@@ -1,0 +1,3 @@
+rootProject.name = 'medflic'
+
+include ':app'
