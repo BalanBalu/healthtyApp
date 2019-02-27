@@ -1,2 +1,0 @@
-# Qbakbak-Native-app
-
