@@ -28,7 +28,7 @@ export default class Home extends PureComponent {
     return (
       <Body>
         <NavigationTop
-          title="Qbakbak"
+          title="Medflic"
           rightIcon={
             <ActionIcon
               icon={'info-outline'}
