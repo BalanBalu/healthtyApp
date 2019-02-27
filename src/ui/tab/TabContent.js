@@ -29,6 +29,7 @@ export default TabContent
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    padding: blockPadding
+    
+    // padding: blockPadding
   }
 })
