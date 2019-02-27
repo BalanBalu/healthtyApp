@@ -4,7 +4,7 @@ import PropTypes from 'prop-types'
 import { connect } from 'react-redux'
 import { View, Text, CheckBox, Picker, DatePickerAndroid, TouchableOpacity,Image } from 'react-native'
 import { isEmail, isLength } from 'validator'
-import DatePicker from 'react-native-datepicker'
+
 
 // UI Imports
 import Button from '../../../ui/button/Button'
