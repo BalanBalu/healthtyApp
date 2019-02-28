@@ -8,6 +8,7 @@ import { isEmail, isLength } from 'validator'
 
 // UI Imports
 import Button from '../../../ui/button/Button'
+import DateTimePicker from '../../../ui/datepicker'
 import InputText from '../../../ui/input/Text'
 import styles from './styles'
 
@@ -15,22 +16,20 @@ import styles from './styles'
 import config from '../../../setup/config'
 import { register } from '../../user/api/actions'
 import { messageShow, messageHide } from '../../common/api/actions'
-import { UIManager, findNodeHandle } from 'react-native';
 
-// Component
 class Signup extends PureComponent {
 constructor(props) {
 super(props)
-this.state = { date: "2016-05-15" },
+
 this.state = {
-
-  isLoading: false,
-
-  name: '',
-  email: '',
-  password: '',
-  
-}
+    date : new Date(),
+    isLoading: false,
+    name: '',
+    email: '',
+    password: '',
+    selectedDOB: `${new Date().getUTCDate()}-${new Date().getUTCMonth() + 1}-${new Date().getUTCFullYear()}`,
+    isDateTimePickerVisible: false
+  }
 }
 
 loading = isLoading => {
@@ -38,6 +37,13 @@ this.setState({
 isLoading
 })
 }
+  
+  _showDateTimePicker = () => this.setState({ isDateTimePickerVisible: true });
+  _hideDateTimePicker = () => this.setState({ isDateTimePickerVisible: false });
+  _handleDatePicked = (date) => {
+    console.log('A date has been picked: ', date);
+    this._hideDateTimePicker();
+  };
 
 onSubmitRegister = async () => {
 const { register, messageShow, messageHide } = this.props
@@ -104,20 +110,6 @@ try {
 
 
 
-_onPressButton() {
-try {
-const { action, year, month, day } = DatePickerAndroid.open({
-  // Use `new Date()` for current date.
-  // May 25 2020. Month 0 is January.
-  date: new Date(2020, 4, 25)
-});
-if (action !== DatePickerAndroid.dismissedAction) {
-  // Selected year, month (0-11), day
-}
-} catch ({ code, message }) {
-console.warn('Cannot open date picker', message);
-}
-}
 
 render() {
 const { isLoading, name, email, password } = this.state
@@ -164,13 +156,27 @@ return (
         <Picker.Item label="Java" value="Male" />
         <Picker.Item label="JavaScript" value="Female" />
       </Picker>
-
-
-      <TouchableOpacity style={{flex:1,flexDirection:'row'}} onPress={this._onPressButton}>
-        <Image source={{ uri: 'http://heritageacademyschools.org/wp-content/uploads/2017/06/heritage_image_2.png' }} style={{height:40,width:40}}/>
-        <Text style={styles.custom}>DATE</Text>
-
+      
+      <TouchableOpacity onPress={this._showDateTimePicker}>
+          <Image source={{ uri: 'http://heritageacademyschools.org/wp-content/uploads/2017/06/heritage_image_2.png' }} style={{height:40,width:40}}/>
       </TouchableOpacity>
+
+      <DateTimePicker
+        isVisible={this.state.isDateTimePickerVisible}
+        date={this.state.date}
+        mode={'datetime'}
+        onConfirm={date => { this.setState({ selectedDOB : date.toISOString() }); this._hideDateTimePicker();} }
+        onCancel={this._hideDateTimePicker}
+      />
+      
+      <Text> {this.state.selectedDOB }</Text>
+
+
+{/*      <TouchableOpacity style={{flex:1,flexDirection:'row'}} onPress={this._onPressButton}>
+        <Image source={{ uri: 'http://heritageacademyschools.org/wp-content/uploads/2017/06/heritage_image_2.png' }} style={{height:40,width:40}}/>
+       <Text style={styles.custom}>DATE</Text>
+
+      </TouchableOpacity> */}
 
 
 
