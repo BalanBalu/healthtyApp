@@ -1,7 +1,7 @@
 // Imports
-import React, { PureComponent } from 'react'
+import React, { PureComponent, Component } from 'react'
 import { View } from 'react-native'
-
+import { Container, Header, Content, Button, Text ,Form,Item,Input} from 'native-base';
 // UI Imports
 import styles from './styles'
 
@@ -10,14 +10,16 @@ import Body from '../../common/Body'
 import ProductList from '../../product/List'
 
 // Component
-class WhatsNew extends PureComponent {
+class WhatsNew extends Component {
   render() {
     return (
-      <View style={styles.container}>
-        <Body>
-          <ProductList />
-        </Body>
-      </View>
+      <Container>
+      <Content>
+      <Item regular>
+            <Input placeholder='Regular Textbox' onChangeText={(text) => console.log(text)} />
+          </Item>
+      </Content>
+    </Container>
     )
   }
 }
