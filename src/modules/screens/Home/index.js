@@ -1,70 +1,51 @@
-// Imports
-import React, { PureComponent } from 'react'
-import { View, Text } from 'react-native'
-import { ScrollView } from 'react-navigation'
+import React, { Component } from 'react';
+import { Container, Text, Button, Icon } from 'native-base';
+import { login, logout } from '../../providers/auth/auth.actions';
+import { connect } from 'react-redux'
+import styles from '../auth/styles'
 
-// UI Imports
-import ActionIcon from '../../../ui/icon/ActionIcon'
-import styles from './styles'
-import InputText from '../../../ui/input/Text'
+class Mainpage extends Component {
+    constructor(props) {
+        super(props)
 
-// App Imports
-import { routes } from '../../../setup/routes'
-import { routesHome } from '../../../setup/routes/home'
-import NavigationTop from '../../common/NavigationTop'
-import Body from '../../common/Body'
-import Intro from './Intro'
-import HowItWorks from './HowItWorks'
-import CollageMen from './Collage/Men'
-import CollageWomen from './Collage/Women'
-import { white } from '../../../ui/common/colors';
+        this.state = {
+            userEntry: '',
+            password: ''
+        }
+    }
 
-// Component
-export default class Home extends PureComponent {
+    doLogout() {
+        logout();
+        this.props.navigation.navigate('login');
+    }  
 
-  getSubscription = () => {
-    this.props.navigation.navigate(routes.crates.name)
-  }
-
-  render() {
-    return (
-      <Body>
-        {/* <NavigationTop
-          title="Qbakbak"
-          rightIcon={
-            <ActionIcon
-              icon={'info-outline'}
-              onPress={() => this.props.navigation.navigate(routesHome.info.name)}
-            />
-          }
-        /> */}
-
-        <ScrollView style={styles.container}>
-          <View style={styles.bodyContainer}>
-            <View style={{ backgroundColor: '#9E63EF' }}>
-              <View style={{ backgroundColor: '#9E63EF', flex: 1, flexDirection: 'row' }}>
-
-                <InputText style={styles.inputText} underlineColorAndroid="transparent" placeholder={'search'} ></InputText>
-                <Text style={styles.rightText}>Filter</Text>
-
-              </View>
-              <Text style={{ color: white, fontSize: 12, marginLeft: 5, }}>medicine , alhocol, aspirin,aspirin..</Text>
-            </View>
+    render() {
+        return (
 
 
-            <View style={styles.searcharea}>
+            <Container style={styles.container}>
 
-              <View style={styles.errorMsg}>
-                <Text> Your Keyword does not match</Text>
-              </View>
+              <Text> HEllo Text </Text>
+              <Button primary onPress={() => this.doLogout() } >
+              <Icon name='ios-home' />
+              <Text>
+                Logout
+            </Text>
+          </Button>  
 
-            </View>
+               
+            </Container>
 
+        )
+    }
 
-
-          </View>
-        </ScrollView>
-      </Body>
-    )
-  }
 }
+
+
+
+function HomeState(state) {
+    return {
+        user: state.user
+    }
+}
+export default connect(HomeState, { login })(Mainpage)

@@ -1,39 +1,52 @@
-// Imports
-import React from 'react'
-import { AsyncStorage } from 'react-native'
-import { Provider } from 'react-redux'
-
-// App Imports
+import React,{ Component }  from 'react';
+import RoutesHome from './routes/appRouterHome';
+import RoutesLogin from './routes/appRouterLogin';
+import { Provider } from 'react-redux';
 import { store } from './store'
-import Routes from './routes'
-import { setUser, setUserLocally } from '../modules/user/api/actions'
+import { StyleProvider } from 'native-base';
+import getTheme from '../theme/components';
+import material from '../theme/variables/material';
+import { AsyncStorage, Text } from 'react-native';
+import { setDoctorLocally } from '../modules/providers/auth/auth.actions';
 
-// User Authentication
-(async () => {
-  try {
-    const token = await AsyncStorage.getItem('token')
-    if (token && token !== 'undefined' && token !== '') {
-      const user = JSON.parse(await AsyncStorage.getItem('user'))
-      if (user) {
-        store.dispatch(setUser(token, user))
-
-        setUserLocally(token, user)
-
-        console.log('User logged in.')
-      }
+export default class App extends Component {
+    constructor(props) {
+      super(props);
+      console.log('coming on Constructor');
+       this.state = {
+         isAuthenticated : false
+       } 
     }
-  } catch (e) {
-    console.log('Failed to login user.')
+   async componentWillMount(){
+    try {
+        console.log('is that coming here?');
+        const token = await AsyncStorage.getItem('token')
+        if (token && token !== 'undefined' && token !== '') {
+          const doctor = JSON.parse(await AsyncStorage.getItem('doctor'))
+          if(doctor) {
+           await setDoctorLocally(token, doctor);
+            //console.log('user props is ' +  this.props);
+            this.setState( {isAuthenticated : true});
+          }
+        }
+      } catch (e) {
+        console.log('Failed to Login User' + e);
+      }     
   }
-})()
+  
 
-// App
-export default class App extends React.Component {
   render() {
-    return (
-      <Provider store={store} key="provider">
-        <Routes />
-      </Provider>
-    )
+      const { isAuthenticated }  = this.state;
+      console.log('coming on Render');
+      return (
+      
+        <Provider store={store} key="provider">
+           <StyleProvider style={getTheme(material)}>
+           
+            {!isAuthenticated ? <RoutesLogin/> : <RoutesHome /> }  
+           
+           </StyleProvider>  
+        </Provider>
+      )
+    }
   }
-}

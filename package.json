@@ -1,5 +1,5 @@
 {
-  "name": "medflic",
+  "name": "drmedflic",
   "version": "0.0.1",
   "private": true,
   "scripts": {
@@ -7,34 +7,26 @@
     "test": "jest"
   },
   "dependencies": {
-    "axios": "0.18.0",
-    "gql-query-builder": "2.0.2",
-    "moment": "^2.24.0",
+    "axios": "^0.18.0",
     "native-base": "^2.12.0",
-    "prop-types": "15.7.2",
     "react": "16.6.3",
-    "react-native": "0.58.4",
-    "react-native-debugger": "^1.1.0",
-    "react-native-gesture-handler": "1.0.15",
-    "react-native-keyboard-aware-scroll-view": "0.8.0",
-    "react-native-vector-icons": "^6.1.0",
-    "react-navigation": "3.2.3",
-    "react-redux": "6.0.0",
-    "redux": "4.0.1",
-    "redux-thunk": "2.3.0",
-    "validator": "10.11.0"
+    "react-native": "0.58.6",
+    "react-native-gesture-handler": "^1.0.17",
+    "react-native-swiper": "^1.5.14",
+    "react-navigation": "^3.3.2",
+    "react-redux": "^6.0.1",
+    "redux": "^4.0.1",
+    "redux-thunk": "^2.3.0",
+    "validator": "^10.11.0"
   },
   "devDependencies": {
     "babel-core": "7.0.0-bridge.0",
     "babel-jest": "24.1.0",
     "jest": "24.1.0",
-    "metro-react-native-babel-preset": "0.51.1",
+    "metro-react-native-babel-preset": "0.53.0",
     "react-test-renderer": "16.6.3"
   },
   "jest": {
-    "preset": "react-native",
-    "transformIgnorePatterns": [
-      "node_modules/(?!react-native|@shoutem/theme|@shoutem/animation|@shoutem/ui|tcomb-form-native)"
-    ]
+    "preset": "react-native"
   }
 }
