@@ -4,7 +4,7 @@ import { login, logout } from '../../providers/auth/auth.actions';
 import { connect } from 'react-redux'
 import styles from '../auth/styles'
 
-class Mainpage extends Component {
+class Home extends Component {
     constructor(props) {
         super(props)
 
@@ -48,4 +48,4 @@ function HomeState(state) {
         user: state.user
     }
 }
-export default connect(HomeState, { login })(Mainpage)
+export default connect(HomeState, { login })(Home)

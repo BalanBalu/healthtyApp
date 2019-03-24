@@ -97,7 +97,7 @@ class Login extends Component {
         </Content>
         <Footer >
           <FooterTab style={{ backgroundColor: '#F2F2F2', }}>
-            <Button full onPress={() => this.props.navigation.navigate('signup')}>
+            <Button full onPress={() => this.props.navigation.navigate('finddoctor')}>
               <Text uppercase={false} style={{ color: '#000', fontSize: 15 }}>Don't Have An Account ? SignUp</Text>
             </Button>
           </FooterTab>
