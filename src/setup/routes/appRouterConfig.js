@@ -1,4 +1,4 @@
-import Home from "../../modules/screens/Home";
+import Home from "../../modules/screens/home";
 import login from "../../modules/screens/auth/login";
 import signup from "../../modules/screens/auth/signup";
 import forgotpassword from "../../modules/screens/auth/forgotpassword";
