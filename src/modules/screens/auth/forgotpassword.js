@@ -34,7 +34,7 @@ class Forgotpassword extends Component {
                             <Input placeholder="Email Or Phone" style={styles.transparentLabel} />
                         </Item>
                         <Button style={styles.loginButton} block primary onPress={() => this.doLogin()}>
-                            <Text>Forgot password</Text>
+                            <Text style={{fontFamily:'opensans-regular'}}>Forgot password</Text>
                         </Button>
 
                     </Form>
@@ -43,7 +43,7 @@ class Forgotpassword extends Component {
                 <Footer >
                     <FooterTab style={{ backgroundColor: '#F2F2F2', }}>
                         <Button full onPress={() => this.props.navigation.navigate('login')}>
-                            <Text uppercase={false} style={{ color: '#000', fontSize: 15 }}>Go Back To SignIn</Text>
+                            <Text uppercase={false} style={{ color: '#000', fontSize: 15,fontFamily:'opensans-regular' }}>Go Back To SignIn</Text>
                         </Button>
                     </FooterTab>
                 </Footer>
