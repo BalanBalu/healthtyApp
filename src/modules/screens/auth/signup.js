@@ -55,12 +55,12 @@ class Signup extends Component {
 
                             <Radio selected={true} color={"#775DA3"}
                                 selectedColor={"#775DA3"} />
-                            <Text style={{ marginLeft: 10 }}>Male</Text>
+                            <Text style={{ marginLeft: 10 ,fontFamily:'opensans-regular'}}>Male</Text>
 
 
                             <Radio selected={true} style={{ marginLeft: 20 }} color={"#775DA3"}
                                 selectedColor={"#775DA3"} />
-                            <Text style={{ marginLeft: 10 }}>Female</Text>
+                            <Text style={{ marginLeft: 10 ,fontFamily:'opensans-regular'}}>Female</Text>
 
 
                         </Item>
@@ -68,12 +68,12 @@ class Signup extends Component {
 
                         <Item style={{ borderBottomWidth: 0, marginTop: 12, marginLeft: 4 }}>
                             <CheckBox checked={true} color="green" ></CheckBox>
-                            <Text style={{ marginLeft: 15, color: 'gray' }}>I Accepted Medflic Terms And Conditions</Text>
+                            <Text style={{ marginLeft: 15, color: 'gray' ,fontFamily:'opensans-regular'}}>I Accepted Medflic Terms And Conditions</Text>
                         </Item>
 
 
                         <Button style={styles.loginButton} block primary onPress={() => this.doLogin()}>
-                            <Text>Sign Up</Text>
+                            <Text style={{fontFamily:'opensans-regular'}}>Sign Up</Text>
                         </Button>
 
                     </Form>
@@ -82,7 +82,7 @@ class Signup extends Component {
                 <Footer >
                     <FooterTab style={{ backgroundColor: '#F2F2F2', }}>
                         <Button full onPress={() => this.props.navigation.navigate('login')}>
-                            <Text uppercase={false} style={{ color: '#000', fontSize: 15 }}>Already Have An Account ? SignIn</Text>
+                            <Text uppercase={false} style={{ color: '#000', fontSize: 15,fontFamily:'opensans-regular' }}>Already Have An Account ? SignIn</Text>
                         </Button>
                     </FooterTab>
                 </Footer>

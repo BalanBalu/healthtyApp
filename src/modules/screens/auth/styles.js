@@ -12,7 +12,7 @@ export default StyleSheet.create({
 
     bodyContent: {
         top: '10%',
-        paddingLeft: 30,
+        paddingLeft: 20,
         paddingRight: 30,
 
     },
@@ -21,6 +21,7 @@ export default StyleSheet.create({
         fontSize: 22,
         textAlign: 'center',
         marginTop: 10,
+        fontFamily: 'opensans-regular',
     },
     transparentLabel: {
         borderBottomColor: 'transparent',
@@ -28,7 +29,8 @@ export default StyleSheet.create({
         height: 45,
         marginTop: 10,
         borderRadius: 5,
-        paddingLeft: 20
+        paddingLeft: 20,
+        fontFamily: 'opensans-regular',
     },
     loginButton: {
         marginTop: 12,
@@ -38,7 +40,8 @@ export default StyleSheet.create({
     },
     customText:
     {
-        color: 'gray'
+        color: 'gray',
+        fontFamily: 'opensans-regular',
     },
     logo: {
         height: 86,
@@ -57,13 +60,14 @@ export default StyleSheet.create({
         backgroundColor: '#fff6d2',
         marginTop: 10,
         fontSize: 14,
-        marginLeft:16,
+        marginLeft: 16,
         borderRadius: 5,
         paddingLeft: 20,
-        color:'#775DA3',
-        height:45,
-        padding:10,
-       
+        color: '#775DA3',
+        height: 45,
+        padding: 10,
+        fontFamily: 'opensans-regular',
+
 
     }
 })

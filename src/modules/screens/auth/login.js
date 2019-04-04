@@ -4,7 +4,7 @@ import { login } from '../../providers/auth/auth.actions';
 import { messageShow, messageHide } from '../../providers/common/common.action';
 import { userInitialState } from '../../providers/auth/auth.actions';
 import { connect } from 'react-redux'
-import { StyleSheet, Image, TouchableOpacity,View } from 'react-native';
+import { StyleSheet, Image, TouchableOpacity, View } from 'react-native';
 import styles from '../../screens/auth/styles'
 class Login extends Component {
   constructor(props) {
@@ -76,7 +76,7 @@ class Login extends Component {
 
               <Item style={{ borderBottomWidth: 0, }}>
                 <CheckBox checked={true} color="green" style={{ marginLeft: -7, }} ></CheckBox>
-                <Text style={{ marginLeft: 15, color: 'gray', }}>Remember me</Text>
+                <Text style={{ marginLeft: 15, color: 'gray', fontFamily: 'opensans-regular' }}>Remember me</Text>
               </Item>
 
               <Right>
@@ -89,7 +89,7 @@ class Login extends Component {
             <Button style={styles.loginButton} block primary
               disabled={isLoading}
               onPress={() => this.doLogin()}>
-              <Text>Sign In</Text>
+              <Text onPress={() => this.props.navigation.navigate('home')}>Sign In</Text>
             </Button>
             <Text>{loginErrorMsg}</Text>
           </Form>
@@ -97,8 +97,8 @@ class Login extends Component {
         </Content>
         <Footer >
           <FooterTab style={{ backgroundColor: '#F2F2F2', }}>
-            <Button full onPress={() => this.props.navigation.navigate('finddoctor')}>
-              <Text uppercase={false} style={{ color: '#000', fontSize: 15 }}>Don't Have An Account ? SignUp</Text>
+            <Button full onPress={() => this.props.navigation.navigate('signup')}>
+              <Text uppercase={false} style={{ color: '#000', fontSize: 15, fontFamily: 'opensans-regular' }}>Don't Have An Account ? SignUp</Text>
             </Button>
           </FooterTab>
         </Footer>
