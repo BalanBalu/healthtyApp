@@ -48,19 +48,19 @@ class Categories extends Component {
               <Col style={styles.column}>
                 <LinearGradient
                   colors={['#7357A2', '#62BFE4']} style={{ borderRadius: 10, padding: 10, height: '100%', width: '100%', marginLeft: 'auto', marginRight: 'auto' }}>
-                  <Image source={{ uri: 'https://cdn3.iconfinder.com/data/icons/dental-blue-icons/512/Untitled-1.png' }} style={styles.customImage} />
+                  <Image source={{ uri: 'https://static1.squarespace.com/static/586ef2c6bf629a58a3512dfa/t/5879369c5016e1f60c105f77/1484358104031/crown-bridge-icon.png' }} style={styles.customImage} />
                 </LinearGradient>
 
-                <Text style={styles.titleText}>Geriatrics</Text>
+                <Text style={styles.titleText}>Dental</Text>
               </Col>
 
               <Col style={styles.column}>
                 <LinearGradient
                   colors={['#7357A2', '#62BFE4']} style={{ borderRadius: 10, padding: 10, height: '100%', width: '100%', marginLeft: 'auto', marginRight: 'auto' }}>
-                  <Image source={{ uri: 'https://cdn3.iconfinder.com/data/icons/dental-blue-icons/512/Untitled-1.png' }} style={styles.customImage} />
+                  <Image source={{ uri: 'http://pluspng.com/img-png/orthopedics-png--350.png' }} style={styles.customImage} />
                 </LinearGradient>
 
-                <Text style={styles.titleText}>Geriatrics</Text>
+                <Text style={styles.titleText}>Orthology</Text>
               </Col>
 
 
@@ -68,10 +68,47 @@ class Categories extends Component {
               <Col style={styles.column}>
                 <LinearGradient
                   colors={['#7357A2', '#62BFE4']} style={{ borderRadius: 10, padding: 10, height: '100%', width: '100%', marginLeft: 'auto', marginRight: 'auto' }}>
-                  <Image source={{ uri: 'https://cdn3.iconfinder.com/data/icons/dental-blue-icons/512/Untitled-1.png' }} style={styles.customImage} />
+                  <Image source={{ uri: 'https://omionline.in/omi_app/images/images/Neurologist.png' }} style={styles.customImage} />
                 </LinearGradient>
 
-                <Text style={styles.titleText}>Geriatrics</Text>
+                <Text style={styles.titleText}>Neurology</Text>
+              </Col>
+
+
+            </Row>
+
+          </Grid>
+
+
+          <Grid style={{marginTop:10}}>
+            <Row>
+              <Col style={styles.column}>
+                <LinearGradient
+                  colors={['#7357A2', '#62BFE4']} style={{ borderRadius: 10, padding: 10, height: '100%', width: '100%', marginLeft: 'auto', marginRight: 'auto' }}>
+                  <Image source={{ uri: 'https://static1.squarespace.com/static/586ef2c6bf629a58a3512dfa/t/5879369c5016e1f60c105f77/1484358104031/crown-bridge-icon.png' }} style={styles.customImage} />
+                </LinearGradient>
+
+                <Text style={styles.titleText}>Dental</Text>
+              </Col>
+
+              <Col style={styles.column}>
+                <LinearGradient
+                  colors={['#7357A2', '#62BFE4']} style={{ borderRadius: 10, padding: 10, height: '100%', width: '100%', marginLeft: 'auto', marginRight: 'auto' }}>
+                  <Image source={{ uri: 'http://pluspng.com/img-png/orthopedics-png--350.png' }} style={styles.customImage} />
+                </LinearGradient>
+
+                <Text style={styles.titleText}>Orthology</Text>
+              </Col>
+
+
+
+              <Col style={styles.column}>
+                <LinearGradient
+                  colors={['#7357A2', '#62BFE4']} style={{ borderRadius: 10, padding: 10, height: '100%', width: '100%', marginLeft: 'auto', marginRight: 'auto' }}>
+                  <Image source={{ uri: 'https://omionline.in/omi_app/images/images/Neurologist.png' }} style={styles.customImage} />
+                </LinearGradient>
+
+                <Text style={styles.titleText}>Neurology</Text>
               </Col>
 
 
@@ -80,24 +117,25 @@ class Categories extends Component {
           </Grid>
 
 
-          <Grid style={{ marginTop: 5 }}>
+
+          <Grid style={{marginTop:10}}>
             <Row>
               <Col style={styles.column}>
                 <LinearGradient
                   colors={['#7357A2', '#62BFE4']} style={{ borderRadius: 10, padding: 10, height: '100%', width: '100%', marginLeft: 'auto', marginRight: 'auto' }}>
-                  <Image source={{ uri: 'https://cdn3.iconfinder.com/data/icons/dental-blue-icons/512/Untitled-1.png' }} style={styles.customImage} />
+                  <Image source={{ uri: 'https://static1.squarespace.com/static/586ef2c6bf629a58a3512dfa/t/5879369c5016e1f60c105f77/1484358104031/crown-bridge-icon.png' }} style={styles.customImage} />
                 </LinearGradient>
 
-                <Text style={styles.titleText}>Geriatrics</Text>
+                <Text style={styles.titleText}>Dental</Text>
               </Col>
 
               <Col style={styles.column}>
                 <LinearGradient
                   colors={['#7357A2', '#62BFE4']} style={{ borderRadius: 10, padding: 10, height: '100%', width: '100%', marginLeft: 'auto', marginRight: 'auto' }}>
-                  <Image source={{ uri: 'https://cdn3.iconfinder.com/data/icons/dental-blue-icons/512/Untitled-1.png' }} style={styles.customImage} />
+                  <Image source={{ uri: 'http://pluspng.com/img-png/orthopedics-png--350.png' }} style={styles.customImage} />
                 </LinearGradient>
 
-                <Text style={styles.titleText}>Geriatrics</Text>
+                <Text style={styles.titleText}>Orthology</Text>
               </Col>
 
 
@@ -105,10 +143,10 @@ class Categories extends Component {
               <Col style={styles.column}>
                 <LinearGradient
                   colors={['#7357A2', '#62BFE4']} style={{ borderRadius: 10, padding: 10, height: '100%', width: '100%', marginLeft: 'auto', marginRight: 'auto' }}>
-                  <Image source={{ uri: 'https://cdn3.iconfinder.com/data/icons/dental-blue-icons/512/Untitled-1.png' }} style={styles.customImage} />
+                  <Image source={{ uri: 'https://omionline.in/omi_app/images/images/Neurologist.png' }} style={styles.customImage} />
                 </LinearGradient>
 
-                <Text style={styles.titleText}>Geriatrics</Text>
+                <Text style={styles.titleText}>Neurology</Text>
               </Col>
 
 
@@ -116,24 +154,27 @@ class Categories extends Component {
 
           </Grid>
 
-          <Grid style={{ marginTop: 5 }}>
+
+
+
+          <Grid style={{marginTop:10}}>
             <Row>
               <Col style={styles.column}>
                 <LinearGradient
                   colors={['#7357A2', '#62BFE4']} style={{ borderRadius: 10, padding: 10, height: '100%', width: '100%', marginLeft: 'auto', marginRight: 'auto' }}>
-                  <Image source={{ uri: 'https://cdn3.iconfinder.com/data/icons/dental-blue-icons/512/Untitled-1.png' }} style={styles.customImage} />
+                  <Image source={{ uri: 'https://static1.squarespace.com/static/586ef2c6bf629a58a3512dfa/t/5879369c5016e1f60c105f77/1484358104031/crown-bridge-icon.png' }} style={styles.customImage} />
                 </LinearGradient>
 
-                <Text style={styles.titleText}>Geriatrics</Text>
+                <Text style={styles.titleText}>Dental</Text>
               </Col>
 
               <Col style={styles.column}>
                 <LinearGradient
                   colors={['#7357A2', '#62BFE4']} style={{ borderRadius: 10, padding: 10, height: '100%', width: '100%', marginLeft: 'auto', marginRight: 'auto' }}>
-                  <Image source={{ uri: 'https://cdn3.iconfinder.com/data/icons/dental-blue-icons/512/Untitled-1.png' }} style={styles.customImage} />
+                  <Image source={{ uri: 'http://pluspng.com/img-png/orthopedics-png--350.png' }} style={styles.customImage} />
                 </LinearGradient>
 
-                <Text style={styles.titleText}>Geriatrics</Text>
+                <Text style={styles.titleText}>Orthology</Text>
               </Col>
 
 
@@ -141,71 +182,34 @@ class Categories extends Component {
               <Col style={styles.column}>
                 <LinearGradient
                   colors={['#7357A2', '#62BFE4']} style={{ borderRadius: 10, padding: 10, height: '100%', width: '100%', marginLeft: 'auto', marginRight: 'auto' }}>
-                  <Image source={{ uri: 'https://cdn3.iconfinder.com/data/icons/dental-blue-icons/512/Untitled-1.png' }} style={styles.customImage} />
+                  <Image source={{ uri: 'https://omionline.in/omi_app/images/images/Neurologist.png' }} style={styles.customImage} />
                 </LinearGradient>
 
-                <Text style={styles.titleText}>Geriatrics</Text>
+                <Text style={styles.titleText}>Neurology</Text>
               </Col>
 
 
             </Row>
 
           </Grid>
-
-          <Grid style={{ marginTop: 5 }}>
+          <Grid style={{marginTop:10}}>
             <Row>
               <Col style={styles.column}>
                 <LinearGradient
                   colors={['#7357A2', '#62BFE4']} style={{ borderRadius: 10, padding: 10, height: '100%', width: '100%', marginLeft: 'auto', marginRight: 'auto' }}>
-                  <Image source={{ uri: 'https://cdn3.iconfinder.com/data/icons/dental-blue-icons/512/Untitled-1.png' }} style={styles.customImage} />
+                  <Image source={{ uri: 'https://static1.squarespace.com/static/586ef2c6bf629a58a3512dfa/t/5879369c5016e1f60c105f77/1484358104031/crown-bridge-icon.png' }} style={styles.customImage} />
                 </LinearGradient>
 
-                <Text style={styles.titleText}>Geriatrics</Text>
+                <Text style={styles.titleText}>Dental</Text>
               </Col>
 
               <Col style={styles.column}>
                 <LinearGradient
                   colors={['#7357A2', '#62BFE4']} style={{ borderRadius: 10, padding: 10, height: '100%', width: '100%', marginLeft: 'auto', marginRight: 'auto' }}>
-                  <Image source={{ uri: 'https://cdn3.iconfinder.com/data/icons/dental-blue-icons/512/Untitled-1.png' }} style={styles.customImage} />
+                  <Image source={{ uri: 'http://pluspng.com/img-png/orthopedics-png--350.png' }} style={styles.customImage} />
                 </LinearGradient>
 
-                <Text style={styles.titleText}>Geriatrics</Text>
-              </Col>
-
-
-
-              <Col style={styles.column}>
-                <LinearGradient
-                  colors={['#7357A2', '#62BFE4']} style={{ borderRadius: 10, padding: 10, height: '100%', width: '100%', marginLeft: 'auto', marginRight: 'auto' }}>
-                  <Image source={{ uri: 'https://cdn3.iconfinder.com/data/icons/dental-blue-icons/512/Untitled-1.png' }} style={styles.customImage} />
-                </LinearGradient>
-
-                <Text style={styles.titleText}>Geriatrics</Text>
-              </Col>
-
-
-            </Row>
-
-          </Grid>
-
-          <Grid style={{ marginTop: 5 }}>
-            <Row>
-              <Col style={styles.column}>
-                <LinearGradient
-                  colors={['#7357A2', '#62BFE4']} style={{ borderRadius: 10, padding: 10, height: '100%', width: '100%', marginLeft: 'auto', marginRight: 'auto' }}>
-                  <Image source={{ uri: 'https://cdn3.iconfinder.com/data/icons/dental-blue-icons/512/Untitled-1.png' }} style={styles.customImage} />
-                </LinearGradient>
-
-                <Text style={styles.titleText}>Geriatrics</Text>
-              </Col>
-
-              <Col style={styles.column}>
-                <LinearGradient
-                  colors={['#7357A2', '#62BFE4']} style={{ borderRadius: 10, padding: 10, height: '100%', width: '100%', marginLeft: 'auto', marginRight: 'auto' }}>
-                  <Image source={{ uri: 'https://cdn3.iconfinder.com/data/icons/dental-blue-icons/512/Untitled-1.png' }} style={styles.customImage} />
-                </LinearGradient>
-
-                <Text style={styles.titleText}>Geriatrics</Text>
+                <Text style={styles.titleText}>Orthology</Text>
               </Col>
 
 
@@ -213,10 +217,10 @@ class Categories extends Component {
               <Col style={styles.column}>
                 <LinearGradient
                   colors={['#7357A2', '#62BFE4']} style={{ borderRadius: 10, padding: 10, height: '100%', width: '100%', marginLeft: 'auto', marginRight: 'auto' }}>
-                  <Image source={{ uri: 'https://cdn3.iconfinder.com/data/icons/dental-blue-icons/512/Untitled-1.png' }} style={styles.customImage} />
+                  <Image source={{ uri: 'https://omionline.in/omi_app/images/images/Neurologist.png' }} style={styles.customImage} />
                 </LinearGradient>
 
-                <Text style={styles.titleText}>Geriatrics</Text>
+                <Text style={styles.titleText}>Neurology</Text>
               </Col>
 
 
@@ -278,7 +282,7 @@ const styles = StyleSheet.create({
   },
 
   titleText: {
-    fontSize: 12,
+    fontSize: 14,
     padding: 5,
     backgroundColor: '#FF9502',
     borderRadius: 20,
