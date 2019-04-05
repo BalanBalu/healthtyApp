@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { Container, Content, Text, Title, Header, Button, H3, Item, List, ListItem, Card, Input, Left, Right, Thumbnail, Body, Icon } from 'native-base';
+import { Container, Content, Text, Title, Header, Button, H3, Item, List, ListItem, Card, Input, Left, Right, Thumbnail, Body, Icon, Footer, FooterTab } from 'native-base';
 import { login } from '../../providers/auth/auth.actions';
 import { messageShow, messageHide } from '../../providers/common/common.action';
 import LinearGradient from 'react-native-linear-gradient';
@@ -73,38 +73,56 @@ class Home extends Component {
                             </Row>
 
                             <Row>
-                                <Col style={styles.column}>
-                                    <LinearGradient
-                                        colors={['#7357A2', '#62BFE4']} style={{ borderRadius: 10, padding: 10, height: '100%', width: '100%', marginLeft: 'auto', marginRight: 'auto' }}>
-                                        <Image source={{ uri: 'https://static1.squarespace.com/static/582bbfef9de4bb07fe62ab18/t/5877b9ccebbd1a124af66dfe/1484241404624/Headshot+-+Circular.png?format=300w' }} style={styles.customImage} />
-                                    </LinearGradient>
+                                <ListItem noBorder>
+                                    <ScrollView horizontal={true}>
+                                        <Col style={styles.column}>
+                                            <LinearGradient
+                                                colors={['#7357A2', '#62BFE4']} style={{ borderRadius: 10, padding: 5, height: '70%', width: '100%', marginLeft: 'auto', marginRight: 'auto' }}>
+                                                <Image source={{ uri: 'https://static1.squarespace.com/static/586ef2c6bf629a58a3512dfa/t/5879369c5016e1f60c105f77/1484358104031/crown-bridge-icon.png' }} style={styles.customImage} />
+                                            </LinearGradient>
 
-                                    <Text style={styles.textcenter}>Geriatrics</Text>
-                                    <Text note style={{ textAlign: 'center' }}>100 Doctors</Text>
-                                </Col>
+                                            <Text style={styles.textcenter}>Dental</Text>
+                                            <Text note style={{ textAlign: 'center' }}>100 Doctors</Text>
+                                        </Col>
 
-                                <Col style={styles.column}>
-                                    <LinearGradient
-                                        colors={['#7357A2', '#62BFE4']} style={{ borderRadius: 10, padding: 10, height: '100%', width: '100%', marginLeft: 'auto', marginRight: 'auto' }}>
-                                        <Image source={{ uri: 'https://static1.squarespace.com/static/582bbfef9de4bb07fe62ab18/t/5877b9ccebbd1a124af66dfe/1484241404624/Headshot+-+Circular.png?format=300w' }} style={styles.customImage} />
-                                    </LinearGradient>
+                                        <Col style={styles.column}>
+                                            <LinearGradient
+                                                colors={['#7357A2', '#62BFE4']} style={{ borderRadius: 10, padding: 10, height: '70%', width: '100%', marginLeft: 'auto', marginRight: 'auto' }}>
+                                                <Image source={{ uri: 'http://pluspng.com/img-png/orthopedics-png--350.png' }} style={styles.customImage} />
+                                            </LinearGradient>
 
-                                    <Text style={styles.textcenter}>Geriatrics</Text>
-                                    <Text note style={{ textAlign: 'center' }}>150 Doctors</Text>
-                                </Col>
+                                            <Text style={styles.textcenter}>Orthology</Text>
+                                            <Text note style={{ textAlign: 'center' }}>150 Doctors</Text>
+                                        </Col>
 
 
 
-                                <Col style={styles.column}>
-                                    <LinearGradient
-                                        colors={['#7357A2', '#62BFE4']} style={{ borderRadius: 10, padding: 10, height: '100%', width: '100%', marginLeft: 'auto', marginRight: 'auto' }}>
-                                        <Image source={{ uri: 'https://static1.squarespace.com/static/582bbfef9de4bb07fe62ab18/t/5877b9ccebbd1a124af66dfe/1484241404624/Headshot+-+Circular.png?format=300w' }} style={styles.customImage} />
-                                    </LinearGradient>
+                                        <Col style={styles.column}>
+                                            <LinearGradient
+                                                colors={['#7357A2', '#62BFE4']} style={{ borderRadius: 10, padding: 10, height: '70%', width: '100%', marginLeft: 'auto', marginRight: 'auto' }}>
+                                                <Image source={{ uri: 'https://omionline.in/omi_app/images/images/Neurologist.png' }} style={styles.customImage} />
+                                            </LinearGradient>
 
-                                    <Text style={styles.textcenter}>Geriatrics</Text>
-                                    <Text note style={{ textAlign: 'center' }}>50 Doctors</Text>
-                                </Col>
+                                            <Text style={styles.textcenter}>Neurology</Text>
+                                            <Text note style={{ textAlign: 'center' }}>50 Doctors</Text>
+                                        </Col>
 
+
+
+
+                                        <Col style={styles.column}>
+                                            <LinearGradient
+                                                colors={['#7357A2', '#62BFE4']} style={{ borderRadius: 10, padding: 10, height: '70%', width: '100%', marginLeft: 'auto', marginRight: 'auto' }}>
+                                                <Image source={{ uri: 'https://static1.squarespace.com/static/586ef2c6bf629a58a3512dfa/t/5879369c5016e1f60c105f77/1484358104031/crown-bridge-icon.png' }} style={styles.customImage} />
+                                            </LinearGradient>
+
+                                            <Text style={styles.textcenter}>Dental</Text>
+                                            <Text note style={{ textAlign: 'center' }}>50 Doctors</Text>
+                                        </Col>
+
+
+
+                                    </ScrollView></ListItem>
 
                             </Row>
 
@@ -186,6 +204,22 @@ class Home extends Component {
 
 
                 </Content>
+                <Footer>
+                    <FooterTab style={{ backgroundColor: '#7E49C3' }}>
+                        <Button >
+                            <Icon name="apps" />
+                        </Button>
+                        <Button>
+                            <Icon name="chatbubbles" />
+                        </Button>
+                        <Button >
+                            <Icon active name="notifications" />
+                        </Button>
+                        <Button>
+                            <Icon name="person" />
+                        </Button>
+                    </FooterTab>
+                </Footer>
             </Container>
 
         )
@@ -221,13 +255,13 @@ const styles = StyleSheet.create({
 
     column:
     {
-        width: '33.33%',
+        width: '25%',
         marginLeft: 'auto',
         marginRight: 'auto',
         borderRadius: 10,
         margin: 5,
         padding: 5,
-        paddingBottom: 25
+        paddingBottom: 20
 
     },
 
@@ -283,12 +317,12 @@ const styles = StyleSheet.create({
     },
 
     offerText: {
-        fontSize: 14,
+        fontSize: 12,
         padding: 5,
         backgroundColor: 'gray',
         borderRadius: 20,
         color: 'white',
-        width: "95%",
+        width: "93%",
         textAlign: 'center',
         fontFamily: 'opensans-regular',
         marginLeft: 'auto',

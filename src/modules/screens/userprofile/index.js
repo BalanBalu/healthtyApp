@@ -59,7 +59,7 @@ class Profile extends Component {
                                 <Col style={{ width: '10%' }}>
                                 </Col>
                                 <Col style={styles.customCol}>
-                                    <Icon name="call" style={styles.profileIcon}></Icon>
+                                    <Icon name="heart" style={styles.profileIcon}></Icon>
                                 </Col>
                                 <Col style={{ width: '40%' }}>
                                     <Thumbnail style={styles.profileImage} source={{ uri: 'https://res.cloudinary.com/demo/image/upload/w_200,h_200,c_thumb,g_face,r_max/face_left.png' }} />
@@ -67,7 +67,7 @@ class Profile extends Component {
 
                                 </Col>
                                 <Col style={styles.customCol}>
-                                    <Icon name="chatbubbles" style={styles.profileIcon}></Icon>
+                                    <Icon name="heart" style={styles.profileIcon}></Icon>
                                 </Col>
                                 <Col style={{ width: '10%' }}>
                                 </Col>
@@ -83,20 +83,20 @@ class Profile extends Component {
 
                     </LinearGradient>
                     <Card>
-                        <Grid style={{padding:10}}>
+                        <Grid style={{ padding: 10 }}>
                             <Col style={{ backgroundColor: 'transparent', borderRightWidth: 0.5, borderRightColor: 'gray', marginLeft: 'auto', marginRight: 'auto' }}>
-                                <Text style={styles.topValue}> Rs 450 </Text>
-                                <Text note style={styles.bottomValue}> Hourly Rate </Text>
+                                <Text style={styles.topValue}> Age </Text>
+                                <Text note style={styles.bottomValue}>25 </Text>
                             </Col>
 
                             <Col style={{ backgroundColor: 'transparent', borderRightWidth: 0.5, borderRightColor: 'gray', marginLeft: 'auto', marginRight: 'auto' }}>
-                                <Text style={styles.topValue}>88 </Text>
-                                <Text note style={styles.bottomValue}> Reviews </Text>
+                                <Text style={styles.topValue}>Sex </Text>
+                                <Text note style={styles.bottomValue}> Male </Text>
                             </Col>
 
                             <Col style={{ backgroundColor: 'transparent', justifyContent: 'center', marginLeft: 'auto', marginRight: 'auto' }}>
-                                <Text style={styles.topValue}>824 </Text>
-                                <Text note style={styles.bottomValue}> patients </Text>
+                                <Text style={styles.topValue}>Blood</Text>
+                                <Text note style={styles.bottomValue}> O Positive </Text>
                             </Col>
                         </Grid>
 
@@ -167,19 +167,7 @@ class Profile extends Component {
                                 <Icon name="create"></Icon>
                             </Right>
                         </ListItem>
-                        <ListItem avatar>
-                            <Left>
-                                <Icon name="male" style={{ color: '#7E49C3' }}></Icon>
-                            </Left>
-                            <Body>
-                                <Text style={styles.customText}>Sex</Text>
-                                <Text note style={styles.customText}>Sex</Text>
 
-                            </Body>
-                            <Right>
-                                <Icon name="create"></Icon>
-                            </Right>
-                        </ListItem>
 
 
                         <ListItem avatar>
@@ -206,7 +194,7 @@ class Profile extends Component {
 
                         <ListItem avatar noBorder>
                             <Left>
-                                <Thumbnail square source={{ uri: 'https://static1.squarespace.com/static/582bbfef9de4bb07fe62ab18/t/5877b9ccebbd1a124af66dfe/1484241404624/Headshot+-+Circular.png?format=300w' }} style={{ height: 40, width: 40 }} />
+                                <Thumbnail square source={{ uri: 'https://res.cloudinary.com/demo/image/upload/w_200,h_200,c_thumb,g_face,r_max/face_left.png' }} style={{ height: 40, width: 40 }} />
                             </Left>
                             <Body>
                                 <Text>Kumar Pratik</Text>
@@ -223,7 +211,24 @@ class Profile extends Component {
 
                         <ListItem avatar noBorder>
                             <Left>
-                                <Thumbnail square source={{ uri: 'https://static1.squarespace.com/static/582bbfef9de4bb07fe62ab18/t/5877b9ccebbd1a124af66dfe/1484241404624/Headshot+-+Circular.png?format=300w' }} style={{ height: 40, width: 40 }} />
+                                <Thumbnail square source={{ uri: 'https://res.cloudinary.com/demo/image/upload/w_200,h_200,c_thumb,g_face,r_max/face_left.png' }} style={{ height: 40, width: 40 }} />
+                            </Left>
+                            <Body>
+                                <Text>Kumar Pratik</Text>
+
+                                <Text note>Annanagar-chennai-40</Text>
+
+                            </Body>
+                            <Right>
+                                <Button style={styles.docbutton}><Text style={{ fontFamily: 'opensans-regular', fontSize: 12 }}> Book Again</Text></Button>
+                            </Right>
+
+                        </ListItem>
+
+
+                        <ListItem avatar noBorder>
+                            <Left>
+                                <Thumbnail square source={{ uri: 'https://res.cloudinary.com/demo/image/upload/w_200,h_200,c_thumb,g_face,r_max/face_left.png' }} style={{ height: 40, width: 40 }} />
                             </Left>
                             <Body>
                                 <Text>Kumar Pratik</Text>

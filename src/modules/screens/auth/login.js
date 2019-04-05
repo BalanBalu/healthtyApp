@@ -91,7 +91,7 @@ class Login extends Component {
               onPress={() => this.doLogin()}>
               <Text onPress={() => this.props.navigation.navigate('home')}>Sign In</Text>
             </Button>
-            <Text>{loginErrorMsg}</Text>
+            <Text style={{ color: '#000', fontSize: 15, fontFamily: 'opensans-regular',textAlign:'center' }}>{loginErrorMsg}</Text>
           </Form>
 
         </Content>
