@@ -5,6 +5,7 @@ import login from "../../modules/screens/auth/login";
 import signup from "../../modules/screens/auth/signup";
 import forgotpassword from "../../modules/screens/auth/forgotpassword";
 import finddoctor from "../../modules/screens/auth/finddoctor";
+import userdetails from "../../modules/screens/auth/userdetails";
 export const routes = {
   // Home
   home: {
@@ -42,6 +43,11 @@ export const routes = {
     name: ' finddoctor',
     path: ' finddoctor',
     screen: finddoctor,
+  },
+  userdetails: {
+    name: '  userdetails',
+    path: '  userdetails',
+    screen: userdetails,
   },
 
 }
