@@ -1,11 +1,11 @@
 import { createStackNavigator,  createAppContainer } from 'react-navigation';
-import { routes } from './appRouterConfig';
+import { AppRoutes } from './appRouterConfig'
 
-const AppNavigator = createStackNavigator((routes), {
+const AppNavigator = createStackNavigator((AppRoutes), {
     initialRouteName: 'login',
     headerMode: 'none',
     navigationOptions: { headerVisible: false }
 })
-  export default createAppContainer(AppNavigator)
+export default createAppContainer(AppNavigator)
   
   

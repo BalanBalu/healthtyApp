@@ -1,4 +1,4 @@
-import home from "../../modules/screens/home";
+//import home from "../../modules/screens/home/index";
 import categories from "../../modules/screens/categories";
 import userprofile from "../../modules/screens/userprofile";
 import login from "../../modules/screens/auth/login";
@@ -6,24 +6,9 @@ import signup from "../../modules/screens/auth/signup";
 import forgotpassword from "../../modules/screens/auth/forgotpassword";
 import finddoctor from "../../modules/screens/auth/finddoctor";
 import userdetails from "../../modules/screens/auth/userdetails";
-export const routes = {
-  // Home
-  home: {
-    name: 'home',
-    path: 'home',
-    screen: home,
-  },
-  categories: {
-    name: 'categories',
-    path: 'categories',
-    screen: categories,
-  },
-  userprofile: {
-    name: 'userprofile',
-    path: 'userprofile',
-    screen: userprofile,
-  },
+import { Icon } from 'native-base';
 
+export const AppRoutes = {
   login: {
     name: 'login',
     path: 'login',
@@ -39,15 +24,14 @@ export const routes = {
     path: 'forgotpassword',
     screen: forgotpassword,
   },
-  finddoctor: {
-    name: ' finddoctor',
-    path: ' finddoctor',
-    screen: finddoctor,
-  },
   userdetails: {
-    name: '  userdetails',
-    path: '  userdetails',
-    screen: userdetails,
+      name: 'userdetails',
+      path: 'userdetails',
+      screen: userdetails,
   },
-
+  categories: {
+    name: 'categories',
+    path: 'categories',
+    screen: categories
+  }
 }

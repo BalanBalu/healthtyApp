@@ -1,5 +1,5 @@
 // Helpers
-
+import moment from 'moment';
 // Render element or component by provided condition
 export function renderIf(condition, renderFn) {
     return condition ? renderFn() : null
@@ -58,4 +58,12 @@ export function renderIf(condition, renderFn) {
       return result
     }, {})
   }
+
+  export function formatDate(date, format) {
+    return moment(date).format(format || 'YYYY-MM-DD HH:mm:ss');
+  }
+  export function dateDiff(pastDate, futureDate, unitOfTime) {
+    return moment(futureDate).diff(pastDate, unitOfTime);
+  }
+
   

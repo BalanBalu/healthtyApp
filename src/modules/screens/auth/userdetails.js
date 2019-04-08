@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import {
-    Container, Content, Button, Text, Form, Item, Input, Header, Footer,Icon,DatePicker,
-    FooterTab, Right, Body, Left, CheckBox, Radio, H3, H2, H1
+    Container, Content, Button, Text, Form, Item, Input, Footer,Icon,DatePicker,
+    FooterTab, H3
 } from 'native-base';
 import { login } from '../../providers/auth/auth.actions';
 import { connect } from 'react-redux'

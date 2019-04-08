@@ -1,25 +1,32 @@
 import React, { Component } from 'react';
 import { Container, Content, Text, Title, Header, Button, H3, Item, List, ListItem, Card, Input, Left, Right, Thumbnail, Body, Icon, Footer, FooterTab } from 'native-base';
-import { login } from '../../providers/auth/auth.actions';
+import { login,logout } from '../../providers/auth/auth.actions';
 import { messageShow, messageHide } from '../../providers/common/common.action';
 import LinearGradient from 'react-native-linear-gradient';
 import { Col, Row, Grid } from 'react-native-easy-grid';
 import { connect } from 'react-redux'
 import { StyleSheet, Image, } from 'react-native';
 import { ScrollView } from 'react-native-gesture-handler';
+import { AppRoutes } from '../../../setup/routes/appRouterConfig'
 
 class Home extends Component {
     constructor(props) {
         super(props)
-
+        console.log(this.props)
     }
-
-
+    navigetToCategories() {
+        console.log(this.props.navigation.navigate('categories'));
+        //this.props.navigation.navigate('categories');
+    }
+    doLogout(){
+        logout();
+        this.props.navigation.navigate('login');
+    }
     render() {
-
-
+        
+        
         return (
-
+              
             <Container style={styles.container}>
 
                 <Header style={{ backgroundColor: '#7E49C3' }}>
@@ -63,7 +70,7 @@ class Home extends Component {
                                 <Right>
 
 
-                                    <Text style={styles.titleText} onPress={() => this.props.navigation.navigate('categories')}>View All</Text>
+                                    <Text style={styles.titleText} onPress={() => this.navigetToCategories()}>View All</Text>
 
 
                                 </Right>
@@ -133,7 +140,7 @@ class Home extends Component {
                     <Card style={{ backgroundColor: '#CDEEFF', padding: 10, borderRadius: 10 }}
                     >
                         <Text style={{ fontFamily: 'opensans-regular', fontSize: 17 }}>You Can save A Life</Text>
-                        <Button block style={{ margin: 10, borderRadius: 20, backgroundColor: '#74579E' }}>
+                        <Button onPress={() => this.doLogout()} block style={{ margin: 10, borderRadius: 20, backgroundColor: '#74579E' }}>
                             <Text>REPORT ASSIDENT NOW</Text>
                         </Button>
 
@@ -204,7 +211,7 @@ class Home extends Component {
 
 
                 </Content>
-                <Footer>
+                {/* <Footer>
                     <FooterTab style={{ backgroundColor: '#7E49C3' }}>
                         <Button >
                             <Icon name="apps" />
@@ -219,7 +226,7 @@ class Home extends Component {
                             <Icon name="person" />
                         </Button>
                     </FooterTab>
-                </Footer>
+                </Footer>*/}
             </Container>
 
         )

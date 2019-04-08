@@ -1,4 +1,4 @@
-import * as httpService from '../../../setup/services/httpservices';
+import { postService } from '../../../setup/services/httpservices';
 import { AsyncStorage } from 'react-native';
 export const LOGIN_REQUEST = 'AUTH/LOGIN_REQUEST'
 export const LOGIN_HAS_ERROR = 'AUTH/LOGIN_RESPONSE'
@@ -15,9 +15,9 @@ export async function login(userCredentials, isLoading = true) {
           type: LOGIN_REQUEST,
           isLoading 
         }) 
-        
+        console.log('comint here manw');
         let endPoint = 'auth/signIn'
-        let response = await httpService.post(endPoint, userCredentials);
+        let response = await postService(endPoint, userCredentials);
        
         let respData = response.data;
         
@@ -32,13 +32,13 @@ export async function login(userCredentials, isLoading = true) {
          
           const token = respData.token;
           
-          await setDoctorLocally(token, respData.data);
+          setDoctorLocally(token, respData.data);
           
           store.dispatch({
             type: LOGIN_RESPONSE,
             message: respData.message
           })
-          console.log('comint here manw');
+          console.log('Logged In Success');
           return true;
           //console.log(store.getState()); 
         }
@@ -53,8 +53,8 @@ export async function login(userCredentials, isLoading = true) {
 
 export function logout() {
   AsyncStorage.removeItem('token')
-  AsyncStorage.removeItem('doctor')
-  AsyncStorage.removeItem('doctorId')
+  AsyncStorage.removeItem('user')
+  AsyncStorage.removeItem('userId')
     
   store.dispatch({
     type: LOGOUT
@@ -63,15 +63,15 @@ export function logout() {
 }
 
 // Set user token and info locally (AsyncStorage)
-export function setDoctorLocally(token, doctorData) {
+export function setDoctorLocally(token, userData) {
     // Set token
    
     AsyncStorage.setItem('token', token)
-    AsyncStorage.setItem('doctorId', doctorData.doctorId)
-    AsyncStorage.setItem('doctor', JSON.stringify(doctorData))
+    AsyncStorage.setItem('userId', userData.userId)
+    AsyncStorage.setItem('user', JSON.stringify(userData))
     store.dispatch({
       type: SET_USER,
-      details: doctorData
+      details: userData
     })
        
 }

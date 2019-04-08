@@ -22,7 +22,7 @@ class Login extends Component {
       let requestData = {
         userEntry: this.state.userEntry,
         password: this.state.password,
-        type: 'doctor'
+        type: 'user'
       };
       await login(requestData)
       if (this.props.user.isAuthenticated) {

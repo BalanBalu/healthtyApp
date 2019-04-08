@@ -17,8 +17,8 @@ class Signup extends Component {
         }
     }
 
-    doLogin() {
-
+    doSignup() {
+         this.props.navigation.navigate('userdetails');   
     }
 
 
@@ -72,7 +72,7 @@ class Signup extends Component {
                         </Item>
 
 
-                        <Button style={styles.loginButton} block primary onPress={() => this.doLogin()}>
+                        <Button style={styles.loginButton} block primary onPress={() => this.doSignup()}>
                             <Text style={{fontFamily:'opensans-regular'}}>Sign Up</Text>
                         </Button>
 
