@@ -10,7 +10,7 @@ import StarRating from 'react-native-star-rating';
 import { ScrollView } from 'react-native-gesture-handler';
 
 
-class FilterDoctor extends Component {
+class doctorSearchList extends Component {
     constructor(props) {
         super(props)
 
@@ -248,7 +248,7 @@ function loginState(state) {
         user: state.user
     }
 }
-export default connect(loginState, { login, messageShow, messageHide })(FilterDoctor)
+export default connect(loginState, { login, messageShow, messageHide })(doctorSearchList)
 
 
 const styles = StyleSheet.create({

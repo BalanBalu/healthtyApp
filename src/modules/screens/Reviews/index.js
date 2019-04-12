@@ -9,7 +9,7 @@ import { StyleSheet, Image, TouchableOpacity, View } from 'react-native';
 import StarRating from 'react-native-star-rating';
 
 
-class MoreReviews extends Component {
+class Reviews extends Component {
     constructor(props) {
         super(props)
 
@@ -236,7 +236,7 @@ function loginState(state) {
         user: state.user
     }
 }
-export default connect(loginState, { login, messageShow, messageHide })(MoreReviews)
+export default connect(loginState, { login, messageShow, messageHide })(Reviews)
 
 
 const styles = StyleSheet.create({
