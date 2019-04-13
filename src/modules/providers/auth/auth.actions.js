@@ -1,12 +1,15 @@
-import { postService } from '../../../setup/services/httpservices';
+import { postService,putService } from '../../../setup/services/httpservices';
 import { AsyncStorage } from 'react-native';
 export const LOGIN_REQUEST = 'AUTH/LOGIN_REQUEST'
 export const LOGIN_HAS_ERROR = 'AUTH/LOGIN_RESPONSE'
 export const LOGIN_RESPONSE = 'AUTH/LOGIN_RESPONSE'
 export const SET_USER = 'AUTH/SET_USER'
 export const LOGOUT = 'AUTH/LOGOUT'
+export const AUTH_REQUEST = 'AUTH_API_REQUEST'
+export const AUTH_HAS_ERROR = 'AUTH_HAS_ERROR' 
+export const AUTH_RESPONSE = 'AUTH_RESPONSE' 
 import { store } from '../../../setup/store'
-
+  
 
 export async function login(userCredentials, isLoading = true) {
       try {
@@ -15,7 +18,7 @@ export async function login(userCredentials, isLoading = true) {
           type: LOGIN_REQUEST,
           isLoading 
         }) 
-        console.log('comint here manw');
+    
         let endPoint = 'auth/signIn'
         let response = await postService(endPoint, userCredentials);
        
@@ -74,4 +77,62 @@ export function setDoctorLocally(token, userData) {
       details: userData
     })
        
+}
+
+// Signup for Patient
+export async function signUp(credentialData){
+  try{
+    store.dispatch({
+      type: AUTH_REQUEST,
+      isLoading: true
+    })
+    let endPoint = 'auth/signUp/';
+    let response = await postService(endPoint, credentialData); 
+    let respData = response.data;
+    console.log(respData);
+    if(respData.error) {             
+      store.dispatch({
+        type: AUTH_HAS_ERROR,
+        message: respData.message
+      })
+      console.log(this.props.user); 
+    }else{        
+        store.dispatch({
+        type: AUTH_RESPONSE,
+        isLoading: false,
+        message: respData.message,
+        userId:respData.userId
+      })
+    }     
+  }catch(ex){
+    console.log(ex.message);
+  }
+}
+
+// Update fields for Patient
+export async function userFiledsUpdate(credentialData, data){
+  try{
+    store.dispatch({
+      type: AUTH_REQUEST,
+      isLoading: true
+    })
+    let endPoint = 'user/'+ data;
+    let response = await putService(endPoint, credentialData); 
+    let respData = response.data;
+    console.log(respData);
+    if(respData.error) {             
+      store.dispatch({
+        type: AUTH_HAS_ERROR,
+        message: respData.message
+      })
+    }else{        
+        store.dispatch({
+        type: AUTH_RESPONSE,
+        isLoading: false,
+        message: respData.message
+      })
+    }     
+  }catch(ex){
+    console.log(ex.message);
+  }
 }
