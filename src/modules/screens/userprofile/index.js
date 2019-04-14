@@ -6,6 +6,7 @@ import { Col, Row, Grid } from 'react-native-easy-grid';
 import { connect } from 'react-redux'
 import LinearGradient from 'react-native-linear-gradient';
 import { StyleSheet, Image, TouchableOpacity, View } from 'react-native';
+import StarRating from 'react-native-star-rating';
 
 
 class Profile extends Component {
