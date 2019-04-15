@@ -3,7 +3,7 @@ import RoutesHome from './routes/appRouterHome';
 import RoutesLogin from './routes/appRouterLogin';
 import { Provider } from 'react-redux';
 import { store } from './store'
-import { StyleProvider } from 'native-base';
+import { StyleProvider, Root } from 'native-base';
 import getTheme from '../theme/components';
 import material from '../theme/variables/material';
 import { AsyncStorage, Text } from 'react-native';
@@ -41,11 +41,13 @@ export default class App extends Component {
       return (
       
         <Provider store={store} key="provider">
-           <StyleProvider style={getTheme(material)}>
+          <Root>
+          <StyleProvider style={getTheme(material)}>
            
             {!isAuthenticated ? <RoutesLogin/> : <RoutesHome /> }  
            
            </StyleProvider>  
+           </Root>
         </Provider>
       )
     }
