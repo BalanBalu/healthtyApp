@@ -1,17 +1,17 @@
 import React from 'react';
 import { createStackNavigator, createBottomTabNavigator, createAppContainer } from 'react-navigation';
 //import { routes } from './appRouterConfig';
-import home from "../../modules/screens/home";
+import Home from "../../modules/screens/Home";
 import userprofile from "../../modules/screens/userprofile";
 import finddoctor from "../../modules/screens/auth/finddoctor";
 import { Icon } from 'native-base';
 import categories from "../../modules/screens/categories";
 import { AppRoutes } from './appRouterConfig'
  const routes = {
-  home: {
-    name: 'home',
-    path: 'home',
-    screen: home,
+  Home: {
+    name: 'Home',
+    path: 'Home',
+    screen: Home,
     navigationOptions: {
       tabBarLabel: 'Home',
       tabBarIcon: ({ tintColor }) => <Icon
@@ -50,7 +50,7 @@ import { AppRoutes } from './appRouterConfig'
   }
 }
 const AppTabs = createBottomTabNavigator((routes), {
-  initialRouteName: 'home',
+  initialRouteName: 'Home',
   navigationOptions: { tabBarVisible: true },
   tabBarOptions: {
     activeTintColor: '#0000FF',
