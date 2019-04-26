@@ -1,42 +1,63 @@
 import React, { Component } from 'react';
-import { Container, Content, Text, Title, Header, H3, Button, Card, List, ListItem, Left, Right, Thumbnail, Body, Icon, locations, ScrollView, ProgressBar } from 'native-base';
-import { login } from '../../providers/auth/auth.actions';
+import { Container, Content, Text, Title, Header, H3, Button, Card, List, ListItem, Left, Right, Thumbnail, Body, Icon, locations, ScrollView, ProgressBar ,Item} from 'native-base';
+import { login, userProfile} from '../../providers/auth/auth.actions';
 import { messageShow, messageHide } from '../../providers/common/common.action';
 import { Col, Row, Grid } from 'react-native-easy-grid';
-import { connect } from 'react-redux'
+import { connect } from 'react-redux';
+import { dateDiff } from '../../../setup/helpers';
 import LinearGradient from 'react-native-linear-gradient';
-import { StyleSheet, Image, TouchableOpacity, View } from 'react-native';
+import { StyleSheet, Image, TouchableOpacity, View, AsyncStorage} from 'react-native';
 import StarRating from 'react-native-star-rating';
+import { FlatList } from 'react-native-gesture-handler';
 
 
 class Profile extends Component {
     constructor(props) {
-        super(props)
+        super(props);
+        this.state = {
+           data:{},
+           starCount: 3.5,
+           userId:''
+        }; 
+        this.getUserProfile();
+      }
 
-        this.state = {
-            userEntry: '',
-            password: '',
-            loginErrorMsg: ''
-        }
-        this.state = {
-            starCount: 3.5
-        };
-    }
     onStarRatingPress(rating) {
         this.setState({
             starCount: rating
         });
     }
 
+      getUserProfile= async () => {
+        try { 
+         let fields = "first_name,last_name,gender,dob,mobile_no,secondary_mobiles,email,secondary_emails,insurance,address,is_blood_donor,is_available_blood_donate,blood_group"         
+        let userId=await AsyncStorage.getItem('userId');
+         console.log(this.state.userId);
+         let result = await userProfile(userId,fields);          
+         console.log(result);      
+         if(this.props) {
+         this.setState({ data: result});
+        }   
+
+        } 
+        catch (e) {
+          console.log(e);
+        }    
+      }
+
+      renderMobile(){
+         
+      }
+    
     render() {
         const { user: { isLoading } } = this.props;
-        const { loginErrorMsg } = this.state;
+        const {data } = this.state;
         return (
 
             <Container style={styles.container}>
                 <Header style={{ backgroundColor: '#7E49C3', fontFamily: 'opensans-semibold' }}>
                     <Left  >
-                        <Button Button transparent onPress={() => this.props.navigation.navigate('home')}>
+                        <Button Button transparent onPress={() => this.props.navigation.navigate('Home')}>
                             <Icon name="arrow-back" style={{ color: '#fff' }}></Icon>
                         </Button>
 
@@ -64,7 +85,7 @@ class Profile extends Component {
                                 </Col>
                                 <Col style={{ width: '40%' }}>
                                     <Thumbnail style={styles.profileImage} source={{ uri: 'https://res.cloudinary.com/demo/image/upload/w_200,h_200,c_thumb,g_face,r_max/face_left.png' }} />
-                                    <Text style={{ marginLeft: 'auto', marginRight: 'auto', fontFamily: 'opensans-regular', backgroundColor: '#fff', borderRadius: 20, padding: 10, marginTop: 5 }}>Kumar Pratik</Text>
+                                    <Text style={{ marginLeft: 'auto', marginRight: 'auto', fontFamily: 'opensans-regular', backgroundColor: '#fff', borderRadius: 20, padding: 10, marginTop: 5 }}>{data.first_name +" "+ data.last_name}</Text>
 
                                 </Col>
                                 <Col style={styles.customCol}>
@@ -87,17 +108,17 @@ class Profile extends Component {
                         <Grid style={{ padding: 10 }}>
                             <Col style={{ backgroundColor: 'transparent', borderRightWidth: 0.5, borderRightColor: 'gray', marginLeft: 'auto', marginRight: 'auto' }}>
                                 <Text style={styles.topValue}> Age </Text>
-                                <Text note style={styles.bottomValue}>25 </Text>
+                                <Text note style={styles.bottomValue}> {dateDiff(data.dob,new Date(),'years')}  </Text>
                             </Col>
 
                             <Col style={{ backgroundColor: 'transparent', borderRightWidth: 0.5, borderRightColor: 'gray', marginLeft: 'auto', marginRight: 'auto' }}>
                                 <Text style={styles.topValue}>Sex </Text>
-                                <Text note style={styles.bottomValue}> Male </Text>
+                                <Text note style={styles.bottomValue}>{data.gender} </Text>
                             </Col>
 
                             <Col style={{ backgroundColor: 'transparent', justifyContent: 'center', marginLeft: 'auto', marginRight: 'auto' }}>
                                 <Text style={styles.topValue}>Blood</Text>
-                                <Text note style={styles.bottomValue}> O Positive </Text>
+                                <Text note style={styles.bottomValue}> {data.blood_group} </Text>
                             </Col>
                         </Grid>
 
@@ -115,7 +136,9 @@ class Profile extends Component {
                             </Left>
                             <Body>
                                 <Text style={styles.customText}>Email</Text>
-                                <Text note style={styles.customText}>theivamagan2gmail.com. .</Text>
+                                <Text note style={styles.customText}>{data.email}</Text>
+                                <Text note style={styles.customText}>{data.secondary_emails && data.secondary_emails[0].email_id}</Text>
+
                             </Body>
                             <Right>
                                 <Icon name="create"></Icon>
@@ -130,38 +153,54 @@ class Profile extends Component {
                             </Left>
                             <Body>
                                 <Text style={styles.customText}>Address</Text>
-                                <Text note style={styles.customText}>31/b jawaharlal nehru street</Text>
-                                <Text note style={styles.customText}>Anna nagar-40 </Text>
-                                <Text note style={styles.customText}>chennai..</Text>
+                                <Text note style={styles.customText}>{data.address && data.address.address.no_and_street}</Text>
+                                <Text note style={styles.customText}>{data.address && data.address.address.address_line_1} </Text>
+                                <Text note style={styles.customText}>{data.address && data.address.address.address_line_2}</Text>
+                                <Text note style={styles.customText}>{data.address && data.address.address.city}</Text>
+                                <Text note style={styles.customText}>{data.address && data.address.address.pin_code}</Text>
+
                             </Body>
                             <Right>
                                 <Icon name="create"></Icon>
                             </Right>
                         </ListItem>
-
-
-
-                        <ListItem avatar>
+                    
+                      <ListItem avatar>
+                      
                             <Left>
                                 <Icon name="call" style={{ color: '#7E49C3' }}></Icon>
                             </Left>
-                            <Body>
-                                <Text style={styles.customText}>Contact</Text>
-                                <Text note style={styles.customText}>8098879167</Text>
-
-                            </Body>
-                            <Right>
+                            
+                                <Body>
+                                    <Text style={styles.customText}>Contact</Text>
+                                    <Text note style={styles.customText}>{data.mobile_no}</Text>  
+                                    <FlatList
+                                      data={this.state.data.secondary_mobiles}
+                                      renderItem={({ item })=>(  
+                                      <List>                        
+                                        <Text note style={styles.customText}>{item.type}</Text>                                  
+                                        <Text note style={styles.customText}>{item.number}</Text> 
+                                      </List>
+                                     )}
+                                    />            
+                                </Body>
+                              
+                             <Right>
                                 <Icon name="create"></Icon>
-                            </Right>
+                             </Right>
+                              
+                            
                         </ListItem>
-
+                       
                         <ListItem avatar>
                             <Left>
                                 <Icon name="flame" style={{ color: '#7E49C3' }}></Icon>
                             </Left>
                             <Body>
                                 <Text style={styles.customText}>Insurance</Text>
-                                <Text note style={styles.customText}>Insurance</Text>
+                                <Text note style={styles.customText}> {data.insurance && data.insurance[0].insurance_no} </Text>
+                                <Text note style={styles.customText}> {data.insurance && data.insurance[0].insurance_provider} </Text>
+                             
 
                             </Body>
                             <Right>
@@ -198,9 +237,9 @@ class Profile extends Component {
                                 <Thumbnail square source={{ uri: 'https://res.cloudinary.com/demo/image/upload/w_200,h_200,c_thumb,g_face,r_max/face_left.png' }} style={{ height: 40, width: 40 }} />
                             </Left>
                             <Body>
-                                <Text>Kumar Pratik</Text>
+                                <Text> {data.first_name +" "+ data.last_name} </Text>
 
-                                <Text note>Annanagar-chennai-40</Text>
+                                <Text note>{data.address && data.address.address_line_2_}</Text>
 
                             </Body>
                             <Right>
@@ -210,7 +249,7 @@ class Profile extends Component {
                         </ListItem>
 
 
-                        <ListItem avatar noBorder>
+                        {/* <ListItem avatar noBorder>
                             <Left>
                                 <Thumbnail square source={{ uri: 'https://res.cloudinary.com/demo/image/upload/w_200,h_200,c_thumb,g_face,r_max/face_left.png' }} style={{ height: 40, width: 40 }} />
                             </Left>
@@ -241,7 +280,7 @@ class Profile extends Component {
                                 <Button style={styles.docbutton}><Text style={{ fontFamily: 'opensans-regular', fontSize: 12 }}> Book Again</Text></Button>
                             </Right>
 
-                        </ListItem>
+                        </ListItem> */}
                     </List>
 
 
@@ -366,3 +405,4 @@ const styles = StyleSheet.create({
 
 
 });
+

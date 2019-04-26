@@ -1,6 +1,6 @@
 // App Imports
 import { isEmpty } from '../../../setup/helpers';
-import { SET_USER, LOGIN_REQUEST, LOGIN_RESPONSE, LOGOUT, LOGIN_HAS_ERROR } from './auth.actions';
+import { SET_USER, LOGIN_REQUEST, LOGIN_RESPONSE, LOGOUT, LOGIN_HAS_ERROR, USER_PROFILE_REQUEST, USER_PROFILE_RESPONSE, USER_PROFILE_HAS_ERROR } from './auth.actions';
 
 // Initial State
 export const userInitialState = {
@@ -34,6 +34,26 @@ export default (state = userInitialState, action) => {
         isLoading: false
       }
     case LOGIN_HAS_ERROR:
+      return {
+        ...state,
+        message: action.error,
+        isLoading: false
+      }
+
+    case USER_PROFILE_REQUEST:
+      return {
+        ...state,
+        message: null,
+        isLoading: action.isLoading
+      }
+
+    case USER_PROFILE_RESPONSE:
+      return {
+        ...state,
+        message: action.message,
+        isLoading: false
+      }
+    case USER_PROFILE_HAS_ERROR:
       return {
         ...state,
         message: action.error,
