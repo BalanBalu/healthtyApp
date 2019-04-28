@@ -1,12 +1,13 @@
 import React, { Component } from 'react';
 import {
     Container, Content, Button, Text, Form, Item, Input, Header, Footer,
-    FooterTab, Icon,Spinner,Right, Body, Left, CheckBox, Radio, H3, H2, H1
+    FooterTab, Icon,Right, Body, Left, CheckBox, Radio, H3, H2, H1, Toast
 } from 'native-base';
 import { login,signUp } from '../../providers/auth/auth.actions';
 import { connect } from 'react-redux'
 import { StyleSheet, Image, View } from 'react-native';
 import styles from '../../screens/auth/styles';
+import Spinner from '../../../components/Spinner';
 
 class Signup extends Component {
     constructor(props) {
@@ -39,27 +40,38 @@ class Signup extends Component {
                 type: 'user'
                 };    
                 let loginData={
-                    email: this.state.userEmail,
+                    userEntry: this.state.userEmail,
                     password: this.state.password,
                     type: 'user'
                 } 
            
                await signUp(requestData); 
-               if(this.props.user.isAuthenticated){                   
+               console.log(this.props.user);
+               if(this.props.user.success) {                   
+                   Toast.show({
+                     text:this.props.user.message,
+                     duration: 3000
+                   }); 
                   await login(loginData); 
-                  if(this.props.user.isAuthenticated)
-                  {
+                  if(this.props.user.isAuthenticated) {
                       this.props.navigation.navigate('userdetails')
-                      console.log(this.props);
-                  }              
-                  }else{
-                   this.setState({conditionCheckErrorMsg: 'Error Occured'});
-               }                         
-                             
-            }else{                  
+                  } else {
+                    Toast.show({
+                        text:this.props.user.message,
+                        duration: 3000
+                    });       
+                  }               
+                } else {
+                    Toast.show({
+                        text:this.props.user.message,
+                        duration: 3000
+                    });                               
+                    return
+                }                         
+            } else {                  
                 this.setState({conditionCheckErrorMsg: 'Kindly agree to the terms and conditions'});
             }                
-        }catch (e) {
+        } catch (e) {
           console.log(e);
         }        
     }
@@ -124,7 +136,11 @@ class Signup extends Component {
                             <Text style={{ marginLeft: 15, color: 'gray', fontFamily: 'opensans-regular' }}>I Accept the Medflic Terms And Conditions</Text>
                         </Item>
 
-                        {isLoading ? <Spinner color='blue' /> : null}    
+                        <Spinner color='blue' 
+                           visible={isLoading}
+                           textContent={'Loading...'}
+                        />
+
                         <Button style={styles.loginButton} block primary onPress={() => this.doSignUp()}>
 
                             <Text>Sign Up</Text>
@@ -154,9 +170,9 @@ class Signup extends Component {
 
 
 
-function loginState(state) {
+function signUpState(state) {
     return {
         user: state.user
     }
 }
-export default connect(loginState, { login })(Signup)
+export default connect(signUpState)(Signup)

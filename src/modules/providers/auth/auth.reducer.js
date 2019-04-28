@@ -28,16 +28,18 @@ export default (state = userInitialState, action) => {
       case AUTH_HAS_ERROR:  
       return {
         ...state,
-        message: action.error,
-        isLoading: false
-    }
+        success: false,
+        message: action.message,
+        isLoading: false,
+        isAuthenticated:false,
+      }
    
     case AUTH_RESPONSE:
     return {
-      ...state,        
+      ...state,
+      success: true,        
       isLoading: action.isLoading,
       message: action.message,
-      isAuthenticated: true,
       userId:action.userId
     }
 
@@ -55,7 +57,7 @@ export default (state = userInitialState, action) => {
         ...state,
         message: action.message,
         isLoading: false,
-        isAuthenticated:true
+        success: true
       }
     case LOGIN_HAS_ERROR:
       return {

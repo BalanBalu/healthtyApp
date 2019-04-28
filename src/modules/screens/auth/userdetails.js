@@ -1,12 +1,13 @@
 import React, { Component } from 'react';
 import {
     Container, Content, Button, Text, Form, Item, Input, Footer,Icon,DatePicker,
-    FooterTab, H3
+    FooterTab, H3, Toast
 } from 'native-base';
-import { login,userFiledsUpdate } from '../../providers/auth/auth.actions';
+import { userFiledsUpdate, logout } from '../../providers/auth/auth.actions';
 import { connect } from 'react-redux'
-import { StyleSheet, Image, View } from 'react-native';
-import styles from '../../screens/auth/styles'
+import { Image, BackHandler } from 'react-native';
+import styles from '../../screens/auth/styles';
+import Spinner from '../../../components/Spinner';
 class UserDetails extends Component {
     constructor(props) {
         super(props)
@@ -18,6 +19,21 @@ class UserDetails extends Component {
             ErrorMsg: ''
         }
     }
+    componentDidMount() {
+        BackHandler.addEventListener('hardwareBackPress', this.handleBackButton);
+    }
+
+    componentWillUnmount() {
+        BackHandler.removeEventListener('hardwareBackPress', this.handleBackButton);
+    }
+
+    handleBackButton() {
+        Toast.show({
+            text:'Please Complete your Profile',
+            duration: 3000
+        });
+        return true;
+    }
 
     userUpdate = async()=>{
         try {
@@ -26,21 +42,33 @@ class UserDetails extends Component {
                 last_name: this.state.lastName,
                 dob: this.state.dob,
                 };                
-               await userFiledsUpdate(requestData,this.props.user.userId);   
-             
-                          if(this.props.user.isAuthenticated){                              
-                             this.props.navigation.navigate('login')
-                           }
-                          else{
-                            this.setState({ErrorMsg: 'Error Occured'});
-                          }
-        }catch (e) {
+               await userFiledsUpdate(requestData, this.props.user.userId);   
+                if(this.props.user.success) {
+                    Toast.show({
+                        text:'Your Profile has been Completed',
+                        duration: 3000
+                    }); 
+                    logout();                             
+                    this.props.navigation.navigate('login')
+                }
+                else {
+                    Toast.show({
+                        text: this.props.user.message,
+                        duration: 3000
+                    });  
+                }
+        } catch (e) {
+            Toast.show({
+                text: 'Exception Occured' + e,
+                duration: 3000
+            });
           console.log(e);
         }        
     }
 
 
     render() {
+        const { user: { isLoading } } = this.props;
         return (
 
             <Container style={styles.container}>
@@ -49,6 +77,10 @@ class UserDetails extends Component {
                 </Header> */}
                 <Content style={styles.bodyContent}>
 
+                <Spinner color='blue' 
+                    visible={isLoading}
+                    textContent={'Loading...'}
+                />
 
                     <H3 style={styles.welcome}>User Details</H3>
                     <Image source={{ uri: 'https://static1.squarespace.com/static/582bbfef9de4bb07fe62ab18/t/5877b9ccebbd1a124af66dfe/1484241404624/Headshot+-+Circular.png?format=300w' }} style={styles.logo} />
@@ -58,7 +90,7 @@ class UserDetails extends Component {
                         </View> */}
                       
                         <Item style={{ borderBottomWidth: 0 }}>
-                            <Input  placeholder="firs tName" style={styles.transparentLabel}                             
+                            <Input  placeholder="First Name" style={styles.transparentLabel}                             
                              value={this.state.firstName}
                              keyboardType={'default'}
                              onChangeText={firstName => this.setState({ firstName
@@ -90,7 +122,7 @@ class UserDetails extends Component {
                             /></Item>
 
                         <Button style={styles.loginButton} block primary onPress={() => this.userUpdate()}>
-                            <Text style={{ fontFamily: 'opensans-regular' }}>Sign Up</Text>
+                            <Text style={{ fontFamily: 'opensans-regular' }}>Submit</Text>
                         </Button>
 
                     </Form>
@@ -112,9 +144,9 @@ class UserDetails extends Component {
 
 
 
-function loginState(state) {
+function userDetailsState(state) {
     return {
         user: state.user
     }
 }
-export default connect(loginState, { login })(UserDetails)
+export default connect(userDetailsState)(UserDetails)

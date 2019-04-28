@@ -1,4 +1,4 @@
-//import home from "../../modules/screens/home/index";
+import Home from "../../modules/screens/home";
 import categories from "../../modules/screens/categories";
 import userprofile from "../../modules/screens/userprofile";
 import login from "../../modules/screens/auth/login";
@@ -9,6 +9,11 @@ import userdetails from "../../modules/screens/auth/userdetails";
 import { Icon } from 'native-base';
 
 export const AppRoutes = {
+  Home: {
+    name: 'Home',
+    path: 'Home',
+    screen: Home,
+  },
   login: {
     name: 'login',
     path: 'login',

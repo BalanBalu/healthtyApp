@@ -8,7 +8,8 @@ export const LOGOUT = 'AUTH/LOGOUT'
 export const AUTH_REQUEST = 'AUTH_API_REQUEST'
 export const AUTH_HAS_ERROR = 'AUTH_HAS_ERROR' 
 export const AUTH_RESPONSE = 'AUTH_RESPONSE' 
-import { store } from '../../../setup/store'
+import { store } from '../../../setup/store';
+import axios from 'axios';
   
 
 export async function login(userCredentials, isLoading = true) {
@@ -25,25 +26,21 @@ export async function login(userCredentials, isLoading = true) {
         let respData = response.data;
         
            
-        if(respData.error && respData.success == false) {
+        if(respData.error || !respData.success) {
           store.dispatch({
             type: LOGIN_HAS_ERROR,
             message: respData.error
           })
-          //console.log(respData);  
         } else {   
          
           const token = respData.token;
-          
-          setDoctorLocally(token, respData.data);
+          setUserLocally(token, respData.data);
           
           store.dispatch({
             type: LOGIN_RESPONSE,
             message: respData.message
           })
-          console.log('Logged In Success');
           return true;
-          //console.log(store.getState()); 
         }
         
       } catch (e) {
@@ -66,12 +63,15 @@ export function logout() {
 }
 
 // Set user token and info locally (AsyncStorage)
-export function setDoctorLocally(token, userData) {
+export function setUserLocally(token, userData) {
     // Set token
    
     AsyncStorage.setItem('token', token)
     AsyncStorage.setItem('userId', userData.userId)
     AsyncStorage.setItem('user', JSON.stringify(userData))
+    axios.defaults.headers.common['x-access-token'] = token;
+    axios.defaults.headers.common['userId'] = userData.userId;
+    
     store.dispatch({
       type: SET_USER,
       details: userData
@@ -89,22 +89,26 @@ export async function signUp(credentialData){
     let endPoint = 'auth/signUp/';
     let response = await postService(endPoint, credentialData); 
     let respData = response.data;
-    console.log(respData);
-    if(respData.error) {             
+    
+    if(respData.error || !respData.success) {             
+      console.log(respData);
       store.dispatch({
         type: AUTH_HAS_ERROR,
-        message: respData.message
+        message: respData.error || respData.message
       })
-      console.log(this.props.user); 
-    }else{        
+      return
+    } else {
         store.dispatch({
-        type: AUTH_RESPONSE,
-        isLoading: false,
-        message: respData.message,
-        userId:respData.userId
+         type: AUTH_RESPONSE,
+         message: respData.message,
+         userId : respData.userId
       })
     }     
   }catch(ex){
+    store.dispatch({
+      type: AUTH_HAS_ERROR,
+      message: 'Expeption Occured' + ex
+    })
     console.log(ex.message);
   }
 }
@@ -119,8 +123,9 @@ export async function userFiledsUpdate(credentialData, data){
     let endPoint = 'user/'+ data;
     let response = await putService(endPoint, credentialData); 
     let respData = response.data;
-    console.log(respData);
+   
     if(respData.error) {             
+      console.log(respData);
       store.dispatch({
         type: AUTH_HAS_ERROR,
         message: respData.message
@@ -133,6 +138,11 @@ export async function userFiledsUpdate(credentialData, data){
       })
     }     
   }catch(ex){
+    store.dispatch({
+      type: AUTH_HAS_ERROR,
+      message: ex.message,
+      details:ex
+    })
     console.log(ex.message);
   }
 }

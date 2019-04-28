@@ -1,11 +1,10 @@
 import React, { Component } from 'react';
-import { Container, Content, Button, Text, Form, Item, Input, Header, Footer, FooterTab, Right, CheckBox, Grid } from 'native-base';
+import { Container, Content, Button, Text, Form, Item, Input, Header, Footer, FooterTab, Right, CheckBox, Grid, Toast } from 'native-base';
 import { login } from '../../providers/auth/auth.actions';
-import { messageShow, messageHide } from '../../providers/common/common.action';
-import { userInitialState } from '../../providers/auth/auth.actions';
 import { connect } from 'react-redux'
-import { StyleSheet, Image, TouchableOpacity, View } from 'react-native';
+import { Image, TouchableOpacity, View } from 'react-native';
 import styles from '../../screens/auth/styles'
+import Spinner from '../../../components/Spinner';
 class Login extends Component {
   constructor(props) {
     super(props)
@@ -24,11 +23,15 @@ class Login extends Component {
         password: this.state.password,
         type: 'user'
       };
-      await login(requestData)
+      await login(requestData);
+      console.log(this.props.user);
       if (this.props.user.isAuthenticated) {
-        this.props.navigation.navigate('home');
+        this.props.navigation.navigate('Home');
       } else {
-        this.setState({ loginErrorMsg: this.props.user.message });
+        Toast.show({
+          text: this.props.user.message,
+          timeout: 3000
+        })
       }
 
     } catch (e) {
@@ -44,6 +47,10 @@ class Login extends Component {
       <Container style={styles.container}>
         <Content style={styles.bodyContent}>
 
+        <Spinner color='blue' 
+          visible={isLoading}
+          textContent={'Loading...'}
+        />
           <Text style={styles.welcome}>Welcome</Text>
           <Image source={{ uri: 'https://static1.squarespace.com/static/582bbfef9de4bb07fe62ab18/t/5877b9ccebbd1a124af66dfe/1484241404624/Headshot+-+Circular.png?format=300w' }} style={styles.logo} />
 
@@ -89,7 +96,7 @@ class Login extends Component {
             <Button style={styles.loginButton} block primary
               disabled={isLoading}
               onPress={() => this.doLogin()}>
-              <Text onPress={() => this.props.navigation.navigate('home')}>Sign In</Text>
+              <Text>Sign In</Text>
             </Button>
             <Text style={{ color: '#000', fontSize: 15, fontFamily: 'opensans-regular',textAlign:'center' }}>{loginErrorMsg}</Text>
           </Form>
@@ -115,4 +122,4 @@ function loginState(state) {
     user: state.user
   }
 }
-export default connect(loginState, { login, messageShow, messageHide })(Login)
+export default connect(loginState)(Login)
