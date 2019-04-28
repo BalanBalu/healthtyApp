@@ -1,12 +1,16 @@
-import { postService } from '../../../setup/services/httpservices';
+import { postService,putService } from '../../../setup/services/httpservices';
 import { AsyncStorage } from 'react-native';
 export const LOGIN_REQUEST = 'AUTH/LOGIN_REQUEST'
 export const LOGIN_HAS_ERROR = 'AUTH/LOGIN_RESPONSE'
 export const LOGIN_RESPONSE = 'AUTH/LOGIN_RESPONSE'
 export const SET_USER = 'AUTH/SET_USER'
 export const LOGOUT = 'AUTH/LOGOUT'
-import { store } from '../../../setup/store'
-
+export const AUTH_REQUEST = 'AUTH_API_REQUEST'
+export const AUTH_HAS_ERROR = 'AUTH_HAS_ERROR' 
+export const AUTH_RESPONSE = 'AUTH_RESPONSE' 
+import { store } from '../../../setup/store';
+import axios from 'axios';
+  
 
 export async function login(userCredentials, isLoading = true) {
       try {
@@ -15,32 +19,28 @@ export async function login(userCredentials, isLoading = true) {
           type: LOGIN_REQUEST,
           isLoading 
         }) 
-        console.log('comint here manw');
+    
         let endPoint = 'auth/signIn'
         let response = await postService(endPoint, userCredentials);
        
         let respData = response.data;
         
            
-        if(respData.error && respData.success == false) {
+        if(respData.error || !respData.success) {
           store.dispatch({
             type: LOGIN_HAS_ERROR,
             message: respData.error
           })
-          //console.log(respData);  
         } else {   
          
           const token = respData.token;
-          
-          setDoctorLocally(token, respData.data);
+          setUserLocally(token, respData.data);
           
           store.dispatch({
             type: LOGIN_RESPONSE,
             message: respData.message
           })
-          console.log('Logged In Success');
           return true;
-          //console.log(store.getState()); 
         }
         
       } catch (e) {
@@ -63,15 +63,86 @@ export function logout() {
 }
 
 // Set user token and info locally (AsyncStorage)
-export function setDoctorLocally(token, userData) {
+export function setUserLocally(token, userData) {
     // Set token
    
     AsyncStorage.setItem('token', token)
     AsyncStorage.setItem('userId', userData.userId)
     AsyncStorage.setItem('user', JSON.stringify(userData))
+    axios.defaults.headers.common['x-access-token'] = token;
+    axios.defaults.headers.common['userId'] = userData.userId;
+    
     store.dispatch({
       type: SET_USER,
       details: userData
     })
        
+}
+
+// Signup for Patient
+export async function signUp(credentialData){
+  try{
+    store.dispatch({
+      type: AUTH_REQUEST,
+      isLoading: true
+    })
+    let endPoint = 'auth/signUp/';
+    let response = await postService(endPoint, credentialData); 
+    let respData = response.data;
+    
+    if(respData.error || !respData.success) {             
+      console.log(respData);
+      store.dispatch({
+        type: AUTH_HAS_ERROR,
+        message: respData.error || respData.message
+      })
+      return
+    } else {
+        store.dispatch({
+         type: AUTH_RESPONSE,
+         message: respData.message,
+         userId : respData.userId
+      })
+    }     
+  }catch(ex){
+    store.dispatch({
+      type: AUTH_HAS_ERROR,
+      message: 'Expeption Occured' + ex
+    })
+    console.log(ex.message);
+  }
+}
+
+// Update fields for Patient
+export async function userFiledsUpdate(credentialData, data){
+  try{
+    store.dispatch({
+      type: AUTH_REQUEST,
+      isLoading: true
+    })
+    let endPoint = 'user/'+ data;
+    let response = await putService(endPoint, credentialData); 
+    let respData = response.data;
+   
+    if(respData.error) {             
+      console.log(respData);
+      store.dispatch({
+        type: AUTH_HAS_ERROR,
+        message: respData.message
+      })
+    }else{        
+        store.dispatch({
+        type: AUTH_RESPONSE,
+        isLoading: false,
+        message: respData.message
+      })
+    }     
+  }catch(ex){
+    store.dispatch({
+      type: AUTH_HAS_ERROR,
+      message: ex.message,
+      details:ex
+    })
+    console.log(ex.message);
+  }
 }

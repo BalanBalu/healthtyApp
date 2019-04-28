@@ -1,7 +1,7 @@
 import React from 'react';
 import { createStackNavigator, createBottomTabNavigator, createAppContainer } from 'react-navigation';
 //import { routes } from './appRouterConfig';
-import Home from "../../modules/screens/Home";
+import Home from "../../modules/screens/home";
 import userprofile from "../../modules/screens/userprofile";
 import finddoctor from "../../modules/screens/auth/finddoctor";
 import { Icon } from 'native-base';
