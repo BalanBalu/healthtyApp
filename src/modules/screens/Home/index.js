@@ -7,7 +7,6 @@ import { Col, Row, Grid } from 'react-native-easy-grid';
 import { connect } from 'react-redux'
 import { StyleSheet, Image, } from 'react-native';
 import { ScrollView } from 'react-native-gesture-handler';
-import { AppRoutes } from '../../../setup/routes/appRouterConfig'
 
 class Home extends Component {
     constructor(props) {
@@ -234,13 +233,13 @@ class Home extends Component {
 
 }
 
-function appoinmentsState(state) {
+function homeState(state) {
 
     return {
         user: state.user
     }
 }
-export default connect(appoinmentsState, { login, messageShow, messageHide })(Home)
+export default connect(homeState)(Home)
 
 
 const styles = StyleSheet.create({

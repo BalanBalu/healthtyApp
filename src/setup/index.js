@@ -41,8 +41,8 @@ export default class App extends Component {
       return (
       
         <Provider store={store} key="provider">
-          <Root>
-          <StyleProvider style={getTheme(material)}>
+        <Root>   
+        <StyleProvider style={getTheme(material)}>
            
             {!isAuthenticated ? <RoutesLogin/> : <RoutesHome /> }  
            

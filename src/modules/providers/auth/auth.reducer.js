@@ -1,15 +1,18 @@
 // App Imports
 import { isEmpty } from '../../../setup/helpers';
-import { SET_USER, LOGIN_REQUEST, LOGIN_RESPONSE, LOGOUT, LOGIN_HAS_ERROR, OTP_CODE_GENERATED, NEW_PASSWORD, AUTH_REQUEST, AUTH_HAS_ERROR, AUTH_RESPONSE } from './auth.actions';
+import { SET_USER, LOGIN_REQUEST, LOGIN_RESPONSE, LOGOUT, LOGIN_HAS_ERROR, AUTH_REQUEST, AUTH_HAS_ERROR, AUTH_RESPONSE, OTP_CODE_GENERATED, NEW_PASSWORD } from './auth.actions';
+
 
 // Initial State
 export const userInitialState = {
   message: null,
   isLoading: false,
   isAuthenticated: false,
-  details: null
+  details: null,
+  success:false,
+  userId:null,
+  isPasswordChanged : false
 }
-
 // State
 export default (state = userInitialState, action) => {
   switch (action.type) {
@@ -19,19 +22,36 @@ export default (state = userInitialState, action) => {
         isAuthenticated: true,
         details: action.details
       }
+      case AUTH_REQUEST:
+      return {
+        ...state,        
+        isLoading: action.isLoading
+      }
+      case AUTH_HAS_ERROR:  
+      return {
+        ...state,
+        success: false,
+        message: action.message,
+        isLoading: false,
+        isAuthenticated:false,
+      }
+   
+   case AUTH_RESPONSE:
+    return {
+      ...state,
+      success: true,        
+      isLoading: false,
+      message: action.message,
+      userId:action.userId || null
+    }
 
     case LOGIN_REQUEST:
       return {
         ...state,
         message: null,
-        isLoading: action.isLoading
-      }
+        isLoading: action.isLoading,
+        isAuthenticated:false
 
-    case LOGIN_RESPONSE:
-      return {
-        ...state,
-        message: action.message,
-        isLoading: false
       }
     case LOGIN_HAS_ERROR:
       return {
@@ -39,18 +59,13 @@ export default (state = userInitialState, action) => {
         message: action.error,
         isLoading: false
       }
-
-      case AUTH_HAS_ERROR:  
+      
+    case LOGIN_RESPONSE:
       return {
         ...state,
-        message: action.error,
-        isLoading: false
-    }
-
-    case AUTH_REQUEST:
-      return {
-        ...state,        
-        isLoading: action.isLoading
+        message: action.message,
+        isLoading: false,
+        success: true
       }
     case OTP_CODE_GENERATED:
       return {
@@ -58,25 +73,13 @@ export default (state = userInitialState, action) => {
         isLoading:false,
         isOTPGenerated: true,
         userId:action.userId,
-        otpCode: action.otpCode 
       }  
     case NEW_PASSWORD:
       return {
         ...state,
-        isLoading:false, 
-        isAuthenticated: true,   
-        isPasswordChanged: action.newPassword,
-        message: action.message
-      }
-
-    case AUTH_RESPONSE:
-      return {
-        ...state,        
-        isLoading: action.isLoading,
-        message: action.message,
-        isAuthenticated: true
-      }
-
+        isLoading:false,   
+        isPasswordChanged: action.isPasswordChanged,
+     }  
       case LOGOUT:
       return userInitialState;
 

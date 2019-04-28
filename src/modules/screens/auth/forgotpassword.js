@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import {View, Container, Content, Button, Text, Form, Item, Input, Header, Footer, FooterTab, Right, Left, CheckBox, Radio, H3, H2, H1, Spinner } from 'native-base';
+import {View, Container, Content, Button, Text, Form, Item, Input, Footer, FooterTab, H3, Toast } from 'native-base';
 import { generateOTP, changePassword, LOGOUT } from '../../providers/auth/auth.actions';
 import { connect } from 'react-redux';
 import { StyleSheet, Image } from 'react-native'
@@ -52,10 +52,17 @@ class Forgotpassword extends Component {
             store.dispatch({
                 type: LOGOUT
             })
+            Toast.show({
+                text : this.props.user.message,
+                timeout: 3000
+            });
             this.props.navigation.navigate('login');                    
         }
         else {
-          this.setState({errorMessage: this.props.user.message });
+            Toast.show({
+                text : this.props.user.message,
+                timeout: 3000
+            });
         }
         } catch (e) {
           console.log(e);
@@ -72,7 +79,7 @@ class Forgotpassword extends Component {
               keyboardType={'email-address'}
               onChangeText={userEntry => this.setState({ userEntry })}/>
             </Item>
-            {isLoading ? <Spinner color='blue' /> : null}
+            
             <Button style={styles.loginButton} block primary onPress={() => this.requestOTP()}>
               <Text>Send OTP</Text>
             </Button>
@@ -104,7 +111,7 @@ class Forgotpassword extends Component {
             onChangeText={password => this.setState({ password })}
           />
           </Item>      
-          {isLoading ? <Spinner color='blue' /> : null}
+          
           <Button style={styles.loginButton} block primary onPress={() => this.changePassword()}>
                     <Text>Reset Password</Text>
           </Button>
@@ -112,7 +119,7 @@ class Forgotpassword extends Component {
          )
      }
     render() {
-        const { user: { isLoading, isOTPGenerated, message } } = this.props;
+        const { user: { isLoading, isOTPGenerated } } = this.props;
         const { errorMessage } = this.state;
 
         return (
@@ -130,7 +137,7 @@ class Forgotpassword extends Component {
                         {isOTPGenerated == true ? this.renderAfterOtpGenerated() : this.renderEnterEmail()}                 
                         
                     </Form>
-                    <Text>{message}</Text>
+                    
                 </Content>
 
                 <Footer >
