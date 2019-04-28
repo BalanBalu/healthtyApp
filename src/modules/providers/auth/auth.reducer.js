@@ -1,6 +1,7 @@
 // App Imports
 import { isEmpty } from '../../../setup/helpers';
-import { SET_USER, LOGIN_REQUEST, LOGIN_RESPONSE, LOGOUT, LOGIN_HAS_ERROR, AUTH_REQUEST, AUTH_HAS_ERROR, AUTH_RESPONSE  } from './auth.actions';
+import { SET_USER, LOGIN_REQUEST, LOGIN_RESPONSE, LOGOUT, LOGIN_HAS_ERROR, AUTH_REQUEST, AUTH_HAS_ERROR, AUTH_RESPONSE, OTP_CODE_GENERATED, NEW_PASSWORD } from './auth.actions';
+
 
 // Initial State
 export const userInitialState = {
@@ -9,7 +10,8 @@ export const userInitialState = {
   isAuthenticated: false,
   details: null,
   success:false,
-  userId:null
+  userId:null,
+  isPasswordChanged : false
 }
 // State
 export default (state = userInitialState, action) => {
@@ -34,13 +36,13 @@ export default (state = userInitialState, action) => {
         isAuthenticated:false,
       }
    
-    case AUTH_RESPONSE:
+   case AUTH_RESPONSE:
     return {
       ...state,
       success: true,        
-      isLoading: action.isLoading,
+      isLoading: false,
       message: action.message,
-      userId:action.userId
+      userId:action.userId || null
     }
 
     case LOGIN_REQUEST:
@@ -51,7 +53,13 @@ export default (state = userInitialState, action) => {
         isAuthenticated:false
 
       }
-
+    case LOGIN_HAS_ERROR:
+      return {
+        ...state,
+        message: action.error,
+        isLoading: false
+      }
+      
     case LOGIN_RESPONSE:
       return {
         ...state,
@@ -59,17 +67,27 @@ export default (state = userInitialState, action) => {
         isLoading: false,
         success: true
       }
-    case LOGIN_HAS_ERROR:
+    case OTP_CODE_GENERATED:
       return {
         ...state,
-        message: action.error,
-        isLoading: false
-      }
-
-    case LOGOUT:
+        isLoading:false,
+        isOTPGenerated: true,
+        userId:action.userId,
+      }  
+    case NEW_PASSWORD:
+      return {
+        ...state,
+        isLoading:false,   
+        isPasswordChanged: action.isPasswordChanged,
+     }  
+      case LOGOUT:
       return userInitialState;
 
     default:
       return state;
-  }
+     }
 }
+
+
+   
+  
