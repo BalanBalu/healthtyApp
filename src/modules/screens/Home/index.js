@@ -45,7 +45,7 @@ class Home extends Component {
                     </Body>
                     <Right >
 
-                        <Button transparent onPress={() => this.props.navigation.navigate('userprofile')}>
+                        <Button transparent onPress={() => this.props.navigation.navigate('Profile')}>
                             <Thumbnail style={{ height: 40, width: 40, borderColor: '#f5f5f5', borderWidth: 2, borderRadius: 50 }} source={{ uri: 'https://res.cloudinary.com/demo/image/upload/w_200,h_200,c_thumb,g_face,r_max/face_left.png' }} />
                         </Button>
 

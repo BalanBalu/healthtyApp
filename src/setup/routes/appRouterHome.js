@@ -2,7 +2,7 @@ import React from 'react';
 import { createStackNavigator, createBottomTabNavigator, createAppContainer } from 'react-navigation';
 //import { routes } from './appRouterConfig';
 import Home from "../../modules/screens/home";
-import userprofile from "../../modules/screens/userprofile";
+import Profile from "../../modules/screens/userprofile";
 import finddoctor from "../../modules/screens/auth/finddoctor";
 import { Icon } from 'native-base';
 import categories from "../../modules/screens/categories";
@@ -22,10 +22,10 @@ import { AppRoutes } from './appRouterConfig'
       
     }
   },
-  userprofile: {
-    name: 'userprofile',
-    path: 'userprofile',
-    screen: userprofile,
+  Profile: {
+    name: 'Profile',
+    path: 'Profile',
+    screen: Profile,
     navigationOptions: {
       tabBarLabel: 'Profile',
       tabBarIcon: ({ tintColor }) => <Icon
