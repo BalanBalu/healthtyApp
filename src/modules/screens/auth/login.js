@@ -98,13 +98,13 @@ class Login extends Component {
               onPress={() => this.doLogin()}>
               <Text>Sign In</Text>
             </Button>
-            <Text style={{ color: '#000', fontSize: 15, fontFamily: 'opensans-regular',textAlign:'center' }}>{loginErrorMsg}</Text>
+            <Text style={{ color: '#000', fontSize: 15, fontFamily: 'opensans-regular', textAlign: 'center' }}>{loginErrorMsg}</Text>
           </Form>
 
         </Content>
         <Footer >
           <FooterTab style={{ backgroundColor: '#F2F2F2', }}>
-            <Button full onPress={() => this.props.navigation.navigate('signup')}>
+            <Button full onPress={() => this.props.navigation.navigate('doctorsearchlist')}>
               <Text uppercase={false} style={{ color: '#000', fontSize: 15, fontFamily: 'opensans-regular' }}>Don't Have An Account ? SignUp</Text>
             </Button>
           </FooterTab>
