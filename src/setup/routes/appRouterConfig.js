@@ -1,6 +1,6 @@
 import Home from "../../modules/screens/home";
 import categories from "../../modules/screens/categories";
-import userprofile from "../../modules/screens/userprofile";
+import Profile from "../../modules/screens/userprofile";
 import login from "../../modules/screens/auth/login";
 import signup from "../../modules/screens/auth/signup";
 import forgotpassword from "../../modules/screens/auth/forgotpassword";
@@ -19,6 +19,11 @@ export const AppRoutes = {
     name: 'Home',
     path: 'Home',
     screen: Home,
+  },
+  Profile: {
+    name: 'Profile',
+    path: 'Profile',
+    screen: Profile,
   },
   login: {
     name: 'login',
