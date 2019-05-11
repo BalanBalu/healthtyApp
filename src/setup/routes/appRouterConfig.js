@@ -12,6 +12,12 @@ import FilterList from "../../modules/screens/FilterList";
 import PaymentPage from "../../modules/screens/PaymentPage";
 import PaymentReview from "../../modules/screens/PaymentReview";
 import PaymentSuccess from "../../modules/screens/PaymentSuccess";
+import MedicineSearch from "../../modules/screens/MedicineSearch";
+import MedicineSearchList from "../../modules/screens/MedicineSearchList";
+import MedicineCheckout from "../../modules/screens/MedicineCheckout";
+import MedicineCheckoutPage from "../../modules/screens/MedicineCheckoutPage";
+import MedicinePaymentResult from "../../modules/screens/MedicinePaymentResult";
+import MedicinePaymentSuccess from "../../modules/screens/MedicinePaymentSuccess";
 import { Icon } from 'native-base';
 
 export const AppRoutes = {
@@ -80,4 +86,37 @@ export const AppRoutes = {
     path: 'paymentsuccess',
     screen: PaymentSuccess
   },
+  medicinesearch: {
+    name: 'medicinesearch',
+    path: 'medicinesearch',
+    screen: MedicineSearch
+  },
+  medicinesearchlist: {
+    name: 'medicinesearchlist',
+    path: 'medicinesearchlist',
+    screen: MedicineSearchList
+  },
+
+  medicinecheckout: {
+    name: 'medicinecheckout',
+    path: 'medicinecheckout',
+    screen: MedicineCheckout
+  },
+
+  medicinecheckoutpage: {
+    name: 'medicinecheckoutpage',
+    path: 'medicinecheckoutpage',
+    screen: MedicineCheckoutPage
+  },
+  medicinepaymentresult: {
+    name: 'medicinepaymentresult',
+    path: 'medicinepaymentresult',
+    screen: MedicinePaymentResult
+  },
+  medicinepaymentsuccess: {
+    name: 'medicinepaymentsuccess',
+    path: 'medicinepaymentsuccess',
+    screen: MedicinePaymentSuccess
+  },
+
 }
