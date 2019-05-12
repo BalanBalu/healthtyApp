@@ -30,24 +30,12 @@ class doctorSearchList extends Component {
     }
 
     render() {
-        const { user: { isLoading } } = this.props;
+        const { user: { isLoading }, navigation } = this.props;
         const { loginErrorMsg } = this.state;
         return (
 
             <Container style={styles.container}>
-                <Header style={{ backgroundColor: '#7E49C3', fontFamily: 'opensans-semibold' }}>
-                    <Left  >
-                        <Button Button transparent onPress={() => this.props.navigation.navigate('home')}>
-                            <Icon name="arrow-back" style={{ color: '#fff' }}></Icon>
-                        </Button>
-
-                    </Left>
-                    <Body>
-                        <Title style={{ fontFamily: 'opensans-semibold' }}>Filter Doctor</Title>
-
-                    </Body>
-                    <Right />
-                </Header>
+                
                 <Content style={styles.bodyContent}>
 
                     <Card>
@@ -68,12 +56,13 @@ class doctorSearchList extends Component {
                             </Col>
                             <Col style={{ col: '33.33%', alignItems: 'center' }}>
 
-                                <Button transparent >
+                                <Button transparent onPress={()=> navigation.navigate('Filters')}>
                                     <Text note uppercase={false} style={{ fontFamily: 'opensans-regular', color: 'gray' }}>Filter</Text>
                                     <Icon name='ios-funnel' style={{ color: 'gray' }} />
                                 </Button>
                             </Col>
-                        </Row></Grid>
+                        </Row>
+                        </Grid>
 
                     </Card>
 
@@ -114,7 +103,7 @@ class doctorSearchList extends Component {
                                         <ScrollView horizontal={true}>
                                             <Col style={{ col: '25%', padding: 5 }}>
 
-                                                <Button primary style={styles.timeButton}>
+                                                <Button primary style={styles.timeButton} onPress={()=> navigation.navigate('filterlist') }>
                                                     <Text note style={{ fontFamily: 'opensans-regular', color: 'white' }}>1 pm</Text>
                                                 </Button>
                                             </Col>

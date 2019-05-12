@@ -12,39 +12,15 @@ import { setDoctorLocally } from '../modules/providers/auth/auth.actions';
 export default class App extends Component {
     constructor(props) {
       super(props);
-      console.log('coming on Constructor');
-       this.state = {
-         isAuthenticated : false
-       } 
-    }
-   async componentWillMount(){
-    try {
-        console.log('is that coming here?');
-        const token = await AsyncStorage.getItem('token')
-        if (token && token !== 'undefined' && token !== '') {
-          const doctor = JSON.parse(await AsyncStorage.getItem('doctor'))
-          if(doctor) {
-           await setDoctorLocally(token, doctor);
-            //console.log('user props is ' +  this.props);
-            this.setState( {isAuthenticated : true});
-          }
-        }
-      } catch (e) {
-        console.log('Failed to Login User' + e);
-      }     
-  }
-  
+    } 
 
   render() {
-      const { isAuthenticated }  = this.state;
-      console.log('coming on Render');
       return (
       
         <Provider store={store} key="provider">
         <Root>   
         <StyleProvider style={getTheme(material)}>
-           
-            {!isAuthenticated ? <RoutesLogin/> : <RoutesHome /> }  
+            <RoutesHome />
            
            </StyleProvider>  
            </Root>

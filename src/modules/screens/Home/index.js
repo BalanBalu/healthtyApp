@@ -14,7 +14,7 @@ class Home extends Component {
         console.log(this.props)
     }
     navigetToCategories() {
-        console.log(this.props.navigation.navigate('categories'));
+        console.log(this.props.navigation.navigate('Categories'));
         //this.props.navigation.navigate('categories');
     }
     doLogout(){
@@ -28,7 +28,7 @@ class Home extends Component {
               
             <Container style={styles.container}>
 
-                <Header style={{ backgroundColor: '#7E49C3' }}>
+               {/* <Header style={{ backgroundColor: '#7E49C3' }}>
                     <Left  >
                         <Button Button transparent onPress={() => this.props.navigation.navigate('home')}>
                             <Icon name="medkit" style={{ color: '#fff', fontSize: 35 }}></Icon>
@@ -51,7 +51,7 @@ class Home extends Component {
 
                     </Right>
                 </Header>
-
+        */}
 
 
                 <Content style={styles.bodyContent}>
@@ -81,8 +81,9 @@ class Home extends Component {
                             <Row>
                                 <ListItem noBorder>
                                     <ScrollView horizontal={true}>
-                                        <Col style={styles.column}>
-                                            <LinearGradient
+                                        <Item style={styles.column} onPress={() => this.props.navigation.navigate('Doctor List') }>
+                                        <Col>
+                                            <LinearGradient 
                                                 colors={['#7357A2', '#62BFE4']} style={{ borderRadius: 10, padding: 5, height: '70%', width: '100%', marginLeft: 'auto', marginRight: 'auto' }}>
                                                 <Image source={{ uri: 'https://static1.squarespace.com/static/586ef2c6bf629a58a3512dfa/t/5879369c5016e1f60c105f77/1484358104031/crown-bridge-icon.png' }} style={styles.customImage} />
                                             </LinearGradient>
@@ -90,8 +91,9 @@ class Home extends Component {
                                             <Text style={styles.textcenter}>Dental</Text>
                                             <Text note style={{ textAlign: 'center' }}>100 Doctors</Text>
                                         </Col>
-
-                                        <Col style={styles.column}>
+                                        </Item>
+                                          <Item style={styles.column} onPress={() => this.props.navigation.navigate('doctorsearchlist') }>
+                                          <Col>
                                             <LinearGradient
                                                 colors={['#7357A2', '#62BFE4']} style={{ borderRadius: 10, padding: 10, height: '70%', width: '100%', marginLeft: 'auto', marginRight: 'auto' }}>
                                                 <Image source={{ uri: 'http://pluspng.com/img-png/orthopedics-png--350.png' }} style={styles.customImage} />
@@ -100,6 +102,7 @@ class Home extends Component {
                                             <Text style={styles.textcenter}>Orthology</Text>
                                             <Text note style={{ textAlign: 'center' }}>150 Doctors</Text>
                                         </Col>
+                                        </Item>
 
 
 

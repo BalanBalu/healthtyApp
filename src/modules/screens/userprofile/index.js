@@ -51,18 +51,6 @@ class Profile extends Component {
         return (
 
             <Container style={styles.container}>
-                <Header style={{ backgroundColor: '#7E49C3', fontFamily: 'opensans-semibold' }}>
-                    <Left  >
-                        <Button Button transparent onPress={() => this.props.navigation.navigate('Home')}>
-                            <Icon name="arrow-back" style={{ color: '#fff' }}></Icon>
-                        </Button>
-                    </Left>
-                    <Body>
-                        <Title style={{ fontFamily: 'opensans-semibold' }}>View Profile</Title>
-                    </Body>
-                    <Right />
-                </Header>
-                
                 {isLoading ? 
                     <Loader style={'profile'} /> :
                 
