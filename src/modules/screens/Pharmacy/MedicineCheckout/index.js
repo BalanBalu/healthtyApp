@@ -1,25 +1,13 @@
 import React, { Component } from 'react';
 import { Container, Content, Text, Title, Header, Form, Textarea, Button, H3, Item, List, ListItem, Card, Input, Left, Right, Thumbnail, Body, Icon, Footer, FooterTab, Picker } from 'native-base';
-import { login, logout } from '../../providers/auth/auth.actions';
-import { messageShow, messageHide } from '../../providers/common/common.action';
-import LinearGradient from 'react-native-linear-gradient';
 import { Col, Row, Grid } from 'react-native-easy-grid';
 import { connect } from 'react-redux'
 import { StyleSheet, Image, } from 'react-native';
-import { ScrollView } from 'react-native-gesture-handler';
 
 class MedicineCheckout extends Component {
     constructor(props) {
         super(props)
         console.log(this.props)
-    }
-    navigetToCategories() {
-        console.log(this.props.navigation.navigate('categories'));
-        //this.props.navigation.navigate('categories');
-    }
-    doLogout() {
-        logout();
-        this.props.navigation.navigate('login');
     }
     render() {
 
