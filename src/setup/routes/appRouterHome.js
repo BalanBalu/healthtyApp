@@ -32,6 +32,7 @@ import profileAvatar from '../../../assets/images/profileAvatar.png';
 
 
 import { HeaderBackButton } from 'react-navigation';
+import BookAppoinment from "../../modules/screens/bookappoinment";
 
 
  const routes = {
@@ -128,6 +129,12 @@ const AppointMentstack  = createStackNavigator({
       title: 'Doctor List',
       headerLeft:(<HeaderBackButton onPress={()=>{navigation.navigate('Home')}}/>)
     })
+  },
+  "Book Appoinment": {
+    screen: BookAppoinment,
+    navigationOptions: {
+      title: 'Book Appoinmen'
+    }
   },
   Filters: {
     screen: FilterList,

@@ -1,13 +1,11 @@
 import React, { Component } from 'react';
 import { Container, Content, Text, Title, Header, H3, Button, Card, List, ListItem, Left, Right, Thumbnail, Body, Icon, locations, ScrollView, Item } from 'native-base';
-import { login } from '../../providers/auth/auth.actions';
-import { messageShow, messageHide } from '../../providers/common/common.action';
 import { Col, Row, Grid } from 'react-native-easy-grid';
 import { connect } from 'react-redux'
 import { StyleSheet, Image, TouchableOpacity, View, FlatList } from 'react-native';
-import LinearGradient from 'react-native-linear-gradient';
 import StarRating from 'react-native-star-rating';
-class bookappoinment extends Component {
+
+class BookAppoinment extends Component {
   constructor(props) {
     super(props)
 
@@ -253,7 +251,7 @@ function loginState(state) {
     user: state.user
   }
 }
-export default connect(loginState, { login, messageShow, messageHide })(bookappoinment)
+export default connect(loginState)(BookAppoinment)
 
 
 const styles = StyleSheet.create({
