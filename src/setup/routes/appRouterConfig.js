@@ -18,6 +18,7 @@ import MedicineCheckout from "../../modules/screens/MedicineCheckout";
 import MedicineCheckoutPage from "../../modules/screens/MedicineCheckoutPage";
 import MedicinePaymentResult from "../../modules/screens/MedicinePaymentResult";
 import MedicinePaymentSuccess from "../../modules/screens/MedicinePaymentSuccess";
+import bookappoinment from "../../modules/screens/bookappoinment";
 import { Icon } from 'native-base';
 
 export const AppRoutes = {
@@ -118,5 +119,11 @@ export const AppRoutes = {
     path: 'medicinepaymentsuccess',
     screen: MedicinePaymentSuccess
   },
+  bookappoinment: {
+    name: ' bookappoinment',
+    path: ' bookappoinment',
+    screen:  bookappoinment
+  },
+ 
 
 }
