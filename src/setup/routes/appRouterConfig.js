@@ -18,7 +18,7 @@ import PaymentSuccess from "../../modules/screens/PaymentSuccess";
 // import MedicineCheckoutPage from "../../modules/screens/MedicineCheckoutPage";
 // import MedicinePaymentResult from "../../modules/screens/MedicinePaymentResult";
 // import MedicinePaymentSuccess from "../../modules/screens/MedicinePaymentSuccess";
-import bookappoinment from "../../modules/screens/bookappoinment";
+import BookAppoinment from "../../modules/screens/bookappoinment";
 import { Icon } from 'native-base';
 
 export const AppRoutes = {
@@ -88,8 +88,8 @@ export const AppRoutes = {
     screen: PaymentSuccess
   },
   bookappoinment: {
-    name: ' bookappoinment',
-    path: ' bookappoinment',
-    screen:  bookappoinment
+    name: 'bookappoinment',
+    path: 'bookappoinment',
+    screen:  BookAppoinment
   },
 }

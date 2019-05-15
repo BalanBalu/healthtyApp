@@ -4,26 +4,66 @@ import { Col, Row, Grid } from 'react-native-easy-grid';
 import { connect } from 'react-redux'
 import { StyleSheet, Image, TouchableOpacity, View, FlatList } from 'react-native';
 import StarRating from 'react-native-star-rating';
+import { viewdoctorProfile } from '../../providers/bookappointment/bookappointment.action';
+import { formatDate } from '../../../setup/helpers';
+
+// const slotList = [
+//   { slotDate: "2019-05-20", slotTime: "11:00:00" },
+//   { slotDate: "2019-05-21", slotTime: "11:30:00" },
+//   { slotDate: "2019-05-21", slotTime: "12:00:00" },
+//   { slotDate: "2019-05-22", slotTime: "12:30:00" },
+// ]
+
 
 class BookAppoinment extends Component {
   constructor(props) {
     super(props)
 
     this.state = {
-      userEntry: '',
-      password: '',
-      loginErrorMsg: '',
-      starCount: 3.5
+      data: [],
+      // slotList: slotList,
+      availableSlotData: [],
+      doctorId: '5ca47f4dd32d2b731c40bef3',
+      starCount: 3.5,
+      availableCurrentDate:[]
     }
+
   }
   onStarRatingPress(rating) {
     this.setState({
       starCount: rating
     });
   }
+  componentDidMount() {
+    let currentDate = formatDate(new Date(), 'YYYY-MM-DD');
+    console.log(currentDate + 'hai');
+    this.getAvailability(currentDate);
+  }
+  getAvailability = async (currentDate) => {
+    console.log("hjk");
+    let result = await viewdoctorProfile(this.state.doctorId);
+    console.log(result);
+    if (result.success) {
+      console.log("success");
+      let availableSlot=result.data[0].slotData;
+      this.setState({availableSlotData:availableSlot});
+      this.setState({data:result.data[0]});
+      this.getCurrentDate(currentDate);
+      
+    }
+
+  }
+  getCurrentDate(date){
+    console.log("fghjkl");
+    if(this.state.availableSlotData[formatDate(date,'YYYY-MM-DD')]){
+      console.log("hai")
+
+    }
+
+
+  }
   render() {
-    const { user: { isLoading } } = this.props;
-    const { loginErrorMsg } = this.state;
+    const { data } = this.state;
     return (
 
       <Container style={styles.container}>
@@ -46,15 +86,17 @@ class BookAppoinment extends Component {
           <Card style={styles.customCard}>
             <List>
               <ListItem thumbnail noBorder>
+
                 <Left>
                   <Thumbnail square source={{ uri: 'https://static1.squarespace.com/static/582bbfef9de4bb07fe62ab18/t/5877b9ccebbd1a124af66dfe/1484241404624/Headshot+-+Circular.png?format=300w' }} style={{ height: 86, width: 86 }} />
 
                 </Left>
                 <Body>
-                  <Text>Kumar Pratik</Text>
-                  <Text note>Doing what you like will always ....</Text>
-                  <Text note>*****</Text>
-                </Body>
+                    <Text>{data.doctorName}</Text>
+
+                   <Text note>Doing what you like will always ....</Text>
+                   <Text note>*****</Text>
+                  </Body>
 
               </ListItem>
 
@@ -91,41 +133,21 @@ class BookAppoinment extends Component {
 
                 </Col>
               </Grid>
+
             </List>
 
           </Card>
 
           <Card>
             <View >
-              <FlatList numColumns={3}
-                data={[
-                  {
-                    "day": 0,
-                    "dayName": "Monday",
-                    "start_time": "09:00:00",
-                    "end_time": "09:30:00"
-                  },
-                  {
-                    "day": 0,
-                    "dayName": "Monday",
-                    "start_time": "10:00:00",
-                    "end_time": "10:30:00"
-                  },
-                  {
-                    "day": 0,
-                    "dayName": "Monday",
-                    "start_time": "12:00:00",
-                    "end_time": "13:00:00"
-                  },
-                  {
-                    "day": 0,
-                    "dayName": "Monday",
-                    "start_time": "13:00:00",
-                    "end_time": "14:00:00"
-                  }
-                ]}
-                renderItem={({ item }) => <Item style={{ borderBottomWidth: 0, alignItems: 'center' }}><Col style={{ width: '33.33%', alignItems: 'center',marginLeft:8 }}><Button style={{ backgroundColor: '#775DA3', borderRadius: 5, width: 80, height: 30, margin: 5 }}><Text uppercase={false} style={{ fontFamily: 'opensans-regular', fontSize: 12, color: 'white' }}>{item.dayName}</Text></Button></Col></Item>}
+              <FlatList
+                numColumns={3}
+                data={this.state.availableSlotData}
+                renderItem={({ item }) => <Item style={{ borderBottomWidth: 0, alignItems: 'center' }}><Col style={{ width: '33.33%', alignItems: 'center', marginLeft: 8 }}><Button style={{ backgroundColor: '#775DA3', borderRadius: 5, width: 80, height: 30, margin: 5 }}><Text uppercase={false} style={{ fontFamily: 'opensans-regular', fontSize: 12, color: 'white' }}>{item.startTime}</Text></Button></Col></Item>}
+                keyExtractor={(item, index) => index.toString()}
+
               />
+
             </View>
           </Card>
 
