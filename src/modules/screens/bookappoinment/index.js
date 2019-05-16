@@ -126,7 +126,7 @@ class bookappoinment extends Component {
                     "end_time": "14:00:00"
                   }
                 ]}
-                renderItem={({ item }) => <Item style={{ borderBottomWidth: 0, alignItems: 'center' }}><Col style={{ width: '33.33%', alignItems: 'center',marginLeft:8 }}><Button style={{ backgroundColor: '#775DA3', borderRadius: 5, width: 80, height: 30, margin: 5 }}><Text uppercase={false} style={{ fontFamily: 'opensans-regular', fontSize: 12, color: 'white' }}>{item.dayName}</Text></Button></Col></Item>}
+                renderItem={({ item }) => <Item style={{ borderBottomWidth: 0, alignItems: 'center' }}><Col style={{ width: '33.33%', alignItems: 'center', marginLeft: 8 }}><Button style={{ backgroundColor: '#775DA3', borderRadius: 5, width: 80, height: 30, margin: 5 }}><Text uppercase={false} style={{ fontFamily: 'opensans-regular', fontSize: 12, color: 'white' }}>{item.dayName}</Text></Button></Col></Item>}
               />
             </View>
           </Card>
@@ -170,8 +170,9 @@ class bookappoinment extends Component {
 
           </Grid>
 
-          <Card transparent style={{ margin: 10 }}>
-            <List>
+          <Card transparent style={{ margin: 20 ,backgroundColor:'#ecf0f1'}}>
+          <Card>
+          <List>
               <ListItem avatar>
                 <Left>
                   <Icon name="locate" style={{ color: '#7E49C3', fontSize: 25 }}></Icon>
@@ -185,6 +186,8 @@ class bookappoinment extends Component {
               </ListItem>
             </List>
 
+          </Card>
+           
 
             <Card style={{ margin: 10, padding: 10, borderRadius: 10 }}>
 
@@ -236,6 +239,331 @@ class bookappoinment extends Component {
                 </Button>
               </List>
             </Card>
+
+
+
+            <Card style={{ backgroundColor: '#ffffff', borderRadius: 10, padding: 10 }}>
+
+              <Text style={styles.subtitlesText}>Professional Statement</Text>
+              <List>
+                <ListItem avatar noBorder style={{ borderLeftWidth: 8, borderColor: "#F29727", marginBottom: 10 }}>
+                  <Left >
+
+                  </Left>
+                  <Body>
+
+                    <Text style={styles.customText}>
+                      The medical doctor CV example below is designed to show you how to properly format and organize your CV, as well as what information to include, such as your hobbies and interests, work history, and a professional summary. Once you’ve familiarized yourself with the structure, you can draft your own tailored CV.
+                  </Text>
+
+                  </Body>
+
+                </ListItem>
+
+              </List>
+
+
+            </Card>
+
+
+
+            <Card style={{ backgroundColor: '#ffffff', borderRadius: 10, padding: 10 }}>
+
+
+              <Grid>
+                <Col style={{ width: '10%' }}>
+                  <Icon name="apps" style={styles.customIcon}></Icon>
+                </Col>
+                <Col style={{ width: '90%', alignItems: 'flex-start' }}>
+                  <Text style={styles.titlesText}>Service</Text></Col>
+
+              </Grid>
+
+
+              <List>
+                <ListItem avatar noBorder style={{ borderRightWidth: 8, borderColor: "#8C4F2B", marginBottom: 10, marginRight: 15 }}>
+                  <Left >
+                  </Left>
+                  <Body>
+                    <Text style={styles.rowText}>
+                      psychiotherephy
+
+ </Text>
+                    <Text style={styles.rowText}>
+                      psychiotherephy
+
+ </Text>
+
+                    <Text style={styles.rowText}>
+                      psychiotherephy
+
+ </Text>
+
+                  </Body>
+
+                </ListItem>
+
+              </List>
+
+            </Card>
+
+
+
+
+            <Card style={{ backgroundColor: '#ffffff', borderRadius: 10, padding: 10 }}>
+
+
+              <Grid style={{ margin: 5 }}>
+                <Col style={{ width: '10%' }}>
+                  <Icon name="apps" style={styles.customIcon}></Icon>
+                </Col>
+                <Col style={{ width: '90%', alignItems: 'flex-start' }}>
+                  <Text style={styles.titlesText}>Specialization</Text></Col>
+
+              </Grid>
+
+
+              <List>
+                <ListItem avatar noBorder style={{ borderLeftWidth: 8, borderColor: "#F29727", marginBottom: -5 }}>
+                  <Left >
+                  </Left>
+                  <Body>
+                    <Text style={styles.rowText}>
+                      psychiotherephy
+
+ </Text>
+                    <Text style={styles.rowText}>
+                      psychiotherephy
+
+ </Text>
+
+                    <Text style={styles.rowText}>
+                      psychiotherephy
+
+ </Text>
+
+                  </Body>
+
+                </ListItem>
+
+              </List>
+
+            </Card>
+
+
+
+
+            <Card style={{ backgroundColor: '#ffffff', borderRadius: 10, padding: 10 }}>
+
+
+              <Grid>
+                <Col style={{ width: '10%' }}>
+                  <Icon name="apps" style={styles.customIcon}></Icon>
+                </Col>
+                <Col style={{ width: '90%', alignItems: 'flex-start' }}>
+                  <Text style={styles.titlesText}>Hospital Network</Text></Col>
+
+              </Grid>
+
+
+              <List>
+                <ListItem avatar noBorder style={{ borderRightWidth: 8, borderColor: "#8C4F2B", marginBottom: 10, marginRight: 15 }}>
+                  <Left >
+                  </Left>
+                  <Body>
+
+                    <Grid>
+                      <Col style={{ width: '40%' }}>
+                        <Text style={styles.rowText}>
+                          ADS Hospitals
+
+ </Text>
+                      </Col>
+                      <Col style={{ width: '30%' }}>
+                      </Col>
+                      <Col style={{ width: '30%' }}>
+
+                        <Text style={styles.rowText}>
+                          Mon-Sat
+
+ </Text>
+                      </Col>
+                    </Grid>
+
+                    <Grid >
+                      <Col style={{ width: '90%', alignItems: 'center', borderColor: 'gray', borderWidth: 1, padding: 5, borderRadius: 5 }}>
+                        <Text style={styles.rowText}>
+                          81/3 middle street</Text>
+
+                        <Text style={styles.rowText}>
+                          nehru street</Text>
+
+
+                        <Text style={styles.rowText}>
+                          Annanagar-40</Text>
+                      </Col>
+                      <Col style={{ width: '10%' }}></Col>
+                    </Grid>
+
+                    <Grid>
+                      <Col style={{ width: '40%' }}>
+                        <Text style={styles.rowText}>
+                          ADS Hospitals
+
+ </Text>
+                      </Col>
+                      <Col style={{ width: '30%' }}>
+                      </Col>
+                      <Col style={{ width: '30%' }}>
+
+                        <Text style={styles.rowText}>
+                          Mon-Sat
+
+ </Text>
+                      </Col>
+                    </Grid>
+
+                    <Grid>
+                      <Col style={{ width: '90%', alignItems: 'center', borderColor: 'gray', borderWidth: 1, padding: 5, borderRadius: 5 }}>
+                        <Text style={styles.rowText}>
+                          81/3 middle street</Text>
+
+                        <Text style={styles.rowText}>
+                          nehru street</Text>
+
+
+                        <Text style={styles.rowText}>
+                          Annanagar-40</Text>
+                      </Col>
+                      <Col style={{ width: '10%' }}></Col>
+                    </Grid>
+
+                  </Body>
+
+                </ListItem>
+
+              </List>
+
+            </Card>
+
+
+            <Card style={{ backgroundColor: '#ffffff', borderRadius: 10, padding: 10 }}>
+
+              <Grid style={{ margin: 5 }}>
+                <Col style={{ width: '10%' }}>
+                  <Icon name="apps" style={styles.customIcon}></Icon>
+                </Col>
+                <Col style={{ width: '90%', alignItems: 'flex-start' }}>
+                  <Text style={styles.titlesText}>Languages speaks By Doctor</Text></Col>
+
+              </Grid>
+
+
+              <List>
+                <ListItem avatar noBorder style={{ borderLeftWidth: 8, borderColor: "#F29727", marginBottom: -5 }}>
+                  <Left >
+                  </Left>
+                  <Body>
+                    <Text style={styles.rowText}>
+                      Tamil
+               
+</Text>
+                    <Text style={styles.rowText}>
+                      English
+                
+</Text>
+
+                    <Text style={styles.rowText}>
+                      French
+                
+</Text>
+
+                  </Body>
+
+                </ListItem>
+
+              </List>
+
+            </Card>
+
+
+            <Card style={{ backgroundColor: '#ffffff', borderRadius: 10, padding: 10 }}>
+
+
+              <Grid>
+                <Col style={{ width: '10%' }}>
+                  <Icon name="apps" style={styles.customIcon}></Icon>
+                </Col>
+                <Col style={{ width: '90%', alignItems: 'flex-start' }}>
+                  <Text style={styles.titlesText}>Awards</Text></Col>
+
+              </Grid>
+
+
+              <List>
+                <ListItem avatar noBorder style={{ borderRightWidth: 8, borderColor: "#8C4F2B", marginBottom: 10, marginRight: 15 }}>
+                  <Left >
+                  </Left>
+                  <Body>
+                    <Text style={styles.rowText}>
+                     Awards1
+ </Text>
+                    <Text style={styles.rowText}>
+                    Awards2
+ </Text>
+
+                  
+
+                  </Body>
+
+                </ListItem>
+
+              </List>
+
+            </Card>
+
+
+            <Card style={{ backgroundColor: '#ffffff', borderRadius: 10, padding: 10 }}>
+
+
+<Grid style={{ margin: 5 }}>
+  <Col style={{ width: '10%' }}>
+    <Icon name="apps" style={styles.customIcon}></Icon>
+  </Col>
+  <Col style={{ width: '90%', alignItems: 'flex-start' }}>
+    <Text style={styles.titlesText}>Board Certifications</Text></Col>
+
+</Grid>
+
+
+<List>
+  <ListItem avatar noBorder style={{ borderLeftWidth: 8, borderColor: "#F29727", marginBottom: -5 }}>
+    <Left >
+    </Left>
+    <Body>
+      <Text style={styles.rowText}>
+      certificate1
+ 
+</Text>
+      <Text style={styles.rowText}>
+     certificate2
+  
+</Text>
+
+     
+
+    </Body>
+
+  </ListItem>
+
+</List>
+
+</Card>
+
+<Button block success style={{ borderRadius: 10 }}>
+                    <Text uppercase={false}>Confirm Appoinment</Text>
+
+                  </Button>
 
 
           </Card>
@@ -294,6 +622,48 @@ const styles = StyleSheet.create({
   {
     marginLeft: 'auto',
     marginRight: 'auto'
+  },
+  customText:
+  {
+
+    fontFamily: 'opensans-regular',
+    color: '#000',
+    fontSize: 14,
+
+  },
+  subtitlesText: {
+    fontSize: 15,
+    margin: 10,
+    color: '#F2889B',
+    fontFamily: 'opensans-semibold',
+
+  },
+  titlesText: {
+    fontSize: 15,
+    color: '#F2889B',
+    fontFamily: 'opensans-semibold',
+
+  },
+  customIcon:
+  {
+    height: 30,
+    width: 30,
+    backgroundColor: 'gray',
+    color: 'white',
+    borderRadius: 8,
+    fontSize: 19,
+    paddingLeft: 8,
+    paddingRight: 6,
+    paddingTop: 6,
+    paddingBottom: 6
+
+  },
+  rowText:
+  {
+    fontFamily: 'opensans-regular',
+    color: '#000',
+    fontSize: 14,
+    margin: 5
   }
 
 });
