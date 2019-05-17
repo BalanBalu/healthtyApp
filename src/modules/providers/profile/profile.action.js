@@ -47,13 +47,13 @@ export async function userProfile (userId, fields, isLoading = true) {
 
 // get user reviews
 
-export async function userReviews (data, isLoading = true) {
+export async function userReviews (id,type, isLoading = true) {
   try {
     store.dispatch({
       type: REVIEWS_REQUEST,
       isLoading 
     })     
-    let endPoint = 'user/reviews/'+data.type+'/'+data.doctor_id;  
+    let endPoint = 'user/reviews/'+type+'/'+id;  
     console.log(endPoint);   
     let response = await getService(endPoint); 
     console.log(response);
@@ -72,12 +72,12 @@ export async function userReviews (data, isLoading = true) {
         success: true,     
         message: respData.message
       })
-      return respData.data;
+      return respData
     }
     
   } catch (e) {
     store.dispatch({
-      type: USER_REVIEWS_HAS_ERROR,
+      type: REVIEWS_ERROR,
       message: e
       }); 
   }  
