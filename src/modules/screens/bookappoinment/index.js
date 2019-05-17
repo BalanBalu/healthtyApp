@@ -1,18 +1,11 @@
 import React, { Component } from 'react';
-import { Container, Content, Text, Title, Header, H3, Button, Card, List, ListItem, Left, Right, Thumbnail, Body, Icon, locations, ScrollView, Item } from 'native-base';
+import { Container, Content, Text, Title, Header, H3, Button, Card, List, ListItem, Left, Right, Thumbnail, Body, Icon, locations, ScrollView, Item, DatePicker } from 'native-base';
 import { Col, Row, Grid } from 'react-native-easy-grid';
 import { connect } from 'react-redux'
 import { StyleSheet, Image, TouchableOpacity, View, FlatList } from 'react-native';
 import StarRating from 'react-native-star-rating';
 import { viewdoctorProfile } from '../../providers/bookappointment/bookappointment.action';
-import { formatDate } from '../../../setup/helpers';
-
-// const slotList = [
-//   { slotDate: "2019-05-20", slotTime: "11:00:00" },
-//   { slotDate: "2019-05-21", slotTime: "11:30:00" },
-//   { slotDate: "2019-05-21", slotTime: "12:00:00" },
-//   { slotDate: "2019-05-22", slotTime: "12:30:00" },
-// ]
+import { formatDate, getFirstDay, getLastDay } from '../../../setup/helpers';
 
 
 class BookAppoinment extends Component {
@@ -21,52 +14,133 @@ class BookAppoinment extends Component {
 
     this.state = {
       data: [],
-      // slotList: slotList,
+      item: '',
+      slotList: [],
       availableSlotData: [],
+      getStartDateOfTheWeek: formatDate(new Date(), 'YYYY-MM-DD'),
+      getEndDateOfTheWeek: formatDate(new Date(), 'YYYY-MM-DD'),
       doctorId: '5ca47f4dd32d2b731c40bef3',
       starCount: 3.5,
-      availableCurrentDate:[]
+      qualification: '',
+      pickDate: formatDate(new Date(), 'YYYY-MM-DD'),
+      isLoading: false,
+      toggleButton: true,
+      toggleButtonColour: 'gray'
     }
-
   }
+
   onStarRatingPress(rating) {
     this.setState({
       starCount: rating
     });
   }
+
   componentDidMount() {
-    let currentDate = formatDate(new Date(), 'YYYY-MM-DD');
-    console.log(currentDate + 'hai');
-    this.getAvailability(currentDate);
+    currentDate = formatDate(new Date(), 'YYYY-MM-DD');
+    let startDate = getFirstDay(new Date(), 'week');
+    console.log(startDate + 'startDate');
+    let endDate = getLastDay(new Date(), 'week');
+    console.log(endDate + 'endDate');
+    this.getAvailability(currentDate, startDate, endDate);
   }
-  getAvailability = async (currentDate) => {
-    console.log("hjk");
-    let result = await viewdoctorProfile(this.state.doctorId);
+
+  /*get availability slots for the week*/
+  getAvailability = async (currentDate, startDate, endDate) => {
+    let slotOfWeek = {
+      startDate: formatDate(startDate, 'YYYY-MM-DD'),
+      endDate: formatDate(endDate, 'YYYY-MM-DD')
+    }
+    let result = await viewdoctorProfile(this.state.doctorId, slotOfWeek);
     console.log(result);
+
     if (result.success) {
       console.log("success");
-      let availableSlot=result.data[0].slotData;
-      this.setState({availableSlotData:availableSlot});
-      this.setState({data:result.data[0]});
-      this.getCurrentDate(currentDate);
-      
+      this.setState({ data: result.data[0] });
+      this.setState({ slotList: result.data[0].slotData[formatDate(currentDate, 'YYYY-MM-DD')] });
+      console.log(JSON.stringify(this.state.slotList) + '>>>>>');
+
+      if (result.data[0].education) {
+        let temp = this.state.data.education.map((val) => {
+          return val.degree;
+        }).join(',');
+        this.setState({ qualification: temp });
+      }
     }
-
   }
-  getCurrentDate(date){
-    console.log("fghjkl");
-    if(this.state.availableSlotData[formatDate(date,'YYYY-MM-DD')]){
-      console.log("hai")
 
+
+  onSlotPress(item, index) {
+    console.log("coming to slotpress");
+    this.state.slotList[index].bg = 'gray';
+    this.setState({ toggleButton: false });
+    this.setState({ toggleButtonColour: 'red' });
+    console.log(this.state.slotList);
+  }
+
+  /*bind hospital location*/
+  renderAddress(item) {
+    <Body>
+    </Body>
+  }
+
+  noAvailableSlots() {
+    return (
+      <Item style={{ borderBottomWidth: 0, justifyContent: 'center', alignItems: 'center' }}>
+        <Text style={{ fontSize: 18, justifyContent: 'center', alignItems: 'center' }} >No slots available </Text>
+      </Item>
+    )
+  }
+
+  haveAvailableSlots() {
+    return (
+      <FlatList
+        numColumns={3}
+        data={this.state.slotList}
+        extraData={this.state}
+        keyExtractor={(item, index) => index.toString()}
+        renderItem={({ item, index }) =>
+          <Item style={{ borderBottomWidth: 0, alignItems: 'center' }}>
+            <Col style={{ width: '33.33%', alignItems: 'center', marginLeft: 8 }}>
+              <Button style={{ backgroundColor: item.bg || '#775DA3', borderRadius: 5, width: 80, height: 30, margin: 5 }}
+                onPress={() => this.onSlotPress(item, index)}>
+                <Text uppercase={false} style={{ fontFamily: 'opensans-regular', fontSize: 12, color: 'white' }}>
+                  {formatDate(item.slotStartDateAndTime, 'hh:mm')}</Text>
+                <Col style={{ width: '40%', alignItems: 'center', backgroundColor: '#2BCA2F' }}>
+                  <Text style={styles.customPadge}> {formatDate(item.slotStartDateAndTime, 'A')}</Text>
+                </Col>
+              </Button></Col></Item>
+        } />
+    )
+  }
+  async onDateChanged(date) {
+    console.log("fghjk");
+    let currentDate = formatDate(date, 'YYYY-MM-DD');
+    console.log(currentDate);
+    let startDate = getFirstDay(new Date(date), 'week');
+    console.log(startDate + 'hai');
+    let endDate = getLastDay(new Date(date), 'week');
+    console.log(endDate + 'hello');
+    this.setState({ currentDate: currentDate, getStartDateOfTheWeek: startDate, getEndDateOfTheWeek: endDate, });  // Set the selected date in Calender
+    if (!this.state.slotList[formatDate(date, 'YYYY-MM-DD')]) {
+      console.log("help me")
+      this.getAvailability(currentDate, startDate, endDate);
     }
-
-
+    else {
+      console.log("test");
+      if (this.state.slotList[formatDate(date, 'YYYY-MM-DD')]) {
+        console.log("test2")
+        this.setState({ data: this.state.slotList[formatDate(date, 'YYYY-MM-DD')] });
+        console.log(JSON.stringify(this.state.slotList) + 'hai');
+      }
+    }
   }
+
   render() {
-    const { data } = this.state;
+    const { data, qualification, slotList } = this.state;
     return (
 
       <Container style={styles.container}>
+
         <Header style={{ backgroundColor: '#7E49C3' }}>
           <Left >
             <Icon name="arrow-back" style={{ color: '#fff' }}></Icon>
@@ -92,11 +166,11 @@ class BookAppoinment extends Component {
 
                 </Left>
                 <Body>
-                    <Text>{data.doctorName}</Text>
+                  <Text>{data.doctorName ? data.doctorName : ''}</Text>
 
-                   <Text note>Doing what you like will always ....</Text>
-                   <Text note>*****</Text>
-                  </Body>
+                  <Text>{qualification}</Text>
+                  <Text note>*****</Text>
+                </Body>
 
               </ListItem>
 
@@ -118,11 +192,10 @@ class BookAppoinment extends Component {
               </Grid>
 
               <Grid style={{ marginTop: 5 }}>
-
                 <Col style={{ width: 270, }}>
-                  <Button block success style={{ borderRadius: 10 }}>
-                    <Text uppercase={false}>Book Appoinment</Text>
 
+                  <Button disabled={this.state.toggleButton} block style={{ borderRadius: 10, color: this.state.toggleButtonColour }}>
+                    <Text uppercase={false}>Book Appoinment</Text>
                   </Button>
 
                 </Col>
@@ -140,13 +213,26 @@ class BookAppoinment extends Component {
 
           <Card>
             <View >
-              <FlatList
-                numColumns={3}
-                data={this.state.availableSlotData}
-                renderItem={({ item }) => <Item style={{ borderBottomWidth: 0, alignItems: 'center' }}><Col style={{ width: '33.33%', alignItems: 'center', marginLeft: 8 }}><Button style={{ backgroundColor: '#775DA3', borderRadius: 5, width: 80, height: 30, margin: 5 }}><Text uppercase={false} style={{ fontFamily: 'opensans-regular', fontSize: 12, color: 'white' }}>{item.startTime}</Text></Button></Col></Item>}
-                keyExtractor={(item, index) => index.toString()}
+              <Item style={{ borderBottomWidth: 0, backgroundColor: '#F1F1F1', marginTop: 10, borderRadius: 5, height: 45, marginLeft: 18 }}>
+                <Icon name='calendar' style={{ paddingLeft: 20, color: '#775DA3' }} />
 
-              />
+                <DatePicker style={styles.transparentLabel}
+
+                  // defaultDate={this.state.pickDate}
+                  locale={"en"}
+                  timeZoneOffsetInMinutes={undefined}
+                  animationType={"fade"}
+                  androidMode={"default"}
+                  placeHolderText={'Pick the date'}
+                  textStyle={{ color: "#5A5A5A" }}
+                  placeHolderTextStyle={{ color: "#5A5A5A" }}
+                  onDateChange={date => { this.onDateChanged(date); }}
+                  disabled={false}
+                  testID='datePicked' />
+              </Item>
+              {this.state.data == null ? this.noAvailableSlots() : this.haveAvailableSlots()}
+
+
 
             </View>
           </Card>
@@ -192,18 +278,24 @@ class BookAppoinment extends Component {
 
           <Card transparent style={{ margin: 10 }}>
             <List>
-              <ListItem avatar>
-                <Left>
-                  <Icon name="locate" style={{ color: '#7E49C3', fontSize: 25 }}></Icon>
-                </Left>
-                <Body>
-                  <Text note>Voc Nagar</Text>
-                  <Text note>Anna nagar-40 . .</Text>
-                  <Text note>chennai</Text>
-                </Body>
+              <FlatList
+                data={this.state.slotList}
+                keyExtractor={(item, index) => index.toString()}
+                renderItem={({ item, index }) =>
+                  <ListItem avatar>
+                    <Left>
+                      <Icon name="locate" style={{ color: '#7E49C3', fontSize: 25 }}></Icon>
+                    </Left>
+                    <Body>
+                      {this.state.slotList ? this.renderAddress(item) : 'Add New hospital'}
 
-              </ListItem>
-            </List>
+                      <Text note>Voc Nagar</Text>
+                      <Text note>Anna nagar-40 . .</Text>
+                      <Text note>chennai</Text>
+                    </Body>
+
+                  </ListItem>}
+              /></List>
 
 
             <Card style={{ margin: 10, padding: 10, borderRadius: 10 }}>

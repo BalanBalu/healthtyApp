@@ -5,16 +5,15 @@ import { store } from '../../../setup/store'
 import { getService } from '../../../setup/services/httpservices';
 
 /*get doctor availability for patient view doctor profile */
-export async function viewdoctorProfile (doctorIds, isLoading = true) {
+export async function viewdoctorProfile (doctorIds,slotOfWeek, isLoading = true) {
   try {
     store.dispatch({
       type: BOOK_APPOINTMENT_REQUEST,
       isLoading 
     })     
-    let endPoint = 'doctors/' + doctorIds + '/availabilitySlots'
-  //  console.log(endPoint);   
+    let endPoint = 'doctors/' + doctorIds + '/availabilitySlots?'+ 'startDate=' + slotOfWeek.startDate + '&endDate=' + slotOfWeek.endDate
+   console.log(endPoint);   
     let response = await getService(endPoint); 
-    console.log(response);   
     let respData = response.data;    
     if(respData.error || !respData.success) {
       console.log('error')
@@ -24,8 +23,7 @@ export async function viewdoctorProfile (doctorIds, isLoading = true) {
       })
     } else {   
       console.log('response');
-      store.dispatch({
-        
+      store.dispatch({        
         type: BOOK_APPOINTMENT_RESPONSE,
         isLoading:false,
         success: true,     
