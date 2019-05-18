@@ -9,6 +9,7 @@ import { StyleSheet, Image, View } from 'react-native';
 import styles from '../../screens/auth/styles';
 import Spinner from '../../../components/Spinner';
 
+
 class Signup extends Component {
     constructor(props) {
         super(props)
@@ -28,7 +29,6 @@ class Signup extends Component {
         this.setState({radioStatus:tempArray});
         this.setState({gender:genderSelect});               
     }
-    
     doSignUp = async()=>{
         try {
             if(this.state.conditionCheck === true)

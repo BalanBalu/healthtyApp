@@ -14,7 +14,13 @@ class BookAppoinment extends Component {
 
     this.state = {
       data: [],
-      item: '',
+      item: {
+        name:'',
+        no_and_street: '',
+        city: '',
+        state: '',
+        pin_code: ''
+      },
       slotList: [],
       availableSlotData: [],
       getStartDateOfTheWeek: formatDate(new Date(), 'YYYY-MM-DD'),
@@ -22,10 +28,11 @@ class BookAppoinment extends Component {
       doctorId: '5ca47f4dd32d2b731c40bef3',
       starCount: 3.5,
       qualification: '',
+      specialism:'',
       pickDate: formatDate(new Date(), 'YYYY-MM-DD'),
       isLoading: false,
       toggleButton: true,
-      toggleButtonColour: 'gray'
+      toggleButtonColour: 'gray',
     }
   }
 
@@ -57,31 +64,44 @@ class BookAppoinment extends Component {
       console.log("success");
       this.setState({ data: result.data[0] });
       this.setState({ slotList: result.data[0].slotData[formatDate(currentDate, 'YYYY-MM-DD')] });
-      console.log(JSON.stringify(this.state.slotList) + '>>>>>');
-
+      console.log(JSON.stringify(this.state.slotList) + '>>>>>' + 'hai');
+      /*Doctor degree*/
       if (result.data[0].education) {
         let temp = this.state.data.education.map((val) => {
           return val.degree;
         }).join(',');
         this.setState({ qualification: temp });
       }
+      /*Doctor category*/
+      if(result.data[0].specialist){
+      let specialistArray=this.state.data.specialist.map((value)=>{
+        return value.category;
+      }).join();
+     this.setState({specialism:specialistArray})
     }
+  }
   }
 
 
   onSlotPress(item, index) {
+
     console.log("coming to slotpress");
-    this.state.slotList[index].bg = 'gray';
+    this.setState({
+      item: {
+        name:item.location.name,
+        no_and_street: item.location.location.address.no_and_street,
+        city: item.location.location.address.city,
+        state: item.location.location.address.state,
+        pin_code: item.location.location.pin_code
+      }
+    })
+
+    this.state.slotList[index].bg = 'transparent';
     this.setState({ toggleButton: false });
     this.setState({ toggleButtonColour: 'red' });
     console.log(this.state.slotList);
   }
 
-  /*bind hospital location*/
-  renderAddress(item) {
-    <Body>
-    </Body>
-  }
 
   noAvailableSlots() {
     return (
@@ -103,9 +123,9 @@ class BookAppoinment extends Component {
             <Col style={{ width: '33.33%', alignItems: 'center', marginLeft: 8 }}>
               <Button style={{ backgroundColor: item.bg || '#775DA3', borderRadius: 5, width: 80, height: 30, margin: 5 }}
                 onPress={() => this.onSlotPress(item, index)}>
-                <Text uppercase={false} style={{ fontFamily: 'opensans-regular', fontSize: 12, color: 'white' }}>
+                <Text uppercase={false} style={[styles.multipleStyles,styles.customPadge]}>
                   {formatDate(item.slotStartDateAndTime, 'hh:mm')}</Text>
-                <Col style={{ width: '40%', alignItems: 'center', backgroundColor: '#2BCA2F' }}>
+                <Col style={{ width: '40%', alignItems: 'center', backgroundColor:item.bg ||'#775DA3' }}>
                   <Text style={styles.customPadge}> {formatDate(item.slotStartDateAndTime, 'A')}</Text>
                 </Col>
               </Button></Col></Item>
@@ -113,22 +133,16 @@ class BookAppoinment extends Component {
     )
   }
   async onDateChanged(date) {
-    console.log("fghjk");
     let currentDate = formatDate(date, 'YYYY-MM-DD');
-    console.log(currentDate);
     let startDate = getFirstDay(new Date(date), 'week');
-    console.log(startDate + 'hai');
     let endDate = getLastDay(new Date(date), 'week');
-    console.log(endDate + 'hello');
     this.setState({ currentDate: currentDate, getStartDateOfTheWeek: startDate, getEndDateOfTheWeek: endDate, });  // Set the selected date in Calender
     if (!this.state.slotList[formatDate(date, 'YYYY-MM-DD')]) {
-      console.log("help me")
       this.getAvailability(currentDate, startDate, endDate);
     }
     else {
       console.log("test");
       if (this.state.slotList[formatDate(date, 'YYYY-MM-DD')]) {
-        console.log("test2")
         this.setState({ data: this.state.slotList[formatDate(date, 'YYYY-MM-DD')] });
         console.log(JSON.stringify(this.state.slotList) + 'hai');
       }
@@ -136,7 +150,7 @@ class BookAppoinment extends Component {
   }
 
   render() {
-    const { data, qualification, slotList } = this.state;
+    const { data, qualification,specialism } = this.state;
     return (
 
       <Container style={styles.container}>
@@ -169,7 +183,7 @@ class BookAppoinment extends Component {
                   <Text>{data.doctorName ? data.doctorName : ''}</Text>
 
                   <Text>{qualification}</Text>
-                  <Text note>*****</Text>
+                  <Text note>{specialism}</Text>
                 </Body>
 
               </ListItem>
@@ -278,24 +292,21 @@ class BookAppoinment extends Component {
 
           <Card transparent style={{ margin: 10 }}>
             <List>
-              <FlatList
-                data={this.state.slotList}
-                keyExtractor={(item, index) => index.toString()}
-                renderItem={({ item, index }) =>
-                  <ListItem avatar>
-                    <Left>
-                      <Icon name="locate" style={{ color: '#7E49C3', fontSize: 25 }}></Icon>
-                    </Left>
-                    <Body>
-                      {this.state.slotList ? this.renderAddress(item) : 'Add New hospital'}
+              <ListItem avatar>
+                <Left>
+                  <Icon name="locate" style={{ color: '#7E49C3', fontSize: 25 }}></Icon>
+                </Left>
+                <Body>
+                  
+                  <Text note>{this.state.item.name}</Text>
+                  <Text note>{this.state.item.no_and_street}</Text>
+                  <Text note>{this.state.item.city}</Text>
+                  <Text note>{this.state.item.state}</Text>
+                  <Text note>{this.state.item.pin_code}</Text>
 
-                      <Text note>Voc Nagar</Text>
-                      <Text note>Anna nagar-40 . .</Text>
-                      <Text note>chennai</Text>
-                    </Body>
-
-                  </ListItem>}
-              /></List>
+                </Body>
+              </ListItem>
+            </List>
 
 
             <Card style={{ margin: 10, padding: 10, borderRadius: 10 }}>
@@ -406,6 +417,13 @@ const styles = StyleSheet.create({
   {
     marginLeft: 'auto',
     marginRight: 'auto'
+  },
+  multipleStyles:
+  {
+    fontFamily: 'opensans-regular', 
+    fontSize: 12, 
+    color: 'black'
+
   }
 
 });

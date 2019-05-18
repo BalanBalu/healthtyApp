@@ -69,5 +69,13 @@ export default StyleSheet.create({
         fontFamily: 'opensans-regular',
 
 
-    }
+    },
+    customPadge: {
+        color: 'white',
+        textAlign: 'center',
+        fontFamily: 'opensans-regular',
+        fontSize: 15,
+        padding: 5,
+    
+      }
 })
