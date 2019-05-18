@@ -66,7 +66,7 @@ class Profile extends Component {
                                 </Col>
                                 <Col style={{ width: '40%' }}>
                                     <Thumbnail style={styles.profileImage} source={{ uri: 'https://res.cloudinary.com/demo/image/upload/w_200,h_200,c_thumb,g_face,r_max/face_left.png' }} />
-                                    <Text style={{ marginLeft: 'auto', marginRight: 'auto', fontFamily: 'opensans-regular', backgroundColor: '#fff', borderRadius: 20, padding: 10, marginTop: 5 }}>{data.first_name +" "+ data.last_name}</Text>
+                                    <Text style={{ marginLeft: 'auto', marginRight: 'auto', fontFamily: 'OpenSans', backgroundColor: '#fff', borderRadius: 20, padding: 10, marginTop: 5 }}>{data.first_name +" "+ data.last_name}</Text>
                                 </Col>
                                 <Col style={styles.customCol}>
                                     <Icon name="heart" style={styles.profileIcon}></Icon>
@@ -224,7 +224,7 @@ class Profile extends Component {
 
                             </Body>
                             <Right>
-                                <Button style={styles.docbutton}><Text style={{ fontFamily: 'opensans-regular', fontSize: 12 }}> Book Again</Text></Button>
+                                <Button style={styles.docbutton}><Text style={{ fontFamily: 'OpenSans', fontSize: 12 }}> Book Again</Text></Button>
                             </Right>
 
                         </ListItem>
@@ -266,12 +266,12 @@ const styles = StyleSheet.create({
 
     customHead:
     {
-        fontFamily: 'opensans-regular',
+        fontFamily: 'OpenSans',
     },
     customText:
     {
 
-        fontFamily: 'opensans-regular',
+        fontFamily: 'OpenSans',
     },
     logo: {
         height: 80,
@@ -287,19 +287,19 @@ const styles = StyleSheet.create({
         marginTop: -100,
         marginLeft: 20,
         marginRight: 20,
-        fontFamily: 'opensans-regular',
+        fontFamily: 'OpenSans',
 
     },
     topValue: {
         marginLeft: 'auto',
         marginRight: 'auto',
-        fontFamily: 'opensans-regular',
+        fontFamily: 'OpenSans',
     },
     bottomValue:
     {
         marginLeft: 'auto',
         marginRight: 'auto',
-        fontFamily: 'opensans-regular',
+        fontFamily: 'OpenSans',
     },
     titleText: {
         fontSize: 15,
@@ -310,7 +310,7 @@ const styles = StyleSheet.create({
         color: 'white',
         width: 150,
         textAlign: 'center',
-        fontFamily: 'opensans-regular',
+        fontFamily: 'OpenSans',
 
     },
     docbutton: {

@@ -83,7 +83,7 @@ class Login extends Component {
 
               <Item style={{ borderBottomWidth: 0, }}>
                 <CheckBox checked={true} color="green" style={{ marginLeft: -7, }} ></CheckBox>
-                <Text style={{ marginLeft: 15, color: 'gray', fontFamily: 'opensans-regular' }}>Remember me</Text>
+                <Text style={{ marginLeft: 15, color: 'gray', fontFamily: 'OpenSans' }}>Remember me</Text>
               </Item>
 
               <Right>
@@ -98,14 +98,14 @@ class Login extends Component {
               onPress={() => this.doLogin()}>
               <Text>Sign In</Text>
             </Button>
-            <Text style={{ color: '#000', fontSize: 15, fontFamily: 'opensans-regular', textAlign: 'center' }}>{loginErrorMsg}</Text>
+            <Text style={{ color: '#000', fontSize: 15, fontFamily: 'OpenSans', textAlign: 'center' }}>{loginErrorMsg}</Text>
           </Form>
 
         </Content>
         <Footer >
           <FooterTab style={{ backgroundColor: '#F2F2F2', }}>
             <Button full onPress={() => this.props.navigation.navigate('doctorsearchlist')}>
-              <Text uppercase={false} style={{ color: '#000', fontSize: 15, fontFamily: 'opensans-regular' }}>Don't Have An Account ? SignUp</Text>
+              <Text uppercase={false} style={{ color: '#000', fontSize: 15, fontFamily: 'OpenSans' }}>Don't Have An Account ? SignUp</Text>
             </Button>
           </FooterTab>
         </Footer>

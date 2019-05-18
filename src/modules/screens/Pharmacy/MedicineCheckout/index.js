@@ -31,7 +31,7 @@ class MedicineCheckout extends Component {
 
                                 <Item style={{ borderBottomWidth: 0 }}>
 
-                                    <Text style={{ fontFamily: 'opensans-regular', color: '#fff' }}>Paracetamal tablets</Text>
+                                    <Text style={{ fontFamily: 'OpenSans', color: '#fff' }}>Paracetamal tablets</Text>
                                 </Item>
 
                             </Col>
@@ -94,7 +94,7 @@ class MedicineCheckout extends Component {
                             <Col style={{ alignItems: 'center', justifyContent: 'center' }}>
                                 <Item style={{ borderWidth: 0, marginLeft: 'auto', marginRight: 'auto' }}>
 
-                                    <Button style={styles.loginButton}><Text style={{ fontFamily: 'opensans-regular', fontSize: 14, color: '#fff' }}>upload</Text></Button>
+                                    <Button style={styles.loginButton}><Text style={{ fontFamily: 'OpenSans', fontSize: 14, color: '#fff' }}>upload</Text></Button>
                                 </Item>
                             </Col>
                         </Grid>
@@ -186,7 +186,7 @@ const styles = StyleSheet.create({
 
     normalText:
     {
-        fontFamily: 'opensans-regular',
+        fontFamily: 'OpenSans',
         fontSize: 16,
         color: 'green',
         fontWeight: 'bold'
@@ -194,7 +194,7 @@ const styles = StyleSheet.create({
 
     boldText:
     {
-        fontFamily: 'opensans-regular',
+        fontFamily: 'OpenSans',
         fontSize: 16,
         color: '#000',
         marginLeft: 20,

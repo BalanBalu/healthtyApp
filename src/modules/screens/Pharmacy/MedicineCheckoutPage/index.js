@@ -32,7 +32,7 @@ class MedicineCheckoutPage extends Component {
 
                                 <Item style={{ borderBottomWidth: 0 }}>
 
-                                    <Text style={{ fontFamily: 'opensans-regular', color: '#fff' }}>Paracetamal tablets</Text>
+                                    <Text style={{ fontFamily: 'OpenSans', color: '#fff' }}>Paracetamal tablets</Text>
                                 </Item>
 
                             </Col>
@@ -70,7 +70,7 @@ class MedicineCheckoutPage extends Component {
 
 
                     <Card transparent style={{ padding: 10, marginTop: 60 }}>
-                        <Text style={{ fontFamily: 'opensans-regular', fontWeight: 'bold', fontSize: 16, padding: 5 }}>AddressInfo</Text>
+                        <Text style={{ fontFamily: 'OpenSans', fontWeight: 'bold', fontSize: 16, padding: 5 }}>AddressInfo</Text>
                         <Segment>
                             <Button first active>
                                 <Text uppercase={false}>DefaultAddress</Text>
@@ -116,7 +116,7 @@ class MedicineCheckoutPage extends Component {
 
 
 
-                        <Text style={{ fontFamily: 'opensans-regular', fontWeight: 'bold', fontSize: 16, padding: 5 }}>PaymentInfo</Text>
+                        <Text style={{ fontFamily: 'OpenSans', fontWeight: 'bold', fontSize: 16, padding: 5 }}>PaymentInfo</Text>
                         <Segment>
                             <Button first active>
                                 <Text uppercase={false}>DefaultCard</Text>
@@ -170,7 +170,7 @@ class MedicineCheckoutPage extends Component {
 
                         <Item style={{ borderBottomWidth: 0, margintop: 5 }}>
                             <CheckBox checked={true} color="green"  ></CheckBox>
-                            <Text style={{ marginLeft: 15, color: 'gray', fontFamily: 'opensans-regular' }}>Save creditcard Information</Text>
+                            <Text style={{ marginLeft: 15, color: 'gray', fontFamily: 'OpenSans' }}>Save creditcard Information</Text>
                         </Item>
 
                         <Button block style={styles.loginButton}><Text>Continue</Text></Button>
@@ -247,14 +247,14 @@ const styles = StyleSheet.create({
     },
     normalText:
     {
-        fontFamily: 'opensans-regular',
+        fontFamily: 'OpenSans',
         fontSize: 16,
         color: '#fff',
         fontWeight: 'bold'
     },
     labelTop:
     {
-        fontFamily: 'opensans-regular',
+        fontFamily: 'OpenSans',
         fontSize: 14,
         color: '#000',
 
@@ -269,7 +269,7 @@ const styles = StyleSheet.create({
         marginTop: 10,
         borderRadius: 5,
         paddingLeft: 20,
-        fontFamily: 'opensans-regular',
+        fontFamily: 'OpenSans',
         margin: 2,
     }
 });

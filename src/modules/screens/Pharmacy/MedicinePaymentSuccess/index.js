@@ -32,7 +32,7 @@ class MedicinePaymentSuccess extends Component {
 
                                 <Item style={{ borderBottomWidth: 0 }}>
 
-                                    <Text style={{ fontFamily: 'opensans-regular', color: '#fff' }}>CONFIRMATION</Text>
+                                    <Text style={{ fontFamily: 'OpenSans', color: '#fff' }}>CONFIRMATION</Text>
                                 </Item>
 
                             </Col>
@@ -68,7 +68,7 @@ class MedicinePaymentSuccess extends Component {
 
 
 
-                            <Text style={{ marginTop: 20, fontFamily: 'opensans-regular', color: 'gray', textAlign: 'center' }}> Your Confirmation Is Successful</Text>
+                            <Text style={{ marginTop: 20, fontFamily: 'OpenSans', color: 'gray', textAlign: 'center' }}> Your Confirmation Is Successful</Text>
                         </Card>
 
                         <Button block style={styles.loginButton}><Text>Home</Text></Button>
@@ -145,7 +145,7 @@ const styles = StyleSheet.create({
 
     labelTop:
     {
-        fontFamily: 'opensans-regular',
+        fontFamily: 'OpenSans',
         fontSize: 14,
         color: '#000',
 

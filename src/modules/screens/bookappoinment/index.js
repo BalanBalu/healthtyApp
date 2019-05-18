@@ -124,7 +124,7 @@ class BookAppoinment extends Component {
                     "end_time": "14:00:00"
                   }
                 ]}
-                renderItem={({ item }) => <Item style={{ borderBottomWidth: 0, alignItems: 'center' }}><Col style={{ width: '33.33%', alignItems: 'center',marginLeft:8 }}><Button style={{ backgroundColor: '#775DA3', borderRadius: 5, width: 80, height: 30, margin: 5 }}><Text uppercase={false} style={{ fontFamily: 'opensans-regular', fontSize: 12, color: 'white' }}>{item.dayName}</Text></Button></Col></Item>}
+                renderItem={({ item }) => <Item style={{ borderBottomWidth: 0, alignItems: 'center' }}><Col style={{ width: '33.33%', alignItems: 'center',marginLeft:8 }}><Button style={{ backgroundColor: '#775DA3', borderRadius: 5, width: 80, height: 30, margin: 5 }}><Text uppercase={false} style={{ fontFamily: 'OpenSans', fontSize: 12, color: 'white' }}>{item.dayName}</Text></Button></Col></Item>}
               />
             </View>
           </Card>

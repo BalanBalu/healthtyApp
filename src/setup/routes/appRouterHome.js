@@ -3,7 +3,7 @@ import { createStackNavigator, createBottomTabNavigator, createAppContainer, cre
 //import { routes } from './appRouterConfig';
 import AuthLoadingScreen from './AuthLoadingScreen';
 
-import Home from "../../modules/screens/home";
+import Home from "../../modules/screens/Home";
 import Profile from "../../modules/screens/userprofile";
 import finddoctor from "../../modules/screens/auth/finddoctor";
 import { Icon } from 'native-base';
