@@ -114,9 +114,6 @@ const AuthRoutes = {
   },
   userdetails: {
     screen: userdetails,
-  },
-  BookAppoinment: {
-    screen: BookAppoinment
   }
 }
 const AuthStack = createStackNavigator(AuthRoutes, {
@@ -124,46 +121,6 @@ const AuthStack = createStackNavigator(AuthRoutes, {
   headerMode: "none",
   navigationOptions: { headerVisible: false }
 })
-
-const AppointMentstack = createStackNavigator({
-  "Doctor List": {
-    screen: doctorSearchList,
-    navigationOptions: ({ navigation }) => ({
-      title: 'Doctor List',
-      headerLeft: (<HeaderBackButton onPress={() => { navigation.navigate('Home') }} />)
-    })
-  },
-  "Book Appoinment": {
-    screen: BookAppoinment,
-    navigationOptions: {
-      title: 'Book Appoinment'
-    }
-  },
-  Filters: {
-    screen: FilterList,
-    navigationOptions: {
-      title: 'Filters'
-    }
-  },
-  paymentpage: {
-    screen: PaymentPage
-  },
-  paymentreview: {
-    screen: PaymentReview
-  },
-  paymentsuccess: {
-    screen: PaymentSuccess
-  },
-  reviews: {
-    screen: Reviews
-  },
-},
-  {
-    defaultNavigationOptions: ({ navigation }) => ({
-      headerStyle: { backgroundColor: '#7E49C3', fontFamily: 'opensans-semibold' },
-      headerTintColor: 'white',
-    })
-  })
 
 
 const AppointMentstack1 = createStackNavigator({
@@ -184,6 +141,12 @@ const AppointMentstack1 = createStackNavigator({
       title: 'Filters'
     }
   },
+  "Book Appoinment": {
+    screen: BookAppoinment,
+    navigationOptions: {
+      title: 'Book Appoinment'
+    }
+  },
   paymentpage: {
     screen: PaymentPage
   },
@@ -193,10 +156,13 @@ const AppointMentstack1 = createStackNavigator({
   paymentsuccess: {
     screen: PaymentSuccess
   },
-  reviews: {
-    screen: Reviews
-  },
-},
+  "Reviews" : {
+    screen: Reviews,
+    navigationOptions: {
+      title: 'Reviews'
+    }
+  }
+ },
   {
     defaultNavigationOptions: ({ navigation }) => ({
       headerStyle: { backgroundColor: '#7E49C3', fontFamily: 'opensans-semibold' },

@@ -13,7 +13,6 @@ class BookAppoinment extends Component {
     super(props)
 
     this.state = {
-      data: [],
       item: {
         name:'',
         no_and_street: '',
@@ -25,14 +24,16 @@ class BookAppoinment extends Component {
       availableSlotData: [],
       getStartDateOfTheWeek: formatDate(new Date(), 'YYYY-MM-DD'),
       getEndDateOfTheWeek: formatDate(new Date(), 'YYYY-MM-DD'),
-      doctorId: '5ca47f4dd32d2b731c40bef3',
+      doctorId: '5ce01ae8d28ab8073515a6f6',
       starCount: 3.5,
       qualification: '',
       specialism:'',
+      data: {},
       pickDate: formatDate(new Date(), 'YYYY-MM-DD'),
       isLoading: false,
       toggleButton: true,
       toggleButtonColour: 'gray',
+      selectedSlotIndex: -1
     }
   }
 
@@ -95,7 +96,7 @@ class BookAppoinment extends Component {
         pin_code: item.location.location.pin_code
       }
     })
-
+    this.setState({selectedSlotIndex : index});
     this.state.slotList[index].bg = 'transparent';
     this.setState({ toggleButton: false });
     this.setState({ toggleButtonColour: 'red' });
@@ -112,23 +113,31 @@ class BookAppoinment extends Component {
   }
 
   haveAvailableSlots() {
+    let { selectedSlotIndex } = this.state;
     return (
       <FlatList
+        style={{margin : 10}}
         numColumns={3}
         data={this.state.slotList}
         extraData={this.state}
         keyExtractor={(item, index) => index.toString()}
         renderItem={({ item, index }) =>
-          <Item style={{ borderBottomWidth: 0, alignItems: 'center' }}>
-            <Col style={{ width: '33.33%', alignItems: 'center', marginLeft: 8 }}>
-              <Button style={{ backgroundColor: item.bg || '#775DA3', borderRadius: 5, width: 80, height: 30, margin: 5 }}
+            
+            
+              <TouchableOpacity style={ selectedSlotIndex === index ? styles.slotSelectedBg : styles.slotDefaultBg}
                 onPress={() => this.onSlotPress(item, index)}>
-                <Text uppercase={false} style={[styles.multipleStyles,styles.customPadge]}>
+                <Row style={{ width: '100%', alignItems: 'center' }}>
+                <Col style={{ width: '70%', alignItems: 'center' }}>
+                <Text uppercase={false} style={ selectedSlotIndex === index ? styles.multipleStyles : styles.slotDefault}>
                   {formatDate(item.slotStartDateAndTime, 'hh:mm')}</Text>
-                <Col style={{ width: '40%', alignItems: 'center', backgroundColor:item.bg ||'#775DA3' }}>
-                  <Text style={styles.customPadge}> {formatDate(item.slotStartDateAndTime, 'A')}</Text>
                 </Col>
-              </Button></Col></Item>
+                <Col style={styles.customPadge}>
+                  <Text style={{color: 'white', fontFamily: 'OpenSans', fontSize: 12}}>
+                  {formatDate(item.slotStartDateAndTime, 'A')}</Text>
+                </Col>
+                </Row>
+              </TouchableOpacity>
+            
         } />
     )
   }
@@ -154,17 +163,6 @@ class BookAppoinment extends Component {
     return (
 
       <Container style={styles.container}>
-
-        <Header style={{ backgroundColor: '#7E49C3' }}>
-          <Left >
-            <Icon name="arrow-back" style={{ color: '#fff' }}></Icon>
-          </Left>
-          <Body>
-            <Title>Book Appoinment</Title>
-
-          </Body>
-          <Right />
-        </Header>
         <Content style={styles.bodyContent}>
 
           <Grid style={{ backgroundColor: '#7E49C3', height: 200 }}>
@@ -208,7 +206,7 @@ class BookAppoinment extends Component {
               <Grid style={{ marginTop: 5 }}>
                 <Col style={{ width: 270, }}>
 
-                  <Button disabled={this.state.toggleButton} block style={{ borderRadius: 10, color: this.state.toggleButtonColour }}>
+                  <Button disabled={this.state.toggleButton} block style={{ borderRadius: 10}}>
                     <Text uppercase={false}>Book Appoinment</Text>
                   </Button>
 
@@ -353,7 +351,7 @@ class BookAppoinment extends Component {
                   </Body>
 
                 </ListItem>
-                <Button iconRight transparent block>
+                <Button iconRight transparent block onPress={()=> this.props.navigation.navigate('Reviews')}>
                   <Icon name='add' />
                   <Text style={styles.customText}>More Reviews</Text>
                 </Button>
@@ -422,8 +420,33 @@ const styles = StyleSheet.create({
   {
     fontFamily: 'OpenSans', 
     fontSize: 12, 
-    color: 'black'
+    color: 'white'
+  },
+  slotDefault : {
+    fontFamily: 'OpenSans', 
+    fontSize: 12, 
+    color: 'white'
+  },
+  slotDefaultBg: {
+    backgroundColor: '#775DA3', 
+    borderRadius: 5, 
+    width: '30%', 
+    height: 30, 
+    margin: 5
+  },
+  slotSelectedBg: {
+    backgroundColor: '#2652AC', 
+    borderRadius: 5, 
+    
+    width: '30%', 
+    height: 30, 
+    margin: 5
+  },
+  customPadge: {
+    backgroundColor:'green',
+    alignItems:'center',
+    width: '30%'
+    
 
-  }
-
+  },
 });

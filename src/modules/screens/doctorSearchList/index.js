@@ -103,7 +103,7 @@ class doctorSearchList extends Component {
                                         <ScrollView horizontal={true}>
                                             <Col style={{ col: '25%', padding: 5 }}>
 
-                                                <Button primary style={styles.timeButton} onPress={()=> navigation.navigate('filterlist') }>
+                                                <Button primary style={styles.timeButton} onPress={()=> navigation.navigate('Book Appoinment') }>
                                                     <Text note style={{ fontFamily: 'OpenSans', color: 'white' }}>1 pm</Text>
                                                 </Button>
                                             </Col>
