@@ -288,8 +288,9 @@ class BookAppoinment extends Component {
 
           </Grid>
 
-          <Card transparent style={{ margin: 10 }}>
-            <List>
+          <Card transparent style={{ margin: 20 ,backgroundColor:'#ecf0f1'}}>
+          <Card>
+          <List>
               <ListItem avatar>
                 <Left>
                   <Icon name="locate" style={{ color: '#7E49C3', fontSize: 25 }}></Icon>
@@ -306,57 +307,385 @@ class BookAppoinment extends Component {
               </ListItem>
             </List>
 
+          </Card>
+           
 
-            <Card style={{ margin: 10, padding: 10, borderRadius: 10 }}>
+          
+          <Card style={{ backgroundColor: '#ffffff', borderRadius: 10, padding: 10 }}>
+
+              <Text style={styles.subtitlesText}>Professional Statement</Text>
+              <List>
+                <ListItem avatar noBorder style={{ borderLeftWidth: 8, borderColor: "#F29727", marginBottom: 10 }}>
+                  <Left >
+
+                  </Left>
+                  <Body>
+
+                    <Text style={styles.customText}>
+                      The medical doctor CV example below is designed to show you how to properly format and organize your CV, as well as what information to include, such as your hobbies and interests, work history, and a professional summary. Once you’ve familiarized yourself with the structure, you can draft your own tailored CV.
+                  </Text>
+
+                  </Body>
+
+                </ListItem>
+
+              </List>
+
+
+            </Card>
+
+
+
+            <Card style={{ backgroundColor: '#ffffff', borderRadius: 10, padding: 10 }}>
+
+
+              <Grid>
+                <Col style={{ width: '10%' }}>
+                  <Icon name="apps" style={styles.customIcon}></Icon>
+                </Col>
+                <Col style={{ width: '90%', alignItems: 'flex-start' }}>
+                  <Text style={styles.titlesText}>Service</Text></Col>
+
+              </Grid>
+
 
               <List>
-                <Text style={styles.titleText}>Reviews</Text>
-
-                <ListItem avatar>
-                  <Left>
-                    <Thumbnail square source={{ uri: 'https://static1.squarespace.com/static/582bbfef9de4bb07fe62ab18/t/5877b9ccebbd1a124af66dfe/1484241404624/Headshot+-+Circular.png?format=300w' }} style={{ height: 40, width: 40 }} />
+                <ListItem avatar noBorder style={{ borderRightWidth: 8, borderColor: "#8C4F2B", marginBottom: 10, marginRight: 15 }}>
+                  <Left >
                   </Left>
                   <Body>
-                    <Text>Kumar Pratik</Text>
+                    <Text style={styles.rowText}>
+                      psychiotherephy
 
-                    <Text note>3hrs.</Text>
-                    <StarRating fullStarColor='#FF9500' starSize={15} width={100} containerStyle={{ width: 100 }}
-                      disabled={false}
-                      maxStars={5}
-                      rating={this.state.starCount}
-                      selectedStar={(rating) => this.onStarRatingPress(rating)}
+ </Text>
+                    <Text style={styles.rowText}>
+                      psychiotherephy
 
-                    />
-                    <Text note style={styles.customText}>this is a good clinic to check basic problems like fever,cold..etc..</Text>
+ </Text>
+
+                    <Text style={styles.rowText}>
+                      psychiotherephy
+
+ </Text>
+
                   </Body>
 
                 </ListItem>
 
-                <ListItem avatar>
-                  <Left>
-                    <Thumbnail square source={{ uri: 'https://static1.squarespace.com/static/582bbfef9de4bb07fe62ab18/t/5877b9ccebbd1a124af66dfe/1484241404624/Headshot+-+Circular.png?format=300w' }} style={{ height: 40, width: 40 }} />
-                  </Left>
-                  <Body>
-                    <Text>Kumar Pratik</Text>
-
-                    <Text note>3hrs.</Text>
-                    <StarRating fullStarColor='#FF9500' starSize={15} width={100} containerStyle={{ width: 100 }}
-                      disabled={false}
-                      maxStars={5}
-                      rating={this.state.starCount}
-                      selectedStar={(rating) => this.onStarRatingPress(rating)}
-
-                    />
-                    <Text note style={styles.customText}>this is a good clinic to check basic problems like fever,cold..etc..</Text>
-                  </Body>
-
-                </ListItem>
-                <Button iconRight transparent block onPress={()=> this.props.navigation.navigate('Reviews')}>
-                  <Icon name='add' />
-                  <Text style={styles.customText}>More Reviews</Text>
-                </Button>
               </List>
+
             </Card>
+
+
+
+
+            <Card style={{ backgroundColor: '#ffffff', borderRadius: 10, padding: 10 }}>
+
+
+              <Grid style={{ margin: 5 }}>
+                <Col style={{ width: '10%' }}>
+                  <Icon name="apps" style={styles.customIcon}></Icon>
+                </Col>
+                <Col style={{ width: '90%', alignItems: 'flex-start' }}>
+                  <Text style={styles.titlesText}>Specialization</Text></Col>
+
+              </Grid>
+
+
+              <List>
+                <ListItem avatar noBorder style={{ borderLeftWidth: 8, borderColor: "#F29727", marginBottom: -5 }}>
+                  <Left >
+                  </Left>
+                  <Body>
+                    <Text style={styles.rowText}>
+                      psychiotherephy
+
+ </Text>
+                    <Text style={styles.rowText}>
+                      psychiotherephy
+
+ </Text>
+
+                    <Text style={styles.rowText}>
+                      psychiotherephy
+
+ </Text>
+
+                  </Body>
+
+                </ListItem>
+
+              </List>
+
+            </Card>
+
+
+
+
+            <Card style={{ backgroundColor: '#ffffff', borderRadius: 10, padding: 10 }}>
+
+
+              <Grid>
+                <Col style={{ width: '10%' }}>
+                  <Icon name="apps" style={styles.customIcon}></Icon>
+                </Col>
+                <Col style={{ width: '90%', alignItems: 'flex-start' }}>
+                  <Text style={styles.titlesText}>Hospital Network</Text></Col>
+
+              </Grid>
+
+
+              <List>
+                <ListItem avatar noBorder style={{ borderRightWidth: 8, borderColor: "#8C4F2B", marginBottom: 10, marginRight: 15 }}>
+                  <Left >
+                  </Left>
+                  <Body>
+
+                    <Grid>
+                      <Col style={{ width: '40%' }}>
+                        <Text style={styles.rowText}>
+                          ADS Hospitals
+
+ </Text>
+                      </Col>
+                      <Col style={{ width: '30%' }}>
+                      </Col>
+                      <Col style={{ width: '30%' }}>
+
+                        <Text style={styles.rowText}>
+                          Mon-Sat
+
+ </Text>
+                      </Col>
+                    </Grid>
+
+                    <Grid >
+                      <Col style={{ width: '90%', alignItems: 'center', borderColor: 'gray', borderWidth: 1, padding: 5, borderRadius: 5 }}>
+                        <Text style={styles.rowText}>
+                          81/3 middle street</Text>
+
+                        <Text style={styles.rowText}>
+                          nehru street</Text>
+
+
+                        <Text style={styles.rowText}>
+                          Annanagar-40</Text>
+                      </Col>
+                      <Col style={{ width: '10%' }}></Col>
+                    </Grid>
+
+                    <Grid>
+                      <Col style={{ width: '40%' }}>
+                        <Text style={styles.rowText}>
+                          ADS Hospitals
+
+ </Text>
+                      </Col>
+                      <Col style={{ width: '30%' }}>
+                      </Col>
+                      <Col style={{ width: '30%' }}>
+
+                        <Text style={styles.rowText}>
+                          Mon-Sat
+
+ </Text>
+                      </Col>
+                    </Grid>
+
+                    <Grid>
+                      <Col style={{ width: '90%', alignItems: 'center', borderColor: 'gray', borderWidth: 1, padding: 5, borderRadius: 5 }}>
+                        <Text style={styles.rowText}>
+                          81/3 middle street</Text>
+
+                        <Text style={styles.rowText}>
+                          nehru street</Text>
+
+
+                        <Text style={styles.rowText}>
+                          Annanagar-40</Text>
+                      </Col>
+                      <Col style={{ width: '10%' }}></Col>
+                    </Grid>
+
+                  </Body>
+
+                </ListItem>
+
+              </List>
+
+            </Card>
+
+
+            <Card style={{ backgroundColor: '#ffffff', borderRadius: 10, padding: 10 }}>
+
+              <Grid style={{ margin: 5 }}>
+                <Col style={{ width: '10%' }}>
+                  <Icon name="apps" style={styles.customIcon}></Icon>
+                </Col>
+                <Col style={{ width: '90%', alignItems: 'flex-start' }}>
+                  <Text style={styles.titlesText}>Languages speaks By Doctor</Text></Col>
+
+              </Grid>
+
+
+              <List>
+                <ListItem avatar noBorder style={{ borderLeftWidth: 8, borderColor: "#F29727", marginBottom: -5 }}>
+                  <Left >
+                  </Left>
+                  <Body>
+                    <Text style={styles.rowText}>
+                      Tamil
+               
+</Text>
+                    <Text style={styles.rowText}>
+                      English
+                
+</Text>
+
+                    <Text style={styles.rowText}>
+                      French
+                
+</Text>
+
+                  </Body>
+
+                </ListItem>
+
+              </List>
+
+            </Card>
+
+
+            <Card style={{ backgroundColor: '#ffffff', borderRadius: 10, padding: 10 }}>
+
+
+              <Grid>
+                <Col style={{ width: '10%' }}>
+                  <Icon name="apps" style={styles.customIcon}></Icon>
+                </Col>
+                <Col style={{ width: '90%', alignItems: 'flex-start' }}>
+                  <Text style={styles.titlesText}>Awards</Text></Col>
+
+              </Grid>
+
+
+              <List>
+                <ListItem avatar noBorder style={{ borderRightWidth: 8, borderColor: "#8C4F2B", marginBottom: 10, marginRight: 15 }}>
+                  <Left >
+                  </Left>
+                  <Body>
+                    <Text style={styles.rowText}>
+                     Awards1
+ </Text>
+                    <Text style={styles.rowText}>
+                    Awards2
+ </Text>
+
+                  
+
+                  </Body>
+
+                </ListItem>
+
+              </List>
+
+            </Card>
+
+
+            <Card style={{ backgroundColor: '#ffffff', borderRadius: 10, padding: 10 }}>
+
+
+<Grid style={{ margin: 5 }}>
+  <Col style={{ width: '10%' }}>
+    <Icon name="apps" style={styles.customIcon}></Icon>
+  </Col>
+  <Col style={{ width: '90%', alignItems: 'flex-start' }}>
+    <Text style={styles.titlesText}>Board Certifications</Text></Col>
+
+</Grid>
+
+
+<List>
+  <ListItem avatar noBorder style={{ borderLeftWidth: 8, borderColor: "#F29727", marginBottom: -5 }}>
+    <Left >
+    </Left>
+    <Body>
+      <Text style={styles.rowText}>
+      certificate1
+ 
+</Text>
+      <Text style={styles.rowText}>
+     certificate2
+  
+</Text>
+
+     
+
+    </Body>
+
+  </ListItem>
+
+</List>
+
+</Card>
+
+<Card style={{ margin: 10, padding: 10, borderRadius: 10 }}>
+
+<List>
+  <Text style={styles.titleText}>Reviews</Text>
+
+  <ListItem avatar>
+    <Left>
+      <Thumbnail square source={{ uri: 'https://static1.squarespace.com/static/582bbfef9de4bb07fe62ab18/t/5877b9ccebbd1a124af66dfe/1484241404624/Headshot+-+Circular.png?format=300w' }} style={{ height: 40, width: 40 }} />
+    </Left>
+    <Body>
+      <Text>Kumar Pratik</Text>
+
+      <Text note>3hrs.</Text>
+      <StarRating fullStarColor='#FF9500' starSize={15} width={100} containerStyle={{ width: 100 }}
+        disabled={false}
+        maxStars={5}
+        rating={this.state.starCount}
+        selectedStar={(rating) => this.onStarRatingPress(rating)}
+
+      />
+      <Text note style={styles.customText}>this is a good clinic to check basic problems like fever,cold..etc..</Text>
+    </Body>
+
+  </ListItem>
+
+  <ListItem avatar>
+    <Left>
+      <Thumbnail square source={{ uri: 'https://static1.squarespace.com/static/582bbfef9de4bb07fe62ab18/t/5877b9ccebbd1a124af66dfe/1484241404624/Headshot+-+Circular.png?format=300w' }} style={{ height: 40, width: 40 }} />
+    </Left>
+    <Body>
+      <Text>Kumar Pratik</Text>
+
+      <Text note>3hrs.</Text>
+      <StarRating fullStarColor='#FF9500' starSize={15} width={100} containerStyle={{ width: 100 }}
+        disabled={false}
+        maxStars={5}
+        rating={this.state.starCount}
+        selectedStar={(rating) => this.onStarRatingPress(rating)}
+
+      />
+      <Text note style={styles.customText}>this is a good clinic to check basic problems like fever,cold..etc..</Text>
+    </Body>
+
+  </ListItem>
+  <Button iconRight transparent block onPress={()=> this.props.navigation.navigate('Reviews')}>
+    <Icon name='add' />
+    <Text style={styles.customText}>More Reviews</Text>
+  </Button>
+</List>
+</Card>
+
+
+
+<Button block success style={{ borderRadius: 10 }}>
+                    <Text uppercase={false}>Confirm Appoinment</Text>
+
+                  </Button>
 
 
           </Card>
@@ -446,7 +775,47 @@ const styles = StyleSheet.create({
     backgroundColor:'green',
     alignItems:'center',
     width: '30%'
-    
+  },
+  customText:
+  {
+    fontFamily: 'OpenSans',
+    color: '#000',
+    fontSize: 14,
 
   },
+  subtitlesText: {
+    fontSize: 15,
+    margin: 10,
+    color: '#F2889B',
+    fontFamily: 'opensans-semibold',
+
+  },
+  titlesText: {
+    fontSize: 15,
+    color: '#F2889B',
+    fontFamily: 'opensans-semibold',
+
+  },
+  customIcon:
+  {
+    height: 30,
+    width: 30,
+    backgroundColor: 'gray',
+    color: 'white',
+    borderRadius: 8,
+    fontSize: 19,
+    paddingLeft: 8,
+    paddingRight: 6,
+    paddingTop: 6,
+    paddingBottom: 6
+
+  },
+  rowText:
+  {
+    fontFamily: 'OpenSans',
+    color: '#000',
+    fontSize: 14,
+    margin: 5
+  }
+
 });

@@ -73,7 +73,7 @@ export default StyleSheet.create({
     customPadge: {
         color: 'white',
         textAlign: 'center',
-        fontFamily: 'opensans-regular',
+        fontFamily: 'OpenSans',
         fontSize: 15,
         padding: 5,
     
