@@ -31,7 +31,7 @@ class MedicinePaymentResult extends Component {
 
                                 <Item style={{ borderBottomWidth: 0 }}>
 
-                                    <Text style={{ fontFamily: 'opensans-regular', color: '#fff' }}>CHECKOUT</Text>
+                                    <Text style={{ fontFamily: 'OpenSans', color: '#fff' }}>CHECKOUT</Text>
                                 </Item>
 
                             </Col>
@@ -75,10 +75,10 @@ class MedicinePaymentResult extends Component {
                                 <Text style={styles.badgeText}>1</Text>
                             </Col>
                             <Col style={{ alignItems: 'center', width: '60%' }}>
-                                <Text style={{ fontFamily: 'opensans-regular', fontWeight: 'bold', fontSize: 18, padding: 5 }}>ContactInfo</Text>
+                                <Text style={{ fontFamily: 'OpenSans', fontWeight: 'bold', fontSize: 18, padding: 5 }}>ContactInfo</Text>
                             </Col>
                             <Col style={{ alignItems: 'center', width: '20%' }}>
-                                <Text style={{ fontFamily: 'opensans-regular', color: 'red', marginTop: 5 }}>Edit</Text>
+                                <Text style={{ fontFamily: 'OpenSans', color: 'red', marginTop: 5 }}>Edit</Text>
                             </Col>
                         </Grid>
 
@@ -139,10 +139,10 @@ class MedicinePaymentResult extends Component {
                                 <Text style={styles.badgeText}>1</Text>
                             </Col>
                             <Col style={{ alignItems: 'center', width: '60%' }}>
-                                <Text style={{ fontFamily: 'opensans-regular', fontWeight: 'bold', fontSize: 18, padding: 5 }}>PaymentInfo</Text>
+                                <Text style={{ fontFamily: 'OpenSans', fontWeight: 'bold', fontSize: 18, padding: 5 }}>PaymentInfo</Text>
                             </Col>
                             <Col style={{ alignItems: 'center', width: '20%' }}>
-                                <Text style={{ fontFamily: 'opensans-regular', color: 'red', marginTop: 5 }}>Edit</Text>
+                                <Text style={{ fontFamily: 'OpenSans', color: 'red', marginTop: 5 }}>Edit</Text>
                             </Col>
                         </Grid>
 
@@ -211,10 +211,10 @@ class MedicinePaymentResult extends Component {
                                 <Text style={styles.badgeText}>1</Text>
                             </Col>
                             <Col style={{ alignItems: 'center', width: '60%' }}>
-                                <Text style={{ fontFamily: 'opensans-regular', fontWeight: 'bold', fontSize: 18, padding: 5 }}>Your Order</Text>
+                                <Text style={{ fontFamily: 'OpenSans', fontWeight: 'bold', fontSize: 18, padding: 5 }}>Your Order</Text>
                             </Col>
                             <Col style={{ alignItems: 'center', width: '20%' }}>
-                                <Text style={{ fontFamily: 'opensans-regular', color: 'red', marginTop: 5 }}>Edit</Text>
+                                <Text style={{ fontFamily: 'OpenSans', color: 'red', marginTop: 5 }}>Edit</Text>
                             </Col>
                         </Grid>
 
@@ -328,21 +328,21 @@ const styles = StyleSheet.create({
     },
     normalText:
     {
-        fontFamily: 'opensans-regular',
+        fontFamily: 'OpenSans',
         fontSize: 16,
         color: '#fff',
         fontWeight: 'bold'
     },
     customText:
     {
-        fontFamily: 'opensans-regular',
+        fontFamily: 'OpenSans',
         fontSize: 16,
         color: '#2F3940',
         fontWeight: 'bold'
     },
     labelTop:
     {
-        fontFamily: 'opensans-regular',
+        fontFamily: 'OpenSans',
         fontSize: 14,
         color: 'gray',
 
@@ -356,7 +356,7 @@ const styles = StyleSheet.create({
         marginTop: 10,
         borderRadius: 5,
         paddingLeft: 20,
-        fontFamily: 'opensans-regular',
+        fontFamily: 'OpenSans',
         margin: 2,
     },
     badgeText:

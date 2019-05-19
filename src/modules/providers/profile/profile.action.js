@@ -56,7 +56,7 @@ export async function userReviews (id,type, isLoading = true) {
     let endPoint = 'user/reviews/'+type+'/'+id;  
     console.log(endPoint);   
     let response = await getService(endPoint); 
-    console.log(response);
+    
    
     let respData = response.data;
     
@@ -72,9 +72,8 @@ export async function userReviews (id,type, isLoading = true) {
         success: true,     
         message: respData.message
       })
-      return respData
     }
-    
+    return response.data;
   } catch (e) {
     store.dispatch({
       type: REVIEWS_ERROR,

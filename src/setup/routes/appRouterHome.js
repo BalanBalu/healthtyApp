@@ -3,7 +3,7 @@ import { createStackNavigator, createBottomTabNavigator, createAppContainer, cre
 //import { routes } from './appRouterConfig';
 import AuthLoadingScreen from './AuthLoadingScreen';
 
-import Home from "../../modules/screens/home";
+import Home from "../../modules/screens/Home";
 import Profile from "../../modules/screens/userprofile";
 import finddoctor from "../../modules/screens/auth/finddoctor";
 import { Icon } from 'native-base';
@@ -24,7 +24,7 @@ import PaymentSuccess from "../../modules/screens/PaymentSuccess";
 
 import { Col, Grid, Row } from 'react-native-easy-grid';
 import { logout } from '../../modules/providers/auth/auth.actions';
-import { TouchableOpacity, Image} from 'react-native'
+import { TouchableOpacity, Image } from 'react-native'
 
 
 import menuIcon from '../../../assets/images/menu.png';
@@ -35,7 +35,7 @@ import { HeaderBackButton } from 'react-navigation';
 import BookAppoinment from "../../modules/screens/bookappoinment";
 
 
- const routes = {
+const routes = {
   Home: {
     name: 'Home',
     path: 'Home',
@@ -47,7 +47,7 @@ import BookAppoinment from "../../modules/screens/bookappoinment";
         size={20}
         color={tintColor}
       />,
-      
+
     }
   },
   Profile: {
@@ -61,7 +61,7 @@ import BookAppoinment from "../../modules/screens/bookappoinment";
         size={20}
         color={tintColor}
       />
-    } 
+    }
   },
   finddoctor: {
     name: ' finddoctor',
@@ -83,10 +83,10 @@ const AppTabs = createBottomTabNavigator((routes), {
   tabBarOptions: {
     activeTintColor: '#0000FF',
     inactiveTintColor: '#D3D3D3',
-    
+
     style: {
       backgroundColor: "#FFFFFF",
-      paddingVertical:25,
+      paddingVertical: 25,
       height: 2
     },
     tabStyle: {
@@ -96,7 +96,7 @@ const AppTabs = createBottomTabNavigator((routes), {
     },
     labelStyle: {
       marginLeft: 0,
-      marginTop: 10 
+      marginTop: 10
     }
   }
 })
@@ -117,60 +117,20 @@ const AuthRoutes = {
   }
 }
 const AuthStack = createStackNavigator(AuthRoutes, {
-  initialRouteName: 'login', 
-   headerMode: "none" ,
-   navigationOptions: { headerVisible: false }
-})
-
-const AppointMentstack  = createStackNavigator({
-  "Doctor List": {
-    screen: doctorSearchList,
-    navigationOptions: ({navigation})=> ({
-      title: 'Doctor List',
-      headerLeft:(<HeaderBackButton onPress={()=>{navigation.navigate('Home')}}/>)
-    })
-  },
-  "Book Appoinment": {
-    screen: BookAppoinment,
-    navigationOptions: {
-      title: 'Book Appoinmen'
-    }
-  },
-  Filters: {
-    screen: FilterList,
-    navigationOptions: {
-      title: 'Filters'
-    }
-  },
-  paymentpage: {
-    screen: PaymentPage
-  },
-  paymentreview: {
-    screen: PaymentReview
-  },
-  paymentsuccess: {
-    screen: PaymentSuccess
-  },
-  reviews: {
-    screen: Reviews
-  },
-  }, 
-  {
-  defaultNavigationOptions: ({ navigation }) => ({
-    headerStyle: { backgroundColor: '#7E49C3',  fontFamily: 'opensans-semibold' },
-    headerTintColor: 'white',
-  })
+  initialRouteName: 'login',
+  headerMode: "none",
+  navigationOptions: { headerVisible: false }
 })
 
 
 const AppointMentstack1 = createStackNavigator({
   "Doctor List": {
     screen: doctorSearchList,
-    navigationOptions : ({ navigation }) => ({
+    navigationOptions: ({ navigation }) => ({
       title: 'Doctor List',
       headerLeft: (
         <TouchableOpacity onPress={() => navigation.navigate('Home')}>
-            <Icon name="arrow-back" style={{marginLeft: 18, color: '#fff',  fontFamily: 'opensans-semibold'  }}></Icon> 
+          <Icon name="arrow-back" style={{ marginLeft: 18, color: '#fff', fontFamily: 'opensans-semibold' }}></Icon>
         </TouchableOpacity>
       ),
     })
@@ -181,6 +141,12 @@ const AppointMentstack1 = createStackNavigator({
       title: 'Filters'
     }
   },
+  "Book Appoinment": {
+    screen: BookAppoinment,
+    navigationOptions: {
+      title: 'Book Appoinment'
+    }
+  },
   paymentpage: {
     screen: PaymentPage
   },
@@ -190,21 +156,24 @@ const AppointMentstack1 = createStackNavigator({
   paymentsuccess: {
     screen: PaymentSuccess
   },
-  reviews: {
-    screen: Reviews
-  },
- }, 
- {
-  defaultNavigationOptions: ({ navigation }) => ({
-    headerStyle: { backgroundColor: '#7E49C3',  fontFamily: 'opensans-semibold' },
-    headerTintColor: 'white',
-  })
-});
+  "Reviews" : {
+    screen: Reviews,
+    navigationOptions: {
+      title: 'Reviews'
+    }
+  }
+ },
+  {
+    defaultNavigationOptions: ({ navigation }) => ({
+      headerStyle: { backgroundColor: '#7E49C3', fontFamily: 'opensans-semibold' },
+      headerTintColor: 'white',
+    })
+  });
 
 const HomeStack = createStackNavigator({
-   Home: {
+  Home: {
     screen: Home,
-    navigationOptions: ( {navigation}) => ({
+    navigationOptions: ({ navigation }) => ({
       title: 'DashBoard',
       headerLeft: (
         <TouchableOpacity onPress={() => navigation.toggleDrawer()}>
@@ -216,91 +185,91 @@ const HomeStack = createStackNavigator({
       ),
       headerRight: (
         <Row>
-        <Col> 
-        <TouchableOpacity onPress={() => navigation.navigate('Profile')}>
-          <Image
-            style={{ marginRight: 18, height: 35, width: 35, borderColor: '#f5f5f5', borderWidth: 2, borderRadius: 50 }}
-            source={profileAvatar}
-          />
-        </TouchableOpacity>
-        </Col>
-        <Col>
-        <TouchableOpacity onPress={() => { logout(); navigation.navigate('login') }}>
-            <Icon name="arrow-back" style={{marginLeft: 18, color: '#fff',  fontFamily: 'opensans-semibold'  }}></Icon> 
-        </TouchableOpacity>
-        </Col>
+          <Col>
+            <TouchableOpacity onPress={() => navigation.navigate('Profile')}>
+              <Image
+                style={{ marginRight: 18, height: 35, width: 35, borderColor: '#f5f5f5', borderWidth: 2, borderRadius: 50 }}
+                source={profileAvatar}
+              />
+            </TouchableOpacity>
+          </Col>
+          <Col>
+            <TouchableOpacity onPress={() => { logout(); navigation.navigate('login') }}>
+              <Icon name="arrow-back" style={{ marginLeft: 18, color: '#fff', fontFamily: 'opensans-semibold' }}></Icon>
+            </TouchableOpacity>
+          </Col>
         </Row>
-      ),    
+      ),
     })
-   },
-   Categories: {
+  },
+  Categories: {
     screen: Categories,
-    navigationOptions : ({ navigation }) => ({
+    navigationOptions: ({ navigation }) => ({
       title: 'Specialists',
     })
-   },
-   Profile: {
+  },
+  Profile: {
     screen: Profile,
-    navigationOptions : ({ navigation }) => ({
+    navigationOptions: ({ navigation }) => ({
       title: 'Profile',
     })
   },
-  }, 
+},
   {
     defaultNavigationOptions: ({ navigation }) => ({
       headerStyle: { backgroundColor: '#7E49C3' },
       headerTintColor: 'white',
+    })
   })
-})
 
 const ProfileStack = createStackNavigator({
   Profile: {
     screen: Profile,
-    navigationOptions : ({ navigation }) => ({
+    navigationOptions: ({ navigation }) => ({
       title: 'Profile',
       headerLeft: (
         <TouchableOpacity onPress={() => navigation.navigate('Home')}>
-            <Icon name="arrow-back" style={{marginLeft: 18, color: '#fff',  fontFamily: 'opensans-semibold'  }}></Icon> 
+          <Icon name="arrow-back" style={{ marginLeft: 18, color: '#fff', fontFamily: 'opensans-semibold' }}></Icon>
         </TouchableOpacity>
       ),
     })
   },
-}, 
-{
-  defaultNavigationOptions: ({ navigation }) => ({
-    headerStyle: { backgroundColor: '#7E49C3',  fontFamily: 'opensans-semibold' },
-    headerTintColor: 'white',
-  })
-});
+},
+  {
+    defaultNavigationOptions: ({ navigation }) => ({
+      headerStyle: { backgroundColor: '#7E49C3', fontFamily: 'opensans-semibold' },
+      headerTintColor: 'white',
+    })
+  });
 
 const categoryStack = createStackNavigator({
   Categories: {
     screen: Categories,
-    navigationOptions : ({ navigation }) => ({
+    navigationOptions: ({ navigation }) => ({
       title: 'Specialists',
       headerLeft: (
         <TouchableOpacity onPress={() => navigation.navigate('Home')}>
-            <Icon name="arrow-back" style={{marginLeft: 18, color: '#fff',  fontFamily: 'opensans-semibold'  }}></Icon> 
+          <Icon name="arrow-back" style={{ marginLeft: 18, color: '#fff', fontFamily: 'opensans-semibold' }}></Icon>
         </TouchableOpacity>
       ),
     })
   },
-}, 
-{
-  defaultNavigationOptions: ({ navigation }) => ({
-    headerStyle: { backgroundColor: '#7E49C3',  fontFamily: 'opensans-semibold' },
-    headerTintColor: 'white',
-  })
-});
-const DrawerNavigator = createDrawerNavigator( {
-    Home: HomeStack,
-    Profile: ProfileStack,
-    categoryStack,
-    Appointments: AppointMentstack1
-  },  
-  { 
+},
+  {
+    defaultNavigationOptions: ({ navigation }) => ({
+      headerStyle: { backgroundColor: '#7E49C3', fontFamily: 'opensans-semibold' },
+      headerTintColor: 'white',
+    })
+  });
+const DrawerNavigator = createDrawerNavigator({
+  Home: HomeStack,
+  Profile: ProfileStack,
+  categoryStack,
+  Appointments: AppointMentstack1
+},
+  {
     initialRouteName: 'Home'
-})
+  })
 
 
 export default createAppContainer(createSwitchNavigator(
@@ -322,5 +291,4 @@ export default createAppContainer(createSwitchNavigator(
 // })
 // const stack = createStackNavigator({ AppTabs, appStack }, { headerMode: "none" });
 //export default createAppContainer(stack)
-  
-  
+

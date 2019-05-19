@@ -54,8 +54,8 @@ class PaymentSuccess extends Component {
                         <Row>
                             <Col style={{ alignItems: 'center' }}>
                                 <Icon name='ios-checkmark' style={{ color: 'green', fontSize: 50, alignItems: 'center' }}></Icon>
-                                <H3 style={{ textAlign: 'center', fontFamily: 'opensans-regular' }}> Success</H3>
-                                <Text note style={{ textAlign: 'center', fontFamily: 'opensans-regular' }}> Thank You For Choosing Our Service And Trust Our Doctors To Take Care Your Health</Text>
+                                <H3 style={{ textAlign: 'center', fontFamily: 'OpenSans' }}> Success</H3>
+                                <Text note style={{ textAlign: 'center', fontFamily: 'OpenSans' }}> Thank You For Choosing Our Service And Trust Our Doctors To Take Care Your Health</Text>
                             </Col>
 
                         </Row>
@@ -145,7 +145,7 @@ const styles = StyleSheet.create({
 
     },
     customizedText: {
-        fontFamily: 'opensans-regular',
+        fontFamily: 'OpenSans',
         fontSize: 16
     },
     userImage:

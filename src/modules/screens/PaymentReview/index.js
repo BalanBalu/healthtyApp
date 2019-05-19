@@ -193,7 +193,7 @@ const styles = StyleSheet.create({
     },
 
     customizedText: {
-        fontFamily: 'opensans-regular',
+        fontFamily: 'OpenSans',
         fontSize: 15
     }
 });

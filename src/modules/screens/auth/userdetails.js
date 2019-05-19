@@ -122,7 +122,7 @@ class UserDetails extends Component {
                             /></Item>
 
                         <Button style={styles.loginButton} block primary onPress={() => this.userUpdate()}>
-                            <Text style={{ fontFamily: 'opensans-regular' }}>Submit</Text>
+                            <Text style={{ fontFamily: 'OpenSans' }}>Submit</Text>
                         </Button>
 
                     </Form>
@@ -131,7 +131,7 @@ class UserDetails extends Component {
                 <Footer >
                     <FooterTab style={{ backgroundColor: '#F2F2F2', }}>
                         <Button full onPress={() => this.props.navigation.navigate('login')}>
-                            <Text uppercase={false} style={{ color: '#000', fontSize: 15, fontFamily: 'opensans-regular' }}>Already Have An Account ? SignIn</Text>
+                            <Text uppercase={false} style={{ color: '#000', fontSize: 15, fontFamily: 'OpenSans' }}>Already Have An Account ? SignIn</Text>
                         </Button>
                     </FooterTab>
                 </Footer>

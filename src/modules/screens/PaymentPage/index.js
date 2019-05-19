@@ -108,7 +108,7 @@ class PaymentPage extends Component {
                             </Col>
                             <Col style={{ width: '90%' }}>
 
-                                <Text style={{ fontFamily: 'opensans-regular', color: 'gray' }}>Save Credit Information</Text>
+                                <Text style={{ fontFamily: 'OpenSans', color: 'gray' }}>Save Credit Information</Text>
                             </Col>
 
 
@@ -126,7 +126,7 @@ class PaymentPage extends Component {
                     <Left></Left>
                     <Body></Body>
                     <Right>
-                        <Button transparent><Text style={{ color: '#66A3F2', fontSize: 15, fontFamily: 'opensans-regular' }}>Pay Later</Text></Button>
+                        <Button transparent><Text style={{ color: '#66A3F2', fontSize: 15, fontFamily: 'OpenSans' }}>Pay Later</Text></Button>
                     </Right>
                 </Footer>
             </Container>
@@ -174,7 +174,7 @@ const styles = StyleSheet.create({
     },
 
     paymentText: {
-        fontFamily: 'opensans-regular',
+        fontFamily: 'OpenSans',
         color: 'gray',
         textAlign: 'center',
         fontSize: 15,
@@ -200,7 +200,7 @@ const styles = StyleSheet.create({
         marginTop: 10,
         borderRadius: 5,
         paddingLeft: 20,
-        fontFamily: 'opensans-regular',
+        fontFamily: 'OpenSans',
     }
 
 });

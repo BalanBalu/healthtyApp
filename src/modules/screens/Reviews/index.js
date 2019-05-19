@@ -8,7 +8,7 @@ import { Col, Row, Grid } from 'react-native-easy-grid';
 import { userReviews } from '../../providers/profile/profile.action';
 import { connect } from 'react-redux'
 import LinearGradient from 'react-native-linear-gradient';
-import { StyleSheet, Image, TouchableOpacity, View, FlatList } from 'react-native';
+import { StyleSheet, Image, TouchableOpacity, View, FlatList, AsyncStorage } from 'react-native';
 import StarRating from 'react-native-star-rating';
 
 
@@ -33,14 +33,16 @@ class Reviews extends Component {
     }
     getUserReview = async () => {
 
-         let doctorId = await AsyncStorage.getItem('doctorId');
-        //   let doctorId = "5cbd58b07045a106541d5999";
+         //let doctorId = await AsyncStorage.getItem('doctorId');
+          let doctorId = "5ce01ae8d28ab8073515a6f6";
          try{
-           let result = await userReviews(doctorId,'doctor');          
+
+           let result = await userReviews(doctorId,'doctor'); 
+           console.log("sathish is that coming now");         
             if (result.success) {   
-                console.log('coming here');         
-             this.setState({ data: result.data })
+               await this.setState({ data: result.data })
             }
+            
             console.log(this.state.data);
         }   
         catch (e) {
@@ -50,29 +52,16 @@ class Reviews extends Component {
     
     render() {
         const { user: { isLoading } } = this.props;
-         const { data } = this.state;
         return (
 
             <Container style={styles.container}>
-                <Header style={{ backgroundColor: '#7E49C3', fontFamily: 'opensans-semibold' }}>
-                    <Left>
-                        <Button Button transparent onPress={() => this.props.navigation.navigate('home')}>
-                            <Icon name="arrow-back" style={{ color: '#fff' }}></Icon>
-                        </Button>
-
-                    </Left>
-                    <Body>
-                        <Title style={{ fontFamily: 'opensans-semibold' }}>More Reviews</Title>
-
-                    </Body>
-                    <Right />
-                </Header>
-                <Content style={styles.bodyContent}>
+              <Content style={styles.bodyContent}>
             
                 <FlatList
-                 data={data}    
+                 data={this.state.data}    
                  extraData={this.state}
-                 renderItem = {(item) =>  
+                 keyExtractor={(item, index) => index.toString()}
+                 renderItem={({ item, index }) =>
                     <Card style={{ padding: 5, borderRadius: 10 }}>
                         <List>
                             <ListItem avatar noBorder>
@@ -80,7 +69,7 @@ class Reviews extends Component {
                                     <Thumbnail square source={{ uri: 'https://res.cloudinary.com/demo/image/upload/w_200,h_200,c_thumb,g_face,r_max/face_left.png' }} style={{ height: 60, width: 60 }} />
                                 </Left>
                                 <Body>
-                                    <Text style={{ fontFamily: 'opensans-regular' }}> {item.userInfo.first_name || 'MedFlic User'} </Text>
+                                    <Text style={{ fontFamily: 'OpenSans' }}> {item.userInfo.first_name || 'MedFlic User'} </Text>
                                     <StarRating fullStarColor='#FF9500' starSize={15} containerStyle={{ width: 100 }}
                                         disabled={false}
                                         maxStars={5}
@@ -93,12 +82,12 @@ class Reviews extends Component {
                                         <Row>
                                             <Col style={{ width: '30%' }} >
                                                 <Item style={{ borderBottomWidth: 0 }}><Icon name='heart' style={{ color: 'red', fontSize: 20 }}></Icon>
-                                                <Text style={{ fontFamily: 'opensans-regular', fontSize: 12, color: 'gray' }}>Like</Text>
+                                                <Text style={{ fontFamily: 'OpenSans', fontSize: 12, color: 'gray' }}>Like</Text>
                                                 </Item>
                                             </Col>
                                             <Col style={{ width: '30%' }}>
                                                 <Item style={{ borderBottomWidth: 0 }}><Icon name='text' style={{ color: 'red', fontSize: 20 }}></Icon>
-                                                <Text style={{ fontFamily: 'opensans-regular', fontSize: 12, color: 'gray' }}>
+                                                <Text style={{ fontFamily: 'OpenSans', fontSize: 12, color: 'gray' }}>
                                                 {item.comments}</Text>
                                                 </Item>
                                             </Col>
@@ -111,7 +100,7 @@ class Reviews extends Component {
                             </ListItem>
                         </List>
                         </Card>  
-         } keyExtractor={item => item._id}  />      
+         }/>      
                       
                
                

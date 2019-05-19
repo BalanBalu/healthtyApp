@@ -1,6 +1,6 @@
 import React,{ Component }  from 'react';
 import RoutesHome from './routes/appRouterHome';
-import RoutesLogin from './routes/appRouterLogin';
+//import RoutesLogin from './routes/appRouterLogin';
 import { Provider } from 'react-redux';
 import { store } from './store'
 import { StyleProvider, Root } from 'native-base';
