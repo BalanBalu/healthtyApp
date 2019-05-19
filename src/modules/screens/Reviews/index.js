@@ -59,7 +59,7 @@ class Reviews extends Component {
                                     <Thumbnail square source={{ uri: 'https://res.cloudinary.com/demo/image/upload/w_200,h_200,c_thumb,g_face,r_max/face_left.png' }} style={{ height: 60, width: 60 }} />
                                 </Left>
                                 <Body>
-                                    <Text style={{ fontFamily: 'opensans-regular' }}>Kumar Pratik</Text>
+                                    <Text style={{ fontFamily: 'OpenSans' }}>Kumar Pratik</Text>
                                     <StarRating fullStarColor='#FF9500' starSize={15} containerStyle={{ width: 100 }}
                                         disabled={false}
                                         maxStars={5}
@@ -73,11 +73,11 @@ class Reviews extends Component {
                                     <Grid style={{ marginTop: 5 }}>
                                         <Row>
                                             <Col style={{ width: '30%' }} >
-                                                <Item style={{ borderBottomWidth: 0 }}><Icon name='heart' style={{ color: 'red', fontSize: 20 }}></Icon><Text style={{ fontFamily: 'opensans-regular', fontSize: 12, color: 'gray' }}>Like</Text>
+                                                <Item style={{ borderBottomWidth: 0 }}><Icon name='heart' style={{ color: 'red', fontSize: 20 }}></Icon><Text style={{ fontFamily: 'OpenSans', fontSize: 12, color: 'gray' }}>Like</Text>
                                                 </Item>
                                             </Col>
                                             <Col style={{ width: '30%' }}>
-                                                <Item style={{ borderBottomWidth: 0 }}><Icon name='text' style={{ color: 'red', fontSize: 20 }}></Icon><Text style={{ fontFamily: 'opensans-regular', fontSize: 12, color: 'gray' }}>Comment</Text>
+                                                <Item style={{ borderBottomWidth: 0 }}><Icon name='text' style={{ color: 'red', fontSize: 20 }}></Icon><Text style={{ fontFamily: '', fontSize: 12, color: 'gray' }}>Comment</Text>
                                                 </Item>
                                             </Col>
                                         </Row>
@@ -101,7 +101,7 @@ class Reviews extends Component {
                                     <Thumbnail square source={{ uri: 'https://res.cloudinary.com/demo/image/upload/w_200,h_200,c_thumb,g_face,r_max/face_left.png' }} style={{ height: 60, width: 60 }} />
                                 </Left>
                                 <Body>
-                                    <Text style={{ fontFamily: 'opensans-regular' }}>Kumar Pratik</Text>
+                                    <Text style={{ fontFamily: 'OpenSans' }}>Kumar Pratik</Text>
                                     <StarRating fullStarColor='#FF9500' starSize={15} containerStyle={{ width: 100 }}
                                         disabled={false}
                                         maxStars={5}
@@ -115,11 +115,11 @@ class Reviews extends Component {
                                     <Grid style={{ marginTop: 5 }}>
                                         <Row>
                                             <Col style={{ width: '30%' }} >
-                                                <Item style={{ borderBottomWidth: 0 }}><Icon name='heart' style={{ color: 'red', fontSize: 20 }}></Icon><Text style={{ fontFamily: 'opensans-regular', fontSize: 12, color: 'gray' }}>Like</Text>
+                                                <Item style={{ borderBottomWidth: 0 }}><Icon name='heart' style={{ color: 'red', fontSize: 20 }}></Icon><Text style={{ fontFamily: 'OpenSans', fontSize: 12, color: 'gray' }}>Like</Text>
                                                 </Item>
                                             </Col>
                                             <Col style={{ width: '30%' }}>
-                                                <Item style={{ borderBottomWidth: 0 }}><Icon name='text' style={{ color: 'red', fontSize: 20 }}></Icon><Text style={{ fontFamily: 'opensans-regular', fontSize: 12, color: 'gray' }}>Comment</Text>
+                                                <Item style={{ borderBottomWidth: 0 }}><Icon name='text' style={{ color: 'red', fontSize: 20 }}></Icon><Text style={{ fontFamily: 'OpenSans', fontSize: 12, color: 'gray' }}>Comment</Text>
                                                 </Item>
                                             </Col>
                                         </Row>
@@ -143,7 +143,7 @@ class Reviews extends Component {
                                     <Thumbnail square source={{ uri: 'https://res.cloudinary.com/demo/image/upload/w_200,h_200,c_thumb,g_face,r_max/face_left.png' }} style={{ height: 60, width: 60 }} />
                                 </Left>
                                 <Body>
-                                    <Text style={{ fontFamily: 'opensans-regular' }}>Kumar Pratik</Text>
+                                    <Text style={{ fontFamily: 'OpenSans' }}>Kumar Pratik</Text>
                                     <StarRating fullStarColor='#FF9500' starSize={15} containerStyle={{ width: 100 }}
                                         disabled={false}
                                         maxStars={5}
@@ -157,11 +157,11 @@ class Reviews extends Component {
                                     <Grid style={{ marginTop: 5 }}>
                                         <Row>
                                             <Col style={{ width: '30%' }} >
-                                                <Item style={{ borderBottomWidth: 0 }}><Icon name='heart' style={{ color: 'red', fontSize: 20 }}></Icon><Text style={{ fontFamily: 'opensans-regular', fontSize: 12, color: 'gray' }}>Like</Text>
+                                                <Item style={{ borderBottomWidth: 0 }}><Icon name='heart' style={{ color: 'red', fontSize: 20 }}></Icon><Text style={{ fontFamily: 'OpenSans', fontSize: 12, color: 'gray' }}>Like</Text>
                                                 </Item>
                                             </Col>
                                             <Col style={{ width: '30%' }}>
-                                                <Item style={{ borderBottomWidth: 0 }}><Icon name='text' style={{ color: 'red', fontSize: 20 }}></Icon><Text style={{ fontFamily: 'opensans-regular', fontSize: 12, color: 'gray' }}>Comment</Text>
+                                                <Item style={{ borderBottomWidth: 0 }}><Icon name='text' style={{ color: 'red', fontSize: 20 }}></Icon><Text style={{ fontFamily: 'OpenSans', fontSize: 12, color: 'gray' }}>Comment</Text>
                                                 </Item>
                                             </Col>
                                         </Row>
@@ -185,7 +185,7 @@ class Reviews extends Component {
                                     <Thumbnail square source={{ uri: 'https://res.cloudinary.com/demo/image/upload/w_200,h_200,c_thumb,g_face,r_max/face_left.png' }} style={{ height: 60, width: 60 }} />
                                 </Left>
                                 <Body>
-                                    <Text style={{ fontFamily: 'opensans-regular' }}>Kumar Pratik</Text>
+                                    <Text style={{ fontFamily: 'OpenSans' }}>Kumar Pratik</Text>
                                     <StarRating fullStarColor='#FF9500' starSize={15} containerStyle={{ width: 100 }}
                                         disabled={false}
                                         maxStars={5}
@@ -199,11 +199,11 @@ class Reviews extends Component {
                                     <Grid style={{ marginTop: 5 }}>
                                         <Row>
                                             <Col style={{ width: '30%' }} >
-                                                <Item style={{ borderBottomWidth: 0 }}><Icon name='heart' style={{ color: 'red', fontSize: 20 }}></Icon><Text style={{ fontFamily: 'opensans-regular', fontSize: 12, color: 'gray' }}>Like</Text>
+                                                <Item style={{ borderBottomWidth: 0 }}><Icon name='heart' style={{ color: 'red', fontSize: 20 }}></Icon><Text style={{ fontFamily: 'OpenSans', fontSize: 12, color: 'gray' }}>Like</Text>
                                                 </Item>
                                             </Col>
                                             <Col style={{ width: '30%' }}>
-                                                <Item style={{ borderBottomWidth: 0 }}><Icon name='text' style={{ color: 'red', fontSize: 20 }}></Icon><Text style={{ fontFamily: 'opensans-regular', fontSize: 12, color: 'gray' }}>Comment</Text>
+                                                <Item style={{ borderBottomWidth: 0 }}><Icon name='text' style={{ color: 'red', fontSize: 20 }}></Icon><Text style={{ fontFamily: 'OpenSans', fontSize: 12, color: 'gray' }}>Comment</Text>
                                                 </Item>
                                             </Col>
                                         </Row>

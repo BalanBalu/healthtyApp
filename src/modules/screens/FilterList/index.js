@@ -474,7 +474,7 @@ const styles = StyleSheet.create({
     },
 
     customText: {
-        fontFamily: 'opensans-regular',
+        fontFamily: 'OpenSans',
         color: 'gray',
         fontSize: 13
     },
@@ -486,7 +486,7 @@ const styles = StyleSheet.create({
         textAlign: 'center',
         alignItems: 'center',
         justifyContent: 'center',
-        fontFamily: 'opensans-regular',
+        fontFamily: 'OpenSans',
     }
 
 

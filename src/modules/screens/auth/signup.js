@@ -116,13 +116,13 @@ class Signup extends Component {
                             <Radio selected={this.state.radioStatus[0]} onPress={()=>this.toggleRadio("0","M")} color={"#775DA3"}
                                 selectedColor={"#775DA3"} />
                             <Text style={{
-                                marginLeft: 10, fontFamily: 'opensans-regular',
+                                marginLeft: 10, fontFamily: 'OpenSans',
                             }}>Male</Text>
                     
                             <Radio selected={this.state.radioStatus[1]} onPress={()=>this.toggleRadio("1","F")} style={{ marginLeft: 20 }} color={"#775DA3"}
                                 selectedColor={"#775DA3"} />
                             <Text style={{
-                                marginLeft: 10, fontFamily: 'opensans-regular',
+                                marginLeft: 10, fontFamily: 'OpenSans',
                             }}>Female</Text>
 
                             <Radio selected={this.state.radioStatus[2]} onPress={()=>this.toggleRadio("2","O")} style={{ marginLeft: 30 }} color={"#775DA3"}
@@ -133,7 +133,7 @@ class Signup extends Component {
 
                         <Item style={{ borderBottomWidth: 0, marginTop: 12, marginLeft: 4 }}>
                             <CheckBox checked={this.state.conditionCheck} color="green" onPress={()=>this.setState({conditionCheck: !this.state.conditionCheck})} ></CheckBox>
-                            <Text style={{ marginLeft: 15, color: 'gray', fontFamily: 'opensans-regular' }}>I Accept the Medflic Terms And Conditions</Text>
+                            <Text style={{ marginLeft: 15, color: 'gray', fontFamily: 'OpenSans' }}>I Accept the Medflic Terms And Conditions</Text>
                         </Item>
 
                         <Spinner color='blue' 
@@ -153,7 +153,7 @@ class Signup extends Component {
                 <Footer >
                     <FooterTab style={{ backgroundColor: '#F2F2F2', }}>
                         <Button full onPress={() => this.props.navigation.navigate('login')}>
-                            <Text uppercase={false} style={{ color: '#000', fontSize: 15, fontFamily: 'opensans-regular' }}>Already Have An Account ? SignIn</Text>
+                            <Text uppercase={false} style={{ color: '#000', fontSize: 15, fontFamily: 'OpenSans' }}>Already Have An Account ? SignIn</Text>
                         </Button>
                     </FooterTab>
                 </Footer>

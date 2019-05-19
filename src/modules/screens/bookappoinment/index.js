@@ -420,7 +420,7 @@ const styles = StyleSheet.create({
   },
   multipleStyles:
   {
-    fontFamily: 'opensans-regular', 
+    fontFamily: 'OpenSans', 
     fontSize: 12, 
     color: 'black'
 

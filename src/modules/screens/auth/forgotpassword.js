@@ -144,7 +144,7 @@ class Forgotpassword extends Component {
                     <FooterTab style={{ backgroundColor: '#F2F2F2', }}>
                         <Button full onPress={() => this.props.navigation.navigate('login')}>
                             <Text uppercase={false} style={{
-                                color: '#000', fontSize: 15, fontFamily: 'opensans-regular',
+                                color: '#000', fontSize: 15, fontFamily: 'OpenSans',
                             }}>Go Back To SignIn</Text>
                         </Button>
                     </FooterTab>

@@ -43,7 +43,7 @@ class MedicineSearchList extends Component {
 
                                 <Item style={{ borderBottomWidth: 0 }}>
 
-                                    <Text style={{ fontFamily: 'opensans-regular', color: '#fff' }}>SEARCH RESULTS</Text>
+                                    <Text style={{ fontFamily: 'OpenSans', color: '#fff' }}>SEARCH RESULTS</Text>
                                 </Item>
 
                             </Col>
@@ -174,13 +174,13 @@ const styles = StyleSheet.create({
 
     normalText:
     {
-        fontFamily: 'opensans-regular',
+        fontFamily: 'OpenSans',
         fontSize: 14,
         color: 'gray'
     },
     offerText:
     {
-        fontFamily: 'opensans-regular',
+        fontFamily: 'OpenSans',
         fontSize: 20,
         color: 'red'
     }

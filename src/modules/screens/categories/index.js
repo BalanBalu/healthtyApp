@@ -241,7 +241,7 @@ const styles = StyleSheet.create({
   textcenter: {
     marginLeft: 'auto',
     marginRight: 'auto',
-    fontFamily: 'opensans-regular'
+    fontFamily: 'OpenSans'
   },
 
   column:
@@ -272,7 +272,7 @@ const styles = StyleSheet.create({
     color: 'white',
     width: '95%',
     textAlign: 'center',
-    fontFamily: 'opensans-regular',
+    fontFamily: 'OpenSans',
     marginLeft: 'auto',
     marginRight: 'auto',
     marginTop: 5
