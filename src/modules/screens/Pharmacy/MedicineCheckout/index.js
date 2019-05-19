@@ -1,25 +1,13 @@
 import React, { Component } from 'react';
 import { Container, Content, Text, Title, Header, Form, Textarea, Button, H3, Item, List, ListItem, Card, Input, Left, Right, Thumbnail, Body, Icon, Footer, FooterTab, Picker } from 'native-base';
-import { login, logout } from '../../providers/auth/auth.actions';
-import { messageShow, messageHide } from '../../providers/common/common.action';
-import LinearGradient from 'react-native-linear-gradient';
 import { Col, Row, Grid } from 'react-native-easy-grid';
 import { connect } from 'react-redux'
 import { StyleSheet, Image, } from 'react-native';
-import { ScrollView } from 'react-native-gesture-handler';
 
 class MedicineCheckout extends Component {
     constructor(props) {
         super(props)
         console.log(this.props)
-    }
-    navigetToCategories() {
-        console.log(this.props.navigation.navigate('categories'));
-        //this.props.navigation.navigate('categories');
-    }
-    doLogout() {
-        logout();
-        this.props.navigation.navigate('login');
     }
     render() {
 
@@ -43,7 +31,7 @@ class MedicineCheckout extends Component {
 
                                 <Item style={{ borderBottomWidth: 0 }}>
 
-                                    <Text style={{ fontFamily: 'opensans-regular', color: '#fff' }}>Paracetamal tablets</Text>
+                                    <Text style={{ fontFamily: 'OpenSans', color: '#fff' }}>Paracetamal tablets</Text>
                                 </Item>
 
                             </Col>
@@ -106,7 +94,7 @@ class MedicineCheckout extends Component {
                             <Col style={{ alignItems: 'center', justifyContent: 'center' }}>
                                 <Item style={{ borderWidth: 0, marginLeft: 'auto', marginRight: 'auto' }}>
 
-                                    <Button style={styles.loginButton}><Text style={{ fontFamily: 'opensans-regular', fontSize: 14, color: '#fff' }}>upload</Text></Button>
+                                    <Button style={styles.loginButton}><Text style={{ fontFamily: 'OpenSans', fontSize: 14, color: '#fff' }}>upload</Text></Button>
                                 </Item>
                             </Col>
                         </Grid>
@@ -198,7 +186,7 @@ const styles = StyleSheet.create({
 
     normalText:
     {
-        fontFamily: 'opensans-regular',
+        fontFamily: 'OpenSans',
         fontSize: 16,
         color: 'green',
         fontWeight: 'bold'
@@ -206,7 +194,7 @@ const styles = StyleSheet.create({
 
     boldText:
     {
-        fontFamily: 'opensans-regular',
+        fontFamily: 'OpenSans',
         fontSize: 16,
         color: '#000',
         marginLeft: 20,

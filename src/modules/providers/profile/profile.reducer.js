@@ -1,4 +1,4 @@
-import {  PROFILE_REQUEST, PROFILE_RESPONSE, PROFILE_ERROR } from './profile.action';
+import {  PROFILE_REQUEST, PROFILE_RESPONSE, PROFILE_ERROR, REVIEWS_REQUEST, REVIEWS_RESPONSE, REVIEWS_ERROR } from './profile.action';
 
 // Initial State
 export const initialState = {
@@ -35,7 +35,30 @@ export default (state = initialState, action) => {
           isLoading: false
         }
   
+        case REVIEWS_REQUEST:
+        return {
+          ...state,
+          message: null,
+          isLoading: action.isLoading,
   
+        }
+  
+      case REVIEWS_RESPONSE:
+        return {
+          ...state,
+          message: action.message,
+          isLoading: false,
+          success: true
+        }
+  
+      case REVIEWS_ERROR:
+        return {
+          ...state,
+          message: action.message,
+          isLoading: false
+        }
+  
+        
       default:
         return state;
     }

@@ -21,7 +21,7 @@ export default StyleSheet.create({
         fontSize: 22,
         textAlign: 'center',
         marginTop: 10,
-        fontFamily: 'opensans-regular',
+        fontFamily: 'OpenSans',
     },
     transparentLabel: {
         borderBottomColor: 'transparent',
@@ -30,7 +30,7 @@ export default StyleSheet.create({
         marginTop: 10,
         borderRadius: 5,
         paddingLeft: 20,
-        fontFamily: 'opensans-regular',
+        fontFamily: 'OpenSans',
     },
     loginButton: {
         marginTop: 12,
@@ -41,7 +41,7 @@ export default StyleSheet.create({
     customText:
     {
         color: 'gray',
-        fontFamily: 'opensans-regular',
+        fontFamily: 'OpenSans',
     },
     logo: {
         height: 86,
@@ -66,8 +66,16 @@ export default StyleSheet.create({
         color: '#775DA3',
         height: 45,
         padding: 10,
+        fontFamily: 'OpenSans',
+
+
+    },
+    customPadge: {
+        color: 'white',
+        textAlign: 'center',
         fontFamily: 'opensans-regular',
-
-
-    }
+        fontSize: 15,
+        padding: 5,
+    
+      }
 })

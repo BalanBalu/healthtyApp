@@ -1,25 +1,13 @@
 import React, { Component } from 'react';
 import { Container, Content, Text, Title, Header, Form, Textarea, Button, H3, Item, List, ListItem, Card, Input, Left, Right, Thumbnail, Body, Icon, Footer, FooterTab, Picker, Segment, CheckBox } from 'native-base';
-import { login, logout } from '../../providers/auth/auth.actions';
-import { messageShow, messageHide } from '../../providers/common/common.action';
-import LinearGradient from 'react-native-linear-gradient';
 import { Col, Row, Grid } from 'react-native-easy-grid';
 import { connect } from 'react-redux'
 import { StyleSheet, Image } from 'react-native';
-import { ScrollView } from 'react-native-gesture-handler';
 
 class MedicinePaymentResult extends Component {
     constructor(props) {
         super(props)
         console.log(this.props)
-    }
-    navigetToCategories() {
-        console.log(this.props.navigation.navigate('categories'));
-        //this.props.navigation.navigate('categories');
-    }
-    doLogout() {
-        logout();
-        this.props.navigation.navigate('login');
     }
     render() {
 
@@ -43,7 +31,7 @@ class MedicinePaymentResult extends Component {
 
                                 <Item style={{ borderBottomWidth: 0 }}>
 
-                                    <Text style={{ fontFamily: 'opensans-regular', color: '#fff' }}>CHECKOUT</Text>
+                                    <Text style={{ fontFamily: 'OpenSans', color: '#fff' }}>CHECKOUT</Text>
                                 </Item>
 
                             </Col>
@@ -87,10 +75,10 @@ class MedicinePaymentResult extends Component {
                                 <Text style={styles.badgeText}>1</Text>
                             </Col>
                             <Col style={{ alignItems: 'center', width: '60%' }}>
-                                <Text style={{ fontFamily: 'opensans-regular', fontWeight: 'bold', fontSize: 18, padding: 5 }}>ContactInfo</Text>
+                                <Text style={{ fontFamily: 'OpenSans', fontWeight: 'bold', fontSize: 18, padding: 5 }}>ContactInfo</Text>
                             </Col>
                             <Col style={{ alignItems: 'center', width: '20%' }}>
-                                <Text style={{ fontFamily: 'opensans-regular', color: 'red', marginTop: 5 }}>Edit</Text>
+                                <Text style={{ fontFamily: 'OpenSans', color: 'red', marginTop: 5 }}>Edit</Text>
                             </Col>
                         </Grid>
 
@@ -151,10 +139,10 @@ class MedicinePaymentResult extends Component {
                                 <Text style={styles.badgeText}>1</Text>
                             </Col>
                             <Col style={{ alignItems: 'center', width: '60%' }}>
-                                <Text style={{ fontFamily: 'opensans-regular', fontWeight: 'bold', fontSize: 18, padding: 5 }}>PaymentInfo</Text>
+                                <Text style={{ fontFamily: 'OpenSans', fontWeight: 'bold', fontSize: 18, padding: 5 }}>PaymentInfo</Text>
                             </Col>
                             <Col style={{ alignItems: 'center', width: '20%' }}>
-                                <Text style={{ fontFamily: 'opensans-regular', color: 'red', marginTop: 5 }}>Edit</Text>
+                                <Text style={{ fontFamily: 'OpenSans', color: 'red', marginTop: 5 }}>Edit</Text>
                             </Col>
                         </Grid>
 
@@ -223,10 +211,10 @@ class MedicinePaymentResult extends Component {
                                 <Text style={styles.badgeText}>1</Text>
                             </Col>
                             <Col style={{ alignItems: 'center', width: '60%' }}>
-                                <Text style={{ fontFamily: 'opensans-regular', fontWeight: 'bold', fontSize: 18, padding: 5 }}>Your Order</Text>
+                                <Text style={{ fontFamily: 'OpenSans', fontWeight: 'bold', fontSize: 18, padding: 5 }}>Your Order</Text>
                             </Col>
                             <Col style={{ alignItems: 'center', width: '20%' }}>
-                                <Text style={{ fontFamily: 'opensans-regular', color: 'red', marginTop: 5 }}>Edit</Text>
+                                <Text style={{ fontFamily: 'OpenSans', color: 'red', marginTop: 5 }}>Edit</Text>
                             </Col>
                         </Grid>
 
@@ -340,21 +328,21 @@ const styles = StyleSheet.create({
     },
     normalText:
     {
-        fontFamily: 'opensans-regular',
+        fontFamily: 'OpenSans',
         fontSize: 16,
         color: '#fff',
         fontWeight: 'bold'
     },
     customText:
     {
-        fontFamily: 'opensans-regular',
+        fontFamily: 'OpenSans',
         fontSize: 16,
         color: '#2F3940',
         fontWeight: 'bold'
     },
     labelTop:
     {
-        fontFamily: 'opensans-regular',
+        fontFamily: 'OpenSans',
         fontSize: 14,
         color: 'gray',
 
@@ -368,7 +356,7 @@ const styles = StyleSheet.create({
         marginTop: 10,
         borderRadius: 5,
         paddingLeft: 20,
-        fontFamily: 'opensans-regular',
+        fontFamily: 'OpenSans',
         margin: 2,
     },
     badgeText:

@@ -1,12 +1,8 @@
 import React, { Component } from 'react';
 import { Container, Content, Text, Title, Header, Button, H3, Item, List, ListItem, Card, Input, Left, Right, Thumbnail, Body, Icon, Footer, FooterTab } from 'native-base';
-import { login, logout } from '../../providers/auth/auth.actions';
-import { messageShow, messageHide } from '../../providers/common/common.action';
-import LinearGradient from 'react-native-linear-gradient';
 import { Col, Row, Grid } from 'react-native-easy-grid';
 import { connect } from 'react-redux'
 import { StyleSheet, Image, } from 'react-native';
-import { ScrollView } from 'react-native-gesture-handler';
 
 class MedicineSearch extends Component {
     constructor(props) {
@@ -17,10 +13,7 @@ class MedicineSearch extends Component {
         console.log(this.props.navigation.navigate('categories'));
         //this.props.navigation.navigate('categories');
     }
-    doLogout() {
-        logout();
-        this.props.navigation.navigate('login');
-    }
+   
     render() {
 
 
@@ -38,7 +31,7 @@ class MedicineSearch extends Component {
                     <Body>
                         <Item style={{ width: '150%', borderBottomWidth: 0, backgroundColor: '#fff', borderRadius: 10, height: 35 }} >
 
-                            <Input placeholder="Chennai,Tamilnadu,India" style={{ color: 'gray', fontFamily: 'opensans-regular', fontSize: 12 }} placeholderTextColor="gray" />
+                            <Input placeholder="Chennai,Tamilnadu,India" style={{ color: 'gray', fontFamily: 'OpenSans', fontSize: 12 }} placeholderTextColor="gray" />
                             <Icon name="ios-search" style={{ color: 'gray' }} />
                         </Item>
 
@@ -67,7 +60,7 @@ class MedicineSearch extends Component {
                             <Col style={{ width: '80%' }}>
                                 <Item style={styles.searchBox} >
 
-                                    <Input placeholder="Search For Any Medicine" style={{ color: 'gray', fontFamily: 'opensans-regular', fontSize: 12 }} placeholderTextColor="gray" />
+                                    <Input placeholder="Search For Any Medicine" style={{ color: 'gray', fontFamily: 'OpenSans', fontSize: 12 }} placeholderTextColor="gray" />
                                     <Button style={{ backgroundColor: '#000', borderRadius: 10, height: 40, marginTop: -20, marginRight: -20, borderBottomLeftRadius: 0, borderTopLeftRadius: 0, }}><Icon name="ios-search" style={{ color: 'white' }} /></Button>
                                 </Item>
                             </Col>
@@ -204,7 +197,7 @@ const styles = StyleSheet.create({
         margin: 5
     },
     pageText: {
-        fontFamily: 'opensans-regular',
+        fontFamily: 'OpenSans',
         fontSize: 14,
         color: 'green',
         textAlign: 'center',

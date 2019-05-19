@@ -66,4 +66,12 @@ export function renderIf(condition, renderFn) {
     return moment(futureDate).diff(pastDate, unitOfTime);
   }
 
+  export function getFirstDay(date, unit, format) {
+    return moment(date).startOf(unit).format(format);
+  }
+  export function getLastDay(date, unit, format) {
+    return moment(date).endOf(unit).format(format);
+  }
+
+
   

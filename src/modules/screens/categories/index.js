@@ -20,32 +20,14 @@ class Categories extends Component {
     return (
 
       <Container style={styles.container}>
-        <Header style={{ backgroundColor: '#7E49C3' }}>
-          <Left  >
-            <Button Button transparent onPress={() => this.props.navigation.navigate('home')}>
-              <Icon name="arrow-back" style={{ color: '#fff' }}></Icon>
-            </Button>
-
-          </Left>
-          <Body>
-            <Title style={{ fontFamily: 'opensans-semibold' }}>Categories</Title>
-
-          </Body>
-          <Right >
-
-            <Button transparent onPress={() => this.props.navigation.navigate('profile')}>
-              <Thumbnail style={{ height: 40, width: 40, borderColor: '#f5f5f5', borderWidth: 2, borderRadius: 50 }} source={{ uri: 'https://res.cloudinary.com/demo/image/upload/w_200,h_200,c_thumb,g_face,r_max/face_left.png' }} />
-            </Button>
-
-          </Right>
-        </Header>
-
+       
         <Content style={styles.bodyContent}>
 
 
           <Grid>
             <Row>
-              <Col style={styles.column}>
+              <Item style={styles.column} onPress={()=> this.props.navigation.navigate('Doctor List') }>
+              <Col>
                 <LinearGradient
                   colors={['#7357A2', '#62BFE4']} style={{ borderRadius: 10, padding: 10, height: '100%', width: '100%', marginLeft: 'auto', marginRight: 'auto' }}>
                   <Image source={{ uri: 'https://static1.squarespace.com/static/586ef2c6bf629a58a3512dfa/t/5879369c5016e1f60c105f77/1484358104031/crown-bridge-icon.png' }} style={styles.customImage} />
@@ -53,8 +35,9 @@ class Categories extends Component {
 
                 <Text style={styles.titleText}>Dental</Text>
               </Col>
-
-              <Col style={styles.column}>
+              </Item>
+              <Item style={styles.column} onPress={()=> this.props.navigation.navigate('Doctor List') }>
+              <Col>
                 <LinearGradient
                   colors={['#7357A2', '#62BFE4']} style={{ borderRadius: 10, padding: 10, height: '100%', width: '100%', marginLeft: 'auto', marginRight: 'auto' }}>
                   <Image source={{ uri: 'http://pluspng.com/img-png/orthopedics-png--350.png' }} style={styles.customImage} />
@@ -62,10 +45,10 @@ class Categories extends Component {
 
                 <Text style={styles.titleText}>Orthology</Text>
               </Col>
+              </Item>
 
-
-
-              <Col style={styles.column}>
+              <Item style={styles.column} onPress={()=> this.props.navigation.navigate('Doctor List') }>
+              <Col>
                 <LinearGradient
                   colors={['#7357A2', '#62BFE4']} style={{ borderRadius: 10, padding: 10, height: '100%', width: '100%', marginLeft: 'auto', marginRight: 'auto' }}>
                   <Image source={{ uri: 'https://omionline.in/omi_app/images/images/Neurologist.png' }} style={styles.customImage} />
@@ -73,7 +56,7 @@ class Categories extends Component {
 
                 <Text style={styles.titleText}>Neurology</Text>
               </Col>
-
+              </Item>
 
             </Row>
 
@@ -258,7 +241,7 @@ const styles = StyleSheet.create({
   textcenter: {
     marginLeft: 'auto',
     marginRight: 'auto',
-    fontFamily: 'opensans-regular'
+    fontFamily: 'OpenSans'
   },
 
   column:
@@ -289,7 +272,7 @@ const styles = StyleSheet.create({
     color: 'white',
     width: '95%',
     textAlign: 'center',
-    fontFamily: 'opensans-regular',
+    fontFamily: 'OpenSans',
     marginLeft: 'auto',
     marginRight: 'auto',
     marginTop: 5

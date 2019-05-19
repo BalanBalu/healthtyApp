@@ -30,24 +30,12 @@ class doctorSearchList extends Component {
     }
 
     render() {
-        const { user: { isLoading } } = this.props;
+        const { user: { isLoading }, navigation } = this.props;
         const { loginErrorMsg } = this.state;
         return (
 
             <Container style={styles.container}>
-                <Header style={{ backgroundColor: '#7E49C3', fontFamily: 'opensans-semibold' }}>
-                    <Left  >
-                        <Button Button transparent onPress={() => this.props.navigation.navigate('home')}>
-                            <Icon name="arrow-back" style={{ color: '#fff' }}></Icon>
-                        </Button>
-
-                    </Left>
-                    <Body>
-                        <Title style={{ fontFamily: 'opensans-semibold' }}>Filter Doctor</Title>
-
-                    </Body>
-                    <Right />
-                </Header>
+                
                 <Content style={styles.bodyContent}>
 
                     <Card>
@@ -55,25 +43,26 @@ class doctorSearchList extends Component {
                             <Col style={{ col: '33.33%', alignItems: 'center' }}>
 
                                 <Button transparent>
-                                    <Text note uppercase={false} style={{ fontFamily: 'opensans-regular', color: 'gray' }}>TopRated</Text>
+                                    <Text note uppercase={false} style={{ fontFamily: 'OpenSans', color: 'gray' }}>TopRated</Text>
                                     <Icon name='ios-arrow-down' style={{ color: 'gray' }} />
                                 </Button>
                             </Col>
                             <Col style={{ col: '33.33%', alignItems: 'center' }}>
 
                                 <Button transparent>
-                                    <Text note uppercase={false} style={{ fontFamily: 'opensans-regular', color: 'gray' }}>Fri 27</Text>
+                                    <Text note uppercase={false} style={{ fontFamily: 'OpenSans', color: 'gray' }}>Fri 27</Text>
                                     <Icon name='ios-arrow-down' style={{ color: 'gray' }} />
                                 </Button>
                             </Col>
                             <Col style={{ col: '33.33%', alignItems: 'center' }}>
 
-                                <Button transparent >
-                                    <Text note uppercase={false} style={{ fontFamily: 'opensans-regular', color: 'gray' }}>Filter</Text>
+                                <Button transparent onPress={()=> navigation.navigate('Filters')}>
+                                    <Text note uppercase={false} style={{ fontFamily: 'OpenSans', color: 'gray' }}>Filter</Text>
                                     <Icon name='ios-funnel' style={{ color: 'gray' }} />
                                 </Button>
                             </Col>
-                        </Row></Grid>
+                        </Row>
+                        </Grid>
 
                     </Card>
 
@@ -87,10 +76,10 @@ class doctorSearchList extends Component {
                                     <Thumbnail square source={{ uri: 'https://res.cloudinary.com/demo/image/upload/w_200,h_200,c_thumb,g_face,r_max/face_left.png' }} style={{ height: 80, width: 80 }} />
                                 </Left>
                                 <Body>
-                                    <Text style={{ fontFamily: 'opensans-regular' }}>Kumar Pratik</Text>
+                                    <Text style={{ fontFamily: 'OpenSans' }}>Kumar Pratik</Text>
                                     <Item style={{ borderBottomWidth: 0 }}>
-                                        <Icon name='pin' style={{ fontSize: 20, fontFamily: 'opensans-regular', color: 'gray' }}></Icon>
-                                        <Text note style={{ fontFamily: 'opensans-regular' }}>Anna Nagar,chennai </Text>
+                                        <Icon name='pin' style={{ fontSize: 20, fontFamily: 'OpenSans', color: 'gray' }}></Icon>
+                                        <Text note style={{ fontFamily: 'OpenSans' }}>Anna Nagar,chennai </Text>
                                     </Item>
 
                                     <StarRating fullStarColor='#FF9500' starSize={15} containerStyle={{ width: 100 }}
@@ -99,7 +88,7 @@ class doctorSearchList extends Component {
                                         rating={this.state.starCount}
                                         selectedStar={(rating) => this.onStarRatingPress(rating)}
                                     />
-                                    <Text note style={{ fontFamily: 'opensans-regular', color: 'gray' }}>Rs 400</Text>
+                                    <Text note style={{ fontFamily: 'OpenSans', color: 'gray' }}>Rs 400</Text>
                                 </Body>
                                 <Right>
                                     <Icon name='heart' style={{ color: 'red', fontSize: 25 }}></Icon>
@@ -114,34 +103,34 @@ class doctorSearchList extends Component {
                                         <ScrollView horizontal={true}>
                                             <Col style={{ col: '25%', padding: 5 }}>
 
-                                                <Button primary style={styles.timeButton}>
-                                                    <Text note style={{ fontFamily: 'opensans-regular', color: 'white' }}>1 pm</Text>
+                                                <Button primary style={styles.timeButton} onPress={()=> navigation.navigate('Book Appoinment') }>
+                                                    <Text note style={{ fontFamily: 'OpenSans', color: 'white' }}>1 pm</Text>
                                                 </Button>
                                             </Col>
 
                                             <Col style={{ col: '25%', padding: 5 }}>
 
                                                 <Button primary style={styles.timeButton}>
-                                                    <Text note style={{ fontFamily: 'opensans-regular', color: 'white' }}>2 pm</Text>
+                                                    <Text note style={{ fontFamily: 'OpenSans', color: 'white' }}>2 pm</Text>
                                                 </Button>
                                             </Col>
 
                                             <Col style={{ col: '25%', padding: 5 }}>
 
                                                 <Button primary style={styles.timeButton}>
-                                                    <Text note style={{ fontFamily: 'opensans-regular', color: 'white' }}>3 pm</Text>
+                                                    <Text note style={{ fontFamily: 'OpenSans', color: 'white' }}>3 pm</Text>
                                                 </Button>
                                             </Col>
                                             <Col style={{ col: '25%', padding: 5 }}>
 
                                                 <Button primary style={styles.timeButton}>
-                                                    <Text note style={{ fontFamily: 'opensans-regular', color: 'white' }}>4 pm</Text>
+                                                    <Text note style={{ fontFamily: 'OpenSans', color: 'white' }}>4 pm</Text>
                                                 </Button>
                                             </Col>
                                             <Col style={{ col: '25%', padding: 5 }}>
 
                                                 <Button primary style={styles.timeButton}>
-                                                    <Text note style={{ fontFamily: 'opensans-regular', color: 'white' }}>5 pm</Text>
+                                                    <Text note style={{ fontFamily: 'OpenSans', color: 'white' }}>5 pm</Text>
                                                 </Button>
                                             </Col>
 
@@ -165,10 +154,10 @@ class doctorSearchList extends Component {
                                     <Thumbnail square source={{ uri: 'https://res.cloudinary.com/demo/image/upload/w_200,h_200,c_thumb,g_face,r_max/face_left.png' }} style={{ height: 80, width: 80 }} />
                                 </Left>
                                 <Body>
-                                    <Text style={{ fontFamily: 'opensans-regular' }}>Kumar Pratik</Text>
+                                    <Text style={{ fontFamily: 'OpenSans' }}>Kumar Pratik</Text>
                                     <Item style={{ borderBottomWidth: 0 }}>
-                                        <Icon name='pin' style={{ fontSize: 20, fontFamily: 'opensans-regular', color: 'gray' }}></Icon>
-                                        <Text note style={{ fontFamily: 'opensans-regular' }}>Anna Nagar,chennai </Text>
+                                        <Icon name='pin' style={{ fontSize: 20, fontFamily: 'OpenSans', color: 'gray' }}></Icon>
+                                        <Text note style={{ fontFamily: 'OpenSans' }}>Anna Nagar,chennai </Text>
                                     </Item>
 
                                     <StarRating fullStarColor='#FF9500' starSize={15} containerStyle={{ width: 100 }}
@@ -177,7 +166,7 @@ class doctorSearchList extends Component {
                                         rating={this.state.starCount}
                                         selectedStar={(rating) => this.onStarRatingPress(rating)}
                                     />
-                                    <Text note style={{ fontFamily: 'opensans-regular', color: 'gray' }}>Rs 400</Text>
+                                    <Text note style={{ fontFamily: 'OpenSans', color: 'gray' }}>Rs 400</Text>
                                 </Body>
                                 <Right>
                                     <Icon name='heart' style={{ color: 'red', fontSize: 25 }}></Icon>
@@ -193,33 +182,33 @@ class doctorSearchList extends Component {
                                             <Col style={{ col: '25%', padding: 5 }}>
 
                                                 <Button primary style={styles.timeButton}>
-                                                    <Text note style={{ fontFamily: 'opensans-regular', color: 'white' }}>1 pm</Text>
+                                                    <Text note style={{ fontFamily: 'OpenSans', color: 'white' }}>1 pm</Text>
                                                 </Button>
                                             </Col>
 
                                             <Col style={{ col: '25%', padding: 5 }}>
 
                                                 <Button primary style={styles.timeButton}>
-                                                    <Text note style={{ fontFamily: 'opensans-regular', color: 'white' }}>2 pm</Text>
+                                                    <Text note style={{ fontFamily: 'OpenSans', color: 'white' }}>2 pm</Text>
                                                 </Button>
                                             </Col>
 
                                             <Col style={{ col: '25%', padding: 5 }}>
 
                                                 <Button primary style={styles.timeButton}>
-                                                    <Text note style={{ fontFamily: 'opensans-regular', color: 'white' }}>3 pm</Text>
+                                                    <Text note style={{ fontFamily: 'OpenSans', color: 'white' }}>3 pm</Text>
                                                 </Button>
                                             </Col>
                                             <Col style={{ col: '25%', padding: 5 }}>
 
                                                 <Button primary style={styles.timeButton}>
-                                                    <Text note style={{ fontFamily: 'opensans-regular', color: 'white' }}>4 pm</Text>
+                                                    <Text note style={{ fontFamily: 'OpenSans', color: 'white' }}>4 pm</Text>
                                                 </Button>
                                             </Col>
                                             <Col style={{ col: '25%', padding: 5 }}>
 
                                                 <Button primary style={styles.timeButton}>
-                                                    <Text note style={{ fontFamily: 'opensans-regular', color: 'white' }}>5 pm</Text>
+                                                    <Text note style={{ fontFamily: 'OpenSans', color: 'white' }}>5 pm</Text>
                                                 </Button>
                                             </Col>
 
@@ -266,7 +255,7 @@ const styles = StyleSheet.create({
     timeButton: {
         height: 35,
         width: 75,
-        fontFamily: 'opensans-regular',
+        fontFamily: 'OpenSans',
         fontSize: 12,
         borderRadius: 15,
         textAlign: 'center',

@@ -8,7 +8,6 @@ import LinearGradient from 'react-native-linear-gradient';
 import { StyleSheet, Image, TouchableOpacity, View } from 'react-native';
 import StarRating from 'react-native-star-rating';
 
-
 class FilterList extends Component {
     constructor(props) {
         super(props)
@@ -34,19 +33,6 @@ class FilterList extends Component {
         return (
 
             <Container style={styles.container}>
-                <Header style={{ backgroundColor: '#7E49C3', fontFamily: 'opensans-semibold' }}>
-                    <Left  >
-                        <Button Button transparent onPress={() => this.props.navigation.navigate('home')}>
-                            <Icon name="arrow-back" style={{ color: '#fff' }}></Icon>
-                        </Button>
-
-                    </Left>
-                    <Body>
-                        <Title style={{ fontFamily: 'opensans-semibold' }}>Filter List</Title>
-
-                    </Body>
-                    <Right />
-                </Header>
                 <Content style={styles.bodyContent}>
 
 
@@ -488,7 +474,7 @@ const styles = StyleSheet.create({
     },
 
     customText: {
-        fontFamily: 'opensans-regular',
+        fontFamily: 'OpenSans',
         color: 'gray',
         fontSize: 13
     },
@@ -500,7 +486,7 @@ const styles = StyleSheet.create({
         textAlign: 'center',
         alignItems: 'center',
         justifyContent: 'center',
-        fontFamily: 'opensans-regular',
+        fontFamily: 'OpenSans',
     }
 
 
