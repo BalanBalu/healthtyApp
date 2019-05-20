@@ -7,11 +7,16 @@ import { Col, Row, Grid } from 'react-native-easy-grid';
 import { connect } from 'react-redux'
 import { StyleSheet, Image, } from 'react-native';
 import { ScrollView } from 'react-native-gesture-handler';
+import { catagries } from '../../providers/catagries/catagries.actions';
 
 class Home extends Component {
     constructor(props) {
         super(props)
+        this.state = {
+            data:[]
+         };
         console.log(this.props)
+        this.getCatagries();
     }
     navigetToCategories() {
         console.log(this.props.navigation.navigate('Categories'));
@@ -21,6 +26,20 @@ class Home extends Component {
         logout();
         this.props.navigation.navigate('login');
     }
+    getCatagries = async () => {
+        try {
+            console.log('hi')
+        
+          let result = await catagries();
+          console.log(result)
+       
+         // if(result.success) 
+            this.setState({ data: result.data, isRefreshing: false });
+        } catch (e) {
+          console.log(e);
+        }  
+        console.log(this.state.data)
+      }
     render() {
         
         
