@@ -6,7 +6,7 @@ import LinearGradient from 'react-native-linear-gradient';
 import { Col, Row, Grid } from 'react-native-easy-grid';
 import { connect } from 'react-redux'
 import { StyleSheet, Image, } from 'react-native';
-import { ScrollView } from 'react-native-gesture-handler';
+import { ScrollView, FlatList } from 'react-native-gesture-handler';
 import { catagries } from '../../providers/catagries/catagries.actions';
 
 class Home extends Component {
@@ -15,12 +15,15 @@ class Home extends Component {
         this.state = {
             data:[]
          };
+         console.log('muni')
         console.log(this.props)
         this.getCatagries();
     }
-    navigetToCategories() {
-        console.log(this.props.navigation.navigate('Categories'));
-        //this.props.navigation.navigate('categories');
+     navigetToCategories() {
+    //     // console.log(
+            this.props.navigation.navigate('Categories',{data:this.state.data})
+    //         // );
+    //     //this.props.navigation.navigate('categories');
     }
     doLogout(){
         logout();
@@ -100,6 +103,10 @@ class Home extends Component {
                             <Row>
                                 <ListItem noBorder>
                                     <ScrollView horizontal={true}>
+                                        <FlatList horizontal={false} numColumns={7}
+                                        data={this.state.data}
+                                        extraData={this.state}
+                                        renderItem = {({item, index}) =>
                                         <Item style={styles.column} onPress={() => this.props.navigation.navigate('Doctor List') }>
                                         <Col>
                                             <LinearGradient 
@@ -107,50 +114,55 @@ class Home extends Component {
                                                 <Image source={{ uri: 'https://static1.squarespace.com/static/586ef2c6bf629a58a3512dfa/t/5879369c5016e1f60c105f77/1484358104031/crown-bridge-icon.png' }} style={styles.customImage} />
                                             </LinearGradient>
 
-                                            <Text style={styles.textcenter}>Dental</Text>
+                                            <Text style={styles.textcenter}>{item.category_name}</Text>
                                             <Text note style={{ textAlign: 'center' }}>100 Doctors</Text>
                                         </Col>
                                         </Item>
-                                          <Item style={styles.column} onPress={() => this.props.navigation.navigate('doctorsearchlist') }>
-                                          <Col>
-                                            <LinearGradient
-                                                colors={['#7357A2', '#62BFE4']} style={{ borderRadius: 10, padding: 10, height: '70%', width: '100%', marginLeft: 'auto', marginRight: 'auto' }}>
-                                                <Image source={{ uri: 'http://pluspng.com/img-png/orthopedics-png--350.png' }} style={styles.customImage} />
-                                            </LinearGradient>
+                                        }
+                                    //       {/* <Item style={styles.column} onPress={() => this.props.navigation.navigate('doctorsearchlist') }>
+                                    //       <Col>
+                                    //         <LinearGradient
+                                    //             colors={['#7357A2', '#62BFE4']} style={{ borderRadius: 10, padding: 10, height: '70%', width: '100%', marginLeft: 'auto', marginRight: 'auto' }}>
+                                    //             <Image source={{ uri: 'http://pluspng.com/img-png/orthopedics-png--350.png' }} style={styles.customImage} />
+                                    //         </LinearGradient>
 
-                                            <Text style={styles.textcenter}>Orthology</Text>
-                                            <Text note style={{ textAlign: 'center' }}>150 Doctors</Text>
-                                        </Col>
-                                        </Item>
-
-
-
-                                        <Col style={styles.column}>
-                                            <LinearGradient
-                                                colors={['#7357A2', '#62BFE4']} style={{ borderRadius: 10, padding: 10, height: '70%', width: '100%', marginLeft: 'auto', marginRight: 'auto' }}>
-                                                <Image source={{ uri: 'https://omionline.in/omi_app/images/images/Neurologist.png' }} style={styles.customImage} />
-                                            </LinearGradient>
-
-                                            <Text style={styles.textcenter}>Neurology</Text>
-                                            <Text note style={{ textAlign: 'center' }}>50 Doctors</Text>
-                                        </Col>
+                                    //         <Text style={styles.textcenter}>Orthology</Text>
+                                    //         <Text note style={{ textAlign: 'center' }}>150 Doctors</Text>
+                                    //     </Col>
+                                    //     </Item>
 
 
 
+                                    //     <Col style={styles.column}>
+                                    //         <LinearGradient
+                                    //             colors={['#7357A2', '#62BFE4']} style={{ borderRadius: 10, padding: 10, height: '70%', width: '100%', marginLeft: 'auto', marginRight: 'auto' }}>
+                                    //             <Image source={{ uri: 'https://omionline.in/omi_app/images/images/Neurologist.png' }} style={styles.customImage} />
+                                    //         </LinearGradient>
 
-                                        <Col style={styles.column}>
-                                            <LinearGradient
-                                                colors={['#7357A2', '#62BFE4']} style={{ borderRadius: 10, padding: 10, height: '70%', width: '100%', marginLeft: 'auto', marginRight: 'auto' }}>
-                                                <Image source={{ uri: 'https://static1.squarespace.com/static/586ef2c6bf629a58a3512dfa/t/5879369c5016e1f60c105f77/1484358104031/crown-bridge-icon.png' }} style={styles.customImage} />
-                                            </LinearGradient>
-
-                                            <Text style={styles.textcenter}>Dental</Text>
-                                            <Text note style={{ textAlign: 'center' }}>50 Doctors</Text>
-                                        </Col>
-
+                                    //         <Text style={styles.textcenter}>Neurology</Text>
+                                    //         <Text note style={{ textAlign: 'center' }}>50 Doctors</Text>
+                                    //     </Col>
 
 
-                                    </ScrollView></ListItem>
+
+
+                                    //     <Col style={styles.column}>
+                                    //         <LinearGradient
+                                    //             colors={['#7357A2', '#62BFE4']} style={{ borderRadius: 10, padding: 10, height: '70%', width: '100%', marginLeft: 'auto', marginRight: 'auto' }}>
+                                    //             <Image source={{ uri: 'https://static1.squarespace.com/static/586ef2c6bf629a58a3512dfa/t/5879369c5016e1f60c105f77/1484358104031/crown-bridge-icon.png' }} style={styles.customImage} />
+                                    //         </LinearGradient>
+
+                                    //         <Text style={styles.textcenter}>Dental</Text>
+                                    //         <Text note style={{ textAlign: 'center' }}>50 Doctors</Text>
+                                    //     </Col>
+                                    // */}
+                         
+ 
+                             keyExtractor={(item, index) => index.toString()}
+                                    />
+
+                        
+                            </ScrollView></ListItem>
 
                             </Row>
 
