@@ -11,7 +11,8 @@ class Categories extends Component {
   constructor(props) {
     super(props)
     this.state={
-      data:this.props.navigation.state.params.data
+      data:this.props.navigation.state.params.data,
+     
     }
 
   }
@@ -25,6 +26,7 @@ class Categories extends Component {
       <Container style={styles.container}>
        
         <Content style={styles.bodyContent}>
+       
 
         <FlatList horizontal={false} numColumns={3}
                                         data={this.state.data}
