@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { Container, Content, Text, Title, Header, H3, Button, Item, Card,
+import { Container, Content, View, Text, Title, Header, H3, Button, Item, Card,
      CardItem, List, ListItem, Left, Right, Thumbnail,
       Body, Icon, locations, ScrollView, ProgressBar } from 'native-base';
 import { login } from '../../providers/auth/auth.actions';
@@ -8,7 +8,7 @@ import { Col, Row, Grid } from 'react-native-easy-grid';
 import { userReviews } from '../../providers/profile/profile.action';
 import { connect } from 'react-redux'
 import LinearGradient from 'react-native-linear-gradient';
-import { StyleSheet, Image, TouchableOpacity, View, FlatList, AsyncStorage } from 'react-native';
+import { StyleSheet, Image, TouchableOpacity, FlatList, AsyncStorage } from 'react-native';
 import StarRating from 'react-native-star-rating';
 
 
@@ -33,31 +33,38 @@ class Reviews extends Component {
     }
     getUserReview = async () => {
 
-         //let doctorId = await AsyncStorage.getItem('doctorId');
-          let doctorId = "5ce01ae8d28ab8073515a6f6";
+    let doctorId = await AsyncStorage.getItem('doctorId');
+            // let doctorId = "5ca47f4dd32d2b731c40bef3";
          try{
 
            let result = await userReviews(doctorId,'doctor'); 
-           console.log("sathish is that coming now");         
-            if (result.success) {   
+           console.log(JSON.stringify(result)+'getUserReviewResponse');
+
+                  
+            if (result.success) {  
                await this.setState({ data: result.data })
+               console.log(JSON.stringify(this.state.data)+'getUserReviewResponse');
             }
             
-            console.log(this.state.data);
         }   
         catch (e) {
             console.log(e)
         }   
-    }  
+    }   
     
-    render() {
-        const { user: { isLoading } } = this.props;
-        return (
+    renderNoReviews(){   
+        return (  
+     
+          <Item style={{ borderBottomWidth: 0, justifyContent:'center',alignItems:'center', height:300 }}>
+            <Text  style={{fontSize:20,justifyContent:'center',alignItems:'center'}} > No reviews yet </Text>
+          </Item>   
+             
+      )
+    }   
 
-            <Container style={styles.container}>
-              <Content style={styles.bodyContent}>
-            
-                <FlatList
+    renderReviews(){
+        return(
+            <FlatList
                  data={this.state.data}    
                  extraData={this.state}
                  keyExtractor={(item, index) => index.toString()}
@@ -66,7 +73,11 @@ class Reviews extends Component {
                         <List>
                             <ListItem avatar noBorder>
                                 <Left>
-                                    <Thumbnail square source={{ uri: 'https://res.cloudinary.com/demo/image/upload/w_200,h_200,c_thumb,g_face,r_max/face_left.png' }} style={{ height: 60, width: 60 }} />
+                                   {
+                                item.userInfo.profile_image.imageURL==undefined 
+                                   ? <Thumbnail square source={item.userInfo.profile_image.imageURL} style={{ height: 60, width: 60 }} />
+                                   : <Thumbnail square source={{ uri: 'https://res.cloudinary.com/demo/image/upload/w_200,h_200,c_thumb,g_face,r_max/face_left.png' }} style={{ height: 60, width: 60 }} /> 
+                                   }
                                 </Left>
                                 <Body>
                                     <Text style={{ fontFamily: 'OpenSans' }}> {item.userInfo.first_name || 'MedFlic User'} </Text>
@@ -76,34 +87,46 @@ class Reviews extends Component {
                                         rating={this.state.starCount}
                                         selectedStar={(rating) => this.onStarRatingPress(rating)}
                                     />
-                                    <Text note> {item.reviews}  </Text>
+                                    {/* <Text note> {item.reviews}  </Text> */}
+                                    <Text style={{ fontFamily: 'OpenSans' }}> {item.comments} </Text>
+             
                                                                        
-                                    <Grid style={{ marginTop: 5 }}>
-                                        <Row>
-                                            <Col style={{ width: '30%' }} >
-                                                <Item style={{ borderBottomWidth: 0 }}><Icon name='heart' style={{ color: 'red', fontSize: 20 }}></Icon>
-                                                <Text style={{ fontFamily: 'OpenSans', fontSize: 12, color: 'gray' }}>Like</Text>
-                                                </Item>
-                                            </Col>
-                                            <Col style={{ width: '30%' }}>
-                                                <Item style={{ borderBottomWidth: 0 }}><Icon name='text' style={{ color: 'red', fontSize: 20 }}></Icon>
-                                                <Text style={{ fontFamily: 'OpenSans', fontSize: 12, color: 'gray' }}>
-                                                {item.comments}</Text>
-                                                </Item>
-                                            </Col>
-                                        </Row>
-                                    </Grid>
-                                </Body>
-                                <Right>
-                                    <Text note>3hrs </Text>
-                                </Right>
-                            </ListItem>
-                        </List>
-                        </Card>  
-         }/>      
-                      
-               
-               
+    {/* <Grid style={{ marginTop: 5 }}>
+                  <Row>
+                  <Col style={{ width: '30%' }} >
+     <Item style={{ borderBottomWidth: 0 }}><Icon name='heart' style={{ color: 'red', fontSize: 20 }}></Icon>
+        <Text style={{ fontFamily: 'OpenSans', fontSize: 12, color: 'gray' }}>Like</Text>
+           </Item>
+             </Col>
+               <Col style={{ width: '30%' }}>
+               <Item style={{ borderBottomWidth: 0 }}><Icon name='text' style={{ color: 'red', fontSize: 20 }}></Icon>
+                <Text style={{ fontFamily: 'OpenSans', fontSize: 12, color: 'gray' }}>
+                 comments</Text>
+                  </Item>
+                   </Col>
+                 </Row>
+               </Grid> */}
+              </Body>
+             <Right>
+             <Text note>3hrs </Text>
+         </Right>
+         </ListItem>
+       </List>
+     </Card>  
+        }/>    
+        )
+    }
+  
+    render() {
+        const { user: { isLoading } } = this.props;
+        return (
+
+            <Container style={styles.container}>
+              <Content style={styles.bodyContent}>
+                        
+         <View>
+         {this.state.data == null ?this.renderNoReviews()  : this.renderReviews()}                            
+         </View>                           
                 </Content>
             </Container>
         )
