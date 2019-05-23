@@ -2,10 +2,10 @@ import React, { Component } from 'react';
 import { Container, Content, Text, Title, Header, H3, Button, Card, List, ListItem, Left, Right, Thumbnail, Body, Icon, locations, ScrollView, Item, DatePicker } from 'native-base';
 import { Col, Row, Grid } from 'react-native-easy-grid';
 import { connect } from 'react-redux'
-import { StyleSheet, Image, TouchableOpacity, View, FlatList } from 'react-native';
+import { StyleSheet, Image, TouchableOpacity, View, FlatList,AsyncStorage } from 'react-native';
 import StarRating from 'react-native-star-rating';
 import { viewdoctorProfile } from '../../providers/bookappointment/bookappointment.action';
-import { formatDate, getFirstDay, getLastDay } from '../../../setup/helpers';
+import { formatDate } from '../../../setup/helpers';
 
 
 class BookAppoinment extends Component {
@@ -20,23 +20,15 @@ class BookAppoinment extends Component {
         state: '',
         pin_code: ''
       },
-      slotList: [],
-      availableSlotData: [],
-      getStartDateOfTheWeek: formatDate(new Date(), 'YYYY-MM-DD'),
-      getEndDateOfTheWeek: formatDate(new Date(), 'YYYY-MM-DD'),
-      doctorId: '5ce01ae8d28ab8073515a6f6',
+      isSlotBooked:true,
       starCount: 3.5,
       qualification: '',
-      specialism:'',
       data: {},
-      pickDate: formatDate(new Date(), 'YYYY-MM-DD'),
       isLoading: false,
-      toggleButton: true,
-      toggleButtonColour: 'gray',
-      selectedSlotIndex: -1
+      appointment_button: true,
+      selectedSlotIndex:-1
     }
   }
-
   onStarRatingPress(rating) {
     this.setState({
       starCount: rating
@@ -44,28 +36,24 @@ class BookAppoinment extends Component {
   }
 
   componentDidMount() {
-    currentDate = formatDate(new Date(), 'YYYY-MM-DD');
-    let startDate = getFirstDay(new Date(), 'week');
-    console.log(startDate + 'startDate');
-    let endDate = getLastDay(new Date(), 'week');
-    console.log(endDate + 'endDate');
-    this.getAvailability(currentDate, startDate, endDate);
+    currentDate = formatDate(new Date(), 'YYYY-MM-DD');    
+     this.getAvailability(currentDate);
   }
 
-  /*get availability slots for the week*/
-  getAvailability = async (currentDate, startDate, endDate) => {
-    let slotOfWeek = {
-      startDate: formatDate(startDate, 'YYYY-MM-DD'),
-      endDate: formatDate(endDate, 'YYYY-MM-DD')
-    }
-    let result = await viewdoctorProfile(this.state.doctorId, slotOfWeek);
-    console.log(result);
+  /*get availability slots */
+  getAvailability = async (currentDate) => {
+    const doctorId = await AsyncStorage.getItem('doctorId');
 
+    let result = await viewdoctorProfile(doctorId);
+    console.log(result);
     if (result.success) {
-      console.log("success");
+      console.log("success");      
       this.setState({ data: result.data[0] });
+      
+      /* Change the state of slotList*/
       this.setState({ slotList: result.data[0].slotData[formatDate(currentDate, 'YYYY-MM-DD')] });
-      console.log(JSON.stringify(this.state.slotList) + '>>>>>' + 'hai');
+      console.log(JSON.stringify(this.state.slotList) + '>>>>>');
+
       /*Doctor degree*/
       if (result.data[0].education) {
         let temp = this.state.data.education.map((val) => {
@@ -73,19 +61,12 @@ class BookAppoinment extends Component {
         }).join(',');
         this.setState({ qualification: temp });
       }
-      /*Doctor category*/
-      if(result.data[0].specialist){
-      let specialistArray=this.state.data.specialist.map((value)=>{
-        return value.category;
-      }).join();
-     this.setState({specialism:specialistArray})
+
     }
-  }
   }
 
 
   onSlotPress(item, index) {
-
     console.log("coming to slotpress");
     this.setState({
       item: {
@@ -96,10 +77,9 @@ class BookAppoinment extends Component {
         pin_code: item.location.location.pin_code
       }
     })
+    console.log(item.isSlotBooked+'hai');
     this.setState({selectedSlotIndex : index});
-    this.state.slotList[index].bg = 'transparent';
-    this.setState({ toggleButton: false });
-    this.setState({ toggleButtonColour: 'red' });
+    this.setState({ appointment_button: false });
     console.log(this.state.slotList);
   }
 
@@ -122,14 +102,14 @@ class BookAppoinment extends Component {
         extraData={this.state}
         keyExtractor={(item, index) => index.toString()}
         renderItem={({ item, index }) =>
-            
-            
-              <TouchableOpacity style={ selectedSlotIndex === index ? styles.slotSelectedBg : styles.slotDefaultBg}
+
+                <TouchableOpacity style={selectedSlotIndex=== index ? styles.slotSelectedBg : styles.slotDefaultBg}
                 onPress={() => this.onSlotPress(item, index)}>
                 <Row style={{ width: '100%', alignItems: 'center' }}>
                 <Col style={{ width: '70%', alignItems: 'center' }}>
-                <Text uppercase={false} style={ selectedSlotIndex === index ? styles.multipleStyles : styles.slotDefault}>
+                <Text style={ selectedSlotIndex === index ? styles.multipleStyles : styles.slotDefault}>
                   {formatDate(item.slotStartDateAndTime, 'hh:mm')}</Text>
+                
                 </Col>
                 <Col style={styles.customPadge}>
                   <Text style={{color: 'white', fontFamily: 'OpenSans', fontSize: 12}}>
@@ -137,29 +117,12 @@ class BookAppoinment extends Component {
                 </Col>
                 </Row>
               </TouchableOpacity>
-            
         } />
     )
   }
-  async onDateChanged(date) {
-    let currentDate = formatDate(date, 'YYYY-MM-DD');
-    let startDate = getFirstDay(new Date(date), 'week');
-    let endDate = getLastDay(new Date(date), 'week');
-    this.setState({ currentDate: currentDate, getStartDateOfTheWeek: startDate, getEndDateOfTheWeek: endDate, });  // Set the selected date in Calender
-    if (!this.state.slotList[formatDate(date, 'YYYY-MM-DD')]) {
-      this.getAvailability(currentDate, startDate, endDate);
-    }
-    else {
-      console.log("test");
-      if (this.state.slotList[formatDate(date, 'YYYY-MM-DD')]) {
-        this.setState({ data: this.state.slotList[formatDate(date, 'YYYY-MM-DD')] });
-        console.log(JSON.stringify(this.state.slotList) + 'hai');
-      }
-    }
-  }
-
+ 
   render() {
-    const { data, qualification,specialism } = this.state;
+    const { data, qualification} = this.state;
     return (
 
       <Container style={styles.container}>
@@ -181,7 +144,6 @@ class BookAppoinment extends Component {
                   <Text>{data.doctorName ? data.doctorName : ''}</Text>
 
                   <Text>{qualification}</Text>
-                  <Text note>{specialism}</Text>
                 </Body>
 
               </ListItem>
@@ -206,7 +168,7 @@ class BookAppoinment extends Component {
               <Grid style={{ marginTop: 5 }}>
                 <Col style={{ width: 270, }}>
 
-                  <Button disabled={this.state.toggleButton} block style={{ borderRadius: 10}}>
+                  <Button disabled={this.state.appointment_button} block style={{ borderRadius: 10}}>
                     <Text uppercase={false}>Book Appoinment</Text>
                   </Button>
 
@@ -225,27 +187,7 @@ class BookAppoinment extends Component {
 
           <Card>
             <View >
-              <Item style={{ borderBottomWidth: 0, backgroundColor: '#F1F1F1', marginTop: 10, borderRadius: 5, height: 45, marginLeft: 18 }}>
-                <Icon name='calendar' style={{ paddingLeft: 20, color: '#775DA3' }} />
-
-                <DatePicker style={styles.transparentLabel}
-
-                  // defaultDate={this.state.pickDate}
-                  locale={"en"}
-                  timeZoneOffsetInMinutes={undefined}
-                  animationType={"fade"}
-                  androidMode={"default"}
-                  placeHolderText={'Pick the date'}
-                  textStyle={{ color: "#5A5A5A" }}
-                  placeHolderTextStyle={{ color: "#5A5A5A" }}
-                  onDateChange={date => { this.onDateChanged(date); }}
-                  disabled={false}
-                  testID='datePicked' />
-              </Item>
-              {this.state.data == null ? this.noAvailableSlots() : this.haveAvailableSlots()}
-
-
-
+                {this.state.data == null ? this.noAvailableSlots() : this.haveAvailableSlots()}             
             </View>
           </Card>
 
@@ -310,7 +252,8 @@ class BookAppoinment extends Component {
           </Card>
            
 
-          
+          {(typeof data.professional_statement!='undefined')?
+
           <Card style={{ backgroundColor: '#ffffff', borderRadius: 10, padding: 10 }}>
 
               <Text style={styles.subtitlesText}>Professional Statement</Text>
@@ -322,58 +265,38 @@ class BookAppoinment extends Component {
                   <Body>
 
                     <Text style={styles.customText}>
-                      The medical doctor CV example below is designed to show you how to properly format and organize your CV, as well as what information to include, such as your hobbies and interests, work history, and a professional summary. Once you’ve familiarized yourself with the structure, you can draft your own tailored CV.
+                    {data.professional_statement}
                   </Text>
-
                   </Body>
-
                 </ListItem>
-
-              </List>
-
-
-            </Card>
+              </List>           
+            </Card>:null}
+        
 
 
 
             <Card style={{ backgroundColor: '#ffffff', borderRadius: 10, padding: 10 }}>
-
-
               <Grid>
                 <Col style={{ width: '10%' }}>
                   <Icon name="apps" style={styles.customIcon}></Icon>
                 </Col>
                 <Col style={{ width: '90%', alignItems: 'flex-start' }}>
                   <Text style={styles.titlesText}>Service</Text></Col>
-
               </Grid>
-
-
               <List>
+                <FlatList
+                data={this.state.data.specialist}
+                keyExtractor={(item, index) => index.toString()}
+                renderItem={({item}) =>             
+                            
                 <ListItem avatar noBorder style={{ borderRightWidth: 8, borderColor: "#8C4F2B", marginBottom: 10, marginRight: 15 }}>
                   <Left >
                   </Left>
                   <Body>
-                    <Text style={styles.rowText}>
-                      psychiotherephy
-
- </Text>
-                    <Text style={styles.rowText}>
-                      psychiotherephy
-
- </Text>
-
-                    <Text style={styles.rowText}>
-                      psychiotherephy
-
- </Text>
-
+                    <Text style={styles.rowText}>{item.services.toString()}</Text>
                   </Body>
-
                 </ListItem>
-
-              </List>
-
+                }/></List>
             </Card>
 
 
@@ -388,34 +311,24 @@ class BookAppoinment extends Component {
                 </Col>
                 <Col style={{ width: '90%', alignItems: 'flex-start' }}>
                   <Text style={styles.titlesText}>Specialization</Text></Col>
-
               </Grid>
 
 
               <List>
+                <FlatList
+                data={this.state.data.specialist}
+                keyExtractor={(item, index) => index.toString()}
+                renderItem={({item}) =>
                 <ListItem avatar noBorder style={{ borderLeftWidth: 8, borderColor: "#F29727", marginBottom: -5 }}>
                   <Left >
                   </Left>
                   <Body>
-                    <Text style={styles.rowText}>
-                      psychiotherephy
-
- </Text>
-                    <Text style={styles.rowText}>
-                      psychiotherephy
-
- </Text>
-
-                    <Text style={styles.rowText}>
-                      psychiotherephy
-
- </Text>
-
+                    <Text style={styles.rowText}> 
+                    {item.category}                   
+                   </Text>
                   </Body>
-
                 </ListItem>
-
-              </List>
+                }/></List>
 
             </Card>
 
@@ -423,8 +336,6 @@ class BookAppoinment extends Component {
 
 
             <Card style={{ backgroundColor: '#ffffff', borderRadius: 10, padding: 10 }}>
-
-
               <Grid>
                 <Col style={{ width: '10%' }}>
                   <Icon name="apps" style={styles.customIcon}></Icon>
@@ -529,29 +440,22 @@ class BookAppoinment extends Component {
 
 
               <List>
+                <FlatList
+                data={this.state.data.language}
+                keyExtractor={(item, index) => index.toString()}
+                renderItem={({item}) =>
+
                 <ListItem avatar noBorder style={{ borderLeftWidth: 8, borderColor: "#F29727", marginBottom: -5 }}>
                   <Left >
                   </Left>
                   <Body>
-                    <Text style={styles.rowText}>
-                      Tamil
-               
-</Text>
-                    <Text style={styles.rowText}>
-                      English
-                
-</Text>
-
-                    <Text style={styles.rowText}>
-                      French
-                
-</Text>
-
+                    <Text style={styles.rowText}>{item}</Text>                           
+                   
                   </Body>
 
                 </ListItem>
 
-              </List>
+              }/></List>
 
             </Card>
 
