@@ -1,82 +1,100 @@
 import React, { Component } from 'react';
-import { Container, Content, Text, Title, Header, Button, H3, Item, List, ListItem, Card, Input, Left, Right, Thumbnail, Body, Icon, Footer, FooterTab } from 'native-base';
+import { Container, Content, Text, Title, Header, Button, H3, Item, List, ListItem,Spinner, Card, Input, Left, Right, Thumbnail, Body, Icon, Footer, FooterTab } from 'native-base';
 import { login,logout } from '../../providers/auth/auth.actions';
 import { messageShow, messageHide } from '../../providers/common/common.action';
 import LinearGradient from 'react-native-linear-gradient';
 import { Col, Row, Grid } from 'react-native-easy-grid';
 import { connect } from 'react-redux'
 import { StyleSheet, Image, } from 'react-native';
+
 import { ScrollView, FlatList } from 'react-native-gesture-handler';
 import { catagries } from '../../providers/catagries/catagries.actions';
+
 
 class Home extends Component {
     constructor(props) {
         super(props)
         this.state = {
-            data:[]
+            data:[],
+            isLoading:false,
+            catagary:[]
+            
+           
          };
-         console.log('muni')
-        console.log(this.props)
+        
         this.getCatagries();
     }
      navigetToCategories() {
-    //     // console.log(
+    
             this.props.navigation.navigate('Categories',{data:this.state.data})
-    //         // );
-    //     //this.props.navigation.navigate('categories');
+    
     }
     doLogout(){
         logout();
         this.props.navigation.navigate('login');
     }
+   
     getCatagries = async () => {
         try {
-            console.log('hi')
+           
         
           let result = await catagries();
-          console.log(result)
+         
        
          // if(result.success) 
-            this.setState({ data: result.data, isRefreshing: false });
+            // setTimeout( ()=>{
+                this.setState({ data: result.data, isLoading: true })
+            let limitedData=[];
+          //  var limtedNumber
+            for(let limtedNumber=0;limtedNumber<4;limtedNumber++){
+                limitedData.push(result.data[limtedNumber]);
+            }
+            this.setState({catagary:limitedData });
+            console.log('state output is:')
+            console.log(this.state.data);
+            // },3000)
         } catch (e) {
           console.log(e);
         }  
-        console.log(this.state.data)
       }
+      
     render() {
         
-        
+          
         return (
-              
+            
             <Container style={styles.container}>
+       {!this.state.isLoading? 
+       (<Spinner color='red'/>):(
+        //                   {/* <Header style={{ backgroundColor: '#7E49C3' }}>
+        //             <Left  >
+        //                 <Button Button transparent onPress={() => this.props.navigation.navigate('home')}>
+        //                     <Icon name="medkit" style={{ color: '#fff', fontSize: 35 }}></Icon>
 
-               {/* <Header style={{ backgroundColor: '#7E49C3' }}>
-                    <Left  >
-                        <Button Button transparent onPress={() => this.props.navigation.navigate('home')}>
-                            <Icon name="medkit" style={{ color: '#fff', fontSize: 35 }}></Icon>
+        //                 </Button>
+        //             </Left>
+        //             <Body>
+        //                 <Item style={{ width: '150%', borderBottomWidth: 0, backgroundColor: '#fff', borderRadius: 10, height: 35 }} >
 
-                        </Button>
-                    </Left>
-                    <Body>
-                        <Item style={{ width: '150%', borderBottomWidth: 0, backgroundColor: '#fff', borderRadius: 10, height: 35 }} >
+        //                     <Input placeholder="Chennai,Tamilnadu,India" style={{ color: 'gray', fontFamily: 'OpenSans', fontSize: 12 }} placeholderTextColor="gray" />
+        //                     <Icon name="ios-search" style={{ color: 'gray' }} />
+        //                 </Item>
 
-                            <Input placeholder="Chennai,Tamilnadu,India" style={{ color: 'gray', fontFamily: 'OpenSans', fontSize: 12 }} placeholderTextColor="gray" />
-                            <Icon name="ios-search" style={{ color: 'gray' }} />
-                        </Item>
+        //             </Body>
+        //             <Right >
 
-                    </Body>
-                    <Right >
+        //                 <Button transparent onPress={() => this.props.navigation.navigate('Profile')}>
+        //                     <Thumbnail style={{ height: 40, width: 40, borderColor: '#f5f5f5', borderWidth: 2, borderRadius: 50 }} source={{ uri: 'https://res.cloudinary.com/demo/image/upload/w_200,h_200,c_thumb,g_face,r_max/face_left.png' }} />
+        //                 </Button>
 
-                        <Button transparent onPress={() => this.props.navigation.navigate('Profile')}>
-                            <Thumbnail style={{ height: 40, width: 40, borderColor: '#f5f5f5', borderWidth: 2, borderRadius: 50 }} source={{ uri: 'https://res.cloudinary.com/demo/image/upload/w_200,h_200,c_thumb,g_face,r_max/face_left.png' }} />
-                        </Button>
-
-                    </Right>
-                </Header>
-        */}
+        //             </Right>
+        //         </Header>
+        // */}
 
 
                 <Content style={styles.bodyContent}>
+                    
+               
                     <Card style={{ padding: 10, borderRadius: 10 }}>
 
                         <Grid>
@@ -101,17 +119,22 @@ class Home extends Component {
                             </Row>
 
                             <Row>
+
                                 <ListItem noBorder>
-                                    <ScrollView horizontal={true}>
-                                        <FlatList horizontal={false} numColumns={7}
-                                        data={this.state.data}
+                                    <ScrollView horizontal={false} 
+                                       
+         >
+                                        <FlatList 
+                                        horizontal={true} 
+                                        data={this.state.catagary}
                                         extraData={this.state}
+                                        // numColumns={5}
                                         renderItem = {({item, index}) =>
-                                        <Item style={styles.column} onPress={() => this.props.navigation.navigate('Doctor List') }>
-                                        <Col>
+                                        <Item  style={styles.column} onPress={() => this.props.navigation.navigate('Doctor List') }>
+                                        <Col  >
                                             <LinearGradient 
-                                                colors={['#7357A2', '#62BFE4']} style={{ borderRadius: 10, padding: 5, height: '70%', width: '100%', marginLeft: 'auto', marginRight: 'auto' }}>
-                                                <Image source={{ uri: 'https://static1.squarespace.com/static/586ef2c6bf629a58a3512dfa/t/5879369c5016e1f60c105f77/1484358104031/crown-bridge-icon.png' }} style={styles.customImage} />
+                                                colors={['#7357A2', '#62BFE4']} style={{ borderRadius: 10, padding: 5, height:100, width: 100, marginLeft: 'auto', marginRight: 'auto' }}>
+                                                <Image source={{ uri: item.imageBaseURL }} style={styles.customImage} />
                                             </LinearGradient>
 
                                             <Text style={styles.textcenter}>{item.category_name}</Text>
@@ -244,6 +267,7 @@ class Home extends Component {
 
 
                 </Content>
+       )}
                 {/* <Footer>
                     <FooterTab style={{ backgroundColor: '#7E49C3' }}>
                         <Button >
@@ -294,10 +318,8 @@ const styles = StyleSheet.create({
     },
 
     column:
-    {
-        width: '25%',
-        marginLeft: 'auto',
-        marginRight: 'auto',
+    { 
+        width: 'auto',
         borderRadius: 10,
         margin: 5,
         padding: 5,

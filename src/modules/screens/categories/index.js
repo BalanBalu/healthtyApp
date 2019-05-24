@@ -35,10 +35,10 @@ class Categories extends Component {
           <Grid>
             
               <Item style={styles.column} onPress={()=> this.props.navigation.navigate('Doctor List') }>
-              <Col style={{width:'33.33%',alignItems:'center'}}>
-                <LinearGradient
-                  colors={['#7357A2', '#62BFE4']} style={{ borderRadius: 10, padding: 10, marginLeft: 'auto', marginRight: 'auto' }}>
-                  <Image source={{ uri: 'https://static1.squarespace.com/static/586ef2c6bf629a58a3512dfa/t/5879369c5016e1f60c105f77/1484358104031/crown-bridge-icon.png' }} style={styles.customImage} />
+              <Col>
+              <LinearGradient
+                  colors={['#7357A2', '#62BFE4']} style={{ borderRadius: 10, padding: 10, height:100, width:100, marginLeft: 'auto', marginRight: 'auto' }}>
+                  <Image source={{ uri: 'http://pluspng.com/img-png/orthopedics-png--350.png' }} style={styles.customImage} />
                 </LinearGradient>
 
                 <Text style={styles.titleText}>{item.category_name}</Text>
@@ -254,9 +254,7 @@ const styles = StyleSheet.create({
 
   column:
   {
-    width: '33.33%',
-    marginLeft: 'auto',
-    marginRight: 'auto',
+    width: '15%',
     borderRadius: 10,
     margin: 10,
     padding: 6
@@ -273,12 +271,12 @@ const styles = StyleSheet.create({
   },
 
   titleText: {
-    fontSize: 14,
+    fontSize: 12,
     padding: 5,
     backgroundColor: '#FF9502',
     borderRadius: 20,
     color: 'white',
-    width: '95%',
+    width: 110,
     textAlign: 'center',
     fontFamily: 'OpenSans',
     marginLeft: 'auto',
