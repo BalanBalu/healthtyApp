@@ -1,10 +1,10 @@
 import React, { Component } from 'react';
-import { Container, Content, Text, Title, Header, H3, Button, Card, List, ListItem, Left, Right, Thumbnail, Body, Icon, locations, ScrollView, Item, DatePicker } from 'native-base';
+import { Container, Content, Text, Title, Header, H3, Button, Card, List, ListItem, Left, Right, Thumbnail, Body, Icon, locations, ScrollView, Item,Toast } from 'native-base';
 import { Col, Row, Grid } from 'react-native-easy-grid';
 import { connect } from 'react-redux'
 import { StyleSheet, Image, TouchableOpacity, View, FlatList,AsyncStorage } from 'react-native';
 import StarRating from 'react-native-star-rating';
-import { viewdoctorProfile } from '../../providers/bookappointment/bookappointment.action';
+import { viewdoctorProfile,viewUserReviews } from '../../providers/bookappointment/bookappointment.action';
 import { formatDate } from '../../../setup/helpers';
 
 
@@ -20,30 +20,23 @@ class BookAppoinment extends Component {
         state: '',
         pin_code: ''
       },
-      isSlotBooked:true,
-      starCount: 3.5,
       qualification: '',
       data: {},
-      isLoading: false,
+      reviewdata:[],      
       appointment_button: true,
       selectedSlotIndex:-1
     }
   }
-  onStarRatingPress(rating) {
-    this.setState({
-      starCount: rating
-    });
-  }
-
-  componentDidMount() {
+  
+  async componentDidMount() {
     currentDate = formatDate(new Date(), 'YYYY-MM-DD');    
      this.getAvailability(currentDate);
+     await this.getUserReviews();
   }
 
   /*get availability slots */
   getAvailability = async (currentDate) => {
     const doctorId = await AsyncStorage.getItem('doctorId');
-
     let result = await viewdoctorProfile(doctorId);
     console.log(result);
     if (result.success) {
@@ -65,7 +58,17 @@ class BookAppoinment extends Component {
     }
   }
 
-
+  /* Get user Reviews*/
+  
+  getUserReviews= async ()=>{
+    let resultReview = await viewUserReviews(doctorId,'doctor');
+    console.log(resultReview.data);
+     if (resultReview.success) {
+       console.log("success1");      
+       await this.setState({ reviewdata: resultReview.data});
+       console.log(this.state.reviewdata);  
+  }
+}
   onSlotPress(item, index) {
     console.log("coming to slotpress");
     this.setState({
@@ -85,9 +88,14 @@ class BookAppoinment extends Component {
 
 
   noAvailableSlots() {
+  //   Toast.show({
+  //     text: "No Slots Are Available",
+  //     type: "danger",
+  //     duration: 3000,
+  // })
     return (
       <Item style={{ borderBottomWidth: 0, justifyContent: 'center', alignItems: 'center' }}>
-        <Text style={{ fontSize: 18, justifyContent: 'center', alignItems: 'center' }} >No slots available </Text>
+        <Text style={{ fontSize: 18, justifyContent: 'center', alignItems: 'center' }} >No slots are available </Text>
       </Item>
     )
   }
@@ -187,7 +195,7 @@ class BookAppoinment extends Component {
 
           <Card>
             <View >
-                {this.state.data == null ? this.noAvailableSlots() : this.haveAvailableSlots()}             
+                {this.state.slotList === undefined ? this.noAvailableSlots() : this.haveAvailableSlots()}             
             </View>
           </Card>
 
@@ -271,40 +279,11 @@ class BookAppoinment extends Component {
                 </ListItem>
               </List>           
             </Card>:null}
-        
 
 
-
-            <Card style={{ backgroundColor: '#ffffff', borderRadius: 10, padding: 10 }}>
-              <Grid>
-                <Col style={{ width: '10%' }}>
-                  <Icon name="apps" style={styles.customIcon}></Icon>
-                </Col>
-                <Col style={{ width: '90%', alignItems: 'flex-start' }}>
-                  <Text style={styles.titlesText}>Service</Text></Col>
-              </Grid>
-              <List>
-                <FlatList
-                data={this.state.data.specialist}
-                keyExtractor={(item, index) => index.toString()}
-                renderItem={({item}) =>             
-                            
-                <ListItem avatar noBorder style={{ borderRightWidth: 8, borderColor: "#8C4F2B", marginBottom: 10, marginRight: 15 }}>
-                  <Left >
-                  </Left>
-                  <Body>
-                    <Text style={styles.rowText}>{item.services.toString()}</Text>
-                  </Body>
-                </ListItem>
-                }/></List>
-            </Card>
-
-
-
+            {(typeof data.specialist!='undefined')?
 
             <Card style={{ backgroundColor: '#ffffff', borderRadius: 10, padding: 10 }}>
-
-
               <Grid style={{ margin: 5 }}>
                 <Col style={{ width: '10%' }}>
                   <Icon name="apps" style={styles.customIcon}></Icon>
@@ -330,10 +309,12 @@ class BookAppoinment extends Component {
                 </ListItem>
                 }/></List>
 
-            </Card>
+            </Card>:null}
+
+        
 
 
-
+            {(typeof data.specialist!='undefined')?
 
             <Card style={{ backgroundColor: '#ffffff', borderRadius: 10, padding: 10 }}>
               <Grid>
@@ -341,91 +322,31 @@ class BookAppoinment extends Component {
                   <Icon name="apps" style={styles.customIcon}></Icon>
                 </Col>
                 <Col style={{ width: '90%', alignItems: 'flex-start' }}>
-                  <Text style={styles.titlesText}>Hospital Network</Text></Col>
-
+                  <Text style={styles.titlesText}>Service</Text></Col>
               </Grid>
-
-
               <List>
+                <FlatList
+                data={this.state.data.specialist}
+                keyExtractor={(item, index) => index.toString()}
+                renderItem={({item}) =>             
+                            
                 <ListItem avatar noBorder style={{ borderRightWidth: 8, borderColor: "#8C4F2B", marginBottom: 10, marginRight: 15 }}>
                   <Left >
                   </Left>
                   <Body>
-
-                    <Grid>
-                      <Col style={{ width: '40%' }}>
-                        <Text style={styles.rowText}>
-                          ADS Hospitals
-
- </Text>
-                      </Col>
-                      <Col style={{ width: '30%' }}>
-                      </Col>
-                      <Col style={{ width: '30%' }}>
-
-                        <Text style={styles.rowText}>
-                          Mon-Sat
-
- </Text>
-                      </Col>
-                    </Grid>
-
-                    <Grid >
-                      <Col style={{ width: '90%', alignItems: 'center', borderColor: 'gray', borderWidth: 1, padding: 5, borderRadius: 5 }}>
-                        <Text style={styles.rowText}>
-                          81/3 middle street</Text>
-
-                        <Text style={styles.rowText}>
-                          nehru street</Text>
-
-
-                        <Text style={styles.rowText}>
-                          Annanagar-40</Text>
-                      </Col>
-                      <Col style={{ width: '10%' }}></Col>
-                    </Grid>
-
-                    <Grid>
-                      <Col style={{ width: '40%' }}>
-                        <Text style={styles.rowText}>
-                          ADS Hospitals
-
- </Text>
-                      </Col>
-                      <Col style={{ width: '30%' }}>
-                      </Col>
-                      <Col style={{ width: '30%' }}>
-
-                        <Text style={styles.rowText}>
-                          Mon-Sat
-
- </Text>
-                      </Col>
-                    </Grid>
-
-                    <Grid>
-                      <Col style={{ width: '90%', alignItems: 'center', borderColor: 'gray', borderWidth: 1, padding: 5, borderRadius: 5 }}>
-                        <Text style={styles.rowText}>
-                          81/3 middle street</Text>
-
-                        <Text style={styles.rowText}>
-                          nehru street</Text>
-
-
-                        <Text style={styles.rowText}>
-                          Annanagar-40</Text>
-                      </Col>
-                      <Col style={{ width: '10%' }}></Col>
-                    </Grid>
-
+                    <Text style={styles.rowText}>{item.services.toString()}</Text>
                   </Body>
-
                 </ListItem>
+                }/></List>
+            </Card>:null}
 
-              </List>
 
-            </Card>
 
+            
+
+
+
+            {(typeof data.language!='undefined')?
 
             <Card style={{ backgroundColor: '#ffffff', borderRadius: 10, padding: 10 }}>
 
@@ -457,7 +378,7 @@ class BookAppoinment extends Component {
 
               }/></List>
 
-            </Card>
+            </Card>:null}
 
 
             <Card style={{ backgroundColor: '#ffffff', borderRadius: 10, padding: 10 }}>
@@ -520,69 +441,43 @@ class BookAppoinment extends Component {
 </Text>
       <Text style={styles.rowText}>
      certificate2
-  
-</Text>
-
-     
-
+  </Text>  
     </Body>
-
   </ListItem>
-
 </List>
-
 </Card>
+
+
 
 <Card style={{ margin: 10, padding: 10, borderRadius: 10 }}>
-
+<Text style={styles.titleText}>Reviews</Text>  
 <List>
-  <Text style={styles.titleText}>Reviews</Text>
-
+<FlatList
+  data={this.state.reviewdata}
+  keyExtractor={(item, index) => index.toString()}
+  renderItem={({item}) =>
   <ListItem avatar>
     <Left>
       <Thumbnail square source={{ uri: 'https://static1.squarespace.com/static/582bbfef9de4bb07fe62ab18/t/5877b9ccebbd1a124af66dfe/1484241404624/Headshot+-+Circular.png?format=300w' }} style={{ height: 40, width: 40 }} />
     </Left>
     <Body>
-      <Text>Kumar Pratik</Text>
-
+      <Text>{((typeof item.userInfo.first_name||typeof item.userInfo.last_name)!=='undefined')?item.userInfo.first_name+''+item.userInfo.last_name:'Unknown UserName'}</Text>
       <Text note>3hrs.</Text>
       <StarRating fullStarColor='#FF9500' starSize={15} width={100} containerStyle={{ width: 100 }}
         disabled={false}
         maxStars={5}
-        rating={this.state.starCount}
-        selectedStar={(rating) => this.onStarRatingPress(rating)}
-
-      />
-      <Text note style={styles.customText}>this is a good clinic to check basic problems like fever,cold..etc..</Text>
+        rating={item.overall_rating}/>
+      
+      <Text note style={styles.customText}>{(typeof item.comments!='undefined')?item.comments:'No Comments'}</Text>
     </Body>
-
-  </ListItem>
-
-  <ListItem avatar>
-    <Left>
-      <Thumbnail square source={{ uri: 'https://static1.squarespace.com/static/582bbfef9de4bb07fe62ab18/t/5877b9ccebbd1a124af66dfe/1484241404624/Headshot+-+Circular.png?format=300w' }} style={{ height: 40, width: 40 }} />
-    </Left>
-    <Body>
-      <Text>Kumar Pratik</Text>
-
-      <Text note>3hrs.</Text>
-      <StarRating fullStarColor='#FF9500' starSize={15} width={100} containerStyle={{ width: 100 }}
-        disabled={false}
-        maxStars={5}
-        rating={this.state.starCount}
-        selectedStar={(rating) => this.onStarRatingPress(rating)}
-
-      />
-      <Text note style={styles.customText}>this is a good clinic to check basic problems like fever,cold..etc..</Text>
-    </Body>
-
-  </ListItem>
+    </ListItem>
+     
+  }/></List>
   <Button iconRight transparent block onPress={()=> this.props.navigation.navigate('Reviews')}>
-    <Icon name='add' />
-    <Text style={styles.customText}>More Reviews</Text>
-  </Button>
-</List>
-</Card>
+       <Icon name='add' />
+         <Text style={styles.customText}>More Reviews</Text>
+       </Button>
+  </Card>
 
 
 
