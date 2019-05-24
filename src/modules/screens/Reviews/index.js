@@ -8,7 +8,7 @@ import { Col, Row, Grid } from 'react-native-easy-grid';
 import { userReviews } from '../../providers/profile/profile.action';
 import { connect } from 'react-redux'
 import LinearGradient from 'react-native-linear-gradient';
-import { StyleSheet, Image, TouchableOpacity, FlatList, AsyncStorage } from 'react-native';
+import { StyleSheet, Image, TouchableOpacity, FlratingatList, AsyncStorage, FlatList } from 'react-native';
 import StarRating from 'react-native-star-rating';
 
 
@@ -18,7 +18,7 @@ class Reviews extends Component {
 
         this.state = {
             data:[],            
-            starCount: 3.5
+            starCount: ''
                     }
                 }
     
@@ -33,20 +33,16 @@ class Reviews extends Component {
     }
     getUserReview = async () => {
 
-    let doctorId = await AsyncStorage.getItem('doctorId');
-            // let doctorId = "5ca47f4dd32d2b731c40bef3";
-         try{
-
-           let result = await userReviews(doctorId,'doctor'); 
-           console.log(JSON.stringify(result)+'getUserReviewResponse');
-
-                  
+    // let doctorId = await AsyncStorage.getItem('doctorId');
+             let doctorId =  "5ce38535ecb5b70f90996222";;
+         try
+         {
+           let result = await userReviews(doctorId,'doctor');          
             if (result.success) {  
+                console.log(JSON.stringify(result.data))
                await this.setState({ data: result.data })
-               console.log(JSON.stringify(this.state.data)+'getUserReviewResponse');
-            }
-            
-        }   
+                           }
+                    }   
         catch (e) {
             console.log(e)
         }   
@@ -74,21 +70,21 @@ class Reviews extends Component {
                             <ListItem avatar noBorder>
                                 <Left>
                                    {
-                                item.userInfo.profile_image.imageURL==undefined 
+                                item.userInfo.profile_image!=undefined 
                                    ? <Thumbnail square source={item.userInfo.profile_image.imageURL} style={{ height: 60, width: 60 }} />
                                    : <Thumbnail square source={{ uri: 'https://res.cloudinary.com/demo/image/upload/w_200,h_200,c_thumb,g_face,r_max/face_left.png' }} style={{ height: 60, width: 60 }} /> 
                                    }
                                 </Left>
                                 <Body>
-                                    <Text style={{ fontFamily: 'OpenSans' }}> {item.userInfo.first_name || 'MedFlic User'} </Text>
+                                    <Text style={{ fontFamily: 'OpenSans' }}> {item.userInfo.first_name +' '+ item.userInfo.last_name || 'MedFlic User'} </Text>
                                     <StarRating fullStarColor='#FF9500' starSize={15} containerStyle={{ width: 100 }}
                                         disabled={false}
                                         maxStars={5}
-                                        rating={this.state.starCount}
+                                        // rating={this.state.starCount}
+                                        rating={item.userInfo.overall_rating}
                                         selectedStar={(rating) => this.onStarRatingPress(rating)}
                                     />
-                                    {/* <Text note> {item.reviews}  </Text> */}
-                                    <Text style={{ fontFamily: 'OpenSans' }}> {item.comments} </Text>
+                                   <Text style={{ fontFamily: 'OpenSans', fontSize: 18, color: 'gray' }}> {item.comments} </Text>
              
                                                                        
     {/* <Grid style={{ marginTop: 5 }}>
@@ -125,7 +121,7 @@ class Reviews extends Component {
               <Content style={styles.bodyContent}>
                         
          <View>
-         {this.state.data == null ?this.renderNoReviews()  : this.renderReviews()}                            
+         {this.state.data == 0 ?this.renderNoReviews()  : this.renderReviews()}                            
          </View>                           
                 </Content>
             </Container>
