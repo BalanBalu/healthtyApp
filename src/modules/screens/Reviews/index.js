@@ -19,18 +19,13 @@ class Reviews extends Component {
         super(props)
 
         this.state = {
-            data: []
+            data: [],
+
         }
     }
 
     componentDidMount() {
         this.getUserReview();
-    }
-
-    onStarRatingPress(rating) {
-        // this.setState({
-        //     starCount: rating
-        // });
     }
 
     getUserReview = async () => {
@@ -47,6 +42,12 @@ class Reviews extends Component {
         catch (e) {
             console.log(e)
         }
+    }
+
+    renderAllRatings() {
+        return (
+            null
+        )
     }
 
     renderNoReviews() {
@@ -81,9 +82,14 @@ class Reviews extends Component {
                                     <StarRating fullStarColor='#FF9500' starSize={15} containerStyle={{ width: 100 }}
                                         disabled={false}
                                         maxStars={5}
-                                        rating={item.userInfo.overall_rating}
-                                        selectedStar={(rating) => this.onStarRatingPress(rating)}
+                                        rating={item.overall_rating}
+                                        selectedStar={this.setState({ allRatingsVisible: !this.state.allRatingsVisible })}
                                     />
+                                    {
+                                        this.state.allRatingsVisible == true
+                                            ? this.renderAllRatings()
+                                            : null
+                                    }
                                     <Text style={{ fontFamily: 'OpenSans', fontSize: 18, color: 'gray' }}> {item.comments} </Text>
 
 
