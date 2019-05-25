@@ -4,7 +4,7 @@ import { login } from '../../providers/auth/auth.actions';
 import { messageShow, messageHide } from '../../providers/common/common.action';
 import { Col, Row, Grid } from 'react-native-easy-grid';
 import { connect } from 'react-redux'
-import { StyleSheet, Image, TouchableOpacity, View, FlatList, AsyncStorage } from 'react-native';
+import { StyleSheet, Image, TouchableOpacity, View, FlatList, AsyncStorage, TouchEvent } from 'react-native';
 import StarRating from 'react-native-star-rating';
 import { ScrollView, TouchableHighlight } from 'react-native-gesture-handler';
 import Modal from "react-native-modal";
@@ -18,8 +18,7 @@ class doctorSearchList extends Component {
 
         this.state = {
             isModalVisible: false,
-            starCount: 3.5,
-            getSearchedDoctorIds: [],
+            starCount: 0,
             doctorDetails: [],
             selectedDate: formatDate(new Date(), 'YYYY-MM-DD'),
             singleDataResult: {},
@@ -41,7 +40,7 @@ class doctorSearchList extends Component {
     componentDidMount() {
         this.getPatientSearchData();
         if (this.state.selectedDate != formatDate(new Date(), 'YYYY-MM-DD')) {
-            this.getavailabilitySlots(startDate, endDate);
+           // this.getavailabilitySlots(startDate, endDate);
         }
     }
     /* get the Doctor Id's list from Search Module  */
@@ -54,24 +53,22 @@ class doctorSearchList extends Component {
         const userId = await AsyncStorage.getItem('userId');
         let resultData = await searchDoctorList(userId, searchedInputvalues);
         // console.log(JSON.stringify(resultData+'response for searchDoctorList '));
-        let temp = resultData.data.map((element) => {
+        if (resultData.success) {
+        let doctorIds = resultData.data.map((element) => {
             return element.doctor_id
         }).join(',');
-        this.setState({ getSearchedDoctorIds: temp });
-        //console.log(this.state.getSearchedDoctorIds + 'getMultipleDoctorIds');
-        if (resultData.success) {
-            this.getavailabilitySlots(startDate, endDate);
+            this.getavailabilitySlots(doctorIds, startDate, endDate);
         }
     }
 
 /* get the  Doctors Availablity Slots */
-    getavailabilitySlots = async (startDate, endDate) => {
+    getavailabilitySlots = async (getSearchedDoctorIds, startDate, endDate) => {
         try {
             let totalSlotsInWeek = {
                 startDate: formatDate(startDate, 'YYYY-MM-DD'),
                 endDate: formatDate(endDate, 'YYYY-MM-DD')
             }
-            let resultData = await viewdoctorProfile(this.state.getSearchedDoctorIds, totalSlotsInWeek);
+            let resultData = await viewdoctorProfile(getSearchedDoctorIds, totalSlotsInWeek);
             if (resultData.success) {
                 this.setState({ doctorDetails: resultData.data });
             }
@@ -106,9 +103,8 @@ class doctorSearchList extends Component {
         this.onClickedHospitalName(selectedHospital);
         item.slotData[this.state.selectedDate].forEach(element => {
             if (!sampleArray.includes(element.location.hospital_id)) {
-                console.log('came to hospital names');
-                sampleArray.push(element.location.hospital_id);
-                hospitalLocations.push({ _id: element.location.hospital_id, hospitalData: element.location.name });
+               sampleArray.push(element.location.hospital_id);
+               hospitalLocations.push({ _id: element.location.hospital_id, hospitalData: element.location.name });
             }
         })
         await this.setState({ hospitalNames: hospitalLocations });
@@ -124,7 +120,6 @@ class doctorSearchList extends Component {
             }
         })
         await this.setState({ singleDataResult: hospitalSlotArray });
-        //return hospitalSlotArray;
     }
 /* Click the Slots or Book Appointment on Popup page */
     onBookSlotsPress = async (index) => {
@@ -155,7 +150,7 @@ class doctorSearchList extends Component {
                         </Button>
                     </Col>
 
-                } />
+                }/>
         )
     }
 
@@ -167,7 +162,8 @@ class doctorSearchList extends Component {
 
                 <Content style={styles.bodyContent}>
                     <Card>
-                        <Grid><Row>
+                        <Grid>
+                          <Row>
                             <Col style={{ col: '33.33%', alignItems: 'center' }}>
                                 <Button transparent>
                                     <Text note uppercase={false} style={{ fontFamily: 'OpenSans', color: 'gray' }}>TopRated</Text>
@@ -216,7 +212,10 @@ class doctorSearchList extends Component {
                             keyExtractor={(item, index) => index.toString()}
                             renderItem={({ item, index }) =>
                                 <List>
-                                    <ListItem avatar onPress={this.props.navigation.navigate('Book Appointment')}>
+                                    
+                                       <ListItem avatar onPress={() => this.props.navigation.navigate('Book Appointment')}>
+                                       
+
                                         <Left>
 
                                             {
@@ -238,7 +237,7 @@ class doctorSearchList extends Component {
                                             </Item>
 
                                             <StarRating fullStarColor='#FF9500' starSize={15} containerStyle={{ width: 100 }}
-                                                disabled={false}
+                                                disabled={true}
                                                 maxStars={5}
                                                 rating={this.state.starCount}
                                                 selectedStar={(rating) => this.onStarRatingPress(rating)}
@@ -248,8 +247,11 @@ class doctorSearchList extends Component {
                                         <Right>
                                             <Icon name='heart' style={{ color: 'red', fontSize: 25 }}></Icon>
                                         </Right>
+                                       
+                                     
+                                       
                                     </ListItem>
-
+                                   
                                     <Grid>
                                         <Row>
                                             <ListItem>

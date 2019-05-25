@@ -5,6 +5,11 @@ export const DOCTORLIST_REQUEST = 'BOOK_APPOINTMENT/DOCTORLIST_REQUEST'
 export const DOCTORLIST_ERROR = 'BOOK_APPOINTMENT/DOCTORLIST_RESPONSE'
 export const DOCTORLIST_RESPONSE = 'BOOK_APPOINTMENT/DOCTORLIST_RESPONSE'
 import { postService, getService } from '../../../setup/services/httpservices';
+export const REVIEW_REQUEST = 'BOOK_APPOINTMENT/REVIEW_REQUEST'
+export const REVIEW_RESPONSE = 'BOOK_APPOINTMENT/REVIEW_RESPONSE'
+export const REVIEW_ERROR = 'BOOK_APPOINTMENT/REVIEW_ERROR'
+
+
 import { store } from '../../../setup/store';
 
 
@@ -17,9 +22,9 @@ export async function searchDoctorList(userId, searchInputvalues, isLoading = tr
       isLoading
     })
     // console.log(searchInputvalues+'searchInputvalues');
-    let endPoint = 'user/' + userId + '/filters/doctors'
+    let endPoint = 'user/' + userId + '/filters/doctors';
     let response = await postService(endPoint, searchInputvalues);
-    // console.log(JSON.stringify(response)+'searchDoctorList API rspnse');
+     console.log(JSON.stringify(response)+'searchDoctorList API rspnse');
     let respData = response.data;
 
     if (respData.error || !respData.success) {
@@ -28,7 +33,7 @@ export async function searchDoctorList(userId, searchInputvalues, isLoading = tr
         message: respData.error
       })
     } else {
-
+     
       store.dispatch({
         type: DOCTORLIST_RESPONSE,
         message: respData.message
@@ -45,24 +50,24 @@ export async function searchDoctorList(userId, searchInputvalues, isLoading = tr
 }
 
 /*get doctor availability for patient view doctor profile */
-export async function viewdoctorProfile(doctorIds, slotOfWeek, isLoading = true) {
+export async function viewdoctorProfile (doctorIds, isLoading = true) {
   try {
     store.dispatch({
       type: BOOK_APPOINTMENT_REQUEST,
-      isLoading
-    })
-    let endPoint = 'doctors/' + doctorIds + '/availabilitySlots?' + 'startDate=' + slotOfWeek.startDate + '&endDate=' + slotOfWeek.endDate
-    console.log(endPoint);
-    let response = await getService(endPoint);
-    let respData = response.data;
-    if (respData.error || !respData.success) {
+      isLoading 
+    })     
+    let endPoint = 'doctors/' + doctorIds + '/availabilitySlots'
+   console.log(endPoint);   
+    let response = await getService(endPoint); 
+    let respData = response.data;    
+    if(respData.error || !respData.success) {
       console.log('error')
       store.dispatch({
-        type: PROFILE_ERROR,
+        type: BOOK_APPOINTMENT_ERROR,
         message: respData.error
       })
     } else {
-      console.log('response');
+          console.log('response');
       store.dispatch({
         type: BOOK_APPOINTMENT_RESPONSE,
         isLoading: false,
@@ -81,9 +86,42 @@ export async function viewdoctorProfile(doctorIds, slotOfWeek, isLoading = true)
   }
 }
 
+/*get userReviews*/
 
-
-
-
-
-
+export async function viewUserReviews(id,type, isLoading = true) {
+  try {
+    store.dispatch({
+      type: REVIEW_REQUEST,
+      isLoading 
+    })     
+    let endPoint = '/user/reviews/'+type+ '/' +id
+   console.log(endPoint);   
+    let response = await getService(endPoint);
+    console.log("hai");
+    console.log(response); 
+    let respData = response.data;    
+    if(respData.error || !respData.success) {
+      console.log('error')
+      store.dispatch({
+        type: REVIEW_ERROR,
+        message: respData.error
+      })
+    } else {   
+      console.log('response');
+      store.dispatch({        
+        type: REVIEW_RESPONSE,
+        isLoading:false,
+        success: true,     
+        message: respData.message
+      })
+      return respData;
+    }
+    return respData;
+    
+  } catch (e) {
+    store.dispatch({
+      type: REVIEW_ERROR,
+      message: e
+      }); 
+  }  
+}

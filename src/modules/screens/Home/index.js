@@ -27,8 +27,8 @@ class Home extends Component {
     searchDoctorListModule = async () => {
         try {
             let serachInputvalues = [{
-                type: 'service',
-                value: this.state.searchValue
+                type: 'language',
+                value: [ this.state.searchValue ]
             }]
             if (this.state.searchValue == '') {
                 alert("We can't Find the Empty Values");
