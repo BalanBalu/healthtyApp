@@ -141,7 +141,7 @@ class Home extends Component {
                                         <Col  >
                                             <LinearGradient 
                                                 colors={['#7357A2', '#62BFE4']} style={{ borderRadius: 10, padding: 5, height:100, width: 100, marginLeft: 'auto', marginRight: 'auto' }}>
-                                                <Image source={{ uri: item.imageBaseURL }} style={styles.customImage} />
+                                                <Image source={{ uri: item.imageBaseURL + '/' + item.category_id + '.png' }} style={styles.customImage} />
                                             </LinearGradient>
 
                                             <Text style={styles.textcenter}>{item.category_name}</Text>
