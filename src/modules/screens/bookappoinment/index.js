@@ -24,19 +24,21 @@ class BookAppoinment extends Component {
       data: {},
       reviewdata:[],      
       appointment_button: true,
-      selectedSlotIndex:-1
+      selectedSlotIndex:-1,
+      doctorId: ''
     }
   }
   
   async componentDidMount() {
-    currentDate = formatDate(new Date(), 'YYYY-MM-DD');    
-     this.getAvailability(currentDate);
-     await this.getUserReviews();
+    await this.setState({doctorId : "5ce01ae8d28ab8073515a6f6"})  
+    let doctorId = this.state.doctorId;
+     currentDate = formatDate(new Date(), 'YYYY-MM-DD');    
+     this.getAvailability(doctorId,currentDate);
+     await this.getUserReviews(doctorId);
   }
 
   /*get availability slots */
-  getAvailability = async (currentDate) => {
-    const doctorId = await AsyncStorage.getItem('doctorId');
+  getAvailability = async (doctorId, currentDate) => {
     let result = await viewdoctorProfile(doctorId);
     console.log(result);
     if (result.success) {
@@ -60,7 +62,7 @@ class BookAppoinment extends Component {
 
   /* Get user Reviews*/
   
-  getUserReviews= async ()=>{
+  getUserReviews= async()=>{
     let resultReview = await viewUserReviews(doctorId,'doctor');
     console.log(resultReview.data);
      if (resultReview.success) {
