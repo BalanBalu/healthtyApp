@@ -4,8 +4,6 @@ import {
     CardItem, List, ListItem, Left, Right, Thumbnail,
     Body, Icon, ScrollView
 } from 'native-base';
-import { connect } from 'react-redux'
-import LinearGradient from 'react-native-linear-gradient';
 import { StyleSheet, Image, AsyncStorage, FlatList } from 'react-native';
 import StarRating from 'react-native-star-rating';
 
@@ -19,6 +17,7 @@ class Reviews extends Component {
 
         this.state = {
             data: [],
+            isLoading: false
 
         }
     }
@@ -29,8 +28,8 @@ class Reviews extends Component {
 
     getUserReview = async () => {
 
-        let doctorId = await AsyncStorage.getItem('doctorId');
-        //  let doctorId =  "5ce38535ecb5b70f90996222";;
+        //let doctorId = await AsyncStorage.getItem('doctorId');
+          let doctorId =  "5ce01ae8d28ab8073515a6f6";
         try {
             let result = await userReviews(doctorId, 'doctor');
             if (result.success) {
@@ -99,7 +98,7 @@ class Reviews extends Component {
                                         disabled={true}
                                         maxStars={5}
                                         rating={item.overall_rating}
-                                        selectedStar={this.setState({ allRatingsVisible: !this.state.allRatingsVisible })}
+                                        selectedStar={() => this.setState({ allRatingsVisible: !this.state.allRatingsVisible })}
                                     />
                                     {
                                         this.state.allRatingsVisible == true
@@ -136,7 +135,6 @@ class Reviews extends Component {
     }
 
     render() {
-        const { user: { isLoading } } = this.props;
         return (
 
             <Container style={styles.container}>
@@ -151,12 +149,7 @@ class Reviews extends Component {
     }
 }
 
-function loginState(state) {
-    return {
-        user: state.user
-    }
-}
-export default connect(loginState, { login, messageShow, messageHide })(Reviews)
+export default Reviews
 const styles = StyleSheet.create({
     container:
     {

@@ -56,7 +56,13 @@ class Categories extends Component {
 
 }
 
-export default Categories
+function appoinmentsState(state) {
+
+  return {
+    user: state.user
+  }
+}
+export default connect(appoinmentsState, { login, messageShow, messageHide })(Categories)
 
 
 const styles = StyleSheet.create({
