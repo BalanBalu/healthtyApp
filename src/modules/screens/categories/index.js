@@ -5,11 +5,15 @@ import { messageShow, messageHide } from '../../providers/common/common.action';
 import LinearGradient from 'react-native-linear-gradient';
 import { Col, Row, Grid } from 'react-native-easy-grid';
 import { connect } from 'react-redux'
-import { StyleSheet, Image, TouchableOpacity, View } from 'react-native';
+import { StyleSheet, Image, TouchableOpacity, View ,FlatList} from 'react-native';
 
 class Categories extends Component {
   constructor(props) {
     super(props)
+    this.state={
+      data:this.props.navigation.state.params.data,
+     
+    }
 
   }
 
@@ -22,195 +26,28 @@ class Categories extends Component {
       <Container style={styles.container}>
        
         <Content style={styles.bodyContent}>
+       
 
-
+        <FlatList horizontal={false} numColumns={3}
+                                        data={this.state.data}
+                                        extraData={this.state}
+                                        renderItem = {({item, index}) =>
           <Grid>
-            <Row>
+            
               <Item style={styles.column} onPress={()=> this.props.navigation.navigate('Doctor List') }>
               <Col>
-                <LinearGradient
-                  colors={['#7357A2', '#62BFE4']} style={{ borderRadius: 10, padding: 10, height: '100%', width: '100%', marginLeft: 'auto', marginRight: 'auto' }}>
-                  <Image source={{ uri: 'https://static1.squarespace.com/static/586ef2c6bf629a58a3512dfa/t/5879369c5016e1f60c105f77/1484358104031/crown-bridge-icon.png' }} style={styles.customImage} />
-                </LinearGradient>
-
-                <Text style={styles.titleText}>Dental</Text>
-              </Col>
-              </Item>
-              <Item style={styles.column} onPress={()=> this.props.navigation.navigate('Doctor List') }>
-              <Col>
-                <LinearGradient
-                  colors={['#7357A2', '#62BFE4']} style={{ borderRadius: 10, padding: 10, height: '100%', width: '100%', marginLeft: 'auto', marginRight: 'auto' }}>
+              <LinearGradient
+                  colors={['#7357A2', '#62BFE4']} style={{ borderRadius: 10, padding: 10, height:100, width:100, marginLeft: 'auto', marginRight: 'auto' }}>
                   <Image source={{ uri: 'http://pluspng.com/img-png/orthopedics-png--350.png' }} style={styles.customImage} />
                 </LinearGradient>
 
-                <Text style={styles.titleText}>Orthology</Text>
-              </Col>
-              </Item>
-
-              <Item style={styles.column} onPress={()=> this.props.navigation.navigate('Doctor List') }>
-              <Col>
-                <LinearGradient
-                  colors={['#7357A2', '#62BFE4']} style={{ borderRadius: 10, padding: 10, height: '100%', width: '100%', marginLeft: 'auto', marginRight: 'auto' }}>
-                  <Image source={{ uri: 'https://omionline.in/omi_app/images/images/Neurologist.png' }} style={styles.customImage} />
-                </LinearGradient>
-
-                <Text style={styles.titleText}>Neurology</Text>
-              </Col>
-              </Item>
-
-            </Row>
+                <Text style={styles.titleText}>{item.category_name}</Text>
+                </Col>
+               </Item>
+              
 
           </Grid>
-
-
-          <Grid style={{marginTop:10}}>
-            <Row>
-              <Col style={styles.column}>
-                <LinearGradient
-                  colors={['#7357A2', '#62BFE4']} style={{ borderRadius: 10, padding: 10, height: '100%', width: '100%', marginLeft: 'auto', marginRight: 'auto' }}>
-                  <Image source={{ uri: 'https://static1.squarespace.com/static/586ef2c6bf629a58a3512dfa/t/5879369c5016e1f60c105f77/1484358104031/crown-bridge-icon.png' }} style={styles.customImage} />
-                </LinearGradient>
-
-                <Text style={styles.titleText}>Dental</Text>
-              </Col>
-
-              <Col style={styles.column}>
-                <LinearGradient
-                  colors={['#7357A2', '#62BFE4']} style={{ borderRadius: 10, padding: 10, height: '100%', width: '100%', marginLeft: 'auto', marginRight: 'auto' }}>
-                  <Image source={{ uri: 'http://pluspng.com/img-png/orthopedics-png--350.png' }} style={styles.customImage} />
-                </LinearGradient>
-
-                <Text style={styles.titleText}>Orthology</Text>
-              </Col>
-
-
-
-              <Col style={styles.column}>
-                <LinearGradient
-                  colors={['#7357A2', '#62BFE4']} style={{ borderRadius: 10, padding: 10, height: '100%', width: '100%', marginLeft: 'auto', marginRight: 'auto' }}>
-                  <Image source={{ uri: 'https://omionline.in/omi_app/images/images/Neurologist.png' }} style={styles.customImage} />
-                </LinearGradient>
-
-                <Text style={styles.titleText}>Neurology</Text>
-              </Col>
-
-
-            </Row>
-
-          </Grid>
-
-
-
-          <Grid style={{marginTop:10}}>
-            <Row>
-              <Col style={styles.column}>
-                <LinearGradient
-                  colors={['#7357A2', '#62BFE4']} style={{ borderRadius: 10, padding: 10, height: '100%', width: '100%', marginLeft: 'auto', marginRight: 'auto' }}>
-                  <Image source={{ uri: 'https://static1.squarespace.com/static/586ef2c6bf629a58a3512dfa/t/5879369c5016e1f60c105f77/1484358104031/crown-bridge-icon.png' }} style={styles.customImage} />
-                </LinearGradient>
-
-                <Text style={styles.titleText}>Dental</Text>
-              </Col>
-
-              <Col style={styles.column}>
-                <LinearGradient
-                  colors={['#7357A2', '#62BFE4']} style={{ borderRadius: 10, padding: 10, height: '100%', width: '100%', marginLeft: 'auto', marginRight: 'auto' }}>
-                  <Image source={{ uri: 'http://pluspng.com/img-png/orthopedics-png--350.png' }} style={styles.customImage} />
-                </LinearGradient>
-
-                <Text style={styles.titleText}>Orthology</Text>
-              </Col>
-
-
-
-              <Col style={styles.column}>
-                <LinearGradient
-                  colors={['#7357A2', '#62BFE4']} style={{ borderRadius: 10, padding: 10, height: '100%', width: '100%', marginLeft: 'auto', marginRight: 'auto' }}>
-                  <Image source={{ uri: 'https://omionline.in/omi_app/images/images/Neurologist.png' }} style={styles.customImage} />
-                </LinearGradient>
-
-                <Text style={styles.titleText}>Neurology</Text>
-              </Col>
-
-
-            </Row>
-
-          </Grid>
-
-
-
-
-          <Grid style={{marginTop:10}}>
-            <Row>
-              <Col style={styles.column}>
-                <LinearGradient
-                  colors={['#7357A2', '#62BFE4']} style={{ borderRadius: 10, padding: 10, height: '100%', width: '100%', marginLeft: 'auto', marginRight: 'auto' }}>
-                  <Image source={{ uri: 'https://static1.squarespace.com/static/586ef2c6bf629a58a3512dfa/t/5879369c5016e1f60c105f77/1484358104031/crown-bridge-icon.png' }} style={styles.customImage} />
-                </LinearGradient>
-
-                <Text style={styles.titleText}>Dental</Text>
-              </Col>
-
-              <Col style={styles.column}>
-                <LinearGradient
-                  colors={['#7357A2', '#62BFE4']} style={{ borderRadius: 10, padding: 10, height: '100%', width: '100%', marginLeft: 'auto', marginRight: 'auto' }}>
-                  <Image source={{ uri: 'http://pluspng.com/img-png/orthopedics-png--350.png' }} style={styles.customImage} />
-                </LinearGradient>
-
-                <Text style={styles.titleText}>Orthology</Text>
-              </Col>
-
-
-
-              <Col style={styles.column}>
-                <LinearGradient
-                  colors={['#7357A2', '#62BFE4']} style={{ borderRadius: 10, padding: 10, height: '100%', width: '100%', marginLeft: 'auto', marginRight: 'auto' }}>
-                  <Image source={{ uri: 'https://omionline.in/omi_app/images/images/Neurologist.png' }} style={styles.customImage} />
-                </LinearGradient>
-
-                <Text style={styles.titleText}>Neurology</Text>
-              </Col>
-
-
-            </Row>
-
-          </Grid>
-          <Grid style={{marginTop:10}}>
-            <Row>
-              <Col style={styles.column}>
-                <LinearGradient
-                  colors={['#7357A2', '#62BFE4']} style={{ borderRadius: 10, padding: 10, height: '100%', width: '100%', marginLeft: 'auto', marginRight: 'auto' }}>
-                  <Image source={{ uri: 'https://static1.squarespace.com/static/586ef2c6bf629a58a3512dfa/t/5879369c5016e1f60c105f77/1484358104031/crown-bridge-icon.png' }} style={styles.customImage} />
-                </LinearGradient>
-
-                <Text style={styles.titleText}>Dental</Text>
-              </Col>
-
-              <Col style={styles.column}>
-                <LinearGradient
-                  colors={['#7357A2', '#62BFE4']} style={{ borderRadius: 10, padding: 10, height: '100%', width: '100%', marginLeft: 'auto', marginRight: 'auto' }}>
-                  <Image source={{ uri: 'http://pluspng.com/img-png/orthopedics-png--350.png' }} style={styles.customImage} />
-                </LinearGradient>
-
-                <Text style={styles.titleText}>Orthology</Text>
-              </Col>
-
-
-
-              <Col style={styles.column}>
-                <LinearGradient
-                  colors={['#7357A2', '#62BFE4']} style={{ borderRadius: 10, padding: 10, height: '100%', width: '100%', marginLeft: 'auto', marginRight: 'auto' }}>
-                  <Image source={{ uri: 'https://omionline.in/omi_app/images/images/Neurologist.png' }} style={styles.customImage} />
-                </LinearGradient>
-
-                <Text style={styles.titleText}>Neurology</Text>
-              </Col>
-
-
-            </Row>
-
-          </Grid>
-
+                                        }/>
         </Content>
       </Container>
 
@@ -219,13 +56,7 @@ class Categories extends Component {
 
 }
 
-function appoinmentsState(state) {
-
-  return {
-    user: state.user
-  }
-}
-export default connect(appoinmentsState, { login, messageShow, messageHide })(Categories)
+export default Categories
 
 
 const styles = StyleSheet.create({
@@ -246,9 +77,7 @@ const styles = StyleSheet.create({
 
   column:
   {
-    width: '33.33%',
-    marginLeft: 'auto',
-    marginRight: 'auto',
+    width: '15%',
     borderRadius: 10,
     margin: 10,
     padding: 6
@@ -265,12 +94,12 @@ const styles = StyleSheet.create({
   },
 
   titleText: {
-    fontSize: 14,
+    fontSize: 12,
     padding: 5,
     backgroundColor: '#FF9502',
     borderRadius: 20,
     color: 'white',
-    width: '95%',
+    width: 110,
     textAlign: 'center',
     fontFamily: 'OpenSans',
     marginLeft: 'auto',

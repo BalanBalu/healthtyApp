@@ -30,7 +30,7 @@ class BookAppoinment extends Component {
   }
   
   async componentDidMount() {
-    await this.setState({doctorId : "5ce01ae8d28ab8073515a6f6"})  
+    await this.setState({doctorId : "5ce01ae8d28ab8073515a6f6"})
     let doctorId = this.state.doctorId;
      currentDate = formatDate(new Date(), 'YYYY-MM-DD');    
      this.getAvailability(doctorId,currentDate);
@@ -49,7 +49,6 @@ class BookAppoinment extends Component {
       this.setState({ slotList: result.data[0].slotData[formatDate(currentDate, 'YYYY-MM-DD')] });
       console.log(JSON.stringify(this.state.slotList) + '>>>>>');
 
-      /*Doctor degree*/
       if (result.data[0].education) {
         let temp = this.state.data.education.map((val) => {
           return val.degree;
@@ -90,11 +89,6 @@ class BookAppoinment extends Component {
 
 
   noAvailableSlots() {
-  //   Toast.show({
-  //     text: "No Slots Are Available",
-  //     type: "danger",
-  //     duration: 3000,
-  // })
     return (
       <Item style={{ borderBottomWidth: 0, justifyContent: 'center', alignItems: 'center' }}>
         <Text style={{ fontSize: 18, justifyContent: 'center', alignItems: 'center' }} >No slots are available </Text>
@@ -148,7 +142,6 @@ class BookAppoinment extends Component {
 
                 <Left>
                   <Thumbnail square source={{ uri: 'https://static1.squarespace.com/static/582bbfef9de4bb07fe62ab18/t/5877b9ccebbd1a124af66dfe/1484241404624/Headshot+-+Circular.png?format=300w' }} style={{ height: 86, width: 86 }} />
-
                 </Left>
                 <Body>
                   <Text>{data.doctorName ? data.doctorName : ''}</Text>
