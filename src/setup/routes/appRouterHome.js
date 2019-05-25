@@ -141,10 +141,10 @@ const AppointMentstack1 = createStackNavigator({
       title: 'Filters'
     }
   },
-  "Book Appoinment": {
+  "Book Appointment": {
     screen: BookAppoinment,
     navigationOptions: {
-      title: 'Book Appoinment'
+      title: 'Book Appointment'
     }
   },
   paymentpage: {
