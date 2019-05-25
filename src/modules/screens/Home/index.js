@@ -17,27 +17,22 @@ class Home extends Component {
         this.state = {
             data:[],
             isLoading:false,
-            catagary:[]
-            
-           
+            catagary:[],
+            searchValue: null           
          };
-        
         this.getCatagries();
     }
      navigetToCategories() {
-    
-            this.props.navigation.navigate('Categories',{data:this.state.data})
-    
+        this.props.navigation.navigate('Categories',{data:this.state.data})
     }
-    doLogout(){
+    
+    doLogout() {
         logout();
         this.props.navigation.navigate('login');
     }
    
     getCatagries = async () => {
         try {
-           
-        
           let result = await catagries();
          
        
@@ -57,44 +52,59 @@ class Home extends Component {
           console.log(e);
         }  
       }
+
+      searchDoctorListModule = async () => {
+        try {
+            let serachInputvalues = [{
+                type: 'language',
+                value: [ this.state.searchValue ]
+            }]
+            if (this.state.searchValue == '') {
+                alert("We can't Find the Empty Values");
+            }
+            else {
+                this.props.navigation.navigate('Doctor List', { resultData: serachInputvalues })
+            }
+        } catch (e) {
+            console.log(e);
+        }
+    }
+
       
     render() {
         
-          
         return (
             
             <Container style={styles.container}>
-       {!this.state.isLoading? 
-       (<Spinner color='red'/>):(
-        //                   {/* <Header style={{ backgroundColor: '#7E49C3' }}>
-        //             <Left  >
-        //                 <Button Button transparent onPress={() => this.props.navigation.navigate('home')}>
-        //                     <Icon name="medkit" style={{ color: '#fff', fontSize: 35 }}></Icon>
+       
+       
+     
+              
 
-        //                 </Button>
-        //             </Left>
-        //             <Body>
-        //                 <Item style={{ width: '150%', borderBottomWidth: 0, backgroundColor: '#fff', borderRadius: 10, height: 35 }} >
-
-        //                     <Input placeholder="Chennai,Tamilnadu,India" style={{ color: 'gray', fontFamily: 'OpenSans', fontSize: 12 }} placeholderTextColor="gray" />
-        //                     <Icon name="ios-search" style={{ color: 'gray' }} />
-        //                 </Item>
-
-        //             </Body>
-        //             <Right >
-
-        //                 <Button transparent onPress={() => this.props.navigation.navigate('Profile')}>
-        //                     <Thumbnail style={{ height: 40, width: 40, borderColor: '#f5f5f5', borderWidth: 2, borderRadius: 50 }} source={{ uri: 'https://res.cloudinary.com/demo/image/upload/w_200,h_200,c_thumb,g_face,r_max/face_left.png' }} />
-        //                 </Button>
-
-        //             </Right>
-        //         </Header>
-        // */}
-
-
-                <Content style={styles.bodyContent}>
-                    
+                   
+             
                
+<Content style={styles.bodyContent}>     
+<Row style={{ backgroundColor: 'white' }}>
+
+<Col style={{width: '87%'}}>
+    <Input placeholder="Search Symptoms/Services"
+        style={{ color: 'gray', fontFamily: 'OpenSans', fontSize: 12 }}
+        placeholderTextColor="gray"
+        value={this.state.searchValue}
+        keyboardType={'email-address'}
+        onChangeText={searchValue => this.setState({ searchValue })}
+    />
+
+</Col>
+<Col style={{width: '13%'}}>
+
+    <Button Button transparent onPress={() => this.searchDoctorListModule()}>
+        <Icon name="ios-search" style={{ color: 'gray' }} />
+    </Button>
+
+</Col>
+</Row>
                     <Card style={{ padding: 10, borderRadius: 10 }}>
 
                         <Grid>
@@ -121,14 +131,11 @@ class Home extends Component {
                             <Row>
 
                                 <ListItem noBorder>
-                                    <ScrollView horizontal={false} 
-                                       
-         >
-                                        <FlatList 
+                                    <ScrollView horizontal={false}>
+                                    <FlatList 
                                         horizontal={true} 
                                         data={this.state.catagary}
                                         extraData={this.state}
-                                        // numColumns={5}
                                         renderItem = {({item, index}) =>
                                         <Item  style={styles.column} onPress={() => this.props.navigation.navigate('Doctor List') }>
                                         <Col  >
@@ -138,49 +145,11 @@ class Home extends Component {
                                             </LinearGradient>
 
                                             <Text style={styles.textcenter}>{item.category_name}</Text>
-                                            <Text note style={{ textAlign: 'center' }}>100 Doctors</Text>
+                                            {/*<Text note style={{ textAlign: 'center' }}>100 Doctors</Text>*/}
                                         </Col>
                                         </Item>
                                         }
-                                    //       {/* <Item style={styles.column} onPress={() => this.props.navigation.navigate('doctorsearchlist') }>
-                                    //       <Col>
-                                    //         <LinearGradient
-                                    //             colors={['#7357A2', '#62BFE4']} style={{ borderRadius: 10, padding: 10, height: '70%', width: '100%', marginLeft: 'auto', marginRight: 'auto' }}>
-                                    //             <Image source={{ uri: 'http://pluspng.com/img-png/orthopedics-png--350.png' }} style={styles.customImage} />
-                                    //         </LinearGradient>
-
-                                    //         <Text style={styles.textcenter}>Orthology</Text>
-                                    //         <Text note style={{ textAlign: 'center' }}>150 Doctors</Text>
-                                    //     </Col>
-                                    //     </Item>
-
-
-
-                                    //     <Col style={styles.column}>
-                                    //         <LinearGradient
-                                    //             colors={['#7357A2', '#62BFE4']} style={{ borderRadius: 10, padding: 10, height: '70%', width: '100%', marginLeft: 'auto', marginRight: 'auto' }}>
-                                    //             <Image source={{ uri: 'https://omionline.in/omi_app/images/images/Neurologist.png' }} style={styles.customImage} />
-                                    //         </LinearGradient>
-
-                                    //         <Text style={styles.textcenter}>Neurology</Text>
-                                    //         <Text note style={{ textAlign: 'center' }}>50 Doctors</Text>
-                                    //     </Col>
-
-
-
-
-                                    //     <Col style={styles.column}>
-                                    //         <LinearGradient
-                                    //             colors={['#7357A2', '#62BFE4']} style={{ borderRadius: 10, padding: 10, height: '70%', width: '100%', marginLeft: 'auto', marginRight: 'auto' }}>
-                                    //             <Image source={{ uri: 'https://static1.squarespace.com/static/586ef2c6bf629a58a3512dfa/t/5879369c5016e1f60c105f77/1484358104031/crown-bridge-icon.png' }} style={styles.customImage} />
-                                    //         </LinearGradient>
-
-                                    //         <Text style={styles.textcenter}>Dental</Text>
-                                    //         <Text note style={{ textAlign: 'center' }}>50 Doctors</Text>
-                                    //     </Col>
-                                    // */}
-                         
- 
+                                  
                              keyExtractor={(item, index) => index.toString()}
                                     />
 
@@ -267,7 +236,7 @@ class Home extends Component {
 
 
                 </Content>
-       )}
+       
                 {/* <Footer>
                     <FooterTab style={{ backgroundColor: '#7E49C3' }}>
                         <Button >
