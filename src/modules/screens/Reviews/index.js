@@ -2,16 +2,15 @@ import React, { Component } from 'react';
 import {
     Container, Content, View, Text, Title, Header, H3, Button, Item, Card,
     CardItem, List, ListItem, Left, Right, Thumbnail,
-    Body, Icon, locations, ScrollView, ProgressBar
+    Body, Icon, ScrollView
 } from 'native-base';
-import { login } from '../../providers/auth/auth.actions';
-import { messageShow, messageHide } from '../../providers/common/common.action';
-import { Col, Row, Grid } from 'react-native-easy-grid';
-import { userReviews } from '../../providers/profile/profile.action';
 import { connect } from 'react-redux'
 import LinearGradient from 'react-native-linear-gradient';
-import { StyleSheet, Image, TouchableOpacity, FlratingatList, AsyncStorage, FlatList } from 'react-native';
+import { StyleSheet, Image, AsyncStorage, FlatList } from 'react-native';
 import StarRating from 'react-native-star-rating';
+
+import { userReviews } from '../../providers/profile/profile.action';
+import { formatDate } from '../../../setup/helpers';
 
 
 class Reviews extends Component {
@@ -44,19 +43,36 @@ class Reviews extends Component {
         }
     }
 
-    renderAllRatings() {
+    renderAllRatings(item) {
         return (
-            null
+            <Item>
+                <Text style={{ fontFamily: 'OpenSans' }}>Cleanliness Rating</Text>
+                <StarRating fullStarColor='#FF9500' starSize={15} containerStyle={{ width: 100 }}
+                    disabled={true}
+                    maxStars={5}
+                    rating={item.cleanness_rating}
+                />
+                <Text style={{ fontFamily: 'OpenSans' }}>Staff Rating</Text>
+                <StarRating fullStarColor='#FF9500' starSize={15} containerStyle={{ width: 100 }}
+                    disabled={true}
+                    maxStars={5}
+                    rating={item.staff_rating}
+                />
+                <Text style={{ fontFamily: 'OpenSans' }}>Wait Time Rating</Text>
+                <StarRating fullStarColor='#FF9500' starSize={15} containerStyle={{ width: 100 }}
+                    disabled={true}
+                    maxStars={5}
+                    rating={item.wait_time_rating}
+                />
+            </Item>
         )
     }
 
     renderNoReviews() {
         return (
-
             <Item style={{ borderBottomWidth: 0, justifyContent: 'center', alignItems: 'center', height: 300 }}>
                 <Text style={{ fontSize: 20, justifyContent: 'center', alignItems: 'center' }} > No reviews yet </Text>
             </Item>
-
         )
     }
 
@@ -80,14 +96,14 @@ class Reviews extends Component {
                                 <Body>
                                     <Text style={{ fontFamily: 'OpenSans' }}> {item.userInfo.first_name + ' ' + item.userInfo.last_name || 'MedFlic User'} </Text>
                                     <StarRating fullStarColor='#FF9500' starSize={15} containerStyle={{ width: 100 }}
-                                        disabled={false}
+                                        disabled={true}
                                         maxStars={5}
                                         rating={item.overall_rating}
                                         selectedStar={this.setState({ allRatingsVisible: !this.state.allRatingsVisible })}
                                     />
                                     {
                                         this.state.allRatingsVisible == true
-                                            ? this.renderAllRatings()
+                                            ? this.renderAllRatings(item)
                                             : null
                                     }
                                     <Text style={{ fontFamily: 'OpenSans', fontSize: 18, color: 'gray' }}> {item.comments} </Text>
@@ -110,7 +126,7 @@ class Reviews extends Component {
                </Grid> */}
                                 </Body>
                                 <Right>
-                                    <Text note>3hrs </Text>
+                                    <Text note>{formatDate(item.review_date, "DD-MM-YYYY")}</Text>
                                 </Right>
                             </ListItem>
                         </List>
