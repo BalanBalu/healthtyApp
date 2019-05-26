@@ -54,12 +54,12 @@ class AppointmentDetails extends Component {
 
               <Grid>
                 <Col style={{ backgroundColor: 'transparent', borderRightWidth: 0.5, borderRightColor: 'gray', marginLeft: 'auto', marginRight: 'auto' }}>
-                  <Text style={styles.topValue}> Rs 450 </Text>
+                  <Text style={styles.topValue}> Rs 45.. </Text>
                   <Text note style={styles.bottomValue}> Hourly Rate </Text>
                 </Col>
 
                 <Col style={{ backgroundColor: 'transparent', borderRightWidth: 0.5, borderRightColor: 'gray', marginLeft: 'auto', marginRight: 'auto' }}>
-                  <Text style={styles.topValue}>88 </Text>
+                  <Text style={styles.topValue}>24 </Text>
                   <Text note style={styles.bottomValue}> Reviews </Text>
                 </Col>
 
@@ -67,6 +67,16 @@ class AppointmentDetails extends Component {
                   <Text style={styles.topValue}>824 </Text>
                   <Text note style={styles.bottomValue}> patients </Text>
                 </Col>
+              </Grid>
+
+              <Grid style={{ marginTop: 5 }}>
+                <Col style={{ width: 270, }}>
+
+                  <Button disabled={this.state.appointment_button} block style={{ borderRadius: 10}}>
+                    <Text uppercase={false}>APPROVED</Text>
+                  </Button>
+                </Col>
+              
               </Grid>
 
 
@@ -234,6 +244,14 @@ const styles = StyleSheet.create({
         color: '#000',
         fontSize: 14,
         margin: 5
-      }
+      },
+      bottomValue: {
+        marginLeft: 'auto',
+        marginRight: 'auto'
+      },
+      topValue: {
+        marginLeft: 'auto',
+        marginRight: 'auto'
+      },
 
 });
