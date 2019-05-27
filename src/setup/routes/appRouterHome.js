@@ -33,6 +33,8 @@ import profileAvatar from '../../../assets/images/profileAvatar.png';
 
 import { HeaderBackButton } from 'react-navigation';
 import BookAppoinment from "../../modules/screens/bookappoinment";
+import MyAppointments from '../../modules/screens/myappoinment';
+import AppointmentDetails from '../../modules/screens/myappoinment/myappoinmentinformation';
 
 
 const routes = {
@@ -170,6 +172,34 @@ const AppointMentstack1 = createStackNavigator({
     })
   });
 
+  const myAppointmentsStack = createStackNavigator({
+    "My Appointments": {
+      screen: MyAppointments,
+      navigationOptions: ({ navigation }) => ({
+        title: 'Appointments',
+        headerLeft: (
+          <TouchableOpacity onPress={() => navigation.navigate('Home')}>
+            <Icon name="arrow-back" style={{ marginLeft: 18, color: '#fff', fontFamily: 'opensans-semibold' }}></Icon>
+          </TouchableOpacity>
+        ),
+      })
+    },
+    "AppointmentInfo": {
+      screen: AppointmentDetails,
+      navigationOptions: {
+        title: 'Appointment Info'
+      }
+    },
+   },
+    {
+      defaultNavigationOptions: ({ navigation }) => ({
+        headerStyle: { backgroundColor: '#7E49C3', fontFamily: 'opensans-semibold' },
+        headerTintColor: 'white',
+      })
+    });
+  
+
+
 const HomeStack = createStackNavigator({
   Home: {
     screen: Home,
@@ -265,6 +295,7 @@ const DrawerNavigator = createDrawerNavigator({
   Home: HomeStack,
   Profile: ProfileStack,
   categoryStack,
+  "My Appointments": myAppointmentsStack,
   Appointments: AppointMentstack1
 },
   {

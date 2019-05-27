@@ -164,40 +164,53 @@ class doctorSearchList extends Component {
                     <Card>
                         <Grid>
                           <Row>
-                            <Col style={{ col: '33.33%', alignItems: 'center' }}>
+                            <Col style={{ width: '20%'}}>
                                 <Button transparent>
-                                    <Text note uppercase={false} style={{ fontFamily: 'OpenSans', color: 'gray' }}>TopRated</Text>
-                                    <Icon name='ios-arrow-down' style={{ color: 'gray' }} />
+                                    <Text uppercase={false} style={{ fontFamily: 'OpenSans', color: 'gray' }}>TopRated
+                                    </Text>
+                                    <Icon name='ios-arrow-down' style={{ color: 'gray', marginLeft: '-3%' }} />
                                 </Button>
                             </Col>
-                            <Col style={{ col: '25.33%', alignItems: 'center' }}>
+                            <Col style={{ width: '2%'}}>
+                
+                            </Col>
+                            
+                            <Col style={{ width: '56%', alignItems: 'center'}}>
 
-                                <Card>
-                                    <View >
-                                        <Item style={{ borderBottomWidth: 5, backgroundColor: '#F1F1F1', marginTop: 8, borderRadius: 5, height: 15, marginLeft: 15 }}>
-                                            <Icon name='calendar' style={{ paddingLeft: 15, color: '#775DA3' }} />
-
+                               
+                                   
+                                        <Item>
+                                        <Button transparent onPress={() => navigation.navigate('Filters')}>
+                                            <Icon name='arrow-dropleft' style={{ color: 'gray' }} />
+                                        </Button>
                                             <DatePicker style={styles.transparentLabel}
                                                 locale={"en"}
                                                 timeZoneOffsetInMinutes={undefined}
                                                 animationType={"fade"}
                                                 androidMode={"default"}
-                                                placeHolderText={'Pick the date'}
+                                                placeHolderText={this.state.selectedDate}
+                                                
                                                 textStyle={{ color: "#5A5A5A" }}
                                                 placeHolderTextStyle={{ color: "#5A5A5A" }}
                                                 onDateChange={date => { this.onDateChanged(date); }}
                                                 disabled={false}
                                                 testID='datePicked' />
+                                             <Button transparent onPress={() => navigation.navigate('Filters')}>
+                                                <Icon name='arrow-dropright' style={{ color: 'gray' }} />
+                                             </Button>
+                                           
                                         </Item>
-                                    </View>
-                                </Card>
+                                   
+                            </Col>
+                            <Col style={{ width: '2%'}}>
 
                             </Col>
-                            <Col style={{ col: '33.33%', alignItems: 'center' }}>
+                            <Col style={{ width: '20%', marginLeft: '-5%', alignItems:'flex-start'}}>
 
                                 <Button transparent onPress={() => navigation.navigate('Filters')}>
-                                    <Text note uppercase={false} style={{ fontFamily: 'OpenSans', color: 'gray' }}>Filter</Text>
-                                    <Icon name='ios-funnel' style={{ color: 'gray' }} />
+                                 <Text uppercase={false} style={{ fontFamily: 'OpenSans', color: 'gray' }}>Filter
+                                    </Text>
+                                    <Icon name='ios-funnel' style={{ color: 'gray', marginLeft: '-3%' }} />
                                 </Button>
                             </Col>
                         </Row>

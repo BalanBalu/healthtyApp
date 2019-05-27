@@ -29,7 +29,7 @@ export default StyleSheet.create({
     customPadge: {
     color: 'white',
     textAlign: 'center',
-    fontFamily: 'opensans-regular',
+    fontFamily: 'OpenSans',
     fontSize: 10,
     padding: 5,
     

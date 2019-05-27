@@ -1,12 +1,9 @@
 import React, { Component } from 'react';
 import { Container, Content, Text, Title, Header, H3, Button, Item, Card, CardItem, List, ListItem, Left, Right, Thumbnail, Body, Icon, locations, ScrollView, ProgressBar } from 'native-base';
-import { login } from '../../providers/auth/auth.actions';
-import { messageShow, messageHide } from '../../providers/common/common.action';
 import { Col, Row, Grid } from 'react-native-easy-grid';
-import { connect } from 'react-redux'
 import { StyleSheet, Image, TouchableOpacity, View } from 'react-native';
 import StarRating from 'react-native-star-rating';
-class Reviews extends Component {
+class AppointmentDetails extends Component {
     constructor(props) {
         super(props)
 
@@ -26,24 +23,10 @@ class Reviews extends Component {
     }
 
     render() {
-        const { user: { isLoading } } = this.props;
-        const { loginErrorMsg } = this.state;
         return (
 
             <Container style={styles.container}>
-                <Header style={{ backgroundColor: '#7E49C3', fontFamily: 'opensans-semibold' }}>
-                    <Left  >
-                        <Button Button transparent onPress={() => this.props.navigation.navigate('home')}>
-                            <Icon name="arrow-back" style={{ color: '#fff' }}></Icon>
-                        </Button>
-
-                    </Left>
-                    <Body>
-                        <Title style={{ fontFamily: 'opensans-semibold' }}>Information</Title>
-
-                    </Body>
-                    <Right />
-                </Header>
+               
                 <Content style={styles.bodyContent}>
                 <Grid style={{ backgroundColor: '#7E49C3', height: 100 }}>
 
@@ -71,12 +54,12 @@ class Reviews extends Component {
 
               <Grid>
                 <Col style={{ backgroundColor: 'transparent', borderRightWidth: 0.5, borderRightColor: 'gray', marginLeft: 'auto', marginRight: 'auto' }}>
-                  <Text style={styles.topValue}> Rs 450 </Text>
+                  <Text style={styles.topValue}> Rs 45.. </Text>
                   <Text note style={styles.bottomValue}> Hourly Rate </Text>
                 </Col>
 
                 <Col style={{ backgroundColor: 'transparent', borderRightWidth: 0.5, borderRightColor: 'gray', marginLeft: 'auto', marginRight: 'auto' }}>
-                  <Text style={styles.topValue}>88 </Text>
+                  <Text style={styles.topValue}>24 </Text>
                   <Text note style={styles.bottomValue}> Reviews </Text>
                 </Col>
 
@@ -84,6 +67,16 @@ class Reviews extends Component {
                   <Text style={styles.topValue}>824 </Text>
                   <Text note style={styles.bottomValue}> patients </Text>
                 </Col>
+              </Grid>
+
+              <Grid style={{ marginTop: 5 }}>
+                <Col style={{ width: 270, }}>
+
+                  <Button disabled={this.state.appointment_button} block style={{ borderRadius: 10}}>
+                    <Text uppercase={false}>APPROVED</Text>
+                  </Button>
+                </Col>
+              
               </Grid>
 
 
@@ -179,13 +172,7 @@ class Reviews extends Component {
 
 }
 
-function loginState(state) {
-
-    return {
-        user: state.user
-    }
-}
-export default connect(loginState, { login, messageShow, messageHide })(Reviews)
+export default AppointmentDetails
 
 
 const styles = StyleSheet.create({
@@ -202,12 +189,12 @@ const styles = StyleSheet.create({
   
     customHead:
     {
-      fontFamily: 'opensans-regular',
+      fontFamily: 'OpenSans',
     },
     customText:
     {
   
-      fontFamily: 'opensans-regular',
+      fontFamily: 'OpenSans',
       color: '#000',
       fontSize: 14,
   
@@ -227,7 +214,7 @@ const styles = StyleSheet.create({
       marginTop: -100,
       marginLeft: 20,
       marginRight: 20,
-      fontFamily: 'opensans-regular',
+      fontFamily: 'OpenSans',
   
     },
    
@@ -253,10 +240,18 @@ const styles = StyleSheet.create({
       },
       rowText:
       {
-        fontFamily: 'opensans-regular',
+        fontFamily: 'OpenSans',
         color: '#000',
         fontSize: 14,
         margin: 5
-      }
+      },
+      bottomValue: {
+        marginLeft: 'auto',
+        marginRight: 'auto'
+      },
+      topValue: {
+        marginLeft: 'auto',
+        marginRight: 'auto'
+      },
 
 });
