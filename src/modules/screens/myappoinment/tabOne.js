@@ -1,5 +1,5 @@
 import React, { Component } from "react";
-import { Content, Text, Body, Left, Right, Thumbnail, ListItem, List, Item, H5, H3, Icon, Button ,Card} from "native-base";
+import { Content, Text, Body, Left, Right, Thumbnail, ListItem, List, Item, H5, H3, Icon, Button, Card } from "native-base";
 import { StyleSheet, Image, TouchableOpacity, View, FlatList } from 'react-native';
 import { Col, Row, Grid } from 'react-native-easy-grid';
 export default class TabOne extends Component {
@@ -26,9 +26,17 @@ export default class TabOne extends Component {
                             <Body>
                                 <Text style={{ fontFamily: 'opensans-regular' }}>Kumar Pratik</Text>
 
-                                <Text note>I was facing baldness because of which I looked older than my age.....  </Text>
+                                <Text style={{ fontFamily: 'opensans-regular' }} note>Dentist </Text>
+                                <Text style={{ fontFamily: 'opensans-regular',fontSize:14 }} note>23-05-2019</Text>
+                                <Text style={{ fontFamily: 'opensans-regular',fontSize:14 }} note>10.00 AM</Text>
+                              
+                                {/* <Item style={{borderBottomWidth:0}}>
+                                <Text style={{ fontFamily: 'opensans-regular',fontSize:14 }} note>23-05-2019</Text>
+                                <Text style={{ fontFamily: 'opensans-regular',fontSize:14,marginLeft:10 }} note>10.00 AM</Text>
+                                </Item> */}
+                               
 
-                                <Grid >
+                                {/* <Grid >
                                             <View >
                                                 <FlatList numColumns={3}
                                                     data={[
@@ -60,7 +68,7 @@ export default class TabOne extends Component {
                                                     renderItem={({ item }) => <Item style={{ borderBottomWidth: 0, alignItems: 'center' }}><Col style={{ width: '32%', alignItems: 'center', marginLeft: 3 }}><Button style={{ backgroundColor: '#775DA3', borderRadius: 5, width: 75, height: 35, margin: 2 }}><Text uppercase={false} style={{ fontFamily: 'opensans-regular', fontSize: 10, color: 'white' }}>{item.dayName}</Text></Button></Col></Item>}
                                                 />
                                             </View>
-                                        </Grid>
+                                        </Grid> */}
                             </Body>
                         </ListItem>
                     </List>
