@@ -1,27 +1,75 @@
 import React, { Component } from 'react';
 import { Container, Content, Text, Title, Header, H3, Button, Item, Card, CardItem, List, ListItem, Left, Right, Thumbnail, Body, Icon, locations, ScrollView, ProgressBar } from 'native-base';
 import { Col, Row, Grid } from 'react-native-easy-grid';
-import { StyleSheet, Image, TouchableOpacity, View } from 'react-native';
+import { StyleSheet, Image, TouchableOpacity, View,AsyncStorage } from 'react-native';
 import StarRating from 'react-native-star-rating';
+import { appointment, doctorDetails } from '../../../providers/bookappointment/bookappointment.action';
+import { formatDate, addTimeUnit } from '../../../../setup/helpers';
+
 class AppointmentDetails extends Component {
     constructor(props) {
         super(props)
 
         this.state = {
-            userEntry: '',
-            password: '',
-            loginErrorMsg: ''
+            data: [],
+            doctorId:'',
+             isLoading: false
         }
-        this.state = {
-            starCount: 3.5
-        };
+       
     }
-    onStarRatingPress(rating) {
-        this.setState({
-            starCount: rating
-        });
+    async componentDidMount() {
+      console.log('coming to component did mount');
+      await this.setState({doctorId : "5cda861aadd469133ba8e0f3"})
+      let doctorId = this.state.doctorId;
+  
+      this.getAppointment(doctorId);
+      this.getDoctorDetails(doctorId);
     }
+    // onStarRatingPress(rating) {
+    //     this.setState({
+    //         starCount: rating
+    //     });
+    // }
+    getAppointment = async (doctorId) => {
+      try {
+        this.setState({ isLoading: true });
+        //let doctorId = await AsyncStorage.getItem('doctorId');
+        console.log(doctorId);
 
+        let filters = {
+          startDate: formatDate(new Date, 'YYYY-MM-DD'),
+          endDate: formatDate(addTimeUnit(new Date(), 3, 'months'), 'YYYY-MM-DD')
+        }
+        let result = await appointment(doctorId, 'PENDING', filters);
+        console.log(JSON.stringify(result)+ 'result');
+
+        this.setState({ isRefreshing: false, isLoading: false });
+        if (result.success){
+          this.setState({ data: result.data, isRefreshing: false });
+          console.log(this.state.data);
+      }
+       
+      } catch (e) {
+        console.log(e);
+      }
+    }
+    getDoctorDetails = async (doctorId) => {
+      try {
+        let fields = 'first_name,last_name,';
+        let resultDetails = await doctorDetails(doctorId,fields);
+        console.log(JSON.stringify(resultDetails)+ 'result');
+        if(resultDetails.success){
+          await this.setState({ data: resultDetails});
+
+          console.log('doctor data' +this.state.data );  
+   
+        }
+
+      }
+      catch (e) {
+        console.log(e);
+      }
+    }
     render() {
         return (
 

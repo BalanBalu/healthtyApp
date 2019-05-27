@@ -4,12 +4,16 @@ export const BOOK_APPOINTMENT_ERROR = 'BOOK_APPOINTMENT/BOOK_APPOINTMENT_ERROR'
 export const DOCTORLIST_REQUEST = 'BOOK_APPOINTMENT/DOCTORLIST_REQUEST'
 export const DOCTORLIST_ERROR = 'BOOK_APPOINTMENT/DOCTORLIST_RESPONSE'
 export const DOCTORLIST_RESPONSE = 'BOOK_APPOINTMENT/DOCTORLIST_RESPONSE'
-import { postService, getService } from '../../../setup/services/httpservices';
 export const REVIEW_REQUEST = 'BOOK_APPOINTMENT/REVIEW_REQUEST'
 export const REVIEW_RESPONSE = 'BOOK_APPOINTMENT/REVIEW_RESPONSE'
 export const REVIEW_ERROR = 'BOOK_APPOINTMENT/REVIEW_ERROR'
+export const APPOINTMENT_REQUEST = 'APPOINTMENT/APPOINTMENT_REQUEST'
+export const APPOINTMENT_ERROR   = 'APPOINTMENT/APPOINTMENT_ERROR'
+export const PROFILE_REQUEST = 'PROFILE/PROFILE_REQUEST'
+export const PROFILE_RESPONSE = 'PROFILE/PROFILE_RESPONSE'
+export const PROFILE_ERROR = 'PROFILE/PROFILE_ERROR'
 
-
+import { postService, getService } from '../../../setup/services/httpservices';
 import { store } from '../../../setup/store';
 
 
@@ -124,4 +128,79 @@ export async function viewUserReviews(id,type, isLoading = true) {
       message: e
       }); 
   }  
+}
+
+/*get doctor appointment */
+export const appointment = async(doctorId, appointmentStatusRequest, filters, isLoading = true) => {
+  try{    
+    store.dispatch({
+      type: APPOINTMENT_REQUEST,
+      isLoading 
+    })       
+    
+    let endPoint = 'doctor/appointment/' + doctorId +'/'+appointmentStatusRequest + '?startDate=' + filters.startDate + '&endDate=' + filters.endDate;
+    
+     console.log(endPoint);
+
+      let response = await getService(endPoint);
+      //console.log(JSON.stringify(response));
+
+      let respData = response.data;
+      //console.log(JSON.stringify(respData));
+      if(respData.error || respData.success == false) {         
+        store.dispatch({
+        type: APPOINTMENT_ERROR,
+        message: respData.error})
+      } else {            
+          store.dispatch({
+          type: APPOINTMENT_RESPONSE,           
+          isLoading:false,
+          success: true
+        })         
+      }
+      return respData; 
+  }catch (e){       
+    console.log(e.message);  
+      store.dispatch({
+      type: APPOINTMENT_ERROR,
+      message: e
+      })  
+  }
+}
+/* get doctor details */
+export const doctorDetails = async(doctorId) => {
+  try{    
+    store.dispatch({
+      type: PROFILE_REQUEST,
+      isLoading 
+    })       
+    
+    let endPoint = 'doctor/' + doctorId + '?fields=' + fields;  
+    
+     console.log(endPoint);
+
+      let response = await getService(endPoint);
+      console.log(JSON.stringify(response));
+
+      let respData = response.data;
+      console.log(JSON.stringify(respData));
+      if(respData.error || respData.success == false) {         
+        store.dispatch({
+        type: PROFILE_ERROR,
+        message: respData.error})
+      } else {            
+          store.dispatch({
+          type: PROFILE_RESPONSE,           
+          isLoading:false,
+          success: true
+        })         
+      }
+      return respData; 
+  }catch (e){       
+    console.log(e.message);  
+      store.dispatch({
+      type: PROFILE_ERROR,
+      message: e
+      })  
+  }
 }
