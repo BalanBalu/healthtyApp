@@ -23,7 +23,7 @@ export default class UpcomingAppointment extends Component {
                                 <Text note>I was facing baldness because of which I looked older than my age.....  </Text>
 
                                 <Text style={{ fontFamily: 'opensans-regular', fontSize: 14 }} note>23-05-2019</Text>
-                                <Text style={{ fontFamily: 'opensans-regular', fontSize: 14 }} note>10.00 AM</Text>
+                                 <Text style={{ fontFamily: 'opensans-regular', fontSize: 14 }} note>10.00 AM</Text>
                             </Body>
                         </ListItem>
                     </List>
