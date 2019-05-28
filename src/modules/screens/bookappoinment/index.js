@@ -54,7 +54,6 @@ class BookAppoinment extends Component {
   }
 
   /*Get doctor Qualification details*/
-
   getdoctorDetails = async (doctorId) => {
     console.log("doctor");
     let fields = "professional_statement,language,specialist,education";
@@ -120,12 +119,11 @@ class BookAppoinment extends Component {
         keyExtractor={(item, index) => index.toString()}
         renderItem={({ item, index }) =>
 
-
-          <TouchableOpacity style={selectedSlotIndex === index ? styles.slotSelectedBg : styles.slotDefaultBg}
+          <TouchableOpacity disabled={item.isSlotBooked===true?true:false} style={selectedSlotIndex === index ? styles.slotSelectedBg :item.isSlotBooked===false? styles.slotDefaultBg:styles.slotBookedBg}
             onPress={() => this.onSlotPress(item, index)}>
             <Row style={{ width: '100%', alignItems: 'center' }}>
               <Col style={{ width: '70%', alignItems: 'center' }}>
-                <Text style={selectedSlotIndex === index ? styles.multipleStyles : styles.slotDefault}>
+                <Text style={styles.multipleStyles}>
                   {formatDate(item.slotStartDateAndTime, 'hh:mm')}</Text>
 
               </Col>
@@ -481,7 +479,7 @@ class BookAppoinment extends Component {
                         </Body>
                       </ListItem>
                     } />
-                  : <Text style={{alignItems: 'center'}} >No Reviews Were found</Text>}
+                  : <Text style={{ alignItems: 'center' }} >No Reviews Were found</Text>}
               </List>
               {this.state.reviewdata !== null ?
                 <Button iconRight transparent block onPress={() => this.props.navigation.navigate('Reviews')}>
@@ -560,13 +558,15 @@ const styles = StyleSheet.create({
     fontSize: 12,
     color: 'white'
   },
-  slotDefault: {
-    fontFamily: 'OpenSans',
-    fontSize: 12,
-    color: 'white'
-  },
   slotDefaultBg: {
-    backgroundColor: '#775DA3',
+    backgroundColor: 'pink',
+    borderRadius: 5,
+    width: '30%',
+    height: 30,
+    margin: 5
+  },
+  slotBookedBg: {
+    backgroundColor: 'gray',
     borderRadius: 5,
     width: '30%',
     height: 30,
@@ -575,7 +575,6 @@ const styles = StyleSheet.create({
   slotSelectedBg: {
     backgroundColor: '#2652AC',
     borderRadius: 5,
-
     width: '30%',
     height: 30,
     margin: 5
