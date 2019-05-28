@@ -1,4 +1,4 @@
-import {  REQUEST, RESPONSE, ERROR } from './bookappointment.action';
+import {  BOOK_APPOINTMENT_REQUEST, BOOK_APPOINTMENT_RESPONSE, BOOK_APPOINTMENT_ERROR } from './bookappointment.action';
 
 // Initial State
 export const initialState = {
@@ -12,7 +12,7 @@ export const initialState = {
 export default (state = initialState, action) => {
     switch (action.type) {
       
-      case REQUEST:
+      case BOOK_APPOINTMENT_REQUEST:
         return {
           ...state,
           message: null,
@@ -20,7 +20,7 @@ export default (state = initialState, action) => {
   
         }
   
-      case RESPONSE:
+      case BOOK_APPOINTMENT_RESPONSE:
         return {
           ...state,
           message: action.message,
@@ -28,7 +28,7 @@ export default (state = initialState, action) => {
           success: true
         }
   
-      case ERROR:
+      case BOOK_APPOINTMENT_ERROR:
         return {
           ...state,
           message: action.message,
