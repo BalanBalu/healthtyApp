@@ -3,7 +3,7 @@ import { Container, Content, Text, Title, Header, H3, Button, Item, Card, CardIt
 import { Col, Row, Grid } from 'react-native-easy-grid';
 import { StyleSheet, Image, TouchableOpacity, View,AsyncStorage } from 'react-native';
 import StarRating from 'react-native-star-rating';
-import { appointment, doctorDetails } from '../../../providers/bookappointment/bookappointment.action';
+import { appointment, doctorDetails, viewUserReviews } from '../../../providers/bookappointment/bookappointment.action';
 import { formatDate, addTimeUnit } from '../../../../setup/helpers';
 
 class AppointmentDetails extends Component {
@@ -13,26 +13,31 @@ class AppointmentDetails extends Component {
         this.state = {
             data: [],
             doctorId:'',
-             isLoading: false
+            doctorData: {},
+            reviewdata: {}
+            
         }
-       
+
     }
     async componentDidMount() {
       console.log('coming to component did mount');
       await this.setState({doctorId : "5cda861aadd469133ba8e0f3"})
       let doctorId = this.state.doctorId;
-  
       this.getAppointment(doctorId);
-      this.getDoctorDetails(doctorId);
+      await this.getDoctorDetails(doctorId);
+      await this.getUserReviews(doctorId);
+
     }
     // onStarRatingPress(rating) {
     //     this.setState({
     //         starCount: rating
     //     });
     // }
+
+    /* get Doctor appointment */
+
     getAppointment = async (doctorId) => {
       try {
-        this.setState({ isLoading: true });
         //let doctorId = await AsyncStorage.getItem('doctorId');
         console.log(doctorId);
 
@@ -43,9 +48,8 @@ class AppointmentDetails extends Component {
         let result = await appointment(doctorId, 'PENDING', filters);
         console.log(JSON.stringify(result)+ 'result');
 
-        this.setState({ isRefreshing: false, isLoading: false });
         if (result.success){
-          this.setState({ data: result.data, isRefreshing: false });
+          this.setState({ data: result.data });
           console.log(this.state.data);
       }
        
@@ -53,24 +57,38 @@ class AppointmentDetails extends Component {
         console.log(e);
       }
     }
+
+    /* get Doctor details */
     getDoctorDetails = async (doctorId) => {
       try {
-        let fields = 'first_name,last_name,';
+        let fields = 'first_name,last_name,specialist,education';
         let resultDetails = await doctorDetails(doctorId,fields);
         console.log(JSON.stringify(resultDetails)+ 'result');
         if(resultDetails.success){
-          await this.setState({ data: resultDetails});
-
-          console.log('doctor data' +this.state.data );  
-   
-        }
-
+          await this.setState({ doctorData: resultDetails.data});
+          console.log(this.state.doctorData ); 
+             }
       }
       catch (e) {
         console.log(e);
       }
     }
+    
+    /* get User reviews */
+    getUserReviews = async (doctorId) => {
+      console.log("reviews");
+      let resultReview = await viewUserReviews(doctorId, 'doctor');
+      console.log(resultReview.data);
+      if (resultReview.success) {
+        this.setState({ reviewdata: resultReview.data });
+      }
+      console.log('reviewdata'+JSON.stringify(this.state.reviewdata));
+
+    }
+  
     render() {
+      const { data, doctorData, reviewdata } = this.state;
+
         return (
 
             <Container style={styles.container}>
@@ -88,8 +106,8 @@ class AppointmentDetails extends Component {
 
                 </Left>
                 <Body>
-                  <Text style={styles.customHead}>Kumar Pratik</Text>
-                  <Text note style={styles.customText}>dentist </Text>
+                  <Text style={styles.customHead}>{(doctorData.data && doctorData.data.first_name)+ " " +(doctorData.data && doctorData.data.last_name)}</Text>
+                  <Text note style={styles.customText}>{doctorData.data&& doctorData.data.specialist[0].category} </Text>
                   <StarRating fullStarColor='#FF9500' starSize={25}
                     disabled={false}
                     maxStars={5}
@@ -107,7 +125,7 @@ class AppointmentDetails extends Component {
                 </Col>
 
                 <Col style={{ backgroundColor: 'transparent', borderRightWidth: 0.5, borderRightColor: 'gray', marginLeft: 'auto', marginRight: 'auto' }}>
-                  <Text style={styles.topValue}>24 </Text>
+                  <Text style={styles.topValue}>{reviewdata.data && reviewdata.data.overall_rating} </Text>
                   <Text note style={styles.bottomValue}> Reviews </Text>
                 </Col>
 
@@ -121,7 +139,7 @@ class AppointmentDetails extends Component {
                 <Col style={{ width: 270, }}>
 
                   <Button disabled={this.state.appointment_button} block style={{ borderRadius: 10}}>
-                    <Text uppercase={false}>APPROVED</Text>
+                    <Text uppercase={false}>{data[0]&& data[0].appointment_status}</Text>
                   </Button>
                 </Col>
               
@@ -153,10 +171,10 @@ class AppointmentDetails extends Component {
     </Left>
     <Body>
       <Text style={styles.rowText}>
-       Fever
+      {data[0]&& data[0].disease_description}
  
 </Text>
-      <Text style={styles.rowText}>
+      {/* <Text style={styles.rowText}>
        Headache
   
 </Text>
@@ -164,7 +182,7 @@ class AppointmentDetails extends Component {
       <Text style={styles.rowText}>
        cold
   
-</Text>
+</Text> */}
 
     </Body>
 
@@ -193,11 +211,10 @@ class AppointmentDetails extends Component {
     </Left>
     <Body>
       <Text style={styles.rowText}>
-      startdate
- 
+      {formatDate(data[0]&& data[0].appointment_starttime, 'MMMM-DD-YYYY')+" "+ formatDate(data[0]&& data[0].appointment_starttime, 'hh:mm A')}
 </Text>
       <Text style={styles.rowText}>
-       enddate
+       {formatDate(data[0]&& data[0].appointment_starttime, 'MMMM-DD-YYYY')+ " " +formatDate(data[0]&& data[0].appointment_endtime, 'hh:mm A')}
   
 </Text>
 

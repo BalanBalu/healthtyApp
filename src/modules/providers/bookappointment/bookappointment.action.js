@@ -8,6 +8,7 @@ export const REVIEW_REQUEST = 'BOOK_APPOINTMENT/REVIEW_REQUEST'
 export const REVIEW_RESPONSE = 'BOOK_APPOINTMENT/REVIEW_RESPONSE'
 export const REVIEW_ERROR = 'BOOK_APPOINTMENT/REVIEW_ERROR'
 export const APPOINTMENT_REQUEST = 'APPOINTMENT/APPOINTMENT_REQUEST'
+export const APPOINTMENT_RESPONSE = 'APPOINTMENT/APPOINTMENT_RESPONSE'
 export const APPOINTMENT_ERROR   = 'APPOINTMENT/APPOINTMENT_ERROR'
 export const PROFILE_REQUEST = 'PROFILE/PROFILE_REQUEST'
 export const PROFILE_RESPONSE = 'PROFILE/PROFILE_RESPONSE'
@@ -103,7 +104,9 @@ export async function viewUserReviews(id,type, isLoading = true) {
     let response = await getService(endPoint);
     console.log("hai");
     console.log(response); 
-    let respData = response.data;    
+    let respData = response.data;   
+    console.log(respData); 
+ 
     if(respData.error || !respData.success) {
       console.log('error')
       store.dispatch({
@@ -168,7 +171,7 @@ export const appointment = async(doctorId, appointmentStatusRequest, filters, is
   }
 }
 /* get doctor details */
-export const doctorDetails = async(doctorId) => {
+export const doctorDetails = async(doctorId, fields, isLoading = true) => {
   try{    
     store.dispatch({
       type: PROFILE_REQUEST,

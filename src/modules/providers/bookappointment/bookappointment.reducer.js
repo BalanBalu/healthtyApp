@@ -1,7 +1,7 @@
 import {
   BOOK_APPOINTMENT_REQUEST, BOOK_APPOINTMENT_RESPONSE, BOOK_APPOINTMENT_ERROR,
   APPOINTMENT_REQUEST, APPOINTMENT_RESPONSE, APPOINTMENT_ERROR ,  PROFILE_REQUEST,
-  PROFILE_RESPONSE, PROFILE_ERROR
+  PROFILE_RESPONSE, PROFILE_ERROR, REVIEW_REQUEST, REVIEW_RESPONSE, REVIEW_ERROR
 } from './bookappointment.action';
 
 // Initial State
@@ -86,7 +86,28 @@ export default (state = initialState, action) => {
           isLoading: false
         }
   
-
+        case REVIEW_REQUEST:
+          return {
+            ...state,
+            message: null,
+            isLoading: action.isLoading,
+    
+          }
+    
+        case REVIEW_RESPONSE:
+          return {
+            ...state,
+            message: action.message,
+            isLoading: false,
+            success: true
+          }
+    
+        case REVIEW_ERROR:
+          return {
+            ...state,
+            message: action.message,
+            isLoading: false
+          }
     default:
       return state;
   }
