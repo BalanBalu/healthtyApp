@@ -32,7 +32,7 @@ class BookAppoinment extends Component {
   }
 
   async componentDidMount() {
-    await this.setState({doctorId : "5ce01ae8d28ab8073515a6f6"})
+    await this.setState({ doctorId: "5ca47f4dd32d2b731c40bef3" })
     let doctorId = this.state.doctorId;
     currentDate = formatDate(new Date(), 'YYYY-MM-DD');
     this.getAvailability(doctorId, currentDate);
@@ -119,7 +119,7 @@ class BookAppoinment extends Component {
         keyExtractor={(item, index) => index.toString()}
         renderItem={({ item, index }) =>
 
-          <TouchableOpacity disabled={item.isSlotBooked===true?true:false} style={selectedSlotIndex === index ? styles.slotSelectedBg :item.isSlotBooked===false? styles.slotDefaultBg:styles.slotBookedBg}
+          <TouchableOpacity disabled={item.isSlotBooked === true ? true : false} style={selectedSlotIndex === index ? styles.slotSelectedBg : item.isSlotBooked === false ? styles.slotDefaultBg : styles.slotBookedBg}
             onPress={() => this.onSlotPress(item, index)}>
             <Row style={{ width: '100%', alignItems: 'center' }}>
               <Col style={{ width: '70%', alignItems: 'center' }}>
@@ -202,7 +202,7 @@ class BookAppoinment extends Component {
           </Card>
 
 
-          <Grid>
+          {/* <Grid>
             <Row>
               <Thumbnail square source={{ uri: 'https://static1.squarespace.com/static/582bbfef9de4bb07fe62ab18/t/5877b9ccebbd1a124af66dfe/1484241404624/Headshot+-+Circular.png?format=300w' }} style={styles.logo} />
             </Row>
@@ -238,7 +238,7 @@ class BookAppoinment extends Component {
               </Grid>
             </Row>
 
-          </Grid>
+          </Grid> */}
 
           <Card transparent style={{ margin: 20, backgroundColor: '#ecf0f1' }}>
             <Card>
@@ -258,6 +258,42 @@ class BookAppoinment extends Component {
                   </Body>
                 </ListItem>
               </List>
+            </Card>
+
+
+            <Card style={{ margin: 10, padding: 10, borderRadius: 10 }}>
+              <Text style={styles.titleText}>Reviews</Text>
+
+              <List>
+                {this.state.reviewdata !== null ?
+                  <FlatList
+                    data={this.state.reviewdata}
+                    extraData={this.state}
+                    keyExtractor={(item, index) => index.toString()}
+                    renderItem={({ item }) =>
+                      <ListItem avatar>
+
+                        <Left>
+                          <Thumbnail square source={{ uri: 'https://static1.squarespace.com/static/582bbfef9de4bb07fe62ab18/t/5877b9ccebbd1a124af66dfe/1484241404624/Headshot+-+Circular.png?format=300w' }} style={{ height: 40, width: 40 }} />
+                        </Left>
+                        <Body>
+                          <Text>{((typeof item.userInfo.first_name || typeof item.userInfo.last_name) !== 'undefined') ? item.userInfo.first_name + '' + item.userInfo.last_name : 'Medflic User'}</Text>
+                          <Text note>3hrs.</Text>
+                          <StarRating fullStarColor='#FF9500' starSize={15} width={100} containerStyle={{ width: 100 }}
+                            disabled={false}
+                            maxStars={5}
+                            rating={item.overall_rating} />
+                          <Text note style={styles.customText}>{(typeof item.comments != 'undefined') ? item.comments : 'No Comments'}</Text>
+                        </Body>
+                      </ListItem>
+                    } />
+                  : <Text style={{ alignItems: 'center' }} >No Reviews Were found</Text>}
+              </List>
+              {this.state.reviewdata !== null ?
+                <Button iconRight transparent block onPress={() => this.props.navigation.navigate('Reviews')}>
+                  <Icon name='add' />
+                  <Text style={styles.customText}>More Reviews</Text>
+                </Button> : null}
 
             </Card>
 
@@ -341,10 +377,6 @@ class BookAppoinment extends Component {
                       </ListItem>
                     } /></List>
               </Card> : null}
-
-
-
-
 
 
 
@@ -449,46 +481,6 @@ class BookAppoinment extends Component {
 </List>
 </Card>
  */}
-
-
-
-            <Card style={{ margin: 10, padding: 10, borderRadius: 10 }}>
-              <Text style={styles.titleText}>Reviews</Text>
-
-              <List>
-                {this.state.reviewdata !== null ?
-                  <FlatList
-                    data={this.state.reviewdata}
-                    extraData={this.state}
-                    keyExtractor={(item, index) => index.toString()}
-                    renderItem={({ item }) =>
-                      <ListItem avatar>
-
-                        <Left>
-                          <Thumbnail square source={{ uri: 'https://static1.squarespace.com/static/582bbfef9de4bb07fe62ab18/t/5877b9ccebbd1a124af66dfe/1484241404624/Headshot+-+Circular.png?format=300w' }} style={{ height: 40, width: 40 }} />
-                        </Left>
-                        <Body>
-                          <Text>{((typeof item.userInfo.first_name || typeof item.userInfo.last_name) !== 'undefined') ? item.userInfo.first_name + '' + item.userInfo.last_name : 'Medflic User'}</Text>
-                          <Text note>3hrs.</Text>
-                          <StarRating fullStarColor='#FF9500' starSize={15} width={100} containerStyle={{ width: 100 }}
-                            disabled={false}
-                            maxStars={5}
-                            rating={item.overall_rating} />
-                          <Text note style={styles.customText}>{(typeof item.comments != 'undefined') ? item.comments : 'No Comments'}</Text>
-                        </Body>
-                      </ListItem>
-                    } />
-                  : <Text style={{ alignItems: 'center' }} >No Reviews Were found</Text>}
-              </List>
-              {this.state.reviewdata !== null ?
-                <Button iconRight transparent block onPress={() => this.props.navigation.navigate('Reviews')}>
-                  <Icon name='add' />
-                  <Text style={styles.customText}>More Reviews</Text>
-                </Button> : null}
-
-            </Card>
-
-
             <Button block success style={{ borderRadius: 10 }}>
               <Text uppercase={false}>Confirm Appoinment</Text>
             </Button>
