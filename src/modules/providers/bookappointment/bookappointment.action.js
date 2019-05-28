@@ -7,6 +7,7 @@ export const REVIEW_ERROR = 'BOOK_APPOINTMENT/REVIEW_ERROR'
 export const PROFILE_REQUEST = 'PROFILE/PROFILE_REQUEST'
 export const PROFILE_RESPONSE = 'PROFILE/PROFILE_RESPONSE'
 export const PROFILE_ERROR = 'PROFILE/PROFILE_ERROR'
+
 import { store } from '../../../setup/store'
 import { getService } from '../../../setup/services/httpservices';
 
