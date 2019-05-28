@@ -1,4 +1,4 @@
-import {  REQUEST, RESPONSE, ERROR } from './bookappointment.action';
+import {  CATAGRIES_REQUEST, CATAGRIES_RESPONSE, CATAGRIES_ERROR } from './catagries.actions';
 
 // Initial State
 export const initialState = {
@@ -12,7 +12,7 @@ export const initialState = {
 export default (state = initialState, action) => {
     switch (action.type) {
       
-      case REQUEST:
+      case CATAGRIES_REQUEST:
         return {
           ...state,
           message: null,
@@ -20,7 +20,7 @@ export default (state = initialState, action) => {
   
         }
   
-      case RESPONSE:
+      case CATAGRIES_RESPONSE:
         return {
           ...state,
           message: action.message,
@@ -28,7 +28,7 @@ export default (state = initialState, action) => {
           success: true
         }
   
-      case ERROR:
+      case CATAGRIES_ERROR:
         return {
           ...state,
           message: action.message,
@@ -40,8 +40,6 @@ export default (state = initialState, action) => {
         return state;
     }
   }
-  
-  
   
   
   
