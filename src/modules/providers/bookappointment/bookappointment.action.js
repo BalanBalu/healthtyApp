@@ -13,7 +13,45 @@ export const DOCTORLIST_ERROR = 'BOOK_APPOINTMENT/DOCTORLIST_RESPONSE'
 export const DOCTORLIST_RESPONSE = 'BOOK_APPOINTMENT/DOCTORLIST_RESPONSE'
 import { postService, getService } from '../../../setup/services/httpservices';
 
-/*get doctor availability for patient view doctor profile */
+
+
+/* Book the Doctor Appointment module  */
+export async function bookAppointment(bookSlotDetails, isLoading = true) {
+  try {
+
+    store.dispatch({
+      type: DOCTORLIST_REQUEST,
+      isLoading
+    })
+    let endPoint = 'doctor/appointment';
+    let response = await postService(endPoint, bookSlotDetails);
+    //  console.log(JSON.stringify(response)+'bookAppointment API rspnse');
+    let respData = response.data;
+
+    if (respData.error || !respData.success) {
+      store.dispatch({
+        type: DOCTORLIST_ERROR,
+        message: respData.error
+      })
+    } else {
+     
+      store.dispatch({
+        type: DOCTORLIST_RESPONSE,
+        message: respData.message
+      })
+      return respData;
+    }
+
+  } catch (e) {
+    store.dispatch({
+      type: DOCTORLIST_ERROR,
+      message: e + ' Occured! Please Try again'
+    });
+  }
+}
+
+
+
 
 /* Search Services and category Module  */
 export async function searchDoctorList(userId, searchInputvalues, isLoading = true) {
@@ -50,6 +88,7 @@ export async function searchDoctorList(userId, searchInputvalues, isLoading = tr
     });
   }
 }
+/*get doctor availability for patient view doctor profile */
 
 export async function viewdoctorProfile (doctorIds, isLoading = true) {
   try {
