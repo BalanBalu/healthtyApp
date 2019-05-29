@@ -109,7 +109,7 @@ class myappoinmentdetail extends Component {
                                                 <Text style={{ fontFamily: 'OpenSans', fontSize: 12 }} note>April-13 </Text>
                                                 <Text style={{ fontFamily: 'OpenSans', fontSize: 12 }} note>10.00 AM</Text>
                                             </Item>
-                                            <Item style={{ borderBottomWidth: 0, marginLeft: 20 }}>
+                                            <Item style={{ borderBottomWidth: 0, marginLeft:5 }}>
                                                 <Button style={styles.bookingButton}>
                                                     <Text  >Book Again</Text>
                                                 </Button>
