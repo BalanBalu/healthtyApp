@@ -11,26 +11,33 @@ import { userReviews } from '../../providers/profile/profile.action';
 import { formatDate } from '../../../setup/helpers';
 import { Col, Row, Grid } from 'react-native-easy-grid';
 import SegmentedControlTab from "react-native-segmented-control-tab";
-class myappoinmentdetail extends Component {
+class MyAppoinmentList extends Component {
     constructor(props) {
         super(props)
 
         this.state = {
             data: [],
             isLoading: false,
-            selectedIndex: 0
+            selectedIndex: 0,
+            upComingData: [1,2,3,4],
+            pastData: []
         }
+    }
+    componentDidMount() {
+        this.setState({ data : this.state.upComingData});
     }
 
     handleIndexChange = index => {
+        let data = index === 0 ? this.state.upComingData : this.state.pastData
         this.setState({
             ...this.state,
-            selectedIndex: index
+            selectedIndex: index,
+            data
         });
     };
 
     render() {
-
+        const { data } = this.state;
 
         return (
 
@@ -41,14 +48,28 @@ class myappoinmentdetail extends Component {
                     onTabPress={this.handleIndexChange}
                     activeTabStyle={{ backgroundColor: '#775DA3', borderColor: '#775DA3' }}
                     tabStyle={{ borderColor: '#775DA3' }}
-                    
-
                 />
 
 
-
+                {data.length === 0 ? 
                 <Card style={{ padding: 5, borderRadius: 10, marginTop: 15 }}>
-                    <List>
+                        <Item style={{ borderBottomWidth: 0 }}>
+                            
+                            <Text style={{ fontFamily: 'OpenSans', fontSize: 12 }} note>If no appointment, this should be printed, karthick bro, code should be implement here</Text>
+
+                                   
+                        </Item>
+                </Card> : 
+                <Card style={{ padding: 5, borderRadius: 10, marginTop: 15 }}>
+                
+
+                   
+                <List>
+                <FlatList
+                            data={data}
+                            extraData={this.state}
+                            renderItem={({ item, index }) => 
+                   
                         <ListItem avatar onPress={() => this.props.navigation.navigate('AppointmentInfo')}>
                             <Left>
                                 <Thumbnail square source={{ uri: 'https://res.cloudinary.com/demo/image/upload/w_200,h_200,c_thumb,g_face,r_max/face_left.png' }} style={{ height: 60, width: 60 }} />
@@ -56,22 +77,19 @@ class myappoinmentdetail extends Component {
                             <Body>
                                 <Text style={{ fontFamily: 'OpenSans' }}>Dr. Anil Verma</Text>
                                 <Item style={{ borderBottomWidth: 0 }}>
-                                    <Text style={{ fontFamily: 'opensans-regular' }}>Internist  </Text>
+                                    <Text style={{ fontFamily: 'OpenSans' }}>Internist</Text>
                                     <StarRating fullStarColor='#FF9500' starSize={20} containerStyle={{ width: 100, marginLeft: 60 }}
                                         disabled={false}
                                         maxStars={5}
                                         rating={this.state.starCount}
                                         selectedStar={(rating) => this.onStarRatingPress(rating)}
-
                                     />
-
-                                </Item>
-
+                              </Item>
                                 <Item style={{ borderBottomWidth: 0 }}>
-                                    <Text style={{ fontFamily: 'opensans-regular', fontSize: 12 }} note>Saturday. </Text>
+                                    <Text style={{ fontFamily: 'OpenSans', fontSize: 12 }} note>Saturday. </Text>
 
-                                    <Text style={{ fontFamily: 'opensans-regular', fontSize: 12 }} note>April-13 </Text>
-                                    <Text style={{ fontFamily: 'opensans-regular', fontSize: 12 }} note>10.00 AM</Text>
+                                    <Text style={{ fontFamily: 'OpenSans', fontSize: 12 }} note>April-13 </Text>
+                                    <Text style={{ fontFamily: 'OpenSans', fontSize: 12 }} note>10.00 AM</Text>
                                 </Item>
                                 <Item style={{ borderBottomWidth: 0,marginLeft:20 }}>
                                     <Button style={styles.bookingButton}>
@@ -85,122 +103,11 @@ class myappoinmentdetail extends Component {
 
                             </Body>
                         </ListItem>
-
-
-                        <ListItem avatar onPress={() => this.props.navigation.navigate('AppointmentInfo')}>
-                            <Left>
-                                <Thumbnail square source={{ uri: 'https://res.cloudinary.com/demo/image/upload/w_200,h_200,c_thumb,g_face,r_max/face_left.png' }} style={{ height: 60, width: 60 }} />
-                            </Left>
-                            <Body>
-                                <Text style={{ fontFamily: 'OpenSans' }}>Dr. Anil Verma</Text>
-                                <Item style={{ borderBottomWidth: 0 }}>
-                                    <Text style={{ fontFamily: 'opensans-regular' }}>Internist  </Text>
-                                    <StarRating fullStarColor='#FF9500' starSize={20} containerStyle={{ width: 100, marginLeft: 60 }}
-                                        disabled={false}
-                                        maxStars={5}
-                                        rating={this.state.starCount}
-                                        selectedStar={(rating) => this.onStarRatingPress(rating)}
-
-                                    />
-
-                                </Item>
-
-                                <Item style={{ borderBottomWidth: 0 }}>
-                                    <Text style={{ fontFamily: 'opensans-regular', fontSize: 12 }} note>Saturday. </Text>
-
-                                    <Text style={{ fontFamily: 'opensans-regular', fontSize: 12 }} note>April-13 </Text>
-                                    <Text style={{ fontFamily: 'opensans-regular', fontSize: 12 }} note>10.00 AM</Text>
-                                </Item>
-                                <Item style={{ borderBottomWidth: 0,marginLeft:20 }}>
-                                    <Button style={styles.bookingButton}>
-                                        <Text  >Book Again</Text>
-                                    </Button>
-                                    <Button style={styles.shareButton}>
-                                        <Text >Share</Text>
-                                    </Button>
-                                </Item>
-
-
-                            </Body>
-                        </ListItem>
-
-
-                        <ListItem avatar onPress={() => this.props.navigation.navigate('AppointmentInfo')}>
-                            <Left>
-                                <Thumbnail square source={{ uri: 'https://res.cloudinary.com/demo/image/upload/w_200,h_200,c_thumb,g_face,r_max/face_left.png' }} style={{ height: 60, width: 60 }} />
-                            </Left>
-                            <Body>
-                                <Text style={{ fontFamily: 'OpenSans' }}>Dr. Anil Verma</Text>
-                                <Item style={{ borderBottomWidth: 0 }}>
-                                    <Text style={{ fontFamily: 'opensans-regular' }}>Internist  </Text>
-                                    <StarRating fullStarColor='#FF9500' starSize={20} containerStyle={{ width: 100, marginLeft: 60 }}
-                                        disabled={false}
-                                        maxStars={5}
-                                        rating={this.state.starCount}
-                                        selectedStar={(rating) => this.onStarRatingPress(rating)}
-
-                                    />
-
-                                </Item>
-
-                                <Item style={{ borderBottomWidth: 0 }}>
-                                    <Text style={{ fontFamily: 'opensans-regular', fontSize: 12 }} note>Saturday. </Text>
-
-                                    <Text style={{ fontFamily: 'opensans-regular', fontSize: 12 }} note>April-13 </Text>
-                                    <Text style={{ fontFamily: 'opensans-regular', fontSize: 12 }} note>10.00 AM</Text>
-                                </Item>
-                                <Item style={{ borderBottomWidth: 0,marginLeft:20 }}>
-                                    <Button style={styles.bookingButton}>
-                                        <Text  >Book Again</Text>
-                                    </Button>
-                                    <Button style={styles.shareButton}>
-                                        <Text >Share</Text>
-                                    </Button>
-                                </Item>
-
-                            </Body>
-                        </ListItem>
-
-
-
-                        <ListItem avatar onPress={() => this.props.navigation.navigate('AppointmentInfo')}>
-                            <Left>
-                                <Thumbnail square source={{ uri: 'https://res.cloudinary.com/demo/image/upload/w_200,h_200,c_thumb,g_face,r_max/face_left.png' }} style={{ height: 60, width: 60 }} />
-                            </Left>
-                            <Body>
-                                <Text style={{ fontFamily: 'OpenSans' }}>Dr. Anil Verma</Text>
-                                <Item style={{ borderBottomWidth: 0 }}>
-                                    <Text style={{ fontFamily: 'opensans-regular' }}>Internist  </Text>
-                                    <StarRating fullStarColor='#FF9500' starSize={20} containerStyle={{ width: 100, marginLeft: 60 }}
-                                        disabled={false}
-                                        maxStars={5}
-                                        rating={this.state.starCount}
-                                        selectedStar={(rating) => this.onStarRatingPress(rating)}
-
-                                    />
-
-                                </Item>
-
-                                <Item style={{ borderBottomWidth: 0 }}>
-                                    <Text style={{ fontFamily: 'opensans-regular', fontSize: 12 }} note>Saturday. </Text>
-
-                                    <Text style={{ fontFamily: 'opensans-regular', fontSize: 12 }} note>April-13 </Text>
-                                    <Text style={{ fontFamily: 'opensans-regular', fontSize: 12 }} note>10.00 AM</Text>
-                                </Item>
-                                <Item style={{ borderBottomWidth: 0,marginLeft:20 }}>
-                                    <Button style={styles.bookingButton}>
-                                        <Text  >Book Again</Text>
-                                    </Button>
-                                    <Button style={styles.shareButton}>
-                                        <Text >Share</Text>
-                                    </Button>
-                                </Item>
-
-
-                            </Body>
-                        </ListItem>
-                    </List>
-                </Card>
+                     }
+                     keyExtractor={(item, index) => index.toString()}/>
+                   </List>
+                </Card> 
+                }
 
 
 
@@ -212,9 +119,7 @@ class myappoinmentdetail extends Component {
     }
 }
 
-
-
-export default myappoinmentdetail
+export default MyAppoinmentList
 const styles = StyleSheet.create({
     container:
     {
