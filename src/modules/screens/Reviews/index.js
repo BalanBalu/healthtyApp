@@ -2,8 +2,7 @@ import React, { Component } from 'react';
 import {
     Container, Content, View, Text, Title, Header, H3, Button, Item, Card,
     CardItem, List, ListItem, Left, Right, Thumbnail,
-    Body, Icon, ScrollView
-} from 'native-base';
+    Body, Icon, ScrollView, Spinner } from 'native-base';
 import { StyleSheet, TouchableOpacity, AsyncStorage, FlatList } from 'react-native';
 import StarRating from 'react-native-star-rating';
 
@@ -28,13 +27,14 @@ class Reviews extends Component {
     }
 
     getUserReview = async () => {
-        let doctorId = await AsyncStorage.getItem('doctorId');
-        //let doctorId = "5ce38535ecb5b70f90996222";       
+          let doctorId = await AsyncStorage.getItem('doctorId');
+        //  let doctorId = "5ce509ef7ca0ee0f10f42c14";       
         try {
             let result = await userReviews(doctorId, 'doctor');
             if (result.success) {
                 console.log(JSON.stringify(result.data))
                 this.setState({ data: result.data });
+                this.setState({isLoading:false});
                 await this.state.data.forEach(element => {
                     this.state.ratingVisible.push(false);
                 });
@@ -96,7 +96,7 @@ class Reviews extends Component {
     renderReviews() {
         return (
             <FlatList
-                data={this.state.data}
+                data={this.state.data}F
                 extraData={this.state}
                 keyExtractor={(item, index) => index.toString()}
                 renderItem={({ item, index }) =>
@@ -113,7 +113,7 @@ class Reviews extends Component {
                                 </Left>
 
                                 <Body>
-                                    <Text style={{ fontFamily: 'OpenSans' }}> {item.is_anonymous == false ? item.userInfo.first_name + ' ' + item.userInfo.last_name : 'MedFlic User'} </Text>
+                                    <Text style={{ fontFamily: 'OpenSans' }}> {item.is_anonymous == true ? 'Medflic User' :  item.userInfo.first_name + ' ' + item.userInfo.last_name} </Text>
                                     <TouchableOpacity onPress={() => { this.toggleRatingVisible(index) }}>
                                         <StarRating fullStarColor='#FF9500' starSize={15} containerStyle={{ width: 100 }}
                                             disabled={true}
@@ -156,12 +156,20 @@ class Reviews extends Component {
     }
 
     render() {
+        //  const { user: { isLoading } } = this.state.props;
         return (
             <Container style={styles.container}>
                 <Content style={styles.bodyContent}>
+                   {this.state.isLoading ? <Spinner color='blue' /> :
                     <View>
                         {this.state.data == null ? this.renderNoReviews() : this.renderReviews()}
-                    </View>
+                    </View>} 
+                      
+                    
+                     {/* <View>
+                        {this.state.data == null ? this.renderNoReviews() : this.renderReviews()}
+                    </View> */}
+                  
                 </Content>
             </Container>
         )
