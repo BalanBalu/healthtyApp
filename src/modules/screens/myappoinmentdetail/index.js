@@ -12,9 +12,10 @@ import { formatDate ,addTimeUnit,dateDiff} from '../../../setup/helpers';
 import { Col, Row, Grid } from 'react-native-easy-grid';
 import SegmentedControlTab from "react-native-segmented-control-tab";
 import { appointment } from "../../providers/bookappointment/bookappointment.action";
-;
+import noAppointmentImage from '../../../../assets/images/noappointment.png';
    
 class MyAppoinmentList extends Component {
+
     constructor(props) {
         super(props)
 
@@ -24,15 +25,13 @@ class MyAppoinmentList extends Component {
             selectedIndex: 0,
             upComingData: [],
             pastData: [],
-            userId: "5ce50ae57ca0ee0f10f42c34"
+            userId: "5ce03548d28ab8073515a6fa"
         }
          
     }
     componentDidMount() {
-      //  this.setState({ data : this.state.upComingData});
-      if(this.state.selectedIndex==0)
+        
         this.upCommingAppointment();
-        else
         this.pastAppointment();
     }
     upCommingAppointment = async () => {
@@ -44,11 +43,9 @@ class MyAppoinmentList extends Component {
             endDate: formatDate(addTimeUnit(new Date(), 1, "years"), "YYYY-MM-DD")
           };
           let result = await appointment(this.state.userId, filters);
-          console.log("myappoinmentlist");
-          console.log(result.data);
           this.setState({ isRefreshing: false, isLoading: false });
           if (result.success)
-            this.setState({ upComingData: result.data, isRefreshing: false });
+            this.setState({ upComingData: result.data, isRefreshing: false, data : result.data });
         } catch (e) {
           console.log(e);
         }
@@ -89,24 +86,27 @@ class MyAppoinmentList extends Component {
         return (
 
             <View style={styles.container}>
-                <SegmentedControlTab  tabsContainerStyle={{ width: 250,marginLeft:'auto',marginRight:'auto'}}
+                <SegmentedControlTab tabsContainerStyle={{ width: 250, marginLeft: 'auto', marginRight: 'auto' }}
                     values={["Upcoming", "Past"]}
                     selectedIndex={this.state.selectedIndex}
                     onTabPress={this.handleIndexChange}
                     activeTabStyle={{ backgroundColor: '#775DA3', borderColor: '#775DA3' }}
                     tabStyle={{ borderColor: '#775DA3' }}
                 />
-   
-                             
-                {data.length === 0 ? 
-                <Card style={{ padding: 5, borderRadius: 10, marginTop: 15 }}>
-                        <Item style={{ borderBottomWidth: 0 }}>
-                            
-                            <Text style={{ fontFamily: 'OpenSans', fontSize: 12 }} note>If no appointment, this should be printed, karthick bro, code should be implement here</Text>
 
-                                   
-                        </Item>
-                </Card> : 
+
+                {data.length === 0 ?
+                    <Card transparent style={{ alignItems: 'center', justifyContent: 'center', marginTop: '20%' }}>
+                       
+                        <Thumbnail square source={noAppointmentImage} style={{ height: 100, width: 100, marginTop: '10%' }} />
+
+                            <Text style={{ fontFamily: 'OpenSans', fontSize: 14, marginTop: '10%' }} note>No appoinments are scheduled</Text>
+                            <Item style={{ marginTop: '15%', borderBottomWidth: 0 }}>
+                                <Button style={[styles.bookingButton, styles.customButton]}>
+                                    <Text  >Book Now</Text>
+                                </Button>
+                            </Item>
+                    </Card> : 
 
                 <Card style={{ padding: 5, borderRadius: 10, marginTop: 15 }}>                  
                 <List>
@@ -152,7 +152,7 @@ class MyAppoinmentList extends Component {
                      keyExtractor={(item, index) => index.toString()}/>
                    </List>
                 </Card> 
-                }
+             }
             </View>
         );
     }
@@ -173,7 +173,7 @@ const styles = StyleSheet.create({
         backgroundColor: '#775DA3',
         marginLeft: 15,
         borderRadius: 10,
-        width: 120,
+        width: 'auto',
         height: 40,
         color: 'white',
         fontSize: 12,
@@ -184,11 +184,29 @@ const styles = StyleSheet.create({
         backgroundColor: 'gray',
         marginLeft: 15,
         borderRadius: 10,
-        width: 90,
+        width: 'auto',
         height: 40,
         color: 'white',
         fontSize: 12,
         textAlign: 'center',
         justifyContent: 'center'
+
     },
+    customButton:
+    {
+        alignItems: 'center',
+        justifyContent: 'center',
+        marginTop: 12,
+        backgroundColor: '#775DA3',
+        marginLeft: 15,
+        borderRadius: 10,
+        width: 'auto',
+        height: 40,
+        color: 'white',
+        fontSize: 12,
+        textAlign: 'center',
+        marginLeft: 'auto',
+        marginRight: 'auto',
+
+    }
 });
