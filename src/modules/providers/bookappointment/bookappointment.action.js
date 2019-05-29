@@ -140,6 +140,7 @@ export const appointment = async(userId, filters, isLoading = true) => {
      console.log(endPoint);
 
       let response = await getService(endPoint);
+      console.log(response)
       
       let respData = response.data;
       console.log(respData);
