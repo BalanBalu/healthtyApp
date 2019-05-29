@@ -23,12 +23,12 @@ class Reviews extends Component {
     }
 
     componentDidMount() {
-        this.getUserReview();
+        const { navigation } = this.props;
+        let doctorId = navigation.getParam('doctorId'); //"5ce01ae8d28ab8073515a6f6";
+        this.getUserReview(doctorId);
     }
 
-    getUserReview = async () => {
-          let doctorId = await AsyncStorage.getItem('doctorId');
-        //  let doctorId = "5ce509ef7ca0ee0f10f42c14";       
+    getUserReview = async (doctorId) => {
         try {
             let result = await userReviews(doctorId, 'doctor');
             if (result.success) {

@@ -32,8 +32,9 @@ class BookAppoinment extends Component {
   }
 
   async componentDidMount() {
-    await this.setState({ doctorId: "5ca47f4dd32d2b731c40bef3" })
-    let doctorId = this.state.doctorId;
+    const { navigation } = this.props;
+    let doctorId = navigation.getParam('doctorId', "5ce01ae8d28ab8073515a6f6");
+    await this.setState({ doctorId });
     currentDate = formatDate(new Date(), 'YYYY-MM-DD');
     this.getAvailability(doctorId, currentDate);
     await this.getdoctorDetails(doctorId);
@@ -290,7 +291,7 @@ class BookAppoinment extends Component {
                   : <Text style={{ alignItems: 'center' }} >No Reviews Were found</Text>}
               </List>
               {this.state.reviewdata !== null ?
-                <Button iconRight transparent block onPress={() => this.props.navigation.navigate('Reviews')}>
+                <Button iconRight transparent block onPress={() => this.props.navigation.navigate('Reviews', { doctorId : this.state.doctorId})}>
                   <Icon name='add' />
                   <Text style={styles.customText}>More Reviews</Text>
                 </Button> : null}
