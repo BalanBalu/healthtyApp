@@ -11,6 +11,7 @@ import { userReviews } from '../../providers/profile/profile.action';
 import { formatDate } from '../../../setup/helpers';
 import { Col, Row, Grid } from 'react-native-easy-grid';
 import SegmentedControlTab from "react-native-segmented-control-tab";
+import noAppointmentImage from '../../../../assets/images/noappointment.png'
 class myappoinmentdetail extends Component {
     constructor(props) {
         super(props)
@@ -62,7 +63,7 @@ class myappoinmentdetail extends Component {
 
 
                         <Card transparent style={{ alignItems: 'center', justifyContent: 'center', marginTop: '20%' }}>
-                            <Thumbnail square source={{ uri: 'https://www.shareicon.net/data/512x512/2017/01/23/874910_document_512x512.png' }} style={{ height: 100, width: 100, marginTop: '10%' }} />
+                            <Thumbnail square source={noAppointmentImage} style={{ height: 100, width: 100, marginTop: '10%' }} />
 
                             <Text style={{ fontFamily: 'OpenSans', fontSize: 14, marginTop: '10%' }} note>No appoinments are scheduled</Text>
 
