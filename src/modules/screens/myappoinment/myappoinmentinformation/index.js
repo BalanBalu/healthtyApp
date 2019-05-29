@@ -14,6 +14,7 @@ class AppointmentDetails extends Component {
             data: [],
             appointmentId:'',
             doctorId: '',
+            userId: '',
             reviewdata: {}
             
         }
@@ -21,18 +22,15 @@ class AppointmentDetails extends Component {
     }
     async componentDidMount() {
       console.log('coming to component did mount');
-      await this.setState({doctorId : "5cda861aadd469133ba8e0f3", appointmentId: "5caa1ba6b701a772f4207f56"})
+      await this.setState({doctorId : "5ce509ef7ca0ee0f10f42c14", appointmentId: "5cbade1f190f4a0bc85d8697", userId:"5ce50ae57ca0ee0f10f42c34"})
       let doctorId = this.state.doctorId;
       let appointmentId = this.state.appointmentId;
+      let userId = this.state.userId;
+
       this.getAppointmentDetails(doctorId, appointmentId);
-       await this.getUserReviews(doctorId);
+       await this.getUserReviews(userId);
 
     }
-    // onStarRatingPress(rating) {
-    //     this.setState({
-    //         starCount: rating
-    //     });
-    // }
 
     /* get Doctor appointment */
 
@@ -43,7 +41,7 @@ class AppointmentDetails extends Component {
         console.log(JSON.stringify(result)+ 'result');
         if (result.success){
           this.setState({ data: result.data });
-          console.log(this.state.data);
+          console.log(this.state.data);          
       }
        
       } catch (e) {
@@ -52,15 +50,14 @@ class AppointmentDetails extends Component {
     }
    
     /* get User reviews */
-    getUserReviews = async (doctorId) => {
+    getUserReviews = async (userId) => {
       console.log("reviews");
-      let resultReview = await viewUserReviews('doctor', doctorId);
+      let resultReview = await viewUserReviews('user', userId);
       console.log(resultReview.data);
       if (resultReview.success) {
         this.setState({ reviewdata: resultReview.data });
       }
       console.log('reviewdata'+JSON.stringify(this.state.reviewdata));
-
     }
   
     render() {
@@ -83,13 +80,12 @@ class AppointmentDetails extends Component {
 
                 </Left>
                 <Body>
-                  {/* <Text style={styles.customHead}>{(doctorData.data && doctorData.data.first_name)+ " " +(doctorData.data && doctorData.data.last_name)}</Text>
-                  <Text note style={styles.customText}>{doctorData.data&& doctorData.data.specialist[0].category} </Text> */}
+                  <Text style={styles.customHead}>{(data[0] && data[0].doctorInfo.first_name)+ " " +(data[0]&& data[0].doctorInfo.last_name)}</Text>
+                  {/* <Text note style={styles.customText}>{doctorData.data&& doctorData.data.specialist[0].category} </Text> */}
                   <StarRating fullStarColor='#FF9500' starSize={25}
                     disabled={false}
                     maxStars={5}
-                    rating={this.state.starCount}
-                    selectedStar={(rating) => this.onStarRatingPress(rating)}
+                    rating={reviewdata[0] && reviewdata[0].overall_rating}
                   />
                 </Body>
 
@@ -102,7 +98,7 @@ class AppointmentDetails extends Component {
                 </Col>
 
                 <Col style={{ backgroundColor: 'transparent', borderRightWidth: 0.5, borderRightColor: 'gray', marginLeft: 'auto', marginRight: 'auto' }}>
-                  {/* <Text style={styles.topValue}>{reviewdata.data && reviewdata.data.overall_rating} </Text> */}
+                  <Text style={styles.topValue}>{reviewdata[0] && reviewdata[0].overall_rating} </Text>
                   <Text note style={styles.bottomValue}> Reviews </Text>
                 </Col>
 
@@ -116,7 +112,7 @@ class AppointmentDetails extends Component {
                 <Col style={{ width: 270, }}>
 
                   <Button disabled={this.state.appointment_button} block style={{ borderRadius: 10}}>
-                    {/* <Text uppercase={false}>{data[0]&& data[0].appointment_status}</Text> */}
+                    <Text uppercase={false}>{data[0]&& data[0].appointment_status}</Text>
                   </Button>
                 </Col>
               
@@ -148,7 +144,7 @@ class AppointmentDetails extends Component {
     </Left>
     <Body>
       <Text style={styles.rowText}>
-      {/* {data[0]&& data[0].disease_description} */}
+      {data[0]&& data[0].disease_description}
  
 </Text>
       {/* <Text style={styles.rowText}>
@@ -188,10 +184,10 @@ class AppointmentDetails extends Component {
     </Left>
     <Body>
       <Text style={styles.rowText}>
-      {/* {formatDate(data[0]&& data[0].appointment_starttime, 'MMMM-DD-YYYY')+" "+ formatDate(data[0]&& data[0].appointment_starttime, 'hh:mm A')} */}
+      {formatDate(data[0]&& data[0].appointment_starttime, 'MMMM-DD-YYYY')+" "+ formatDate(data[0]&& data[0].appointment_starttime, 'hh:mm A')}
 </Text>
       <Text style={styles.rowText}>
-       {/* {formatDate(data[0]&& data[0].appointment_starttime, 'MMMM-DD-YYYY')+ " " +formatDate(data[0]&& data[0].appointment_endtime, 'hh:mm A')} */}
+       {formatDate(data[0]&& data[0].appointment_starttime, 'MMMM-DD-YYYY')+ " " +formatDate(data[0]&& data[0].appointment_endtime, 'hh:mm A')}
   
 </Text>
 
