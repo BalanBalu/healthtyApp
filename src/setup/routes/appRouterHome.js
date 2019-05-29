@@ -6,7 +6,7 @@ import AuthLoadingScreen from './AuthLoadingScreen';
 import Home from "../../modules/screens/Home";
 import Profile from "../../modules/screens/userprofile";
 import finddoctor from "../../modules/screens/auth/finddoctor";
-import { Icon } from 'native-base';
+import { Icon, View } from 'native-base';
 import Categories from "../../modules/screens/categories";
 
 
@@ -35,6 +35,7 @@ import { HeaderBackButton } from 'react-navigation';
 import BookAppoinment from "../../modules/screens/bookappoinment";
 import MyAppointments from '../../modules/screens/myappoinment';
 import AppointmentDetails from '../../modules/screens/myappoinment/myappoinmentinformation';
+import MyAppoinmentList from '../../modules/screens/myappoinmentdetail';
 
 
 const routes = {
@@ -135,6 +136,7 @@ const AppointMentstack1 = createStackNavigator({
           <Icon name="arrow-back" style={{ marginLeft: 18, color: '#fff', fontFamily: 'opensans-semibold' }}></Icon>
         </TouchableOpacity>
       ),
+     
     })
   },
   Filters: {
@@ -174,7 +176,7 @@ const AppointMentstack1 = createStackNavigator({
 
   const myAppointmentsStack = createStackNavigator({
     "My Appointments": {
-      screen: MyAppointments,
+      screen: MyAppoinmentList,
       navigationOptions: ({ navigation }) => ({
         title: 'Appointments',
         headerLeft: (
