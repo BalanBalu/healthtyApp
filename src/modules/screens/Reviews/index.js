@@ -4,11 +4,12 @@ import {
     CardItem, List, ListItem, Left, Right, Thumbnail,
     Body, Icon, ScrollView
 } from 'native-base';
-import { StyleSheet, Image, AsyncStorage, FlatList } from 'react-native';
+import { StyleSheet, TouchableOpacity, AsyncStorage, FlatList } from 'react-native';
 import StarRating from 'react-native-star-rating';
 
 import { userReviews } from '../../providers/profile/profile.action';
 import { formatDate } from '../../../setup/helpers';
+//import Spinner from '../../../components/Spinner';
 
 
 class Reviews extends Component {
@@ -16,9 +17,9 @@ class Reviews extends Component {
         super(props)
 
         this.state = {
-            data: [],
-            isLoading: false
-
+            data: null,
+            isLoading: true,
+            ratingVisible: []
         }
     }
 
@@ -27,14 +28,16 @@ class Reviews extends Component {
     }
 
     getUserReview = async () => {
-
-        //let doctorId = await AsyncStorage.getItem('doctorId');
-          let doctorId =  "5ce01ae8d28ab8073515a6f6";
+        let doctorId = await AsyncStorage.getItem('doctorId');
+        //let doctorId = "5ce38535ecb5b70f90996222";       
         try {
             let result = await userReviews(doctorId, 'doctor');
             if (result.success) {
                 console.log(JSON.stringify(result.data))
-                await this.setState({ data: result.data })
+                this.setState({ data: result.data });
+                await this.state.data.forEach(element => {
+                    this.state.ratingVisible.push(false);
+                });
             }
         }
         catch (e) {
@@ -42,28 +45,43 @@ class Reviews extends Component {
         }
     }
 
+    toggleRatingVisible(index) {
+        let temp = this.state.ratingVisible;
+        temp.splice(index, 1, !temp[index]);
+        this.setState({ ratingVisible: temp })
+    }
+
     renderAllRatings(item) {
         return (
-            <Item>
-                <Text style={{ fontFamily: 'OpenSans' }}>Cleanliness Rating</Text>
-                <StarRating fullStarColor='#FF9500' starSize={15} containerStyle={{ width: 100 }}
-                    disabled={true}
-                    maxStars={5}
-                    rating={item.cleanness_rating}
-                />
-                <Text style={{ fontFamily: 'OpenSans' }}>Staff Rating</Text>
-                <StarRating fullStarColor='#FF9500' starSize={15} containerStyle={{ width: 100 }}
-                    disabled={true}
-                    maxStars={5}
-                    rating={item.staff_rating}
-                />
-                <Text style={{ fontFamily: 'OpenSans' }}>Wait Time Rating</Text>
-                <StarRating fullStarColor='#FF9500' starSize={15} containerStyle={{ width: 100 }}
-                    disabled={true}
-                    maxStars={5}
-                    rating={item.wait_time_rating}
-                />
-            </Item>
+            <Body>
+                {item.cleanness_rating != undefined ?
+                    <Item>
+                        <Text style={{ fontFamily: 'OpenSans' }}>Cleanliness Rating</Text>
+                        <StarRating fullStarColor='#FF9500' starSize={15} containerStyle={{ width: 50, alignContent: 'center' }}
+                            disabled={true}
+                            maxStars={5}
+                            rating={item.cleanness_rating}
+                        />
+                    </Item> : null}
+                {item.staff_rating != undefined ?
+                    <Item>
+                        <Text style={{ fontFamily: 'OpenSans' }}>Staff Rating</Text>
+                        <StarRating fullStarColor='#FF9500' starSize={15} containerStyle={{ width: 50, alignContent: 'center' }}
+                            disabled={true}
+                            maxStars={5}
+                            rating={item.staff_rating}
+                        />
+                    </Item> : null}
+                {item.wait_time_rating != undefined ?
+                    <Item>
+                        <Text style={{ fontFamily: 'OpenSans' }}>Wait Time Rating</Text>
+                        <StarRating fullStarColor='#FF9500' starSize={15} containerStyle={{ width: 50, alignContent: 'center' }}
+                            disabled={true}
+                            maxStars={5}
+                            rating={item.wait_time_rating}
+                        />
+                    </Item> : null}
+            </Body>
         )
     }
 
@@ -87,42 +105,45 @@ class Reviews extends Component {
                             <ListItem avatar noBorder>
                                 <Left>
                                     {
-                                        item.userInfo.profile_image != undefined
-                                            ? <Thumbnail square source={item.userInfo.profile_image.imageURL} style={{ height: 60, width: 60 }} />
-                                            : <Thumbnail square source={{ uri: 'https://res.cloudinary.com/demo/image/upload/w_200,h_200,c_thumb,g_face,r_max/face_left.png' }} style={{ height: 60, width: 60 }} />
+                                        (item.userInfo.profile_image == undefined || item.is_anonymous == true)
+                                            ? <Thumbnail square source={{ uri: 'https://res.cloudinary.com/demo/image/upload/w_200,h_200,c_thumb,g_face,r_max/face_left.png' }}
+                                                style={{ height: 60, width: 60 }} />
+                                            : <Thumbnail square source={item.userInfo.profile_image.imageURL} style={{ height: 60, width: 60 }} />
                                     }
                                 </Left>
+
                                 <Body>
-                                    <Text style={{ fontFamily: 'OpenSans' }}> {item.userInfo.first_name + ' ' + item.userInfo.last_name || 'MedFlic User'} </Text>
-                                    <StarRating fullStarColor='#FF9500' starSize={15} containerStyle={{ width: 100 }}
-                                        disabled={true}
-                                        maxStars={5}
-                                        rating={item.overall_rating}
-                                        selectedStar={() => this.setState({ allRatingsVisible: !this.state.allRatingsVisible })}
-                                    />
+                                    <Text style={{ fontFamily: 'OpenSans' }}> {item.is_anonymous == false ? item.userInfo.first_name + ' ' + item.userInfo.last_name : 'MedFlic User'} </Text>
+                                    <TouchableOpacity onPress={() => { this.toggleRatingVisible(index) }}>
+                                        <StarRating fullStarColor='#FF9500' starSize={15} containerStyle={{ width: 100 }}
+                                            disabled={true}
+                                            maxStars={5}
+                                            rating={item.overall_rating}
+                                        />
+                                    </TouchableOpacity>
                                     {
-                                        this.state.allRatingsVisible == true
+                                        this.state.ratingVisible[index] == true
                                             ? this.renderAllRatings(item)
                                             : null
                                     }
                                     <Text style={{ fontFamily: 'OpenSans', fontSize: 18, color: 'gray' }}> {item.comments} </Text>
 
-
                                     {/* <Grid style={{ marginTop: 5 }}>
-                  <Row>
-                  <Col style={{ width: '30%' }} >
-     <Item style={{ borderBottomWidth: 0 }}><Icon name='heart' style={{ color: 'red', fontSize: 20 }}></Icon>
-        <Text style={{ fontFamily: 'OpenSans', fontSize: 12, color: 'gray' }}>Like</Text>
-           </Item>
-             </Col>
-               <Col style={{ width: '30%' }}>
-               <Item style={{ borderBottomWidth: 0 }}><Icon name='text' style={{ color: 'red', fontSize: 20 }}></Icon>
-                <Text style={{ fontFamily: 'OpenSans', fontSize: 12, color: 'gray' }}>
-                 comments</Text>
-                  </Item>
-                   </Col>
-                 </Row>
-               </Grid> */}
+                                            <Row>
+                                                <Col style={{ width: '30%' }} >
+                                                    <Item style={{ borderBottomWidth: 0 }}><Icon name='heart' style={{ color: 'red', fontSize: 20 }}></Icon>
+                                                        <Text style={{ fontFamily: 'OpenSans', fontSize: 12, color: 'gray' }}>Like</Text>
+                                                    </Item>
+                                                </Col>
+                                                <Col style={{ width: '30%' }}>
+                                                    <Item style={{ borderBottomWidth: 0 }}><Icon name='text' style={{ color: 'red', fontSize: 20 }}></Icon>
+                                                        <Text style={{ fontFamily: 'OpenSans', fontSize: 12, color: 'gray' }}>
+                                                            comments</Text>
+                                                    </Item>
+                                                </Col>
+                                            </Row>
+                                        </Grid> */}
+
                                 </Body>
                                 <Right>
                                     <Text note>{formatDate(item.review_date, "DD-MM-YYYY")}</Text>
@@ -136,12 +157,10 @@ class Reviews extends Component {
 
     render() {
         return (
-
             <Container style={styles.container}>
                 <Content style={styles.bodyContent}>
-
                     <View>
-                        {this.state.data == 0 ? this.renderNoReviews() : this.renderReviews()}
+                        {this.state.data == null ? this.renderNoReviews() : this.renderReviews()}
                     </View>
                 </Content>
             </Container>
