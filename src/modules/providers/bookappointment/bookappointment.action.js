@@ -7,11 +7,50 @@ export const REVIEW_ERROR = 'BOOK_APPOINTMENT/REVIEW_ERROR'
 export const PROFILE_REQUEST = 'PROFILE/PROFILE_REQUEST'
 export const PROFILE_RESPONSE = 'PROFILE/PROFILE_RESPONSE'
 export const PROFILE_ERROR = 'PROFILE/PROFILE_ERROR'
-
 import { store } from '../../../setup/store'
-import { getService } from '../../../setup/services/httpservices';
+export const DOCTORLIST_REQUEST = 'BOOK_APPOINTMENT/DOCTORLIST_REQUEST'
+export const DOCTORLIST_ERROR = 'BOOK_APPOINTMENT/DOCTORLIST_RESPONSE'
+export const DOCTORLIST_RESPONSE = 'BOOK_APPOINTMENT/DOCTORLIST_RESPONSE'
+import { postService, getService } from '../../../setup/services/httpservices';
 
 /*get doctor availability for patient view doctor profile */
+
+/* Search Services and category Module  */
+export async function searchDoctorList(userId, searchInputvalues, isLoading = true) {
+  try {
+
+    store.dispatch({
+      type: DOCTORLIST_REQUEST,
+      isLoading
+    })
+    // console.log(searchInputvalues+'searchInputvalues');
+    let endPoint = 'user/' + userId + '/filters/doctors';
+    let response = await postService(endPoint, searchInputvalues);
+     console.log(JSON.stringify(response)+'searchDoctorList API rspnse');
+    let respData = response.data;
+
+    if (respData.error || !respData.success) {
+      store.dispatch({
+        type: DOCTORLIST_ERROR,
+        message: respData.error
+      })
+    } else {
+     
+      store.dispatch({
+        type: DOCTORLIST_RESPONSE,
+        message: respData.message
+      })
+      return respData;
+    }
+
+  } catch (e) {
+    store.dispatch({
+      type: DOCTORLIST_ERROR,
+      message: e + ' Occured! Please Try again'
+    });
+  }
+}
+
 export async function viewdoctorProfile (doctorIds, isLoading = true) {
   try {
     store.dispatch({
