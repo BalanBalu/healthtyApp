@@ -81,6 +81,8 @@ class AppointmentDetails extends Component {
                 </Left>
                 <Body>
                   <Text style={styles.customHead}>{(data[0] && data[0].doctorInfo.first_name)+ " " +(data[0]&& data[0].doctorInfo.last_name)}</Text>
+                  {/* <Text style={styles.customHead}>Gender: {data[0] && data[0].doctorInfo.gender}</Text> */}
+
                   {/* <Text note style={styles.customText}>{doctorData.data&& doctorData.data.specialist[0].category} </Text> */}
                   <StarRating fullStarColor='#FF9500' starSize={25}
                     disabled={false}
@@ -123,6 +125,81 @@ class AppointmentDetails extends Component {
 
           </Card>
 
+          <Card style={{ backgroundColor: '#ffffff', borderRadius: 10, padding: 10, marginTop: 5 }}>
+
+<Grid style={{ margin: 5 }}>
+  <Col style={{ width: '10%' }}>
+    <Icon name="apps" style={styles.customIcon}></Icon>
+  </Col>
+  <Col style={{ width: '90%', alignItems: 'flex-start' }}>
+    <Text style={styles.titlesText}>Email</Text></Col>
+
+</Grid>
+
+
+<List>
+  <ListItem avatar noBorder style={{ borderLeftWidth: 8, borderColor: "#F29727", marginBottom: -5 }}>
+    <Left >
+    </Left>
+    <Body>
+    <Text style={styles.rowText}>
+      {data[0] && data[0].doctorInfo.email}
+ 
+</Text>
+    </Body>
+  </ListItem>
+</List>
+</Card>
+<Card style={{ backgroundColor: '#ffffff', borderRadius: 10, padding: 10, marginTop: 5 }}>
+
+<Grid style={{ margin: 5 }}>
+  <Col style={{ width: '10%' }}>
+    <Icon name="apps" style={styles.customIcon}></Icon>
+  </Col>
+  <Col style={{ width: '90%', alignItems: 'flex-start' }}>
+    <Text style={styles.titlesText}>Contact No</Text></Col>
+
+</Grid>
+
+
+<List>
+  <ListItem avatar noBorder style={{ borderLeftWidth: 8, borderColor: "#F29727", marginBottom: -5 }}>
+    <Left >
+    </Left>
+    <Body>
+    <Text style={styles.rowText}>
+      {data[0] && data[0].doctorInfo.mobile_no}
+ 
+</Text>
+    </Body>
+  </ListItem>
+</List>
+</Card>
+<Card style={{ backgroundColor: '#ffffff', borderRadius: 10, padding: 10, marginTop: 5 }}>
+
+<Grid style={{ margin: 5 }}>
+  <Col style={{ width: '10%' }}>
+    <Icon name="apps" style={styles.customIcon}></Icon>
+  </Col>
+  <Col style={{ width: '90%', alignItems: 'flex-start' }}>
+    <Text style={styles.titlesText}>Year of Experience</Text></Col>
+
+</Grid>
+
+
+<List>
+  <ListItem avatar noBorder style={{ borderLeftWidth: 8, borderColor: "#F29727", marginBottom: -5 }}>
+    <Left >
+    </Left>
+    <Body>
+    <Text style={styles.rowText}>
+      {data[0] && data[0].doctorInfo.experience.year}
+ 
+</Text>
+    </Body>
+  </ListItem>
+</List>
+</Card>
 
 <Card transparent style={{padding:5}}>
 
@@ -133,7 +210,7 @@ class AppointmentDetails extends Component {
     <Icon name="apps" style={styles.customIcon}></Icon>
   </Col>
   <Col style={{ width: '90%', alignItems: 'flex-start' }}>
-    <Text style={styles.titlesText}>diseases</Text></Col>
+    <Text style={styles.titlesText}>Diseases</Text></Col>
 
 </Grid>
 
@@ -173,7 +250,7 @@ class AppointmentDetails extends Component {
     <Icon name="apps" style={styles.customIcon}></Icon>
   </Col>
   <Col style={{ width: '90%', alignItems: 'flex-start' }}>
-    <Text style={styles.titlesText}>day of the appoinments</Text></Col>
+    <Text style={styles.titlesText}>Day of the appoinments</Text></Col>
 
 </Grid>
 
@@ -190,20 +267,79 @@ class AppointmentDetails extends Component {
        {formatDate(data[0]&& data[0].appointment_starttime, 'MMMM-DD-YYYY')+ " " +formatDate(data[0]&& data[0].appointment_endtime, 'hh:mm A')}
   
 </Text>
+</Body>
 
-    
-
-    </Body>
-
-  </ListItem>
+</ListItem>
 
 </List>
 
 </Card>
+<Card style={{ backgroundColor: '#ffffff', borderRadius: 10, padding: 10, marginTop: 5 }}>
+
+<Grid style={{ margin: 5 }}>
+  <Col style={{ width: '10%' }}>
+    <Icon name="apps" style={styles.customIcon}></Icon>
+  </Col>
+  <Col style={{ width: '90%', alignItems: 'flex-start' }}>
+    <Text style={styles.titlesText}>Language Known</Text></Col>
+
+</Grid>
+
+
+<List>
+  <ListItem avatar noBorder style={{ borderLeftWidth: 8, borderColor: "#F29727", marginBottom: -5 }}>
+    <Left >
+    </Left>
+    <Body>
+    <Text style={styles.rowText}>
+      {data[0] && data[0].doctorInfo.language.toString()}
+ 
+</Text>
+    </Body>
+  </ListItem>
+</List>
+</Card>
+<Card style={{ backgroundColor: '#ffffff', borderRadius: 10, padding: 10, marginTop: 5 }}>
+
+<Grid style={{ margin: 5 }}>
+  <Col style={{ width: '10%' }}>
+    <Icon name="apps" style={styles.customIcon}></Icon>
+  </Col>
+  <Col style={{ width: '90%', alignItems: 'flex-start' }}>
+    <Text style={styles.titlesText}>Hospital</Text></Col>
+
+</Grid>
+
+
+<List>
+  <ListItem avatar noBorder style={{ borderLeftWidth: 8, borderColor: "#F29727", marginBottom: -5 }}>
+    <Left >
+    </Left>
+    <Body>
+    <Text style={styles.customText}>
+                      {data.doctorInfo && data.doctorInfo.hospital[0].name}
+                    </Text>
+
+                    {/* <Text style={styles.customText}>
+                    {data.location && data.location[0].location.address.no_and_street}
+                     </Text>
+
+                    <Text style={styles.customText}>
+                    {data.location && data.location[0].location.address.address_line_1},{data.location && data.location[0].location.address.address_line_1}
+                    </Text>
+                    <Text style={styles.customText}>
+                    {data.location && data.location[0].location.address.pin_code}
+
+                    </Text> */}
+    </Body>
+  </ListItem>
+</List>
+</Card>
 
 </Card>
-                </Content>
-            </Container>
+
+</Content>
+</Container>
 
         )
     }
