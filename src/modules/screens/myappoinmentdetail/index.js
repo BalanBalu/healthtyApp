@@ -8,7 +8,7 @@ import { StyleSheet, Image, AsyncStorage, FlatList } from 'react-native';
 import StarRating from 'react-native-star-rating';
 
 import { userReviews } from '../../providers/profile/profile.action';
-import { formatDate ,addTimeUnit,dateDiff} from '../../../setup/helpers';
+import { formatDate ,addTimeUnit,dateDiff,subTimeUnit} from '../../../setup/helpers';
 import { Col, Row, Grid } from 'react-native-easy-grid';
 import SegmentedControlTab from "react-native-segmented-control-tab";
 import { appointment } from "../../providers/bookappointment/bookappointment.action";
@@ -25,14 +25,20 @@ class MyAppoinmentList extends Component {
             selectedIndex: 0,
             upComingData: [],
             pastData: [],
-            userId: "5ce03548d28ab8073515a6fa"
+            userId:"5ce50ae57ca0ee0f10f42c34"
         }
-         
+        
     }
+   
+         
+    
     componentDidMount() {
         
-        this.upCommingAppointment();
+         this.upCommingAppointment(); 
+        
         this.pastAppointment();
+        
+         
     }
     upCommingAppointment = async () => {
         try {
@@ -43,9 +49,12 @@ class MyAppoinmentList extends Component {
             endDate: formatDate(addTimeUnit(new Date(), 1, "years"), "YYYY-MM-DD")
           };
           let result = await appointment(this.state.userId, filters);
+         
           this.setState({ isRefreshing: false, isLoading: false });
+          console.log('upComming appointment')
+          console.log(result.data);
           if (result.success)
-            this.setState({ upComingData: result.data, isRefreshing: false, data : result.data });
+            this.setState({ upComingData: result.data, isRefreshing: false,data:result.data});
         } catch (e) {
           console.log(e);
         }
@@ -54,34 +63,38 @@ class MyAppoinmentList extends Component {
         try {
           this.setState({ isLoading: true });
           // let userId = await AsyncStorage.getItem('userId');
+        let  endData=  formatDate(subTimeUnit(new Date(), 1, "day"), "YYYY-MM-DD")
           let filters = {
-            startDate:  formatDate(dateDiff(new Date(), 1, "days"), "YYYY-MM-DD"),
-            endDate: formatDate(dateDiff(new Date(startDate), 1, "years"), "YYYY-MM-DD")
-          };
-          let result = await appointment(this.state.userId, filters);
-          console.log("myappoinmentlist");
+          endDate: endData,
+            startDate:"2018-01-01"
+            // formatDate(subTimeUnit(new Date(endData), 1, "year"),"YYYY-MM-DD")
+          };        
+          let result = await appointment(this.state.userId, filters); 
+          console.log('past appointment')        
           console.log(result.data);
           this.setState({ isRefreshing: false, isLoading: false });
           if (result.success)
-            this.setState({ pastData: result.data, isRefreshing: false });
+           // this.setState({ pastData: result.data, isRefreshing: false });
+            this.setState({ pastData: result.data, isRefreshing: false,data:result.data});
         } catch (e) {
           console.log(e);
         }
       };
 
     handleIndexChange = (index) => {
+        this.componentDidMount();
         console.log("Display index  value : " + index);
-        let data= (index === 0 ? this.state.upComingData : this.state.pastData)
+        let data= (index === 0 ? this.state.upComingData:this.state.pastData)
         this.setState({
-            ...this.state,
+         //   ...this.state,
             selectedIndex: index,
             data
         });
-        this.componentDidMount();
+       
     };
 
     render() {
-        const { data } = this.state;
+        const { data,selectedIndex } = this.state;
 
         return (
 
@@ -129,13 +142,25 @@ class MyAppoinmentList extends Component {
                                         rating={this.state.starCount}
                                         selectedStar={(rating) => this.onStarRatingPress(rating)}
                                     />
-                              </Item>
+                                    </Item>
+                                    {selectedIndex==0&&
+                                <Item style={{ borderBottomWidth: 0 }}>
+                                    {item.appointment_status=='PENDING'&&
+                                    <Text style={{ fontFamily: 'OpenSans', fontSize: 12 ,color:'red' }} note>{item.appointment_status }</Text>
+                                    }{item.appointment_status=='APPROVED'&&
+                                    <Text style={{ fontFamily: 'OpenSans', fontSize: 12 ,color:'green' }} note>{item.appointment_status }</Text>
+                                    }
+
+                                </Item>
+                                    }
+                              
                                 <Item style={{ borderBottomWidth: 0 }}>
                                     <Text style={{ fontFamily: 'OpenSans', fontSize: 12 }} note>{formatDate(item.appointment_starttime,'dddd.MMMM-YY, LT') }</Text>
 
                                     {/* <Text style={{ fontFamily: 'OpenSans', fontSize: 12 }} note>April-13 </Text>
                                     <Text style={{ fontFamily: 'OpenSans', fontSize: 12 }} note>10.00 AM</Text> */}
                                 </Item>
+                               {selectedIndex==0?
                                 <Item style={{ borderBottomWidth: 0,marginLeft:20 }}>
                                     <Button style={styles.bookingButton}>
                                         <Text  >Book Again</Text>
@@ -143,7 +168,7 @@ class MyAppoinmentList extends Component {
                                     <Button style={styles.shareButton}>
                                         <Text >Share</Text>
                                     </Button>
-                                </Item>
+                                </Item>:null}
 
 
                             </Body>
