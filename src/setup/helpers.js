@@ -72,6 +72,9 @@ export function renderIf(condition, renderFn) {
   export function getLastDay(date, unit, format) {
     return moment(date).endOf(unit).format(format);
   }
+  export function addTimeUnit(date, amount, unit) {
+    return moment(date).add(amount, unit).toDate();
+  }
 
 
   
