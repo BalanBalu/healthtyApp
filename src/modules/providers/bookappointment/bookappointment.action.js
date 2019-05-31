@@ -139,8 +139,8 @@ export const appointment = async(userId, filters, isLoading = true) => {
       type:BOOK_APPOINTMENT_REQUEST,
       isLoading 
     })       
-    
     let endPoint = 'doctor/appointment/user' +'/'+userId + '?startDate=' + filters.startDate + '&endDate=' + filters.endDate;
+    //let endPoint = 'appointments/user/' + userId + '?startDate=' + filters.startDate + '&endDate=' + filters.endDate;
     
      console.log(endPoint);
 
@@ -169,6 +169,24 @@ export const appointment = async(userId, filters, isLoading = true) => {
       })  
   }
 }
+
+export const getUserAppointments = async(userId, filters) => {
+  try{    
+      let endPoint = 'appointments/user/' + userId + '?startDate=' + filters.startDate + '&endDate=' + filters.endDate;
+      
+      let response = await getService(endPoint);
+      let respData = response.data;
+      console.log(respData);
+      return respData; 
+  }catch (e){       
+    console.log(e.message);  
+      store.dispatch({
+      type: BOOK_APPOINTMENT_ERROR,
+      message: e
+      })  
+  }
+}
+
 
 /*get doctor details*/
 export const bindDoctorDetails = async (doctorId, fields, isLoading = true) => {
