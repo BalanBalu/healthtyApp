@@ -8,10 +8,14 @@ import { StyleSheet, Image, AsyncStorage, FlatList } from 'react-native';
 import StarRating from 'react-native-star-rating';
 
 import { userReviews } from '../../providers/profile/profile.action';
-import { formatDate } from '../../../setup/helpers';
+import { formatDate ,addTimeUnit,dateDiff} from '../../../setup/helpers';
 import { Col, Row, Grid } from 'react-native-easy-grid';
 import SegmentedControlTab from "react-native-segmented-control-tab";
+import { appointment } from "../../providers/bookappointment/bookappointment.action";
+import noAppointmentImage from '../../../../assets/images/noappointment.png';
+   
 class MyAppoinmentList extends Component {
+
     constructor(props) {
         super(props)
 
@@ -19,21 +23,61 @@ class MyAppoinmentList extends Component {
             data: [],
             isLoading: false,
             selectedIndex: 0,
-            upComingData: [1,2,3,4],
-            pastData: []
+            upComingData: [],
+            pastData: [],
+            userId: "5ce03548d28ab8073515a6fa"
         }
+         
     }
     componentDidMount() {
-        this.setState({ data : this.state.upComingData});
+        
+        this.upCommingAppointment();
+        this.pastAppointment();
     }
+    upCommingAppointment = async () => {
+        try {
+          this.setState({ isLoading: true });
+          // let userId = await AsyncStorage.getItem('userId');
+          let filters = {
+            startDate: formatDate(new Date() , "YYYY-MM-DD"),
+            endDate: formatDate(addTimeUnit(new Date(), 1, "years"), "YYYY-MM-DD")
+          };
+          let result = await appointment(this.state.userId, filters);
+          this.setState({ isRefreshing: false, isLoading: false });
+          if (result.success)
+            this.setState({ upComingData: result.data, isRefreshing: false, data : result.data });
+        } catch (e) {
+          console.log(e);
+        }
+      };
+      pastAppointment = async () => {
+        try {
+          this.setState({ isLoading: true });
+          // let userId = await AsyncStorage.getItem('userId');
+          let filters = {
+            startDate:  formatDate(dateDiff(new Date(), 1, "days"), "YYYY-MM-DD"),
+            endDate: formatDate(dateDiff(new Date(startDate), 1, "years"), "YYYY-MM-DD")
+          };
+          let result = await appointment(this.state.userId, filters);
+          console.log("myappoinmentlist");
+          console.log(result.data);
+          this.setState({ isRefreshing: false, isLoading: false });
+          if (result.success)
+            this.setState({ pastData: result.data, isRefreshing: false });
+        } catch (e) {
+          console.log(e);
+        }
+      };
 
-    handleIndexChange = index => {
-        let data = index === 0 ? this.state.upComingData : this.state.pastData
+    handleIndexChange = (index) => {
+        console.log("Display index  value : " + index);
+        let data= (index === 0 ? this.state.upComingData : this.state.pastData)
         this.setState({
             ...this.state,
             selectedIndex: index,
             data
         });
+        this.componentDidMount();
     };
 
     render() {
@@ -42,7 +86,7 @@ class MyAppoinmentList extends Component {
         return (
 
             <View style={styles.container}>
-                <SegmentedControlTab  tabsContainerStyle={{ width: 250,marginLeft:'auto',marginRight:'auto'}}
+                <SegmentedControlTab tabsContainerStyle={{ width: 250, marginLeft: 'auto', marginRight: 'auto' }}
                     values={["Upcoming", "Past"]}
                     selectedIndex={this.state.selectedIndex}
                     onTabPress={this.handleIndexChange}
@@ -51,19 +95,20 @@ class MyAppoinmentList extends Component {
                 />
 
 
-                {data.length === 0 ? 
-                <Card style={{ padding: 5, borderRadius: 10, marginTop: 15 }}>
-                        <Item style={{ borderBottomWidth: 0 }}>
-                            
-                            <Text style={{ fontFamily: 'OpenSans', fontSize: 12 }} note>If no appointment, this should be printed, karthick bro, code should be implement here</Text>
+                {data.length === 0 ?
+                    <Card transparent style={{ alignItems: 'center', justifyContent: 'center', marginTop: '20%' }}>
+                       
+                        <Thumbnail square source={noAppointmentImage} style={{ height: 100, width: 100, marginTop: '10%' }} />
 
-                                   
-                        </Item>
-                </Card> : 
-                <Card style={{ padding: 5, borderRadius: 10, marginTop: 15 }}>
-                
+                            <Text style={{ fontFamily: 'OpenSans', fontSize: 14, marginTop: '10%' }} note>No appoinments are scheduled</Text>
+                            <Item style={{ marginTop: '15%', borderBottomWidth: 0 }}>
+                                <Button style={[styles.bookingButton, styles.customButton]}>
+                                    <Text  >Book Now</Text>
+                                </Button>
+                            </Item>
+                    </Card> : 
 
-                   
+                <Card style={{ padding: 5, borderRadius: 10, marginTop: 15 }}>                  
                 <List>
                 <FlatList
                             data={data}
@@ -75,7 +120,7 @@ class MyAppoinmentList extends Component {
                                 <Thumbnail square source={{ uri: 'https://res.cloudinary.com/demo/image/upload/w_200,h_200,c_thumb,g_face,r_max/face_left.png' }} style={{ height: 60, width: 60 }} />
                             </Left>
                             <Body>
-                                <Text style={{ fontFamily: 'OpenSans' }}>Dr. Anil Verma</Text>
+                                <Text style={{ fontFamily: 'OpenSans' }}>Dr.{item.doctorInfo.first_name+' '+item.doctorInfo.last_name} </Text>
                                 <Item style={{ borderBottomWidth: 0 }}>
                                     <Text style={{ fontFamily: 'OpenSans' }}>Internist</Text>
                                     <StarRating fullStarColor='#FF9500' starSize={20} containerStyle={{ width: 100, marginLeft: 60 }}
@@ -86,10 +131,10 @@ class MyAppoinmentList extends Component {
                                     />
                               </Item>
                                 <Item style={{ borderBottomWidth: 0 }}>
-                                    <Text style={{ fontFamily: 'OpenSans', fontSize: 12 }} note>Saturday. </Text>
+                                    <Text style={{ fontFamily: 'OpenSans', fontSize: 12 }} note>{formatDate(item.appointment_starttime,'dddd.MMMM-YY, LT') }</Text>
 
-                                    <Text style={{ fontFamily: 'OpenSans', fontSize: 12 }} note>April-13 </Text>
-                                    <Text style={{ fontFamily: 'OpenSans', fontSize: 12 }} note>10.00 AM</Text>
+                                    {/* <Text style={{ fontFamily: 'OpenSans', fontSize: 12 }} note>April-13 </Text>
+                                    <Text style={{ fontFamily: 'OpenSans', fontSize: 12 }} note>10.00 AM</Text> */}
                                 </Item>
                                 <Item style={{ borderBottomWidth: 0,marginLeft:20 }}>
                                     <Button style={styles.bookingButton}>
@@ -107,14 +152,8 @@ class MyAppoinmentList extends Component {
                      keyExtractor={(item, index) => index.toString()}/>
                    </List>
                 </Card> 
-                }
-
-
-
-
+             }
             </View>
-
-
         );
     }
 }
@@ -134,7 +173,7 @@ const styles = StyleSheet.create({
         backgroundColor: '#775DA3',
         marginLeft: 15,
         borderRadius: 10,
-        width: 120,
+        width: 'auto',
         height: 40,
         color: 'white',
         fontSize: 12,
@@ -145,11 +184,29 @@ const styles = StyleSheet.create({
         backgroundColor: 'gray',
         marginLeft: 15,
         borderRadius: 10,
-        width: 90,
+        width: 'auto',
         height: 40,
         color: 'white',
         fontSize: 12,
         textAlign: 'center',
         justifyContent: 'center'
+
     },
+    customButton:
+    {
+        alignItems: 'center',
+        justifyContent: 'center',
+        marginTop: 12,
+        backgroundColor: '#775DA3',
+        marginLeft: 15,
+        borderRadius: 10,
+        width: 'auto',
+        height: 40,
+        color: 'white',
+        fontSize: 12,
+        textAlign: 'center',
+        marginLeft: 'auto',
+        marginRight: 'auto',
+
+    }
 });
