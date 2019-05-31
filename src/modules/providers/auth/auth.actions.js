@@ -127,6 +127,7 @@ try {
 export function logout() {
   AsyncStorage.removeItem('token')
   AsyncStorage.removeItem('user')
+  AsyncStorage.removeItem('hasLoggedIn');
   AsyncStorage.removeItem('userId')
     
   store.dispatch({
@@ -140,6 +141,7 @@ export function setUserLocally(token, userData) {
     // Set token
    
     AsyncStorage.setItem('token', token)
+    AsyncStorage.setItem('hasLoggedIn', true);
     AsyncStorage.setItem('userId', userData.userId)
     AsyncStorage.setItem('user', JSON.stringify(userData))
     axios.defaults.headers.common['x-access-token'] = token;

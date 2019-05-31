@@ -11,7 +11,7 @@ import { userReviews } from '../../providers/profile/profile.action';
 import { formatDate ,addTimeUnit,dateDiff,subTimeUnit} from '../../../setup/helpers';
 import { Col, Row, Grid } from 'react-native-easy-grid';
 import SegmentedControlTab from "react-native-segmented-control-tab";
-import { appointment,viewUserReviews } from "../../providers/bookappointment/bookappointment.action";
+import { getUserAppointments,viewUserReviews } from "../../providers/bookappointment/bookappointment.action";
 import noAppointmentImage from '../../../../assets/images/noappointment.png';
    
 class MyAppoinmentList extends Component {
@@ -25,7 +25,7 @@ class MyAppoinmentList extends Component {
             selectedIndex: 0,
             upComingData: [],
             pastData: [],
-            userId:"5ce50ae57ca0ee0f10f42c34",
+            userId: null,
             reviewData:[],
             
         }
@@ -34,8 +34,12 @@ class MyAppoinmentList extends Component {
    
          
     
-    componentDidMount() {
-        
+    async componentDidMount() {
+      let userId = await AsyncStorage.getItem('userId');
+      if(userId === undefined) {
+          this.props.navigation.navigate('login');
+      }
+      this.setState({ userId});
       this.upCommingAppointment(); 
         
       this.pastAppointment();
@@ -74,7 +78,7 @@ class MyAppoinmentList extends Component {
             startDate: formatDate(new Date() , "YYYY-MM-DD"),
             endDate: formatDate(addTimeUnit(new Date(), 1, "years"), "YYYY-MM-DD")
           };
-          let result = await appointment(this.state.userId, filters);
+          let result = await getUserAppointments(this.state.userId, filters);
                result=result.data;
               
              
@@ -102,13 +106,13 @@ class MyAppoinmentList extends Component {
       pastAppointment = async () => {
         try {
           this.setState({ isLoading: true });
-           let userId = await AsyncStorage.getItem('userId');
-        let  endData=  formatDate(subTimeUnit(new Date(), 1, "day"), "YYYY-MM-DD")
+          let userId = await AsyncStorage.getItem('userId');
+          let  endData=  formatDate(subTimeUnit(new Date(), 1, "day"), "YYYY-MM-DD")
           let filters = {
-          endDate: endData,
+            endDate: endData,
             startDate:"2018-01-01"
           };        
-          let result = await appointment(this.state.userId, filters); 
+          let result = await getUserAppointments(this.state.userId, filters); 
 
          
           this.setState({ isRefreshing: false, isLoading: false });
