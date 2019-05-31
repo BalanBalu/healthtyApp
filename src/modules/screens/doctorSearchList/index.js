@@ -30,6 +30,7 @@ class doctorSearchList extends Component {
             qualification: '',
             reviewdata: null,
             confirm_button: true,
+            getSearchedDoctorIds: null
         }
     }
 
@@ -56,7 +57,8 @@ class doctorSearchList extends Component {
             let doctorIds = resultData.data.map((element) => {
                 return element.doctor_id
             }).join(',');
-            this.getavailabilitySlots(doctorIds, startDate, endDate);
+            this.setState({ getSearchedDoctorIds: doctorIds });
+            this.getavailabilitySlots(this.state.getSearchedDoctorIds, startDate, endDate);
         }
     }
 
@@ -84,7 +86,7 @@ class doctorSearchList extends Component {
         let endDate = getLastDay(new Date(date), 'week');
         this.setState({ selectedDate: selectedDate, getStartDateOfTheWeek: startDate, getEndDateOfTheWeek: endDate, });
         if (!this.state.doctorDetails[selectedDate]) {
-            this.getavailabilitySlots(startDate, endDate);
+            this.getavailabilitySlots(this.state.getSearchedDoctorIds, startDate, endDate);
         }
         else {
             if (this.state.doctorDetails[selectedDate]) {
@@ -122,7 +124,9 @@ class doctorSearchList extends Component {
             }
         })
         await this.setState({ singleDataResult: hospitalSlotArray });
+        console.log('singleDataResult' + JSON.stringify(this.state.singleDataResult));
         // console.log('address' + JSON.stringify(this.state.singleDataResult[0].location.location.address.no_and_street));
+
 
     }
 
@@ -317,7 +321,7 @@ class doctorSearchList extends Component {
                                 <Right>
 
                                     <Button iconRight transparent onPress={() => {
-                                        this.setState({ isModalVisible: !this.state.isModalVisible })
+                                        this.setState({ isModalVisible: !this.state.isModalVisible });
                                     }}>
                                         <Icon name='ios-close' style={{ fontSize: 25, marginTop: -5 }}></Icon>
                                     </Button>

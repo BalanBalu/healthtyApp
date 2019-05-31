@@ -1,11 +1,12 @@
 import React, { Component } from 'react';
-import { Container, Content, Text, Title, Header, H3, Button, Item, Card, CardItem, List, ListItem, Left, Right, Footer, Thumbnail, Body, Icon, Input, CheckBox } from 'native-base';
+import { Container, Toast, Content, Text, Title, Header, H3, Button, Item, Card, CardItem, List, ListItem, Left, Right, Footer, Thumbnail, Body, Icon, Input, CheckBox } from 'native-base';
 import { login } from '../../providers/auth/auth.actions';
 import { messageShow, messageHide } from '../../providers/common/common.action';
 import { Col, Row, Grid } from 'react-native-easy-grid';
 import { connect } from 'react-redux'
 import { StyleSheet, Image, AsyncStorage, TouchableOpacity, View } from 'react-native';
 import { bookAppointment } from '../../providers/bookappointment/bookappointment.action';
+import { formatDate } from '../../../setup/helpers';
 
 
 
@@ -16,40 +17,37 @@ class PaymentReview extends Component {
         this.state = {
             bookSlotDetails: {},
         }
+    }
 
-    }
-    onStarRatingPress(rating) {
-        this.setState({
-            starCount: rating
-        });
-    }
     async componentDidMount() {
         const { navigation } = this.props;
         const bookSlotDetails = navigation.getParam('resultconfirmSlotDetails');
         await this.setState({ bookSlotDetails: bookSlotDetails });
     }
-
     confirmPayLater = async () => {
 
         const userId = await AsyncStorage.getItem('userId');
-        let objectData = {
+        let bookAppointmentData = {
             userId: userId,
             doctorId: this.state.bookSlotDetails.doctorId,
-            description: "Bones Pain",
-            startTime: this.state.bookSlotDetails.slotData.slotDate + 'T' + this.state.bookSlotDetails.slotData.slotTime + '.000Z',
-            endTime: this.state.bookSlotDetails.slotData.slotDate + 'T' + this.state.bookSlotDetails.slotData.slotEndTime + '.000Z',
+            description: "something",
+            startTime: formatDate(this.state.bookSlotDetails.slotData.slotStartDateAndTime, 'YYYY-MM-DD HH:mm:ss'),
+            endTime: formatDate(this.state.bookSlotDetails.slotData.slotEndDateAndTime, 'YYYY-MM-DD HH:mm:ss'),
             status: "PENDING",
             status_by: "Patient",
             statusUpdateReason: "something",
             hospital_id: this.state.bookSlotDetails.slotData.location.hospital_id,
             booked_from: "Mobile"
         }
-
-        let resultData = await bookAppointment(objectData);
+        //    console.log(JSON.stringify(bookAppointmentData) + 'response for bookAppointmentData ');
+        let resultData = await bookAppointment(bookAppointmentData);
         // console.log(JSON.stringify(resultData) + 'response for confirmPayLater ');
         if (resultData.success) {
-            alert("Appointment Book Successfully");
-
+            Toast.show({
+                text: resultData.message,
+                type: "success",
+                duration: 3000,
+            })
         }
     }
 
@@ -59,22 +57,8 @@ class PaymentReview extends Component {
         return (
 
             <Container style={styles.container}>
-                {/* <Header style={{ backgroundColor: '#7E49C3', fontFamily: 'opensans-semibold' }}>
-                    <Left  >
-                        <Button Button transparent onPress={() => this.props.navigation.navigate('home')}>
-                            <Icon name="arrow-back" style={{ color: '#fff' }}></Icon>
-                        </Button>
 
-                    </Left>
-                    <Body>
-                        <Title style={{ fontFamily: 'opensans-semibold' }}>Review</Title>
-
-                    </Body>
-
-                </Header>
- */}
                 <Content style={styles.bodyContent}>
-
 
                     <Grid style={{ borderBottomWidth: 0.3, color: 'gray', padding: 10, marginLeft: 10 }}>
                         <Row>
@@ -90,8 +74,6 @@ class PaymentReview extends Component {
                                 <Icon name="ios-arrow-dropright" />
                             </Col>
                         </Row>
-
-
                     </Grid>
 
                     <Grid style={{ borderBottomWidth: 0.3, color: '#f2f2f2', padding: 10, marginLeft: 10 }}>
@@ -108,8 +90,6 @@ class PaymentReview extends Component {
                         </Row>
                     </Grid>
 
-
-
                     <Grid style={{ borderBottomWidth: 0.3, color: '#f2f2f2', padding: 10, marginLeft: 10 }}>
                         <Row>
                             <Col style={{ width: '90%' }}>
@@ -125,7 +105,6 @@ class PaymentReview extends Component {
                         </Row>
 
                     </Grid>
-
 
                     <Grid style={{ borderBottomWidth: 0.3, color: '#f2f2f2', padding: 10, marginLeft: 10 }}>
                         <Row>
@@ -148,25 +127,19 @@ class PaymentReview extends Component {
 
                     </Grid>
 
-
-
                     <Grid style={{ borderBottomWidth: 0.3, color: '#f2f2f2', padding: 10, marginLeft: 10 }}>
                         <Row>
                             <Col style={{ width: '90%' }}>
                                 <Text style={styles.customizedText}>fee</Text>
-
                             </Col>
                             <Col style={{ width: '90%' }}>
                                 <Text style={styles.customizedText}>{bookSlotDetails.slotData && bookSlotDetails.slotData.fee}</Text>
                             </Col>
-
                         </Row>
 
                         <Row style={{ marginTop: 10 }}>
                             <Col style={{ width: '90%' }}>
                                 <Text style={styles.customizedText}>Total fee</Text>
-
-
                             </Col>
                             <Col style={{ width: '10%' }}>
                                 <Text style={styles.customizedText}>300</Text>
@@ -176,7 +149,6 @@ class PaymentReview extends Component {
                     </Grid>
                     <Button block success style={{ borderRadius: 6, marginLeft: 6 }} onPress={this.confirmPayLater}>
                         <Text uppercase={false} >payLater</Text>
-
                     </Button>
                 </Content>
 
