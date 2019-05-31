@@ -16,7 +16,45 @@ export const APPOINTMENT_RESPONSE = 'BOOK_APPOINTMENT/APPOINTMENT_RESPONSE'
 export const APPOINTMENT_ERROR = 'BOOK_APPOINTMENT/APPOINTMENT_ERROR'
 import { postService, getService } from '../../../setup/services/httpservices';
 
-/*get doctor availability for patient view doctor profile */
+
+
+/* Book the Doctor Appointment module  */
+export async function bookAppointment(bookSlotDetails, isLoading = true) {
+  try {
+
+    store.dispatch({
+      type: DOCTORLIST_REQUEST,
+      isLoading
+    })
+    let endPoint = 'doctor/appointment';
+    let response = await postService(endPoint, bookSlotDetails);
+     console.log(JSON.stringify(response)+'bookAppointment API rspnse');
+    let respData = response.data;
+
+    if (respData.error || !respData.success) {
+      store.dispatch({
+        type: DOCTORLIST_ERROR,
+        message: respData.error
+      })
+    } else {
+     
+      store.dispatch({
+        type: DOCTORLIST_RESPONSE,
+        message: respData.message
+      })
+      return respData;
+    }
+
+  } catch (e) {
+    store.dispatch({
+      type: DOCTORLIST_ERROR,
+      message: e + ' Occured! Please Try again'
+    });
+  }
+}
+
+
+
 
 /* Search Services and category Module  */
 export async function searchDoctorList(userId, searchInputvalues, isLoading = true) {
@@ -53,6 +91,7 @@ export async function searchDoctorList(userId, searchInputvalues, isLoading = tr
     });
   }
 }
+/*get doctor availability for patient view doctor profile */
 
 export async function viewdoctorProfile (doctorIds, isLoading = true) {
   try {
@@ -61,8 +100,8 @@ export async function viewdoctorProfile (doctorIds, isLoading = true) {
       isLoading 
     })     
     let endPoint = 'doctors/' + doctorIds + '/availabilitySlots'
-   console.log(endPoint);   
     let response = await getService(endPoint); 
+    //console.log('get Avalblty API Response'+JSON.stringify(response))
     let respData = response.data;    
     if(respData.error || !respData.success) {
       console.log('availability error')
@@ -99,7 +138,6 @@ export async function viewUserReviews(type, id, isLoading = true) {
       isLoading 
     })     
     let endPoint = 'user/reviews/'+type+ '/' +id
-   console.log(endPoint);   
     let response = await getService(endPoint);
     console.log("review response");
     console.log(response); 
@@ -196,7 +234,6 @@ export const bindDoctorDetails = async (doctorId, fields, isLoading = true) => {
       isLoading
     })
     let endPoint = 'doctor/' + doctorId + '?fields=' + fields;
-    console.log(endPoint);
     let response = await getService(endPoint);
     let respData = response.data;
     if (respData.error || respData.success == false) {
