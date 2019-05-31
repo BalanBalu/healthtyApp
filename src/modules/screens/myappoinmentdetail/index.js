@@ -170,7 +170,7 @@ class MyAppoinmentList extends Component {
                             renderItem={({ item, index }) => 
                            
                    
-                        <ListItem avatar onPress={() => this.props.navigation.navigate('AppointmentInfo')}>
+                        <ListItem avatar onPress={() => this.props.navigation.navigate('AppointmentInfo', { data : item })}>
                             <Left>
                                 <Thumbnail square source={{ uri: 'https://res.cloudinary.com/demo/image/upload/w_200,h_200,c_thumb,g_face,r_max/face_left.png' }} style={{ height: 60, width: 60 }} />
                             </Left>
