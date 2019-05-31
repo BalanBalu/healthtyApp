@@ -162,6 +162,44 @@ export async function viewUserReviews(id,type, isLoading = true) {
       }); 
   }  
 }
+//user appointment status\
+
+export const appointment = async(userId, filters, isLoading = true) => {
+  try{    
+    store.dispatch({
+      type:BOOK_APPOINTMENT_REQUEST,
+      isLoading 
+    })       
+    
+    let endPoint = 'doctor/appointment/user' +'/'+userId + '?startDate=' + filters.startDate + '&endDate=' + filters.endDate;
+    
+     console.log(endPoint);
+
+      let response = await getService(endPoint);
+      console.log(response)
+      
+      let respData = response.data;
+      console.log(respData);
+      if(respData.error || respData.success == false) {         
+        store.dispatch({
+        type: BOOK_APPOINTMENT_ERROR,
+        message: respData.error})
+      } else {            
+          store.dispatch({
+          type: BOOK_APPOINTMENT_RESPONSE,           
+          isLoading:false,
+          success: true
+        })         
+      }
+      return respData; 
+  }catch (e){       
+    console.log(e.message);  
+      store.dispatch({
+      type: BOOK_APPOINTMENT_ERROR,
+      message: e
+      })  
+  }
+}
 
 /*get doctor details*/
 export const bindDoctorDetails = async (doctorId, fields, isLoading = true) => {
