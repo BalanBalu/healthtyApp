@@ -128,14 +128,14 @@ export async function viewUserReviews(id,type, isLoading = true) {
 }
 //user appointment status\
 
-export const appointment = async(userId, filters, isLoading = true) => {
+export const getUserAppointments = async(userId, filters, isLoading = true) => {
   try{    
     store.dispatch({
       type:BOOK_APPOINTMENT_REQUEST,
       isLoading 
     })       
     
-    let endPoint = 'doctor/appointment/user' +'/'+userId + '?startDate=' + filters.startDate + '&endDate=' + filters.endDate;
+    let endPoint = 'appointments/user/' + userId + '?startDate=' + filters.startDate + '&endDate=' + filters.endDate;
     
      console.log(endPoint);
 
