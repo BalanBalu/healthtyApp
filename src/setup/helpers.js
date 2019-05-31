@@ -75,6 +75,9 @@ export function renderIf(condition, renderFn) {
   export function addTimeUnit(date, amount, unit) {
     return moment(date).add(amount, unit).toDate();
   }
+  export function subTimeUnit(date, amount, unit) {
+    return moment(date).subtract(amount, unit).toDate();
+  }
 
 
   
