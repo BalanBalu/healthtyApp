@@ -23,13 +23,16 @@ class AppointmentDetails extends Component {
   }
   async componentDidMount() {
     console.log('coming to component did mount');
-    await this.setState({ doctorId: "5ce509ef7ca0ee0f10f42c14", appointmentId: "5cbade1f190f4a0bc85d8697", userId: "5ce50ae57ca0ee0f10f42c34" })
-    let doctorId = this.state.doctorId;
-    let appointmentId = this.state.appointmentId;
-    let userId = this.state.userId;
+    const userId = await AsyncStorage.getItem('userId');
+    const { navigation } = this.props;
+    const appointmentData = navigation.getParam('data');
+    console.log(appointmentData);
+    let doctorId = appointmentData.doctor_id;
+    let appointmentId = appointmentData._id;
+    await this.setState({ doctorId: doctorId, appointmentId: appointmentId, userId: userId })
     this.getAppointmentDetails(doctorId, appointmentId);
-    await this.getDoctorDetails(doctorId);
-    await this.getUserReviews(userId);
+    this.getDoctorDetails(doctorId);
+    this.getUserReviews(userId);
 
   }
 
