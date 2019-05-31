@@ -11,7 +11,7 @@ import { userReviews } from '../../providers/profile/profile.action';
 import { formatDate ,addTimeUnit,dateDiff,subTimeUnit} from '../../../setup/helpers';
 import { Col, Row, Grid } from 'react-native-easy-grid';
 import SegmentedControlTab from "react-native-segmented-control-tab";
-import { appointment } from "../../providers/bookappointment/bookappointment.action";
+import { appointment,viewUserReviews } from "../../providers/bookappointment/bookappointment.action";
 import noAppointmentImage from '../../../../assets/images/noappointment.png';
    
 class MyAppoinmentList extends Component {
@@ -25,7 +25,9 @@ class MyAppoinmentList extends Component {
             selectedIndex: 0,
             upComingData: [],
             pastData: [],
-            userId:"5ce50ae57ca0ee0f10f42c34"
+            userId:"5ce50ae57ca0ee0f10f42c34",
+            reviewData:[],
+            
         }
         
     }
@@ -34,25 +36,63 @@ class MyAppoinmentList extends Component {
     
     componentDidMount() {
         
-         this.upCommingAppointment(); 
+      this.upCommingAppointment(); 
         
-        this.pastAppointment();
+      this.pastAppointment();
+      
+       
+        
         
          
     }
+    // user reviews
+    //  getUserReview = async () => {
+    //     try {
+    //       this.setState({ isLoading: true });
+    //       // let userId = await AsyncStorage.getItem('userId');
+         
+    //       let result = await viewUserReviews(this.state.userId,'user');
+    //     let resultData=result.data
+    //       this.setState({ isRefreshing: false, isLoading: false });
+    //       console.log('userreview appointment')
+    //       console.log(result.data);
+    //       while(resultData.length>0){
+              
+    //       }
+    //       if (result.success)
+    //         this.setState({ reviewData: result.data, isRefreshing: false});
+    //     } catch (e) {
+    //       console.log(e);
+    //     }
+    //   };
+    // my appoinment list get function in name, specialist ,date,...
     upCommingAppointment = async () => {
         try {
           this.setState({ isLoading: true });
-          // let userId = await AsyncStorage.getItem('userId');
+           let userId = await AsyncStorage.getItem('userId');
           let filters = {
             startDate: formatDate(new Date() , "YYYY-MM-DD"),
             endDate: formatDate(addTimeUnit(new Date(), 1, "years"), "YYYY-MM-DD")
           };
           let result = await appointment(this.state.userId, filters);
+               result=result.data;
+              
+             
+               let tempReview=[];
+              
+              let results = await viewUserReviews(this.state.userId,'user');
+                  results=results.data;
+                    for(let count=0;count<result.length;count++){
+                        for(let counts=0;counts<result.length;counts++) {
+                            if(result[count]._id==results[counts].appointment_id){
+                                tempReview.push(results[counts].comments);
+                                
+                            }
+
+                        }
+               }
          
-          this.setState({ isRefreshing: false, isLoading: false });
-          console.log('upComming appointment')
-          console.log(result.data);
+          this.setState({ reviewData:tempReview, isLoading: false });
           if (result.success)
             this.setState({ upComingData: result.data, isRefreshing: false,data:result.data});
         } catch (e) {
@@ -62,19 +102,18 @@ class MyAppoinmentList extends Component {
       pastAppointment = async () => {
         try {
           this.setState({ isLoading: true });
-          // let userId = await AsyncStorage.getItem('userId');
+           let userId = await AsyncStorage.getItem('userId');
         let  endData=  formatDate(subTimeUnit(new Date(), 1, "day"), "YYYY-MM-DD")
           let filters = {
           endDate: endData,
             startDate:"2018-01-01"
-            // formatDate(subTimeUnit(new Date(endData), 1, "year"),"YYYY-MM-DD")
           };        
           let result = await appointment(this.state.userId, filters); 
-          console.log('past appointment')        
-          console.log(result.data);
+
+         
           this.setState({ isRefreshing: false, isLoading: false });
           if (result.success)
-           // this.setState({ pastData: result.data, isRefreshing: false });
+          
             this.setState({ pastData: result.data, isRefreshing: false,data:result.data});
         } catch (e) {
           console.log(e);
@@ -83,10 +122,9 @@ class MyAppoinmentList extends Component {
 
     handleIndexChange = (index) => {
         this.componentDidMount();
-        console.log("Display index  value : " + index);
         let data= (index === 0 ? this.state.upComingData:this.state.pastData)
         this.setState({
-         //   ...this.state,
+            ...this.state,
             selectedIndex: index,
             data
         });
@@ -94,7 +132,8 @@ class MyAppoinmentList extends Component {
     };
 
     render() {
-        const { data,selectedIndex } = this.state;
+        const { data,selectedIndex,reviewData } = this.state;
+              
 
         return (
 
@@ -125,8 +164,9 @@ class MyAppoinmentList extends Component {
                 <List>
                 <FlatList
                             data={data}
-                            extraData={this.state}
+                            extraData={reviewData}
                             renderItem={({ item, index }) => 
+                           
                    
                         <ListItem avatar onPress={() => this.props.navigation.navigate('AppointmentInfo')}>
                             <Left>
@@ -139,11 +179,11 @@ class MyAppoinmentList extends Component {
                                     <StarRating fullStarColor='#FF9500' starSize={20} containerStyle={{ width: 100, marginLeft: 60 }}
                                         disabled={false}
                                         maxStars={5}
-                                        rating={this.state.starCount}
+                                        rating={5}
                                         selectedStar={(rating) => this.onStarRatingPress(rating)}
                                     />
                                     </Item>
-                                    {selectedIndex==0&&
+                                    {selectedIndex==1&&
                                 <Item style={{ borderBottomWidth: 0 }}>
                                     {item.appointment_status=='PENDING'&&
                                     <Text style={{ fontFamily: 'OpenSans', fontSize: 12 ,color:'red' }} note>{item.appointment_status }</Text>
