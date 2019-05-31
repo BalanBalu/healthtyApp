@@ -1,18 +1,69 @@
-import {  BOOK_APPOINTMENT_REQUEST, BOOK_APPOINTMENT_RESPONSE, BOOK_APPOINTMENT_ERROR } from './bookappointment.action';
+import {
+  BOOK_APPOINTMENT_REQUEST, BOOK_APPOINTMENT_RESPONSE, BOOK_APPOINTMENT_ERROR,
+  APPOINTMENT_REQUEST, APPOINTMENT_RESPONSE, APPOINTMENT_ERROR ,  PROFILE_REQUEST,
+  PROFILE_RESPONSE, PROFILE_ERROR, REVIEW_REQUEST, REVIEW_RESPONSE, REVIEW_ERROR
+} from './bookappointment.action';
 
 // Initial State
 export const initialState = {
-    message: null,
-    isLoading: false,
-    details: null,
-    success: false
-  }
+  message: null,
+  isLoading: false,
+  details: null,
+  success: false,
+  condition: false
 
-  // State
+}
+
+// State
 export default (state = initialState, action) => {
-    switch (action.type) {
-      
-      case BOOK_APPOINTMENT_REQUEST:
+  switch (action.type) {
+
+    case BOOK_APPOINTMENT_REQUEST:
+      return {
+        ...state,
+        message: null,
+        isLoading: action.isLoading,
+
+      }
+
+    case BOOK_APPOINTMENT_RESPONSE:
+      return {
+        ...state,
+        message: action.message,
+        isLoading: false,
+        success: true
+      }
+
+    case BOOK_APPOINTMENT_ERROR:
+      return {
+        ...state,
+        message: action.message,
+        isLoading: false
+      }
+    case APPOINTMENT_REQUEST:
+      return {
+        ...state,
+        message: null,
+        isLoading: action.isLoading,
+        condition: false
+      }
+
+    case APPOINTMENT_RESPONSE:
+      return {
+        ...state,
+        message: action.message,
+        isLoading: false,
+        success: true,
+        condition: action.condition
+      }
+
+    case APPOINTMENT_ERROR:
+      return {
+        ...state,
+        message: action.message,
+        isLoading: false
+      }
+      case PROFILE_REQUEST:
         return {
           ...state,
           message: null,
@@ -20,7 +71,7 @@ export default (state = initialState, action) => {
   
         }
   
-      case BOOK_APPOINTMENT_RESPONSE:
+      case PROFILE_RESPONSE:
         return {
           ...state,
           message: action.message,
@@ -28,20 +79,40 @@ export default (state = initialState, action) => {
           success: true
         }
   
-      case BOOK_APPOINTMENT_ERROR:
+      case PROFILE_ERROR:
         return {
           ...state,
           message: action.message,
           isLoading: false
         }
   
-  
-      default:
-        return state;
-    }
+        case REVIEW_REQUEST:
+          return {
+            ...state,
+            message: null,
+            isLoading: action.isLoading,
+    
+          }
+    
+        case REVIEW_RESPONSE:
+          return {
+            ...state,
+            message: action.message,
+            isLoading: false,
+            success: true
+          }
+    
+        case REVIEW_ERROR:
+          return {
+            ...state,
+            message: action.message,
+            isLoading: false
+          }
+    default:
+      return state;
   }
-  
-  
-  
-  
-  
+}
+
+
+
+
