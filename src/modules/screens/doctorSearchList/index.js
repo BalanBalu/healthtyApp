@@ -155,7 +155,7 @@ class doctorSearchList extends Component {
     }
 
     render() {
-
+        const  { navigation } = this.props;    
         return (
 
             <Container style={styles.container}>
