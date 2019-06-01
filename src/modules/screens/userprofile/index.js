@@ -1,6 +1,8 @@
 import React, { Component } from 'react';
 import { Container, Content, Text, Title, Header, H3, Button, Card, List, ListItem, Left, Right, Thumbnail, Body, Icon, locations, ScrollView, ProgressBar ,Item} from 'native-base';
-import { userProfile} from '../../providers/profile/profile.action';
+import { fetchUserProfile } from '../../providers/profile/profile.action';
+import { hasLoggedIn } from '../../providers/auth/auth.actions';
+
 import { Col, Row, Grid } from 'react-native-easy-grid';
 import { connect } from 'react-redux';
 import { dateDiff } from '../../../setup/helpers';
@@ -11,6 +13,7 @@ import { FlatList } from 'react-native-gesture-handler';
 import { Loader } from '../../../components/ContentLoader'
 
 class Profile extends Component {
+     navigation = this.props.navigation;
     constructor(props) {
         super(props);
         this.state = {
@@ -19,9 +22,16 @@ class Profile extends Component {
            userId:'',
            bookedAppointments: [1,2,3]
         }; 
-        this.getUserProfile();
+        
       }
-
+    async componentDidMount() {
+        const isLoggedIn = await hasLoggedIn();
+        if(!isLoggedIn) {
+            this.props.navigation.navigate('login');
+            return     
+        } else
+           this.getUserProfile();
+    }  
     onStarRatingPress(rating) {
         this.setState({
             starCount: rating
@@ -31,9 +41,10 @@ class Profile extends Component {
       getUserProfile= async () => {
         try { 
          let fields = "first_name,last_name,gender,dob,mobile_no,secondary_mobiles,email,secondary_emails,insurance,address,is_blood_donor,is_available_blood_donate,blood_group"         
-         let userId=await AsyncStorage.getItem('userId');
+         let userId= await AsyncStorage.getItem('userId');
          console.log(this.state.userId);
-         let result = await userProfile(userId,fields);          
+         let result = await fetchUserProfile(userId,fields);    
+         console.log(result);      
          console.log(this.props.profile.success);      
          if(this.props.profile.success) {
             this.setState({ data: result});
