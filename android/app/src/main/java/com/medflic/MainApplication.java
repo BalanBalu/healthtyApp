@@ -11,7 +11,7 @@ import com.facebook.react.ReactNativeHost;
 import com.facebook.react.ReactPackage;
 import com.facebook.react.shell.MainReactPackage;
 import com.facebook.soloader.SoLoader;
-
+import com.mapbox.rctmgl.RCTMGLPackage;//for mapbox
 import java.util.Arrays;
 import java.util.List;
 
@@ -29,10 +29,11 @@ public class MainApplication extends Application implements ReactApplication {
     protected List<ReactPackage> getPackages() {
       return Arrays.<ReactPackage>asList(
           new MainReactPackage(),
-            new SvgPackage(),
-		   new LinearGradientPackage(),
-            new RNGestureHandlerPackage(),
-            new VectorIconsPackage()
+          new SvgPackage(),
+		      new LinearGradientPackage(),
+          new RNGestureHandlerPackage(),
+          new VectorIconsPackage(),
+          new RCTMGLPackage() 
       );
     }
 
@@ -53,3 +54,8 @@ public class MainApplication extends Application implements ReactApplication {
     SoLoader.init(this, /* native exopackage */ false);
   }
 }
+
+
+
+
+

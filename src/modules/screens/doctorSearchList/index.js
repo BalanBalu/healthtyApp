@@ -196,9 +196,8 @@ class doctorSearchList extends Component {
     }
 
     render() {
+        const  { navigation } = this.props;    
         const { qualification, singleDataResult, reviewdata } = this.state;
-
-
         return (
 
             <Container style={styles.container}>

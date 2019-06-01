@@ -4,9 +4,15 @@ import { Col, Row, Grid } from 'react-native-easy-grid';
 import { connect } from 'react-redux'
 import { StyleSheet, Image, TouchableOpacity, View, FlatList, AsyncStorage } from 'react-native';
 import StarRating from 'react-native-star-rating';
+import MapboxGL from '@mapbox/react-native-mapbox-gl';
+
+// let token1 = 'sk.eyJ1IjoidmFpcmFpc2F0aGlzaCIsImEiOiJjanZhMjZ0ZXMwdWozNDRteTB4bG14Y2o1In0.A34n-MA-vy3hsydgt_8pRQ';
+let token = 'pk.eyJ1IjoiYnJpdmluc3JlZSIsImEiOiJjanc2Y3hkZHcxOGhvNDVwOXRhMWo2aDR1In0.EV8iYtfMxEcRcn8HcZ0ZPA';
+
 import { viewdoctorProfile, viewUserReviews, bindDoctorDetails } from '../../providers/bookappointment/bookappointment.action';
 import { formatDate } from '../../../setup/helpers';
 
+MapboxGL.setAccessToken(token);
 
 class BookAppoinment extends Component {
   constructor(props) {
@@ -27,9 +33,24 @@ class BookAppoinment extends Component {
       appointment_button: true,
       selectedSlotIndex: -1,
       doctorId: '',
-      reviews_length: ''
+      reviews_length: '',
+      zoom:12, 
+      annotations:{        
+        annotationtype:[{
+        type: 'point',
+        coordinates: [11.953125,39.436192999314095]
+
+      }, {
+        type: 'point',
+        coordinates: [18.896484375,46.37725420510028]
+          }]
+      }        
+        
     }
+    console.log(this.state.annotations+'annotations');
+
   }
+  
 
   async componentDidMount() {
     const { navigation } = this.props;
@@ -140,8 +161,40 @@ class BookAppoinment extends Component {
 
   render() {
     const { data, qualification, doctordata } = this.state;
-    return (
+    return (      
       <Container style={styles.container}>
+      <View style={{flex:1}}>
+      <MapboxGL.MapView
+       ref={c => (this._map = c)}
+      zoomLevel={this.state.zoom}
+      showUserLocation={false}
+      centerCoordinate={[11.256, 43.770]}
+      style={{flex:1}}
+      styleURL={MapboxGL.StyleURL.Light}
+      userTrackingMode={MapboxGL.UserTrackingModes.Follow}>
+
+         <MapboxGL.PointAnnotation
+        id='Pin'
+        coordinate={[11.256, 43.770]}>
+         <Image
+                  // source={require('../../../../../assets/marker.png')}
+                style={{
+                  flex: 1,
+                  resizeMode: 'contain',
+                  width: 25,
+                  height: 25
+                }} />       
+      </MapboxGL.PointAnnotation> 
+
+      
+      {/* <MapboxGL.ShapeSource id='line1' shape={this.state.annotations}>
+          </MapboxGL.ShapeSource>  */}
+
+
+      </MapboxGL.MapView>
+      </View>  
+
+
         <Content style={styles.bodyContent}>
 
           <Grid style={{ backgroundColor: '#7E49C3', height: 200 }}>
@@ -241,8 +294,24 @@ class BookAppoinment extends Component {
 
           </Grid> */}
 
-          <Card transparent style={{ margin: 20, backgroundColor: '#ecf0f1' }}>
-            <Card>
+      
+
+           <Card transparent style={{ margin: 20, backgroundColor: '#ecf0f1' }}>
+           
+           
+      
+          {/* <MapboxGL.MapView
+          zoomLevel={this.state.zoom}
+          centerCoordinate={[13.09,80.27]}
+          showUserLocation={true}
+          userTrackingMode={MapboxGL.UserTrackingModes.Follow}
+          style={{ flex: 1 }}>
+          </MapboxGL.MapView> */}
+          {/* <MapboxGL.ShapeSource id='line1' shape={this.state.route}>
+          <MapboxGL.LineLayer id='linelayer1' style={{lineColor:'red'}} />
+          </MapboxGL.ShapeSource> */}
+          
+          {/* <Card>
               <List>
                 <ListItem avatar>
                   <Left>
@@ -259,8 +328,8 @@ class BookAppoinment extends Component {
                   </Body>
                 </ListItem>
               </List>
-            </Card>
-
+            </Card> */}
+           
 
             <Card style={{ margin: 10, padding: 10, borderRadius: 10 }}>
               <Text style={styles.titleText}>Reviews</Text>
@@ -290,11 +359,17 @@ class BookAppoinment extends Component {
                     } />
                   : <Text style={{ alignItems: 'center' }} >No Reviews Were found</Text>}
               </List>
-              {this.state.reviewdata !== null ?
-                <Button iconRight transparent block onPress={() => this.props.navigation.navigate('Reviews', { doctorId : this.state.doctorId})}>
-                  <Icon name='add' />
-                  <Text style={styles.customText}>More Reviews</Text>
-                </Button> : null}
+              <Grid>
+                <Col style={{ width: '50%' }}></Col>
+                <Col style={{ width: '50%' }}>
+
+                  {this.state.reviewdata !== null ?
+                    <Button iconRight transparent onPress={() => this.props.navigation.navigate('Reviews')}>
+                      <Icon name='add' />
+                      <Text style={styles.customText}>More Reviews</Text>
+                    </Button> : null}
+                </Col>
+              </Grid>
 
             </Card>
 
@@ -492,6 +567,7 @@ class BookAppoinment extends Component {
       </Container>
 
     )
+
   }
 
 }
