@@ -11,9 +11,50 @@ import { store } from '../../../setup/store'
 export const DOCTORLIST_REQUEST = 'BOOK_APPOINTMENT/DOCTORLIST_REQUEST'
 export const DOCTORLIST_ERROR = 'BOOK_APPOINTMENT/DOCTORLIST_RESPONSE'
 export const DOCTORLIST_RESPONSE = 'BOOK_APPOINTMENT/DOCTORLIST_RESPONSE'
+export const APPOINTMENT_REQUEST = 'BOOK_APPOINTMENT/APPOINTMENT_REQUEST'
+export const APPOINTMENT_RESPONSE = 'BOOK_APPOINTMENT/APPOINTMENT_RESPONSE'
+export const APPOINTMENT_ERROR = 'BOOK_APPOINTMENT/APPOINTMENT_ERROR'
 import { postService, getService } from '../../../setup/services/httpservices';
 
-/*get doctor availability for patient view doctor profile */
+
+
+/* Book the Doctor Appointment module  */
+export async function bookAppointment(bookSlotDetails, isLoading = true) {
+  try {
+
+    store.dispatch({
+      type: DOCTORLIST_REQUEST,
+      isLoading
+    })
+    let endPoint = 'doctor/appointment';
+    let response = await postService(endPoint, bookSlotDetails);
+     console.log(JSON.stringify(response)+'bookAppointment API rspnse');
+    let respData = response.data;
+
+    if (respData.error || !respData.success) {
+      store.dispatch({
+        type: DOCTORLIST_ERROR,
+        message: respData.error
+      })
+    } else {
+     
+      store.dispatch({
+        type: DOCTORLIST_RESPONSE,
+        message: respData.message
+      })
+      return respData;
+    }
+
+  } catch (e) {
+    store.dispatch({
+      type: DOCTORLIST_ERROR,
+      message: e + ' Occured! Please Try again'
+    });
+  }
+}
+
+
+
 
 /* Search Services and category Module  */
 export async function searchDoctorList(userId, searchInputvalues, isLoading = true) {
@@ -50,6 +91,7 @@ export async function searchDoctorList(userId, searchInputvalues, isLoading = tr
     });
   }
 }
+/*get doctor availability for patient view doctor profile */
 
 export async function viewdoctorProfile (doctorIds, isLoading = true) {
   try {
@@ -58,8 +100,8 @@ export async function viewdoctorProfile (doctorIds, isLoading = true) {
       isLoading 
     })     
     let endPoint = 'doctors/' + doctorIds + '/availabilitySlots'
-   console.log(endPoint);   
     let response = await getService(endPoint); 
+    //console.log('get Avalblty API Response'+JSON.stringify(response))
     let respData = response.data;    
     if(respData.error || !respData.success) {
       console.log('availability error')
@@ -89,18 +131,19 @@ export async function viewdoctorProfile (doctorIds, isLoading = true) {
 
 /*get userReviews*/
 
-export async function viewUserReviews(id,type, isLoading = true) {
+export async function viewUserReviews(type, id, isLoading = true) {
   try {
     store.dispatch({
       type: REVIEW_REQUEST,
       isLoading 
     })     
     let endPoint = 'user/reviews/'+type+ '/' +id
-   console.log(endPoint);   
     let response = await getService(endPoint);
     console.log("review response");
     console.log(response); 
-    let respData = response.data;    
+    let respData = response.data;   
+    console.log(respData); 
+ 
     if(respData.error || !respData.success) {
       console.log('review error')
       store.dispatch({
@@ -134,8 +177,8 @@ export const appointment = async(userId, filters, isLoading = true) => {
       type:BOOK_APPOINTMENT_REQUEST,
       isLoading 
     })       
-    
     let endPoint = 'doctor/appointment/user' +'/'+userId + '?startDate=' + filters.startDate + '&endDate=' + filters.endDate;
+    //let endPoint = 'appointments/user/' + userId + '?startDate=' + filters.startDate + '&endDate=' + filters.endDate;
     
      console.log(endPoint);
 
@@ -165,6 +208,24 @@ export const appointment = async(userId, filters, isLoading = true) => {
   }
 }
 
+export const getUserAppointments = async(userId, filters) => {
+  try{    
+      let endPoint = 'appointments/user/' + userId + '?startDate=' + filters.startDate + '&endDate=' + filters.endDate;
+      
+      let response = await getService(endPoint);
+      let respData = response.data;
+      console.log(respData);
+      return respData; 
+  }catch (e){       
+    console.log(e.message);  
+      store.dispatch({
+      type: BOOK_APPOINTMENT_ERROR,
+      message: e
+      })  
+  }
+}
+
+
 /*get doctor details*/
 export const bindDoctorDetails = async (doctorId, fields, isLoading = true) => {
   try {
@@ -173,7 +234,6 @@ export const bindDoctorDetails = async (doctorId, fields, isLoading = true) => {
       isLoading
     })
     let endPoint = 'doctor/' + doctorId + '?fields=' + fields;
-    console.log(endPoint);
     let response = await getService(endPoint);
     let respData = response.data;
     if (respData.error || respData.success == false) {
@@ -201,7 +261,43 @@ export const bindDoctorDetails = async (doctorId, fields, isLoading = true) => {
   }
 }
 
+/* Get Appointment details */
 
+export async function appointmentDetails (doctorId, appointmentId, isLoading = true) {
+  try {
+    store.dispatch({
+      type: APPOINTMENT_REQUEST,
+      isLoading 
+    })     
+    let endPoint = 'doctor/' + doctorId + '/appointment/' + appointmentId
+   console.log(endPoint);   
+    let response = await getService(endPoint); 
+    let respData = response.data;    
+    if(respData.error || !respData.success) {
+      console.log('availability error')
+      store.dispatch({
+        type: APPOINTMENT_ERROR,
+        message: respData.error
+      })
+    } else {   
+      console.log('availability response');
+      store.dispatch({        
+        type: APPOINTMENT_RESPONSE,
+        isLoading:false,
+        success: true,     
+        message: respData.message
+      })
+      return respData;
+    }
+    return respData;
+    
+  } catch (e) {
+    store.dispatch({
+      type: APPOINTMENT_ERROR,
+      message: e
+      }); 
+  }  
+}
 
 
 

@@ -154,8 +154,14 @@ const AppointMentstack1 = createStackNavigator({
   paymentpage: {
     screen: PaymentPage
   },
-  paymentreview: {
-    screen: PaymentReview
+  // paymentreview: {
+  //   screen: PaymentReview
+  // },
+  "Payment Review": {
+    screen: PaymentReview,
+    navigationOptions: {
+      title: 'Payment Review'
+    }
   },
   paymentsuccess: {
     screen: PaymentSuccess
