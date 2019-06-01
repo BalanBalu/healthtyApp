@@ -304,21 +304,23 @@ const DrawerNavigator = createDrawerNavigator({
   Profile: ProfileStack,
   categoryStack,
   "My Appointments": myAppointmentsStack,
-  Appointments: AppointMentstack1
+  
 },
   {
     initialRouteName: 'Home'
   })
 
 
-export default createAppContainer(createSwitchNavigator(
+export default createAppContainer(createStackNavigator(
   {
-    AuthLoading: AuthLoadingScreen,
+    //AuthLoading: AuthLoadingScreen,
     App: DrawerNavigator,
     Auth: AuthStack,
+    Appointments: AppointMentstack1
   },
   {
-    initialRouteName: 'AuthLoading'
+    initialRouteName: 'App',
+    headerMode: 'none'
 
   }
 ));

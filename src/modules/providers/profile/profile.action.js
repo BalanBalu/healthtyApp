@@ -8,17 +8,15 @@ import { store } from '../../../setup/store'
 import { getService } from '../../../setup/services/httpservices';
 
 /*get doctor profile*/
-export async function userProfile (userId, fields, isLoading = true) {
+export async function fetchUserProfile(userId, fields, isLoading = true) {
   try {
     store.dispatch({
       type: PROFILE_REQUEST,
       isLoading 
     })     
     let endPoint = 'user/' + userId + '?fields=' + fields;  
-    console.log(endPoint);   
+    
     let response = await getService(endPoint); 
-    console.log(response);
-   
     let respData = response.data;
     
     if(respData.error || !respData.success) {
@@ -26,6 +24,7 @@ export async function userProfile (userId, fields, isLoading = true) {
         type: PROFILE_ERROR,
         message: respData.error
       })
+      return respData.data;
     } else {   
       store.dispatch({
         type: PROFILE_RESPONSE,
@@ -37,8 +36,9 @@ export async function userProfile (userId, fields, isLoading = true) {
     }
     
   } catch (e) {
+    console.log(e);
     store.dispatch({
-      type: USER_PROFILE_HAS_ERROR,
+      type: PROFILE_ERROR,
       message: e
       }); 
   }  

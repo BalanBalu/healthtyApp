@@ -124,17 +124,26 @@ try {
 
 }
 
-export function logout() {
-  AsyncStorage.removeItem('token')
-  AsyncStorage.removeItem('user')
-  AsyncStorage.removeItem('userId')
+export async function logout() {
+  console.log('is Coming here ');
+  await AsyncStorage.removeItem('token')
+  await AsyncStorage.removeItem('user')
+  await AsyncStorage.removeItem('userId')
     
   store.dispatch({
     type: LOGOUT
   })
-  
 }
 
+export const hasLoggedIn = async () => {
+  const token = await AsyncStorage.getItem('token')
+  const userId =  await AsyncStorage.getItem('userId')
+  console.log(token);
+  if(token === undefined || userId === undefined || token === null || userId === null ) {
+    return false
+  }  
+    return true;      
+}
 // Set user token and info locally (AsyncStorage)
 export function setUserLocally(token, userData) {
     // Set token
