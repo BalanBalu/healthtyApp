@@ -37,7 +37,6 @@ end
    'RCTNetwork',
    'RCTPushNotification',
    'RCTSettings',
-   'RCTTest',
    'RCTText',
    'RCTVibration',
    'RCTWebSocket',
@@ -45,4 +44,15 @@ end
  ]
 
  # Mapbox
- pod 'react-native-mapbox-gl', :path => '../node_modules/@mapbox/react-native-mapbox-gl'
+ pod 'react-native-mapbox-gl', :path => '../node_modules/@react-native-mapbox-gl/maps'
+
+ # Third party
+ pod 'Folly', :podspec => '../node_modules/react-native/third-party-podspecs/Folly.podspec'
+
+ post_install do |installer|
+   installer.pods_project.targets.each do |target|
+     if target.name == "React"
+       target.remove_from_project
+     end
+   end
+ end
