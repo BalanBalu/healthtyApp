@@ -78,6 +78,16 @@ export function renderIf(condition, renderFn) {
   export function subTimeUnit(date, amount, unit) {
     return moment(date).subtract(amount, unit).toDate();
   }
-
+  export function findArrayObj(array, findNode, findValue) {
+    let returnObj;   
+       //console.log(findValue);
+    for(let i = 0; i < array.length; i++) {
+       if(array[i][findNode] === findValue) {
+          returnObj = array[i];
+           break  
+       }
+   }
+   return returnObj;
+}
 
   
