@@ -176,6 +176,12 @@ class doctorSearchList extends Component {
         // console.log(JSON.stringify(this.state.confirmSlotDetails));
     }
 
+    navigateToBookAppointmentPage(doctorAvailabilityData) {
+        const doctorId = doctorAvailabilityData.doctorId;
+        const slotData = doctorAvailabilityData.slotData[this.state.selectedDate]
+        this.props.navigation.navigate('Book Appointment' ,{ doctorId : doctorId, slotList: slotData })
+    }
+
     noAvailableSlots() {
         return (
             <Item style={{ borderBottomWidth: 0, justifyContent: 'center', alignItems: 'center' }}>
@@ -276,7 +282,7 @@ class doctorSearchList extends Component {
                             renderItem={({ item, index }) =>
                                 <List>
 
-                                    <ListItem avatar onPress={() => this.props.navigation.navigate('Book Appointment')}>
+                                    <ListItem avatar onPress={() => this.navigateToBookAppointmentPage(item)}>
                                         <Left>
                                             {
                                                 item.profile_image != undefined

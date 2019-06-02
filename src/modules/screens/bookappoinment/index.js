@@ -54,10 +54,12 @@ class BookAppoinment extends Component {
 
   async componentDidMount() {
     const { navigation } = this.props;
-    let doctorId = navigation.getParam('doctorId', "5ce01ae8d28ab8073515a6f6");
-    await this.setState({ doctorId });
-    currentDate = formatDate(new Date(), 'YYYY-MM-DD');
-    this.getAvailability(doctorId, currentDate);
+    let doctorId = navigation.getParam('doctorId');
+    const slotList = navigation.getParam('slotList', []);
+    await this.setState({ doctorId, slotList });
+    // currentDate = formatDate(new Date(), 'YYYY-MM-DD');
+    // this.getAvailability(doctorId, currentDate);
+    
     await this.getdoctorDetails(doctorId);
     await this.getUserReviews(doctorId);
   }
@@ -78,7 +80,7 @@ class BookAppoinment extends Component {
   /*Get doctor Qualification details*/
   getdoctorDetails = async (doctorId) => {
     console.log("doctor");
-    let fields = "professional_statement,language,specialist,education";
+    let fields = "first_name,last_name,prefix,professional_statement,language,specialist,education";
     let resultDoctorDetails = await bindDoctorDetails(doctorId, fields);
     if (resultDoctorDetails.success) {
       this.setState({ doctordata: resultDoctorDetails.data });
@@ -209,7 +211,7 @@ class BookAppoinment extends Component {
                   <Thumbnail square source={{ uri: 'https://static1.squarespace.com/static/582bbfef9de4bb07fe62ab18/t/5877b9ccebbd1a124af66dfe/1484241404624/Headshot+-+Circular.png?format=300w' }} style={{ height: 86, width: 86 }} />
                 </Left>
                 <Body>
-                  <Text>{data.doctorName ? data.doctorName : ''}</Text>
+                  <Text>{doctordata.prefix ? doctordata.prefix : 'Dr. ' + doctordata.first_name}</Text>
 
                   <Text>{qualification}</Text>
                 </Body>
