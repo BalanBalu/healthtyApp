@@ -3,6 +3,7 @@ package com.medflic;
 import android.app.Application;
 
 import com.facebook.react.ReactApplication;
+import com.mapbox.rctmgl.RCTMGLPackage;
 import com.horcrux.svg.SvgPackage;
 import com.BV.LinearGradient.LinearGradientPackage;
 import com.swmansion.gesturehandler.react.RNGestureHandlerPackage;
@@ -11,7 +12,6 @@ import com.facebook.react.ReactNativeHost;
 import com.facebook.react.ReactPackage;
 import com.facebook.react.shell.MainReactPackage;
 import com.facebook.soloader.SoLoader;
-import com.mapbox.rctmgl.RCTMGLPackage;//for mapbox
 import java.util.Arrays;
 import java.util.List;
 
