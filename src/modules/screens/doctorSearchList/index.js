@@ -294,19 +294,26 @@ class doctorSearchList extends Component {
                                         <Body>
                                             <Text style={{ fontFamily: 'OpenSans' }}>{item.doctorName}</Text>
                                             {item.slotData[this.state.selectedDate] ? 
+                                            
                                             <View>
+                                             
                                             {item.slotData[this.state.selectedDate][0].location ?   
-                                              <Item style={{ borderBottomWidth: 0 }}>
+                                                 <Grid>
+                                                 <Col>
                                                 <Icon name='pin' style={{ fontSize: 20, fontFamily: 'OpenSans', color: 'gray' }}></Icon>
-                                                <Text note style={{ fontFamily: 'OpenSans' }}>{item.slotData[this.state.selectedDate][0].location.location.address.no_and_street}</Text>
+                                                <Text note style={{ fontFamily: 'OpenSans', }}>{item.slotData[this.state.selectedDate][0].location.location.address.no_and_street}</Text>
                                                 <Text note style={{ fontFamily: 'OpenSans' }}>{item.slotData[this.state.selectedDate][0].location.location.address.city}</Text>
                                                 <Text note style={{ fontFamily: 'OpenSans' }}>{item.slotData[this.state.selectedDate][0].location.location.address.state}</Text>
-                                                  
-                                            </Item> : null } 
+                                                </Col>
+                                         </Grid> 
+                                            : null } 
 
                                             <Text note style={{ fontFamily: 'OpenSans', color: 'gray' }}>Rs {item.slotData[this.state.selectedDate][0].fee}</Text>
+                                           
                                             </View>
+                                            
                                          : null }
+                                        
                                         </Body>
                                         <Right>
                                             <Icon name='heart' style={{ color: 'red', fontSize: 25 }}></Icon>
@@ -388,7 +395,7 @@ class doctorSearchList extends Component {
                                         maxStars={5}
                                         rating={reviewdata && reviewdata[0].overall_rating}
                                     />
-                                    <Grid >
+                                    <Grid>
                                         <Col>
                                             <Text note style={{ fontFamily: 'OpenSans' }}>Address </Text>
                                             <Text note style={{ fontFamily: 'OpenSans' }}>{singleHospitalDataSlots.hospitalLocationData.name}</Text>
