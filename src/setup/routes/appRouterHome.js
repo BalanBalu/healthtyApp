@@ -164,7 +164,10 @@ const AppointMentstack1 = createStackNavigator({
     }
   },
   paymentsuccess: {
-    screen: PaymentSuccess
+    screen: PaymentSuccess,
+    navigationOptions: {
+      title: 'Success'
+    }
   },
   "Reviews" : {
     screen: Reviews,
@@ -222,21 +225,19 @@ const HomeStack = createStackNavigator({
         </TouchableOpacity>
       ),
       headerRight: (
-        <Row>
+        <Grid>
+
           <Col>
-            <TouchableOpacity onPress={() => navigation.navigate('Profile')}>
-              <Image
-                style={{ marginRight: 18, height: 35, width: 35, borderColor: '#f5f5f5', borderWidth: 2, borderRadius: 50 }}
-                source={profileAvatar}
-              />
+            <TouchableOpacity onPress={() => { console.log('clicking'); navigation.navigate('Profile')}} >
+            <Icon name="contact" style={{ color: '#fff', marginRight: 10, fontFamily: 'opensans-semibold' }}></Icon>
             </TouchableOpacity>
           </Col>
           <Col>
             <TouchableOpacity onPress={() => { logout(); navigation.navigate('login') }}>
-              <Icon name="arrow-back" style={{ marginLeft: 18, color: '#fff', fontFamily: 'opensans-semibold' }}></Icon>
+              <Icon name="log-out" style={{ marginRight: 5, color: '#fff', fontFamily: 'opensans-semibold' }}></Icon>
             </TouchableOpacity>
           </Col>
-        </Row>
+        </Grid>
       ),
     })
   },

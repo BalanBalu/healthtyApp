@@ -32,10 +32,12 @@ class BookAppoinment extends Component {
       doctordata: {},
       appointment_button: true,
       selectedSlotIndex: -1,
+      selectedSlotItem: {},
+      
       doctorId: '',
       reviews_length: '',
       zoom:12, 
-      annotations:{        
+      annotations: {        
         annotationtype:[{
         type: 'point',
         coordinates: [11.953125,39.436192999314095]
@@ -111,6 +113,7 @@ class BookAppoinment extends Component {
 
   /*On pressing  slot*/
   onSlotPress(item, index) {
+
     this.setState({
       item: {
         name: item.location.name,
@@ -118,10 +121,19 @@ class BookAppoinment extends Component {
         city: item.location.location.address.city,
         state: item.location.location.address.state,
         pin_code: item.location.location.pin_code
-      }
+      } 
     })
-    this.setState({ selectedSlotIndex: index });
-    this.setState({ appointment_button: false });
+    this.setState({ selectedSlotIndex: index, appointment_button: false, selectedSlotItem : item});
+   
+  }
+  navigateToPaymentReview() {
+            debugger
+            var confirmSlotDetails = {
+                doctorId: this.state.doctordata.doctor_id,
+                doctorName: this.state.doctordata.first_name + ' ' + this.state.doctordata.last_name,
+                slotData: this.state.selectedSlotItem
+            }
+            this.props.navigation.navigate('Payment Review', { resultconfirmSlotDetails: confirmSlotDetails })
   }
 
   noAvailableSlots() {
@@ -165,7 +177,7 @@ class BookAppoinment extends Component {
     const { data, qualification, doctordata } = this.state;
     return (      
       <Container style={styles.container}>
-      <View style={{flex:1}}>
+     {/* <View style={{flex:1}}>
       <MapboxGL.MapView
        ref={c => (this._map = c)}
       zoomLevel={this.state.zoom}
@@ -189,12 +201,10 @@ class BookAppoinment extends Component {
       </MapboxGL.PointAnnotation> 
 
       
-      {/* <MapboxGL.ShapeSource id='line1' shape={this.state.annotations}>
-          </MapboxGL.ShapeSource>  */}
-
+      
 
       </MapboxGL.MapView>
-      </View>  
+      </View>  */}
 
 
         <Content style={styles.bodyContent}>
@@ -234,7 +244,7 @@ class BookAppoinment extends Component {
               <Grid style={{ marginTop: 5 }}>
                 <Col style={{ width: 270, }}>
 
-                  <Button disabled={this.state.appointment_button} block style={{ borderRadius: 10 }}>
+                  <Button disabled={this.state.appointment_button} block onPress={() => this.navigateToPaymentReview() } style={{ borderRadius: 10 }}>
                     <Text uppercase={false}>Book Appoinment</Text>
                   </Button>
 

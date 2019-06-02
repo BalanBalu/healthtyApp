@@ -29,25 +29,12 @@ class PaymentSuccess extends Component {
     }
 
     render() {
-        const { user: { isLoading } } = this.props;
+        const { navigation } = this.props;
         const { loginErrorMsg } = this.state;
         return (
 
             <Container style={styles.container}>
-                <Header style={{ backgroundColor: '#7E49C3', fontFamily: 'opensans-semibold' }}>
-                    <Left  >
-                        <Button Button transparent onPress={() => this.props.navigation.navigate('home')}>
-                            <Icon name="arrow-back" style={{ color: '#fff' }}></Icon>
-                        </Button>
-
-                    </Left>
-                    <Body>
-                        <Title style={{ fontFamily: 'opensans-semibold' }}>Payment Success</Title>
-
-                    </Body>
-
-                </Header>
-
+               
                 <Content style={styles.bodyContent}>
 
                     <Grid style={{ alignItems: 'center' }}>
@@ -57,7 +44,6 @@ class PaymentSuccess extends Component {
                                 <H3 style={{ textAlign: 'center', fontFamily: 'OpenSans' }}> Success</H3>
                                 <Text note style={{ textAlign: 'center', fontFamily: 'OpenSans' }}> Thank You For Choosing Our Service And Trust Our Doctors To Take Care Your Health</Text>
                             </Col>
-
                         </Row>
 
 
@@ -112,7 +98,7 @@ class PaymentSuccess extends Component {
 
                     </Card>
 
-                    <Button block success style={{ marginTop: 10, borderRadius: 20 }}><Text style={styles.customizedText}> Check Details </Text></Button>
+                    <Button block success style={{ marginTop: 10, borderRadius: 20 }} onPress={()=> navigation.navigate('Home') }><Text style={styles.customizedText}> Home </Text></Button>
 
                 </Content>
 

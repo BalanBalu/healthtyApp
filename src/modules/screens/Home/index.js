@@ -55,7 +55,11 @@ class Home extends Component {
       searchDoctorListModule = async () => {
         try {
             let serachInputvalues = [{
-                type: 'language',
+                type: 'service',
+                value: [ this.state.searchValue ]
+            }, 
+            {
+                type: 'symptoms',
                 value: [ this.state.searchValue ]
             }]
             if (this.state.searchValue == '') {
@@ -67,6 +71,13 @@ class Home extends Component {
         } catch (e) {
             console.log(e);
         }
+    }
+    navigateToCategorySearch(categoryName) {
+       let serachInputvalues = [{
+            type: 'category',
+            value: [ categoryName ]
+        }]      
+        this.props.navigation.navigate('Doctor List', { resultData: serachInputvalues })  
     }
 
       
@@ -136,11 +147,12 @@ class Home extends Component {
                                         data={this.state.catagary}
                                         extraData={this.state}
                                         renderItem = {({item, index}) =>
-                                        <Item  style={styles.column} onPress={() => this.props.navigation.navigate('Doctor List') }>
+                                        <Item  style={styles.column} onPress={() => this.navigateToCategorySearch(item.category_name) }>
                                         <Col  >
-                                            <LinearGradient 
+                                            <LinearGradient
                                                 colors={['#7357A2', '#62BFE4']} style={{ borderRadius: 10, padding: 5, height:100, width: 100, marginLeft: 'auto', marginRight: 'auto' }}>
-                                                <Image source={{ uri: item.imageBaseURL + '/' + item.category_id + '.png' }} style={styles.customImage} />
+                                                <Image 
+                                                    source={{ uri: item.imageBaseURL + '/' + item.category_id + '.png' }} style={styles.customImage} />
                                             </LinearGradient>
 
                                             <Text style={styles.textcenter}>{item.category_name}</Text>

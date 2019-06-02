@@ -55,6 +55,13 @@ class PaymentReview extends Component {
                 type: "success",
                 duration: 3000,
             })
+            this.props.navigation.navigate('paymentsuccess');
+        } else{
+            Toast.show({
+                text: resultData.message,
+                type: "warning",
+                duration: 3000,
+            })
         }
     }
 

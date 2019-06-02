@@ -16,8 +16,13 @@ class Categories extends Component {
     }
 
   }
-
-
+  navigateToCategorySearch(categoryName) {
+    let serachInputvalues = [{
+         type: 'category',
+         value: [ categoryName ]
+     }]      
+     this.props.navigation.navigate('Doctor List', { resultData: serachInputvalues })  
+  }
   render() {
 
 
@@ -30,11 +35,11 @@ class Categories extends Component {
 
         <FlatList horizontal={false} numColumns={3}
                                         data={this.state.data}
-                                        extraData={this.state}
+                                        extraData={this.state.data}
                                         renderItem = {({item, index}) =>
           <Grid>
             
-              <Item style={styles.column} onPress={()=> this.props.navigation.navigate('Doctor List') }>
+              <Item style={styles.column} onPress={()=> this.navigateToCategorySearch(item.category_name)}>
               <Col>
               <LinearGradient
                   colors={['#7357A2', '#62BFE4']} style={{ borderRadius: 10, padding: 10, height:100, width:100, marginLeft: 'auto', marginRight: 'auto' }}>
@@ -47,7 +52,9 @@ class Categories extends Component {
               
 
           </Grid>
-                                        }/>
+          }
+          keyExtractor={(item, index) => index.toString()}
+          />
         </Content>
       </Container>
 
