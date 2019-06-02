@@ -302,7 +302,6 @@ const categoryStack = createStackNavigator({
 const DrawerNavigator = createDrawerNavigator({
   Home: HomeStack,
   Profile: ProfileStack,
-  categoryStack,
   "My Appointments": myAppointmentsStack,
   
 },
@@ -311,15 +310,16 @@ const DrawerNavigator = createDrawerNavigator({
   })
 
 
-export default createAppContainer(createStackNavigator(
+export default createAppContainer(createSwitchNavigator(
   {
-    //AuthLoading: AuthLoadingScreen,
+    AuthLoading: AuthLoadingScreen,
     App: DrawerNavigator,
     Auth: AuthStack,
+    categoryStack,
     Appointments: AppointMentstack1
   },
   {
-    initialRouteName: 'App',
+    initialRouteName: 'AuthLoading',
     headerMode: 'none'
 
   }
@@ -332,4 +332,5 @@ export default createAppContainer(createStackNavigator(
 // })
 // const stack = createStackNavigator({ AppTabs, appStack }, { headerMode: "none" });
 //export default createAppContainer(stack)
+
 
