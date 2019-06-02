@@ -1,10 +1,11 @@
 import React, { Component } from 'react';
 import { Container, Content, Button, Text, Form, Item, Input, Header, Footer, FooterTab, Right, CheckBox, Grid, Toast } from 'native-base';
-import { login } from '../../providers/auth/auth.actions';
+import { login, RESET_REDIRECT_NOTICE } from '../../providers/auth/auth.actions';
 import { connect } from 'react-redux'
 import { Image, TouchableOpacity, View } from 'react-native';
 import styles from '../../screens/auth/styles'
 import Spinner from '../../../components/Spinner';
+import { store } from '../../../setup/store';
 class Login extends Component {
   constructor(props) {
     super(props)
@@ -26,6 +27,16 @@ class Login extends Component {
       await login(requestData);
       console.log(this.props.user);
       if (this.props.user.isAuthenticated) {
+        if(this.props.user.needToRedirect === true) {
+          let redirectNoticeData = this.props.user.redirectNotice;
+          this.props.navigation.navigate(redirectNoticeData.routeName,redirectNoticeData.stateParams);
+          store.dispatch({
+            type: RESET_REDIRECT_NOTICE
+          })
+          return
+        }
+
+
         this.props.navigation.navigate('Home');
       } else {
         Toast.show({

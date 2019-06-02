@@ -8,6 +8,7 @@ import { StyleSheet, Image, AsyncStorage, FlatList } from 'react-native';
 import StarRating from 'react-native-star-rating';
 
 import { userReviews } from '../../providers/profile/profile.action';
+import { hasLoggedIn } from '../../providers/auth/auth.actions';
 import { formatDate ,addTimeUnit,dateDiff,subTimeUnit} from '../../../setup/helpers';
 import { Col, Row, Grid } from 'react-native-easy-grid';
 import SegmentedControlTab from "react-native-segmented-control-tab";
@@ -27,25 +28,19 @@ class MyAppoinmentList extends Component {
             pastData: [],
             userId: null,
             reviewData:[],
-            
         }
-        
     }
    
     async componentDidMount() {
+        const isLoggedIn = await hasLoggedIn(this.props);
+        if(!isLoggedIn) {
+            this.props.navigation.navigate('login');
+            return
+        }
       let userId = await AsyncStorage.getItem('userId');
-      if(userId === undefined) {
-          this.props.navigation.navigate('login');
-      }
       this.setState({ userId});
       this.upCommingAppointment(); 
-        
       this.pastAppointment();
-      
-       
-        
-        
-         
     }
     // user reviews
     //  getUserReview = async () => {

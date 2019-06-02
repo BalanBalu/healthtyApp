@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import { Container, Toast, Content, Text, Title, Header, H3, Button, Item, Card, CardItem, List, ListItem, Left, Right, Footer, Thumbnail, Body, Icon, Input, CheckBox } from 'native-base';
-import { login } from '../../providers/auth/auth.actions';
+import { hasLoggedIn } from '../../providers/auth/auth.actions';
 import { messageShow, messageHide } from '../../providers/common/common.action';
 import { Col, Row, Grid } from 'react-native-easy-grid';
 import { connect } from 'react-redux'
@@ -21,6 +21,13 @@ class PaymentReview extends Component {
 
     async componentDidMount() {
         const { navigation } = this.props;
+        console.log(navigation.state);
+        const isLoggedIn = await hasLoggedIn(this.props);
+        if(!isLoggedIn) {
+            navigation.navigate('login');
+            return
+        }
+        
         const bookSlotDetails = navigation.getParam('resultconfirmSlotDetails');
         await this.setState({ bookSlotDetails: bookSlotDetails });
     }
@@ -52,7 +59,6 @@ class PaymentReview extends Component {
     }
 
     render() {
-        const { user: { isLoading } } = this.props;
         const { bookSlotDetails } = this.state;
         return (
 
@@ -159,13 +165,7 @@ class PaymentReview extends Component {
 
 }
 
-function loginState(state) {
-
-    return {
-        user: state.user
-    }
-}
-export default connect(loginState, { login, messageShow, messageHide })(PaymentReview)
+export default PaymentReview
 
 
 const styles = StyleSheet.create({

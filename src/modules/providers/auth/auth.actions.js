@@ -10,10 +10,11 @@ export const AUTH_REQUEST = 'AUTH_API_REQUEST'
 export const AUTH_HAS_ERROR = 'AUTH_HAS_ERROR' 
 export const AUTH_RESPONSE = 'AUTH_RESPONSE' 
 export const NEW_PASSWORD = 'AUTH/NEW_PASSWORD'; 
+export const REDIRECT_NOTICE = 'AUTH/REDIRECT_NOTICE';
+export const RESET_REDIRECT_NOTICE = 'AUTH/RESET_REDIRECT_NOTICE';
 import { store } from '../../../setup/store';
-import axios from 'axios';
-  
 
+import axios from 'axios';
 
 export async function login(userCredentials, isLoading = true) {
       try {
@@ -135,15 +136,7 @@ export async function logout() {
   })
 }
 
-export const hasLoggedIn = async () => {
-  const token = await AsyncStorage.getItem('token')
-  const userId =  await AsyncStorage.getItem('userId')
-  console.log(token);
-  if(token === undefined || userId === undefined || token === null || userId === null ) {
-    return false
-  }  
-    return true;      
-}
+
 // Set user token and info locally (AsyncStorage)
 export function setUserLocally(token, userData) {
     // Set token
@@ -159,6 +152,31 @@ export function setUserLocally(token, userData) {
       details: userData
     })
        
+}
+export const hasLoggedIn = async(props) => {
+  const token = await AsyncStorage.getItem('token')
+  const userId =  await AsyncStorage.getItem('userId')
+  if(token === undefined || userId === undefined || token === null || userId === null ) {
+    if(props) {
+      let navigation = props.navigation;
+      if(navigation.state) {
+       debugger
+        let stateParams = navigation.state.params;
+        console.log(stateParams);
+        let routeName = navigation.state.routeName;
+        store.dispatch({
+          type: REDIRECT_NOTICE,
+          redirectNotice: {
+            routeName,
+            stateParams
+          }
+        })
+        AsyncStorage.setItem('redirect', 'true')
+      }
+    }
+    return false;
+  }  
+    return true;      
 }
 
 // Signup for Patient

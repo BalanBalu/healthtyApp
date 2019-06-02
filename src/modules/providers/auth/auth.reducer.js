@@ -1,6 +1,9 @@
 // App Imports
 import { isEmpty } from '../../../setup/helpers';
-import { SET_USER, LOGIN_REQUEST, LOGIN_RESPONSE, LOGOUT, LOGIN_HAS_ERROR, AUTH_REQUEST, AUTH_HAS_ERROR, AUTH_RESPONSE, OTP_CODE_GENERATED, NEW_PASSWORD } from './auth.actions';
+import { SET_USER, LOGIN_REQUEST, LOGIN_RESPONSE, LOGOUT, LOGIN_HAS_ERROR, AUTH_REQUEST, AUTH_HAS_ERROR, AUTH_RESPONSE, OTP_CODE_GENERATED, NEW_PASSWORD , 
+  REDIRECT_NOTICE, RESET_REDIRECT_NOTICE
+} from './auth.actions';
+import { statement } from '@babel/template';
 
 
 // Initial State
@@ -11,7 +14,9 @@ export const userInitialState = {
   details: null,
   success:false,
   userId:null,
-  isPasswordChanged : false
+  isPasswordChanged : false,
+  redirectNotice: {},
+  needToRedirect: false
 }
 // State
 export default (state = userInitialState, action) => {
@@ -79,7 +84,19 @@ export default (state = userInitialState, action) => {
         ...state,
         isLoading:false,   
         isPasswordChanged: action.isPasswordChanged,
-     }  
+     }
+     case REDIRECT_NOTICE:
+      return {
+        ...state,
+        redirectNotice: action.redirectNotice,
+        needToRedirect : true
+      }
+      case RESET_REDIRECT_NOTICE : 
+        return {
+          ...state,
+          redirectNotice: {},
+          needToRedirect: false
+        } 
       case LOGOUT:
       return userInitialState;
 

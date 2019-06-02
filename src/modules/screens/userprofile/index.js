@@ -25,12 +25,12 @@ class Profile extends Component {
         
       }
     async componentDidMount() {
-        const isLoggedIn = await hasLoggedIn();
+        const isLoggedIn = await hasLoggedIn(this.props);
         if(!isLoggedIn) {
             this.props.navigation.navigate('login');
-            return     
-        } else
-           this.getUserProfile();
+            return
+        }
+        this.getUserProfile();  
     }  
     onStarRatingPress(rating) {
         this.setState({
