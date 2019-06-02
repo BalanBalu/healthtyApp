@@ -293,14 +293,20 @@ class doctorSearchList extends Component {
                                         </Left>
                                         <Body>
                                             <Text style={{ fontFamily: 'OpenSans' }}>{item.doctorName}</Text>
-                                            <Item style={{ borderBottomWidth: 0 }}>
+                                            {item.slotData[this.state.selectedDate] ? 
+                                            <View>
+                                            {item.slotData[this.state.selectedDate][0].location ?   
+                                              <Item style={{ borderBottomWidth: 0 }}>
                                                 <Icon name='pin' style={{ fontSize: 20, fontFamily: 'OpenSans', color: 'gray' }}></Icon>
-                                                <Text note style={{ fontFamily: 'OpenSans' }}>
-                                                    Anna Nagar,chennai
-                                                     </Text>
-                                            </Item>
+                                                <Text note style={{ fontFamily: 'OpenSans' }}>{item.slotData[this.state.selectedDate][0].location.location.address.no_and_street}</Text>
+                                                <Text note style={{ fontFamily: 'OpenSans' }}>{item.slotData[this.state.selectedDate][0].location.location.address.city}</Text>
+                                                <Text note style={{ fontFamily: 'OpenSans' }}>{item.slotData[this.state.selectedDate][0].location.location.address.state}</Text>
+                                                  
+                                            </Item> : null } 
 
-                                            <Text note style={{ fontFamily: 'OpenSans', color: 'gray' }}>Rs 400</Text>
+                                            <Text note style={{ fontFamily: 'OpenSans', color: 'gray' }}>Rs {item.slotData[this.state.selectedDate][0].fee}</Text>
+                                            </View>
+                                         : null }
                                         </Body>
                                         <Right>
                                             <Icon name='heart' style={{ color: 'red', fontSize: 25 }}></Icon>
