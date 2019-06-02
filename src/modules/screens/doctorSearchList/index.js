@@ -299,8 +299,10 @@ class doctorSearchList extends Component {
                                              
                                             {item.slotData[this.state.selectedDate][0].location ?   
                                                  <Grid>
-                                                 <Col>
+                                                 <Col style={{width: '10%' }}>
                                                 <Icon name='pin' style={{ fontSize: 20, fontFamily: 'OpenSans', color: 'gray' }}></Icon>
+                                                </Col>
+                                                <Col style={{width: '90%'}}>
                                                 <Text note style={{ fontFamily: 'OpenSans', }}>{item.slotData[this.state.selectedDate][0].location.location.address.no_and_street}</Text>
                                                 <Text note style={{ fontFamily: 'OpenSans' }}>{item.slotData[this.state.selectedDate][0].location.location.address.city}</Text>
                                                 <Text note style={{ fontFamily: 'OpenSans' }}>{item.slotData[this.state.selectedDate][0].location.location.address.state}</Text>
