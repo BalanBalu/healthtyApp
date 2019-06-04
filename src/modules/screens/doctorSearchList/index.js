@@ -4,13 +4,13 @@ import { login } from '../../providers/auth/auth.actions';
 import { messageShow, messageHide } from '../../providers/common/common.action';
 import { Col, Row, Grid } from 'react-native-easy-grid';
 import { connect } from 'react-redux'
-import { StyleSheet, Image, TouchableOpacity, View, FlatList, AsyncStorage, TouchEvent } from 'react-native';
+import { StyleSheet, Image, TouchableOpacity, View, FlatList, AsyncStorage, TouchEvent , Dimensions} from 'react-native';
 import StarRating from 'react-native-star-rating';
 import { ScrollView, TouchableHighlight } from 'react-native-gesture-handler';
 import Modal from "react-native-modal";
 import { searchDoctorList, viewdoctorProfile, bindDoctorDetails, viewUserReviews } from '../../providers/bookappointment/bookappointment.action';
 import { formatDate, getFirstDay, getLastDay, findArrayObj } from '../../../setup/helpers';
-
+import { Loader } from '../../../components/ContentLoader'
 
 class doctorSearchList extends Component {
     constructor(props) {
@@ -34,7 +34,8 @@ class doctorSearchList extends Component {
             qualification: '',
             reviewdata: null,
             confirm_button: true,
-            getSearchedDoctorIds: null
+            getSearchedDoctorIds: null,
+            isLoading: false
         }
     }
 
@@ -49,6 +50,7 @@ class doctorSearchList extends Component {
 
     /* get the Doctor Id's list from Search Module  */
     getPatientSearchData = async () => {
+        this.setState({isLoading : true});
         const { navigation } = this.props;
         const searchedInputvalues = navigation.getParam('resultData');
         let startDate = getFirstDay(new Date(), 'week');
@@ -57,6 +59,7 @@ class doctorSearchList extends Component {
         const userId = await AsyncStorage.getItem('userId');
         let resultData = await searchDoctorList(userId, searchedInputvalues);
         // console.log(JSON.stringify(resultData+'response for searchDoctorList '));
+        this.setState({isLoading : false});
         if (resultData.success) {
             let doctorIds = resultData.data.map((element) => {
                 return element.doctor_id
@@ -68,12 +71,14 @@ class doctorSearchList extends Component {
 
     /* get the  Doctors Availablity Slots */
     getavailabilitySlots = async (getSearchedDoctorIds, startDate, endDate) => {
+        this.setState({isLoading : true});
         try {
             let totalSlotsInWeek = {
                 startDate: formatDate(startDate, 'YYYY-MM-DD'),
                 endDate: formatDate(endDate, 'YYYY-MM-DD')
             }
             let resultData = await viewdoctorProfile(getSearchedDoctorIds, totalSlotsInWeek);
+            this.setState({isLoading : false});
             if (resultData.success) {
                 this.setState({ doctorDetails: resultData.data });
             }
@@ -208,15 +213,21 @@ class doctorSearchList extends Component {
                 } />
         )
     }
-
+   
     render() {
         const  { navigation } = this.props;    
-        const { qualification,singleDataWithDoctorDetails, singleHospitalDataSlots, reviewdata } = this.state;
+        const {isLoading,  qualification,singleDataWithDoctorDetails, singleHospitalDataSlots, reviewdata } = this.state;
+        let start = 0;
         return (
 
             <Container style={styles.container}>
 
                 <Content style={styles.bodyContent}>
+                   
+        {isLoading ?    
+            <Loader style='list'/>
+       : null}
+
                     <Card>
                         <Grid>
                             <Row>

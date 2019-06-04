@@ -1,7 +1,7 @@
 import React from 'react';
 import ContentLoader from './ContentLoader';
 import { Circle, Rect } from 'react-native-svg'
-import { Dimensions } from "react-native";
+import { Dimensions, View } from "react-native";
 export const Loader = (props) => {
   if(props.style === 'profile') {
     return <ContentLoader height={Dimensions.get('window').height} width={Dimensions.get('window').width}>
@@ -21,4 +21,39 @@ export const Loader = (props) => {
          <Rect x="10" y="70" rx="5" ry="5" width="600" height={Dimensions.get('window').height} />
        </ContentLoader>
     }
+    else if(props.style === 'list') {
+      console.log(Dimensions.get('window').height);
+      let height = Dimensions.get('window').height;
+      noOfList = height / 100; 
+      let array = [];
+      for(let i = 0; i < noOfList; i++) {
+        array.push(i * 100)
+      }
+      return <ContentLoader height={Dimensions.get('window').height} 
+                            width={Dimensions.get('window').width}>
+            {array.map((start, key) => {
+            return (
+                <View key={key}>
+                <Rect x="0" y={String(start)} rx="5" ry="5" width="70" height="70" />
+                <Rect x="80" y={String(start + 17)} rx="4" ry="4" width="300" height="13" />
+                <Rect x="80" y={String(start + 40)} rx="3" ry="3" width="250" height="10" />
+                <Rect x="0" y={String(start + 80)} rx="3" ry="3" width="350" height="10" />
+                </View>
+             );
+            })}                   
+          
+          
+       </ContentLoader>
+      }
+      function fun(start) {
+       
+       return (
+         <View>
+          <Rect x="0" y={String(start)} rx="5" ry="5" width="70" height="70" />
+          <Rect x="80" y={String(start + 17)} rx="4" ry="4" width="300" height="13" />
+          <Rect x="80" y={String(start + 40)} rx="3" ry="3" width="250" height="10" />
+          <Rect x="0" y={String(start + 80)} rx="3" ry="3" width="350" height="10" />
+          </View>
+          )
+      }
 }
