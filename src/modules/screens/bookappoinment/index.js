@@ -55,29 +55,16 @@ class BookAppoinment extends Component {
 
 
   async componentDidMount() {
+    console.log("componentDidMount");
     const { navigation } = this.props;
-    let doctorId = navigation.getParam('doctorId');
+    let doctorDetails = navigation.getParam('doctorDetails');
+    console.log(JSON.stringify(doctorDetails.profile_image) + 'doctorDetails profile image')
     const slotList = navigation.getParam('slotList', []);
-    await this.setState({ doctorId, slotList });
-    // currentDate = formatDate(new Date(), 'YYYY-MM-DD');
-    // this.getAvailability(doctorId, currentDate);
-
-    await this.getdoctorDetails(doctorId);
-    await this.getUserReviews(doctorId);
+    await this.setState({ doctorDetails, slotList });
+    await this.getdoctorDetails(doctorDetails.doctorId);
+    await this.getUserReviews(doctorDetails.doctorId);
   }
 
-  /*get availability slots */
-  getAvailability = async (doctorId, currentDate) => {
-    console.log("availability")
-    let result = await viewdoctorProfile(doctorId);
-    console.log(result);
-    if (result.success) {
-      this.setState({ data: result.data[0] });
-
-      /* Change the state of slotList*/
-      this.setState({ slotList: result.data[0].slotData[formatDate(currentDate, 'YYYY-MM-DD')] });
-    }
-  }
 
   /*Get doctor Qualification details*/
   getdoctorDetails = async (doctorId) => {
@@ -101,7 +88,7 @@ class BookAppoinment extends Component {
   /* Get user Reviews*/
   getUserReviews = async (doctorId) => {
     console.log("reviews");
-    let resultReview = await viewUserReviews('doctor',doctorId);
+    let resultReview = await viewUserReviews('doctor', doctorId);
     console.log(resultReview.data);
     if (resultReview.success) {
       this.setState({ reviewdata: resultReview.data });
@@ -174,12 +161,14 @@ class BookAppoinment extends Component {
   }
 
   render() {
+    const { navigation } = this.props;
+    const doctorDetails = navigation.getParam('doctorDetails');
     const { data, qualification, doctordata } = this.state;
     return (
       <Container style={styles.container}>
 
 
-        <Content style={styles.bodyContent} contentContainerStyle={{ flex: 1 }}>
+        <Content style={styles.bodyContent} contentContainerStyle={{ flex: 0}}>
 
           <Grid style={{ backgroundColor: '#7E49C3', height: 200 }}>
 
@@ -190,7 +179,10 @@ class BookAppoinment extends Component {
               <ListItem thumbnail noBorder>
 
                 <Left>
-                  <Thumbnail square source={{ uri: 'https://static1.squarespace.com/static/582bbfef9de4bb07fe62ab18/t/5877b9ccebbd1a124af66dfe/1484241404624/Headshot+-+Circular.png?format=300w' }} style={{ height: 86, width: 86 }} />
+                  {
+                    doctorDetails.profile_image != undefined ?
+                      <Thumbnail square source={doctorDetails.profile_image.imageURL} style={{ height: 86, width: 86 }} /> :
+                      <Thumbnail square source={{ uri: 'https://static1.squarespace.com/static/582bbfef9de4bb07fe62ab18/t/5877b9ccebbd1a124af66dfe/1484241404624/Headshot+-+Circular.png?format=300w' }} style={{ height: 86, width: 86 }} />}
                 </Left>
                 <Body>
                   <Text>{doctordata.prefix ? doctordata.prefix : 'Dr. ' + doctordata.first_name}</Text>
@@ -239,24 +231,28 @@ class BookAppoinment extends Component {
             </View>
           </Card>
 
-          <MapboxGL.MapView
-            zoomLevel={this.state.zoom}
-            centerCoordinate={[13.09, 80.27]}
-            showUserLocation={true}
-            style={{ flex: 1 }}>
-            <MapboxGL.PointAnnotation
-              id='Pin'
-              coordinate={[13.09, 80.27]}>
-              <Image
-                // source={require('../../../../../assets/marker.png')}
-                style={{
-                  flex: 1,
-                  resizeMode: 'contain',
-                  width: 25,
-                  height: 25
-                }} />
-            </MapboxGL.PointAnnotation>
-          </MapboxGL.MapView>
+          <View style={{ flex: 1 }}>
+            <MapboxGL.MapView
+              ref={c => (this._map = c)}
+              zoomLevel={this.state.zoom}
+              showUserLocation={false}
+              centerCoordinate={[13.09, 80.27]}
+              style={{ flex: 1 }}
+              styleURL={MapboxGL.StyleURL.Light}>
+              <MapboxGL.PointAnnotation
+                id='Pin'
+                coordinate={[13.09, 80.27]}>
+                <Image
+                  // source={require('../../../../../assets/marker.png')}
+                  style={{
+                    flex: 1,
+                    resizeMode: 'contain',
+                    width: 25,
+                    height: 25
+                  }} />
+              </MapboxGL.PointAnnotation>
+            </MapboxGL.MapView>
+          </View>
 
 
 
