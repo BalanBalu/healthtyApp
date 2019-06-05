@@ -13,11 +13,11 @@ class AppointmentDetails extends Component {
     super(props)
 
     this.state = {
-      data: [],
+      data: {},
       appointmentId: '',
       doctorId: '',
       userId: '',
-      reviewdata: {},
+      reviewData: {},
       doctorData: {},
       experience: ''
     }
@@ -33,28 +33,27 @@ class AppointmentDetails extends Component {
     console.log(appointmentData);
     let doctorId = appointmentData.doctor_id;
     let appointmentId = appointmentData._id;
-    await this.setState({ doctorId: doctorId, appointmentId: appointmentId, userId: userId })
-    this.getAppointmentDetails(doctorId, appointmentId);
+    await this.setState({ doctorId: doctorId, appointmentId: appointmentId, userId: userId, data: appointmentData })
+    //this.getAppointmentDetails(doctorId, appointmentId);
     this.getDoctorDetails(doctorId);
-    this.getUserReviews(userId);
-
+    this.getUserReviews(doctorId);
+    console.log('state data : ' + JSON.stringify(this.state.data));
   }
-  /* get Doctor appointment */
 
-  getAppointmentDetails = async (doctorId, appointmentId) => {
-    try {
-      //let doctorId = await AsyncStorage.getItem('doctorId');
-      let result = await appointmentDetails(doctorId, appointmentId);
-      console.log(JSON.stringify(result));
-      if (result.success) {
-        this.setState({ data: result.data });
-        console.log(JSON.stringify(this.state.data));
-      }
+  /* get appointment details */
+  // getAppointmentDetails = async (doctorId, appointmentId) => {
+  //   try {      
+  //     let result = await appointmentDetails(doctorId, appointmentId);      
+  //     if (result.success) {
+  //       this.setState({ data: result.data });
+  //       console.log(JSON.stringify(this.state.data));
+  //     }
 
-    } catch (e) {
-      console.log(e);
-    }
-  }
+  //   } catch (e) {
+  //     console.log(e);
+  //   }
+  // }
+
   /* Get Doctor Details */
   getDoctorDetails = async (doctorId) => {
     try {
@@ -70,19 +69,20 @@ class AppointmentDetails extends Component {
       console.log(e);
     }
   }
+
   /* get User reviews */
-  getUserReviews = async (userId) => {
-    let resultReview = await viewUserReviews('user', userId);
+  getUserReviews = async (doctorId) => {
+    let resultReview = await viewUserReviews(doctorId);
     console.log(resultReview.data);
     if (resultReview.success) {
-      this.setState({ reviewdata: resultReview.data });
+      this.setState({ reviewData: resultReview.data });
     }
-    console.log(JSON.stringify(this.state.reviewdata));
+    console.log(JSON.stringify(JSON.stringify(this.state.reviewData)));
   }
 
 
   render() {
-    const { data, reviewdata, doctorData } = this.state;
+    const { data, reviewData, doctorData } = this.state;
 
     return (
 
@@ -102,6 +102,7 @@ class AppointmentDetails extends Component {
                 <Body>
                   <Text style={styles.customHead}>{(doctorData && doctorData.first_name) + " " + (doctorData && doctorData.last_name) + "," + (doctorData.education && doctorData.education[0].degree)}</Text>
                   <Text note style={styles.customText}>{doctorData.specialist && doctorData.specialist[0].category} </Text>
+
                   {/* <StarRating fullStarColor='#FF9500' starSize={25}
                     disabled={false}
                     maxStars={5}
@@ -128,8 +129,8 @@ class AppointmentDetails extends Component {
 
                 <Col style={{ width: 270, }}>
                   <Button block success style={{ borderRadius: 10 }}>
-                    <Text uppercase={false}>{data[0] && data[0].appointment_status == 'PROPOSED_NEW_TIME' ?
-                      'PROPOSED NEW TIME' : data[0] && data[0].appointment_status}
+                    <Text uppercase={false}>{data.appointment_status == 'PROPOSED_NEW_TIME' ?
+                      'PROPOSED NEW TIME' : data.appointment_status == 'PENDING_REVIEW' ? 'COMPLETED' : data.appointment_status}
                     </Text>
                   </Button>
 
@@ -149,7 +150,7 @@ class AppointmentDetails extends Component {
 
                 <Right>
                   <Text>
-                    {formatDate(data[0] && data[0].appointment_starttime, 'MMMM-DD-YYYY') + "   " + formatDate(data[0] && data[0].appointment_starttime, 'hh:mm A')}
+                    {formatDate(data.appointment_starttime, 'MMMM-DD-YYYY') + "   " + formatDate(data[0] && data[0].appointment_starttime, 'hh:mm A')}
                   </Text>
                 </Right>
 
@@ -172,106 +173,53 @@ class AppointmentDetails extends Component {
 
                   </Body>
                 </ListItem>
-
               </List>
-
             </Card>
 
-            {/* <Card style={{ margin: 10, padding: 10, borderRadius: 10 }}>
-           <List>
 
-              <Text style={styles.titlesText}>Review</Text>
-             
-              {data[0] && data[0].appointment_status == 'APPROVED'|| data[0] && data[0].appointment_status == 'COMPLETED'?
-       
-                <ListItem avatar>
-                  <Left>
-                    <Thumbnail square source={{ uri: 'https://static1.squarespace.com/static/582bbfef9de4bb07fe62ab18/t/5877b9ccebbd1a124af66dfe/1484241404624/Headshot+-+Circular.png?format=300w' }} style={{ height: 40, width: 40 }} />
-                  </Left>
-                  <Body>
-                    <Text>{(doctorData && doctorData.first_name) + " " + (doctorData && doctorData.last_name)}</Text>
-                    <StarRating fullStarColor='#FF9500' starSize={15} width={100} containerStyle={{ width: 100 }}
-                      disabled={false}
-                      maxStars={5}
-                      rating={reviewdata[0] && reviewdata[0].overall_rating}
-                      selectedStar={(rating) => this.onStarRatingPress(rating)}
 
-                    />
-                    <Text note style={styles.customText}>{reviewdata[0] && reviewdata[0].comments} </Text>
-                  </Body>
 
-                </ListItem> :
-                <Text style={{ alignItems: 'center' }} >No Reviews</Text>
-             <Grid>
-               <Col style={{ width: '50%' }}></Col>
-               <Col style={{ width: '50%' }}>
-
-                   <Button iconRight transparent block>
-                     <Icon name='add' />
-                     <Text style={styles.customText}></Text>
-                   </Button> 
-               </Col>
-             </Grid>
-            }
-
+            {data.appointment_status == 'PENDING_REVIEW' ?
+              <Card style={{ margin: 10, padding: 10, borderRadius: 10 }}>
+                <List>
+                  <Text style={styles.titlesText}>Review</Text>
+                  <ListItem>
+                    <Grid>
+                      <Col style={{ width: '50%' }}>
+                        <Button block success style={styles.reviewButton}>
+                          {/* <Icon name='add' /> */}
+                          <Text style={styles.customText}> ADD FEEDBACK </Text>
+                        </Button>
+                      </Col>
+                    </Grid>
+                  </ListItem>
                 </List>
+              </Card>
 
-            </Card>
-                    
-          }             */}
-
-            {/* <Button iconRight transparent block>
-      <Icon name='add' />
-      <Text style={styles.customText}>More Reviews</Text>
-    </Button> */}
-
-            <Card style={{ margin: 10, padding: 10, borderRadius: 10 }}>
-              <List>
-                <ListItem>
-                  {data[0] && data[0].appointment_status == 'PENDING_REVIEW' ?
-
-                    (<Item>
-                      <Text style={styles.titlesText}>Review</Text>
-                      <Grid>
-
-                        <Col style={{ width: '50%' }}>
-                          <Button iconRight transparent block>
-                            <Icon name='add' />
-                            <Text style={styles.customText}> ADD FEEDBACK </Text>
-                          </Button>
-                        </Col>
-                      </Grid>
-                    </Item>) :
-                    <Item>
-                      {data[0] && data[0].appointment_status == 'COMPLETED' ?
-                        <Item>
-                          <Text style={styles.titlesText}>Review</Text>
-                          <Left>
-                            <Thumbnail square source={{ uri: 'https://static1.squarespace.com/static/582bbfef9de4bb07fe62ab18/t/5877b9ccebbd1a124af66dfe/1484241404624/Headshot+-+Circular.png?format=300w' }} style={{ height: 40, width: 40 }} />
-                          </Left>
-                          <Body>
-                            <Text>{(doctorData && doctorData.first_name) + " " + (doctorData && doctorData.last_name)}</Text>
-                            <StarRating fullStarColor='#FF9500' starSize={15} width={100} containerStyle={{ width: 100 }}
-                              disabled={false}
-                              maxStars={5}
-                              rating={reviewdata[0] && reviewdata[0].overall_rating}
-                              selectedStar={(rating) => this.onStarRatingPress(rating)}
-                            />
-                            <Text note style={styles.customText}>{reviewdata[0] && reviewdata[0].comments} </Text>
-                          </Body>
-                        </Item> :
-                        null}
-                    </Item>
-                  }
-                </ListItem>
-
-              </List>
-            </Card>
-
+              : data.appointment_status == 'COMPLETED' ?
+                <Card style={{ margin: 10, padding: 10, borderRadius: 10 }}>
+                  <List>
+                    <Text style={styles.titlesText}>Review</Text>
+                    <ListItem>
+                      <Left>
+                        <Thumbnail square source={{ uri: 'https://static1.squarespace.com/static/582bbfef9de4bb07fe62ab18/t/5877b9ccebbd1a124af66dfe/1484241404624/Headshot+-+Circular.png?format=300w' }} 
+                        style={{ height: 40, width: 40, justifyContent: 'flex-end' }} />
+                      </Left>
+                      <Body>
+                        <Text>{(doctorData && doctorData.first_name) + " " + (doctorData && doctorData.last_name)}</Text>
+                        <StarRating fullStarColor='#FF9500' starSize={15} width={100} containerStyle={{ width: 50 }}
+                          disabled={false}
+                          maxStars={5}
+                          rating={reviewData[0] && reviewData[0].total_rating}
+                          selectedStar={(rating) => this.onStarRatingPress(rating)}
+                        />
+                        <Text note style={styles.customText}>{reviewData[0] && reviewData[0].comments} </Text>
+                      </Body>
+                    </ListItem>
+                  </List>
+                </Card> : null}
 
             <Card style={{ backgroundColor: '#ffffff', borderRadius: 10, padding: 10 }}>
-
-
               <Grid style={{ margin: 5 }}>
                 <Col style={{ width: '10%' }}>
                   <Icon name="apps" style={styles.customIcon}></Icon>
@@ -289,7 +237,7 @@ class AppointmentDetails extends Component {
                   <Body>
                     <Text style={styles.rowText}>
 
-                      {data[0] && data[0].disease_description}
+                      {data.disease_description}
 
                     </Text>
 
@@ -433,12 +381,23 @@ const styles = StyleSheet.create({
     marginLeft: 'auto',
     marginRight: 'auto'
   },
+  reviewButton: {
+    marginTop: 12,
+    backgroundColor: '#775DA3',
+    marginLeft: 75,
+    borderRadius: 10,
+    width: 170,
+    height: 40,
+    color: 'white',
+    fontSize: 12,
+    textAlign: 'center'
+  },
   customText:
   {
-
     fontFamily: 'OpenSans',
     color: '#000',
     fontSize: 14,
+    paddingLeft: 15,
 
   },
   subtitlesText: {
@@ -451,7 +410,7 @@ const styles = StyleSheet.create({
   titlesText: {
     fontSize: 15,
     color: '#F2889B',
-    fontFamily: 'opensans-semibold',
+    fontFamily: 'opensans-semibold'
 
   },
   customIcon:
@@ -472,8 +431,8 @@ const styles = StyleSheet.create({
   {
     fontFamily: 'OpenSans',
     color: '#000',
-    fontSize: 14,
-    margin: 5
+    fontSize: 16,
+    margin: 10
   }
 
 });
