@@ -2,9 +2,9 @@ import React, { Component } from 'react';
 import {
     Container, Content, View, Text, Title, Header, H3, Button, Item, Card,
     CardItem, List, ListItem, Left, Right, Thumbnail, Segment,
-    Body, Icon, ScrollView
+    Body, Icon
 } from 'native-base';
-import { StyleSheet, Image, AsyncStorage, FlatList } from 'react-native';
+import { StyleSheet, Image, AsyncStorage, FlatList, ScrollView } from 'react-native';
 import StarRating from 'react-native-star-rating';
 
 import { userReviews } from '../../providers/profile/profile.action';
@@ -12,9 +12,10 @@ import { hasLoggedIn } from '../../providers/auth/auth.actions';
 import { formatDate ,addTimeUnit,dateDiff,subTimeUnit} from '../../../setup/helpers';
 import { Col, Row, Grid } from 'react-native-easy-grid';
 import SegmentedControlTab from "react-native-segmented-control-tab";
+import ContentLoader from '../../../components/ContentLoader/ContentLoader';
 import { getUserAppointments,viewUserReviews } from "../../providers/bookappointment/bookappointment.action";
 import noAppointmentImage from '../../../../assets/images/noappointment.png';
-import { isLoop } from '@babel/types';
+import { Loader } from '../../../components/ContentLoader';
    
 class MyAppoinmentList extends Component {
 
@@ -29,6 +30,7 @@ class MyAppoinmentList extends Component {
             pastData: [],
             userId: '5ce50ae57ca0ee0f10f42c34',
             reviewData:[],
+            isLoading:true
         }
     }
    
@@ -42,8 +44,23 @@ class MyAppoinmentList extends Component {
     //this.setState({ userId});
       this.upCommingAppointment(); 
       this.pastAppointment();
-    
+    //  this.getUserReview();
     }
+    // user reviews
+    //  getUserReview = async () => {
+    //     try {
+    //       this.setState({ isLoading: true });
+    //       // let userId = await AsyncStorage.getItem('userId');
+    //      let result = await viewUserReviews('user',this.state.userId);
+    //       console.log('userreview appointment')
+    //       console.log(result.data);
+    //       if (result.success)
+    //         this.setState({ reviewData: result.data, isRefreshing: false});
+    //     } catch (e) {
+    //       console.log(e);
+    //     }
+    //   };
+    // my appoinment list get function in name, specialist ,date,...
     upCommingAppointment = async () => {
         try {
           this.setState({ isLoading: true });
@@ -61,38 +78,44 @@ class MyAppoinmentList extends Component {
             appointmentData.push({AppointmentResult})
                
              });
-            this.setState({ upComingData: appointmentData, isRefreshing: false,data:appointmentData});
+            this.setState({ upComingData: appointmentData, isLoading: false,data:appointmentData});
             }
+           console.log(this.state.upComingData);
         } catch (e) {
           console.log(e);
         }
       };
       pastAppointment = async () => {
         try {
-          this.setState({ isLoading: true });
         //  let userId = await AsyncStorage.getItem('userId');
           let  endData=  formatDate(subTimeUnit(new Date(), 1, "day"), "YYYY-MM-DD")
           let filters = {
             endDate: endData,
             startDate:"2018-01-01"
           };        
-           let pastAppointmentResult = await getUserAppointments(this.state.userId, filters)
-           let viewUserReviewResult = await viewUserReviews('user',this.state.userId);
-              if (pastAppointmentResult.success){
-                 pastAppointmentResult=pastAppointmentResult.data;
-                 viewUserReviewResult=viewUserReviewResult.data;
-                 let appointmentData=[];
-                  pastAppointmentResult.map(AppointmentResult=> {
-                  viewUserReviewResult.map(viewUserReview => {
-                  if(AppointmentResult._id === viewUserReview .appointment_id){
-                   appointmentData.push({AppointmentResult,ratting:viewUserReview .overall_rating})
-                 }
-                 else{
-                appointmentData.push({AppointmentResult})
-                 }
-             }); 
+          let pastAppointmentResult = await getUserAppointments(this.state.userId, filters)
+          let viewUserReviewResult = await viewUserReviews('user',this.state.userId);
+          if (pastAppointmentResult.success){
+          pastAppointmentResult=pastAppointmentResult.data;
+          viewUserReviewResult=viewUserReviewResult.data;
+
+              let appointmentData=[];
+             
+             pastAppointmentResult.map(AppointmentResult=> {
+                let condition=false;
+             viewUserReviewResult.map(viewUserReview => {
+               if(AppointmentResult._id === viewUserReview .appointment_id){
+                appointmentData.push({AppointmentResult,ratting:viewUserReview.overall_rating});
+               condition = true;              
+               }                     
+             });
+             if(condition == false){
+             appointmentData.push({AppointmentResult})
+             condition=false;
+             }
            });         
-             this.setState({ pastData: appointmentData, isRefreshing: false});
+           console.log(appointmentData)
+             this.setState({ pastData: appointmentData, isLoading: false});
         }
          } catch (e) {
            console.log(e);
@@ -110,7 +133,7 @@ class MyAppoinmentList extends Component {
     };
 
     render() {
-        const { data,selectedIndex,reviewData } = this.state;
+        const { data,selectedIndex,reviewData,isLoading } = this.state;
               
 
         return (
@@ -123,9 +146,9 @@ class MyAppoinmentList extends Component {
                     activeTabStyle={{ backgroundColor: '#775DA3', borderColor: '#775DA3' }}
                     tabStyle={{ borderColor: '#775DA3' }}
                 />
+              { isLoading==true?  <Loader style={'list'} />:
 
-
-                {data.length === 0 ?
+                data.length === 0 ?
                     <Card transparent style={{ alignItems: 'center', justifyContent: 'center', marginTop: '20%' }}>
                        
                         <Thumbnail square source={noAppointmentImage} style={{ height: 100, width: 100, marginTop: '10%' }} />
@@ -136,10 +159,12 @@ class MyAppoinmentList extends Component {
                                     <Text  >Book Now</Text>
                                 </Button>
                             </Item>
-                    </Card> : 
-
+                    </Card> :
+                    
+                 <ScrollView>
                 <Card style={{ padding: 5, borderRadius: 10, marginTop: 15 }}>                  
                 <List>
+                   
                 <FlatList
                             data={data}
                             extraData={reviewData}
@@ -182,9 +207,12 @@ class MyAppoinmentList extends Component {
                                 
                                {selectedIndex==0?
                             //    & item.ratting>0 ?
-                              null:item.ratting==undefined? <Item><Button style={styles.shareButton}>
+                              null:item.ratting==undefined? <Item>
+                                   {/* <Text style={{ fontFamily: 'OpenSans', fontSize: 12,marginLeft:10 }} >How was your visit with the office of Dr.{item.AppointmentResult.doctorInfo.first_name+' '+item.AppointmentResult.doctorInfo.last_name}? Help other patients by leaving a review</Text>  */}
+                                 <Button style={styles.shareButton}>
                               <Text >leave feed back</Text>
                           </Button>
+                         
                       </Item>:  <Item style={{ borderBottomWidth: 0,marginLeft:20 }}>
                               <Button style={styles.bookingButton}>
                                   <Text  >Book Again</Text>
@@ -193,13 +221,20 @@ class MyAppoinmentList extends Component {
                                   <Text >Share</Text>
                               </Button>
                           </Item>
+                                // :<Item> <Button style={styles.shareButton}>
+                                //         <Text >Share</Text>
+                                // </Button></Item>
                             }
+                               
+
                             </Body>
                         </ListItem>
                      }
                      keyExtractor={(item, index) => index.toString()}/>
+                     
                    </List>
                 </Card> 
+                </ScrollView>
              }
             </View>
         );
