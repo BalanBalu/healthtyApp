@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
-import { Container, Content, Text, Title, Header, Button, H3, Item, List, ListItem,Spinner, Card, Input, Left, Right, Thumbnail, Body, Icon, Footer, FooterTab } from 'native-base';
-import { login ,logout } from '../../providers/auth/auth.actions';
+import { Container, Content, Text, Title, Header, Button, H3, Item, List, ListItem, Spinner, Card, Input, Left, Right, Thumbnail, Body, Icon, Footer, FooterTab } from 'native-base';
+import { login, logout } from '../../providers/auth/auth.actions';
 import LinearGradient from 'react-native-linear-gradient';
 import { Col, Row, Grid } from 'react-native-easy-grid';
 import { connect } from 'react-redux'
@@ -14,53 +14,53 @@ class Home extends Component {
     constructor(props) {
         super(props)
         this.state = {
-            data:[],
-            isLoading:false,
-            catagary:[],
-            searchValue: null           
-         };
+            data: [],
+            isLoading: false,
+            catagary: [],
+            searchValue: null
+        };
         this.getCatagries();
     }
-     navigetToCategories() {
-        this.props.navigation.navigate('Categories',{data:this.state.data})
+    navigetToCategories() {
+        this.props.navigation.navigate('Categories', { data: this.state.data })
     }
-    
+
     doLogout() {
         logout();
         this.props.navigation.navigate('login');
     }
-   
+
     getCatagries = async () => {
         try {
-          let result = await catagries();
-         
-       
-         // if(result.success) 
+            let result = await catagries();
+
+
+            // if(result.success) 
             // setTimeout( ()=>{
-                this.setState({ data: result.data, isLoading: true })
-            let limitedData=[];
-          //  var limtedNumber
-            for(let limtedNumber=0;limtedNumber<4;limtedNumber++){
+            this.setState({ data: result.data, isLoading: true })
+            let limitedData = [];
+            //  var limtedNumber
+            for (let limtedNumber = 0; limtedNumber < 4; limtedNumber++) {
                 limitedData.push(result.data[limtedNumber]);
             }
-            this.setState({catagary:limitedData });
+            this.setState({ catagary: limitedData });
             console.log('state output is:')
             console.log(this.state.data);
             // },3000)
         } catch (e) {
-          console.log(e);
-        }  
-      }
+            console.log(e);
+        }
+    }
 
-      searchDoctorListModule = async () => {
+    searchDoctorListModule = async () => {
         try {
             let serachInputvalues = [{
                 type: 'service',
-                value: [ this.state.searchValue ]
-            }, 
+                value: [this.state.searchValue]
+            },
             {
                 type: 'symptoms',
-                value: [ this.state.searchValue ]
+                value: [this.state.searchValue]
             }]
             if (this.state.searchValue == '') {
                 alert("We can't Find the Empty Values");
@@ -73,48 +73,50 @@ class Home extends Component {
         }
     }
     navigateToCategorySearch(categoryName) {
-       let serachInputvalues = [{
+        let serachInputvalues = [{
             type: 'category',
-            value: [ categoryName ]
-        }]      
-        this.props.navigation.navigate('Doctor List', { resultData: serachInputvalues })  
+            value: [categoryName]
+        }]
+        this.props.navigation.navigate('Doctor List', { resultData: serachInputvalues })
     }
 
-      
+
     render() {
-        
+
         return (
-            
+
             <Container style={styles.container}>
-       
-       
-     
-              
 
-                   
-             
-               
-<Content style={styles.bodyContent}>     
-<Row style={{ backgroundColor: 'white' }}>
 
-<Col style={{width: '87%'}}>
-    <Input placeholder="Search Symptoms/Services"
-        style={{ color: 'gray', fontFamily: 'OpenSans', fontSize: 12 }}
-        placeholderTextColor="gray"
-        value={this.state.searchValue}
-        keyboardType={'email-address'}
-        onChangeText={searchValue => this.setState({ searchValue })}
-    />
 
-</Col>
-<Col style={{width: '13%'}}>
 
-    <Button Button transparent onPress={() => this.searchDoctorListModule()}>
-        <Icon name="ios-search" style={{ color: 'gray' }} />
-    </Button>
 
-</Col>
-</Row>
+
+
+
+                <Content keyboardShouldPersistTaps={'handled'} style={styles.bodyContent}>
+                    <Row style={{ backgroundColor: 'white' }}>
+
+                        <Col style={{ width: '87%' }}>
+                            <Input placeholder="Search Symptoms/Services"
+                                style={{ color: 'gray', fontFamily: 'OpenSans', fontSize: 12 }}
+                                placeholderTextColor="gray"
+                                value={this.state.searchValue}
+                                keyboardType={'email-address'}
+                                onChangeText={searchValue => this.setState({ searchValue })}
+                                blurOnSubmit={false}
+                                onSubmitEditing={() => { this.searchDoctorListModule();}}
+                            />
+
+                        </Col>
+                        <Col style={{ width: '13%' }}>
+
+                            <Button Button transparent onPress={() => this.searchDoctorListModule()}>
+                                <Icon name="ios-search" style={{ color: 'gray' }} />
+                            </Button>
+
+                        </Col>
+                    </Row>
                     <Card style={{ padding: 10, borderRadius: 10 }}>
 
                         <Grid>
@@ -142,30 +144,30 @@ class Home extends Component {
 
                                 <ListItem noBorder>
                                     <ScrollView horizontal={false}>
-                                    <FlatList 
-                                        horizontal={true} 
-                                        data={this.state.catagary}
-                                        extraData={this.state}
-                                        renderItem = {({item, index}) =>
-                                        <Item  style={styles.column} onPress={() => this.navigateToCategorySearch(item.category_name) }>
-                                        <Col  >
-                                            <LinearGradient
-                                                colors={['#7357A2', '#62BFE4']} style={{ borderRadius: 10, padding: 5, height:100, width: 100, marginLeft: 'auto', marginRight: 'auto' }}>
-                                                <Image 
-                                                    source={{ uri: item.imageBaseURL + '/' + item.category_id + '.png' }} style={styles.customImage} />
-                                            </LinearGradient>
+                                        <FlatList
+                                            horizontal={true}
+                                            data={this.state.catagary}
+                                            extraData={this.state}
+                                            renderItem={({ item, index }) =>
+                                                <Item style={styles.column} onPress={() => this.navigateToCategorySearch(item.category_name)}>
+                                                    <Col  >
+                                                        <LinearGradient
+                                                            colors={['#7357A2', '#62BFE4']} style={{ borderRadius: 10, padding: 5, height: 100, width: 100, marginLeft: 'auto', marginRight: 'auto' }}>
+                                                            <Image
+                                                                source={{ uri: item.imageBaseURL + '/' + item.category_id + '.png' }} style={styles.customImage} />
+                                                        </LinearGradient>
 
-                                            <Text style={styles.textcenter}>{item.category_name}</Text>
-                                            {/*<Text note style={{ textAlign: 'center' }}>100 Doctors</Text>*/}
-                                        </Col>
-                                        </Item>
-                                        }
-                                  
-                             keyExtractor={(item, index) => index.toString()}
-                                    />
+                                                        <Text style={styles.textcenter}>{item.category_name}</Text>
+                                                        {/*<Text note style={{ textAlign: 'center' }}>100 Doctors</Text>*/}
+                                                    </Col>
+                                                </Item>
+                                            }
 
-                        
-                            </ScrollView></ListItem>
+                                            keyExtractor={(item, index) => index.toString()}
+                                        />
+
+
+                                    </ScrollView></ListItem>
 
                             </Row>
 
@@ -247,7 +249,7 @@ class Home extends Component {
 
 
                 </Content>
-       
+
                 {/* <Footer>
                     <FooterTab style={{ backgroundColor: '#7E49C3' }}>
                         <Button >
@@ -298,7 +300,7 @@ const styles = StyleSheet.create({
     },
 
     column:
-    { 
+    {
         width: 'auto',
         borderRadius: 10,
         margin: 5,

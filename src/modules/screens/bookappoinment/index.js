@@ -168,7 +168,7 @@ class BookAppoinment extends Component {
       <Container style={styles.container}>
 
 
-        <Content style={styles.bodyContent} contentContainerStyle={{ flex: 0}}>
+        <Content style={styles.bodyContent} contentContainerStyle={{ flex: 0 }}>
 
           <Grid style={{ backgroundColor: '#7E49C3', height: 200 }}>
 
@@ -504,7 +504,7 @@ class BookAppoinment extends Component {
 </List>
 </Card>
  */}
-            <Button block success style={{ borderRadius: 10 }}>
+            <Button block success onPress={() => this.navigateToPaymentReview()} style={{ borderRadius: 10 }}>
               <Text uppercase={false}>Confirm Appoinment</Text>
             </Button>
 
