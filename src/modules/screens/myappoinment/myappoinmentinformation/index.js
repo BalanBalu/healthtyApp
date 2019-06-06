@@ -5,8 +5,8 @@ import { StyleSheet, AsyncStorage } from 'react-native';
 import StarRating from 'react-native-star-rating';
 import moment from 'moment';
 
-import { appointmentDetails, viewUserReviews, bindDoctorDetails } from '../../../providers/bookappointment/bookappointment.action';
-import { formatDate } from '../../../../setup/helpers';
+import { viewUserReviews, bindDoctorDetails } from '../../../providers/bookappointment/bookappointment.action';
+import { formatDate, dateDiff } from '../../../../setup/helpers';
 
 class AppointmentDetails extends Component {
   constructor(props) {
@@ -19,7 +19,8 @@ class AppointmentDetails extends Component {
       userId: '',
       reviewData: {},
       doctorData: {},
-      experience: ''
+      isLoading: false
+
     }
 
   }
@@ -57,12 +58,28 @@ class AppointmentDetails extends Component {
   /* Get Doctor Details */
   getDoctorDetails = async (doctorId) => {
     try {
+      this.setState({ isLoading: true });
       let fields = 'first_name,last_name,education,specialist,email,mobile_no,experience,hospital,language,professional_statement';
       let resultDetails = await bindDoctorDetails(doctorId, fields);
       console.log(JSON.stringify(resultDetails));
       if (resultDetails.success) {
-        await this.setState({ doctorData: resultDetails.data });
+        await this.setState({ doctorData: resultDetails.data, isLoading: false });
         console.log(JSON.stringify(this.state.doctorData));
+         let updatedDate = moment(this.state.doctorData.experience.updated_date);
+        let experienceInYear = dateDiff(updatedDate, new Date(), 'year');
+        let experienceInMonth = dateDiff(updatedDate, new Date(), 'months');
+        console.log(experienceInYear + 'experience');
+        console.log(experienceInMonth + 'experience');
+        let year = (moment(this.state.doctorData.experience.year) + experienceInYear);
+        let month = (moment(this.state.doctorData.experience.month)) + experienceInMonth;
+        console.log(year + 'year');
+        console.log(month + 'month');
+        let experience = experienceInYear + year;
+        if (month >= 12) {
+          experience++;
+        }
+        console.log(experience)
+        
       }
     }
     catch (e) {
@@ -72,10 +89,11 @@ class AppointmentDetails extends Component {
 
   /* get User reviews */
   getUserReviews = async (doctorId) => {
+    this.setState({ isLoading: true });
     let resultReview = await viewUserReviews(doctorId);
     console.log(resultReview.data);
     if (resultReview.success) {
-      this.setState({ reviewData: resultReview.data });
+      this.setState({ reviewData: resultReview.data, isLoading: false });
     }
     console.log(JSON.stringify(JSON.stringify(this.state.reviewData)));
   }
@@ -97,10 +115,9 @@ class AppointmentDetails extends Component {
               <ListItem thumbnail noBorder>
                 <Left>
                   <Thumbnail square source={{ uri: 'https://static1.squarespace.com/static/582bbfef9de4bb07fe62ab18/t/5877b9ccebbd1a124af66dfe/1484241404624/Headshot+-+Circular.png?format=300w' }} style={{ height: 86, width: 86 }} />
-
                 </Left>
                 <Body>
-                  <Text style={styles.customHead}>{(doctorData && doctorData.first_name) + " " + (doctorData && doctorData.last_name) + "," + (doctorData.education && doctorData.education[0].degree)}</Text>
+                  <Text style={fontSize = 13}>{(doctorData && doctorData.first_name) + " " + (doctorData && doctorData.last_name) + "," + (doctorData.education && doctorData.education[0].degree)}</Text>
                   <Text note style={styles.customText}>{doctorData.specialist && doctorData.specialist[0].category} </Text>
 
                   {/* <StarRating fullStarColor='#FF9500' starSize={25}
@@ -118,7 +135,10 @@ class AppointmentDetails extends Component {
                   <Text style={styles.topValue}> Rs 45.. </Text>
                   <Text note style={styles.bottomValue}> Hourly Rate </Text>
                 </Col>
-
+                <Col style={{ backgroundColor: 'transparent', borderRightWidth: 0.5, borderRightColor: 'gray', marginLeft: 'auto', marginRight: 'auto' }}>
+                  <Text style={styles.topValue}>  </Text>
+                  <Text note style={styles.bottomValue}> Experience</Text>
+                </Col>
                 <Col style={{ backgroundColor: 'transparent', justifyContent: 'center', marginLeft: 'auto', marginRight: 'auto' }}>
                   <Text style={styles.topValue}>Card </Text>
                   <Text note style={styles.bottomValue}> Paid Method </Text>
@@ -162,10 +182,10 @@ class AppointmentDetails extends Component {
                     <Icon name="locate" style={{ color: '#7E49C3', fontSize: 25 }}></Icon>
                   </Left>
                   <Body>
-                    <Text style={styles.rowText}>
+                    <Text style={styles.customText}>
                       {doctorData.hospital && doctorData.hospital[0].name}
                     </Text>
-                    <Text style={styles.rowText}>
+                    <Text style={styles.customText}>
                       {(doctorData.hospital && doctorData.hospital[0].location.address.no_and_street) + "," +
                         (doctorData.hospital && doctorData.hospital[0].location.address.address_line_1) + ", " +
                         (doctorData.hospital && doctorData.hospital[0].location.address.address_line_2)}
@@ -200,21 +220,22 @@ class AppointmentDetails extends Component {
                 <Card style={{ margin: 10, padding: 10, borderRadius: 10 }}>
                   <List>
                     <Text style={styles.titlesText}>Review</Text>
-                    <ListItem>
+                    <ListItem avatar>
                       <Left>
-                        <Thumbnail square source={{ uri: 'https://static1.squarespace.com/static/582bbfef9de4bb07fe62ab18/t/5877b9ccebbd1a124af66dfe/1484241404624/Headshot+-+Circular.png?format=300w' }} 
-                        style={{ height: 40, width: 40, justifyContent: 'flex-end' }} />
+                        <Thumbnail square source={{ uri: 'https://static1.squarespace.com/static/582bbfef9de4bb07fe62ab18/t/5877b9ccebbd1a124af66dfe/1484241404624/Headshot+-+Circular.png?format=300w' }} style={{ height: 40, width: 40 }} />
                       </Left>
                       <Body>
                         <Text>{(doctorData && doctorData.first_name) + " " + (doctorData && doctorData.last_name)}</Text>
-                        <StarRating fullStarColor='#FF9500' starSize={15} width={100} containerStyle={{ width: 50 }}
+                        <StarRating fullStarColor='#FF9500' starSize={15} width={100} containerStyle={{ width: 100 }}
                           disabled={false}
                           maxStars={5}
                           rating={reviewData[0] && reviewData[0].total_rating}
                           selectedStar={(rating) => this.onStarRatingPress(rating)}
+
                         />
                         <Text note style={styles.customText}>{reviewData[0] && reviewData[0].comments} </Text>
                       </Body>
+
                     </ListItem>
                   </List>
                 </Card> : null}
@@ -263,7 +284,7 @@ class AppointmentDetails extends Component {
                 <ListItem avatar noBorder style={{ borderLeftWidth: 8, borderColor: "#F29727", marginBottom: -5 }}>
                   <Body>
                     <Text style={styles.customText}>Email</Text>
-                    <Text style={styles.rowText}>{doctorData && doctorData.email} </Text>
+                    <Text style={styles.customText}>{doctorData && doctorData.email} </Text>
                   </Body>
                 </ListItem>
 
@@ -276,37 +297,6 @@ class AppointmentDetails extends Component {
 
               </List>
             </Card>
-
-            <Card style={{ backgroundColor: '#ffffff', borderRadius: 10, padding: 10 }}>
-
-              <Grid style={{ margin: 5 }}>
-                <Col style={{ width: '10%' }}>
-                  <Icon name="apps" style={styles.customIcon}></Icon>
-                </Col>
-                <Col style={{ width: '90%', alignItems: 'flex-start' }}>
-                  <Text style={styles.titlesText}>Year of Experience</Text></Col>
-              </Grid>
-
-              <List>
-                <ListItem avatar noBorder style={{ borderLeftWidth: 8, borderColor: "#F29727", marginBottom: -5 }}>
-                  <Left >
-                  </Left>
-                  <Body>
-                    <Text style={styles.rowText}>
-
-                      {/* {doctorData.experience && doctorData.experience.year} */}
-                      {/* {yearOfExperience(doctorData.experience.year, new Date(),'years')}  */}
-                      {/* {dateDiff(doctorData.experience, new Date(),'years')} */}
-                    </Text>
-
-                  </Body>
-
-                </ListItem>
-
-              </List>
-
-            </Card>
-
 
             <Card style={{ backgroundColor: '#ffffff', borderRadius: 10, padding: 10 }}>
 
@@ -396,8 +386,8 @@ const styles = StyleSheet.create({
   {
     fontFamily: 'OpenSans',
     color: '#000',
-    fontSize: 14,
-    paddingLeft: 15,
+    fontSize: 16,
+
 
   },
   subtitlesText: {
