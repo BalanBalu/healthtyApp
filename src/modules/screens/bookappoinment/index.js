@@ -33,51 +33,38 @@ class BookAppoinment extends Component {
       appointment_button: true,
       selectedSlotIndex: -1,
       selectedSlotItem: {},
-      
+
       doctorId: '',
       reviews_length: '',
-      zoom:12, 
-      annotations: {        
-        annotationtype:[{
-        type: 'point',
-        coordinates: [11.953125,39.436192999314095]
+      zoom: 12,
+      annotations: {
+        annotationtype: [{
+          type: 'point',
+          coordinates: [11.953125, 39.436192999314095]
 
-      }, {
-        type: 'point',
-        coordinates: [18.896484375,46.37725420510028]
-          }]
-      }        
-        
+        }, {
+          type: 'point',
+          coordinates: [18.896484375, 46.37725420510028]
+        }]
+      }
+
     }
-    console.log(this.state.annotations+'annotations');
+    console.log(this.state.annotations + 'annotations');
 
   }
-  
+
 
   async componentDidMount() {
+    console.log("componentDidMount");
     const { navigation } = this.props;
-    let doctorId = navigation.getParam('doctorId');
+    let doctorDetails = navigation.getParam('doctorDetails');
+    console.log(JSON.stringify(doctorDetails.profile_image) + 'doctorDetails profile image')
     const slotList = navigation.getParam('slotList', []);
-    await this.setState({ doctorId, slotList });
-    // currentDate = formatDate(new Date(), 'YYYY-MM-DD');
-    // this.getAvailability(doctorId, currentDate);
-    
-    await this.getdoctorDetails(doctorId);
-    await this.getUserReviews(doctorId);
+    await this.setState({ doctorDetails, slotList });
+    await this.getdoctorDetails(doctorDetails.doctorId);
+    await this.getUserReviews(doctorDetails.doctorId);
   }
 
-  /*get availability slots */
-  getAvailability = async (doctorId, currentDate) => {
-    console.log("availability")
-    let result = await viewdoctorProfile(doctorId);
-    console.log(result);
-    if (result.success) {
-      this.setState({ data: result.data[0] });
-
-      /* Change the state of slotList*/
-      this.setState({ slotList: result.data[0].slotData[formatDate(currentDate, 'YYYY-MM-DD')] });
-    }
-  }
 
   /*Get doctor Qualification details*/
   getdoctorDetails = async (doctorId) => {
@@ -101,7 +88,7 @@ class BookAppoinment extends Component {
   /* Get user Reviews*/
   getUserReviews = async (doctorId) => {
     console.log("reviews");
-    let resultReview = await viewUserReviews(doctorId, 'doctor');
+    let resultReview = await viewUserReviews('doctor', doctorId);
     console.log(resultReview.data);
     if (resultReview.success) {
       this.setState({ reviewdata: resultReview.data });
@@ -121,19 +108,19 @@ class BookAppoinment extends Component {
         city: item.location.location.address.city,
         state: item.location.location.address.state,
         pin_code: item.location.location.pin_code
-      } 
+      }
     })
-    this.setState({ selectedSlotIndex: index, appointment_button: false, selectedSlotItem : item});
-   
+    this.setState({ selectedSlotIndex: index, appointment_button: false, selectedSlotItem: item });
+
   }
   navigateToPaymentReview() {
-            debugger
-            var confirmSlotDetails = {
-                doctorId: this.state.doctordata.doctor_id,
-                doctorName: this.state.doctordata.first_name + ' ' + this.state.doctordata.last_name,
-                slotData: this.state.selectedSlotItem
-            }
-            this.props.navigation.navigate('Payment Review', { resultconfirmSlotDetails: confirmSlotDetails })
+    debugger
+    var confirmSlotDetails = {
+      doctorId: this.state.doctordata.doctor_id,
+      doctorName: this.state.doctordata.first_name + ' ' + this.state.doctordata.last_name,
+      slotData: this.state.selectedSlotItem
+    }
+    this.props.navigation.navigate('Payment Review', { resultconfirmSlotDetails: confirmSlotDetails })
   }
 
   noAvailableSlots() {
@@ -174,40 +161,14 @@ class BookAppoinment extends Component {
   }
 
   render() {
+    const { navigation } = this.props;
+    const doctorDetails = navigation.getParam('doctorDetails');
     const { data, qualification, doctordata } = this.state;
-    return (      
+    return (
       <Container style={styles.container}>
-     {/* <View style={{flex:1}}>
-      <MapboxGL.MapView
-       ref={c => (this._map = c)}
-      zoomLevel={this.state.zoom}
-      showUserLocation={false}
-      centerCoordinate={[11.256, 43.770]}
-      style={{flex:1}}
-      styleURL={MapboxGL.StyleURL.Light}
-      userTrackingMode={MapboxGL.UserTrackingModes.Follow}>
-
-         <MapboxGL.PointAnnotation
-        id='Pin'
-        coordinate={[11.256, 43.770]}>
-         <Image
-                  // source={require('../../../../../assets/marker.png')}
-                style={{
-                  flex: 1,
-                  resizeMode: 'contain',
-                  width: 25,
-                  height: 25
-                }} />       
-      </MapboxGL.PointAnnotation> 
-
-      
-      
-
-      </MapboxGL.MapView>
-      </View>  */}
 
 
-        <Content style={styles.bodyContent}>
+        <Content style={styles.bodyContent} contentContainerStyle={{ flex: 0}}>
 
           <Grid style={{ backgroundColor: '#7E49C3', height: 200 }}>
 
@@ -218,7 +179,10 @@ class BookAppoinment extends Component {
               <ListItem thumbnail noBorder>
 
                 <Left>
-                  <Thumbnail square source={{ uri: 'https://static1.squarespace.com/static/582bbfef9de4bb07fe62ab18/t/5877b9ccebbd1a124af66dfe/1484241404624/Headshot+-+Circular.png?format=300w' }} style={{ height: 86, width: 86 }} />
+                  {
+                    doctorDetails.profile_image != undefined ?
+                      <Thumbnail square source={doctorDetails.profile_image.imageURL} style={{ height: 86, width: 86 }} /> :
+                      <Thumbnail square source={{ uri: 'https://static1.squarespace.com/static/582bbfef9de4bb07fe62ab18/t/5877b9ccebbd1a124af66dfe/1484241404624/Headshot+-+Circular.png?format=300w' }} style={{ height: 86, width: 86 }} />}
                 </Left>
                 <Body>
                   <Text>{doctordata.prefix ? doctordata.prefix : 'Dr. ' + doctordata.first_name}</Text>
@@ -230,7 +194,7 @@ class BookAppoinment extends Component {
 
               <Grid>
                 <Col style={{ backgroundColor: 'transparent', borderRightWidth: 0.5, borderRightColor: 'gray', marginLeft: 'auto', marginRight: 'auto' }}>
-                  <Text style={styles.topValue}>{(typeof this.state.slotList !== 'undefined') ? this.state.slotList && 'Rs.' + this.state.slotList[0].fee + '/-' : '/-'}</Text>
+                  <Text style={styles.topValue}>{(this.state.slotList && this.state.slotList.length > 0) ? 'Rs.' + this.state.slotList[0].fee + '/-' : '/-'}</Text>
                   <Text note style={styles.bottomValue}>Rate</Text>
                 </Col>
 
@@ -244,7 +208,7 @@ class BookAppoinment extends Component {
               <Grid style={{ marginTop: 5 }}>
                 <Col style={{ width: 270, }}>
 
-                  <Button disabled={this.state.appointment_button} block onPress={() => this.navigateToPaymentReview() } style={{ borderRadius: 10 }}>
+                  <Button disabled={this.state.appointment_button} block onPress={() => this.navigateToPaymentReview()} style={{ borderRadius: 10 }}>
                     <Text uppercase={false}>Book Appoinment</Text>
                   </Button>
 
@@ -267,63 +231,34 @@ class BookAppoinment extends Component {
             </View>
           </Card>
 
-
-          {/* <Grid>
-            <Row>
-              <Thumbnail square source={{ uri: 'https://static1.squarespace.com/static/582bbfef9de4bb07fe62ab18/t/5877b9ccebbd1a124af66dfe/1484241404624/Headshot+-+Circular.png?format=300w' }} style={styles.logo} />
-            </Row>
-
-            <Row>
-
-              <Grid style={{ borderBottomColor: 'gray', borderBottomWidth: 0.5, padding: 10 }}>
-                <Col style={{ width: 180 }}>
-                  <Row>
-                    <Col>
-                      <Text > Distance </Text>
-                      <Text note > 10 km</Text>
-                    </Col>
-                    <Col>
-                      <Text > Time </Text>
-                      <Text note> 13.00 am</Text>
-                    </Col>
-                  </Row>
-                </Col>
-
-                <Col>
-
-                </Col>
-
-                <Col >
-                  <Col style={{ marginLeft: 5, justifyContent: 'center' }} >
-
-                    <Icon name="paper-plane" style={{ color: 'blue', fontSize: 20, marginLeft: 'auto', marginRight: 5, borderColor: 'gray', borderWidth: 1, padding: 10, borderRadius: 50, }} />
+          <View style={{ flex: 1 }}>
+            <MapboxGL.MapView
+              ref={c => (this._map = c)}
+              zoomLevel={this.state.zoom}
+              showUserLocation={false}
+              centerCoordinate={[13.09, 80.27]}
+              style={{ flex: 1 }}
+              styleURL={MapboxGL.StyleURL.Light}>
+              <MapboxGL.PointAnnotation
+                id='Pin'
+                coordinate={[13.09, 80.27]}>
+                <Image
+                  // source={require('../../../../../assets/marker.png')}
+                  style={{
+                    flex: 1,
+                    resizeMode: 'contain',
+                    width: 25,
+                    height: 25
+                  }} />
+              </MapboxGL.PointAnnotation>
+            </MapboxGL.MapView>
+          </View>
 
 
-                  </Col>
-                </Col>
-              </Grid>
-            </Row>
 
-          </Grid> */}
+          <Card transparent style={{ margin: 20, backgroundColor: '#ecf0f1' }}>
 
-      
-
-           <Card transparent style={{ margin: 20, backgroundColor: '#ecf0f1' }}>
-           
-           
-      
-          {/* <MapboxGL.MapView
-          zoomLevel={this.state.zoom}
-          centerCoordinate={[13.09,80.27]}
-          showUserLocation={true}
-          userTrackingMode={MapboxGL.UserTrackingModes.Follow}
-          style={{ flex: 1 }}>
-          </MapboxGL.MapView> */}
-          {/* <MapboxGL.ShapeSource id='line1' shape={this.state.route}>
-          <MapboxGL.LineLayer id='linelayer1' style={{lineColor:'red'}} />
-          </MapboxGL.ShapeSource> */}
-          
-          {/* <Card>
+            <Card>
               <List>
                 <ListItem avatar>
                   <Left>
@@ -340,8 +275,8 @@ class BookAppoinment extends Component {
                   </Body>
                 </ListItem>
               </List>
-            </Card> */}
-           
+            </Card>
+
 
             <Card style={{ margin: 10, padding: 10, borderRadius: 10 }}>
               <Text style={styles.titleText}>Reviews</Text>

@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { Container, Content, Button, Text, Form, Item, Input, Header, Footer, FooterTab, Right, CheckBox, Grid, Toast } from 'native-base';
+import { Container, Content, Button, Text, Form, Item, Input, Header, Footer, FooterTab, Right, CheckBox, Grid, Toast, KeyboardAvoidingView } from 'native-base';
 import { login, RESET_REDIRECT_NOTICE } from '../../providers/auth/auth.actions';
 import { connect } from 'react-redux'
 import { Image, TouchableOpacity, View } from 'react-native';
@@ -27,9 +27,9 @@ class Login extends Component {
       await login(requestData);
       console.log(this.props.user);
       if (this.props.user.isAuthenticated) {
-        if(this.props.user.needToRedirect === true) {
+        if (this.props.user.needToRedirect === true) {
           let redirectNoticeData = this.props.user.redirectNotice;
-          this.props.navigation.navigate(redirectNoticeData.routeName,redirectNoticeData.stateParams);
+          this.props.navigation.navigate(redirectNoticeData.routeName, redirectNoticeData.stateParams);
           store.dispatch({
             type: RESET_REDIRECT_NOTICE
           })
@@ -65,6 +65,7 @@ class Login extends Component {
           <Text style={styles.welcome}>Welcome</Text>
           <Image source={{ uri: 'https://static1.squarespace.com/static/582bbfef9de4bb07fe62ab18/t/5877b9ccebbd1a124af66dfe/1484241404624/Headshot+-+Circular.png?format=300w' }} style={styles.logo} />
 
+
           <Form>
             {/* <View style={styles.errorMsg}>
               <Text style={{textAlign:'center',color:'#775DA3'}}> Invalid Credencials</Text>
@@ -82,11 +83,13 @@ class Login extends Component {
 
             <Item style={{ borderBottomWidth: 0 }}>
               <Input placeholder="Password" style={styles.transparentLabel}
-                getRef={(input) => { this.userEntry = input; }}
+                ref={(input) => { this.userEntry = input; }}
                 secureTextEntry={true}
-                returnKeyType={'go'}
+                returnKeyType={'done'}
                 value={this.state.password}
                 onChangeText={password => this.setState({ password })}
+                blurOnSubmit={false}
+                onSubmitEditing={() => { this.doLogin(); }}
               />
             </Item>
 
