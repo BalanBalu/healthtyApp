@@ -24,13 +24,17 @@ export const Loader = (props) => {
     else if(props.style === 'list') {
       console.log(Dimensions.get('window').height);
       let height = Dimensions.get('window').height;
+      let width = Dimensions.get('window').width;
       noOfList = height / 100; 
       let array = [];
       for(let i = 0; i < noOfList; i++) {
-        array.push(i * 100)
+        array.push( ( i * 100) + 35 )
       }
       return <ContentLoader height={Dimensions.get('window').height} 
                             width={Dimensions.get('window').width}>
+                <Rect x="0" y="2" rx="3" ry="3" width={width} height="10" />
+                <Rect x="0" y="20" rx="3" ry="3" width={width} height="10" />
+              
             {array.map((start, key) => {
             return (
                 <View key={key}>
