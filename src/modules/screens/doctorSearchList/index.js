@@ -10,7 +10,8 @@ import { ScrollView, TouchableHighlight } from 'react-native-gesture-handler';
 import Modal from "react-native-modal";
 import { searchDoctorList, viewdoctorProfile, bindDoctorDetails, viewUserReviews } from '../../providers/bookappointment/bookappointment.action';
 import { formatDate, getFirstDay, getLastDay, findArrayObj } from '../../../setup/helpers';
-import { Loader } from '../../../components/ContentLoader'
+import { Loader } from '../../../components/ContentLoader';
+import Spinner from '../../../components/Spinner';
 
 class doctorSearchList extends Component {
     constructor(props) {
@@ -31,11 +32,13 @@ class doctorSearchList extends Component {
             selectedDoctorHospitalLocations: [],
             confirmSlotDetails: {},
             doctordata: {},
+            searchedResultData:[],
             qualification: '',
             reviewdata: null,
             confirm_button: true,
             getSearchedDoctorIds: null,
-            isLoading: false
+            isLoading: false,
+            isSpinnerLoading:false
         }
     }
 
@@ -58,7 +61,7 @@ class doctorSearchList extends Component {
 
         const userId = await AsyncStorage.getItem('userId');
         let resultData = await searchDoctorList(userId, searchedInputvalues);
-        // console.log(JSON.stringify(resultData+'response for searchDoctorList '));
+        await this.setState({ searchedResultData: resultData.data });
         this.setState({ isLoading: false });
         if (resultData.success) {
             let doctorIds = resultData.data.map((element) => {
@@ -90,6 +93,7 @@ class doctorSearchList extends Component {
 
     /* Change the Date from Date Picker */
     onDateChanged(date) {
+        this.setState({ isLoading: true });
         let selectedDate = formatDate(date, 'YYYY-MM-DD');
         let startDate = getFirstDay(new Date(date), 'week');
         let endDate = getLastDay(new Date(date), 'week');
@@ -106,7 +110,6 @@ class doctorSearchList extends Component {
 
     /* Click the Slots from Doctor List page */
     onSlotPress = async (doctorData, selectedSlotItem, availableSlots, selectedSlotIndex) => {
-
         var selectedHospitalId = selectedSlotItem.location.hospital_id;
         let hospitalLocations = [];
         let tempHospitalArray = [];
@@ -119,34 +122,34 @@ class doctorSearchList extends Component {
             this.props.navigation.navigate('Payment Review', { resultconfirmSlotDetails: confirmSlotDetails })
         } else {
             availableSlots.forEach(element => {
-                if (!tempHospitalArray.includes(element.location.hospital_id)) {
-                    tempHospitalArray.push(element.location.hospital_id);
-                    hospitalLocations.push({
-                        _id: element.location.hospital_id,
-                        hospitalLocationData: element.location,
-                        hospitalSlotArray: [element]
-                    });
-                } else {
-                    let index = tempHospitalArray.indexOf(element.location.hospital_id);
-                    hospitalLocations[index].hospitalSlotArray.push(element)
-                }
-            })
-            await this.setState({ selectedDoctorHospitalLocations: hospitalLocations });
-            await this.onClickedHospitalName(selectedHospitalId);
-
-            await this.setState({ isModalVisible: true })
+             if (!tempHospitalArray.includes(element.location.hospital_id)) {
+                 tempHospitalArray.push(element.location.hospital_id);
+                 hospitalLocations.push({ 
+                    _id: element.location.hospital_id, 
+                    hospitalLocationData: element.location,
+                    hospitalSlotArray : [ element ] 
+                });
+             } else {
+                 let index = tempHospitalArray.indexOf(element.location.hospital_id);
+                 hospitalLocations[index].hospitalSlotArray.push(element);
+                 this.getdoctorDetails(this.state.singleDataWithDoctorDetails.doctorId);
+                 this.getUserReviews(this.state.singleDataWithDoctorDetails.doctorId);
+             }
+         })
+         await this.setState({ selectedDoctorHospitalLocations: hospitalLocations });
+         await this.onClickedHospitalName(selectedHospitalId);
+         await this.setState({ isModalVisible: true,isSpinnerLoading:false })
         }
     }
     /* Click the Hospital location and names from Book Appointment Popup page */
     onClickedHospitalName = async (hospitalId) => {
         let selectedHospitalData = findArrayObj(this.state.selectedDoctorHospitalLocations, '_id', hospitalId);
         await this.setState({ singleHospitalDataSlots: selectedHospitalData });
-        console.log(selectedHospitalData);
     }
 
     /* Get user Reviews*/
     getUserReviews = async (doctorId) => {
-        let resultReview = await viewUserReviews(doctorId, 'doctor');
+        let resultReview = await viewUserReviews('doctor',doctorId);
         if (resultReview.success) {
             this.setState({ reviewdata: resultReview.data });
         }
@@ -172,13 +175,11 @@ class doctorSearchList extends Component {
 
     /* Click the Slots oand Book Appointment on Popup page */
     onBookSlotsPress = async (item, index) => {
-        debugger
         this.setState({ confirm_button: false });
         var confirmSlotDetails = {};
-        confirmSlotDetails = this.state.singleDataWithDoctorDetails;
+        confirmSlotDetails = {...this.state.singleDataWithDoctorDetails};
         confirmSlotDetails.slotData = item;
         await this.setState({ selectedSlotIndex: index, confirmSlotDetails: confirmSlotDetails });
-        // console.log(JSON.stringify(this.state.confirmSlotDetails));
     }
 
     navigateToBookAppointmentPage(doctorAvailabilityData) {
@@ -192,6 +193,13 @@ class doctorSearchList extends Component {
         return (
             <Item style={{ borderBottomWidth: 0, justifyContent: 'center', alignItems: 'center' }}>
                 <Text style={{ fontSize: 18, justifyContent: 'center', alignItems: 'center' }} > No slots available on Today! Plss Select the next Date! </Text>
+            </Item>
+        )
+    }
+    noDoctorsAvailable(){
+        return (
+            <Item style={{ borderBottomWidth: 0, justifyContent: 'center', alignItems: 'center' }}>
+                <Text style={{ fontSize: 18, justifyContent: 'center', alignItems: 'center' }} > No Doctors available! </Text>
             </Item>
         )
     }
@@ -217,6 +225,8 @@ class doctorSearchList extends Component {
 
     render() {
         const { navigation } = this.props;
+        const { searchedResultData } = this.state;
+
         const { isLoading, qualification, singleDataWithDoctorDetails, singleHospitalDataSlots, reviewdata } = this.state;
         let start = 0;
         return (
@@ -224,6 +234,11 @@ class doctorSearchList extends Component {
             <Container style={styles.container}>
 
                 <Content style={styles.bodyContent}>
+                               
+          <Spinner color='blue'
+            visible={this.state.isSpinnerLoading}
+            textContent={'Loading...'}
+          />
 
                     {isLoading ?
                         <Loader style='list' />
@@ -285,8 +300,8 @@ class doctorSearchList extends Component {
                         </Grid>
 
                     </Card>
-
-                    <Card style={{ padding: 5, borderRadius: 10 }}>
+{searchedResultData == null ? this.noDoctorsAvailable() :
+                   <Card style={{ padding: 5, borderRadius: 10 }}>
                         <FlatList
                             data={this.state.doctorDetails}
                             extraData={this.state}
@@ -348,8 +363,9 @@ class doctorSearchList extends Component {
                                 </List>
                             } />
                     </Card>
+}
                 </Content>
-
+                        
                 <Modal isVisible={this.state.isModalVisible} >
                     <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}>
 

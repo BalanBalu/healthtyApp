@@ -7,6 +7,8 @@ import { connect } from 'react-redux'
 import { StyleSheet, Image, AsyncStorage, TouchableOpacity, View } from 'react-native';
 import { bookAppointment } from '../../providers/bookappointment/bookappointment.action';
 import { formatDate } from '../../../setup/helpers';
+import Spinner from '../../../components/Spinner';
+
 
 
 
@@ -16,6 +18,7 @@ class PaymentReview extends Component {
 
         this.state = {
             bookSlotDetails: {},
+            isLoading:false
         }
     }
 
@@ -32,6 +35,7 @@ class PaymentReview extends Component {
         await this.setState({ bookSlotDetails: bookSlotDetails });
     }
     confirmPayLater = async () => {
+        this.setState({isLoading:true})
 
         const userId = await AsyncStorage.getItem('userId');
         let bookAppointmentData = {
@@ -46,16 +50,17 @@ class PaymentReview extends Component {
             hospital_id: this.state.bookSlotDetails.slotData.location.hospital_id,
             booked_from: "Mobile"
         }
-        //    console.log(JSON.stringify(bookAppointmentData) + 'response for bookAppointmentData ');
         let resultData = await bookAppointment(bookAppointmentData);
         // console.log(JSON.stringify(resultData) + 'response for confirmPayLater ');
+        this.setState({isLoading:false})
         if (resultData.success) {
             Toast.show({
                 text: resultData.message,
                 type: "success",
                 duration: 3000,
             })
-            this.props.navigation.navigate('paymentsuccess');
+            this.props.navigation.navigate('paymentsuccess',{successBookSlotDetails: this.state.bookSlotDetails});
+
         } else{
             Toast.show({
                 text: resultData.message,
@@ -72,6 +77,11 @@ class PaymentReview extends Component {
             <Container style={styles.container}>
 
                 <Content style={styles.bodyContent}>
+                    
+          <Spinner color='blue'
+            visible={this.state.isLoading}
+            textContent={'Loading...'}
+          />
 
                     <Grid style={{ borderBottomWidth: 0.3, color: 'gray', padding: 10, marginLeft: 10 }}>
                         <Row>
@@ -94,7 +104,7 @@ class PaymentReview extends Component {
                             <Col style={{ width: '90%' }}>
                                 <Text note style={styles.customizedText}>Doctor</Text>
 
-                                <Text style={styles.customizedText}>{this.state.bookSlotDetails.doctorName}</Text>
+                                <Text style={styles.customizedText}>{bookSlotDetails.doctorName}</Text>
 
                             </Col>
                             <Col style={{ width: '10%' }}>
@@ -123,15 +133,13 @@ class PaymentReview extends Component {
                         <Row>
                             <Col style={{ width: '90%' }}>
                                 <Text style={styles.customizedText}>Apply Coupons</Text>
-
-                                <ListItem noBorder>
-                                    <Left>
-                                        <Image source={{ uri: 'https://img.icons8.com/color/180/visa.png' }} style={{ width: '80%', height: 50, borderRadius: 10 }} />
-                                    </Left>
-                                    {/* <Body>
-                                        <Text style={styles.customizedText}>Paypal</Text>
-                                    </Body> */}
-                                </ListItem>
+                                <Input underlineColorAndroid='gray' placeholder="Enter Your 'Coupon' Code here" style={styles.transparentLabel}
+                getRef={(input) => { this.enterCouponCode = input; }}
+                secureTextEntry={true}
+                returnKeyType={'go'}
+                value={this.state.password}
+                onChangeText={enterCouponCode => this.setState({ enterCouponCode })}
+              />
                             </Col>
                             <Col style={{ width: '10%' }}>
                                 <Icon name="ios-arrow-dropright" />
@@ -147,16 +155,6 @@ class PaymentReview extends Component {
                             </Col>
                             <Col style={{ width: '90%' }}>
                                 <Text style={styles.customizedText}>{bookSlotDetails.slotData && bookSlotDetails.slotData.fee}</Text>
-                            </Col>
-                        </Row>
-
-                        <Row style={{ marginTop: 10 }}>
-                            <Col style={{ width: '90%' }}>
-                                <Text style={styles.customizedText}>Total fee</Text>
-                            </Col>
-                            <Col style={{ width: '10%' }}>
-                                <Text style={styles.customizedText}>300</Text>
-
                             </Col>
                         </Row>
                     </Grid>

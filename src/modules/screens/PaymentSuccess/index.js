@@ -4,9 +4,7 @@ import { login } from '../../providers/auth/auth.actions';
 import { messageShow, messageHide } from '../../providers/common/common.action';
 import { Col, Row, Grid } from 'react-native-easy-grid';
 import { connect } from 'react-redux'
-import LinearGradient from 'react-native-linear-gradient';
 import { StyleSheet, Image, TouchableOpacity, View } from 'react-native';
-import StarRating from 'react-native-star-rating';
 
 
 class PaymentSuccess extends Component {
@@ -14,23 +12,18 @@ class PaymentSuccess extends Component {
         super(props)
 
         this.state = {
-            userEntry: '',
-            password: '',
-            loginErrorMsg: ''
+            successBookSlotDetails: {},
         }
-        this.state = {
-            starCount: 3.5
-        };
-    }
-    onStarRatingPress(rating) {
-        this.setState({
-            starCount: rating
-        });
     }
 
+    async componentDidMount() {
+        const { navigation } = this.props;
+        const successBookSlotDetails = navigation.getParam('successBookSlotDetails');
+        await this.setState({ successBookSlotDetails: successBookSlotDetails });
+    }
     render() {
         const { navigation } = this.props;
-        const { loginErrorMsg } = this.state;
+        const { successBookSlotDetails } = this.state;
         return (
 
             <Container style={styles.container}>
@@ -45,8 +38,6 @@ class PaymentSuccess extends Component {
                                 <Text note style={{ textAlign: 'center', fontFamily: 'OpenSans' }}> Thank You For Choosing Our Service And Trust Our Doctors To Take Care Your Health</Text>
                             </Col>
                         </Row>
-
-
                     </Grid>
 
                     <Card style={{ padding: 15, borderRadius: 10, marginTop: 10 }}>
@@ -54,20 +45,19 @@ class PaymentSuccess extends Component {
                             <Icon name='create' style={{ color: 'gray', fontSize: 20, }}></Icon>
                         </Right> */}
                         <Grid>
-
-
                             <Row>
-
                                 <Body>
-                                    <Image source={{ uri: 'https://static1.squarespace.com/static/582bbfef9de4bb07fe62ab18/t/5877b9ccebbd1a124af66dfe/1484241404624/Headshot+-+Circular.png?format=300w' }} style={styles.userImage} />
+                                {
+                                                successBookSlotDetails.profile_image != undefined
+                                                    ? <Thumbnail square source={successBookSlotDetails.profile_image.imageURL} style={{ height: 60, width: 60 }} />
+                                                    : <Thumbnail square source={{ uri: 'https://res.cloudinary.com/demo/image/upload/w_200,h_200,c_thumb,g_face,r_max/face_left.png' }} style={{ height: 80, width: 80 }} />
+                                            }
                                 </Body>
-
-
                             </Row>
 
                             <Row style={{ marginTop: 20 }}>
                                 <Col style={{ alignItems: 'center' }}>
-                                    <Text style={styles.customizedText}>Adam Gilchrist</Text>
+                                    <Text style={styles.customizedText}>{successBookSlotDetails.doctorName}</Text>
 
                                     <Text note style={styles.customizedText}>Accident And Emergency</Text>
                                 </Col>
@@ -77,31 +67,26 @@ class PaymentSuccess extends Component {
                                 <Col style={{ alignItems: 'center' }}>
                                     <Text style={styles.customizedText} note>Date And Time</Text>
 
-                                    <Text style={styles.customizedText}>Monday,October24</Text>
+                                    <Text style={styles.customizedText}>{successBookSlotDetails.slotData && successBookSlotDetails.slotData.slotDate}</Text>
 
-                                    <Text note style={styles.customizedText}>10.00 AM</Text>
+                                    <Text note style={styles.customizedText}>{successBookSlotDetails.slotData && successBookSlotDetails.slotData.slotTime}</Text>
                                 </Col>
 
                             </Row>
 
                             <Row style={{ marginTop: 20 }}>
                                 <Col style={{ alignItems: 'center' }}>
-
                                     <Text style={styles.customizedText}>Address</Text>
-
-                                    <Text note style={styles.customizedText}>Netaji street,</Text>
-                                    <Text style={styles.customizedText}>No 20 Annanagar, Chennai</Text>
-                                    <Text note style={styles.customizedText}>0.30 mins away</Text>
+                                    <Text style={styles.customizedText}>{successBookSlotDetails.slotData && successBookSlotDetails.slotData.location.location.address.address_line_1},</Text>
+                                    <Text note style={styles.customizedText}>{successBookSlotDetails.slotData && successBookSlotDetails.slotData.location.location.address.address_line_2},</Text>
+                                    <Text note style={styles.customizedText}>{successBookSlotDetails.slotData && successBookSlotDetails.slotData.location.location.address.no_and_street}</Text>
                                 </Col></Row>
 
                         </Grid>
 
                     </Card>
-
                     <Button block success style={{ marginTop: 10, borderRadius: 20 }} onPress={()=> navigation.navigate('Home') }><Text style={styles.customizedText}> Home </Text></Button>
-
                 </Content>
-
             </Container>
 
         )
