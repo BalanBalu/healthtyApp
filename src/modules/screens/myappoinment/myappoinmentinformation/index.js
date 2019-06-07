@@ -7,6 +7,8 @@ import moment from 'moment';
 
 import { viewUserReviews, bindDoctorDetails } from '../../../providers/bookappointment/bookappointment.action';
 import { formatDate, dateDiff } from '../../../../setup/helpers';
+import { Loader } from '../../../../components/ContentLoader'
+
 
 class AppointmentDetails extends Component {
   constructor(props) {
@@ -19,7 +21,8 @@ class AppointmentDetails extends Component {
       userId: '',
       reviewData: {},
       doctorData: {},
-      isLoading: false
+      isLoading: false,
+      yearOfExperience: ''
 
     }
 
@@ -35,25 +38,10 @@ class AppointmentDetails extends Component {
     let doctorId = appointmentData.doctor_id;
     let appointmentId = appointmentData._id;
     await this.setState({ doctorId: doctorId, appointmentId: appointmentId, userId: userId, data: appointmentData })
-    //this.getAppointmentDetails(doctorId, appointmentId);
     this.getDoctorDetails(doctorId);
-    this.getUserReviews(doctorId);
+    this.getUserReviews(appointmentId);
     console.log('state data : ' + JSON.stringify(this.state.data));
   }
-
-  /* get appointment details */
-  // getAppointmentDetails = async (doctorId, appointmentId) => {
-  //   try {      
-  //     let result = await appointmentDetails(doctorId, appointmentId);      
-  //     if (result.success) {
-  //       this.setState({ data: result.data });
-  //       console.log(JSON.stringify(this.state.data));
-  //     }
-
-  //   } catch (e) {
-  //     console.log(e);
-  //   }
-  // }
 
   /* Get Doctor Details */
   getDoctorDetails = async (doctorId) => {
@@ -79,7 +67,9 @@ class AppointmentDetails extends Component {
           experience++;
         }
         console.log(experience)
-        
+        await this.setState({ yearOfExperience: experience, isLoading: false });
+        console.log(this.state.yearOfExperience)
+
       }
     }
     catch (e) {
@@ -88,9 +78,9 @@ class AppointmentDetails extends Component {
   }
 
   /* get User reviews */
-  getUserReviews = async (doctorId) => {
+  getUserReviews = async (appointmentId) => {
     this.setState({ isLoading: true });
-    let resultReview = await viewUserReviews(doctorId);
+    let resultReview = await viewUserReviews('appointment', appointmentId);
     console.log(resultReview.data);
     if (resultReview.success) {
       this.setState({ reviewData: resultReview.data, isLoading: false });
@@ -100,13 +90,15 @@ class AppointmentDetails extends Component {
 
 
   render() {
-    const { data, reviewData, doctorData } = this.state;
+
+    const { data, reviewData, doctorData, yearOfExperience, isLoading} = this.state;
 
     return (
 
       <Container style={styles.container}>
+          { isLoading==true?  <Loader style={'list'} />:
+                
         <Content style={styles.bodyContent}>
-
           <Grid style={{ backgroundColor: '#7E49C3', height: 200 }}>
           </Grid>
 
@@ -119,13 +111,6 @@ class AppointmentDetails extends Component {
                 <Body>
                   <Text style={fontSize = 13}>{(doctorData && doctorData.first_name) + " " + (doctorData && doctorData.last_name) + "," + (doctorData.education && doctorData.education[0].degree)}</Text>
                   <Text note style={styles.customText}>{doctorData.specialist && doctorData.specialist[0].category} </Text>
-
-                  {/* <StarRating fullStarColor='#FF9500' starSize={25}
-                    disabled={false}
-                    maxStars={5}
-                    rating={reviewdata[0] && reviewdata[0].overall_rating}
-                  /> */}
-
                 </Body>
 
               </ListItem>
@@ -136,7 +121,7 @@ class AppointmentDetails extends Component {
                   <Text note style={styles.bottomValue}> Hourly Rate </Text>
                 </Col>
                 <Col style={{ backgroundColor: 'transparent', borderRightWidth: 0.5, borderRightColor: 'gray', marginLeft: 'auto', marginRight: 'auto' }}>
-                  <Text style={styles.topValue}>  </Text>
+                  <Text style={styles.topValue}> {yearOfExperience} </Text>
                   <Text note style={styles.bottomValue}> Experience</Text>
                 </Col>
                 <Col style={{ backgroundColor: 'transparent', justifyContent: 'center', marginLeft: 'auto', marginRight: 'auto' }}>
@@ -220,23 +205,39 @@ class AppointmentDetails extends Component {
                 <Card style={{ margin: 10, padding: 10, borderRadius: 10 }}>
                   <List>
                     <Text style={styles.titlesText}>Review</Text>
+                    {reviewData[0] && reviewData[0].is_anonymous == true ? 
+
                     <ListItem avatar>
                       <Left>
                         <Thumbnail square source={{ uri: 'https://static1.squarespace.com/static/582bbfef9de4bb07fe62ab18/t/5877b9ccebbd1a124af66dfe/1484241404624/Headshot+-+Circular.png?format=300w' }} style={{ height: 40, width: 40 }} />
                       </Left>
                       <Body>
-                        <Text>{(doctorData && doctorData.first_name) + " " + (doctorData && doctorData.last_name)}</Text>
-                        <StarRating fullStarColor='#FF9500' starSize={15} width={100} containerStyle={{ width: 100 }}
+                      <Text>Medflic User</Text>
+                      <StarRating fullStarColor='#FF9500' starSize={15} width={100} containerStyle={{ width: 100 }}
                           disabled={false}
                           maxStars={5}
-                          rating={reviewData[0] && reviewData[0].total_rating}
+                          rating={reviewData[0] && reviewData[0].overall_rating}
                           selectedStar={(rating) => this.onStarRatingPress(rating)}
-
                         />
                         <Text note style={styles.customText}>{reviewData[0] && reviewData[0].comments} </Text>
-                      </Body>
-
-                    </ListItem>
+                        </Body>
+                        </ListItem>
+                        :
+                        <ListItem avatar>
+                      <Left>
+                        <Thumbnail square source={{ uri: 'https://static1.squarespace.com/static/582bbfef9de4bb07fe62ab18/t/5877b9ccebbd1a124af66dfe/1484241404624/Headshot+-+Circular.png?format=300w' }} style={{ height: 40, width: 40 }} />
+                      </Left>
+                      <Body>
+                      <Text>{(reviewData[0] && reviewData[0].userInfo.first_name)+ " " + (reviewData[0] && reviewData[0].userInfo.last_name)}</Text>
+                      <StarRating fullStarColor='#FF9500' starSize={15} width={100} containerStyle={{ width: 100 }}
+                          disabled={false}
+                          maxStars={5}
+                          rating={reviewData[0] && reviewData[0].overall_rating}
+                          selectedStar={(rating) => this.onStarRatingPress(rating)}
+                        />
+                        <Text note style={styles.customText}>{reviewData[0] && reviewData[0].comments} </Text>
+                        </Body>
+                        </ListItem>}
                   </List>
                 </Card> : null}
 
@@ -322,6 +323,7 @@ class AppointmentDetails extends Component {
             </Card>
           </Card>
         </Content>
+        }
       </Container>
 
     )
@@ -387,7 +389,8 @@ const styles = StyleSheet.create({
     fontFamily: 'OpenSans',
     color: '#000',
     fontSize: 16,
-
+    // alignItems: 'flex-start'
+    // marginRight: 45 
 
   },
   subtitlesText: {
