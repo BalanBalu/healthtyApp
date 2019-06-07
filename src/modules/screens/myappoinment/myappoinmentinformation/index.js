@@ -1,86 +1,106 @@
 import React, { Component } from 'react';
-import { Container, Content, Text, Title, Header, H3, Button, Item, Card, CardItem, List, ListItem, Left, Right, Thumbnail, Body, Icon, locations, ScrollView, ProgressBar } from 'native-base';
+import { Container, Content, Text, Button, Item, Card, List, ListItem, Left, Right, Thumbnail, Body, Icon } from 'native-base';
 import { Col, Row, Grid } from 'react-native-easy-grid';
-import { StyleSheet, FlatList, Image, TouchableOpacity, View, AsyncStorage } from 'react-native';
+import { StyleSheet, AsyncStorage } from 'react-native';
 import StarRating from 'react-native-star-rating';
-import { appointmentDetails, viewUserReviews, bindDoctorDetails } from '../../../providers/bookappointment/bookappointment.action';
-import { formatDate, addTimeUnit } from '../../../../setup/helpers';
+import moment from 'moment';
+
+import { viewUserReviews, bindDoctorDetails } from '../../../providers/bookappointment/bookappointment.action';
+import { formatDate, dateDiff } from '../../../../setup/helpers';
 
 class AppointmentDetails extends Component {
   constructor(props) {
     super(props)
 
     this.state = {
-      data: [],
+      data: {},
       appointmentId: '',
       doctorId: '',
       userId: '',
-      reviewdata: {},
-      doctorData: {}
+      reviewData: {},
+      doctorData: {},
+      isLoading: false
 
     }
 
   }
+
   async componentDidMount() {
     console.log('coming to component did mount');
     const userId = await AsyncStorage.getItem('userId');
+    console.log(userId);
     const { navigation } = this.props;
     const appointmentData = navigation.getParam('data');
     console.log(appointmentData);
     let doctorId = appointmentData.doctor_id;
     let appointmentId = appointmentData._id;
-    await this.setState({ doctorId: doctorId, appointmentId: appointmentId, userId: userId })
-    this.getAppointmentDetails(doctorId, appointmentId);
+    await this.setState({ doctorId: doctorId, appointmentId: appointmentId, userId: userId, data: appointmentData })
+    //this.getAppointmentDetails(doctorId, appointmentId);
     this.getDoctorDetails(doctorId);
-    this.getUserReviews(userId);
-
+    this.getUserReviews(doctorId);
+    console.log('state data : ' + JSON.stringify(this.state.data));
   }
 
-  /* get Doctor appointment */
+  /* get appointment details */
+  // getAppointmentDetails = async (doctorId, appointmentId) => {
+  //   try {      
+  //     let result = await appointmentDetails(doctorId, appointmentId);      
+  //     if (result.success) {
+  //       this.setState({ data: result.data });
+  //       console.log(JSON.stringify(this.state.data));
+  //     }
 
-  getAppointmentDetails = async (doctorId, appointmentId) => {
-    try {
-      //let doctorId = await AsyncStorage.getItem('doctorId');
-      let result = await appointmentDetails(doctorId, appointmentId);
-      console.log(JSON.stringify(result) + 'result');
-      if (result.success) {
-        this.setState({ data: result.data });
-        console.log(JSON.stringify(this.state.data));
-      }
+  //   } catch (e) {
+  //     console.log(e);
+  //   }
+  // }
 
-    } catch (e) {
-      console.log(e);
-    }
-  }
   /* Get Doctor Details */
   getDoctorDetails = async (doctorId) => {
     try {
-      let fields = 'first_name,last_name,education,specialist,email,mobile_no,experience,hospital,language';
+      this.setState({ isLoading: true });
+      let fields = 'first_name,last_name,education,specialist,email,mobile_no,experience,hospital,language,professional_statement';
       let resultDetails = await bindDoctorDetails(doctorId, fields);
-      console.log(JSON.stringify(resultDetails) + 'result');
+      console.log(JSON.stringify(resultDetails));
       if (resultDetails.success) {
-        await this.setState({ doctorData: resultDetails.data });
+        await this.setState({ doctorData: resultDetails.data, isLoading: false });
         console.log(JSON.stringify(this.state.doctorData));
-
+         let updatedDate = moment(this.state.doctorData.experience.updated_date);
+        let experienceInYear = dateDiff(updatedDate, new Date(), 'year');
+        let experienceInMonth = dateDiff(updatedDate, new Date(), 'months');
+        console.log(experienceInYear + 'experience');
+        console.log(experienceInMonth + 'experience');
+        let year = (moment(this.state.doctorData.experience.year) + experienceInYear);
+        let month = (moment(this.state.doctorData.experience.month)) + experienceInMonth;
+        console.log(year + 'year');
+        console.log(month + 'month');
+        let experience = experienceInYear + year;
+        if (month >= 12) {
+          experience++;
+        }
+        console.log(experience)
+        
       }
     }
     catch (e) {
       console.log(e);
     }
   }
+
   /* get User reviews */
-  getUserReviews = async (userId) => {
-    console.log("reviews");
-    let resultReview = await viewUserReviews('user', userId);
+  getUserReviews = async (doctorId) => {
+    this.setState({ isLoading: true });
+    let resultReview = await viewUserReviews(doctorId);
     console.log(resultReview.data);
     if (resultReview.success) {
-      this.setState({ reviewdata: resultReview.data });
+      this.setState({ reviewData: resultReview.data, isLoading: false });
     }
-    console.log('reviewdata' + JSON.stringify(this.state.reviewdata));
+    console.log(JSON.stringify(JSON.stringify(this.state.reviewData)));
   }
 
+
   render() {
-    const { data, reviewdata, doctorData } = this.state;
+    const { data, reviewData, doctorData } = this.state;
 
     return (
 
@@ -88,7 +108,6 @@ class AppointmentDetails extends Component {
         <Content style={styles.bodyContent}>
 
           <Grid style={{ backgroundColor: '#7E49C3', height: 200 }}>
-
           </Grid>
 
           <Card style={styles.customCard}>
@@ -96,15 +115,16 @@ class AppointmentDetails extends Component {
               <ListItem thumbnail noBorder>
                 <Left>
                   <Thumbnail square source={{ uri: 'https://static1.squarespace.com/static/582bbfef9de4bb07fe62ab18/t/5877b9ccebbd1a124af66dfe/1484241404624/Headshot+-+Circular.png?format=300w' }} style={{ height: 86, width: 86 }} />
-
                 </Left>
                 <Body>
-                  <Text style={styles.customHead}>{(doctorData && doctorData.first_name) + " " + (doctorData && doctorData.last_name) + "," + (doctorData.education && doctorData.education[0].degree)}</Text>
-                  <StarRating fullStarColor='#FF9500' starSize={25}
+                  <Text style={fontSize = 13}>{(doctorData && doctorData.first_name) + " " + (doctorData && doctorData.last_name) + "," + (doctorData.education && doctorData.education[0].degree)}</Text>
+                  <Text note style={styles.customText}>{doctorData.specialist && doctorData.specialist[0].category} </Text>
+
+                  {/* <StarRating fullStarColor='#FF9500' starSize={25}
                     disabled={false}
                     maxStars={5}
                     rating={reviewdata[0] && reviewdata[0].overall_rating}
-                  />
+                  /> */}
 
                 </Body>
 
@@ -115,15 +135,13 @@ class AppointmentDetails extends Component {
                   <Text style={styles.topValue}> Rs 45.. </Text>
                   <Text note style={styles.bottomValue}> Hourly Rate </Text>
                 </Col>
-
                 <Col style={{ backgroundColor: 'transparent', borderRightWidth: 0.5, borderRightColor: 'gray', marginLeft: 'auto', marginRight: 'auto' }}>
-                  <Text style={styles.topValue}>{reviewdata[0] && reviewdata[0].overall_rating}  </Text>
-                  <Text note style={styles.bottomValue}> Reviews </Text>
+                  <Text style={styles.topValue}>  </Text>
+                  <Text note style={styles.bottomValue}> Experience</Text>
                 </Col>
-
                 <Col style={{ backgroundColor: 'transparent', justifyContent: 'center', marginLeft: 'auto', marginRight: 'auto' }}>
-                  <Text style={styles.topValue}>824 </Text>
-                  <Text note style={styles.bottomValue}> patients </Text>
+                  <Text style={styles.topValue}>Card </Text>
+                  <Text note style={styles.bottomValue}> Paid Method </Text>
                 </Col>
               </Grid>
 
@@ -131,206 +149,98 @@ class AppointmentDetails extends Component {
 
                 <Col style={{ width: 270, }}>
                   <Button block success style={{ borderRadius: 10 }}>
-                    <Text uppercase={false}>{data[0] && data[0].appointment_status}</Text>
+                    <Text uppercase={false}>{data.appointment_status == 'PROPOSED_NEW_TIME' ?
+                      'PROPOSED NEW TIME' : data.appointment_status == 'PENDING_REVIEW' ? 'COMPLETED' : data.appointment_status}
+                    </Text>
                   </Button>
 
                 </Col>
-                <Col style={{ marginLeft: 5, justifyContent: 'center' }} >
 
-                  <Icon name="heart" style={{ color: 'red', fontSize: 25, borderColor: 'gray', borderWidth: 1, padding: 10, borderRadius: 10, marginLeft: 'auto', marginRight: 'auto' }} />
-
-
-                </Col>
               </Grid>
+
             </List>
 
           </Card>
 
 
           <Card transparent style={{ margin: 20, backgroundColor: '#ecf0f1' }}>
-
-
-            <Card style={{ margin: 10, padding: 10, borderRadius: 10 }}>
-
-              <List>
-                <Text style={styles.titleText}>Reviews</Text>
-
-                <ListItem avatar>
-                  <Left>
-                    <Thumbnail square source={{ uri: 'https://static1.squarespace.com/static/582bbfef9de4bb07fe62ab18/t/5877b9ccebbd1a124af66dfe/1484241404624/Headshot+-+Circular.png?format=300w' }} style={{ height: 40, width: 40 }} />
-                  </Left>
-                  <Body>
-                    <Text>Kumar Pratik</Text>
-
-                    <Text note>3hrs.</Text>
-                    <StarRating fullStarColor='#FF9500' starSize={15} width={100} containerStyle={{ width: 100 }}
-                      disabled={false}
-                      maxStars={5}
-                      rating={reviewdata[0] && reviewdata[0].overall_rating}
-                      selectedStar={(rating) => this.onStarRatingPress(rating)}
-
-                    />
-                    <Text note style={styles.customText}>{reviewdata[0] && reviewdata[0].comments} </Text>
-                  </Body>
-
-                </ListItem>
-
-                <Button iconRight transparent block>
-                  <Icon name='add' />
-                  <Text style={styles.customText}>More Reviews</Text>
-                </Button>
-              </List>
-            </Card>
-
             <Card style={{ backgroundColor: '#ffffff', borderRadius: 10, padding: 10 }}>
 
               <Grid style={{ margin: 5 }}>
-                <Col style={{ width: '10%' }}>
-                  <Icon name="apps" style={styles.customIcon}></Icon>
-                </Col>
-                <Col style={{ width: '90%', alignItems: 'flex-start' }}>
-                  <Text style={styles.titlesText}>Day of the Appointment</Text></Col>
 
-              </Grid>
-
-
-              <List>
-                <ListItem avatar noBorder style={{ borderLeftWidth: 8, borderColor: "#F29727", marginBottom: -5 }}>
-                  <Left >
-                  </Left>
-                  <Body>
-                    <Text style={styles.rowText}>
-                      {formatDate(data[0] && data[0].appointment_starttime, 'MMMM-DD-YYYY') + " " + formatDate(data[0] && data[0].appointment_starttime, 'hh:mm A')}
-                    </Text>
-                    <Text style={styles.rowText}>
-                      {formatDate(data[0] && data[0].appointment_starttime, 'MMMM-DD-YYYY') + " " + formatDate(data[0] && data[0].appointment_endtime, 'hh:mm A')}
-
-                    </Text>
-                  </Body>
-                </ListItem>
-              </List>
-            </Card>
-
-            <Card style={{ backgroundColor: '#ffffff', borderRadius: 10, padding: 10 }}>
-
-              <Text style={styles.subtitlesText}>Professional Statement</Text>
-              <List>
-                <ListItem avatar noBorder style={{ borderLeftWidth: 8, borderColor: "#F29727", marginBottom: 10 }}>
-                  <Left >
-
-                  </Left>
-                  <Body>
-
-                    <Text style={styles.customText}>
-                      The medical doctor CV example below is designed to show you how to properly format and organize your CV, as well as what information to include, such as your hobbies and interests, work history, and a professional summary. Once you’ve familiarized yourself with the structure, you can draft your own tailored CV.
+                <Right>
+                  <Text>
+                    {formatDate(data.appointment_starttime, 'MMMM-DD-YYYY') + "   " + formatDate(data[0] && data[0].appointment_starttime, 'hh:mm A')}
                   </Text>
-
-                  </Body>
-
-                </ListItem>
-
-              </List>
-
-
-            </Card>
-
-            <Card style={{ backgroundColor: '#ffffff', borderRadius: 10, padding: 10 }}>
-
-
-              <Grid style={{ margin: 5 }}>
-                <Col style={{ width: '10%' }}>
-                  <Icon name="apps" style={styles.customIcon}></Icon>
-                </Col>
-                <Col style={{ width: '90%', alignItems: 'flex-start' }}>
-                  <Text style={styles.titlesText}>Email</Text></Col>
+                </Right>
 
               </Grid>
 
-
               <List>
-                <ListItem avatar noBorder style={{ borderLeftWidth: 8, borderColor: "#F29727", marginBottom: -5 }}>
-                  <Left >
+                <ListItem avatar >
+                  <Left>
+                    <Icon name="locate" style={{ color: '#7E49C3', fontSize: 25 }}></Icon>
                   </Left>
                   <Body>
-                    <Text style={styles.rowText}>
-
-                      {doctorData && doctorData.email}
-
+                    <Text style={styles.customText}>
+                      {doctorData.hospital && doctorData.hospital[0].name}
+                    </Text>
+                    <Text style={styles.customText}>
+                      {(doctorData.hospital && doctorData.hospital[0].location.address.no_and_street) + "," +
+                        (doctorData.hospital && doctorData.hospital[0].location.address.address_line_1) + ", " +
+                        (doctorData.hospital && doctorData.hospital[0].location.address.address_line_2)}
                     </Text>
 
                   </Body>
-
                 </ListItem>
-
               </List>
-
-            </Card>
-            <Card style={{ backgroundColor: '#ffffff', borderRadius: 10, padding: 10 }}>
-
-
-              <Grid style={{ margin: 5 }}>
-                <Col style={{ width: '10%' }}>
-                  <Icon name="apps" style={styles.customIcon}></Icon>
-                </Col>
-                <Col style={{ width: '90%', alignItems: 'flex-start' }}>
-                  <Text style={styles.titlesText}>Contact No</Text></Col>
-
-              </Grid>
-
-
-              <List>
-                <ListItem avatar noBorder style={{ borderLeftWidth: 8, borderColor: "#F29727", marginBottom: -5 }}>
-                  <Left >
-                  </Left>
-                  <Body>
-                    <Text style={styles.rowText}>
-
-                      {doctorData && doctorData.mobile_no}
-
-                    </Text>
-
-                  </Body>
-
-                </ListItem>
-
-              </List>
-
-            </Card>
-            <Card style={{ backgroundColor: '#ffffff', borderRadius: 10, padding: 10 }}>
-
-
-              <Grid style={{ margin: 5 }}>
-                <Col style={{ width: '10%' }}>
-                  <Icon name="apps" style={styles.customIcon}></Icon>
-                </Col>
-                <Col style={{ width: '90%', alignItems: 'flex-start' }}>
-                  <Text style={styles.titlesText}>Year of Experience</Text></Col>
-
-              </Grid>
-
-
-              <List>
-                <ListItem avatar noBorder style={{ borderLeftWidth: 8, borderColor: "#F29727", marginBottom: -5 }}>
-                  <Left >
-                  </Left>
-                  <Body>
-                    <Text style={styles.rowText}>
-
-                      {doctorData.experience && doctorData.experience.year}
-
-                    </Text>
-
-                  </Body>
-
-                </ListItem>
-
-              </List>
-
             </Card>
 
+
+
+
+            {data.appointment_status == 'PENDING_REVIEW' ?
+              <Card style={{ margin: 10, padding: 10, borderRadius: 10 }}>
+                <List>
+                  <Text style={styles.titlesText}>Review</Text>
+                  <ListItem>
+                    <Grid>
+                      <Col style={{ width: '50%' }}>
+                        <Button block success style={styles.reviewButton}>
+                          {/* <Icon name='add' /> */}
+                          <Text style={styles.customText}> ADD FEEDBACK </Text>
+                        </Button>
+                      </Col>
+                    </Grid>
+                  </ListItem>
+                </List>
+              </Card>
+
+              : data.appointment_status == 'COMPLETED' ?
+                <Card style={{ margin: 10, padding: 10, borderRadius: 10 }}>
+                  <List>
+                    <Text style={styles.titlesText}>Review</Text>
+                    <ListItem avatar>
+                      <Left>
+                        <Thumbnail square source={{ uri: 'https://static1.squarespace.com/static/582bbfef9de4bb07fe62ab18/t/5877b9ccebbd1a124af66dfe/1484241404624/Headshot+-+Circular.png?format=300w' }} style={{ height: 40, width: 40 }} />
+                      </Left>
+                      <Body>
+                        <Text>{(doctorData && doctorData.first_name) + " " + (doctorData && doctorData.last_name)}</Text>
+                        <StarRating fullStarColor='#FF9500' starSize={15} width={100} containerStyle={{ width: 100 }}
+                          disabled={false}
+                          maxStars={5}
+                          rating={reviewData[0] && reviewData[0].total_rating}
+                          selectedStar={(rating) => this.onStarRatingPress(rating)}
+
+                        />
+                        <Text note style={styles.customText}>{reviewData[0] && reviewData[0].comments} </Text>
+                      </Body>
+
+                    </ListItem>
+                  </List>
+                </Card> : null}
+
             <Card style={{ backgroundColor: '#ffffff', borderRadius: 10, padding: 10 }}>
-
-
               <Grid style={{ margin: 5 }}>
                 <Col style={{ width: '10%' }}>
                   <Icon name="apps" style={styles.customIcon}></Icon>
@@ -348,7 +258,7 @@ class AppointmentDetails extends Component {
                   <Body>
                     <Text style={styles.rowText}>
 
-                      {data[0] && data[0].disease_description}
+                      {data.disease_description}
 
                     </Text>
 
@@ -359,69 +269,34 @@ class AppointmentDetails extends Component {
               </List>
 
             </Card>
-
-
-
-
             <Card style={{ backgroundColor: '#ffffff', borderRadius: 10, padding: 10 }}>
 
 
-              <Grid>
+              <Grid style={{ margin: 5 }}>
                 <Col style={{ width: '10%' }}>
                   <Icon name="apps" style={styles.customIcon}></Icon>
                 </Col>
                 <Col style={{ width: '90%', alignItems: 'flex-start' }}>
-                  <Text style={styles.titlesText}>Hospital Network</Text></Col>
+                  <Text style={styles.titlesText}>Personal Details</Text></Col>
 
               </Grid>
-
-
               <List>
-                <ListItem avatar noBorder style={{ borderRightWidth: 8, borderColor: "#8C4F2B", marginBottom: 10, marginRight: 15 }}>
-                  <Left >
-                  </Left>
+                <ListItem avatar noBorder style={{ borderLeftWidth: 8, borderColor: "#F29727", marginBottom: -5 }}>
                   <Body>
-
-                    <Grid>
-                      <Col style={{ width: '40%' }}>
-                        <Text style={styles.rowText}>
-                          {doctorData.hospital && doctorData.hospital[0].name}
-
-                        </Text>
-                      </Col>
-                      <Col style={{ width: '30%' }}>
-                      </Col>
-                      <Col style={{ width: '30%' }}>
-
-                      </Col>
-                    </Grid>
-
-                    <Grid>
-                      <Col style={{ width: '90%', alignItems: 'center', borderColor: 'gray', borderWidth: 1, padding: 5, borderRadius: 5 }}>
-                        <Text style={styles.rowText}>
-                          {doctorData.hospital && doctorData.hospital[0].location.address.no_and_street}
-                        </Text>
-
-                        <Text style={styles.rowText}>
-                          {doctorData.hospital && doctorData.hospital[0].location.address.address_line_1}
-                        </Text>
-
-
-                        <Text style={styles.rowText}>
-                          {doctorData.hospital && doctorData.hospital[0].location.address.address_line_2}
-                        </Text>
-                      </Col>
-                      <Col style={{ width: '10%' }}></Col>
-                    </Grid>
-
+                    <Text style={styles.customText}>Email</Text>
+                    <Text style={styles.customText}>{doctorData && doctorData.email} </Text>
                   </Body>
+                </ListItem>
 
+                <ListItem avatar noBorder style={{ borderLeftWidth: 8, borderColor: "#F29727", marginBottom: -5 }}>
+                  <Body>
+                    <Text style={styles.customText}>Contact</Text>
+                    <Text note style={styles.customText}>{doctorData && doctorData.mobile_no} </Text>
+                  </Body>
                 </ListItem>
 
               </List>
-
             </Card>
-
 
             <Card style={{ backgroundColor: '#ffffff', borderRadius: 10, padding: 10 }}>
 
@@ -431,9 +306,7 @@ class AppointmentDetails extends Component {
                 </Col>
                 <Col style={{ width: '90%', alignItems: 'flex-start' }}>
                   <Text style={styles.titlesText}>Languages speaks By Doctor</Text></Col>
-
               </Grid>
-
 
               <List>
                 <ListItem avatar noBorder style={{ borderLeftWidth: 8, borderColor: "#F29727", marginBottom: -5 }}>
@@ -498,12 +371,23 @@ const styles = StyleSheet.create({
     marginLeft: 'auto',
     marginRight: 'auto'
   },
+  reviewButton: {
+    marginTop: 12,
+    backgroundColor: '#775DA3',
+    marginLeft: 75,
+    borderRadius: 10,
+    width: 170,
+    height: 40,
+    color: 'white',
+    fontSize: 12,
+    textAlign: 'center'
+  },
   customText:
   {
-
     fontFamily: 'OpenSans',
     color: '#000',
-    fontSize: 14,
+    fontSize: 16,
+
 
   },
   subtitlesText: {
@@ -516,7 +400,7 @@ const styles = StyleSheet.create({
   titlesText: {
     fontSize: 15,
     color: '#F2889B',
-    fontFamily: 'opensans-semibold',
+    fontFamily: 'opensans-semibold'
 
   },
   customIcon:
@@ -537,8 +421,8 @@ const styles = StyleSheet.create({
   {
     fontFamily: 'OpenSans',
     color: '#000',
-    fontSize: 14,
-    margin: 5
+    fontSize: 16,
+    margin: 10
   }
 
 });

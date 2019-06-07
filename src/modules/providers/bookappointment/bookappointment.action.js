@@ -55,9 +55,9 @@ export async function viewdoctorProfile(doctorIds, isLoading = true) {
 
 /*get userReviews*/
 
-export async function viewUserReviews(type, id, isLoading = true) {
+export async function viewUserReviews(doctorId, isLoading = true) {
   try {
-    let endPoint = 'user/reviews/' + type + '/' + id
+    let endPoint = 'user/reviewsCount/'+doctorId
     let response = await getService(endPoint);
     let respData = response.data;
     return respData;
