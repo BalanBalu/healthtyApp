@@ -60,7 +60,7 @@ class BookAppoinment extends Component {
     let doctorDetails = navigation.getParam('doctorDetails');
     console.log(JSON.stringify(doctorDetails.profile_image) + 'doctorDetails profile image')
     const slotList = navigation.getParam('slotList', []);
-    await this.setState({ doctorDetails, slotList });
+    await this.setState({ doctorDetails, slotList, doctorId: doctorDetails.doctorId });
     await this.getdoctorDetails(doctorDetails.doctorId);
     await this.getUserReviews(doctorDetails.doctorId);
   }
@@ -311,7 +311,7 @@ class BookAppoinment extends Component {
                 <Col style={{ width: '50%' }}>
 
                   {this.state.reviewdata !== null ?
-                    <Button iconRight transparent onPress={() => this.props.navigation.navigate('Reviews')}>
+                    <Button iconRight transparent onPress={() => this.props.navigation.navigate('Reviews', { doctorId : this.state.doctorId})}>
                       <Icon name='add' />
                       <Text style={styles.customText}>More Reviews</Text>
                     </Button> : null}
