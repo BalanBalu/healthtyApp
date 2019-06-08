@@ -76,6 +76,7 @@ class Login extends Component {
                 value={this.state.userEntry}
                 keyboardType={'email-address'}
                 onChangeText={userEntry => this.setState({ userEntry })}
+                autoCapitalize='none'
                 blurOnSubmit={false}
                 onSubmitEditing={() => { this.userEntry._root.focus(); }}
               />
@@ -87,6 +88,7 @@ class Login extends Component {
                 secureTextEntry={true}
                 returnKeyType={'done'}
                 value={this.state.password}
+                autoCapitalize='none'
                 onChangeText={password => this.setState({ password })}
                 blurOnSubmit={false}
                 onSubmitEditing={() => { this.doLogin(); }}
@@ -118,7 +120,7 @@ class Login extends Component {
         </Content>
         <Footer >
           <FooterTab style={{ backgroundColor: '#F2F2F2', }}>
-            <Button full onPress={() => this.props.navigation.navigate('signup')}>
+            <Button full onPress={() => this.props.navigation.navigate('userdetails')}>
               <Text uppercase={false} style={{ color: '#000', fontSize: 15, fontFamily: 'OpenSans' }}>Don't Have An Account ? SignUp</Text>
             </Button>
           </FooterTab>
