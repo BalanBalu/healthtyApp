@@ -8,6 +8,7 @@ import { StyleSheet, Image, AsyncStorage, TouchableOpacity, View } from 'react-n
 import { bookAppointment } from '../../providers/bookappointment/bookappointment.action';
 import { formatDate } from '../../../setup/helpers';
 import Spinner from '../../../components/Spinner';
+import { RenderHospitalAddress}  from '../../common';
 
 
 
@@ -93,9 +94,7 @@ class PaymentReview extends Component {
                                 <Text note style={styles.customizedText}></Text>
 
                             </Col>
-                            <Col style={{ width: '10%' }}>
-                                <Icon name="ios-arrow-dropright" />
-                            </Col>
+                           
                         </Row>
                     </Grid>
 
@@ -107,26 +106,20 @@ class PaymentReview extends Component {
                                 <Text style={styles.customizedText}>{bookSlotDetails.doctorName}</Text>
 
                             </Col>
-                            <Col style={{ width: '10%' }}>
-                                <Icon name="ios-arrow-dropright" />
-                            </Col>
+                           
                         </Row>
                     </Grid>
 
-                    <Grid style={{ borderBottomWidth: 0.3, color: '#f2f2f2', padding: 10, marginLeft: 10 }}>
-                        <Row>
-                            <Col style={{ width: '90%' }}>
-                                <Text style={styles.customizedText}>Address</Text>
-                                <Text note style={styles.customizedText}>
-                                    {bookSlotDetails.slotData && bookSlotDetails.slotData.location.location.address.no_and_street},</Text>
-                                <Text note style={styles.customizedText}>{bookSlotDetails.slotData && bookSlotDetails.slotData.location.location.address.address_line_1},</Text>
-                                <Text note style={styles.customizedText}>{bookSlotDetails.slotData && bookSlotDetails.slotData.location.location.address.address_line_2}</Text>
-                            </Col>
-                            <Col style={{ width: '10%' }}>
-                                <Icon name="ios-arrow-dropright" />
-                            </Col>
-                        </Row>
+                    {bookSlotDetails.slotData ? 
+                    <RenderHospitalAddress gridStyle={{ padding: 10, marginLeft: 10 , width: '10%'}} 
+                        textStyle={styles.customizedText} 
+                        hospitalAddress={bookSlotDetails.slotData && bookSlotDetails.slotData.location}
+                    />
+                    : null }
 
+                                                
+                    <Grid style={{ borderBottomWidth: 0.3, color: '#f2f2f2', padding: 10, marginLeft: 10 }}>
+                       
                     </Grid>
 
                     <Grid style={{ borderBottomWidth: 0.3, color: '#f2f2f2', padding: 10, marginLeft: 10 }}>
@@ -141,9 +134,7 @@ class PaymentReview extends Component {
                 onChangeText={enterCouponCode => this.setState({ enterCouponCode })}
               />
                             </Col>
-                            <Col style={{ width: '10%' }}>
-                                <Icon name="ios-arrow-dropright" />
-                            </Col>
+                           
                         </Row>
 
                     </Grid>

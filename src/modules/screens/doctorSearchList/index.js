@@ -12,6 +12,7 @@ import { searchDoctorList, viewdoctorProfile, bindDoctorDetails, viewUserReviews
 import { formatDate, getFirstDay, getLastDay, findArrayObj } from '../../../setup/helpers';
 import { Loader } from '../../../components/ContentLoader';
 import Spinner from '../../../components/Spinner';
+import { RenderHospitalAddress}  from '../../common';
 
 class doctorSearchList extends Component {
     constructor(props) {
@@ -321,26 +322,10 @@ class doctorSearchList extends Component {
                                         <Body>
                                             <Text style={{ fontFamily: 'OpenSans' }}>{item.doctorName}</Text>
                                             {item.slotData[this.state.selectedDate] ?
-
-                                                <View>
-
-                                                    {item.slotData[this.state.selectedDate][0].location ?
-                                                        <Grid>
-                                                            <Col style={{ width: '10%' }}>
-                                                                <Icon name='pin' style={{ fontSize: 20, fontFamily: 'OpenSans', color: 'gray' }}></Icon>
-                                                            </Col>
-                                                            <Col style={{ width: '90%' }}>
-                                                                <Text note style={{ fontFamily: 'OpenSans', }}>{item.slotData[this.state.selectedDate][0].location.location.address.no_and_street}</Text>
-                                                                <Text note style={{ fontFamily: 'OpenSans' }}>{item.slotData[this.state.selectedDate][0].location.location.address.city}</Text>
-                                                                <Text note style={{ fontFamily: 'OpenSans' }}>{item.slotData[this.state.selectedDate][0].location.location.address.state}</Text>
-                                                            </Col>
-                                                        </Grid>
-                                                        : null}
-
-                                                    <Text note style={{ fontFamily: 'OpenSans', color: 'gray' }}>Rs {item.slotData[this.state.selectedDate][0].fee}</Text>
-
-                                                </View>
-
+                                                 <RenderHospitalAddress gridStyle={ {width: '10%'}} textStyle={{ fontFamily: 'OpenSans' }} hospitalAddress={item.slotData[this.state.selectedDate][0].location}
+                                                 >
+                                                     </RenderHospitalAddress>    
+                                                   
                                                 : null}
 
                                         </Body>
@@ -427,14 +412,16 @@ class doctorSearchList extends Component {
                                     />
                                     <Grid>
                                         <Col>
-                                            <Text note style={{ fontFamily: 'OpenSans' }}>Address </Text>
+                                            {/* <Text note style={{ fontFamily: 'OpenSans' }}>Address </Text>
                                             <Text note style={{ fontFamily: 'OpenSans' }}>{singleHospitalDataSlots.hospitalLocationData.name}</Text>
                                             {singleHospitalDataSlots.hospitalLocationData.location ?
                                                 <View>
                                                     <Text note style={{ fontFamily: 'OpenSans' }}>{singleHospitalDataSlots.hospitalLocationData.location.address.no_and_street}</Text>
                                                     <Text note style={{ fontFamily: 'OpenSans' }}>{singleHospitalDataSlots.hospitalLocationData.location.address.city}</Text>
                                                     <Text note style={{ fontFamily: 'OpenSans' }}>{singleHospitalDataSlots.hospitalLocationData.location.address.state}</Text>
-                                                </View> : null}
+                                                </View> : null} */}
+                                                <renderHospitalAddress textStyle={{ fontFamily: 'OpenSans' }} hospitalAddress={singleHospitalDataSlots.hospitalLocationData}
+                                                />
                                         </Col>
 
                                     </Grid>
