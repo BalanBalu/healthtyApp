@@ -8,7 +8,7 @@ import moment from 'moment';
 import { viewUserReviews, bindDoctorDetails } from '../../../providers/bookappointment/bookappointment.action';
 import { formatDate, dateDiff } from '../../../../setup/helpers';
 import { Loader } from '../../../../components/ContentLoader'
-
+import { RenderHospitalAddress}  from '../../../common';
 
 class AppointmentDetails extends Component {
   constructor(props) {
@@ -163,7 +163,14 @@ class AppointmentDetails extends Component {
 
               <List>
                 <ListItem avatar >
-                  <Left>
+                {doctorData.hospital ? 
+                <RenderHospitalAddress gridStyle={{ width: '10%'}} 
+                        hospotalNameTextStyle={styles.customText}
+                        textStyle={styles.customText} 
+                        hospitalAddress={doctorData.hospital[0]}
+                  /> : null }
+                  
+                  {/* <Left>
                     <Icon name="locate" style={{ color: '#7E49C3', fontSize: 25 }}></Icon>
                   </Left>
                   <Body>
@@ -176,7 +183,7 @@ class AppointmentDetails extends Component {
                         (doctorData.hospital && doctorData.hospital[0].location.address.address_line_2)}
                     </Text>
 
-                  </Body>
+                  </Body> */}
                 </ListItem>
               </List>
             </Card>
