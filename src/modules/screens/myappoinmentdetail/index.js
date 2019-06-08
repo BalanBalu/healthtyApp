@@ -12,7 +12,7 @@ import { hasLoggedIn } from '../../providers/auth/auth.actions';
 import { formatDate ,addTimeUnit,dateDiff,subTimeUnit} from '../../../setup/helpers';
 import { Col, Row, Grid } from 'react-native-easy-grid';
 import SegmentedControlTab from "react-native-segmented-control-tab";
-import { getUserAppointments,viewUserReviews } from "../../providers/bookappointment/bookappointment.action";
+import { getUserAppointments,viewUserReviewCount } from "../../providers/bookappointment/bookappointment.action";
 import noAppointmentImage from '../../../../assets/images/noappointment.png';
    
 class MyAppoinmentList extends Component {
@@ -37,10 +37,11 @@ class MyAppoinmentList extends Component {
             this.props.navigation.navigate('login');
             return
         }
+
       let userId = await AsyncStorage.getItem('userId');
-      this.setState({ userId});
-      this.upCommingAppointment(); 
-      this.pastAppointment();
+        await this.setState({ userId});
+      this.upCommingAppointment(userId); 
+      this.pastAppointment(userId);
     }
     // user reviews
     //  getUserReview = async () => {
@@ -48,7 +49,7 @@ class MyAppoinmentList extends Component {
     //       this.setState({ isLoading: true });
     //       // let userId = await AsyncStorage.getItem('userId');
          
-    //       let result = await viewUserReviews(this.state.userId,'user');
+    //       let result = await viewUserReviewCount(this.state.userId,'user');
     //     let resultData=result.data
     //       this.setState({ isRefreshing: false, isLoading: false });
     //       console.log('userreview appointment')
@@ -63,21 +64,22 @@ class MyAppoinmentList extends Component {
     //     }
     //   };
     // my appoinment list get function in name, specialist ,date,...
-    upCommingAppointment = async () => {
+    upCommingAppointment = async (userId) => {
         try {
           this.setState({ isLoading: true });
-           let userId = await AsyncStorage.getItem('userId');
+          
           let filters = {
             startDate: formatDate(new Date() , "YYYY-MM-DD"),
             endDate: formatDate(addTimeUnit(new Date(), 1, "years"), "YYYY-MM-DD")
           };
-          let result = await getUserAppointments(this.state.userId, filters);
+        
+          let result = await getUserAppointments(userId, filters);
                result=result.data;
               
-             
+              
                let tempReview=[];
               
-              let results = await viewUserReviews(this.state.userId,'user');
+                let results = await viewUserReviewCount(userId,'user');
                   results=results.data;
                     for(let count=0;count<result.length;count++){
                         for(let counts=0;counts<result.length;counts++) {
@@ -96,16 +98,16 @@ class MyAppoinmentList extends Component {
           console.log(e);
         }
       };
-      pastAppointment = async () => {
+      pastAppointment = async (userId) => {
         try {
           this.setState({ isLoading: true });
-          let userId = await AsyncStorage.getItem('userId');
+          
           let  endData=  formatDate(subTimeUnit(new Date(), 1, "day"), "YYYY-MM-DD")
           let filters = {
             endDate: endData,
             startDate:"2018-01-01"
           };        
-          let result = await getUserAppointments(this.state.userId, filters); 
+          let result = await getUserAppointments(userId, filters); 
 
          
           this.setState({ isRefreshing: false, isLoading: false });
@@ -119,7 +121,7 @@ class MyAppoinmentList extends Component {
 
     handleIndexChange = (index) => {
         this.componentDidMount();
-        let data= (index === 0 ? this.state.upComingData:this.state.pastData)
+        let data= (index === 0 ? this.state.upComingData: this.state.pastData)
         this.setState({
             ...this.state,
             selectedIndex: index,

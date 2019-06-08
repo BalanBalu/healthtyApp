@@ -24,7 +24,9 @@ class BookAppoinment extends Component {
       qualification: '',
       data: {},
       reviewdata: null,
-      doctordata: {},
+      doctordata: {
+        prefix: null
+      },
       selectedSlotIndex:0,
       selectedSlotItem: {},
       doctorId: '',
@@ -40,20 +42,22 @@ class BookAppoinment extends Component {
     const { navigation } = this.props;
     let doctorDetails = navigation.getParam('doctorDetails');
     const slotList = navigation.getParam('slotList', []);
-    
-    await this.setState({item:{
-      name:slotList[0].location.name,
-      no_and_street: slotList[0].location.location.address.no_and_street,
-      city: slotList[0].location.location.address.city,
-      state: slotList[0].location.location.address.state,
-      pin_code: slotList[0].location.location.pin_code
-    },
-      selectedSlotItem:slotList[0], 
-      doctorDetails, slotList, 
-      doctorId: doctorDetails.doctorId 
-    });
+   if(slotList) {
+    if(slotList.length !== 0) { 
+      await this.setState({item:{
+        name:slotList[0].location.name,
+        no_and_street: slotList[0].location.location.address.no_and_street,
+        city: slotList[0].location.location.address.city,
+        state: slotList[0].location.location.address.state,
+        pin_code: slotList[0].location.location.pin_code
+      },
+        selectedSlotItem:slotList[0], 
+        doctorDetails, slotList, 
+      });
+    }
+  }
     console.log(this.state.item.name);
-   
+    await this.setState({ doctorId: doctorDetails.doctorId })
     await this.getdoctorDetails(doctorDetails.doctorId);
     await this.getUserReviews(doctorDetails.doctorId);
   }
@@ -65,10 +69,10 @@ class BookAppoinment extends Component {
     let fields = "first_name,last_name,prefix,professional_statement,language,specialist,education";
     let resultDoctorDetails = await bindDoctorDetails(doctorId, fields);
     if (resultDoctorDetails.success) {
-      this.setState({ doctordata: resultDoctorDetails.data[0] });
+      this.setState({ doctordata: resultDoctorDetails.data});
       console.log(JSON.stringify(this.state.doctordata)+'doctordata');
       /*Doctor degree*/
-      if (resultDoctorDetails.data[0].education) {
+      if (resultDoctorDetails.data.education) {
 
         let temp = this.state.doctordata.education.map((val) => {
           return val.degree;
@@ -245,8 +249,8 @@ class BookAppoinment extends Component {
 
                   </Body>
                   <Right>
-                <Button block onPress={() => this.navigateToMap(this.state.slotList)} style={{ borderRadius:7,color:'gray',paddingTop:15}}>
-                <Text uppercase={false}>View Map</Text>
+                <Button onPress={() => this.navigateToMap(this.state.slotList)} style={{ borderRadius:7,color:'gray'}}>
+                    <Text uppercase={false}>View Map</Text>
                 </Button>
 
               </Right>
