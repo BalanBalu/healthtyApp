@@ -1,41 +1,100 @@
 import React, { Component } from 'react';
-import { Container, Content, Text, Title, Header, H3, Button, Item, Card, CardItem, List, ListItem, Left, Right, Thumbnail, Body, Icon, locations, ScrollView, ProgressBar, Switch, CheckBox } from 'native-base';
+import { Container, Content, Text, Radio, CheckBox, Title, Header, H3, Button, Item, Card, CardItem, List, ListItem, Left, Right, Thumbnail, Body, Icon, locations, ScrollView, ProgressBar, Switch } from 'native-base';
 import { login } from '../../providers/auth/auth.actions';
 import { messageShow, messageHide } from '../../providers/common/common.action';
 import { Col, Row, Grid } from 'react-native-easy-grid';
 import { connect } from 'react-redux'
-import LinearGradient from 'react-native-linear-gradient';
 import { StyleSheet, Image, TouchableOpacity, View } from 'react-native';
-import StarRating from 'react-native-star-rating';
+import Autocomplete from 'react-native-autocomplete-input';
+
 
 class FilterList extends Component {
     constructor(props) {
         super(props)
 
         this.state = {
-            userEntry: '',
-            password: '',
-            loginErrorMsg: ''
+            doctordata: [],
+            languageData: [],
+            typeLanguage: '',
+            genderPreferenceCheck: [true, true, false],
+            genderSelected: ['M', 'F', 'O'],
+            genderSelect: ''
         }
-        this.state = {
-            starCount: 3.5
-        };
-    }
-    onStarRatingPress(rating) {
-        this.setState({
-            starCount: rating
-        });
     }
 
+    async componentDidMount() {
+        const { navigation } = this.props;
+        const doctordata = navigation.getParam('doctordata');
+        await this.setState({ doctordata: doctordata });
+        // console.log('doctordata'+JSON.stringify(this.state.doctordata));
+        let sampleArray = [];
+        for (var data in this.state.doctordata) {
+            console.log('entered loop')
+            if (this.state.doctordata[data].language) {
+                Array.prototype.push.apply(sampleArray, this.state.doctordata[data].language)
+
+                // sample = this.arrayUnique(sample.concat(this.state.doctordata[data]));         
+            }
+        }
+        this.setState({ languageData: sampleArray });
+    }
+
+    /* send multiple Filter values   */
+    sendFilterDatas = async () => {
+        let filterData = [{
+            type: 'language',
+            value: [this.state.typeLanguage]
+        },
+        {
+            type: "gender_preference",
+            value: this.state.genderSelect
+        }
+        ]
+         console.log('filterData'+JSON.stringify(filterData));
+        if (this.state.typeLanguage == '') {
+            alert("We can't Find the Empty data's");
+        }
+        else {
+            this.props.navigation.navigate('Doctor List', { resultData: filterData })
+        }
+    }
+    /*  Auto completed language select method  */
+    findLanguage(typeLanguage) {
+        if (typeLanguage === '') {
+            return [];
+        }
+        const { languageData } = this.state;
+        const regex = new RegExp(`${typeLanguage.trim()}`, 'i');
+        //   console.log('typeLanguage'+this.state.typeLanguage);
+        return languageData.filter(languageData => languageData.search(regex) >= 0);
+
+    }
+    /*  Select multilple Or single Genders */
+    clickedCheckBox = (genderIndex, genderSelect) => {
+        let sampleArray = this.state.genderPreferenceCheck;
+        sampleArray[genderIndex] = !this.state.genderPreferenceCheck[genderIndex];
+        this.setState({ genderPreferenceCheck: sampleArray });
+        this.setState({ genderSelect: genderSelect })
+        // console.log('genderSelect'+this.state.genderSelect);
+
+        if (sampleArray[genderIndex] == true) {
+            this.state.genderSelected.splice(genderIndex, 0, genderSelect);
+        } else {
+            let deSelectedIndex = this.state.genderSelected.indexOf(genderSelect);
+            this.state.genderSelected.splice(deSelectedIndex, 1);
+        }
+    }
+
+
     render() {
-        const { user: { isLoading } } = this.props;
-        const { loginErrorMsg } = this.state;
+        const { typeLanguage } = this.state;
+        const languageData = this.findLanguage(typeLanguage);
+        const comp = (a, b) => a.toLowerCase().trim() === b.toLowerCase().trim();
+
         return (
 
             <Container style={styles.container}>
                 <Content style={styles.bodyContent}>
-
-
 
                     <Card style={{ padding: 5 }}>
                         <CardItem header bordered>
@@ -57,9 +116,6 @@ class FilterList extends Component {
                                         </Col>
                                     </Row>
                                 </Grid>
-
-
-
                                 <Grid style={{ marginTop: 10 }}>
                                     <Row>
                                         <Col style={{ width: '60%' }}>
@@ -79,17 +135,11 @@ class FilterList extends Component {
                         </CardItem>
 
                     </Card>
-
-
-
                     <Card style={{ borderRadius: 10 }}>
                         <CardItem header bordered>
                             <Text>Dentist</Text>
                         </CardItem>
                         <CardItem style={{ paddingLeft: 0, paddingRight: 0 }}>
-
-
-
                             <Grid style={{ marginTop: 10 }}>
                                 <Row>
                                     <Col style={{ width: '50%' }}>
@@ -112,339 +162,92 @@ class FilterList extends Component {
 
                                 </Row>
 
-                                <Row>
-                                    <Col style={{ width: '50%' }}>
-                                        <ListItem noBorder>
-                                            <CheckBox checked={true} />
-                                            <Body>
-                                                <Text style={styles.customText}>Dental consultation</Text>
-                                            </Body>
-                                        </ListItem>
-
-                                    </Col>
-                                    <Col style={{ width: '50%' }}>
-                                        <ListItem noBorder>
-                                            <CheckBox checked={true} />
-                                            <Body>
-                                                <Text style={styles.customText}>Dental consultation</Text>
-                                            </Body>
-                                        </ListItem>
-                                    </Col>
-
-                                </Row>
                             </Grid>
-
-
-
-
-
 
                         </CardItem>
 
                     </Card>
-
-
-
-
-
                     <Card style={{ borderRadius: 10 }}>
                         <CardItem header bordered>
-                            <Text>Language</Text>
+                            <Text>Languages</Text>
                         </CardItem>
-                        <CardItem style={{ paddingLeft: 0, paddingRight: 0 }} >
-
-
-
-
-
-                            <Grid style={{ marginTop: 10 }}>
-                                <Row>
-                                    <Col style={{ width: '33.33%' }}>
-                                        <ListItem noBorder>
-                                            <CheckBox checked={true} />
-                                            <Body>
-                                                <Text style={styles.customText}>tamil</Text>
-                                            </Body>
-                                        </ListItem>
-
-                                    </Col>
-                                    <Col style={{ width: '33.33%' }}>
-                                        <ListItem noBorder>
-                                            <CheckBox checked={true} />
-                                            <Body>
-                                                <Text style={styles.customText}>English</Text>
-                                            </Body>
-                                        </ListItem>
-                                    </Col>
-
-                                    <Col style={{ width: '33.33%' }}>
-                                        <ListItem noBorder>
-                                            <CheckBox checked={true} />
-                                            <Body>
-                                                <Text style={styles.customText}>French</Text>
-                                            </Body>
-                                        </ListItem>
-                                    </Col>
-
-                                </Row>
-
-
-                                <Row>
-                                    <Col style={{ width: '33.33%' }}>
-                                        <ListItem noBorder>
-                                            <CheckBox checked={true} />
-                                            <Body>
-                                                <Text style={styles.customText}>tamil</Text>
-                                            </Body>
-                                        </ListItem>
-
-                                    </Col>
-                                    <Col style={{ width: '33.33%' }}>
-                                        <ListItem noBorder>
-                                            <CheckBox checked={true} />
-                                            <Body>
-                                                <Text style={styles.customText}>English</Text>
-                                            </Body>
-                                        </ListItem>
-                                    </Col>
-
-                                    <Col style={{ width: '33.33%' }}>
-                                        <ListItem noBorder>
-                                            <CheckBox checked={true} />
-                                            <Body>
-                                                <Text style={styles.customText}>French</Text>
-                                            </Body>
-                                        </ListItem>
-                                    </Col>
-
-                                </Row>
-
-                                <Row>
-                                    <Col style={{ width: '33.33%' }}>
-                                        <ListItem noBorder>
-                                            <CheckBox checked={true} />
-                                            <Body>
-                                                <Text style={styles.customText}>tamil</Text>
-                                            </Body>
-                                        </ListItem>
-
-                                    </Col>
-                                    <Col style={{ width: '33.33%' }}>
-                                        <ListItem noBorder>
-                                            <CheckBox checked={true} />
-                                            <Body>
-                                                <Text style={styles.customText}>English</Text>
-                                            </Body>
-                                        </ListItem>
-                                    </Col>
-
-                                    <Col style={{ width: '33.33%' }}>
-                                        <ListItem noBorder>
-                                            <CheckBox checked={true} />
-                                            <Body>
-                                                <Text style={styles.customText}>French</Text>
-                                            </Body>
-                                        </ListItem>
-                                    </Col>
-
-                                </Row>
-
-                            </Grid>
-
-
-
-
-
-
-                        </CardItem>
-
+                        <Autocomplete
+                            autoCapitalize="none"
+                            autoCorrect={false}
+                            containerStyle={styles.autocompleteContainer}
+                            data={languageData.length === 1 && comp(typeLanguage, languageData) ? [] : languageData}
+                            defaultValue={typeLanguage}
+                            onChangeText={enterText => this.setState({ typeLanguage: enterText })}
+                            placeholder="Enter Your Language"
+                            renderItem={({ item, i }) => (
+                                <TouchableOpacity onPress={() => this.setState({ typeLanguage: item })}>
+                                    <Text style={styles.itemText}>
+                                        {item}
+                                    </Text>
+                                </TouchableOpacity>
+                            )}
+                            keyExtractor={(item, index) => index.toString()}
+                        />
                     </Card>
-
-
-
-
-
-
-
-
                     <Card style={{ borderRadius: 10 }}>
                         <CardItem header bordered>
                             <Text>Gender</Text>
                         </CardItem>
-                        <CardItem style={{ paddingLeft: 0, paddingRight: 0 }}>
 
-
-
-                            <Grid style={{ marginTop: 10 }}>
-                                <Row>
-                                    <Col style={{ width: '80%' }}>
-                                        <ListItem noBorder>
-
-                                            <Body>
-                                                <Text style={styles.customText}>male</Text>
-                                            </Body>
-                                        </ListItem>
-
-                                    </Col>
-                                    <Col style={{ width: '20%' }}>
-                                        <ListItem noBorder>
-                                            <CheckBox checked={true} />
-
-                                        </ListItem>
-                                    </Col>
-
-
-
-                                </Row>
-
-
-                                <Row>
-                                    <Col style={{ width: '80%' }}>
-                                        <ListItem noBorder>
-                                            <Body>
-                                                <Text style={styles.customText}>Female</Text>
-                                            </Body>
-                                        </ListItem>
-
-                                    </Col>
-                                    <Col style={{ width: '20%' }}>
-                                        <ListItem noBorder>
-                                            <CheckBox checked={true} />
-
-                                        </ListItem>
-                                    </Col>
-
-
-
-                                </Row>
-
-
-                                <Row>
-                                    <Col style={{ width: '80%' }}>
-                                        <ListItem noBorder>
-                                            <Body>
-                                                <Text style={styles.customText}>Others</Text>
-                                            </Body>
-                                        </ListItem>
-
-                                    </Col>
-                                    <Col style={{ width: '20%' }}>
-                                        <ListItem noBorder>
-                                            <CheckBox checked={true} />
-
-                                        </ListItem>
-                                    </Col>
-
-
-
-                                </Row>
-
-
-                            </Grid>
-
-
-
-
-
-
-                        </CardItem>
-
+                        <Item style={{ marginTop: 10, borderBottomWidth: 0 }}>
+                            <Col>
+                                <Item style={{ marginTop: 10, borderBottomWidth: 0 }}>
+                                    <CheckBox color={"#775DA3"} selectedColor={"#775DA3"} style={{ marginLeft: 11 }}
+                                        checked={this.state.genderPreferenceCheck[0]} onPress={() => this.clickedCheckBox(0, "M")} />
+                                    <Text style={{ marginLeft: 11, color: 'gray', fontFamily: 'OpenSans' }}>Male</Text>
+                                </Item></Col>
+                            <Col>
+                                <Item style={{ marginTop: 10, borderBottomWidth: 0 }}>
+                                    <CheckBox color={"#775DA3"} selectedColor={"#775DA3"} style={{ marginLeft: 11 }}
+                                        checked={this.state.genderPreferenceCheck[1]} onPress={() => this.clickedCheckBox(1, "F")} />
+                                    <Text style={{ marginLeft: 11, color: 'gray', fontFamily: 'OpenSans' }}>Female</Text>
+                                </Item></Col>
+                            <Col>
+                                <Item style={{ marginTop: 10, borderBottomWidth: 0 }}>
+                                    <CheckBox color={"#775DA3"} selectedColor={"#775DA3"} style={{ marginLeft: 11 }}
+                                        checked={this.state.genderPreferenceCheck[2]} onPress={() => this.clickedCheckBox(2, "O")} />
+                                    <Text style={{ marginLeft: 11, color: 'gray', fontFamily: 'OpenSans' }}>Others</Text>
+                                </Item></Col>
+                        </Item>
                     </Card>
-
-
-
-
 
                     <Card style={{ borderRadius: 10 }}>
                         <CardItem header bordered>
                             <Text>Work Experience</Text>
                         </CardItem>
                         <CardItem style={{ paddingLeft: 0, paddingRight: 0 }}>
-
-
-
-
-
                             <Grid style={{ marginTop: 10 }}>
                                 <Row>
                                     <Col style={{ width: '50%' }}>
                                         <ListItem noBorder>
 
                                             <Body>
-                                                <Button style={styles.expButton}><Text style={{ fontFamily: 'opensans - regular' }}> Any</Text></Button>
+                                                <Button style={styles.expButton}><Text style={{ fontFamily: 'opensans' }}> Any</Text></Button>
                                             </Body>
                                         </ListItem>
 
                                     </Col>
                                     <Col style={{ width: '50%' }}>
                                         <ListItem noBorder>
-                                            <Button style={styles.expButton}><Text style={{ fontFamily: 'opensans - regular' }}>0-5</Text></Button>
+                                            <Button style={styles.expButton}><Text style={{ fontFamily: 'opensans' }}>0-5</Text></Button>
                                         </ListItem>
                                     </Col>
-
-
 
                                 </Row>
-
-
-                                <Row>
-                                    <Col style={{ width: '50%' }}>
-                                        <ListItem noBorder>
-
-                                            <Body>
-                                                <Button style={styles.expButton}><Text style={{ fontFamily: 'opensans - regular' }}> 5-10</Text></Button>
-                                            </Body>
-                                        </ListItem>
-
-                                    </Col>
-                                    <Col style={{ width: '50%' }}>
-                                        <ListItem noBorder>
-                                            <Button style={styles.expButton}><Text style={{ fontFamily: 'opensans - regular' }}>10-15</Text></Button>
-                                        </ListItem>
-                                    </Col>
-
-
-
-                                </Row>
-
-
-                                <Row>
-                                    <Col style={{ width: '50%' }}>
-                                        <ListItem noBorder>
-
-                                            <Body>
-                                                <Button style={styles.expButton}><Text style={{ fontFamily: 'opensans - regular' }}> 15-20</Text></Button>
-                                            </Body>
-                                        </ListItem>
-
-                                    </Col>
-                                    <Col style={{ width: '50%' }}>
-                                        <ListItem noBorder>
-                                            <Button style={styles.expButton}><Text style={{ fontFamily: 'opensans - regular' }}>20-25</Text></Button>
-                                        </ListItem>
-                                    </Col>
-
-
-
-                                </Row>
-
                             </Grid>
-
-
-
-
-
-
                         </CardItem>
 
                     </Card>
-
-
-
-
-
-
+                    <Button block success style={{ borderRadius: 17, marginLeft: 3 }} onPress={this.sendFilterDatas}>
+                        <Text uppercase={false} >Submit</Text>
+                    </Button>
                 </Content>
+
             </Container>
 
         )
@@ -466,7 +269,9 @@ const styles = StyleSheet.create({
     container:
     {
         backgroundColor: '#ffffff',
-
+        flex: 1,
+        padding: 16,
+        marginTop: 40,
     },
 
     bodyContent: {
@@ -487,7 +292,25 @@ const styles = StyleSheet.create({
         alignItems: 'center',
         justifyContent: 'center',
         fontFamily: 'OpenSans',
-    }
+    },
 
+    autocompleteContainer: {
+        backgroundColor: '#ffffff',
+        borderWidth: 0,
+    },
+    descriptionContainer: {
+        flex: 1,
+        justifyContent: 'center',
+    },
+    itemText: {
+        fontSize: 15,
+        paddingTop: 5,
+        paddingBottom: 5,
+        margin: 2,
+    },
+    infoText: {
+        textAlign: 'center',
+        fontSize: 16,
+    },
 
 });
