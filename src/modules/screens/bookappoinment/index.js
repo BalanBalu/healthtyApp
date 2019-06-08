@@ -4,15 +4,10 @@ import { Col, Row, Grid } from 'react-native-easy-grid';
 import { connect } from 'react-redux'
 import { StyleSheet, Image, TouchableOpacity, View, FlatList, AsyncStorage } from 'react-native';
 import StarRating from 'react-native-star-rating';
-import MapboxGL from '@react-native-mapbox-gl/maps';
 
-// let token1 = 'sk.eyJ1IjoidmFpcmFpc2F0aGlzaCIsImEiOiJjanZhMjZ0ZXMwdWozNDRteTB4bG14Y2o1In0.A34n-MA-vy3hsydgt_8pRQ';
-let token = 'pk.eyJ1IjoiYnJpdmluc3JlZSIsImEiOiJjanc2Y3hkZHcxOGhvNDVwOXRhMWo2aDR1In0.EV8iYtfMxEcRcn8HcZ0ZPA';
-
-import { viewdoctorProfile, viewUserReviews, bindDoctorDetails } from '../../providers/bookappointment/bookappointment.action';
+import {  viewUserReviews, bindDoctorDetails } from '../../providers/bookappointment/bookappointment.action';
 import { formatDate } from '../../../setup/helpers';
 
-MapboxGL.setAccessToken(token);
 
 class BookAppoinment extends Component {
   constructor(props) {
@@ -30,37 +25,35 @@ class BookAppoinment extends Component {
       data: {},
       reviewdata: null,
       doctordata: {},
-      appointment_button: true,
-      selectedSlotIndex: -1,
+      selectedSlotIndex:0,
       selectedSlotItem: {},
-
       doctorId: '',
       reviews_length: '',
-      zoom: 12,
-      annotations: {
-        annotationtype: [{
-          type: 'point',
-          coordinates: [11.953125, 39.436192999314095]
 
-        }, {
-          type: 'point',
-          coordinates: [18.896484375, 46.37725420510028]
-        }]
-      }
-
+      
     }
-    console.log(this.state.annotations + 'annotations');
 
   }
 
 
   async componentDidMount() {
-    console.log("componentDidMount");
     const { navigation } = this.props;
     let doctorDetails = navigation.getParam('doctorDetails');
-    console.log(JSON.stringify(doctorDetails.profile_image) + 'doctorDetails profile image')
     const slotList = navigation.getParam('slotList', []);
-    await this.setState({ doctorDetails, slotList, doctorId: doctorDetails.doctorId });
+    
+    await this.setState({item:{
+      name:slotList[0].location.name,
+      no_and_street: slotList[0].location.location.address.no_and_street,
+      city: slotList[0].location.location.address.city,
+      state: slotList[0].location.location.address.state,
+      pin_code: slotList[0].location.location.pin_code
+    },
+      selectedSlotItem:slotList[0], 
+      doctorDetails, slotList, 
+      doctorId: doctorDetails.doctorId 
+    });
+    console.log(this.state.item.name);
+   
     await this.getdoctorDetails(doctorDetails.doctorId);
     await this.getUserReviews(doctorDetails.doctorId);
   }
@@ -72,10 +65,11 @@ class BookAppoinment extends Component {
     let fields = "first_name,last_name,prefix,professional_statement,language,specialist,education";
     let resultDoctorDetails = await bindDoctorDetails(doctorId, fields);
     if (resultDoctorDetails.success) {
-      this.setState({ doctordata: resultDoctorDetails.data });
-
+      this.setState({ doctordata: resultDoctorDetails.data[0] });
+      console.log(JSON.stringify(this.state.doctordata)+'doctordata');
       /*Doctor degree*/
-      if (resultDoctorDetails.data.education) {
+      if (resultDoctorDetails.data[0].education) {
+
         let temp = this.state.doctordata.education.map((val) => {
           return val.degree;
         }).join();
@@ -87,14 +81,13 @@ class BookAppoinment extends Component {
 
   /* Get user Reviews*/
   getUserReviews = async (doctorId) => {
-    console.log("reviews");
-    let resultReview = await viewUserReviews('doctor', doctorId);
+    console.log(" get reviews");
+    let resultReview = await viewUserReviews('doctor',doctorId);
     console.log(resultReview.data);
     if (resultReview.success) {
       this.setState({ reviewdata: resultReview.data });
       this.setState({ reviews_length: this.state.reviewdata.length });//  reviews length
     }
-    console.log(JSON.stringify(this.state.reviewdata) + 'reviewdata');
 
   }
 
@@ -108,9 +101,9 @@ class BookAppoinment extends Component {
         city: item.location.location.address.city,
         state: item.location.location.address.state,
         pin_code: item.location.location.pin_code
-      }
+      }, 
     })
-    this.setState({ selectedSlotIndex: index, appointment_button: false, selectedSlotItem: item });
+    this.setState({ selectedSlotIndex: index,  selectedSlotItem: item });
 
   }
   navigateToPaymentReview() {
@@ -121,6 +114,9 @@ class BookAppoinment extends Component {
       slotData: this.state.selectedSlotItem
     }
     this.props.navigation.navigate('Payment Review', { resultconfirmSlotDetails: confirmSlotDetails })
+  }
+  navigateToMap(coordinates){
+    this.props.navigation.navigate('Mapbox', { coordinates:this.state.selectedSlotItem})
   }
 
   noAvailableSlots() {
@@ -163,7 +159,7 @@ class BookAppoinment extends Component {
   render() {
     const { navigation } = this.props;
     const doctorDetails = navigation.getParam('doctorDetails');
-    const { data, qualification, doctordata } = this.state;
+    const { qualification, doctordata } = this.state;
     return (
       <Container style={styles.container}>
 
@@ -208,7 +204,7 @@ class BookAppoinment extends Component {
               <Grid style={{ marginTop: 5 }}>
                 <Col style={{ width: 270, }}>
 
-                  <Button disabled={this.state.appointment_button} block onPress={() => this.navigateToPaymentReview()} style={{ borderRadius: 10 }}>
+                  <Button  block onPress={() => this.navigateToPaymentReview()} style={{ borderRadius: 10 }}>
                     <Text uppercase={false}>Book Appoinment</Text>
                   </Button>
 
@@ -231,31 +227,6 @@ class BookAppoinment extends Component {
             </View>
           </Card>
 
-          <View style={{ flex: 1 }}>
-            <MapboxGL.MapView
-              ref={c => (this._map = c)}
-              zoomLevel={this.state.zoom}
-              showUserLocation={false}
-              centerCoordinate={[13.09, 80.27]}
-              style={{ flex: 1 }}
-              styleURL={MapboxGL.StyleURL.Light}>
-              <MapboxGL.PointAnnotation
-                id='Pin'
-                coordinate={[13.09, 80.27]}>
-                <Image
-                  // source={require('../../../../../assets/marker.png')}
-                  style={{
-                    flex: 1,
-                    resizeMode: 'contain',
-                    width: 25,
-                    height: 25
-                  }} />
-              </MapboxGL.PointAnnotation>
-            </MapboxGL.MapView>
-          </View>
-
-
-
           <Card transparent style={{ margin: 20, backgroundColor: '#ecf0f1' }}>
 
             <Card>
@@ -273,10 +244,18 @@ class BookAppoinment extends Component {
                     <Text note>{this.state.item.pin_code}</Text>
 
                   </Body>
+                  <Right>
+                <Button block onPress={() => this.navigateToMap(this.state.slotList)} style={{ borderRadius:7,color:'gray',paddingTop:15}}>
+                <Text uppercase={false}>View Map</Text>
+                </Button>
+
+              </Right>
+
                 </ListItem>
               </List>
             </Card>
 
+          
 
             <Card style={{ margin: 10, padding: 10, borderRadius: 10 }}>
               <Text style={styles.titleText}>Reviews</Text>
@@ -291,7 +270,10 @@ class BookAppoinment extends Component {
                       <ListItem avatar>
 
                         <Left>
+                          {item.userInfo.profile_image!=undefined?
+                          <Thumbnail square source={item.userInfo.profile_image.imageURL} style={{ height: 86, width: 86 }} /> :
                           <Thumbnail square source={{ uri: 'https://static1.squarespace.com/static/582bbfef9de4bb07fe62ab18/t/5877b9ccebbd1a124af66dfe/1484241404624/Headshot+-+Circular.png?format=300w' }} style={{ height: 40, width: 40 }} />
+                          }
                         </Left>
                         <Body>
                           <Text>{((typeof item.userInfo.first_name || typeof item.userInfo.last_name) !== 'undefined') ? item.userInfo.first_name + '' + item.userInfo.last_name : 'Medflic User'}</Text>
