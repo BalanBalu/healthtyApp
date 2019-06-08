@@ -75,7 +75,7 @@ class Home extends Component {
     navigateToCategorySearch(categoryName) {
         let serachInputvalues = [{
             type: 'category',
-            value: [categoryName]
+            value: categoryName
         }]
         this.props.navigation.navigate('Doctor List', { resultData: serachInputvalues })
     }
