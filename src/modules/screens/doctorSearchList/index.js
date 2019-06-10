@@ -4,13 +4,15 @@ import { login } from '../../providers/auth/auth.actions';
 import { messageShow, messageHide } from '../../providers/common/common.action';
 import { Col, Row, Grid } from 'react-native-easy-grid';
 import { connect } from 'react-redux'
-import { StyleSheet, Image, TouchableOpacity, View, FlatList, AsyncStorage, TouchEvent } from 'react-native';
+import { StyleSheet, Image, TouchableOpacity, View, FlatList, AsyncStorage, TouchEvent, Dimensions } from 'react-native';
 import StarRating from 'react-native-star-rating';
 import { ScrollView, TouchableHighlight } from 'react-native-gesture-handler';
 import Modal from "react-native-modal";
 import { searchDoctorList, viewdoctorProfile, bindDoctorDetails, viewUserReviews } from '../../providers/bookappointment/bookappointment.action';
 import { formatDate, getFirstDay, getLastDay, findArrayObj } from '../../../setup/helpers';
-
+import { Loader } from '../../../components/ContentLoader';
+import Spinner from '../../../components/Spinner';
+import { RenderHospitalAddress}  from '../../common';
 
 class doctorSearchList extends Component {
     constructor(props) {
@@ -31,10 +33,13 @@ class doctorSearchList extends Component {
             selectedDoctorHospitalLocations: [],
             confirmSlotDetails: {},
             doctordata: {},
+            searchedResultData:[],
             qualification: '',
             reviewdata: null,
             confirm_button: true,
-            getSearchedDoctorIds: null
+            getSearchedDoctorIds: null,
+            isLoading: false,
+            isSpinnerLoading:false
         }
     }
 
@@ -49,6 +54,7 @@ class doctorSearchList extends Component {
 
     /* get the Doctor Id's list from Search Module  */
     getPatientSearchData = async () => {
+        this.setState({ isLoading: true });
         const { navigation } = this.props;
         const searchedInputvalues = navigation.getParam('resultData');
         let startDate = getFirstDay(new Date(), 'week');
@@ -56,7 +62,8 @@ class doctorSearchList extends Component {
 
         const userId = await AsyncStorage.getItem('userId');
         let resultData = await searchDoctorList(userId, searchedInputvalues);
-        // console.log(JSON.stringify(resultData+'response for searchDoctorList '));
+        await this.setState({ searchedResultData: resultData.data });
+        this.setState({ isLoading: false });
         if (resultData.success) {
             let doctorIds = resultData.data.map((element) => {
                 return element.doctor_id
@@ -68,12 +75,14 @@ class doctorSearchList extends Component {
 
     /* get the  Doctors Availablity Slots */
     getavailabilitySlots = async (getSearchedDoctorIds, startDate, endDate) => {
+        this.setState({ isLoading: true });
         try {
             let totalSlotsInWeek = {
                 startDate: formatDate(startDate, 'YYYY-MM-DD'),
                 endDate: formatDate(endDate, 'YYYY-MM-DD')
             }
             let resultData = await viewdoctorProfile(getSearchedDoctorIds, totalSlotsInWeek);
+            this.setState({ isLoading: false });
             if (resultData.success) {
                 this.setState({ doctorDetails: resultData.data });
             }
@@ -85,6 +94,7 @@ class doctorSearchList extends Component {
 
     /* Change the Date from Date Picker */
     onDateChanged(date) {
+        this.setState({ isLoading: true });
         let selectedDate = formatDate(date, 'YYYY-MM-DD');
         let startDate = getFirstDay(new Date(date), 'week');
         let endDate = getLastDay(new Date(date), 'week');
@@ -101,18 +111,17 @@ class doctorSearchList extends Component {
 
     /* Click the Slots from Doctor List page */
     onSlotPress = async (doctorData, selectedSlotItem, availableSlots, selectedSlotIndex) => {
-        
-         var selectedHospitalId = selectedSlotItem.location.hospital_id;
-         let hospitalLocations = [];
-         let tempHospitalArray = [];
-         
-         await this.setState({ singleDataWithDoctorDetails: doctorData });
-         if(availableSlots[0].location.hospital_id === selectedHospitalId) {
+        var selectedHospitalId = selectedSlotItem.location.hospital_id;
+        let hospitalLocations = [];
+        let tempHospitalArray = [];
+
+        await this.setState({ singleDataWithDoctorDetails: doctorData });
+        if (availableSlots[0].location.hospital_id === selectedHospitalId) {
             var confirmSlotDetails = {};
             confirmSlotDetails = this.state.singleDataWithDoctorDetails;
             confirmSlotDetails.slotData = selectedSlotItem;
             this.props.navigation.navigate('Payment Review', { resultconfirmSlotDetails: confirmSlotDetails })
-         } else {
+        } else {
             availableSlots.forEach(element => {
              if (!tempHospitalArray.includes(element.location.hospital_id)) {
                  tempHospitalArray.push(element.location.hospital_id);
@@ -123,25 +132,25 @@ class doctorSearchList extends Component {
                 });
              } else {
                  let index = tempHospitalArray.indexOf(element.location.hospital_id);
-                 hospitalLocations[index].hospitalSlotArray.push(element)
+                 hospitalLocations[index].hospitalSlotArray.push(element);
+                 this.getdoctorDetails(this.state.singleDataWithDoctorDetails.doctorId);
+                 this.getUserReviews(this.state.singleDataWithDoctorDetails.doctorId);
              }
          })
          await this.setState({ selectedDoctorHospitalLocations: hospitalLocations });
          await this.onClickedHospitalName(selectedHospitalId);
-         
-         await this.setState({ isModalVisible: true })
+         await this.setState({ isModalVisible: true,isSpinnerLoading:false })
         }
     }
     /* Click the Hospital location and names from Book Appointment Popup page */
     onClickedHospitalName = async (hospitalId) => {
-        let selectedHospitalData = findArrayObj(this.state.selectedDoctorHospitalLocations,'_id', hospitalId);
+        let selectedHospitalData = findArrayObj(this.state.selectedDoctorHospitalLocations, '_id', hospitalId);
         await this.setState({ singleHospitalDataSlots: selectedHospitalData });
-        console.log(selectedHospitalData);
     }
 
     /* Get user Reviews*/
     getUserReviews = async (doctorId) => {
-        let resultReview = await viewUserReviews(doctorId, 'doctor');
+        let resultReview = await viewUserReviews('doctor',doctorId);
         if (resultReview.success) {
             this.setState({ reviewdata: resultReview.data });
         }
@@ -167,25 +176,31 @@ class doctorSearchList extends Component {
 
     /* Click the Slots oand Book Appointment on Popup page */
     onBookSlotsPress = async (item, index) => {
-       debugger
         this.setState({ confirm_button: false });
         var confirmSlotDetails = {};
-        confirmSlotDetails = this.state.singleDataWithDoctorDetails;
+        confirmSlotDetails = {...this.state.singleDataWithDoctorDetails};
         confirmSlotDetails.slotData = item;
         await this.setState({ selectedSlotIndex: index, confirmSlotDetails: confirmSlotDetails });
-        // console.log(JSON.stringify(this.state.confirmSlotDetails));
     }
 
     navigateToBookAppointmentPage(doctorAvailabilityData) {
-        const doctorId = doctorAvailabilityData.doctorId;
+        
+        const doctorDetails = doctorAvailabilityData;
         const slotData = doctorAvailabilityData.slotData[this.state.selectedDate]
-        this.props.navigation.navigate('Book Appointment' ,{ doctorId : doctorId, slotList: slotData })
+        this.props.navigation.navigate('Book Appointment', { doctorDetails: doctorDetails, slotList: slotData })
     }
 
     noAvailableSlots() {
         return (
             <Item style={{ borderBottomWidth: 0, justifyContent: 'center', alignItems: 'center' }}>
                 <Text style={{ fontSize: 18, justifyContent: 'center', alignItems: 'center' }} > No slots available on Today! Plss Select the next Date! </Text>
+            </Item>
+        )
+    }
+    noDoctorsAvailable(){
+        return (
+            <Item style={{ borderBottomWidth: 0, justifyContent: 'center', alignItems: 'center' }}>
+                <Text style={{ fontSize: 18, justifyContent: 'center', alignItems: 'center' }} > No Doctors available! </Text>
             </Item>
         )
     }
@@ -210,13 +225,26 @@ class doctorSearchList extends Component {
     }
 
     render() {
-        const  { navigation } = this.props;    
-        const { qualification,singleDataWithDoctorDetails, singleHospitalDataSlots, reviewdata } = this.state;
+        const { navigation } = this.props;
+        const { searchedResultData } = this.state;
+
+        const { isLoading, qualification, singleDataWithDoctorDetails, singleHospitalDataSlots, reviewdata } = this.state;
+        let start = 0;
         return (
 
             <Container style={styles.container}>
 
                 <Content style={styles.bodyContent}>
+                               
+          <Spinner color='blue'
+            visible={this.state.isSpinnerLoading}
+            textContent={'Loading...'}
+          />
+
+                    {isLoading ?
+                        <Loader style='list' />
+                        : null}
+
                     <Card>
                         <Grid>
                             <Row>
@@ -273,8 +301,8 @@ class doctorSearchList extends Component {
                         </Grid>
 
                     </Card>
-
-                    <Card style={{ padding: 5, borderRadius: 10 }}>
+{searchedResultData == null ? this.noDoctorsAvailable() :
+                   <Card style={{ padding: 5, borderRadius: 10 }}>
                         <FlatList
                             data={this.state.doctorDetails}
                             extraData={this.state}
@@ -293,29 +321,13 @@ class doctorSearchList extends Component {
                                         </Left>
                                         <Body>
                                             <Text style={{ fontFamily: 'OpenSans' }}>{item.doctorName}</Text>
-                                            {item.slotData[this.state.selectedDate] ? 
-                                            
-                                            <View>
-                                             
-                                            {item.slotData[this.state.selectedDate][0].location ?   
-                                                 <Grid>
-                                                 <Col style={{width: '10%' }}>
-                                                <Icon name='pin' style={{ fontSize: 20, fontFamily: 'OpenSans', color: 'gray' }}></Icon>
-                                                </Col>
-                                                <Col style={{width: '90%'}}>
-                                                <Text note style={{ fontFamily: 'OpenSans', }}>{item.slotData[this.state.selectedDate][0].location.location.address.no_and_street}</Text>
-                                                <Text note style={{ fontFamily: 'OpenSans' }}>{item.slotData[this.state.selectedDate][0].location.location.address.city}</Text>
-                                                <Text note style={{ fontFamily: 'OpenSans' }}>{item.slotData[this.state.selectedDate][0].location.location.address.state}</Text>
-                                                </Col>
-                                         </Grid> 
-                                            : null } 
+                                            {item.slotData[this.state.selectedDate] ?
+                                                 <RenderHospitalAddress gridStyle={ {width: '10%'}} textStyle={{ fontFamily: 'OpenSans' }} hospitalAddress={item.slotData[this.state.selectedDate][0].location}
+                                                 >
+                                                     </RenderHospitalAddress>    
+                                                   
+                                                : null}
 
-                                            <Text note style={{ fontFamily: 'OpenSans', color: 'gray' }}>Rs {item.slotData[this.state.selectedDate][0].fee}</Text>
-                                           
-                                            </View>
-                                            
-                                         : null }
-                                        
                                         </Body>
                                         <Right>
                                             <Icon name='heart' style={{ color: 'red', fontSize: 25 }}></Icon>
@@ -327,7 +339,7 @@ class doctorSearchList extends Component {
                                             <ListItem>
                                                 <ScrollView horizontal={true}>
 
-                                                    {item.slotData[this.state.selectedDate] == undefined ? this.noAvailableSlots() : this.haveAvailableSlots(item,item.slotData[this.state.selectedDate])}
+                                                    {item.slotData[this.state.selectedDate] == undefined ? this.noAvailableSlots() : this.haveAvailableSlots(item, item.slotData[this.state.selectedDate])}
 
                                                 </ScrollView>
                                             </ListItem>
@@ -336,8 +348,9 @@ class doctorSearchList extends Component {
                                 </List>
                             } />
                     </Card>
+}
                 </Content>
-
+                        
                 <Modal isVisible={this.state.isModalVisible} >
                     <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}>
 
@@ -382,15 +395,15 @@ class doctorSearchList extends Component {
                                     </Row>
                                 </Col>
 
-                                <Col style={{ width: '70%', borderLeftWidth: 1, borderColor: '#F2889B', paddingLeft: 10}}>
-                                    
-                                        <Col style={{ width: '75%' }}>
-                                            <Text style={{ fontFamily: 'OpenSans' }}>{singleDataWithDoctorDetails.doctorName}</Text>
-                                            <Item style={{ borderBottomWidth: 0 }}>
-                                                <Text note style={{ fontFamily: 'OpenSans' }}>{qualification}</Text>
-                                            </Item>
-                                        </Col>
-                                   
+                                <Col style={{ width: '70%', borderLeftWidth: 1, borderColor: '#F2889B', paddingLeft: 10 }}>
+
+                                    <Col style={{ width: '75%' }}>
+                                        <Text style={{ fontFamily: 'OpenSans' }}>{singleDataWithDoctorDetails.doctorName}</Text>
+                                        <Item style={{ borderBottomWidth: 0 }}>
+                                            <Text note style={{ fontFamily: 'OpenSans' }}>{qualification}</Text>
+                                        </Item>
+                                    </Col>
+
 
                                     <StarRating fullStarColor='#FF9500' starSize={15} width={100} containerStyle={{ width: 100 }}
                                         disabled={false}
@@ -399,14 +412,16 @@ class doctorSearchList extends Component {
                                     />
                                     <Grid>
                                         <Col>
-                                            <Text note style={{ fontFamily: 'OpenSans' }}>Address </Text>
+                                            {/* <Text note style={{ fontFamily: 'OpenSans' }}>Address </Text>
                                             <Text note style={{ fontFamily: 'OpenSans' }}>{singleHospitalDataSlots.hospitalLocationData.name}</Text>
-                                            {singleHospitalDataSlots.hospitalLocationData.location ? 
+                                            {singleHospitalDataSlots.hospitalLocationData.location ?
                                                 <View>
-                                                <Text note style={{ fontFamily: 'OpenSans' }}>{singleHospitalDataSlots.hospitalLocationData.location.address.no_and_street}</Text>
-                                                <Text note style={{ fontFamily: 'OpenSans' }}>{singleHospitalDataSlots.hospitalLocationData.location.address.city}</Text>
-                                                <Text note style={{ fontFamily: 'OpenSans' }}>{singleHospitalDataSlots.hospitalLocationData.location.address.state}</Text>
-                                                </View> : null }
+                                                    <Text note style={{ fontFamily: 'OpenSans' }}>{singleHospitalDataSlots.hospitalLocationData.location.address.no_and_street}</Text>
+                                                    <Text note style={{ fontFamily: 'OpenSans' }}>{singleHospitalDataSlots.hospitalLocationData.location.address.city}</Text>
+                                                    <Text note style={{ fontFamily: 'OpenSans' }}>{singleHospitalDataSlots.hospitalLocationData.location.address.state}</Text>
+                                                </View> : null} */}
+                                                <renderHospitalAddress textStyle={{ fontFamily: 'OpenSans' }} hospitalAddress={singleHospitalDataSlots.hospitalLocationData}
+                                                />
                                         </Col>
 
                                     </Grid>

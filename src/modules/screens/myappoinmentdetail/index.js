@@ -12,8 +12,10 @@ import { hasLoggedIn } from '../../providers/auth/auth.actions';
 import { formatDate ,addTimeUnit,dateDiff,subTimeUnit} from '../../../setup/helpers';
 import { Col, Row, Grid } from 'react-native-easy-grid';
 import SegmentedControlTab from "react-native-segmented-control-tab";
+import ContentLoader from '../../../components/ContentLoader/ContentLoader';
 import { getUserAppointments,viewUserReviews } from "../../providers/bookappointment/bookappointment.action";
 import noAppointmentImage from '../../../../assets/images/noappointment.png';
+import Spinner from '../../../components/Spinner';
 import { Loader } from '../../../components/ContentLoader';
    
 class MyAppoinmentList extends Component {
@@ -43,12 +45,12 @@ class MyAppoinmentList extends Component {
     this.setState({ userId});
       this.upCommingAppointment(); 
       this.pastAppointment();
+    
     }
-   
     upCommingAppointment = async () => {
         try {
           this.setState({ isLoading: true });
-         let userId = await AsyncStorage.getItem('userId');
+       let userId = await AsyncStorage.getItem('userId');
           let filters = {
             startDate: formatDate(new Date() , "YYYY-MM-DD"),
             endDate: formatDate(addTimeUnit(new Date(), 1, "years"), "YYYY-MM-DD")
@@ -71,7 +73,7 @@ class MyAppoinmentList extends Component {
       };
       pastAppointment = async () => {
         try {
-        let userId = await AsyncStorage.getItem('userId');
+         let userId = await AsyncStorage.getItem('userId');
           let  endData=  formatDate(subTimeUnit(new Date(), 1, "day"), "YYYY-MM-DD")
           let filters = {
             endDate: endData,
@@ -131,7 +133,8 @@ class MyAppoinmentList extends Component {
                     tabStyle={{ borderColor: '#775DA3' }}
                 />
               { isLoading==true?  <Loader style={'list'} />:
-                 data.length === 0 ?
+
+                data.length === 0 ?
                     <Card transparent style={{ alignItems: 'center', justifyContent: 'center', marginTop: '20%' }}>
                        
                         <Thumbnail square source={noAppointmentImage} style={{ height: 100, width: 100, marginTop: '10%' }} />
@@ -147,13 +150,13 @@ class MyAppoinmentList extends Component {
                  <ScrollView>
                 <Card style={{ padding: 5, borderRadius: 10, marginTop: 15 }}>                  
                 <List>
-                   
+              
                 <FlatList
                             data={data}
                             extraData={reviewData}
                             renderItem={({ item, index }) => 
+                          
                            
-                   
                         <ListItem avatar onPress={() => this.props.navigation.navigate('AppointmentInfo', { data : item })}>
                             <Left>
                                 <Thumbnail square source={{ uri: 'https://res.cloudinary.com/demo/image/upload/w_200,h_200,c_thumb,g_face,r_max/face_left.png' }} style={{ height: 60, width: 60 }} />
@@ -183,33 +186,28 @@ class MyAppoinmentList extends Component {
                               
                                 <Item style={{ borderBottomWidth: 0 }}>
                                     <Text style={{ fontFamily: 'OpenSans', fontSize: 12 }} note>{formatDate(item.AppointmentResult.appointment_starttime,'dddd.MMMM-YY, LT') }</Text>
-
-                                    {/* <Text style={{ fontFamily: 'OpenSans', fontSize: 12 }} note>April-13 </Text>
-                                    <Text style={{ fontFamily: 'OpenSans', fontSize: 12 }} note>10.00 AM</Text> */}
                                 </Item>
                                 
                                {selectedIndex==0?
                               null:item.ratting==undefined? <Item>
-                                    <Button style={styles.shareButton}>
-                                     <Text >leave feed back</Text>
-                                     </Button>
-                                   </Item>: 
-                                    <Item style={{ borderBottomWidth: 0,marginLeft:20 }}>
-                                       <Button style={styles.bookingButton}>
-                                        <Text  >Book Again</Text>
-                                    </Button>
-                                      <Button style={styles.shareButton}>
-                                        <Text >Share</Text>
-                                        </Button>
-                                     </Item>
-                               
+                                 <Button style={styles.shareButton}>
+                              <Text >leave feed back</Text>
+                          </Button>
+                         
+                      </Item>:  <Item style={{ borderBottomWidth: 0,marginLeft:20 }}>
+                              <Button style={styles.bookingButton}>
+                                  <Text  >Book Again</Text>
+                              </Button>
+                              <Button style={styles.shareButton}>
+                                  <Text >Share</Text>
+                              </Button>
+                          </Item>
                             }
-                               
-
                             </Body>
                         </ListItem>
-                     }
-                     keyExtractor={(item, index) => index.toString()}/>
+                            }
+                          
+                     keyExtractor={(item, index) => index.toString()}/>  
                      
                    </List>
                 </Card> 

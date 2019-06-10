@@ -33,6 +33,7 @@ import profileAvatar from '../../../assets/images/profileAvatar.png';
 
 import { HeaderBackButton } from 'react-navigation';
 import BookAppoinment from "../../modules/screens/bookappoinment";
+import Mapbox from "../../modules/screens/bookappoinment/Mapbox";
 import MyAppointments from '../../modules/screens/myappoinment';
 import AppointmentDetails from '../../modules/screens/myappoinment/myappoinmentinformation';
 import MyAppoinmentList from '../../modules/screens/myappoinmentdetail';
@@ -150,6 +151,13 @@ const AppointMentstack1 = createStackNavigator({
     navigationOptions: {
       title: 'Book Appointment'
     }
+  },
+  "Mapbox":{
+    screen: Mapbox,
+    navigationOptions: {
+      title: 'Mapbox'
+    }
+
   },
   paymentpage: {
     screen: PaymentPage
