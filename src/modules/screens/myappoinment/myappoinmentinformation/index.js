@@ -132,9 +132,9 @@ class AppointmentDetails extends Component {
 
               <Grid style={{ marginTop: 5 }}>
 
-                <Col style={{ width: 270, }}>
-                  <Button block success style={{ borderRadius: 10 }}>
-                    <Text uppercase={false}>{data.appointment_status == 'PROPOSED_NEW_TIME' ?
+                <Col style={{ width: 300, }}>
+                <Button disabled={true} block style={{ borderRadius: 10,backgroundColor: '#D7BDE2' }}>
+                    <Text style={{ color: 'black', fontSize: 16 }}>{data.appointment_status == 'PROPOSED_NEW_TIME' ?
                       'PROPOSED NEW TIME' : data.appointment_status == 'PENDING_REVIEW' ? 'COMPLETED' : data.appointment_status}
                     </Text>
                   </Button>
@@ -142,11 +142,27 @@ class AppointmentDetails extends Component {
                 </Col>
 
               </Grid>
+              <Grid style={{ marginTop: 5 }}>
+               {data.appointment_status == 'APPROVED' ?
+              <Col style={width= 'auto'}>
+               <Button block danger style={{margin: 1,marginTop: 10, marginLeft: 1, borderRadius: 30,padding: 15,height: 35,width: "auto"} }>
+                     <Text style={{ textAlign: 'center', fontFamily: 'OpenSans'}}>CANCEL APPOINTMENT</Text>
+                     </Button>                  
+                </Col>    :
+                data.appointment_status == 'PROPOSED_NEW_TIME'?
+              
+               
+                 <Item style={{ borderBottomWidth: 0, justifyContent: 'center' }}>
+                     <Button success style={styles.statusButton} onPress={() => this.doAccept(item, 'APPROVED', index)}>
+                       <Text style={{ textAlign: 'center', fontFamily: 'OpenSans'}}>ACCEPT</Text>
+                    </Button>
+                    <Button  danger style={styles.statusButton}>
+                     <Text style={{ textAlign: 'center', fontFamily: 'OpenSans'}}> CANCEL </Text></Button>
+                   </Item>  :null}
+              </Grid>
 
             </List>
-
-          </Card>
-
+         </Card>
 
           <Card transparent style={{ margin: 20, backgroundColor: '#ecf0f1' }}>
             <Card style={{ backgroundColor: '#ffffff', borderRadius: 10, padding: 10 }}>
@@ -208,7 +224,7 @@ class AppointmentDetails extends Component {
                 </List>
               </Card>
 
-              : data.appointment_status == 'COMPLETED' ?
+              : data.appointment_status == 'CLOSED' ?
                 <Card style={{ margin: 10, padding: 10, borderRadius: 10 }}>
                   <List>
                     <Text style={styles.titlesText}>Review</Text>
@@ -433,6 +449,14 @@ const styles = StyleSheet.create({
     color: '#000',
     fontSize: 16,
     margin: 10
+  },
+  statusButton:{
+    margin: 1, 
+    marginLeft: 20, 
+    marginTop: 10, 
+    borderRadius: 30, 
+    padding: 15, 
+    height: 35,  
+    width: "auto"
   }
-
 });
