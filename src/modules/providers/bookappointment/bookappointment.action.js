@@ -1,4 +1,4 @@
-import { postService, getService } from '../../../setup/services/httpservices';
+import { postService, getService, putService } from '../../../setup/services/httpservices';
 
 
 
@@ -143,6 +143,27 @@ export async function appointmentDetails(doctorId, appointmentId, isLoading = tr
     let endPoint = 'doctor/' + doctorId + '/appointment/' + appointmentId
     let response = await getService(endPoint);
     let respData = response.data;
+    return respData;
+  } catch (e) {
+    return {
+      message: 'exception' + e,
+      success: false
+    }
+  }
+}
+
+/* Update Appoiontment Status */
+
+export async function acceptAppointment(doctorId, appointmentId, requestData, isLoading = true) {
+  console.log("appointment is runnuing");
+  try {
+    console.log("hhhhhh")
+    let endPoint = 'doctor/' + doctorId + '/appointment/' + appointmentId
+    console.log(endPoint+'end');
+    let response = await putService(endPoint, requestData);
+    let respData = response.data;
+    console.log('respData'+JSON.stringify(respData))
+
     return respData;
   } catch (e) {
     return {
