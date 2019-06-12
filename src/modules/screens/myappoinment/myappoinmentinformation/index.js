@@ -23,7 +23,7 @@ class AppointmentDetails extends Component {
       doctorData: {},
       isLoading: false,
       yearOfExperience: '',
-      appointStatus: ''
+      appointmentStatus: ''
 
     }
 
@@ -41,6 +41,7 @@ class AppointmentDetails extends Component {
     await this.setState({ doctorId: doctorId, appointmentId: appointmentId, userId: userId, data: appointmentData })
     this.getDoctorDetails(doctorId);
     this.getUserReviews(appointmentId);
+    this.updateAppointmentStatus(data, status)
 
     console.log('state data : ' + JSON.stringify(this.state.data));
   }
@@ -51,26 +52,20 @@ class AppointmentDetails extends Component {
       this.setState({ isLoading: true });
       let fields = 'first_name,last_name,education,specialist,email,mobile_no,experience,hospital,language,professional_statement';
       let resultDetails = await bindDoctorDetails(doctorId, fields);
-      //console.log(JSON.stringify(resultDetails));
+      console.log(JSON.stringify(resultDetails));
       if (resultDetails.success) {
         await this.setState({ doctorData: resultDetails.data, isLoading: false });
-        //console.log(JSON.stringify(this.state.doctorData));
+        console.log(JSON.stringify(this.state.doctorData));
         let updatedDate = moment(this.state.doctorData.experience.updated_date);
         let experienceInYear = dateDiff(updatedDate, new Date(), 'year');
         let experienceInMonth = dateDiff(updatedDate, new Date(), 'months');
-        //console.log(experienceInYear + 'experience');
-        //console.log(experienceInMonth + 'experience');
         let year = (moment(this.state.doctorData.experience.year) + experienceInYear);
         let month = (moment(this.state.doctorData.experience.month)) + experienceInMonth;
-       // console.log(year + 'year');
-        //console.log(month + 'month');
         let experience = experienceInYear + year;
         if (month >= 12) {
           experience++;
         }
-       // console.log(experience)
         await this.setState({ yearOfExperience: experience, isLoading: false });
-       // console.log(this.state.yearOfExperience)
 
       }
     }
@@ -83,18 +78,15 @@ class AppointmentDetails extends Component {
   getUserReviews = async (appointmentId) => {
     this.setState({ isLoading: true });
     let resultReview = await viewUserReviews('appointment', appointmentId);
-    //console.log(resultReview.data);
+    console.log(resultReview.data);
     if (resultReview.success) {
       this.setState({ reviewData: resultReview.data, isLoading: false });
     }
-   // console.log(JSON.stringify(JSON.stringify(this.state.reviewData)));
+    console.log(JSON.stringify(JSON.stringify(this.state.reviewData)));
   }
 
   /* Update Appoiontment Status */
 
-  accept(data, status) {
-    this.updateAppointmentStatus(data, status)
-  }
   updateAppointmentStatus = async (data, updatedStatus) => {
     try {
       this.setState({ isLoading: true });
@@ -111,17 +103,18 @@ class AppointmentDetails extends Component {
      let userId = await AsyncStorage.getItem('userId');
       console.log('userId'+userId);
       let result = await acceptAppointment(this.state.doctorId, this.state.appointmentId, requestData);
+      this.setState({isLoading : false })
       console.log(result);
-      console.log(JSON.stringify(result.appointmentData.appointment_status));
-      let appointStatus = result.appointmentData.appointment_status;
       console.log('update result' +JSON.stringify(result));
+      console.log(JSON.stringify(result.appointmentData.appointment_status));
+      let appointmentStatus = result.appointmentData.appointment_status;
+
       if (result.success) {
         Toast.show({
           text: result.message,
           duration: 3000
         })
-        this.setState({ appointStatus: appointStatus });
-
+        this.setState({ appointmentStatus: appointmentStatus });
       }
     }
     catch (e) {
@@ -174,8 +167,8 @@ class AppointmentDetails extends Component {
 
                   <Col style={{ width: 300, }}>
                     <Button disabled={true} block style={{ borderRadius: 10, backgroundColor: '#D7BDE2' }}>
-                      <Text style={{ color: 'black', fontSize: 16 }}>{data.appointment_status == 'PROPOSED_NEW_TIME' ?
-                        'PROPOSED NEW TIME' : data.appointment_status == 'PENDING_REVIEW' ? 'COMPLETED' : data.appointment_status}
+                      <Text style={{ color: 'black', fontSize: 16 }}>{this.state.appointmentStatus == 'APPROVED'?'APPROVED':data.appointment_status == 'PROPOSED_NEW_TIME' ?
+                        'PROPOSED NEW TIME' : data.appointment_status == 'PENDING_REVIEW' ? 'COMPLETED' : data.appointment_status||this.state.appointStatus}
                       </Text>
                     </Button>
 
@@ -183,7 +176,7 @@ class AppointmentDetails extends Component {
 
                 </Grid>
                 <Grid style={{ marginTop: 5 }}>
-                {data.appointment_status == 'APPROVED' ?
+                {data.appointment_status == 'APPROVED' ||  this.state.appointmentStatus === 'APPROVED'?
                     <Col style={width = 'auto'}>
                       <Button block danger style={{ margin: 1, marginTop: 10, marginLeft: 1, borderRadius: 30, padding: 15, height: 40, width: "auto" }}>
                         <Text style={{ textAlign: 'center', fontFamily: 'OpenSans' }}>CANCEL APPOINTMENT</Text>
@@ -192,19 +185,12 @@ class AppointmentDetails extends Component {
                
                     data.appointment_status == 'PROPOSED_NEW_TIME' ?
                      <Item style={{ borderBottomWidth: 0, justifyContent: 'center' }}>
-                        <Button success style={styles.statusButton} onPress={() => this.accept( data, 'APPROVED')}>
+                        <Button success style={styles.statusButton} onPress={() => this.updateAppointmentStatus( data, 'APPROVED')}>
                           <Text style={{ textAlign: 'center', fontFamily: 'OpenSans' }}>ACCEPT</Text>
                         </Button>
                         <Button danger style={styles.statusButton}>
                           <Text style={{ textAlign: 'center', fontFamily: 'OpenSans' }}> CANCEL </Text></Button>
-                      </Item> : 
-                    //   this.state.appointStatus == 'APPROVED' ?
-                    //   <Col style={width = 'auto'}>
-                    //   <Button block danger style={{ margin: 1, marginTop: 10, marginLeft: 1, borderRadius: 30, padding: 15, height: 40, width: "auto" }}>
-                    //     <Text style={{ textAlign: 'center', fontFamily: 'OpenSans' }}>CANCEL APPOINTMENT</Text>
-                    //   </Button>
-                    // </Col>:
-                    null}
+                      </Item>: null}
                 </Grid>
 
               </List>
