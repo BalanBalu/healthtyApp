@@ -55,9 +55,9 @@ export async function viewdoctorProfile(doctorIds, isLoading = true) {
 
 /*get userReviews*/
 
-export async function viewUserReviews(doctorId, isLoading = true) {
+export async function viewUserReviews(type,id,isLoading = true) {
   try {
-    let endPoint = 'user/reviewsCount/'+doctorId
+    let endPoint = 'user/reviews/'+ type+ '/'+id
     let response = await getService(endPoint);
     let respData = response.data;
     return respData;
@@ -69,6 +69,22 @@ export async function viewUserReviews(doctorId, isLoading = true) {
     }
   }
 }
+
+export async function viewUserReviewCount(doctorId, isLoading = true) {
+  try {
+    let endPoint = 'user/reviewsCount/' + doctorId
+    let response = await getService(endPoint);
+    let respData = response.data;
+    return respData;
+
+  } catch (e) {
+    return {
+      message: 'exception' + e,
+      success: false
+    }
+  }
+}
+
 //user appointment status\
 
 export const appointment = async (userId, filters, isLoading = true) => {
@@ -108,7 +124,7 @@ export const bindDoctorDetails = async (doctorId, fields, isLoading = true) => {
     let endPoint = 'doctor/' + doctorId + '?fields=' + fields;
     console.log(endPoint + 'doctor endpoint');
     let response = await getService(endPoint);
-    console.log(response + 'response');
+    console.log(JSON.stringify(response) + 'response');
     let respData = response.data;
     return respData;
   } catch (e) {

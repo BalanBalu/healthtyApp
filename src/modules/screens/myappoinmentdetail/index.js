@@ -4,7 +4,7 @@ import {
     CardItem, List, ListItem, Left, Right, Thumbnail, Segment,
     Body, Icon
 } from 'native-base';
-import { StyleSheet, Image, AsyncStorage, FlatList, ScrollView } from 'react-native';
+import { StyleSheet, Image, AsyncStorage, FlatList, ScrollView ,ActivityIndicator} from 'react-native';
 import StarRating from 'react-native-star-rating';
 
 import { userReviews } from '../../providers/profile/profile.action';
@@ -15,6 +15,7 @@ import SegmentedControlTab from "react-native-segmented-control-tab";
 import ContentLoader from '../../../components/ContentLoader/ContentLoader';
 import { getUserAppointments,viewUserReviews } from "../../providers/bookappointment/bookappointment.action";
 import noAppointmentImage from '../../../../assets/images/noappointment.png';
+import Spinner from '../../../components/Spinner';
 import { Loader } from '../../../components/ContentLoader';
    
 class MyAppoinmentList extends Component {
@@ -23,62 +24,50 @@ class MyAppoinmentList extends Component {
         super(props)
 
         this.state = {
-            data: [],
+            data:[],
+           spinnerData: [1,2,3,4],
             isLoading: false,
             selectedIndex: 0,
             upComingData: [],
             pastData: [],
-            userId: '5ce50ae57ca0ee0f10f42c34',
+            userId: null,
             reviewData:[],
-            isLoading:true
+            page: 0,
+            loading: true
         }
     }
    
     async componentDidMount() {
-    //     const isLoggedIn = await hasLoggedIn(this.props);
-    //     if(!isLoggedIn) {
-    //         this.props.navigation.navigate('login');
-    //         return
-    //     }
-    //   let userId = await AsyncStorage.getItem('userId');
-    //this.setState({ userId});
+        const isLoggedIn = await hasLoggedIn(this.props);
+        if(!isLoggedIn) {
+            this.props.navigation.navigate('login');
+            return
+        }
+      let userId = await AsyncStorage.getItem('userId');
+    this.setState({ userId,isLoading:false});
       this.upCommingAppointment(); 
       this.pastAppointment();
-    //  this.getUserReview();
+    
     }
-    // user reviews
-    //  getUserReview = async () => {
-    //     try {
-    //       this.setState({ isLoading: true });
-    //       // let userId = await AsyncStorage.getItem('userId');
-    //      let result = await viewUserReviews('user',this.state.userId);
-    //       console.log('userreview appointment')
-    //       console.log(result.data);
-    //       if (result.success)
-    //         this.setState({ reviewData: result.data, isRefreshing: false});
-    //     } catch (e) {
-    //       console.log(e);
-    //     }
-    //   };
-    // my appoinment list get function in name, specialist ,date,...
     upCommingAppointment = async () => {
         try {
-          this.setState({ isLoading: true });
-      //  let userId = await AsyncStorage.getItem('userId');
+            this.setState({isLoading:false});
+        //   this.setState({ isLoading: true,loading: true });
+       let userId = await AsyncStorage.getItem('userId');
           let filters = {
             startDate: formatDate(new Date() , "YYYY-MM-DD"),
             endDate: formatDate(addTimeUnit(new Date(), 1, "years"), "YYYY-MM-DD")
           };
-         let upCommingAppointmentResult = await getUserAppointments(this.state.userId, filters)
+         let upCommingAppointmentResult = await getUserAppointments(userId, filters,this.state.page)
           if (upCommingAppointmentResult.success){
             let appointmentData=[];
               upCommingAppointmentResult=upCommingAppointmentResult.data;
                
-          upCommingAppointmentResult.map(AppointmentResult=> {
-            appointmentData.push({AppointmentResult})
+          upCommingAppointmentResult.map(appointmentResult=> {
+            appointmentData.push({appointmentResult})
                
              });
-            this.setState({ upComingData: appointmentData, isLoading: false,data:appointmentData});
+            this.setState({ upComingData: appointmentData, isLoading:true,data:appointmentData});
             }
            console.log(this.state.upComingData);
         } catch (e) {
@@ -87,7 +76,7 @@ class MyAppoinmentList extends Component {
       };
       pastAppointment = async () => {
         try {
-        //  let userId = await AsyncStorage.getItem('userId');
+         let userId = await AsyncStorage.getItem('userId');
           let  endData=  formatDate(subTimeUnit(new Date(), 1, "day"), "YYYY-MM-DD")
           let filters = {
             endDate: endData,
@@ -101,19 +90,22 @@ class MyAppoinmentList extends Component {
 
               let appointmentData=[];
              
-             pastAppointmentResult.map(AppointmentResult=> {
+        let temp= pastAppointmentResult.map(appointmentResult=> {
                 let condition=false;
              viewUserReviewResult.map(viewUserReview => {
-               if(AppointmentResult._id === viewUserReview .appointment_id){
-                appointmentData.push({AppointmentResult,ratting:viewUserReview.overall_rating});
+               if(appointmentResult._id === viewUserReview .appointment_id){
+                appointmentData.push({appointmentResult,ratting:viewUserReview.overall_rating});
                condition = true;              
-               }                     
+               }   return appointmentResult.education.degree ;
+                
              });
+            
              if(condition == false){
-             appointmentData.push({AppointmentResult})
+             appointmentData.push({appointmentResult})
              condition=false;
              }
-           });         
+           });  
+           console.log('temp return volue id:'+temp)       
            console.log(appointmentData)
              this.setState({ pastData: appointmentData, isLoading: false});
         }
@@ -121,6 +113,9 @@ class MyAppoinmentList extends Component {
            console.log(e);
          }
        };
+       handleEnd = () => {
+        this.setState(state => ({ page: state.page + 1 }), () => this.upCommingAppointment());
+      };
         
        handleIndexChange = (index) => {
         let data= (index === 0 ? this.state.upComingData:this.state.pastData)
@@ -133,7 +128,7 @@ class MyAppoinmentList extends Component {
     };
 
     render() {
-        const { data,selectedIndex,reviewData,isLoading } = this.state;
+        const { data,selectedIndex,reviewData,isLoading ,spinnerData} = this.state;
               
 
         return (
@@ -146,9 +141,9 @@ class MyAppoinmentList extends Component {
                     activeTabStyle={{ backgroundColor: '#775DA3', borderColor: '#775DA3' }}
                     tabStyle={{ borderColor: '#775DA3' }}
                 />
-              { isLoading==true?  <Loader style={'list'} />:
+               { isLoading==true?
 
-                data.length === 0 ?
+                    data.length === 0 ?
                     <Card transparent style={{ alignItems: 'center', justifyContent: 'center', marginTop: '20%' }}>
                        
                         <Thumbnail square source={noAppointmentImage} style={{ height: 100, width: 100, marginTop: '10%' }} />
@@ -164,19 +159,24 @@ class MyAppoinmentList extends Component {
                  <ScrollView>
                 <Card style={{ padding: 5, borderRadius: 10, marginTop: 15 }}>                  
                 <List>
-                   
+              
                 <FlatList
                             data={data}
                             extraData={reviewData}
-                            renderItem={({ item, index }) => 
+                            onEndReached={() => this.handleEnd()}
+                            onEndReachedThreshold={0}
                            
-                   
+                            renderItem={({ item, index }) => 
+                         
+                          
+                          
                         <ListItem avatar onPress={() => this.props.navigation.navigate('AppointmentInfo', { data : item })}>
+                           
                             <Left>
                                 <Thumbnail square source={{ uri: 'https://res.cloudinary.com/demo/image/upload/w_200,h_200,c_thumb,g_face,r_max/face_left.png' }} style={{ height: 60, width: 60 }} />
                             </Left>
                             <Body>
-                                <Text style={{ fontFamily: 'OpenSans' }}>Dr.{item.AppointmentResult.doctorInfo.first_name+' '+item.AppointmentResult.doctorInfo.last_name} </Text>
+                                <Text style={{ fontFamily: 'OpenSans' }}>Dr.{item.appointmentResult.doctorInfo.first_name+' '+item.appointmentResult.doctorInfo.last_name} </Text>
                                 <Item style={{ borderBottomWidth: 0 }}>
                                     <Text style={{ fontFamily: 'OpenSans' }}>Internist</Text>
                                     {selectedIndex==1&& item.ratting!=undefined&&
@@ -189,26 +189,21 @@ class MyAppoinmentList extends Component {
                                     </Item>
                                     {selectedIndex==0&&
                                 <Item style={{ borderBottomWidth: 0 }}>
-                                    {item.AppointmentResult.appointment_status=='PENDING'&&
-                                    <Text style={{ fontFamily: 'OpenSans', fontSize: 12 ,color:'red' }} note>{item.AppointmentResult.appointment_status }</Text>
-                                    }{item.AppointmentResult.appointment_status=='APPROVED'&&
-                                    <Text style={{ fontFamily: 'OpenSans', fontSize: 12 ,color:'green' }} note>{item.AppointmentResult.appointment_status }</Text>
+                                    {item.appointmentResult.appointment_status=='PENDING'&&
+                                    <Text style={{ fontFamily: 'OpenSans', fontSize: 12 ,color:'red' }} note>{item.appointmentResult.appointment_status }</Text>
+                                    }{item.appointmentResult.appointment_status=='APPROVED'&&
+                                    <Text style={{ fontFamily: 'OpenSans', fontSize: 12 ,color:'green' }} note>{item.appointmentResult.appointment_status }</Text>
                                     }
 
                                 </Item>
                                     }
                               
                                 <Item style={{ borderBottomWidth: 0 }}>
-                                    <Text style={{ fontFamily: 'OpenSans', fontSize: 12 }} note>{formatDate(item.AppointmentResult.appointment_starttime,'dddd.MMMM-YY, LT') }</Text>
-
-                                    {/* <Text style={{ fontFamily: 'OpenSans', fontSize: 12 }} note>April-13 </Text>
-                                    <Text style={{ fontFamily: 'OpenSans', fontSize: 12 }} note>10.00 AM</Text> */}
+                                    <Text style={{ fontFamily: 'OpenSans', fontSize: 12 }} note>{formatDate(item.appointmentResult.appointment_starttime,'dddd.MMMM-YY, LT') }</Text>
                                 </Item>
                                 
                                {selectedIndex==0?
-                            //    & item.ratting>0 ?
                               null:item.ratting==undefined? <Item>
-                                   {/* <Text style={{ fontFamily: 'OpenSans', fontSize: 12,marginLeft:10 }} >How was your visit with the office of Dr.{item.AppointmentResult.doctorInfo.first_name+' '+item.AppointmentResult.doctorInfo.last_name}? Help other patients by leaving a review</Text>  */}
                                  <Button style={styles.shareButton}>
                               <Text >leave feed back</Text>
                           </Button>
@@ -221,21 +216,35 @@ class MyAppoinmentList extends Component {
                                   <Text >Share</Text>
                               </Button>
                           </Item>
-                                // :<Item> <Button style={styles.shareButton}>
-                                //         <Text >Share</Text>
-                                // </Button></Item>
                             }
-                               
-
                             </Body>
-                        </ListItem>
-                     }
-                     keyExtractor={(item, index) => index.toString()}/>
-                     
+                            
+                        </ListItem>}
+                       
+                         
+                          
+                     keyExtractor={(item, index) => index.toString()}/>  
+                       
                    </List>
                 </Card> 
                 </ScrollView>
-             }
+             
+           : <FlatList
+           data={spinnerData} 
+         renderItem={({ item, index }) => 
+           <ListItem >
+           <ActivityIndicator color='blue'
+           style={[styles.container, styles.horizontal]}
+            visible={true}
+            size ={"large"}
+           
+            />
+               
+           
+           </ListItem>}
+            />  
+           
+            }
             </View>
         );
     }
@@ -291,5 +300,14 @@ const styles = StyleSheet.create({
         marginLeft: 'auto',
         marginRight: 'auto',
 
-    }
+    },
+    container: {
+        flex: 1,
+        justifyContent: 'center'
+      },
+      horizontal: {
+        flexDirection: 'column',
+        justifyContent: 'center',
+        padding: 10
+      }
 });
