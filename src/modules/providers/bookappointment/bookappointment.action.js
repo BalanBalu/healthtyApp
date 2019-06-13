@@ -154,13 +154,12 @@ export async function appointmentDetails(doctorId, appointmentId, isLoading = tr
 
 /* Update Appoiontment Status */
 
-export async function acceptAppointment(doctorId, appointmentId, requestData, isLoading = true) {
+export async function appointmentStatusUpdate(doctorId, appointmentId, requestData, isLoading = true) {
   try {
     let endPoint = 'doctor/' + doctorId + '/appointment/' + appointmentId
     let response = await putService(endPoint, requestData);
     let respData = response.data;
     console.log('respData'+JSON.stringify(respData))
-
     return respData;
   } catch (e) {
     return {
