@@ -44,21 +44,19 @@ class MyAppoinmentList extends Component {
             return
         }
       let userId = await AsyncStorage.getItem('userId');
-    this.setState({ userId,isLoading:false});
+    this.setState({ userId});
       this.upCommingAppointment(); 
       this.pastAppointment();
     
     }
     upCommingAppointment = async () => {
         try {
-            this.setState({isLoading:false});
-        //   this.setState({ isLoading: true,loading: true });
        let userId = await AsyncStorage.getItem('userId');
           let filters = {
             startDate: formatDate(new Date() , "YYYY-MM-DD"),
             endDate: formatDate(addTimeUnit(new Date(), 1, "years"), "YYYY-MM-DD")
           };
-         let upCommingAppointmentResult = await getUserAppointments(userId, filters,this.state.page)
+         let upCommingAppointmentResult = await getUserAppointments(userId, filters)
           if (upCommingAppointmentResult.success){
             let appointmentData=[];
               upCommingAppointmentResult=upCommingAppointmentResult.data;
@@ -90,13 +88,13 @@ class MyAppoinmentList extends Component {
 
               let appointmentData=[];
              
-        let temp= pastAppointmentResult.map(appointmentResult=> {
+             pastAppointmentResult.map(appointmentResult=> {
                 let condition=false;
              viewUserReviewResult.map(viewUserReview => {
                if(appointmentResult._id === viewUserReview .appointment_id){
                 appointmentData.push({appointmentResult,ratting:viewUserReview.overall_rating});
                condition = true;              
-               }   return appointmentResult.education.degree ;
+               }  
                 
              });
             
@@ -105,30 +103,31 @@ class MyAppoinmentList extends Component {
              condition=false;
              }
            });  
-           console.log('temp return volue id:'+temp)       
+                  
            console.log(appointmentData)
-             this.setState({ pastData: appointmentData, isLoading: false});
+             this.setState({ pastData: appointmentData, isLoading:true});
         }
          } catch (e) {
            console.log(e);
          }
        };
-       handleEnd = () => {
-        this.setState(state => ({ page: state.page + 1 }), () => this.upCommingAppointment());
-      };
+      
         
-       handleIndexChange = (index) => {
-        let data= (index === 0 ? this.state.upComingData:this.state.pastData)
+       handleIndexChange =(index) => {
+       
+
+        let data=  (index === 0 ? this.state.upComingData:this.state.pastData)
         this.setState({
             ...this.state,
             selectedIndex: index,
-            data
+            data,
+           
         });
        
     };
 
     render() {
-        const { data,selectedIndex,reviewData,isLoading ,spinnerData} = this.state;
+        const { data,selectedIndex,reviewData,isLoading } = this.state;
               
 
         return (
@@ -163,9 +162,6 @@ class MyAppoinmentList extends Component {
                 <FlatList
                             data={data}
                             extraData={reviewData}
-                            onEndReached={() => this.handleEnd()}
-                            onEndReachedThreshold={0}
-                           
                             renderItem={({ item, index }) => 
                          
                           
@@ -229,19 +225,14 @@ class MyAppoinmentList extends Component {
                 </Card> 
                 </ScrollView>
              
-           : <FlatList
-           data={spinnerData} 
-         renderItem={({ item, index }) => 
-           <ListItem >
-           <ActivityIndicator color='blue'
-           style={[styles.container, styles.horizontal]}
+           : 
+           <Spinner color='blue'
+           style={[styles.containers, styles.horizontal]}
             visible={true}
             size ={"large"}
-           
-            />
-               
-           
-           </ListItem>}
+            overlayColor='none'
+            cancelable={ true}
+
             />  
            
             }
@@ -301,7 +292,7 @@ const styles = StyleSheet.create({
         marginRight: 'auto',
 
     },
-    container: {
+    containers: {
         flex: 1,
         justifyContent: 'center'
       },
