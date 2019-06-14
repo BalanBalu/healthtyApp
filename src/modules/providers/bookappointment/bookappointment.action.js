@@ -36,6 +36,25 @@ export async function searchDoctorList(userId, searchInputvalues, isLoading = tr
     }
   }
 }
+/* user gives Rate and Reviews */
+
+export async function addReview(userId,insertUserReviews, isLoading = true) {
+  try {
+    let endPoint = '/user/'+ userId + '/review';
+    console.log(endPoint+'endPoint');
+
+    let response = await postService(endPoint, insertUserReviews);
+    let respData = response.data;
+    console.log(JSON.stringify(respData) + 'respData');
+
+    return respData;
+  } catch (e) {
+    return {
+      message: 'exception' + e,
+      success: false
+    }
+  }
+}
 /*get doctor availability for patient view doctor profile */
 
 export async function viewdoctorProfile(doctorIds, isLoading = true) {
