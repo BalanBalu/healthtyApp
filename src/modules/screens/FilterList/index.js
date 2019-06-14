@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import { Container, Content, Text, Picker, CheckBox, Title, Header, H3, Button, Item, Card, CardItem, List, ListItem, Left, Right, Thumbnail, Body, Icon, locations, ScrollView, ProgressBar, Switch } from 'native-base';
 import { Col, Row, Grid } from 'react-native-easy-grid';
 import { connect } from 'react-redux'
-import { StyleSheet, Image, TouchableOpacity, View } from 'react-native';
+import { StyleSheet, Image,FlatList, TouchableOpacity, View } from 'react-native';
 import Autocomplete from 'react-native-autocomplete-input';
 
 
@@ -18,7 +18,13 @@ class FilterList extends Component {
             genderSelected: ['M', 'F', 'O'],
             genderSelect: '',
             categoryList: [],
-            selectedCategory: ''
+            sampleServiceArray:[],
+            serviceList:[],
+            selectedCategory: '',
+            serviceCheckBox:[false],
+            selectedService:[],
+            serviceValue:''
+
         }
     }
 
@@ -29,30 +35,36 @@ class FilterList extends Component {
         console.log('doctorData' + JSON.stringify(this.state.doctorData));
         let sampleLangArray = [];
         let sampleCategoryArray = [];
+        let sampleServiceArray = [];
+        let conditionCategoryArry=[];
+let conditionServiceArry=[];
 
         for (var data in this.state.doctorData) {
             if (this.state.doctorData[data].language) {
+                
                 Array.prototype.push.apply(sampleLangArray, this.state.doctorData[data].language)
             }
             if (this.state.doctorData[data].specialist) {
                 this.state.doctorData[data].specialist.forEach(element => {
 
-                    if (!sampleCategoryArray.includes(element.category)) {
-                        let sampleObject = { id: element.category_id, value: element.category };
-                        sampleCategoryArray.push(sampleObject)
+                    if (!conditionCategoryArry.includes(element.category_id)&&!conditionServiceArry.includes(element.service_id)) {
+                        conditionCategoryArry.push(element.category_id);
+                        conditionServiceArry.push(element.service_id);
+                        let sampleCategoryObject = { id: element.category_id, value: element.category };
+                        let sampleServiceObject = { id: element.service_id, value: element.service };
+                        sampleCategoryArray.push(sampleCategoryObject);
+                        sampleServiceArray.push(sampleServiceObject);
                     }
                 })
             }
         }
-        await this.setState({ languageData: sampleLangArray, categoryList: sampleCategoryArray });
-        // console.log('this.state.categoryList' + this.state.categoryList);
-        // console.log('this.state.languageData' + this.state.languageData);
-
-
+        await this.setState({ languageData: sampleLangArray, categoryList: sampleCategoryArray,serviceList:sampleServiceArray });
+        // console.log('this.state.categoryList' +JSON.stringify(this.state.categoryList));
+        // console.log('this.state.serviceList' +JSON.stringify(this.state.serviceList));
     }
 
     /* send multiple Filter values   */
-    sendFilterData = async () => {
+    sendFilteredData = async () => {
         let filterData = [{
             type: 'language',
             value: [this.state.typeLanguage]
@@ -60,10 +72,18 @@ class FilterList extends Component {
         {
             type: "gender_preference",
             value: [this.state.genderSelect]
+        },
+        {
+            type: "category",
+            value: [this.state.selectedCategory]
+        },
+        {
+            type: "service",
+            value: [this.state.serviceValue]
         }
         ]
         console.log('filterData' + JSON.stringify(filterData));
-        if (this.state.typeLanguage == '') {
+        if (this.state.genderSelect == '') {
             alert("We can't Find the Empty data");
         }
         else {
@@ -82,7 +102,7 @@ class FilterList extends Component {
 
     }
     /*  Select multiple Or single Genders */
-    clickedCheckBox = (genderIndex, genderSelect) => {
+    clickedGenderInCheckBox = (genderIndex, genderSelect) => {
         let sampleArray = this.state.genderPreferenceCheck;
         sampleArray[genderIndex] = !this.state.genderPreferenceCheck[genderIndex];
         this.setState({ genderPreferenceCheck: sampleArray });
@@ -96,7 +116,22 @@ class FilterList extends Component {
             this.state.genderSelected.splice(deSelectedIndex, 1);
         }
     }
+    clickedServiceInCheckBox=(serviceIndex,serviceValue)=>{
 
+let sampleArray = this.state.serviceCheckBox;
+sampleArray[serviceIndex] = !this.state.serviceCheckBox[serviceIndex];
+this.setState({ serviceCheckBox: sampleArray });
+this.setState({ serviceValue: serviceValue })
+console.log('serviceValue'+this.state.serviceValue);
+
+if (sampleArray[serviceIndex] == true) {
+    this.state.selectedService.splice(serviceIndex, 0, serviceValue);
+} else {
+    let deSelectedIndex = this.state.selectedService.indexOf(serviceValue);
+    this.state.selectedService.splice(deSelectedIndex, 1);
+}
+
+    }
     render() {
         const { typeLanguage } = this.state;
         const languageData = this.findLanguage(typeLanguage);
@@ -150,7 +185,7 @@ class FilterList extends Component {
                         <Item style={{ borderBottomWidth: 0, backgroundColor: '#F1F1F1', marginTop: 10, borderRadius: 5 }}>
                             <Picker style={{ fontFamily: 'OpenSans' }}
                                 mode="dropdown"
-                                placeholder="Select Degree"
+                                placeholder="Select Category"
                                 iosIcon={<Icon name="arrow-down" />}
                                 textStyle={{ color: "#5cb85c" }}
                                 itemStyle={{
@@ -160,44 +195,35 @@ class FilterList extends Component {
                                 }}
                                 itemTextStyle={{ color: 'gray' }}
                                 style={{ width: 25 }}
-                                onValueChange={(category) => { console.log(category); this.setState({ selectedCategory: category }) }}
+                                onValueChange={(category) => { this.setState({ selectedCategory: category}) }}
                                 selectedValue={this.state.selectedCategory}
                             >
                                 {this.state.categoryList.map((category, key) => {
-                                    return <Picker.Item label={String(category)} value={String(category)} key={key}
+                                    console.log(category);
+                                    return <Picker.Item label={String(category.value)} value={String(category)} key={key}
                                     />
                                 })
                                 }
                             </Picker>
 
                         </Item>
-                        <CardItem style={{ paddingLeft: 0, paddingRight: 0 }}>
-                            <Grid style={{ marginTop: 10 }}>
-                                <Row>
-                                    <Col style={{ width: '50%' }}>
-                                        <ListItem noBorder>
-                                            <CheckBox checked={true} />
-                                            <Body>
-                                                <Text style={styles.customText}>Dental consultation</Text>
-                                            </Body>
-                                        </ListItem>
+                      
 
-                                    </Col>
-                                    <Col style={{ width: '50%' }}>
-                                        <ListItem noBorder>
-                                            <CheckBox checked={true} />
-                                            <Body>
-                                                <Text style={styles.customText}>Dental consultation</Text>
-                                            </Body>
-                                        </ListItem>
-                                    </Col>
 
-                                </Row>
-
-                            </Grid>
-
-                        </CardItem>
-
+                        <FlatList
+                numColumns={2}
+                data={this.state.serviceList}
+                extraData={this.state}
+                keyExtractor={(item, index) => index.toString()}
+                renderItem={({ item, index }) =>
+            
+                         <Col style={{ width: '50%' }}>
+                                                 <CheckBox color={"#775DA3"} selectedColor={"#775DA3"} style={{ marginLeft: 11 }}
+                                                    checked={this.state.serviceCheckBox[index]}  onPress={() => this.clickedServiceInCheckBox(index,item.value )} />
+                                                     <Text style={styles.customText}>{item.value}</Text>
+                        </Col>
+                } />
+                       
                     </Card>
                     <Card style={{ borderRadius: 10 }}>
                         <CardItem header bordered>
@@ -230,19 +256,19 @@ class FilterList extends Component {
                             <Col>
                                 <Item style={{ marginTop: 10, borderBottomWidth: 0 }}>
                                     <CheckBox color={"#775DA3"} selectedColor={"#775DA3"} style={{ marginLeft: 11 }}
-                                        checked={this.state.genderPreferenceCheck[0]} onPress={() => this.clickedCheckBox(0, "M")} />
+                                        checked={this.state.genderPreferenceCheck[0]} onPress={() => this.clickedGenderInCheckBox(0, "M")} />
                                     <Text style={{ marginLeft: 11, color: 'gray', fontFamily: 'OpenSans' }}>Male</Text>
                                 </Item></Col>
                             <Col>
                                 <Item style={{ marginTop: 10, borderBottomWidth: 0 }}>
                                     <CheckBox color={"#775DA3"} selectedColor={"#775DA3"} style={{ marginLeft: 11 }}
-                                        checked={this.state.genderPreferenceCheck[1]} onPress={() => this.clickedCheckBox(1, "F")} />
+                                        checked={this.state.genderPreferenceCheck[1]} onPress={() => this.clickedGenderInCheckBox(1, "F")} />
                                     <Text style={{ marginLeft: 11, color: 'gray', fontFamily: 'OpenSans' }}>Female</Text>
                                 </Item></Col>
                             <Col>
                                 <Item style={{ marginTop: 10, borderBottomWidth: 0 }}>
                                     <CheckBox color={"#775DA3"} selectedColor={"#775DA3"} style={{ marginLeft: 11 }}
-                                        checked={this.state.genderPreferenceCheck[2]} onPress={() => this.clickedCheckBox(2, "O")} />
+                                        checked={this.state.genderPreferenceCheck[2]} onPress={() => this.clickedGenderInCheckBox(2, "O")} />
                                     <Text style={{ marginLeft: 11, color: 'gray', fontFamily: 'OpenSans' }}>Others</Text>
                                 </Item></Col>
                         </Item>
@@ -275,7 +301,7 @@ class FilterList extends Component {
                         </CardItem>
 
                     </Card>
-                    <Button block success style={{ borderRadius: 17, marginLeft: 3 }} onPress={this.sendFilterData}>
+                    <Button block success style={{ borderRadius: 17, marginLeft: 3 }} onPress={this.sendFilteredData}>
                         <Text uppercase={false} >Submit</Text>
                     </Button>
                 </Content>
