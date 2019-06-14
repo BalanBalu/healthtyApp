@@ -3,28 +3,54 @@ import { connect } from 'react-redux'
 import { Container, Content, Card, Text } from 'native-base';
 import { StyleSheet, View, Image, PermissionsAndroid } from 'react-native';
 import MapboxGL from '@react-native-mapbox-gl/maps';
-// import { Directions } from 'react-native-gesture-handler';
+// import MapboxClient from 'mapbox';
 
 let token = 'pk.eyJ1IjoiYnJpdmluc3JlZSIsImEiOiJjanc2Y3hkZHcxOGhvNDVwOXRhMWo2aDR1In0.EV8iYtfMxEcRcn8HcZ0ZPA';
-
 MapboxGL.setAccessToken(token);
+let hospitaldestination={};
+
 class Mapbox extends Component {
   constructor(props) {
     super(props)
 
     this.state = {
       currentLocation: null,
-
+      mapboxClient:null
     }
-
   }
 
   async componentDidMount() {
-    console.log("Component")
-    await this.requestLocationPermission();
-    // data.location.location.coordinates = [13.0694, 80.1948];
+    console.log(this.props.navigation);
+    const { navigation } = this.props;
+    const data = navigation.getParam('coordinates');
+    data.location.location.coordinates = [13.0694, 80.1948]; //chennai location
+    hospitaldestination = {
+      lat: data.location.location.coordinates[1],
+      lon: data.location.location.coordinates[0]
+    }
+    await this.getUserLocation();
+        // await this.requestLocationPermission();
+
+    /*fetch directions*/
+    // this.setState({ mapboxClient: new MapboxClient(token) }, () => {
+    //   this.fetchDirections(this.state.currentLocation,this.props.coordinates);
+    // });
+    // console.log(this.state.mapboxClient);
+
+
+    /*zoom*/
+    // const zoomMap = await this._map.getZoom();
+    // this.setState({currentZoom:zoomMap})
+    // console.log(JSON.stringify(this.state.currentZoom)+'hai');
+
+
+
+  }
+
+  getUserLocation(){
     navigator.geolocation.getCurrentPosition(
       (position) => {
+        // const zoomMap = this._map.getZoom();
         const origin_coordinates = [position.coords.longitude, position.coords.latitude];
 
         console.log(JSON.stringify(position) + 'position origin_coordinates');
@@ -34,51 +60,46 @@ class Mapbox extends Component {
       },
 
       (error) => alert(JSON.stringify(error)),
-      { enableHighAccuracy: true, timeout: 2000, maximumAge: 3600000 }
-
+      { enableHighAccuracy: true }
     )
-
-
   }
-  async requestLocationPermission() {
-    try {
-      const granted = await PermissionsAndroid.request(
-        PermissionsAndroid.PERMISSIONS.ACCESS_FINE_LOCATION,
-        {
 
-          'title': 'Location Permission',
-          'message': 'This App needs access to your location ' +
-            'so we can know where you are.'
-        }
-      )
-      if (granted === PermissionsAndroid.RESULTS.GRANTED) {
-        console.log("In mobile.Please enable the location ")
-      } else {
-        console.log("Location permission denied")
-      }
-    } catch (err) {
-      console.warn(err)
-    }
+  fetchDirections(){
+    console.log("Directions");
   }
+
+
+  
+// requestLocationPermission() {
+//     try {
+//       const granted = await PermissionsAndroid.request(
+//         PermissionsAndroid.PERMISSIONS.ACCESS_FINE_LOCATION,
+//         {
+
+//           'title': 'Location Permission',
+//           'message': 'This App needs access to your location ' +
+//             'so we can know where you are.'
+//         }
+//       )
+//       if (granted === PermissionsAndroid.RESULTS.GRANTED) {
+//         console.log("In mobile.Please enable the location ")
+//       } else {
+//         console.log("Location permission denied")
+//       }
+//     } catch (err) {
+//       console.warn(err)
+//     }
+//   }
 
 
   render() {
-    const { navigation } = this.props;
-    const data = navigation.getParam('coordinates');
-    data.location.location.coordinates = [13.0694, 80.1948]; //chennai location
-    var hospitaldestination = {
-      lat: data.location.location.coordinates[1],
-      lon: data.location.location.coordinates[0]
-    }
-
-
     return (
       <Container>
         <Content contentContainerStyle={{ flex: 1 }}>
           <View style={{ flex: 1 }}>
             <MapboxGL.MapView
               ref={c => (this._map = c)}
-              zoomLevel={25}
+              zoomLevel={12}
               zoomEnabled={true}
               showUserLocation={true}
               centerCoordinate={[hospitaldestination.lat, hospitaldestination.lon]}
@@ -115,10 +136,6 @@ class Mapbox extends Component {
             <Text style={{ borderRadius: 10, color: 'gray', paddingTop: 15 }}>Location details</Text>
 
           </Card>
-
-
-
-
 
         </Content>
       </Container>
