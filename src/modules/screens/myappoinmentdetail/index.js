@@ -80,8 +80,8 @@ class MyAppoinmentList extends Component {
             endDate: endData,
             startDate:"2018-01-01"
           };        
-          let pastAppointmentResult = await getUserAppointments(this.state.userId, filters)
-          let viewUserReviewResult = await viewUserReviews('user',this.state.userId);
+          let pastAppointmentResult = await getUserAppointments(userId, filters)
+          let viewUserReviewResult = await viewUserReviews('user',userId);
           if (pastAppointmentResult.success){
           pastAppointmentResult=pastAppointmentResult.data;
           viewUserReviewResult=viewUserReviewResult.data;
@@ -103,7 +103,7 @@ class MyAppoinmentList extends Component {
              condition=false;
              }
            });  
-                  
+            console.log('past appointment');      
            console.log(appointmentData)
              this.setState({ pastData: appointmentData, isLoading:true});
         }
@@ -117,6 +117,7 @@ class MyAppoinmentList extends Component {
        
 
         let data=  (index === 0 ? this.state.upComingData:this.state.pastData)
+        console.log(index);
         this.setState({
             ...this.state,
             selectedIndex: index,
@@ -133,18 +134,20 @@ class MyAppoinmentList extends Component {
         return (
 
             <View style={styles.container}>
-                <SegmentedControlTab tabsContainerStyle={{ width: 250, marginLeft: 'auto', marginRight: 'auto' }}
+               <Card>
+               
+                <SegmentedControlTab tabsContainerStyle={{ width: 250, marginLeft: 'auto', marginRight: 'auto',marginTop:'auto' }}
                     values={["Upcoming", "Past"]}
                     selectedIndex={this.state.selectedIndex}
                     onTabPress={this.handleIndexChange}
                     activeTabStyle={{ backgroundColor: '#775DA3', borderColor: '#775DA3' }}
                     tabStyle={{ borderColor: '#775DA3' }}
                 />
+               
                { isLoading==true?
-
                     data.length === 0 ?
+                   
                     <Card transparent style={{ alignItems: 'center', justifyContent: 'center', marginTop: '20%' }}>
-                       
                         <Thumbnail square source={noAppointmentImage} style={{ height: 100, width: 100, marginTop: '10%' }} />
 
                             <Text style={{ fontFamily: 'OpenSans', fontSize: 14, marginTop: '10%' }} note>No appoinments are scheduled</Text>
@@ -153,10 +156,11 @@ class MyAppoinmentList extends Component {
                                     <Text  >Book Now</Text>
                                 </Button>
                             </Item>
-                    </Card> :
+                            </Card>
+                     :
                     
                  <ScrollView>
-                <Card style={{ padding: 5, borderRadius: 10, marginTop: 15 }}>                  
+                              
                 <List>
               
                 <FlatList
@@ -172,7 +176,7 @@ class MyAppoinmentList extends Component {
                                 <Thumbnail square source={{ uri: 'https://res.cloudinary.com/demo/image/upload/w_200,h_200,c_thumb,g_face,r_max/face_left.png' }} style={{ height: 60, width: 60 }} />
                             </Left>
                             <Body>
-                                <Text style={{ fontFamily: 'OpenSans' }}>Dr.{item.appointmentResult.doctorInfo.first_name+' '+item.appointmentResult.doctorInfo.last_name} </Text>
+                                <Text style={{ fontFamily: 'OpenSans' }}>{item.appointmentResult.doctorInfo.prefix||'Dr'+'.'+item.appointmentResult.doctorInfo.first_name+' '+item.appointmentResult.doctorInfo.last_name} </Text>
                                 <Item style={{ borderBottomWidth: 0 }}>
                                     <Text style={{ fontFamily: 'OpenSans' }}>Internist</Text>
                                     {selectedIndex==1&& item.ratting!=undefined&&
@@ -185,30 +189,45 @@ class MyAppoinmentList extends Component {
                                     </Item>
                                     {selectedIndex==0&&
                                 <Item style={{ borderBottomWidth: 0 }}>
-                                    {item.appointmentResult.appointment_status=='PENDING'&&
-                                    <Text style={{ fontFamily: 'OpenSans', fontSize: 12 ,color:'red' }} note>{item.appointmentResult.appointment_status }</Text>
-                                    }{item.appointmentResult.appointment_status=='APPROVED'&&
-                                    <Text style={{ fontFamily: 'OpenSans', fontSize: 12 ,color:'green' }} note>{item.appointmentResult.appointment_status }</Text>
+                                    {item.appointmentResult.appointment_status=='PENDING'?
+                                    <Text style={{ fontFamily: 'OpenSans', fontSize: 12 ,color:'red' }} note>waiting for confirmation</Text>
+                                    :item.appointmentResult.appointment_status=='APPROVED'?
+                                    <Text style={{ fontFamily: 'OpenSans', fontSize: 12 ,color:'green' }} note>Appointment conformed</Text>
+                                    :  <Text style={{ fontFamily: 'OpenSans', fontSize: 12 ,color:'grey' }} note>{item.appointmentResult.appointment_status }</Text>
                                     }
-
+                                    </Item>
+                                    }
+                                     {selectedIndex==1&&
+                                     <Item style={{ borderBottomWidth: 0 }}>
+                                    { item.appointmentResult.appointment_status=='CLOSED'?
+                                    <Text style={{ fontFamily: 'OpenSans', fontSize: 12 ,color:'red' }} note>Appointment cancelled.</Text>
+                                    
+                                    : item.appointmentResult.appointment_status=='COMPLETED'&&
+                                    <Text style={{ fontFamily: 'OpenSans', fontSize: 12 ,color:'green' }} note>Appointment completed</Text>
+                                     }
+                    
                                 </Item>
                                     }
                               
-                                <Item style={{ borderBottomWidth: 0 }}>
-                                    <Text style={{ fontFamily: 'OpenSans', fontSize: 12 }} note>{formatDate(item.appointmentResult.appointment_starttime,'dddd.MMMM-YY, LT') }</Text>
-                                </Item>
                                 
-                               {selectedIndex==0?
-                              null:item.ratting==undefined? <Item>
-                                 <Button style={styles.shareButton}>
-                              <Text >leave feed back</Text>
+                                    <Text style={{ fontFamily: 'OpenSans', fontSize: 12 }} note>{formatDate(item.appointmentResult.appointment_starttime,'dddd,MMMM DD-YYYY  hh:mm a') }</Text>
+                                
+                                
+                               {selectedIndex==1&&
+                              item.appointmentResult.appointment_status=='PENDING_REVIEW'?<Item style={{ borderBottomWidth: 0}}>
+                                 <Button style={styles.bookingButton}>
+                              <Text > feed back</Text>
+                          </Button>
+                          <Button style={styles.shareButton} >
+                              <Text >CANCEL</Text>
                           </Button>
                          
-                      </Item>:  <Item style={{ borderBottomWidth: 0,marginLeft:20 }}>
+                      </Item>: selectedIndex==1&& 
+                             <Item style={{ borderBottomWidth: 0}}>
                               <Button style={styles.bookingButton}>
                                   <Text  >Book Again</Text>
                               </Button>
-                              <Button style={styles.shareButton}>
+                              <Button style={styles.shareButton} >
                                   <Text >Share</Text>
                               </Button>
                           </Item>
@@ -222,7 +241,7 @@ class MyAppoinmentList extends Component {
                      keyExtractor={(item, index) => index.toString()}/>  
                        
                    </List>
-                </Card> 
+              
                 </ScrollView>
              
            : 
@@ -236,6 +255,7 @@ class MyAppoinmentList extends Component {
             />  
            
             }
+            </Card>
             </View>
         );
     }
@@ -252,25 +272,25 @@ const styles = StyleSheet.create({
         padding: 5
     },
     bookingButton: {
-        marginTop: 12,
+        marginTop: 10,
         backgroundColor: '#775DA3',
-        marginLeft: 15,
+         marginLeft:35,
         borderRadius: 10,
         width: 'auto',
         height: 40,
         color: 'white',
-        fontSize: 12,
+        fontSize: 1,
         textAlign: 'center'
     },
     shareButton: {
         marginTop: 12,
         backgroundColor: 'gray',
-        marginLeft: 15,
+        marginRight:10,
         borderRadius: 10,
         width: 'auto',
         height: 40,
         color: 'white',
-        fontSize: 12,
+        fontSize: 1,
         textAlign: 'center',
         justifyContent: 'center'
 
