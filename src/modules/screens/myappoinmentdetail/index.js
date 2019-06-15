@@ -63,8 +63,7 @@ class MyAppoinmentList extends Component {
                
           upCommingAppointmentResult.map(appointmentResult=> {
             appointmentData.push({appointmentResult})
-               
-             });
+          });
             this.setState({ upComingData: appointmentData, isLoading:true,data:appointmentData});
             }
            console.log(this.state.upComingData);
@@ -171,7 +170,7 @@ class MyAppoinmentList extends Component {
                          
                           
                           
-                        <ListItem avatar onPress={() => this.props.navigation.navigate('AppointmentInfo', { data : item })}>
+                        <ListItem avatar onPress={() => this.props.navigation.navigate('AppointmentInfo', { data : item.appointmentResult })}>
                            
                             <Left>
                                 <Thumbnail square source={{ uri: 'https://res.cloudinary.com/demo/image/upload/w_200,h_200,c_thumb,g_face,r_max/face_left.png' }} style={{ height: 60, width: 60 }} />
