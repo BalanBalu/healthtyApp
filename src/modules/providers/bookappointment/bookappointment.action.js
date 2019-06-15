@@ -36,6 +36,25 @@ export async function searchDoctorList(userId, searchInputvalues, isLoading = tr
     }
   }
 }
+/* user gives Rate and Reviews */
+
+export async function addReview(userId,insertUserReviews, isLoading = true) {
+  try {
+    let endPoint = '/user/'+ userId + '/review';
+    console.log(endPoint+'endPoint');
+
+    let response = await postService(endPoint, insertUserReviews);
+    let respData = response.data;
+    console.log(JSON.stringify(respData) + 'respData');
+
+    return respData;
+  } catch (e) {
+    return {
+      message: 'exception' + e,
+      success: false
+    }
+  }
+}
 /*get doctor availability for patient view doctor profile */
 
 export async function viewdoctorProfile(doctorIds, isLoading = true) {
@@ -154,13 +173,12 @@ export async function appointmentDetails(doctorId, appointmentId, isLoading = tr
 
 /* Update Appoiontment Status */
 
-export async function acceptAppointment(doctorId, appointmentId, requestData, isLoading = true) {
+export async function appointmentStatusUpdate(doctorId, appointmentId, requestData, isLoading = true) {
   try {
     let endPoint = 'doctor/' + doctorId + '/appointment/' + appointmentId
     let response = await putService(endPoint, requestData);
     let respData = response.data;
     console.log('respData'+JSON.stringify(respData))
-
     return respData;
   } catch (e) {
     return {
