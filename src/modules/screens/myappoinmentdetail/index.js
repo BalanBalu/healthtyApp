@@ -126,7 +126,8 @@ class MyAppoinmentList extends Component {
         });
        
     };
-
+    
+       
     render() {
         const { data,selectedIndex,reviewData,isLoading } = this.state;
               
@@ -134,7 +135,7 @@ class MyAppoinmentList extends Component {
         return (
 
             <View style={styles.container}>
-               <Card>
+               <Card transparent>
                
                 <SegmentedControlTab tabsContainerStyle={{ width: 250, marginLeft: 'auto', marginRight: 'auto',marginTop:'auto' }}
                     values={["Upcoming", "Past"]}
@@ -215,7 +216,7 @@ class MyAppoinmentList extends Component {
                                 
                                {selectedIndex==1&&
                               item.appointmentResult.appointment_status=='PENDING_REVIEW'?<Item style={{ borderBottomWidth: 0}}>
-                                 <Button style={styles.bookingButton}>
+                                 <Button style={styles.bookingButton} onPress={() => this.props.navigation.navigate('insertReview')}>
                               <Text > feed back</Text>
                           </Button>
                           <Button style={styles.shareButton} >
@@ -250,7 +251,7 @@ class MyAppoinmentList extends Component {
             visible={true}
             size ={"large"}
             overlayColor='none'
-            cancelable={ true}
+            cancelable={ false}
 
             />  
            
@@ -277,7 +278,7 @@ const styles = StyleSheet.create({
          marginLeft:35,
         borderRadius: 10,
         width: 'auto',
-        height: 40,
+        height: 30,
         color: 'white',
         fontSize: 1,
         textAlign: 'center'
@@ -289,7 +290,7 @@ const styles = StyleSheet.create({
         marginLeft:5,
         borderRadius: 10,
         width: 'auto',
-        height: 40,
+        height: 30,
         color: 'white',
         fontSize: 1,
         textAlign: 'center',
