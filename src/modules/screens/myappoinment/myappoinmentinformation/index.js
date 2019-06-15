@@ -5,7 +5,7 @@ import { StyleSheet, AsyncStorage } from 'react-native';
 import StarRating from 'react-native-star-rating';
 import moment from 'moment';
 
-import { viewUserReviews, bindDoctorDetails, acceptAppointment } from '../../../providers/bookappointment/bookappointment.action';
+import { viewUserReviews, bindDoctorDetails, appointmentStatusUpdate } from '../../../providers/bookappointment/bookappointment.action';
 import { formatDate, dateDiff } from '../../../../setup/helpers';
 import { Loader } from '../../../../components/ContentLoader'
 import { RenderHospitalAddress } from '../../../common';
@@ -41,7 +41,6 @@ class AppointmentDetails extends Component {
     await this.setState({ doctorId: doctorId, appointmentId: appointmentId, userId: userId, data: appointmentData })
     this.getDoctorDetails(doctorId);
     this.getUserReviews(appointmentId);
-    this.updateAppointmentStatus(data, status)
 
     console.log('state data : ' + JSON.stringify(this.state.data));
   }
@@ -85,6 +84,9 @@ class AppointmentDetails extends Component {
     console.log(JSON.stringify(JSON.stringify(this.state.reviewData)));
   }
 
+  accept(data, status) {
+    this.updateAppointmentStatus(data, status)
+  }
   /* Update Appoiontment Status */
 
   updateAppointmentStatus = async (data, updatedStatus) => {
@@ -96,18 +98,19 @@ class AppointmentDetails extends Component {
         startTime: data.appointment_starttime,
         endTime: data.appointment_endtime,
         status: updatedStatus,
-        status_by: 'USER',
+        status_by: 'USER'
       };
       console.log(requestData);
 
-     let userId = await AsyncStorage.getItem('userId');
-      console.log('userId'+userId);
-      let result = await acceptAppointment(this.state.doctorId, this.state.appointmentId, requestData);
-      this.setState({isLoading : false })
+      let userId = await AsyncStorage.getItem('userId');
+      console.log('userId' + userId);
+      let result = await appointmentStatusUpdate(this.state.doctorId, this.state.appointmentId, requestData);
+      this.setState({ isLoading: false })
       console.log(result);
-      console.log('update result' +JSON.stringify(result));
-      console.log(JSON.stringify(result.appointmentData.appointment_status));
+      console.log('update result' + JSON.stringify(result));
+      // console.log(JSON.stringify(result.appointmentData.appointment_status));
       let appointmentStatus = result.appointmentData.appointment_status;
+      console.log(appointmentStatus);
 
       if (result.success) {
         Toast.show({
@@ -116,10 +119,15 @@ class AppointmentDetails extends Component {
         })
         this.setState({ appointmentStatus: appointmentStatus });
       }
+
     }
     catch (e) {
-       console.log(e);
+      console.log(e);
     }
+  }
+  navigateCancelAppoointment(){
+    this.props.navigation.navigate('cancelAppointment', { navigateData:this.state.data})
+
   }
 
   render() {
@@ -142,7 +150,9 @@ class AppointmentDetails extends Component {
                     <Thumbnail square source={{ uri: 'https://static1.squarespace.com/static/582bbfef9de4bb07fe62ab18/t/5877b9ccebbd1a124af66dfe/1484241404624/Headshot+-+Circular.png?format=300w' }} style={{ height: 86, width: 86 }} />
                   </Left>
                   <Body>
-                    <Text style={fontSize = 13}>{(doctorData && doctorData.first_name) + " " + (doctorData && doctorData.last_name) + "," + (doctorData.education && doctorData.education[0].degree)}</Text>
+                    <Text style={{ fontSize: 16 }}>{'Dr.' + (doctorData && doctorData.first_name) + " " + (doctorData && doctorData.last_name)},
+                    <Text style={{ fontSize: 10 }}>{doctorData.education && doctorData.education[0].degree}</Text>
+                    </Text>
                     <Text note style={styles.customText}>{doctorData.specialist && doctorData.specialist[0].category} </Text>
                   </Body>
 
@@ -167,8 +177,8 @@ class AppointmentDetails extends Component {
 
                   <Col style={{ width: 300, }}>
                     <Button disabled={true} block style={{ borderRadius: 10, backgroundColor: '#D7BDE2' }}>
-                      <Text style={{ color: 'black', fontSize: 16 }}>{this.state.appointmentStatus == 'APPROVED'?'APPROVED':data.appointment_status == 'PROPOSED_NEW_TIME' ?
-                        'PROPOSED NEW TIME' : data.appointment_status == 'PENDING_REVIEW' ? 'COMPLETED' : data.appointment_status||this.state.appointStatus}
+                      <Text style={{ color: 'black', fontSize: 16 }}>{this.state.appointmentStatus == 'APPROVED' ? 'APPROVED' : data.appointment_status == 'PROPOSED_NEW_TIME' ?
+                        'PROPOSED NEW TIME' : data.appointment_status == 'PENDING_REVIEW' ? 'PENDING REVIEW' : data.appointment_status || this.state.appointStatus}
                       </Text>
                     </Button>
 
@@ -176,21 +186,20 @@ class AppointmentDetails extends Component {
 
                 </Grid>
                 <Grid style={{ marginTop: 5 }}>
-                {data.appointment_status == 'APPROVED' ||  this.state.appointmentStatus === 'APPROVED'?
+                  {data.appointment_status == 'APPROVED' || this.state.appointmentStatus === 'APPROVED' ?
                     <Col style={width = 'auto'}>
-                      <Button block danger style={{ margin: 1, marginTop: 10, marginLeft: 1, borderRadius: 30, padding: 15, height: 40, width: "auto" }}>
+                      <Button block danger style={{ margin: 1, marginTop: 10, marginLeft: 1, borderRadius: 30, padding: 15, height: 40, width: "auto" }} onPress={() => this.accept(data, 'REJECTED')}>
                         <Text style={{ textAlign: 'center', fontFamily: 'OpenSans' }}>CANCEL APPOINTMENT</Text>
                       </Button>
-                    </Col> :  
-               
+                    </Col> :
                     data.appointment_status == 'PROPOSED_NEW_TIME' ?
-                     <Item style={{ borderBottomWidth: 0, justifyContent: 'center' }}>
-                        <Button success style={styles.statusButton} onPress={() => this.updateAppointmentStatus( data, 'APPROVED')}>
+                      <Item style={{ borderBottomWidth: 0, justifyContent: 'center' }}>
+                        <Button success style={styles.statusButton} onPress={() => this.accept(data, 'APPROVED')}>
                           <Text style={{ textAlign: 'center', fontFamily: 'OpenSans' }}>ACCEPT</Text>
                         </Button>
-                        <Button danger style={styles.statusButton}>
+                        <Button danger style={styles.statusButton} onPress={() => this.accept(data, 'REJECTED')}>
                           <Text style={{ textAlign: 'center', fontFamily: 'OpenSans' }}> CANCEL </Text></Button>
-                      </Item>: null}
+                      </Item> : null}
                 </Grid>
 
               </List>
@@ -249,6 +258,8 @@ class AppointmentDetails extends Component {
                           <Button block success style={styles.reviewButton}>
                             {/* <Icon name='add' /> */}
                             <Text style={styles.customText}> ADD FEEDBACK </Text>
+                            <Icon name="create" style={styles.editProfilePencil}></Icon>
+
                           </Button>
                         </Col>
                       </Grid>
@@ -312,7 +323,7 @@ class AppointmentDetails extends Component {
                     <Left >
                     </Left>
                     <Body>
-                      <Text style={styles.rowText}>
+                      <Text style={styles.customText}>
 
                         {data.disease_description}
 
@@ -369,7 +380,7 @@ class AppointmentDetails extends Component {
                     <Left >
                     </Left>
                     <Body>
-                      <Text style={styles.rowText}>
+                      <Text style={styles.customText}>
                         {doctorData.language && doctorData.language.toString()}
                       </Text>
                     </Body>
@@ -443,7 +454,7 @@ const styles = StyleSheet.create({
   {
     fontFamily: 'OpenSans',
     color: '#000',
-    fontSize: 16,
+    fontSize: 15,
     // alignItems: 'flex-start'
     // marginRight: 45 
 
@@ -490,5 +501,12 @@ const styles = StyleSheet.create({
     padding: 15,
     height: 35,
     width: "auto"
+  },
+  editProfilePencil: {
+    color: 'white',
+    marginLeft: '1%',
+    fontSize: 25
   }
+
+
 });
