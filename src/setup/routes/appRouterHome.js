@@ -20,6 +20,7 @@ import FilterList from "../../modules/screens/FilterList";
 import PaymentPage from "../../modules/screens/PaymentPage";
 import PaymentReview from "../../modules/screens/PaymentReview";
 import PaymentSuccess from "../../modules/screens/PaymentSuccess";
+import InsertReview from '../../modules/screens/Reviews/InsertReview';
 
 
 import { Col, Grid, Row } from 'react-native-easy-grid';
@@ -37,6 +38,7 @@ import Mapbox from "../../modules/screens/bookappoinment/Mapbox";
 import MyAppointments from '../../modules/screens/myappoinment';
 import AppointmentDetails from '../../modules/screens/myappoinment/myappoinmentinformation';
 import MyAppoinmentList from '../../modules/screens/myappoinmentdetail';
+import CancelAppointment from "../../modules/screens/bookappoinment/cancelAppointment";
 
 
 const routes = {
@@ -137,7 +139,7 @@ const AppointMentstack1 = createStackNavigator({
           <Icon name="arrow-back" style={{ marginLeft: 18, color: '#fff', fontFamily: 'opensans-semibold' }}></Icon>
         </TouchableOpacity>
       ),
-     
+
     })
   },
   Filters: {
@@ -152,7 +154,7 @@ const AppointMentstack1 = createStackNavigator({
       title: 'Book Appointment'
     }
   },
-  "Mapbox":{
+  "Mapbox": {
     screen: Mapbox,
     navigationOptions: {
       title: 'Mapbox'
@@ -177,13 +179,19 @@ const AppointMentstack1 = createStackNavigator({
       title: 'Success'
     }
   },
-  "Reviews" : {
-    screen: Reviews,
+  "CancelAppointment": {
+    screen: CancelAppointment,
     navigationOptions: {
-      title: 'Reviews'
+      title: 'Cancel Appointment'
+    }
+  },
+  "InsertReview": {
+    screen: InsertReview,
+    navigationOptions: {
+      title: 'Rate and Review'
     }
   }
- },
+},
   {
     defaultNavigationOptions: ({ navigation }) => ({
       headerStyle: { backgroundColor: '#7E49C3', fontFamily: 'opensans-semibold' },
@@ -191,32 +199,33 @@ const AppointMentstack1 = createStackNavigator({
     })
   });
 
-  const myAppointmentsStack = createStackNavigator({
-    "My Appointments": {
-      screen: MyAppoinmentList,
-      navigationOptions: ({ navigation }) => ({
-        title: 'Appointments',
-        headerLeft: (
-          <TouchableOpacity onPress={() => navigation.navigate('Home')}>
-            <Icon name="arrow-back" style={{ marginLeft: 18, color: '#fff', fontFamily: 'opensans-semibold' }}></Icon>
-          </TouchableOpacity>
-        ),
-      })
-    },
-    "AppointmentInfo": {
-      screen: AppointmentDetails,
-      navigationOptions: {
-        title: 'Appointment Info'
-      }
-    },
-   },
-    {
-      defaultNavigationOptions: ({ navigation }) => ({
-        headerStyle: { backgroundColor: '#7E49C3', fontFamily: 'opensans-semibold' },
-        headerTintColor: 'white',
-      })
-    });
-  
+const myAppointmentsStack = createStackNavigator({
+  "My Appointments": {
+    screen: MyAppoinmentList,
+    navigationOptions: ({ navigation }) => ({
+      title: 'Appointments',
+      headerLeft: (
+        <TouchableOpacity onPress={() => navigation.navigate('Home')}>
+          <Icon name="arrow-back" style={{ marginLeft: 18, color: '#fff', fontFamily: 'opensans-semibold' }}></Icon>
+        </TouchableOpacity>
+      ),
+    })
+  },
+  "AppointmentInfo": {
+    screen: AppointmentDetails,
+    navigationOptions: {
+      title: 'Appointment Info'
+    }
+  },
+
+},
+  {
+    defaultNavigationOptions: ({ navigation }) => ({
+      headerStyle: { backgroundColor: '#7E49C3', fontFamily: 'opensans-semibold' },
+      headerTintColor: 'white',
+    })
+  });
+
 
 
 const HomeStack = createStackNavigator({
@@ -236,8 +245,8 @@ const HomeStack = createStackNavigator({
         <Grid>
 
           <Col>
-            <TouchableOpacity onPress={() => { console.log('clicking'); navigation.navigate('Profile')}} >
-            <Icon name="contact" style={{ color: '#fff', marginRight: 10, fontFamily: 'opensans-semibold' }}></Icon>
+            <TouchableOpacity onPress={() => { console.log('clicking'); navigation.navigate('Profile') }} >
+              <Icon name="contact" style={{ color: '#fff', marginRight: 10, fontFamily: 'opensans-semibold' }}></Icon>
             </TouchableOpacity>
           </Col>
           <Col>
@@ -312,7 +321,7 @@ const DrawerNavigator = createDrawerNavigator({
   Home: HomeStack,
   Profile: ProfileStack,
   "My Appointments": myAppointmentsStack,
-  
+
 },
   {
     initialRouteName: 'Home'
