@@ -286,6 +286,7 @@ const styles = StyleSheet.create({
         marginTop: 12,
         backgroundColor: 'gray',
         marginRight:10,
+        marginLeft:5,
         borderRadius: 10,
         width: 'auto',
         height: 40,
