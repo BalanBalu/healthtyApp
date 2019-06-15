@@ -216,7 +216,7 @@ class MyAppoinmentList extends Component {
                                 
                                {selectedIndex==1&&
                               item.appointmentResult.appointment_status=='PENDING_REVIEW'?<Item style={{ borderBottomWidth: 0}}>
-                                 <Button style={styles.bookingButton} onPress={() => this.props.navigation.navigate('insertReview')}>
+                                 <Button style={styles.bookingButton} onPress={() => this.props.navigation.navigate('InsertReview')}>
                               <Text > feed back</Text>
                           </Button>
                           <Button style={styles.shareButton} >
