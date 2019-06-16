@@ -37,7 +37,7 @@ class FilterList extends Component {
         let sampleCategoryArray = [];
         let sampleServiceArray = [];
         let conditionCategoryArry=[];
-let conditionServiceArry=[];
+        let conditionServiceArry=[];
 
         for (var data in this.state.doctorData) {
             if (this.state.doctorData[data].language) {
@@ -339,7 +339,7 @@ const styles = StyleSheet.create({
         backgroundColor: '#8e8b87',
         flex: 12,
         padding: 1,
-        marginTop: 40,
+        marginTop: 0,
     },
 
     bodyContent: {
