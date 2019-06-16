@@ -38,7 +38,7 @@ class Mapbox extends Component {
       zoom: 12,
       route: null,
       coordinates : [ 77.5946, 12.9716 ],
-      center:[ 77.5946, 12.9716 ],
+      center: null,
       currentLocation: null,
       hospitaldestination: null,
       directions: {}
@@ -46,6 +46,7 @@ class Mapbox extends Component {
   }
 
   async componentDidMount() {
+    debugger
     let isGranted = true;
     if (IS_ANDROID) {
       isGranted = await MapboxGL.requestAndroidLocationPermissions();
@@ -74,11 +75,17 @@ class Mapbox extends Component {
     
     const res = await directionsClient.getDirections(reqOptions).send();
     if (res !== null) {
+      if(res.body) { 
+      const centerCoodinateIntex  = parseInt(res.body.routes[0].geometry.coordinates.length / 2);
+      const centerCoordinates = res.body.routes[0].geometry.coordinates[centerCoodinateIntex];
+        
       this.setState({
         route: makeLineString(res.body.routes[0].geometry.coordinates),
+        center : centerCoordinates
       });
       console.log(res.body.routes[0]);
     }
+  }
   }
   
 
@@ -88,8 +95,9 @@ class Mapbox extends Component {
     this.setState( { zoom : 14});
   }
   async getUserLocation() {
-    const { navigation } = this.props;
-    const data = navigation.getParam('coordinates');
+    //const { navigation, hospitalLocation } = this.props;
+    const { hospitalLocation } = this.props
+    const data = hospitalLocation // navigation.getParam('coordinates');
     //data.location.location.coordinates = [13.0694, 80.1948]; //chennai location
     hospitaldestination = [
       data.location.location.coordinates[1],
@@ -173,10 +181,10 @@ renderOrigin(coordinates) {
           styleURL={MapboxGL.StyleURL.Light}
           style={{flex: 1}}
         >
-        {this.state.hospitaldestination !== null ?  
+        {this.state.center !== null ?  
           <MapboxGL.Camera
-            zoomLevel={6}
-            centerCoordinate={this.state.hospitaldestination}
+            zoomLevel={12}
+            centerCoordinate={this.state.center}
           />: null }
           {this.state.currentLocation !== null ? 
               this.renderOrigin(this.state.currentLocation)
