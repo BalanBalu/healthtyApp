@@ -7,7 +7,7 @@ import StarRating from 'react-native-star-rating';
 
 import {  viewUserReviews, bindDoctorDetails } from '../../providers/bookappointment/bookappointment.action';
 import { formatDate } from '../../../setup/helpers';
-
+import Mapbox from './Mapbox'
 
 class BookAppoinment extends Component {
   constructor(props) {
@@ -28,7 +28,7 @@ class BookAppoinment extends Component {
         prefix: null
       },
       selectedSlotIndex:0,
-      selectedSlotItem: {},
+      selectedSlotItem: null,
       doctorId: '',
       reviews_length: '',
 
@@ -232,8 +232,9 @@ class BookAppoinment extends Component {
           </Card>
 
           <Card transparent style={{ margin: 20, backgroundColor: '#ecf0f1' }}>
-
-            <Card>
+             <Card style={ { height: 250 }}>
+                    
+               {this.state.selectedSlotItem !== null ? <Mapbox hospitalLocation={this.state.selectedSlotItem}/>  : null }        
               <List>
                 <ListItem avatar>
                   <Left>
@@ -248,12 +249,12 @@ class BookAppoinment extends Component {
                     <Text note>{this.state.item.pin_code}</Text>
 
                   </Body>
-                  <Right>
+                  {/* <Right>
                 <Button onPress={() => this.navigateToMap(this.state.slotList)} style={{ borderRadius:7,color:'gray'}}>
                     <Text uppercase={false}>View Map</Text>
                 </Button>
 
-              </Right>
+              </Right> */}
 
                 </ListItem>
               </List>
