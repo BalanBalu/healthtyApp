@@ -1,10 +1,10 @@
 import React, { Component } from 'react';
 import { StyleSheet, TextInput, AsyncStorage } from 'react-native';
 import { Container, Radio, Button, Card, Grid, View, Text, Content, Input, Item, Row, Col } from 'native-base';
-import { appointmentStatusUpdate } from '../../providers/bookappointment/bookappointment.action';
-import { formatDate } from '../../../setup/helpers';
+import { appointmentStatusUpdate } from '../../../providers/bookappointment/bookappointment.action';
+import { formatDate } from '../../../../setup/helpers';
 
-import { Loader } from '../../../components/ContentLoader'
+import { Loader } from '../../../../components/ContentLoader'
 
 
 class CancelAppointment extends Component {
@@ -16,21 +16,25 @@ class CancelAppointment extends Component {
             doctorId: '',
             appointmentId: '',
             statusUpdateReason: '',
+            appointmentStatus: '',
             isLoading: false
           
         }
+        
+
     }
    
     async componentDidMount() {
-              const { navigation } = this.props;
-          const cancelData = navigation.getParam('appointmentDetail');
+       
+        const { navigation } = this.props;
+        const cancelData = navigation.getParam('appointmentDetail');
        let doctorId = cancelData.doctor_id;
         let appointmentId = cancelData._id;
         await this.setState({ doctorId: doctorId, appointmentId: appointmentId, data: cancelData });
         console.log(this.state.data);
 
     }
-    cancel(data, status) {
+    doCancel(data, status) {
         this.updateAppointmentStatus(data, status)
     }
     /* Update Appoiontment Status */
@@ -47,25 +51,27 @@ class CancelAppointment extends Component {
                 statusUpdateReason: this.state.statusUpdateReason,
                 status_by: 'USER'
             };
-            console.log(requestData);
-
+           console.log(requestData);
             let userId = await AsyncStorage.getItem('userId');
             console.log('userId' + userId);
             let result = await appointmentStatusUpdate(this.state.doctorId, this.state.appointmentId, requestData);
             this.setState({ isLoading: false })
             console.log(result);
             console.log('update result' + JSON.stringify(result));
-            // console.log(JSON.stringify(result.appointmentData.appointment_status));
             let appointmentStatus = result.appointmentData.appointment_status;
             console.log(appointmentStatus);
-            //this.setState({ appointmentStatus: appointmentStatus });
+            this.setState({ appointmentStatus: appointmentStatus });
 
         }
         catch (e) {
             console.log(e);
         }
     }
+    backNavigation(){
+        this.props.navigation.navigate('AppointmentInfo', { cancelDetails: this.state.data})
+        console.log(this.state.data);
 
+      }
     render() {
         const { data, isLoading } = this.state;
 
@@ -145,9 +151,10 @@ class CancelAppointment extends Component {
 
                                 <View style={{ flex: 1, flexDirection: 'row' }}>
 
-                                    <Button style={styles.button2} onPress={() => this.cancel(data, 'REJECTED')}>
+                                    <Button style={styles.button2} onPress={() => (this.doCancel(data, 'REJECTED'),this.backNavigation())}>
                                         <Text> SUBMIT </Text></Button>
-                                    <Button style={styles.button1} >
+                                    <Button style={styles.button1}  onPress={() => this.props.navigation.navigate('AppointmentInfo')}>
+
                                         <Text> CANCEL</Text></Button>
 
                                 </View>

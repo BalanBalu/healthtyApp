@@ -38,7 +38,7 @@ import Mapbox from "../../modules/screens/bookappoinment/Mapbox";
 import MyAppointments from '../../modules/screens/myappoinment';
 import AppointmentDetails from '../../modules/screens/myappoinment/myappoinmentinformation';
 import MyAppoinmentList from '../../modules/screens/myappoinmentdetail';
-import CancelAppointment from "../../modules/screens/bookappoinment/cancelAppointment";
+import CancelAppointment from "../../modules/screens/myappoinment/myappoinmentinformation/cancelAppointment";
 
 
 const routes = {
@@ -179,12 +179,6 @@ const AppointMentstack1 = createStackNavigator({
       title: 'Success'
     }
   },
-  "CancelAppointment": {
-    screen: CancelAppointment,
-    navigationOptions: {
-      title: 'Cancel Appointment'
-    }
-  },
   "InsertReview": {
     screen: InsertReview,
     navigationOptions: {
@@ -217,6 +211,12 @@ const myAppointmentsStack = createStackNavigator({
       title: 'Appointment Info'
     }
   },
+  "CancelAppointment": {
+    screen: CancelAppointment,
+    navigationOptions: {
+      title: 'Cancel Appointment'
+    }
+  },
 
 },
   {
@@ -226,8 +226,7 @@ const myAppointmentsStack = createStackNavigator({
     })
   });
 
-
-
+  
 const HomeStack = createStackNavigator({
   Home: {
     screen: Home,

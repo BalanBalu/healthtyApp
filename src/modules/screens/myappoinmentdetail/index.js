@@ -6,6 +6,8 @@ import {
 } from 'native-base';
 import { StyleSheet, Image, AsyncStorage, FlatList, ScrollView ,ActivityIndicator} from 'react-native';
 import StarRating from 'react-native-star-rating';
+import { NavigationEvents } from 'react-navigation';
+import { connect } from 'react-redux';
 
 import { userReviews } from '../../providers/profile/profile.action';
 import { hasLoggedIn } from '../../providers/auth/auth.actions';
@@ -33,9 +35,12 @@ class MyAppoinmentList extends Component {
             userId: null,
             reviewData:[],
             page: 0,
-            loading: true
+            loading: true,
+            isRefreshing: false,
+
         }
     }
+   
    
     async componentDidMount() {
         const isLoggedIn = await hasLoggedIn(this.props);
@@ -49,14 +54,38 @@ class MyAppoinmentList extends Component {
       this.pastAppointment();
     
     }
-    upCommingAppointment = async () => {
+    upCommingAppointment = async (navigationData) => {
         try {
-       let userId = await AsyncStorage.getItem('userId');
-          let filters = {
-            startDate: formatDate(new Date() , "YYYY-MM-DD"),
-            endDate: formatDate(addTimeUnit(new Date(), 1, "years"), "YYYY-MM-DD")
-          };
-         let upCommingAppointmentResult = await getUserAppointments(userId, filters)
+            let userId = await AsyncStorage.getItem('userId');
+            let filters = {
+                startDate: formatDate(new Date() , "YYYY-MM-DD"),
+                endDate: formatDate(addTimeUnit(new Date(), 1, "years"), "YYYY-MM-DD")
+              };
+              let upCommingAppointmentResult = await getUserAppointments(userId, filters)
+              if (upCommingAppointmentResult.success){
+                let appointmentData=[];
+                  upCommingAppointmentResult=upCommingAppointmentResult.data;
+                   
+              upCommingAppointmentResult.map(appointmentResult=> {
+                appointmentData.push({appointmentResult})
+              });
+                this.setState({ upComingData: appointmentData, isLoading:true,data:appointmentData});
+                }
+               console.log(this.state.upComingData);
+               if(navigationData.action) {
+                if(navigationData.action.type === 'Navigation/BACK') {
+                    return;
+                }
+              }
+              console.log(navigationData);
+              if(navigationData.state.params) {
+                  if(navigationData.state.params.updated) {
+                              
+                    this.setState({ isRefreshing: true }); 
+    
+                  }
+                }    
+          
           if (upCommingAppointmentResult.success){
             let appointmentData=[];
               upCommingAppointmentResult=upCommingAppointmentResult.data;
@@ -73,6 +102,7 @@ class MyAppoinmentList extends Component {
       };
       pastAppointment = async () => {
         try {
+           
          let userId = await AsyncStorage.getItem('userId');
           let  endData=  formatDate(subTimeUnit(new Date(), 1, "day"), "YYYY-MM-DD")
           let filters = {
@@ -102,8 +132,8 @@ class MyAppoinmentList extends Component {
              condition=false;
              }
            });  
-            console.log('past appointment');      
-           console.log(appointmentData)
+            //console.log('past appointment');      
+           //console.log(appointmentData)
              this.setState({ pastData: appointmentData, isLoading:true});
         }
          } catch (e) {
@@ -134,6 +164,9 @@ class MyAppoinmentList extends Component {
         return (
 
             <View style={styles.container}>
+                 <NavigationEvents
+          onWillFocus={payload => { this.upCommingAppointment(payload) }}
+        />
                <Card transparent>
                
                 <SegmentedControlTab tabsContainerStyle={{ width: 250, marginLeft: 'auto', marginRight: 'auto',marginTop:'auto' }}
@@ -261,7 +294,8 @@ class MyAppoinmentList extends Component {
     }
 }
 
-export default MyAppoinmentList
+ export default MyAppoinmentList
+
 const styles = StyleSheet.create({
     container:
     {

@@ -4,6 +4,8 @@ import { Col, Row, Grid } from 'react-native-easy-grid';
 import { StyleSheet, AsyncStorage } from 'react-native';
 import StarRating from 'react-native-star-rating';
 import moment from 'moment';
+import { NavigationEvents } from 'react-navigation';
+import { connect } from 'react-redux';
 
 import { viewUserReviews, bindDoctorDetails, appointmentStatusUpdate } from '../../../providers/bookappointment/bookappointment.action';
 import { formatDate, dateDiff } from '../../../../setup/helpers';
@@ -24,16 +26,15 @@ class AppointmentDetails extends Component {
       isLoading: false,
       yearOfExperience: '',
       appointmentStatus: '',
-      statusUpdateReason: ' '
+      statusUpdateReason: ' ',
+      isRefreshing: false,
+
 
     }
-
   }
 
   async componentDidMount() {
-    //console.log('coming to component did mount');
     const userId = await AsyncStorage.getItem('userId');
-    //console.log(userId);
     const { navigation } = this.props;
     const appointmentData = navigation.getParam('data');
     console.log(appointmentData);
@@ -42,7 +43,6 @@ class AppointmentDetails extends Component {
     await this.setState({ doctorId: doctorId, appointmentId: appointmentId, userId: userId, data: appointmentData })
     this.getDoctorDetails(doctorId);
     this.getUserReviews(appointmentId);
-
     console.log('state data : ' + JSON.stringify(this.state.data));
   }
 
@@ -52,10 +52,9 @@ class AppointmentDetails extends Component {
       this.setState({ isLoading: true });
       let fields = 'first_name,last_name,education,specialist,email,mobile_no,experience,hospital,language,professional_statement';
       let resultDetails = await bindDoctorDetails(doctorId, fields);
-     // console.log(JSON.stringify(resultDetails));
       if (resultDetails.success) {
         await this.setState({ doctorData: resultDetails.data, isLoading: false });
-       // console.log(JSON.stringify(this.state.doctorData));
+       console.log(JSON.stringify(this.state.doctorData));
         let updatedDate = moment(this.state.doctorData.experience.updated_date);
         let experienceInYear = dateDiff(updatedDate, new Date(), 'year');
         let experienceInMonth = dateDiff(updatedDate, new Date(), 'months');
@@ -78,19 +77,17 @@ class AppointmentDetails extends Component {
   getUserReviews = async (appointmentId) => {
     this.setState({ isLoading: true });
     let resultReview = await viewUserReviews('appointment', appointmentId);
-    //console.log(resultReview.data);
     if (resultReview.success) {
       this.setState({ reviewData: resultReview.data, isLoading: false });
     }
-   // console.log(JSON.stringify(JSON.stringify(this.state.reviewData)));
   }
 
-  accept(data, status) {
+  doAccept(data, status) {
     this.updateAppointmentStatus(data, status)
   }
   /* Update Appoiontment Status */
 
-  updateAppointmentStatus = async (data, updatedStatus) => {
+   updateAppointmentStatus = async (data, updatedStatus, navigationData) => {
     try {
       this.setState({ isLoading: true });
       let requestData = {
@@ -103,30 +100,44 @@ class AppointmentDetails extends Component {
         status_by: 'USER'
       };
       console.log(requestData);
-
+      
       let userId = await AsyncStorage.getItem('userId');
-     // console.log('userId' + userId);
+      console.log('userId' + userId);
       let result = await appointmentStatusUpdate(this.state.doctorId, this.state.appointmentId, requestData);
       this.setState({ isLoading: false })
       console.log(result);
-      console.log('update result' + JSON.stringify(result));
-      //console.log(JSON.stringify(result.appointmentData.appointment_status));
+      
       let appointmentStatus = result.appointmentData.appointment_status;
-      //console.log(appointmentStatus);
+      console.log(appointmentStatus);
 
       if (result.success) {
         Toast.show({
           text: result.message,
           duration: 3000
         })
+        if(navigationData.action) {
+          if(navigationData.action.type === 'Navigation/BACK') {
+              return;
+          }
+        }
+        console.log(navigationData);
+        if(navigationData.state.params) {
+            if(navigationData.state.params.updated) {
+                        
+              this.setState({ isRefreshing: true }); 
+  
+            }
+          }    
         this.setState({ appointmentStatus: appointmentStatus });
       }
-
+   
     }
     catch (e) {
       console.log(e);
     }
   }
+ 
+
   navigateCancelAppoointment(){
     this.props.navigation.navigate('CancelAppointment', { appointmentDetail: this.state.data})
   }
@@ -138,9 +149,13 @@ class AppointmentDetails extends Component {
     return (
 
       <Container style={styles.container}>
+
         {isLoading == true ? <Loader style={'list'} /> :
 
           <Content style={styles.bodyContent}>
+               <NavigationEvents
+          onWillFocus={payload => { this.updateAppointmentStatus(payload) }}
+        />     
             <Grid style={{ backgroundColor: '#7E49C3', height: 200 }}>
             </Grid>
 
@@ -178,8 +193,12 @@ class AppointmentDetails extends Component {
 
                   <Col style={{ width: 300, }}>
                     <Button disabled={true} block style={{ borderRadius: 10, backgroundColor: '#D7BDE2' }}>
-                      <Text style={{ color: 'black', fontSize: 16 }}>{this.state.appointmentStatus == 'APPROVED' ? 'APPROVED' :this.state.appointmentStatus == 'REJECTED' ? 'REJECTED': data.appointment_status == 'PROPOSED_NEW_TIME' ?
-                        'PROPOSED NEW TIME' : data.appointment_status == 'PENDING_REVIEW' ? 'PENDING REVIEW' : data.appointment_status || this.state.appointStatus}
+                      <Text style={{ color: 'black', fontSize: 16 }}>
+                      {this.state.appointmentStatus == 'APPROVED' ? 'APPROVED' :
+                      this.state.appointmentStatus == 'REJECTED' ? 'REJECTED': 
+                      data.appointment_status == 'PROPOSED_NEW_TIME' ?'PROPOSED NEW TIME' :
+                       data.appointment_status == 'PENDING_REVIEW' ? 'PENDING REVIEW' :
+                        data.appointment_status || this.state.appointStatus}
                       </Text>
                     </Button>
 
@@ -195,7 +214,7 @@ class AppointmentDetails extends Component {
                     </Col> :
                     data.appointment_status == 'PROPOSED_NEW_TIME' ?
                       <Item style={{ borderBottomWidth: 0, justifyContent: 'center' }}>
-                        <Button success style={styles.statusButton} onPress={() => this.accept(data, 'APPROVED')}>
+                        <Button success style={styles.statusButton} onPress={() => this.doAccept(data, 'APPROVED')}>
                           <Text style={{ textAlign: 'center', fontFamily: 'OpenSans' }}>ACCEPT</Text>
                         </Button>
                         <Button danger style={styles.statusButton} onPress={() => this.navigateCancelAppoointment()}>
