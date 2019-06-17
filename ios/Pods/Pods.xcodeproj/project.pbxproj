@@ -23,14 +23,12 @@
 		012371AAA322889E81136BB5CF227C08 /* RCTMGLEvent.h in Headers */ = {isa = PBXBuildFile; fileRef = 4B1A438E989DDEBCAEFA039918E9D96E /* RCTMGLEvent.h */; settings = {ATTRIBUTES = (Project, ); }; };
 		02A60FFE0D1F2A8AC042823C4BF92C1E /* RCTMGLImageQueue.h in Headers */ = {isa = PBXBuildFile; fileRef = ABD32708D751A99BAC379F1B778642E1 /* RCTMGLImageQueue.h */; settings = {ATTRIBUTES = (Project, ); }; };
 		02FF5D849A0664874439EF4BAC2A029C /* Conv.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 71E771951DA4A28EF2841BD1F9D8AEBE /* Conv.cpp */; settings = {COMPILER_FLAGS = "-DFOLLY_NO_CONFIG -DFOLLY_MOBILE=1 -DFOLLY_USE_LIBCPP=1"; }; };
-		0402D5125D500D007DAA7A456AE89A5F /* YGFloatOptional.cpp in Sources */ = {isa = PBXBuildFile; fileRef = C0A7A448962375259D3678E28D4EEFDF /* YGFloatOptional.cpp */; settings = {COMPILER_FLAGS = "-fno-omit-frame-pointer -fexceptions -Wall -Werror -std=c++1y -fPIC -fno-objc-arc"; }; };
 		04B12E9217B42A6D4679CD861B0D9F6B /* RCTMGLFillLayerManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 71F9CB74B53C1FCF95D93BB981E45961 /* RCTMGLFillLayerManager.m */; };
 		04DB0A4D26E60C9F1D66CE9D849611B2 /* RCTMGLPointAnnotation.m in Sources */ = {isa = PBXBuildFile; fileRef = C367BB3164DBB8E1684D8C96196BC49B /* RCTMGLPointAnnotation.m */; };
 		0558D767B6DCA6831539E45145A9E99F /* RCTMGLFillExtrusionLayerManager.h in Headers */ = {isa = PBXBuildFile; fileRef = C4AF7D7B3D9BFD2FC83483524E88D87E /* RCTMGLFillExtrusionLayerManager.h */; settings = {ATTRIBUTES = (Project, ); }; };
 		070A1064131F92B7B62D15F8CD64D1B8 /* RCTMGLLocationModule.m in Sources */ = {isa = PBXBuildFile; fileRef = 0AC4E862A8C66E2A4C8C60B014B52F12 /* RCTMGLLocationModule.m */; };
 		08F9747618A9327A39D7B1AF00D5DC5C /* diy-fp.cc in Sources */ = {isa = PBXBuildFile; fileRef = C7F474CECB7E19DFEB918C3DF397131B /* diy-fp.cc */; };
 		091C0C0E3A30D286E30F860AE0925759 /* bignum.h in Headers */ = {isa = PBXBuildFile; fileRef = 58E9B311936DEC204A2A0FE2250AB830 /* bignum.h */; settings = {ATTRIBUTES = (Project, ); }; };
-		0981248462C0998055A310E301D3E322 /* YGFloatOptional.h in Headers */ = {isa = PBXBuildFile; fileRef = 311FD5D5E72403C7F98F1850FF0A53A7 /* YGFloatOptional.h */; settings = {ATTRIBUTES = (Project, ); }; };
 		09F73736440325D0CC5F64119C504F0A /* RCTMGLRasterLayer.m in Sources */ = {isa = PBXBuildFile; fileRef = A1D4EE5E66DD1A581DB65D2E24A81DF8 /* RCTMGLRasterLayer.m */; };
 		0A63FF2A23BA8EF950D29CA533F04607 /* MallocImpl.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 88F9A36303ACFE0D275DF980D72F0F19 /* MallocImpl.cpp */; settings = {COMPILER_FLAGS = "-DFOLLY_NO_CONFIG -DFOLLY_MOBILE=1 -DFOLLY_USE_LIBCPP=1"; }; };
 		0ACEEB8B7FCA88B49AF046E287460161 /* RCTMGLStyleValue.h in Headers */ = {isa = PBXBuildFile; fileRef = 42A9E94656A7D4559A1DBC70F271ED3E /* RCTMGLStyleValue.h */; settings = {ATTRIBUTES = (Project, ); }; };
@@ -40,7 +38,6 @@
 		107BF2E806089DC6DD5715D1FCADC1FF /* strtod.h in Headers */ = {isa = PBXBuildFile; fileRef = E95359563749FDC25920C929A56593FF /* strtod.h */; settings = {ATTRIBUTES = (Project, ); }; };
 		12134B17BCDC2E86E98510E2C95C9036 /* RCTMGLLocationModule.h in Headers */ = {isa = PBXBuildFile; fileRef = CE7BDA20E8F559989541092986408A40 /* RCTMGLLocationModule.h */; settings = {ATTRIBUTES = (Project, ); }; };
 		1222F495B3A05E04C28E50C4B3CCCCCE /* RCTMGLBackgroundLayer.h in Headers */ = {isa = PBXBuildFile; fileRef = B3271710112825F575478341ECA63009 /* RCTMGLBackgroundLayer.h */; settings = {ATTRIBUTES = (Project, ); }; };
-		1689AC8710147E112CF7C67699443606 /* YGEnums.h in Headers */ = {isa = PBXBuildFile; fileRef = 0F49662B24D76AFE1E37D19863356340 /* YGEnums.h */; settings = {ATTRIBUTES = (Project, ); }; };
 		168E0B3660D23C5D5049A5E1467C1B87 /* FilterParser.m in Sources */ = {isa = PBXBuildFile; fileRef = 14F6E81D0078839597C72746894E35F7 /* FilterParser.m */; };
 		19052169ACB75BFBE37A3E407925FEBA /* RCTMGLCamera.m in Sources */ = {isa = PBXBuildFile; fileRef = 4E9CB4B247A3F62D7567D8FBE66228C4 /* RCTMGLCamera.m */; };
 		191C15F88ACEC13860AD338F208BDDB5 /* double-conversion.h in Headers */ = {isa = PBXBuildFile; fileRef = 1C4821E72C0D329D9CCC5AFE7D8FADDD /* double-conversion.h */; settings = {ATTRIBUTES = (Project, ); }; };
@@ -48,12 +45,10 @@
 		1B652BCE276D5A5F41A432B43B5219EC /* MGLUserLocationHeadingIndicator.h in Headers */ = {isa = PBXBuildFile; fileRef = 51476796117748BA157E0C21ED04A547 /* MGLUserLocationHeadingIndicator.h */; settings = {ATTRIBUTES = (Project, ); }; };
 		1BC1F2D122BB99DADC1973DF4EAFCDEB /* CameraUpdateItem.h in Headers */ = {isa = PBXBuildFile; fileRef = 988BD0F3C91E13412860628EA44320F6 /* CameraUpdateItem.h */; settings = {ATTRIBUTES = (Project, ); }; };
 		1CCD52FA90E551B47CE2CB95D46ED4FC /* RCTMGLLocationManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 47DD4B925E95BD4BD96838A9E74B14A6 /* RCTMGLLocationManager.m */; };
-		1D87B6C71F01CF3A92105AF1CD0CA341 /* YGConfig.h in Headers */ = {isa = PBXBuildFile; fileRef = E19A72D1DDB48DB61710A32FC98DC248 /* YGConfig.h */; settings = {ATTRIBUTES = (Project, ); }; };
 		1DEBCB73B19589825892640DDE292CB0 /* symbolize.cc in Sources */ = {isa = PBXBuildFile; fileRef = 76A4D410A71FCE76D2FD6F5CF2009A62 /* symbolize.cc */; };
 		1E10E6FC5DD912A78829C072AE2205D5 /* RCTMGLCameraManager.m in Sources */ = {isa = PBXBuildFile; fileRef = F03BC1D7C7FB8016EB81E7B58977D6C7 /* RCTMGLCameraManager.m */; };
 		1FAF7570A4874398425AE81A265ED314 /* FilterParser.h in Headers */ = {isa = PBXBuildFile; fileRef = 2C18B662C7C60A3857F9673335406508 /* FilterParser.h */; settings = {ATTRIBUTES = (Project, ); }; };
 		20F0D13F0C31A19295812D26BA9F58B9 /* vlog_is_on.h in Headers */ = {isa = PBXBuildFile; fileRef = 781209F2559C7F1EBA29051C1C468645 /* vlog_is_on.h */; settings = {ATTRIBUTES = (Project, ); }; };
-		235C0764F2B6745078675A07ACA1BF18 /* Yoga.h in Headers */ = {isa = PBXBuildFile; fileRef = 660D7248C32DA4F0E595DBD3BD50F859 /* Yoga.h */; settings = {ATTRIBUTES = (Project, ); }; };
 		24309E367DCE20366B4E845382EB5065 /* RCTMGLMapViewManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 026896F269F1850396E8D0A0E7335CCE /* RCTMGLMapViewManager.m */; };
 		25AFEF17D61EC2B2743E19489B7C131A /* RCTMGLEvent.m in Sources */ = {isa = PBXBuildFile; fileRef = E948E09B8B1DCADF3344A6F327E554B0 /* RCTMGLEvent.m */; };
 		272644ED109BBC89876B26348EC394F3 /* RCTMGLStyleValue.m in Sources */ = {isa = PBXBuildFile; fileRef = 0D6ECFFDB155C34AE9BC97D527923118 /* RCTMGLStyleValue.m */; };
@@ -64,7 +59,6 @@
 		2CAA6819541082DA06E08619E1DA80F6 /* RCTMGLLight.h in Headers */ = {isa = PBXBuildFile; fileRef = E1312C9BBEF34FE85A2FC1E1166ED7D0 /* RCTMGLLight.h */; settings = {ATTRIBUTES = (Project, ); }; };
 		30177BF31111E2730C3BAFECA41D3F90 /* RCTMGLVectorSource.h in Headers */ = {isa = PBXBuildFile; fileRef = 83AFCAB379DD7F2D382260AAF6B60C5D /* RCTMGLVectorSource.h */; settings = {ATTRIBUTES = (Project, ); }; };
 		321DD18CAD878AC311B716FBE1B47CBA /* ViewManager.h in Headers */ = {isa = PBXBuildFile; fileRef = 6DBB5D6110ACEEDB33726928691EFEB0 /* ViewManager.h */; settings = {ATTRIBUTES = (Project, ); }; };
-		33EEB808056759930CE1DD814B8DD200 /* Yoga.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 92D93617E9C56E02B80BDD96FAABABC6 /* Yoga.cpp */; settings = {COMPILER_FLAGS = "-fno-omit-frame-pointer -fexceptions -Wall -Werror -std=c++1y -fPIC -fno-objc-arc"; }; };
 		34ADD36EDF5472CD3ADA7BA267003AD3 /* MGLUserLocationHeadingBeamLayer.h in Headers */ = {isa = PBXBuildFile; fileRef = 88EB2A5E702DD65BDF7B683C2604D256 /* MGLUserLocationHeadingBeamLayer.h */; settings = {ATTRIBUTES = (Project, ); }; };
 		3728CB53E4723B332E0C5D8CD2409CDE /* ieee.h in Headers */ = {isa = PBXBuildFile; fileRef = 6174B2132099E04DE8395F27095B0ED8 /* ieee.h */; settings = {ATTRIBUTES = (Project, ); }; };
 		38A32F5D4C77518EC0B1E0F8822E7DA6 /* RCTMGLLocationManagerDelegate.h in Headers */ = {isa = PBXBuildFile; fileRef = A55036E33CDEACBC66BC862C0DC51009 /* RCTMGLLocationManagerDelegate.h */; settings = {ATTRIBUTES = (Project, ); }; };
@@ -77,7 +71,6 @@
 		3D2CFD3D7697E35EDDAC7841ABCA8711 /* RCTMGLShapeSource.m in Sources */ = {isa = PBXBuildFile; fileRef = 81A48868D4C0263BC2EA0A016F258852 /* RCTMGLShapeSource.m */; };
 		3DE45D3910CC47153462598BD966C2FA /* ScopeGuard.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 42C45CD817342CAFA8B36F88FA4FAB59 /* ScopeGuard.cpp */; settings = {COMPILER_FLAGS = "-DFOLLY_NO_CONFIG -DFOLLY_MOBILE=1 -DFOLLY_USE_LIBCPP=1"; }; };
 		41BC1AFA0D59A3CDF3E518CEB9B5AC4D /* RCTMGLUserLocation.m in Sources */ = {isa = PBXBuildFile; fileRef = 3A4AADEC4723C9EE63E188717803E4CD /* RCTMGLUserLocation.m */; };
-		423F7F7B06075768CD0A19936F35824C /* YGLayout.h in Headers */ = {isa = PBXBuildFile; fileRef = 48411391DF8E911A3EED18560BB5B807 /* YGLayout.h */; settings = {ATTRIBUTES = (Project, ); }; };
 		44BECE7DD161CB93B9E3144A85686351 /* RCTMGLUserLocation.h in Headers */ = {isa = PBXBuildFile; fileRef = 113B0BDBF16472A678C176B717FA919F /* RCTMGLUserLocation.h */; settings = {ATTRIBUTES = (Project, ); }; };
 		467363C2A95E77685B64C3A361F061BB /* RCTMGLSource.m in Sources */ = {isa = PBXBuildFile; fileRef = 10D01FBDB90F272324E5FCC545D34C20 /* RCTMGLSource.m */; };
 		49D5AE148EDE23C66E04C17A9DF3CD0E /* double-conversion.cc in Sources */ = {isa = PBXBuildFile; fileRef = A21DE0069C96CEC6F97A29146026E068 /* double-conversion.cc */; };
@@ -86,24 +79,20 @@
 		4CDC59C21C77823B8BC9424ADE57A5B5 /* RCTMGLPointAnnotation.h in Headers */ = {isa = PBXBuildFile; fileRef = 185A117FCDB2A9DE68CC6818E28A26FB /* RCTMGLPointAnnotation.h */; settings = {ATTRIBUTES = (Project, ); }; };
 		4CEDCCA9205427A9012325FD855E64A0 /* RCTMGLFillExtrusionLayer.h in Headers */ = {isa = PBXBuildFile; fileRef = 31ED0A26E3B38D2557AD4B9128B1169C /* RCTMGLFillExtrusionLayer.h */; settings = {ATTRIBUTES = (Project, ); }; };
 		4E0A2703083AF8211C29C24927EEA578 /* json_pointer.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 0CF44D9584D7A951901EBF3CF35DC739 /* json_pointer.cpp */; settings = {COMPILER_FLAGS = "-DFOLLY_NO_CONFIG -DFOLLY_MOBILE=1 -DFOLLY_USE_LIBCPP=1"; }; };
-		50B37B1EC4B98E72F4287CFDB670D073 /* yoga-dummy.m in Sources */ = {isa = PBXBuildFile; fileRef = 4939D9EF69F10E9FB8AD7BC0171FC86C /* yoga-dummy.m */; };
 		52D8434D9AE0E12EAB24B394BEB96535 /* RCTMGLSource.h in Headers */ = {isa = PBXBuildFile; fileRef = E18351A8BE46F9BDCF3C703F225E403C /* RCTMGLSource.h */; settings = {ATTRIBUTES = (Project, ); }; };
 		52DC3363B953D47BBCAB93375A17C9E7 /* RCTMGLRasterLayerManager.m in Sources */ = {isa = PBXBuildFile; fileRef = C91C238027C26A314933B0AE09ECE636 /* RCTMGLRasterLayerManager.m */; };
 		536958AB1C633246F8571198039B46F0 /* RCTMGLRasterSource.h in Headers */ = {isa = PBXBuildFile; fileRef = 330B3FEF7C5D7F52AF4EAAA83D532ECE /* RCTMGLRasterSource.h */; settings = {ATTRIBUTES = (Project, ); }; };
 		5417751F797161B8F8A945B9169880B8 /* raw_logging.h in Headers */ = {isa = PBXBuildFile; fileRef = 3964915146E5317A68D10EE406BFE073 /* raw_logging.h */; settings = {ATTRIBUTES = (Project, ); }; };
 		55D39F9E32639A4A2CFADB267C7120EC /* RCTMGLShapeSource.h in Headers */ = {isa = PBXBuildFile; fileRef = 33A4E3844C1928E3C798B82F496B541A /* RCTMGLShapeSource.h */; settings = {ATTRIBUTES = (Project, ); }; };
-		565FB66814F824C9AB4C93A0C8150186 /* YGEnums.cpp in Sources */ = {isa = PBXBuildFile; fileRef = AE9BC5DF862EE8372170F8900FC3D42F /* YGEnums.cpp */; settings = {COMPILER_FLAGS = "-fno-omit-frame-pointer -fexceptions -Wall -Werror -std=c++1y -fPIC -fno-objc-arc"; }; };
 		598BF86C3CEAF5C934DBC6C26792EF94 /* bignum.cc in Sources */ = {isa = PBXBuildFile; fileRef = DEC62F9D2916218D839AE650D306C4F9 /* bignum.cc */; };
 		5AD2957BC9616A15C34796F1E7487F00 /* glog-dummy.m in Sources */ = {isa = PBXBuildFile; fileRef = 331122A82B7E3B5DF2ACEEE00CD24FFC /* glog-dummy.m */; };
 		5DD4F162A05BBE70B45F001FAF411A66 /* RCTMGLBackgroundLayerManager.h in Headers */ = {isa = PBXBuildFile; fileRef = DB7AF92ED8C4BDA0DDCA7C8FEF9906D8 /* RCTMGLBackgroundLayerManager.h */; settings = {ATTRIBUTES = (Project, ); }; };
 		5FC2E7897FFEDE32F30D8F8134949A26 /* RCTMGLFillLayerManager.h in Headers */ = {isa = PBXBuildFile; fileRef = 6AD2391F0EFE5FF785482B4E9B98B24D /* RCTMGLFillLayerManager.h */; settings = {ATTRIBUTES = (Project, ); }; };
 		62825760B895542D30194A59B53D82EA /* log_severity.h in Headers */ = {isa = PBXBuildFile; fileRef = AFF4D15A69F019E94427D23DFEDABACB /* log_severity.h */; settings = {ATTRIBUTES = (Project, ); }; };
-		63BDE8854E5053913293ABB41AA3816A /* YGNode.h in Headers */ = {isa = PBXBuildFile; fileRef = BEFC58A1798D2064ECC87DB2AE527E3C /* YGNode.h */; settings = {ATTRIBUTES = (Project, ); }; };
 		63DAD44C52B3C69CC097E3C9AB1E76EF /* MGLUserLocationHeadingArrowLayer.h in Headers */ = {isa = PBXBuildFile; fileRef = 250113FD115CF589EA18B53A5543E782 /* MGLUserLocationHeadingArrowLayer.h */; settings = {ATTRIBUTES = (Project, ); }; };
 		65AB95B50A3F253E56767FC717190684 /* F14Table.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 05836BE808B569BDB539264B2D42787B /* F14Table.cpp */; settings = {COMPILER_FLAGS = "-DFOLLY_NO_CONFIG -DFOLLY_MOBILE=1 -DFOLLY_USE_LIBCPP=1"; }; };
 		666413CA2968FE6CA6668ABBC6B813DD /* RCTMGLStyle.h in Headers */ = {isa = PBXBuildFile; fileRef = 00503DFAF1A38B9F7CA24AB4AAC52386 /* RCTMGLStyle.h */; settings = {ATTRIBUTES = (Project, ); }; };
 		68D4330C51D5871B5BBC15AFABCE116D /* RCTMGLMapView.h in Headers */ = {isa = PBXBuildFile; fileRef = 36D858C280D6FADA13CA249BD8832A13 /* RCTMGLMapView.h */; settings = {ATTRIBUTES = (Project, ); }; };
-		6AF0D0ECB63FCCA30EB0D83E44D68437 /* Utils.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 740934F3CCE12AF563ACAB0B5E92E038 /* Utils.cpp */; settings = {COMPILER_FLAGS = "-fno-omit-frame-pointer -fexceptions -Wall -Werror -std=c++1y -fPIC -fno-objc-arc"; }; };
 		6B6BCE83313B4E5E862AD24D017DC756 /* ViewManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 1302CC0D1134092FB826AFC16476F15B /* ViewManager.m */; };
 		6D1E7B8FCFE99F83512303F4D544BF60 /* react-native-mapbox-gl-dummy.m in Sources */ = {isa = PBXBuildFile; fileRef = CDC57856FDF6E1C7438DC9D47B42CACB /* react-native-mapbox-gl-dummy.m */; };
 		6D3913895B99C9CA1AC7B01A3FDB3E40 /* stl_logging.h in Headers */ = {isa = PBXBuildFile; fileRef = DAF21D557C0C65BFFF6DABBBC28EA539 /* stl_logging.h */; settings = {ATTRIBUTES = (Project, ); }; };
@@ -133,7 +122,6 @@
 		8645BC9F6B060E8AA02AC1589C35F84F /* RCTMGLSymbolLayerManager.h in Headers */ = {isa = PBXBuildFile; fileRef = 765001433B98D90CFE723705A9C654B1 /* RCTMGLSymbolLayerManager.h */; settings = {ATTRIBUTES = (Project, ); }; };
 		86EA7E92E92C08FD852710F521BD25E4 /* RCTMGLCamera.h in Headers */ = {isa = PBXBuildFile; fileRef = DBEA3AB025F61F935D7E47B099DF746F /* RCTMGLCamera.h */; settings = {ATTRIBUTES = (Project, ); }; };
 		87223E1BEAB415F791755EBF9E002C66 /* Folly-dummy.m in Sources */ = {isa = PBXBuildFile; fileRef = 88D037DB623C890BE8440DCCC75F809F /* Folly-dummy.m */; };
-		8B27228A6B6D2EF2AF4C12CD8A1AE3BE /* YGMacros.h in Headers */ = {isa = PBXBuildFile; fileRef = 91C00B620BBF6D7F05E98380255D85D9 /* YGMacros.h */; settings = {ATTRIBUTES = (Project, ); }; };
 		8B71864F111E25138D4B9F35E282DCCE /* RCTMGLLight.m in Sources */ = {isa = PBXBuildFile; fileRef = 82D87AD139EDD9D1194079760A8DC9CD /* RCTMGLLight.m */; };
 		8BBAE33A3DFE00C686977C0631DD5D23 /* RCTMGL.h in Headers */ = {isa = PBXBuildFile; fileRef = 1953026A4964435F6999F9CB937F2EE5 /* RCTMGL.h */; settings = {ATTRIBUTES = (Project, ); }; };
 		9025A95ACB806F8A83D9C8809EBA6C93 /* RCTMGLEventTypes.m in Sources */ = {isa = PBXBuildFile; fileRef = 87352229E9EAF197C9FDF1F679F79273 /* RCTMGLEventTypes.m */; };
@@ -146,7 +134,6 @@
 		98E8408D6F45245BAFB722FDBE37E435 /* RCTMGLLocationManager.h in Headers */ = {isa = PBXBuildFile; fileRef = D71312D28BEF840079302FAAC27E6BB2 /* RCTMGLLocationManager.h */; settings = {ATTRIBUTES = (Project, ); }; };
 		9950550B1C9FF74E990BEC2C14AB0349 /* RCTMGLBackgroundLayer.m in Sources */ = {isa = PBXBuildFile; fileRef = 2C4FEDD934C95874810D43FBC76716E7 /* RCTMGLBackgroundLayer.m */; };
 		9964CA48693BFFE5B4E59341611C8E79 /* Pods-medflic-tvOSTests-dummy.m in Sources */ = {isa = PBXBuildFile; fileRef = 259E25C5CCFF9703828124DA3F21D17A /* Pods-medflic-tvOSTests-dummy.m */; };
-		9B7F234217A35377B2B1BEE39653953D /* YGConfig.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 3589745CF6A76E4EDECC37E25E8032D7 /* YGConfig.cpp */; settings = {COMPILER_FLAGS = "-fno-omit-frame-pointer -fexceptions -Wall -Werror -std=c++1y -fPIC -fno-objc-arc"; }; };
 		9C09F11BA21A367F85580F5E5CF30CA9 /* ColdClass.cpp in Sources */ = {isa = PBXBuildFile; fileRef = A8459404919EB824E9CC5B6B73273A78 /* ColdClass.cpp */; settings = {COMPILER_FLAGS = "-DFOLLY_NO_CONFIG -DFOLLY_MOBILE=1 -DFOLLY_USE_LIBCPP=1"; }; };
 		9D96C6DBFA556B6EE5F93762A4DBBC95 /* CameraUpdateItem.m in Sources */ = {isa = PBXBuildFile; fileRef = 34E23073CECDC5AEC241D967A0AA2547 /* CameraUpdateItem.m */; };
 		9E6A0C839DE6753C4E6EDFEF43A707C4 /* RCTMGLLocation.h in Headers */ = {isa = PBXBuildFile; fileRef = 1DC3304EA226FE8A04F93E1DABB58428 /* RCTMGLLocation.h */; settings = {ATTRIBUTES = (Project, ); }; };
@@ -158,14 +145,12 @@
 		ABCAFCBE11F2B57EE2DEADF677B194CB /* RCTMGLLightManager.m in Sources */ = {isa = PBXBuildFile; fileRef = A09236098644D43EBF726277ED6B5D87 /* RCTMGLLightManager.m */; };
 		AE5E15016A072E0F82C1A6C7D869AF59 /* RCTMGLMapViewManager.h in Headers */ = {isa = PBXBuildFile; fileRef = 3F2BCE707ABC4AA88E38ABBB3CD7BF51 /* RCTMGLMapViewManager.h */; settings = {ATTRIBUTES = (Project, ); }; };
 		AECC71160479BCC2E76F9E96065D4FA1 /* RCTMGLCircleLayerManager.m in Sources */ = {isa = PBXBuildFile; fileRef = FBD2B5835459EEF28F919406609C4B07 /* RCTMGLCircleLayerManager.m */; };
-		AF5B7323DC92AA6ABCE3E0633D32E106 /* YGStyle.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 0D9E1BB555EFF333E781FC2EF198B08E /* YGStyle.cpp */; settings = {COMPILER_FLAGS = "-fno-omit-frame-pointer -fexceptions -Wall -Werror -std=c++1y -fPIC -fno-objc-arc"; }; };
 		AF8EC55515847D2EE9AD7ADED2B0B0BD /* fast-dtoa.h in Headers */ = {isa = PBXBuildFile; fileRef = A4543BC668A1BEBC0F6C6A8A5CA60BF0 /* fast-dtoa.h */; settings = {ATTRIBUTES = (Project, ); }; };
 		B3A49EDBE88241105A3DDB31D54A4155 /* RCTMGLBackgroundLayerManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 78D8AA1237B15C983CE31C6FA2DD05FF /* RCTMGLBackgroundLayerManager.m */; };
 		B5342DD8C99B6EAA57FAB6C09E94E38A /* fixed-dtoa.cc in Sources */ = {isa = PBXBuildFile; fileRef = 1A89D8674A162CEDD6CD9050D9980ED1 /* fixed-dtoa.cc */; };
 		B64B153ABCA61648FF956F61990979AA /* RCTMGLVectorSource.m in Sources */ = {isa = PBXBuildFile; fileRef = 116342414C8D82CCF52FB8DC82300C31 /* RCTMGLVectorSource.m */; };
 		B6B0D47F7C7E598FE4C6D335043AB2E2 /* RCTMGLMapView.m in Sources */ = {isa = PBXBuildFile; fileRef = 8137C8A04E85AA5CE1D836F82C150332 /* RCTMGLMapView.m */; };
 		B6C8CED4E7341AD35A7E8E1E56F30DFC /* RCTMGLLayer.m in Sources */ = {isa = PBXBuildFile; fileRef = 96DF38C0C867856B56224064458B5C14 /* RCTMGLLayer.m */; };
-		BCBD75C9D8288484CB08DC9F488E0F80 /* YGLayout.cpp in Sources */ = {isa = PBXBuildFile; fileRef = A851AD7E7E7FEDE48A4ECD0AF20A2292 /* YGLayout.cpp */; settings = {COMPILER_FLAGS = "-fno-omit-frame-pointer -fexceptions -Wall -Werror -std=c++1y -fPIC -fno-objc-arc"; }; };
 		BD391641A04E8325502C0D28CDA1A4B1 /* RCTMGLEventTypes.h in Headers */ = {isa = PBXBuildFile; fileRef = 4E3853FAE524486143D9D2BF72D8FE94 /* RCTMGLEventTypes.h */; settings = {ATTRIBUTES = (Project, ); }; };
 		BEC3CA8C9E0A39122C357E83C2DE2DB3 /* MGLUserLocationHeadingArrowLayer.m in Sources */ = {isa = PBXBuildFile; fileRef = 103C981C09D2EA9C1BD01E9056ED8363 /* MGLUserLocationHeadingArrowLayer.m */; };
 		BFB435DCD830128AB1C6D7C4773C629D /* RCTMGLMapTouchEvent.m in Sources */ = {isa = PBXBuildFile; fileRef = A7298DD53EFEFB0930CD09697342D53D /* RCTMGLMapTouchEvent.m */; };
@@ -176,7 +161,6 @@
 		C7DCA36BC01C33478E6BC8801AA6F929 /* utils.h in Headers */ = {isa = PBXBuildFile; fileRef = D2223FA33E68BEAAA5D877F3EC8CAFAE /* utils.h */; settings = {ATTRIBUTES = (Project, ); }; };
 		C83B66029E5524ED5740D4BBB86C243C /* RCTMGLCallout.m in Sources */ = {isa = PBXBuildFile; fileRef = D46D09DD4F815254E0EAEE3723A93904 /* RCTMGLCallout.m */; };
 		CB6842E9E0CDDDD31D726C3D70697B17 /* RCTMGLFillExtrusionLayerManager.m in Sources */ = {isa = PBXBuildFile; fileRef = EA1A8926C2A96F5E75E56D822C1818FD /* RCTMGLFillExtrusionLayerManager.m */; };
-		CDE50D608F4C9A3E295CC26C98C0A89A /* YGNodePrint.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 28559081A7CF91B85A42272ACAC824A5 /* YGNodePrint.cpp */; settings = {COMPILER_FLAGS = "-fno-omit-frame-pointer -fexceptions -Wall -Werror -std=c++1y -fPIC -fno-objc-arc"; }; };
 		D6C20DCB29B6BFF5E545D724066718D0 /* fixed-dtoa.h in Headers */ = {isa = PBXBuildFile; fileRef = CDBD542B673488F6FFCDC1732A1B8EC5 /* fixed-dtoa.h */; settings = {ATTRIBUTES = (Project, ); }; };
 		D9876B805F6720653B6F77F9CFE50872 /* RCTMGLImageSourceManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 370ED2240FD886C64CBAC6D3B18BB62B /* RCTMGLImageSourceManager.m */; };
 		DB03EC41EA95D852A6249FEAD3FE0727 /* RCTMGLRasterSourceManager.h in Headers */ = {isa = PBXBuildFile; fileRef = 276EAAE7B4890BA1C808B84E6620FA7E /* RCTMGLRasterSourceManager.h */; settings = {ATTRIBUTES = (Project, ); }; };
@@ -189,7 +173,6 @@
 		DF648025B2299DD1D47156A5F7E84CB9 /* RCTMGLSymbolLayerManager.m in Sources */ = {isa = PBXBuildFile; fileRef = BD4949EDA7D2FD58877A22A362561077 /* RCTMGLSymbolLayerManager.m */; };
 		DF8AB0474644F0C391FB729D5E24B51E /* RCTMGLFillLayer.m in Sources */ = {isa = PBXBuildFile; fileRef = 87380D2945330F43C79E99A6873183FD /* RCTMGLFillLayer.m */; };
 		E0B0635BB34B74971BBCD93EB6E5EB25 /* RCTMGLPointAnnotationManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 941B516166712C725971927222180559 /* RCTMGLPointAnnotationManager.m */; };
-		E19D6D2E540203CB4A037C127D445CF9 /* YGNodePrint.h in Headers */ = {isa = PBXBuildFile; fileRef = 82F18BA92C8D5FB8D8F909B6FD9A0FFC /* YGNodePrint.h */; settings = {ATTRIBUTES = (Project, ); }; };
 		E30636799D2363B05D48F859511864CB /* demangle.cc in Sources */ = {isa = PBXBuildFile; fileRef = A82BB59E4B7804923F41010EEE8E3584 /* demangle.cc */; };
 		E617FD47E6BF612C77E9C04B4B651E6F /* RCTMGLImageQueue.m in Sources */ = {isa = PBXBuildFile; fileRef = 1601B20273B847FC2D85412B3048C9BF /* RCTMGLImageQueue.m */; };
 		E877E0325B847C3998AE69C2D480B4B9 /* RCTMGLImageQueueOperation.m in Sources */ = {isa = PBXBuildFile; fileRef = C76064A1EDF1A00A479FF059CAC5D029 /* RCTMGLImageQueueOperation.m */; };
@@ -201,8 +184,6 @@
 		EEE9BFA3B34A8CECDEDD0561FCC2D318 /* MGLOfflineModule.m in Sources */ = {isa = PBXBuildFile; fileRef = 9399B7134E08142CDA9E7F59D91E91B1 /* MGLOfflineModule.m */; };
 		EFAA838BA65AA3584A10848B75DFF1B9 /* RCTMGLSymbolLayer.h in Headers */ = {isa = PBXBuildFile; fileRef = 0613E05178BEB697C443710803BF77D6 /* RCTMGLSymbolLayer.h */; settings = {ATTRIBUTES = (Project, ); }; };
 		F1B902B60FA4FD0B8198397332120C84 /* dynamic.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 6FDE092486327B54F44A0EC1005E1A43 /* dynamic.cpp */; settings = {COMPILER_FLAGS = "-DFOLLY_NO_CONFIG -DFOLLY_MOBILE=1 -DFOLLY_USE_LIBCPP=1"; }; };
-		F34A2BAF25FF025719E060F797C38D62 /* YGStyle.h in Headers */ = {isa = PBXBuildFile; fileRef = F7784A7AACDA0488A6CD8583B000BE12 /* YGStyle.h */; settings = {ATTRIBUTES = (Project, ); }; };
-		F4B41A2A4B2856578BE3FF7360D62F08 /* YGNode.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 2E27B6D4BF70A0EE8A50252008581F04 /* YGNode.cpp */; settings = {COMPILER_FLAGS = "-fno-omit-frame-pointer -fexceptions -Wall -Werror -std=c++1y -fPIC -fno-objc-arc"; }; };
 		F51DCE0149C5598FA6490485FEA43F6A /* RCTMGLRasterSource.m in Sources */ = {isa = PBXBuildFile; fileRef = 9B85F4C74C7EA2EBB30C930CDDA6B029 /* RCTMGLRasterSource.m */; };
 		F534219F25A716D6A4B244B94DB1915B /* RCTMGL.m in Sources */ = {isa = PBXBuildFile; fileRef = C8A9881422AACC49D05C72D0B8918422 /* RCTMGL.m */; };
 		F556A3B426F6905EF93D49F7669676A3 /* RNMBImageUtils.m in Sources */ = {isa = PBXBuildFile; fileRef = E4F3698E3C08811AF2832513F0E935E6 /* RNMBImageUtils.m */; };
@@ -213,10 +194,8 @@
 		F901A44BAB4BB2967096265D767469D0 /* Demangle.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 51B90B874D0A89219ED3042361120B0C /* Demangle.cpp */; settings = {COMPILER_FLAGS = "-DFOLLY_NO_CONFIG -DFOLLY_MOBILE=1 -DFOLLY_USE_LIBCPP=1"; }; };
 		FA1E4A6B29365A0FC653CA983E51FD3A /* CameraUpdateQueue.m in Sources */ = {isa = PBXBuildFile; fileRef = F9DFB0E533FD0157F193FE0B76C78CDC /* CameraUpdateQueue.m */; };
 		FAC33B2F84A853D95B981ECE766AD49F /* RCTMGLSymbolLayer.m in Sources */ = {isa = PBXBuildFile; fileRef = 5A9CCF68CFA0D2C988C23EF734A5725A /* RCTMGLSymbolLayer.m */; };
-		FB0E9DBB7F12A83C7E6B94FBE976C10A /* Utils.h in Headers */ = {isa = PBXBuildFile; fileRef = 0225E3B98A56D89352F63DE47A3ABCBA /* Utils.h */; settings = {ATTRIBUTES = (Project, ); }; };
 		FD75715E1F1FF0520743746356896CE0 /* RCTMGLShapeSourceManager.m in Sources */ = {isa = PBXBuildFile; fileRef = A25E4783D22F8601978D2962B627601E /* RCTMGLShapeSourceManager.m */; };
 		FE3350C2A4C6ECEE35DA90459AC249CE /* DoubleConversion-dummy.m in Sources */ = {isa = PBXBuildFile; fileRef = 5D0D8E7CF3C0C0B180E073DB3A18E130 /* DoubleConversion-dummy.m */; };
-		FE9EEDBB55E498BC974A44EE64BE27DC /* Yoga-internal.h in Headers */ = {isa = PBXBuildFile; fileRef = 019325BC42F57EDEC857D4148967AEAD /* Yoga-internal.h */; settings = {ATTRIBUTES = (Project, ); }; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -280,7 +259,7 @@
 			isa = PBXContainerItemProxy;
 			containerPortal = BFDFE7DC352907FC980B868725387E98 /* Project object */;
 			proxyType = 1;
-			remoteGlobalIDString = 40B4080E62D08D4DB93BB34548D51665;
+			remoteGlobalIDString = 000000005780;
 			remoteInfo = yoga;
 		};
 		E5FC7482D9C63CD1FE1119B4938366A3 /* PBXContainerItemProxy */ = {
@@ -1024,13 +1003,6 @@
 
 /* Begin PBXFrameworksBuildPhase section */
 		07F276E08325103B9D354728225D7435 /* Frameworks */ = {
-			isa = PBXFrameworksBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
-		777393018171097C071729004D9BAF15 /* Frameworks */ = {
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
@@ -2361,24 +2333,6 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
-		A5C2C93B59EA1B6D8BB88B237A72A787 /* Headers */ = {
-			isa = PBXHeadersBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-				FB0E9DBB7F12A83C7E6B94FBE976C10A /* Utils.h in Headers */,
-				1D87B6C71F01CF3A92105AF1CD0CA341 /* YGConfig.h in Headers */,
-				1689AC8710147E112CF7C67699443606 /* YGEnums.h in Headers */,
-				0981248462C0998055A310E301D3E322 /* YGFloatOptional.h in Headers */,
-				423F7F7B06075768CD0A19936F35824C /* YGLayout.h in Headers */,
-				8B27228A6B6D2EF2AF4C12CD8A1AE3BE /* YGMacros.h in Headers */,
-				63BDE8854E5053913293ABB41AA3816A /* YGNode.h in Headers */,
-				E19D6D2E540203CB4A037C127D445CF9 /* YGNodePrint.h in Headers */,
-				F34A2BAF25FF025719E060F797C38D62 /* YGStyle.h in Headers */,
-				FE9EEDBB55E498BC974A44EE64BE27DC /* Yoga-internal.h in Headers */,
-				235C0764F2B6745078675A07ACA1BF18 /* Yoga.h in Headers */,
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
 		B2F8C62B4B187AA4737392B90029C1E7 /* Headers */ = {
 			isa = PBXHeadersBuildPhase;
 			buildActionMask = 2147483647;
@@ -2537,23 +2491,6 @@
 			productReference = C6732CBB3746CC71E30D002201E1FF7F /* libPods-medflic.a */;
 			productType = "com.apple.product-type.library.static";
 		};
-		40B4080E62D08D4DB93BB34548D51665 /* yoga */ = {
-			isa = PBXNativeTarget;
-			buildConfigurationList = AC2845962FC6EAE4C5FA7A9DADB6636F /* Build configuration list for PBXNativeTarget "yoga" */;
-			buildPhases = (
-				A5C2C93B59EA1B6D8BB88B237A72A787 /* Headers */,
-				FB10493CB17FBCF0B698A0C4A667FB4C /* Sources */,
-				777393018171097C071729004D9BAF15 /* Frameworks */,
-			);
-			buildRules = (
-			);
-			dependencies = (
-			);
-			name = yoga;
-			productName = yoga;
-			productReference = 9259798E6DBF428952053ACDD6BBDB9D /* libyoga.a */;
-			productType = "com.apple.product-type.library.static";
-		};
 		524DF92C5C2E936C0921A82F3BAF84CD /* Pods-medflic-tvOSTests */ = {
 			isa = PBXNativeTarget;
 			buildConfigurationList = 14EF1EA7F3AEF852377028DD487CF949 /* Build configuration list for PBXNativeTarget "Pods-medflic-tvOSTests" */;
@@ -2657,7 +2594,6 @@
 				524DF92C5C2E936C0921A82F3BAF84CD /* Pods-medflic-tvOSTests */,
 				9E6D0BE10EFEE0E37061260783C8E3F0 /* Pods-medflicTests */,
 				703344DFA4326780B90C9C136223DAFA /* react-native-mapbox-gl */,
-				40B4080E62D08D4DB93BB34548D51665 /* yoga */,
 			);
 		};
 /* End PBXProject section */
@@ -2810,23 +2746,6 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
-		FB10493CB17FBCF0B698A0C4A667FB4C /* Sources */ = {
-			isa = PBXSourcesBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-				6AF0D0ECB63FCCA30EB0D83E44D68437 /* Utils.cpp in Sources */,
-				9B7F234217A35377B2B1BEE39653953D /* YGConfig.cpp in Sources */,
-				565FB66814F824C9AB4C93A0C8150186 /* YGEnums.cpp in Sources */,
-				0402D5125D500D007DAA7A456AE89A5F /* YGFloatOptional.cpp in Sources */,
-				BCBD75C9D8288484CB08DC9F488E0F80 /* YGLayout.cpp in Sources */,
-				F4B41A2A4B2856578BE3FF7360D62F08 /* YGNode.cpp in Sources */,
-				CDE50D608F4C9A3E295CC26C98C0A89A /* YGNodePrint.cpp in Sources */,
-				AF5B7323DC92AA6ABCE3E0633D32E106 /* YGStyle.cpp in Sources */,
-				50B37B1EC4B98E72F4287CFDB670D073 /* yoga-dummy.m in Sources */,
-				33EEB808056759930CE1DD814B8DD200 /* Yoga.cpp in Sources */,
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
 /* End PBXSourcesBuildPhase section */
 
 /* Begin PBXTargetDependency section */
@@ -2897,7 +2816,6 @@
 		DAAAEB98EF422D1F04A8EE34BFCEA22C /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
 			name = yoga;
-			target = 40B4080E62D08D4DB93BB34548D51665 /* yoga */;
 			targetProxy = D15A1520B9B4348CE27DD06C80853A35 /* PBXContainerItemProxy */;
 		};
 		E19BC067D63A9D8CCBB18E729680DD27 /* PBXTargetDependency */ = {
@@ -2909,30 +2827,6 @@
 /* End PBXTargetDependency section */
 
 /* Begin XCBuildConfiguration section */
-		005DBC6A2D41136FFA3B530883E4FB59 /* Release */ = {
-			isa = XCBuildConfiguration;
-			baseConfigurationReference = BE2063B4739E95622B2B1AF120C6944A /* yoga.xcconfig */;
-			buildSettings = {
-				CODE_SIGN_IDENTITY = "iPhone Developer";
-				"CODE_SIGN_IDENTITY[sdk=appletvos*]" = "";
-				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "";
-				"CODE_SIGN_IDENTITY[sdk=watchos*]" = "";
-				GCC_PREFIX_HEADER = "Target Support Files/yoga/yoga-prefix.pch";
-				IPHONEOS_DEPLOYMENT_TARGET = 9.0;
-				OTHER_LDFLAGS = "";
-				OTHER_LIBTOOLFLAGS = "";
-				PRIVATE_HEADERS_FOLDER_PATH = "";
-				PRODUCT_MODULE_NAME = yoga;
-				PRODUCT_NAME = yoga;
-				PUBLIC_HEADERS_FOLDER_PATH = "";
-				SDKROOT = iphoneos;
-				SKIP_INSTALL = YES;
-				SWIFT_ACTIVE_COMPILATION_CONDITIONS = "$(inherited) ";
-				TARGETED_DEVICE_FAMILY = "1,2";
-				VALIDATE_PRODUCT = YES;
-			};
-			name = Release;
-		};
 		014A207A97F0C6A93126D955F5325EE1 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			baseConfigurationReference = 11F90AF4E5A57C4D120A8BEC248F5B7F /* Folly.xcconfig */;
@@ -2977,29 +2871,6 @@
 				VALIDATE_PRODUCT = YES;
 			};
 			name = Release;
-		};
-		0CCD1F2DA2F94DDCCAC0C94AEE39386B /* Debug */ = {
-			isa = XCBuildConfiguration;
-			baseConfigurationReference = BE2063B4739E95622B2B1AF120C6944A /* yoga.xcconfig */;
-			buildSettings = {
-				CODE_SIGN_IDENTITY = "iPhone Developer";
-				"CODE_SIGN_IDENTITY[sdk=appletvos*]" = "";
-				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "";
-				"CODE_SIGN_IDENTITY[sdk=watchos*]" = "";
-				GCC_PREFIX_HEADER = "Target Support Files/yoga/yoga-prefix.pch";
-				IPHONEOS_DEPLOYMENT_TARGET = 9.0;
-				OTHER_LDFLAGS = "";
-				OTHER_LIBTOOLFLAGS = "";
-				PRIVATE_HEADERS_FOLDER_PATH = "";
-				PRODUCT_MODULE_NAME = yoga;
-				PRODUCT_NAME = yoga;
-				PUBLIC_HEADERS_FOLDER_PATH = "";
-				SDKROOT = iphoneos;
-				SKIP_INSTALL = YES;
-				SWIFT_ACTIVE_COMPILATION_CONDITIONS = "$(inherited) ";
-				TARGETED_DEVICE_FAMILY = "1,2";
-			};
-			name = Debug;
 		};
 		11CC045E930FC21F8A13558BB5366794 /* Release */ = {
 			isa = XCBuildConfiguration;
@@ -3504,15 +3375,6 @@
 			buildConfigurations = (
 				014A207A97F0C6A93126D955F5325EE1 /* Debug */,
 				3F9893011771ABBFEAFD81AF1EA5926F /* Release */,
-			);
-			defaultConfigurationIsVisible = 0;
-			defaultConfigurationName = Release;
-		};
-		AC2845962FC6EAE4C5FA7A9DADB6636F /* Build configuration list for PBXNativeTarget "yoga" */ = {
-			isa = XCConfigurationList;
-			buildConfigurations = (
-				0CCD1F2DA2F94DDCCAC0C94AEE39386B /* Debug */,
-				005DBC6A2D41136FFA3B530883E4FB59 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
