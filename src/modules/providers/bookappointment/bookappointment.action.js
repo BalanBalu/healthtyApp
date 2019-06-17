@@ -7,7 +7,7 @@ export async function bookAppointment(bookSlotDetails, isLoading = true) {
   try {
     let endPoint = 'doctor/appointment';
     let response = await postService(endPoint, bookSlotDetails);
-    console.log(JSON.stringify(response) + 'bookAppointment API rspnse');
+    // console.log(JSON.stringify(response) + 'bookAppointment API rspnse');
     let respData = response.data;
     return respData;
   } catch (e) {
@@ -17,9 +17,6 @@ export async function bookAppointment(bookSlotDetails, isLoading = true) {
     }
   }
 }
-
-
-
 
 /* Search Services and category Module  */
 export async function searchDoctorList(userId, searchInputvalues, isLoading = true) {
@@ -88,7 +85,7 @@ export async function viewUserReviews(type,id,isLoading = true) {
     }
   }
 }
-
+/* get Patient Reviews count */
 export async function viewUserReviewCount(doctorId, isLoading = true) {
   try {
     let endPoint = 'user/reviewsCount/' + doctorId
@@ -154,6 +151,24 @@ export const bindDoctorDetails = async (doctorId, fields, isLoading = true) => {
     }
   }
 }
+
+/*get multiple doctor details*/
+export const getMultipleDoctorDetails = async (doctorIds, fields, isLoading = true) => {
+  try {
+    let endPoint = 'doctors/' + doctorIds + '?fields=' + fields;
+    let response = await getService(endPoint);
+    // console.log(JSON.stringify(response) + 'response');
+    let respData = response.data;
+    return respData;
+  } catch (e) {
+    console.log(e.message);
+    return {
+      message: 'exception' + e,
+      success: false
+    }
+  }
+}
+
 
 /* Get Appointment details */
 
