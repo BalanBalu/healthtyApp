@@ -13,8 +13,10 @@ import { FlatList } from 'react-native-gesture-handler';
 import { Loader } from '../../../components/ContentLoader'
 
 class Profile extends Component {
+    
      navigation = this.props.navigation;
     constructor(props) {
+    
         super(props);
         this.state = {
            data:{},
@@ -31,6 +33,7 @@ class Profile extends Component {
             return
         }
         this.getUserProfile();  
+
     }  
     onStarRatingPress(rating) {
         this.setState({
@@ -56,6 +59,10 @@ class Profile extends Component {
         }    
       }
 
+       editProfile() {
+        this.props.navigation.navigate('userdetails', { fromProfile:true, updatedata: this.state.data });
+      }
+
     render() {
         const { profile : { isLoading } } = this.props;
         const {data } = this.state;
@@ -75,9 +82,14 @@ class Profile extends Component {
                                 <Col style={styles.customCol}>
                                     <Icon name="heart" style={styles.profileIcon}></Icon>
                                 </Col>
-                                <Col style={{ width: '40%' }}>
+                                <Col style={{ width: '40%' }} >
                                     <Thumbnail style={styles.profileImage} source={{ uri: 'https://res.cloudinary.com/demo/image/upload/w_200,h_200,c_thumb,g_face,r_max/face_left.png' }} />
                                     <Text style={{ marginLeft: 'auto', marginRight: 'auto', fontFamily: 'OpenSans', backgroundColor: '#fff', borderRadius: 20, padding: 10, marginTop: 5 }}>{data.first_name +" "+ data.last_name}</Text>
+                                    <Grid>
+                                    <Col>
+                                    <Icon name="create" onPress={() => this.editProfile()} />
+                                    </Col>
+                                   </Grid>
                                 </Col>
                                 <Col style={styles.customCol}>
                                     <Icon name="heart" style={styles.profileIcon}></Icon>
@@ -108,7 +120,6 @@ class Profile extends Component {
                         </Grid>
 
                     </Card>
-
 
 
                     <List>
