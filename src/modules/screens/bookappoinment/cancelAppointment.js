@@ -15,7 +15,7 @@ class CancelAppointment extends Component {
             data: '',
             doctorId: '',
             appointmentId: '',
-            status_update_reason: '',
+            statusUpdateReason: '',
             isLoading: false
           
         }
@@ -44,6 +44,7 @@ class CancelAppointment extends Component {
                 startTime: data.appointment_starttime,
                 endTime: data.appointment_endtime,
                 status: updatedStatus,
+                statusUpdateReason: this.state.statusUpdateReason,
                 status_by: 'USER'
             };
             console.log(requestData);
@@ -79,88 +80,74 @@ class CancelAppointment extends Component {
                                 <Text style={styles.text}>
                                     we understand life can get in the way! cancelling or missing your appointment too many times will result in your account being locked!
                                   </Text>
+
                                 <Text style={{ marginTop: 30 }}>  <Text style={{ fontWeight: "bold" }}>
-                                    {formatDate(data.appointment_starttime, 'MMMM-DD-YYYY') + "   " + formatDate(data[0] && data[0].appointment_starttime, 'hh:mm A')}</Text> with {'Dr.' + (data && data.doctorInfo.first_name) + " " + (data && data.doctorInfo.last_name)}</Text>
+                                    {formatDate(data.appointment_starttime, 'MMMM-DD-YYYY') + "   " + 
+                                    formatDate(data[0] && data[0].appointment_starttime, 'hh:mm A')}
+                                    </Text> with {'Dr.' + (data && data.doctorInfo.first_name) + " " + (data && data.doctorInfo.last_name)}</Text>
+
                                 <Text style={{ marginTop: 20, textAlign: "center" }}>What is the reason for Cancellation?</Text>
+                               
                                 <Row style={{ marginLeft: 20, marginTop: 10 }}>
-                                    <Radio selected={true} color={"#775DA3"}
-                                        selectedColor={"#775DA3"} />
+                                    <Radio selected={false} color={"#8a2be2"}selectedColor={"#8a2be2"} />
                                     <Col>
-                                        <Text style={{
-                                            marginLeft: 10, fontFamily: 'OpenSans',
-                                        }}>I am feeling better</Text></Col>
-
+                                       <Text style={styles.customText}>I am feeling better</Text>
+                                     </Col>
                                 </Row>
 
 
-                                <Row style={{ marginLeft: 20, marginTop: 10 }}>
-                                    <Radio selected={true} color={"#775DA3"}
-                                        selectedColor={"#775DA3"} />
+                                <Row style={{ marginLeft: 20 }}>
+                                    <Radio selected={false} color={"#8a2be2"} selectedColor={"#8a2be2"} />
                                     <Col>
-                                        <Text style={{
-                                            marginLeft: 10, fontFamily: 'OpenSans',
-                                        }}>Iam looking for sooner or faster</Text>
-                                    </Col>
-
-                                </Row>
-
-
-                                <Row style={{ marginLeft: 20, marginTop: 10 }}>
-                                    <Radio selected={true} color={"#775DA3"}
-                                        selectedColor={"#775DA3"} />
-                                    <Col>
-                                        <Text style={{
-                                            marginLeft: 10, fontFamily: 'OpenSans',
-                                        }}>I will not be able to make this on the time</Text>
-                                    </Col>
-
-                                </Row>
-
-                                <Row style={{ marginLeft: 20, marginTop: 10 }}>
-                                    <Radio selected={true} color={"#775DA3"} 
-                                        selectedColor={"#775DA3"} />
-                                    <Col>
-                                        <Text style={{
-                                            marginLeft: 10, fontFamily: 'OpenSans',
-                                        }}>I want to reshedule with different type</Text>
-
-                                    </Col>
-
-                                </Row>
-
-                                <Row style={{ marginLeft: 20, marginTop: 10 }}>
-                                    <Radio selected={true} color={"#775DA3"}
-                                        selectedColor={"#775DA3"} />
-                                    <Col>
-                                        <Text style={{
-                                            marginLeft: 10, fontFamily: 'OpenSans',
-                                        }}>Other</Text>
+                                    <Text style={styles.customText}>
+                                    Iam looking for sooner or faster</Text>
                                     </Col>
                                 </Row>
 
 
-                                <View style={{ marginTop: 10, paddingLeft: 18 }}>
+                                <Row style={{ marginLeft: 20 }}>
+                                    <Radio selected={false} color={"#8a2be2"} selectedColor={"#8a2be2"} />
+                                    <Col>
+                                    <Text style={styles.customText}>
+                                        I will not be able to make this on the time</Text>
+                                    </Col>
+                                </Row>
+
+                                <Row style={{ marginLeft: 20 }}>
+                                    <Radio selected={false} color={"#8a2be2"} selectedColor={"#8a2be2"} />
+                                    <Col>
+                                    <Text style={styles.customText}>                                           
+                                    I want to reshedule with different type</Text>
+                                    </Col>
+                                </Row>
+
+                                <Row style={{ marginLeft: 20 }}>
+                                    <Radio selected={false} color={"#8a2be2"} selectedColor={"#8a2be2"}/>
+                                    <Col>
+                                    <Text style={styles.customText}>Other</Text>
+                                    </Col>
+                                </Row>
+
+
+                                <View style={{ marginTop: 0, paddingLeft: 18 }}>
                                     <Text style={{ fontSize: 16 }}>
                                         Write your Reason
                       </Text>
                                 </View>
-                                <View style={{ marginTop: 5, paddingLeft: 18, padding: 10, }}>
+                                <View style={{ marginTop: 10, paddingLeft: 18, padding: 10, }}>
                                     <TextInput
                                         style={{ height: 80, borderWidth: 1, width: 'auto' }}
                                         placeholder="Write your reason here"
-                                        onChangeText={(status_update_reason) => this.setState({ status_update_reason })}
+                                        onChangeText={(statusUpdateReason) => this.setState({ statusUpdateReason })}
                                     />
                                 </View>
 
 
-                                <View style={{
-                                    flex: 1,
-                                    flexDirection: 'row',
-                                }}>
+                                <View style={{ flex: 1, flexDirection: 'row' }}>
 
                                     <Button style={styles.button2} onPress={() => this.cancel(data, 'REJECTED')}>
                                         <Text> SUBMIT </Text></Button>
-                                    <Button style={styles.button1}>
+                                    <Button style={styles.button1} >
                                         <Text> CANCEL</Text></Button>
 
                                 </View>
@@ -194,7 +181,7 @@ const styles = StyleSheet.create({
     grid: {
         backgroundColor: '#f5f5f5',
         marginBottom: 10,
-        marginTop: 10,
+        marginTop: 5,
         height: 800,
         width: 'auto',
         marginLeft: 5,
@@ -203,7 +190,7 @@ const styles = StyleSheet.create({
     card: {
         backgroundColor: '#f5f5f5',
         marginBottom: 10,
-        marginTop: 10,
+        marginTop: 5,
         height: 'auto',
         width: 'auto',
         marginLeft: 10,
@@ -223,7 +210,7 @@ const styles = StyleSheet.create({
     subcard: {
         backgroundColor: 'grey',
         marginBottom: 10,
-        marginTop: 20,
+        marginTop: 5,
         height: 50,
         width: 'auto',
         marginLeft: 15
@@ -235,7 +222,7 @@ const styles = StyleSheet.create({
         borderRadius: 5,
         justifyContent: 'center',
         padding: 20,
-        marginTop: 30,
+        marginTop: 10,
 
     },
     button2: {
@@ -245,8 +232,16 @@ const styles = StyleSheet.create({
         borderRadius: 5,
         justifyContent: 'center',
         padding: 20,
-        marginTop: 30,
-    }
+        marginTop: 10,
+    },
+    customText:
+  {
+    fontFamily: 'OpenSans',
+    color: '#000',
+    fontSize: 15,
+    marginLeft: 10,
+   
+  },
 
 })
 
