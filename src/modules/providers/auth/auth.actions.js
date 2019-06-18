@@ -87,6 +87,7 @@ export async function generateOTP(reqData) {
   }     
 }
 
+/*Forgot Password*/
 export async function changePassword(reqData) {
 try {
   store.dispatch({
@@ -124,6 +125,25 @@ try {
   }     
 
 }
+
+/*Change Password*/
+export async function updateNewPassword(data){
+  try {
+    let endPoint = 'auth/changeNewPassword';
+    let response = await putService(endPoint, data);
+    console.log('response'+JSON.stringify(response));
+    let respData = response.data;
+    console.log('respData'+JSON.stringify(respData))
+    return respData;
+  } catch (e) {
+    return {
+      message: 'exception' + e,
+      success: false
+    }
+  }
+}
+
+
 
 export async function logout() {
   console.log('is Coming here ');
@@ -214,7 +234,7 @@ export async function signUp(credentialData){
 }
 
 // Update fields for Patient
-export async function userFiledsUpdate(userId, data){
+export async function userFiledsUpdate(userId,data,isLoading = true){
   try {
     let endPoint = 'user/'+ userId;
     let response = await putService(endPoint, data); 

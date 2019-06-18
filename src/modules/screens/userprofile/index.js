@@ -59,9 +59,13 @@ class Profile extends Component {
         }    
       }
 
-       editProfile() {
-        this.props.navigation.navigate('userdetails', { fromProfile:true, updatedata: this.state.data });
+       editProfile(screen) {
+           console.log(screen);
+         this.props.navigation.navigate(screen, {screen:screen,fromProfile:true, updatedata: this.state.data })
+        
       }
+
+
 
     render() {
         const { profile : { isLoading } } = this.props;
@@ -87,7 +91,7 @@ class Profile extends Component {
                                     <Text style={{ marginLeft: 'auto', marginRight: 'auto', fontFamily: 'OpenSans', backgroundColor: '#fff', borderRadius: 20, padding: 10, marginTop: 5 }}>{data.first_name +" "+ data.last_name}</Text>
                                     <Grid>
                                     <Col>
-                                    <Icon name="create" onPress={() => this.editProfile()} />
+                                    <Icon name="create" onPress={() => this.editProfile('userdetails')} />
                                     </Col>
                                    </Grid>
                                 </Col>
@@ -133,10 +137,19 @@ class Profile extends Component {
                             <Body>
                                 <Text style={styles.customText}>Email</Text>
                                 <Text note style={styles.customText}>{data.email}</Text>
-                                <Text note style={styles.customText}>{data.secondary_emails && data.secondary_emails[0].email_id}</Text>
-                            </Body>
+                                <FlatList
+                                      data={data.secondary_emails}
+                                      renderItem={({ item })=>(  
+                                      <List>                        
+                                        <Text note style={styles.customText}>{item.type}</Text>                                  
+                                        <Text note style={styles.customText}>{item.email_id}</Text> 
+                                      </List>
+                                     )}
+                                     keyExtractor={(item, index) => index.toString()}
+                                    />            
+                               </Body>
                             <Right>
-                                <Icon name="create"></Icon>
+                            <Icon name="create" onPress={() => this.editProfile('UpdateEmail')} />
                             </Right>
                         </ListItem>
 
@@ -160,11 +173,7 @@ class Profile extends Component {
                                  <Icon name='add' style={{ color: 'gray' }} />
                                   <Text uppercase={false} style={styles.customText}>Add your Address</Text>
                                 </Button> }
-                                {data.address ? 
-                                <Right>
-                                    <Icon name="create"></Icon>
-                                </Right> : null }
-                           
+                                
                         </ListItem>
                     
                       <ListItem avatar>
@@ -189,7 +198,7 @@ class Profile extends Component {
                                 </Body>
                               
                              <Right>
-                                <Icon name="create"></Icon>
+                                <Icon name="create" onPress={() => this.editProfile('UpdateContact')}></Icon>
                              </Right>
                               
                             
@@ -201,8 +210,17 @@ class Profile extends Component {
                             </Left>
                             <Body>
                                 <Text style={styles.customText}>Insurance</Text>
-                                <Text note style={styles.customText}> {data.insurance && data.insurance[0].insurance_no} </Text>
-                                <Text note style={styles.customText}> {data.insurance && data.insurance[0].insurance_provider} </Text>
+                                <FlatList
+                                      data={this.state.data.insurance}
+                                      renderItem={({ item })=>(  
+                                      <List>                        
+                                        <Text note style={styles.customText}>{item.insurance_no}</Text>                                  
+                                        <Text note style={styles.customText}>{item.insurance_provider}</Text> 
+                                      </List>
+                                     )}
+                                     keyExtractor={(item, index) => index.toString()}
+                                    />            
+
                             </Body>
                             <Right>
                                 <Icon name="create"></Icon>
@@ -217,11 +235,11 @@ class Profile extends Component {
                             </Left>
                             <Body>
                                 <Text style={styles.customText}>Change Password</Text>
-                                <Text note style={styles.customText}>Change Password</Text>
+                                <Text note style={styles.customText}>*********</Text>
 
                             </Body>
                             <Right>
-                                <Icon name="create"></Icon>
+                                <Icon name="create" onPress={() => this.editProfile('UpdatePassword')}></Icon>
                             </Right>
                         </ListItem>
 
