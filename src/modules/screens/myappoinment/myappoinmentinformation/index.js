@@ -32,7 +32,22 @@ class AppointmentDetails extends Component {
 
     }
   }
+  backNavigation = async(navigationData)=>{
+    console.log('navigationData'+JSON.stringify(navigationData));
+    if(navigationData.action) {
+      if(navigationData.action.type === 'Navigation/BACK') {
+          return;
+      }
+    }
+    console.log(navigationData);
+    if(navigationData.state.params) {
+        if(navigationData.state.params.updated) {
+                    
+          this.setState({ isRefreshing: true }); 
 
+        }
+      }  
+    }
   async componentDidMount() {
     const userId = await AsyncStorage.getItem('userId');
     const { navigation } = this.props;
@@ -99,36 +114,26 @@ class AppointmentDetails extends Component {
         statusUpdateReason: this.state.statusUpdateReason,
         status_by: 'USER'
       };
-      console.log(requestData);
+      //console.log(requestData);
       
       let userId = await AsyncStorage.getItem('userId');
       console.log('userId' + userId);
       let result = await appointmentStatusUpdate(this.state.doctorId, this.state.appointmentId, requestData);
       this.setState({ isLoading: false })
-      console.log(result);
+     // console.log(result);
       
       let appointmentStatus = result.appointmentData.appointment_status;
-      console.log(appointmentStatus);
+      console.log( 'appointmentStatus'+appointmentStatus);
 
       if (result.success) {
         Toast.show({
           text: result.message,
           duration: 3000
         })
-        if(navigationData.action) {
-          if(navigationData.action.type === 'Navigation/BACK') {
-              return;
-          }
-        }
-        console.log(navigationData);
-        if(navigationData.state.params) {
-            if(navigationData.state.params.updated) {
-                        
-              this.setState({ isRefreshing: true }); 
-  
-            }
-          }    
+         
         this.setState({ appointmentStatus: appointmentStatus });
+        console.log( 'appointmentStatus'+appointmentStatus);
+
       }
    
     }
@@ -154,8 +159,8 @@ class AppointmentDetails extends Component {
 
           <Content style={styles.bodyContent}>
                <NavigationEvents
-          onWillFocus={payload => { this.updateAppointmentStatus(payload) }}
-        />     
+                  onWillFocus={payload => { this.backNavigation(payload) }}
+                 />     
             <Grid style={{ backgroundColor: '#7E49C3', height: 200 }}>
             </Grid>
 
@@ -195,7 +200,7 @@ class AppointmentDetails extends Component {
                     <Button disabled={true} block style={{ borderRadius: 10, backgroundColor: '#D7BDE2' }}>
                       <Text style={{ color: 'black', fontSize: 16 }}>
                       {this.state.appointmentStatus == 'APPROVED' ? 'APPROVED' :
-                      this.state.appointmentStatus == 'REJECTED' ? 'REJECTED': 
+                       data.appointment_status == 'CLOSED' ? 'CLOSED' :
                       data.appointment_status == 'PROPOSED_NEW_TIME' ?'PROPOSED NEW TIME' :
                        data.appointment_status == 'PENDING_REVIEW' ? 'PENDING REVIEW' :
                         data.appointment_status || this.state.appointStatus}
