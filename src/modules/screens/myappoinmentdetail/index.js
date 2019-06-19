@@ -71,20 +71,7 @@ class MyAppoinmentList extends Component {
               });
                 this.setState({ upComingData: appointmentData, isLoading:true,data:appointmentData});
                 }
-               console.log(this.state.upComingData);
-               if(navigationData.action) {
-                if(navigationData.action.type === 'Navigation/BACK') {
-                    return;
-                }
-              }
-              console.log(navigationData);
-              if(navigationData.state.params) {
-                  if(navigationData.state.params.updated) {
-                              
-                    this.setState({ isRefreshing: true }); 
-    
-                  }
-                }    
+              
           
           if (upCommingAppointmentResult.success){
             let appointmentData=[];
@@ -164,9 +151,7 @@ class MyAppoinmentList extends Component {
         return (
 
             <View style={styles.container}>
-                 <NavigationEvents
-          onWillFocus={payload => { this.upCommingAppointment(payload) }}
-        />
+                 
                <Card transparent>
                
                 <SegmentedControlTab tabsContainerStyle={{ width: 250, marginLeft: 'auto', marginRight: 'auto',marginTop:'auto' }}

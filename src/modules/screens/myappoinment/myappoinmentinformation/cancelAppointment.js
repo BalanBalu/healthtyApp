@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import { StyleSheet, TextInput, AsyncStorage } from 'react-native';
-import { Container, Radio, Button, Card, Grid, View, Text,CardItem, Body, Content, Input, Item, Row, Col } from 'native-base';
+import { Container, Radio, Button, Card, Grid, ListItem, View, Text,CardItem,Right, Body, Content, Input, Item, Row, Col } from 'native-base';
+import { NavigationEvents } from 'react-navigation';
 import { appointmentStatusUpdate } from '../../../providers/bookappointment/bookappointment.action';
 import { formatDate } from '../../../../setup/helpers';
 
@@ -16,10 +17,9 @@ class CancelAppointment extends Component {
             doctorId: '',
             appointmentId: '',
             statusUpdateReason: '',
-            appointmentStatus: '',
             isLoading: false,
             radioStatus: [true, false, false, false, false],
-            reason:[]
+          
         }
      
 
@@ -30,7 +30,7 @@ class CancelAppointment extends Component {
         tempArray[radioSelect] = true;
         this.setState({ radioStatus: tempArray });
 
-        this.setState({ reason: reasonSelect });
+        this.setState({ statusUpdateReason: reasonSelect });
     }
     async componentDidMount() {
        
@@ -42,12 +42,9 @@ class CancelAppointment extends Component {
         console.log(this.state.data);
 
     }
-    doCancel= async(data, status)=> {
-       this.updateAppointmentStatus(data, status)
-    }
-    /* Update Appoiontment Status */
-
-    updateAppointmentStatus = async (data, updatedStatus) => {
+    
+    /* Cancel Appoiontment Status */
+    cancelAppointment = async (data, updatedStatus) => {
         try {
             this.setState({ isLoading: true });
             let requestData = {
@@ -59,31 +56,22 @@ class CancelAppointment extends Component {
                 statusUpdateReason: this.state.statusUpdateReason,
                 status_by: 'USER'
             };
-           //console.log(requestData);
-            let userId = await AsyncStorage.getItem('userId');
-            console.log('userId' + userId);
+          
+            let userId = await AsyncStorage.getItem('userId');      
             let result = await appointmentStatusUpdate(this.state.doctorId, this.state.appointmentId, requestData);
-            this.setState({ isLoading: false })
-            //console.log(result);
-            //console.log('update result' + JSON.stringify(result));
-            let appointmentStatus = result.appointmentData.appointment_status;
-            //console.log(appointmentStatus);
-            await this.setState({data:result, appointmentStatus: appointmentStatus , isLoading: true});
-            console.log('1'+JSON.stringify(this.state.data));
-            this.props.navigation.navigate('AppointmentInfo', { cancelDetails: this.state.appointmentStatus})
-
-          }
+            this.setState({ isLoading: false }) 
+            console.log('result'+ result) 
+            let temp = this.state.data;          
+            temp.appointment_status = result.appointmentData.appointment_status;   
+            temp.status_update_reason = result.appointmentData.status_update_reason;
+           this.setState({data:temp});  
+           this.props.navigation.navigate('AppointmentInfo',{data:this.state.data});
+           }
         catch (e) {
             console.log(e);
         }
     }
-    // backNavigation(){
-    //   console.log('2'+JSON.stringify(this.state.data));
-
-    //      this.props.navigation.navigate('AppointmentInfo', { cancelDetails: this.state.data})
-    //      console.log('3'+JSON.stringify(this.state.data));
-
-    //   }
+    
     render() {
         const { data, isLoading } = this.state;
 
@@ -91,8 +79,7 @@ class CancelAppointment extends Component {
 
     <Container style={styles.container}>
     {isLoading == true ? <Loader style={'list'} /> :
-    <Content style={styles.bodycontent}>
- 
+    <Content style={styles.bodycontent}> 
     <Card style={{ borderRadius: 5, padding: 10, height: 'auto' }}>
         <Card>
       <CardItem style={styles.text}>
@@ -108,10 +95,10 @@ class CancelAppointment extends Component {
              formatDate(data[0] && data[0].appointment_starttime, 'hh:mm A')}
             </Text> with {'Dr.' + (data && data.doctorInfo.first_name) + " " + (data && data.doctorInfo.last_name)}</Text>
             <Text style={{ marginTop: 20, }}>What is the reason for Cancellation?</Text>
+         
           <Row style={{ marginLeft: 20, marginTop: 10 }}>
-          <Radio borderColor='black' selected={this.state.radioStatus[0]} onPress={() => this.toggleRadio("0", "I am feeling better")} 
-           
-            
+          <Radio borderColor='black' selected={this.state.radioStatus[0]} onPress={() => this.toggleRadio(0, "I am feeling better")} 
+                     
             selectedColor={"#775DA3"} />
             <Col>
               <Text style={{
@@ -135,7 +122,7 @@ class CancelAppointment extends Component {
 
 
           <Row style={{ marginLeft: 20, marginTop: 10 }}>
-          <Radio selected={this.state.radioStatus[2]} onPress={() => this.toggleRadio("2", "I will not be able to make this on the time")} color={"#775DA3"}
+          <Radio selected={this.state.radioStatus[2]} onPress={() => this.toggleRadio(2, "I will not be able to make this on the time")} color={"#775DA3"}
               selectedColor={"#775DA3"} />
             <Col>
               <Text style={{
@@ -146,8 +133,9 @@ class CancelAppointment extends Component {
           </Row>
 
           <Row style={{ marginLeft: 20, marginTop: 10 }}>
-          <Radio selected={this.state.radioStatus[3]} onPress={() => this.toggleRadio("3", "I want to reshedule with different type")} color={"#775DA3"}
+          <Radio selected={this.state.radioStatus[3]} color="red" selectedColor="green" onPress={() => this.toggleRadio(3, "I want to reshedule with different type")} color={"#775DA3"}
               selectedColor={"#775DA3"} />
+              
             <Col>
               <Text style={{
                 marginLeft: 10, fontFamily: 'OpenSans',
@@ -158,16 +146,16 @@ class CancelAppointment extends Component {
           </Row>
 
           <Row style={{ marginLeft: 20, marginTop: 10 }}>
-          <Radio selected={this.state.radioStatus[4]} onPress={() => this.toggleRadio("4", "Other")} color={"#775DA3"}
+          <Radio selected={this.state.radioStatus[4]} onPress={() => this.toggleRadio(4, "Other")} color={"#775DA3"}
               selectedColor={"#775DA3"} />
             <Col>
               <Text style={{
                 marginLeft: 10, fontFamily: 'OpenSans',
               }}>Other</Text>
             </Col>
-          </Row>
+          </Row> 
 
-          <Text style={{ fontSize: 16, marginTop: 20 }}>
+           <Text style={{ fontSize: 16, marginTop: 20 }}>
             Write your reason
               </Text>
             <TextInput 
@@ -177,7 +165,7 @@ class CancelAppointment extends Component {
                />
           
           <Row style={{ marginTop: 25 }}><Col>
-            <Button style={styles.button1} onPress={() => this.doCancel(data, 'CLOSED')}>
+            <Button style={styles.button1} onPress={() => (this.cancelAppointment(data, 'CLOSED'))}>
                 <Text> SUBMIT</Text>
                 </Button>
           </Col>
@@ -272,4 +260,5 @@ marginTop: 15,
 }
 
 })
+
 
