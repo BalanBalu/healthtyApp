@@ -4,6 +4,8 @@ import { AsyncStorage } from 'react-native';
 import { updateNewPassword} from '../../providers/auth/auth.actions';
 import { connect } from 'react-redux'
 import styles from './style.js'
+import Spinner from '../../../components/Spinner';
+
 
 
 class UpdatePassword extends Component {
@@ -12,12 +14,14 @@ class UpdatePassword extends Component {
         this.state = {            
             oldPassword:'',
             newPassword:'',
-            confirmPassword:''
+            confirmPassword:'',
+            isLoading:false
         }
     }
 
     handlePasswordUpdate = async () => {
         try {
+            this.setState({isLoading:true});
             if(this.state.newPassword === this.state.confirmPassword){
             let userId = await AsyncStorage.getItem('userId');            
             console.log(userId);
@@ -37,6 +41,8 @@ class UpdatePassword extends Component {
 
                 })
                 this.props.navigation.navigate('Profile');
+                this.setState({isLoading:false});
+
             } else {
                 Toast.show({
                     text: 'Not updated',
@@ -60,11 +66,14 @@ class UpdatePassword extends Component {
     }
 
     render() {
-        const { user: { isLoading } } = this.props;
 
         return (
             <Container style={styles.container}>
-                
+                    <Spinner color='blue'
+                    visible={this.state.isLoading}
+                    textContent={'Please wait updating...'}
+                />
+
        
                 <Content style={styles.bodyContent} contentContainerStyle={{ justifyContent: 'center', flex: 1, height: '100%' }}>
                   

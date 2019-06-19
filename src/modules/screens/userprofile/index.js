@@ -10,6 +10,8 @@ import LinearGradient from 'react-native-linear-gradient';
 import { StyleSheet, AsyncStorage} from 'react-native';
 import StarRating from 'react-native-star-rating';
 import { FlatList } from 'react-native-gesture-handler';
+import { NavigationEvents } from 'react-navigation';
+
 import { Loader } from '../../../components/ContentLoader'
 
 class Profile extends Component {
@@ -43,7 +45,7 @@ class Profile extends Component {
 
       getUserProfile= async () => {
         try { 
-         let fields = "first_name,last_name,gender,dob,mobile_no,secondary_mobiles,email,secondary_emails,insurance,address,is_blood_donor,is_available_blood_donate,blood_group"         
+         let fields = "first_name,last_name,gender,dob,mobile_no,secondary_mobiles,email,secondary_emails,insurance,address,is_blood_donor,is_available_blood_donate,blood_group,profile_image"         
          let userId= await AsyncStorage.getItem('userId');
          console.log(this.state.userId);
          let result = await fetchUserProfile(userId,fields);    
@@ -52,6 +54,7 @@ class Profile extends Component {
          if(this.props.profile.success) {
             this.setState({ data: result});
          }   
+         console.log(JSON.stringify(this.state.data.profile_image)+'profile');
 
         } 
         catch (e) {
@@ -73,6 +76,12 @@ class Profile extends Component {
         return (
 
             <Container style={styles.container}>
+            
+            <NavigationEvents
+            onWillFocus={payload => {this.getUserProfile(payload)}}
+            />
+
+
                 {isLoading ? 
                     <Loader style={'profile'} /> :
                 
@@ -87,7 +96,11 @@ class Profile extends Component {
                                     <Icon name="heart" style={styles.profileIcon}></Icon>
                                 </Col>
                                 <Col style={{ width: '40%' }} >
-                                    <Thumbnail style={styles.profileImage} source={{ uri: 'https://res.cloudinary.com/demo/image/upload/w_200,h_200,c_thumb,g_face,r_max/face_left.png' }} />
+                                    {data.profile_image != undefined ?
+
+                                    <Thumbnail style={styles.profileImage} source={data.profile_image.imageURL} style={{ height: 86, width: 86 }} />:
+                                    <Thumbnail style={styles.profileImage} source={{ uri: 'https://res.cloudinary.com/demo/image/upload/w_200,h_200,c_thumb,g_face,r_max/face_left.png' }} />}
+
                                     <Text style={{ marginLeft: 'auto', marginRight: 'auto', fontFamily: 'OpenSans', backgroundColor: '#fff', borderRadius: 20, padding: 10, marginTop: 5 }}>{data.first_name +" "+ data.last_name}</Text>
                                     <Grid>
                                     <Col>
@@ -223,7 +236,7 @@ class Profile extends Component {
 
                             </Body>
                             <Right>
-                                <Icon name="create"></Icon>
+                                <Icon name="create" onPress={() => this.editProfile('UpdateInsurance')} ></Icon>
                             </Right>
                         </ListItem>
 

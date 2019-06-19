@@ -9,23 +9,23 @@ import Spinner from '../../../components/Spinner';
 
 
 
-class UpdateEmail extends Component {
+class UpdateInsurance extends Component {
     constructor(props) {
         super(props)
         this.state={
-            email:'',
-            type:'',
+            insurance_no:'',
+            insurance_provider:'',
             active:true,
-            primary_email:'',
             isLoading:false
-        }      
+
+             }      
     }
     
     componentDidMount() {
-         this.bindEmailValues();
+         this.bindInsuranceValues();
     }
     
-    bindEmailValues() {
+    bindInsuranceValues() {
         const { navigation } = this.props;
         const userData = navigation.getParam('updatedata');
         const fromProfile = navigation.getParam('fromProfile') || false
@@ -33,40 +33,40 @@ class UpdateEmail extends Component {
         if(fromProfile){
              this.setState({
              fromProfile:true,
-            primary_email:userData.email,
-            email:userData.secondary_emails[0].email_id,
-            type:userData.secondary_emails[0].type, 
-            active:userData.secondary_emails[0].active               
+             insurance_no:userData.insurance[0].insurance_no,
+            insurance_provider:userData.insurance[0].insurance_provider,
+            active:userData.insurance[0].active,
              })
          }
     }
 
-    handleEmailUpdate = async () => {
-        
+    handleInsuranceUpdate = async () => {
+
         try {
             this.setState({isLoading:true});
             let userId = await AsyncStorage.getItem('userId');
             let data = {
-                secondary_emails: [{
-                    email_id: this.state.email,
-                    type: this.state.type,
+                insurance: [{
+                    insurance_no: this.state.insurance_no,
+                    insurance_provider: this.state.insurance_provider,
                     active:this.state.active
                 }]
             };
             let response= await userFiledsUpdate(userId,data);
             if (response.success) {
                 Toast.show({
-                    text:'Email updated Successfully',
+                    text:'Inusrance updated Successfully',
                     type: "success",
                     duration: 3000,
 
                 })
                 this.props.navigation.navigate('Profile');
-                this.setState({isLoading:false})
+                this.setState({isLoading:true});
+
 
             } else {
                 Toast.show({
-                    text: 'Email not updated',
+                    text: 'Insurance not updated',
                     type: "danger",
                     duration: 3000
                 })
@@ -82,59 +82,52 @@ class UpdateEmail extends Component {
 
     
     render() {
-
+        const { user: { isLoading } } = this.props;
 
 
         return (
-            <Container style={styles.container}>  
-    
+            <Container style={styles.container}>      
                
        
                 <Content style={styles.bodyContent} contentContainerStyle={{ justifyContent: 'center', flex: 1, height: '100%' }}>
 
+                <Spinner color='blue'
+                    visible={this.state.isLoading}
+                    textContent={'Please wait updating...'}
+                />
+           
 
-
-                <H3 style={{ fontFamily: 'OpenSans' }}>Primary Email</H3>
-                 <Card style={{ padding: 10, borderRadius: 10 }}>
-                 <Item style={{ borderBottomWidth: 0 }}>
-                    <Icon name='mail' style={styles.centeredIcons}></Icon>
-                        <Body>
-                        <Text style={styles.customText}>{this.state.primary_email}</Text>
-                        </Body>
-                  </Item>
-                  </Card>   
-                    <H3 style={{ fontFamily: 'OpenSans' }}>Edit Secondary Email</H3>
-                    <Text style={{ color: 'gray', fontSize: 13, fontFamily: 'OpenSans' }}>Update your secondary email</Text>
+                    <H3 style={{ fontFamily: 'OpenSans' }}>Edit Insurance</H3>
+                    <Text style={{ color: 'gray', fontSize: 13, fontFamily: 'OpenSans' }}>Update your Insurance</Text>
                     <Card style={{ padding: 10, borderRadius: 10 }}>
-
-                    <Item style={{ borderBottomWidth: 0, marginTop: 12, marginLeft: 4 }}>
-                            <Text style={{ marginLeft: 15, color: 'gray', fontFamily: 'OpenSans' }}>{this.state.type}</Text>
-                    </Item>
 
 
                     <Item style={{ borderBottomWidth: 0 }}>
                             <Icon name='mail' style={styles.centeredIcons}></Icon>
-                            <Input placeholder="Edit Your Secondary Email" style={styles.transparentLabel} keyboardType="email-address"
-                                onChangeText={(email) => this.setState({ email })}
-                                value={this.state.email}
-                                testID='updateEmail' />
+                            <Input placeholder="Edit insurance number" style={styles.transparentLabel} keyboardType="email-address"
+                                onChangeText={(insurance_no) => this.setState({ insurance_no })}
+                                value={this.state.insurance_no}
+                                testID='updateInsuranceNo' />
                     </Item>
+
+                    <Item style={{ borderBottomWidth: 0 }}>
+                            <Icon name='mail' style={styles.centeredIcons}></Icon>
+                            <Input placeholder="Edit insurance provider" style={styles.transparentLabel} keyboardType="email-address"
+                                onChangeText={(insurance_provider) => this.setState({ insurance_provider })}
+                                value={this.state.insurance_provider}
+                                testID='updateInsuranceProvider' />
+                    </Item>
+
                     <Item style={{ borderBottomWidth: 0, marginTop: 12, marginLeft: 4 }}>
-                            <CheckBox checked={this.state.active} color="green" onPress={() => this.setState({ active: !this.state.active })} testID='privateCheckbox'></CheckBox>
+                            <CheckBox checked={this.state.active} color="green" onPress={() => this.setState({ active: !this.state.active })} testID='activeCheckbox'></CheckBox>
                             <Text style={{ marginLeft: 15, color: 'gray', fontFamily: 'OpenSans' }}>Active</Text>
                         </Item>
-
-                        <Spinner color='blue'
-                    visible={this.state.isLoading}
-                    textContent={'Loading...'}
-                        />
-
 
 
 
                         <Item style={{ borderBottomWidth: 0 }}>
                             <Right>
-                                <Button style={styles.updateButton} onPress={() => this.handleEmailUpdate()} testID='clickUpdateEmail'>
+                                <Button style={styles.updateButton} onPress={() => this.handleInsuranceUpdate()} testID='clickUpdateInsurance'>
                                     <Text uppercase={false} note style={{ color: '#fff', fontFamily: 'OpenSans' }}>Update</Text>
                                 </Button>
                             </Right>
@@ -163,5 +156,5 @@ function profileState(state) {
         user: state.user
     }
 }
-export default connect(profileState)(UpdateEmail)
+export default connect(profileState)(UpdateInsurance)
 
