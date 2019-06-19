@@ -1,19 +1,15 @@
 import React, { Component } from 'react';
-import {
-    Container, Content, View, Text, Title, Header, H3, Button, Item, Card,
-    CardItem, List, ListItem, Left, Right, Thumbnail, Segment,
-    Body, Icon
-} from 'native-base';
+import { Container, Content, View, Text, Title, Header, H3, Button, Item, Card, CardItem, List, ListItem, Left, Right, Thumbnail, Segment,
+  Body, Icon} from 'native-base';
 import { StyleSheet, Image, AsyncStorage, FlatList, ScrollView ,ActivityIndicator} from 'react-native';
 import StarRating from 'react-native-star-rating';
-
 import { userReviews } from '../../providers/profile/profile.action';
 import { hasLoggedIn } from '../../providers/auth/auth.actions';
 import { formatDate ,addTimeUnit,dateDiff,subTimeUnit} from '../../../setup/helpers';
 import { Col, Row, Grid } from 'react-native-easy-grid';
 import SegmentedControlTab from "react-native-segmented-control-tab";
 import ContentLoader from '../../../components/ContentLoader/ContentLoader';
-import { getUserAppointments,viewUserReviews } from "../../providers/bookappointment/bookappointment.action";
+import { getUserAppointments,viewUserReviews,getMultipleDoctorDetails } from "../../providers/bookappointment/bookappointment.action";
 import noAppointmentImage from '../../../../assets/images/noappointment.png';
 import Spinner from '../../../components/Spinner';
 import { Loader } from '../../../components/ContentLoader';
@@ -25,15 +21,16 @@ class MyAppoinmentList extends Component {
 
         this.state = {
             data:[],
-           spinnerData: [1,2,3,4],
             isLoading: false,
             selectedIndex: 0,
             upComingData: [],
             pastData: [],
             userId: null,
             reviewData:[],
-            page: 0,
-            loading: true
+            upcommingSpecialist:[],
+            pastSpecialist:[],
+            speciallist:[],
+            loading: true,
         }
     }
    
@@ -61,12 +58,34 @@ class MyAppoinmentList extends Component {
             let appointmentData=[];
               upCommingAppointmentResult=upCommingAppointmentResult.data;
                
-          upCommingAppointmentResult.map(appointmentResult=> {
-            appointmentData.push({appointmentResult})
-          });
-            this.setState({ upComingData: appointmentData, isLoading:true,data:appointmentData});
+     let doctorIds=upCommingAppointmentResult.map((appointmentResult,index)=> {
+            let educationDetails=null;
+            educationDetails=appointmentResult.doctorInfo.education.map(education=>{
+                  return education.degree
+              }).join(',');
+            appointmentData.push({appointmentResult,degree:educationDetails})
+               
+               
+            return appointmentResult.doctor_id
+        }).join(',');
+       
+         let speciallistResult= await getMultipleDoctorDetails(doctorIds,'specialist');
+       
+         let upcommingSpecialist=[];
+        speciallistResult.data.map((speciallists,index)=> {
+            let speaciallistDetails=null
+            
+             speaciallistDetails=speciallists.specialist.map(categories=>{
+                     
+                   return categories.category
+               }).join(',')
+                     
+               upcommingSpecialist.push({data:appointmentData[index],specialist:speaciallistDetails})
+                       
+            });
+            this.setState({ upComingData:upcommingSpecialist, isLoading:true,data:upcommingSpecialist,specialist:upcommingSpecialist});
             }
-           console.log(this.state.upComingData);
+            
         } catch (e) {
           console.log(e);
         }
@@ -81,31 +100,56 @@ class MyAppoinmentList extends Component {
           };        
           let pastAppointmentResult = await getUserAppointments(userId, filters)
           let viewUserReviewResult = await viewUserReviews('user',userId);
+          
           if (pastAppointmentResult.success){
           pastAppointmentResult=pastAppointmentResult.data;
           viewUserReviewResult=viewUserReviewResult.data;
 
-              let appointmentData=[];
+              let appointmentData=[]
              
-             pastAppointmentResult.map(appointmentResult=> {
+              let doctorIds=pastAppointmentResult.map(appointmentResult=> {
+                  
+                let educationDetails=null;
+                 educationDetails=appointmentResult.doctorInfo.education.map(education=>{
+                       return education.degree
+                   }).join(',');
+                   
+               
                 let condition=false;
-             viewUserReviewResult.map(viewUserReview => {
+             viewUserReviewResult.map(viewUserReview => {              
                if(appointmentResult._id === viewUserReview .appointment_id){
-                appointmentData.push({appointmentResult,ratting:viewUserReview.overall_rating});
+                appointmentData.push({appointmentResult,ratting:viewUserReview.overall_rating,degree:educationDetails});
                condition = true;              
-               }  
-                
+               }                 
              });
             
              if(condition == false){
-             appointmentData.push({appointmentResult})
+             appointmentData.push({appointmentResult,degree:educationDetails})
              condition=false;
              }
-           });  
-            console.log('past appointment');      
-           console.log(appointmentData)
-             this.setState({ pastData: appointmentData, isLoading:true});
+            
+            
+              
+             return appointmentResult.doctor_id
+            }).join(',');
+
+       
+           
+             let speciallistResult= await getMultipleDoctorDetails(doctorIds,'specialist');
+           
+             let pastSpecialist=[];
+            speciallistResult.data.map((speciallists,index)=> {
+              let speaciallistDetails=speciallists.specialist.map(categories=>{
+                       return categories.category
+                   }).join(',');
+                   pastSpecialist.push({data:appointmentData[index],specialist:speaciallistDetails})
+                });
+                   
+                console.log(pastSpecialist);
+          
+           this.setState({ pastData: pastSpecialist,isLoading:true});
         }
+        
          } catch (e) {
            console.log(e);
          }
@@ -116,19 +160,20 @@ class MyAppoinmentList extends Component {
        
 
         let data=  (index === 0 ? this.state.upComingData:this.state.pastData)
-        console.log(index);
+     
+        
         this.setState({
             ...this.state,
             selectedIndex: index,
             data,
-           
+        
         });
        
     };
     
        
     render() {
-        const { data,selectedIndex,reviewData,isLoading } = this.state;
+        const { data,selectedIndex,reviewData,isLoading ,speciallist} = this.state;
               
 
         return (
@@ -165,7 +210,7 @@ class MyAppoinmentList extends Component {
               
                 <FlatList
                             data={data}
-                            extraData={reviewData}
+                            extraData={data}
                             renderItem={({ item, index }) => 
                          
                           
@@ -175,34 +220,36 @@ class MyAppoinmentList extends Component {
                             <Left>
                                 <Thumbnail square source={{ uri: 'https://res.cloudinary.com/demo/image/upload/w_200,h_200,c_thumb,g_face,r_max/face_left.png' }} style={{ height: 60, width: 60 }} />
                             </Left>
-                            <Body>
-                                <Text style={{ fontFamily: 'OpenSans' }}>{item.appointmentResult.doctorInfo.prefix||'Dr'+'.'+item.appointmentResult.doctorInfo.first_name+' '+item.appointmentResult.doctorInfo.last_name} </Text>
+                            <Body><Item style={{ borderBottomWidth: 0 }}>
+                                <Text style={{ fontFamily: 'OpenSans' }}>{item.data.appointmentResult.doctorInfo.prefix||'Dr'+'.'+item.data.appointmentResult.doctorInfo.first_name+' '+item.data.appointmentResult.doctorInfo.last_name} </Text>
+                                <Text style={{ fontFamily: 'OpenSans', fontSize: 10,marginTop: '1%' }}>{item.data.degree.slice(0,7)+item.data.degree.length>7 ? '...':null}</Text></Item>
                                 <Item style={{ borderBottomWidth: 0 }}>
-                                    <Text style={{ fontFamily: 'OpenSans' }}>Internist</Text>
-                                    {selectedIndex==1&& item.ratting!=undefined&&
+                                    <Text style={{ fontFamily: 'OpenSans',fontSize: 14 }}>{item.specialist}</Text>
+                                    {selectedIndex==1&& item.data.ratting!=undefined &&
                                     <StarRating fullStarColor='#FF9500' starSize={20} containerStyle={{ width: 100, marginLeft: 60 }}
                                         disabled={false}
                                         maxStars={5}
-                                        rating={item.ratting}
+                                        rating={item.data.ratting}
                                         selectedStar={(rating) => this.onStarRatingPress(rating)}
                                     />}
+                                   {console.log('ratting of datarender is:'+ item.data.ratting)}
+                                   {console.log('ratting of render is:'+ item.ratting)}
                                     </Item>
                                     {selectedIndex==0&&
                                 <Item style={{ borderBottomWidth: 0 }}>
-                                    {item.appointmentResult.appointment_status=='PENDING'?
+                                    {item.data.appointmentResult.appointment_status=='PENDING'?
                                     <Text style={{ fontFamily: 'OpenSans', fontSize: 12 ,color:'red' }} note>waiting for confirmation</Text>
-                                    :item.appointmentResult.appointment_status=='APPROVED'?
-                                    <Text style={{ fontFamily: 'OpenSans', fontSize: 12 ,color:'green' }} note>Appointment conformed</Text>
-                                    :  <Text style={{ fontFamily: 'OpenSans', fontSize: 12 ,color:'grey' }} note>{item.appointmentResult.appointment_status }</Text>
+                                    :item.data.appointmentResult.appointment_status=='APPROVED'?
+                                    <Text style={{ fontFamily: 'OpenSans', fontSize: 12 ,color:'green' }} note>Appointment confirmed</Text>
+                                    :  <Text style={{ fontFamily: 'OpenSans', fontSize: 12 ,color:'grey' }} note>{item.data.appointmentResult.appointment_status }</Text>
                                     }
                                     </Item>
                                     }
                                      {selectedIndex==1&&
                                      <Item style={{ borderBottomWidth: 0 }}>
-                                    { item.appointmentResult.appointment_status=='CLOSED'?
+                                    { item.data.appointmentResult.appointment_status=='CLOSED'?
                                     <Text style={{ fontFamily: 'OpenSans', fontSize: 12 ,color:'red' }} note>Appointment cancelled.</Text>
-                                    
-                                    : item.appointmentResult.appointment_status=='COMPLETED'&&
+                                    : item.data.appointmentResult.appointment_status=='COMPLETED'&&
                                     <Text style={{ fontFamily: 'OpenSans', fontSize: 12 ,color:'green' }} note>Appointment completed</Text>
                                      }
                     
@@ -210,25 +257,22 @@ class MyAppoinmentList extends Component {
                                     }
                               
                                 
-                                    <Text style={{ fontFamily: 'OpenSans', fontSize: 12 }} note>{formatDate(item.appointmentResult.appointment_starttime,'dddd,MMMM DD-YYYY  hh:mm a') }</Text>
+                                    <Text style={{ fontFamily: 'OpenSans', fontSize: 12 }} note>{formatDate(item.data.appointmentResult.appointment_starttime,'dddd,MMMM DD-YYYY  hh:mm a') }</Text>
                                 
                                 
                                {selectedIndex==1&&
-                              item.appointmentResult.appointment_status=='PENDING_REVIEW'?<Item style={{ borderBottomWidth: 0}}>
+                              item.data.appointmentResult.appointment_status=='PENDING_REVIEW'?<Item style={{ borderBottomWidth: 0}}>
                                  <Button style={styles.bookingButton} onPress={() => this.props.navigation.navigate('InsertReview')}>
-                              <Text > feed back</Text>
+                              <Text style={fontsize=3}> Add To Review</Text>
                           </Button>
                           <Button style={styles.shareButton} >
-                              <Text >CANCEL</Text>
+                              <Text style={fontsize=3} >book Again</Text>
                           </Button>
                          
-                      </Item>: selectedIndex==1&& 
-                             <Item style={{ borderBottomWidth: 0}}>
-                              <Button style={styles.bookingButton}>
-                                  <Text  >Book Again</Text>
-                              </Button>
-                              <Button style={styles.shareButton} >
-                                  <Text >Share</Text>
+                      </Item>:  selectedIndex===1&&
+                             <Item style={{ borderBottomWidth: 0} }>
+                              <Button style={styles.bookingAgainButton}>
+                                  <Text style={fontsize=3} >Book Again</Text>
                               </Button>
                           </Item>
                             }
@@ -274,7 +318,7 @@ const styles = StyleSheet.create({
     bookingButton: {
         marginTop: 10,
         backgroundColor: '#775DA3',
-         marginLeft:35,
+         marginRight:1,
         borderRadius: 10,
         width: 'auto',
         height: 30,
@@ -282,11 +326,23 @@ const styles = StyleSheet.create({
         fontSize: 1,
         textAlign: 'center'
     },
+    bookingAgainButton:{
+    marginTop: 12,
+    backgroundColor: 'gray',
+    
+    marginLeft:110,
+    borderRadius: 10,
+    width: 'auto',
+    height: 30,
+    color: 'white',
+    fontSize: 1,
+    textAlign: 'center',
+    justifyContent: 'center'},
     shareButton: {
         marginTop: 12,
         backgroundColor: 'gray',
-        marginRight:10,
-        marginLeft:5,
+        marginRight:5,
+       
         borderRadius: 10,
         width: 'auto',
         height: 30,
