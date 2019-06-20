@@ -1,4 +1,4 @@
-import React, { Component } from 'react';
+import React, { Component } from './node_modules/react';
 import { StyleSheet, TextInput, AsyncStorage } from 'react-native';
 import { Container, Radio, Button, Card, Grid, ListItem,List, View, Text,CardItem,Right, Body, Content, Input, Item, Row, Col } from 'native-base';
 import { NavigationEvents } from 'react-navigation';

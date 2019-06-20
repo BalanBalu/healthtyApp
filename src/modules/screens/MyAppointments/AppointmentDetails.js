@@ -1,17 +1,17 @@
-import React, { Component } from 'react';
+import React, { Component } from './node_modules/react';
 import { Container, Content, Text, Button, Item, Card, List, ListItem, Left, Right, Thumbnail, Body, Icon, Toast } from 'native-base';
 import { Col, Row, Grid } from 'react-native-easy-grid';
 import { StyleSheet, AsyncStorage } from 'react-native';
-import StarRating from 'react-native-star-rating';
-import moment from 'moment';
+import StarRating from './node_modules/react-native-star-rating';
+import moment from './node_modules/moment';
 import { NavigationEvents } from 'react-navigation';
-import { connect } from 'react-redux';
+import { connect } from './node_modules/react-redux';
 
-import { viewUserReviews, bindDoctorDetails, appointmentStatusUpdate } from '../../../providers/bookappointment/bookappointment.action';
-import { formatDate, dateDiff } from '../../../../setup/helpers';
+import { viewUserReviews, bindDoctorDetails, appointmentStatusUpdate } from '../../providers/bookappointment/bookappointment.action';
+import { formatDate, dateDiff } from '../../../setup/helpers';
 
-import { Loader } from '../../../../components/ContentLoader'
-import { RenderHospitalAddress } from '../../../common';
+import { Loader } from '../../../components/ContentLoader'
+import { RenderHospitalAddress } from '../../common';
 
 class AppointmentDetails extends Component {
   constructor(props) {
