@@ -43,10 +43,10 @@ import profileAvatar from '../../../assets/images/profileAvatar.png';
 import { HeaderBackButton } from 'react-navigation';
 import BookAppoinment from "../../modules/screens/bookappoinment";
 import Mapbox from "../../modules/screens/bookappoinment/Mapbox";
-import MyAppointments from '../../modules/screens/myappoinment';
-import AppointmentDetails from '../../modules/screens/myappoinment/myappoinmentinformation';
-import MyAppoinmentList from '../../modules/screens/myappoinmentdetail';
-import CancelAppointment from "../../modules/screens/bookappoinment/cancelAppointment";
+
+import AppointmentDetails from '../../modules/screens/MyAppointments/AppointmentDetails';
+import MyAppoinmentList from '../../modules/screens/MyAppointments/MyAppointmentList';
+import CancelAppointment from "../../modules/screens/MyAppointments/cancelAppointment";
 
 
 const routes = {
@@ -188,19 +188,8 @@ const AppointMentstack1 = createStackNavigator({
     navigationOptions: {
       title: 'Success'
     }
-  },
-  "CancelAppointment": {
-    screen: CancelAppointment,
-    navigationOptions: {
-      title: 'Cancel Appointment'
-    }
-  },
-  "InsertReview": {
-    screen: InsertReview,
-    navigationOptions: {
-      title: 'Rate and Review'
-    }
   }
+ 
 },
   {
     defaultNavigationOptions: ({ navigation }) => ({
@@ -227,6 +216,18 @@ const myAppointmentsStack = createStackNavigator({
       title: 'Appointment Info'
     }
   },
+  "CancelAppointment": {
+    screen: CancelAppointment,
+    navigationOptions: {
+      title: 'Cancel Appointment'
+    }
+  },
+  "InsertReview": {
+    screen: InsertReview,
+    navigationOptions: {
+      title: 'Rate and Review'
+    }
+  }
 
 },
   {
@@ -236,8 +237,7 @@ const myAppointmentsStack = createStackNavigator({
     })
   });
 
-
-
+  
 const HomeStack = createStackNavigator({
   Home: {
     screen: Home,
