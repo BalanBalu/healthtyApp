@@ -1,11 +1,10 @@
-import React, { Component } from './node_modules/react';
+import React, { Component } from 'react';
 import { StyleSheet, TextInput, AsyncStorage } from 'react-native';
 import { Container, Radio, Button, Card, Grid, ListItem,List, View, Text,CardItem,Right, Body, Content, Input, Item, Row, Col } from 'native-base';
-import { NavigationEvents } from 'react-navigation';
-import { appointmentStatusUpdate } from '../../../providers/bookappointment/bookappointment.action';
-import { formatDate } from '../../../../setup/helpers';
+import { appointmentStatusUpdate } from '../../providers/bookappointment/bookappointment.action';
+import { formatDate } from '../../../setup/helpers';
 
-import { Loader } from '../../../../components/ContentLoader'
+import { Loader } from '../../../components/ContentLoader'
 
 
 class CancelAppointment extends Component {

@@ -1,4 +1,4 @@
-import React, { Component } from "./node_modules/react";
+import React, { Component } from "react";
 import {
 	View,
 	Text,
@@ -21,9 +21,9 @@ import {
 	ScrollView,
 	ActivityIndicator
 } from "react-native";
-import StarRating from "./node_modules/react-native-star-rating";
+import StarRating from "react-native-star-rating";
 import { Col, Row, Grid } from "react-native-easy-grid";
-import SegmentedControlTab from "./node_modules/react-native-segmented-control-tab";
+import SegmentedControlTab from "react-native-segmented-control-tab";
 
 import { userReviews } from "../../providers/profile/profile.action";
 import { hasLoggedIn } from "../../providers/auth/auth.actions";

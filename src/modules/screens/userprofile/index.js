@@ -1,26 +1,34 @@
 import React, { Component } from 'react';
-import { Container, Content, Text, Title, Header, H3, Button, Card, List, ListItem, Left, Right, Thumbnail, Body, Icon, locations, ScrollView, ProgressBar ,Item} from 'native-base';
+import { Container, Content, Text, Title, Header, H3, Button, Card, List, ListItem,View, Left, Right,Toast,Thumbnail, Body, Icon, locations, ScrollView, ProgressBar ,Item,Radio} from 'native-base';
 import { fetchUserProfile } from '../../providers/profile/profile.action';
-import { hasLoggedIn } from '../../providers/auth/auth.actions';
+import { hasLoggedIn,userFiledsUpdate } from '../../providers/auth/auth.actions';
 
 import { Col, Row, Grid } from 'react-native-easy-grid';
 import { connect } from 'react-redux';
 import { dateDiff } from '../../../setup/helpers';
 import LinearGradient from 'react-native-linear-gradient';
-import { StyleSheet, AsyncStorage} from 'react-native';
-import StarRating from 'react-native-star-rating';
+import { StyleSheet, AsyncStorage,TouchableOpacity} from 'react-native';
+import Modal from "react-native-modal";
 import { FlatList } from 'react-native-gesture-handler';
+import { NavigationEvents } from 'react-navigation';
+
 import { Loader } from '../../../components/ContentLoader'
 
 class Profile extends Component {
+    
      navigation = this.props.navigation;
     constructor(props) {
+    
         super(props);
         this.state = {
-           data:{},
+           data:{
+            gender:''
+           },
            starCount: 3.5,
            userId:'',
-           bookedAppointments: [1,2,3]
+           bookedAppointments: [1,2,3],
+           modalVisible:false,
+
         }; 
         
       }
@@ -31,6 +39,7 @@ class Profile extends Component {
             return
         }
         this.getUserProfile();  
+
     }  
     onStarRatingPress(rating) {
         this.setState({
@@ -40,7 +49,7 @@ class Profile extends Component {
 
       getUserProfile= async () => {
         try { 
-         let fields = "first_name,last_name,gender,dob,mobile_no,secondary_mobiles,email,secondary_emails,insurance,address,is_blood_donor,is_available_blood_donate,blood_group"         
+         let fields = "first_name,last_name,gender,dob,mobile_no,secondary_mobiles,email,secondary_emails,insurance,address,is_blood_donor,is_available_blood_donate,blood_group,profile_image"         
          let userId= await AsyncStorage.getItem('userId');
          console.log(this.state.userId);
          let result = await fetchUserProfile(userId,fields);    
@@ -49,12 +58,59 @@ class Profile extends Component {
          if(this.props.profile.success) {
             this.setState({ data: result});
          }   
-
+    
         } 
         catch (e) {
           console.log(e);
         }    
       }
+
+      modalBoxOpen(){
+          this.setState({modalVisible:!this.state.modalVisible});
+      }
+
+      updateGender=()=>{
+
+           console.log("update Gender is running");
+    //       try {
+
+    //       const userId = await AsyncStorage.getItem('userId')
+    //       let requestData={
+    //           gender:this.state.gender
+    //       }
+    //        let response= await userFiledsUpdate(userId,requestData);
+    //         if (response.success) {
+    //             Toast.show({
+    //                 text: 'Gender updated',
+    //                 type: "success",
+    //                 duration: 3000
+    //             });
+    //         }
+    //         else {
+    //             Toast.show({
+    //                 text:response.message,
+    //                 type: "danger",
+    //                 duration: 3000
+    //             });
+    //         }
+        
+    // }catch (e) {
+    //     console.log(e);
+    // }
+}
+    
+
+    onPressRadio(value){
+            this.setState(state=>(state.data.gender=value,state))
+            console.log(this.state.data.gender+'gender');
+        }
+       editProfile(screen) {
+           console.log(screen);
+         this.props.navigation.navigate(screen, {screen:screen,fromProfile:true, updatedata: this.state.data })
+        
+      }
+
+
 
     render() {
         const { profile : { isLoading } } = this.props;
@@ -62,6 +118,12 @@ class Profile extends Component {
         return (
 
             <Container style={styles.container}>
+            
+            <NavigationEvents
+            onWillFocus={payload => {this.getUserProfile(payload)}}
+            />
+
+
                 {isLoading ? 
                     <Loader style={'profile'} /> :
                 
@@ -73,12 +135,19 @@ class Profile extends Component {
                              <Col style={{ width: '10%' }}>
                               </Col>
                                 <Col style={styles.customCol}>
-                                    <Icon name="heart" style={styles.profileIcon}></Icon>
+                                <Icon name="heart" style={styles.profileIcon}></Icon>
                                 </Col>
-                                <Col style={{ width: '40%' }}>
-                                    <Thumbnail style={styles.profileImage} source={{ uri: 'https://res.cloudinary.com/demo/image/upload/w_200,h_200,c_thumb,g_face,r_max/face_left.png' }} />
-                                    <Text style={{ marginLeft: 'auto', marginRight: 'auto', fontFamily: 'OpenSans', backgroundColor: '#fff', borderRadius: 20, padding: 10, marginTop: 5 }}>{data.first_name +" "+ data.last_name}</Text>
-                                </Col>
+                                <Col style={{ width: '40%' }} >
+                                    {data.profile_image != undefined ?
+                                    <Thumbnail style={styles.profileImage} source={data.profile_image.imageURL} style={{ height: 86, width: 86 }} />:
+                                    <Thumbnail style={styles.profileImage} source={{ uri: 'https://res.cloudinary.com/demo/image/upload/w_200,h_200,c_thumb,g_face,r_max/face_left.png' }} />}
+                                         <Text style={{ marginLeft: 'auto', marginRight: 'auto', fontFamily: 'OpenSans', backgroundColor: '#fff', borderRadius: 20, padding: 10, marginTop: 5 }}>{data.first_name +" "+ data.last_name}
+                                         </Text>
+                                         <Col>
+                                        <Icon name="create" style={{fontSize:15}} onPress={() => this.editProfile('userdetails')} />
+                                        </Col>
+                                   
+                                                                    </Col>
                                 <Col style={styles.customCol}>
                                     <Icon name="heart" style={styles.profileIcon}></Icon>
                                 </Col>
@@ -87,7 +156,6 @@ class Profile extends Component {
                             </Row>
 
                         </Grid>
-
                     </LinearGradient>
                     <Card>
                         <Grid style={{ padding: 10 }}>
@@ -95,20 +163,51 @@ class Profile extends Component {
                                 <Text style={styles.topValue}> Age </Text>
                                 <Text note style={styles.bottomValue}> {dateDiff(data.dob, new Date(),'years')}  </Text>
                             </Col>
-
                             <Col style={{ backgroundColor: 'transparent', borderRightWidth: 0.5, borderRightColor: 'gray', marginLeft: 'auto', marginRight: 'auto' }}>
                                 <Text style={styles.topValue}>Sex </Text>
+                                <Right>
+                                <Icon name="create"  style={{fontSize:15}} onPress={() => this.modalBoxOpen()}/>
+                                </Right>
+                                                     
                                 <Text note style={styles.bottomValue}>{data.gender} </Text>
                             </Col>
+
+                    <Modal isVisible={this.state.modalVisible} >
+
+                    <Card style={{ marginTop:5,padding:10, borderRadius: 7, height: 100,justifyContent: 'center'}}>
+                        <ListItem noBorder>
+                            
+                            <Radio selected={this.state.data.gender==='M'} onPress={() => this.onPressRadio('M')} style={{ marginLeft: 2, }} color={"#775DA3"}
+                                selectedColor={"#775DA3"} />
+                            <Text style={{marginLeft: 10, fontFamily: 'OpenSans'}}>Male</Text>
+
+                            <Radio selected={this.state.data.gender==='F'} onPress={() => this.onPressRadio('F')} style={{ marginLeft: 10 }} color={"#775DA3"}
+                                selectedColor={"#775DA3"} />
+                            <Text style={{marginLeft: 10, fontFamily: 'OpenSans'}}>Female</Text>
+
+                            <Radio selected={this.state.data.gender==='O'} onPress={() => this.onPressRadio('O')}  style={{ marginLeft: 10 }} color={"#775DA3"}
+                                selectedColor={"#775DA3"} />
+                            <Text style={{ marginLeft: 10 }}>Other</Text>
+                            
+                         <Button  style={styles.updateButton} onPress={this.updateGender}>
+                                      <Text uppercase={false}>Update</Text>
+                        </Button>
+
+                        </ListItem> 
+
+                    </Card>
+                    </Modal>
+
+                            
 
                             <Col style={{ backgroundColor: 'transparent', justifyContent: 'center', marginLeft: 'auto', marginRight: 'auto' }}>
                                 <Text style={styles.topValue}>Blood</Text>
                                 <Text note style={styles.bottomValue}> {data.blood_group} </Text>
                             </Col>
                         </Grid>
-
                     </Card>
 
+                    
 
 
                     <List>
@@ -122,10 +221,19 @@ class Profile extends Component {
                             <Body>
                                 <Text style={styles.customText}>Email</Text>
                                 <Text note style={styles.customText}>{data.email}</Text>
-                                <Text note style={styles.customText}>{data.secondary_emails && data.secondary_emails[0].email_id}</Text>
-                            </Body>
+                                <FlatList
+                                      data={data.secondary_emails}
+                                      renderItem={({ item })=>(  
+                                      <List>                        
+                                        <Text note style={styles.customText}>{item.type}</Text>                                  
+                                        <Text note style={styles.customText}>{item.email_id}</Text> 
+                                      </List>
+                                     )}
+                                     keyExtractor={(item, index) => index.toString()}
+                                    />            
+                               </Body>
                             <Right>
-                                <Icon name="create"></Icon>
+                            <Icon name="create" onPress={() => this.editProfile('UpdateEmail')} />
                             </Right>
                         </ListItem>
 
@@ -149,11 +257,7 @@ class Profile extends Component {
                                  <Icon name='add' style={{ color: 'gray' }} />
                                   <Text uppercase={false} style={styles.customText}>Add your Address</Text>
                                 </Button> }
-                                {data.address ? 
-                                <Right>
-                                    <Icon name="create"></Icon>
-                                </Right> : null }
-                           
+                                
                         </ListItem>
                     
                       <ListItem avatar>
@@ -178,7 +282,7 @@ class Profile extends Component {
                                 </Body>
                               
                              <Right>
-                                <Icon name="create"></Icon>
+                                <Icon name="create" onPress={() => this.editProfile('UpdateContact')}></Icon>
                              </Right>
                               
                             
@@ -190,11 +294,20 @@ class Profile extends Component {
                             </Left>
                             <Body>
                                 <Text style={styles.customText}>Insurance</Text>
-                                <Text note style={styles.customText}> {data.insurance && data.insurance[0].insurance_no} </Text>
-                                <Text note style={styles.customText}> {data.insurance && data.insurance[0].insurance_provider} </Text>
+                                <FlatList
+                                      data={this.state.data.insurance}
+                                      renderItem={({ item })=>(  
+                                      <List>                        
+                                        <Text note style={styles.customText}>{item.insurance_no}</Text>                                  
+                                        <Text note style={styles.customText}>{item.insurance_provider}</Text> 
+                                      </List>
+                                     )}
+                                     keyExtractor={(item, index) => index.toString()}
+                                    />            
+
                             </Body>
                             <Right>
-                                <Icon name="create"></Icon>
+                                <Icon name="create" onPress={() => this.editProfile('UpdateInsurance')} ></Icon>
                             </Right>
                         </ListItem>
 
@@ -206,11 +319,11 @@ class Profile extends Component {
                             </Left>
                             <Body>
                                 <Text style={styles.customText}>Change Password</Text>
-                                <Text note style={styles.customText}>Change Password</Text>
+                                <Text note style={styles.customText}>*********</Text>
 
                             </Body>
                             <Right>
-                                <Icon name="create"></Icon>
+                                <Icon name="create" onPress={() => this.editProfile('UpdatePassword')}></Icon>
                             </Right>
                         </ListItem>
 
@@ -248,6 +361,8 @@ class Profile extends Component {
 
 
                 </Content> }
+
+
             </Container>
 
         )
@@ -312,6 +427,18 @@ const styles = StyleSheet.create({
         marginRight: 'auto',
         fontFamily: 'OpenSans',
     },
+    updateButton:
+    {
+        height: 45,
+        width: 'auto',
+        borderRadius: 10,
+        textAlign: 'center',
+        // backgroundColor: '#775DA3',
+        color: 'white',
+        marginTop: 20,
+        fontSize: 12
+    },
+
     titleText: {
         fontSize: 15,
         padding: 5,

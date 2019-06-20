@@ -87,6 +87,7 @@ export async function generateOTP(reqData) {
   }     
 }
 
+/*Forgot Password*/
 export async function changePassword(reqData) {
 try {
   store.dispatch({
@@ -124,6 +125,25 @@ try {
   }     
 
 }
+
+/*Change Password*/
+export async function updateNewPassword(data){
+  try {
+    let endPoint = 'auth/changeNewPassword';
+    let response = await putService(endPoint, data);
+    console.log('response'+JSON.stringify(response));
+    let respData = response.data;
+    console.log('respData'+JSON.stringify(respData))
+    return respData;
+  } catch (e) {
+    return {
+      message: 'exception' + e,
+      success: false
+    }
+  }
+}
+
+
 
 export async function logout() {
   console.log('is Coming here ');
@@ -214,35 +234,23 @@ export async function signUp(credentialData){
 }
 
 // Update fields for Patient
-export async function userFiledsUpdate(credentialData, data){
-  try{
-    store.dispatch({
-      type: AUTH_REQUEST,
-      isLoading: true
-    })
-    let endPoint = 'user/'+ data;
-    let response = await putService(endPoint, credentialData); 
+export async function userFiledsUpdate(userId,data){
+  try {
+    let endPoint = 'user/'+ userId;
+    let response = await putService(endPoint,data);
     let respData = response.data;
-   
-    if(respData.error) {             
-      console.log(respData);
-      store.dispatch({
-        type: AUTH_HAS_ERROR,
-        message: respData.message
-      })
-    }else{        
-        store.dispatch({
-        type: AUTH_RESPONSE,
-        isLoading: false,
-        message: respData.message
-      })
-    }     
-  }catch(ex){
-    store.dispatch({
-      type: AUTH_HAS_ERROR,
-      message: ex.message,
-      details:ex
-    })
-    console.log(ex.message);
+    console.log('respData'+JSON.stringify(respData))
+    return respData;
+  } catch (e) {
+    return {
+      message: 'exception' + e,
+      success: false
+    }
   }
 }
+
+
+
+
+
+  

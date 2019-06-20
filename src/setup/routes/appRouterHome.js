@@ -5,6 +5,14 @@ import AuthLoadingScreen from './AuthLoadingScreen';
 
 import Home from "../../modules/screens/Home";
 import Profile from "../../modules/screens/userprofile";
+import UpdateEmail from "../../modules/screens/userprofile/UpdateEmail";
+import UpdateContact from "../../modules/screens/userprofile/UpdateContact";
+import UpdatePassword from "../../modules/screens/userprofile/UpdatePassword";
+import UpdateInsurance from "../../modules/screens/userprofile/UpdateInsurance";
+
+
+
+
 import finddoctor from "../../modules/screens/auth/finddoctor";
 import { Icon, View } from 'native-base';
 import Categories from "../../modules/screens/categories";
@@ -69,6 +77,8 @@ const routes = {
       />
     }
   },
+  
+  
   finddoctor: {
     name: ' finddoctor',
     path: ' finddoctor',
@@ -290,6 +300,30 @@ const ProfileStack = createStackNavigator({
       ),
     })
   },
+  UpdateEmail: {
+    screen: UpdateEmail,
+    navigationOptions:{
+     title: 'UpdateEmail'
+   }
+  },
+  UpdateContact: {
+    screen: UpdateContact,
+    navigationOptions:{
+     title: 'UpdateContact'
+   }
+  },
+  UpdatePassword: {
+    screen: UpdatePassword,
+    navigationOptions:{
+     title: 'UpdatePassword'
+   }
+  },
+  UpdateInsurance: {
+    screen: UpdateInsurance,
+    navigationOptions:{
+     title: 'UpdateInsurance'
+   }
+  }, 
 },
   {
     defaultNavigationOptions: ({ navigation }) => ({
