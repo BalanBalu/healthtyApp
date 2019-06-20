@@ -4,9 +4,12 @@ import { Col, Row, Grid } from 'react-native-easy-grid';
 import { StyleSheet, AsyncStorage } from 'react-native';
 import StarRating from 'react-native-star-rating';
 import moment from 'moment';
+import { NavigationEvents } from 'react-navigation';
+import { connect } from 'react-redux';
 
 import { viewUserReviews, bindDoctorDetails, appointmentStatusUpdate } from '../../../providers/bookappointment/bookappointment.action';
 import { formatDate, dateDiff } from '../../../../setup/helpers';
+
 import { Loader } from '../../../../components/ContentLoader'
 import { RenderHospitalAddress } from '../../../common';
 
@@ -23,26 +26,24 @@ class AppointmentDetails extends Component {
       doctorData: {},
       isLoading: false,
       yearOfExperience: '',
-      appointmentStatus: ''
+      appointmentStatus: '',
+      statusUpdateReason: ' ',
+      isRefreshing: false,
+      cancelStatus: ''
+
 
     }
-
   }
-
+  
   async componentDidMount() {
-    console.log('coming to component did mount');
     const userId = await AsyncStorage.getItem('userId');
-    console.log(userId);
     const { navigation } = this.props;
     const appointmentData = navigation.getParam('data');
-    console.log(appointmentData);
     let doctorId = appointmentData.doctor_id;
     let appointmentId = appointmentData._id;
     await this.setState({ doctorId: doctorId, appointmentId: appointmentId, userId: userId, data: appointmentData })
     this.getDoctorDetails(doctorId);
     this.getUserReviews(appointmentId);
-
-    console.log('state data : ' + JSON.stringify(this.state.data));
   }
 
   /* Get Doctor Details */
@@ -51,10 +52,8 @@ class AppointmentDetails extends Component {
       this.setState({ isLoading: true });
       let fields = 'first_name,last_name,education,specialist,email,mobile_no,experience,hospital,language,professional_statement';
       let resultDetails = await bindDoctorDetails(doctorId, fields);
-      console.log(JSON.stringify(resultDetails));
       if (resultDetails.success) {
         await this.setState({ doctorData: resultDetails.data, isLoading: false });
-        console.log(JSON.stringify(this.state.doctorData));
         let updatedDate = moment(this.state.doctorData.experience.updated_date);
         let experienceInYear = dateDiff(updatedDate, new Date(), 'year');
         let experienceInMonth = dateDiff(updatedDate, new Date(), 'months');
@@ -64,7 +63,7 @@ class AppointmentDetails extends Component {
         if (month >= 12) {
           experience++;
         }
-        await this.setState({ yearOfExperience: experience, isLoading: false });
+        await this.setState({ yearOfExperience: experience });
 
       }
     }
@@ -77,19 +76,17 @@ class AppointmentDetails extends Component {
   getUserReviews = async (appointmentId) => {
     this.setState({ isLoading: true });
     let resultReview = await viewUserReviews('appointment', appointmentId);
-    console.log(resultReview.data);
     if (resultReview.success) {
       this.setState({ reviewData: resultReview.data, isLoading: false });
     }
-    console.log(JSON.stringify(JSON.stringify(this.state.reviewData)));
   }
 
-  accept(data, status) {
+  doAccept(data, status) {
     this.updateAppointmentStatus(data, status)
   }
   /* Update Appoiontment Status */
 
-  updateAppointmentStatus = async (data, updatedStatus) => {
+   updateAppointmentStatus = async (data, updatedStatus) => {
     try {
       this.setState({ isLoading: true });
       let requestData = {
@@ -98,38 +95,36 @@ class AppointmentDetails extends Component {
         startTime: data.appointment_starttime,
         endTime: data.appointment_endtime,
         status: updatedStatus,
+        statusUpdateReason: this.state.statusUpdateReason,
         status_by: 'USER'
       };
-      console.log(requestData);
-
       let userId = await AsyncStorage.getItem('userId');
-      console.log('userId' + userId);
       let result = await appointmentStatusUpdate(this.state.doctorId, this.state.appointmentId, requestData);
       this.setState({ isLoading: false })
-      console.log(result);
-      console.log('update result' + JSON.stringify(result));
-      // console.log(JSON.stringify(result.appointmentData.appointment_status));
+      console.log('result'+JSON.stringify(result));
       let appointmentStatus = result.appointmentData.appointment_status;
-      console.log(appointmentStatus);
 
       if (result.success) {
         Toast.show({
           text: result.message,
           duration: 3000
         })
+         
         this.setState({ appointmentStatus: appointmentStatus });
       }
-
+   
     }
     catch (e) {
       console.log(e);
     }
   }
+ 
+
   navigateCancelAppoointment(){
-    this.props.navigation.navigate('cancelAppointment', { navigateData:this.state.data})
-
+    this.props.navigation.navigate('CancelAppointment', { appointmentDetail: this.state.data})
+  console.log(this.state.data)
   }
-
+ 
   render() {
 
     const { data, reviewData, doctorData, yearOfExperience, isLoading } = this.state;
@@ -137,9 +132,13 @@ class AppointmentDetails extends Component {
     return (
 
       <Container style={styles.container}>
-        {isLoading == true ? <Loader style={'list'} /> :
+
+        {isLoading  ? <Loader style={'list'} /> :
 
           <Content style={styles.bodyContent}>
+               <NavigationEvents
+                  onWillFocus={payload => { this.componentDidMount() }}
+                 />     
             <Grid style={{ backgroundColor: '#7E49C3', height: 200 }}>
             </Grid>
 
@@ -177,8 +176,11 @@ class AppointmentDetails extends Component {
 
                   <Col style={{ width: 300, }}>
                     <Button disabled={true} block style={{ borderRadius: 10, backgroundColor: '#D7BDE2' }}>
-                      <Text style={{ color: 'black', fontSize: 16 }}>{this.state.appointmentStatus == 'APPROVED' ? 'APPROVED' : data.appointment_status == 'PROPOSED_NEW_TIME' ?
-                        'PROPOSED NEW TIME' : data.appointment_status == 'PENDING_REVIEW' ? 'PENDING REVIEW' : data.appointment_status || this.state.appointStatus}
+                      <Text style={{ color: 'black', fontSize: 16 }}>
+                      {this.state.appointmentStatus == 'APPROVED' ? 'APPROVED' :
+                      data.appointment_status == 'PROPOSED_NEW_TIME' ?'PROPOSED NEW TIME' :
+                       data.appointment_status == 'PENDING_REVIEW' ? 'PENDING REVIEW' :
+                        data.appointment_status || this.state.appointStatus}
                       </Text>
                     </Button>
 
@@ -188,16 +190,16 @@ class AppointmentDetails extends Component {
                 <Grid style={{ marginTop: 5 }}>
                   {data.appointment_status == 'APPROVED' || this.state.appointmentStatus === 'APPROVED' ?
                     <Col style={width = 'auto'}>
-                      <Button block danger style={{ margin: 1, marginTop: 10, marginLeft: 1, borderRadius: 30, padding: 15, height: 40, width: "auto" }} onPress={() => this.accept(data, 'REJECTED')}>
+                      <Button block danger style={{ margin: 1, marginTop: 10, marginLeft: 1, borderRadius: 30, padding: 15, height: 40, width: "auto" }} onPress={() => this.navigateCancelAppoointment()}>
                         <Text style={{ textAlign: 'center', fontFamily: 'OpenSans' }}>CANCEL APPOINTMENT</Text>
                       </Button>
                     </Col> :
-                    data.appointment_status == 'PROPOSED_NEW_TIME' ?
+                    data.appointment_status == 'PROPOSED_NEW_TIME'|| ! this.state.cancelStatus == 'CLOSED'?
                       <Item style={{ borderBottomWidth: 0, justifyContent: 'center' }}>
-                        <Button success style={styles.statusButton} onPress={() => this.accept(data, 'APPROVED')}>
+                        <Button success style={styles.statusButton} onPress={() => this.doAccept(data, 'APPROVED')}>
                           <Text style={{ textAlign: 'center', fontFamily: 'OpenSans' }}>ACCEPT</Text>
                         </Button>
-                        <Button danger style={styles.statusButton} onPress={() => this.accept(data, 'REJECTED')}>
+                        <Button danger style={styles.statusButton} onPress={() => this.navigateCancelAppoointment()}>
                           <Text style={{ textAlign: 'center', fontFamily: 'OpenSans' }}> CANCEL </Text></Button>
                       </Item> : null}
                 </Grid>
