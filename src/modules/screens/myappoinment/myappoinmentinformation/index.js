@@ -9,6 +9,7 @@ import { connect } from 'react-redux';
 
 import { viewUserReviews, bindDoctorDetails, appointmentStatusUpdate } from '../../../providers/bookappointment/bookappointment.action';
 import { formatDate, dateDiff } from '../../../../setup/helpers';
+
 import { Loader } from '../../../../components/ContentLoader'
 import { RenderHospitalAddress } from '../../../common';
 
@@ -62,7 +63,7 @@ class AppointmentDetails extends Component {
         if (month >= 12) {
           experience++;
         }
-        await this.setState({ yearOfExperience: experience, isLoading: false });
+        await this.setState({ yearOfExperience: experience });
 
       }
     }
@@ -132,7 +133,7 @@ class AppointmentDetails extends Component {
 
       <Container style={styles.container}>
 
-        {isLoading == true ? <Loader style={'list'} /> :
+        {isLoading  ? <Loader style={'list'} /> :
 
           <Content style={styles.bodyContent}>
                <NavigationEvents

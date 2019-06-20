@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import { StyleSheet, TextInput, AsyncStorage } from 'react-native';
-import { Container, Radio, Button, Card, Grid, ListItem, View, Text,CardItem,Right, Body, Content, Input, Item, Row, Col } from 'native-base';
+import { Container, Radio, Button, Card, Grid, ListItem,List, View, Text,CardItem,Right, Body, Content, Input, Item, Row, Col } from 'native-base';
 import { NavigationEvents } from 'react-navigation';
 import { appointmentStatusUpdate } from '../../../providers/bookappointment/bookappointment.action';
 import { formatDate } from '../../../../setup/helpers';
@@ -24,13 +24,12 @@ class CancelAppointment extends Component {
      
 
     }
-    toggleRadio = (radioSelect, reasonSelect) => {
-      console.log(radioSelect+reasonSelect)
+    toggleRadio = async (radioSelect, reasonSelect) => {      
         let tempArray = [false, false, false, false, false];
         tempArray[radioSelect] = true;
-        this.setState({ radioStatus: tempArray });
-
-        this.setState({ statusUpdateReason: reasonSelect });
+        await this.setState({ radioStatus: tempArray , statusUpdateReason: reasonSelect});
+        console.log(tempArray);
+        
     }
     async componentDidMount() {
        
@@ -46,6 +45,7 @@ class CancelAppointment extends Component {
     /* Cancel Appoiontment Status */
     cancelAppointment = async (data, updatedStatus) => {
         try {
+          if(this.state.statusUpdateReason != null){
             this.setState({ isLoading: true });
             let requestData = {
                 doctorId: data.doctor_id,
@@ -59,13 +59,16 @@ class CancelAppointment extends Component {
           
             let userId = await AsyncStorage.getItem('userId');      
             let result = await appointmentStatusUpdate(this.state.doctorId, this.state.appointmentId, requestData);
-            this.setState({ isLoading: false }) 
             console.log('result'+ result) 
+            if(result.success){
             let temp = this.state.data;          
             temp.appointment_status = result.appointmentData.appointment_status;   
             temp.status_update_reason = result.appointmentData.status_update_reason;
            this.setState({data:temp});  
            this.props.navigation.navigate('AppointmentInfo',{data:this.state.data});
+            }            
+          }
+          this.setState({ isLoading: false });
            }
         catch (e) {
             console.log(e);
@@ -78,9 +81,10 @@ class CancelAppointment extends Component {
         return (
 
     <Container style={styles.container}>
-    {isLoading == true ? <Loader style={'list'} /> :
     <Content style={styles.bodycontent}> 
-    <Card style={{ borderRadius: 5, padding: 10, height: 'auto' }}>
+    {isLoading  ? <Loader style={'list'} /> :
+
+    <Card style={{ borderRadius: 5, padding: 15, height: 'auto' }}>
         <Card>
       <CardItem style={styles.text}>
         <Body>
@@ -94,80 +98,57 @@ class CancelAppointment extends Component {
             {formatDate(data.appointment_starttime, 'MMMM-DD-YYYY') + "   " + 
              formatDate(data[0] && data[0].appointment_starttime, 'hh:mm A')}
             </Text> with {'Dr.' + (data && data.doctorInfo.first_name) + " " + (data && data.doctorInfo.last_name)}</Text>
-            <Text style={{ marginTop: 20, }}>What is the reason for Cancellation?</Text>
-         
-          <Row style={{ marginLeft: 20, marginTop: 10 }}>
-          <Radio borderColor='black' selected={this.state.radioStatus[0]} onPress={() => this.toggleRadio(0, "I am feeling better")} 
-                     
-            selectedColor={"#775DA3"} />
-            <Col>
-              <Text style={{
-                marginLeft: 10, fontFamily: 'OpenSans',
-              }}>I am feeling better</Text>
-            </Col>
-
-          </Row>
-
-
-          <Row style={{ marginLeft: 20, marginTop: 10 }}>
+        <Text style={{ marginTop: 40, }}>What is the reason for Cancellation?</Text>
+        
+        
+          <ListItem onPress={() => this.toggleRadio(0, "I am feeling better")}>
+          <Radio borderColor='black' selected={this.state.radioStatus[0]} onPress={() => this.toggleRadio(0, "I am feeling better")}       
+          selectedColor={"#775DA3"} />
+                <Text style={{marginLeft: 10, fontFamily: 'OpenSans'}}>I am feeling better</Text>
+            </ListItem>
+           
+         <ListItem onPress={() => this.toggleRadio(1, " am looking for sooner or faster")}>
           <Radio selected={this.state.radioStatus[1]} onPress={() => this.toggleRadio(1, "Iam looking for sooner or faster")} color={"#775DA3"}
               selectedColor={"#775DA3"} />
-            <Col>
-              <Text style={{
-                marginLeft: 10, fontFamily: 'OpenSans',
-              }}>Iam looking for sooner or faster</Text>
-            </Col>
+            <Text style={{ marginLeft: 10, fontFamily: 'OpenSans'}}>I am looking for sooner or faster</Text>
 
-          </Row>
-
-
-          <Row style={{ marginLeft: 20, marginTop: 10 }}>
+            </ListItem>
+        
+         
+          <ListItem onPress={() => this.toggleRadio(2, "I will not be able to make this on the time")}>
           <Radio selected={this.state.radioStatus[2]} onPress={() => this.toggleRadio(2, "I will not be able to make this on the time")} color={"#775DA3"}
               selectedColor={"#775DA3"} />
-            <Col>
-              <Text style={{
-                marginLeft: 10, fontFamily: 'OpenSans',
-              }}>I will not be able to make this on the time</Text>
-            </Col>
+             <Text style={{ marginLeft: 10, fontFamily: 'OpenSans'}}>I will not be able to make this on the time</Text>
+           </ListItem>
+         
 
-          </Row>
-
-          <Row style={{ marginLeft: 20, marginTop: 10 }}>
+          
+          <ListItem onPress={() => this.toggleRadio(3, "I want to reshedule with different type")}>
           <Radio selected={this.state.radioStatus[3]} color="red" selectedColor="green" onPress={() => this.toggleRadio(3, "I want to reshedule with different type")} color={"#775DA3"}
               selectedColor={"#775DA3"} />
-              
-            <Col>
-              <Text style={{
-                marginLeft: 10, fontFamily: 'OpenSans',
-              }}>I want to reshedule with different type</Text>
-
-            </Col>
-
-          </Row>
-
-          <Row style={{ marginLeft: 20, marginTop: 10 }}>
-          <Radio selected={this.state.radioStatus[4]} onPress={() => this.toggleRadio(4, "Other")} color={"#775DA3"}
+            <Text style={{marginLeft: 10, fontFamily: 'OpenSans'}}>I want to reshedule with different type</Text>
+          </ListItem>
+         
+          <ListItem onPress={() => this.toggleRadio(4, null)}>
+          <Radio selected={this.state.radioStatus[4]} onPress={() => this.toggleRadio(4, null)} color={"#775DA3"}
               selectedColor={"#775DA3"} />
-            <Col>
-              <Text style={{
-                marginLeft: 10, fontFamily: 'OpenSans',
-              }}>Other</Text>
-            </Col>
-          </Row> 
-
-           <Text style={{ fontSize: 16, marginTop: 20 }}>
-            Write your reason
-              </Text>
-            <TextInput 
-            style={{ height: 100, borderWidth: 1, marginTop: 20, width: 300 }}
+              <Text style={{marginLeft: 10, fontFamily: 'OpenSans'}}>Others</Text>
+              </ListItem>
+             
+     {this.state.radioStatus[4] === true?
+         <Col> 
+          <Text style={{ fontSize: 16, marginTop: 20 }}> Write your reason </Text>
+            <TextInput style={{ height: 100, borderWidth: 1, marginTop: 20, width: 300 }}
             placeholder="Write your reason here"
-            onChangeText={(statusUpdateReason) => this.setState({ statusUpdateReason })}
-               />
+             onChangeText ={statusUpdateReason => this.setState({ statusUpdateReason })}
+             />
+          </Col>
+           : null} 
           
-          <Row style={{ marginTop: 25 }}><Col>
+          <Row style={{ marginTop: 45 }}><Col>
             <Button style={styles.button1} onPress={() => (this.cancelAppointment(data, 'CLOSED'))}>
                 <Text> SUBMIT</Text>
-                </Button>
+            </Button>
           </Col>
             <Col>
               <Button style={styles.button2} onPress={() => this.props.navigation.navigate('AppointmentInfo')}>
@@ -180,8 +161,9 @@ class CancelAppointment extends Component {
       </CardItem>
     </Card>
   </Card>
+  }
 </Content>
-            }
+   
 </Container>
 );
 }
@@ -196,34 +178,32 @@ padding: 5
 
 },
 
-card: {
-width: 'auto',
-borderRadius: 100
 
-},
+
 title: {
 paddingLeft: 40, paddingTop: 10
 
 },
-grid: {
-backgroundColor: '#f5f5f5',
-marginBottom: 5,
-marginTop: 5,
-height: 'auto',
-width: 'auto',
-marginLeft: 5,
-marginRight: 5
-},
-card: {
-backgroundColor: '#f5f5f5',
-marginBottom: 10,
-marginTop: 10,
-height: 540,
-width: 'auto',
-marginLeft: 10,
-marginRight: 10
+// grid: {
+// backgroundColor: '#f5f5f5',
+// marginBottom: 5,
+// marginTop: 5,
+// height: 'auto',
+// width: 'auto',
+// marginLeft: 5,
+// marginRight: 5
+// },
+// card: {
+// backgroundColor: '#f5f5f5',
+// marginBottom: 10,
+// marginTop: 10,
+// height: 'auto',
+// width: 'auto',
+// marginLeft: 10,
+// marginRight: 10
 
-},
+// },
+
 text: {
 backgroundColor: "grey",
 color: "white",
