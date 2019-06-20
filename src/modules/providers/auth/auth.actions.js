@@ -234,10 +234,10 @@ export async function signUp(credentialData){
 }
 
 // Update fields for Patient
-export async function userFiledsUpdate(userId,data,isLoading = true){
+export async function userFiledsUpdate(userId,data){
   try {
     let endPoint = 'user/'+ userId;
-    let response = await putService(endPoint, data); 
+    let response = await putService(endPoint,data);
     let respData = response.data;
     console.log('respData'+JSON.stringify(respData))
     return respData;
