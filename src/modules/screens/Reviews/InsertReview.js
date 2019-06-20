@@ -2,7 +2,6 @@ import React, { Component } from 'react';
 import { StyleSheet, Image, TextInput, Dimensions, Toast, AsyncStorage } from 'react-native';
 import StarRating from 'react-native-star-rating';
 import { Container, Header, Title, Left, Right, Body, Button, Card, CardItem, Row, Grid, View, Text, Thumbnail, Content, CheckBox } from 'native-base';
-import { connect } from 'react-redux'
 
 //import Icon from 'react-native-vector-icons/FontAwesome';
 import { addReview } from '../../providers/bookappointment/bookappointment.action'
@@ -165,13 +164,7 @@ class InsertReview extends Component {
   }
 }
 
-function reviewState(state) {
-  return {
-    user: state.user
-  }
-
-}
-export default connect(reviewState)(InsertReview)
+export default InsertReview
 
 
 const styles = StyleSheet.create({

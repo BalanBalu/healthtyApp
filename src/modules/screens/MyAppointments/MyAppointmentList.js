@@ -1,24 +1,17 @@
-import React, { Component } from "react";
+import React, { Component } from "./node_modules/react";
 import {
-	Container,
-	Content,
 	View,
 	Text,
-	Title,
-	Header,
-	H3,
 	Button,
 	List,
 	ListItem,
 	Left,
 	Right,
 	Thumbnail,
-	Segment,
 	Item,
 	Card,
-	CardItem,
 	Body,
-	Icon
+	
 } from "native-base";
 import {
 	StyleSheet,
@@ -28,19 +21,17 @@ import {
 	ScrollView,
 	ActivityIndicator
 } from "react-native";
-import StarRating from "react-native-star-rating";
+import StarRating from "./node_modules/react-native-star-rating";
 import { Col, Row, Grid } from "react-native-easy-grid";
-import SegmentedControlTab from "react-native-segmented-control-tab";
+import SegmentedControlTab from "./node_modules/react-native-segmented-control-tab";
 
 import { userReviews } from "../../providers/profile/profile.action";
 import { hasLoggedIn } from "../../providers/auth/auth.actions";
 import {
 	formatDate,
 	addTimeUnit,
-	dateDiff,
 	subTimeUnit
 } from "../../../setup/helpers";
-import ContentLoader from "../../../components/ContentLoader/ContentLoader";
 import {
 	getUserAppointments,
 	viewUserReviews,
@@ -48,7 +39,6 @@ import {
 } from "../../providers/bookappointment/bookappointment.action";
 import noAppointmentImage from "../../../../assets/images/noappointment.png";
 import Spinner from "../../../components/Spinner";
-import { Loader } from "../../../components/ContentLoader";
 
 class MyAppoinmentList extends Component {
 	constructor(props) {
