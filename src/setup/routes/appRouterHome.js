@@ -323,12 +323,7 @@ const ProfileStack = createStackNavigator({
     navigationOptions:{
      title: 'UpdateInsurance'
    }
-  },
-
-
-
-
- 
+  }, 
 },
   {
     defaultNavigationOptions: ({ navigation }) => ({

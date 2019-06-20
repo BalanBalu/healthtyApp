@@ -1,12 +1,10 @@
-import React, { Component } from './node_modules/react';
+import React, { Component } from 'react';
 import { Container, Content, Text, Button, Item, Card, List, ListItem, Left, Right, Thumbnail, Body, Icon, Toast } from 'native-base';
 import { Col, Row, Grid } from 'react-native-easy-grid';
 import { StyleSheet, AsyncStorage } from 'react-native';
-import StarRating from './node_modules/react-native-star-rating';
-import moment from './node_modules/moment';
+import StarRating from 'react-native-star-rating';
+import moment from 'moment';
 import { NavigationEvents } from 'react-navigation';
-import { connect } from './node_modules/react-redux';
-
 import { viewUserReviews, bindDoctorDetails, appointmentStatusUpdate } from '../../providers/bookappointment/bookappointment.action';
 import { formatDate, dateDiff } from '../../../setup/helpers';
 
