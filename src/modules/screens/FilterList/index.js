@@ -37,7 +37,7 @@ class FilterList extends Component {
         let sampleCategoryArray = [];
         let sampleServiceArray = [];
         let conditionCategoryArry=[];
-let conditionServiceArry=[];
+        let conditionServiceArry=[];
 
         for (var data in this.state.doctorData) {
             if (this.state.doctorData[data].language) {
@@ -141,42 +141,70 @@ if (sampleArray[serviceIndex] == true) {
 
             <Container style={styles.container}>
                 <Content style={styles.bodyContent}>
-
-                    <Card style={{ padding: 5 }}>
+                    <Card style={{ padding: 10, borderRadius: 10  }}>
                         <CardItem header bordered>
-                            <Text>Availability Time</Text>
+                            <Text style={styles.hederText}>Gender preference</Text>
+                        </CardItem>
+
+                        <Item style={{ marginTop: 10, borderBottomWidth: 0 }}>
+                            <Col>
+                                <Item style={{ marginTop: 10, borderBottomWidth: 0 }}>
+
+                                <TouchableOpacity color={"#775DA3"} selectedColor={"#7459A1"} style={styles.buttonSelected}>
+                                    <Text style={styles.buttonText}>Any</Text>
+                                    </TouchableOpacity>
+                                   
+                                    {/* <CheckBox color={"#775DA3"} selectedColor={"#775DA3"} style={{ marginLeft: 11 }}
+                                        checked={this.state.genderPreferenceCheck[0]} onPress={() => this.clickedGenderInCheckBox(0, "M")} /> */}
+                                    {/* <Text style={{ marginLeft: 11, color: 'gray', fontFamily: 'OpenSans' }}>Male</Text> */}
+                                </Item></Col>
+                            <Col>
+                                <Item style={{ marginTop: 10, borderBottomWidth: 0 }}>
+                                    {/* <CheckBox color={"#775DA3"} selectedColor={"#775DA3"} style={{ marginLeft: 11 }}
+                                        checked={this.state.genderPreferenceCheck[1]} onPress={() => this.clickedGenderInCheckBox(1, "F")} />
+                                    <Text style={{ marginLeft: 11, color: 'gray', fontFamily: 'OpenSans' }}>Female</Text> */}
+                                     <TouchableOpacity color={"#FF00FF"} selectedColor={"#FF00FF"} style={styles.button}>
+                                    <Text style={styles.buttonText}>Male</Text>
+                                    </TouchableOpacity>
+                                </Item></Col>
+                            <Col>
+                                <Item style={{ marginTop: 10, borderBottomWidth: 0 }}>
+                                    {/* <CheckBox color={"#775DA3"} selectedColor={"#775DA3"} style={{ marginLeft: 11 }}
+                                        checked={this.state.genderPreferenceCheck[2]} onPress={() => this.clickedGenderInCheckBox(2, "O")} />
+                                    <Text style={{ marginLeft: 11, color: 'gray', fontFamily: 'OpenSans' }}>Others</Text> */}
+
+                            <TouchableOpacity color={"#FF00FF"} selectedColor={"#FF00FF"} style={styles.button}>
+                                    <Text style={styles.buttonText}>FeMale</Text>
+                                    </TouchableOpacity>
+                                </Item></Col>
+                        </Item>
+                    </Card>
+
+                    <Card style={{ padding: 10, borderRadius: 10 }}>
+                        <CardItem header bordered>
+                            <Text style={styles.hederText}>Availability Time</Text>
                         </CardItem>
                         <CardItem >
                             <Body>
-                                <Grid style={{ marginTop: 10 }}>
-                                    <Row>
-                                        <Col style={{ width: '60%' }}>
-                                            <Text style={styles.customText}>Availability Today</Text>
 
+                                <Grid>
+                                    <Row>
+
+                                        <Col style={{ width: '30%' ,marginTop: 10,paddingRight: 10}}>
+                                        <TouchableOpacity color={"#775DA3"} selectedColor={"#7459A1"} style={styles.buttonAvTimeToday}>
+                                        <Text style={styles.buttonTextTmAV}>Today</Text>
+                                        </TouchableOpacity>
                                         </Col>
-                                        <Col style={{ width: '20%' }}>
-                                            <Text style={styles.customText}>45 mins</Text>
-                                        </Col>
-                                        <Col style={{ width: '20%' }}>
-                                            <Switch></Switch>
+
+                                        <Col style={{ width: '75%' ,marginTop: 10,paddingRight: 20}}>
+                                        <TouchableOpacity color={"#775DA3"} selectedColor={"#7459A1"} style={styles.buttonAvTime}>
+                                        <Text style={styles.buttonTextTmAV}>Only doctors Available today</Text>
+                                        </TouchableOpacity>
                                         </Col>
                                     </Row>
-                                </Grid>
-                                <Grid style={{ marginTop: 10 }}>
-                                    <Row>
-                                        <Col style={{ width: '60%' }}>
-                                            <Text style={styles.customText}>Next 3 Days</Text>
 
-                                        </Col>
-                                        <Col style={{ width: '20%' }}>
-                                            {/* <Text style={styles.customText}>45 mins</Text> */}
-                                        </Col>
-                                        <Col style={{ width: '20%' }}>
-                                            <Switch></Switch>
-                                        </Col>
-                                    </Row>
-                                </Grid>
 
+                                </Grid>
                             </Body>
                         </CardItem>
 
@@ -227,7 +255,7 @@ if (sampleArray[serviceIndex] == true) {
                     </Card>
                     <Card style={{ borderRadius: 10 }}>
                         <CardItem header bordered>
-                            <Text>Languages</Text>
+                            <Text style={styles.hederText}>Languages</Text>
                         </CardItem>
                         <Autocomplete
                             autoCapitalize="none"
@@ -238,45 +266,25 @@ if (sampleArray[serviceIndex] == true) {
                             onChangeText={enterText => this.setState({ typeLanguage: enterText })}
                             placeholder="Enter Your Language"
                             renderItem={({ item, i }) => (
-                                <TouchableOpacity onPress={() => this.setState({ typeLanguage: item })}>
-                                    <Text style={styles.itemText}>
-                                        {item}
-                                    </Text>
-                                </TouchableOpacity>
+                       
+                                <CheckBox color={"#775DA3"} selectedColor={"#775DA3"} style={{ marginLeft: 11 }}
+                                checked={this.state.genderPreferenceCheck[2]} onPress={() => this.clickedGenderInCheckBox(2, "O")} >
+                                <Text style={styles.itemText}>
+                                {item}
+                            </Text>
+                            </CheckBox>
+
                             )}
                             keyExtractor={(item, index) => index.toString()}
+
+                            
                         />
                     </Card>
-                    <Card style={{ borderRadius: 10 }}>
-                        <CardItem header bordered>
-                            <Text>Gender</Text>
-                        </CardItem>
-
-                        <Item style={{ marginTop: 10, borderBottomWidth: 0 }}>
-                            <Col>
-                                <Item style={{ marginTop: 10, borderBottomWidth: 0 }}>
-                                    <CheckBox color={"#775DA3"} selectedColor={"#775DA3"} style={{ marginLeft: 11 }}
-                                        checked={this.state.genderPreferenceCheck[0]} onPress={() => this.clickedGenderInCheckBox(0, "M")} />
-                                    <Text style={{ marginLeft: 11, color: 'gray', fontFamily: 'OpenSans' }}>Male</Text>
-                                </Item></Col>
-                            <Col>
-                                <Item style={{ marginTop: 10, borderBottomWidth: 0 }}>
-                                    <CheckBox color={"#775DA3"} selectedColor={"#775DA3"} style={{ marginLeft: 11 }}
-                                        checked={this.state.genderPreferenceCheck[1]} onPress={() => this.clickedGenderInCheckBox(1, "F")} />
-                                    <Text style={{ marginLeft: 11, color: 'gray', fontFamily: 'OpenSans' }}>Female</Text>
-                                </Item></Col>
-                            <Col>
-                                <Item style={{ marginTop: 10, borderBottomWidth: 0 }}>
-                                    <CheckBox color={"#775DA3"} selectedColor={"#775DA3"} style={{ marginLeft: 11 }}
-                                        checked={this.state.genderPreferenceCheck[2]} onPress={() => this.clickedGenderInCheckBox(2, "O")} />
-                                    <Text style={{ marginLeft: 11, color: 'gray', fontFamily: 'OpenSans' }}>Others</Text>
-                                </Item></Col>
-                        </Item>
-                    </Card>
+                    
 
                     <Card style={{ borderRadius: 10 }}>
                         <CardItem header bordered>
-                            <Text>Work Experience</Text>
+                            <Text style={styles.hederText}>Work Experience</Text>
                         </CardItem>
                         <CardItem style={{ paddingLeft: 0, paddingRight: 0 }}>
                             <Grid style={{ marginTop: 10 }}>
@@ -287,6 +295,8 @@ if (sampleArray[serviceIndex] == true) {
                                             <Body>
                                                 <Button style={styles.expButton}><Text style={{ fontFamily: 'opensans' }}> Any</Text></Button>
                                             </Body>
+
+                                            
                                         </ListItem>
 
                                     </Col>
@@ -302,7 +312,7 @@ if (sampleArray[serviceIndex] == true) {
 
                     </Card>
                     <Button block success style={{ borderRadius: 17, marginLeft: 3 }} onPress={this.sendFilteredData}>
-                        <Text uppercase={false} >Submit</Text>
+                        <Text uppercase={false} >View doctors</Text>
                     </Button>
                 </Content>
 
@@ -326,10 +336,10 @@ const styles = StyleSheet.create({
 
     container:
     {
-        backgroundColor: '#ffffff',
-        flex: 1,
-        padding: 16,
-        marginTop: 40,
+        backgroundColor: '#8e8b87',
+        flex: 12,
+        padding: 1,
+        marginTop: 0,
     },
 
     bodyContent: {
@@ -370,5 +380,114 @@ const styles = StyleSheet.create({
         textAlign: 'center',
         fontSize: 16,
     },
+    button: {
+        backgroundColor: '#8e8b87',
+        padding: 10,
+        paddingTop: 7,
+        paddingBottom: 7,
+        borderRadius: 1,
+        opacity: 0.9,
+        shadowColor: '#C8C7CC',
+        shadowOffset: { width: 0, height: 0 },
+        shadowOpacity: 0.2,
+        shadowRadius: 5,
+        height: 40,
+        width: '100%',
+        marginLeft: 'auto',
+        marginRight: 'auto',
+      },
+      buttonSelected: {
+        backgroundColor: '#7E49C3',
+        padding: 10,
+        paddingTop: 7,
+        paddingBottom: 7,
+        borderRadius: 1,
+        opacity: 0.9,
+        shadowColor: '#C8C7CC',
+        shadowOffset: { width: 0, height: 0 },
+        shadowOpacity: 0.2,
+        shadowRadius: 5,
+        height: 40,
+        width: '100%',
+        marginLeft: 'auto',
+        marginRight: 'auto',
+      },
+      buttonText: {
+        color: 'white',
+        alignItems: 'center',
+        justifyContent: 'center',
+        fontFamily: 'OpenSans',
+        marginLeft: 'auto',
+        marginRight: 'auto',
+        fontSize: 20,
+      },
+      buttonTextTmAV: {
+        color: 'white',
+        alignItems: 'center',
+        justifyContent: 'center',
+        fontFamily: 'OpenSans',
+        marginLeft: 'auto',
+        marginRight: 'auto',
+        fontSize: 15,
+      },
+      hederText: {
+        color: 'gray',
+        justifyContent: 'center',
+        fontFamily: 'OpenSans',
+        fontSize: 12,
+      },
 
+      buttonAvTime: {
+        borderColor: '#d6d7da',
+        backgroundColor: '#8e8b87',
+        padding: 10,
+        paddingTop: 7,
+        paddingBottom: 7,
+        borderRadius: 10,
+        opacity: 0.9,
+        shadowColor: '#C8C7CC',
+        shadowOffset: { width: 0, height: 0 },
+        shadowOpacity: 0.2,
+        shadowRadius: 5,
+        height: 40,
+        width: '100%',
+        marginLeft: 'auto',
+        marginRight: 'auto',
+      },
+      buttonAvTimeToday: {
+        borderColor: '#d6d7da',
+        backgroundColor: '#8e8b87',
+        padding: 10,
+        paddingTop: 7,
+        paddingBottom: 7,
+        borderRadius: 10,
+        opacity: 0.9,
+        shadowColor: '#C8C7CC',
+        shadowOffset: { width: 0, height: 0 },
+        shadowOpacity: 0.2,
+        shadowRadius: 5,
+        height: 40,
+        width: '100%',
+        marginLeft: 'auto',
+        marginRight: 'auto',
+      },
+
+      submit:{
+        marginRight:40,
+        marginTop:2,
+        paddingTop:2,
+        paddingBottom:5,
+        borderRadius:10,
+        borderWidth: 1,
+        borderColor: '#68a0cf'
+      },
+      submitText:{
+          color:'#68a0cf',
+          textAlign:'center',
+          
+      },
+
+
+
+      
 });
