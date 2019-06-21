@@ -118,11 +118,7 @@ class UpdateInsurance extends Component {
                                 testID='updateInsuranceProvider' />
                     </Item>
 
-                    <Item style={{ borderBottomWidth: 0, marginTop: 12, marginLeft: 4 }}>
-                            <CheckBox checked={this.state.active} color="green" onPress={() => this.setState({ active: !this.state.active })} testID='activeCheckbox'></CheckBox>
-                            <Text style={{ marginLeft: 15, color: 'gray', fontFamily: 'OpenSans' }}>Active</Text>
-                        </Item>
-
+                    
 
 
                         <Item style={{ borderBottomWidth: 0 }}>

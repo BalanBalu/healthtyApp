@@ -13,10 +13,10 @@ class UpdateEmail extends Component {
     constructor(props) {
         super(props)
         this.state={
-            email:'',
-            type:'',
+            email:null,
+            type:null,
             active:true,
-            primary_email:'',
+            primary_email:null,
             isLoading:false
         }      
     }
@@ -34,10 +34,11 @@ class UpdateEmail extends Component {
              this.setState({
              fromProfile:true,
             primary_email:userData.email,
-            email:userData.secondary_emails[0].email_id,
-            type:userData.secondary_emails[0].type, 
-            active:userData.secondary_emails[0].active               
+            email:userData.secondary_emails[0].email_id||[],
+            type:userData.secondary_emails[0].type||[],
+            active:userData.secondary_emails[0].active||[]            
              })
+             console.log(this.state.email+'email');
          }
     }
 
@@ -82,18 +83,9 @@ class UpdateEmail extends Component {
 
     
     render() {
-
-
-
         return (
-            <Container style={styles.container}>  
-    
-               
-       
+            <Container style={styles.container}>                     
                 <Content style={styles.bodyContent} contentContainerStyle={{ justifyContent: 'center', flex: 1, height: '100%' }}>
-
-
-
                 <H3 style={{ fontFamily: 'OpenSans' }}>Primary Email</H3>
                  <Card style={{ padding: 10, borderRadius: 10 }}>
                  <Item style={{ borderBottomWidth: 0 }}>
@@ -111,7 +103,6 @@ class UpdateEmail extends Component {
                             <Text style={{ marginLeft: 15, color: 'gray', fontFamily: 'OpenSans' }}>{this.state.type}</Text>
                     </Item>
 
-
                     <Item style={{ borderBottomWidth: 0 }}>
                             <Icon name='mail' style={styles.centeredIcons}></Icon>
                             <Input placeholder="Edit Your Secondary Email" style={styles.transparentLabel} keyboardType="email-address"
@@ -119,12 +110,8 @@ class UpdateEmail extends Component {
                                 value={this.state.email}
                                 testID='updateEmail' />
                     </Item>
-                    <Item style={{ borderBottomWidth: 0, marginTop: 12, marginLeft: 4 }}>
-                            <CheckBox checked={this.state.active} color="green" onPress={() => this.setState({ active: !this.state.active })} testID='privateCheckbox'></CheckBox>
-                            <Text style={{ marginLeft: 15, color: 'gray', fontFamily: 'OpenSans' }}>Active</Text>
-                        </Item>
 
-                        <Spinner color='blue'
+                    <Spinner color='blue'
                     visible={this.state.isLoading}
                     textContent={'Loading...'}
                         />

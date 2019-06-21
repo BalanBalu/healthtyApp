@@ -14,7 +14,6 @@ class UpdatePassword extends Component {
         this.state = {            
             oldPassword:'',
             newPassword:'',
-            confirmPassword:'',
             isLoading:false
         }
     }
@@ -22,7 +21,6 @@ class UpdatePassword extends Component {
     handlePasswordUpdate = async () => {
         try {
             this.setState({isLoading:true});
-            if(this.state.newPassword === this.state.confirmPassword){
             let userId = await AsyncStorage.getItem('userId');            
             console.log(userId);
             let data = {
@@ -34,33 +32,24 @@ class UpdatePassword extends Component {
             let result = await updateNewPassword(data);
             console.log('result'+JSON.stringify(result));
             if (result.success) {
-                Toast.show({
+                await Toast.show({
                     text:'Password is updated',
                     type: "success",
                     duration: 3000,
 
                 })
                 this.props.navigation.navigate('Profile');
-                this.setState({isLoading:false});
 
             } else {
-                Toast.show({
-                    text: 'Not updated',
+                await Toast.show({
+                    text:result.message,
                     type: "danger",
                     duration: 3000
                 })
-
-            }
-        }else{
-            Toast.show({
-                text: "Entered passwords do not match. Kindly re-enter them",
-                type: "danger",
-                duration: 3000
-            })
-        }
-
-
-        } catch (e) {
+            } 
+            this.setState({isLoading:false});
+    
+        }catch (e) {
             console.log(e);
         }
     }
@@ -72,9 +61,7 @@ class UpdatePassword extends Component {
                     <Spinner color='blue'
                     visible={this.state.isLoading}
                     textContent={'Please wait updating...'}
-                />
-
-       
+                />       
                 <Content style={styles.bodyContent} contentContainerStyle={{ justifyContent: 'center', flex: 1, height: '100%' }}>
                   
                     <H3 style={{ fontFamily: 'OpenSans' }}>Update Password</H3>
@@ -83,27 +70,24 @@ class UpdatePassword extends Component {
 
                         <Item style={{ borderBottomWidth: 0 }}>
                             <Icon name='mail' style={styles.centeredIcons}></Icon>
-                            <Input placeholder="Enter old password" style={styles.transparentLabel} keyboardType="email-address"
-                                onChangeText={(oldPassword) => this.setState({ oldPassword })}
-                                value={this.state.oldPassword}
-                                testID='enterOldPassword' />
+                            <Input placeholder="Enter old password" 
+                            secureTextEntry={true} style={styles.transparentLabel} 
+                            keyboardType="default"
+                            value={this.state.oldPassword}
+                            onChangeText={(oldPassword) => this.setState({ oldPassword })}
+                            testID='enterOldPassword' />
                         </Item>
 
                         <Item style={{ borderBottomWidth: 0 }}>
                             <Icon name='mail' style={styles.centeredIcons}></Icon>
-                            <Input placeholder="Enter new password" style={styles.transparentLabel} keyboardType="email-address"
-                                onChangeText={(newPassword) => this.setState({ newPassword })}
-                                value={this.state.newPassword}
-                                testID='enterNewPassword' />
+                            <Input placeholder="Enter new password" secureTextEntry={true}
+                            style={styles.transparentLabel} 
+                            keyboardType="default"
+                            value={this.state.newPassword}
+                            onChangeText={(newPassword) => this.setState({ newPassword })}
+                            testID='enterNewPassword' />
                         </Item>
 
-                        <Item style={{ borderBottomWidth: 0 }}>
-                            <Icon name='mail' style={styles.centeredIcons}></Icon>
-                            <Input placeholder="Confirm password" style={styles.transparentLabel} keyboardType="email-address"
-                                onChangeText={(confirmPassword) => this.setState({ confirmPassword })}
-                                value={this.state.confirmPassword}
-                                testID='enterConfirmPassword' />
-                        </Item>
                         
                         <Item style={{ borderBottomWidth: 0 }}>
                             <Right>

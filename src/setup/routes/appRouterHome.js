@@ -9,6 +9,8 @@ import UpdateEmail from "../../modules/screens/userprofile/UpdateEmail";
 import UpdateContact from "../../modules/screens/userprofile/UpdateContact";
 import UpdatePassword from "../../modules/screens/userprofile/UpdatePassword";
 import UpdateInsurance from "../../modules/screens/userprofile/UpdateInsurance";
+import UpdateUserDetails from "../../modules/screens/userprofile/UpdateUserDetails";
+
 
 
 
@@ -323,7 +325,17 @@ const ProfileStack = createStackNavigator({
     navigationOptions:{
      title: 'UpdateInsurance'
    }
-  }, 
+  },
+
+  UpdateUserDetails: {
+    screen: UpdateUserDetails,
+    navigationOptions:{
+     title: 'UpdateUserDetails'
+   }
+  },
+
+
+
 },
   {
     defaultNavigationOptions: ({ navigation }) => ({

@@ -21,9 +21,8 @@ class Profile extends Component {
     
         super(props);
         this.state = {
-           data:{
-            gender:''
-           },
+           data:{},
+           gender:'',
            starCount: 3.5,
            userId:'',
            bookedAppointments: [1,2,3],
@@ -47,65 +46,67 @@ class Profile extends Component {
         });
     }
 
+    /*Get userProfile*/
       getUserProfile= async () => {
         try { 
          let fields = "first_name,last_name,gender,dob,mobile_no,secondary_mobiles,email,secondary_emails,insurance,address,is_blood_donor,is_available_blood_donate,blood_group,profile_image"         
          let userId= await AsyncStorage.getItem('userId');
-         console.log(this.state.userId);
          let result = await fetchUserProfile(userId,fields);    
-         console.log(result);      
          console.log(this.props.profile.success);      
          if(this.props.profile.success) {
-            this.setState({ data: result});
+            this.setState({ data: result, gender:result.gender});
          }   
-    
         } 
         catch (e) {
           console.log(e);
         }    
       }
 
-      modalBoxOpen(){
-          this.setState({modalVisible:!this.state.modalVisible});
+
+        /*Update Gender*/
+        updateGender = async () => {
+          try {
+          const userId = await AsyncStorage.getItem('userId')
+          let requestData={
+              gender:this.state.gender
+          }
+           let response= await userFiledsUpdate(userId,requestData);
+           console.log(response);
+            if (response.success) {
+                await Toast.show({
+                    text: 'Gender updated successfuly',
+                    type: "success",
+                    duration: 3000
+                });
+            }
+            else {
+               await Toast.show({
+                    text:response.message,
+                    type: "danger",
+                    duration: 3000
+                });
+            }
+            this.setState({modalVisible:!this.state.modalVisible});
+        
+    }catch (e) {
+        console.log(e);
+    }
+}
+
+    /*Open the Modal box*/
+    modalBoxOpen(){
+        this.setState({modalVisible:!this.state.modalVisible});
       }
 
-      updateGender=()=>{
-
-           console.log("update Gender is running");
-    //       try {
-
-    //       const userId = await AsyncStorage.getItem('userId')
-    //       let requestData={
-    //           gender:this.state.gender
-    //       }
-    //        let response= await userFiledsUpdate(userId,requestData);
-    //         if (response.success) {
-    //             Toast.show({
-    //                 text: 'Gender updated',
-    //                 type: "success",
-    //                 duration: 3000
-    //             });
-    //         }
-    //         else {
-    //             Toast.show({
-    //                 text:response.message,
-    //                 type: "danger",
-    //                 duration: 3000
-    //             });
-    //         }
-        
-    // }catch (e) {
-    //     console.log(e);
-    // }
-}
     
-
+    /*Press Radio button*/
     onPressRadio(value){
-            this.setState(state=>(state.data.gender=value,state))
-            console.log(this.state.data.gender+'gender');
+            this.setState({gender:value})
         }
+
        editProfile(screen) {
            console.log(screen);
+           //console.log(this.state.data);
          this.props.navigation.navigate(screen, {screen:screen,fromProfile:true, updatedata: this.state.data })
         
       }
@@ -114,7 +115,7 @@ class Profile extends Component {
 
     render() {
         const { profile : { isLoading } } = this.props;
-        const {data } = this.state;
+        const {data, gender } = this.state;
         return (
 
             <Container style={styles.container}>
@@ -144,7 +145,7 @@ class Profile extends Component {
                                          <Text style={{ marginLeft: 'auto', marginRight: 'auto', fontFamily: 'OpenSans', backgroundColor: '#fff', borderRadius: 20, padding: 10, marginTop: 5 }}>{data.first_name +" "+ data.last_name}
                                          </Text>
                                          <Col>
-                                        <Icon name="create" style={{fontSize:15}} onPress={() => this.editProfile('userdetails')} />
+                                        <Icon name="create" style={{fontSize:15}} onPress={() => this.editProfile('UpdateUserDetails')} />
                                         </Col>
                                    
                                                                     </Col>
@@ -164,38 +165,39 @@ class Profile extends Component {
                                 <Text note style={styles.bottomValue}> {dateDiff(data.dob, new Date(),'years')}  </Text>
                             </Col>
                             <Col style={{ backgroundColor: 'transparent', borderRightWidth: 0.5, borderRightColor: 'gray', marginLeft: 'auto', marginRight: 'auto' }}>
-                                <Text style={styles.topValue}>Sex </Text>
+                                <Text style={styles.topValue}>Gender </Text>
                                 <Right>
                                 <Icon name="create"  style={{fontSize:15}} onPress={() => this.modalBoxOpen()}/>
                                 </Right>
                                                      
-                                <Text note style={styles.bottomValue}>{data.gender} </Text>
+                                <Text note style={styles.bottomValue}>{gender} </Text>
                             </Col>
 
-                    <Modal isVisible={this.state.modalVisible} >
-
-                    <Card style={{ marginTop:5,padding:10, borderRadius: 7, height: 100,justifyContent: 'center'}}>
-                        <ListItem noBorder>
-                            
-                            <Radio selected={this.state.data.gender==='M'} onPress={() => this.onPressRadio('M')} style={{ marginLeft: 2, }} color={"#775DA3"}
+                    <Modal isVisible={this.state.modalVisible} >                                      
+                    <Card style={{ padding:10, borderRadius: 7, height: 100,justifyContent: 'center'}}>
+                       <ListItem noBorder>
+                                           
+                            <Radio selected={this.state.gender==='M'} onPress={() => this.onPressRadio('M')} style={{ marginLeft: 2, }} color={"#775DA3"}
                                 selectedColor={"#775DA3"} />
                             <Text style={{marginLeft: 10, fontFamily: 'OpenSans'}}>Male</Text>
 
-                            <Radio selected={this.state.data.gender==='F'} onPress={() => this.onPressRadio('F')} style={{ marginLeft: 10 }} color={"#775DA3"}
+                            <Radio selected={this.state.gender==='F'} onPress={() => this.onPressRadio('F')} style={{ marginLeft: 10 }} color={"#775DA3"}
                                 selectedColor={"#775DA3"} />
                             <Text style={{marginLeft: 10, fontFamily: 'OpenSans'}}>Female</Text>
 
-                            <Radio selected={this.state.data.gender==='O'} onPress={() => this.onPressRadio('O')}  style={{ marginLeft: 10 }} color={"#775DA3"}
+                            <Radio selected={this.state.gender==='O'} onPress={() => this.onPressRadio('O')}  style={{ marginLeft: 10 }} color={"#775DA3"}
                                 selectedColor={"#775DA3"} />
-                            <Text style={{ marginLeft: 10 }}>Other</Text>
-                            
-                         <Button  style={styles.updateButton} onPress={this.updateGender}>
+                            <Text style={{ marginLeft: 10 }}>Other</Text>   
+
+                        </ListItem> 
+                        
+                        <Button  style={styles.updateButton} onPress={()=>this.updateGender()}
+ >
                                       <Text uppercase={false}>Update</Text>
                         </Button>
 
-                        </ListItem> 
-
                     </Card>
+  
                     </Modal>
 
                             
@@ -224,13 +226,19 @@ class Profile extends Component {
                                 <FlatList
                                       data={data.secondary_emails}
                                       renderItem={({ item })=>(  
-                                      <List>                        
+                                      <List>
+                        
                                         <Text note style={styles.customText}>{item.type}</Text>                                  
-                                        <Text note style={styles.customText}>{item.email_id}</Text> 
+                                        <Text note style={styles.customText}>{item.email_id}</Text>
+                                        
                                       </List>
                                      )}
                                      keyExtractor={(item, index) => index.toString()}
                                     />            
+                                <Button transparent>
+                                 <Icon name='add' style={{ color: 'gray' }} />
+                                  <Text uppercase={false} style={styles.customText}>Add Secondary email</Text>
+                                </Button> 
                                </Body>
                             <Right>
                             <Icon name="create" onPress={() => this.editProfile('UpdateEmail')} />
@@ -268,7 +276,8 @@ class Profile extends Component {
                             
                                 <Body>
                                     <Text style={styles.customText}>Contact</Text>
-                                    <Text note style={styles.customText}>{data.mobile_no}</Text>  
+                                    <Text note style={styles.customText}>{data.mobile_no}</Text>
+                                    {typeof data.secondary_mobiles!=='undefined'?  
                                     <FlatList
                                       data={this.state.data.secondary_mobiles}
                                       renderItem={({ item })=>(  
@@ -278,7 +287,12 @@ class Profile extends Component {
                                       </List>
                                      )}
                                      keyExtractor={(item, index) => index.toString()}
-                                    />            
+                                    />
+                                 :<Button transparent>
+                                 <Icon name='add' style={{ color: 'gray' }} />
+                                  <Text uppercase={false} style={styles.customText}>Add Secondary Contact</Text>
+                                </Button>}
+                                           
                                 </Body>
                               
                              <Right>
@@ -294,6 +308,8 @@ class Profile extends Component {
                             </Left>
                             <Body>
                                 <Text style={styles.customText}>Insurance</Text>
+                                {typeof data.secondary_mobiles!=='undefined'?  
+
                                 <FlatList
                                       data={this.state.data.insurance}
                                       renderItem={({ item })=>(  
@@ -304,7 +320,12 @@ class Profile extends Component {
                                      )}
                                      keyExtractor={(item, index) => index.toString()}
                                     />            
-
+                                :<Button transparent>
+                                <Icon name='add' style={{ color: 'gray' }} />
+                                 <Text uppercase={false} style={styles.customText}>Add Insurance</Text>
+                               </Button>}
+                                          
+                              
                             </Body>
                             <Right>
                                 <Icon name="create" onPress={() => this.editProfile('UpdateInsurance')} ></Icon>
@@ -429,15 +450,16 @@ const styles = StyleSheet.create({
     },
     updateButton:
     {
-        height: 45,
+        height: 30,
         width: 'auto',
         borderRadius: 10,
         textAlign: 'center',
-        // backgroundColor: '#775DA3',
         color: 'white',
-        marginTop: 20,
-        fontSize: 12
-    },
+        marginTop: 10,
+        fontSize: 12,
+        marginLeft:120
+        
+        },
 
     titleText: {
         fontSize: 15,
