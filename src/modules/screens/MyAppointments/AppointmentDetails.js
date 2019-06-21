@@ -26,13 +26,11 @@ class AppointmentDetails extends Component {
       yearOfExperience: '',
       appointmentStatus: '',
       statusUpdateReason: ' ',
-      isRefreshing: false,
-      cancelStatus: ''
 
 
     }
   }
-  
+
   async componentDidMount() {
     const userId = await AsyncStorage.getItem('userId');
     const { navigation } = this.props;
@@ -40,15 +38,15 @@ class AppointmentDetails extends Component {
     let doctorId = appointmentData.doctor_id;
     let appointmentId = appointmentData._id;
     await this.setState({ doctorId: doctorId, appointmentId: appointmentId, userId: userId, data: appointmentData })
-    this.getDoctorDetails(doctorId);
-    this.getUserReviews(appointmentId);
+    this.getDoctorDetails(doctorId);    
+    await this.getUserReviews(appointmentId);
   }
 
   /* Get Doctor Details */
   getDoctorDetails = async (doctorId) => {
     try {
       this.setState({ isLoading: true });
-      let fields = 'first_name,last_name,education,specialist,email,mobile_no,experience,hospital,language,professional_statement';
+      let fields = 'first_name,last_name,prefix,education,specialist,email,mobile_no,experience,hospital,language,professional_statement';
       let resultDetails = await bindDoctorDetails(doctorId, fields);
       if (resultDetails.success) {
         await this.setState({ doctorData: resultDetails.data, isLoading: false });
@@ -74,17 +72,17 @@ class AppointmentDetails extends Component {
   getUserReviews = async (appointmentId) => {
     this.setState({ isLoading: true });
     let resultReview = await viewUserReviews('appointment', appointmentId);
+    console
     if (resultReview.success) {
       this.setState({ reviewData: resultReview.data, isLoading: false });
     }
+
   }
 
-  doAccept(data, status) {
-    this.updateAppointmentStatus(data, status)
-  }
+ 
   /* Update Appoiontment Status */
 
-   updateAppointmentStatus = async (data, updatedStatus) => {
+  updateAppointmentStatus = async (data, updatedStatus) => {
     try {
       this.setState({ isLoading: true });
       let requestData = {
@@ -99,7 +97,6 @@ class AppointmentDetails extends Component {
       let userId = await AsyncStorage.getItem('userId');
       let result = await appointmentStatusUpdate(this.state.doctorId, this.state.appointmentId, requestData);
       this.setState({ isLoading: false })
-      console.log('result'+JSON.stringify(result));
       let appointmentStatus = result.appointmentData.appointment_status;
 
       if (result.success) {
@@ -107,20 +104,19 @@ class AppointmentDetails extends Component {
           text: result.message,
           duration: 3000
         })
-         
-        this.setState({ appointmentStatus: appointmentStatus });
+
+        this.setState({ appointmentStatus: appointmentStatus, data: result });
       }
-   
     }
     catch (e) {
       console.log(e);
     }
   }
- 
 
-  navigateCancelAppoointment(){
-    this.props.navigation.navigate('CancelAppointment', { appointmentDetail: this.state.data})
-  console.log(this.state.data)
+
+  navigateCancelAppoointment() {
+    this.state.data.prefix = this.state.doctorData.prefix;
+    this.props.navigation.navigate('CancelAppointment', { appointmentDetail: this.state.data })
   }
  
   render() {
@@ -131,12 +127,12 @@ class AppointmentDetails extends Component {
 
       <Container style={styles.container}>
 
-        {isLoading  ? <Loader style={'list'} /> :
+        {isLoading ? <Loader style={'list'} /> :
 
           <Content style={styles.bodyContent}>
-               <NavigationEvents
+                <NavigationEvents
                   onWillFocus={payload => { this.componentDidMount() }}
-                 />     
+                 />   
             <Grid style={{ backgroundColor: '#7E49C3', height: 200 }}>
             </Grid>
 
@@ -147,7 +143,7 @@ class AppointmentDetails extends Component {
                     <Thumbnail square source={{ uri: 'https://static1.squarespace.com/static/582bbfef9de4bb07fe62ab18/t/5877b9ccebbd1a124af66dfe/1484241404624/Headshot+-+Circular.png?format=300w' }} style={{ height: 86, width: 86 }} />
                   </Left>
                   <Body>
-                    <Text style={{ fontSize: 16 }}>{'Dr.' + (doctorData && doctorData.first_name) + " " + (doctorData && doctorData.last_name)},
+                    <Text style={{ fontSize: 16 }}>{(doctorData && doctorData.prefix) + (doctorData && doctorData.first_name) + " " + (doctorData && doctorData.last_name)},
                     <Text style={{ fontSize: 10 }}>{doctorData.education && doctorData.education[0].degree}</Text>
                     </Text>
                     <Text note style={styles.customText}>{doctorData.specialist && doctorData.specialist[0].category} </Text>
@@ -156,11 +152,11 @@ class AppointmentDetails extends Component {
                 </ListItem>
 
                 <Grid>
-                  <Col style={{ backgroundColor: 'transparent', borderRightWidth: 0.5, borderRightColor: 'gray', marginLeft: 'auto', marginRight: 'auto' }}>
+                  <Col style={{ backgroundColor: 'transparent', borderRightWidth: 0.5, borderRightColor: 'gray', justifyContent: 'center' }}>
                     <Text style={styles.topValue}> Rs 45.. </Text>
                     <Text note style={styles.bottomValue}> Hourly Rate </Text>
                   </Col>
-                  <Col style={{ backgroundColor: 'transparent', borderRightWidth: 0.5, borderRightColor: 'gray', marginLeft: 'auto', marginRight: 'auto' }}>
+                  <Col style={{ backgroundColor: 'transparent', borderRightWidth: 0.5, borderRightColor: 'gray', justifyContent: 'center' }}>
                     <Text style={styles.topValue}> {yearOfExperience} </Text>
                     <Text note style={styles.bottomValue}> Experience</Text>
                   </Col>
@@ -175,10 +171,10 @@ class AppointmentDetails extends Component {
                   <Col style={{ width: 300, }}>
                     <Button disabled={true} block style={{ borderRadius: 10, backgroundColor: '#D7BDE2' }}>
                       <Text style={{ color: 'black', fontSize: 16 }}>
-                      {this.state.appointmentStatus == 'APPROVED' ? 'APPROVED' :
-                      data.appointment_status == 'PROPOSED_NEW_TIME' ?'PROPOSED NEW TIME' :
-                       data.appointment_status == 'PENDING_REVIEW' ? 'PENDING REVIEW' :
-                        data.appointment_status || this.state.appointStatus}
+                        {this.state.appointmentStatus == 'APPROVED' ? 'APPROVED' :
+                          data.appointment_status == 'PROPOSED_NEW_TIME' ? 'PROPOSED NEW TIME' :
+                            data.appointment_status == 'PENDING_REVIEW' ? 'PENDING REVIEW' :
+                              data.appointment_status || this.state.appointStatus}
                       </Text>
                     </Button>
 
@@ -188,16 +184,16 @@ class AppointmentDetails extends Component {
                 <Grid style={{ marginTop: 5 }}>
                   {data.appointment_status == 'APPROVED' || this.state.appointmentStatus === 'APPROVED' ?
                     <Col style={width = 'auto'}>
-                      <Button block danger style={{ margin: 1, marginTop: 10, marginLeft: 1, borderRadius: 30, padding: 15, height: 40, width: "auto" }} onPress={() => this.navigateCancelAppoointment()}>
+                      <Button block danger style={{ margin: 1, marginTop: 10, marginLeft: 1, borderRadius: 30, padding: 15, height: 40, width: "auto" }} onPress={() => this.navigateCancelAppoointment()} testID='cancelAppointment'>
                         <Text style={{ textAlign: 'center', fontFamily: 'OpenSans' }}>CANCEL APPOINTMENT</Text>
                       </Button>
                     </Col> :
-                    data.appointment_status == 'PROPOSED_NEW_TIME'|| ! this.state.cancelStatus == 'CLOSED'?
+                    data.appointment_status == 'PROPOSED_NEW_TIME' ?
                       <Item style={{ borderBottomWidth: 0, justifyContent: 'center' }}>
-                        <Button success style={styles.statusButton} onPress={() => this.doAccept(data, 'APPROVED')}>
+                        <Button success style={styles.statusButton} onPress={() => this.updateAppointmentStatus(data, 'APPROVED')} testID='approvedAppointment'>
                           <Text style={{ textAlign: 'center', fontFamily: 'OpenSans' }}>ACCEPT</Text>
                         </Button>
-                        <Button danger style={styles.statusButton} onPress={() => this.navigateCancelAppoointment()}>
+                        <Button danger style={styles.statusButton} onPress={() => this.navigateCancelAppoointment()} testID='appointmentCancel'>
                           <Text style={{ textAlign: 'center', fontFamily: 'OpenSans' }}> CANCEL </Text></Button>
                       </Item> : null}
                 </Grid>
@@ -226,27 +222,9 @@ class AppointmentDetails extends Component {
                         textStyle={styles.customText}
                         hospitalAddress={doctorData.hospital[0]}
                       /> : null}
-
-                    {/* <Left>
-                    <Icon name="locate" style={{ color: '#7E49C3', fontSize: 25 }}></Icon>
-                  </Left>
-                  <Body>
-                    <Text style={styles.customText}>
-                      {doctorData.hospital && doctorData.hospital[0].name}
-                    </Text>
-                    <Text style={styles.customText}>
-                      {(doctorData.hospital && doctorData.hospital[0].location.address.no_and_street) + "," +
-                        (doctorData.hospital && doctorData.hospital[0].location.address.address_line_1) + ", " +
-                        (doctorData.hospital && doctorData.hospital[0].location.address.address_line_2)}
-                    </Text>
-
-                  </Body> */}
                   </ListItem>
                 </List>
               </Card>
-
-
-
 
               {data.appointment_status == 'PENDING_REVIEW' ?
                 <Card style={{ margin: 10, padding: 10, borderRadius: 10 }}>
@@ -255,7 +233,7 @@ class AppointmentDetails extends Component {
                     <ListItem>
                       <Grid>
                         <Col style={{ width: '50%' }}>
-                          <Button block success style={styles.reviewButton}>
+                          <Button block success style={styles.reviewButton} onPress={() =>   this.props.navigation.navigate('InsertReview',{ appointmentDetail: this.state.data })} testID='addFeedBack'>
                             {/* <Icon name='add' /> */}
                             <Text style={styles.customText}> ADD FEEDBACK </Text>
                             <Icon name="create" style={styles.editProfilePencil}></Icon>
@@ -267,7 +245,7 @@ class AppointmentDetails extends Component {
                   </List>
                 </Card>
 
-                : data.appointment_status == 'CLOSED' ?
+                : data.appointment_status == 'COMPLETED' ?
                   <Card style={{ margin: 10, padding: 10, borderRadius: 10 }}>
                     <List>
                       <Text style={styles.titlesText}>Review</Text>

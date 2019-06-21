@@ -5,6 +5,7 @@ import { Container, Header, Title, Left, Right, Body, Button, Card, CardItem, Ro
 
 //import Icon from 'react-native-vector-icons/FontAwesome';
 import { addReview } from '../../providers/bookappointment/bookappointment.action'
+import { formatDate } from '../../../setup/helpers';
 
 
 
@@ -19,26 +20,34 @@ class InsertReview extends Component {
       wait_time_rating: 0,
       comments: null,
       doctorRecommended: false,
-      appointmentData: null
+      data: '',
+      doctorId: '',
+      appointmentId: '',
     }
   }
 
-  componentDidMount() {
-    let appointmentData = this.props.navigation.getParam('data');
-    this.setState({ appointmentData: appointmentData })
-    console.log('navigationData :' + this.state.appointmentData);
+    async componentDidMount() {
+
+      const { navigation } = this.props;
+      const reviewData = navigation.getParam('appointmentDetail');
+      
+      let userId= reviewData.user_id;
+      let doctorId = reviewData.doctor_id;
+      let appointmentId = reviewData._id;
+      await this.setState({userId:userId, doctorId: doctorId, appointmentId: appointmentId, data: reviewData }); 
+    
   }
 
   submitReview = async () => {
     try {
-      let userId = this.state.appointmentData.user_id;
+      let userId = this.state.data.user_id;
       let overallrating = (this.state.cleanness_rating + this.state.staff_rating + this.state.wait_time_rating) / 3;
-      console.log('this is .state.comments' + this.state.comments)
-      // if (this.state.comments != null) {
+    
+      //if (this.state.comments != null) {
       let insertReviewData = {
         user_id: userId,
-        doctor_id: this.state.appointmentData.doctor_id,
-        appointment_id: this.state.appointmentData._id,
+        doctor_id: this.state.data.doctor_id,
+        appointment_id: this.state.data._id,
         is_anonymous: this.state.isAnonymous,
         wait_time_rating: this.state.wait_time_rating,
         staff_rating: this.state.staff_rating, // 1 to 5
@@ -48,13 +57,11 @@ class InsertReview extends Component {
         is_doctor_recommended: this.state.doctorRecommended,
       };
       let result = await addReview(userId, insertReviewData);
-      console.log(result);
-      if (result.success) {
-        this.props.navigation.navigate('AppointmentInfo', { data: this.state.appointmentData })
+     
+      if (result.success) {       
+        this.props.navigation.navigate('AppointmentInfo', { reviewDetails: this.state.data })
       }
-      // } else {
-
-      // }
+    
     }
     catch (e) {
       console.log(e);
@@ -78,7 +85,7 @@ class InsertReview extends Component {
   }
 
   render() {
-    const { appointmentData } = this.state;
+    const { data } = this.state;
     return (
       < Container style={styles.container} >
         <Content style={styles.bodycontent}>
@@ -91,8 +98,11 @@ class InsertReview extends Component {
               </CardItem>
               <CardItem>
                 <Body>
-                  <Text style={{ marginTop: 5 }}>
-                    <Text style={{ fontWeight: "bold" }}>saturday,April 13 - 10:15AM</Text> with Dr,Ravi</Text>
+                <Text style={{ marginTop: 15, }}>
+                      <Text style={{ fontWeight: "bold" }}>
+                        {formatDate(data.appointment_starttime, 'MMMM-DD-YYYY') + "   " +
+                          formatDate(data[0] && data[0].appointment_starttime, 'hh:mm A')}
+                      </Text> with {(data && data.prefix) + (data && data.doctorInfo.first_name) + " " + (data && data.doctorInfo.last_name)}</Text>
                   <Row style={{ marginTop: 20 }}>
                     <Text style={{ fontSize: 16 }}>Cleanliness</Text>
                     <StarRating fullStarColor='#FF9500' starSize={20} containerStyle={{ width: 110, marginLeft: 50 }}
