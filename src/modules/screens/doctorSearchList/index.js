@@ -39,7 +39,6 @@ class doctorSearchList extends Component {
             nextAvailableSlotDate:'',
             isLoading: false,
             wishListColor:false,
-
         }
     }
 
@@ -93,7 +92,7 @@ class doctorSearchList extends Component {
         const userId = await AsyncStorage.getItem('userId');
         let resultData = await searchDoctorList(userId, searchedInputValues);
         await this.setState({ searchedResultData: resultData.data });
-        this.setState({ isLoading: false });
+      
         if (resultData.success) {
             let doctorIds = resultData.data.map((element) => {
                 return element.doctor_id
@@ -109,6 +108,7 @@ class doctorSearchList extends Component {
             this.getDoctorDetails(DoctorIds),
             this.getPatientReviews(DoctorIds),
         ])
+        this.setState({ isLoading: false });
       }
 
     /* get the  Doctors Availability Slots */
