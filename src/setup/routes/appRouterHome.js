@@ -1,4 +1,5 @@
 import React from 'react';
+import { Button } from 'native-base';
 import { createStackNavigator, createBottomTabNavigator, createAppContainer, createSwitchNavigator, createDrawerNavigator } from 'react-navigation';
 //import { routes } from './appRouterConfig';
 import AuthLoadingScreen from './AuthLoadingScreen';
@@ -29,6 +30,7 @@ import PaymentPage from "../../modules/screens/PaymentPage";
 import PaymentReview from "../../modules/screens/PaymentReview";
 import PaymentSuccess from "../../modules/screens/PaymentSuccess";
 import InsertReview from '../../modules/screens/Reviews/InsertReview';
+import WishList from "../../modules/screens/wishList";
 
 
 import { Col, Grid, Row } from 'react-native-easy-grid';
@@ -77,9 +79,7 @@ const routes = {
       />
     }
   },
-  
-  
-  finddoctor: {
+    finddoctor: {
     name: ' finddoctor',
     path: ' finddoctor',
     screen: finddoctor,
@@ -253,7 +253,15 @@ const HomeStack = createStackNavigator({
       ),
       headerRight: (
         <Grid>
-
+ <Col>
+ {/* <Button style={{backgroundColor:'red'}}> */}
+            <TouchableOpacity 
+            onPress={() => { console.log('wishclicking'); navigation.navigate('WishList') }}
+             >
+              <Icon name="heart" style={{ color: 'red', marginRight: 10, fontFamily: 'opensans-semibold' }}></Icon>
+            </TouchableOpacity>
+            {/* </Button> */}
+          </Col>
           <Col>
             <TouchableOpacity onPress={() => { console.log('clicking'); navigation.navigate('Profile') }} >
               <Icon name="contact" style={{ color: '#fff', marginRight: 10, fontFamily: 'opensans-semibold' }}></Icon>
@@ -280,7 +288,15 @@ const HomeStack = createStackNavigator({
       title: 'Profile',
     })
   },
-},
+
+  WishList: {
+    screen: WishList,
+    navigationOptions: ({ navigation }) => ({
+      title: 'WishList',
+    })
+  },
+ 
+ },
   {
     defaultNavigationOptions: ({ navigation }) => ({
       headerStyle: { backgroundColor: '#7E49C3' },
