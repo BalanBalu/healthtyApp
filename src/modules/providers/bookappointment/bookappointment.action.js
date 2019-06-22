@@ -82,6 +82,22 @@ export async function viewUserReviews(type,id,isLoading = true) {
   }
 }
 
+export async function getDoctorsReviewsCount(doctorIds) {
+  try {
+    let endPoint = 'user/reviewsCount/' + doctorIds;
+    let response = await getService(endPoint);
+    console.log('response'+response);
+    let respData = response.data;
+    return respData;
+
+  } catch (e) {
+    return {
+      message: 'exception' + e,
+      success: false
+    }
+  }
+}
+
 
 //user appointment status\
 

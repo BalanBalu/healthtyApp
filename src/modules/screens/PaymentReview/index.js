@@ -111,8 +111,9 @@ class PaymentReview extends Component {
                     </Grid>
 
                     {bookSlotDetails.slotData ? 
-                    <RenderHospitalAddress gridStyle={{ padding: 10, marginLeft: 10 , width: '10%'}} 
+                    <RenderHospitalAddress gridStyle={{ padding: 10, marginLeft: 10 , width: '100%'}} 
                         textStyle={styles.customizedText} 
+                        hospotalNameTextStyle= {{fontFamily: 'OpenSans-SemiBold'}}
                         hospitalAddress={bookSlotDetails.slotData && bookSlotDetails.slotData.location}
                     />
                     : null }
