@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import { Container, Content, Text, Title, Header, H3, Button, Card, List, ListItem,View, Left, Right,Toast,Thumbnail, Body, Icon, locations, ScrollView, ProgressBar ,Item,Radio} from 'native-base';
 import { fetchUserProfile } from '../../providers/profile/profile.action';
+import { getPatientWishList } from '../../providers/bookappointment/bookappointment.action';
 import { hasLoggedIn,userFiledsUpdate } from '../../providers/auth/auth.actions';
 import { Col, Row, Grid } from 'react-native-easy-grid';
 import { connect } from 'react-redux';
@@ -23,9 +24,8 @@ class Profile extends Component {
            gender:'',
            starCount: 3.5,
            userId:'',
-           bookedAppointments: [1,2,3],
            modalVisible:false,
-
+           favouriteList: []
         }; 
         
       }
@@ -35,7 +35,8 @@ class Profile extends Component {
             this.props.navigation.navigate('login');
             return
         }
-        this.getUserProfile();  
+        this.getUserProfile(); 
+        this.getfavouritesList() 
 
     }  
     onStarRatingPress(rating) {
@@ -57,9 +58,26 @@ class Profile extends Component {
         } 
         catch (e) {
           console.log(e);
-        }    
+        }  
       }
 
+      getfavouritesList = async () => {
+        try {
+           this.setState({isLoading: true});
+           debugger 
+           let userId = await AsyncStorage.getItem('userId');
+           let result = await getPatientWishList(userId);
+           console.log(result);
+           if (result.success) {
+                this.setState({ favouriteList: result.data });
+            }
+        }
+        catch (e) {
+            console.log(e)
+        } finally {
+            this.setState({isLoading: false});
+        }
+    }
 
         /*Update Gender*/
         updateGender = async () => {
@@ -100,14 +118,12 @@ class Profile extends Component {
     /*Press Radio button*/
     onPressRadio(value){
             this.setState({gender:value})
-        }
+    }
 
-       editProfile(screen) {
-           console.log(screen);
-         this.props.navigation.navigate(screen, {screen:screen,fromProfile:true, updatedata: this.state.data||'' })
-       }
-
-
+    editProfile(screen) {
+       console.log(screen);
+       this.props.navigation.navigate(screen, {screen:screen,fromProfile:true, updatedata: this.state.data||'' })
+    }
 
     render() {
         const { profile : { isLoading } } = this.props;
@@ -347,23 +363,20 @@ class Profile extends Component {
 
                     </List>
 
-
+                  {this.state.favouriteList.length === 0 ? null :                         
                     <List>
                         <Text style={styles.titleText}>Your Doctors</Text>
 
 
                       <FlatList
-                        data={this.state.bookedAppointments}
+                        data={this.state.favouriteList}
                         renderItem={({ item }) => (
                        <ListItem avatar noBorder>
                             <Left>
                                 <Thumbnail square source={{ uri: 'https://res.cloudinary.com/demo/image/upload/w_200,h_200,c_thumb,g_face,r_max/face_left.png' }} style={{ height: 40, width: 40 }} />
                             </Left>
                             <Body>
-                                <Text> {data.first_name +" "+ data.last_name} </Text>
-
-                                <Text note>{data.address && data.address.address_line_2_}</Text>
-
+                                <Text> {item.doctorInfo.prefix ? item.doctorInfo.prefix : '' } {item.doctorInfo.first_name +" "+ item.doctorInfo.last_name} </Text>
                             </Body>
                             <Right>
                                 <Button style={styles.docbutton}><Text style={{ fontFamily: 'OpenSans', fontSize: 12 }}> Book Again</Text></Button>
@@ -373,11 +386,7 @@ class Profile extends Component {
                         )}
                         keyExtractor={(item, index) => index.toString()}
                         />
-
-                       
-                    </List>
-
-
+                    </List> }
                 </Content> }
 
 

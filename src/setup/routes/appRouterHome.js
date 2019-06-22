@@ -255,15 +255,7 @@ const HomeStack = createStackNavigator({
       ),
       headerRight: (
         <Grid>
- <Col>
- {/* <Button style={{backgroundColor:'red'}}> */}
-            <TouchableOpacity 
-            onPress={() => { console.log('wishclicking'); navigation.navigate('WishList') }}
-             >
-              <Icon name="heart" style={{ color: 'red', marginRight: 10, fontFamily: 'opensans-semibold' }}></Icon>
-            </TouchableOpacity>
-            {/* </Button> */}
-          </Col>
+          
           <Col>
             <TouchableOpacity onPress={() => { console.log('clicking'); navigation.navigate('Profile') }} >
               <Icon name="contact" style={{ color: '#fff', marginRight: 10, fontFamily: 'opensans-semibold' }}></Icon>

@@ -37,10 +37,6 @@ export async function searchDoctorList(userId, searchInputvalues, isLoading = tr
 export async function addReview(userId,insertUserReviews, isLoading = true) {
   try {
     let endPoint = '/user/'+ userId + '/review';
-<<<<<<< HEAD
-=======
-    
->>>>>>> a4e2d55bade608917dbadd795def5030b83586f7
     let response = await postService(endPoint, insertUserReviews);
     let respData = response.data;
     

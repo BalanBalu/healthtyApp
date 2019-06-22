@@ -25,16 +25,18 @@ class WishList extends Component {
     getfavouritesList = async () => {
         try {
            this.setState({isLoading:true});
+           debugger 
            let userId = await AsyncStorage.getItem('userId');
            let result = await getPatientWishList(userId);
-        //   console.log('result'+JSON.stringify(result));
-            if (result.success) {
+           if (result.success) {
                 this.setState({isLoading:false});
                 this.setState({ favouriteList: result.status });
             }
         }
         catch (e) {
             console.log(e)
+        } finally {
+            this.setState({isLoading:false});
         }
     }
   
