@@ -33,24 +33,28 @@ class UpdateEmail extends Component {
         if(fromProfile){
              this.setState({
              fromProfile:true,
-            primary_email:userData.email,
-            email:userData.secondary_emails[0].email_id||[],
-            type:userData.secondary_emails[0].type||[],
-            active:userData.secondary_emails[0].active||[]            
-             })
+             primary_email:userData.email,
+        })
+        if(userData.secondary_emails) {
+            this.setState( {
+               email:userData.secondary_emails[0].email_id,
+               type:userData.secondary_emails[0].type,
+               active:userData.secondary_emails[0].active  
+            })
+           } 
              console.log(this.state.email+'email');
          }
     }
 
     handleEmailUpdate = async () => {
-        
+        debugger
         try {
             this.setState({isLoading:true});
             let userId = await AsyncStorage.getItem('userId');
             let data = {
                 secondary_emails: [{
                     email_id: this.state.email,
-                    type: this.state.type,
+                    type: "Secondary",
                     active:this.state.active
                 }]
             };
@@ -63,8 +67,6 @@ class UpdateEmail extends Component {
 
                 })
                 this.props.navigation.navigate('Profile');
-                this.setState({isLoading:false})
-
             } else {
                 Toast.show({
                     text: 'Email not updated',
@@ -77,6 +79,9 @@ class UpdateEmail extends Component {
 
         } catch (e) {
             console.log(e);
+        }
+        finally {
+            this.setState({isLoading:false});     
         }
     }
 

@@ -105,8 +105,7 @@ class Profile extends Component {
        editProfile(screen) {
            console.log(screen);
          this.props.navigation.navigate(screen, {screen:screen,fromProfile:true, updatedata: this.state.data||'' })
-        
-      }
+       }
 
 
 
@@ -227,7 +226,7 @@ class Profile extends Component {
                                       renderItem={({ item })=>(  
                                       <List>
                         
-                                        <Text note style={styles.customText}>{item.type}</Text>                                  
+                                        <Text style={styles.customText}>{item.type}</Text>                                  
                                         <Text note style={styles.customText}>{item.email_id}</Text>
                                         
                                       </List>
@@ -236,7 +235,7 @@ class Profile extends Component {
                                     />            
                                 :<Button transparent>
                                  <Icon name='add' style={{ color: 'gray' }} />
-                                  <Text uppercase={false} style={styles.customText}>Add Secondary email</Text>
+                                  <Text uppercase={false} style={styles.customText} onPress={() => this.editProfile('UpdateEmail')} >Add Secondary email</Text>
                                 </Button>}
                                </Body>
                             <Right>
@@ -247,10 +246,12 @@ class Profile extends Component {
 
 
                         <ListItem avatar>
-                            <Left>
-                                <Icon name="locate" style={{ color: '#7E49C3' }}></Icon>
-                            </Left>
+                           
                              {data.address ? 
+                               <View>
+                                <Left>
+                                    <Icon name="locate" style={{ color: '#7E49C3' }}></Icon>
+                                </Left>
                                   <Body>
                                     <Text style={styles.customText}>Address</Text>
                                     <Text note style={styles.customText}>{data.address && data.address.address.no_and_street}</Text>
@@ -259,6 +260,7 @@ class Profile extends Component {
                                     <Text note style={styles.customText}>{data.address && data.address.address.city}</Text>
                                     <Text note style={styles.customText}>{data.address && data.address.address.pin_code}</Text>
                                   </Body>  
+                                </View>
                                :null}
                                 
                         </ListItem>
@@ -277,7 +279,7 @@ class Profile extends Component {
                                       data={this.state.data.secondary_mobiles}
                                       renderItem={({ item })=>(  
                                       <List>                        
-                                        <Text note style={styles.customText}>{item.type}</Text>                                  
+                                        <Text style={styles.customText}>{item.type}</Text>                                  
                                         <Text note style={styles.customText}>{item.number}</Text> 
                                       </List>
                                      )}
@@ -285,7 +287,7 @@ class Profile extends Component {
                                     />
                                  :<Button transparent>
                                  <Icon name='add' style={{ color: 'gray' }} />
-                                  <Text uppercase={false} style={styles.customText}>Add Secondary Contact</Text>
+                                  <Text uppercase={false} style={styles.customText} onPress={() => this.editProfile('UpdateContact')}>Add Secondary Contact</Text>
                                 </Button>}
                                            
                                 </Body>
@@ -317,7 +319,7 @@ class Profile extends Component {
                                     />            
                                 :<Button transparent>
                                 <Icon name='add' style={{ color: 'gray' }} />
-                                 <Text uppercase={false} style={styles.customText}>Add Insurance</Text>
+                                 <Text uppercase={false} style={styles.customText} onPress={() => this.editProfile('UpdateInsurance')}>Add Insurance</Text>
                                </Button>}
                                           
                               

@@ -14,7 +14,7 @@ class UpdateContact extends Component {
     constructor(props) {
         super(props)
         this.state={
-            type:'',
+            type:'Home',
             mobile_no:'',
             active:true,
             primary_mobile_no:'',
@@ -36,13 +36,17 @@ class UpdateContact extends Component {
         if(fromProfile){
             
              this.setState({
-             fromProfile:true,
-            primary_mobile_no:userData.mobile_no,
-            type:userData.secondary_mobiles[0].type,
-            mobile_no:userData.secondary_mobiles[0].number, 
-            active:userData.secondary_mobiles[0].active               
-
+                fromProfile:true,
+                primary_mobile_no:userData.mobile_no,
+                           
             })
+            if(userData.secondary_mobiles) {
+                this.setState ({
+                    type:userData.secondary_mobiles[0].type,
+                    mobile_no:userData.secondary_mobiles[0].number, 
+                    active:userData.secondary_mobiles[0].active    
+                })
+            }
 
          }
     }
@@ -57,7 +61,7 @@ class UpdateContact extends Component {
                     {
                     type: this.state.type,
                     number:this.state.mobile_no,                    
-                    active:this.state.active
+                    active:true
                     }]
                     
             };

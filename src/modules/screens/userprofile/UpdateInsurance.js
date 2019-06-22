@@ -30,14 +30,14 @@ class UpdateInsurance extends Component {
         const userData = navigation.getParam('updatedata');
         const fromProfile = navigation.getParam('fromProfile') || false
         
-        if(fromProfile){
+        if(fromProfile && userData.insurance) {
              this.setState({
-             fromProfile:true,
-             insurance_no:userData.insurance[0].insurance_no,
-            insurance_provider:userData.insurance[0].insurance_provider,
-            active:userData.insurance[0].active,
+                insurance_no:userData.insurance[0].insurance_no,
+                insurance_provider:userData.insurance[0].insurance_provider,
+                active:userData.insurance[0].active,
              })
          }
+         
     }
 
     handleInsuranceUpdate = async () => {
