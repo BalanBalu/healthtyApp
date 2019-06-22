@@ -72,7 +72,7 @@ class AppointmentDetails extends Component {
   getUserReviews = async (appointmentId) => {
     this.setState({ isLoading: true });
     let resultReview = await viewUserReviews('appointment', appointmentId);
-    console
+    debugger
     if (resultReview.success) {
       this.setState({ reviewData: resultReview.data, isLoading: false });
     }
@@ -148,7 +148,7 @@ class AppointmentDetails extends Component {
                     <Thumbnail square source={{ uri: 'https://static1.squarespace.com/static/582bbfef9de4bb07fe62ab18/t/5877b9ccebbd1a124af66dfe/1484241404624/Headshot+-+Circular.png?format=300w' }} style={{ height: 86, width: 86 }} />
                   </Left>
                   <Body>
-                    <Text style={{ fontSize: 16 }}>{(doctorData && doctorData.prefix) + (doctorData && doctorData.first_name) + " " + (doctorData && doctorData.last_name)},
+                    <Text style={{ fontSize: 16 }}>{(doctorData && doctorData.prefix ? doctorData.prefix : 'Dr.') + (doctorData && doctorData.first_name) + " " + (doctorData && doctorData.last_name)},
                     <Text style={{ fontSize: 10 }}>{doctorData.education && doctorData.education[0].degree}</Text>
                     </Text>
                     <Text note style={styles.customText}>{doctorData.specialist && doctorData.specialist[0].category} </Text>
@@ -231,7 +231,7 @@ class AppointmentDetails extends Component {
                 </List>
               </Card>
 
-              {data.appointment_status == 'PENDING_REVIEW' ?
+              { (data.appointment_status == 'PENDING_REVIEW' || reviewData.length === 0 ) ?
                 <Card style={{ margin: 10, padding: 10, borderRadius: 10 }}>
                   <List>
                     <Text style={styles.titlesText}>Review</Text>
@@ -250,7 +250,7 @@ class AppointmentDetails extends Component {
                   </List>
                 </Card>
 
-                : data.appointment_status == 'COMPLETED' ?
+                : (data.appointment_status == 'COMPLETED' || reviewData.length !== 0 ) ?
                   <Card style={{ margin: 10, padding: 10, borderRadius: 10 }}>
                     <List>
                       <Text style={styles.titlesText}>Review</Text>
