@@ -8,9 +8,10 @@ import { StyleSheet, Image, TouchableOpacity, View, FlatList, AsyncStorage, Touc
 import StarRating from 'react-native-star-rating';
 import { ScrollView, TouchableHighlight } from 'react-native-gesture-handler';
 import Modal from "react-native-modal";
-import { insertDoctorsWishList, searchDoctorList, viewdoctorProfile, getMultipleDoctorDetails, viewUserReviews,viewUserReviewCount } from '../../providers/bookappointment/bookappointment.action';
+import { insertDoctorsWishList, searchDoctorList, viewdoctorProfile, getMultipleDoctorDetails, getDoctorsReviewsCount, viewUserReviews,viewUserReviewCount } from '../../providers/bookappointment/bookappointment.action';
 import { formatDate, getFirstDay, getLastDay, findArrayObj } from '../../../setup/helpers';
 import { Loader } from '../../../components/ContentLoader';
+import { RenderHospitalAddress } from '../../common';
 
 class doctorSearchList extends Component {
     constructor(props) {
@@ -122,6 +123,7 @@ class doctorSearchList extends Component {
             this.setState({ isLoading: false });
             if (resultData.success) {
                 this.setState({ doctorDetails: resultData.data });
+                console.log(resultData.data);
             }
         } catch (e) {
             console.log(e);
@@ -187,29 +189,45 @@ class doctorSearchList extends Component {
     }
 
     /* Get Patients Reviews*/
+    reviewMap = new Map();
     getPatientReviews = async (doctorIds) => {
-        let resultReview = await viewUserReviews('doctor', doctorIds);
+        let resultReview = await getDoctorsReviewsCount(doctorIds);
         // console.log('resultReview'+JSON.stringify(resultReview));
+        debugger
         if (resultReview.success) {
+        
             this.setState({ reviewData: resultReview.data });
 
-            for (i = 0; i <= this.state.reviewData.length; i++) {
-                this.state.doctorDetails[i].overall_rating = this.state.reviewData[i].overall_rating;  //for Bind the "Stars Reviews" for multiple Doctors
+            for (i = 0; i < resultReview.data.length; i++) {
+                this.reviewMap.set(resultReview.data[i]._id, resultReview.data[i]) // total_rating
+                //this.state.doctorDetails[i].overall_rating = this.state.reviewData[i].overall_rating;  //for Bind the "Stars Reviews" for multiple Doctors
             }
+            console.log(this.reviewMap);
         }
     }
 
     /*Get doctor specialist and Degree details*/
+    doctorSpecialitesMap = new Map();
     getDoctorDetails = async (doctorIds) => {
         let fields = "specialist,education,language,gender_preference,experience";
         let resultDoctorDetails = await getMultipleDoctorDetails(doctorIds, fields);
         if (resultDoctorDetails.success) {
             this.setState({ doctorData: resultDoctorDetails.data });
-            
-            for (i = 0; i <= this.state.doctorData.length; i++) {
-                this.state.doctorDetails[i].category = this.state.doctorData[i].specialist[i].category;  //for Bind the "Category Name" for multiple Doctors.
+            console.log(resultDoctorDetails.data);
+            for (i = 0; i < resultDoctorDetails.data.length; i++) {
+                this.doctorSpecialitesMap.set(resultDoctorDetails.data[i].doctor_id, resultDoctorDetails.data[i]) // total_rating
+                //this.state.doctorDetails[i].category = this.state.doctorData[i].specialist[i].category;  //for Bind the "Category Name" for multiple Doctors.
             }
         }
+    }
+    getDoctorSpecialist(doctorId) {
+        if(this.doctorSpecialitesMap.has(doctorId)) {
+           if(this.doctorSpecialitesMap.get(doctorId).specialist) {
+            return this.doctorSpecialitesMap.get(doctorId).specialist[0].category
+           }
+           return '';
+        }  
+        return '';
     }
 
     /* Click the Slots and Book Appointment on Popup page */
@@ -222,6 +240,7 @@ class doctorSearchList extends Component {
     }
 
     navigateToBookAppointmentPage(doctorAvailabilityData) {
+       console.log('comsdasdas');
         const doctorDetails = doctorAvailabilityData;
         const slotData = doctorAvailabilityData.slotData[this.state.selectedDate]
         this.props.navigation.navigate('Book Appointment', { doctorDetails: doctorDetails, slotList: slotData })
@@ -351,7 +370,7 @@ this.state.nextAvailableSlotDate=nextAvailableSlotDate;
 
                                 <Card style={{ padding: 5, borderRadius: 10, borderBottomWidth: 2 }}>
                                     <List>
-                                        <ListItem avatar >
+                                        <ListItem avatar onPress={() => this.navigateToBookAppointmentPage(item)}>
                                             <Left>
                                                 {
                                                     item.profile_image != undefined
@@ -360,39 +379,41 @@ this.state.nextAvailableSlotDate=nextAvailableSlotDate;
                                                 }
 
                                             </Left>
-                                            <Body onPress={() => this.navigateToBookAppointmentPage(item)} style={{ margin: 'auto' }}>
+                                            <Body style={{ margin: 'auto' }}>
                                                 <Text style={{ fontFamily: 'OpenSans' }}>{item.doctorName}</Text>
                                                 {item.slotData[this.state.selectedDate] ?
                                                     <View>
+                                                         <Grid style={{ marginTop: 5 }}>
+                                                        <Col style={{ width: '100%' }}> 
+                                                             <Text style={{ fontFamily: 'OpenSans-SemiBold', color: '#282727', fontSize: 12 }}>{this.getDoctorSpecialist(item.doctorId)}</Text>  
+                                                        </Col>
+                                                        </Grid>
                                                         {item.slotData[this.state.selectedDate][0].location ?
-                                                            <Grid style={{ marginTop: 5 }}>
-                                                                <Col style={{ width: '8%' }}>
-                                                                    <Icon name='pin' style={{ fontSize: 20, fontFamily: 'OpenSans', color: 'gray' }}></Icon>
-                                                                </Col>
-                                                                <Col style={{ width: '40%' }}>
-                                                                    {/* <Text note style={{ fontFamily: 'OpenSans', }}>{item.slotData[this.state.selectedDate][0].location.location.address.no_and_street}</Text> */}
-                                                                    <Text note style={{ fontFamily: 'OpenSans' }}>{item.slotData[this.state.selectedDate][0].location.location.address.city}</Text>
-                                                                    <Text note style={{ fontFamily: 'OpenSans' }}>{item.slotData[this.state.selectedDate][0].location.location.address.no_and_street}</Text>
-                                                                </Col>
-                                                                <Text>.</Text>
-                                                                <Col style={{ width: '52%', marginLeft: '-4%' }}>
-                                                                    <Text note style={{ fontFamily: 'OpenSans' }}>{item.category}</Text>
-                                                                </Col>
-                                                            </Grid>
+                                                            <RenderHospitalAddress 
+                                                                hospitalAddress={item.slotData[this.state.selectedDate][0].location} 
+                                                                hospotalNameTextStyle= {{fontFamily: 'OpenSans-SemiBold'}}
+                                                                textStyle={{ fontFamily: 'OpenSans'}}
+                                                                gridStyle={{ marginTop: 5 }}
+                                                                renderHalfAddress={true}
+                                                            />
                                                             : null}
                                                         <Grid style={{ marginTop: 5 }}>
                                                             <Col style={{ width: '40%', marginBottom: 8, marginTop: 5 }}>
 
-                                                                <StarRating fullStarColor='#FF9500' starSize={14} width={85} containerStyle={{ width: 80 }}
-                                                                    disabled={false}
+                                                                <StarRating fullStarColor='#FF9500' starSize={11} width={85} containerStyle={{ width: 80 }}
+                                                                    disabled={true}
                                                                     maxStars={5}
-                                                                    rating={item.overall_rating}
+                                                                    rating={ this.reviewMap.get(item.doctorId) ? this.reviewMap.get(item.doctorId).average_rating : 0}
                                                                 />
                                                             </Col>
-
-                                                            <Col style={{ width: '40%', marginLeft: '-6%' }} >
-                                                                <Text note style={{ fontFamily: 'OpenSans', color: 'gray' }}>₹ {item.slotData[this.state.selectedDate][0].fee}</Text>
+                                                            <Col style={{ width: '18%', }}>
+                                                                <Text style={{fontFamily: 'OpenSans', paddingLeft: 5, color: 'gray', fontSize: 14 }}>{this.reviewMap.get(item.doctorId) ? this.reviewMap.get(item.doctorId).total_rating : ''} </Text>
                                                             </Col>
+                                                            <Col style={{ width: '35%',  }}> 
+                                                                <Text style={{ fontFamily: 'OpenSans-SemiBold', paddingTop:2, color: '#282727', fontSize: 12 }}>Fee: ₹{item.slotData[this.state.selectedDate][0].fee}</Text>  
+                                                            </Col> 
+                                                             
+                                                          
                                                         </Grid>
 
                                                     </View>
