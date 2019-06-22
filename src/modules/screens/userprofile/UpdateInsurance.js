@@ -30,14 +30,14 @@ class UpdateInsurance extends Component {
         const userData = navigation.getParam('updatedata');
         const fromProfile = navigation.getParam('fromProfile') || false
         
-        if(fromProfile){
+        if(fromProfile && userData.insurance) {
              this.setState({
-             fromProfile:true,
-             insurance_no:userData.insurance[0].insurance_no,
-            insurance_provider:userData.insurance[0].insurance_provider,
-            active:userData.insurance[0].active,
+                insurance_no:userData.insurance[0].insurance_no,
+                insurance_provider:userData.insurance[0].insurance_provider,
+                active:userData.insurance[0].active,
              })
          }
+         
     }
 
     handleInsuranceUpdate = async () => {
@@ -118,11 +118,7 @@ class UpdateInsurance extends Component {
                                 testID='updateInsuranceProvider' />
                     </Item>
 
-                    <Item style={{ borderBottomWidth: 0, marginTop: 12, marginLeft: 4 }}>
-                            <CheckBox checked={this.state.active} color="green" onPress={() => this.setState({ active: !this.state.active })} testID='activeCheckbox'></CheckBox>
-                            <Text style={{ marginLeft: 15, color: 'gray', fontFamily: 'OpenSans' }}>Active</Text>
-                        </Item>
-
+                    
 
 
                         <Item style={{ borderBottomWidth: 0 }}>

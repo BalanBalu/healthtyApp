@@ -24,6 +24,7 @@ import {
 import StarRating from "react-native-star-rating";
 import { Col, Row, Grid } from "react-native-easy-grid";
 import SegmentedControlTab from "react-native-segmented-control-tab";
+import { NavigationEvents } from 'react-navigation';
 
 import { userReviews } from "../../providers/profile/profile.action";
 import { hasLoggedIn } from "../../providers/auth/auth.actions";
@@ -40,6 +41,7 @@ import {
 import noAppointmentImage from "../../../../assets/images/noappointment.png";
 import Spinner from "../../../components/Spinner";
 
+
 class MyAppoinmentList extends Component {
 	constructor(props) {
 		super(props);
@@ -54,11 +56,13 @@ class MyAppoinmentList extends Component {
 			upcommingSpecialist: [],
 			pastSpecialist: [],
 			speciallist: [],
-			loading: true
+			loading: true,
+			isRefreshing: false,
+
 		};
 	}
 
-	async componentDidMount() {
+	async componentDidMount() {		
 		const isLoggedIn = await hasLoggedIn(this.props);
 		if (!isLoggedIn) {
 			this.props.navigation.navigate("login");
@@ -66,11 +70,21 @@ class MyAppoinmentList extends Component {
 		}
 		let userId = await AsyncStorage.getItem("userId");
 		this.setState({ userId });
-		this.upCommingAppointment();
-		this.pastAppointment();
+		await this.upCommingAppointment();
+		await this.pastAppointment();        
 	}
 
-	upCommingAppointment = async () => {
+backNavigation=async(navigationData)=>{
+	if(navigationData.action) {
+        if(navigationData.action.type === 'Navigation/BACK') {
+            await this.upCommingAppointment();
+		    await this.pastAppointment();        
+        }
+      }
+      console.log(navigationData);     
+}
+
+	upCommingAppointment = async (navigationData) => {
 		try {
 			let userId = await AsyncStorage.getItem("userId");
 			let filters = {
@@ -81,6 +95,7 @@ class MyAppoinmentList extends Component {
 				userId,
 				filters
 			);
+			
 			if (upCommingAppointmentResult.success) {
 				let appointmentData = [];
 				upCommingAppointmentResult = upCommingAppointmentResult.data;
@@ -118,7 +133,9 @@ class MyAppoinmentList extends Component {
 						specialist: speaciallistDetails,
 						degree: educationDetails
 					});
+					
 				});
+				
 				this.setState({
 					upComingData: upcommingSpecialist,
 					isLoading: true,
@@ -221,6 +238,9 @@ class MyAppoinmentList extends Component {
 
 		return (
 			<View style={styles.container}>
+				   <NavigationEvents
+                  onWillFocus={payload => { this.backNavigation(payload) }}
+                 />    
 				<Card transparent>
 					<SegmentedControlTab
 						tabsContainerStyle={{
