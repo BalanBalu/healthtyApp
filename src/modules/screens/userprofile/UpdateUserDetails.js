@@ -7,6 +7,7 @@ import { userFiledsUpdate, logout } from '../../providers/auth/auth.actions';
 import { connect } from 'react-redux'
 import { Image, BackHandler,AsyncStorage } from 'react-native';
 import styles from './style.js';
+
  import Spinner from '../../../components/Spinner';
 
 class UpdateUserDetails extends Component {
@@ -16,7 +17,7 @@ class UpdateUserDetails extends Component {
         this.state = {
             firstName: '',
             lastName: '',
-            dob: '',
+            dob:null,
             fromProfile:false,
             isLoading:false
 
@@ -34,7 +35,7 @@ class UpdateUserDetails extends Component {
          const fromProfile = navigation.getParam('fromProfile') || false
         if (fromProfile) {
           if(userData.dob) {
-            await this.setState({dob : new Date(userData.dob),
+            await this.setState({dob :new Date(userData.dob),
                 firstName: userData.first_name,
                 lastName: userData.last_name
             }) 
@@ -84,18 +85,22 @@ class UpdateUserDetails extends Component {
 
 
     render() {
-
-        return (
-
+        return (          
+            
             <Container style={styles.container}>
+                <Spinner color='blue'
+                    visible={this.state.isLoading}
+                    textContent={'Please wait updating...'}
+                />
+           
+                
                 <Content style={styles.bodyContent} contentContainerStyle={{ justifyContent: 'center', flex: 1, height: '75%' }}>
+                           
                     <H3 style={styles.welcome}>Update User Details</H3>
-                    <Image source={{ uri: 'https://static1.squarespace.com/static/582bbfef9de4bb07fe62ab18/t/5877b9ccebbd1a124af66dfe/1484241404624/Headshot+-+Circular.png?format=300w' }} style={styles.logo} />
                     <Form>
                          <Item style={{ borderBottomWidth: 0 }}>
                             <Input placeholder="First Name" style={styles.transparentLabel}
                                 value={this.state.firstName}
-                                autoFocus={true}
                                 keyboardType={'default'}
                                 returnKeyType={'next'}
                                 onChangeText={firstName => this.setState({ firstName })}
@@ -122,12 +127,11 @@ class UpdateUserDetails extends Component {
                             <Icon name='calendar' style={{ paddingLeft: 20, color: '#775DA3' }} />
                             <DatePicker style={styles.transparentLabel}
                                 defaultDate={this.state.dob}
-                                //ref={(datepicker) => { this.DatePicker = datepicker;}}
                                 timeZoneOffsetInMinutes={undefined}
                                 modalTransparent={false}
                                 animationType={"fade"}
                                 androidMode={"default"}
-                                placeHolderText="Date Of Birth"
+                                placeHolderText="Date of Birth"
                                 textStyle={{ color: "#5A5A5A" }}
                                 value={this.state.dob}
                                 placeHolderTextStyle={{ color: "#5A5A5A" }}
@@ -135,28 +139,22 @@ class UpdateUserDetails extends Component {
 
                                 disabled={false}                           
                             /></Item>
-
-                        <Spinner color='blue'
-                        visible={this.state.isLoading}
-                        textContent={'Loading...'}
-                    />
-                    
+               
 
 
                         <Button style={styles.updateButton} block primary onPress={() => this.userUpdate()}>
                             <Text style={{ fontFamily: 'OpenSans' }}>Update</Text>
                         </Button>
-
                     </Form>
-
+                    
+                
                 </Content>
-                  </Container>
+                  </Container>            
+        
+    )
 
-        )
-    }
-my
 }
-
+}
 
 
 function userDetailsState(state) {

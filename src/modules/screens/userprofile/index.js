@@ -2,7 +2,6 @@ import React, { Component } from 'react';
 import { Container, Content, Text, Title, Header, H3, Button, Card, List, ListItem,View, Left, Right,Toast,Thumbnail, Body, Icon, locations, ScrollView, ProgressBar ,Item,Radio} from 'native-base';
 import { fetchUserProfile } from '../../providers/profile/profile.action';
 import { hasLoggedIn,userFiledsUpdate } from '../../providers/auth/auth.actions';
-
 import { Col, Row, Grid } from 'react-native-easy-grid';
 import { connect } from 'react-redux';
 import { dateDiff } from '../../../setup/helpers';
@@ -11,7 +10,6 @@ import { StyleSheet, AsyncStorage,TouchableOpacity} from 'react-native';
 import Modal from "react-native-modal";
 import { FlatList } from 'react-native-gesture-handler';
 import { NavigationEvents } from 'react-navigation';
-
 import { Loader } from '../../../components/ContentLoader'
 
 class Profile extends Component {
@@ -106,8 +104,7 @@ class Profile extends Component {
 
        editProfile(screen) {
            console.log(screen);
-           //console.log(this.state.data);
-         this.props.navigation.navigate(screen, {screen:screen,fromProfile:true, updatedata: this.state.data })
+         this.props.navigation.navigate(screen, {screen:screen,fromProfile:true, updatedata: this.state.data||'' })
         
       }
 
@@ -142,13 +139,12 @@ class Profile extends Component {
                                     {data.profile_image != undefined ?
                                     <Thumbnail style={styles.profileImage} source={data.profile_image.imageURL} style={{ height: 86, width: 86 }} />:
                                     <Thumbnail style={styles.profileImage} source={{ uri: 'https://res.cloudinary.com/demo/image/upload/w_200,h_200,c_thumb,g_face,r_max/face_left.png' }} />}
-                                         <Text style={{ marginLeft: 'auto', marginRight: 'auto', fontFamily: 'OpenSans', backgroundColor: '#fff', borderRadius: 20, padding: 10, marginTop: 5 }}>{data.first_name +" "+ data.last_name}
+                                        <View style={{flexDirection:'row'}}>
+                                         <Text style={{ marginLeft: 'auto', marginRight: 'auto',padding:5, fontFamily: 'OpenSans', backgroundColor: '#fff', borderRadius: 10, marginTop: 5 }}>{data.first_name +" "+ data.last_name}
                                          </Text>
-                                         <Col>
-                                        <Icon name="create" style={{fontSize:15}} onPress={() => this.editProfile('UpdateUserDetails')} />
-                                        </Col>
-                                   
-                                                                    </Col>
+                                        <Icon name="create" style={{fontSize:17,marginTop:10}} onPress={() => this.editProfile('UpdateUserDetails')} />
+                                        </View>
+                                </Col>
                                 <Col style={styles.customCol}>
                                     <Icon name="heart" style={styles.profileIcon}></Icon>
                                 </Col>
@@ -164,17 +160,18 @@ class Profile extends Component {
                                 <Text style={styles.topValue}> Age </Text>
                                 <Text note style={styles.bottomValue}> {dateDiff(data.dob, new Date(),'years')}  </Text>
                             </Col>
-                            <Col style={{ backgroundColor: 'transparent', borderRightWidth: 0.5, borderRightColor: 'gray', marginLeft: 'auto', marginRight: 'auto' }}>
+                            <Col style={{ backgroundColor: 'transparent', borderRightWidth: 0.5, borderRightColor: 'gray', marginLeft: 'auto', marginRight: 'auto',justifyContent:'center' }}>
+                            <View style={{flexDirection:'row'}}>                 
                                 <Text style={styles.topValue}>Gender </Text>
-                                <Right>
-                                <Icon name="create"  style={{fontSize:15}} onPress={() => this.modalBoxOpen()}/>
-                                </Right>
-                                                     
+                                <Icon name="create"  style={{fontSize:15,marginLeft:-20}} onPress={() => this.modalBoxOpen()}/>
+                                </View>
                                 <Text note style={styles.bottomValue}>{gender} </Text>
+
                             </Col>
 
                     <Modal isVisible={this.state.modalVisible} >                                      
-                    <Card style={{ padding:10, borderRadius: 7, height: 100,justifyContent: 'center'}}>
+                    <Card style={{ padding:10, borderRadius: 7, height: 150,justifyContent: 'center'}}>
+                        <H3 style={{ fontFamily: 'OpenSans',marginTop:15 }}>Update Gender</H3>
                        <ListItem noBorder>
                                            
                             <Radio selected={this.state.gender==='M'} onPress={() => this.onPressRadio('M')} style={{ marginLeft: 2, }} color={"#775DA3"}
@@ -202,6 +199,7 @@ class Profile extends Component {
 
                             
 
+                            
                             <Col style={{ backgroundColor: 'transparent', justifyContent: 'center', marginLeft: 'auto', marginRight: 'auto' }}>
                                 <Text style={styles.topValue}>Blood</Text>
                                 <Text note style={styles.bottomValue}> {data.blood_group} </Text>
@@ -223,6 +221,7 @@ class Profile extends Component {
                             <Body>
                                 <Text style={styles.customText}>Email</Text>
                                 <Text note style={styles.customText}>{data.email}</Text>
+                                {data.secondary_emails!=undefined?
                                 <FlatList
                                       data={data.secondary_emails}
                                       renderItem={({ item })=>(  
@@ -235,10 +234,10 @@ class Profile extends Component {
                                      )}
                                      keyExtractor={(item, index) => index.toString()}
                                     />            
-                                <Button transparent>
+                                :<Button transparent>
                                  <Icon name='add' style={{ color: 'gray' }} />
                                   <Text uppercase={false} style={styles.customText}>Add Secondary email</Text>
-                                </Button> 
+                                </Button>}
                                </Body>
                             <Right>
                             <Icon name="create" onPress={() => this.editProfile('UpdateEmail')} />
@@ -260,11 +259,7 @@ class Profile extends Component {
                                     <Text note style={styles.customText}>{data.address && data.address.address.city}</Text>
                                     <Text note style={styles.customText}>{data.address && data.address.address.pin_code}</Text>
                                   </Body>  
-                               :
-                                <Button transparent>
-                                 <Icon name='add' style={{ color: 'gray' }} />
-                                  <Text uppercase={false} style={styles.customText}>Add your Address</Text>
-                                </Button> }
+                               :null}
                                 
                         </ListItem>
                     
@@ -277,7 +272,7 @@ class Profile extends Component {
                                 <Body>
                                     <Text style={styles.customText}>Contact</Text>
                                     <Text note style={styles.customText}>{data.mobile_no}</Text>
-                                    {typeof data.secondary_mobiles!=='undefined'?  
+                                    { data.secondary_mobiles!=undefined?  
                                     <FlatList
                                       data={this.state.data.secondary_mobiles}
                                       renderItem={({ item })=>(  
@@ -308,7 +303,7 @@ class Profile extends Component {
                             </Left>
                             <Body>
                                 <Text style={styles.customText}>Insurance</Text>
-                                {typeof data.secondary_mobiles!=='undefined'?  
+                            {data.insurance!=undefined? 
 
                                 <FlatList
                                       data={this.state.data.insurance}
@@ -456,8 +451,9 @@ const styles = StyleSheet.create({
         textAlign: 'center',
         color: 'white',
         marginTop: 10,
+        marginBottom:10,
         fontSize: 12,
-        marginLeft:120
+        marginLeft:80
         
         },
 
