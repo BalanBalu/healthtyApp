@@ -1,13 +1,12 @@
 import React, { Component } from 'react';
-import { StyleSheet, Image, TextInput, Dimensions, Toast, AsyncStorage } from 'react-native';
+import { StyleSheet, Image, TextInput, Dimensions, AsyncStorage } from 'react-native';
 import StarRating from 'react-native-star-rating';
-import { Container, Header, Title, Left, Right, Body, Button, Card, CardItem, Row, Grid, View, Text, Thumbnail, Content, CheckBox } from 'native-base';
+import { Container, Header, Title, Left, Right, Body, Button, Card, Toast, CardItem, Row, Grid, View, Text, Thumbnail, Content, CheckBox } from 'native-base';
 
 //import Icon from 'react-native-vector-icons/FontAwesome';
 import { addReview } from '../../providers/bookappointment/bookappointment.action'
 import { formatDate } from '../../../setup/helpers';
-
-
+import { appointmentStatusUpdate } from '../../providers/bookappointment/bookappointment.action';
 
 class InsertReview extends Component {
   constructor(props) {
@@ -35,15 +34,35 @@ class InsertReview extends Component {
       let doctorId = reviewData.doctor_id;
       let appointmentId = reviewData._id;
       await this.setState({userId:userId, doctorId: doctorId, appointmentId: appointmentId, data: reviewData }); 
-    
-  }
+      console.log(this.state.data.prefix)
+    }
+
+  updateAppointmentStatus = async (data, updatedStatus) => {
+    try {              
+        let requestData = {
+          doctorId: data.doctor_id,
+          userId: data.user_id,
+          startTime: data.appointment_starttime,
+          endTime: data.appointment_endtime,
+          status: updatedStatus,
+          statusUpdateReason: ' ',
+          status_by: 'USER'
+        };
+
+        let userId = await AsyncStorage.getItem('userId');
+        let result = await appointmentStatusUpdate(data.doctor_id, data._id, requestData);
+        console.log('result' + JSON.stringify(result))
+      }catch(e){
+        console.log(e);
+      }
+    }
 
   submitReview = async () => {
     try {
       let userId = this.state.data.user_id;
       let overallrating = (this.state.cleanness_rating + this.state.staff_rating + this.state.wait_time_rating) / 3;
     
-      //if (this.state.comments != null) {
+      if (this.state.comments != null) {
       let insertReviewData = {
         user_id: userId,
         doctor_id: this.state.data.doctor_id,
@@ -58,10 +77,17 @@ class InsertReview extends Component {
       };
       let result = await addReview(userId, insertReviewData);
      
-      if (result.success) {       
+      if (result.success) {  
+        this.state.data.appointment_status='COMPLETED';          
+        await this.updateAppointmentStatus(this.state.data, 'COMPLETED')
         this.props.navigation.navigate('AppointmentInfo', { reviewDetails: this.state.data })
       }
-    
+    }else{
+      Toast.show({
+        text: 'Kindly add a comment for your Review',
+        duration: 3000
+      })
+    }    
     }
     catch (e) {
       console.log(e);
@@ -98,7 +124,7 @@ class InsertReview extends Component {
               </CardItem>
               <CardItem>
                 <Body>
-                <Text style={{ marginTop: 15, }}>
+                <Text style={{ marginTop: 25, }}>
                       <Text style={{ fontWeight: "bold" }}>
                         {formatDate(data.appointment_starttime, 'MMMM-DD-YYYY') + "   " +
                           formatDate(data[0] && data[0].appointment_starttime, 'hh:mm A')}
@@ -133,7 +159,7 @@ class InsertReview extends Component {
 
                     />
                   </Row>
-                  <Row style={{ marginTop: 20, marginLeft: -10 }}>
+                  <Row style={{ marginTop: 30, marginLeft: -10 }}>
                     <CheckBox checked={this.state.isAnonymous} color="green" onPress={() => this.setState({ isAnonymous: !this.state.isAnonymous })} ></CheckBox>
                     <Text style={{ marginLeft: 20 }}>Would you like to give as Anonymous</Text>
                   </Row>
@@ -142,11 +168,11 @@ class InsertReview extends Component {
                     <Text style={{ marginLeft: 20 }}>Do you recommend this doctor</Text>
                   </Row>
 
-                  <Text style={{ fontSize: 16, marginTop: 10 }}>
+                  <Text style={{ fontSize: 16, marginTop: 40 }}>
                     Write your review
                       </Text>
                   <TextInput
-                    style={{ height: 100, borderWidth: 1, marginTop: 10, width: 340 }}
+                    style={{ height: 100, borderWidth: 1, marginTop: 20, width: 300 }}
                     placeholder="Write your reviews here"
                     value={this.state.comments}
 
@@ -156,11 +182,11 @@ class InsertReview extends Component {
                     style={{ height: 80, borderWidth: 1, width: 'auto' }}
                    
                   /> */}
-                  <Row style={{ marginTop: 10 }}>
+                  <Row style={{ marginTop: 20 }}>
                     <Right>
                       <Button style={styles.button1}
-                        onPress={() => this.submitReview()}
-                      ><Text>Submit </Text></Button>
+                        onPress={() => this.submitReview()}>
+                      <Text>SUBMIT </Text></Button>
                     </Right></Row>
 
                 </Body>
@@ -186,43 +212,44 @@ const styles = StyleSheet.create({
 
   card: {
     width: 'auto',
-    borderRadius: 100
+    borderRadius: 100,
+    height: 700,
 
   },
   title: {
     paddingLeft: 40, paddingTop: 10
 
   },
-  grid: {
-    backgroundColor: '#f5f5f5',
-    marginBottom: 5,
-    marginTop: 5,
-    height: 'auto',
-    width: 'auto',
-    marginLeft: 5,
-    marginRight: 5
-  },
-  card: {
-    backgroundColor: '#f5f5f5',
-    marginBottom: 10,
-    marginTop: 10,
-    height: 540,
-    width: 'auto',
-    marginLeft: 10,
-    marginRight: 10
+  // grid: {
+  //   backgroundColor: '#f5f5f5',
+  //   marginBottom: 5,
+  //   marginTop: 5,
+  //   height: 'auto',
+  //   width: 'auto',
+  //   marginLeft: 5,
+  //   marginRight: 5
+  // },
+  // card: {
+  //   backgroundColor: '#f5f5f5',
+  //   marginBottom: 10,
+  //   marginTop: 10,
+  //   height: 'auto',
+  //   width: 'auto',
+  //   marginLeft: 10,
+  //   marginRight: 10
 
-  },
+  // },
   text: {
     backgroundColor: "grey",
     color: "white",
-    fontSize: 14
+    fontSize: 15
   },
 
   subcard: {
     backgroundColor: 'grey',
     marginBottom: 10,
     marginTop: 10,
-    height: 50,
+    height: 100,
     width: 'auto',
     marginLeft: 15
   },
@@ -231,9 +258,10 @@ const styles = StyleSheet.create({
     backgroundColor: "#7459a0",
     borderRadius: 15,
     justifyContent: 'center',
-    padding: 30,
-    marginTop: 10,
-
+    padding: 40,
+    marginTop: 20,
+    fontSize: 15,
+    marginBottom: 10,
 
   }
 

@@ -78,7 +78,11 @@ class AppointmentDetails extends Component {
     }
 
   }
+  navigateAddReview() {
+    this.state.data.prefix = this.state.doctorData.prefix;
+    this.props.navigation.navigate('InsertReview', { appointmentDetail: this.state.data })
 
+  }
  
   /* Update Appoiontment Status */
 
@@ -117,6 +121,7 @@ class AppointmentDetails extends Component {
   navigateCancelAppoointment() {
     this.state.data.prefix = this.state.doctorData.prefix;
     this.props.navigation.navigate('CancelAppointment', { appointmentDetail: this.state.data })
+
   }
  
   render() {
@@ -173,7 +178,7 @@ class AppointmentDetails extends Component {
                       <Text style={{ color: 'black', fontSize: 16 }}>
                         {this.state.appointmentStatus == 'APPROVED' ? 'APPROVED' :
                           data.appointment_status == 'PROPOSED_NEW_TIME' ? 'PROPOSED NEW TIME' :
-                            data.appointment_status == 'PENDING_REVIEW' ? 'PENDING REVIEW' :
+                            data.appointment_status == 'PENDING_REVIEW' ? 'COMPLETED' :
                               data.appointment_status || this.state.appointStatus}
                       </Text>
                     </Button>
@@ -233,7 +238,7 @@ class AppointmentDetails extends Component {
                     <ListItem>
                       <Grid>
                         <Col style={{ width: '50%' }}>
-                          <Button block success style={styles.reviewButton} onPress={() =>   this.props.navigation.navigate('InsertReview',{ appointmentDetail: this.state.data })} testID='addFeedBack'>
+                          <Button block success style={styles.reviewButton} onPress={() =>   this.navigateAddReview()} testID='addFeedBack'>
                             {/* <Icon name='add' /> */}
                             <Text style={styles.customText}> ADD FEEDBACK </Text>
                             <Icon name="create" style={styles.editProfilePencil}></Icon>
