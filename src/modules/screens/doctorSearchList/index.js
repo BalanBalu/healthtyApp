@@ -396,21 +396,6 @@ this.state.nextAvailableSlotDate=nextAvailableSlotDate;
                                                                 gridStyle={{ marginTop: 5 }}
                                                                 renderHalfAddress={true}
                                                             />
-                                                            //RenderHospitalAddress(item.slotData[this.state.selectedDate][0].location)
-                                                            // <Grid style={{ marginTop: 5 }}>
-                                                            //     <Col style={{ width: '8%' }}>
-                                                            //         <Icon name='pin' style={{ fontSize: 20, fontFamily: 'OpenSans', color: 'gray' }}></Icon>
-                                                            //     </Col>
-                                                            //     <Col style={{ width: '40%' }}>
-                                                            //         {/* <Text note style={{ fontFamily: 'OpenSans', }}>{item.slotData[this.state.selectedDate][0].location.location.address.no_and_street}</Text> */}
-                                                            //         <Text note style={{ fontFamily: 'OpenSans' }}>{item.slotData[this.state.selectedDate][0].location.location.address.city}</Text>
-                                                            //         <Text note style={{ fontFamily: 'OpenSans' }}>{item.slotData[this.state.selectedDate][0].location.location.address.no_and_street}</Text>
-                                                            //     </Col>
-                                                            //     <Text>.</Text>
-                                                            //     <Col style={{ width: '52%', marginLeft: '-4%' }}>
-                                                            //         <Text note style={{ fontFamily: 'OpenSans' }}>{item.category}</Text>
-                                                            //     </Col>
-                                                            // </Grid>
                                                             : null}
                                                         <Grid style={{ marginTop: 5 }}>
                                                             <Col style={{ width: '40%', marginBottom: 8, marginTop: 5 }}>
