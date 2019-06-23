@@ -384,8 +384,8 @@ this.state.nextAvailableSlotDate=nextAvailableSlotDate;
                                                 {item.slotData[this.state.selectedDate] ?
                                                     <View>
                                                          <Grid style={{ marginTop: 5 }}>
-                                                        <Col style={{ width: '100%' }}> 
-                                                             <Text style={{ fontFamily: 'OpenSans-SemiBold', color: '#282727', fontSize: 12 }}>{this.getDoctorSpecialist(item.doctorId)}</Text>  
+                                                        <Col> 
+                                                             <Text style={{ fontFamily: 'OpenSans-SemiBold', color: '#282727', fontSize: 12 }}>{this.getDoctorSpecialist(item.doctorId)}  - Fee: ₹{item.slotData[this.state.selectedDate][0].fee}</Text>  
                                                         </Col>
                                                         </Grid>
                                                         {item.slotData[this.state.selectedDate][0].location ?
@@ -400,20 +400,15 @@ this.state.nextAvailableSlotDate=nextAvailableSlotDate;
                                                         <Grid style={{ marginTop: 5 }}>
                                                             <Col style={{ width: '40%', marginBottom: 8, marginTop: 5 }}>
 
-                                                                <StarRating fullStarColor='#FF9500' starSize={11} width={85} containerStyle={{ width: 80 }}
+                                                                <StarRating fullStarColor='#FF9500' starSize={14} width={85} containerStyle={{ width: 80 }}
                                                                     disabled={true}
                                                                     maxStars={5}
                                                                     rating={ this.reviewMap.get(item.doctorId) ? this.reviewMap.get(item.doctorId).average_rating : 0}
                                                                 />
                                                             </Col>
                                                             <Col style={{ width: '18%', }}>
-                                                                <Text style={{fontFamily: 'OpenSans', paddingLeft: 5, color: 'gray', fontSize: 14 }}>{this.reviewMap.get(item.doctorId) ? this.reviewMap.get(item.doctorId).total_rating : ''} </Text>
+                                                                <Text style={{fontFamily: 'OpenSans', paddingLeft: 5, color: 'gray', fontSize: 15 }}>{this.reviewMap.get(item.doctorId) ? this.reviewMap.get(item.doctorId).total_rating : '' } </Text>
                                                             </Col>
-                                                            <Col style={{ width: '35%',  }}> 
-                                                                <Text style={{ fontFamily: 'OpenSans-SemiBold', paddingTop:2, color: '#282727', fontSize: 12 }}>Fee: ₹{item.slotData[this.state.selectedDate][0].fee}</Text>  
-                                                            </Col> 
-                                                             
-                                                          
                                                         </Grid>
 
                                                     </View>

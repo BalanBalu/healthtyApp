@@ -178,7 +178,7 @@ renderOrigin(coordinates) {
        <View style={{ flex: 1 }}>
         <MapboxGL.MapView
           ref={c => (this._map = c)}
-          styleURL={MapboxGL.StyleURL.Light}
+          styleURL={MapboxGL.StyleURL.TrafficDay}
           style={{flex: 1}}
         >
         {this.state.center !== null ?  
