@@ -13,6 +13,7 @@ import com.facebook.react.shell.MainReactPackage;
 import com.facebook.soloader.SoLoader;
 import java.util.Arrays;
 import java.util.List;
+import com.razorpay.rn.RazorpayPackage;
 
 public class MainApplication extends Application implements ReactApplication {
 
@@ -32,7 +33,8 @@ public class MainApplication extends Application implements ReactApplication {
 		      new LinearGradientPackage(),
           new RNGestureHandlerPackage(),
           new VectorIconsPackage(),
-          new RCTMGLPackage() 
+          new RCTMGLPackage(),
+          new RazorpayPackage() 
       );
     }
 
