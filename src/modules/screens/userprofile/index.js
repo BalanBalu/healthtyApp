@@ -254,30 +254,30 @@ class Profile extends Component {
                                   <Text uppercase={false} style={styles.customText} onPress={() => this.editProfile('UpdateEmail')} >Add Secondary email</Text>
                                 </Button>}
                                </Body>
+                               {data.secondary_emails!=undefined? 
                             <Right>
                             <Icon name="create" onPress={() => this.editProfile('UpdateEmail')} />
-                            </Right>
+                            </Right>:null}
                         </ListItem>
 
 
 
                         <ListItem avatar>
                            
-                             {data.address ? 
-                               <View>
                                 <Left>
                                     <Icon name="locate" style={{ color: '#7E49C3' }}></Icon>
                                 </Left>
+                                {data.address!=undefined ?
+
                                   <Body>
+
                                     <Text style={styles.customText}>Address</Text>
                                     <Text note style={styles.customText}>{data.address && data.address.address.no_and_street}</Text>
                                     <Text note style={styles.customText}>{data.address && data.address.address.address_line_1} </Text>
                                     <Text note style={styles.customText}>{data.address && data.address.address.address_line_2}</Text>
                                     <Text note style={styles.customText}>{data.address && data.address.address.city}</Text>
-                                    <Text note style={styles.customText}>{data.address && data.address.address.pin_code}</Text>
-                                  </Body>  
-                                </View>
-                               :null}
+                                    <Text note style={styles.customText}>{data.address && data.address.address.pin_code}</Text>                                    
+                                    </Body>:null}  
                                 
                         </ListItem>
                     
@@ -307,17 +307,17 @@ class Profile extends Component {
                                 </Button>}
                                            
                                 </Body>
-                              
+                            { data.secondary_mobiles!=undefined?  
                              <Right>
                                 <Icon name="create" onPress={() => this.editProfile('UpdateContact')}></Icon>
-                             </Right>
+                             </Right>:null}
                               
                             
                         </ListItem>
                        
                         <ListItem avatar>
                             <Left>
-                                <Icon name="flame" style={{ color: '#7E49C3' }}></Icon>
+                                <Icon name='heartbeat' type='FontAwesome' style={{ color: '#7E49C3' }}></Icon>
                             </Left>
                             <Body>
                                 <Text style={styles.customText}>Insurance</Text>
@@ -336,13 +336,14 @@ class Profile extends Component {
                                 :<Button transparent>
                                 <Icon name='add' style={{ color: 'gray' }} />
                                  <Text uppercase={false} style={styles.customText} onPress={() => this.editProfile('UpdateInsurance')}>Add Insurance</Text>
-                               </Button>}
-                                          
-                              
+                               </Button>}                                         
                             </Body>
+
+                            {data.insurance!=undefined?
                             <Right>
-                                <Icon name="create" onPress={() => this.editProfile('UpdateInsurance')} ></Icon>
-                            </Right>
+                            <Icon name="create" onPress={() => this.editProfile('UpdateInsurance')} ></Icon>
+                            </Right>:null}
+
                         </ListItem>
 
 

@@ -110,7 +110,7 @@ class UpdateContact extends Component {
                 <H3 style={{ fontFamily: 'OpenSans' }}>Primary Mobile_no</H3>
                  <Card style={{ padding: 10, borderRadius: 10 }}>
                  <Item style={{ borderBottomWidth: 0 }}>
-                    <Icon name='mail' style={styles.centeredIcons}></Icon>
+                    <Icon name="call" style={styles.centeredIcons}></Icon>
                         <Body>
                         <Text style={styles.customText}>{this.state.primary_mobile_no}</Text>
                         </Body>
@@ -146,7 +146,7 @@ class UpdateContact extends Component {
                 
 
                     <Item style={{ borderBottomWidth: 0 }}>
-                            <Icon name='mail' style={styles.centeredIcons}></Icon>
+                            <Icon name='call' style={styles.centeredIcons}></Icon>
                             <Input placeholder="Edit Your Number" style={styles.transparentLabel} keyboardType="email-address"
                                 onChangeText={(mobile_no) => this.setState({mobile_no})}
                                 value={String(this.state.mobile_no)}

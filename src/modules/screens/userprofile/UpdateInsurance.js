@@ -103,7 +103,7 @@ class UpdateInsurance extends Component {
 
 
                     <Item style={{ borderBottomWidth: 0 }}>
-                            <Icon name='mail' style={styles.centeredIcons}></Icon>
+                            <Icon name='heartbeat' type='FontAwesome' style={styles.centeredIcons}></Icon>
                             <Input placeholder="Edit insurance number" style={styles.transparentLabel} keyboardType="email-address"
                                 onChangeText={(insurance_no) => this.setState({ insurance_no })}
                                 value={this.state.insurance_no}
@@ -111,7 +111,7 @@ class UpdateInsurance extends Component {
                     </Item>
 
                     <Item style={{ borderBottomWidth: 0 }}>
-                            <Icon name='mail' style={styles.centeredIcons}></Icon>
+                            <Icon name='heartbeat' type='FontAwesome' style={styles.centeredIcons}></Icon>
                             <Input placeholder="Edit insurance provider" style={styles.transparentLabel} keyboardType="email-address"
                                 onChangeText={(insurance_provider) => this.setState({ insurance_provider })}
                                 value={this.state.insurance_provider}
