@@ -25,7 +25,7 @@ class Profile extends Component {
            starCount: 3.5,
            userId:'',
            modalVisible:false,
-           favouriteList: []
+           favouriteList: [],
         }; 
         
       }
@@ -272,11 +272,15 @@ class Profile extends Component {
                                   <Body>
 
                                     <Text style={styles.customText}>Address</Text>
-                                    <Text note style={styles.customText}>{data.address && data.address.address.no_and_street}</Text>
-                                    <Text note style={styles.customText}>{data.address && data.address.address.address_line_1} </Text>
+                                    <Text note style={styles.customText}>{data.address && data.address.address.no_and_street + ',   ' +   
+                                     data.address.address.address_line_1 + ',  ' +
+                                     data.address.address.address_line_2 + ',  ' + 
+                                      data.address.address.city + ' - '+  
+                                     data.address.address.pin_code}</Text>
+                                    {/* <Text note style={styles.customText}>{data.address && data.address.address.address_line_1} </Text>
                                     <Text note style={styles.customText}>{data.address && data.address.address.address_line_2}</Text>
                                     <Text note style={styles.customText}>{data.address && data.address.address.city}</Text>
-                                    <Text note style={styles.customText}>{data.address && data.address.address.pin_code}</Text>                                    
+                                    <Text note style={styles.customText}>{data.address && data.address.address.pin_code}</Text>                                     */}
                                     </Body>:null}  
                                 
                         </ListItem>
