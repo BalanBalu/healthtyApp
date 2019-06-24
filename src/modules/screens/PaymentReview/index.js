@@ -5,11 +5,12 @@ import { messageShow, messageHide } from '../../providers/common/common.action';
 import { Col, Row, Grid } from 'react-native-easy-grid';
 import { connect } from 'react-redux'
 import { StyleSheet, Image, AsyncStorage, TouchableOpacity, View } from 'react-native';
-import { bookAppointment } from '../../providers/bookappointment/bookappointment.action';
+import { bookAppointment, createPaymentRazor } from '../../providers/bookappointment/bookappointment.action';
 import { formatDate } from '../../../setup/helpers';
 import Spinner from '../../../components/Spinner';
 import { RenderHospitalAddress}  from '../../common';
-
+import RazorpayCheckout from 'react-native-razorpay';
+import appIcon from '../../../../assets/Icon.png';
 
 
 
@@ -69,6 +70,48 @@ class PaymentReview extends Component {
                 duration: 3000,
             })
         }
+    }
+
+    async updatePaymentDetails(isSuccess, data) {
+         try {
+            console.log('is it comign ?') 
+            this.setState({isLoading:true});
+            const userId = await AsyncStorage.getItem('userId');
+            let bookAppointmentData = {
+              payer_id: userId,
+              payer_type: 'user',
+              payment_id: data.razorpay_payment_id,
+              amount: this.state.bookSlotDetails.slotData.fee,
+              amount_paid : isSuccess ? this.state.bookSlotDetails.slotData.fee : 0,
+              amount_due: isSuccess ? 0 : this.state.bookSlotDetails.slotData.fee,
+              currency: 'INR',
+              service_type: 'APPOINTMENT',
+              pay_from: 'APPLICATION',
+              is_error: !isSuccess,
+              error_message: data.description || null,
+          }
+          console.log('is congign')
+          let resultData = await createPaymentRazor(bookAppointmentData);
+          console.log(resultData);
+          if (resultData.success) {
+            Toast.show({
+                text: resultData.message,
+                type: "success",
+                duration: 3000,
+            })
+            
+          } else{
+            Toast.show({
+                text: resultData.message,
+                type: "warning",
+                duration: 3000,
+            })
+        }
+         } catch (error) {
+             
+         } finally {
+
+         }  
     }
 
     render() {
@@ -150,8 +193,35 @@ class PaymentReview extends Component {
                             </Col>
                         </Row>
                     </Grid>
-                    <Button block success style={{ borderRadius: 6, marginLeft: 6 }} onPress={this.confirmPayLater}>
+                    <Button block success style={{ borderRadius: 6, margin: 6 }} onPress={this.confirmPayLater}>
                         <Text uppercase={false} >payLater</Text>
+                    </Button>
+                    <Button block success style={{ padding: 10, borderRadius: 6, margin: 6 }} onPress={() => {
+                        var options = {
+                            description: 'Pay for your Health',
+                            image: 'https://png.pngtree.com/svg/20170309/c730f2b69f.svg',
+                            currency: 'INR',
+                            key: 'rzp_test_1DP5mmOlF5G5ag',
+                            amount: '5000',
+                            name: 'Sathish Krishnan',
+                            prefill: {
+                              email: 'sathishkrish20@razorpay.com',
+                              contact: '919164932823',
+                              name: 'Sathish Krishnan',
+                            },
+                            theme: {color: '#775DA3'}
+                          }
+                          RazorpayCheckout.open(options).then((data) => {
+                            console.log(data);
+                            this.updatePaymentDetails(true, data);
+                            alert(`Success: ${data.razorpay_payment_id}`);
+                          }).catch((error) => {
+                            // handle failure
+                            console.log(error);
+                            alert(`Error: ${error.code} | ${error.description}`);
+                          });
+                      }}>
+                        <Text uppercase={false} >Pay Now</Text>
                     </Button>
                 </Content>
 

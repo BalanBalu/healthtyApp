@@ -18,6 +18,20 @@ export async function bookAppointment(bookSlotDetails, isLoading = true) {
   }
 }
 
+export async function createPaymentRazor(paymentData) {
+  try {
+    let endPoint = 'razor/payment';
+    let response = await postService(endPoint, paymentData);
+    let respData = response.data;
+    return respData;
+  } catch (e) {
+    return {
+      message: 'exception' + e,
+      success: false
+    }
+  }
+}
+
 /* Search Services and category Module  */
 export async function searchDoctorList(userId, searchInputvalues, isLoading = true) {
   try {
