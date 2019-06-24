@@ -36,7 +36,7 @@ class Profile extends Component {
             return
         }
         this.getUserProfile(); 
-        this.getfavouritesList() 
+        this.getfavouritesList(); 
 
     }  
     onStarRatingPress(rating) {
@@ -154,6 +154,8 @@ class Profile extends Component {
                                     {data.profile_image != undefined ?
                                     <Thumbnail style={styles.profileImage} source={data.profile_image.imageURL} style={{ height: 86, width: 86 }} />:
                                     <Thumbnail style={styles.profileImage} source={{ uri: 'https://res.cloudinary.com/demo/image/upload/w_200,h_200,c_thumb,g_face,r_max/face_left.png' }} />}
+                                    <Icon name="camera" style={{fontSize:20}} onPress={() => this.editProfile('UploadImage')} />
+
                                         <View style={{flexDirection:'row'}}>
                                          <Text style={{ marginLeft: 'auto', marginRight: 'auto',padding:5, fontFamily: 'OpenSans', backgroundColor: '#fff', borderRadius: 10, marginTop: 5 }}>{data.first_name +" "+ data.last_name}
                                          </Text>

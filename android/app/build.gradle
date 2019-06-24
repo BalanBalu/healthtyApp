@@ -103,6 +103,8 @@ android {
         targetSdkVersion rootProject.ext.targetSdkVersion
         versionCode 1
         versionName "1.0"
+        vectorDrawables.useSupportLibrary = true
+
     }
     splits {
         abi {
@@ -143,6 +145,8 @@ android {
 }
 
 dependencies {
+    implementation project(':react-native-image-picker')
+    implementation project(':react-native-image-crop-picker')
     implementation project(':@react-native-mapbox-gl_maps')
     implementation project(':react-native-svg')
     implementation project(':react-native-linear-gradient')

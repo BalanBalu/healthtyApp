@@ -11,6 +11,8 @@ import UpdateContact from "../../modules/screens/userprofile/UpdateContact";
 import UpdatePassword from "../../modules/screens/userprofile/UpdatePassword";
 import UpdateInsurance from "../../modules/screens/userprofile/UpdateInsurance";
 import UpdateUserDetails from "../../modules/screens/userprofile/UpdateUserDetails";
+import UploadImage from "../../modules/screens/userprofile/UploadImage";
+
 
 
 
@@ -341,6 +343,14 @@ const ProfileStack = createStackNavigator({
      title: 'UpdateUserDetails'
    }
   },
+
+  UploadImage: {
+    screen: UploadImage,
+    navigationOptions:{
+     title: 'UploadImage'
+   }
+  },
+
 
 
 
