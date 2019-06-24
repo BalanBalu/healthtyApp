@@ -41,30 +41,33 @@ class CancelAppointment extends Component {
   /* Cancel Appoiontment Status */
   cancelAppointment = async (data, updatedStatus) => {
     try {
-      if (this.state.statusUpdateReason != null) {
-        this.setState({ isLoading: true });
-        let requestData = {
-          doctorId: data.doctor_id,
-          userId: data.user_id,
-          startTime: data.appointment_starttime,
-          endTime: data.appointment_endtime,
-          status: updatedStatus,
-          statusUpdateReason: this.state.statusUpdateReason,
-          status_by: 'USER'
-        };
+      this.props.navigation.navigate('AppointmentInfo', { data: this.state.data });
 
-        let userId = await AsyncStorage.getItem('userId');
-        let result = await appointmentStatusUpdate(this.state.doctorId, this.state.appointmentId, requestData);
-        console.log('result' + result)
-        if (result.success) {
-          let temp = this.state.data;
-          temp.appointment_status = result.appointmentData.appointment_status;
-          temp.status_update_reason = result.appointmentData.status_update_reason;
-          this.setState({ data: temp });
-          this.props.navigation.navigate('AppointmentInfo', { data: this.state.data });
-        }
-      }
-      this.setState({ isLoading: false });
+      // if (this.state.statusUpdateReason != null) {
+      //   this.setState({ isLoading: true });
+      //   let requestData = {
+      //     doctorId: data.doctor_id,
+      //     userId: data.user_id,
+      //     startTime: data.appointment_starttime,
+      //     endTime: data.appointment_endtime,
+      //     status: updatedStatus,
+      //     statusUpdateReason: this.state.statusUpdateReason,
+      //     status_by: 'USER'
+      //   };
+
+      //   let userId = await AsyncStorage.getItem('userId');
+      //   let result = await appointmentStatusUpdate(this.state.doctorId, this.state.appointmentId, requestData);
+      //   console.log('result' + result)
+      //   if (result.success) {
+      //     let temp = this.state.data;
+      //     temp.appointment_status = result.appointmentData.appointment_status;
+      //     temp.status_update_reason = result.appointmentData.status_update_reason;
+      //     this.setState({ data: temp });
+      //     this.props.navigation.navigate('AppointmentInfo', { data: this.state.data });
+      //   }
+      // }
+      // this.setState({ isLoading: false });
+
     }
     catch (e) {
       console.log(e);
@@ -77,24 +80,24 @@ class CancelAppointment extends Component {
     return (
 
       <Container style={styles.container}>
-        <Content style={styles.bodycontent}>
+        <Content>
           {isLoading ? <Loader style={'list'} /> :
 
-            <Card style={{ borderRadius: 5, padding: 15, height: 'auto' }}>
+            <Card style={{ borderRadius: 5, padding: 5 }}>
               <Card>
                 <CardItem style={styles.text}>
                   <Body>
-                    <Text > we understand life can get in the way! cancelling or missing your appointment too many times will result in your account being locked!</Text>
+                    <Text > We understand life can get in the way! cancelling or missing your appointment too many times will result in your account being locked!</Text>
                   </Body>
                 </CardItem>
                 <CardItem>
                   <Body>
-                    <Text style={{ marginTop: 15, }}>
+                    <Text style={{ marginTop: 2, }}>
                       <Text style={{ fontWeight: "bold" }}>
                         {formatDate(data.appointment_starttime, 'MMMM-DD-YYYY') + "   " +
                           formatDate(data[0] && data[0].appointment_starttime, 'hh:mm A')}
                       </Text> with {(data && data.prefix) + (data && data.doctorInfo.first_name) + " " + (data && data.doctorInfo.last_name)}</Text>
-                    <Text style={{ marginTop: 40, }}>What is the reason for Cancellation?</Text>
+                    <Text style={{ marginTop: 15, }}>What is the reason for Cancellation?</Text>
 
 
                     <ListItem onPress={() => this.toggleRadio(0, "I am feeling better")}>
@@ -132,25 +135,29 @@ class CancelAppointment extends Component {
                     </ListItem>
 
                     {this.state.radioStatus[4] === true ?
-                      <Col>
-                        <Text style={{ fontSize: 16, marginTop: 20 }}> Write your reason </Text>
-                        <TextInput style={{ height: 100, borderWidth: 1, marginTop: 20, width: 300 }}
-                          placeholder="Write your reason here"
-                          onChangeText={statusUpdateReason => this.setState({ statusUpdateReason })}
-                          testID='addToEditReason' />
-                      </Col>
+                      <Row>
+                        <Col>
+                          <Text style={{ fontSize: 16, marginTop: 5 }}> Write your reason </Text>
+                          <TextInput style={{ height: 100, borderWidth: 1, marginTop: 20, width: 'auto' }}
+                            placeholder="Write your reason here"
+                            onChangeText={statusUpdateReason => this.setState({ statusUpdateReason })}
+                            testID='addToEditReason'
+
+                          />
+                        </Col>
+                      </Row>
                       : null}
 
-                    <Row style={{ marginTop: 45 }}><Col>
+                    <Row style={{ marginTop: 10 }}>
                       <Button style={styles.button1} onPress={() => (this.cancelAppointment(data, 'CLOSED'))} testID='appointment_cancel'>
-                        <Text> SUBMIT</Text>
+                        <Text style={{ color: '#000' }}> SUBMIT</Text>
                       </Button>
-                    </Col>
-                      <Col>
-                        <Button style={styles.button2} onPress={() => this.props.navigation.navigate('AppointmentInfo')} testID='iconToEditContact'>
-                          <Text>CANCEL</Text>
-                        </Button>
-                      </Col></Row>
+
+
+                      <Button danger style={styles.button2} onPress={() => this.props.navigation.navigate('AppointmentInfo')} testID='iconToEditContact'>
+                        <Text style={{ color: '#000' }}>CANCEL</Text>
+                      </Button>
+                    </Row>
 
                   </Body>
 
@@ -169,7 +176,7 @@ export default CancelAppointment
 
 const styles = StyleSheet.create({
   container: {
-    backgroundColor: 'gray',
+    backgroundColor: '#c9cdcf',
     padding: 5
 
   },
@@ -181,38 +188,30 @@ const styles = StyleSheet.create({
 
   },
   text: {
-    backgroundColor: "grey",
-    color: "white",
+    backgroundColor: "#c9cdcf",
     fontSize: 14
   },
-
-  subcard: {
-    backgroundColor: 'grey',
-    marginBottom: 10,
-    marginTop: 10,
-    height: 50,
-    width: 'auto',
-    marginLeft: 15
-  },
-
   button1: {
-    backgroundColor: "#7459a0",
-    marginLeft: 'auto',
-    marginRight: 'auto',
-    borderRadius: 5,
+    backgroundColor: "#c9cdcf",
+    borderRadius: 10,
     justifyContent: 'center',
-    padding: 30,
+    padding: 1,
     marginTop: 15,
+    width: '30%',
+    height: 60,
+
   },
 
   button2: {
-    backgroundColor: "#7459a0",
-    marginLeft: 'auto',
-    marginRight: 'auto',
-    borderRadius: 5,
+
+    borderRadius: 10,
+    marginLeft: 5,
     justifyContent: 'center',
     padding: 30,
     marginTop: 15,
+    height: 60,
+    width: '70%',
+
   }
 
 })
