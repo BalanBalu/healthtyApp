@@ -43,30 +43,30 @@ class CancelAppointment extends Component {
     try {
       this.props.navigation.navigate('AppointmentInfo', { data: this.state.data });
 
-      // if (this.state.statusUpdateReason != null) {
-      //   this.setState({ isLoading: true });
-      //   let requestData = {
-      //     doctorId: data.doctor_id,
-      //     userId: data.user_id,
-      //     startTime: data.appointment_starttime,
-      //     endTime: data.appointment_endtime,
-      //     status: updatedStatus,
-      //     statusUpdateReason: this.state.statusUpdateReason,
-      //     status_by: 'USER'
-      //   };
+      if (this.state.statusUpdateReason != null) {
+        this.setState({ isLoading: true });
+        let requestData = {
+          doctorId: data.doctor_id,
+          userId: data.user_id,
+          startTime: data.appointment_starttime,
+          endTime: data.appointment_endtime,
+          status: updatedStatus,
+          statusUpdateReason: this.state.statusUpdateReason,
+          status_by: 'USER'
+        };
 
-      //   let userId = await AsyncStorage.getItem('userId');
-      //   let result = await appointmentStatusUpdate(this.state.doctorId, this.state.appointmentId, requestData);
-      //   console.log('result' + result)
-      //   if (result.success) {
-      //     let temp = this.state.data;
-      //     temp.appointment_status = result.appointmentData.appointment_status;
-      //     temp.status_update_reason = result.appointmentData.status_update_reason;
-      //     this.setState({ data: temp });
-      //     this.props.navigation.navigate('AppointmentInfo', { data: this.state.data });
-      //   }
-      // }
-      // this.setState({ isLoading: false });
+        let userId = await AsyncStorage.getItem('userId');
+        let result = await appointmentStatusUpdate(this.state.doctorId, this.state.appointmentId, requestData);
+        console.log('result' + result)
+        if (result.success) {
+          let temp = this.state.data;
+          temp.appointment_status = result.appointmentData.appointment_status;
+          temp.status_update_reason = result.appointmentData.status_update_reason;
+          this.setState({ data: temp });
+          this.props.navigation.navigate('AppointmentInfo', { data: this.state.data });
+        }
+      }
+      this.setState({ isLoading: false });
 
     }
     catch (e) {
