@@ -11,7 +11,8 @@ import { StyleSheet, AsyncStorage,TouchableOpacity} from 'react-native';
 import Modal from "react-native-modal";
 import { FlatList } from 'react-native-gesture-handler';
 import { NavigationEvents } from 'react-navigation';
-import { Loader } from '../../../components/ContentLoader'
+import { Loader } from '../../../components/ContentLoader';
+import { RenderPatientAddress } from '../../common';
 
 class Profile extends Component {
     
@@ -54,6 +55,7 @@ class Profile extends Component {
          console.log(this.props.profile.success);      
          if(this.props.profile.success) {
             this.setState({ data: result, gender:result.gender});
+            console.log('data' +JSON.stringify(this.state.data.address.address))
          }   
         } 
         catch (e) {
@@ -267,7 +269,19 @@ class Profile extends Component {
                                 <Left>
                                     <Icon name="locate" style={{ color: '#7E49C3' }}></Icon>
                                 </Left>
-                                {data.address!=undefined ?
+                                <Body>
+                                    {data.address != undefined ?
+                                        <RenderPatientAddress
+                                            patientAddress={data.address}
+                                            textStyle={{ fontFamily: 'OpenSans' }}
+                                            gridStyle={{ marginTop: 5 }}
+                                        />
+                                        : null}
+                                </Body>
+                                
+                                
+                                
+                                {/* {data.address!=undefined ?
 
                                   <Body>
 
@@ -276,12 +290,16 @@ class Profile extends Component {
                                      data.address.address.address_line_1 + ',  ' +
                                      data.address.address.address_line_2 + ',  ' + 
                                       data.address.address.city + ' - '+  
-                                     data.address.address.pin_code}</Text>
-                                    {/* <Text note style={styles.customText}>{data.address && data.address.address.address_line_1} </Text>
+                                     data.address.address.pin_code}</Text> </Body>:null}   */}
+
+                                    {/* {data.address!=undefined ?
+                                    <Body>
+                                      <Text note style={styles.customText}>{data.address && data.address.address.address_line_1} </Text>
                                     <Text note style={styles.customText}>{data.address && data.address.address.address_line_2}</Text>
                                     <Text note style={styles.customText}>{data.address && data.address.address.city}</Text>
-                                    <Text note style={styles.customText}>{data.address && data.address.address.pin_code}</Text>                                     */}
-                                    </Body>:null}  
+                                    <Text note style={styles.customText}>{data.address && data.address.address.pin_code}</Text>                                     
+                                    </Body> : null}
+                                    */}
                                 
                         </ListItem>
                     
