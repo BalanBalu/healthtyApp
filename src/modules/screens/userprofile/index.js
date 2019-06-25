@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import { Container, Content, Text, Title, Header, H3, Button, Card, List, ListItem,View, Left, Right,Toast,Thumbnail, Body, Icon, locations, ScrollView, ProgressBar ,Item,Radio} from 'native-base';
 import { fetchUserProfile } from '../../providers/profile/profile.action';
 import { getPatientWishList } from '../../providers/bookappointment/bookappointment.action';
-import { hasLoggedIn,userFiledsUpdate } from '../../providers/auth/auth.actions';
+import { hasLoggedIn,userFiledsUpdate,updateProfilePicture } from '../../providers/auth/auth.actions';
 import { Col, Row, Grid } from 'react-native-easy-grid';
 import { connect } from 'react-redux';
 import { dateDiff } from '../../../setup/helpers';
@@ -12,6 +12,8 @@ import Modal from "react-native-modal";
 import { FlatList } from 'react-native-gesture-handler';
 import { NavigationEvents } from 'react-navigation';
 import { Loader } from '../../../components/ContentLoader'
+import ImagePicker from 'react-native-image-picker';
+
 
 class Profile extends Component {
     
@@ -25,7 +27,11 @@ class Profile extends Component {
            starCount: 3.5,
            userId:'',
            modalVisible:false,
-           favouriteList: []
+           favouriteList: [],
+           imageSource: null,
+           file_name:'',
+           buttonVisible:false
+
         }; 
         
       }
@@ -54,7 +60,14 @@ class Profile extends Component {
          console.log(this.props.profile.success);      
          if(this.props.profile.success) {
             this.setState({ data: result, gender:result.gender});
-         }   
+            /*Profile pic*/
+            if(result.profile_image){
+             this.setState({imageSource:result.profile_image.imageURL});
+            }
+         }
+         console.log('dthe state data is    :'+JSON.stringify(this.state.data));
+
+  
         } 
         catch (e) {
           console.log(e);
@@ -125,9 +138,92 @@ class Profile extends Component {
        this.props.navigation.navigate(screen, {screen:screen,fromProfile:true, updatedata: this.state.data||'' })
     }
 
+    /*Upload profile pic*/
+    selectPhotoTapped() {
+
+        this.setState({buttonVisible:!this.state.buttonVisible});
+        const options = {
+          quality: 1.0,
+          maxWidth: 500,
+          maxHeight: 500,
+          storageOptions: {
+            skipBackup: true
+          }
+        };
+    
+        ImagePicker.showImagePicker(options, (response) => {
+          console.log('Response = ', response);
+    
+          if (response.didCancel) {
+            console.log('User cancelled photo picker');
+          }
+          else if (response.error) {
+            console.log('ImagePicker Error: ', response.error);
+          }
+          else if (response.customButton) {
+            console.log('User tapped custom button: ', response.customButton);
+          }
+          else {
+            let source = { uri: response.uri };
+    
+            // You can also display the image using data:
+    
+            this.setState({
+  
+              imageSource: source.uri
+  
+            });
+            console.log(this.state.imageSource);
+          }
+        });
+      }
+
+      /*Save profile pic*/
+      handleToSaveImage=async()=>{
+        try {
+            let userId = await AsyncStorage.getItem('userId');
+            let image = {
+                profile:this.state.imageSource
+                
+            };
+            console.log('imageprofile'+image.profile);
+            let response= await updateProfilePicture(userId,image);
+            console.log(response);
+            if (response.success) {
+                
+                Toast.show({
+                    text:'Profile updated Successfully',
+                    type: "success",
+                    duration: 3000,
+
+                })
+                this.props.navigation.navigate('Profile');
+            } else {
+                Toast.show({
+                    text:response.message,
+                    type: "danger",
+                    duration: 3000
+                })
+
+            }
+
+
+        } catch (e) {
+            console.log(e);
+        }
+    }
+
+
+
+
+
+      
+
+    
+
     render() {
         const { profile : { isLoading } } = this.props;
-        const {data, gender } = this.state;
+        const {data, gender,imageSource } = this.state;
         return (
 
             <Container style={styles.container}>
@@ -151,12 +247,27 @@ class Profile extends Component {
                                 <Icon name="heart" style={styles.profileIcon}></Icon>
                                 </Col>
                                 <Col style={{ width: '40%' }} >
-                                    {data.profile_image != undefined ?
-                                    <Thumbnail style={styles.profileImage} source={data.profile_image.imageURL} style={{ height: 86, width: 86 }} />:
-                                    <Thumbnail style={styles.profileImage} source={{ uri: 'https://res.cloudinary.com/demo/image/upload/w_200,h_200,c_thumb,g_face,r_max/face_left.png' }} />}
-                                    <Icon name="camera" style={{fontSize:20}} onPress={() => this.editProfile('UploadImage')} />
+                                {imageSource != undefined ?
+                                    <Thumbnail style={styles.profileImage} source={{ uri:imageSource}} style={{ height: 86, width: 86 }} />:
+                                    <Thumbnail style={styles.profileImage} source={{ uri:'https://res.cloudinary.com/demo/image/upload/w_200,h_200,c_thumb,g_face,r_max/face_left.png' }} />}
+                                   
+                                    <View style={{marginLeft:80,marginTop:-20}}>
+                                    <Icon name="camera" style={{fontSize:20}} onPress={() => this.selectPhotoTapped()} />
+                                    </View>
+                                    {this.state.buttonVisible?
+                                      <View style={{marginLeft:-10,marginTop:5}}>
+                                        <Row>
+                                        <Button style={{borderRadius:5,height:15 }} onPress={()=>{this.handleToSaveImage()}}>
+                                        <Text style={{fontSize:10,fontFamily: 'OpenSans'}}>SAVE</Text>
+                                        </Button>
+                                        <Button style={{marginLeft:10,borderRadius:5,height:15}}>
+                                        <Text style={{fontSize:10,fontFamily: 'OpenSans'}}>CANCEL</Text>
+                                        </Button>
+                                        
+                                        </Row>
+                                    </View>:null}
 
-                                        <View style={{flexDirection:'row'}}>
+                                        <View style={{flexDirection:'row',marginTop:25}}>
                                          <Text style={{ marginLeft: 'auto', marginRight: 'auto',padding:5, fontFamily: 'OpenSans', backgroundColor: '#fff', borderRadius: 10, marginTop: 5 }}>{data.first_name +" "+ data.last_name}
                                          </Text>
                                         <Icon name="create" style={{fontSize:17,marginTop:10}} onPress={() => this.editProfile('UpdateUserDetails')} />
@@ -253,7 +364,7 @@ class Profile extends Component {
                                     />            
                                 :<Button transparent>
                                  <Icon name='add' style={{ color: 'gray' }} />
-                                  <Text uppercase={false} style={styles.customText} onPress={() => this.editProfile('UpdateEmail')} >Add Secondary email</Text>
+                                  <Text uppercase={false} style={styles.customText} onPress={() => this.selectPhotoTapped()} >Add Secondary email</Text>
                                 </Button>}
                                </Body>
                                {data.secondary_emails!=undefined? 
@@ -523,7 +634,18 @@ const styles = StyleSheet.create({
         marginRight: 'auto',
         marginTop: 'auto',
         marginBottom: 'auto'
-    }
+    },
+    ImageContainer: {
+        borderRadius: 10,
+        width: 250,
+        height: 250,
+        borderColor: '#9B9B9B',
+        justifyContent: 'center',
+        alignItems: 'center',
+        backgroundColor: '#CDDC39',
+        
+      },
+
 
 
 });
