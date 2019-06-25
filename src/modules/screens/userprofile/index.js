@@ -24,17 +24,22 @@ class Profile extends Component {
            gender:'',
            starCount: 3.5,
            userId:'',
-           modalVisible:false,
-           favouriteList: []
+            modalVisible: false,
+            isLoading:false
+           
+        //    favouriteList: []
         }; 
         
       }
     async componentDidMount() {
+       
         const isLoggedIn = await hasLoggedIn(this.props);
         if(!isLoggedIn) {
             this.props.navigation.navigate('login');
             return
         }
+          
+        
         this.getUserProfile(); 
         this.getfavouritesList() 
 
@@ -47,18 +52,23 @@ class Profile extends Component {
 
     /*Get userProfile*/
       getUserProfile= async () => {
-        try { 
+          try { 
+              this.setState({ isLoading: true });
          let fields = "first_name,last_name,gender,dob,mobile_no,secondary_mobiles,email,secondary_emails,insurance,address,is_blood_donor,is_available_blood_donate,blood_group,profile_image"         
          let userId= await AsyncStorage.getItem('userId');
          let result = await fetchUserProfile(userId,fields);    
          console.log(this.props.profile.success);      
          if(this.props.profile.success) {
             this.setState({ data: result, gender:result.gender});
-         }   
+              }   
+              
         } 
         catch (e) {
           console.log(e);
-        }  
+          }  
+          finally {
+              this.setState({ isLoading: false });
+          }
       }
 
       getfavouritesList = async () => {
@@ -68,9 +78,9 @@ class Profile extends Component {
            let userId = await AsyncStorage.getItem('userId');
            let result = await getPatientWishList(userId);
            console.log(result);
-           if (result.success) {
-                this.setState({ favouriteList: result.data });
-            }
+        //    if (result.success) {
+        //         this.setState({ favouriteList: result.data });
+        //     }
         }
         catch (e) {
             console.log(e)
@@ -126,7 +136,7 @@ class Profile extends Component {
     }
 
     render() {
-        const { profile : { isLoading } } = this.props;
+        // const { profile : { isLoading } } = this.props;
         const {data, gender } = this.state;
         return (
 
@@ -137,7 +147,7 @@ class Profile extends Component {
             />
 
 
-                {isLoading ? 
+                {this.state.isLoading ? 
                     <Loader style={'profile'} /> :
                 
                   <Content style={styles.bodyContent}>
@@ -364,12 +374,12 @@ class Profile extends Component {
 
                     </List>
 
-                  {this.state.favouriteList.length === 0 ? null :                         
+                  {/* {this.state.favouriteList.length === 0 ? null :                          */}
                     <List>
                         <Text style={styles.titleText}>Your Doctors</Text>
 
 
-                      <FlatList
+                      {/* <FlatList
                         data={this.state.favouriteList}
                         renderItem={({ item }) => (
                        <ListItem avatar noBorder>
@@ -386,8 +396,9 @@ class Profile extends Component {
                         </ListItem>
                         )}
                         keyExtractor={(item, index) => index.toString()}
-                        />
-                    </List> }
+                        /> */}
+                        </List> 
+                    {/* } */}
                 </Content> }
 
 
