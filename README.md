@@ -23,3 +23,11 @@ Change this
     public List<Class<? extends JavaScriptModule>> createJSModules() {
       return Collections.emptyList();
     }
+
+
+    IOS 
+      if the Node BUndler is not working, then goto on terminal
+        
+         nodemodules/reactnative-razropay/ios
+         Run sh SelectDefaultXcode.sh
+       

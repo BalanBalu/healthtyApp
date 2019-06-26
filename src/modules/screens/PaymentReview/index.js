@@ -72,26 +72,27 @@ class PaymentReview extends Component {
         }
     }
 
-    async updatePaymentDetails(isSuccess, data) {
-         try {
+    async updatePaymentDetails(isSuccess, data, modeOfPayment) {
+        try {
             console.log('is it comign ?') 
             this.setState({isLoading:true});
             const userId = await AsyncStorage.getItem('userId');
-            let bookAppointmentData = {
+            let paymentData = {
               payer_id: userId,
               payer_type: 'user',
-              payment_id: data.razorpay_payment_id,
+              payment_id: data.razorpay_payment_id || modeOfPayment === 'cash' ? 'cash_' +  new Date().getTime() : 'pay_err_' + new Date().getTime(), 
               amount: this.state.bookSlotDetails.slotData.fee,
-              amount_paid : isSuccess ? this.state.bookSlotDetails.slotData.fee : 0,
-              amount_due: isSuccess ? 0 : this.state.bookSlotDetails.slotData.fee,
+              amount_paid : !isSuccess || modeOfPayment === 'cash' ? 0 : this.state.bookSlotDetails.slotData.fee,
+              amount_due: !isSuccess || modeOfPayment === 'cash' ?  this.state.bookSlotDetails.slotData.fee : 0,
               currency: 'INR',
               service_type: 'APPOINTMENT',
-              pay_from: 'APPLICATION',
+              booking_from: 'APPLICATION',
               is_error: !isSuccess,
               error_message: data.description || null,
+              payment_mode : modeOfPayment, 
           }
           console.log('is congign')
-          let resultData = await createPaymentRazor(bookAppointmentData);
+          let resultData = await createPaymentRazor(paymentData);
           console.log(resultData);
           if (resultData.success) {
             Toast.show({
@@ -99,20 +100,30 @@ class PaymentReview extends Component {
                 type: "success",
                 duration: 3000,
             })
-            
+            if(isSuccess) {
+                this.confirmPayLater();   
+            } else {
+                Toast.show({
+                    text: data.description,
+                    type: "warning",
+                    duration: 3000,
+                })
+            }
           } else{
-            Toast.show({
+             Toast.show({
                 text: resultData.message,
                 type: "warning",
                 duration: 3000,
             })
         }
-         } catch (error) {
-             
-         } finally {
-
-         }  
-    }
+     }  catch (error) {
+          Toast.show({
+            text: error,
+            type: "warning",
+            duration: 3000,
+          })    
+        } 
+  }
 
     render() {
         const { bookSlotDetails } = this.state;
@@ -193,8 +204,8 @@ class PaymentReview extends Component {
                             </Col>
                         </Row>
                     </Grid>
-                    <Button block success style={{ borderRadius: 6, margin: 6 }} onPress={this.confirmPayLater}>
-                        <Text uppercase={false} >payLater</Text>
+                    <Button block success style={{ borderRadius: 6, margin: 6 }} onPress={()=> this.updatePaymentDetails(true, {}, 'cash')}>
+                        <Text uppercase={false}>payLater</Text>
                     </Button>
                     <Button block success style={{ padding: 10, borderRadius: 6, margin: 6 }} onPress={() => {
                         var options = {
@@ -213,12 +224,13 @@ class PaymentReview extends Component {
                           }
                           RazorpayCheckout.open(options).then((data) => {
                             console.log(data);
-                            this.updatePaymentDetails(true, data);
-                            alert(`Success: ${data.razorpay_payment_id}`);
+                            this.updatePaymentDetails(true, data, 'razor');
+                           // alert(`Success: ${data.razorpay_payment_id}`);
                           }).catch((error) => {
                             // handle failure
+                            this.updatePaymentDetails(false, error, 'razor');
                             console.log(error);
-                            alert(`Error: ${error.code} | ${error.description}`);
+                            //alert(`Error: ${error.code} | ${error.description}`);
                           });
                       }}>
                         <Text uppercase={false} >Pay Now</Text>
