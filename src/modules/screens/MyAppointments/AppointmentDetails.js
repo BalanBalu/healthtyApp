@@ -191,16 +191,16 @@ class AppointmentDetails extends Component {
                   {data.appointment_status == 'APPROVED' || this.state.appointmentStatus === 'APPROVED' ?
                     <Col style={width = 'auto'}>
                       <Button block danger style={{ margin: 1, marginTop: 10, marginLeft: 1, borderRadius: 30, padding: 15, height: 40, width: "auto" }} onPress={() => this.navigateCancelAppoointment()} testID='cancelAppointment'>
-                        <Text style={{ textAlign: 'center', fontFamily: 'OpenSans' }}>CANCEL APPOINTMENT</Text>
+                        <Text style={{ textAlign: 'center', fontFamily: 'OpenSans', }}>CANCEL APPOINTMENT</Text>
                       </Button>
                     </Col> :
                     data.appointment_status == 'PROPOSED_NEW_TIME' ?
                       <Item style={{ borderBottomWidth: 0, justifyContent: 'center' }}>
                         <Button success style={styles.statusButton} onPress={() => this.updateAppointmentStatus(data, 'APPROVED')} testID='approvedAppointment'>
-                          <Text style={{ textAlign: 'center', fontFamily: 'OpenSans' }}>ACCEPT</Text>
+                          <Text style={{ textAlign: 'center', fontFamily: 'OpenSans', color: '#000' }}>ACCEPT</Text>
                         </Button>
                         <Button danger style={styles.Button2} onPress={() => this.navigateCancelAppoointment()} testID='appointmentCancel'>
-                          <Text style={{ textAlign: 'center', fontFamily: 'OpenSans' }}> CANCEL </Text></Button>
+                          <Text style={{ textAlign: 'center', fontFamily: 'OpenSans', color: '#000' }}> CANCEL </Text></Button>
                       </Item> : null}
                 </Grid>
 
@@ -493,8 +493,8 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     padding: 30,
     marginTop: 15,
-    height: 50,
     width: '70%',
+
 
   },
   Button2: {
@@ -504,7 +504,7 @@ const styles = StyleSheet.create({
     padding: 1,
     marginTop: 15,
     width: '30%',
-    height: 50,
+
   },
   editProfilePencil: {
     color: 'white',

@@ -97,7 +97,7 @@ class CancelAppointment extends Component {
                         {formatDate(data.appointment_starttime, 'MMMM-DD-YYYY') + "   " +
                           formatDate(data[0] && data[0].appointment_starttime, 'hh:mm A')}
                       </Text> with {(data && data.prefix) + (data && data.doctorInfo.first_name) + " " + (data && data.doctorInfo.last_name)}</Text>
-                    <Text style={{ marginTop: 15, }}>What is the reason for Cancellation?</Text>
+                    <Text style={{ marginTop: 20, }}>What is the reason for Cancellation?</Text>
 
 
                     <ListItem onPress={() => this.toggleRadio(0, "I am feeling better")}>
@@ -137,7 +137,7 @@ class CancelAppointment extends Component {
                     {this.state.radioStatus[4] === true ?
                       <Row>
                         <Col>
-                          <Text style={{ fontSize: 16, marginTop: 5 }}> Write your reason </Text>
+                          <Text style={{ fontSize: 16, marginTop: 10 }}> Write your reason </Text>
                           <TextInput style={{ height: 100, borderWidth: 1, marginTop: 20, width: 'auto' }}
                             placeholder="Write your reason here"
                             onChangeText={statusUpdateReason => this.setState({ statusUpdateReason })}
@@ -198,7 +198,7 @@ const styles = StyleSheet.create({
     padding: 1,
     marginTop: 15,
     width: '30%',
-    height: 60,
+
 
   },
 
@@ -209,7 +209,6 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     padding: 30,
     marginTop: 15,
-    height: 60,
     width: '70%',
 
   }
