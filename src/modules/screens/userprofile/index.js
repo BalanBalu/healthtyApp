@@ -13,6 +13,8 @@ import { FlatList } from 'react-native-gesture-handler';
 import { NavigationEvents } from 'react-navigation';
 import { Loader } from '../../../components/ContentLoader'
 import ImagePicker from 'react-native-image-picker';
+import axios from 'axios';
+
 
 
 class Profile extends Component {
@@ -29,8 +31,10 @@ class Profile extends Component {
            modalVisible:false,
            favouriteList: [],
            imageSource: null,
+           file_name:null,
            file_name:'',
-           buttonVisible:false
+           buttonVisible:false,
+           cancelImage:null
 
         }; 
         
@@ -62,7 +66,7 @@ class Profile extends Component {
             this.setState({ data: result, gender:result.gender});
             /*Profile pic*/
             if(result.profile_image){
-             this.setState({imageSource:result.profile_image.imageURL});
+             this.setState({imageSource:result.profile_image.imageURL,cancelImage:result.profile_image.imageURL});
             }
          }
          console.log('dthe state data is    :'+JSON.stringify(this.state.data));
@@ -141,7 +145,7 @@ class Profile extends Component {
     /*Upload profile pic*/
     selectPhotoTapped() {
 
-        this.setState({buttonVisible:!this.state.buttonVisible});
+        this.setState({buttonVisible:true});
         const options = {
           quality: 1.0,
           maxWidth: 500,
@@ -153,7 +157,7 @@ class Profile extends Component {
     
         ImagePicker.showImagePicker(options, (response) => {
           console.log('Response = ', response);
-    
+          
           if (response.didCancel) {
             console.log('User cancelled photo picker');
           }
@@ -164,16 +168,21 @@ class Profile extends Component {
             console.log('User tapped custom button: ', response.customButton);
           }
           else {
+              console.log("response is running")
             let source = { uri: response.uri };
+            
+            let value={uri:response};
+            console.log('value'+JSON.stringify(value));
     
-            // You can also display the image using data:
     
-            this.setState({
-  
-              imageSource: source.uri
+            this.setState({ 
+              imageSource: source.uri,
+              file_name:value.uri.fileName
   
             });
             console.log(this.state.imageSource);
+            console.log(this.state.file_name);
+
           }
         });
       }
@@ -181,37 +190,55 @@ class Profile extends Component {
       /*Save profile pic*/
       handleToSaveImage=async()=>{
         try {
-            let userId = await AsyncStorage.getItem('userId');
-            let image = {
-                profile:this.state.imageSource
-                
-            };
-            console.log('imageprofile'+image.profile);
-            let response= await updateProfilePicture(userId,image);
-            console.log(response);
-            if (response.success) {
-                
-                Toast.show({
-                    text:'Profile updated Successfully',
-                    type: "success",
-                    duration: 3000,
+            this.setState({buttonVisible:false});
+            console.log("try");
+            var formData = new FormData();
+            /*Pick image*/
+            formData.append('profile',{uri:this.state.imageSource,file_name:this.state.file_name}); 
 
+            /*Store image into api folder*/
+               axios({
+                method: 'PUT',
+                url:'http://192.168.1.3:3200/api/user/5d0cca487807f4085021dd6d/upload/profile',
+                body:formData,
+                config: { headers: {'Content-Type': 'multipart/form-data;charset=utf-8;'}}
                 })
-                this.props.navigation.navigate('Profile');
-            } else {
-                Toast.show({
-                    text:response.message,
-                    type: "danger",
-                    duration: 3000
+                
+                .then((response)=> {
+                    console.log("response");
+                    Toast.show({
+                        text: 'Pic posted successfuly',
+                        type: "success",
+                        duration: 3000
+                    });
+                    console.log(response);
                 })
+                .catch((err)=> {
+                    console.log("error");
+                    
+                    console.log(err);
 
-            }
+                    Toast.show({
+                        text:err.message,
+                        type: "danger",
+                        duration: 3000
+                    });   
+               
+                });         
 
-
-        } catch (e) {
+            
+        }
+         catch (e) {
             console.log(e);
         }
     }
+
+    handleToCancelImage(){
+        this.setState({imageSource:this.state.cancelImage,buttonVisible:false})
+        
+    }
+
+
 
 
 
@@ -248,10 +275,10 @@ class Profile extends Component {
                                 </Col>
                                 <Col style={{ width: '40%' }} >
                                 {imageSource != undefined ?
-                                    <Thumbnail style={styles.profileImage} source={{ uri:imageSource}} style={{ height: 86, width: 86 }} />:
+                                    <Thumbnail style={styles.profileImage} source={{ uri:imageSource}} />:
                                     <Thumbnail style={styles.profileImage} source={{ uri:'https://res.cloudinary.com/demo/image/upload/w_200,h_200,c_thumb,g_face,r_max/face_left.png' }} />}
                                    
-                                    <View style={{marginLeft:80,marginTop:-20}}>
+                                    <View style={{marginLeft:80,marginTop:-20,justifyContent:'center'}}>
                                     <Icon name="camera" style={{fontSize:20}} onPress={() => this.selectPhotoTapped()} />
                                     </View>
                                     {this.state.buttonVisible?
@@ -260,7 +287,7 @@ class Profile extends Component {
                                         <Button style={{borderRadius:5,height:15 }} onPress={()=>{this.handleToSaveImage()}}>
                                         <Text style={{fontSize:10,fontFamily: 'OpenSans'}}>SAVE</Text>
                                         </Button>
-                                        <Button style={{marginLeft:10,borderRadius:5,height:15}}>
+                                        <Button style={{marginLeft:10,borderRadius:5,height:15}}onPress={()=>{this.handleToCancelImage()}}>
                                         <Text style={{fontSize:10,fontFamily: 'OpenSans'}}>CANCEL</Text>
                                         </Button>
                                         
@@ -389,7 +416,10 @@ class Profile extends Component {
                                     <Text note style={styles.customText}>{data.address && data.address.address.address_line_1} </Text>
                                     <Text note style={styles.customText}>{data.address && data.address.address.address_line_2}</Text>
                                     <Text note style={styles.customText}>{data.address && data.address.address.city}</Text>
-                                    <Text note style={styles.customText}>{data.address && data.address.address.pin_code}</Text>                                    
+                                    <Text note style={styles.customText}>{data.address && data.address.address.pin_code}</Text>  
+
+
+
                                     </Body>:null}  
                                 
                         </ListItem>
