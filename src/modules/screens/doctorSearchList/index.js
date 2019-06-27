@@ -223,7 +223,7 @@ class doctorSearchList extends Component {
     getDoctorSpecialist(doctorId) {
         if(this.doctorSpecialitesMap.has(doctorId)) {
            if(this.doctorSpecialitesMap.get(doctorId).specialist) {
-            return this.doctorSpecialitesMap.get(doctorId).specialist[0].category
+              return this.doctorSpecialitesMap.get(doctorId).specialist[0] ? this.doctorSpecialitesMap.get(doctorId).specialist[0].category : ''
            }
            return '';
         }  
@@ -406,29 +406,23 @@ this.state.nextAvailableSlotDate=nextAvailableSlotDate;
                                                                     rating={ this.reviewMap.get(item.doctorId) ? this.reviewMap.get(item.doctorId).average_rating : 0}
                                                                 />
                                                             </Col>
-                                                            <Col style={{ width: '18%', }}>
-                                                                <Text style={{fontFamily: 'OpenSans', paddingLeft: 5, color: 'gray', fontSize: 15 }}>{this.reviewMap.get(item.doctorId) ? this.reviewMap.get(item.doctorId).total_rating : '' } </Text>
+                                                            <Col style={{ width: '60%', marginLeft: 5 }}>
+                                                                <Text style={{fontFamily: 'OpenSans', paddingLeft: 5, color: 'gray', fontSize: 15 }}>{this.reviewMap.get(item.doctorId) ? Number(this.reviewMap.get(item.doctorId).total_rating).toFixed(0): '' } </Text>
                                                             </Col>
                                                         </Grid>
 
                                                     </View>
                                                     : //condition
                                                     <View>
-                                                        <Grid style={{ marginTop: 5 }}>
-                                                            <Col style={{ width: '8%' }}>
-                                                                <Icon name='pin' style={{ fontSize: 20, fontFamily: 'OpenSans', color: 'gray' }}></Icon>
+                                                        <Grid>
+                                                           
+                                                            <Col>
+                                                                <Text note style={{ fontFamily: 'OpenSans' }}>{this.getDoctorSpecialist(item.doctorId)}</Text>
                                                             </Col>
-                                                            <Col style={{ width: '40%' }}>
-                                                            </Col>
-                                                            <Text>.</Text>
-                                                            <Col style={{ width: '52%', marginLeft: '-4%' }}>
-                                                                <Text note style={{ fontFamily: 'OpenSans' }}>{item.category}</Text>
-
-                                                            </Col>
-
                                                         </Grid>
                                                         <Grid style={{ marginTop: 5 }}>
-                                                            <Col style={{ width: '40%', marginBottom: 8, marginTop: 5 }}>
+                                                           <Row>
+                                                            <Col style={{ width: '40%'}}>
 
                                                                 <StarRating fullStarColor='#FF9500' starSize={13} width={80} containerStyle={{ width: 80 }}
                                                                     disabled={false}
@@ -437,12 +431,12 @@ this.state.nextAvailableSlotDate=nextAvailableSlotDate;
                                                                 />
                                                             </Col>
 
-                                                            <Col style={{ width: '20%' }}>
+                                                            <Col style={{ width: '60%' }}>
                                                                 <Text>{item.average_rating}</Text>
                                                             </Col>
+                                                        </Row>
 
-                                                            <Col style={{ width: '40%', marginLeft: '-6%' }} >
-                                                            </Col>
+                                                            
                                                         </Grid>
 
                                                     </View>}
