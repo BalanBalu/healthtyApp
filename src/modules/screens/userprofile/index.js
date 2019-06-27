@@ -7,13 +7,14 @@ import { Col, Row, Grid } from 'react-native-easy-grid';
 import { connect } from 'react-redux';
 import { dateDiff } from '../../../setup/helpers';
 import LinearGradient from 'react-native-linear-gradient';
-import { StyleSheet, AsyncStorage,TouchableOpacity} from 'react-native';
+import { StyleSheet, AsyncStorage,TouchableOpacity,Platform} from 'react-native';
 import Modal from "react-native-modal";
 import { FlatList } from 'react-native-gesture-handler';
 import { NavigationEvents } from 'react-navigation';
 import { Loader } from '../../../components/ContentLoader'
 import ImagePicker from 'react-native-image-picker';
 import axios from 'axios';
+
 
 
 
@@ -193,15 +194,19 @@ class Profile extends Component {
             this.setState({buttonVisible:false});
             console.log("try");
             var formData = new FormData();
+
             /*Pick image*/
-            formData.append('profile',{uri:this.state.imageSource,file_name:this.state.file_name}); 
+            // uri:
+            // Platform.OS === "android" ? photo.uri : photo.uri.replace("file://", "")
+      
+            formData.append('profile',{uri:Platform.OS === "android" ? this.state.imageSource.uri:this.state.imageSource.uri.replace("file://","")}); 
 
             /*Store image into api folder*/
                axios({
                 method: 'PUT',
-                url:'http://192.168.1.3:3200/api/user/5d0cca487807f4085021dd6d/upload/profile',
+                url:'http://10.229.195.154:3200/api/user/5d0cca487807f4085021dd6d/upload/profile',
                 body:formData,
-                config: { headers: {'Content-Type': 'multipart/form-data;charset=utf-8;'}}
+                config: { headers: {'content-Type': `multipart/form-data; boundary=${formData._boundary}`}}
                 })
                 
                 .then((response)=> {
