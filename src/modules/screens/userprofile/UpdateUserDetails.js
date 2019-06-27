@@ -123,7 +123,7 @@ class UpdateUserDetails extends Component {
 
                     <H3 style={styles.welcome}>Update User Details</H3>
                     <Form>
-                        <ScrollView>
+                    
                         <Item style={{ borderBottomWidth: 0 }}>
                             <Input placeholder="First Name" style={styles.transparentLabel}
                                 value={this.state.firstName}
@@ -219,7 +219,7 @@ class UpdateUserDetails extends Component {
                         <Button style={styles.updateButton} block primary onPress={() => this.userUpdate()}>
                             <Text style={{ fontFamily: 'OpenSans' }}>Update</Text>
                             </Button>
-                        </ScrollView>
+                        
                     </Form>
 
 

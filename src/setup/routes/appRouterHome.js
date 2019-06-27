@@ -11,7 +11,7 @@ import UpdateContact from "../../modules/screens/userprofile/UpdateContact";
 import UpdatePassword from "../../modules/screens/userprofile/UpdatePassword";
 import UpdateInsurance from "../../modules/screens/userprofile/UpdateInsurance";
 import UpdateUserDetails from "../../modules/screens/userprofile/UpdateUserDetails";
-
+import UpdateAddress from "../../modules/screens/userprofile/UpdateAddress";
 
 
 
@@ -341,7 +341,12 @@ const ProfileStack = createStackNavigator({
      title: 'UpdateUserDetails'
    }
   },
-
+  UpdateAddress: {
+    screen: UpdateAddress,
+    navigationOptions: {
+      title: 'UpdateAddress'
+    }
+  },
 
 
 },

@@ -287,7 +287,14 @@ class Profile extends Component {
                                     <Text note style={styles.customText}>{data.address && data.address.address.address_line_2}</Text>
                                     <Text note style={styles.customText}>{data.address && data.address.address.city}</Text>
                                     <Text note style={styles.customText}>{data.address && data.address.address.pin_code}</Text>                                    
-                                    </Body>:null}  
+                                        
+                                      
+                                            <Right>
+                                                <Icon name="create" onPress={() => this.editProfile('UpdateAddress')} />
+                                            </Right>
+        
+                                        
+                                    </Body> : null}  
                                 
                         </ListItem>
                     
