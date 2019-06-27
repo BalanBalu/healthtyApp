@@ -259,7 +259,7 @@ class doctorSearchList extends Component {
         return (
             <Col style={{ alignSelf: 'center' }}>
             <Button style={{ borderColor: 'blue', borderRadius: 20, backgroundColor: 'gray' }}>
-                <Text>Next Available Date : {nextAvailableDate}</Text>
+                {nextAvailableDate ? <Text>Next Available Date : {nextAvailableDate}</Text> : 'No Availablity for Next 7 Days'} 
             </Button>
             </Col>
         )
