@@ -249,13 +249,19 @@ class doctorSearchList extends Component {
 
 
     noAvailableSlots(slotData) {
+        let nextAvailableDate;
         for (let nextAvailableSlotDate of Object.keys(slotData)) {
-this.state.nextAvailableSlotDate=nextAvailableSlotDate;
-          }
+            if(this.state.selectedDate < nextAvailableSlotDate) {
+                nextAvailableDate = nextAvailableSlotDate;
+                break;
+            }
+        }
         return (
-            <Button style={{ borderColor: 'blue', borderRadius: 20, margin: 'auto', backgroundColor: 'gray' }}>
-                <Text>Next Available Date : {this.state.nextAvailableSlotDate}</Text>
+            <Col style={{ alignSelf: 'center' }}>
+            <Button style={{ borderColor: 'blue', borderRadius: 20, backgroundColor: 'gray' }}>
+                <Text>Next Available Date : {nextAvailableDate}</Text>
             </Button>
+            </Col>
         )
     }
     noDoctorsAvailable() {
