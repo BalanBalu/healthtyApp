@@ -1,8 +1,9 @@
 import React, { Component } from 'react';
 import { StyleSheet, Image, TextInput, Dimensions, AsyncStorage } from 'react-native';
 import StarRating from 'react-native-star-rating';
-import { Container, Header, Title, Left, Right, Body, Button, Card, Toast, CardItem, Row, Grid, View, Text, Thumbnail, Content, CheckBox } from 'native-base';
-
+import { Container, Header, Title, Left, Right, Body, Button, Card, Toast, CardItem, Row, Grid, View, 
+  Text, Thumbnail, Content, CheckBox } from 'native-base';
+//import {ScrollView} from 'react-native-gesture-handler';
 //import Icon from 'react-native-vector-icons/FontAwesome';
 import { addReview } from '../../providers/bookappointment/bookappointment.action'
 import { formatDate } from '../../../setup/helpers';
@@ -173,11 +174,12 @@ class InsertReview extends Component {
                       </Text>
                   <TextInput
                     style={{ height: 100, borderWidth: 1, marginTop: 20, width: 300 }}
+                    multiline = {true}
                     placeholder="Write your reviews here"
-                    value={this.state.comments}
-
+                    textAlignVertical={'top'}
                     onChangeText={(comments) => this.setState({ comments })}
                   />
+                  
                   {/* <TextInput
                     style={{ height: 80, borderWidth: 1, width: 'auto' }}
                    
