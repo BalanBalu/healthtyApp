@@ -34,7 +34,6 @@ class Profile extends Component {
            imageSource: null,
            file_name:'',
            buttonVisible:false,
-           cancelImage:null
 
         }; 
         
@@ -66,7 +65,7 @@ class Profile extends Component {
             this.setState({ data: result, gender:result.gender});
             /*Profile pic*/
             if(result.profile_image){
-             this.setState({imageSource:result.profile_image.imageURL,cancelImage:result.profile_image.imageURL});
+             this.setState({imageSource:result.profile_image.imageURL});
             }
          }
          console.log('dthe state data is    :'+JSON.stringify(this.state.data));
@@ -169,12 +168,8 @@ class Profile extends Component {
           }
           else {
               console.log("response is running")
-            let source = { uri: response.uri };
-            
-            let value={uri:response};
-            console.log('value'+JSON.stringify(value));
-    
-    
+            let source = { uri: response.uri };       
+      
             this.setState({ 
               imageSource: source.uri,
   
