@@ -26,7 +26,6 @@ class AppointmentDetails extends Component {
       yearOfExperience: '',
       appointmentStatus: '',
       statusUpdateReason: ' ',
-      qualification: ''
 
 
     }
@@ -51,8 +50,6 @@ class AppointmentDetails extends Component {
       let resultDetails = await bindDoctorDetails(doctorId, fields);
       if (resultDetails.success) {
         await this.setState({ doctorData: resultDetails.data, isLoading: false });
-        console.log('doctorData'+JSON.stringify(resultDetails));
-
         let updatedDate = moment(this.state.doctorData.experience.updated_date);
         let experienceInYear = dateDiff(updatedDate, new Date(), 'year');
         let experienceInMonth = dateDiff(updatedDate, new Date(), 'months');
@@ -63,7 +60,6 @@ class AppointmentDetails extends Component {
           experience++;
         }
         await this.setState({ yearOfExperience: experience });
-console.log(this.state.doctorData.education[0].degree)
       }
      
    }
@@ -153,8 +149,7 @@ console.log(this.state.doctorData.education[0].degree)
                   </Left>
                   <Body>
                     <Text style={{ fontSize: 16 }}>{(doctorData && doctorData.prefix ? doctorData.prefix : 'Dr.') + (doctorData && doctorData.first_name) + " " + (doctorData && doctorData.last_name)},
-                    {/* <Text style={{ fontSize: 10 }}>{doctorData.education && doctorData.education[0].degree}</Text> */}
-                    <Text style={{ fontSize: 10 }}>{qualification}</Text>
+                    <Text style={{ fontSize: 10 }}>{doctorData.education && doctorData.education[0].degree}</Text>
 
                     </Text>
                     <Text note style={styles.customText}>{doctorData.specialist && doctorData.specialist[0].category} </Text>
