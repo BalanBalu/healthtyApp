@@ -189,48 +189,31 @@ class Profile extends Component {
       }
 
       /*Save profile pic*/
-      handleToSaveImage=async()=>{
+      handleToSaveImage= async() => {
         try {
-            this.setState({buttonVisible:false});
+            await this.setState({buttonVisible:false});
             console.log("try");
+            const userId = await AsyncStorage.getItem('userId')
             var formData = new FormData();
-
-            /*Pick image*/
-            // uri:
-            // Platform.OS === "android" ? photo.uri : photo.uri.replace("file://", "")
-      
-            formData.append('profile',{uri:Platform.OS === "android" ? this.state.imageSource.uri:this.state.imageSource.uri.replace("file://","")}); 
-
+            
+            formData.append('profile', {
+                uri: this.state.imageSource,
+                type: 'image/jpeg',
+                name: 'photo.jpg'
+            });        
             /*Store image into api folder*/
-               axios({
+            debugger   
+            var req = {
                 method: 'PUT',
-                url:'http://10.229.195.154:3200/api/user/5d0cca487807f4085021dd6d/upload/profile',
-                body:formData,
-                config: { headers: {'content-Type': `multipart/form-data; boundary=${formData._boundary}`}}
-                })
-                
-                .then((response)=> {
-                    console.log("response");
-                    Toast.show({
-                        text: 'Pic posted successfuly',
-                        type: "success",
-                        duration: 3000
-                    });
-                    console.log(response);
-                })
-                .catch((err)=> {
-                    console.log("error");
-                    
-                    console.log(err);
-
-                    Toast.show({
-                        text:err.message,
-                        type: "danger",
-                        duration: 3000
-                    });   
-               
-                });         
-
+                url: `http://192.168.1.3:3200/api/user/${userId}/upload/profile`,
+                data: formData,
+                headers: {
+                'content-type': `multipart/form-data; boundary=${formData._boundary}`,
+                },
+            }
+            const response = await axios(req);
+            console.log(response);
+            
             
         }
          catch (e) {
@@ -238,8 +221,10 @@ class Profile extends Component {
         }
     }
 
-    handleToCancelImage(){
-        this.setState({imageSource:this.state.cancelImage,buttonVisible:false})
+    async handleToCancelImage(){
+       debugger
+        await this.setState({imageSource:this.state.cancelImage});
+       await this.setState({ buttonVisible:false})
         
     }
 
