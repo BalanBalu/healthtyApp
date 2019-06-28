@@ -13,7 +13,7 @@ import { FlatList } from 'react-native-gesture-handler';
 import { NavigationEvents } from 'react-navigation';
 import { Loader } from '../../../components/ContentLoader'
 import ImagePicker from 'react-native-image-picker';
-import axios from 'axios';
+import {uploadMultiPart} from '../../../setup/services/httpservices'
 
 
 
@@ -32,7 +32,6 @@ class Profile extends Component {
            modalVisible:false,
            favouriteList: [],
            imageSource: null,
-           file_name:null,
            file_name:'',
            buttonVisible:false,
            cancelImage:null
@@ -178,63 +177,34 @@ class Profile extends Component {
     
             this.setState({ 
               imageSource: source.uri,
-              file_name:value.uri.fileName
   
             });
-            console.log(this.state.imageSource);
-            console.log(this.state.file_name);
+            this.uploadImageToServer();
 
           }
         });
       }
 
-      /*Save profile pic*/
-      handleToSaveImage= async() => {
-        try {
-            await this.setState({buttonVisible:false});
-            console.log("try");
-            const userId = await AsyncStorage.getItem('userId')
-            var formData = new FormData();
-            
-            formData.append('profile', {
-                uri: this.state.imageSource,
-                type: 'image/jpeg',
-                name: 'photo.jpg'
-            });        
-            /*Store image into api folder*/
-            debugger   
-            var req = {
-                method: 'PUT',
-                url: `http://192.168.1.3:3200/api/user/${userId}/upload/profile`,
-                data: formData,
-                headers: {
-                'content-type': `multipart/form-data; boundary=${formData._boundary}`,
-                },
-            }
-            const response = await axios(req);
-            console.log(response);
-            
-            
-        }
-         catch (e) {
-            console.log(e);
-        }
+    /*Store image into api folder*/
+    uploadImageToServer=async()=>{
+    try{
+        console.log("Image uploading");
+        const userId = await AsyncStorage.getItem('userId')
+        var formData = new FormData();        
+        formData.append('profile', {
+            uri: this.state.imageSource,
+            type: 'image/jpeg',
+            name: 'photo.jpg'
+        });        
+        debugger
+        let endPoint=`user/${userId}/upload/profile` 
+        var response=await uploadMultiPart(endPoint,formData); 
+        return response;    
+    } catch (e) {
+        console.log(e);
     }
-
-    async handleToCancelImage(){
-       debugger
-        await this.setState({imageSource:this.state.cancelImage});
-       await this.setState({ buttonVisible:false})
-        
-    }
-
-
-
-
-
-
-
-      
+}
+    
 
     
 
@@ -271,19 +241,7 @@ class Profile extends Component {
                                     <View style={{marginLeft:80,marginTop:-20,justifyContent:'center'}}>
                                     <Icon name="camera" style={{fontSize:20}} onPress={() => this.selectPhotoTapped()} />
                                     </View>
-                                    {this.state.buttonVisible?
-                                      <View style={{marginLeft:-10,marginTop:5}}>
-                                        <Row>
-                                        <Button style={{borderRadius:5,height:15 }} onPress={()=>{this.handleToSaveImage()}}>
-                                        <Text style={{fontSize:10,fontFamily: 'OpenSans'}}>SAVE</Text>
-                                        </Button>
-                                        <Button style={{marginLeft:10,borderRadius:5,height:15}}onPress={()=>{this.handleToCancelImage()}}>
-                                        <Text style={{fontSize:10,fontFamily: 'OpenSans'}}>CANCEL</Text>
-                                        </Button>
-                                        
-                                        </Row>
-                                    </View>:null}
-
+                                    
                                         <View style={{flexDirection:'row',marginTop:25}}>
                                          <Text style={{ marginLeft: 'auto', marginRight: 'auto',padding:5, fontFamily: 'OpenSans', backgroundColor: '#fff', borderRadius: 10, marginTop: 5 }}>{data.first_name +" "+ data.last_name}
                                          </Text>
