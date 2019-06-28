@@ -154,7 +154,7 @@ class CancelAppointment extends Component {
                       </Button>
 
 
-                      <Button danger style={styles.button2} onPress={() => this.props.navigation.navigate('AppointmentInfo')} testID='iconToEditContact'>
+                      <Button success style={styles.button2} onPress={() => this.props.navigation.navigate('AppointmentInfo')} testID='iconToEditContact'>
                         <Text style={{ color: '#000' }}>CANCEL</Text>
                       </Button>
                     </Row>

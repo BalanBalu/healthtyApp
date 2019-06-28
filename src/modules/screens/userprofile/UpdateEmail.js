@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { Container, Content, Text, Button, H3, Item, List, CheckBox, Left, Right, Thumbnail, Body, Icon, Card, Input, Toast, View } from 'native-base';
+import { Container, Content, Text, Button, H3, Item, List, CheckBox, Left, Right, Thumbnail, Body, Icon, Card, Input, Toast, View, Row } from 'native-base';
 import { userFiledsUpdate } from '../../providers/auth/auth.actions';
 import { AsyncStorage } from 'react-native';
 import { connect } from 'react-redux'
@@ -92,23 +92,23 @@ class UpdateEmail extends Component {
             <Container style={styles.container}>
                 <Content style={{ padding: 10 }} contentContainerStyle={{ flex: 1, height: '100%', }}>
                     <View style={{ marginTop: 20 }}>
-                        <H3 style={{ fontFamily: 'OpenSans', }}>Primary Email</H3>
+                        <Text style={{ fontFamily: 'OpenSans', marginLeft: 7, fontWeight: 'bold', fontSize: 20 }}>Primary Email</Text>
                         <Card style={{ padding: 10, borderRadius: 10, marginTop: 10 }}>
                             <Item style={{ borderBottomWidth: 0 }}>
                                 <Icon name='mail' style={styles.centeredIcons}></Icon>
-                                <Body>
-                                    <Text style={styles.customText}>{this.state.primary_email}</Text>
-                                </Body>
+
+                                <Text style={styles.customText}>{this.state.primary_email}</Text>
+
                             </Item>
                         </Card>
                     </View>
                     <View style={{ marginTop: 20 }}>
-                        <H3 style={{ fontFamily: 'OpenSans', marginTop: 50 }}>Edit Secondary Email</H3>
-                        <Text style={{ color: 'gray', fontSize: 13, fontFamily: 'OpenSans', marginTop: 15 }}>Update your secondary email</Text>
+                        <Text style={{ fontFamily: 'OpenSans', marginTop: 50, marginLeft: 7, fontWeight: 'bold', fontSize: 20 }}>Secondary Email</Text>
+
                         <Card style={{ padding: 10, borderRadius: 10, marginTop: 10, height: 250, justifyContent: 'center' }}>
 
                             <Item style={{ borderBottomWidth: 0, marginTop: 12, marginLeft: 4 }}>
-                                <Text style={{ marginLeft: 15, color: 'gray', fontFamily: 'OpenSans' }}>{this.state.type}</Text>
+                                <Text style={{ color: 'gray', fontSize: 13, fontFamily: 'OpenSans', marginTop: 5, marginLeft: 7 }}>Update your secondary email</Text>
                             </Item>
 
                             <Item style={{ borderBottomWidth: 0, }}>
@@ -127,13 +127,30 @@ class UpdateEmail extends Component {
 
 
 
-                            <Item style={{ borderBottomWidth: 0 }}>
-                                <Right>
+                            <Item style={{ borderBottomWidth: 0, justifyContent: 'center', marginTop: 35 }}>
+                                {/* 
+                                <Button style={styles.updateButton} onPress={() => this.handleEmailUpdate()} testID='clickUpdateEmail'>
+                                    <Text uppercase={false} note style={{ color: '#fff', fontFamily: 'OpenSans' }}>Update</Text>
+                                </Button>
+                                <View style={{ marginLeft: 80 }}>
                                     <Button style={styles.updateButton} onPress={() => this.handleEmailUpdate()} testID='clickUpdateEmail'>
-                                        <Text uppercase={false} note style={{ color: '#fff', fontFamily: 'OpenSans' }}>Update</Text>
+                                        <Text uppercase={false} note style={{ color: '#fff', fontFamily: 'OpenSans' }}>Cancel</Text>
                                     </Button>
-                                </Right>
+                                </View> */}
+                                <Row style={{ justifyContent: 'center' }}>
+                                    <Button success style={styles.button2} >
+                                        <Text style={{ color: '#000' }}>Update</Text>
+                                    </Button>
+                                    <Button style={styles.button1}>
+                                        <Text style={{ color: '#000' }}> Cancel</Text>
+                                    </Button>
+                                </Row>
+
+
                             </Item>
+
+
+
 
 
                         </Card>
