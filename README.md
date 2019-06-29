@@ -3,11 +3,32 @@
 How to Build Android APP
     1. Change the Config File URL
     2. Run cd android && ./gradlew assembleRelease
+    
 
-Issues ON IOS
-   while Running Pod Install, if you face below error
-      "Remote branch not found in upstream origin"
-   then, open
-     nodemodules/react-native-image-crop-picker/RNImageCropPicker.podspec      
-   Search for (ctlr+F)
-       "'v#{version}'" change to "'v' + version"
+ Issues 
+
+    1. If you get following Error   Task :react-native-razorpay:compileDebugJavaWithJavac FAILED then 
+
+goto 
+    nodemodules/reactnative-razropay/android/src/main/java/com/razorpay/rn/RazorPayPackage.java
+    On Line No 19 --> remove the @OverRide 
+
+Change this 
+    @Override
+    public List<Class<? extends JavaScriptModule>> createJSModules() {
+      return Collections.emptyList();
+    }
+   to  
+    
+    public List<Class<? extends JavaScriptModule>> createJSModules() {
+      return Collections.emptyList();
+    }
+
+
+    IOS 
+      if the Node BUndler is not working, then goto on terminal
+        
+         nodemodules/reactnative-razropay/ios
+         Run sh SelectDefaultXcode.sh
+       
+    See the Video https://www.youtube.com/watch?v=hE-F0QqTwnI

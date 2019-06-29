@@ -264,7 +264,7 @@ const HomeStack = createStackNavigator({
         <Grid>
           
           <Col>
-            <TouchableOpacity onPress={() => { console.log('clicking'); navigation.navigate('Profile') }} >
+            <TouchableOpacity onPress={() => { navigation.navigate('Profile') }} >
               <Icon name="contact" style={{ color: '#fff', marginRight: 10, fontFamily: 'opensans-semibold' }}></Icon>
             </TouchableOpacity>
           </Col>

@@ -7,7 +7,7 @@ import { connect } from 'react-redux'
 import LinearGradient from 'react-native-linear-gradient';
 import { StyleSheet, Image, TouchableOpacity, View } from 'react-native';
 import StarRating from 'react-native-star-rating';
-
+import RazorpayCheckout from 'react-native-razorpay';
 
 class PaymentPage extends Component {
     constructor(props) {
@@ -49,7 +49,37 @@ class PaymentPage extends Component {
                 </Header>
 
                 <Content style={styles.bodyContent}>
-
+                    
+                    <Button transparent
+                      onPress={() => {
+                        var options = {
+                            description: 'Credits towards consultation',
+                            image: 'https://i.imgur.com/3g7nmJC.png',
+                            currency: 'INR',
+                            key: 'rzp_test_1DP5mmOlF5G5ag',
+                            amount: '5000',
+                            name: 'foo',
+                           
+                            prefill: {
+                              email: 'sathishkrish20@razorpay.com',
+                              contact: '919164932823',
+                              name: 'Razorpay Software',
+                              method: 'netbaking',
+                              bank: 'HDFC',
+                            },
+                            theme: {color: '#F37254'}
+                          }
+                          RazorpayCheckout.open(options).then((data) => {
+                            // handle success
+                            alert(`Success: ${data.razorpay_payment_id}`);
+                          }).catch((error) => {
+                            // handle failure
+                            alert(`Error: ${error.code} | ${error.description}`);
+                          });
+                      }}
+                    ><Text style={{ color: '#66A3F2', fontSize: 15, fontFamily: 'OpenSans' }}>Pay Now</Text>
+                    </Button>
+                        
                     <H3 style={styles.paymentHeader}>Payment </H3>
 
                     <Grid style={styles.gridNew}>
@@ -59,20 +89,20 @@ class PaymentPage extends Component {
 
                         <Row >
                             <Col style={{ width: '33.33%', alignItems: 'center' }}>
-                                <Image source={{ uri: 'https://img.icons8.com/color/180/visa.png' }} style={{ width: '100%', height: 50, borderradius: 10 }} />
+                                <Image source={{ uri: 'https://img.icons8.com/color/180/visa.png' }} style={{ width: '100%', height: 50, borderRadius: 10 }} />
                                 <ListItem noBorder>
                                     <CheckBox checked={true} color="#4ED963" style={{ marginTop: 10 }}></CheckBox>
                                 </ListItem>
 
                             </Col>
                             <Col style={{ width: '33.33%', alignItems: 'center' }}>
-                                <Image source={{ uri: 'https://cdn.freebiesupply.com/logos/large/2x/cirrus-3-logo-png-transparent.png' }} style={{ width: '100%', height: 50, borderradius: 10 }} />
+                                <Image source={{ uri: 'https://cdn.freebiesupply.com/logos/large/2x/cirrus-3-logo-png-transparent.png' }} style={{ width: '100%', height: 50, borderRadius: 10 }} />
                                 <ListItem noBorder>
                                     <CheckBox checked={true} color="#4ED963" style={{ marginTop: 10 }}></CheckBox>
                                 </ListItem>
                             </Col>
                             <Col style={{ width: '33.33%', alignItems: 'center' }}>
-                                <Image source={{ uri: 'https://img.icons8.com/color/180/visa.png' }} style={{ width: '100%', height: 50, borderradius: 10 }} />
+                                <Image source={{ uri: 'https://img.icons8.com/color/180/visa.png' }} style={{ width: '100%', height: 50, borderRadius: 10 }} />
                                 <ListItem noBorder>
                                     <CheckBox checked={true} color="#4ED963" style={{ marginTop: 10 }}></CheckBox>
                                 </ListItem>
@@ -159,7 +189,7 @@ const styles = StyleSheet.create({
 
     paymentHeader:
     {
-        fontFamily: 'opensans - semibold',
+        fontFamily: 'opensans-semibold',
         borderColor: '#000',
         backgroundColor: 'white',
         borderWidth: 1,
