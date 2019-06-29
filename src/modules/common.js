@@ -2,6 +2,7 @@ import React from 'react';
 import { View, Text } from "react-native";
 import { Icon } from 'native-base';
 import { Col, Row, Grid } from 'react-native-easy-grid';
+
 export const RenderHospitalAddress = (props) => {
     const { headerStyle, hospotalNameTextStyle, gridStyle, renderHalfAddress } = props
     return (
@@ -18,7 +19,7 @@ export const RenderHospitalAddress = (props) => {
                 </Col>
             </Row>
             <Row>
-                   <Col style={{ width: '8%' }}>
+                <Col style={{ width: '8%' }}>
                     <Icon name='pin' style={{ fontSize: 18, fontFamily: 'OpenSans', color: 'gray' }}></Icon>
                 </Col>
                 <Col style={{ width: '90%' }}>
@@ -49,13 +50,27 @@ export const RenderPatientAddress = (props) => {
                 <Col style={{ width: '90%' }}>
                     {props.patientAddress.address ?
                         <View>
-                            <Text note style={props.textStyle}>{props.patientAddress.address.no_and_street + ' , ' + 
-                            props.patientAddress.address.address_line_1 + ' , ' + 
-                            props.patientAddress.address.address_line_2 + ' , ' + 
-                            props.patientAddress.address.city + ' - ' + props.patientAddress.address.pin_code}</Text>
+                            <Text note style={props.textStyle}>{props.patientAddress.address.no_and_street + ' , ' +
+                                props.patientAddress.address.address_line_1 + ' , ' +
+                                props.patientAddress.address.address_line_2 + ' , ' +
+                                props.patientAddress.address.city + ' - ' + props.patientAddress.address.pin_code}</Text>
                         </View> : null}
                 </Col>
             </Row>
         </Grid>
     )
 }
+
+export function renderProfileImage(data) {
+    let source = null;
+    if (data.profile_image) {
+        source = { uri: data.profile_image.imageURL }
+    } else if (data.gender == 'M') {
+        source = require('../../assets/images/profile_male.png')
+    } else if (data.gender == 'F') {
+        source = require('../../assets/images/profile_female.png')
+    } else {
+        source = require('../../assets/images/profile_common.png')
+    }
+    return (source)
+} 
