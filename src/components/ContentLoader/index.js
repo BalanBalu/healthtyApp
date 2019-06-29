@@ -13,12 +13,19 @@ export const Loader = (props) => {
         <Rect x="0" y="120" rx="3" ry="3" width="360" height={Dimensions.get('window').height} />
      </ContentLoader>
     }
-    else if(props.style ==='insta') {
+    else if(props.style ==='appointment') {
        return <ContentLoader height={Dimensions.get('window').height} width={Dimensions.get('window').width}>
-         <Circle cx="30" cy="30" r="30" />
-         <Rect x="75" y="13" rx="4" ry="4" width="100" height="13" />
-         <Rect x="75" y="37" rx="4" ry="4" width="50" height="8" />
-         <Rect x="10" y="70" rx="5" ry="5" width="600" height={Dimensions.get('window').height} />
+         
+         <Circle x="45" y="53" cx="30" cy="50" r="50" />
+         <Rect x="135" y="63" rx="4" ry="8" width="200" height="13" />
+         <Rect x="135" y="87" rx="4" ry="4" width="200" height="8" />
+         <Rect x="135" y="100" rx="4" ry="4" width="200" height="13" />
+
+         <Rect x="40" y="180" rx="5" ry="5" width="300" height="20" />
+         <Rect x="40" y="210" rx="5" ry="5" width="300" height="20" />
+        
+        
+         <Rect x="10" y="280" rx="5" ry="5" width="600" height={Dimensions.get('window').height} />
        </ContentLoader>
     }
     else if(props.style === 'list') {

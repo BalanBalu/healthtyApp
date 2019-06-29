@@ -37,19 +37,26 @@ class AppointmentDetails extends Component {
     const appointmentData = navigation.getParam('data');
     let doctorId = appointmentData.doctor_id;
     let appointmentId = appointmentData._id;
-    await this.setState({ doctorId: doctorId, appointmentId: appointmentId, userId: userId, data: appointmentData })
-    this.getDoctorDetails(doctorId);
-    await this.getUserReviews(appointmentId);
-  }
+    await this.setState({ doctorId: doctorId, appointmentId: appointmentId, userId: userId, data: appointmentData, isLoading: true })
+    
+    await new Promise.all([
+      this.getDoctorDetails(doctorId),
+      this.getUserReviews(appointmentId)
+    ])
+    this.setState({ isLoading: false })
+    
+    
+    
+     }
 
   /* Get Doctor Details */
   getDoctorDetails = async (doctorId) => {
     try {
-      this.setState({ isLoading: true });
+      //this.setState({ isLoading: true });
       let fields = 'first_name,last_name,prefix,education,specialist,email,mobile_no,experience,hospital,language,professional_statement';
       let resultDetails = await bindDoctorDetails(doctorId, fields);
       if (resultDetails.success) {
-        await this.setState({ doctorData: resultDetails.data, isLoading: false });
+        await this.setState({ doctorData: resultDetails.data });
         let updatedDate = moment(this.state.doctorData.experience.updated_date);
         let experienceInYear = dateDiff(updatedDate, new Date(), 'year');
         let experienceInMonth = dateDiff(updatedDate, new Date(), 'months');
@@ -70,11 +77,10 @@ class AppointmentDetails extends Component {
 
   /* get User reviews */
   getUserReviews = async (appointmentId) => {
-    this.setState({ isLoading: true });
     let resultReview = await viewUserReviews('appointment', appointmentId);
     debugger
     if (resultReview.success) {
-      this.setState({ reviewData: resultReview.data, isLoading: false });
+      this.setState({ reviewData: resultReview.data });
     }
 
   }
@@ -132,7 +138,7 @@ class AppointmentDetails extends Component {
 
       <Container style={styles.container}>
 
-        {isLoading ? <Loader style={'list'} /> :
+        {isLoading ? <Loader style={'appointment'} /> :
 
           <Content style={styles.bodyContent}>
             <NavigationEvents
