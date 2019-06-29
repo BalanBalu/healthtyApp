@@ -81,23 +81,6 @@ class MedicineCheckout extends Component {
                         </Grid>
 
 
-                        <Text style={styles.boldText}>Prescription</Text>
-                        <Grid >
-
-                            <Col style={{ borderColor: '#D92B4B', borderWidth: 1, padding: 10, alignItems: 'center', borderRadius: 10, margin: 10 }}>
-
-
-                                <Image source={{ uri: 'https://vimecare.com/WelcomeDesign/images/doctor-icon.png' }} style={styles.customImage} />
-                                <Text style={styles.normalText}>once</Text>
-                            </Col>
-
-                            <Col style={{ alignItems: 'center', justifyContent: 'center' }}>
-                                <Item style={{ borderWidth: 0, marginLeft: 'auto', marginRight: 'auto' }}>
-
-                                    <Button style={styles.loginButton}><Text style={{ fontFamily: 'OpenSans', fontSize: 14, color: '#fff' }}>upload</Text></Button>
-                                </Item>
-                            </Col>
-                        </Grid>
 
 
                         <Text style={styles.boldText}>Notes</Text>
@@ -116,7 +99,7 @@ class MedicineCheckout extends Component {
                             </Col>
                         </Grid>
 
-                        <Button block style={styles.loginButton}><Text>Checkout</Text></Button>
+                        <Button onPress={()=> this.props.navigation.navigate('MedicinePaymentPage')} block style={styles.loginButton}><Text>Checkout</Text></Button>
 
                     </Card>
                 </Content>
@@ -143,13 +126,8 @@ class MedicineCheckout extends Component {
 
 }
 
-function homeState(state) {
 
-    return {
-        user: state.user
-    }
-}
-export default connect(homeState)(MedicineCheckout)
+export default MedicineCheckout
 
 
 const styles = StyleSheet.create({
