@@ -11,7 +11,8 @@ import { StyleSheet, AsyncStorage, TouchableOpacity } from 'react-native';
 import Modal from "react-native-modal";
 import { FlatList } from 'react-native-gesture-handler';
 import { NavigationEvents } from 'react-navigation';
-import { Loader } from '../../../components/ContentLoader'
+import { Loader } from '../../../components/ContentLoader';
+import { RenderPatientAddress } from '../../common';
 
 class Profile extends Component {
 
@@ -23,10 +24,10 @@ class Profile extends Component {
            data:{},
            gender: '',
            starCount: 3.5,
-           userId: '',
-            modalVisible: false,
-            isLoading: false,
-           favouriteList: []
+           userId:'',
+           modalVisible:false,
+           favouriteList: [],
+           isLoading: false,
         }; 
       }
     
@@ -57,6 +58,7 @@ class Profile extends Component {
          console.log(this.props.profile.success);      
          if(this.props.profile.success) {
             this.setState({ data: result, gender:result.gender});
+            console.log('data' +JSON.stringify(this.state.data.address.address))
          }   
               
         } 
@@ -186,10 +188,7 @@ class Profile extends Component {
                                 <Col style={{ backgroundColor: 'transparent', borderRightWidth: 0.5, borderRightColor: 'gray', marginLeft: 'auto', marginRight: 'auto', justifyContent: 'center' }}>
                                     <View style={{ flexDirection: 'row' }}>
                                         <Text style={styles.topValue}>Gender </Text>
-                                        <View>
-                                            <Icon name="create" style={{ fontSize: 15, marginLeft: -30 }} onPress={() => this.modalBoxOpen()} />
-
-                                        </View>
+                                       
                                     </View>
                                     <Text note style={styles.bottomValue}>{gender} </Text>
 
@@ -282,14 +281,16 @@ class Profile extends Component {
                                 
                                   <Body>
                                   <Text style={styles.customText}>Address</Text>
-                                  {data.address ? <View>  
-                                    
-                                    <Text note style={styles.customText}>{data.address && data.address.address.no_and_street}</Text>
-                                    <Text note style={styles.customText}>{data.address && data.address.address.address_line_1} </Text>
-                                    <Text note style={styles.customText}>{data.address && data.address.address.address_line_2}</Text>
-                                    <Text note style={styles.customText}>{data.address && data.address.address.city}</Text>
-                                    <Text note style={styles.customText}>{data.address && data.address.address.pin_code}</Text>                                    
-                                    </View> : 
+                                    {data.address ? 
+                                        <View>  
+                                            <Text note style={styles.customText}>{data.address.address.no_and_street + ', ' 
+                                                 + data.address.address.address_line_1 + ', '
+                                                 + data.address.address.address_line_2 + ', '
+                                                 + data.address.address.city + ', '
+                                                 + data.address.address.pin_code
+                                            }
+                                            </Text>
+                                        </View> : 
                                       <Button transparent onPress={() => this.editProfile('UpdateAddress')}>
                                          <Icon name='add' style={{ color: 'gray' }} />
                                          <Text uppercase={false} style={styles.customText}>Add Address</Text>
@@ -302,6 +303,8 @@ class Profile extends Component {
                                     : null }
                                 
                         </ListItem>
+
+                                    
                     
                       <ListItem avatar>
                       
