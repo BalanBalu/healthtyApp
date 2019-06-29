@@ -146,7 +146,7 @@ class UpdateUserDetails extends Component {
                                 onChangeText={lastName => this.setState({ lastName })}
                                 autoCapitalize='none'
                                 blurOnSubmit={false}
-                                onSubmitEditing={() => { this.lastName._root.focus(); }}
+                                onSubmitEditing={() => { this.lastName._root.focus(this.setState({focus:true})); }}
                             />
                         </Item>
 
@@ -154,6 +154,7 @@ class UpdateUserDetails extends Component {
                             <Icon name='calendar' style={{ paddingLeft: 20, color: '#775DA3' }} />
                             <DatePicker style={styles.transparentLabel}
                                 defaultDate={this.state.dob}
+                                
                                 timeZoneOffsetInMinutes={undefined}
                                 returnKeyType={'next'}
                                 modalTransparent={false}
@@ -165,7 +166,7 @@ class UpdateUserDetails extends Component {
                                 placeHolderTextStyle={{ color: "#5A5A5A" }}
                                 onDateChange={dob => { console.log(dob); this.setState({ dob }) }}
 
-                                onSubmitEditing={() => { this.dob._root.focus(); }}
+                                // onSubmitEditing={() => { this.dob._root.focus(); }}
                                 disabled={false}
                             />
 

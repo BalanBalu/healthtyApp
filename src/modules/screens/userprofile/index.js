@@ -275,10 +275,9 @@ class Profile extends Component {
                         <ListItem avatar>
                            
                                 <Left>
-                                    <Icon name="locate" style={{ color: '#7E49C3' }}></Icon>
+                                    <Icon name="locate" style={{ color: '#7E49C3' }}/>
                                 </Left>
-                                {data.address!=undefined ?
-
+                                
                                   <Body>
 
                                     <Text style={styles.customText}>Address</Text>
@@ -287,14 +286,10 @@ class Profile extends Component {
                                     <Text note style={styles.customText}>{data.address && data.address.address.address_line_2}</Text>
                                     <Text note style={styles.customText}>{data.address && data.address.address.city}</Text>
                                     <Text note style={styles.customText}>{data.address && data.address.address.pin_code}</Text>                                    
-                                        
-                                      
-                                            <Right>
-                                                <Icon name="create" onPress={() => this.editProfile('UpdateAddress')} />
-                                            </Right>
-        
-                                        
-                                    </Body> : null}  
+                                    </Body>
+                                    <Right>
+                                        <Icon name="create" onPress={() => this.editProfile('UpdateAddress')} />
+                                    </Right> 
                                 
                         </ListItem>
                     
