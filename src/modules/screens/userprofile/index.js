@@ -7,17 +7,16 @@ import { Col, Row, Grid } from 'react-native-easy-grid';
 import { connect } from 'react-redux';
 import { dateDiff } from '../../../setup/helpers';
 import LinearGradient from 'react-native-linear-gradient';
-import { StyleSheet, AsyncStorage, TouchableOpacity } from 'react-native';
+import { StyleSheet, AsyncStorage, TouchableOpacity, NativeModules } from 'react-native';
 import Modal from "react-native-modal";
 import { FlatList } from 'react-native-gesture-handler';
 import { NavigationEvents } from 'react-navigation';
 import { Loader } from '../../../components/ContentLoader'
 import ImagePicker from 'react-native-image-picker';
+
 import {uploadMultiPart} from '../../../setup/services/httpservices'
-
-
-
-
+//import ImagePicker from 'react-native-image-crop-picker';
+//var ImagePicker = NativeModules.ImageCropPicker;
 class Profile extends Component {
 
     navigation = this.props.navigation;
@@ -26,7 +25,7 @@ class Profile extends Component {
         super(props);
         this.state = {
            data:{},
-           gender:'',
+           gender: '',
            starCount: 3.5,
            userId:'',
            modalVisible:false,
@@ -34,11 +33,12 @@ class Profile extends Component {
            imageSource: null,
            file_name:'',
            buttonVisible:false,
-
+           isLoading: false
         }; 
         
       }
     async componentDidMount() {
+       
         const isLoggedIn = await hasLoggedIn(this.props);
         if (!isLoggedIn) {
             this.props.navigation.navigate('login');
@@ -57,25 +57,25 @@ class Profile extends Component {
     /*Get userProfile*/
       getUserProfile= async () => {
         try { 
-         let fields = "first_name,last_name,gender,dob,mobile_no,secondary_mobiles,email,secondary_emails,insurance,address,is_blood_donor,is_available_blood_donate,blood_group,profile_image"         
-         let userId= await AsyncStorage.getItem('userId');
-         let result = await fetchUserProfile(userId,fields);    
-         console.log(this.props.profile.success);      
-         if(this.props.profile.success) {
-            this.setState({ data: result, gender:result.gender});
-            /*Profile pic*/
-            if(result.profile_image){
-             this.setState({imageSource:result.profile_image.imageURL});
-            }
-         }
-         console.log('dthe state data is    :'+JSON.stringify(this.state.data));
-
-  
+          this.setState({ isLoading: true });
+          let fields = "first_name,last_name,gender,dob,mobile_no,secondary_mobiles,email,secondary_emails,insurance,address,is_blood_donor,is_available_blood_donate,blood_group,profile_image"         
+          let userId = await AsyncStorage.getItem('userId');
+          let result = await fetchUserProfile(userId,fields);    
+          console.log(this.props.profile.success);      
+          if(this.props.profile.success) {
+             this.setState({ data: result, gender:result.gender});
+             if(result.profile_image){
+               this.setState({imageSource:result.profile_image.imageURL});
+             }
+          }
         } 
         catch (e) {
-            console.log(e);
+          console.log(e);
+        }  
+        finally {
+            this.setState({ isLoading: false });
         }
-    }
+      }
 
     getfavouritesList = async () => {
         try {
@@ -105,14 +105,14 @@ class Profile extends Component {
             let response = await userFiledsUpdate(userId, requestData);
             console.log(response);
             if (response.success) {
-                await Toast.show({
+                 Toast.show({
                     text: 'Gender updated successfuly',
                     type: "success",
                     duration: 3000
                 });
             }
             else {
-                await Toast.show({
+                 Toast.show({
                     text: response.message,
                     type: "danger",
                     duration: 3000
@@ -153,8 +153,18 @@ class Profile extends Component {
             skipBackup: true
           }
         };
-    
-        ImagePicker.showImagePicker(options, (response) => {
+        // ImagePicker.openPicker({
+        //     width: 300,
+        //     height: 300,
+        //     mime: 'image/jpeg, image/png',
+        //     cropping: true
+        //   }).then(image => {
+        //     console.log(image);
+           
+        //     this.uploadImageToServer(image.path);
+        //   }).catch(e => console.info(e));
+
+       ImagePicker.showImagePicker(options, (response) => {
           console.log('Response = ', response);
           
           if (response.didCancel) {
@@ -174,35 +184,47 @@ class Profile extends Component {
               imageSource: source.uri,
   
             });
-            this.uploadImageToServer();
+            this.uploadImageToServer(response.uri);
 
           }
         });
       }
 
     /*Store image into api folder*/
-    uploadImageToServer=async()=>{
-    try{
+    uploadImageToServer=async(imagePath)=>{
+    try {
         console.log("Image uploading");
         const userId = await AsyncStorage.getItem('userId')
         var formData = new FormData();        
         formData.append('profile', {
-            uri: this.state.imageSource,
+            uri: imagePath,
             type: 'image/jpeg',
             name: 'photo.jpg'
         });        
         debugger
         let endPoint=`user/${userId}/upload/profile` 
-        var response=await uploadMultiPart(endPoint,formData); 
-        return response;    
+        var res = await uploadMultiPart(endPoint,formData); 
+        const response = res.data;
+        if(response.success) {
+            this.setState({ 
+              imageSource: imagePath,
+            });
+        } else {
+            Toast.show({
+                text: 'Problem Uploading Profile Picture',
+                duration: 3000, 
+                type: 'danger'
+            });
+        }
     } catch (e) {
+        Toast.show({
+            text: 'Problem Uploading Profile Picture' + e,
+            duration: 3000, 
+            type: 'danger'
+        });
         console.log(e);
     }
 }
-    
-
-    
-
     render() {
         const { profile : { isLoading } } = this.props;
         const {data, gender,imageSource } = this.state;
@@ -215,7 +237,7 @@ class Profile extends Component {
                 />
 
 
-                {isLoading ?
+                {this.state.isLoading ? 
                     <Loader style={'profile'} /> :
                 
                   <Content style={styles.bodyContent}>
@@ -262,10 +284,7 @@ class Profile extends Component {
                                 <Col style={{ backgroundColor: 'transparent', borderRightWidth: 0.5, borderRightColor: 'gray', marginLeft: 'auto', marginRight: 'auto', justifyContent: 'center' }}>
                                     <View style={{ flexDirection: 'row' }}>
                                         <Text style={styles.topValue}>Gender </Text>
-                                        <View>
-                                            <Icon name="create" style={{ fontSize: 15, marginLeft: -30 }} onPress={() => this.modalBoxOpen()} />
-
-                                        </View>
+                                       
                                     </View>
                                     <Text note style={styles.bottomValue}>{gender} </Text>
 
@@ -353,28 +372,42 @@ class Profile extends Component {
                             <ListItem avatar>
 
                                 <Left>
-                                    <Icon name="locate" style={{ color: '#7E49C3' }}></Icon>
+                                    <Icon name="locate" style={{ color: '#7E49C3' }}/>
                                 </Left>
-                                {data.address != undefined ?
+                                
+                                  <Body>
+                                  <Text style={styles.customText}>Address</Text>
+                                    {data.address ? 
+                                        <View>  
+                                            <Text note style={styles.customText}>{data.address.address.no_and_street + ', ' 
+                                                 + data.address.address.address_line_1 + ', '
+                                                 + data.address.address.address_line_2 + ', '
+                                                 + data.address.address.city + ', '
+                                                 + data.address.address.pin_code
+                                            }
+                                            </Text>
+                                        </View> : 
+                                      <Button transparent onPress={() => this.editProfile('UpdateAddress')}>
+                                         <Icon name='add' style={{ color: 'gray' }} />
+                                         <Text uppercase={false} style={styles.customText}>Add Address</Text>
+                                      </Button> }
+                                 </Body>
+                                    {data.address ?  
+                                      <Right>
+                                        <Icon name="create" onPress={() => this.editProfile('UpdateAddress')} />
+                                      </Right> 
+                                    : null }
+                                
+                        </ListItem>
 
-                                    <Body>
-
-                                        <Text style={styles.customText}>Address</Text>
-                                        <Text note style={styles.customText}>{data.address && data.address.address.no_and_street}</Text>
-                                        <Text note style={styles.customText}>{data.address && data.address.address.address_line_1} </Text>
-                                        <Text note style={styles.customText}>{data.address && data.address.address.address_line_2}</Text>
-                                        <Text note style={styles.customText}>{data.address && data.address.address.city}</Text>
-                                        <Text note style={styles.customText}>{data.address && data.address.address.pin_code}</Text>
-                                    </Body> : null}
-
-                            </ListItem>
-
-                            <ListItem avatar>
-
-                                <Left>
-                                    <Icon name="call" style={{ color: '#7E49C3' }}></Icon>
-                                </Left>
-
+                                    
+                    
+                      <ListItem avatar>
+                      
+                            <Left>
+                                <Icon name="call" style={{ color: '#7E49C3' }}></Icon>
+                            </Left>
+                            
                                 <Body>
                                     <Text style={styles.customText}>Contact</Text>
                                     <Text note style={styles.customText}>{data.mobile_no}</Text>

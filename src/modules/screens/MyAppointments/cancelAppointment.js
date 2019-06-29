@@ -135,17 +135,15 @@ class CancelAppointment extends Component {
                     </ListItem>
 
                     {this.state.radioStatus[4] === true ?
-                      <Row>
-                        <Col>
-                          <Text style={{ fontSize: 16, marginTop: 10 }}> Write your reason </Text>
-                          <TextInput style={{ height: 100, borderWidth: 1, marginTop: 20, width: 'auto' }}
-                            placeholder="Write your reason here"
-                            onChangeText={statusUpdateReason => this.setState({ statusUpdateReason })}
-                            testID='addToEditReason'
-
-                          />
-                        </Col>
-                      </Row>
+                      <Col>
+                        <Text style={{ fontSize: 16, marginTop: 20 }}> Write your reason </Text>
+                        <TextInput style={{ height: 100, borderWidth: 1, marginTop: 20, width: 300 }}
+                          placeholder="Write your reason here"
+                          multiline = {true}
+                          textAlignVertical={'top'}
+                          onChangeText={statusUpdateReason => this.setState({ statusUpdateReason })}
+                          testID='addToEditReason' />
+                      </Col>
                       : null}
 
                     <Row style={{ marginTop: 10 }}>
