@@ -1,9 +1,10 @@
 import { StyleSheet } from 'react-native'
 
 export default StyleSheet.create({
-
+   
     container:
     {
+        marginTop: 10,
         backgroundColor: '#ffffff',
     },
     bodyContent: {
@@ -130,7 +131,6 @@ export default StyleSheet.create({
         backgroundColor: '#775DA3',
         borderRadius: 5,
         fontFamily: 'OpenSans',
-
     },
     button1: {
         backgroundColor: "#c9cdcf",
@@ -142,7 +142,6 @@ export default StyleSheet.create({
         marginLeft: 5
 
     },
-
     button2: {
 
         borderRadius: 10,

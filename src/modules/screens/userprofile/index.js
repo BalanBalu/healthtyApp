@@ -20,16 +20,18 @@ class Profile extends Component {
 
         super(props);
         this.state = {
-            data: {},
-            gender: '',
-            starCount: 3.5,
-            userId: '',
+           data:{},
+           gender: '',
+           starCount: 3.5,
+           userId: '',
             modalVisible: false,
-            favouriteList: []
-        };
-
-    }
+            isLoading: false,
+           favouriteList: []
+        }; 
+      }
+    
     async componentDidMount() {
+       
         const isLoggedIn = await hasLoggedIn(this.props);
         if (!isLoggedIn) {
             this.props.navigation.navigate('login');
@@ -46,20 +48,25 @@ class Profile extends Component {
     }
 
     /*Get userProfile*/
-    getUserProfile = async () => {
-        try {
-            let fields = "first_name,last_name,gender,dob,mobile_no,secondary_mobiles,email,secondary_emails,insurance,address,is_blood_donor,is_available_blood_donate,blood_group,profile_image"
-            let userId = await AsyncStorage.getItem('userId');
-            let result = await fetchUserProfile(userId, fields);
-            console.log(this.props.profile.success);
-            if (this.props.profile.success) {
-                this.setState({ data: result, gender: result.gender });
-            }
-        }
+      getUserProfile= async () => {
+          try { 
+              this.setState({ isLoading: true });
+         let fields = "first_name,last_name,gender,dob,mobile_no,secondary_mobiles,email,secondary_emails,insurance,address,is_blood_donor,is_available_blood_donate,blood_group,profile_image"         
+         let userId = await AsyncStorage.getItem('userId');
+         let result = await fetchUserProfile(userId,fields);    
+         console.log(this.props.profile.success);      
+         if(this.props.profile.success) {
+            this.setState({ data: result, gender:result.gender});
+         }   
+              
+        } 
         catch (e) {
-            console.log(e);
-        }
-    }
+          console.log(e);
+        }  
+          finally {
+              this.setState({ isLoading: false });
+          }
+      }
 
     getfavouritesList = async () => {
         try {
@@ -137,7 +144,7 @@ class Profile extends Component {
                 />
 
 
-                {isLoading ?
+                {this.state.isLoading ? 
                     <Loader style={'profile'} /> :
 
                     <Content style={styles.bodyContent}>
@@ -270,28 +277,38 @@ class Profile extends Component {
                             <ListItem avatar>
 
                                 <Left>
-                                    <Icon name="locate" style={{ color: '#7E49C3' }}></Icon>
+                                    <Icon name="locate" style={{ color: '#7E49C3' }}/>
                                 </Left>
-                                {data.address != undefined ?
-
-                                    <Body>
-
-                                        <Text style={styles.customText}>Address</Text>
-                                        <Text note style={styles.customText}>{data.address && data.address.address.no_and_street}</Text>
-                                        <Text note style={styles.customText}>{data.address && data.address.address.address_line_1} </Text>
-                                        <Text note style={styles.customText}>{data.address && data.address.address.address_line_2}</Text>
-                                        <Text note style={styles.customText}>{data.address && data.address.address.city}</Text>
-                                        <Text note style={styles.customText}>{data.address && data.address.address.pin_code}</Text>
-                                    </Body> : null}
-
-                            </ListItem>
-
-                            <ListItem avatar>
-
-                                <Left>
-                                    <Icon name="call" style={{ color: '#7E49C3' }}></Icon>
-                                </Left>
-
+                                
+                                  <Body>
+                                  <Text style={styles.customText}>Address</Text>
+                                  {data.address ? <View>  
+                                    
+                                    <Text note style={styles.customText}>{data.address && data.address.address.no_and_street}</Text>
+                                    <Text note style={styles.customText}>{data.address && data.address.address.address_line_1} </Text>
+                                    <Text note style={styles.customText}>{data.address && data.address.address.address_line_2}</Text>
+                                    <Text note style={styles.customText}>{data.address && data.address.address.city}</Text>
+                                    <Text note style={styles.customText}>{data.address && data.address.address.pin_code}</Text>                                    
+                                    </View> : 
+                                      <Button transparent onPress={() => this.editProfile('UpdateAddress')}>
+                                         <Icon name='add' style={{ color: 'gray' }} />
+                                         <Text uppercase={false} style={styles.customText}>Add Address</Text>
+                                      </Button> }
+                                 </Body>
+                                    {data.address ?  
+                                      <Right>
+                                        <Icon name="create" onPress={() => this.editProfile('UpdateAddress')} />
+                                      </Right> 
+                                    : null }
+                                
+                        </ListItem>
+                    
+                      <ListItem avatar>
+                      
+                            <Left>
+                                <Icon name="call" style={{ color: '#7E49C3' }}></Icon>
+                            </Left>
+                            
                                 <Body>
                                     <Text style={styles.customText}>Contact</Text>
                                     <Text note style={styles.customText}>{data.mobile_no}</Text>
