@@ -1,9 +1,10 @@
 import { StyleSheet } from 'react-native'
 
 export default StyleSheet.create({
-
+   
     container:
     {
+        marginTop: 10,
         backgroundColor: '#ffffff',
     },
     bodyContent: {
@@ -86,7 +87,7 @@ export default StyleSheet.create({
         fontFamily: 'OpenSans',
     },
     customText: {
-        marginLeft: 10,
+        marginLeft: 25,
         fontFamily: 'OpenSans',
     },
     customNote: {
@@ -130,6 +131,25 @@ export default StyleSheet.create({
         backgroundColor: '#775DA3',
         borderRadius: 5,
         fontFamily: 'OpenSans',
-       
     },
+    button1: {
+        backgroundColor: "#c9cdcf",
+        borderRadius: 10,
+        justifyContent: 'center',
+        padding: 1,
+        marginTop: 15,
+        width: '30%',
+        marginLeft: 5
+
+    },
+    button2: {
+
+        borderRadius: 10,
+
+        justifyContent: 'center',
+        padding: 20,
+        marginTop: 15,
+        width: '50%',
+
+    }
 });

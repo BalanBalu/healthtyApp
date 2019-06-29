@@ -22,34 +22,34 @@ class UserDetails extends Component {
 
         }
     }
-    componentDidMount() {
-        BackHandler.addEventListener('hardwareBackPress', this.handleBackButton);
-        this.bindValues();
+    // componentDidMount() {
+    //     BackHandler.addEventListener('hardwareBackPress', this.handleBackButton);
+    //     this.bindValues();
 
-    }
+    // }
 
-    async bindValues() {
-        const { navigation } = this.props;
-        const userData = navigation.getParam('updatedata');
-        console.log('userData'+JSON.stringify(userData));
-         const fromProfile = navigation.getParam('fromProfile') || false
-        if (fromProfile) {
-          if(userData.dob) {
-            await this.setState({dob : new Date(userData.dob),
-                firstName: userData.first_name,
-                lastName: userData.last_name
-            }) 
-             console.log(this.state.dob+'dob');
-          }           
+    // async bindValues() {
+    //     const { navigation } = this.props;
+    //     const userData = navigation.getParam('updatedata');
+    //     console.log('userData'+JSON.stringify(userData));
+    //      const fromProfile = navigation.getParam('fromProfile') || false
+    //     if (fromProfile) {
+    //       if(userData.dob) {
+    //         await this.setState({dob : new Date(userData.dob),
+    //             firstName: userData.first_name,
+    //             lastName: userData.last_name
+    //         }) 
+    //          console.log(this.state.dob+'dob');
+    //       }           
         
-          }
-        }
+    //       }
+    //     }
           
      
     
-    componentWillUnmount() {
-        BackHandler.removeEventListener('hardwareBackPress', this.handleBackButton);
-    }
+    // componentWillUnmount() {
+    //     BackHandler.removeEventListener('hardwareBackPress', this.handleBackButton);
+    // }
 
     handleBackButton() {
         Toast.show({

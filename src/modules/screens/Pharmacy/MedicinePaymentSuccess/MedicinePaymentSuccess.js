@@ -97,13 +97,7 @@ class MedicinePaymentSuccess extends Component {
 
 }
 
-function homeState(state) {
-
-    return {
-        user: state.user
-    }
-}
-export default connect(homeState)(MedicinePaymentSuccess)
+export default MedicinePaymentSuccess
 
 
 const styles = StyleSheet.create({
