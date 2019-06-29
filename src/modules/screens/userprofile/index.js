@@ -7,13 +7,16 @@ import { Col, Row, Grid } from 'react-native-easy-grid';
 import { connect } from 'react-redux';
 import { dateDiff } from '../../../setup/helpers';
 import LinearGradient from 'react-native-linear-gradient';
-import { StyleSheet, AsyncStorage, TouchableOpacity } from 'react-native';
+import { StyleSheet, AsyncStorage, TouchableOpacity, NativeModules } from 'react-native';
 import Modal from "react-native-modal";
 import { FlatList } from 'react-native-gesture-handler';
 import { NavigationEvents } from 'react-navigation';
-import { Loader } from '../../../components/ContentLoader';
-import { RenderPatientAddress } from '../../common';
+import { Loader } from '../../../components/ContentLoader'
+import ImagePicker from 'react-native-image-picker';
 
+import {uploadMultiPart} from '../../../setup/services/httpservices'
+//import ImagePicker from 'react-native-image-crop-picker';
+//var ImagePicker = NativeModules.ImageCropPicker;
 class Profile extends Component {
 
     navigation = this.props.navigation;
@@ -27,10 +30,13 @@ class Profile extends Component {
            userId:'',
            modalVisible:false,
            favouriteList: [],
-           isLoading: false,
+           imageSource: null,
+           file_name:'',
+           buttonVisible:false,
+           isLoading: false
         }; 
+        
       }
-    
     async componentDidMount() {
        
         const isLoggedIn = await hasLoggedIn(this.props);
@@ -38,8 +44,8 @@ class Profile extends Component {
             this.props.navigation.navigate('login');
             return
         }
-        this.getUserProfile();
-        this.getfavouritesList()
+        this.getUserProfile(); 
+        this.getfavouritesList(); 
 
     }
     onStarRatingPress(rating) {
@@ -50,24 +56,25 @@ class Profile extends Component {
 
     /*Get userProfile*/
       getUserProfile= async () => {
-          try { 
-              this.setState({ isLoading: true });
-         let fields = "first_name,last_name,gender,dob,mobile_no,secondary_mobiles,email,secondary_emails,insurance,address,is_blood_donor,is_available_blood_donate,blood_group,profile_image"         
-         let userId = await AsyncStorage.getItem('userId');
-         let result = await fetchUserProfile(userId,fields);    
-         console.log(this.props.profile.success);      
-         if(this.props.profile.success) {
-            this.setState({ data: result, gender:result.gender});
-            console.log('data' +JSON.stringify(this.state.data.address.address))
-         }   
-              
+        try { 
+          this.setState({ isLoading: true });
+          let fields = "first_name,last_name,gender,dob,mobile_no,secondary_mobiles,email,secondary_emails,insurance,address,is_blood_donor,is_available_blood_donate,blood_group,profile_image"         
+          let userId = await AsyncStorage.getItem('userId');
+          let result = await fetchUserProfile(userId,fields);    
+          console.log(this.props.profile.success);      
+          if(this.props.profile.success) {
+             this.setState({ data: result, gender:result.gender});
+             if(result.profile_image){
+               this.setState({imageSource:result.profile_image.imageURL});
+             }
+          }
         } 
         catch (e) {
           console.log(e);
         }  
-          finally {
-              this.setState({ isLoading: false });
-          }
+        finally {
+            this.setState({ isLoading: false });
+        }
       }
 
     getfavouritesList = async () => {
@@ -98,14 +105,14 @@ class Profile extends Component {
             let response = await userFiledsUpdate(userId, requestData);
             console.log(response);
             if (response.success) {
-                await Toast.show({
+                 Toast.show({
                     text: 'Gender updated successfuly',
                     type: "success",
                     duration: 3000
                 });
             }
             else {
-                await Toast.show({
+                 Toast.show({
                     text: response.message,
                     type: "danger",
                     duration: 3000
@@ -134,9 +141,93 @@ class Profile extends Component {
         this.props.navigation.navigate(screen, { screen: screen, fromProfile: true, updatedata: this.state.data || '' })
     }
 
+    /*Upload profile pic*/
+    selectPhotoTapped() {
+
+        this.setState({buttonVisible:true});
+        const options = {
+          quality: 1.0,
+          maxWidth: 500,
+          maxHeight: 500,
+          storageOptions: {
+            skipBackup: true
+          }
+        };
+        // ImagePicker.openPicker({
+        //     width: 300,
+        //     height: 300,
+        //     mime: 'image/jpeg, image/png',
+        //     cropping: true
+        //   }).then(image => {
+        //     console.log(image);
+           
+        //     this.uploadImageToServer(image.path);
+        //   }).catch(e => console.info(e));
+
+       ImagePicker.showImagePicker(options, (response) => {
+          console.log('Response = ', response);
+          
+          if (response.didCancel) {
+            console.log('User cancelled photo picker');
+          }
+          else if (response.error) {
+            console.log('ImagePicker Error: ', response.error);
+          }
+          else if (response.customButton) {
+            console.log('User tapped custom button: ', response.customButton);
+          }
+          else {
+              console.log("response is running")
+            let source = { uri: response.uri };       
+      
+            this.setState({ 
+              imageSource: source.uri,
+  
+            });
+            this.uploadImageToServer(response.uri);
+
+          }
+        });
+      }
+
+    /*Store image into api folder*/
+    uploadImageToServer=async(imagePath)=>{
+    try {
+        console.log("Image uploading");
+        const userId = await AsyncStorage.getItem('userId')
+        var formData = new FormData();        
+        formData.append('profile', {
+            uri: imagePath,
+            type: 'image/jpeg',
+            name: 'photo.jpg'
+        });        
+        debugger
+        let endPoint=`user/${userId}/upload/profile` 
+        var res = await uploadMultiPart(endPoint,formData); 
+        const response = res.data;
+        if(response.success) {
+            this.setState({ 
+              imageSource: imagePath,
+            });
+        } else {
+            Toast.show({
+                text: 'Problem Uploading Profile Picture',
+                duration: 3000, 
+                type: 'danger'
+            });
+        }
+    } catch (e) {
+        Toast.show({
+            text: 'Problem Uploading Profile Picture' + e,
+            duration: 3000, 
+            type: 'danger'
+        });
+        console.log(e);
+    }
+}
     render() {
-        const { profile: { isLoading } } = this.props;
-        const { data, gender } = this.state;
+        const { profile : { isLoading } } = this.props;
+        const {data, gender,imageSource } = this.state;
         return (
 
             <Container style={styles.container}>
@@ -148,25 +239,30 @@ class Profile extends Component {
 
                 {this.state.isLoading ? 
                     <Loader style={'profile'} /> :
+                
+                  <Content style={styles.bodyContent}>
 
-                    <Content style={styles.bodyContent}>
-
-                        <LinearGradient colors={['#7E49C3', '#C86DD7']} style={{ height: 180 }}>
-                            <Grid>
-                                <Row>
-                                    <Col style={{ width: '10%' }}>
-                                    </Col>
-                                    <Col style={styles.customCol}>
-                                        <Icon name="heart" style={styles.profileIcon}></Icon>
-                                    </Col>
-                                    <Col style={{ width: '40%' }} >
-                                        {data.profile_image != undefined ?
-                                            <Thumbnail style={styles.profileImage} source={data.profile_image.imageURL} style={{ height: 86, width: 86 }} /> :
-                                            <Thumbnail style={styles.profileImage} source={{ uri: 'https://res.cloudinary.com/demo/image/upload/w_200,h_200,c_thumb,g_face,r_max/face_left.png' }} />}
-                                        <View style={{ flexDirection: 'row' }}>
-                                            <Text style={{ marginLeft: 'auto', marginRight: 'auto', padding: 5, fontFamily: 'OpenSans', backgroundColor: '#fff', borderRadius: 10, marginTop: 5 }}>{data.first_name + " " + data.last_name}
-                                            </Text>
-                                            <Icon name="create" style={{ fontSize: 17, marginTop: 10 }} onPress={() => this.editProfile('UpdateUserDetails')} />
+                    <LinearGradient colors={['#7E49C3', '#C86DD7']} style={{ height: 180 }}>
+                        <Grid>
+                            <Row>
+                             <Col style={{ width: '10%' }}>
+                              </Col>
+                                <Col style={styles.customCol}>
+                                <Icon name="heart" style={styles.profileIcon}></Icon>
+                                </Col>
+                                <Col style={{ width: '40%' }} >
+                                {imageSource != undefined ?
+                                    <Thumbnail style={styles.profileImage} source={{ uri:imageSource}} />:
+                                    <Thumbnail style={styles.profileImage} source={{ uri:'https://res.cloudinary.com/demo/image/upload/w_200,h_200,c_thumb,g_face,r_max/face_left.png' }} />}
+                                   
+                                    <View style={{marginLeft:80,marginTop:-20,justifyContent:'center'}}>
+                                    <Icon name="camera" style={{fontSize:20}} onPress={() => this.selectPhotoTapped()} />
+                                    </View>
+                                    
+                                        <View style={{flexDirection:'row',marginTop:25}}>
+                                         <Text style={{ marginLeft: 'auto', marginRight: 'auto',padding:5, fontFamily: 'OpenSans', backgroundColor: '#fff', borderRadius: 10, marginTop: 5 }}>{data.first_name +" "+ data.last_name}
+                                         </Text>
+                                        <Icon name="create" style={{fontSize:17,marginTop:10}} onPress={() => this.editProfile('UpdateUserDetails')} />
                                         </View>
                                     </Col>
                                     <Col style={styles.customCol}>
@@ -546,7 +642,18 @@ const styles = StyleSheet.create({
         marginRight: 'auto',
         marginTop: 'auto',
         marginBottom: 'auto'
-    }
+    },
+    ImageContainer: {
+        borderRadius: 10,
+        width: 250,
+        height: 250,
+        borderColor: '#9B9B9B',
+        justifyContent: 'center',
+        alignItems: 'center',
+        backgroundColor: '#CDDC39',
+        
+      },
+
 
 
 });
