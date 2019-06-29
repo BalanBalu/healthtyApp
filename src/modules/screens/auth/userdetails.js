@@ -17,7 +17,6 @@ class UserDetails extends Component {
             lastName: '',
             dob: '',
             ErrorMsg: '',
-            fromProfile:false,
             isLoading:false
 
         }
@@ -71,11 +70,11 @@ class UserDetails extends Component {
            let response= await userFiledsUpdate(userId,requestData);
             if (response.success) {
                 Toast.show({
-                    text: 'Your Profile has been completed',
+                    text: 'Your Profile has been completed, Please Login to Continue',
                     type: "success",
                     duration: 3000
                 });
-                this.props.navigation.navigate('Profile');
+                this.props.navigation.navigate('login');
             }
             else {
                 Toast.show({
@@ -93,16 +92,14 @@ class UserDetails extends Component {
         }
     }
 
-
     render() {
-        const { navigation,user: { isLoading } } = this.props;
-        const fromProfile = navigation.getParam('fromProfile') || false
-
+        const { navigation, user: { isLoading } } = this.props;
+       
         return (
 
             <Container style={styles.container}>
                     <Content style={styles.bodyContent}>                   
-                    <H3 style={styles.welcome}>{fromProfile===true?'Update User Details':'User Details'}</H3>
+                    <H3 style={styles.welcome}>User Details</H3>
                     <Image source={{ uri: 'https://static1.squarespace.com/static/582bbfef9de4bb07fe62ab18/t/5877b9ccebbd1a124af66dfe/1484241404624/Headshot+-+Circular.png?format=300w' }} style={styles.logo} />
                     <Form>
                         {/* <View style={styles.errorMsg}>
