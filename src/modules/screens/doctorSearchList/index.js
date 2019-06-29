@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { Container, Content, Text, Title, Header, H3, Button, Card, Item, CardItem, List, ListItem, Left, Right, Thumbnail, Body, Icon, locations, ProgressBar, DatePicker } from 'native-base';
+import { Container, Content, Text, Title,Toast, Header, H3, Button, Card, Item, CardItem, List, ListItem, Left, Right, Thumbnail, Body, Icon, locations, ProgressBar, DatePicker } from 'native-base';
 import { login } from '../../providers/auth/auth.actions';
 import { messageShow, messageHide } from '../../providers/common/common.action';
 import { Col, Row, Grid } from 'react-native-easy-grid';
@@ -8,9 +8,10 @@ import { StyleSheet, Image, TouchableOpacity, View, FlatList, AsyncStorage, Touc
 import StarRating from 'react-native-star-rating';
 import { ScrollView, TouchableHighlight } from 'react-native-gesture-handler';
 import Modal from "react-native-modal";
-import { searchDoctorList, viewdoctorProfile, getMultipleDoctorDetails, viewUserReviews,viewUserReviewCount } from '../../providers/bookappointment/bookappointment.action';
+import { insertDoctorsWishList, searchDoctorList, viewdoctorProfile, getMultipleDoctorDetails, getDoctorsReviewsCount, viewUserReviews,viewUserReviewCount } from '../../providers/bookappointment/bookappointment.action';
 import { formatDate, getFirstDay, getLastDay, findArrayObj } from '../../../setup/helpers';
 import { Loader } from '../../../components/ContentLoader';
+import { RenderHospitalAddress } from '../../common';
 
 class doctorSearchList extends Component {
     constructor(props) {
@@ -33,11 +34,11 @@ class doctorSearchList extends Component {
             doctorData: [],
             searchedResultData: [],
             reviewData: null,
-            resultReviewCount:[],
             confirm_button: true,
             getSearchedDoctorIds: null,
             nextAvailableSlotDate:'',
             isLoading: false,
+            wishListColor:false,
         }
     }
 
@@ -51,6 +52,32 @@ class doctorSearchList extends Component {
     componentDidMount() {
         this.getPatientSearchData();
     }
+  
+
+    /* Insert Doctors Favourite Lists  */
+    addToWishList = async (doctorId,index) => {
+        try {
+          let requestData = {
+          active:true
+          };
+          let userId = await AsyncStorage.getItem('userId');
+          let result = await insertDoctorsWishList(userId, doctorId, requestData);
+        //   console.log('result'+JSON.stringify(result));
+    
+          if (result.success) {
+            Toast.show({
+                text: result.message,
+                type: "success",
+                duration: 3000,
+            })
+             this.setState({ wishListColor: true });    
+          }
+        }
+        catch (e) {
+          console.log(e);
+        }
+      }
+     
 
 
     /* get the Doctor Id's list from Search Module  */
@@ -65,7 +92,7 @@ class doctorSearchList extends Component {
         const userId = await AsyncStorage.getItem('userId');
         let resultData = await searchDoctorList(userId, searchedInputValues);
         await this.setState({ searchedResultData: resultData.data });
-        this.setState({ isLoading: false });
+      
         if (resultData.success) {
             let doctorIds = resultData.data.map((element) => {
                 return element.doctor_id
@@ -80,8 +107,8 @@ class doctorSearchList extends Component {
         await new Promise.all([
             this.getDoctorDetails(DoctorIds),
             this.getPatientReviews(DoctorIds),
-            this.getPatientReviewsCount(DoctorIds),
         ])
+        this.setState({ isLoading: false });
       }
 
     /* get the  Doctors Availability Slots */
@@ -96,6 +123,7 @@ class doctorSearchList extends Component {
             this.setState({ isLoading: false });
             if (resultData.success) {
                 this.setState({ doctorDetails: resultData.data });
+                console.log(resultData.data);
             }
         } catch (e) {
             console.log(e);
@@ -161,42 +189,45 @@ class doctorSearchList extends Component {
     }
 
     /* Get Patients Reviews*/
+    reviewMap = new Map();
     getPatientReviews = async (doctorIds) => {
-        let resultReview = await viewUserReviews('doctor', doctorIds);
+        let resultReview = await getDoctorsReviewsCount(doctorIds);
+        // console.log('resultReview'+JSON.stringify(resultReview));
+        debugger
         if (resultReview.success) {
+        
             this.setState({ reviewData: resultReview.data });
 
-            for (i = 0; i <= this.state.reviewData.length; i++) {
-                this.state.doctorDetails[i].overall_rating = this.state.reviewData[i].overall_rating;  //for Bind the "Stars Reviews" for multiple Doctors
+            for (i = 0; i < resultReview.data.length; i++) {
+                this.reviewMap.set(resultReview.data[i]._id, resultReview.data[i]) // total_rating
+                //this.state.doctorDetails[i].overall_rating = this.state.reviewData[i].overall_rating;  //for Bind the "Stars Reviews" for multiple Doctors
             }
-        }
-    }
-
-    
-    /* Get multiple Patient's Reviews count*/
-    getPatientReviewsCount = async (doctorIds) => {
-        let resultReviewCount = await viewUserReviewCount(doctorIds);
-        if (resultReviewCount.success) {
-            this.setState({ resultReviewCount: resultReviewCount.data });
-
-            for (i = 0; i <= this.state.resultReviewCount.length; i++) {
-                this.state.doctorDetails[i].average_rating = this.state.resultReviewCount[i].average_rating; //for Bind the "Reviews count" for multiple Doctors.   
-            }
+            console.log(this.reviewMap);
         }
     }
 
     /*Get doctor specialist and Degree details*/
+    doctorSpecialitesMap = new Map();
     getDoctorDetails = async (doctorIds) => {
         let fields = "specialist,education,language,gender_preference,experience";
         let resultDoctorDetails = await getMultipleDoctorDetails(doctorIds, fields);
-        // console.log('resultDoctorDetails'+JSON.stringify(resultDoctorDetails))
         if (resultDoctorDetails.success) {
             this.setState({ doctorData: resultDoctorDetails.data });
-            
-            for (i = 0; i <= this.state.doctorData.length; i++) {
-                this.state.doctorDetails[i].category = this.state.doctorData[i].specialist[i].category;  //for Bind the "Category Name" for multiple Doctors.
+            console.log(resultDoctorDetails.data);
+            for (i = 0; i < resultDoctorDetails.data.length; i++) {
+                this.doctorSpecialitesMap.set(resultDoctorDetails.data[i].doctor_id, resultDoctorDetails.data[i]) // total_rating
+                //this.state.doctorDetails[i].category = this.state.doctorData[i].specialist[i].category;  //for Bind the "Category Name" for multiple Doctors.
             }
         }
+    }
+    getDoctorSpecialist(doctorId) {
+        if(this.doctorSpecialitesMap.has(doctorId)) {
+           if(this.doctorSpecialitesMap.get(doctorId).specialist) {
+              return this.doctorSpecialitesMap.get(doctorId).specialist[0] ? this.doctorSpecialitesMap.get(doctorId).specialist[0].category : ''
+           }
+           return '';
+        }  
+        return '';
     }
 
     /* Click the Slots and Book Appointment on Popup page */
@@ -209,19 +240,28 @@ class doctorSearchList extends Component {
     }
 
     navigateToBookAppointmentPage(doctorAvailabilityData) {
+       console.log('comsdasdas');
         const doctorDetails = doctorAvailabilityData;
         const slotData = doctorAvailabilityData.slotData[this.state.selectedDate]
         this.props.navigation.navigate('Book Appointment', { doctorDetails: doctorDetails, slotList: slotData })
     }
 
+
+
     noAvailableSlots(slotData) {
+        let nextAvailableDate;
         for (let nextAvailableSlotDate of Object.keys(slotData)) {
-this.state.nextAvailableSlotDate=nextAvailableSlotDate;
-          }
+            if(this.state.selectedDate < nextAvailableSlotDate) {
+                nextAvailableDate = nextAvailableSlotDate;
+                break;
+            }
+        }
         return (
-            <Button style={{ borderColor: 'blue', borderRadius: 20, margin: 'auto', backgroundColor: 'gray' }}>
-                <Text>Next Available Date : {this.state.nextAvailableSlotDate}</Text>
+            <Col style={{ alignSelf: 'center' }}>
+            <Button style={{ borderColor: 'blue', borderRadius: 20, backgroundColor: 'gray' }}>
+                {nextAvailableDate ? <Text>Next Available Date : {nextAvailableDate}</Text> : 'No Availablity for Next 7 Days'} 
             </Button>
+            </Col>
         )
     }
     noDoctorsAvailable() {
@@ -349,59 +389,46 @@ this.state.nextAvailableSlotDate=nextAvailableSlotDate;
                                                 <Text style={{ fontFamily: 'OpenSans' }}>{item.doctorName}</Text>
                                                 {item.slotData[this.state.selectedDate] ?
                                                     <View>
+                                                         <Grid style={{ marginTop: 5 }}>
+                                                        <Col> 
+                                                             <Text style={{ fontFamily: 'OpenSans-SemiBold', color: '#282727', fontSize: 12 }}>{this.getDoctorSpecialist(item.doctorId)}  - Fee: ₹{item.slotData[this.state.selectedDate][0].fee}</Text>  
+                                                        </Col>
+                                                        </Grid>
                                                         {item.slotData[this.state.selectedDate][0].location ?
-                                                            <Grid style={{ marginTop: 5 }}>
-                                                                <Col style={{ width: '8%' }}>
-                                                                    <Icon name='pin' style={{ fontSize: 20, fontFamily: 'OpenSans', color: 'gray' }}></Icon>
-                                                                </Col>
-                                                                <Col style={{ width: '40%' }}>
-                                                                    {/* <Text note style={{ fontFamily: 'OpenSans', }}>{item.slotData[this.state.selectedDate][0].location.location.address.no_and_street}</Text> */}
-                                                                    <Text note style={{ fontFamily: 'OpenSans' }}>{item.slotData[this.state.selectedDate][0].location.location.address.city}</Text>
-                                                                    {/* <Text note style={{ fontFamily: 'OpenSans' }}>{item.slotData[this.state.selectedDate][0].location.location.address.state}</Text> */}
-                                                                </Col>
-                                                                <Text>.</Text>
-                                                                <Col style={{ width: '52%', marginLeft: '-4%' }}>
-                                                                    <Text note style={{ fontFamily: 'OpenSans' }}>{item.category}</Text>
-                                                                </Col>
-                                                            </Grid>
+                                                            <RenderHospitalAddress 
+                                                                hospitalAddress={item.slotData[this.state.selectedDate][0].location} 
+                                                                hospotalNameTextStyle= {{fontFamily: 'OpenSans-SemiBold'}}
+                                                                textStyle={{ fontFamily: 'OpenSans'}}
+                                                                gridStyle={{ marginTop: 5 }}
+                                                                renderHalfAddress={true}
+                                                            />
                                                             : null}
                                                         <Grid style={{ marginTop: 5 }}>
                                                             <Col style={{ width: '40%', marginBottom: 8, marginTop: 5 }}>
 
-                                                                <StarRating fullStarColor='#FF9500' starSize={13} width={80} containerStyle={{ width: 80 }}
-                                                                    disabled={false}
+                                                                <StarRating fullStarColor='#FF9500' starSize={14} width={85} containerStyle={{ width: 80 }}
+                                                                    disabled={true}
                                                                     maxStars={5}
-                                                                    rating={item.overall_rating}
+                                                                    rating={ this.reviewMap.get(item.doctorId) ? this.reviewMap.get(item.doctorId).average_rating : 0}
                                                                 />
                                                             </Col>
-
-                                                            <Col style={{ width: '20%' }}>
-                                                                <Text>{item.average_rating}</Text>
-                                                            </Col>
-
-                                                            <Col style={{ width: '40%', marginLeft: '-6%' }} >
-                                                                <Text note style={{ fontFamily: 'OpenSans', color: 'gray' }}>₹ {item.slotData[this.state.selectedDate][0].fee}</Text>
+                                                            <Col style={{ width: '60%', marginLeft: 5 }}>
+                                                                <Text style={{fontFamily: 'OpenSans', paddingLeft: 5, color: 'gray', fontSize: 15 }}>{this.reviewMap.get(item.doctorId) ? Number(this.reviewMap.get(item.doctorId).total_rating).toFixed(0): '' } </Text>
                                                             </Col>
                                                         </Grid>
 
                                                     </View>
                                                     : //condition
                                                     <View>
-                                                        <Grid style={{ marginTop: 5 }}>
-                                                            <Col style={{ width: '8%' }}>
-                                                                <Icon name='pin' style={{ fontSize: 20, fontFamily: 'OpenSans', color: 'gray' }}></Icon>
+                                                        <Grid>
+                                                           
+                                                            <Col>
+                                                                <Text note style={{ fontFamily: 'OpenSans' }}>{this.getDoctorSpecialist(item.doctorId)}</Text>
                                                             </Col>
-                                                            <Col style={{ width: '40%' }}>
-                                                            </Col>
-                                                            <Text>.</Text>
-                                                            <Col style={{ width: '52%', marginLeft: '-4%' }}>
-                                                                <Text note style={{ fontFamily: 'OpenSans' }}>{item.category}</Text>
-
-                                                            </Col>
-
                                                         </Grid>
                                                         <Grid style={{ marginTop: 5 }}>
-                                                            <Col style={{ width: '40%', marginBottom: 8, marginTop: 5 }}>
+                                                           <Row>
+                                                            <Col style={{ width: '40%'}}>
 
                                                                 <StarRating fullStarColor='#FF9500' starSize={13} width={80} containerStyle={{ width: 80 }}
                                                                     disabled={false}
@@ -410,21 +437,26 @@ this.state.nextAvailableSlotDate=nextAvailableSlotDate;
                                                                 />
                                                             </Col>
 
-                                                            <Col style={{ width: '20%' }}>
+                                                            <Col style={{ width: '60%' }}>
                                                                 <Text>{item.average_rating}</Text>
                                                             </Col>
+                                                        </Row>
 
-                                                            <Col style={{ width: '40%', marginLeft: '-6%' }} >
-                                                            </Col>
+                                                            
                                                         </Grid>
 
                                                     </View>}
 
                                             </Body>
+
                                             <Right>
-                                                <Icon name='heart' style={{ color: 'red', fontSize: 25 }}></Icon>
+                                                
+                                                <Icon name='heart' type='Ionicons'
+                                                style={this.state.wishListColor===true?{color:'red',fontSize: 25}:{color:'gray',fontSize: 25}}
+                                                  onPress={() => this.addToWishList(item.doctorId,index)} ></Icon>
                                             </Right>
-                                        </ListItem>
+
+                                        </ListItem> 
 
                                         <Grid>
                                             <Row>

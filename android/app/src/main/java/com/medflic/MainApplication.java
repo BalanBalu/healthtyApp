@@ -1,10 +1,10 @@
 package com.medflic;
 
 import android.app.Application;
-
-import com.facebook.react.ReactApplication;
-import com.mapbox.rctmgl.RCTMGLPackage;
 import com.horcrux.svg.SvgPackage;
+import com.facebook.react.ReactApplication;
+import com.imagepicker.ImagePickerPackage;
+import com.mapbox.rctmgl.RCTMGLPackage;
 import com.BV.LinearGradient.LinearGradientPackage;
 import com.swmansion.gesturehandler.react.RNGestureHandlerPackage;
 import com.oblador.vectoricons.VectorIconsPackage;
@@ -29,6 +29,7 @@ public class MainApplication extends Application implements ReactApplication {
     protected List<ReactPackage> getPackages() {
       return Arrays.<ReactPackage>asList(
           new MainReactPackage(),
+          new ImagePickerPackage(),
           new SvgPackage(),
 		      new LinearGradientPackage(),
           new RNGestureHandlerPackage(),

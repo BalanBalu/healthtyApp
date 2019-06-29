@@ -7,7 +7,7 @@ export async function bookAppointment(bookSlotDetails, isLoading = true) {
   try {
     let endPoint = 'doctor/appointment';
     let response = await postService(endPoint, bookSlotDetails);
-    // console.log(JSON.stringify(response) + 'bookAppointment API rspnse');
+    
     let respData = response.data;
     return respData;
   } catch (e) {
@@ -23,7 +23,6 @@ export async function searchDoctorList(userId, searchInputvalues, isLoading = tr
   try {
     let endPoint = 'user/' + userId + '/filters/doctors';
     let response = await postService(endPoint, searchInputvalues);
-    console.log(JSON.stringify(response) + 'searchDoctorList API rspnse');
     let respData = response.data;
     return respData;
   } catch (e) {
@@ -38,12 +37,9 @@ export async function searchDoctorList(userId, searchInputvalues, isLoading = tr
 export async function addReview(userId,insertUserReviews, isLoading = true) {
   try {
     let endPoint = '/user/'+ userId + '/review';
-    console.log(endPoint+'endPoint');
-
     let response = await postService(endPoint, insertUserReviews);
     let respData = response.data;
-    console.log(JSON.stringify(respData) + 'respData');
-
+    
     return respData;
   } catch (e) {
     return {
@@ -57,8 +53,7 @@ export async function addReview(userId,insertUserReviews, isLoading = true) {
 export async function viewdoctorProfile(doctorIds, isLoading = true) {
   try {
     let endPoint = 'doctors/' + doctorIds + '/availabilitySlots'
-    let response = await getService(endPoint);
-    //console.log('get Avalblty API Response'+JSON.stringify(response))
+    let response = await getService(endPoint);   
     let respData = response.data;
     return respData;
   } catch (e) {
@@ -75,6 +70,7 @@ export async function viewUserReviews(type,id,isLoading = true) {
   try {
     let endPoint = 'user/reviews/'+ type+ '/'+id
     let response = await getService(endPoint);
+    console.log('response'+response);
     let respData = response.data;
     return respData;
 
@@ -85,11 +81,12 @@ export async function viewUserReviews(type,id,isLoading = true) {
     }
   }
 }
-/* get Patient Reviews count */
-export async function viewUserReviewCount(doctorId, isLoading = true) {
+
+export async function getDoctorsReviewsCount(doctorIds) {
   try {
-    let endPoint = 'user/reviewsCount/' + doctorId
+    let endPoint = 'user/reviewsCount/' + doctorIds;
     let response = await getService(endPoint);
+    console.log('response'+response);
     let respData = response.data;
     return respData;
 
@@ -100,6 +97,7 @@ export async function viewUserReviewCount(doctorId, isLoading = true) {
     }
   }
 }
+
 
 //user appointment status\
 
@@ -108,9 +106,10 @@ export const appointment = async (userId, filters, isLoading = true) => {
     let endPoint = 'doctor/appointment/user' + '/' + userId + '?startDate=' + filters.startDate + '&endDate=' + filters.endDate;
     let response = await getService(endPoint);
     let respData = response.data;
+    
     return respData;
   } catch (e) {
-    console.log(e.message);
+   
     return {
       message: 'exception' + e,
       success: false
@@ -138,9 +137,7 @@ export const getUserAppointments = async (userId, filters) => {
 export const bindDoctorDetails = async (doctorId, fields, isLoading = true) => {
   try {
     let endPoint = 'doctor/' + doctorId + '?fields=' + fields;
-    console.log(endPoint + 'doctor endpoint');
     let response = await getService(endPoint);
-    console.log(JSON.stringify(response) + 'response');
     let respData = response.data;
     return respData;
   } catch (e) {
@@ -157,7 +154,6 @@ export const getMultipleDoctorDetails = async (doctorIds, fields, isLoading = tr
   try {
     let endPoint = 'doctors/' + doctorIds + '?fields=' + fields;
     let response = await getService(endPoint);
-    // console.log(JSON.stringify(response) + 'response');
     let respData = response.data;
     return respData;
   } catch (e) {
@@ -193,7 +189,7 @@ export async function appointmentStatusUpdate(doctorId, appointmentId, requestDa
     let endPoint = 'doctor/' + doctorId + '/appointment/' + appointmentId
     let response = await putService(endPoint, requestData);
     let respData = response.data;
-    console.log('respData'+JSON.stringify(respData))
+   
     return respData;
   } catch (e) {
     return {
@@ -205,10 +201,38 @@ export async function appointmentStatusUpdate(doctorId, appointmentId, requestDa
 
 
 
+/* Insert Doctors  Favourite List */
 
+export async function insertDoctorsWishList(userId, doctorId, requestData) {
+  try {
 
-
-
+    let endPoint = 'user/wishList/' + userId +'/'+ doctorId
+    let response = await putService(endPoint, requestData);
+    let respData = response.data;
+    // console.log('respData'+JSON.stringify(respData))
+    return respData;
+  } catch (e) {
+    return {
+      message: 'exception' + e,
+      success: false
+    }
+  }
+}
+ /* Get Patient Total Favourite Doctors List  */
+export const getPatientWishList = async (userId) => {
+  try {
+    let endPoint ='user/wishList/'+userId;
+    let response = await getService(endPoint);
+   let respData = response.data;
+    return respData;
+  } catch (e) {
+    console.log(e.message);
+    return {
+      message: 'exception' + e,
+      success: false
+    }
+  }
+}
 
 
 

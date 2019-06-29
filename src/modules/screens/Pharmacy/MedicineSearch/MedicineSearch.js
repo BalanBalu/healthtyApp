@@ -1,7 +1,6 @@
 import React, { Component } from 'react';
 import { Container, Content, Text, Title, Header, Button, H3, Item, List, ListItem, Card, Input, Left, Right, Thumbnail, Body, Icon, Footer, FooterTab } from 'native-base';
 import { Col, Row, Grid } from 'react-native-easy-grid';
-import { connect } from 'react-redux'
 import { StyleSheet, Image, } from 'react-native';
 
 class MedicineSearch extends Component {
@@ -15,38 +14,13 @@ class MedicineSearch extends Component {
     }
    
     render() {
-
+        const { navigation } =  this.props
 
         return (
 
             <Container style={styles.container}>
 
-                {/* <Header style={{ backgroundColor: '#745DA6' }}>
-                    <Left  >
-                        <Button Button transparent onPress={() => this.props.navigation.navigate('home')}>
-                            <Icon name="medkit" style={{ color: '#fff', fontSize: 35 }}></Icon>
-
-                        </Button>
-                    </Left>
-                    <Body>
-                        <Item style={{ width: '150%', borderBottomWidth: 0, backgroundColor: '#fff', borderRadius: 10, height: 35 }} >
-
-                            <Input placeholder="Chennai,Tamilnadu,India" style={{ color: 'gray', fontFamily: 'OpenSans', fontSize: 12 }} placeholderTextColor="gray" />
-                            <Icon name="ios-search" style={{ color: 'gray' }} />
-                        </Item>
-
-                    </Body>
-                    <Right >
-
-                        <Button transparent onPress={() => this.props.navigation.navigate('Profile')}>
-                            <Thumbnail style={{ height: 40, width: 40, borderColor: '#f5f5f5', borderWidth: 2, borderRadius: 50 }} source={{ uri: 'https://res.cloudinary.com/demo/image/upload/w_200,h_200,c_thumb,g_face,r_max/face_left.png' }} />
-                        </Button>
-
-                    </Right>
-                </Header> */}
-
-
-
+               
                 <Content >
 
                     <Grid style={styles.curvedGrid}>
@@ -61,7 +35,10 @@ class MedicineSearch extends Component {
                                 <Item style={styles.searchBox} >
 
                                     <Input placeholder="Search For Any Medicine" style={{ color: 'gray', fontFamily: 'OpenSans', fontSize: 12 }} placeholderTextColor="gray" />
-                                    <Button style={{ backgroundColor: '#000', borderRadius: 10, height: 40, marginTop: -20, marginRight: -20, borderBottomLeftRadius: 0, borderTopLeftRadius: 0, }}><Icon name="ios-search" style={{ color: 'white' }} /></Button>
+                                    <Button style={{ backgroundColor: '#000', borderRadius: 10, height: 40, marginTop: -20, marginRight: -20, borderBottomLeftRadius: 0, borderTopLeftRadius: 0, }}><Icon name="ios-search" style={{ color: 'white' }} 
+                                    onPress={()=> navigation.navigate('medicineSearchList')}
+                                    
+                                    /></Button>
                                 </Item>
                             </Col>
                             <Col style={{ width: '10%' }}>
@@ -133,13 +110,7 @@ class MedicineSearch extends Component {
 
 }
 
-function homeState(state) {
-
-    return {
-        user: state.user
-    }
-}
-export default connect(homeState)(MedicineSearch)
+export default MedicineSearch
 
 
 const styles = StyleSheet.create({

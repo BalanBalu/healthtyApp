@@ -1,14 +1,15 @@
 import React, { Component } from 'react';
-import { Container, Content, Text, Button, Item, Card, List, ListItem, Left, Right, Thumbnail, Body, Icon, Toast } from 'native-base';
+import { Container, Content, Text, Button, Item, Card, List, ListItem, Left, Right, Thumbnail, Body, Icon, Toast, View } from 'native-base';
 import { Col, Row, Grid } from 'react-native-easy-grid';
 import { StyleSheet, AsyncStorage } from 'react-native';
 import StarRating from 'react-native-star-rating';
 import moment from 'moment';
+import { NavigationEvents } from 'react-navigation';
+import { viewUserReviews, bindDoctorDetails, appointmentStatusUpdate } from '../../providers/bookappointment/bookappointment.action';
+import { formatDate, dateDiff } from '../../../setup/helpers';
 
-import { viewUserReviews, bindDoctorDetails, appointmentStatusUpdate } from '../../../providers/bookappointment/bookappointment.action';
-import { formatDate, dateDiff } from '../../../../setup/helpers';
-import { Loader } from '../../../../components/ContentLoader'
-import { RenderHospitalAddress } from '../../../common';
+import { Loader } from '../../../components/ContentLoader'
+import { RenderHospitalAddress } from '../../common';
 
 class AppointmentDetails extends Component {
   constructor(props) {
@@ -23,38 +24,32 @@ class AppointmentDetails extends Component {
       doctorData: {},
       isLoading: false,
       yearOfExperience: '',
-      appointmentStatus: ''
+      appointmentStatus: '',
+      statusUpdateReason: ' ',
+
 
     }
-
   }
 
   async componentDidMount() {
-    console.log('coming to component did mount');
     const userId = await AsyncStorage.getItem('userId');
-    console.log(userId);
     const { navigation } = this.props;
     const appointmentData = navigation.getParam('data');
-    console.log(appointmentData);
     let doctorId = appointmentData.doctor_id;
     let appointmentId = appointmentData._id;
     await this.setState({ doctorId: doctorId, appointmentId: appointmentId, userId: userId, data: appointmentData })
     this.getDoctorDetails(doctorId);
-    this.getUserReviews(appointmentId);
-
-    console.log('state data : ' + JSON.stringify(this.state.data));
+    await this.getUserReviews(appointmentId);
   }
 
   /* Get Doctor Details */
   getDoctorDetails = async (doctorId) => {
     try {
       this.setState({ isLoading: true });
-      let fields = 'first_name,last_name,education,specialist,email,mobile_no,experience,hospital,language,professional_statement';
+      let fields = 'first_name,last_name,prefix,education,specialist,email,mobile_no,experience,hospital,language,professional_statement';
       let resultDetails = await bindDoctorDetails(doctorId, fields);
-      console.log(JSON.stringify(resultDetails));
       if (resultDetails.success) {
         await this.setState({ doctorData: resultDetails.data, isLoading: false });
-        console.log(JSON.stringify(this.state.doctorData));
         let updatedDate = moment(this.state.doctorData.experience.updated_date);
         let experienceInYear = dateDiff(updatedDate, new Date(), 'year');
         let experienceInMonth = dateDiff(updatedDate, new Date(), 'months');
@@ -64,10 +59,10 @@ class AppointmentDetails extends Component {
         if (month >= 12) {
           experience++;
         }
-        await this.setState({ yearOfExperience: experience, isLoading: false });
-
+        await this.setState({ yearOfExperience: experience });
       }
-    }
+     
+   }
     catch (e) {
       console.log(e);
     }
@@ -77,16 +72,18 @@ class AppointmentDetails extends Component {
   getUserReviews = async (appointmentId) => {
     this.setState({ isLoading: true });
     let resultReview = await viewUserReviews('appointment', appointmentId);
-    console.log(resultReview.data);
+    debugger
     if (resultReview.success) {
       this.setState({ reviewData: resultReview.data, isLoading: false });
     }
-    console.log(JSON.stringify(JSON.stringify(this.state.reviewData)));
+
+  }
+  navigateAddReview() {
+    this.state.data.prefix = this.state.doctorData.prefix;
+    this.props.navigation.navigate('InsertReview', { appointmentDetail: this.state.data })
+
   }
 
-  accept(data, status) {
-    this.updateAppointmentStatus(data, status)
-  }
   /* Update Appoiontment Status */
 
   updateAppointmentStatus = async (data, updatedStatus) => {
@@ -98,48 +95,49 @@ class AppointmentDetails extends Component {
         startTime: data.appointment_starttime,
         endTime: data.appointment_endtime,
         status: updatedStatus,
+        statusUpdateReason: this.state.statusUpdateReason,
         status_by: 'USER'
       };
-      console.log(requestData);
-
       let userId = await AsyncStorage.getItem('userId');
-      console.log('userId' + userId);
       let result = await appointmentStatusUpdate(this.state.doctorId, this.state.appointmentId, requestData);
       this.setState({ isLoading: false })
-      console.log(result);
-      console.log('update result' + JSON.stringify(result));
-      // console.log(JSON.stringify(result.appointmentData.appointment_status));
       let appointmentStatus = result.appointmentData.appointment_status;
-      console.log(appointmentStatus);
 
       if (result.success) {
         Toast.show({
           text: result.message,
           duration: 3000
         })
-        this.setState({ appointmentStatus: appointmentStatus });
-      }
 
+        this.setState({ appointmentStatus: appointmentStatus, data: result });
+      }
     }
     catch (e) {
       console.log(e);
     }
   }
-  navigateCancelAppoointment(){
-    this.props.navigation.navigate('cancelAppointment', { navigateData:this.state.data})
+
+
+  navigateCancelAppoointment() {
+    this.state.data.prefix = this.state.doctorData.prefix;
+    this.props.navigation.navigate('CancelAppointment', { appointmentDetail: this.state.data })
 
   }
 
   render() {
 
-    const { data, reviewData, doctorData, yearOfExperience, isLoading } = this.state;
+    const { data, reviewData, doctorData, yearOfExperience, qualification, isLoading } = this.state;
 
     return (
 
       <Container style={styles.container}>
-        {isLoading == true ? <Loader style={'list'} /> :
+
+        {isLoading ? <Loader style={'list'} /> :
 
           <Content style={styles.bodyContent}>
+            <NavigationEvents
+              onWillFocus={payload => { this.componentDidMount() }}
+            />
             <Grid style={{ backgroundColor: '#7E49C3', height: 200 }}>
             </Grid>
 
@@ -150,8 +148,9 @@ class AppointmentDetails extends Component {
                     <Thumbnail square source={{ uri: 'https://static1.squarespace.com/static/582bbfef9de4bb07fe62ab18/t/5877b9ccebbd1a124af66dfe/1484241404624/Headshot+-+Circular.png?format=300w' }} style={{ height: 86, width: 86 }} />
                   </Left>
                   <Body>
-                    <Text style={{ fontSize: 16 }}>{'Dr.' + (doctorData && doctorData.first_name) + " " + (doctorData && doctorData.last_name)},
+                    <Text style={{ fontSize: 16 }}>{(doctorData && doctorData.prefix ? doctorData.prefix : 'Dr.') + (doctorData && doctorData.first_name) + " " + (doctorData && doctorData.last_name)},
                     <Text style={{ fontSize: 10 }}>{doctorData.education && doctorData.education[0].degree}</Text>
+
                     </Text>
                     <Text note style={styles.customText}>{doctorData.specialist && doctorData.specialist[0].category} </Text>
                   </Body>
@@ -159,11 +158,11 @@ class AppointmentDetails extends Component {
                 </ListItem>
 
                 <Grid>
-                  <Col style={{ backgroundColor: 'transparent', borderRightWidth: 0.5, borderRightColor: 'gray', marginLeft: 'auto', marginRight: 'auto' }}>
+                  <Col style={{ backgroundColor: 'transparent', borderRightWidth: 0.5, borderRightColor: 'gray', justifyContent: 'center' }}>
                     <Text style={styles.topValue}> Rs 45.. </Text>
                     <Text note style={styles.bottomValue}> Hourly Rate </Text>
                   </Col>
-                  <Col style={{ backgroundColor: 'transparent', borderRightWidth: 0.5, borderRightColor: 'gray', marginLeft: 'auto', marginRight: 'auto' }}>
+                  <Col style={{ backgroundColor: 'transparent', borderRightWidth: 0.5, borderRightColor: 'gray', justifyContent: 'center' }}>
                     <Text style={styles.topValue}> {yearOfExperience} </Text>
                     <Text note style={styles.bottomValue}> Experience</Text>
                   </Col>
@@ -174,31 +173,35 @@ class AppointmentDetails extends Component {
                 </Grid>
 
                 <Grid style={{ marginTop: 5 }}>
+                  <View style={{ marginLeft: 'auto', marginRight: 'auto' }}>
+                    <Col style={{ width: 300, }}>
+                      <Button disabled={true} block style={{ borderRadius: 10, backgroundColor: '#D7BDE2' }}>
+                        <Text style={{ color: 'black', fontSize: 16 }}>
+                          {this.state.appointmentStatus == 'APPROVED' ? 'APPROVED' :
+                            data.appointment_status == 'PROPOSED_NEW_TIME' ? 'PROPOSED NEW TIME' :
+                              data.appointment_status == 'PENDING_REVIEW' ? 'COMPLETED' :
+                                data.appointment_status || this.state.appointStatus}
+                        </Text>
+                      </Button>
 
-                  <Col style={{ width: 300, }}>
-                    <Button disabled={true} block style={{ borderRadius: 10, backgroundColor: '#D7BDE2' }}>
-                      <Text style={{ color: 'black', fontSize: 16 }}>{this.state.appointmentStatus == 'APPROVED' ? 'APPROVED' : data.appointment_status == 'PROPOSED_NEW_TIME' ?
-                        'PROPOSED NEW TIME' : data.appointment_status == 'PENDING_REVIEW' ? 'PENDING REVIEW' : data.appointment_status || this.state.appointStatus}
-                      </Text>
-                    </Button>
+                    </Col>
 
-                  </Col>
-
+                  </View>
                 </Grid>
                 <Grid style={{ marginTop: 5 }}>
                   {data.appointment_status == 'APPROVED' || this.state.appointmentStatus === 'APPROVED' ?
                     <Col style={width = 'auto'}>
-                      <Button block danger style={{ margin: 1, marginTop: 10, marginLeft: 1, borderRadius: 30, padding: 15, height: 40, width: "auto" }} onPress={() => this.accept(data, 'REJECTED')}>
-                        <Text style={{ textAlign: 'center', fontFamily: 'OpenSans' }}>CANCEL APPOINTMENT</Text>
+                      <Button block danger style={{ margin: 1, marginTop: 10, marginLeft: 1, borderRadius: 30, padding: 15, height: 40, width: "auto" }} onPress={() => this.navigateCancelAppoointment()} testID='cancelAppointment'>
+                        <Text style={{ textAlign: 'center', fontFamily: 'OpenSans', }}>CANCEL APPOINTMENT</Text>
                       </Button>
                     </Col> :
                     data.appointment_status == 'PROPOSED_NEW_TIME' ?
                       <Item style={{ borderBottomWidth: 0, justifyContent: 'center' }}>
-                        <Button success style={styles.statusButton} onPress={() => this.accept(data, 'APPROVED')}>
-                          <Text style={{ textAlign: 'center', fontFamily: 'OpenSans' }}>ACCEPT</Text>
+                        <Button success style={styles.statusButton} onPress={() => this.updateAppointmentStatus(data, 'APPROVED')} testID='approvedAppointment'>
+                          <Text style={{ textAlign: 'center', fontFamily: 'OpenSans', color: '#000' }}>ACCEPT</Text>
                         </Button>
-                        <Button danger style={styles.statusButton} onPress={() => this.accept(data, 'REJECTED')}>
-                          <Text style={{ textAlign: 'center', fontFamily: 'OpenSans' }}> CANCEL </Text></Button>
+                        <Button danger style={styles.Button2} onPress={() => this.navigateCancelAppoointment()} testID='appointmentCancel'>
+                          <Text style={{ textAlign: 'center', fontFamily: 'OpenSans', color: '#000' }}> CANCEL </Text></Button>
                       </Item> : null}
                 </Grid>
 
@@ -207,12 +210,10 @@ class AppointmentDetails extends Component {
 
             <Card transparent style={{ margin: 20, backgroundColor: '#ecf0f1' }}>
               <Card style={{ backgroundColor: '#ffffff', borderRadius: 10, padding: 10 }}>
-
                 <Grid style={{ margin: 5 }}>
-
                   <Right>
                     <Text>
-                      {formatDate(data.appointment_starttime, 'MMMM-DD-YYYY') + "   " + formatDate(data[0] && data[0].appointment_starttime, 'hh:mm A')}
+                    {formatDate(data.appointment_starttime, "dddd,MMMM DD-YYYY  hh:mm a")}
                     </Text>
                   </Right>
 
@@ -226,36 +227,18 @@ class AppointmentDetails extends Component {
                         textStyle={styles.customText}
                         hospitalAddress={doctorData.hospital[0]}
                       /> : null}
-
-                    {/* <Left>
-                    <Icon name="locate" style={{ color: '#7E49C3', fontSize: 25 }}></Icon>
-                  </Left>
-                  <Body>
-                    <Text style={styles.customText}>
-                      {doctorData.hospital && doctorData.hospital[0].name}
-                    </Text>
-                    <Text style={styles.customText}>
-                      {(doctorData.hospital && doctorData.hospital[0].location.address.no_and_street) + "," +
-                        (doctorData.hospital && doctorData.hospital[0].location.address.address_line_1) + ", " +
-                        (doctorData.hospital && doctorData.hospital[0].location.address.address_line_2)}
-                    </Text>
-
-                  </Body> */}
                   </ListItem>
                 </List>
               </Card>
 
-
-
-
-              {data.appointment_status == 'PENDING_REVIEW' ?
+              {(data.appointment_status == 'PENDING_REVIEW' || reviewData.length === 0) ?
                 <Card style={{ margin: 10, padding: 10, borderRadius: 10 }}>
                   <List>
                     <Text style={styles.titlesText}>Review</Text>
                     <ListItem>
                       <Grid>
                         <Col style={{ width: '50%' }}>
-                          <Button block success style={styles.reviewButton}>
+                          <Button block success style={styles.reviewButton} onPress={() => this.navigateAddReview()} testID='addFeedBack'>
                             {/* <Icon name='add' /> */}
                             <Text style={styles.customText}> ADD FEEDBACK </Text>
                             <Icon name="create" style={styles.editProfilePencil}></Icon>
@@ -267,7 +250,7 @@ class AppointmentDetails extends Component {
                   </List>
                 </Card>
 
-                : data.appointment_status == 'CLOSED' ?
+                : (data.appointment_status == 'COMPLETED' || reviewData.length !== 0) ?
                   <Card style={{ margin: 10, padding: 10, borderRadius: 10 }}>
                     <List>
                       <Text style={styles.titlesText}>Review</Text>
@@ -294,7 +277,7 @@ class AppointmentDetails extends Component {
                             <Thumbnail square source={{ uri: 'https://static1.squarespace.com/static/582bbfef9de4bb07fe62ab18/t/5877b9ccebbd1a124af66dfe/1484241404624/Headshot+-+Circular.png?format=300w' }} style={{ height: 40, width: 40 }} />
                           </Left>
                           <Body>
-                            <Text>{(reviewData[0] && reviewData[0].userInfo.first_name) + " " + (reviewData[0] && reviewData[0].userInfo.last_name)}</Text>
+                            <Text style={{ fontFamily: 'OpenSans', fontSize: 20 }}>{(reviewData[0] && reviewData[0].userInfo.first_name) + " " + (reviewData[0] && reviewData[0].userInfo.last_name)}</Text>
                             <StarRating fullStarColor='#FF9500' starSize={15} width={100} containerStyle={{ width: 100 }}
                               disabled={false}
                               maxStars={5}
@@ -456,7 +439,7 @@ const styles = StyleSheet.create({
     color: '#000',
     fontSize: 15,
     // alignItems: 'flex-start'
-    // marginRight: 45 
+    // marginRight: 45
 
   },
   subtitlesText: {
@@ -494,13 +477,33 @@ const styles = StyleSheet.create({
     margin: 10
   },
   statusButton: {
-    margin: 1,
-    marginLeft: 20,
-    marginTop: 10,
-    borderRadius: 30,
-    padding: 15,
-    height: 35,
-    width: "auto"
+    // margin: 1,
+    // marginLeft: 20,
+    // marginTop: 10,
+    // borderRadius: 30,
+    // padding: 15,
+    // height: 35,
+    // width: "auto"
+
+
+
+    borderRadius: 10,
+
+    justifyContent: 'center',
+    padding: 30,
+    marginTop: 15,
+    width: '70%',
+
+
+  },
+  Button2: {
+    borderRadius: 10,
+    marginLeft: 5,
+    justifyContent: 'center',
+    padding: 1,
+    marginTop: 15,
+    width: '30%',
+
   },
   editProfilePencil: {
     color: 'white',

@@ -7,7 +7,9 @@
     "test": "jest"
   },
   "dependencies": {
+    "@mapbox/mapbox-sdk": "^0.6.0",
     "@react-native-mapbox-gl/maps": "^7.0.0",
+    "@turf/helpers": "^6.1.4",
     "axios": "^0.18.0",
     "d3-interpolate": "^1.3.2",
     "moment": "^2.24.0",
@@ -17,8 +19,10 @@
     "react-native": "0.58.6",
     "react-native-autocomplete-input": "^4.1.0",
     "react-native-gesture-handler": "^1.0.17",
+    "react-native-image-picker": "^0.28.1",
     "react-native-linear-gradient": "^2.5.4",
     "react-native-modal": "^11.0.1",
+    "react-native-sectioned-multi-select": "^0.7.0",
     "react-native-segmented-control-tab": "^3.4.0",
     "react-native-star-rating": "^1.1.0",
     "react-native-svg": "^9.4.0",
@@ -41,7 +45,8 @@
   },
   "rnpm": {
     "assets": [
-      "./assets/fonts/"
+      "./assets/fonts/",
+      "./assets/icons/"
     ]
   }
 }
