@@ -1,7 +1,6 @@
 import React, { Component } from 'react';
 import { Container, Content, Text, Title, Header, Form, Textarea, Button, H3, Item, List, ListItem, Card, Input, Left, Right, Thumbnail, Body, Icon, Footer, FooterTab, Picker, Segment, CheckBox } from 'native-base';
 import { Col, Row, Grid } from 'react-native-easy-grid';
-import { connect } from 'react-redux'
 import { StyleSheet, Image } from 'react-native';
 
 class MedicinePaymentResult extends Component {
@@ -280,13 +279,8 @@ class MedicinePaymentResult extends Component {
 
 }
 
-function homeState(state) {
 
-    return {
-        user: state.user
-    }
-}
-export default connect(homeState)(MedicinePaymentResult)
+export default MedicinePaymentResult
 
 
 const styles = StyleSheet.create({
