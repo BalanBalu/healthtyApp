@@ -290,7 +290,7 @@ class Profile extends Component {
                                     <Text note style={styles.customText}>{data.address && data.address.address.city}</Text>
                                     <Text note style={styles.customText}>{data.address && data.address.address.pin_code}</Text>                                    
                                     </View> : 
-                                      <Button transparent>
+                                      <Button transparent onPress={() => this.editProfile('UpdateAddress')}>
                                          <Icon name='add' style={{ color: 'gray' }} />
                                          <Text uppercase={false} style={styles.customText}>Add Address</Text>
                                       </Button> }
