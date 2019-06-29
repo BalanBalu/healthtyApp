@@ -26,8 +26,7 @@ class Reviews extends Component {
     }
     componentDidMount() {
         const { navigation } = this.props;
-        //let doctorId = navigation.getParam('doctorId'); //"5ce01ae8d28ab8073515a6f6";
-        let doctorId = "5ca47f4dd32d2b731c40bef3";
+        let doctorId = navigation.getParam('doctorId'); //"5ce01ae8d28ab8073515a6f6";
         this.getUserReview(doctorId);
     }
 
