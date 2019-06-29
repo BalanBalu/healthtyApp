@@ -60,9 +60,9 @@ class AppointmentDetails extends Component {
           experience++;
         }
         await this.setState({ yearOfExperience: experience });
-
       }
-    }
+     
+   }
     catch (e) {
       console.log(e);
     }
@@ -126,7 +126,7 @@ class AppointmentDetails extends Component {
 
   render() {
 
-    const { data, reviewData, doctorData, yearOfExperience, isLoading } = this.state;
+    const { data, reviewData, doctorData, yearOfExperience, qualification, isLoading } = this.state;
 
     return (
 
@@ -150,6 +150,7 @@ class AppointmentDetails extends Component {
                   <Body>
                     <Text style={{ fontSize: 16 }}>{(doctorData && doctorData.prefix ? doctorData.prefix : 'Dr.') + (doctorData && doctorData.first_name) + " " + (doctorData && doctorData.last_name)},
                     <Text style={{ fontSize: 10 }}>{doctorData.education && doctorData.education[0].degree}</Text>
+
                     </Text>
                     <Text note style={styles.customText}>{doctorData.specialist && doctorData.specialist[0].category} </Text>
                   </Body>
@@ -209,12 +210,10 @@ class AppointmentDetails extends Component {
 
             <Card transparent style={{ margin: 20, backgroundColor: '#ecf0f1' }}>
               <Card style={{ backgroundColor: '#ffffff', borderRadius: 10, padding: 10 }}>
-
                 <Grid style={{ margin: 5 }}>
-
                   <Right>
                     <Text>
-                      {formatDate(data.appointment_starttime, 'MMMM-DD-YYYY') + "   " + formatDate(data[0] && data[0].appointment_starttime, 'hh:mm A')}
+                    {formatDate(data.appointment_starttime, "dddd,MMMM DD-YYYY  hh:mm a")}
                     </Text>
                   </Right>
 
