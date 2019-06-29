@@ -74,6 +74,7 @@ class UserDetails extends Component {
                     type: "success",
                     duration: 3000
                 });
+                logout();
                 this.props.navigation.navigate('login');
             }
             else {
