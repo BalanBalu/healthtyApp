@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { Container, Content, Text, Button, Item, Card, List, ListItem, Left, Right, Thumbnail, Body, Icon, Toast } from 'native-base';
+import { Container, Content, Text, Button, Item, Card, List, ListItem, Left, Right, Thumbnail, Body, Icon, Toast, View } from 'native-base';
 import { Col, Row, Grid } from 'react-native-easy-grid';
 import { StyleSheet, AsyncStorage } from 'react-native';
 import StarRating from 'react-native-star-rating';
@@ -38,7 +38,7 @@ class AppointmentDetails extends Component {
     let doctorId = appointmentData.doctor_id;
     let appointmentId = appointmentData._id;
     await this.setState({ doctorId: doctorId, appointmentId: appointmentId, userId: userId, data: appointmentData })
-    this.getDoctorDetails(doctorId);    
+    this.getDoctorDetails(doctorId);
     await this.getUserReviews(appointmentId);
   }
 
@@ -83,7 +83,7 @@ class AppointmentDetails extends Component {
     this.props.navigation.navigate('InsertReview', { appointmentDetail: this.state.data })
 
   }
- 
+
   /* Update Appoiontment Status */
 
   updateAppointmentStatus = async (data, updatedStatus) => {
@@ -123,7 +123,7 @@ class AppointmentDetails extends Component {
     this.props.navigation.navigate('CancelAppointment', { appointmentDetail: this.state.data })
 
   }
- 
+
   render() {
 
     const { data, reviewData, doctorData, yearOfExperience, isLoading } = this.state;
@@ -135,9 +135,9 @@ class AppointmentDetails extends Component {
         {isLoading ? <Loader style={'list'} /> :
 
           <Content style={styles.bodyContent}>
-                <NavigationEvents
-                  onWillFocus={payload => { this.componentDidMount() }}
-                 />   
+            <NavigationEvents
+              onWillFocus={payload => { this.componentDidMount() }}
+            />
             <Grid style={{ backgroundColor: '#7E49C3', height: 200 }}>
             </Grid>
 
@@ -172,34 +172,35 @@ class AppointmentDetails extends Component {
                 </Grid>
 
                 <Grid style={{ marginTop: 5 }}>
+                  <View style={{ marginLeft: 'auto', marginRight: 'auto' }}>
+                    <Col style={{ width: 300, }}>
+                      <Button disabled={true} block style={{ borderRadius: 10, backgroundColor: '#D7BDE2' }}>
+                        <Text style={{ color: 'black', fontSize: 16 }}>
+                          {this.state.appointmentStatus == 'APPROVED' ? 'APPROVED' :
+                            data.appointment_status == 'PROPOSED_NEW_TIME' ? 'PROPOSED NEW TIME' :
+                              data.appointment_status == 'PENDING_REVIEW' ? 'COMPLETED' :
+                                data.appointment_status || this.state.appointStatus}
+                        </Text>
+                      </Button>
 
-                  <Col style={{ width: 300, }}>
-                    <Button disabled={true} block style={{ borderRadius: 10, backgroundColor: '#D7BDE2' }}>
-                      <Text style={{ color: 'black', fontSize: 16 }}>
-                        {this.state.appointmentStatus == 'APPROVED' ? 'APPROVED' :
-                          data.appointment_status == 'PROPOSED_NEW_TIME' ? 'PROPOSED NEW TIME' :
-                            data.appointment_status == 'PENDING_REVIEW' ? 'COMPLETED' :
-                              data.appointment_status || this.state.appointStatus}
-                      </Text>
-                    </Button>
+                    </Col>
 
-                  </Col>
-
+                  </View>
                 </Grid>
                 <Grid style={{ marginTop: 5 }}>
                   {data.appointment_status == 'APPROVED' || this.state.appointmentStatus === 'APPROVED' ?
                     <Col style={width = 'auto'}>
                       <Button block danger style={{ margin: 1, marginTop: 10, marginLeft: 1, borderRadius: 30, padding: 15, height: 40, width: "auto" }} onPress={() => this.navigateCancelAppoointment()} testID='cancelAppointment'>
-                        <Text style={{ textAlign: 'center', fontFamily: 'OpenSans' }}>CANCEL APPOINTMENT</Text>
+                        <Text style={{ textAlign: 'center', fontFamily: 'OpenSans', }}>CANCEL APPOINTMENT</Text>
                       </Button>
                     </Col> :
                     data.appointment_status == 'PROPOSED_NEW_TIME' ?
                       <Item style={{ borderBottomWidth: 0, justifyContent: 'center' }}>
                         <Button success style={styles.statusButton} onPress={() => this.updateAppointmentStatus(data, 'APPROVED')} testID='approvedAppointment'>
-                          <Text style={{ textAlign: 'center', fontFamily: 'OpenSans' }}>ACCEPT</Text>
+                          <Text style={{ textAlign: 'center', fontFamily: 'OpenSans', color: '#000' }}>ACCEPT</Text>
                         </Button>
-                        <Button danger style={styles.statusButton} onPress={() => this.navigateCancelAppoointment()} testID='appointmentCancel'>
-                          <Text style={{ textAlign: 'center', fontFamily: 'OpenSans' }}> CANCEL </Text></Button>
+                        <Button danger style={styles.Button2} onPress={() => this.navigateCancelAppoointment()} testID='appointmentCancel'>
+                          <Text style={{ textAlign: 'center', fontFamily: 'OpenSans', color: '#000' }}> CANCEL </Text></Button>
                       </Item> : null}
                 </Grid>
 
@@ -231,14 +232,14 @@ class AppointmentDetails extends Component {
                 </List>
               </Card>
 
-              { (data.appointment_status == 'PENDING_REVIEW' || reviewData.length === 0 ) ?
+              {(data.appointment_status == 'PENDING_REVIEW' || reviewData.length === 0) ?
                 <Card style={{ margin: 10, padding: 10, borderRadius: 10 }}>
                   <List>
                     <Text style={styles.titlesText}>Review</Text>
                     <ListItem>
                       <Grid>
                         <Col style={{ width: '50%' }}>
-                          <Button block success style={styles.reviewButton} onPress={() =>   this.navigateAddReview()} testID='addFeedBack'>
+                          <Button block success style={styles.reviewButton} onPress={() => this.navigateAddReview()} testID='addFeedBack'>
                             {/* <Icon name='add' /> */}
                             <Text style={styles.customText}> ADD FEEDBACK </Text>
                             <Icon name="create" style={styles.editProfilePencil}></Icon>
@@ -250,7 +251,7 @@ class AppointmentDetails extends Component {
                   </List>
                 </Card>
 
-                : (data.appointment_status == 'COMPLETED' || reviewData.length !== 0 ) ?
+                : (data.appointment_status == 'COMPLETED' || reviewData.length !== 0) ?
                   <Card style={{ margin: 10, padding: 10, borderRadius: 10 }}>
                     <List>
                       <Text style={styles.titlesText}>Review</Text>
@@ -277,7 +278,7 @@ class AppointmentDetails extends Component {
                             <Thumbnail square source={{ uri: 'https://static1.squarespace.com/static/582bbfef9de4bb07fe62ab18/t/5877b9ccebbd1a124af66dfe/1484241404624/Headshot+-+Circular.png?format=300w' }} style={{ height: 40, width: 40 }} />
                           </Left>
                           <Body>
-                            <Text>{(reviewData[0] && reviewData[0].userInfo.first_name) + " " + (reviewData[0] && reviewData[0].userInfo.last_name)}</Text>
+                            <Text style={{ fontFamily: 'OpenSans', fontSize: 20 }}>{(reviewData[0] && reviewData[0].userInfo.first_name) + " " + (reviewData[0] && reviewData[0].userInfo.last_name)}</Text>
                             <StarRating fullStarColor='#FF9500' starSize={15} width={100} containerStyle={{ width: 100 }}
                               disabled={false}
                               maxStars={5}
@@ -439,7 +440,7 @@ const styles = StyleSheet.create({
     color: '#000',
     fontSize: 15,
     // alignItems: 'flex-start'
-    // marginRight: 45 
+    // marginRight: 45
 
   },
   subtitlesText: {
@@ -477,13 +478,33 @@ const styles = StyleSheet.create({
     margin: 10
   },
   statusButton: {
-    margin: 1,
-    marginLeft: 20,
-    marginTop: 10,
-    borderRadius: 30,
-    padding: 15,
-    height: 35,
-    width: "auto"
+    // margin: 1,
+    // marginLeft: 20,
+    // marginTop: 10,
+    // borderRadius: 30,
+    // padding: 15,
+    // height: 35,
+    // width: "auto"
+
+
+
+    borderRadius: 10,
+
+    justifyContent: 'center',
+    padding: 30,
+    marginTop: 15,
+    width: '70%',
+
+
+  },
+  Button2: {
+    borderRadius: 10,
+    marginLeft: 5,
+    justifyContent: 'center',
+    padding: 1,
+    marginTop: 15,
+    width: '30%',
+
   },
   editProfilePencil: {
     color: 'white',
