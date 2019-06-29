@@ -24,16 +24,10 @@ class Profile extends Component {
            data:{},
            gender: '',
            starCount: 3.5,
-<<<<<<< HEAD
            userId:'',
            modalVisible:false,
            favouriteList: [],
-=======
-           userId: '',
-            modalVisible: false,
-            isLoading: false,
-           favouriteList: []
->>>>>>> origin/Dev
+           isLoading: false,
         }; 
       }
     
@@ -194,10 +188,7 @@ class Profile extends Component {
                                 <Col style={{ backgroundColor: 'transparent', borderRightWidth: 0.5, borderRightColor: 'gray', marginLeft: 'auto', marginRight: 'auto', justifyContent: 'center' }}>
                                     <View style={{ flexDirection: 'row' }}>
                                         <Text style={styles.topValue}>Gender </Text>
-                                        <View>
-                                            <Icon name="create" style={{ fontSize: 15, marginLeft: -30 }} onPress={() => this.modalBoxOpen()} />
-
-                                        </View>
+                                       
                                     </View>
                                     <Text note style={styles.bottomValue}>{gender} </Text>
 
@@ -254,20 +245,6 @@ class Profile extends Component {
                                     <Icon name="mail" style={{ color: '#7E49C3' }}></Icon>
                                 </Left>
                                 <Body>
-<<<<<<< HEAD
-                                    {data.address != undefined ?
-                                        <RenderPatientAddress
-                                            patientAddress={data.address}
-                                            textStyle={{ fontFamily: 'OpenSans' }}
-                                            gridStyle={{ marginTop: 5 }}
-                                        />
-                                        : null}
-                                </Body>
-                                
-                                
-                                
-                                {/* {data.address!=undefined ?
-=======
                                     <Text style={styles.customText}>Email</Text>
                                     <Text note style={styles.customText}>{data.email}</Text>
                                     {data.secondary_emails != undefined ?
@@ -293,26 +270,8 @@ class Profile extends Component {
                                         <Icon name="create" onPress={() => this.editProfile('UpdateEmail')} />
                                     </Right> : null}
                             </ListItem>
->>>>>>> origin/Dev
 
 
-<<<<<<< HEAD
-                                    <Text style={styles.customText}>Address</Text>
-                                    <Text note style={styles.customText}>{data.address && data.address.address.no_and_street + ',   ' +   
-                                     data.address.address.address_line_1 + ',  ' +
-                                     data.address.address.address_line_2 + ',  ' + 
-                                      data.address.address.city + ' - '+  
-                                     data.address.address.pin_code}</Text> </Body>:null}   */}
-
-                                    {/* {data.address!=undefined ?
-                                    <Body>
-                                      <Text note style={styles.customText}>{data.address && data.address.address.address_line_1} </Text>
-                                    <Text note style={styles.customText}>{data.address && data.address.address.address_line_2}</Text>
-                                    <Text note style={styles.customText}>{data.address && data.address.address.city}</Text>
-                                    <Text note style={styles.customText}>{data.address && data.address.address.pin_code}</Text>                                     
-                                    </Body> : null}
-                                    */}
-=======
 
                             <ListItem avatar>
 
@@ -322,14 +281,16 @@ class Profile extends Component {
                                 
                                   <Body>
                                   <Text style={styles.customText}>Address</Text>
-                                  {data.address ? <View>  
-                                    
-                                    <Text note style={styles.customText}>{data.address && data.address.address.no_and_street}</Text>
-                                    <Text note style={styles.customText}>{data.address && data.address.address.address_line_1} </Text>
-                                    <Text note style={styles.customText}>{data.address && data.address.address.address_line_2}</Text>
-                                    <Text note style={styles.customText}>{data.address && data.address.address.city}</Text>
-                                    <Text note style={styles.customText}>{data.address && data.address.address.pin_code}</Text>                                    
-                                    </View> : 
+                                    {data.address ? 
+                                        <View>  
+                                            <Text note style={styles.customText}>{data.address.address.no_and_street + ', ' 
+                                                 + data.address.address.address_line_1 + ', '
+                                                 + data.address.address.address_line_2 + ', '
+                                                 + data.address.address.city + ', '
+                                                 + data.address.address.pin_code
+                                            }
+                                            </Text>
+                                        </View> : 
                                       <Button transparent onPress={() => this.editProfile('UpdateAddress')}>
                                          <Icon name='add' style={{ color: 'gray' }} />
                                          <Text uppercase={false} style={styles.customText}>Add Address</Text>
@@ -340,9 +301,10 @@ class Profile extends Component {
                                         <Icon name="create" onPress={() => this.editProfile('UpdateAddress')} />
                                       </Right> 
                                     : null }
->>>>>>> origin/Dev
                                 
                         </ListItem>
+
+                                    
                     
                       <ListItem avatar>
                       
