@@ -22,3 +22,16 @@ export const deleteService = async(endPoint, data) => {
    let resp = await axios.delete(fullPath, data)
    return resp;
 }
+export const uploadMultiPart = async(endPoint,formData) => {
+   var req = {
+      method: 'PUT',
+      url: API_URL+endPoint,
+      data: formData,
+      headers: {
+      'content-type': `multipart/form-data; boundary=${formData._boundary}`,
+      },
+  }
+  const response = await axios(req)
+  return response;
+
+}

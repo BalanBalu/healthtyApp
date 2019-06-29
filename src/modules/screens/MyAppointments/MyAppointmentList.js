@@ -76,9 +76,12 @@ class MyAppoinmentList extends Component {
 
 backNavigation=async(navigationData)=>{
 	if(navigationData.action) {
-        if(navigationData.action.type === 'Navigation/BACK') {
-            await this.upCommingAppointment();
-		    await this.pastAppointment();        
+		if (navigationData.action.type === 'Navigation/BACK') {
+			if (this.state.selectedIndex == 0) {
+				await this.upCommingAppointment();
+			} else {
+				await this.pastAppointment();
+			}
         }
       }
       console.log(navigationData);     

@@ -249,6 +249,25 @@ export async function userFiledsUpdate(userId,data){
   }
 }
 
+/*Update User Profile Picture*/
+export async function updateProfilePicture(userId,data){
+  try {
+    let endPoint = 'user/'+ userId+'/upload/profile'
+    console.log(endPoint);
+    let response = await putService(endPoint,data);
+    let respData = response.data;
+    console.log('respData'+JSON.stringify(respData))
+    return respData;
+  } catch (e) {
+    return {
+      message: 'exception' + e,
+      success: false
+    }
+  }
+}
+
+
+
 
 
 

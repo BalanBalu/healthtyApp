@@ -69,7 +69,7 @@ class UpdatePassword extends Component {
                     <Card style={{ padding: 10, borderRadius: 10 }}>
 
                         <Item style={{ borderBottomWidth: 0 }}>
-                            <Icon name='mail' style={styles.centeredIcons}></Icon>
+                            <Icon name="briefcase" style={styles.centeredIcons}></Icon>
                             <Input placeholder="Enter old password" 
                             secureTextEntry={true} style={styles.transparentLabel} 
                             keyboardType="default"
@@ -79,7 +79,7 @@ class UpdatePassword extends Component {
                         </Item>
 
                         <Item style={{ borderBottomWidth: 0 }}>
-                            <Icon name='mail' style={styles.centeredIcons}></Icon>
+                            <Icon name="briefcase" style={styles.centeredIcons}></Icon>
                             <Input placeholder="Enter new password" secureTextEntry={true}
                             style={styles.transparentLabel} 
                             keyboardType="default"

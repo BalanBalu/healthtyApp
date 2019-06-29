@@ -10,7 +10,7 @@ import { formatDate } from '../../../setup/helpers';
 import Spinner from '../../../components/Spinner';
 import { RenderHospitalAddress}  from '../../common';
 import RazorpayCheckout from 'react-native-razorpay';
-import appIcon from '../../../../assets/Icon.png';
+//import appIcon from '../../../../assets/Icon.png';
 
 
 

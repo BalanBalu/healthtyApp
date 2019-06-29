@@ -12,14 +12,7 @@ class MedicineSearchList extends Component {
         super(props)
         console.log(this.props)
     }
-    navigetToCategories() {
-        console.log(this.props.navigation.navigate('categories'));
-        //this.props.navigation.navigate('categories');
-    }
-    doLogout() {
-        logout();
-        this.props.navigation.navigate('login');
-    }
+    
     render() {
 
 
@@ -36,10 +29,8 @@ class MedicineSearchList extends Component {
 
                     <Grid style={{ marginTop: -180, height: 150 }}>
                         <Row>
-                            <Col style={{ width: '10%', marginTop: 'auto', marginBottom: 'auto', alignItems: 'center' }}>
-                                <Icon name="arrow-back" style={{ color: 'white' }}></Icon>
-                            </Col>
-                            <Col style={{ width: '80%', marginTop: 'auto', marginBottom: 'auto', alignItems: 'center' }}>
+                            
+                            <Col style={{ width: '100%', marginTop: 'auto', marginBottom: 'auto', alignItems: 'center' }}>
 
                                 <Item style={{ borderBottomWidth: 0 }}>
 
@@ -53,7 +44,7 @@ class MedicineSearchList extends Component {
                         </Row>
 
                     </Grid>
-                    <Card transparent style={{ padding: 10, marginTop: 40 }}>
+                    <Card transparent style={{ padding: 10, marginTop: 40 }} onTouchStart={()=> this.props.navigation.navigate('MedicineCheckout')} >
                         <Card style={{ padding: 10 }}>
                             <Grid>
                                 <Col style={{ width: '25%' }}>
@@ -131,13 +122,7 @@ class MedicineSearchList extends Component {
 
 }
 
-function homeState(state) {
-
-    return {
-        user: state.user
-    }
-}
-export default connect(homeState)(MedicineSearchList)
+export default MedicineSearchList
 
 
 const styles = StyleSheet.create({

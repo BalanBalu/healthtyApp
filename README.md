@@ -31,3 +31,4 @@ Change this
          nodemodules/reactnative-razropay/ios
          Run sh SelectDefaultXcode.sh
        
+    See the Video https://www.youtube.com/watch?v=hE-F0QqTwnI

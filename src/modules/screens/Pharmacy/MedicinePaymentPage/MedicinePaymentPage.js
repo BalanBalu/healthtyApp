@@ -4,7 +4,7 @@ import { Col, Row, Grid } from 'react-native-easy-grid';
 import { connect } from 'react-redux'
 import { StyleSheet, Image } from 'react-native';
 
-class MedicineCheckoutPage extends Component {
+class MedicinePaymentPage extends Component {
     constructor(props) {
         super(props)
         console.log(this.props)
@@ -173,7 +173,7 @@ class MedicineCheckoutPage extends Component {
                             <Text style={{ marginLeft: 15, color: 'gray', fontFamily: 'OpenSans' }}>Save creditcard Information</Text>
                         </Item>
 
-                        <Button block style={styles.loginButton}><Text>Continue</Text></Button>
+                        <Button onPress={()=> this.props.navigation.navigate('MedicinePaymentResult')} block style={styles.loginButton}><Text>Continue</Text></Button>
                     </Card>
                 </Content>
                 <Footer>
@@ -199,13 +199,8 @@ class MedicineCheckoutPage extends Component {
 
 }
 
-function homeState(state) {
 
-    return {
-        user: state.user
-    }
-}
-export default connect(homeState)(MedicineCheckoutPage)
+export default MedicinePaymentPage
 
 
 const styles = StyleSheet.create({
