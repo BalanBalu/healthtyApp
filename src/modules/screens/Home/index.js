@@ -66,7 +66,7 @@ class Home extends Component {
                 alert("We can't Find the Empty Values");
             }
             else {
-                this.props.navigation.navigate('Filters')
+                this.props.navigation.navigate('Doctor List', { resultData: serachInputvalues })
             }
         } catch (e) {
             console.log(e);
