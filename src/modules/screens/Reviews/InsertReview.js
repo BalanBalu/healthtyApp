@@ -25,69 +25,69 @@ class InsertReview extends Component {
     }
   }
 
-    async componentDidMount() {
+  async componentDidMount() {
 
-      const { navigation } = this.props;
-      const reviewData = navigation.getParam('appointmentDetail');
-      
-      let userId= reviewData.user_id;
-      let doctorId = reviewData.doctor_id;
-      let appointmentId = reviewData._id;
-      await this.setState({userId:userId, doctorId: doctorId, appointmentId: appointmentId, data: reviewData }); 
-      console.log(this.state.data.prefix)
-    }
+    const { navigation } = this.props;
+    const reviewData = navigation.getParam('appointmentDetail');
+
+    let userId = reviewData.user_id;
+    let doctorId = reviewData.doctor_id;
+    let appointmentId = reviewData._id;
+    await this.setState({ userId: userId, doctorId: doctorId, appointmentId: appointmentId, data: reviewData });
+    console.log(this.state.data.prefix)
+  }
 
   updateAppointmentStatus = async (data, updatedStatus) => {
-    try {              
-        let requestData = {
-          doctorId: data.doctor_id,
-          userId: data.user_id,
-          startTime: data.appointment_starttime,
-          endTime: data.appointment_endtime,
-          status: updatedStatus,
-          statusUpdateReason: ' ',
-          status_by: 'USER'
-        };
+    try {
+      let requestData = {
+        doctorId: data.doctor_id,
+        userId: data.user_id,
+        startTime: data.appointment_starttime,
+        endTime: data.appointment_endtime,
+        status: updatedStatus,
+        statusUpdateReason: ' ',
+        status_by: 'USER'
+      };
 
-        let userId = await AsyncStorage.getItem('userId');
-        let result = await appointmentStatusUpdate(data.doctor_id, data._id, requestData);
-        console.log('result' + JSON.stringify(result))
-      }catch(e){
-        console.log(e);
-      }
+      let userId = await AsyncStorage.getItem('userId');
+      let result = await appointmentStatusUpdate(data.doctor_id, data._id, requestData);
+      console.log('result' + JSON.stringify(result))
+    } catch (e) {
+      console.log(e);
     }
+  }
 
   submitReview = async () => {
     try {
       let userId = this.state.data.user_id;
       let overallrating = (this.state.cleanness_rating + this.state.staff_rating + this.state.wait_time_rating) / 3;
-    
+
       if (this.state.comments != null) {
-      let insertReviewData = {
-        user_id: userId,
-        doctor_id: this.state.data.doctor_id,
-        appointment_id: this.state.data._id,
-        is_anonymous: this.state.isAnonymous,
-        wait_time_rating: this.state.wait_time_rating,
-        staff_rating: this.state.staff_rating, // 1 to 5
-        cleanness_rating: this.state.cleanness_rating,
-        overall_rating: overallrating,
-        comments: this.state.comments,
-        is_doctor_recommended: this.state.doctorRecommended,
-      };
-      let result = await addReview(userId, insertReviewData);
-     
-      if (result.success) {  
-        this.state.data.appointment_status='COMPLETED';          
-        await this.updateAppointmentStatus(this.state.data, 'COMPLETED')
-        this.props.navigation.navigate('AppointmentInfo', { reviewDetails: this.state.data })
+        let insertReviewData = {
+          user_id: userId,
+          doctor_id: this.state.data.doctor_id,
+          appointment_id: this.state.data._id,
+          is_anonymous: this.state.isAnonymous,
+          wait_time_rating: this.state.wait_time_rating,
+          staff_rating: this.state.staff_rating, // 1 to 5
+          cleanness_rating: this.state.cleanness_rating,
+          overall_rating: overallrating,
+          comments: this.state.comments,
+          is_doctor_recommended: this.state.doctorRecommended,
+        };
+        let result = await addReview(userId, insertReviewData);
+
+        if (result.success) {
+          this.state.data.appointment_status = 'COMPLETED';
+          await this.updateAppointmentStatus(this.state.data, 'COMPLETED')
+          this.props.navigation.navigate('AppointmentInfo', { reviewDetails: this.state.data })
+        }
+      } else {
+        Toast.show({
+          text: 'Kindly add a comment for your Review',
+          duration: 3000
+        })
       }
-    }else{
-      Toast.show({
-        text: 'Kindly add a comment for your Review',
-        duration: 3000
-      })
-    }    
     }
     catch (e) {
       console.log(e);
@@ -114,8 +114,8 @@ class InsertReview extends Component {
     const { data } = this.state;
     return (
       < Container style={styles.container} >
-        <Content style={styles.bodycontent}>
-          <Card style={{ borderRadius: 5, padding: 10, height: 'auto' }}>
+        <Content>
+          <Card style={{ borderRadius: 5, padding: 5, }}>
             <Card>
               <CardItem style={styles.text}>
                 <Body>
@@ -124,11 +124,11 @@ class InsertReview extends Component {
               </CardItem>
               <CardItem>
                 <Body>
-                <Text style={{ marginTop: 25, }}>
-                      <Text style={{ fontWeight: "bold" }}>
-                        {formatDate(data.appointment_starttime, 'MMMM-DD-YYYY') + "   " +
-                          formatDate(data[0] && data[0].appointment_starttime, 'hh:mm A')}
-                      </Text> with {(data && data.prefix) + (data && data.doctorInfo.first_name) + " " + (data && data.doctorInfo.last_name)}</Text>
+                  <Text style={{ marginTop: 5, }}>
+                    <Text style={{ fontWeight: "bold" }}>
+                      {formatDate(data.appointment_starttime, 'MMMM-DD-YYYY') + "   " +
+                        formatDate(data[0] && data[0].appointment_starttime, 'hh:mm A')}
+                    </Text> with {(data && data.prefix) + (data && data.doctorInfo.first_name) + " " + (data && data.doctorInfo.last_name)}</Text>
                   <Row style={{ marginTop: 20 }}>
                     <Text style={{ fontSize: 16 }}>Cleanliness</Text>
                     <StarRating fullStarColor='#FF9500' starSize={20} containerStyle={{ width: 110, marginLeft: 50 }}
@@ -159,20 +159,20 @@ class InsertReview extends Component {
 
                     />
                   </Row>
-                  <Row style={{ marginTop: 30, marginLeft: -10 }}>
+                  <Row style={{ marginTop: 20, marginLeft: -10 }}>
                     <CheckBox checked={this.state.isAnonymous} color="green" onPress={() => this.setState({ isAnonymous: !this.state.isAnonymous })} ></CheckBox>
                     <Text style={{ marginLeft: 20 }}>Would you like to give as Anonymous</Text>
                   </Row>
-                  <Row style={{ marginTop: 20, marginLeft: -10 }} >
+                  <Row style={{ marginTop: 10, marginLeft: -10 }} >
                     <CheckBox checked={this.state.doctorRecommended} color="green" onPress={() => this.setState({ doctorRecommended: !this.state.doctorRecommended })} ></CheckBox>
                     <Text style={{ marginLeft: 20 }}>Do you recommend this doctor</Text>
                   </Row>
 
-                  <Text style={{ fontSize: 16, marginTop: 40 }}>
+                  <Text style={{ fontSize: 16, marginTop: 20 }}>
                     Write your review
                       </Text>
                   <TextInput
-                    style={{ height: 100, borderWidth: 1, marginTop: 20, width: 300 }}
+                    style={{ height: 100, borderWidth: 1, marginTop: 10, width: '100%' }}
                     placeholder="Write your reviews here"
                     value={this.state.comments}
 
@@ -182,11 +182,11 @@ class InsertReview extends Component {
                     style={{ height: 80, borderWidth: 1, width: 'auto' }}
                    
                   /> */}
-                  <Row style={{ marginTop: 20 }}>
+                  <Row style={{ marginTop: 10 }}>
                     <Right>
                       <Button style={styles.button1}
                         onPress={() => this.submitReview()}>
-                      <Text>SUBMIT </Text></Button>
+                        <Text>SUBMIT </Text></Button>
                     </Right></Row>
 
                 </Body>
@@ -213,7 +213,6 @@ const styles = StyleSheet.create({
   card: {
     width: 'auto',
     borderRadius: 100,
-    height: 700,
 
   },
   title: {
@@ -249,7 +248,6 @@ const styles = StyleSheet.create({
     backgroundColor: 'grey',
     marginBottom: 10,
     marginTop: 10,
-    height: 100,
     width: 'auto',
     marginLeft: 15
   },

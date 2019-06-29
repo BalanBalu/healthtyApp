@@ -62,7 +62,7 @@ class Home extends Component {
                 type: 'symptoms',
                 value: [this.state.searchValue]
             }]
-            if (this.state.searchValue == '') {
+            if (this.state.searchValue == null) {
                 alert("We can't Find the Empty Values");
             }
             else {
@@ -105,7 +105,7 @@ class Home extends Component {
                                 keyboardType={'email-address'}
                                 onChangeText={searchValue => this.setState({ searchValue })}
                                 blurOnSubmit={false}
-                                onSubmitEditing={() => { this.searchDoctorListModule();}}
+                                onSubmitEditing={() => { this.searchDoctorListModule(); }}
                             />
 
                         </Col>
