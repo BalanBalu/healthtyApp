@@ -120,7 +120,7 @@ class Login extends Component {
         </Content>
         <Footer >
           <FooterTab style={{ backgroundColor: '#F2F2F2', }}>
-            <Button full onPress={() => this.props.navigation.navigate('userdetails')}>
+            <Button full onPress={() => this.props.navigation.navigate('signup')}>
               <Text uppercase={false} style={{ color: '#000', fontSize: 15, fontFamily: 'OpenSans' }}>Don't Have An Account ? SignUp</Text>
             </Button>
           </FooterTab>
