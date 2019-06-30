@@ -105,18 +105,19 @@ class Signup extends Component {
                             />
                         </Item>
 
-                        <Item style={{ borderBottomWidth: 0 }}>
-                            <Input placeholder="Password" style={styles.transparentLabel}
+                        <Item success style={styles.transparentLabel}>
+                            <Input placeholder="Password" 
                                 ref={(input) => { this.userEmail = input; }}
                                 returnKeyType={'done'}
                                 value={this.state.password}
-                                secureTextEntry={true}
-                                keyboardType={'visible-password'}
+                                secureTextEntry={this.state.showPassword}
+                                keyboardType={'default'}
                                 onChangeText={password => this.setState({ password })}
                                 blurOnSubmit={false}
+                                maxLength={16}
                                 onSubmitEditing={() => { this.doSignUp(); }} />
 
-                            <Icon active name='eye' onPress={() => this.setState({ showPassword: !this.state.showPassword })} />
+                                <Icon active name='eye' onPress={() => this.setState({ showPassword: !this.state.showPassword })} />
                         </Item>
                         <Item style={{ marginTop: 12, borderBottomWidth: 0 }}>
 
