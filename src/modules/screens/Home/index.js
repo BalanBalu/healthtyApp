@@ -250,7 +250,7 @@ class Home extends Component {
 
                 </Content>
 
-                {/* <Footer>
+                <Footer>
                     <FooterTab style={{ backgroundColor: '#7E49C3' }}>
                         <Button >
                             <Icon name="apps" />
@@ -258,14 +258,14 @@ class Home extends Component {
                         <Button>
                             <Icon name="chatbubbles" />
                         </Button>
-                        <Button >
+                        <Button onPress={() => this.props.navigation.navigate('Notification')}  >
                             <Icon active name="notifications" />
                         </Button>
                         <Button>
                             <Icon name="person" />
                         </Button>
                     </FooterTab>
-                </Footer>*/}
+                </Footer>
             </Container>
 
         )

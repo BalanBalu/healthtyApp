@@ -1,9 +1,48 @@
 
 import React, { Component } from 'react';
-import { StyleSheet } from 'react-native';
+import { StyleSheet, AsyncStorage } from 'react-native';
 import { Container, Header, Title, Left, Body, Card, View, Text, Content, Col, Icon } from 'native-base';
-
+import { fetchUserNotification } from '../../providers/bookappointment/bookappointment.action';
 class Notification extends Component {
+    constructor(props) {
+
+        super(props);
+        this.state = {
+            data: {},
+
+            isLoading: false
+        };
+
+    }
+   
+async componentDidMount() {
+
+
+    this.getUserNotification();
+
+}
+
+getUserNotification = async () => {
+    try {
+        this.setState({ isLoading: true });
+
+        let userId = await AsyncStorage.getItem('userId');
+    
+        let result = await fetchUserNotification(userId);
+    
+        console.log(result)
+        console.log(this.props);
+
+    }
+    catch (e) {
+        console.log(e);
+    }
+    finally {
+        this.setState({ isLoading: false });
+    }
+}
+
+
     render() {
         return (
             < Container style={styles.container} >
