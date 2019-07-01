@@ -40,6 +40,13 @@ class BookAppoinment extends Component {
 
   async componentDidMount() {
     const { navigation } = this.props;
+    const fromAppointmentList = navigation.getParam('fromAppointmentList');
+    
+    if(fromAppointmentList){
+      this.setState({ doctorId = navigation.getParam('doctorId')});
+      console.log(doctorId);
+
+    }else{
     let doctorDetails = navigation.getParam('doctorDetails');
     const slotList = navigation.getParam('slotList', []);
    if(slotList) {
@@ -58,8 +65,9 @@ class BookAppoinment extends Component {
   }
     console.log(this.state.item.name);
     await this.setState({ doctorId: doctorDetails.doctorId })
-    await this.getdoctorDetails(doctorDetails.doctorId);
-    await this.getUserReviews(doctorDetails.doctorId);
+}
+    await this.getdoctorDetails(this.state.doctorId);
+    await this.getUserReviews(this.state.doctorId);
   }
 
 
