@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { Container, Content, Text, Title, Header, Button, H3, Item, List, ListItem, Card, Input, Left, Right, Thumbnail, Body, Icon, Footer, FooterTab } from 'native-base';
+import { Container, Content, Text, Title, Header,View, Button, H3, Item, List, ListItem, Card, Input, Left, Right, Thumbnail, Body, Icon, Footer, FooterTab } from 'native-base';
 
 import LinearGradient from 'react-native-linear-gradient';
 import { Col, Row, Grid } from 'react-native-easy-grid';
@@ -45,39 +45,61 @@ class MedicineSearchList extends Component {
 
                     </Grid>
                     <Card transparent style={{ padding: 10, marginTop: 40 }} onTouchStart={()=> this.props.navigation.navigate('MedicineCheckout')} >
+                         <Card style={{ padding: 10 }}>
+                            <Grid>
+                                <Col style={{ width: '25%' }}>
+                                    <Image source={{ uri: 'https://vimecare.com/WelcomeDesign/images/doctor-icon.png' }} style={styles.customImage} />
+                                </Col>
+
+                                <Col style={{marginLeft: 10, width: '75%', alignItems: 'flex-start', justifyContent: 'center' }}>
+                                    <Text style={styles.normalText}>Aminocaproic Acid</Text>
+                                  <Row>
+                                    <Left style={{marginLeft: 30}}>
+                                   <Text style={styles.subText}>
+                                    <Text style={{color: 'gray',fontSize:17, textDecorationLine: 'line-through',textDecorationStyle: 'solid',textDecorationColor:'gray'}}>
+                                    {'\u20B9'}100</Text>  {'\u20B9'} 80</Text>
+                                    </Left>
+
+                                    <Right style={{marginRight: 10}}>
+                                        <View style={{ backgroundColor: 'white', borderWidth: 1, borderRadius: 200, padding: 5}}>
+                                    <Text style={styles.offerText}>20% </Text>
+                                    </View>                           
+                                   </Right>
+                                    </Row>
+                                   <Text style={{ color: 'gray',fontSize:15 }}>White Pigeon Pharmacy</Text>
+       
+                                </Col>
+                            </Grid>
+
+                        </Card>
                         <Card style={{ padding: 10 }}>
                             <Grid>
                                 <Col style={{ width: '25%' }}>
                                     <Image source={{ uri: 'https://vimecare.com/WelcomeDesign/images/doctor-icon.png' }} style={styles.customImage} />
                                 </Col>
 
-                                <Col style={{ width: '75%', alignItems: 'center', justifyContent: 'center' }}>
-                                    <Text style={styles.normalText}>Allow the emergency to get offer</Text>
+                                <Col style={{ marginLeft: 10,width: '75%', alignItems: 'flex-start', justifyContent: 'center' }}>
+                                    <Text style={styles.normalText}>Gemtuzumab ozogamicin</Text>
+                                  <Row>
+                                    <Left style={{marginLeft: 30}}>
+                                   <Text style={styles.subText}>
+                                    <Text style={{color: 'gray',fontSize:17, textDecorationLine: 'line-through',textDecorationStyle: 'solid',textDecorationColor:'gray'}}>
+                                    {'\u20B9'}100</Text>  {'\u20B9'} 50</Text>
+                                    </Left>
 
-                                    <Text style={styles.offerText}>get 20% Offer</Text>
-
-
+                                    <Right style={{marginRight: 10}}>
+                                    <View style={{ backgroundColor: 'white', borderWidth: 1, borderRadius: 200, padding: 5}}>
+                                    <Text style={styles.offerText}>50% </Text>
+                                    </View>                           
+                                   </Right>
+                                    </Row>
+                                   <Text style={{ color: 'gray',fontSize:15 }}>Wellness Craft Pharmacy</Text>
+       
                                 </Col>
                             </Grid>
 
                         </Card>
 
-                        <Card style={{ padding: 10 }}>
-                            <Grid>
-                                <Col style={{ width: '25%' }}>
-                                    <Image source={{ uri: 'https://vimecare.com/WelcomeDesign/images/doctor-icon.png' }} style={styles.customImage} />
-                                </Col>
-
-                                <Col style={{ width: '75%', alignItems: 'center', justifyContent: 'center' }}>
-                                    <Text style={styles.normalText}>Allow the emergency to get offer</Text>
-
-                                    <Text style={styles.offerText}>get 20% Offer</Text>
-
-
-                                </Col>
-                            </Grid>
-
-                        </Card>
 
 
                         <Card style={{ padding: 10 }}>
@@ -86,12 +108,21 @@ class MedicineSearchList extends Component {
                                     <Image source={{ uri: 'https://vimecare.com/WelcomeDesign/images/doctor-icon.png' }} style={styles.customImage} />
                                 </Col>
 
-                                <Col style={{ width: '75%', alignItems: 'center', justifyContent: 'center' }}>
-                                    <Text style={styles.normalText}>Allow the emergency to get offer</Text>
-
-                                    <Text style={styles.offerText}>get 20% Offer</Text>
-
-
+                                <Col style={{ marginLeft: 10,width: '75%', alignItems: 'flex-start', justifyContent: 'center' }}>
+                                    <Text style={styles.normalText}>Hydroxyurea for sickle cell disease</Text>
+                                  <Row>
+                                    <Left style={{marginLeft: 30}}>
+                                   <Text style={styles.subText}>
+                                    <Text style={{color: 'gray',fontSize:17, textDecorationLine: 'line-through',textDecorationStyle: 'solid',textDecorationColor:'gray'}}>
+                                    {'\u20B9'}100</Text>  {'\u20B9'} 75</Text>
+                                    </Left>
+                                    <Right style={{marginRight: 10}}>
+                                    <View style={{ backgroundColor: 'white', borderWidth: 1, borderRadius: 200, padding: 5}}>
+                                    <Text style={styles.offerText}>25% </Text>
+                                    </View>                           
+                                   </Right>
+                                    </Row>
+                                       <Text style={{ color: 'gray',fontSize:15 }}>Shoprite Pharmacy</Text>
                                 </Col>
                             </Grid>
 
@@ -160,14 +191,21 @@ const styles = StyleSheet.create({
     normalText:
     {
         fontFamily: 'OpenSans',
-        fontSize: 14,
-        color: 'gray'
+        fontSize: 17,
+        // color: 'gblackray',
+        marginTop: 10
     },
     offerText:
     {
         fontFamily: 'OpenSans',
-        fontSize: 20,
+        fontSize: 13,
         color: 'red'
+     
+    },
+    subText:{
+        fontFamily: 'OpenSans',
+        fontSize: 17,
+        color: 'black'
     }
 
 });
