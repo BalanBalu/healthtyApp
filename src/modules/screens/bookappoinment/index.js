@@ -1,12 +1,11 @@
 import React, { Component } from 'react';
-import { Container, Content, Text, Title, Header, H3, Button, Card, List, ListItem, Left, Right, Thumbnail, Body, Icon, locations, ScrollView, Item, Toast } from 'native-base';
+import { Container, Content, Text, Title, Header, H3, Button, Card, List, ListItem, Left, Right, Thumbnail, Body, Icon, locations, ScrollView, Item, Toast,DatePicker } from 'native-base';
 import { Col, Row, Grid } from 'react-native-easy-grid';
 import { connect } from 'react-redux'
 import { StyleSheet, Image, TouchableOpacity, View, FlatList, AsyncStorage } from 'react-native';
 import StarRating from 'react-native-star-rating';
-
-import {  viewUserReviews, bindDoctorDetails } from '../../providers/bookappointment/bookappointment.action';
-import { formatDate } from '../../../setup/helpers';
+import { formatDate, getFirstDay, getLastDay,addMoment } from '../../../setup/helpers';
+import {  viewdoctorProfile,viewUserReviews, bindDoctorDetails } from '../../providers/bookappointment/bookappointment.action';
 import Mapbox from './Mapbox'
 
 class BookAppoinment extends Component {
@@ -31,6 +30,11 @@ class BookAppoinment extends Component {
       selectedSlotItem: null,
       doctorId: '',
       reviews_length: '',
+      doctorId:'',
+      slotList:[],
+      doctorDetails:[],
+      currentDate:formatDate(new Date(),'YYYY-MM-DD'),
+
 
       
     }
@@ -40,14 +44,23 @@ class BookAppoinment extends Component {
 
   async componentDidMount() {
     const { navigation } = this.props;
-    const fromAppointmentList = navigation.getParam('fromAppointmentList');
-    
-    if(fromAppointmentList){
-      this.setState({ doctorId = navigation.getParam('doctorId')});
-      console.log(doctorId);
+    const fromAppointmentList = navigation.getParam('fromAppointmentList')||false;
+    let endDateMoment = addMoment(this.state.currentDate, 7, 'days')
+    let endDate = formatDate(endDateMoment, 'YYYY-MM-DD');
+    console.log(endDate+'endDate')
 
-    }else{
+    if(fromAppointmentList)
+    {
+      const doctorId = navigation.getParam('doctorId')||false;
+      await this.setState({doctorId:doctorId});
+      console.log(doctorId+'book again');
+      await this.getAvailabilitySlots(this.state.doctorId,this.state.currentDate,endDate);          
+    }
+
+    if(!fromAppointmentList)
+    {
     let doctorDetails = navigation.getParam('doctorDetails');
+    await this.setState({ doctorId: doctorDetails.doctorId });
     const slotList = navigation.getParam('slotList', []);
    if(slotList) {
     if(slotList.length !== 0) { 
@@ -63,18 +76,62 @@ class BookAppoinment extends Component {
       });
     }
   }
-    console.log(this.state.item.name);
-    await this.setState({ doctorId: doctorDetails.doctorId })
 }
-    await this.getdoctorDetails(this.state.doctorId);
-    await this.getUserReviews(this.state.doctorId);
+  await this.getdoctorDetails(this.state.doctorId);
+  await this.getUserReviews(this.state.doctorId);
+
   }
 
+
+  /*FromAppointment list(Get availability slots)*/
+  getAvailabilitySlots = async (fromAppointmentDoctorId, startDate, endDate) => {
+    console.log("availability slots");
+    console.log('startDate='+startDate + 'enddate='+endDate)
+    this.setState({ isLoading: true });
+    try {
+        let totalSlotsInWeek = {
+            startDate: formatDate(startDate, 'YYYY-MM-DD'),
+            endDate: formatDate(endDate, 'YYYY-MM-DD')
+        }
+        let resultData = await viewdoctorProfile(fromAppointmentDoctorId, totalSlotsInWeek);
+        this.setState({ isLoading: false });
+        if (resultData.success) {
+          let slotData=resultData.data[0].slotData
+          console.log(slotData);
+          this.setState({slotList:slotData[formatDate(startDate,'YYYY-MM-DD')]});
+        }
+    } catch (e) {
+        console.log(e);
+    }
+}
+
+/* Change the Date using Date Picker */
+
+    onDateChanged(date) {
+      console.log("On date change is running");
+      console.log(date);
+      this.setState({ isLoading: true });
+      let selectedDate = formatDate(date, 'YYYY-MM-DD');
+      console.log('selectedDate'+selectedDate);
+      let endDateMoment = addMoment(this.state.currentDate, 7, 'days')
+      let endDate = formatDate(endDateMoment, 'YYYY-MM-DD');
+      this.setState({ selectedDate: selectedDate, getStartDateOfTheWeek: this.state.currentDate, getEndDateOfTheWeek: endDate, });
+      console.log('this.state.getStartDateOfTheWeek'+this.state.getStartDateOfTheWeek)
+      if (!this.state.slotList[selectedDate]) {
+        console.log("selecteddateslotlist");
+          this.getAvailabilitySlots(this.state.doctorId, this.state.currentDate, endDate);
+      }
+      else {
+          if (this.state.slotList[selectedDate]) {
+              this.setState({ slotList: this.state.slotList[selectedDate] });
+          }
+      }
+    }
 
   /*Get doctor Qualification details*/
   getdoctorDetails = async (doctorId) => {
     console.log("doctor");
-    let fields = "first_name,last_name,prefix,professional_statement,language,specialist,education";
+    let fields = "first_name,last_name,prefix,professional_statement,language,specialist,education,profile_image";
     let resultDoctorDetails = await bindDoctorDetails(doctorId, fields);
     if (resultDoctorDetails.success) {
       this.setState({ doctordata: resultDoctorDetails.data});
@@ -170,8 +227,9 @@ class BookAppoinment extends Component {
 
   render() {
     const { navigation } = this.props;
-    const doctorDetails = navigation.getParam('doctorDetails');
     const { qualification, doctordata } = this.state;
+    const fromAppointmentList = navigation.getParam('fromAppointmentList')||false;
+
     return (
       <Container style={styles.container}>
 
@@ -181,16 +239,15 @@ class BookAppoinment extends Component {
           <Grid style={{ backgroundColor: '#7E49C3', height: 200 }}>
 
           </Grid>
-
           <Card style={styles.customCard}>
             <List>
               <ListItem thumbnail noBorder>
 
                 <Left>
                   {
-                    doctorDetails.profile_image != undefined ?
-                      <Thumbnail square source={doctorDetails.profile_image.imageURL} style={{ height: 86, width: 86 }} /> :
-                      <Thumbnail square source={{ uri: 'https://static1.squarespace.com/static/582bbfef9de4bb07fe62ab18/t/5877b9ccebbd1a124af66dfe/1484241404624/Headshot+-+Circular.png?format=300w' }} style={{ height: 86, width: 86 }} />}
+                    doctordata.profile_image != undefined ?
+                      <Thumbnail style={styles.profileImage} source={{uri:doctordata.profile_image.imageURL}} /> :
+                      <Thumbnail style={styles.profileImage} source={{ uri: 'https://static1.squarespace.com/static/582bbfef9de4bb07fe62ab18/t/5877b9ccebbd1a124af66dfe/1484241404624/Headshot+-+Circular.png?format=300w' }} />}
                 </Left>
                 <Body>
                   <Text>{doctordata.prefix ? doctordata.prefix : 'Dr. ' + doctordata.first_name}</Text>
@@ -234,9 +291,27 @@ class BookAppoinment extends Component {
           </Card>
 
           <Card>
+
+          {fromAppointmentList?
+          <Item style={{ borderBottomWidth: 0, backgroundColor: '#F1F1F1', marginTop: 10, borderRadius:5,width:'50%'}}>
+          <Icon name='calendar' style={{ paddingLeft:15, color: '#775DA3' }} />
+          <DatePicker
+              locale={"en"}
+              timeZoneOffsetInMinutes={undefined}
+              animationType={"fade"}
+              androidMode={"default"}
+              placeHolderText={this.state.currentDate}
+              textStyle={{ color: "#5A5A5A" }}
+              placeHolderTextStyle={{ color: "#5A5A5A" }}
+              onDateChange={date => { this.onDateChanged(date); }}
+              disabled={false}
+              testID='datePicked' />
+          </Item>:null}
+
             <View >
               {this.state.slotList === undefined ? this.noAvailableSlots() : this.haveAvailableSlots()}
             </View>
+
           </Card>
 
           <Card transparent style={{ margin: 20, backgroundColor: '#ecf0f1' }}>
@@ -614,6 +689,17 @@ const styles = StyleSheet.create({
     fontFamily: 'opensans-semibold',
 
   },
+  profileImage:
+    {
+        marginLeft: 'auto',
+        marginRight: 'auto',
+        marginTop: 25,
+        height: 80,
+        width: 80,
+        borderColor: '#f5f5f5',
+        borderWidth: 2,
+        borderRadius: 50
+    },
   customIcon:
   {
     height: 30,
