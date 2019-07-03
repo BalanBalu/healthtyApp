@@ -138,7 +138,7 @@ class doctorSearchList extends Component {
             this.setState({ isLoading: false });
             if (resultData.success) {
                 this.setState({ doctorDetails: resultData.data });
-                // console.log('Doctor details with availability'+JSON.stringify(this.state.doctorDetails));
+                 console.log('Doctor details with availability'+JSON.stringify(this.state.doctorDetails));
             }
         } catch (e) {
             console.log(e);
@@ -276,7 +276,7 @@ class doctorSearchList extends Component {
         return (
             <Col style={{ alignSelf: 'center' }}>
                 <Button style={{ borderColor: 'blue', borderRadius: 20, backgroundColor: 'gray' }}>
-                    {nextAvailableDate ? <Text>Next Available Date : {nextAvailableDate}</Text> : 'No Availablity for Next 7 Days'}
+                    {nextAvailableDate ? <Text>Next Available Date : {nextAvailableDate}</Text> : <Text> No Availablity for Next 7 Days</Text>}
                 </Button>
             </Col>
         )
@@ -298,9 +298,8 @@ class doctorSearchList extends Component {
                 keyExtractor={(item, index) => index.toString()}
                 renderItem={({ item, index }) =>
                     <Col style={{ col: '25%', padding: 5 }}>
-                        <Button disabled={item.isSlotBooked === true ? true : false}
-                      primary style={ item.isSlotBooked === false ? 
-                        styles.slotDefaultBgColor : styles.slotBookedBgColor}    
+                        <Button disabled={item.isSlotBooked}
+                        primary style={item.isSlotBooked ? styles.slotBookedBgColor : styles.slotDefaultBgColor }    
                           onPress={() => { this.onSlotPress(doctorData, item, slotsData, index) }}>
                             <Text note style={{ fontFamily: 'OpenSans', color: 'white' }}>{formatDate(item.slotStartDateAndTime, 'hh:mm')}</Text>
                         </Button>
