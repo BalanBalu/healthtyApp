@@ -6,7 +6,10 @@ import { StyleSheet, Image, TouchableOpacity, View, FlatList, AsyncStorage } fro
 import StarRating from 'react-native-star-rating';
 import { formatDate, getFirstDay, getLastDay,addMoment } from '../../../setup/helpers';
 import {  viewdoctorProfile,viewUserReviews, bindDoctorDetails } from '../../providers/bookappointment/bookappointment.action';
-import Mapbox from './Mapbox'
+import Mapbox from './Mapbox';
+import { Loader } from '../../../components/ContentLoader';
+
+let slotMap=new Map();
 
 class BookAppoinment extends Component {
   constructor(props) {
@@ -31,12 +34,8 @@ class BookAppoinment extends Component {
       doctorId: '',
       reviews_length: '',
       doctorId:'',
-      slotList:[],
-      doctorDetails:[],
-      currentDate:formatDate(new Date(),'YYYY-MM-DD'),
-
-
-      
+      currentDate:formatDate(new Date(),'YYYY-MM-DD'), 
+      isLoading: true     
     }
 
   }
@@ -44,27 +43,23 @@ class BookAppoinment extends Component {
 
   async componentDidMount() {
     const { navigation } = this.props;
-    const fromAppointmentList = navigation.getParam('fromAppointmentList')||false;
-    let endDateMoment = addMoment(this.state.currentDate, 7, 'days')
-    let endDate = formatDate(endDateMoment, 'YYYY-MM-DD');
-    console.log(endDate+'endDate')
+    const slotList = navigation.getParam('slotList');
 
-    if(fromAppointmentList)
+    if(slotList===undefined)
     {
+      let endDateMoment = addMoment(this.state.currentDate, 7, 'days')
+      let endDate = formatDate(endDateMoment, 'YYYY-MM-DD');
+      console.log(endDate+'endDate');  
       const doctorId = navigation.getParam('doctorId')||false;
       await this.setState({doctorId:doctorId});
       console.log(doctorId+'book again');
       await this.getAvailabilitySlots(this.state.doctorId,this.state.currentDate,endDate);          
-    }
-
-    if(!fromAppointmentList)
-    {
+    }else{
     let doctorDetails = navigation.getParam('doctorDetails');
     await this.setState({ doctorId: doctorDetails.doctorId });
-    const slotList = navigation.getParam('slotList', []);
-   if(slotList) {
+    if(slotList) {
     if(slotList.length !== 0) { 
-      await this.setState({item:{
+      await this.setState({item:{ 
         name:slotList[0].location.name,
         no_and_street: slotList[0].location.location.address.no_and_street,
         city: slotList[0].location.location.address.city,
@@ -79,52 +74,43 @@ class BookAppoinment extends Component {
 }
   await this.getdoctorDetails(this.state.doctorId);
   await this.getUserReviews(this.state.doctorId);
-
+  this.setState({ isLoading: false });
   }
 
 
   /*FromAppointment list(Get availability slots)*/
   getAvailabilitySlots = async (fromAppointmentDoctorId, startDate, endDate) => {
-    console.log("availability slots");
-    console.log('startDate='+startDate + 'enddate='+endDate)
-    this.setState({ isLoading: true });
+    
     try {
         let totalSlotsInWeek = {
             startDate: formatDate(startDate, 'YYYY-MM-DD'),
             endDate: formatDate(endDate, 'YYYY-MM-DD')
         }
         let resultData = await viewdoctorProfile(fromAppointmentDoctorId, totalSlotsInWeek);
-        this.setState({ isLoading: false });
-        if (resultData.success) {
+        
+        if (resultData.success) {          
           let slotData=resultData.data[0].slotData
-          console.log(slotData);
           this.setState({slotList:slotData[formatDate(startDate,'YYYY-MM-DD')]});
+          for(var key in slotData){           
+          await slotMap.set(key,slotData[key]);
+        }
+              
         }
     } catch (e) {
         console.log(e);
     }
 }
 
-/* Change the Date using Date Picker */
 
+/* Change the Date using Date Picker */
     onDateChanged(date) {
-      console.log("On date change is running");
-      console.log(date);
-      this.setState({ isLoading: true });
+      console.log(date);      
       let selectedDate = formatDate(date, 'YYYY-MM-DD');
       console.log('selectedDate'+selectedDate);
-      let endDateMoment = addMoment(this.state.currentDate, 7, 'days')
-      let endDate = formatDate(endDateMoment, 'YYYY-MM-DD');
-      this.setState({ selectedDate: selectedDate, getStartDateOfTheWeek: this.state.currentDate, getEndDateOfTheWeek: endDate, });
-      console.log('this.state.getStartDateOfTheWeek'+this.state.getStartDateOfTheWeek)
-      if (!this.state.slotList[selectedDate]) {
-        console.log("selecteddateslotlist");
-          this.getAvailabilitySlots(this.state.doctorId, this.state.currentDate, endDate);
-      }
-      else {
-          if (this.state.slotList[selectedDate]) {
-              this.setState({ slotList: this.state.slotList[selectedDate] });
-          }
+      this.setState({ selectedDate: selectedDate });
+      if(slotMap.has(selectedDate)){
+        let temp = slotMap.get(selectedDate);
+        this.setState({slotList:temp})
       }
     }
 
@@ -227,14 +213,15 @@ class BookAppoinment extends Component {
 
   render() {
     const { navigation } = this.props;
-    const { qualification, doctordata } = this.state;
+    const { qualification, doctordata, isLoading } = this.state;
     const fromAppointmentList = navigation.getParam('fromAppointmentList')||false;
 
     return (
       <Container style={styles.container}>
-
-
-        <Content style={styles.bodyContent} contentContainerStyle={{ flex: 0 }}>
+        {isLoading ?
+                        <Loader style='appointment' />
+                        : 
+        <Content style={styles.bodyContent} contentContainerStyle={{ flex: 0 }}>        
 
           <Grid style={{ backgroundColor: '#7E49C3', height: 200 }}>
 
@@ -580,7 +567,9 @@ class BookAppoinment extends Component {
 
 
           </Card>
-        </Content>
+       
+       </Content>
+}
       </Container>
 
     )
