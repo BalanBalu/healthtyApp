@@ -78,6 +78,13 @@ export function renderIf(condition, renderFn) {
   export function subTimeUnit(date, amount, unit) {
     return moment(date).subtract(amount, unit).toDate();
   }
+
+  export function getMoment(date) {
+    return moment(date)
+}
+export function  addMoment(date,amount, unit) {
+  return moment(date).add(amount,unit)
+}
   export function findArrayObj(array, findNode, findValue) {
     let returnObj;   
        //console.log(findValue);
@@ -88,6 +95,17 @@ export function renderIf(condition, renderFn) {
        }
    }
    return returnObj;
+}
+
+/* Get Unique Values from Array  */
+export function getUniqueValues(array){
+  var uniqueLanguageArray = [];
+  for(i=0; i < array.length; i++){
+      if(uniqueLanguageArray.indexOf(array[i]) === -1) {
+          uniqueLanguageArray.push(array[i]);
+      }
+  }
+  return uniqueLanguageArray;
 }
 
   
