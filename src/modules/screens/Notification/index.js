@@ -1,6 +1,6 @@
 
 import React, { Component } from 'react';
-import { StyleSheet, AsyncStorage, FlatList } from 'react-native';
+import { StyleSheet, AsyncStorage, FlatList, TouchableOpacity} from 'react-native';
 import { ScrollView } from 'react-native-gesture-handler';
 import { NavigationEvents } from 'react-navigation';
 import { Container, Header, Title, Left, Body, Card, View, Text, Content, Col, Icon, ListItem, List
@@ -31,54 +31,58 @@ class Notification extends Component {
 
     }
 
-    backNavigation = async (navigationData) => {
-        if (navigationData.action) {
-            if (navigationData.action.type === 'Navigation/BACK') {
-                this.upDateNotification();
-            }
+    // backNavigation = async (navigationData) => {
+    //     if (navigationData.action) {
+    //         if (navigationData.action.type === 'Navigation/BACK') {
+//   
+    //         }
+    //     }
+    //     // console.log(navigationData);
+    // }
+    updateNavigation=async (item)=> {
+     await   this.setState({notificationId:item._id})
+        if (!item.mark_as_readed) {
+            
+          await  this.upDateNotification()
         }
-        // console.log(navigationData);
+        
     }
-    upDateNotification = async () => {
+    upDateNotification = async() => {
         try {
-            await UpDateUserNotification('mark_as_viewed', this.state.notificationId);
+            console.log('updatenotification.......' + this.state.notificationId)
+         let  result=  await UpDateUserNotification('mark_as_viewed', this.state.notificationId);
+            console.log(result);
         }
         catch (e) {
             console.log(e);
         }
-        // finally {
-        //     this.setState({ isLoading: false });
-        // }
+       
     }
 
     //
     getUserNotification = async () => {
         try {
-             this.setState({ isLoading: true });
+            
             let userId = await AsyncStorage.getItem('userId');
-            let condition = true;
-            let oldResult = await fetchUserNotification(userId, condition);
-            //if my point of you mark_as_viewed=false  means new notification 
-            let condition1 = false;
-            let newResult = await fetchUserNotification(userId, condition1);
-            let notificationId = newResult.data.map(_id => {
-                return _id._id
-            }).join(',');
-            this.setState({ notificationId: notificationId })
-            let result = [];
-            result=newResult.data.concat( oldResult.data)
-            if (newResult.success) {
-                await this.setState({ data: result })
-              
+           
+            let result = await fetchUserNotification(userId);
+            // let notificationId = result.data.map(_id => {
+            //     return _id._id
+            // }).join(',');
+            // this.setState({ notificationId: notificationId })
+          
+            if (result.success) {
+                await this.setState({ data: result.data, isLoading: true  })   
             }
-            this.setState({ isLoading: false });
+            console.log(this.state.data)
+           
 
         }
         catch (e) {
             console.log(e);
         }
         finally {
-            this.setState({ isLoading: false });
+            this.setState({ isLoading: true });
         }
     }
 
@@ -87,11 +91,12 @@ class Notification extends Component {
         const { data ,isLoading} = this.state
         return (
             < Container style={styles.container} >
-                <NavigationEvents onWillFocus={payload => { this.backNavigation(payload) }} />
+                {/* <NavigationEvents onwillBlur={payload => { this.componentWillMount() }} /> */}
                 <Content>
-                    {/* {isLoading == true ? */}
+                     {isLoading == true ? 
                     
                         < ScrollView horizontal={false}>
+                            
                             <List noBorder>
                                 <FlatList
                                     // horizontal={true}
@@ -100,12 +105,12 @@ class Notification extends Component {
                                     renderItem={({ item, index }) =>
 
                                 
-                                        <Body>
+                                       
                                             <Card style={{ borderRadius: 5, width: 'auto', }}>
-                                                <View style={{ borderWidth: 1, borderColor: '#c9cdcf', marginTop: 10 }} />
-                                    
-                                                <View style={{ backgroundColor: (item.mark_as_viewed == false) ? '#f5e6ff' : null }}>
-
+                                                {/* <View style={{ borderWidth: 1, borderColor: '#c9cdcf', marginTop: 10 }} /> */}
+                                            <TouchableOpacity onPress={() => this.updateNavigation(item)}>
+                                                <View style={{ backgroundColor: (item.mark_as_viewed== false) ? '#f5e6ff' : null }}>
+                                               
                                                     <Col>
                                                         {dateDiff(item.created_date, new Date(), 'days') > 30 ?
         
@@ -130,17 +135,18 @@ class Notification extends Component {
 
 
                                                     </Col>
-
+                                                
                                                 </View>
-
+                                            </TouchableOpacity>
                                             </Card>
-                                        </Body>
+                                       
                                     }
                                     keyExtractor={(item, index) => index.toString()} />
-                            </List>
-                    </ ScrollView>
+                                </List>
+                                
+                    </ ScrollView>:
                          
-                        {/*<Spinner
+                        <Spinner
                             color="blue"
                             style={[styles.containers, styles.horizontal]}
                             visible={true}
@@ -148,7 +154,7 @@ class Notification extends Component {
                             overlayColor="none"
                             cancelable={false}
                         />
-                    } */}
+                    } 
                 </Content>
             </Container >
         );

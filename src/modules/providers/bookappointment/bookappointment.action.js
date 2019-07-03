@@ -1,4 +1,4 @@
-import { postService, getService, putService } from '../../../setup/services/httpservices';
+import { postService, getService, putService} from '../../../setup/services/httpservices';
 
 
 
@@ -250,10 +250,10 @@ export const getPatientWishList = async (userId) => {
 
 
 /* Get Patient Notification List  */
-export const fetchUserNotification = async (userId, condition) => {
+export const fetchUserNotification = async (userId) => {
   try {
    
-    let endPoint = '/notifications/' + userId + '?mark_as_viewed=' + condition;
+    let endPoint = '/notifications/' + userId ;
     let response = await getService(endPoint);
     let respData = response.data;
     return respData;
@@ -269,7 +269,8 @@ export const fetchUserNotification = async (userId, condition) => {
 export const UpDateUserNotification = async (updateNode, notificationIds) => {
   try {
 
-    let endPoint = '/notifications/status /' + updateNode + '/' + notificationIds;
+    let endPoint = '/notifications/status/'+updateNode +'/'+notificationIds;
+    console.log(endPoint)
     let response = await putService(endPoint);
     let respData = response.data;
     return respData;
