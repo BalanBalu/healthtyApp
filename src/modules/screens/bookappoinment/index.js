@@ -4,7 +4,7 @@ import { Col, Row, Grid } from 'react-native-easy-grid';
 import { connect } from 'react-redux'
 import { StyleSheet, Image, TouchableOpacity, View, FlatList, AsyncStorage } from 'react-native';
 import StarRating from 'react-native-star-rating';
-import { formatDate, getFirstDay, getLastDay,addMoment } from '../../../setup/helpers';
+import { formatDate,addMoment } from '../../../setup/helpers';
 import {  viewdoctorProfile,viewUserReviews, bindDoctorDetails } from '../../providers/bookappointment/bookappointment.action';
 import Mapbox from './Mapbox';
 import { Loader } from '../../../components/ContentLoader';
@@ -53,7 +53,8 @@ class BookAppoinment extends Component {
       const doctorId = navigation.getParam('doctorId')||false;
       await this.setState({doctorId:doctorId});
       console.log(doctorId+'book again');
-      await this.getAvailabilitySlots(this.state.doctorId,this.state.currentDate,endDate);          
+      await this.getAvailabilitySlots(this.state.doctorId,this.state.currentDate,endDate);
+                
     }else{
     let doctorDetails = navigation.getParam('doctorDetails');
     await this.setState({ doctorId: doctorDetails.doctorId });
@@ -81,24 +82,20 @@ class BookAppoinment extends Component {
   /*FromAppointment list(Get availability slots)*/
   getAvailabilitySlots = async (fromAppointmentDoctorId, startDate, endDate) => {
     
-    try {
         let totalSlotsInWeek = {
             startDate: formatDate(startDate, 'YYYY-MM-DD'),
             endDate: formatDate(endDate, 'YYYY-MM-DD')
         }
         let resultData = await viewdoctorProfile(fromAppointmentDoctorId, totalSlotsInWeek);
         
-        if (resultData.success) {          
+        if (resultData.success) {
           let slotData=resultData.data[0].slotData
           this.setState({slotList:slotData[formatDate(startDate,'YYYY-MM-DD')]});
+          console.log(this.state.slotList);
           for(var key in slotData){           
           await slotMap.set(key,slotData[key]);
         }
-              
-        }
-    } catch (e) {
-        console.log(e);
-    }
+      }
 }
 
 
@@ -170,9 +167,6 @@ class BookAppoinment extends Component {
     }
     this.props.navigation.navigate('Payment Review', { resultconfirmSlotDetails: confirmSlotDetails })
   }
-  navigateToMap(coordinates){
-    this.props.navigation.navigate('Mapbox', { coordinates:this.state.selectedSlotItem})
-  }
 
   noAvailableSlots() {
     return (
@@ -185,6 +179,8 @@ class BookAppoinment extends Component {
   haveAvailableSlots() {
     let { selectedSlotIndex } = this.state;
     return (
+
+
       <FlatList
         style={{ margin: 10 }}
         numColumns={3}
@@ -319,13 +315,7 @@ class BookAppoinment extends Component {
                     <Text note>{this.state.item.pin_code}</Text>
 
                   </Body>
-                  {/* <Right>
-                <Button onPress={() => this.navigateToMap(this.state.slotList)} style={{ borderRadius:7,color:'gray'}}>
-                    <Text uppercase={false}>View Map</Text>
-                </Button>
-
-              </Right> */}
-
+                  
                 </ListItem>
               </List>
             </Card>

@@ -85,9 +85,6 @@ export function renderIf(condition, renderFn) {
   export function getMoment(date) {
     return moment(date)
 }
-export function  addMoment(date,amount, unit) {
-  return moment(date).add(amount,unit)
-}
   export function findArrayObj(array, findNode, findValue) {
     let returnObj;   
        //console.log(findValue);
