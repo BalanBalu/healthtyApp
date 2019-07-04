@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { Container, Content, Text, Title, Header,View, Button, H3, Item, List, ListItem, Card, Input, Left, Right, Thumbnail, Body, Icon, Footer, FooterTab } from 'native-base';
+import { Container, Content, Text, Title, Header,View, Button, H3, Item, List, ListItem, Card, Input, Left, Right, Thumbnail, Body, Icon, Footer, FooterTab, Badge } from 'native-base';
 
 import LinearGradient from 'react-native-linear-gradient';
 import { Col, Row, Grid } from 'react-native-easy-grid';
@@ -47,53 +47,54 @@ class MedicineSearchList extends Component {
                     <Card transparent style={{ padding: 10, marginTop: 40 }} onTouchStart={()=> this.props.navigation.navigate('MedicineCheckout')} >
                          <Card style={{ padding: 10 }}>
                             <Grid>
-                                <Col style={{ width: '25%' }}>
-                                    <Image source={{ uri: 'https://vimecare.com/WelcomeDesign/images/doctor-icon.png' }} style={styles.customImage} />
+                            <Col style={{ width: '25%' }}>
+                                <View>
+                                 <Image source={{ uri: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQE-GVencCM4e7LuKxP2SaFTbONdLA1BiOGz96ICf1fkBixV-Tv' }} style={styles.customImage} />
+                                 <View style={{position: 'absolute', width: 30, height:30, borderRadius: 20, marginLeft:5,
+                                  backgroundColor: 'green', right: 0, top:0, justifyContent: 'center', alignItems: 'center',
+                                   borderColor: 'green', borderWidth:1 }}>
+                                 <Text style={{padding:5, backgroundColor: 'transparent', color: 'white', fontSize: 13}}>20%</Text>
+                                
+                                </View>
+                                </View> 
                                 </Col>
 
-                                <Col style={{marginLeft: 10, width: '75%', alignItems: 'flex-start', justifyContent: 'center' }}>
-                                    <Text style={styles.normalText}>Aminocaproic Acid</Text>
-                                  <Row>
-                                    <Left style={{marginLeft: 30}}>
-                                   <Text style={styles.subText}>
-                                    <Text style={{color: 'gray',fontSize:17, textDecorationLine: 'line-through',textDecorationStyle: 'solid',textDecorationColor:'gray'}}>
-                                    {'\u20B9'}100</Text>  {'\u20B9'} 80</Text>
-                                    </Left>
 
-                                    <Right style={{marginRight: 10}}>
-                                        <View style={{ backgroundColor: 'white', borderWidth: 1, borderRadius: 200, padding: 5}}>
-                                    <Text style={styles.offerText}>20% </Text>
-                                    </View>                           
-                                   </Right>
+                                <Col style={{marginLeft: 20, width: '75%', alignItems: 'flex-start', justifyContent: 'center',marginTop: 10 }}>
+                                <Text style={styles.normalText}>Aminocaproic Acid</Text>
+                                  <Row>
+                                   <Text style={styles.subText}>{'\u20B9'}80</Text>  
+                                   <Text style={{marginLeft:10, marginTop:2, color: 'gray',fontSize:15, textDecorationLine: 'line-through',textDecorationStyle: 'solid',textDecorationColor:'gray'}}>
+                                              {'\u20B9'}100</Text>
                                     </Row>
-                                   <Text style={{ color: 'gray',fontSize:15 }}>White Pigeon Pharmacy</Text>
-       
+                                   <Text style={{ color: 'gray',fontSize:16 }}>White Pigeon Pharmacy</Text>
                                 </Col>
                             </Grid>
-
                         </Card>
+                        
                         <Card style={{ padding: 10 }}>
                             <Grid>
                                 <Col style={{ width: '25%' }}>
-                                    <Image source={{ uri: 'https://vimecare.com/WelcomeDesign/images/doctor-icon.png' }} style={styles.customImage} />
+                                    <View>
+                                    <Image source={{ uri: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTmQtUYMSYsZlwJM46ZccW_Ev3KULxQA-o2yFEygywoQBs0KBnlJg' }} style={styles.customImage} />
+                                    <View style={{position: 'absolute', width: 30, height:30, borderRadius: 20, marginLeft:5,
+                                  backgroundColor: 'green', right: 0, top:0, justifyContent: 'center', alignItems: 'center',
+                                   borderColor: 'green', borderWidth:1 }}>
+                                 <Text style={{padding:5, backgroundColor: 'transparent', color: 'white', fontSize: 13}}>50%</Text>
+                                
+                                </View>
+                                </View> 
+
                                 </Col>
 
-                                <Col style={{ marginLeft: 10,width: '75%', alignItems: 'flex-start', justifyContent: 'center' }}>
+                                <Col style={{marginLeft: 20, width: '75%', alignItems: 'flex-start', justifyContent: 'center',marginTop: 10 }}>
                                     <Text style={styles.normalText}>Gemtuzumab ozogamicin</Text>
                                   <Row>
-                                    <Left style={{marginLeft: 30}}>
-                                   <Text style={styles.subText}>
-                                    <Text style={{color: 'gray',fontSize:17, textDecorationLine: 'line-through',textDecorationStyle: 'solid',textDecorationColor:'gray'}}>
-                                    {'\u20B9'}100</Text>  {'\u20B9'} 50</Text>
-                                    </Left>
-
-                                    <Right style={{marginRight: 10}}>
-                                    <View style={{ backgroundColor: 'white', borderWidth: 1, borderRadius: 200, padding: 5}}>
-                                    <Text style={styles.offerText}>50% </Text>
-                                    </View>                           
-                                   </Right>
+                                        <Text style={styles.subText}>{'\u20B9'}50</Text>  
+                                        <Text style={{marginLeft:10, marginTop:2, color: 'gray',fontSize:15, textDecorationLine: 'line-through',textDecorationStyle: 'solid',textDecorationColor:'gray'}}>
+                                        {'\u20B9'}100</Text>
                                     </Row>
-                                   <Text style={{ color: 'gray',fontSize:15 }}>Wellness Craft Pharmacy</Text>
+                                   <Text style={{ color: 'gray',fontSize:16 }}>Wellness Craft Pharmacy</Text>
        
                                 </Col>
                             </Grid>
@@ -105,24 +106,26 @@ class MedicineSearchList extends Component {
                         <Card style={{ padding: 10 }}>
                             <Grid>
                                 <Col style={{ width: '25%' }}>
-                                    <Image source={{ uri: 'https://vimecare.com/WelcomeDesign/images/doctor-icon.png' }} style={styles.customImage} />
-                                </Col>
+                                    <View>
+                                    <Image source={{ uri: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSTSgZ9jiVeVoxjDCuYlwzlbUop6Y_EQOtMj-2DoLZQ1he-azufKg' }} style={styles.customImage} />
+                                    <View style={{position: 'absolute', width: 30, height:30, borderRadius: 20, marginLeft:5,
+                                  backgroundColor: 'green', right: 0, top:0, justifyContent: 'center', alignItems: 'center',
+                                   borderColor: 'green', borderWidth:1 }}>
+                                 <Text style={{padding:5, backgroundColor: 'transparent', color: 'white', fontSize: 13}}>25%</Text>
+                                
+                                </View>
+                                </View> 
+                              </Col>
 
-                                <Col style={{ marginLeft: 10,width: '75%', alignItems: 'flex-start', justifyContent: 'center' }}>
+                                <Col style={{marginLeft: 20, width: '75%', alignItems: 'flex-start', justifyContent: 'center',marginTop: 10 }}>
                                     <Text style={styles.normalText}>Hydroxyurea for sickle cell disease</Text>
                                   <Row>
-                                    <Left style={{marginLeft: 30}}>
-                                   <Text style={styles.subText}>
-                                    <Text style={{color: 'gray',fontSize:17, textDecorationLine: 'line-through',textDecorationStyle: 'solid',textDecorationColor:'gray'}}>
-                                    {'\u20B9'}100</Text>  {'\u20B9'} 75</Text>
-                                    </Left>
-                                    <Right style={{marginRight: 10}}>
-                                    <View style={{ backgroundColor: 'white', borderWidth: 1, borderRadius: 200, padding: 5}}>
-                                    <Text style={styles.offerText}>25% </Text>
-                                    </View>                           
-                                   </Right>
-                                    </Row>
-                                       <Text style={{ color: 'gray',fontSize:15 }}>Shoprite Pharmacy</Text>
+                                 
+                                        <Text style={styles.subText}>{'\u20B9'}75</Text>  
+                                        <Text style={{marginLeft:10, marginTop:2, color: 'gray',fontSize:15, textDecorationLine: 'line-through',textDecorationStyle: 'solid',textDecorationColor:'gray'}}>
+                                              {'\u20B9'}100</Text>
+                                       </Row>
+                                       <Text style={{ color: 'gray',fontSize:16 }}>Shoprite Pharmacy</Text>
                                 </Col>
                             </Grid>
 
@@ -172,7 +175,8 @@ const styles = StyleSheet.create({
         marginLeft: 'auto',
         marginRight: 'auto',
         marginTop: 'auto',
-        marginBottom: 'auto'
+        marginBottom: 'auto',
+        borderRadius: 50
     },
 
     curvedGrid:
@@ -192,20 +196,20 @@ const styles = StyleSheet.create({
     {
         fontFamily: 'OpenSans',
         fontSize: 17,
-        // color: 'gblackray',
         marginTop: 10
     },
     offerText:
     {
         fontFamily: 'OpenSans',
         fontSize: 13,
-        color: 'red'
+        color: 'green'
      
     },
     subText:{
         fontFamily: 'OpenSans',
         fontSize: 17,
-        color: 'black'
+        color: 'black',
+        //marginLeft: 5
     }
 
 });
