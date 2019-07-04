@@ -6,7 +6,7 @@ import { NavigationEvents } from 'react-navigation';
 import { Container, Header, Title, Left, Body, Card, View, Text, Content, Col, Icon, ListItem, List
 } from 'native-base';
 import moment from 'moment';
-import { fetchUserNotification, UpDateUserNotification } from '../../providers/bookappointment/bookappointment.action';
+import { fetchUserNotification, UpDateUserNotification } from '../../providers/notification/notification.action';
 import { formatDate, dateDiff } from '../../../setup/helpers';
 import Spinner from "../../../components/Spinner";
 
@@ -26,7 +26,7 @@ class Notification extends Component {
 
     async componentDidMount() {
 
-
+         console.log('go componentDid mount')
         this.getUserNotification();
 
     }
@@ -39,13 +39,16 @@ class Notification extends Component {
     //     }
     //     // console.log(navigationData);
     // }
-    updateNavigation=async (item)=> {
+    updateNavigation = async (item) => {
+        console.log('appointmentId' + item.appointment_id)
      await   this.setState({notificationId:item._id})
         if (!item.mark_as_readed) {
-            
+            this.props.navigation.navigate("AppointmentInfo", { appointmentId: item.appointment_id })
           await  this.upDateNotification()
         }
-        
+        else {
+            this.props.navigation.navigate("AppointmentInfo", { appointmentId: item.appointment_id })
+        }
     }
     upDateNotification = async() => {
         try {
@@ -64,7 +67,7 @@ class Notification extends Component {
         try {
             
             let userId = await AsyncStorage.getItem('userId');
-           
+             
             let result = await fetchUserNotification(userId);
             // let notificationId = result.data.map(_id => {
             //     return _id._id
