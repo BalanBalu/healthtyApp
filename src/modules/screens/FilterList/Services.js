@@ -1,92 +1,83 @@
 import React, { Component } from 'react';
-import { StyleSheet, TextInput } from 'react-native';
-import { Container, Card, Text, Content, ListItem, CheckBox, Body, Header, Left, Title, Icon } from 'native-base';
+import { StyleSheet, TextInput, FlatList } from 'react-native';
+import { Container, Card, Text, Content, ListItem, CheckBox, Body, View,Button,Item, Left, Title, Icon, List } from 'native-base';
 
 class Services extends Component {
+    
+    constructor(props) {
+        super(props)
+
+        this.state={
+            serviceList:[],
+            serviceCheckBox:[false],
+            selectedService:[],
+            serviceValue:''
+
+        }
+    }
+
+    async componentDidMount() {
+             const { navigation } = this.props;
+        const serviceList = navigation.getParam('serviceList');
+        await this.setState({ serviceList: serviceList });
+        console.log('serviceList'+JSON.stringify(this.state.serviceList));
+
+    }
+
+    sendServicesData = async () => {
+        await this.props.navigation.navigate('Filters',{selectedServicesList:this.state.serviceValue})
+
+    }
+
+
+
+    selectServicesInCheckBox=(serviceIndex,serviceValue)=>{
+
+        let sampleArray = this.state.serviceCheckBox;
+        sampleArray[serviceIndex] = !this.state.serviceCheckBox[serviceIndex];
+        this.setState({ serviceCheckBox: sampleArray });
+        this.setState({ serviceValue: serviceValue })
+        console.log('serviceValue'+this.state.serviceValue);
+        
+        if (sampleArray[serviceIndex] == true) {
+            this.state.selectedService.splice(serviceIndex, 0, serviceValue);
+        } else {
+            let deSelectedIndex = this.state.selectedService.indexOf(serviceValue);
+            this.state.selectedService.splice(deSelectedIndex, 1);
+        }
+        
+            }
     render() {
         return (
-            < Container style={styles.container} >
+           
+                < Container style={styles.container} >
                 <Content>
-                    <Header style={{ backgroundColor: '#7f49c3' }}>
-                        <Left>
-                            <Icon size={30} color={'#fff'} name={'arrow-back'} />
-                        </Left>
-                        <Body>
-                            <Title style={{ fontFamily: 'OpenSans', }} >Services</Title>
-                        </Body>
-                    </Header>
-                    <Card style={{ borderRadius: 5, padding: 10 }}>
-                        <ListItem>
-                            <CheckBox checked={true} color="green" />
-                            <Body>
-                                <Text>infectious diseases</Text>
-                            </Body>
-                        </ListItem>
-                        <ListItem>
-                            <CheckBox checked={false} color="green" />
-                            <Body>
-                                <Text>deficiency diseases</Text>
-                            </Body>
-                        </ListItem>
-                        <ListItem>
-                            <CheckBox checked={false} color="green" />
-                            <Body>
-                                <Text>hereditary diseases </Text>
-                            </Body>
-                        </ListItem>
-                        <ListItem>
-                            <CheckBox checked={false} color="green" />
-                            <Body>
-                                <Text> physiological diseases</Text>
-                            </Body>
-                        </ListItem>
-                        <ListItem>
-                            <CheckBox checked={false} color="green" />
-                            <Body>
-                                <Text>Idiopathic disease</Text>
-                            </Body>
-                        </ListItem>
-                        <ListItem>
-                            <CheckBox checked={false} color="green" />
-                            <Body>
-                                <Text> physiological diseases</Text>
-                            </Body>
-                        </ListItem>
-                        <ListItem>
-                            <CheckBox checked={false} color="green" />
-                            <Body>
-                                <Text>Idiopathic disease</Text>
-                            </Body>
-                        </ListItem>
-                        <ListItem>
-                            <CheckBox checked={false} color="green" />
-                            <Body>
-                                <Text> physiological diseases</Text>
-                            </Body>
-                        </ListItem>
-                        <ListItem>
-                            <CheckBox checked={false} color="green" />
-                            <Body>
-                                <Text>Idiopathic disease</Text>
-                            </Body>
-                        </ListItem>
-                        <ListItem>
-                            <CheckBox checked={false} color="green" />
-                            <Body>
-                                <Text> physiological diseases</Text>
-                            </Body>
-                        </ListItem>
-                        <ListItem>
-                            <CheckBox checked={false} color="green" />
-                            <Body>
-                                <Text>Idiopathic disease</Text>
-                            </Body>
-                        </ListItem>
-
+                <FlatList
+                data={this.state.serviceList}
+                extraData={this.state}
+                keyExtractor={(item, index) => index.toString()}
+                renderItem={({ item, index }) =>
+                <Card style={{ borderRadius: 5, padding: 10 }}>
+                    <CheckBox 
+                    checked={this.state.serviceCheckBox[index]}  onPress={() => this.selectServicesInCheckBox(index,item.value )} color="green"
+                    />
+                    <Body>
+                        <Text>{item.value}</Text>
+                    </Body>
                     </Card>
-                </Content>
-            </Container >
-        );
+                } />
+
+                
+<View style={{ paddingTop: 5 }}>
+                        <Button block style={{ borderRadius: 10, backgroundColor: '#5cb75d', height: 48 }} onPress={this.sendServicesData}>
+                            <Text style={{ fontFamily: 'OpenSans', }}>View Doctors</Text>
+                        </Button>
+                    </View>
+
+                                </Content>
+                            </Container>
+
+        )
     }
 }
 export default Services
@@ -94,17 +85,10 @@ export default Services
 
 const styles = StyleSheet.create({
     container: {
-        backgroundColor: 'gray',
+        backgroundColor: 'white',
         padding: 5
 
-    },
-
-    card: {
-        width: 'auto',
-        borderRadius: 100
-
-    },
-
+    }
 })
 
 

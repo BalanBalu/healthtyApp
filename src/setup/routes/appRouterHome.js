@@ -29,6 +29,7 @@ import userdetails from "../../modules/screens/auth/userdetails";
 import Reviews from "../../modules/screens/Reviews";
 import doctorSearchList from "../../modules/screens/doctorSearchList";
 import FilterList from "../../modules/screens/FilterList";
+import ServicesList from "../../modules/screens/FilterList/Services";
 import PaymentPage from "../../modules/screens/PaymentPage";
 import PaymentReview from "../../modules/screens/PaymentReview";
 import PaymentSuccess from "../../modules/screens/PaymentSuccess";
@@ -167,6 +168,13 @@ const AppointMentstack1 = createStackNavigator({
       title: 'Filters'
     }
   },
+
+ Services: {
+      screen: ServicesList,
+      navigationOptions: {
+      title: 'ServicesList'
+    }
+   },
   "Book Appointment": {
     screen: BookAppoinment,
     navigationOptions: {
