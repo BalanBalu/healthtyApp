@@ -31,6 +31,7 @@ class BookAppoinment extends Component {
       },
       selectedSlotIndex:0,
       selectedSlotItem: null,
+      fromBookAgainSelectedSlotItem:'',
       doctorId: '',
       reviews_length: '',
       doctorId:'',
@@ -48,13 +49,10 @@ class BookAppoinment extends Component {
     if(slotList===undefined)
     {
       let endDateMoment = addMoment(this.state.currentDate, 7, 'days')
-      let endDate = formatDate(endDateMoment, 'YYYY-MM-DD');
-      console.log(endDate+'endDate');  
+      let endDate = formatDate(endDateMoment, 'YYYY-MM-DD'); 
       const doctorId = navigation.getParam('doctorId')||false;
       await this.setState({doctorId:doctorId});
-      console.log(doctorId+'book again');
       await this.getAvailabilitySlots(this.state.doctorId,this.state.currentDate,endDate);
-                
     }else{
     let doctorDetails = navigation.getParam('doctorDetails');
     await this.setState({ doctorId: doctorDetails.doctorId });
@@ -92,8 +90,20 @@ class BookAppoinment extends Component {
           let slotData=resultData.data[0].slotData
           this.setState({slotList:slotData[formatDate(startDate,'YYYY-MM-DD')]});
           console.log(this.state.slotList);
+          if(this.state.slotList){
+            await this.setState({item:{ 
+              name:this.state.slotList[0].location.name,
+              no_and_street:this.state.slotList[0].location.location.address.no_and_street,
+              city:this.state.slotList[0].location.location.address.city,
+              state:this.state.slotList[0].location.location.address.state,
+              pin_code:this.state.slotList[0].location.location.pin_code
+            },
+            selectedSlotItem:this.state.slotList[0], 
+            });
+          }
           for(var key in slotData){           
           await slotMap.set(key,slotData[key]);
+
         }
       }
 }
@@ -169,6 +179,7 @@ class BookAppoinment extends Component {
   }
 
   noAvailableSlots() {
+    
     return (
       <Item style={{ borderBottomWidth: 0, justifyContent: 'center', alignItems: 'center' }}>
         <Text style={{ fontSize: 18, justifyContent: 'center', alignItems: 'center' }} >No slots are available </Text>
@@ -177,6 +188,7 @@ class BookAppoinment extends Component {
   }
 
   haveAvailableSlots() {
+
     let { selectedSlotIndex } = this.state;
     return (
 
@@ -300,7 +312,7 @@ class BookAppoinment extends Component {
           <Card transparent style={{ margin: 20, backgroundColor: '#ecf0f1' }}>
              <Card style={ { height: 250 }}>
                     
-               {this.state.selectedSlotItem !== null ? <Mapbox hospitalLocation={this.state.selectedSlotItem}/>  : null }        
+               {this.state.selectedSlotItem !== null  ? <Mapbox hospitalLocation={this.state.selectedSlotItem}/>  : null }        
               <List>
                 <ListItem avatar>
                   <Left>
