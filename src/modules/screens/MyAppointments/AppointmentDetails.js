@@ -17,7 +17,7 @@ class AppointmentDetails extends Component {
 
     this.state = {
       data: {},
-      appointmentId: '',
+      appointmentId:null,
       doctorId: '',
       userId: '',
       reviewData: {},
@@ -35,14 +35,18 @@ class AppointmentDetails extends Component {
     const userId = await AsyncStorage.getItem('userId');
     const { navigation } = this.props;
     const appointmentData = navigation.getParam('data');
-    console.log(appointmentData);
+    
+    let appointmentId = navigation.getParam('appointmentId');
+    console.log(appointmentId)
+    await this.setState({ appointmentId });
+
     if (appointmentData == undefined) {
-      const appointmentId = navigation.getParam('appointmentId');
-      let doctorId = "5ce38535ecb5b70f90996221";
-      await this.setState({ doctorId: doctorId, appointmentId: appointmentId, userId: userId });
-          await this.appointmentDetailsGetById()
+     
+          console.log('appointmentdata')
+          this.appointmentDetailsGetById()
     }
     else {
+      console.log('not pass a way...')
       let doctorId = appointmentData.doctor_id;
       let appointmentId = appointmentData._id;
       await this.setState({ doctorId: doctorId, appointmentId: appointmentId, userId: userId, data: appointmentData, isLoading: true })
@@ -86,7 +90,7 @@ class AppointmentDetails extends Component {
   /* get User reviews */
   getUserReviews = async (appointmentId) => {
     let resultReview = await viewUserReviews('appointment', appointmentId);
-    debugger
+     console.log(resultReview.data)
     if (resultReview.success) {
       this.setState({ reviewData: resultReview.data });
     }
@@ -94,14 +98,20 @@ class AppointmentDetails extends Component {
   }
   
   appointmentDetailsGetById = async () => {
-    let result = await getAppointmentDetails(this.state.doctorId, this.state.appointmentId);
+    let result = await getAppointmentDetails(this.state.appointmentId);
+    
     this.getUserReviews(this.state.appointmentId);
-    console.log('ajay mama')
-    console.log(result.data);
-
+    if (result.success) {
+      this.setState({ doctorId: result.data.doctor_id })
+      let doctorId = result.data.doctor_id;
+      console.log(doctorId);
+      this.getDoctorDetails(doctorId)
+      
+    }
+  
+    console.log(result.data)
   
      
-    this.getDoctorDetails(result.data.doctor_id);
     
 
   }

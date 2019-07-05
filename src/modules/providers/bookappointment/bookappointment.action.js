@@ -84,7 +84,7 @@ export async function viewUserReviews(type, id, isLoading = true) {
   try {
     let endPoint = 'user/reviews/' + type + '/' + id
     let response = await getService(endPoint);
-    console.log('response' + response);
+    
     let respData = response.data;
     return respData;
 
@@ -236,6 +236,21 @@ export async function insertDoctorsWishList(userId, doctorId, requestData) {
 export const getPatientWishList = async (userId) => {
   try {
     let endPoint = 'user/wishList/' + userId;
+    let response = await getService(endPoint);
+    let respData = response.data;
+    return respData;
+  } catch (e) {
+    console.log(e.message);
+    return {
+      message: 'exception' + e,
+      success: false
+    }
+  }
+}
+//get doctordetails using appointment Id notification page
+export const getAppointmentDetails = async (appointmentId) => {
+  try {
+    let endPoint = '/appointment/'+appointmentId;
     let response = await getService(endPoint);
     let respData = response.data;
     return respData;
