@@ -5,7 +5,7 @@ import { postService, getService, putService } from '../../../setup/services/htt
 /* Book the Doctor Appointment module  */
 export async function bookAppointment(bookSlotDetails, isLoading = true) {
   try {
-    let endPoint = 'doctor/appointment';
+    let endPoint = 'appointment';
     let response = await postService(endPoint, bookSlotDetails);
     
     let respData = response.data;
@@ -184,7 +184,7 @@ export const getMultipleDoctorDetails = async (doctorIds, fields, isLoading = tr
 
 export async function appointmentDetails(doctorId, appointmentId, isLoading = true) {
   try {
-    let endPoint = 'doctor/' + doctorId + '/appointment/' + appointmentId
+    let endPoint = 'appointment/' + appointmentId
     let response = await getService(endPoint);
     let respData = response.data;
     return respData;
@@ -200,7 +200,7 @@ export async function appointmentDetails(doctorId, appointmentId, isLoading = tr
 
 export async function appointmentStatusUpdate(doctorId, appointmentId, requestData, isLoading = true) {
   try {
-    let endPoint = 'doctor/' + doctorId + '/appointment/' + appointmentId
+    let endPoint =  'appointment/' + appointmentId
     let response = await putService(endPoint, requestData);
     let respData = response.data;
    
