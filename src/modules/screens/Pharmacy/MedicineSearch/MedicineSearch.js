@@ -48,11 +48,11 @@ class MedicineSearch extends Component {
                         </Row>
 
                     </Grid>
-                    <View style={{ marginLeft: 'auto', marginRight: 'auto', marginTop: 10 }}>
+                    <View style={{ marginLeft: 'auto', marginRight: 'auto', marginTop: 42 }}>
                         <Button style={{ justifyContent: "center", backgroundColor: '#745DA6', borderRadius: 5 }}>
                             <Icon style={{ fontSize: 30 }} name='ios-cloud-upload'>
 
-                                <Text style={{ padding: 2, color: '#fff', marginTop: -20 }}>Upload your prescription
+                                <Text style={{ padding: 2, color: '#fff', }}>Upload your prescription
 
                                 </Text>
 
@@ -63,7 +63,7 @@ class MedicineSearch extends Component {
 
                     <Card transparent >
 
-                        <Grid style={{ marginTop: 25, padding: 10, width: 'auto' }}>
+                        <Grid style={{ marginTop: 50, padding: 10, width: 'auto' }}>
                             <FlatList data={medicine}
                                 renderItem={
 
@@ -215,22 +215,7 @@ class MedicineSearch extends Component {
 
                     </Card>
                 </Content>
-                <Footer>
-                    <FooterTab style={{ backgroundColor: '#7E49C3' }}>
-                        <Button >
-                            <Icon name="apps" />
-                        </Button>
-                        <Button>
-                            <Icon name="chatbubbles" />
-                        </Button>
-                        <Button >
-                            <Icon active name="notifications" />
-                        </Button>
-                        <Button>
-                            <Icon name="person" />
-                        </Button>
-                    </FooterTab>
-                </Footer>
+
             </Container>
 
         )
