@@ -17,10 +17,10 @@ class UpdateContact extends Component {
             type:'Home',
             mobile_no:'',
             active:true,
-            primary_mobile_no:'',
+            primary_mobile_no:null,
             isLoading:false,
             numberType:''
-        }      
+        } 
     }
     
     componentDidMount() {
@@ -107,15 +107,16 @@ class UpdateContact extends Component {
                
        
                 <Content style={styles.bodyContent} contentContainerStyle={{ justifyContent: 'center', flex: 1, height: '100%' }}>
-                <H3 style={{ fontFamily: 'OpenSans' }}>Primary Mobile_no</H3>
-                 <Card style={{ padding: 10, borderRadius: 10 }}>
+                {this.state.primary_mobile_no!=null?<H3 style={{ fontFamily: 'OpenSans' }}>Primary Mobile_no</H3>:null}
+                {this.state.primary_mobile_no!=null?
+                <Card style={{ padding: 10, borderRadius: 10 }}>
                  <Item style={{ borderBottomWidth: 0 }}>
                     <Icon name="call" style={styles.centeredIcons}></Icon>
                         <Body>
                         <Text style={styles.customText}>{this.state.primary_mobile_no}</Text>
                         </Body>
                   </Item>
-                  </Card> 
+                  </Card>:null} 
                     
                     <H3 style={{ fontFamily: 'OpenSans' }}>Edit Secondary Mobile_No</H3>
                     <Text style={{ color: 'gray', fontSize: 13, fontFamily: 'OpenSans' }}>Update your secondary mobile_no</Text>

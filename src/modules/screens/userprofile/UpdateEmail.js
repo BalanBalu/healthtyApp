@@ -92,15 +92,16 @@ class UpdateEmail extends Component {
             <Container style={styles.container}>
                 <Content style={{ padding: 10 }} contentContainerStyle={{ flex: 1, height: '100%', }}>
                     <View style={{ marginTop: 20 }}>
-                        <Text style={{ fontFamily: 'OpenSans', marginLeft: 7, fontWeight: 'bold', fontSize: 20 }}>Primary Email</Text>
+                        {this.state.primary_email!=null?<Text style={{ fontFamily: 'OpenSans', marginLeft: 7, fontWeight: 'bold', fontSize: 20 }}>Primary Email</Text>:null}
                         <Card style={{ padding: 10, borderRadius: 10, marginTop: 10 }}>
+                            {this.state.primary_email!=null?
                             <Item style={{ borderBottomWidth: 0 }}>
                                 <Icon name='mail' style={styles.centeredIcons}></Icon>
 
                                 <Text style={styles.customText}>{this.state.primary_email}</Text>
 
                             </Item>
-                        </Card>
+                        :null}</Card>
                     </View>
                     <View style={{ marginTop: 20 }}>
                         <Text style={{ fontFamily: 'OpenSans', marginTop: 50, marginLeft: 7, fontWeight: 'bold', fontSize: 20 }}>Secondary Email</Text>
