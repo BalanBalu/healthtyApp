@@ -1,7 +1,7 @@
 import { StyleSheet } from 'react-native'
 
 export default StyleSheet.create({
-   
+
     container:
     {
         marginTop: 10,
@@ -147,9 +147,9 @@ export default StyleSheet.create({
         borderRadius: 10,
 
         justifyContent: 'center',
-        padding: 20,
-        marginTop: 15,
-        width: '50%',
+        padding: 10,
+        marginTop: 10,
+
 
     }
 });
