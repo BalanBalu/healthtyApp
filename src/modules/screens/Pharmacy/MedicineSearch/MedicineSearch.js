@@ -215,6 +215,32 @@ class MedicineSearch extends Component {
 
                     </Card>
                 </Content>
+                <Footer style={{ backgroundColor: '#7E49C3', }}>
+
+                    <Col >
+                        <Button success style={{ borderRadius: 10, marginTop: 10, marginLeft: 40, height: 35, justifyContent: 'center' }}>
+
+                            <Row style={{ justifyContent: 'center', }}>
+                                <Icon name='ios-cart' />
+                                <Text style={{ marginLeft: -25 }}>Add to cart</Text>
+                            </Row>
+                        </Button>
+                    </Col>
+
+
+
+                    <Col >
+                        <Button success style={{ borderRadius: 10, marginTop: 10, marginLeft: 40, height: 35, alignContent: 'center' }}>
+
+
+                            <Text>View Cart</Text>
+
+                        </Button>
+                    </Col>
+
+
+
+                </Footer>
 
             </Container>
 
