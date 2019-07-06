@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { Container, Content, Text, Title, Header, Button, H3, Item, List, ListItem, Card, Input, Left, Right, Thumbnail, Body, Icon, Footer, FooterTab } from 'native-base';
+import { Container, Content, Text, Title, Header, View, Button, H3, Item, List, ListItem, Card, Input, Left, Right, Thumbnail, Body, Icon, Footer, FooterTab, Badge } from 'native-base';
 
 import LinearGradient from 'react-native-linear-gradient';
 import { Col, Row, Grid } from 'react-native-easy-grid';
@@ -12,7 +12,7 @@ class MedicineSearchList extends Component {
         super(props)
         console.log(this.props)
     }
-    
+
     render() {
 
 
@@ -27,9 +27,9 @@ class MedicineSearchList extends Component {
 
                     </Grid>
 
-                    <Grid style={{ marginTop: -180, height: 150 }}>
+                    <Grid style={{ marginTop: -100, height: 100 }}>
                         <Row>
-                            
+
                             <Col style={{ width: '100%', marginTop: 'auto', marginBottom: 'auto', alignItems: 'center' }}>
 
                                 <Item style={{ borderBottomWidth: 0 }}>
@@ -44,19 +44,94 @@ class MedicineSearchList extends Component {
                         </Row>
 
                     </Grid>
-                    <Card transparent style={{ padding: 10, marginTop: 40 }} onTouchStart={()=> this.props.navigation.navigate('MedicineCheckout')} >
+                    <Card transparent style={{ padding: 10, marginTop: 20 }} onTouchStart={() => this.props.navigation.navigate('MedicineCheckout')} >
                         <Card style={{ padding: 10 }}>
                             <Grid>
                                 <Col style={{ width: '25%' }}>
-                                    <Image source={{ uri: 'https://vimecare.com/WelcomeDesign/images/doctor-icon.png' }} style={styles.customImage} />
+                                    <View>
+                                        <Image source={{ uri: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQE-GVencCM4e7LuKxP2SaFTbONdLA1BiOGz96ICf1fkBixV-Tv' }} style={styles.customImage} />
+                                        <View style={{
+                                            position: 'absolute', width: 30, height: 30, borderRadius: 20, marginLeft: 5,
+                                            backgroundColor: 'green', right: 0, top: 0, justifyContent: 'center', alignItems: 'center',
+                                            borderColor: 'green', borderWidth: 1
+                                        }}>
+                                            <Text style={{ padding: 5, backgroundColor: 'transparent', color: 'white', fontSize: 13 }}>20%</Text>
+
+                                        </View>
+                                    </View>
                                 </Col>
 
-                                <Col style={{ width: '75%', alignItems: 'center', justifyContent: 'center' }}>
-                                    <Text style={styles.normalText}>Allow the emergency to get offer</Text>
 
-                                    <Text style={styles.offerText}>get 20% Offer</Text>
+                                <Col style={{ marginLeft: 20, width: '70%', alignItems: 'flex-start', justifyContent: 'center', marginTop: 10 }}>
+                                    <Text style={styles.normalText}>Aminocaproic Acid</Text>
+                                    <Row>
+                                        <Text style={styles.subText}>{'\u20B9'}80</Text>
+                                        <Text style={{ marginLeft: 10, marginTop: 2, color: 'gray', fontSize: 15, textDecorationLine: 'line-through', textDecorationStyle: 'solid', textDecorationColor: 'gray' }}>
+                                            {'\u20B9'}100</Text>
+                                    </Row>
+                                    <Text style={{ color: 'gray', fontSize: 16 }}>White Pigeon Pharmacy</Text>
+                                </Col>
+                            </Grid>
+                        </Card>
+
+                        <Card style={{ padding: 10 }}>
+                            <Grid>
+                                <Col style={{ width: '25%' }}>
+                                    <View>
+                                        <Image source={{ uri: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTmQtUYMSYsZlwJM46ZccW_Ev3KULxQA-o2yFEygywoQBs0KBnlJg' }} style={styles.customImage} />
+                                        <View style={{
+                                            position: 'absolute', width: 30, height: 30, borderRadius: 20, marginLeft: 5,
+                                            backgroundColor: 'green', right: 0, top: 0, justifyContent: 'center', alignItems: 'center',
+                                            borderColor: 'green', borderWidth: 1
+                                        }}>
+                                            <Text style={{ padding: 5, backgroundColor: 'transparent', color: 'white', fontSize: 13 }}>50%</Text>
+
+                                        </View>
+                                    </View>
+
+                                </Col>
+
+                                <Col style={{ marginLeft: 20, width: '70%', alignItems: 'flex-start', justifyContent: 'center', marginTop: 10 }}>
+                                    <Text style={styles.normalText}>Gemtuzumab ozogamicin</Text>
+                                    <Row>
+                                        <Text style={styles.subText}>{'\u20B9'}50</Text>
+                                        <Text style={{ marginLeft: 10, marginTop: 2, color: 'gray', fontSize: 15, textDecorationLine: 'line-through', textDecorationStyle: 'solid', textDecorationColor: 'gray' }}>
+                                            {'\u20B9'}100</Text>
+                                    </Row>
+                                    <Text style={{ color: 'gray', fontSize: 16 }}>Wellness Craft Pharmacy</Text>
+
+                                </Col>
+                            </Grid>
+
+                        </Card>
 
 
+
+                        <Card style={{ padding: 10 }}>
+                            <Grid>
+                                <Col style={{ width: '25%' }}>
+                                    <View>
+                                        <Image source={{ uri: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSTSgZ9jiVeVoxjDCuYlwzlbUop6Y_EQOtMj-2DoLZQ1he-azufKg' }} style={styles.customImage} />
+                                        <View style={{
+                                            position: 'absolute', width: 30, height: 30, borderRadius: 20, marginLeft: 5,
+                                            backgroundColor: 'green', right: 0, top: 0, justifyContent: 'center', alignItems: 'center',
+                                            borderColor: 'green', borderWidth: 1
+                                        }}>
+                                            <Text style={{ padding: 5, backgroundColor: 'transparent', color: 'white', fontSize: 13 }}>25%</Text>
+
+                                        </View>
+                                    </View>
+                                </Col>
+
+                                <Col style={{ marginLeft: 20, width: '70%', alignItems: 'flex-start', justifyContent: 'center', marginTop: 10 }}>
+                                    <Text style={styles.normalText}>Hydroxyurea for sickle cell disease</Text>
+                                    <Row>
+
+                                        <Text style={styles.subText}>{'\u20B9'}75</Text>
+                                        <Text style={{ marginLeft: 10, marginTop: 2, color: 'gray', fontSize: 15, textDecorationLine: 'line-through', textDecorationStyle: 'solid', textDecorationColor: 'gray' }}>
+                                            {'\u20B9'}100</Text>
+                                    </Row>
+                                    <Text style={{ color: 'gray', fontSize: 16 }}>Shoprite Pharmacy</Text>
                                 </Col>
                             </Grid>
 
@@ -65,56 +140,35 @@ class MedicineSearchList extends Component {
                         <Card style={{ padding: 10 }}>
                             <Grid>
                                 <Col style={{ width: '25%' }}>
-                                    <Image source={{ uri: 'https://vimecare.com/WelcomeDesign/images/doctor-icon.png' }} style={styles.customImage} />
+                                    <View>
+                                        <Image source={{ uri: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQE-GVencCM4e7LuKxP2SaFTbONdLA1BiOGz96ICf1fkBixV-Tv' }} style={styles.customImage} />
+                                        <View style={{
+                                            position: 'absolute', width: 30, height: 30, borderRadius: 20, marginLeft: 5,
+                                            backgroundColor: 'green', right: 0, top: 0, justifyContent: 'center', alignItems: 'center',
+                                            borderColor: 'green', borderWidth: 1
+                                        }}>
+                                            <Text style={{ padding: 5, backgroundColor: 'transparent', color: 'white', fontSize: 13 }}>20%</Text>
+
+                                        </View>
+                                    </View>
                                 </Col>
 
-                                <Col style={{ width: '75%', alignItems: 'center', justifyContent: 'center' }}>
-                                    <Text style={styles.normalText}>Allow the emergency to get offer</Text>
 
-                                    <Text style={styles.offerText}>get 20% Offer</Text>
-
-
-                                </Col>
-                            </Grid>
-
-                        </Card>
-
-
-                        <Card style={{ padding: 10 }}>
-                            <Grid>
-                                <Col style={{ width: '25%' }}>
-                                    <Image source={{ uri: 'https://vimecare.com/WelcomeDesign/images/doctor-icon.png' }} style={styles.customImage} />
-                                </Col>
-
-                                <Col style={{ width: '75%', alignItems: 'center', justifyContent: 'center' }}>
-                                    <Text style={styles.normalText}>Allow the emergency to get offer</Text>
-
-                                    <Text style={styles.offerText}>get 20% Offer</Text>
-
-
+                                <Col style={{ marginLeft: 20, width: '70%', alignItems: 'flex-start', justifyContent: 'center', marginTop: 10 }}>
+                                    <Text style={styles.normalText}>Aminocaproic Acid</Text>
+                                    <Row>
+                                        <Text style={styles.subText}>{'\u20B9'}80</Text>
+                                        <Text style={{ marginLeft: 10, marginTop: 2, color: 'gray', fontSize: 15, textDecorationLine: 'line-through', textDecorationStyle: 'solid', textDecorationColor: 'gray' }}>
+                                            {'\u20B9'}100</Text>
+                                    </Row>
+                                    <Text style={{ color: 'gray', fontSize: 16 }}>White Pigeon Pharmacy</Text>
                                 </Col>
                             </Grid>
-
                         </Card>
 
                     </Card>
                 </Content>
-                <Footer>
-                    <FooterTab style={{ backgroundColor: '#7E49C3' }}>
-                        <Button >
-                            <Icon name="apps" />
-                        </Button>
-                        <Button>
-                            <Icon name="chatbubbles" />
-                        </Button>
-                        <Button >
-                            <Icon active name="notifications" />
-                        </Button>
-                        <Button>
-                            <Icon name="person" />
-                        </Button>
-                    </FooterTab>
-                </Footer>
+
             </Container>
 
         )
@@ -141,33 +195,42 @@ const styles = StyleSheet.create({
         marginLeft: 'auto',
         marginRight: 'auto',
         marginTop: 'auto',
-        marginBottom: 'auto'
+        marginBottom: 'auto',
+        borderRadius: 50
     },
 
     curvedGrid:
     {
         borderRadius: 800,
         width: '200%',
-        height: 800,
+        height: 690,
         marginLeft: -200,
         marginTop: -600,
         position: 'relative',
         bottom: 0,
         overflow: 'hidden',
         backgroundColor: '#745DA6'
+
     },
 
     normalText:
     {
         fontFamily: 'OpenSans',
-        fontSize: 14,
-        color: 'gray'
+        fontSize: 17,
+        marginTop: 10
     },
     offerText:
     {
         fontFamily: 'OpenSans',
-        fontSize: 20,
-        color: 'red'
+        fontSize: 13,
+        color: 'green'
+
+    },
+    subText: {
+        fontFamily: 'OpenSans',
+        fontSize: 17,
+        color: 'black',
+        //marginLeft: 5
     }
 
 });

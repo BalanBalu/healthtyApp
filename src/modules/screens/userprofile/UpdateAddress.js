@@ -21,7 +21,7 @@ class UserDetails extends Component {
             pin_code: '',
             isLoading: false,
             isFocused: false,
-            pinCodeIsFocused:false
+            pinCodeIsFocused: false
 
         }
     }
@@ -96,8 +96,8 @@ class UserDetails extends Component {
             console.log(e);
         }
     }
-   
-    
+
+
 
 
 
@@ -108,40 +108,39 @@ class UserDetails extends Component {
         return (
 
             <Container style={styles.Container}>
-               
-                
-                    <Content style={styles.bodyContent} contentContainerStyle={{ justifyContent: 'center', flex: 1, height: '75%' }}>
-                        <H3 style={{ fontSize: 22,textAlign: 'center',marginTop: 10, fontFamily: 'opensans-semibold'}}>Update User Details</H3>
-                        <Image source={{ uri: 'https://static1.squarespace.com/static/582bbfef9de4bb07fe62ab18/t/5877b9ccebbd1a124af66dfe/1484241404624/Headshot+-+Circular.png?format=300w' }} style={styles.logo} />
+
+
+                <Content style={styles.bodyContent} contentContainerStyle={{ flex: 1, height: '75%' }}>
+                    <H3 style={{ fontSize: 20, fontFamily: 'opensans-semibold', marginTop: 40, marginLeft: '5%', fontWeight: 'bold', }}>Update User Details</H3>
                     <Form>
                         <ScrollView scrollEventThrottle={16} >
 
                             {/* <View style={styles.errorMsg}>
                             <Text style={{ textAlign: 'center', color: '#775DA3' }}> Invalid Credencials</Text>
                         </View> */}
-                       
+
                             <Item style={{ borderBottomWidth: 0 }}>
-                                <Text>Door_no</Text>
+                                <Text style={{ fontFamily: 'OpenSans', fontSize: 20, marginTop: 30 }}>Door_no</Text>
                             </Item>
                             <Item style={{ borderBottomWidth: 0 }}>
                                 <Input
                                     // placeholder="First Name"
-                                   
+
                                     style={styles.transparentLabel}
                                     value={this.state.no_and_street}
-                                  
+
                                     keyboardType={'default'}
                                     returnKeyType={'next'}
                                     onChangeText={no_and_street => this.setState({ no_and_street })}
                                     autoCapitalize='none'
                                     blurOnSubmit={false}
                                     onSubmitEditing={() => { this.no_and_street._root.focus(); }}
-                                   
+
                                 />
                             </Item>
 
                             <Item style={{ borderBottomWidth: 0 }}>
-                                <Text>AddressLine1</Text>
+                                <Text style={{ fontFamily: 'OpenSans', fontSize: 20, }}>AddressLine1</Text>
                             </Item>
                             <Item style={{ borderBottomWidth: 0 }}>
                                 <Input
@@ -158,7 +157,7 @@ class UserDetails extends Component {
                                 />
                             </Item>
                             <Item style={{ borderBottomWidth: 0 }}>
-                                <Text>AddressLine2</Text>
+                                <Text style={{ fontFamily: 'OpenSans', fontSize: 20, }}>AddressLine2</Text>
                             </Item>
                             <Item style={{ borderBottomWidth: 0 }}>
                                 <Input
@@ -171,60 +170,60 @@ class UserDetails extends Component {
                                     onChangeText={address_line_2 => this.setState({ address_line_2 })}
                                     autoCapitalize='none'
                                     blurOnSubmit={false}
-                                    onSubmitEditing={() => { this.address_line_2._root.focus(this.setState({ isFocused: true})); } }
-                                    
-                                   
+                                    onSubmitEditing={() => { this.address_line_2._root.focus(this.setState({ isFocused: true })); }}
+
+
                                 />
                             </Item>
-                            
-                                
-                                <Item style={{ borderBottomWidth: 0 }}>
-                                    <Text>city</Text>
-                                </Item>
-                                <Item style={{ borderBottomWidth: 0 }}>
-                                    <Input
-                                        // placeholder="Last Name"
-                                        style={styles.transparentLabel}
-                                        autoFocus={this.state.isFocused}
-                                        ref={(input) => { this.address_line_2 = input; }}
-                                        value={this.state.city}
-                                        keyboardType={'default'}
-                                        returnKeyType={'next'}
-                                        onChangeText={city => this.setState({ city })}
-                                        autoCapitalize='none'
-                                        blurOnSubmit={false}
+
+
+                            <Item style={{ borderBottomWidth: 0 }}>
+                                <Text style={{ fontFamily: 'OpenSans', fontSize: 20, }}>city</Text>
+                            </Item>
+                            <Item style={{ borderBottomWidth: 0 }}>
+                                <Input
+                                    // placeholder="Last Name"
+                                    style={styles.transparentLabel}
+                                    autoFocus={this.state.isFocused}
+                                    ref={(input) => { this.address_line_2 = input; }}
+                                    value={this.state.city}
+                                    keyboardType={'default'}
+                                    returnKeyType={'next'}
+                                    onChangeText={city => this.setState({ city })}
+                                    autoCapitalize='none'
+                                    blurOnSubmit={false}
                                     onSubmitEditing={() => { this.city._root.focus(this.setState({ pinCodeIsFocused: true })); }}
-                                    />
-                                </Item>
-                            
-                                <Item style={{ borderBottomWidth: 0 }}>
-                                    <Text>pincode</Text>
-                                </Item>
-                                <Item style={{ borderBottomWidth: 0 }}>
-                                    <Input
-                                        // placeholder="Last Name"
-                                        style={styles.transparentLabel}
-                                       value={this.state.pin_code}
-                                       autoFocus={this.state.pinCodeIsFocused}
-                                        ref={(input) => { this.city = input; }}
+                                />
+                            </Item>
 
-                                        keyboardType={'default'}
-                                        returnKeyType={'next'}
-                                        onChangeText={pin_code => this.setState({ pin_code })}
-                                        autoCapitalize='none'
-                                        blurOnSubmit={false}
+                            <Item style={{ borderBottomWidth: 0 }}>
+                                <Text style={{ fontFamily: 'OpenSans', fontSize: 20, }}>pincode</Text>
+                            </Item>
+                            <Item style={{ borderBottomWidth: 0 }}>
+                                <Input
+                                    // placeholder="Last Name"
+                                    style={styles.transparentLabel}
+                                    value={this.state.pin_code}
+                                    autoFocus={this.state.pinCodeIsFocused}
+                                    ref={(input) => { this.city = input; }}
+
+                                    keyboardType={'default'}
+                                    returnKeyType={'next'}
+                                    onChangeText={pin_code => this.setState({ pin_code })}
+                                    autoCapitalize='none'
+                                    blurOnSubmit={false}
                                     onSubmitEditing={() => { this.userUpdate(); }}
-                                    />
-                                </Item>
-
-
-                            
+                                />
+                            </Item>
 
 
 
-                                <Button style={styles.loginButton} ref={(input) => { this.pin_code = input; }} block primary onPress={() => this.userUpdate()}>
-                                    <Text style={{ fontFamily: 'OpenSans' }}>Submit</Text>
-        </Button> 
+
+
+
+                            <Button style={styles.loginButton} ref={(input) => { this.pin_code = input; }} block primary onPress={() => this.userUpdate()}>
+                                <Text style={{ fontFamily: 'OpenSans' }}>Submit</Text>
+                            </Button>
                         </ScrollView>
 
                     </Form>
@@ -232,9 +231,9 @@ class UserDetails extends Component {
                         visible={this.state.isLoading}
                         textContent={'Please wait updating......'}
                     />
-                    
+
                 </Content>
-            
+
             </Container>
 
         )

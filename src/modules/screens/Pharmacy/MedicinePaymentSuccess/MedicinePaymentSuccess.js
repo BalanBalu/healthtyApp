@@ -9,7 +9,7 @@ class MedicinePaymentSuccess extends Component {
         super(props)
         console.log(this.props)
     }
-    
+
     render() {
 
 
@@ -74,22 +74,7 @@ class MedicinePaymentSuccess extends Component {
                         <Button block style={styles.loginButton}><Text>Home</Text></Button>
                     </Card>
                 </Content>
-                <Footer>
-                    <FooterTab style={{ backgroundColor: '#7E49C3' }}>
-                        <Button >
-                            <Icon name="apps" />
-                        </Button>
-                        <Button>
-                            <Icon name="chatbubbles" />
-                        </Button>
-                        <Button >
-                            <Icon active name="notifications" />
-                        </Button>
-                        <Button>
-                            <Icon name="person" />
-                        </Button>
-                    </FooterTab>
-                </Footer>
+
             </Container>
 
         )

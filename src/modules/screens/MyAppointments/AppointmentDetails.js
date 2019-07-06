@@ -5,7 +5,7 @@ import { StyleSheet, AsyncStorage } from 'react-native';
 import StarRating from 'react-native-star-rating';
 import moment from 'moment';
 import { NavigationEvents } from 'react-navigation';
-import { viewUserReviews, bindDoctorDetails, appointmentStatusUpdate } from '../../providers/bookappointment/bookappointment.action';
+import { viewUserReviews, bindDoctorDetails, appointmentStatusUpdate, getAppointmentDetails } from '../../providers/bookappointment/bookappointment.action';
 import { formatDate, dateDiff } from '../../../setup/helpers';
 
 import { Loader } from '../../../components/ContentLoader'
@@ -17,7 +17,7 @@ class AppointmentDetails extends Component {
 
     this.state = {
       data: {},
-      appointmentId: '',
+      appointmentId:null,
       doctorId: '',
       userId: '',
       reviewData: {},
@@ -35,16 +35,28 @@ class AppointmentDetails extends Component {
     const userId = await AsyncStorage.getItem('userId');
     const { navigation } = this.props;
     const appointmentData = navigation.getParam('data');
-    let doctorId = appointmentData.doctor_id;
-    let appointmentId = appointmentData._id;
-    await this.setState({ doctorId: doctorId, appointmentId: appointmentId, userId: userId, data: appointmentData, isLoading: true })
     
-    await new Promise.all([
-      this.getDoctorDetails(doctorId),
-      this.getUserReviews(appointmentId)
-    ])
-    this.setState({ isLoading: false })
+    let appointmentId = navigation.getParam('appointmentId');
+    console.log(appointmentId)
+    await this.setState({ appointmentId });
+
+    if (appointmentData == undefined) {
+     
+          console.log('appointmentdata')
+          this.appointmentDetailsGetById()
+    }
+    else {
+      console.log('not pass a way...')
+      let doctorId = appointmentData.doctor_id;
+      let appointmentId = appointmentData._id;
+      await this.setState({ doctorId: doctorId, appointmentId: appointmentId, userId: userId, data: appointmentData, isLoading: true })
     
+      await new Promise.all([
+        this.getDoctorDetails(doctorId),
+        this.getUserReviews(appointmentId)
+      ])
+      this.setState({ isLoading: false })
+    }
     
     
      }
@@ -78,12 +90,32 @@ class AppointmentDetails extends Component {
   /* get User reviews */
   getUserReviews = async (appointmentId) => {
     let resultReview = await viewUserReviews('appointment', appointmentId);
-    debugger
+     console.log(resultReview.data)
     if (resultReview.success) {
       this.setState({ reviewData: resultReview.data });
     }
 
   }
+  
+  appointmentDetailsGetById = async () => {
+    let result = await getAppointmentDetails(this.state.appointmentId);
+    
+    this.getUserReviews(this.state.appointmentId);
+    if (result.success) {
+      this.setState({ doctorId: result.data.doctor_id })
+      let doctorId = result.data.doctor_id;
+      console.log(doctorId);
+      this.getDoctorDetails(doctorId)
+      
+    }
+  
+    console.log(result.data)
+  
+     
+    
+
+  }
+
   navigateAddReview() {
     this.state.data.prefix = this.state.doctorData.prefix;
     this.props.navigation.navigate('InsertReview', { appointmentDetail: this.state.data })
