@@ -35,7 +35,7 @@ import PaymentReview from "../../modules/screens/PaymentReview";
 import PaymentSuccess from "../../modules/screens/PaymentSuccess";
 import InsertReview from '../../modules/screens/Reviews/InsertReview';
 import WishList from "../../modules/screens/wishList";
-
+import Notification from "../../modules/screens/Notification";
 
 import { Col, Grid, Row } from 'react-native-easy-grid';
 import { logout } from '../../modules/providers/auth/auth.actions';
@@ -275,8 +275,8 @@ const HomeStack = createStackNavigator({
         <Grid>
           
           <Col>
-            <TouchableOpacity onPress={() => { navigation.navigate('Profile') }} >
-              <Icon name="contact" style={{ color: '#fff', marginRight: 10, fontFamily: 'opensans-semibold' }}></Icon>
+            <TouchableOpacity onPress={() => { navigation.navigate('Notification') }} >
+              <Icon name="notifications" style={{ color: '#fff', marginRight: 10, fontFamily: 'opensans-semibold' }}></Icon>
             </TouchableOpacity>
           </Col>
           <Col>
@@ -305,6 +305,12 @@ const HomeStack = createStackNavigator({
     screen: WishList,
     navigationOptions: ({ navigation }) => ({
       title: 'WishList',
+    })
+  },
+  Notification: {
+    screen: Notification,
+    navigationOptions: ({ navigation }) => ({
+      title: 'Notification',
     })
   },
  

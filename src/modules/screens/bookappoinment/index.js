@@ -5,13 +5,15 @@ import { connect } from 'react-redux'
 import { StyleSheet, Image, TouchableOpacity, View, FlatList, AsyncStorage } from 'react-native';
 import StarRating from 'react-native-star-rating';
 import { formatDate,addMoment } from '../../../setup/helpers';
-import {  viewdoctorProfile,viewUserReviews, bindDoctorDetails } from '../../providers/bookappointment/bookappointment.action';
+import {  fetchAvailabilitySlots,viewUserReviews, bindDoctorDetails } from '../../providers/bookappointment/bookappointment.action';
 import Mapbox from './Mapbox';
 import { Loader } from '../../../components/ContentLoader';
+import moment from 'moment';
 
 let slotMap=new Map();
 
 class BookAppoinment extends Component {
+  processedAvailabilityDates = [];
   constructor(props) {
     super(props)
 
@@ -46,14 +48,12 @@ class BookAppoinment extends Component {
     const { navigation } = this.props;
     const slotList = navigation.getParam('slotList');
 
-    if(slotList===undefined)
-    {
+    if(slotList===undefined) {
       let endDateMoment = addMoment(this.state.currentDate, 7, 'days')
-      let endDate = formatDate(endDateMoment, 'YYYY-MM-DD'); 
-      const doctorId = navigation.getParam('doctorId')||false;
+      const doctorId = navigation.getParam('doctorId')|| false;
       await this.setState({doctorId:doctorId});
-      await this.getAvailabilitySlots(this.state.doctorId,this.state.currentDate,endDate);
-    }else{
+      await this.getAvailabilitySlots(doctorId, moment(new Date()), endDateMoment);
+    } else {
     let doctorDetails = navigation.getParam('doctorDetails');
     await this.setState({ doctorId: doctorDetails.doctorId });
     if(slotList) {
@@ -78,19 +78,20 @@ class BookAppoinment extends Component {
 
 
   /*FromAppointment list(Get availability slots)*/
-  getAvailabilitySlots = async (fromAppointmentDoctorId, startDate, endDate) => {
+  async getAvailabilitySlots(fromAppointmentDoctorId, startDate, endDate) {
     
         let totalSlotsInWeek = {
             startDate: formatDate(startDate, 'YYYY-MM-DD'),
             endDate: formatDate(endDate, 'YYYY-MM-DD')
         }
-        let resultData = await viewdoctorProfile(fromAppointmentDoctorId, totalSlotsInWeek);
+        let resultData = await fetchAvailabilitySlots(fromAppointmentDoctorId, totalSlotsInWeek);
         
         if (resultData.success) {
-          let slotData=resultData.data[0].slotData
-          this.setState({slotList:slotData[formatDate(startDate,'YYYY-MM-DD')]});
+          let slotData = resultData.data[0].slotData
+          this.setState({slotList: slotData[formatDate(startDate,'YYYY-MM-DD')]});
           console.log(this.state.slotList);
-          if(this.state.slotList){
+          this.enumarateDates(startDate, endDate)
+          if(this.state.slotList) {
             await this.setState({item:{ 
               name:this.state.slotList[0].location.name,
               no_and_street:this.state.slotList[0].location.location.address.no_and_street,
@@ -102,24 +103,40 @@ class BookAppoinment extends Component {
             });
           }
           for(var key in slotData){           
-          await slotMap.set(key,slotData[key]);
-
-        }
+             await slotMap.set(key,slotData[key]);
+         }
       }
 }
 
+enumarateDates(startDate, endDate) {
+  debugger
+  let now = startDate.clone();
+  while (now.isSameOrBefore(endDate)) {
+    this.processedAvailabilityDates.push(now.format('YYYY-MM-DD'));
+    now = now.add(1, 'day');
+  }
+  console.log(this.processedAvailabilityDates);
+}
 
 /* Change the Date using Date Picker */
-    onDateChanged(date) {
+  onDateChanged(date) {
       console.log(date);      
       let selectedDate = formatDate(date, 'YYYY-MM-DD');
+    if(this.processedAvailabilityDates.includes(selectedDate)) {
       console.log('selectedDate'+selectedDate);
       this.setState({ selectedDate: selectedDate });
-      if(slotMap.has(selectedDate)){
+      if(slotMap.has(selectedDate)) {
         let temp = slotMap.get(selectedDate);
         this.setState({slotList:temp})
+      } else {
+        this.setState({slotList: []})
       }
-    }
+    } else {
+      debugger
+      let endDateMoment = addMoment(date, 7, 'days')
+      this.getAvailabilitySlots(this.state.doctorId, moment(date), endDateMoment);
+    } 
+  }
 
   /*Get doctor Qualification details*/
   getdoctorDetails = async (doctorId) => {

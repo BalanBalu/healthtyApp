@@ -99,7 +99,7 @@ class UpdateEmail extends Component {
                                 <Icon name='mail' style={styles.centeredIcons}></Icon>
 
                                 <Text style={styles.customText}>{this.state.primary_email}</Text>
-
+                                <Icon style={{ marginLeft: 70, color: 'gray' }} name='ios-lock' />
                             </Item>
                         :null}</Card>
                     </View>
@@ -138,13 +138,11 @@ class UpdateEmail extends Component {
                                         <Text uppercase={false} note style={{ color: '#fff', fontFamily: 'OpenSans' }}>Cancel</Text>
                                     </Button>
                                 </View> */}
-                                <Row style={{ justifyContent: 'center' }}>
+                                <Row style={{ marginLeft: 255 }}>
                                     <Button success style={styles.button2} >
                                         <Text style={{ color: '#000' }}>Update</Text>
                                     </Button>
-                                    <Button style={styles.button1}>
-                                        <Text style={{ color: '#000' }}> Cancel</Text>
-                                    </Button>
+
                                 </Row>
 
 
