@@ -250,7 +250,7 @@ class Home extends Component {
 
                 </Content>
 
-                <Footer>
+               {/* <Footer>
                     <FooterTab style={{ backgroundColor: '#7E49C3' }}>
                         <Button >
                             <Icon name="apps" />
@@ -265,7 +265,7 @@ class Home extends Component {
                             <Icon name="person" />
                         </Button>
                     </FooterTab>
-                </Footer>
+               </Footer> */}
             </Container>
 
         )
