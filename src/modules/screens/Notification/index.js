@@ -65,17 +65,12 @@ class Notification extends Component {
     //
     getUserNotification = async () => {
         try {
-            
+            this.setState({ isLoading: true });
             let userId = await AsyncStorage.getItem('userId');
              
             let result = await fetchUserNotification(userId);
-            // let notificationId = result.data.map(_id => {
-            //     return _id._id
-            // }).join(',');
-            // this.setState({ notificationId: notificationId })
-          
             if (result.success) {
-                await this.setState({ data: result.data, isLoading: true  })   
+                await this.setState({ data: result.data })   
             }
             console.log(this.state.data)
            
@@ -85,7 +80,7 @@ class Notification extends Component {
             console.log(e);
         }
         finally {
-            this.setState({ isLoading: true });
+            this.setState({ isLoading: false });
         }
     }
 
@@ -96,7 +91,15 @@ class Notification extends Component {
             < Container style={styles.container} >
                 {/* <NavigationEvents onwillBlur={payload => { this.componentWillMount() }} /> */}
                 <Content>
-                     {isLoading == true ? 
+                     {isLoading === true ?  
+                     <Spinner
+                            color="blue"
+                            style={[styles.containers, styles.horizontal]}
+                            visible={true}
+                            size={"large"}
+                            overlayColor="none"
+                            cancelable={false}
+                        /> :
                     
                         < ScrollView horizontal={false}>
                             
@@ -115,17 +118,19 @@ class Notification extends Component {
                                                 <View style={{ backgroundColor: (item.mark_as_viewed== false) ? '#f5e6ff' : null }}>
                                                
                                                     <Col>
-                                                        {dateDiff(item.created_date, new Date(), 'days') > 30 ?
-        
+                                                      {dateDiff(new Date(item.created_date), new Date(), 'days') > 30 ?
             
-                                                            <Text style={{ fontSize: 15, fontFamily: 'OpenSans', marginLeft: 265, marginTop: 5 }}> {formatDate(item.created_date, "DD-MM-YYYY")} </Text> :
+                                                            <Text style={{ fontSize: 15, fontFamily: 'OpenSans', marginLeft: 265, marginTop: 5 }}> 
+                                                                {formatDate(new Date(item.created_date), "DD-MM-YYYY")} 
+                                                            </Text> :
+                                                            
                                                             <Text style={{
                                                                 fontSize: 15, fontFamily: 'OpenSans',
                                                                 marginLeft: 265, marginTop: 5
-                                                            }}> {moment(item.created_date, "YYYYMMDD").fromNow()}</Text>
-                                                        }
-                                              
-
+                                                            }}> 
+                                                            {moment(new Date(item.created_date), "YYYYMMDD").fromNow()}
+                                                            </Text>
+                                                      } 
                                                     </Col>
 
                                                     <Col>
@@ -147,16 +152,9 @@ class Notification extends Component {
                                     keyExtractor={(item, index) => index.toString()} />
                                 </List>
                                 
-                    </ ScrollView>:
+                    </ ScrollView>
                          
-                        <Spinner
-                            color="blue"
-                            style={[styles.containers, styles.horizontal]}
-                            visible={true}
-                            size={"large"}
-                            overlayColor="none"
-                            cancelable={false}
-                        />
+                      
                     } 
                 </Content>
             </Container >
