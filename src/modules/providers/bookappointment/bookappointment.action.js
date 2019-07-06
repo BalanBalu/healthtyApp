@@ -64,7 +64,7 @@ export async function addReview(userId, insertUserReviews, isLoading = true) {
 }
 /*get doctor availability for patient view doctor profile */
 
-export async function viewdoctorProfile(doctorIds, isLoading = true) {
+export async function fetchAvailabilitySlots(doctorIds, isLoading = true) {
   try {
     let endPoint = 'doctors/' + doctorIds + '/availabilitySlots'
     let response = await getService(endPoint);

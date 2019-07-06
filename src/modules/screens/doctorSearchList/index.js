@@ -8,7 +8,7 @@ import { StyleSheet, Image, TouchableOpacity, View, FlatList, AsyncStorage, Touc
 import StarRating from 'react-native-star-rating';
 import { ScrollView, TouchableHighlight } from 'react-native-gesture-handler';
 import Modal from "react-native-modal";
-import { insertDoctorsWishList, searchDoctorList, viewdoctorProfile, getMultipleDoctorDetails, getDoctorsReviewsCount, viewUserReviews, viewUserReviewCount } from '../../providers/bookappointment/bookappointment.action';
+import { insertDoctorsWishList, searchDoctorList, fetchAvailabilitySlots, getMultipleDoctorDetails, getDoctorsReviewsCount, getPatientWishList } from '../../providers/bookappointment/bookappointment.action';
 import { formatDate, addMoment, getFirstDay, getLastDay, findArrayObj } from '../../../setup/helpers';
 import { Loader } from '../../../components/ContentLoader';
 import { RenderHospitalAddress } from '../../common';
@@ -42,8 +42,8 @@ class doctorSearchList extends Component {
                 getSearchedDoctorIds: null,
                 nextAvailableSlotDate: '',
                 isLoading: false,
-                wishListColor: false,
-                filterByAvailabilityDate:null
+                filterByAvailabilityDate:null, 
+                patientWishListsDoctorIds : []
             }
     }
 
@@ -55,11 +55,12 @@ class doctorSearchList extends Component {
         this.props.navigation.navigate('Filters', { doctorData: this.state.doctorData, doctorDetailsWitSlots: this.state.doctorDetails })
     }
     componentDidMount() {
-            const { navigation } = this.props;
+        const { navigation } = this.props;
         const filterByAvailabilityDate = navigation.getParam('filterByAvailabilityDate');
         const ConditionFromFilter = navigation.getParam('ConditionFromFilter');
         this.setState({filterByAvailabilityDate:filterByAvailabilityDate})
-        conditionFromFilterPage =ConditionFromFilter;
+        conditionFromFilterPage = ConditionFromFilter;
+        this.getPatientWishLists();
         this.getPatientSearchData();
     }
 
@@ -80,14 +81,33 @@ class doctorSearchList extends Component {
                     type: "success",
                     duration: 3000,
                 })
-                this.setState({ wishListColor: true });
+                let wishLists = this.state.patientWishListsDoctorIds;
+                wishLists.push(doctorId)
+                this.setState({ patientWishListsDoctorIds: wishLists });
             }
         }
         catch (e) {
             console.log(e);
         }
     }
-
+    getPatientWishLists = async () => {
+        try {
+           let userId = await AsyncStorage.getItem('userId');
+           let result = await getPatientWishList(userId);
+           debugger
+           if (result.success) {
+              let wishListDoctorsIds = [];
+              result.data.forEach(element => {
+                wishListDoctorsIds.push(element.doctorInfo.doctor_id)       
+             })  
+             this.setState({ patientWishListsDoctorIds: wishListDoctorsIds});
+           }
+        } catch (e) {
+            this.setState({ doctorDetails: [] });
+            console.log(e);
+        }
+          
+    }
 
 
     /* get the Doctor Id's list from Search Module  */
@@ -95,10 +115,6 @@ class doctorSearchList extends Component {
         this.setState({ isLoading: true });
         const { navigation } = this.props;
         const searchedInputValues = navigation.getParam('resultData');
-        console.log('searchedInputValues'+JSON.stringify(searchedInputValues));
-        // let startDate = getFirstDay(new Date(), 'week');
-        // let endDate = getLastDay(new Date(), 'week');
-
         let endDateMoment = addMoment(this.state.selectedDate, 7, 'days')
         let endDate = formatDate(endDateMoment, 'YYYY-MM-DD');
 
@@ -106,19 +122,20 @@ class doctorSearchList extends Component {
         let resultData = await searchDoctorList(userId, searchedInputValues);
         // console.log(' resultData'+JSON.stringify(resultData.data));
         await this.setState({ searchedResultData: resultData.data });
-        console.log(' searchedResultData'+JSON.stringify(this.state.searchedResultData));
-
         if (resultData.success) {
             let doctorIds = resultData.data.map((element) => {
                 return element.doctor_id
             }).join(',');
             this.setState({ getSearchedDoctorIds: doctorIds });
-            this.getAvailabilitySlots(this.state.getSearchedDoctorIds, this.state.selectedDate, endDate);
+            this.getAvailabilitySlots(doctorIds,this.state.selectedDate, endDate),
             this.getDoctorAllDetails(this.state.getSearchedDoctorIds);// for getting multiple Doctor details,Reviews ,ReviewCount,etc....
+        } else {
+            this.setState ({ isLoading : false })
         }
     }
 
     async getDoctorAllDetails(DoctorIds) {
+        this.setState({ isLoading: true });
         await new Promise.all([
             this.getDoctorDetails(DoctorIds),
             this.getPatientReviews(DoctorIds),
@@ -134,14 +151,17 @@ class doctorSearchList extends Component {
                 startDate: formatDate(startDate, 'YYYY-MM-DD'),
                 endDate: formatDate(endDate, 'YYYY-MM-DD')
             }
-            let resultData = await viewdoctorProfile(getSearchedDoctorIds, totalSlotsInWeek);
-            this.setState({ isLoading: false });
+            let resultData = await fetchAvailabilitySlots(getSearchedDoctorIds, totalSlotsInWeek);
             if (resultData.success) {
                 this.setState({ doctorDetails: resultData.data });
                  console.log('Doctor details with availability'+JSON.stringify(this.state.doctorDetails));
             }
         } catch (e) {
+            this.setState({ doctorDetails: [] });
             console.log(e);
+        }
+        finally { 
+            this.setState({ isLoading: false }); 
         }
     }
 
@@ -158,7 +178,7 @@ class doctorSearchList extends Component {
 
         this.setState({ selectedDate: selectedDate, getStartDateOfTheWeek: selectedDate, getEndDateOfTheWeek: endDate });
         if (!this.state.doctorDetails[selectedDate]) {
-            this.getAvailabilitySlots(this.state.getSearchedDoctorIds, selectedDate, endDate);
+            this.getAvailabilitySlots(this.state.getSearchedDoctorIds,selectedDate, endDate),
             this.getDoctorAllDetails(this.state.getSearchedDoctorIds);
         }
         else {
@@ -340,19 +360,19 @@ class doctorSearchList extends Component {
 
     render() {
         const { navigation } = this.props;
-        const { isLoading, searchedResultData, categories, singleDataWithDoctorDetails, singleHospitalDataSlots, reviewData } = this.state;
+        const { isLoading, searchedResultData, categories, singleDataWithDoctorDetails, singleHospitalDataSlots, reviewData, patientWishListsDoctorIds } = this.state;
         return (
 
             <Container style={styles.container}>
 
-                <Content style={styles.bodyContent}>
+                
                 <NavigationEvents
-      onWillFocus={payload => {this.componentDidMount() }}
-      />
+                    onWillFocus={payload => {this.componentDidMount() }}
+                />
                     {isLoading ?
                         <Loader style='list' />
-                        : null}
-
+                        : 
+                    <Content style={styles.bodyContent}>
                     <Card style={{ borderRadius: 7 }}>
                         <Grid>
                             <Row>
@@ -501,7 +521,7 @@ class doctorSearchList extends Component {
                                             <Right>
 
                                                 <Icon name='heart' type='Ionicons'
-                                                    style={this.state.wishListColor === true ? { color: 'red', fontSize: 25 } : { color: 'gray', fontSize: 25 }}
+                                                    style={patientWishListsDoctorIds.includes(item.doctorId) ? { color: 'red', fontSize: 25 } : { color: 'gray', fontSize: 25 }}
                                                     onPress={() => this.addToWishList(item.doctorId, index)} ></Icon>
                                             </Right>
 
@@ -524,6 +544,7 @@ class doctorSearchList extends Component {
                             } />
                     }
                 </Content>
+                }
 
 
                 <Modal isVisible={this.state.isModalVisible} >

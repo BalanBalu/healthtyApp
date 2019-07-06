@@ -5,7 +5,7 @@ import { connect } from 'react-redux'
 import { StyleSheet, Image, TouchableOpacity, View, FlatList, AsyncStorage } from 'react-native';
 import StarRating from 'react-native-star-rating';
 import { formatDate,addMoment } from '../../../setup/helpers';
-import {  viewdoctorProfile,viewUserReviews, bindDoctorDetails } from '../../providers/bookappointment/bookappointment.action';
+import {  fetchAvailabilitySlots,viewUserReviews, bindDoctorDetails } from '../../providers/bookappointment/bookappointment.action';
 import Mapbox from './Mapbox';
 import { Loader } from '../../../components/ContentLoader';
 import moment from 'moment';
@@ -84,7 +84,7 @@ class BookAppoinment extends Component {
             startDate: formatDate(startDate, 'YYYY-MM-DD'),
             endDate: formatDate(endDate, 'YYYY-MM-DD')
         }
-        let resultData = await viewdoctorProfile(fromAppointmentDoctorId, totalSlotsInWeek);
+        let resultData = await fetchAvailabilitySlots(fromAppointmentDoctorId, totalSlotsInWeek);
         
         if (resultData.success) {
           let slotData = resultData.data[0].slotData
