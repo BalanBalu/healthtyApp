@@ -80,11 +80,10 @@ export async function viewdoctorProfile(doctorIds, isLoading = true) {
 
 /*get userReviews*/
 
-export async function viewUserReviews(type, id, isLoading = true) {
+export async function viewUserReviews(type, id) {
   try {
     let endPoint = 'user/reviews/' + type + '/' + id
     let response = await getService(endPoint);
-    
     let respData = response.data;
     return respData;
 

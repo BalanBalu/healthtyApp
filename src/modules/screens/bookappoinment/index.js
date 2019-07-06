@@ -1,15 +1,19 @@
 import React, { Component } from 'react';
-import { Container, Content, Text, Title, Header, H3, Button, Card, List, ListItem, Left, Right, Thumbnail, Body, Icon, locations, ScrollView, Item, Toast } from 'native-base';
+import { Container, Content, Text, Title, Header, H3, Button, Card, List, ListItem, Left, Right, Thumbnail, Body, Icon, locations, ScrollView, Item, Toast,DatePicker } from 'native-base';
 import { Col, Row, Grid } from 'react-native-easy-grid';
 import { connect } from 'react-redux'
 import { StyleSheet, Image, TouchableOpacity, View, FlatList, AsyncStorage } from 'react-native';
 import StarRating from 'react-native-star-rating';
+import { formatDate,addMoment } from '../../../setup/helpers';
+import {  viewdoctorProfile,viewUserReviews, bindDoctorDetails } from '../../providers/bookappointment/bookappointment.action';
+import Mapbox from './Mapbox';
+import { Loader } from '../../../components/ContentLoader';
+import moment from 'moment';
 
-import {  viewUserReviews, bindDoctorDetails } from '../../providers/bookappointment/bookappointment.action';
-import { formatDate } from '../../../setup/helpers';
-import Mapbox from './Mapbox'
+let slotMap=new Map();
 
 class BookAppoinment extends Component {
+  processedAvailabilityDates = [];
   constructor(props) {
     super(props)
 
@@ -29,10 +33,12 @@ class BookAppoinment extends Component {
       },
       selectedSlotIndex:0,
       selectedSlotItem: null,
+      fromBookAgainSelectedSlotItem:'',
       doctorId: '',
       reviews_length: '',
-
-      
+      doctorId:'',
+      currentDate:formatDate(new Date(),'YYYY-MM-DD'), 
+      isLoading: true     
     }
 
   }
@@ -40,11 +46,19 @@ class BookAppoinment extends Component {
 
   async componentDidMount() {
     const { navigation } = this.props;
+    const slotList = navigation.getParam('slotList');
+
+    if(slotList===undefined) {
+      let endDateMoment = addMoment(this.state.currentDate, 7, 'days')
+      const doctorId = navigation.getParam('doctorId')|| false;
+      await this.setState({doctorId:doctorId});
+      await this.getAvailabilitySlots(doctorId, moment(new Date()), endDateMoment);
+    } else {
     let doctorDetails = navigation.getParam('doctorDetails');
-    const slotList = navigation.getParam('slotList', []);
-   if(slotList) {
+    await this.setState({ doctorId: doctorDetails.doctorId });
+    if(slotList) {
     if(slotList.length !== 0) { 
-      await this.setState({item:{
+      await this.setState({item:{ 
         name:slotList[0].location.name,
         no_and_street: slotList[0].location.location.address.no_and_street,
         city: slotList[0].location.location.address.city,
@@ -56,17 +70,78 @@ class BookAppoinment extends Component {
       });
     }
   }
-    console.log(this.state.item.name);
-    await this.setState({ doctorId: doctorDetails.doctorId })
-    await this.getdoctorDetails(doctorDetails.doctorId);
-    await this.getUserReviews(doctorDetails.doctorId);
+}
+  await this.getdoctorDetails(this.state.doctorId);
+  await this.getUserReviews(this.state.doctorId);
+  this.setState({ isLoading: false });
   }
 
+
+  /*FromAppointment list(Get availability slots)*/
+  async getAvailabilitySlots(fromAppointmentDoctorId, startDate, endDate) {
+    
+        let totalSlotsInWeek = {
+            startDate: formatDate(startDate, 'YYYY-MM-DD'),
+            endDate: formatDate(endDate, 'YYYY-MM-DD')
+        }
+        let resultData = await viewdoctorProfile(fromAppointmentDoctorId, totalSlotsInWeek);
+        
+        if (resultData.success) {
+          let slotData = resultData.data[0].slotData
+          this.setState({slotList: slotData[formatDate(startDate,'YYYY-MM-DD')]});
+          console.log(this.state.slotList);
+          this.enumarateDates(startDate, endDate)
+          if(this.state.slotList) {
+            await this.setState({item:{ 
+              name:this.state.slotList[0].location.name,
+              no_and_street:this.state.slotList[0].location.location.address.no_and_street,
+              city:this.state.slotList[0].location.location.address.city,
+              state:this.state.slotList[0].location.location.address.state,
+              pin_code:this.state.slotList[0].location.location.pin_code
+            },
+            selectedSlotItem:this.state.slotList[0], 
+            });
+          }
+          for(var key in slotData){           
+             await slotMap.set(key,slotData[key]);
+         }
+      }
+}
+
+enumarateDates(startDate, endDate) {
+  debugger
+  let now = startDate.clone();
+  while (now.isSameOrBefore(endDate)) {
+    this.processedAvailabilityDates.push(now.format('YYYY-MM-DD'));
+    now = now.add(1, 'day');
+  }
+  console.log(this.processedAvailabilityDates);
+}
+
+/* Change the Date using Date Picker */
+  onDateChanged(date) {
+      console.log(date);      
+      let selectedDate = formatDate(date, 'YYYY-MM-DD');
+    if(this.processedAvailabilityDates.includes(selectedDate)) {
+      console.log('selectedDate'+selectedDate);
+      this.setState({ selectedDate: selectedDate });
+      if(slotMap.has(selectedDate)) {
+        let temp = slotMap.get(selectedDate);
+        this.setState({slotList:temp})
+      } else {
+        this.setState({slotList: []})
+      }
+    } else {
+      debugger
+      let endDateMoment = addMoment(date, 7, 'days')
+      this.getAvailabilitySlots(this.state.doctorId, moment(date), endDateMoment);
+    } 
+  }
 
   /*Get doctor Qualification details*/
   getdoctorDetails = async (doctorId) => {
     console.log("doctor");
-    let fields = "first_name,last_name,prefix,professional_statement,language,specialist,education";
+    let fields = "first_name,last_name,prefix,professional_statement,language,specialist,education,profile_image";
     let resultDoctorDetails = await bindDoctorDetails(doctorId, fields);
     if (resultDoctorDetails.success) {
       this.setState({ doctordata: resultDoctorDetails.data});
@@ -119,11 +194,9 @@ class BookAppoinment extends Component {
     }
     this.props.navigation.navigate('Payment Review', { resultconfirmSlotDetails: confirmSlotDetails })
   }
-  navigateToMap(coordinates){
-    this.props.navigation.navigate('Mapbox', { coordinates:this.state.selectedSlotItem})
-  }
 
   noAvailableSlots() {
+    
     return (
       <Item style={{ borderBottomWidth: 0, justifyContent: 'center', alignItems: 'center' }}>
         <Text style={{ fontSize: 18, justifyContent: 'center', alignItems: 'center' }} >No slots are available </Text>
@@ -132,8 +205,11 @@ class BookAppoinment extends Component {
   }
 
   haveAvailableSlots() {
+
     let { selectedSlotIndex } = this.state;
     return (
+
+
       <FlatList
         style={{ margin: 10 }}
         numColumns={3}
@@ -162,27 +238,28 @@ class BookAppoinment extends Component {
 
   render() {
     const { navigation } = this.props;
-    const doctorDetails = navigation.getParam('doctorDetails');
-    const { qualification, doctordata } = this.state;
+    const { qualification, doctordata, isLoading } = this.state;
+    const fromAppointmentList = navigation.getParam('fromAppointmentList')||false;
+
     return (
       <Container style={styles.container}>
-
-
-        <Content style={styles.bodyContent} contentContainerStyle={{ flex: 0 }}>
+        {isLoading ?
+                        <Loader style='appointment' />
+                        : 
+        <Content style={styles.bodyContent} contentContainerStyle={{ flex: 0 }}>        
 
           <Grid style={{ backgroundColor: '#7E49C3', height: 200 }}>
 
           </Grid>
-
           <Card style={styles.customCard}>
             <List>
               <ListItem thumbnail noBorder>
 
                 <Left>
                   {
-                    doctorDetails.profile_image != undefined ?
-                      <Thumbnail square source={doctorDetails.profile_image.imageURL} style={{ height: 86, width: 86 }} /> :
-                      <Thumbnail square source={{ uri: 'https://static1.squarespace.com/static/582bbfef9de4bb07fe62ab18/t/5877b9ccebbd1a124af66dfe/1484241404624/Headshot+-+Circular.png?format=300w' }} style={{ height: 86, width: 86 }} />}
+                    doctordata.profile_image != undefined ?
+                      <Thumbnail style={styles.profileImage} source={{uri:doctordata.profile_image.imageURL}} /> :
+                      <Thumbnail style={styles.profileImage} source={{ uri: 'https://static1.squarespace.com/static/582bbfef9de4bb07fe62ab18/t/5877b9ccebbd1a124af66dfe/1484241404624/Headshot+-+Circular.png?format=300w' }} />}
                 </Left>
                 <Body>
                   <Text>{doctordata.prefix ? doctordata.prefix : 'Dr. ' + doctordata.first_name}</Text>
@@ -226,15 +303,33 @@ class BookAppoinment extends Component {
           </Card>
 
           <Card>
+
+          {fromAppointmentList?
+          <Item style={{ borderBottomWidth: 0, backgroundColor: '#F1F1F1', marginTop: 10, borderRadius:5,width:'50%'}}>
+          <Icon name='calendar' style={{ paddingLeft:15, color: '#775DA3' }} />
+          <DatePicker
+              locale={"en"}
+              timeZoneOffsetInMinutes={undefined}
+              animationType={"fade"}
+              androidMode={"default"}
+              placeHolderText={this.state.currentDate}
+              textStyle={{ color: "#5A5A5A" }}
+              placeHolderTextStyle={{ color: "#5A5A5A" }}
+              onDateChange={date => { this.onDateChanged(date); }}
+              disabled={false}
+              testID='datePicked' />
+          </Item>:null}
+
             <View >
               {this.state.slotList === undefined ? this.noAvailableSlots() : this.haveAvailableSlots()}
             </View>
+
           </Card>
 
           <Card transparent style={{ margin: 20, backgroundColor: '#ecf0f1' }}>
              <Card style={ { height: 250 }}>
                     
-               {this.state.selectedSlotItem !== null ? <Mapbox hospitalLocation={this.state.selectedSlotItem}/>  : null }        
+               {this.state.selectedSlotItem !== null  ? <Mapbox hospitalLocation={this.state.selectedSlotItem}/>  : null }        
               <List>
                 <ListItem avatar>
                   <Left>
@@ -249,13 +344,7 @@ class BookAppoinment extends Component {
                     <Text note>{this.state.item.pin_code}</Text>
 
                   </Body>
-                  {/* <Right>
-                <Button onPress={() => this.navigateToMap(this.state.slotList)} style={{ borderRadius:7,color:'gray'}}>
-                    <Text uppercase={false}>View Map</Text>
-                </Button>
-
-              </Right> */}
-
+                  
                 </ListItem>
               </List>
             </Card>
@@ -497,7 +586,9 @@ class BookAppoinment extends Component {
 
 
           </Card>
-        </Content>
+       
+       </Content>
+}
       </Container>
 
     )
@@ -606,6 +697,17 @@ const styles = StyleSheet.create({
     fontFamily: 'opensans-semibold',
 
   },
+  profileImage:
+    {
+        marginLeft: 'auto',
+        marginRight: 'auto',
+        marginTop: 25,
+        height: 80,
+        width: 80,
+        borderColor: '#f5f5f5',
+        borderWidth: 2,
+        borderRadius: 50
+    },
   customIcon:
   {
     height: 30,

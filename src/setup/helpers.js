@@ -72,6 +72,9 @@ export function renderIf(condition, renderFn) {
   export function getLastDay(date, unit, format) {
     return moment(date).endOf(unit).format(format);
   }
+  export function  addMoment(date,amount, unit) {
+    return moment(date).add(amount,unit)
+  }
   export function addTimeUnit(date, amount, unit) {
     return moment(date).add(amount, unit).toDate();
   }
@@ -81,9 +84,6 @@ export function renderIf(condition, renderFn) {
 
   export function getMoment(date) {
     return moment(date)
-}
-export function  addMoment(date,amount, unit) {
-  return moment(date).add(amount,unit)
 }
   export function findArrayObj(array, findNode, findValue) {
     let returnObj;   
