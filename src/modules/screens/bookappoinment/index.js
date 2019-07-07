@@ -103,7 +103,7 @@ class BookAppoinment extends Component {
             });
           }
           for(var key in slotData){           
-             await slotMap.set(key,slotData[key]);
+            slotMap.set(key,slotData[key]);
          }
       }
 }
