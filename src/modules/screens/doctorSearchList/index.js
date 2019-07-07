@@ -336,11 +336,11 @@ class doctorSearchList extends Component {
                 extraData={this.state}
                 keyExtractor={(item, index) => index.toString()}
                 renderItem={({ item, index }) =>
-                    <Col style={{ col: '25%', padding: 5 }}>
+                    <Col style={{ col: '28%', padding: 4 }}>
                         <Button disabled={item.isSlotBooked}
                         primary style={item.isSlotBooked ? styles.slotBookedBgColor : styles.slotDefaultBgColor }    
                           onPress={() => { this.onSlotPress(doctorData, item, slotsData, index) }}>
-                            <Text note style={{ fontFamily: 'OpenSans', color: 'white' }}>{formatDate(item.slotStartDateAndTime, 'hh:mm')}</Text>
+                            <Text note style={{ fontFamily: 'OpenSans', color: 'white' }}>{formatDate(item.slotStartDateAndTime, 'hh:mm A')}</Text>
                         </Button>
                     </Col>
 
@@ -680,7 +680,7 @@ const styles = StyleSheet.create({
 
     slotDefaultBgColor: {
         height: 35,
-        width: 75,
+        width: 90,
         fontFamily: 'OpenSans',
         fontSize: 12,
         borderRadius: 15,
@@ -691,7 +691,7 @@ const styles = StyleSheet.create({
     
     slotBookedBgColor: {
         height: 35,
-        width: 75,
+        width: '100%',
         fontFamily: 'OpenSans',
         fontSize: 12,
         borderRadius: 15,
