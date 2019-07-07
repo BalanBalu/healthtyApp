@@ -1,19 +1,19 @@
 import React, { Component } from 'react';
-import { Container, Content, Text, Title, Toast, Header, H3, Button, Card, Item, CardItem, List, ListItem, Left, Right, Thumbnail, Body, Icon, locations, ProgressBar, DatePicker } from 'native-base';
+import { Container, Content, Text, Toast, Button, Card, Item,  List, ListItem, Left, Right, Thumbnail, Body, Icon, DatePicker } from 'native-base';
 import { login } from '../../providers/auth/auth.actions';
 import { messageShow, messageHide } from '../../providers/common/common.action';
 import { Col, Row, Grid } from 'react-native-easy-grid';
 import { connect } from 'react-redux'
-import { StyleSheet, Image, TouchableOpacity, View, FlatList, AsyncStorage, TouchEvent, Dimensions } from 'react-native';
+import { StyleSheet, Image, TouchableOpacity, View, FlatList, AsyncStorage } from 'react-native';
 import StarRating from 'react-native-star-rating';
-import { ScrollView, TouchableHighlight } from 'react-native-gesture-handler';
+import { ScrollView } from 'react-native-gesture-handler';
 import Modal from "react-native-modal";
 import { insertDoctorsWishList, searchDoctorList, fetchAvailabilitySlots, getMultipleDoctorDetails, getDoctorsReviewsCount, getPatientWishList } from '../../providers/bookappointment/bookappointment.action';
-import { formatDate, addMoment, getMoment, getFirstDay, getLastDay, findArrayObj } from '../../../setup/helpers';
+import { formatDate, addMoment, getMoment, findArrayObj } from '../../../setup/helpers';
 import { Loader } from '../../../components/ContentLoader';
 import { RenderHospitalAddress } from '../../common';
 import { NavigationEvents } from 'react-navigation';
-import { arrayExpression } from '@babel/types';
+import Spinner from '../../../components/Spinner';
 
 let conditionFromFilterPage;
 
@@ -130,25 +130,25 @@ class doctorSearchList extends Component {
                 return element.doctor_id
             }).join(',');
             this.setState({ getSearchedDoctorIds: doctorIds });
-            this.getAvailabilitySlots(doctorIds, getMoment(this.state.selectedDate), endDateMoment),
-            this.getDoctorAllDetails(this.state.getSearchedDoctorIds);// for getting multiple Doctor details,Reviews ,ReviewCount,etc....
+            this.getDoctorAllDetails(this.state.getSearchedDoctorIds, getMoment(this.state.selectedDate), endDateMoment);// for getting multiple Doctor details,Reviews ,ReviewCount,etc....
         } else {
             this.setState ({ isLoading : false })
         }
     }
 
-    async getDoctorAllDetails(DoctorIds) {
+    async getDoctorAllDetails(doctorIds, startDate, endDate) {
         this.setState({ isLoading: true });
         await new Promise.all([
-            this.getDoctorDetails(DoctorIds),
-            this.getPatientReviews(DoctorIds),
+            this.getAvailabilitySlots(doctorIds, startDate, endDate),
+            this.getDoctorDetails(doctorIds),
+            this.getPatientReviews(doctorIds),
         ])
         this.setState({ isLoading: false });
     }
 
     /* get the  Doctors Availability Slots */
     getAvailabilitySlots = async (getSearchedDoctorIds, startDate, endDate) => {
-        this.setState({ isLoading: true });
+        this.setState({ isAvailabilityLoading: true });
         try {
             let totalSlotsInWeek = {
                 startDate: formatDate(startDate, 'YYYY-MM-DD'),
@@ -181,7 +181,7 @@ class doctorSearchList extends Component {
             console.log(e);
         }
         finally { 
-            this.setState({ isLoading: false }); 
+            this.setState({ isAvailabilityLoading: false }); 
         }
     }
     enumarateDates(startDate, endDate) {
@@ -203,7 +203,6 @@ class doctorSearchList extends Component {
         debugger
         if (this.processedDoctorAvailabilityDates.includes(selectedDate) === false) {
             this.getAvailabilitySlots(this.state.getSearchedDoctorIds, getMoment(date), endDateMoment);
-            //this.getDoctorAllDetails(this.state.getSearchedDoctorIds);
         }
         
     }
@@ -313,9 +312,9 @@ class doctorSearchList extends Component {
             }
         }
         return (
-            <Col style={{ alignSelf: 'center' }}>
-                <Button style={{ borderColor: 'blue', borderRadius: 20, backgroundColor: 'gray' }}>
-                    {nextAvailableDate ? <Text>Next Available Date : {nextAvailableDate}</Text> : <Text> No Availablity for Next 7 Days</Text>}
+            <Col>
+                <Button style={{ alignItems: 'center', borderColor: 'blue', borderRadius: 20, backgroundColor: 'gray' }} onPress={()=> { if(nextAvailableDate) this.setState( { selectedDate : nextAvailableDate })} }>
+                    {nextAvailableDate ? <Text>Next Availability On {nextAvailableDate}</Text> : <Text> No Availablity for Next 7 Days</Text>}
                 </Button>
             </Col>
         )
@@ -345,14 +344,14 @@ class doctorSearchList extends Component {
                     </Col>
 
                 } />
-        )
+            )
     }
 
 
   
     render() {
         const { navigation } = this.props;
-        const { isLoading, searchedResultData, categories, singleDataWithDoctorDetails, singleHospitalDataSlots, reviewData, patientWishListsDoctorIds } = this.state;
+        const { isLoading,isAvailabilityLoading, searchedResultData, categories, singleDataWithDoctorDetails, singleHospitalDataSlots, reviewData, patientWishListsDoctorIds } = this.state;
         return (
 
             <Container style={styles.container}>
@@ -361,10 +360,12 @@ class doctorSearchList extends Component {
                 <NavigationEvents
                     onWillFocus={payload => {this.componentDidMount() }}
                 />
-                    {isLoading ?
-                        <Loader style='list' />
-                        : 
+                {isLoading ? <Loader style='list' /> : 
                     <Content style={styles.bodyContent}>
+
+                    <Spinner color="blue"
+					    visible={isAvailabilityLoading}/> 
+
                     <Card style={{ borderRadius: 7 }}>
                         <Grid>
                             <Row>
@@ -523,9 +524,9 @@ class doctorSearchList extends Component {
                                             <Row>
                                                 <ListItem>
                                                     <ScrollView horizontal={true}>
-
-                                                        {item.slotData[this.state.selectedDate] == undefined ? this.noAvailableSlots(item.slotData) : this.haveAvailableSlots(item, item.slotData[this.state.selectedDate])}
-                                                        
+                                                        {   
+                                                          item.slotData[this.state.selectedDate] == undefined ? this.noAvailableSlots(item.slotData) : this.haveAvailableSlots(item, item.slotData[this.state.selectedDate])
+                                                        }
                                                     </ScrollView>
                                                 </ListItem>
                                             </Row>
