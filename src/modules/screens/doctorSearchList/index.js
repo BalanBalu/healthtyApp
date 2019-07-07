@@ -202,8 +202,8 @@ class doctorSearchList extends Component {
         this.setState({ selectedDate: selectedDate });
         debugger
         if (this.processedDoctorAvailabilityDates.includes(selectedDate) === false) {
-            this.getAvailabilitySlots(this.state.getSearchedDoctorIds, getMoment(date), endDateMoment),
-            this.getDoctorAllDetails(this.state.getSearchedDoctorIds);
+            this.getAvailabilitySlots(this.state.getSearchedDoctorIds, getMoment(date), endDateMoment);
+            //this.getDoctorAllDetails(this.state.getSearchedDoctorIds);
         }
         
     }
