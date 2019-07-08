@@ -74,7 +74,7 @@ class MyAppoinmentList extends Component {
 		await this.pastAppointment();        
 	}
 
-backNavigation=async(navigationData)=>{
+backNavigation=async()=>{
 	if(navigationData.action) {
 		if (navigationData.action.type === 'Navigation/BACK') {
 			if (this.state.selectedIndex == 0) {
@@ -84,67 +84,48 @@ backNavigation=async(navigationData)=>{
 			}
         }
       }
-      console.log(navigationData);     
+         
 }
 
-	upCommingAppointment = async (navigationData) => {
+	upCommingAppointment = async () => {
 		try {
 			let userId = await AsyncStorage.getItem("userId");
 			let filters = {
 				startDate: formatDate(new Date(), "YYYY-MM-DD"),
 				endDate: formatDate(addTimeUnit(new Date(), 1, "years"), "YYYY-MM-DD")
 			};
-			let upCommingAppointmentResult = await getUserAppointments(
-				userId,
-				filters
-			);
+			let upCommingAppointmentResult = await getUserAppointments(userId,filters	);
 			
 			if (upCommingAppointmentResult.success) {
 				let appointmentData = [];
 				upCommingAppointmentResult = upCommingAppointmentResult.data;
 
-				let doctorIds = upCommingAppointmentResult
-					.map((appointmentResult, index) => {
-						appointmentData.push({ appointmentResult });
-						return appointmentResult.doctor_id;
-					})
-					.join(",");
+				let doctorIds = upCommingAppointmentResult.map((appointmentResult, index) => {
+						
+					return appointmentResult.doctor_id;
+				}).join(",");
 
-				let speciallistResult = await getMultipleDoctorDetails(
-					doctorIds,
-					"specialist,education"
-				);
+				let speciallistResult = await getMultipleDoctorDetails(doctorIds, "specialist,education");
 
 				let upcommingSpecialist = [];
-				speciallistResult.data.map((doctorInfo, index) => {
-					let speaciallistDetails = null;
+				upCommingAppointmentResult.map(_id => {
+					speciallistResult.data.map(doctor_id => {
+						let speaciallistDetails = null;
 
-					speaciallistDetails = doctorInfo.specialist
-						.map(categories => {
+						speaciallistDetails = doctor_id.specialist.map(categories => {
 							return categories.category;
-						})
-						.join(",");
-					let educationDetails = null;
-					educationDetails = doctorInfo.education
-						.map(education => {
+						}).join(",");
+						let educationDetails = null;
+						educationDetails = doctor_id.education.map(education => {
 							return education.degree;
-						})
-						.join(",");
+						}).join(",");
 
-					upcommingSpecialist.push({
-						data: appointmentData[index],
-						specialist: speaciallistDetails,
-						degree: educationDetails
-					});
 					
-				});
-				
-				this.setState({
-					upComingData: upcommingSpecialist,
-					isLoading: true,
-					data: upcommingSpecialist,
-					specialist: upcommingSpecialist
-				});
+					});
+					upcommingSpecialist.push({ data: _id, specialist: speaciallistDetails, degree: educationDetails });
+					// this.setState({ upComingData: upcommingSpecialist, isLoading: true, data: upcommingSpecialist, specialist: upcommingSpecialist });
+				})
+				console.log(upcommingSpecialist);
 			}
 		} catch (e) {
 			console.log(e);
@@ -154,65 +135,58 @@ backNavigation=async(navigationData)=>{
 		try {
 			let userId = await AsyncStorage.getItem("userId");
 			let endData = formatDate(subTimeUnit(new Date(), 1, "day"), "YYYY-MM-DD");
-			let filters = {
-				endDate: endData,
-				startDate: "2018-01-01"
-			};
+			let filters = {endDate: endData,startDate: "2018-01-01"};
 			let pastAppointmentResult = await getUserAppointments(userId, filters);
 			let viewUserReviewResult = await viewUserReviews("user", userId);
-
 			if (pastAppointmentResult.success) {
 				pastAppointmentResult = pastAppointmentResult.data;
 				viewUserReviewResult = viewUserReviewResult.data;
+				
+				let doctorIds = pastAppointmentResult.map((appointmentResult, index) => {
+					
+					return appointmentResult.doctor_id;
+				}).join(",");
 
-				let appointmentData = [];
-
-				let doctorIds = pastAppointmentResult
-					.map(appointmentResult => {
-						if (appointmentResult.appointment_status == "COMPLETED") {
-							viewUserReviewResult.map(viewUserReview => {
-								if (appointmentResult._id === viewUserReview.appointment_id) {
-									appointmentData.push({
-										appointmentResult,
-										ratting: viewUserReview.overall_rating
-									});
-								}
-							});
-						} else {
-							appointmentData.push({ appointmentResult });
-							condition = false;
-						}
-
-						return appointmentResult.doctor_id;
-					})
-					.join(",");
-
-				let speciallistResult = await getMultipleDoctorDetails(
-					doctorIds,
-					"specialist,education"
-				);
-
+				let speciallistResult = await getMultipleDoctorDetails(doctorIds, "specialist,education");
+				
 				let pastDoctorDetails = [];
+				pastAppointmentResult.map((_id, index) => {
+				
+					let ratting, speaciallistDetails, educationDetails;
+					 if (_id.appointment_status == "COMPLETED") {
+						viewUserReviewResult.map(viewUserReview => {
+							if (_id._id === viewUserReview.appointment_id) {
+								ratting = viewUserReview.overall_rating
+								  
+							}
+							 
+						});
+						  
+					 }
+				
+				
+					speciallistResult.data.forEach(doctor_id => {
+						if (doctor_id.doctor_id == _id.doctor_id) {
+							educationDetails = doctor_id.education.map(education => {
+								return education.degree;
+							}).join(",");
 
-				speciallistResult.data.map((doctorInfo, index) => {
-					let educationDetails = doctorInfo.education
-						.map(education => {
-							return education.degree;
-						})
-						.join(",");
-
-					let speaciallistDetails = doctorInfo.specialist
-						.map(categories => {
-							return categories.category;
-						})
-						.join(",");
-					pastDoctorDetails.push({
-						data: appointmentData[index],
-						specialist: speaciallistDetails,
-						degree: educationDetails
+							speaciallistDetails = doctor_id.specialist.map(categories => {
+								return categories.category;
+							}).join(",");
+						      return
+						}
+						
 					});
-				});
-
+					
+					pastDoctorDetails.push({
+						data: _id, specialist: speaciallistDetails, degree: educationDetails, ratting: ratting
+					});
+					
+				
+				}
+					
+				)
 				this.setState({ pastData: pastDoctorDetails, isLoading: true });
 				console.log("past data");
 				console.log(this.state.pastData);
