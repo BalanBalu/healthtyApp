@@ -81,7 +81,7 @@ class InsertReview extends Component {
         if (result.success) {
           this.state.data.appointment_status = 'COMPLETED';
           await this.updateAppointmentStatus(this.state.data, 'COMPLETED')
-          this.props.navigation.navigate('AppointmentInfo', { reviewDetails: this.state.data })
+         // this.props.navigation.navigate('AppointmentDetails', { reviewDetails: this.state.data })
         }
       } else {
         Toast.show({
@@ -93,6 +93,10 @@ class InsertReview extends Component {
     catch (e) {
       console.log(e);
     }
+  }
+
+  navigateAddReview() {
+        this.props.navigation.navigate('My Appointments')
   }
 
   CleanlinessStarRating(rating) {
@@ -187,7 +191,7 @@ class InsertReview extends Component {
                   <Row style={{ marginTop: 10 }}>
                     <Right>
                       <Button style={styles.button1}
-                        onPress={() => this.submitReview()}>
+                       onPress={() => this.navigateAddReview()}>
                         <Text>SUBMIT </Text></Button>
                     </Right></Row>
 
