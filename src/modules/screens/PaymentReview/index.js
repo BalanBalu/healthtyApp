@@ -37,15 +37,15 @@ class PaymentReview extends Component {
         await this.setState({ bookSlotDetails: bookSlotDetails });
     }
     confirmPayLater = async () => {
+        try {
         this.setState({isLoading:true})
-
         const userId = await AsyncStorage.getItem('userId');
         let bookAppointmentData = {
             userId: userId,
             doctorId: this.state.bookSlotDetails.doctorId,
             description: "something",
-            startTime: formatDate(this.state.bookSlotDetails.slotData.slotStartDateAndTime, 'YYYY-MM-DD HH:mm:ss'),
-            endTime: formatDate(this.state.bookSlotDetails.slotData.slotEndDateAndTime, 'YYYY-MM-DD HH:mm:ss'),
+            startTime: this.state.bookSlotDetails.slotData.slotStartDateAndTime,
+            endTime: this.state.bookSlotDetails.slotData.slotEndDateAndTime,
             status: "PENDING",
             status_by: "Patient",
             statusUpdateReason: "something",
@@ -70,7 +70,16 @@ class PaymentReview extends Component {
                 duration: 3000,
             })
         }
+    } catch(ex) {
+        Toast.show({
+            text: 'Exception Occured ' + ex,
+            type: "warning",
+            duration: 3000,
+        })
+    } finally {
+        this.setState({ isLoading: false })
     }
+}
 
     async updatePaymentDetails(isSuccess, data, modeOfPayment) {
         try {
@@ -109,7 +118,7 @@ class PaymentReview extends Component {
                     duration: 3000,
                 })
             }
-          } else{
+          } else {
              Toast.show({
                 text: resultData.message,
                 type: "warning",
@@ -117,6 +126,7 @@ class PaymentReview extends Component {
             })
         }
      }  catch (error) {
+         this.setState({isLoading: false});
           Toast.show({
             text: error,
             type: "warning",
@@ -143,8 +153,8 @@ class PaymentReview extends Component {
                             <Col style={{ width: '90%' }}>
 
                                 <Text style={styles.customizedText} note>Date And Time</Text>
-                                <Text style={styles.customizedText}>{bookSlotDetails.slotData && bookSlotDetails.slotData.slotDate}</Text>
-                                <Text note style={styles.customizedText}>{bookSlotDetails.slotData && bookSlotDetails.slotData.slotTime} to {bookSlotDetails.slotData && bookSlotDetails.slotData.slotEndTime}</Text>
+                                <Text style={styles.customizedText}>{bookSlotDetails.slotData && formatDate(bookSlotDetails.slotData.slotStartDateAndTime, 'DD MMMM, YYYY')}</Text>
+                                <Text  style={styles.customizedText}>{bookSlotDetails.slotData && formatDate(bookSlotDetails.slotData.slotStartDateAndTime, 'hh:mm A')} to {bookSlotDetails.slotData && formatDate(bookSlotDetails.slotData.slotEndDateAndTime, 'DD MMM,YYYY hh:mm A')}</Text>
                                 <Text note style={styles.customizedText}></Text>
 
                             </Col>
