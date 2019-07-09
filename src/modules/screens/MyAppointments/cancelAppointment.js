@@ -139,7 +139,7 @@ class CancelAppointment extends Component {
                         <Text style={{ fontSize: 16, marginTop: 20 }}> Write your reason </Text>
                         <TextInput style={{ height: 100, borderWidth: 1, marginTop: 20, width: 300 }}
                           placeholder="Write your reason here"
-                          multiline = {true}
+                          multiline={true}
                           textAlignVertical={'top'}
                           onChangeText={statusUpdateReason => this.setState({ statusUpdateReason })}
                           testID='addToEditReason' />

@@ -104,12 +104,12 @@ class UpdateEmail extends Component {
                         :null}</Card>
                     </View>
                     <View style={{ marginTop: 20 }}>
-                        <Text style={{ fontFamily: 'OpenSans', marginTop: 50, marginLeft: 7, fontWeight: 'bold', fontSize: 20 }}>Secondary Email</Text>
+                        <Text style={{ fontFamily: 'OpenSans', marginTop: 50, marginLeft: 7, fontWeight: 'bold', fontSize: 22 }}>Secondary Email</Text>
 
                         <Card style={{ padding: 10, borderRadius: 10, marginTop: 10, height: 250, justifyContent: 'center' }}>
 
                             <Item style={{ borderBottomWidth: 0, marginTop: 12, marginLeft: 4 }}>
-                                <Text style={{ color: 'gray', fontSize: 13, fontFamily: 'OpenSans', marginTop: 5, marginLeft: 7 }}>Update your secondary email</Text>
+                                <Text style={{ color: 'gray', fontSize: 14, fontFamily: 'OpenSans', marginTop: 5, marginLeft: 7 }}>Update your secondary email</Text>
                             </Item>
 
                             <Item style={{ borderBottomWidth: 0, }}>
@@ -139,7 +139,7 @@ class UpdateEmail extends Component {
                                     </Button>
                                 </View> */}
                                 <Row style={{ marginLeft: 255 }}>
-                                    <Button success style={styles.button2} >
+                                    <Button success style={styles.button2} onPress={() => this.handleEmailUpdate()} testID='clickUpdateEmail' >
                                         <Text style={{ color: '#000' }}>Update</Text>
                                     </Button>
 

@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
-import { Container, Content, Text, Button, H3, Item, List, CheckBox, Left, Right, Picker, Body, Icon, Card, Input, Toast } from 'native-base';
-import { userFiledsUpdate} from '../../providers/auth/auth.actions';
+import { Container, Content, Text, Button, H3, Item, List, CheckBox, Left, Right, Picker, Body, Icon, Card, Input, Toast, View } from 'native-base';
+import { userFiledsUpdate } from '../../providers/auth/auth.actions';
 import { AsyncStorage } from 'react-native';
 import { connect } from 'react-redux'
 import styles from './style.js';
@@ -9,7 +9,7 @@ import Spinner from '../../../components/Spinner';
 
 
 class UpdateContact extends Component {
- numberCategory=['Home','Emergency']
+    numberCategory = ['Home', 'Emergency']
 
     constructor(props) {
         super(props)
@@ -22,66 +22,66 @@ class UpdateContact extends Component {
             numberType:''
         } 
     }
-    
+
     componentDidMount() {
-         this.bindContactValues();
+        this.bindContactValues();
     }
-    
-     bindContactValues() {
+
+    bindContactValues() {
         const { navigation } = this.props;
         const userData = navigation.getParam('updatedata');
         const fromProfile = navigation.getParam('fromProfile') || false
 
-        
-        if(fromProfile){
-            
-             this.setState({
-                fromProfile:true,
-                primary_mobile_no:userData.mobile_no,
-                           
+
+        if (fromProfile) {
+
+            this.setState({
+                fromProfile: true,
+                primary_mobile_no: userData.mobile_no,
+
             })
-            if(userData.secondary_mobiles) {
-                this.setState ({
-                    type:userData.secondary_mobiles[0].type,
-                    mobile_no:userData.secondary_mobiles[0].number, 
-                    active:userData.secondary_mobiles[0].active    
+            if (userData.secondary_mobiles) {
+                this.setState({
+                    type: userData.secondary_mobiles[0].type,
+                    mobile_no: userData.secondary_mobiles[0].number,
+                    active: userData.secondary_mobiles[0].active
                 })
             }
 
-         }
+        }
     }
 
     handleContactUpdate = async () => {
 
         try {
-            this.setState({isLoading:true})
+            this.setState({ isLoading: true })
             let userId = await AsyncStorage.getItem('userId');
             let data = {
                 secondary_mobiles: [
                     {
-                    type: this.state.type,
-                    number:this.state.mobile_no,                    
-                    active:true
+                        type: this.state.type,
+                        number: this.state.mobile_no,
+                        active: true
                     }]
-                    
+
             };
-            let response= await userFiledsUpdate(userId,data);
+            let response = await userFiledsUpdate(userId, data);
             if (response.success) {
                 Toast.show({
-                    text:'Contact updated Successfully',
+                    text: 'Contact updated Successfully',
                     type: "success",
                     duration: 3000,
 
                 })
                 this.props.navigation.navigate('Profile');
-                this.setState({isLoading:false});
+                this.setState({ isLoading: false });
             } else {
                 Toast.show({
                     text: 'Contact not updated',
                     type: "danger",
                     duration: 3000
                 })
-                this.setState({isLoading:false});
+                this.setState({ isLoading: false });
 
 
             }
@@ -93,9 +93,9 @@ class UpdateContact extends Component {
     }
 
 
-    
+
     render() {
-        
+
 
         return (
             <Container style={styles.container}>
