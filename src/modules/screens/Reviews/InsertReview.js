@@ -23,6 +23,7 @@ class InsertReview extends Component {
       data: '',
       doctorId: '',
       appointmentId: '',
+      isRefresh:'false'
     }
   }
 
@@ -79,9 +80,12 @@ class InsertReview extends Component {
         let result = await addReview(userId, insertReviewData);
 
         if (result.success) {
+          console.log('review updated');
           this.state.data.appointment_status = 'COMPLETED';
           await this.updateAppointmentStatus(this.state.data, 'COMPLETED')
-         // this.props.navigation.navigate('AppointmentDetails', { reviewDetails: this.state.data })
+          console.log('back navigation initiated');
+        this.props.navigation.pop();
+        console.log('back navigation completed');
         }
       } else {
         Toast.show({
@@ -93,10 +97,6 @@ class InsertReview extends Component {
     catch (e) {
       console.log(e);
     }
-  }
-
-  navigateAddReview() {
-        this.props.navigation.navigate('My Appointments')
   }
 
   CleanlinessStarRating(rating) {
@@ -191,7 +191,7 @@ class InsertReview extends Component {
                   <Row style={{ marginTop: 10 }}>
                     <Right>
                       <Button style={styles.button1}
-                       onPress={() => this.navigateAddReview()}>
+                       onPress={() => this.submitReview()}>
                         <Text>SUBMIT </Text></Button>
                     </Right></Row>
 

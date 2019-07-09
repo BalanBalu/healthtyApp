@@ -1,11 +1,13 @@
 import React, { Component } from 'react';
-import { Container, Content, Text, Button, Item, Card, List, ListItem, Left, Right, Thumbnail, Body, Icon, Toast, View } from 'native-base';
+import { Container, Content, Text, Button, Item, Card, List, ListItem, Left, Right, 
+  Thumbnail, Body, Icon, Toast, View } from 'native-base';
 import { Col, Row, Grid } from 'react-native-easy-grid';
 import { StyleSheet, AsyncStorage } from 'react-native';
 import StarRating from 'react-native-star-rating';
 import moment from 'moment';
 import { NavigationEvents } from 'react-navigation';
-import { viewUserReviews, bindDoctorDetails, appointmentStatusUpdate, getAppointmentDetails } from '../../providers/bookappointment/bookappointment.action';
+import { viewUserReviews, bindDoctorDetails, appointmentStatusUpdate,
+   getAppointmentDetails } from '../../providers/bookappointment/bookappointment.action';
 import { formatDate, dateDiff } from '../../../setup/helpers';
 
 import { Loader } from '../../../components/ContentLoader'
@@ -49,7 +51,8 @@ class AppointmentDetails extends Component {
       console.log('not pass a way...')
       let doctorId = appointmentData.doctor_id;
       let appointmentId = appointmentData._id;
-      await this.setState({ doctorId: doctorId, appointmentId: appointmentId, userId: userId, data: appointmentData, isLoading: true })
+      await this.setState({ doctorId: doctorId, appointmentId: appointmentId,
+         userId: userId, data: appointmentData, isLoading: true })
     
       await new Promise.all([
         this.getDoctorDetails(doctorId),
@@ -118,7 +121,7 @@ class AppointmentDetails extends Component {
 
   navigateAddReview() {
     this.state.data.prefix = this.state.doctorData.prefix;
-    this.props.navigation.navigate('InsertReview', { appointmentDetail: this.state.data })
+    this.props.navigation.push('InsertReview', { appointmentDetail: this.state.data })
 
   }
 

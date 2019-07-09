@@ -71,7 +71,8 @@ class MyAppoinmentList extends Component {
 		let userId = await AsyncStorage.getItem("userId");
 		this.setState({ userId });
 		await this.upCommingAppointment();
-		await this.pastAppointment();        
+		await this.pastAppointment();   
+		 
 	}
 
 backNavigation=async(navigationData)=>{
@@ -466,7 +467,7 @@ backNavigation=async(navigationData)=>{
 															<Button
 																style={styles.shareButton}
 																onPress={() =>
-																	this.props.navigation.navigate("InsertReview")
+																	this.props.navigation.push("InsertReview")
 																}
 															>
 																<Text style={styles.bookAgain1}>
