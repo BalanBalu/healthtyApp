@@ -4,7 +4,7 @@ import { Container, Content, Text, Title, Header, View, Button, H3, Item, List, 
 import LinearGradient from 'react-native-linear-gradient';
 import { Col, Row, Grid } from 'react-native-easy-grid';
 import { connect } from 'react-redux'
-import { StyleSheet, Image, } from 'react-native';
+import { StyleSheet, Image, TouchableOpacity } from 'react-native';
 import { ScrollView } from 'react-native-gesture-handler';
 
 class MedicineSearchList extends Component {
@@ -44,7 +44,7 @@ class MedicineSearchList extends Component {
                         </Row>
 
                     </Grid>
-                    <Card transparent style={{ padding: 10, marginTop: 20 }} onTouchStart={() => this.props.navigation.navigate('MedicineCheckout')} >
+                    <Card transparent style={{ padding: 10, marginTop: 60 }} onTouchStart={() => this.props.navigation.navigate('MedicineCheckout')} >
                         <Card style={{ padding: 10 }}>
                             <Grid>
                                 <Col style={{ width: '25%' }}>
@@ -170,32 +170,48 @@ class MedicineSearchList extends Component {
 
                 </Content>
                 <Footer style={{ backgroundColor: '#7E49C3', }}>
+                    <Row>
+                        <Col style={{ flexDirection: 'row', justifyContent: 'center', marginTop: 12 }}>
+                            <TouchableOpacity>
+                                <View style={{ padding: 0, justifyContent: 'center', borderWidth: 1, borderColor: 'black', width: 40, height: 35, backgroundColor: 'white' }}>
+                                    <Text style={{ fontSize: 40, textAlign: 'center', marginTop: -5, color: 'black' }}>-</Text>
+                                </View>
+                            </TouchableOpacity>
+                            <View>
+                                <Text style={{ marginLeft: 5, color: 'white', fontSize: 20 }}>8</Text>
+                            </View>
+                            <TouchableOpacity>
+                                <View style={{ padding: 0, justifyContent: 'center', borderWidth: 1, borderColor: 'black', width: 40, height: 35, marginLeft: 5, backgroundColor: 'white' }}>
+                                    <Text style={{
+                                        fontSize: 20, textAlign: 'center', marginTop: -5,
+                                        color: 'black'
+                                    }}>+</Text>
+                                </View>
+                            </TouchableOpacity>
+                        </Col>
 
-                    <Col >
-                        <Button success style={{ borderRadius: 10, marginTop: 10, marginLeft: 40, height: 35, justifyContent: 'center' }}>
-
-                            <Row style={{ justifyContent: 'center', }}>
-                                <Icon name='ios-cart' />
-                                <Text style={{ marginLeft: -25 }}>Add to cart</Text>
-                            </Row>
-                        </Button>
-                    </Col>
+                        <Col style={{ marginRight: 40 }} >
+                            <Button success style={{ borderRadius: 10, marginTop: 10, marginLeft: 45, height: 40, justifyContent: 'center' }}>
 
 
+                                <Row style={{ justifyContent: 'center', }}>
 
-                    <Col >
-                        <Button success style={{ borderRadius: 10, marginTop: 10, marginLeft: 40, height: 35, alignContent: 'center' }}>
+                                    <Icon name='ios-cart' />
 
+                                    <Text style={{ marginLeft: -25, marginTop: 2, }}>VIEW CART</Text>
+                                    <View>
+                                        <Text style={{ position: 'absolute', height: 20, width: 20, fontSize: 13, backgroundColor: '#ffa723', top: 0, marginLeft: -105, borderRadius: 20, marginTop: -10 }}>
+                                            20
+                                        </Text>
+                                    </View>
+                                </Row>
+                            </Button>
+                        </Col>
 
-                            <Text>View Cart</Text>
-
-                        </Button>
-                    </Col>
-
+                    </Row>
 
 
                 </Footer>
-
             </Container>
 
         )

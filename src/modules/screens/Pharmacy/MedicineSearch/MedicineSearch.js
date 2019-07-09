@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import { Container, Content, Text, Title, Header, Button, H3, Item, List, ListItem, Card, Input, Left, Right, Thumbnail, Body, Icon, View, Footer, FooterTab } from 'native-base';
 import { Col, Row, Grid } from 'react-native-easy-grid';
-import { StyleSheet, Image, FlatList } from 'react-native';
+import { StyleSheet, Image, FlatList, TouchableOpacity } from 'react-native';
 
 class MedicineSearch extends Component {
     constructor(props) {
@@ -48,7 +48,7 @@ class MedicineSearch extends Component {
                         </Row>
 
                     </Grid>
-                    <View style={{ marginLeft: 'auto', marginRight: 'auto', marginTop: 42 }}>
+                    <View style={{ marginLeft: 'auto', marginRight: 'auto', marginTop: 20 }}>
                         <Button style={{ justifyContent: "center", backgroundColor: '#745DA6', borderRadius: 5 }}>
                             <Icon style={{ fontSize: 30 }} name='ios-cloud-upload'>
 
@@ -63,78 +63,85 @@ class MedicineSearch extends Component {
 
                     <Card transparent >
 
-                        <Grid style={{ marginTop: 50, padding: 10, width: 'auto' }}>
+                        <Grid style={{ marginTop: 25, padding: 10, width: 'auto' }}>
                             <FlatList data={medicine}
                                 renderItem={
 
                                     ({ item }) =>
                                         <Row style={{ justifyContent: 'center' }}>
                                             <View style={styles.customColumn}>
-                                                <View style={{ width: 'auto' }}>
+                                                <TouchableOpacity>
+                                                    <View style={{ width: 'auto', flex: 1, flexDirection: 'row' }}>
 
-                                                    <Text style={{ marginTop: -30, fontFamily: 'OpenSans', fontSize: 13, color: '#ffa723', }}> Get 50% Off
+                                                        <Text style={{ marginTop: -30, fontFamily: 'OpenSans', fontSize: 13, color: '#ffa723', }}> Get 50% Off
                                          {/* <Icon style={{ fontSize: 13, marginLeft: 15, color: '#e25657' }} name='ios-star' /> */}
-                                                    </Text>
+                                                        </Text>
 
 
-                                                </View>
-                                                <Image source={{ uri: 'https://vimecare.com/WelcomeDesign/images/doctor-icon.png' }} style={styles.customImage} />
+                                                        <Right>
+                                                            <Icon name="checkmark-circle" style={{ color: '#5cb75d', marginTop: -30, }}></Icon>
+                                                        </Right>
+
+                                                    </View>
+
+                                                    <Image source={{ uri: 'https://vimecare.com/WelcomeDesign/images/doctor-icon.png' }} style={styles.customImage} />
 
 
-                                                <Text style={styles.pageText}>{item.med1}</Text>
-                                                <View style={{ flex: 1, flexDirection: 'row' }}>
+                                                    <Text style={styles.pageText}>{item.med1}</Text>
+                                                    <View style={{ flex: 1, flexDirection: 'row' }}>
 
-                                                    <Text style={{
-                                                        textDecorationLine: 'line-through', textDecorationStyle: 'solid',
-                                                        fontFamily: 'OpenSans',
-                                                        fontSize: 12,
-                                                        color: 'black',
+                                                        <Text style={{
+                                                            textDecorationLine: 'line-through', textDecorationStyle: 'solid',
+                                                            fontFamily: 'OpenSans',
+                                                            fontSize: 12,
+                                                            color: 'black',
 
-                                                        fontWeight: "bold"
-                                                    }}>MRP: Rs 100</Text><Text style={{
-                                                        fontFamily: 'OpenSans',
-                                                        fontSize: 12,
-                                                        color: '#000',
-                                                        marginLeft: 10,
-                                                        fontWeight: "bold"
-                                                    }} > Rs.50</Text>
-                                                </View>
+                                                            fontWeight: "bold"
+                                                        }}>MRP: Rs 100</Text><Text style={{
+                                                            fontFamily: 'OpenSans',
+                                                            fontSize: 12,
+                                                            color: '#000',
+                                                            marginLeft: 10,
+                                                            fontWeight: "bold"
+                                                        }} > Rs.50</Text>
+                                                    </View>
 
 
-
+                                                </TouchableOpacity>
                                             </View>
 
                                             <View style={styles.customColumn}>
-                                                <View style={{ width: 'auto' }}>
+                                                <TouchableOpacity>
+                                                    <View style={{ width: 'auto' }}>
 
-                                                    <Text style={{ marginTop: -30, fontFamily: 'OpenSans', fontSize: 13, color: '#ffa723', }}> Get 50% Off
+                                                        <Text style={{ marginTop: -30, fontFamily: 'OpenSans', fontSize: 13, color: '#ffa723', }}> Get 50% Off
                                          {/* <Icon style={{ fontSize: 13, marginLeft: 15, color: '#e25657' }} name='ios-star' /> */}
-                                                    </Text>
+                                                        </Text>
 
 
-                                                </View>
-                                                <Image source={{ uri: 'https://vimecare.com/WelcomeDesign/images/doctor-icon.png' }} style={styles.customImage} />
+                                                    </View>
+                                                    <Image source={{ uri: 'https://vimecare.com/WelcomeDesign/images/doctor-icon.png' }} style={styles.customImage} />
 
-                                                <Text style={styles.pageText}>Rx Ready</Text>
-                                                <View style={{ flex: 1, flexDirection: 'row' }}>
+                                                    <Text style={styles.pageText}>Rx Ready</Text>
+                                                    <View style={{ flex: 1, flexDirection: 'row' }}>
 
-                                                    <Text style={{
-                                                        textDecorationLine: 'line-through', textDecorationStyle: 'solid',
-                                                        textDecorationColor: 'green',
-                                                        fontFamily: 'OpenSans',
-                                                        fontSize: 12,
-                                                        color: 'black',
+                                                        <Text style={{
+                                                            textDecorationLine: 'line-through', textDecorationStyle: 'solid',
+                                                            textDecorationColor: 'green',
+                                                            fontFamily: 'OpenSans',
+                                                            fontSize: 12,
+                                                            color: 'black',
 
-                                                        fontWeight: "bold"
-                                                    }}>MRP: Rs 100</Text><Text style={{
-                                                        fontFamily: 'OpenSans',
-                                                        fontSize: 12,
-                                                        color: '#000',
-                                                        marginLeft: 10,
-                                                        fontWeight: "bold"
-                                                    }} > Rs.50</Text>
-                                                </View>
-
+                                                            fontWeight: "bold"
+                                                        }}>MRP: Rs 100</Text><Text style={{
+                                                            fontFamily: 'OpenSans',
+                                                            fontSize: 12,
+                                                            color: '#000',
+                                                            marginLeft: 10,
+                                                            fontWeight: "bold"
+                                                        }} > Rs.50</Text>
+                                                    </View>
+                                                </TouchableOpacity>
                                             </View>
                                         </Row>
 
@@ -143,101 +150,48 @@ class MedicineSearch extends Component {
                             />
 
                         </Grid>
-
-
-                        {/* <Grid style={{ padding: 10 }}>
-                            <Row>
-                                <View style={styles.customColumn}>
-                                    <View>
-
-                                        <Text style={{ marginTop: -30, marginLeft: 100, fontFamily: 'OpenSans', fontSize: 13, color: '#e25657' }}> Get 50%
-                                         <Icon style={{ fontSize: 13, marginLeft: 15, color: '#e25657' }} name='ios-star' />
-                                        </Text>
-
-
-                                    </View>
-                                    <Image source={{ uri: 'https://vimecare.com/WelcomeDesign/images/doctor-icon.png' }} style={styles.customImage} />
-
-
-                                    <Text style={styles.pageText}>Rx Ready</Text>
-                                    <View style={{ flex: 1, flexDirection: 'row' }}>
-
-                                        <Text style={{
-                                            textDecorationLine: 'line-through', textDecorationStyle: 'solid',
-                                            fontFamily: 'OpenSans',
-                                            fontSize: 12,
-                                            color: 'black',
-
-                                            fontWeight: "bold"
-                                        }}>MRP: Rs 100</Text><Text style={{
-                                            fontFamily: 'OpenSans',
-                                            fontSize: 12,
-                                            color: '#000',
-                                            marginLeft: 10,
-                                            fontWeight: "bold"
-                                        }} > Rs.50</Text>
-                                    </View>
-
-
-
-                                </View>
-
-                                <Col style={styles.customColumn}>
-
-                                    <Image source={{ uri: 'https://vimecare.com/WelcomeDesign/images/doctor-icon.png' }} style={styles.customImage} />
-
-                                    <Text style={styles.pageText}>Rx Ready</Text>
-                                    <View style={{ flex: 1, flexDirection: 'row' }}> */}
-
-                        {/* <Text style={{
-                                            textDecorationLine: 'line-through', textDecorationStyle: 'solid',
-                                            textDecorationColor: 'green',
-                                            fontFamily: 'OpenSans',
-                                            fontSize: 12,
-                                            color: 'black',
-
-                                            fontWeight: "bold"
-                                        }}>MRP: Rs 100</Text> */}
-                        {/* <Text style={{
-                                            fontFamily: 'OpenSans',
-                                            fontSize: 12,
-                                            color: '#000',
-                                            // marginLeft: 10,
-                                            fontWeight: "bold"
-                                        }} >MRP: Rs 100</Text>
-                                    </View>
-
-                                </Col>
-                            </Row>
-
-                        </Grid> */}
-
-
                     </Card>
                 </Content>
                 <Footer style={{ backgroundColor: '#7E49C3', }}>
+                    <Row>
+                        <Col style={{ flexDirection: 'row', justifyContent: 'center', marginTop: 12 }}>
+                            <TouchableOpacity>
+                                <View style={{ padding: 0, justifyContent: 'center', borderWidth: 1, borderColor: 'black', width: 40, height: 35, backgroundColor: 'white' }}>
+                                    <Text style={{ fontSize: 40, textAlign: 'center', marginTop: -5, color: 'black' }}>-</Text>
+                                </View>
+                            </TouchableOpacity>
+                            <View>
+                                <Text style={{ marginLeft: 5, color: 'white', fontSize: 20 }}>8</Text>
+                            </View>
+                            <TouchableOpacity>
+                                <View style={{ padding: 0, justifyContent: 'center', borderWidth: 1, borderColor: 'black', width: 40, height: 35, marginLeft: 5, backgroundColor: 'white' }}>
+                                    <Text style={{
+                                        fontSize: 20, textAlign: 'center', marginTop: -5,
+                                        color: 'black'
+                                    }}>+</Text>
+                                </View>
+                            </TouchableOpacity>
+                        </Col>
 
-                    <Col >
-                        <Button success style={{ borderRadius: 10, marginTop: 10, marginLeft: 40, height: 35, justifyContent: 'center' }}>
-
-                            <Row style={{ justifyContent: 'center', }}>
-                                <Icon name='ios-cart' />
-                                <Text style={{ marginLeft: -25 }}>Add to cart</Text>
-                            </Row>
-                        </Button>
-                    </Col>
+                        <Col style={{ marginRight: 40 }} >
+                            <Button success style={{ borderRadius: 10, marginTop: 10, marginLeft: 45, height: 40, justifyContent: 'center' }}>
 
 
+                                <Row style={{ justifyContent: 'center', }}>
 
-                    <Col >
-                        <Button success style={{ borderRadius: 10, marginTop: 10, marginLeft: 40, height: 35, alignContent: 'center' }}>
+                                    <Icon name='ios-cart' />
 
+                                    <Text style={{ marginLeft: -25, marginTop: 2, }}>VIEW CART</Text>
+                                    <View>
+                                        <Text style={{ position: 'absolute', height: 20, width: 20, fontSize: 13, backgroundColor: '#ffa723', top: 0, marginLeft: -105, borderRadius: 20, marginTop: -10 }}>
+                                            20
+                                        </Text>
+                                    </View>
+                                </Row>
+                            </Button>
+                        </Col>
 
-                            <Text>View Cart</Text>
-
-                        </Button>
-                    </Col>
-
+                    </Row>
 
 
                 </Footer>

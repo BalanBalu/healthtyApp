@@ -5,7 +5,7 @@ import { messageShow, messageHide } from '../../providers/common/common.action';
 import { Col, Row, Grid } from 'react-native-easy-grid';
 import { connect } from 'react-redux'
 import { StyleSheet, Image, TouchableOpacity, View } from 'react-native';
-
+import { formatDate } from '../../../setup/helpers';
 
 class PaymentSuccess extends Component {
     constructor(props) {
@@ -59,27 +59,27 @@ class PaymentSuccess extends Component {
                                 <Col style={{ alignItems: 'center' }}>
                                     <Text style={styles.customizedText}>{successBookSlotDetails.doctorName}</Text>
 
-                                    <Text note style={styles.customizedText}>Accident And Emergency</Text>
                                 </Col>
                             </Row>
 
                             <Row style={{ marginTop: 20 }}>
                                 <Col style={{ alignItems: 'center' }}>
                                     <Text style={styles.customizedText} note>Date And Time</Text>
-
                                     <Text style={styles.customizedText}>{successBookSlotDetails.slotData && successBookSlotDetails.slotData.slotDate}</Text>
-
-                                    <Text note style={styles.customizedText}>{successBookSlotDetails.slotData && successBookSlotDetails.slotData.slotTime}</Text>
+                                    <Text style={styles.customizedText}>{successBookSlotDetails.slotData && formatDate(successBookSlotDetails.slotData.slotStartDateAndTime, 'hh:mm a')}</Text>
                                 </Col>
-
                             </Row>
 
                             <Row style={{ marginTop: 20 }}>
                                 <Col style={{ alignItems: 'center' }}>
                                     <Text style={styles.customizedText}>Address</Text>
-                                    <Text style={styles.customizedText}>{successBookSlotDetails.slotData && successBookSlotDetails.slotData.location.location.address.address_line_1},</Text>
-                                    <Text note style={styles.customizedText}>{successBookSlotDetails.slotData && successBookSlotDetails.slotData.location.location.address.address_line_2},</Text>
-                                    <Text note style={styles.customizedText}>{successBookSlotDetails.slotData && successBookSlotDetails.slotData.location.location.address.no_and_street}</Text>
+                                    <Text style={styles.customizedText}>{successBookSlotDetails.slotData && successBookSlotDetails.slotData.location.name}</Text>
+                      
+                                    <Text note style={styles.customizedText}>{successBookSlotDetails.slotData && successBookSlotDetails.slotData.location.location.address.no_and_street},</Text>
+                                    <Text note style={styles.customizedText}>{successBookSlotDetails.slotData && successBookSlotDetails.slotData.location.location.address.city},</Text>
+                                    <Text note style={styles.customizedText}>{successBookSlotDetails.slotData && successBookSlotDetails.slotData.location.location.address.state}</Text>
+                                    <Text note style={styles.customizedText}>{successBookSlotDetails.slotData && successBookSlotDetails.slotData.location.location.address.pin_code}</Text>
+                               
                                 </Col></Row>
 
                         </Grid>
