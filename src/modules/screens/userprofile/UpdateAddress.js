@@ -120,7 +120,7 @@ class UserDetails extends Component {
                         </View> */}
 
                             <Item style={{ borderBottomWidth: 0 }}>
-                                <Text style={{ fontFamily: 'OpenSans', fontSize: 20, marginTop: 30 }}>Door_no</Text>
+                                <Text style={{ fontFamily: 'OpenSans', fontSize: 18, marginTop: 30 }}>Door_no</Text>
                             </Item>
                             <Item style={{ borderBottomWidth: 0 }}>
                                 <Input
@@ -140,7 +140,7 @@ class UserDetails extends Component {
                             </Item>
 
                             <Item style={{ borderBottomWidth: 0 }}>
-                                <Text style={{ fontFamily: 'OpenSans', fontSize: 20, }}>AddressLine1</Text>
+                                <Text style={{ fontFamily: 'OpenSans', fontSize: 18, }}>AddressLine1</Text>
                             </Item>
                             <Item style={{ borderBottomWidth: 0 }}>
                                 <Input
@@ -157,7 +157,7 @@ class UserDetails extends Component {
                                 />
                             </Item>
                             <Item style={{ borderBottomWidth: 0 }}>
-                                <Text style={{ fontFamily: 'OpenSans', fontSize: 20, }}>AddressLine2</Text>
+                                <Text style={{ fontFamily: 'OpenSans', fontSize: 18, }}>AddressLine2</Text>
                             </Item>
                             <Item style={{ borderBottomWidth: 0 }}>
                                 <Input
@@ -178,7 +178,7 @@ class UserDetails extends Component {
 
 
                             <Item style={{ borderBottomWidth: 0 }}>
-                                <Text style={{ fontFamily: 'OpenSans', fontSize: 20, }}>city</Text>
+                                <Text style={{ fontFamily: 'OpenSans', fontSize: 18, }}>city</Text>
                             </Item>
                             <Item style={{ borderBottomWidth: 0 }}>
                                 <Input
@@ -197,7 +197,7 @@ class UserDetails extends Component {
                             </Item>
 
                             <Item style={{ borderBottomWidth: 0 }}>
-                                <Text style={{ fontFamily: 'OpenSans', fontSize: 20, }}>pincode</Text>
+                                <Text style={{ fontFamily: 'OpenSans', fontSize: 18, }}>pincode</Text>
                             </Item>
                             <Item style={{ borderBottomWidth: 0 }}>
                                 <Input
@@ -222,7 +222,7 @@ class UserDetails extends Component {
 
 
                             <Button style={styles.loginButton} ref={(input) => { this.pin_code = input; }} block primary onPress={() => this.userUpdate()}>
-                                <Text style={{ fontFamily: 'OpenSans' }}>Submit</Text>
+                                <Text style={{ fontFamily: 'OpenSans', fontSize: 18, }}>Submit</Text>
                             </Button>
                         </ScrollView>
 
