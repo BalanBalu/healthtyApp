@@ -5,16 +5,13 @@ import {
 } from 'native-base';
 import { userFiledsUpdate, logout } from '../../providers/auth/auth.actions';
 import { connect } from 'react-redux'
-import { Image, BackHandler, AsyncStorage,TouchableHighlight } from 'react-native';
+import { Image, BackHandler, AsyncStorage } from 'react-native';
 import styles from './style.js';
 import {
     formatDate,
-} from "../../../setup/helpers";
-
-
+} from "../../../setup/helpers";` M,NMNJHUYTAW`
 import Spinner from '../../../components/Spinner';
-import { ScrollView } from 'react-native-gesture-handler';
-const bloodGroupList = ['A+', 'O+', 'B+', 'AB+', 'A-', 'O-', 'B-', 'AB-']
+const bloodGroupList = ['Select Blood Group','A+', 'O+', 'B+', 'AB+', 'A-', 'O-', 'B-', 'AB-']
 
 class UpdateUserDetails extends Component {
     constructor(props) {
@@ -27,9 +24,8 @@ class UpdateUserDetails extends Component {
             gender: '',
             fromProfile: false,
             isLoading: false,
-            selectedBloodGroup:null
-
-
+            selectedBloodGroup:null,
+            updateButton:false
         }
     }
     componentDidMount() {
@@ -62,11 +58,9 @@ class UpdateUserDetails extends Component {
 
 
 
-    userUpdate = async () => {
-        
+    userUpdate = async () => {   
 
-        try {
-        
+        try {        
                 this.setState({ isLoading: true });
                 let requestData = {
                     first_name: this.state.firstName,
@@ -79,6 +73,8 @@ class UpdateUserDetails extends Component {
                 const userId = await AsyncStorage.getItem('userId')
                 let response = await userFiledsUpdate(userId, requestData);
                 if (response.success) {
+                    this.setState({updateButton:!this.state.updateButton})
+
                     Toast.show({
                         text: 'Your Profile has been Updated',
                         type: "success",
@@ -174,26 +170,28 @@ class UpdateUserDetails extends Component {
                         <Item style={{ borderBottomWidth: 0, backgroundColor: '#F1F1F1', marginTop: 10, borderRadius: 5 }}>
                         <Picker style={{ fontFamily: 'OpenSans' }}
                             mode="dropdown"
-                            placeholder="Select blood group"
+                            placeholder="Select Blood Group"                       
                             iosIcon={<Icon name="arrow-down" />}
+                            placeholder="Select Blood Group"
                             textStyle={{ color: "#5cb85c" }}
+                            note={false}
                             itemStyle={{
                                 backgroundColor: "gray",
                                 marginLeft: 0,
                                 paddingLeft: 10
                             }}
-                            itemTextStyle={{ color: 'gray' }}
-                            style={{ width: 25 }}
+                            itemTextStyle={{ color: '#5cb85c' }}
+                            style={{ width:undefined }}
                             onValueChange={(sample) => { this.setState({ selectedBloodGroup: sample }) }}
                             selectedValue={this.state.selectedBloodGroup}
                         >
                             
-                            {bloodGroupList.map((value,key) => {
+                         {bloodGroupList.map((value,key) => {
                                
                                 return <Picker.Item label={String(value)} value={String(value)} key={key} 
                                 />
                             })
-                                }
+                                } 
                                 
                             </Picker>
                         </Item>
@@ -217,7 +215,7 @@ class UpdateUserDetails extends Component {
 
 
 
-                        <Button style={styles.updateButton} block primary onPress={() => this.userUpdate()}>
+                        <Button disabled style={styles.updateButton} block primary onPress={() => this.userUpdate()}>
                             <Text style={{ fontFamily: 'OpenSans' }}>Update</Text>
                             </Button>
                         
