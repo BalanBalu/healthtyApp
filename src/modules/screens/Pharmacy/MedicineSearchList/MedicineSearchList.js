@@ -1,50 +1,66 @@
 import React, { Component } from 'react';
-import { Container, Content, Text, Title, Header, View, Button, H3, Item, List, ListItem, Card, Input, Left, Right, Thumbnail, Body, Icon, Footer, FooterTab, Badge } from 'native-base';
-
+import { Container, Content, Text, Title, Header, View, Button, H3, Item, List, ListItem, Card, 
+    Input, Left, Right, Thumbnail, Body, Icon, Footer, FooterTab, Badge } from 'native-base';
 import LinearGradient from 'react-native-linear-gradient';
 import { Col, Row, Grid } from 'react-native-easy-grid';
 import { connect } from 'react-redux'
-import { StyleSheet, Image, } from 'react-native';
+import { StyleSheet, Image, AsyncStorage, FlatList } from 'react-native';
 import { ScrollView } from 'react-native-gesture-handler';
+import { getSearchedMedicines } from '../../../providers/pharmacy/pharmacy.action';
 
 class MedicineSearchList extends Component {
     constructor(props) {
         super(props)
         console.log(this.props)
+        this.state={
+            value:[]
+        }
     }
+componentDidMount(){
+    this.searchedMedicines();
+};
 
+    searchedMedicines = async () => {
+        try {
+            let requestData = {
+                value: "Paracitamal"               
+            };
+            //let userId = await AsyncStorage.getItem('userId');
+            let result = await getSearchedMedicines(requestData);
+            this.setState({ value: result.data, isLoading: true })
+              console.log('result'+JSON.stringify(result)); 
+            }
+        catch (e) {
+            console.log(e);
+        }
+    }
     render() {
-
-
+        const {value} =this.state;
         return (
-
             <Container style={styles.container}>
-
-
                 <Content>
-
                     <Grid style={styles.curvedGrid}>
-
                     </Grid>
-
                     <Grid style={{ marginTop: -100, height: 100 }}>
                         <Row>
-
                             <Col style={{ width: '100%', marginTop: 'auto', marginBottom: 'auto', alignItems: 'center' }}>
-
                                 <Item style={{ borderBottomWidth: 0 }}>
-
                                     <Text style={{ fontFamily: 'OpenSans', color: '#fff' }}>SEARCH RESULTS</Text>
                                 </Item>
-
                             </Col>
                             <Col style={{ width: '10%' }}>
                             </Col>
-
                         </Row>
-
                     </Grid>
                     <Card transparent style={{ padding: 10, marginTop: 20 }} onTouchStart={() => this.props.navigation.navigate('MedicineCheckout')} >
+                       
+
+
+                    <FlatList
+                data={value}
+                extraData={this.state}
+                keyExtractor={(item, index) => index.toString()}
+                renderItem={({ item, index }) => 
                         <Card style={{ padding: 10 }}>
                             <Grid>
                                 <Col style={{ width: '25%' }}>
@@ -56,14 +72,11 @@ class MedicineSearchList extends Component {
                                             borderColor: 'green', borderWidth: 1
                                         }}>
                                             <Text style={{ padding: 5, backgroundColor: 'transparent', color: 'white', fontSize: 13 }}>20%</Text>
-
                                         </View>
                                     </View>
                                 </Col>
-
-
                                 <Col style={{ marginLeft: 20, width: '70%', alignItems: 'flex-start', justifyContent: 'center', marginTop: 10 }}>
-                                    <Text style={styles.normalText}>Aminocaproic Acid</Text>
+                                    <Text style={styles.normalText}> {item.medicine_name} </Text>
                                     <Row>
                                         <Text style={styles.subText}>{'\u20B9'}80</Text>
                                         <Text style={{ marginLeft: 10, marginTop: 2, color: 'gray', fontSize: 15, textDecorationLine: 'line-through', textDecorationStyle: 'solid', textDecorationColor: 'gray' }}>
@@ -73,8 +86,8 @@ class MedicineSearchList extends Component {
                                 </Col>
                             </Grid>
                         </Card>
-
-                        <Card style={{ padding: 10 }}>
+                }/>
+                        {/* <Card style={{ padding: 10 }}>
                             <Grid>
                                 <Col style={{ width: '25%' }}>
                                     <View>
@@ -85,12 +98,9 @@ class MedicineSearchList extends Component {
                                             borderColor: 'green', borderWidth: 1
                                         }}>
                                             <Text style={{ padding: 5, backgroundColor: 'transparent', color: 'white', fontSize: 13 }}>50%</Text>
-
                                         </View>
                                     </View>
-
                                 </Col>
-
                                 <Col style={{ marginLeft: 20, width: '70%', alignItems: 'flex-start', justifyContent: 'center', marginTop: 10 }}>
                                     <Text style={styles.normalText}>Gemtuzumab ozogamicin</Text>
                                     <Row>
@@ -99,14 +109,9 @@ class MedicineSearchList extends Component {
                                             {'\u20B9'}100</Text>
                                     </Row>
                                     <Text style={{ color: 'gray', fontSize: 16 }}>Wellness Craft Pharmacy</Text>
-
                                 </Col>
                             </Grid>
-
                         </Card>
-
-
-
                         <Card style={{ padding: 10 }}>
                             <Grid>
                                 <Col style={{ width: '25%' }}>
@@ -118,15 +123,12 @@ class MedicineSearchList extends Component {
                                             borderColor: 'green', borderWidth: 1
                                         }}>
                                             <Text style={{ padding: 5, backgroundColor: 'transparent', color: 'white', fontSize: 13 }}>25%</Text>
-
                                         </View>
                                     </View>
                                 </Col>
-
                                 <Col style={{ marginLeft: 20, width: '70%', alignItems: 'flex-start', justifyContent: 'center', marginTop: 10 }}>
                                     <Text style={styles.normalText}>Hydroxyurea for sickle cell disease</Text>
                                     <Row>
-
                                         <Text style={styles.subText}>{'\u20B9'}75</Text>
                                         <Text style={{ marginLeft: 10, marginTop: 2, color: 'gray', fontSize: 15, textDecorationLine: 'line-through', textDecorationStyle: 'solid', textDecorationColor: 'gray' }}>
                                             {'\u20B9'}100</Text>
@@ -134,9 +136,7 @@ class MedicineSearchList extends Component {
                                     <Text style={{ color: 'gray', fontSize: 16 }}>Shoprite Pharmacy</Text>
                                 </Col>
                             </Grid>
-
                         </Card>
-
                         <Card style={{ padding: 10 }}>
                             <Grid>
                                 <Col style={{ width: '25%' }}>
@@ -148,12 +148,9 @@ class MedicineSearchList extends Component {
                                             borderColor: 'green', borderWidth: 1
                                         }}>
                                             <Text style={{ padding: 5, backgroundColor: 'transparent', color: 'white', fontSize: 13 }}>20%</Text>
-
                                         </View>
                                     </View>
                                 </Col>
-
-
                                 <Col style={{ marginLeft: 20, width: '70%', alignItems: 'flex-start', justifyContent: 'center', marginTop: 10 }}>
                                     <Text style={styles.normalText}>Aminocaproic Acid</Text>
                                     <Row>
@@ -164,23 +161,16 @@ class MedicineSearchList extends Component {
                                     <Text style={{ color: 'gray', fontSize: 16 }}>White Pigeon Pharmacy</Text>
                                 </Col>
                             </Grid>
-                        </Card>
-
+                        </Card> */}
                     </Card>
                 </Content>
-
             </Container>
-
         )
     }
-
 }
 
 export default MedicineSearchList
-
-
 const styles = StyleSheet.create({
-
     container:
     {
         backgroundColor: '#ffffff',
@@ -232,5 +222,4 @@ const styles = StyleSheet.create({
         color: 'black',
         //marginLeft: 5
     }
-
 });
