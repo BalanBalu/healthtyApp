@@ -40,7 +40,6 @@ export default StyleSheet.create({
         width: 'auto',
         borderRadius: 10,
         textAlign: 'center',
-        backgroundColor: '#775DA3',
         color: 'white',
         marginTop: 20,
         fontSize: 12
