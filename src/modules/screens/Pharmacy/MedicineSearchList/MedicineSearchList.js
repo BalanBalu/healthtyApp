@@ -17,13 +17,15 @@ class MedicineSearchList extends Component {
         }
     }
 componentDidMount(){
-    this.searchedMedicines();
+    
+    const keyword=this.props.navigation.getParam('key');
+    this.searchedMedicines(keyword);
 };
 
-    searchedMedicines = async () => {
+    searchedMedicines = async (keyword) => {
         try {
             let requestData = {
-                value: "Paracitamal"               
+                value: keyword           
             };
             //let userId = await AsyncStorage.getItem('userId');
             let result = await getSearchedMedicines(requestData);
@@ -33,6 +35,13 @@ componentDidMount(){
         catch (e) {
             console.log(e);
         }
+    }
+    noMedicines() {
+        return (
+            <Item style={{ borderBottomWidth: 0, justifyContent: 'center', alignItems: 'center' }}>
+                <Text style={{ fontSize: 18, justifyContent: 'center', alignItems: 'center' }} > No Medicines available! </Text>
+            </Item>
+        )
     }
     render() {
         const {value} =this.state;
@@ -55,7 +64,7 @@ componentDidMount(){
                     <Card transparent style={{ padding: 10, marginTop: 20 }} onTouchStart={() => this.props.navigation.navigate('MedicineCheckout')} >
                        
 
-
+{this.state.value==null?this.noMedicines():
                     <FlatList
                 data={value}
                 extraData={this.state}
@@ -87,6 +96,7 @@ componentDidMount(){
                             </Grid>
                         </Card>
                 }/>
+            }
                         {/* <Card style={{ padding: 10 }}>
                             <Grid>
                                 <Col style={{ width: '25%' }}>

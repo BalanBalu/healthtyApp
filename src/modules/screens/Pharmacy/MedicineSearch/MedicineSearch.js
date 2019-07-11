@@ -7,27 +7,31 @@ class MedicineSearch extends Component {
     constructor(props) {
         super(props)
         console.log(this.props)
+        this.state={
+            keyword:null
+        }
     }
     navigetToCategories() {
         console.log(this.props.navigation.navigate('categories'));
         //this.props.navigation.navigate('categories');
     }
-
+    searchMedicines=async()=>{
+if(this.state.keyword !=null){
+    this.props.navigation.navigate('medicineSearchList',{key:this.state.keyword})
+}
+else{
+    alert('We can not find the Empty Values')
+}
+    }
     render() {
         const medicine = [{ med1: 'abc' }, { med2: 'def' }, { med3: 'ghi' }, { med4: "jkl" }, { med5: "mno" }]
         const { navigation } = this.props
 
         return (
-
-            <Container style={styles.container}>
-
-
+           <Container style={styles.container}>
                 <Content >
-
                     <Grid style={styles.curvedGrid}>
-
                     </Grid>
-
                     <Grid style={{ marginTop: -100, height: 100 }}>
                         <Row>
                             <Col style={{ width: '10%' }}>
@@ -35,39 +39,36 @@ class MedicineSearch extends Component {
                             <Col style={{ width: '80%' }}>
                                 <Item style={styles.searchBox}  >
 
-                                    <Input placeholder="Search For Any Medicine" style={{ color: 'gray', fontFamily: 'OpenSans', fontSize: 12 }} placeholderTextColor="gray" />
-                                    <Button style={{ backgroundColor: '#000', borderRadius: 10, height: 40, marginTop: -20, marginRight: -20, borderBottomLeftRadius: 0, borderTopLeftRadius: 0, }}><Icon name="ios-search" style={{ color: 'white' }}
-                                        onPress={() => navigation.navigate('medicineSearchList')}
-
-                                    /></Button>
+                                    <Input placeholder="Search For Any Medicine" 
+                                    style={{ color: 'gray', fontFamily: 'OpenSans', fontSize: 12 }}
+                                     placeholderTextColor="gray" 
+                                     value={this.state.keyword}
+                                     onChangeText={keyword => this.setState({ keyword })}
+                                     />
+                                    <Button style={{ backgroundColor: '#000', borderRadius: 10, height: 40, marginTop: -20, marginRight: -20, borderBottomLeftRadius: 0, borderTopLeftRadius: 0, }}>
+                                        <Icon name="ios-search" style={{ color: 'white' }}
+                                         onPress={() => { this.searchMedicines() }}
+                                    />
+                                    </Button>
                                 </Item>
                             </Col>
                             <Col style={{ width: '10%' }}>
                             </Col>
-
                         </Row>
-
                     </Grid>
                     <View style={{ marginLeft: 'auto', marginRight: 'auto', marginTop: 42 }}>
                         <Button style={{ justifyContent: "center", backgroundColor: '#745DA6', borderRadius: 5 }}>
                             <Icon style={{ fontSize: 30 }} name='ios-cloud-upload'>
-
                                 <Text style={{ padding: 2, color: '#fff', }}>Upload your prescription
-
                                 </Text>
-
                             </Icon>
-
                         </Button>
                     </View>
-
                     <Card transparent >
-
                         <Grid style={{ marginTop: 50, padding: 10, width: 'auto' }}>
                             <FlatList data={medicine}
                                 renderItem={
-
-                                    ({ item }) =>
+                                   ({ item }) =>
                                         <Row style={{ justifyContent: 'center' }}>
                                             <View style={styles.customColumn}>
                                                 <View style={{ width: 'auto' }}>
@@ -75,21 +76,15 @@ class MedicineSearch extends Component {
                                                     <Text style={{ marginTop: -30, fontFamily: 'OpenSans', fontSize: 13, color: '#ffa723', }}> Get 50% Off
                                          {/* <Icon style={{ fontSize: 13, marginLeft: 15, color: '#e25657' }} name='ios-star' /> */}
                                                     </Text>
-
-
                                                 </View>
                                                 <Image source={{ uri: 'https://vimecare.com/WelcomeDesign/images/doctor-icon.png' }} style={styles.customImage} />
-
-
                                                 <Text style={styles.pageText}>{item.med1}</Text>
                                                 <View style={{ flex: 1, flexDirection: 'row' }}>
-
                                                     <Text style={{
                                                         textDecorationLine: 'line-through', textDecorationStyle: 'solid',
                                                         fontFamily: 'OpenSans',
                                                         fontSize: 12,
                                                         color: 'black',
-
                                                         fontWeight: "bold"
                                                     }}>MRP: Rs 100</Text><Text style={{
                                                         fontFamily: 'OpenSans',
@@ -99,32 +94,22 @@ class MedicineSearch extends Component {
                                                         fontWeight: "bold"
                                                     }} > Rs.50</Text>
                                                 </View>
-
-
-
                                             </View>
-
                                             <View style={styles.customColumn}>
                                                 <View style={{ width: 'auto' }}>
-
                                                     <Text style={{ marginTop: -30, fontFamily: 'OpenSans', fontSize: 13, color: '#ffa723', }}> Get 50% Off
                                          {/* <Icon style={{ fontSize: 13, marginLeft: 15, color: '#e25657' }} name='ios-star' /> */}
                                                     </Text>
-
-
                                                 </View>
                                                 <Image source={{ uri: 'https://vimecare.com/WelcomeDesign/images/doctor-icon.png' }} style={styles.customImage} />
-
                                                 <Text style={styles.pageText}>Rx Ready</Text>
                                                 <View style={{ flex: 1, flexDirection: 'row' }}>
-
                                                     <Text style={{
                                                         textDecorationLine: 'line-through', textDecorationStyle: 'solid',
                                                         textDecorationColor: 'green',
                                                         fontFamily: 'OpenSans',
                                                         fontSize: 12,
                                                         color: 'black',
-
                                                         fontWeight: "bold"
                                                     }}>MRP: Rs 100</Text><Text style={{
                                                         fontFamily: 'OpenSans',
@@ -133,18 +118,12 @@ class MedicineSearch extends Component {
                                                         marginLeft: 10,
                                                         fontWeight: "bold"
                                                     }} > Rs.50</Text>
-                                                </View>
-
+                                               </View>
                                             </View>
                                         </Row>
-
                                 }
-
                             />
-
                         </Grid>
-
-
                         {/* <Grid style={{ padding: 10 }}>
                             <Row>
                                 <View style={styles.customColumn}>
