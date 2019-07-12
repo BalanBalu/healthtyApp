@@ -61,7 +61,6 @@ class UpdateInsurance extends Component {
 
                 })
                 this.props.navigation.navigate('Profile');
-                this.setState({ isLoading: true });
 
 
             } else {
@@ -70,8 +69,9 @@ class UpdateInsurance extends Component {
                     type: "danger",
                     duration: 3000
                 })
-
             }
+            this.setState({ isLoading:false});
+
 
 
         } catch (e) {
