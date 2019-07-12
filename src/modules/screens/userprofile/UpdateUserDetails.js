@@ -170,9 +170,7 @@ class UpdateUserDetails extends Component {
                         <Item style={{ borderBottomWidth: 0, backgroundColor: '#F1F1F1', marginTop: 10, borderRadius: 5 }}>
                         <Picker style={{ fontFamily: 'OpenSans' }}
                             mode="dropdown"
-                            placeholder="Select Blood Group"                       
                             iosIcon={<Icon name="arrow-down" />}
-                            placeholder="Select Blood Group"
                             textStyle={{ color: "#5cb85c" }}
                             note={false}
                             itemStyle={{
