@@ -77,11 +77,13 @@ class MyAppoinmentList extends Component {
 
 backNavigation=async(navigationData)=>{
 	if(navigationData.action) {
-		if (navigationData.action.type === 'Navigation/BACK') {
+		if (navigationData.action.type === 'Navigation/POP') {
+			await this.setState({isLoading:false})
 			if (this.state.selectedIndex == 0) {
 				await this.upCommingAppointment();
 			} else {
 				await this.pastAppointment();
+				await this.setState({isLoading:true})
 			}
         }
       }
@@ -215,8 +217,7 @@ backNavigation=async(navigationData)=>{
 				});
 
 				this.setState({ pastData: pastDoctorDetails, isLoading: true });
-				console.log("past data");
-				console.log(this.state.pastData);
+			
 			}
 		} catch (e) {
 			console.log(e);
@@ -237,7 +238,7 @@ backNavigation=async(navigationData)=>{
 	navigateToBookAppointmentPage(appointmentData){
 		console.log("book appointment page");
 		let doctorId=appointmentData.data.appointmentResult.doctor_id;
-        this.props.navigation.navigate('Book Appointment', { doctorId: doctorId, fromAppointmentList: true })
+        this.props.navigation.navigate('MyAppoinmentList', { doctorId: doctorId, fromAppointmentList: true })
 	}
 
 	render() {
@@ -467,7 +468,7 @@ backNavigation=async(navigationData)=>{
 															<Button
 																style={styles.shareButton}
 																onPress={() =>
-																	this.props.navigation.push("InsertReview")
+																	this.props.navigation.push("InsertReview",{ appointmentDetail: item })
 																}
 															>
 																<Text style={styles.bookAgain1}>

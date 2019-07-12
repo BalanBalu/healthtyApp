@@ -30,9 +30,13 @@ class InsertReview extends Component {
   async componentDidMount() {
 
     const { navigation } = this.props;
-    const reviewData = navigation.getParam('appointmentDetail');
+    const finalReviewData = navigation.getParam('appointmentDetail');
 
-    let userId = reviewData.user_id;
+let reviewData=finalReviewData.data.appointmentResult;
+console.log('reviewData'+JSON.stringify(reviewData));
+
+let userId = reviewData.user_id;
+
     let doctorId = reviewData.doctor_id;
     let appointmentId = reviewData._id;
     await this.setState({ userId: userId, doctorId: doctorId, appointmentId: appointmentId, data: reviewData });

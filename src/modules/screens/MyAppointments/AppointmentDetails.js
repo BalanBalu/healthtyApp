@@ -121,6 +121,10 @@ class AppointmentDetails extends Component {
 
   navigateAddReview() {
     this.state.data.prefix = this.state.doctorData.prefix;
+
+  
+    console.log('appointmentDetails'+JSON.stringify(this.state.data));
+    
     this.props.navigation.push('InsertReview', { appointmentDetail: this.state.data })
 
   }
@@ -165,6 +169,9 @@ class AppointmentDetails extends Component {
 
   }
 
+  
+  
+
   render() {
 
     const { data, reviewData, doctorData, yearOfExperience, qualification, isLoading } = this.state;
@@ -177,7 +184,7 @@ class AppointmentDetails extends Component {
 
           <Content style={styles.bodyContent}>
             <NavigationEvents
-              onWillFocus={payload => { this.componentDidMount() }}
+              onWillFocus={payload => { this.componentDidMount(payload) }}
             />
             <Grid style={{ backgroundColor: '#7E49C3', height: 200 }}>
             </Grid>
