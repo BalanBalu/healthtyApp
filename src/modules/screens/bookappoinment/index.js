@@ -45,32 +45,35 @@ class BookAppoinment extends Component {
 
 
   async componentDidMount() {
-    const { navigation } = this.props;
-    const slotList = navigation.getParam('slotList');
 
-    if(slotList===undefined) {
+    const { navigation } = this.props;
+    const fromAppointmentList = navigation.getParam('fromAppointmentList')||false;
+
+    if(fromAppointmentList) {
       let endDateMoment = addMoment(this.state.currentDate, 7, 'days')
       const doctorId = navigation.getParam('doctorId')|| false;
       await this.setState({doctorId:doctorId});
       await this.getAvailabilitySlots(doctorId, moment(new Date()), endDateMoment);
-    } else {
-    let doctorDetails = navigation.getParam('doctorDetails');
-    await this.setState({ doctorId: doctorDetails.doctorId });
-    if(slotList) {
-    if(slotList.length !== 0) { 
-      await this.setState({item:{ 
-        name:slotList[0].location.name,
-        no_and_street: slotList[0].location.location.address.no_and_street,
-        city: slotList[0].location.location.address.city,
-        state: slotList[0].location.location.address.state,
-        pin_code: slotList[0].location.location.pin_code
-      },
-        selectedSlotItem:slotList[0], 
-        doctorDetails, slotList, 
-      });
+    }else {
+      let doctorDetails = navigation.getParam('doctorDetails');
+      const slotList = navigation.getParam('slotList');
+      console.log('slotList'+JSON.stringify(slotList));
+      await this.setState({ doctorId: doctorDetails.doctorId });
+      if(slotList) {
+      if(slotList.length !== 0) { 
+        await this.setState({item:{ 
+          name:slotList[0].location.name,
+          no_and_street: slotList[0].location.location.address.no_and_street,
+          city: slotList[0].location.location.address.city,
+          state: slotList[0].location.location.address.state,
+          pin_code: slotList[0].location.location.pin_code
+        },
+          selectedSlotItem:slotList[0], 
+          doctorDetails, slotList, 
+        });
+      }
     }
   }
-}
   await this.getdoctorDetails(this.state.doctorId);
   await this.getUserReviews(this.state.doctorId);
   this.setState({ isLoading: false });
@@ -78,8 +81,7 @@ class BookAppoinment extends Component {
 
 
   /*FromAppointment list(Get availability slots)*/
-  async getAvailabilitySlots(fromAppointmentDoctorId, startDate, endDate) {
-    
+  async getAvailabilitySlots(fromAppointmentDoctorId, startDate, endDate) {    
         let totalSlotsInWeek = {
             startDate: formatDate(startDate, 'YYYY-MM-DD'),
             endDate: formatDate(endDate, 'YYYY-MM-DD')
@@ -142,7 +144,9 @@ enumarateDates(startDate, endDate) {
   getdoctorDetails = async (doctorId) => {
     console.log("doctor");
     let fields = "first_name,last_name,prefix,professional_statement,language,specialist,education,profile_image";
+    console.log(fields+'fields');
     let resultDoctorDetails = await bindDoctorDetails(doctorId, fields);
+    console.log('resultDoctorDetails'+JSON.stringify(resultDoctorDetails))
     if (resultDoctorDetails.success) {
       this.setState({ doctordata: resultDoctorDetails.data});
       console.log(JSON.stringify(this.state.doctordata)+'doctordata');
@@ -195,8 +199,7 @@ enumarateDates(startDate, endDate) {
     this.props.navigation.navigate('Payment Review', { resultconfirmSlotDetails: confirmSlotDetails })
   }
 
-  noAvailableSlots() {
-    
+  noAvailableSlots() {    
     return (
       <Item style={{ borderBottomWidth: 0, justifyContent: 'center', alignItems: 'center' }}>
         <Text style={{ fontSize: 18, justifyContent: 'center', alignItems: 'center' }} >No slots are available </Text>
@@ -217,14 +220,12 @@ enumarateDates(startDate, endDate) {
         extraData={this.state}
         keyExtractor={(item, index) => index.toString()}
         renderItem={({ item, index }) =>
-
           <TouchableOpacity disabled={item.isSlotBooked === true ? true : false} style={selectedSlotIndex === index ? styles.slotSelectedBg : item.isSlotBooked === false ? styles.slotDefaultBg : styles.slotBookedBg}
             onPress={() => this.onSlotPress(item, index)}>
             <Row style={{ width: '100%', alignItems: 'center' }}>
               <Col style={{ width: '70%', alignItems: 'center' }}>
                 <Text style={styles.multipleStyles}>
                   {formatDate(item.slotStartDateAndTime, 'hh:mm')}</Text>
-
               </Col>
               <Col style={styles.customPadge}>
                 <Text style={{ color: 'white', fontFamily: 'OpenSans', fontSize: 12 }}>
@@ -263,7 +264,6 @@ enumarateDates(startDate, endDate) {
                 </Left>
                 <Body>
                   <Text>{doctordata.prefix ? doctordata.prefix : 'Dr. ' + doctordata.first_name}</Text>
-
                   <Text>{qualification}</Text>
                 </Body>
 
@@ -323,13 +323,12 @@ enumarateDates(startDate, endDate) {
             <View >
               {this.state.slotList === undefined ? this.noAvailableSlots() : this.haveAvailableSlots()}
             </View>
-
           </Card>
-
+          
           <Card transparent style={{ margin: 20, backgroundColor: '#ecf0f1' }}>
-             <Card style={ { height: 250 }}>
-                    
-               {this.state.selectedSlotItem !== null  ? <Mapbox hospitalLocation={this.state.selectedSlotItem}/>  : null }        
+
+             {this.state.slotList!==undefined?<Card style={ { height: 250 }}>
+              {this.state.selectedSlotItem !== null  ? <Mapbox hospitalLocation={this.state.selectedSlotItem}/>  : null }        
               <List>
                 <ListItem avatar>
                   <Left>
@@ -347,7 +346,7 @@ enumarateDates(startDate, endDate) {
                   
                 </ListItem>
               </List>
-            </Card>
+            </Card>:null}
 
           
 
