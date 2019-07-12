@@ -65,7 +65,7 @@ class UpdateInsurance extends Component {
 
             } else {
                 Toast.show({
-                    text: 'Insurance not updated',
+                    text:response.message,
                     type: "danger",
                     duration: 3000
                 })
