@@ -35,18 +35,14 @@ class Home extends Component {
             let result = await catagries();
 
 
-            // if(result.success) 
-            // setTimeout( ()=>{
             this.setState({ data: result.data, isLoading: true })
             let limitedData = [];
-            //  var limtedNumber
+           
             for (let limtedNumber = 0; limtedNumber < 4; limtedNumber++) {
                 limitedData.push(result.data[limtedNumber]);
             }
             this.setState({ catagary: limitedData });
-            console.log('state output is:')
-            console.log(this.state.data);
-            // },3000)
+           
         } catch (e) {
             console.log(e);
         }

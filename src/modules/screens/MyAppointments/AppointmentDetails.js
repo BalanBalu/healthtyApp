@@ -17,7 +17,7 @@ class AppointmentDetails extends Component {
 
     this.state = {
       data: {},
-      appointmentId:null,
+      appointmentId:'',
       doctorId: '',
       userId: '',
       reviewData: {},
@@ -26,6 +26,7 @@ class AppointmentDetails extends Component {
       yearOfExperience: '',
       appointmentStatus: '',
       statusUpdateReason: ' ',
+      selectedIndex:'',
 
 
     }
@@ -35,10 +36,12 @@ class AppointmentDetails extends Component {
     const userId = await AsyncStorage.getItem('userId');
     const { navigation } = this.props;
     const appointmentData = navigation.getParam('data');
+    const selectedIndex = navigation.getParam('selectedIndex');
+        await   this.setState({selectedIndex:selectedIndex})
     
-    let appointmentId = navigation.getParam('appointmentId');
-    console.log(appointmentId)
-    await this.setState({ appointmentId });
+    const appointmentId = navigation.getParam('appointmentId');
+    
+    await this.setState({ appointmentId:appointmentId });
 
     if (appointmentData == undefined) {
      
@@ -67,6 +70,7 @@ class AppointmentDetails extends Component {
       //this.setState({ isLoading: true });
       let fields = 'first_name,last_name,prefix,education,specialist,email,mobile_no,experience,hospital,language,professional_statement';
       let resultDetails = await bindDoctorDetails(doctorId, fields);
+      console.log(resultDetails.data)
       if (resultDetails.success) {
         await this.setState({ doctorData: resultDetails.data });
         let updatedDate = moment(this.state.doctorData.experience.updated_date);
@@ -163,8 +167,10 @@ class AppointmentDetails extends Component {
   }
 
   render() {
+    
 
-    const { data, reviewData, doctorData, yearOfExperience, qualification, isLoading } = this.state;
+
+    const { data, reviewData, doctorData,selectedIndex, yearOfExperience, qualification, isLoading } = this.state;
 
     return (
 
@@ -268,8 +274,8 @@ class AppointmentDetails extends Component {
                   </ListItem>
                 </List>
               </Card>
-
-              {(data.appointment_status == 'PENDING_REVIEW' || reviewData.length === 0) ?
+              {selectedIndex == 0 ? null : data.appointment_status == 'CLOSED'?null:
+              (data.appointment_status == 'PENDING_REVIEW' || reviewData.length === 0) ?
                 <Card style={{ margin: 10, padding: 10, borderRadius: 10 }}>
                   <List>
                     <Text style={styles.titlesText}>Review</Text>
@@ -287,8 +293,8 @@ class AppointmentDetails extends Component {
                     </ListItem>
                   </List>
                 </Card>
-
-                : (data.appointment_status == 'COMPLETED' || reviewData.length !== 0) ?
+         : (data.appointment_status == 'COMPLETED' || reviewData.length !== 0) ?
+          
                   <Card style={{ margin: 10, padding: 10, borderRadius: 10 }}>
                     <List>
                       <Text style={styles.titlesText}>Review</Text>

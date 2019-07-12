@@ -70,17 +70,27 @@ class MyAppoinmentList extends Component {
 		}
 		let userId = await AsyncStorage.getItem("userId");
 		this.setState({ userId });
-		await this.upCommingAppointment();
-		await this.pastAppointment();
+		await new Promise.all([
+			this.upCommingAppointment(),
+			this.pastAppointment()
+		])
+		await this.setState({ isLoading: true })
+
 	}
 
-	backNavigation = async () => {
+	backNavigation = async (navigationData) => {
 		if (navigationData.action) {
 			if (navigationData.action.type === 'Navigation/BACK') {
+				await this.setState({ isLoading: false })
 				if (this.state.selectedIndex == 0) {
+
+
 					await this.upCommingAppointment();
+					await this.setState({ isLoading: true })
+
 				} else {
 					await this.pastAppointment();
+					await this.setState({ isLoading: true })
 				}
 			}
 		}
@@ -97,7 +107,7 @@ class MyAppoinmentList extends Component {
 			let upCommingAppointmentResult = await getUserAppointments(userId, filters);
 
 			if (upCommingAppointmentResult.success) {
-				let doctorInfo= [];
+				let doctorInfo = [];
 				upCommingAppointmentResult = upCommingAppointmentResult.data;
 
 				let doctorIds = upCommingAppointmentResult.map((appointmentResult, index) => {
@@ -116,7 +126,7 @@ class MyAppoinmentList extends Component {
 					speaciallistDetails = doctor_id.specialist.map(categories => {
 						return categories.category;
 					}).join(",");
-					doctorInfo.push({ doctor_id: doctor_id.doctor_id, degree: educationDetails, speaciallist: speaciallistDetails })
+					doctorInfo.push({ doctor_id: doctor_id.doctor_id, degree: educationDetails, specialist: speaciallistDetails })
 
 
 				});
@@ -125,17 +135,17 @@ class MyAppoinmentList extends Component {
 					doctorInfo.forEach(doctor_id => {
 
 						if (_id.doctor_id == doctor_id.doctor_id) {
-							
-								upcommingSpecialist.push({ appointmentResult: _id, specialist: speaciallistDetails, degree: educationDetails });
 
-							
+							upcommingSpecialist.push({ appointmentResult: _id, specialist: doctor_id.specialist, degree: doctor_id.degree });
+
+
 						}
 					})
-					
-					
-				  this.setState({ upComingData: upcommingSpecialist, isLoading: true, data: upcommingSpecialist, specialist: upcommingSpecialist });
+
+
+					this.setState({ upComingData: upcommingSpecialist, data: upcommingSpecialist, specialist: upcommingSpecialist });
 				})
-				 console.log(upcommingSpecialist);
+				
 			}
 		} catch (e) {
 			console.log(e);
@@ -157,7 +167,7 @@ class MyAppoinmentList extends Component {
 
 					return appointmentResult.doctor_id;
 				}).join(",");
-			
+
 				let speciallistResult = await getMultipleDoctorDetails(doctorIds, "specialist,education");
 				speciallistResult.data.forEach(doctor_id => {
 
@@ -169,16 +179,16 @@ class MyAppoinmentList extends Component {
 					speaciallistDetails = doctor_id.specialist.map(categories => {
 						return categories.category;
 					}).join(",");
-					doctorInfo.push({ doctor_id: doctor_id.doctor_id, degree: educationDetails, speaciallist: speaciallistDetails })
+					doctorInfo.push({ doctor_id: doctor_id.doctor_id, degree: educationDetails, specialist: speaciallistDetails })
 
 
 				});
 
 				let pastDoctorDetails = [];
 				pastAppointmentResult.map((_id, index) => {
-					
 
-					let ratting, speaciallistDetails, educationDetails;
+
+					let ratting;
 					if (_id.appointment_status == "COMPLETED") {
 						viewUserReviewResult.map(viewUserReview => {
 							if (_id._id === viewUserReview.appointment_id) {
@@ -191,11 +201,11 @@ class MyAppoinmentList extends Component {
 					}
 
 					doctorInfo.forEach(doctor_id => {
-				
+
 						if (_id.doctor_id == doctor_id.doctor_id) {
 							pastDoctorDetails.push({
 								appointmentResult: _id, specialist: doctor_id.specialist, degree: doctor_id.degree, ratting: ratting
-								
+
 							});
 						}
 					})
@@ -203,9 +213,8 @@ class MyAppoinmentList extends Component {
 				}
 
 				)
-				this.setState({ pastData: pastDoctorDetails, isLoading: true });
-				console.log("past data");
-				console.log(this.state.pastData);
+				this.setState({ pastData: pastDoctorDetails });
+				
 			}
 		} catch (e) {
 			console.log(e);
@@ -213,19 +222,23 @@ class MyAppoinmentList extends Component {
 	};
 
 	handleIndexChange = index => {
+
 		let data = index === 0 ? this.state.upComingData : this.state.pastData;
 
 		this.setState({
 			...this.state,
 			selectedIndex: index,
+
 			data
+
 		});
 	};
 
 
-	navigateToBookAppointmentPage(appointmentData) {
+	navigateToBookAppointmentPage(item) {
 		console.log("book appointment page");
-		let doctorId = appointmentData.data.appointmentResult.doctor_id;
+		let doctorId = item.appointmentResult.doctor_id;
+		
 		this.props.navigation.navigate('Book Appointment', { doctorId: doctorId, fromAppointmentList: true })
 	}
 
@@ -304,7 +317,7 @@ class MyAppoinmentList extends Component {
 													avatar
 													onPress={() =>
 														this.props.navigation.navigate("AppointmentInfo", {
-															data: item.appointmentResult
+															data: item.appointmentResult, selectedIndex: this.state.selectedIndex
 														})
 													}
 												>
@@ -364,73 +377,28 @@ class MyAppoinmentList extends Component {
 																	/>
 																)}
 														</Item>
-														{selectedIndex == 0 && (
-															<Item style={{ borderBottomWidth: 0 }}>
-																{item.appointmentResult.appointment_status ==
-																	"PENDING" ? (
-																		<Text
-																			style={{
-																				fontFamily: "OpenSans",
-																				fontSize: 12,
-																				color: "red"
-																			}}
-																			note
-																		>
-																			waiting for confirmation
-																</Text>
-																	) : item.appointmentResult
-																		.appointment_status == "APPROVED" ? (
-																			<Text
-																				style={{
-																					fontFamily: "OpenSans",
-																					fontSize: 12,
-																					color: "green"
-																				}}
-																				note
-																			>
-																				Appointment confirmed
-																</Text>
-																		) : (
-																			<Text
-																				style={{
-																					fontFamily: "OpenSans",
-																					fontSize: 12,
-																					color: "grey"
-																				}}
-																				note
-																			>
-																				{
-																					item.appointmentResult
-																						.appointment_status
-																				}
-																			</Text>
-																		)}
-															</Item>
-														)}
-														{selectedIndex == 1 && (
-															<Item style={{ borderBottomWidth: 0 }}>
-																{item.appointmentResult.appointment_status ==
-																	"CLOSED" ? (
-																		<Text
-																			style={{
-																				fontFamily: "OpenSans",
-																				fontSize: 12,
-																				color: "red"
-																			}}
-																			note
-																		>
-																			Appointment cancelled.
-																</Text>
-																	) : (	item.appointmentResult.appointment_status == "COMPLETED" ? (
-																			<Text style={{fontFamily: "OpenSans",fontSize: 1,color: "green"}}note>Appointment completed
+														<Item style={{ borderBottomWidth: 0 }}>
+															{selectedIndex == 0 ?
+															
+																(item.appointmentResult.appointment_status == "PENDING" ?
+																	<Text style={{ fontFamily: "OpenSans", fontSize: 12, color: "red" }} note>waiting for confirmation</Text>
+																	: item.appointmentResult.appointment_status == "APPROVED" ?
+																		<Text style={{ fontFamily: "OpenSans", fontSize: 12, color: "green" }} note>	Appointment confirmed</Text>
+																		: item.appointmentResult.appointment_status == "CLOSED" ?
+																			<Text style={{ fontFamily: "OpenSans", fontSize: 12, color: "red" }} note	>Appointment cancelled</Text>
+																			:item.appointmentResult.appointment_status == "PROPOSED_NEW_TIME"&&
+																			<Text style={{ fontFamily: "OpenSans", fontSize: 12, color: "grey" }} note	> PROPOSED_NEW_TIME</Text>
+																):
+														(item.appointmentResult.appointment_status == "CLOSED" ? 
+																	<Text style={{ fontFamily: "OpenSans", fontSize: 12, color: "red" }} note>	Appointment cancelled.	</Text>
+																 :
+																	<Text style={{ fontFamily: "OpenSans", fontSize: 1, color: "green" }} note>Appointment completed
 																	</Text>
-																	)  : ( item.appointmentResult.appointment_status == "PENDING_REVIEW" && (
-																			<Text style={{ fontFamily: "OpenSans", fontSize: 1, color: "green" }} note>Appointment completed
-																	</Text>
-																	))
-																)}
-															</Item>
-														)}
+														)
+															
+														}
+														
+														</Item>
 
 														<Text
 															style={{ fontFamily: "OpenSans", fontSize: 12 }}
