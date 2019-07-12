@@ -5,7 +5,7 @@ import { StyleSheet, AsyncStorage } from 'react-native';
 import StarRating from 'react-native-star-rating';
 import moment from 'moment';
 import { NavigationEvents } from 'react-navigation';
-import { viewUserReviews, bindDoctorDetails, appointmentStatusUpdate, getAppointmentDetails } from '../../providers/bookappointment/bookappointment.action';
+import { viewUserReviews, bindDoctorDetails, appointmentStatusUpdate, appointmentDetails,getAppointmentDetails } from '../../providers/bookappointment/bookappointment.action';
 import { formatDate, dateDiff } from '../../../setup/helpers';
 
 import { Loader } from '../../../components/ContentLoader'
@@ -26,7 +26,9 @@ class AppointmentDetails extends Component {
       yearOfExperience: '',
       appointmentStatus: '',
       statusUpdateReason: ' ',
-      selectedIndex:'',
+      education: '',
+      specialist: '',
+      hospital:[],
 
 
     }
@@ -36,40 +38,40 @@ class AppointmentDetails extends Component {
     const userId = await AsyncStorage.getItem('userId');
     const { navigation } = this.props;
     const appointmentData = navigation.getParam('data');
-    const selectedIndex = navigation.getParam('selectedIndex');
-        await   this.setState({selectedIndex:selectedIndex})
-    
-    const appointmentId = navigation.getParam('appointmentId');
-    
-    await this.setState({ appointmentId:appointmentId });
+   
+   
 
     if (appointmentData == undefined) {
-     
+      const appointmentId = navigation.getParam('appointmentId');
+      console.log(appointmentId);
+      await this.setState({ appointmentId: appointmentId });
           console.log('appointmentdata')
-          this.appointmentDetailsGetById()
+        await this.appointmentDetailsGetById()
     }
     else {
       console.log('not pass a way...')
+      const selectedIndex = navigation.getParam('selectedIndex');
+      await this.setState({ selectedIndex: selectedIndex })
       let doctorId = appointmentData.doctor_id;
       let appointmentId = appointmentData._id;
-      await this.setState({ doctorId: doctorId, appointmentId: appointmentId, userId: userId, data: appointmentData, isLoading: true })
+      await this.setState({ doctorId: doctorId, appointmentId: appointmentId, userId: userId, data: appointmentData})
     
       await new Promise.all([
-        this.getDoctorDetails(doctorId),
-        this.getUserReviews(appointmentId)
+        this.getDoctorDetails(),
+        this.getUserReviews()
       ])
-      this.setState({ isLoading: false })
+      
     }
     
-    
+  await  this.setState({ isLoading: true })
      }
 
   /* Get Doctor Details */
-  getDoctorDetails = async (doctorId) => {
+  getDoctorDetails = async () => {
     try {
-      //this.setState({ isLoading: true });
+      
       let fields = 'first_name,last_name,prefix,education,specialist,email,mobile_no,experience,hospital,language,professional_statement';
-      let resultDetails = await bindDoctorDetails(doctorId, fields);
+      let resultDetails = await bindDoctorDetails(this.state.doctorId, fields);
       console.log(resultDetails.data)
       if (resultDetails.success) {
         await this.setState({ doctorData: resultDetails.data });
@@ -83,7 +85,21 @@ class AppointmentDetails extends Component {
           experience++;
         }
         await this.setState({ yearOfExperience: experience });
-      }
+        let educationDetails = resultDetails.data.education.map(education => {
+          return education.degree;
+        }).join(",");
+           this.setState({education:educationDetails})
+        let specialistDetails = resultDetails.data.specialist.map(categories => {
+          return categories.category;
+        }).join(",");
+        this.setState({ specialist: specialistDetails })
+        resultDetails.data.hospital.map(hospital_id => {
+          if (hospital_id.hospital_id == this.state.data.hospital_id)
+            this.setState({hospital:hospital_id})
+        }
+
+        )
+       }
      
    }
     catch (e) {
@@ -92,8 +108,8 @@ class AppointmentDetails extends Component {
   }
 
   /* get User reviews */
-  getUserReviews = async (appointmentId) => {
-    let resultReview = await viewUserReviews('appointment', appointmentId);
+  getUserReviews = async () => {
+    let resultReview = await viewUserReviews('appointment', this.state.appointmentId);
      console.log(resultReview.data)
     if (resultReview.success) {
       this.setState({ reviewData: resultReview.data });
@@ -102,18 +118,19 @@ class AppointmentDetails extends Component {
   }
   
   appointmentDetailsGetById = async () => {
-    let result = await getAppointmentDetails(this.state.appointmentId);
+
+  let result = await appointmentDetails(this.state.appointmentId);
+    console.log(result.data)
+    await this.setState({data:result.data[0]})
     
-    this.getUserReviews(this.state.appointmentId);
+    this.getUserReviews();
     if (result.success) {
-      this.setState({ doctorId: result.data.doctor_id })
-      let doctorId = result.data.doctor_id;
-      console.log(doctorId);
-      this.getDoctorDetails(doctorId)
+      this.setState({ doctorId: result.data[0].doctor_id })
+      this.getDoctorDetails()
       
     }
   
-    console.log(result.data)
+    
   
      
     
@@ -130,7 +147,7 @@ class AppointmentDetails extends Component {
 
   updateAppointmentStatus = async (data, updatedStatus) => {
     try {
-      this.setState({ isLoading: true });
+      this.setState({ isLoading: false });
       let requestData = {
         doctorId: data.doctor_id,
         userId: data.user_id,
@@ -142,7 +159,7 @@ class AppointmentDetails extends Component {
       };
       let userId = await AsyncStorage.getItem('userId');
       let result = await appointmentStatusUpdate(this.state.doctorId, this.state.appointmentId, requestData);
-      this.setState({ isLoading: false })
+      this.setState({ isLoading: true })
       let appointmentStatus = result.appointmentData.appointment_status;
 
       if (result.success) {
@@ -170,13 +187,13 @@ class AppointmentDetails extends Component {
     
 
 
-    const { data, reviewData, doctorData,selectedIndex, yearOfExperience, qualification, isLoading } = this.state;
+    const { data, reviewData, doctorData, education, yearOfExperience, specialist, hospital, isLoading } = this.state;
 
     return (
 
       <Container style={styles.container}>
 
-        {isLoading ? <Loader style={'appointment'} /> :
+        {isLoading ==false? <Loader style={'appointment'} /> :
 
           <Content style={styles.bodyContent}>
             <NavigationEvents
@@ -193,10 +210,10 @@ class AppointmentDetails extends Component {
                   </Left>
                   <Body>
                     <Text style={{ fontSize: 16 }}>{(doctorData && doctorData.prefix ? doctorData.prefix : 'Dr.') + (doctorData && doctorData.first_name) + " " + (doctorData && doctorData.last_name)},
-                    <Text style={{ fontSize: 10 }}>{doctorData.education && doctorData.education[0].degree}</Text>
+                    <Text style={{ fontSize: 10 }}>{education}</Text>
 
                     </Text>
-                    <Text note style={styles.customText}>{doctorData.specialist && doctorData.specialist[0].category} </Text>
+                    <Text note style={styles.customText}>{specialist} </Text>
                   </Body>
 
                 </ListItem>
@@ -269,12 +286,12 @@ class AppointmentDetails extends Component {
                       <RenderHospitalAddress gridStyle={{ width: '10%' }}
                         hospotalNameTextStyle={styles.customText}
                         textStyle={styles.customText}
-                        hospitalAddress={doctorData.hospital[0]}
+                        hospitalAddress={hospital}
                       /> : null}
                   </ListItem>
                 </List>
               </Card>
-              {selectedIndex == 0 ? null : data.appointment_status == 'CLOSED'?null:
+              {data.appointment_status == 'CLOSED' || data.appointment_status == 'APPROVED' || data.appointment_status == 'PENDING' || data.appointment_status == 'PROPOSED_NEW_TIME'?null:
               (data.appointment_status == 'PENDING_REVIEW' || reviewData.length === 0) ?
                 <Card style={{ margin: 10, padding: 10, borderRadius: 10 }}>
                   <List>
