@@ -468,7 +468,7 @@ backNavigation=async(navigationData)=>{
 															<Button
 																style={styles.shareButton}
 																onPress={() =>
-																	this.props.navigation.push("InsertReview",{ appointmentDetail: item })
+																	this.props.navigation.push("InsertReview",{ appointmentDetail: item.data.appointmentResult })
 																}
 															>
 																<Text style={styles.bookAgain1}>

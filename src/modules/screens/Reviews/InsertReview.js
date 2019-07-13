@@ -30,10 +30,11 @@ class InsertReview extends Component {
   async componentDidMount() {
 
     const { navigation } = this.props;
-    const finalReviewData = navigation.getParam('appointmentDetail');
+    const reviewData = navigation.getParam('appointmentDetail');
+    console.log('finalReviewData'+JSON.stringify(reviewData));
 
-let reviewData=finalReviewData.data.appointmentResult;
-console.log('reviewData'+JSON.stringify(reviewData));
+// let reviewData=finalReviewData.data.appointmentResult;
+// console.log('reviewData'+JSON.stringify(reviewData));
 
 let userId = reviewData.user_id;
 
@@ -82,6 +83,7 @@ let userId = reviewData.user_id;
           is_doctor_recommended: this.state.doctorRecommended,
         };
         let result = await addReview(userId, insertReviewData);
+        console.log(JSON.stringify(result))
 
         if (result.success) {
           console.log('review updated');
