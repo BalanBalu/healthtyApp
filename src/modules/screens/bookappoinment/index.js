@@ -218,7 +218,7 @@ enumarateDates(startDate, endDate) {
   noAvailableSlots() {    
     return (
       <View style={{alignItems:'center'}}>
-      <Text style={{ fontSize:18,borderColor:'gray',borderWidth:1,borderRadius:5,alignItems:'center',padding:2}} >No slots are available </Text>
+      <Text style={{ fontSize:15,borderColor:'gray',borderRadius:5,alignItems:'center'}} >No slots are available </Text>
       </View>
         )
   }
@@ -336,7 +336,7 @@ enumarateDates(startDate, endDate) {
               testID='datePicked' />
           </Item>:null}
 
-            <View >
+            <View style={{marginTop:10,marginBottom:15}}>
               {this.state.slotList === undefined ? this.noAvailableSlots() : this.haveAvailableSlots()}
             </View>
           </Card>
