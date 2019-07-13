@@ -50,9 +50,11 @@ class BookAppoinment extends Component {
     const fromAppointmentList = navigation.getParam('fromAppointmentList')||false;
 
     if(fromAppointmentList) {
+      console.log("if")
       let endDateMoment = addMoment(this.state.currentDate, 7, 'days')
       const doctorId = navigation.getParam('doctorId')|| false;
       await this.setState({doctorId:doctorId});
+      console.log("doctorId");
       await this.getAvailabilitySlots(doctorId, moment(new Date()), endDateMoment);
     }else {
       let doctorDetails = navigation.getParam('doctorDetails');
@@ -81,7 +83,8 @@ class BookAppoinment extends Component {
 
 
   /*FromAppointment list(Get availability slots)*/
-  async getAvailabilitySlots(fromAppointmentDoctorId, startDate, endDate) {    
+  async getAvailabilitySlots(fromAppointmentDoctorId, startDate, endDate) {
+    console.log("getAvailabilty");    
         let totalSlotsInWeek = {
             startDate: formatDate(startDate, 'YYYY-MM-DD'),
             endDate: formatDate(endDate, 'YYYY-MM-DD')
@@ -93,21 +96,29 @@ class BookAppoinment extends Component {
           this.setState({slotList: slotData[formatDate(startDate,'YYYY-MM-DD')]});
           console.log(this.state.slotList);
           this.enumarateDates(startDate, endDate)
-          if(this.state.slotList) {
-            await this.setState({item:{ 
-              name:this.state.slotList[0].location.name,
-              no_and_street:this.state.slotList[0].location.location.address.no_and_street,
-              city:this.state.slotList[0].location.location.address.city,
-              state:this.state.slotList[0].location.location.address.state,
-              pin_code:this.state.slotList[0].location.location.pin_code
-            },
-            selectedSlotItem:this.state.slotList[0], 
-            });
-          }
+          await this.displaylocation();          
           for(var key in slotData){           
             slotMap.set(key,slotData[key]);
          }
       }
+}
+/*Display the location details*/
+displaylocation=async()=>{
+  if(this.state.slotList) {
+    console.log("slotList");
+    await this.setState({item:{
+       
+      name:this.state.slotList[0].location.name,
+      no_and_street:this.state.slotList[0].location.location.address.no_and_street,
+      city:this.state.slotList[0].location.location.address.city,
+      state:this.state.slotList[0].location.location.address.state,
+      pin_code:this.state.slotList[0].location.location.pin_code
+    },
+    
+    selectedSlotItem:this.state.slotList[0], 
+    });
+  }
+
 }
 
 enumarateDates(startDate, endDate) {
@@ -128,8 +139,13 @@ enumarateDates(startDate, endDate) {
       console.log('selectedDate'+selectedDate);
       this.setState({ selectedDate: selectedDate });
       if(slotMap.has(selectedDate)) {
+        console.log("slotMap");
         let temp = slotMap.get(selectedDate);
         this.setState({slotList:temp})
+        console.log('slotList'+JSON.stringify(this.state.slotList));
+        this.displaylocation();
+        console.log("display location");
+
       } else {
         this.setState({slotList: []})
       }
@@ -201,10 +217,10 @@ enumarateDates(startDate, endDate) {
 
   noAvailableSlots() {    
     return (
-      <Item style={{ borderBottomWidth: 0, justifyContent: 'center', alignItems: 'center' }}>
-        <Text style={{ fontSize: 18, justifyContent: 'center', alignItems: 'center' }} >No slots are available </Text>
-      </Item>
-    )
+      <View style={{alignItems:'center'}}>
+      <Text style={{ fontSize:18,borderColor:'gray',borderWidth:1,borderRadius:5,alignItems:'center',padding:2}} >No slots are available </Text>
+      </View>
+        )
   }
 
   haveAvailableSlots() {
@@ -327,7 +343,8 @@ enumarateDates(startDate, endDate) {
           
           <Card transparent style={{ margin: 20, backgroundColor: '#ecf0f1' }}>
 
-             {this.state.slotList!==undefined?<Card style={ { height: 250 }}>
+             {this.state.slotList!==undefined?
+             <Card style={ { height: 250 }}>
               {this.state.selectedSlotItem !== null  ? <Mapbox hospitalLocation={this.state.selectedSlotItem}/>  : null }        
               <List>
                 <ListItem avatar>
