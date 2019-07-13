@@ -79,6 +79,7 @@ class MyAppoinmentList extends Component {
 	}
 
 	backNavigation = async (navigationData) => {
+		console.log(navigationData)
 		if (navigationData.action) {
 			if (navigationData.action.type === 'Navigation/BACK') {
 				await this.setState({ isLoading: false })
@@ -317,7 +318,7 @@ class MyAppoinmentList extends Component {
 													avatar
 													onPress={() =>
 														this.props.navigation.navigate("AppointmentInfo", {
-															data: item.appointmentResult, selectedIndex: this.state.selectedIndex
+															data: item.appointmentResult
 														})
 													}
 												>

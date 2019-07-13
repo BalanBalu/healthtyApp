@@ -36,22 +36,21 @@ class AppointmentDetails extends Component {
 
   async componentDidMount() {
     const userId = await AsyncStorage.getItem('userId');
-    const { navigation } = this.props;
+ 
     const appointmentData = navigation.getParam('data');
-   
+    const { navigation } = this.props;
    
 
     if (appointmentData == undefined) {
       const appointmentId = navigation.getParam('appointmentId');
+      const { navigation } = this.props;
       console.log(appointmentId);
       await this.setState({ appointmentId: appointmentId });
           console.log('appointmentdata')
         await this.appointmentDetailsGetById()
     }
     else {
-      console.log('not pass a way...')
-      const selectedIndex = navigation.getParam('selectedIndex');
-      await this.setState({ selectedIndex: selectedIndex })
+      
       let doctorId = appointmentData.doctor_id;
       let appointmentId = appointmentData._id;
       await this.setState({ doctorId: doctorId, appointmentId: appointmentId, userId: userId, data: appointmentData})
@@ -198,6 +197,7 @@ class AppointmentDetails extends Component {
           <Content style={styles.bodyContent}>
             <NavigationEvents
               onWillFocus={payload => { this.componentDidMount() }}
+              
             />
             <Grid style={{ backgroundColor: '#7E49C3', height: 200 }}>
             </Grid>
@@ -209,7 +209,7 @@ class AppointmentDetails extends Component {
                     <Thumbnail square source={{ uri: 'https://static1.squarespace.com/static/582bbfef9de4bb07fe62ab18/t/5877b9ccebbd1a124af66dfe/1484241404624/Headshot+-+Circular.png?format=300w' }} style={{ height: 86, width: 86 }} />
                   </Left>
                   <Body>
-                    <Text style={{ fontSize: 16 }}>{(doctorData && doctorData.prefix ? doctorData.prefix : 'Dr.') + (doctorData && doctorData.first_name) + " " + (doctorData && doctorData.last_name)},
+                    <Text style={{ fontSize: 16 }}>{(doctorData && doctorData.prefix ? doctorData.prefix : 'Dr') + ('.') + (doctorData && doctorData.first_name) + " " + (doctorData && doctorData.last_name)},
                     <Text style={{ fontSize: 10 }}>{education}</Text>
 
                     </Text>
