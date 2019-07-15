@@ -1,20 +1,43 @@
 import React, { Component } from 'react';
 import { Container, Content, Text, Title, Header, Button, H3, Item, List, ListItem, Card, Input, Left, Right, Thumbnail, Body, Icon, View, Footer, FooterTab } from 'native-base';
 import { Col, Row, Grid } from 'react-native-easy-grid';
+import { getMedicineDetails } from '../../../providers/pharmacy/pharmacy.action'
+
 import { StyleSheet, Image, FlatList, TouchableOpacity } from 'react-native';
 
 class MedicineSearch extends Component {
     constructor(props) {
         super(props)
         console.log(this.props)
-    }
-    navigetToCategories() {
-        console.log(this.props.navigation.navigate('categories'));
-        //this.props.navigation.navigate('categories');
+        this.state={
+            medicineData:[],
+            limit:8
+
+        }
     }
 
+    // navigetToCategories() {
+    //     console.log(this.props.navigation.navigate('categories'));
+    //     //this.props.navigation.navigate('categories');
+    // }
+
+    componentDidMount(){
+        this.getMedicineList();
+    }
+
+
+    getMedicineList=async()=>{
+        let result=await getMedicineDetails();
+        this.setState({medicineData:result.data});
+        console.log("resultant data");
+        console.log(this.state.medicineData);
+        console.log(this.state.medicineData.length);
+    }
+    
+    
+
     render() {
-        const medicine = [{ med1: 'abc' }, { med2: 'def' }, { med3: 'ghi' }, { med4: "jkl" }, { med5: "mno" }]
+        const {medicineData}=this.state
         const { navigation } = this.props
 
         return (
@@ -64,32 +87,24 @@ class MedicineSearch extends Component {
                     <Card transparent >
 
                         <Grid style={{ marginTop: 25, padding: 10, width: 'auto' }}>
-                            <FlatList data={medicine}
+                            <FlatList 
+                                data={medicineData}
+                                horizontal={false}
+                                numColumns={2}
                                 renderItem={
-
                                     ({ item }) =>
-                                        <Row style={{ justifyContent: 'center' }}>
                                             <View style={styles.customColumn}>
                                                 <TouchableOpacity>
                                                     <View style={{ width: 'auto', flex: 1, flexDirection: 'row' }}>
-
                                                         <Text style={{ marginTop: -30, fontFamily: 'OpenSans', fontSize: 13, color: '#ffa723', }}> Get 50% Off
-                                         {/* <Icon style={{ fontSize: 13, marginLeft: 15, color: '#e25657' }} name='ios-star' /> */}
                                                         </Text>
-
-
                                                         <Right>
                                                             <Icon name="checkmark-circle" style={{ color: '#5cb75d', marginTop: -30, }}></Icon>
                                                         </Right>
-
                                                     </View>
-
                                                     <Image source={{ uri: 'https://vimecare.com/WelcomeDesign/images/doctor-icon.png' }} style={styles.customImage} />
-
-
-                                                    <Text style={styles.pageText}>{item.med1}</Text>
+                                                   <Text style={styles.pageText}>{item.medicine_name}</Text>
                                                     <View style={{ flex: 1, flexDirection: 'row' }}>
-
                                                         <Text style={{
                                                             textDecorationLine: 'line-through', textDecorationStyle: 'solid',
                                                             fontFamily: 'OpenSans',
@@ -109,42 +124,6 @@ class MedicineSearch extends Component {
 
                                                 </TouchableOpacity>
                                             </View>
-
-                                            <View style={styles.customColumn}>
-                                                <TouchableOpacity>
-                                                    <View style={{ width: 'auto' }}>
-
-                                                        <Text style={{ marginTop: -30, fontFamily: 'OpenSans', fontSize: 13, color: '#ffa723', }}> Get 50% Off
-                                         {/* <Icon style={{ fontSize: 13, marginLeft: 15, color: '#e25657' }} name='ios-star' /> */}
-                                                        </Text>
-
-
-                                                    </View>
-                                                    <Image source={{ uri: 'https://vimecare.com/WelcomeDesign/images/doctor-icon.png' }} style={styles.customImage} />
-
-                                                    <Text style={styles.pageText}>Rx Ready</Text>
-                                                    <View style={{ flex: 1, flexDirection: 'row' }}>
-
-                                                        <Text style={{
-                                                            textDecorationLine: 'line-through', textDecorationStyle: 'solid',
-                                                            textDecorationColor: 'green',
-                                                            fontFamily: 'OpenSans',
-                                                            fontSize: 12,
-                                                            color: 'black',
-
-                                                            fontWeight: "bold"
-                                                        }}>MRP: Rs 100</Text><Text style={{
-                                                            fontFamily: 'OpenSans',
-                                                            fontSize: 12,
-                                                            color: '#000',
-                                                            marginLeft: 10,
-                                                            fontWeight: "bold"
-                                                        }} > Rs.50</Text>
-                                                    </View>
-                                                </TouchableOpacity>
-                                            </View>
-                                        </Row>
-
                                 }
 
                             />
