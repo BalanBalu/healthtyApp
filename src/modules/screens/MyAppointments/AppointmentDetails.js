@@ -36,17 +36,18 @@ class AppointmentDetails extends Component {
 
   async componentDidMount() {
     const userId = await AsyncStorage.getItem('userId');
- 
+ const { navigation } = this.props;
     const appointmentData = navigation.getParam('data');
-    const { navigation } = this.props;
    
+    console.log(appointmentData)
+    const appointmentId = navigation.getParam('appointmentId');
+    // const { navigation } = this.props;
+    console.log(navigation);
 
     if (appointmentData == undefined) {
-      const appointmentId = navigation.getParam('appointmentId');
-      const { navigation } = this.props;
-      console.log(appointmentId);
+     
       await this.setState({ appointmentId: appointmentId });
-          console.log('appointmentdata')
+         
         await this.appointmentDetailsGetById()
     }
     else {
@@ -71,7 +72,7 @@ class AppointmentDetails extends Component {
       
       let fields = 'first_name,last_name,prefix,education,specialist,email,mobile_no,experience,hospital,language,professional_statement';
       let resultDetails = await bindDoctorDetails(this.state.doctorId, fields);
-      console.log(resultDetails.data)
+   
       if (resultDetails.success) {
         await this.setState({ doctorData: resultDetails.data });
         let updatedDate = moment(this.state.doctorData.experience.updated_date);
@@ -109,7 +110,7 @@ class AppointmentDetails extends Component {
   /* get User reviews */
   getUserReviews = async () => {
     let resultReview = await viewUserReviews('appointment', this.state.appointmentId);
-     console.log(resultReview.data)
+     
     if (resultReview.success) {
       this.setState({ reviewData: resultReview.data });
     }
