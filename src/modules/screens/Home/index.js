@@ -22,12 +22,12 @@ class Home extends Component {
         this.getCatagries();
     }
     navigetToCategories() {
-        this.props.navigation.navigate('Categories', { data: this.state.data })
+        this.props.navigation.navigate('MedicinePaymentResult')
     }
 
     doLogout() {
         logout();
-        this.props.navigation.navigate('login');
+        this.props.navigation.navigate('MedicinePaymentPage');
     }
 
     getCatagries = async () => {
@@ -66,7 +66,7 @@ class Home extends Component {
                 alert("We can't Find the Empty Values");
             }
             else {
-                this.props.navigation.navigate('Doctor List', { resultData: serachInputvalues })
+                this.props.navigation.navigate('MedicinePaymentResult')
             }
         } catch (e) {
             console.log(e);
@@ -219,7 +219,7 @@ class Home extends Component {
                                 </Col>
                             </Row>
 
-                            <Row onPress={()=> this.props.navigation.navigate('MedicineList')}>
+                            <Row onPress={() => this.props.navigation.navigate('MedicineList')}>
                                 <Col>
                                     <Text note style={{ fontFamily: 'OpenSans', color: 'white', marginTop: 15 }}>Medflick Pharmacy Offers You Online Convenience For Ordering, Monitoring And Receiving Prescription For You And Your Family.</Text>
                                 </Col>
@@ -250,7 +250,7 @@ class Home extends Component {
 
                 </Content>
 
-                {/* <Footer>
+               {/* <Footer>
                     <FooterTab style={{ backgroundColor: '#7E49C3' }}>
                         <Button >
                             <Icon name="apps" />
@@ -258,14 +258,14 @@ class Home extends Component {
                         <Button>
                             <Icon name="chatbubbles" />
                         </Button>
-                        <Button >
+                        <Button onPress={() => this.props.navigation.navigate('Notification')}  >
                             <Icon active name="notifications" />
                         </Button>
                         <Button>
                             <Icon name="person" />
                         </Button>
                     </FooterTab>
-                </Footer>*/}
+               </Footer> */}
             </Container>
 
         )

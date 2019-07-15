@@ -91,24 +91,24 @@ class UpdateEmail extends Component {
         return (
             <Container style={styles.container}>
                 <Content style={{ padding: 10 }} contentContainerStyle={{ flex: 1, height: '100%', }}>
-                    <View style={{ marginTop: 20 }}>
-                        <Text style={{ fontFamily: 'OpenSans', marginLeft: 7, fontWeight: 'bold', fontSize: 20 }}>Primary Email</Text>
+                    <View style={{ marginTop: 22 }}>
+                        <Text style={{ fontFamily: 'OpenSans', marginLeft: 7, fontWeight: 'bold', fontSize: 22 }}>Primary Email</Text>
                         <Card style={{ padding: 10, borderRadius: 10, marginTop: 10 }}>
                             <Item style={{ borderBottomWidth: 0 }}>
                                 <Icon name='mail' style={styles.centeredIcons}></Icon>
 
                                 <Text style={styles.customText}>{this.state.primary_email}</Text>
-
+                                <Icon style={{ marginLeft: 70, color: 'gray' }} name='ios-lock' />
                             </Item>
                         </Card>
                     </View>
                     <View style={{ marginTop: 20 }}>
-                        <Text style={{ fontFamily: 'OpenSans', marginTop: 50, marginLeft: 7, fontWeight: 'bold', fontSize: 20 }}>Secondary Email</Text>
+                        <Text style={{ fontFamily: 'OpenSans', marginTop: 50, marginLeft: 7, fontWeight: 'bold', fontSize: 22 }}>Secondary Email</Text>
 
                         <Card style={{ padding: 10, borderRadius: 10, marginTop: 10, height: 250, justifyContent: 'center' }}>
 
                             <Item style={{ borderBottomWidth: 0, marginTop: 12, marginLeft: 4 }}>
-                                <Text style={{ color: 'gray', fontSize: 13, fontFamily: 'OpenSans', marginTop: 5, marginLeft: 7 }}>Update your secondary email</Text>
+                                <Text style={{ color: 'gray', fontSize: 14, fontFamily: 'OpenSans', marginTop: 5, marginLeft: 7 }}>Update your secondary email</Text>
                             </Item>
 
                             <Item style={{ borderBottomWidth: 0, }}>
@@ -137,13 +137,11 @@ class UpdateEmail extends Component {
                                         <Text uppercase={false} note style={{ color: '#fff', fontFamily: 'OpenSans' }}>Cancel</Text>
                                     </Button>
                                 </View> */}
-                                <Row style={{ justifyContent: 'center' }}>
-                                    <Button success style={styles.button2} >
+                                <Row style={{ marginLeft: 255 }}>
+                                    <Button success style={styles.button2} onPress={() => this.handleEmailUpdate()} testID='clickUpdateEmail' >
                                         <Text style={{ color: '#000' }}>Update</Text>
                                     </Button>
-                                    <Button style={styles.button1}>
-                                        <Text style={{ color: '#000' }}> Cancel</Text>
-                                    </Button>
+
                                 </Row>
 
 

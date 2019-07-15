@@ -86,6 +86,7 @@ class Mapbox extends Component {
       console.log(res.body.routes[0]);
     }
   }
+
   }
   
 
@@ -110,12 +111,17 @@ class Mapbox extends Component {
       { enableHighAccuracy: true }
     )
   }
-    success = async (position) => {
+    success = async (position) => 
+    {
+      try{
       const origin_coordinates = [position.coords.longitude, position.coords.latitude];
       this.setState({
         currentLocation: origin_coordinates,
       })
       await this.fetchDirections();
+    }catch(e){
+      console.log(e);
+    }
     }  
   
 renderOrigin(coordinates) {

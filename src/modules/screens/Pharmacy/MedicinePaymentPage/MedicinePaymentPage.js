@@ -173,25 +173,10 @@ class MedicinePaymentPage extends Component {
                             <Text style={{ marginLeft: 15, color: 'gray', fontFamily: 'OpenSans' }}>Save creditcard Information</Text>
                         </Item>
 
-                        <Button onPress={()=> this.props.navigation.navigate('MedicinePaymentResult')} block style={styles.loginButton}><Text>Continue</Text></Button>
+                        <Button onPress={() => this.props.navigation.navigate('MedicinePaymentResult')} block style={styles.loginButton}><Text>Continue</Text></Button>
                     </Card>
                 </Content>
-                <Footer>
-                    <FooterTab style={{ backgroundColor: '#7E49C3' }}>
-                        <Button >
-                            <Icon name="apps" />
-                        </Button>
-                        <Button>
-                            <Icon name="chatbubbles" />
-                        </Button>
-                        <Button >
-                            <Icon active name="notifications" />
-                        </Button>
-                        <Button>
-                            <Icon name="person" />
-                        </Button>
-                    </FooterTab>
-                </Footer>
+
             </Container>
 
         )

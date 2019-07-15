@@ -214,6 +214,8 @@ backNavigation=async(navigationData)=>{
 				});
 
 				this.setState({ pastData: pastDoctorDetails, isLoading: true });
+				console.log("past data");
+				console.log(this.state.pastData);
 			}
 		} catch (e) {
 			console.log(e);
@@ -229,6 +231,13 @@ backNavigation=async(navigationData)=>{
 			data
 		});
 	};
+
+
+	navigateToBookAppointmentPage(appointmentData){
+		console.log("book appointment page");
+		let doctorId=appointmentData.data.appointmentResult.doctor_id;
+        this.props.navigation.navigate('Book Appointment', { doctorId: doctorId, fromAppointmentList: true })
+	}
 
 	render() {
 		const {
@@ -465,7 +474,7 @@ backNavigation=async(navigationData)=>{
 																	Add To Review
 																</Text>
 															</Button>
-															<Button style={styles.bookingButton}>
+															<Button style={styles.bookingButton} onPress={() => this.navigateToBookAppointmentPage(item)}>
 																<Text style={styles.bookAgain1}>
 																	book Again
 																</Text>
@@ -475,7 +484,7 @@ backNavigation=async(navigationData)=>{
 														selectedIndex === 1 && (
 															<Item style={{ borderBottomWidth: 0 }}>
 																<Right style={(styles.marginRight = 5)}>
-																	<Button style={styles.bookingButton}>
+																	<Button style={styles.bookingButton} onPress={() => this.navigateToBookAppointmentPage(item)}>
 																		<Text style={styles.bookAgain1}>
 																			Book Again
 																		</Text>

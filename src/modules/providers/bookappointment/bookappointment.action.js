@@ -1,13 +1,13 @@
-import { postService, getService, putService } from '../../../setup/services/httpservices';
+import { postService, getService, putService} from '../../../setup/services/httpservices';
 
 
 
 /* Book the Doctor Appointment module  */
 export async function bookAppointment(bookSlotDetails, isLoading = true) {
   try {
-    let endPoint = 'doctor/appointment';
+    let endPoint = 'appointment';
     let response = await postService(endPoint, bookSlotDetails);
-    
+
     let respData = response.data;
     return respData;
   } catch (e) {
@@ -48,12 +48,12 @@ export async function searchDoctorList(userId, searchInputvalues, isLoading = tr
 }
 /* user gives Rate and Reviews */
 
-export async function addReview(userId,insertUserReviews, isLoading = true) {
+export async function addReview(userId, insertUserReviews, isLoading = true) {
   try {
-    let endPoint = '/user/'+ userId + '/review';
+    let endPoint = '/user/' + userId + '/review';
     let response = await postService(endPoint, insertUserReviews);
     let respData = response.data;
-    
+
     return respData;
   } catch (e) {
     return {
@@ -64,10 +64,11 @@ export async function addReview(userId,insertUserReviews, isLoading = true) {
 }
 /*get doctor availability for patient view doctor profile */
 
-export async function viewdoctorProfile(doctorIds, isLoading = true) {
+export async function fetchAvailabilitySlots(doctorIds, dateFilter) {
   try {
-    let endPoint = 'doctors/' + doctorIds + '/availabilitySlots'
-    let response = await getService(endPoint);   
+    let endPoint = 'doctors/' + doctorIds + '/availabilitySlots?startDate=' + dateFilter.startDate + '&endDate='+ dateFilter.endDate;
+    console.log(endPoint);
+    let response = await getService(endPoint);
     let respData = response.data;
     return respData;
   } catch (e) {
@@ -80,11 +81,10 @@ export async function viewdoctorProfile(doctorIds, isLoading = true) {
 
 /*get userReviews*/
 
-export async function viewUserReviews(type,id,isLoading = true) {
+export async function viewUserReviews(type, id) {
   try {
-    let endPoint = 'user/reviews/'+ type+ '/'+id
+    let endPoint = 'user/reviews/' + type + '/' + id
     let response = await getService(endPoint);
-    console.log('response'+response);
     let respData = response.data;
     return respData;
 
@@ -100,7 +100,7 @@ export async function getDoctorsReviewsCount(doctorIds) {
   try {
     let endPoint = 'user/reviewsCount/' + doctorIds;
     let response = await getService(endPoint);
-    console.log('response'+response);
+    console.log('response' + response);
     let respData = response.data;
     return respData;
 
@@ -120,10 +120,10 @@ export const appointment = async (userId, filters, isLoading = true) => {
     let endPoint = 'doctor/appointment/user' + '/' + userId + '?startDate=' + filters.startDate + '&endDate=' + filters.endDate;
     let response = await getService(endPoint);
     let respData = response.data;
-    
+
     return respData;
   } catch (e) {
-   
+
     return {
       message: 'exception' + e,
       success: false
@@ -184,7 +184,7 @@ export const getMultipleDoctorDetails = async (doctorIds, fields, isLoading = tr
 
 export async function appointmentDetails(doctorId, appointmentId, isLoading = true) {
   try {
-    let endPoint = 'doctor/' + doctorId + '/appointment/' + appointmentId
+    let endPoint = 'appointment/' + appointmentId
     let response = await getService(endPoint);
     let respData = response.data;
     return respData;
@@ -200,10 +200,10 @@ export async function appointmentDetails(doctorId, appointmentId, isLoading = tr
 
 export async function appointmentStatusUpdate(doctorId, appointmentId, requestData, isLoading = true) {
   try {
-    let endPoint = 'doctor/' + doctorId + '/appointment/' + appointmentId
+    let endPoint =  'appointment/' + appointmentId
     let response = await putService(endPoint, requestData);
     let respData = response.data;
-   
+
     return respData;
   } catch (e) {
     return {
@@ -220,7 +220,7 @@ export async function appointmentStatusUpdate(doctorId, appointmentId, requestDa
 export async function insertDoctorsWishList(userId, doctorId, requestData) {
   try {
 
-    let endPoint = 'user/wishList/' + userId +'/'+ doctorId
+    let endPoint = 'user/wishList/' + userId + '/' + doctorId
     let response = await putService(endPoint, requestData);
     let respData = response.data;
     // console.log('respData'+JSON.stringify(respData))
@@ -232,12 +232,12 @@ export async function insertDoctorsWishList(userId, doctorId, requestData) {
     }
   }
 }
- /* Get Patient Total Favourite Doctors List  */
+/* Get Patient Total Favourite Doctors List  */
 export const getPatientWishList = async (userId) => {
   try {
-    let endPoint ='user/wishList/'+userId;
+    let endPoint = 'user/wishList/' + userId;
     let response = await getService(endPoint);
-   let respData = response.data;
+    let respData = response.data;
     return respData;
   } catch (e) {
     console.log(e.message);
@@ -247,7 +247,20 @@ export const getPatientWishList = async (userId) => {
     }
   }
 }
-
-
+//get doctordetails using appointment Id notification page
+export const getAppointmentDetails = async (appointmentId) => {
+  try {
+    let endPoint = '/appointment/'+appointmentId;
+    let response = await getService(endPoint);
+    let respData = response.data;
+    return respData;
+  } catch (e) {
+    console.log(e.message);
+    return {
+      message: 'exception' + e,
+      success: false
+    }
+  }
+}
 
 

@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
-import { Container, Content, Text, Title, Header, Form, Textarea, Button, H3, Item, List, ListItem, Card, Input, Left, Right, Thumbnail, Body, Icon, Footer, FooterTab, Picker, Segment, CheckBox } from 'native-base';
+import { Container, Content, Text, Title, Header, Form, Textarea, Button, H3, Item, List, ListItem, Card, Input, Left, Right, Thumbnail, Body, Icon, Footer, FooterTab, Picker, Segment, CheckBox, View, Badge } from 'native-base';
 import { Col, Row, Grid } from 'react-native-easy-grid';
-import { StyleSheet, Image } from 'react-native';
+import { StyleSheet, Image, TextInput } from 'react-native';
 
 class MedicinePaymentResult extends Component {
     constructor(props) {
@@ -20,259 +20,233 @@ class MedicinePaymentResult extends Component {
                     <Grid style={styles.curvedGrid}>
 
                     </Grid>
+                    <Grid style={{ marginTop: -60, height: 100, }}>
+                        <Row style={{ justifyContent: 'center' }}>
 
-                    <Item style={{ bottom: 100, borderBottomWidth: 0, marginTop: -80 }}>
-                        <Row >
-                            <Col style={{ width: '10%', marginTop: 'auto', marginBottom: 'auto', alignItems: 'center' }}>
-                                <Icon name="arrow-back" style={{ color: 'white' }}></Icon>
+                            <Text style={{ fontFamily: 'OpenSans', color: '#fff', fontSize: 18, }}>CHECKOUT</Text>
+
+
+                        </Row>
+                    </Grid>
+
+
+                    {/* <Grid style={{ marginTop: -70, height: 100, }}>
+                        <Row style={{ marginLeft: 100, }}>
+                            <Col>
+
+                                <Text style={{ fontFamily: 'OpenSans', color: '#fff', fontSize: 14 }}>Date: </Text>
                             </Col>
-                            <Col style={{ width: '80%', marginTop: 'auto', marginBottom: 'auto', alignItems: 'center' }}>
+                            <Col>
 
-                                <Item style={{ borderBottomWidth: 0 }}>
-
-                                    <Text style={{ fontFamily: 'OpenSans', color: '#fff' }}>CHECKOUT</Text>
-                                </Item>
-
+                                <Text style={{ fontFamily: 'OpenSans', color: '#fff', fontSize: 14 }}> 24,2019</Text>
                             </Col>
-                            <Col style={{ width: '10%' }}>
-                            </Col>
+
+
+
 
                         </Row>
 
-                    </Item>
+                    </Grid> */}
 
-                    <Card transparent style={{ marginTop: -70 }}>
+
+
+
+
+
+
+                    <Card transparent >
+
+
+
                         <Grid >
-                            <Col style={{ width: '30%', alignItems: 'center' }}>
-                                <Text style={styles.normalText}>Date</Text>
-                            </Col>
-                            <Col style={{ width: '40%', alignItems: 'center' }}>
-                            </Col>
-                            <Col style={{ width: '30%', alignItems: 'center' }}>
-                                <Text style={styles.normalText}>Jan 24,2019</Text>
-                            </Col>
+
+                            <Row style={{ justifyContent: 'center', width: '100%', marginTop: -15 }}>
+                                <Text style={{ fontFamily: 'OpenSans', fontWeight: 'bold', fontSize: 20, padding: 5 }}>Your Order</Text>
+                            </Row>
+
                         </Grid>
 
-                        <Grid style={{ marginTop: 10 }}>
-                            <Col style={{ width: '30%', alignItems: 'center' }}>
-                                <Text style={styles.normalText}>TotalBill</Text>
-                            </Col>
-                            <Col style={{ width: '40%', alignItems: 'center' }}>
-                            </Col>
-                            <Col style={{ width: '30%', alignItems: 'center' }}>
-                                <Text style={styles.normalText}>Rs.100</Text>
-                            </Col>
-                        </Grid>
-                    </Card>
-
-
-
-                    <Card transparent style={{ padding: 10, marginTop: 60 }}>
-
-                        <Grid>
-                            <Col style={{ alignItems: 'center', width: '20%' }}>
-                                <Text style={styles.badgeText}>1</Text>
-                            </Col>
-                            <Col style={{ alignItems: 'center', width: '60%' }}>
-                                <Text style={{ fontFamily: 'OpenSans', fontWeight: 'bold', fontSize: 18, padding: 5 }}>ContactInfo</Text>
-                            </Col>
-                            <Col style={{ alignItems: 'center', width: '20%' }}>
-                                <Text style={{ fontFamily: 'OpenSans', color: 'red', marginTop: 5 }}>Edit</Text>
-                            </Col>
-                        </Grid>
-
-                        <Card style={{ borderRadius: 10, padding: 10 }}>
-                            <Grid style={{ marginTop: 10 }}>
-                                <Form>
-                                    <Text style={styles.labelTop}>
-                                        Name
-                             </Text>
-                                    <Text style={styles.customText}>
-                                        Sourav Ganguly
-                             </Text>
-                                </Form>
-                            </Grid>
-
-
+                        <Card style={{ marginTop: 10, padding: 5, height: 180 }}>
                             <Grid>
-                                <Form style={{ marginTop: 10 }}>
-                                    <Text style={styles.labelTop}>
-                                        Phone No
-                             </Text>
-                                    <Text style={styles.customText}>
-                                        9986754321
-                             </Text>
-                                </Form>
+                                <Row >
+                                    <Image source={{ uri: 'https://static01.nyt.com/images/2019/03/05/opinion/05Fixes-1/05Fixes-1-articleLarge.jpg?quality=75&auto=webp&disable=upscale' }} style={{
+                                        width: 100, height: 100, borderRadius: 10,
+                                        marginTop: 20
+                                    }} />
+                                    <View style={{ width: '75%', }}>
+                                        <Text style={styles.labelTop}>Anti-Inhibitor Coagulant Complex (FEIBA)  </Text>
+
+                                    </View>
+
+                                </Row>
+                                <View style={{ marginLeft: 105, flex: 1, flexDirection: 'row', marginTop: 25 }}>
+
+                                    <Text style={{
+                                        fontFamily: 'OpenSans',
+                                        fontSize: 16,
+                                        color: '#c26c57',
+                                        fontWeight: "bold"
+                                    }} > Rs.50</Text>
+                                    <Text style={{
+                                        textDecorationLine: 'line-through', textDecorationStyle: 'solid',
+                                        fontFamily: 'OpenSans',
+                                        fontSize: 14,
+                                        color: 'gray',
+                                        marginLeft: 10,
+                                        fontWeight: "bold"
+                                    }}>MRP: Rs 100</Text>
+
+                                    <Text style={{ fontFamily: 'OpenSans', fontSize: 15, color: '#ffa723', marginLeft: 10, fontWeight: 'bold' }}> Get 50% Off</Text>
+                                </View>
+
+                                <View style={{ flex: 1, flexDirection: 'row', width: '65%', marginLeft: 110, }}>
+                                    <Text style={{ fontSize: 14, color: '#000', marginTop: -10 }}>Pharmacy name </Text>
+
+                                </View>
+
+                                <View style={{ flex: 1, flexDirection: 'row', marginLeft: 110 }}>
+                                    <View style={{ padding: 0, justifyContent: 'center', borderWidth: 1, borderColor: '#c26c57', width: 30, height: 25, }}>
+                                        <Text style={{ fontSize: 40, textAlign: 'center', marginTop: -5, color: '#c26c57' }}>-</Text>
+                                    </View>
+                                    <View>
+                                        <Text style={{ marginLeft: 5, color: '#c26c57' }}>8</Text>
+                                    </View>
+                                    <View style={{ padding: 0, justifyContent: 'center', borderWidth: 1, borderColor: '#c26c57', width: 30, height: 25, marginLeft: 5 }}>
+                                        <Text style={{
+                                            fontSize: 20, textAlign: 'center', marginTop: -5,
+                                            color: '#c26c57'
+                                        }}>+</Text>
+                                    </View>
+                                    {/* <View >
+                                        <Button style={styles.button1}><Text> Save for later</Text></Button>
+                                    </View> */}
+                                    <View>
+                                        {/* <Button style={styles.button2}> */}
+
+
+                                        <Icon style={{ fontSize: 30, color: 'red', marginLeft: 2, marginLeft: 50, marginTop: -4 }} name='ios-trash' />
+                                        {/* <Text style={{ color: '#fff', marginLeft: -30 }}> Remove</Text> */}
+
+
+
+                                        {/* </Button> */}
+                                    </View>
+                                </View>
+
+
                             </Grid>
 
 
+
+
+                        </Card>
+                        <Card style={{ marginTop: 10, padding: 5, height: 180 }}>
                             <Grid>
-                                <Form style={{ marginTop: 10 }}>
-                                    <Text style={styles.labelTop}>
-                                        Phone No
-                             </Text>
-                                    <Text style={styles.customText}>
-                                        theivamagan@gmail.com
-                             </Text>
-                                </Form>
+                                <Row >
+                                    <Image source={{ uri: 'http://www.sunnyph.com/Content/Uploads/2015/01/pills.jpg' }} style={{
+                                        width: 100, height: 100, borderRadius: 10,
+                                        marginTop: 20
+                                    }} />
+                                    <View style={{ width: '75%', }}>
+                                        <Text style={styles.labelTop}>Anti-Inhibitor Coagulant Complex (FEIBA)  </Text>
+
+                                    </View>
+
+                                </Row>
+                                <View style={{ marginLeft: 105, flex: 1, flexDirection: 'row', marginTop: 25 }}>
+
+                                    <Text style={{
+                                        fontFamily: 'OpenSans',
+                                        fontSize: 16,
+                                        color: '#c26c57',
+                                        fontWeight: "bold"
+                                    }} > Rs.50</Text>
+                                    <Text style={{
+                                        textDecorationLine: 'line-through', textDecorationStyle: 'solid',
+                                        fontFamily: 'OpenSans',
+                                        fontSize: 14,
+                                        color: 'gray',
+                                        marginLeft: 10,
+                                        fontWeight: "bold"
+                                    }}>MRP: Rs 100</Text>
+
+                                    <Text style={{ fontFamily: 'OpenSans', fontSize: 15, color: '#ffa723', marginLeft: 10, fontWeight: 'bold' }}> Get 50% Off</Text>
+                                </View>
+
+                                <View style={{ flex: 1, flexDirection: 'row', width: '65%', marginLeft: 110, }}>
+                                    <Text style={{ fontSize: 14, color: '#000', marginTop: -10 }}>Pharmacy name </Text>
+
+                                </View>
+
+                                <View style={{ flex: 1, flexDirection: 'row', marginLeft: 110 }}>
+                                    <View style={{ padding: 0, justifyContent: 'center', borderWidth: 1, borderColor: '#c26c57', width: 30, height: 25, }}>
+                                        <Text style={{ fontSize: 40, textAlign: 'center', marginTop: -5, color: '#c26c57' }}>-</Text>
+                                    </View>
+                                    <View>
+                                        <Text style={{ marginLeft: 5, color: '#c26c57' }}>8</Text>
+                                    </View>
+                                    <View style={{ padding: 0, justifyContent: 'center', borderWidth: 1, borderColor: '#c26c57', width: 30, height: 25, marginLeft: 5 }}>
+                                        <Text style={{
+                                            fontSize: 20, textAlign: 'center', marginTop: -5,
+                                            color: '#c26c57'
+                                        }}>+</Text>
+                                    </View>
+                                    {/* <View>
+                                        <Button style={styles.button1}><Text> Save for later</Text></Button>
+                                    </View> */}
+                                    <View>
+                                        {/* <Button style={styles.button2}> */}
+
+
+                                        <Icon style={{ fontSize: 30, color: 'red', marginLeft: 2, marginTop: -4, marginLeft: 50, }} name='ios-trash' />
+                                        {/* <Text style={{ color: '#fff', marginLeft: -30 }}> Remove</Text> */}
+
+
+
+                                        {/* </Button> */}
+                                    </View>
+                                </View>
+
+
                             </Grid>
 
 
-                            <Grid>
-                                <Form style={{ marginTop: 10 }}>
-                                    <Text style={styles.labelTop}>
-                                        Address
-                             </Text>
-                                    <Text style={styles.customText}>
-                                        81/3, northern east street,
-                                        Annannagar,
-                                        chennai-40
-                             </Text>
-                                </Form>
-                            </Grid>
+
 
                         </Card>
 
-                        <Grid style={{ marginTop: 10 }}>
-                            <Col style={{ alignItems: 'center', width: '20%' }}>
-                                <Text style={styles.badgeText}>1</Text>
-                            </Col>
-                            <Col style={{ alignItems: 'center', width: '60%' }}>
-                                <Text style={{ fontFamily: 'OpenSans', fontWeight: 'bold', fontSize: 18, padding: 5 }}>PaymentInfo</Text>
-                            </Col>
-                            <Col style={{ alignItems: 'center', width: '20%' }}>
-                                <Text style={{ fontFamily: 'OpenSans', color: 'red', marginTop: 5 }}>Edit</Text>
-                            </Col>
-                        </Grid>
-
-                        <Card style={{ borderRadius: 10, padding: 10 }}>
 
 
-                            <Grid style={{ marginTop: 10 }}>
-                                <Col style={{ width: '25%', alignItems: 'center' }}>
-                                    <Image source={{ uri: 'https://img.icons8.com/color/180/visa.png' }} style={{ width: '100%', height: 50, borderRadius: 10 }} /></Col>
-                                <Col style={{ width: '75%' }}>
-                                    <Text style={styles.labelTop}> you will need to confirm the payment after the formation of order</Text>
-                                </Col>
-                            </Grid>
 
-                            <Grid>
-                                <Col>
-                                    <Form style={{ marginTop: 10 }}>
-                                        <Text style={styles.labelTop}>
-                                            CARDHOLDER NAME
-                             </Text>
-                                        <Text style={styles.customText}>
-                                            SOURAV GANGULY
-                             </Text>
-                                    </Form>
-                                </Col>
 
-                                <Col>
-                                    <Form style={{ marginTop: 10 }}>
-                                        <Text style={styles.labelTop}>
-                                            CARD NUMBER
-                             </Text>
-                                        <Text style={styles.customText}>
-                                            9876 5432 7865 1234
-                             </Text>
-                                    </Form>
-                                </Col>
-                            </Grid>
 
-                            <Grid>
-                                <Col>
-                                    <Form style={{ marginTop: 10 }}>
-                                        <Text style={styles.labelTop}>
-                                            CVV
-                             </Text>
-                                        <Text style={styles.customText}>
-                                            21/12
-                             </Text>
-                                    </Form>
-                                </Col>
 
-                                <Col>
-                                    <Form style={{ marginTop: 10 }}>
-                                        <Text style={styles.labelTop}>
-                                            EXPIRED DATE
-                             </Text>
-                                        <Text style={styles.customText}>
-                                            24/6
-                             </Text>
-                                    </Form>
-                                </Col>
-                            </Grid>
-                        </Card>
 
-                        <Grid style={{ marginTop: 10 }}>
-                            <Col style={{ alignItems: 'center', width: '20%' }}>
-                                <Text style={styles.badgeText}>1</Text>
-                            </Col>
-                            <Col style={{ alignItems: 'center', width: '60%' }}>
-                                <Text style={{ fontFamily: 'OpenSans', fontWeight: 'bold', fontSize: 18, padding: 5 }}>Your Order</Text>
-                            </Col>
-                            <Col style={{ alignItems: 'center', width: '20%' }}>
-                                <Text style={{ fontFamily: 'OpenSans', color: 'red', marginTop: 5 }}>Edit</Text>
-                            </Col>
-                        </Grid>
 
-                        <Card style={{ marginTop: 10, padding: 5 }}>
-                            <Grid >
 
-                                <Col style={{ width: '20%' }}>
-                                    <Image source={{ uri: 'https://img.icons8.com/color/180/visa.png' }} style={{ width: '100%', height: 50, borderRadius: 10 }} />
-                                </Col>
-                                <Col style={{ width: '50%', justifyContent: 'center' }}>
-                                    <Text style={styles.labelTop}>Alive easy open athritis tablets</Text>
-                                </Col>
-                                <Col style={{ width: '10%', justifyContent: 'center' }}>
-                                    <Text style={styles.labelTop}>X 2</Text>
-                                </Col>
-                                <Col style={{ width: '20%', justifyContent: 'center' }}>
-                                    <Text style={styles.labelTop}>RS.300</Text>
-                                </Col>
-                            </Grid>
-                        </Card>
-                        <Card style={{ marginTop: 10, padding: 5 }}>
-                            <Grid >
-
-                                <Col style={{ width: '20%' }}>
-                                    <Image source={{ uri: 'https://img.icons8.com/color/180/visa.png' }} style={{ width: '100%', height: 50, borderRadius: 10 }} />
-                                </Col>
-                                <Col style={{ width: '50%', justifyContent: 'center' }}>
-                                    <Text style={styles.labelTop}>Alive easy open athritis tablets</Text>
-                                </Col>
-                                <Col style={{ width: '10%', justifyContent: 'center' }}>
-                                    <Text style={styles.labelTop}>X 2</Text>
-                                </Col>
-                                <Col style={{ width: '20%', justifyContent: 'center' }}>
-                                    <Text style={styles.labelTop}>RS.300</Text>
-                                </Col>
-                            </Grid>
-                        </Card>
 
 
 
                     </Card>
                 </Content>
-                <Footer>
-                    <FooterTab style={{ backgroundColor: '#7E49C3' }}>
-                        <Button >
-                            <Icon name="apps" />
+                <Footer style={{ backgroundColor: '#7E49C3', }}>
+
+                    <Row style={{ justifyContent: 'center', marginTop: 15 }}>
+                        <Text style={{ fontSize: 20, fontWeight: 'bold', color: '#fff' }}>Total </Text>
+                        <Text style={{ fontSize: 20, fontWeight: 'bold', color: '#fff' }}>Rs: 300</Text>
+                    </Row>
+
+
+                    <Col >
+                        <Button style={{ backgroundColor: '#5cb75d', borderRadius: 10, padding: 10, marginTop: 10, marginLeft: 40, height: 35 }}>
+                            <Text>Checkout</Text>
                         </Button>
-                        <Button>
-                            <Icon name="chatbubbles" />
-                        </Button>
-                        <Button >
-                            <Icon active name="notifications" />
-                        </Button>
-                        <Button>
-                            <Icon name="person" />
-                        </Button>
-                    </FooterTab>
+                    </Col>
+
+
+
                 </Footer>
-            </Container>
+            </Container >
 
         )
     }
@@ -306,7 +280,7 @@ const styles = StyleSheet.create({
     curvedGrid: {
         borderRadius: 800,
         width: '200%',
-        height: 800,
+        height: 690,
         marginLeft: -200,
         marginTop: -600,
         position: 'relative',
@@ -337,8 +311,26 @@ const styles = StyleSheet.create({
     labelTop:
     {
         fontFamily: 'OpenSans',
+        fontSize: 18,
+        marginLeft: 10,
+        marginTop: 15,
+        fontWeight: 'bold'
+    },
+    medName:
+    {
+        fontFamily: 'OpenSans',
         fontSize: 14,
-        color: 'gray',
+        fontWeight: 'bold',
+        marginTop: 5
+
+
+    },
+    medPhar:
+    {
+        fontFamily: 'OpenSans',
+        fontSize: 12,
+
+
 
     },
     transparentLabel:
@@ -363,5 +355,32 @@ const styles = StyleSheet.create({
         paddingLeft: 10,
         paddingTop: 5
 
-    }
+    },
+    button1: {
+        backgroundColor: "#5cb75d",
+        marginLeft: 20,
+        marginTop: -10,
+        borderRadius: 10,
+        justifyContent: 'center',
+        padding: 5,
+
+
+
+    },
+    button2: {
+
+        marginLeft: 70,
+        marginTop: -5,
+        borderRadius: 10,
+        justifyContent: 'center',
+        padding: 5,
+        height: 35,
+        backgroundColor: 'gray',
+
+
+
+    },
+
+
+
 });
