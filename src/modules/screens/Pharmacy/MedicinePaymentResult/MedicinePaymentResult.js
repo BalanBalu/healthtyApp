@@ -1,15 +1,58 @@
 import React, { Component } from 'react';
 import { Container, Content, Text, Title, Header, Form, Textarea, Button, H3, Item, List, ListItem, Card, Input, Left, Right, Thumbnail, Body, Icon, Footer, FooterTab, Picker, Segment, CheckBox, View, Badge } from 'native-base';
 import { Col, Row, Grid } from 'react-native-easy-grid';
-import { StyleSheet, Image, TextInput } from 'react-native';
+import { StyleSheet, Image, AsyncStorage, TextInput, FlatList, TouchableOpacity } from 'react-native';
 
 class MedicinePaymentResult extends Component {
     constructor(props) {
         super(props)
-        console.log(this.props)
+        this.state = {
+            cartData:[]            
+        }
+    }
+
+   async componentDidMount(){
+        const cartData = await AsyncStorage.getItem('cart');
+        console.log('cartData'+ cartData)
+        if(this.state.cartData == undefined)
+        {
+            this.state.cartData=[];
+        }
+        this.setState({ 
+             cartData:[{
+                medicineId: '5d2c2005df5b14242999add7',
+                medicineName: 'Dolo650',
+                quantity: 5,
+                pharmacyName: 'MedPlus',
+                price: 80 
+             },
+             {
+                medicineId: '5d2d89157362ff7b86599eff  ',
+                medicineName: 'Antibiotic',
+                quantity: 10,
+                pharmacyName: 'Apollo',
+                price: 50 
+             }
+        ]})
+        console.log('cartData'+ JSON.stringify(this.state.cartData))
+    }
+    increase =async(index)=>{
+        let addQuantity= this.state.cartData;
+        addQuantity[index].quantity++;
+        console.log(addQuantity)
+        await this.setState({quantity: addQuantity})
+
+    }
+    decrease =async(index)=>{
+        if(this.state.cartData.quantity != 0){
+        let minusQuantity= this.state.cartData;
+        minusQuantity[index].quantity--;
+        console.log(minusQuantity)
+        await this.setState({quantity: minusQuantity})
+        }
     }
     render() {
-
+            const{ cartData}= this.state
 
         return (
 
@@ -33,38 +76,24 @@ class MedicinePaymentResult extends Component {
                     {/* <Grid style={{ marginTop: -70, height: 100, }}>
                         <Row style={{ marginLeft: 100, }}>
                             <Col>
-
                                 <Text style={{ fontFamily: 'OpenSans', color: '#fff', fontSize: 14 }}>Date: </Text>
                             </Col>
                             <Col>
-
                                 <Text style={{ fontFamily: 'OpenSans', color: '#fff', fontSize: 14 }}> 24,2019</Text>
                             </Col>
-
-
-
-
                         </Row>
-
                     </Grid> */}
-
-
-
-
-
-
-
                     <Card transparent >
-
-
-
                         <Grid >
-
                             <Row style={{ justifyContent: 'center', width: '100%', marginTop: -15 }}>
                                 <Text style={{ fontFamily: 'OpenSans', fontWeight: 'bold', fontSize: 20, padding: 5 }}>Your Order</Text>
                             </Row>
 
                         </Grid>
+                        <FlatList
+                        data={cartData}
+                        extraData={this.state}
+                        renderItem = {({item, index}) =>  
 
                         <Card style={{ marginTop: 10, padding: 5, height: 180 }}>
                             <Grid>
@@ -74,177 +103,59 @@ class MedicinePaymentResult extends Component {
                                         marginTop: 20
                                     }} />
                                     <View style={{ width: '75%', }}>
-                                        <Text style={styles.labelTop}>Anti-Inhibitor Coagulant Complex (FEIBA)  </Text>
+                                        <Text style={styles.labelTop}>{item.medicineName} </Text>
 
                                     </View>
 
                                 </Row>
-                                <View style={{ marginLeft: 105, flex: 1, flexDirection: 'row', marginTop: 25 }}>
-
-                                    <Text style={{
-                                        fontFamily: 'OpenSans',
-                                        fontSize: 16,
-                                        color: '#c26c57',
-                                        fontWeight: "bold"
-                                    }} > Rs.50</Text>
-                                    <Text style={{
-                                        textDecorationLine: 'line-through', textDecorationStyle: 'solid',
-                                        fontFamily: 'OpenSans',
-                                        fontSize: 14,
-                                        color: 'gray',
-                                        marginLeft: 10,
-                                        fontWeight: "bold"
-                                    }}>MRP: Rs 100</Text>
-
+                                <View style={{ marginLeft: 105, flex: 1, flexDirection: 'row', marginTop: 15 }}>
+                                       <Row>
+                                        <Text style={styles.subText}>{'\u20B9'}{item.price}</Text>
+                                        <Text style={{ marginLeft: 10, marginTop: 2, color: 'gray', fontSize: 15, textDecorationLine: 'line-through', textDecorationStyle: 'solid', textDecorationColor: 'gray' }}>
+                                            {'\u20B9'}100</Text>
+                                    </Row>
                                     <Text style={{ fontFamily: 'OpenSans', fontSize: 15, color: '#ffa723', marginLeft: 10, fontWeight: 'bold' }}> Get 50% Off</Text>
                                 </View>
 
                                 <View style={{ flex: 1, flexDirection: 'row', width: '65%', marginLeft: 110, }}>
-                                    <Text style={{ fontSize: 14, color: '#000', marginTop: -10 }}>Pharmacy name </Text>
+                                    <Text style={{ fontSize: 14, color: '#000', marginTop: -10 }}>{item.pharmacyName} </Text>
 
                                 </View>
 
                                 <View style={{ flex: 1, flexDirection: 'row', marginLeft: 110 }}>
-                                    <View style={{ padding: 0, justifyContent: 'center', borderWidth: 1, borderColor: '#c26c57', width: 30, height: 25, }}>
-                                        <Text style={{ fontSize: 40, textAlign: 'center', marginTop: -5, color: '#c26c57' }}>-</Text>
-                                    </View>
+                                    <Button style={{ padding: 0, justifyContent: 'center', borderWidth: 1, borderColor: '#c26c57', width: 30, height: 25, backgroundColor: 'white'}} onPress={()=>this.decrease(index)}>
+                                        <Text style={{ fontSize: 40, textAlign: 'center', marginTop: -5, color: '#c26c57' }}> - </Text>
+                                    </Button>
                                     <View>
-                                        <Text style={{ marginLeft: 5, color: '#c26c57' }}>8</Text>
+                                        <TextInput style={{ marginLeft: 5, color: '#c26c57' }}>{item.quantity}</TextInput>
                                     </View>
-                                    <View style={{ padding: 0, justifyContent: 'center', borderWidth: 1, borderColor: '#c26c57', width: 30, height: 25, marginLeft: 5 }}>
+                                    <Button style={{ padding: 0, justifyContent: 'center', borderWidth: 1, borderColor: '#c26c57', width: 30, height: 25, marginLeft: 5, backgroundColor: 'white' }} onPress={(index)=>this.increase()}>
                                         <Text style={{
-                                            fontSize: 20, textAlign: 'center', marginTop: -5,
-                                            color: '#c26c57'
+                                            fontSize: 20, textAlign: 'center', marginTop: -5, color: '#c26c57'
                                         }}>+</Text>
-                                    </View>
-                                    {/* <View >
-                                        <Button style={styles.button1}><Text> Save for later</Text></Button>
-                                    </View> */}
-                                    <View>
-                                        {/* <Button style={styles.button2}> */}
-
-
+                                    </Button>
+                                     <TouchableOpacity>
                                         <Icon style={{ fontSize: 30, color: 'red', marginLeft: 2, marginLeft: 50, marginTop: -4 }} name='ios-trash' />
-                                        {/* <Text style={{ color: '#fff', marginLeft: -30 }}> Remove</Text> */}
-
-
-
-                                        {/* </Button> */}
-                                    </View>
+                                    </TouchableOpacity>
                                 </View>
 
 
                             </Grid>
-
-
-
-
                         </Card>
-                        <Card style={{ marginTop: 10, padding: 5, height: 180 }}>
-                            <Grid>
-                                <Row >
-                                    <Image source={{ uri: 'http://www.sunnyph.com/Content/Uploads/2015/01/pills.jpg' }} style={{
-                                        width: 100, height: 100, borderRadius: 10,
-                                        marginTop: 20
-                                    }} />
-                                    <View style={{ width: '75%', }}>
-                                        <Text style={styles.labelTop}>Anti-Inhibitor Coagulant Complex (FEIBA)  </Text>
-
-                                    </View>
-
-                                </Row>
-                                <View style={{ marginLeft: 105, flex: 1, flexDirection: 'row', marginTop: 25 }}>
-
-                                    <Text style={{
-                                        fontFamily: 'OpenSans',
-                                        fontSize: 16,
-                                        color: '#c26c57',
-                                        fontWeight: "bold"
-                                    }} > Rs.50</Text>
-                                    <Text style={{
-                                        textDecorationLine: 'line-through', textDecorationStyle: 'solid',
-                                        fontFamily: 'OpenSans',
-                                        fontSize: 14,
-                                        color: 'gray',
-                                        marginLeft: 10,
-                                        fontWeight: "bold"
-                                    }}>MRP: Rs 100</Text>
-
-                                    <Text style={{ fontFamily: 'OpenSans', fontSize: 15, color: '#ffa723', marginLeft: 10, fontWeight: 'bold' }}> Get 50% Off</Text>
-                                </View>
-
-                                <View style={{ flex: 1, flexDirection: 'row', width: '65%', marginLeft: 110, }}>
-                                    <Text style={{ fontSize: 14, color: '#000', marginTop: -10 }}>Pharmacy name </Text>
-
-                                </View>
-
-                                <View style={{ flex: 1, flexDirection: 'row', marginLeft: 110 }}>
-                                    <View style={{ padding: 0, justifyContent: 'center', borderWidth: 1, borderColor: '#c26c57', width: 30, height: 25, }}>
-                                        <Text style={{ fontSize: 40, textAlign: 'center', marginTop: -5, color: '#c26c57' }}>-</Text>
-                                    </View>
-                                    <View>
-                                        <Text style={{ marginLeft: 5, color: '#c26c57' }}>8</Text>
-                                    </View>
-                                    <View style={{ padding: 0, justifyContent: 'center', borderWidth: 1, borderColor: '#c26c57', width: 30, height: 25, marginLeft: 5 }}>
-                                        <Text style={{
-                                            fontSize: 20, textAlign: 'center', marginTop: -5,
-                                            color: '#c26c57'
-                                        }}>+</Text>
-                                    </View>
-                                    {/* <View>
-                                        <Button style={styles.button1}><Text> Save for later</Text></Button>
-                                    </View> */}
-                                    <View>
-                                        {/* <Button style={styles.button2}> */}
-
-
-                                        <Icon style={{ fontSize: 30, color: 'red', marginLeft: 2, marginTop: -4, marginLeft: 50, }} name='ios-trash' />
-                                        {/* <Text style={{ color: '#fff', marginLeft: -30 }}> Remove</Text> */}
-
-
-
-                                        {/* </Button> */}
-                                    </View>
-                                </View>
-
-
-                            </Grid>
-
-
-
-
-                        </Card>
-
-
-
-
-
-
-
-
-
-
-
-
-
+                        }>
+                        </FlatList>
                     </Card>
                 </Content>
                 <Footer style={{ backgroundColor: '#7E49C3', }}>
-
                     <Row style={{ justifyContent: 'center', marginTop: 15 }}>
                         <Text style={{ fontSize: 20, fontWeight: 'bold', color: '#fff' }}>Total </Text>
                         <Text style={{ fontSize: 20, fontWeight: 'bold', color: '#fff' }}>Rs: 300</Text>
                     </Row>
-
-
                     <Col >
                         <Button style={{ backgroundColor: '#5cb75d', borderRadius: 10, padding: 10, marginTop: 10, marginLeft: 40, height: 35 }}>
                             <Text>Checkout</Text>
                         </Button>
                     </Col>
-
-
-
                 </Footer>
             </Container >
 
@@ -380,6 +291,13 @@ const styles = StyleSheet.create({
 
 
     },
+    subText: {
+        fontFamily: 'OpenSans',
+        fontSize: 17,
+        color: '#c26c57',
+        marginLeft: 5,
+        fontWeight: "bold"
+    }
 
 
 
