@@ -5,7 +5,7 @@ export const REVIEWS_REQUEST = 'PROFILE/REVIEWS_REQUEST'
 export const REVIEWS_RESPONSE = 'PROFILE/REVIEWS_RESPONSE'
 export const REVIEWS_ERROR = 'PROFILE/REVIEWS_ERROR'
 import { store } from '../../../setup/store'
-import { getService } from '../../../setup/services/httpservices';
+import { getService, putService } from '../../../setup/services/httpservices';
 
 /*get doctor profile*/
 export async function fetchUserProfile(userId, fields, isLoading = true) {
@@ -82,6 +82,25 @@ export async function userReviews (id,type, isLoading = true) {
   }  
 }
 
+
+
+export async function insertLikesDataForReviews(reviewId, reviewerId,reactionData, isLoading = true) {
+  try {
+    let endPoint = 'review/reaction/'+reviewId+'/'+reviewerId;  
+    let response = await putService(endPoint, reactionData); 
+    console.log('response'+response);
+    let respData = response.data;
+    console.log('respData'+JSON.stringify(respData));
+
+    return respData;   
+  }
+   catch (e) {
+    return {
+      message: 'exception' + e,
+      success: false
+    }
+  } 
+}
   
   
   

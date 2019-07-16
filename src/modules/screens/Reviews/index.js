@@ -19,15 +19,18 @@ class Reviews extends Component {
         this.state = {
             data: null,
             userId: '',
-            isLoading: true
+            isLoading: true,
+            reviewLikeColor: false
         }
 
 
     }
     componentDidMount() {
         const { navigation } = this.props;
-        let doctorId = navigation.getParam('doctorId'); //"5ce01ae8d28ab8073515a6f6";
+       // let doctorId = navigation.getParam('doctorId'); //"5ce01ae8d28ab8073515a6f6";
+        let doctorId="5d24389d44ba7f1d04bc3225";
         this.getUserReview(doctorId);
+        // this.insertUserLikes(reviewId);
     }
 
     getUserReview = async (doctorId) => {
@@ -44,21 +47,32 @@ class Reviews extends Component {
         }
     }
 
-    insertUserLikes = async (data, index) => {
+    insertUserLikes = async (item) => {
+
         try {
+            let reviewerId = await AsyncStorage.getItem('userId');
+let reviewId =item._id;
+            console.log('item'+JSON.stringify(item))
+            console.log('reviewId'+JSON.stringify(reviewId))
+
             let reactionData = {
                 reviewerType: 'USER',
                 reactionType: 'LIKE',
                 active: true
             }
-            let result = await insertLikesDataForReviews(data._id, this.state.userId, reactionData);
+            //let result = await insertLikesDataForReviews(data._id, this.state.userId, reactionData);
+            let result= await insertLikesDataForReviews(reviewId,reviewerId, reactionData)
             console.log('result      :   ' + JSON.stringify(result));
             this.setState({ isLoading: false });
-            if (result.success) {
-                data.likeColor = true;
-                this.state.data[index].likeColor = true;
-                this.likesCount(data, index);
+            // if (result.success) {
+            //     data.likeColor = true;
+            //     this.state.data[index].likeColor = true;
+            //     this.likesCount(data, index);
+            // }
+            if(result.success){
+                this.setState({reviewLikeColor:true});
             }
+           
         }
         catch (e) {
             console.log(e)
@@ -97,7 +111,7 @@ class Reviews extends Component {
                 });
                 return count;
             } else {
-                return null;
+                return null;d
             }
         } catch (e) {
             console.log(e)
@@ -182,7 +196,8 @@ class Reviews extends Component {
                                     <Text style={{ fontSize: 12, marginLeft: 60 }}>{this.likesCount(item, index)}</Text>
 
                                     <TouchableOpacity onPress={() => this.insertUserLikes(item, index)}>
-                                        <Text style={item.likeColor == true ? { color: '#FF9500', fontSize: 12, marginLeft: 3 } : { fontSize: 12, marginLeft: 60 }}>Likes</Text>
+                                        <Text style={this.state.reviewLikeColor == true ? { color: '#FF9500', fontSize: 12, marginLeft: 3 }
+                                         : { fontSize: 12, marginLeft: 60 }}>Likes</Text>
                                     </TouchableOpacity>
 
                                     <Text style={{ fontSize: 12, marginLeft: 20 }}>Reply</Text>
