@@ -33,6 +33,10 @@ class MedicineSearch extends Component {
         console.log(this.state.medicineData);
         console.log(this.state.medicineData.length);
     }
+
+    onPressCard(){
+        <Icon name="checkmark-circle" style={{ color: '#5cb75d', marginTop: -30, }}></Icon>
+   }
     
     
 
@@ -94,12 +98,12 @@ class MedicineSearch extends Component {
                                 renderItem={
                                     ({ item }) =>
                                             <View style={styles.customColumn}>
-                                                <TouchableOpacity>
+                                                <TouchableOpacity onPress={()=>this.onPressCard()}>
                                                     <View style={{ width: 'auto', flex: 1, flexDirection: 'row' }}>
-                                                        <Text style={{ marginTop: -30, fontFamily: 'OpenSans', fontSize: 13, color: '#ffa723', }}> Get 50% Off
+                                                        <Text style={{ marginTop: -30, fontFamily: 'OpenSans', fontSize: 13, color: '#ffa723', }}>{'Get'+' '+item.offer+' '+'OFF'}
                                                         </Text>
                                                         <Right>
-                                                            <Icon name="checkmark-circle" style={{ color: '#5cb75d', marginTop: -30, }}></Icon>
+                                                            <Icon style={{ color: '#5cb75d', marginTop: -30, }}></Icon>
                                                         </Right>
                                                     </View>
                                                     <Image source={{ uri: 'https://vimecare.com/WelcomeDesign/images/doctor-icon.png' }} style={styles.customImage} />
@@ -112,7 +116,7 @@ class MedicineSearch extends Component {
                                                             color: 'black',
 
                                                             fontWeight: "bold"
-                                                        }}>MRP: Rs 100</Text><Text style={{
+                                                        }}>{'MRP'+' '+'Rs.'+item.price}</Text><Text style={{
                                                             fontFamily: 'OpenSans',
                                                             fontSize: 12,
                                                             color: '#000',
