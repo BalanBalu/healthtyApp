@@ -22,7 +22,7 @@ class Home extends Component {
         this.getCatagries();
     }
     navigetToCategories() {
-        this.props.navigation.navigate('MedicinePaymentResult')
+        this.props.navigation.navigate('Categories',{data:this.state.data})
     }
 
     doLogout() {
@@ -66,7 +66,7 @@ class Home extends Component {
                 alert("We can't Find the Empty Values");
             }
             else {
-                this.props.navigation.navigate('MedicinePaymentResult')
+                this.props.navigation.navigate('Doctor List', { resultData: serachInputvalues })
             }
         } catch (e) {
             console.log(e);
