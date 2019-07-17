@@ -11,7 +11,7 @@ class MedicineSearch extends Component {
         console.log(this.props)
         this.state={
             medicineData:[],
-            limit:8
+            clickCard:false
 
         }
     }
@@ -34,9 +34,15 @@ class MedicineSearch extends Component {
         console.log(this.state.medicineData.length);
     }
 
-    onPressCard(){
-        <Icon name="checkmark-circle" style={{ color: '#5cb75d', marginTop: -30, }}></Icon>
-   }
+//     onPressCard(item,index){
+//         this.setState({clickCard:!this.state.Card})
+
+        
+//    }
+
+   returnRequiredRate(item){
+        return parseInt(item.price)-((parseInt(item.offer)/100) * parseInt(item.price));
+    }
     
     
 
@@ -98,12 +104,13 @@ class MedicineSearch extends Component {
                                 renderItem={
                                     ({ item }) =>
                                             <View style={styles.customColumn}>
-                                                <TouchableOpacity onPress={()=>this.onPressCard()}>
+                                                <TouchableOpacity onPress={()=>this.onPressCard(item,index)}>
                                                     <View style={{ width: 'auto', flex: 1, flexDirection: 'row' }}>
                                                         <Text style={{ marginTop: -30, fontFamily: 'OpenSans', fontSize: 13, color: '#ffa723', }}>{'Get'+' '+item.offer+' '+'OFF'}
                                                         </Text>
                                                         <Right>
-                                                            <Icon style={{ color: '#5cb75d', marginTop: -30, }}></Icon>
+                                                            {this.state.card===false?<Icon style={{ color: '#5cb75d', marginTop: -30, }}></Icon>:
+                                                            <Icon name="checkmark-circle"style={{color: '#5cb75d', marginTop: -30, }}></Icon>}
                                                         </Right>
                                                     </View>
                                                     <Image source={{ uri: 'https://vimecare.com/WelcomeDesign/images/doctor-icon.png' }} style={styles.customImage} />
@@ -122,7 +129,7 @@ class MedicineSearch extends Component {
                                                             color: '#000',
                                                             marginLeft: 10,
                                                             fontWeight: "bold"
-                                                        }} > Rs.50</Text>
+                                                        }} >{this.returnRequiredRate(item)}</Text>
                                                     </View>
 
 
@@ -135,6 +142,7 @@ class MedicineSearch extends Component {
                         </Grid>
                     </Card>
                 </Content>
+                
                 <Footer style={{ backgroundColor: '#7E49C3', }}>
                     <Row>
                         <Col style={{ flexDirection: 'row', justifyContent: 'center', marginTop: 12 }}>
