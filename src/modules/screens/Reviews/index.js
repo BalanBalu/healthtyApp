@@ -18,9 +18,11 @@ class Reviews extends Component {
 
         this.state = {
             data: null,
-            userId: '',
+            // userId: '',
+            reviewId:'',
             isLoading: true,
-            reviewLikeColor: false
+            reviewLikeColor: false,
+            userId:null
         }
 
 
@@ -28,18 +30,23 @@ class Reviews extends Component {
     componentDidMount() {
         const { navigation } = this.props;
        // let doctorId = navigation.getParam('doctorId'); //"5ce01ae8d28ab8073515a6f6";
-        let doctorId="5d24389d44ba7f1d04bc3225";
-        this.getUserReview(doctorId);
+        this.getUserReview();
+        // this.getUserLikes();
         // this.insertUserLikes(reviewId);
     }
 
-    getUserReview = async (doctorId) => {
+    getUserReview = async () => {
         try {
+            let doctorId="5d24389d44ba7f1d04bc3225";
+
             let userId = await AsyncStorage.getItem('userId');
+            await this.setState({userId:userId})
             let result = await userReviews(doctorId, 'doctor');
             this.setState({ isLoading: false, userId: userId });
             if (result.success) {
                 this.setState({ data: result.data });
+
+                console.log('data'+JSON.stringify(this.state.data))
             }
         }
         catch (e) {
@@ -47,11 +54,26 @@ class Reviews extends Component {
         }
     }
 
+    // getUserLikes = async () => {
+    //     try {
+    //         let userId = await AsyncStorage.getItem('userId');
+    //         let result = await insertLikesDataForReviews(userId, 'reviewer');
+    //         this.setState({ isLoading: false, reviewId: userId });
+    //         if (result.success && item.reactionData.active===true) {
+    //             this.setState({ data: result.data });
+    //         }
+    //     }
+    //     catch (e) {
+    //         console.log(e)
+    //     }
+    // }
+
+
     insertUserLikes = async (item) => {
 
         try {
             let reviewerId = await AsyncStorage.getItem('userId');
-let reviewId =item._id;
+            let reviewId =item._id;
             console.log('item'+JSON.stringify(item))
             console.log('reviewId'+JSON.stringify(reviewId))
 
@@ -196,7 +218,14 @@ let reviewId =item._id;
                                     <Text style={{ fontSize: 12, marginLeft: 60 }}>{this.likesCount(item, index)}</Text>
 
                                     <TouchableOpacity onPress={() => this.insertUserLikes(item, index)}>
-                                        <Text style={this.state.reviewLikeColor == true ? { color: '#FF9500', fontSize: 12, marginLeft: 3 }
+                                        <Text style={item.reactionData !==undefined && item.reactionData[0].reviewer_id==this.state.userId ? 
+                                        { color: '#FF9500', fontSize: 12, marginLeft: 3 }
+                                         : { fontSize: 12, marginLeft: 60 }}>Likes</Text>
+                                    </TouchableOpacity>
+
+                                    <TouchableOpacity onPress={() => this.insertUserLikes(item, index)}>
+                                        <Text style={this.state.reviewLikeColor == true ? 
+                                        { color: '#FF9500', fontSize: 12, marginLeft: 3 }
                                          : { fontSize: 12, marginLeft: 60 }}>Likes</Text>
                                     </TouchableOpacity>
 
