@@ -57,16 +57,27 @@ class Profile extends Component {
     /*Get userProfile*/
     getUserProfile = async () => {
         try {
-            this.setState({ isLoading: true });
-            let fields = "first_name,last_name,gender,dob,mobile_no,secondary_mobiles,email,secondary_emails,insurance,address,is_blood_donor,is_available_blood_donate,blood_group,profile_image"
-            let userId = await AsyncStorage.getItem('userId');
-            let result = await fetchUserProfile(userId, fields);
-            console.log(this.props.profile.success);
-            if (this.props.profile.success) {
-                this.setState({ data: result, gender: result.gender });
-                if (result.profile_image) {
-                    this.setState({ imageSource: result.profile_image.imageURL });
+            let result = await AsyncStorage.getItem('profile');
+               console.log('hi')
+               console.log(result)
+            if (result == null) {
+                console.log('api calling')
+                this.setState({ isLoading: true });
+                let fields = "first_name,last_name,gender,dob,mobile_no,secondary_mobiles,email,secondary_emails,insurance,address,is_blood_donor,is_available_blood_donate,blood_group,profile_image"
+                let userId = await AsyncStorage.getItem('userId');
+                let result = await fetchUserProfile(userId, fields);
+                       
+                console.log(this.props.profile.success);
+                if (this.props.profile.success) {
+                    this.setState({ data: result, gender: result.gender });
+                    if (result.profile_image) {
+                        this.setState({ imageSource: result.profile_image.imageURL });
+                    }
                 }
+            }
+            else {
+                console.log('hello')
+                this.setState({ data: result, gender: result.gender });
             }
         }
         catch (e) {

@@ -1,8 +1,10 @@
+import { AsyncStorage } from 'react-native';
 export const PROFILE_REQUEST = 'PROFILE/PROFILE_REQUEST'
 export const PROFILE_RESPONSE = 'PROFILE/PROFILE_RESPONSE'
 export const PROFILE_ERROR = 'PROFILE/PROFILE_ERROR'
 export const REVIEWS_REQUEST = 'PROFILE/REVIEWS_REQUEST'
 export const REVIEWS_RESPONSE = 'PROFILE/REVIEWS_RESPONSE'
+export const SET_USER = 'PROFILE/SET_USER'
 export const REVIEWS_ERROR = 'PROFILE/REVIEWS_ERROR'
 import { store } from '../../../setup/store'
 import { getService } from '../../../setup/services/httpservices';
@@ -14,10 +16,12 @@ export async function fetchUserProfile(userId, fields, isLoading = true) {
       type: PROFILE_REQUEST,
       isLoading 
     })     
-    let endPoint = 'user/' + userId + '?fields=' + fields;  
-    
+    let endPoint = 'user/' + userId + '?fields=' + fields; 
+  
     let response = await getService(endPoint); 
     let respData = response.data;
+   
+
     
     if(respData.error || !respData.success) {
       store.dispatch({
@@ -25,14 +29,11 @@ export async function fetchUserProfile(userId, fields, isLoading = true) {
         message: respData.error
       })
       return respData.data;
-    } else {   
-      store.dispatch({
-        type: PROFILE_RESPONSE,
-        isLoading:false,
-        success: true,     
-        message: respData.message
-      })
-      return respData.data;
+    } else { 
+      console.log('hi')
+      setUserLocally(respData.data);
+     
+      return true
     }
     
   } catch (e) {
@@ -81,9 +82,27 @@ export async function userReviews (id,type, isLoading = true) {
       }); 
   }  
 }
+// export async function logout() {
+//   console.log('is Coming here ');
+//   await AsyncStorage.removeItem('profile')
+//   store.dispatch({
+//     type: LOGOUT
+//   })
+// }
+  
+// Set user token and info locally (AsyncStorage)
+export function setUserLocally(userData) {
+  
+  AsyncStorage.setItem('profile', JSON.stringify(userData))
+  // axios.defaults.headers.common['x-access-token'] = token;
+  // axios.defaults.headers.common['userId'] = userData.userId;
 
-  
-  
+  store.dispatch({
+    type: SET_USER,
+    details: userData
+  })
+
+}  
   
   
   
