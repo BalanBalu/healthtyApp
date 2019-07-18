@@ -11,7 +11,9 @@ class MedicineSearch extends Component {
         console.log(this.props)
         this.state={
             medicineData:[],
-            clickCard:false
+            clickCard:null,
+            footerquantity:''
+        
 
         }
     }
@@ -34,11 +36,22 @@ class MedicineSearch extends Component {
         console.log(this.state.medicineData.length);
     }
 
-//     onPressCard(item,index){
-//         this.setState({clickCard:!this.state.Card})
+    onPressCard=async(item,index)=>{
+        console.log("onPress");
+     this.setState({clickCard:index})
+     await this.setState({footerquantity:item});
+     console.log('footer'+JSON.stringify(this.state.footerquantity));
+
+
+       
 
         
-//    }
+   }
+
+   addSubOperation(selectitem,index){
+
+
+   }
 
    returnRequiredRate(item){
         return parseInt(item.price)-((parseInt(item.offer)/100) * parseInt(item.price));
@@ -99,18 +112,20 @@ class MedicineSearch extends Component {
                         <Grid style={{ marginTop: 25, padding: 10, width: 'auto' }}>
                             <FlatList 
                                 data={medicineData}
+                                extraData={this.state}
                                 horizontal={false}
                                 numColumns={2}
                                 renderItem={
-                                    ({ item }) =>
+                                    ({ item,index }) =>
                                             <View style={styles.customColumn}>
                                                 <TouchableOpacity onPress={()=>this.onPressCard(item,index)}>
                                                     <View style={{ width: 'auto', flex: 1, flexDirection: 'row' }}>
                                                         <Text style={{ marginTop: -30, fontFamily: 'OpenSans', fontSize: 13, color: '#ffa723', }}>{'Get'+' '+item.offer+' '+'OFF'}
-                                                        </Text>
+                                                        </Text>                                                        
                                                         <Right>
-                                                            {this.state.card===false?<Icon style={{ color: '#5cb75d', marginTop: -30, }}></Icon>:
-                                                            <Icon name="checkmark-circle"style={{color: '#5cb75d', marginTop: -30, }}></Icon>}
+                                                        {this.state.clickCard!==index?<Icon  style={{ color: '#5cb75d', marginTop: -30, }} />
+                                                         :<Icon name="checkmark-circle" style={{ color: '#5cb75d', marginTop: -30, }} />}
+                         
                                                         </Right>
                                                     </View>
                                                     <Image source={{ uri: 'https://vimecare.com/WelcomeDesign/images/doctor-icon.png' }} style={styles.customImage} />
@@ -136,6 +151,8 @@ class MedicineSearch extends Component {
                                                 </TouchableOpacity>
                                             </View>
                                 }
+                                keyExtractor={(item, index) => index.toString()}
+
 
                             />
 
@@ -143,18 +160,18 @@ class MedicineSearch extends Component {
                     </Card>
                 </Content>
                 
-                <Footer style={{ backgroundColor: '#7E49C3', }}>
+                {this.state.clickCard!==null?<Footer style={{ backgroundColor: '#7E49C3', }}>
                     <Row>
                         <Col style={{ flexDirection: 'row', justifyContent: 'center', marginTop: 12 }}>
-                            <TouchableOpacity>
+                            <TouchableOpacity onPress={()=>this.addSubOperation(item,index)}>
                                 <View style={{ padding: 0, justifyContent: 'center', borderWidth: 1, borderColor: 'black', width: 40, height: 35, backgroundColor: 'white' }}>
                                     <Text style={{ fontSize: 40, textAlign: 'center', marginTop: -5, color: 'black' }}>-</Text>
                                 </View>
                             </TouchableOpacity>
                             <View>
-                                <Text style={{ marginLeft: 5, color: 'white', fontSize: 20 }}>8</Text>
+                                <Text style={{ marginLeft: 5, color: 'white', fontSize: 20 }}>{this.state.footerquantity!=undefined?this.state.footerquantity.total_quantity:'0'}</Text>
                             </View>
-                            <TouchableOpacity>
+                            <TouchableOpacity onPress={()=>this.addSubOperation(item,index)}>
                                 <View style={{ padding: 0, justifyContent: 'center', borderWidth: 1, borderColor: 'black', width: 40, height: 35, marginLeft: 5, backgroundColor: 'white' }}>
                                     <Text style={{
                                         fontSize: 20, textAlign: 'center', marginTop: -5,
@@ -185,7 +202,7 @@ class MedicineSearch extends Component {
                     </Row>
 
 
-                </Footer>
+                </Footer>:null}
 
             </Container>
 
