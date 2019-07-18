@@ -58,6 +58,7 @@ class Profile extends Component {
     getUserProfile = async () => {
         try {
             let result = await AsyncStorage.getItem('profile');
+            result = JSON.parse(result)
                console.log('hi')
                console.log(result)
             if (result == null) {
@@ -66,10 +67,10 @@ class Profile extends Component {
                 let fields = "first_name,last_name,gender,dob,mobile_no,secondary_mobiles,email,secondary_emails,insurance,address,is_blood_donor,is_available_blood_donate,blood_group,profile_image"
                 let userId = await AsyncStorage.getItem('userId');
                 let result = await fetchUserProfile(userId, fields);
-                       
+                console.log(result);
                 console.log(this.props.profile.success);
-                if (this.props.profile.success) {
-                    this.setState({ data: result, gender: result.gender });
+                if (result.success) {
+                    this.setState({ data: result.data, gender: result.gender });
                     if (result.profile_image) {
                         this.setState({ imageSource: result.profile_image.imageURL });
                     }
@@ -77,7 +78,7 @@ class Profile extends Component {
             }
             else {
                 console.log('hello')
-                this.setState({ data: result, gender: result.gender });
+                this.setState({ data:result, gender: result.gender });
             }
         }
         catch (e) {

@@ -30,10 +30,10 @@ export async function fetchUserProfile(userId, fields, isLoading = true) {
       })
       return respData.data;
     } else { 
-      console.log('hi')
+      
       setUserLocally(respData.data);
      
-      return true
+      return respData
     }
     
   } catch (e) {
@@ -82,20 +82,10 @@ export async function userReviews (id,type, isLoading = true) {
       }); 
   }  
 }
-// export async function logout() {
-//   console.log('is Coming here ');
-//   await AsyncStorage.removeItem('profile')
-//   store.dispatch({
-//     type: LOGOUT
-//   })
-// }
-  
-// Set user token and info locally (AsyncStorage)
+
 export function setUserLocally(userData) {
   
   AsyncStorage.setItem('profile', JSON.stringify(userData))
-  // axios.defaults.headers.common['x-access-token'] = token;
-  // axios.defaults.headers.common['userId'] = userData.userId;
 
   store.dispatch({
     type: SET_USER,
