@@ -3,18 +3,25 @@ import { Container, Content, Text, Title, Header, Form, Textarea, Button, H3, It
 import { Col, Row, Grid } from 'react-native-easy-grid';
 import { StyleSheet, Image, AsyncStorage, TextInput, FlatList, TouchableOpacity } from 'react-native';
 import { Loader } from '../../../../components/ContentLoader';
+import * as Animatable from 'react-native-animatable';
+import { isThisExpression } from '@babel/types';
 
 class MedicinePaymentResult extends Component {
     constructor(props) {
         super(props)
         this.state = {
             cart:[],
-            isLoading:true           
+            isLoading:true,
+           
         }
     }
 
    async componentDidMount(){
-     const cart=[
+    await this.getAddToCart();
+   }
+
+    setAddToCart= async() => {
+        const cart=[
             {
                 medicineName : 'Dolo650',
                 price : 100,
@@ -25,8 +32,20 @@ class MedicinePaymentResult extends Component {
                 medicineName : 'Antibiotic',
                 price : 100,
                 offerPercentage : 50,
-                quantity: 10
-            }
+                quantity: 1
+            },
+            {
+                medicineName : 'Dextromethorphan',
+                price : 10,
+                offerPercentage : 10,
+                quantity: 1
+            },
+            {
+                medicineName : 'Amoxicillin',
+                price : 50,
+                offerPercentage : 50,
+                quantity: 1
+            },
         ]
        await AsyncStorage.setItem('cartItems', JSON.stringify(cart))
        this.getAddToCart();
@@ -49,15 +68,19 @@ class MedicinePaymentResult extends Component {
     increase =async(index)=>{
         let addQuantity= this.state.cart;
         addQuantity[index].quantity++;
-        console.log(addQuantity)
         await this.setState({quantity: addQuantity})
+        AsyncStorage.setItem('cartItems', JSON.stringify(this.state.cart))
+
     }
+
     decrease =async(index)=>{
-        if(this.state.cart.quantity !== null){
         let minusQuantity= this.state.cart;
-        console.log(minusQuantity)
-        minusQuantity[index].quantity--;
+        console.log('minusQuantity'+JSON.stringify(minusQuantity))
+        if(minusQuantity[index].quantity >= 1){
+        minusQuantity[index].quantity--;       
         await this.setState({quantity: minusQuantity})
+        AsyncStorage.setItem('cartItems', JSON.stringify(this.state.cart))
+
         }
     }
     medicineOffer(item){
@@ -65,9 +88,35 @@ class MedicinePaymentResult extends Component {
         return parseInt(item.price) - ((parseInt(item.offerPercentage)/100) * parseInt(item.price));
     }
   
+    removeMedicine(index){
+           setTimeout(() => {
+            let data = this.state.cart;
+            data.splice(index, 1);
+            this.setState({ cart: data });
+            console.log('cart:'+JSON.stringify(this.state.cart))
+             AsyncStorage.setItem('cartItems', JSON.stringify(this.state.cart))
+          }, 1000)
+       
+      }
+      
+    //   totalPrice(){
+    //   let subtotal=this.state.cart.price * this.state.cart.quantity;
+    //   console.log('subtotoal is '+ subtotal);
+    //   this.setState({ total: subtotal })
+    //   console.log('total is '+ this.state.total);
+
+    //  }
+
+    //   totalPrice(index){
+    //     let total = this.state.cart;
+    //     let totalPrice = total[index].quantity* total[index].price
+    //     console.log('totalPrice:'+totalPrice)
+      //}
+
+
     render() {            
               const {isLoading,cart} = this.state;
-              console.log(this.state.cart)
+             // console.log(this.state.cart)
      return (            
       <Container style={styles.container}>
 
@@ -95,6 +144,7 @@ class MedicinePaymentResult extends Component {
                    extraData={this.state}
                    keyExtractor={(item, index) => index.toString()}
                    renderItem={({ item, index }) =>
+                //    <Animatable.View duration={1000} animation={index === this.state.removeItem ? 'zoomOut' : 'fadeInDown'} useNativeDriver={true}>
 
                 <Card style={{ marginTop: 10, padding: 5, height: 180 }}>
                   <Grid>
@@ -117,25 +167,27 @@ class MedicinePaymentResult extends Component {
                         </View>
                                 
                         <View style={{ flex: 1, flexDirection: 'row', marginLeft: 110 }}>
-                          <Button style={{ padding: 0, justifyContent: 'center', borderWidth: 1, borderColor: '#c26c57', width: 30, height: 25, backgroundColor: 'white'}} onPress={()=>this.decrease(index)}>
-                            <Text style={{ fontSize: 40, textAlign: 'center', marginTop: -5, color: '#c26c57' }}> - </Text>
+                          <Button style={{ padding: 0, justifyContent: 'center', borderWidth: 1, borderColor: '#c26c57', width: 30, height: 25, backgroundColor: 'white'}}  onPress={()=>this.decrease(index)}>
+                            <Text style={{ fontSize: 30, textAlign: 'center', marginTop: -5, color: '#c26c57' }}> - </Text>
                           </Button>
 
                          <View>
-                            <TextInput style={{ marginLeft: 5, color: '#c26c57' }}>{item.quantity}</TextInput>
+                            <TextInput type='number' min='1' style={{ marginLeft: 5, color: '#c26c57' }} >{item.quantity}</TextInput>
                          </View>
 
                           <Button style={{ padding: 0, justifyContent: 'center', borderWidth: 1, borderColor: '#c26c57', width: 30, height: 25, marginLeft: 5, backgroundColor: 'white' }} onPress={()=>this.increase(index)}>
                              <Text style={{ fontSize: 20, textAlign: 'center', marginTop: -5, color: '#c26c57' }}>+</Text>
                           </Button>
 
-                        <TouchableOpacity>
-                            <Icon style={{ fontSize: 30, color: 'red', marginLeft: 2, marginLeft: 50, marginTop: -4 }} name='ios-trash' />
-                        </TouchableOpacity>
+                        <TouchableOpacity onPress={()=> this.  removeMedicine(index)}>
+                           <Icon style={{ fontSize: 30, color: 'red', marginLeft: 2, marginLeft: 50, marginTop: -4 }} name='ios-trash' />
+                         </TouchableOpacity>  
+                      
 
                     </View>
                   </Grid>
                 </Card>
+                // </Animatable.View>
                 }/>
 
             </Card>
@@ -144,10 +196,10 @@ class MedicinePaymentResult extends Component {
                 <Footer style={{ backgroundColor: '#7E49C3', }}>
                     <Row style={{ justifyContent: 'center', marginTop: 15 }}>
                         <Text style={{ fontSize: 20, fontWeight: 'bold', color: '#fff' }}>Total </Text>
-                        <Text style={{ fontSize: 20, fontWeight: 'bold', color: '#fff' }}>Rs: 300</Text>
+                        {/* <Text style={{ fontSize: 20, fontWeight: 'bold', color: '#fff' }}>{'Rs:'}</Text> */}
                     </Row>
                     <Col >
-                        <Button style={{ backgroundColor: '#5cb75d', borderRadius: 10, padding: 10, marginTop: 10, marginLeft: 40, height: 35 }}>
+                        <Button style={{ backgroundColor: '#5cb75d', borderRadius: 10, padding: 10, marginTop: 10, marginLeft: 40, height: 35 }} onPress={()=> this.props.navigation.navigate('MedicineCheckout')}>
                             <Text>Checkout</Text>
                         </Button>
                     </Col>
