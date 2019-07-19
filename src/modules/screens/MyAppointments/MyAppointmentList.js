@@ -11,7 +11,7 @@ import {
 	Item,
 	Card,
 	Body,
-	
+
 } from "native-base";
 import {
 	StyleSheet,
@@ -62,7 +62,7 @@ class MyAppoinmentList extends Component {
 		};
 	}
 
-	async componentDidMount() {		
+	async componentDidMount() {
 		const isLoggedIn = await hasLoggedIn(this.props);
 		if (!isLoggedIn) {
 			this.props.navigation.navigate("login");
@@ -70,81 +70,83 @@ class MyAppoinmentList extends Component {
 		}
 		let userId = await AsyncStorage.getItem("userId");
 		this.setState({ userId });
-		await this.upCommingAppointment();
-		await this.pastAppointment();        
+		await new Promise.all([
+			this.upCommingAppointment(),
+			this.pastAppointment()
+		])
+		await this.setState({ isLoading: true })
+
 	}
 
-backNavigation=async(navigationData)=>{
-	if(navigationData.action) {
-		if (navigationData.action.type === 'Navigation/BACK') {
-			if (this.state.selectedIndex == 0) {
-				await this.upCommingAppointment();
-			} else {
-				await this.pastAppointment();
-			}
-        }
-      }
-      console.log(navigationData);     
-}
+	backNavigation = async (navigationData) => {
+		console.log(navigationData)
+		if (navigationData.action) {
+			if (navigationData.action.type === 'Navigation/BACK') {
+				await this.setState({ isLoading: false })
+				if (this.state.selectedIndex == 0) {
 
-	upCommingAppointment = async (navigationData) => {
+
+					await this.upCommingAppointment();
+					await this.setState({ isLoading: true })
+
+				} else {
+					await this.pastAppointment();
+					await this.setState({ isLoading: true })
+				}
+			}
+		}
+
+	}
+
+	upCommingAppointment = async () => {
 		try {
 			let userId = await AsyncStorage.getItem("userId");
 			let filters = {
 				startDate: formatDate(new Date(), "YYYY-MM-DD"),
 				endDate: formatDate(addTimeUnit(new Date(), 1, "years"), "YYYY-MM-DD")
 			};
-			let upCommingAppointmentResult = await getUserAppointments(
-				userId,
-				filters
-			);
-			
+			let upCommingAppointmentResult = await getUserAppointments(userId, filters);
+
 			if (upCommingAppointmentResult.success) {
-				let appointmentData = [];
+				let doctorInfo = [];
 				upCommingAppointmentResult = upCommingAppointmentResult.data;
 
-				let doctorIds = upCommingAppointmentResult
-					.map((appointmentResult, index) => {
-						appointmentData.push({ appointmentResult });
-						return appointmentResult.doctor_id;
-					})
-					.join(",");
+				let doctorIds = upCommingAppointmentResult.map((appointmentResult, index) => {
 
-				let speciallistResult = await getMultipleDoctorDetails(
-					doctorIds,
-					"specialist,education"
-				);
+					return appointmentResult.doctor_id;
+				}).join(",");
 
+				let speciallistResult = await getMultipleDoctorDetails(doctorIds, "specialist,education");
+				speciallistResult.data.forEach(doctor_id => {
+
+
+					educationDetails = doctor_id.education.map(education => {
+						return education.degree;
+					}).join(",");
+
+					speaciallistDetails = doctor_id.specialist.map(categories => {
+						return categories.category;
+					}).join(",");
+					doctorInfo.push({ doctor_id: doctor_id.doctor_id, degree: educationDetails, specialist: speaciallistDetails })
+
+
+				});
 				let upcommingSpecialist = [];
-				speciallistResult.data.map((doctorInfo, index) => {
-					let speaciallistDetails = null;
+				upCommingAppointmentResult.map(_id => {
+					doctorInfo.forEach(doctor_id => {
 
-					speaciallistDetails = doctorInfo.specialist
-						.map(categories => {
-							return categories.category;
-						})
-						.join(",");
-					let educationDetails = null;
-					educationDetails = doctorInfo.education
-						.map(education => {
-							return education.degree;
-						})
-						.join(",");
+						if (_id.doctor_id == doctor_id.doctor_id) {
 
-					upcommingSpecialist.push({
-						data: appointmentData[index],
-						specialist: speaciallistDetails,
-						degree: educationDetails
-					});
-					
-				});
+							upcommingSpecialist.push({ appointmentResult: _id, specialist: doctor_id.specialist, degree: doctor_id.degree });
+
+
+						}
+					})
+
+
+					this.setState({ upComingData: upcommingSpecialist, data: upcommingSpecialist, specialist: upcommingSpecialist });
+				})
 				
-				this.setState({
-					upComingData: upcommingSpecialist,
-					isLoading: true,
-					data: upcommingSpecialist,
-					specialist: upcommingSpecialist
-				});
 			}
 		} catch (e) {
 			console.log(e);
@@ -154,68 +156,66 @@ backNavigation=async(navigationData)=>{
 		try {
 			let userId = await AsyncStorage.getItem("userId");
 			let endData = formatDate(subTimeUnit(new Date(), 1, "day"), "YYYY-MM-DD");
-			let filters = {
-				endDate: endData,
-				startDate: "2018-01-01"
-			};
+			let filters = { endDate: endData, startDate: "2018-01-01" };
 			let pastAppointmentResult = await getUserAppointments(userId, filters);
 			let viewUserReviewResult = await viewUserReviews("user", userId);
-
+			let doctorInfo = [];
 			if (pastAppointmentResult.success) {
 				pastAppointmentResult = pastAppointmentResult.data;
 				viewUserReviewResult = viewUserReviewResult.data;
 
-				let appointmentData = [];
+				let doctorIds = pastAppointmentResult.map((appointmentResult, index) => {
 
-				let doctorIds = pastAppointmentResult
-					.map(appointmentResult => {
-						if (appointmentResult.appointment_status == "COMPLETED") {
-							viewUserReviewResult.map(viewUserReview => {
-								if (appointmentResult._id === viewUserReview.appointment_id) {
-									appointmentData.push({
-										appointmentResult,
-										ratting: viewUserReview.overall_rating
-									});
-								}
-							});
-						} else {
-							appointmentData.push({ appointmentResult });
-							condition = false;
-						}
+					return appointmentResult.doctor_id;
+				}).join(",");
 
-						return appointmentResult.doctor_id;
-					})
-					.join(",");
+				let speciallistResult = await getMultipleDoctorDetails(doctorIds, "specialist,education");
+				speciallistResult.data.forEach(doctor_id => {
 
-				let speciallistResult = await getMultipleDoctorDetails(
-					doctorIds,
-					"specialist,education"
-				);
 
-				let pastDoctorDetails = [];
+					educationDetails = doctor_id.education.map(education => {
+						return education.degree;
+					}).join(",");
 
-				speciallistResult.data.map((doctorInfo, index) => {
-					let educationDetails = doctorInfo.education
-						.map(education => {
-							return education.degree;
-						})
-						.join(",");
+					speaciallistDetails = doctor_id.specialist.map(categories => {
+						return categories.category;
+					}).join(",");
+					doctorInfo.push({ doctor_id: doctor_id.doctor_id, degree: educationDetails, specialist: speaciallistDetails })
 
-					let speaciallistDetails = doctorInfo.specialist
-						.map(categories => {
-							return categories.category;
-						})
-						.join(",");
-					pastDoctorDetails.push({
-						data: appointmentData[index],
-						specialist: speaciallistDetails,
-						degree: educationDetails
-					});
+
 				});
 
-				this.setState({ pastData: pastDoctorDetails, isLoading: true });
-				console.log("past data");
-				console.log(this.state.pastData);
+				let pastDoctorDetails = [];
+				pastAppointmentResult.map((_id, index) => {
+
+
+					let ratting;
+					if (_id.appointment_status == "COMPLETED") {
+						viewUserReviewResult.map(viewUserReview => {
+							if (_id._id === viewUserReview.appointment_id) {
+								ratting = viewUserReview.overall_rating
+
+							}
+
+						});
+
+					}
+
+					doctorInfo.forEach(doctor_id => {
+
+						if (_id.doctor_id == doctor_id.doctor_id) {
+							pastDoctorDetails.push({
+								appointmentResult: _id, specialist: doctor_id.specialist, degree: doctor_id.degree, ratting: ratting
+
+							});
+						}
+					})
+
+				}
+
+				)
+				this.setState({ pastData: pastDoctorDetails });
+				
 			}
 		} catch (e) {
 			console.log(e);
@@ -223,20 +223,24 @@ backNavigation=async(navigationData)=>{
 	};
 
 	handleIndexChange = index => {
+
 		let data = index === 0 ? this.state.upComingData : this.state.pastData;
 
 		this.setState({
 			...this.state,
 			selectedIndex: index,
+
 			data
+
 		});
 	};
 
 
-	navigateToBookAppointmentPage(appointmentData){
+	navigateToBookAppointmentPage(item) {
 		console.log("book appointment page");
-		let doctorId=appointmentData.data.appointmentResult.doctor_id;
-        this.props.navigation.navigate('Book Appointment', { doctorId: doctorId, fromAppointmentList: true })
+		let doctorId = item.appointmentResult.doctor_id;
+		
+		this.props.navigation.navigate('Book Appointment', { doctorId: doctorId, fromAppointmentList: true })
 	}
 
 	render() {
@@ -250,9 +254,9 @@ backNavigation=async(navigationData)=>{
 
 		return (
 			<View style={styles.container}>
-				   <NavigationEvents
-                  onWillFocus={payload => { this.backNavigation(payload) }}
-                 />    
+				<NavigationEvents
+					onWillFocus={payload => { this.backNavigation(payload) }}
+				/>
 				<Card transparent>
 					<SegmentedControlTab
 						tabsContainerStyle={{
@@ -304,213 +308,161 @@ backNavigation=async(navigationData)=>{
 								</Item>
 							</Card>
 						) : (
-							<ScrollView>
-								<List>
-									<FlatList
-										data={data}
-										extraData={data}
-										renderItem={({ item, index }) => (
-											<ListItem
-												avatar
-												onPress={() =>
-													this.props.navigation.navigate("AppointmentInfo", {
-														data: item.data.appointmentResult
-													})
-												}
-											>
-												<Left>
-													<Thumbnail
-														square
-														source={{
-															uri:
-																"https://res.cloudinary.com/demo/image/upload/w_200,h_200,c_thumb,g_face,r_max/face_left.png"
-														}}
-														style={{ height: 60, width: 60 }}
-													/>
-												</Left>
-												<Body>
-													<Item style={{ borderBottomWidth: 0 }}>
-														<Text style={{ fontFamily: "OpenSans" }}>
-															{item.data.appointmentResult.doctorInfo.prefix ||
-																"Dr" +
+								<ScrollView>
+									<List>
+										<FlatList
+											data={data}
+											extraData={data}
+											renderItem={({ item, index }) => (
+												<ListItem
+													avatar
+													onPress={() =>
+														this.props.navigation.navigate("AppointmentInfo", {
+															data: item.appointmentResult
+														})
+													}
+												>
+													<Left>
+														<Thumbnail
+															square
+															source={{
+																uri:
+																	"https://res.cloudinary.com/demo/image/upload/w_200,h_200,c_thumb,g_face,r_max/face_left.png"
+															}}
+															style={{ height: 60, width: 60 }}
+														/>
+													</Left>
+													<Body>
+														<Item style={{ borderBottomWidth: 0 }}>
+															<Text style={{ fontFamily: "OpenSans" }}>
+																{item.appointmentResult.doctorInfo.prefix ||
+																	"Dr" +
 																	"." +
-																	item.data.appointmentResult.doctorInfo
+																	item.appointmentResult.doctorInfo
 																		.first_name +
 																	" " +
-																	item.data.appointmentResult.doctorInfo
+																	item.appointmentResult.doctorInfo
 																		.last_name}{" "}
-														</Text>
-														<Text
-															style={{
-																fontFamily: "OpenSans",
-																fontSize: 10,
-																marginTop: "1%"
-															}}
-														>
-															{item.degree}
-														</Text>
-													</Item>
-													<Item style={{ borderBottomWidth: 0 }}>
-														<Text
-															style={{ fontFamily: "OpenSans", fontSize: 14 }}
-														>
-															{item.specialist}
-														</Text>
-														{selectedIndex == 1 &&
-															item.data.ratting != undefined && (
-																<StarRating
-																	fullStarColor="#FF9500"
-																	starSize={20}
-																	containerStyle={{
-																		width: 100,
-																		marginLeft: "auto"
-																	}}
-																	disabled={false}
-																	maxStars={5}
-																	rating={item.data.ratting}
-																	selectedStar={rating =>
-																		this.onStarRatingPress(rating)
-																	}
-																/>
-															)}
-													</Item>
-													{selectedIndex == 0 && (
-														<Item style={{ borderBottomWidth: 0 }}>
-															{item.data.appointmentResult.appointment_status ==
-															"PENDING" ? (
-																<Text
-																	style={{
-																		fontFamily: "OpenSans",
-																		fontSize: 12,
-																		color: "red"
-																	}}
-																	note
-																>
-																	waiting for confirmation
-																</Text>
-															) : item.data.appointmentResult
-																	.appointment_status == "APPROVED" ? (
-																<Text
-																	style={{
-																		fontFamily: "OpenSans",
-																		fontSize: 12,
-																		color: "green"
-																	}}
-																	note
-																>
-																	Appointment confirmed
-																</Text>
-															) : (
-																<Text
-																	style={{
-																		fontFamily: "OpenSans",
-																		fontSize: 12,
-																		color: "grey"
-																	}}
-																	note
-																>
-																	{
-																		item.data.appointmentResult
-																			.appointment_status
-																	}
-																</Text>
-															)}
-														</Item>
-													)}
-													{selectedIndex == 1 && (
-														<Item style={{ borderBottomWidth: 0 }}>
-															{item.data.appointmentResult.appointment_status ==
-															"CLOSED" ? (
-																<Text
-																	style={{
-																		fontFamily: "OpenSans",
-																		fontSize: 12,
-																		color: "red"
-																	}}
-																	note
-																>
-																	Appointment cancelled.
-																</Text>
-															) : (
-																item.data.appointmentResult
-																	.appointment_status == "COMPLETED" && (
-																	<Text
-																		style={{
-																			fontFamily: "OpenSans",
-																			fontSize: 12,
-																			color: "green"
-																		}}
-																		note
-																	>
-																		Appointment completed
-																	</Text>
-																)
-															)}
-														</Item>
-													)}
-
-													<Text
-														style={{ fontFamily: "OpenSans", fontSize: 12 }}
-														note
-													>
-														{formatDate(
-															item.data.appointmentResult.appointment_starttime,
-															"dddd,MMMM DD-YYYY  hh:mm a"
-														)}
-													</Text>
-
-													{selectedIndex == 1 &&
-													item.data.appointmentResult.appointment_status ==
-														"PENDING_REVIEW" ? (
-														<Item style={{ borderBottomWidth: 0 }}>
-															<Button
-																style={styles.shareButton}
-																onPress={() =>
-																	this.props.navigation.navigate("InsertReview")
-																}
+															</Text>
+															<Text
+																style={{
+																	fontFamily: "OpenSans",
+																	fontSize: 10,
+																	marginTop: "1%"
+																}}
 															>
-																<Text style={styles.bookAgain1}>
-																	{" "}
-																	Add To Review
-																</Text>
-															</Button>
-															<Button style={styles.bookingButton} onPress={() => this.navigateToBookAppointmentPage(item)}>
-																<Text style={styles.bookAgain1}>
-																	book Again
-																</Text>
-															</Button>
+																{item.degree}
+															</Text>
 														</Item>
-													) : (
-														selectedIndex === 1 && (
-															<Item style={{ borderBottomWidth: 0 }}>
-																<Right style={(styles.marginRight = 5)}>
+														<Item style={{ borderBottomWidth: 0 }}>
+															<Text
+																style={{ fontFamily: "OpenSans", fontSize: 14 }}
+															>
+																{item.specialist}
+															</Text>
+															{selectedIndex == 1 &&
+																item.ratting != undefined && (
+																	<StarRating
+																		fullStarColor="#FF9500"
+																		starSize={20}
+																		containerStyle={{
+																			width: 100,
+																			marginLeft: "auto"
+																		}}
+																		disabled={false}
+																		maxStars={5}
+																		rating={item.ratting}
+																		selectedStar={rating =>
+																			this.onStarRatingPress(rating)
+																		}
+																	/>
+																)}
+														</Item>
+														<Item style={{ borderBottomWidth: 0 }}>
+															{selectedIndex == 0 ?
+															
+																(item.appointmentResult.appointment_status == "PENDING" ?
+																	<Text style={{ fontFamily: "OpenSans", fontSize: 12, color: "red" }} note>waiting for confirmation</Text>
+																	: item.appointmentResult.appointment_status == "APPROVED" ?
+																		<Text style={{ fontFamily: "OpenSans", fontSize: 12, color: "green" }} note>	Appointment confirmed</Text>
+																		: item.appointmentResult.appointment_status == "CLOSED" ?
+																			<Text style={{ fontFamily: "OpenSans", fontSize: 12, color: "red" }} note	>Appointment cancelled</Text>
+																			:item.appointmentResult.appointment_status == "PROPOSED_NEW_TIME"&&
+																			<Text style={{ fontFamily: "OpenSans", fontSize: 12, color: "grey" }} note	> PROPOSED_NEW_TIME</Text>
+																):
+														(item.appointmentResult.appointment_status == "CLOSED" ? 
+																	<Text style={{ fontFamily: "OpenSans", fontSize: 12, color: "red" }} note>	Appointment cancelled.	</Text>
+																 :
+																	<Text style={{ fontFamily: "OpenSans", fontSize: 1, color: "green" }} note>Appointment completed
+																	</Text>
+														)
+															
+														}
+														
+														</Item>
+
+														<Text
+															style={{ fontFamily: "OpenSans", fontSize: 12 }}
+															note
+														>
+															{formatDate(
+																item.appointmentResult.appointment_starttime,
+																"dddd,MMMM DD-YYYY  hh:mm a"
+															)}
+														</Text>
+
+														{selectedIndex == 1 &&
+															item.appointmentResult.appointment_status ==
+															"PENDING_REVIEW" ? (
+																<Item style={{ borderBottomWidth: 0 }}>
+																	<Button
+																		style={styles.shareButton}
+																		onPress={() =>
+																			this.props.navigation.navigate("InsertReview")
+																		}
+																	>
+																		<Text style={styles.bookAgain1}>
+																			{" "}
+																			Add To Review
+																</Text>
+																	</Button>
 																	<Button style={styles.bookingButton} onPress={() => this.navigateToBookAppointmentPage(item)}>
 																		<Text style={styles.bookAgain1}>
-																			Book Again
-																		</Text>
+																			book Again
+																</Text>
 																	</Button>
-																</Right>
-															</Item>
-														)
-													)}
-												</Body>
-											</ListItem>
-										)}
-										keyExtractor={(item, index) => index.toString()}
-									/>
-								</List>
-							</ScrollView>
-						)
+																</Item>
+															) : (
+																selectedIndex === 1 && (
+																	<Item style={{ borderBottomWidth: 0 }}>
+																		<Right style={(styles.marginRight = 5)}>
+																			<Button style={styles.bookingButton} onPress={() => this.navigateToBookAppointmentPage(item)}>
+																				<Text style={styles.bookAgain1}>
+																					Book Again
+																		</Text>
+																			</Button>
+																		</Right>
+																	</Item>
+																)
+															)}
+													</Body>
+												</ListItem>
+											)}
+											keyExtractor={(item, index) => index.toString()}
+										/>
+									</List>
+								</ScrollView>
+							)
 					) : (
-						<Spinner
-							color="blue"
-							style={[styles.containers, styles.horizontal]}
-							visible={true}
-							size={"large"}
-							overlayColor="none"
-							cancelable={false}
-						/>
-					)}
+							<Spinner
+								color="blue"
+								style={[styles.containers, styles.horizontal]}
+								visible={true}
+								size={"large"}
+								overlayColor="none"
+								cancelable={false}
+							/>
+						)}
 				</Card>
 			</View>
 		);
