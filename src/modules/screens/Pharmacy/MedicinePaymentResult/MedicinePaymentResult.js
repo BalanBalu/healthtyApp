@@ -45,7 +45,7 @@ class MedicinePaymentResult extends Component {
                 price : 50,
                 offerPercentage : 50,
                 quantity: 1
-            },
+            }
         ]
        await AsyncStorage.setItem('cartItems', JSON.stringify(cart))
        this.getAddToCart();
@@ -76,7 +76,7 @@ class MedicinePaymentResult extends Component {
     decrease =async(index)=>{
         let minusQuantity= this.state.cart;
         console.log('minusQuantity'+JSON.stringify(minusQuantity))
-        if(minusQuantity[index].quantity >= 1){
+        if(minusQuantity[index].quantity > 1){
         minusQuantity[index].quantity--;       
         await this.setState({quantity: minusQuantity})
         AsyncStorage.setItem('cartItems', JSON.stringify(this.state.cart))
@@ -99,19 +99,15 @@ class MedicinePaymentResult extends Component {
        
       }
       
-    //   totalPrice(){
-    //   let subtotal=this.state.cart.price * this.state.cart.quantity;
-    //   console.log('subtotoal is '+ subtotal);
-    //   this.setState({ total: subtotal })
-    //   console.log('total is '+ this.state.total);
-
-    //  }
-
-    //   totalPrice(index){
-    //     let total = this.state.cart;
-    //     let totalPrice = total[index].quantity* total[index].price
-    //     console.log('totalPrice:'+totalPrice)
-      //}
+      totalPrice(){
+        let total = 0;
+        console.log(total);
+        this.state.cart.forEach(element => {
+            total = total + ((parseInt(element.price) - (parseInt(element.offerPercentage)/100) * parseInt(element.price)) * parseInt(element.quantity))
+        })    
+        return total;    
+        console.log('totalPrice:'+total)
+      }
 
 
     render() {            
@@ -196,7 +192,7 @@ class MedicinePaymentResult extends Component {
                 <Footer style={{ backgroundColor: '#7E49C3', }}>
                     <Row style={{ justifyContent: 'center', marginTop: 15 }}>
                         <Text style={{ fontSize: 20, fontWeight: 'bold', color: '#fff' }}>Total </Text>
-                        {/* <Text style={{ fontSize: 20, fontWeight: 'bold', color: '#fff' }}>{'Rs:'}</Text> */}
+                        <Text style={{ fontSize: 20, fontWeight: 'bold', color: '#fff' }}>{'Rs:'+this.totalPrice()}</Text>
                     </Row>
                     <Col >
                         <Button style={{ backgroundColor: '#5cb75d', borderRadius: 10, padding: 10, marginTop: 10, marginLeft: 40, height: 35 }} onPress={()=> this.props.navigation.navigate('MedicineCheckout')}>
