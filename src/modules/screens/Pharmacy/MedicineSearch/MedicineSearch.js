@@ -12,16 +12,17 @@ class MedicineSearch extends Component {
         this.state={
             medicineData:[],
             clickCard:null,
-            footerquantity:''
-        
+            footerSelectedItem:'',
+            initialQuantity:0,
+            
 
         }
     }
 
-    // navigetToCategories() {
-    //     console.log(this.props.navigation.navigate('categories'));
-    //     //this.props.navigation.navigate('categories');
-    // }
+    navigetToCategories() {
+        console.log(this.props.navigation.navigate('categories'));
+        this.props.navigation.navigate('categories');
+    }
 
     componentDidMount(){
         this.getMedicineList();
@@ -31,34 +32,36 @@ class MedicineSearch extends Component {
     getMedicineList=async()=>{
         let result=await getMedicineDetails();
         this.setState({medicineData:result.data});
-        console.log("resultant data");
         console.log(this.state.medicineData);
-        console.log(this.state.medicineData.length);
     }
 
     onPressCard=async(item,index)=>{
-        console.log("onPress");
      this.setState({clickCard:index})
-     await this.setState({footerquantity:item});
-     console.log('footer'+JSON.stringify(this.state.footerquantity));
-
-
-       
-
-        
+     await this.setState({footerSelectedItem:item});
    }
 
-   addSubOperation(selectitem,index){
-
-
+   addSubOperation(selectItem,operation){
+       if(operation==="add"){        
+       let addItem = ++this.state.initialQuantity;
+       selectItem.selectedQuantity = this.state.initialQuantity;
+       let temp = this.state.medicineData;
+       temp[this.state.clickCard] = selectItem;
+       this.setState({ initialQuantity:addItem, medicineData:temp });
+    }else{
+        if(this.state.initialQuantity>0){
+        let subItem=--this.state.initialQuantity;
+        selectItem.selectedQuantity = this.state.initialQuantity;
+        let temp = this.state.medicineData;
+        temp[this.state.clickCard] = selectItem;
+        this.setState({ initialQuantity:subItem, medicineData:temp }); 
+        }     
+    }
    }
 
    returnRequiredRate(item){
         return parseInt(item.price)-((parseInt(item.offer)/100) * parseInt(item.price));
-    }
+    } 
     
-    
-
     render() {
         const {medicineData}=this.state
         const { navigation } = this.props
@@ -163,15 +166,15 @@ class MedicineSearch extends Component {
                 {this.state.clickCard!==null?<Footer style={{ backgroundColor: '#7E49C3', }}>
                     <Row>
                         <Col style={{ flexDirection: 'row', justifyContent: 'center', marginTop: 12 }}>
-                            <TouchableOpacity onPress={()=>this.addSubOperation(item,index)}>
+                            <TouchableOpacity onPress={()=>this.addSubOperation(this.state.footerSelectedItem,"sub")}>
                                 <View style={{ padding: 0, justifyContent: 'center', borderWidth: 1, borderColor: 'black', width: 40, height: 35, backgroundColor: 'white' }}>
                                     <Text style={{ fontSize: 40, textAlign: 'center', marginTop: -5, color: 'black' }}>-</Text>
                                 </View>
                             </TouchableOpacity>
                             <View>
-                                <Text style={{ marginLeft: 5, color: 'white', fontSize: 20 }}>{this.state.footerquantity!=undefined?this.state.footerquantity.total_quantity:'0'}</Text>
+                                <Text style={{ marginLeft: 5, color: 'white', fontSize: 20 }}>{this.state.footerSelectedItem.selectedQuantity==undefined?0:this.state.footerSelectedItem.selectedQuantity}</Text>
                             </View>
-                            <TouchableOpacity onPress={()=>this.addSubOperation(item,index)}>
+                            <TouchableOpacity onPress={()=>this.addSubOperation(this.state.footerSelectedItem,"add")}>
                                 <View style={{ padding: 0, justifyContent: 'center', borderWidth: 1, borderColor: 'black', width: 40, height: 35, marginLeft: 5, backgroundColor: 'white' }}>
                                     <Text style={{
                                         fontSize: 20, textAlign: 'center', marginTop: -5,
