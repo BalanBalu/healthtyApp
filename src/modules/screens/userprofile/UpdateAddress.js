@@ -75,9 +75,10 @@ class UserDetails extends Component {
                 };
                 const userId = await AsyncStorage.getItem('userId')
                 let response = await userFiledsUpdate(userId, requestData);
-               
+               console.log(response.success)
                 
                 if (response.success) {
+                    
                     Toast.show({
                         text: 'Your Profile has been Updated',
                         type: "success",
@@ -87,6 +88,7 @@ class UserDetails extends Component {
                 }
                 else {
                     Toast.show({
+                          
                         text: response.message,
                         type: "danger",
                         duration: 3000

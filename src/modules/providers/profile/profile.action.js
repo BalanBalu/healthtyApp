@@ -4,7 +4,6 @@ export const PROFILE_RESPONSE = 'PROFILE/PROFILE_RESPONSE'
 export const PROFILE_ERROR = 'PROFILE/PROFILE_ERROR'
 export const REVIEWS_REQUEST = 'PROFILE/REVIEWS_REQUEST'
 export const REVIEWS_RESPONSE = 'PROFILE/REVIEWS_RESPONSE'
-export const SET_USER = 'PROFILE/SET_USER'
 export const REVIEWS_ERROR = 'PROFILE/REVIEWS_ERROR'
 import { store } from '../../../setup/store'
 import { getService } from '../../../setup/services/httpservices';
@@ -33,7 +32,7 @@ export async function fetchUserProfile(userId, fields, isLoading = true) {
       
       setUserLocally(respData.data);
      
-      return respData
+      return respData.data
     }
     
   } catch (e) {
@@ -88,7 +87,7 @@ export function setUserLocally(userData) {
   AsyncStorage.setItem('profile', JSON.stringify(userData))
 
   store.dispatch({
-    type: SET_USER,
+    type: PROFILE_RESPONSE,
     details: userData
   })
 

@@ -69,7 +69,7 @@ class Profile extends Component {
                 let result = await fetchUserProfile(userId, fields);
                 console.log(result);
                 console.log(this.props.profile.success);
-                if (result.success) {
+                if (this.props.profile.success) {
                     this.setState({ data: result.data, gender: result.gender });
                     if (result.profile_image) {
                         this.setState({ imageSource: result.profile_image.imageURL });
@@ -77,7 +77,7 @@ class Profile extends Component {
                 }
             }
             else {
-                console.log('hello')
+                
                 this.setState({ data:result, gender: result.gender });
             }
         }
@@ -244,7 +244,7 @@ class Profile extends Component {
 
             <Container style={styles.container}>
 
-                <NavigationEvents
+             <NavigationEvents
                     onWillFocus={payload => { this.getUserProfile(payload) }}
                 />
 
