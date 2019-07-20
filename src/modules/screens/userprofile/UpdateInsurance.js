@@ -61,17 +61,17 @@ class UpdateInsurance extends Component {
 
                 })
                 this.props.navigation.navigate('Profile');
-                this.setState({ isLoading: true });
 
 
             } else {
                 Toast.show({
-                    text: 'Insurance not updated',
+                    text:response.message,
                     type: "danger",
                     duration: 3000
                 })
-
             }
+            this.setState({ isLoading:false});
+
 
 
         } catch (e) {

@@ -17,9 +17,9 @@ class Home extends Component {
             data: [],
             isLoading: false,
             catagary: [],
-            searchValue: null
+            searchValue: 'fever'
         };
-        this.getCatagries();
+        // this.getCatagries();
     }
     navigetToCategories() {
         this.props.navigation.navigate('Categories',{data:this.state.data})
@@ -246,7 +246,7 @@ class Home extends Component {
 
                 </Content>
 
-               {/* <Footer>
+                {/* <Footer>
                     <FooterTab style={{ backgroundColor: '#7E49C3' }}>
                         <Button >
                             <Icon name="apps" />

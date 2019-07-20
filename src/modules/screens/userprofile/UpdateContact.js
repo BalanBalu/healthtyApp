@@ -13,14 +13,14 @@ class UpdateContact extends Component {
 
     constructor(props) {
         super(props)
-        this.state = {
-            type: 'Home',
-            mobile_no: '',
-            active: true,
-            primary_mobile_no: '',
-            isLoading: false,
-            numberType: ''
-        }
+        this.state={
+            type:'Home',
+            mobile_no:'',
+            active:true,
+            primary_mobile_no:null,
+            isLoading:false,
+            numberType:''
+        } 
     }
 
     componentDidMount() {
@@ -102,80 +102,76 @@ class UpdateContact extends Component {
                 <Spinner color='blue'
                     visible={this.state.isLoading}
                     textContent={'Loading...'}
-                />
+                        />
+
+               
+       
+                <Content style={styles.bodyContent} contentContainerStyle={{ justifyContent: 'center', flex: 1, height: '100%' }}>
+                {this.state.primary_mobile_no!=null?<H3 style={{ fontFamily: 'OpenSans' }}>Primary Mobile_no</H3>:null}
+                {this.state.primary_mobile_no!=null?
+                <Card style={{ padding: 10, borderRadius: 10 }}>
+                 <Item style={{ borderBottomWidth: 0 }}>
+                    <Icon name="call" style={styles.centeredIcons}></Icon>
+                        <Body>
+                        <Text style={styles.customText}>{this.state.primary_mobile_no}</Text>
+                        </Body>
+                  </Item>
+                  </Card>:null} 
+                    
+                    <H3 style={{ fontFamily: 'OpenSans' }}>Edit Secondary Mobile_No</H3>
+                    <Text style={{ color: 'gray', fontSize: 13, fontFamily: 'OpenSans' }}>Update your secondary mobile_no</Text>
+                    <Card style={{ padding: 10, borderRadius: 10 }}>
+
+                   <Item style={{ borderBottomWidth: 0}}>
+                  <Picker style={{ fontFamily: 'OpenSans' }}
+                    mode="dropdown"
+                    iosIcon={<Icon name="arrow-down" />}
+                    textStyle={{ color: "#5cb85c" }}
+                    itemStyle={{
+                      backgroundColor: "gray",
+                      marginLeft: 0,
+                      paddingLeft: 10
+                    }}
+                    itemTextStyle={{ color: '#788ad2' }}
+                    style={{ width: 25 }}
+                    onValueChange={val => this.setState({ type:val})}
+                    selectedValue={String(this.state.type)}
+                  >
+                     {this.numberCategory.map((type, key) => {
+                         return <Picker.Item label={String(type)} value={String(type)} key={key}
+                         testID='pickType' />
+                    })}
+                     
+                  </Picker>
+                  </Item>
+                
+
+                    <Item style={{ borderBottomWidth: 0 }}>
+                            <Icon name='call' style={styles.centeredIcons}></Icon>
+                            <Input placeholder="Edit Your Number" style={styles.transparentLabel} keyboardType="email-address"
+                                onChangeText={(mobile_no) => this.setState({mobile_no})}
+                                value={String(this.state.mobile_no)}
+                                testID='updateContact' />
+                    </Item>
+
+                    
+
+                   
+                        <Item style={{ borderBottomWidth: 0 }}>
+                            <Right>
+                                <Button style={styles.updateButton} onPress={() => this.handleContactUpdate()} testID='clickUpdateContact'>
+                                    <Text uppercase={false} note style={{ color: '#fff', fontFamily: 'OpenSans' }}>Update</Text>
+                                </Button>
+                            </Right>
+                        </Item>
 
 
+                    </Card>
 
-                <Content style={{ padding: 10 }} contentContainerStyle={{ justifyContent: 'center', flex: 1, height: '100%' }}>
-                    <View style={{ marginTop: 10 }}>
-                        <Text style={{ fontFamily: 'OpenSans', marginLeft: 7, fontWeight: 'bold', fontSize: 20 }}>Primary Mobile_no</Text>
-                        <Card style={{ padding: 10, borderRadius: 10, marginTop: 10 }}>
-                            <Item style={{ borderBottomWidth: 0 }}>
-                                <Icon name='call' style={styles.centeredIcons}></Icon>
+                    
 
-                                <Text style={styles.customText}>{this.state.primary_mobile_no}</Text>
-
-                                <Text style={styles.customText}>{this.state.primary_email}</Text>
-                                <Icon style={{ marginLeft: 110, color: 'gray' }} name='ios-lock' />
-                            </Item>
-                        </Card>
-                    </View>
-
-                    <View style={{ marginTop: 20 }}>
-                        <Text style={{ fontFamily: 'OpenSans', marginTop: 50, marginLeft: 7, fontWeight: 'bold', fontSize: 20 }}>Secondary Email</Text>
-                        <Card style={{ padding: 10, borderRadius: 10 }}>
-
-                            <Item style={{ borderBottomWidth: 0 }}>
-                                <Picker style={{ fontFamily: 'OpenSans' }}
-                                    mode="dropdown"
-                                    iosIcon={<Icon name="arrow-down" />}
-                                    textStyle={{ color: "#5cb85c" }}
-                                    itemStyle={{
-                                        backgroundColor: "gray",
-                                        marginLeft: 0,
-                                        paddingLeft: 10
-                                    }}
-                                    itemTextStyle={{ color: '#788ad2' }}
-                                    style={{ width: 25 }}
-                                    onValueChange={val => this.setState({ type: val })}
-                                    selectedValue={String(this.state.type)}
-                                >
-                                    {this.numberCategory.map((type, key) => {
-                                        return <Picker.Item label={String(type)} value={String(type)} key={key}
-                                            testID='pickType' />
-                                    })}
-
-                                </Picker>
-                            </Item>
-
-
-                            <Item style={{ borderBottomWidth: 0 }}>
-                                <Icon name='call' style={styles.centeredIcons}></Icon>
-                                <Input placeholder="Edit Your Number" style={styles.transparentLabel} keyboardType="email-address"
-                                    onChangeText={(mobile_no) => this.setState({ mobile_no })}
-                                    value={String(this.state.mobile_no)}
-                                    testID='updateContact' />
-                            </Item>
-
-
-
-
-                            <Item style={{ borderBottomWidth: 0 }}>
-                                <Right>
-                                    <Button success style={styles.updateButton} onPress={() => this.handleContactUpdate()} testID='clickUpdateContact'>
-                                        <Text uppercase={false} note style={{ color: '#fff', fontFamily: 'OpenSans' }}>Update</Text>
-                                    </Button>
-                                </Right>
-                            </Item>
-
-
-                        </Card>
-                    </View>
-
-
-
-
-
+                        
+                   
 
 
                 </Content >
