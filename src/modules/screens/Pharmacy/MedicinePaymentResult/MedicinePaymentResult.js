@@ -10,15 +10,15 @@ class MedicinePaymentResult extends Component {
     constructor(props) {
         super(props)
         this.state = {
-            cart:[],
-            isLoading:true,
-           
+            cartItems:[],
+            isLoading:true
         }
+        
     }
 
-   async componentDidMount(){
-    await this.getAddToCart();
-   }
+     componentDidMount(){
+        this.getAddToCart();
+    }
 
     setAddToCart= async() => {
         const cart=[
@@ -48,71 +48,64 @@ class MedicinePaymentResult extends Component {
             }
         ]
        await AsyncStorage.setItem('cartItems', JSON.stringify(cart))
-       this.getAddToCart();
     }
 
     getAddToCart= async() => {
     try{
         const cartItems = await AsyncStorage.getItem('cartItems');
         if( cartItems === undefined){
-            this.setState({ cart: [], isLoading: false });
+            this.setState({ cartItems: [], isLoading: false });
         }else{       
-            this.setState({ cart: JSON.parse(cartItems), isLoading: false });
+            this.setState({ cartItems: JSON.parse(cartItems), isLoading: false });
         }
-        console.log( 'cart' + this.state.cart )
     }
     catch(e){
         console.log(e);
     }
     }
-    increase =async(index)=>{
-        let addQuantity= this.state.cart;
-        addQuantity[index].quantity++;
-        await this.setState({quantity: addQuantity})
-        AsyncStorage.setItem('cartItems', JSON.stringify(this.state.cart))
+
+
+    increase (index){
+        let selectedCartItem = this.state.cartItems;
+        selectedCartItem[index].quantity++;
+        this.setState({cartItems: selectedCartItem})
+        AsyncStorage.setItem('cartItems', JSON.stringify(this.state.cartItems))
 
     }
 
-    decrease =async(index)=>{
-        let minusQuantity= this.state.cart;
-        console.log('minusQuantity'+JSON.stringify(minusQuantity))
-        if(minusQuantity[index].quantity > 1){
-        minusQuantity[index].quantity--;       
-        await this.setState({quantity: minusQuantity})
-        AsyncStorage.setItem('cartItems', JSON.stringify(this.state.cart))
-
+    decrease (index){
+        let selectedCartItem = this.state.cartItems;
+        if(selectedCartItem[index].quantity > 1){
+            selectedCartItem[index].quantity--;       
+         this.setState({cartItems: selectedCartItem})
+            AsyncStorage.setItem('cartItems', JSON.stringify(this.state.cartItems))
         }
     }
+
     medicineOffer(item){
 
         return parseInt(item.price) - ((parseInt(item.offerPercentage)/100) * parseInt(item.price));
     }
   
     removeMedicine(index){
-           setTimeout(() => {
-            let data = this.state.cart;
+            let data = this.state.cartItems;
             data.splice(index, 1);
-            this.setState({ cart: data });
-            console.log('cart:'+JSON.stringify(this.state.cart))
-             AsyncStorage.setItem('cartItems', JSON.stringify(this.state.cart))
-          }, 1000)
-       
+            this.setState({ cartItems: data });
+             AsyncStorage.setItem('cartItems', JSON.stringify(this.state.cartItems))
       }
       
       totalPrice(){
         let total = 0;
-        console.log(total);
-        this.state.cart.forEach(element => {
-            total = total + ((parseInt(element.price) - (parseInt(element.offerPercentage)/100) * parseInt(element.price)) * parseInt(element.quantity))
+        this.state.cartItems.forEach(element => {
+          total = total + ((parseInt(element.price) - (parseInt(element.offerPercentage)/100) * parseInt(element.price)) * parseInt(element.quantity))
         })    
         return total;    
-        console.log('totalPrice:'+total)
       }
 
 
     render() {            
-              const {isLoading,cart} = this.state;
-             // console.log(this.state.cart)
+              const {isLoading,cartItems} = this.state;
+
      return (            
       <Container style={styles.container}>
 
@@ -134,13 +127,15 @@ class MedicinePaymentResult extends Component {
                 <Text style={{ fontFamily: 'OpenSans', fontWeight: 'bold', fontSize: 20, padding: 5 }}>Your Order</Text>
                </Row>
             </Grid>
-
+              {cartItems== '' ?
+               <Item style={{ borderBottomWidth: 0, justifyContent:'center',alignItems:'center', height:70 }}>
+               <Text style={{fontSize:20,justifyContent:'center',alignItems:'center'}}>No Medicines Are Found Your Cart</Text>
+               </Item>  :
                 <FlatList
-                   data={cart}
+                   data={cartItems}
                    extraData={this.state}
                    keyExtractor={(item, index) => index.toString()}
                    renderItem={({ item, index }) =>
-                //    <Animatable.View duration={1000} animation={index === this.state.removeItem ? 'zoomOut' : 'fadeInDown'} useNativeDriver={true}>
 
                 <Card style={{ marginTop: 10, padding: 5, height: 180 }}>
                   <Grid>
@@ -158,35 +153,36 @@ class MedicinePaymentResult extends Component {
                             <Text style={styles.subText}>{'\u20B9'}{this.medicineOffer(item)}</Text>
                             <Text style={{ marginLeft: 10, marginTop: 2, color: 'gray', fontSize: 15, textDecorationLine: 'line-through', textDecorationStyle: 'solid', textDecorationColor: 'gray' }}>
                                             {'\u20B9'}{item.price}</Text>
+                            <Text style={{ fontFamily: 'OpenSans', fontSize: 15, color: '#ffa723', marginLeft: 20, fontWeight: 'bold' }}> {'Get'+ ' ' +item.offerPercentage+ '%' +' ' +'Off'}</Text>
+
                           </Row>
-                            <Text style={{ fontFamily: 'OpenSans', fontSize: 15, color: '#ffa723', marginLeft: 10, fontWeight: 'bold' }}> {'Get'+ ' ' +item.offerPercentage+ ' ' +'Off'}</Text>
                         </View>
                                 
                         <View style={{ flex: 1, flexDirection: 'row', marginLeft: 110 }}>
-                          <Button style={{ padding: 0, justifyContent: 'center', borderWidth: 1, borderColor: '#c26c57', width: 30, height: 25, backgroundColor: 'white'}}  onPress={()=>this.decrease(index)}>
-                            <Text style={{ fontSize: 30, textAlign: 'center', marginTop: -5, color: '#c26c57' }}> - </Text>
+                          <Button style={{ padding: 0, justifyContent: 'center', borderWidth: 1, borderColor: '#c26c57', width: 30, height: 25, marginLeft: 5, backgroundColor: 'white' }} onPress={()=>this.decrease(index)}>
+                             <Text style={{ fontSize: 25, justifyContent: 'flex-start', textAlign: 'center', marginTop: -15, marginRight:10, color: '#c26c57', fontWeight: 'bold' }}>-</Text>
                           </Button>
-
                          <View>
                             <TextInput type='number' min='1' style={{ marginLeft: 5, color: '#c26c57' }} >{item.quantity}</TextInput>
                          </View>
 
                           <Button style={{ padding: 0, justifyContent: 'center', borderWidth: 1, borderColor: '#c26c57', width: 30, height: 25, marginLeft: 5, backgroundColor: 'white' }} onPress={()=>this.increase(index)}>
-                             <Text style={{ fontSize: 20, textAlign: 'center', marginTop: -5, color: '#c26c57' }}>+</Text>
+                             <Text style={{ fontSize: 20, justifyContent: 'flex-start', textAlign: 'center', marginTop: -10, marginRight:10, color: '#c26c57', fontWeight: 'bold' }}>+</Text>
                           </Button>
-
-                        <TouchableOpacity onPress={()=> this.  removeMedicine(index)}>
-                           <Icon style={{ fontSize: 30, color: 'red', marginLeft: 2, marginLeft: 50, marginTop: -4 }} name='ios-trash' />
+                        
+                        <TouchableOpacity style={{ marginLeft: 50, alignItems: 'center'}} onPress={()=> this.removeMedicine(index)}>
+                           <Icon style={{ fontSize: 30, color: 'red', marginTop: -4 }} name='ios-trash' />
                          </TouchableOpacity>  
-                      
+                        
 
                     </View>
                   </Grid>
                 </Card>
-                // </Animatable.View>
+                
                 }/>
-
+              }
             </Card>
+
             </Content>}
 
                 <Footer style={{ backgroundColor: '#7E49C3', }}>
