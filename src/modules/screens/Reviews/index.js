@@ -17,26 +17,27 @@ class Reviews extends Component {
         super(props)
 
         this.state = {
-            data: null,
-            userId: '',
-            isLoading: true
+            getReviewsData: null,
+            reviewId: '',
+            isLoading: true,
+            reviewLikeColor: false,
+            userId: null
         }
-
-
     }
     componentDidMount() {
-        const { navigation } = this.props;
-        let doctorId = navigation.getParam('doctorId'); //"5ce01ae8d28ab8073515a6f6";
-        this.getUserReview(doctorId);
+        this.getUserReview();
     }
 
-    getUserReview = async (doctorId) => {
+    getUserReview = async () => {
         try {
+            //let doctorId = "5d24389d44ba7f1d04bc3225";
+            
             let userId = await AsyncStorage.getItem('userId');
             let result = await userReviews(doctorId, 'doctor');
-            this.setState({ isLoading: false, userId: userId });
+            await this.setState({ isLoading: false, userId: userId });
             if (result.success) {
-                this.setState({ data: result.data });
+                this.setState({ getReviewsData: result.data });
+                // console.log('getReviewsData' + JSON.stringify(this.state.getReviewsData))
             }
         }
         catch (e) {
@@ -44,20 +45,21 @@ class Reviews extends Component {
         }
     }
 
-    insertUserLikes = async (data, index) => {
+    insertUserLikes = async (item) => {
         try {
+            let reviewerId = await AsyncStorage.getItem('userId');
+            let reviewId = item._id;
+            console.log('item' + JSON.stringify(item))
             let reactionData = {
                 reviewerType: 'USER',
                 reactionType: 'LIKE',
                 active: true
             }
-            let result = await insertLikesDataForReviews(data._id, this.state.userId, reactionData);
+            let result = await insertLikesDataForReviews(reviewId, reviewerId, reactionData)
             console.log('result      :   ' + JSON.stringify(result));
             this.setState({ isLoading: false });
             if (result.success) {
-                data.likeColor = true;
-                this.state.data[index].likeColor = true;
-                this.likesCount(data, index);
+            await this.setState({ reviewLikeColor: true });
             }
         }
         catch (e) {
@@ -70,8 +72,8 @@ class Reviews extends Component {
             var postedDate = review_date;
             var currentDate = new Date();
             var relativeDate = dateDiff(postedDate, currentDate, 'days');
-            console.log('difference : ' + relativeDate);
-            if (relativeDate > 30) { 
+            // console.log('difference : ' + relativeDate);
+            if (relativeDate > 30) {
                 return formatDate(review_date, "DD-MM-YYYY")
             } else {
                 return moment(review_date, "YYYYMMDD").fromNow();
@@ -92,18 +94,45 @@ class Reviews extends Component {
                     }
                     else if (element.reviewer_id == this.state.userId && element.active === true) {
                         this.state.data[index].likeColor = true;
-                        console.log('like color     :   ' + this.state.data[index]);
+                        // console.log('like color     :   ' + this.state.data[index]);
                     }
                 });
                 return count;
             } else {
-                return null;
+                return null; d
             }
         } catch (e) {
             console.log(e)
         }
     }
+    changeLikesColor=(item)=>{
+        console.log('item'+JSON.stringify(item))
+        let reviewIdArray=[]
+        item.reactionData.forEach((reactionElement)=>{
 
+if(reactionElement.reviewer_id == this.state.userId){
+    reviewIdArray.push(reactionElement.reviewer_id)
+}
+})
+console.log('reviewIdArray'+JSON.stringify(reviewIdArray))
+
+if( item.reactionData !== undefined && reviewIdArray == this.state.userId){
+    return (
+         { color: '#FF9500', fontSize: 12, marginLeft: 3 }
+    )
+}
+else{
+   
+    if(this.state.reviewLikeColor===true){
+        return (
+            { color: '#FF9500', fontSize: 12, marginLeft: 3 }
+       )
+    }
+    return(
+        { fontSize: 12, marginLeft: 60 } 
+    )
+}
+    }
 
     renderNoReviews() {
         return (
@@ -116,16 +145,16 @@ class Reviews extends Component {
     renderReviews() {
         return (
             <FlatList
-                data={this.state.data}
+                data={this.state.getReviewsData}
                 extraData={this.state}
                 keyExtractor={(item, index) => index.toString()}
                 renderItem={({ item, index }) =>
                     <Card style={styles.card}>
                         <CardItem>
                             <Body>
-                                <Row>                                 
-                                    <Thumbnail style={{ marginLeft: -10, height: 50, width: 50 }} square source={renderProfileImage(item.userInfo)}/>
-                                   
+                                <Row>
+                                    <Thumbnail style={{ marginLeft: -10, height: 50, width: 50 }} square source={renderProfileImage(item.userInfo)} />
+
                                     <Col>
                                         <Text style={{ fontWeight: 'bold', fontSize: 15, marginLeft: 5, }}>{item.is_anonymous == true ? 'Medflic User' : item.userInfo.first_name + ' ' + item.userInfo.last_name} </Text>
                                     </Col>
@@ -182,26 +211,10 @@ class Reviews extends Component {
                                     <Text style={{ fontSize: 12, marginLeft: 60 }}>{this.likesCount(item, index)}</Text>
 
                                     <TouchableOpacity onPress={() => this.insertUserLikes(item, index)}>
-                                        <Text style={item.likeColor == true ? { color: '#FF9500', fontSize: 12, marginLeft: 3 } : { fontSize: 12, marginLeft: 60 }}>Likes</Text>
-                                    </TouchableOpacity>
-
+                                        <Text style={this.changeLikesColor(item)} >Likes</Text>
+                                   </TouchableOpacity>
                                     <Text style={{ fontSize: 12, marginLeft: 20 }}>Reply</Text>
                                 </Row>
-
-                                {/* <Row style={{ marginLeft: 60, marginTop: 10 }}>
-    <Thumbnail style={{ height: 26, width: 26 }} square source={require("./assets/images/profileAvatar.png")}></Thumbnail>
-    <Text style={{ fontSize: 12, marginRight: 54 }}> What do you think about the book? I wonder if i should read it...</Text>
-    </Row>
-    <Row style={{ marginLeft: 60, marginTop: 10 }}>
-    <Thumbnail style={{ height: 26, width: 26 }} square source={require("./assets/images/profileAvatar.png")}></Thumbnail>
-    <TextInput
-    style={{ height: 20, borderRadius: 5, borderWidth: 1, width: 'auto', padding: 1, margin: 'auto', marginLeft: 10 }}
-    placeholder="Write your reviews here"
-    onChangeText={(text) => this.setState({ text })}
-    />
-    </Row>
-    <Button style={styles.button2}><Text style={{ fontSize: 10, color: 'black' }}> Submit</Text>
-    </Button> */}
                             </Body>
                         </CardItem>
                     </Card>
@@ -215,7 +228,7 @@ class Reviews extends Component {
                 <Content style={styles.bodyContent}>
                     {this.state.isLoading ? <Spinner color='blue' /> :
                         <Card>
-                            {this.state.data == null ? this.renderNoReviews() : this.renderReviews()}
+                            {this.state.getReviewsData == null ? this.renderNoReviews() : this.renderReviews()}
                         </Card>}
                 </Content>
             </Container>
