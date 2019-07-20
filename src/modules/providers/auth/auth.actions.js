@@ -240,9 +240,9 @@ export async function userFiledsUpdate(userId,data){
     let endPoint = 'user/' + userId;
     let response = await putService(endPoint,data);
  
+   
     await AsyncStorage.removeItem('profile');
-
-    return response;
+    return response.data;
   } catch (e) {
     return {
       message: 'exception' + e,

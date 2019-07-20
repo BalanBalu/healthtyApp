@@ -55,13 +55,13 @@ class UserDetails extends Component {
             
         try {
             const { userData, no_and_street, address_line_1, address_line_2, city, pin_code } = this.state
-
+            this.setState({ isLoading: true });
+            await this.setState({ loderContent: 'Please wait updatting' })
             
             if (no_and_street != userData.address.address.no_and_street ||address_line_1 != userData.address.address.address_line_1 ||
                 address_line_2 != userData.address.address.address_line_2 ||city != userData.address.address.city ||
                 pin_code != userData.address.address.pin_code) {
-                this.setState({ isLoading: true });
-                await this.setState({ loderContent: 'Please wait updatting' })
+                
                 let requestData = {
                     address: {
                         address: {
@@ -75,10 +75,11 @@ class UserDetails extends Component {
                 };
                 const userId = await AsyncStorage.getItem('userId')
                 let response = await userFiledsUpdate(userId, requestData);
-               console.log(response.success)
+                
                 
                 if (response.success) {
                     
+                   
                     Toast.show({
                         text: 'Your Profile has been Updated',
                         type: "success",
@@ -101,6 +102,7 @@ class UserDetails extends Component {
                 this.props.navigation.navigate('Profile');
             
             }
+            this.setState({ isLoading: false });
         }
 
         catch (e) {
