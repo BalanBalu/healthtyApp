@@ -182,7 +182,7 @@ export const getMultipleDoctorDetails = async (doctorIds, fields, isLoading = tr
 
 /* Get Appointment details */
 
-export async function appointmentDetails(doctorId, appointmentId, isLoading = true) {
+export async function appointmentDetails( appointmentId, isLoading = true) {
   try {
     let endPoint = 'appointment/' + appointmentId
     let response = await getService(endPoint);
@@ -247,20 +247,21 @@ export const getPatientWishList = async (userId) => {
     }
   }
 }
-//get doctordetails using appointment Id notification page
-export const getAppointmentDetails = async (appointmentId) => {
-  try {
-    let endPoint = '/appointment/'+appointmentId;
-    let response = await getService(endPoint);
-    let respData = response.data;
-    return respData;
-  } catch (e) {
-    console.log(e.message);
-    return {
-      message: 'exception' + e,
-      success: false
-    }
-  }
-}
+// //get doctordetails using appointment Id notification page
+// export const getAppointmentDetails = async (appointmentId) => {
+//   try {
+//     let endPoint = '/appointment/' + appointmentId;
+//     console.log(endPoint)
+//     let response = await getService(endPoint);
+//     let respData = response.data;
+//     return respData;
+//   } catch (e) {
+//     console.log(e.message);
+//     return {
+//       message: 'exception' + e,
+//       success: false
+//     }
+//   }
+// }
 
 
