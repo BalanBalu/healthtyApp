@@ -27,7 +27,7 @@ class Home extends Component {
 
     doLogout() {
         logout();
-        this.props.navigation.navigate('MedicinePaymentPage');
+        this.props.navigation.navigate('login');
     }
 
     getCatagries = async () => {

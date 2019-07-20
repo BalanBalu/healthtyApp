@@ -30,8 +30,11 @@ export async function fetchUserProfile(userId, fields, isLoading = true) {
       return respData.data;
     } else { 
       
-      setUserLocally(respData.data);
-     
+      
+      store.dispatch({
+        type: PROFILE_RESPONSE,
+        details: respData.data
+      })
       return respData.data
     }
     
@@ -82,16 +85,13 @@ export async function userReviews (id,type, isLoading = true) {
   }  
 }
 
-export function setUserLocally(userData) {
+
   
-  AsyncStorage.setItem('profile', JSON.stringify(userData))
+  
 
-  store.dispatch({
-    type: PROFILE_RESPONSE,
-    details: userData
-  })
+ 
 
-}  
+  
   
   
   
