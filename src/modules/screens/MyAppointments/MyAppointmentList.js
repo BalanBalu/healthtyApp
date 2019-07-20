@@ -236,7 +236,7 @@ backNavigation=async(navigationData)=>{
 	navigateToBookAppointmentPage(appointmentData){
 		console.log("book appointment page");
 		let doctorId=appointmentData.data.appointmentResult.doctor_id;
-        this.props.navigation.navigate('Book Appointment', { doctorId: doctorId, fromAppointmentList: true })
+        this.props.navigation.navigate('Book Appointment', { doctorId: doctorId, fetchAvailabiltySlots:true })
 	}
 
 	render() {

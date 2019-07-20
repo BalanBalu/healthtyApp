@@ -47,9 +47,9 @@ class BookAppoinment extends Component {
   async componentDidMount() {
 
     const { navigation } = this.props;
-    const fromAppointmentList = navigation.getParam('fromAppointmentList')||false;
+    const availabilitySlots = navigation.getParam('fetchAvailabiltySlots')||false;
 
-    if(fromAppointmentList) {
+    if(availabilitySlots) {
       console.log("if")
       let endDateMoment = addMoment(this.state.currentDate, 7, 'days')
       const doctorId = navigation.getParam('doctorId')|| false;
@@ -256,7 +256,7 @@ enumarateDates(startDate, endDate) {
   render() {
     const { navigation } = this.props;
     const { qualification, doctordata, isLoading } = this.state;
-    const fromAppointmentList = navigation.getParam('fromAppointmentList')||false;
+    const availabilitySlots = navigation.getParam('availabilitySlots')||false;
 
     return (
       <Container style={styles.container}>
@@ -320,7 +320,7 @@ enumarateDates(startDate, endDate) {
 
           <Card>
 
-          {fromAppointmentList?
+          {availabilitySlots?
           <Item style={{ borderBottomWidth: 0, backgroundColor: '#F1F1F1', marginTop: 10, borderRadius:5,width:'50%'}}>
           <Icon name='calendar' style={{ paddingLeft:15, color: '#775DA3' }} />
           <DatePicker

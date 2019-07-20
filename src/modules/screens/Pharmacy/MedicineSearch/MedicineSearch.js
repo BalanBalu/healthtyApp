@@ -12,17 +12,10 @@ class MedicineSearch extends Component {
         this.state={
             medicineData:[],
             clickCard:null,
-            footerSelectedItem:'',
-            initialQuantity:0,
-            
-
+            footerSelectedItem:''
         }
     }
 
-    navigetToCategories() {
-        console.log(this.props.navigation.navigate('categories'));
-        this.props.navigation.navigate('categories');
-    }
 
     componentDidMount(){
         this.getMedicineList();
@@ -35,27 +28,26 @@ class MedicineSearch extends Component {
         console.log(this.state.medicineData);
     }
 
+
     onPressCard=async(item,index)=>{
      this.setState({clickCard:index})
      await this.setState({footerSelectedItem:item});
+     console.log(this.state.footerSelectedItem)
    }
 
    addSubOperation(selectItem,operation){
-       if(operation==="add"){        
-       let addItem = ++this.state.initialQuantity;
-       selectItem.selectedQuantity = this.state.initialQuantity;
-       let temp = this.state.medicineData;
-       temp[this.state.clickCard] = selectItem;
-       this.setState({ initialQuantity:addItem, medicineData:temp });
+    if(operation==="add"){           
+    let addItem = (selectItem.selectedQuantity==undefined?0:selectItem.selectedQuantity);
+     console.log('addItem'+addItem);         
+    selectItem.selectedQuantity=++addItem;    
     }else{
-        if(this.state.initialQuantity>0){
-        let subItem=--this.state.initialQuantity;
-        selectItem.selectedQuantity = this.state.initialQuantity;
-        let temp = this.state.medicineData;
-        temp[this.state.clickCard] = selectItem;
-        this.setState({ initialQuantity:subItem, medicineData:temp }); 
+        if(selectItem.selectedQuantity>0){
+        let subItem=selectItem.selectedQuantity;
+        selectItem.selectedQuantity = --subItem;
         }     
     }
+    let temp = this.state.medicineData;
+    this.setState({ medicineData:temp });
    }
 
    returnRequiredRate(item){
@@ -67,16 +59,10 @@ class MedicineSearch extends Component {
         const { navigation } = this.props
 
         return (
-
             <Container style={styles.container}>
-
-
                 <Content >
-
                     <Grid style={styles.curvedGrid}>
-
                     </Grid>
-
                     <Grid style={{ marginTop: -100, height: 100 }}>
                         <Row>
                             <Col style={{ width: '10%' }}>
