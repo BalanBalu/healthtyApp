@@ -108,41 +108,42 @@ class MyAppoinmentList extends Component {
 			let upCommingAppointmentResult = await getUserAppointments(userId, filters);
 
 			if (upCommingAppointmentResult.success) {
-				let doctorInfo = [];
+				var doctorInfo=[];
 				upCommingAppointmentResult = upCommingAppointmentResult.data;
 
-				let doctorIds = upCommingAppointmentResult.map((appointmentResult, index) => {
+				let doctorIds = upCommingAppointmentResult.map(appointmentResult => {
 
 					return appointmentResult.doctor_id;
 				}).join(",");
 
 				let speciallistResult = await getMultipleDoctorDetails(doctorIds, "specialist,education");
-				speciallistResult.data.forEach(doctor_id => {
+			        
+				speciallistResult.data.forEach(doctorData => {
 
 
-					educationDetails = doctor_id.education.map(education => {
+					educationDetails = doctorData.education.map(education => {
 						return education.degree;
 					}).join(",");
 
-					speaciallistDetails = doctor_id.specialist.map(categories => {
+					speaciallistDetails = doctorData.specialist.map(categories => {
 						return categories.category;
 					}).join(",");
-					doctorInfo.push({ doctor_id: doctor_id.doctor_id, degree: educationDetails, specialist: speaciallistDetails })
+					doctorInfo.set( doctorData.doctor_id, {degree: educationDetails, specialist: speaciallistDetails })
 
 
 				});
+			     
 				let upcommingSpecialist = [];
-				upCommingAppointmentResult.map(_id => {
-					doctorInfo.forEach(doctor_id => {
+				upCommingAppointmentResult.map(doctor_id => {
+					
+                      
+					console.log(doctorInfo.doctor_id.degree)
 
-						if (_id.doctor_id == doctor_id.doctor_id) {
-
-							upcommingSpecialist.push({ appointmentResult: _id, specialist: doctor_id.specialist, degree: doctor_id.degree });
+					upcommingSpecialist.push({ appointmentResult: doctor_id, specialist: doctorInfo.get(doctor_id.specialist), degree:doctorInfo.get(doctor_id.degree) });
 
 
-						}
-					})
-
+						
+				
 
 					this.setState({ upComingData: upcommingSpecialist, data: upcommingSpecialist, specialist: upcommingSpecialist });
 				})
@@ -170,17 +171,17 @@ class MyAppoinmentList extends Component {
 				}).join(",");
 
 				let speciallistResult = await getMultipleDoctorDetails(doctorIds, "specialist,education");
-				speciallistResult.data.forEach(doctor_id => {
+				speciallistResult.data.forEach(doctorData => {
 
 
-					educationDetails = doctor_id.education.map(education => {
+					educationDetails = doctorData.education.map(education => {
 						return education.degree;
 					}).join(",");
 
-					speaciallistDetails = doctor_id.specialist.map(categories => {
+					speaciallistDetails = doctorData.specialist.map(categories => {
 						return categories.category;
 					}).join(",");
-					doctorInfo.push({ doctor_id: doctor_id.doctor_id, degree: educationDetails, specialist: speaciallistDetails })
+					doctorInfo.push({ doctor_id: doctorData.doctor_id, degree: educationDetails, specialist: speaciallistDetails })
 
 
 				});
@@ -201,11 +202,11 @@ class MyAppoinmentList extends Component {
 
 					}
 
-					doctorInfo.forEach(doctor_id => {
+					doctorInfo.forEach(doctorDetails => {
 
-						if (_id.doctor_id == doctor_id.doctor_id) {
+						if (_id.doctor_id == doctorDetails.doctor_id) {
 							pastDoctorDetails.push({
-								appointmentResult: _id, specialist: doctor_id.specialist, degree: doctor_id.degree, ratting: ratting
+								appointmentResult: _id, specialist: doctorDetails.specialist, degree: doctorDetails.degree, ratting: ratting
 
 							});
 						}
