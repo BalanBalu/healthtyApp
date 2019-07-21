@@ -1,6 +1,8 @@
 import React, { Component } from 'react';
 import { Container, Content, Text, Title, Header, Button, H3, Item, List, ListItem, Card, Input, Left, Right, Thumbnail, Body, Icon, View, Footer, FooterTab } from 'native-base';
 import { Col, Row, Grid } from 'react-native-easy-grid';
+import { getMedicineDetails } from '../../../providers/pharmacy/pharmacy.action'
+
 import { StyleSheet, Image, FlatList, TouchableOpacity } from 'react-native';
 
 class MedicineSearch extends Component {
@@ -8,27 +10,56 @@ class MedicineSearch extends Component {
         super(props)
         console.log(this.props)
         this.state={
-            keyword:null
+            medicineData:[],
+            clickCard:null,
+            footerSelectedItem:''
         }
     }
-    navigetToCategories() {
-        console.log(this.props.navigation.navigate('categories'));
-        //this.props.navigation.navigate('categories');
+
+
+    componentDidMount(){
+        this.getMedicineList();
     }
-    searchMedicines=async()=>{
-if(this.state.keyword !=null){
-    this.props.navigation.navigate('medicineSearchList',{key:this.state.keyword})
-}
-else{
-    alert('We can not find the Empty Values')
-}
+
+
+    getMedicineList=async()=>{
+        let result=await getMedicineDetails();
+        this.setState({medicineData:result.data});
+        console.log(this.state.medicineData);
     }
+
+
+    onPressCard=async(item,index)=>{
+     this.setState({clickCard:index})
+     await this.setState({footerSelectedItem:item});
+     console.log(this.state.footerSelectedItem)
+   }
+
+   addSubOperation(selectItem,operation){
+    if(operation==="add"){           
+    let addItem = (selectItem.selectedQuantity==undefined?0:selectItem.selectedQuantity);
+     console.log('addItem'+addItem);         
+    selectItem.selectedQuantity=++addItem;    
+    }else{
+        if(selectItem.selectedQuantity>0){
+        let subItem=selectItem.selectedQuantity;
+        selectItem.selectedQuantity = --subItem;
+        }     
+    }
+    let temp = this.state.medicineData;
+    this.setState({ medicineData:temp });
+   }
+
+   returnRequiredRate(item){
+        return parseInt(item.price)-((parseInt(item.offer)/100) * parseInt(item.price));
+    } 
+    
     render() {
-        const medicine = [{ med1: 'abc' }, { med2: 'def' }, { med3: 'ghi' }, { med4: "jkl" }, { med5: "mno" }]
+        const {medicineData}=this.state
         const { navigation } = this.props
 
         return (
-           <Container style={styles.container}>
+            <Container style={styles.container}>
                 <Content >
                     <Grid style={styles.curvedGrid}>
                     </Grid>
@@ -67,31 +98,28 @@ else{
                     <Card transparent >
 
                         <Grid style={{ marginTop: 25, padding: 10, width: 'auto' }}>
-                            <FlatList data={medicine}
+                            <FlatList 
+                                data={medicineData}
+                                extraData={this.state}
+                                horizontal={false}
+                                numColumns={2}
                                 renderItem={
                                    ({ item }) =>
                                         <Row style={{ justifyContent: 'center' }}>
                                             <View style={styles.customColumn}>
-                                                <TouchableOpacity>
+                                                <TouchableOpacity onPress={()=>this.onPressCard(item,index)}>
                                                     <View style={{ width: 'auto', flex: 1, flexDirection: 'row' }}>
-
-                                                        <Text style={{ marginTop: -30, fontFamily: 'OpenSans', fontSize: 13, color: '#ffa723', }}> Get 50% Off
-                                         {/* <Icon style={{ fontSize: 13, marginLeft: 15, color: '#e25657' }} name='ios-star' /> */}
-                                                        </Text>
-
-
+                                                        <Text style={{ marginTop: -30, fontFamily: 'OpenSans', fontSize: 13, color: '#ffa723', }}>{'Get'+' '+item.offer+' '+'OFF'}
+                                                        </Text>                                                        
                                                         <Right>
-                                                            <Icon name="checkmark-circle" style={{ color: '#5cb75d', marginTop: -30, }}></Icon>
+                                                        {this.state.clickCard!==index?<Icon  style={{ color: '#5cb75d', marginTop: -30, }} />
+                                                         :<Icon name="checkmark-circle" style={{ color: '#5cb75d', marginTop: -30, }} />}
+                         
                                                         </Right>
-
                                                     </View>
-
                                                     <Image source={{ uri: 'https://vimecare.com/WelcomeDesign/images/doctor-icon.png' }} style={styles.customImage} />
-
-
-                                                    <Text style={styles.pageText}>{item.med1}</Text>
+                                                   <Text style={styles.pageText}>{item.medicine_name}</Text>
                                                     <View style={{ flex: 1, flexDirection: 'row' }}>
-
                                                         <Text style={{
                                                             textDecorationLine: 'line-through', textDecorationStyle: 'solid',
                                                             fontFamily: 'OpenSans',
@@ -99,69 +127,38 @@ else{
                                                             color: 'black',
 
                                                             fontWeight: "bold"
-                                                        }}>MRP: Rs 100</Text><Text style={{
+                                                        }}>{'MRP'+' '+'Rs.'+item.price}</Text><Text style={{
                                                             fontFamily: 'OpenSans',
                                                             fontSize: 12,
                                                             color: '#000',
                                                             marginLeft: 10,
                                                             fontWeight: "bold"
-                                                        }} > Rs.50</Text>
+                                                        }} >{this.returnRequiredRate(item)}</Text>
                                                     </View>
 
 
-                                                </TouchableOpacity>
-                                            </View>
-                                            <View style={styles.customColumn}>
-                                                <TouchableOpacity>
-                                                    <View style={{ width: 'auto' }}>
-
-                                                        <Text style={{ marginTop: -30, fontFamily: 'OpenSans', fontSize: 13, color: '#ffa723', }}> Get 50% Off
-                                         {/* <Icon style={{ fontSize: 13, marginLeft: 15, color: '#e25657' }} name='ios-star' /> */}
-                                                        </Text>
-
-
-                                                    </View>
-                                                    <Image source={{ uri: 'https://vimecare.com/WelcomeDesign/images/doctor-icon.png' }} style={styles.customImage} />
-
-                                                    <Text style={styles.pageText}>Rx Ready</Text>
-                                                    <View style={{ flex: 1, flexDirection: 'row' }}>
-
-                                                        <Text style={{
-                                                            textDecorationLine: 'line-through', textDecorationStyle: 'solid',
-                                                            textDecorationColor: 'green',
-                                                            fontFamily: 'OpenSans',
-                                                            fontSize: 12,
-                                                            color: 'black',
-
-                                                            fontWeight: "bold"
-                                                        }}>MRP: Rs 100</Text><Text style={{
-                                                            fontFamily: 'OpenSans',
-                                                            fontSize: 12,
-                                                            color: '#000',
-                                                            marginLeft: 10,
-                                                            fontWeight: "bold"
-                                                        }} > Rs.50</Text>
-                                                    </View>
                                                 </TouchableOpacity>
                                             </View>
                                         </Row>
                                 }
+                                keyExtractor={(item, index) => index.toString()}
                             />
                         </Grid>
                     </Card>
                 </Content>
-                <Footer style={{ backgroundColor: '#7E49C3', }}>
+                
+                {this.state.clickCard!==null?<Footer style={{ backgroundColor: '#7E49C3', }}>
                     <Row>
                         <Col style={{ flexDirection: 'row', justifyContent: 'center', marginTop: 12 }}>
-                            <TouchableOpacity>
+                            <TouchableOpacity onPress={()=>this.addSubOperation(this.state.footerSelectedItem,"sub")}>
                                 <View style={{ padding: 0, justifyContent: 'center', borderWidth: 1, borderColor: 'black', width: 40, height: 35, backgroundColor: 'white' }}>
                                     <Text style={{ fontSize: 40, textAlign: 'center', marginTop: -5, color: 'black' }}>-</Text>
                                 </View>
                             </TouchableOpacity>
                             <View>
-                                <Text style={{ marginLeft: 5, color: 'white', fontSize: 20 }}>8</Text>
+                                <Text style={{ marginLeft: 5, color: 'white', fontSize: 20 }}>{this.state.footerSelectedItem.selectedQuantity==undefined?0:this.state.footerSelectedItem.selectedQuantity}</Text>
                             </View>
-                            <TouchableOpacity>
+                            <TouchableOpacity onPress={()=>this.addSubOperation(this.state.footerSelectedItem,"add")}>
                                 <View style={{ padding: 0, justifyContent: 'center', borderWidth: 1, borderColor: 'black', width: 40, height: 35, marginLeft: 5, backgroundColor: 'white' }}>
                                     <Text style={{
                                         fontSize: 20, textAlign: 'center', marginTop: -5,
@@ -192,7 +189,7 @@ else{
                     </Row>
 
 
-                </Footer>
+                </Footer>:null}
 
             </Container>
 
@@ -206,11 +203,9 @@ export default MedicineSearch
 
 const styles = StyleSheet.create({
 
-    container:
-    {
+    container: {
         backgroundColor: '#ffffff',
     },
-
     bodyContent: {
         padding: 5
     },
@@ -222,9 +217,7 @@ const styles = StyleSheet.create({
         marginTop: 'auto',
         marginBottom: 'auto'
     },
-
-    curvedGrid:
-    {
+    curvedGrid: {
         borderRadius: 800,
         width: '200%',
         height: 690,
@@ -234,10 +227,8 @@ const styles = StyleSheet.create({
         bottom: 0,
         overflow: 'hidden',
         backgroundColor: '#745DA6'
-
     },
-    searchBox:
-    {
+    searchBox: {
         width: '100%',
         borderBottomWidth: 0,
         backgroundColor: '#fff',
@@ -248,8 +239,7 @@ const styles = StyleSheet.create({
         marginBottom: 'auto',
         padding: 20
     },
-    customColumn:
-    {
+    customColumn: {
         padding: 10,
         paddingTop: 30,
         paddingBottom: 30,
@@ -259,15 +249,10 @@ const styles = StyleSheet.create({
         margin: 5,
         width: '45%',
         marginRight: 10
-
     },
     pageText: {
         fontFamily: 'OpenSans',
         fontSize: 14,
-
-
         fontWeight: "bold"
     }
-
-
 });

@@ -21,7 +21,9 @@ class UserDetails extends Component {
             pin_code: '',
             isLoading: false,
             isFocused: false,
-            pinCodeIsFocused: false
+            pinCodeIsFocused: false,
+            userData: [],
+            loderContent:''
 
         }
     }
@@ -33,6 +35,7 @@ class UserDetails extends Component {
     async bindValues() {
         const { navigation } = this.props;
         const userData = navigation.getParam('updatedata');
+    
         console.log(userData);
         if (userData) {
             await this.setState({
@@ -40,7 +43,8 @@ class UserDetails extends Component {
                 address_line_1: userData.address.address.address_line_1,
                 address_line_2: userData.address.address.address_line_2,
                 city: userData.address.address.city,
-                pin_code: userData.address.address.pin_code
+                pin_code: userData.address.address.pin_code,
+                userData:userData
             })
         }
     }
@@ -48,43 +52,58 @@ class UserDetails extends Component {
 
 
     userUpdate = async () => {
-
-
+            
         try {
-
+            const { userData, no_and_street, address_line_1, address_line_2, city, pin_code } = this.state
             this.setState({ isLoading: true });
-            let requestData = {
-                address: {
+            await this.setState({ loderContent: 'Please wait updatting' })
+            
+            if (no_and_street != userData.address.address.no_and_street ||address_line_1 != userData.address.address.address_line_1 ||
+                address_line_2 != userData.address.address.address_line_2 ||city != userData.address.address.city ||
+                pin_code != userData.address.address.pin_code) {
+                
+                let requestData = {
                     address: {
-                        no_and_street: this.state.no_and_street,
-                        address_line_1: this.state.address_line_1,
-                        address_line_2: this.state.address_line_2,
-                        city: this.state.city,
-                        pin_code: this.state.pin_code
+                        address: {
+                            no_and_street: this.state.no_and_street,
+                            address_line_1: this.state.address_line_1,
+                            address_line_2: this.state.address_line_2,
+                            city: this.state.city,
+                            pin_code: this.state.pin_code
+                        }
                     }
+                };
+                const userId = await AsyncStorage.getItem('userId')
+                let response = await userFiledsUpdate(userId, requestData);
+                
+                
+                if (response.success) {
+                    
+                   
+                    Toast.show({
+                        text: 'Your Profile has been Updated',
+                        type: "success",
+                        duration: 3000
+                    });
+                    this.props.navigation.navigate('Profile');
                 }
-            };
-            console.log(requestData)
-            const userId = await AsyncStorage.getItem('userId')
-            let response = await userFiledsUpdate(userId, requestData);
-            if (response.success) {
-                Toast.show({
-                    text: 'Your Profile has been Updated',
-                    type: "success",
-                    duration: 3000
-                });
+                else {
+                    Toast.show({
+                          
+                        text: response.message,
+                        type: "danger",
+                        duration: 3000
+                    });
+                }
+               
+            
+            } else {
+                this.setState({ isLoading: true });
                 this.props.navigation.navigate('Profile');
+            
             }
-            else {
-                Toast.show({
-                    text: response.message,
-                    type: "danger",
-                    duration: 3000
-                });
-            }
-            this.setState({ isLoading: false })
+            this.setState({ isLoading: false });
         }
-
 
         catch (e) {
             Toast.show({
@@ -109,10 +128,12 @@ class UserDetails extends Component {
 
             <Container style={styles.Container}>
 
-
+                {this.state.isLoading == false ?
                 <Content style={styles.bodyContent} contentContainerStyle={{ flex: 1, height: '75%' }}>
+                  
                     <H3 style={{ fontSize: 20, fontFamily: 'opensans-semibold', marginTop: 40, marginLeft: '5%', fontWeight: 'bold', }}>Update User Details</H3>
-                    <Form>
+                  
+                     <Form>
                         <ScrollView scrollEventThrottle={16} >
 
                             {/* <View style={styles.errorMsg}>
@@ -226,13 +247,19 @@ class UserDetails extends Component {
                             </Button>
                         </ScrollView>
 
-                    </Form>
+                    </Form> 
+                     {/* <Spinner 
+                        visible={this.state.isLoading}
+                        overlayColor="none"
+                    /> */}
+
+                    </Content> :
                     <Spinner color='blue'
                         visible={this.state.isLoading}
-                        textContent={'Please wait updating......'}
-                    />
-
-                </Content>
+                        textContent={this.state.loderContent}
+                        overlayColor="none"
+                        cancelable={false}
+                    />}
 
             </Container>
 

@@ -1,7 +1,5 @@
 import { postService, getService, putService} from '../../../setup/services/httpservices';
 
-
-
 /* Search Medicine in pharmacy module  */
 export async function getSearchedMedicines (keyword, isLoading = true) {
   try {
@@ -17,3 +15,20 @@ export async function getSearchedMedicines (keyword, isLoading = true) {
     }
   }
 }
+
+/*get medicine list*/
+export async function getMedicineDetails() {
+    try {
+      console.log("try");
+      let endPoint = '/medicine/fullDetails?limit=8'
+      console.log(endPoint);
+      let response = await getService(endPoint);
+      let respData = response.data;
+      return respData;  
+    } catch (e) {
+      return {
+        message: 'exception' + e,
+        success: false
+      }
+    }
+  }

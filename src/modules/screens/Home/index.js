@@ -22,12 +22,12 @@ class Home extends Component {
         // this.getCatagries();
     }
     navigetToCategories() {
-        this.props.navigation.navigate('Doctor List')
+        this.props.navigation.navigate('Categories',{data:this.state.data})
     }
 
     doLogout() {
         logout();
-        this.props.navigation.navigate('MedicinePaymentPage');
+        this.props.navigation.navigate('login');
     }
 
     getCatagries = async () => {
