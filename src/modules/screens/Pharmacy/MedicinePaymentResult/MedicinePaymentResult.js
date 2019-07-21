@@ -3,8 +3,6 @@ import { Container, Content, Text, Title, Header, Form, Textarea, Button, H3, It
 import { Col, Row, Grid } from 'react-native-easy-grid';
 import { StyleSheet, Image, AsyncStorage, TextInput, FlatList, TouchableOpacity } from 'react-native';
 import { Loader } from '../../../../components/ContentLoader';
-import * as Animatable from 'react-native-animatable';
-import { isThisExpression } from '@babel/types';
 
 class MedicinePaymentResult extends Component {
     constructor(props) {
