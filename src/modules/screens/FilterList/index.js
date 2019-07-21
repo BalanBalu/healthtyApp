@@ -2,7 +2,6 @@ import React, { Component } from 'react';
 import { StyleSheet } from 'react-native';
 import { Container, Body, Picker, Button, Card, Text, Item, Row, View, Col, Content, Icon, Header, Left, Title, ListItem } from 'native-base';
 import SectionedMultiSelect from 'react-native-sectioned-multi-select';
-import { formatDate, getUniqueValues } from '../../../setup/helpers';
 import { NavigationEvents } from 'react-navigation';
 
 export default class Filters extends Component {
@@ -12,25 +11,17 @@ export default class Filters extends Component {
 
         this.state = {
             doctorData: [],
-            doctorDetailsWitSlots: [],
             languageData: [],
-            genderSelected: 'M',
+            genderSelected: '',
             categoryList: [],
             sampleServiceArray: [],
             serviceList: [],
             selectedCategory: '',
-            serviceCheckBox: [false],
             selectedService: [],
-            serviceValue: '',
-            language: [],
+            language: '',
             genderIndex: 0,
             selectAvailabilityIndex: 0,
-            filterAvailabilityData: {},
-            selectedServicesList: [],
-            filterByAvailabilityDate: [],
-            selectedDays: [{ value: 1, label: 'Today', clicked: false },
-            { value: 3, label: '3 days', clicked: false },
-            { value: 7, label: "7 days", clicked: false }]
+            selectedServicesList: '',
         }
     }
 
@@ -38,10 +29,9 @@ export default class Filters extends Component {
 
         const { navigation } = this.props;
         const doctorData = navigation.getParam('doctorData');
-        const doctorDetailsWitSlots = navigation.getParam('doctorDetailsWitSlots');
         const selectedServicesList = navigation.getParam('selectedServicesList');
 
-        await this.setState({ doctorData: doctorData, doctorDetailsWitSlots: doctorDetailsWitSlots, selectedServicesList: selectedServicesList });
+        await this.setState({ doctorData: doctorData, selectedServicesList: selectedServicesList });
         // console.log('selectedServicesList' + JSON.stringify(this.state.selectedServicesList));
         // console.log('doctorData' + JSON.stringify(this.state.doctorData));
         let sampleLangArray = [];
@@ -70,14 +60,14 @@ export default class Filters extends Component {
                 })
             }
         }
-        var uniqueLanguages = getUniqueValues(sampleLangArray);
-        // console.log('uniqueLanguages'+JSON.stringify(uniqueLanguages));
-        uniqueLanguages.forEach(element => {
+
+        let setUniqueLanguages =new Set(sampleLangArray)
+        setUniqueLanguages.forEach(element => {
             let sample = { value: element };
             multipleLanguages.push(sample);
         })
         await this.setState({ languageData: multipleLanguages, categoryList: sampleCategoryArray, serviceList: sampleServiceArray });
-        // console.log('this.state.serviceList' + JSON.stringify(this.state.serviceList));
+        // console.log('this.state.languageData' + JSON.stringify(this.state.languageData));
     }
 
     /* Go and select the Services from Service List page  */
@@ -86,13 +76,14 @@ export default class Filters extends Component {
     }
     /* Send multiple Selected Filtered values  */
     sendFilteredData = async () => {
-        let filterData = [{
+        let filterData = [
+            {
             type: 'language',
             value: this.state.language
         },
         {
             type: "gender_preference",
-            value: [this.state.genderSelected]
+            value: this.state.genderSelected
         },
         {
             type: "category",
@@ -102,60 +93,32 @@ export default class Filters extends Component {
             type: "service",
             value: this.state.selectedServicesList
         }
-        ]        
-        // console.log('filterData' + JSON.stringify(filterData));
+        ]  
+
+        let finalFilArray=[];
+
+        filterData.forEach((filElement)=>{
+          if (filElement.value!==''){
+            finalFilArray.push(filElement)
+          }
+        })
+        console.log('finalFilArray' + JSON.stringify(finalFilArray));
+
         if (this.state.genderSelected == '') {
             alert("We can't Find the Empty data");
         }
         else {
-
-            this.props.navigation.navigate('Doctor List', { resultData: filterData, filterByAvailabilityDate: this.state.filterByAvailabilityDate, ConditionFromFilter: true })
+            this.props.navigation.navigate('Doctor List', { filterData: finalFilArray, filterBySelectedAvailabilityDateCount: this.state.selectAvailabilityIndex, ConditionFromFilter: true })
         }
     }
     /*  Select GenderPreference */
     clickGenderInButton = (genderIndex, genderSelected) => {
         this.setState({ genderIndex: genderIndex });
-        this.setState({ genderSelected: genderSelected })
+        this.setState({ genderSelected: genderSelected })   
     }
     /* Get the selected Availability Date  */
     clickFilterByAvailabilityDates = (index) => {
         this.setState({ selectAvailabilityIndex: index })
-
-        // let slotMap = new Map();
-        // this.state.doctorDetailsWitSlots.forEach(element => {
-        //     slotMap.set(element.doctorId , element.slotData)
-        // });
-        // this.state.selectedDays[index].clicked = !this.state.selectedDays[index].clicked;   
-
-        // if(this.state.selectedDays[index].clicked){
-        //     let availabilityMap = new Map();
-        // this.state.doctorDetailsWitSlots.forEach(element=>{
-        // availabilityMap.set(element.doctorId,element)      
-        // });
-
-        // const data = Array.from(slotMap.keys());
-let filterByAvailabilityDate=[];
-        for (let i = 0; i < this.state.selectedDays[index].value; i++) {
-            let selectedAvailabilityDates = formatDate(new Date(new Date().setDate(new Date().getDate() + i)), 'YYYY-MM-DD');
-            filterByAvailabilityDate.push(selectedAvailabilityDates)
-            //   data.forEach(element => {
-            //       const temp = slotMap.get(element)
-            //     //   console.log('temp'+JSON.stringify(temp));
-
-            //       if (temp[date] === undefined) {
-            //         //   console.log('comming');
-            //           availabilityMap.delete(element);
-            //       }
-            //   });
-
-        }
-
-        this.setState({ filterByAvailabilityDate: filterByAvailabilityDate })
-        console.log('filterByAvailabilityDate'+this.state.filterByAvailabilityDate);
-
-        // let availabilityData = Array.from(availabilityMap.values());
-        // // console.log('availabilityData'+JSON.stringify(availabilityData));
-        // }
     }
 
     render() {
@@ -220,8 +183,8 @@ let filterByAvailabilityDate=[];
                         <Row style={{ marginTop: 10 }}>
                             <Col>
                                 <Button bordered style={styles.defaultColor}
-                                    onPress={() => this.clickFilterByAvailabilityDates(0)}
-                                    style={selectAvailabilityIndex === 0 ? styles.selectedGenderColor : styles.defaultColor}
+                                    onPress={() => this.clickFilterByAvailabilityDates(1)}
+                                    style={selectAvailabilityIndex === 1 ? styles.selectedGenderColor : styles.defaultColor}
                                 >
                                     <View style={{ marginLeft: 'auto', marginRight: 'auto' }}>
 
@@ -234,8 +197,8 @@ let filterByAvailabilityDate=[];
                             </Col>
                             <Col>
                                 <Button bordered style={styles.defaultColor}
-                                    onPress={() => this.clickFilterByAvailabilityDates(1)}
-                                    style={selectAvailabilityIndex === 1 ? styles.selectedGenderColor : styles.defaultColor}
+                                    onPress={() => this.clickFilterByAvailabilityDates(3)}
+                                    style={selectAvailabilityIndex === 3 ? styles.selectedGenderColor : styles.defaultColor}
 
                                 >
                                     <View style={{ marginLeft: 'auto', marginRight: 'auto' }}>
@@ -251,8 +214,8 @@ let filterByAvailabilityDate=[];
                             </Col>
                             <Col>
                                 <Button bordered style={styles.defaultColor}
-                                    style={selectAvailabilityIndex === 2 ? styles.selectedGenderColor : styles.defaultColor}
-                                    onPress={() => this.clickFilterByAvailabilityDates(2)}
+                                    style={selectAvailabilityIndex === 7 ? styles.selectedGenderColor : styles.defaultColor}
+                                    onPress={() => this.clickFilterByAvailabilityDates(7)}
                                 >
                                     <View style={{ marginLeft: 'auto', marginRight: 'auto' }}>
                                         <Icon style={{ fontSize: 30, marginLeft: 'auto', marginRight: 'auto', }} name='female' />
@@ -357,7 +320,6 @@ let filterByAvailabilityDate=[];
                             selectedValue={this.state.selectedCategory}
                         >
                             {this.state.categoryList.map((category, key) => {
-                                console.log(category);
                                 return <Picker.Item label={String(category.value)} value={String(category.value)} key={key}
                                 />
                             })
@@ -429,14 +391,5 @@ const styles = StyleSheet.create({
         marginLeft: 10,
         borderWidth: 50,
         height: 75,
-    },
-    exampleCard3: {
-        borderRadius: 10,
-        padding: 30,
-        width: '90%',
-        marginLeft: 10,
-        borderWidth: 50,
-        height: 75,
-        backgroundColor: 'green',
     }
 })
