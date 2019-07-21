@@ -36,7 +36,7 @@ export async function login(userCredentials, isLoading = true) {
             message: respData.error
           })
         } else {   
-         
+         console.log('token:'+JSON.stringify(respData))
           const token = respData.token;
           setUserLocally(token, respData.data);
           
@@ -147,10 +147,11 @@ export async function updateNewPassword(data){
 
 export async function logout() {
   console.log('is Coming here ');
+  
   await AsyncStorage.removeItem('token')
   await AsyncStorage.removeItem('user')
   await AsyncStorage.removeItem('userId')
-    
+   await AsyncStorage.removeItem('profile') 
   store.dispatch({
     type: LOGOUT
   })
@@ -159,14 +160,14 @@ export async function logout() {
 
 // Set user token and info locally (AsyncStorage)
 export function setUserLocally(token, userData) {
-    // Set token
-   
-    AsyncStorage.setItem('token', token)
-    AsyncStorage.setItem('userId', userData.userId)
-    AsyncStorage.setItem('user', JSON.stringify(userData))
-    axios.defaults.headers.common['x-access-token'] = token;
-    axios.defaults.headers.common['userId'] = userData.userId;
-    
+  // Set token
+
+  AsyncStorage.setItem('token', token)
+  AsyncStorage.setItem('userId', userData.userId)
+  AsyncStorage.setItem('user', JSON.stringify(userData))
+  axios.defaults.headers.common['x-access-token'] = token;
+  axios.defaults.headers.common['userId'] = userData.userId;
+    AsyncStorage
     store.dispatch({
       type: SET_USER,
       details: userData
@@ -236,11 +237,12 @@ export async function signUp(credentialData){
 // Update fields for Patient
 export async function userFiledsUpdate(userId,data){
   try {
-    let endPoint = 'user/'+ userId;
+    let endPoint = 'user/' + userId;
     let response = await putService(endPoint,data);
-    let respData = response.data;
-    console.log('respData'+JSON.stringify(respData))
-    return respData;
+ 
+   
+    await AsyncStorage.removeItem('profile');
+    return response.data;
   } catch (e) {
     return {
       message: 'exception' + e,
