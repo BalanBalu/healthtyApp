@@ -9,12 +9,13 @@ class MedicinePaymentResult extends Component {
         super(props)
         this.state = {
             cartItems:[],
-            isLoading:true
+            isLoading: false
         }
         
     }
 
      componentDidMount(){
+       
         this.getAddToCart();
     }
 
@@ -46,16 +47,20 @@ class MedicinePaymentResult extends Component {
             }
         ]
        await AsyncStorage.setItem('cartItems', JSON.stringify(cart))
+       this.setState({ cartItems: (cart)});
     }
 
     getAddToCart= async() => {
     try{
-        const cartItems = await AsyncStorage.getItem('cartItems');
-        if( cartItems === undefined){
-            this.setState({ cartItems: [], isLoading: false });
-        }else{       
-            this.setState({ cartItems: JSON.parse(cartItems), isLoading: false });
-        }
+        this.setState({ isLoading : true })
+        this.setAddToCart()
+        this.setState({ isLoading : false })
+        // const cartItems = await AsyncStorage.getItem('cartItems');
+        // if( cartItems === undefined){
+        //     this.setState({ cartItems: [], isLoading: false });
+        // }else{       
+        //     this.setState({ cartItems: JSON.parse(cartItems), isLoading: false });
+        // }
     }
     catch(e){
         console.log(e);
@@ -92,12 +97,14 @@ class MedicinePaymentResult extends Component {
              AsyncStorage.setItem('cartItems', JSON.stringify(this.state.cartItems))
       }
       
-      totalPrice(){
+      totalPrice() {
         let total = 0;
-        this.state.cartItems.forEach(element => {
-          total = total + ((parseInt(element.price) - (parseInt(element.offerPercentage)/100) * parseInt(element.price)) * parseInt(element.quantity))
-        })    
-        return total;    
+        if(this.state.cartItems) {
+            this.state.cartItems.forEach(element => {
+                total = total + ((parseInt(element.price) - (parseInt(element.offerPercentage)/100) * parseInt(element.price)) * parseInt(element.quantity))
+            })    
+        return total;
+        }    
       }
 
 

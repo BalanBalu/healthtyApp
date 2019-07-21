@@ -174,7 +174,7 @@ class MedicineSearch extends Component {
 
                                 <Row style={{ justifyContent: 'center', }}>
 
-                                    <Icon name='ios-cart' />
+                                    <Icon name='ios-cart' onPress={() => this.props.navigation.navigate('MedicinePaymentResult')}/>
 
                                     <Text style={{ marginLeft: -25, marginTop: 2, }}>VIEW CART</Text>
                                     <View>
