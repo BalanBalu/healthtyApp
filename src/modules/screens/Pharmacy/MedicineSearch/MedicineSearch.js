@@ -52,7 +52,7 @@ class MedicineSearch extends Component {
 
    returnRequiredRate(item){
         return parseInt(item.price)-((parseInt(item.offer)/100) * parseInt(item.price));
-    } 
+   } 
     
     render() {
         const {medicineData}=this.state
@@ -78,7 +78,7 @@ class MedicineSearch extends Component {
                                      />
                                     <Button style={{ backgroundColor: '#000', borderRadius: 10, height: 40, marginTop: -20, marginRight: -20, borderBottomLeftRadius: 0, borderTopLeftRadius: 0, }}>
                                         <Icon name="ios-search" style={{ color: 'white' }}
-                                         onPress={() => { this.searchMedicines() }}
+                                         onPress={() => { this.props.navigation.navigate('medicineSearchList',{medicineKeyword : this.state.keyword}) }}
                                     />
                                     </Button>
                                 </Item>
@@ -104,7 +104,7 @@ class MedicineSearch extends Component {
                                 horizontal={false}
                                 numColumns={2}
                                 renderItem={
-                                   ({ item }) =>
+                                   ({ item, index }) =>
                                         <Row style={{ justifyContent: 'center' }}>
                                             <View style={styles.customColumn}>
                                                 <TouchableOpacity onPress={()=>this.onPressCard(item,index)}>
