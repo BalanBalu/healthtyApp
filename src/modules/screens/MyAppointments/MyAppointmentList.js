@@ -239,9 +239,8 @@ class MyAppoinmentList extends Component {
 
 	navigateToBookAppointmentPage(item) {
 		console.log("book appointment page");
-		let doctorId = item.appointmentResult.doctor_id;
-		
-		this.props.navigation.navigate('Book Appointment', { doctorId: doctorId, fromAppointmentList: true })
+		let doctorId = item.appointmentResult.doctor_id;		
+		this.props.navigation.navigate('Book Appointment', { doctorId: doctorId,fetchAvailabiltySlots:true})
 	}
 
 	render() {
