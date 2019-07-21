@@ -18,7 +18,7 @@ class MedicineSearchList extends Component {
     }
 componentDidMount(){
     
-    const keyword=this.props.navigation.getParam('key');
+    const keyword=this.props.navigation.getParam('medicineKeyword');
     this.searchedMedicines(keyword);
 };
 
