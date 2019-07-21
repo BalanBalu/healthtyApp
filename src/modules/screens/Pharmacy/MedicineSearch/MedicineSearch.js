@@ -70,32 +70,31 @@ class MedicineSearch extends Component {
                             <Col style={{ width: '80%' }}>
                                 <Item style={styles.searchBox}  >
 
-                                    <Input placeholder="Search For Any Medicine" style={{ color: 'gray', fontFamily: 'OpenSans', fontSize: 12 }} placeholderTextColor="gray" />
-                                    <Button style={{ backgroundColor: '#000', borderRadius: 10, height: 40, marginTop: -20, marginRight: -20, borderBottomLeftRadius: 0, borderTopLeftRadius: 0, }}><Icon name="ios-search" style={{ color: 'white' }}
-                                        onPress={() => navigation.navigate('medicineSearchList')}
-
-                                    /></Button>
+                                    <Input placeholder="Search For Any Medicine" 
+                                    style={{ color: 'gray', fontFamily: 'OpenSans', fontSize: 12 }}
+                                     placeholderTextColor="gray" 
+                                     value={this.state.keyword}
+                                     onChangeText={keyword => this.setState({ keyword })}
+                                     />
+                                    <Button style={{ backgroundColor: '#000', borderRadius: 10, height: 40, marginTop: -20, marginRight: -20, borderBottomLeftRadius: 0, borderTopLeftRadius: 0, }}>
+                                        <Icon name="ios-search" style={{ color: 'white' }}
+                                         onPress={() => { this.searchMedicines() }}
+                                    />
+                                    </Button>
                                 </Item>
                             </Col>
                             <Col style={{ width: '10%' }}>
                             </Col>
-
                         </Row>
-
                     </Grid>
                     <View style={{ marginLeft: 'auto', marginRight: 'auto', marginTop: 20 }}>
                         <Button style={{ justifyContent: "center", backgroundColor: '#745DA6', borderRadius: 5 }}>
                             <Icon style={{ fontSize: 30 }} name='ios-cloud-upload'>
-
                                 <Text style={{ padding: 2, color: '#fff', }}>Upload your prescription
-
                                 </Text>
-
                             </Icon>
-
                         </Button>
                     </View>
-
                     <Card transparent >
 
                         <Grid style={{ marginTop: 25, padding: 10, width: 'auto' }}>
@@ -105,7 +104,8 @@ class MedicineSearch extends Component {
                                 horizontal={false}
                                 numColumns={2}
                                 renderItem={
-                                    ({ item,index }) =>
+                                   ({ item }) =>
+                                        <Row style={{ justifyContent: 'center' }}>
                                             <View style={styles.customColumn}>
                                                 <TouchableOpacity onPress={()=>this.onPressCard(item,index)}>
                                                     <View style={{ width: 'auto', flex: 1, flexDirection: 'row' }}>
@@ -139,12 +139,10 @@ class MedicineSearch extends Component {
 
                                                 </TouchableOpacity>
                                             </View>
+                                        </Row>
                                 }
                                 keyExtractor={(item, index) => index.toString()}
-
-
                             />
-
                         </Grid>
                     </Card>
                 </Content>
@@ -205,11 +203,9 @@ export default MedicineSearch
 
 const styles = StyleSheet.create({
 
-    container:
-    {
+    container: {
         backgroundColor: '#ffffff',
     },
-
     bodyContent: {
         padding: 5
     },
@@ -221,9 +217,7 @@ const styles = StyleSheet.create({
         marginTop: 'auto',
         marginBottom: 'auto'
     },
-
-    curvedGrid:
-    {
+    curvedGrid: {
         borderRadius: 800,
         width: '200%',
         height: 690,
@@ -233,10 +227,8 @@ const styles = StyleSheet.create({
         bottom: 0,
         overflow: 'hidden',
         backgroundColor: '#745DA6'
-
     },
-    searchBox:
-    {
+    searchBox: {
         width: '100%',
         borderBottomWidth: 0,
         backgroundColor: '#fff',
@@ -247,8 +239,7 @@ const styles = StyleSheet.create({
         marginBottom: 'auto',
         padding: 20
     },
-    customColumn:
-    {
+    customColumn: {
         padding: 10,
         paddingTop: 30,
         paddingBottom: 30,
@@ -258,15 +249,10 @@ const styles = StyleSheet.create({
         margin: 5,
         width: '45%',
         marginRight: 10
-
     },
     pageText: {
         fontFamily: 'OpenSans',
         fontSize: 14,
-
-
         fontWeight: "bold"
     }
-
-
 });

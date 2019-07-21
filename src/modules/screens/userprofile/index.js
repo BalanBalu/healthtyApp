@@ -490,7 +490,7 @@ class Profile extends Component {
 
                                 </Body>
                                 <Right>
-                                    <Icon name="create" style={{ color: '#000' }} onPress={() => this.editProfile('UpdatePassword')}></Icon>
+                                    <Icon name="create" style={{ color: 'gray' }} onPress={() => this.editProfile('UpdatePassword')}></Icon>
                                 </Right>
                             </ListItem>
 

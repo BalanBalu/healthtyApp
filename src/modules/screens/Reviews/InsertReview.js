@@ -23,6 +23,7 @@ class InsertReview extends Component {
       data: '',
       doctorId: '',
       appointmentId: '',
+      isRefresh:'false'
     }
   }
 
@@ -30,8 +31,13 @@ class InsertReview extends Component {
 
     const { navigation } = this.props;
     const reviewData = navigation.getParam('appointmentDetail');
+    console.log('finalReviewData'+JSON.stringify(reviewData));
 
-    let userId = reviewData.user_id;
+// let reviewData=finalReviewData.data.appointmentResult;
+// console.log('reviewData'+JSON.stringify(reviewData));
+
+let userId = reviewData.user_id;
+
     let doctorId = reviewData.doctor_id;
     let appointmentId = reviewData._id;
     await this.setState({ userId: userId, doctorId: doctorId, appointmentId: appointmentId, data: reviewData });
@@ -77,11 +83,15 @@ class InsertReview extends Component {
           is_doctor_recommended: this.state.doctorRecommended,
         };
         let result = await addReview(userId, insertReviewData);
+        console.log(JSON.stringify(result))
 
         if (result.success) {
+          console.log('review updated');
           this.state.data.appointment_status = 'COMPLETED';
           await this.updateAppointmentStatus(this.state.data, 'COMPLETED')
-          this.props.navigation.navigate('AppointmentInfo', { reviewDetails: this.state.data })
+          console.log('back navigation initiated');
+        this.props.navigation.pop();
+        console.log('back navigation completed');
         }
       } else {
         Toast.show({
@@ -187,7 +197,7 @@ class InsertReview extends Component {
                   <Row style={{ marginTop: 10 }}>
                     <Right>
                       <Button style={styles.button1}
-                        onPress={() => this.submitReview()}>
+                       onPress={() => this.submitReview()}>
                         <Text>SUBMIT </Text></Button>
                     </Right></Row>
 
