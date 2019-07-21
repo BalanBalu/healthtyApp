@@ -17,17 +17,17 @@ class Home extends Component {
             data: [],
             isLoading: false,
             catagary: [],
-            searchValue: null
+            searchValue: 'fever'
         };
-        this.getCatagries();
+        // this.getCatagries();
     }
     navigetToCategories() {
-        this.props.navigation.navigate('MedicinePaymentResult')
+        this.props.navigation.navigate('Categories',{data:this.state.data})
     }
 
     doLogout() {
         logout();
-        this.props.navigation.navigate('MedicinePaymentPage');
+        this.props.navigation.navigate('login');
     }
 
     getCatagries = async () => {
@@ -35,18 +35,14 @@ class Home extends Component {
             let result = await catagries();
 
 
-            // if(result.success) 
-            // setTimeout( ()=>{
             this.setState({ data: result.data, isLoading: true })
             let limitedData = [];
-            //  var limtedNumber
+           
             for (let limtedNumber = 0; limtedNumber < 4; limtedNumber++) {
                 limitedData.push(result.data[limtedNumber]);
             }
             this.setState({ catagary: limitedData });
-            console.log('state output is:')
-            console.log(this.state.data);
-            // },3000)
+           
         } catch (e) {
             console.log(e);
         }
@@ -66,7 +62,7 @@ class Home extends Component {
                 alert("We can't Find the Empty Values");
             }
             else {
-                this.props.navigation.navigate('MedicinePaymentResult')
+                this.props.navigation.navigate('Doctor List', { resultData: serachInputvalues })
             }
         } catch (e) {
             console.log(e);
@@ -250,7 +246,7 @@ class Home extends Component {
 
                 </Content>
 
-               {/* <Footer>
+                {/* <Footer>
                     <FooterTab style={{ backgroundColor: '#7E49C3' }}>
                         <Button >
                             <Icon name="apps" />

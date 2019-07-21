@@ -1,3 +1,4 @@
+import { AsyncStorage } from 'react-native';
 export const PROFILE_REQUEST = 'PROFILE/PROFILE_REQUEST'
 export const PROFILE_RESPONSE = 'PROFILE/PROFILE_RESPONSE'
 export const PROFILE_ERROR = 'PROFILE/PROFILE_ERROR'
@@ -14,10 +15,12 @@ export async function fetchUserProfile(userId, fields, isLoading = true) {
       type: PROFILE_REQUEST,
       isLoading 
     })     
-    let endPoint = 'user/' + userId + '?fields=' + fields;  
-    
+    let endPoint = 'user/' + userId + '?fields=' + fields; 
+  
     let response = await getService(endPoint); 
     let respData = response.data;
+   
+
     
     if(respData.error || !respData.success) {
       store.dispatch({
@@ -25,14 +28,14 @@ export async function fetchUserProfile(userId, fields, isLoading = true) {
         message: respData.error
       })
       return respData.data;
-    } else {   
+    } else { 
+      
+      
       store.dispatch({
         type: PROFILE_RESPONSE,
-        isLoading:false,
-        success: true,     
-        message: respData.message
+        details: respData.data
       })
-      return respData.data;
+      return respData.data
     }
     
   } catch (e) {
@@ -82,7 +85,12 @@ export async function userReviews (id,type, isLoading = true) {
   }  
 }
 
+
   
+  
+
+ 
+
   
   
   

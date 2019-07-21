@@ -25,36 +25,47 @@ class Notification extends Component {
     }
 
     async componentDidMount() {
-
-         console.log('go componentDid mount')
+        // const isLoggedIn = await hasLoggedIn(this.props);
+        // if (!isLoggedIn) {
+        //     this.props.navigation.navigate("login");
+        //     return;
+        // }
         this.getUserNotification();
 
     }
 
-    // backNavigation = async (navigationData) => {
-    //     if (navigationData.action) {
-    //         if (navigationData.action.type === 'Navigation/BACK') {
-//   
-    //         }
-    //     }
-    //     // console.log(navigationData);
-    // }
+    backNavigation = async (navigationData) => {
+        console.log('notification')
+        await this.setState({ isLoading: false })
+        if (navigationData.action) {
+            if (navigationData.action.type === 'Navigation/POP') {
+               
+                
+
+
+                    await this.getUserNotification();
+                    await this.setState({ isLoading: true })
+            }
+        }
+        // console.log(navigationData);
+    }
     updateNavigation = async (item) => {
-        console.log('appointmentId' + item.appointment_id)
-     await   this.setState({notificationId:item._id})
+       
+     await  this.setState({notificationId:item._id})
         if (!item.mark_as_readed) {
-            this.props.navigation.navigate("AppointmentInfo", { appointmentId: item.appointment_id })
-          await  this.upDateNotification()
+            await this.upDateNotification()
+            this.props.navigation.push("AppointmentInfo", { appointmentId: item.appointment_id })
+         
         }
         else {
-            this.props.navigation.navigate("AppointmentInfo", { appointmentId: item.appointment_id })
+            this.props.navigation.push("AppointmentInfo", { appointmentId: item.appointment_id })
         }
     }
     upDateNotification = async() => {
         try {
-            console.log('updatenotification.......' + this.state.notificationId)
+           
          let  result=  await UpDateUserNotification('mark_as_viewed', this.state.notificationId);
-            console.log(result);
+           
         }
         catch (e) {
             console.log(e);
@@ -102,6 +113,9 @@ class Notification extends Component {
                         /> :
                     
                         < ScrollView horizontal={false}>
+                            <NavigationEvents
+                                onWillFocus={payload => { this.backNavigation(payload) }}
+                            />
                             
                             <List noBorder>
                                 <FlatList
