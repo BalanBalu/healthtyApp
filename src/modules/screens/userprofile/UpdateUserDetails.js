@@ -25,7 +25,8 @@ class UpdateUserDetails extends Component {
             fromProfile: false,
             isLoading: false,
             selectedBloodGroup:null,
-            updateButton:false
+            updateButton: false,
+            userData:''
         }
     }
     componentDidMount() {
@@ -39,10 +40,9 @@ class UpdateUserDetails extends Component {
     async bindValues() {
         const { navigation } = this.props;
         const userData = navigation.getParam('updatedata');
-        console.log(userData);
-        const fromProfile = navigation.getParam('fromProfile') || false
-        if (fromProfile) {
-            if (userData.dob) {
+      await  this.setState({ userData})
+       
+       
                 await this.setState({
                     dob: userData.dob,
                     firstName: userData.first_name,
@@ -51,36 +51,39 @@ class UpdateUserDetails extends Component {
                     selectedBloodGroup:userData.blood_group
                     
                 })
-            }
+           
 
         }
-    }
+    
 
 
 
     userUpdate = async () => {   
-
-        try {        
-                this.setState({ isLoading: true });
+     const{userData,firstName,lastName,dob,gender,selectedBloodGroup}=this.state
+        try {  
+            this.setState({ isLoading: true });
+            if (userData.first_name != firstName || userData.last_name != lastName || userData.dob != dob || userData.gender != gender || userData.blood_group != selectedBloodGroup) {
+                
                 let requestData = {
-                    first_name: this.state.firstName,
-                    last_name: this.state.lastName,
-                    dob: this.state.dob,
-                    gender: this.state.gender,
-                    blood_group: this.state.selectedBloodGroup
+                    first_name: firstName,
+                    last_name: lastName,
+                    dob: dob,
+                    gender: gender,
+                    blood_group:selectedBloodGroup
                 };
-                console.log(requestData)
+              
                 const userId = await AsyncStorage.getItem('userId')
                 let response = await userFiledsUpdate(userId, requestData);
                 if (response.success) {
-                    this.setState({updateButton:!this.state.updateButton})
+                  
 
                     Toast.show({
                         text: 'Your Profile has been Updated',
                         type: "success",
                         duration: 3000
                     });
-                    this.props.navigation.navigate('Profile');                }
+                   await this.props.navigation.navigate('Profile');
+                }
                 else {
                     Toast.show({
                         text: response.message,
@@ -88,7 +91,10 @@ class UpdateUserDetails extends Component {
                         duration: 3000
                     });
                 }
-                this.setState({ isLoading: false })
+            } else {
+               await this.props.navigation.navigate('Profile');
+            }
+                
             } 
                 
           
@@ -213,7 +219,7 @@ class UpdateUserDetails extends Component {
 
 
 
-                        <Button disabled style={styles.updateButton} block primary onPress={() => this.userUpdate()}>
+                        <Button  style={styles.updateButton} block primary onPress={() => this.userUpdate()}>
                             <Text style={{ fontFamily: 'OpenSans' }}>Update</Text>
                             </Button>
                         
