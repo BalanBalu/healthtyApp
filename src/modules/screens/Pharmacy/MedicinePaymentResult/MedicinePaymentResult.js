@@ -15,52 +15,27 @@ class MedicinePaymentResult extends Component {
     }
 
      componentDidMount(){
-       
         this.getAddToCart();
     }
 
-    setAddToCart= async() => {
-        const cart=[
-            {
-                medicineName : 'Dolo650',
-                price : 100,
-                offerPercentage : 20,
-                quantity: 5
-            },
-            {
-                medicineName : 'Antibiotic',
-                price : 100,
-                offerPercentage : 50,
-                quantity: 1
-            },
-            {
-                medicineName : 'Dextromethorphan',
-                price : 10,
-                offerPercentage : 10,
-                quantity: 1
-            },
-            {
-                medicineName : 'Amoxicillin',
-                price : 50,
-                offerPercentage : 50,
-                quantity: 1
-            }
-        ]
-       await AsyncStorage.setItem('cartItems', JSON.stringify(cart))
-       this.setState({ cartItems: (cart)});
-    }
 
     getAddToCart= async() => {
     try{
-        this.setState({ isLoading : true })
-        this.setAddToCart()
-        this.setState({ isLoading : false })
         // const cartItems = await AsyncStorage.getItem('cartItems');
-        // if( cartItems === undefined){
-        //     this.setState({ cartItems: [], isLoading: false });
-        // }else{       
-        //     this.setState({ cartItems: JSON.parse(cartItems), isLoading: false });
-        // }
+        // console.log('cartItems'+cartItems)
+        // this.setState({cartItems: cartItems} )
+        // this.setState({ isLoading : true })
+        // this.setAddToCart()
+        // this.setState({ isLoading : false })
+
+
+
+        const cartItems = await AsyncStorage.getItem('cartItems');
+        if( cartItems === undefined){
+            this.setState({ cartItems: [], isLoading: false });
+        }else{       
+            this.setState({ cartItems: JSON.parse(cartItems), isLoading: false });
+        }
     }
     catch(e){
         console.log(e);
@@ -68,18 +43,18 @@ class MedicinePaymentResult extends Component {
     }
 
 
-    increase (index){
+    increase(index){
         let selectedCartItem = this.state.cartItems;
-        selectedCartItem[index].quantity++;
+        console.log('selectedCartItem'+JSON.stringify(selectedCartItem))
+        selectedCartItem[index].selectedQuantity++;
         this.setState({cartItems: selectedCartItem})
-        AsyncStorage.setItem('cartItems', JSON.stringify(this.state.cartItems))
 
     }
 
-    decrease (index){
+    decrease(index){
         let selectedCartItem = this.state.cartItems;
-        if(selectedCartItem[index].quantity > 1){
-            selectedCartItem[index].quantity--;       
+        if(selectedCartItem[index].selectedQuantity > 1){
+            selectedCartItem[index].selectedQuantity--;       
          this.setState({cartItems: selectedCartItem})
             AsyncStorage.setItem('cartItems', JSON.stringify(this.state.cartItems))
         }
@@ -87,7 +62,7 @@ class MedicinePaymentResult extends Component {
 
     medicineOffer(item){
 
-        return parseInt(item.price) - ((parseInt(item.offerPercentage)/100) * parseInt(item.price));
+        return parseInt(item.price) - ((parseInt(item.offer)/100) * parseInt(item.price));
     }
   
     removeMedicine(index){
@@ -101,7 +76,7 @@ class MedicinePaymentResult extends Component {
         let total = 0;
         if(this.state.cartItems) {
             this.state.cartItems.forEach(element => {
-                total = total + ((parseInt(element.price) - (parseInt(element.offerPercentage)/100) * parseInt(element.price)) * parseInt(element.quantity))
+                total = total + ((parseInt(element.price) - (parseInt(element.offer)/100) * parseInt(element.price)) * parseInt(element.selectedQuantity))
             })    
         return total;
         }    
@@ -149,7 +124,7 @@ class MedicinePaymentResult extends Component {
                                         width: 100, height: 100, borderRadius: 10, marginTop: 20 }} />
 
                         <View style={{ width: '75%', }}>
-                            <Text style={styles.labelTop}>{item.medicineName} </Text>
+                            <Text style={styles.labelTop}>{item.medicine_name} </Text>
                         </View>
                      </Row>
 
@@ -158,7 +133,7 @@ class MedicinePaymentResult extends Component {
                             <Text style={styles.subText}>{'\u20B9'}{this.medicineOffer(item)}</Text>
                             <Text style={{ marginLeft: 10, marginTop: 2, color: 'gray', fontSize: 15, textDecorationLine: 'line-through', textDecorationStyle: 'solid', textDecorationColor: 'gray' }}>
                                             {'\u20B9'}{item.price}</Text>
-                            <Text style={{ fontFamily: 'OpenSans', fontSize: 15, color: '#ffa723', marginLeft: 20, fontWeight: 'bold' }}> {'Get'+ ' ' +item.offerPercentage+ '%' +' ' +'Off'}</Text>
+                            <Text style={{ fontFamily: 'OpenSans', fontSize: 15, color: '#ffa723', marginLeft: 20, fontWeight: 'bold' }}> {'Get'+ ' ' +item.offer+ '%' +' ' +'Off'}</Text>
 
                           </Row>
                         </View>
@@ -168,7 +143,7 @@ class MedicinePaymentResult extends Component {
                              <Text style={{ fontSize: 25, justifyContent: 'flex-start', textAlign: 'center', marginTop: -15, marginRight:10, color: '#c26c57', fontWeight: 'bold' }}>-</Text>
                           </Button>
                          <View>
-                            <TextInput type='number' min='1' style={{ marginLeft: 5, color: '#c26c57' }} >{item.quantity}</TextInput>
+                            <TextInput type='number' min='1' style={{ marginLeft: 5, color: '#c26c57' }} >{item.selectedQuantity}</TextInput>
                          </View>
 
                           <Button style={{ padding: 0, justifyContent: 'center', borderWidth: 1, borderColor: '#c26c57', width: 30, height: 25, marginLeft: 5, backgroundColor: 'white' }} onPress={()=>this.increase(index)}>

@@ -1,9 +1,10 @@
 import React, { Component } from 'react';
-import { Container, Content, Text, Title, Header, Button, H3, Item, List, ListItem, Card, Input, Left, Right, Thumbnail, Body, Icon, View, Footer, FooterTab } from 'native-base';
+import { Container, Content, Toast, Text, Title, Header, Button, H3, Item, List, ListItem, Card, Input, Left, Right, Thumbnail, Body, Icon, View, Footer, FooterTab } from 'native-base';
 import { Col, Row, Grid } from 'react-native-easy-grid';
 import { getMedicineDetails } from '../../../providers/pharmacy/pharmacy.action'
 
-import { StyleSheet, Image, FlatList, TouchableOpacity } from 'react-native';
+import { StyleSheet, Image, FlatList, TouchableOpacity, AsyncStorage } from 'react-native';
+import { arrayExpression } from '@babel/types';
 
 class MedicineSearch extends Component {
     constructor(props) {
@@ -12,48 +13,76 @@ class MedicineSearch extends Component {
         this.state={
             medicineData:[],
             clickCard:null,
-            footerSelectedItem:''
+            footerSelectedItem:'',
+            cartItems:[],
+            searchText: null
+            
         }
     }
 
-
     componentDidMount(){
+        const cart = AsyncStorage.getItem('cartItems')
+        if(cart!=undefined)
+        this.setState({cartItems:cart})
         this.getMedicineList();
     }
-
 
     getMedicineList=async()=>{
         let result=await getMedicineDetails();
         this.setState({medicineData:result.data});
-        console.log(this.state.medicineData);
     }
-
 
     onPressCard=async(item,index)=>{
      this.setState({clickCard:index})
      await this.setState({footerSelectedItem:item});
-     console.log(this.state.footerSelectedItem)
    }
 
    addSubOperation(selectItem,operation){
+    let itemQuantity;
     if(operation==="add"){           
-    let addItem = (selectItem.selectedQuantity==undefined?0:selectItem.selectedQuantity);
-     console.log('addItem'+addItem);         
-    selectItem.selectedQuantity=++addItem;    
+    itemQuantity = (selectItem.selectedQuantity==undefined?0:selectItem.selectedQuantity);
+    selectItem.selectedQuantity=++itemQuantity;    
     }else{
         if(selectItem.selectedQuantity>0){
-        let subItem=selectItem.selectedQuantity;
-        selectItem.selectedQuantity = --subItem;
+        itemQuantity=selectItem.selectedQuantity;
+        selectItem.selectedQuantity = --itemQuantity;
         }     
-    }
-    let temp = this.state.medicineData;
-    this.setState({ medicineData:temp });
+    }    
+    let temp =this.state.medicineData
+    this.setState({medicineData: temp})    
+    this.addToCart();
    }
 
    returnRequiredRate(item){
         return parseInt(item.price)-((parseInt(item.offer)/100) * parseInt(item.price));
    } 
-    
+
+   onSearchPress() { 
+       if(this.state.searchText!==null){
+        this.props.navigation.navigate('medicineSearchList',{medicineKeyword : this.state.searchText}) 
+       }else{
+        Toast.show({
+            type:"danger",
+            text: 'Kindly enter a medicine to search',
+            duration: 3000
+          })
+       }
+    }
+
+ addToCart= async() => {
+     let cart =[];
+         this.state.medicineData.filter(element=>{
+            if( element.selectedQuantity>=1){
+                cart.push(element);
+            }
+            console.log('cart'+JSON.stringify(cart))
+        })
+        await AsyncStorage.setItem('cartItems', JSON.stringify(cart))
+ }
+
+     
+ 
+
     render() {
         const {medicineData}=this.state
         const { navigation } = this.props
@@ -73,12 +102,12 @@ class MedicineSearch extends Component {
                                     <Input placeholder="Search For Any Medicine" 
                                     style={{ color: 'gray', fontFamily: 'OpenSans', fontSize: 12 }}
                                      placeholderTextColor="gray" 
-                                     value={this.state.keyword}
-                                     onChangeText={keyword => this.setState({ keyword })}
+                                     value={this.state.searchText}
+                                     onChangeText={searchText => this.setState({ searchText })}
                                      />
-                                    <Button style={{ backgroundColor: '#000', borderRadius: 10, height: 40, marginTop: -20, marginRight: -20, borderBottomLeftRadius: 0, borderTopLeftRadius: 0, }}>
+                                    <Button style={{ backgroundColor: '#000', borderRadius: 10, height: 40, marginTop: -20, marginRight: -20, borderBottomLeftRadius: 0, borderTopLeftRadius: 0, }}  onPress={()=>this.onSearchPress()}>
                                         <Icon name="ios-search" style={{ color: 'white' }}
-                                         onPress={() => { this.props.navigation.navigate('medicineSearchList',{medicineKeyword : this.state.keyword}) }}
+                                        
                                     />
                                     </Button>
                                 </Item>
@@ -105,7 +134,6 @@ class MedicineSearch extends Component {
                                 numColumns={2}
                                 renderItem={
                                    ({ item, index }) =>
-                                        <Row style={{ justifyContent: 'center' }}>
                                             <View style={styles.customColumn}>
                                                 <TouchableOpacity onPress={()=>this.onPressCard(item,index)}>
                                                     <View style={{ width: 'auto', flex: 1, flexDirection: 'row' }}>
@@ -127,7 +155,8 @@ class MedicineSearch extends Component {
                                                             color: 'black',
 
                                                             fontWeight: "bold"
-                                                        }}>{'MRP'+' '+'Rs.'+item.price}</Text><Text style={{
+                                                        }}>{'MRP'+' '+'Rs.'+item.price}</Text>
+                                                        <Text style={{
                                                             fontFamily: 'OpenSans',
                                                             fontSize: 12,
                                                             color: '#000',
@@ -139,7 +168,6 @@ class MedicineSearch extends Component {
 
                                                 </TouchableOpacity>
                                             </View>
-                                        </Row>
                                 }
                                 keyExtractor={(item, index) => index.toString()}
                             />
@@ -169,12 +197,12 @@ class MedicineSearch extends Component {
                         </Col>
 
                         <Col style={{ marginRight: 40 }} >
-                            <Button success style={{ borderRadius: 10, marginTop: 10, marginLeft: 45, height: 40, justifyContent: 'center' }}>
+                            <Button success style={{ borderRadius: 10, marginTop: 10, marginLeft: 45, height: 40, justifyContent: 'center' }} onPress={()=> this.props.navigation.navigate('MedicinePaymentResult')}>
 
 
                                 <Row style={{ justifyContent: 'center', }}>
 
-                                    <Icon name='ios-cart' onPress={() => this.props.navigation.navigate('MedicinePaymentResult')}/>
+                                    <Icon name='ios-cart'/>
 
                                     <Text style={{ marginLeft: -25, marginTop: 2, }}>VIEW CART</Text>
                                     <View>

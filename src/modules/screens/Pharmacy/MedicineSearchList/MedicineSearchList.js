@@ -13,7 +13,9 @@ class MedicineSearchList extends Component {
         super(props)
         console.log(this.props)
         this.state={
-            value:[]
+            value:[],
+            clickCard:null,
+            footerSelectedItem:'',
         }
     }
 componentDidMount(){
@@ -36,6 +38,44 @@ componentDidMount(){
             console.log(e);
         }
     }
+    addSubOperation(selectItem,operation){
+        let itemQuantity;
+        if(operation==="add"){           
+        itemQuantity = (selectItem.selectedQuantity==undefined?0:selectItem.selectedQuantity);
+        selectItem.selectedQuantity=++itemQuantity;    
+        }else{
+            if(selectItem.selectedQuantity>0){
+            itemQuantity=selectItem.selectedQuantity;
+            selectItem.selectedQuantity = --itemQuantity;
+            }     
+        }    
+        let temp =this.state.medicineData
+        this.setState({medicineData: temp})  
+        this.addToCart();
+  
+       }
+
+    onPressCard=async(item,index)=>{
+        this.setState({clickCard:index})
+        await this.setState({footerSelectedItem:item});
+      }
+   
+    medicineOffer(item){
+
+        return parseInt(item.price) - ((parseInt(item.offer)/100) * parseInt(item.price));
+    }
+
+    addToCart= async() => {
+        let cart =[];
+            this.state.value.filter(element=>{
+               if( element.selectedQuantity>=1){
+                   cart.push(element);
+               }
+               console.log('cart'+JSON.stringify(cart))
+           })
+           await AsyncStorage.setItem('cartItems', JSON.stringify(cart))
+    }
+   
     noMedicines() {
         return (
             <Item style={{ borderBottomWidth: 0, justifyContent: 'center', alignItems: 'center' }}>
@@ -61,19 +101,23 @@ componentDidMount(){
                             </Col>
                         </Row>
                     </Grid>
-                    <Card transparent style={{ padding: 10, marginTop: 60 }} onTouchStart={() => this.props.navigation.navigate('MedicineCheckout')} >
+                    {/* <Card transparent style={{ padding: 10, marginTop: 60 }} onTouchStart={() => this.props.navigation.navigate('MedicineCheckout')} > */}
                        
                     {this.state.value==null?this.noMedicines():
                      <FlatList data={value}
                      extraData={this.state}
                      keyExtractor={(item, index) => index.toString()}
                             renderItem={
-                                ({ item }) =>
-                                    <Card style={{ padding: 10 }}>
+                                ({ item, index }) =>
+                                <TouchableOpacity onPress={()=>this.onPressCard(item,index)}>
+
+                                    <Card style={{ padding: 10, marginTop: 20, }}>
                                         <View style={{ width: 'auto', flex: 1, flexDirection: 'row' }}>
 
                                             <Right>
-                                                <Icon name="checkmark-circle" style={{ color: '#5cb75d', }}></Icon></Right>
+                                            {this.state.clickCard!==index?<Icon  style={{ color: '#5cb75d', marginTop: 20, }} />
+                                                         :<Icon name="checkmark-circle" style={{ color: '#5cb75d', marginTop: 20, }} />} 
+                                        </Right>
                                         </View>
 
                                         <Grid>
@@ -86,7 +130,7 @@ componentDidMount(){
                                                         backgroundColor: 'green', right: 0, top: 0, justifyContent: 'center', alignItems: 'center',
                                                         borderColor: 'green', borderWidth: 1
                                                     }}>
-                                                        <Text style={{ padding: 5, backgroundColor: 'transparent', color: 'white', fontSize: 13 }}>20%</Text>
+                                                        <Text style={{ padding: 5, backgroundColor: 'transparent', color: 'white', fontSize: 13 }}>{item.offer+'%'}</Text>
 
                                                     </View>
                                                 </View>
@@ -96,33 +140,35 @@ componentDidMount(){
                                             <Col style={{ marginLeft: 20, width: '70%', alignItems: 'flex-start', justifyContent: 'center', marginTop: 10 }}>
                                                 <Text style={styles.normalText}>{item.medicine_name}</Text>
                                                 <Row>
-                                                    <Text style={styles.subText}>{'\u20B9'}80</Text>
+                                                    <Text style={styles.subText}>{'\u20B9'}{this.medicineOffer(item)}</Text>
                                                     <Text style={{ marginLeft: 10, marginTop: 2, color: 'gray', fontSize: 15, textDecorationLine: 'line-through', textDecorationStyle: 'solid', textDecorationColor: 'gray' }}>
-                                                        {'\u20B9'}100</Text>
+                                                        {'\u20B9'}{item.price}</Text>
                                                 </Row>
                                                 <Text style={{ color: 'gray', fontSize: 16 }}>White Pigeon Pharmacy</Text>
                                             </Col>
                                         </Grid>
 
                                     </Card>
+                                    </TouchableOpacity> 
                             } />
                         }
 
-                    </Card>
+                    {/* </Card> */}
 
                 </Content>
-                <Footer style={{ backgroundColor: '#7E49C3', }}>
+                {this.state.clickCard!==null?<Footer style={{ backgroundColor: '#7E49C3', }}>
+
                     <Row>
                         <Col style={{ flexDirection: 'row', justifyContent: 'center', marginTop: 12 }}>
-                            <TouchableOpacity>
+                        <TouchableOpacity onPress={()=>this.addSubOperation(this.state.footerSelectedItem,"sub")}>
                                 <View style={{ padding: 0, justifyContent: 'center', borderWidth: 1, borderColor: 'black', width: 40, height: 35, backgroundColor: 'white' }}>
                                     <Text style={{ fontSize: 40, textAlign: 'center', marginTop: -5, color: 'black' }}>-</Text>
                                 </View>
                             </TouchableOpacity>
                             <View>
-                                <Text style={{ marginLeft: 5, color: 'white', fontSize: 20 }}>8</Text>
+                            <Text style={{ marginLeft: 5, color: 'white', fontSize: 20 }}>{this.state.footerSelectedItem.selectedQuantity==undefined?0:this.state.footerSelectedItem.selectedQuantity}</Text>
                             </View>
-                            <TouchableOpacity>
+                            <TouchableOpacity onPress={()=>this.addSubOperation(this.state.footerSelectedItem,"add")}>
                                 <View style={{ padding: 0, justifyContent: 'center', borderWidth: 1, borderColor: 'black', width: 40, height: 35, marginLeft: 5, backgroundColor: 'white' }}>
                                     <Text style={{
                                         fontSize: 20, textAlign: 'center', marginTop: -5,
@@ -133,7 +179,7 @@ componentDidMount(){
                         </Col>
 
                         <Col style={{ marginRight: 40 }} >
-                            <Button success style={{ borderRadius: 10, marginTop: 10, marginLeft: 45, height: 40, justifyContent: 'center' }}>
+                            <Button success style={{ borderRadius: 10, marginTop: 10, marginLeft: 45, height: 40, justifyContent: 'center' }} onPress={()=> this.props.navigation.navigate('MedicinePaymentResult')}>
 
 
                                 <Row style={{ justifyContent: 'center', }}>
@@ -153,7 +199,8 @@ componentDidMount(){
                     </Row>
 
 
-                </Footer>
+                </Footer>:null
+            }
             </Container > 
         )
                                 }
