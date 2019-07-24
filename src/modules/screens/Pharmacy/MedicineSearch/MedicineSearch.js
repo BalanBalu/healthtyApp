@@ -16,19 +16,31 @@ class MedicineSearch extends Component {
             footerSelectedItem:'',
             cartItems:[],
             searchText: null
-            
         }
     }
 
-    componentDidMount(){
-        const cart = AsyncStorage.getItem('cartItems')
-        if(cart!=undefined)
-        this.setState({cartItems:cart})
+    componentDidMount(){           
         this.getMedicineList();
     }
 
     getMedicineList=async()=>{
+        medicineSearchMap = new Map();
         let result=await getMedicineDetails();
+        result.data.forEach(element =>{           
+            medicineSearchMap.set(element.medicine_id,element)
+        })       
+        const cart = AsyncStorage.getItem('cartItems')        
+        if(Array.isArray(cart) == true){
+            console.log('cart is an array')
+            this.setState({cartItems:cart})
+            cart.forEach(element => {                
+                if(medicineSearchMap.get(element.medicine_id) != undefined){                    
+                    medicineSearchMap.set(element.medicine_id, element);
+                }
+            })
+        }
+        // let temp = medicineSearchMap.values();
+        // console.log(temp)
         this.setState({medicineData:result.data});
     }
 
@@ -137,7 +149,7 @@ class MedicineSearch extends Component {
                                             <View style={styles.customColumn}>
                                                 <TouchableOpacity onPress={()=>this.onPressCard(item,index)}>
                                                     <View style={{ width: 'auto', flex: 1, flexDirection: 'row' }}>
-                                                        <Text style={{ marginTop: -30, fontFamily: 'OpenSans', fontSize: 13, color: '#ffa723', }}>{'Get'+' '+item.offer+' '+'OFF'}
+                                                        <Text style={{ marginTop: -30, fontFamily: 'OpenSans', fontSize: 13, color: '#ffa723', }}>{'Get'+' '+item.offer+'%'+' '+'OFF'}
                                                         </Text>                                                        
                                                         <Right>
                                                         {this.state.clickCard!==index?<Icon  style={{ color: '#5cb75d', marginTop: -30, }} />
