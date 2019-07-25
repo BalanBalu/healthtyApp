@@ -26,7 +26,9 @@ class UpdateUserDetails extends Component {
             isLoading: false,
             selectedBloodGroup:null,
             updateButton: false,
-            userData:''
+            userData:'',
+            loaderContent:''
+
         }
     }
     componentDidMount() {
@@ -59,11 +61,12 @@ class UpdateUserDetails extends Component {
 
 
     userUpdate = async () => {   
-     const{userData,firstName,lastName,dob,gender,selectedBloodGroup}=this.state
+        const { userData, firstName, lastName, dob, gender, selectedBloodGroup } = this.state
+        
         try {  
             this.setState({ isLoading: true });
             if (userData.first_name != firstName || userData.last_name != lastName || userData.dob != dob || userData.gender != gender || userData.blood_group != selectedBloodGroup) {
-                
+                this.setState({loaderContent:'please Wailt Updating...'})
                 let requestData = {
                     first_name: firstName,
                     last_name: lastName,
@@ -92,6 +95,7 @@ class UpdateUserDetails extends Component {
                     });
                 }
             } else {
+                
                await this.props.navigation.navigate('Profile');
             }
                 
@@ -107,6 +111,9 @@ class UpdateUserDetails extends Component {
 
             console.log(e);
         }
+        finally{
+            this.setState({ isLoading: false})
+        }
     }
 
 
@@ -115,10 +122,7 @@ class UpdateUserDetails extends Component {
         return (
 
             <Container style={styles.container}>
-                <Spinner color='blue'
-                    visible={this.state.isLoading}
-                    textContent={'Please wait updating...'}
-                />
+              
 
 
                 <Content style={styles.bodyContent} contentContainerStyle={{ justifyContent: 'center', flex: 1, height: '75%' }}>
@@ -216,7 +220,10 @@ class UpdateUserDetails extends Component {
 
                         </ListItem>
 
-
+                        <Spinner color='blue'
+                            visible={this.state.isLoading}
+                            textContent={this.state.loaderContent}
+                        />
 
 
                         <Button  style={styles.updateButton} block primary onPress={() => this.userUpdate()}>

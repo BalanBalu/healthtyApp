@@ -15,7 +15,6 @@ class UpdateInsurance extends Component {
         this.state = {
             insurance_no: '',
             insurance_provider: '',
-            active: true,
             isLoading: false
 
         }
@@ -28,47 +27,54 @@ class UpdateInsurance extends Component {
     bindInsuranceValues() {
         const { navigation } = this.props;
         const userData = navigation.getParam('updatedata');
-        const fromProfile = navigation.getParam('fromProfile') || false
+       
 
-        if (fromProfile && userData.insurance) {
+        
             this.setState({
                 insurance_no: userData.insurance[0].insurance_no,
-                insurance_provider: userData.insurance[0].insurance_provider,
-                active: userData.insurance[0].active,
+                insurance_provider: userData.insurance[0].insurance_provider,               
+                userData
             })
-        }
+        
 
     }
 
     handleInsuranceUpdate = async () => {
-
+      const{userData,insurance_no,insurance_provider}=this.state
         try {
             this.setState({ isLoading: true });
-            let userId = await AsyncStorage.getItem('userId');
-            let data = {
-                insurance: [{
-                    insurance_no: this.state.insurance_no,
-                    insurance_provider: this.state.insurance_provider,
-                    active: this.state.active
-                }]
-            };
-            let response = await userFiledsUpdate(userId, data);
-            if (response.success) {
-                Toast.show({
-                    text: 'Inusrance updated Successfully',
-                    type: "success",
-                    duration: 3000,
+            if (insurance_no != userData.insurance[0].insurance_no ||
+                insurance_provider != userData.insurance[0].insurance_provider) {
+                let userId = await AsyncStorage.getItem('userId');
+                let data = {
+                    insurance: [{
+                        insurance_no: this.state.insurance_no,
+                        insurance_provider: this.state.insurance_provider,
+                        active: true
+                    }]
+                };
+                let response = await userFiledsUpdate(userId, data);
+                if (response.success) {
+                    Toast.show({
+                        text: 'Inusrance updated Successfully',
+                        type: "success",
+                        duration: 3000,
 
-                })
+                    })
+                    this.props.navigation.navigate('Profile');
+
+
+                } else {
+                    Toast.show({
+                        text: response.message,
+                        type: "danger",
+                        duration: 3000
+                    })
+                }
+            }
+            else {
                 this.props.navigation.navigate('Profile');
-
-
-            } else {
-                Toast.show({
-                    text:response.message,
-                    type: "danger",
-                    duration: 3000
-                })
+                
             }
             this.setState({ isLoading:false});
 

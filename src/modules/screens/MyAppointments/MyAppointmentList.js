@@ -338,14 +338,7 @@ class MyAppoinmentList extends Component {
 													<Body>
 														<Item style={{ borderBottomWidth: 0 }}>
 															<Text style={{ fontFamily: "OpenSans" }}>
-																{item.appointmentResult.doctorInfo.prefix ||
-																	"Dr" +
-																	"." +
-																	item.appointmentResult.doctorInfo
-																		.first_name +
-																	" " +
-																	item.appointmentResult.doctorInfo
-																		.last_name}{" "}
+																{item.appointmentResult.doctorInfo.prefix ||"Dr." +item.appointmentResult.doctorInfo.first_name +" " +item.appointmentResult.doctorInfo.last_name}{" "}
 															</Text>
 															<Text
 																style={{
