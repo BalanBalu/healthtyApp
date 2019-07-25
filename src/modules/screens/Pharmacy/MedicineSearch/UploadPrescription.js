@@ -6,58 +6,47 @@ import { TouchableOpacity } from 'react-native-gesture-handler';
 import ImagePicker from 'react-native-image-picker';
 import { uploadMultiPart } from '../../../../setup/services/httpservices'
 import Autocomplete from '../../../../components/Autocomplete'
-import { searchPharmacyByName } from '../../../providers/pharmacy/pharmacy.action'
+import { searchPharmacyByName,attachPrescription } from '../../../providers/pharmacy/pharmacy.action'
 
 
 
 class UploadPrescription extends Component {
     constructor(props) {
-        var wait;
         super(props)
         this.state={
             imageSource:null,
             keyword:'',
             pharmacyData:[],
-            waitValue:''
-
-
-
-            
+            waitValue:'',
+            uploadButton:true            
         }
-        this.searchPharmacy();
+        this.getPharmacyData();
     }
 
     /*Search Pharmacy */
 
-    searchPharmacy=async()=>{
+    getPharmacyData=async()=>{
         let postValues=[{
             type:'name',
             value:[this.state.keyword]
-
         }]
         let result = await searchPharmacyByName(postValues);
-        console.log(result);
+        console.log('pharmacy result    '+JSON.stringify(result.data));
         await this.setState({pharmacyData:result.data});
         console.log('this.state.pharmacyData'+JSON.stringify(this.state.pharmacyData));
     }
-    autoCompletePharmacyName(keyword){
+    autoCompletePharmacyName=async(keyword)=>{
         console.log(keyword+'keyword');
-        console.log("autocomplete");
         if (keyword === '' || keyword === undefined || keyword === null) {
             console.log("empty");
             return [];
         }
         const { pharmacyData } = this.state;
-        
-        const regex = new RegExp(`${keyword.trim()}`, 'i');
-        console.log(JSON.stringify(regex)+'regex');
-        wait=pharmacyData.filter(value => value.name.search(regex) >= 0);
-        console.log(JSON.stringify(wait)+'wait');
-        return wait;
-
+        const regex = new RegExp(`${keyword.trim()}`, 'i');       
+      let temp = pharmacyData.filter(value => value.name.search(regex) >= 0); 
+      await console.log('regex'+JSON.stringify(temp));   
+      return {id: temp._id, data: temp}
     }
-
-
 
 
     /*Upload profile pic*/
@@ -70,6 +59,7 @@ class UploadPrescription extends Component {
             skipBackup: true
         }
     };
+
     ImagePicker.showImagePicker(options, (response) => {
         console.log('Response = ', response);
 
@@ -88,7 +78,7 @@ class UploadPrescription extends Component {
 
             this.setState({
                 imageSource: source.uri,
-
+                uploadButton:!this.state.uploadButton
             });
 
         }
@@ -100,7 +90,7 @@ uploadImageToServer = async (imagePath,number) => {
     try {
         console.log("Image uploading");
         console.log("number"+JSON.stringify(number));
-        const userId = await AsyncStorage.getItem('userId')
+        const userId = await AsyncStorage.getItem('userId');
         const pharmacyId=number[0]._id;
         console.log(pharmacyId+'pharmacy')
         var formData = new FormData();
@@ -111,6 +101,7 @@ uploadImageToServer = async (imagePath,number) => {
         });
         debugger
         let endPoint = `prescription/${userId}/${pharmacyId}`
+        console.log(endPoint+'endpoint');
         var res = await uploadMultiPart(endPoint, formData);
         const response = res.data;
         if (response.success) {
@@ -134,37 +125,45 @@ uploadImageToServer = async (imagePath,number) => {
     }
 }
 
+cancelPrescription(){
+        this.props.navigation.navigate('MedicineList');
+}
+
 render() {
     const {imageSource}=this.state;
-    const pharmacyData=this.autoCompletePharmacyName(this.state.keyword);
+    let pharmacyData=this.autoCompletePharmacyName(this.state.keyword);
     const comp = (a, b) => a.toLowerCase().trim() === b.toLowerCase().trim();
-
-
 
 return(
     <Container style={styles.container}>
     <Content>
     <Item style={{ borderBottomWidth: 0,marginTop:10 }}>
      <Autocomplete style={{ borderBottomWidth: 0,height: 45, backgroundColor: '#F1F1F1', borderRadius: 5,width:'75%',marginLeft:35}}
-    data={pharmacyData.length===1 && comp(this.state.keyword,pharmacyData[0].name)?[]:pharmacyData}
+    data={pharmacyData.data.length===1 && comp(this.state.keyword,pharmacyData.data[0].name)?[]:pharmacyData.data}
     defaultValue={this.state.keyword}
-    onChangeText={text => this.setState({keyword:text })}
+    onChangeText={text => this.setState({ keyword:text })}
      placeholder="Select Pharmacy"
      listStyle={{ position: 'relative' }}
     renderItem={({ item}) => (
-         <TouchableOpacity onPress={() => this.setState({keyword:item.name},console.log('keee'+this.state.keyword))}>
+         <TouchableOpacity onPress={() => this.setState({keyword:item.name})}>
               <Text>{item.name}</Text>
           </TouchableOpacity>
       )}
      keyExtractor={(item, index) => index.toString()} />
      </Item>
  
-                                  
+    <View>
+    {imageSource!==null?<Icon name="ios-close" style={{ color: 'black',marginRight:-120}} onPress={()=>{this.cancelPrescription()}} />:null}
+                         
     <TouchableOpacity onPress={()=>{this.attachPrescription()}}>
+
     {imageSource===null?    
     <Thumbnail square style={styles.profileImage} source={require('../../../../../assets/images/prescription_upload.png')} /> 
-        :<Thumbnail   square style={styles.profileImage} source={{ uri: imageSource }} />}
+        :<Thumbnail   square style={styles.profileImage} source={{uri:imageSource}} />}
+
         </TouchableOpacity>
+        </View>
+         
         <View style={{padding:10,marginTop:10}}>
 
         <Input placeholder="Comments" style={{borderWidth:0.5,borderRadius:5,borderColor:'#000',height:80,width:'80%',marginLeft:'auto',marginRight:'auto'}}/>        
@@ -174,12 +173,12 @@ return(
         
         <Row style={{alignSelf:'center',justifyContent:'center',marginTop:10,}}>
          <Col style={{width:'50%',alignItems:'center'}}>
-         <Button style={{borderRadius:5,height:35,padding:40}} onPress={()=>{this.uploadImageToServer(this.state.imageSource,wait)}}>
+         <Button disabled={this.state.uploadButton} style={{borderRadius:5,height:35,padding:40,color:'gray'}} onPress={()=>{this.uploadImageToServer(this.state.imageSource,pharmacyData.id)}}>
              <Text style={{fontSize:12}}>UPLOAD</Text>
              </Button>
              </Col>
              <Col style={{width:'30%',alignItems:'center'}}>
-             <Button style={{borderRadius:5,height:35,padding:5}}>
+             <Button style={{borderRadius:5,height:35,padding:5}} onPress={()=>this.cancelPrescription()}>
              <Text style={{fontSize:12}} >CANCEL</Text>
              </Button>
              </Col>     
