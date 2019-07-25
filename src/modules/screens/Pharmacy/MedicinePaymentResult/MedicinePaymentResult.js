@@ -29,8 +29,8 @@ class MedicinePaymentResult extends Component {
         // this.setState({ isLoading : false })
 
 
-
-        const cartItems = await AsyncStorage.getItem('cartItems');
+        let userId = AsyncStorage.getItem('userId')
+        const cartItems = await AsyncStorage.getItem('cartItems-'+userId);        
         if( cartItems === undefined){
             this.setState({ cartItems: [], isLoading: false });
         }else{       
@@ -52,11 +52,13 @@ class MedicinePaymentResult extends Component {
     }
 
     decrease(index){
+        let userId = AsyncStorage.getItem('userId')
+
         let selectedCartItem = this.state.cartItems;
         if(selectedCartItem[index].selectedQuantity > 1){
             selectedCartItem[index].selectedQuantity--;       
          this.setState({cartItems: selectedCartItem})
-            AsyncStorage.setItem('cartItems', JSON.stringify(this.state.cartItems))
+            AsyncStorage.setItem('cartItems-'+userId, JSON.stringify(this.state.cartItems))
         }
     }
 
@@ -66,10 +68,12 @@ class MedicinePaymentResult extends Component {
     }
   
     removeMedicine(index){
+        let userId = AsyncStorage.getItem('userId')
+
             let data = this.state.cartItems;
             data.splice(index, 1);
             this.setState({ cartItems: data });
-             AsyncStorage.setItem('cartItems', JSON.stringify(this.state.cartItems))
+             AsyncStorage.setItem('cartItems-'+userId, JSON.stringify(this.state.cartItems))
       }
       
       totalPrice() {

@@ -24,24 +24,28 @@ class MedicineSearch extends Component {
     }
 
     getMedicineList=async()=>{
+        let userId = AsyncStorage.getItem('userId')
+        console.log(userId)
         medicineSearchMap = new Map();
         let result=await getMedicineDetails();
         result.data.forEach(element =>{           
             medicineSearchMap.set(element.medicine_id,element)
-        })       
-        const cart = AsyncStorage.getItem('cartItems')        
-        if(Array.isArray(cart) == true){
+        })   
+        const cartItems = await AsyncStorage.getItem('cartItems-'+userId);        
+        console.log(cartItems)
+        if(Array.isArray(JSON.parse(cartItems)) == true){
             console.log('cart is an array')
-            this.setState({cartItems:cart})
-            cart.forEach(element => {                
-                if(medicineSearchMap.get(element.medicine_id) != undefined){                    
+          this.setState({cartItems:JSON.parse(cartItems)})           
+            this.state.cartItems.forEach(element => {  
+                if(medicineSearchMap.get(element.medicine_id) != undefined){    
                     medicineSearchMap.set(element.medicine_id, element);
                 }
+                        this.setState({cartItems:cartItems}) 
             })
         }
-        // let temp = medicineSearchMap.values();
-        // console.log(temp)
-        this.setState({medicineData:result.data});
+
+        let temp = [...medicineSearchMap.values()]        
+        this.setState({medicineData:temp});      
     }
 
     onPressCard=async(item,index)=>{
@@ -82,14 +86,14 @@ class MedicineSearch extends Component {
     }
 
  addToCart= async() => {
+    let userId = AsyncStorage.getItem('userId')
      let cart =[];
          this.state.medicineData.filter(element=>{
             if( element.selectedQuantity>=1){
                 cart.push(element);
             }
-            console.log('cart'+JSON.stringify(cart))
         })
-        await AsyncStorage.setItem('cartItems', JSON.stringify(cart))
+        await AsyncStorage.setItem('cartItems-'+userId, JSON.stringify(cart))
  }
 
      
