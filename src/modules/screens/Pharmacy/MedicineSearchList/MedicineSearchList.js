@@ -8,6 +8,7 @@ import { StyleSheet, Image, TouchableOpacity, AsyncStorage, FlatList } from 'rea
 import { ScrollView } from 'react-native-gesture-handler';
 import { getSearchedMedicines } from '../../../providers/pharmacy/pharmacy.action';
 
+let temp, userId; 
 class MedicineSearchList extends Component {
     constructor(props) {
         super(props)
@@ -16,12 +17,14 @@ class MedicineSearchList extends Component {
             value:[],
             clickCard:null,
             footerSelectedItem:'',
+            cartItems: []
         }
     }
-componentDidMount(){
+async componentDidMount(){
     
     const keyword=this.props.navigation.getParam('medicineKeyword');
-    this.searchedMedicines(keyword);
+    await this.searchedMedicines(keyword);
+    this.storeMedicineToCart();
 };
 
     searchedMedicines = async (keyword) => {
@@ -32,7 +35,6 @@ componentDidMount(){
             //let userId = await AsyncStorage.getItem('userId');
             let result = await getSearchedMedicines(requestData);
             this.setState({ value: result.data, isLoading: true })
-              console.log('result'+JSON.stringify(result)); 
             }
         catch (e) {
             console.log(e);
@@ -49,8 +51,8 @@ componentDidMount(){
             selectItem.selectedQuantity = --itemQuantity;
             }     
         }    
-        let temp =this.state.medicineData
-        this.setState({medicineData: temp})  
+        let temp =this.state.value
+        this.setState({value: temp})  
         this.addToCart();
   
        }
@@ -71,11 +73,33 @@ componentDidMount(){
                if( element.selectedQuantity>=1){
                    cart.push(element);
                }
-               console.log('cart'+JSON.stringify(cart))
            })
-           await AsyncStorage.setItem('cartItems', JSON.stringify(cart))
-    }
+           await AsyncStorage.setItem('cartItems-'+userId, JSON.stringify(cart))
+        }
    
+    storeMedicineToCart= async() =>{
+        temp = await AsyncStorage.getItem('userId')
+        userId = JSON.stringify(temp);
+        console.log('cartItems-'+userId) 
+        
+        medicineSearchMap = new Map();
+        this.state.value.forEach(element =>{           
+            medicineSearchMap.set(element.medicine_id,element)
+        })   
+        const cartItems = await AsyncStorage.getItem('cartItems-'+userId);        
+        if(Array.isArray(JSON.parse(cartItems)) == true){
+          this.setState({cartItems:JSON.parse(cartItems)})  
+            this.state.cartItems.forEach(element => {  
+                if(medicineSearchMap.get(element.medicine_id) != undefined){    
+                    medicineSearchMap.set(element.medicine_id, element);
+                }
+                      this.setState({cartItems:cartItems}) 
+            })
+        }
+
+        let temp = [...medicineSearchMap.values()]   
+        this.setState({value:temp});      
+    }
     noMedicines() {
         return (
             <Item style={{ borderBottomWidth: 0, justifyContent: 'center', alignItems: 'center' }}>
@@ -116,9 +140,9 @@ componentDidMount(){
 
                                             <Right>
                                             {this.state.clickCard!==index?<Icon  style={{ color: '#5cb75d', marginTop: 20, }} />
-                                                         :<Icon name="checkmark-circle" style={{ color: '#5cb75d', marginTop: 20, }} />} 
-                                        </Right>
-                                        </View>
+                                                :<Icon name="checkmark-circle" style={{ color: '#5cb75d', marginTop: 20, }} />} 
+                                             </Right>
+                                             </View>
 
                                         <Grid>
                                             <Col style={{ width: '25%' }}>
@@ -198,13 +222,12 @@ componentDidMount(){
 
                     </Row>
 
-
                 </Footer>:null
             }
             </Container > 
         )
-                                }
-                            }             
+       }
+       }             
                         
 
 export default MedicineSearchList
@@ -257,7 +280,6 @@ const styles = StyleSheet.create({
     subText: {
         fontFamily: 'OpenSans',
         fontSize: 17,
-        color: 'black',
-        //marginLeft: 5
+        color: 'black'
     }
 });

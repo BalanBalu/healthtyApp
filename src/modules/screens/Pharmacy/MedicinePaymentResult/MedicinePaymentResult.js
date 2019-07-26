@@ -4,14 +4,14 @@ import { Col, Row, Grid } from 'react-native-easy-grid';
 import { StyleSheet, Image, AsyncStorage, TextInput, FlatList, TouchableOpacity } from 'react-native';
 import { Loader } from '../../../../components/ContentLoader';
 
+let temp, userId; 
 class MedicinePaymentResult extends Component {
     constructor(props) {
         super(props)
         this.state = {
             cartItems:[],
             isLoading: false
-        }
-        
+        }       
     }
 
      componentDidMount(){
@@ -27,15 +27,16 @@ class MedicinePaymentResult extends Component {
         // this.setState({ isLoading : true })
         // this.setAddToCart()
         // this.setState({ isLoading : false })
+        temp = await AsyncStorage.getItem('userId')
+        userId = JSON.stringify(temp);
 
-
-        let userId = AsyncStorage.getItem('userId')
-        const cartItems = await AsyncStorage.getItem('cartItems-'+userId);        
+        const cartItems = await AsyncStorage.getItem('cartItems-'+userId);       
         if( cartItems === undefined){
             this.setState({ cartItems: [], isLoading: false });
         }else{       
             this.setState({ cartItems: JSON.parse(cartItems), isLoading: false });
         }
+        console.log(this.state.cartItems)
     }
     catch(e){
         console.log(e);
@@ -44,16 +45,13 @@ class MedicinePaymentResult extends Component {
 
 
     increase(index){
-        let selectedCartItem = this.state.cartItems;
-        console.log('selectedCartItem'+JSON.stringify(selectedCartItem))
+        let selectedCartItem = this.state.cartItems;        
         selectedCartItem[index].selectedQuantity++;
         this.setState({cartItems: selectedCartItem})
-
+        AsyncStorage.setItem('cartItems-'+userId, JSON.stringify(this.state.cartItems))
     }
 
     decrease(index){
-        let userId = AsyncStorage.getItem('userId')
-
         let selectedCartItem = this.state.cartItems;
         if(selectedCartItem[index].selectedQuantity > 1){
             selectedCartItem[index].selectedQuantity--;       
@@ -68,8 +66,6 @@ class MedicinePaymentResult extends Component {
     }
   
     removeMedicine(index){
-        let userId = AsyncStorage.getItem('userId')
-
             let data = this.state.cartItems;
             data.splice(index, 1);
             this.setState({ cartItems: data });
@@ -111,7 +107,7 @@ class MedicinePaymentResult extends Component {
                 <Text style={{ fontFamily: 'OpenSans', fontWeight: 'bold', fontSize: 20, padding: 5 }}>Your Order</Text>
                </Row>
             </Grid>
-              {cartItems== '' ?
+              {cartItems== null  ?
                <Item style={{ borderBottomWidth: 0, justifyContent:'center',alignItems:'center', height:70 }}>
                <Text style={{fontSize:20,justifyContent:'center',alignItems:'center'}}>No Medicines Are Found Your Cart</Text>
                </Item>  :
@@ -172,7 +168,10 @@ class MedicinePaymentResult extends Component {
                 <Footer style={{ backgroundColor: '#7E49C3', }}>
                     <Row style={{ justifyContent: 'center', marginTop: 15 }}>
                         <Text style={{ fontSize: 20, fontWeight: 'bold', color: '#fff' }}>Total </Text>
+                        {this.totalPrice()== undefined ?
+                        <Text style={{ fontSize: 20, fontWeight: 'bold', color: '#fff' }}>{'Rs:0'}</Text>:
                         <Text style={{ fontSize: 20, fontWeight: 'bold', color: '#fff' }}>{'Rs:'+this.totalPrice()}</Text>
+                        }
                     </Row>
                     <Col >
                         <Button style={{ backgroundColor: '#5cb75d', borderRadius: 10, padding: 10, marginTop: 10, marginLeft: 40, height: 35 }} onPress={()=> this.props.navigation.navigate('MedicineCheckout')}>

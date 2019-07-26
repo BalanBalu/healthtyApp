@@ -6,41 +6,40 @@ import { getMedicineDetails } from '../../../providers/pharmacy/pharmacy.action'
 import { StyleSheet, Image, FlatList, TouchableOpacity, AsyncStorage } from 'react-native';
 import { arrayExpression } from '@babel/types';
 
+let temp, userId; 
 class MedicineSearch extends Component {
     constructor(props) {
-        super(props)
-        console.log(this.props)
+        super(props)       
         this.state={
             medicineData:[],
             clickCard:null,
             footerSelectedItem:'',
             cartItems:[],
             searchText: null
-        }
+        }   
     }
 
     componentDidMount(){           
         this.getMedicineList();
     }
 
-    getMedicineList=async()=>{
-        let userId = AsyncStorage.getItem('userId')
-        console.log(userId)
+    getMedicineList=async()=>{    
+       temp = await AsyncStorage.getItem('userId')
+       userId = JSON.stringify(temp);
+       console.log('cartItems-'+userId)
+
         medicineSearchMap = new Map();
         let result=await getMedicineDetails();
         result.data.forEach(element =>{           
             medicineSearchMap.set(element.medicine_id,element)
-        })   
-        const cartItems = await AsyncStorage.getItem('cartItems-'+userId);        
-        console.log(cartItems)
+        })           
+        const cartItems = await AsyncStorage.getItem('cartItems-'+userId);
         if(Array.isArray(JSON.parse(cartItems)) == true){
-            console.log('cart is an array')
           this.setState({cartItems:JSON.parse(cartItems)})           
             this.state.cartItems.forEach(element => {  
                 if(medicineSearchMap.get(element.medicine_id) != undefined){    
                     medicineSearchMap.set(element.medicine_id, element);
                 }
-                        this.setState({cartItems:cartItems}) 
             })
         }
 
@@ -85,8 +84,7 @@ class MedicineSearch extends Component {
        }
     }
 
- addToCart= async() => {
-    let userId = AsyncStorage.getItem('userId')
+ addToCart= async() => {    
      let cart =[];
          this.state.medicineData.filter(element=>{
             if( element.selectedQuantity>=1){
@@ -94,11 +92,9 @@ class MedicineSearch extends Component {
             }
         })
         await AsyncStorage.setItem('cartItems-'+userId, JSON.stringify(cart))
- }
+      }
 
      
- 
-
     render() {
         const {medicineData}=this.state
         const { navigation } = this.props
@@ -141,7 +137,10 @@ class MedicineSearch extends Component {
                         </Button>
                     </View>
                     <Card transparent >
-
+                    {medicineData== '' ?
+                            <Item style={{ borderBottomWidth: 0, justifyContent:'center',alignItems:'center', height:70 }}>
+                               <Text style={{fontSize:20,justifyContent:'center',alignItems:'center'}}>No Medicines </Text>
+                            </Item>  :
                         <Grid style={{ marginTop: 25, padding: 10, width: 'auto' }}>
                             <FlatList 
                                 data={medicineData}
@@ -188,6 +187,7 @@ class MedicineSearch extends Component {
                                 keyExtractor={(item, index) => index.toString()}
                             />
                         </Grid>
+                    }
                     </Card>
                 </Content>
                 
