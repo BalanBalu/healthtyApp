@@ -20,12 +20,11 @@ class UploadPrescription extends Component {
             uploadButton:true,
             isLoading: true,
             isImageNotLoaded:true
-
         }
         
     }
 
-    async componentDidMount(){
+    async componentWillMount(){
         this.getPharmacyData();
     }
 
@@ -43,10 +42,11 @@ class UploadPrescription extends Component {
     autoCompletePharmacyName(keyword){
         if (keyword === '' || keyword === undefined || keyword === null) {
             return [];
+
         }        
         const { pharmacyList } = this.state;
         const regex = new RegExp(`${keyword.trim()}`, 'i');       
-        let selectedPharmacy=pharmacyList.filter(value => value.name.search(regex) >= 0);
+         selectedPharmacy=pharmacyList.filter(value => value.name.search(regex) >= 0);
         return selectedPharmacy;            
     }
 
@@ -54,6 +54,7 @@ class UploadPrescription extends Component {
 
     /*Upload profile pic*/
    attachPrescription(){
+       console.log("attach")
     const options = {
         quality: 1.0,
         maxWidth: 500,
@@ -91,10 +92,13 @@ class UploadPrescription extends Component {
 uploadImageToServer = async (imagePath,selectedPharmacy) => {
     try {
         console.log("Image uploading");
+        console.log(imagePath);
+        console.log(selectedPharmacy);
+        if(selectedPharmacy.length!=0){
         const userId = await AsyncStorage.getItem('userId');
         const pharmacyId=selectedPharmacy[0]._id;
         var formData = new FormData();
-        formData.append('prescription', {
+        formData.append('prescription',{
             uri: imagePath,
             type: 'image/jpeg',
             name: 'photo.jpg'
@@ -114,6 +118,7 @@ uploadImageToServer = async (imagePath,selectedPharmacy) => {
                 imageSource: imagePath,
                 isImageNotLoaded:false
             });
+            console.log('this.state.imageSource'+JSON.stringify(this.state.imageSource));
             this.props.navigation.navigate('MedicineList')
         } else {
             Toast.show({
@@ -123,7 +128,14 @@ uploadImageToServer = async (imagePath,selectedPharmacy) => {
             });
         
         }       
-    } catch (e) {
+    }else{
+        Toast.show({
+            text: 'Kindly select a pharmacy',
+            duration: 3000,
+            type: 'danger'
+        });
+    }
+        }catch (e) {
         Toast.show({
             text: 'Problem Uploading Profile Picture' + e,
             duration: 3000,
@@ -133,12 +145,9 @@ uploadImageToServer = async (imagePath,selectedPharmacy) => {
     }
 }
 
-cancelPrescription(){
-        this.props.navigation.navigate('MedicineList');
-}
 
 render() {
-    let selectedPharmacy=[];
+    var selectedPharmacy=[];
     if(this.state.isImageNotLoaded===true){
         selectedPharmacy=this.autoCompletePharmacyName(this.state.keyword);
     }
@@ -148,11 +157,11 @@ return(
     <Container style={styles.container}>
         {isLoading==true? <Loader style={'appointment'} /> : 
     <Content>
-    <Item style={{ borderBottomWidth: 0,marginTop:10 }}>
-     <Autocomplete style={{ borderBottomWidth: 0,height: 45, backgroundColor: '#F1F1F1', borderRadius: 5,width:'75%',marginLeft:35}}
-    data={selectedPharmacy.length===1 && comp(this.state.keyword,selectedPharmacy[0].name)?[]:selectedPharmacy}
+    <Item style={{ borderBottomWidth: 0,marginTop:10,}}>
+        
+    <Autocomplete style={{ borderBottomWidth: 0, backgroundColor: '#F1F1F1', borderRadius: 5,padding:5,width:'70%',marginLeft:48}}    data={selectedPharmacy.length===1 && comp(this.state.keyword,selectedPharmacy[0].name)?[]:selectedPharmacy}
     defaultValue={this.state.keyword}
-    onChangeText={text => this.setState({ keyword:text })}
+    onChangeText={text => this.setState({ keyword:text})}
      placeholder="Select Pharmacy"
      listStyle={{ position: 'relative' }}
     renderItem={({ item}) => (
@@ -161,34 +170,33 @@ return(
           </TouchableOpacity>
       )}
      keyExtractor={(item, index) => index.toString()} />
+    
      </Item>
     
     
-    <View>      
     <TouchableOpacity onPress={()=>{this.attachPrescription()}}>
     {imageSource===null?    
     <Thumbnail square style={styles.profileImage} source={require('../../../../../assets/images/prescription_upload.png')} /> 
         :<Thumbnail   square style={styles.profileImage} source={{uri:imageSource}} />} 
-    </TouchableOpacity>    
-    <Row style={{width:'83%',}}>
+    </TouchableOpacity> 
+    <Row style={{width:'83.5%',}}>
     <Right>
-        {imageSource!=null?<Icon name="ios-close" style={{ color: 'black',position: 'absolute',marginTop:-205,}} onPress={()=>{this.cancelPrescription()}} />:null}
+        {imageSource!=null?<Icon name="ios-close-circle-outline" style={{ color: 'red',position:'absolute',marginTop:-202}} onPress={()=>{this.setState({imageSource:null})}} />:null}
     </Right>
     </Row>
-    </View>
 
     <View style={{padding:10,marginTop:10}}>
-        <Input placeholder="Comments" style={{borderWidth:0.5,borderRadius:5,borderColor:'#000',height:80,width:'80%',marginLeft:'auto',marginRight:'auto'}}/>        
+        <Input placeholder="Comments" style={{borderWidth:0.5,borderRadius:5,height:80,width:'80%',marginLeft:'auto',marginRight:'auto',paddingVertical:0,paddingHorizontal:0,margin:0}}/>        
     </View>
 
-    <Row style={{alignSelf:'center',justifyContent:'center',marginTop:10,}}>
+    <Row style={{alignSelf:'center',justifyContent:'center',marginTop:10,marginLeft:2}}>
          <Col style={{width:'50%',alignItems:'center'}}>
-         <Button disabled={this.state.uploadButton} style={{borderRadius:5,height:35,padding:40,color:'gray'}} onPress={()=>{this.uploadImageToServer(this.state.imageSource,selectedPharmacy)}}>
+         <Button disabled={this.state.uploadButton} style={{borderRadius:5,height:35,padding:35,color:'gray'}} onPress={()=>{this.uploadImageToServer(this.state.imageSource,selectedPharmacy)}}>
              <Text style={{fontSize:12}}>UPLOAD</Text>
              </Button>
              </Col>
-             <Col style={{width:'30%',alignItems:'center'}}>
-             <Button style={{borderRadius:5,height:35,padding:5}} onPress={()=>this.cancelPrescription()}>
+             <Col style={{width:'28%',alignItems:'center'}}>
+             <Button style={{borderRadius:5,height:35,padding:5}} onPress={()=>this.props.navigation.navigate('MedicineList')}>
              <Text style={{fontSize:12}} >CANCEL</Text>
              </Button>
              </Col>     
