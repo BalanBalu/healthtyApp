@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import { Container, Content, Text, Title, Header, Button, H3, Item, List, ListItem, Card, Input, Left, Right, Thumbnail, Body, Icon, View, Footer, FooterTab,Toast } from 'native-base';
 import { Col, Row, Grid } from 'react-native-easy-grid';
-import { StyleSheet,AsyncStorage} from 'react-native';
+import { StyleSheet,AsyncStorage,TextInput} from 'react-native';
 import { TouchableOpacity } from 'react-native-gesture-handler';
 import ImagePicker from 'react-native-image-picker';
 import { uploadMultiPart } from '../../../../setup/services/httpservices'
@@ -157,23 +157,23 @@ return(
     <Container style={styles.container}>
         {isLoading==true? <Loader style={'appointment'} /> : 
     <Content>
-    <Item style={{ borderBottomWidth: 0,marginTop:10,}}>
-        
-    <Autocomplete style={{ borderBottomWidth: 0, backgroundColor: '#F1F1F1', borderRadius: 5,padding:5,width:'70%',marginLeft:48}}    data={selectedPharmacy.length===1 && comp(this.state.keyword,selectedPharmacy[0].name)?[]:selectedPharmacy}
+    
+    <View style={{marginTop:15}}>
+    <Autocomplete style={{borderBottomWidth: 0, backgroundColor: '#F1F1F1', borderRadius: 5,padding:5,width:'70%',marginLeft:48}}    data={selectedPharmacy.length===1 && comp(this.state.keyword,selectedPharmacy[0].name)?[]:selectedPharmacy}
     defaultValue={this.state.keyword}
     onChangeText={text => this.setState({ keyword:text})}
      placeholder="Select Pharmacy"
-     listStyle={{ position: 'relative' }}
+     listStyle={{ position: 'relative',marginLeft:45,width:'70%',marginTop:-3.5 }}
     renderItem={({ item}) => (
          <TouchableOpacity onPress={() => this.setState({keyword:item.name})}>
-              <Text>{item.name}</Text>
+              <Text style={{ fontFamily: 'OpenSans', borderBottomWidth: 0.3, color: 'gray', marginTop: 2, fontSize: 14 }}>{item.name}</Text>
           </TouchableOpacity>
       )}
      keyExtractor={(item, index) => index.toString()} />
     
-     </Item>
+     </View>
     
-    
+    <View style={{marginTop:-15}}>
     <TouchableOpacity onPress={()=>{this.attachPrescription()}}>
     {imageSource===null?    
     <Thumbnail square style={styles.profileImage} source={require('../../../../../assets/images/prescription_upload.png')} /> 
@@ -184,9 +184,16 @@ return(
         {imageSource!=null?<Icon name="ios-close-circle-outline" style={{ color: 'red',position:'absolute',marginTop:-202}} onPress={()=>{this.setState({imageSource:null})}} />:null}
     </Right>
     </Row>
+    </View>
 
     <View style={{padding:10,marginTop:10}}>
-        <Input placeholder="Comments" style={{borderWidth:0.5,borderRadius:5,height:80,width:'80%',marginLeft:'auto',marginRight:'auto',paddingVertical:0,paddingHorizontal:0,margin:0}}/>        
+         <TextInput style={{borderWidth:0.5,textAlignVertical:'top',borderRadius:5,height:80,width:'80%',marginLeft:'auto',marginRight:'auto'}}
+         placeholder="Comments"
+         placeholderTextColor={'black'}
+         multiline={true} />
+
+
+
     </View>
 
     <Row style={{alignSelf:'center',justifyContent:'center',marginTop:10,marginLeft:2}}>
