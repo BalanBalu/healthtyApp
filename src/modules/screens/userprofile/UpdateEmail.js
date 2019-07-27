@@ -17,7 +17,9 @@ class UpdateEmail extends Component {
             type: null,
             active: true,
             primary_email: null,
-            isLoading: false
+            isLoading: false,
+            userEmail: '',
+            loader:''
         }
     }
 
@@ -28,12 +30,13 @@ class UpdateEmail extends Component {
     bindEmailValues() {
         const { navigation } = this.props;
         const userData = navigation.getParam('updatedata');
-        const fromProfile = navigation.getParam('fromProfile') || false
+       
 
-        if (fromProfile) {
+       
             this.setState({
                 fromProfile: true,
                 primary_email: userData.email,
+                userEmail: userData.secondary_emails[0].email_id
             })
             if (userData.secondary_emails) {
                 this.setState({
@@ -42,38 +45,45 @@ class UpdateEmail extends Component {
                     active: userData.secondary_emails[0].active
                 })
             }
-            console.log(this.state.email + 'email');
-        }
+            
+        
     }
 
     handleEmailUpdate = async () => {
         debugger
+        const{userEmail,email}=this.state
         try {
-            this.setState({ isLoading: true });
+           this.setState({ isLoading: true  });
             let userId = await AsyncStorage.getItem('userId');
-            let data = {
-                secondary_emails: [{
-                    email_id: this.state.email,
-                    type: "Secondary",
-                    active: this.state.active
-                }]
-            };
-            let response = await userFiledsUpdate(userId, data);
-            if (response.success) {
-                Toast.show({
-                    text: 'Email updated Successfully',
-                    type: "success",
-                    duration: 3000,
+            if (userEmail != email) {
+                this.setState({ loader: 'please wait updating'})
+                let data = {
+                    secondary_emails: [{
+                        email_id: email,
+                        type: "Secondary",
+                        active: this.state.active
+                    }]
+                };
+                let response = await userFiledsUpdate(userId, data);
+                if (response.success) {
+                    Toast.show({
+                        text: 'Email updated Successfully',
+                        type: "success",
+                        duration: 3000,
 
-                })
+                    })
+                    this.props.navigation.navigate('Profile');
+                } else {
+                    Toast.show({
+                        text: 'Email not updated',
+                        type: "danger",
+                        duration: 3000
+                    })
+
+                }
+            }
+            else {
                 this.props.navigation.navigate('Profile');
-            } else {
-                Toast.show({
-                    text: 'Email not updated',
-                    type: "danger",
-                    duration: 3000
-                })
-
             }
 
 
@@ -122,7 +132,7 @@ class UpdateEmail extends Component {
 
                             <Spinner color='blue'
                                 visible={this.state.isLoading}
-                                textContent={'Loading...'}
+                                textContent={this.state.loader}
                             />
 
 

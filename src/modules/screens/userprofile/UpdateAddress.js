@@ -56,7 +56,7 @@ class UserDetails extends Component {
         try {
             const { userData, no_and_street, address_line_1, address_line_2, city, pin_code } = this.state
             this.setState({ isLoading: true });
-            await this.setState({ loderContent: 'Please wait updatting' })
+            await this.setState({ loderContent: 'Loading....' })
             
             if (no_and_street != userData.address.address.no_and_street ||address_line_1 != userData.address.address.address_line_1 ||
                 address_line_2 != userData.address.address.address_line_2 ||city != userData.address.address.city ||
@@ -128,7 +128,7 @@ class UserDetails extends Component {
 
             <Container style={styles.Container}>
 
-                {this.state.isLoading == false ?
+               
                 <Content style={styles.bodyContent} contentContainerStyle={{ flex: 1, height: '75%' }}>
                   
                     <H3 style={{ fontSize: 20, fontFamily: 'opensans-semibold', marginTop: 40, marginLeft: '5%', fontWeight: 'bold', }}>Update User Details</H3>
@@ -253,13 +253,13 @@ class UserDetails extends Component {
                         overlayColor="none"
                     /> */}
 
-                    </Content> :
+                    </Content> 
                     <Spinner color='blue'
                         visible={this.state.isLoading}
                         textContent={this.state.loderContent}
                         overlayColor="none"
                         cancelable={false}
-                    />}
+                    />
 
             </Container>
 
