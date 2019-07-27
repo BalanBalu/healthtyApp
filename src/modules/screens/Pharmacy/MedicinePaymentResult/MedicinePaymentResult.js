@@ -3,6 +3,7 @@ import { Container, Content, Text, Title, Header, Form, Textarea, Button, H3, It
 import { Col, Row, Grid } from 'react-native-easy-grid';
 import { StyleSheet, Image, AsyncStorage, TextInput, FlatList, TouchableOpacity } from 'react-native';
 import { Loader } from '../../../../components/ContentLoader';
+import { medicineRateAfterOffer } from '../../../common';
 
 let temp, userId; 
 class MedicinePaymentResult extends Component {
@@ -21,12 +22,6 @@ class MedicinePaymentResult extends Component {
 
     getAddToCart= async() => {
     try{
-        // const cartItems = await AsyncStorage.getItem('cartItems');
-        // console.log('cartItems'+cartItems)
-        // this.setState({cartItems: cartItems} )
-        // this.setState({ isLoading : true })
-        // this.setAddToCart()
-        // this.setState({ isLoading : false })
         temp = await AsyncStorage.getItem('userId')
         userId = JSON.stringify(temp);
 
@@ -58,11 +53,6 @@ class MedicinePaymentResult extends Component {
          this.setState({cartItems: selectedCartItem})
             AsyncStorage.setItem('cartItems-'+userId, JSON.stringify(this.state.cartItems))
         }
-    }
-
-    medicineOffer(item){
-
-        return parseInt(item.price) - ((parseInt(item.offer)/100) * parseInt(item.price));
     }
   
     removeMedicine(index){
@@ -107,7 +97,7 @@ class MedicinePaymentResult extends Component {
                 <Text style={{ fontFamily: 'OpenSans', fontWeight: 'bold', fontSize: 20, padding: 5 }}>Your Order</Text>
                </Row>
             </Grid>
-              {cartItems== null  ?
+              {cartItems== '' || cartItems== null  ?
                <Item style={{ borderBottomWidth: 0, justifyContent:'center',alignItems:'center', height:70 }}>
                <Text style={{fontSize:20,justifyContent:'center',alignItems:'center'}}>No Medicines Are Found Your Cart</Text>
                </Item>  :
@@ -130,7 +120,7 @@ class MedicinePaymentResult extends Component {
 
                         <View style={{ marginLeft: 105, flex: 1, flexDirection: 'row', marginTop: 15 }}>
                           <Row>
-                            <Text style={styles.subText}>{'\u20B9'}{this.medicineOffer(item)}</Text>
+                            <Text style={styles.subText}>{'\u20B9'}{medicineRateAfterOffer(item)}</Text>
                             <Text style={{ marginLeft: 10, marginTop: 2, color: 'gray', fontSize: 15, textDecorationLine: 'line-through', textDecorationStyle: 'solid', textDecorationColor: 'gray' }}>
                                             {'\u20B9'}{item.price}</Text>
                             <Text style={{ fontFamily: 'OpenSans', fontSize: 15, color: '#ffa723', marginLeft: 20, fontWeight: 'bold' }}> {'Get'+ ' ' +item.offer+ '%' +' ' +'Off'}</Text>

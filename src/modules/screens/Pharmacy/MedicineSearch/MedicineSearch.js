@@ -5,6 +5,9 @@ import { getMedicineDetails } from '../../../providers/pharmacy/pharmacy.action'
 
 import { StyleSheet, Image, FlatList, TouchableOpacity, AsyncStorage } from 'react-native';
 import { arrayExpression } from '@babel/types';
+import { NavigationEvents } from 'react-navigation';
+import { addToCart,medicineRateAfterOffer } from '../../../common';
+
 
 let temp, userId; 
 class MedicineSearch extends Component {
@@ -19,14 +22,14 @@ class MedicineSearch extends Component {
         }   
     }
 
-    componentDidMount(){           
+    componentDidMount(){
+        this.setState({clickCard:null});               
         this.getMedicineList();
     }
 
     getMedicineList=async()=>{    
        temp = await AsyncStorage.getItem('userId')
-       userId = JSON.stringify(temp);
-       console.log('cartItems-'+userId)
+       userId = JSON.stringify(temp);      
 
         medicineSearchMap = new Map();
         let result=await getMedicineDetails();
@@ -52,25 +55,10 @@ class MedicineSearch extends Component {
      await this.setState({footerSelectedItem:item});
    }
 
-   addSubOperation(selectItem,operation){
-    let itemQuantity;
-    if(operation==="add"){           
-    itemQuantity = (selectItem.selectedQuantity==undefined?0:selectItem.selectedQuantity);
-    selectItem.selectedQuantity=++itemQuantity;    
-    }else{
-        if(selectItem.selectedQuantity>0){
-        itemQuantity=selectItem.selectedQuantity;
-        selectItem.selectedQuantity = --itemQuantity;
-        }     
-    }    
-    let temp =this.state.medicineData
-    this.setState({medicineData: temp})    
-    this.addToCart();
+   async addSubOperation(selectItem,operation){
+    let data = await addToCart(this.state.medicineData, selectItem, operation);    
+    this.setState({footerSelectedItem:data.selectemItemData})       
    }
-
-   returnRequiredRate(item){
-        return parseInt(item.price)-((parseInt(item.offer)/100) * parseInt(item.price));
-   } 
 
    onSearchPress() { 
        if(this.state.searchText!==null){
@@ -84,16 +72,6 @@ class MedicineSearch extends Component {
        }
     }
 
- addToCart= async() => {    
-     let cart =[];
-         this.state.medicineData.filter(element=>{
-            if( element.selectedQuantity>=1){
-                cart.push(element);
-            }
-        })
-        await AsyncStorage.setItem('cartItems-'+userId, JSON.stringify(cart))
-      }
-
      
     render() {
         const {medicineData}=this.state
@@ -101,6 +79,9 @@ class MedicineSearch extends Component {
 
         return (
             <Container style={styles.container}>
+                <NavigationEvents
+					onWillFocus={payload => { this.componentDidMount() }}
+				/>
                 <Content >
                     <Grid style={styles.curvedGrid}>
                     </Grid>
@@ -177,7 +158,7 @@ class MedicineSearch extends Component {
                                                             color: '#000',
                                                             marginLeft: 10,
                                                             fontWeight: "bold"
-                                                        }} >{this.returnRequiredRate(item)}</Text>
+                                                        }} >{medicineRateAfterOffer(item)}</Text>
                                                     </View>
 
 
@@ -224,9 +205,9 @@ class MedicineSearch extends Component {
                                     <View>
                                         <Text style={{ position: 'absolute', height: 20, width: 20, fontSize: 13, backgroundColor: '#ffa723', top: 0, marginLeft: -105, borderRadius: 20, marginTop: -10 }}>
                                             20
-                                        </Text>
-                                    </View>
-                                </Row>
+                                        </Text>     
+                                    </View>   
+                                </Row>               
                             </Button>
                         </Col>
 

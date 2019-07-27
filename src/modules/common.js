@@ -1,5 +1,5 @@
 import React from 'react';
-import { View, Text } from "react-native";
+import { View, Text, AsyncStorage} from "react-native";
 import { Icon } from 'native-base';
 import { Col, Row, Grid } from 'react-native-easy-grid';
 
@@ -73,4 +73,30 @@ export function renderProfileImage(data) {
         source = require('../../assets/images/profile_common.png')
     }
     return (source)
+} 
+
+export async function addToCart(medicineData, selectItem, operation) {
+    let userId = JSON.stringify(await AsyncStorage.getItem('userId'))    
+    let itemQuantity;
+    if(operation==="add"){           
+    itemQuantity = (selectItem.selectedQuantity==undefined?0:selectItem.selectedQuantity);
+    selectItem.selectedQuantity=++itemQuantity;    
+    }else{
+        if(selectItem.selectedQuantity>0){
+        itemQuantity=selectItem.selectedQuantity;
+        selectItem.selectedQuantity = --itemQuantity;
+        }     
+    }     
+   let cart =[];
+        medicineData.filter(element=>{
+           if( element.selectedQuantity>=1){
+               cart.push(element);
+           }
+       })
+       await AsyncStorage.setItem('cartItems-'+userId, JSON.stringify(cart))
+       return{selectemItemData: selectItem}
+}
+
+export function medicineRateAfterOffer(item){
+    return parseInt(item.price)-((parseInt(item.offer)/100) * parseInt(item.price));
 } 

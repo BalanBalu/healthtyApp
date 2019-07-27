@@ -7,6 +7,8 @@ import { connect } from 'react-redux'
 import { StyleSheet, Image, TouchableOpacity, AsyncStorage, FlatList } from 'react-native';
 import { ScrollView } from 'react-native-gesture-handler';
 import { getSearchedMedicines } from '../../../providers/pharmacy/pharmacy.action';
+import { NavigationEvents } from 'react-navigation';
+import { addToCart, medicineRateAfterOffer } from '../../../common';
 
 let temp, userId; 
 class MedicineSearchList extends Component {
@@ -14,14 +16,14 @@ class MedicineSearchList extends Component {
         super(props)
         console.log(this.props)
         this.state={
-            value:[],
+            medicineData:[],
             clickCard:null,
             footerSelectedItem:'',
             cartItems: []
         }
     }
 async componentDidMount(){
-    
+    this.setState({clickCard:null});   
     const keyword=this.props.navigation.getParam('medicineKeyword');
     await this.searchedMedicines(keyword);
     this.storeMedicineToCart();
@@ -30,60 +32,34 @@ async componentDidMount(){
     searchedMedicines = async (keyword) => {
         try {
             let requestData = {
-                value: keyword           
+                medicineData: keyword           
             };
             //let userId = await AsyncStorage.getItem('userId');
             let result = await getSearchedMedicines(requestData);
-            this.setState({ value: result.data, isLoading: true })
+            this.setState({ medicineData: result.data, isLoading: true })
             }
         catch (e) {
             console.log(e);
         }
     }
-    addSubOperation(selectItem,operation){
-        let itemQuantity;
-        if(operation==="add"){           
-        itemQuantity = (selectItem.selectedQuantity==undefined?0:selectItem.selectedQuantity);
-        selectItem.selectedQuantity=++itemQuantity;    
-        }else{
-            if(selectItem.selectedQuantity>0){
-            itemQuantity=selectItem.selectedQuantity;
-            selectItem.selectedQuantity = --itemQuantity;
-            }     
-        }    
-        let temp =this.state.value
-        this.setState({value: temp})  
-        this.addToCart();
-  
-       }
+
+    async addSubOperation(selectItem,operation){
+        let data = await addToCart(this.state.medicineData, selectItem, operation);    
+        this.setState({footerSelectedItem:data.selectemItemData})       
+    }
 
     onPressCard=async(item,index)=>{
         this.setState({clickCard:index})
         await this.setState({footerSelectedItem:item});
-      }
-   
-    medicineOffer(item){
-
-        return parseInt(item.price) - ((parseInt(item.offer)/100) * parseInt(item.price));
-    }
-
-    addToCart= async() => {
-        let cart =[];
-            this.state.value.filter(element=>{
-               if( element.selectedQuantity>=1){
-                   cart.push(element);
-               }
-           })
-           await AsyncStorage.setItem('cartItems-'+userId, JSON.stringify(cart))
-        }
-   
+      }  
+  
     storeMedicineToCart= async() =>{
         temp = await AsyncStorage.getItem('userId')
         userId = JSON.stringify(temp);
         console.log('cartItems-'+userId) 
         
         medicineSearchMap = new Map();
-        this.state.value.forEach(element =>{           
+        this.state.medicineData.forEach(element =>{           
             medicineSearchMap.set(element.medicine_id,element)
         })   
         const cartItems = await AsyncStorage.getItem('cartItems-'+userId);        
@@ -98,7 +74,7 @@ async componentDidMount(){
         }
 
         let temp = [...medicineSearchMap.values()]   
-        this.setState({value:temp});      
+        this.setState({medicineData:temp});      
     }
     noMedicines() {
         return (
@@ -108,9 +84,12 @@ async componentDidMount(){
         )
     }
     render() {
-        const {value} =this.state;
+        const {medicineData} =this.state;
         return (
             <Container style={styles.container}>
+                 <NavigationEvents
+					onWillFocus={payload => { this.componentDidMount() }}
+				/>
                 <Content>
                     <Grid style={styles.curvedGrid}>
                     </Grid>
@@ -127,8 +106,8 @@ async componentDidMount(){
                     </Grid>
                     {/* <Card transparent style={{ padding: 10, marginTop: 60 }} onTouchStart={() => this.props.navigation.navigate('MedicineCheckout')} > */}
                        
-                    {this.state.value==null?this.noMedicines():
-                     <FlatList data={value}
+                    {this.state.medicineData==null?this.noMedicines():
+                     <FlatList data={medicineData}
                      extraData={this.state}
                      keyExtractor={(item, index) => index.toString()}
                             renderItem={
@@ -164,7 +143,7 @@ async componentDidMount(){
                                             <Col style={{ marginLeft: 20, width: '70%', alignItems: 'flex-start', justifyContent: 'center', marginTop: 10 }}>
                                                 <Text style={styles.normalText}>{item.medicine_name}</Text>
                                                 <Row>
-                                                    <Text style={styles.subText}>{'\u20B9'}{this.medicineOffer(item)}</Text>
+                                                    <Text style={styles.subText}>{'\u20B9'}{medicineRateAfterOffer(item)}</Text>
                                                     <Text style={{ marginLeft: 10, marginTop: 2, color: 'gray', fontSize: 15, textDecorationLine: 'line-through', textDecorationStyle: 'solid', textDecorationColor: 'gray' }}>
                                                         {'\u20B9'}{item.price}</Text>
                                                 </Row>
