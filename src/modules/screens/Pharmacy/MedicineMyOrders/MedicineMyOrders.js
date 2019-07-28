@@ -128,9 +128,14 @@ class MedicineMyOrders extends Component {
                             </Grid>
 
                             <View style={{
-                                padding: 5, marginTop: 20
+                                padding: 5, borderRadius: 10, borderColor: '#8e44ad', borderWidth: 2,
                             }}>
 
+
+                                <Row style={{ marginTop: 20, }}>
+                                    <Text style={{ fontFamily: 'OpenSans', fontSize: 18, marginLeft: 10, color: '#0a3d62', fontWeight: 'bold' }}>Order List: 1</Text>
+                                    <Right><Text style={{ fontFamily: 'OpenSans', fontSize: 18, color: '#0a3d62', marginRight: 10, fontWeight: 'bold' }}>23-7-2019</Text></Right>
+                                </Row>
 
 
                                 {cartItems == '' ?
@@ -143,40 +148,40 @@ class MedicineMyOrders extends Component {
                                         keyExtractor={(item, index) => index.toString()}
                                         renderItem={({ item, index }) =>
 
-                                            <Card style={{ marginTop: 10, padding: 5, height: 155, borderRadius: 5 }}>
+                                            <View style={{ marginTop: 10, padding: 5, height: 160, borderTopColor: '#000', borderTopWidth: 1 }}>
                                                 <Grid>
-                                                    <Row>
-                                                        <Right><Text style={{
-                                                            fontFamily: 'OpenSans',
-                                                            fontSize: 16, color: '#e84393', marginRight: 10, fontWeight: 'bold'
-                                                        }}>Friday, July 26-2019 11:25 am</Text></Right>
-                                                    </Row>
 
+                                                    <View style={{ flexDirection: 'column' }}>
+                                                        <Image source={{ uri: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQ-hoBS1Om5R7srf1jULEdImPjOS1gdCSTMUFgccbOfymosJAwP' }} style={{
+                                                            width: 110, height: 110, borderRadius: 10, marginTop: 20
+                                                        }} />
 
-                                                    <View style={{ marginLeft: 10, marginTop: 20, flexDirection: 'row' }}>
-                                                        <Text style={{ fontFamily: 'OpenSans', fontSize: 18, fontWeight: 'bold', color: '#3966c6' }}>Order Id </Text>
-                                                        <Text style={{ fontFamily: 'OpenSans', fontSize: 16, marginLeft: 48, fontWeight: 'bold' }}>:  123njh11e13123ddafw </Text>
 
                                                     </View>
-                                                    <View style={{ flexDirection: 'row', marginLeft: 10, marginTop: 5 }}>
-                                                        <Text style={{ fontSize: 15, fontWeight: 'bold', fontFamily: 'OpenSans', color: '#3966c6', }}>Pharmacy </Text>
-                                                        <Text style={{ fontSize: 15, fontFamily: 'OpenSans', marginLeft: 42, fontWeight: 'bold' }}> :  Apollo Pharmacy</Text>
+                                                    <View>
+                                                        <View style={{ marginLeft: 20, marginTop: 15 }}>
+                                                            <Text style={styles.labelTop}>{item.medicineName} </Text>
+                                                            <Text style={styles.textDesc}>Dolo 650 MG Tablet is used to tempo-rarily relieve </Text>
+
+
+                                                        </View>
+                                                        <View style={{ marginLeft: 20, flex: 1, flexDirection: 'row', marginTop: 10 }}>
+
+                                                            <Text style={{ fontSize: 15, fontWeight: 'bold', fontFamily: 'OpenSans', color: '#3966c6' }}>Pharmacy :</Text>
+                                                            <Text style={{ fontSize: 15, fontFamily: 'OpenSans', marginLeft: 10 }}>Apollo Pharmacy</Text>
+
+                                                        </View>
+                                                        <View style={{ marginLeft: 20, flex: 1, flexDirection: 'row', marginTop: 5 }}>
+
+                                                            <Text style={{ fontSize: 15, fontWeight: 'bold', fontFamily: 'OpenSans', color: '#3966c6' }}>Quantity :</Text>
+                                                            <Text style={{ fontSize: 15, fontFamily: 'OpenSans', marginLeft: 10 }}>10</Text>
+                                                            <Text style={{ fontSize: 15, fontWeight: 'bold', fontFamily: 'OpenSans', marginLeft: 20, color: '#3966c6' }}>Total :</Text>
+                                                            <Text style={styles.subText}>{'\u20B9'}{this.medicineOffer(item)}</Text>
+
+                                                        </View>
                                                     </View>
-
-
-                                                    <View style={{ flexDirection: 'row', marginLeft: 10, marginTop: 5 }}>
-
-                                                        <Text style={{ fontSize: 15, fontWeight: 'bold', fontFamily: 'OpenSans', color: '#3966c6' }}>No of Medicine </Text>
-                                                        <Text style={{ fontSize: 15, fontFamily: 'OpenSans', marginLeft: 10, fontWeight: 'bold' }}>:  10</Text>
-                                                    </View>
-                                                    <View style={{ flexDirection: 'row', marginLeft: 10, marginTop: 5 }}>
-                                                        <Text style={{ fontSize: 15, fontWeight: 'bold', fontFamily: 'OpenSans', color: '#3966c6' }}>Total </Text>
-                                                        <Text style={styles.subText}>:{'  '}{'\u20B9'}{this.medicineOffer(item)}</Text>
-
-                                                    </View>
-
                                                 </Grid>
-                                            </Card>
+                                            </View>
 
                                         } />
                                 }
@@ -323,10 +328,7 @@ const styles = StyleSheet.create({
         fontFamily: 'OpenSans',
         fontSize: 17,
         color: '#c26c57',
-        marginLeft: 79,
+        marginLeft: 10,
         fontWeight: "bold"
     }
-
-
-
 });
