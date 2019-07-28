@@ -2,6 +2,8 @@ import React, { Component } from 'react';
 import { Container, Content, Toast, Text, Title, Header, Button, H3, Item, List, ListItem, Card, Input, Left, Right, Thumbnail, Body, Icon, View, Footer, FooterTab } from 'native-base';
 import { Col, Row, Grid } from 'react-native-easy-grid';
 import { getMedicineDetails } from '../../../providers/pharmacy/pharmacy.action'
+// import { uploadMultiPart } from '../../../setup/services/httpservices'
+
 
 import { StyleSheet, Image, FlatList, TouchableOpacity, AsyncStorage } from 'react-native';
 import { arrayExpression } from '@babel/types';
@@ -50,6 +52,7 @@ class MedicineSearch extends Component {
         this.setState({medicineData:temp});      
     }
 
+
     onPressCard=async(item,index)=>{
      this.setState({clickCard:index})
      await this.setState({footerSelectedItem:item});
@@ -75,7 +78,6 @@ class MedicineSearch extends Component {
      
     render() {
         const {medicineData}=this.state
-        const { navigation } = this.props
 
         return (
             <Container style={styles.container}>
@@ -110,7 +112,7 @@ class MedicineSearch extends Component {
                         </Row>
                     </Grid>
                     <View style={{ marginLeft: 'auto', marginRight: 'auto', marginTop: 20 }}>
-                        <Button style={{ justifyContent: "center", backgroundColor: '#745DA6', borderRadius: 5 }}>
+                        <Button style={{ justifyContent: "center", backgroundColor: '#745DA6', borderRadius: 5 }} onPress={() => this.props.navigation.navigate('UploadPrescription')} testID="clickButtonToUploadPrescription">
                             <Icon style={{ fontSize: 30 }} name='ios-cloud-upload'>
                                 <Text style={{ padding: 2, color: '#fff', }}>Upload your prescription
                                 </Text>
@@ -118,7 +120,7 @@ class MedicineSearch extends Component {
                         </Button>
                     </View>
                     <Card transparent >
-                    {medicineData== '' ?
+                    {medicineData.length == 0 ?
                             <Item style={{ borderBottomWidth: 0, justifyContent:'center',alignItems:'center', height:70 }}>
                                <Text style={{fontSize:20,justifyContent:'center',alignItems:'center'}}>No Medicines </Text>
                             </Item>  :

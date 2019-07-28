@@ -23,6 +23,7 @@ export const deleteService = async(endPoint, data) => {
    return resp;
 }
 export const uploadMultiPart = async(endPoint,formData) => {
+   console.log("axios running");
    var req = {
       method: 'PUT',
       url: API_URL+endPoint,
@@ -30,8 +31,10 @@ export const uploadMultiPart = async(endPoint,formData) => {
       headers: {
       'content-type': `multipart/form-data; boundary=${formData._boundary}`,
       },
+
   }
   const response = await axios(req)
+  console.log('axiosresponse'+JSON.stringify(response));
   return response;
 
 }
