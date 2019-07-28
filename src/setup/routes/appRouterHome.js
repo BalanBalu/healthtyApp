@@ -59,6 +59,7 @@ import MedicineCheckout from '../../modules/screens/Pharmacy/MedicineCheckout/Me
 import MedicinePaymentPage from '../../modules/screens/Pharmacy/MedicinePaymentPage/MedicinePaymentPage';
 import MedicinePaymentResult from '../../modules/screens/Pharmacy/MedicinePaymentResult/MedicinePaymentResult';
 import MedicinePaymentSuccess from '../../modules/screens/Pharmacy/MedicinePaymentSuccess/MedicinePaymentSuccess';
+import UploadPrescription from '../../modules/screens/Pharmacy/MedicineSearch/UploadPrescription';
 
 
 const routes = {
@@ -393,6 +394,14 @@ const ProfileStack = createStackNavigator({
           </TouchableOpacity>
         ),
       })
+    },
+    UploadPrescription:{
+      screen: UploadPrescription,
+      navigationOptions:{
+       title: 'UploadPrescription'
+     }
+
+      
     },
     medicineSearchList: {
       screen: MedicineSearchList,

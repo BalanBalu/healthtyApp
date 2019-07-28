@@ -103,13 +103,7 @@ export default class Filters extends Component {
           }
         })
         console.log('finalFilArray' + JSON.stringify(finalFilArray));
-
-        if (this.state.genderSelected == '') {
-            alert("We can't Find the Empty data");
-        }
-        else {
             this.props.navigation.navigate('Doctor List', { filterData: finalFilArray, filterBySelectedAvailabilityDateCount: this.state.selectAvailabilityIndex, ConditionFromFilter: true })
-        }
     }
     /*  Select GenderPreference */
     clickGenderInButton = (genderIndex, genderSelected) => {
@@ -137,8 +131,8 @@ export default class Filters extends Component {
                         <Row style={{ justifyContent: 'center', marginTop: 10 }}>
                             <Col>
                                 <Button bordered
-                                    style={genderIndex === 0 ? styles.selectedGenderColor : styles.defaultGenderColor}
-                                    onPress={() => this.clickGenderInButton(0, "M")}
+                                    style={genderIndex === 1 ? styles.selectedGenderColor : styles.defaultGenderColor}
+                                    onPress={() => this.clickGenderInButton(1, "M")}
                                 >
                                     <View style={{ marginLeft: 'auto', marginRight: 'auto' }}>
                                         <Icon style={{ fontSize: 30, marginLeft: 'auto', marginRight: 'auto' }} name='male' />
@@ -149,8 +143,8 @@ export default class Filters extends Component {
                             </Col>
                             <Col>
                                 <Button bordered style={styles.defaultColor}
-                                    style={genderIndex === 1 ? styles.selectedGenderColor : styles.defaultColor}
-                                    onPress={() => this.clickGenderInButton(1, "F")}
+                                    style={genderIndex === 2 ? styles.selectedGenderColor : styles.defaultColor}
+                                    onPress={() => this.clickGenderInButton(2, "F")}
                                 >
                                     <View style={{ marginLeft: 'auto', marginRight: 'auto' }}>
                                         <Icon style={{ fontSize: 30, marginLeft: 'auto', marginRight: 'auto', }} name='female' />
@@ -161,9 +155,9 @@ export default class Filters extends Component {
                             </Col>
                             <Col>
                                 <Button bordered style={styles.defaultColor}
-                                    style={genderIndex === 2 ? styles.selectedGenderColor : styles.defaultGenderColor}
+                                    style={genderIndex === 3 ? styles.selectedGenderColor : styles.defaultGenderColor}
 
-                                    onPress={() => this.clickGenderInButton(2, "O")} >
+                                    onPress={() => this.clickGenderInButton(3, "O")} >
                                     <View style={{ marginLeft: 'auto', marginRight: 'auto' }}>
                                         <Icon style={{ fontSize: 30, marginLeft: 'auto', marginRight: 'auto', }} name='female' />
 

@@ -108,13 +108,13 @@ class MyAppoinmentList extends Component {
 			let upCommingAppointmentResult = await getUserAppointments(userId, filters);
 
 			if (upCommingAppointmentResult.success) {
-				var doctorInfo=[];
+				let doctorInfo=new Map();
 				upCommingAppointmentResult = upCommingAppointmentResult.data;
 
 				let doctorIds = upCommingAppointmentResult.map(appointmentResult => {
 
 					return appointmentResult.doctor_id;
-				}).join(",");
+   		}).join(",");
 
 				let speciallistResult = await getMultipleDoctorDetails(doctorIds, "specialist,education");
 			        
@@ -133,20 +133,21 @@ class MyAppoinmentList extends Component {
 
 				});
 			     
-				let upcommingSpecialist = [];
-				upCommingAppointmentResult.map(doctor_id => {
+				let upcommingInfo = [];
+				upCommingAppointmentResult.map(doctorData => {
 					
                       
-					console.log(doctorInfo.doctor_id.degree)
 
-					upcommingSpecialist.push({ appointmentResult: doctor_id, specialist: doctorInfo.get(doctor_id.specialist), degree:doctorInfo.get(doctor_id.degree) });
+					let details = doctorInfo.get(doctorData.doctor_id)
+
+					upcommingInfo.push({ appointmentResult: doctorData, specialist: details.specialist, degree:details.degree });
 
 
 						
-				
-
-					this.setState({ upComingData: upcommingSpecialist, data: upcommingSpecialist, specialist: upcommingSpecialist });
 				})
+
+				this.setState({ upComingData: upcommingInfo, data: upcommingInfo });
+				
 				
 			}
 		} catch (e) {
@@ -160,7 +161,7 @@ class MyAppoinmentList extends Component {
 			let filters = { endDate: endData, startDate: "2018-01-01" };
 			let pastAppointmentResult = await getUserAppointments(userId, filters);
 			let viewUserReviewResult = await viewUserReviews("user", userId);
-			let doctorInfo = [];
+		    let doctorInfo=new Set();
 			if (pastAppointmentResult.success) {
 				pastAppointmentResult = pastAppointmentResult.data;
 				viewUserReviewResult = viewUserReviewResult.data;
@@ -169,10 +170,10 @@ class MyAppoinmentList extends Component {
 
 					return appointmentResult.doctor_id;
 				}).join(",");
-
+				let doctorInfo =new Map();   
 				let speciallistResult = await getMultipleDoctorDetails(doctorIds, "specialist,education");
 				speciallistResult.data.forEach(doctorData => {
-
+				
 
 					educationDetails = doctorData.education.map(education => {
 						return education.degree;
@@ -181,19 +182,21 @@ class MyAppoinmentList extends Component {
 					speaciallistDetails = doctorData.specialist.map(categories => {
 						return categories.category;
 					}).join(",");
-					doctorInfo.push({ doctor_id: doctorData.doctor_id, degree: educationDetails, specialist: speaciallistDetails })
+					doctorInfo.set(doctorData.doctor_id,{ degree: educationDetails, specialist: speaciallistDetails })
 
 
 				});
-
+				
+				
 				let pastDoctorDetails = [];
-				pastAppointmentResult.map((_id, index) => {
+				pastAppointmentResult.map((doctorData, index) => {
 
-
+					
+					
 					let ratting;
-					if (_id.appointment_status == "COMPLETED") {
+					if (doctorData.appointment_status == "COMPLETED") {
 						viewUserReviewResult.map(viewUserReview => {
-							if (_id._id === viewUserReview.appointment_id) {
+							if (doctorData._id === viewUserReview.appointment_id) {
 								ratting = viewUserReview.overall_rating
 
 							}
@@ -202,17 +205,16 @@ class MyAppoinmentList extends Component {
 
 					}
 
-					doctorInfo.forEach(doctorDetails => {
 
-						if (_id.doctor_id == doctorDetails.doctor_id) {
-							pastDoctorDetails.push({
-								appointmentResult: _id, specialist: doctorDetails.specialist, degree: doctorDetails.degree, ratting: ratting
+					let details = doctorInfo.get(doctorData.doctor_id)
+						pastDoctorDetails.push({
+							appointmentResult: doctorData, specialist: details.specialist, degree: details.degree, ratting: ratting
 
-							});
-						}
-					})
+						});
+				
+			
 
-				}
+			 }
 
 				)
 				this.setState({ pastData: pastDoctorDetails });
@@ -335,14 +337,7 @@ class MyAppoinmentList extends Component {
 													<Body>
 														<Item style={{ borderBottomWidth: 0 }}>
 															<Text style={{ fontFamily: "OpenSans" }}>
-																{item.appointmentResult.doctorInfo.prefix ||
-																	"Dr" +
-																	"." +
-																	item.appointmentResult.doctorInfo
-																		.first_name +
-																	" " +
-																	item.appointmentResult.doctorInfo
-																		.last_name}{" "}
+																{item.appointmentResult.doctorInfo.prefix ||"Dr." +item.appointmentResult.doctorInfo.first_name +" " +item.appointmentResult.doctorInfo.last_name}{" "}
 															</Text>
 															<Text
 																style={{

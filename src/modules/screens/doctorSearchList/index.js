@@ -60,14 +60,13 @@ class doctorSearchList extends Component {
     navigateToFilters() {
         this.props.navigation.navigate('Filters', { doctorData: this.state.doctorData, doctorDetailsWitSlots: this.state.doctorDetails })
     }
-    componentDidMount = async () => {
-        debugger
+    componentWillMount = async () => {
+
         const { navigation } = this.props;
         const filterData = navigation.getParam('filterData');
         const filterBySelectedAvailabilityDateCount = navigation.getParam('filterBySelectedAvailabilityDateCount');
         conditionFromFilterPage = navigation.getParam('ConditionFromFilter');
         await this.setState({ filterData: filterData })
-        console.log('conditionFromFilterPage is ' + conditionFromFilterPage);
         if (conditionFromFilterPage == true) {
             console.log('comming FilterPage');
             this.renderDoctorListByFilteredData(filterData, filterBySelectedAvailabilityDateCount)
@@ -80,29 +79,21 @@ class doctorSearchList extends Component {
 
     renderDoctorListByFilteredData = async (filterData, availtyDateCount) => {
         console.log('filterData' + JSON.stringify(filterData))
-        // console.log('this.state.doctorDetails' + JSON.stringify(this.state.doctorDetails));
-        let index=0;
-     let filteredDocListArray=[];
-     let uniqueFilteredDocArray = [];
+    let availableDateSlotsDocArray =[];
+if(availtyDateCount !==0){
 
         this.state.doctorDetails.forEach((docDetailElement)=>{
-
         for (i = 0; i < availtyDateCount; i++) {
             let sampleDateArray = formatDate(addTimeUnit(this.state.selectedDate, i, 'days'), "YYYY-MM-DD");
-
-            if(!docDetailElement.slotData[sampleDateArray]){
-                this.state.doctorDetails.splice(index,1);
-                break;
+            if(docDetailElement.slotData[sampleDateArray]){
+                availableDateSlotsDocArray.push(docDetailElement.doctorId)
             }           
-            else{
-                uniqueFilteredDocArray.push(docDetailElement.doctorId)
-            }
         }
-        index++;
     })
-        console.log('uniqueFilteredDocArray' + JSON.stringify(uniqueFilteredDocArray))
-        console.log('this.state.doctorDetails'+JSON.stringify(this.state.doctorDetails));
+}
+console.log('availableDateSlotsDocArray'+JSON.stringify(availableDateSlotsDocArray))
 
+let filteredDocListArray=[];
         this.state.doctorData.forEach((doctorElement) => {
 
             filterData.forEach((filterElement) => {
@@ -132,14 +123,61 @@ class doctorSearchList extends Component {
                 }
             })
         });
+        console.log('filteredDocListArray' + JSON.stringify(filteredDocListArray))
 
-        let tempUniqueFilteredDocArray = new Set(filteredDocListArray)
-        tempUniqueFilteredDocArray.forEach(element => {
-            uniqueFilteredDocArray.push(element);
-        })
-        await this.setState({ uniqueFilteredDocArray: uniqueFilteredDocArray })
-        console.log('this.state.uniqueFilteredDocArray' + JSON.stringify(this.state.uniqueFilteredDocArray))
+        var sortedArray = filteredDocListArray.slice().sort(); 
 
+        var resultsArray = [];
+        var dupFilteredDocDetailsArray = [];
+
+        for (var i = 0; i <= sortedArray.length - 1; i++) {
+            if (sortedArray[i + 1] == sortedArray[i]) {
+                dupFilteredDocDetailsArray.push(sortedArray[i]);
+            }
+            else{
+                resultsArray.push(sortedArray[i]);
+            }
+        }
+        console.log('resultsArray' + JSON.stringify(resultsArray))
+        console.log('dupFilteredDocDetailsArray' + JSON.stringify(dupFilteredDocDetailsArray))
+        
+
+        let withAvailabilityDateDocArray=[];
+if(availableDateSlotsDocArray[0]&&filteredDocListArray[0]){
+    console.log('came filter availability date and DocDatas  condition')
+    filteredDocListArray.forEach((ele_doctorId)=>{
+
+    if(availableDateSlotsDocArray.includes(ele_doctorId)){
+        withAvailabilityDateDocArray.push(ele_doctorId);
+    }
+})
+
+await this.setState({uniqueFilteredDocArray:withAvailabilityDateDocArray})
+console.log('this.state.uniqueFilteredDocArray'+JSON.stringify(this.state.uniqueFilteredDocArray))
+}
+
+else {
+if(availableDateSlotsDocArray[0]){
+    await this.setState({uniqueFilteredDocArray:availableDateSlotsDocArray})
+}
+else{
+    console.log('filterData  Object count'+filterData[1])
+    if(filterData[1].value === undefined){
+console.log('working filter single docDetails ')
+if(typeof dupFilteredDocDetailsArray ==undefined){
+    await this.setState({uniqueFilteredDocArray:resultsArray})
+}
+else{
+await this.setState({uniqueFilteredDocArray:dupFilteredDocDetailsArray})
+}
+    }
+else{
+    console.log('came without availability dates');
+    await this.setState({uniqueFilteredDocArray:filteredDocListArray})
+    console.log('this.state.uniqueFilteredDocArray'+JSON.stringify(this.state.uniqueFilteredDocArray))
+}
+}
+}
     }
     /* Insert Doctors Favourite Lists  */
     addToWishList = async (doctorId, index) => {
@@ -245,7 +283,7 @@ class doctorSearchList extends Component {
                     }
                 }
                 this.setState({ doctorDetails: this.processedDoctorData });
-                console.log('doctorDetails  nowwwww'+JSON.stringify(this.state.doctorDetails));
+                // console.log('doctorDetails'+JSON.stringify(this.state.doctorDetails));
                 this.enumarateDates(startDate, endDate)
                 // console.log(this.processedDoctorData);
             }
@@ -350,7 +388,7 @@ class doctorSearchList extends Component {
             })
 
             await this.setState({ uniqueFilteredDocArray: uniqueFilteredDocArray })
-            console.log('this.state.uniqueFilteredDocArray'+JSON.stringify(this.state.uniqueFilteredDocArray));
+            console.log('doctorData uniqueFilteredDocArray'+JSON.stringify(this.state.uniqueFilteredDocArray));
             for (i = 0; i < resultDoctorDetails.data.length; i++) {
                 this.doctorSpecialitesMap.set(resultDoctorDetails.data[i].doctor_id, resultDoctorDetails.data[i]) // total_rating
             }
@@ -442,7 +480,7 @@ class doctorSearchList extends Component {
 
 
                 <NavigationEvents
-                    onWillFocus={payload => { this.componentDidMount() }}
+                    onWillFocus={payload => { this.componentWillMount() }}
                 />
                 {isLoading ? <Loader style='list' /> :
                     <Content style={styles.bodyContent}>
