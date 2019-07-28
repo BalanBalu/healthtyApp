@@ -2,6 +2,8 @@ import React, { Component } from 'react';
 import { Container, Content, Text, Title, Header, Button, H3, Item, List, ListItem, Card, Input, Left, Right, Thumbnail, Body, Icon, View, Footer, FooterTab } from 'native-base';
 import { Col, Row, Grid } from 'react-native-easy-grid';
 import { getMedicineDetails } from '../../../providers/pharmacy/pharmacy.action'
+// import { uploadMultiPart } from '../../../setup/services/httpservices'
+
 
 import { StyleSheet, Image, FlatList, TouchableOpacity } from 'react-native';
 
@@ -29,16 +31,15 @@ class MedicineSearch extends Component {
     }
 
 
+
     onPressCard=async(item,index)=>{
      this.setState({clickCard:index})
      await this.setState({footerSelectedItem:item});
-     console.log(this.state.footerSelectedItem)
    }
 
    addSubOperation(selectItem,operation){
     if(operation==="add"){           
     let addItem = (selectItem.selectedQuantity==undefined?0:selectItem.selectedQuantity);
-     console.log('addItem'+addItem);         
     selectItem.selectedQuantity=++addItem;    
     }else{
         if(selectItem.selectedQuantity>0){
@@ -56,7 +57,6 @@ class MedicineSearch extends Component {
     
     render() {
         const {medicineData}=this.state
-        const { navigation } = this.props
 
         return (
             <Container style={styles.container}>
@@ -88,7 +88,7 @@ class MedicineSearch extends Component {
                         </Row>
                     </Grid>
                     <View style={{ marginLeft: 'auto', marginRight: 'auto', marginTop: 20 }}>
-                        <Button style={{ justifyContent: "center", backgroundColor: '#745DA6', borderRadius: 5 }}>
+                        <Button style={{ justifyContent: "center", backgroundColor: '#745DA6', borderRadius: 5 }} onPress={() => this.props.navigation.navigate('UploadPrescription')} testID="clickButtonToUploadPrescription">
                             <Icon style={{ fontSize: 30 }} name='ios-cloud-upload'>
                                 <Text style={{ padding: 2, color: '#fff', }}>Upload your prescription
                                 </Text>
@@ -96,7 +96,6 @@ class MedicineSearch extends Component {
                         </Button>
                     </View>
                     <Card transparent >
-
                         <Grid style={{ marginTop: 25, padding: 10, width: 'auto' }}>
                             <FlatList 
                                 data={medicineData}
@@ -105,7 +104,6 @@ class MedicineSearch extends Component {
                                 numColumns={2}
                                 renderItem={
                                    ({ item, index }) =>
-                                        <Row style={{ justifyContent: 'center' }}>
                                             <View style={styles.customColumn}>
                                                 <TouchableOpacity onPress={()=>this.onPressCard(item,index)}>
                                                     <View style={{ width: 'auto', flex: 1, flexDirection: 'row' }}>
@@ -139,7 +137,6 @@ class MedicineSearch extends Component {
 
                                                 </TouchableOpacity>
                                             </View>
-                                        </Row>
                                 }
                                 keyExtractor={(item, index) => index.toString()}
                             />
