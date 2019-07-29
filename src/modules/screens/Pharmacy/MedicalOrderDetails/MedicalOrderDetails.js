@@ -3,21 +3,32 @@ import { Container, Content, Text, Radio, Title, Header, Form, Textarea, Button,
 import { Grid } from 'react-native-easy-grid';
 import { connect } from 'react-redux'
 import { StyleSheet, Image, AsyncStorage, FlatList, TouchableOpacity } from 'react-native';
+import { getMedicineDetails } from '../../../providers/pharmacy/pharmacy.action'
+import { medicineRateAfterOffer } from '../../../common';
 
 
 class MedicalOrderDetails extends Component {
     constructor(props) {
         super(props);
-        this.state = {};
+        this.state = {
+            medicineData: []
+        };
+        this.getMedicine();
+    }
+    getMedicine= async() => {
+        let result = await getMedicineDetails();
+        this.setState({medicineData: result.data})
+        console.log(this.state.medicineData)
     }
     render() {
+        const {medicineData} = this.state
         return (
             <Container >
                 <Content>
                     <View style={styles.customColumn}>
                         <Row>
                             <Right>
-                                <Text style={{ fontFamily: 'OpenSans', fontSize: 20, color: '#ffa723', }}> Get 50% OFF
+                                <Text style={{ fontFamily: 'OpenSans', fontSize: 20, color: '#ffa723', }}> Get {medicineData[0] && medicineData[0].offer} off
                         </Text>
                             </Right>
                         </Row>
@@ -28,7 +39,9 @@ class MedicalOrderDetails extends Component {
 
                         </Card>
                         <View>
-                            <Text style={{ fontFamily: 'Opensans', fontWeight: 'bold', fontSize: 21, marginTop: 20, marginLeft: 26 }}>Human Factor VIII with von Willebrand factor (also called Humate-P®)</Text>
+                            <Text style={{ fontFamily: 'Opensans', fontWeight: 'bold', fontSize: 21, marginTop: 20, marginLeft: 26 }}>
+                                {medicineData[0] && medicineData[0].medicine_name}
+                            </Text>
                             <View style={{ marginLeft: 26, marginTop: 5 }}>
 
                                 <Row>
@@ -42,9 +55,9 @@ class MedicalOrderDetails extends Component {
                                     <Text style={{ fontFamily: 'Opensans', fontWeight: 'bold', fontSize: 18, color: '#0066c4' }}>Total</Text>
                                     <Text style={{
                                         fontFamily: 'OpenSans', fontSize: 18, color: 'black', marginTop: 1, marginLeft: 53
-                                    }}> :{'   '} {'\u20B9'}80</Text>
+                                    }}> :{'   '} {'\u20B9'}90</Text>
                                     <Text style={{ marginLeft: 10, marginTop: 3, color: 'gray', fontSize: 15, textDecorationLine: 'line-through', textDecorationStyle: 'solid', textDecorationColor: 'gray' }}>
-                                        {'\u20B9'}100</Text>
+                                        {'\u20B9'}{medicineData[0]&&medicineData[0].price}</Text>
 
                                 </Row>
 
@@ -57,7 +70,7 @@ class MedicalOrderDetails extends Component {
                                         </View>
                                     </TouchableOpacity>
                                     <View>
-                                        <Text style={{ marginLeft: 5, color: '#000', fontSize: 20 }}>10</Text>
+                                        <Text style={{ marginLeft: 5, color: '#000', fontSize: 20 }}> {medicineData[0] && medicineData[0].total_quantity}</Text>
                                     </View>
                                     <TouchableOpacity>
                                         <View style={{ padding: 0, justifyContent: 'center', borderWidth: 1, borderColor: 'black', width: 40, height: 35, marginLeft: 5, backgroundColor: 'white' }}>
