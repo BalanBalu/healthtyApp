@@ -49,5 +49,25 @@ export async function getMedicineDetails() {
     }
   }
 
+  /* Medicine Order List */
+
+  export async function getMedicineOrderList(user_id) {
+    try {
+      
+      let endPoint = 'ordersDetails/' + user_id + '&fields='+ order_items;
+      console.log(endPoint);
+      let response = await getService(endPoint);
+      let respData = response.data;
+      return respData;  
+    } catch (e) {
+      return {
+        message: 'exception' + e,
+        success: false
+      }
+    }
+  }
+
+
+
 
   
