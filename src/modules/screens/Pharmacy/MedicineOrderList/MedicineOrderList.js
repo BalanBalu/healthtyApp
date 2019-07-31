@@ -5,68 +5,43 @@ import { StyleSheet, Image, AsyncStorage, TextInput, FlatList, TouchableOpacity 
 import { Loader } from '../../../../components/ContentLoader';
 import { getMedicineOrderList } from '../../../providers/pharmacy/pharmacy.action';
 
-class MedicineMyOrderList extends Component {
+class MedicineMyOrders extends Component {
     constructor(props) {
         super(props)
         this.state = {
             cartItems: [],
-            orderList:[],
-          //  isLoading: false
+            orderList:[]
+           // isLoading: false
         }
+
     }
+
     componentDidMount() {
+
         this.getAddToCart();
-         this.medicineOrderList();
+        this.medicineOrderList();
     }
+
     async medicineOrderList(){    
         try {
-           let userId='5d2420a2731df239784cd001';
-           // let userId = await AsyncStorage.getItem('userId');
+        //    let userId='5d2420a2731df239784cd001';
+           let userId = await AsyncStorage.getItem('userId');
             let result = await getMedicineOrderList(userId);
-            console.log('result' + JSON.stringify(result));
+           // let array=[];
+            //rray.push(JSON.stringify(result.data.order_items));
+            console.log('success' + JSON.stringify(result.data));
             this.setState({ orderList: result.data})
             }
         catch (e) {
             console.log(e);
         }        
     }
- 
-    setAddToCart = async () => {
-        const cart = [
-            {
-                medicineName: 'Dolo650',
-                price: 100,
-                offerPercentage: 20,
-                quantity: 5
-            },
-            {
-                medicineName: 'Antibiotic',
-                price: 100,
-                offerPercentage: 50,
-                quantity: 1
-            },
-            {
-                medicineName: 'Dextromethorphan',
-                price: 10,
-                offerPercentage: 10,
-                quantity: 1
-            },
-            {
-                medicineName: 'Amoxicillin',
-                price: 50,
-                offerPercentage: 50,
-                quantity: 1
-            }
-        ]
-        await AsyncStorage.setItem('cartItems', JSON.stringify(cart))
-        this.setState({ cartItems: (cart) });
-    }
 
     getAddToCart = async () => {
         try {
-            this.setState({ isLoading: true })
+         //   this.setState({ isLoading: true })
             this.setAddToCart()
-            this.setState({ isLoading: false })
+         //  this.setState({ isLoading: false })
             // const cartItems = await AsyncStorage.getItem('cartItems');
             // if( cartItems === undefined){
             //     this.setState({ cartItems: [], isLoading: false });
@@ -121,7 +96,7 @@ class MedicineMyOrderList extends Component {
 
 
     render() {
-        const { isLoading, cartItems } = this.state;
+        const { isLoading, cartItems , orderList} = this.state;
 
         return (
             <Container style={styles.container}>
@@ -140,60 +115,61 @@ class MedicineMyOrderList extends Component {
                             </Grid>
 
                             <View style={{
-                                padding: 5, borderRadius: 10, borderColor: '#8e44ad', borderWidth: 2,
+                                padding: 5, marginTop: 20
                             }}>
 
 
-                                <Row style={{ marginTop: 20, }}>
-                                    <Text style={{ fontFamily: 'OpenSans', fontSize: 18, marginLeft: 10, color: '#0a3d62', fontWeight: 'bold' }}>Order List: 1</Text>
-                                    <Right><Text style={{ fontFamily: 'OpenSans', fontSize: 18, color: '#0a3d62', marginRight: 10, fontWeight: 'bold' }}>23-7-2019</Text></Right>
-                                </Row>
 
-
-                                {cartItems == '' ?
+                                {orderList == '' ?
                                     <Item style={{ borderBottomWidth: 0, justifyContent: 'center', alignItems: 'center', height: 70 }}>
                                         <Text style={{ fontSize: 20, justifyContent: 'center', alignItems: 'center' }}>No Medicines Are Found Your Cart</Text>
                                     </Item> :
                                     <FlatList
-                                        data={cartItems}
+                                        data={orderList}
                                         extraData={this.state}
                                         keyExtractor={(item, index) => index.toString()}
                                         renderItem={({ item, index }) =>
 
-                                            <View style={{ marginTop: 10, padding: 5, height: 160, borderTopColor: '#000', borderTopWidth: 1 }}>
+                                            <Card style={{ marginTop: 10, padding: 5, height: 155, borderRadius: 5 }}>
                                                 <Grid>
+                                                    <Row>
+                                                        <Right><Text style={{
+                                                            fontFamily: 'OpenSans',
+                                                            fontSize: 16, color: '#e84393', marginRight: 10, fontWeight: 'bold'
+                                                        }}>Friday, July 26-2019 11:25 am</Text></Right>
+                                                    </Row>
 
-                                                    <View style={{ flexDirection: 'column' }}>
-                                                        <Image source={{ uri: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQ-hoBS1Om5R7srf1jULEdImPjOS1gdCSTMUFgccbOfymosJAwP' }} style={{
-                                                            width: 110, height: 110, borderRadius: 10, marginTop: 20
-                                                        }} />
 
+                                                    <View style={{ marginLeft: 10, marginTop: 20, flexDirection: 'row' }}>
+                                                        <Text style={{ fontFamily: 'OpenSans', fontSize: 18, fontWeight: 'bold', color: '#3966c6' }}>Order Id </Text>
+                                                        <Text style={{ fontFamily: 'OpenSans', fontSize: 16, marginLeft: 48, fontWeight: 'bold' }}>:  {this.state.orderList.user_id} </Text>
 
                                                     </View>
-                                                    <View>
-                                                        <View style={{ marginLeft: 20, marginTop: 15 }}>
-                                                            <Text style={styles.labelTop}>{item.medicineName} </Text>
-                                                            <Text style={styles.textDesc}>Dolo 650 MG Tablet is used to tempo-rarily relieve </Text>
-
-
-                                                        </View>
-                                                        <View style={{ marginLeft: 20, flex: 1, flexDirection: 'row', marginTop: 10 }}>
-
-                                                            <Text style={{ fontSize: 15, fontWeight: 'bold', fontFamily: 'OpenSans', color: '#3966c6' }}>Pharmacy :</Text>
-                                                            <Text style={{ fontSize: 15, fontFamily: 'OpenSans', marginLeft: 10 }}>Apollo Pharmacy</Text>
-
-                                                        </View>
-                                                        <View style={{ marginLeft: 20, flex: 1, flexDirection: 'row', marginTop: 5 }}>
-
-                                                            <Text style={{ fontSize: 15, fontWeight: 'bold', fontFamily: 'OpenSans', color: '#3966c6' }}>Quantity :</Text>
-                                                            <Text style={{ fontSize: 15, fontFamily: 'OpenSans', marginLeft: 10 }}>10</Text>
-                                                            <Text style={{ fontSize: 15, fontWeight: 'bold', fontFamily: 'OpenSans', marginLeft: 20, color: '#3966c6' }}>Total :</Text>
-                                                            <Text style={styles.subText}>{'\u20B9'}{this.medicineOffer(item)}</Text>
-
-                                                        </View>
+                                                    <View style={{ flexDirection: 'row', marginLeft: 10, marginTop: 5 }}>
+                                                        <Text style={{ fontSize: 15, fontWeight: 'bold', fontFamily: 'OpenSans', color: '#3966c6', }}>Pharmacy </Text>
+                                                        <Text style={{ fontSize: 15, fontFamily: 'OpenSans', marginLeft: 42, fontWeight: 'bold' }}> : {this.state.orderList.medicine_name} </Text>
                                                     </View>
+
+
+                                                    <View style={{ flexDirection: 'row', marginLeft: 10, marginTop: 5 }}>
+
+                                                        <Text style={{ fontSize: 15, fontWeight: 'bold', fontFamily: 'OpenSans', color: '#3966c6' }}>No of Medicine </Text>
+                                                        <Text style={{ fontSize: 15, fontFamily: 'OpenSans', marginLeft: 10, fontWeight: 'bold' }}>:  10</Text>
+                                                    </View>
+                                                    <View style={{ flexDirection: 'row', marginLeft: 10, marginTop: 5 }}>
+
+                                                        <Text style={{ fontSize: 15, fontWeight: 'bold', fontFamily: 'OpenSans', color: '#3966c6' }}>Medicine Name </Text>
+                                                        <Text style={{ fontSize: 15, fontFamily: 'OpenSans', marginLeft: 10, fontWeight: 'bold' }}>: Alkof </Text>
+                                                    </View>
+
+                                                    <View style={{ flexDirection: 'row', marginLeft: 10, marginTop: 5 }}>
+                                                        <Text style={{ fontSize: 15, fontWeight: 'bold', fontFamily: 'OpenSans', color: '#3966c6' }}>Total </Text>
+                                                        <Text style={styles.subText}>:{'  '}{'\u20B9'}{this.medicineOffer(item)}</Text>
+
+                                                    </View>
+
                                                 </Grid>
-                                            </View>
+                                            </Card>
 
                                         } />
                                 }
@@ -219,7 +195,7 @@ class MedicineMyOrderList extends Component {
 }
 
 
-export default MedicineMyOrderList
+export default MedicineMyOrders
 
 
 const styles = StyleSheet.create({
@@ -340,7 +316,7 @@ const styles = StyleSheet.create({
         fontFamily: 'OpenSans',
         fontSize: 17,
         color: '#c26c57',
-        marginLeft: 10,
+        marginLeft: 79,
         fontWeight: "bold"
     }
 
