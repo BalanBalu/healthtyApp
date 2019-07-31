@@ -4,32 +4,75 @@ import { Grid } from 'react-native-easy-grid';
 import { connect } from 'react-redux'
 import { StyleSheet, Image, AsyncStorage, FlatList, TouchableOpacity } from 'react-native';
 import { getMedicineDetails } from '../../../providers/pharmacy/pharmacy.action'
-import { medicineRateAfterOffer } from '../../../common';
 
 
 class MedicalOrderDetails extends Component {
     constructor(props) {
         super(props);
         this.state = {
-            medicineData: []
+            orderData: {},
+            medicine: {}
         };
+        
+    }
+    async componentDidMount(){
+    const { navigation } = this.props;
+    const data = navigation.getParam('data');
+    // console.log('data'+JSON.stringify(data))
+    await this.setState({orderData: data})
+    // console.log('orderData'+JSON.stringify(this.state.orderData))
+
         this.getMedicine();
+        this.medicineOffer();
+
     }
     getMedicine= async() => {
+       
         let result = await getMedicineDetails();
-        this.setState({medicineData: result.data})
-        console.log(this.state.medicineData)
+        this.setState({medicine: result.data})
+        //console.log(this.state.medicine)
+        // this.medicineOffer();
+        
     }
+  
+    increase(){
+        let selectedCartItem = this.state.orderData;    
+        // console.log('selectedCartItem'+JSON.stringify( selectedCartItem[0].total_quantity++;))
+        selectedCartItem.quantity++;
+
+        this.setState({orderData: selectedCartItem})
+    }
+
+    decrease(){
+        let selectedCartItem = this.state.orderData;
+        if(selectedCartItem.quantity > 1){
+            selectedCartItem.quantity--;       
+         this.setState({orderData: selectedCartItem})
+
+        }
+    }
+
+
+    // medicineOffer(){
+    //     console.log('price'+this.state.orderData.price)
+    //     let offers= this.state.medicine;
+    //      //console.log('offer'+JSON.stringify(offer))
+
+    //      console.log('offer'+JSON.stringify(offers.offer))
+
+    //    return parseInt(this.state.orderData.price)-((parseInt(offers.offer)/100) * parseInt(this.state.orderData.price));
+    // }
+
+
     render() {
-        const {medicineData} = this.state
+        const { orderData, medicine } = this.state
         return (
             <Container >
                 <Content>
                     <View style={styles.customColumn}>
                         <Row>
-                            <Right>
-                                <Text style={{ fontFamily: 'OpenSans', fontSize: 20, color: '#ffa723', }}> Get {medicineData[0] && medicineData[0].offer} off
-                        </Text>
+                         <Right>
+                                <Text style={{ fontFamily: 'OpenSans', fontSize: 20, color: '#ffa723', }}> Get { medicine[0]&& medicine[0].offer} off </Text>
                             </Right>
                         </Row>
                         <Card style={styles.cardsize}>
@@ -40,7 +83,7 @@ class MedicalOrderDetails extends Component {
                         </Card>
                         <View>
                             <Text style={{ fontFamily: 'Opensans', fontWeight: 'bold', fontSize: 21, marginTop: 20, marginLeft: 26 }}>
-                                {medicineData[0] && medicineData[0].medicine_name}
+                                { orderData.medicine_name}
                             </Text>
                             <View style={{ marginLeft: 26, marginTop: 5 }}>
 
@@ -55,35 +98,35 @@ class MedicalOrderDetails extends Component {
                                     <Text style={{ fontFamily: 'Opensans', fontWeight: 'bold', fontSize: 18, color: '#0066c4' }}>Total</Text>
                                     <Text style={{
                                         fontFamily: 'OpenSans', fontSize: 18, color: 'black', marginTop: 1, marginLeft: 53
-                                    }}> :{'   '} {'\u20B9'}90</Text>
+                                    }}> :{'   '} {'\u20B9'}{this.medicineOffer()}</Text>
                                     <Text style={{ marginLeft: 10, marginTop: 3, color: 'gray', fontSize: 15, textDecorationLine: 'line-through', textDecorationStyle: 'solid', textDecorationColor: 'gray' }}>
-                                        {'\u20B9'}{medicineData[0]&&medicineData[0].price}</Text>
+                                        {'\u20B9'}{orderData.price}</Text>
 
                                 </Row>
 
                             </View>
                             <Row style={{ marginTop: 15, }}>
                                 <Col style={{ flexDirection: 'row', justifyContent: 'center', }}>
-                                    <TouchableOpacity>
+                                    <Button style={{backgroundColor: 'white'}} onPress={()=>this.decrease()}>
                                         <View style={{ padding: 0, justifyContent: 'center', borderWidth: 1, borderColor: 'black', width: 40, height: 35, backgroundColor: 'white' }}>
                                             <Text style={{ fontSize: 40, textAlign: 'center', marginTop: -5, color: 'black' }}>-</Text>
                                         </View>
-                                    </TouchableOpacity>
+                                    </Button>
                                     <View>
-                                        <Text style={{ marginLeft: 5, color: '#000', fontSize: 20 }}> {medicineData[0] && medicineData[0].total_quantity}</Text>
+                                        <Text style={{ marginLeft: 5, color: '#000', fontSize: 20 }}> {orderData.quantity}</Text>
                                     </View>
-                                    <TouchableOpacity>
+                                    <Button style={{backgroundColor: 'white'}} onPress={()=>this.increase()}>
                                         <View style={{ padding: 0, justifyContent: 'center', borderWidth: 1, borderColor: 'black', width: 40, height: 35, marginLeft: 5, backgroundColor: 'white' }}>
                                             <Text style={{
                                                 fontSize: 20, textAlign: 'center', marginTop: -5,
                                                 color: 'black'
                                             }}>+</Text>
                                         </View>
-                                    </TouchableOpacity>
+                                    </Button>
                                 </Col>
 
                                 <Col style={{ marginRight: 40 }} >
-                                    <Button success style={{ borderRadius: 10, marginLeft: 25, height: 40, justifyContent: 'center' }}>
+                                    <Button success style={{ borderRadius: 10, marginLeft: 25, height: 40, justifyContent: 'center' }} onPress={()=> this.props.navigation.navigate('MedicinePaymentResult')}>
 
 
                                         <Row style={{ justifyContent: 'center', }}>
@@ -105,7 +148,7 @@ class MedicalOrderDetails extends Component {
                     </Row>
                     <View>
                         <Text style={{ fontSize: 18, marginTop: 20, marginLeft: 42, color: '#636e72', width: "90%" }}>
-                            An antibiotic is a type of antimicrobial substance active against bacteria and is the most important type of antibacterial agent for fighting bacterial infections. Antibiotic medications are widely used in the treatment and prevention of such infections. They may either kill or inhibit the growth of bacteria.
+                          {medicine[0]&& medicine[0].description}
 
                         </Text>
 
