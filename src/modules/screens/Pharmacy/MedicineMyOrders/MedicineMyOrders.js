@@ -25,6 +25,14 @@ class MedicineMyOrders extends Component {
         let response=await getMyOrders(this.state.orderId);
         await this.setState({myOrderList:response.data[0],isLoading:false});
     }
+    noOrders() {
+        return (
+            <Item style={{ borderBottomWidth: 0, justifyContent: 'center', alignItems: 'center' }}>
+                <Text style={{ fontSize: 18, justifyContent: 'center', alignItems: 'center' }} > No Orders Available </Text>
+            </Item>
+        )
+    }
+
     render() {
         const { isLoading,myOrderList } = this.state;
         return (
@@ -42,14 +50,15 @@ class MedicineMyOrders extends Component {
                                     <Text style={{ fontFamily: 'OpenSans', fontWeight: 'bold', fontSize: 22, padding: 5,color:'#fff' }}>Your Order</Text>
                                 </Row>
                             </Grid>
-
+                            {myOrderList===undefined?this.noOrders():
+                                                
                             <View style={{padding: 5, borderRadius: 10, borderColor: '#8e44ad', borderWidth:2}}>
-                                                            
+                                           
                                 <Row style={{ marginTop: 20 }}>
                                     <Text style={{ fontFamily: 'OpenSans', fontSize: 14, marginLeft: 10, color: '#0a3d62', fontWeight: 'bold',width:'70%' }}>OrderNo:{myOrderList._id}</Text>
                                     <Right><Text style={{ fontFamily: 'OpenSans', fontSize: 14, color: '#0a3d62', marginRight: 10, fontWeight: 'bold' }}>{formatDate(myOrderList.order_date,"DD-MM-YYYY")}</Text></Right>
                                 </Row>
-                                
+
                                 <FlatList
                                         data={myOrderList.order_items}
                                         extraData={this.state}
@@ -90,8 +99,11 @@ class MedicineMyOrders extends Component {
                                             </View>
 
                                         } />
+                                    
                                 
-                            </View>
+                                    </View>
+                            }
+                                
                         </Card>
 
                     </Content>}
