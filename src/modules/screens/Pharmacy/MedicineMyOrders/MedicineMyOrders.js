@@ -4,57 +4,55 @@ import { Col, Row, Grid } from 'react-native-easy-grid';
 import { StyleSheet, Image, AsyncStorage, TextInput, FlatList, TouchableOpacity } from 'react-native';
 import { Loader } from '../../../../components/ContentLoader';
 import {getMyOrders} from '../../../providers/pharmacy/pharmacy.action'
+import { formatDate } from '../../../../setup/helpers'
+
 
 class MedicineMyOrders extends Component {
     constructor(props) {
         super(props)
         this.state = {
-            order_id:'',
-            myOrderList:{},
-            isLoading: false,
-
-
+            orderId:'',
+            myOrderList:[],
+            isLoading:true,
         }
-
     }
     componentDidMount(){
         this.getMedicineOrder();        
     }
     getMedicineOrder=async()=>{
-        console.log("await fun")
-        let orderId="5d3ef08ebf4ba51128199c66"
-        await this.setState({order_id:orderId});
-        let response=await getMyOrders(this.state.order_id);
-        await this.setState({myOrderList:response.data[0].order_items});
-        console.log('myorder'+JSON.stringify(this.state.myOrderList));
+        let orderId="5d418339170fc31bd0c3a5cb"
+        await this.setState({orderId:orderId});
+        let response=await getMyOrders(this.state.orderId);
+        await this.setState({myOrderList:response.data[0],isLoading:false});
     }
     render() {
         const { isLoading,myOrderList } = this.state;
-
         return (
             <Container style={styles.container}>
 
                 {isLoading == true ? <Loader style='list' /> :
                     <Content style={styles.bodyContent}>
+                    <Grid style={styles.curvedGrid}>
+                    </Grid>
+
                         <Card transparent >
-                            <Grid >
+
+                        <Grid style={{ marginTop: -100, height: 100 }}>
                                 <Row style={{ justifyContent: 'center', width: '100%', marginTop: 30 }}>
-                                    <Text style={{ fontFamily: 'OpenSans', fontWeight: 'bold', fontSize: 22, padding: 5 }}>Your Order</Text>
+                                    <Text style={{ fontFamily: 'OpenSans', fontWeight: 'bold', fontSize: 22, padding: 5,color:'#fff' }}>Your Order</Text>
                                 </Row>
                             </Grid>
 
-                            <View style={{
-                                padding: 5, borderRadius: 10, borderColor: '#8e44ad', borderWidth: 2,
-                            }}>
-
-
-                                <Row style={{ marginTop: 20, }}>
-                                    <Text style={{ fontFamily: 'OpenSans', fontSize: 18, marginLeft: 10, color: '#0a3d62', fontWeight: 'bold' }}>Order List: 1</Text>
-                                    <Right><Text style={{ fontFamily: 'OpenSans', fontSize: 18, color: '#0a3d62', marginRight: 10, fontWeight: 'bold' }}>23-7-2019</Text></Right>
+                            <View style={{padding: 5, borderRadius: 10, borderColor: '#8e44ad', borderWidth:2}}>
+                                                            
+                                <Row style={{ marginTop: 20 }}>
+                                    <Text style={{ fontFamily: 'OpenSans', fontSize: 14, marginLeft: 10, color: '#0a3d62', fontWeight: 'bold',width:'70%' }}>OrderNo:{myOrderList._id}</Text>
+                                    <Right><Text style={{ fontFamily: 'OpenSans', fontSize: 14, color: '#0a3d62', marginRight: 10, fontWeight: 'bold' }}>{formatDate(myOrderList.order_date,"DD-MM-YYYY")}</Text></Right>
                                 </Row>
-
+                                
                                 <FlatList
-                                        data={myOrderList}
+                                        data={myOrderList.order_items}
+                                        extraData={this.state}
                                         keyExtractor={(item, index) => index.toString()}
                                         renderItem={({ item, index }) =>
 
@@ -70,16 +68,13 @@ class MedicineMyOrders extends Component {
                                                     </View>
 
                                                     <View>
-                                                        <View style={{ marginLeft: 20, marginTop: 15 }}>
+                                                        <View style={{ marginLeft: 20, marginTop: 20}}>
                                                             <Text style={styles.labelTop}>{item.medicine_name} </Text>
-                                                            <Text style={styles.textDesc}>Dolo 650 MG Tablet is used to tempo-rarily relieve </Text>
-
-
                                                         </View>
-                                                        <View style={{ marginLeft: 20, flex: 1, flexDirection: 'row', marginTop: 10 }}>
+                                                        <View style={{ marginLeft: 20, flex: 1, flexDirection: 'row', marginTop: 25 }}>
 
                                                             <Text style={{ fontSize: 15, fontWeight: 'bold', fontFamily: 'OpenSans', color: '#3966c6' }}>Pharmacy :</Text>
-                                                            <Text style={{ fontSize: 15, fontFamily: 'OpenSans', marginLeft: 10 }}>{item.name}</Text>
+                                                            <Text style={{ fontSize: 15, fontFamily: 'OpenSans', marginLeft: 10 }}>{myOrderList.pharmacyInfo.name}</Text>
 
                                                         </View>
                                                         <View style={{ marginLeft: 20, flex: 1, flexDirection: 'row', marginTop: 5 }}>
@@ -133,9 +128,9 @@ const styles = StyleSheet.create({
         borderRadius: 800,
         width: '200%',
         height: 690,
-        marginLeft: -200,
+        marginLeft: -150,
         marginTop: -600,
-        position: 'relative',
+        // position: 'relative',
         bottom: 0,
         overflow: 'hidden',
         backgroundColor: '#745DA6'
@@ -223,6 +218,18 @@ const styles = StyleSheet.create({
         height: 35,
         backgroundColor: 'gray',
     },
+    curvedGrid: {
+        borderRadius: 800,
+        width: '200%',
+        height: 690,
+        marginLeft: -200,
+        marginTop: -600,
+        position: 'relative',
+        bottom: 0,
+        overflow: 'hidden',
+        backgroundColor: '#745DA6'
+    },
+
     subText: {
         fontFamily: 'OpenSans',
         fontSize: 17,
