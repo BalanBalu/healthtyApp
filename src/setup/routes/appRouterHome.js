@@ -55,6 +55,7 @@ import MyAppoinmentList from '../../modules/screens/MyAppointments/MyAppointment
 import CancelAppointment from "../../modules/screens/MyAppointments/cancelAppointment";
 import MedicineSearch from '../../modules/screens/Pharmacy/MedicineSearch/MedicineSearch';
 import MedicineOrderList from '../../modules/screens/Pharmacy/MedicineOrderList/MedicineOrderList';
+import MedicineMyOrders from '../../modules/screens/Pharmacy/MedicineMyOrders/MedicineMyOrders';
 
 import MedicineSearchList from '../../modules/screens/Pharmacy/MedicineSearchList/MedicineSearchList';
 import MedicineCheckout from '../../modules/screens/Pharmacy/MedicineCheckout/MedicineChekout';
@@ -416,6 +417,12 @@ const ProfileStack = createStackNavigator({
       screen: MedicineOrderList,
       navigationOptions:{
        title: 'Order List'
+     }
+    },
+    MedicineMyOrders: {
+      screen: MedicineMyOrders,
+      navigationOptions:{
+       title: 'My Order'
      }
     },
        MedicineCheckout: {
