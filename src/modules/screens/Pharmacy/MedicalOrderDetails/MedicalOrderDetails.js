@@ -4,75 +4,70 @@ import { Grid } from 'react-native-easy-grid';
 import { connect } from 'react-redux'
 import { StyleSheet, Image, AsyncStorage, FlatList, TouchableOpacity } from 'react-native';
 import { getMedicineDetails } from '../../../providers/pharmacy/pharmacy.action'
+import { medicineRateAfterOffer } from '../../../common';
 
 
 class MedicalOrderDetails extends Component {
     constructor(props) {
         super(props);
         this.state = {
-            orderData: {},
-            medicine: {}
+            medicineData: {}
         };
+       
+    }
+
+    async componentDidMount(){
+        await this.getMedicine();
         
     }
-    async componentDidMount(){
-    const { navigation } = this.props;
-    const data = navigation.getParam('data');
-    // console.log('data'+JSON.stringify(data))
-    await this.setState({orderData: data})
-    // console.log('orderData'+JSON.stringify(this.state.orderData))
 
-        this.getMedicine();
-        this.medicineOffer();
-
-    }
     getMedicine= async() => {
        
         let result = await getMedicineDetails();
-        this.setState({medicine: result.data})
-        //console.log(this.state.medicine)
-        // this.medicineOffer();
-        
+        this.setState({medicineData: result.data[0]})
+       // console.log(this.state.medicineData)
     }
-  
-    increase(){
-        let selectedCartItem = this.state.orderData;    
-        // console.log('selectedCartItem'+JSON.stringify( selectedCartItem[0].total_quantity++;))
-        selectedCartItem.quantity++;
 
-        this.setState({orderData: selectedCartItem})
+    increase(){
+        let selectedCartItem = this.state.medicineData;    
+        // console.log('selectedCartItem'+JSON.stringify( selectedCartItem[0].total_quantity++;))
+        selectedCartItem.total_quantity++;
+        this.setState({medicineData: selectedCartItem})
+        this.addToCart();
     }
 
     decrease(){
-        let selectedCartItem = this.state.orderData;
-        if(selectedCartItem.quantity > 1){
-            selectedCartItem.quantity--;       
-         this.setState({orderData: selectedCartItem})
-
+        let selectedCartItem = this.state.medicineData;
+        if(selectedCartItem.total_quantity> 1){
+            selectedCartItem.total_quantity--;       
+         this.setState({medicineData: selectedCartItem})
+         this.addToCart();
         }
     }
 
+    medicineOffer(medicineData){
+       
+        return parseInt(medicineData.price)-((parseInt(medicineData.offer)/100) * parseInt(medicineData.price));
+    } 
 
-    // medicineOffer(){
-    //     console.log('price'+this.state.orderData.price)
-    //     let offers= this.state.medicine;
-    //      //console.log('offer'+JSON.stringify(offer))
-
-    //      console.log('offer'+JSON.stringify(offers.offer))
-
-    //    return parseInt(this.state.orderData.price)-((parseInt(offers.offer)/100) * parseInt(this.state.orderData.price));
-    // }
-
+   addToCart = async() => {
+    let temp = await AsyncStorage.getItem('userId')
+    let userId = JSON.stringify(temp);  
+       let cart = this.state.medicineData;
+       console.log('cart'+JSON.stringify(cart))
+       await AsyncStorage.setItem('cartItems-'+userId, JSON.stringify(cart))
+   }
 
     render() {
-        const { orderData, medicine } = this.state
+        const {medicineData} = this.state
         return (
             <Container >
                 <Content>
                     <View style={styles.customColumn}>
                         <Row>
-                         <Right>
-                                <Text style={{ fontFamily: 'OpenSans', fontSize: 20, color: '#ffa723', }}> Get { medicine[0]&& medicine[0].offer} off </Text>
+                            <Right>
+                                <Text style={{ fontFamily: 'OpenSans', fontSize: 20, color: '#ffa723', }}> Get {medicineData && medicineData.offer} off
+                        </Text>
                             </Right>
                         </Row>
                         <Card style={styles.cardsize}>
@@ -83,7 +78,7 @@ class MedicalOrderDetails extends Component {
                         </Card>
                         <View>
                             <Text style={{ fontFamily: 'Opensans', fontWeight: 'bold', fontSize: 21, marginTop: 20, marginLeft: 26 }}>
-                                { orderData.medicine_name}
+                                {medicineData && medicineData.medicine_name}
                             </Text>
                             <View style={{ marginLeft: 26, marginTop: 5 }}>
 
@@ -98,31 +93,31 @@ class MedicalOrderDetails extends Component {
                                     <Text style={{ fontFamily: 'Opensans', fontWeight: 'bold', fontSize: 18, color: '#0066c4' }}>Total</Text>
                                     <Text style={{
                                         fontFamily: 'OpenSans', fontSize: 18, color: 'black', marginTop: 1, marginLeft: 53
-                                    }}> :{'   '} {'\u20B9'}{this.medicineOffer()}</Text>
+                                    }}> :{'   '} {'\u20B9'}{this.medicineOffer(this.state.medicineData)}</Text>
                                     <Text style={{ marginLeft: 10, marginTop: 3, color: 'gray', fontSize: 15, textDecorationLine: 'line-through', textDecorationStyle: 'solid', textDecorationColor: 'gray' }}>
-                                        {'\u20B9'}{orderData.price}</Text>
+                                        {'\u20B9'}{medicineData && medicineData.price}</Text>
 
                                 </Row>
 
                             </View>
                             <Row style={{ marginTop: 15, }}>
                                 <Col style={{ flexDirection: 'row', justifyContent: 'center', }}>
-                                    <Button style={{backgroundColor: 'white'}} onPress={()=>this.decrease()}>
+                                    <TouchableOpacity onPress={()=>this.decrease()}>
                                         <View style={{ padding: 0, justifyContent: 'center', borderWidth: 1, borderColor: 'black', width: 40, height: 35, backgroundColor: 'white' }}>
                                             <Text style={{ fontSize: 40, textAlign: 'center', marginTop: -5, color: 'black' }}>-</Text>
                                         </View>
-                                    </Button>
+                                    </TouchableOpacity>
                                     <View>
-                                        <Text style={{ marginLeft: 5, color: '#000', fontSize: 20 }}> {orderData.quantity}</Text>
+                                        <Text style={{ marginLeft: 5, color: '#000', fontSize: 20 }}> {medicineData && medicineData.total_quantity}</Text>
                                     </View>
-                                    <Button style={{backgroundColor: 'white'}} onPress={()=>this.increase()}>
+                                    <TouchableOpacity onPress={()=> this.increase()}>
                                         <View style={{ padding: 0, justifyContent: 'center', borderWidth: 1, borderColor: 'black', width: 40, height: 35, marginLeft: 5, backgroundColor: 'white' }}>
                                             <Text style={{
                                                 fontSize: 20, textAlign: 'center', marginTop: -5,
                                                 color: 'black'
                                             }}>+</Text>
                                         </View>
-                                    </Button>
+                                    </TouchableOpacity>
                                 </Col>
 
                                 <Col style={{ marginRight: 40 }} >
@@ -148,7 +143,7 @@ class MedicalOrderDetails extends Component {
                     </Row>
                     <View>
                         <Text style={{ fontSize: 18, marginTop: 20, marginLeft: 42, color: '#636e72', width: "90%" }}>
-                          {medicine[0]&& medicine[0].description}
+                             {medicineData && medicineData.description}         
 
                         </Text>
 
