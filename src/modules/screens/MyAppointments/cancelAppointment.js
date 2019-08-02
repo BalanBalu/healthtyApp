@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import { StyleSheet, TextInput, AsyncStorage } from 'react-native';
-import { Container, Radio, Button, Card, Grid, ListItem, List, View, Text, CardItem, Right, Body, Content, Input, Item, Row, Col } from 'native-base';
+import { Container, Radio, Button, Card, Grid, ListItem, List, View, Text, CardItem, Right, Body, Content, Input, Item, Row, Col, Toast } from 'native-base';
 import { appointmentStatusUpdate } from '../../providers/bookappointment/bookappointment.action';
 import { formatDate } from '../../../setup/helpers';
 
@@ -64,6 +64,12 @@ class CancelAppointment extends Component {
           temp.status_update_reason = result.appointmentData.status_update_reason;
           this.setState({ data: temp });
           this.props.navigation.navigate('AppointmentInfo', { data: this.state.data });
+        }
+        else {
+          Toast.show({
+            text: 'Kindly give the reason for Cancellation',
+            duration: 3000
+          })
         }
       }
       this.setState({ isLoading: false });
