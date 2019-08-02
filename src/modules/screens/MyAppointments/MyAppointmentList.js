@@ -81,9 +81,11 @@ class MyAppoinmentList extends Component {
 	backNavigation = async (navigationData) => {
 		console.log(navigationData)
 		if (navigationData.action) {
-			if (navigationData.action.type === 'Navigation/BACK') {
-				await this.setState({ isLoading: false })
-				if (this.state.selectedIndex == 0) {
+			console.log('back navigation work')
+			await this.setState({ isLoading: false })
+
+			if (navigationData.action.type === 'Navigation/BACK' || navigationData.action.type === 'Navigation/POP') {
+								if (this.state.selectedIndex == 0) {
 
 
 					await this.upCommingAppointment();
@@ -91,9 +93,12 @@ class MyAppoinmentList extends Component {
 
 				} else {
 					await this.pastAppointment();
-					await this.setState({ isLoading: true })
+					await this.setState({ isLoading: true, data:this.state.pastData })
 				}
+				
 			}
+			
+						
 		}
 
 	}
@@ -164,6 +169,7 @@ class MyAppoinmentList extends Component {
 		    let doctorInfo=new Set();
 			if (pastAppointmentResult.success) {
 				pastAppointmentResult = pastAppointmentResult.data;
+				console.log('pastAppointmentResult' + JSON.stringify(viewUserReviewResult.data))
 				viewUserReviewResult = viewUserReviewResult.data;
 
 				let doctorIds = pastAppointmentResult.map((appointmentResult, index) => {
@@ -198,6 +204,7 @@ class MyAppoinmentList extends Component {
 						viewUserReviewResult.map(viewUserReview => {
 							if (doctorData._id === viewUserReview.appointment_id) {
 								ratting = viewUserReview.overall_rating
+								console.log('ratting' + ratting);
 
 							}
 
@@ -355,6 +362,7 @@ class MyAppoinmentList extends Component {
 															>
 																{item.specialist}
 															</Text>
+															{console.log(item.ratting)}
 															{selectedIndex == 1 &&
 																item.ratting != undefined && (
 																	<StarRating
@@ -413,7 +421,7 @@ class MyAppoinmentList extends Component {
 																	<Button
 																		style={styles.shareButton}
 																		onPress={() =>
-																			this.props.navigation.navigate("InsertReview")
+																			this.props.navigation.navigate("InsertReview",{appointmentDetail: item.appointmentResult})
 																		}
 																	>
 																		<Text style={styles.bookAgain1}>
