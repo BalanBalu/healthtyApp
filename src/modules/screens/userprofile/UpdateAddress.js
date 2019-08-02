@@ -129,9 +129,10 @@ class UserDetails extends Component {
             <Container style={styles.Container}>
 
                
-                <Content style={styles.bodyContent} contentContainerStyle={{ flex: 1, height: '75%' }}>
+                <Content style={styles.bodyContent} contentContainerStyle={{ flex: 1 }}>
+                    <ScrollView>
                   
-                    <H3 style={{ fontSize: 20, fontFamily: 'opensans-semibold', marginTop: 40, marginLeft: '5%', fontWeight: 'bold', }}>Update User Details</H3>
+                    <H3 style={{ fontSize: 20, fontFamily: 'opensans-semibold', marginTop: 20, marginLeft: '5%', fontWeight: 'bold', }}>Update User Details</H3>
                   
                      <Form>
                         <ScrollView scrollEventThrottle={16} >
@@ -252,7 +253,7 @@ class UserDetails extends Component {
                         visible={this.state.isLoading}
                         overlayColor="none"
                     /> */}
-
+</ScrollView>
                     </Content> 
                     <Spinner color='blue'
                         visible={this.state.isLoading}

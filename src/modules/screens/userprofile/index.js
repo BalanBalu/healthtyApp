@@ -250,6 +250,7 @@ class Profile extends Component {
                     <Loader style={'profile'} /> :
 
                     <Content style={styles.bodyContent}>
+                        
 
                         <LinearGradient colors={['#7E49C3', '#C86DD7']} style={{ height: 180 }}>
                             <Grid>
@@ -346,12 +347,15 @@ class Profile extends Component {
                         <List>
                             <Text style={styles.titleText}>Personal details..</Text>
 
-
                             <ListItem avatar>
+                           
                                 <Left>
                                     <Icon name="mail" style={{ color: '#7E49C3' }}></Icon>
                                 </Left>
-                                <Body>
+                                
+
+                                <Body >
+                                    <TouchableOpacity onPress={() => this.editProfile('UpdateEmail')}>
                                     <Text style={styles.customText}>Email</Text>
                                     <Text note style={styles.customText}>{data.email}</Text>
                                     {data.secondary_emails != undefined ?
@@ -371,13 +375,17 @@ class Profile extends Component {
                                             <Icon name='add' style={{ color: 'gray' }} />
                                             <Text uppercase={false} style={styles.customText} onPress={() => this.editProfile('UpdateEmail')} >Add Secondary email</Text>
                                         </Button>}
+                                        </TouchableOpacity>
                                 </Body>
-                                {data.secondary_emails != undefined ?
-                                    <Right>
-                                        <Icon name="create" onPress={() => this.editProfile('UpdateEmail')} />
-                                    </Right> : null}
-                            </ListItem>
+                                
 
+                                {data.secondary_emails != undefined ?
+                                
+                                    <Right>
+                                        <Icon name="create" style={{color:'black'}} onPress={() => this.editProfile('UpdateEmail')} />
+                                    </Right> : null}
+                                       
+                            </ListItem>
 
 
                             <ListItem avatar>
@@ -387,6 +395,7 @@ class Profile extends Component {
                                 </Left>
 
                                 <Body>
+                                    <TouchableOpacity>
                                     <Text style={styles.customText}>Address</Text>
                                     {data.address ?
                                         <View>
@@ -402,10 +411,11 @@ class Profile extends Component {
                                             <Icon name='add' style={{ color: 'gray' }} />
                                             <Text uppercase={false} style={styles.customText}>Add Address</Text>
                                         </Button>}
+                                        </TouchableOpacity>
                                 </Body>
                                 {data.address ?
                                     <Right>
-                                        <Icon name="create" onPress={() => this.editProfile('UpdateAddress')} />
+                                        <Icon name="create"  style={{color:'black'}} onPress={() => this.editProfile('UpdateAddress')} />
                                     </Right>
                                     : null}
 
@@ -420,6 +430,7 @@ class Profile extends Component {
                                 </Left>
 
                                 <Body>
+                                    <TouchableOpacity>
                                     <Text style={styles.customText}>Contact</Text>
                                     <Text note style={styles.customText}>{data.mobile_no}</Text>
                                     {data.secondary_mobiles != undefined ?
@@ -437,11 +448,11 @@ class Profile extends Component {
                                             <Icon name='add' style={{ color: 'gray' }} />
                                             <Text uppercase={false} style={styles.customText} onPress={() => this.editProfile('UpdateContact')}>Add Secondary Contact</Text>
                                         </Button>}
-
+                                        </TouchableOpacity>
                                 </Body>
                                 {data.secondary_mobiles != undefined ?
                                     <Right>
-                                        <Icon name="create" onPress={() => this.editProfile('UpdateContact')}></Icon>
+                                        <Icon name="create" style={{color:'black'}} onPress={() => this.editProfile('UpdateContact')}></Icon>
                                     </Right> : null}
 
 
@@ -452,6 +463,7 @@ class Profile extends Component {
                                     <Icon name='heartbeat' type='FontAwesome' style={{ color: '#7E49C3' }}></Icon>
                                 </Left>
                                 <Body>
+                                    <TouchableOpacity>
                                     <Text style={styles.customText}>Insurance</Text>
                                     {data.insurance != undefined ?
 
@@ -469,11 +481,12 @@ class Profile extends Component {
                                             <Icon name='add' style={{ color: 'gray' }} />
                                             <Text uppercase={false} style={styles.customText} onPress={() => this.editProfile('UpdateInsurance')}>Add Insurance</Text>
                                         </Button>}
+                                        </TouchableOpacity>
                                 </Body>
 
                                 {data.insurance != undefined ?
                                     <Right>
-                                        <Icon name="create" onPress={() => this.editProfile('UpdateInsurance')} ></Icon>
+                                        <Icon name="create" style={{color:'black'}} onPress={() => this.editProfile('UpdateInsurance')} ></Icon>
                                     </Right> : null}
 
                             </ListItem>
@@ -485,12 +498,13 @@ class Profile extends Component {
                                     <Icon name="briefcase" style={{ color: '#7E49C3' }}></Icon>
                                 </Left>
                                 <Body>
+                                    <TouchableOpacity>
                                     <Text style={styles.customText}>Change Password</Text>
                                     <Text note style={styles.customText}>*********</Text>
-
+                                    </TouchableOpacity>
                                 </Body>
                                 <Right>
-                                    <Icon name="create" style={{ color: 'gray' }} onPress={() => this.editProfile('UpdatePassword')}></Icon>
+                                    <Icon name="create" style={{color:'black'}} onPress={() => this.editProfile('UpdatePassword')}></Icon>
                                 </Right>
                             </ListItem>
 

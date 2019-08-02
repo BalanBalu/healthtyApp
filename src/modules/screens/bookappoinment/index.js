@@ -299,19 +299,19 @@ enumarateDates(startDate, endDate) {
               </Grid>
 
               <Grid style={{ marginTop: 5 }}>
-                <Col style={{ width: 270, }}>
+                <Row>
+                                  <Col style={{width:'80%'}}>
 
                   <Button  block onPress={() => this.navigateToPaymentReview()} style={{ borderRadius: 10 }}>
                     <Text uppercase={false}>Book Appoinment</Text>
                   </Button>
 
                 </Col>
-                <Col style={{ marginLeft: 5, justifyContent: 'center' }} >
-
+                <Col style={{ marginLeft: 5, justifyContent: 'center',width:'20%' }} >
                   <Icon name="heart" style={{ color: 'red', fontSize: 25, borderColor: 'gray', borderWidth: 1, padding: 10, borderRadius: 10, marginLeft: 'auto', marginRight: 'auto' }} />
-
-
                 </Col>
+                </Row>
+
               </Grid>
 
             </List>

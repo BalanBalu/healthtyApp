@@ -5,7 +5,7 @@ import {
 } from 'native-base';
 import { userFiledsUpdate, logout } from '../../providers/auth/auth.actions';
 import { connect } from 'react-redux'
-import { Image, BackHandler, AsyncStorage } from 'react-native';
+import { Image, BackHandler, AsyncStorage,ScrollView} from 'react-native';
 import styles from './style.js';
 import {
     formatDate,
@@ -126,7 +126,7 @@ class UpdateUserDetails extends Component {
 
 
                 <Content style={styles.bodyContent} contentContainerStyle={{ justifyContent: 'center', flex: 1, height: '75%' }}>
-
+<ScrollView>
                     <H3 style={styles.welcome}>Update User Details</H3>
                     <Form>
                     
@@ -232,7 +232,7 @@ class UpdateUserDetails extends Component {
                         
                     </Form>
 
-
+                    </ScrollView>
                 </Content>
             </Container>
 

@@ -83,7 +83,7 @@ class CancelAppointment extends Component {
         <Content>
           {isLoading ? <Loader style={'list'} /> :
 
-            <Card style={{ borderRadius: 5, padding: 5 }}>
+            <Card style={{ borderRadius: 5, padding: 5,height:'200%' }}>
               <Card>
                 <CardItem style={styles.text}>
                   <Body>

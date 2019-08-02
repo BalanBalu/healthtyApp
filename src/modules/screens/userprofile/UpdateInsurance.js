@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import { Container, Content, Text, Button, H3, Item, List, CheckBox, Left, Right, Thumbnail, Body, Icon, Card, Input, Toast, View } from 'native-base';
 import { userFiledsUpdate } from '../../providers/auth/auth.actions';
-import { AsyncStorage } from 'react-native';
+import { AsyncStorage,ScrollView} from 'react-native';
 import { connect } from 'react-redux'
 import styles from './style.js';
 import Spinner from '../../../components/Spinner';
@@ -96,7 +96,7 @@ class UpdateInsurance extends Component {
 
 
                 <Content style={styles.bodyContent} contentContainerStyle={{ flex: 1, height: '100%' }}>
-
+<ScrollView>
                     <Spinner color='blue'
                         visible={this.state.isLoading}
                         textContent={'Please wait updating...'}
@@ -142,7 +142,7 @@ class UpdateInsurance extends Component {
 
 
 
-
+                    </ScrollView>
 
                 </Content >
 
