@@ -17,9 +17,9 @@ class Home extends Component {
             data: [],
             isLoading: false,
             catagary: [],
-            searchValue: 'fever'
+            searchValue: ''
         };
-        // this.getCatagries();
+        this.getCatagries();
     }
     navigetToCategories() {
         this.props.navigation.navigate('Categories',{data:this.state.data})

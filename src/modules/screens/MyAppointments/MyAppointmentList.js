@@ -223,6 +223,10 @@ class MyAppoinmentList extends Component {
 		} catch (e) {
 			console.log(e);
 		}
+		finally {
+			this.setState({isLoading:true})
+
+		}
 	};
 
 	handleIndexChange = index => {
@@ -367,9 +371,9 @@ class MyAppoinmentList extends Component {
 																		disabled={false}
 																		maxStars={5}
 																		rating={item.ratting}
-																		selectedStar={rating =>
-																			this.onStarRatingPress(rating)
-																		}
+																		// selectedStar={rating =>
+																		// 	this.onStarRatingPress(rating)
+																		// }
 																	/>
 																)}
 														</Item>
@@ -388,7 +392,7 @@ class MyAppoinmentList extends Component {
 														(item.appointmentResult.appointment_status == "CLOSED" ? 
 																	<Text style={{ fontFamily: "OpenSans", fontSize: 12, color: "red" }} note>	Appointment cancelled.	</Text>
 																 :
-																	<Text style={{ fontFamily: "OpenSans", fontSize: 1, color: "green" }} note>Appointment completed
+																	<Text style={{ fontFamily: "OpenSans", fontSize: 12, color: "green" }} note>Appointment completed
 																	</Text>
 														)
 															
