@@ -50,7 +50,7 @@ class MedicineMyOrders extends Component {
                             <Grid >
                                 <Row style={{ justifyContent: 'center', width: '100%', marginTop: 30 }}>
                                     <Text style={{ fontFamily: 'OpenSans', fontWeight: 'bold', fontSize: 22, padding: 5 }}>Your Order</Text>
-                                </Row>
+                             </Row>
                             </Grid>
                             <View style={{
                                 padding: 5, marginTop: 20
