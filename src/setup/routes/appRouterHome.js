@@ -63,6 +63,7 @@ import MedicinePaymentPage from '../../modules/screens/Pharmacy/MedicinePaymentP
 import MedicinePaymentResult from '../../modules/screens/Pharmacy/MedicinePaymentResult/MedicinePaymentResult';
 import MedicinePaymentSuccess from '../../modules/screens/Pharmacy/MedicinePaymentSuccess/MedicinePaymentSuccess';
 import UploadPrescription from '../../modules/screens/Pharmacy/MedicineSearch/UploadPrescription';
+import MedicalOrderDetails from '../../modules/screens/Pharmacy/MedicalOrderDetails/MedicalOrderDetails';
 
 
 const routes = {
@@ -450,8 +451,12 @@ const ProfileStack = createStackNavigator({
      }
     },
     
-  
-  
+    MedicalOrderDetails: {
+      screen: MedicalOrderDetails,
+      navigationOptions: {
+       title: 'MedicalOrderDetails'
+     }
+    }
   
   },
     {
