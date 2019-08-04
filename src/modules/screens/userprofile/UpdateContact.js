@@ -5,6 +5,7 @@ import { AsyncStorage } from 'react-native';
 import { connect } from 'react-redux'
 import styles from './style.js';
 import Spinner from '../../../components/Spinner';
+import { ScrollView } from 'react-native-gesture-handler';
 
 
 
@@ -117,7 +118,8 @@ class UpdateContact extends Component {
 
 
 
-                <Content style={styles.bodyContent} contentContainerStyle={{ justifyContent: 'center', flex: 1, height: '100%' }}>
+                <Content style={styles.bodyContent} contentContainerStyle={{ justifyContent: 'center', }}>
+                    <ScrollView>
                     {this.state.primary_mobile_no != null ? <H3 style={{ fontFamily: 'OpenSans' }}>Primary Mobile_no</H3> : null}
                     {this.state.primary_mobile_no != null ?
                         <Card style={{ padding: 10, borderRadius: 10 }}>
@@ -129,7 +131,7 @@ class UpdateContact extends Component {
                             </Item>
                         </Card> : null}
 
-                    <H3 style={{ fontFamily: 'OpenSans' }}>Edit Secondary Mobile_No</H3>
+                    <H3 style={{ fontFamily: 'OpenSans',marginTop:20 }}>Edit Secondary Mobile_No</H3>
                     <Text style={{ color: 'gray', fontSize: 13, fontFamily: 'OpenSans' }}>Update your secondary mobile_no</Text>
                     <Card style={{ padding: 10, borderRadius: 10 }}>
 
@@ -184,7 +186,7 @@ class UpdateContact extends Component {
 
 
 
-
+                    </ScrollView>
                 </Content >
 
             </Container>
