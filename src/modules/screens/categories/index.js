@@ -48,8 +48,8 @@ class Categories extends Component {
                   <LinearGradient
                     colors={['#7357A2', '#62BFE4']} style={{ borderRadius: 10, padding: 10, height: 100, width: 100, marginLeft: 'auto', marginRight: 'auto' }}>
                     <Image
-                      // source={{ uri: item.imageBaseURL + '/' + item.category_id + '.png' }} style={styles.customImage} 
-                      source={{ uri: 'http://pluspng.com/img-png/orthopedics-png--350.png' }} style={styles.customImage}
+                     source={{ uri: item.imageBaseURL + '/' + item.category_id + '.png' }} style={styles.customImage} 
+                      //  source={{ uri: 'http://pluspng.com/img-png/orthopedics-png--350.png' }} style={styles.customImage}
                     />
                   </LinearGradient>
 
