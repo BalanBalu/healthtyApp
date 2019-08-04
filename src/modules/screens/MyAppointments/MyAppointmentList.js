@@ -224,7 +224,7 @@ class MyAppoinmentList extends Component {
 			console.log(e);
 		}
 		finally {
-			this.setState({isLoading:true})
+			this.setState({isLoading:false})
 
 		}
 	};
