@@ -31,7 +31,7 @@ class Reviews extends Component {
     getUserReview = async () => {
         try {
             //let doctorId = "5d24389d44ba7f1d04bc3225";
-            
+            let doctorId="5d2420ed731df239784cd111";
             let userId = await AsyncStorage.getItem('userId');
             let result = await userReviews(doctorId, 'doctor');
             await this.setState({ isLoading: false, userId: userId });
@@ -99,7 +99,7 @@ class Reviews extends Component {
                 });
                 return count;
             } else {
-                return null; d
+                return null; 
             }
         } catch (e) {
             console.log(e)
@@ -153,7 +153,7 @@ else{
                         <CardItem>
                             <Body>
                                 <Row>
-                                    <Thumbnail style={{ marginLeft: -10, height: 50, width: 50 }} square source={renderProfileImage(item.userInfo)} />
+                                    <Thumbnail style={{ marginLeft: -10, height: 50, width: 50 }} square source={renderProfileImage(item.userInfo.profile_image)} />
 
                                     <Col>
                                         <Text style={{ fontWeight: 'bold', fontSize: 15, marginLeft: 5, }}>{item.is_anonymous == true ? 'Medflic User' : item.userInfo.first_name + ' ' + item.userInfo.last_name} </Text>
