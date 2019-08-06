@@ -118,18 +118,18 @@ console.log('reviewIdArray'+JSON.stringify(reviewIdArray))
 
 if( item.reactionData !== undefined && reviewIdArray == this.state.userId){
     return (
-         { color: '#FF9500', fontSize: 12, marginLeft: 3 }
+         { color: '#FF9500', fontSize: 12,  }
     )
 }
 else{
    
     if(this.state.reviewLikeColor===true){
         return (
-            { color: '#FF9500', fontSize: 12, marginLeft: 3 }
+            { color: '#FF9500', fontSize: 12,  }
        )
     }
     return(
-        { fontSize: 12, marginLeft: 60 } 
+        { fontSize: 12 } 
     )
 }
     }
