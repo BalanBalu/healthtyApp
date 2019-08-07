@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import { Container, Content, Text, Button, H3, Item, List, CheckBox, Left, Right, Thumbnail, Body, Icon, Card, Input, Toast, View, Row } from 'native-base';
 import { userFiledsUpdate } from '../../providers/auth/auth.actions';
-import { AsyncStorage } from 'react-native';
+import { AsyncStorage,ScrollView } from 'react-native';
 import { connect } from 'react-redux'
 import styles from './style.js';
 import Spinner from '../../../components/Spinner';
@@ -100,7 +100,8 @@ class UpdateEmail extends Component {
     render() {
         return (
             <Container style={styles.container}>
-                <Content style={{ padding: 10 }} contentContainerStyle={{ flex: 1, height: '100%', }}>
+                <Content style={{ padding: 10 }} contentContainerStyle={{ flex: 1, }}>
+                    <ScrollView>
                     <View style={{ marginTop: 20 }}>
                         {this.state.primary_email!=null?<Text style={{ fontFamily: 'OpenSans', marginLeft: 7, fontWeight: 'bold', fontSize: 20 }}>Primary Email</Text>:null}
                         <Card style={{ padding: 10, borderRadius: 10, marginTop: 10 }}>
@@ -109,14 +110,16 @@ class UpdateEmail extends Component {
                                 <Icon name='mail' style={styles.centeredIcons}></Icon>
 
                                 <Text style={styles.customText}>{this.state.primary_email}</Text>
-                                <Icon style={{ marginLeft: 70, color: 'gray' }} name='ios-lock' />
+                                <Right>
+                                <Icon style={{ color: 'gray' }} name='ios-lock' />
+                                </Right>
                             </Item>
                         :null}</Card>
                     </View>
                     <View style={{ marginTop: 20 }}>
                         <Text style={{ fontFamily: 'OpenSans', marginTop: 50, marginLeft: 7, fontWeight: 'bold', fontSize: 22 }}>Secondary Email</Text>
 
-                        <Card style={{ padding: 10, borderRadius: 10, marginTop: 10, height: 250, justifyContent: 'center' }}>
+                        <Card style={{ padding: 10, borderRadius: 10, marginTop: 10, justifyContent: 'center' }}>
 
                             <Item style={{ borderBottomWidth: 0, marginTop: 12, marginLeft: 4 }}>
                                 <Text style={{ color: 'gray', fontSize: 14, fontFamily: 'OpenSans', marginTop: 5, marginLeft: 7 }}>Update your secondary email</Text>
@@ -148,11 +151,12 @@ class UpdateEmail extends Component {
                                         <Text uppercase={false} note style={{ color: '#fff', fontFamily: 'OpenSans' }}>Cancel</Text>
                                     </Button>
                                 </View> */}
-                                <Row style={{ marginLeft: 255 }}>
+                                <Row style={{width:'100%' }}>
+                                    <Right>
                                     <Button success style={styles.button2} onPress={() => this.handleEmailUpdate()} testID='clickUpdateEmail' >
                                         <Text style={{ color: '#000' }}>Update</Text>
                                     </Button>
-
+                                    </Right>
                                 </Row>
 
 
@@ -169,7 +173,7 @@ class UpdateEmail extends Component {
 
 
 
-
+                    </ScrollView>
 
                 </Content >
 

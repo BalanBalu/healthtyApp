@@ -19,7 +19,11 @@ export async function getSearchedMedicines (keyword, isLoading = true) {
 /*get medicine list*/
 export async function getMedicineDetails() {
     try {
+<<<<<<< HEAD
       console.log("medicine details")      
+=======
+      
+>>>>>>> 237de7a24dfeb7b97787098a659233f1964683b5
       let endPoint = '/medicine/detailsList?limit=8'
       console.log(endPoint);
       let response = await getService(endPoint);
@@ -48,6 +52,27 @@ export async function getMedicineDetails() {
       }
     }
   }
+
+  /* Medicine Order List */
+
+  export async function getMedicineOrderList(user_id) {
+    try {
+      
+      let endPoint = 'ordersDetails/' + user_id + '&fields='+ order_items;
+      console.log(endPoint);
+      let response = await getService(endPoint);
+      let respData = response.data;
+      return respData;  
+    } catch (e) {
+      return {
+        message: 'exception' + e,
+        success: false
+      }
+    }
+  }
+
+
+
 
 
   /*get specific order list*/

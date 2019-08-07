@@ -63,7 +63,7 @@ class UpdatePassword extends Component {
                     textContent={'Please wait updating...'}
                 />       
                 <Content style={styles.bodyContent} contentContainerStyle={{ justifyContent: 'center', flex: 1, height: '100%' }}>
-                  
+                  <ScrollView>
                     <H3 style={{ fontFamily: 'OpenSans' }}>Update Password</H3>
                     <Text style={{ color: 'gray', fontSize: 13, fontFamily: 'OpenSans' }}></Text>
                     <Card style={{ padding: 10, borderRadius: 10 }}>
@@ -105,7 +105,7 @@ class UpdatePassword extends Component {
                         
                    
 
-
+                    </ScrollView>
                 </Content>
 
             </Container>
