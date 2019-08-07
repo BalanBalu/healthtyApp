@@ -35,9 +35,12 @@ class MedicineSearch extends Component {
 
         medicineSearchMap = new Map();
         let result=await getMedicineDetails();
+        console.log('result'+JSON.stringify(result))
+        if(result.success){
         result.data.forEach(element =>{           
             medicineSearchMap.set(element.medicine_id,element)
-        })           
+        })  
+    }         
         const cartItems = await AsyncStorage.getItem('cartItems-'+userId);
         if(Array.isArray(JSON.parse(cartItems)) == true){
           this.setState({cartItems:JSON.parse(cartItems)})           
