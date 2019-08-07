@@ -5,9 +5,10 @@ import {
 } from 'native-base';
 import { userFiledsUpdate, logout } from '../../providers/auth/auth.actions';
 import { connect } from 'react-redux'
-import { Image, BackHandler,AsyncStorage } from 'react-native';
+import { Image, BackHandler, AsyncStorage } from 'react-native';
 import styles from '../../screens/auth/styles';
- import Spinner from '../../../components/Spinner';
+import Spinner from '../../../components/Spinner';
+import { ScrollView } from 'react-native-gesture-handler';
 class UserDetails extends Component {
     constructor(props) {
         super(props)
@@ -17,7 +18,7 @@ class UserDetails extends Component {
             lastName: '',
             dob: '',
             ErrorMsg: '',
-            isLoading:false
+            isLoading: false
 
         }
     }
@@ -40,12 +41,12 @@ class UserDetails extends Component {
     //         }) 
     //          console.log(this.state.dob+'dob');
     //       }           
-        
+
     //       }
     //     }
-          
-     
-    
+
+
+
     // componentWillUnmount() {
     //     BackHandler.removeEventListener('hardwareBackPress', this.handleBackButton);
     // }
@@ -67,7 +68,7 @@ class UserDetails extends Component {
                 dob: this.state.dob,
             };
             const userId = await AsyncStorage.getItem('userId')
-           let response= await userFiledsUpdate(userId,requestData);
+            let response = await userFiledsUpdate(userId, requestData);
             if (response.success) {
                 Toast.show({
                     text: 'Your Profile has been completed, Please Login to Continue',
@@ -79,7 +80,7 @@ class UserDetails extends Component {
             }
             else {
                 Toast.show({
-                    text:response.message,
+                    text: response.message,
                     type: "danger",
                     duration: 3000
                 });
@@ -95,74 +96,75 @@ class UserDetails extends Component {
 
     render() {
         const { navigation, user: { isLoading } } = this.props;
-       
+
         return (
 
             <Container style={styles.container}>
-                    <Content style={styles.bodyContent}>                   
-                    <H3 style={styles.welcome}>User Details</H3>
-                    <Image source={{ uri: 'https://static1.squarespace.com/static/582bbfef9de4bb07fe62ab18/t/5877b9ccebbd1a124af66dfe/1484241404624/Headshot+-+Circular.png?format=300w' }} style={styles.logo} />
-                    <Form>
-                        {/* <View style={styles.errorMsg}>
+                <Content style={styles.bodyContent}>
+                    <ScrollView>
+                        <H3 style={styles.welcome}>User Details</H3>
+                        <Image source={{ uri: 'https://static1.squarespace.com/static/582bbfef9de4bb07fe62ab18/t/5877b9ccebbd1a124af66dfe/1484241404624/Headshot+-+Circular.png?format=300w' }} style={styles.logo} />
+                        <Form style={{ marginBottom: 50 }}>
+                            {/* <View style={styles.errorMsg}>
                             <Text style={{ textAlign: 'center', color: '#775DA3' }}> Invalid Credencials</Text>
                         </View> */}
-                        <Item style={{ borderBottomWidth: 0 }}>
-                            <Input placeholder="First Name" style={styles.transparentLabel}
-                                value={this.state.firstName}
-                                autoFocus={true}
-                                keyboardType={'default'}
-                                returnKeyType={'next'}
-                                onChangeText={firstName => this.setState({ firstName })}
-                                autoCapitalize='none'
-                                blurOnSubmit={false}
-                                onSubmitEditing={() => { this.firstName._root.focus(); }}
+                            <Item style={{ borderBottomWidth: 0 }}>
+                                <Input placeholder="First Name" style={styles.transparentLabel}
+                                    value={this.state.firstName}
+                                    autoFocus={true}
+                                    keyboardType={'default'}
+                                    returnKeyType={'next'}
+                                    onChangeText={firstName => this.setState({ firstName })}
+                                    autoCapitalize='none'
+                                    blurOnSubmit={false}
+                                    onSubmitEditing={() => { this.firstName._root.focus(); }}
+                                />
+                            </Item>
+
+                            <Item style={{ borderBottomWidth: 0 }}>
+                                <Input placeholder="Last Name" style={styles.transparentLabel}
+                                    ref={(input) => { this.firstName = input; }}
+                                    value={this.state.lastName}
+                                    keyboardType={'default'}
+                                    returnKeyType={'next'}
+                                    onChangeText={lastName => this.setState({ lastName })}
+                                    autoCapitalize='none'
+                                    blurOnSubmit={false}
+                                    onSubmitEditing={() => { this.lastName.focus(); }}
+                                />
+                            </Item>
+
+                            <Item style={{ borderBottomWidth: 0, backgroundColor: '#F1F1F1', marginTop: 10, borderRadius: 5 }}>
+                                <Icon name='calendar' style={{ paddingLeft: 20, color: '#775DA3' }} />
+                                <DatePicker style={styles.transparentLabel}
+                                    defaultDate={this.state.dob}
+                                    //ref={(datepicker) => { this.DatePicker = datepicker;}}
+                                    timeZoneOffsetInMinutes={undefined}
+                                    modalTransparent={false}
+                                    animationType={"fade"}
+                                    androidMode={"default"}
+                                    placeHolderText="Date Of Birth"
+                                    textStyle={{ color: "#5A5A5A" }}
+                                    value={this.state.dob}
+                                    placeHolderTextStyle={{ color: "#5A5A5A" }}
+                                    onDateChange={dob => { console.log(dob); this.setState({ dob }) }}
+
+                                    disabled={false}
+                                /></Item>
+
+                            <Spinner color='blue'
+                                visible={this.state.isLoading}
+                                textContent={'Loading...'}
                             />
-                        </Item>
-
-                        <Item style={{ borderBottomWidth: 0 }}>
-                            <Input placeholder="Last Name" style={styles.transparentLabel}
-                                ref={(input) => { this.firstName = input; }}
-                                value={this.state.lastName}
-                                keyboardType={'default'}
-                                returnKeyType={'next'}
-                                onChangeText={lastName => this.setState({ lastName })}
-                                autoCapitalize='none'
-                                blurOnSubmit={false}
-                                onSubmitEditing={() => { this.lastName.focus(); }}
-                            />
-                        </Item>
-
-                        <Item style={{ borderBottomWidth: 0, backgroundColor: '#F1F1F1', marginTop: 10, borderRadius: 5 }}>
-                            <Icon name='calendar' style={{ paddingLeft: 20, color: '#775DA3' }} />
-                            <DatePicker style={styles.transparentLabel}
-                                defaultDate={this.state.dob}
-                                //ref={(datepicker) => { this.DatePicker = datepicker;}}
-                                timeZoneOffsetInMinutes={undefined}
-                                modalTransparent={false}
-                                animationType={"fade"}
-                                androidMode={"default"}
-                                placeHolderText="Date Of Birth"
-                                textStyle={{ color: "#5A5A5A" }}
-                                value={this.state.dob}
-                                placeHolderTextStyle={{ color: "#5A5A5A" }}
-                                onDateChange={dob => { console.log(dob); this.setState({ dob })}}
-
-                                disabled={false}                           
-                            /></Item>
-
-                        <Spinner color='blue'
-                        visible={this.state.isLoading}
-                        textContent={'Loading...'}
-                    />
-                    
 
 
-                        <Button style={styles.loginButton} block primary onPress={() => this.userUpdate()}>
-                            <Text style={{ fontFamily: 'OpenSans' }}>Submit</Text>
-                        </Button>
 
-                    </Form>
+                            <Button style={styles.loginButton} block primary onPress={() => this.userUpdate()}>
+                                <Text style={{ fontFamily: 'OpenSans' }}>Submit</Text>
+                            </Button>
 
+                        </Form>
+                    </ScrollView>
                 </Content>
                 <Footer >
                     <FooterTab style={{ backgroundColor: '#F2F2F2', }}>

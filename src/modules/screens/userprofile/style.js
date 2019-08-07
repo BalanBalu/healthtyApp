@@ -6,6 +6,7 @@ export default StyleSheet.create({
     {
         marginTop: 10,
         backgroundColor: '#ffffff',
+
     },
     bodyContent: {
         backgroundColor: '#fff',
@@ -68,7 +69,6 @@ export default StyleSheet.create({
     {
         fontSize: 22,
         textAlign: 'center',
-        marginTop: -10,
         fontFamily: 'opensans-semibold',
 
     },
