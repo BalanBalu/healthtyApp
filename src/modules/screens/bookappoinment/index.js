@@ -9,7 +9,7 @@ import {  fetchAvailabilitySlots,viewUserReviews, bindDoctorDetails } from '../.
 import Mapbox from './Mapbox';
 import { Loader } from '../../../components/ContentLoader';
 import moment from 'moment';
-
+import { renderProfileImage } from '../../common';
 let slotMap=new Map();
 
 class BookAppoinment extends Component {
@@ -382,7 +382,8 @@ enumarateDates(startDate, endDate) {
                         <Left>
                           {item.userInfo.profile_image!=undefined?
                           <Thumbnail square source={item.userInfo.profile_image.imageURL} style={{ height: 86, width: 86 }} /> :
-                          <Thumbnail square source={{ uri: 'https://static1.squarespace.com/static/582bbfef9de4bb07fe62ab18/t/5877b9ccebbd1a124af66dfe/1484241404624/Headshot+-+Circular.png?format=300w' }} style={{ height: 40, width: 40 }} />
+                          //<Thumbnail square source={{ uri: 'https://static1.squarespace.com/static/582bbfef9de4bb07fe62ab18/t/5877b9ccebbd1a124af66dfe/1484241404624/Headshot+-+Circular.png?format=300w' }} style={{ height: 40, width: 40 }} />
+                          <Thumbnail square source={renderProfileImage(item.userInfo.profile_image)} style={{ height: 40, width: 40 }} />
                           }
                         </Left>
                         <Body>

@@ -57,7 +57,7 @@ class Reviews extends Component {
             }
             let result = await insertLikesDataForReviews(reviewId, reviewerId, reactionData)
             console.log('result      :   ' + JSON.stringify(result));
-            this.setState({ isLoading: false });
+           this.setState({ isLoading: false });
             if (result.success) {
             await this.setState({ reviewLikeColor: true });
             }
@@ -86,25 +86,26 @@ class Reviews extends Component {
 
     likesCount(data, index) {
         try {
+            console.log('reaction:'  +  data.reactionData)
             if (data.reactionData) {
                 let count = 0;
-                data.reactionData.forEach(element => {
-                    if (element.active === true) {
-                        count++;
-                    }
-                    else if (element.reviewer_id == this.state.userId && element.active === true) {
-                        this.state.data[index].likeColor = true;
-                        // console.log('like color     :   ' + this.state.data[index]);
-                    }
-                });
+            {
+              if (element.reviewer_id == this.state.userId && element.active === true)
+               {
+                   
+               count++;
+               }
+            };
                 return count;
-            } else {
+            } 
+            else {
                 return null; 
             }
         } catch (e) {
             console.log(e)
         }
     }
+
     changeLikesColor=(item)=>{
         console.log('item'+JSON.stringify(item))
         let reviewIdArray=[]
@@ -115,8 +116,9 @@ if(reactionElement.reviewer_id == this.state.userId){
 }
 })
 console.log('reviewIdArray'+JSON.stringify(reviewIdArray))
+//if(this.state.reviewLikeColor===true  && reviewIdArray == this.state.userId){
 
-if( item.reactionData !== undefined && reviewIdArray == this.state.userId){
+ if( item.reactionData !== undefined && reviewIdArray == this.state.userId){
     return (
          { color: '#FF9500', fontSize: 12,  }
     )
