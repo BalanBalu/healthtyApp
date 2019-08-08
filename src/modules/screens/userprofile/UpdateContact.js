@@ -20,8 +20,7 @@ class UpdateContact extends Component {
             active: true,
             primary_mobile_no: null,
             isLoading: false,
-            numberType: '',
-            userData:[]
+            userData:''
         }
     }
 
@@ -33,8 +32,6 @@ class UpdateContact extends Component {
     bindContactValues() {
         const { navigation } = this.props;
         const userData = navigation.getParam('updatedata');
-        this.setState({userData})
-
         this.setState({
             primary_mobile_no: userData.mobile_no,
 
@@ -43,27 +40,20 @@ class UpdateContact extends Component {
             this.setState({
                 type: userData.secondary_mobiles[0].type,
                 mobile_no: userData.secondary_mobiles[0].number,
-                active: userData.secondary_mobiles[0].active
+                active: userData.secondary_mobiles[0].active,
+                userData
             })
         }
 
     }
-    // }
-
-    handleContactUpdate = async () => {
-        const{mobile_no,type,userData}=this.state
-
-        try {
-            this.setState({ isLoading: true })
-            let userId = await AsyncStorage.getItem('userId');
-            if (type != userData.secondary_mobiles[0].type || mobile_no != userData.secondary_mobiles[0].number) {
-
+    commonUpdateContactMethod=async()=>{
+        let userId = await AsyncStorage.getItem('userId');
                 let data = {
                     secondary_mobiles: [
                         {
-                            type: type,
-                            number: mobile_no,
-                            active: true
+                            type:this.state.type,
+                            number:this.state.mobile_no,
+                            active:true
                         }]
 
                 };
@@ -73,34 +63,34 @@ class UpdateContact extends Component {
                         text: 'Contact updated Successfully',
                         type: "success",
                         duration: 3000,
-
                     })
-                    this.setState({ isloading: false })
-                    this.props.navigation.navigate('Profile');
-               
+                    this.props.navigation.navigate('Profile');               
                 } else {
                     Toast.show({
                         text: 'Contact not updated',
                         type: "danger",
                         duration: 3000
-                    })
-             
-
-
+                    })           
+                    this.setState({ isLoading: false })
                 }
-            }
-            else {
-                this.setState({ isloading: false })
+    }
+    
+
+    handleContactUpdate = async () => {
+        const{mobile_no,type,userData}=this.state
+        try {
+            this.setState({ isLoading:true})
+            if(userData.secondary_mobiles!==undefined){                
+            if (type != userData.secondary_mobiles[0].type || mobile_no != userData.secondary_mobiles[0].number) {
+                this.commonUpdateContactMethod();
+            }else {
                 this.props.navigation.navigate('Profile');
-                
             }
-
-
-        } catch (e) {
-            console.log(e);
+        }else{
+            this.commonUpdateContactMethod();
         }
-        finally {
-            this.setState({isloading:false})
+        }catch (e) {
+        console.log(e);
         }
     }
 
@@ -113,7 +103,7 @@ class UpdateContact extends Component {
             <Container style={styles.container}>
                 <Spinner color='blue'
                     visible={this.state.isLoading}
-                    textContent={'Loading...'}
+                    textContent={'Please wait Loading'}
                 />
 
 
@@ -161,7 +151,7 @@ class UpdateContact extends Component {
 
                         <Item style={{ borderBottomWidth: 0 }}>
                             <Icon name='call' style={styles.centeredIcons}></Icon>
-                            <Input placeholder="Edit Your Number" style={styles.transparentLabel} keyboardType="email-address"
+                            <Input placeholder="Edit Your Number" style={styles.transparentLabel} keyboardType="numeric"
                                 onChangeText={(mobile_no) => this.setState({ mobile_no })}
                                 value={String(this.state.mobile_no)}
                                 testID='updateContact' />
