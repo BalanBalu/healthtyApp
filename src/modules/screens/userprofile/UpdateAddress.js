@@ -20,10 +20,8 @@ class UserDetails extends Component {
             city: '',
             pin_code: '',
             isLoading: false,
-            isFocused: false,
-            pinCodeIsFocused: false,
-            userData: [],
-            loderContent:''
+            userData:'',
+            isFocusKeyboard:false
 
         }
     }
@@ -33,11 +31,11 @@ class UserDetails extends Component {
 
     }
     async bindValues() {
+        console.log("component");
         const { navigation } = this.props;
-        const userData = navigation.getParam('updatedata');
-    
-        console.log(userData);
-        if (userData) {
+        const userData = navigation.getParam('updatedata');  
+       if (userData.address!=undefined) {
+            console.log("undefined");
             await this.setState({
                 no_and_street: userData.address.address.no_and_street,
                 address_line_1: userData.address.address.address_line_1,
@@ -49,70 +47,64 @@ class UserDetails extends Component {
         }
     }
 
-
-
-    userUpdate = async () => {
-            
-        try {
-            const { userData, no_and_street, address_line_1, address_line_2, city, pin_code } = this.state
-            this.setState({ isLoading: true });
-            await this.setState({ loderContent: 'Loading....' })
-            
-            if (no_and_street != userData.address.address.no_and_street ||address_line_1 != userData.address.address.address_line_1 ||
-                address_line_2 != userData.address.address.address_line_2 ||city != userData.address.address.city ||
-                pin_code != userData.address.address.pin_code) {
-                
-                let requestData = {
-                    address: {
-                        address: {
-                            no_and_street: this.state.no_and_street,
-                            address_line_1: this.state.address_line_1,
-                            address_line_2: this.state.address_line_2,
-                            city: this.state.city,
-                            pin_code: this.state.pin_code
-                        }
-                    }
-                };
-                const userId = await AsyncStorage.getItem('userId')
-                let response = await userFiledsUpdate(userId, requestData);
-                
-                
-                if (response.success) {
-                    
-                   
-                    Toast.show({
-                        text: 'Your Profile has been Updated',
-                        type: "success",
-                        duration: 3000
-                    });
-                    this.props.navigation.navigate('Profile');
+    //Common method to update address
+    commonUpdateAddressMethod=async()=>{
+        const userId = await AsyncStorage.getItem('userId')
+        let requestData = {
+            address: {
+                address: {
+                    no_and_street: this.state.no_and_street,
+                    address_line_1: this.state.address_line_1,
+                    address_line_2: this.state.address_line_2,
+                    city: this.state.city,
+                    pin_code: this.state.pin_code
                 }
-                else {
-                    Toast.show({
-                          
-                        text: response.message,
-                        type: "danger",
-                        duration: 3000
-                    });
-                }
-               
-            
-            } else {
-                this.setState({ isLoading: true });
-                this.props.navigation.navigate('Profile');
-            
             }
-            this.setState({ isLoading: false });
-        }
-
-        catch (e) {
+        };
+        let response = await userFiledsUpdate(userId, requestData);
+        console.log(response);             
+        
+        if (response.success) {                  
             Toast.show({
-                text: 'Exception Occured' + e,
+                text: 'Your Profile has been Updated',
+                type: "success",
                 duration: 3000
             });
+            this.props.navigation.navigate('Profile');
+        }
+        else {
+            Toast.show({                         
+                text:response.message,
+                type: "danger",
+                duration: 3000
+            });
+            this.setState({ isLoading: false });
+        }              
+     }
+
+    
 
 
+
+    userUpdate(){            
+        try {
+            const { userData, no_and_street, address_line_1, address_line_2, city, pin_code } = this.state
+            this.setState({ isLoading: true });            
+            if(userData.address!==undefined){
+             if (no_and_street != userData.address.address.no_and_street ||address_line_1 != userData.address.address.address_line_1 ||
+                 address_line_2 != userData.address.address.address_line_2 ||city != userData.address.address.city ||
+                 pin_code != userData.address.address.pin_code) {
+                     this.commonUpdateAddressMethod();     //Common method to update address                    
+                 }else {
+                this.props.navigation.navigate('Profile');
+                }
+            }else{
+            console.log("else")
+            this.commonUpdateAddressMethod();           
+            }     
+        }catch (e) {
             console.log(e);
+
         }
     }
 
@@ -121,36 +113,23 @@ class UserDetails extends Component {
 
 
     render() {
-        const { navigation, user: { isLoading } } = this.props;
-
-
         return (
-
             <Container style={styles.Container}>
-
-               
-                <Content style={styles.bodyContent} contentContainerStyle={{ flex: 1 }}>
+               <Content style={styles.bodyContent} contentContainerStyle={{ flex: 1 }}>
                     <ScrollView>
                   
                     <H3 style={{ fontSize: 20, fontFamily: 'opensans-semibold', marginTop: 20, marginLeft: '5%', fontWeight: 'bold', }}>Update User Details</H3>
                   
                      <Form>
                         <ScrollView scrollEventThrottle={16} >
-
-                            {/* <View style={styles.errorMsg}>
-                            <Text style={{ textAlign: 'center', color: '#775DA3' }}> Invalid Credencials</Text>
-                        </View> */}
-
                             <Item style={{ borderBottomWidth: 0 }}>
                                 <Text style={{ fontFamily: 'OpenSans', fontSize: 18, marginTop: 30 }}>Door_no</Text>
                             </Item>
                             <Item style={{ borderBottomWidth: 0 }}>
                                 <Input
-                                    // placeholder="First Name"
-
+                                    placeholder="Enter Door no"
                                     style={styles.transparentLabel}
                                     value={this.state.no_and_street}
-
                                     keyboardType={'default'}
                                     returnKeyType={'next'}
                                     onChangeText={no_and_street => this.setState({ no_and_street })}
@@ -162,11 +141,11 @@ class UserDetails extends Component {
                             </Item>
 
                             <Item style={{ borderBottomWidth: 0 }}>
-                                <Text style={{ fontFamily: 'OpenSans', fontSize: 18, }}>AddressLine1</Text>
+                                <Text style={{ fontFamily: 'OpenSans', fontSize: 18, }}>Address Line1</Text>
                             </Item>
                             <Item style={{ borderBottomWidth: 0 }}>
                                 <Input
-                                    // placeholder="Last Name"
+                                    placeholder="Enter Address Line1"
                                     style={styles.transparentLabel}
                                     ref={(input) => { this.no_and_street = input; }}
                                     value={this.state.address_line_1}
@@ -179,11 +158,11 @@ class UserDetails extends Component {
                                 />
                             </Item>
                             <Item style={{ borderBottomWidth: 0 }}>
-                                <Text style={{ fontFamily: 'OpenSans', fontSize: 18, }}>AddressLine2</Text>
+                                <Text style={{ fontFamily: 'OpenSans', fontSize: 18, }}>Address Line2</Text>
                             </Item>
                             <Item style={{ borderBottomWidth: 0 }}>
                                 <Input
-                                    // placeholder="Last Name"
+                                    placeholder="Enter Address Line2"
                                     style={styles.transparentLabel}
                                     ref={(input) => { this.address_line_1 = input; }}
                                     value={this.state.address_line_2}
@@ -192,7 +171,7 @@ class UserDetails extends Component {
                                     onChangeText={address_line_2 => this.setState({ address_line_2 })}
                                     autoCapitalize='none'
                                     blurOnSubmit={false}
-                                    onSubmitEditing={() => { this.address_line_2._root.focus(this.setState({ isFocused: true })); }}
+                                    onSubmitEditing={() => { this.address_line_2._root.focus(this.setState({ isFocusKeyboard: true })); }}
 
 
                                 />
@@ -200,13 +179,13 @@ class UserDetails extends Component {
 
 
                             <Item style={{ borderBottomWidth: 0 }}>
-                                <Text style={{ fontFamily: 'OpenSans', fontSize: 18, }}>city</Text>
+                                <Text style={{ fontFamily: 'OpenSans', fontSize: 18, }}>City</Text>
                             </Item>
                             <Item style={{ borderBottomWidth: 0 }}>
                                 <Input
-                                    // placeholder="Last Name"
+                                    placeholder="Enter City"
                                     style={styles.transparentLabel}
-                                    autoFocus={this.state.isFocused}
+                                    autoFocus={this.state.isFocusKeyboard}
                                     ref={(input) => { this.address_line_2 = input; }}
                                     value={this.state.city}
                                     keyboardType={'default'}
@@ -214,27 +193,26 @@ class UserDetails extends Component {
                                     onChangeText={city => this.setState({ city })}
                                     autoCapitalize='none'
                                     blurOnSubmit={false}
-                                    onSubmitEditing={() => { this.city._root.focus(this.setState({ pinCodeIsFocused: true })); }}
+                                    onSubmitEditing={() => { this.city._root.focus(this.setState({ isFocusKeyboard: true })); }}
                                 />
                             </Item>
 
                             <Item style={{ borderBottomWidth: 0 }}>
-                                <Text style={{ fontFamily: 'OpenSans', fontSize: 18, }}>pincode</Text>
+                                <Text style={{ fontFamily: 'OpenSans', fontSize: 18, }}>Pincode</Text>
                             </Item>
                             <Item style={{ borderBottomWidth: 0 }}>
                                 <Input
-                                    // placeholder="Last Name"
+                                    placeholder="Enter Pincode"
                                     style={styles.transparentLabel}
                                     value={this.state.pin_code}
-                                    autoFocus={this.state.pinCodeIsFocused}
+                                    autoFocus={this.state.isFocusKeyboard}
                                     ref={(input) => { this.city = input; }}
-
-                                    keyboardType={'default'}
+                                    keyboardType="numeric"
                                     returnKeyType={'next'}
                                     onChangeText={pin_code => this.setState({ pin_code })}
                                     autoCapitalize='none'
                                     blurOnSubmit={false}
-                                    onSubmitEditing={() => { this.userUpdate(); }}
+                                    onSubmitEditing={() => { this.userUpdate()}}
                                 />
                             </Item>
 
@@ -249,15 +227,11 @@ class UserDetails extends Component {
                         </ScrollView>
 
                     </Form> 
-                     {/* <Spinner 
-                        visible={this.state.isLoading}
-                        overlayColor="none"
-                    /> */}
 </ScrollView>
                     </Content> 
                     <Spinner color='blue'
                         visible={this.state.isLoading}
-                        textContent={this.state.loderContent}
+                        textContent={'Please wait Loading...'}
                         overlayColor="none"
                         cancelable={false}
                     />
