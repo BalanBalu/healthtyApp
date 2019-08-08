@@ -31,7 +31,7 @@ class Reviews extends Component {
     getUserReview = async () => {
         try {
             //let doctorId = "5d24389d44ba7f1d04bc3225";
-            let doctorId="5d2420ed731df239784cd111";
+            let doctorId="5d2420ed731df239784cd222";
             let userId = await AsyncStorage.getItem('userId');
             let result = await userReviews(doctorId, 'doctor');
             await this.setState({ isLoading: false, userId: userId });

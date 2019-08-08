@@ -10,6 +10,7 @@ import Mapbox from './Mapbox';
 import { Loader } from '../../../components/ContentLoader';
 import moment from 'moment';
 import { renderProfileImage } from '../../common';
+import Reviews from '../Reviews';
 let slotMap=new Map();
 
 class BookAppoinment extends Component {
@@ -27,6 +28,7 @@ class BookAppoinment extends Component {
       },
       qualification: '',
       data: {},
+     
       reviewdata: null,
       doctordata: {
         prefix: null
@@ -43,6 +45,7 @@ class BookAppoinment extends Component {
 
   }
 
+ 
 
   async componentDidMount() {
 
@@ -52,7 +55,8 @@ class BookAppoinment extends Component {
     if(availabilitySlots) {
       console.log("if")
       let endDateMoment = addMoment(this.state.currentDate, 7, 'days')
-      const doctorId = navigation.getParam('doctorId')|| false;
+    const doctorId = navigation.getParam('doctorId')|| false;
+   // let doctorId = "5d2420ed731df239784cd222";
       await this.setState({doctorId:doctorId});
       console.log("doctorId");
       await this.getAvailabilitySlots(doctorId, moment(new Date()), endDateMoment);
@@ -182,7 +186,7 @@ enumarateDates(startDate, endDate) {
   getUserReviews = async (doctorId) => {
     console.log(" get reviews");
     let resultReview = await viewUserReviews('doctor',doctorId);
-    console.log(resultReview.data);
+    console.log('resultReview : ' + JSON.stringify (resultReview));
     if (resultReview.success) {
       this.setState({ reviewdata: resultReview.data });
       this.setState({ reviews_length: this.state.reviewdata.length });//  reviews length
@@ -368,23 +372,25 @@ enumarateDates(startDate, endDate) {
           
 
             <Card style={{ margin: 10, padding: 10, borderRadius: 10 }}>
-              <Text style={styles.titleText}>Reviews</Text>
-
+            
               <List>
                 {this.state.reviewdata !== null ?
                   <FlatList
                     data={this.state.reviewdata}
                     extraData={this.state}
                     keyExtractor={(item, index) => index.toString()}
-                    renderItem={({ item }) =>
+                    renderItem={({ item, index }) =>
                       <ListItem avatar>
 
+           
                         <Left>
-                          {item.userInfo.profile_image!=undefined?
+                          {/* {item.userInfo.profile_image!=undefined?
                           <Thumbnail square source={item.userInfo.profile_image.imageURL} style={{ height: 86, width: 86 }} /> :
-                          //<Thumbnail square source={{ uri: 'https://static1.squarespace.com/static/582bbfef9de4bb07fe62ab18/t/5877b9ccebbd1a124af66dfe/1484241404624/Headshot+-+Circular.png?format=300w' }} style={{ height: 40, width: 40 }} />
-                          <Thumbnail square source={renderProfileImage(item.userInfo.profile_image)} style={{ height: 40, width: 40 }} />
-                          }
+                          <Thumbnail square source={{ uri: 'https://static1.squarespace.com/static/582bbfef9de4bb07fe62ab18/t/5877b9ccebbd1a124af66dfe/1484241404624/Headshot+-+Circular.png?format=300w' }} style={{ height: 40, width: 40 }} />
+                          //<Thumbnail square source={renderProfileImage(item.userInfo.profile_image)} style={{ height: 40, width: 40 }} />
+                          } */}
+                          <Thumbnail style={{ marginLeft: -10, height: 50, width: 50 }} square source={renderProfileImage(item.userInfo.profile_image)} />
+                          
                         </Left>
                         <Body>
                           <Text>{((typeof item.userInfo.first_name || typeof item.userInfo.last_name) !== 'undefined') ? item.userInfo.first_name + '' + item.userInfo.last_name : 'Medflic User'}</Text>
@@ -406,12 +412,12 @@ enumarateDates(startDate, endDate) {
                   {this.state.reviewdata !== null ?
                     <Button iconRight transparent onPress={() => this.props.navigation.navigate('Reviews', { doctorId : this.state.doctorId})}>
                       <Icon name='add' />
-                      <Text style={styles.customText}>More Reviews</Text>
+                      <Text  style={styles.customText}>More Reviews</Text>
                     </Button> : null}
                 </Col>
               </Grid>
 
-            </Card>
+           </Card>
 
 
             {(typeof doctordata.professional_statement != 'undefined') ?
