@@ -33,6 +33,7 @@ class AppointmentDetails extends Component {
 
 
     }
+    
   }
 
   async componentDidMount() {
@@ -117,19 +118,19 @@ class AppointmentDetails extends Component {
   }
   
   appointmentDetailsGetById = async () => {
-
+    console.log('this.state.aappointmentId');
   let result = await appointmentDetails(this.state.appointmentId);
-    console.log(result.data)
-    await this.setState({data:result.data[0]})
+    console.log(JSON.stringify(result.data))
     
     this.getUserReviews();
     if (result.success) {
-      this.setState({ doctorId: result.data[0].doctor_id })
+
+     await  this.setState({ doctorId: result.data[0].doctor_id ,data:result.data[0]})
       this.getDoctorDetails()
       
     }
   
-    
+    console.log(this.state.data.appointment_status)
   
      
     
@@ -160,6 +161,7 @@ class AppointmentDetails extends Component {
         statusUpdateReason: this.state.statusUpdateReason,
         status_by: 'USER'
       };
+      debugger
       let userId = await AsyncStorage.getItem('userId');
       let result = await appointmentStatusUpdate(this.state.doctorId, this.state.appointmentId, requestData);
       this.setState({ isLoading: true })
@@ -191,261 +193,262 @@ class AppointmentDetails extends Component {
 
   render() {
     
+    
 
 
-    const { data, reviewData, doctorData, education, yearOfExperience, specialist, hospital, isLoading } = this.state;
+      const { data, reviewData, doctorData, education, yearOfExperience, specialist, hospital, isLoading } = this.state;
 
-    return (
+      return (
 
-      <Container style={styles.container}>
+        <Container style={styles.container}>
 
-        {isLoading ==false? <Loader style={'appointment'} /> :
+          {isLoading ==false? <Loader style={'appointment'} /> :
 
-          <Content style={styles.bodyContent}>
-            <NavigationEvents
-              onWillFocus={payload => { this.componentDidMount() }}
+            <Content style={styles.bodyContent}>
+              {/* <NavigationEvents
+                onWillFocus={payload => { this.componentDidMount() }}
               
-            />
-            <Grid style={{ backgroundColor: '#7E49C3', height: 200 }}>
-            </Grid>
+              /> */}
+              <Grid style={{ backgroundColor: '#7E49C3', height: 200 }}>
+              </Grid>
 
-            <Card style={styles.customCard}>
-              <List>
-                <ListItem thumbnail noBorder>
-                  <Left>
-                    <Thumbnail square source={{ uri: 'https://static1.squarespace.com/static/582bbfef9de4bb07fe62ab18/t/5877b9ccebbd1a124af66dfe/1484241404624/Headshot+-+Circular.png?format=300w' }} style={{ height: 86, width: 86 }} />
-                  </Left>
-                  <Body>
-                    <Text style={{ fontSize: 16 }}>{(doctorData && doctorData.prefix ? doctorData.prefix : 'Dr') + ('.') + (doctorData && doctorData.first_name) + " " + (doctorData && doctorData.last_name)},
-                    <Text style={{ fontSize: 10 }}>{education}</Text>
-
-                    </Text>
-                    <Text note style={styles.customText}>{specialist} </Text>
-                  </Body>
-
-                </ListItem>
-
-                <Grid>
-                  <Col style={{ backgroundColor: 'transparent', borderRightWidth: 0.5, borderRightColor: 'gray', justifyContent: 'center' }}>
-                    <Text style={styles.topValue}> Rs 45.. </Text>
-                    <Text note style={styles.bottomValue}> Hourly Rate </Text>
-                  </Col>
-                  <Col style={{ backgroundColor: 'transparent', borderRightWidth: 0.5, borderRightColor: 'gray', justifyContent: 'center' }}>
-                    <Text style={styles.topValue}> {yearOfExperience} </Text>
-                    <Text note style={styles.bottomValue}> Experience</Text>
-                  </Col>
-                  <Col style={{ backgroundColor: 'transparent', justifyContent: 'center', marginLeft: 'auto', marginRight: 'auto' }}>
-                    <Text style={styles.topValue}>Card </Text>
-                    <Text note style={styles.bottomValue}> Paid Method </Text>
-                  </Col>
-                </Grid>
-
-                <Grid style={{ marginTop: 5 }}>
-                  <View style={{ marginLeft: 'auto', marginRight: 'auto' }}>
-                    <Col style={{ width: 300, }}>
-                      <Button disabled={true} block style={{ borderRadius: 10, backgroundColor: '#D7BDE2' }}>
-                        <Text style={{ color: 'black', fontSize: 16 }}>
-                          {this.state.appointmentStatus == 'APPROVED' ? 'APPROVED' :
-                            data.appointment_status == 'PROPOSED_NEW_TIME' ? 'PROPOSED NEW TIME' :
-                              data.appointment_status == 'PENDING_REVIEW' ? 'COMPLETED' :
-                                data.appointment_status || this.state.appointStatus}
-                        </Text>
-                      </Button>
-
-                    </Col>
-
-                  </View>
-                </Grid>
-                <Grid style={{ marginTop: 5 }}>
-                  {data.appointment_status == 'APPROVED' || this.state.appointmentStatus === 'APPROVED' ?
-                    <Col style={width = 'auto'}>
-                      <Button block danger style={{ margin: 1, marginTop: 10, marginLeft: 1, borderRadius: 30, padding: 15, height: 40, width: "auto" }} onPress={() => this.navigateCancelAppoointment()} testID='cancelAppointment'>
-                        <Text style={{ textAlign: 'center', fontFamily: 'OpenSans', }}>CANCEL APPOINTMENT</Text>
-                      </Button>
-                    </Col> :
-                    data.appointment_status == 'PROPOSED_NEW_TIME' ?
-                      <Item style={{ borderBottomWidth: 0, justifyContent: 'center' }}>
-                        <Button success style={styles.statusButton} onPress={() => this.updateAppointmentStatus(data, 'APPROVED')} testID='approvedAppointment'>
-                          <Text style={{ textAlign: 'center', fontFamily: 'OpenSans', color: '#000' }}>ACCEPT</Text>
-                        </Button>
-                        <Button danger style={styles.Button2} onPress={() => this.navigateCancelAppoointment()} testID='appointmentCancel'>
-                          <Text style={{ textAlign: 'center', fontFamily: 'OpenSans', color: '#000' }}> CANCEL </Text></Button>
-                      </Item> : null}
-                </Grid>
-
-              </List>
-            </Card>
-
-            <Card transparent style={{ margin: 20, backgroundColor: '#ecf0f1' }}>
-              <Card style={{ backgroundColor: '#ffffff', borderRadius: 10, padding: 10 }}>
-                <Grid style={{ margin: 5 }}>
-                  <Right>
-                    <Text>
-                    {formatDate(data.appointment_starttime, "dddd,MMMM DD-YYYY  hh:mm a")}
-                    </Text>
-                  </Right>
-
-                </Grid>
-
+              <Card style={styles.customCard}>
                 <List>
-                  <ListItem avatar >
-                    {doctorData.hospital ?
-                      <RenderHospitalAddress gridStyle={{ width: '10%' }}
-                        hospotalNameTextStyle={styles.customText}
-                        textStyle={styles.customText}
-                        hospitalAddress={hospital}
-                      /> : null}
+                  <ListItem thumbnail noBorder>
+                    <Left>
+                      <Thumbnail square source={{ uri: 'https://static1.squarespace.com/static/582bbfef9de4bb07fe62ab18/t/5877b9ccebbd1a124af66dfe/1484241404624/Headshot+-+Circular.png?format=300w' }} style={{ height: 86, width: 86 }} />
+                    </Left>
+                    <Body>
+                      <Text style={{ fontSize: 16 }}>{(doctorData && doctorData.prefix ? doctorData.prefix : 'Dr') + ('.') + (doctorData && doctorData.first_name) + " " + (doctorData && doctorData.last_name)},
+                      <Text style={{ fontSize: 10 }}>{education}</Text>
+
+                      </Text>
+                      <Text note style={styles.customText}>{specialist} </Text>
+                    </Body>
+
                   </ListItem>
+
+                  <Grid>
+                    <Col style={{ backgroundColor: 'transparent', borderRightWidth: 0.5, borderRightColor: 'gray', justifyContent: 'center' }}>
+                      <Text style={styles.topValue}> Rs 45.. </Text>
+                      <Text note style={styles.bottomValue}> Hourly Rate </Text>
+                    </Col>
+                    <Col style={{ backgroundColor: 'transparent', borderRightWidth: 0.5, borderRightColor: 'gray', justifyContent: 'center' }}>
+                      <Text style={styles.topValue}> {yearOfExperience} </Text>
+                      <Text note style={styles.bottomValue}> Experience</Text>
+                    </Col>
+                    <Col style={{ backgroundColor: 'transparent', justifyContent: 'center', marginLeft: 'auto', marginRight: 'auto' }}>
+                      <Text style={styles.topValue}>Card </Text>
+                      <Text note style={styles.bottomValue}> Paid Method </Text>
+                    </Col>
+                  </Grid>
+
+                  <Grid style={{ marginTop: 5 }}>
+                    <View style={{ marginLeft: 'auto', marginRight: 'auto' }}>
+                      <Col style={{ width: 300, }}>
+                        <Button disabled={true} block style={{ borderRadius: 10, backgroundColor: '#D7BDE2' }}>
+                          <Text style={{ color: 'black', fontSize: 16 }}>
+                            {this.state.appointmentStatus == 'APPROVED' ? 'APPROVED' :
+                              data.appointment_status == 'PROPOSED_NEW_TIME' ? 'PROPOSED NEW TIME' :
+                                data.appointment_status == 'PENDING_REVIEW' ? 'COMPLETED' :
+                                  data.appointment_status || this.state.appointStatus}
+                          </Text>
+                        </Button>
+
+                      </Col>
+
+                    </View>
+                  </Grid>
+                  <Grid style={{ marginTop: 5 }}>
+                    {data.appointment_status == 'APPROVED' || this.state.appointmentStatus === 'APPROVED' ?
+                      <Col style={width = 'auto'}>
+                        <Button block danger style={{ margin: 1, marginTop: 10, marginLeft: 1, borderRadius: 30, padding: 15, height: 40, width: "auto" }} onPress={() => this.navigateCancelAppoointment()} testID='cancelAppointment'>
+                          <Text style={{ textAlign: 'center', fontFamily: 'OpenSans', }}>CANCEL APPOINTMENT</Text>
+                        </Button>
+                      </Col> :
+                      data.appointment_status == 'PROPOSED_NEW_TIME' ?
+                        <Item style={{ borderBottomWidth: 0, justifyContent: 'center' }}>
+                          <Button success style={styles.statusButton} onPress={() => this.updateAppointmentStatus(data, 'APPROVED')} testID='approvedAppointment'>
+                            <Text style={{ textAlign: 'center', fontFamily: 'OpenSans', color: '#000' }}>ACCEPT</Text>
+                          </Button>
+                          <Button danger style={styles.Button2} onPress={() => this.navigateCancelAppoointment()} testID='appointmentCancel'>
+                            <Text style={{ textAlign: 'center', fontFamily: 'OpenSans', color: '#000' }}> CANCEL </Text></Button>
+                        </Item> : null}
+                  </Grid>
+
                 </List>
               </Card>
-              {data.appointment_status == 'CLOSED' || data.appointment_status == 'APPROVED' || data.appointment_status == 'PENDING' || data.appointment_status == 'PROPOSED_NEW_TIME'?null:
-              (data.appointment_status == 'PENDING_REVIEW' || reviewData.length === 0) ?
-                <Card style={{ margin: 10, padding: 10, borderRadius: 10 }}>
-                  <List>
-                    <Text style={styles.titlesText}>Review</Text>
-                    <ListItem>
-                      <Grid>
-                        <Col style={{ width: '50%' }}>
-                          <Button block success style={styles.reviewButton} onPress={() => this.navigateAddReview()} testID='addFeedBack'>
-                            {/* <Icon name='add' /> */}
-                            <Text style={styles.customText}> ADD FEEDBACK </Text>
-                            <Icon name="create" style={styles.editProfilePencil}></Icon>
 
-                          </Button>
-                        </Col>
-                      </Grid>
+              <Card transparent style={{ margin: 20, backgroundColor: '#ecf0f1' }}>
+                <Card style={{ backgroundColor: '#ffffff', borderRadius: 10, padding: 10 }}>
+                  <Grid style={{ margin: 5 }}>
+                    <Right>
+                      <Text>
+                      {formatDate(data.appointment_starttime, "dddd,MMMM DD-YYYY  hh:mm a")}
+                      </Text>
+                    </Right>
+
+                  </Grid>
+
+                  <List>
+                    <ListItem avatar >
+                      {doctorData.hospital ?
+                        <RenderHospitalAddress gridStyle={{ width: '10%' }}
+                          hospotalNameTextStyle={styles.customText}
+                          textStyle={styles.customText}
+                          hospitalAddress={hospital}
+                        /> : null}
                     </ListItem>
                   </List>
                 </Card>
-         : (data.appointment_status == 'COMPLETED' || reviewData.length !== 0) ?
-          
+                {data.appointment_status == 'CLOSED' || data.appointment_status == 'APPROVED' || data.appointment_status == 'PENDING' || data.appointment_status == 'PROPOSED_NEW_TIME'?null:
+                (data.appointment_status == 'PENDING_REVIEW' || reviewData.length === 0) ?
                   <Card style={{ margin: 10, padding: 10, borderRadius: 10 }}>
                     <List>
                       <Text style={styles.titlesText}>Review</Text>
-                      {reviewData[0] && reviewData[0].is_anonymous == true ?
+                      <ListItem>
+                        <Grid>
+                          <Col style={{ width: '50%' }}>
+                            <Button block success style={styles.reviewButton} onPress={() => this.navigateAddReview()} testID='addFeedBack'>
+                              {/* <Icon name='add' /> */}
+                              <Text style={styles.customText}> ADD FEEDBACK </Text>
+                              <Icon name="create" style={styles.editProfilePencil}></Icon>
 
-                        <ListItem avatar>
-                          <Left>
-                            <Thumbnail square source={{ uri: 'https://static1.squarespace.com/static/582bbfef9de4bb07fe62ab18/t/5877b9ccebbd1a124af66dfe/1484241404624/Headshot+-+Circular.png?format=300w' }} style={{ height: 40, width: 40 }} />
-                          </Left>
-                          <Body>
-                            <Text>Medflic User</Text>
-                            <StarRating fullStarColor='#FF9500' starSize={15} width={100} containerStyle={{ width: 100 }}
-                              disabled={false}
-                              maxStars={5}
-                              rating={reviewData[0] && reviewData[0].overall_rating}
-                              selectedStar={(rating) => this.onStarRatingPress(rating)}
-                            />
-                            <Text note style={styles.customText}>{reviewData[0] && reviewData[0].comments} </Text>
-                          </Body>
-                        </ListItem>
-                        :
-                        <ListItem avatar>
-                          <Left>
-                            <Thumbnail square source={{ uri: 'https://static1.squarespace.com/static/582bbfef9de4bb07fe62ab18/t/5877b9ccebbd1a124af66dfe/1484241404624/Headshot+-+Circular.png?format=300w' }} style={{ height: 40, width: 40 }} />
-                          </Left>
-                          <Body>
-                            <Text style={{ fontFamily: 'OpenSans', fontSize: 20 }}>{(reviewData[0] && reviewData[0].userInfo.first_name) + " " + (reviewData[0] && reviewData[0].userInfo.last_name)}</Text>
-                            <StarRating fullStarColor='#FF9500' starSize={15} width={100} containerStyle={{ width: 100 }}
-                              disabled={false}
-                              maxStars={5}
-                              rating={reviewData[0] && reviewData[0].overall_rating}
-                              selectedStar={(rating) => this.onStarRatingPress(rating)}
-                            />
-                            <Text note style={styles.customText}>{reviewData[0] && reviewData[0].comments} </Text>
-                          </Body>
-                        </ListItem>}
+                            </Button>
+                          </Col>
+                        </Grid>
+                      </ListItem>
                     </List>
-                  </Card> : null}
+                  </Card>
+           : (data.appointment_status == 'COMPLETED' || reviewData.length !== 0) ?
+          
+                    <Card style={{ margin: 10, padding: 10, borderRadius: 10 }}>
+                      <List>
+                        <Text style={styles.titlesText}>Review</Text>
+                        {reviewData[0] && reviewData[0].is_anonymous == true ?
 
-              <Card style={{ backgroundColor: '#ffffff', borderRadius: 10, padding: 10 }}>
-                <Grid style={{ margin: 5 }}>
-                  <Col style={{ width: '10%' }}>
-                    <Icon name="apps" style={styles.customIcon}></Icon>
-                  </Col>
-                  <Col style={{ width: '90%', alignItems: 'flex-start' }}>
-                    <Text style={styles.titlesText}>Disease</Text></Col>
+                          <ListItem avatar>
+                            <Left>
+                              <Thumbnail square source={{ uri: 'https://static1.squarespace.com/static/582bbfef9de4bb07fe62ab18/t/5877b9ccebbd1a124af66dfe/1484241404624/Headshot+-+Circular.png?format=300w' }} style={{ height: 40, width: 40 }} />
+                            </Left>
+                            <Body>
+                              <Text>Medflic User</Text>
+                              <StarRating fullStarColor='#FF9500' starSize={15} width={100} containerStyle={{ width: 100 }}
+                                disabled={false}
+                                maxStars={5}
+                                rating={reviewData[0] && reviewData[0].overall_rating}
+                                selectedStar={(rating) => this.onStarRatingPress(rating)}
+                              />
+                              <Text note style={styles.customText}>{reviewData[0] && reviewData[0].comments} </Text>
+                            </Body>
+                          </ListItem>
+                          :
+                          <ListItem avatar>
+                            <Left>
+                              <Thumbnail square source={{ uri: 'https://static1.squarespace.com/static/582bbfef9de4bb07fe62ab18/t/5877b9ccebbd1a124af66dfe/1484241404624/Headshot+-+Circular.png?format=300w' }} style={{ height: 40, width: 40 }} />
+                            </Left>
+                            <Body>
+                              <Text style={{ fontFamily: 'OpenSans', fontSize: 20 }}>{(reviewData[0] && reviewData[0].userInfo.first_name) + " " + (reviewData[0] && reviewData[0].userInfo.last_name)}</Text>
+                              <StarRating fullStarColor='#FF9500' starSize={15} width={100} containerStyle={{ width: 100 }}
+                                disabled={false}
+                                maxStars={5}
+                                rating={reviewData[0] && reviewData[0].overall_rating}
+                                selectedStar={(rating) => this.onStarRatingPress(rating)}
+                              />
+                              <Text note style={styles.customText}>{reviewData[0] && reviewData[0].comments} </Text>
+                            </Body>
+                          </ListItem>}
+                      </List>
+                    </Card> : null}
 
-                </Grid>
+                <Card style={{ backgroundColor: '#ffffff', borderRadius: 10, padding: 10 }}>
+                  <Grid style={{ margin: 5 }}>
+                    <Col style={{ width: '10%' }}>
+                      <Icon name="apps" style={styles.customIcon}></Icon>
+                    </Col>
+                    <Col style={{ width: '90%', alignItems: 'flex-start' }}>
+                      <Text style={styles.titlesText}>Disease</Text></Col>
+
+                  </Grid>
 
 
-                <List>
-                  <ListItem avatar noBorder style={{ borderLeftWidth: 8, borderColor: "#F29727", marginBottom: -5 }}>
-                    <Left >
-                    </Left>
-                    <Body>
-                      <Text style={styles.customText}>
+                  <List>
+                    <ListItem avatar noBorder style={{ borderLeftWidth: 8, borderColor: "#F29727", marginBottom: -5 }}>
+                      <Left >
+                      </Left>
+                      <Body>
+                        <Text style={styles.customText}>
 
-                        {data.disease_description}
+                          {data.disease_description}
 
-                      </Text>
+                        </Text>
 
-                    </Body>
+                      </Body>
 
-                  </ListItem>
+                    </ListItem>
 
-                </List>
+                  </List>
 
+                </Card>
+                <Card style={{ backgroundColor: '#ffffff', borderRadius: 10, padding: 10 }}>
+
+
+                  <Grid style={{ margin: 5 }}>
+                    <Col style={{ width: '10%' }}>
+                      <Icon name="apps" style={styles.customIcon}></Icon>
+                    </Col>
+                    <Col style={{ width: '90%', alignItems: 'flex-start' }}>
+                      <Text style={styles.titlesText}>Personal Details</Text></Col>
+
+                  </Grid>
+                  <List>
+                    <ListItem avatar noBorder style={{ borderLeftWidth: 8, borderColor: "#F29727", marginBottom: -5 }}>
+                      <Body>
+                        <Text style={styles.customText}>Email</Text>
+                        <Text style={styles.customText}>{doctorData && doctorData.email} </Text>
+                      </Body>
+                    </ListItem>
+
+                    <ListItem avatar noBorder style={{ borderLeftWidth: 8, borderColor: "#F29727", marginBottom: -5 }}>
+                      <Body>
+                        <Text style={styles.customText}>Contact</Text>
+                        <Text note style={styles.customText}>{doctorData && doctorData.mobile_no} </Text>
+                      </Body>
+                    </ListItem>
+
+                  </List>
+                </Card>
+
+                <Card style={{ backgroundColor: '#ffffff', borderRadius: 10, padding: 10 }}>
+
+                  <Grid style={{ margin: 5 }}>
+                    <Col style={{ width: '10%' }}>
+                      <Icon name="apps" style={styles.customIcon}></Icon>
+                    </Col>
+                    <Col style={{ width: '90%', alignItems: 'flex-start' }}>
+                      <Text style={styles.titlesText}>Languages speaks By Doctor</Text></Col>
+                  </Grid>
+
+                  <List>
+                    <ListItem avatar noBorder style={{ borderLeftWidth: 8, borderColor: "#F29727", marginBottom: -5 }}>
+                      <Left >
+                      </Left>
+                      <Body>
+                        <Text style={styles.customText}>
+                          {doctorData.language && doctorData.language.toString()}
+                        </Text>
+                      </Body>
+                    </ListItem>
+                  </List>
+                </Card>
               </Card>
-              <Card style={{ backgroundColor: '#ffffff', borderRadius: 10, padding: 10 }}>
+            </Content>
+          }
+        </Container>
 
-
-                <Grid style={{ margin: 5 }}>
-                  <Col style={{ width: '10%' }}>
-                    <Icon name="apps" style={styles.customIcon}></Icon>
-                  </Col>
-                  <Col style={{ width: '90%', alignItems: 'flex-start' }}>
-                    <Text style={styles.titlesText}>Personal Details</Text></Col>
-
-                </Grid>
-                <List>
-                  <ListItem avatar noBorder style={{ borderLeftWidth: 8, borderColor: "#F29727", marginBottom: -5 }}>
-                    <Body>
-                      <Text style={styles.customText}>Email</Text>
-                      <Text style={styles.customText}>{doctorData && doctorData.email} </Text>
-                    </Body>
-                  </ListItem>
-
-                  <ListItem avatar noBorder style={{ borderLeftWidth: 8, borderColor: "#F29727", marginBottom: -5 }}>
-                    <Body>
-                      <Text style={styles.customText}>Contact</Text>
-                      <Text note style={styles.customText}>{doctorData && doctorData.mobile_no} </Text>
-                    </Body>
-                  </ListItem>
-
-                </List>
-              </Card>
-
-              <Card style={{ backgroundColor: '#ffffff', borderRadius: 10, padding: 10 }}>
-
-                <Grid style={{ margin: 5 }}>
-                  <Col style={{ width: '10%' }}>
-                    <Icon name="apps" style={styles.customIcon}></Icon>
-                  </Col>
-                  <Col style={{ width: '90%', alignItems: 'flex-start' }}>
-                    <Text style={styles.titlesText}>Languages speaks By Doctor</Text></Col>
-                </Grid>
-
-                <List>
-                  <ListItem avatar noBorder style={{ borderLeftWidth: 8, borderColor: "#F29727", marginBottom: -5 }}>
-                    <Left >
-                    </Left>
-                    <Body>
-                      <Text style={styles.customText}>
-                        {doctorData.language && doctorData.language.toString()}
-                      </Text>
-                    </Body>
-                  </ListItem>
-                </List>
-              </Card>
-            </Card>
-          </Content>
-        }
-      </Container>
-
-    )
+      )
+    
   }
-
 }
 
 export default AppointmentDetails
