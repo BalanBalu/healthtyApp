@@ -13,8 +13,8 @@ import { FlatList } from 'react-native-gesture-handler';
 import { NavigationEvents } from 'react-navigation';
 import { Loader } from '../../../components/ContentLoader'
 import ImagePicker from 'react-native-image-picker';
-
 import { uploadMultiPart } from '../../../setup/services/httpservices'
+import {renderProfileImage} from '../../common'
 //import ImagePicker from 'react-native-image-crop-picker';
 //var ImagePicker = NativeModules.ImageCropPicker;
 class Profile extends Component {
@@ -33,7 +33,7 @@ class Profile extends Component {
             imageSource: null,
             file_name: '',
             buttonVisible: false,
-            isLoading: false
+            isLoading: false,
         };
 
     }
@@ -75,7 +75,7 @@ class Profile extends Component {
             }
             else {
                 
-                this.setState({ data:result, gender: result.gender });
+                this.setState({ data:result, gender: result.gender,  imageSource: result.profile_image.imageURL });
             }
         }
         catch (e) {
@@ -147,7 +147,7 @@ class Profile extends Component {
 
     editProfile(screen) {
         console.log(screen);
-        this.props.navigation.navigate(screen, { screen: screen, fromProfile: true, updatedata: this.state.data || '' })
+        this.props.navigation.navigate(screen, { screen: screen, updatedata: this.state.data || '' })
     }
 
     /*Upload profile pic*/
@@ -204,6 +204,7 @@ class Profile extends Component {
         try {
             console.log("Image uploading");
             const userId = await AsyncStorage.getItem('userId')
+            
             var formData = new FormData();
             formData.append('profile', {
                 uri: imagePath,
@@ -214,10 +215,17 @@ class Profile extends Component {
             let endPoint = `user/${userId}/upload/profile`
             var res = await uploadMultiPart(endPoint, formData);
             const response = res.data;
+            // console.log("res    "+JSON.stringify(response.data))
             if (response.success) {
+                console.log("success");
+                let result=await AsyncStorage.getItem('profile');
+                const storeResult=JSON.parse(result);
+                alert(storeResult.profile_image.imageURL);
+                console.log(imagePath);
                 this.setState({
-                    imageSource: imagePath,
-                });
+                    imageSource:imagePath
+               });     
+         
             } else {
                 Toast.show({
                     text: 'Problem Uploading Profile Picture',
