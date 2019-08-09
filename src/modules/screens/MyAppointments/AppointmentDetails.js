@@ -37,16 +37,13 @@ class AppointmentDetails extends Component {
 
   async componentDidMount() {
     const userId = await AsyncStorage.getItem('userId');
- const { navigation } = this.props;
+    const { navigation } = this.props;
     const appointmentData = navigation.getParam('data');
-   
-    console.log(appointmentData)
     const appointmentId = navigation.getParam('appointmentId');
-    // const { navigation } = this.props;
     console.log(navigation);
 
     if (appointmentData == undefined) {
-     
+    
       await this.setState({ appointmentId: appointmentId });
          
         await this.appointmentDetailsGetById()

@@ -247,13 +247,20 @@ else{
     }
 
     async getDoctorAllDetails(doctorIds, startDate, endDate) {
-        this.setState({ isLoading: true });
-        await new Promise.all([
-            this.getAvailabilitySlots(doctorIds, startDate, endDate),
-            this.getDoctorDetails(doctorIds),
-            this.getPatientReviews(doctorIds),
-        ])
-        this.setState({ isLoading: false });
+        try {
+          this.setState({ isLoading: true });
+        
+            this.getAvailabilitySlots(doctorIds, startDate, endDate).catch(res => console.log("Exception on getAvailabilitySlots" + res));
+            this.getDoctorDetails(doctorIds).catch(res => console.log("Exception on  getDoctorDetails: " +res));
+            this.getPatientReviews(doctorIds).catch(res => console.log("Exception on getPatientReviews" + res));
+        
+        
+        } catch (error) {
+            console.log('exception on getting multiple Requests');
+              console.log(error)  
+        } finally {
+            this.setState({ isLoading: false });
+        }
     }
 
     /* get the  Doctors Availability Slots */
@@ -376,14 +383,13 @@ else{
     /*Get doctor specialist and Degree details*/
     doctorSpecialitesMap = new Map();
     getDoctorDetails = async (doctorIds) => {
+        try {
         let uniqueFilteredDocArray = [];
-
         let fields = "specialist,education,language,gender_preference,experience";
         let resultDoctorDetails = await getMultipleDoctorDetails(doctorIds, fields);
         if (resultDoctorDetails.success) {
             await this.setState({ doctorData: resultDoctorDetails.data });
             this.state.doctorData.forEach((element) => {
-
                 uniqueFilteredDocArray.push(element.doctor_id)
             })
 
@@ -393,6 +399,9 @@ else{
                 this.doctorSpecialitesMap.set(resultDoctorDetails.data[i].doctor_id, resultDoctorDetails.data[i]) // total_rating
             }
         }
+      } catch(ex) {
+          console.log('Exception occured on getMultplieDocDetail')
+      }
     }
     getDoctorSpecialist(doctorId) {
         if (this.doctorSpecialitesMap.has(doctorId)) {

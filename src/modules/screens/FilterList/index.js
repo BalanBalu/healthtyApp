@@ -3,6 +3,7 @@ import { StyleSheet } from 'react-native';
 import { Container, Body, Picker, Button, Card, Text, Item, Row, View, Col, Content, Icon, Header, Left, Title, ListItem } from 'native-base';
 import SectionedMultiSelect from 'react-native-sectioned-multi-select';
 import { NavigationEvents } from 'react-navigation';
+import { ScrollView } from 'react-native-gesture-handler';
 
 export default class Filters extends Component {
 
@@ -121,6 +122,7 @@ export default class Filters extends Component {
         return (
             <Container style={styles.container}>
                 <Content style={{ padding: 5 }}>
+                    <ScrollView>
                 <NavigationEvents
       onWillFocus={payload => {this.componentDidMount() }}
       />
@@ -341,6 +343,7 @@ export default class Filters extends Component {
                             <Text style={{ fontFamily: 'OpenSans', }}>View Doctors</Text>
                         </Button>
                     </View>
+                    </ScrollView>
                 </Content>
             </Container >
 
