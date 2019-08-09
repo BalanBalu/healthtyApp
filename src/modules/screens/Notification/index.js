@@ -36,7 +36,7 @@ class Notification extends Component {
     }
 
     backNavigation = async (navigationData) => {
-        console.log('notification')
+       
         await this.setState({ isLoading: false })
         if (navigationData.action) {
             if (navigationData.action.type === 'Navigation/POP') {
@@ -48,12 +48,12 @@ class Notification extends Component {
                 await this.setState({ isLoading: true })
             }
         }
-        // console.log(navigationData);
+        
     }
     updateNavigation = async (item) => {
 
         await this.setState({ notificationId: item._id })
-        if (!item.mark_as_readed) {
+        if (!item.mark_as_viewed) {
             await this.upDateNotification()
             this.props.navigation.push("AppointmentInfo", { appointmentId: item.appointment_id })
 
@@ -84,8 +84,7 @@ class Notification extends Component {
             if (result.success) {
                 await this.setState({ data: result.data })
             }
-            console.log(this.state.data)
-
+           
 
         }
         catch (e) {
@@ -99,7 +98,7 @@ class Notification extends Component {
 
     render() {
         const { data, isLoading } = this.state
-        console.log(data.length)
+    
         return (
             < Container style={styles.container} >
                 {/* <NavigationEvents onwillBlur={payload => { this.componentWillMount() }} /> */}

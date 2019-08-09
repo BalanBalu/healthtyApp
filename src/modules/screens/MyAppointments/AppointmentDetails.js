@@ -40,17 +40,17 @@ class AppointmentDetails extends Component {
     const userId = await AsyncStorage.getItem('userId');
     const { navigation } = this.props;
     const appointmentData = navigation.getParam('data');
-    const appointmentId = navigation.getParam('appointmentId');
-    console.log(navigation);
+ 
 
     if (appointmentData == undefined) {
-    
+      const appointmentId = navigation.getParam('appointmentId');
+     
       await this.setState({ appointmentId: appointmentId });
          
         await this.appointmentDetailsGetById()
     }
     else {
-      
+     
       let doctorId = appointmentData.doctor_id;
       let appointmentId = appointmentData._id;
       await this.setState({ doctorId: doctorId, appointmentId: appointmentId,
@@ -75,31 +75,45 @@ class AppointmentDetails extends Component {
    
       if (resultDetails.success) {
         await this.setState({ doctorData: resultDetails.data });
-        let updatedDate = moment(this.state.doctorData.experience.updated_date);
-        let experienceInYear = dateDiff(updatedDate, new Date(), 'year');
-        let experienceInMonth = dateDiff(updatedDate, new Date(), 'months');
-        let year = (moment(this.state.doctorData.experience.year) + experienceInYear);
-        let month = (moment(this.state.doctorData.experience.month)) + experienceInMonth;
-        let experience = experienceInYear + year;
-        if (month >= 12) {
-          experience++;
+      
+        let experience = 'N/A';
+        if (resultDetails.data.experience != undefined) {
+          let updatedDate = moment(this.state.doctorData.experience.updated_date);
+          let experienceInYear = dateDiff(updatedDate, new Date(), 'year');
+          let experienceInMonth = dateDiff(updatedDate, new Date(), 'months');
+          let year = (moment(this.state.doctorData.experience.year) + experienceInYear);
+          let month = (moment(this.state.doctorData.experience.month)) + experienceInMonth;
+          experience = experienceInYear + year;
+          if (month >= 12) {
+            experience++;
+          }
         }
         await this.setState({ yearOfExperience: experience });
-        let educationDetails = resultDetails.data.education.map(education => {
-          return education.degree;
-        }).join(",");
-           this.setState({education:educationDetails})
-        let specialistDetails = resultDetails.data.specialist.map(categories => {
-          return categories.category;
-        }).join(",");
-        this.setState({ specialist: specialistDetails })
-        resultDetails.data.hospital.map(hospital_id => {
-          if (hospital_id.hospital_id == this.state.data.hospital_id)
-            this.setState({hospital:hospital_id})
+          
+        let educationDetails = '';
+        if (resultDetails.data.education != undefined) {
+          educationDetails = resultDetails.data.education.map(education => {
+            return education.degree;
+          }).join(",");
         }
+        this.setState({ education: educationDetails })
+        let specialistDetails = '';
+        if (resultDetails.data.specialist != undefined) {
+          specialistDetails = resultDetails.data.specialist.map(categories => {
+            return categories.category;
+          }).join(",");
+        }
+        this.setState({ specialist: specialistDetails })
+       if(resultDetails.data.hospital != undefined) {
+          resultDetails.data.hospital.map(hospital_id => {
+            if (hospital_id.hospital_id == this.state.data.hospital_id)
+              this.setState({ hospital: hospital_id })
+          }
 
-        )
-       }
+          )
+        
+        }
+      }
      
    }
     catch (e) {
@@ -109,19 +123,23 @@ class AppointmentDetails extends Component {
 
   /* get User reviews */
   getUserReviews = async () => {
-    let resultReview = await viewUserReviews('appointment', this.state.appointmentId);
+    try {
+      let resultReview = await viewUserReviews('appointment', this.state.appointmentId);
      
-    if (resultReview.success) {
-      this.setState({ reviewData: resultReview.data });
+      if (resultReview.success) {
+        this.setState({ reviewData: resultReview.data });
+      }
+    }
+    catch(e){
+      console.log(e);
     }
 
   }
   
   appointmentDetailsGetById = async () => {
-    console.log('this.state.aappointmentId');
+   
   let result = await appointmentDetails(this.state.appointmentId);
-    console.log(JSON.stringify(result.data))
-    
+   
     this.getUserReviews();
     if (result.success) {
 
@@ -130,7 +148,7 @@ class AppointmentDetails extends Component {
       
     }
   
-    console.log(this.state.data.appointment_status)
+    
   
      
     
@@ -141,7 +159,7 @@ class AppointmentDetails extends Component {
     this.state.data.prefix = this.state.doctorData.prefix;
 
   
-    console.log('appointmentDetails'+JSON.stringify(this.state.data));
+   
     
     this.props.navigation.push('InsertReview', { appointmentDetail: this.state.data })
 
@@ -205,10 +223,10 @@ class AppointmentDetails extends Component {
           {isLoading ==false? <Loader style={'appointment'} /> :
 
             <Content style={styles.bodyContent}>
-              {/* <NavigationEvents
+               <NavigationEvents
                 onWillFocus={payload => { this.componentDidMount() }}
               
-              /> */}
+              /> 
               <Grid style={{ backgroundColor: '#7E49C3', height: 200 }}>
               </Grid>
 
@@ -418,29 +436,29 @@ class AppointmentDetails extends Component {
 
                   </List>
                 </Card>
+                {doctorData.language != undefined ?
+                  <Card style={{ backgroundColor: '#ffffff', borderRadius: 10, padding: 10 }}>
 
-                <Card style={{ backgroundColor: '#ffffff', borderRadius: 10, padding: 10 }}>
+                    <Grid style={{ margin: 5 }}>
+                      <Col style={{ width: '10%' }}>
+                        <Icon name="apps" style={styles.customIcon}></Icon>
+                      </Col>
+                      <Col style={{ width: '90%', alignItems: 'flex-start' }}>
+                        <Text style={styles.titlesText}>Languages speaks By Doctor</Text></Col>
+                    </Grid>
 
-                  <Grid style={{ margin: 5 }}>
-                    <Col style={{ width: '10%' }}>
-                      <Icon name="apps" style={styles.customIcon}></Icon>
-                    </Col>
-                    <Col style={{ width: '90%', alignItems: 'flex-start' }}>
-                      <Text style={styles.titlesText}>Languages speaks By Doctor</Text></Col>
-                  </Grid>
-
-                  <List>
-                    <ListItem avatar noBorder style={{ borderLeftWidth: 8, borderColor: "#F29727", marginBottom: -5 }}>
-                      <Left >
-                      </Left>
-                      <Body>
-                        <Text style={styles.customText}>
-                          {doctorData.language && doctorData.language.toString()}
-                        </Text>
-                      </Body>
-                    </ListItem>
-                  </List>
-                </Card>
+                    <List>
+                      <ListItem avatar noBorder style={{ borderLeftWidth: 8, borderColor: "#F29727", marginBottom: -5 }}>
+                        <Left >
+                        </Left>
+                        <Body>
+                          <Text style={styles.customText}>
+                            {doctorData.language && doctorData.language.toString()}
+                          </Text>
+                        </Body>
+                      </ListItem>
+                    </List>
+                  </Card> : null}
               </Card>
             </Content>
           }
