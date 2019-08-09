@@ -395,7 +395,7 @@ class Profile extends Component {
                                 </Left>
 
                                 <Body>
-                                    <TouchableOpacity>
+                                    <TouchableOpacity onPress={() => this.editProfile('UpdateAddress')}>
                                         <Text style={styles.customText}>Address</Text>
                                         {data.address ?
                                             <View>
@@ -430,7 +430,7 @@ class Profile extends Component {
                                 </Left>
 
                                 <Body>
-                                    <TouchableOpacity>
+                                    <TouchableOpacity onPress={() => this.editProfile('UpdateContact')}>
                                         <Text style={styles.customText}>Contact</Text>
                                         <Text note style={styles.customText}>{data.mobile_no}</Text>
                                         {data.secondary_mobiles != undefined ?
@@ -463,7 +463,7 @@ class Profile extends Component {
                                     <Icon name='heartbeat' type='FontAwesome' style={{ color: '#7E49C3' }}></Icon>
                                 </Left>
                                 <Body>
-                                    <TouchableOpacity>
+                                    <TouchableOpacity onPress={() => this.editProfile('UpdateInsurance')}>
                                         <Text style={styles.customText}>Insurance</Text>
                                         {data.insurance != undefined ?
 
@@ -498,7 +498,7 @@ class Profile extends Component {
                                     <Icon name="briefcase" style={{ color: '#7E49C3' }}></Icon>
                                 </Left>
                                 <Body>
-                                    <TouchableOpacity>
+                                    <TouchableOpacity onPress={() => this.editProfile('UpdatePassword')}>
                                         <Text style={styles.customText}>Change Password</Text>
                                         <Text note style={styles.customText}>*********</Text>
                                     </TouchableOpacity>
