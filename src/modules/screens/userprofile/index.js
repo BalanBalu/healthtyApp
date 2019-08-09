@@ -61,7 +61,7 @@ class Profile extends Component {
             let data = await AsyncStorage.getItem('profile');
             console.log('result'+JSON.stringify(result))
            
-            let result = JSON.parse(data);
+             result = JSON.parse(data);
                console.log(result)
             if (result == null) {
                 let fields = "first_name,last_name,gender,dob,mobile_no,secondary_mobiles,email,secondary_emails,insurance,address,is_blood_donor,is_available_blood_donate,blood_group,profile_image"
