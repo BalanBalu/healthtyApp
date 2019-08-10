@@ -4,13 +4,14 @@ import { Col, Row, Grid } from 'react-native-easy-grid';
 import { connect } from 'react-redux'
 import { StyleSheet, Image, TouchableOpacity, View, FlatList, AsyncStorage } from 'react-native';
 import StarRating from 'react-native-star-rating';
-import { formatDate,addMoment } from '../../../setup/helpers';
+import { formatDate, dateDiff, addMoment } from '../../../setup/helpers';
 import {  fetchAvailabilitySlots,viewUserReviews, bindDoctorDetails } from '../../providers/bookappointment/bookappointment.action';
 import Mapbox from './Mapbox';
 import { Loader } from '../../../components/ContentLoader';
 import moment from 'moment';
 import { renderProfileImage } from '../../common';
-import Reviews from '../Reviews';
+
+
 let slotMap=new Map();
 
 class BookAppoinment extends Component {
@@ -160,6 +161,23 @@ enumarateDates(startDate, endDate) {
     } 
   }
 
+  relativeTimeView(review_date) {
+    try {
+        var postedDate = review_date;
+        var currentDate = new Date();
+        var relativeDate = dateDiff(postedDate, currentDate, 'days');
+        // console.log('difference : ' + relativeDate);
+        if (relativeDate > 30) {
+            return formatDate(review_date, "DD-MM-YYYY")
+        } else {
+            return moment(review_date, "YYYYMMDD").fromNow();
+        }
+    }
+    catch (e) {
+        console.log(e)
+    }
+}
+
   /*Get doctor Qualification details*/
   getdoctorDetails = async (doctorId) => {
     console.log("doctor");
@@ -193,6 +211,7 @@ enumarateDates(startDate, endDate) {
     }
 
   }
+
 
   /*On pressing  slot*/
   onSlotPress(item, index) {
@@ -296,8 +315,9 @@ enumarateDates(startDate, endDate) {
                 </Col>
 
                 <Col style={{ backgroundColor: 'transparent', borderRightWidth: 0.5, borderRightColor: 'gray', marginLeft: 'auto', marginRight: 'auto' }}>
-                  <Text style={styles.topValue}>{(this.state.reviews_length != '') ? this.state.reviews_length : 'No Reviews'}</Text>
-                  <Text note style={styles.bottomValue}> Reviews </Text>
+                <Text note style={styles.bottomValue}> Reviews </Text>
+
+                  <Text style={styles.topValue}>{(this.state.reviews_length != '') ? this.state.reviews_length : 'N/A'}</Text>
                 </Col>
 
               </Grid>
@@ -371,8 +391,17 @@ enumarateDates(startDate, endDate) {
 
           
 
-            <Card style={{ margin: 10, padding: 10, borderRadius: 10 }}>
-            
+            {/* <Card style={{ margin: 10, padding: 10, borderRadius: 10 }}>
+            <Text  style={{fontWeight:'bold', fontSize:18}}>Reviews</Text> */}
+             <Card style={{ backgroundColor: '#ffffff', borderRadius: 10, padding: 10 }}>
+                <Grid style={{ margin: 5 }}>
+                  <Col style={{ width: '10%' }}>
+                    <Icon name="apps" style={styles.customIcon}></Icon>
+                  </Col>
+                  <Col style={{ width: '90%', alignItems: 'flex-start' }}>
+                    <Text style={styles.titlesText}>Reviews</Text></Col>
+                </Grid>
+
               <List>
                 {this.state.reviewdata !== null ?
                   <FlatList
@@ -389,12 +418,13 @@ enumarateDates(startDate, endDate) {
                           <Thumbnail square source={{ uri: 'https://static1.squarespace.com/static/582bbfef9de4bb07fe62ab18/t/5877b9ccebbd1a124af66dfe/1484241404624/Headshot+-+Circular.png?format=300w' }} style={{ height: 40, width: 40 }} />
                           //<Thumbnail square source={renderProfileImage(item.userInfo.profile_image)} style={{ height: 40, width: 40 }} />
                           } */}
-                          <Thumbnail style={{ marginLeft: -10, height: 50, width: 50 }} square source={renderProfileImage(item.userInfo.profile_image)} />
+                          <Thumbnail style={{ marginLeft: -10, height: 50, width: 50 }} square source={renderProfileImage(item.userInfo)} />
                           
                         </Left>
                         <Body>
                           <Text>{((typeof item.userInfo.first_name || typeof item.userInfo.last_name) !== 'undefined') ? item.userInfo.first_name + '' + item.userInfo.last_name : 'Medflic User'}</Text>
-                          <Text note>3hrs.</Text>
+                          <Text style={{ fontSize: 12, marginLeft: -5, }}>  {this.relativeTimeView(item.review_date)} </Text>
+                         
                           <StarRating fullStarColor='#FF9500' starSize={15} width={100} containerStyle={{ width: 100 }}
                             disabled={false}
                             maxStars={5}
@@ -410,7 +440,7 @@ enumarateDates(startDate, endDate) {
                 <Col style={{ width: '50%' }}>
 
                   {this.state.reviewdata !== null ?
-                    <Button iconRight transparent onPress={() => this.props.navigation.navigate('Reviews', { doctorId : this.state.doctorId})}>
+                    <Button iconRight transparent onPress={() => this.props.navigation.navigate('Reviews', { reviewDoctorId : this.state.doctorId})}>
                       <Icon name='add' />
                       <Text  style={styles.customText}>More Reviews</Text>
                     </Button> : null}
