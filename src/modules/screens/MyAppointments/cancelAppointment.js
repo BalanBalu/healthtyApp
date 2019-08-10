@@ -56,7 +56,6 @@ class CancelAppointment extends Component {
 
         let userId = await AsyncStorage.getItem('userId');
         let result = await appointmentStatusUpdate(this.state.doctorId, this.state.appointmentId, requestData);
-        console.log('result:' + JSON.stringify(result))
         if (result.success) {
           let temp = this.state.data;
           temp.appointment_status = result.appointmentData.appointment_status;
@@ -101,7 +100,7 @@ class CancelAppointment extends Component {
                     <Text style={{ marginTop: 2, }}>
                       <Text style={{ fontWeight: "bold" }}>
                         {formatDate(data.appointment_starttime, 'MMMM-DD-YYYY') + "   " +
-                          formatDate(data[0] && data[0].appointment_starttime, 'hh:mm A')}
+                          formatDate(data.appointment_starttime, 'hh:mm A')}
                       </Text> with {(data && data.prefix) + (data && data.doctorInfo.first_name) + " " + (data && data.doctorInfo.last_name)}</Text>
                     <Text style={{ marginTop: 20, }}>What is the reason for Cancellation?</Text>
 
