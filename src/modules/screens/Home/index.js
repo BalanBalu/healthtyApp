@@ -22,7 +22,7 @@ class Home extends Component {
         this.getCatagries();
     }
     navigetToCategories() {
-        this.props.navigation.navigate('Categories',{data:this.state.data})
+        this.props.navigation.navigate('Categories', { data: this.state.data })
     }
 
     doLogout() {
@@ -37,12 +37,12 @@ class Home extends Component {
 
             this.setState({ data: result.data, isLoading: true })
             let limitedData = [];
-           
-            for (let limtedNumber = 0; limtedNumber < 4; limtedNumber++) {
+
+            for (let limtedNumber = 0; limtedNumber < 6; limtedNumber++) {
                 limitedData.push(result.data[limtedNumber]);
             }
             this.setState({ catagary: limitedData });
-           
+
         } catch (e) {
             console.log(e);
         }
@@ -145,18 +145,20 @@ class Home extends Component {
                                             data={this.state.catagary}
                                             extraData={this.state}
                                             renderItem={({ item, index }) =>
-                                                <Item style={styles.column} onPress={() => this.navigateToCategorySearch(item.category_name)}>
-                                                    <Col  >
-                                                        <LinearGradient
-                                                            colors={['#7357A2', '#62BFE4']} style={{ borderRadius: 10, padding: 5, height: 100, width: 100, marginLeft: 'auto', marginRight: 'auto' }}>
-                                                            <Image
-                                                                source={{ uri: item.imageBaseURL + '/' + item.category_id + '.png' }} style={styles.customImage} />
-                                                        </LinearGradient>
+                                                <Grid style={{ marginTop: 10 }}>
+                                                    <Item style={styles.column} onPress={() => this.navigateToCategorySearch(item.category_name)}>
+                                                        <Col  >
+                                                            <LinearGradient
+                                                                colors={['#7357A2', '#62BFE4']} style={{ borderRadius: 10, padding: 5, height: 100, width: 100, marginLeft: 'auto', marginRight: 'auto' }}>
+                                                                <Image
+                                                                    source={{ uri: item.imageBaseURL + '/' + item.category_id + '.png' }} style={styles.customImage} />
+                                                            </LinearGradient>
 
-                                                        <Text style={styles.textcenter}>{item.category_name}</Text>
-                                                        {/*<Text note style={{ textAlign: 'center' }}>100 Doctors</Text>*/}
-                                                    </Col>
-                                                </Item>
+                                                            <Text style={styles.textcenter}>{item.category_name}</Text>
+                                                            {/*<Text note style={{ textAlign: 'center' }}>100 Doctors</Text>*/}
+                                                        </Col>
+                                                    </Item>
+                                                </Grid>
                                             }
 
                                             keyExtractor={(item, index) => index.toString()}
@@ -301,7 +303,8 @@ const styles = StyleSheet.create({
         borderRadius: 10,
         margin: 5,
         padding: 5,
-        paddingBottom: 20
+        paddingBottom: 20,
+
 
     },
 
