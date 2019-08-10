@@ -22,6 +22,7 @@ export default class Filters extends Component {
             language: '',
             genderIndex: 0,
             selectAvailabilityIndex: 0,
+            selectExperinceIndex:0,
             selectedServicesList: '',
         }
     }
@@ -31,9 +32,14 @@ export default class Filters extends Component {
         const { navigation } = this.props;
         const doctorData = navigation.getParam('doctorData');
         const selectedServicesList = navigation.getParam('selectedServicesList');
-
-        await this.setState({ doctorData: doctorData, selectedServicesList: selectedServicesList });
-        // console.log('selectedServicesList' + JSON.stringify(this.state.selectedServicesList));
+if(selectedServicesList===undefined){
+    await this.setState({selectedServicesList: '' });
+}
+else{
+    await this.setState({selectedServicesList: selectedServicesList  });
+}
+        await this.setState({ doctorData: doctorData});
+        console.log('selectedServicesList' + JSON.stringify(this.state.selectedServicesList));
         // console.log('doctorData' + JSON.stringify(this.state.doctorData));
         let sampleLangArray = [];
         let sampleCategoryArray = [];
@@ -97,7 +103,6 @@ export default class Filters extends Component {
         ]  
 
         let finalFilArray=[];
-
         filterData.forEach((filElement)=>{
           if (filElement.value!==''){
             finalFilArray.push(filElement)
@@ -116,8 +121,13 @@ export default class Filters extends Component {
         this.setState({ selectAvailabilityIndex: index })
     }
 
+    clickFilterByExperince=(index)=>{
+        this.setState({ selectExperinceIndex: index })
+
+    }
+
     render() {
-        const { genderIndex, selectAvailabilityIndex } = this.state;
+        const { genderIndex, selectAvailabilityIndex,selectExperinceIndex } = this.state;
 
         return (
             <Container style={styles.container}>
@@ -231,7 +241,10 @@ export default class Filters extends Component {
                         </View>
                         <Row style={{ marginTop: 10 }}>
                             <Col>
-                                <Button disabled bordered style={styles.card3}>
+                                <Button bordered
+                                   style={selectExperinceIndex === 10 ? styles.selectedExpColor : styles.defaultExpColor}
+                                   onPress={() => this.clickFilterByExperince(10)}
+                                >
                                     <View style={{ marginLeft: 'auto', marginRight: 'auto' }}>
 
                                         <Icon style={{ fontSize: 30, marginLeft: 'auto', marginRight: 'auto', }} name='female' />
@@ -240,18 +253,27 @@ export default class Filters extends Component {
                                 </Button>
                             </Col>
                             <Col>
-                                <Button disabled bordered style={styles.card3}>
+                                <Button bordered
+                                
+                                style={selectExperinceIndex === 20 ? styles.selectedExpColor : styles.defaultExpColor}
+                                onPress={() => this.clickFilterByExperince(20)}
+
+                                >
                                     <View style={{ marginLeft: 'auto', marginRight: 'auto' }}>
 
-                                        <Icon style={{ fontSize: 30, marginLeft: 'auto', marginRight: 'auto', color: 'blue' }} name='female' />
-                                        <Text style={{ textAlign: 'center', fontSize: 12, color: 'blue' }}>10-20 years</Text>
+                                        <Icon style={{ fontSize: 30, marginLeft: 'auto', marginRight: 'auto' }} name='female' />
+                                        <Text style={{ textAlign: 'center', fontSize: 12 }}>10-20 years</Text>
 
                                     </View>
 
                                 </Button>
                             </Col>
                             <Col>
-                                <Button disabled bordered style={styles.card3}>
+                                <Button bordered
+                                
+                                style={selectExperinceIndex === 30 ? styles.selectedExpColor : styles.defaultExpColor}
+                                onPress={() => this.clickFilterByExperince(30)}
+                                >
                                     <View style={{ marginLeft: 'auto', marginRight: 'auto' }}>
 
                                         <Icon style={{ fontSize: 30, marginLeft: 'auto', marginRight: 'auto', }} name='female' />
@@ -262,7 +284,11 @@ export default class Filters extends Component {
                                 </Button>
                             </Col>
                             <Col>
-                                <Button disabled bordered style={styles.card3}>
+                                <Button  bordered
+                                  style={selectExperinceIndex === 40 ? styles.selectedExpColor : styles.defaultExpColor}
+                                  onPress={() => this.clickFilterByExperince(40)}
+                                
+                                >
                                     <View style={{ marginLeft: 'auto', marginRight: 'auto' }}>
 
                                         <Icon style={{ fontSize: 30, marginLeft: 'auto', marginRight: 'auto', }} name='female' />
@@ -355,14 +381,24 @@ const styles = StyleSheet.create({
         backgroundColor: '#c9cdcf',
         padding: 5
     },
-    card3: {
+    
+    defaultExpColor:{
         borderRadius: 10,
         padding: 20,
         height: 80,
         width: '90%',
-        borderColor: 'black',
         borderWidth: 10,
         height: 80,
+    },
+    selectedExpColor:{
+        borderRadius: 10,
+        padding: 20,
+        height: 80,
+        width: '90%',
+        borderWidth: 10,
+        height: 80,
+        backgroundColor: 'green',
+
     },
     defaultGenderColor: {
         borderRadius: 10,
