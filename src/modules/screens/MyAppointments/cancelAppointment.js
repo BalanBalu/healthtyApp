@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import { StyleSheet, TextInput, AsyncStorage } from 'react-native';
-import { Container, Radio, Button, Card, Grid, ListItem, List, View, Text, CardItem, Right, Body, Content, Input, Item, Row, Col } from 'native-base';
+import { Container, Radio, Button, Card, Grid, ListItem, List, View, Text, Toast, CardItem, Right, Body, Content, Input, Item, Row, Col } from 'native-base';
 import { appointmentStatusUpdate } from '../../providers/bookappointment/bookappointment.action';
 import { formatDate } from '../../../setup/helpers';
 
@@ -41,7 +41,6 @@ class CancelAppointment extends Component {
   /* Cancel Appoiontment Status */
   cancelAppointment = async (data, updatedStatus) => {
     try {
-      this.props.navigation.navigate('AppointmentInfo', { data: this.state.data });
 
       if (this.state.statusUpdateReason != null) {
         this.setState({ isLoading: true });
@@ -57,13 +56,19 @@ class CancelAppointment extends Component {
 
         let userId = await AsyncStorage.getItem('userId');
         let result = await appointmentStatusUpdate(this.state.doctorId, this.state.appointmentId, requestData);
-        console.log('result' + result)
         if (result.success) {
           let temp = this.state.data;
           temp.appointment_status = result.appointmentData.appointment_status;
           temp.status_update_reason = result.appointmentData.status_update_reason;
           this.setState({ data: temp });
           this.props.navigation.navigate('AppointmentInfo', { data: this.state.data });
+        }
+        else{
+          Toast.show({
+            text: 'Kindly add a reason for Appointment Cancellation',
+            type: "danger",
+            duration: 3000
+          })
         }
       }
       this.setState({ isLoading: false });
@@ -95,7 +100,7 @@ class CancelAppointment extends Component {
                     <Text style={{ marginTop: 2, }}>
                       <Text style={{ fontWeight: "bold" }}>
                         {formatDate(data.appointment_starttime, 'MMMM-DD-YYYY') + "   " +
-                          formatDate(data[0] && data[0].appointment_starttime, 'hh:mm A')}
+                          formatDate(data.appointment_starttime, 'hh:mm A')}
                       </Text> with {(data && data.prefix) + (data && data.doctorInfo.first_name) + " " + (data && data.doctorInfo.last_name)}</Text>
                     <Text style={{ marginTop: 20, }}>What is the reason for Cancellation?</Text>
 
