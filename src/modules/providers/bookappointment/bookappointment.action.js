@@ -83,7 +83,7 @@ export async function fetchAvailabilitySlots(doctorIds, dateFilter) {
 
 export async function viewUserReviews(type, id) {
   try {
-    let endPoint = 'user/reviews/' + type + '/' + id
+    let endPoint = 'user/reviews/' + type + '/' + id +'?limit=2';
     let response = await getService(endPoint);
     let respData = response.data;
     return respData;

@@ -7,7 +7,7 @@ import { Col, Row, Grid } from 'react-native-easy-grid';
 import { connect } from 'react-redux';
 import { dateDiff } from '../../../setup/helpers';
 import LinearGradient from 'react-native-linear-gradient';
-import { StyleSheet, AsyncStorage, TouchableOpacity, NativeModules } from 'react-native';
+import { StyleSheet, AsyncStorage, TouchableOpacity } from 'react-native';
 import Modal from "react-native-modal";
 import { FlatList } from 'react-native-gesture-handler';
 import { NavigationEvents } from 'react-navigation';
@@ -58,16 +58,22 @@ class Profile extends Component {
     getUserProfile = async () => {
         try {
             this.setState({isLoading:true})
-            let result = await AsyncStorage.getItem('profile');
-            result = JSON.parse(result)
+            let data = await AsyncStorage.getItem('profile');
+            console.log('result'+JSON.stringify(result))
+           
+             result = JSON.parse(data);
                console.log(result)
             if (result == null) {
                 let fields = "first_name,last_name,gender,dob,mobile_no,secondary_mobiles,email,secondary_emails,insurance,address,is_blood_donor,is_available_blood_donate,blood_group,profile_image"
                 let userId = await AsyncStorage.getItem('userId');
                 let result = await fetchUserProfile(userId, fields);
+                console.log('result111'+JSON.stringify(result))
+
                 if (this.props.profile.success) {
                     AsyncStorage.setItem('profile', JSON.stringify(result))
                     this.setState({ data: result, gender: result.gender });
+                    console.log('data111'+JSON.stringify(this.state.data))
+
                     if (result.profile_image) {
                         this.setState({ imageSource: result.profile_image.imageURL });
                     }
@@ -89,7 +95,6 @@ class Profile extends Component {
     getfavouritesList = async () => {
         try {
             this.setState({ isLoading: true });
-            debugger
             let userId = await AsyncStorage.getItem('userId');
             let result = await getPatientWishList(userId);
             console.log(result);
@@ -146,8 +151,7 @@ class Profile extends Component {
     }
 
     editProfile(screen) {
-        console.log(screen);
-        this.props.navigation.navigate(screen, { screen: screen, fromProfile: true, updatedata: this.state.data || '' })
+        this.props.navigation.navigate(screen, { screen: screen, updatedata: this.state.data || '' })
     }
 
     /*Upload profile pic*/
@@ -526,7 +530,7 @@ class Profile extends Component {
                                                 <Text> {item.doctorInfo.prefix ? item.doctorInfo.prefix : ''} {item.doctorInfo.first_name + " " + item.doctorInfo.last_name} </Text>
                                             </Body>
                                             <Right>
-                                                <Button style={styles.docbutton}><Text style={{ fontFamily: 'OpenSans', fontSize: 12 }}> Book Again</Text></Button>
+                                                <Button style={styles.docbutton}><Text style={{ fontFamily: 'OpenSans', fontSize: 12 }} onPress={()=>this.props.navigate.navigation('Book Appointment')}> Book Again</Text></Button>
                                             </Right>
 
                                         </ListItem>
@@ -682,4 +686,5 @@ const styles = StyleSheet.create({
 
 
 });
+
 

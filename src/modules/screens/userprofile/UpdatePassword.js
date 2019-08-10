@@ -1,8 +1,9 @@
 import React, { Component } from 'react';
-import { Container, Content, Text, Button, H3, Item, List, CheckBox, Left, Right, Thumbnail, Body, Icon, Card, Input, Toast } from 'native-base';
+import { Container, Content, Text, Button, H3, Item, List, View, CheckBox, Left, Right, Thumbnail, Body, Icon, Card, Input, Toast } from 'native-base';
 import { AsyncStorage } from 'react-native';
 import { updateNewPassword} from '../../providers/auth/auth.actions';
 import { connect } from 'react-redux'
+import { ScrollView } from 'react-native-gesture-handler';
 import styles from './style.js'
 import Spinner from '../../../components/Spinner';
 
@@ -29,20 +30,29 @@ class UpdatePassword extends Component {
                 oldPassword:this.state.oldPassword,
                 newPassword:this.state.newPassword
             };
+             if(data.oldPassword != data.newPassword){
             let result = await updateNewPassword(data);
             console.log('result'+JSON.stringify(result));
             if (result.success) {
                 await Toast.show({
-                    text:'Password is updated',
+                    text:'Your Password is changed Successfully',
                     type: "success",
                     duration: 3000,
 
                 })
                 this.props.navigation.navigate('Profile');
 
-            } else {
+            }
+            else {
                 await Toast.show({
                     text:result.message,
+                    type: "danger",
+                    duration: 3000
+                })
+            } }
+            else {
+                await Toast.show({
+                    text:'Cannot have the same password. Kindly enter a new Password',
                     type: "danger",
                     duration: 3000
                 })
@@ -51,6 +61,9 @@ class UpdatePassword extends Component {
     
         }catch (e) {
             console.log(e);
+        }
+        finally {
+            this.setState({ isLoading: false });
         }
     }
 
@@ -77,6 +90,9 @@ class UpdatePassword extends Component {
                             onChangeText={(oldPassword) => this.setState({ oldPassword })}
                             testID='enterOldPassword' />
                         </Item>
+                        <View>
+                        <Icon name="eye" style={{position:'absolute',marginLeft:250,marginTop:-35, fontSize:20}}></Icon>
+                        </View>
 
                         <Item style={{ borderBottomWidth: 0 }}>
                             <Icon name="briefcase" style={styles.centeredIcons}></Icon>
@@ -87,7 +103,9 @@ class UpdatePassword extends Component {
                             onChangeText={(newPassword) => this.setState({ newPassword })}
                             testID='enterNewPassword' />
                         </Item>
-
+                        <View>
+                        <Icon name="eye" style={{position:'absolute',marginLeft:250,marginTop:-35, fontSize:20}}></Icon>
+                        </View>
                         
                         <Item style={{ borderBottomWidth: 0 }}>
                             <Right>
@@ -122,4 +140,5 @@ function profileState(state) {
     }
 }
 export default connect(profileState)(UpdatePassword)
+
 
