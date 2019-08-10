@@ -49,8 +49,8 @@ let userId = reviewData.user_id;
       let requestData = {
         doctorId: data.doctor_id,
         userId: data.user_id,
-        startTime: data.appointment_endtime,
-        endTime: data.appointment_starttime,
+        startTime: data.appointment_starttime,
+        endTime: data.appointment_endtime,
         status: updatedStatus,
         statusUpdateReason: ' ',
         status_by: 'USER'
