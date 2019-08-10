@@ -26,9 +26,9 @@ class Login extends Component {
         password: this.state.password,
         type: 'user'
       };
-      
-      let result=  await login(requestData);
-     console.log('result' +JSON.stringify (result))
+
+      let result = await login(requestData);
+      console.log('result' + JSON.stringify(result))
       console.log(this.props.user);
       if (this.props.user.isAuthenticated) {
         if (this.props.user.needToRedirect === true) {
@@ -41,9 +41,9 @@ class Login extends Component {
         }
         this.props.navigation.navigate('Home');
       } else {
-       this.setState({loginErrorMsg: 'Invalid Credentials'})
+        this.setState({ loginErrorMsg: this.props.user.message })
         Toast.show({
-          text: 'Invalid Credentials',
+          text: this.props.user.message,
           timeout: 50000
         })
       }
@@ -73,7 +73,7 @@ class Login extends Component {
               <Text style={{textAlign:'center',color:'#775DA3'}}> Invalid Credencials</Text>
             </View> */}
             <Item style={{ borderBottomWidth: 0 }}>
-              <Input placeholder="Email Or Phone" style={styles.transparentLabel} 
+              <Input placeholder="Email Or Phone" style={styles.transparentLabel}
                 returnKeyType={'next'}
                 value={this.state.userEntry}
                 keyboardType={'email-address'}
@@ -85,7 +85,7 @@ class Login extends Component {
             </Item>
 
             <Item success style={styles.transparentLabel}>
-              <Input placeholder="Password" 
+              <Input placeholder="Password"
                 ref={(input) => { this.userEntry = input; }}
                 secureTextEntry={true}
                 returnKeyType={'done'}
@@ -95,11 +95,11 @@ class Login extends Component {
                 onChangeText={password => this.setState({ password })}
                 blurOnSubmit={false}
                 onSubmitEditing={() => { this.doLogin(); }}
-                
+
               />
               <Icon active name='eye' onPress={() => this.setState({ showPassword: !this.state.showPassword })} />
             </Item>
-                      <Text style={{ color: 'red', fontSize: 15, fontFamily: 'OpenSans', textAlign:'left', marginLeft: 15 }}>{loginErrorMsg}</Text>
+            <Text style={{ color: 'red', fontSize: 15, fontFamily: 'OpenSans', textAlign: 'left', marginLeft: 15 }}>{loginErrorMsg}</Text>
 
             <Item style={{ marginTop: 10, borderBottomWidth: 0 }}>
 
@@ -114,13 +114,13 @@ class Login extends Component {
                 </TouchableOpacity>
               </Right>
             </Item>
-            
+
             <Button style={styles.loginButton} block primary
               disabled={isLoading}
               onPress={() => this.doLogin()}>
               <Text>Sign In</Text>
             </Button>
-            
+
           </Form>
 
         </Content>

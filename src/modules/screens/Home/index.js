@@ -174,8 +174,8 @@ class Home extends Component {
                     <Card style={{ backgroundColor: '#CDEEFF', padding: 10, borderRadius: 10 }}
                     >
                         <Text style={{ fontFamily: 'OpenSans', fontSize: 17 }}>You Can save A Life</Text>
-                        <Button onPress={() => this.doLogout()} block style={{ margin: 10, borderRadius: 20, backgroundColor: '#74579E' }}>
-                            <Text>REPORT ASSIDENT NOW</Text>
+                        <Button block style={{ margin: 10, borderRadius: 20, backgroundColor: '#74579E' }}>
+                            <Text>REPORT ACCIDENT NOW</Text>
                         </Button>
 
                         <Text style={{ textAlign: 'right', fontSize: 14, fontFamily: 'OpenSans', color: '#000' }}>5002 Fast Growing Ambulance</Text>
