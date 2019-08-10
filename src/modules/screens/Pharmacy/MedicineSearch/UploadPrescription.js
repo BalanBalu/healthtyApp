@@ -41,8 +41,7 @@ class UploadPrescription extends Component {
     autoCompletePharmacyName(keyword) {
         if (keyword === '' || keyword === undefined || keyword === null) {
             return [];
-
-        }
+        }        
         const { pharmacyList } = this.state;
         const regex = new RegExp(`${keyword.trim()}`, 'i');
         selectedPharmacy = pharmacyList.filter(value => value.name.search(regex) >= 0);

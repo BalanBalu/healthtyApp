@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import {
     Container, Content, Button, Text, Form, Item, Input, Footer, Icon, DatePicker,
-    FooterTab, H3, Toast, ListItem, Radio, Picker
+    FooterTab, H3, Toast, ListItem, Radio, Picker, View
 } from 'native-base';
 import { userFiledsUpdate, logout } from '../../providers/auth/auth.actions';
 import { connect } from 'react-redux'
@@ -42,7 +42,7 @@ class UserDetails extends Component {
                 address_line_2: userData.address.address.address_line_2,
                 city: userData.address.address.city,
                 pin_code: userData.address.address.pin_code,
-                userData:userData
+                userData: userData
             })
         }
     }

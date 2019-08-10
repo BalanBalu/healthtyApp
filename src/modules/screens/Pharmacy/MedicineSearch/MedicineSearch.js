@@ -35,10 +35,13 @@ class MedicineSearch extends Component {
 
         medicineSearchMap = new Map();
         let result=await getMedicineDetails();
+        if(result.success){
         result.data.forEach(element =>{           
             medicineSearchMap.set(element.medicine_id,element)
-        })           
+        })  
+    }         
         const cartItems = await AsyncStorage.getItem('cartItems-'+userId);
+
         if(Array.isArray(JSON.parse(cartItems)) == true){
           this.setState({cartItems:JSON.parse(cartItems)})           
             this.state.cartItems.forEach(element => {  
@@ -100,10 +103,8 @@ class MedicineSearch extends Component {
                                      value={this.state.searchText}
                                      onChangeText={searchText => this.setState({ searchText })}
                                      />
-                                    <Button style={{ backgroundColor: '#000', borderRadius: 10, height: 40, marginTop: -20, marginRight: -20, borderBottomLeftRadius: 0, borderTopLeftRadius: 0, }}  onPress={()=>this.onSearchPress()}>
-                                        <Icon name="ios-search" style={{ color: 'white' }}
-                                        
-                                    />
+                                    <Button style={{ backgroundColor: '#000', borderRadius: 10, height: 40, marginTop: -20, marginRight: -20, borderBottomLeftRadius: 0, borderTopLeftRadius: 0, }}  onPress={()=>this.onSearchPress()} testID='searchMedicine'>
+                                        <Icon name="ios-search" style={{ color: 'white' }}/>
                                     </Button>
                                 </Item>
                             </Col>
@@ -133,7 +134,7 @@ class MedicineSearch extends Component {
                                 renderItem={
                                    ({ item, index }) =>
                                             <View style={styles.customColumn}>
-                                                <TouchableOpacity onPress={()=>this.onPressCard(item,index)}>
+                                                <TouchableOpacity onPress={()=>this.onPressCard(item,index)} testID='selectToMedicine'>
                                                     <View style={{ width: 'auto', flex: 1, flexDirection: 'row' }}>
                                                         <Text style={{ marginTop: -30, fontFamily: 'OpenSans', fontSize: 13, color: '#ffa723', }}>{'Get'+' '+item.offer+'%'+' '+'OFF'}
                                                         </Text>                                                        
@@ -177,7 +178,7 @@ class MedicineSearch extends Component {
                 {this.state.clickCard!==null?<Footer style={{ backgroundColor: '#7E49C3', }}>
                     <Row>
                         <Col style={{ flexDirection: 'row', justifyContent: 'center', marginTop: 12 }}>
-                            <TouchableOpacity onPress={()=>this.addSubOperation(this.state.footerSelectedItem,"sub")}>
+                            <TouchableOpacity onPress={()=>this.addSubOperation(this.state.footerSelectedItem,"sub")} testID='decreaseMedicineQuantity'>
                                 <View style={{ padding: 0, justifyContent: 'center', borderWidth: 1, borderColor: 'black', width: 40, height: 35, backgroundColor: 'white' }}>
                                     <Text style={{ fontSize: 40, textAlign: 'center', marginTop: -5, color: 'black' }}>-</Text>
                                 </View>
@@ -185,7 +186,7 @@ class MedicineSearch extends Component {
                             <View>
                                 <Text style={{ marginLeft: 5, color: 'white', fontSize: 20 }}>{this.state.footerSelectedItem.selectedQuantity==undefined?0:this.state.footerSelectedItem.selectedQuantity}</Text>
                             </View>
-                            <TouchableOpacity onPress={()=>this.addSubOperation(this.state.footerSelectedItem,"add")}>
+                            <TouchableOpacity onPress={()=>this.addSubOperation(this.state.footerSelectedItem,"add")} testID='addMedicineQuantity'>
                                 <View style={{ padding: 0, justifyContent: 'center', borderWidth: 1, borderColor: 'black', width: 40, height: 35, marginLeft: 5, backgroundColor: 'white' }}>
                                     <Text style={{
                                         fontSize: 20, textAlign: 'center', marginTop: -5,
@@ -196,7 +197,7 @@ class MedicineSearch extends Component {
                         </Col>
 
                         <Col style={{ marginRight: 40 }} >
-                            <Button success style={{ borderRadius: 10, marginTop: 10, marginLeft: 45, height: 40, justifyContent: 'center' }} onPress={()=> this.props.navigation.navigate('MedicinePaymentResult')}>
+                            <Button success style={{ borderRadius: 10, marginTop: 10, marginLeft: 45, height: 40, justifyContent: 'center' }} onPress={()=> this.props.navigation.navigate('MedicinePaymentResult')} testID='clickButtonToViewCartPage'>
 
 
                                 <Row style={{ justifyContent: 'center', }}>

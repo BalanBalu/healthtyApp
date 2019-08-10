@@ -7,7 +7,7 @@ import { Col, Row, Grid } from 'react-native-easy-grid';
 import { connect } from 'react-redux';
 import { dateDiff } from '../../../setup/helpers';
 import LinearGradient from 'react-native-linear-gradient';
-import { StyleSheet, AsyncStorage, TouchableOpacity, NativeModules } from 'react-native';
+import { StyleSheet, AsyncStorage, TouchableOpacity } from 'react-native';
 import Modal from "react-native-modal";
 import { FlatList } from 'react-native-gesture-handler';
 import { NavigationEvents } from 'react-navigation';
@@ -58,24 +58,30 @@ class Profile extends Component {
     getUserProfile = async () => {
         try {
             this.setState({isLoading:true})
-            let result = await AsyncStorage.getItem('profile');
-            result = JSON.parse(result)
+            let data = await AsyncStorage.getItem('profile');
+            console.log('result'+JSON.stringify(result))
+           
+             result = JSON.parse(data);
                console.log(result)
             if (result == null) {
                 let fields = "first_name,last_name,gender,dob,mobile_no,secondary_mobiles,email,secondary_emails,insurance,address,is_blood_donor,is_available_blood_donate,blood_group,profile_image"
                 let userId = await AsyncStorage.getItem('userId');
                 let result = await fetchUserProfile(userId, fields);
+                console.log('result111'+JSON.stringify(result))
+
                 if (this.props.profile.success) {
                     AsyncStorage.setItem('profile', JSON.stringify(result))
                     this.setState({ data: result, gender: result.gender });
+                    console.log('data111'+JSON.stringify(this.state.data))
+
                     if (result.profile_image) {
                         this.setState({ imageSource: result.profile_image.imageURL });
                     }
                 }
             }
             else {
-                
-                this.setState({ data:result, gender: result.gender });
+
+                this.setState({ data: result, gender: result.gender });
             }
         }
         catch (e) {
@@ -89,7 +95,6 @@ class Profile extends Component {
     getfavouritesList = async () => {
         try {
             this.setState({ isLoading: true });
-            debugger
             let userId = await AsyncStorage.getItem('userId');
             let result = await getPatientWishList(userId);
             console.log(result);
@@ -146,8 +151,7 @@ class Profile extends Component {
     }
 
     editProfile(screen) {
-        console.log(screen);
-        this.props.navigation.navigate(screen, { screen: screen, fromProfile: true, updatedata: this.state.data || '' })
+        this.props.navigation.navigate(screen, { screen: screen, updatedata: this.state.data || '' })
     }
 
     /*Upload profile pic*/
@@ -241,7 +245,7 @@ class Profile extends Component {
 
             <Container style={styles.container}>
 
-             <NavigationEvents
+                <NavigationEvents
                     onWillFocus={payload => { this.getUserProfile(payload) }}
                 />
 
@@ -250,7 +254,7 @@ class Profile extends Component {
                     <Loader style={'profile'} /> :
 
                     <Content style={styles.bodyContent}>
-                        
+
 
                         <LinearGradient colors={['#7E49C3', '#C86DD7']} style={{ height: 180 }}>
                             <Grid>
@@ -260,7 +264,7 @@ class Profile extends Component {
                                     <Col style={styles.customCol}>
                                         <Icon name="heart" style={styles.profileIcon}></Icon>
                                     </Col>
-                                    <Col style={{ width: '40%' }} >
+                                    <Col style={{ width: '55%' }} >
                                         {imageSource != undefined ?
                                             <Thumbnail style={styles.profileImage} source={{ uri: imageSource }} /> :
                                             <Thumbnail style={styles.profileImage} source={{ uri: 'https://res.cloudinary.com/demo/image/upload/w_200,h_200,c_thumb,g_face,r_max/face_left.png' }} />}
@@ -269,11 +273,13 @@ class Profile extends Component {
                                             <Icon name="camera" style={{ fontSize: 20 }} onPress={() => this.selectPhotoTapped()} />
                                         </View>
 
-                                        <View style={{ flexDirection: 'row', marginTop: 25 }}>
-                                            <Text style={{ marginLeft: 'auto', marginRight: 'auto', padding: 5, fontFamily: 'OpenSans', backgroundColor: '#fff', borderRadius: 10, marginTop: 5 }}>{data.first_name + " " + data.last_name}
+                                        <View style={{ flexDirection: 'row', marginTop: 25, marginLeft: 30 }}>
+                                            <Text style={{ marginLeft: 'auto', marginRight: 'auto', padding: 5, fontFamily: 'OpenSans', backgroundColor: '#fff', borderRadius: 10, marginTop: 5, width: '100%' }}>{data.first_name + " " + data.last_name}
                                             </Text>
 
-                                            <Icon name="create" style={{ fontSize: 17, marginTop: 10, marginLeft: 5 }} onPress={() => this.editProfile('UpdateUserDetails')} />
+                                            <Icon name="create" style={{ fontSize: 17, marginTop: 10, marginLeft: 25 }} onPress={() => this.editProfile('UpdateUserDetails')} />
+
+                                            <Icon name="create" style={{ fontSize: 17, marginTop: 12, marginLeft: 25 }} onPress={() => this.editProfile('UpdateUserDetails')} />
 
                                         </View>
                                     </Col>
@@ -348,43 +354,43 @@ class Profile extends Component {
                             <Text style={styles.titleText}>Personal details..</Text>
 
                             <ListItem avatar>
-                           
+
                                 <Left>
                                     <Icon name="mail" style={{ color: '#7E49C3' }}></Icon>
                                 </Left>
-                                
+
 
                                 <Body >
                                     <TouchableOpacity onPress={() => this.editProfile('UpdateEmail')}>
-                                    <Text style={styles.customText}>Email</Text>
-                                    <Text note style={styles.customText}>{data.email}</Text>
-                                    {data.secondary_emails != undefined ?
-                                        <FlatList
-                                            data={data.secondary_emails}
-                                            renderItem={({ item }) => (
-                                                <List>
+                                        <Text style={styles.customText}>Email</Text>
+                                        <Text note style={styles.customText}>{data.email}</Text>
+                                        {data.secondary_emails != undefined ?
+                                            <FlatList
+                                                data={data.secondary_emails}
+                                                renderItem={({ item }) => (
+                                                    <List>
 
-                                                    <Text style={styles.customText}>{item.type}</Text>
-                                                    <Text note style={styles.customText}>{item.email_id}</Text>
+                                                        <Text style={styles.customText}>{item.type}</Text>
+                                                        <Text note style={styles.customText}>{item.email_id}</Text>
 
-                                                </List>
-                                            )}
-                                            keyExtractor={(item, index) => index.toString()}
-                                        />
-                                        : <Button transparent>
-                                            <Icon name='add' style={{ color: 'gray' }} />
-                                            <Text uppercase={false} style={styles.customText} onPress={() => this.editProfile('UpdateEmail')} >Add Secondary email</Text>
-                                        </Button>}
-                                        </TouchableOpacity>
+                                                    </List>
+                                                )}
+                                                keyExtractor={(item, index) => index.toString()}
+                                            />
+                                            : <Button transparent>
+                                                <Icon name='add' style={{ color: 'gray' }} />
+                                                <Text uppercase={false} style={styles.customText} onPress={() => this.editProfile('UpdateEmail')} >Add Secondary email</Text>
+                                            </Button>}
+                                    </TouchableOpacity>
                                 </Body>
-                                
+
 
                                 {data.secondary_emails != undefined ?
-                                
+
                                     <Right>
-                                        <Icon name="create" style={{color:'black'}} onPress={() => this.editProfile('UpdateEmail')} />
+                                        <Icon name="create" style={{ color: 'black' }} onPress={() => this.editProfile('UpdateEmail')} />
                                     </Right> : null}
-                                       
+
                             </ListItem>
 
 
@@ -395,27 +401,27 @@ class Profile extends Component {
                                 </Left>
 
                                 <Body>
-                                    <TouchableOpacity>
-                                    <Text style={styles.customText}>Address</Text>
-                                    {data.address ?
-                                        <View>
-                                            <Text note style={styles.customText}>{data.address.address.no_and_street + ', '
-                                                + data.address.address.address_line_1 + ', '
-                                                + data.address.address.address_line_2 + ', '
-                                                + data.address.address.city + ', '
-                                                + data.address.address.pin_code
-                                            }
-                                            </Text>
-                                        </View> :
-                                        <Button transparent onPress={() => this.editProfile('UpdateAddress')}>
-                                            <Icon name='add' style={{ color: 'gray' }} />
-                                            <Text uppercase={false} style={styles.customText}>Add Address</Text>
-                                        </Button>}
-                                        </TouchableOpacity>
+                                    <TouchableOpacity onPress={() => this.editProfile('UpdateAddress')}>
+                                        <Text style={styles.customText}>Address</Text>
+                                        {data.address ?
+                                            <View>
+                                                <Text note style={styles.customText}>{data.address.address.no_and_street + ', '
+                                                    + data.address.address.address_line_1 + ', '
+                                                    + data.address.address.address_line_2 + ', '
+                                                    + data.address.address.city + ', '
+                                                    + data.address.address.pin_code
+                                                }
+                                                </Text>
+                                            </View> :
+                                            <Button transparent onPress={() => this.editProfile('UpdateAddress')}>
+                                                <Icon name='add' style={{ color: 'gray' }} />
+                                                <Text uppercase={false} style={styles.customText}>Add Address</Text>
+                                            </Button>}
+                                    </TouchableOpacity>
                                 </Body>
                                 {data.address ?
                                     <Right>
-                                        <Icon name="create"  style={{color:'black'}} onPress={() => this.editProfile('UpdateAddress')} />
+                                        <Icon name="create" style={{ color: 'black' }} onPress={() => this.editProfile('UpdateAddress')} />
                                     </Right>
                                     : null}
 
@@ -430,29 +436,29 @@ class Profile extends Component {
                                 </Left>
 
                                 <Body>
-                                    <TouchableOpacity>
-                                    <Text style={styles.customText}>Contact</Text>
-                                    <Text note style={styles.customText}>{data.mobile_no}</Text>
-                                    {data.secondary_mobiles != undefined ?
-                                        <FlatList
-                                            data={this.state.data.secondary_mobiles}
-                                            renderItem={({ item }) => (
-                                                <List>
-                                                    <Text style={styles.customText}>{item.type}</Text>
-                                                    <Text note style={styles.customText}>{item.number}</Text>
-                                                </List>
-                                            )}
-                                            keyExtractor={(item, index) => index.toString()}
-                                        />
-                                        : <Button transparent>
-                                            <Icon name='add' style={{ color: 'gray' }} />
-                                            <Text uppercase={false} style={styles.customText} onPress={() => this.editProfile('UpdateContact')}>Add Secondary Contact</Text>
-                                        </Button>}
-                                        </TouchableOpacity>
+                                    <TouchableOpacity onPress={() => this.editProfile('UpdateContact')}>
+                                        <Text style={styles.customText}>Contact</Text>
+                                        <Text note style={styles.customText}>{data.mobile_no}</Text>
+                                        {data.secondary_mobiles != undefined ?
+                                            <FlatList
+                                                data={this.state.data.secondary_mobiles}
+                                                renderItem={({ item }) => (
+                                                    <List>
+                                                        <Text style={styles.customText}>{item.type}</Text>
+                                                        <Text note style={styles.customText}>{item.number}</Text>
+                                                    </List>
+                                                )}
+                                                keyExtractor={(item, index) => index.toString()}
+                                            />
+                                            : <Button transparent>
+                                                <Icon name='add' style={{ color: 'gray' }} />
+                                                <Text uppercase={false} style={styles.customText} onPress={() => this.editProfile('UpdateContact')}>Add Secondary Contact</Text>
+                                            </Button>}
+                                    </TouchableOpacity>
                                 </Body>
                                 {data.secondary_mobiles != undefined ?
                                     <Right>
-                                        <Icon name="create" style={{color:'black'}} onPress={() => this.editProfile('UpdateContact')}></Icon>
+                                        <Icon name="create" style={{ color: 'black' }} onPress={() => this.editProfile('UpdateContact')}></Icon>
                                     </Right> : null}
 
 
@@ -463,30 +469,30 @@ class Profile extends Component {
                                     <Icon name='heartbeat' type='FontAwesome' style={{ color: '#7E49C3' }}></Icon>
                                 </Left>
                                 <Body>
-                                    <TouchableOpacity>
-                                    <Text style={styles.customText}>Insurance</Text>
-                                    {data.insurance != undefined ?
+                                    <TouchableOpacity onPress={() => this.editProfile('UpdateInsurance')}>
+                                        <Text style={styles.customText}>Insurance</Text>
+                                        {data.insurance != undefined ?
 
-                                        <FlatList
-                                            data={this.state.data.insurance}
-                                            renderItem={({ item }) => (
-                                                <List>
-                                                    <Text note style={styles.customText}>{item.insurance_no}</Text>
-                                                    <Text note style={styles.customText}>{item.insurance_provider}</Text>
-                                                </List>
-                                            )}
-                                            keyExtractor={(item, index) => index.toString()}
-                                        />
-                                        : <Button transparent>
-                                            <Icon name='add' style={{ color: 'gray' }} />
-                                            <Text uppercase={false} style={styles.customText} onPress={() => this.editProfile('UpdateInsurance')}>Add Insurance</Text>
-                                        </Button>}
-                                        </TouchableOpacity>
+                                            <FlatList
+                                                data={this.state.data.insurance}
+                                                renderItem={({ item }) => (
+                                                    <List>
+                                                        <Text note style={styles.customText}>{item.insurance_no}</Text>
+                                                        <Text note style={styles.customText}>{item.insurance_provider}</Text>
+                                                    </List>
+                                                )}
+                                                keyExtractor={(item, index) => index.toString()}
+                                            />
+                                            : <Button transparent>
+                                                <Icon name='add' style={{ color: 'gray' }} />
+                                                <Text uppercase={false} style={styles.customText} onPress={() => this.editProfile('UpdateInsurance')}>Add Insurance</Text>
+                                            </Button>}
+                                    </TouchableOpacity>
                                 </Body>
 
                                 {data.insurance != undefined ?
                                     <Right>
-                                        <Icon name="create" style={{color:'black'}} onPress={() => this.editProfile('UpdateInsurance')} ></Icon>
+                                        <Icon name="create" style={{ color: 'black' }} onPress={() => this.editProfile('UpdateInsurance')} ></Icon>
                                     </Right> : null}
 
                             </ListItem>
@@ -498,13 +504,13 @@ class Profile extends Component {
                                     <Icon name="briefcase" style={{ color: '#7E49C3' }}></Icon>
                                 </Left>
                                 <Body>
-                                    <TouchableOpacity>
-                                    <Text style={styles.customText}>Change Password</Text>
-                                    <Text note style={styles.customText}>*********</Text>
+                                    <TouchableOpacity onPress={() => this.editProfile('UpdatePassword')}>
+                                        <Text style={styles.customText}>Change Password</Text>
+                                        <Text note style={styles.customText}>*********</Text>
                                     </TouchableOpacity>
                                 </Body>
                                 <Right>
-                                    <Icon name="create" style={{color:'black'}} onPress={() => this.editProfile('UpdatePassword')}></Icon>
+                                    <Icon name="create" style={{ color: 'black' }} onPress={() => this.editProfile('UpdatePassword')}></Icon>
                                 </Right>
                             </ListItem>
 
@@ -526,7 +532,7 @@ class Profile extends Component {
                                                 <Text> {item.doctorInfo.prefix ? item.doctorInfo.prefix : ''} {item.doctorInfo.first_name + " " + item.doctorInfo.last_name} </Text>
                                             </Body>
                                             <Right>
-                                                <Button style={styles.docbutton}><Text style={{ fontFamily: 'OpenSans', fontSize: 12 }}> Book Again</Text></Button>
+                                                <Button style={styles.docbutton}><Text style={{ fontFamily: 'OpenSans', fontSize: 12 }} onPress={()=>this.props.navigate.navigation('Book Appointment')}> Book Again</Text></Button>
                                             </Right>
 
                                         </ListItem>
@@ -682,4 +688,5 @@ const styles = StyleSheet.create({
 
 
 });
+
 
