@@ -9,7 +9,7 @@ import { Image, BackHandler, AsyncStorage,ScrollView} from 'react-native';
 import styles from './style.js';
 import {
     formatDate,
-} from "../../../setup/helpers";` M,NMNJHUYTAW`
+} from "../../../setup/helpers";
 import Spinner from '../../../components/Spinner';
 const bloodGroupList = ['Select Blood Group','A+', 'O+', 'B+', 'AB+', 'A-', 'O-', 'B-', 'AB-']
 
@@ -27,7 +27,6 @@ class UpdateUserDetails extends Component {
             selectedBloodGroup:null,
             updateButton: false,
             userData:'',
-            loaderContent:''
 
         }
     }
@@ -42,7 +41,7 @@ class UpdateUserDetails extends Component {
     async bindValues() {
         const { navigation } = this.props;
         const userData = navigation.getParam('updatedata');
-      await  this.setState({ userData})
+        this.setState({ userData})
        
        
                 await this.setState({
@@ -50,9 +49,11 @@ class UpdateUserDetails extends Component {
                     firstName: userData.first_name,
                     lastName: userData.last_name,
                     gender: userData.gender,
-                    selectedBloodGroup:userData.blood_group
+                    selectedBloodGroup:userData.blood_group||null
                     
                 })
+
+                
            
 
         }
@@ -62,11 +63,10 @@ class UpdateUserDetails extends Component {
 
     userUpdate = async () => {   
         const { userData, firstName, lastName, dob, gender, selectedBloodGroup } = this.state
-        
-        try {  
+
+        try {
             this.setState({ isLoading: true });
             if (userData.first_name != firstName || userData.last_name != lastName || userData.dob != dob || userData.gender != gender || userData.blood_group != selectedBloodGroup) {
-                this.setState({loaderContent:'please Wailt Updating...'})
                 let requestData = {
                     first_name: firstName,
                     last_name: lastName,
@@ -85,7 +85,7 @@ class UpdateUserDetails extends Component {
                         type: "success",
                         duration: 3000
                     });
-                   await this.props.navigation.navigate('Profile');
+                 this.props.navigation.navigate('Profile');
                 }
                 else {
                     Toast.show({
@@ -93,10 +93,11 @@ class UpdateUserDetails extends Component {
                         type: "danger",
                         duration: 3000
                     });
+                    this.setState({isLoading:false});
                 }
             } else {
                 
-               await this.props.navigation.navigate('Profile');
+                this.props.navigation.navigate('Profile');
             }
                 
             } 
@@ -111,9 +112,6 @@ class UpdateUserDetails extends Component {
 
             console.log(e);
         }
-        finally{
-            this.setState({ isLoading: false})
-        }
     }
 
 
@@ -126,7 +124,7 @@ class UpdateUserDetails extends Component {
 
 
                 <Content style={styles.bodyContent} contentContainerStyle={{ justifyContent: 'center', flex: 1, height: '75%' }}>
-<ScrollView>
+                <ScrollView>
                     <H3 style={styles.welcome}>Update User Details</H3>
                     <Form>
                     
@@ -222,7 +220,7 @@ class UpdateUserDetails extends Component {
 
                         <Spinner color='blue'
                             visible={this.state.isLoading}
-                            textContent={this.state.loaderContent}
+                            textContent={'Please Wait Loading...'}
                         />
 
 
