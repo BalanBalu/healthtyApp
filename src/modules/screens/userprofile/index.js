@@ -14,9 +14,7 @@ import { NavigationEvents } from 'react-navigation';
 import { Loader } from '../../../components/ContentLoader'
 import ImagePicker from 'react-native-image-picker';
 import { uploadMultiPart } from '../../../setup/services/httpservices'
-import {renderProfileImage} from '../../common'
-//import ImagePicker from 'react-native-image-crop-picker';
-//var ImagePicker = NativeModules.ImageCropPicker;
+
 class Profile extends Component {
 
     navigation = this.props.navigation;
@@ -32,7 +30,6 @@ class Profile extends Component {
             favouriteList: [],
             imageSource: null,
             file_name: '',
-            buttonVisible: false,
             isLoading: false,
         };
 
@@ -57,44 +54,33 @@ class Profile extends Component {
     /*Get userProfile*/
     getUserProfile = async () => {
         try {
-            this.setState({isLoading:true})
             let data = await AsyncStorage.getItem('profile');
-            console.log('result'+JSON.stringify(result))
-           
              result = JSON.parse(data);
-               console.log(result)
             if (result == null) {
                 let fields = "first_name,last_name,gender,dob,mobile_no,secondary_mobiles,email,secondary_emails,insurance,address,is_blood_donor,is_available_blood_donate,blood_group,profile_image"
                 let userId = await AsyncStorage.getItem('userId');
                 let result = await fetchUserProfile(userId, fields);
-                console.log('result111'+JSON.stringify(result))
-
                 if (this.props.profile.success) {
                     AsyncStorage.setItem('profile', JSON.stringify(result))
                     this.setState({ data: result, gender: result.gender });
-                    console.log('data111'+JSON.stringify(this.state.data))
-
                     if (result.profile_image) {
-                        this.setState({ imageSource: result.profile_image.imageURL });
-                    }
+                        this.setState({ imageSource:result.profile_image.imageURL });                    }
                 }
             }
             else {
-                
-                this.setState({ data:result, gender: result.gender,  imageSource: result.profile_image.imageURL });
+                this.setState({ data:result, gender:result.gender});
+                if(result.profile_image!=undefined){
+                    this.setState({imageSource:result.profile_image.imageURL});
+                }
             }
         }
         catch (e) {
             console.log(e);
         }
-        finally {
-            this.setState({ isLoading: false });
-        }
     }
 
     getfavouritesList = async () => {
         try {
-            this.setState({ isLoading: true });
             let userId = await AsyncStorage.getItem('userId');
             let result = await getPatientWishList(userId);
             console.log(result);
@@ -104,9 +90,7 @@ class Profile extends Component {
         }
         catch (e) {
             console.log(e)
-        } finally {
-            this.setState({ isLoading: false });
-        }
+        } 
     }
 
     /*Update Gender*/
@@ -157,7 +141,6 @@ class Profile extends Component {
     /*Upload profile pic*/
     selectPhotoTapped() {
 
-        this.setState({ buttonVisible: true });
         const options = {
             quality: 1.0,
             maxWidth: 500,
@@ -166,17 +149,6 @@ class Profile extends Component {
                 skipBackup: true
             }
         };
-        // ImagePicker.openPicker({
-        //     width: 300,
-        //     height: 300,
-        //     mime: 'image/jpeg, image/png',
-        //     cropping: true
-        //   }).then(image => {
-        //     console.log(image);
-
-        //     this.uploadImageToServer(image.path);
-        //   }).catch(e => console.info(e));
-
         ImagePicker.showImagePicker(options, (response) => {
             console.log('Response = ', response);
 
@@ -219,13 +191,11 @@ class Profile extends Component {
             let endPoint = `user/${userId}/upload/profile`
             var res = await uploadMultiPart(endPoint, formData);
             const response = res.data;
-            // console.log("res    "+JSON.stringify(response.data))
             if (response.success) {
-                console.log("success");
                 let result=await AsyncStorage.getItem('profile');
                 const storeResult=JSON.parse(result);
-                alert(storeResult.profile_image.imageURL);
-                console.log(imagePath);
+                storeResult.profile_image = response.profile_image
+                await AsyncStorage.setItem('profile',JSON.stringify(storeResult));
                 this.setState({
                     imageSource:imagePath
                });     
