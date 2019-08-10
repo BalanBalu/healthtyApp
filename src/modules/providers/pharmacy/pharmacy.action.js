@@ -19,11 +19,7 @@ export async function getSearchedMedicines (keyword, isLoading = true) {
 /*get medicine list*/
 export async function getMedicineDetails() {
     try {
-<<<<<<< HEAD
-      console.log("medicine details")      
-=======
       
->>>>>>> 237de7a24dfeb7b97787098a659233f1964683b5
       let endPoint = '/medicine/detailsList?limit=8'
       console.log(endPoint);
       let response = await getService(endPoint);
