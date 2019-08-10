@@ -279,6 +279,8 @@ class Profile extends Component {
 
                                             <Icon name="create" style={{ fontSize: 17, marginTop: 10, marginLeft: 25 }} onPress={() => this.editProfile('UpdateUserDetails')} />
 
+                                            <Icon name="create" style={{ fontSize: 17, marginTop: 12, marginLeft: 25 }} onPress={() => this.editProfile('UpdateUserDetails')} />
+
                                         </View>
                                     </Col>
                                     <Col style={styles.customCol}>

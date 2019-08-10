@@ -93,25 +93,25 @@ class Home extends Component {
                 <Content keyboardShouldPersistTaps={'handled'} style={styles.bodyContent}>
                     <Row style={{ backgroundColor: 'white' }}>
 
-                        <Col style={{ width: '87%' }}>
-                            <Input placeholder="Search Symptoms/Services"
-                                style={{ color: 'gray', fontFamily: 'OpenSans', fontSize: 12 }}
-                                placeholderTextColor="gray"
-                                value={this.state.searchValue}
-                                keyboardType={'email-address'}
-                                onChangeText={searchValue => this.setState({ searchValue })}
-                                blurOnSubmit={false}
-                                onSubmitEditing={() => { this.searchDoctorListModule(); }}
-                            />
 
-                        </Col>
-                        <Col style={{ width: '13%' }}>
+                        <Input placeholder="Search Symptoms/Services"
+                            style={{ color: 'gray', fontFamily: 'OpenSans', fontSize: 12 }}
+                            placeholderTextColor="gray"
+                            value={this.state.searchValue}
+                            keyboardType={'email-address'}
+                            onChangeText={searchValue => this.setState({ searchValue })}
+                            blurOnSubmit={false}
+                            onSubmitEditing={() => { this.searchDoctorListModule(); }}
+                        />
+
+
+                        <Right>
 
                             <Button Button transparent onPress={() => this.searchDoctorListModule()}>
                                 <Icon name="ios-search" style={{ color: 'gray' }} />
                             </Button>
+                        </Right>
 
-                        </Col>
                     </Row>
                     <Card style={{ padding: 10, borderRadius: 10 }}>
 

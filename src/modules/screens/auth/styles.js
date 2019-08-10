@@ -76,6 +76,6 @@ export default StyleSheet.create({
         fontFamily: 'OpenSans',
         fontSize: 15,
         padding: 5,
-    
-      }
+
+    }
 })
