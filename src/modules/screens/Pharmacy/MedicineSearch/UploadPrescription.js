@@ -36,13 +36,11 @@ class UploadPrescription extends Component {
         }]
         let result = await searchPharmacyByName(pharmacyData);
         this.setState({pharmacyList:result.data,isLoading:false});
-        // console.log('this.state.pharmacyList'+JSON.stringify(this.state.pharmacyList));
     }
     
     autoCompletePharmacyName(keyword){
         if (keyword === '' || keyword === undefined || keyword === null) {
             return [];
-
         }        
         const { pharmacyList } = this.state;
         const regex = new RegExp(`${keyword.trim()}`, 'i');       
@@ -91,12 +89,10 @@ class UploadPrescription extends Component {
 /*Save Image to Database*/
 uploadImageToServer = async (imagePath,selectedPharmacy) => {
     try {
-        console.log("Image uploading");
-        console.log(imagePath);
-        console.log(selectedPharmacy);
         if(selectedPharmacy.length!=0){
         const userId = await AsyncStorage.getItem('userId');
         const pharmacyId=selectedPharmacy[0]._id;
+        console.log(pharmacyId);
         var formData = new FormData();
         formData.append('prescription',{
             uri: imagePath,
@@ -104,7 +100,7 @@ uploadImageToServer = async (imagePath,selectedPharmacy) => {
             name: 'photo.jpg'
         });
         debugger
-        let endPoint = `prescription/${userId}/${pharmacyId}`
+        let endPoint = `description/${userId}/${pharmacyId}`
         console.log(endPoint+'endpoint');
         var res = await uploadMultiPart(endPoint, formData);
         const response = res.data;
@@ -159,7 +155,8 @@ return(
     <Content>
     
     <View style={{marginTop:15}}>
-    <Autocomplete style={{borderBottomWidth: 0, backgroundColor: '#F1F1F1', borderRadius: 5,padding:5,width:'70%',marginLeft:48}}    data={selectedPharmacy.length===1 && comp(this.state.keyword,selectedPharmacy[0].name)?[]:selectedPharmacy}
+    <Autocomplete style={{borderBottomWidth: 0, backgroundColor: '#F1F1F1', borderRadius: 5,padding:5,width:'70%',marginLeft:48}}  
+    data={selectedPharmacy.length===1 && comp(this.state.keyword,selectedPharmacy[0].name)?[]:selectedPharmacy}
     defaultValue={this.state.keyword}
     onChangeText={text => this.setState({ keyword:text})}
      placeholder="Select Pharmacy"
