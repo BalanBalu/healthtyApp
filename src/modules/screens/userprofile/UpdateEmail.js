@@ -19,7 +19,6 @@ class UpdateEmail extends Component {
             primary_email: null,
             isLoading: false,
             userEmail: '',
-            loader:''
         }
     }
 
@@ -29,23 +28,20 @@ class UpdateEmail extends Component {
 
     bindEmailValues() {
         const { navigation } = this.props;
-        const userData = navigation.getParam('updatedata');
-       
-
-       
-            this.setState({
+        const userData = navigation.getParam('updatedata');   
+               this.setState({
                 fromProfile: true,
                 primary_email: userData.email,
-                userEmail: userData.secondary_emails[0].email_id
             })
             if (userData.secondary_emails) {
                 this.setState({
                     email: userData.secondary_emails[0].email_id,
                     type: userData.secondary_emails[0].type,
-                    active: userData.secondary_emails[0].active
+                    active: userData.secondary_emails[0].active,
+                    userEmail: userData.secondary_emails[0].email_id
+
                 })
-            }
-            
+            }          
         
     }
 
@@ -56,7 +52,6 @@ class UpdateEmail extends Component {
            this.setState({ isLoading: true  });
             let userId = await AsyncStorage.getItem('userId');
             if (userEmail != email) {
-                this.setState({ loader: 'please wait updating'})
                 let data = {
                     secondary_emails: [{
                         email_id: email,
@@ -75,7 +70,7 @@ class UpdateEmail extends Component {
                     this.props.navigation.navigate('Profile');
                 } else {
                     Toast.show({
-                        text: 'Email not updated',
+                        text: 'Fields should not be empty',
                         type: "danger",
                         duration: 3000
                     })
@@ -135,48 +130,25 @@ class UpdateEmail extends Component {
 
                             <Spinner color='blue'
                                 visible={this.state.isLoading}
-                                textContent={this.state.loader}
+                                textContent={'Loading...'}
                             />
 
 
 
 
                             <Item style={{ borderBottomWidth: 0, justifyContent: 'center', marginTop: 35 }}>
-                                {/* 
-                                <Button style={styles.updateButton} onPress={() => this.handleEmailUpdate()} testID='clickUpdateEmail'>
-                                    <Text uppercase={false} note style={{ color: '#fff', fontFamily: 'OpenSans' }}>Update</Text>
-                                </Button>
-                                <View style={{ marginLeft: 80 }}>
-                                    <Button style={styles.updateButton} onPress={() => this.handleEmailUpdate()} testID='clickUpdateEmail'>
-                                        <Text uppercase={false} note style={{ color: '#fff', fontFamily: 'OpenSans' }}>Cancel</Text>
-                                    </Button>
-                                </View> */}
-                                <Row style={{width:'100%' }}>
+                            <Row style={{width:'100%' }}>
                                     <Right>
                                     <Button success style={styles.button2} onPress={() => this.handleEmailUpdate()} testID='clickUpdateEmail' >
                                         <Text style={{ color: '#000' }}>Update</Text>
                                     </Button>
                                     </Right>
                                 </Row>
-
-
                             </Item>
-
-
-
-
-
                         </Card>
                     </View>
-
-
-
-
-
-                    </ScrollView>
-
+                </ScrollView>
                 </Content >
-
             </Container>
 
         )
