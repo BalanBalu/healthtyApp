@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import { StyleSheet, TextInput, AsyncStorage } from 'react-native';
-import { Container, Radio, Button, Card, Grid, ListItem, List, View, Text, CardItem, Right, Body, Content, Input, Item, Row, Col, Toast } from 'native-base';
+import { Container, Radio, Button, Card, Grid, ListItem, List, View, Text, Toast, CardItem, Right, Body, Content, Input, Item, Row, Col } from 'native-base';
 import { appointmentStatusUpdate } from '../../providers/bookappointment/bookappointment.action';
 import { formatDate } from '../../../setup/helpers';
 
@@ -41,7 +41,6 @@ class CancelAppointment extends Component {
   /* Cancel Appoiontment Status */
   cancelAppointment = async (data, updatedStatus) => {
     try {
-      this.props.navigation.navigate('AppointmentInfo', { data: this.state.data });
 
       if (this.state.statusUpdateReason != null) {
         this.setState({ isLoading: true });
@@ -57,7 +56,7 @@ class CancelAppointment extends Component {
 
         let userId = await AsyncStorage.getItem('userId');
         let result = await appointmentStatusUpdate(this.state.doctorId, this.state.appointmentId, requestData);
-        console.log('result' + result)
+        console.log('result:' + JSON.stringify(result))
         if (result.success) {
           let temp = this.state.data;
           temp.appointment_status = result.appointmentData.appointment_status;
@@ -65,9 +64,10 @@ class CancelAppointment extends Component {
           this.setState({ data: temp });
           this.props.navigation.navigate('AppointmentInfo', { data: this.state.data });
         }
-        else {
+        else{
           Toast.show({
-            text: 'Kindly give the reason for Cancellation',
+            text: 'Kindly add a reason for Appointment Cancellation',
+            type: "danger",
             duration: 3000
           })
         }
