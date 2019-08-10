@@ -570,11 +570,11 @@ else{
 
                                     <Card style={{ padding: 5, borderRadius: 10, borderBottomWidth: 2 }}>
                                         <List>
-                                            <ListItem avatar onPress={() => this.navigateToBookAppointmentPage(item)}>
+                                            <ListItem avatar>
                                                 <Left>
                                                     {
                                                         item.profile_image != undefined
-                                                            ? <Thumbnail square source={item.profile_image.imageURL} style={{ height: 60, width: 60 }} />
+                                                            ? <Thumbnail square source={{uri:item.profile_image.imageURL}} style={{ height: 60, width: 60 }} />
                                                             : <Thumbnail square source={{ uri: 'https://res.cloudinary.com/demo/image/upload/w_200,h_200,c_thumb,g_face,r_max/face_left.png' }} style={{ height: 80, width: 80 }} />
                                                     }
 
@@ -622,7 +622,7 @@ else{
                                                             </Grid>
                                                             <Grid style={{ marginTop: 5 }}>
                                                                 <Row>
-                                                                    <Col style={{ width: '40%' }}>
+                                                                    <Col style={{ width: '90%' }}>
 
                                                                         <StarRating fullStarColor='#FF9500' starSize={13} width={80} containerStyle={{ width: 80 }}
                                                                             disabled={false}
@@ -631,7 +631,7 @@ else{
                                                                         />
                                                                     </Col>
 
-                                                                    <Col style={{ width: '60%' }}>
+                                                                    <Col style={{ width: '10%' }}>
                                                                         <Text>{item.average_rating}</Text>
                                                                     </Col>
                                                                 </Row>
@@ -644,12 +644,14 @@ else{
                                                 </Body>
 
                                                 <Right>
-
                                                     <Icon name='heart' type='Ionicons'
                                                         style={patientWishListsDoctorIds.includes(item.doctorId) ? { color: 'red', fontSize: 25 } : { color: 'gray', fontSize: 25 }}
                                                         onPress={() => this.addToWishList(item.doctorId, index)} ></Icon>
-                                                </Right>
 
+                                                        <Button style={{borderRadius:15,marginTop:90,height:35}} onPress={() => this.navigateToBookAppointmentPage(item)}>
+                                                            <Text style={{fontFamily:'OpenSans',fontSize:11,justifyContent:'center'}}>View Profile</Text>
+                                                        </Button>
+                                                </Right>
                                             </ListItem>
 
                                             <Grid>
