@@ -13,7 +13,7 @@ class Login extends Component {
     this.state = {
       userEntry: '',
       password: '',
-      loginErrorMsg: '',
+      loginErrorMsg: null,
       conditionCheck: false,
       showPassword: true
     }

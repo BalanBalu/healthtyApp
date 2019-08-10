@@ -5,9 +5,9 @@ import {
 } from 'native-base';
 import { userFiledsUpdate, logout } from '../../providers/auth/auth.actions';
 import { connect } from 'react-redux'
-import { Image, BackHandler,AsyncStorage } from 'react-native';
+import { Image, BackHandler, AsyncStorage } from 'react-native';
 import styles from '../../screens/auth/styles';
- import Spinner from '../../../components/Spinner';
+import Spinner from '../../../components/Spinner';
 class UserDetails extends Component {
     constructor(props) {
         super(props)
@@ -17,7 +17,7 @@ class UserDetails extends Component {
             lastName: '',
             dob: '',
             ErrorMsg: '',
-            isLoading:false
+            isLoading: false
 
         }
     }
@@ -40,12 +40,12 @@ class UserDetails extends Component {
     //         }) 
     //          console.log(this.state.dob+'dob');
     //       }           
-        
+
     //       }
     //     }
-          
-     
-    
+
+
+
     // componentWillUnmount() {
     //     BackHandler.removeEventListener('hardwareBackPress', this.handleBackButton);
     // }
@@ -67,7 +67,7 @@ class UserDetails extends Component {
                 dob: this.state.dob,
             };
             const userId = await AsyncStorage.getItem('userId')
-           let response= await userFiledsUpdate(userId,requestData);
+            let response = await userFiledsUpdate(userId, requestData);
             if (response.success) {
                 Toast.show({
                     text: 'Your Profile has been completed, Please Login to Continue',
@@ -79,7 +79,7 @@ class UserDetails extends Component {
             }
             else {
                 Toast.show({
-                    text:response.message,
+                    text: response.message,
                     type: "danger",
                     duration: 3000
                 });
@@ -95,11 +95,11 @@ class UserDetails extends Component {
 
     render() {
         const { navigation, user: { isLoading } } = this.props;
-       
+
         return (
 
             <Container style={styles.container}>
-                    <Content style={styles.bodyContent}>                   
+                <Content style={styles.bodyContent}>
                     <H3 style={styles.welcome}>User Details</H3>
                     <Image source={{ uri: 'https://static1.squarespace.com/static/582bbfef9de4bb07fe62ab18/t/5877b9ccebbd1a124af66dfe/1484241404624/Headshot+-+Circular.png?format=300w' }} style={styles.logo} />
                     <Form>
@@ -145,16 +145,15 @@ class UserDetails extends Component {
                                 textStyle={{ color: "#5A5A5A" }}
                                 value={this.state.dob}
                                 placeHolderTextStyle={{ color: "#5A5A5A" }}
-                                onDateChange={dob => { console.log(dob); this.setState({ dob })}}
-
-                                disabled={false}                           
+                                onDateChange={dob => { this.setState({ dob }) }}
+                                disabled={false}
                             /></Item>
 
                         <Spinner color='blue'
-                        visible={this.state.isLoading}
-                        textContent={'Loading...'}
-                    />
-                    
+                            visible={this.state.isLoading}
+                            textContent={'Loading...'}
+                        />
+
 
 
                         <Button style={styles.loginButton} block primary onPress={() => this.userUpdate()}>

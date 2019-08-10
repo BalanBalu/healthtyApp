@@ -17,12 +17,12 @@ class Home extends Component {
             data: [],
             isLoading: false,
             catagary: [],
-            searchValue: ''
+            searchValue: null
         };
         this.getCatagries();
     }
     navigetToCategories() {
-        this.props.navigation.navigate('Categories',{data:this.state.data})
+        this.props.navigation.navigate('Categories', { data: this.state.data })
     }
 
     doLogout() {
@@ -35,14 +35,18 @@ class Home extends Component {
             let result = await catagries();
 
 
+            // if(result.success) 
+            // setTimeout( ()=>{
             this.setState({ data: result.data, isLoading: true })
             let limitedData = [];
-           
+            //  var limtedNumber
             for (let limtedNumber = 0; limtedNumber < 4; limtedNumber++) {
                 limitedData.push(result.data[limtedNumber]);
             }
             this.setState({ catagary: limitedData });
-           
+            console.log('state output is:')
+            console.log(this.state.data);
+            // },3000)
         } catch (e) {
             console.log(e);
         }
@@ -58,7 +62,7 @@ class Home extends Component {
                 type: 'symptoms',
                 value: [this.state.searchValue]
             }]
-            if (this.state.searchValue == null) {
+            if (this.state.searchValue == '') {
                 alert("We can't Find the Empty Values");
             }
             else {
@@ -215,7 +219,7 @@ class Home extends Component {
                                 </Col>
                             </Row>
 
-                            <Row onPress={() => this.props.navigation.navigate('MedicineList')}>
+                            <Row>
                                 <Col>
                                     <Text note style={{ fontFamily: 'OpenSans', color: 'white', marginTop: 15 }}>Medflick Pharmacy Offers You Online Convenience For Ordering, Monitoring And Receiving Prescription For You And Your Family.</Text>
                                 </Col>
@@ -254,14 +258,14 @@ class Home extends Component {
                         <Button>
                             <Icon name="chatbubbles" />
                         </Button>
-                        <Button onPress={() => this.props.navigation.navigate('Notification')}  >
+                        <Button >
                             <Icon active name="notifications" />
                         </Button>
                         <Button>
                             <Icon name="person" />
                         </Button>
                     </FooterTab>
-               </Footer> */}
+                </Footer>*/}
             </Container>
 
         )
