@@ -94,6 +94,7 @@ class doctorSearchList extends Component {
         console.log('availableDateSlotsDocArray' + JSON.stringify(availableDateSlotsDocArray))
 
         let filteredDocListArray = [];
+        
         this.state.doctorData.forEach((doctorElement) => {
 
             filterData.forEach((filterElement) => {
@@ -123,6 +124,7 @@ class doctorSearchList extends Component {
                 }
             })
         });
+    
         console.log('filteredDocListArray' + JSON.stringify(filteredDocListArray))
 
         var sortedArray = filteredDocListArray.slice().sort();
@@ -161,8 +163,7 @@ class doctorSearchList extends Component {
                 await this.setState({ uniqueFilteredDocArray: availableDateSlotsDocArray })
             }
             else {
-                console.log('filterData  Object count' + filterData[1])
-                if (filterData[1].value === undefined) {
+                if (filterData === '') {
                     console.log('working filter single docDetails ')
                     if (typeof dupFilteredDocDetailsArray == undefined) {
                         await this.setState({ uniqueFilteredDocArray: resultsArray })
