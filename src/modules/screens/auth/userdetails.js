@@ -8,7 +8,6 @@ import { connect } from 'react-redux'
 import { Image, BackHandler, AsyncStorage } from 'react-native';
 import styles from '../../screens/auth/styles';
 import Spinner from '../../../components/Spinner';
-import { ScrollView } from 'react-native-gesture-handler';
 class UserDetails extends Component {
     constructor(props) {
         super(props)
@@ -101,11 +100,10 @@ class UserDetails extends Component {
 
             <Container style={styles.container}>
                 <Content style={styles.bodyContent}>
-                    <ScrollView>
-                        <H3 style={styles.welcome}>User Details</H3>
-                        <Image source={{ uri: 'https://static1.squarespace.com/static/582bbfef9de4bb07fe62ab18/t/5877b9ccebbd1a124af66dfe/1484241404624/Headshot+-+Circular.png?format=300w' }} style={styles.logo} />
-                        <Form style={{ marginBottom: 50 }}>
-                            {/* <View style={styles.errorMsg}>
+                    <H3 style={styles.welcome}>User Details</H3>
+                    <Image source={{ uri: 'https://static1.squarespace.com/static/582bbfef9de4bb07fe62ab18/t/5877b9ccebbd1a124af66dfe/1484241404624/Headshot+-+Circular.png?format=300w' }} style={styles.logo} />
+                    <Form>
+                        {/* <View style={styles.errorMsg}>
                             <Text style={{ textAlign: 'center', color: '#775DA3' }}> Invalid Credencials</Text>
                         </View> */}
                             <Item style={{ borderBottomWidth: 0 }}>
@@ -164,7 +162,6 @@ class UserDetails extends Component {
                             </Button>
 
                         </Form>
-                    </ScrollView>
                 </Content>
                 <Footer >
                     <FooterTab style={{ backgroundColor: '#F2F2F2', }}>

@@ -22,6 +22,7 @@ class Signup extends Component {
             radioStatus: [true, false, false],
             conditionCheckErrorMsg: '',
             conditionCheck: false,
+            showPassword: true
         }
     }
     toggleRadio = (radioSelect, genderSelect) => {

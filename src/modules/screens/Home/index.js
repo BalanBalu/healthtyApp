@@ -17,7 +17,7 @@ class Home extends Component {
             data: [],
             isLoading: false,
             catagary: [],
-            searchValue: ''
+            searchValue: null
         };
         this.getCatagries();
     }
@@ -35,6 +35,8 @@ class Home extends Component {
             let result = await catagries();
 
 
+            // if(result.success) 
+            // setTimeout( ()=>{
             this.setState({ data: result.data, isLoading: true })
             let limitedData = [];
 
@@ -176,8 +178,8 @@ class Home extends Component {
                     <Card style={{ backgroundColor: '#CDEEFF', padding: 10, borderRadius: 10 }}
                     >
                         <Text style={{ fontFamily: 'OpenSans', fontSize: 17 }}>You Can save A Life</Text>
-                        <Button onPress={() => this.doLogout()} block style={{ margin: 10, borderRadius: 20, backgroundColor: '#74579E' }}>
-                            <Text>REPORT ASSIDENT NOW</Text>
+                        <Button block style={{ margin: 10, borderRadius: 20, backgroundColor: '#74579E' }}>
+                            <Text>REPORT ACCIDENT NOW</Text>
                         </Button>
 
                         <Text style={{ textAlign: 'right', fontSize: 14, fontFamily: 'OpenSans', color: '#000' }}>5002 Fast Growing Ambulance</Text>
@@ -217,7 +219,7 @@ class Home extends Component {
                                 </Col>
                             </Row>
 
-                            <Row onPress={() => this.props.navigation.navigate('MedicineList')}>
+                            <Row>
                                 <Col>
                                     <Text note style={{ fontFamily: 'OpenSans', color: 'white', marginTop: 15 }}>Medflick Pharmacy Offers You Online Convenience For Ordering, Monitoring And Receiving Prescription For You And Your Family.</Text>
                                 </Col>
@@ -256,14 +258,14 @@ class Home extends Component {
                         <Button>
                             <Icon name="chatbubbles" />
                         </Button>
-                        <Button onPress={() => this.props.navigation.navigate('Notification')}  >
+                        <Button >
                             <Icon active name="notifications" />
                         </Button>
                         <Button>
                             <Icon name="person" />
                         </Button>
                     </FooterTab>
-               </Footer> */}
+                </Footer>*/}
             </Container>
 
         )

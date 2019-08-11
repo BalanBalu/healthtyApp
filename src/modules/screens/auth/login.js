@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { Container, Content, Button, Text, Form, Item, Input, Header, Footer, FooterTab, Right, CheckBox, Grid, Toast, KeyboardAvoidingView } from 'native-base';
+import { Container, Content, Button, Text, Form, Item, Input, Header, Footer, FooterTab, Right, CheckBox, Grid, Toast, KeyboardAvoidingView, Icon } from 'native-base';
 import { login, RESET_REDIRECT_NOTICE } from '../../providers/auth/auth.actions';
 import { connect } from 'react-redux'
 import { Image, TouchableOpacity, View, ScrollView } from 'react-native';
@@ -13,7 +13,9 @@ class Login extends Component {
     this.state = {
       userEntry: '',
       password: '',
-      loginErrorMsg: ''
+      loginErrorMsg: null,
+      conditionCheck: false,
+      showPassword: true
     }
   }
 
@@ -24,7 +26,9 @@ class Login extends Component {
         password: this.state.password,
         type: 'user'
       };
-      await login(requestData);
+
+      let result = await login(requestData);
+      console.log('result' + JSON.stringify(result))
       console.log(this.props.user);
       if (this.props.user.isAuthenticated) {
         if (this.props.user.needToRedirect === true) {
@@ -35,20 +39,18 @@ class Login extends Component {
           })
           return
         }
-
-
         this.props.navigation.navigate('Home');
       } else {
+        this.setState({ loginErrorMsg: this.props.user.message })
         Toast.show({
           text: this.props.user.message,
-          timeout: 3000
+          timeout: 50000
         })
       }
 
     } catch (e) {
       console.log(e);
     }
-
   }
 
   render() {
@@ -70,44 +72,48 @@ class Login extends Component {
               {/* <View style={styles.errorMsg}>
               <Text style={{textAlign:'center',color:'#775DA3'}}> Invalid Credencials</Text>
             </View> */}
-              <Item style={{ borderBottomWidth: 0 }}>
-                <Input placeholder="Email Or Phone" style={styles.transparentLabel}
-                  returnKeyType={'next'}
-                  value={this.state.userEntry}
-                  keyboardType={'email-address'}
-                  onChangeText={userEntry => this.setState({ userEntry })}
-                  autoCapitalize='none'
-                  blurOnSubmit={false}
-                  onSubmitEditing={() => { this.userEntry._root.focus(); }}
-                />
-              </Item>
+            <Item style={{ borderBottomWidth: 0 }}>
+              <Input placeholder="Email Or Phone" style={styles.transparentLabel}
+                returnKeyType={'next'}
+                value={this.state.userEntry}
+                keyboardType={'email-address'}
+                onChangeText={userEntry => this.setState({ userEntry })}
+                autoCapitalize='none'
+                blurOnSubmit={false}
+                onSubmitEditing={() => { this.userEntry._root.focus(); }}
+              />
+            </Item>
+
+            <Item success style={styles.transparentLabel}>
+              <Input placeholder="Password"
+                ref={(input) => { this.userEntry = input; }}
+                secureTextEntry={true}
+                returnKeyType={'done'}
+                value={this.state.password}
+                secureTextEntry={this.state.showPassword}
+                autoCapitalize='none'
+                onChangeText={password => this.setState({ password })}
+                blurOnSubmit={false}
+                onSubmitEditing={() => { this.doLogin(); }}
+
+              />
+              <Icon active name='eye' onPress={() => this.setState({ showPassword: !this.state.showPassword })} />
+            </Item>
+
+
+            <Item style={{ marginTop: 10, borderBottomWidth: 0 }}>
 
               <Item style={{ borderBottomWidth: 0 }}>
-                <Input placeholder="Password" style={styles.transparentLabel}
-                  ref={(input) => { this.userEntry = input; }}
-                  secureTextEntry={true}
-                  returnKeyType={'done'}
-                  value={this.state.password}
-                  autoCapitalize='none'
-                  onChangeText={password => this.setState({ password })}
-                  blurOnSubmit={false}
-                  onSubmitEditing={() => { this.doLogin(); }}
-                />
+                <CheckBox checked={this.state.conditionCheck} color="green" onPress={() => this.setState({ conditionCheck: !this.state.conditionCheck })} style={{ marginLeft: -7, }}  ></CheckBox>
+                <Text style={{ marginLeft: 15, color: 'gray', fontFamily: 'OpenSans' }}>Remember me</Text>
               </Item>
 
-              <Item style={{ marginTop: 10, borderBottomWidth: 0 }}>
-
-                <Item style={{ borderBottomWidth: 0, }}>
-                  <CheckBox checked={true} color="green" style={{ marginLeft: -7, }} ></CheckBox>
-                  <Text style={{ marginLeft: 15, color: 'gray', fontFamily: 'OpenSans' }}>Remember me</Text>
-                </Item>
-
-                <Right>
-                  <TouchableOpacity onPress={() => this.props.navigation.navigate('forgotpassword')}>
-                    <Text style={styles.customText}> Forgot Password</Text>
-                  </TouchableOpacity>
-                </Right>
-              </Item>
+              <Right>
+                <TouchableOpacity onPress={() => this.props.navigation.navigate('forgotpassword')}>
+                  <Text style={styles.customText}> Forgot Password</Text>
+                </TouchableOpacity>
+              </Right>
+            </Item>
 
               <Button style={styles.loginButton} block primary
                 disabled={isLoading}
