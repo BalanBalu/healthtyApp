@@ -63,7 +63,7 @@ import MedicinePaymentPage from '../../modules/screens/Pharmacy/MedicinePaymentP
 import MedicinePaymentResult from '../../modules/screens/Pharmacy/MedicinePaymentResult/MedicinePaymentResult';
 import MedicinePaymentSuccess from '../../modules/screens/Pharmacy/MedicinePaymentSuccess/MedicinePaymentSuccess';
 import UploadPrescription from '../../modules/screens/Pharmacy/MedicineSearch/UploadPrescription';
-import MedicalOrderDetails from '../../modules/screens/Pharmacy/MedicalOrderDetails/MedicalOrderDetails';
+import MedicineMyOrders from '../../modules/screens/Pharmacy/MedicineMyOrders/MedicineMyOrders'
 
 
 const routes = {
@@ -147,6 +147,7 @@ const AuthRoutes = {
     screen: userdetails,
   }
 }
+
 const AuthStack = createStackNavigator(AuthRoutes, {
   initialRouteName: 'login',
   headerMode: "none",
