@@ -27,6 +27,7 @@ class UpdateUserDetails extends Component {
             selectedBloodGroup: null,
             updateButton: false,
             userData:'',
+            isValid:true
 
         }
     }
@@ -51,16 +52,27 @@ class UpdateUserDetails extends Component {
                     gender: userData.gender,
                     selectedBloodGroup:userData.blood_group||null
                     
-                })
+                })           
+        }
+        
+    validateFirstName=(text)=>{
+        console.log("validation");
+        console.log(text);
+        const regex=new RegExp('^[A-Z ]+$') //Support Capital letter with space
+        if(regex.test(text) === false){ 
+            Toast.show({
+                    text: 'Accepts only characters',
+                    type: "danger",
+                    duration: 3000
+            });
+            
+        }else{
+            console.log("Valid");
+        }
+        this.setState({firstName:text});
 
-                
-           
-
-
-    }
-
-
-
+        
+    }    
 
     userUpdate = async () => {
         const { userData, firstName, lastName, dob, gender, selectedBloodGroup } = this.state
@@ -134,7 +146,7 @@ class UpdateUserDetails extends Component {
                                     value={this.state.firstName}
                                     keyboardType={'default'}
                                     returnKeyType={"next"}
-                                    onChangeText={firstName => this.setState({ firstName })}
+                                    onChangeText={text => this.validateFirstName(text)}
                                     autoCapitalize='none'
                                     blurOnSubmit={false}
                                     onSubmitEditing={() => { this.firstName._root.focus(); }}
