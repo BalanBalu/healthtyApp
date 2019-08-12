@@ -318,6 +318,12 @@ const HomeStack = createStackNavigator({
       title: 'Notification',
     })
   },
+  "AppointmentInfo": {
+    screen: AppointmentDetails,
+    navigationOptions: {
+      title: 'Appointment Info'
+    }
+  },
  
  },
   {
