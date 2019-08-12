@@ -1,20 +1,59 @@
 import React, { Component } from 'react';
 import { Container, Content, Text, Title, Header, Form, Textarea, Button, H3, Item, List, ListItem, Card, Input, Left, Right, Thumbnail, Body, Icon, Footer, FooterTab, Picker, Segment, CheckBox, View } from 'native-base';
 import { Col, Row, Grid } from 'react-native-easy-grid';
-import { StyleSheet, Image, ScrollView } from 'react-native';
+import { StyleSheet, Image, ScrollView, AsyncStorage, FlatList } from 'react-native';
+import { getpharmacy } from '../../../providers/pharmacy/pharmacy.action';
+import { medicineRateAfterOffer } from '../../../common';
 
 class MedicinePaymentReview extends Component {
     constructor(props) {
         super(props)
 
         this.state = {
-
+            cartItems:[],
+            pharmacyData:[],
+            isLoading: false
         }
     }
+   async componentDidMount(){
+       await this.getAddToCart();
+        this.getPharmacyDetails();
+    }
+    getAddToCart= async() => {
+        try{
+            temp = await AsyncStorage.getItem('userId')
+            userId = JSON.stringify(temp);
+            const cartItems = await AsyncStorage.getItem('cartItems-'+userId);       
+             this.setState({ cartItems: JSON.parse(cartItems)});
+             console.log(this.state.cartItems);
+        }
+        catch(e){
+            console.log(e);
+        }
+        }
+        totalPrice() {
+            let total = 0;
+            if(this.state.cartItems) {
+                this.state.cartItems.forEach(element => {
+                    total = total + ((parseInt(element.price) - (parseInt(element.offer)/100) * parseInt(element.price)) * parseInt(element.selectedQuantity))
+                })    
+            return total;
+            }
+          }
+          
+        getPharmacyDetails= async() =>{
+            console.log("getPharmacy");
+            console.log(this.state.cartItems);
+            let pharmacyId=this.state.cartItems[0].pharmacy_id;
+            console.log(pharmacyId)
+            let result= await getpharmacy(pharmacyId);
+            this.setState({pharmacyData:result})
+            console.log('test'+JSON.stringify(this.state.pharmacyData));
+        }
 
 
     render() {
-
+            const{ cartItems } = this.state;
         return (
 
             <Container style={styles.container}>
@@ -62,43 +101,32 @@ class MedicinePaymentReview extends Component {
                             </Row>
                         </Grid>
                         <Grid style={{ borderBottomWidth: 0.3, color: '#f2f2f2', padding: 10, marginLeft: 10 }}>
-                            <View>
+                           
                                 <Text style={{ fontFamily: 'OpenSans', fontSize: 18, fontWeight: 'bold' }}>Order Details</Text>
+                                <FlatList
+                                    data={cartItems}
+                                    extraData={this.state}
+                                    keyExtractor={(item, index) => index.toString()}
+                                    renderItem={({ item, index }) =>
+                                    <View>
                                 <Text note style={styles.customizedText}>Pharmacy</Text>
                                 <Text style={styles.customizedText}>pharmacy name1</Text>
                                 <Text note style={styles.customizedText}>Medicine</Text>
 
                                 <Row>
                                     <Col style={{ width: '50%' }}>
-                                        <Text style={styles.customizedText}>Antibiotic</Text>
+                                        <Text style={styles.customizedText}>{item.medicine_name}</Text>
                                     </Col>
                                     <Col style={{ width: '35%' }}>
-                                        <Text style={styles.customizedText}>QTY:10</Text>
+                                        <Text style={styles.customizedText}>{item.selectedQuantity}</Text>
                                     </Col>
                                     <Col style={{ width: '15%' }}>
-                                        <Text style={styles.customizedText}>{'\u20B9'}5000</Text>
+                                        <Text style={styles.customizedText}>{'\u20B9'}{medicineRateAfterOffer(item)}</Text>
                                     </Col>
                                 </Row>
-                                <Text style={styles.customizedText}>pharmacy name2</Text>
-                                <Text note style={styles.customizedText}>Medicine</Text>
-
-                                <Row>
-                                    <Col style={{ width: '50%' }}>
-                                        <Text style={styles.customizedText}>Antibiotic</Text>
-                                    </Col>
-                                    <Col style={{ width: '35%' }}>
-                                        <Text style={styles.customizedText}>QTY:5</Text>
-                                    </Col>
-                                    <Col style={{ width: '15%' }}>
-                                        <Text style={styles.customizedText}>{'\u20B9'}100</Text>
-                                    </Col>
-                                </Row>
-
-
-
-
-
-                            </View>
+                                </View>
+                                }/>
+                            
                         </Grid>
 
                         <Grid style={{ borderBottomWidth: 0.3, color: '#f2f2f2', padding: 10, marginLeft: 10 }}>
@@ -126,15 +154,14 @@ class MedicinePaymentReview extends Component {
                                     <Text style={styles.customizedText}>Total</Text>
                                 </Col>
                                 <Col style={{ width: '90%' }}>
-                                    <Text style={styles.customizedText}>2000</Text>
+                                    <Text style={styles.customizedText}>{this.totalPrice()}</Text>
                                 </Col>
                             </Row>
                         </Grid>
-                        <Button block success style={{ borderRadius: 6, margin: 6 }} >
+                        <Button block success style={{ borderRadius: 6, margin: 6 }} onPress={()=> this.props.navigation.navigate('MedicinePaymentSuccess')} >
                             <Text uppercase={false}>payLater</Text>
                         </Button>
-                        <Button block success style={{ padding: 10, borderRadius: 6, margin: 6, marginBottom: 20 }}
-                        >
+                        <Button block success style={{ padding: 10, borderRadius: 6, margin: 6, marginBottom: 20 }}>
                             <Text uppercase={false} >Pay Now</Text>
                         </Button>
                     </ScrollView>
