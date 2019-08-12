@@ -15,6 +15,7 @@ class UpdatePassword extends Component {
         this.state = {
             oldPassword: '',
             newPassword: '',
+            showPassword: true,
             isLoading: false
         }
     }
@@ -88,11 +89,12 @@ class UpdatePassword extends Component {
                             secureTextEntry={true} style={styles.transparentLabel} 
                             keyboardType="default"
                             value={this.state.oldPassword}
+                            secureTextEntry={this.state.showPassword}
                             onChangeText={(oldPassword) => this.setState({ oldPassword })}
                             testID='enterOldPassword' />
                         </Item>
                         <View>
-                        <Icon name="eye" style={{position:'absolute',marginLeft:250,marginTop:-35, fontSize:20}}></Icon>
+                        <Icon active name="eye" style={{position:'absolute',marginLeft:250,marginTop:-35, fontSize:20}} onPress={() => this.setState({ showPassword: !this.state.showPassword })} />
                         </View>
 
                         <Item style={{ borderBottomWidth: 0 }}>
@@ -101,11 +103,13 @@ class UpdatePassword extends Component {
                             style={styles.transparentLabel} 
                             keyboardType="default"
                             value={this.state.newPassword}
+                            secureTextEntry={this.state.showPassword}
                             onChangeText={(newPassword) => this.setState({ newPassword })}
                             testID='enterNewPassword' />
                         </Item>
                         <View>
-                        <Icon name="eye" style={{position:'absolute',marginLeft:250,marginTop:-35, fontSize:20}}></Icon>
+                        <Icon active name="eye" style={{position:'absolute',marginLeft:250,marginTop:-35, fontSize:20}} onPress={() => this.setState({ showPassword: !this.state.showPassword })} />
+           
                         </View>
                         
                         <Item style={{ borderBottomWidth: 0 }}>
