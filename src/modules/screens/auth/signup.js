@@ -8,6 +8,7 @@ import { connect } from 'react-redux'
 import { StyleSheet, Image, View } from 'react-native';
 import styles from '../../screens/auth/styles';
 import Spinner from '../../../components/Spinner';
+import { ScrollView } from 'react-native-gesture-handler';
 
 
 class Signup extends Component {
@@ -21,6 +22,7 @@ class Signup extends Component {
             radioStatus: [true, false, false],
             conditionCheckErrorMsg: '',
             conditionCheck: false,
+            showPassword: true
         }
     }
     toggleRadio = (radioSelect, genderSelect) => {
@@ -84,79 +86,79 @@ class Signup extends Component {
 
                 </Header> */}
                 <Content style={styles.bodyContent}>
+                    <ScrollView>
 
-
-                    <H3 style={styles.welcome}>List Your Practice to Reach millions of Peoples</H3>
-                    <Image source={{ uri: 'https://static1.squarespace.com/static/582bbfef9de4bb07fe62ab18/t/5877b9ccebbd1a124af66dfe/1484241404624/Headshot+-+Circular.png?format=300w' }} style={styles.logo} />
-                    <Form>
-                        {/* <View style={styles.errorMsg}>
+                        <H3 style={styles.welcome}>List Your Practice to Reach millions of Peoples</H3>
+                        <Image source={{ uri: 'https://static1.squarespace.com/static/582bbfef9de4bb07fe62ab18/t/5877b9ccebbd1a124af66dfe/1484241404624/Headshot+-+Circular.png?format=300w' }} style={styles.logo} />
+                        <Form style={{ marginBottom: 50 }}>
+                            {/* <View style={styles.errorMsg}>
                             <Text style={{ textAlign: 'center', color: '#775DA3' }}> Invalid Credencials</Text>
                         </View> */}
 
-                        <Item style={{ borderBottomWidth: 0 }}>
-                            <Input placeholder="Email Or Phone" style={styles.transparentLabel}
-                                returnKeyType={'next'}
-                                keyboardType={'email-address'}
-                                value={this.state.userEmail}
-                                keyboardType={'email-address'}
-                                onChangeText={userEmail => this.setState({ userEmail })}
-                                blurOnSubmit={false}
-                                onSubmitEditing={() => { this.userEmail._root.focus(); }}
-                            />
-                        </Item>
+                            <Item style={{ borderBottomWidth: 0 }}>
+                                <Input placeholder="Email Or Phone" style={styles.transparentLabel}
+                                    returnKeyType={'next'}
+                                    keyboardType={'email-address'}
+                                    value={this.state.userEmail}
+                                    keyboardType={'email-address'}
+                                    onChangeText={userEmail => this.setState({ userEmail })}
+                                    blurOnSubmit={false}
+                                    onSubmitEditing={() => { this.userEmail._root.focus(); }}
+                                />
+                            </Item>
 
-                        <Item success style={styles.transparentLabel}>
-                            <Input placeholder="Password" 
-                                ref={(input) => { this.userEmail = input; }}
-                                returnKeyType={'done'}
-                                value={this.state.password}
-                                secureTextEntry={this.state.showPassword}
-                                keyboardType={'default'}
-                                onChangeText={password => this.setState({ password })}
-                                blurOnSubmit={false}
-                                maxLength={16}
-                                onSubmitEditing={() => { this.doSignUp(); }} />
+                            <Item success style={styles.transparentLabel}>
+                                <Input placeholder="Password"
+                                    ref={(input) => { this.userEmail = input; }}
+                                    returnKeyType={'done'}
+                                    value={this.state.password}
+                                    secureTextEntry={this.state.showPassword}
+                                    keyboardType={'default'}
+                                    onChangeText={password => this.setState({ password })}
+                                    blurOnSubmit={false}
+                                    maxLength={16}
+                                    onSubmitEditing={() => { this.doSignUp(); }} />
 
                                 <Icon active name='eye' onPress={() => this.setState({ showPassword: !this.state.showPassword })} />
-                        </Item>
-                        <Item style={{ marginTop: 12, borderBottomWidth: 0 }}>
+                            </Item>
+                            <Item style={{ marginTop: 12, borderBottomWidth: 0 }}>
 
-                            <Radio selected={this.state.radioStatus[0]} onPress={() => this.toggleRadio("0", "M")} color={"#775DA3"}
-                                selectedColor={"#775DA3"} />
-                            <Text style={{
-                                marginLeft: 10, fontFamily: 'OpenSans',
-                            }}>Male</Text>
+                                <Radio selected={this.state.radioStatus[0]} onPress={() => this.toggleRadio("0", "M")} color={"#775DA3"}
+                                    selectedColor={"#775DA3"} />
+                                <Text style={{
+                                    marginLeft: 10, fontFamily: 'OpenSans',
+                                }}>Male</Text>
 
-                            <Radio selected={this.state.radioStatus[1]} onPress={() => this.toggleRadio("1", "F")} style={{ marginLeft: 20 }} color={"#775DA3"}
-                                selectedColor={"#775DA3"} />
-                            <Text style={{
-                                marginLeft: 10, fontFamily: 'OpenSans',
-                            }}>Female</Text>
+                                <Radio selected={this.state.radioStatus[1]} onPress={() => this.toggleRadio("1", "F")} style={{ marginLeft: 20 }} color={"#775DA3"}
+                                    selectedColor={"#775DA3"} />
+                                <Text style={{
+                                    marginLeft: 10, fontFamily: 'OpenSans',
+                                }}>Female</Text>
 
-                            <Radio selected={this.state.radioStatus[2]} onPress={() => this.toggleRadio("2", "O")} style={{ marginLeft: 30 }} color={"#775DA3"}
-                                selectedColor={"#775DA3"} />
-                            <Text style={{ marginLeft: 10 }}>Other</Text>
-                        </Item>
+                                <Radio selected={this.state.radioStatus[2]} onPress={() => this.toggleRadio("2", "O")} style={{ marginLeft: 30 }} color={"#775DA3"}
+                                    selectedColor={"#775DA3"} />
+                                <Text style={{ marginLeft: 10 }}>Other</Text>
+                            </Item>
 
 
-                        <Item style={{ borderBottomWidth: 0, marginTop: 12, marginLeft: 4 }}>
-                            <CheckBox checked={this.state.conditionCheck} color="green" onPress={() => this.setState({ conditionCheck: !this.state.conditionCheck })} ></CheckBox>
-                            <Text style={{ marginLeft: 15, color: 'gray', fontFamily: 'OpenSans' }}>I Accept the Medflic Terms And Conditions</Text>
-                        </Item>
+                            <Item style={{ borderBottomWidth: 0, marginTop: 12, marginLeft: 4 }}>
+                                <CheckBox checked={this.state.conditionCheck} color="green" onPress={() => this.setState({ conditionCheck: !this.state.conditionCheck })} ></CheckBox>
+                                <Text style={{ marginLeft: 15, color: 'gray', fontFamily: 'OpenSans' }}>I Accept the Medflic Terms And Conditions</Text>
+                            </Item>
 
-                        <Spinner color='blue'
-                            visible={isLoading}
-                            textContent={'Loading...'}
-                        />
+                            <Spinner color='blue'
+                                visible={isLoading}
+                                textContent={'Loading...'}
+                            />
 
-                        <Button style={styles.loginButton} block primary onPress={() => this.doSignUp()}>
+                            <Button style={styles.loginButton} block primary onPress={() => this.doSignUp()}>
 
-                            <Text>Sign Up</Text>
-                        </Button>
-                        <Text style={{ color: 'red' }}>{this.state.conditionCheckErrorMsg} </Text>
+                                <Text>Sign Up</Text>
+                            </Button>
+                            <Text style={{ color: 'red' }}>{this.state.conditionCheckErrorMsg} </Text>
 
-                    </Form>
-
+                        </Form>
+                    </ScrollView>
                 </Content>
                 <Footer >
                     <FooterTab style={{ backgroundColor: '#F2F2F2', }}>

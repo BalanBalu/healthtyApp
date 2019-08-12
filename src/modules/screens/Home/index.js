@@ -17,12 +17,12 @@ class Home extends Component {
             data: [],
             isLoading: false,
             catagary: [],
-            searchValue: ''
+            searchValue: null
         };
         this.getCatagries();
     }
     navigetToCategories() {
-        this.props.navigation.navigate('Categories',{data:this.state.data})
+        this.props.navigation.navigate('Categories', { data: this.state.data })
     }
 
     doLogout() {
@@ -35,14 +35,16 @@ class Home extends Component {
             let result = await catagries();
 
 
+            // if(result.success) 
+            // setTimeout( ()=>{
             this.setState({ data: result.data, isLoading: true })
             let limitedData = [];
-           
-            for (let limtedNumber = 0; limtedNumber < 4; limtedNumber++) {
+
+            for (let limtedNumber = 0; limtedNumber < 6; limtedNumber++) {
                 limitedData.push(result.data[limtedNumber]);
             }
             this.setState({ catagary: limitedData });
-           
+
         } catch (e) {
             console.log(e);
         }
@@ -58,7 +60,7 @@ class Home extends Component {
                 type: 'symptoms',
                 value: [this.state.searchValue]
             }]
-            if (this.state.searchValue == null) {
+            if (this.state.searchValue == '') {
                 alert("We can't Find the Empty Values");
             }
             else {
@@ -93,25 +95,25 @@ class Home extends Component {
                 <Content keyboardShouldPersistTaps={'handled'} style={styles.bodyContent}>
                     <Row style={{ backgroundColor: 'white' }}>
 
-                        <Col style={{ width: '87%' }}>
-                            <Input placeholder="Search Symptoms/Services"
-                                style={{ color: 'gray', fontFamily: 'OpenSans', fontSize: 12 }}
-                                placeholderTextColor="gray"
-                                value={this.state.searchValue}
-                                keyboardType={'email-address'}
-                                onChangeText={searchValue => this.setState({ searchValue })}
-                                blurOnSubmit={false}
-                                onSubmitEditing={() => { this.searchDoctorListModule(); }}
-                            />
 
-                        </Col>
-                        <Col style={{ width: '13%' }}>
+                        <Input placeholder="Search Symptoms/Services"
+                            style={{ color: 'gray', fontFamily: 'OpenSans', fontSize: 12 }}
+                            placeholderTextColor="gray"
+                            value={this.state.searchValue}
+                            keyboardType={'email-address'}
+                            onChangeText={searchValue => this.setState({ searchValue })}
+                            blurOnSubmit={false}
+                            onSubmitEditing={() => { this.searchDoctorListModule(); }}
+                        />
+
+
+                        <Right>
 
                             <Button Button transparent onPress={() => this.searchDoctorListModule()}>
                                 <Icon name="ios-search" style={{ color: 'gray' }} />
                             </Button>
+                        </Right>
 
-                        </Col>
                     </Row>
                     <Card style={{ padding: 10, borderRadius: 10 }}>
 
@@ -145,18 +147,20 @@ class Home extends Component {
                                             data={this.state.catagary}
                                             extraData={this.state}
                                             renderItem={({ item, index }) =>
-                                                <Item style={styles.column} onPress={() => this.navigateToCategorySearch(item.category_name)}>
-                                                    <Col  >
-                                                        <LinearGradient
-                                                            colors={['#7357A2', '#62BFE4']} style={{ borderRadius: 10, padding: 5, height: 100, width: 100, marginLeft: 'auto', marginRight: 'auto' }}>
-                                                            <Image
-                                                                source={{ uri: item.imageBaseURL + '/' + item.category_id + '.png' }} style={styles.customImage} />
-                                                        </LinearGradient>
+                                                <Grid style={{ marginTop: 10 }}>
+                                                    <Item style={styles.column} onPress={() => this.navigateToCategorySearch(item.category_name)}>
+                                                        <Col  >
+                                                            <LinearGradient
+                                                                colors={['#7357A2', '#62BFE4']} style={{ borderRadius: 10, padding: 5, height: 100, width: 100, marginLeft: 'auto', marginRight: 'auto' }}>
+                                                                <Image
+                                                                    source={{ uri: item.imageBaseURL + '/' + item.category_id + '.png' }} style={styles.customImage} />
+                                                            </LinearGradient>
 
-                                                        <Text style={styles.textcenter}>{item.category_name}</Text>
-                                                        {/*<Text note style={{ textAlign: 'center' }}>100 Doctors</Text>*/}
-                                                    </Col>
-                                                </Item>
+                                                            <Text style={styles.textcenter}>{item.category_name}</Text>
+                                                            {/*<Text note style={{ textAlign: 'center' }}>100 Doctors</Text>*/}
+                                                        </Col>
+                                                    </Item>
+                                                </Grid>
                                             }
 
                                             keyExtractor={(item, index) => index.toString()}
@@ -174,8 +178,8 @@ class Home extends Component {
                     <Card style={{ backgroundColor: '#CDEEFF', padding: 10, borderRadius: 10 }}
                     >
                         <Text style={{ fontFamily: 'OpenSans', fontSize: 17 }}>You Can save A Life</Text>
-                        <Button onPress={() => this.doLogout()} block style={{ margin: 10, borderRadius: 20, backgroundColor: '#74579E' }}>
-                            <Text>REPORT ASSIDENT NOW</Text>
+                        <Button block style={{ margin: 10, borderRadius: 20, backgroundColor: '#74579E' }}>
+                            <Text>REPORT ACCIDENT NOW</Text>
                         </Button>
 
                         <Text style={{ textAlign: 'right', fontSize: 14, fontFamily: 'OpenSans', color: '#000' }}>5002 Fast Growing Ambulance</Text>
@@ -215,7 +219,7 @@ class Home extends Component {
                                 </Col>
                             </Row>
 
-                            <Row onPress={() => this.props.navigation.navigate('MedicineList')}>
+                            <Row>
                                 <Col>
                                     <Text note style={{ fontFamily: 'OpenSans', color: 'white', marginTop: 15 }}>Medflick Pharmacy Offers You Online Convenience For Ordering, Monitoring And Receiving Prescription For You And Your Family.</Text>
                                 </Col>
@@ -254,14 +258,14 @@ class Home extends Component {
                         <Button>
                             <Icon name="chatbubbles" />
                         </Button>
-                        <Button onPress={() => this.props.navigation.navigate('Notification')}  >
+                        <Button >
                             <Icon active name="notifications" />
                         </Button>
                         <Button>
                             <Icon name="person" />
                         </Button>
                     </FooterTab>
-               </Footer> */}
+                </Footer>*/}
             </Container>
 
         )
@@ -301,7 +305,8 @@ const styles = StyleSheet.create({
         borderRadius: 10,
         margin: 5,
         padding: 5,
-        paddingBottom: 20
+        paddingBottom: 20,
+
 
     },
 
