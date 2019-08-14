@@ -64,7 +64,7 @@ class Login extends Component {
               visible={isLoading}
               textContent={'Loading...'}
             />
-            <Text style={styles.welcome}>Welcome</Text>
+            <Text style={styles.welcome}>Welcome To Patient Medflic</Text>
             <Image source={{ uri: 'https://static1.squarespace.com/static/582bbfef9de4bb07fe62ab18/t/5877b9ccebbd1a124af66dfe/1484241404624/Headshot+-+Circular.png?format=300w' }} style={styles.logo} />
 
 
@@ -72,48 +72,52 @@ class Login extends Component {
               {/* <View style={styles.errorMsg}>
               <Text style={{textAlign:'center',color:'#775DA3'}}> Invalid Credencials</Text>
             </View> */}
-            <Item style={{ borderBottomWidth: 0 }}>
-              <Input placeholder="Email Or Phone" style={styles.transparentLabel}
-                returnKeyType={'next'}
-                value={this.state.userEntry}
-                keyboardType={'email-address'}
-                onChangeText={userEntry => this.setState({ userEntry })}
-                autoCapitalize='none'
-                blurOnSubmit={false}
-                onSubmitEditing={() => { this.userEntry._root.focus(); }}
-              />
-            </Item>
+              <Item style={{ borderBottomWidth: 0, marginTop: 10 }}>
+                <Input placeholder="Email Or Phone" style={styles.transparentLabel}
 
-            <Item success style={styles.transparentLabel}>
-              <Input placeholder="Password"
-                ref={(input) => { this.userEntry = input; }}
-                secureTextEntry={true}
-                returnKeyType={'done'}
-                value={this.state.password}
-                secureTextEntry={this.state.showPassword}
-                autoCapitalize='none'
-                onChangeText={password => this.setState({ password })}
-                blurOnSubmit={false}
-                onSubmitEditing={() => { this.doLogin(); }}
-
-              />
-              <Icon active name='eye' onPress={() => this.setState({ showPassword: !this.state.showPassword })} />
-            </Item>
-
-
-            <Item style={{ marginTop: 10, borderBottomWidth: 0 }}>
-
-              <Item style={{ borderBottomWidth: 0 }}>
-                <CheckBox checked={this.state.conditionCheck} color="green" onPress={() => this.setState({ conditionCheck: !this.state.conditionCheck })} style={{ marginLeft: -7, }}  ></CheckBox>
-                <Text style={{ marginLeft: 15, color: 'gray', fontFamily: 'OpenSans' }}>Remember me</Text>
+                  returnKeyType={'next'}
+                  value={this.state.userEntry}
+                  keyboardType={'email-address'}
+                  onChangeText={userEntry => this.setState({ userEntry })}
+                  autoCapitalize='none'
+                  blurOnSubmit={false}
+                  onSubmitEditing={() => { this.userEntry._root.focus(); }}
+                />
               </Item>
 
-              <Right>
-                <TouchableOpacity onPress={() => this.props.navigation.navigate('forgotpassword')}>
-                  <Text style={styles.customText}> Forgot Password</Text>
-                </TouchableOpacity>
-              </Right>
-            </Item>
+              <Item success style={styles.transparentLabel}>
+                <Input placeholder="Password" style={{ fontSize: 15, marginTop: 10 }}
+                  ref={(input) => { this.userEntry = input; }}
+                  secureTextEntry={true}
+                  returnKeyType={'done'}
+                  value={this.state.password}
+                  secureTextEntry={this.state.showPassword}
+                  autoCapitalize='none'
+                  onChangeText={password => this.setState({ password })}
+                  blurOnSubmit={false}
+                  onSubmitEditing={() => { this.doLogin(); }}
+
+                />
+                <Icon active name='eye' style={{ fontSize: 20, marginTop: 10 }} onPress={() => this.setState({ showPassword: !this.state.showPassword })} />
+              </Item>
+
+
+              <Item style={{ marginTop: 10, borderBottomWidth: 0 }}>
+
+                <Item style={{ borderBottomWidth: 0, marginTop: 10 }}>
+                  <CheckBox checked={this.state.conditionCheck}
+
+                    color="green" onPress={() => this.setState({ conditionCheck: !this.state.conditionCheck })} style={{ marginLeft: -7, height: 20, width: '11%' }}
+                  ></CheckBox>
+                  <Text style={{ marginLeft: 15, color: 'gray', fontFamily: 'OpenSans' }}>Remember me</Text>
+                </Item>
+
+                <Right>
+                  <TouchableOpacity onPress={() => this.props.navigation.navigate('forgotpassword')}>
+                    <Text style={styles.customText}> Forgot Password</Text>
+                  </TouchableOpacity>
+                </Right>
+              </Item>
 
               <Button style={styles.loginButton} block primary
                 disabled={isLoading}

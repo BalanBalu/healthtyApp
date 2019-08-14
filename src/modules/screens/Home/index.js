@@ -93,7 +93,7 @@ class Home extends Component {
 
 
                 <Content keyboardShouldPersistTaps={'handled'} style={styles.bodyContent}>
-                    <Row style={{ backgroundColor: 'white' }}>
+                    <Row style={{ backgroundColor: 'white', borderColor: '#000', borderWidth: 1, borderRadius: 20, }}>
 
 
                         <Input placeholder="Search Symptoms/Services"
@@ -110,15 +110,15 @@ class Home extends Component {
                         <Right>
 
                             <Button Button transparent onPress={() => this.searchDoctorListModule()}>
-                                <Icon name="ios-search" style={{ color: 'gray' }} />
+                                <Icon name="ios-search" style={{ color: '#000' }} />
                             </Button>
                         </Right>
 
                     </Row>
-                    <Card style={{ padding: 10, borderRadius: 10 }}>
+                    <Card style={{ padding: 10, borderRadius: 10, backgroundColor: '#82ccdd', marginTop: 10 }}>
 
                         <Grid>
-                            <Row>
+                            <Row >
                                 <Left  >
 
                                     <Text style={{ fontFamily: 'OpenSans', fontSize: 17 }}>Categories</Text>
@@ -149,7 +149,7 @@ class Home extends Component {
                                             renderItem={({ item, index }) =>
                                                 <Grid style={{ marginTop: 10 }}>
                                                     <Item style={styles.column} onPress={() => this.navigateToCategorySearch(item.category_name)}>
-                                                        <Col  >
+                                                        <Col>
                                                             <LinearGradient
                                                                 colors={['#7357A2', '#62BFE4']} style={{ borderRadius: 10, padding: 5, height: 100, width: 100, marginLeft: 'auto', marginRight: 'auto' }}>
                                                                 <Image
@@ -175,9 +175,9 @@ class Home extends Component {
 
                     </Card>
 
-                    <Card style={{ backgroundColor: '#CDEEFF', padding: 10, borderRadius: 10 }}
+                    <Card style={{ backgroundColor: '#ffeaa7', padding: 10, borderRadius: 10 }}
                     >
-                        <Text style={{ fontFamily: 'OpenSans', fontSize: 17 }}>You Can save A Life</Text>
+                        <Text style={{ fontFamily: 'OpenSans', fontSize: 17 }}>You Can Save A Life</Text>
                         <Button block style={{ margin: 10, borderRadius: 20, backgroundColor: '#74579E' }}>
                             <Text>REPORT ACCIDENT NOW</Text>
                         </Button>
@@ -215,7 +215,7 @@ class Home extends Component {
                                     <Text style={{ fontFamily: 'OpenSans', color: 'white', marginTop: 10, fontSize: 17 }}>Online Pharmacy Services</Text>
                                 </Col>
                                 <Col style={{ width: '25%' }}>
-                                    <Text style={styles.offerText}>25% offers</Text>
+                                    <Text style={styles.offerText1}>25% offers</Text>
                                 </Col>
                             </Row>
 
@@ -365,6 +365,20 @@ const styles = StyleSheet.create({
         fontSize: 12,
         padding: 5,
         backgroundColor: 'gray',
+        borderRadius: 20,
+        color: 'white',
+        width: "93%",
+        textAlign: 'center',
+        fontFamily: 'OpenSans',
+        marginLeft: 'auto',
+        marginRight: 'auto',
+        marginTop: 10
+    },
+
+    offerText1: {
+        fontSize: 12,
+        padding: 5,
+        backgroundColor: 'red',
         borderRadius: 20,
         color: 'white',
         width: "93%",
