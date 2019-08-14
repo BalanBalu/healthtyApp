@@ -2,7 +2,6 @@ import React, { Component } from 'react';
 import { Container, Content, Text, Title, Header, Form, Textarea, Button, H3, Item, List, ListItem, Card, Input, Left, Right, Thumbnail, Body, Icon, Footer, FooterTab, Picker, Segment, CheckBox, View } from 'native-base';
 import { Col, Row, Grid } from 'react-native-easy-grid';
 import { StyleSheet, Image, ScrollView, AsyncStorage, FlatList } from 'react-native';
-import { getpharmacy } from '../../../providers/pharmacy/pharmacy.action';
 import { medicineRateAfterOffer } from '../../../common';
 
 class MedicinePaymentReview extends Component {
@@ -11,15 +10,19 @@ class MedicinePaymentReview extends Component {
 
         this.state = {
             cartItems:[],
-            pharmacyData:[],
+            addressData: [],
             isLoading: false
         }
     }
    async componentDidMount(){
+    const { navigation } = this.props;
+    const deliveryAddress = navigation.getParam('data');
+    this.setState({addressData: deliveryAddress})
+    console.log('deliveryAddress'+JSON.stringify(this.state.address));
        await this.getAddToCart();
-        this.getPharmacyDetails();
+        
     }
-    getAddToCart= async() => {
+    getAddToCart= async() => { 
         try{
             temp = await AsyncStorage.getItem('userId')
             userId = JSON.stringify(temp);
@@ -41,19 +44,9 @@ class MedicinePaymentReview extends Component {
             }
           }
           
-        getPharmacyDetails= async() =>{
-            console.log("getPharmacy");
-            console.log(this.state.cartItems);
-            let pharmacyId=this.state.cartItems[0].pharmacy_id;
-            console.log(pharmacyId)
-            let result= await getpharmacy(pharmacyId);
-            this.setState({pharmacyData:result})
-            console.log('test'+JSON.stringify(this.state.pharmacyData));
-        }
-
-
+        
     render() {
-            const{ cartItems } = this.state;
+            const{ cartItems,addressData } = this.state;
         return (
 
             <Container style={styles.container}>
@@ -77,7 +70,7 @@ class MedicinePaymentReview extends Component {
                                 </Col>
                                 <Col style={{ width: '90%' }}>
 
-                                    <Text note style={{ fontFamily: 'OpenSans' }}>uuu</Text>
+                                    <Text style={styles.customizedText}>{addressData[0]&& addressData[0].fullName}</Text>
 
                                 </Col>
                             </Row>
@@ -86,17 +79,12 @@ class MedicinePaymentReview extends Component {
                                     <Icon name='pin' style={{ fontSize: 18, fontFamily: 'OpenSans', color: 'gray' }}></Icon>
                                 </Col>
                                 <Col style={{ width: '90%' }}>
-
+                                {this.state.addressData ?
                                     <View>
-                                        <Text note >kkkk</Text>
-                                        <Text note >llll</Text>
-
-                                        <View>
-                                            <Text note >kkk</Text>
-                                            <Text note >ooo</Text>
-                                        </View>
-
-                                    </View>
+                                        <Text style={styles.customizedText}>{(addressData[0] && addressData[0].address.no_and_street) + ', ' + (addressData[0] && addressData[0].address.address_line_1)}</Text>
+                                        <Text style={styles.customizedText}>{addressData[0] && addressData[0].address.address_line_2}</Text>
+                                        <Text style={styles.customizedText}>{(addressData[0] && addressData[0].address.city) + ','+ (addressData[0] && addressData[0].address.pin_code)}</Text>
+                                    </View>: null}
                                 </Col>
                             </Row>
                         </Grid>
@@ -110,7 +98,7 @@ class MedicinePaymentReview extends Component {
                                     renderItem={({ item, index }) =>
                                     <View>
                                 <Text note style={styles.customizedText}>Pharmacy</Text>
-                                <Text style={styles.customizedText}>pharmacy name1</Text>
+                                <Text style={styles.customizedText}>MedPlus</Text>
                                 <Text note style={styles.customizedText}>Medicine</Text>
 
                                 <Row>
