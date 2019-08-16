@@ -144,6 +144,7 @@ class UserDetails extends Component {
                                         autoCapitalize='none'
                                         blurOnSubmit={false}
                                         onSubmitEditing={() => { this.no_and_street._root.focus(); }}
+                                        testID="enterNo&Street"
 
                                     />
                                 </Item>
@@ -163,6 +164,7 @@ class UserDetails extends Component {
                                         autoCapitalize='none'
                                         blurOnSubmit={false}
                                         onSubmitEditing={() => { this.address_line_1._root.focus(); }}
+                                        testID="enterAddressLine1"
                                     />
                                 </Item>
                                 <Item style={{ borderBottomWidth: 0 }}>
@@ -180,6 +182,7 @@ class UserDetails extends Component {
                                         autoCapitalize='none'
                                         blurOnSubmit={false}
                                         onSubmitEditing={() => { this.address_line_2._root.focus(this.setState({ isFocusKeyboard: true })); }}
+                                        testID="enterAddressLine2"
 
 
                                     />
@@ -202,6 +205,7 @@ class UserDetails extends Component {
                                         autoCapitalize='none'
                                         blurOnSubmit={false}
                                         onSubmitEditing={() => { this.city._root.focus(this.setState({ isFocusKeyboard: true })); }}
+                                        testID="enterCity"
                                     />
                                 </Item>
 
@@ -221,6 +225,7 @@ class UserDetails extends Component {
                                         autoCapitalize='none'
                                         blurOnSubmit={false}
                                         onSubmitEditing={() => { this.userUpdate() }}
+                                        testID="enterPincode"
                                     />
                                 </Item>
 
@@ -229,7 +234,7 @@ class UserDetails extends Component {
 
 
 
-                                <Button disabled={this.state.updateButton} style={styles.loginButton} ref={(input) => { this.pin_code = input; }} block primary onPress={() => this.userUpdate()}>
+                                <Button disabled={this.state.updateButton} style={styles.loginButton} ref={(input) => { this.pin_code = input; }} block primary onPress={() => this.userUpdate()} testID="updateAddressButton">
                                     <Text style={{ fontFamily: 'OpenSans', fontSize: 18, }}>Update</Text>
                                 </Button>
                             </ScrollView>

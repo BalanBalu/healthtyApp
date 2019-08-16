@@ -140,7 +140,7 @@ class UpdateUserDetails extends Component {
                                     onChangeText={text => this.validateFirstNameLastName(text, "Firstname")}
                                     autoCapitalize='none'
                                     blurOnSubmit={false}
-                                    onSubmitEditing={() => { this.firstName._root.focus(); }}
+                                    onSubmitEditing={() => { this.firstName._root.focus(); }} testID="editFirstName"
                                 />
                             </Item>
 
@@ -154,6 +154,7 @@ class UpdateUserDetails extends Component {
                                     autoCapitalize='none'
                                     blurOnSubmit={false}
                                     onSubmitEditing={() => { this.lastName._root.focus(this.setState({ focus: true })); }}
+                                    testID="editLastName"
                                 />
                             </Item>
 
@@ -174,6 +175,7 @@ class UpdateUserDetails extends Component {
                                     placeHolderTextStyle={{ color: "#5A5A5A" }}
                                     onDateChange={dob => { console.log(dob); this.setState({ dob }) }}
                                     disabled={false}
+                                    testID="editDateOfBirth"
                                 />
 
                             </Item>
@@ -192,6 +194,7 @@ class UpdateUserDetails extends Component {
                                     style={{ width: undefined }}
                                     onValueChange={(sample) => { this.setState({ selectedBloodGroup: sample }) }}
                                     selectedValue={this.state.selectedBloodGroup}
+                                    testID="editBloodGroup"
                                 >
 
                                     {bloodGroupList.map((value, key) => {
@@ -207,15 +210,15 @@ class UpdateUserDetails extends Component {
                             <ListItem noBorder>
 
                                 <Radio selected={this.state.gender === 'M'} onPress={() => this.onPressRadio('M')} style={{ marginLeft: 2, }} color={"#775DA3"}
-                                    selectedColor={"#775DA3"} />
+                                    selectedColor={"#775DA3"} testID="clickMale" />
                                 <Text style={{ marginLeft: 10, fontFamily: 'OpenSans' }}>Male</Text>
 
                                 <Radio selected={this.state.gender === 'F'} onPress={() => this.onPressRadio('F')} style={{ marginLeft: 10 }} color={"#775DA3"}
-                                    selectedColor={"#775DA3"} />
+                                    selectedColor={"#775DA3"} testID="clickFemale" />
                                 <Text style={{ marginLeft: 10, fontFamily: 'OpenSans' }}>Female</Text>
 
                                 <Radio selected={this.state.gender === 'O'} onPress={() => this.onPressRadio('O')} style={{ marginLeft: 10 }} color={"#775DA3"}
-                                    selectedColor={"#775DA3"} />
+                                    selectedColor={"#775DA3"} testID="clickOther" />
                                 <Text style={{ marginLeft: 10 }}>Other</Text>
 
                             </ListItem>
@@ -226,7 +229,7 @@ class UpdateUserDetails extends Component {
                             />
 
                             <Row>
-                                <Button disabled={this.state.updateButton} style={{ height: 45, width: 'auto', color: 'gray', borderRadius: 10, textAlign: 'center', marginTop: 20, padding: 85, marginLeft: 15 }} primary onPress={() => this.userUpdate()}>
+                                <Button disabled={this.state.updateButton} style={{ height: 45, width: 'auto', color: 'gray', borderRadius: 10, textAlign: 'center', marginTop: 20, padding: 85, marginLeft: 15 }} primary onPress={() => this.userUpdate()} testID="updateUserDetails">
                                     <Text style={{ fontFamily: 'OpenSans', fontSize: 15, }}>Update</Text>
                                 </Button>
                             </Row>
