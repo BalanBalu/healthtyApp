@@ -21,33 +21,36 @@ class Login extends Component {
 
   doLogin = async () => {
     try {
-      let requestData = {
-        userEntry: this.state.userEntry,
-        password: this.state.password,
-        type: 'user'
-      };
+      if (this.state.userEntry != '' && this.state.password != '') {
+        let requestData = {
+          userEntry: this.state.userEntry,
+          password: this.state.password,
+          type: 'user'
+        };
 
-      let result = await login(requestData);
-      console.log('result' + JSON.stringify(result))
-      console.log(this.props.user);
-      if (this.props.user.isAuthenticated) {
-        if (this.props.user.needToRedirect === true) {
-          let redirectNoticeData = this.props.user.redirectNotice;
-          this.props.navigation.navigate(redirectNoticeData.routeName, redirectNoticeData.stateParams);
-          store.dispatch({
-            type: RESET_REDIRECT_NOTICE
+        let result = await login(requestData);
+        console.log('result' + JSON.stringify(result))
+        console.log(this.props.user);
+        if (this.props.user.isAuthenticated) {
+          if (this.props.user.needToRedirect === true) {
+            let redirectNoticeData = this.props.user.redirectNotice;
+            this.props.navigation.navigate(redirectNoticeData.routeName, redirectNoticeData.stateParams);
+            store.dispatch({
+              type: RESET_REDIRECT_NOTICE
+            })
+            return
+          }
+          this.props.navigation.navigate('Home');
+        } else {
+          this.setState({ loginErrorMsg: this.props.user.message })
+          Toast.show({
+            text: this.props.user.message,
+            timeout: 50000
           })
-          return
         }
-        this.props.navigation.navigate('Home');
       } else {
-        this.setState({ loginErrorMsg: this.props.user.message })
-        Toast.show({
-          text: this.props.user.message,
-          timeout: 50000
-        })
+        this.setState({ loginErrorMsg: "Your login credentials are not valid" })
       }
-
     } catch (e) {
       console.log(e);
     }
@@ -124,7 +127,7 @@ class Login extends Component {
                 onPress={() => this.doLogin()}>
                 <Text>Sign In</Text>
               </Button>
-              <Text style={{ color: '#000', fontSize: 15, fontFamily: 'OpenSans', textAlign: 'center', marginBottom: 30 }}>{loginErrorMsg}</Text>
+              <Text style={{ color: 'red', paddingLeft: 20, fontSize: 15, fontFamily: 'OpenSans', marginBottom: 30 }}>{loginErrorMsg != null ? '*' + loginErrorMsg : null}</Text>
             </Form>
           </ScrollView>
         </Content>
