@@ -5,10 +5,12 @@ import {
 } from 'native-base';
 import { userFiledsUpdate, logout } from '../../providers/auth/auth.actions';
 import { connect } from 'react-redux'
+import { Row } from 'react-native-easy-grid';
+
 import { Image, BackHandler, AsyncStorage, ScrollView } from 'react-native';
 import styles from './style.js';
 import {
-    formatDate,subTimeUnit
+    formatDate, subTimeUnit
 } from "../../../setup/helpers";
 import Spinner from '../../../components/Spinner';
 const bloodGroupList = ['Select Blood Group', 'A+', 'O+', 'B+', 'AB+', 'A-', 'O-', 'B-', 'AB-']
@@ -25,7 +27,7 @@ class UpdateUserDetails extends Component {
             isLoading: false,
             selectedBloodGroup: null,
             updateButton: false,
-            userData:'',
+            userData: '',
         }
     }
     componentDidMount() {
@@ -38,38 +40,38 @@ class UpdateUserDetails extends Component {
     async bindValues() {
         const { navigation } = this.props;
         const userData = navigation.getParam('updatedata');
-        this.setState({ userData})    
-            await this.setState({
-                    dob: userData.dob,
-                    firstName: userData.first_name,
-                    lastName: userData.last_name,
-                    gender: userData.gender,
-                    selectedBloodGroup:userData.blood_group||null                   
-                })           
+        this.setState({ userData })
+        await this.setState({
+            dob: userData.dob,
+            firstName: userData.first_name,
+            lastName: userData.last_name,
+            gender: userData.gender,
+            selectedBloodGroup: userData.blood_group || null
+        })
+    }
+
+    validateFirstNameLastName = async (text, type) => {
+        console.log(this.state.updateButton + 'updateButton');
+        const regex = new RegExp('^[A-Z ]+$')  //Support Capital letter with space
+        if (type === "Firstname") {
+            this.setState({ firstName: text, updateButton: false });
+        } else {
+            this.setState({ lastName: text, updateButton: false });
         }
-        
-    validateFirstNameLastName=(text,type)=>{
-        if(type==="Firstname" || type ==="Lastname"){
-        const regex=new RegExp('^[A-Z ]+$')  //Support Capital letter with space
-        if(regex.test(text) === false){ 
+        if (regex.test(text) === false) {
+            this.setState({ updateButton: true });
             Toast.show({
-                    text: 'Accepts only UpperCase Letters',
-                    type: "danger",
-                    duration: 3000
-            });            
+                text: 'Kindly Enter UpperCase Letters',
+                type: "danger",
+                duration: 3000
+            });
         }
-        if(type==="Firstname"){
-        this.setState({firstName:text});
-        }else{
-        this.setState({lastName:text});
-        }
-    }                
     }
 
     userUpdate = async () => {
         const { userData, firstName, lastName, dob, gender, selectedBloodGroup } = this.state
         try {
-            this.setState({ isLoading: true });
+            this.setState({ isLoading: true, updateButton: false });
             if (userData.first_name != firstName || userData.last_name != lastName || userData.dob != dob || userData.gender != gender || userData.blood_group != selectedBloodGroup) {
                 let requestData = {
                     first_name: firstName,
@@ -87,7 +89,7 @@ class UpdateUserDetails extends Component {
                         type: "success",
                         duration: 3000
                     });
-                 this.props.navigation.navigate('Profile');
+                    this.props.navigation.navigate('Profile');
                 }
                 else {
                     Toast.show({
@@ -95,10 +97,10 @@ class UpdateUserDetails extends Component {
                         type: "danger",
                         duration: 3000
                     });
-                    this.setState({isLoading:false});
+                    this.setState({ isLoading: false });
                 }
             } else {
-                
+
                 this.props.navigation.navigate('Profile');
             }
 
@@ -135,7 +137,7 @@ class UpdateUserDetails extends Component {
                                     value={this.state.firstName}
                                     keyboardType={'default'}
                                     returnKeyType={"next"}
-                                    onChangeText={text => this.validateFirstNameLastName(text,"Firstname")}
+                                    onChangeText={text => this.validateFirstNameLastName(text, "Firstname")}
                                     autoCapitalize='none'
                                     blurOnSubmit={false}
                                     onSubmitEditing={() => { this.firstName._root.focus(); }}
@@ -148,7 +150,7 @@ class UpdateUserDetails extends Component {
                                     value={this.state.lastName}
                                     keyboardType={'default'}
                                     returnKeyType={"next"}
-                                    onChangeText={text => this.validateFirstNameLastName(text,"Lastname")}
+                                    onChangeText={text => this.validateFirstNameLastName(text, "Lastname")}
                                     autoCapitalize='none'
                                     blurOnSubmit={false}
                                     onSubmitEditing={() => { this.lastName._root.focus(this.setState({ focus: true })); }}
@@ -223,10 +225,11 @@ class UpdateUserDetails extends Component {
                                 textContent={'Please wait Loading'}
                             />
 
-
-                            <Button style={{ height: 45, width: 'auto',color:'gray',borderRadius: 10, textAlign: 'center',marginTop: 20, padding: 85, marginLeft: 15 }} primary onPress={() => this.userUpdate()}>
-                                <Text style={{ fontFamily: 'OpenSans', fontSize: 15, }}>Update</Text>
-                            </Button>
+                            <Row>
+                                <Button disabled={this.state.updateButton} style={{ height: 45, width: 'auto', color: 'gray', borderRadius: 10, textAlign: 'center', marginTop: 20, padding: 85, marginLeft: 15 }} primary onPress={() => this.userUpdate()}>
+                                    <Text style={{ fontFamily: 'OpenSans', fontSize: 15, }}>Update</Text>
+                                </Button>
+                            </Row>
 
                         </Form>
 
