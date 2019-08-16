@@ -4,11 +4,11 @@ import { login, logout } from '../../providers/auth/auth.actions';
 import LinearGradient from 'react-native-linear-gradient';
 import { Col, Row, Grid } from 'react-native-easy-grid';
 import { connect } from 'react-redux'
-import { StyleSheet, Image, } from 'react-native';
+import { StyleSheet, Image, AsyncStorage} from 'react-native';
 
 import { ScrollView, FlatList } from 'react-native-gesture-handler';
 import { catagries } from '../../providers/catagries/catagries.actions';
-
+import { fetchUserNotification, UpDateUserNotification } from '../../providers/notification/notification.actions';
 
 class Home extends Component {
     constructor(props) {
@@ -17,9 +17,15 @@ class Home extends Component {
             data: [],
             isLoading: false,
             catagary: [],
+          
             searchValue: null
         };
+
+    }
+    componentDidMount() {
         this.getCatagries();
+        
+        this.getUserNotification();  
     }
     navigetToCategories() {
         this.props.navigation.navigate('Categories', { data: this.state.data })
@@ -30,6 +36,7 @@ class Home extends Component {
         this.props.navigation.navigate('login');
     }
 
+   
     getCatagries = async () => {
         try {
             let result = await catagries();
@@ -77,6 +84,26 @@ class Home extends Component {
         }]
         this.props.navigation.navigate('Doctor List', { resultData: serachInputvalues })
     }
+
+     getUserNotification = async () => {
+        try {
+            this.setState({ isLoading: true });
+         let userId = await AsyncStorage.getItem('userId');
+
+         let result = await fetchUserNotification(userId);
+        if (result.success) {
+                await this.setState({ data: result.data })
+            }
+
+
+         }
+         catch (e) {
+         console.log(e);
+        }
+         finally {        this.setState({ isLoading: false });
+       }
+     }
+
 
 
     render() {
@@ -129,7 +156,7 @@ class Home extends Component {
                                 <Right>
 
 
-                                    <Text style={styles.titleText} onPress={() => this.navigetToCategories()}>View All</Text>
+                                    <Text style={styles.titleText} onPress={() => this.navigetToCategories()}>ViAll</Text>
 
 
                                 </Right>
