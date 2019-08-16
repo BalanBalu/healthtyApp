@@ -11,8 +11,10 @@ class MedicineAddress extends Component {
     render() {
         var address = [{
             name: 'bala', email: 'balan@gmail.com', Ph: 7234567780, housename: 'kkr', PO: 'ambattur',
-            city: 'chennai', Pincode: 600053, name1: 'balu', email1: 'balu@gmail.com', Ph1: 8234567780, housename1: 'ppr', PO1: 'ambattur',
-            city1: 'chennai', Pincode1: 600053,
+            city: 'chennai', Pincode: 600053
+        }, {
+            name: 'balu', email: 'balu@gmail.com', Ph: 8234567780, housename: 'ppr', PO: 'ambattur',
+            city: 'chennai', Pincode: 600053,
         }]
 
         return (
@@ -97,40 +99,6 @@ class MedicineAddress extends Component {
 
                                     </Card>
                             } />
-                        <Card style={{ padding: 10, marginTop: 20, backgroundColor: '#dfe4ea' }}>
-
-
-
-                            <Row>
-                                <Col style={{ width: '6%' }}>
-                                    <Radio selected={true} />
-                                </Col>
-                                <Col style={{ width: '95%' }}>
-                                    <Text style={{ fontSize: 14, fontFamily: 'OpenSans', marginLeft: 20, marginTop: 3, fontWeight: 'bold' }}>Balan</Text>
-                                </Col>
-                            </Row>
-                            <Text style={styles.customText}>balan@gmail.com</Text>
-                            <Text style={styles.customText}>7034591213</Text>
-
-
-                            <Text style={{ fontSize: 14, fontFamily: 'OpenSans', marginLeft: 40, marginTop: 4, fontWeight: 'bold' }}>Delivery Address</Text>
-
-
-                            <Row>
-                                <Text style={styles.customText}>k.R nagar,
-                                        </Text>
-                                <Text style={styles.customSubText}>Ambattur
-                                        </Text>
-                            </Row>
-                            <Row>
-                                <Text style={styles.customText}>chennai,</Text>
-                                <Text style={styles.customSubText}>Pincode:600053</Text>
-                            </Row>
-
-
-
-
-                        </Card>
 
                         {/* <Grid style={{ marginTop: 10 }}>
                             <Col>
