@@ -21,7 +21,7 @@ class Login extends Component {
 
   doLogin = async () => {
     try {
-      if (this.state.userEntry != '' || this.state.password != '') {
+      if (this.state.userEntry != '' && this.state.password != '') {
         let requestData = {
           userEntry: this.state.userEntry,
           password: this.state.password,
