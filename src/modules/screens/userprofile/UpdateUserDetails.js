@@ -8,7 +8,7 @@ import { connect } from 'react-redux'
 import { Image, BackHandler, AsyncStorage, ScrollView } from 'react-native';
 import styles from './style.js';
 import {
-    formatDate,
+    formatDate,subTimeUnit
 } from "../../../setup/helpers";
 import Spinner from '../../../components/Spinner';
 const bloodGroupList = ['Select Blood Group', 'A+', 'O+', 'B+', 'AB+', 'A-', 'O-', 'B-', 'AB-']
@@ -16,7 +16,6 @@ const bloodGroupList = ['Select Blood Group', 'A+', 'O+', 'B+', 'AB+', 'A-', 'O-
 class UpdateUserDetails extends Component {
     constructor(props) {
         super(props)
-
         this.state = {
             firstName: '',
             lastName: '',
@@ -27,44 +26,48 @@ class UpdateUserDetails extends Component {
             selectedBloodGroup: null,
             updateButton: false,
             userData:'',
-
         }
     }
     componentDidMount() {
-
         this.bindValues();
-
     }
+
     onPressRadio(value) {
         this.setState({ gender: value })
     }
     async bindValues() {
         const { navigation } = this.props;
         const userData = navigation.getParam('updatedata');
-        this.setState({ userData})
-       
-       
-                await this.setState({
+        this.setState({ userData})    
+            await this.setState({
                     dob: userData.dob,
                     firstName: userData.first_name,
                     lastName: userData.last_name,
                     gender: userData.gender,
-                    selectedBloodGroup:userData.blood_group||null
-                    
-                })
-
-                
-           
-
-
+                    selectedBloodGroup:userData.blood_group||null                   
+                })           
+        }
+        
+    validateFirstNameLastName=(text,type)=>{
+        if(type==="Firstname" || type ==="Lastname"){
+        const regex=new RegExp('^[A-Z ]+$')  //Support Capital letter with space
+        if(regex.test(text) === false){ 
+            Toast.show({
+                    text: 'Accepts only UpperCase Letters',
+                    type: "danger",
+                    duration: 3000
+            });            
+        }
+        if(type==="Firstname"){
+        this.setState({firstName:text});
+        }else{
+        this.setState({lastName:text});
+        }
+    }                
     }
-
-
-
 
     userUpdate = async () => {
         const { userData, firstName, lastName, dob, gender, selectedBloodGroup } = this.state
-
         try {
             this.setState({ isLoading: true });
             if (userData.first_name != firstName || userData.last_name != lastName || userData.dob != dob || userData.gender != gender || userData.blood_group != selectedBloodGroup) {
@@ -79,8 +82,6 @@ class UpdateUserDetails extends Component {
                 const userId = await AsyncStorage.getItem('userId')
                 let response = await userFiledsUpdate(userId, requestData);
                 if (response.success) {
-
-
                     Toast.show({
                         text: 'Your Profile has been Updated',
                         type: "success",
@@ -134,7 +135,7 @@ class UpdateUserDetails extends Component {
                                     value={this.state.firstName}
                                     keyboardType={'default'}
                                     returnKeyType={"next"}
-                                    onChangeText={firstName => this.setState({ firstName })}
+                                    onChangeText={text => this.validateFirstNameLastName(text,"Firstname")}
                                     autoCapitalize='none'
                                     blurOnSubmit={false}
                                     onSubmitEditing={() => { this.firstName._root.focus(); }}
@@ -147,8 +148,7 @@ class UpdateUserDetails extends Component {
                                     value={this.state.lastName}
                                     keyboardType={'default'}
                                     returnKeyType={"next"}
-
-                                    onChangeText={lastName => this.setState({ lastName })}
+                                    onChangeText={text => this.validateFirstNameLastName(text,"Lastname")}
                                     autoCapitalize='none'
                                     blurOnSubmit={false}
                                     onSubmitEditing={() => { this.lastName._root.focus(this.setState({ focus: true })); }}
@@ -159,19 +159,18 @@ class UpdateUserDetails extends Component {
                                 <Icon name='calendar' style={{ paddingLeft: 20, color: '#775DA3' }} />
                                 <DatePicker style={styles.transparentLabel}
                                     defaultDate={this.state.dob}
-
                                     timeZoneOffsetInMinutes={undefined}
                                     returnKeyType={'next'}
                                     modalTransparent={false}
                                     animationType={"fade"}
+                                    minimumDate={new Date(1940, 0, 1)}
+                                    maximumDate={subTimeUnit(new Date(), 1, 'year')}
                                     androidMode={"default"}
                                     placeHolderText={formatDate(this.state.dob, "DD/MM/YYYY")}
                                     textStyle={{ color: "#5A5A5A" }}
                                     value={this.state.dob}
                                     placeHolderTextStyle={{ color: "#5A5A5A" }}
                                     onDateChange={dob => { console.log(dob); this.setState({ dob }) }}
-
-                                    // onSubmitEditing={() => { this.dob._root.focus(); }}
                                     disabled={false}
                                 />
 
@@ -225,7 +224,7 @@ class UpdateUserDetails extends Component {
                             />
 
 
-                            <Button style={{ height: 45, width: 'auto', borderRadius: 10, textAlign: 'center', color: 'white', marginTop: 20, padding: 85, marginLeft: 15 }} primary onPress={() => this.userUpdate()}>
+                            <Button style={{ height: 45, width: 'auto',color:'gray',borderRadius: 10, textAlign: 'center',marginTop: 20, padding: 85, marginLeft: 15 }} primary onPress={() => this.userUpdate()}>
                                 <Text style={{ fontFamily: 'OpenSans', fontSize: 15, }}>Update</Text>
                             </Button>
 

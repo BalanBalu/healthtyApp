@@ -31,11 +31,9 @@ class UserDetails extends Component {
 
     }
     async bindValues() {
-        console.log("component");
         const { navigation } = this.props;
         const userData = navigation.getParam('updatedata');  
        if (userData.address!=undefined) {
-            console.log("undefined");
             await this.setState({
                 no_and_street: userData.address.address.no_and_street,
                 address_line_1: userData.address.address.address_line_1,
@@ -80,11 +78,19 @@ class UserDetails extends Component {
             });
             this.setState({ isLoading: false });
         }              
-     }
-
+    }
     
-
-
+    validateCity=(text)=>{
+        const regex=new RegExp('^[A-Z ]+$') //Support Capital letter with space
+        if(regex.test(text) === false){ 
+            Toast.show({
+                    text: 'Accepts only UpperCase Letters',
+                    type: "danger",
+                    duration: 3000
+            });            
+        }
+        this.setState({city:text});       
+    }
 
     userUpdate(){            
         try {
@@ -190,7 +196,7 @@ class UserDetails extends Component {
                                     value={this.state.city}
                                     keyboardType={'default'}
                                     returnKeyType={'next'}
-                                    onChangeText={city => this.setState({ city })}
+                                    onChangeText={text => this.validateCity(text)}
                                     autoCapitalize='none'
                                     blurOnSubmit={false}
                                     onSubmitEditing={() => { this.city._root.focus(this.setState({ isFocusKeyboard: true })); }}
@@ -232,8 +238,6 @@ class UserDetails extends Component {
                     <Spinner color='blue'
                         visible={this.state.isLoading}
                         textContent={'Please wait Loading...'}
-                        overlayColor="none"
-                        cancelable={false}
                     />
 
             </Container>
