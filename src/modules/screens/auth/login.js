@@ -21,33 +21,36 @@ class Login extends Component {
 
   doLogin = async () => {
     try {
-      let requestData = {
-        userEntry: this.state.userEntry,
-        password: this.state.password,
-        type: 'user'
-      };
+      if (this.state.userEntry != '' || this.state.password != '') {
+        let requestData = {
+          userEntry: this.state.userEntry,
+          password: this.state.password,
+          type: 'user'
+        };
 
-      let result = await login(requestData);
-      console.log('result' + JSON.stringify(result))
-      console.log(this.props.user);
-      if (this.props.user.isAuthenticated) {
-        if (this.props.user.needToRedirect === true) {
-          let redirectNoticeData = this.props.user.redirectNotice;
-          this.props.navigation.navigate(redirectNoticeData.routeName, redirectNoticeData.stateParams);
-          store.dispatch({
-            type: RESET_REDIRECT_NOTICE
+        let result = await login(requestData);
+        console.log('result' + JSON.stringify(result))
+        console.log(this.props.user);
+        if (this.props.user.isAuthenticated) {
+          if (this.props.user.needToRedirect === true) {
+            let redirectNoticeData = this.props.user.redirectNotice;
+            this.props.navigation.navigate(redirectNoticeData.routeName, redirectNoticeData.stateParams);
+            store.dispatch({
+              type: RESET_REDIRECT_NOTICE
+            })
+            return
+          }
+          this.props.navigation.navigate('Home');
+        } else {
+          this.setState({ loginErrorMsg: this.props.user.message })
+          Toast.show({
+            text: this.props.user.message,
+            timeout: 50000
           })
-          return
         }
-        this.props.navigation.navigate('Home');
       } else {
-        this.setState({ loginErrorMsg: this.props.user.message })
-        Toast.show({
-          text: this.props.user.message,
-          timeout: 50000
-        })
+        this.setState({ loginErrorMsg: "Your login credentials are not valid" })
       }
-
     } catch (e) {
       console.log(e);
     }
@@ -72,55 +75,55 @@ class Login extends Component {
               {/* <View style={styles.errorMsg}>
               <Text style={{textAlign:'center',color:'#775DA3'}}> Invalid Credencials</Text>
             </View> */}
-            <Item style={{ borderBottomWidth: 0 }}>
-              <Input placeholder="Email Or Phone" style={styles.transparentLabel}
-                returnKeyType={'next'}
-                value={this.state.userEntry}
-                keyboardType={'email-address'}
-                onChangeText={userEntry => this.setState({ userEntry })}
-                autoCapitalize='none'
-                blurOnSubmit={false}
-                onSubmitEditing={() => { this.userEntry._root.focus(); }}
-              />
-            </Item>
-
-            <Item success style={styles.transparentLabel}>
-              <Input placeholder="Password"
-                ref={(input) => { this.userEntry = input; }}
-                secureTextEntry={true}
-                returnKeyType={'done'}
-                value={this.state.password}
-                secureTextEntry={this.state.showPassword}
-                autoCapitalize='none'
-                onChangeText={password => this.setState({ password })}
-                blurOnSubmit={false}
-                onSubmitEditing={() => { this.doLogin(); }}
-
-              />
-              <Icon active name='eye' onPress={() => this.setState({ showPassword: !this.state.showPassword })} />
-            </Item>
-
-
-            <Item style={{ marginTop: 10, borderBottomWidth: 0 }}>
-
               <Item style={{ borderBottomWidth: 0 }}>
-                <CheckBox checked={this.state.conditionCheck} color="green" onPress={() => this.setState({ conditionCheck: !this.state.conditionCheck })} style={{ marginLeft: -7, }}  ></CheckBox>
-                <Text style={{ marginLeft: 15, color: 'gray', fontFamily: 'OpenSans' }}>Remember me</Text>
+                <Input placeholder="Email Or Phone" style={styles.transparentLabel}
+                  returnKeyType={'next'}
+                  value={this.state.userEntry}
+                  keyboardType={'email-address'}
+                  onChangeText={userEntry => this.setState({ userEntry })}
+                  autoCapitalize='none'
+                  blurOnSubmit={false}
+                  onSubmitEditing={() => { this.userEntry._root.focus(); }}
+                />
               </Item>
 
-              <Right>
-                <TouchableOpacity onPress={() => this.props.navigation.navigate('forgotpassword')}>
-                  <Text style={styles.customText}> Forgot Password</Text>
-                </TouchableOpacity>
-              </Right>
-            </Item>
+              <Item success style={styles.transparentLabel}>
+                <Input placeholder="Password"
+                  ref={(input) => { this.userEntry = input; }}
+                  secureTextEntry={true}
+                  returnKeyType={'done'}
+                  value={this.state.password}
+                  secureTextEntry={this.state.showPassword}
+                  autoCapitalize='none'
+                  onChangeText={password => this.setState({ password })}
+                  blurOnSubmit={false}
+                  onSubmitEditing={() => { this.doLogin(); }}
+
+                />
+                <Icon active name='eye' onPress={() => this.setState({ showPassword: !this.state.showPassword })} />
+              </Item>
+
+
+              <Item style={{ marginTop: 10, borderBottomWidth: 0 }}>
+
+                <Item style={{ borderBottomWidth: 0 }}>
+                  <CheckBox checked={this.state.conditionCheck} color="green" onPress={() => this.setState({ conditionCheck: !this.state.conditionCheck })} style={{ marginLeft: -7, }}  ></CheckBox>
+                  <Text style={{ marginLeft: 15, color: 'gray', fontFamily: 'OpenSans' }}>Remember me</Text>
+                </Item>
+
+                <Right>
+                  <TouchableOpacity onPress={() => this.props.navigation.navigate('forgotpassword')}>
+                    <Text style={styles.customText}> Forgot Password</Text>
+                  </TouchableOpacity>
+                </Right>
+              </Item>
 
               <Button style={styles.loginButton} block primary
                 disabled={isLoading}
                 onPress={() => this.doLogin()}>
                 <Text>Sign In</Text>
               </Button>
-              <Text style={{ color: '#000', fontSize: 15, fontFamily: 'OpenSans', textAlign: 'center', marginBottom: 30 }}>{loginErrorMsg}</Text>
+              <Text style={{ color: 'red', paddingLeft: 20, fontSize: 15, fontFamily: 'OpenSans', marginBottom: 30 }}>{loginErrorMsg != null ? '*' + loginErrorMsg : null}</Text>
             </Form>
           </ScrollView>
         </Content>
