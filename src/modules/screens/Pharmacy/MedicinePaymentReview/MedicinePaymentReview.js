@@ -25,53 +25,54 @@ class MedicinePaymentReview extends Component {
             <Container style={styles.container}>
 
                 <Content style={styles.bodyContent}>
-                    <FlatList
-                        data={medNames}
-                        renderItem={
-                            ({ item }) =>
 
-                                <ScrollView>
 
-                                    <Grid style={styles.underLine}>
-                                        <Row>
-                                            <Col>
+                    <ScrollView>
 
-                                                <Text style={styles.Heading} >Date And Time</Text>
-                                                <Text style={styles.customizedText}>12 August,2019 12:30 AM </Text>
-                                            </Col>
+                        <Grid style={styles.underLine}>
+                            <Row>
+                                <Col>
 
-                                        </Row>
-                                    </Grid>
-                                    <Grid style={styles.underLine}>
-                                        <Row>
-                                            <Col style={{ width: '8%' }}>
-                                                <Icon name='medkit' style={styles.medkitIcon}></Icon>
-                                            </Col>
-                                            <Col style={{ width: '90%' }}>
+                                    <Text style={styles.Heading} >Date And Time</Text>
+                                    <Text style={styles.customizedText}>12 August,2019 12:30 AM </Text>
+                                </Col>
 
-                                                <Text note style={{ fontFamily: 'OpenSans' }}>shanthi house</Text>
+                            </Row>
+                        </Grid>
+                        <Grid style={styles.underLine}>
+                            <Row>
+                                <Col style={{ width: '8%' }}>
+                                    <Icon name='medkit' style={styles.medkitIcon}></Icon>
+                                </Col>
+                                <Col style={{ width: '90%' }}>
 
-                                            </Col>
-                                        </Row>
-                                        <Row>
-                                            <Col style={{ width: '8%' }}>
-                                                <Icon name='pin' style={styles.pinIcon}></Icon>
-                                            </Col>
-                                            <Col style={{ width: '90%' }}>
+                                    <Text note style={{ fontFamily: 'OpenSans' }}>shanthi house</Text>
 
-                                                <View>
-                                                    <Text note >1/32,4th cross street</Text>
-                                                    <Text note >ambattur</Text>
+                                </Col>
+                            </Row>
+                            <Row>
+                                <Col style={{ width: '8%' }}>
+                                    <Icon name='pin' style={styles.pinIcon}></Icon>
+                                </Col>
+                                <Col style={{ width: '90%' }}>
 
-                                                    <View>
-                                                        <Text note >chennai</Text>
-                                                        <Text note >600053</Text>
-                                                    </View>
+                                    <View>
+                                        <Text note >1/32,4th cross street</Text>
+                                        <Text note >ambattur</Text>
 
-                                                </View>
-                                            </Col>
-                                        </Row>
-                                    </Grid>
+                                        <View>
+                                            <Text note >chennai</Text>
+                                            <Text note >600053</Text>
+                                        </View>
+
+                                    </View>
+                                </Col>
+                            </Row>
+                        </Grid>
+                        <FlatList
+                            data={medNames}
+                            renderItem={
+                                ({ item }) =>
                                     <Grid style={styles.underLine}>
                                         <View>
                                             <Text style={{ fontFamily: 'OpenSans', fontSize: 15, fontWeight: 'bold' }}>Order Details</Text>
@@ -120,43 +121,43 @@ class MedicinePaymentReview extends Component {
 
                                         </View>
                                     </Grid>
+                            } />
+                        <Grid style={styles.underLine}>
+                            <Row>
+                                <Col style={{ width: '90%' }}>
+                                    <Text style={styles.Heading}>Apply Coupons</Text>
+                                    <Input underlineColorAndroid='gray' placeholder="Enter Your Coupon Code Here" style={styles.transparentLabel}
+                                        getRef={(input) => { this.enterCouponCode = input; }}
+                                        secureTextEntry={true}
+                                        returnKeyType={'go'}
+                                        value={this.state.password}
+                                        onChangeText={enterCouponCode => this.setState({ enterCouponCode })}
+                                    />
+                                </Col>
 
-                                    <Grid style={styles.underLine}>
-                                        <Row>
-                                            <Col style={{ width: '90%' }}>
-                                                <Text style={styles.Heading}>Apply Coupons</Text>
-                                                <Input underlineColorAndroid='gray' placeholder="Enter Your Coupon Code Here" style={styles.transparentLabel}
-                                                    getRef={(input) => { this.enterCouponCode = input; }}
-                                                    secureTextEntry={true}
-                                                    returnKeyType={'go'}
-                                                    value={this.state.password}
-                                                    onChangeText={enterCouponCode => this.setState({ enterCouponCode })}
-                                                />
-                                            </Col>
+                            </Row>
 
-                                        </Row>
-
-                                    </Grid>
+                        </Grid>
 
 
 
-                                    <Grid style={styles.underLine}>
-                                        <Row>
-                                            <Col style={{ width: '79%' }}>
-                                                <Text style={styles.Heading}>Total Amount</Text>
-                                            </Col>
-                                            <Col style={{ width: '90%' }}>
-                                                <Row>
-                                                    <Text style={styles.amountName}>{'\u20B9'}200000</Text>
-                                                    {/* <Text style={{ marginLeft: 3, fontSize: 20, marginTop: -5 }}>-</Text> */}
-                                                </Row>
-                                                {/* <Row>
+                        <Grid style={styles.underLine}>
+                            <Row>
+                                <Col style={{ width: '79%' }}>
+                                    <Text style={styles.Heading}>Total Amount</Text>
+                                </Col>
+                                <Col style={{ width: '90%' }}>
+                                    <Row>
+                                        <Text style={styles.amountName}>{'\u20B9'}200000</Text>
+                                        {/* <Text style={{ marginLeft: 3, fontSize: 20, marginTop: -5 }}>-</Text> */}
+                                    </Row>
+                                    {/* <Row>
                                         <Text style={{ fontFamily: 'OpenSans', fontSize: 15, borderBottomWidth: 0.3, BorderBottomcolor: '#000000', width: '20%' }}>{'\u20B9'}100000</Text>
                                     </Row> */}
 
-                                            </Col>
-                                        </Row>
-                                        {/* <Row style={{ marginTop: 2 }}>
+                                </Col>
+                            </Row>
+                            {/* <Row style={{ marginTop: 2 }}>
                                 <Col style={{ width: '79%' }}>
                                     <Text style={styles.customizedText}>Final Amount</Text>
                                 </Col>
@@ -164,15 +165,15 @@ class MedicinePaymentReview extends Component {
                                     <Text style={styles.customizedText}>{'\u20B9'}100000</Text>
                                 </Col>
                             </Row> */}
-                                    </Grid>
+                        </Grid>
 
-                                    <Button block success style={{ padding: 10, borderRadius: 6, margin: 6, marginBottom: 20 }}
-                                    >
-                                        <Text uppercase={false} >Pay Now</Text>
-                                    </Button>
+                        <Button block success style={{ padding: 10, borderRadius: 6, margin: 6, marginBottom: 20 }}
+                        >
+                            <Text uppercase={false} >Pay Now</Text>
+                        </Button>
 
-                                </ScrollView>
-                        } />
+                    </ScrollView>
+
                 </Content>
 
             </Container>
