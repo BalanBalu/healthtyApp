@@ -15,10 +15,9 @@ class MedicinePaymentReview extends Component {
 
 
     render() {
-        var medNames = [{
-            medName: 'Antibiotic', pharName: 'Apollo pharmacy', QTY: 10, Rs: 5000,
-            medName1: 'Dollo650', pharName1: 'Shanthi pharmacy', QTY1: 11, Rs1: 4000
-        }
+        var medNames = [
+            { medName: 'Antibiotic', pharName: 'Apollo pharmacy', QTY: 10, Rs: 5000 },
+            { medName: 'Dollo650', pharName: 'Shanthi pharmacy', QTY: 11, Rs: 4000 }
         ];
         return (
 
@@ -96,26 +95,6 @@ class MedicinePaymentReview extends Component {
                                                 </Col>
                                                 <Col style={{ width: '20%' }}>
                                                     <Text style={styles.amountName}>{'\u20B9'}{item.Rs}</Text>
-                                                </Col>
-                                            </Row>
-                                            <Row>
-                                                <Col style={{ width: '6%' }}>
-                                                    <Text style={styles.customizedText}>2.</Text>
-                                                </Col>
-                                                <Col style={{ width: '94%' }}>
-                                                    <Text style={styles.customizedText}>{item.medName1}</Text>
-                                                </Col>
-                                            </Row>
-
-                                            <Row>
-                                                <Col style={{ width: '50%' }}>
-                                                    <Text note style={styles.customizedText}>{item.pharName1}</Text>
-                                                </Col>
-                                                <Col style={{ width: '30%' }}>
-                                                    <Text style={styles.customizedText}>QTY:{item.QTY1}</Text>
-                                                </Col>
-                                                <Col style={{ width: '20%' }}>
-                                                    <Text style={styles.amountName}>{'\u20B9'}{item.Rs1}</Text>
                                                 </Col>
                                             </Row>
                                         </View>
