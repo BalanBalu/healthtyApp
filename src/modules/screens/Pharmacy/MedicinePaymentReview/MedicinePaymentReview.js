@@ -69,13 +69,16 @@ class MedicinePaymentReview extends Component {
                                 </Col>
                             </Row>
                         </Grid>
-                        <FlatList
-                            data={medNames}
-                            renderItem={
-                                ({ item }) =>
-                                    <Grid style={styles.underLine}>
+
+                        <Grid style={styles.underLine}>
+                            <Row>
+                                <Text style={{ fontFamily: 'OpenSans', fontSize: 15, fontWeight: 'bold' }}>Order Details</Text>
+                            </Row>
+                            <FlatList
+                                data={medNames}
+                                renderItem={
+                                    ({ item }) =>
                                         <View>
-                                            <Text style={{ fontFamily: 'OpenSans', fontSize: 15, fontWeight: 'bold' }}>Order Details</Text>
                                             <Row>
                                                 <Col style={{ width: '6%' }}>
                                                     <Text style={styles.customizedText}>1.</Text>
@@ -115,13 +118,14 @@ class MedicinePaymentReview extends Component {
                                                     <Text style={styles.amountName}>{'\u20B9'}{item.Rs1}</Text>
                                                 </Col>
                                             </Row>
-
-
-
-
                                         </View>
-                                    </Grid>
-                            } />
+
+                                } />
+
+
+
+                        </Grid>
+
                         <Grid style={styles.underLine}>
                             <Row>
                                 <Col style={{ width: '90%' }}>
