@@ -179,7 +179,7 @@ class MedicinePaymentReview extends Component {
                             </Row> */}
                         </Grid>
 
-                        <Button block success style={{ padding: 10, borderRadius: 6, margin: 6, marginBottom: 20 }}>
+                        <Button block success style={{ padding: 10, borderRadius: 6, margin: 6, marginBottom: 20 }}testID='navigateToPaymentPage'>
                             <Text uppercase={false} >Pay Now</Text>
                         </Button>
 
