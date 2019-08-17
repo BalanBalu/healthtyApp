@@ -152,5 +152,15 @@ export default StyleSheet.create({
         marginTop: 10,
 
 
+    },
+    userbutton: {
+
+        borderRadius: 5,
+        marginLeft: 13,
+        justifyContent: 'center',
+
+        marginTop: 15,
+        width: '97%',
+
     }
 });
