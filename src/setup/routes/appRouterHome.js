@@ -62,9 +62,8 @@ import MedicinePaymentPage from '../../modules/screens/Pharmacy/MedicinePaymentP
 import MedicinePaymentResult from '../../modules/screens/Pharmacy/MedicinePaymentResult/MedicinePaymentResult';
 import MedicinePaymentSuccess from '../../modules/screens/Pharmacy/MedicinePaymentSuccess/MedicinePaymentSuccess';
 import UploadPrescription from '../../modules/screens/Pharmacy/MedicineSearch/UploadPrescription';
-import MedicalOrderDetails from '../../modules/screens/Pharmacy/MedicalOrderDetails/MedicalOrderDetails';
-
-
+import MedicineAddress from '../../modules/screens/Pharmacy/MedicineAddress/MedicineAddress';
+import MedicinePaymentReview from '../../modules/screens/Pharmacy/MedicinePaymentReview/MedicinePaymentReview';
 const routes = {
   Home: {
     name: 'Home',
@@ -431,6 +430,12 @@ const PharmacyStack = createStackNavigator({
     screen: MedicineCheckout,
     navigationOptions: {
       title: 'Checkout'
+    }
+  },
+  MedicinePaymentReview: {
+    screen: MedicinePaymentReview,
+    navigationOptions: {
+      title: 'MedicinePaymentReview'
     }
   },
   MedicinePaymentPage: {

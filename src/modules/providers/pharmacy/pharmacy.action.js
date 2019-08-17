@@ -88,6 +88,23 @@ export async function getMyOrders(orderId) {
   }
 }
 
+/*get pharmacy list*/
+export async function getpharmacy(pharmacy_id) {
+  try {
+    
+    let endPoint = '/getpharmacy/'+ pharmacy_id
+    console.log(endPoint);
+    let response = await getService(endPoint);
+    let respData = response.data;
+    return respData;  
+  } catch (e) {
+    return {
+      message: 'exception' + e,
+      success: false
+    }
+  }
+}
+
 
 
   
