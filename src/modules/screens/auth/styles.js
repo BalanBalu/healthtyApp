@@ -31,6 +31,7 @@ export default StyleSheet.create({
         borderRadius: 5,
         paddingLeft: 20,
         fontFamily: 'OpenSans',
+        fontSize: 15
     },
     loginButton: {
         marginTop: 12,

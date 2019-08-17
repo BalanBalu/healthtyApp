@@ -47,7 +47,7 @@ class Notification extends Component {
     }
 
     backNavigation = async (navigationData) => {
-       
+
         await this.setState({ isLoading: false })
         if (navigationData.action) {
             if (navigationData.action.type === 'Navigation/POP') {
@@ -59,7 +59,7 @@ class Notification extends Component {
                 await this.setState({ isLoading: true })
             }
         }
-        
+
     }
     updateNavigation = async (item) => {
 
@@ -113,7 +113,7 @@ class Notification extends Component {
                             }}>
 
                                 <Icon style={{ fontSize: 25 }} name='ios-notifications-off' />
-                                <Text>No notification found</Text>
+                                <Text>No Notification Found</Text>
 
                             </View>
 

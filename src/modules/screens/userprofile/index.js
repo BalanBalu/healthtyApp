@@ -55,7 +55,7 @@ class Profile extends Component {
     getUserProfile = async () => {
         try {
             let data = await AsyncStorage.getItem('profile');
-             result = JSON.parse(data);
+            result = JSON.parse(data);
             if (result == null) {
                 let fields = "first_name,last_name,gender,dob,mobile_no,secondary_mobiles,email,secondary_emails,insurance,address,is_blood_donor,is_available_blood_donate,blood_group,profile_image"
                 let userId = await AsyncStorage.getItem('userId');
@@ -64,13 +64,14 @@ class Profile extends Component {
                     AsyncStorage.setItem('profile', JSON.stringify(result))
                     this.setState({ data: result, gender: result.gender });
                     if (result.profile_image) {
-                        this.setState({ imageSource:result.profile_image.imageURL });                    }
+                        this.setState({ imageSource: result.profile_image.imageURL });
+                    }
                 }
             }
             else {
-                this.setState({ data:result, gender:result.gender});
-                if(result.profile_image!=undefined){
-                    this.setState({imageSource:result.profile_image.imageURL});
+                this.setState({ data: result, gender: result.gender });
+                if (result.profile_image != undefined) {
+                    this.setState({ imageSource: result.profile_image.imageURL });
                 }
             }
         }
@@ -90,7 +91,7 @@ class Profile extends Component {
         }
         catch (e) {
             console.log(e)
-        } 
+        }
     }
 
     /*Update Gender*/
@@ -180,7 +181,7 @@ class Profile extends Component {
         try {
             console.log("Image uploading");
             const userId = await AsyncStorage.getItem('userId')
-            
+
             var formData = new FormData();
             formData.append('profile', {
                 uri: imagePath,
@@ -192,14 +193,14 @@ class Profile extends Component {
             var res = await uploadMultiPart(endPoint, formData);
             const response = res.data;
             if (response.success) {
-                let result=await AsyncStorage.getItem('profile');
-                const storeResult=JSON.parse(result);
+                let result = await AsyncStorage.getItem('profile');
+                const storeResult = JSON.parse(result);
                 storeResult.profile_image = response.profile_image
-                await AsyncStorage.setItem('profile',JSON.stringify(storeResult));
+                await AsyncStorage.setItem('profile', JSON.stringify(storeResult));
                 this.setState({
-                    imageSource:imagePath
-               });     
-         
+                    imageSource: imagePath
+                });
+
             } else {
                 Toast.show({
                     text: 'Problem Uploading Profile Picture',
@@ -251,13 +252,13 @@ class Profile extends Component {
                                             <Icon name="camera" style={{ fontSize: 20 }} onPress={() => this.selectPhotoTapped()} />
                                         </View>
 
-                                        <View style={{ flexDirection: 'row', marginTop: 25, marginLeft: 30 }}>
-                                            <Text style={{ marginLeft: 'auto', marginRight: 'auto', padding: 5, fontFamily: 'OpenSans', backgroundColor: '#fff', borderRadius: 10, marginTop: 5, width: '100%' }}>{data.first_name + " " + data.last_name}
+                                        <View style={{ flexDirection: 'row', marginTop: 10, marginLeft: 30 }}>
+                                            <Text style={{ marginLeft: 'auto', marginRight: 'auto', padding: 5, fontFamily: 'OpenSans', backgroundColor: '#fff', borderRadius: 10, marginTop: 5, width: '100%', textAlign: 'center' }} onPress={() => this.editProfile('UpdateUserDetails')}>{data.first_name + " " + data.last_name}
                                             </Text>
 
-                                            <Icon name="create" style={{ fontSize: 17, marginTop: 10, marginLeft: 25 }} onPress={() => this.editProfile('UpdateUserDetails')} />
 
-                                            <Icon name="create" style={{ fontSize: 17, marginTop: 12, marginLeft: 25 }} onPress={() => this.editProfile('UpdateUserDetails')} />
+
+                                            <Icon name="create" style={{ fontSize: 17, marginTop: 15, marginLeft: 25 }} onPress={() => this.editProfile('UpdateUserDetails')} />
 
                                         </View>
                                     </Col>
@@ -510,7 +511,7 @@ class Profile extends Component {
                                                 <Text> {item.doctorInfo.prefix ? item.doctorInfo.prefix : ''} {item.doctorInfo.first_name + " " + item.doctorInfo.last_name} </Text>
                                             </Body>
                                             <Right>
-                                                <Button style={styles.docbutton}><Text style={{ fontFamily: 'OpenSans', fontSize: 12 }} onPress={()=>this.props.navigate.navigation('Book Appointment')}> Book Again</Text></Button>
+                                                <Button style={styles.docbutton}><Text style={{ fontFamily: 'OpenSans', fontSize: 12 }} onPress={() => this.props.navigate.navigation('Book Appointment')}> Book Again</Text></Button>
                                             </Right>
 
                                         </ListItem>

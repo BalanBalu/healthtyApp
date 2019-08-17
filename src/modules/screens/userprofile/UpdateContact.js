@@ -120,19 +120,22 @@ class UpdateContact extends Component {
 
                 <Content style={styles.bodyContent} contentContainerStyle={{ justifyContent: 'center', }}>
                     <ScrollView>
-                        {this.state.primary_mobile_no != null ? <H3 style={{ fontFamily: 'OpenSans' }}>Primary Mobile_no</H3> : null}
+                        {this.state.primary_mobile_no != null ?
+                            <Text style={{ fontFamily: 'OpenSans', marginTop: 70, marginLeft: 7, fontWeight: 'bold', fontSize: 22 }}>Primary Mobile_no</Text> : null}
                         {this.state.primary_mobile_no != null ?
                             <Card style={{ padding: 10, borderRadius: 10 }}>
                                 <Item style={{ borderBottomWidth: 0 }}>
                                     <Icon name="call" style={styles.centeredIcons}></Icon>
-                                    <Body>
-                                        <Text style={styles.customText}>{this.state.primary_mobile_no}</Text>
-                                    </Body>
+
+                                    <Text style={styles.customText}>{this.state.primary_mobile_no}</Text>
+                                    <Right>
+                                        <Icon style={{ color: 'gray', fontSize: 25 }} name='ios-lock' />
+                                    </Right>
                                 </Item>
                             </Card> : null}
 
-                        <H3 style={{ fontFamily: 'OpenSans', marginTop: 20 }}>Edit Secondary Mobile_No</H3>
-                        <Text style={{ color: 'gray', fontSize: 13, fontFamily: 'OpenSans' }}>Update your secondary mobile_no</Text>
+                        <Text style={{ fontFamily: 'OpenSans', marginTop: 50, marginLeft: 7, fontWeight: 'bold', fontSize: 22 }}>Edit Secondary Mobile_No</Text>
+                        <Text style={{ color: 'gray', fontSize: 13, fontFamily: 'OpenSans', marginLeft: 6 }}>Update your secondary mobile_no</Text>
                         <Card style={{ padding: 10, borderRadius: 10, marginBottom: 20 }}>
 
                             <Item style={{ borderBottomWidth: 0 }}>
@@ -172,7 +175,7 @@ class UpdateContact extends Component {
 
                             <Item style={{ borderBottomWidth: 0 }}>
                                 <Right>
-                                    <Button style={styles.updateButton} onPress={() => this.handleContactUpdate()} testID='clickUpdateContact'>
+                                    <Button success style={styles.updateButton} onPress={() => this.handleContactUpdate()} testID='clickUpdateContact'>
                                         <Text uppercase={false} note style={{ color: '#fff', fontFamily: 'OpenSans' }}>Update</Text>
                                     </Button>
                                 </Right>

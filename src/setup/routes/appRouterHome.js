@@ -56,14 +56,13 @@ import CancelAppointment from "../../modules/screens/MyAppointments/cancelAppoin
 import MedicineSearch from '../../modules/screens/Pharmacy/MedicineSearch/MedicineSearch';
 import MedicineOrderList from '../../modules/screens/Pharmacy/MedicineOrderList/MedicineOrderList';
 import MedicineMyOrders from '../../modules/screens/Pharmacy/MedicineMyOrders/MedicineMyOrders';
-import MedicalOrderDetails from '../../modules/screens/Pharmacy/MedicalOrderDetails/MedicalOrderDetails'
-
 import MedicineSearchList from '../../modules/screens/Pharmacy/MedicineSearchList/MedicineSearchList';
 import MedicineCheckout from '../../modules/screens/Pharmacy/MedicineCheckout/MedicineChekout';
 import MedicinePaymentPage from '../../modules/screens/Pharmacy/MedicinePaymentPage/MedicinePaymentPage';
 import MedicinePaymentResult from '../../modules/screens/Pharmacy/MedicinePaymentResult/MedicinePaymentResult';
 import MedicinePaymentSuccess from '../../modules/screens/Pharmacy/MedicinePaymentSuccess/MedicinePaymentSuccess';
 import UploadPrescription from '../../modules/screens/Pharmacy/MedicineSearch/UploadPrescription';
+import MedicalOrderDetails from '../../modules/screens/Pharmacy/MedicalOrderDetails/MedicalOrderDetails';
 
 
 
@@ -272,6 +271,7 @@ const HomeStack = createStackNavigator({
   Home: {
     screen: Home,
     navigationOptions: ({ navigation }) => ({
+
       title: 'DashBoard',
       headerLeft: (
         <TouchableOpacity onPress={() => navigation.toggleDrawer()}>
@@ -357,39 +357,39 @@ const ProfileStack = createStackNavigator({
   UpdateEmail: {
     screen: UpdateEmail,
     navigationOptions: {
-      title: 'UpdateEmail'
+      title: 'Update Email'
     }
   },
   UpdateContact: {
     screen: UpdateContact,
     navigationOptions: {
-      title: 'UpdateContact'
+      title: 'Update Contact'
     }
   },
   UpdatePassword: {
     screen: UpdatePassword,
     navigationOptions: {
-      title: 'UpdatePassword'
+      title: 'Update Password'
     }
   },
   UpdateInsurance: {
     screen: UpdateInsurance,
     navigationOptions: {
-      title: 'UpdateInsurance'
+      title: 'Update Insurance'
     }
   },
 
   UpdateUserDetails: {
     screen: UpdateUserDetails,
     navigationOptions: {
-      title: 'UpdateUserDetails'
+      title: 'Update User Details'
     }
   },
 
   UpdateAddress: {
     screen: UpdateAddress,
     navigationOptions: {
-      title: 'UpdateAddress'
+      title: 'Update Address'
     }
   },
 },
