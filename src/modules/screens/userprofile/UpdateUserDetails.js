@@ -51,8 +51,7 @@ class UpdateUserDetails extends Component {
     }
 
     validateFirstNameLastName = async (text, type) => {
-        console.log(this.state.updateButton + 'updateButton');
-        const regex = new RegExp('^[A-Z ]+$')  //Support Capital letter with space
+        const regex = new RegExp('^[\ba-zA-Z ]+$')  //Support letter with space
         if (type === "Firstname") {
             this.setState({ firstName: text, updateButton: false });
         } else {
@@ -60,11 +59,14 @@ class UpdateUserDetails extends Component {
         }
         if (regex.test(text) === false) {
             this.setState({ updateButton: true });
+            if(text!==''){
             Toast.show({
-                text: 'Kindly Enter UpperCase Letters',
+                text: 'Please enter only alphabets',
                 type: "danger",
                 duration: 3000
             });
+        }
+        
         }
     }
 

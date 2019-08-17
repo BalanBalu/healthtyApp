@@ -82,15 +82,17 @@ class UserDetails extends Component {
     }
 
     validateCity = (text) => {
-        const regex = new RegExp('^[A-Z ]+$') //Support Capital letter with space
+        const regex = new RegExp('^[\ba-zA-Z ]+$')  //Support letter with space
         this.setState({ city: text, updateButton: false });
         if (regex.test(text) === false) {
             this.setState({ updateButton: true });
+            if(text!=''){
             Toast.show({
-                text: 'Kindly Enter UpperCase Letters',
+                text: 'Please enter only alphabets',
                 type: "danger",
                 duration: 3000
             });
+        }
         }
     }
 
