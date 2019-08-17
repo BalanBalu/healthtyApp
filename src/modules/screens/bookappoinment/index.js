@@ -440,7 +440,7 @@ enumarateDates(startDate, endDate) {
                 <Col style={{ width: '50%' }}>
 
                   {this.state.reviewdata !== null ?
-                    <Button iconRight transparent onPress={() => this.props.navigation.navigate('Reviews', { reviewDoctorId : this.state.doctorId})}>
+                    <Button testID="reviewNavigateButton" iconRight transparent onPress={() => this.props.navigation.navigate('Reviews', { reviewDoctorId : this.state.doctorId})}>
                       <Icon name='add' />
                       <Text  style={styles.customText}>More Reviews</Text>
                     </Button> : null}
