@@ -41,8 +41,10 @@ class Home extends Component {
             let limitedData = [];
 
             for (let limtedNumber = 0; limtedNumber < 6; limtedNumber++) {
-                limitedData.push(result.data[limtedNumber]);
+                if(result.data[limtedNumber] !== undefined)
+                  limitedData.push(result.data[limtedNumber]);
             }
+            console.log(limitedData);
             this.setState({ catagary: limitedData });
 
         } catch (e) {

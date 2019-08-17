@@ -425,7 +425,7 @@ class doctorSearchList extends Component {
     }
 
     navigateToBookAppointmentPage(doctorAvailabilityData) {
-
+        console.log('coming here');
         const doctorDetails = doctorAvailabilityData;
         const slotData = doctorAvailabilityData.slotData[this.state.selectedDate]
         this.props.navigation.navigate('Book Appointment', { doctorDetails: doctorDetails, slotList: slotData })
@@ -566,7 +566,7 @@ class doctorSearchList extends Component {
                                 renderItem={({ item, index }) =>
 
                                     <Card style={{ padding: 5, borderRadius: 10, borderBottomWidth: 2 }}>
-                                        <List>
+                                        <List onPress={() => this.navigateToBookAppointmentPage(item)}>
                                             <ListItem avatar>
                                                 <Left>
                                                     {
@@ -640,7 +640,7 @@ class doctorSearchList extends Component {
 
                                                 </Body>
 
-                                                <Right>
+                                                {/* <Right>
                                                     <Icon name='heart' type='Ionicons'
                                                         style={patientWishListsDoctorIds.includes(item.doctorId) ? { color: 'red', fontSize: 25 } : { color: 'gray', fontSize: 25 }}
                                                         onPress={() => this.addToWishList(item.doctorId, index)} ></Icon>
@@ -648,7 +648,7 @@ class doctorSearchList extends Component {
                                                         <Button style={{borderRadius:15,marginTop:90,height:35}} onPress={() => this.navigateToBookAppointmentPage(item)}>
                                                             <Text style={{fontFamily:'OpenSans',fontSize:11,justifyContent:'center'}}>View Profile</Text>
                                                         </Button>
-                                                </Right>
+                                                </Right> */}
                                             </ListItem>
 
                                             <Grid>
