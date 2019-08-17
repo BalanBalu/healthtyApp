@@ -21,7 +21,8 @@ class UserDetails extends Component {
             pin_code: '',
             isLoading: false,
             userData: '',
-            isFocusKeyboard: false
+            isFocusKeyboard: false,
+            updateButton: false
 
         }
     }
@@ -31,11 +32,9 @@ class UserDetails extends Component {
 
     }
     async bindValues() {
-        console.log("component");
         const { navigation } = this.props;
         const userData = navigation.getParam('updatedata');
         if (userData.address != undefined) {
-            console.log("undefined");
             await this.setState({
                 no_and_street: userData.address.address.no_and_street,
                 address_line_1: userData.address.address.address_line_1,
@@ -82,9 +81,20 @@ class UserDetails extends Component {
         }
     }
 
-
-
-
+    validateCity = (text) => {
+        const regex = new RegExp('^[\ba-zA-Z ]+$')  //Support letter with space
+        this.setState({ city: text, updateButton: false });
+        if (regex.test(text) === false) {
+            this.setState({ updateButton: true });
+            if(text!=''){
+            Toast.show({
+                text: 'Please enter only alphabets',
+                type: "danger",
+                duration: 3000
+            });
+        }
+        }
+    }
 
     userUpdate() {
         try {
@@ -115,15 +125,15 @@ class UserDetails extends Component {
     render() {
         return (
             <Container style={styles.Container}>
-                <Content style={styles.bodyContent} contentContainerStyle={{ flex: 1, justifyContent: 'center' }}>
+                <Content style={styles.bodyContent} contentContainerStyle={{ flex: 1 }}>
                     <ScrollView>
 
-                        <H3 style={{ fontSize: 20, fontFamily: 'opensans-semibold', marginTop: 55, marginLeft: '5%', fontWeight: 'bold', }}>Update Your Details</H3>
+                        <H3 style={{ fontSize: 20, fontFamily: 'opensans-semibold', marginTop: 20, marginLeft: '5%', fontWeight: 'bold', }}>Update User Details</H3>
 
                         <Form>
                             <ScrollView scrollEventThrottle={16} >
                                 <Item style={{ borderBottomWidth: 0 }}>
-                                    <Text style={{ fontFamily: 'OpenSans', fontSize: 16, marginTop: 20 }}>Door_no</Text>
+                                    <Text style={{ fontFamily: 'OpenSans', fontSize: 18, marginTop: 30 }}>Door_no</Text>
                                 </Item>
                                 <Item style={{ borderBottomWidth: 0 }}>
                                     <Input
@@ -136,12 +146,13 @@ class UserDetails extends Component {
                                         autoCapitalize='none'
                                         blurOnSubmit={false}
                                         onSubmitEditing={() => { this.no_and_street._root.focus(); }}
+                                        testID="enterNo&Street"
 
                                     />
                                 </Item>
 
                                 <Item style={{ borderBottomWidth: 0 }}>
-                                    <Text style={{ fontFamily: 'OpenSans', fontSize: 16, }}>Address Line1</Text>
+                                    <Text style={{ fontFamily: 'OpenSans', fontSize: 18, }}>Address Line1</Text>
                                 </Item>
                                 <Item style={{ borderBottomWidth: 0 }}>
                                     <Input
@@ -155,10 +166,11 @@ class UserDetails extends Component {
                                         autoCapitalize='none'
                                         blurOnSubmit={false}
                                         onSubmitEditing={() => { this.address_line_1._root.focus(); }}
+                                        testID="enterAddressLine1"
                                     />
                                 </Item>
                                 <Item style={{ borderBottomWidth: 0 }}>
-                                    <Text style={{ fontFamily: 'OpenSans', fontSize: 16, }}>Address Line2</Text>
+                                    <Text style={{ fontFamily: 'OpenSans', fontSize: 18, }}>Address Line2</Text>
                                 </Item>
                                 <Item style={{ borderBottomWidth: 0 }}>
                                     <Input
@@ -172,6 +184,7 @@ class UserDetails extends Component {
                                         autoCapitalize='none'
                                         blurOnSubmit={false}
                                         onSubmitEditing={() => { this.address_line_2._root.focus(this.setState({ isFocusKeyboard: true })); }}
+                                        testID="enterAddressLine2"
 
 
                                     />
@@ -179,7 +192,7 @@ class UserDetails extends Component {
 
 
                                 <Item style={{ borderBottomWidth: 0 }}>
-                                    <Text style={{ fontFamily: 'OpenSans', fontSize: 16, }}>City</Text>
+                                    <Text style={{ fontFamily: 'OpenSans', fontSize: 18, }}>City</Text>
                                 </Item>
                                 <Item style={{ borderBottomWidth: 0 }}>
                                     <Input
@@ -190,15 +203,16 @@ class UserDetails extends Component {
                                         value={this.state.city}
                                         keyboardType={'default'}
                                         returnKeyType={'next'}
-                                        onChangeText={city => this.setState({ city })}
+                                        onChangeText={text => this.validateCity(text)}
                                         autoCapitalize='none'
                                         blurOnSubmit={false}
                                         onSubmitEditing={() => { this.city._root.focus(this.setState({ isFocusKeyboard: true })); }}
+                                        testID="enterCity"
                                     />
                                 </Item>
 
                                 <Item style={{ borderBottomWidth: 0 }}>
-                                    <Text style={{ fontFamily: 'OpenSans', fontSize: 16, }}>Pincode</Text>
+                                    <Text style={{ fontFamily: 'OpenSans', fontSize: 18, }}>Pincode</Text>
                                 </Item>
                                 <Item style={{ borderBottomWidth: 0 }}>
                                     <Input
@@ -213,6 +227,7 @@ class UserDetails extends Component {
                                         autoCapitalize='none'
                                         blurOnSubmit={false}
                                         onSubmitEditing={() => { this.userUpdate() }}
+                                        testID="enterPincode"
                                     />
                                 </Item>
 
@@ -221,8 +236,8 @@ class UserDetails extends Component {
 
 
 
-                                <Button style={styles.loginButton} ref={(input) => { this.pin_code = input; }} block primary onPress={() => this.userUpdate()}>
-                                    <Text style={{ fontFamily: 'OpenSans', fontSize: 16, }}>Submit</Text>
+                                <Button disabled={this.state.updateButton} style={styles.loginButton} ref={(input) => { this.pin_code = input; }} block primary onPress={() => this.userUpdate()} testID="updateAddressButton">
+                                    <Text style={{ fontFamily: 'OpenSans', fontSize: 18, }}>Update</Text>
                                 </Button>
                             </ScrollView>
 
@@ -232,8 +247,6 @@ class UserDetails extends Component {
                 <Spinner color='blue'
                     visible={this.state.isLoading}
                     textContent={'Please wait Loading...'}
-                    overlayColor="none"
-                    cancelable={false}
                 />
 
             </Container>

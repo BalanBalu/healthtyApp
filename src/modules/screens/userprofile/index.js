@@ -249,7 +249,7 @@ class Profile extends Component {
                                             <Thumbnail style={styles.profileImage} source={{ uri: 'https://res.cloudinary.com/demo/image/upload/w_200,h_200,c_thumb,g_face,r_max/face_left.png' }} />}
 
                                         <View style={{ marginLeft: 80, marginTop: -20, justifyContent: 'center' }}>
-                                            <Icon name="camera" style={{ fontSize: 20 }} onPress={() => this.selectPhotoTapped()} />
+                                            <Icon name="camera" style={{ fontSize: 20 }} onPress={() => this.selectPhotoTapped()} testID="cameraIconTapped" />
                                         </View>
 
                                         <View style={{ flexDirection: 'row', marginTop: 10, marginLeft: 30 }}>
@@ -294,21 +294,21 @@ class Profile extends Component {
                                         <ListItem noBorder>
 
                                             <Radio selected={this.state.gender === 'M'} onPress={() => this.onPressRadio('M')} style={{ marginLeft: 2, }} color={"#775DA3"}
-                                                selectedColor={"#775DA3"} />
+                                                selectedColor={"#775DA3"} testID="clickMale"/>
                                             <Text style={{ marginLeft: 10, fontFamily: 'OpenSans' }}>Male</Text>
 
                                             <Radio selected={this.state.gender === 'F'} onPress={() => this.onPressRadio('F')} style={{ marginLeft: 10 }} color={"#775DA3"}
-                                                selectedColor={"#775DA3"} />
+                                                selectedColor={"#775DA3"} testID="clickFemale" />
                                             <Text style={{ marginLeft: 10, fontFamily: 'OpenSans' }}>Female</Text>
 
                                             <Radio selected={this.state.gender === 'O'} onPress={() => this.onPressRadio('O')} style={{ marginLeft: 10 }} color={"#775DA3"}
-                                                selectedColor={"#775DA3"} />
+                                                selectedColor={"#775DA3"} testID="clickOther" />
                                             <Text style={{ marginLeft: 10 }}>Other</Text>
 
                                         </ListItem>
 
                                         <Button style={styles.updateButton} onPress={() => this.updateGender()}
-                                        >
+                                        testID="updateGenderButton">
                                             <Text uppercase={false}>Update</Text>
                                         </Button>
 
@@ -340,7 +340,7 @@ class Profile extends Component {
 
 
                                 <Body >
-                                    <TouchableOpacity onPress={() => this.editProfile('UpdateEmail')}>
+                                    <TouchableOpacity onPress={() => this.editProfile('UpdateEmail')} testID="onPressEmail">
                                         <Text style={styles.customText}>Email</Text>
                                         <Text note style={styles.customText}>{data.email}</Text>
                                         {data.secondary_emails != undefined ?
@@ -358,7 +358,7 @@ class Profile extends Component {
                                             />
                                             : <Button transparent>
                                                 <Icon name='add' style={{ color: 'gray' }} />
-                                                <Text uppercase={false} style={styles.customText} onPress={() => this.editProfile('UpdateEmail')} >Add Secondary email</Text>
+                                                <Text uppercase={false} style={styles.customText} onPress={() => this.editProfile('UpdateEmail')} testID="onPressAddSecondaryEmail">Add Secondary email</Text>
                                             </Button>}
                                     </TouchableOpacity>
                                 </Body>
@@ -367,7 +367,7 @@ class Profile extends Component {
                                 {data.secondary_emails != undefined ?
 
                                     <Right>
-                                        <Icon name="create" style={{ color: 'black' }} onPress={() => this.editProfile('UpdateEmail')} />
+                                        <Icon name="create" style={{ color: 'black' }} onPress={() => this.editProfile('UpdateEmail')} testID="iconToUpdateEmail" />
                                     </Right> : null}
 
                             </ListItem>
@@ -380,7 +380,7 @@ class Profile extends Component {
                                 </Left>
 
                                 <Body>
-                                    <TouchableOpacity onPress={() => this.editProfile('UpdateAddress')}>
+                                    <TouchableOpacity onPress={() => this.editProfile('UpdateAddress')} testID="onPressAddress">
                                         <Text style={styles.customText}>Address</Text>
                                         {data.address ?
                                             <View>
@@ -400,7 +400,7 @@ class Profile extends Component {
                                 </Body>
                                 {data.address ?
                                     <Right>
-                                        <Icon name="create" style={{ color: 'black' }} onPress={() => this.editProfile('UpdateAddress')} />
+                                        <Icon name="create" style={{ color: 'black' }} onPress={() => this.editProfile('UpdateAddress')} testID="iconToUpdateAddress"/>
                                     </Right>
                                     : null}
 
@@ -415,7 +415,7 @@ class Profile extends Component {
                                 </Left>
 
                                 <Body>
-                                    <TouchableOpacity onPress={() => this.editProfile('UpdateContact')}>
+                                    <TouchableOpacity onPress={() => this.editProfile('UpdateContact')} testID="onPressUpdateContact">
                                         <Text style={styles.customText}>Contact</Text>
                                         <Text note style={styles.customText}>{data.mobile_no}</Text>
                                         {data.secondary_mobiles != undefined ?
@@ -431,13 +431,13 @@ class Profile extends Component {
                                             />
                                             : <Button transparent>
                                                 <Icon name='add' style={{ color: 'gray' }} />
-                                                <Text uppercase={false} style={styles.customText} onPress={() => this.editProfile('UpdateContact')}>Add Secondary Contact</Text>
+                                                <Text uppercase={false} style={styles.customText} onPress={() => this.editProfile('UpdateContact')} testID="onPressAddSecondaryContactText">Add Secondary Contact</Text>
                                             </Button>}
                                     </TouchableOpacity>
                                 </Body>
                                 {data.secondary_mobiles != undefined ?
                                     <Right>
-                                        <Icon name="create" style={{ color: 'black' }} onPress={() => this.editProfile('UpdateContact')}></Icon>
+                                        <Icon name="create" style={{ color: 'black' }} onPress={() => this.editProfile('UpdateContact')} testID="iconToUpdateContact"></Icon>
                                     </Right> : null}
 
 
@@ -448,7 +448,7 @@ class Profile extends Component {
                                     <Icon name='heartbeat' type='FontAwesome' style={{ color: '#7E49C3' }}></Icon>
                                 </Left>
                                 <Body>
-                                    <TouchableOpacity onPress={() => this.editProfile('UpdateInsurance')}>
+                                    <TouchableOpacity onPress={() => this.editProfile('UpdateInsurance')} testID="onPressUpdateInsurance">
                                         <Text style={styles.customText}>Insurance</Text>
                                         {data.insurance != undefined ?
 
@@ -464,14 +464,14 @@ class Profile extends Component {
                                             />
                                             : <Button transparent>
                                                 <Icon name='add' style={{ color: 'gray' }} />
-                                                <Text uppercase={false} style={styles.customText} onPress={() => this.editProfile('UpdateInsurance')}>Add Insurance</Text>
+                                                <Text uppercase={false} style={styles.customText} onPress={() => this.editProfile('UpdateInsurance')} testID="clickAddInsuranceText">Add Insurance</Text>
                                             </Button>}
                                     </TouchableOpacity>
                                 </Body>
 
                                 {data.insurance != undefined ?
                                     <Right>
-                                        <Icon name="create" style={{ color: 'black' }} onPress={() => this.editProfile('UpdateInsurance')} ></Icon>
+                                        <Icon name="create" style={{ color: 'black' }} onPress={() => this.editProfile('UpdateInsurance')} testID="iconToEditUpdateInsurance"></Icon>
                                     </Right> : null}
 
                             </ListItem>
@@ -483,13 +483,13 @@ class Profile extends Component {
                                     <Icon name="briefcase" style={{ color: '#7E49C3' }}></Icon>
                                 </Left>
                                 <Body>
-                                    <TouchableOpacity onPress={() => this.editProfile('UpdatePassword')}>
+                                    <TouchableOpacity onPress={() => this.editProfile('UpdatePassword')} testID="onPressUpdatePassword">
                                         <Text style={styles.customText}>Change Password</Text>
                                         <Text note style={styles.customText}>*********</Text>
                                     </TouchableOpacity>
                                 </Body>
                                 <Right>
-                                    <Icon name="create" style={{ color: 'black' }} onPress={() => this.editProfile('UpdatePassword')}></Icon>
+                                    <Icon name="create" style={{ color: 'black' }} onPress={() => this.editProfile('UpdatePassword')} testID="iconToUpdatePassword"></Icon>
                                 </Right>
                             </ListItem>
 
