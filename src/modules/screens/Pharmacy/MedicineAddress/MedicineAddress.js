@@ -1,14 +1,22 @@
 import React, { Component } from 'react';
-import { Container, Content, Text, Title, Header, Form, Textarea, Button, H3, Item, List, ListItem, Card, Input, Left, Right, Thumbnail, Body, Icon, Footer, FooterTab, Picker, Segment, CheckBox, View } from 'native-base';
+import { Container, Content, Text, Title, Header, Form, Textarea, Button, H3, Item, List, ListItem, Card, Input, Left, Right, Thumbnail, Body, Icon, Footer, FooterTab, Picker, Segment, CheckBox, View, Radio } from 'native-base';
 import { Col, Row, Grid } from 'react-native-easy-grid';
 import { StyleSheet, Image } from 'react-native';
-
+import { FlatList } from 'react-native-gesture-handler';
 class MedicineAddress extends Component {
     constructor(props) {
         super(props);
         this.state = {};
     }
     render() {
+        var address = [{
+            name: 'bala', email: 'balan@gmail.com', Ph: 7234567780, housename: 'kkr', PO: 'ambattur',
+            city: 'chennai', Pincode: 600053
+        }, {
+            name: 'balu', email: 'balu@gmail.com', Ph: 8234567780, housename: 'ppr', PO: 'ambattur',
+            city: 'chennai', Pincode: 600053,
+        }]
+
         return (
             <Container>
                 <Content>
@@ -41,7 +49,9 @@ class MedicineAddress extends Component {
                         </Row>
                     </View>
 
-                    <Card transparent style={{ padding: 10, marginTop: 20 }}>
+
+
+                    <Card transparent style={{ padding: 10, marginTop: 20, }}>
                         <Text style={{ fontFamily: 'OpenSans', fontWeight: 'bold', fontSize: 16, padding: 5 }}>AddressInfo</Text>
                         <Segment>
                             <Button first active>
@@ -52,8 +62,45 @@ class MedicineAddress extends Component {
                             </Button>
 
                         </Segment>
+                        <FlatList
+                            data={address}
+                            renderItem={
+                                ({ item }) =>
+                                    <Card style={{ padding: 10, marginTop: 20 }}>
 
-                        <Grid style={{ marginTop: 10 }}>
+                                        <Row>
+                                            <Col style={{ width: '6%' }}>
+                                                <Radio selected={false} />
+                                            </Col>
+                                            <Col style={{ width: '95%' }}>
+                                                <Text style={{ fontSize: 14, fontFamily: 'OpenSans', marginLeft: 20, marginTop: 3, fontWeight: 'bold' }}>{item.name}</Text>
+                                            </Col>
+                                        </Row>
+                                        <Text style={styles.customText}>{item.email}</Text>
+                                        <Text style={styles.customText}>{item.Ph}</Text>
+
+
+                                        <Text style={{ fontSize: 14, fontFamily: 'OpenSans', marginLeft: 40, marginTop: 4, fontWeight: 'bold' }}>Delivery Address</Text>
+
+
+                                        <Row>
+                                            <Text style={styles.customText}>{item.housename}
+                                            </Text>
+                                            <Text style={styles.customSubText}>{item.PO}
+                                            </Text>
+                                        </Row>
+                                        <Row>
+                                            <Text style={styles.customText}>{item.city}</Text>
+                                            <Text style={styles.customSubText}>Pincode:{item.Pincode}</Text>
+                                        </Row>
+
+
+
+
+                                    </Card>
+                            } />
+
+                        {/* <Grid style={{ marginTop: 10 }}>
                             <Col>
                                 <Text style={styles.labelTop}>First Name</Text>
                                 <Input placeholder="First Name" style={styles.transparentLabel} />
@@ -85,10 +132,11 @@ class MedicineAddress extends Component {
 
                             </Col>
                         </Grid>
-                        <Button onPress={() => this.props.navigation.navigate('MedicinePaymentResult')} block style={styles.loginButton}><Text>Continue</Text></Button>
+                        <Button onPress={() => this.props.navigation.navigate('MedicinePaymentResult')} block style={styles.loginButton}><Text>Continue</Text></Button> */}
                     </Card>
+
                 </Content>
-            </Container>
+            </Container >
         );
     }
 }
@@ -158,5 +206,21 @@ const styles = StyleSheet.create({
         paddingLeft: 20,
         fontFamily: 'OpenSans',
         margin: 2,
-    }
+    },
+    customText:
+    {
+        marginLeft: 40,
+        fontFamily: 'OpenSans',
+        fontSize: 13,
+        marginTop: 3,
+        color: 'gray'
+    },
+    customSubText:
+    {
+        marginLeft: 2,
+        fontFamily: 'OpenSans',
+        fontSize: 13,
+        marginTop: 3,
+        color: 'gray'
+    },
 });

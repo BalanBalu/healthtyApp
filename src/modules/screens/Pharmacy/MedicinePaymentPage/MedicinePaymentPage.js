@@ -3,6 +3,7 @@ import { Container, Content, Text, Title, Header, Form, Textarea, Button, H3, It
 import { Col, Row, Grid } from 'react-native-easy-grid';
 import { connect } from 'react-redux'
 import { StyleSheet, Image } from 'react-native';
+import { FlatList } from 'react-native-gesture-handler';
 
 class MedicinePaymentPage extends Component {
     constructor(props) {
@@ -11,6 +12,10 @@ class MedicinePaymentPage extends Component {
     }
 
     render() {
+        var payment = [{
+            bankName: 'State Bank', number: '2344'
+
+        }]
 
 
         return (
@@ -62,9 +67,30 @@ class MedicinePaymentPage extends Component {
                             </Button>
 
                         </Segment>
+                        <FlatList
+                            data={payment}
+                            renderItem={
+                                ({ item }) =>
+                                    <Card style={{ padding: 20, marginTop: 20, borderRadius: 5 }}>
+                                        <Row>
+                                            <Col style={{ width: '32%' }}>
+                                                <Image source={{ uri: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQUKuPIQiZ-73x4xDj522X2WR1wUvbZoT14N3Jl4wa92mOig4WkKg' }}
+                                                    style={{ width: '30%', height: 50, }}
+                                                />
+                                            </Col>
+                                            <Col style={{ width: '58%', marginTop: 5, marginLeft: -20 }}>
+                                                <Row>
+                                                    <Text style={{ fontSize: 15, marginTop: 2 }} >******</Text>
+                                                    <Text style={{ fontSize: 15 }}>{item.number}</Text>
+                                                </Row>
+                                                <Text style={{ color: 'blue', fontFamily: 'OpenSans', fontWeight: 'bold', fontSize: 15 }}>{item.bankName}</Text>
+                                            </Col>
+                                            <Col style={{ width: '10%', marginTop: 15, marginLeft: 20, }} >
+                                                <Icon style={{ color: 'green', fontSize: 25 }} name="ios-checkmark-circle" />
+                                            </Col>
+                                        </Row>
 
-
-                        <Grid style={{ padding: 5, margin: 10 }}>
+                                        {/* <Grid style={{ padding: 5, margin: 10 }}>
                             <Col style={{ borderColor: '#D92B4B', borderWidth: 1, padding: 10, alignItems: 'center', borderRadius: 10, margin: 10 }}>
                                 <Image source={{ uri: 'https://img.icons8.com/color/180/visa.png' }} style={{ width: '100%', height: 50, borderRadius: 10 }} /></Col>
 
@@ -109,7 +135,9 @@ class MedicinePaymentPage extends Component {
                             <Text style={{ marginLeft: 15, color: 'gray', fontFamily: 'OpenSans' }}>Save creditcard Information</Text>
                         </Item>
 
-                        <Button onPress={() => this.props.navigation.navigate('MedicinePaymentResult')} block style={styles.loginButton}><Text>Continue</Text></Button>
+                        <Button onPress={() => this.props.navigation.navigate('MedicinePaymentResult')} block style={styles.loginButton}><Text>Continue</Text></Button> */}
+                                    </Card>
+                            } />
                     </Card>
                 </Content>
 

@@ -62,7 +62,8 @@ export default StyleSheet.create({
         borderRadius: 5,
         paddingLeft: 20,
         fontFamily: 'OpenSans',
-        marginLeft: 3
+        marginLeft: 3,
+        fontSize: 13
 
     },
     welcome:
@@ -86,7 +87,8 @@ export default StyleSheet.create({
         fontFamily: 'OpenSans',
     },
     customText: {
-        marginLeft: 25,
+        fontSize: 15,
+        marginLeft: 20,
         fontFamily: 'OpenSans',
     },
     customNote: {

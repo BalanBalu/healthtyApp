@@ -269,6 +269,7 @@ const HomeStack = createStackNavigator({
   Home: {
     screen: Home,
     navigationOptions: ({ navigation }) => ({
+
       title: 'DashBoard',
       headerLeft: (
         <TouchableOpacity onPress={() => navigation.toggleDrawer()}>
@@ -344,39 +345,39 @@ const ProfileStack = createStackNavigator({
   UpdateEmail: {
     screen: UpdateEmail,
     navigationOptions: {
-      title: 'UpdateEmail'
+      title: 'Update Email'
     }
   },
   UpdateContact: {
     screen: UpdateContact,
     navigationOptions: {
-      title: 'UpdateContact'
+      title: 'Update Contact'
     }
   },
   UpdatePassword: {
     screen: UpdatePassword,
     navigationOptions: {
-      title: 'UpdatePassword'
+      title: 'Update Password'
     }
   },
   UpdateInsurance: {
     screen: UpdateInsurance,
     navigationOptions: {
-      title: 'UpdateInsurance'
+      title: 'Update Insurance'
     }
   },
 
   UpdateUserDetails: {
     screen: UpdateUserDetails,
     navigationOptions: {
-      title: 'UpdateUserDetails'
+      title: 'Update User Details'
     }
   },
 
   UpdateAddress: {
     screen: UpdateAddress,
     navigationOptions: {
-      title: 'UpdateAddress'
+      title: 'Update Address'
     }
   },
 },
@@ -457,18 +458,6 @@ const PharmacyStack = createStackNavigator({
     screen: MedicalOrderDetails,
     navigationOptions: {
       title: 'MedicalOrderDetails'
-    }
-  },
-  MedicineAddress: {
-    screen: MedicineAddress,
-    navigationOptions: {
-      title: 'MedicineAddress'
-    }
-  },
-  MedicinePaymentReview: {
-    screen: MedicinePaymentReview,
-    navigationOptions: {
-      title: 'MedicinePaymentReview'
     }
   }
 

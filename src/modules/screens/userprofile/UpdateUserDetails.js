@@ -26,7 +26,7 @@ class UpdateUserDetails extends Component {
             isLoading: false,
             selectedBloodGroup: null,
             updateButton: false,
-            userData:'',
+            userData: '',
 
         }
     }
@@ -41,20 +41,20 @@ class UpdateUserDetails extends Component {
     async bindValues() {
         const { navigation } = this.props;
         const userData = navigation.getParam('updatedata');
-        this.setState({ userData})
-       
-       
-                await this.setState({
-                    dob: userData.dob,
-                    firstName: userData.first_name,
-                    lastName: userData.last_name,
-                    gender: userData.gender,
-                    selectedBloodGroup:userData.blood_group||null
-                    
-                })
+        this.setState({ userData })
 
-                
-           
+
+        await this.setState({
+            dob: userData.dob,
+            firstName: userData.first_name,
+            lastName: userData.last_name,
+            gender: userData.gender,
+            selectedBloodGroup: userData.blood_group || null
+
+        })
+
+
+
 
 
     }
@@ -86,7 +86,7 @@ class UpdateUserDetails extends Component {
                         type: "success",
                         duration: 3000
                     });
-                 this.props.navigation.navigate('Profile');
+                    this.props.navigation.navigate('Profile');
                 }
                 else {
                     Toast.show({
@@ -94,10 +94,10 @@ class UpdateUserDetails extends Component {
                         type: "danger",
                         duration: 3000
                     });
-                    this.setState({isLoading:false});
+                    this.setState({ isLoading: false });
                 }
             } else {
-                
+
                 this.props.navigation.navigate('Profile');
             }
 
@@ -124,12 +124,12 @@ class UpdateUserDetails extends Component {
 
 
 
-                <Content contentContainerStyle={{ justifyContent: 'center', flex: 1, alignItems: 'center', marginTop: 100 }}>
+                <Content contentContainerStyle={{ justifyContent: 'center', flex: 1, marginTop: 50, padding: 60 }}>
                     <ScrollView>
-                        <H3 style={styles.welcome}>Update User Details</H3>
+                        <Text style={{ fontSize: 22, textAlign: 'center', fontFamily: 'opensans-semibold', marginLeft: -30 }}>Update Your Details</Text>
                         <Form>
 
-                            <Item style={{ borderBottomWidth: 0 }}>
+                            <Item style={{ borderBottomWidth: 0, marginTop: 10 }}>
                                 <Input placeholder="First Name" style={styles.transparentLabel}
                                     value={this.state.firstName}
                                     keyboardType={'default'}
@@ -185,7 +185,8 @@ class UpdateUserDetails extends Component {
                                     itemStyle={{
                                         backgroundColor: "gray",
                                         marginLeft: 0,
-                                        paddingLeft: 10
+                                        paddingLeft: 10,
+                                        fontSize: 13
                                     }}
                                     itemTextStyle={{ color: '#5cb85c' }}
                                     style={{ width: undefined }}
@@ -225,7 +226,7 @@ class UpdateUserDetails extends Component {
                             />
 
 
-                            <Button style={{ height: 45, width: 'auto', borderRadius: 10, textAlign: 'center', color: 'white', marginTop: 20, padding: 85, marginLeft: 15 }} primary onPress={() => this.userUpdate()}>
+                            <Button style={{ height: 45, borderRadius: 10, textAlign: 'center', color: 'white', marginTop: 20, padding: 94, marginLeft: 15 }} primary onPress={() => this.userUpdate()}>
                                 <Text style={{ fontFamily: 'OpenSans', fontSize: 15, }}>Update</Text>
                             </Button>
 
