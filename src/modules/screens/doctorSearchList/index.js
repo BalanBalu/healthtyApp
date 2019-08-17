@@ -9,11 +9,13 @@ import StarRating from 'react-native-star-rating';
 import { ScrollView } from 'react-native-gesture-handler';
 import Modal from "react-native-modal";
 import { insertDoctorsWishList, searchDoctorList, fetchAvailabilitySlots, getMultipleDoctorDetails, getDoctorsReviewsCount, getPatientWishList } from '../../providers/bookappointment/bookappointment.action';
-import { formatDate, addMoment, addTimeUnit, getMoment, findArrayObj } from '../../../setup/helpers';
+import { formatDate, addMoment, addTimeUnit, getMoment,addDate,dateDiff, findArrayObj } from '../../../setup/helpers';
 import { Loader } from '../../../components/ContentLoader';
 import { RenderHospitalAddress } from '../../common';
 import { NavigationEvents } from 'react-navigation';
 import Spinner from '../../../components/Spinner';
+import moment from 'moment';
+
 
 let conditionFromFilterPage;
 
@@ -49,7 +51,8 @@ class doctorSearchList extends Component {
                 filterBySelectedAvailabilityDateCount: 0,
                 patientWishListsDoctorIds: [],
                 filterData: [],
-                uniqueFilteredDocArray: []
+                uniqueFilteredDocArray: [],
+                yearOfExperience:''
             }
     }
 
@@ -91,18 +94,39 @@ class doctorSearchList extends Component {
                 }
             })
         }
-        console.log('availableDateSlotsDocArray' + JSON.stringify(availableDateSlotsDocArray))
+        // console.log('availableDateSlotsDocArray' + JSON.stringify(availableDateSlotsDocArray))
 
         let filteredDocListArray = [];
-        
+        // console.log('this.state.doctorData'+JSON.stringify(this.state.doctorData))
         this.state.doctorData.forEach((doctorElement) => {
+            let experience;
+
 
             filterData.forEach((filterElement) => {
                 if (filterElement.value) {
                     if (doctorElement.gender_preference.includes(filterElement.value)) {
                         filteredDocListArray.push(doctorElement.doctor_id)
                     }
+                    if(filterElement.type ==='experience'){
 
+                        let updatedDate = moment(doctorElement.experience.updated_date);
+                        let experienceInYear = dateDiff(updatedDate, this.state.selectedDate, 'year');
+                        let experienceInMonth = dateDiff(updatedDate, this.state.selectedDate, 'months');
+                        let year = (moment(doctorElement.experience.year) + experienceInYear);
+                        let month = (moment(doctorElement.experience.month)) + experienceInMonth;
+                        experience = experienceInYear + year;
+                        console.log('experience'+experience)
+                        if (month >= 12) {
+                          experience++;
+                        }
+                      
+if (experience >= filterElement.value) {
+    filteredDocListArray.push(doctorElement.doctor_id)
+}
+console.log('filteredDocListArray'+JSON.stringify(filteredDocListArray))
+                    }
+                  
+                  
                     doctorElement.language.forEach((docLanguage) => {
                         if (filterElement.type == 'language') {
                             filterElement.value.forEach((filLanguage) => {
@@ -125,7 +149,7 @@ class doctorSearchList extends Component {
             })
         });
     
-        console.log('filteredDocListArray' + JSON.stringify(filteredDocListArray))
+        // console.log('filteredDocListArray' + JSON.stringify(filteredDocListArray))
 
         var sortedArray = filteredDocListArray.slice().sort();
 
@@ -140,8 +164,8 @@ class doctorSearchList extends Component {
                 resultsArray.push(sortedArray[i]);
             }
         }
-        console.log('resultsArray' + JSON.stringify(resultsArray))
-        console.log('dupFilteredDocDetailsArray' + JSON.stringify(dupFilteredDocDetailsArray))
+        // console.log('resultsArray' + JSON.stringify(resultsArray))
+        // console.log('dupFilteredDocDetailsArray' + JSON.stringify(dupFilteredDocDetailsArray))
 
 
         let withAvailabilityDateDocArray = [];
@@ -155,7 +179,7 @@ class doctorSearchList extends Component {
             })
 
             await this.setState({ uniqueFilteredDocArray: withAvailabilityDateDocArray })
-            console.log('this.state.uniqueFilteredDocArray' + JSON.stringify(this.state.uniqueFilteredDocArray))
+            // console.log('this.state.uniqueFilteredDocArray' + JSON.stringify(this.state.uniqueFilteredDocArray))
         }
 
         else {
@@ -163,7 +187,8 @@ class doctorSearchList extends Component {
                 await this.setState({ uniqueFilteredDocArray: availableDateSlotsDocArray })
             }
             else {
-                if (filterData === '') {
+                if ( filterData === '') {
+                    alert('single')
                     console.log('working filter single docDetails ')
                     if (typeof dupFilteredDocDetailsArray == undefined) {
                         await this.setState({ uniqueFilteredDocArray: resultsArray })
@@ -175,7 +200,7 @@ class doctorSearchList extends Component {
                 else {
                     console.log('came without availability dates');
                     await this.setState({ uniqueFilteredDocArray: filteredDocListArray })
-                    console.log('this.state.uniqueFilteredDocArray' + JSON.stringify(this.state.uniqueFilteredDocArray))
+                    // console.log('this.state.uniqueFilteredDocArray' + JSON.stringify(this.state.uniqueFilteredDocArray))
                 }
             }
         }
@@ -395,7 +420,7 @@ class doctorSearchList extends Component {
                 })
 
                 await this.setState({ uniqueFilteredDocArray: uniqueFilteredDocArray })
-                console.log('doctorData uniqueFilteredDocArray' + JSON.stringify(this.state.uniqueFilteredDocArray));
+                // console.log('doctorData uniqueFilteredDocArray' + JSON.stringify(this.state.uniqueFilteredDocArray));
                 for (i = 0; i < resultDoctorDetails.data.length; i++) {
                     this.doctorSpecialitesMap.set(resultDoctorDetails.data[i].doctor_id, resultDoctorDetails.data[i]) // total_rating
                 }
@@ -566,8 +591,8 @@ class doctorSearchList extends Component {
                                 renderItem={({ item, index }) =>
 
                                     <Card style={{ padding: 5, borderRadius: 10, borderBottomWidth: 2 }}>
-                                        <List onPress={() => this.navigateToBookAppointmentPage(item)}>
-                                            <ListItem avatar>
+                                        <List>
+                                            <ListItem avatar onPress={() => this.navigateToBookAppointmentPage(item)}>
                                                 <Left>
                                                     {
                                                         item.profile_image != undefined
@@ -639,8 +664,8 @@ class doctorSearchList extends Component {
                                                         </View>}
 
                                                 </Body>
-
-                                                {/* <Right>
+                                            {/* 
+                                                <Right>
                                                     <Icon name='heart' type='Ionicons'
                                                         style={patientWishListsDoctorIds.includes(item.doctorId) ? { color: 'red', fontSize: 25 } : { color: 'gray', fontSize: 25 }}
                                                         onPress={() => this.addToWishList(item.doctorId, index)} ></Icon>

@@ -4,8 +4,7 @@ import { login, logout } from '../../providers/auth/auth.actions';
 import LinearGradient from 'react-native-linear-gradient';
 import { Col, Row, Grid } from 'react-native-easy-grid';
 import { connect } from 'react-redux'
-import { StyleSheet, Image, } from 'react-native';
-
+import { StyleSheet, Image, View, TouchableOpacity } from 'react-native';
 import { ScrollView, FlatList } from 'react-native-gesture-handler';
 import { catagries } from '../../providers/catagries/catagries.actions';
 
@@ -17,8 +16,12 @@ class Home extends Component {
             data: [],
             isLoading: false,
             catagary: [],
-            searchValue: null
+            searchValue: null,
+            totalSpecialistDataArry: [],
+            visibleClearIcon: ''
+
         };
+        this.arrayData = []
         this.getCatagries();
     }
     navigetToCategories() {
@@ -38,15 +41,37 @@ class Home extends Component {
             // if(result.success) 
             // setTimeout( ()=>{
             this.setState({ data: result.data, isLoading: true })
-            let limitedData = [];
+             console.log('category Data'+JSON.stringify(this.state.data));
+             let limitedData = [];
 
-            for (let limtedNumber = 0; limtedNumber < 6; limtedNumber++) {
-                if(result.data[limtedNumber] !== undefined)
-                  limitedData.push(result.data[limtedNumber]);
-            }
-            console.log(limitedData);
-            this.setState({ catagary: limitedData });
+             for (let limtedNumber = 0; limtedNumber < 6; limtedNumber++) {
+                 if(result.data[limtedNumber] !== undefined)
+                     limitedData.push(result.data[limtedNumber]);
+             }
+             this.setState({ catagary: limitedData });
+            
+             let totalSpecialistDataArry = [];
 
+            this.state.data.forEach((dataElement) => {
+                let categoryObject = { name: 'specialist', value: dataElement.category_name };
+                totalSpecialistDataArry.push(categoryObject);
+
+                dataElement.services.forEach((serviceEle) => {
+                    let serviceObject = { name: 'service', value: serviceEle.service };
+                    totalSpecialistDataArry.push(serviceObject);
+                    if(serviceEle.symptoms != undefined) {
+                      serviceEle.symptoms.forEach((symptomsEle) => {
+                        let symptomObject = { name: 'symptoms', value: symptomsEle };
+                        totalSpecialistDataArry.push(symptomObject)
+                      })
+                    }
+                })
+
+            })
+            await this.setState({ totalSpecialistDataArry: totalSpecialistDataArry })
+            console.log('this.state.totalSpecialistDataArry' + JSON.stringify(this.state.totalSpecialistDataArry));
+
+            
         } catch (e) {
             console.log(e);
         }
@@ -62,7 +87,7 @@ class Home extends Component {
                 type: 'symptoms',
                 value: [this.state.searchValue]
             }]
-            if (this.state.searchValue == '') {
+            if (this.state.searchValue == null) {
                 alert("We can't Find the Empty Values");
             }
             else {
@@ -80,44 +105,91 @@ class Home extends Component {
         this.props.navigation.navigate('Doctor List', { resultData: serachInputvalues })
     }
 
+    /* Filter the Specialist and Services on Search Box  */
+    SearchFilterFunction = async (enteredText) => {
+        await this.setState({ visibleClearIcon: enteredText })
+
+        this.arrayData = this.state.totalSpecialistDataArry;
+        let newData = this.arrayData.filter(function (item) {
+            let itemData = item.value ? item.value.toUpperCase() : ''.toUpperCase();
+            let textData = enteredText.toUpperCase();
+            return itemData.indexOf(textData) > -1;
+        });
+
+        this.setState({
+            totalSpecialistDataArry: newData,
+            searchValue: enteredText,
+        });
+    }
+
+    clearTotalText = () => {
+        this.setState({ searchValue: '' })
+    };
+
+    itemSaperatedByListView = () => {
+        return (
+            <View
+                style={{
+                    height: 0.3,
+                    width: '90%',
+                    backgroundColor: '#080808',
+                }}
+            />
+        );
+    };
 
     render() {
 
         return (
 
             <Container style={styles.container}>
-
-
-
-
-
-
-
-
                 <Content keyboardShouldPersistTaps={'handled'} style={styles.bodyContent}>
                     <Row style={{ backgroundColor: 'white', borderColor: '#000', borderWidth: 1, borderRadius: 20, }}>
-
 
                         <Input placeholder="Search Symptoms/Services"
                             style={{ color: 'gray', fontFamily: 'OpenSans', fontSize: 12 }}
                             placeholderTextColor="gray"
                             value={this.state.searchValue}
                             keyboardType={'email-address'}
-                            onChangeText={searchValue => this.setState({ searchValue })}
+                            // onChangeText={searchValue => this.setState({ searchValue })}
+                            onChangeText={enteredText => this.SearchFilterFunction(enteredText)}
+                            underlineColorAndroid="transparent"
                             blurOnSubmit={false}
                             onSubmitEditing={() => { this.searchDoctorListModule(); }}
                         />
-
-
+                        {this.state.visibleClearIcon != '' ? <Right style={{ marginLeft: 10 }}>
+                            <Button Button transparent onPress={() => this.clearTotalText()}>
+                                <Icon name="ios-close" style={{ color: 'gray' }} />
+                            </Button>
+                        </Right> : null
+                        }
                         <Right>
-
                             <Button Button transparent onPress={() => this.searchDoctorListModule()}>
                                 <Icon name="ios-search" style={{ color: '#000' }} />
                             </Button>
                         </Right>
 
                     </Row>
-                    <Card style={{ padding: 10, borderRadius: 10, backgroundColor: '#82ccdd', marginTop: 10 }}>
+
+
+                    {this.state.searchValue != null ?
+                        <FlatList
+                            data={this.state.totalSpecialistDataArry}
+                            ItemSeparatorComponent={this.itemSaperatedByListView}
+                            renderItem={({ item }) => (
+                                <Row>
+                                    <Text style={{ padding: 10 }}>{item.value}</Text>
+                                    <Text style={{ padding: 10, marginRight: 10, fontSize: 14, fontStyle: 'italic' }}>{item.name}</Text>
+
+                                </Row>
+                            )}
+                            enableEmptySections={true}
+                            style={{ marginTop: 10 }}
+                            keyExtractor={(item, index) => index.toString()}
+                        />
+                        : null}
+
+                    <Card style={{ padding: 10, borderRadius: 10 }}>
 
                         <Grid>
                             <Row >
@@ -144,7 +216,7 @@ class Home extends Component {
 
                                 <ListItem noBorder>
                                     <ScrollView horizontal={false}>
-                                        <FlatList
+                                         {/* <FlatList
                                             horizontal={true}
                                             data={this.state.catagary}
                                             extraData={this.state}
@@ -159,14 +231,14 @@ class Home extends Component {
                                                             </LinearGradient>
 
                                                             <Text style={styles.textcenter}>{item.category_name}</Text>
-                                                            {/*<Text note style={{ textAlign: 'center' }}>100 Doctors</Text>*/}
+                                                            <Text note style={{ textAlign: 'center' }}>100 Doctors</Text>
                                                         </Col>
                                                     </Item>
                                                 </Grid>
                                             }
                                             keyExtractor={(item, index) => index.toString()}
                                         />
-
+  */}
 
                                     </ScrollView></ListItem>
 
