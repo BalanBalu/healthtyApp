@@ -95,7 +95,7 @@ class Signup extends Component {
                             <Text style={{ textAlign: 'center', color: '#775DA3' }}> Invalid Credencials</Text>
                         </View> */}
 
-                            <Item style={{ borderBottomWidth: 0 }}>
+                            <Item style={{ borderBottomWidth: 0, marginTop: 10 }}>
                                 <Input placeholder="Email Or Phone" style={styles.transparentLabel}
                                     returnKeyType={'next'}
                                     keyboardType={'email-address'}
@@ -108,7 +108,7 @@ class Signup extends Component {
                             </Item>
 
                             <Item success style={styles.transparentLabel}>
-                                <Input placeholder="Password"
+                                <Input placeholder="Password" style={{ fontSize: 15, marginTop: 10 }}
                                     ref={(input) => { this.userEmail = input; }}
                                     returnKeyType={'done'}
                                     value={this.state.password}
@@ -119,9 +119,9 @@ class Signup extends Component {
                                     maxLength={16}
                                     onSubmitEditing={() => { this.doSignUp(); }} />
 
-                                <Icon active name='eye' onPress={() => this.setState({ showPassword: !this.state.showPassword })} />
+                                <Icon active name='eye' style={{ fontSize: 20 }} onPress={() => this.setState({ showPassword: !this.state.showPassword })} />
                             </Item>
-                            <Item style={{ marginTop: 12, borderBottomWidth: 0 }}>
+                            <Item style={{ marginTop: 12, borderBottomWidth: 0, marginLeft: 18 }}>
 
                                 <Radio selected={this.state.radioStatus[0]} onPress={() => this.toggleRadio("0", "M")} color={"#775DA3"}
                                     selectedColor={"#775DA3"} />
@@ -141,9 +141,9 @@ class Signup extends Component {
                             </Item>
 
 
-                            <Item style={{ borderBottomWidth: 0, marginTop: 12, marginLeft: 4 }}>
-                                <CheckBox checked={this.state.conditionCheck} color="green" onPress={() => this.setState({ conditionCheck: !this.state.conditionCheck })} ></CheckBox>
-                                <Text style={{ marginLeft: 15, color: 'gray', fontFamily: 'OpenSans' }}>I Accept the Medflic Terms And Conditions</Text>
+                            <Item style={{ borderBottomWidth: 0, marginTop: 12, marginLeft: 8 }}>
+                                <CheckBox checked={this.state.conditionCheck} color="green" style={{ height: 20, width: '5%' }} onPress={() => this.setState({ conditionCheck: !this.state.conditionCheck })} ></CheckBox>
+                                <Text style={{ marginLeft: 15, color: 'gray', fontFamily: 'OpenSans', fontSize: 13, }}>I Accept the Medflic Terms And Conditions</Text>
                             </Item>
 
                             <Spinner color='blue'
