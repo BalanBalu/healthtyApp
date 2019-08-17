@@ -5,10 +5,12 @@ import {
 } from 'native-base';
 import { userFiledsUpdate, logout } from '../../providers/auth/auth.actions';
 import { connect } from 'react-redux'
+import { Row } from 'react-native-easy-grid';
+
 import { Image, BackHandler, AsyncStorage, ScrollView } from 'react-native';
 import styles from './style.js';
 import {
-    formatDate,
+    formatDate, subTimeUnit
 } from "../../../setup/helpers";
 import Spinner from '../../../components/Spinner';
 const bloodGroupList = ['Select Blood Group', 'A+', 'O+', 'B+', 'AB+', 'A-', 'O-', 'B-', 'AB-']
@@ -16,7 +18,6 @@ const bloodGroupList = ['Select Blood Group', 'A+', 'O+', 'B+', 'AB+', 'A-', 'O-
 class UpdateUserDetails extends Component {
     constructor(props) {
         super(props)
-
         this.state = {
             firstName: '',
             lastName: '',
@@ -27,14 +28,12 @@ class UpdateUserDetails extends Component {
             selectedBloodGroup: null,
             updateButton: false,
             userData: '',
-
         }
     }
     componentDidMount() {
-
         this.bindValues();
-
     }
+
     onPressRadio(value) {
         this.setState({ gender: value })
     }
@@ -42,31 +41,37 @@ class UpdateUserDetails extends Component {
         const { navigation } = this.props;
         const userData = navigation.getParam('updatedata');
         this.setState({ userData })
-
-
         await this.setState({
             dob: userData.dob,
             firstName: userData.first_name,
             lastName: userData.last_name,
             gender: userData.gender,
             selectedBloodGroup: userData.blood_group || null
-
         })
-
-
-
-
-
     }
 
-
-
+    validateFirstNameLastName = async (text, type) => {
+        console.log(this.state.updateButton + 'updateButton');
+        const regex = new RegExp('^[A-Z ]+$')  //Support Capital letter with space
+        if (type === "Firstname") {
+            this.setState({ firstName: text, updateButton: false });
+        } else {
+            this.setState({ lastName: text, updateButton: false });
+        }
+        if (regex.test(text) === false) {
+            this.setState({ updateButton: true });
+            Toast.show({
+                text: 'Kindly Enter UpperCase Letters',
+                type: "danger",
+                duration: 3000
+            });
+        }
+    }
 
     userUpdate = async () => {
         const { userData, firstName, lastName, dob, gender, selectedBloodGroup } = this.state
-
         try {
-            this.setState({ isLoading: true });
+            this.setState({ isLoading: true, updateButton: false });
             if (userData.first_name != firstName || userData.last_name != lastName || userData.dob != dob || userData.gender != gender || userData.blood_group != selectedBloodGroup) {
                 let requestData = {
                     first_name: firstName,
@@ -79,8 +84,6 @@ class UpdateUserDetails extends Component {
                 const userId = await AsyncStorage.getItem('userId')
                 let response = await userFiledsUpdate(userId, requestData);
                 if (response.success) {
-
-
                     Toast.show({
                         text: 'Your Profile has been Updated',
                         type: "success",
@@ -134,10 +137,10 @@ class UpdateUserDetails extends Component {
                                     value={this.state.firstName}
                                     keyboardType={'default'}
                                     returnKeyType={"next"}
-                                    onChangeText={firstName => this.setState({ firstName })}
+                                    onChangeText={text => this.validateFirstNameLastName(text, "Firstname")}
                                     autoCapitalize='none'
                                     blurOnSubmit={false}
-                                    onSubmitEditing={() => { this.firstName._root.focus(); }}
+                                    onSubmitEditing={() => { this.firstName._root.focus(); }} testID="editFirstName"
                                 />
                             </Item>
 
@@ -147,11 +150,11 @@ class UpdateUserDetails extends Component {
                                     value={this.state.lastName}
                                     keyboardType={'default'}
                                     returnKeyType={"next"}
-
-                                    onChangeText={lastName => this.setState({ lastName })}
+                                    onChangeText={text => this.validateFirstNameLastName(text, "Lastname")}
                                     autoCapitalize='none'
                                     blurOnSubmit={false}
                                     onSubmitEditing={() => { this.lastName._root.focus(this.setState({ focus: true })); }}
+                                    testID="editLastName"
                                 />
                             </Item>
 
@@ -159,20 +162,20 @@ class UpdateUserDetails extends Component {
                                 <Icon name='calendar' style={{ paddingLeft: 20, color: '#775DA3' }} />
                                 <DatePicker style={styles.transparentLabel}
                                     defaultDate={this.state.dob}
-
                                     timeZoneOffsetInMinutes={undefined}
                                     returnKeyType={'next'}
                                     modalTransparent={false}
                                     animationType={"fade"}
+                                    minimumDate={new Date(1940, 0, 1)}
+                                    maximumDate={subTimeUnit(new Date(), 1, 'year')}
                                     androidMode={"default"}
                                     placeHolderText={formatDate(this.state.dob, "DD/MM/YYYY")}
                                     textStyle={{ color: "#5A5A5A" }}
                                     value={this.state.dob}
                                     placeHolderTextStyle={{ color: "#5A5A5A" }}
                                     onDateChange={dob => { console.log(dob); this.setState({ dob }) }}
-
-                                    // onSubmitEditing={() => { this.dob._root.focus(); }}
                                     disabled={false}
+                                    testID="editDateOfBirth"
                                 />
 
                             </Item>
@@ -192,6 +195,7 @@ class UpdateUserDetails extends Component {
                                     style={{ width: undefined }}
                                     onValueChange={(sample) => { this.setState({ selectedBloodGroup: sample }) }}
                                     selectedValue={this.state.selectedBloodGroup}
+                                    testID="editBloodGroup"
                                 >
 
                                     {bloodGroupList.map((value, key) => {
@@ -207,15 +211,15 @@ class UpdateUserDetails extends Component {
                             <ListItem noBorder>
 
                                 <Radio selected={this.state.gender === 'M'} onPress={() => this.onPressRadio('M')} style={{ marginLeft: 2, }} color={"#775DA3"}
-                                    selectedColor={"#775DA3"} />
+                                    selectedColor={"#775DA3"} testID="clickMale" />
                                 <Text style={{ marginLeft: 10, fontFamily: 'OpenSans' }}>Male</Text>
 
                                 <Radio selected={this.state.gender === 'F'} onPress={() => this.onPressRadio('F')} style={{ marginLeft: 10 }} color={"#775DA3"}
-                                    selectedColor={"#775DA3"} />
+                                    selectedColor={"#775DA3"} testID="clickFemale" />
                                 <Text style={{ marginLeft: 10, fontFamily: 'OpenSans' }}>Female</Text>
 
                                 <Radio selected={this.state.gender === 'O'} onPress={() => this.onPressRadio('O')} style={{ marginLeft: 10 }} color={"#775DA3"}
-                                    selectedColor={"#775DA3"} />
+                                    selectedColor={"#775DA3"} testID="clickOther" />
                                 <Text style={{ marginLeft: 10 }}>Other</Text>
 
                             </ListItem>
@@ -225,10 +229,11 @@ class UpdateUserDetails extends Component {
                                 textContent={'Please wait Loading'}
                             />
 
-
-                            <Button style={{ height: 45, borderRadius: 10, textAlign: 'center', color: 'white', marginTop: 20, padding: 94, marginLeft: 15 }} primary onPress={() => this.userUpdate()}>
-                                <Text style={{ fontFamily: 'OpenSans', fontSize: 15, }}>Update</Text>
-                            </Button>
+                            <Row>
+                                <Button disabled={this.state.updateButton} style={{ height: 45, width: 'auto', color: 'gray', borderRadius: 10, textAlign: 'center', marginTop: 20, padding: 85, marginLeft: 15 }} primary onPress={() => this.userUpdate()} testID="updateUserDetails">
+                                    <Text style={{ fontFamily: 'OpenSans', fontSize: 15, }}>Update</Text>
+                                </Button>
+                            </Row>
 
                         </Form>
 
