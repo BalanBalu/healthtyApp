@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import {
     Container, Content, Button, Text, Form, Item, Input, Footer, Icon, DatePicker,
-    FooterTab, H3, Toast, ListItem, Radio, Picker
+    FooterTab, H3, Toast, ListItem, Radio, Picker, View
 } from 'native-base';
 import { userFiledsUpdate, logout } from '../../providers/auth/auth.actions';
 import { connect } from 'react-redux'
@@ -127,10 +127,10 @@ class UpdateUserDetails extends Component {
 
             <Container >
 
+                <ScrollView>
 
+                    <Content contentContainerStyle={{ justifyContent: 'center', flex: 1, marginTop: 50, padding: 60 }}>
 
-                <Content contentContainerStyle={{ justifyContent: 'center', flex: 1, marginTop: 50, padding: 60 }}>
-                    <ScrollView>
                         <Text style={{ fontSize: 22, textAlign: 'center', fontFamily: 'opensans-semibold', marginLeft: -30 }}>Update Your Details</Text>
                         <Form>
 
@@ -146,7 +146,7 @@ class UpdateUserDetails extends Component {
                                 />
                             </Item>
 
-                            <Item style={{ borderBottomWidth: 0 }}>
+                            <Item style={{ borderBottomWidth: 0, }}>
                                 <Input placeholder="Last Name" style={styles.transparentLabel}
                                     ref={(input) => { this.firstName = input; }}
                                     value={this.state.lastName}
@@ -160,7 +160,7 @@ class UpdateUserDetails extends Component {
                                 />
                             </Item>
 
-                            <Item style={{ borderBottomWidth: 0, backgroundColor: '#F1F1F1', marginTop: 10, borderRadius: 5 }}>
+                            <Item style={{ borderBottomWidth: 0, backgroundColor: '#F1F1F1', marginTop: 10, borderRadius: 5, }}>
                                 <Icon name='calendar' style={{ paddingLeft: 20, color: '#775DA3' }} />
                                 <DatePicker style={styles.transparentLabel}
                                     defaultDate={this.state.dob}
@@ -182,16 +182,16 @@ class UpdateUserDetails extends Component {
 
                             </Item>
                             <Item style={{ borderBottomWidth: 0, backgroundColor: '#F1F1F1', marginTop: 10, borderRadius: 5 }}>
-                                <Picker style={{ fontFamily: 'OpenSans' }}
+                                <Picker style={styles.transparentLabel}
                                     mode="dropdown"
                                     iosIcon={<Icon name="arrow-down" />}
                                     textStyle={{ color: "#5cb85c" }}
                                     note={false}
                                     itemStyle={{
                                         backgroundColor: "gray",
-                                        marginLeft: 0,
+
                                         paddingLeft: 10,
-                                        fontSize: 13
+                                        fontSize: 10,
                                     }}
                                     itemTextStyle={{ color: '#5cb85c' }}
                                     style={{ width: undefined }}
@@ -231,17 +231,17 @@ class UpdateUserDetails extends Component {
                                 textContent={'Please wait Loading'}
                             />
 
-                            <Row>
-                                <Button disabled={this.state.updateButton} style={{ height: 45, width: 'auto', color: 'gray', borderRadius: 10, textAlign: 'center', marginTop: 20, padding: 85, marginLeft: 15 }} primary onPress={() => this.userUpdate()} testID="updateUserDetails">
+                            <View>
+                                <Button primary style={styles.userbutton} onPress={() => this.userUpdate()}>
                                     <Text style={{ fontFamily: 'OpenSans', fontSize: 15, }}>Update</Text>
                                 </Button>
-                            </Row>
-
+                            </View>
                         </Form>
 
-                    </ScrollView>
 
-                </Content>
+
+                    </Content>
+                </ScrollView>
 
             </Container>
 
