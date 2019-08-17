@@ -592,7 +592,7 @@ console.log('filteredDocListArray'+JSON.stringify(filteredDocListArray))
 
                                     <Card style={{ padding: 5, borderRadius: 10, borderBottomWidth: 2 }}>
                                         <List>
-                                            <ListItem avatar>
+                                            <ListItem avatar onPress={() => this.navigateToBookAppointmentPage(item)}>
                                                 <Left>
                                                     {
                                                         item.profile_image != undefined
@@ -664,7 +664,7 @@ console.log('filteredDocListArray'+JSON.stringify(filteredDocListArray))
                                                         </View>}
 
                                                 </Body>
-
+                                            {/* 
                                                 <Right>
                                                     <Icon name='heart' type='Ionicons'
                                                         style={patientWishListsDoctorIds.includes(item.doctorId) ? { color: 'red', fontSize: 25 } : { color: 'gray', fontSize: 25 }}
@@ -673,7 +673,7 @@ console.log('filteredDocListArray'+JSON.stringify(filteredDocListArray))
                                                         <Button style={{borderRadius:15,marginTop:90,height:35}} onPress={() => this.navigateToBookAppointmentPage(item)}>
                                                             <Text style={{fontFamily:'OpenSans',fontSize:11,justifyContent:'center'}}>View Profile</Text>
                                                         </Button>
-                                                </Right>
+                                                </Right> */}
                                             </ListItem>
 
                                             <Grid>

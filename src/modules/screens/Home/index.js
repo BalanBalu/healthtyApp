@@ -41,8 +41,16 @@ class Home extends Component {
             // if(result.success) 
             // setTimeout( ()=>{
             this.setState({ data: result.data, isLoading: true })
-            // console.log('category Data'+JSON.stringify(this.state.data));
-            let totalSpecialistDataArry = [];
+             console.log('category Data'+JSON.stringify(this.state.data));
+             let limitedData = [];
+
+             for (let limtedNumber = 0; limtedNumber < 6; limtedNumber++) {
+                 if(result.data[limtedNumber] !== undefined)
+                     limitedData.push(result.data[limtedNumber]);
+             }
+             this.setState({ catagary: limitedData });
+            
+             let totalSpecialistDataArry = [];
 
             this.state.data.forEach((dataElement) => {
                 let categoryObject = { name: 'specialist', value: dataElement.category_name };
@@ -51,24 +59,19 @@ class Home extends Component {
                 dataElement.services.forEach((serviceEle) => {
                     let serviceObject = { name: 'service', value: serviceEle.service };
                     totalSpecialistDataArry.push(serviceObject);
-
-                    serviceEle.symptoms.forEach((symptomsEle) => {
+                    if(serviceEle.symptoms != undefined) {
+                      serviceEle.symptoms.forEach((symptomsEle) => {
                         let symptomObject = { name: 'symptoms', value: symptomsEle };
                         totalSpecialistDataArry.push(symptomObject)
-                    })
+                      })
+                    }
                 })
 
             })
             await this.setState({ totalSpecialistDataArry: totalSpecialistDataArry })
             console.log('this.state.totalSpecialistDataArry' + JSON.stringify(this.state.totalSpecialistDataArry));
 
-            let limitedData = [];
-
-            for (let limtedNumber = 0; limtedNumber < 6; limtedNumber++) {
-                limitedData.push(result.data[limtedNumber]);
-            }
-            this.setState({ catagary: limitedData });
-
+            
         } catch (e) {
             console.log(e);
         }
