@@ -91,7 +91,8 @@ class Home extends Component {
          let userId = await AsyncStorage.getItem('userId');
 
          let result = await fetchUserNotification(userId);
-        if (result.success) {
+            if (result.success) {
+            
                 await this.setState({ data: result.data })
             }
 
@@ -156,7 +157,7 @@ class Home extends Component {
                                 <Right>
 
 
-                                    <Text style={styles.titleText} onPress={() => this.navigetToCategories()}>ViAll</Text>
+                                    <Text style={styles.titleText} onPress={() => this.navigetToCategories()}>View All</Text>
 
 
                                 </Right>

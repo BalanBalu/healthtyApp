@@ -12,7 +12,7 @@ import { fetchUserNotification, UpDateUserNotification } from '../../providers/n
 import { hasLoggedIn } from "../../providers/auth/auth.actions";
 import { formatDate, dateDiff } from '../../../setup/helpers';
 import Spinner from "../../../components/Spinner";
-import Home from '../Home';
+// import Home from '../Home';
 
 
 
@@ -35,13 +35,12 @@ class Notification extends Component {
             this.props.navigation.navigate("login");
             return;
         }
-        this.setState({ data: this.props.notification.details })
-        if (this.props.notification.notificationId != null) {
+        this.setState({ data: this.props.user.details })
+        if (this.props.user.notificationId != null) {
     
-          await this.setState({ notificationId: this.props.notification.notificationId })
+          await this.setState({ notificationId: this.props.user.notificationId })
             this.upDateNotification('mark_as_viewed')
         }
-        console.log(JSON.stringify(this.state.data))
         // this.getUserNotification();
 
     }
@@ -91,7 +90,7 @@ class Notification extends Component {
 
     render() {
         const { data, isLoading } = this.state;
-        console.log(data)
+        console.log('notification' +data)
     
         return (
             < Container style={styles.container} >
@@ -210,7 +209,7 @@ function notificationState(state) {
         user: state.user
     }
 }
-export default connect(notificationState)(Home)
+export default connect(notificationState)(Notification)
 //export default Notification
 
 

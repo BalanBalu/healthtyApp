@@ -17,7 +17,7 @@ export const userInitialState = {
   isLoading: false,
   isAuthenticated: false,
   details: null,
-  notificationId:null,
+  notificationId:[],
   success: false,
   userId: null,
   isPasswordChanged: false,

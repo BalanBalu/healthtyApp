@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { Component} from 'react';
 import { Button } from 'native-base';
 import { createStackNavigator, createBottomTabNavigator, createAppContainer, createSwitchNavigator, createDrawerNavigator } from 'react-navigation';
 //import { routes } from './appRouterConfig';
@@ -39,7 +39,7 @@ import Notification from "../../modules/screens/Notification";
 
 import { Col, Grid, Row } from 'react-native-easy-grid';
 import { logout } from '../../modules/providers/auth/auth.actions';
-import { TouchableOpacity, Image, Text ,AppRegistry} from 'react-native'
+import { TouchableOpacity, Image, Text, AppRegistry, AsyncStorage} from 'react-native'
 
 
 import menuIcon from '../../../assets/images/menu.png';
@@ -266,7 +266,7 @@ const myAppointmentsStack = createStackNavigator({
     })
   });
 
-
+  
 const HomeStack = createStackNavigator({
   Home: {
     screen: Home,
@@ -281,6 +281,7 @@ const HomeStack = createStackNavigator({
           />
         </TouchableOpacity>
       ),
+      
       headerRight: (          
         <Grid>
 
@@ -289,7 +290,7 @@ const HomeStack = createStackNavigator({
               <View>
                 <Icon name="notifications" style={{ color: '#fff', marginRight: 10, fontFamily: 'opensans-semibold' }}></Icon>
 
-                <Text style={{ position: 'absolute', backgroundColor: 'red', color: 'white', borderRadius: 20, marginLeft: 10, padding: 2, marginTop: -7 }}>{7}</Text>
+                <Text style={{ position: 'absolute', backgroundColor: 'red', color: 'white', borderRadius: 20, marginLeft: 10, padding: 2, marginTop: -7 }}>{AsyncStorage.getItem('notificationCount')}</Text>
               </View>
             </TouchableOpacity>
           </Col>
@@ -534,11 +535,3 @@ export default createAppContainer(createSwitchNavigator(
 // })
 // const stack = createStackNavigator({ AppTabs, appStack }, { headerMode: "none" });
 //export default createAppContainer(stack)
-class App extends Component {
-  constructor(props) {
-    super(props)
-    this.state = {
-     length:this.props.user
-    };
-  }
-}
