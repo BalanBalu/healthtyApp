@@ -148,7 +148,7 @@ class Home extends Component {
 
             let result = await fetchUserNotification(userId);
             if (result.success) {
-                await this.setState({ data: result.data })
+                // await this.setState({ data: result.data })
             }
 
 
