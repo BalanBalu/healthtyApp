@@ -141,6 +141,27 @@ class Home extends Component {
             />
         );
     };
+    getUserNotification = async () => {
+        try {
+            this.setState({ isLoading: true });
+            let userId = await AsyncStorage.getItem('userId');
+
+            let result = await fetchUserNotification(userId);
+            if (result.success) {
+                await this.setState({ data: result.data })
+            }
+
+
+        }
+        catch (e) {
+            console.log(e);
+        }
+        finally {
+            this.setState({ isLoading: false });
+        }
+    }
+
+
 
     render() {
 
