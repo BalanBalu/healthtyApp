@@ -22,8 +22,9 @@ export default class Filters extends Component {
             language: '',
             genderIndex: 0,
             selectAvailabilityIndex: 0,
-            selectExperinceIndex:0,
+            selectExperinceIndex:'',
             selectedServicesList: '',
+            viewDoctors_button:true
         }
     }
 
@@ -51,7 +52,6 @@ else{
         for (var data in this.state.doctorData) {
             if (this.state.doctorData[data].language) {
                 Array.prototype.push.apply(sampleLangArray, this.state.doctorData[data].language)
-
             }
             if (this.state.doctorData[data].specialist) {
                 this.state.doctorData[data].specialist.forEach(element => {
@@ -64,17 +64,20 @@ else{
                         sampleCategoryArray.push(sampleCategoryObject);
                         sampleServiceArray.push(sampleServiceObject);
                     }
+                   
                 })
+               
             }
         }
-
+        let defaultPlaceHolderValue={id:'0101',value:"Select Your Category"}               
+        sampleCategoryArray.unshift(defaultPlaceHolderValue)
         let setUniqueLanguages =new Set(sampleLangArray)
         setUniqueLanguages.forEach(element => {
-            let sample = { value: element };
+            let sample = { value: element };   
             multipleLanguages.push(sample);
         })
         await this.setState({ languageData: multipleLanguages, categoryList: sampleCategoryArray, serviceList: sampleServiceArray });
-        // console.log('this.state.languageData' + JSON.stringify(this.state.languageData));
+        // console.log('this.state.categoryList' + JSON.stringify(this.state.categoryList));
     }
 
     /* Go and select the Services from Service List page  */
@@ -99,6 +102,10 @@ else{
         {
             type: "service",
             value: this.state.selectedServicesList
+        },
+        {
+            type: "experience",
+            value: this.state.selectExperinceIndex
         }
         ]  
 
@@ -114,15 +121,15 @@ else{
     /*  Select GenderPreference */
     clickGenderInButton = (genderIndex, genderSelected) => {
         this.setState({ genderIndex: genderIndex });
-        this.setState({ genderSelected: genderSelected })   
+        this.setState({ genderSelected: genderSelected ,viewDoctors_button:false})   
     }
     /* Get the selected Availability Date  */
     clickFilterByAvailabilityDates = (index) => {
-        this.setState({ selectAvailabilityIndex: index })
+        this.setState({ selectAvailabilityIndex: index,viewDoctors_button:false })
     }
 
     clickFilterByExperince=(index)=>{
-        this.setState({ selectExperinceIndex: index })
+        this.setState({ selectExperinceIndex: index,viewDoctors_button:false })
 
     }
 
@@ -314,7 +321,7 @@ else{
                                     showRemoveAll={true}
                                     showChips={false}
                                     readOnlyHeadings={false}
-                                    onSelectedItemsChange={(language) => this.setState({ language })}
+                                    onSelectedItemsChange={(language) => this.setState({ language,viewDoctors_button:false })}
                                     selectedItems={this.state.language}
                                     colors={{ primary: '#18c971' }}
                                     showCancelButton={true}
@@ -338,7 +345,7 @@ else{
                             }}
                             itemTextStyle={{ color: 'gray' }}
                             style={{ width: 25 }}
-                            onValueChange={(y) => { this.setState({ selectedCategory: y }) }}
+                            onValueChange={(y) => { this.setState({ selectedCategory: y ,viewDoctors_button:false}) }}
                             selectedValue={this.state.selectedCategory}
                         >
                             {this.state.categoryList.map((category, key) => {
@@ -365,7 +372,9 @@ else{
                     </View>
 
                     <View style={{ paddingTop: 5 }}>
-                        <Button block style={{ borderRadius: 10, backgroundColor: '#5cb75d', height: 48 }} onPress={this.sendFilteredData}>
+
+                        <Button block success disabled={this.state.viewDoctors_button} style={this.state.viewDoctors_button===true?styles.viewDocButtonBgGray:styles.viewDocButtonBgGreeen}
+                             onPress={this.sendFilteredData}>
                             <Text style={{ fontFamily: 'OpenSans', }}>View Doctors</Text>
                         </Button>
                     </View>
@@ -424,5 +433,16 @@ const styles = StyleSheet.create({
         marginLeft: 10,
         borderWidth: 50,
         height: 75,
+    },
+    viewDocButtonBgGreeen:{
+        borderRadius: 10,
+         backgroundColor: '#69f025',
+          height: 48 
+    },
+    viewDocButtonBgGray:{
+        borderRadius: 10,
+        backgroundColor: '#698d52',
+         height: 48 
     }
+    
 })
