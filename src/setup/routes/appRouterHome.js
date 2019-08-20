@@ -492,6 +492,9 @@ const DrawerNavigator = createDrawerNavigator({
   Home: HomeStack,
   Profile: ProfileStack,
   "My Appointments": myAppointmentsStack,
+  PaymentPage: {
+    screen: PaymentPage
+  }
 
 },
   {
@@ -506,7 +509,8 @@ export default createAppContainer(createSwitchNavigator(
     Auth: AuthStack,
     categoryStack,
     Appointments: AppointMentstack1,
-    Pharmacy: PharmacyStack
+    Pharmacy: PharmacyStack,
+    
   },
   {
     initialRouteName: 'AuthLoading',

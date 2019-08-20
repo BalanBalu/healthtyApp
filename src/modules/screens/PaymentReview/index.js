@@ -9,7 +9,7 @@ import { bookAppointment, createPaymentRazor } from '../../providers/bookappoint
 import { formatDate } from '../../../setup/helpers';
 import Spinner from '../../../components/Spinner';
 import { RenderHospitalAddress } from '../../common';
-import RazorpayCheckout from 'react-native-razorpay';
+//import RazorpayCheckout from 'react-native-razorpay';
 import { ScrollView } from 'react-native-gesture-handler';
 //import appIcon from '../../../../assets/Icon.png';
 

@@ -6,6 +6,9 @@ How to Build Android APP
     
 
  Issues 
+    Bable Error
+       Goto --> nodemodules/@babel/types/library/constants --> remove last 4 lines of code.
+
 
     1. If you get following Error   Task :react-native-razorpay:compileDebugJavaWithJavac FAILED then 
 

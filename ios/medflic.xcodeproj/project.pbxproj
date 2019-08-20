@@ -66,9 +66,6 @@
 		AD66AED6E4A74425BBE93453 /* libRNVectorIcons-tvOS.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 4C32883541B749C8AAA46260 /* libRNVectorIcons-tvOS.a */; };
 		ADBDB9381DFEBF1600ED6528 /* libRCTBlob.a in Frameworks */ = {isa = PBXBuildFile; fileRef = ADBDB9271DFEBF0700ED6528 /* libRCTBlob.a */; };
 		B8C6A89B22C7DFE4003D9356 /* libRNImagePicker.a in Frameworks */ = {isa = PBXBuildFile; fileRef = B8C6A89622C7DFBA003D9356 /* libRNImagePicker.a */; };
-		B8C6A91422C7EB25003D9356 /* libRazorpayCheckout.a in Frameworks */ = {isa = PBXBuildFile; fileRef = B8C6A8E722C7EAF1003D9356 /* libRazorpayCheckout.a */; };
-		B8C6A91622C7EB6C003D9356 /* Razorpay.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = B8C6A91522C7EB6B003D9356 /* Razorpay.framework */; };
-		B8C6A91722C7EB6C003D9356 /* Razorpay.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = B8C6A91522C7EB6B003D9356 /* Razorpay.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		B91FBD5FECB04FD5767E7EB0 /* libPods-medflic-tvOSTests.a in Frameworks */ = {isa = PBXBuildFile; fileRef = ADD3E751ED16895C2259AC9F /* libPods-medflic-tvOSTests.a */; };
 		CF10C304B3BC403DB0970D21 /* Icon-120.png in Resources */ = {isa = PBXBuildFile; fileRef = 0CD4086F2280413D96532512 /* Icon-120.png */; };
 		D27F7D97A3704A34A2E7D326 /* FontAwesome5_Regular.ttf in Resources */ = {isa = PBXBuildFile; fileRef = D0D88BDDC10D48218B810932 /* FontAwesome5_Regular.ttf */; };
@@ -417,13 +414,6 @@
 			remoteGlobalIDString = 014A3B5C1C6CF33500B6D375;
 			remoteInfo = RNImagePicker;
 		};
-		B8C6A8E622C7EAF1003D9356 /* PBXContainerItemProxy */ = {
-			isa = PBXContainerItemProxy;
-			containerPortal = B8C6A8DF22C7EAF1003D9356 /* RazorpayCheckout.xcodeproj */;
-			proxyType = 2;
-			remoteGlobalIDString = 134814201AA4EA6300B7C361;
-			remoteInfo = RazorpayCheckout;
-		};
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXCopyFilesBuildPhase section */
@@ -433,7 +423,6 @@
 			dstPath = "";
 			dstSubfolderSpec = 10;
 			files = (
-				B8C6A91722C7EB6C003D9356 /* Razorpay.framework in Embed Frameworks */,
 			);
 			name = "Embed Frameworks";
 			runOnlyForDeploymentPostprocessing = 0;
@@ -513,8 +502,6 @@
 		B873C85B2290043F002BDEB1 /* opensans-regular.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "opensans-regular.ttf"; sourceTree = "<group>"; };
 		B873C85C22900443002BDEB1 /* opensans-semibold.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "opensans-semibold.ttf"; sourceTree = "<group>"; };
 		B8C6A86822C7DFB9003D9356 /* RNImagePicker.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = RNImagePicker.xcodeproj; path = "../node_modules/react-native-image-picker/ios/RNImagePicker.xcodeproj"; sourceTree = "<group>"; };
-		B8C6A8DF22C7EAF1003D9356 /* RazorpayCheckout.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = RazorpayCheckout.xcodeproj; path = "../node_modules/react-native-razorpay/ios/RazorpayCheckout.xcodeproj"; sourceTree = "<group>"; };
-		B8C6A91522C7EB6B003D9356 /* Razorpay.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Razorpay.framework; path = "../node_modules/react-native-razorpay/ios/Razorpay.framework"; sourceTree = "<group>"; };
 		B9B72F86838324263D4AA792 /* Pods-medflicTests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-medflicTests.release.xcconfig"; path = "Target Support Files/Pods-medflicTests/Pods-medflicTests.release.xcconfig"; sourceTree = "<group>"; };
 		C35D52E9DF774A2591911AEA /* Entypo.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = Entypo.ttf; path = "../node_modules/native-base/Fonts/Entypo.ttf"; sourceTree = "<group>"; };
 		C3C39B6E6C9E4AFBBC55EC9B /* Icon-76.png */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = "Icon-76.png"; path = "../assets/icons/Icon-76.png"; sourceTree = "<group>"; };
@@ -551,9 +538,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				B8C6A89B22C7DFE4003D9356 /* libRNImagePicker.a in Frameworks */,
-				B8C6A91622C7EB6C003D9356 /* Razorpay.framework in Frameworks */,
 				ED297163215061F000B7C4FE /* JavaScriptCore.framework in Frameworks */,
-				B8C6A91422C7EB25003D9356 /* libRazorpayCheckout.a in Frameworks */,
 				ADBDB9381DFEBF1600ED6528 /* libRCTBlob.a in Frameworks */,
 				11D1A2F320CAFA9E000508D9 /* libRCTAnimation.a in Frameworks */,
 				146834051AC3E58100842450 /* libReact.a in Frameworks */,
@@ -814,7 +799,6 @@
 		832341AE1AAA6A7D00B99B32 /* Libraries */ = {
 			isa = PBXGroup;
 			children = (
-				B8C6A8DF22C7EAF1003D9356 /* RazorpayCheckout.xcodeproj */,
 				B8C6A86822C7DFB9003D9356 /* RNImagePicker.xcodeproj */,
 				5E91572D1DD0AC6500FF2AA8 /* RCTAnimation.xcodeproj */,
 				146833FF1AC3E56700842450 /* React.xcodeproj */,
@@ -848,7 +832,6 @@
 		83CBB9F61A601CBA00E9B192 = {
 			isa = PBXGroup;
 			children = (
-				B8C6A91522C7EB6B003D9356 /* Razorpay.framework */,
 				B873C85522900376002BDEB1 /* fonts */,
 				13B07FAE1A68108700A75B9A /* medflic */,
 				832341AE1AAA6A7D00B99B32 /* Libraries */,
@@ -947,14 +930,6 @@
 			isa = PBXGroup;
 			children = (
 				B8C6A89622C7DFBA003D9356 /* libRNImagePicker.a */,
-			);
-			name = Products;
-			sourceTree = "<group>";
-		};
-		B8C6A8E022C7EAF1003D9356 /* Products */ = {
-			isa = PBXGroup;
-			children = (
-				B8C6A8E722C7EAF1003D9356 /* libRazorpayCheckout.a */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -1082,10 +1057,6 @@
 				{
 					ProductGroup = B873C836228FFD9D002BDEB1 /* Products */;
 					ProjectRef = 83A95212FA034BA99896330D /* BVLinearGradient.xcodeproj */;
-				},
-				{
-					ProductGroup = B8C6A8E022C7EAF1003D9356 /* Products */;
-					ProjectRef = B8C6A8DF22C7EAF1003D9356 /* RazorpayCheckout.xcodeproj */;
 				},
 				{
 					ProductGroup = 00C302A81ABCB8CE00DB3ED1 /* Products */;
@@ -1483,13 +1454,6 @@
 			fileType = archive.ar;
 			path = libRNImagePicker.a;
 			remoteRef = B8C6A89522C7DFBA003D9356 /* PBXContainerItemProxy */;
-			sourceTree = BUILT_PRODUCTS_DIR;
-		};
-		B8C6A8E722C7EAF1003D9356 /* libRazorpayCheckout.a */ = {
-			isa = PBXReferenceProxy;
-			fileType = archive.ar;
-			path = libRazorpayCheckout.a;
-			remoteRef = B8C6A8E622C7EAF1003D9356 /* PBXContainerItemProxy */;
 			sourceTree = BUILT_PRODUCTS_DIR;
 		};
 /* End PBXReferenceProxy section */

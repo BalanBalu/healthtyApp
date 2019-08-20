@@ -7,7 +7,7 @@ import { connect } from 'react-redux'
 import LinearGradient from 'react-native-linear-gradient';
 import { StyleSheet, Image, TouchableOpacity, View } from 'react-native';
 import StarRating from 'react-native-star-rating';
-import RazorpayCheckout from 'react-native-razorpay';
+//import Razorpay from '../../../components/Razorpay';
 
 class PaymentPage extends Component {
     constructor(props) {
@@ -27,6 +27,27 @@ class PaymentPage extends Component {
             starCount: rating
         });
     }
+
+    razorpayChekout() {
+        var options = {
+         description: 'Credits towards consultation',
+         currency: 'INR',
+         key_id: 'rzp_test_Cq2ADxwBVYKNlL',
+         amount: '5000',
+         email: 'gaurav.kumar@example.com',
+         contact: '9123456789',
+         method: 'netbanking',
+         bank: 'HDFC'
+       }
+       Razorpay.open(options).then((data) => {
+         // handle success
+         alert(`Success: ${data.razorpay_payment_id}`);
+       }).catch((error) => {
+     // handle failure 
+         alert(`Error: ${error.code} | ${error.description}`);
+       });
+     }
+     
 
     render() {
         const { user: { isLoading } } = this.props;
@@ -51,7 +72,7 @@ class PaymentPage extends Component {
                 <Content style={styles.bodyContent}>
                     
                     <Button transparent
-                      onPress={() => {
+                      onPress={() => /*{
                         var options = {
                             description: 'Credits towards consultation',
                             image: 'https://i.imgur.com/3g7nmJC.png',
@@ -76,7 +97,7 @@ class PaymentPage extends Component {
                             // handle failure
                             alert(`Error: ${error.code} | ${error.description}`);
                           });
-                      }}
+                      }*/ this.razorpayChekout()}
                     ><Text style={{ color: '#66A3F2', fontSize: 15, fontFamily: 'OpenSans' }}>Pay Now</Text>
                     </Button>
                         
