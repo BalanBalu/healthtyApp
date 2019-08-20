@@ -19,7 +19,7 @@ class UserDetails extends Component {
             firstName: '',
             lastName: '',
             dob: '',
-            ErrorMsg: '',
+            errorMsg: '',
             isLoading: false
 
         }
@@ -27,7 +27,6 @@ class UserDetails extends Component {
     // componentDidMount() {
     //     BackHandler.addEventListener('hardwareBackPress', this.handleBackButton);
     //     this.bindValues();
-
     // }
 
     // async bindValues() {
@@ -42,47 +41,58 @@ class UserDetails extends Component {
     //             lastName: userData.last_name
     //         }) 
     //          console.log(this.state.dob+'dob');
-    //       }           
-
+    //       }        
     //       }
     //     }
-
-
 
     // componentWillUnmount() {
     //     BackHandler.removeEventListener('hardwareBackPress', this.handleBackButton);
     // }
 
-    handleBackButton() {
-        Toast.show({
-            text: 'Please Complete your Profile',
-            duration: 3000
-        });
-        return true;
+    validateFirstNameLastName = async (text, type) => {
+        const regex = new RegExp('^[\ba-zA-Z ]+$')  //Support letter with space
+        if (type === "firstName") {
+            this.setState({ firstName: text });
+        } else {
+            this.setState({ lastName: text });
+        }
+        if (regex.test(text) === false) {
+            this.setState({ errorMsg: "* Name can contain only alphabets" });
+        } else {
+            this.setState({ errorMsg: '' })
+        }
     }
 
-    userUpdate = async () => {
 
+    userUpdate = async () => {
         try {
-            let requestData = {
-                first_name: this.state.firstName,
-                last_name: this.state.lastName,
-                dob: this.state.dob,
-            };
-            const userId = await AsyncStorage.getItem('userId')
-            let response = await userFiledsUpdate(userId, requestData);
-            if (response.success) {
+            if (this.state.errorMsg === '') {
+                let requestData = {
+                    first_name: this.state.firstName,
+                    last_name: this.state.lastName,
+                    dob: this.state.dob,
+                };
+                const userId = await AsyncStorage.getItem('userId')
+                let response = await userFiledsUpdate(userId, requestData);
+                if (response.success) {
+                    Toast.show({
+                        text: 'Your Profile has been completed, Please Login to Continue',
+                        type: "success",
+                        duration: 3000
+                    });
+                    logout();
+                    this.props.navigation.navigate('login');
+                }
+                else {
+                    Toast.show({
+                        text: response.message,
+                        type: "danger",
+                        duration: 3000
+                    });
+                }
+            } else {
                 Toast.show({
-                    text: 'Your Profile has been completed, Please Login to Continue',
-                    type: "success",
-                    duration: 3000
-                });
-                logout();
-                this.props.navigation.navigate('login');
-            }
-            else {
-                Toast.show({
-                    text: response.message,
+                    text: "Entered Data is not Valid. Kindly review them.",
                     type: "danger",
                     duration: 3000
                 });
@@ -106,16 +116,13 @@ class UserDetails extends Component {
                     <H3 style={styles.welcome}>User Details</H3>
                     <Image source={{ uri: 'https://static1.squarespace.com/static/582bbfef9de4bb07fe62ab18/t/5877b9ccebbd1a124af66dfe/1484241404624/Headshot+-+Circular.png?format=300w' }} style={styles.logo} />
                     <Form>
-                        {/* <View style={styles.errorMsg}>
-                            <Text style={{ textAlign: 'center', color: '#775DA3' }}> Invalid Credencials</Text>
-                        </View> */}
                         <Item style={{ borderBottomWidth: 0 }}>
                             <Input placeholder="First Name" style={styles.transparentLabel}
                                 value={this.state.firstName}
                                 autoFocus={true}
                                 keyboardType={'default'}
                                 returnKeyType={'next'}
-                                onChangeText={firstName => this.setState({ firstName })}
+                                onChangeText={text => this.validateFirstNameLastName(text, "firstName")}
                                 autoCapitalize='none'
                                 blurOnSubmit={false}
                                 onSubmitEditing={() => { this.firstName._root.focus(); }}
@@ -128,7 +135,7 @@ class UserDetails extends Component {
                                 value={this.state.lastName}
                                 keyboardType={'default'}
                                 returnKeyType={'next'}
-                                onChangeText={lastName => this.setState({ lastName })}
+                                onChangeText={text => this.validateFirstNameLastName(text, "lastName")}
                                 autoCapitalize='none'
                                 blurOnSubmit={false}
                                 onSubmitEditing={() => { this.lastName.focus(); }}
@@ -153,6 +160,8 @@ class UserDetails extends Component {
 
                                 disabled={false}
                             /></Item>
+
+                        <Text style={{ paddingLeft: 20, fontSize: 15, fontFamily: 'OpenSans', marginBottom: 20, color: 'red' }}> {this.state.errorMsg}</Text>
 
                         <Spinner color='blue'
                             visible={this.state.isLoading}
