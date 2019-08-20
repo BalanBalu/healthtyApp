@@ -7,7 +7,7 @@ import { connect } from 'react-redux'
 import LinearGradient from 'react-native-linear-gradient';
 import { StyleSheet, Image, TouchableOpacity, View } from 'react-native';
 import StarRating from 'react-native-star-rating';
-//import Razorpay from '../../../components/Razorpay';
+import Razorpay from '../../../components/Razorpay';
 
 class PaymentPage extends Component {
     constructor(props) {
