@@ -188,9 +188,12 @@ const AppointMentstack1 = createStackNavigator({
     }
 
   },
-  paymentpage: {
-    screen: PaymentPage
-  },
+  // paymentpage: {
+  //   screen: PaymentPage,
+  //   navigationOptions: {
+  //     title: 'Payment Page'
+  //   }
+  // },
   Reviews: {
     screen: Reviews,
     navigationOptions: {
@@ -488,13 +491,36 @@ const categoryStack = createStackNavigator({
       headerTintColor: 'white',
     })
   });
+
+
+
+const paymentStack = createStackNavigator({
+
+  paymentpage: {
+    screen: PaymentPage,
+    navigationOptions: ({ navigation }) => ({
+      title: 'Payment Page',
+
+      headerLeft: (
+        <TouchableOpacity onPress={() => navigation.navigate('Home')}>
+          <Icon name="arrow-back" style={{ marginLeft: 18, color: '#fff', fontFamily: 'opensans-semibold' }}></Icon>
+        </TouchableOpacity>
+      ),
+    })
+  },
+},
+  {
+    defaultNavigationOptions: ({ navigation }) => ({
+      headerStyle: { backgroundColor: '#7E49C3', fontFamily: 'opensans-semibold' },
+      headerTintColor: 'white',
+    })
+  });
+
 const DrawerNavigator = createDrawerNavigator({
   Home: HomeStack,
   Profile: ProfileStack,
   "My Appointments": myAppointmentsStack,
-  PaymentPage: {
-    screen: PaymentPage
-  }
+  PaymentPage: paymentStack
 
 },
   {
@@ -510,7 +536,7 @@ export default createAppContainer(createSwitchNavigator(
     categoryStack,
     Appointments: AppointMentstack1,
     Pharmacy: PharmacyStack,
-    
+
   },
   {
     initialRouteName: 'AuthLoading',
