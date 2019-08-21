@@ -13,29 +13,27 @@ import { bookAppointment, createPaymentRazor } from '../../providers/bookappoint
 import { availableNetBanking, availableWallet } from '../../../setup/paymentMethods';
 import { FlatList } from 'react-native-gesture-handler';
 
+
 class PaymentPage extends Component {
     constructor(props) {
         super(props)
-
         this.state = {
             userEntry: '',
             password: '',
             loginErrorMsg: '',
-            paymentOption: null,
+            paymentOption: 'card', // setting default option to be card
             cardPaymentDetails: {
                 name: null,
                 number: null,
                 cvv: null,
-                monthyear: null
+                monthyear: ''
             },
             selectedNetBank: null,
             selectedWallet: null,
             upiVPA: null,
             amount: null,
-        }
-        this.state = {
             starCount: 3.5
-        };
+        }
     }
     componentDidMount() {
         availableNetBanking();
@@ -58,6 +56,22 @@ class PaymentPage extends Component {
     makePaymentMethod() {
         let data;
         if (this.state.paymentOption === 'card') {
+           if(!this.valid_credit_card(this.state.cardPaymentDetails.number)){
+                Toast.show({
+                    text: 'Please Enter valid Card number',
+                    type: 'danger',
+                    duration: 3000
+                })
+                return false;
+           };
+           if(this.state.cardPaymentDetails.monthyear.length !== 5) {
+            Toast.show({
+                text: 'Please Enter valid Expiry Date',
+                type: 'danger',
+                duration: 3000
+            })
+            return false;
+          };
             data = {
                 method: 'card',
                 'card[name]': this.state.cardPaymentDetails.name,
@@ -206,91 +220,154 @@ class PaymentPage extends Component {
         }
     }
 
+
+    handlingCardNumber(number) {
+        var cardPaymentDetails = {...this.state.cardPaymentDetails}
+        cardPaymentDetails.number = number.replace(/\s?/g, '').replace(/(\d{4})/g, '$1 ').trim();
+        this.setState({cardPaymentDetails})
+    }
+    handlingCardExpiry(text) {
+        if (text.indexOf('.') >= 0 || text.length > 5) {
+            // Since the keyboard will have a decimal and we don't want
+            // to let the user use decimals, just exit if they add a decimal
+            // Also, we only want 'MM/YY' so if they try to add more than
+            // 5 characters, we want to exit as well
+            return;
+        }
+        if(text.length === 5) {
+            if(Number(text.split('/')[1]) > 31) {
+                return;
+            }
+        }
+        var cardPaymentDetails = {...this.state.cardPaymentDetails}
+       
+        if (text.length === 2 && cardPaymentDetails.monthyear.length === 1) {
+            if(Number(text) > 12) {
+                return;
+            }
+            // This is where the user has typed 2 numbers so far
+            // We can manually add a slash onto the end
+            // We check to make sure the current value was only 1 character
+            // long so that if they are backspacing, we don't add on the slash again
+            text += '/'
+        }
+
+        cardPaymentDetails.monthyear = text;
+        console.log(cardPaymentDetails);
+
+        this.setState({cardPaymentDetails})
+        // Update the state, which in turns updates the value in the text field
+        
+    }
+     valid_credit_card(value) {
+        // Accept only digits, dashes or spaces
+          if (/[^0-9-\s]+/.test(value)) return false;
+      
+          // The Luhn Algorithm. It's so pretty.
+          let nCheck = 0, bEven = false;
+          value = value.replace(/\D/g, "");
+      
+          for (var n = value.length - 1; n >= 0; n--) {
+              var cDigit = value.charAt(n),
+                    nDigit = parseInt(cDigit, 10);
+      
+              if (bEven && (nDigit *= 2) > 9) nDigit -= 9;
+      
+              nCheck += nDigit;
+              bEven = !bEven;
+          }
+      
+          return (nCheck % 10) == 0;
+      }
     render() {
-        var payment = [{
-            bankName: 'State Bank', number: '2344'
-
-        }]
-        const { user: { isLoading } } = this.props;
-        const { loginErrorMsg } = this.state;
-
+       
+        const { cardPaymentDetails, paymentOption} = this.state;
 
         return (
             <Container style={styles.container}>
 
                 <Content style={styles.bodyContent}>
                     <Card transparent style={{ padding: 5, }}>
-                        <Segment>
-                            <Button first active>
-                                <Text uppercase={false}>DefaultCard</Text>
-                            </Button>
-                            <Button>
-                                <Text uppercase={false}>AddNewCard</Text>
-                            </Button>
-
-                        </Segment>
-                        <FlatList
-                            data={payment}
-                            renderItem={
-                                ({ item }) =>
-                                    <Card style={{ padding: 20, marginTop: 20, borderRadius: 5 }}>
-                                        {/* <Row>
-                                            <Col style={{ width: '32%' }}>
-                                                <Image source={{ uri: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQUKuPIQiZ-73x4xDj522X2WR1wUvbZoT14N3Jl4wa92mOig4WkKg' }}
-                                                    style={{ width: '30%', height: 50, }}
-                                                />
-                                            </Col>
-                                            <Col style={{ width: '58%', marginTop: 5, marginLeft: -20 }}>
-                                                <Row>
-                                                    <Text style={{ fontSize: 15, marginTop: 2 }} >******</Text>
-                                                    <Text style={{ fontSize: 15 }}>{item.number}</Text>
-                                                </Row>
-                                                <Text style={{ color: 'blue', fontFamily: 'OpenSans', fontWeight: 'bold', fontSize: 15 }}>{item.bankName}</Text>
-                                            </Col>
-                                            <Col style={{ width: '10%', marginTop: 15, marginLeft: 20, }} >
-                                                <Icon style={{ color: 'green', fontSize: 25 }} name="ios-checkmark-circle" />
-                                            </Col>
-                                        </Row> */}
-
-                                        <Grid style={{ padding: 5, margin: 10, backgroundColor: '#f2f2f2', }}>
-                                            <Text style={styles.paymentText}>Choose Your Payment Method</Text>
+                        
+                       <Card style={{ padding: 20, marginTop: 20, borderRadius: 5 }}>
+                                        
+                            <Grid style={{ padding: 5, margin: 10, backgroundColor: '#f2f2f2', }}>
+                                    <Text style={styles.paymentText}>Choose Your Payment Method</Text>
                                             <Row>
-                                                <Col style={{ borderColor: '#D92B4B', borderWidth: 1, padding: 10, alignItems: 'center', borderRadius: 10, margin: 10 }}>
-                                                    <Image source={{ uri: 'https://img.icons8.com/color/180/visa.png' }} style={{ width: '100%', height: 50, borderRadius: 10 }} /></Col>
+                                                <Col style={{ borderColor: '#D92B4B', borderWidth: 1, padding: 10, alignItems: 'center', borderRadius: 10, margin: 10 }}
+                                                     onPress={()=> this.setState({ paymentOption: 'card' })}>
+                                                    <Image source={{ uri: 'https://img.icons8.com/color/180/visa.png' }} style={{ width: '100%', height: 50, borderRadius: 10 }} />
+                                                </Col>
 
 
-                                                <Col style={{ borderColor: '#D92B4B', borderWidth: 1, padding: 10, alignItems: 'center', borderRadius: 10, margin: 10, backgroundColor: '#82ccdd' }}>
-                                                    <Image source={{ uri: 'https://img.icons8.com/color/180/visa.png' }} style={{ width: '100%', height: 50, borderRadius: 10 }} /></Col>
+                                                <Col style={{ borderColor: '#D92B4B', borderWidth: 1, padding: 10, alignItems: 'center', borderRadius: 10, margin: 10, backgroundColor: '#82ccdd' }} 
+                                                     onPress={()=> this.setState({ paymentOption: 'netbanking' })}>
+                                                    <Image source={{ uri: 'https://img.icons8.com/color/180/visa.png' }} style={{ width: '100%', height: 50, borderRadius: 10 }} />
+                                                </Col>
 
 
-                                                <Col style={{ borderColor: '#D92B4B', borderWidth: 1, padding: 10, alignItems: 'center', borderRadius: 10, margin: 10 }}>
-                                                    <Image source={{ uri: 'https://cdn.freebiesupply.com/logos/large/2x/cirrus-3-logo-png-transparent.png' }} style={{ width: '100%', height: 50, borderRadius: 10 }} /></Col>
+                                                <Col style={{ borderColor: '#D92B4B', borderWidth: 1, padding: 10, alignItems: 'center', borderRadius: 10, margin: 10 }} 
+                                                            onPress={()=> this.setState({ paymentOption: 'wallet' })}>
+                                                    <Image source={{ uri: 'https://cdn.freebiesupply.com/logos/large/2x/cirrus-3-logo-png-transparent.png' }} style={{ width: '100%', height: 50, borderRadius: 10 }}  />
+                                                </Col>
+
+                                                <Col style={{ borderColor: '#D92B4B', borderWidth: 1, padding: 10, alignItems: 'center', borderRadius: 10, margin: 10 }} 
+                                                            onPress={()=> this.setState({ paymentOption: 'upi' })}>
+                                                    <Image source={{ uri: 'https://cdn.freebiesupply.com/logos/large/2x/cirrus-3-logo-png-transparent.png' }} style={{ width: '100%', height: 50, borderRadius: 10 }}  />
+                                                </Col>
                                             </Row>
 
                                         </Grid>
-
+                                    { paymentOption === 'card' ? 
+                                        <Content> 
                                         <Grid style={{ marginTop: 10 }}>
                                             <Col>
                                                 <Text style={styles.labelTop}>Card Holder Name</Text>
-                                                <Input placeholder="Card Holder Name" style={styles.transparentLabel} />
-
+                                                <Input placeholder="Card Holder Name" 
+                                                       value={cardPaymentDetails ? cardPaymentDetails.name : ''}
+                                                       onChangeText={(text) => { 
+                                                        var cardPaymentDetails = {...this.state.cardPaymentDetails}
+                                                        cardPaymentDetails.name =text;
+                                                        this.setState({cardPaymentDetails}) 
+                                                       }}
+                                                       style={styles.transparentLabel} />
                                             </Col>
                                         </Grid>
 
                                         <Grid style={{ marginTop: 10 }}>
                                             <Col>
                                                 <Text style={styles.labelTop}>Card Number</Text>
-                                                <Input placeholder="Card Number" style={styles.transparentLabel} />
+                                                <Input placeholder="Card Number" 
+                                                       maxLength={19}
+                                                       keyboardType={'numeric'}
+                                                       onChangeText={(text) => this.handlingCardNumber(text)}
+                                                       value={cardPaymentDetails ? cardPaymentDetails.number : ''} 
+                                                       style={styles.transparentLabel} />
                                             </Col>
                                         </Grid>
                                         <Grid style={{ marginTop: 10 }}>
-                                            <Col>
-                                                <Text style={styles.labelTop}>CVV</Text>
-                                                <Input placeholder="CVV" style={styles.transparentLabel} />
-                                            </Col>
+                                           
                                             <Col>
                                                 <Text style={styles.labelTop}>Expired Date</Text>
-                                                <Input placeholder="Expired Date" style={styles.transparentLabel} />
+                                                <Input placeholder='MM/YY'
+                                                       keyboardType={'numeric'}
+                                                       value={cardPaymentDetails ? cardPaymentDetails.monthyear : ''}
+                                                       onChangeText={(text) => this.handlingCardExpiry(text)}
+                                                       style={styles.transparentLabel} />
+                                            </Col>
+                                            <Col>
+                                                <Text style={styles.labelTop}>CVV</Text>
+                                                <Input placeholder="CVV" 
+                                                       maxLength={3}
+                                                       keyboardType={'numeric'}
+                                                       secureTextEntry={true}
+                                                       value={cardPaymentDetails ? cardPaymentDetails.cvv : ''}
+                                                       onChangeText={(text) => { 
+                                                            var cardPaymentDetails = {...this.state.cardPaymentDetails}
+                                                            cardPaymentDetails.cvv =text;
+                                                            this.setState({cardPaymentDetails}) 
+                                                       }}
+                                                       style={styles.transparentLabel} />
                                             </Col>
 
                                         </Grid>
@@ -299,21 +376,43 @@ class PaymentPage extends Component {
                                             <Row>
                                                 <Col>
                                                     <Row>
-                                                        <CheckBox checked={true} color="green"  ></CheckBox>
+                                                        <CheckBox checked={true} color="green"></CheckBox>
                                                         <Text style={{ marginLeft: 15, color: 'gray', fontFamily: 'OpenSans', }}>Save creditcard Information</Text>
                                                     </Row>
                                                 </Col>
                                             </Row>
 
                                         </Grid>
-                                        <View style={{ flexDirection: 'row', margintop: 10 }}>
+                                        </Content> : null }
+                                        
 
-                                        </View>
+                                    { paymentOption === 'netbanking' ? 
+                                        <Content> 
+                                            {/* Code for Netbanking */}       
+                                        </Content> : null } 
+
+                                    { paymentOption === 'wallet' ? 
+                                        <Content> 
+                                           {/* Code for wallet */}     
+                                        </Content> : null } 
+                                                         
+                                    { paymentOption === 'upi' ? 
+                                        <Content> 
+                                        <Grid style={{ marginTop: 10 }}>
+                                            <Col>
+                                                <Text style={styles.labelTop}>UPI ID</Text>
+                                                <Input placeholder="Enter your UPI ID" 
+                                                       value={this.state.upiVPA}
+                                                       onChangeText={(text) =>  this.setState({ upiVPA : text})}
+                                                       style={styles.transparentLabel} />
+                                            </Col>
+                                        </Grid>
+                                      </Content> : null } 
 
 
-                                        <Button onPress={() => this.updatePaymentDetails(true, {}, 'cash')} block style={styles.paymentButton}><Text>Continue</Text></Button>
+                                        <Button onPress={() => this.makePaymentMethod()} block style={styles.paymentButton}><Text>Continue</Text></Button>
                                     </Card>
-                            } />
+                          
                     </Card>
                 </Content>
 
@@ -325,13 +424,10 @@ class PaymentPage extends Component {
 }
 
 
-function loginState(state) {
 
-    return {
-        user: state.user
-    }
-}
-export default connect(loginState, { login, messageShow, messageHide })(PaymentPage)
+
+
+export default (PaymentPage)
 
 
 const styles = StyleSheet.create({
