@@ -1,14 +1,16 @@
 import React, { Component } from 'react';
-import { Container, Content, Text, Title, Header, H3, Button, Item, Card, CardItem, List, ListItem, Left, Right, Footer, Thumbnail, Body, Icon, Input, CheckBox } from 'native-base';
+import { Container, Content, Text, Title, Header, H3, Button, Item, Card, CardItem, List, ListItem, Left, Right, Footer, Thumbnail, Body, Icon, Input, CheckBox, Toast } from 'native-base';
 import { login } from '../../providers/auth/auth.actions';
 import { messageShow, messageHide } from '../../providers/common/common.action';
 import { Col, Row, Grid } from 'react-native-easy-grid';
 import { connect } from 'react-redux'
 import LinearGradient from 'react-native-linear-gradient';
-import { StyleSheet, Image, TouchableOpacity, View } from 'react-native';
+import { StyleSheet, Image, TouchableOpacity, View, AsyncStorage } from 'react-native';
 import StarRating from 'react-native-star-rating';
 import Razorpay from '../../../components/Razorpay';
-
+import { RAZOR_KEY } from '../../../setup/config';
+import { bookAppointment, createPaymentRazor } from '../../providers/bookappointment/bookappointment.action';
+import { availableNetBanking, availableWallet  } from '../../../setup/paymentMethods';
 class PaymentPage extends Component {
     constructor(props) {
         super(props)
@@ -16,37 +18,192 @@ class PaymentPage extends Component {
         this.state = {
             userEntry: '',
             password: '',
-            loginErrorMsg: ''
+            loginErrorMsg: '',
+            paymentOption: null,
+            cardPaymentDetails : {
+                name: null, 
+                number: null, 
+                cvv: null, 
+                monthyear: null
+            },
+            selectedNetBank: null,
+            selectedWallet: null,
+            upiVPA: null,
+            amount: null,
         }
         this.state = {
             starCount: 3.5
         };
+    }
+    componentDidMount() {
+        availableNetBanking();
+        availableWallet();
     }
     onStarRatingPress(rating) {
         this.setState({
             starCount: rating
         });
     }
+    async payNow() {
+      await this.setState({
+            paymentOption: 'netbanking',
+            selectedNetBank: 'HDFC',
+            amount: 5 * 100 // equavlt to 5 RS. 5 is consider as a Paise
+        });
+        this.makePaymentMethod();
+    }
+    
+    makePaymentMethod() {
+		let data;
+		if (this.state.paymentOption === 'card') {
+			data = {
+				method: 'card',
+				'card[name]': this.state.cardPaymentDetails.name,
+				'card[number]': this.state.cardPaymentDetails.number,
+				'card[cvv]': this.state.cardPaymentDetails.cvv,
+				'card[expiry_month]': this.state.cardPaymentDetails.monthyear.split('/')[0],
+				'card[expiry_year]': this.state.cardPaymentDetails.monthyear.split('/')[1],
+			}
+		} else if (this.state.paymentOption === 'netbanking') {
+			data = {
+				method: 'netbanking',
+				bank: this.state.selectedNetBank
+			}
+		} else if (this.state.paymentOption === 'wallet') {
+			data = {
+				method: 'wallet',
+				bank: this.selectedWallet
+			}
+		} else if (this.state.paymentOption === 'upi') {
+			data = {
+				method: 'upi',
+				bank: this.state.upiVPA
+			}
+		}
+		this.razorpayChekout(data)
+    }
+    
+    razorpayChekout(paymentMethodData) {
 
-    razorpayChekout() {
-        var options = {
-         description: 'Credits towards consultation',
-         currency: 'INR',
-         key_id: 'rzp_test_Cq2ADxwBVYKNlL',
-         amount: '5000',
-         email: 'gaurav.kumar@example.com',
-         contact: '9123456789',
-         method: 'netbanking',
-         bank: 'HDFC'
-       }
+        const options = {
+            description: 'Pay for your Health',
+            currency: 'INR',
+            key_id: RAZOR_KEY,
+            amount: this.state.amount,
+            email: 'gaurav.kumar@example.com',
+            contact: '9123456780',
+            ...paymentMethodData
+        }
        Razorpay.open(options).then((data) => {
          // handle success
          alert(`Success: ${data.razorpay_payment_id}`);
+         this.updatePaymentDetails(true, data, 'razor');
        }).catch((error) => {
      // handle failure 
          alert(`Error: ${error.code} | ${error.description}`);
+         this.updatePaymentDetails(false, error, 'razor');
        });
      }
+
+     async updatePaymentDetails(isSuccess, data, modeOfPayment) {
+        try {
+            debugger
+            this.setState({ isLoading: true });
+            const userId = await AsyncStorage.getItem('userId');
+            let paymentData = {
+                payer_id: userId,
+                payer_type: 'user',
+                payment_id: data.razorpay_payment_id || modeOfPayment === 'cash' ? 'cash_' + new Date().getTime() : 'pay_err_' + new Date().getTime(),
+                amount: this.state.amount,
+                amount_paid: !isSuccess || modeOfPayment === 'cash' ? 0 : this.state.amount,
+                amount_due: !isSuccess || modeOfPayment === 'cash' ? this.state.amount : 0,
+                currency: 'INR',
+                service_type: 'APPOINTMENT',
+                booking_from: 'APPLICATION',
+                is_error: !isSuccess,
+                error_message: data.description || null,
+                payment_mode: modeOfPayment,
+            }
+            console.log('is congign')
+            let resultData = await createPaymentRazor(paymentData);
+            console.log(resultData);
+            if (resultData.success) {
+                Toast.show({
+                    text: resultData.message,
+                    type: "success",
+                    duration: 3000,
+                })
+                if (isSuccess) {
+                   // this.updateBookAppointmentData();
+                } else {
+                    Toast.show({
+                        text: data.description,
+                        type: "warning",
+                        duration: 3000,
+                    })
+                }
+            } else {
+                Toast.show({
+                    text: resultData.message,
+                    type: "warning",
+                    duration: 3000,
+                })
+            }
+        } catch (error) {
+            this.setState({ isLoading: false });
+            Toast.show({
+                text: error,
+                type: "warning",
+                duration: 3000,
+            })
+        }
+    }
+
+    updateBookAppointmentData = async () => {
+        try {
+            this.setState({ isLoading: true })
+            const userId = await AsyncStorage.getItem('userId');
+            let bookAppointmentData = {
+                userId: userId,
+                doctorId: this.state.bookSlotDetails.doctorId,
+                description: "something",
+                startTime: this.state.bookSlotDetails.slotData.slotStartDateAndTime,
+                endTime: this.state.bookSlotDetails.slotData.slotEndDateAndTime,
+                status: "PENDING",
+                status_by: "Patient",
+                statusUpdateReason: "something",
+                hospital_id: this.state.bookSlotDetails.slotData.location.hospital_id,
+                booked_from: "Mobile"
+            }
+            let resultData = await bookAppointment(bookAppointmentData);
+            // console.log(JSON.stringify(resultData) + 'response for confirmPayLater ');
+            this.setState({ isLoading: false })
+            if (resultData.success) {
+                Toast.show({
+                    text: resultData.message,
+                    type: "success",
+                    duration: 3000,
+                })
+                this.props.navigation.navigate('paymentsuccess', { successBookSlotDetails: this.state.bookSlotDetails });
+
+            } else {
+                Toast.show({
+                    text: resultData.message,
+                    type: "warning",
+                    duration: 3000,
+                })
+            }
+        } catch (ex) {
+            Toast.show({
+                text: 'Exception Occured ' + ex,
+                type: "warning",
+                duration: 3000,
+            })
+        } finally {
+            this.setState({ isLoading: false })
+        }
+    }
+
      
 
     render() {
@@ -97,7 +254,7 @@ class PaymentPage extends Component {
                             // handle failure
                             alert(`Error: ${error.code} | ${error.description}`);
                           });
-                      }*/ this.razorpayChekout()}
+                      }*/ this.payNow()}
                     ><Text style={{ color: '#66A3F2', fontSize: 15, fontFamily: 'OpenSans' }}>Pay Now</Text>
                     </Button>
                         
@@ -177,7 +334,7 @@ class PaymentPage extends Component {
                     <Left></Left>
                     <Body></Body>
                     <Right>
-                        <Button transparent><Text style={{ color: '#66A3F2', fontSize: 15, fontFamily: 'OpenSans' }}>Pay Later</Text></Button>
+                        <Button onPress={()=> this.updatePaymentDetails(true, {}, 'cash')} transparent><Text style={{ color: '#66A3F2', fontSize: 15, fontFamily: 'OpenSans' }}>Pay Later</Text></Button>
                     </Right>
                 </Footer>
             </Container>
