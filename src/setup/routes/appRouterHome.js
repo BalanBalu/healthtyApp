@@ -64,6 +64,8 @@ import MedicinePaymentSuccess from '../../modules/screens/Pharmacy/MedicinePayme
 import UploadPrescription from '../../modules/screens/Pharmacy/MedicineSearch/UploadPrescription';
 import MedicineAddress from '../../modules/screens/Pharmacy/MedicineAddress/MedicineAddress';
 import MedicinePaymentReview from '../../modules/screens/Pharmacy/MedicinePaymentReview/MedicinePaymentReview';
+import MedicalOrderDetails from '../../modules/screens/Pharmacy/MedicalOrderDetails/MedicalOrderDetails';
+
 const routes = {
   Home: {
     name: 'Home',
