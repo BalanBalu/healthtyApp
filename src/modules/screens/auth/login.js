@@ -1,8 +1,12 @@
 import React, { Component } from 'react';
-import { Container, Content, Button, Text, Form, Item, Input, Header, Footer, FooterTab, Right, CheckBox, Grid, Toast, KeyboardAvoidingView, Icon } from 'native-base';
-import { login, RESET_REDIRECT_NOTICE } from '../../providers/auth/auth.actions';
+import {
+  Container, Content, Button, Text, Form, Item, Input, Header, Footer, FooterTab, Right,
+  CheckBox, Grid, Toast, KeyboardAvoidingView, Icon
+} from 'native-base';
 import { connect } from 'react-redux'
 import { Image, TouchableOpacity, View, ScrollView } from 'react-native';
+
+import { login, RESET_REDIRECT_NOTICE } from '../../providers/auth/auth.actions';
 import styles from '../../screens/auth/styles'
 import Spinner from '../../../components/Spinner';
 import { store } from '../../../setup/store';

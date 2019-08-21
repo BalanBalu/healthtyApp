@@ -14,13 +14,9 @@ import UpdateUserDetails from "../../modules/screens/userprofile/UpdateUserDetai
 //import UploadImage from "../../modules/screens/userprofile/UploadImage";
 import UpdateAddress from "../../modules/screens/userprofile/UpdateAddress";
 
-
-
-
 import finddoctor from "../../modules/screens/auth/finddoctor";
 import { Icon, View } from 'native-base';
 import Categories from "../../modules/screens/categories";
-
 
 import login from "../../modules/screens/auth/login";
 import signup from "../../modules/screens/auth/signup";
@@ -41,10 +37,8 @@ import { Col, Grid, Row } from 'react-native-easy-grid';
 import { logout } from '../../modules/providers/auth/auth.actions';
 import { TouchableOpacity, Image } from 'react-native'
 
-
 import menuIcon from '../../../assets/images/menu.png';
 import profileAvatar from '../../../assets/images/profileAvatar.png';
-
 
 import { HeaderBackButton } from 'react-navigation';
 import BookAppoinment from "../../modules/screens/bookappoinment";
@@ -56,6 +50,7 @@ import CancelAppointment from "../../modules/screens/MyAppointments/cancelAppoin
 import MedicineSearch from '../../modules/screens/Pharmacy/MedicineSearch/MedicineSearch';
 import MedicineOrderList from '../../modules/screens/Pharmacy/MedicineOrderList/MedicineOrderList';
 import MedicineMyOrders from '../../modules/screens/Pharmacy/MedicineMyOrders/MedicineMyOrders';
+import MedicalOrderDetails from '../../modules/screens/Pharmacy/MedicalOrderDetails/MedicalOrderDetails';
 import MedicineSearchList from '../../modules/screens/Pharmacy/MedicineSearchList/MedicineSearchList';
 import MedicineCheckout from '../../modules/screens/Pharmacy/MedicineCheckout/MedicineChekout';
 import MedicinePaymentPage from '../../modules/screens/Pharmacy/MedicinePaymentPage/MedicinePaymentPage';
@@ -64,7 +59,6 @@ import MedicinePaymentSuccess from '../../modules/screens/Pharmacy/MedicinePayme
 import UploadPrescription from '../../modules/screens/Pharmacy/MedicineSearch/UploadPrescription';
 import MedicineAddress from '../../modules/screens/Pharmacy/MedicineAddress/MedicineAddress';
 import MedicinePaymentReview from '../../modules/screens/Pharmacy/MedicinePaymentReview/MedicinePaymentReview';
-import MedicalOrderDetails from '../../modules/screens/Pharmacy/MedicalOrderDetails/MedicalOrderDetails';
 
 const routes = {
   Home: {
