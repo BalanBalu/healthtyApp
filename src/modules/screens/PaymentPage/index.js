@@ -10,11 +10,13 @@ import StarRating from 'react-native-star-rating';
 import Razorpay from '../../../components/Razorpay';
 import { RAZOR_KEY } from '../../../setup/config';
 import { bookAppointment, createPaymentRazor } from '../../providers/bookappointment/bookappointment.action';
-import { availableNetBanking, availableWallet } from '../../../setup/paymentMethods';
+import { getAvailableNetBanking, getAvailableWallet } from '../../../setup/paymentMethods';
 import { FlatList } from 'react-native-gesture-handler';
 
 
 class PaymentPage extends Component {
+     availableNetBankingData = [];
+     availableWallets = [];
     constructor(props) {
         super(props)
         this.state = {
@@ -36,8 +38,8 @@ class PaymentPage extends Component {
         }
     }
     componentDidMount() {
-        availableNetBanking();
-        availableWallet();
+        this.availableNetBankingData = getAvailableNetBanking();
+        this.availableWallets =  getAvailableWallet();
     }
     onStarRatingPress(rating) {
         this.setState({
