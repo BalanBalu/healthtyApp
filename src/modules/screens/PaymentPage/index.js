@@ -31,7 +31,7 @@ class PaymentPage extends Component {
             selectedNetBank: null,
             selectedWallet: null,
             upiVPA: null,
-            amount: null,
+            amount: 100,
             starCount: 3.5
         }
     }
@@ -93,7 +93,7 @@ class PaymentPage extends Component {
         } else if (this.state.paymentOption === 'upi') {
             data = {
                 method: 'upi',
-                bank: this.state.upiVPA
+                vpa: this.state.upiVPA
             }
         }
         this.razorpayChekout(data)
