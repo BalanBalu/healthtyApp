@@ -53,7 +53,7 @@ class Home extends Component {
             let totalSpecialistDataArry = [];
 
             this.state.data.forEach((dataElement) => {
-                let categoryObject = { name: 'specialist', value: dataElement.category_name };
+                let categoryObject = { name: 'category', value: dataElement.category_name };
                 totalSpecialistDataArry.push(categoryObject);
 
                 dataElement.services.forEach((serviceEle) => {
@@ -66,7 +66,6 @@ class Home extends Component {
                         })
                     }
                 })
-
             })
             await this.setState({ totalSpecialistDataArry: totalSpecialistDataArry })
             console.log('this.state.totalSpecialistDataArry' + JSON.stringify(this.state.totalSpecialistDataArry));
@@ -130,13 +129,14 @@ class Home extends Component {
         return (
             <View
                 style={{
-                    height: 0.3,
-                    width: '90%',
-                    backgroundColor: '#080808',
+                    padding: 4,
+                    borderBottomColor: 'gray',
+                    borderBottomWidth: 0.5
                 }}
             />
         );
     };
+
 
     render() {
 
@@ -146,7 +146,7 @@ class Home extends Component {
                 <Content keyboardShouldPersistTaps={'handled'} style={styles.bodyContent}>
                     <Row style={{ backgroundColor: 'white', borderColor: '#000', borderWidth: 1, borderRadius: 20, }}>
 
-                        <Input placeholder="Search Symptoms/Services"
+                    <Input placeholder="Search Symptoms/Services"
                             style={{ color: 'gray', fontFamily: 'OpenSans', fontSize: 12 }}
                             placeholderTextColor="gray"
                             value={this.state.searchValue}
@@ -157,30 +157,40 @@ class Home extends Component {
                             blurOnSubmit={false}
                             onSubmitEditing={() => { this.searchDoctorListModule(); }}
                         />
-                        {this.state.visibleClearIcon != '' ? <Right style={{ marginLeft: 10 }}>
-                            <Button Button transparent onPress={() => this.clearTotalText()}>
-                                <Icon name="ios-close" style={{ color: 'gray' }} />
-                            </Button>
-                        </Right> : null
-                        }
+
                         <Right>
-                            <Button Button transparent onPress={() => this.searchDoctorListModule()}>
-                                <Icon name="ios-search" style={{ color: '#000' }} />
-                            </Button>
+                            <Row>
+                                {this.state.visibleClearIcon != '' ?
+                                    <Button Button transparent onPress={() => this.clearTotalText()}>
+                                        <Icon name="ios-close" style={{ fontSize: 32, color: 'gray', marginLeft: 50 }} />
+                                    </Button>
+                                    : null}
+                                <Button Button transparent onPress={() => this.searchDoctorListModule()}>
+                                    <Icon name="ios-search" style={{ color: '#000' }} />
+                                </Button>
+                            </Row>
+
                         </Right>
 
                     </Row>
-
 
                     {this.state.searchValue != null ?
                         <FlatList
                             data={this.state.totalSpecialistDataArry}
                             ItemSeparatorComponent={this.itemSaperatedByListView}
                             renderItem={({ item }) => (
-                                <Row>
+                                <Row
+                                    onPress={() => this.props.navigation.navigate("Doctor List", {
+                                        resultData: [{
+                                            type: item.name,
+                                            value: item.name==='symptoms'?[item.value]:item.value
+                                        }]
+                                    })}
+                                >
                                     <Text style={{ padding: 10 }}>{item.value}</Text>
-                                    <Text style={{ padding: 10, marginRight: 10, fontSize: 14, fontStyle: 'italic' }}>{item.name}</Text>
-
+                                    <Right>
+                                        <Text uppercase={true} style={{ color: 'gray', padding: 10, marginRight: 10, fontSize: 12, fontFamily: 'Sarpanch-Bold' }}>{item.name}</Text>
+                                    </Right>
                                 </Row>
                             )}
                             enableEmptySections={true}
@@ -216,7 +226,7 @@ class Home extends Component {
 
                                 <ListItem noBorder>
                                     <ScrollView horizontal={false}>
-                                        {/* <FlatList
+                                        <FlatList
                                             horizontal={true}
                                             data={this.state.catagary}
                                             extraData={this.state}
@@ -238,7 +248,7 @@ class Home extends Component {
                                             }
                                             keyExtractor={(item, index) => index.toString()}
                                         />
-  */}
+ 
 
                                     </ScrollView></ListItem>
 

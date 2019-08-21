@@ -67,12 +67,13 @@ class doctorSearchList extends Component {
 
         const { navigation } = this.props;
         const filterData = navigation.getParam('filterData');
+        
         const filterBySelectedAvailabilityDateCount = navigation.getParam('filterBySelectedAvailabilityDateCount');
         conditionFromFilterPage = navigation.getParam('ConditionFromFilter');
         await this.setState({ filterData: filterData })
         if (conditionFromFilterPage == true) {
             console.log('comming FilterPage');
-            this.renderDoctorListByFilteredData(filterData, filterBySelectedAvailabilityDateCount)
+            this.renderDoctorListByFilteredData(filterData, filterBySelectedAvailabilityDateCount) 
         }
         else {
             this.getPatientWishLists();
@@ -101,7 +102,6 @@ class doctorSearchList extends Component {
         this.state.doctorData.forEach((doctorElement) => {
             let experience;
 
-
             filterData.forEach((filterElement) => {
                 if (filterElement.value) {
                     if (doctorElement.gender_preference.includes(filterElement.value)) {
@@ -115,93 +115,76 @@ class doctorSearchList extends Component {
                         let year = (moment(doctorElement.experience.year) + experienceInYear);
                         let month = (moment(doctorElement.experience.month)) + experienceInMonth;
                         experience = experienceInYear + year;
-                        console.log('experience'+experience)
+                        // console.log('experience'+experience)
                         if (month >= 12) {
                           experience++;
                         }
                       
-if (experience >= filterElement.value) {
-    filteredDocListArray.push(doctorElement.doctor_id)
-}
-console.log('filteredDocListArray'+JSON.stringify(filteredDocListArray))
+experience >= filterElement.value ? 
+    filteredDocListArray.push(doctorElement.doctor_id):null
+
                     }
                   
-                  
+                    filterElement.type == 'language' ? 
                     doctorElement.language.forEach((docLanguage) => {
-                        if (filterElement.type == 'language') {
                             filterElement.value.forEach((filLanguage) => {
                                 if (docLanguage.includes(filLanguage)) {
                                     filteredDocListArray.push(doctorElement.doctor_id)
                                 }
                             })
-                        }
-                    })
-
+                    }) :null
+                
+                filterElement.type ==='category' || 'service' ?
                     doctorElement.specialist.forEach((docSpecialist) => {
+
                         if (docSpecialist.category.includes(filterElement.value)) {
                             filteredDocListArray.push(doctorElement.doctor_id)
                         }
                         if (docSpecialist.service.includes(filterElement.value)) {
                             filteredDocListArray.push(doctorElement.doctor_id)
                         }
-                    })
+                    }):null
+                
                 }
             })
         });
-    
         // console.log('filteredDocListArray' + JSON.stringify(filteredDocListArray))
 
         var sortedArray = filteredDocListArray.slice().sort();
 
-        var resultsArray = [];
-        var dupFilteredDocDetailsArray = [];
+        var FinalFilteredByDocDetailsArray = [];
 
         for (var i = 0; i <= sortedArray.length - 1; i++) {
             if (sortedArray[i + 1] == sortedArray[i]) {
-                dupFilteredDocDetailsArray.push(sortedArray[i]);
-            }
-            else {
-                resultsArray.push(sortedArray[i]);
+                FinalFilteredByDocDetailsArray.push(sortedArray[i]);
             }
         }
-        // console.log('resultsArray' + JSON.stringify(resultsArray))
-        // console.log('dupFilteredDocDetailsArray' + JSON.stringify(dupFilteredDocDetailsArray))
-
+        // console.log('FinalFilteredByDocDetailsArray' + JSON.stringify(FinalFilteredByDocDetailsArray))
 
         let withAvailabilityDateDocArray = [];
         if (availableDateSlotsDocArray[0] && filteredDocListArray[0]) {
-            console.log('came filter availability date and DocDatas  condition')
+            // console.log('came filter availability date and DocDatas  condition')
             filteredDocListArray.forEach((ele_doctorId) => {
-
                 if (availableDateSlotsDocArray.includes(ele_doctorId)) {
                     withAvailabilityDateDocArray.push(ele_doctorId);
                 }
             })
-
             await this.setState({ uniqueFilteredDocArray: withAvailabilityDateDocArray })
-            // console.log('this.state.uniqueFilteredDocArray' + JSON.stringify(this.state.uniqueFilteredDocArray))
+            // console.log('withAvailabilityDateDocArray' + JSON.stringify(withAvailabilityDateDocArray))
         }
 
         else {
             if (availableDateSlotsDocArray[0]) {
+                // console.log('came filter by only available dates')
                 await this.setState({ uniqueFilteredDocArray: availableDateSlotsDocArray })
             }
             else {
-                if ( filterData === '') {
-                    alert('single')
-                    console.log('working filter single docDetails ')
-                    if (typeof dupFilteredDocDetailsArray == undefined) {
-                        await this.setState({ uniqueFilteredDocArray: resultsArray })
-                    }
-                    else {
-                        await this.setState({ uniqueFilteredDocArray: dupFilteredDocDetailsArray })
-                    }
-                }
-                else {
-                    console.log('came without availability dates');
+                console.log('came both Filtered DocDetails data')
+                filterData[1] !=undefined?
+                    await this.setState({ uniqueFilteredDocArray: FinalFilteredByDocDetailsArray }):
                     await this.setState({ uniqueFilteredDocArray: filteredDocListArray })
                     // console.log('this.state.uniqueFilteredDocArray' + JSON.stringify(this.state.uniqueFilteredDocArray))
-                }
+                
             }
         }
     }
