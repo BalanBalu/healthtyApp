@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { Container, Content, Text, Title, Header, H3, Button, Item, Card, CardItem, List, ListItem, Left, Right, Footer, Thumbnail, Body, Icon, Input, CheckBox, Toast } from 'native-base';
+import { Container, Content, Text, Title, Header, H3, Button, Item, Card, CardItem, List, ListItem, Left, Right, Footer, Thumbnail, Body, Icon, Input, CheckBox, Toast, Segment } from 'native-base';
 import { login } from '../../providers/auth/auth.actions';
 import { messageShow, messageHide } from '../../providers/common/common.action';
 import { Col, Row, Grid } from 'react-native-easy-grid';
@@ -10,7 +10,9 @@ import StarRating from 'react-native-star-rating';
 import Razorpay from '../../../components/Razorpay';
 import { RAZOR_KEY } from '../../../setup/config';
 import { bookAppointment, createPaymentRazor } from '../../providers/bookappointment/bookappointment.action';
-import { availableNetBanking, availableWallet  } from '../../../setup/paymentMethods';
+import { availableNetBanking, availableWallet } from '../../../setup/paymentMethods';
+import { FlatList } from 'react-native-gesture-handler';
+
 class PaymentPage extends Component {
     constructor(props) {
         super(props)
@@ -20,10 +22,10 @@ class PaymentPage extends Component {
             password: '',
             loginErrorMsg: '',
             paymentOption: null,
-            cardPaymentDetails : {
-                name: null, 
-                number: null, 
-                cvv: null, 
+            cardPaymentDetails: {
+                name: null,
+                number: null,
+                cvv: null,
                 monthyear: null
             },
             selectedNetBank: null,
@@ -45,44 +47,44 @@ class PaymentPage extends Component {
         });
     }
     async payNow() {
-      await this.setState({
+        await this.setState({
             paymentOption: 'netbanking',
             selectedNetBank: 'HDFC',
             amount: 5 * 100 // equavlt to 5 RS. 5 is consider as a Paise
         });
         this.makePaymentMethod();
     }
-    
+
     makePaymentMethod() {
-		let data;
-		if (this.state.paymentOption === 'card') {
-			data = {
-				method: 'card',
-				'card[name]': this.state.cardPaymentDetails.name,
-				'card[number]': this.state.cardPaymentDetails.number,
-				'card[cvv]': this.state.cardPaymentDetails.cvv,
-				'card[expiry_month]': this.state.cardPaymentDetails.monthyear.split('/')[0],
-				'card[expiry_year]': this.state.cardPaymentDetails.monthyear.split('/')[1],
-			}
-		} else if (this.state.paymentOption === 'netbanking') {
-			data = {
-				method: 'netbanking',
-				bank: this.state.selectedNetBank
-			}
-		} else if (this.state.paymentOption === 'wallet') {
-			data = {
-				method: 'wallet',
-				bank: this.selectedWallet
-			}
-		} else if (this.state.paymentOption === 'upi') {
-			data = {
-				method: 'upi',
-				bank: this.state.upiVPA
-			}
-		}
-		this.razorpayChekout(data)
+        let data;
+        if (this.state.paymentOption === 'card') {
+            data = {
+                method: 'card',
+                'card[name]': this.state.cardPaymentDetails.name,
+                'card[number]': this.state.cardPaymentDetails.number,
+                'card[cvv]': this.state.cardPaymentDetails.cvv,
+                'card[expiry_month]': this.state.cardPaymentDetails.monthyear.split('/')[0],
+                'card[expiry_year]': this.state.cardPaymentDetails.monthyear.split('/')[1],
+            }
+        } else if (this.state.paymentOption === 'netbanking') {
+            data = {
+                method: 'netbanking',
+                bank: this.state.selectedNetBank
+            }
+        } else if (this.state.paymentOption === 'wallet') {
+            data = {
+                method: 'wallet',
+                bank: this.selectedWallet
+            }
+        } else if (this.state.paymentOption === 'upi') {
+            data = {
+                method: 'upi',
+                bank: this.state.upiVPA
+            }
+        }
+        this.razorpayChekout(data)
     }
-    
+
     razorpayChekout(paymentMethodData) {
 
         const options = {
@@ -94,18 +96,18 @@ class PaymentPage extends Component {
             contact: '9123456780',
             ...paymentMethodData
         }
-       Razorpay.open(options).then((data) => {
-         // handle success
-         alert(`Success: ${data.razorpay_payment_id}`);
-         this.updatePaymentDetails(true, data, 'razor');
-       }).catch((error) => {
-     // handle failure 
-         alert(`Error: ${error.code} | ${error.description}`);
-         this.updatePaymentDetails(false, error, 'razor');
-       });
-     }
+        Razorpay.open(options).then((data) => {
+            // handle success
+            alert(`Success: ${data.razorpay_payment_id}`);
+            this.updatePaymentDetails(true, data, 'razor');
+        }).catch((error) => {
+            // handle failure 
+            alert(`Error: ${error.code} | ${error.description}`);
+            this.updatePaymentDetails(false, error, 'razor');
+        });
+    }
 
-     async updatePaymentDetails(isSuccess, data, modeOfPayment) {
+    async updatePaymentDetails(isSuccess, data, modeOfPayment) {
         try {
             debugger
             this.setState({ isLoading: true });
@@ -134,7 +136,7 @@ class PaymentPage extends Component {
                     duration: 3000,
                 })
                 if (isSuccess) {
-                   // this.updateBookAppointmentData();
+                    // this.updateBookAppointmentData();
                 } else {
                     Toast.show({
                         text: data.description,
@@ -204,145 +206,124 @@ class PaymentPage extends Component {
         }
     }
 
-     
-
     render() {
+        var payment = [{
+            bankName: 'State Bank', number: '2344'
+
+        }]
         const { user: { isLoading } } = this.props;
         const { loginErrorMsg } = this.state;
+
+
         return (
-
             <Container style={styles.container}>
-                <Header style={{ backgroundColor: '#7E49C3', fontFamily: 'opensans-semibold' }}>
-                    <Left  >
-                        <Button Button transparent onPress={() => this.props.navigation.navigate('home')}>
-                            <Icon name="arrow-back" style={{ color: '#fff' }}></Icon>
-                        </Button>
-
-                    </Left>
-                    <Body>
-                        <Title style={{ fontFamily: 'opensans-semibold' }}>Payment</Title>
-
-                    </Body>
-                    <Right ><Text style={{ color: '#fff' }}> Add New</Text></Right>
-                </Header>
 
                 <Content style={styles.bodyContent}>
-                    
-                    <Button transparent
-                      onPress={() => /*{
-                        var options = {
-                            description: 'Credits towards consultation',
-                            image: 'https://i.imgur.com/3g7nmJC.png',
-                            currency: 'INR',
-                            key: 'rzp_test_1DP5mmOlF5G5ag',
-                            amount: '5000',
-                            name: 'foo',
-                           
-                            prefill: {
-                              email: 'sathishkrish20@razorpay.com',
-                              contact: '919164932823',
-                              name: 'Razorpay Software',
-                              method: 'netbaking',
-                              bank: 'HDFC',
-                            },
-                            theme: {color: '#F37254'}
-                          }
-                          RazorpayCheckout.open(options).then((data) => {
-                            // handle success
-                            alert(`Success: ${data.razorpay_payment_id}`);
-                          }).catch((error) => {
-                            // handle failure
-                            alert(`Error: ${error.code} | ${error.description}`);
-                          });
-                      }*/ this.payNow()}
-                    ><Text style={{ color: '#66A3F2', fontSize: 15, fontFamily: 'OpenSans' }}>Pay Now</Text>
-                    </Button>
-                        
-                    <H3 style={styles.paymentHeader}>Payment </H3>
+                    <Card transparent style={{ padding: 5, }}>
+                        <Segment>
+                            <Button first active>
+                                <Text uppercase={false}>DefaultCard</Text>
+                            </Button>
+                            <Button>
+                                <Text uppercase={false}>AddNewCard</Text>
+                            </Button>
 
-                    <Grid style={styles.gridNew}>
+                        </Segment>
+                        <FlatList
+                            data={payment}
+                            renderItem={
+                                ({ item }) =>
+                                    <Card style={{ padding: 20, marginTop: 20, borderRadius: 5 }}>
+                                        {/* <Row>
+                                            <Col style={{ width: '32%' }}>
+                                                <Image source={{ uri: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQUKuPIQiZ-73x4xDj522X2WR1wUvbZoT14N3Jl4wa92mOig4WkKg' }}
+                                                    style={{ width: '30%', height: 50, }}
+                                                />
+                                            </Col>
+                                            <Col style={{ width: '58%', marginTop: 5, marginLeft: -20 }}>
+                                                <Row>
+                                                    <Text style={{ fontSize: 15, marginTop: 2 }} >******</Text>
+                                                    <Text style={{ fontSize: 15 }}>{item.number}</Text>
+                                                </Row>
+                                                <Text style={{ color: 'blue', fontFamily: 'OpenSans', fontWeight: 'bold', fontSize: 15 }}>{item.bankName}</Text>
+                                            </Col>
+                                            <Col style={{ width: '10%', marginTop: 15, marginLeft: 20, }} >
+                                                <Icon style={{ color: 'green', fontSize: 25 }} name="ios-checkmark-circle" />
+                                            </Col>
+                                        </Row> */}
 
-                        <Text style={styles.paymentText}>Choose Your Payment Method</Text>
-
-
-                        <Row >
-                            <Col style={{ width: '33.33%', alignItems: 'center' }}>
-                                <Image source={{ uri: 'https://img.icons8.com/color/180/visa.png' }} style={{ width: '100%', height: 50, borderRadius: 10 }} />
-                                <ListItem noBorder>
-                                    <CheckBox checked={true} color="#4ED963" style={{ marginTop: 10 }}></CheckBox>
-                                </ListItem>
-
-                            </Col>
-                            <Col style={{ width: '33.33%', alignItems: 'center' }}>
-                                <Image source={{ uri: 'https://cdn.freebiesupply.com/logos/large/2x/cirrus-3-logo-png-transparent.png' }} style={{ width: '100%', height: 50, borderRadius: 10 }} />
-                                <ListItem noBorder>
-                                    <CheckBox checked={true} color="#4ED963" style={{ marginTop: 10 }}></CheckBox>
-                                </ListItem>
-                            </Col>
-                            <Col style={{ width: '33.33%', alignItems: 'center' }}>
-                                <Image source={{ uri: 'https://img.icons8.com/color/180/visa.png' }} style={{ width: '100%', height: 50, borderRadius: 10 }} />
-                                <ListItem noBorder>
-                                    <CheckBox checked={true} color="#4ED963" style={{ marginTop: 10 }}></CheckBox>
-                                </ListItem>
-                            </Col>
-                        </Row>
-
-                    </Grid>
+                                        <Grid style={{ padding: 5, margin: 10, backgroundColor: '#f2f2f2', }}>
+                                            <Text style={styles.paymentText}>Choose Your Payment Method</Text>
+                                            <Row>
+                                                <Col style={{ borderColor: '#D92B4B', borderWidth: 1, padding: 10, alignItems: 'center', borderRadius: 10, margin: 10 }}>
+                                                    <Image source={{ uri: 'https://img.icons8.com/color/180/visa.png' }} style={{ width: '100%', height: 50, borderRadius: 10 }} /></Col>
 
 
-
-                    <Grid style={styles.gridEntry}>
-                        <Row>
-                            <Input placeholder="Card Number" style={styles.transparentLabel} />
-                        </Row>
-                        <Row>
-                            <Input placeholder="Card Holder " style={styles.transparentLabel} />
-                        </Row>
-
-                        <Row>
-                            <Col style={{ width: '50%', paddingRight: 5 }}>
-                                <Input placeholder="Expired Date " style={styles.transparentLabel} />
-                            </Col>
-                            <Col style={{ width: '50%', paddingLeft: 5 }}>
-                                <Input placeholder="CVV " style={styles.transparentLabel} />
-                            </Col>
-                        </Row>
-
-                        <Row style={{ marginTop: 10 }}>
-
-                            <Col style={{ width: '10%' }}>
-                                <CheckBox checked={true} color="#4ED963" />
-
-                            </Col>
-                            <Col style={{ width: '90%' }}>
-
-                                <Text style={{ fontFamily: 'OpenSans', color: 'gray' }}>Save Credit Information</Text>
-                            </Col>
+                                                <Col style={{ borderColor: '#D92B4B', borderWidth: 1, padding: 10, alignItems: 'center', borderRadius: 10, margin: 10, backgroundColor: '#82ccdd' }}>
+                                                    <Image source={{ uri: 'https://img.icons8.com/color/180/visa.png' }} style={{ width: '100%', height: 50, borderRadius: 10 }} /></Col>
 
 
+                                                <Col style={{ borderColor: '#D92B4B', borderWidth: 1, padding: 10, alignItems: 'center', borderRadius: 10, margin: 10 }}>
+                                                    <Image source={{ uri: 'https://cdn.freebiesupply.com/logos/large/2x/cirrus-3-logo-png-transparent.png' }} style={{ width: '100%', height: 50, borderRadius: 10 }} /></Col>
+                                            </Row>
+
+                                        </Grid>
+
+                                        <Grid style={{ marginTop: 10 }}>
+                                            <Col>
+                                                <Text style={styles.labelTop}>Card Holder Name</Text>
+                                                <Input placeholder="Card Holder Name" style={styles.transparentLabel} />
+
+                                            </Col>
+                                        </Grid>
+
+                                        <Grid style={{ marginTop: 10 }}>
+                                            <Col>
+                                                <Text style={styles.labelTop}>Card Number</Text>
+                                                <Input placeholder="Card Number" style={styles.transparentLabel} />
+                                            </Col>
+                                        </Grid>
+                                        <Grid style={{ marginTop: 10 }}>
+                                            <Col>
+                                                <Text style={styles.labelTop}>CVV</Text>
+                                                <Input placeholder="CVV" style={styles.transparentLabel} />
+                                            </Col>
+                                            <Col>
+                                                <Text style={styles.labelTop}>Expired Date</Text>
+                                                <Input placeholder="Expired Date" style={styles.transparentLabel} />
+                                            </Col>
+
+                                        </Grid>
+
+                                        <Grid style={{ marginTop: 15 }}>
+                                            <Row>
+                                                <Col>
+                                                    <Row>
+                                                        <CheckBox checked={true} color="green"  ></CheckBox>
+                                                        <Text style={{ marginLeft: 15, color: 'gray', fontFamily: 'OpenSans', }}>Save creditcard Information</Text>
+                                                    </Row>
+                                                </Col>
+                                            </Row>
+
+                                        </Grid>
+                                        <View style={{ flexDirection: 'row', margintop: 10 }}>
+
+                                        </View>
 
 
-
-
-                        </Row>
-
-                    </Grid>
-
-
+                                        <Button onPress={() => this.updatePaymentDetails(true, {}, 'cash')} block style={styles.paymentButton}><Text>Continue</Text></Button>
+                                    </Card>
+                            } />
+                    </Card>
                 </Content>
-                <Footer style={{ backgroundColor: '#fff' }}>
-                    <Left></Left>
-                    <Body></Body>
-                    <Right>
-                        <Button onPress={()=> this.updatePaymentDetails(true, {}, 'cash')} transparent><Text style={{ color: '#66A3F2', fontSize: 15, fontFamily: 'OpenSans' }}>Pay Later</Text></Button>
-                    </Right>
-                </Footer>
+
             </Container>
 
         )
     }
 
 }
+
 
 function loginState(state) {
 
@@ -358,50 +339,56 @@ const styles = StyleSheet.create({
     container:
     {
         backgroundColor: '#ffffff',
-
     },
 
     bodyContent: {
-
+        padding: 0
+    },
+    customImage: {
+        height: 50,
+        width: 90,
+        marginLeft: 'auto',
+        marginRight: 'auto',
+        marginTop: 'auto',
+        marginBottom: 'auto'
     },
 
-    paymentHeader:
-    {
-        fontFamily: 'opensans-semibold',
-        borderColor: '#000',
-        backgroundColor: 'white',
-        borderWidth: 1,
-        width: 130,
-        textAlign: 'center',
+
+    curvedGrid: {
+        borderRadius: 800,
+        width: '200%',
+        height: 690,
+        marginLeft: -200,
+        marginTop: -600,
+        position: 'relative',
+        bottom: 0,
+        overflow: 'hidden',
+        backgroundColor: '#745DA6'
+    },
+
+    paymentButton: {
+        marginTop: 15,
+        backgroundColor: '#775DA3',
         borderRadius: 5,
-        padding: 10,
-        margin: 10,
-        color: 'gray',
-        fontSize: 18
-
     },
-
-    paymentText: {
-        fontFamily: 'OpenSans',
-        color: 'gray',
-        textAlign: 'center',
-        fontSize: 15,
-        padding: 10
-    },
-
-    gridNew: {
-        backgroundColor: '#f2f2f2',
-        alignItems: 'center',
-        padding: 15,
-        marginTop: 10
-    },
-    gridEntry:
+    normalText:
     {
-        paddingLeft: 30,
-        paddingRight: 30,
-        paddingTop: 20,
+        fontFamily: 'OpenSans',
+        fontSize: 16,
+        color: '#fff',
+        fontWeight: 'bold'
     },
-    transparentLabel: {
+    labelTop:
+    {
+        fontFamily: 'OpenSans',
+        fontSize: 14,
+        color: '#000',
+
+
+    },
+    transparentLabel:
+    {
+
         borderBottomColor: 'transparent',
         backgroundColor: '#F1F1F1',
         height: 45,
@@ -409,6 +396,13 @@ const styles = StyleSheet.create({
         borderRadius: 5,
         paddingLeft: 20,
         fontFamily: 'OpenSans',
-    }
+        margin: 2,
+    },
+    paymentText: {
+        fontFamily: 'OpenSans',
+        color: 'gray',
+        textAlign: 'center',
+        fontSize: 15,
 
+    },
 });
