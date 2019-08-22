@@ -14,13 +14,9 @@ import UpdateUserDetails from "../../modules/screens/userprofile/UpdateUserDetai
 //import UploadImage from "../../modules/screens/userprofile/UploadImage";
 import UpdateAddress from "../../modules/screens/userprofile/UpdateAddress";
 
-
-
-
 import finddoctor from "../../modules/screens/auth/finddoctor";
 import { Icon, View } from 'native-base';
 import Categories from "../../modules/screens/categories";
-
 
 import login from "../../modules/screens/auth/login";
 import signup from "../../modules/screens/auth/signup";
@@ -41,10 +37,8 @@ import { Col, Grid, Row } from 'react-native-easy-grid';
 import { logout } from '../../modules/providers/auth/auth.actions';
 import { TouchableOpacity, Image } from 'react-native'
 
-
 import menuIcon from '../../../assets/images/menu.png';
 import profileAvatar from '../../../assets/images/profileAvatar.png';
-
 
 import { HeaderBackButton } from 'react-navigation';
 import BookAppoinment from "../../modules/screens/bookappoinment";
@@ -53,17 +47,20 @@ import Mapbox from "../../modules/screens/bookappoinment/Mapbox";
 import AppointmentDetails from '../../modules/screens/MyAppointments/AppointmentDetails';
 import MyAppoinmentList from '../../modules/screens/MyAppointments/MyAppointmentList';
 import CancelAppointment from "../../modules/screens/MyAppointments/cancelAppointment";
+
 import PharmacyHome from '../../modules/screens/Pharmacy/PharmacyHome/PharmacyHome';
 import PharmacyMyOrders from '../../modules/screens/Pharmacy/PharmacyMyOrders/PharmacyMyOrders';
 import PharmacyOrderDetails from '../../modules/screens/Pharmacy/PharmacyOrderDetails/PharmacyOrderDetails';
-import MedicineSearchList from '../../modules/screens/Pharmacy/MedicineSearchList/MedicineSearchList';
-import MedicineCheckout from '../../modules/screens/Pharmacy/MedicineCheckout/MedicineChekout';
 import OrderPayment from '../../modules/screens/Pharmacy/OrderPayment/OrderPayment';
 import PharmacyCart from '../../modules/screens/Pharmacy/PharmacyCart/PharmacyCart';
 import OrderPaymentSuccess from '../../modules/screens/Pharmacy/OrderPaymentSuccess/OrderPaymentSuccess';
 import UploadPrescription from '../../modules/screens/Pharmacy/PharmacyHome/UploadPrescription';
 import OrderPaymentAddress from '../../modules/screens/Pharmacy/OrderPaymentAddress/OrderPaymentAddress';
 import OrderPaymentPreview from '../../modules/screens/Pharmacy/OrderPaymentPreview/OrderPaymentPreview';
+import PharmacyMedicineDetails from '../../modules/screens/Pharmacy/PharmacyMedicineDetails/PharmacyMedicineDetails';
+import MedicineSearchList from '../../modules/screens/Pharmacy/MedicineSearchList/MedicineSearchList';
+import MedicineCheckout from '../../modules/screens/Pharmacy/MedicineCheckout/MedicineChekout';
+
 const routes = {
   Home: {
     name: 'Home',

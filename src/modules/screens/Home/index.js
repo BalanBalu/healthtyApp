@@ -41,16 +41,16 @@ class Home extends Component {
             // if(result.success) 
             // setTimeout( ()=>{
             this.setState({ data: result.data, isLoading: true })
-             console.log('category Data'+JSON.stringify(this.state.data));
-             let limitedData = [];
+            console.log('category Data' + JSON.stringify(this.state.data));
+            let limitedData = [];
 
-             for (let limtedNumber = 0; limtedNumber < 6; limtedNumber++) {
-                 if(result.data[limtedNumber] !== undefined)
-                     limitedData.push(result.data[limtedNumber]);
-             }
-             this.setState({ catagary: limitedData });
-            
-             let totalSpecialistDataArry = [];
+            for (let limtedNumber = 0; limtedNumber < 6; limtedNumber++) {
+                if (result.data[limtedNumber] !== undefined)
+                    limitedData.push(result.data[limtedNumber]);
+            }
+            this.setState({ catagary: limitedData });
+
+            let totalSpecialistDataArry = [];
 
             this.state.data.forEach((dataElement) => {
                 let categoryObject = { name: 'specialist', value: dataElement.category_name };
@@ -59,11 +59,11 @@ class Home extends Component {
                 dataElement.services.forEach((serviceEle) => {
                     let serviceObject = { name: 'service', value: serviceEle.service };
                     totalSpecialistDataArry.push(serviceObject);
-                    if(serviceEle.symptoms != undefined) {
-                      serviceEle.symptoms.forEach((symptomsEle) => {
-                        let symptomObject = { name: 'symptoms', value: symptomsEle };
-                        totalSpecialistDataArry.push(symptomObject)
-                      })
+                    if (serviceEle.symptoms != undefined) {
+                        serviceEle.symptoms.forEach((symptomsEle) => {
+                            let symptomObject = { name: 'symptoms', value: symptomsEle };
+                            totalSpecialistDataArry.push(symptomObject)
+                        })
                     }
                 })
 
@@ -71,7 +71,7 @@ class Home extends Component {
             await this.setState({ totalSpecialistDataArry: totalSpecialistDataArry })
             console.log('this.state.totalSpecialistDataArry' + JSON.stringify(this.state.totalSpecialistDataArry));
 
-            
+
         } catch (e) {
             console.log(e);
         }
@@ -216,7 +216,7 @@ class Home extends Component {
 
                                 <ListItem noBorder>
                                     <ScrollView horizontal={false}>
-                                         {/* <FlatList
+                                        {/* <FlatList
                                             horizontal={true}
                                             data={this.state.catagary}
                                             extraData={this.state}
@@ -294,7 +294,7 @@ class Home extends Component {
 
                             <Row>
                                 <Col>
-                                    <Text note style={{ fontFamily: 'OpenSans', color: 'white', marginTop: 15 }}>Medflick Pharmacy Offers You Online Convenience For Ordering, Monitoring And Receiving Prescription For You And Your Family.</Text>
+                                    <Text note style={{ fontFamily: 'OpenSans', color: 'white', marginTop: 15 }}>Medflic Pharmacy Offers You Online Convenience For Ordering, Monitoring And Receiving Prescription For You And Your Family.</Text>
                                 </Col>
                             </Row>
                         </Grid>

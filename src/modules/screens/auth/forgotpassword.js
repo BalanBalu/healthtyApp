@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { View, Container, Content, Button, Text, Form, Item, Input, Footer, FooterTab, H3, Toast } from 'native-base';
+import { View, Container, Content, Button, Text, Form, Item, Input, Footer, FooterTab, H3, Toast, Icon } from 'native-base';
 import { generateOTP, changePassword, LOGOUT } from '../../providers/auth/auth.actions';
 import { connect } from 'react-redux';
 import { StyleSheet, Image } from 'react-native'
@@ -19,7 +19,8 @@ class Forgotpassword extends Component {
             password: '',
             isOTPGenerated: false,
             errorMessage: '',
-            userEntry: ''
+            userEntry: '',
+            showPassword: true
         }
     }
     requestOTP = async () => {
@@ -126,8 +127,8 @@ class Forgotpassword extends Component {
                             onChangeText={password => this.setState({ password })}
                             blurOnSubmit={false}
                             onSubmitEditing={() => { this.changePassword(); }}
-
                         />
+                        <Icon active name='eye' style={{ fontSize: 20, marginTop: 10 }} onPress={() => this.setState({ showPassword: !this.state.showPassword })} />
                     </Item>
 
                     <Button style={styles.loginButton} block primary onPress={() => this.changePassword()}>

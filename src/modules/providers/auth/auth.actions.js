@@ -33,7 +33,7 @@ export async function login(userCredentials, isLoading = true) {
     if (respData.error || !respData.success) {
       store.dispatch({
         type: LOGIN_HAS_ERROR,
-        message: respData.message
+        message: "Invalid Login Credentials"
       })
     } else {
       console.log('token:' + JSON.stringify(respData))
