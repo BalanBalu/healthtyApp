@@ -1,4 +1,4 @@
-import React, { Component} from 'react';
+import React, { Component } from 'react';
 import { Button } from 'native-base';
 import { createStackNavigator, createBottomTabNavigator, createAppContainer, createSwitchNavigator, createDrawerNavigator } from 'react-navigation';
 //import { routes } from './appRouterConfig';
@@ -13,6 +13,7 @@ import UpdateInsurance from "../../modules/screens/userprofile/UpdateInsurance";
 import UpdateUserDetails from "../../modules/screens/userprofile/UpdateUserDetails";
 //import UploadImage from "../../modules/screens/userprofile/UploadImage";
 import UpdateAddress from "../../modules/screens/userprofile/UpdateAddress";
+
 
 
 
@@ -39,7 +40,7 @@ import Notification from "../../modules/screens/Notification";
 
 import { Col, Grid, Row } from 'react-native-easy-grid';
 import { logout } from '../../modules/providers/auth/auth.actions';
-import { TouchableOpacity, Image, Text, AppRegistry, AsyncStorage} from 'react-native'
+import { TouchableOpacity, Image, Text, AppRegistry, AsyncStorage } from 'react-native'
 
 
 import menuIcon from '../../../assets/images/menu.png';
@@ -63,6 +64,9 @@ import MedicinePaymentResult from '../../modules/screens/Pharmacy/MedicinePaymen
 import MedicinePaymentSuccess from '../../modules/screens/Pharmacy/MedicinePaymentSuccess/MedicinePaymentSuccess';
 import UploadPrescription from '../../modules/screens/Pharmacy/MedicineSearch/UploadPrescription';
 import MedicalOrderDetails from '../../modules/screens/Pharmacy/MedicalOrderDetails/MedicalOrderDetails';
+
+
+import { Badge } from '../../../src/modules/common'
 
 import MedicineAddress from '../../modules/screens/Pharmacy/MedicineAddress/MedicineAddress';
 import MedicinePaymentReview from '../../modules/screens/Pharmacy/MedicinePaymentReview/MedicinePaymentReview';
@@ -266,11 +270,12 @@ const myAppointmentsStack = createStackNavigator({
     })
   });
 
-  
+
+
 const HomeStack = createStackNavigator({
   Home: {
     screen: Home,
-    navigationOptions: ({ navigation }) => ({
+   navigationOptions: ({ navigation }) => ({
 
       title: 'DashBoard',
       headerLeft: (
@@ -281,8 +286,8 @@ const HomeStack = createStackNavigator({
           />
         </TouchableOpacity>
       ),
-      
-      headerRight: (          
+
+      headerRight: (
         <Grid>
 
           <Col>
@@ -290,7 +295,7 @@ const HomeStack = createStackNavigator({
               <View>
                 <Icon name="notifications" style={{ color: '#fff', marginRight: 10, fontFamily: 'opensans-semibold' }}></Icon>
 
-                <Text style={{ position: 'absolute', backgroundColor: 'red', color: 'white', borderRadius: 20, marginLeft: 10, padding: 2, marginTop: -7 }}>{AsyncStorage.getItem('notificationCount')}</Text>
+                 <Badge/>
               </View>
             </TouchableOpacity>
           </Col>
@@ -342,6 +347,7 @@ const HomeStack = createStackNavigator({
       headerTintColor: 'white',
     })
   })
+
 
 const ProfileStack = createStackNavigator({
   Profile: {

@@ -5,7 +5,7 @@ import LinearGradient from 'react-native-linear-gradient';
 import { Col, Row, Grid } from 'react-native-easy-grid';
 import { connect } from 'react-redux'
 
-import { StyleSheet, Image, View, TouchableOpacity, AsyncStorage} from 'react-native';
+import { StyleSheet, Image, View, TouchableOpacity, AsyncStorage } from 'react-native';
 import { ScrollView, FlatList } from 'react-native-gesture-handler';
 import { catagries } from '../../providers/catagries/catagries.actions';
 import { fetchUserNotification, UpDateUserNotification } from '../../providers/notification/notification.actions';
@@ -23,9 +23,7 @@ class Home extends Component {
 
         };
         this.arrayData = []
-        this.getCatagries();
-        
-        this.getUserNotification();  
+
     }
     navigetToCategories() {
         this.props.navigation.navigate('Categories', { data: this.state.data })
@@ -35,26 +33,32 @@ class Home extends Component {
         logout();
         this.props.navigation.navigate('login');
     }
+    async componentDidMount() {
+       
+        await this.getCatagries();
 
-   
+        await this.getUserNotification();
+    }
+
     getCatagries = async () => {
         try {
             let result = await catagries();
 
 
-            // if(result.success) 
-            // setTimeout( ()=>{
-            this.setState({ data: result.data, isLoading: true })
-             console.log('category Data'+JSON.stringify(this.state.data));
-             let limitedData = [];
+            if (result.success) { }
 
-             for (let limtedNumber = 0; limtedNumber < 6; limtedNumber++) {
-                 if(result.data[limtedNumber] !== undefined)
-                     limitedData.push(result.data[limtedNumber]);
-             }
-             this.setState({ catagary: limitedData });
-            
-             let totalSpecialistDataArry = [];
+            this.setState({ data: result.data, isLoading: true })
+            console.log(result.data)
+
+            let limitedData = [];
+
+            for (let limtedNumber = 0; limtedNumber < 6; limtedNumber++) {
+                if (result.data[limtedNumber] !== undefined)
+                    limitedData.push(result.data[limtedNumber]);
+            }
+            this.setState({ catagary: limitedData });
+
+            let totalSpecialistDataArry = [];
 
             this.state.data.forEach((dataElement) => {
                 let categoryObject = { name: 'specialist', value: dataElement.category_name };
@@ -63,19 +67,19 @@ class Home extends Component {
                 dataElement.services.forEach((serviceEle) => {
                     let serviceObject = { name: 'service', value: serviceEle.service };
                     totalSpecialistDataArry.push(serviceObject);
-                    if(serviceEle.symptoms != undefined) {
-                      serviceEle.symptoms.forEach((symptomsEle) => {
-                        let symptomObject = { name: 'symptoms', value: symptomsEle };
-                        totalSpecialistDataArry.push(symptomObject)
-                      })
+                    if (serviceEle.symptoms != undefined) {
+                        serviceEle.symptoms.forEach((symptomsEle) => {
+                            let symptomObject = { name: 'symptoms', value: symptomsEle };
+                            totalSpecialistDataArry.push(symptomObject)
+                        })
                     }
                 })
 
             })
             await this.setState({ totalSpecialistDataArry: totalSpecialistDataArry })
-            console.log('this.state.totalSpecialistDataArry' + JSON.stringify(this.state.totalSpecialistDataArry));
 
-            
+
+
         } catch (e) {
             console.log(e);
         }
@@ -145,12 +149,29 @@ class Home extends Component {
         try {
             this.setState({ isLoading: true });
             let userId = await AsyncStorage.getItem('userId');
+            let count = 0;
 
             let result = await fetchUserNotification(userId);
-            if (result.success) {
-                // await this.setState({ data: result.data })
-            }
+            // let no = [];
+            console.log(JSON.stringify(result))
 
+            if (result.success) {
+
+                result.data.forEach(element => {
+                    console.log(element)
+                    if (element.mark_as_viewed == true) {
+                        console.log('true')
+                        count++;
+                        // no.push(element._id)
+
+                    }
+
+                })
+
+
+            }
+            console.log('async value ' + count)
+             await AsyncStorage.setItem('count', count.toString())
 
         }
         catch (e) {
@@ -241,7 +262,7 @@ class Home extends Component {
 
                                 <ListItem noBorder>
                                     <ScrollView horizontal={false}>
-                                         {/* <FlatList
+                                        {/* <FlatList
                                             horizontal={true}
                                             data={this.state.catagary}
                                             extraData={this.state}

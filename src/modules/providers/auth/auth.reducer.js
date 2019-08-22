@@ -1,5 +1,5 @@
 // App Imports
-import { isEmpty ,store} from '../../../setup/helpers';
+import { store} from '../../../setup/store';
 import {
   SET_USER, LOGIN_REQUEST, LOGIN_RESPONSE, LOGOUT, LOGIN_HAS_ERROR, AUTH_REQUEST, AUTH_HAS_ERROR, AUTH_RESPONSE, OTP_CODE_GENERATED, NEW_PASSWORD,
   REDIRECT_NOTICE, RESET_REDIRECT_NOTICE
@@ -17,7 +17,8 @@ export const userInitialState = {
   isLoading: false,
   isAuthenticated: false,
   details: null,
-  notificationId:[],
+  notification: [],
+ 
   success: false,
   userId: null,
   isPasswordChanged: false,
@@ -128,7 +129,7 @@ export default (state = userInitialState, action) => {
         success: true,
         isLoading: false,
         message: action.message,
-        details: action.details,
+        notification: action.details,
         notificationId: action.notificationIds,
 
       }

@@ -1,4 +1,4 @@
-import React from 'react';
+import React,{Component} from 'react';
 import { View, Text, AsyncStorage} from "react-native";
 import { Icon } from 'native-base';
 import { Col, Row, Grid } from 'react-native-easy-grid';
@@ -97,6 +97,42 @@ export async function addToCart(medicineData, selectItem, operation) {
        return{selectemItemData: selectItem}
 }
 
-export function medicineRateAfterOffer(item){
-    return parseInt(item.price)-((parseInt(item.offer)/100) * parseInt(item.price));
-} 
+export function medicineRateAfterOffer(item) {
+    return parseInt(item.price) - ((parseInt(item.offer) / 100) * parseInt(item.price));
+
+}
+
+
+
+export  class Badge extends Component {
+    constructor(props) {
+
+        super(props);
+        this.state = {
+            data:'7',
+        };
+        // this.notificationcount();
+
+    }
+
+    
+//         notificationcount = async () => {
+//         let data = '7';
+//         //    await AsyncStorage.getItem('count');
+//         setState({data})
+// }
+    async componentDidMount() {
+        let data = await AsyncStorage.getItem('count')
+
+        this.setState({data})
+    }
+
+    render() {
+        const { data} = this.state;
+
+
+        return (
+            <Text style={{ position: 'absolute', backgroundColor: 'red', color: 'white', borderRadius: 20, marginLeft: 10, padding: 2, marginTop: -7 }}>{data}</Text>
+        )
+    }
+}
