@@ -7,7 +7,7 @@ import { getMedicineDetails } from '../../../providers/pharmacy/pharmacy.action'
 import { medicineRateAfterOffer } from '../../../common';
 
 
-class PharmacyMedicineDetails extends Component {
+class OrderMedicineDetails extends Component {
     constructor(props) {
         super(props);
         this.state = {
@@ -166,7 +166,7 @@ class PharmacyMedicineDetails extends Component {
     }
 }
 
-export default PharmacyMedicineDetails;
+export default OrderMedicineDetails;
 
 const styles = StyleSheet.create({
     cardsize: {

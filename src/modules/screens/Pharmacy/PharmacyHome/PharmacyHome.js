@@ -197,7 +197,7 @@ class PharmacyHome extends Component {
                         </Col>
 
                         <Col style={{ marginRight: 40 }} >
-                            <Button success style={{ borderRadius: 10, marginTop: 10, marginLeft: 45, height: 40, justifyContent: 'center' }} onPress={()=> this.props.navigation.navigate('MedicinePaymentResult')} testID='clickButtonToViewCartPage'>
+                            <Button success style={{ borderRadius: 10, marginTop: 10, marginLeft: 45, height: 40, justifyContent: 'center' }} onPress={()=> this.props.navigation.navigate('PharmacyCart')} testID='clickButtonToViewCartPage'>
 
 
                                 <Row style={{ justifyContent: 'center', }}>

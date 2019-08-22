@@ -7,7 +7,7 @@ import {getMyOrders} from '../../../providers/pharmacy/pharmacy.action'
 import { formatDate } from '../../../../setup/helpers'
 
 
-class PharmacyOrderDetails extends Component {
+class OrderDetails extends Component {
     constructor(props) {
         super(props)
         this.state = {
@@ -113,7 +113,7 @@ class PharmacyOrderDetails extends Component {
 }
 
 
-export default PharmacyOrderDetails
+export default OrderDetails
 
 
 const styles = StyleSheet.create({
