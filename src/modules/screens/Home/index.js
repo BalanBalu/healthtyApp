@@ -47,8 +47,7 @@ class Home extends Component {
             if (result.success) { }
 
             this.setState({ data: result.data, isLoading: true })
-            console.log(result.data)
-
+            console.log('category Data' + JSON.stringify(this.state.data));
             let limitedData = [];
 
             for (let limtedNumber = 0; limtedNumber < 6; limtedNumber++) {
@@ -76,7 +75,6 @@ class Home extends Component {
 
             })
             await this.setState({ totalSpecialistDataArry: totalSpecialistDataArry })
-
 
 
         } catch (e) {
@@ -301,7 +299,7 @@ class Home extends Component {
 
                             <Row>
                                 <Col>
-                                    <Text note style={{ fontFamily: 'OpenSans', color: 'white', marginTop: 15 }}>Medflick Pharmacy Offers You Online Convenience For Ordering, Monitoring And Receiving Prescription For You And Your Family.</Text>
+                                    <Text note style={{ fontFamily: 'OpenSans', color: 'white', marginTop: 15 }}>Medflic Pharmacy Offers You Online Convenience For Ordering, Monitoring And Receiving Prescription For You And Your Family.</Text>
                                 </Col>
                             </Row>
                         </Grid>

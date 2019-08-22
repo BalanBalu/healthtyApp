@@ -65,8 +65,7 @@ class UpdateUserDetails extends Component {
                 type: "danger",
                 duration: 3000
             });
-        }
-        
+        }        
         }
     }
 
@@ -232,7 +231,7 @@ class UpdateUserDetails extends Component {
                             />
 
                             <View>
-                                <Button primary style={styles.userbutton} onPress={() => this.userUpdate()}>
+                                <Button disabled={this.state.updateButton} primary style={styles.userbutton} onPress={() => this.userUpdate()}>
                                     <Text style={{ fontFamily: 'OpenSans', fontSize: 15, }}>Update</Text>
                                 </Button>
                             </View>

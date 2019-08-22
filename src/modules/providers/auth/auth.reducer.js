@@ -23,7 +23,8 @@ export const userInitialState = {
   userId: null,
   isPasswordChanged: false,
   redirectNotice: {},
-  needToRedirect: false
+  needToRedirect: false,
+  isOTPGenerated: false
 }
 // State
 export default (state = userInitialState, action) => {
