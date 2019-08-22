@@ -8,8 +8,7 @@ import { connect } from 'react-redux'
 import { StyleSheet, Image, View, TouchableOpacity, AsyncStorage } from 'react-native';
 import { ScrollView, FlatList } from 'react-native-gesture-handler';
 import { catagries } from '../../providers/catagries/catagries.actions';
-import { fetchUserNotification, UpDateUserNotification } from '../../providers/notification/notification.actions';
-
+import { getUserNotification } from '../../common'
 class Home extends Component {
     constructor(props) {
         super(props)
@@ -37,7 +36,7 @@ class Home extends Component {
        
         await this.getCatagries();
 
-        await this.getUserNotification();
+     await getUserNotification();
     }
 
     getCatagries = async () => {
@@ -145,44 +144,6 @@ class Home extends Component {
             />
         );
     };
-    getUserNotification = async () => {
-        try {
-            this.setState({ isLoading: true });
-            let userId = await AsyncStorage.getItem('userId');
-            let count = 0;
-
-            let result = await fetchUserNotification(userId);
-            // let no = [];
-            console.log(JSON.stringify(result))
-
-            if (result.success) {
-
-                result.data.forEach(element => {
-                    console.log(element)
-                    if (element.mark_as_viewed == true) {
-                        console.log('true')
-                        count++;
-                        // no.push(element._id)
-
-                    }
-
-                })
-
-
-            }
-            console.log('async value ' + count)
-             await AsyncStorage.setItem('count', count.toString())
-
-        }
-        catch (e) {
-            console.log(e);
-        }
-        finally {
-            this.setState({ isLoading: false });
-        }
-    }
-
-
 
     render() {
 

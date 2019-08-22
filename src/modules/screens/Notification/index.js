@@ -12,6 +12,7 @@ import { fetchUserNotification, UpDateUserNotification } from '../../providers/n
 import { hasLoggedIn } from "../../providers/auth/auth.actions";
 import { formatDate, dateDiff } from '../../../setup/helpers';
 import Spinner from "../../../components/Spinner";
+import { getUserNotification } from '../../common'
 // import Home from '../Home';
 
 
@@ -21,7 +22,7 @@ class Notification extends Component {
 
         super(props);
         this.state = {
-            data:[],
+            data: [],
             notificationId: [],
 
             isLoading: false
@@ -30,33 +31,45 @@ class Notification extends Component {
     }
 
     async componentDidMount() {
+       
+       console.log('notification componentDid mount')
+
         const isLoggedIn = await hasLoggedIn(this.props);
         if (!isLoggedIn) {
             this.props.navigation.navigate("login");
             return;
         }
-        this.setState({ data: this.props.user.details })
-        if (this.props.user.notificationId != null) {
-    
-          await this.setState({ notificationId: this.props.user.notificationId })
-            this.upDateNotification('mark_as_viewed')
+
+        this.setState({ data: this.props.user.notification });
+       
+        if (this.props.user.notificationId[0] != undefined) {
+            console.log('null but come')
+            await this.setState({ notificationId: this.props.user.notificationId })
+          await  this.upDateNotification('mark_as_viewed')
+
+            await AsyncStorage.removeItem('notification')
         }
-        // this.getUserNotification();
+     
 
     }
 
     backNavigation = async (navigationData) => {
+        try {
 
-        await this.setState({ isLoading: false })
-        if (navigationData.action) {
-            if (navigationData.action.type === 'Navigation/POP') {
+            await this.setState({ isLoading: false })
+            if (navigationData.action) {
+                console.log(navigationData.action.type)
+                if (navigationData.action.type === 'Navigation/BACK') {
 
 
 
 
-                await this.getUserNotification();
-                await this.setState({ isLoading: true })
+                    getUserNotification();
+                    await this.setState({ isLoading: false })
+                }
             }
+        } catch (e) {
+            console.log(e)
         }
 
     }
@@ -84,14 +97,14 @@ class Notification extends Component {
 
     }
 
-    
-    
+
+
 
 
     render() {
         const { data, isLoading } = this.state;
-        console.log('notification' +data)
-    
+
+
         return (
             < Container style={styles.container} >
                 {/* <NavigationEvents onwillBlur={payload => { this.componentWillMount() }} /> */}

@@ -2,6 +2,8 @@ import React,{Component} from 'react';
 import { View, Text, AsyncStorage} from "react-native";
 import { Icon } from 'native-base';
 import { Col, Row, Grid } from 'react-native-easy-grid';
+import { fetchUserNotification, UpDateUserNotification } from '../../src/modules/providers/notification/notification.actions'
+
 
 export const RenderHospitalAddress = (props) => {
     const { headerStyle, hospotalNameTextStyle, gridStyle, renderHalfAddress } = props
@@ -42,6 +44,7 @@ export const RenderHospitalAddress = (props) => {
 }
 
 export const RenderPatientAddress = (props) => {
+    
     const { gridStyle } = props
     return (
 
@@ -101,7 +104,23 @@ export function medicineRateAfterOffer(item) {
     return parseInt(item.price) - ((parseInt(item.offer) / 100) * parseInt(item.price));
 
 }
+export async function getUserNotification() {
+    try {
+       
+        let userId = await AsyncStorage.getItem('userId');
+    
+        let result = await fetchUserNotification(userId);
+      
+        
+        
 
+    }
+    catch (e) {
+        console.log(e);
+    }
+   
+   
+}
 
 
 export  class Badge extends Component {
@@ -109,21 +128,14 @@ export  class Badge extends Component {
 
         super(props);
         this.state = {
-            data:'7',
+            data:''
         };
-        // this.notificationcount();
-
     }
 
     
-//         notificationcount = async () => {
-//         let data = '7';
-//         //    await AsyncStorage.getItem('count');
-//         setState({data})
-// }
+  
     async componentDidMount() {
-        let data = await AsyncStorage.getItem('count')
-
+        let data = await AsyncStorage.getItem('notification');
         this.setState({data})
     }
 
