@@ -53,17 +53,17 @@ import Mapbox from "../../modules/screens/bookappoinment/Mapbox";
 import AppointmentDetails from '../../modules/screens/MyAppointments/AppointmentDetails';
 import MyAppoinmentList from '../../modules/screens/MyAppointments/MyAppointmentList';
 import CancelAppointment from "../../modules/screens/MyAppointments/cancelAppointment";
-import MedicineSearch from '../../modules/screens/Pharmacy/MedicineSearch/MedicineSearch';
-import MedicineOrderList from '../../modules/screens/Pharmacy/MedicineOrderList/MedicineOrderList';
-import MedicineMyOrders from '../../modules/screens/Pharmacy/MedicineMyOrders/MedicineMyOrders';
+import PharmacyHome from '../../modules/screens/Pharmacy/PharmacyHome/PharmacyHome';
+import PharmacyMyOrders from '../../modules/screens/Pharmacy/PharmacyMyOrders/PharmacyMyOrders';
+import PharmacyOrderDetails from '../../modules/screens/Pharmacy/PharmacyOrderDetails/PharmacyOrderDetails';
 import MedicineSearchList from '../../modules/screens/Pharmacy/MedicineSearchList/MedicineSearchList';
 import MedicineCheckout from '../../modules/screens/Pharmacy/MedicineCheckout/MedicineChekout';
-import MedicinePaymentPage from '../../modules/screens/Pharmacy/MedicinePaymentPage/MedicinePaymentPage';
-import MedicinePaymentResult from '../../modules/screens/Pharmacy/MedicinePaymentResult/MedicinePaymentResult';
-import MedicinePaymentSuccess from '../../modules/screens/Pharmacy/MedicinePaymentSuccess/MedicinePaymentSuccess';
-import UploadPrescription from '../../modules/screens/Pharmacy/MedicineSearch/UploadPrescription';
-import MedicineAddress from '../../modules/screens/Pharmacy/MedicineAddress/MedicineAddress';
-import MedicinePaymentReview from '../../modules/screens/Pharmacy/MedicinePaymentReview/MedicinePaymentReview';
+import OrderPayment from '../../modules/screens/Pharmacy/OrderPayment/OrderPayment';
+import PharmacyCart from '../../modules/screens/Pharmacy/PharmacyCart/PharmacyCart';
+import OrderPaymentSuccess from '../../modules/screens/Pharmacy/OrderPaymentSuccess/OrderPaymentSuccess';
+import UploadPrescription from '../../modules/screens/Pharmacy/PharmacyHome/UploadPrescription';
+import OrderPaymentAddress from '../../modules/screens/Pharmacy/OrderPaymentAddress/OrderPaymentAddress';
+import OrderPaymentPreview from '../../modules/screens/Pharmacy/OrderPaymentPreview/OrderPaymentPreview';
 const routes = {
   Home: {
     name: 'Home',
@@ -389,7 +389,7 @@ const ProfileStack = createStackNavigator({
 
 const PharmacyStack = createStackNavigator({
   MedicineList: {
-    screen: MedicineSearch,
+    screen: PharmacyHome,
     navigationOptions: ({ navigation }) => ({
       title: 'Medicine List',
       headerLeft: (
@@ -414,14 +414,14 @@ const PharmacyStack = createStackNavigator({
     }
   },
 
-  MedicineOrderList: {
-    screen: MedicineOrderList,
+  PharmacyMyOrders: {
+    screen: PharmacyMyOrders,
     navigationOptions: {
       title: 'Order List'
     }
   },
-  MedicineMyOrders: {
-    screen: MedicineMyOrders,
+  PharmacyOrderDetails: {
+    screen: PharmacyOrderDetails,
     navigationOptions: {
       title: 'My Order'
     }
@@ -432,35 +432,35 @@ const PharmacyStack = createStackNavigator({
       title: 'Checkout'
     }
   },
-  MedicinePaymentReview: {
-    screen: MedicinePaymentReview,
+  OrderPaymentPreview: {
+    screen: OrderPaymentPreview,
     navigationOptions: {
-      title: 'MedicinePaymentReview'
+      title: 'OrderPaymentPreview'
     }
   },
-  MedicinePaymentPage: {
-    screen: MedicinePaymentPage,
+  OrderPayment: {
+    screen: OrderPayment,
     navigationOptions: {
       title: 'PaymentPage'
     }
   },
-  MedicinePaymentResult: {
-    screen: MedicinePaymentResult,
+  PharmacyCart: {
+    screen: PharmacyCart,
     navigationOptions: {
-      title: 'MedicinePaymentResult'
+      title: 'PharmacyCart'
     }
   },
-  MedicinePaymentSuccess: {
-    screen: MedicinePaymentSuccess,
+  OrderPaymentSuccess: {
+    screen: OrderPaymentSuccess,
     navigationOptions: {
-      title: 'MedicinePaymentSuccess'
+      title: 'OrderPaymentSuccess'
     }
   },
 
-  MedicalOrderDetails: {
-    screen: MedicalOrderDetails,
+  PharmacyMedicineDetails: {
+    screen: PharmacyMedicineDetails,
     navigationOptions: {
-      title: 'MedicalOrderDetails'
+      title: 'PharmacyMedicineDetails'
     }
   }
 

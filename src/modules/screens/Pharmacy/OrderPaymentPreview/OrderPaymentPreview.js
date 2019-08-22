@@ -5,7 +5,7 @@ import { StyleSheet, Image, ScrollView, AsyncStorage, FlatList } from 'react-nat
 import { medicineRateAfterOffer } from '../../../common';
 import { formatDate } from '../../../../setup/helpers';
 
-class MedicinePaymentReview extends Component {
+class OrderPaymentPreview extends Component {
     constructor(props) {
         super(props)
 
@@ -194,7 +194,7 @@ class MedicinePaymentReview extends Component {
 
 }
 
-export default MedicinePaymentReview
+export default OrderPaymentPreview
 
 
 const styles = StyleSheet.create({

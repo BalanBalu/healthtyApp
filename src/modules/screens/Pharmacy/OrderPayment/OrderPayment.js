@@ -5,7 +5,7 @@ import { connect } from 'react-redux'
 import { StyleSheet, Image } from 'react-native';
 import { FlatList } from 'react-native-gesture-handler';
 
-class MedicinePaymentPage extends Component {
+class OrderPayment extends Component {
     constructor(props) {
         super(props)
         console.log(this.props)
@@ -149,7 +149,7 @@ class MedicinePaymentPage extends Component {
 }
 
 
-export default MedicinePaymentPage
+export default OrderPayment
 
 
 const styles = StyleSheet.create({

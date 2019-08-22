@@ -3,7 +3,7 @@ import { Container, Content, Text, Title, Header, Form, Textarea, Button, H3, It
 import { Col, Row, Grid } from 'react-native-easy-grid';
 import { StyleSheet, Image } from 'react-native';
 import { FlatList } from 'react-native-gesture-handler';
-class MedicineAddress extends Component {
+class OrderPaymentAddress extends Component {
     constructor(props) {
         super(props);
         this.state = {};
@@ -141,7 +141,7 @@ class MedicineAddress extends Component {
     }
 }
 
-export default MedicineAddress;
+export default OrderPaymentAddress;
 
 const styles = StyleSheet.create({
 

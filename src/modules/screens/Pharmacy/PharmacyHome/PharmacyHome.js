@@ -12,7 +12,7 @@ import { addToCart,medicineRateAfterOffer } from '../../../common';
 
 
 let temp, userId; 
-class MedicineSearch extends Component {
+class PharmacyHome extends Component {
     constructor(props) {
         super(props)       
         this.state={
@@ -226,7 +226,7 @@ class MedicineSearch extends Component {
 
 }
 
-export default MedicineSearch
+export default PharmacyHome
 
 
 const styles = StyleSheet.create({

@@ -7,7 +7,7 @@ import { Loader } from '../../../../components/ContentLoader';
 import { getMedicineOrderList } from '../../../providers/pharmacy/pharmacy.action';
 import {formatDate} from '../../../../setup/helpers'
 
-class MedicineMyOrders extends Component {
+class PharmacyMyOrders extends Component {
     constructor(props) {
         super(props)
         this.state = {
@@ -60,7 +60,7 @@ class MedicineMyOrders extends Component {
     extraData={this.state}
     keyExtractor={(item, index) => index.toString()}
     renderItem={({ item, index }) =>
-    <TouchableOpacity onPress={()=>this.props.navigation.navigate('MedicineMyOrders')}>
+    <TouchableOpacity onPress={()=>this.props.navigation.navigate('PharmacyOrderDetails')}>
     <Card style={{ marginTop: 10, padding: 5, height: 155, borderRadius: 5 }}>
     <Grid>
       <Row>
@@ -109,7 +109,7 @@ class MedicineMyOrders extends Component {
     }
 }
 
-export default MedicineMyOrders
+export default PharmacyMyOrders
 const styles = StyleSheet.create({
     container:
     {
