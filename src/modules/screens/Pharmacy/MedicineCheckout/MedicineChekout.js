@@ -220,10 +220,9 @@ class MedicineCheckout extends Component {
                             <Textarea rowSpan={2} bordered placeholder="DeliveryInfo If Needed" style={{ borderRadius: 10, marginTop: 10, padding: 10, height: 80 }} />
                         </Form>
 
-                        <Button onPress={() => this.props.navigation.navigate('MedicinePaymentPage')} block style={styles.CheckoutButton}><Text style={{
-                            fontFamily: 'OpenSans', fontSize: 15,
-                            fontWeight: "bold"
-                        }}>Proceed to pay</Text></Button>
+                        <Button block style={styles.CheckoutButton} onPress={() => this.props.navigation.navigate('OrderPaymentPreview',{data: this.state.deliveryArray})} testID='navigateToPaymentReviewPage'>
+                            <Text style={{ fontFamily: 'OpenSans', fontSize: 15, fontWeight: "bold" }}> Proceed to pay </Text>
+                        </Button>
 
                     </Card>
                 </Content>

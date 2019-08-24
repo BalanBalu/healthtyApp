@@ -6,6 +6,7 @@ export default StyleSheet.create({
     {
         marginTop: 10,
         backgroundColor: '#ffffff',
+
     },
     bodyContent: {
         backgroundColor: '#fff',
@@ -61,14 +62,14 @@ export default StyleSheet.create({
         borderRadius: 5,
         paddingLeft: 20,
         fontFamily: 'OpenSans',
-        marginLeft: 3
+        marginLeft: 3,
+        fontSize: 13
 
     },
     welcome:
     {
         fontSize: 22,
         textAlign: 'center',
-        marginTop: -10,
         fontFamily: 'opensans-semibold',
 
     },
@@ -86,7 +87,8 @@ export default StyleSheet.create({
         fontFamily: 'OpenSans',
     },
     customText: {
-        marginLeft: 25,
+        fontSize: 15,
+        marginLeft: 20,
         fontFamily: 'OpenSans',
     },
     customNote: {
@@ -149,6 +151,16 @@ export default StyleSheet.create({
         padding: 10,
         marginTop: 10,
 
+
+    },
+    userbutton: {
+
+        borderRadius: 5,
+        marginLeft: 13,
+        justifyContent: 'center',
+
+        marginTop: 15,
+        width: '97%',
 
     }
 });

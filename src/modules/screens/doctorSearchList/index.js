@@ -9,11 +9,13 @@ import StarRating from 'react-native-star-rating';
 import { ScrollView } from 'react-native-gesture-handler';
 import Modal from "react-native-modal";
 import { insertDoctorsWishList, searchDoctorList, fetchAvailabilitySlots, getMultipleDoctorDetails, getDoctorsReviewsCount, getPatientWishList } from '../../providers/bookappointment/bookappointment.action';
-import { formatDate, addMoment, addTimeUnit, getMoment, findArrayObj } from '../../../setup/helpers';
+import { formatDate, addMoment, addTimeUnit, getMoment,addDate,dateDiff, findArrayObj } from '../../../setup/helpers';
 import { Loader } from '../../../components/ContentLoader';
 import { RenderHospitalAddress } from '../../common';
 import { NavigationEvents } from 'react-navigation';
 import Spinner from '../../../components/Spinner';
+import moment from 'moment';
+
 
 let conditionFromFilterPage;
 
@@ -49,7 +51,8 @@ class doctorSearchList extends Component {
                 filterBySelectedAvailabilityDateCount: 0,
                 patientWishListsDoctorIds: [],
                 filterData: [],
-                uniqueFilteredDocArray: []
+                uniqueFilteredDocArray: [],
+                yearOfExperience:''
             }
     }
 
@@ -79,29 +82,51 @@ class doctorSearchList extends Component {
 
     renderDoctorListByFilteredData = async (filterData, availtyDateCount) => {
         console.log('filterData' + JSON.stringify(filterData))
-    let availableDateSlotsDocArray =[];
-if(availtyDateCount !==0){
+        let availableDateSlotsDocArray = [];
+        if (availtyDateCount !== 0) {
 
-        this.state.doctorDetails.forEach((docDetailElement)=>{
-        for (i = 0; i < availtyDateCount; i++) {
-            let sampleDateArray = formatDate(addTimeUnit(this.state.selectedDate, i, 'days'), "YYYY-MM-DD");
-            if(docDetailElement.slotData[sampleDateArray]){
-                availableDateSlotsDocArray.push(docDetailElement.doctorId)
-            }           
+            this.state.doctorDetails.forEach((docDetailElement) => {
+                for (i = 0; i < availtyDateCount; i++) {
+                    let sampleDateArray = formatDate(addTimeUnit(this.state.selectedDate, i, 'days'), "YYYY-MM-DD");
+                    if (docDetailElement.slotData[sampleDateArray]) {
+                        availableDateSlotsDocArray.push(docDetailElement.doctorId)
+                    }
+                }
+            })
         }
-    })
-}
-console.log('availableDateSlotsDocArray'+JSON.stringify(availableDateSlotsDocArray))
+        // console.log('availableDateSlotsDocArray' + JSON.stringify(availableDateSlotsDocArray))
 
-let filteredDocListArray=[];
+        let filteredDocListArray = [];
+        // console.log('this.state.doctorData'+JSON.stringify(this.state.doctorData))
         this.state.doctorData.forEach((doctorElement) => {
+            let experience;
+
 
             filterData.forEach((filterElement) => {
                 if (filterElement.value) {
                     if (doctorElement.gender_preference.includes(filterElement.value)) {
                         filteredDocListArray.push(doctorElement.doctor_id)
                     }
+                    if(filterElement.type ==='experience'){
 
+                        let updatedDate = moment(doctorElement.experience.updated_date);
+                        let experienceInYear = dateDiff(updatedDate, this.state.selectedDate, 'year');
+                        let experienceInMonth = dateDiff(updatedDate, this.state.selectedDate, 'months');
+                        let year = (moment(doctorElement.experience.year) + experienceInYear);
+                        let month = (moment(doctorElement.experience.month)) + experienceInMonth;
+                        experience = experienceInYear + year;
+                        console.log('experience'+experience)
+                        if (month >= 12) {
+                          experience++;
+                        }
+                      
+if (experience >= filterElement.value) {
+    filteredDocListArray.push(doctorElement.doctor_id)
+}
+console.log('filteredDocListArray'+JSON.stringify(filteredDocListArray))
+                    }
+                  
+                  
                     doctorElement.language.forEach((docLanguage) => {
                         if (filterElement.type == 'language') {
                             filterElement.value.forEach((filLanguage) => {
@@ -123,9 +148,10 @@ let filteredDocListArray=[];
                 }
             })
         });
-        console.log('filteredDocListArray' + JSON.stringify(filteredDocListArray))
+    
+        // console.log('filteredDocListArray' + JSON.stringify(filteredDocListArray))
 
-        var sortedArray = filteredDocListArray.slice().sort(); 
+        var sortedArray = filteredDocListArray.slice().sort();
 
         var resultsArray = [];
         var dupFilteredDocDetailsArray = [];
@@ -134,50 +160,50 @@ let filteredDocListArray=[];
             if (sortedArray[i + 1] == sortedArray[i]) {
                 dupFilteredDocDetailsArray.push(sortedArray[i]);
             }
-            else{
+            else {
                 resultsArray.push(sortedArray[i]);
             }
         }
-        console.log('resultsArray' + JSON.stringify(resultsArray))
-        console.log('dupFilteredDocDetailsArray' + JSON.stringify(dupFilteredDocDetailsArray))
-        
+        // console.log('resultsArray' + JSON.stringify(resultsArray))
+        // console.log('dupFilteredDocDetailsArray' + JSON.stringify(dupFilteredDocDetailsArray))
 
-        let withAvailabilityDateDocArray=[];
-if(availableDateSlotsDocArray[0]&&filteredDocListArray[0]){
-    console.log('came filter availability date and DocDatas  condition')
-    filteredDocListArray.forEach((ele_doctorId)=>{
 
-    if(availableDateSlotsDocArray.includes(ele_doctorId)){
-        withAvailabilityDateDocArray.push(ele_doctorId);
-    }
-})
+        let withAvailabilityDateDocArray = [];
+        if (availableDateSlotsDocArray[0] && filteredDocListArray[0]) {
+            console.log('came filter availability date and DocDatas  condition')
+            filteredDocListArray.forEach((ele_doctorId) => {
 
-await this.setState({uniqueFilteredDocArray:withAvailabilityDateDocArray})
-console.log('this.state.uniqueFilteredDocArray'+JSON.stringify(this.state.uniqueFilteredDocArray))
-}
+                if (availableDateSlotsDocArray.includes(ele_doctorId)) {
+                    withAvailabilityDateDocArray.push(ele_doctorId);
+                }
+            })
 
-else {
-if(availableDateSlotsDocArray[0]){
-    await this.setState({uniqueFilteredDocArray:availableDateSlotsDocArray})
-}
-else{
-    console.log('filterData  Object count'+filterData[1])
-    if(filterData[1].value === undefined){
-console.log('working filter single docDetails ')
-if(typeof dupFilteredDocDetailsArray ==undefined){
-    await this.setState({uniqueFilteredDocArray:resultsArray})
-}
-else{
-await this.setState({uniqueFilteredDocArray:dupFilteredDocDetailsArray})
-}
-    }
-else{
-    console.log('came without availability dates');
-    await this.setState({uniqueFilteredDocArray:filteredDocListArray})
-    console.log('this.state.uniqueFilteredDocArray'+JSON.stringify(this.state.uniqueFilteredDocArray))
-}
-}
-}
+            await this.setState({ uniqueFilteredDocArray: withAvailabilityDateDocArray })
+            // console.log('this.state.uniqueFilteredDocArray' + JSON.stringify(this.state.uniqueFilteredDocArray))
+        }
+
+        else {
+            if (availableDateSlotsDocArray[0]) {
+                await this.setState({ uniqueFilteredDocArray: availableDateSlotsDocArray })
+            }
+            else {
+                if ( filterData === '') {
+                    alert('single')
+                    console.log('working filter single docDetails ')
+                    if (typeof dupFilteredDocDetailsArray == undefined) {
+                        await this.setState({ uniqueFilteredDocArray: resultsArray })
+                    }
+                    else {
+                        await this.setState({ uniqueFilteredDocArray: dupFilteredDocDetailsArray })
+                    }
+                }
+                else {
+                    console.log('came without availability dates');
+                    await this.setState({ uniqueFilteredDocArray: filteredDocListArray })
+                    // console.log('this.state.uniqueFilteredDocArray' + JSON.stringify(this.state.uniqueFilteredDocArray))
+                }
+            }
+        }
     }
     /* Insert Doctors Favourite Lists  */
     addToWishList = async (doctorId, index) => {
@@ -248,16 +274,16 @@ else{
 
     async getDoctorAllDetails(doctorIds, startDate, endDate) {
         try {
-          this.setState({ isLoading: true });
-        
+            this.setState({ isLoading: true });
+
             this.getAvailabilitySlots(doctorIds, startDate, endDate).catch(res => console.log("Exception on getAvailabilitySlots" + res));
-            this.getDoctorDetails(doctorIds).catch(res => console.log("Exception on  getDoctorDetails: " +res));
+            this.getDoctorDetails(doctorIds).catch(res => console.log("Exception on  getDoctorDetails: " + res));
             this.getPatientReviews(doctorIds).catch(res => console.log("Exception on getPatientReviews" + res));
-        
-        
+
+
         } catch (error) {
             console.log('exception on getting multiple Requests');
-              console.log(error)  
+            console.log(error)
         } finally {
             this.setState({ isLoading: false });
         }
@@ -384,24 +410,24 @@ else{
     doctorSpecialitesMap = new Map();
     getDoctorDetails = async (doctorIds) => {
         try {
-        let uniqueFilteredDocArray = [];
-        let fields = "specialist,education,language,gender_preference,experience";
-        let resultDoctorDetails = await getMultipleDoctorDetails(doctorIds, fields);
-        if (resultDoctorDetails.success) {
-            await this.setState({ doctorData: resultDoctorDetails.data });
-            this.state.doctorData.forEach((element) => {
-                uniqueFilteredDocArray.push(element.doctor_id)
-            })
+            let uniqueFilteredDocArray = [];
+            let fields = "specialist,education,language,gender_preference,experience";
+            let resultDoctorDetails = await getMultipleDoctorDetails(doctorIds, fields);
+            if (resultDoctorDetails.success) {
+                await this.setState({ doctorData: resultDoctorDetails.data });
+                this.state.doctorData.forEach((element) => {
+                    uniqueFilteredDocArray.push(element.doctor_id)
+                })
 
-            await this.setState({ uniqueFilteredDocArray: uniqueFilteredDocArray })
-            console.log('doctorData uniqueFilteredDocArray'+JSON.stringify(this.state.uniqueFilteredDocArray));
-            for (i = 0; i < resultDoctorDetails.data.length; i++) {
-                this.doctorSpecialitesMap.set(resultDoctorDetails.data[i].doctor_id, resultDoctorDetails.data[i]) // total_rating
+                await this.setState({ uniqueFilteredDocArray: uniqueFilteredDocArray })
+                // console.log('doctorData uniqueFilteredDocArray' + JSON.stringify(this.state.uniqueFilteredDocArray));
+                for (i = 0; i < resultDoctorDetails.data.length; i++) {
+                    this.doctorSpecialitesMap.set(resultDoctorDetails.data[i].doctor_id, resultDoctorDetails.data[i]) // total_rating
+                }
             }
+        } catch (ex) {
+            console.log('Exception occured on getMultplieDocDetail')
         }
-      } catch(ex) {
-          console.log('Exception occured on getMultplieDocDetail')
-      }
     }
     getDoctorSpecialist(doctorId) {
         if (this.doctorSpecialitesMap.has(doctorId)) {
@@ -424,7 +450,7 @@ else{
     }
 
     navigateToBookAppointmentPage(doctorAvailabilityData) {
-
+        console.log('coming here');
         const doctorDetails = doctorAvailabilityData;
         const slotData = doctorAvailabilityData.slotData[this.state.selectedDate]
         this.props.navigation.navigate('Book Appointment', { doctorDetails: doctorDetails, slotList: slotData })
@@ -500,14 +526,14 @@ else{
                         <Card style={{ borderRadius: 7 }}>
                             <Grid>
                                 <Row>
-                                    <Col style={{ width: '30%' }}>
-                                        <Button transparent >
-                                            <Text uppercase={false} style={{ fontFamily: 'OpenSans', color: 'gray', fontSize: 13, textAlign: 'center' }}>Top Rated
+                                    <Col style={{ width: '30%', justifyContent: 'center', alignItems: 'center', flexDirection: 'row' }}>
+
+                                        <Text uppercase={false} style={{ fontFamily: 'OpenSans', color: 'gray', fontSize: 13, textAlign: 'center' }}>Top Rated
                                     </Text>
-                                            <View style={{ marginRight: "auto", marginLeft: 'auto' }}>
-                                                <Icon name='ios-arrow-down' style={{ color: 'gray', marginLeft: '-3%', fontSize: 21 }} />
-                                            </View>
-                                        </Button>
+
+                                        <Icon name='ios-arrow-down' style={{ color: 'gray', marginLeft: 5, fontSize: 21 }} />
+
+
                                     </Col>
 
                                     <View
@@ -516,28 +542,24 @@ else{
                                             borderLeftColor: 'whitesmoke',
                                         }}
                                     />
-                                    <Col style={{ width: '40%', alignItems: 'center' }}>
+                                    <Col style={{ width: '40%', alignItems: 'center', flexDirection: 'row', justifyContent: 'center' }}>
+
+                                        <DatePicker
+                                            locale={"en"}
+                                            timeZoneOffsetInMinutes={undefined}
+                                            animationType={"fade"}
+                                            androidMode={"default"}
+                                            placeHolderText={this.state.selectedDate}
+                                            textStyle={{ color: "#5A5A5A" }}
+                                            placeHolderTextStyle={{ color: "#5A5A5A" }}
+                                            onDateChange={date => { this.onDateChanged(date); }}
+                                            disabled={false}
+                                            testID='datePicked' />
+
+                                        <Icon name='ios-arrow-down' style={{ color: 'gray', marginLeft: 5, fontSize: 21 }} />
 
 
 
-                                        <View style={{ marginLeft: 10, flex: 1, flexDirection: 'row' }}>
-
-                                            <DatePicker
-                                                locale={"en"}
-                                                timeZoneOffsetInMinutes={undefined}
-                                                animationType={"fade"}
-                                                androidMode={"default"}
-                                                placeHolderText={this.state.selectedDate}
-                                                textStyle={{ color: "#5A5A5A" }}
-                                                placeHolderTextStyle={{ color: "#5A5A5A" }}
-                                                onDateChange={date => { this.onDateChanged(date); }}
-                                                disabled={false}
-                                                testID='datePicked' />
-                                            <View style={{ marginTop: 10, marginLeft: '-1%' }}>
-                                                <Icon name='ios-arrow-down' style={{ color: 'gray', marginLeft: '5%', fontSize: 21 }} />
-                                            </View>
-
-                                        </View>
 
                                     </Col>
                                     <View
@@ -546,23 +568,23 @@ else{
                                             borderLeftColor: 'whitesmoke',
                                         }}
                                     />
-                                    <Col style={{ alignItems: 'flex-start' }}>
 
-                                        <Button transparent onPress={() => this.navigateToFilters()}>
-                                            <Icon name='ios-funnel' style={{ color: 'gray' }} />
 
-                                            <Text uppercase={false} style={{ fontFamily: 'OpenSans', color: 'gray', fontSize: 13, marginLeft: '-30%' }}>Filter
+                                    <Col style={{ alignItems: 'flex-start', flexDirection: 'row', justifyContent: 'center', alignItems: 'center' }} onPress={() => this.navigateToFilters()}>
+
+                                        <Icon name='ios-funnel' style={{ color: 'gray' }} />
+
+                                        <Text uppercase={false} style={{ fontFamily: 'OpenSans', color: 'gray', fontSize: 13, marginLeft: 5 }}>Filter
                                     </Text>
-                                        </Button>
                                     </Col>
                                 </Row>
                             </Grid>
 
                         </Card>
-                          {searchedResultData == null ? this.noDoctorsAvailable() :
-                           
-                           <FlatList
-                                data={this.state.doctorDetails.filter(ele => uniqueFilteredDocArray.includes(ele.doctorId) )}
+                        {searchedResultData == null ? this.noDoctorsAvailable() :
+
+                            <FlatList
+                                data={this.state.doctorDetails.filter(ele => uniqueFilteredDocArray.includes(ele.doctorId))}
                                 extraData={this.state}
                                 style={{ borderBottomWidth: 0 }}
                                 keyExtractor={(item, index) => index.toString()}
@@ -574,7 +596,7 @@ else{
                                                 <Left>
                                                     {
                                                         item.profile_image != undefined
-                                                            ? <Thumbnail square source={item.profile_image.imageURL} style={{ height: 60, width: 60 }} />
+                                                            ? <Thumbnail square source={{uri:item.profile_image.imageURL}} style={{ height: 60, width: 60 }} />
                                                             : <Thumbnail square source={{ uri: 'https://res.cloudinary.com/demo/image/upload/w_200,h_200,c_thumb,g_face,r_max/face_left.png' }} style={{ height: 80, width: 80 }} />
                                                     }
 
@@ -622,7 +644,7 @@ else{
                                                             </Grid>
                                                             <Grid style={{ marginTop: 5 }}>
                                                                 <Row>
-                                                                    <Col style={{ width: '40%' }}>
+                                                                    <Col style={{ width: '90%' }}>
 
                                                                         <StarRating fullStarColor='#FF9500' starSize={13} width={80} containerStyle={{ width: 80 }}
                                                                             disabled={false}
@@ -631,7 +653,7 @@ else{
                                                                         />
                                                                     </Col>
 
-                                                                    <Col style={{ width: '60%' }}>
+                                                                    <Col style={{ width: '10%' }}>
                                                                         <Text>{item.average_rating}</Text>
                                                                     </Col>
                                                                 </Row>
@@ -642,14 +664,16 @@ else{
                                                         </View>}
 
                                                 </Body>
-
+                                            {/* 
                                                 <Right>
-
                                                     <Icon name='heart' type='Ionicons'
                                                         style={patientWishListsDoctorIds.includes(item.doctorId) ? { color: 'red', fontSize: 25 } : { color: 'gray', fontSize: 25 }}
                                                         onPress={() => this.addToWishList(item.doctorId, index)} ></Icon>
-                                                </Right>
 
+                                                        <Button style={{borderRadius:15,marginTop:90,height:35}} onPress={() => this.navigateToBookAppointmentPage(item)}>
+                                                            <Text style={{fontFamily:'OpenSans',fontSize:11,justifyContent:'center'}}>View Profile</Text>
+                                                        </Button>
+                                                </Right> */}
                                             </ListItem>
 
                                             <Grid>
@@ -667,8 +691,8 @@ else{
                                             </Grid>
                                         </List>
                                     </Card>
-                                }/>
-                            }
+                                } />
+                        }
                     </Content>
                 }
 
@@ -786,7 +810,7 @@ else{
                     </View>
                 </Modal>
 
-            </Container>
+            </Container >
         )
     }
 

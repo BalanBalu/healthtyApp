@@ -79,11 +79,13 @@ class MyAppoinmentList extends Component {
 	}
 
 	backNavigation = async (navigationData) => {
-		console.log(navigationData)
+		
 		if (navigationData.action) {
-			if (navigationData.action.type === 'Navigation/BACK') {
-				await this.setState({ isLoading: false })
-				if (this.state.selectedIndex == 0) {
+			console.log('back navigation work')
+			await this.setState({ isLoading: false })
+
+			if (navigationData.action.type === 'Navigation/BACK' || navigationData.action.type === 'Navigation/POP') {
+								if (this.state.selectedIndex == 0) {
 
 
 					await this.upCommingAppointment();
@@ -91,9 +93,12 @@ class MyAppoinmentList extends Component {
 
 				} else {
 					await this.pastAppointment();
-					await this.setState({ isLoading: true })
+					await this.setState({ isLoading: true, data:this.state.pastData })
 				}
+				
 			}
+			
+						
 		}
 
 	}
@@ -106,49 +111,53 @@ class MyAppoinmentList extends Component {
 				endDate: formatDate(addTimeUnit(new Date(), 1, "years"), "YYYY-MM-DD")
 			};
 			let upCommingAppointmentResult = await getUserAppointments(userId, filters);
-
+			
 			if (upCommingAppointmentResult.success) {
-				let doctorInfo=new Map();
+				let doctorInfo = new Map();
 				upCommingAppointmentResult = upCommingAppointmentResult.data;
-
+                
 				let doctorIds = upCommingAppointmentResult.map(appointmentResult => {
 
 					return appointmentResult.doctor_id;
-   		}).join(",");
+				}).join(",");
 
 				let speciallistResult = await getMultipleDoctorDetails(doctorIds, "specialist,education");
-			        
+
 				speciallistResult.data.forEach(doctorData => {
+				
+					let educationDetails = ' ', speaciallistDetails = '';
 
-
-					educationDetails = doctorData.education.map(education => {
-						return education.degree;
-					}).join(",");
-
-					speaciallistDetails = doctorData.specialist.map(categories => {
-						return categories.category;
-					}).join(",");
-					doctorInfo.set( doctorData.doctor_id, {degree: educationDetails, specialist: speaciallistDetails })
+					
+					if (doctorData.education != undefined) {
+						educationDetails = doctorData.education.map(education => {
+							return education.degree;
+						}).join(",");
+					} if (doctorData.specialist != undefined) {
+						speaciallistDetails = doctorData.specialist.map(categories => {
+							return categories.category;
+						}).join(",");
+					}
+					doctorInfo.set(doctorData.doctor_id, { degree: educationDetails, specialist: speaciallistDetails })
 
 
 				});
-			     
+
 				let upcommingInfo = [];
 				upCommingAppointmentResult.map(doctorData => {
-					
-                      
+
+
 
 					let details = doctorInfo.get(doctorData.doctor_id)
 
-					upcommingInfo.push({ appointmentResult: doctorData, specialist: details.specialist, degree:details.degree });
+					upcommingInfo.push({ appointmentResult: doctorData, specialist: details.specialist, degree: details.degree });
 
 
-						
+
 				})
-
+                  
 				this.setState({ upComingData: upcommingInfo, data: upcommingInfo });
-				
-				
+
+
 			}
 		} catch (e) {
 			console.log(e);
@@ -161,70 +170,80 @@ class MyAppoinmentList extends Component {
 			let filters = { endDate: endData, startDate: "2018-01-01" };
 			let pastAppointmentResult = await getUserAppointments(userId, filters);
 			let viewUserReviewResult = await viewUserReviews("user", userId);
-		    let doctorInfo=new Set();
+			
 			if (pastAppointmentResult.success) {
 				pastAppointmentResult = pastAppointmentResult.data;
+				console.log('pastAppointmentResult' + JSON.stringify(viewUserReviewResult.data))
 				viewUserReviewResult = viewUserReviewResult.data;
-
+                     
 				let doctorIds = pastAppointmentResult.map((appointmentResult, index) => {
-
+                            
 					return appointmentResult.doctor_id;
 				}).join(",");
-				let doctorInfo =new Map();   
+				let doctorInfo = new Map();
 				let speciallistResult = await getMultipleDoctorDetails(doctorIds, "specialist,education");
 				speciallistResult.data.forEach(doctorData => {
-				
+					
+					let educationDetails = ' ',speaciallistDetails = '';
+					if (doctorData.education != undefined) {
+						educationDetails = doctorData.education.map(education => {
 
-					educationDetails = doctorData.education.map(education => {
-						return education.degree;
-					}).join(",");
+							return education.degree;
+						}).join(",");
+						
+					
+					}
+					
+					if (doctorData.specialist!=undefined){
+						speaciallistDetails = doctorData.specialist.map(categories => {
+							return categories.category;
+						}).join(",");
+						
+					}
+						doctorInfo.set(doctorData.doctor_id, { degree: educationDetails, specialist: speaciallistDetails })
 
-					speaciallistDetails = doctorData.specialist.map(categories => {
-						return categories.category;
-					}).join(",");
-					doctorInfo.set(doctorData.doctor_id,{ degree: educationDetails, specialist: speaciallistDetails })
+
+					});
+			
 
 
-				});
-				
-				
 				let pastDoctorDetails = [];
 				pastAppointmentResult.map((doctorData, index) => {
 
-					
+  
 					
 					let ratting;
 					if (doctorData.appointment_status == "COMPLETED") {
 						viewUserReviewResult.map(viewUserReview => {
 							if (doctorData._id === viewUserReview.appointment_id) {
 								ratting = viewUserReview.overall_rating
+								console.log('ratting' + ratting);
 
 							}
 
 						});
 
 					}
-
-
 					let details = doctorInfo.get(doctorData.doctor_id)
-						pastDoctorDetails.push({
-							appointmentResult: doctorData, specialist: details.specialist, degree: details.degree, ratting: ratting
+					pastDoctorDetails.push({
+						appointmentResult: doctorData, specialist: details.specialist, degree: details.degree, ratting: ratting
 
-						});
-				
-			
+					});
 
-			 }
+
+
+				}
 
 				)
+			
 				this.setState({ pastData: pastDoctorDetails });
-				
+
 			}
 		} catch (e) {
 			console.log(e);
 		}
 		finally {
-			this.setState({isLoading:false})
+			this.setState({ isLoading: false })
 
 		}
 	};
@@ -244,18 +263,18 @@ class MyAppoinmentList extends Component {
 
 
 	navigateToBookAppointmentPage(item) {
-		console.log("book appointment page");
-		let doctorId = item.appointmentResult.doctor_id;		
-		this.props.navigation.navigate('Book Appointment', { doctorId: doctorId,fetchAvailabiltySlots:true})
+		
+		let doctorId = item.appointmentResult.doctor_id;
+		this.props.navigation.navigate('Book Appointment', { doctorId: doctorId, fetchAvailabiltySlots: true })
 	}
 
 	render() {
 		const {
 			data,
 			selectedIndex,
-			reviewData,
+			
 			isLoading,
-			speciallist
+			
 		} = this.state;
 
 		return (
@@ -341,7 +360,7 @@ class MyAppoinmentList extends Component {
 													<Body>
 														<Item style={{ borderBottomWidth: 0 }}>
 															<Text style={{ fontFamily: "OpenSans" }}>
-																{item.appointmentResult.doctorInfo.prefix ||"Dr." +item.appointmentResult.doctorInfo.first_name +" " +item.appointmentResult.doctorInfo.last_name}{" "}
+																{item.appointmentResult.doctorInfo.prefix || "Dr." + item.appointmentResult.doctorInfo.first_name + " " + item.appointmentResult.doctorInfo.last_name}{" "}
 															</Text>
 															<Text
 																style={{
@@ -359,6 +378,7 @@ class MyAppoinmentList extends Component {
 															>
 																{item.specialist}
 															</Text>
+															{console.log(item.ratting)}
 															{selectedIndex == 1 &&
 																item.ratting != undefined && (
 																	<StarRating
@@ -371,33 +391,33 @@ class MyAppoinmentList extends Component {
 																		disabled={false}
 																		maxStars={5}
 																		rating={item.ratting}
-																		// selectedStar={rating =>
-																		// 	this.onStarRatingPress(rating)
-																		// }
+																	// selectedStar={rating =>
+																	// 	this.onStarRatingPress(rating)
+																	// }
 																	/>
 																)}
 														</Item>
 														<Item style={{ borderBottomWidth: 0 }}>
 															{selectedIndex == 0 ?
-															
+
 																(item.appointmentResult.appointment_status == "PENDING" ?
 																	<Text style={{ fontFamily: "OpenSans", fontSize: 12, color: "red" }} note>waiting for confirmation</Text>
 																	: item.appointmentResult.appointment_status == "APPROVED" ?
 																		<Text style={{ fontFamily: "OpenSans", fontSize: 12, color: "green" }} note>	Appointment confirmed</Text>
 																		: item.appointmentResult.appointment_status == "CLOSED" ?
 																			<Text style={{ fontFamily: "OpenSans", fontSize: 12, color: "red" }} note	>Appointment cancelled</Text>
-																			:item.appointmentResult.appointment_status == "PROPOSED_NEW_TIME"&&
+																			: item.appointmentResult.appointment_status == "PROPOSED_NEW_TIME" &&
 																			<Text style={{ fontFamily: "OpenSans", fontSize: 12, color: "grey" }} note	> PROPOSED_NEW_TIME</Text>
-																):
-														(item.appointmentResult.appointment_status == "CLOSED" ? 
+																) :
+																(item.appointmentResult.appointment_status == "CLOSED" ?
 																	<Text style={{ fontFamily: "OpenSans", fontSize: 12, color: "red" }} note>	Appointment cancelled.	</Text>
-																 :
+																	:
 																	<Text style={{ fontFamily: "OpenSans", fontSize: 12, color: "green" }} note>Appointment completed
 																	</Text>
-														)
-															
-														}
-														
+																)
+
+															}
+
 														</Item>
 
 														<Text
@@ -417,7 +437,7 @@ class MyAppoinmentList extends Component {
 																	<Button
 																		style={styles.shareButton}
 																		onPress={() =>
-																			this.props.navigation.navigate("InsertReview")
+																			this.props.navigation.navigate("InsertReview",{appointmentDetail: item.appointmentResult})
 																		}
 																	>
 																		<Text style={styles.bookAgain1}>

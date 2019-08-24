@@ -11,17 +11,11 @@ import UpdateContact from "../../modules/screens/userprofile/UpdateContact";
 import UpdatePassword from "../../modules/screens/userprofile/UpdatePassword";
 import UpdateInsurance from "../../modules/screens/userprofile/UpdateInsurance";
 import UpdateUserDetails from "../../modules/screens/userprofile/UpdateUserDetails";
-//import UploadImage from "../../modules/screens/userprofile/UploadImage";
 import UpdateAddress from "../../modules/screens/userprofile/UpdateAddress";
-
-
-
 
 import finddoctor from "../../modules/screens/auth/finddoctor";
 import { Icon, View } from 'native-base';
 import Categories from "../../modules/screens/categories";
-
-
 import login from "../../modules/screens/auth/login";
 import signup from "../../modules/screens/auth/signup";
 import forgotpassword from "../../modules/screens/auth/forgotpassword";
@@ -41,34 +35,31 @@ import { Col, Grid, Row } from 'react-native-easy-grid';
 import { logout } from '../../modules/providers/auth/auth.actions';
 import { TouchableOpacity, Image } from 'react-native'
 
-
 import menuIcon from '../../../assets/images/menu.png';
 import profileAvatar from '../../../assets/images/profileAvatar.png';
-
 
 import { HeaderBackButton } from 'react-navigation';
 import BookAppoinment from "../../modules/screens/bookappoinment";
 import Mapbox from "../../modules/screens/bookappoinment/Mapbox";
-
 import AppointmentDetails from '../../modules/screens/MyAppointments/AppointmentDetails';
 import MyAppoinmentList from '../../modules/screens/MyAppointments/MyAppointmentList';
 import CancelAppointment from "../../modules/screens/MyAppointments/cancelAppointment";
-import MedicineSearch from '../../modules/screens/Pharmacy/MedicineSearch/MedicineSearch';
-import MedicineOrderList from '../../modules/screens/Pharmacy/MedicineOrderList/MedicineOrderList';
-import MedicineMyOrders from '../../modules/screens/Pharmacy/MedicineMyOrders/MedicineMyOrders';
 
+import PharmacyHome from '../../modules/screens/Pharmacy/PharmacyHome/PharmacyHome';
+import MyOrdersList from '../../modules/screens/Pharmacy/MyOrdersList/MyOrdersList';
+import OrderDetails from '../../modules/screens/Pharmacy/OrderDetails/OrderDetails';
+import OrderPayment from '../../modules/screens/Pharmacy/OrderPayment/OrderPayment';
+import PharmacyCart from '../../modules/screens/Pharmacy/PharmacyCart/PharmacyCart';
+import OrderPaymentSuccess from '../../modules/screens/Pharmacy/OrderPaymentSuccess/OrderPaymentSuccess';
+import UploadPrescription from '../../modules/screens/Pharmacy/PharmacyHome/UploadPrescription';
+import OrderPaymentAddress from '../../modules/screens/Pharmacy/OrderPaymentAddress/OrderPaymentAddress';
+import OrderPaymentPreview from '../../modules/screens/Pharmacy/OrderPaymentPreview/OrderPaymentPreview';
+import OrderMedicineDetails from '../../modules/screens/Pharmacy/OrderMedicineDetails/OrderMedicineDetails';
 import MedicineSearchList from '../../modules/screens/Pharmacy/MedicineSearchList/MedicineSearchList';
 import MedicineCheckout from '../../modules/screens/Pharmacy/MedicineCheckout/MedicineChekout';
-import MedicinePaymentPage from '../../modules/screens/Pharmacy/MedicinePaymentPage/MedicinePaymentPage';
-import MedicinePaymentResult from '../../modules/screens/Pharmacy/MedicinePaymentResult/MedicinePaymentResult';
-import MedicinePaymentSuccess from '../../modules/screens/Pharmacy/MedicinePaymentSuccess/MedicinePaymentSuccess';
-import UploadPrescription from '../../modules/screens/Pharmacy/MedicineSearch/UploadPrescription';
-import MedicalOrderDetails from '../../modules/screens/Pharmacy/MedicalOrderDetails/MedicalOrderDetails';
-
 
 const routes = {
   Home: {
-    name: 'Home',
     path: 'Home',
     screen: Home,
     navigationOptions: {
@@ -94,7 +85,7 @@ const routes = {
       />
     }
   },
-    finddoctor: {
+  finddoctor: {
     name: ' finddoctor',
     path: ' finddoctor',
     screen: finddoctor,
@@ -147,6 +138,7 @@ const AuthRoutes = {
     screen: userdetails,
   }
 }
+
 const AuthStack = createStackNavigator(AuthRoutes, {
   initialRouteName: 'login',
   headerMode: "none",
@@ -174,12 +166,12 @@ const AppointMentstack1 = createStackNavigator({
     }
   },
 
- Services: {
-      screen: ServicesList,
-      navigationOptions: {
+  Services: {
+    screen: ServicesList,
+    navigationOptions: {
       title: 'ServicesList'
     }
-   },
+  },
   "Book Appointment": {
     screen: BookAppoinment,
     navigationOptions: {
@@ -197,8 +189,8 @@ const AppointMentstack1 = createStackNavigator({
     screen: PaymentPage
   },
   Reviews: {
-     screen: Reviews,
-     navigationOptions: {
+    screen: Reviews,
+    navigationOptions: {
       title: 'Reviews'
     }
   },
@@ -214,7 +206,7 @@ const AppointMentstack1 = createStackNavigator({
       title: 'Success'
     }
   }
- 
+
 },
   {
     defaultNavigationOptions: ({ navigation }) => ({
@@ -262,11 +254,12 @@ const myAppointmentsStack = createStackNavigator({
     })
   });
 
-  
+
 const HomeStack = createStackNavigator({
   Home: {
     screen: Home,
     navigationOptions: ({ navigation }) => ({
+
       title: 'DashBoard',
       headerLeft: (
         <TouchableOpacity onPress={() => navigation.toggleDrawer()}>
@@ -278,7 +271,7 @@ const HomeStack = createStackNavigator({
       ),
       headerRight: (
         <Grid>
-          
+
           <Col>
             <TouchableOpacity onPress={() => { navigation.navigate('Notification') }} >
               <Icon name="notifications" style={{ color: '#fff', marginRight: 10, fontFamily: 'opensans-semibold' }}></Icon>
@@ -318,8 +311,8 @@ const HomeStack = createStackNavigator({
       title: 'Notification',
     })
   },
- 
- },
+
+},
   {
     defaultNavigationOptions: ({ navigation }) => ({
       headerStyle: { backgroundColor: '#7E49C3' },
@@ -341,40 +334,40 @@ const ProfileStack = createStackNavigator({
   },
   UpdateEmail: {
     screen: UpdateEmail,
-    navigationOptions:{
-     title: 'UpdateEmail'
-   }
+    navigationOptions: {
+      title: 'Update Email'
+    }
   },
   UpdateContact: {
     screen: UpdateContact,
-    navigationOptions:{
-     title: 'UpdateContact'
-   }
+    navigationOptions: {
+      title: 'Update Contact'
+    }
   },
   UpdatePassword: {
     screen: UpdatePassword,
-    navigationOptions:{
-     title: 'UpdatePassword'
-   }
+    navigationOptions: {
+      title: 'Update Password'
+    }
   },
   UpdateInsurance: {
     screen: UpdateInsurance,
-    navigationOptions:{
-     title: 'UpdateInsurance'
-   }
+    navigationOptions: {
+      title: 'Update Insurance'
+    }
   },
 
   UpdateUserDetails: {
     screen: UpdateUserDetails,
-    navigationOptions:{
-     title: 'UpdateUserDetails'
-   }
+    navigationOptions: {
+      title: 'Update User Details'
+    }
   },
- 
+
   UpdateAddress: {
     screen: UpdateAddress,
     navigationOptions: {
-      title: 'UpdateAddress'
+      title: 'Update Address'
     }
   },
 },
@@ -385,13 +378,83 @@ const ProfileStack = createStackNavigator({
     })
   });
 
-  
 
-  const PharmacyStack = createStackNavigator({
-    MedicineList: {
-      screen: MedicineSearch,
+
+const PharmacyStack = createStackNavigator({
+  Pharmacy:{ 
+    screen:PharmacyHome,
+    navigationOptions: ({ navigation }) => ({
+      title: 'Medflic Pharmacy',
+      headerLeft: (
+        <TouchableOpacity onPress={() => navigation.navigate('Home')}>
+          <Icon name="arrow-back" style={{ marginLeft: 18, color: '#fff', fontFamily: 'opensans-semibold' }}></Icon>
+        </TouchableOpacity>
+      ),
+    })
+  },
+  UploadPrescription: {
+    screen: UploadPrescription,
+    navigationOptions: {
+      title: 'Upload Prescription'
+    }
+  },
+  medicineSearchList: {
+    screen: MedicineSearchList,
+    navigationOptions: {
+      title: 'Search List'
+    }
+  },
+    MedicineCheckout: {
+    screen: MedicineCheckout,
+    navigationOptions: {
+      title: 'Checkout'
+    }
+  },
+  OrderPaymentPreview: {
+    screen: OrderPaymentPreview,
+    navigationOptions: {
+      title: 'Payment Preview'
+    }
+  },
+  OrderPayment: {
+    screen: OrderPayment,
+    navigationOptions: {
+      title: 'Payment Page'
+    }
+  },
+  PharmacyCart: {
+    screen: PharmacyCart,
+    navigationOptions: {
+      title: 'Pharmacy Cart'
+    }
+  },
+  OrderPaymentSuccess: {
+    screen: OrderPaymentSuccess,
+    navigationOptions: {
+      title: 'Payment Success'
+    }
+  },
+
+  OrderPaymentAddress:{
+    screen:OrderPaymentAddress,
+    navigationOptions:{
+      title:'Order Payment Address'
+    }
+} 
+},
+  {
+    defaultNavigationOptions: ({ navigation }) => ({
+      headerStyle: { backgroundColor: '#7E49C3', fontFamily: 'opensans-semibold' },
+      headerTintColor: 'white',
+    })
+  });
+
+
+  const OrdersStack = createStackNavigator({
+    Orders:{ 
+      screen:MyOrdersList,
       navigationOptions: ({ navigation }) => ({
-        title: 'Medicine List',
+        title: 'Orders List',
         headerLeft: (
           <TouchableOpacity onPress={() => navigation.navigate('Home')}>
             <Icon name="arrow-back" style={{ marginLeft: 18, color: '#fff', fontFamily: 'opensans-semibold' }}></Icon>
@@ -399,63 +462,25 @@ const ProfileStack = createStackNavigator({
         ),
       })
     },
-    UploadPrescription:{
-      screen: UploadPrescription,
-      navigationOptions:{
-       title: 'UploadPrescription'
-     }
-
-      
-    },
-    medicineSearchList: {
-      screen: MedicineSearchList,
-      navigationOptions:{
-       title: 'Search List'
-     }
-    },
-
-    MedicineOrderList: {
-      screen: MedicineOrderList,
-      navigationOptions:{
-       title: 'Order List'
-     }
-    },
-    MedicineMyOrders: {
-      screen: MedicineMyOrders,
-      navigationOptions:{
-       title: 'My Order'
-     }
-    },
-       MedicineCheckout: {
-      screen: MedicineCheckout,
-      navigationOptions:{
-       title: 'Checkout'
-     }
-    },
-    MedicinePaymentPage: {
-      screen: MedicinePaymentPage,
-      navigationOptions:{
-       title: 'PaymentPage'
-     }
-    },
-    MedicinePaymentResult: {
-      screen: MedicinePaymentResult,
-      navigationOptions:{
-       title: 'MedicinePaymentResult'
-     }
-    },
-    MedicinePaymentSuccess: {
-      screen: MedicinePaymentSuccess,
+    MyOrdersList: {
+      screen: MyOrdersList,
       navigationOptions: {
-       title: 'MedicinePaymentSuccess'
-     }
+        title: 'Order List'
+      }
     },
-    
-    MedicalOrderDetails: {
-      screen: MedicalOrderDetails,
+  
+    OrderDetails: {
+      screen: OrderDetails,
       navigationOptions: {
-       title: 'MedicalOrderDetails'
-     }
+        title: 'My Order'
+      }
+    },
+  
+    OrderMedicineDetails: {
+      screen: OrderMedicineDetails,
+      navigationOptions: {
+        title: 'Medicine Details'
+      }
     }
   
   },
@@ -466,6 +491,10 @@ const ProfileStack = createStackNavigator({
       })
     });
   
+
+  
+  
+
 
 const categoryStack = createStackNavigator({
   Categories: {
@@ -490,6 +519,9 @@ const DrawerNavigator = createDrawerNavigator({
   Home: HomeStack,
   Profile: ProfileStack,
   "My Appointments": myAppointmentsStack,
+  Pharmacy:PharmacyStack,
+  Orders:OrdersStack
+  
 
 },
   {
@@ -504,7 +536,8 @@ export default createAppContainer(createSwitchNavigator(
     Auth: AuthStack,
     categoryStack,
     Appointments: AppointMentstack1,
-    Pharmacy: PharmacyStack
+    Pharmacy: PharmacyStack,
+    Orders:OrdersStack
   },
   {
     initialRouteName: 'AuthLoading',

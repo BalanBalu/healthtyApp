@@ -1,22 +1,23 @@
 import React, { Component } from 'react';
 import {
     Container, Content, Button, Text, Form, Item, Input, Footer, Icon, DatePicker,
-    FooterTab, H3, Toast, ListItem, Radio,Picker
+    FooterTab, H3, Toast, ListItem, Radio, Picker, View
 } from 'native-base';
 import { userFiledsUpdate, logout } from '../../providers/auth/auth.actions';
 import { connect } from 'react-redux'
-import { Image, BackHandler, AsyncStorage,ScrollView} from 'react-native';
+import { Row } from 'react-native-easy-grid';
+
+import { Image, BackHandler, AsyncStorage, ScrollView } from 'react-native';
 import styles from './style.js';
 import {
-    formatDate,
-} from "../../../setup/helpers";` M,NMNJHUYTAW`
+    formatDate, subTimeUnit
+} from "../../../setup/helpers";
 import Spinner from '../../../components/Spinner';
-const bloodGroupList = ['Select Blood Group','A+', 'O+', 'B+', 'AB+', 'A-', 'O-', 'B-', 'AB-']
+const bloodGroupList = ['Select Blood Group', 'A+', 'O+', 'B+', 'AB+', 'A-', 'O-', 'B-', 'AB-']
 
 class UpdateUserDetails extends Component {
     constructor(props) {
         super(props)
-
         this.state = {
             firstName: '',
             lastName: '',
@@ -24,68 +25,72 @@ class UpdateUserDetails extends Component {
             gender: '',
             fromProfile: false,
             isLoading: false,
-            selectedBloodGroup:null,
+            selectedBloodGroup: null,
             updateButton: false,
-            userData:'',
-            loaderContent:''
-
+            userData: '',
         }
     }
     componentDidMount() {
-
         this.bindValues();
-
     }
+
     onPressRadio(value) {
         this.setState({ gender: value })
     }
     async bindValues() {
         const { navigation } = this.props;
         const userData = navigation.getParam('updatedata');
-      await  this.setState({ userData})
-       
-       
-                await this.setState({
-                    dob: userData.dob,
-                    firstName: userData.first_name,
-                    lastName: userData.last_name,
-                    gender: userData.gender,
-                    selectedBloodGroup:userData.blood_group
-                    
-                })
-           
+        this.setState({ userData })
+        await this.setState({
+            dob: userData.dob,
+            firstName: userData.first_name,
+            lastName: userData.last_name,
+            gender: userData.gender,
+            selectedBloodGroup: userData.blood_group || null
+        })
+    }
 
+    validateFirstNameLastName = async (text, type) => {
+        const regex = new RegExp('^[\ba-zA-Z ]+$')  //Support letter with space
+        if (type === "Firstname") {
+            this.setState({ firstName: text, updateButton: false });
+        } else {
+            this.setState({ lastName: text, updateButton: false });
         }
-    
+        if (regex.test(text) === false) {
+            this.setState({ updateButton: true });
+            if(text!==''){
+            Toast.show({
+                text: 'Please enter only alphabets',
+                type: "danger",
+                duration: 3000
+            });
+        }        
+        }
+    }
 
-
-
-    userUpdate = async () => {   
+    userUpdate = async () => {
         const { userData, firstName, lastName, dob, gender, selectedBloodGroup } = this.state
-        
-        try {  
-            this.setState({ isLoading: true });
+        try {
+            this.setState({ isLoading: true, updateButton: false });
             if (userData.first_name != firstName || userData.last_name != lastName || userData.dob != dob || userData.gender != gender || userData.blood_group != selectedBloodGroup) {
-                this.setState({loaderContent:'please Wailt Updating...'})
                 let requestData = {
                     first_name: firstName,
                     last_name: lastName,
                     dob: dob,
                     gender: gender,
-                    blood_group:selectedBloodGroup
+                    blood_group: selectedBloodGroup
                 };
-              
+
                 const userId = await AsyncStorage.getItem('userId')
                 let response = await userFiledsUpdate(userId, requestData);
                 if (response.success) {
-                  
-
                     Toast.show({
                         text: 'Your Profile has been Updated',
                         type: "success",
                         duration: 3000
                     });
-                   await this.props.navigation.navigate('Profile');
+                    this.props.navigation.navigate('Profile');
                 }
                 else {
                     Toast.show({
@@ -93,147 +98,150 @@ class UpdateUserDetails extends Component {
                         type: "danger",
                         duration: 3000
                     });
+                    this.setState({ isLoading: false });
                 }
             } else {
-                
-               await this.props.navigation.navigate('Profile');
+
+                this.props.navigation.navigate('Profile');
             }
-                
-            } 
-                
-          
-         catch (e) {
+
+        }
+
+
+        catch (e) {
             Toast.show({
                 text: 'Exception Occured' + e,
                 duration: 3000
             });
-           
+
 
             console.log(e);
-        }
-        finally{
-            this.setState({ isLoading: false})
         }
     }
 
 
     render() {
-        
+
         return (
 
-            <Container style={styles.container}>
-              
+            <Container >
 
+                <ScrollView>
 
-                <Content style={styles.bodyContent} contentContainerStyle={{ justifyContent: 'center', flex: 1, height: '75%' }}>
-<ScrollView>
-                    <H3 style={styles.welcome}>Update User Details</H3>
-                    <Form>
-                    
-                        <Item style={{ borderBottomWidth: 0 }}>
-                            <Input placeholder="First Name" style={styles.transparentLabel}
-                                value={this.state.firstName}
-                                keyboardType={'default'}
-                                returnKeyType={"next"}
-                                onChangeText={firstName => this.setState({ firstName })}
-                                autoCapitalize='none'
-                                blurOnSubmit={false}
-                                onSubmitEditing={() => { this.firstName._root.focus(); }}
-                            />
-                        </Item>
+                    <Content contentContainerStyle={{ justifyContent: 'center', flex: 1, marginTop: 50, padding: 60 }}>
 
-                        <Item style={{ borderBottomWidth: 0 }}>
-                            <Input placeholder="Last Name" style={styles.transparentLabel}
-                                ref={(input) => { this.firstName = input; }}
-                                value={this.state.lastName}
-                                keyboardType={'default'}
-                                returnKeyType={"next"}
+                        <Text style={{ fontSize: 22, textAlign: 'center', fontFamily: 'opensans-semibold', marginLeft: -30 }}>Update Your Details</Text>
+                        <Form>
 
-                                onChangeText={lastName => this.setState({ lastName })}
-                                autoCapitalize='none'
-                                blurOnSubmit={false}
-                                onSubmitEditing={() => { this.lastName._root.focus(this.setState({focus:true})); }}
-                            />
-                        </Item>
-
-                        <Item style={{ borderBottomWidth: 0, backgroundColor: '#F1F1F1', marginTop: 10, borderRadius: 5 }}>
-                            <Icon name='calendar' style={{ paddingLeft: 20, color: '#775DA3' }} />
-                            <DatePicker style={styles.transparentLabel}
-                                defaultDate={this.state.dob}
-                                
-                                timeZoneOffsetInMinutes={undefined}
-                                returnKeyType={'next'}
-                                modalTransparent={false}
-                                animationType={"fade"}
-                                androidMode={"default"}
-                                    placeHolderText={formatDate(this.state.dob, "DD/MM/YYYY")}
-                                textStyle={{ color: "#5A5A5A" }}
-                                value={this.state.dob}
-                                placeHolderTextStyle={{ color: "#5A5A5A" }}
-                                onDateChange={dob => { console.log(dob); this.setState({ dob }) }}
-
-                                // onSubmitEditing={() => { this.dob._root.focus(); }}
-                                disabled={false}
-                            />
-
-                        </Item>
-                        <Item style={{ borderBottomWidth: 0, backgroundColor: '#F1F1F1', marginTop: 10, borderRadius: 5 }}>
-                        <Picker style={{ fontFamily: 'OpenSans' }}
-                            mode="dropdown"
-                            iosIcon={<Icon name="arrow-down" />}
-                            textStyle={{ color: "#5cb85c" }}
-                            note={false}
-                            itemStyle={{
-                                backgroundColor: "gray",
-                                marginLeft: 0,
-                                paddingLeft: 10
-                            }}
-                            itemTextStyle={{ color: '#5cb85c' }}
-                            style={{ width:undefined }}
-                            onValueChange={(sample) => { this.setState({ selectedBloodGroup: sample }) }}
-                            selectedValue={this.state.selectedBloodGroup}
-                        >
-                            
-                         {bloodGroupList.map((value,key) => {
-                               
-                                return <Picker.Item label={String(value)} value={String(value)} key={key} 
+                            <Item style={{ borderBottomWidth: 0, marginTop: 10 }}>
+                                <Input placeholder="First Name" style={styles.transparentLabel}
+                                    value={this.state.firstName}
+                                    keyboardType={'default'}
+                                    returnKeyType={"next"}
+                                    onChangeText={text => this.validateFirstNameLastName(text, "Firstname")}
+                                    autoCapitalize='none'
+                                    blurOnSubmit={false}
+                                    onSubmitEditing={() => { this.firstName._root.focus(); }} testID="editFirstName"
                                 />
-                            })
-                                } 
-                                
-                            </Picker>
-                        </Item>
+                            </Item>
 
-                        <ListItem noBorder>
+                            <Item style={{ borderBottomWidth: 0, }}>
+                                <Input placeholder="Last Name" style={styles.transparentLabel}
+                                    ref={(input) => { this.firstName = input; }}
+                                    value={this.state.lastName}
+                                    keyboardType={'default'}
+                                    returnKeyType={"next"}
+                                    onChangeText={text => this.validateFirstNameLastName(text, "Lastname")}
+                                    autoCapitalize='none'
+                                    blurOnSubmit={false}
+                                    onSubmitEditing={() => { this.lastName._root.focus(this.setState({ focus: true })); }}
+                                    testID="editLastName"
+                                />
+                            </Item>
 
-                            <Radio selected={this.state.gender === 'M'} onPress={() => this.onPressRadio('M')} style={{ marginLeft: 2, }} color={"#775DA3"}
-                                selectedColor={"#775DA3"} />
-                            <Text style={{ marginLeft: 10, fontFamily: 'OpenSans' }}>Male</Text>
+                            <Item style={{ borderBottomWidth: 0, backgroundColor: '#F1F1F1', marginTop: 10, borderRadius: 5, }}>
+                                <Icon name='calendar' style={{ paddingLeft: 20, color: '#775DA3' }} />
+                                <DatePicker style={styles.transparentLabel}
+                                    defaultDate={this.state.dob}
+                                    timeZoneOffsetInMinutes={undefined}
+                                    returnKeyType={'next'}
+                                    modalTransparent={false}
+                                    animationType={"fade"}
+                                    minimumDate={new Date(1940, 0, 1)}
+                                    maximumDate={subTimeUnit(new Date(), 1, 'year')}
+                                    androidMode={"default"}
+                                    placeHolderText={formatDate(this.state.dob, "DD/MM/YYYY")}
+                                    textStyle={{ color: "#5A5A5A" }}
+                                    value={this.state.dob}
+                                    placeHolderTextStyle={{ color: "#5A5A5A" }}
+                                    onDateChange={dob => { console.log(dob); this.setState({ dob }) }}
+                                    disabled={false}
+                                    testID="editDateOfBirth"
+                                />
 
-                            <Radio selected={this.state.gender === 'F'} onPress={() => this.onPressRadio('F')} style={{ marginLeft: 10 }} color={"#775DA3"}
-                                selectedColor={"#775DA3"} />
-                            <Text style={{ marginLeft: 10, fontFamily: 'OpenSans' }}>Female</Text>
+                            </Item>
+                            <Item style={{ borderBottomWidth: 0, backgroundColor: '#F1F1F1', marginTop: 10, borderRadius: 5 }}>
+                                <Picker style={styles.transparentLabel}
+                                    mode="dropdown"
+                                    iosIcon={<Icon name="arrow-down" />}
+                                    textStyle={{ color: "#5cb85c" }}
+                                    note={false}
+                                    itemStyle={{
+                                        backgroundColor: "gray",
 
-                            <Radio selected={this.state.gender === 'O'} onPress={() => this.onPressRadio('O')} style={{ marginLeft: 10 }} color={"#775DA3"}
-                                selectedColor={"#775DA3"} />
-                            <Text style={{ marginLeft: 10 }}>Other</Text>
+                                        paddingLeft: 10,
+                                        fontSize: 10,
+                                    }}
+                                    itemTextStyle={{ color: '#5cb85c' }}
+                                    style={{ width: undefined }}
+                                    onValueChange={(sample) => { this.setState({ selectedBloodGroup: sample }) }}
+                                    selectedValue={this.state.selectedBloodGroup}
+                                    testID="editBloodGroup"
+                                >
 
-                        </ListItem>
+                                    {bloodGroupList.map((value, key) => {
 
-                        <Spinner color='blue'
-                            visible={this.state.isLoading}
-                            textContent={this.state.loaderContent}
-                        />
+                                        return <Picker.Item label={String(value)} value={String(value)} key={key}
+                                        />
+                                    })
+                                    }
+
+                                </Picker>
+                            </Item>
+
+                            <ListItem noBorder>
+
+                                <Radio selected={this.state.gender === 'M'} onPress={() => this.onPressRadio('M')} style={{ marginLeft: 2, }} color={"#775DA3"}
+                                    selectedColor={"#775DA3"} testID="clickMale" />
+                                <Text style={{ marginLeft: 10, fontFamily: 'OpenSans' }}>Male</Text>
+
+                                <Radio selected={this.state.gender === 'F'} onPress={() => this.onPressRadio('F')} style={{ marginLeft: 10 }} color={"#775DA3"}
+                                    selectedColor={"#775DA3"} testID="clickFemale" />
+                                <Text style={{ marginLeft: 10, fontFamily: 'OpenSans' }}>Female</Text>
+
+                                <Radio selected={this.state.gender === 'O'} onPress={() => this.onPressRadio('O')} style={{ marginLeft: 10 }} color={"#775DA3"}
+                                    selectedColor={"#775DA3"} testID="clickOther" />
+                                <Text style={{ marginLeft: 10 }}>Other</Text>
+
+                            </ListItem>
+
+                            <Spinner color='blue'
+                                visible={this.state.isLoading}
+                                textContent={'Please wait Loading'}
+                            />
+
+                            <View>
+                                <Button disabled={this.state.updateButton} primary style={styles.userbutton} onPress={() => this.userUpdate()}>
+                                    <Text style={{ fontFamily: 'OpenSans', fontSize: 15, }}>Update</Text>
+                                </Button>
+                            </View>
+                        </Form>
 
 
-                        <Button  style={styles.updateButton} block primary onPress={() => this.userUpdate()}>
-                            <Text style={{ fontFamily: 'OpenSans' }}>Update</Text>
-                            </Button>
-                        
-                    </Form>
 
-                    </ScrollView>
-                </Content>
+                    </Content>
+                </ScrollView>
+
             </Container>
 
         )

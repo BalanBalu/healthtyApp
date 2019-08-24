@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import { Container, Content, Text, Button, H3, Item, List, CheckBox, Left, Right, Thumbnail, Body, Icon, Card, Input, Toast, View } from 'native-base';
 import { userFiledsUpdate } from '../../providers/auth/auth.actions';
-import { AsyncStorage,ScrollView} from 'react-native';
+import { AsyncStorage, ScrollView } from 'react-native';
 import { connect } from 'react-redux'
 import styles from './style.js';
 import Spinner from '../../../components/Spinner';
@@ -16,7 +16,7 @@ class UpdateInsurance extends Component {
             insurance_no: '',
             insurance_provider: '',
             isLoading: false,
-            userData:''
+            userData: ''
 
         }
     }
@@ -30,19 +30,19 @@ class UpdateInsurance extends Component {
         const { navigation } = this.props;
         const userData = navigation.getParam('updatedata');
         console.log(userData);
-       
 
-        if(userData.insurance){        
+
+        if (userData.insurance) {
             this.setState({
                 insurance_no: userData.insurance[0].insurance_no,
                 insurance_provider: userData.insurance[0].insurance_provider,
-                userData               
+                userData
             })
         }
 
     }
 
-    commonUpdateInsuranceMethod=async()=>{
+    commonUpdateInsuranceMethod = async () => {
         console.log("console");
         let userId = await AsyncStorage.getItem('userId');
         console.log(userId)
@@ -55,7 +55,7 @@ class UpdateInsurance extends Component {
         };
         console.log(data);
         let response = await userFiledsUpdate(userId, data);
-        console.log('response'+JSON.stringify(response));        
+        console.log('response' + JSON.stringify(response));
         if (response.success) {
             Toast.show({
                 text: 'Inusrance updated Successfully',
@@ -66,34 +66,34 @@ class UpdateInsurance extends Component {
 
         } else {
             Toast.show({
-                text:'Fields should not be empty',
+                text: 'Fields should not be empty',
                 type: "danger",
                 duration: 3000
             })
         }
         this.setState({ isLoading: false });
-      }
+    }
 
     handleInsuranceUpdate = async () => {
         console.log("pdate")
-      const{userData,insurance_no,insurance_provider}=this.state
-      console.log(userData.insurance);
+        const { userData, insurance_no, insurance_provider } = this.state
+        console.log(userData.insurance);
         try {
             console.log("try");
-            this.setState({ isLoading:true });
-            if(userData.insurance!==undefined){
-            if (insurance_no != userData.insurance[0].insurance_no ||
-                insurance_provider != userData.insurance[0].insurance_provider) {
+            this.setState({ isLoading: true });
+            if (userData.insurance !== undefined) {
+                if (insurance_no != userData.insurance[0].insurance_no ||
+                    insurance_provider != userData.insurance[0].insurance_provider) {
                     this.commonUpdateInsuranceMethod();
-                }else{
+                } else {
                     this.props.navigation.navigate('Profile');
-                    
-                }      
-               
-            }else{
-            this.commonUpdateInsuranceMethod();
-        }
-    } catch (e) {
+
+                }
+
+            } else {
+                this.commonUpdateInsuranceMethod();
+            }
+        } catch (e) {
             console.log("catch")
             console.log(e);
         }
@@ -110,48 +110,48 @@ class UpdateInsurance extends Component {
             <Container style={styles.container}>
 
 
-                <Content style={styles.bodyContent} contentContainerStyle={{ flex: 1, height: '100%' }}>
-<ScrollView>
-                    <Spinner color='blue'
-                        visible={this.state.isLoading}
-                        textContent={'Loading...'}
-                    />
+                <Content style={styles.bodyContent} contentContainerStyle={{ justifyContent: 'center' }}>
+                    <ScrollView>
+                        <Spinner color='blue'
+                            visible={this.state.isLoading}
+                            textContent={'Loading...'}
+                        />
 
-                    <Text style={{ fontFamily: 'OpenSans', marginLeft: 7, marginTop: 60, fontWeight: 'bold', fontSize: 22 }}>Edit Insurance</Text>
+                        <Text style={{ fontFamily: 'OpenSans', marginLeft: 7, marginTop: 100, fontWeight: 'bold', fontSize: 22 }}>Edit Insurance</Text>
 
-                    <Text style={{ color: 'gray', fontSize: 13, fontFamily: 'OpenSans', marginTop: 10, marginLeft: 7 }}>Update your Insurance</Text>
-                    <Card style={{ padding: 10, borderRadius: 10, marginTop: 20, height: 250 }}>
-
-
-                        <Item style={{ borderBottomWidth: 0, marginTop: 25 }}>
-                            <Icon name='heartbeat' type='FontAwesome' style={styles.centeredIcons}></Icon>
-                            <Input placeholder="Edit insurance number" style={styles.transparentLabel} keyboardType="email-address"
-                                onChangeText={(insurance_no) => this.setState({ insurance_no })}
-                                value={this.state.insurance_no}
-                                testID='updateInsuranceNo' />
-                        </Item>
-
-                        <Item style={{ borderBottomWidth: 0, marginTop: 25 }}>
-                            <Icon name='heartbeat' type='FontAwesome' style={styles.centeredIcons}></Icon>
-                            <Input placeholder="Edit insurance provider" style={styles.transparentLabel} keyboardType="email-address"
-                                onChangeText={(insurance_provider) => this.setState({ insurance_provider })}
-                                value={this.state.insurance_provider}
-                                testID='updateInsuranceProvider' />
-                        </Item>
+                        <Text style={{ color: 'gray', fontSize: 13, fontFamily: 'OpenSans', marginTop: 10, marginLeft: 7 }}>Update your Insurance</Text>
+                        <Card style={{ padding: 10, borderRadius: 10, marginTop: 20, height: 250, marginBottom: 20 }}>
 
 
+                            <Item style={{ borderBottomWidth: 0, marginTop: 25 }}>
+                                <Icon name='heartbeat' type='FontAwesome' style={styles.centeredIcons}></Icon>
+                                <Input placeholder="Edit insurance number" style={styles.transparentLabel} keyboardType="email-address"
+                                    onChangeText={(insurance_no) => this.setState({ insurance_no })}
+                                    value={this.state.insurance_no}
+                                    testID='updateInsuranceNo' />
+                            </Item>
+
+                            <Item style={{ borderBottomWidth: 0, marginTop: 25 }}>
+                                <Icon name='heartbeat' type='FontAwesome' style={styles.centeredIcons}></Icon>
+                                <Input placeholder="Edit insurance provider" style={styles.transparentLabel} keyboardType="email-address"
+                                    onChangeText={(insurance_provider) => this.setState({ insurance_provider })}
+                                    value={this.state.insurance_provider}
+                                    testID='updateInsuranceProvider' />
+                            </Item>
 
 
-                        <Item style={{ borderBottomWidth: 0 }}>
-                            <Right>
-                                <Button success style={styles.updateButton} onPress={() => this.handleInsuranceUpdate()} testID='clickUpdateInsurance'>
-                                    <Text uppercase={false} note style={{ color: '#fff', fontFamily: 'OpenSans' }}>Update</Text>
-                                </Button>
-                            </Right>
-                        </Item>
 
 
-                    </Card>
+                            <Item style={{ borderBottomWidth: 0 }}>
+                                <Right>
+                                    <Button success style={styles.updateButton} onPress={() => this.handleInsuranceUpdate()} testID='clickUpdateInsurance'>
+                                        <Text uppercase={false} note style={{ color: '#fff', fontFamily: 'OpenSans' }}>Update</Text>
+                                    </Button>
+                                </Right>
+                            </Item>
+
+
+                        </Card>
 
 
 

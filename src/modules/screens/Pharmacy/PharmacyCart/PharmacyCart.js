@@ -6,7 +6,7 @@ import { Loader } from '../../../../components/ContentLoader';
 import { medicineRateAfterOffer } from '../../../common';
 
 let temp, userId; 
-class MedicinePaymentResult extends Component {
+class PharmacyCart extends Component {
     constructor(props) {
         super(props)
         this.state = {
@@ -129,18 +129,18 @@ class MedicinePaymentResult extends Component {
                         </View>
                                 
                         <View style={{ flex: 1, flexDirection: 'row', marginLeft: 110 }}>
-                          <Button style={{ padding: 0, justifyContent: 'center', borderWidth: 1, borderColor: '#c26c57', width: 30, height: 25, marginLeft: 5, backgroundColor: 'white' }} onPress={()=>this.decrease(index)}>
+                          <Button style={{ padding: 0, justifyContent: 'center', borderWidth: 1, borderColor: '#c26c57', width: 30, height: 25, marginLeft: 5, backgroundColor: 'white' }} onPress={()=>this.decrease(index)} testID='decreaseMedicine'>
                              <Text style={{ fontSize: 25, justifyContent: 'flex-start', textAlign: 'center', marginTop: -15, marginRight:10, color: '#c26c57', fontWeight: 'bold' }}>-</Text>
                           </Button>
                          <View>
                             <TextInput type='number' min='1' style={{ marginLeft: 5, color: '#c26c57' }} >{item.selectedQuantity}</TextInput>
                          </View>
 
-                          <Button style={{ padding: 0, justifyContent: 'center', borderWidth: 1, borderColor: '#c26c57', width: 30, height: 25, marginLeft: 5, backgroundColor: 'white' }} onPress={()=>this.increase(index)}>
+                          <Button style={{ padding: 0, justifyContent: 'center', borderWidth: 1, borderColor: '#c26c57', width: 30, height: 25, marginLeft: 5, backgroundColor: 'white' }} onPress={()=>this.increase(index)} testID='increaseMedicine'>
                              <Text style={{ fontSize: 20, justifyContent: 'flex-start', textAlign: 'center', marginTop: -10, marginRight:10, color: '#c26c57', fontWeight: 'bold' }}>+</Text>
                           </Button>
                         
-                        <TouchableOpacity style={{ marginLeft: 50, alignItems: 'center'}} onPress={()=> this.removeMedicine(index)}>
+                        <TouchableOpacity style={{ marginLeft: 50, alignItems: 'center'}} onPress={()=> this.removeMedicine(index)} testID='removeMedicineToCart'>
                            <Icon style={{ fontSize: 30, color: 'red', marginTop: -4 }} name='ios-trash' />
                          </TouchableOpacity>  
                         
@@ -164,7 +164,7 @@ class MedicinePaymentResult extends Component {
                         }
                     </Row>
                     <Col >
-                        <Button style={{ backgroundColor: '#5cb75d', borderRadius: 10, padding: 10, marginTop: 10, marginLeft: 40, height: 35 }} onPress={()=> this.props.navigation.navigate('MedicineCheckout')}>
+                        <Button style={{ backgroundColor: '#5cb75d', borderRadius: 10, padding: 10, marginTop: 10, marginLeft: 40, height: 35 }} onPress={()=> this.props.navigation.navigate('MedicineCheckout',{medicineDetails:this.state.cartItems})} testID='navigateToCheckout'>
                             <Text>Checkout</Text>
                         </Button>
                     </Col>
@@ -175,7 +175,7 @@ class MedicinePaymentResult extends Component {
 }
 
 
-export default MedicinePaymentResult
+export default PharmacyCart
 
 
 const styles = StyleSheet.create({
