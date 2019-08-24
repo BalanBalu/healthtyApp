@@ -12,7 +12,7 @@ import { addToCart,medicineRateAfterOffer } from '../../../common';
 
 
 let temp, userId; 
-class MedicineSearch extends Component {
+class PharmacyHome extends Component {
     constructor(props) {
         super(props)       
         this.state={
@@ -197,7 +197,7 @@ class MedicineSearch extends Component {
                         </Col>
 
                         <Col style={{ marginRight: 40 }} >
-                            <Button success style={{ borderRadius: 10, marginTop: 10, marginLeft: 45, height: 40, justifyContent: 'center' }} onPress={()=> this.props.navigation.navigate('MedicinePaymentResult')} testID='clickButtonToViewCartPage'>
+                            <Button success style={{ borderRadius: 10, marginTop: 10, marginLeft: 45, height: 40, justifyContent: 'center' }} onPress={()=> this.props.navigation.navigate('PharmacyCart')} testID='clickButtonToViewCartPage'>
 
 
                                 <Row style={{ justifyContent: 'center', }}>
@@ -226,7 +226,7 @@ class MedicineSearch extends Component {
 
 }
 
-export default MedicineSearch
+export default PharmacyHome
 
 
 const styles = StyleSheet.create({

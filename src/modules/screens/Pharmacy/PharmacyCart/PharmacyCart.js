@@ -6,7 +6,7 @@ import { Loader } from '../../../../components/ContentLoader';
 import { medicineRateAfterOffer } from '../../../common';
 
 let temp, userId; 
-class MedicinePaymentResult extends Component {
+class PharmacyCart extends Component {
     constructor(props) {
         super(props)
         this.state = {
@@ -175,7 +175,7 @@ class MedicinePaymentResult extends Component {
 }
 
 
-export default MedicinePaymentResult
+export default PharmacyCart
 
 
 const styles = StyleSheet.create({

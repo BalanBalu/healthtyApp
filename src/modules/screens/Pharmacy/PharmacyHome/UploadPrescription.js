@@ -16,12 +16,11 @@ class UploadPrescription extends Component {
         this.state = {
             imageSource: null,
             keyword: '',
-            pharmacyList: null,
+            pharmacyList:[],
             uploadButton: true,
             isLoading: true,
-            isImageNotLoaded: true
+            isImageNotLoaded: true,
         }
-
     }
 
     async componentWillMount() {
@@ -34,21 +33,28 @@ class UploadPrescription extends Component {
             type: 'name',
             value: [this.state.keyword]
         }]
+        console.log(pharmacyData);
         let result = await searchPharmacyByName(pharmacyData);
+        console.log(result);
         this.setState({ pharmacyList: result.data, isLoading: false });
     }
 
     autoCompletePharmacyName(keyword) {
         if (keyword === '' || keyword === undefined || keyword === null) {
             return [];
-        }        
+        }
         const { pharmacyList } = this.state;
+
+        if(pharmacyList!=undefined){
         const regex = new RegExp(`${keyword.trim()}`, 'i');
+        console.log(regex);        
         selectedPharmacy = pharmacyList.filter(value => value.name.search(regex) >= 0);
+        if(selectedPharmacy.length==0){
+            let defaultValue={name:'Pharmacy not found'}
+           selectedPharmacy.push(defaultValue);        }
         return selectedPharmacy;
+        }       
     }
-
-
 
     /*Upload profile pic*/
     attachPrescription() {
@@ -157,10 +163,11 @@ class UploadPrescription extends Component {
                     <Content>
                         <ScrollView>
                             <View style={{ marginTop: 25 }}>
-                                <Autocomplete style={{ borderBottomWidth: 0, backgroundColor: '#F1F1F1', borderRadius: 5, padding: 5, width: '76%', marginLeft: 48 }} data={selectedPharmacy.length === 1 && comp(this.state.keyword, selectedPharmacy[0].name) ? [] : selectedPharmacy}
+                                <Autocomplete style={{ borderBottomWidth: 0, backgroundColor: '#F1F1F1', borderRadius: 5, padding: 5, width: '76%', marginLeft: 48 }} 
+                                data={this.state.pharmacyList!==undefined?(selectedPharmacy.length === 1 && comp(this.state.keyword, selectedPharmacy[0].name) ? [] : selectedPharmacy):selectedPharmacy}
                                     defaultValue={this.state.keyword}
                                     onChangeText={text => this.setState({ keyword: text })}
-                                    placeholder="Select Pharmacy"
+                                    placeholder='Select Pharmacy'
                                     listStyle={{ position: 'relative', marginLeft: 45, width: '70%', marginTop: -3.5 }}
                                     renderItem={({ item }) => (
                                         <TouchableOpacity onPress={() => this.setState({ keyword: item.name })}>
@@ -170,6 +177,10 @@ class UploadPrescription extends Component {
                                     keyExtractor={(item, index) => index.toString()} />
 
                             </View>
+                            <View style={{marginTop:5}}>
+                               <Text style={{marginLeft:10,fontFamily:'OpenSans',color:'red'}}>{this.state.noKeywords}</Text>
+                            </View>
+
 
                             <View >
                                 <TouchableOpacity onPress={() => { this.attachPrescription() }}>
@@ -259,12 +270,7 @@ const styles = StyleSheet.create({
     height: 25,
     width: 25,
     fontWeight: 'bold'
-
   }
-
-
-
-
 })
 
 
