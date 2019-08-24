@@ -182,12 +182,8 @@ const AppointMentstack1 = createStackNavigator({
     screen: Mapbox,
     navigationOptions: {
       title: 'Mapbox'
-    }
-
-  },
-  paymentpage: {
-    screen: PaymentPage
-  },
+   }
+  }, 
   Reviews: {
     screen: Reviews,
     navigationOptions: {
@@ -198,6 +194,12 @@ const AppointMentstack1 = createStackNavigator({
     screen: PaymentReview,
     navigationOptions: {
       title: 'Payment Review'
+    }
+  },
+  paymentPage: {
+    screen: PaymentPage,
+    navigationOptions: {
+      title: 'Payment Page'
     }
   },
   paymentsuccess: {
@@ -515,14 +517,37 @@ const categoryStack = createStackNavigator({
       headerTintColor: 'white',
     })
   });
+
+
+
+const paymentStack = createStackNavigator({
+
+  paymentpage: {
+    screen: PaymentPage,
+    navigationOptions: ({ navigation }) => ({
+      title: 'Payment Page',
+
+      headerLeft: (
+        <TouchableOpacity onPress={() => navigation.navigate('Home')}>
+          <Icon name="arrow-back" style={{ marginLeft: 18, color: '#fff', fontFamily: 'opensans-semibold' }}></Icon>
+        </TouchableOpacity>
+      ),
+    })
+  },
+},
+  {
+    defaultNavigationOptions: ({ navigation }) => ({
+      headerStyle: { backgroundColor: '#7E49C3', fontFamily: 'opensans-semibold' },
+      headerTintColor: 'white',
+    })
+  });
+
 const DrawerNavigator = createDrawerNavigator({
   Home: HomeStack,
   Profile: ProfileStack,
   "My Appointments": myAppointmentsStack,
   Pharmacy:PharmacyStack,
   Orders:OrdersStack
-  
-
 },
   {
     initialRouteName: 'Home'
