@@ -13,7 +13,7 @@ import { RenderHospitalAddress } from '../../common';
 import { ScrollView } from 'react-native-gesture-handler';
 //import appIcon from '../../../../assets/Icon.png';
 
-
+import BookAppointmentPaymentUpdate from '../../providers/bookappointment/bookAppointment';
 
 export default class PaymentReview extends Component {
     constructor(props) {
@@ -41,108 +41,25 @@ export default class PaymentReview extends Component {
         const amount = this.state.bookSlotDetails.slotData.fee;
         this.props.navigation.navigate('paymentPage', {service_type : 'APPOINTMENT', bookSlotDetails: this.state.bookSlotDetails, amount: amount })
     }
-
-    confirmPayLater = async () => {
-        try {
-            this.setState({ isLoading: true })
-            const userId = await AsyncStorage.getItem('userId');
-            let bookAppointmentData = {
-                userId: userId,
-                doctorId: this.state.bookSlotDetails.doctorId,
-                description: "something",
-                startTime: this.state.bookSlotDetails.slotData.slotStartDateAndTime,
-                endTime: this.state.bookSlotDetails.slotData.slotEndDateAndTime,
-                status: "PENDING",
-                status_by: "Patient",
-                statusUpdateReason: "something",
-                hospital_id: this.state.bookSlotDetails.slotData.location.hospital_id,
-                booked_from: "Mobile"
-            }
-            let resultData = await bookAppointment(bookAppointmentData);
-            // console.log(JSON.stringify(resultData) + 'response for confirmPayLater ');
-            this.setState({ isLoading: false })
-            if (resultData.success) {
-                Toast.show({
-                    text: resultData.message,
-                    type: "success",
-                    duration: 3000,
-                })
-                this.props.navigation.navigate('paymentsuccess', { successBookSlotDetails: this.state.bookSlotDetails });
-
-            } else {
-                Toast.show({
-                    text: resultData.message,
-                    type: "warning",
-                    duration: 3000,
-                })
-            }
-        } catch (ex) {
+   async processToPayLater() {
+        const userId = await AsyncStorage.getItem('userId');
+        this.BookAppointmentPaymentUpdate = new BookAppointmentPaymentUpdate();
+        let response = await this.BookAppointmentPaymentUpdate.updatePaymentDetails(true, {}, 'cash', this.state.bookSlotDetails, 'APPOINTMENT', userId);
+        console.log('Book Appointment Payment Update Response ');
+        console.log(response);
+        if(response.success) {
+            this.props.navigation.navigate('paymentsuccess', { successBookSlotDetails: this.state.bookSlotDetails });
+        } else {
             Toast.show({
-                text: 'Exception Occured ' + ex,
-                type: "warning",
-                duration: 3000,
-            })
-        } finally {
-            this.setState({ isLoading: false })
-        }
-    }
-
-   async updatePaymentDetails(isSuccess, data, modeOfPayment) {
-
-
-        try {
-            console.log('is it comign ?')
-            this.setState({ isLoading: true });
-            const userId = await AsyncStorage.getItem('userId');
-            let paymentData = {
-                payer_id: userId,
-                payer_type: 'user',
-                payment_id: data.razorpay_payment_id || modeOfPayment === 'cash' ? 'cash_' + new Date().getTime() : 'pay_err_' + new Date().getTime(),
-                amount: this.state.bookSlotDetails.slotData.fee,
-                amount_paid: !isSuccess || modeOfPayment === 'cash' ? 0 : this.state.bookSlotDetails.slotData.fee,
-                amount_due: !isSuccess || modeOfPayment === 'cash' ? this.state.bookSlotDetails.slotData.fee : 0,
-                currency: 'INR',
-                service_type: 'APPOINTMENT',
-                booking_from: 'APPLICATION',
-                is_error: !isSuccess,
-                error_message: data.description || null,
-                payment_mode: modeOfPayment,
-            }
-            console.log('is congign')
-            let resultData = await createPaymentRazor(paymentData);
-            console.log(resultData);
-            if (resultData.success) {
-                Toast.show({
-                    text: resultData.message,
-                    type: "success",
-                    duration: 3000,
-                })
-                if (isSuccess) {
-                    this.confirmPayLater();
-                } else {
-                    Toast.show({
-                        text: data.description,
-                        type: "warning",
-                        duration: 3000,
-                    })
-                }
-            } else {
-                Toast.show({
-                    text: resultData.message,
-                    type: "warning",
-                    duration: 3000,
-                })
-            }
-        } catch (error) {
-            this.setState({ isLoading: false });
-            Toast.show({
-                text: error,
-                type: "warning",
-                duration: 3000,
+                text: response.message,
+                type: 'warning',
+                duration: 3000
             })
         }
+           
     }
 
+   
     render() {
         const { bookSlotDetails } = this.state;
         return (
@@ -222,7 +139,7 @@ export default class PaymentReview extends Component {
                                 </Col>
                             </Row>
                         </Grid>
-                        <Button block success style={{ borderRadius: 6, margin: 6 }} onPress={() => this.updatePaymentDetails(true, {}, 'cash')}>
+                        <Button block success style={{ borderRadius: 6, margin: 6 }} onPress={() => this.processToPayLater()}>
                             <Text uppercase={false}>payLater</Text>
                         </Button>
                         <Button block success style={{ padding: 10, borderRadius: 6, margin: 6, marginBottom: 20 }} onPress={() => 

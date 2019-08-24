@@ -11,11 +11,12 @@ import { putService , getService} from '../../../setup/services/httpservices';
 import Razorpay from '../../../components/Razorpay';
 import { RAZOR_KEY } from '../../../setup/config';
 import { updatePaymentDetails } from '../PaymentReview'
+import BookAppointmentPaymentUpdate from '../../providers/bookappointment/bookAppointment';
 
 class PaymentPage extends Component {
     availableNetBankingData = [];
     availableWallets = [];
-   
+    userId = null;
     constructor(props) {
         super(props)
         this.state = {
@@ -38,10 +39,14 @@ class PaymentPage extends Component {
             selectedItems: [],
             savedCards: [],
             saveCardCheckbox: true,
-            bookSlotDetails: null
+            bookSlotDetails: null,
+            isLoading: false
         }
+        this.BookAppointmentPaymentUpdate = new BookAppointmentPaymentUpdate();
     }
-    componentDidMount() {
+    async componentDidMount() {
+         this.userId = await AsyncStorage.getItem('userId');
+       
         const { navigation } = this.props;
         
         const bookSlotDetails = navigation.getParam('bookSlotDetails');
@@ -155,7 +160,6 @@ class PaymentPage extends Component {
         Razorpay.open(options).then((data) => {
             // handle success
             this.updatePaymentDetails(true, data, 'razor');
-            debugger
             if(this.state.saveCardCheckbox) {
                 this.storeCardData();
             }
@@ -164,106 +168,22 @@ class PaymentPage extends Component {
              this.updatePaymentDetails(false, error, 'razor');
         });
     }
-
-    async updatePaymentDetails(isSuccess, data, modeOfPayment) {
-        try {
-            debugger
-            this.setState({ isLoading: true });
-            const userId = await AsyncStorage.getItem('userId');
-            let paymentData = {
-                payer_id: userId,
-                payer_type: 'user',
-                payment_id: data.razorpay_payment_id || modeOfPayment === 'cash' ? 'cash_' + new Date().getTime() : 'pay_err_' + new Date().getTime(),
-                amount: this.state.amount,
-                amount_paid: !isSuccess || modeOfPayment === 'cash' ? 0 : this.state.amount,
-                amount_due: !isSuccess || modeOfPayment === 'cash' ? this.state.amount : 0,
-                currency: 'INR',
-                service_type: this.state.serviceType,
-                booking_from: 'APPLICATION',
-                is_error: !isSuccess,
-                error_message: data.description || null,
-                payment_mode: modeOfPayment,
-            }
-            console.log('is congign')
-            let resultData = await createPaymentRazor(paymentData);
-            console.log(resultData);
-            if (resultData.success) {
-                Toast.show({
-                    text: resultData.message,
-                    type: "success",
-                    duration: 3000,
-                })
-                if (isSuccess) {
-                     this.updateBookAppointmentData();
-                } else {
-                    Toast.show({
-                        text: data.description,
-                        type: "warning",
-                        duration: 3000,
-                    })
-                }
-            } else {
-                Toast.show({
-                    text: resultData.message,
-                    type: "warning",
-                    duration: 3000,
-                })
-            }
-        } catch (error) {
-            this.setState({ isLoading: false });
-            Toast.show({
-                text: error,
-                type: "warning",
-                duration: 3000,
-            })
-        }
+   async updatePaymentDetails(isSuccess, data, modeOfPayment) {
+    this.setState({ isLoading: true  })
+    let response = await this.BookAppointmentPaymentUpdate.updatePaymentDetails(isSuccess, data, modeOfPayment, this.state.bookSlotDetails, 'APPOINTMENT', this.userId);
+    console.log(response);
+    if(response.success) {
+        this.props.navigation.navigate('paymentsuccess', { successBookSlotDetails: this.state.bookSlotDetails });
+    } else {
+        Toast.show({
+            text: response.message,
+            type: 'warning',
+            duration: 3000
+        })
     }
-
-    updateBookAppointmentData = async () => {
-        try {
-            this.setState({ isLoading: true })
-            const userId = await AsyncStorage.getItem('userId');
-            let bookAppointmentData = {
-                userId: userId,
-                doctorId: this.state.bookSlotDetails.doctorId,
-                description: "something",
-                startTime: this.state.bookSlotDetails.slotData.slotStartDateAndTime,
-                endTime: this.state.bookSlotDetails.slotData.slotEndDateAndTime,
-                status: "PENDING",
-                status_by: "Patient",
-                statusUpdateReason: "something",
-                hospital_id: this.state.bookSlotDetails.slotData.location.hospital_id,
-                booked_from: "Mobile"
-            }
-            let resultData = await bookAppointment(bookAppointmentData);
-            // console.log(JSON.stringify(resultData) + 'response for confirmPayLater ');
-            this.setState({ isLoading: false })
-            if (resultData.success) {
-                Toast.show({
-                    text: resultData.message,
-                    type: "success",
-                    duration: 3000,
-                })
-                this.props.navigation.navigate('paymentsuccess', { successBookSlotDetails: this.state.bookSlotDetails });
-
-            } else {
-                Toast.show({
-                    text: resultData.message,
-                    type: "warning",
-                    duration: 3000,
-                })
-            }
-        } catch (ex) {
-            Toast.show({
-                text: 'Exception Occured ' + ex,
-                type: "warning",
-                duration: 3000,
-            })
-        } finally {
-            this.setState({ isLoading: false })
-        }
-    }
-
+    this.setState({ isLoading: false });  
+  }
+ 
     handlingCardNumber(number) {
         var cardPaymentDetails = { ...this.state.cardPaymentDetails }
         cardPaymentDetails.number = number.replace(/\s?/g, '').replace(/(\d{4})/g, '$1 ').trim();
