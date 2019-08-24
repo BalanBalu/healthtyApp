@@ -4,7 +4,7 @@ import { Col, Row, Grid } from 'react-native-easy-grid';
 import { connect } from 'react-redux'
 import { StyleSheet, Image } from 'react-native';
 
-class MedicinePaymentSuccess extends Component {
+class OrderPaymentSuccess extends Component {
     constructor(props) {
         super(props)
         console.log(this.props)
@@ -82,7 +82,7 @@ class MedicinePaymentSuccess extends Component {
 
 }
 
-export default MedicinePaymentSuccess
+export default OrderPaymentSuccess
 
 
 const styles = StyleSheet.create({
