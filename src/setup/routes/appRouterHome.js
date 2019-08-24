@@ -185,15 +185,8 @@ const AppointMentstack1 = createStackNavigator({
     screen: Mapbox,
     navigationOptions: {
       title: 'Mapbox'
-    }
-
-  },
-  // paymentpage: {
-  //   screen: PaymentPage,
-  //   navigationOptions: {
-  //     title: 'Payment Page'
-  //   }
-  // },
+   }
+  }, 
   Reviews: {
     screen: Reviews,
     navigationOptions: {
@@ -204,6 +197,12 @@ const AppointMentstack1 = createStackNavigator({
     screen: PaymentReview,
     navigationOptions: {
       title: 'Payment Review'
+    }
+  },
+  paymentPage: {
+    screen: PaymentPage,
+    navigationOptions: {
+      title: 'Payment Page'
     }
   },
   paymentsuccess: {

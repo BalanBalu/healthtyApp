@@ -1,35 +1,30 @@
 import React, { Component } from 'react';
-import { Container, Content, Text, Title, Header, H3, Button, FooterTab, Item, Card, CardItem, List, ListItem, Left, Right, Footer, Thumbnail, Body, Icon, Input, CheckBox, Toast, Segment, Radio, Form } from 'native-base';
-import { login } from '../../providers/auth/auth.actions';
-import { messageShow, messageHide } from '../../providers/common/common.action';
+import { Container, Content, Text, Button, FooterTab, Card, Footer, Icon, Input, CheckBox, Toast, Form } from 'native-base';
 import { Col, Row, Grid } from 'react-native-easy-grid';
-import { connect } from 'react-redux'
-import LinearGradient from 'react-native-linear-gradient';
-import { StyleSheet, Image, TouchableOpacity, View, AsyncStorage, Picker } from 'react-native';
-import StarRating from 'react-native-star-rating';
-import Razorpay from '../../../components/Razorpay';
-import { RAZOR_KEY } from '../../../setup/config';
+import { StyleSheet, Image, View, AsyncStorage } from 'react-native';
 import SectionedMultiSelect from 'react-native-sectioned-multi-select';
-import { bookAppointment, createPaymentRazor } from '../../providers/bookappointment/bookappointment.action';
-import { getAvailableNetBanking, getAvailableWallet } from '../../../setup/paymentMethods';
-import { FlatList } from 'react-native-gesture-handler';
 import { RadioButton } from 'react-native-paper';
 
+import { getAvailableNetBanking, getAvailableWallet, luhnCheck, getPayCardType } from '../../../setup/paymentMethods';
+import { bookAppointment, createPaymentRazor } from '../../providers/bookappointment/bookappointment.action';
+import { putService , getService} from '../../../setup/services/httpservices';
+import Razorpay from '../../../components/Razorpay';
+import { RAZOR_KEY } from '../../../setup/config';
+import { updatePaymentDetails } from '../PaymentReview'
 
 class PaymentPage extends Component {
     availableNetBankingData = [];
     availableWallets = [];
+   
     constructor(props) {
         super(props)
-
-
-
         this.state = {
             selectedItems: [],
             userEntry: '',
             password: '',
             loginErrorMsg: '',
             paymentOption: 'CREDIT_CARD', // setting default option to be card
+            selectedSavedCardId: null,
             cardPaymentDetails: {
                 name: null,
                 number: null,
@@ -40,33 +35,66 @@ class PaymentPage extends Component {
             selectedWallet: null,
             upiVPA: null,
             amount: 100,
-            starCount: 3.5,
-            isVisibleDebit: false,
-            isVisibleCredit: false,
-            isVisibleNetbanking: false,
-            isVisibleUpi: false,
-            language: 'java',
-            value: 'credit',
-            savedCardId: 1,
-            selectedItems: []
+            selectedItems: [],
+            savedCards: [],
+            saveCardCheckbox: true,
+            bookSlotDetails: null
         }
     }
     componentDidMount() {
+        const { navigation } = this.props;
+        
+        const bookSlotDetails = navigation.getParam('bookSlotDetails');
+        const serviceType = navigation.getParam('service_type');
+        const amount = navigation.getParam('amount');
+        this.setState({ bookSlotDetails: bookSlotDetails, serviceType: serviceType, amount: amount });
+
         this.availableNetBankingData = getAvailableNetBanking();
         this.availableWallets = getAvailableWallet();
+        this.getSavedCards() 
+       
+       
     }
-
-
-    onStarRatingPress(rating) {
-        this.setState({
-            starCount: rating
-        });
+   
+    async getSavedCards() {
+      const userId = await AsyncStorage.getItem('userId');
+      const endPointForGetCards = `payer/${userId}/type/user`;
+      const response = await getService(endPointForGetCards);
+      const respData = response.data;
+       if(respData.success === true) {
+            this.setState({ savedCards : respData.data});   
+      }
     }
 
     makePaymentMethod() {
         let data;
-        if (this.state.paymentOption === 'CREDIT_CARD' || this.state.paymentOption === 'DEBIT_CARD') {
-            if (!this.valid_credit_card(this.state.cardPaymentDetails.number)) {
+        if(this.state.selectedSavedCardId !== null) {
+            var savedCards = this.state.savedCards;
+            var selectedSavedCardId = this.state.selectedSavedCardId;
+            var selectedSavedCardArr = savedCards.filter(function(savedCards) {
+                return savedCards.card_id === selectedSavedCardId;
+            });
+            console.log(this.state);
+            data = {
+               
+
+                method: 'card',
+                'card[name]': selectedSavedCardArr[0].card_holder_name ? selectedSavedCardArr[0].card_holder_name : 'default', 
+                'card[number]': selectedSavedCardArr[0].card_number,
+                'card[cvv]': this.state[selectedSavedCardId + '-savedCardCVV'],
+                'card[expiry_month]': selectedSavedCardArr[0].expiry_m_y.split('/')[0],
+                'card[expiry_year]': selectedSavedCardArr[0].expiry_m_y.split('/')[1],
+            }
+           
+            if(selectedSavedCardArr[0].card_holder_name) {
+                //data['card[name]'] = selectedSavedCardArr[0].card_holder_name;
+            }
+            console.log(data);  
+            this.razorpayChekout(data)
+        }
+        else if(this.state.paymentOption !== null) {
+          if (this.state.paymentOption === 'CREDIT_CARD' || this.state.paymentOption === 'DEBIT_CARD') {
+            if (!luhnCheck(this.state.cardPaymentDetails.number)) {
                 Toast.show({
                     text: 'Please Enter valid Card number',
                     type: 'danger',
@@ -85,11 +113,13 @@ class PaymentPage extends Component {
             data = {
                 method: 'card',
                 'card[name]': this.state.cardPaymentDetails.name,
-                'card[number]': this.state.cardPaymentDetails.number,
+                'card[number]': this.state.cardPaymentDetails.number.replace(/ /g, ''),
                 'card[cvv]': this.state.cardPaymentDetails.cvv,
                 'card[expiry_month]': this.state.cardPaymentDetails.monthyear.split('/')[0],
                 'card[expiry_year]': this.state.cardPaymentDetails.monthyear.split('/')[1],
             }
+            console.log(data);
+            this.setState({ pay_card_type: getPayCardType(this.state.cardPaymentDetails.number) });
         } else if (this.state.paymentOption === 'NET_BANKING') {
             data = {
                 method: 'netbanking',
@@ -106,7 +136,8 @@ class PaymentPage extends Component {
                 vpa: this.state.upiVPA
             }
         }
-        this.razorpayChekout(data)
+           this.razorpayChekout(data)
+        }   
     }
 
     razorpayChekout(paymentMethodData) {
@@ -120,14 +151,17 @@ class PaymentPage extends Component {
             contact: '9123456780',
             ...paymentMethodData
         }
+        console.log(options);
         Razorpay.open(options).then((data) => {
             // handle success
-            alert(`Success: ${data.razorpay_payment_id}`);
             this.updatePaymentDetails(true, data, 'razor');
+            debugger
+            if(this.state.saveCardCheckbox) {
+                this.storeCardData();
+            }
         }).catch((error) => {
             // handle failure 
-            alert(`Error: ${error.code} | ${error.description}`);
-            this.updatePaymentDetails(false, error, 'razor');
+             this.updatePaymentDetails(false, error, 'razor');
         });
     }
 
@@ -144,7 +178,7 @@ class PaymentPage extends Component {
                 amount_paid: !isSuccess || modeOfPayment === 'cash' ? 0 : this.state.amount,
                 amount_due: !isSuccess || modeOfPayment === 'cash' ? this.state.amount : 0,
                 currency: 'INR',
-                service_type: 'APPOINTMENT',
+                service_type: this.state.serviceType,
                 booking_from: 'APPLICATION',
                 is_error: !isSuccess,
                 error_message: data.description || null,
@@ -160,7 +194,7 @@ class PaymentPage extends Component {
                     duration: 3000,
                 })
                 if (isSuccess) {
-                    // this.updateBookAppointmentData();
+                     this.updateBookAppointmentData();
                 } else {
                     Toast.show({
                         text: data.description,
@@ -230,7 +264,6 @@ class PaymentPage extends Component {
         }
     }
 
-
     handlingCardNumber(number) {
         var cardPaymentDetails = { ...this.state.cardPaymentDetails }
         cardPaymentDetails.number = number.replace(/\s?/g, '').replace(/(\d{4})/g, '$1 ').trim();
@@ -269,27 +302,29 @@ class PaymentPage extends Component {
         // Update the state, which in turns updates the value in the text field
 
     }
-    valid_credit_card(value) {
-        // Accept only digits, dashes or spaces
-        if (/[^0-9-\s]+/.test(value)) return false;
+   
+    async storeCardData() {
+      try {
+       if (this.state.paymentOption === 'CREDIT_CARD' || this.state.paymentOption === 'DEBIT_CARD') {
+        var cardRequestData = {
+          card_holder_name: this.state.cardPaymentDetails.name,
+          card_number:  this.state.cardPaymentDetails.number.replace(/ /g, ''),
+          expiry_m_y: this.state.cardPaymentDetails.monthyear,
+          card_type: this.state.paymentOption,
+          pay_card_type: this.state.pay_card_type,
+          user_type: 'user',
+          active: true
+       }
+        const userId = await AsyncStorage.getItem('userId');
+        let endPoint = 'user/payment/ ' + userId;
+        putService(endPoint, cardRequestData);
+       }
+      } catch (error) {
+        console.log(error)      
+      }
 
-        // The Luhn Algorithm. It's so pretty.
-        let nCheck = 0, bEven = false;
-        value = value.replace(/\D/g, "");
-
-        for (var n = value.length - 1; n >= 0; n--) {
-            var cDigit = value.charAt(n),
-                nDigit = parseInt(cDigit, 10);
-
-            if (bEven && (nDigit *= 2) > 9) nDigit -= 9;
-
-            nCheck += nDigit;
-            bEven = !bEven;
-        }
-
-        return (nCheck % 10) == 0;
     }
-
+    
     onSelectedItemsChange = (selectedItems) => {
         // this.setState({ selectedItems: [ selectedItems[selectedItems.length - 1] ] });
         this.setState({ selectedItems: selectedItems });
@@ -297,8 +332,7 @@ class PaymentPage extends Component {
 
     render() {
 
-        const { cardPaymentDetails, paymentOption, checked } = this.state;
-        var savedCards = [1, 2]
+        const { cardPaymentDetails, paymentOption, checked, savedCards } = this.state;
         return (
             <Container style={styles.container}>
                 <Content style={styles.bodyContent}>
@@ -315,8 +349,8 @@ class PaymentPage extends Component {
                     </Row>
 
                     <RadioButton.Group
-                        onValueChange={value => this.setState({ savedCardId: value })}
-                        value={this.state.savedCardId}>
+                        onValueChange={value => this.setState({ selectedSavedCardId: value, paymentOption: null })}
+                        value={this.state.selectedSavedCardId}>
                         <Grid>
                             <View style={{ marginTop: 10, justifyContent: 'center' }}>
                                 {savedCards.map(element => {
@@ -332,10 +366,20 @@ class PaymentPage extends Component {
                     </Row>
 
                     <RadioButton.Group
-                        onValueChange={value => this.setState({ paymentOption: value })}
+                        onValueChange={value => { 
+                            this.setState({ paymentOption: value , selectedSavedCardId : null })
+                            if((this.state.paymentOption === 'CREDIT_CARD' && value === 'DEBIT_CARD') || (this.state.paymentOption === 'DEBIT_CARD' && value === 'CREDIT_CARD') ) {
+                                this.setState({
+                                    cardPaymentDetails : {
+                                     name: null,
+                                     number: null,
+                                     cvv: null,
+                                     monthyear: ''
+                                   }
+                                })
+                            }    
+                        }}
                         value={this.state.paymentOption}>
-
-
                         <Row style={{ borderBottomColor: '#000', borderBottomWidth: 0.6, backgroundColor: '#fff', padding: 15, marginLeft: 10, marginRight: 10 }}>
                             <RadioButton value="CREDIT_CARD" />
                             <Text style={{ marginTop: 8, fontFamily: 'OpenSans', fontSize: 15 }}>Credit Card</Text>
@@ -370,9 +414,9 @@ class PaymentPage extends Component {
                                 <Text style={{ marginTop: 8, fontFamily: 'OpenSans', fontSize: 15 }}>Wallet</Text>
                             </Col>
 
-                            <Col style={{ width: '20%' }}>
+                            {/* <Col style={{ width: '20%' }}>
                                 <Text style={{ marginTop: 8, fontSize: 16, fontFamily: 'OpenSans', fontWeight: 'bold', color: 'red', marginLeft: 10 }}>{'\u20B9'}1000</Text>
-                            </Col>
+                            </Col> */}
 
 
                         </Row>
@@ -407,7 +451,7 @@ class PaymentPage extends Component {
                                         <Input placeholder="Card Holder Name"
                                             value={cardPaymentDetails ? cardPaymentDetails.name : ''}
                                             onChangeText={(text) => {
-                                                var cardPaymentDetails = { ...this.state.cardPaymentDetails }
+                                               var cardPaymentDetails = { ...this.state.cardPaymentDetails }
                                                 cardPaymentDetails.name = text;
                                                 this.setState({ cardPaymentDetails })
                                             }}
@@ -451,7 +495,7 @@ class PaymentPage extends Component {
                                     <Form>
 
                                         <Input placeholder="CVV"
-                                            maxLength={3}
+                                            maxLength={4}
                                             keyboardType={'numeric'}
                                             secureTextEntry={true}
                                             value={cardPaymentDetails ? cardPaymentDetails.cvv : ''}
@@ -471,7 +515,7 @@ class PaymentPage extends Component {
                                 <Row>
                                     <Col>
                                         <Row>
-                                            <CheckBox checked={true} color="green"></CheckBox>
+                                            <CheckBox checked={this.state.saveCardCheckbox} color="grey" onPress={()=> this.setState({ saveCardCheckbox : !this.state.saveCardCheckbox })} ></CheckBox>
                                             <Text style={{ marginLeft: 15, color: 'gray', fontFamily: 'OpenSans', }}>Save creditcard Information</Text>
                                         </Row>
                                     </Col>
@@ -493,38 +537,42 @@ class PaymentPage extends Component {
                             <Grid style={{ marginRight: 10, marginLeft: 10 }}>
                                 <Row>
 
-                                    <Col style={{ width: '33%', alignItems: 'center', }} onPress={() => this.setState({ selectedNetBank: 'SBIN' })}>
+                                    <Col style={{ width: '50%', alignItems: 'center', }} onPress={() => this.setState({ selectedNetBank: 'SBIN' })}>
 
                                         <Image source={require('../../../../assets/images/statebank.png')} style={{ width: 50, height: 50, }} />
                                         <Text style={{ fontSize: 15, fontFamily: 'OpenSans', marginTop: 5, textAlign: 'center' }}>State Bank</Text>
 
                                     </Col>
 
-                                    <Col style={{ width: '33%', alignItems: 'center' }} onPress={() => this.setState({ selectedNetBank: 'UTIB' })}>
+                                    <Col style={{ width: '50%', alignItems: 'center' }} onPress={() => this.setState({ selectedNetBank: 'UTIB' })}>
                                         <Image source={require('../../../../assets/images/Axisbank.jpg')} style={{ width: 50, height: 50, }} />
                                         <Text style={{ fontSize: 15, fontFamily: 'OpenSans', marginTop: 5, textAlign: 'center' }}>Axis Bank</Text>
                                     </Col>
-                                    <Col style={{ width: '33%', alignItems: 'center' }}>
-                                        <Image source={require('../../../../assets/images/ICICI.jpg')} style={{ width: 50, height: 50, }} />
-                                        <Text style={{ fontSize: 15, fontFamily: 'OpenSans', marginTop: 5, textAlign: 'center' }}>ICICI Bank</Text>
-                                    </Col>
+                                    
                                 </Row>
                                 <Row style={{ marginTop: 10 }}>
-
-                                    <Col style={{ width: '33%', alignItems: 'center' }}>
+                                   <Col style={{ width: '50%', alignItems: 'center' }}
+                                        onPress={() => this.setState({ selectedNetBank: 'ICIC' })}>
+                                        <Image source={require('../../../../assets/images/ICICI.jpg')} style={{ width: 50, height: 50, }}/>
+                                        <Text style={{ fontSize: 15, fontFamily: 'OpenSans', marginTop: 5, textAlign: 'center' }}>ICICI Bank</Text>
+                                    </Col>
+                                    <Col style={{ width: '50%', alignItems: 'center' }}
+                                         onPress={() => this.setState({ selectedNetBank: 'HDFC' })}>
 
                                         <Image source={require('../../../../assets/images/HDFCbank.png')} style={{ width: 50, height: 50, }} />
                                         <Text style={{ fontSize: 15, fontFamily: 'OpenSans', marginTop: 5, textAlign: 'center' }}>HDFC Bank</Text>
 
                                     </Col>
-                                    <Col style={{ width: '33%', alignItems: 'center' }}>
+                                </Row>
+                                <Row style={{ marginTop: 10 }}>
+                                    <Col style={{ width: '50%', alignItems: 'center' }}
+                                         onPress={() => this.setState({ selectedNetBank: 'IDIB' })}>
                                         <Image source={require('../../../../assets/images/Indianbank.png')} style={{ width: 50, height: 50, }} />
                                         <Text style={{ fontSize: 15, fontFamily: 'OpenSans', marginTop: 5, textAlign: 'center' }}>Indian Bank</Text>
                                     </Col>
-                                    <Col style={{ width: '33%' }}>
+                                    <Col style={{ width: '50%' }}>
 
                                     </Col>
-
                                 </Row>
                                 <Card style={{ marginTop: 15, backgroundColor: '#fff', height: 50 }}>
                                     <View>
@@ -595,18 +643,20 @@ class PaymentPage extends Component {
                         <View style={{ marginTop: 10, marginBottom: 10 }}>
                             <Grid style={{ marginRight: 10, marginLeft: 10, alignItems: 'center' }}>
                                 <Row >
-                                    <Col style={{ width: '33%', alignItems: 'center' }}>
+                                    <Col style={{ width: '33%', alignItems: 'center' }}
+                                        onPress={() => this.setState({ selectedWallet: 'olamoney' })}>
                                         <Image source={require('../../../../assets/images/Ola.jpg')} style={{ width: 50, height: 50, }} />
                                         <Text style={{ fontSize: 15, fontFamily: 'OpenSans', marginTop: 5, textAlign: 'center' }}>Ola Wallet</Text>
                                     </Col>
-                                    <Col style={{ width: '33%', alignItems: 'center' }}>
-
-                                        <Image source={require('../../../../assets/images/Axisbank.jpg')} style={{ width: 50, height: 50, }} />
-                                        <Text style={{ fontSize: 15, fontFamily: 'OpenSans', marginTop: 5, textAlign: 'center' }}>Axis Bank</Text>
+                                    <Col style={{ width: '33%', alignItems: 'center' }}
+                                         onPress={() => this.setState({ selectedWallet: 'payzapp' })}>
+                                        <Image source={require('../../../../assets/images/payzapp.png')} style={{ width: 50, height: 50, }} />
+                                        <Text style={{ fontSize: 15, fontFamily: 'OpenSans', marginTop: 5, textAlign: 'center' }}>PayZapp</Text>
                                     </Col>
-                                    <Col style={{ width: '33%', alignItems: 'center' }}>
-                                        <Image source={require('../../../../assets/images/HDFCbank.png')} style={{ width: 50, height: 50, }} />
-                                        <Text style={{ fontSize: 15, fontFamily: 'OpenSans', marginTop: 5, textAlign: 'center' }}>HDFC Bank</Text>
+                                    <Col style={{ width: '33%', alignItems: 'center' }}
+                                         onPress={() => this.setState({ selectedWallet: 'freecharge' })}>
+                                        <Image source={require('../../../../assets/images/freecharge.png')} style={{ width: 50, height: 50, }} />
+                                        <Text style={{ fontSize: 15, fontFamily: 'OpenSans', marginTop: 5, textAlign: 'center' }}>FreeCharge</Text>
 
                                     </Col>
                                 </Row>
@@ -619,20 +669,19 @@ class PaymentPage extends Component {
     }
 
     renderSavedCards(valueOfCreditCard) {
-        const { cardPaymentDetails } = this.state;
         return (
-            <View>
+            <View key={valueOfCreditCard.card_id}> 
                 <Row style={{ borderBottomColor: '#000', borderBottomWidth: 0.6, backgroundColor: '#fff', padding: 15, marginLeft: 10, marginRight: 10 }}>
-                    <RadioButton value={valueOfCreditCard} />
+                    <RadioButton value={valueOfCreditCard.card_id} />
                     <Col style={{ width: '90%', }}>
                         <Row>
-                            <Text style={{ color: '#000', fontFamily: 'OpenSans', fontWeight: 'bold', fontSize: 15, marginTop: 8, }}
-                            >SBI</Text>
+                            {/* <Text style={{ color: '#000', fontFamily: 'OpenSans', fontWeight: 'bold', fontSize: 15, marginTop: 8, }}
+                            >SBI</Text> */}
                         </Row>
                         <Row>
-                            <Text style={{ fontSize: 15, marginTop: 5 }} >******</Text>
-                            <Text style={{ fontSize: 15 }}>1111</Text>
-                            <Text style={{ fontSize: 10, marginLeft: 10, marginTop: 5, color: 'blue', fontWeight: 'bold' }}>VISA</Text>
+                            <Text style={{ fontSize: 15, marginTop: 5 }}>{valueOfCreditCard.card_number.substring(0, 4)} **** **** {valueOfCreditCard.card_number.substring(12, 16)}</Text>
+                            <Text style={{ fontSize: 15 }}></Text>
+                            <Text style={{ fontSize: 10, marginLeft: 10, marginTop: 5, color: 'blue', fontWeight: 'bold' }}>{valueOfCreditCard.pay_type_card}</Text>
                         </Row>
 
                         <Row>
@@ -644,15 +693,12 @@ class PaymentPage extends Component {
                                         maxLength={3}
                                         keyboardType={'numeric'}
                                         secureTextEntry={true}
-                                        value={cardPaymentDetails ? cardPaymentDetails.cvv : ''}
+                                        value={this.state[valueOfCreditCard.card_id + '-savedCardCVV']}
                                         onChangeText={(text) => {
-                                            var cardPaymentDetails = { ...this.state.cardPaymentDetails }
-                                            cardPaymentDetails.cvv = text;
-                                            this.setState({ cardPaymentDetails })
+                                           this.setState({ [valueOfCreditCard.card_id + '-savedCardCVV'] : text })
                                         }}
                                         style={{ borderColor: '#000', borderWidth: 1, height: 30, paddingTop: 6, paddingBottom: 6, borderRadius: 5 }} />
-
-                                </Form>
+                            </Form>
                             </View>
                             <Icon style={{ fontSize: 20, marginTop: 5 }} name="ios-information-circle-outline" />
                         </Row>

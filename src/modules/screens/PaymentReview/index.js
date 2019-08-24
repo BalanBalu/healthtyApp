@@ -15,7 +15,7 @@ import { ScrollView } from 'react-native-gesture-handler';
 
 
 
-class PaymentReview extends Component {
+export default class PaymentReview extends Component {
     constructor(props) {
         super(props)
 
@@ -37,6 +37,11 @@ class PaymentReview extends Component {
         const bookSlotDetails = navigation.getParam('resultconfirmSlotDetails');
         await this.setState({ bookSlotDetails: bookSlotDetails });
     }
+    confirmProceedPayment() {
+        const amount = this.state.bookSlotDetails.slotData.fee;
+        this.props.navigation.navigate('paymentPage', {service_type : 'APPOINTMENT', bookSlotDetails: this.state.bookSlotDetails, amount: amount })
+    }
+
     confirmPayLater = async () => {
         try {
             this.setState({ isLoading: true })
@@ -82,7 +87,9 @@ class PaymentReview extends Component {
         }
     }
 
-    async updatePaymentDetails(isSuccess, data, modeOfPayment) {
+   async updatePaymentDetails(isSuccess, data, modeOfPayment) {
+
+
         try {
             console.log('is it comign ?')
             this.setState({ isLoading: true });
@@ -218,32 +225,8 @@ class PaymentReview extends Component {
                         <Button block success style={{ borderRadius: 6, margin: 6 }} onPress={() => this.updatePaymentDetails(true, {}, 'cash')}>
                             <Text uppercase={false}>payLater</Text>
                         </Button>
-                        <Button block success style={{ padding: 10, borderRadius: 6, margin: 6, marginBottom: 20 }} onPress={() => {
-                            var options = {
-                                description: 'Pay for your Health',
-                                image: 'https://png.pngtree.com/svg/20170309/c730f2b69f.svg',
-                                currency: 'INR',
-                                key: 'rzp_test_1DP5mmOlF5G5ag',
-                                amount: '5000',
-                                name: 'Sathish Krishnan',
-                                prefill: {
-                                    email: 'sathishkrish20@razorpay.com',
-                                    contact: '919164932823',
-                                    name: 'Sathish Krishnan',
-                                },
-                                theme: { color: '#775DA3' }
-                            }
-                            RazorpayCheckout.open(options).then((data) => {
-                                console.log(data);
-                                this.updatePaymentDetails(true, data, 'razor');
-                                // alert(`Success: ${data.razorpay_payment_id}`);
-                            }).catch((error) => {
-                                // handle failure
-                                this.updatePaymentDetails(false, error, 'razor');
-                                console.log(error);
-                                //alert(`Error: ${error.code} | ${error.description}`);
-                            });
-                        }}>
+                        <Button block success style={{ padding: 10, borderRadius: 6, margin: 6, marginBottom: 20 }} onPress={() => 
+                            this.confirmProceedPayment()}>
                             <Text uppercase={false} >Pay Now</Text>
                         </Button>
                     </ScrollView>
@@ -256,7 +239,7 @@ class PaymentReview extends Component {
 
 }
 
-export default PaymentReview
+
 
 
 const styles = StyleSheet.create({
