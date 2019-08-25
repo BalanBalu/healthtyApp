@@ -189,7 +189,7 @@ class Home extends Component {
                                 >
                                     <Text style={{ padding: 10 }}>{item.value}</Text>
                                     <Right>
-                                        <Text uppercase={true} style={{ color: 'gray', padding: 10, marginRight: 10, fontSize: 12, fontFamily: 'Sarpanch-Bold' }}>{item.name}</Text>
+                                        <Text uppercase={true} style={{ color: 'gray', padding: 10, marginRight: 10, fontSize: 12, fontFamily: 'OpenSans-Bold' }}>{item.name}</Text>
                                     </Right>
                                 </Row>
                             )}
