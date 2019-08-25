@@ -17,7 +17,7 @@ class CancelAppointment extends Component {
       appointmentId: '',
       statusUpdateReason: '',
       isLoading: false,
-      radioStatus: [true, false, false, false, false],
+      radioStatus: [false, false, false, false, false],
 
     }
 
@@ -57,6 +57,10 @@ class CancelAppointment extends Component {
         let userId = await AsyncStorage.getItem('userId');
         let result = await appointmentStatusUpdate(this.state.doctorId, this.state.appointmentId, requestData);
         if (result.success) {
+           Toast.show({
+            text: 'Your appointment has been cancelled',
+            duration: 3000
+          })
           let temp = this.state.data;
           temp.appointment_status = result.appointmentData.appointment_status;
           temp.status_update_reason = result.appointmentData.status_update_reason;
@@ -71,12 +75,14 @@ class CancelAppointment extends Component {
           })
         }
       }
-      this.setState({ isLoading: false });
-
+     
     }
     catch (e) {
       console.log(e);
     }
+    finally {
+      this.setState({ isLoading: false });
+  }
   }
 
   render() {
