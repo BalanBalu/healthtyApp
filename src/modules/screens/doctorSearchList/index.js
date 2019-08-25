@@ -9,7 +9,7 @@ import StarRating from 'react-native-star-rating';
 import { ScrollView } from 'react-native-gesture-handler';
 import Modal from "react-native-modal";
 import { insertDoctorsWishList, searchDoctorList, fetchAvailabilitySlots, getMultipleDoctorDetails, getDoctorsReviewsCount, getPatientWishList } from '../../providers/bookappointment/bookappointment.action';
-import { formatDate, addMoment, addTimeUnit, getMoment,addDate,dateDiff, findArrayObj } from '../../../setup/helpers';
+import { formatDate, addMoment, addTimeUnit, getMoment,addDate,dateDiff, findArrayObj, intersection } from '../../../setup/helpers';
 import { Loader } from '../../../components/ContentLoader';
 import { RenderHospitalAddress } from '../../common';
 import { NavigationEvents } from 'react-navigation';
@@ -23,6 +23,7 @@ class doctorSearchList extends Component {
     processedDoctorIds = [];
     processedDoctorData = [];
     processedDoctorAvailabilityDates = [];
+    doctorSpecialitesMap = new Map();
     constructor(props) {
         super(props)
         conditionFromFilterPage = null,  // for check FilterPage Values
@@ -83,10 +84,97 @@ class doctorSearchList extends Component {
 
     renderDoctorListByFilteredData = async (filterData, availtyDateCount) => {
         console.log('filterData' + JSON.stringify(filterData))
-        let availableDateSlotsDocArray = [];
+        let genderPreferenceMatchedList = [];
+        let languageMatchedList = [];
+        let categoryMatchedList = [];
+        let servicesMatchedList = [];
+        let experienceMatchedList = [];
+
+       
+        this.state.doctorData.forEach((doctorElement) => {
+            let experience;
+
+            console.log(doctorElement);
+
+            filterData.forEach((filterElement) => {
+                if (filterElement.value) {
+                    if(filterElement.type === 'gender_preference') {
+                        if (doctorElement.gender_preference.includes(filterElement.value)) {
+                            genderPreferenceMatchedList.push(doctorElement.doctor_id);
+                        }
+                    }
+
+                    if(filterElement.type == 'language' ) {
+                        doctorElement.language.forEach((docLanguage) => {
+                            filterElement.value.forEach((filLanguage) => {
+                                if (docLanguage.includes(filLanguage)) {
+                                    languageMatchedList.push(doctorElement.doctor_id)
+                                }
+                            })
+                        })     
+                    }
+
+                    if(filterElement.type === 'experience') {
+                        if(doctorElement.experience) {
+                           let updatedDate = moment(doctorElement.experience.updated_date);
+                           let doctorExperienceMonth = dateDiff(updatedDate, moment(new Date()), 'months');
+                           let filterValueExperienceInMonth = filterElement.value * 12; // value is returning as year to convert to months multiplies by 12 
+                           if(filterValueExperienceInMonth >= doctorExperienceMonth) {
+                                experienceMatchedList.push(doctorElement.doctor_id);
+                           }
+                        }
+                    }
+
+                    
+                    if(filterElement.type === 'category') {
+                       let specialistArray = doctorElement.specialist ? doctorElement.specialist : [];
+                       specialistArray.forEach((docSpecialist) => {
+                        if (docSpecialist.category === filterElement.value) {
+                            categoryMatchedList.push(doctorElement.doctor_id)
+                        }
+                      })
+                    }
+
+                  if(filterElement.type === 'service') {
+                    let specialistArray = doctorElement.specialist ? doctorElement.specialist : [];
+                    specialistArray.forEach((docSpecialist) => {
+                        if(filterElement.value.includes(docSpecialist.service)) {
+                            servicesMatchedList.push(doctorElement.doctor_id)
+                        }     
+                    })
+                  }
+                }
+              })
+           });           
+           let selectedFiltesArray = [];
+           console.log("Gender Preference Match list :" +genderPreferenceMatchedList);
+          filterData.forEach((filterElement) => {
+            if (filterElement.value) {
+                if(filterElement.type === 'gender_preference') {
+                    selectedFiltesArray.push(genderPreferenceMatchedList); 
+                }
+                if(filterElement.type === 'language') {
+                    selectedFiltesArray.push(languageMatchedList); 
+                }
+                if(filterElement.type === 'category') {
+                    selectedFiltesArray.push(categoryMatchedList); 
+                }
+                if(filterElement.type === 'service') {
+                    selectedFiltesArray.push(servicesMatchedList); 
+                }
+            }    
+          });
+          console.log(selectedFiltesArray);
+          let filteredDocListArray = intersection(selectedFiltesArray);
+          console.log(filteredDocListArray);
+          await this.setState({ uniqueFilteredDocArray: filteredDocListArray })
+        //console.log(JSON.stringify(this.state.doctorDetails));
+       /* let availableDateSlotsDocArray = [];
         if (availtyDateCount !== 0) {
 
             this.state.doctorDetails.forEach((docDetailElement) => {
+                
+                
                 for (i = 0; i < availtyDateCount; i++) {
                     let sampleDateArray = formatDate(addTimeUnit(this.state.selectedDate, i, 'days'), "YYYY-MM-DD");
                     if (docDetailElement.slotData[sampleDateArray]) {
@@ -94,20 +182,22 @@ class doctorSearchList extends Component {
                     }
                 }
             })
-        }
+        } */
         // console.log('availableDateSlotsDocArray' + JSON.stringify(availableDateSlotsDocArray))
 
-        let filteredDocListArray = [];
+  /*      let filteredDocListArray = [];
         // console.log('this.state.doctorData'+JSON.stringify(this.state.doctorData))
         this.state.doctorData.forEach((doctorElement) => {
             let experience;
 
             filterData.forEach((filterElement) => {
                 if (filterElement.value) {
+                  if(filterElement.type ==='gender_preference'){  "M" --> doctor1 
                     if (doctorElement.gender_preference.includes(filterElement.value)) {
                         filteredDocListArray.push(doctorElement.doctor_id)
                     }
-                    if(filterElement.type ==='experience'){
+                  }
+                    if(filterElement.type ==='experience') {  10 --> doctor2 
 
                         let updatedDate = moment(doctorElement.experience.updated_date);
                         let experienceInYear = dateDiff(updatedDate, this.state.selectedDate, 'year');
@@ -120,9 +210,8 @@ class doctorSearchList extends Component {
                           experience++;
                         }
                       
-experience >= filterElement.value ? 
-    filteredDocListArray.push(doctorElement.doctor_id):null
-
+                    experience >= filterElement.value ? 
+                       filteredDocListArray.push(doctorElement.doctor_id):null
                     }
                   
                     filterElement.type == 'language' ? 
@@ -134,7 +223,7 @@ experience >= filterElement.value ?
                             })
                     }) :null
                 
-                filterElement.type ==='category' || 'service' ?
+                filterElement.type ==='category' || 'service' ? --> doctor 2
                     doctorElement.specialist.forEach((docSpecialist) => {
 
                         if (docSpecialist.category.includes(filterElement.value)) {
@@ -186,7 +275,7 @@ experience >= filterElement.value ?
                     // console.log('this.state.uniqueFilteredDocArray' + JSON.stringify(this.state.uniqueFilteredDocArray))
                 
             }
-        }
+        } */
     }
     /* Insert Doctors Favourite Lists  */
     addToWishList = async (doctorId, index) => {
@@ -258,8 +347,8 @@ experience >= filterElement.value ?
     async getDoctorAllDetails(doctorIds, startDate, endDate) {
         try {
             this.setState({ isLoading: true });
-
-            this.getAvailabilitySlots(doctorIds, startDate, endDate).catch(res => console.log("Exception on getAvailabilitySlots" + res));
+            await this.getAvailabilitySlots(doctorIds, startDate, endDate).catch(res => console.log("Exception" + res));
+           
             this.getDoctorDetails(doctorIds).catch(res => console.log("Exception on  getDoctorDetails: " + res));
             this.getPatientReviews(doctorIds).catch(res => console.log("Exception on getPatientReviews" + res));
 
@@ -269,6 +358,27 @@ experience >= filterElement.value ?
             console.log(error)
         } finally {
             this.setState({ isLoading: false });
+        }
+    }
+
+     /*Get doctor specialist and Degree details*/
+   
+     getDoctorDetails = async (doctorIds) => {
+        try {
+            let uniqueFilteredDocArray = [];
+            let fields = "specialist,education,language,gender_preference,experience";
+            let resultDoctorDetails = await getMultipleDoctorDetails(doctorIds, fields);
+            if (resultDoctorDetails.success) {
+                resultDoctorDetails.data.forEach((element) => {
+                    uniqueFilteredDocArray.push(element.doctor_id)
+                    this.doctorSpecialitesMap.set(element.doctor_id, element) // total_rating
+                })
+                await this.setState({ doctorData: resultDoctorDetails.data });
+                await this.setState({ uniqueFilteredDocArray: uniqueFilteredDocArray })
+            }
+        } catch (ex) {
+            console.log(ex);
+            console.log('Exception occured on getMultplieDocDetail')
         }
     }
 
@@ -282,26 +392,26 @@ experience >= filterElement.value ?
             }
             let resultData = await fetchAvailabilitySlots(getSearchedDoctorIds, totalSlotsInWeek);
             if (resultData.success) {
-
-                debugger
+                console.log(resultData.data);
+              
                 for (let docCount = 0; docCount < resultData.data.length; docCount++) {
                     let doctorSlotData = resultData.data[docCount];
-                    if (this.processedDoctorIds.includes(doctorSlotData.doctorId)) {
-                        let index = this.processedDoctorIds.indexOf(doctorSlotData.doctorId);
+                    if (this.processedDoctorIds.includes(doctorSlotData.doctorIdHostpitalId)) { // condition to append another week conditions
+                        let index = this.processedDoctorIds.indexOf(doctorSlotData.doctorIdHostpitalId);
                         //let processedSlotData = this.processedDoctorData[index].slotData;
                         for (var key in doctorSlotData.slotData) {
-                            if (this.processedDoctorData[index].slotData[key] === undefined)
+                            if (this.processedDoctorData[index].slotData[key] === undefined) {
                                 this.processedDoctorData[index].slotData[key] = doctorSlotData.slotData[key]
+                            }
                         }
                     } else {
                         this.processedDoctorData.push(doctorSlotData);
-                        this.processedDoctorIds.push(doctorSlotData.doctorId);
+                        this.processedDoctorIds.push(doctorSlotData.doctorIdHostpitalId);
                     }
                 }
                 this.setState({ doctorDetails: this.processedDoctorData });
-                // console.log('doctorDetails'+JSON.stringify(this.state.doctorDetails));
                 this.enumarateDates(startDate, endDate)
-                // console.log(this.processedDoctorData);
+                
             }
         } catch (e) {
             this.setState({ doctorDetails: [] });
@@ -389,29 +499,7 @@ experience >= filterElement.value ?
         }
     }
 
-    /*Get doctor specialist and Degree details*/
-    doctorSpecialitesMap = new Map();
-    getDoctorDetails = async (doctorIds) => {
-        try {
-            let uniqueFilteredDocArray = [];
-            let fields = "specialist,education,language,gender_preference,experience";
-            let resultDoctorDetails = await getMultipleDoctorDetails(doctorIds, fields);
-            if (resultDoctorDetails.success) {
-                await this.setState({ doctorData: resultDoctorDetails.data });
-                this.state.doctorData.forEach((element) => {
-                    uniqueFilteredDocArray.push(element.doctor_id)
-                })
-
-                await this.setState({ uniqueFilteredDocArray: uniqueFilteredDocArray })
-                // console.log('doctorData uniqueFilteredDocArray' + JSON.stringify(this.state.uniqueFilteredDocArray));
-                for (i = 0; i < resultDoctorDetails.data.length; i++) {
-                    this.doctorSpecialitesMap.set(resultDoctorDetails.data[i].doctor_id, resultDoctorDetails.data[i]) // total_rating
-                }
-            }
-        } catch (ex) {
-            console.log('Exception occured on getMultplieDocDetail')
-        }
-    }
+   
     getDoctorSpecialist(doctorId) {
         if (this.doctorSpecialitesMap.has(doctorId)) {
             if (this.doctorSpecialitesMap.get(doctorId).specialist) {

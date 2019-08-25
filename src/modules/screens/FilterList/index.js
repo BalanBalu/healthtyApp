@@ -144,8 +144,8 @@ else{
                 <Content style={{ padding: 5 }}>
                     <ScrollView>
                 <NavigationEvents
-      onWillFocus={payload => {this.componentDidMount() }}
-      />
+                    onWillFocus={payload => {this.componentDidMount() }}
+                />
                     {/* first card */}
 
                     <Card style={{ padding: 10, borderRadius: 10, width: 'auto' }}>
