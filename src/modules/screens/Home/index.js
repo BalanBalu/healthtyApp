@@ -293,7 +293,7 @@ class Home extends Component {
                         colors={['#F58949', '#E0C084']}
                         style={{ borderRadius: 10, padding: 10, borderBottomWidth: 0, fontFamily: 'OpenSans', marginTop: 10, marginBottom: 10 }} >
                         <Grid>
-                            <Row onPress={() => this.props.navigation.navigate("MedicineList")}>
+                            <Row onPress={() => this.props.navigation.navigate("Pharmacy")}>
                                 <Col style={{ width: '75%' }}>
                                     <Text style={{ fontFamily: 'OpenSans', color: 'white', marginTop: 10, fontSize: 17 }}>Online Pharmacy Services</Text>
                                 </Col>

@@ -50,7 +50,7 @@ class PaymentSuccess extends Component {
                                     <Body>
                                         {
                                             successBookSlotDetails.profile_image != undefined
-                                                ? <Thumbnail square source={successBookSlotDetails.profile_image.imageURL} style={{ height: 60, width: 60 }} />
+                                                ? <Thumbnail square source={{uri : successBookSlotDetails.profile_image.imageURL}} style={{ height: 60, width: 60 }} />
                                                 : <Thumbnail square source={{ uri: 'https://res.cloudinary.com/demo/image/upload/w_200,h_200,c_thumb,g_face,r_max/face_left.png' }} style={{ height: 80, width: 80 }} />
                                         }
                                     </Body>
