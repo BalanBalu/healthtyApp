@@ -90,7 +90,7 @@ class doctorSearchList extends Component {
         let categoryMatchedList = [];
         let servicesMatchedList = [];
         let experienceMatchedList = [];
-
+        let availabilityMatchedList = [];
        
         this.state.doctorData.forEach((doctorElement) => {
             let doctorIdHostpitalId = doctorElement.doctorIdHostpitalId
@@ -144,10 +144,23 @@ class doctorSearchList extends Component {
                   }
                 }
               })
-           });           
+           });  
            let selectedFiltesArray = [];
-           console.log("Gender Preference Match list :" +genderPreferenceMatchedList);
-          filterData.forEach((filterElement) => {
+          
+           if (availtyDateCount !== 0) {
+               this.state.doctorDetails.forEach((slotDetailElement) => {
+                  for (i = 0; i < availtyDateCount; i++) {
+                    let availabilityDate = formatDate(addTimeUnit(this.state.selectedDate, i, 'days'), "YYYY-MM-DD");
+                    if (slotDetailElement.slotData[availabilityDate]) {
+                        availabilityMatchedList.push(slotDetailElement.doctorIdHostpitalId)
+                    }
+                  }
+                });
+                selectedFiltesArray.push(availabilityMatchedList);
+           } 
+          
+          
+           filterData.forEach((filterElement) => {
             if (filterElement.value) {
                 if(filterElement.type === 'gender_preference') {
                     selectedFiltesArray.push(genderPreferenceMatchedList); 
@@ -163,10 +176,12 @@ class doctorSearchList extends Component {
                 }
             }    
           });
-          console.log(selectedFiltesArray);
-          let filteredDocListArray = intersection(selectedFiltesArray);
-          console.log(filteredDocListArray);
-          await this.setState({ uniqueFilteredDocArray: filteredDocListArray })
+         if(filterData.length !== 0 ) { 
+            console.log(selectedFiltesArray);
+            let filteredDocListArray = intersection(selectedFiltesArray);
+            console.log(filteredDocListArray);
+            await this.setState({ uniqueFilteredDocArray: filteredDocListArray })
+        }
         //console.log(JSON.stringify(this.state.doctorDetails));
        /* let availableDateSlotsDocArray = [];
         if (availtyDateCount !== 0) {
