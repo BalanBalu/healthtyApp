@@ -19,7 +19,7 @@ export default class Filters extends Component {
             serviceList: [],
             selectedCategory: '',
             selectedService: [],
-            language: '',
+            language: [],
             genderIndex: 0,
             selectAvailabilityIndex: 0,
             selectExperinceIndex:'',
@@ -111,8 +111,11 @@ else{
 
         let finalFilArray=[];
         filterData.forEach((filElement)=>{
-          if (filElement.value!==''){
-            finalFilArray.push(filElement)
+            if(filElement.type === 'language' &&filElement.value.length !=0 ){
+                    finalFilArray.push(filElement) 
+            }
+         else if (filElement.value!=='' && filElement.type !='language' ){
+            finalFilArray.push(filElement) 
           }
         })
         console.log('finalFilArray' + JSON.stringify(finalFilArray));
@@ -141,8 +144,8 @@ else{
                 <Content style={{ padding: 5 }}>
                     <ScrollView>
                 <NavigationEvents
-      onWillFocus={payload => {this.componentDidMount() }}
-      />
+                    onWillFocus={payload => {this.componentDidMount() }}
+                />
                     {/* first card */}
 
                     <Card style={{ padding: 10, borderRadius: 10, width: 'auto' }}>

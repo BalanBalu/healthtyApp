@@ -58,6 +58,7 @@ class MyAppoinmentList extends Component {
 			speciallist: [],
 			loading: true,
 			isRefreshing: false,
+			isNavigation:true
 
 		};
 	}
@@ -74,30 +75,30 @@ class MyAppoinmentList extends Component {
 			this.upCommingAppointment(),
 			this.pastAppointment()
 		])
-		await this.setState({ isLoading: true })
+		await this.setState({ isLoading: true,isNavigation:false })
 
 	}
 
 	backNavigation = async (navigationData) => {
-		
-		if (navigationData.action) {
-			console.log('back navigation work')
-			await this.setState({ isLoading: false })
+		if(!this.state.isNavigation){
+			if (navigationData.action) {
+				console.log('back navigation work')
+				await this.setState({ isLoading: false })
 
-			if (navigationData.action.type === 'Navigation/BACK' || navigationData.action.type === 'Navigation/POP') {
-								if (this.state.selectedIndex == 0) {
+				if (navigationData.action.type === 'Navigation/BACK' || navigationData.action.type === 'Navigation/NAVIGATE') {
+					if (this.state.selectedIndex == 0) {
 
 
-					await this.upCommingAppointment();
-					await this.setState({ isLoading: true })
+						await this.upCommingAppointment();
+						await this.setState({ isLoading: true })
 
-				} else {
-					await this.pastAppointment();
-					await this.setState({ isLoading: true, data:this.state.pastData })
-				}
+					} else {
+						await this.pastAppointment();
+						await this.setState({ isLoading: true, data: this.state.pastData })
+					}
 				
+				}
 			}
-			
 						
 		}
 
@@ -327,7 +328,10 @@ class MyAppoinmentList extends Component {
 									No appoinments are scheduled
 								</Text>
 								<Item style={{ marginTop: "15%", borderBottomWidth: 0 }}>
-									<Button style={[styles.bookingButton, styles.customButton]}>
+									<Button style={[styles.bookingButton, styles.customButton]}
+										onPress={() =>
+											this.props.navigation.navigate("Home", { fromAppointment: true })
+										}>
 										<Text>Book Now</Text>
 									</Button>
 								</Item>
