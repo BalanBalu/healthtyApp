@@ -9,7 +9,7 @@ import { getAvailableNetBanking, getAvailableWallet, luhnCheck, getPayCardType }
 import { bookAppointment, createPaymentRazor } from '../../providers/bookappointment/bookappointment.action';
 import { putService , getService} from '../../../setup/services/httpservices';
 import Razorpay from '../../../components/Razorpay';
-import { RAZOR_KEY } from '../../../setup/config';
+import { RAZOR_KEY , BASIC_DEFAULT} from '../../../setup/config';
 import { updatePaymentDetails } from '../PaymentReview'
 import BookAppointmentPaymentUpdate from '../../providers/bookappointment/bookAppointment';
 import { TouchableOpacity } from 'react-native-gesture-handler';
@@ -18,6 +18,7 @@ class PaymentPage extends Component {
     availableNetBankingData = [];
     availableWallets = [];
     userId = null;
+    userBasicData = null;
     constructor(props) {
         super(props)
         this.state = {
@@ -58,8 +59,15 @@ class PaymentPage extends Component {
         this.availableNetBankingData = getAvailableNetBanking();
         this.availableWallets = getAvailableWallet();
         this.getSavedCards() 
-       
-       
+        let userBasicData = await AsyncStorage.getItem('basicProfileData')
+        
+        if(userBasicData !== null) {
+           this.userBasicData = JSON.parse(userBasicData);
+           this.userBasicData.email ? this.userBasicData.email : BASIC_DEFAULT.email 
+           this.userBasicData.mobile_no ? this.userBasicData.mobile_no : BASIC_DEFAULT.mobile_no 
+        } else {
+            this.userBasicData = BASIC_DEFAULT
+        }
     }
    
     async getSavedCards() {
@@ -82,8 +90,6 @@ class PaymentPage extends Component {
             });
             console.log(this.state);
             data = {
-               
-
                 method: 'card',
                 'card[name]': selectedSavedCardArr[0].card_holder_name ? selectedSavedCardArr[0].card_holder_name : 'default', 
                 'card[number]': selectedSavedCardArr[0].card_number,
@@ -147,14 +153,14 @@ class PaymentPage extends Component {
     }
 
     razorpayChekout(paymentMethodData) {
-
+        
         const options = {
             description: 'Pay for your Health',
             currency: 'INR',
             key_id: RAZOR_KEY,
-            amount: this.state.amount,
-            email: 'gaurav.kumar@example.com',
-            contact: '9123456780',
+            amount: this.state.amount * 100, // here the value is consider as paise so, we have to multiply to 100 
+            email: this.userBasicData.email,
+            contact: this.userBasicData.mobile_no,
             ...paymentMethodData
         }
         console.log(options);
@@ -247,13 +253,14 @@ class PaymentPage extends Component {
     }
     
     onSelectedItemsChange = (selectedItems) => {
+        console.log(selectedItems)
         // this.setState({ selectedItems: [ selectedItems[selectedItems.length - 1] ] });
-        this.setState({ selectedItems: selectedItems });
+        this.setState({ selectedItems: selectedItems, selectedNetBank : selectedItems[0] });
     };
 
     render() {
 
-        const { cardPaymentDetails, paymentOption, checked, savedCards } = this.state;
+        const { savedCards } = this.state;
         return (
             <Container style={styles.container}>
                 <Content style={styles.bodyContent}>
@@ -262,33 +269,13 @@ class PaymentPage extends Component {
                             <Text style={{ fontSize: 20, fontFamily: 'OpenSans', fontWeight: 'bold', }}>Select Options To Pay</Text>
                         </Col>
                         <Col style={{ width: '50%' }}>
-                            <Text style={{ marginLeft: 40, fontSize: 20, fontFamily: 'OpenSans', fontWeight: 'bold' }}>{'  '}{'\u20B9'}1000</Text>
+                            <Text style={{ marginLeft: 40, fontSize: 20, fontFamily: 'OpenSans', fontWeight: 'bold' }}>{'  '}{'\u20B9'}{this.state.amount}</Text>
                         </Col>
                     </Row>
-                    <Row>
-                        <Text style={{ fontSize: 15, fontFamily: 'OpenSans', color: 'gray', marginTop: 40, marginLeft: 15 }}>SAVED CARDS</Text>
-                    </Row>
 
-                    <RadioButton.Group
-                        onValueChange={value => this.setState({ selectedSavedCardId: value, paymentOption: null })}
-                        value={this.state.selectedSavedCardId}>
-                        <Grid>
-                            <View style={{ marginTop: 10, justifyContent: 'center' }}>
-                                {savedCards.map(element => {
-                                    return this.renderSavedCards(element)
-                                })}
-                            </View>
-                        </Grid>
-                    </RadioButton.Group>
-
-
-                    <Row style={{ marginBottom: 10, marginLeft: 15, marginRight: 15, marginTop: 10 }}>
-                        <Text style={{ fontSize: 15, fontFamily: 'OpenSans', color: 'gray', marginTop: 10, }}>PAYMENT OPTIONS</Text>
-                    </Row>
                     <Row style={{ borderBottomColor: '#000', borderBottomWidth: 0.6, backgroundColor: '#fff', padding: 15, marginLeft: 10, marginRight: 10 }}>
-                            <RadioButton selected={true}/>
                             <Text style={{ marginTop: 8, fontFamily: 'OpenSans', fontSize: 15 }}>Apply Coupons</Text>
-                        </Row>
+                    </Row>
                     <View style={{ backgroundColor: '#fff', marginLeft: 10, marginRight: 10, borderBottomColor: '#000', borderBottomWidth: 0.6 }}>
                     <View style={{ borderColor: '#000', borderWidth: 1, backgroundColor: '#f2f2f2', borderRadius: 5, marginLeft: 10, marginRight: 10, marginTop: 10, marginBottom: 10 }}>
                         <View style={{ marginTop: 10, marginBottom: 10 }}>
@@ -311,6 +298,28 @@ class PaymentPage extends Component {
                             </View>
                             </View>
                             </View>
+                   
+                   {savedCards.length !== 0 ? <Row>
+                        <Text style={{ fontSize: 15, fontFamily: 'OpenSans', color: 'gray', marginTop: 40, marginLeft: 15 }}>SAVED CARDS</Text>
+                    </Row> : null }
+
+                    <RadioButton.Group
+                        onValueChange={value => this.setState({ selectedSavedCardId: value, paymentOption: null })}
+                        value={this.state.selectedSavedCardId}>
+                        <Grid>
+                            <View style={{ marginTop: 10, justifyContent: 'center' }}>
+                                {savedCards.map(element => {
+                                    return this.renderSavedCards(element)
+                                })}
+                            </View>
+                        </Grid>
+                    </RadioButton.Group>
+
+
+                    <Row style={{ marginBottom: 10, marginLeft: 15, marginRight: 15, marginTop: 10 }}>
+                        <Text style={{ fontSize: 15, fontFamily: 'OpenSans', color: 'gray', marginTop: 10, }}>PAYMENT OPTIONS</Text>
+                    </Row>
+                    
 
 
                     <RadioButton.Group
@@ -479,6 +488,7 @@ class PaymentPage extends Component {
     }
 
     renderNetBanking() {
+        const { selectedNetBank } = this.state;
         return (
             <Content>
                 <View style={{ backgroundColor: '#fff', marginLeft: 10, marginRight: 10, borderBottomColor: '#000', borderBottomWidth: 0.6 }}>
@@ -487,15 +497,15 @@ class PaymentPage extends Component {
                             <Grid style={{ marginRight: 10, marginLeft: 10 }}>
                                 <Row>
 
-                                    <Col style={{ width: '50%', alignItems: 'center',justifyContent:'center'}} onPress={() => this.setState({ selectedNetBank: 'SBIN' })}>
-<TouchableOpacity style={{padding:15}}>
+                                    <Col style={{ width: '50%', alignItems: 'center',justifyContent:'center'}} onPress={() => this.setState({ selectedNetBank: 'SBIN', selectedItems:[] })}>
+                                      <TouchableOpacity style={selectedNetBank === 'SBIN' ? {borderColor:'red',borderWidth:1,padding:15} : {padding:15} }>
                                         <Image source={require('../../../../assets/images/statebank.png')} style={{ width: 50, height: 50, }} />
                                         <Text style={{ fontSize: 15, fontFamily: 'OpenSans', marginTop: 5, textAlign: 'center' }}>State Bank</Text>
-                                        </TouchableOpacity> 
+                                      </TouchableOpacity> 
                                     </Col>
 
-                                    <Col style={{ width: '50%', alignItems: 'center' }} onPress={() => this.setState({ selectedNetBank: 'UTIB' })}>
-                                    <TouchableOpacity style={{padding:15}}>
+                                    <Col style={{ width: '50%', alignItems: 'center' }} onPress={() => this.setState({ selectedNetBank: 'UTIB', selectedItems:[] })}>
+                                    <TouchableOpacity style={selectedNetBank === 'UTIB' ? {borderColor:'red',borderWidth:1,padding:15} : {padding:15} }>
 
                                         <Image source={require('../../../../assets/images/Axisbank.jpg')} style={{ width: 50, height: 50, }} />
                                         <Text style={{ fontSize: 15, fontFamily: 'OpenSans', marginTop: 5, textAlign: 'center' }}>Axis Bank</Text>
@@ -505,27 +515,25 @@ class PaymentPage extends Component {
                                 </Row>
                                 <Row style={{ marginTop: 10 }}>
                                    <Col style={{ width: '50%', alignItems: 'center' }}
-                                        onPress={() => this.setState({ selectedNetBank: 'ICIC' })}>
-                                       <TouchableOpacity style={{padding:15}}>
+                                        onPress={() => this.setState({ selectedNetBank: 'ICIC', selectedItems:[] })}>
+                                       <TouchableOpacity style={selectedNetBank === 'ICIC' ? {borderColor:'red',borderWidth:1,padding:15}: { padding:15 } }>
 
                                         <Image source={require('../../../../assets/images/ICICI.jpg')} style={{ width: 50, height: 50, }}/>
                                         <Text style={{ fontSize: 15, fontFamily: 'OpenSans', marginTop: 5, textAlign: 'center' }}>ICICI Bank</Text>
                                     </TouchableOpacity>
                                     </Col>
                                     <Col style={{ width: '50%', alignItems: 'center' }}
-                                         onPress={() => this.setState({ selectedNetBank: 'HDFC' })}>
-                                       <TouchableOpacity style={{padding:15}}>
-
-                                        <Image source={require('../../../../assets/images/HDFCbank.png')} style={{ width: 50, height: 50, }} />
-                                        <Text style={{ fontSize: 15, fontFamily: 'OpenSans', marginTop: 5, textAlign: 'center' }}>HDFC Bank</Text>
+                                         onPress={() => this.setState({ selectedNetBank: 'HDFC', selectedItems: [] })}>
+                                       <TouchableOpacity style={selectedNetBank === 'HDFC' ?  {borderColor:'red',borderWidth:1,padding:15} : {padding:15}}>
+                                          <Image source={require('../../../../assets/images/HDFCbank.png')} style={{ width: 50, height: 50, }} />
+                                          <Text style={{ fontSize: 15, fontFamily: 'OpenSans', marginTop: 5, textAlign: 'center' }}>HDFC Bank</Text>
                                     </TouchableOpacity>
                                     </Col>
                                 </Row>
                                 <Row style={{ marginTop: 10 }}>
                                     <Col style={{ width: '50%', alignItems: 'center' }}
-                                         onPress={() => this.setState({ selectedNetBank: 'IDIB' })}>
-                                      <TouchableOpacity style={{borderColor:'red',borderWidth:1,padding:15}}>
-
+                                         onPress={() => this.setState({ selectedNetBank: 'IDIB', selectedItems: [] })}>
+                                      <TouchableOpacity style={selectedNetBank === 'IDIB' ? {borderColor:'red',borderWidth:1,padding:15} : {padding:15} }>
                                         <Image source={require('../../../../assets/images/Indianbank.png')} style={{ width: 50, height: 50, }} />
                                         <Text style={{ fontSize: 15, fontFamily: 'OpenSans', marginTop: 5, textAlign: 'center' }}>Indian Bank</Text>
                                     </TouchableOpacity>
@@ -596,6 +604,7 @@ class PaymentPage extends Component {
     }
 
     renderWallet() {
+        const { selectedWallet} = this.state;
         return (
             <Content>
                 <View style={{ backgroundColor: '#fff', marginLeft: 10, marginRight: 10, borderBottomColor: '#000', borderBottomWidth: 0.6 }}>
@@ -605,21 +614,27 @@ class PaymentPage extends Component {
                                 <Row >
                                     <Col style={{ width: '50%', alignItems: 'center' }}
                                         onPress={() => this.setState({ selectedWallet: 'olamoney' })}>
-                                        <Image source={require('../../../../assets/images/Ola.jpg')} style={{ width: 50, height: 50, }} />
-                                        <Text style={{ fontSize: 15, fontFamily: 'OpenSans', marginTop: 5, textAlign: 'center' }}>Ola Wallet</Text>
+                                        <TouchableOpacity style={selectedWallet === 'olamoney' ? {borderColor:'red',borderWidth:1,padding:15} : {padding:15} }>
+                                            <Image source={require('../../../../assets/images/Ola.jpg')} style={{ width: 50, height: 50, }} />
+                                            <Text style={{ fontSize: 15, fontFamily: 'OpenSans', marginTop: 5, textAlign: 'center' }}>Ola Wallet</Text>
+                                        </TouchableOpacity>
                                     </Col>
                                     <Col style={{ width: '50%', alignItems: 'center' }}
                                          onPress={() => this.setState({ selectedWallet: 'payzapp' })}>
+                                         <TouchableOpacity style={selectedWallet === 'payzapp' ? {borderColor:'red',borderWidth:1,padding:15} : {padding:15} }>
+                                       
                                         <Image source={require('../../../../assets/images/payzapp.png')} style={{ width: 50, height: 50, }} />
                                         <Text style={{ fontSize: 15, fontFamily: 'OpenSans', marginTop: 5, textAlign: 'center' }}>PayZapp</Text>
+                                        </TouchableOpacity>
                                     </Col>
                                     </Row>
                                     <Row style={{ marginTop: 10, }}>
                                     <Col style={{ width: '55%', alignItems: 'center' }}
                                          onPress={() => this.setState({ selectedWallet: 'freecharge' })}>
-                                        <Image source={require('../../../../assets/images/freecharge.png')} style={{ width: 50, height: 50, }} />
-                                        <Text style={{ fontSize: 15, fontFamily: 'OpenSans', marginTop: 5, textAlign: 'center' }}>FreeCharge</Text>
-
+                                       <TouchableOpacity style={selectedWallet === 'freecharge' ? {borderColor:'red',borderWidth:1,padding:15} : {padding:15} }>
+                                          <Image source={require('../../../../assets/images/freecharge.png')} style={{ width: 50, height: 50, }} />
+                                          <Text style={{ fontSize: 15, fontFamily: 'OpenSans', marginTop: 5, textAlign: 'center' }}>FreeCharge</Text>
+                                       </TouchableOpacity>
                                     </Col>
                                     <Col style={{ width: '50%', alignItems: 'center' }}>
                                       
