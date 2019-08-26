@@ -139,6 +139,7 @@ class Home extends Component {
 
 
     render() {
+        const { fromAppointment } = this.state
         return (
 
             <Container style={styles.container}>
