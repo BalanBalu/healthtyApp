@@ -12,7 +12,7 @@ class MyOrdersList extends Component {
         super(props)
         this.state = {
             cartItems: [],
-            orderList:[],
+            orderList:[],           
             isLoading: true
         }
     }
@@ -21,9 +21,10 @@ class MyOrdersList extends Component {
     }
     async medicineOrderList(){    
         try {
-        //    let userId='5d2420a2731df239784cd001';
+          //let userId='5d2420a2731df239784cd001';
            let userId = await AsyncStorage.getItem('userId');
            let result = await getMedicineOrderList(userId);
+           console.log('result :' + JSON.stringify(result));
            this.setState({  orderList: result.data[0], isLoading:false });
            console.log('orderList' + JSON.stringify(this.state.orderList));
             }
@@ -60,7 +61,7 @@ class MyOrdersList extends Component {
     extraData={this.state}
     keyExtractor={(item, index) => index.toString()}
     renderItem={({ item, index }) =>
-    <TouchableOpacity onPress={()=>this.props.navigation.navigate('PharmacyOrderDetails')}>
+    <TouchableOpacity onPress={()=>this.props.navigation.navigate('OrderDetails')}>
     <Card style={{ marginTop: 10, padding: 5, height: 155, borderRadius: 5 }}>
     <Grid>
       <Row>

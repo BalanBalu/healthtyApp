@@ -51,10 +51,10 @@ export async function getMedicineDetails() {
 
   /* Medicine Order List */
 
-  export async function getMedicineOrderList(user_id) {
+  export async function getMedicineOrderList(userId) {
     try {
       
-      let endPoint = 'ordersDetails/' + user_id + '&fields='+ order_items;
+      let endPoint = 'ordersDetails?userId='+userId;
       console.log(endPoint);
       let response = await getService(endPoint);
       let respData = response.data;
@@ -66,7 +66,6 @@ export async function getMedicineDetails() {
       }
     }
   }
-
 
 
 
