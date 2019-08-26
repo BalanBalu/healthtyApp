@@ -139,7 +139,6 @@ class Home extends Component {
     };
 
     render() {
-
         return (
 
             <Container style={styles.container}>
@@ -151,6 +150,7 @@ class Home extends Component {
                             placeholderTextColor="gray"
                             value={this.state.searchValue}
                             keyboardType={'email-address'}
+                            autoFocus={fromAppointment}
                             // onChangeText={searchValue => this.setState({ searchValue })}
                             onChangeText={enteredText => this.SearchFilterFunction(enteredText)}
                             underlineColorAndroid="transparent"
