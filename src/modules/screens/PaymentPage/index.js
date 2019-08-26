@@ -12,6 +12,7 @@ import Razorpay from '../../../components/Razorpay';
 import { RAZOR_KEY } from '../../../setup/config';
 import { updatePaymentDetails } from '../PaymentReview'
 import BookAppointmentPaymentUpdate from '../../providers/bookappointment/bookAppointment';
+import { TouchableOpacity } from 'react-native-gesture-handler';
 
 class PaymentPage extends Component {
     availableNetBankingData = [];
@@ -284,6 +285,33 @@ class PaymentPage extends Component {
                     <Row style={{ marginBottom: 10, marginLeft: 15, marginRight: 15, marginTop: 10 }}>
                         <Text style={{ fontSize: 15, fontFamily: 'OpenSans', color: 'gray', marginTop: 10, }}>PAYMENT OPTIONS</Text>
                     </Row>
+                    <Row style={{ borderBottomColor: '#000', borderBottomWidth: 0.6, backgroundColor: '#fff', padding: 15, marginLeft: 10, marginRight: 10 }}>
+                            <RadioButton selected={true}/>
+                            <Text style={{ marginTop: 8, fontFamily: 'OpenSans', fontSize: 15 }}>Apply Coupons</Text>
+                        </Row>
+                    <View style={{ backgroundColor: '#fff', marginLeft: 10, marginRight: 10, borderBottomColor: '#000', borderBottomWidth: 0.6 }}>
+                    <View style={{ borderColor: '#000', borderWidth: 1, backgroundColor: '#f2f2f2', borderRadius: 5, marginLeft: 10, marginRight: 10, marginTop: 10, marginBottom: 10 }}>
+                        <View style={{ marginTop: 10, marginBottom: 10 }}>
+                            <Grid style={{ marginRight: 10, marginLeft: 10 }}>
+                                <Col>
+                              
+                                    <Form>
+                                    <Input underlineColorAndroid='gray' placeholder="Enter Your 'Coupon' Code here" style={styles.transparentLabel}
+                                        getRef={(input) => { this.enterCouponCode = input; }}
+                                        secureTextEntry={true}
+                                        returnKeyType={'go'}
+                                        value={this.state.password}
+                                        onChangeText={enterCouponCode => this.setState({ enterCouponCode })}
+                                    />
+                                       
+
+                                    </Form>
+                                </Col>
+                            </Grid>
+                            </View>
+                            </View>
+                            </View>
+
 
                     <RadioButton.Group
                         onValueChange={value => { 
@@ -342,6 +370,8 @@ class PaymentPage extends Component {
                         </Row>
                         {this.state.paymentOption === "WALLET" ? this.renderWallet() : null}
                     </RadioButton.Group>
+                    
+                        
 
                 </Content>
 
@@ -457,38 +487,48 @@ class PaymentPage extends Component {
                             <Grid style={{ marginRight: 10, marginLeft: 10 }}>
                                 <Row>
 
-                                    <Col style={{ width: '50%', alignItems: 'center', }} onPress={() => this.setState({ selectedNetBank: 'SBIN' })}>
-
+                                    <Col style={{ width: '50%', alignItems: 'center',justifyContent:'center'}} onPress={() => this.setState({ selectedNetBank: 'SBIN' })}>
+<TouchableOpacity style={{padding:15}}>
                                         <Image source={require('../../../../assets/images/statebank.png')} style={{ width: 50, height: 50, }} />
                                         <Text style={{ fontSize: 15, fontFamily: 'OpenSans', marginTop: 5, textAlign: 'center' }}>State Bank</Text>
-
+                                        </TouchableOpacity> 
                                     </Col>
 
                                     <Col style={{ width: '50%', alignItems: 'center' }} onPress={() => this.setState({ selectedNetBank: 'UTIB' })}>
+                                    <TouchableOpacity style={{padding:15}}>
+
                                         <Image source={require('../../../../assets/images/Axisbank.jpg')} style={{ width: 50, height: 50, }} />
                                         <Text style={{ fontSize: 15, fontFamily: 'OpenSans', marginTop: 5, textAlign: 'center' }}>Axis Bank</Text>
+                                    </TouchableOpacity>
                                     </Col>
                                     
                                 </Row>
                                 <Row style={{ marginTop: 10 }}>
                                    <Col style={{ width: '50%', alignItems: 'center' }}
                                         onPress={() => this.setState({ selectedNetBank: 'ICIC' })}>
+                                       <TouchableOpacity style={{padding:15}}>
+
                                         <Image source={require('../../../../assets/images/ICICI.jpg')} style={{ width: 50, height: 50, }}/>
                                         <Text style={{ fontSize: 15, fontFamily: 'OpenSans', marginTop: 5, textAlign: 'center' }}>ICICI Bank</Text>
+                                    </TouchableOpacity>
                                     </Col>
                                     <Col style={{ width: '50%', alignItems: 'center' }}
                                          onPress={() => this.setState({ selectedNetBank: 'HDFC' })}>
+                                       <TouchableOpacity style={{padding:15}}>
 
                                         <Image source={require('../../../../assets/images/HDFCbank.png')} style={{ width: 50, height: 50, }} />
                                         <Text style={{ fontSize: 15, fontFamily: 'OpenSans', marginTop: 5, textAlign: 'center' }}>HDFC Bank</Text>
-
+                                    </TouchableOpacity>
                                     </Col>
                                 </Row>
                                 <Row style={{ marginTop: 10 }}>
                                     <Col style={{ width: '50%', alignItems: 'center' }}
                                          onPress={() => this.setState({ selectedNetBank: 'IDIB' })}>
+                                      <TouchableOpacity style={{borderColor:'red',borderWidth:1,padding:15}}>
+
                                         <Image source={require('../../../../assets/images/Indianbank.png')} style={{ width: 50, height: 50, }} />
                                         <Text style={{ fontSize: 15, fontFamily: 'OpenSans', marginTop: 5, textAlign: 'center' }}>Indian Bank</Text>
+                                    </TouchableOpacity>
                                     </Col>
                                     <Col style={{ width: '50%' }}>
 
@@ -709,6 +749,19 @@ const styles = StyleSheet.create({
         margin: 2,
         fontSize: 13
     },
+    transparentLabelCpn:
+    {
+
+        borderBottomColor: 'transparent',
+        backgroundColor: 'gray',
+        height: 45,
+        marginTop: 10,
+        borderRadius: 5,
+        paddingLeft: 35,
+        fontFamily: 'OpenSans',
+        margin: 2,
+        fontSize: 13
+    },
     transparentLabelUpi:
     {
 
@@ -732,4 +785,11 @@ const styles = StyleSheet.create({
         fontSize: 15,
 
     },
+    customizedText:{
+        fontFamily: 'OpenSans',
+        fontSize: 14,
+        color: '#000',
+        marginLeft: 20
+
+    }
 });
