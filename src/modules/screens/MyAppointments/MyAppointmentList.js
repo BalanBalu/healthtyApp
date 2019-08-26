@@ -328,7 +328,10 @@ class MyAppoinmentList extends Component {
 									No appoinments are scheduled
 								</Text>
 								<Item style={{ marginTop: "15%", borderBottomWidth: 0 }}>
-									<Button style={[styles.bookingButton, styles.customButton]}>
+									<Button style={[styles.bookingButton, styles.customButton]}
+										onPress={() =>
+											this.props.navigation.navigate("Home", { fromAppointment: true })
+										}>
 										<Text>Book Now</Text>
 									</Button>
 								</Item>
