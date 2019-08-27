@@ -72,12 +72,19 @@ export function renderIf(condition, renderFn) {
   export function getLastDay(date, unit, format) {
     return moment(date).endOf(unit).format(format);
   }
+  export function  addMoment(date,amount, unit) {
+    return moment(date).add(amount,unit)
+  }
   export function addTimeUnit(date, amount, unit) {
     return moment(date).add(amount, unit).toDate();
   }
   export function subTimeUnit(date, amount, unit) {
     return moment(date).subtract(amount, unit).toDate();
   }
+
+  export function getMoment(date) {
+    return moment(date)
+}
   export function findArrayObj(array, findNode, findValue) {
     let returnObj;   
        //console.log(findValue);
@@ -90,4 +97,45 @@ export function renderIf(condition, renderFn) {
    return returnObj;
 }
 
+/* Get Unique Values from Array  */
+export function getUniqueValues(array){
+  var uniqueLanguageArray = [];
+  for(i=0; i < array.length; i++){
+      if(uniqueLanguageArray.indexOf(array[i]) === -1) {
+          uniqueLanguageArray.push(array[i]);
+      }
+  }
+  return uniqueLanguageArray;
+}
+
+export function intersection() {
+    var result = [];
+    var lists;
+    
+    if(arguments.length === 1) {
+      lists = arguments[0];
+    } else {
+      lists = arguments;
+    }
+    console.log(lists);
+    for(var i = 0; i < lists.length; i++) {
+      var currentList = lists[i];
+      for(var y = 0; y < currentList.length; y++) {
+        var currentValue = currentList[y];
+        if(result.indexOf(currentValue) === -1) {
+          var existsInAll = true;
+          for(var x = 0; x < lists.length; x++) {
+            if(lists[x].indexOf(currentValue) === -1) {
+              existsInAll = false;
+              break;
+            }
+          }
+          if(existsInAll) {
+            result.push(currentValue);
+          }
+        }
+      }
+    }
+    return result;
+  }
   

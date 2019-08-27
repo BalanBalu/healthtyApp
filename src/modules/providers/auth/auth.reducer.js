@@ -1,6 +1,7 @@
 // App Imports
 import { isEmpty } from '../../../setup/helpers';
-import { SET_USER, LOGIN_REQUEST, LOGIN_RESPONSE, LOGOUT, LOGIN_HAS_ERROR, AUTH_REQUEST, AUTH_HAS_ERROR, AUTH_RESPONSE, OTP_CODE_GENERATED, NEW_PASSWORD , 
+import {
+  SET_USER, LOGIN_REQUEST, LOGIN_RESPONSE, LOGOUT, LOGIN_HAS_ERROR, AUTH_REQUEST, AUTH_HAS_ERROR, AUTH_RESPONSE, OTP_CODE_GENERATED, NEW_PASSWORD,
   REDIRECT_NOTICE, RESET_REDIRECT_NOTICE
 } from './auth.actions';
 import { statement } from '@babel/template';
@@ -12,11 +13,12 @@ export const userInitialState = {
   isLoading: false,
   isAuthenticated: false,
   details: null,
-  success:false,
-  userId:null,
-  isPasswordChanged : false,
+  success: false,
+  userId: null,
+  isPasswordChanged: false,
   redirectNotice: {},
-  needToRedirect: false
+  needToRedirect: false,
+  isOTPGenerated: false
 }
 // State
 export default (state = userInitialState, action) => {
@@ -27,44 +29,44 @@ export default (state = userInitialState, action) => {
         isAuthenticated: true,
         details: action.details
       }
-      case AUTH_REQUEST:
+    case AUTH_REQUEST:
       return {
-        ...state,        
+        ...state,
         isLoading: action.isLoading
       }
-      case AUTH_HAS_ERROR:  
+    case AUTH_HAS_ERROR:
       return {
         ...state,
         success: false,
         message: action.message,
         isLoading: false,
-        isAuthenticated:false,
+        isAuthenticated: false,
       }
-   
-   case AUTH_RESPONSE:
-    return {
-      ...state,
-      success: true,        
-      isLoading: false,
-      message: action.message,
-      userId:action.userId || null
-    }
+
+    case AUTH_RESPONSE:
+      return {
+        ...state,
+        success: true,
+        isLoading: false,
+        message: action.message,
+        userId: action.userId || null
+      }
 
     case LOGIN_REQUEST:
       return {
         ...state,
         message: null,
         isLoading: action.isLoading,
-        isAuthenticated:false
+        isAuthenticated: false
 
       }
     case LOGIN_HAS_ERROR:
       return {
         ...state,
-        message: action.error,
+        message: action.message,
         isLoading: false
       }
-      
+
     case LOGIN_RESPONSE:
       return {
         ...state,
@@ -75,36 +77,35 @@ export default (state = userInitialState, action) => {
     case OTP_CODE_GENERATED:
       return {
         ...state,
-        isLoading:false,
+        isLoading: false,
         isOTPGenerated: true,
-        userId:action.userId,
-      }  
+        userId: action.userId,
+      }
     case NEW_PASSWORD:
       return {
         ...state,
-        isLoading:false,   
+        isLoading: false,
         isPasswordChanged: action.isPasswordChanged,
-     }
-     case REDIRECT_NOTICE:
+      }
+    case REDIRECT_NOTICE:
       return {
         ...state,
         redirectNotice: action.redirectNotice,
-        needToRedirect : true
+        needToRedirect: true
       }
-      case RESET_REDIRECT_NOTICE : 
-        return {
-          ...state,
-          redirectNotice: {},
-          needToRedirect: false
-        } 
-      case LOGOUT:
+    case RESET_REDIRECT_NOTICE:
+      return {
+        ...state,
+        redirectNotice: {},
+        needToRedirect: false
+      }
+    case LOGOUT:
       return userInitialState;
 
     default:
       return state;
-     }
+  }
 }
 
 
-   
-  
+

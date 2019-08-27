@@ -1,4 +1,7 @@
 rootProject.name = 'medflic'
+include ':react-native-image-picker'
+project(':react-native-image-picker').projectDir = new File(rootProject.projectDir, '../node_modules/react-native-image-picker/android')
+
 include ':@react-native-mapbox-gl_maps'
 project(':@react-native-mapbox-gl_maps').projectDir = new File(rootProject.projectDir, '../node_modules/@react-native-mapbox-gl/maps/android/rctmgl')
 include ':react-native-svg'
@@ -10,5 +13,8 @@ project(':react-native-linear-gradient').projectDir = new File(rootProject.proje
 project(':react-native-gesture-handler').projectDir = new File(rootProject.projectDir, '..\\node_modules\\react-native-gesture-handler\\android')
 include ':react-native-vector-icons'
 project(':react-native-vector-icons').projectDir = new File(rootProject.projectDir, '..\\node_modules\\react-native-vector-icons\\android')
+
+include ':react-native-customui'
+project(':react-native-customui').projectDir = new File(rootProject.projectDir,   '../node_modules/react-native-customui/android')
 
 include ':app'

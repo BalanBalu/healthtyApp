@@ -10,6 +10,9 @@ target 'medflic' do
   target 'medflic-tvOSTests' do
     inherit! :search_paths
     # Pods for testing
+
+    pod 'react-native-image-picker', :path => '../node_modules/react-native-image-picker'
+
   end
 
   target 'medflicTests' do
@@ -51,6 +54,11 @@ end
 
  post_install do |installer|
    installer.pods_project.targets.each do |target|
+      
+     targets_to_ignore = %w(React yoga)
+     if targets_to_ignore.include? target.name
+      target.remove_from_project
+     end
      if target.name == "React"
        target.remove_from_project
      end

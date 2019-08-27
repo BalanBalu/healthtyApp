@@ -14,7 +14,7 @@ class Categories extends Component {
     super(props)
     this.state = {
       data: this.props.navigation.state.params.data,
-         }
+    }
   }
   componentDidMount() {
     console.log(' this.state.data' + JSON.stringify(this.state.data));
@@ -39,25 +39,30 @@ class Categories extends Component {
             data={this.state.data}
             extraData={this.state}
             renderItem={({ item, index }) =>
-            <Grid>
-              <Item>
-              {isLoading ? <Spinner color='blue' /> : null}
-              <TouchableOpacity onPress={() => this.navigateToCategorySearch(item.category_name)}>
-                
-              <Col>
-                  <LinearGradient
-                    colors={['#7357A2', '#62BFE4']} style={{ borderRadius: 10, padding: 10, height: 100, width: 100, marginLeft: 'auto', marginRight: 'auto' }}>
-                    <Image
-                      // source={{ uri: item.imageBaseURL + '/' + item.category_id + '.png' }} style={styles.customImage} 
-                      source={{ uri: 'http://pluspng.com/img-png/orthopedics-png--350.png' }} style={styles.customImage}
-                    />
-                  </LinearGradient>
+              <Grid style={{ marginTop: 10, justifyContent: 'center', padding: 5 }}>
+                <Item>
+                  {isLoading ? <Spinner color='blue' /> : null}
+                  <TouchableOpacity onPress={() => this.navigateToCategorySearch(item.category_name)}>
 
-                  <Text style={styles.titleText}>{item.category_name}</Text>
+                    <Col>
+                      <LinearGradient
+                        colors={['#7357A2', '#62BFE4']} style={{
+                          flex: 1,
 
-                </Col>
-              </TouchableOpacity>
-              </Item>
+                          borderRadius: 10,
+                          padding: 6
+                        }}>
+                        <Image
+                          source={{ uri: item.imageBaseURL + '/' + item.category_id + '.png' }} style={styles.customImage}
+                        //  source={{ uri: 'http://pluspng.com/img-png/orthopedics-png--350.png' }} style={styles.customImage}
+                        />
+                      </LinearGradient>
+
+                      <Text style={styles.titleText}>{item.category_name}</Text>
+
+                    </Col>
+                  </TouchableOpacity>
+                </Item>
               </Grid>
             }
             keyExtractor={(item, index) => index.toString()}
@@ -105,12 +110,10 @@ const styles = StyleSheet.create({
 
 
   customImage: {
-    height: 70,
-    width: 70,
-    marginLeft: 'auto',
-    marginRight: 'auto',
-    marginTop: 'auto',
-    marginBottom: 'auto'
+    height: 100,
+    width: 100,
+    margin: 10,
+    alignItems: 'center'
   },
 
   titleText: {

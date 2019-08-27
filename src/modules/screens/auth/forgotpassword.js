@@ -1,10 +1,11 @@
 import React, { Component } from 'react';
-import { View, Container, Content, Button, Text, Form, Item, Input, Footer, FooterTab, H3, Toast } from 'native-base';
+import { View, Container, Content, Button, Text, Form, Item, Input, Footer, FooterTab, H3, Toast, Icon } from 'native-base';
 import { generateOTP, changePassword, LOGOUT } from '../../providers/auth/auth.actions';
 import { connect } from 'react-redux';
 import { StyleSheet, Image } from 'react-native'
 import styles from '../../screens/auth/styles';
 import { store } from '../../../setup/store';
+import { ScrollView } from 'react-native-gesture-handler';
 
 //import console = require('console');
 
@@ -18,7 +19,8 @@ class Forgotpassword extends Component {
             password: '',
             isOTPGenerated: false,
             errorMessage: '',
-            userEntry: ''
+            userEntry: '',
+            showPassword: true
         }
     }
     requestOTP = async () => {
@@ -72,61 +74,69 @@ class Forgotpassword extends Component {
     renderEnterEmail() {
         const { user: { isLoading } } = this.props;
         return (
-            <View>
-                <Item style={{ borderBottomWidth: 0 }}>
-                    <Input placeholder="Email Or Phone" style={styles.transparentLabel}
-                        value={this.state.userEntry}
-                        keyboardType={'email-address'}
-                        onChangeText={userEntry => this.setState({ userEntry })}
-                        autoFocus={true}
-                        autoCapitalize='none'
-                        blurOnSubmit={false}
-                        onSubmitEditing={() => { this.requestOTP(); }}
-                    />
-                </Item>
+            <Container style={styles.container}>
+                <Content style={styles.bodyContent}>
 
-                <Button style={styles.loginButton} block primary onPress={() => this.requestOTP()}>
-                    <Text>Send OTP</Text>
-                </Button>
-            </View>
+                    <Item style={{ borderBottomWidth: 0, marginLeft: 16 }}>
+                        <Input placeholder="Email Or Phone" style={styles.transparentLabel}
+                            value={this.state.userEntry}
+                            keyboardType={'email-address'}
+                            onChangeText={userEntry => this.setState({ userEntry })}
+                            autoFocus={true}
+                            autoCapitalize='none'
+                            blurOnSubmit={false}
+                            onSubmitEditing={() => { this.requestOTP(); }}
+                        />
+                    </Item>
+
+                    <Button style={styles.loginButton} block primary onPress={() => this.requestOTP()}>
+                        <Text>Send OTP</Text>
+                    </Button>
+
+                </Content>
+            </Container>
         )
     }
     renderAfterOtpGenerated() {
         const { user: { isLoading } } = this.props;
         return (
-            <View>
-                <Item style={{ borderBottomWidth: 0 }}>
-                    <Input placeholder="Enter OTP" style={styles.transparentLabel}
-                        keyboardType={'email-address'}
-                        autoFocus={true}
-                        autoCapitalize='none'
-                        value={this.state.otpCode}
-                        onChangeText={otpCode => this.setState({ otpCode })}
-                        returnKeyType={'next'}
-                        onSubmitEditing={() => { this.otpCode._root.focus(); }}
-                        blurOnSubmit={false}
-                    />
-                </Item>
+            <Container style={styles.container}>
+                <Content style={styles.bodyContent}>
 
-                <Item style={{ borderBottomWidth: 0 }}>
-                    <Input placeholder="New Password" style={styles.transparentLabel}
-                        ref={(input) => { this.otpCode = input; }}
-                        //getRef={(input) => { this.otpCode = input; }}
-                        secureTextEntry={true}
-                        returnKeyType={'done'}
-                        autoCapitalize='none'
-                        value={this.state.password}
-                        onChangeText={password => this.setState({ password })}
-                        blurOnSubmit={false}
-                        onSubmitEditing={() => { this.changePassword(); }}
+                    <Item style={{ borderBottomWidth: 0, marginLeft: 17 }}>
+                        <Input placeholder="Enter OTP" style={styles.transparentLabel}
+                            keyboardType={'email-address'}
+                            autoFocus={true}
+                            autoCapitalize='none'
+                            value={this.state.otpCode}
+                            onChangeText={otpCode => this.setState({ otpCode })}
+                            returnKeyType={'next'}
+                            onSubmitEditing={() => { this.otpCode._root.focus(); }}
+                            blurOnSubmit={false}
+                        />
+                    </Item>
 
-                    />
-                </Item>
+                    <Item style={{ borderBottomWidth: 0, marginLeft: 17 }}>
+                        <Input placeholder="New Password" style={styles.transparentLabel}
+                            ref={(input) => { this.otpCode = input; }}
+                            //getRef={(input) => { this.otpCode = input; }}
+                            secureTextEntry={true}
+                            returnKeyType={'done'}
+                            autoCapitalize='none'
+                            value={this.state.password}
+                            onChangeText={password => this.setState({ password })}
+                            blurOnSubmit={false}
+                            onSubmitEditing={() => { this.changePassword(); }}
+                        />
+                        <Icon active name='eye' style={{ fontSize: 20, marginTop: 10 }} onPress={() => this.setState({ showPassword: !this.state.showPassword })} />
+                    </Item>
 
-                <Button style={styles.loginButton} block primary onPress={() => this.changePassword()}>
-                    <Text>Reset Password</Text>
-                </Button>
-            </View>
+                    <Button style={styles.loginButton} block primary onPress={() => this.changePassword()}>
+                        <Text>Reset Password</Text>
+                    </Button>
+
+                </Content>
+            </Container>
         )
     }
     render() {
@@ -136,19 +146,20 @@ class Forgotpassword extends Component {
         return (
             <Container style={styles.container}>
                 <Content style={styles.bodyContent}>
-                    <H3 style={styles.welcome}>Forgot Password</H3>
-                    <Image source={{ uri: 'https://static1.squarespace.com/static/582bbfef9de4bb07fe62ab18/t/5877b9ccebbd1a124af66dfe/1484241404624/Headshot+-+Circular.png?format=300w' }} style={styles.logo} />
+                    <ScrollView>
+                        <H3 style={styles.welcome}>Forgot Password</H3>
+                        <Image source={{ uri: 'https://static1.squarespace.com/static/582bbfef9de4bb07fe62ab18/t/5877b9ccebbd1a124af66dfe/1484241404624/Headshot+-+Circular.png?format=300w' }} style={styles.logo} />
 
-                    <Form>
-                        {/* <View style={styles.errorMessage}>
+                        <Form>
+                            {/* <View style={styles.errorMessage}>
                          <Text style={{textAlign:'center',color:'#775DA3'}}> Invalid Credentials</Text>
                   </View>                */}
 
 
-                        {isOTPGenerated == true ? this.renderAfterOtpGenerated() : this.renderEnterEmail()}
+                            {isOTPGenerated == true ? this.renderAfterOtpGenerated() : this.renderEnterEmail()}
 
-                    </Form>
-
+                        </Form>
+                    </ScrollView>
                 </Content>
 
                 <Footer >
