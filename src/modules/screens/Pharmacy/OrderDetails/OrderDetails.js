@@ -19,12 +19,29 @@ class OrderDetails extends Component {
     componentDidMount(){
         this.getMedicineOrder();        
     }
-    getMedicineOrder=async()=>{
-        let orderId="5d418339170fc31bd0c3a5cb"
-        await this.setState({orderId:orderId});
-        let response=await getMyOrders(this.state.orderId);
-        await this.setState({myOrderList:response.data[0],isLoading:false});
+    // getMedicineOrder=async()=>{
+    //    // let orderId="5d418339170fc31bd0c3a5cb"
+    //     await this.setState({orderId:orderId});
+    //     let response=await getMyOrders(this.state.orderId);
+    //     await this.setState({myOrderList:response.data[0],isLoading:false});
+    // }
+
+    async getMedicineOrder(){    
+        try {
+        // await this.setState({orderId:orderId});
+      // let orderId= '5d1a4063e34c990f68ad8828';
+        const { navigation } = this.props;
+         const orderId = navigation.getParam('orderId');
+       // let userId = await AsyncStorage.getItem('userId');
+        let response=await getMyOrders(orderId);
+        console.log('result :' + JSON.stringify(response));
+         await this.setState({myOrderList:response.data[0],isLoading:false});        
+             }
+        catch (e) {
+            console.log(e);
+        }        
     }
+
     noOrders() {
         return (
             <Item style={{ borderBottomWidth: 0, justifyContent: 'center', alignItems: 'center' }}>
@@ -34,6 +51,7 @@ class OrderDetails extends Component {
     }
 
     render() {
+        const { navigation } = this.props;
         const { isLoading,myOrderList } = this.state;
         return (
             <Container style={styles.container}>
@@ -64,6 +82,8 @@ class OrderDetails extends Component {
                                         extraData={this.state}
                                         keyExtractor={(item, index) => index.toString()}
                                         renderItem={({ item, index }) =>
+                        <TouchableOpacity testID="medicineOrderNavigation" 
+                        onPress={()=>this.props.navigation.navigate('OrderMedicineDetails')}>
 
                                             <View style={{ marginTop: 10, padding: 5, height: 160, borderTopColor: '#000', borderTopWidth: 1 }}>
                                                 <Grid>
@@ -75,7 +95,6 @@ class OrderDetails extends Component {
 
 
                                                     </View>
-
                                                     <View>
                                                         <View style={{ marginLeft: 20, marginTop: 20}}>
                                                             <Text style={styles.labelTop}>{item.medicine_name} </Text>
@@ -90,14 +109,14 @@ class OrderDetails extends Component {
 
                                                             <Text style={{ fontSize: 15, fontWeight: 'bold', fontFamily: 'OpenSans', color: '#3966c6' }}>Quantity :</Text>
                                                             <Text style={{ fontSize: 15, fontFamily: 'OpenSans', marginLeft: 10 }}>{item.quantity}</Text>
-                                                            <Text style={{ fontSize: 15, fontWeight: 'bold', fontFamily: 'OpenSans', marginLeft: 20, color: '#3966c6' }}>Total :</Text>
+                                                            <Text style={{ fontSize: 15, fontWeight: 'bold', fontFamily: 'OpenSans', marginLeft: 20, color: '#3966c6' }}>Amount :</Text>
                                                             <Text style={styles.subText}>{'\u20B9'}{item.price}</Text>
 
                                                         </View>
                                                     </View>
                                                 </Grid>
                                             </View>
-
+                                            </TouchableOpacity> 
                                         } />
                                     
                                 
@@ -105,6 +124,7 @@ class OrderDetails extends Component {
                             }
                                 
                         </Card>
+                        
 
                     </Content>}
             </Container >

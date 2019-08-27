@@ -12,7 +12,8 @@ class MyOrdersList extends Component {
         super(props)
         this.state = {
             cartItems: [],
-            orderList:[],           
+            orderList:[],  
+            orderId:'',         
             isLoading: true
         }
     }
@@ -25,7 +26,7 @@ class MyOrdersList extends Component {
            let userId = await AsyncStorage.getItem('userId');
            let result = await getMedicineOrderList(userId);
            console.log('result :' + JSON.stringify(result));
-           this.setState({  orderList: result.data[0], isLoading:false });
+           this.setState({  orderList: result.data, isLoading:false });
            console.log('orderList' + JSON.stringify(this.state.orderList));
             }
         catch (e) {
@@ -33,6 +34,14 @@ class MyOrdersList extends Component {
         }        
     }
 
+    calcTotalAmount(data){
+        let temp=0;
+    data.forEach(element=>{
+        temp += (element.quantity*element.price)
+    })
+    return temp;
+    }
+    
     renderNoOrders() {
         return (
             <Item style={{ borderBottomWidth: 0, justifyContent: 'center', alignItems: 'center', height: 300 }}>
@@ -57,32 +66,28 @@ class MyOrdersList extends Component {
                                 padding: 5, marginTop: 20
                             }}>
     <FlatList
-    data={orderList.order_items}
+    data={orderList}
     extraData={this.state}
     keyExtractor={(item, index) => index.toString()}
     renderItem={({ item, index }) =>
-    <TouchableOpacity onPress={()=>this.props.navigation.navigate('OrderDetails')}>
+    <TouchableOpacity testID="orderDetailsNavigation" onPress={()=>this.props.navigation.navigate('OrderDetails',{ orderId : item._id})}>
     <Card style={{ marginTop: 10, padding: 5, height: 155, borderRadius: 5 }}>
     <Grid>
       <Row>
       <Right><Text style={{fontFamily: 'OpenSans', fontSize: 16, color: '#e84393', marginRight: 10,
-       fontWeight: 'bold' }}>{formatDate(orderList.order_date,"dddd, MMMM DD-YYYY, hh:mm a")}</Text></Right>
+       fontWeight: 'bold' }}>{formatDate(item.order_date,"dddd, MMMM DD-YYYY, hh:mm a")}</Text></Right>
        </Row>
      <View style={{ marginLeft: 10, marginTop: 20, flexDirection: 'row' }}>
     <Text style={{ fontFamily: 'OpenSans', fontSize: 18, fontWeight: 'bold', color: '#3966c6' }}>Order Id </Text>
-    <Text style={{ fontFamily: 'OpenSans', fontSize: 16, marginLeft: 48, fontWeight: 'bold' }}>:  {item.medicine_id} </Text>
+    <Text style={{ fontFamily: 'OpenSans', fontSize: 16, marginLeft: 48, fontWeight: 'bold' }}>:  {item._id} </Text>
      </View>
    <View style={{ flexDirection: 'row', marginLeft: 10, marginTop: 5 }}>
-   <Text style={{ fontSize: 15, fontWeight: 'bold', fontFamily: 'OpenSans', color: '#3966c6', }}>Pharmacy </Text>
-  <Text style={{ fontSize: 15, fontFamily: 'OpenSans', marginLeft: 42, fontWeight: 'bold' }}> :  {orderList.pharmacyInfo.name} </Text>
-   </View>
-   <View style={{ flexDirection: 'row', marginLeft: 10, marginTop: 5 }}>
    <Text style={{ fontSize: 15, fontWeight: 'bold', fontFamily: 'OpenSans', color: '#3966c6' }}>No of Medicine </Text>
-   <Text style={{ fontSize: 15, fontFamily: 'OpenSans', marginLeft: 10, fontWeight: 'bold' }}>:  {item.quantity} </Text>
+   <Text style={{ fontSize: 15, fontFamily: 'OpenSans', marginLeft: 10, fontWeight: 'bold' }}>:  {item.order_items.length} </Text>
     </View>
     <View style={{ flexDirection: 'row', marginLeft: 10, marginTop: 5 }}>
    <Text style={{ fontSize: 15, fontWeight: 'bold', fontFamily: 'OpenSans', color: '#3966c6' }}>Total </Text>
-   <Text style={styles.subText}>:{'  '}{'\u20B9'}{item.price}</Text>
+   <Text style={styles.subText}>:{'  '}{'\u20B9'}{this.calcTotalAmount(item.order_items)}</Text>
     </View>
        </Grid>
         </Card>
