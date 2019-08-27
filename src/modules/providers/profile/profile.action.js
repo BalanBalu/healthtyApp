@@ -27,10 +27,8 @@ export async function fetchUserProfile(userId, fields, isLoading = true) {
         type: PROFILE_ERROR,
         message: respData.error
       })
-      return respData.data;
+      return respData;
     } else { 
-      
-      
       store.dispatch({
         type: PROFILE_RESPONSE,
         details: respData.data
@@ -44,6 +42,10 @@ export async function fetchUserProfile(userId, fields, isLoading = true) {
       type: PROFILE_ERROR,
       message: e
       }); 
+      return {
+        success : false,
+        message: e
+      }
   }  
 }
 

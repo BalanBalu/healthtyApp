@@ -38,7 +38,7 @@ export async function login(userCredentials, isLoading = true) {
     } else {
       console.log('token:' + JSON.stringify(respData))
       const token = respData.token;
-      setUserLocally(token, respData.data);
+     await setUserLocally(token, respData.data);
 
       store.dispatch({
         type: LOGIN_RESPONSE,
@@ -158,11 +158,11 @@ export async function logout() {
 
 
 // Set user token and info locally (AsyncStorage)
-export function setUserLocally(token, userData) {
+export async function  setUserLocally(token, userData) {
   // Set token
 
-  AsyncStorage.setItem('token', token)
-  AsyncStorage.setItem('userId', userData.userId)
+  await AsyncStorage.setItem('token', token)
+  await AsyncStorage.setItem('userId', userData.userId)
   AsyncStorage.setItem('user', JSON.stringify(userData))
   axios.defaults.headers.common['x-access-token'] = token;
   axios.defaults.headers.common['userId'] = userData.userId;

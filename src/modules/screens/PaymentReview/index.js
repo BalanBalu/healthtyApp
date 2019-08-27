@@ -112,22 +112,7 @@ export default class PaymentReview extends Component {
 
                         </Grid>
 
-                        <Grid style={{ borderBottomWidth: 0.3, color: '#f2f2f2', padding: 10, marginLeft: 10 }}>
-                            <Row>
-                                <Col style={{ width: '90%' }}>
-                                    <Text style={styles.customizedText}>Apply Coupons</Text>
-                                    <Input underlineColorAndroid='gray' placeholder="Enter Your 'Coupon' Code here" style={styles.transparentLabel}
-                                        getRef={(input) => { this.enterCouponCode = input; }}
-                                        secureTextEntry={true}
-                                        returnKeyType={'go'}
-                                        value={this.state.password}
-                                        onChangeText={enterCouponCode => this.setState({ enterCouponCode })}
-                                    />
-                                </Col>
-
-                            </Row>
-
-                        </Grid>
+                       
 
                         <Grid style={{ borderBottomWidth: 0.3, color: '#f2f2f2', padding: 10, marginLeft: 10 }}>
                             <Row>
