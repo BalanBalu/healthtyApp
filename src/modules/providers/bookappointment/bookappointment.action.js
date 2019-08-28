@@ -20,6 +20,20 @@ export async function bookAppointment(bookSlotDetails, isLoading = true) {
   }
 }
 
+export async function validateBooking(reqDataValidate) {
+  try {
+    let endPoint = 'appointment/validate';
+    let response = await postService(endPoint, reqDataValidate);
+    let respData = response.data;
+    return respData;
+  } catch (e) {
+    return {
+      message: 'exception' + e,
+      success: false
+    }
+  }
+}
+
 export async function createPaymentRazor(paymentData) {
   try {
     let endPoint = 'razor/payment';
