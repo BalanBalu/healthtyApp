@@ -43,7 +43,8 @@ class PaymentPage extends Component {
             saveCardCheckbox: true,
             bookSlotDetails: null,
             isLoading: false,
-            isHidden: false
+            isHidden: false,
+            coupenCodeText: null
         }
         this.BookAppointmentPaymentUpdate = new BookAppointmentPaymentUpdate();
     }
@@ -260,8 +261,8 @@ class PaymentPage extends Component {
         // this.setState({ selectedItems: [ selectedItems[selectedItems.length - 1] ] });
         this.setState({ selectedItems: selectedItems, selectedNetBank : selectedItems[0] });
     } 
-    onCouponPress() {
-        this.setState({isHidden: true})
+    onCouponPress(coupenCodeText) {
+        this.setState({isHidden: true, coupenCodeText : coupenCodeText.toUpperCase()})
       }
 
     render() {
@@ -292,11 +293,11 @@ class PaymentPage extends Component {
                                         
                                     <Input underlineColorAndroid='gray' placeholder="Enter Your 'Coupon' Code here" style={styles.transparentLabel}
                                         getRef={(input) => { this.enterCouponCode = input; }}
-                                        secureTextEntry={true}
                                         keyboardType={'default'}
                                         returnKeyType={'go'}
-                                        value={this.state.password}
-                                        onChangeText={enterCouponCode => this.onCouponPress({ enterCouponCode })}
+                                        multiline={false}
+                                        value={this.state.coupenCodeText}
+                                        onChangeText={enterCouponCode => this.onCouponPress(enterCouponCode)}
                                     />
                                       
                                     </Form>
@@ -420,9 +421,8 @@ class PaymentPage extends Component {
                             <Grid style={{ marginRight: 10, marginLeft: 10 }}>
                                 <Col>
                                     <Text style={styles.labelTop}>{cardType} Card Holder Name (Optional)</Text>
-                                    <Form><TextInput
-                                     style={{ height:60, backgroundColor: this.state.backgroundColor, color: this.state.color }}  />
-
+                                    <Form>
+                                   
                                         <Input placeholder="Card Holder Name"
                                          returnKeyType={'next'}
                                          keyboardType={'default'}
