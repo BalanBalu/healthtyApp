@@ -16,7 +16,9 @@ class UpdatePassword extends Component {
         this.state = {
             oldPassword: '',
             newPassword: '',
-            showPassword: true,
+            showOldPassword: true,
+            showNewPassword: true,
+
             isLoading: false
         }
     }
@@ -25,7 +27,6 @@ class UpdatePassword extends Component {
         try {
             this.setState({ isLoading: true });
             let userId = await AsyncStorage.getItem('userId');
-            console.log(userId);
             let data = {
                 type: 'user',
                 userId: userId,
@@ -97,12 +98,12 @@ class UpdatePassword extends Component {
                                         secureTextEntry={true} style={styles.transparentLabel}
                                         keyboardType="default"
                                         value={this.state.oldPassword}
-                                        secureTextEntry={this.state.showPassword}
+                                        secureTextEntry={this.state.showOldPassword}
                                         onChangeText={(oldPassword) => this.setState({ oldPassword })}
                                         testID='enterOldPassword' />
                                 </Col>
                                 <Right>
-                                    <Icon active name="eye" style={{ position: 'absolute', marginTop: -10, fontSize: 20,  }} onPress={() => this.setState({ showPassword: !this.state.showPassword })} />
+                                    <Icon active name="eye" style={{ position: 'absolute', marginTop: -10, fontSize: 20, }} onPress={() => this.setState({ showOldPassword: !this.state.showOldPassword })} />
                                 </Right>
 
                             </Item>
@@ -118,13 +119,13 @@ class UpdatePassword extends Component {
                                         style={styles.transparentLabel}
                                         keyboardType="default"
                                         value={this.state.newPassword}
-                                        secureTextEntry={this.state.showPassword}
+                                        secureTextEntry={this.state.showNewPassword}
                                         onChangeText={(newPassword) => this.setState({ newPassword })}
                                         testID='enterNewPassword' />
 
                                 </Col>
                                 <Right>
-                                    <Icon active name="eye" style={{ position: 'absolute', marginTop: -10, fontSize: 20, }} onPress={() => this.setState({ showPassword: !this.state.showPassword })} />
+                                    <Icon active name="eye" style={{ position: 'absolute', marginTop: -10, fontSize: 20, }} onPress={() => this.setState({ showNewPassword: !this.state.showNewPassword })} />
 
                                 </Right>
 
@@ -141,11 +142,6 @@ class UpdatePassword extends Component {
 
 
                         </Card>
-
-
-
-
-
 
                     </ScrollView>
                 </Content>
