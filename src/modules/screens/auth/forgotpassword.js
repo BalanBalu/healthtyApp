@@ -76,9 +76,8 @@ class Forgotpassword extends Component {
         return (
             <Container style={styles.container}>
                 <Content style={styles.bodyContent}>
-
-                    <Item style={{ borderBottomWidth: 0, marginLeft: 16 }}>
-                        <Input placeholder="Email Or Phone" style={styles.transparentLabel}
+                    <Item style={{ borderBottomWidth: 0, marginLeft: 16}}>
+                        <Input placeholder="Email Or Phone" style={styles.transparentLabel2}
                             value={this.state.userEntry}
                             keyboardType={'email-address'}
                             onChangeText={userEntry => this.setState({ userEntry })}
@@ -92,7 +91,7 @@ class Forgotpassword extends Component {
                     <Button style={styles.loginButton} block primary onPress={() => this.requestOTP()}>
                         <Text>Send OTP</Text>
                     </Button>
-
+              
                 </Content>
             </Container>
         )
@@ -147,6 +146,8 @@ class Forgotpassword extends Component {
             <Container style={styles.container}>
                 <Content style={styles.bodyContent}>
                     <ScrollView>
+                    <View style={{marginTop:100,}}>
+
                         <H3 style={styles.welcome}>Forgot Password</H3>
                         <Image source={{ uri: 'https://static1.squarespace.com/static/582bbfef9de4bb07fe62ab18/t/5877b9ccebbd1a124af66dfe/1484241404624/Headshot+-+Circular.png?format=300w' }} style={styles.logo} />
 
@@ -159,6 +160,8 @@ class Forgotpassword extends Component {
                             {isOTPGenerated == true ? this.renderAfterOtpGenerated() : this.renderEnterEmail()}
 
                         </Form>
+                        </View>
+
                     </ScrollView>
                 </Content>
 
@@ -182,3 +185,4 @@ function forgotpasswordState(state) {
     }
 }
 export default connect(forgotpasswordState)(Forgotpassword)
+

@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import {
-    Container, Content, Button, Text, Form, Item, Input, Footer, Icon, DatePicker,
+    Container, Content, Button, Text, Form, Item, Input, Footer, Icon, DatePicker,View,
     FooterTab, H3, Toast
 } from 'native-base';
 import { connect } from 'react-redux'
@@ -113,6 +113,8 @@ class UserDetails extends Component {
 
             <Container style={styles.container}>
                 <Content style={styles.bodyContent}>
+                <View style={{marginTop:100,}}>
+
                     <H3 style={styles.welcome}>User Details</H3>
                     <Image source={{ uri: 'https://static1.squarespace.com/static/582bbfef9de4bb07fe62ab18/t/5877b9ccebbd1a124af66dfe/1484241404624/Headshot+-+Circular.png?format=300w' }} style={styles.logo} />
                     <Form>
@@ -170,11 +172,12 @@ class UserDetails extends Component {
 
 
 
-                        <Button style={styles.loginButton} block primary onPress={() => this.userUpdate()}>
-                            <Text style={{ fontFamily: 'OpenSans' }}>Submit</Text>
+                        <Button style={styles.detailsButton} block primary onPress={() => this.userUpdate()}>
+                            <Text style={ styles.ButtonText}>Submit</Text>
                         </Button>
 
                     </Form>
+                    </View>
                 </Content>
                 <Footer >
                     <FooterTab style={{ backgroundColor: '#F2F2F2', }}>
@@ -198,3 +201,4 @@ function userDetailsState(state) {
     }
 }
 export default connect(userDetailsState)(UserDetails)
+
