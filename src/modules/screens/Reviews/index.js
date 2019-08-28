@@ -140,16 +140,17 @@ class Reviews extends Component {
                                 <Row>
                                     <Thumbnail style={{ marginLeft: -10, height: 50, width: 50 }} square source={renderProfileImage(item.userInfo)} />
 
-                                    <Col>
-                                        <Text style={{ fontWeight: 'bold', fontSize: 15, marginLeft: 5, }}>{item.is_anonymous == true ? 'Medflic User' : item.userInfo.first_name + ' ' + item.userInfo.last_name} </Text>
+                                    <Col style={{marginLeft:15,width:'52.5%'}} >
+                                    <Text numberOfLines={1} style={{ fontWeight: 'bold', fontSize: 15, marginLeft: 5, }}>{item.is_anonymous == true ? 'Medflic User' : item.userInfo.first_name + ' ' + item.userInfo.last_name} </Text>
+                                    {/* <Text style={{ fontWeight: 'bold', fontSize: 15, marginLeft: 5, }}>{item.is_anonymous == true ? 'Medflic User' : item.userInfo.first_name + ' ' + item.userInfo.last_name} </Text> */}
                                     </Col>
-                                    <Col>
+                                    <Col style={{width:'47.5%'}}>
                                         <Text style={{ fontSize: 12, marginLeft: 60, }}>  {this.relativeTimeView(item.review_date)} </Text>
                                     </Col>
                                 </Row>
 
                                 <Row
-                                    style={{ marginTop: -25 }}>
+                                    style={{marginTop:-20 }}>
                                     <Col style={{ marginLeft: 60 }}>
                                         <Text style={{ fontSize: 15 }}>Cleanliness</Text>
                                         <StarRating

@@ -413,22 +413,19 @@ enumarateDates(startDate, endDate) {
 
            
                         <Left>
-                          {/* {item.userInfo.profile_image!=undefined?
-                          <Thumbnail square source={item.userInfo.profile_image.imageURL} style={{ height: 86, width: 86 }} /> :
-                          <Thumbnail square source={{ uri: 'https://static1.squarespace.com/static/582bbfef9de4bb07fe62ab18/t/5877b9ccebbd1a124af66dfe/1484241404624/Headshot+-+Circular.png?format=300w' }} style={{ height: 40, width: 40 }} />
-                          //<Thumbnail square source={renderProfileImage(item.userInfo.profile_image)} style={{ height: 40, width: 40 }} />
-                          } */}
                           <Thumbnail style={{ marginLeft: -10, height: 50, width: 50 }} square source={renderProfileImage(item.userInfo)} />
-                          
-                        </Left>
+                           </Left>
                         <Body>
-                          <Text>{((typeof item.userInfo.first_name || typeof item.userInfo.last_name) !== 'undefined') ? item.userInfo.first_name + '' + item.userInfo.last_name : 'Medflic User'}</Text>
-                          <Text style={{ fontSize: 12, marginLeft: -5, }}>  {this.relativeTimeView(item.review_date)} </Text>
-                         
-                          <StarRating fullStarColor='#FF9500' starSize={15} width={100} containerStyle={{ width: 100 }}
+                          {/* <Text>{((typeof item.userInfo.first_name || typeof item.userInfo.last_name) !== 'undefined') ? item.userInfo.first_name + ' ' + item.userInfo.last_name : 'Medflic User'}</Text> */}
+                          <Text numberOfLines={1} >{((typeof item.userInfo.first_name || typeof item.userInfo.last_name) !== 'undefined') ? item.userInfo.first_name + ' ' + item.userInfo.last_name : 'Medflic User'}</Text>
+
+                          <Text style={{ fontSize: 12, marginLeft: -5, marginTop:5 }}>  {this.relativeTimeView(item.review_date)} </Text>
+                         <View style={{marginTop:5}}>
+                          <StarRating fullStarColor='#FF9500' starSize={15} width={100} containerStyle={{ width: 100 }} 
                             disabled={false}
                             maxStars={5}
                             rating={item.overall_rating} />
+                            </View>
                           <Text note style={styles.customText}>{(typeof item.comments != 'undefined') ? item.comments : 'No Comments'}</Text>
                         </Body>
                       </ListItem>
@@ -735,7 +732,7 @@ const styles = StyleSheet.create({
     fontFamily: 'OpenSans',
     color: '#000',
     fontSize: 14,
-
+    marginTop:5
   },
   subtitlesText: {
     fontSize: 15,
