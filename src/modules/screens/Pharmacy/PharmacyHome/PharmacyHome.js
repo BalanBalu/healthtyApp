@@ -113,19 +113,23 @@ class PharmacyHome extends Component {
             return [];
         }
         const { searchMedicine } = this.state;
+        var selectedMedicineName=[]
 
         if(searchMedicine!=undefined){
         const regex = new RegExp(`${keyword.trim()}`, 'i');
         console.log(regex);        
         selectedMedicineName = searchMedicine.filter(value => value.medicine_name.search(regex) >= 0);
-        console.log('selectedMedicineName'+JSON.stringify(selectedMedicineName));
+        console.log('selectedMedicineName'+JSON.stringify(selectedMedicineName));        
+        }
+
         if(selectedMedicineName.length==0){
-            let defaultValue={medicine_name:'Medicine is not available'}
+            let defaultValue={medicine_name:'Medicine Not Found'}
             selectedMedicineName.push(defaultValue);
         
         }
         return selectedMedicineName;
-        }
+
+        
     }
 
      
@@ -153,7 +157,7 @@ class PharmacyHome extends Component {
                                     placeholder='Search Medicine'
                                     listStyle={{ marginLeft: 49, width: '71%', marginTop: -3.9}}
                                     renderItem={({ item }) => (
-                                        <TouchableOpacity onPress={() => this.setState({ keyword: item.medicine_name})}>
+                                        <TouchableOpacity onPress={() => this.setState({ keyword: selectedMedicineName[0].medicine_name==='Medicine Not Found'?null:item.medicine_name})}>
                                             <Text style={{fontSize: 15,color:'gray',borderBottomWidth:0.3,padding:3}}>{item.medicine_name}</Text>
                                         </TouchableOpacity>
                                     )}
