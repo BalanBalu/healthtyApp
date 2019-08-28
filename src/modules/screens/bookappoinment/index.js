@@ -54,29 +54,38 @@ class BookAppoinment extends Component {
     const availabilitySlots = navigation.getParam('fetchAvailabiltySlots')||false;
 
     if(availabilitySlots) {
-      console.log("if")
       let endDateMoment = addMoment(this.state.currentDate, 7, 'days')
-    const doctorId = navigation.getParam('doctorId')|| false;
-   // let doctorId = "5d2420ed731df239784cd222";
+      const doctorId = navigation.getParam('doctorId')|| false;
+  
       await this.setState({doctorId:doctorId});
       console.log("doctorId");
       await this.getAvailabilitySlots(doctorId, moment(new Date()), endDateMoment);
-    }else {
+    } else {
       let doctorDetails = navigation.getParam('doctorDetails');
       const slotList = navigation.getParam('slotList');
       console.log('slotList'+JSON.stringify(slotList));
       await this.setState({ doctorId: doctorDetails.doctorId });
       if(slotList) {
-      if(slotList.length !== 0) { 
-        await this.setState({item:{ 
-          name:slotList[0].location.name,
-          no_and_street: slotList[0].location.location.address.no_and_street,
-          city: slotList[0].location.location.address.city,
-          state: slotList[0].location.location.address.state,
-          pin_code: slotList[0].location.location.pin_code
+      if(slotList.length !== 0) {
+        let firstAvailableIndex = 0; 
+         for(let slotListIndex = 0; slotListIndex < slotList.length; slotListIndex++) {
+            console.log(slotList[slotListIndex]);
+            if(slotList[slotListIndex].isSlotBooked === false) {
+              firstAvailableIndex = slotListIndex;
+              break;
+            }
+         }
+         console.log(firstAvailableIndex);
+        await this.setState({item: { 
+          name:slotList[firstAvailableIndex].location.name,
+          no_and_street: slotList[firstAvailableIndex].location.location.address.no_and_street,
+          city: slotList[firstAvailableIndex].location.location.address.city,
+          state: slotList[firstAvailableIndex].location.location.address.state,
+          pin_code: slotList[firstAvailableIndex].location.location.pin_code
         },
-          selectedSlotItem:slotList[0], 
+          selectedSlotItem: slotList[firstAvailableIndex], 
           doctorDetails, slotList, 
+          selectedSlotIndex: firstAvailableIndex
         });
       }
     }
@@ -259,7 +268,7 @@ enumarateDates(startDate, endDate) {
         extraData={this.state}
         keyExtractor={(item, index) => index.toString()}
         renderItem={({ item, index }) =>
-          <TouchableOpacity disabled={item.isSlotBooked === true ? true : false} style={selectedSlotIndex === index ? styles.slotSelectedBg : item.isSlotBooked === false ? styles.slotDefaultBg : styles.slotBookedBg}
+          <TouchableOpacity disabled={item.isSlotBooked === true ? true : false} style={item.isSlotBooked  === true ? styles.slotBookedBg : selectedSlotIndex === index ? styles.slotSelectedBg : styles.slotDefaultBg}
             onPress={() => this.onSlotPress(item, index)}>
             <Row style={{ width: '100%', alignItems: 'center' }}>
               <Col style={{ width: '70%', alignItems: 'center' }}>
@@ -310,8 +319,8 @@ enumarateDates(startDate, endDate) {
 
               <Grid>
                 <Col style={{ backgroundColor: 'transparent', borderRightWidth: 0.5, borderRightColor: 'gray', marginLeft: 'auto', marginRight: 'auto' }}>
-                  <Text style={styles.topValue}>{(this.state.slotList && this.state.slotList.length > 0) ? 'Rs.' + this.state.slotList[0].fee + '/-' : '/-'}</Text>
-                  <Text note style={styles.bottomValue}>Rate</Text>
+                  <Text style={styles.topValue}>{(this.state.slotList && this.state.slotList.length > 0) ?  '\u20B9' + this.state.slotList[0].fee + '/-' : '/-'}</Text>
+                 
                 </Col>
 
                 <Col style={{ backgroundColor: 'transparent', borderRightWidth: 0.5, borderRightColor: 'gray', marginLeft: 'auto', marginRight: 'auto' }}>
