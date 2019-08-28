@@ -1,5 +1,7 @@
 import React, { Component } from 'react';
-import { Container, Content, Text, Title, Header, Form, Textarea, Button, H3, Item, List, ListItem, Card, Input, Left, Right, Thumbnail, Body, Icon, Footer, FooterTab, Picker, Segment, CheckBox, View, Badge } from 'native-base';
+import { Container, Content, Text, Title, Header, Form, Textarea, 
+    Button, H3, Item, List, ListItem, Card, Input, Left, Right, 
+    Thumbnail, Body, Icon, Footer, FooterTab, Picker, Segment, CheckBox, View, Badge, Spinner } from 'native-base';
 import { Col, Row, Grid } from 'react-native-easy-grid';
 import { StyleSheet, Image, AsyncStorage, TextInput, FlatList, TouchableOpacity } from 'react-native';
 import { Loader } from '../../../../components/ContentLoader';
@@ -19,21 +21,12 @@ class OrderDetails extends Component {
     componentDidMount(){
         this.getMedicineOrder();        
     }
-    // getMedicineOrder=async()=>{
-    //    // let orderId="5d418339170fc31bd0c3a5cb"
-    //     await this.setState({orderId:orderId});
-    //     let response=await getMyOrders(this.state.orderId);
-    //     await this.setState({myOrderList:response.data[0],isLoading:false});
-    // }
-
+   
     async getMedicineOrder(){    
         try {
-        // await this.setState({orderId:orderId});
-      // let orderId= '5d1a4063e34c990f68ad8828';
-        const { navigation } = this.props;
+          const { navigation } = this.props;
          const orderId = navigation.getParam('orderId');
-       // let userId = await AsyncStorage.getItem('userId');
-        let response=await getMyOrders(orderId);
+         let response=await getMyOrders(orderId);
         console.log('result :' + JSON.stringify(response));
          await this.setState({myOrderList:response.data[0],isLoading:false});        
              }
@@ -56,7 +49,7 @@ class OrderDetails extends Component {
         return (
             <Container style={styles.container}>
 
-                {isLoading == true ? <Loader style='list' /> :
+                {isLoading == true ? <Spinner color='blue' /> :
                     <Content style={styles.bodyContent}>
                     <Grid style={styles.curvedGrid}>
                     </Grid>
@@ -68,7 +61,7 @@ class OrderDetails extends Component {
                                     <Text style={{ fontFamily: 'OpenSans', fontWeight: 'bold', fontSize: 22, padding: 5,color:'#fff' }}>Your Order</Text>
                                 </Row>
                             </Grid>
-                            {myOrderList===undefined?this.noOrders():
+                            {myOrderList===undefined? this.noOrders():
                                                 
                             <View style={{padding: 5, borderRadius: 10, borderColor: '#8e44ad', borderWidth:2}}>
                                            
@@ -117,27 +110,20 @@ class OrderDetails extends Component {
                                                 </Grid>
                                             </View>
                                             </TouchableOpacity> 
-                                        } />
-                                    
-                                
+                                        } />                               
                                     </View>
                             }
                                 
-                        </Card>
-                        
-
+                        </Card>             
                     </Content>}
-            </Container >
+            </Container>
         )
     }
 }
 
 
 export default OrderDetails
-
-
 const styles = StyleSheet.create({
-
     container:
     {
         backgroundColor: '#ffffff',
