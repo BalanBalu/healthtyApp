@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
-import { Container, Content, Text, Button, FooterTab, Card, Footer, Icon, Input, CheckBox, Toast, Form } from 'native-base';
+import { Container, Content, Text, Button, FooterTab, Card, Footer, Icon, Input, CheckBox, Toast, Form,Right} from 'native-base';
 import { Col, Row, Grid } from 'react-native-easy-grid';
-import { StyleSheet, Image, View, AsyncStorage } from 'react-native';
+import { StyleSheet, Image, View, AsyncStorage,TextInput} from 'react-native';
 import SectionedMultiSelect from 'react-native-sectioned-multi-select';
 import { RadioButton } from 'react-native-paper';
 
@@ -42,7 +42,8 @@ class PaymentPage extends Component {
             savedCards: [],
             saveCardCheckbox: true,
             bookSlotDetails: null,
-            isLoading: false
+            isLoading: false,
+            isHidden: false
         }
         this.BookAppointmentPaymentUpdate = new BookAppointmentPaymentUpdate();
     }
@@ -79,7 +80,9 @@ class PaymentPage extends Component {
             this.setState({ savedCards : respData.data});   
       }
     }
+    
 
+    
     makePaymentMethod() {
         let data;
         if(this.state.selectedSavedCardId !== null) {
@@ -256,7 +259,10 @@ class PaymentPage extends Component {
         console.log(selectedItems)
         // this.setState({ selectedItems: [ selectedItems[selectedItems.length - 1] ] });
         this.setState({ selectedItems: selectedItems, selectedNetBank : selectedItems[0] });
-    };
+    } 
+    onCouponPress() {
+        this.setState({isHidden: true})
+      }
 
     render() {
 
@@ -281,18 +287,27 @@ class PaymentPage extends Component {
                         <View style={{ marginTop: 10, marginBottom: 10 }}>
                             <Grid style={{ marginRight: 10, marginLeft: 10 }}>
                                 <Col>
-                              
+                                
                                     <Form>
+                                        
                                     <Input underlineColorAndroid='gray' placeholder="Enter Your 'Coupon' Code here" style={styles.transparentLabel}
                                         getRef={(input) => { this.enterCouponCode = input; }}
                                         secureTextEntry={true}
+                                        keyboardType={'default'}
                                         returnKeyType={'go'}
                                         value={this.state.password}
-                                        onChangeText={enterCouponCode => this.setState({ enterCouponCode })}
+                                        onChangeText={enterCouponCode => this.onCouponPress({ enterCouponCode })}
                                     />
-                                       
-
+                                      
                                     </Form>
+                                     
+                                    <Row>
+                                    <Right>
+                                    {this.state.isHidden ? 
+                                        <Button  style={{marginTop:10,backgroundColor:'#2ecc71',color:'#fff',borderRadius:10}}><Text style={{fontSize:15,fontFamily:'OpenSans',fontWeight:'bold'}}>submit</Text></Button>
+                                        :null}
+                                        </Right>
+                                    </Row>
                                 </Col>
                             </Grid>
                             </View>
@@ -405,9 +420,13 @@ class PaymentPage extends Component {
                             <Grid style={{ marginRight: 10, marginLeft: 10 }}>
                                 <Col>
                                     <Text style={styles.labelTop}>{cardType} Card Holder Name (Optional)</Text>
-                                    <Form>
+                                    <Form><TextInput
+                                     style={{ height:60, backgroundColor: this.state.backgroundColor, color: this.state.color }}  />
 
                                         <Input placeholder="Card Holder Name"
+                                         returnKeyType={'next'}
+                                         keyboardType={'default'}
+                                         
                                             value={cardPaymentDetails ? cardPaymentDetails.name : ''}
                                             onChangeText={(text) => {
                                                var cardPaymentDetails = { ...this.state.cardPaymentDetails }
@@ -427,6 +446,7 @@ class PaymentPage extends Component {
 
                                         <Input placeholder="Card Number"
                                             maxLength={19}
+                                            returnKeyType={'next'}
                                             keyboardType={'numeric'}
                                             onChangeText={(text) => this.handlingCardNumber(text)}
                                             value={cardPaymentDetails ? cardPaymentDetails.number : ''}
@@ -442,6 +462,7 @@ class PaymentPage extends Component {
                                     <Form>
 
                                         <Input placeholder='MM/YY'
+                                        returnKeyType={'next'}
                                             keyboardType={'numeric'}
                                             value={cardPaymentDetails ? cardPaymentDetails.monthyear : ''}
                                             onChangeText={(text) => this.handlingCardExpiry(text)}
@@ -455,6 +476,7 @@ class PaymentPage extends Component {
 
                                         <Input placeholder="CVV"
                                             maxLength={4}
+                                            returnKeyType={'next'}
                                             keyboardType={'numeric'}
                                             secureTextEntry={true}
                                             value={cardPaymentDetails ? cardPaymentDetails.cvv : ''}
@@ -579,8 +601,7 @@ class PaymentPage extends Component {
                                         <Form>
 
                                             <Input
-                                                //  underlineColorAndroid="red"
-                                                //     underlineColorIos="red"
+                                            
 
                                                 value={this.state.upiVPA}
                                                 onChangeText={(value) => this.setState({ upiVPA: value })}
