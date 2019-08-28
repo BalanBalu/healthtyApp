@@ -1,6 +1,8 @@
 import { postService, getService, putService} from '../../../setup/services/httpservices';
 
-
+export const SET_BOOK_APP_SLOT_DATA = 'BOOK_APP/SLOTDATA';
+export const SET_BOOK_APP_DOCTOR_DATA = 'BOOK_APP/DOCTORDATA';
+export const SET_SELECTED_DATE = 'BOOK_APP/SELECTED_DATE';
 
 /* Book the Doctor Appointment module  */
 export async function bookAppointment(bookSlotDetails, isLoading = true) {

@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { Component } from 'react';
 import { Button } from 'native-base';
 import { createStackNavigator, createBottomTabNavigator, createAppContainer, createSwitchNavigator, createDrawerNavigator } from 'react-navigation';
 //import { routes } from './appRouterConfig';
@@ -12,6 +12,10 @@ import UpdatePassword from "../../modules/screens/userprofile/UpdatePassword";
 import UpdateInsurance from "../../modules/screens/userprofile/UpdateInsurance";
 import UpdateUserDetails from "../../modules/screens/userprofile/UpdateUserDetails";
 import UpdateAddress from "../../modules/screens/userprofile/UpdateAddress";
+
+
+
+
 
 import finddoctor from "../../modules/screens/auth/finddoctor";
 import { Icon, View } from 'native-base';
@@ -33,12 +37,9 @@ import Notification from "../../modules/screens/Notification";
 
 import { Col, Grid, Row } from 'react-native-easy-grid';
 import { logout } from '../../modules/providers/auth/auth.actions';
-import { TouchableOpacity, Image } from 'react-native'
+import { TouchableOpacity, Image, Text, AppRegistry, AsyncStorage } from 'react-native'
 
 import menuIcon from '../../../assets/images/menu.png';
-import profileAvatar from '../../../assets/images/profileAvatar.png';
-
-import { HeaderBackButton } from 'react-navigation';
 import BookAppoinment from "../../modules/screens/bookappoinment";
 import Mapbox from "../../modules/screens/bookappoinment/Mapbox";
 import AppointmentDetails from '../../modules/screens/MyAppointments/AppointmentDetails';
@@ -58,6 +59,7 @@ import OrderMedicineDetails from '../../modules/screens/Pharmacy/OrderMedicineDe
 import MedicineSearchList from '../../modules/screens/Pharmacy/MedicineSearchList/MedicineSearchList';
 import MedicineCheckout from '../../modules/screens/Pharmacy/MedicineCheckout/MedicineChekout';
 
+import { Badge } from '../../../src/modules/common'
 const routes = {
   Home: {
     path: 'Home',
@@ -91,11 +93,14 @@ const routes = {
     screen: finddoctor,
     navigationOptions: {
       tabBarLabel: 'doctor',
-      tabBarIcon: ({ tintColor }) => <Icon
-        name={'notifications'}
-        size={20}
-        color={tintColor}
-      />
+      tabBarIcon: ({ tintColor }) =>
+
+        <Icon
+          name={'notifications'}
+          size={20}
+          color={tintColor}
+        />
+
     }
   }
 }
@@ -257,10 +262,11 @@ const myAppointmentsStack = createStackNavigator({
   });
 
 
+
 const HomeStack = createStackNavigator({
   Home: {
     screen: Home,
-    navigationOptions: ({ navigation }) => ({
+   navigationOptions: ({ navigation }) => ({
 
       title: 'DashBoard',
       headerLeft: (
@@ -271,12 +277,17 @@ const HomeStack = createStackNavigator({
           />
         </TouchableOpacity>
       ),
+
       headerRight: (
         <Grid>
 
           <Col>
             <TouchableOpacity onPress={() => { navigation.navigate('Notification') }} >
-              <Icon name="notifications" style={{ color: '#fff', marginRight: 10, fontFamily: 'opensans-semibold' }}></Icon>
+              <View>
+                <Icon name="notifications" style={{ color: '#fff', marginRight: 10, fontFamily: 'opensans-semibold' }}></Icon>
+
+                 <Badge/>
+              </View>
             </TouchableOpacity>
           </Col>
           <Col>
@@ -313,6 +324,12 @@ const HomeStack = createStackNavigator({
       title: 'Notification',
     })
   },
+  "AppointmentInfo": {
+    screen: AppointmentDetails,
+    navigationOptions: {
+      title: 'Appointment Info'
+    }
+  },
 
 },
   {
@@ -321,6 +338,7 @@ const HomeStack = createStackNavigator({
       headerTintColor: 'white',
     })
   })
+
 
 const ProfileStack = createStackNavigator({
   Profile: {
@@ -570,7 +588,6 @@ export default createAppContainer(createSwitchNavigator(
 
   }
 ));
-
 // export const appStack = createStackNavigator(AppRoutes, {
 //   initialRouteName: 'Home',
 //   headerMode: 'none',
@@ -578,5 +595,3 @@ export default createAppContainer(createSwitchNavigator(
 // })
 // const stack = createStackNavigator({ AppTabs, appStack }, { headerMode: "none" });
 //export default createAppContainer(stack)
-
-

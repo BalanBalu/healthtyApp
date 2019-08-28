@@ -8,7 +8,7 @@ import { StyleSheet, Image, TouchableOpacity, View, FlatList, AsyncStorage } fro
 import StarRating from 'react-native-star-rating';
 import { ScrollView } from 'react-native-gesture-handler';
 import Modal from "react-native-modal";
-import { insertDoctorsWishList, searchDoctorList, fetchAvailabilitySlots, getMultipleDoctorDetails, getDoctorsReviewsCount, getPatientWishList } from '../../providers/bookappointment/bookappointment.action';
+import { insertDoctorsWishList, searchDoctorList, fetchAvailabilitySlots, getMultipleDoctorDetails, getDoctorsReviewsCount, getPatientWishList, SET_BOOK_APP_SLOT_DATA, SET_BOOK_APP_DOCTOR_DATA, SET_SELECTED_DATE } from '../../providers/bookappointment/bookappointment.action';
 import { formatDate, addMoment, addTimeUnit, getMoment,addDate,dateDiff, findArrayObj, intersection } from '../../../setup/helpers';
 import { Loader } from '../../../components/ContentLoader';
 import { RenderHospitalAddress } from '../../common';
@@ -16,7 +16,7 @@ import { NavigationEvents } from 'react-navigation';
 import Spinner from '../../../components/Spinner';
 import moment from 'moment';
 
-
+import { store } from '../../../setup/store';
 let conditionFromFilterPage;
 
 class doctorSearchList extends Component {
@@ -66,6 +66,10 @@ class doctorSearchList extends Component {
         this.props.navigation.navigate('Filters', { doctorData: this.state.doctorData, doctorDetailsWitSlots: this.state.doctorDetails })
     }
     componentDidMount = async () => {
+        store.dispatch({
+            type: SET_SELECTED_DATE,
+            data: this.state.selectedDate
+        });
         this.getPatientWishLists();
         this.getPatientSearchData();
     }
@@ -368,7 +372,7 @@ class doctorSearchList extends Component {
             
             this.getPatientReviews(doctorIds).catch(res => console.log("Exception on getPatientReviews" + res));
             
-          let doctorData = this.state.doctorData;
+            let doctorData = this.state.doctorData;
             let uniqueFilteredDocArray = []; 
             doctorData.forEach((element) => {
                 console.log(element);
@@ -438,13 +442,21 @@ class doctorSearchList extends Component {
                             doctorIdHostpitalId : doctorSlotData.doctorIdHostpitalId
                         }
                         this.processedDoctorDetailsData.push(obj);
-                       
                     }
             }
+                store.dispatch({
+                    type: SET_BOOK_APP_SLOT_DATA,
+                    data: this.processedDoctorData
+                })
                 
+                store.dispatch({
+                    type: SET_BOOK_APP_DOCTOR_DATA,
+                    data: this.doctorDetailsData
+                })
                 console.log(this.processedDoctorDetailsData);
                 
                 await this.setState({ doctorDetails: this.processedDoctorData, doctorData: this.processedDoctorDetailsData });
+               
                 this.enumarateDates(startDate, endDate)
                 
             }
@@ -480,17 +492,18 @@ class doctorSearchList extends Component {
     /* Click the Slots from Doctor List page */
     onSlotPress = async (doctorData, selectedSlotItem, availableSlots, selectedSlotIndex) => {
         var selectedHospitalId = selectedSlotItem.location.hospital_id;
-        let hospitalLocations = [];
-        let tempHospitalArray = [];
-
-        await this.setState({ singleDataWithDoctorDetails: doctorData });
+       
+       // await this.setState({ singleDataWithDoctorDetails: doctorData });
         if (availableSlots[0].location.hospital_id === selectedHospitalId) {
-            var confirmSlotDetails = {};
-            confirmSlotDetails = this.state.singleDataWithDoctorDetails;
-            confirmSlotDetails.slotData = selectedSlotItem;
+            var confirmSlotDetails = {
+                ...doctorData,
+                slotData: selectedSlotItem
+            };
             this.props.navigation.navigate('Payment Review', { resultconfirmSlotDetails: confirmSlotDetails })
-        } else {
-            availableSlots.forEach(element => {
+        } /*else {
+             let hospitalLocations = [];
+             let tempHospitalArray = [];
+             availableSlots.forEach(element => {
                 if (!tempHospitalArray.includes(element.location.hospital_id)) {
                     tempHospitalArray.push(element.location.hospital_id);
                     hospitalLocations.push({
@@ -508,7 +521,7 @@ class doctorSearchList extends Component {
             await this.setState({ selectedDoctorHospitalLocations: hospitalLocations });
             await this.onClickedHospitalName(selectedHospitalId);
             await this.setState({ isModalVisible: true })
-        }
+        } */
     }
     /* Click the Hospital location and names from Book Appointment Popup page */
     onClickedHospitalName = async (hospitalId) => {
@@ -554,7 +567,6 @@ class doctorSearchList extends Component {
     }
 
     navigateToBookAppointmentPage(doctorAvailabilityData) {
-        console.log('coming here');
         const doctorDetails = doctorAvailabilityData;
         const slotData = doctorAvailabilityData.slotData[this.state.selectedDate]
         this.props.navigation.navigate('Book Appointment', { doctorDetails: doctorDetails, slotList: slotData })
@@ -610,9 +622,10 @@ class doctorSearchList extends Component {
 
 
     render() {
+        const { bookappointment: { slotData, selectedDate } } = this.props;
         const { navigation } = this.props;
         const { isLoading, isAvailabilityLoading,
-            uniqueFilteredDocArray, searchedResultData, categories, singleDataWithDoctorDetails, singleHospitalDataSlots, reviewData, patientWishListsDoctorIds } = this.state;
+            uniqueFilteredDocArray, searchedResultData, categories, singleDataWithDoctorDetails, singleHospitalDataSlots, reviewData, patientWishListsDoctorIds,/* doctorDetails */} = this.state;
         return (
 
             <Container style={styles.container}>
@@ -688,7 +701,7 @@ class doctorSearchList extends Component {
                         {searchedResultData == null ? this.noDoctorsAvailable() :
 
                             <FlatList
-                                data={this.state.doctorDetails.filter(ele => uniqueFilteredDocArray.includes(ele.doctorIdHostpitalId))}
+                                data={slotData.filter(ele => uniqueFilteredDocArray.includes(ele.doctorIdHostpitalId))}
                                 extraData={this.state}
                                 style={{ borderBottomWidth: 0 }}
                                 keyExtractor={(item, index) => index.toString()}
@@ -800,7 +813,7 @@ class doctorSearchList extends Component {
                     </Content>
                 }
 
-
+{/* 
                 <Modal isVisible={this.state.isModalVisible} >
                     <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}>
 
@@ -912,7 +925,7 @@ class doctorSearchList extends Component {
 
                         <Button title="Hide modal" onPress={this.confirmAppointmentPress} />
                     </View>
-                </Modal>
+                </Modal> */}
 
             </Container >
         )
@@ -920,13 +933,12 @@ class doctorSearchList extends Component {
 
 }
 
-function loginState(state) {
-
+function bookApppointmentState(state) {
     return {
-        user: state.user
+        bookappointment: state.bookappointment
     }
 }
-export default connect(loginState, { login, messageShow, messageHide })(doctorSearchList)
+export default connect(bookApppointmentState)(doctorSearchList)
 
 
 const styles = StyleSheet.create({
