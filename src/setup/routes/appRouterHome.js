@@ -40,9 +40,6 @@ import { logout } from '../../modules/providers/auth/auth.actions';
 import { TouchableOpacity, Image, Text, AppRegistry, AsyncStorage } from 'react-native'
 
 import menuIcon from '../../../assets/images/menu.png';
-import profileAvatar from '../../../assets/images/profileAvatar.png';
-
-import { HeaderBackButton } from 'react-navigation';
 import BookAppoinment from "../../modules/screens/bookappoinment";
 import Mapbox from "../../modules/screens/bookappoinment/Mapbox";
 import AppointmentDetails from '../../modules/screens/MyAppointments/AppointmentDetails';
@@ -62,6 +59,7 @@ import OrderMedicineDetails from '../../modules/screens/Pharmacy/OrderMedicineDe
 import MedicineSearchList from '../../modules/screens/Pharmacy/MedicineSearchList/MedicineSearchList';
 import MedicineCheckout from '../../modules/screens/Pharmacy/MedicineCheckout/MedicineChekout';
 
+import { Badge } from '../../../src/modules/common'
 const routes = {
   Home: {
     path: 'Home',

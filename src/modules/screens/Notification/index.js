@@ -41,12 +41,10 @@ class Notification extends Component {
         }
 
         this.setState({ data: this.props.user.notification });
-       
-        if (this.props.user.notificationId[0] != undefined) {
+        if (this.props.user.notificationId != undefined) {
             console.log('null but come')
             await this.setState({ notificationId: this.props.user.notificationId })
-          await  this.upDateNotification('mark_as_viewed')
-
+            this.upDateNotification('mark_as_viewed')
             await AsyncStorage.removeItem('notification')
         }
      
@@ -117,7 +115,7 @@ class Notification extends Component {
                             size={"large"}
                             overlayColor="none"
                             cancelable={false}
-                        /> : data.length == undefined ?
+                        /> : data === undefined ? null : data.length == undefined ?
 
                             <View style={{
                                 flex: 1,
