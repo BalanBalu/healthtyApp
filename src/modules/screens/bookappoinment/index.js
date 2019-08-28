@@ -650,13 +650,13 @@ enumarateDates(startDate, endDate) {
 
 }
 
-function loginState(state) {
+function bookAppointmentState(state) {
 
   return {
-    user: state.user
+    user: state.bookAppointmentData
   }
 }
-export default connect(loginState)(BookAppoinment)
+export default connect(bookAppointmentState)(BookAppoinment)
 
 
 const styles = StyleSheet.create({
