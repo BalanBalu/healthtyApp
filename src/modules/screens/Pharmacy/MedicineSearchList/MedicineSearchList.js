@@ -25,8 +25,8 @@ class MedicineSearchList extends Component {
 async componentDidMount(){
     this.setState({clickCard:null});  
     const keyword=this.props.navigation.getParam('medicineKeyword');
-    this.storeMedicineToCart()
-    await this.searchedMedicines(keyword); 
+    await this.storeMedicineToCart() ;   
+    this.searchedMedicines(keyword);
 
 };
 
@@ -37,6 +37,7 @@ async componentDidMount(){
             };
           
             let result = await getSearchedMedicines(requestData);
+            console.log("result:"+result.data)
             this.setState({ value: result.data, isLoading: true })
             }
         catch (e) {
@@ -45,19 +46,17 @@ async componentDidMount(){
         finally {
             this.setState({ isLoading: false });
         }
+        
     }
 
     async addSubOperation(selectItem,operation){
         let data = await addToCart(this.state.value, selectItem, operation);  
-       // console.log('data:'+JSON.stringify(data)  )
-        this.setState({footerSelectedItem:data.selectemItemData})       
+        this.setState({footerSelectedItem:data.selectemItemData})  
     }
 
     onPressCard=async(item,index)=>{
         this.setState({clickCard:index})
         await this.setState({footerSelectedItem:item});
-       
-
       }  
   
     storeMedicineToCart= async() =>{
@@ -78,12 +77,12 @@ async componentDidMount(){
                     medicineSearchMap.set(element.medicine_id, element);
                 }
             })
-        }
+            console.log("length" + this.state.cartItems.length)
 
+        }
 
         let temp = [...medicineSearchMap.values()]   
         this.setState({value:temp});   
-        // console.log('value222'+JSON.stringify(this.state.value));
 
     }
     noMedicines() {
@@ -141,7 +140,7 @@ async componentDidMount(){
                                                         backgroundColor: 'green', right: 0, top: 0, justifyContent: 'center', alignItems: 'center',
                                                         borderColor: 'green', borderWidth: 1
                                                     }}>
-                                                        <Text style={{ padding: 5, backgroundColor: 'transparent', color: 'white', fontSize: 13 }}>{item.offer}</Text>
+                                                        <Text style={{ padding: 5, backgroundColor: 'transparent', textAlign: "center", color: 'white', fontSize: 13 }}>{item.offer}</Text>
 
                                                     </View>
                                                 </View>
@@ -197,10 +196,12 @@ async componentDidMount(){
                                     <Icon name='ios-cart' onPress={() => this.props.navigation.navigate('PharmacyCart')} />
 
                                     <Text style={{ marginLeft: -25, marginTop: 2, }} >VIEW CART</Text>
+                                    
                                     <View>
-                                        <Text style={{ position: 'absolute', height: 20, width: 20, fontSize: 13, backgroundColor: '#ffa723', top: 0, marginLeft: -105, borderRadius: 20, marginTop: -10 }}>
-                                            20
-                                        </Text>
+                                        {this.state.cartItems.length != 0 ?
+                                        <Text style={{ position: 'absolute', height: 20, width: 20, fontSize: 13, backgroundColor: '#ffa723', top: 0, marginLeft: -100, borderRadius: 20, marginTop: -10, textAlign:"center" }}>
+                                           {this.state.cartItems.length}
+                                        </Text>:null}
                                     </View>
                                 </Row>
                             </Button>
