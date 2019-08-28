@@ -9,7 +9,7 @@ import { StyleSheet, Image, View } from 'react-native';
 import styles from '../../screens/auth/styles';
 import Spinner from '../../../components/Spinner';
 import { ScrollView } from 'react-native-gesture-handler';
-
+import { RadioButton } from 'react-native-paper';
 
 class Signup extends Component {
     constructor(props) {
@@ -118,7 +118,24 @@ class Signup extends Component {
                             </Item>
                             <Item style={{ marginTop: 20, borderBottomWidth: 0, marginLeft: 20 }}>
 
-                                <Radio selected={this.state.radioStatus[0]} onPress={() => this.toggleRadio("0", "M")} color={"#775DA3"}
+                            <RadioButton.Group
+                               onValueChange={value => this.setState({ gender: value }) }
+                                value={this.state.gender}>
+                                  <RadioButton value="M" />
+                                  <Text style={{
+                                        marginLeft: 10, fontFamily: 'OpenSans',fontSize:15
+                                    }}>Male</Text>  
+                                  <RadioButton value="F" />
+                                  <Text style={{
+                                        marginLeft: 10, fontFamily: 'OpenSans',fontSize:15
+                                    }}>Female</Text>  
+                                  <RadioButton value="O" />
+                                  <Text style={{
+                                        marginLeft: 10, fontFamily: 'OpenSans',fontSize:15
+                                    }}>Others</Text>  
+                                      
+                             </RadioButton.Group>       
+                                {/* <Radio selected={this.state.radioStatus[0]} onPress={() => this.toggleRadio("0", "M")} color={"#775DA3"}
                                     selectedColor={"#775DA3"} />
                                 <Text style={{
                                     marginLeft: 10, fontFamily: 'OpenSans',fontSize:15
@@ -134,7 +151,7 @@ class Signup extends Component {
                                     selectedColor={"#775DA3"} />
                                 <Text style={{
                                     marginLeft: 40, fontFamily: 'OpenSans',fontSize:15
-                                }}>Other</Text>
+                                }}>Other</Text> */}
                             </Item>
 
 
