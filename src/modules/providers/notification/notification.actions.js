@@ -2,9 +2,9 @@
 
 
 import { postService, getService, putService } from '../../../setup/services/httpservices';
-export const NOTIFICATION_REQUEST = 'AUTH/NOTIFICATION/NOTIFICATION_REQUEST'
-export const NOTIFICATION_HAS_ERROR = 'AUTH/NOTIFICATION/NOTIFICATION_HAS_ERROR'
-export const NOTIFICATION_RESPONSE = 'AUTH/NOTIFICATION/NOTIFICATION_RESPONSE'
+
+export const NOTIFICATION_HAS_ERROR = 'NOTIFICATION/NOTIFICATION_HAS_ERROR'
+export const NOTIFICATION_RESPONSE = 'NOTIFICATION/NOTIFICATION_RESPONSE'
 import { AsyncStorage } from 'react-native';
 import { store } from '../../../setup/store';
 
@@ -37,10 +37,10 @@ export const fetchUserNotification = async (userId) => {
                 type: NOTIFICATION_RESPONSE,
                 message: respData.message,
                 details: respData.data,
-                notificationIds: notification
+                notificationIds: notification,
+                notificationCount: count 
             })
-               console.log(count)
-            await AsyncStorage.setItem('notification', count.toString())
+              
 
         }
         return respData;
