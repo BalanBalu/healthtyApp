@@ -4,12 +4,14 @@ import {
   CheckBox, Grid, Toast, KeyboardAvoidingView, Icon
 } from 'native-base';
 import { connect } from 'react-redux'
-import { Image, TouchableOpacity, View, ScrollView } from 'react-native';
+import { Image, TouchableOpacity, View, ScrollView, AsyncStorage } from 'react-native';
 
 import { login, RESET_REDIRECT_NOTICE } from '../../providers/auth/auth.actions';
 import styles from '../../screens/auth/styles'
 import Spinner from '../../../components/Spinner';
 import { store } from '../../../setup/store';
+import { fetchUserProfile } from '../../providers/profile/profile.action';
+
 class Login extends Component {
   constructor(props) {
     super(props)
@@ -36,6 +38,7 @@ class Login extends Component {
         console.log('result' + JSON.stringify(result))
         console.log(this.props.user);
         if (this.props.user.isAuthenticated) {
+          this.getUserProfile();
           if (this.props.user.needToRedirect === true) {
             let redirectNoticeData = this.props.user.redirectNotice;
             this.props.navigation.navigate(redirectNoticeData.routeName, redirectNoticeData.stateParams);
@@ -60,6 +63,19 @@ class Login extends Component {
     }
   }
 
+  getUserProfile = async () => {
+    try {
+            let userId = await AsyncStorage.getItem('userId');
+            let fields = "first_name,last_name,gender,dob,mobile_no,email"
+            let result = await fetchUserProfile(userId, fields);
+            if (!result.error) {
+              await AsyncStorage.setItem('basicProfileData', JSON.stringify(result))
+            }
+     }
+    catch (e) {
+        console.log(e);
+    }
+}
   render() {
     const { user: { isLoading } } = this.props;
     const { loginErrorMsg } = this.state;

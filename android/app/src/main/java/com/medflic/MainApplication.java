@@ -36,7 +36,7 @@ public class MainApplication extends Application implements ReactApplication {
           new RNGestureHandlerPackage(),
           new VectorIconsPackage(),
           new RCTMGLPackage(),
-          new RazorpayPackage() 
+          new RazorpayPackage()
       );
     }
 

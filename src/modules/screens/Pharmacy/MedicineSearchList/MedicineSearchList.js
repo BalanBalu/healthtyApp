@@ -189,14 +189,14 @@ async componentDidMount(){
                         </Col>
 
                         <Col style={{ marginRight: 40 }} >
-                            <Button success style={{ borderRadius: 10, marginTop: 10, marginLeft: 45, height: 40, justifyContent: 'center' }} onPress={()=> this.props.navigation.navigate('MedicinePaymentResult')} testID='viewToCartPage'>
+                            <Button success style={{ borderRadius: 10, marginTop: 10, marginLeft: 45, height: 40, justifyContent: 'center' }} onPress={()=> this.props.navigation.navigate('PharmacyCart')} testID='viewToCartPage'>
 
 
                                 <Row style={{ justifyContent: 'center', }}>
 
-                                    <Icon name='ios-cart' onPress={() => this.props.navigation.navigate('MedicinePaymentResult')} />
+                                    <Icon name='ios-cart' onPress={() => this.props.navigation.navigate('PharmacyCart')} />
 
-                                    <Text style={{ marginLeft: -25, marginTop: 2, }}>VIEW CART</Text>
+                                    <Text style={{ marginLeft: -25, marginTop: 2, }} >VIEW CART</Text>
                                     <View>
                                         <Text style={{ position: 'absolute', height: 20, width: 20, fontSize: 13, backgroundColor: '#ffa723', top: 0, marginLeft: -105, borderRadius: 20, marginTop: -10 }}>
                                             20

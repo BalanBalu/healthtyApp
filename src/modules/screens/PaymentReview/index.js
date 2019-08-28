@@ -9,13 +9,13 @@ import { bookAppointment, createPaymentRazor } from '../../providers/bookappoint
 import { formatDate } from '../../../setup/helpers';
 import Spinner from '../../../components/Spinner';
 import { RenderHospitalAddress } from '../../common';
-import RazorpayCheckout from 'react-native-razorpay';
+//import RazorpayCheckout from 'react-native-razorpay';
 import { ScrollView } from 'react-native-gesture-handler';
 //import appIcon from '../../../../assets/Icon.png';
 
+import BookAppointmentPaymentUpdate from '../../providers/bookappointment/bookAppointment';
 
-
-class PaymentReview extends Component {
+export default class PaymentReview extends Component {
     constructor(props) {
         super(props)
 
@@ -37,105 +37,29 @@ class PaymentReview extends Component {
         const bookSlotDetails = navigation.getParam('resultconfirmSlotDetails');
         await this.setState({ bookSlotDetails: bookSlotDetails });
     }
-    confirmPayLater = async () => {
-        try {
-            this.setState({ isLoading: true })
-            const userId = await AsyncStorage.getItem('userId');
-            let bookAppointmentData = {
-                userId: userId,
-                doctorId: this.state.bookSlotDetails.doctorId,
-                description: "something",
-                startTime: this.state.bookSlotDetails.slotData.slotStartDateAndTime,
-                endTime: this.state.bookSlotDetails.slotData.slotEndDateAndTime,
-                status: "PENDING",
-                status_by: "Patient",
-                statusUpdateReason: "something",
-                hospital_id: this.state.bookSlotDetails.slotData.location.hospital_id,
-                booked_from: "Mobile"
-            }
-            let resultData = await bookAppointment(bookAppointmentData);
-            // console.log(JSON.stringify(resultData) + 'response for confirmPayLater ');
-            this.setState({ isLoading: false })
-            if (resultData.success) {
-                Toast.show({
-                    text: resultData.message,
-                    type: "success",
-                    duration: 3000,
-                })
-                this.props.navigation.navigate('paymentsuccess', { successBookSlotDetails: this.state.bookSlotDetails });
-
-            } else {
-                Toast.show({
-                    text: resultData.message,
-                    type: "warning",
-                    duration: 3000,
-                })
-            }
-        } catch (ex) {
-            Toast.show({
-                text: 'Exception Occured ' + ex,
-                type: "warning",
-                duration: 3000,
-            })
-        } finally {
-            this.setState({ isLoading: false })
-        }
+    confirmProceedPayment() {
+        const amount = this.state.bookSlotDetails.slotData.fee;
+        this.props.navigation.navigate('paymentPage', {service_type : 'APPOINTMENT', bookSlotDetails: this.state.bookSlotDetails, amount: amount })
     }
-
-    async updatePaymentDetails(isSuccess, data, modeOfPayment) {
-        try {
-            console.log('is it comign ?')
-            this.setState({ isLoading: true });
-            const userId = await AsyncStorage.getItem('userId');
-            let paymentData = {
-                payer_id: userId,
-                payer_type: 'user',
-                payment_id: data.razorpay_payment_id || modeOfPayment === 'cash' ? 'cash_' + new Date().getTime() : 'pay_err_' + new Date().getTime(),
-                amount: this.state.bookSlotDetails.slotData.fee,
-                amount_paid: !isSuccess || modeOfPayment === 'cash' ? 0 : this.state.bookSlotDetails.slotData.fee,
-                amount_due: !isSuccess || modeOfPayment === 'cash' ? this.state.bookSlotDetails.slotData.fee : 0,
-                currency: 'INR',
-                service_type: 'APPOINTMENT',
-                booking_from: 'APPLICATION',
-                is_error: !isSuccess,
-                error_message: data.description || null,
-                payment_mode: modeOfPayment,
-            }
-            console.log('is congign')
-            let resultData = await createPaymentRazor(paymentData);
-            console.log(resultData);
-            if (resultData.success) {
-                Toast.show({
-                    text: resultData.message,
-                    type: "success",
-                    duration: 3000,
-                })
-                if (isSuccess) {
-                    this.confirmPayLater();
-                } else {
-                    Toast.show({
-                        text: data.description,
-                        type: "warning",
-                        duration: 3000,
-                    })
-                }
-            } else {
-                Toast.show({
-                    text: resultData.message,
-                    type: "warning",
-                    duration: 3000,
-                })
-            }
-        } catch (error) {
-            this.setState({ isLoading: false });
+   async processToPayLater() {
+        const userId = await AsyncStorage.getItem('userId');
+        this.BookAppointmentPaymentUpdate = new BookAppointmentPaymentUpdate();
+        let response = await this.BookAppointmentPaymentUpdate.updatePaymentDetails(true, {}, 'cash', this.state.bookSlotDetails, 'APPOINTMENT', userId);
+        console.log('Book Appointment Payment Update Response ');
+        console.log(response);
+        if(response.success) {
+            this.props.navigation.navigate('paymentsuccess', { successBookSlotDetails: this.state.bookSlotDetails });
+        } else {
             Toast.show({
-                text: error,
-                type: "warning",
-                duration: 3000,
+                text: response.message,
+                type: 'warning',
+                duration: 3000
             })
         }
+           
     }
 
+   
     render() {
         const { bookSlotDetails } = this.state;
         return (
@@ -188,22 +112,7 @@ class PaymentReview extends Component {
 
                         </Grid>
 
-                        <Grid style={{ borderBottomWidth: 0.3, color: '#f2f2f2', padding: 10, marginLeft: 10 }}>
-                            <Row>
-                                <Col style={{ width: '90%' }}>
-                                    <Text style={styles.customizedText}>Apply Coupons</Text>
-                                    <Input underlineColorAndroid='gray' placeholder="Enter Your 'Coupon' Code here" style={styles.transparentLabel}
-                                        getRef={(input) => { this.enterCouponCode = input; }}
-                                        secureTextEntry={true}
-                                        returnKeyType={'go'}
-                                        value={this.state.password}
-                                        onChangeText={enterCouponCode => this.setState({ enterCouponCode })}
-                                    />
-                                </Col>
-
-                            </Row>
-
-                        </Grid>
+                       
 
                         <Grid style={{ borderBottomWidth: 0.3, color: '#f2f2f2', padding: 10, marginLeft: 10 }}>
                             <Row>
@@ -215,35 +124,11 @@ class PaymentReview extends Component {
                                 </Col>
                             </Row>
                         </Grid>
-                        <Button block success style={{ borderRadius: 6, margin: 6 }} onPress={() => this.updatePaymentDetails(true, {}, 'cash')}>
+                        <Button block success style={{ borderRadius: 6, margin: 6 }} onPress={() => this.processToPayLater()}>
                             <Text uppercase={false}>payLater</Text>
                         </Button>
-                        <Button block success style={{ padding: 10, borderRadius: 6, margin: 6, marginBottom: 20 }} onPress={() => {
-                            var options = {
-                                description: 'Pay for your Health',
-                                image: 'https://png.pngtree.com/svg/20170309/c730f2b69f.svg',
-                                currency: 'INR',
-                                key: 'rzp_test_1DP5mmOlF5G5ag',
-                                amount: '5000',
-                                name: 'Sathish Krishnan',
-                                prefill: {
-                                    email: 'sathishkrish20@razorpay.com',
-                                    contact: '919164932823',
-                                    name: 'Sathish Krishnan',
-                                },
-                                theme: { color: '#775DA3' }
-                            }
-                            RazorpayCheckout.open(options).then((data) => {
-                                console.log(data);
-                                this.updatePaymentDetails(true, data, 'razor');
-                                // alert(`Success: ${data.razorpay_payment_id}`);
-                            }).catch((error) => {
-                                // handle failure
-                                this.updatePaymentDetails(false, error, 'razor');
-                                console.log(error);
-                                //alert(`Error: ${error.code} | ${error.description}`);
-                            });
-                        }}>
+                        <Button block success style={{ padding: 10, borderRadius: 6, margin: 6, marginBottom: 20 }} onPress={() => 
+                            this.confirmProceedPayment()}>
                             <Text uppercase={false} >Pay Now</Text>
                         </Button>
                     </ScrollView>
@@ -256,7 +141,7 @@ class PaymentReview extends Component {
 
 }
 
-export default PaymentReview
+
 
 
 const styles = StyleSheet.create({
