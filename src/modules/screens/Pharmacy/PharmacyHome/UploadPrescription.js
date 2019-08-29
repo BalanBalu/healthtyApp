@@ -49,11 +49,13 @@ class UploadPrescription extends Component {
         const regex = new RegExp(`${keyword.trim()}`, 'i');
         console.log(regex);        
         selectedPharmacy = pharmacyList.filter(value => value.name.search(regex) >= 0);
+        }
         if(selectedPharmacy.length==0){
             let defaultValue={name:'Pharmacy not found'}
-           selectedPharmacy.push(defaultValue);        }
+           selectedPharmacy.push(defaultValue);
+        }
         return selectedPharmacy;
-        }       
+       
     }
 
     /*Upload profile pic*/
@@ -69,6 +71,7 @@ class UploadPrescription extends Component {
         };
 
         ImagePicker.showImagePicker(options, (response) => {
+            console.log("showImagePicker");
             console.log('Response = ', response);
 
             if (response.didCancel) {
@@ -113,6 +116,7 @@ class UploadPrescription extends Component {
                 var res = await uploadMultiPart(endPoint, formData);
                 const response = res.data;
                 if (response.success) {
+                    console.log("succcss")
                     Toast.show({
                         text: 'Prescription Uploaded Successfully',
                         duration: 3000,
@@ -123,7 +127,7 @@ class UploadPrescription extends Component {
                         isImageNotLoaded: false
                     });
                     console.log('this.state.imageSource' + JSON.stringify(this.state.imageSource));
-                    this.props.navigation.navigate('MedicineList')
+                    this.props.navigation.navigate('Pharmacy')
                 } else {
                     Toast.show({
                         text: 'Problem Uploading Profile Picture',
@@ -170,7 +174,7 @@ class UploadPrescription extends Component {
                                     placeholder='Select Pharmacy'
                                     listStyle={{ position: 'relative', marginLeft: 45, width: '70%', marginTop: -3.5 }}
                                     renderItem={({ item }) => (
-                                        <TouchableOpacity onPress={() => this.setState({ keyword: item.name })}>
+                                        <TouchableOpacity onPress={() => this.setState({ keyword:selectedPharmacy[0].name==='Pharmacy not found'?null:item.name })}>
                                             <Text style={{ fontFamily: 'OpenSans', borderBottomWidth: 0.3, color: 'gray', marginTop: 2, fontSize: 14 }}>{item.name}</Text>
                                         </TouchableOpacity>
                                     )}
@@ -214,7 +218,7 @@ class UploadPrescription extends Component {
                                     </Button>
                                 </Col>
                                 <Col style={{ width: '45%', alignItems: 'center' }}>
-                                    <Button style={{ borderRadius: 5, height: 35, padding: 15 }} onPress={() => this.props.navigation.navigate('MedicineList')}>
+                                    <Button style={{ borderRadius: 5, height: 35, padding: 15 }} onPress={() => this.props.navigation.navigate('Pharmacy')}>
                                         <Text style={{ fontSize: 12 }} >CANCEL</Text>
                                     </Button>
                                 </Col>
