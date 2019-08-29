@@ -33,12 +33,44 @@ export default class Filters extends Component {
         const { navigation } = this.props;
         const doctorData = navigation.getParam('doctorData');
         const selectedServicesList = navigation.getParam('selectedServicesList');
+        const filterData = navigation.getParam('filterData');
+        const filterBySelectedAvailabilityDateCount = navigation.getParam('filterBySelectedAvailabilityDateCount')
+       // console.log( 'Filter Data from Search List: ' + JSON.stringify(filterData));
+        //console.log(' filterBySelectedAvailabilityDateCount' + filterBySelectedAvailabilityDateCount);
+        if(filterBySelectedAvailabilityDateCount !== 0) {
+            this.clickFilterByAvailabilityDates(filterBySelectedAvailabilityDateCount);
+        }
+        if(filterData) {
+            if(filterData.gender_preference) {
+                let genderIndex, genderSelected;
+                if(filterData.gender_preference === 'M') {
+                    this.clickGenderInButton(1, 'M')
+                } else if(filterData.gender_preference === 'F') {
+                    this.clickGenderInButton(2, 'F')
+                } else if(filterData.gender_preference === 'O') {
+                    this.clickGenderInButton(3, 'O')
+                }
+            }
+            if(filterData.experience) {
+                this.clickFilterByExperince(filterData.experience);
+            }
+            if(filterData.language) {
+                this.onSelectedLanguagesChange(filterData.language);
+            }
+            if(filterData.category) {
+                this.onSelectedCategoryChange(filterData.category);
+            }
+            if(filterData.service) {
+                // add the implemendation here for service list    
+            }
+        }
+
         if (selectedServicesList != undefined) {
             await this.setState({ selectedServicesList: selectedServicesList, viewDoctors_button: false });
             filterData.service = selectedServicesList;
         }
         await this.setState({ doctorData: doctorData });
-        console.log('selectedServicesList' + JSON.stringify(this.state.selectedServicesList));
+        //console.log('selectedServicesList' + JSON.stringify(this.state.selectedServicesList));
         // console.log('doctorData' + JSON.stringify(this.state.doctorData));
         let sampleLangArray = [];
         let sampleCategoryArray = [];
@@ -78,7 +110,7 @@ export default class Filters extends Component {
 
     /* Go and select the Services from Service List page  */
     goServiceListPage = async () => {
-        await this.props.navigation.navigate('Services', { serviceList: this.state.serviceList })
+        this.props.navigation.navigate('Services', { serviceList: this.state.serviceList })
     }
     /* Send multiple Selected Filtered values  */
     sendFilteredData = async () => {
@@ -87,8 +119,8 @@ export default class Filters extends Component {
     /*  Select GenderPreference */
     clickGenderInButton = async (genderIndex, genderSelected) => {
         this.setState({ genderIndex: genderIndex });
-        await this.setState({ genderSelected: genderSelected, viewDoctors_button: false })
-        filterData.gender_preference = this.state.genderSelected;
+        this.setState({ genderSelected: genderSelected, viewDoctors_button: false })
+        filterData.gender_preference = genderSelected;
     }
     /* Get the selected Availability Date  */
     clickFilterByAvailabilityDates = (index) => {
@@ -96,23 +128,22 @@ export default class Filters extends Component {
     }
 
     clickFilterByExperince = async (index) => {
-        await this.setState({ selectExperinceIndex: index, viewDoctors_button: false })
-        filterData.experience = this.state.selectExperinceIndex;
+        this.setState({ selectExperinceIndex: index, viewDoctors_button: false })
+        filterData.experience = index;
     }
 
     onSelectedLanguagesChange = async (language) => {
-        await this.setState({ language, viewDoctors_button: false });
-        filterData.language = this.state.language;
+        this.setState({ language, viewDoctors_button: false });
+        filterData.language = language;
     };
 
     onSelectedCategoryChange = async (selectedCategory) => {
-        await this.setState({ selectedCategory, viewDoctors_button: false });
-        filterData.category = this.state.selectedCategory;
+        this.setState({ selectedCategory, viewDoctors_button: false });
+        filterData.category = selectedCategory;
     }
 
     render() {
         const { genderIndex, selectAvailabilityIndex, selectExperinceIndex } = this.state;
-
         return (
             <Container style={styles.container}>
                 <Content style={{ padding: 5 }}>
@@ -157,7 +188,7 @@ export default class Filters extends Component {
                                         <View style={{ marginLeft: 'auto', marginRight: 'auto' }}>
                                             <Icon style={{ fontSize: 30, marginLeft: 'auto', marginRight: 'auto', }} name='female' />
 
-                                            <Text style={{ textAlign: 'center', fontSize: 12, }}>Any</Text>
+                                            <Text style={{ textAlign: 'center', fontSize: 12, }}>Others</Text>
                                         </View>
                                     </Button>
                                 </Col>
@@ -196,7 +227,7 @@ export default class Filters extends Component {
                                             <Icon style={{ fontSize: 30, marginLeft: 'auto', marginRight: 'auto' }} name='female' />
 
 
-                                            <Text style={{ textAlign: 'center', fontSize: 12 }}>After 3 Day</Text>
+                                            <Text style={{ textAlign: 'center', fontSize: 12 }}>Next 3 Days</Text>
 
                                         </View>
 
@@ -209,7 +240,7 @@ export default class Filters extends Component {
                                     >
                                         <View style={{ marginLeft: 'auto', marginRight: 'auto' }}>
                                             <Icon style={{ fontSize: 30, marginLeft: 'auto', marginRight: 'auto', }} name='female' />
-                                            <Text style={{ textAlign: 'center', fontSize: 12, }}>After a week</Text>
+                                            <Text style={{ textAlign: 'center', fontSize: 12, }}>Next 7 Days</Text>
                                         </View>
                                     </Button>
 

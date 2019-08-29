@@ -52,7 +52,7 @@ class doctorSearchList extends Component {
                 isLoading: false,
                 filterBySelectedAvailabilityDateCount: 0,
                 patientWishListsDoctorIds: [],
-                filterData: [],
+                filterData : null,
                 uniqueFilteredDocArray: [],
                 yearOfExperience: ''
             }
@@ -63,7 +63,12 @@ class doctorSearchList extends Component {
         this.props.navigation.navigate('Payment Review', { resultconfirmSlotDetails: this.state.confirmSlotDetails })
     };
     navigateToFilters() {
-        this.props.navigation.navigate('Filters', { doctorData: this.state.doctorData, doctorDetailsWitSlots: this.state.doctorDetails })
+        this.props.navigation.navigate('Filters', { 
+            doctorData: this.state.doctorData, 
+            doctorDetailsWitSlots: this.state.doctorDetails,  
+            filterData : this.state.filterData,
+            filterBySelectedAvailabilityDateCount: this.state.filterBySelectedAvailabilityDateCount
+        })
     }
     componentDidMount = async () => {
         store.dispatch({
@@ -79,7 +84,7 @@ class doctorSearchList extends Component {
 
         const filterBySelectedAvailabilityDateCount = navigation.getParam('filterBySelectedAvailabilityDateCount');
         conditionFromFilterPage = navigation.getParam('ConditionFromFilter');
-        await this.setState({ filterData: filterData })
+        await this.setState({ filterData: filterData, filterBySelectedAvailabilityDateCount: filterBySelectedAvailabilityDateCount })
         if (conditionFromFilterPage == true) {
             console.log('comming FilterPage');
             this.renderDoctorListByFilteredData(filterData, filterBySelectedAvailabilityDateCount)
@@ -114,15 +119,14 @@ class doctorSearchList extends Component {
                 })
             }
 
-            if (filterData.experience) {
-                if (doctorElement.experience) {
-                    let updatedDate = moment(doctorElement.experience.updated_date);
-                    let doctorExperienceMonth = dateDiff(updatedDate, moment(new Date()), 'months');
-                    let filterValueExperienceInMonth = filterData.experience * 12; // value is returning as year to convert to months multiplies by 12 
-                    if (filterValueExperienceInMonth >= doctorExperienceMonth) {
-                        experienceMatchedList.push(doctorIdHostpitalId);
-                    }
-                }
+            if (filterData.experience && doctorElement.experience) {
+                let updatedDate = moment(doctorElement.experience.updated_date);
+                let doctorExperienceMonth = dateDiff(updatedDate, moment(new Date()), 'months');
+                let filterValueExperienceInMonth = filterData.experience * 12; // value is returning as year to convert to months multiplies by 12 
+                 if (filterValueExperienceInMonth >= doctorExperienceMonth) {
+                     experienceMatchedList.push(doctorIdHostpitalId);
+                  }
+                
             }
             if (filterData.category) {
                 let specialistArray = doctorElement.specialist ? doctorElement.specialist : [];
@@ -178,25 +182,15 @@ class doctorSearchList extends Component {
         }
 /* Finally Rendered the Doctor Lists  */
 
-        if (filterData) {
+        if (filterData || availtyDateCount !== 0 ) {
             console.log('Came Filter Availability and DocData , Filter only DocDatas  ')
             let filteredDocListArray = intersection(selectedFiltesArray);
             await this.setState({ uniqueFilteredDocArray: filteredDocListArray })
             console.log('this.state.uniqueFilteredDocArray'+JSON.stringify(this.state.uniqueFilteredDocArray))
-if( this.state.uniqueFilteredDocArray.length ===0){
-    this.noDoctorsAvailable();
-}
+            if (this.state.uniqueFilteredDocArray.length ===0){
+                this.noDoctorsAvailable();
+            }
         }
-        else {
-            console.log('Came only Filtered Availability Date list')
-            let filteredAvaltyDocListArry = intersection(selectedFiltesArray);
-            await this.setState({ uniqueFilteredDocArray: filteredAvaltyDocListArry })
-            console.log('this.state.uniqueFilteredDocArray'+JSON.stringify(this.state.uniqueFilteredDocArray))
-            if( this.state.uniqueFilteredDocArray.length===0){
-                this.noDoctorsAvailable();           
-                 }
-        }
-
     }
     /* Insert Doctors Favourite Lists  */
     addToWishList = async (doctorId, index) => {
