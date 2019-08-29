@@ -37,22 +37,21 @@ export default class Filters extends Component {
         const filterBySelectedAvailabilityDateCount = navigation.getParam('filterBySelectedAvailabilityDateCount')
        // console.log( 'Filter Data from Search List: ' + JSON.stringify(filterData));
         //console.log(' filterBySelectedAvailabilityDateCount' + filterBySelectedAvailabilityDateCount);
-        if(filterBySelectedAvailabilityDateCount !== 0) {
-            this.clickFilterByAvailabilityDates(filterBySelectedAvailabilityDateCount);
+        if(filterBySelectedAvailabilityDateCount !== 0 && filterBySelectedAvailabilityDateCount !== undefined) {
+            this.clickFilterByAvailabilityDates(filterBySelectedAvailabilityDateCount, false);
         }
         if(filterData) {
             if(filterData.gender_preference) {
-                let genderIndex, genderSelected;
                 if(filterData.gender_preference === 'M') {
-                    this.clickGenderInButton(1, 'M')
+                    this.clickGenderInButton(1, 'M', false)
                 } else if(filterData.gender_preference === 'F') {
-                    this.clickGenderInButton(2, 'F')
+                    this.clickGenderInButton(2, 'F', false)
                 } else if(filterData.gender_preference === 'O') {
-                    this.clickGenderInButton(3, 'O')
+                    this.clickGenderInButton(3, 'O', false)
                 }
             }
             if(filterData.experience) {
-                this.clickFilterByExperince(filterData.experience);
+                this.clickFilterByExperince(filterData.experience, false );
             }
             if(filterData.language) {
                 this.onSelectedLanguagesChange(filterData.language);
@@ -114,20 +113,32 @@ export default class Filters extends Component {
     }
     /* Send multiple Selected Filtered values  */
     sendFilteredData = async () => {
-        this.props.navigation.navigate('Doctor List', { filterData: filterData, filterBySelectedAvailabilityDateCount: this.state.selectAvailabilityIndex, ConditionFromFilter: true })
-    }
+        this.props.navigation.navigate('Doctor List', { 
+                filterData: filterData, 
+                filterBySelectedAvailabilityDateCount: this.state.selectAvailabilityIndex, ConditionFromFilter: true })
+        }
     /*  Select GenderPreference */
-    clickGenderInButton = async (genderIndex, genderSelected) => {
+    clickGenderInButton = async (genderIndex, genderSelected, bySelect) => {
+        if(genderIndex === this.state.genderIndex && bySelect) {
+            genderIndex = 0,
+            genderSelected = ''
+        }
         this.setState({ genderIndex: genderIndex });
         this.setState({ genderSelected: genderSelected, viewDoctors_button: false })
         filterData.gender_preference = genderSelected;
     }
     /* Get the selected Availability Date  */
-    clickFilterByAvailabilityDates = (index) => {
+    clickFilterByAvailabilityDates = (index, bySelect) => {
+        if(index === this.state.selectAvailabilityIndex && bySelect) {
+            index = 0
+        }
         this.setState({ selectAvailabilityIndex: index, viewDoctors_button: false })
     }
 
-    clickFilterByExperince = async (index) => {
+    clickFilterByExperince = async (index, bySelect) => {
+        if(index === this.state.selectExperinceIndex && bySelect) {
+            index = 0
+        }
         this.setState({ selectExperinceIndex: index, viewDoctors_button: false })
         filterData.experience = index;
     }
@@ -138,6 +149,9 @@ export default class Filters extends Component {
     };
 
     onSelectedCategoryChange = async (selectedCategory) => {
+        if(selectedCategory == 'Select Your Category') {
+            selectedCategory = null;
+        }
         this.setState({ selectedCategory, viewDoctors_button: false });
         filterData.category = selectedCategory;
     }
@@ -159,7 +173,7 @@ export default class Filters extends Component {
                                 <Col>
                                     <Button bordered
                                         style={genderIndex === 1 ? styles.selectedGenderColor : styles.defaultGenderColor}
-                                        onPress={() => this.clickGenderInButton(1, "M")}
+                                        onPress={() => this.clickGenderInButton(1, "M", true)}
                                     >
                                         <View style={{ marginLeft: 'auto', marginRight: 'auto' }}>
                                             <Icon style={{ fontSize: 30, marginLeft: 'auto', marginRight: 'auto' }} name='male' />
@@ -171,7 +185,7 @@ export default class Filters extends Component {
                                 <Col>
                                     <Button bordered style={styles.defaultColor}
                                         style={genderIndex === 2 ? styles.selectedGenderColor : styles.defaultColor}
-                                        onPress={() => this.clickGenderInButton(2, "F")}
+                                        onPress={() => this.clickGenderInButton(2, "F", true)}
                                     >
                                         <View style={{ marginLeft: 'auto', marginRight: 'auto' }}>
                                             <Icon style={{ fontSize: 30, marginLeft: 'auto', marginRight: 'auto', }} name='female' />
@@ -184,7 +198,7 @@ export default class Filters extends Component {
                                     <Button bordered style={styles.defaultColor}
                                         style={genderIndex === 3 ? styles.selectedGenderColor : styles.defaultGenderColor}
 
-                                        onPress={() => this.clickGenderInButton(3, "O")} >
+                                        onPress={() => this.clickGenderInButton(3, "O", true )} >
                                         <View style={{ marginLeft: 'auto', marginRight: 'auto' }}>
                                             <Icon style={{ fontSize: 30, marginLeft: 'auto', marginRight: 'auto', }} name='female' />
 
@@ -204,7 +218,7 @@ export default class Filters extends Component {
                             <Row style={{ marginTop: 10 }}>
                                 <Col>
                                     <Button bordered style={styles.defaultColor}
-                                        onPress={() => this.clickFilterByAvailabilityDates(1)}
+                                        onPress={() => this.clickFilterByAvailabilityDates(1, true)}
                                         style={selectAvailabilityIndex === 1 ? styles.selectedGenderColor : styles.defaultColor}
                                     >
                                         <View style={{ marginLeft: 'auto', marginRight: 'auto' }}>
@@ -218,7 +232,7 @@ export default class Filters extends Component {
                                 </Col>
                                 <Col>
                                     <Button bordered style={styles.defaultColor}
-                                        onPress={() => this.clickFilterByAvailabilityDates(3)}
+                                        onPress={() => this.clickFilterByAvailabilityDates(3, true)}
                                         style={selectAvailabilityIndex === 3 ? styles.selectedGenderColor : styles.defaultColor}
 
                                     >
@@ -236,7 +250,7 @@ export default class Filters extends Component {
                                 <Col>
                                     <Button bordered style={styles.defaultColor}
                                         style={selectAvailabilityIndex === 7 ? styles.selectedGenderColor : styles.defaultColor}
-                                        onPress={() => this.clickFilterByAvailabilityDates(7)}
+                                        onPress={() => this.clickFilterByAvailabilityDates(7, true)}
                                     >
                                         <View style={{ marginLeft: 'auto', marginRight: 'auto' }}>
                                             <Icon style={{ fontSize: 30, marginLeft: 'auto', marginRight: 'auto', }} name='female' />
@@ -258,7 +272,7 @@ export default class Filters extends Component {
                                 <Col>
                                     <Button bordered
                                         style={selectExperinceIndex === 10 ? styles.selectedExpColor : styles.defaultExpColor}
-                                        onPress={() => this.clickFilterByExperince(10)}
+                                        onPress={() => this.clickFilterByExperince(10, true)}
                                     >
                                         <View style={{ marginLeft: 'auto', marginRight: 'auto' }}>
 
@@ -271,7 +285,7 @@ export default class Filters extends Component {
                                     <Button bordered
 
                                         style={selectExperinceIndex === 20 ? styles.selectedExpColor : styles.defaultExpColor}
-                                        onPress={() => this.clickFilterByExperince(20)}
+                                        onPress={() => this.clickFilterByExperince(20, true)}
 
                                     >
                                         <View style={{ marginLeft: 'auto', marginRight: 'auto' }}>
@@ -287,7 +301,7 @@ export default class Filters extends Component {
                                     <Button bordered
 
                                         style={selectExperinceIndex === 30 ? styles.selectedExpColor : styles.defaultExpColor}
-                                        onPress={() => this.clickFilterByExperince(30)}
+                                        onPress={() => this.clickFilterByExperince(30, true)}
                                     >
                                         <View style={{ marginLeft: 'auto', marginRight: 'auto' }}>
 
@@ -301,7 +315,7 @@ export default class Filters extends Component {
                                 <Col>
                                     <Button bordered
                                         style={selectExperinceIndex === 40 ? styles.selectedExpColor : styles.defaultExpColor}
-                                        onPress={() => this.clickFilterByExperince(40)}
+                                        onPress={() => this.clickFilterByExperince(40, true )}
 
                                     >
                                         <View style={{ marginLeft: 'auto', marginRight: 'auto' }}>
