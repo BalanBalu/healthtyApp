@@ -1,17 +1,14 @@
 import React, { Component } from 'react';
 import { Container, Content, Toast, Text, Title, Header, Button, H3, Item, List, ListItem, Card, Input, Left, Right, Thumbnail, Body, Icon, View, Footer, FooterTab } from 'native-base';
 import { Col, Row, Grid } from 'react-native-easy-grid';
-import { getMedicineDetails } from '../../../providers/pharmacy/pharmacy.action'
-// import { uploadMultiPart } from '../../../setup/services/httpservices'
-
-
+import { getMedicineDetails,getSearchedMedicines } from '../../../providers/pharmacy/pharmacy.action'
 import { StyleSheet, Image, FlatList, TouchableOpacity, AsyncStorage } from 'react-native';
-import { arrayExpression } from '@babel/types';
 import { NavigationEvents } from 'react-navigation';
 import { addToCart,medicineRateAfterOffer } from '../../../common';
+import Autocomplete from '../../../../components/Autocomplete'
 
 
-let temp, userId; 
+let  userId; 
 class PharmacyHome extends Component {
     constructor(props) {
         super(props)       
@@ -20,28 +17,39 @@ class PharmacyHome extends Component {
             clickCard:null,
             footerSelectedItem:'',
             cartItems:[],
-            searchText: null
+            searchMedicine:[],
+            keyword:''
+            
         }   
     }
 
-    componentDidMount(){
+    async componentDidMount(){
         this.setState({clickCard:null});               
         this.getMedicineList();
+        await this.searchMedicineByName();
     }
 
-    getMedicineList=async()=>{    
+    /*Get medicine list*/
+    getMedicineList=async()=>{
+        console.log("getmedicine");    
        temp = await AsyncStorage.getItem('userId')
-       userId = JSON.stringify(temp);      
+       userId = JSON.stringify(temp);  
+       console.log(userId);    
 
         medicineSearchMap = new Map();
         let result=await getMedicineDetails();
+
         if(result.success){
+            console.log("reust.success")
         result.data.forEach(element =>{           
             medicineSearchMap.set(element.medicine_id,element)
+
         })  
     }         
         const cartItems = await AsyncStorage.getItem('cartItems-'+userId);
-
+        console.log(cartItems);
+        if(cartItems===null){
+            console.log("");
         if(Array.isArray(JSON.parse(cartItems)) == true){
           this.setState({cartItems:JSON.parse(cartItems)})           
             this.state.cartItems.forEach(element => {  
@@ -50,10 +58,33 @@ class PharmacyHome extends Component {
                 }
             })
         }
+    }
 
         let temp = [...medicineSearchMap.values()]        
-        this.setState({medicineData:temp});      
+        this.setState({medicineData:temp});
+        console.log('this.state.medicineData'+JSON.stringify(this.state.medicineData))      
     }
+
+    /*Search medicine*/
+    searchMedicineByName = async () => {
+        try {
+            let requestData = {
+                value: this.state.keyword           
+            };
+          
+            let result = await getSearchedMedicines(requestData);
+            console.log('result'+JSON.stringify(result));
+            await this.setState({ searchMedicine: result.data, isLoading: true })
+            console.log('this.staete'+JSON.stringify(this.state.searchMedicine));
+            }
+        catch (e) {
+            console.log(e);
+        }
+        finally {
+            this.setState({ isLoading: false });
+        }
+    }
+
 
 
     onPressCard=async(item,index)=>{
@@ -66,21 +97,48 @@ class PharmacyHome extends Component {
     this.setState({footerSelectedItem:data.selectemItemData})       
    }
 
-   onSearchPress() { 
-       if(this.state.searchText!==null){
-        this.props.navigation.navigate('medicineSearchList',{medicineKeyword : this.state.searchText}) 
-       }else{
-        Toast.show({
-            type:"danger",
-            text: 'Kindly enter a medicine to search',
-            duration: 3000
-          })
+   onSearchPress(selectedMedicineName) {
+       console.log("selectmed") 
+       console.log(selectedMedicineName)
+       if(selectedMedicineName.length!=0){
+           console.log("null")
+        this.props.navigation.navigate('medicineSearchList',{medicineList:selectedMedicineName}) 
+
        }
+    }
+
+    autoCompleteMedicineName(keyword){
+        console.log("auto")
+        if (keyword === '' || keyword === undefined || keyword === null) {
+            return [];
+        }
+        const { searchMedicine } = this.state;
+        var selectedMedicineName=[]
+
+        if(searchMedicine!=undefined){
+        const regex = new RegExp(`${keyword.trim()}`, 'i');
+        console.log(regex);        
+        selectedMedicineName = searchMedicine.filter(value => value.medicine_name.search(regex) >= 0);
+        console.log('selectedMedicineName'+JSON.stringify(selectedMedicineName));        
+        }
+
+        if(selectedMedicineName.length==0){
+            let defaultValue={medicine_name:'Medicine Not Found'}
+            selectedMedicineName.push(defaultValue);
+        
+        }
+        return selectedMedicineName;
+
+        
     }
 
      
     render() {
         const {medicineData}=this.state
+        var selectedMedicineName=[]
+        selectedMedicineName=this.autoCompleteMedicineName(this.state.keyword);
+        const comp = (a, b) => a.toLowerCase().trim() === b.toLowerCase().trim();
+
 
         return (
             <Container style={styles.container}>
@@ -90,33 +148,35 @@ class PharmacyHome extends Component {
                 <Content >
                     <Grid style={styles.curvedGrid}>
                     </Grid>
-                    <Grid style={{ marginTop: -100, height: 100 }}>
-                        <Row>
-                            <Col style={{ width: '10%' }}>
-                            </Col>
-                            <Col style={{ width: '80%' }}>
-                                <Item style={styles.searchBox}  >
-
-                                    <Input placeholder="Search For Any Medicine" 
-                                    style={{ color: 'gray', fontFamily: 'OpenSans', fontSize: 12 }}
-                                     placeholderTextColor="gray" 
-                                     value={this.state.searchText}
-                                     onChangeText={searchText => this.setState({ searchText })}
-                                     />
-                                    <Button style={{ backgroundColor: '#000', borderRadius: 10, height: 40, marginTop: -20, marginRight: -20, borderBottomLeftRadius: 0, borderTopLeftRadius: 0, }}  onPress={()=>this.onSearchPress()} testID='searchMedicine'>
+                   
+                            <View style={{marginTop:-65}}>
+                                <Autocomplete style={{ borderBottomWidth: 0, backgroundColor: '#F1F1F1', borderRadius: 5, padding:6, width: '60%', marginLeft:49,borderBottomRightRadius: 0, borderTopRightRadius: 0}} 
+                                data={this.state.searchMedicine!=undefined?(selectedMedicineName.length === 1 && comp(this.state.keyword, selectedMedicineName[0].medicine_name) ? [] : selectedMedicineName):selectedMedicineName}
+                                    defaultValue={this.state.keyword}
+                                    onChangeText={text => this.setState({ keyword:text })}
+                                    placeholder='Search Medicine'
+                                    listStyle={{ marginLeft: 49, width: '71%', marginTop: -3.9}}
+                                    renderItem={({ item }) => (
+                                        <TouchableOpacity onPress={() => this.setState({ keyword: selectedMedicineName[0].medicine_name==='Medicine Not Found'?null:item.medicine_name})}>
+                                            <Text style={{fontSize: 15,color:'gray',borderBottomWidth:0.3,padding:3}}>{item.medicine_name}</Text>
+                                        </TouchableOpacity>
+                                    )}
+                                  keyExtractor={(item, index) => index.toString()} />
+                            </View>
+                             
+                            <View style={{marginTop:70,position:'absolute'}}>
+                                   <Button style={{ backgroundColor: '#000', borderRadius: 10, height:40, marginTop:-42, marginLeft:293, borderBottomLeftRadius: 0, borderTopLeftRadius: 0 }}  onPress={()=>this.onSearchPress(selectedMedicineName)} testID='searchMedicine'>
                                         <Icon name="ios-search" style={{ color: 'white' }}/>
-                                    </Button>
-                                </Item>
-                            </Col>
-                            <Col style={{ width: '10%' }}>
-                            </Col>
-                        </Row>
-                    </Grid>
-                    <View style={{ marginLeft: 'auto', marginRight: 'auto', marginTop: 20 }}>
+                            </Button>
+                            </View>
+                           
+                        
+                           
+
+                    <View style={{ marginLeft: 'auto', marginRight: 'auto', marginTop:55 }}>
                         <Button style={{ justifyContent: "center", backgroundColor: '#745DA6', borderRadius: 5 }} onPress={() => this.props.navigation.navigate('UploadPrescription')} testID="clickButtonToUploadPrescription">
-                            <Icon style={{ fontSize: 30 }} name='ios-cloud-upload'>
-                                <Text style={{ padding: 2, color: '#fff', }}>Upload your prescription
-                                </Text>
+                            <Icon style={{ fontSize: 30}} name='ios-cloud-upload'>
+                                <Text style={{ padding: 2, color: '#fff'}}>Upload your prescription</Text>
                             </Icon>
                         </Button>
                     </View>
@@ -257,15 +317,16 @@ const styles = StyleSheet.create({
         backgroundColor: '#745DA6'
     },
     searchBox: {
-        width: '100%',
+        width: '50%',
         borderBottomWidth: 0,
         backgroundColor: '#fff',
         borderRadius: 10,
         height: 35,
         alignItems: 'center',
-        marginTop: 'auto',
+        marginTop:-80,
         marginBottom: 'auto',
-        padding: 20
+        padding: 20,
+        flex:1
     },
     customColumn: {
         padding: 10,
