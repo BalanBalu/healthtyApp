@@ -84,7 +84,6 @@ class Profile extends Component {
         try {
             let userId = await AsyncStorage.getItem('userId');
             let result = await getPatientWishList(userId);
-            console.log(result);
             if (result.success) {
                 this.setState({ favouriteList: result.data });
             }
@@ -511,7 +510,7 @@ class Profile extends Component {
                                                 <Text> {item.doctorInfo.prefix ? item.doctorInfo.prefix : ''} {item.doctorInfo.first_name + " " + item.doctorInfo.last_name} </Text>
                                             </Body>
                                             <Right>
-                                                <Button style={styles.docbutton}><Text style={{ fontFamily: 'OpenSans', fontSize: 12 }} onPress={() => this.props.navigate.navigation('Book Appointment')}> Book Again</Text></Button>
+                                                <Button style={styles.docbutton}><Text style={{ fontFamily: 'OpenSans', fontSize: 12 }} onPress={() => this.props.navigation.navigate('Book Appointment',{doctorId:item.doctorInfo.doctor_id})}> Book Again</Text></Button>
                                             </Right>
 
                                         </ListItem>
