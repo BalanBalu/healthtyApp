@@ -75,6 +75,14 @@ class CancelAppointment extends Component {
           })
         }
       }
+      else {
+        Toast.show({
+          text: 'Write a reason for Appointment Cancellation',
+          type: "danger",
+          duration: 3000
+        })
+      }
+      
      
     }
     catch (e) {
