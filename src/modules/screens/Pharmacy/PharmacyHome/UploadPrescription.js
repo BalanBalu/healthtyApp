@@ -194,7 +194,7 @@ class UploadPrescription extends Component {
                                 </TouchableOpacity>
                                 <Row style={{ width: '92%', }}>
                                     <Right>
-                                        {imageSource != null ? <Icon name='ios-close' style={styles.customIcons} onPress={() => { this.setState({ imageSource: null }) }} /> : null}
+                                        {imageSource != null ? <Icon name='ios-close' style={styles.customIcons} onPress={() => { this.setState({ imageSource: null, uploadButton: true }) }} /> : null}
 
                                     </Right>
                                 </Row>

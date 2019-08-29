@@ -6,6 +6,7 @@ import { StyleSheet, Image, FlatList, TouchableOpacity, AsyncStorage } from 'rea
 import { NavigationEvents } from 'react-navigation';
 import { addToCart,medicineRateAfterOffer } from '../../../common';
 import Autocomplete from '../../../../components/Autocomplete'
+import Spinner from '../../../../components/Spinner'
 
 
 let  userId; 
@@ -18,22 +19,31 @@ class PharmacyHome extends Component {
             footerSelectedItem:'',
             cartItems:[],
             searchMedicine:[],
-            keyword:''
+            keyword:'',
+            isLoading:true
             
         }   
     }
 
-    async componentDidMount(){
-        this.setState({clickCard:null});               
+    componentDidMount(){
+        this.setState({clickCard:null, isLoading:true});               
         this.getMedicineList();
-        await this.searchMedicineByName();
+    }
+
+    backNavigation(payload){
+        console.log(payload)
+        if(payload.action.type=='Navigation/BACK'){
+            this.setState({clickCard:null, isLoading:true});               
+            this.getMedicineList();
+        }
     }
 
     /*Get medicine list*/
     getMedicineList=async()=>{
+        try{
         console.log("getmedicine");    
-       temp = await AsyncStorage.getItem('userId')
-       userId = JSON.stringify(temp);  
+       let temp_userid = await AsyncStorage.getItem('userId')
+       userId = JSON.stringify(temp_userid);  
        console.log(userId);    
 
         medicineSearchMap = new Map();
@@ -45,7 +55,8 @@ class PharmacyHome extends Component {
             medicineSearchMap.set(element.medicine_id,element)
 
         })  
-    }         
+    }
+        
         const cartItems = await AsyncStorage.getItem('cartItems-'+userId);
         console.log(cartItems);
         if(cartItems===null){
@@ -63,6 +74,14 @@ class PharmacyHome extends Component {
         let temp = [...medicineSearchMap.values()]        
         this.setState({medicineData:temp});
         console.log('this.state.medicineData'+JSON.stringify(this.state.medicineData))      
+        this.setState({isLoading:false}) 
+    }
+catch(e){
+console.log(e)
+}
+finally {
+    this.setState({ isLoading: false });
+}
     }
 
     /*Search medicine*/
@@ -74,14 +93,11 @@ class PharmacyHome extends Component {
           
             let result = await getSearchedMedicines(requestData);
             console.log('result'+JSON.stringify(result));
-            await this.setState({ searchMedicine: result.data, isLoading: true })
+            await this.setState({ searchMedicine: result.data })
             console.log('this.staete'+JSON.stringify(this.state.searchMedicine));
             }
         catch (e) {
             console.log(e);
-        }
-        finally {
-            this.setState({ isLoading: false });
         }
     }
 
@@ -93,22 +109,22 @@ class PharmacyHome extends Component {
    }
 
    async addSubOperation(selectItem,operation){
-    let data = await addToCart(this.state.medicineData, selectItem, operation);    
-    this.setState({footerSelectedItem:data.selectemItemData})       
+    let temp = await AsyncStorage.getItem('userId');
+    userId = JSON.stringify(temp);
+    let data = await addToCart(this.state.medicineData, selectItem, operation);
+    const cartItems = await AsyncStorage.getItem('cartItems-'+userId);    
+    this.setState({footerSelectedItem:data.selectemItemData,cartItems:JSON.parse(cartItems)})       
    }
 
    onSearchPress(selectedMedicineName) {
-       console.log("selectmed") 
        console.log(selectedMedicineName)
        if(selectedMedicineName.length!=0){
-           console.log("null")
         this.props.navigation.navigate('medicineSearchList',{medicineList:selectedMedicineName}) 
 
        }
     }
 
     autoCompleteMedicineName(keyword){
-        console.log("auto")
         if (keyword === '' || keyword === undefined || keyword === null) {
             return [];
         }
@@ -143,7 +159,7 @@ class PharmacyHome extends Component {
         return (
             <Container style={styles.container}>
                 <NavigationEvents
-					onWillFocus={payload => { this.componentDidMount() }}
+					onWillFocus={payload => { this.backNavigation(payload) }}
 				/>
                 <Content >
                     <Grid style={styles.curvedGrid}>
@@ -165,11 +181,10 @@ class PharmacyHome extends Component {
                             </View>
                              
                             <View style={{marginTop:70,position:'absolute'}}>
-                                   <Button style={{ backgroundColor: '#000', borderRadius: 10, height:40, marginTop:-42, marginLeft:293, borderBottomLeftRadius: 0, borderTopLeftRadius: 0 }}  onPress={()=>this.onSearchPress(selectedMedicineName)} testID='searchMedicine'>
+                                   <Button style={{ backgroundColor: '#000', borderRadius: 10, height:40, marginTop:-42, marginLeft:260, borderBottomLeftRadius: 0, borderTopLeftRadius: 0 }}  onPress={()=>this.onSearchPress(selectedMedicineName)} testID='searchMedicine'>
                                         <Icon name="ios-search" style={{ color: 'white' }}/>
                             </Button>
-                            </View>
-                           
+                            </View>                          
                         
                            
 
@@ -180,11 +195,15 @@ class PharmacyHome extends Component {
                             </Icon>
                         </Button>
                     </View>
+                   
                     <Card transparent >
-                    {medicineData.length == 0 ?
+                    { this.state.isLoading == true?
+                         <Spinner color='blue'
+                         visible={this.state.isLoading}/>
+                         :medicineData.length == 0 ?
                             <Item style={{ borderBottomWidth: 0, justifyContent:'center',alignItems:'center', height:70 }}>
                                <Text style={{fontSize:20,justifyContent:'center',alignItems:'center'}}>No Medicines </Text>
-                            </Item>  :
+                            </Item>  : 
                         <Grid style={{ marginTop: 25, padding: 10, width: 'auto' }}>
                             <FlatList 
                                 data={medicineData}
@@ -265,11 +284,11 @@ class PharmacyHome extends Component {
                                     <Icon name='ios-cart'/>
 
                                     <Text style={{ marginLeft: -25, marginTop: 2, }}>VIEW CART</Text>
-                                    <View>
+                                   {this.state.cartItems.length!=0? <View>
                                         <Text style={{ position: 'absolute', height: 20, width: 20, fontSize: 13, backgroundColor: '#ffa723', top: 0, marginLeft: -105, borderRadius: 20, marginTop: -10 }}>
-                                            20
+                                            {this.state.cartItems.length}
                                         </Text>     
-                                    </View>   
+                                   </View>:null }  
                                 </Row>               
                             </Button>
                         </Col>
