@@ -18,7 +18,6 @@ class UpdatePassword extends Component {
             newPassword: '',
             showOldPassword: true,
             showNewPassword: true,
-
             isLoading: false
         }
     }
