@@ -43,7 +43,7 @@ class MedicineCheckout extends Component {
 
                             <Col style={{ borderColor: '#D92B4B', borderWidth: 1, padding: 10, alignItems: 'center', borderRadius: 10, margin: 10 }}>
                                 <TouchableOpacity
-                                    onPress={() => this.props.navigation.navigate("OrderPaymentAddress", medicineDetails)}>
+                                    onPress={() => this.props.navigation.navigate("OrderPaymentAddress", { medicineDetails: medicineDetails })}>
                                     <Row>
                                         <Right>
                                             <Icon name="checkmark-circle" style={{ color: '#D92B4B' }}></Icon>
