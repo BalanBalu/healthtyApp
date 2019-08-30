@@ -8,7 +8,7 @@ import { StyleSheet, Image, TouchableOpacity, View, FlatList, AsyncStorage } fro
 import StarRating from 'react-native-star-rating';
 import { ScrollView } from 'react-native-gesture-handler';
 import Modal from "react-native-modal";
-import { insertDoctorsWishList, searchDoctorList, fetchAvailabilitySlots, getMultipleDoctorDetails, getDoctorsReviewsCount, getPatientWishList } from '../../providers/bookappointment/bookappointment.action';
+import { insertDoctorsWishList, searchDoctorList, fetchAvailabilitySlots, getMultipleDoctorDetails, getDoctorsReviewsCount, getPatientWishList, SET_BOOK_APP_SLOT_DATA, SET_BOOK_APP_DOCTOR_DATA, SET_SELECTED_DATE } from '../../providers/bookappointment/bookappointment.action';
 import { formatDate, addMoment, addTimeUnit, getMoment,addDate,dateDiff, findArrayObj, intersection } from '../../../setup/helpers';
 import { Loader } from '../../../components/ContentLoader';
 import { RenderHospitalAddress } from '../../common';
@@ -16,7 +16,7 @@ import { NavigationEvents } from 'react-navigation';
 import Spinner from '../../../components/Spinner';
 import moment from 'moment';
 
-
+import { store } from '../../../setup/store';
 let conditionFromFilterPage;
 
 class doctorSearchList extends Component {
@@ -25,6 +25,7 @@ class doctorSearchList extends Component {
     processedDoctorDetailsData = [];
     processedDoctorAvailabilityDates = [];
     doctorDetailsMap = new Map();
+    patientGender = null;
     constructor(props) {
         super(props)
         conditionFromFilterPage = null,  // for check FilterPage Values
@@ -52,9 +53,9 @@ class doctorSearchList extends Component {
                 isLoading: false,
                 filterBySelectedAvailabilityDateCount: 0,
                 patientWishListsDoctorIds: [],
-                filterData: [],
+                filterData : null,
                 uniqueFilteredDocArray: [],
-                yearOfExperience:''
+                yearOfExperience: ''
             }
     }
 
@@ -63,233 +64,139 @@ class doctorSearchList extends Component {
         this.props.navigation.navigate('Payment Review', { resultconfirmSlotDetails: this.state.confirmSlotDetails })
     };
     navigateToFilters() {
-        this.props.navigation.navigate('Filters', { doctorData: this.state.doctorData, doctorDetailsWitSlots: this.state.doctorDetails })
+        this.props.navigation.navigate('Filters', { 
+            doctorData: this.state.doctorData, 
+            doctorDetailsWitSlots: this.state.doctorDetails,  
+            filterData : this.state.filterData,
+            filterBySelectedAvailabilityDateCount: this.state.filterBySelectedAvailabilityDateCount
+        })
     }
     componentDidMount = async () => {
+        store.dispatch({
+            type: SET_SELECTED_DATE,
+            data: this.state.selectedDate
+        });
+        let userBasicData = await AsyncStorage.getItem('basicProfileData')
+        if(userBasicData !== null) {
+            this.patientGender = JSON.parse(userBasicData).gender;
+        }
+      
         this.getPatientWishLists();
         this.getPatientSearchData();
     }
-    componentNavigationMount = async() => {
+    componentNavigationMount = async () => {
         const { navigation } = this.props;
         const filterData = navigation.getParam('filterData');
-        
+
         const filterBySelectedAvailabilityDateCount = navigation.getParam('filterBySelectedAvailabilityDateCount');
         conditionFromFilterPage = navigation.getParam('ConditionFromFilter');
-        await this.setState({ filterData: filterData })
+        await this.setState({ filterData: filterData, filterBySelectedAvailabilityDateCount: filterBySelectedAvailabilityDateCount })
         if (conditionFromFilterPage == true) {
             console.log('comming FilterPage');
-            this.renderDoctorListByFilteredData(filterData, filterBySelectedAvailabilityDateCount) 
+            this.renderDoctorListByFilteredData(filterData, filterBySelectedAvailabilityDateCount)
         }
     }
 
     renderDoctorListByFilteredData = async (filterData, availtyDateCount) => {
         console.log('filterData' + JSON.stringify(filterData))
-        console.log(availtyDateCount);
+        console.log('availtyDateCount' + availtyDateCount);
         let genderPreferenceMatchedList = [];
         let languageMatchedList = [];
         let categoryMatchedList = [];
         let servicesMatchedList = [];
         let experienceMatchedList = [];
         let availabilityMatchedList = [];
-       
+
         this.state.doctorData.forEach((doctorElement) => {
             let doctorIdHostpitalId = doctorElement.doctorIdHostpitalId
 
-            filterData.forEach((filterElement) => {
-                if (filterElement.value) {
-                    if(filterElement.type === 'gender_preference') {
-                        if (doctorElement.gender_preference.includes(filterElement.value)) {
-                            genderPreferenceMatchedList.push(doctorIdHostpitalId);
-                        }
-                    }
-
-                    if(filterElement.type == 'language' ) {
-                        doctorElement.language.forEach((docLanguage) => {
-                            filterElement.value.forEach((filLanguage) => {
-                                if (docLanguage.includes(filLanguage)) {
-                                    languageMatchedList.push(doctorIdHostpitalId)
-                                }
-                            })
-                        })     
-                    }
-
-                    if(filterElement.type === 'experience') {
-                        if(doctorElement.experience) {
-                           let updatedDate = moment(doctorElement.experience.updated_date);
-                           let doctorExperienceMonth = dateDiff(updatedDate, moment(new Date()), 'months');
-                           let filterValueExperienceInMonth = filterElement.value * 12; // value is returning as year to convert to months multiplies by 12 
-                           if(filterValueExperienceInMonth >= doctorExperienceMonth) {
-                                experienceMatchedList.push(doctorIdHostpitalId);
-                           }
-                        }
-                    }
-
-                    
-                    if(filterElement.type === 'category') {
-                       let specialistArray = doctorElement.specialist ? doctorElement.specialist : [];
-                       specialistArray.forEach((docSpecialist) => {
-                        if (docSpecialist.category === filterElement.value) {
-                            categoryMatchedList.push(doctorIdHostpitalId)
-                        }
-                      })
-                    }
-
-                  if(filterElement.type === 'service') {
-                    let specialistArray = doctorElement.specialist ? doctorElement.specialist : [];
-                    specialistArray.forEach((docSpecialist) => {
-                        if(filterElement.value.includes(docSpecialist.service)) {
-                            servicesMatchedList.push(doctorIdHostpitalId)
-                        }     
-                    })
-                  }
+            if (filterData.gender_preference) {
+                if (doctorElement.gender_preference.includes(filterData.gender_preference)) {
+                    genderPreferenceMatchedList.push(doctorIdHostpitalId);
                 }
-              })
-           });  
-           let selectedFiltesArray = [];
-          
-           if (availtyDateCount !== 0) {
-               this.state.doctorDetails.forEach((slotDetailElement) => {
-                  for (i = 0; i < availtyDateCount; i++) {
+            }
+            if (filterData.language) {
+                doctorElement.language.forEach((docLanguage) => {
+                    filterData.language.forEach((filLanguage) => {
+                        if (docLanguage.includes(filLanguage)) {
+                            languageMatchedList.push(doctorIdHostpitalId)
+                        }
+                    })
+                })
+            }
+
+            if (filterData.experience && doctorElement.experience) {
+                let updatedDate = moment(doctorElement.experience.updated_date);
+                let doctorExperienceMonth = dateDiff(updatedDate, moment(new Date()), 'months');
+                let filterValueExperienceInMonth = filterData.experience * 12; // value is returning as year to convert to months multiplies by 12 
+                 if (filterValueExperienceInMonth >= doctorExperienceMonth) {
+                     experienceMatchedList.push(doctorIdHostpitalId);
+                  }
+                
+            }
+            if (filterData.category) {
+                let specialistArray = doctorElement.specialist ? doctorElement.specialist : [];
+                specialistArray.forEach((docSpecialist) => {
+                    if (docSpecialist.category === filterData.category) {
+                        categoryMatchedList.push(doctorIdHostpitalId)
+                    }
+                })
+            }
+
+            if (filterData.service) {
+                let specialistArray = doctorElement.specialist ? doctorElement.specialist : [];
+                specialistArray.forEach((docSpecialist) => {
+                    if (docSpecialist.service.includes(filterData.service)) {
+                        servicesMatchedList.push(doctorIdHostpitalId)
+                    }
+                })
+            }
+        });
+
+        let selectedFiltesArray = [];
+
+        if (availtyDateCount !== 0) {
+            this.state.doctorDetails.forEach((slotDetailElement) => {
+                for (i = 0; i < availtyDateCount; i++) {
                     let availabilityDate = formatDate(addTimeUnit(this.state.selectedDate, i, 'days'), "YYYY-MM-DD");
                     if (slotDetailElement.slotData[availabilityDate]) {
                         availabilityMatchedList.push(slotDetailElement.doctorIdHostpitalId)
                     }
-                  }
-                });
-                selectedFiltesArray.push(availabilityMatchedList);
-           } 
-          
-          
-           filterData.forEach((filterElement) => {
-            if (filterElement.value) {
-                if(filterElement.type === 'gender_preference') {
-                    selectedFiltesArray.push(genderPreferenceMatchedList); 
                 }
-                if(filterElement.type === 'language') {
-                    selectedFiltesArray.push(languageMatchedList); 
-                }
-                if(filterElement.type === 'category') {
-                    selectedFiltesArray.push(categoryMatchedList); 
-                }
-                if(filterElement.type === 'service') {
-                    selectedFiltesArray.push(servicesMatchedList); 
-                }
-            }    
-          });
-         if(filterData.length !== 0 ) { 
-            console.log(selectedFiltesArray);
+            });
+            selectedFiltesArray.push(availabilityMatchedList);
+
+        }
+        console.log("selectedFiltesArray" + JSON.stringify(selectedFiltesArray))
+
+        if (filterData) {
+            if (filterData.gender_preference) {
+                selectedFiltesArray.push(genderPreferenceMatchedList);
+            }
+            if (filterData.language) {
+                selectedFiltesArray.push(languageMatchedList);
+            }
+            if (filterData.experience) {
+                selectedFiltesArray.push(experienceMatchedList);
+            }
+            if (filterData.category) {
+                selectedFiltesArray.push(categoryMatchedList);
+            }
+            if (filterData.service) {
+                selectedFiltesArray.push(servicesMatchedList);
+            }
+        }
+/* Finally Rendered the Doctor Lists  */
+
+        if (filterData || availtyDateCount !== 0 ) {
+            console.log('Came Filter Availability and DocData , Filter only DocDatas  ')
             let filteredDocListArray = intersection(selectedFiltesArray);
-            console.log(filteredDocListArray);
             await this.setState({ uniqueFilteredDocArray: filteredDocListArray })
-        }
-        //console.log(JSON.stringify(this.state.doctorDetails));
-       /* let availableDateSlotsDocArray = [];
-        if (availtyDateCount !== 0) {
-
-            this.state.doctorDetails.forEach((docDetailElement) => {
-                
-                
-                for (i = 0; i < availtyDateCount; i++) {
-                    let sampleDateArray = formatDate(addTimeUnit(this.state.selectedDate, i, 'days'), "YYYY-MM-DD");
-                    if (docDetailElement.slotData[sampleDateArray]) {
-                        availableDateSlotsDocArray.push(docDetailElement.doctorId)
-                    }
-                }
-            })
-        } */
-        // console.log('availableDateSlotsDocArray' + JSON.stringify(availableDateSlotsDocArray))
-
-  /*      let filteredDocListArray = [];
-        // console.log('this.state.doctorData'+JSON.stringify(this.state.doctorData))
-        this.state.doctorData.forEach((doctorElement) => {
-            let experience;
-
-            filterData.forEach((filterElement) => {
-                if (filterElement.value) {
-                  if(filterElement.type ==='gender_preference'){  "M" --> doctor1 
-                    if (doctorElement.gender_preference.includes(filterElement.value)) {
-                        filteredDocListArray.push(doctorElement.doctor_id)
-                    }
-                  }
-                    if(filterElement.type ==='experience') {  10 --> doctor2 
-
-                        let updatedDate = moment(doctorElement.experience.updated_date);
-                        let experienceInYear = dateDiff(updatedDate, this.state.selectedDate, 'year');
-                        let experienceInMonth = dateDiff(updatedDate, this.state.selectedDate, 'months');
-                        let year = (moment(doctorElement.experience.year) + experienceInYear);
-                        let month = (moment(doctorElement.experience.month)) + experienceInMonth;
-                        experience = experienceInYear + year;
-                        // console.log('experience'+experience)
-                        if (month >= 12) {
-                          experience++;
-                        }
-                      
-                    experience >= filterElement.value ? 
-                       filteredDocListArray.push(doctorElement.doctor_id):null
-                    }
-                  
-                    filterElement.type == 'language' ? 
-                    doctorElement.language.forEach((docLanguage) => {
-                            filterElement.value.forEach((filLanguage) => {
-                                if (docLanguage.includes(filLanguage)) {
-                                    filteredDocListArray.push(doctorElement.doctor_id)
-                                }
-                            })
-                    }) :null
-                
-                filterElement.type ==='category' || 'service' ? --> doctor 2
-                    doctorElement.specialist.forEach((docSpecialist) => {
-
-                        if (docSpecialist.category.includes(filterElement.value)) {
-                            filteredDocListArray.push(doctorElement.doctor_id)
-                        }
-                        if (docSpecialist.service.includes(filterElement.value)) {
-                            filteredDocListArray.push(doctorElement.doctor_id)
-                        }
-                    }):null
-                
-                }
-            })
-        });
-        // console.log('filteredDocListArray' + JSON.stringify(filteredDocListArray))
-
-        var sortedArray = filteredDocListArray.slice().sort();
-
-        var FinalFilteredByDocDetailsArray = [];
-
-        for (var i = 0; i <= sortedArray.length - 1; i++) {
-            if (sortedArray[i + 1] == sortedArray[i]) {
-                FinalFilteredByDocDetailsArray.push(sortedArray[i]);
+            console.log('this.state.uniqueFilteredDocArray'+JSON.stringify(this.state.uniqueFilteredDocArray))
+            if (this.state.uniqueFilteredDocArray.length ===0){
+                this.noDoctorsAvailable();
             }
         }
-        // console.log('FinalFilteredByDocDetailsArray' + JSON.stringify(FinalFilteredByDocDetailsArray))
-
-        let withAvailabilityDateDocArray = [];
-        if (availableDateSlotsDocArray[0] && filteredDocListArray[0]) {
-            // console.log('came filter availability date and DocDatas  condition')
-            filteredDocListArray.forEach((ele_doctorId) => {
-                if (availableDateSlotsDocArray.includes(ele_doctorId)) {
-                    withAvailabilityDateDocArray.push(ele_doctorId);
-                }
-            })
-            await this.setState({ uniqueFilteredDocArray: withAvailabilityDateDocArray })
-            // console.log('withAvailabilityDateDocArray' + JSON.stringify(withAvailabilityDateDocArray))
-        }
-
-        else {
-            if (availableDateSlotsDocArray[0]) {
-                // console.log('came filter by only available dates')
-                await this.setState({ uniqueFilteredDocArray: availableDateSlotsDocArray })
-            }
-            else {
-                console.log('came both Filtered DocDetails data')
-                filterData[1] !=undefined?
-                    await this.setState({ uniqueFilteredDocArray: FinalFilteredByDocDetailsArray }):
-                    await this.setState({ uniqueFilteredDocArray: filteredDocListArray })
-                    // console.log('this.state.uniqueFilteredDocArray' + JSON.stringify(this.state.uniqueFilteredDocArray))
-                
-            }
-        } */
     }
     /* Insert Doctors Favourite Lists  */
     addToWishList = async (doctorId, index) => {
@@ -357,25 +264,24 @@ class doctorSearchList extends Component {
             this.setState({ isLoading: false })
         }
     }
-   
+
     async getDoctorAllDetails(doctorIds, startDate, endDate) {
         try {
-           
+
             this.setState({ isLoading: true });
             await this.getDoctorDetails(doctorIds).catch(res => console.log("Exception on  getDoctorDetails: " + res));
-            
-            await this.getAvailabilitySlots(doctorIds,startDate, endDate).catch(res => console.log("Exception" + res));
-            
+
+            await this.getAvailabilitySlots(doctorIds, startDate, endDate).catch(res => console.log("Exception" + res));
+
             this.getPatientReviews(doctorIds).catch(res => console.log("Exception on getPatientReviews" + res));
             
-          let doctorData = this.state.doctorData;
+            let doctorData = this.state.doctorData;
             let uniqueFilteredDocArray = []; 
             doctorData.forEach((element) => {
-                console.log(element);
                 uniqueFilteredDocArray.push(element.doctorIdHostpitalId)
             })
             await this.setState({ uniqueFilteredDocArray: uniqueFilteredDocArray })
-           
+
         } catch (error) {
             console.log('exception on getting multiple Requests');
             console.log(error)
@@ -384,21 +290,20 @@ class doctorSearchList extends Component {
         }
     }
 
-     /*Get doctor specialist and Degree details*/
-  
-     getDoctorDetails = async (doctorIds) => {
+    /*Get doctor specialist and Degree details*/
+
+    getDoctorDetails = async (doctorIds) => {
         try {
-            
+
             let fields = "specialist,education,language,gender_preference,experience";
             let resultDoctorDetails = await getMultipleDoctorDetails(doctorIds, fields);
             if (resultDoctorDetails.success) {
-                console.log(resultDoctorDetails.data);
                 resultDoctorDetails.data.forEach((element) => {
-                  this.doctorDetailsMap.set(element.doctor_id, element) // total_rating
+                    this.doctorDetailsMap.set(element.doctor_id, element) // total_rating
                 })
             }
             console.log('finished loading get Doctor Details');
-          
+
         } catch (ex) {
             console.log(ex);
             console.log('Exception occured on getMultplieDocDetail')
@@ -414,10 +319,10 @@ class doctorSearchList extends Component {
                 startDate: formatDate(startDate, 'YYYY-MM-DD'),
                 endDate: formatDate(endDate, 'YYYY-MM-DD')
             }
-            let resultData = await fetchAvailabilitySlots(getSearchedDoctorIds, totalSlotsInWeek);
+            let resultData = await fetchAvailabilitySlots(getSearchedDoctorIds, totalSlotsInWeek, this.patientGender);
             if (resultData.success) {
-               // console.log(resultData.data);
-              
+                // console.log(resultData.data);
+
                 for (let docCount = 0; docCount < resultData.data.length; docCount++) {
                     let doctorSlotData = resultData.data[docCount];
                     if (this.processedDoctorIds.includes(doctorSlotData.doctorIdHostpitalId)) { // condition to append another week conditions
@@ -431,22 +336,30 @@ class doctorSearchList extends Component {
                     } else {
                         this.processedDoctorData.push(doctorSlotData);
                         this.processedDoctorIds.push(doctorSlotData.doctorIdHostpitalId);
-                        
+
                         let doctorDetailsData = this.doctorDetailsMap.get(doctorSlotData.doctorId)
                         let obj = {
                             ...doctorDetailsData,
-                            doctorIdHostpitalId : doctorSlotData.doctorIdHostpitalId
+                            doctorIdHostpitalId: doctorSlotData.doctorIdHostpitalId
                         }
                         this.processedDoctorDetailsData.push(obj);
-                       
                     }
             }
+                store.dispatch({
+                    type: SET_BOOK_APP_SLOT_DATA,
+                    data: this.processedDoctorData
+                })
                 
+                store.dispatch({
+                    type: SET_BOOK_APP_DOCTOR_DATA,
+                    data: this.doctorDetailsData
+                })
                 console.log(this.processedDoctorDetailsData);
                 
                 await this.setState({ doctorDetails: this.processedDoctorData, doctorData: this.processedDoctorDetailsData });
+               
                 this.enumarateDates(startDate, endDate)
-                
+
             }
         } catch (e) {
             this.setState({ doctorDetails: [] });
@@ -480,17 +393,18 @@ class doctorSearchList extends Component {
     /* Click the Slots from Doctor List page */
     onSlotPress = async (doctorData, selectedSlotItem, availableSlots, selectedSlotIndex) => {
         var selectedHospitalId = selectedSlotItem.location.hospital_id;
-        let hospitalLocations = [];
-        let tempHospitalArray = [];
-
-        await this.setState({ singleDataWithDoctorDetails: doctorData });
+       
+       // await this.setState({ singleDataWithDoctorDetails: doctorData });
         if (availableSlots[0].location.hospital_id === selectedHospitalId) {
-            var confirmSlotDetails = {};
-            confirmSlotDetails = this.state.singleDataWithDoctorDetails;
-            confirmSlotDetails.slotData = selectedSlotItem;
+            var confirmSlotDetails = {
+                ...doctorData,
+                slotData: selectedSlotItem
+            };
             this.props.navigation.navigate('Payment Review', { resultconfirmSlotDetails: confirmSlotDetails })
-        } else {
-            availableSlots.forEach(element => {
+        } /*else {
+             let hospitalLocations = [];
+             let tempHospitalArray = [];
+             availableSlots.forEach(element => {
                 if (!tempHospitalArray.includes(element.location.hospital_id)) {
                     tempHospitalArray.push(element.location.hospital_id);
                     hospitalLocations.push({
@@ -508,7 +422,7 @@ class doctorSearchList extends Component {
             await this.setState({ selectedDoctorHospitalLocations: hospitalLocations });
             await this.onClickedHospitalName(selectedHospitalId);
             await this.setState({ isModalVisible: true })
-        }
+        } */
     }
     /* Click the Hospital location and names from Book Appointment Popup page */
     onClickedHospitalName = async (hospitalId) => {
@@ -532,7 +446,7 @@ class doctorSearchList extends Component {
         }
     }
 
-   
+
     getDoctorSpecialist(doctorId) {
         if (this.doctorDetailsMap.has(doctorId)) {
             if (this.doctorDetailsMap.get(doctorId).specialist) {
@@ -554,7 +468,6 @@ class doctorSearchList extends Component {
     }
 
     navigateToBookAppointmentPage(doctorAvailabilityData) {
-        console.log('coming here');
         const doctorDetails = doctorAvailabilityData;
         const slotData = doctorAvailabilityData.slotData[this.state.selectedDate]
         this.props.navigation.navigate('Book Appointment', { doctorDetails: doctorDetails, slotList: slotData })
@@ -580,7 +493,7 @@ class doctorSearchList extends Component {
             </Row>
         )
     }
-    noDoctorsAvailable() {
+    noDoctorsAvailable() {        
         return (
             <Item style={{ borderBottomWidth: 0, justifyContent: 'center', alignItems: 'center' }}>
                 <Text style={{ fontSize: 18, justifyContent: 'center', alignItems: 'center' }} > No Doctors available! </Text>
@@ -610,9 +523,10 @@ class doctorSearchList extends Component {
 
 
     render() {
+        const { bookappointment: { slotData, selectedDate } } = this.props;
         const { navigation } = this.props;
         const { isLoading, isAvailabilityLoading,
-            uniqueFilteredDocArray, searchedResultData, categories, singleDataWithDoctorDetails, singleHospitalDataSlots, reviewData, patientWishListsDoctorIds } = this.state;
+            uniqueFilteredDocArray, searchedResultData, categories, singleDataWithDoctorDetails, singleHospitalDataSlots, reviewData, patientWishListsDoctorIds,/* doctorDetails */} = this.state;
         return (
 
             <Container style={styles.container}>
@@ -688,7 +602,7 @@ class doctorSearchList extends Component {
                         {searchedResultData == null ? this.noDoctorsAvailable() :
 
                             <FlatList
-                                data={this.state.doctorDetails.filter(ele => uniqueFilteredDocArray.includes(ele.doctorIdHostpitalId))}
+                                data={slotData.filter(ele => uniqueFilteredDocArray.includes(ele.doctorIdHostpitalId))}
                                 extraData={this.state}
                                 style={{ borderBottomWidth: 0 }}
                                 keyExtractor={(item, index) => index.toString()}
@@ -700,7 +614,7 @@ class doctorSearchList extends Component {
                                                 <Left>
                                                     {
                                                         item.profile_image != undefined
-                                                            ? <Thumbnail square source={{uri:item.profile_image.imageURL}} style={{ height: 60, width: 60 }} />
+                                                            ? <Thumbnail square source={{ uri: item.profile_image.imageURL }} style={{ height: 60, width: 60 }} />
                                                             : <Thumbnail square source={{ uri: 'https://res.cloudinary.com/demo/image/upload/w_200,h_200,c_thumb,g_face,r_max/face_left.png' }} style={{ height: 80, width: 80 }} />
                                                     }
 
@@ -768,7 +682,7 @@ class doctorSearchList extends Component {
                                                         </View>}
 
                                                 </Body>
-                                            {/* 
+                                                {/* 
                                                 <Right>
                                                     <Icon name='heart' type='Ionicons'
                                                         style={patientWishListsDoctorIds.includes(item.doctorId) ? { color: 'red', fontSize: 25 } : { color: 'gray', fontSize: 25 }}
@@ -800,7 +714,7 @@ class doctorSearchList extends Component {
                     </Content>
                 }
 
-
+{/* 
                 <Modal isVisible={this.state.isModalVisible} >
                     <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}>
 
@@ -912,7 +826,7 @@ class doctorSearchList extends Component {
 
                         <Button title="Hide modal" onPress={this.confirmAppointmentPress} />
                     </View>
-                </Modal>
+                </Modal> */}
 
             </Container >
         )
@@ -920,13 +834,12 @@ class doctorSearchList extends Component {
 
 }
 
-function loginState(state) {
-
+function bookApppointmentState(state) {
     return {
-        user: state.user
+        bookappointment: state.bookappointment
     }
 }
-export default connect(loginState, { login, messageShow, messageHide })(doctorSearchList)
+export default connect(bookApppointmentState)(doctorSearchList)
 
 
 const styles = StyleSheet.create({

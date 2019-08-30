@@ -24,7 +24,7 @@ export default class BookAppointmentPaymentUpdate {
         console.log(resultData);
         if (resultData.success) {
             if (isSuccess) {
-               let bookAppointmentResponse = await this.updateNewBookAppointment(bookSlotDetails, userId);
+               let bookAppointmentResponse = await this.updateNewBookAppointment(bookSlotDetails,  userId);
                return bookAppointmentResponse;
             } else {
                 return {
@@ -52,6 +52,7 @@ export default class BookAppointmentPaymentUpdate {
             userId: userId,
             doctorId: bookSlotDetails.doctorId,
             description: "something",
+            fee: bookSlotDetails.slotData.fee,
             startTime: bookSlotDetails.slotData.slotStartDateAndTime,
             endTime: bookSlotDetails.slotData.slotEndDateAndTime,
             status: "PENDING",

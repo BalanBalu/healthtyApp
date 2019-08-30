@@ -1,6 +1,8 @@
 import { postService, getService, putService} from '../../../setup/services/httpservices';
 
-
+export const SET_BOOK_APP_SLOT_DATA = 'BOOK_APP/SLOTDATA';
+export const SET_BOOK_APP_DOCTOR_DATA = 'BOOK_APP/DOCTORDATA';
+export const SET_SELECTED_DATE = 'BOOK_APP/SELECTED_DATE';
 
 /* Book the Doctor Appointment module  */
 export async function bookAppointment(bookSlotDetails, isLoading = true) {
@@ -8,6 +10,20 @@ export async function bookAppointment(bookSlotDetails, isLoading = true) {
     let endPoint = 'appointment';
     let response = await postService(endPoint, bookSlotDetails);
 
+    let respData = response.data;
+    return respData;
+  } catch (e) {
+    return {
+      message: 'exception' + e,
+      success: false
+    }
+  }
+}
+
+export async function validateBooking(reqDataValidate) {
+  try {
+    let endPoint = 'appointment/validate';
+    let response = await postService(endPoint, reqDataValidate);
     let respData = response.data;
     return respData;
   } catch (e) {
@@ -64,9 +80,10 @@ export async function addReview(userId, insertUserReviews, isLoading = true) {
 }
 /*get doctor availability for patient view doctor profile */
 
-export async function fetchAvailabilitySlots(doctorIds, dateFilter) {
+export async function fetchAvailabilitySlots(doctorIds, dateFilter, patientGender) {
   try {
     let endPoint = 'doctors/' + doctorIds + '/availabilitySlots?startDate=' + dateFilter.startDate + '&endDate='+ dateFilter.endDate;
+    if(patientGender)   endPoint + '&gender='+ patientGender;
     console.log(endPoint);
     let response = await getService(endPoint);
     let respData = response.data;

@@ -5,7 +5,7 @@ import { messageShow, messageHide } from '../../providers/common/common.action';
 import { Col, Row, Grid } from 'react-native-easy-grid';
 import { connect } from 'react-redux'
 import { StyleSheet, Image, AsyncStorage, TouchableOpacity, View } from 'react-native';
-import { bookAppointment, createPaymentRazor } from '../../providers/bookappointment/bookappointment.action';
+import {  validateBooking } from '../../providers/bookappointment/bookappointment.action';
 import { formatDate } from '../../../setup/helpers';
 import Spinner from '../../../components/Spinner';
 import { RenderHospitalAddress } from '../../common';
@@ -37,9 +37,28 @@ export default class PaymentReview extends Component {
         const bookSlotDetails = navigation.getParam('resultconfirmSlotDetails');
         await this.setState({ bookSlotDetails: bookSlotDetails });
     }
-    confirmProceedPayment() {
-        const amount = this.state.bookSlotDetails.slotData.fee;
-        this.props.navigation.navigate('paymentPage', {service_type : 'APPOINTMENT', bookSlotDetails: this.state.bookSlotDetails, amount: amount })
+    async confirmProceedPayment() {
+        this.setState({ isLoading : true });
+        const bookingSlotData = this.state.bookSlotDetails
+        const reqData = {
+           doctorId: bookingSlotData.doctorId,
+           startTime: bookingSlotData.slotData.slotStartDateAndTime,
+           endTime: bookingSlotData.slotData.slotEndDateAndTime,
+        }
+        validationResult = await validateBooking(reqData)
+        this.setState({ isLoading : false });
+        if(validationResult.success) {
+           const amount = this.state.bookSlotDetails.slotData.fee;
+           this.props.navigation.navigate('paymentPage', {service_type : 'APPOINTMENT', bookSlotDetails: this.state.bookSlotDetails, amount: amount })
+        } else {
+            console.log(validationResult);
+            Toast.show({
+                text: validationResult.message,
+                type: 'warning',
+                duration: 3000
+            })
+        }
+        
     }
    async processToPayLater() {
         const userId = await AsyncStorage.getItem('userId');
