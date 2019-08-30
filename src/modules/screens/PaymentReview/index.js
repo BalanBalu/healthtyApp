@@ -98,7 +98,7 @@ export default class PaymentReview extends Component {
 
                                     <Text style={styles.customizedText} note>Date And Time</Text>
                                     <Text style={styles.customizedText}>{bookSlotDetails.slotData && formatDate(bookSlotDetails.slotData.slotStartDateAndTime, 'DD MMMM, YYYY')}</Text>
-                                    <Text style={styles.customizedText}>{bookSlotDetails.slotData && formatDate(bookSlotDetails.slotData.slotStartDateAndTime, 'hh:mm A')} to {bookSlotDetails.slotData && formatDate(bookSlotDetails.slotData.slotEndDateAndTime, 'DD MMM,YYYY hh:mm A')}</Text>
+                                    <Text style={styles.customizedText}>{bookSlotDetails.slotData && formatDate(bookSlotDetails.slotData.slotStartDateAndTime, 'hh:mm A')} to {bookSlotDetails.slotData && formatDate(bookSlotDetails.slotData.slotEndDateAndTime, 'hh:mm A')}</Text>
                                     <Text note style={styles.customizedText}></Text>
 
                                 </Col>
@@ -110,9 +110,7 @@ export default class PaymentReview extends Component {
                             <Row>
                                 <Col style={{ width: '90%' }}>
                                     <Text note style={styles.customizedText}>Doctor</Text>
-
-                                    <Text style={styles.customizedText}>{bookSlotDetails.doctorName}</Text>
-
+                                    <Text style={styles.customizedText}>{bookSlotDetails.prefix ? bookSlotDetails.prefix : 'Dr'}. {bookSlotDetails.doctorName}</Text>
                                 </Col>
 
                             </Row>
