@@ -75,7 +75,7 @@ class PharmacyCart extends Component {
 
 
     render() {            
-              const {isLoading,cartItems} = this.state;
+              const { isLoading,cartItems } = this.state;
 
      return (            
       <Container style={styles.container}>
@@ -155,7 +155,7 @@ class PharmacyCart extends Component {
             </Card>
 
             </Content>}
-
+              {this.state.cartItems != ''?
                 <Footer style={{ backgroundColor: '#7E49C3', }}>
                     <Row style={{ justifyContent: 'center', marginTop: 15 }}>
                         <Text style={{ fontSize: 20, fontWeight: 'bold', color: '#fff' }}>Total </Text>
@@ -169,7 +169,7 @@ class PharmacyCart extends Component {
                             <Text>Checkout</Text>
                         </Button>
                     </Col>
-                </Footer>
+                </Footer>: null}
             </Container >
         )
     }
