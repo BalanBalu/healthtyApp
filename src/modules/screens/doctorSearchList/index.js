@@ -25,7 +25,6 @@ class doctorSearchList extends Component {
     processedDoctorDetailsData = [];
     processedDoctorAvailabilityDates = [];
     doctorDetailsMap = new Map();
-    patientGender = null;
     constructor(props) {
         super(props)
         conditionFromFilterPage = null,  // for check FilterPage Values
@@ -55,7 +54,8 @@ class doctorSearchList extends Component {
                 patientWishListsDoctorIds: [],
                 filterData : null,
                 uniqueFilteredDocArray: [],
-                yearOfExperience: ''
+                yearOfExperience: '',
+                isHidden: false
             }
     }
 
@@ -76,11 +76,6 @@ class doctorSearchList extends Component {
             type: SET_SELECTED_DATE,
             data: this.state.selectedDate
         });
-        let userBasicData = await AsyncStorage.getItem('basicProfileData')
-        if(userBasicData !== null) {
-            this.patientGender = JSON.parse(userBasicData).gender;
-        }
-      
         this.getPatientWishLists();
         this.getPatientSearchData();
     }
@@ -319,7 +314,7 @@ class doctorSearchList extends Component {
                 startDate: formatDate(startDate, 'YYYY-MM-DD'),
                 endDate: formatDate(endDate, 'YYYY-MM-DD')
             }
-            let resultData = await fetchAvailabilitySlots(getSearchedDoctorIds, totalSlotsInWeek, this.patientGender);
+            let resultData = await fetchAvailabilitySlots(getSearchedDoctorIds, totalSlotsInWeek);
             if (resultData.success) {
                 // console.log(resultData.data);
 
@@ -520,9 +515,16 @@ class doctorSearchList extends Component {
                 } />
         )
     }
-
+onBookPress(){
+    this.setState({isHidden:true})
+}
 
     render() {
+
+        const doctorList = [{docname:'Dr.John williams', degree:'MBBS,MD-DNB,Opththalmology',hospital:'dominur - Manipal Hospital',Experience:'12yrs',Rating:3.5,
+        Favorite:'85%',fees:250,selectedappointment:'fri 13 Aug 9:00 am'},{docname:'Dr.John williams', degree:'MBBS,MD-DNB,Opththalmology',hospital:'dominur - Manipal Hospital',Experience:'12yrs',Rating:3.5,
+        Favorite:'85%',fees:250,selectedappointment:'fri 13 Aug 9:00 am'}]
+
         const { bookappointment: { slotData, selectedDate } } = this.props;
         const { navigation } = this.props;
         const { isLoading, isAvailabilityLoading,
@@ -530,9 +532,288 @@ class doctorSearchList extends Component {
         return (
 
             <Container style={styles.container}>
+<Content>
 
 
-                <NavigationEvents
+<View>
+                    <FlatList
+                            data={doctorList}
+                            renderItem={
+                                ({ item }) =>
+                    <Card style={{ padding: 2, borderRadius: 10, borderBottomWidth: 2 }}>
+                                    <List style={{borderBottomWidth:0}}>
+                                        <ListItem>
+                                            <Grid>
+                                            <Row>
+                                               
+                                               <Col style={{width:'5%'}}>
+                                               
+                                               <Thumbnail square source={{ uri: 'https://res.cloudinary.com/demo/image/upload/w_200,h_200,c_thumb,g_face,r_max/face_left.png' }} style={{ height: 60, width: 60 }} />
+
+                                               </Col>
+                                               <Col style={{width:'78%'}}>
+                                               <Row style={{marginLeft:55,}}>
+                                               <Text style={{ fontFamily: 'OpenSans',fontSize:12,fontWeight:'bold'}}>{item.docname}</Text>
+                                               </Row>
+                                               <Row style={{marginLeft:55,}}>
+                                               <Text note  style={{ fontFamily: 'OpenSans',marginTop:2 ,fontSize:11}}>{item.degree}</Text>
+                                               </Row>
+                                             <Row style={{marginLeft:55,}}>
+                                               <Text style={{ fontFamily: 'OpenSans',marginTop:5,fontSize:12,fontWeight:'bold' }}>{item.hospital}</Text>
+                                               </Row>
+                                               
+
+
+                                               </Col>
+                                               <Col style={{width:'17%'}}>
+                                               <Icon name="heart" style={{marginLeft:20,backgroundColor:'#fff',fontSize:20}}></Icon>
+                                               <Row>
+                                               <Text style={{ fontFamily: 'OpenSans',marginTop:20,fontSize:12,marginLeft:5 }}> 2.6km</Text>
+
+                                               </Row>
+
+
+                                               </Col>
+
+                                               
+
+                                            </Row>
+                                            
+                                            <Row>
+                                                <Col style={{width:"25%",marginTop:20}}>
+                                                
+                                                <Text note style={{ fontFamily: 'OpenSans',fontSize:12,marginLeft:5, }}> Experience</Text>
+                                                <Text style={{ fontFamily: 'OpenSans',fontSize:12,marginLeft:5,fontWeight:'bold' }}> {item.Experience}</Text>
+
+
+                                                </Col>
+                                                <Col style={{width:"25%",marginTop:20}}>
+                                                
+                                                <Text note style={{ fontFamily: 'OpenSans',fontSize:12,marginLeft:5, }}> Rating</Text>
+                                                <View style={{flexDirection:'row',marginLeft:10}}>
+                                                <StarRating fullStarColor='#FF9500' starSize={12} width={85} containerStyle={{ marginLeft:15,marginTop:2}} 
+                                                                    disabled={false}
+                                                                    maxStars={1}
+                                                                />
+                                                <Text style={{ fontFamily: 'OpenSans',fontSize:12,fontWeight:'bold',marginLeft:2 }}> {item.Rating}</Text>
+                                                </View>
+                                                
+
+
+                                                </Col>
+                                                <Col style={{width:"25%",marginTop:20}}>
+                                                
+                                                <Text note style={{ fontFamily: 'OpenSans',fontSize:12,marginLeft:5 ,}}> Favourite</Text>
+                                                <Text style={{ fontFamily: 'OpenSans',fontSize:12,marginLeft:5,fontWeight:'bold' }}> {item.Favorite}</Text>
+
+
+                                                </Col>
+                                                <Col style={{width:"25%",marginTop:20}}>
+                                                
+                                                <Text note style={{ fontFamily: 'OpenSans',fontSize:12,marginLeft:5, }}> Fees</Text>
+                                                <Text  style={{ fontFamily: 'OpenSans',fontSize:12,fontWeight:'bold',marginLeft:5 }}> {item.fees}</Text>
+
+
+                                                </Col>
+                                            </Row>
+                                           
+                                           
+
+                                            <Row style={{borderTopColor:'#000',borderTopWidth:0.4,marginTop:5}} >
+                                                <Col style={{width:"8%"}}>
+                                                
+                                                <Icon name='ios-time' style={{fontSize:20,marginTop:15}}/>
+
+                                                </Col>
+                                                <Col style={{width:"70%"}}>
+                                                
+                                                <Text note style={{ fontFamily: 'OpenSans',marginTop:15,fontSize:12,marginRight:50,fontWeight:'bold' }}>Available 9:00 am - 1 pm</Text>
+                                               
+                                                
+
+
+                                                </Col>
+                                                <Col style={{width:"22%"}}>
+                                                <TouchableOpacity  onPress={()=>this.onBookPress()}  style={{ textAlign:'center',backgroundColor:'green',borderColor: '#000', marginTop:15, borderRadius: 20, height: 30,justifyContent:'center' ,marginLeft:5,marginRight:5 ,}}>
+                                                    <Text style={{textAlign:'center',color:'#fff',fontSize:12,fontWeight:'bold',fontFamily:'OpenSans'}}>BOOK </Text>
+                                                </TouchableOpacity>  
+                                               
+                                                </Col>
+                                               
+                                            </Row>
+                                            <View>
+                                            {this.state.isHidden?
+                                            <View>
+                                            <Row style={{marginTop:10}}>
+                                                <Text style={{fontSize:13,fontFamily:'OpenSans'}}>Select appoinment date And time</Text>
+                                            </Row>
+
+                                            <Row style={{marginLeft:'auto',marginRight:'auto'}}  >
+                                             
+                                           <Col style={{width:'8%'}}>
+                                            <Icon name='ios-arrow-back' style={{fontSize:25,marginTop:25}}/>
+                                            </Col>
+                                                <Col style={{width:'22%',}}>
+                                                <TouchableOpacity style={{textAlign:'center',backgroundColor:'#775DA3', borderColor: '#000', marginTop:10, height: 50, borderRadius: 5,justifyContent:'center' ,marginRight:5,paddingLeft:5,paddingRight:5}}>
+                                                    
+                                                    <Text style={{textAlign:'center',color:'#fff',fontSize:13,fontFamily:'OpenSans',fontWeight:'bold'}}>Mon</Text>
+                                                    <Text style={{textAlign:'center',color:'#fff',fontSize:12,fontFamily:'OpenSans'}}>25 Aug </Text>
+
+                                               </TouchableOpacity>
+                                                </Col>
+                                                <Col style={{width:'22%',}}>
+                                                
+
+                                                <TouchableOpacity style={{textAlign:'center',backgroundColor:'#ced6e0', borderColor: '#000', marginTop:10, height: 50, borderRadius: 5,justifyContent:'center' ,marginRight:5,paddingLeft:5,paddingRight:5}}>
+                                                    
+                                                    <Text style={{textAlign:'center',color:'#000',fontSize:13,fontFamily:'OpenSans',fontWeight:'bold'}}>Mon</Text>
+                                                    <Text style={{textAlign:'center',color:'#000',fontSize:12,fontFamily:'OpenSans'}}>25 Aug </Text>
+
+                                               </TouchableOpacity>
+                                                </Col>
+                                                <Col style={{width:'22%',}}>
+                                                <TouchableOpacity style={{textAlign:'center',backgroundColor:'#ced6e0', borderColor: '#000', marginTop:10, height: 50, borderRadius: 5,justifyContent:'center' ,marginRight:5,paddingLeft:5,paddingRight:5}}>
+                                                    
+                                                    <Text style={{textAlign:'center',color:'#000',fontSize:13,fontFamily:'OpenSans',fontWeight:'bold'}}>Mon</Text>
+                                                    <Text style={{textAlign:'center',color:'#000',fontSize:12,fontFamily:'OpenSans'}}>25 Aug </Text>
+
+                                               </TouchableOpacity>
+                                                </Col>
+                                                <Col style={{width:'22%',}}>
+                                                
+
+                                                <TouchableOpacity style={{textAlign:'center',backgroundColor:'#ced6e0', borderColor: '#000', marginTop:10, height: 50, borderRadius: 5,justifyContent:'center' ,marginRight:5,paddingLeft:5,paddingRight:5}}>
+                                                    
+                                                    <Text style={{textAlign:'center',color:'#000',fontSize:13,fontFamily:'OpenSans',fontWeight:'bold'}}>Mon</Text>
+                                                    <Text style={{textAlign:'center',color:'#000',fontSize:12,fontFamily:'OpenSans'}}>25 Aug </Text>
+
+                                               </TouchableOpacity>
+                            
+                                                </Col>
+                                                <Col style={{width:'8%'}}>
+                                                <Icon name='ios-arrow-forward' style={{fontSize:25,marginTop:25,marginLeft:5,marginRight:5}}/>
+
+                                                </Col>
+
+                                               
+                                          </Row>
+                                          <Row>
+                                          <Col style={{width:'8%'}}>
+                                            </Col>
+                                                <Col style={{width:'22%',}}>
+                                                <TouchableOpacity style={{textAlign:'center',backgroundColor:'#775DA3', borderColor: '#000', marginTop:10, height: 30, borderRadius: 5,justifyContent:'center' ,marginRight:5,paddingLeft:5,paddingRight:5}}>
+                                                    
+                                                <Text style={{textAlign:'center',color:'#fff',fontSize:12,fontFamily:'OpenSans'}}>9:00 am </Text>
+
+
+                                               </TouchableOpacity>
+                                                </Col>
+                                                <Col style={{width:'22%',}}>
+                                                
+
+                                                <TouchableOpacity style={{textAlign:'center',backgroundColor:'#ced6e0', borderColor: '#000', marginTop:10, height: 30, borderRadius: 5,justifyContent:'center' ,marginRight:5,paddingLeft:5,paddingRight:5}}>
+                                                <Text style={{textAlign:'center',color:'#000',fontSize:12,fontFamily:'OpenSans'}}>10:00 am </Text>
+
+
+                                               </TouchableOpacity>
+                                                </Col>
+                                                <Col style={{width:'22%',}}>
+                                                <TouchableOpacity style={{textAlign:'center',backgroundColor:'#ced6e0', borderColor: '#000', marginTop:10, height: 30, borderRadius: 5,justifyContent:'center' ,marginRight:5,paddingLeft:5,paddingRight:5}}>
+                                                    
+                                                <Text style={{textAlign:'center',color:'#000',fontSize:12,fontFamily:'OpenSans'}}>11:00 am </Text>
+
+                                               </TouchableOpacity>
+                                                </Col>
+                                                <Col style={{width:'22%',}}>
+                                                
+
+                                                <TouchableOpacity style={{textAlign:'center',backgroundColor:'#ced6e0', borderColor: '#000', marginTop:10, height: 30, borderRadius: 5,justifyContent:'center' ,marginRight:5,paddingLeft:5,paddingRight:5}}>
+                                                    
+                                                <Text style={{textAlign:'center',color:'#000',fontSize:12,fontFamily:'OpenSans'}}>12:00 am </Text>
+
+
+                                               </TouchableOpacity>
+                            
+                                                </Col>
+                                                <Col style={{width:'8%'}}>
+                                                </Col>
+
+                                               
+                                          </Row>
+                                          <Row>
+                                          <Col style={{width:'8%'}}>
+                                            </Col>
+                                                <Col style={{width:'22%',}}>
+                                                <TouchableOpacity style={{textAlign:'center',backgroundColor:'#ced6e0', borderColor: '#000', marginTop:10, height: 30, borderRadius: 5,justifyContent:'center' ,marginRight:5,paddingLeft:5,paddingRight:5}}>
+                                                    
+                                                <Text style={{textAlign:'center',color:'#000',fontSize:12,fontFamily:'OpenSans'}}>1:00 am </Text>
+
+
+                                               </TouchableOpacity>
+                                                </Col>
+                                                <Col style={{width:'22%',}}>
+                                                
+
+                                                <TouchableOpacity style={{textAlign:'center',backgroundColor:'#ced6e0', borderColor: '#000', marginTop:10, height: 30, borderRadius: 5,justifyContent:'center' ,marginRight:5,paddingLeft:5,paddingRight:5}}>
+                                                <Text style={{textAlign:'center',color:'#000',fontSize:12,fontFamily:'OpenSans'}}>3:00 am </Text>
+
+
+                                               </TouchableOpacity>
+                                                </Col>
+                                                <Col style={{width:'22%',}}>
+                                               
+                                                </Col>
+                                                <Col style={{width:'22%',}}>
+                                                
+
+                                                
+                            
+                                                </Col>
+                                                <Col style={{width:'8%'}}>
+                                                </Col>
+
+                                               
+                                          </Row>
+                                            
+                                          
+                                           <View style={{borderTopColor:'#000',borderTopWidth:0.5,marginTop:10}}>
+                                            <Row style={{marginTop:10}}>
+                                                <Text note style={{fontSize:12,fontFamily:'OpenSans'}}>Selected Appointment on</Text>
+                                            </Row>
+                                            <Row style={{marginTop:5}}>
+                                           <Col style={{width:'40%'}}>
+                                         <Text  style={{color:'#000',fontSize:12,fontFamily:'OpenSans',marginLeft:-16}}>{item.selectedappointment}</Text>
+
+                                         </Col>
+                                        <Col style={{width:'30%'}}>
+
+                                       </Col>
+                                        <Col style={{width:'30%'}}>
+                                        <TouchableOpacity style={{backgroundColor:'green', borderColor: '#000', marginTop:10, height: 30, borderRadius: 20,justifyContent:'center' ,marginLeft:5,marginRight:5,marginTop:-5 }}>
+                                                    <Text style={{color:'#fff',fontSize:12,fontWeight:'bold',fontFamily:'OpenSans'}}>Continue </Text>
+                                                </TouchableOpacity> 
+                                            </Col>
+                                            </Row>
+                                            </View>
+                                            </View>
+                                            :null}
+                                            </View>
+                                            </Grid>
+                                           
+                                          
+                                            
+                                            
+                                        </ListItem>
+
+                                        
+                                    </List>
+                                </Card>
+                        }/>
+                       </View>
+
+</Content>
+
+                {/* <NavigationEvents
                     onWillFocus={payload => { this.componentNavigationMount() }}
                 />
                 {isLoading ? <Loader style='list' /> :
@@ -681,7 +962,7 @@ class doctorSearchList extends Component {
 
                                                         </View>}
 
-                                                </Body>
+                                                </Body> */}
                                                 {/* 
                                                 <Right>
                                                     <Icon name='heart' type='Ionicons'
@@ -691,28 +972,28 @@ class doctorSearchList extends Component {
                                                         <Button style={{borderRadius:15,marginTop:90,height:35}} onPress={() => this.navigateToBookAppointmentPage(item)}>
                                                             <Text style={{fontFamily:'OpenSans',fontSize:11,justifyContent:'center'}}>View Profile</Text>
                                                         </Button>
-                                                </Right> */}
-                                            </ListItem>
+                //                                 </Right> */}
+                                   {/* </ListItem>  */}
 
-                                            <Grid>
-                                                <Row>
-                                                    {item.slotData[this.state.selectedDate] !== undefined ?
-                                                        <ListItem>
-                                                            <ScrollView horizontal={true}>
-                                                                {
-                                                                    this.haveAvailableSlots(item, item.slotData[this.state.selectedDate])
-                                                                }
-                                                            </ScrollView>
-                                                        </ListItem> : this.noAvailableSlots(item.slotData)
-                                                    }
-                                                </Row>
-                                            </Grid>
-                                        </List>
-                                    </Card>
-                                } />
-                        }
-                    </Content>
-                }
+                {/* //                             <Grid>
+                //                                 <Row>
+                //                                     {item.slotData[this.state.selectedDate] !== undefined ?
+                //                                         <ListItem>
+                //                                             <ScrollView horizontal={true}>
+                //                                                 {
+                //                                                     this.haveAvailableSlots(item, item.slotData[this.state.selectedDate])
+                //                                                 }
+                //                                             </ScrollView>
+                //                                         </ListItem> : this.noAvailableSlots(item.slotData)
+                //                                     }
+                //                                 </Row>
+                //                             </Grid>
+                //                         </List>
+                //                     </Card>
+                //                 } />
+                //         }
+                //     </Content>
+                // } */}
 
 {/* 
                 <Modal isVisible={this.state.isModalVisible} >
