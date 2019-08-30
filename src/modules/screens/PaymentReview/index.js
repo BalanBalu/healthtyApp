@@ -5,7 +5,7 @@ import { messageShow, messageHide } from '../../providers/common/common.action';
 import { Col, Row, Grid } from 'react-native-easy-grid';
 import { connect } from 'react-redux'
 import { StyleSheet, Image, AsyncStorage, TouchableOpacity, View } from 'react-native';
-import {  validateBooking } from '../../providers/bookappointment/bookappointment.action';
+import { validateBooking } from '../../providers/bookappointment/bookappointment.action';
 import { formatDate } from '../../../setup/helpers';
 import Spinner from '../../../components/Spinner';
 import { RenderHospitalAddress } from '../../common';
@@ -38,18 +38,18 @@ export default class PaymentReview extends Component {
         await this.setState({ bookSlotDetails: bookSlotDetails });
     }
     async confirmProceedPayment() {
-        this.setState({ isLoading : true });
+        this.setState({ isLoading: true });
         const bookingSlotData = this.state.bookSlotDetails
         const reqData = {
-           doctorId: bookingSlotData.doctorId,
-           startTime: bookingSlotData.slotData.slotStartDateAndTime,
-           endTime: bookingSlotData.slotData.slotEndDateAndTime,
+            doctorId: bookingSlotData.doctorId,
+            startTime: bookingSlotData.slotData.slotStartDateAndTime,
+            endTime: bookingSlotData.slotData.slotEndDateAndTime,
         }
         validationResult = await validateBooking(reqData)
-        this.setState({ isLoading : false });
-        if(validationResult.success) {
-           const amount = this.state.bookSlotDetails.slotData.fee;
-           this.props.navigation.navigate('paymentPage', {service_type : 'APPOINTMENT', bookSlotDetails: this.state.bookSlotDetails, amount: amount })
+        this.setState({ isLoading: false });
+        if (validationResult.success) {
+            const amount = this.state.bookSlotDetails.slotData.fee;
+            this.props.navigation.navigate('paymentPage', { service_type: 'APPOINTMENT', bookSlotDetails: this.state.bookSlotDetails, amount: amount })
         } else {
             console.log(validationResult);
             Toast.show({
@@ -58,15 +58,15 @@ export default class PaymentReview extends Component {
                 duration: 3000
             })
         }
-        
+
     }
-   async processToPayLater() {
+    async processToPayLater() {
         const userId = await AsyncStorage.getItem('userId');
         this.BookAppointmentPaymentUpdate = new BookAppointmentPaymentUpdate();
         let response = await this.BookAppointmentPaymentUpdate.updatePaymentDetails(true, {}, 'cash', this.state.bookSlotDetails, 'APPOINTMENT', userId);
         console.log('Book Appointment Payment Update Response ');
         console.log(response);
-        if(response.success) {
+        if (response.success) {
             this.props.navigation.navigate('paymentsuccess', { successBookSlotDetails: this.state.bookSlotDetails });
         } else {
             Toast.show({
@@ -75,10 +75,10 @@ export default class PaymentReview extends Component {
                 duration: 3000
             })
         }
-           
+
     }
 
-   
+
     render() {
         const { bookSlotDetails } = this.state;
         return (
@@ -124,12 +124,9 @@ export default class PaymentReview extends Component {
                             />
                             : null}
 
-
                         <Grid style={{ borderBottomWidth: 0.3, color: '#f2f2f2', padding: 10, marginLeft: 10 }}>
 
                         </Grid>
-
-                       
 
                         <Grid style={{ borderBottomWidth: 0.3, color: '#f2f2f2', padding: 10, marginLeft: 10 }}>
                             <Row>
@@ -144,7 +141,7 @@ export default class PaymentReview extends Component {
                         <Button block success style={{ borderRadius: 6, margin: 6 }} onPress={() => this.processToPayLater()}>
                             <Text uppercase={false}>payLater</Text>
                         </Button>
-                        <Button block success style={{ padding: 10, borderRadius: 6, margin: 6, marginBottom: 20 }} onPress={() => 
+                        <Button block success style={{ padding: 10, borderRadius: 6, margin: 6, marginBottom: 20 }} onPress={() =>
                             this.confirmProceedPayment()}>
                             <Text uppercase={false} >Pay Now</Text>
                         </Button>
@@ -157,9 +154,6 @@ export default class PaymentReview extends Component {
     }
 
 }
-
-
-
 
 const styles = StyleSheet.create({
 
