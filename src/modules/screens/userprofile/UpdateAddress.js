@@ -125,20 +125,20 @@ class UserDetails extends Component {
     render() {
         return (
             <Container style={styles.Container}>
-                <Content style={styles.bodyContent} contentContainerStyle={{ flex: 1 }}>
+                <Content contentContainerStyle={styles.bodyContent}>
                     <ScrollView>
+                    
+                        <Text style={styles.addressHeaderText}>Update User Details</Text>
 
-                        <H3 style={{ fontSize: 20, fontFamily: 'opensans-semibold', marginTop: 20, marginLeft: '5%', fontWeight: 'bold', }}>Update User Details</H3>
-
-                        <Form>
-                            <ScrollView scrollEventThrottle={16} >
+                        <Form style={{marginTop:15}}>
+                           
                                 <Item style={{ borderBottomWidth: 0 }}>
-                                    <Text style={{ fontFamily: 'OpenSans', fontSize: 18, marginTop: 30 }}>Door_no</Text>
+                                    <Text style={styles.subText}>Door_no</Text>
                                 </Item>
                                 <Item style={{ borderBottomWidth: 0 }}>
                                     <Input
                                         placeholder="Enter Door no"
-                                        style={styles.transparentLabel}
+                                        style={styles.transparentLabel2}
                                         value={this.state.no_and_street}
                                         keyboardType={'default'}
                                         returnKeyType={'next'}
@@ -152,12 +152,12 @@ class UserDetails extends Component {
                                 </Item>
 
                                 <Item style={{ borderBottomWidth: 0 }}>
-                                    <Text style={{ fontFamily: 'OpenSans', fontSize: 18, }}>Address Line1</Text>
+                                    <Text style={styles.subText}>Address Line1</Text>
                                 </Item>
                                 <Item style={{ borderBottomWidth: 0 }}>
                                     <Input
                                         placeholder="Enter Address Line1"
-                                        style={styles.transparentLabel}
+                                        style={styles.transparentLabel2}
                                         ref={(input) => { this.no_and_street = input; }}
                                         value={this.state.address_line_1}
                                         keyboardType={'default'}
@@ -170,12 +170,12 @@ class UserDetails extends Component {
                                     />
                                 </Item>
                                 <Item style={{ borderBottomWidth: 0 }}>
-                                    <Text style={{ fontFamily: 'OpenSans', fontSize: 18, }}>Address Line2</Text>
+                                    <Text style={styles.subText}>Address Line2</Text>
                                 </Item>
                                 <Item style={{ borderBottomWidth: 0 }}>
                                     <Input
                                         placeholder="Enter Address Line2"
-                                        style={styles.transparentLabel}
+                                        style={styles.transparentLabel2}
                                         ref={(input) => { this.address_line_1 = input; }}
                                         value={this.state.address_line_2}
                                         keyboardType={'default'}
@@ -192,12 +192,12 @@ class UserDetails extends Component {
 
 
                                 <Item style={{ borderBottomWidth: 0 }}>
-                                    <Text style={{ fontFamily: 'OpenSans', fontSize: 18, }}>City</Text>
+                                    <Text style={styles.subText}>City</Text>
                                 </Item>
                                 <Item style={{ borderBottomWidth: 0 }}>
                                     <Input
                                         placeholder="Enter City"
-                                        style={styles.transparentLabel}
+                                        style={styles.transparentLabel2}
                                         autoFocus={this.state.isFocusKeyboard}
                                         ref={(input) => { this.address_line_2 = input; }}
                                         value={this.state.city}
@@ -212,12 +212,12 @@ class UserDetails extends Component {
                                 </Item>
 
                                 <Item style={{ borderBottomWidth: 0 }}>
-                                    <Text style={{ fontFamily: 'OpenSans', fontSize: 18, }}>Pincode</Text>
+                                    <Text style={styles.subText}>Pincode</Text>
                                 </Item>
                                 <Item style={{ borderBottomWidth: 0 }}>
                                     <Input
                                         placeholder="Enter Pincode"
-                                        style={styles.transparentLabel}
+                                        style={styles.transparentLabel2}
                                         value={this.state.pin_code}
                                         autoFocus={this.state.isFocusKeyboard}
                                         ref={(input) => { this.city = input; }}
@@ -236,12 +236,13 @@ class UserDetails extends Component {
 
 
 
-                                <Button disabled={this.state.updateButton} style={styles.loginButton} ref={(input) => { this.pin_code = input; }} block primary onPress={() => this.userUpdate()} testID="updateAddressButton">
-                                    <Text style={{ fontFamily: 'OpenSans', fontSize: 18, }}>Update</Text>
+                                <Button disabled={this.state.updateButton} style={styles.addressButton} ref={(input) => { this.pin_code = input; }} block onPress={() => this.userUpdate()} testID="updateAddressButton">
+                                    <Text style={styles.buttonText}>Update</Text>
                                 </Button>
-                            </ScrollView>
+                           
 
                         </Form>
+                       
                     </ScrollView>
                 </Content>
                 <Spinner color='blue'
