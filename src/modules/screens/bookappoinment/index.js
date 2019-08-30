@@ -212,7 +212,7 @@ enumarateDates(startDate, endDate) {
   /* Get user Reviews*/
   getUserReviews = async (doctorId) => {
     console.log(" get reviews");
-    let resultReview = await viewUserReviews('doctor',doctorId);
+    let resultReview = await viewUserReviews('doctor', doctorId, '?limit=2');
     console.log('resultReview : ' + JSON.stringify (resultReview));
     if (resultReview.success) {
       this.setState({ reviewdata: resultReview.data });
