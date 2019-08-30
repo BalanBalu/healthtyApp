@@ -22,6 +22,7 @@ export async function bookAppointment(bookSlotDetails, isLoading = true) {
 
 export async function validateBooking(reqDataValidate) {
   try {
+    console.log(reqDataValidate);
     let endPoint = 'appointment/validate';
     let response = await postService(endPoint, reqDataValidate);
     let respData = response.data;

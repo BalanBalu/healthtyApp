@@ -38,15 +38,9 @@ export default class PaymentReview extends Component {
         await this.setState({ bookSlotDetails: bookSlotDetails });
     }
     async confirmProceedPayment() {
-        this.setState({ isLoading : true });
+      
         const bookingSlotData = this.state.bookSlotDetails
-        const reqData = {
-           doctorId: bookingSlotData.doctorId,
-           startTime: bookingSlotData.slotData.slotStartDateAndTime,
-           endTime: bookingSlotData.slotData.slotEndDateAndTime,
-        }
-        validationResult = await validateBooking(reqData)
-        this.setState({ isLoading : false });
+        validationResult = await this.validateForBookAppointment(bookingSlotData)
         if(validationResult.success) {
            const amount = this.state.bookSlotDetails.slotData.fee;
            this.props.navigation.navigate('paymentPage', {service_type : 'APPOINTMENT', bookSlotDetails: this.state.bookSlotDetails, amount: amount })
@@ -61,6 +55,16 @@ export default class PaymentReview extends Component {
         
     }
    async processToPayLater() {
+    const bookingSlotData = this.state.bookSlotDetails;
+        validationResult = await this.validateForBookAppointment(bookingSlotData);
+        if(!validationResult.success) {
+            Toast.show({
+                text: validationResult.message,
+                type: 'warning',
+                duration: 3000
+            })
+            return;
+        }
         const userId = await AsyncStorage.getItem('userId');
         this.BookAppointmentPaymentUpdate = new BookAppointmentPaymentUpdate();
         let response = await this.BookAppointmentPaymentUpdate.updatePaymentDetails(true, {}, 'cash', this.state.bookSlotDetails, 'APPOINTMENT', userId);
@@ -76,6 +80,23 @@ export default class PaymentReview extends Component {
             })
         }
            
+    }
+
+   async validateForBookAppointment(bookingSlotData) {
+    this.setState({ isLoading : true });
+        let reqData = {
+            doctorId: bookingSlotData.doctorId,
+            startTime: bookingSlotData.slotData.slotStartDateAndTime,
+            endTime: bookingSlotData.slotData.slotEndDateAndTime,
+         }
+         let userBasicData = await AsyncStorage.getItem('basicProfileData')
+         if(userBasicData !== null) {
+             reqData.gender = JSON.parse(userBasicData).gender;
+         }
+        
+         validationResult = await validateBooking(reqData)
+         this.setState({ isLoading : false });
+         return validationResult;
     }
 
    
