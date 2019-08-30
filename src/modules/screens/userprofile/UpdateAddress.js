@@ -81,26 +81,29 @@ class UserDetails extends Component {
         }
     }
 
-    validateCity = (text) => {
+    validateCity = () => {
         const regex = new RegExp('^[\ba-zA-Z ]+$')  //Support letter with space
-        this.setState({ city: text, updateButton: false });
-        if (regex.test(text) === false) {
-            this.setState({ updateButton: true });
-            if(text!=''){
-            Toast.show({
-                text: 'Please enter only alphabets',
-                type: "danger",
-                duration: 3000
-            });
-        }
+        //this.setState({ updateButton: false });
+        if (regex.test(this.state.city) === false) {
+            //this.setState({ updateButton: true });
+            if (this.state.city != '') {
+                Toast.show({
+                    text: 'The entered city is invalid',
+                    type: "danger",
+                    duration: 3000
+                });
+            }
+            return false;
+        } else {
+            return true;
         }
     }
 
-    userUpdate() {
+    async userUpdate() {
         try {
             const { userData, no_and_street, address_line_1, address_line_2, city, pin_code } = this.state
             this.setState({ isLoading: true });
-            if (userData.address !== undefined) {
+            if (userData.address !== undefined && this.validateCity() == true) {
                 if (no_and_street != userData.address.address.no_and_street || address_line_1 != userData.address.address.address_line_1 ||
                     address_line_2 != userData.address.address.address_line_2 || city != userData.address.address.city ||
                     pin_code != userData.address.address.pin_code) {
@@ -108,13 +111,14 @@ class UserDetails extends Component {
                 } else {
                     this.props.navigation.navigate('Profile');
                 }
-            } else {
-                console.log("else")
+            } else if (this.validateCity() == true) {
                 this.commonUpdateAddressMethod();
             }
         } catch (e) {
             console.log(e);
-
+        }
+        finally {
+            this.setState({ isLoading: false });
         }
     }
 
@@ -203,7 +207,7 @@ class UserDetails extends Component {
                                         value={this.state.city}
                                         keyboardType={'default'}
                                         returnKeyType={'next'}
-                                        onChangeText={text => this.validateCity(text)}
+                                        onChangeText={text => this.setState({ city: text })}
                                         autoCapitalize='none'
                                         blurOnSubmit={false}
                                         onSubmitEditing={() => { this.city._root.focus(this.setState({ isFocusKeyboard: true })); }}
