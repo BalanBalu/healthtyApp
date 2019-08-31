@@ -70,7 +70,7 @@ class UpdateEmail extends Component {
                     this.props.navigation.navigate('Profile');
                 } else {
                     Toast.show({
-                        text: 'Fields should not be empty',
+                        text: 'The entered email is invalid',
                         type: "danger",
                         duration: 3000
                     })
@@ -110,6 +110,8 @@ class UpdateEmail extends Component {
                                         </Right>
                                     </Item>
                                     : null}</Card>
+                            <Text style={{ color: 'gray', fontSize: 16 }}>Primary email is not editable</Text>
+
                         </View>
                         <View style={{ marginTop: 20 }}>
                             <Text style={{ fontFamily: 'OpenSans', marginTop: 50, marginLeft: 7, fontWeight: 'bold', fontSize: 22 }}>Secondary Email</Text>
