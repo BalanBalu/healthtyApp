@@ -1,8 +1,10 @@
 import React, { Component } from 'react';
 import { StyleSheet, Image, TextInput, Dimensions, AsyncStorage } from 'react-native';
 import StarRating from 'react-native-star-rating';
-import { Container, Header, Title, Left, Right, Body, Button, Card, Toast, CardItem, Row, Grid, View, 
-  Text, Thumbnail, Content, CheckBox } from 'native-base';
+import {
+  Container, Header, Title, Left, Right, Body, Button, Card, Toast, CardItem, Row, Grid, View,
+  Text, Thumbnail, Content, CheckBox
+} from 'native-base';
 //import {ScrollView} from 'react-native-gesture-handler';
 //import Icon from 'react-native-vector-icons/FontAwesome';
 import { addReview } from '../../providers/bookappointment/bookappointment.action'
@@ -23,7 +25,7 @@ class InsertReview extends Component {
       data: '',
       doctorId: '',
       appointmentId: '',
-      isRefresh:'false'
+      isRefresh: 'false'
     }
   }
 
@@ -31,12 +33,13 @@ class InsertReview extends Component {
 
     const { navigation } = this.props;
     const reviewData = navigation.getParam('appointmentDetail');
-    console.log('finalReviewData'+JSON.stringify(reviewData));
+    console.log('reviewData:')
+    console.log(reviewData);
 
-// let reviewData=finalReviewData.data.appointmentResult;
-// console.log('reviewData'+JSON.stringify(reviewData));
+    // let reviewData=finalReviewData.data.appointmentResult;
+    // console.log('reviewData'+JSON.stringify(reviewData));
 
-let userId = reviewData.user_id;
+    let userId = reviewData.user_id;
 
     let doctorId = reviewData.doctor_id;
     let appointmentId = reviewData._id;
@@ -68,12 +71,12 @@ let userId = reviewData.user_id;
     try {
       let userId = this.state.data.user_id;
       let overallrating = (this.state.cleanness_rating + this.state.staff_rating + this.state.wait_time_rating) / 3;
-
+      console.log(this.state.appointmentId)
       if (this.state.comments != null) {
         let insertReviewData = {
           user_id: userId,
           doctor_id: this.state.data.doctor_id,
-          appointment_id: this.state.data._id,
+          appointment_id: this.state.appointmentId,
           is_anonymous: this.state.isAnonymous,
           wait_time_rating: this.state.wait_time_rating,
           staff_rating: this.state.staff_rating, // 1 to 5
@@ -82,16 +85,17 @@ let userId = reviewData.user_id;
           comments: this.state.comments,
           is_doctor_recommended: this.state.doctorRecommended,
         };
+        console.log(insertReviewData.appointment_id);
         let result = await addReview(userId, insertReviewData);
         console.log(JSON.stringify(result))
 
         if (result.success) {
           console.log('review updated');
-          this.state.data.appointment_status = 'COMPLETED';
-          await this.updateAppointmentStatus(this.state.data, 'COMPLETED')
+          // this.state.data.appointment_status = 'COMPLETED';
+          // await this.updateAppointmentStatus(this.state.data, 'COMPLETED')
           console.log('back navigation initiated');
-        this.props.navigation.pop();
-        console.log('back navigation completed');
+          this.props.navigation.pop();
+          console.log('back navigation completed');
         }
       } else {
         Toast.show({
@@ -130,7 +134,7 @@ let userId = reviewData.user_id;
             <Card>
               <CardItem style={styles.text}>
                 <Body>
-                  <Text > How was your visit with Dr.Anil varma ? help other patients by leaving a Review </Text>
+                  <Text > How was your visit with {(data && data.prefix) + (data && data.doctorInfo.first_name) + " " + (data && data.doctorInfo.last_name)} ? help other patients by leaving a Review </Text>
                 </Body>
               </CardItem>
               <CardItem>
@@ -184,12 +188,12 @@ let userId = reviewData.user_id;
                       </Text>
                   <TextInput
                     style={{ height: 100, borderWidth: 1, marginTop: 20, width: 300 }}
-                    multiline = {true}
+                    multiline={true}
                     placeholder="Write your reviews here"
                     textAlignVertical={'top'}
                     onChangeText={(comments) => this.setState({ comments })}
                   />
-                  
+
                   {/* <TextInput
                     style={{ height: 80, borderWidth: 1, width: 'auto' }}
                    
@@ -197,7 +201,7 @@ let userId = reviewData.user_id;
                   <Row style={{ marginTop: 10 }}>
                     <Right>
                       <Button style={styles.button1}
-                       onPress={() => this.submitReview()}>
+                        onPress={() => this.submitReview()}>
                         <Text>SUBMIT </Text></Button>
                     </Right></Row>
 
