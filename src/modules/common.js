@@ -28,10 +28,12 @@ export const RenderHospitalAddress = (props) => {
                     {props.hospitalAddress.location ?
                         <View>
                             <Text note style={props.textStyle}>{props.hospitalAddress.location.address.no_and_street + ', '}</Text>
-                            <Text note style={props.textStyle}>{props.hospitalAddress.location.address.city}</Text>
+                            <Text note style={props.textStyle}>{props.hospitalAddress.location.address.address_line_1}</Text>
+                            <Text note style={props.textStyle}>{props.hospitalAddress.location.address.address_line_2}</Text>
+
                             {renderHalfAddress === true ? null :
                                 <View>
-                                    <Text note style={props.textStyle}>{props.hospitalAddress.location.address.state}</Text>
+                                    <Text note style={props.textStyle}>{props.hospitalAddress.location.address.city}</Text>
                                     <Text note style={props.textStyle}>{props.hospitalAddress.location.address.pin_code}</Text>
                                 </View>
                             }
