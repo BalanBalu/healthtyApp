@@ -39,7 +39,10 @@ class OrderDetails extends Component {
              }
         catch (e) {
             console.log(e);
-        }        
+        }   
+        finally{
+            this.setState({isLoading:false});
+        }            
     }
 
     noOrders() {
