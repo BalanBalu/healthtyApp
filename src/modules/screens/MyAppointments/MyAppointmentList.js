@@ -362,7 +362,7 @@ class MyAppoinmentList extends Component {
 									<Button style={[styles.bookingButton, styles.customButton]}
 										onPress={() =>
 											this.props.navigation.navigate("Home", { fromAppointment: true })
-										}>
+										} testID='navigateToHome'>
 										<Text>Book Now</Text>
 									</Button>
 								</Item>
@@ -380,7 +380,7 @@ class MyAppoinmentList extends Component {
 														this.props.navigation.navigate("AppointmentInfo", {
 															data: item.appointmentResult
 														})
-													}
+													} testID='navigateAppointmentInfo'
 												>
 													<Left>
 														<Thumbnail
@@ -473,7 +473,7 @@ class MyAppoinmentList extends Component {
 																		style={styles.shareButton}
 																		onPress={() =>
 																			this.props.navigation.navigate("InsertReview", { appointmentDetail: item.appointmentResult })
-																		}
+																		} testID='navigateInsertReview'
 																	>
 																		<Text style={styles.bookAgain1}>
 																			{" "}
@@ -481,7 +481,7 @@ class MyAppoinmentList extends Component {
 																</Text>
 																	</Button>
 																	<Button style={styles.bookingButton} onPress={() => this.navigateToBookAppointmentPage(item)}>
-																		<Text style={styles.bookAgain1}>
+																		<Text style={styles.bookAgain1} testID='navigateBookAppointment'>
 																			book Again
 																</Text>
 																	</Button>
@@ -490,7 +490,7 @@ class MyAppoinmentList extends Component {
 																selectedIndex === 1 && (
 																	<Item style={{ borderBottomWidth: 0 }}>
 																		<Right style={(styles.marginRight = 5)}>
-																			<Button style={styles.bookingButton} onPress={() => this.navigateToBookAppointmentPage(item)}>
+																			<Button style={styles.bookingButton} onPress={() => this.navigateToBookAppointmentPage(item)} testID='navigateBookingPage'>
 																				<Text style={styles.bookAgain1}>
 																					Book Again
 																		</Text>
