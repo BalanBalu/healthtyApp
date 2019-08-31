@@ -144,8 +144,6 @@ class PharmacyCart extends Component {
                         <TouchableOpacity style={{ marginLeft: 50, alignItems: 'center'}} onPress={()=> this.removeMedicine(index)} testID='removeMedicineToCart'>
                            <Icon style={{ fontSize: 30, color: 'red', marginTop: -4 }} name='ios-trash' />
                          </TouchableOpacity>  
-                        
-
                     </View>
                   </Grid>
                 </Card>

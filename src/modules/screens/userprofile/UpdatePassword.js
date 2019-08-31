@@ -16,8 +16,8 @@ class UpdatePassword extends Component {
         this.state = {
             oldPassword: '',
             newPassword: '',
-            showOldPassword: true,
-            showNewPassword: true,
+            oldPasswordVisible: true,
+            newPasswordVisible: true,
             isLoading: false
         }
     }
@@ -97,10 +97,10 @@ class UpdatePassword extends Component {
                                         secureTextEntry={true}  style={{fontSize:13,fontFamily:'OpenSans',marginTop:-5}}
                                         keyboardType="default"
                                         value={this.state.oldPassword}
-                                        secureTextEntry={this.state.showOldPassword}
+                                            secureTextEntry={this.state.oldPasswordVisible}
                                         onChangeText={(oldPassword) => this.setState({ oldPassword })}
                                         testID='enterOldPassword' />
-                                    <Icon active name="eye" style={{ fontSize: 20, marginTop: 10 }} onPress={() => this.setState({ showPassword: !this.state.showPassword })} />
+                                        <Icon active name="eye" style={{ fontSize: 20, marginTop: 10 }} onPress={() => this.setState({ oldPasswordVisible: !this.state.oldPasswordVisible })} />
 
                             </Row>
                                 </Col>
@@ -115,12 +115,12 @@ class UpdatePassword extends Component {
                         secureTextEntry={true} style={{fontSize:13,fontFamily:'OpenSans',marginTop:-5}}
                         keyboardType="default"
                         value={this.state.newPassword}
-                        secureTextEntry={this.state.showPassword}
+                                            secureTextEntry={this.state.newPasswordVisible}
                         onChangeText={(newPassword) => this.setState({ newPassword })}
                         testID='enterNewPassword'
 
                         />
-                        <Icon active name='eye' style={{ fontSize: 20, marginTop: 10 }} onPress={() => this.setState({ showPassword: !this.state.showPassword })} />
+                                        <Icon active name='eye' style={{ fontSize: 20, marginTop: 10 }} onPress={() => this.setState({ newPasswordVisible: !this.state.newPasswordVisible })} />
                 </Row>
                             </Col>
               

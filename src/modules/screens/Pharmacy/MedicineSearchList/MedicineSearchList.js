@@ -27,6 +27,7 @@ class MedicineSearchList extends Component {
         this.storeMedicineToCart();
     };
 
+    
     backNavigation(payload) {
         if (payload.action.type === 'Navigation/BACK') {
             const temp = this.props.navigation.getParam('medicineList');
