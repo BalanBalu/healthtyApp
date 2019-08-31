@@ -5,7 +5,8 @@ import { Col, Row, Grid } from 'react-native-easy-grid';
 import { StyleSheet, Image, AsyncStorage, TextInput, FlatList, TouchableOpacity } from 'react-native';
 import { Loader } from '../../../../components/ContentLoader';
 import { getMedicineOrderList } from '../../../providers/pharmacy/pharmacy.action';
-import {formatDate} from '../../../../setup/helpers'
+import {formatDate} from '../../../../setup/helpers';
+import { NavigationEvents } from 'react-navigation';
 
 class MyOrdersList extends Component {
     constructor(props) {
@@ -17,20 +18,25 @@ class MyOrdersList extends Component {
             isLoading: true
         }
     }
-    componentDidMount() {
-        this.medicineOrderList();
+   componentDidMount() {
+    this.medicineOrderList();
     }
+
     async medicineOrderList(){    
         try {
-          //let userId='5d2420a2731df239784cd001';
+            this.setState({isLoading:true});
            let userId = await AsyncStorage.getItem('userId');
            let result = await getMedicineOrderList(userId);
            console.log('result :' + JSON.stringify(result));
-           this.setState({  orderList: result.data, isLoading:false });
+           if(result.success){
+            this.setState({  orderList: result.data });               
+           }
            console.log('orderList' + JSON.stringify(this.state.orderList));
             }
         catch (e) {
             console.log(e);
+        }finally{
+            this.setState({isLoading:false});
         }        
     }
 
@@ -102,12 +108,15 @@ class MyOrdersList extends Component {
     }
 
     render() {
-        return (
+              return (
             <Container style={styles.container}>
                 <Content style={styles.bodyContent}>
+                <NavigationEvents 
+              onWillFocus={payload => { if(payload.action.type=='Navigation/BACK'){this.medicineOrderList()} }}
+            />
                 {this.state.isLoading ? <Spinner color='blue' /> :
                         <Card>
-                            {this.state.orderList !== null ? this.renderOrders() : this.renderNoOrders()}
+                            {this.state.orderList.length !== 0 ? this.renderOrders() : this.renderNoOrders()}
                         </Card>}
                 </Content>
             </Container>

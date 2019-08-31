@@ -6,7 +6,9 @@ import { Col, Row, Grid } from 'react-native-easy-grid';
 import { StyleSheet, Image, AsyncStorage, TextInput, FlatList, TouchableOpacity } from 'react-native';
 import { Loader } from '../../../../components/ContentLoader';
 import {getMyOrders} from '../../../providers/pharmacy/pharmacy.action'
-import { formatDate } from '../../../../setup/helpers'
+import { formatDate } from '../../../../setup/helpers';
+import { NavigationEvents } from 'react-navigation';
+
 
 
 class OrderDetails extends Component {
@@ -19,16 +21,21 @@ class OrderDetails extends Component {
         }
     }
     componentDidMount(){
-        this.getMedicineOrder();        
+      this.getMedicineOrder();   
     }
    
     async getMedicineOrder(){    
         try {
+            this.setState({isLoading:true});
           const { navigation } = this.props;
          const orderId = navigation.getParam('orderId');
          let response=await getMyOrders(orderId);
         console.log('result :' + JSON.stringify(response));
-         await this.setState({myOrderList:response.data[0],isLoading:false});        
+        if(response.success)
+        {
+         await this.setState({myOrderList:response.data[0]});
+        }   
+        this.setState({isLoading:false});
              }
         catch (e) {
             console.log(e);
@@ -48,9 +55,11 @@ class OrderDetails extends Component {
         const { isLoading,myOrderList } = this.state;
         return (
             <Container style={styles.container}>
-
                 {isLoading == true ? <Spinner color='blue' /> :
                     <Content style={styles.bodyContent}>
+                        <NavigationEvents
+              onWillFocus={payload => { if(payload.action.type=='Navigation/BACK'){this.getMedicineOrder()} }}
+            />
                     <Grid style={styles.curvedGrid}>
                     </Grid>
 
