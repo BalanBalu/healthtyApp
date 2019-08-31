@@ -18,12 +18,11 @@ export default class Filters extends Component {
             sampleServiceArray: [],
             serviceList: [],
             selectedCategory: '',
-            selectedService: [],
             language: [],
             genderIndex: 0,
             selectAvailabilityIndex: 0,
             selectExperinceIndex: '',
-            selectedServicesList: '',
+            selectedServices:[],
             viewDoctors_button: true
         }
     }
@@ -32,7 +31,7 @@ export default class Filters extends Component {
 
         const { navigation } = this.props;
         const doctorData = navigation.getParam('doctorData');
-        const selectedServicesList = navigation.getParam('selectedServicesList');
+        // const selectedServicesList = navigation.getParam('selectedServicesList');
         const filterData = navigation.getParam('filterData');
         const filterBySelectedAvailabilityDateCount = navigation.getParam('filterBySelectedAvailabilityDateCount')
        // console.log( 'Filter Data from Search List: ' + JSON.stringify(filterData));
@@ -60,16 +59,10 @@ export default class Filters extends Component {
                 this.onSelectedCategoryChange(filterData.category);
             }
             if(filterData.service) {
-                // add the implemendation here for service list    
-            }
+                this.onSelectedServiceChange(filterData.service)         }
         }
 
-        if (selectedServicesList != undefined) {
-            await this.setState({ selectedServicesList: selectedServicesList, viewDoctors_button: false });
-            filterData.service = selectedServicesList;
-        }
         await this.setState({ doctorData: doctorData });
-        //console.log('selectedServicesList' + JSON.stringify(this.state.selectedServicesList));
         // console.log('doctorData' + JSON.stringify(this.state.doctorData));
         let sampleLangArray = [];
         let sampleCategoryArray = [];
@@ -104,7 +97,7 @@ export default class Filters extends Component {
             multipleLanguages.push(sample);
         })
         await this.setState({ languageData: multipleLanguages, categoryList: sampleCategoryArray, serviceList: sampleServiceArray });
-        // console.log('this.state.categoryList' + JSON.stringify(this.state.categoryList));
+        console.log('this.state.serviceList' + JSON.stringify(this.state.serviceList));
     }
 
     /* Go and select the Services from Service List page  */
@@ -141,13 +134,19 @@ export default class Filters extends Component {
         }
         this.setState({ selectExperinceIndex: index, viewDoctors_button: false })
         filterData.experience = index;
+        console.log('filterData'+JSON.stringify(filterData))
     }
 
     onSelectedLanguagesChange = async (language) => {
         this.setState({ language, viewDoctors_button: false });
         filterData.language = language;
     };
+    onSelectedServiceChange=async(selectedServices)=>{
+       await this.setState({selectedServices,viewDoctors_button: false })
+       filterData.service = selectedServices;
 
+        console.log('selectedServices'+console.log(this.state.selectedServices))
+    }
     onSelectedCategoryChange = async (selectedCategory) => {
         if(selectedCategory == 'Select Your Category') {
             selectedCategory = null;
@@ -336,9 +335,10 @@ export default class Filters extends Component {
                                         uniqueKey='value'
                                         displayKey='value'
                                         selectText='Choose Languages You know'
+                                        searchPlaceholderText='Search Your Languages'
                                         modalWithTouchable={true}
                                         showDropDowns={true}
-                                        hideSearch={true}
+                                        hideSearch={false}
                                         showRemoveAll={true}
                                         showChips={false}
                                         readOnlyHeadings={false}
@@ -346,6 +346,9 @@ export default class Filters extends Component {
                                         selectedItems={this.state.language}
                                         colors={{ primary: '#18c971' }}
                                         showCancelButton={true}
+                                        animateDropDowns={true}
+
+
                                         testID='languageSelected'
                                     />
                                 </View>
@@ -378,17 +381,31 @@ export default class Filters extends Component {
 
                         </Item>
 
-                        <View style={{ paddingTop: 5 }}>
-                            <Card block style={{ backgroundColor: '#fff', padding: 5, borderRadius: 10, }}>
-                                <Row>
-                                    <Col style={{ width: '95%' }}>
-                                        <Text style={{ color: 'black', fontSize: 15, width: 'auto', fontFamily: 'OpenSans', }}>Select Services</Text>
-                                    </Col>
-                                    <Col style={{ width: '95%' }}>
-                                        <Icon name='ios-arrow-forward' style={{ fontSize: 30, color: 'black', width: 'auto' }}
-                                            onPress={() => { this.goServiceListPage() }} />
-                                    </Col>
-                                </Row>
+
+                        <View>
+                            <Card style={{ backgroundColor: '#fff', borderRadius: 10, height: 50 }}>
+                                <View style={{ justifyContent: 'center' }}>
+
+                                    <SectionedMultiSelect style={{ height: 100 }}
+                                        items={this.state.serviceList}
+                                        uniqueKey='value'
+                                        displayKey='value'
+                                        selectText='Choose your Services  '
+                                        searchPlaceholderText='Search Your Services'
+                                        modalWithTouchable={true}
+                                        showDropDowns={true}
+                                        hideSearch={false}
+                                        showRemoveAll={true}
+                                        showChips={false}
+                                        readOnlyHeadings={false}
+                                        onSelectedItemsChange={this.onSelectedServiceChange}
+                                        selectedItems={this.state.selectedServices}
+                                        colors={{ primary: '#18c971' }}
+                                        showCancelButton={true}
+                                        animateDropDowns={true}
+                                        testID='servicesSelected'
+                                    />
+                                </View>
                             </Card>
                         </View>
 

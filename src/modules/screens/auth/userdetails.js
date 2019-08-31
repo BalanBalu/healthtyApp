@@ -10,6 +10,7 @@ import { userFiledsUpdate, logout } from '../../providers/auth/auth.actions';
 import styles from '../../screens/auth/styles';
 import Spinner from '../../../components/Spinner';
 import { subTimeUnit } from "../../../setup/helpers";
+import { ScrollView } from 'react-native-gesture-handler';
 
 class UserDetails extends Component {
     constructor(props) {
@@ -112,8 +113,9 @@ class UserDetails extends Component {
         return (
 
             <Container style={styles.container}>
-                <Content style={styles.bodyContent}>
-                <View style={{marginTop:100,}}>
+                <Content contentContainerStyle={styles.bodyContent}>
+                    <ScrollView>
+                <View >
 
                     <H3 style={styles.welcome}>User Details</H3>
                     <Image source={{ uri: 'https://static1.squarespace.com/static/582bbfef9de4bb07fe62ab18/t/5877b9ccebbd1a124af66dfe/1484241404624/Headshot+-+Circular.png?format=300w' }} style={styles.logo} />
@@ -178,6 +180,7 @@ class UserDetails extends Component {
 
                     </Form>
                     </View>
+                    </ScrollView>
                 </Content>
                 <Footer >
                     <FooterTab style={{ backgroundColor: '#F2F2F2', }}>

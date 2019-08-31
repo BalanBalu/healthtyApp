@@ -9,10 +9,13 @@ export default StyleSheet.create({
 
     },
     bodyContent: {
-        backgroundColor: '#fff',
-        paddingLeft: 30,
-        paddingRight: 40,
-
+    
+        flex:1,
+        flexDirection:'row',
+        alignItems:'center',
+        justifyContent:'center',
+       paddingLeft:30,
+       paddingRight:30
     },
     textStyle:
     {
@@ -21,17 +24,17 @@ export default StyleSheet.create({
     },
     centeredIcons:
     {
-        padding: 10,
+        padding: 5,
         color: '#fff',
         justifyContent: 'center',
-        height: 50,
-        width: 50,
-        fontSize: 25,
+        height: 40,
+        width: 40,
+        fontSize: 20,
         borderRadius: 25,
         backgroundColor: '#775DA3',
         marginTop: 10,
-        paddingLeft: 14,
-        paddingTop: 12,
+        paddingLeft: 12,
+        paddingTop: 10,
 
 
     },
@@ -46,12 +49,14 @@ export default StyleSheet.create({
         fontSize: 12
     },
 
-    loginButton: {
+    addressButton: {
         marginTop: 12,
         backgroundColor: '#775DA3',
         borderRadius: 5,
         fontFamily: 'OpenSans',
-        marginLeft: 15
+       marginLeft:15,
+       marginRight:15
+        
     },
     transparentLabel:
     {
@@ -60,10 +65,38 @@ export default StyleSheet.create({
         height: 45,
         marginTop: 10,
         borderRadius: 5,
+        
+        fontFamily: 'OpenSans',
+        fontSize: 13
+
+    },
+    transparentLabel2:
+    {
+        borderBottomColor: 'transparent',
+        backgroundColor: '#F1F1F1',
+        height: 45,
+        marginTop: 10,
+        borderRadius: 5,
+        
+        fontFamily: 'OpenSans',
+        marginRight: 15,
+        fontSize: 13
+
+    },
+    transparentLabel1:
+    {
+        borderBottomColor: 'transparent',
+        backgroundColor: '#F1F1F1',
+        height: 45,
+        marginTop: 10,
+        borderRadius: 5,
+        fontSize:13,
         paddingLeft: 20,
         fontFamily: 'OpenSans',
-        marginLeft: 3,
-        fontSize: 13
+        marginRight: 15,
+        fontSize: 13,
+        borderBottomLeftRadius: 0,
+         borderTopLeftRadius: 0, 
 
     },
     welcome:
@@ -146,7 +179,7 @@ export default StyleSheet.create({
     button2: {
 
         borderRadius: 10,
-
+        backgroundColor:'#775DA3',
         justifyContent: 'center',
         padding: 10,
         marginTop: 10,
@@ -162,5 +195,39 @@ export default StyleSheet.create({
         marginTop: 15,
         width: '97%',
 
+    },
+    headerText:{
+
+        fontFamily: 'OpenSans', 
+        marginLeft: 7, 
+        fontWeight: 'bold', 
+        fontSize: 20   
+    },
+    addressHeaderText:{
+
+        fontFamily: 'OpenSans', 
+        marginLeft: 15, 
+        fontWeight: 'bold', 
+        fontSize: 20   
+    },
+    cardEmail:{
+        padding: 10, 
+        borderRadius: 10, 
+        marginTop: 10, 
+        justifyContent: 'center'
+    },
+    buttonText:{
+        fontFamily:'OpenSans',
+        fontSize:15,
+        fontWeight:'bold',
+        color:'#fff',
+        
+    },
+    subText:{
+        fontFamily: 'OpenSans',
+         fontSize: 15, 
+        fontWeight:'bold',
+        marginTop:5
     }
 });
+

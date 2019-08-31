@@ -252,12 +252,12 @@ class Profile extends Component {
                                         </View>
 
                                         <View style={{ flexDirection: 'row', marginTop: 10, marginLeft: 30 }}>
-                                            <Text style={{ marginLeft: 'auto', marginRight: 'auto', padding: 5, fontFamily: 'OpenSans', backgroundColor: '#fff', borderRadius: 10, marginTop: 5, width: '100%', textAlign: 'center' }} onPress={() => this.editProfile('UpdateUserDetails')}>{data.first_name + " " + data.last_name}
+                                            <Text style={{ marginLeft: 'auto', marginRight: 'auto', padding: 5, fontFamily: 'OpenSans', backgroundColor: '#fff', borderRadius: 10, marginTop: 5, width: '100%', textAlign: 'center',fontSize:15 }} onPress={() => this.editProfile('UpdateUserDetails')}>{data.first_name + " " + data.last_name}
                                             </Text>
 
 
 
-                                            <Icon name="create" style={{ fontSize: 17, marginTop: 15, marginLeft: 25 }} onPress={() => this.editProfile('UpdateUserDetails')} />
+                                            <Icon name="create" style={{ fontSize: 20, marginTop: 10, marginLeft: 25 }} onPress={() => this.editProfile('UpdateUserDetails')} />
 
                                         </View>
                                     </Col>
@@ -289,26 +289,26 @@ class Profile extends Component {
 
                                 <Modal isVisible={this.state.modalVisible} >
                                     <Card style={{ padding: 10, borderRadius: 7, height: 150, justifyContent: 'center' }}>
-                                        <H3 style={{ fontFamily: 'OpenSans', marginTop: 15 }}>Update Gender</H3>
+                                        <H3 style={{ fontFamily: 'OpenSans', marginTop: 15,fontSize:15 }}>Update Gender</H3>
                                         <ListItem noBorder>
 
                                             <Radio selected={this.state.gender === 'M'} onPress={() => this.onPressRadio('M')} style={{ marginLeft: 2, }} color={"#775DA3"}
                                                 selectedColor={"#775DA3"} testID="clickMale"/>
-                                            <Text style={{ marginLeft: 10, fontFamily: 'OpenSans' }}>Male</Text>
+                                            <Text style={{ marginLeft: 10, fontFamily: 'OpenSans',fontSize:15 }}>Male</Text>
 
                                             <Radio selected={this.state.gender === 'F'} onPress={() => this.onPressRadio('F')} style={{ marginLeft: 10 }} color={"#775DA3"}
                                                 selectedColor={"#775DA3"} testID="clickFemale" />
-                                            <Text style={{ marginLeft: 10, fontFamily: 'OpenSans' }}>Female</Text>
+                                            <Text style={{ marginLeft: 10, fontFamily: 'OpenSans',fontSize:15 }}>Female</Text>
 
                                             <Radio selected={this.state.gender === 'O'} onPress={() => this.onPressRadio('O')} style={{ marginLeft: 10 }} color={"#775DA3"}
                                                 selectedColor={"#775DA3"} testID="clickOther" />
-                                            <Text style={{ marginLeft: 10 }}>Other</Text>
+                                            <Text style={{ marginLeft: 10 ,fontFamily: 'OpenSans',fontSize:15}}>Other</Text>
 
                                         </ListItem>
 
                                         <Button style={styles.updateButton} onPress={() => this.updateGender()}
                                         testID="updateGenderButton">
-                                            <Text uppercase={false}>Update</Text>
+                                            <Text uppercase={false} style={{ fontFamily: 'OpenSans',fontSize:15}}>Update</Text>
                                         </Button>
 
                                     </Card>
@@ -341,7 +341,7 @@ class Profile extends Component {
                                 <Body >
                                     <TouchableOpacity onPress={() => this.editProfile('UpdateEmail')} testID="onPressEmail">
                                         <Text style={styles.customText}>Email</Text>
-                                        <Text note style={styles.customText}>{data.email}</Text>
+                                        <Text note style={styles.customText1}>{data.email}</Text>
                                         {data.secondary_emails != undefined ?
                                             <FlatList
                                                 data={data.secondary_emails}
@@ -349,7 +349,7 @@ class Profile extends Component {
                                                     <List>
 
                                                         <Text style={styles.customText}>{item.type}</Text>
-                                                        <Text note style={styles.customText}>{item.email_id}</Text>
+                                                        <Text note style={styles.customText1}>{item.email_id}</Text>
 
                                                     </List>
                                                 )}
@@ -383,7 +383,7 @@ class Profile extends Component {
                                         <Text style={styles.customText}>Address</Text>
                                         {data.address ?
                                             <View>
-                                                <Text note style={styles.customText}>{data.address.address.no_and_street + ', '
+                                                <Text note style={styles.customText1}>{data.address.address.no_and_street + ', '
                                                     + data.address.address.address_line_1 + ', '
                                                     + data.address.address.address_line_2 + ', '
                                                     + data.address.address.city + ', '
@@ -416,14 +416,14 @@ class Profile extends Component {
                                 <Body>
                                     <TouchableOpacity onPress={() => this.editProfile('UpdateContact')} testID="onPressUpdateContact">
                                         <Text style={styles.customText}>Contact</Text>
-                                        <Text note style={styles.customText}>{data.mobile_no}</Text>
+                                        <Text note style={styles.customText1}>{data.mobile_no}</Text>
                                         {data.secondary_mobiles != undefined ?
                                             <FlatList
                                                 data={this.state.data.secondary_mobiles}
                                                 renderItem={({ item }) => (
                                                     <List>
                                                         <Text style={styles.customText}>{item.type}</Text>
-                                                        <Text note style={styles.customText}>{item.number}</Text>
+                                                        <Text note style={styles.customText1}>{item.number}</Text>
                                                     </List>
                                                 )}
                                                 keyExtractor={(item, index) => index.toString()}
@@ -455,8 +455,8 @@ class Profile extends Component {
                                                 data={this.state.data.insurance}
                                                 renderItem={({ item }) => (
                                                     <List>
-                                                        <Text note style={styles.customText}>{item.insurance_no}</Text>
-                                                        <Text note style={styles.customText}>{item.insurance_provider}</Text>
+                                                        <Text note style={styles.customText1}>{item.insurance_no}</Text>
+                                                        <Text note style={styles.customText1}>{item.insurance_provider}</Text>
                                                     </List>
                                                 )}
                                                 keyExtractor={(item, index) => index.toString()}
@@ -484,7 +484,7 @@ class Profile extends Component {
                                 <Body>
                                     <TouchableOpacity onPress={() => this.editProfile('UpdatePassword')} testID="onPressUpdatePassword">
                                         <Text style={styles.customText}>Change Password</Text>
-                                        <Text note style={styles.customText}>*********</Text>
+                                        <Text note style={styles.customText1}>*********</Text>
                                     </TouchableOpacity>
                                 </Body>
                                 <Right>
@@ -507,7 +507,7 @@ class Profile extends Component {
                                                 <Thumbnail square source={{ uri: 'https://res.cloudinary.com/demo/image/upload/w_200,h_200,c_thumb,g_face,r_max/face_left.png' }} style={{ height: 40, width: 40 }} />
                                             </Left>
                                             <Body>
-                                                <Text> {item.doctorInfo.prefix ? item.doctorInfo.prefix : ''} {item.doctorInfo.first_name + " " + item.doctorInfo.last_name} </Text>
+                                                <Text style={{fontFamily:'OpenSans',fontSize:15}}> {item.doctorInfo.prefix ? item.doctorInfo.prefix : ''} {item.doctorInfo.first_name + " " + item.doctorInfo.last_name} </Text>
                                             </Body>
                                             <Right>
                                                 <Button style={styles.docbutton}><Text style={{ fontFamily: 'OpenSans', fontSize: 12 }} onPress={() => this.props.navigation.navigate('Book Appointment',{doctorId:item.doctorInfo.doctor_id})}> Book Again</Text></Button>
@@ -554,7 +554,12 @@ const styles = StyleSheet.create({
     },
     customText:
     {
-
+fontSize:15,
+        fontFamily: 'OpenSans',
+    },
+    customText1:
+    {
+fontSize:13,
         fontFamily: 'OpenSans',
     },
     logo: {
@@ -578,12 +583,14 @@ const styles = StyleSheet.create({
         marginLeft: 'auto',
         marginRight: 'auto',
         fontFamily: 'OpenSans',
+        fontSize:15
     },
     bottomValue:
     {
         marginLeft: 'auto',
         marginRight: 'auto',
         fontFamily: 'OpenSans',
+        fontSize:13
     },
     updateButton:
     {

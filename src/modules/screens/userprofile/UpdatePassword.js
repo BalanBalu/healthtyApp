@@ -75,7 +75,7 @@ class UpdatePassword extends Component {
         return (
             <Container style={styles.container}>
 
-                <Content style={styles.bodyContent} contentContainerStyle={{ justifyContent: 'center', }}>
+<Content contentContainerStyle={styles.bodyContent}>
                     <ScrollView>
                         <Spinner color='blue'
                             visible={this.state.isLoading}
@@ -83,58 +83,54 @@ class UpdatePassword extends Component {
                         />
 
 
-                        <Text style={{ fontFamily: 'OpenSans', marginLeft: 7, marginTop: 100, fontWeight: 'bold', fontSize: 22 }}>Update Your Password</Text>
+                        <Text style={styles.headerText}>Update Your Password</Text>
                         {/* <Text style={{ color: 'gray', fontSize: 13, fontFamily: 'OpenSans', marginTop: 10, marginLeft: 7 }}>Update your Password</Text> */}
                         <Card style={{ padding: 10, borderRadius: 10, marginTop: 20 }}>
 
                             <Item style={{ borderBottomWidth: 0 }}>
-                                <Col style={{ width: '20%' }}>
+                                
                                     <Icon name="briefcase" style={styles.centeredIcons}></Icon>
-                                </Col>
-                                <Col style={{ width: '80%' }}>
-
+                               
+                                <Col style={styles.transparentLabel1}>
+                            <Row>
                                     <Input placeholder="Enter old password"
-                                        secureTextEntry={true} style={styles.transparentLabel}
+                                        secureTextEntry={true}  style={{fontSize:13,fontFamily:'OpenSans',marginTop:-5}}
                                         keyboardType="default"
                                         value={this.state.oldPassword}
                                         secureTextEntry={this.state.showOldPassword}
                                         onChangeText={(oldPassword) => this.setState({ oldPassword })}
                                         testID='enterOldPassword' />
+                                    <Icon active name="eye" style={{ fontSize: 20, marginTop: 10 }} onPress={() => this.setState({ showPassword: !this.state.showPassword })} />
+
+                            </Row>
                                 </Col>
-                                <Right>
-                                    <Icon active name="eye" style={{ position: 'absolute', marginTop: -10, fontSize: 20, }} onPress={() => this.setState({ showOldPassword: !this.state.showOldPassword })} />
-                                </Right>
+                               
 
                             </Item>
-
-
-
                             <Item style={{ borderBottomWidth: 0 }}>
-                                <Col style={{ width: '20%' }}>
-                                    <Icon name="briefcase" style={styles.centeredIcons}></Icon>
-                                </Col>
-                                <Col style={{ width: '80%' }}>
-                                    <Input placeholder="Enter new password" secureTextEntry={true}
-                                        style={styles.transparentLabel}
-                                        keyboardType="default"
-                                        value={this.state.newPassword}
-                                        secureTextEntry={this.state.showNewPassword}
-                                        onChangeText={(newPassword) => this.setState({ newPassword })}
-                                        testID='enterNewPassword' />
+                            <Icon name="briefcase" style={styles.centeredIcons}></Icon>
+                            <Col style={styles.transparentLabel1}>
+                                <Row>
+                            <Input placeholder="Enter new password"
+                        secureTextEntry={true} style={{fontSize:13,fontFamily:'OpenSans',marginTop:-5}}
+                        keyboardType="default"
+                        value={this.state.newPassword}
+                        secureTextEntry={this.state.showPassword}
+                        onChangeText={(newPassword) => this.setState({ newPassword })}
+                        testID='enterNewPassword'
 
-                                </Col>
+                        />
+                        <Icon active name='eye' style={{ fontSize: 20, marginTop: 10 }} onPress={() => this.setState({ showPassword: !this.state.showPassword })} />
+                </Row>
+                            </Col>
+              
+              </Item>
+
+
+                            <Item style={{ borderBottomWidth: 0,marginTop:10}}>
                                 <Right>
-                                    <Icon active name="eye" style={{ position: 'absolute', marginTop: -10, fontSize: 20, }} onPress={() => this.setState({ showNewPassword: !this.state.showNewPassword })} />
-
-                                </Right>
-
-                            </Item>
-
-
-                            <Item style={{ borderBottomWidth: 0 }}>
-                                <Right>
-                                    <Button success style={styles.updateButton} onPress={() => this.handlePasswordUpdate()} testID='clickUpdatePassword'>
-                                        <Text uppercase={false} note style={{ color: '#fff', fontFamily: 'OpenSans' }}>Update</Text>
+                                    <Button success style={styles.button2} onPress={() => this.handlePasswordUpdate()} testID='clickUpdatePassword'>
+                                        <Text uppercase={false} note style={styles.buttonText}>Update</Text>
                                     </Button>
                                 </Right>
                             </Item>

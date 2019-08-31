@@ -11,9 +11,12 @@ export default StyleSheet.create({
     },
 
     bodyContent: {
-        top: '10%',
-        paddingLeft: 30,
-        paddingRight: 30,
+        flex:1,
+        flexDirection:'row',
+        alignItems:'center',
+        justifyContent:'center',
+       paddingLeft:30,
+       paddingRight:30 
 
     },
     welcome:
