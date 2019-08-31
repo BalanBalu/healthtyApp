@@ -4,10 +4,12 @@ import thunk from 'redux-thunk';
 import user from '../modules/providers/auth/auth.reducer';
 import common from '../modules/providers/common/common.reducer';
 import profile from '../modules/providers/profile/profile.reducer';
+import bookappointment from '../modules/providers/bookappointment/bookappointment.reducer';
 const rootReducer = combineReducers({
     user,
     common,
-    profile
+    profile,
+    bookappointment
 });
 
 export const store = createStore(

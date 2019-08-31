@@ -85,7 +85,7 @@ class MyAppoinmentList extends Component {
 				console.log('back navigation work')
 				await this.setState({ isLoading: false })
 
-				if (navigationData.action.type === 'Navigation/BACK' || navigationData.action.type === 'Navigation/NAVIGATE') {
+				if (navigationData.action.type === 'Navigation/BACK' || navigationData.action.type === 'Navigation/NAVIGATE' || navigationData.action.type ==='Navigation/POP') {
 					if (this.state.selectedIndex == 0) {
 
 
@@ -108,8 +108,8 @@ class MyAppoinmentList extends Component {
 		try {
 			let userId = await AsyncStorage.getItem("userId");
 			let filters = {
-				startDate: formatDate(new Date(), "YYYY-MM-DD"),
-				endDate: formatDate(addTimeUnit(new Date(), 1, "years"), "YYYY-MM-DD")
+				startDate: new Date(),
+				endDate:addTimeUnit(new Date(), 1, "years")
 			};
 			let upCommingAppointmentResult = await getUserAppointments(userId, filters);
 			
@@ -155,9 +155,11 @@ class MyAppoinmentList extends Component {
 
 
 				})
-                  
+				upcommingInfo.sort(function (firstVarlue, secandValue) {
+					 return firstVarlue.appointmentResult.appointment_starttime<secandValue.appointmentResult.appointment_starttime?-1:0
+				 })
 				this.setState({ upComingData: upcommingInfo, data: upcommingInfo });
-
+             
 
 			}
 		} catch (e) {
@@ -167,8 +169,8 @@ class MyAppoinmentList extends Component {
 	pastAppointment = async () => {
 		try {
 			let userId = await AsyncStorage.getItem("userId");
-			let endData = formatDate(subTimeUnit(new Date(), 1, "day"), "YYYY-MM-DD");
-			let filters = { endDate: endData, startDate: "2018-01-01" };
+			
+			let filters = { endDate: new Date(), startDate: subTimeUnit(new Date(), 1, "years") };
 			let pastAppointmentResult = await getUserAppointments(userId, filters);
 			let viewUserReviewResult = await viewUserReviews("user", userId);
 			
@@ -236,6 +238,10 @@ class MyAppoinmentList extends Component {
 				}
 
 				)
+				console.log(pastDoctorDetails);
+				pastDoctorDetails.sort(function (firstVarlue, secandValue) {
+					return firstVarlue.appointmentResult.appointment_starttime > secandValue.appointmentResult.appointment_starttime ? -1 : 0
+				})
 			
 				this.setState({ pastData: pastDoctorDetails });
 

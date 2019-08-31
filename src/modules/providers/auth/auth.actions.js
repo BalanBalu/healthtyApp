@@ -36,7 +36,8 @@ export async function login(userCredentials, isLoading = true) {
         message: "Invalid Login Credentials"
       })
     } else {
-      console.log('token:' + JSON.stringify(respData))
+
+
       const token = respData.token;
      await setUserLocally(token, respData.data);
 
@@ -44,6 +45,7 @@ export async function login(userCredentials, isLoading = true) {
         type: LOGIN_RESPONSE,
         message: respData.message
       })
+
       return true;
     }
 
@@ -145,7 +147,7 @@ export async function updateNewPassword(data) {
 
 
 export async function logout() {
-  console.log('is Coming here ');
+
 
   await AsyncStorage.removeItem('token')
   await AsyncStorage.removeItem('user')
@@ -159,8 +161,7 @@ export async function logout() {
 
 // Set user token and info locally (AsyncStorage)
 export async function  setUserLocally(token, userData) {
-  // Set token
-
+  
   await AsyncStorage.setItem('token', token)
   await AsyncStorage.setItem('userId', userData.userId)
   AsyncStorage.setItem('user', JSON.stringify(userData))
@@ -211,7 +212,7 @@ export async function signUp(credentialData) {
     let respData = response.data;
 
     if (respData.error || !respData.success) {
-      console.log(respData);
+
       store.dispatch({
         type: AUTH_HAS_ERROR,
         message: respData.error || respData.message
@@ -254,10 +255,10 @@ export async function userFiledsUpdate(userId, data) {
 export async function updateProfilePicture(userId, data) {
   try {
     let endPoint = 'user/' + userId + '/upload/profile'
-    console.log(endPoint);
+
     let response = await putService(endPoint, data);
     let respData = response.data;
-    console.log('respData' + JSON.stringify(respData))
+
     return respData;
   } catch (e) {
     return {

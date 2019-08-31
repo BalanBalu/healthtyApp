@@ -54,29 +54,38 @@ class BookAppoinment extends Component {
     const availabilitySlots = navigation.getParam('fetchAvailabiltySlots')||false;
 
     if(availabilitySlots) {
-      console.log("if")
       let endDateMoment = addMoment(this.state.currentDate, 7, 'days')
-    const doctorId = navigation.getParam('doctorId')|| false;
-   // let doctorId = "5d2420ed731df239784cd222";
+      const doctorId = navigation.getParam('doctorId')|| false;
+  
       await this.setState({doctorId:doctorId});
       console.log("doctorId");
       await this.getAvailabilitySlots(doctorId, moment(new Date()), endDateMoment);
-    }else {
+    } else {
       let doctorDetails = navigation.getParam('doctorDetails');
       const slotList = navigation.getParam('slotList');
       console.log('slotList'+JSON.stringify(slotList));
       await this.setState({ doctorId: doctorDetails.doctorId });
       if(slotList) {
-      if(slotList.length !== 0) { 
-        await this.setState({item:{ 
-          name:slotList[0].location.name,
-          no_and_street: slotList[0].location.location.address.no_and_street,
-          city: slotList[0].location.location.address.city,
-          state: slotList[0].location.location.address.state,
-          pin_code: slotList[0].location.location.pin_code
+      if(slotList.length !== 0) {
+        let firstAvailableIndex = 0; 
+         for(let slotListIndex = 0; slotListIndex < slotList.length; slotListIndex++) {
+            console.log(slotList[slotListIndex]);
+            if(slotList[slotListIndex].isSlotBooked === false) {
+              firstAvailableIndex = slotListIndex;
+              break;
+            }
+         }
+         console.log(firstAvailableIndex);
+        await this.setState({item: { 
+          name:slotList[firstAvailableIndex].location.name,
+          no_and_street: slotList[firstAvailableIndex].location.location.address.no_and_street,
+          city: slotList[firstAvailableIndex].location.location.address.city,
+          state: slotList[firstAvailableIndex].location.location.address.state,
+          pin_code: slotList[firstAvailableIndex].location.location.pin_code
         },
-          selectedSlotItem:slotList[0], 
+          selectedSlotItem: slotList[firstAvailableIndex], 
           doctorDetails, slotList, 
+          selectedSlotIndex: firstAvailableIndex
         });
       }
     }
@@ -181,7 +190,7 @@ enumarateDates(startDate, endDate) {
   /*Get doctor Qualification details*/
   getdoctorDetails = async (doctorId) => {
     console.log("doctor");
-    let fields = "first_name,last_name,prefix,professional_statement,language,specialist,education,profile_image";
+    let fields = "first_name,last_name,prefix,professional_statement,language,gender,specialist,education,profile_image";
     console.log(fields+'fields');
     let resultDoctorDetails = await bindDoctorDetails(doctorId, fields);
     console.log('resultDoctorDetails'+JSON.stringify(resultDoctorDetails))
@@ -259,7 +268,7 @@ enumarateDates(startDate, endDate) {
         extraData={this.state}
         keyExtractor={(item, index) => index.toString()}
         renderItem={({ item, index }) =>
-          <TouchableOpacity disabled={item.isSlotBooked === true ? true : false} style={selectedSlotIndex === index ? styles.slotSelectedBg : item.isSlotBooked === false ? styles.slotDefaultBg : styles.slotBookedBg}
+          <TouchableOpacity disabled={item.isSlotBooked === true ? true : false} style={item.isSlotBooked  === true ? styles.slotBookedBg : selectedSlotIndex === index ? styles.slotSelectedBg : styles.slotDefaultBg}
             onPress={() => this.onSlotPress(item, index)}>
             <Row style={{ width: '100%', alignItems: 'center' }}>
               <Col style={{ width: '70%', alignItems: 'center' }}>
@@ -302,16 +311,18 @@ enumarateDates(startDate, endDate) {
                       <Thumbnail style={styles.profileImage} source={{ uri: 'https://static1.squarespace.com/static/582bbfef9de4bb07fe62ab18/t/5877b9ccebbd1a124af66dfe/1484241404624/Headshot+-+Circular.png?format=300w' }} />}
                 </Left>
                 <Body>
-                  <Text>{doctordata.prefix ? doctordata.prefix : 'Dr. ' + doctordata.first_name}</Text>
+                  <Text>{doctordata.prefix ? doctordata.prefix  : 'Dr. ' + doctordata.first_name}</Text>
                   <Text>{qualification}</Text>
+                  <Text>{doctordata.gender?'Gender:   ' + doctordata.gender:''}</Text>
+
                 </Body>
 
               </ListItem>
 
               <Grid>
                 <Col style={{ backgroundColor: 'transparent', borderRightWidth: 0.5, borderRightColor: 'gray', marginLeft: 'auto', marginRight: 'auto' }}>
-                  <Text style={styles.topValue}>{(this.state.slotList && this.state.slotList.length > 0) ? 'Rs.' + this.state.slotList[0].fee + '/-' : '/-'}</Text>
-                  <Text note style={styles.bottomValue}>Rate</Text>
+                  <Text style={styles.topValue}>{(this.state.slotList && this.state.slotList.length > 0) ?  '\u20B9' + this.state.slotList[0].fee + '/-' : '/-'}</Text>
+                 
                 </Col>
 
                 <Col style={{ backgroundColor: 'transparent', borderRightWidth: 0.5, borderRightColor: 'gray', marginLeft: 'auto', marginRight: 'auto' }}>
@@ -413,22 +424,19 @@ enumarateDates(startDate, endDate) {
 
            
                         <Left>
-                          {/* {item.userInfo.profile_image!=undefined?
-                          <Thumbnail square source={item.userInfo.profile_image.imageURL} style={{ height: 86, width: 86 }} /> :
-                          <Thumbnail square source={{ uri: 'https://static1.squarespace.com/static/582bbfef9de4bb07fe62ab18/t/5877b9ccebbd1a124af66dfe/1484241404624/Headshot+-+Circular.png?format=300w' }} style={{ height: 40, width: 40 }} />
-                          //<Thumbnail square source={renderProfileImage(item.userInfo.profile_image)} style={{ height: 40, width: 40 }} />
-                          } */}
                           <Thumbnail style={{ marginLeft: -10, height: 50, width: 50 }} square source={renderProfileImage(item.userInfo)} />
-                          
-                        </Left>
+                           </Left>
                         <Body>
-                          <Text>{((typeof item.userInfo.first_name || typeof item.userInfo.last_name) !== 'undefined') ? item.userInfo.first_name + '' + item.userInfo.last_name : 'Medflic User'}</Text>
-                          <Text style={{ fontSize: 12, marginLeft: -5, }}>  {this.relativeTimeView(item.review_date)} </Text>
-                         
-                          <StarRating fullStarColor='#FF9500' starSize={15} width={100} containerStyle={{ width: 100 }}
+                          {/* <Text>{((typeof item.userInfo.first_name || typeof item.userInfo.last_name) !== 'undefined') ? item.userInfo.first_name + ' ' + item.userInfo.last_name : 'Medflic User'}</Text> */}
+                          <Text numberOfLines={1} >{((typeof item.userInfo.first_name || typeof item.userInfo.last_name) !== 'undefined') ? item.userInfo.first_name + ' ' + item.userInfo.last_name : 'Medflic User'}</Text>
+
+                          <Text style={{ fontSize: 12, marginLeft: -5, marginTop:5 }}>  {this.relativeTimeView(item.review_date)} </Text>
+                         <View style={{marginTop:5}}>
+                          <StarRating fullStarColor='#FF9500' starSize={15} width={100} containerStyle={{ width: 100 }} 
                             disabled={false}
                             maxStars={5}
                             rating={item.overall_rating} />
+                            </View>
                           <Text note style={styles.customText}>{(typeof item.comments != 'undefined') ? item.comments : 'No Comments'}</Text>
                         </Body>
                       </ListItem>
@@ -650,13 +658,13 @@ enumarateDates(startDate, endDate) {
 
 }
 
-function loginState(state) {
+function bookAppointmentState(state) {
 
   return {
-    user: state.user
+    user: state.bookAppointmentData
   }
 }
-export default connect(loginState)(BookAppoinment)
+export default connect(bookAppointmentState)(BookAppoinment)
 
 
 const styles = StyleSheet.create({
@@ -735,7 +743,7 @@ const styles = StyleSheet.create({
     fontFamily: 'OpenSans',
     color: '#000',
     fontSize: 14,
-
+    marginTop:5
   },
   subtitlesText: {
     fontSize: 15,

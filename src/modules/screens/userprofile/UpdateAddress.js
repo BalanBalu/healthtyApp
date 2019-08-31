@@ -81,26 +81,29 @@ class UserDetails extends Component {
         }
     }
 
-    validateCity = (text) => {
+    validateCity = () => {
         const regex = new RegExp('^[\ba-zA-Z ]+$')  //Support letter with space
-        this.setState({ city: text, updateButton: false });
-        if (regex.test(text) === false) {
-            this.setState({ updateButton: true });
-            if(text!=''){
-            Toast.show({
-                text: 'Please enter only alphabets',
-                type: "danger",
-                duration: 3000
-            });
-        }
+        //this.setState({ updateButton: false });
+        if (regex.test(this.state.city) === false) {
+            //this.setState({ updateButton: true });
+            if (this.state.city != '') {
+                Toast.show({
+                    text: 'The entered city is invalid',
+                    type: "danger",
+                    duration: 3000
+                });
+            }
+            return false;
+        } else {
+            return true;
         }
     }
 
-    userUpdate() {
+    async userUpdate() {
         try {
             const { userData, no_and_street, address_line_1, address_line_2, city, pin_code } = this.state
             this.setState({ isLoading: true });
-            if (userData.address !== undefined) {
+            if (userData.address !== undefined && this.validateCity() == true) {
                 if (no_and_street != userData.address.address.no_and_street || address_line_1 != userData.address.address.address_line_1 ||
                     address_line_2 != userData.address.address.address_line_2 || city != userData.address.address.city ||
                     pin_code != userData.address.address.pin_code) {
@@ -108,13 +111,14 @@ class UserDetails extends Component {
                 } else {
                     this.props.navigation.navigate('Profile');
                 }
-            } else {
-                console.log("else")
+            } else if (this.validateCity() == true) {
                 this.commonUpdateAddressMethod();
             }
         } catch (e) {
             console.log(e);
-
+        }
+        finally {
+            this.setState({ isLoading: false });
         }
     }
 
@@ -125,20 +129,20 @@ class UserDetails extends Component {
     render() {
         return (
             <Container style={styles.Container}>
-                <Content style={styles.bodyContent} contentContainerStyle={{ flex: 1 }}>
+                <Content contentContainerStyle={styles.bodyContent}>
                     <ScrollView>
+                    
+                        <Text style={styles.addressHeaderText}>Update User Details</Text>
 
-                        <H3 style={{ fontSize: 20, fontFamily: 'opensans-semibold', marginTop: 20, marginLeft: '5%', fontWeight: 'bold', }}>Update User Details</H3>
-
-                        <Form>
-                            <ScrollView scrollEventThrottle={16} >
+                        <Form style={{marginTop:15}}>
+                           
                                 <Item style={{ borderBottomWidth: 0 }}>
-                                    <Text style={{ fontFamily: 'OpenSans', fontSize: 18, marginTop: 30 }}>Door_no</Text>
+                                    <Text style={styles.subText}>Door_no</Text>
                                 </Item>
                                 <Item style={{ borderBottomWidth: 0 }}>
                                     <Input
                                         placeholder="Enter Door no"
-                                        style={styles.transparentLabel}
+                                        style={styles.transparentLabel2}
                                         value={this.state.no_and_street}
                                         keyboardType={'default'}
                                         returnKeyType={'next'}
@@ -152,12 +156,12 @@ class UserDetails extends Component {
                                 </Item>
 
                                 <Item style={{ borderBottomWidth: 0 }}>
-                                    <Text style={{ fontFamily: 'OpenSans', fontSize: 18, }}>Address Line1</Text>
+                                    <Text style={styles.subText}>Address Line1</Text>
                                 </Item>
                                 <Item style={{ borderBottomWidth: 0 }}>
                                     <Input
                                         placeholder="Enter Address Line1"
-                                        style={styles.transparentLabel}
+                                        style={styles.transparentLabel2}
                                         ref={(input) => { this.no_and_street = input; }}
                                         value={this.state.address_line_1}
                                         keyboardType={'default'}
@@ -170,12 +174,12 @@ class UserDetails extends Component {
                                     />
                                 </Item>
                                 <Item style={{ borderBottomWidth: 0 }}>
-                                    <Text style={{ fontFamily: 'OpenSans', fontSize: 18, }}>Address Line2</Text>
+                                    <Text style={styles.subText}>Address Line2</Text>
                                 </Item>
                                 <Item style={{ borderBottomWidth: 0 }}>
                                     <Input
                                         placeholder="Enter Address Line2"
-                                        style={styles.transparentLabel}
+                                        style={styles.transparentLabel2}
                                         ref={(input) => { this.address_line_1 = input; }}
                                         value={this.state.address_line_2}
                                         keyboardType={'default'}
@@ -192,18 +196,18 @@ class UserDetails extends Component {
 
 
                                 <Item style={{ borderBottomWidth: 0 }}>
-                                    <Text style={{ fontFamily: 'OpenSans', fontSize: 18, }}>City</Text>
+                                    <Text style={styles.subText}>City</Text>
                                 </Item>
                                 <Item style={{ borderBottomWidth: 0 }}>
                                     <Input
                                         placeholder="Enter City"
-                                        style={styles.transparentLabel}
+                                        style={styles.transparentLabel2}
                                         autoFocus={this.state.isFocusKeyboard}
                                         ref={(input) => { this.address_line_2 = input; }}
                                         value={this.state.city}
                                         keyboardType={'default'}
                                         returnKeyType={'next'}
-                                        onChangeText={text => this.validateCity(text)}
+                                        onChangeText={text => this.setState({ city: text })}
                                         autoCapitalize='none'
                                         blurOnSubmit={false}
                                         onSubmitEditing={() => { this.city._root.focus(this.setState({ isFocusKeyboard: true })); }}
@@ -212,12 +216,12 @@ class UserDetails extends Component {
                                 </Item>
 
                                 <Item style={{ borderBottomWidth: 0 }}>
-                                    <Text style={{ fontFamily: 'OpenSans', fontSize: 18, }}>Pincode</Text>
+                                    <Text style={styles.subText}>Pincode</Text>
                                 </Item>
                                 <Item style={{ borderBottomWidth: 0 }}>
                                     <Input
                                         placeholder="Enter Pincode"
-                                        style={styles.transparentLabel}
+                                        style={styles.transparentLabel2}
                                         value={this.state.pin_code}
                                         autoFocus={this.state.isFocusKeyboard}
                                         ref={(input) => { this.city = input; }}
@@ -236,12 +240,13 @@ class UserDetails extends Component {
 
 
 
-                                <Button disabled={this.state.updateButton} style={styles.loginButton} ref={(input) => { this.pin_code = input; }} block primary onPress={() => this.userUpdate()} testID="updateAddressButton">
-                                    <Text style={{ fontFamily: 'OpenSans', fontSize: 18, }}>Update</Text>
+                                <Button disabled={this.state.updateButton} style={styles.addressButton} ref={(input) => { this.pin_code = input; }} block onPress={() => this.userUpdate()} testID="updateAddressButton">
+                                    <Text style={styles.buttonText}>Update</Text>
                                 </Button>
-                            </ScrollView>
+                           
 
                         </Form>
+                       
                     </ScrollView>
                 </Content>
                 <Spinner color='blue'

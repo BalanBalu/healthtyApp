@@ -6,10 +6,15 @@ import { NavigationEvents } from 'react-navigation';
 import {
     Container, Header, Title, Left, Body, Card, View, Text, Content, Col, Row, Icon, ListItem, List, Grid
 } from 'native-base';
+import { connect } from 'react-redux'
 import moment from 'moment';
-import { fetchUserNotification, UpDateUserNotification } from '../../providers/notification/notification.action';
+import { fetchUserNotification, UpDateUserNotification } from '../../providers/notification/notification.actions';
+import { hasLoggedIn } from "../../providers/auth/auth.actions";
 import { formatDate, dateDiff } from '../../../setup/helpers';
 import Spinner from "../../../components/Spinner";
+import { getUserNotification } from '../../common'
+// import Home from '../Home';
+
 
 
 class Notification extends Component {
@@ -26,35 +31,51 @@ class Notification extends Component {
     }
 
     async componentDidMount() {
-        // const isLoggedIn = await hasLoggedIn(this.props);
-        // if (!isLoggedIn) {
-        //     this.props.navigation.navigate("login");
-        //     return;
-        // }
-        this.getUserNotification();
+       
+       console.log('notification componentDid mount')
+
+        const isLoggedIn = await hasLoggedIn(this.props);
+        if (!isLoggedIn) {
+            this.props.navigation.navigate("login");
+            return;
+        }
+
+        this.setState({ data: this.props.user.notification });
+        if (this.props.user.notificationId != undefined) {
+            console.log('null but come')
+            await this.setState({ notificationId: this.props.user.notificationId })
+            this.upDateNotification('mark_as_viewed')
+            await AsyncStorage.removeItem('notification')
+        }
+     
 
     }
 
     backNavigation = async (navigationData) => {
+        try {
 
-        await this.setState({ isLoading: false })
-        if (navigationData.action) {
-            if (navigationData.action.type === 'Navigation/POP') {
+            await this.setState({ isLoading: false })
+            if (navigationData.action) {
+                console.log(navigationData.action.type)
+                if (navigationData.action.type === 'Navigation/BACK') {
 
 
 
 
-                await this.getUserNotification();
-                await this.setState({ isLoading: true })
+                    getUserNotification();
+                    await this.setState({ isLoading: false })
+                }
             }
+        } catch (e) {
+            console.log(e)
         }
 
     }
     updateNavigation = async (item) => {
 
         await this.setState({ notificationId: item._id })
-        if (!item.mark_as_viewed) {
-            await this.upDateNotification()
+        if (!item.mark_as_readed) {
+            await this.upDateNotification('mark_as_readed')
             this.props.navigation.push("AppointmentInfo", { appointmentId: item.appointment_id })
 
         }
@@ -62,10 +83,10 @@ class Notification extends Component {
             this.props.navigation.push("AppointmentInfo", { appointmentId: item.appointment_id })
         }
     }
-    upDateNotification = async () => {
+    upDateNotification = async (node) => {
         try {
 
-            let result = await UpDateUserNotification('mark_as_viewed', this.state.notificationId);
+            let result = await UpDateUserNotification(node, this.state.notificationId);
 
         }
         catch (e) {
@@ -74,30 +95,13 @@ class Notification extends Component {
 
     }
 
-    //
-    getUserNotification = async () => {
-        try {
-            this.setState({ isLoading: true });
-            let userId = await AsyncStorage.getItem('userId');
-
-            let result = await fetchUserNotification(userId);
-            if (result.success) {
-                await this.setState({ data: result.data })
-            }
 
 
-        }
-        catch (e) {
-            console.log(e);
-        }
-        finally {
-            this.setState({ isLoading: false });
-        }
-    }
 
 
     render() {
-        const { data, isLoading } = this.state
+        const { data, isLoading } = this.state;
+
 
         return (
             < Container style={styles.container} >
@@ -111,7 +115,7 @@ class Notification extends Component {
                             size={"large"}
                             overlayColor="none"
                             cancelable={false}
-                        /> : data.length == 0 ?
+                        /> : data === undefined ? null : data.length == undefined ?
 
                             <View style={{
                                 flex: 1,
@@ -210,7 +214,14 @@ const styles = StyleSheet.create({
 
 
 })
-export default Notification
+function notificationState(state) {
+
+    return {
+        user: state.user
+    }
+}
+export default connect(notificationState)(Notification)
+//export default Notification
 
 
 

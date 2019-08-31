@@ -1,7 +1,9 @@
-import React from 'react';
+import React,{Component} from 'react';
 import { View, Text, AsyncStorage} from "react-native";
 import { Icon } from 'native-base';
 import { Col, Row, Grid } from 'react-native-easy-grid';
+import { fetchUserNotification, UpDateUserNotification } from '../../src/modules/providers/notification/notification.actions'
+
 
 export const RenderHospitalAddress = (props) => {
     const { headerStyle, hospotalNameTextStyle, gridStyle, renderHalfAddress } = props
@@ -26,10 +28,12 @@ export const RenderHospitalAddress = (props) => {
                     {props.hospitalAddress.location ?
                         <View>
                             <Text note style={props.textStyle}>{props.hospitalAddress.location.address.no_and_street + ', '}</Text>
-                            <Text note style={props.textStyle}>{props.hospitalAddress.location.address.city}</Text>
+                            <Text note style={props.textStyle}>{props.hospitalAddress.location.address.address_line_1}</Text>
+                            <Text note style={props.textStyle}>{props.hospitalAddress.location.address.address_line_2}</Text>
+
                             {renderHalfAddress === true ? null :
                                 <View>
-                                    <Text note style={props.textStyle}>{props.hospitalAddress.location.address.state}</Text>
+                                    <Text note style={props.textStyle}>{props.hospitalAddress.location.address.city}</Text>
                                     <Text note style={props.textStyle}>{props.hospitalAddress.location.address.pin_code}</Text>
                                 </View>
                             }
@@ -42,6 +46,7 @@ export const RenderHospitalAddress = (props) => {
 }
 
 export const RenderPatientAddress = (props) => {
+    
     const { gridStyle } = props
     return (
 
@@ -97,6 +102,51 @@ export async function addToCart(medicineData, selectItem, operation) {
        return{selectemItemData: selectItem}
 }
 
-export function medicineRateAfterOffer(item){
-    return parseInt(item.price)-((parseInt(item.offer)/100) * parseInt(item.price));
-} 
+export function medicineRateAfterOffer(item) {
+    return parseInt(item.price) - ((parseInt(item.offer) / 100) * parseInt(item.price));
+
+}
+export async function getUserNotification() {
+    try {
+       
+        let userId = await AsyncStorage.getItem('userId');
+    
+        let result = await fetchUserNotification(userId);
+      
+        
+        
+
+    }
+    catch (e) {
+        console.log(e);
+    }
+   
+   
+}
+
+
+export  class Badge extends Component {
+    constructor(props) {
+
+        super(props);
+        this.state = {
+            data:''
+        };
+    }
+
+    
+  
+    async componentDidMount() {
+        let data = await AsyncStorage.getItem('notification');
+        this.setState({data})
+    }
+
+    render() {
+        const { data} = this.state;
+
+
+        return (
+            <Text style={{ position: 'absolute', backgroundColor: 'red', color: 'white', borderRadius: 20, marginLeft: 10, padding: 2, marginTop: -7 }}>{data}</Text>
+        )
+    }
+}

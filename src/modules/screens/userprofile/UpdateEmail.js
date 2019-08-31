@@ -70,7 +70,7 @@ class UpdateEmail extends Component {
                     this.props.navigation.navigate('Profile');
                 } else {
                     Toast.show({
-                        text: 'Fields should not be empty',
+                        text: 'The entered email is invalid',
                         type: "danger",
                         duration: 3000
                     })
@@ -95,29 +95,32 @@ class UpdateEmail extends Component {
     render() {
         return (
             <Container style={styles.container}>
-                <Content style={{ padding: 10, }} contentContainerStyle={{ justifyContent: 'center' }}>
+                <Content contentContainerStyle={styles.bodyContent}>
                     <ScrollView>
-                        <View style={{ marginTop: 50 }}>
-                            {this.state.primary_email != null ? <Text style={{ fontFamily: 'OpenSans', marginLeft: 7, fontWeight: 'bold', fontSize: 20 }}>Primary Email</Text> : null}
-                            <Card style={{ padding: 10, borderRadius: 10, marginTop: 10 }}>
+                      
+                            <View>
+                            {this.state.primary_email != null ? <Text style={styles.headerText}>Primary Email</Text> : null}
+                            <Card style={styles.cardEmail}>
                                 {this.state.primary_email != null ?
                                     <Item style={{ borderBottomWidth: 0 }}>
                                         <Icon name='mail' style={styles.centeredIcons}></Icon>
 
                                         <Text style={styles.customText}>{this.state.primary_email}</Text>
                                         <Right>
-                                            <Icon style={{ color: 'gray' }} name='ios-lock' />
+                                            <Icon style={{ color: 'gray', fontSize: 25 }} name='ios-lock' />
                                         </Right>
                                     </Item>
                                     : null}</Card>
-                        </View>
-                        <View style={{ marginTop: 20 }}>
-                            <Text style={{ fontFamily: 'OpenSans', marginTop: 50, marginLeft: 7, fontWeight: 'bold', fontSize: 22 }}>Secondary Email</Text>
+                            <Text style={{ color: 'gray', fontSize: 16 }}>Primary email is not editable</Text>
 
-                            <Card style={{ padding: 10, borderRadius: 10, marginTop: 10, justifyContent: 'center' }}>
+                        </View>
+                        <View style={{ marginTop: 30 }}>
+                            <Text style={ styles.headerText}>Secondary Email</Text>
+
+                            <Card style={styles.cardEmail}>
 
                                 <Item style={{ borderBottomWidth: 0, marginTop: 12, marginLeft: 4 }}>
-                                    <Text style={{ color: 'gray', fontSize: 14, fontFamily: 'OpenSans', marginTop: 5, marginLeft: 7 }}>Update your secondary email</Text>
+                                    <Text style={{ color: 'gray', fontSize: 15, fontFamily: 'OpenSans', marginTop: 5, marginLeft: 7 }}>Update your secondary email</Text>
                                 </Item>
 
                                 <Item style={{ borderBottomWidth: 0, }}>
@@ -140,13 +143,14 @@ class UpdateEmail extends Component {
                                     <Row style={{ width: '100%' }}>
                                         <Right>
                                             <Button success style={styles.button2} onPress={() => this.handleEmailUpdate()} testID='clickUpdateEmail' >
-                                                <Text style={{ color: '#000' }}>Update</Text>
+                                                <Text style={styles.buttonText}>Update</Text>
                                             </Button>
                                         </Right>
                                     </Row>
                                 </Item>
                             </Card>
                         </View>
+                       
                     </ScrollView>
                 </Content >
             </Container>

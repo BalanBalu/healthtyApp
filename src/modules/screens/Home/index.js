@@ -4,11 +4,11 @@ import { login, logout } from '../../providers/auth/auth.actions';
 import LinearGradient from 'react-native-linear-gradient';
 import { Col, Row, Grid } from 'react-native-easy-grid';
 import { connect } from 'react-redux'
-import { StyleSheet, Image, View, TouchableOpacity } from 'react-native';
+
+import { StyleSheet, Image, View, TouchableOpacity, AsyncStorage } from 'react-native';
 import { ScrollView, FlatList } from 'react-native-gesture-handler';
 import { catagries } from '../../providers/catagries/catagries.actions';
-
-
+import { getUserNotification } from '../../common'
 class Home extends Component {
     constructor(props) {
         super(props)
@@ -22,7 +22,7 @@ class Home extends Component {
 
         };
         this.arrayData = []
-        this.getCatagries();
+
     }
     navigetToCategories() {
         this.props.navigation.navigate('Categories', { data: this.state.data })
@@ -32,14 +32,20 @@ class Home extends Component {
         logout();
         this.props.navigation.navigate('login');
     }
+    async componentDidMount() {
+       
+        await this.getCatagries();
+
+     await getUserNotification();
+    }
 
     getCatagries = async () => {
         try {
             let result = await catagries();
 
 
-            // if(result.success) 
-            // setTimeout( ()=>{
+            if (result.success) { }
+
             this.setState({ data: result.data, isLoading: true })
             console.log('category Data' + JSON.stringify(this.state.data));
             let limitedData = [];
@@ -68,7 +74,6 @@ class Home extends Component {
                 })
             })
             await this.setState({ totalSpecialistDataArry: totalSpecialistDataArry })
-            console.log('this.state.totalSpecialistDataArry' + JSON.stringify(this.state.totalSpecialistDataArry));
 
 
         } catch (e) {
