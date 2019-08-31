@@ -83,9 +83,9 @@ class Signup extends Component {
 
             <Container style={styles.container}>
                 
-                <Content style={styles.bodyContent}>
+                <Content contentContainerStyle={styles.bodyContent}>
                     <ScrollView>
-                    <View style={{marginTop:100}}>
+                    <View >
                         <H3 style={styles.welcome}>List Your Practice to Reach millions of Peoples</H3>
                         <Image source={{ uri: 'https://static1.squarespace.com/static/582bbfef9de4bb07fe62ab18/t/5877b9ccebbd1a124af66dfe/1484241404624/Headshot+-+Circular.png?format=300w' }} style={styles.logo} />
                         <Form style={{ marginBottom: 50 }}>

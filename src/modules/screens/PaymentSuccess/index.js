@@ -7,6 +7,8 @@ import { connect } from 'react-redux'
 import { StyleSheet, Image, TouchableOpacity, View } from 'react-native';
 import { formatDate } from '../../../setup/helpers';
 import { ScrollView } from 'react-native-gesture-handler';
+import { RenderHospitalAddress } from '../../common';
+
 
 class PaymentSuccess extends Component {
     constructor(props) {
@@ -21,6 +23,7 @@ class PaymentSuccess extends Component {
         const { navigation } = this.props;
         const successBookSlotDetails = navigation.getParam('successBookSlotDetails');
         await this.setState({ successBookSlotDetails: successBookSlotDetails });
+        console.log('successBookSlotDetails' + JSON.stringify(this.state.successBookSlotDetails))
     }
     render() {
         const { navigation } = this.props;
@@ -50,7 +53,7 @@ class PaymentSuccess extends Component {
                                     <Body>
                                         {
                                             successBookSlotDetails.profile_image != undefined
-                                                ? <Thumbnail square source={{uri : successBookSlotDetails.profile_image.imageURL}} style={{ height: 60, width: 60 }} />
+                                                ? <Thumbnail square source={{ uri: successBookSlotDetails.profile_image.imageURL }} style={{ height: 60, width: 60 }} />
                                                 : <Thumbnail square source={{ uri: 'https://res.cloudinary.com/demo/image/upload/w_200,h_200,c_thumb,g_face,r_max/face_left.png' }} style={{ height: 80, width: 80 }} />
                                         }
                                     </Body>
@@ -58,7 +61,8 @@ class PaymentSuccess extends Component {
 
                                 <Row style={{ marginTop: 20 }}>
                                     <Col style={{ alignItems: 'center' }}>
-                                        <Text style={styles.customizedText}>{successBookSlotDetails.doctorName}</Text>
+                                        <Text note style={styles.customizedText}>Doctor</Text>
+                                        <Text style={styles.customizedText}>{successBookSlotDetails.prefix ? successBookSlotDetails.prefix : 'Dr'}. {successBookSlotDetails.doctorName}</Text>
 
                                     </Col>
                                 </Row>
@@ -72,16 +76,18 @@ class PaymentSuccess extends Component {
                                 </Row>
 
                                 <Row style={{ marginTop: 20 }}>
-                                    <Col style={{ alignItems: 'center' }}>
-                                        <Text style={styles.customizedText}>Address</Text>
-                                        <Text style={styles.customizedText}>{successBookSlotDetails.slotData && successBookSlotDetails.slotData.location.name}</Text>
+                                    {/* <Col style={{ alignItems: 'center' }}> */}
+                                    <Text style={styles.customizedText}>Address</Text>
+                                    {successBookSlotDetails.slotData ?
+                                        <RenderHospitalAddress gridStyle={{ padding: 10, marginLeft: 10, width: '100%' }}
+                                            textStyle={styles.customizedText}
+                                            hospotalNameTextStyle={{ fontFamily: 'OpenSans-SemiBold' }}
+                                            hospitalAddress={successBookSlotDetails.slotData && successBookSlotDetails.slotData.location}
+                                        />
+                                        : null}
 
-                                        <Text note style={styles.customizedText}>{successBookSlotDetails.slotData && successBookSlotDetails.slotData.location.location.address.no_and_street},</Text>
-                                        <Text note style={styles.customizedText}>{successBookSlotDetails.slotData && successBookSlotDetails.slotData.location.location.address.city},</Text>
-                                        <Text note style={styles.customizedText}>{successBookSlotDetails.slotData && successBookSlotDetails.slotData.location.location.address.state}</Text>
-                                        <Text note style={styles.customizedText}>{successBookSlotDetails.slotData && successBookSlotDetails.slotData.location.location.address.pin_code}</Text>
-
-                                    </Col></Row>
+                                    {/* </Col> */}
+                                </Row>
 
                             </Grid>
 
