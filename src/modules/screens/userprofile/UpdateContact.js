@@ -118,12 +118,13 @@ class UpdateContact extends Component {
 
 
 
-                <Content style={styles.bodyContent} contentContainerStyle={{ justifyContent: 'center', }}>
+                <Content contentContainerStyle={styles.bodyContent}>
                     <ScrollView>
+                        
                         {this.state.primary_mobile_no != null ?
-                            <Text style={{ fontFamily: 'OpenSans', marginTop: 70, marginLeft: 7, fontWeight: 'bold', fontSize: 22 }}>Primary Mobile_no</Text> : null}
+                            <Text style={styles.headerText}>Primary Mobile_no</Text> : null}
                         {this.state.primary_mobile_no != null ?
-                            <Card style={{ padding: 10, borderRadius: 10 }}>
+                            <Card style={styles.cardEmail}>
                                 <Item style={{ borderBottomWidth: 0 }}>
                                     <Icon name="call" style={styles.centeredIcons}></Icon>
 
@@ -133,16 +134,16 @@ class UpdateContact extends Component {
                                     </Right>
                                 </Item>
                             </Card> : null}
-
-                        <Text style={{ fontFamily: 'OpenSans', marginTop: 50, marginLeft: 7, fontWeight: 'bold', fontSize: 22 }}>Edit Secondary Mobile_No</Text>
-                        <Text style={{ color: 'gray', fontSize: 13, fontFamily: 'OpenSans', marginLeft: 6 }}>Update your secondary mobile_no</Text>
-                        <Card style={{ padding: 10, borderRadius: 10, marginBottom: 20 }}>
+                            <View style={{ marginTop: 30 }}>
+                        <Text style={styles.headerText}>Edit Secondary Mobile_No</Text>
+                       
+                        <Card style={styles.cardEmail}>
 
                             <Item style={{ borderBottomWidth: 0 }}>
-                                <Picker style={{ fontFamily: 'OpenSans' }}
+                                <Picker style={{ fontFamily: 'OpenSans'}}
                                     mode="dropdown"
                                     iosIcon={<Icon name="arrow-down" />}
-                                    textStyle={{ color: "#5cb85c" }}
+                                    textStyle={{ color: "#775DA3",backgroundColor: "gray", }}
                                     itemStyle={{
                                         backgroundColor: "gray",
                                         marginLeft: 0,
@@ -173,10 +174,10 @@ class UpdateContact extends Component {
 
 
 
-                            <Item style={{ borderBottomWidth: 0 }}>
+                            <Item style={{ borderBottomWidth: 0,marginTop: 35}}>
                                 <Right>
-                                    <Button success style={styles.updateButton} onPress={() => this.handleContactUpdate()} testID='clickUpdateContact'>
-                                        <Text uppercase={false} note style={{ color: '#fff', fontFamily: 'OpenSans' }}>Update</Text>
+                                    <Button success style={styles.button2} onPress={() => this.handleContactUpdate()} testID='clickUpdateContact'>
+                                        <Text uppercase={false} note style={styles.buttonText}>Update</Text>
                                     </Button>
                                 </Right>
                             </Item>
@@ -184,11 +185,11 @@ class UpdateContact extends Component {
 
                         </Card>
 
+                      </View>
 
 
 
-
-
+                        
                     </ScrollView>
                 </Content >
 

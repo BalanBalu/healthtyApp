@@ -189,7 +189,12 @@ class doctorSearchList extends Component {
             await this.setState({ uniqueFilteredDocArray: filteredDocListArray })
             console.log('this.state.uniqueFilteredDocArray'+JSON.stringify(this.state.uniqueFilteredDocArray))
             if (this.state.uniqueFilteredDocArray.length ===0){
-                this.noDoctorsAvailable();
+                // this.noDoctorsAvailable();
+                Toast.show({
+                    text: 'Doctors Not found!..Choose Filter again',
+                    type: "danger",
+                    duration: 5000,
+                })
             }
         }
     }
