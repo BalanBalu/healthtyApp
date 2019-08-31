@@ -105,33 +105,7 @@ export default (state = userInitialState, action) => {
       }
     case LOGOUT:
       return userInitialState;
-    case NOTIFICATION_REQUEST:
-
-      return {
-        ...state,
-        isLoading: action.isLoading
-      }
-    case NOTIFICATION_HAS_ERROR:
-
-      return {
-        ...state,
-        success: false,
-        message: action.message,
-        isLoading: false,
-        isAuthenticated: false,
-      }
-
-    case NOTIFICATION_RESPONSE:
-
-      return {
-        ...state,
-        success: true,
-        isLoading: false,
-        message: action.message,
-        notification: action.details,
-        notificationId: action.notificationIds,
-
-      }
+  
 
     default:
       return state;

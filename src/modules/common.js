@@ -108,8 +108,10 @@ export async function getUserNotification() {
     try {
        
         let userId = await AsyncStorage.getItem('userId');
-    
+    console.log(userId)
         let result = await fetchUserNotification(userId);
+        console.log('hi notification')
+        console.log(JSON.stringify(result))
       
         
         

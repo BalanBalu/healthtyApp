@@ -40,7 +40,7 @@ class Notification extends Component {
             return;
         }
 
-        this.setState({ data: this.props.user.notification });
+        this.setState({ data: this.props.notification.notification });
         if (this.props.user.notificationId != undefined) {
             console.log('null but come')
             await this.setState({ notificationId: this.props.user.notificationId })
@@ -217,7 +217,7 @@ const styles = StyleSheet.create({
 function notificationState(state) {
 
     return {
-        user: state.user
+        notification: state.notification
     }
 }
 export default connect(notificationState)(Notification)
