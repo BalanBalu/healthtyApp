@@ -25,6 +25,7 @@ class doctorSearchList extends Component {
     processedDoctorDetailsData = [];
     processedDoctorAvailabilityDates = [];
     doctorDetailsMap = new Map();
+    patientGender = null;
     constructor(props) {
         super(props)
         conditionFromFilterPage = null,  // for check FilterPage Values
@@ -75,6 +76,11 @@ class doctorSearchList extends Component {
             type: SET_SELECTED_DATE,
             data: this.state.selectedDate
         });
+        let userBasicData = await AsyncStorage.getItem('basicProfileData')
+        if(userBasicData !== null) {
+            this.patientGender = JSON.parse(userBasicData).gender;
+        }
+      
         this.getPatientWishLists();
         this.getPatientSearchData();
     }
@@ -188,7 +194,12 @@ class doctorSearchList extends Component {
             await this.setState({ uniqueFilteredDocArray: filteredDocListArray })
             console.log('this.state.uniqueFilteredDocArray'+JSON.stringify(this.state.uniqueFilteredDocArray))
             if (this.state.uniqueFilteredDocArray.length ===0){
-                this.noDoctorsAvailable();
+                // this.noDoctorsAvailable();
+                Toast.show({
+                    text: 'Doctors Not found!..Choose Filter again',
+                    type: "danger",
+                    duration: 5000,
+                })
             }
         }
     }
@@ -313,7 +324,7 @@ class doctorSearchList extends Component {
                 startDate: formatDate(startDate, 'YYYY-MM-DD'),
                 endDate: formatDate(endDate, 'YYYY-MM-DD')
             }
-            let resultData = await fetchAvailabilitySlots(getSearchedDoctorIds, totalSlotsInWeek);
+            let resultData = await fetchAvailabilitySlots(getSearchedDoctorIds, totalSlotsInWeek, this.patientGender);
             if (resultData.success) {
                 // console.log(resultData.data);
 

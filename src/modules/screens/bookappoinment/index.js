@@ -190,7 +190,7 @@ enumarateDates(startDate, endDate) {
   /*Get doctor Qualification details*/
   getdoctorDetails = async (doctorId) => {
     console.log("doctor");
-    let fields = "first_name,last_name,prefix,professional_statement,language,specialist,education,profile_image";
+    let fields = "first_name,last_name,prefix,professional_statement,language,gender,specialist,education,profile_image";
     console.log(fields+'fields');
     let resultDoctorDetails = await bindDoctorDetails(doctorId, fields);
     console.log('resultDoctorDetails'+JSON.stringify(resultDoctorDetails))
@@ -311,8 +311,10 @@ enumarateDates(startDate, endDate) {
                       <Thumbnail style={styles.profileImage} source={{ uri: 'https://static1.squarespace.com/static/582bbfef9de4bb07fe62ab18/t/5877b9ccebbd1a124af66dfe/1484241404624/Headshot+-+Circular.png?format=300w' }} />}
                 </Left>
                 <Body>
-                  <Text>{doctordata.prefix ? doctordata.prefix : 'Dr. ' + doctordata.first_name}</Text>
+                  <Text>{doctordata.prefix ? doctordata.prefix  : 'Dr. ' + doctordata.first_name}</Text>
                   <Text>{qualification}</Text>
+                  <Text>{doctordata.gender?'Gender:   ' + doctordata.gender:''}</Text>
+
                 </Body>
 
               </ListItem>
