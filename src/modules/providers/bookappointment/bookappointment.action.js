@@ -80,9 +80,10 @@ export async function addReview(userId, insertUserReviews, isLoading = true) {
 }
 /*get doctor availability for patient view doctor profile */
 
-export async function fetchAvailabilitySlots(doctorIds, dateFilter) {
+export async function fetchAvailabilitySlots(doctorIds, dateFilter, patientGender) {
   try {
     let endPoint = 'doctors/' + doctorIds + '/availabilitySlots?startDate=' + dateFilter.startDate + '&endDate='+ dateFilter.endDate;
+    if(patientGender)   endPoint + '&gender='+ patientGender;
     console.log(endPoint);
     let response = await getService(endPoint);
     let respData = response.data;
