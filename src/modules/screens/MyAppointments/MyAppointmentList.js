@@ -198,7 +198,7 @@ class MyAppoinmentList extends Component {
 				}).join(",");
 
 				let speciallistResult = await getMultipleDoctorDetails(doctorIds, "specialist,education,prefix,profile_image,gender");
-				console.log(speciallistResult)
+				
 				speciallistResult.data.forEach(doctorData => {
 
 					let educationDetails = ' ', speaciallistDetails = '';
@@ -285,6 +285,15 @@ class MyAppoinmentList extends Component {
 
 		}
 	};
+    
+
+	navigateAddReview(item) {
+		let data = item.appointmentResult;
+		data.prefix = item.prefix
+		console.log(data)
+		this.props.navigation.navigate('InsertReview', { appointmentDetail:data })
+		
+	}
 
 	handleIndexChange = index => {
 
@@ -298,6 +307,7 @@ class MyAppoinmentList extends Component {
 
 		});
 	};
+	
 
 
 	navigateToBookAppointmentPage(item) {
@@ -474,9 +484,9 @@ class MyAppoinmentList extends Component {
 																<Item style={{ borderBottomWidth: 0 }}>
 																	<Button
 																		style={styles.shareButton}
-																		onPress={() =>
-																			this.props.navigation.navigate("InsertReview", { appointmentDetail: item.appointmentResult })
-																		} testID='navigateInsertReview'
+																		onPress={() => this.navigateAddReview(item)}
+																		
+																		 testID='navigateInsertReview'
 																	>
 																		<Text style={styles.bookAgain1}>
 																			{" "}

@@ -55,6 +55,8 @@ class AppointmentDetails extends Component {
 
       let doctorId = appointmentData.doctor_id;
       let appointmentId = appointmentData._id;
+      console.log('data')
+      console.log(appointmentData)
       await this.setState({
         doctorId: doctorId, appointmentId: appointmentId,
         userId: userId, data: appointmentData, isLoading: true
@@ -196,6 +198,7 @@ class AppointmentDetails extends Component {
           text: result.message,
           duration: 3000
         })
+        console.log(result)
 
         this.setState({ appointmentStatus: appointmentStatus, data: result });
       }
@@ -255,7 +258,7 @@ class AppointmentDetails extends Component {
 
                 <Grid>
                   <Col style={{ backgroundColor: 'transparent', borderRightWidth: 0.5, borderRightColor: 'gray', justifyContent: 'center' }}>
-                    <Text style={styles.topValue}> {data.fee} </Text>
+                    <Text style={styles.topValue}> { data.fee!=undefined?data.fee:'N/A' } </Text>
                     <Text note style={styles.bottomValue}> Hourly Rate </Text>
                   </Col>
                   <Col style={{ backgroundColor: 'transparent', borderRightWidth: 0.5, borderRightColor: 'gray', justifyContent: 'center' }}>
