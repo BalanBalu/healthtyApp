@@ -139,7 +139,7 @@ class MyAppoinmentList extends Component {
 						}).join(",");
 					}
 					
-						  doctorData.profile_image
+						 
 					
 					doctorInfo.set(doctorData.doctor_id, { degree: educationDetails, specialist: speaciallistDetails, prefix: doctorData.prefix ,profile_image: doctorData.profile_image,gender:doctorData.gender})
 
