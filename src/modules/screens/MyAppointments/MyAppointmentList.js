@@ -40,7 +40,7 @@ import {
 } from "../../providers/bookappointment/bookappointment.action";
 import noAppointmentImage from "../../../../assets/images/noappointment.png";
 import Spinner from "../../../components/Spinner";
-
+import { renderProfileImage } from '../../common'
 
 class MyAppoinmentList extends Component {
 	constructor(props) {
@@ -122,11 +122,11 @@ class MyAppoinmentList extends Component {
 					return appointmentResult.doctor_id;
 				}).join(",");
 
-				let speciallistResult = await getMultipleDoctorDetails(doctorIds, "specialist,education,prefix,profile_image");
+				let speciallistResult = await getMultipleDoctorDetails(doctorIds, "specialist,education,prefix,profile_image,gender");
 
 				speciallistResult.data.forEach(doctorData => {
 
-					let educationDetails = ' ', speaciallistDetails = '', profilePicture;
+					let educationDetails = ' ', speaciallistDetails = '';
 
 
 					if (doctorData.education != undefined) {
@@ -138,10 +138,10 @@ class MyAppoinmentList extends Component {
 							return categories.category;
 						}).join(",");
 					}
-					if (doctorData.profile_image != undefined) {
-						profilePicture = doctorData.profile_image.imageURL;
-					}
-					doctorInfo.set(doctorData.doctor_id, { degree: educationDetails, specialist: speaciallistDetails, prefix: doctorData.prefix, profilePicture: profilePicture })
+					
+						  doctorData.profile_image
+					
+					doctorInfo.set(doctorData.doctor_id, { degree: educationDetails, specialist: speaciallistDetails, prefix: doctorData.prefix ,profile_image: doctorData.profile_image,gender:doctorData.gender})
 
 
 				});
@@ -153,7 +153,7 @@ class MyAppoinmentList extends Component {
 
 					let details = doctorInfo.get(doctorData.doctor_id)
 
-					upcommingInfo.push({ appointmentResult: doctorData, specialist: details.specialist, degree: details.degree, prefix: details.prefix, profilePicture: details.profilePicture });
+					upcommingInfo.push({ appointmentResult: doctorData, specialist: details.specialist, degree: details.degree, prefix: details.prefix, profile_image: details.profile_image });
 
 
 
@@ -197,11 +197,11 @@ class MyAppoinmentList extends Component {
 					return appointmentResult.doctor_id;
 				}).join(",");
 
-				let speciallistResult = await getMultipleDoctorDetails(doctorIds, "specialist,education,prefix,profile_image");
+				let speciallistResult = await getMultipleDoctorDetails(doctorIds, "specialist,education,prefix,profile_image,gender");
 				console.log(speciallistResult)
 				speciallistResult.data.forEach(doctorData => {
 
-					let educationDetails = ' ', speaciallistDetails = '', profilePicture;
+					let educationDetails = ' ', speaciallistDetails = '';
 					if (doctorData.education != undefined) {
 						educationDetails = doctorData.education.map(education => {
 
@@ -218,11 +218,8 @@ class MyAppoinmentList extends Component {
 
 					}
 					
-					if (doctorData.profile_image != undefined) {
-						profilePicture = doctorData.profile_image.imageURL;
-					}
-
-					doctorInfo.set(doctorData.doctor_id, { degree: educationDetails, specialist: speaciallistDetails, prefix: doctorData.prefix, profilePicture: profilePicture })
+				
+					doctorInfo.set(doctorData.doctor_id, { degree: educationDetails, specialist: speaciallistDetails, prefix: doctorData.prefix, profile_image: doctorData.profile_image ,gender:doctorData.gender})
 
 
 				});
@@ -263,7 +260,7 @@ class MyAppoinmentList extends Component {
 					}
 					let details = doctorInfo.get(doctorData.doctor_id)
 					pastDoctorDetails.push({
-						appointmentResult: doctorData, specialist: details.specialist, degree: details.degree, ratting: ratting, prefix: details.prefix, profilePicture: details.profilePicture
+						appointmentResult: doctorData, specialist: details.specialist, degree: details.degree, ratting: ratting, prefix: details.prefix, profile_image: details.profile_image
 
 					});
 
@@ -392,18 +389,11 @@ class MyAppoinmentList extends Component {
 													} testID='navigateAppointmentInfo'
 												>
 													<Left>
-														{item.profilePicture != undefined ?
-															<Thumbnail
+														 <Thumbnail
 																square
-																source={{
-																	uri: item.profilePicture
-																}}
+															source={renderProfileImage(item)}
 																style={{ height: 60, width: 60 }}
-															/> : <Thumbnail
-																square
-																source={{ uri: "https://res.cloudinary.com/demo/image/upload/w_200,h_200,c_thumb,g_face,r_max/face_left.png" }}
-																style={{ height: 60, width: 60 }}
-															/>}
+															/>
 													</Left>
 													<Body>
 

@@ -13,7 +13,7 @@ import { formatDate, dateDiff } from '../../../setup/helpers';
 
 import { Loader } from '../../../components/ContentLoader'
 import { RenderHospitalAddress } from '../../common';
-
+import { renderProfileImage } from '../../common'
 class AppointmentDetails extends Component {
   constructor(props) {
     super(props)
@@ -74,7 +74,7 @@ class AppointmentDetails extends Component {
   getDoctorDetails = async () => {
     try {
 
-      let fields = 'first_name,last_name,prefix,education,specialist,email,mobile_no,experience,hospital,language,professional_statement,fee';
+      let fields = 'first_name,last_name,prefix,education,specialist,email,mobile_no,experience,hospital,language,professional_statement,fee,profile_image';
       let resultDetails = await bindDoctorDetails(this.state.doctorId, fields);
 
       if (resultDetails.success) {
@@ -240,7 +240,8 @@ class AppointmentDetails extends Component {
               <List>
                 <ListItem thumbnail noBorder>
                   <Left>
-                    <Thumbnail square source={{ uri: 'https://static1.squarespace.com/static/582bbfef9de4bb07fe62ab18/t/5877b9ccebbd1a124af66dfe/1484241404624/Headshot+-+Circular.png?format=300w' }} style={{ height: 86, width: 86 }} />
+                    
+                    <Thumbnail square source={renderProfileImage(doctorData)} style={{ height: 86, width: 86 }} />
                   </Left>
                   <Body>
                     <Text style={{ fontSize: 16 }}>{(doctorData && doctorData.prefix ? doctorData.prefix : 'Dr') + ('.') + (doctorData && doctorData.first_name) + " " + (doctorData && doctorData.last_name)},
