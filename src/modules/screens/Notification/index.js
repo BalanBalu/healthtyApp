@@ -12,10 +12,6 @@ import { fetchUserNotification, UpDateUserNotification } from '../../providers/n
 import { hasLoggedIn } from "../../providers/auth/auth.actions";
 import { formatDate, dateDiff } from '../../../setup/helpers';
 import Spinner from "../../../components/Spinner";
-import { getUserNotification } from '../../common'
-// import Home from '../Home';
-
-
 
 class Notification extends Component {
     constructor(props) {
@@ -32,37 +28,21 @@ class Notification extends Component {
 
     async componentDidMount() {
        
-       console.log('notification componentDid mount')
-
         const isLoggedIn = await hasLoggedIn(this.props);
         if (!isLoggedIn) {
             this.props.navigation.navigate("login");
             return;
         }
-
-        this.setState({ data: this.props.notification.notification });
-        if (this.props.user.notificationId != undefined) {
-            console.log('null but come')
-            await this.setState({ notificationId: this.props.user.notificationId })
-            this.upDateNotification('mark_as_viewed')
-            await AsyncStorage.removeItem('notification')
-        }
-     
-
+        await this.getUserNotification();
     }
 
     backNavigation = async (navigationData) => {
         try {
-
             await this.setState({ isLoading: false })
             if (navigationData.action) {
                 console.log(navigationData.action.type)
                 if (navigationData.action.type === 'Navigation/BACK') {
-
-
-
-
-                    getUserNotification();
+                   this.getUserNotification();
                     await this.setState({ isLoading: false })
                 }
             }
@@ -95,7 +75,28 @@ class Notification extends Component {
 
     }
 
+     getUserNotification=async()=> {
+    try {
 
+        let userId = await AsyncStorage.getItem('userId');
+        console.log(userId)
+        let result = await fetchUserNotification(userId);
+        if (result.success) {
+            this.setState({data:result.data})
+        }
+        
+        console.log(JSON.stringify(result))
+
+
+
+
+    }
+    catch (e) {
+        console.log(e);
+    }
+
+
+}
 
 
 

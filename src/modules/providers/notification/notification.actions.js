@@ -17,45 +17,13 @@ export const fetchUserNotification = async (userId) => {
             
         let response = await getService(endPoint);
         let respData = response.data;
-        store.dispatch({
-            type: NOTIFICATION_REQUEST,
-            message: respData.message
-        })
-        if (respData.error || !respData.success) {
-            store.dispatch({
-                type: NOTIFICATION_HAS_ERROR,
-                message: e + ' Occured! Please Try again'
-            });
-            
-        } else {
-            let count = 0, notification = [];
-            respData.data.forEach(element => {
-               
-                if (element.mark_as_viewed == false) {
-                    console.log(element)
-                    notification.push(element._id)
-                    count++;
-                }
-
-            });
-            store.dispatch({
-                type: NOTIFICATION_RESPONSE,
-                message: respData.message,
-                details: respData.data,
-                notificationIds: notification,
-                notificationCount: count 
-            })
-              
-
-        }
         return respData;
 
     } catch (e) {
-        console.log(e);
-        store.dispatch({
+        return {
             type: NOTIFICATION_HAS_ERROR,
             message: e + ' Occured! Please Try again'
-        });
+        }
     }
 
 
@@ -82,8 +50,50 @@ export function setnotification(notificationData) {
 
     AsyncStorage.setItem('notificationCount', notificationData)
 
+}
+export const fetchUserMarkedAsReadedNotification = async (userId) => {
+    try {
+
+        let endPoint = '/notifications/' + userId + '?mark_as_readed=' +true ;
+
+        let response = await getService(endPoint);
+        let respData = response.data;
+        store.dispatch({
+            type: NOTIFICATION_REQUEST,
+            message: respData.message
+        })
+        if (respData.error || !respData.success) {
+            store.dispatch({
+                type: NOTIFICATION_HAS_ERROR,
+                message: e + ' Occured! Please Try again'
+            });
+
+        } else {
+            let count=respData.data.length
+         notificationId= respData.data.map(element => {
+
+               return element._id
+
+            }).join(',')
+            store.dispatch({
+                type: NOTIFICATION_RESPONSE,
+                message: respData.message,
+                notificationIds: notificationId,
+                notificationCount: count
+            })
 
 
+        }
+        return respData;
+
+    } catch (e) {
+        console.log(e);
+        store.dispatch({
+            type: NOTIFICATION_HAS_ERROR,
+            message: e + ' Occured! Please Try again'
+        });
+    }
 
 
 }
+
