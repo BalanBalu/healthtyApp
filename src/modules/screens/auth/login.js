@@ -1,10 +1,11 @@
 import React, { Component } from 'react';
 import {
   Container, Content, Button, Text, Form, Item, Input, Header, Footer, FooterTab, Right,
-  CheckBox, Grid, Toast, KeyboardAvoidingView, Icon,Row
+   Grid, Toast, KeyboardAvoidingView, Icon,Row
 } from 'native-base';
 import { connect } from 'react-redux'
 import { Image, TouchableOpacity, View, ScrollView, AsyncStorage } from 'react-native';
+import { Checkbox } from 'react-native-paper';
 
 import { login, RESET_REDIRECT_NOTICE } from '../../providers/auth/auth.actions';
 import styles from '../../screens/auth/styles'
@@ -20,7 +21,7 @@ class Login extends Component {
       userEntry: '',
       password: '',
       loginErrorMsg: null,
-      conditionCheck: false,
+      checked: false,
       showPassword: true
     }
   }
@@ -79,6 +80,7 @@ class Login extends Component {
   render() {
     const { user: { isLoading } } = this.props;
     const { loginErrorMsg } = this.state;
+    const { checked } = this.state;
     return (
       <Container style={styles.container}>
         <Content contentContainerStyle={styles.bodyContent}>
@@ -126,11 +128,15 @@ class Login extends Component {
               <Row style={{ marginTop: 20, borderBottomWidth: 0 }}>
 
                 <Item style={{ borderBottomWidth: 0 }}>
-                  <CheckBox checked={false} checked={this.state.conditionCheck}
+                  {/* <CheckBox  checked={this.state.conditionCheck}
 
                     color="green" onPress={() => this.setState({ conditionCheck: !this.state.conditionCheck })} style={{borderRadius:5}}
-                  ></CheckBox>
-                  <Text style={{ marginLeft: 15, color: 'gray', fontFamily: 'OpenSans',fontSize:15 }}>Remember me</Text>
+                  ></CheckBox> */}
+                   <Checkbox color="green"
+                    status={checked ? 'checked' : 'unchecked'}
+                    onPress={() => { this.setState({ checked: !checked }); }}
+                     />
+                  <Text style={{ marginLeft: 5, color: 'gray', fontFamily: 'OpenSans',fontSize:15 }}>Remember me</Text>
                 </Item>
 
                 <Right>
