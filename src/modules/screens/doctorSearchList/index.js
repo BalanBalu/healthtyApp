@@ -523,7 +523,12 @@ class doctorSearchList extends Component {
 onBookPress(){
     this.setState({isHidden:true})
 }
-
+onpressHeart(){
+    console.log('you pressed the heart icon')
+}
+onpressSideSlider(){
+    console.log('you pressed the sideslider')
+}
     render() {
 
         const doctorList = [{docname:'Dr.John williams', degree:'MBBS,MD-DNB,Opththalmology',hospital:'dominur - Manipal Hospital',Experience:'12yrs',Rating:3.5,
@@ -541,6 +546,53 @@ onBookPress(){
 
 
 <View>
+
+<Card style={{ borderRadius: 7,paddingTop:5,paddingBottom:5
+ }}>
+                            <Grid>
+                                <Row>
+                                    <Col style={{ width: '55%',  flexDirection: 'row' }}>
+
+
+
+<Text uppercase={false} style={{ fontFamily: 'OpenSans', color: '#000', fontSize: 13, textAlign: 'center',marginLeft:20,marginTop:5 }}>Top Rated
+                                    </Text>
+<Right>
+<Icon name='ios-arrow-down' style={{ color: '#000', marginLeft: 50, fontSize: 20 }} />
+
+</Right>
+
+
+
+                                    </Col>
+
+                                   
+                                   <View style={{borderRightWidth: 1,
+                                            borderRightColor: 'gray',paddingLeft:20,marginRight:20}}/> 
+                                    
+
+
+ 
+                                 <Col style={{ width:'45%',alignItems: 'flex-start', flexDirection: 'row', }} onPress={() => this.navigateToFilters()}>
+                                 <Row>
+     
+                                 <Left>
+                                 <Icon name='ios-funnel' style={{ color: 'gray' }} />
+
+</Left>
+
+<Text uppercase={false} style={{ fontFamily: 'OpenSans', color: '#000', fontSize: 13, marginLeft: 8,textAlign: 'center',marginTop:5 }}>Filters
+                                    </Text>
+     </Row>  
+
+
+
+                                      
+                                    </Col>
+                                </Row>
+                            </Grid>
+
+                        </Card>
                     <FlatList
                             data={doctorList}
                             renderItem={
@@ -571,7 +623,7 @@ onBookPress(){
 
                                                </Col>
                                                <Col style={{width:'17%'}}>
-                                               <Icon name="heart" style={{marginLeft:20,backgroundColor:'#fff',fontSize:20}}></Icon>
+                                               <Icon name="heart" onPress={()=>this.onpressHeart()} style={{marginLeft:20,backgroundColor:'#fff',fontSize:20}}></Icon>
                                                <Row>
                                                <Text style={{ fontFamily: 'OpenSans',marginTop:20,fontSize:12,marginLeft:5 }}> 2.6km</Text>
 
@@ -656,7 +708,7 @@ onBookPress(){
                                             <Row style={{marginLeft:'auto',marginRight:'auto'}}  >
                                              
                                            <Col style={{width:'8%'}}>
-                                            <Icon name='ios-arrow-back' style={{fontSize:25,marginTop:25}}/>
+                                            <Icon name='ios-arrow-back' onPress={()=>this.onpressSideSlider()} style={{fontSize:25,marginTop:25}}/>
                                             </Col>
                                                 <Col style={{width:'22%',}}>
                                                 <TouchableOpacity style={{textAlign:'center',backgroundColor:'#775DA3', borderColor: '#000', marginTop:10, height: 50, borderRadius: 5,justifyContent:'center' ,marginRight:5,paddingLeft:5,paddingRight:5}}>
