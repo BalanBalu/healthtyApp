@@ -11,7 +11,7 @@ class PharmacyCart extends Component {
         super(props)
         this.state = {
             cartItems:[],
-            isLoading: false
+            isLoading: true
         }       
     }
 
@@ -19,9 +19,9 @@ class PharmacyCart extends Component {
         this.getAddToCart();
     }
 
-
     getAddToCart= async() => {
     try{
+        this.setState({ isLoading: true })
         temp = await AsyncStorage.getItem('userId')
         userId = JSON.stringify(temp);
 
@@ -31,13 +31,14 @@ class PharmacyCart extends Component {
         }else{       
             this.setState({ cartItems: JSON.parse(cartItems), isLoading: false });
         }
-        console.log(this.state.cartItems)
     }
     catch(e){
         console.log(e);
     }
+    finally {
+         this.setState({ isLoading: false });
+        }
     }
-
 
     increase(index){
         let selectedCartItem = this.state.cartItems;        
@@ -67,14 +68,14 @@ class PharmacyCart extends Component {
         if(this.state.cartItems) {
             this.state.cartItems.forEach(element => {
                 total = total + ((parseInt(element.price) - (parseInt(element.offer)/100) * parseInt(element.price)) * parseInt(element.selectedQuantity))
-            })    
-        return total;
-        }    
+            }) 
+            return total.toFixed(2);
+        }   
       }
 
 
     render() {            
-              const {isLoading,cartItems} = this.state;
+              const { isLoading,cartItems } = this.state;
 
      return (            
       <Container style={styles.container}>
@@ -130,21 +131,19 @@ class PharmacyCart extends Component {
                                 
                         <View style={{ flex: 1, flexDirection: 'row', marginLeft: 110 }}>
                           <Button style={{ padding: 0, justifyContent: 'center', borderWidth: 1, borderColor: '#c26c57', width: 30, height: 25, marginLeft: 5, backgroundColor: 'white' }} onPress={()=>this.decrease(index)} testID='decreaseMedicine'>
-                             <Text style={{ fontSize: 25, justifyContent: 'flex-start', textAlign: 'center', marginTop: -15, marginRight:10, color: '#c26c57', fontWeight: 'bold' }}>-</Text>
+                             <Text style={{ fontSize: 25, justifyContent: 'flex-start', textAlign: 'center', marginTop: -5, marginRight:10, color: '#c26c57', fontWeight: 'bold' }}>-</Text>
                           </Button>
                          <View>
-                            <TextInput type='number' min='1' style={{ marginLeft: 5, color: '#c26c57' }} >{item.selectedQuantity}</TextInput>
+                                       <TextInput type='number' min='1' style={{ marginLeft: 5, marginTop: -5, color: '#c26c57' }} >{item.selectedQuantity}</TextInput>
                          </View>
 
                           <Button style={{ padding: 0, justifyContent: 'center', borderWidth: 1, borderColor: '#c26c57', width: 30, height: 25, marginLeft: 5, backgroundColor: 'white' }} onPress={()=>this.increase(index)} testID='increaseMedicine'>
-                             <Text style={{ fontSize: 20, justifyContent: 'flex-start', textAlign: 'center', marginTop: -10, marginRight:10, color: '#c26c57', fontWeight: 'bold' }}>+</Text>
+                             <Text style={{ fontSize: 20, justifyContent: 'flex-start', textAlign: 'center', marginTop: -5, marginRight:10, color: '#c26c57', fontWeight: 'bold' }}>+</Text>
                           </Button>
                         
                         <TouchableOpacity style={{ marginLeft: 50, alignItems: 'center'}} onPress={()=> this.removeMedicine(index)} testID='removeMedicineToCart'>
                            <Icon style={{ fontSize: 30, color: 'red', marginTop: -4 }} name='ios-trash' />
                          </TouchableOpacity>  
-                        
-
                     </View>
                   </Grid>
                 </Card>
@@ -154,7 +153,7 @@ class PharmacyCart extends Component {
             </Card>
 
             </Content>}
-
+              {this.state.cartItems != ''?
                 <Footer style={{ backgroundColor: '#7E49C3', }}>
                     <Row style={{ justifyContent: 'center', marginTop: 15 }}>
                         <Text style={{ fontSize: 20, fontWeight: 'bold', color: '#fff' }}>Total </Text>
@@ -168,7 +167,7 @@ class PharmacyCart extends Component {
                             <Text>Checkout</Text>
                         </Button>
                     </Col>
-                </Footer>
+                </Footer>: null}
             </Container >
         )
     }

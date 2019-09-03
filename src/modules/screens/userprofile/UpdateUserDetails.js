@@ -12,6 +12,7 @@ import styles from './style.js';
 import {
     formatDate, subTimeUnit
 } from "../../../setup/helpers";
+import { RadioButton } from 'react-native-paper';
 import Spinner from '../../../components/Spinner';
 const bloodGroupList = ['Select Blood Group', 'A+', 'O+', 'B+', 'AB+', 'A-', 'O-', 'B-', 'AB-']
 
@@ -126,15 +127,16 @@ class UpdateUserDetails extends Component {
 
             <Container >
 
+              
+
+                <Content contentContainerStyle={styles.bodyContent}>
                 <ScrollView>
+                        <Text style={styles.headerText}>Update Your Details</Text>
+                        <View style={{marginLeft:-10}}>
+                        <Form style={{marginTop: 10 }}>
 
-                    <Content contentContainerStyle={{ justifyContent: 'center', flex: 1, marginTop: 50, padding: 60 }}>
-
-                        <Text style={{ fontSize: 22, textAlign: 'center', fontFamily: 'opensans-semibold', marginLeft: -30 }}>Update Your Details</Text>
-                        <Form>
-
-                            <Item style={{ borderBottomWidth: 0, marginTop: 10 }}>
-                                <Input placeholder="First Name" style={styles.transparentLabel}
+                            <Item style={{ borderBottomWidth: 0, }}>
+                                <Input placeholder="First Name" style={styles.transparentLabel2}
                                     value={this.state.firstName}
                                     keyboardType={'default'}
                                     returnKeyType={"next"}
@@ -146,7 +148,7 @@ class UpdateUserDetails extends Component {
                             </Item>
 
                             <Item style={{ borderBottomWidth: 0, }}>
-                                <Input placeholder="Last Name" style={styles.transparentLabel}
+                                <Input placeholder="Last Name" style={styles.transparentLabel2}
                                     ref={(input) => { this.firstName = input; }}
                                     value={this.state.lastName}
                                     keyboardType={'default'}
@@ -159,9 +161,9 @@ class UpdateUserDetails extends Component {
                                 />
                             </Item>
 
-                            <Item style={{ borderBottomWidth: 0, backgroundColor: '#F1F1F1', marginTop: 10, borderRadius: 5, }}>
+                            <Item style={{ borderBottomWidth: 0, backgroundColor: '#F1F1F1',height: 45, marginRight: 15, marginTop: 10, borderRadius: 5, }}>
                                 <Icon name='calendar' style={{ paddingLeft: 20, color: '#775DA3' }} />
-                                <DatePicker style={styles.transparentLabel}
+                                <DatePicker style={styles.transparentLabel2}
                                     defaultDate={this.state.dob}
                                     timeZoneOffsetInMinutes={undefined}
                                     returnKeyType={'next'}
@@ -171,17 +173,17 @@ class UpdateUserDetails extends Component {
                                     maximumDate={subTimeUnit(new Date(), 1, 'year')}
                                     androidMode={"default"}
                                     placeHolderText={formatDate(this.state.dob, "DD/MM/YYYY")}
-                                    textStyle={{ color: "#5A5A5A" }}
+                                    textStyle={{ fontSize:13,color: "#5A5A5A" }}
                                     value={this.state.dob}
-                                    placeHolderTextStyle={{ color: "#5A5A5A" }}
+                                    placeHolderTextStyle={{fontSize:13, color: "#5A5A5A" }}
                                     onDateChange={dob => { console.log(dob); this.setState({ dob }) }}
                                     disabled={false}
                                     testID="editDateOfBirth"
                                 />
 
                             </Item>
-                            <Item style={{ borderBottomWidth: 0, backgroundColor: '#F1F1F1', marginTop: 10, borderRadius: 5 }}>
-                                <Picker style={styles.transparentLabel}
+                            <Item style={{ borderBottomWidth: 0, marginRight: 15,height: 45, backgroundColor: '#F1F1F1', marginTop: 10, borderRadius: 5 }}>
+                                <Picker style={styles.transparentLabel2}
                                     mode="dropdown"
                                     iosIcon={<Icon name="arrow-down" />}
                                     textStyle={{ color: "#5cb85c" }}
@@ -209,21 +211,25 @@ class UpdateUserDetails extends Component {
                                 </Picker>
                             </Item>
 
-                            <ListItem noBorder>
+                            
+                            <Item style={{ marginTop: 20, borderBottomWidth: 0, marginLeft: 20 }}>
 
-                                <Radio selected={this.state.gender === 'M'} onPress={() => this.onPressRadio('M')} style={{ marginLeft: 2, }} color={"#775DA3"}
-                                    selectedColor={"#775DA3"} testID="clickMale" />
-                                <Text style={{ marginLeft: 10, fontFamily: 'OpenSans' }}>Male</Text>
-
-                                <Radio selected={this.state.gender === 'F'} onPress={() => this.onPressRadio('F')} style={{ marginLeft: 10 }} color={"#775DA3"}
-                                    selectedColor={"#775DA3"} testID="clickFemale" />
-                                <Text style={{ marginLeft: 10, fontFamily: 'OpenSans' }}>Female</Text>
-
-                                <Radio selected={this.state.gender === 'O'} onPress={() => this.onPressRadio('O')} style={{ marginLeft: 10 }} color={"#775DA3"}
-                                    selectedColor={"#775DA3"} testID="clickOther" />
-                                <Text style={{ marginLeft: 10 }}>Other</Text>
-
-                            </ListItem>
+<RadioButton.Group>
+      <RadioButton selected={this.state.gender === 'M'} onPress={() => this.onPressRadio('M')}/>
+      <Text style={{
+            marginLeft: 10, fontFamily: 'OpenSans',fontSize:15
+        }}>Male</Text>  
+      <RadioButton selected={this.state.gender === 'F'} onPress={() => this.onPressRadio('F')} />
+      <Text style={{
+            marginLeft: 10, fontFamily: 'OpenSans',fontSize:15
+        }}>Female</Text>  
+      <RadioButton selected={this.state.gender === 'O'} onPress={() => this.onPressRadio('O')}/>
+      <Text style={{
+            marginLeft: 10, fontFamily: 'OpenSans',fontSize:15
+        }}>Others</Text>  
+          
+ </RadioButton.Group>  
+ </Item>
 
                             <Spinner color='blue'
                                 visible={this.state.isLoading}
@@ -231,16 +237,16 @@ class UpdateUserDetails extends Component {
                             />
 
                             <View>
-                                <Button disabled={this.state.updateButton} primary style={styles.userbutton} onPress={() => this.userUpdate()}>
-                                    <Text style={{ fontFamily: 'OpenSans', fontSize: 15, }}>Update</Text>
+                                <Button disabled={this.state.updateButton} primary  style={styles.addressButton} block onPress={() => this.userUpdate()}>
+                                    <Text style={styles.buttonText}>Update</Text>
                                 </Button>
                             </View>
                         </Form>
 
-
-
+                        </View>
+                        </ScrollView>
                     </Content>
-                </ScrollView>
+               
 
             </Container>
 

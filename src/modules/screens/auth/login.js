@@ -1,10 +1,11 @@
 import React, { Component } from 'react';
 import {
   Container, Content, Button, Text, Form, Item, Input, Header, Footer, FooterTab, Right,
-  CheckBox, Grid, Toast, KeyboardAvoidingView, Icon
+   Grid, Toast, KeyboardAvoidingView, Icon,Row
 } from 'native-base';
 import { connect } from 'react-redux'
 import { Image, TouchableOpacity, View, ScrollView, AsyncStorage } from 'react-native';
+import { Checkbox } from 'react-native-paper';
 
 import { login, RESET_REDIRECT_NOTICE } from '../../providers/auth/auth.actions';
 import styles from '../../screens/auth/styles'
@@ -20,7 +21,7 @@ class Login extends Component {
       userEntry: '',
       password: '',
       loginErrorMsg: null,
-      conditionCheck: false,
+      checked: false,
       showPassword: true
     }
   }
@@ -79,25 +80,24 @@ class Login extends Component {
   render() {
     const { user: { isLoading } } = this.props;
     const { loginErrorMsg } = this.state;
+    const { checked } = this.state;
     return (
       <Container style={styles.container}>
-        <Content style={styles.bodyContent}>
+        <Content contentContainerStyle={styles.bodyContent}>
           <ScrollView>
             <Spinner color='blue'
               visible={isLoading}
               textContent={'Loading...'}
             />
+            <View >
             <Text style={styles.welcome}>Welcome To Patient Medflic</Text>
             <Image source={{ uri: 'https://static1.squarespace.com/static/582bbfef9de4bb07fe62ab18/t/5877b9ccebbd1a124af66dfe/1484241404624/Headshot+-+Circular.png?format=300w' }} style={styles.logo} />
 
 
             <Form>
-              {/* <View style={styles.errorMsg}>
-              <Text style={{textAlign:'center',color:'#775DA3'}}> Invalid Credencials</Text>
-            </View> */}
-              <Item style={{ borderBottomWidth: 0, marginTop: 10 }}>
+              
+              <Item style={{ borderBottomWidth: 0, marginTop: 20 }}>
                 <Input placeholder="Email Or Phone" style={styles.transparentLabel}
-
                   returnKeyType={'next'}
                   value={this.state.userEntry}
                   keyboardType={'email-address'}
@@ -108,8 +108,8 @@ class Login extends Component {
                 />
               </Item>
 
-              <Item success style={styles.transparentLabel}>
-                <Input placeholder="Password" style={{ fontSize: 15, marginTop: 10 }}
+              <Item success style={styles.transparentLabel1}>
+                <Input placeholder="Password" style={{fontSize:15,fontFamily:'OpenSans',paddingLeft: 20,}}
                   ref={(input) => { this.userEntry = input; }}
                   secureTextEntry={true}
                   returnKeyType={'done'}
@@ -125,14 +125,23 @@ class Login extends Component {
               </Item>
 
 
-              <Item style={{ marginTop: 10, borderBottomWidth: 0 }}>
+              <Row style={{ marginTop: 20, borderBottomWidth: 0 }}>
 
-                <Item style={{ borderBottomWidth: 0, marginTop: 10 }}>
-                  <CheckBox checked={this.state.conditionCheck}
+                <Item style={{ borderBottomWidth: 0 }}>
+                  {/* <CheckBox  checked={this.state.conditionCheck}
 
-                    color="green" onPress={() => this.setState({ conditionCheck: !this.state.conditionCheck })} style={{ marginLeft: -7, height: 20, width: '11%' }}
-                  ></CheckBox>
-                  <Text style={{ marginLeft: 15, color: 'gray', fontFamily: 'OpenSans' }}>Remember me</Text>
+                    color="green" onPress={() => this.setState({ conditionCheck: !this.state.conditionCheck })} style={{borderRadius:5}}
+                  ></CheckBox> */}
+                   <Checkbox color="green"
+                   borderStyle={{ borderColor: '#F44336', 
+                   backfaceVisibility: 'visible',
+                   borderRadius: 18,
+                   borderWidth: 1,
+                   padding: 2,}}
+                    status={checked ? 'checked' : 'unchecked'}
+                    onPress={() => { this.setState({ checked: !checked }); }}
+                     />
+                  <Text style={{ marginLeft: 5, color: 'gray', fontFamily: 'OpenSans',fontSize:15 }}>Remember me</Text>
                 </Item>
 
                 <Right>
@@ -140,16 +149,18 @@ class Login extends Component {
                     <Text style={styles.customText}> Forgot Password</Text>
                   </TouchableOpacity>
                 </Right>
-              </Item>
+              </Row>
 
               <Button style={styles.loginButton} block primary
                 disabled={isLoading}
                 onPress={() => this.doLogin()}>
-                <Text>Sign In</Text>
+                <Text style={styles.ButtonText}>Sign In</Text>
               </Button>
               <Text style={{ color: 'red', paddingLeft: 20, fontSize: 15, fontFamily: 'OpenSans', marginBottom: 30 }}>{loginErrorMsg != null ? '*' + loginErrorMsg : null}</Text>
             </Form>
+            </View>
           </ScrollView>
+          
         </Content>
         <Footer >
           <FooterTab style={{ backgroundColor: '#F2F2F2', }}>
@@ -172,3 +183,4 @@ function loginState(state) {
   }
 }
 export default connect(loginState)(Login)
+

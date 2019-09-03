@@ -211,9 +211,14 @@ const AppointMentstack1 = createStackNavigator({
       title: 'Payment Page'
     }
   },
+
+  
+
   paymentsuccess: {
     screen: PaymentSuccess,
     navigationOptions: {
+      headerLeft: null,
+
       title: 'Success'
     }
   }

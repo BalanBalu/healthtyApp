@@ -20,6 +20,20 @@ export async function bookAppointment(bookSlotDetails, isLoading = true) {
   }
 }
 
+export async function validateBooking(reqDataValidate) {
+  try {
+    let endPoint = 'appointment/validate';
+    let response = await postService(endPoint, reqDataValidate);
+    let respData = response.data;
+    return respData;
+  } catch (e) {
+    return {
+      message: 'exception' + e,
+      success: false
+    }
+  }
+}
+
 export async function createPaymentRazor(paymentData) {
   try {
     let endPoint = 'razor/payment';
@@ -66,9 +80,10 @@ export async function addReview(userId, insertUserReviews, isLoading = true) {
 }
 /*get doctor availability for patient view doctor profile */
 
-export async function fetchAvailabilitySlots(doctorIds, dateFilter) {
+export async function fetchAvailabilitySlots(doctorIds, dateFilter, patientGender) {
   try {
     let endPoint = 'doctors/' + doctorIds + '/availabilitySlots?startDate=' + dateFilter.startDate + '&endDate='+ dateFilter.endDate;
+    if(patientGender)   endPoint + '&gender='+ patientGender;
     console.log(endPoint);
     let response = await getService(endPoint);
     let respData = response.data;
@@ -83,9 +98,9 @@ export async function fetchAvailabilitySlots(doctorIds, dateFilter) {
 
 /*get userReviews*/
 
-export async function viewUserReviews(type, id) {
+export async function viewUserReviews(type, id, limit) {
   try {
-    let endPoint = 'user/reviews/' + type + '/' + id +'?limit=2';
+    let endPoint = 'user/reviews/' + type + '/' + id + limit;
     let response = await getService(endPoint);
     let respData = response.data;
     return respData;
