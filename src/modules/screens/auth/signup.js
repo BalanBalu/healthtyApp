@@ -9,7 +9,7 @@ import { StyleSheet, Image, View } from 'react-native';
 import styles from '../../screens/auth/styles';
 import Spinner from '../../../components/Spinner';
 import { ScrollView } from 'react-native-gesture-handler';
-import { RadioButton } from 'react-native-paper';
+import { RadioButton,Checkbox } from 'react-native-paper';
 
 class Signup extends Component {
     constructor(props) {
@@ -21,7 +21,7 @@ class Signup extends Component {
             gender: 'M',
             radioStatus: [true, false, false],
             conditionCheckErrorMsg: '',
-            conditionCheck: false,
+            checked: false,
             showPassword: true
         }
     }
@@ -33,7 +33,7 @@ class Signup extends Component {
     }
     doSignUp = async () => {
         try {
-            if (this.state.conditionCheck === true) {
+            if (this.state.checked === true) {
                 let requestData = {
                     email: this.state.userEmail,
                     password: this.state.password,
@@ -79,6 +79,7 @@ class Signup extends Component {
 
     render() {
         const { user: { isLoading } } = this.props;
+        const { checked } = this.state;
         return (
 
             <Container style={styles.container}>
@@ -155,9 +156,13 @@ class Signup extends Component {
                             </Item>
 
 
-                            <Item style={{ borderBottomWidth: 0, marginTop: 12, marginLeft: 8 }}>
-                                <CheckBox checked={this.state.conditionCheck} color="green" style={{ borderRadius:5}} onPress={() => this.setState({ conditionCheck: !this.state.conditionCheck })} ></CheckBox>
-                                <Text style={{ marginLeft:15, color: 'gray', fontFamily: 'OpenSans', fontSize: 13, }}>I Accept the Medflic Terms And Conditions</Text>
+                            <Item style={{ borderBottomWidth: 0, marginTop: 5, marginLeft: 20 }}>
+                                {/* <CheckBox checked={this.state.conditionCheck} color="green" style={{ borderRadius:5}} onPress={() => this.setState({ conditionCheck: !this.state.conditionCheck })} ></CheckBox> */}
+                                <Checkbox  color="green" 
+                                 status={checked ? 'checked' : 'unchecked'}
+                                 onPress={() => { this.setState({ checked: !checked }); }}
+                                  />
+                                <Text style={{ marginLeft:5, color: 'gray', fontFamily: 'OpenSans', fontSize: 13, }}>I Accept the Medflic Terms And Conditions</Text>
                             </Item>
 
                             <Spinner color='blue'

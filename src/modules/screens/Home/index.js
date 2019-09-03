@@ -152,7 +152,7 @@ class Home extends Component {
                     <Row style={{ backgroundColor: 'white', borderColor: '#000', borderWidth: 1, borderRadius: 20, }}>
 
                     <Input placeholder="Search Symptoms/Services"
-                            style={{ color: 'gray', fontFamily: 'OpenSans', fontSize: 12 }}
+                            style={{ color: 'gray', fontFamily: 'OpenSans', fontSize: 13 }}
                             placeholderTextColor="gray"
                             value={this.state.searchValue}
                             keyboardType={'email-address'}
@@ -168,7 +168,7 @@ class Home extends Component {
                             <Row>
                                 {this.state.visibleClearIcon != '' ?
                                     <Button Button transparent onPress={() => this.clearTotalText()}>
-                                        <Icon name="ios-close" style={{ fontSize: 32, color: 'gray', marginLeft: 50 }} />
+                                        <Icon name="ios-close" style={{ fontSize: 30, color: 'gray', marginLeft: 50 }} />
                                     </Button>
                                     : null}
                                 <Button Button transparent onPress={() => this.searchDoctorListModule()}>
@@ -193,9 +193,9 @@ class Home extends Component {
                                         }]
                                     })}
                                 >
-                                    <Text style={{ padding: 10 }}>{item.value}</Text>
+                                    <Text style={{ padding: 10,fontFamily:'OpenSans',fontSize:13}}>{item.value}</Text>
                                     <Right>
-                                        <Text uppercase={true} style={{ color: 'gray', padding: 10, marginRight: 10, fontSize: 12, fontFamily: 'OpenSans-Bold' }}>{item.name}</Text>
+                                        <Text uppercase={true} style={{ color: 'gray', padding: 10, marginRight: 10, fontSize: 13, fontFamily: 'OpenSans-Bold' }}>{item.name}</Text>
                                     </Right>
                                 </Row>
                             )}
@@ -211,7 +211,7 @@ class Home extends Component {
                             <Row >
                                 <Left  >
 
-                                    <Text style={{ fontFamily: 'OpenSans', fontSize: 17 }}>Categories</Text>
+                                    <Text style={{ fontFamily: 'OpenSans', fontSize: 15 }}>Categories</Text>
                                 </Left>
                                 <Body >
 
@@ -230,7 +230,7 @@ class Home extends Component {
 
                             <Row>
 
-                                <ListItem noBorder>
+                                <ListItem style={{borderBottomWidth:0}}>
                                     <ScrollView horizontal={false}>
                                         <FlatList
                                             horizontal={true}
@@ -241,13 +241,13 @@ class Home extends Component {
                                                     <Item style={styles.column} onPress={() => this.navigateToCategorySearch(item.category_name)}>
                                                         <Col>
                                                             <LinearGradient
-                                                                colors={['#7357A2', '#62BFE4']} style={{ borderRadius: 10, padding: 5, height: 100, width: 100, marginLeft: 'auto', marginRight: 'auto' }}>
+                                                                colors={['#5758BB', '#9980FA']} style={{ borderRadius: 10, padding: 5, height: 100, width: 100, marginLeft: 'auto', marginRight: 'auto' }}>
                                                                 <Image
                                                                     source={{ uri: item.imageBaseURL + '/' + item.category_id + '.png' }} style={styles.customImage} />
                                                             </LinearGradient>
 
                                                             <Text style={styles.textcenter}>{item.category_name}</Text>
-                                                            <Text note style={{ textAlign: 'center' }}>100 Doctors</Text>
+                                                            <Text note style={{ textAlign: 'center',fontFamily:'OpenSans',fontSize:15 }}>100 Doctors</Text>
                                                         </Col>
                                                     </Item>
                                                 </Grid>
@@ -266,12 +266,12 @@ class Home extends Component {
 
                     <Card style={{ backgroundColor: '#ffeaa7', padding: 10, borderRadius: 10 }}
                     >
-                        <Text style={{ fontFamily: 'OpenSans', fontSize: 17 }}>You Can Save A Life</Text>
+                        <Text style={{ fontFamily: 'OpenSans', fontSize: 15 }}>You Can Save A Life</Text>
                         <Button block style={{ margin: 10, borderRadius: 20, backgroundColor: '#74579E' }}>
-                            <Text>REPORT ACCIDENT NOW</Text>
+                            <Text uppercase={true} style={{fontFamily:'OpenSans',fontSize:15,fontWeight:'bold'}}>REPORT ACCIDENT NOW</Text>
                         </Button>
 
-                        <Text style={{ textAlign: 'right', fontSize: 14, fontFamily: 'OpenSans', color: '#000' }}>5002 Fast Growing Ambulance</Text>
+                        <Text style={{ textAlign: 'right', fontSize: 15, fontFamily: 'OpenSans', color: '#000' }}>5002 Fast Growing Ambulance</Text>
 
                     </Card>
 
@@ -281,8 +281,8 @@ class Home extends Component {
                         style={{ borderRadius: 10, padding: 10, borderBottomWidth: 0, fontFamily: 'OpenSans', marginTop: 5 }} >
                         <Grid style={{ padding: 10 }}>
                             <Col style={{ width: '75%' }}>
-                                <Text style={{ fontFamily: 'OpenSans', color: 'white', fontSize: 17 }}>Video Consultation</Text>
-                                <Text note style={{ color: 'white', fontFamily: 'OpenSans', marginTop: 'auto', marginBottom: 'auto' }}>Have A Video Visit With A Certified HealthCare - Doctors</Text>
+                                <Text style={{ fontFamily: 'OpenSans', color: 'white', fontSize: 15}}>Video Consultation</Text>
+                                <Text note style={{ color: 'white', fontFamily: 'OpenSans', marginTop: 'auto', marginBottom: 'auto',fontSize:15 }}>Have A Video Visit With A Certified HealthCare - Doctors</Text>
 
                             </Col>
 
@@ -301,7 +301,7 @@ class Home extends Component {
                         <Grid>
                             <Row onPress={() => this.props.navigation.navigate("Pharmacy")}>
                                 <Col style={{ width: '75%' }}>
-                                    <Text style={{ fontFamily: 'OpenSans', color: 'white', marginTop: 10, fontSize: 17 }}>Online Pharmacy Services</Text>
+                                    <Text style={{ fontFamily: 'OpenSans', color: 'white', marginTop: 10, fontSize: 15 }}>Online Pharmacy Services</Text>
                                 </Col>
                                 <Col style={{ width: '25%' }}>
                                     <Text style={styles.offerText1}>25% offers</Text>
@@ -382,7 +382,7 @@ const styles = StyleSheet.create({
         padding: 5
     },
     textcenter: {
-        fontSize: 14,
+        fontSize: 15,
         marginLeft: 'auto',
         marginRight: 'auto',
         fontFamily: 'OpenSans'
@@ -440,8 +440,9 @@ const styles = StyleSheet.create({
     },
     titleText: {
         fontSize: 15,
+        fontWeight:'bold',
         padding: 5,
-        backgroundColor: '#FF9500',
+        backgroundColor: '#775DA3',
         borderRadius: 20,
         color: 'white',
         width: "95%",
@@ -451,7 +452,7 @@ const styles = StyleSheet.create({
     },
 
     offerText: {
-        fontSize: 12,
+        fontSize: 15,
         padding: 5,
         backgroundColor: 'gray',
         borderRadius: 20,
@@ -461,11 +462,12 @@ const styles = StyleSheet.create({
         fontFamily: 'OpenSans',
         marginLeft: 'auto',
         marginRight: 'auto',
-        marginTop: 10
+        marginTop: 10,
+        fontWeight:'bold'
     },
 
     offerText1: {
-        fontSize: 12,
+        fontSize: 15,
         padding: 5,
         backgroundColor: 'red',
         borderRadius: 20,
@@ -475,7 +477,8 @@ const styles = StyleSheet.create({
         fontFamily: 'OpenSans',
         marginLeft: 'auto',
         marginRight: 'auto',
-        marginTop: 10
+        marginTop: 8,
+        fontWeight:'bold'
     }
 
 });
