@@ -54,7 +54,7 @@ export function setnotification(notificationData) {
 export const fetchUserMarkedAsReadedNotification = async (userId) => {
     try {
 
-        let endPoint = '/notifications/' + userId + '?mark_as_readed=' +true ;
+        let endPoint = '/notifications/' + userId + '?mark_as_readed=true';
 
         let response = await getService(endPoint);
         let respData = response.data;
@@ -87,7 +87,7 @@ export const fetchUserMarkedAsReadedNotification = async (userId) => {
         return respData;
 
     } catch (e) {
-        console.log(e);
+       
         store.dispatch({
             type: NOTIFICATION_HAS_ERROR,
             message: e + ' Occured! Please Try again'
