@@ -133,6 +133,11 @@ class Login extends Component {
                     color="green" onPress={() => this.setState({ conditionCheck: !this.state.conditionCheck })} style={{borderRadius:5}}
                   ></CheckBox> */}
                    <Checkbox color="green"
+                   borderStyle={{ borderColor: '#F44336', 
+                   backfaceVisibility: 'visible',
+                   borderRadius: 18,
+                   borderWidth: 1,
+                   padding: 2,}}
                     status={checked ? 'checked' : 'unchecked'}
                     onPress={() => { this.setState({ checked: !checked }); }}
                      />
