@@ -35,7 +35,7 @@ class UpdateContact extends Component {
         const userData = navigation.getParam('updatedata');
         this.setState({
             primary_mobile_no: userData.mobile_no,
-            primaryMobileNoText:'Primary MobileNo Is Not Editable'
+            primaryMobileNoText:'Primary Mobile_No Is Not Editable'
 
         })
         if (userData.secondary_mobiles) {
@@ -69,12 +69,13 @@ class UpdateContact extends Component {
                     this.props.navigation.navigate('Profile');               
                 } else {
                     Toast.show({
-                        text:'Number Is Not Allowed To Be Empty',
+                        text:'Enter Secondary Mobile_No',
                         type: "danger",
                         duration: 3000
                     })           
-                    this.setState({ isLoading: false })
                 }
+                this.setState({ isLoading: false })
+
     }
     
 
@@ -105,7 +106,7 @@ class UpdateContact extends Component {
             <Container style={styles.container}>
                 <Spinner color='blue'
                     visible={this.state.isLoading}
-                    textContent={'Please wait Loading'}
+                    textContent={'Please Wait Loading'}
                 />
 
 
@@ -126,7 +127,7 @@ class UpdateContact extends Component {
                                     </Right>
                                 </Item>
                             </Card> : null}
-                            <Text style={{fontFamily:'OpenSans',fontSize:12,color:'red',marginLeft:7}}>{this.state.primaryMobileNoText}</Text>
+                            <Text style={{fontFamily:'OpenSans',fontSize:12,color:'red',marginLeft:8}}>{this.state.primaryMobileNoText}</Text>
 
                             <View style={{ marginTop: 30 }}>
                         <Text style={styles.headerText}>Edit Secondary Mobile_No</Text>
