@@ -40,7 +40,7 @@ import {
 } from "../../providers/bookappointment/bookappointment.action";
 import noAppointmentImage from "../../../../assets/images/noappointment.png";
 import Spinner from "../../../components/Spinner";
-
+import { renderProfileImage } from '../../common'
 
 class MyAppoinmentList extends Component {
 	constructor(props) {
@@ -82,7 +82,7 @@ class MyAppoinmentList extends Component {
 	backNavigation = async (navigationData) => {
 		if (!this.state.isNavigation) {
 			if (navigationData.action) {
-				
+
 				await this.setState({ isLoading: false })
 
 				if (navigationData.action.type === 'Navigation/BACK' || navigationData.action.type === 'Navigation/NAVIGATE' || navigationData.action.type === 'Navigation/POP') {
@@ -122,7 +122,7 @@ class MyAppoinmentList extends Component {
 					return appointmentResult.doctor_id;
 				}).join(",");
 
-				let speciallistResult = await getMultipleDoctorDetails(doctorIds, "specialist,education,prefix");
+				let speciallistResult = await getMultipleDoctorDetails(doctorIds, "specialist,education,prefix,profile_image,gender");
 
 				speciallistResult.data.forEach(doctorData => {
 
@@ -138,7 +138,10 @@ class MyAppoinmentList extends Component {
 							return categories.category;
 						}).join(",");
 					}
-					doctorInfo.set(doctorData.doctor_id, { degree: educationDetails, specialist: speaciallistDetails, prefix: doctorData.prefix })
+					
+						 
+					
+					doctorInfo.set(doctorData.doctor_id, { degree: educationDetails, specialist: speaciallistDetails, prefix: doctorData.prefix ,profile_image: doctorData.profile_image,gender:doctorData.gender})
 
 
 				});
@@ -150,7 +153,7 @@ class MyAppoinmentList extends Component {
 
 					let details = doctorInfo.get(doctorData.doctor_id)
 
-					upcommingInfo.push({ appointmentResult: doctorData, specialist: details.specialist, degree: details.degree, prefix: details.prefix});
+					upcommingInfo.push({ appointmentResult: doctorData, specialist: details.specialist, degree: details.degree, prefix: details.prefix, profile_image: details.profile_image });
 
 
 
@@ -179,7 +182,7 @@ class MyAppoinmentList extends Component {
 				pastAppointmentResult = pastAppointmentResult.data;
 
 				viewUserReviewResult = viewUserReviewResult.data;
-				
+
 				let doctorInfo = new Map();
 				let reviewRate = new Map();
 				if (viewUserReviewResult != undefined) {
@@ -194,7 +197,8 @@ class MyAppoinmentList extends Component {
 					return appointmentResult.doctor_id;
 				}).join(",");
 
-				let speciallistResult = await getMultipleDoctorDetails(doctorIds, "specialist,education,prefix");
+				let speciallistResult = await getMultipleDoctorDetails(doctorIds, "specialist,education,prefix,profile_image,gender");
+				
 				speciallistResult.data.forEach(doctorData => {
 
 					let educationDetails = ' ', speaciallistDetails = '';
@@ -213,7 +217,9 @@ class MyAppoinmentList extends Component {
 						}).join(",");
 
 					}
-					doctorInfo.set(doctorData.doctor_id, { degree: educationDetails, specialist: speaciallistDetails, prefix: doctorData.prefix })
+					
+				
+					doctorInfo.set(doctorData.doctor_id, { degree: educationDetails, specialist: speaciallistDetails, prefix: doctorData.prefix, profile_image: doctorData.profile_image ,gender:doctorData.gender})
 
 
 				});
@@ -249,12 +255,12 @@ class MyAppoinmentList extends Component {
 						let rating = reviewRate.get(doctorData._id);
 						ratting = rating.ratting;
 
-					
+
 
 					}
 					let details = doctorInfo.get(doctorData.doctor_id)
 					pastDoctorDetails.push({
-						appointmentResult: doctorData, specialist: details.specialist, degree: details.degree, ratting: ratting, prefix: details.prefix
+						appointmentResult: doctorData, specialist: details.specialist, degree: details.degree, ratting: ratting, prefix: details.prefix, profile_image: details.profile_image
 
 					});
 
@@ -269,7 +275,7 @@ class MyAppoinmentList extends Component {
 				})
 
 				this.setState({ pastData: pastDoctorDetails });
-				console.log(pastDoctorDetails);
+
 			}
 		} catch (e) {
 			console.log(e);
@@ -279,6 +285,15 @@ class MyAppoinmentList extends Component {
 
 		}
 	};
+    
+
+	navigateAddReview(item) {
+		let data = item.appointmentResult;
+		data.prefix = item.prefix
+		console.log(data)
+		this.props.navigation.navigate('InsertReview', { appointmentDetail:data })
+		
+	}
 
 	handleIndexChange = index => {
 
@@ -292,6 +307,7 @@ class MyAppoinmentList extends Component {
 
 		});
 	};
+	
 
 
 	navigateToBookAppointmentPage(item) {
@@ -383,21 +399,18 @@ class MyAppoinmentList extends Component {
 													} testID='navigateAppointmentInfo'
 												>
 													<Left>
-														<Thumbnail
-															square
-															source={{
-																uri:
-																	"https://res.cloudinary.com/demo/image/upload/w_200,h_200,c_thumb,g_face,r_max/face_left.png"
-															}}
-															style={{ height: 60, width: 60 }}
-														/>
+														 <Thumbnail
+																square
+															source={renderProfileImage(item)}
+																style={{ height: 60, width: 60 }}
+															/>
 													</Left>
 													<Body>
-														
+
 														<Item style={{ borderBottomWidth: 0 }}>
-															
+
 															<Text style={{ fontFamily: "OpenSans" }}>
-																{item.prefix || '' + item.appointmentResult.doctorInfo.first_name + " " + item.appointmentResult.doctorInfo.last_name}{" "}
+																{(item.prefix != undefined ? item.prefix : 'Dr.') + item.appointmentResult.doctorInfo.first_name + " " + item.appointmentResult.doctorInfo.last_name}{" "}
 															</Text>
 															<Text
 																style={{
@@ -471,9 +484,9 @@ class MyAppoinmentList extends Component {
 																<Item style={{ borderBottomWidth: 0 }}>
 																	<Button
 																		style={styles.shareButton}
-																		onPress={() =>
-																			this.props.navigation.navigate("InsertReview", { appointmentDetail: item.appointmentResult })
-																		} testID='navigateInsertReview'
+																		onPress={() => this.navigateAddReview(item)}
+																		
+																		 testID='navigateInsertReview'
 																	>
 																		<Text style={styles.bookAgain1}>
 																			{" "}
