@@ -20,7 +20,7 @@ import { store } from '../../../setup/store';
 import Swiper from 'react-native-swiper';
 
 let conditionFromFilterPage;
-const NO_OF_SLOTS_SHOULD_SHOW_PER_SLIDE = 4;
+const NO_OF_SLOTS_SHOULD_SHOW_PER_SLIDE = 3;
 class doctorSearchList extends Component {
     processedDoctorIds = [];
     processedDoctorData = [];
@@ -63,7 +63,8 @@ class doctorSearchList extends Component {
                 sliderPageIndex : 0,
                 sliderPageIndexesByDoctorIds: {},
                 selectedDatesByDoctorIds: {},
-                selectedSlotByDoctorIds: {}
+                selectedSlotByDoctorIds: {},
+                expandedDoctorIdHospitalsToShowSlotsData: []
             }
     }
 
@@ -207,12 +208,13 @@ class doctorSearchList extends Component {
         }
     }
     /* Insert Doctors Favourite Lists  */
-    addToWishList = async (doctorId, index) => {
+    addToWishList = async (doctorId) => {
         try {
-            let requestData = {
-                active: true
-            };
-            let userId = await AsyncStorage.getItem('userId');
+          let requestData = {
+             active: true
+          };
+          let userId = await AsyncStorage.getItem('userId');
+          if(userId) {
             let result = await insertDoctorsWishList(userId, doctorId, requestData);
             //   console.log('result'+JSON.stringify(result));
 
@@ -226,7 +228,8 @@ class doctorSearchList extends Component {
                 wishLists.push(doctorId)
                 this.setState({ patientWishListsDoctorIds: wishLists });
             }
-        }
+         }
+      }
         catch (e) {
             console.log(e);
         }
@@ -543,7 +546,7 @@ class doctorSearchList extends Component {
     }
     
     
-    noAvailableSlots(slotData) {
+    noAvailableSlots(doctorIdHostpitalId, slotData) {
         let nextAvailableDate;
         for (let nextAvailableSlotDate of Object.keys(slotData)) {
             if (this.state.selectedDate < nextAvailableSlotDate) {
@@ -553,8 +556,14 @@ class doctorSearchList extends Component {
         }
         return (
             <Row style={{ justifyContent: 'center', marginTop: 20 }}>
-                <Button style={{ alignItems: 'center', borderRadius: 10, backgroundColor: '#6e5c7b' }} onPress={() => { if (nextAvailableDate) this.setState({ selectedDate: nextAvailableDate }) }}>
-                    {nextAvailableDate ? <Text style={{ color: '#fff', fontFamily: 'OpenSans', fontWeight: 'bold', fontSize: 15 }}>Next Availability On {nextAvailableDate}</Text> : <Text style={{ color: '#fff', fontFamily: 'OpenSans', fontWeight: 'bold', fontSize: 16 }}> No Availablity for Next 7 Days</Text>}
+                <Button disabled style={{ alignItems: 'center', borderRadius: 10, backgroundColor: '#6e5c7b' }} onPress={() => { if (nextAvailableDate) {
+                      let { selectedDatesByDoctorIds }  = this.state;
+                      selectedDatesByDoctorIds[doctorIdHostpitalId] = nextAvailableDate;
+                      this.setState({ selectedDatesByDoctorIds });
+                }
+                 }}>
+                 <Text>No Slots Available</Text>    
+                {/*nextAvailableDate ? <Text style={{ color: '#fff', fontFamily: 'OpenSans', fontWeight: 'bold', fontSize: 15 }}>Next Availability On {nextAvailableDate}</Text> : <Text style={{ color: '#fff', fontFamily: 'OpenSans', fontWeight: 'bold', fontSize: 16 }}> No Availablity for Next 7 Days</Text>*/}
                 </Button>
             </Row>
         )
@@ -570,9 +579,15 @@ class doctorSearchList extends Component {
      
      
 
-    onBookPress() {
+    onBookPress(doctorIdHospitalId) {
         console.log('you have pressed onBookPress');
-        this.setState({ isHidden:true });
+        const { expandedDoctorIdHospitalsToShowSlotsData } = this.state;
+        if(expandedDoctorIdHospitalsToShowSlotsData.indexOf(doctorIdHospitalId) !== -1) {
+            expandedDoctorIdHospitalsToShowSlotsData.splice(expandedDoctorIdHospitalsToShowSlotsData.indexOf(doctorIdHospitalId), 1)
+        } else {
+            expandedDoctorIdHospitalsToShowSlotsData.push(doctorIdHospitalId);
+        }
+        this.setState({ expandedDoctorIdHospitalsToShowSlotsData });
     }
     noDoctorsAvailable() {
         return (
@@ -581,9 +596,7 @@ class doctorSearchList extends Component {
             </Item>
         )
     }
-    onpressHeart() {
-        console.log('you pressed the heart icon')
-    }
+    
     onpressSideSlider() {
         console.log('you pressed the sideslider')
     }
@@ -597,9 +610,9 @@ class doctorSearchList extends Component {
 
         const { bookappointment: { slotData, selectedDate, doctorData } } = this.props;
         const { navigation } = this.props;
-        const { selectedDatesByDoctorIds,
+        const { selectedDatesByDoctorIds, expandedDoctorIdHospitalsToShowSlotsData, patientWishListsDoctorIds,
              isLoading, isAvailabilityLoading, processedDoctorAvailabilityDates, 
-            uniqueFilteredDocArray, searchedResultData, categories, singleDataWithDoctorDetails, singleHospitalDataSlots, reviewData, patientWishListsDoctorIds, doctorList /* doctorDetails */} = this.state;
+            uniqueFilteredDocArray, searchedResultData, categories, singleDataWithDoctorDetails, singleHospitalDataSlots, reviewData, doctorList /* doctorDetails */} = this.state;
         return (
             <Container style={styles.container}>
               <Content>
@@ -652,7 +665,10 @@ class doctorSearchList extends Component {
                                         </Row>
                                      </Col>
                                       <Col style={{width:'17%'}}>
-                                         <Icon name="heart" onPress={()=>this.onpressHeart()} style={{marginLeft:20,backgroundColor:'#fff',fontSize:20}}></Icon>
+                                         <Icon name="heart" onPress={()=>this.addToWishList(item.doctor_id)} 
+                                            style={patientWishListsDoctorIds.includes(item.doctor_id) ? { marginLeft:20, color: '#B22222', fontSize:20 } : {marginLeft:20, borderColor: '#fff',fontSize:20}}>
+
+                                            </Icon>
                                          {/* <Row>
                                            <Text style={{ fontFamily: 'OpenSans',marginTop:20,fontSize:12,marginLeft:5 }}> 2.6km</Text>
                                          </Row> */}
@@ -708,17 +724,19 @@ class doctorSearchList extends Component {
                                                 <Text note style={{ fontFamily: 'OpenSans',marginTop:15,fontSize:12,marginRight:50,fontWeight:'bold' }}>Available 9:00 am - 1 pm</Text>
                                               </Col>
                                                 <Col style={{width:"22%"}}>
-                                                <TouchableOpacity  onPress={()=>this.onBookPress()}  style={{ textAlign:'center',backgroundColor:'green',borderColor: '#000', marginTop:15, borderRadius: 20, height: 30,justifyContent:'center' ,marginLeft:5,marginRight:5 ,}}>
+                                                <TouchableOpacity  onPress={()=>this.onBookPress(item.doctorIdHostpitalId)}  style={{ textAlign:'center',backgroundColor:'green',borderColor: '#000', marginTop:15, borderRadius: 20, height: 30,justifyContent:'center' ,marginLeft:5,marginRight:5 ,}}>
                                                     <Text style={{textAlign:'center',color:'#fff',fontSize:12,fontWeight:'bold',fontFamily:'OpenSans'}}>BOOK </Text>
                                                 </TouchableOpacity>  
                                                
                                                 </Col>
                                                
                                             </Row>
+                                           
+                                            {expandedDoctorIdHospitalsToShowSlotsData.includes(item.doctorIdHostpitalId) ? 
+                                           
                                             <View>
-                                          
-                                            <View>
-                                            <Row style={{marginTop:10}}>
+                                            
+                                                <Row style={{marginTop:10}}>
                                                 <Text style={{fontSize:13,fontFamily:'OpenSans'}}>Select appoinment date And time</Text>
                                             </Row>
 
@@ -727,12 +745,14 @@ class doctorSearchList extends Component {
                                                   <Icon name='ios-arrow-back' onPress={() => this.slidePrevious(item.doctorIdHostpitalId)} style={{fontSize:25,marginTop:25}}/>
                                               </Col> 
                                               {this.getAvailabilityDateSliderData(item.doctorIdHostpitalId).map(date => {
+                                                   let availableslotData = item.slotData[date] || [];
                                                    let selectedDate = selectedDatesByDoctorIds[item.doctorIdHostpitalId] || this.state.currentDate;
                                                    return (
-                                                      <Col style={{width:'22%',}} key={date}>
+                                                      <Col style={{width:'30%',}} key={date}>
                                                        <TouchableOpacity style={[styles.availabilityBG, selectedDate === date ? { backgroundColor:'#775DA3' } : { backgroundColor:'#ced6e0' } ]} onPress={() => this.onDateChanged( date, item.doctorIdHostpitalId)}>
-                                                          <Text style={[{textAlign:'center',fontSize:13,fontFamily:'OpenSans',fontWeight:'bold'}, selectedDate === date ? { color:'#fff' } : { color:'#000'} ]  }>{formatDate(moment(date), 'ddd')}</Text>
-                                                          <Text style={[{textAlign:'center',fontSize:12,fontFamily:'OpenSans'}, selectedDate === date ? { color:'#fff' } : { color:'#000' } ] }>{formatDate(moment(date), 'DD MMM')}</Text>
+                                                          <Text style={[{textAlign:'center',fontSize:12,fontFamily:'OpenSans'}, selectedDate === date ? { color:'#fff' } : { color:'#000' } ] }>{formatDate(moment(date), 'ddd, DD MMM')}</Text>
+                                                          <Text style={[{textAlign:'center',fontSize:10,fontFamily:'OpenSans'}, selectedDate === date ? { color:'#fff' } : { color:'#000' } ] }>{ availableslotData.length === 0 ? 'No Slots Available' : availableslotData.length + ' Slots Available' }</Text>
+                                                       
                                                        </TouchableOpacity>
                                                      </Col>
                                                     )
@@ -744,7 +764,7 @@ class doctorSearchList extends Component {
                                              {  
                                                  item.slotData[selectedDatesByDoctorIds[item.doctorIdHostpitalId] || this.state.currentDate] !== undefined ?
                                                    this.haveAvailableSlots(item.doctorIdHostpitalId,item.slotData[selectedDatesByDoctorIds[item.doctorIdHostpitalId] || this.state.currentDate]) 
-                                                   : this.noAvailableSlots(item.slotData)
+                                                   : this.noAvailableSlots(item.doctorIdHostpitalId, item.slotData)
                                               }
 
                                          <View style={{borderTopColor:'#000',borderTopWidth:0.5,marginTop:10}}>
@@ -764,8 +784,9 @@ class doctorSearchList extends Component {
                                                </Col>
                                             </Row>
                                          </View>
-                                            </View>
-                                            </View>
+                                         
+                                            </View> : null }
+                                           
                                             </Grid>
                                            
                                           
