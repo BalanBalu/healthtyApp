@@ -4,7 +4,7 @@ import { login } from '../../providers/auth/auth.actions';
 import { messageShow, messageHide } from '../../providers/common/common.action';
 import { Col, Row, Grid } from 'react-native-easy-grid';
 import { connect } from 'react-redux'
-import { StyleSheet, Image, TouchableOpacity, View, FlatList, AsyncStorage } from 'react-native';
+import { StyleSheet, Image, TouchableOpacity, View, FlatList, AsyncStorage, Slider } from 'react-native';
 import StarRating from 'react-native-star-rating';
 import { ScrollView } from 'react-native-gesture-handler';
 import Modal from "react-native-modal";
@@ -17,8 +17,10 @@ import Spinner from '../../../components/Spinner';
 import moment from 'moment';
 
 import { store } from '../../../setup/store';
-let conditionFromFilterPage;
+import Swiper from 'react-native-swiper';
 
+let conditionFromFilterPage;
+const NO_OF_SLOTS_SHOULD_SHOW_PER_SLIDE = 4;
 class doctorSearchList extends Component {
     processedDoctorIds = [];
     processedDoctorData = [];
@@ -34,6 +36,7 @@ class doctorSearchList extends Component {
                 starCount: 0,
                 doctorDetails: [],
                 selectedDate: formatDate(new Date(), 'YYYY-MM-DD'),
+                currentDate: formatDate(new Date(), 'YYYY-MM-DD'),
                 singleHospitalDataSlots: {
                     _id: null,
                     hospitalLocationData: {},
@@ -55,7 +58,12 @@ class doctorSearchList extends Component {
                 filterData : null,
                 uniqueFilteredDocArray: [],
                 yearOfExperience: '',
-                isHidden: false
+                isHidden: false,
+                processedDoctorAvailabilityDates: [],
+                sliderPageIndex : 0,
+                sliderPageIndexesByDoctorIds: {},
+                selectedDatesByDoctorIds: {},
+                selectedSlotByDoctorIds: {}
             }
     }
 
@@ -360,11 +368,8 @@ class doctorSearchList extends Component {
                     data: this.processedDoctorDetailsData
                 })
                 console.log(this.processedDoctorDetailsData);
-                
+                await this.enumarateDates(startDate, endDate)
                 await this.setState({ doctorDetails: this.processedDoctorData, doctorData: this.processedDoctorDetailsData });
-               
-                this.enumarateDates(startDate, endDate)
-
             }
         } catch (e) {
             this.setState({ doctorDetails: [] });
@@ -374,23 +379,28 @@ class doctorSearchList extends Component {
             this.setState({ isAvailabilityLoading: false });
         }
     }
-    enumarateDates(startDate, endDate) {
+   async enumarateDates(startDate, endDate) {
         let now = startDate.clone();
         while (now.isSameOrBefore(endDate)) {
             this.processedDoctorAvailabilityDates.push(now.format('YYYY-MM-DD'));
             now = now.add(1, 'day');
         }
+        await this.setState({ processedDoctorAvailabilityDates : this.processedDoctorAvailabilityDates });
+        console.log('Process Dates are ' + this.state.processedDoctorAvailabilityDates);
+       
     }
 
 
     /* Change the Date from Date Picker */
-    onDateChanged(date) {
-        let endDateMoment = addMoment(date, 7, 'days')
-
-        let selectedDate = formatDate(date, 'YYYY-MM-DD');
-        this.setState({ selectedDate: selectedDate });
+    onDateChanged(selectedDate, doctorIdHostpitalId) {
+        
+        let { selectedDatesByDoctorIds }  = this.state;
+        
+        selectedDatesByDoctorIds[doctorIdHostpitalId] = selectedDate;
+        this.setState({ selectedDatesByDoctorIds });
         if (this.processedDoctorAvailabilityDates.includes(selectedDate) === false) {
-            this.getAvailabilitySlots(this.state.getSearchedDoctorIds, getMoment(date), endDateMoment);
+           let endDateMoment = addMoment(getMoment(selectedDate), 7, 'days');
+           this.getAvailabilitySlots(this.state.getSearchedDoctorIds, getMoment(selectedDate), endDateMoment);
         }
 
     }
@@ -406,28 +416,7 @@ class doctorSearchList extends Component {
                 slotData: selectedSlotItem
             };
             this.props.navigation.navigate('Payment Review', { resultconfirmSlotDetails: confirmSlotDetails })
-        } /*else {
-             let hospitalLocations = [];
-             let tempHospitalArray = [];
-             availableSlots.forEach(element => {
-                if (!tempHospitalArray.includes(element.location.hospital_id)) {
-                    tempHospitalArray.push(element.location.hospital_id);
-                    hospitalLocations.push({
-                        _id: element.location.hospital_id,
-                        hospitalLocationData: element.location,
-                        hospitalSlotArray: [element]
-                    });
-                } else {
-                    let index = tempHospitalArray.indexOf(element.location.hospital_id);
-                    hospitalLocations[index].hospitalSlotArray.push(element);
-                    this.getDoctorDetails(this.state.singleDataWithDoctorDetails.doctorId);
-                    this.getPatientReviews(this.state.singleDataWithDoctorDetails.doctorId);
-                }
-            })
-            await this.setState({ selectedDoctorHospitalLocations: hospitalLocations });
-            await this.onClickedHospitalName(selectedHospitalId);
-            await this.setState({ isModalVisible: true })
-        } */
+        } 
     }
     /* Click the Hospital location and names from Book Appointment Popup page */
     onClickedHospitalName = async (hospitalId) => {
@@ -489,46 +478,71 @@ class doctorSearchList extends Component {
     }
 
 
-    haveAvailableSlots(doctorData, slotsData) {
-       /* return (
-            <FlatList
-                numColumns={100}
-                data={slotsData}
-                extraData={this.state}
-                keyExtractor={(item, index) => index.toString()}
-                renderItem={({ item, index }) =>
-                    <Row style={{ width: '28%', padding: 4 }}>
-                        <Button disabled={item.isSlotBooked}
-                            primary style={item.isSlotBooked ? styles.slotBookedBgColor : styles.slotDefaultBgColor}
-                            onPress={() => { this.onSlotPress(doctorData, item, slotsData, index) }}>
-                            <Text note style={{ fontFamily: 'OpenSans', color: 'white', fontSize: 13 }}>{formatDate(item.slotStartDateAndTime, 'hh:mm A')}</Text>
-                        </Button>
-                    </Row>
-
-                } />
-        ) */
+    haveAvailableSlots(doctorIdHostpitalId, slotsData) {
+        let { selectedSlotByDoctorIds }  = this.state;
+        selectedSlotIndex = selectedSlotByDoctorIds[doctorIdHostpitalId] || -1
         return (
             <Row>
               <Col style={{width:'8%'}}></Col>
-            
+             
             <FlatList
               numColumns={4}
               data={slotsData}
               extraData={this.state}
-              keyExtractor={(item, index) => index.toString()}
+            
               renderItem={({ item, index }) =>
             <Col style={{width:'23.5%'}}>
-              <TouchableOpacity style={item.isSlotBooked ? styles.slotBookedBgColor : styles.slotDefaultBgColor}>
-                <Text style={item.isSlotBooked ? styles.slotBookedTextColor : styles.slotDefaultTextColor}> {formatDate(item.slotStartDateAndTime, 'hh:mm A')} </Text>
+              <TouchableOpacity disabled={item.isSlotBooked} style={item.isSlotBooked ? styles.slotBookedBgColor : selectedSlotIndex === index ? styles.slotSelectedBgColor : styles.slotDefaultBgColor} onPress={()=> { 
+                   let { selectedSlotByDoctorIds }  = this.state;
+                   selectedSlotByDoctorIds[doctorIdHostpitalId] = index;
+                   this.setState({ selectedSlotByDoctorIds });
+               }}>
+               <Text style={item.isSlotBooked ? styles.slotBookedTextColor : selectedSlotIndex === index ? styles.slotBookedTextColor : styles.slotDefaultTextColor}> {formatDate(item.slotStartDateAndTime, 'hh:mm A')} </Text>
+              {/* item.isSlotBooked ? <Text style={styles.slotBookedTextColor}>Booked</Text> : null */}
               </TouchableOpacity>
             </Col>
-            
-      }/>
-       <Col style={{width:'8%'}}>
-        </Col>
+      } 
+      keyExtractor={(item, index) => index.toString()}/>
+       <Col style={{width:'8%'}}></Col>
       </Row>
         )
     }
+
+    getAvailabilityDateSliderData = (doctorId) => {
+        let {  sliderPageIndexesByDoctorIds }  = this.state;
+        let sliderPageIndex = sliderPageIndexesByDoctorIds[doctorId] || 0;
+        let startingDataCount = sliderPageIndex * NO_OF_SLOTS_SHOULD_SHOW_PER_SLIDE;
+        let endingDataCount = startingDataCount + NO_OF_SLOTS_SHOULD_SHOW_PER_SLIDE;
+        let startDate = moment().add(startingDataCount, 'days');
+        let now = startDate.clone();
+        let availabiltySliderDates = [];
+        for(let dateCount = startingDataCount; dateCount < endingDataCount; dateCount++ ) {
+            availabiltySliderDates.push(now.format('YYYY-MM-DD'));
+            now = now.add(1, 'day');
+        }
+        return availabiltySliderDates
+    }
+
+    slidePrevious = async (doctorId) => {
+        let { sliderPageIndexesByDoctorIds }  = this.state;
+        let sliderPageIndex = sliderPageIndexesByDoctorIds[doctorId] || 0;
+        if(sliderPageIndex !== 0) {
+            sliderPageIndexesByDoctorIds[doctorId] = sliderPageIndex - 1;
+            await this.setState({sliderPageIndexesByDoctorIds}) 
+            this.getAvailabilityDateSliderData(doctorId)
+        }
+    }
+    slideNext = async (doctorId) => {
+        let { sliderPageIndexesByDoctorIds }  = this.state;
+        let sliderPageIndex = sliderPageIndexesByDoctorIds[doctorId] || 0;
+
+            sliderPageIndexesByDoctorIds[doctorId] = sliderPageIndex + 1;
+            await this.setState({sliderPageIndexesByDoctorIds}) 
+            console.log(this.state.sliderPageIndexesByDoctorIds)
+            this.getAvailabilityDateSliderData(doctorId)
+    }
+    
+    
     noAvailableSlots(slotData) {
         let nextAvailableDate;
         for (let nextAvailableSlotDate of Object.keys(slotData)) {
@@ -539,14 +553,23 @@ class doctorSearchList extends Component {
         }
         return (
             <Row style={{ justifyContent: 'center', marginTop: 20 }}>
-
                 <Button style={{ alignItems: 'center', borderRadius: 10, backgroundColor: '#6e5c7b' }} onPress={() => { if (nextAvailableDate) this.setState({ selectedDate: nextAvailableDate }) }}>
                     {nextAvailableDate ? <Text style={{ color: '#fff', fontFamily: 'OpenSans', fontWeight: 'bold', fontSize: 15 }}>Next Availability On {nextAvailableDate}</Text> : <Text style={{ color: '#fff', fontFamily: 'OpenSans', fontWeight: 'bold', fontSize: 16 }}> No Availablity for Next 7 Days</Text>}
                 </Button>
-
             </Row>
         )
     }
+    getSlotDatesByObject = (slotData) => {
+        availableSlotDates = Object.keys(slotData).map(element => {
+          return {
+             date: element
+          }     
+        });
+        return availableSlotDates;     
+     }
+     
+     
+
     onBookPress() {
         console.log('you have pressed onBookPress');
         this.setState({ isHidden:true });
@@ -565,6 +588,7 @@ class doctorSearchList extends Component {
         console.log('you pressed the sideslider')
     }
     
+    
     render() {
 
         // const doctorList = [{docname:'Dr.John williams', degree:'MBBS,MD-DNB,Opththalmology',hospital:'dominur - Manipal Hospital',Experience:'12yrs',Rating:3.5,
@@ -573,7 +597,8 @@ class doctorSearchList extends Component {
 
         const { bookappointment: { slotData, selectedDate, doctorData } } = this.props;
         const { navigation } = this.props;
-        const { isLoading, isAvailabilityLoading,
+        const { selectedDatesByDoctorIds,
+             isLoading, isAvailabilityLoading, processedDoctorAvailabilityDates, 
             uniqueFilteredDocArray, searchedResultData, categories, singleDataWithDoctorDetails, singleHospitalDataSlots, reviewData, patientWishListsDoctorIds, doctorList /* doctorDetails */} = this.state;
         return (
             <Container style={styles.container}>
@@ -598,9 +623,10 @@ class doctorSearchList extends Component {
                        </Row>
                     </Grid>
                 </Card>
-                    
+                
                     <FlatList
                         data={doctorData}
+                        extraData={this.state}
                         keyExtractor={(item, index) => index.toString()}
                         renderItem={({ item }) =>
                          <Card style={{ padding: 2, borderRadius: 10, borderBottomWidth: 2 }}>
@@ -632,6 +658,7 @@ class doctorSearchList extends Component {
                                          </Row> */}
                                        </Col> 
                                    </Row>
+                                 
                                    <Row>
                                        <Col style={{width:"25%",marginTop:20}}>        
                                          <Text note style={{ fontFamily: 'OpenSans',fontSize:12,marginLeft:5, }}> Experience</Text>
@@ -689,80 +716,55 @@ class doctorSearchList extends Component {
                                                
                                             </Row>
                                             <View>
-                                            {true ?
+                                          
                                             <View>
                                             <Row style={{marginTop:10}}>
                                                 <Text style={{fontSize:13,fontFamily:'OpenSans'}}>Select appoinment date And time</Text>
                                             </Row>
 
                                             <Row style={{marginLeft:'auto',marginRight:'auto'}}  >
-                                             
-                                            <Col style={{width:'8%'}}>
-                                                <Icon name='ios-arrow-back' onPress={()=>this.onpressSideSlider()} style={{fontSize:25,marginTop:25}}/>
-                                            </Col>
-                                                
-                                                <Col style={{width:'22%',}}>
-                                                  <TouchableOpacity style={{textAlign:'center',backgroundColor:'#775DA3', borderColor: '#000', marginTop:10, height: 50, borderRadius: 5,justifyContent:'center' ,marginRight:5,paddingLeft:5,paddingRight:5}}>
-                                                     <Text style={{textAlign:'center',color:'#fff',fontSize:13,fontFamily:'OpenSans',fontWeight:'bold'}}>Mon</Text>
-                                                     <Text style={{textAlign:'center',color:'#fff',fontSize:12,fontFamily:'OpenSans'}}>25 Aug </Text>
-                                                  </TouchableOpacity>
-                                                </Col>
-                                                
-                                                <Col style={{width:'22%',}}>
-                                                  <TouchableOpacity style={{textAlign:'center',backgroundColor:'#ced6e0', borderColor: '#000', marginTop:10, height: 50, borderRadius: 5,justifyContent:'center' ,marginRight:5,paddingLeft:5,paddingRight:5}}>
-                                                    <Text style={{textAlign:'center',color:'#000',fontSize:13,fontFamily:'OpenSans',fontWeight:'bold'}}>Mon</Text>
-                                                    <Text style={{textAlign:'center',color:'#000',fontSize:12,fontFamily:'OpenSans'}}>26 Aug </Text>
-                                                  </TouchableOpacity>
-                                                </Col>
-                                                <Col style={{width:'22%',}}>
-                                                <TouchableOpacity style={{textAlign:'center',backgroundColor:'#ced6e0', borderColor: '#000', marginTop:10, height: 50, borderRadius: 5,justifyContent:'center' ,marginRight:5,paddingLeft:5,paddingRight:5}}>
-                                                    
-                                                    <Text style={{textAlign:'center',color:'#000',fontSize:13,fontFamily:'OpenSans',fontWeight:'bold'}}>Mon</Text>
-                                                    <Text style={{textAlign:'center',color:'#000',fontSize:12,fontFamily:'OpenSans'}}>27 Aug </Text>
-
-                                               </TouchableOpacity>
-                                                </Col>
-                                                <Col style={{width:'22%',}}>
-                                                
-
-                                                <TouchableOpacity style={{textAlign:'center',backgroundColor:'#ced6e0', borderColor: '#000', marginTop:10, height: 50, borderRadius: 5,justifyContent:'center' ,marginRight:5,paddingLeft:5,paddingRight:5}}>
-                                                    
-                                                    <Text style={{textAlign:'center',color:'#000',fontSize:13,fontFamily:'OpenSans',fontWeight:'bold'}}>Mon</Text>
-                                                    <Text style={{textAlign:'center',color:'#000',fontSize:12,fontFamily:'OpenSans'}}>25 Aug </Text>
-
-                                               </TouchableOpacity>
-                            
-                                                </Col>
+                                              <Col style={{width:'8%'}}>
+                                                  <Icon name='ios-arrow-back' onPress={() => this.slidePrevious(item.doctorIdHostpitalId)} style={{fontSize:25,marginTop:25}}/>
+                                              </Col> 
+                                              {this.getAvailabilityDateSliderData(item.doctorIdHostpitalId).map(date => {
+                                                   let selectedDate = selectedDatesByDoctorIds[item.doctorIdHostpitalId] || this.state.currentDate;
+                                                   return (
+                                                      <Col style={{width:'22%',}} key={date}>
+                                                       <TouchableOpacity style={[styles.availabilityBG, selectedDate === date ? { backgroundColor:'#775DA3' } : { backgroundColor:'#ced6e0' } ]} onPress={() => this.onDateChanged( date, item.doctorIdHostpitalId)}>
+                                                          <Text style={[{textAlign:'center',fontSize:13,fontFamily:'OpenSans',fontWeight:'bold'}, selectedDate === date ? { color:'#fff' } : { color:'#000'} ]  }>{formatDate(moment(date), 'ddd')}</Text>
+                                                          <Text style={[{textAlign:'center',fontSize:12,fontFamily:'OpenSans'}, selectedDate === date ? { color:'#fff' } : { color:'#000' } ] }>{formatDate(moment(date), 'DD MMM')}</Text>
+                                                       </TouchableOpacity>
+                                                     </Col>
+                                                    )
+                                              })}
                                                 <Col style={{width:'8%'}}>
-                                                <Icon name='ios-arrow-forward' style={{fontSize:25,marginTop:25,marginLeft:5,marginRight:5}}/>
-
-                                                </Col>
+                                                    <Icon name='ios-arrow-forward' onPress={()=>this.slideNext(item.doctorIdHostpitalId)} style={{fontSize:25,marginTop:25,marginLeft:5,marginRight:5}}/>
+                                                 </Col>
                                              </Row>
-                                             {item.slotData[this.state.selectedDate] !== undefined ?
-                                                    this.haveAvailableSlots(item,item.slotData[this.state.selectedDate]) : this.noAvailableSlots(item.slotData)}
-                                                    
-                                          
-                                           <View style={{borderTopColor:'#000',borderTopWidth:0.5,marginTop:10}}>
+                                             {  
+                                                 item.slotData[selectedDatesByDoctorIds[item.doctorIdHostpitalId] || this.state.currentDate] !== undefined ?
+                                                   this.haveAvailableSlots(item.doctorIdHostpitalId,item.slotData[selectedDatesByDoctorIds[item.doctorIdHostpitalId] || this.state.currentDate]) 
+                                                   : this.noAvailableSlots(item.slotData)
+                                              }
+
+                                         <View style={{borderTopColor:'#000',borderTopWidth:0.5,marginTop:10}}>
                                             <Row style={{marginTop:10}}>
                                                 <Text note style={{fontSize:12,fontFamily:'OpenSans'}}>Selected Appointment on</Text>
                                             </Row>
                                             <Row style={{marginTop:5}}>
-                                           <Col style={{width:'40%'}}>
-                                         <Text  style={{color:'#000',fontSize:12,fontFamily:'OpenSans',marginLeft:-16}}>{item.selectedappointment}</Text>
-
-                                         </Col>
-                                        <Col style={{width:'30%'}}>
-
-                                       </Col>
-                                        <Col style={{width:'30%'}}>
-                                        <TouchableOpacity style={{backgroundColor:'green', borderColor: '#000', marginTop:10, height: 30, borderRadius: 20,justifyContent:'center' ,marginLeft:5,marginRight:5,marginTop:-5 }}>
-                                                    <Text style={{color:'#fff',fontSize:12,fontWeight:'bold',fontFamily:'OpenSans'}}>Continue </Text>
-                                                </TouchableOpacity> 
-                                            </Col>
+                                               <Col style={{width:'40%'}}>
+                                                 <Text style={{color:'#000',fontSize:12,fontFamily:'OpenSans',marginLeft:-16}}>{item.selectedappointment}</Text>
+                                               </Col>
+                                               <Col style={{width:'30%'}}>
+                                               </Col>
+                                               <Col style={{width:'30%'}}>
+                                                  <TouchableOpacity style={{backgroundColor:'green', borderColor: '#000', marginTop:10, height: 30, borderRadius: 20,justifyContent:'center' ,marginLeft:5,marginRight:5,marginTop:-5 }}>
+                                                     <Text style={{color:'#fff',fontSize:12,fontWeight:'bold',fontFamily:'OpenSans'}}>Continue </Text>
+                                                  </TouchableOpacity> 
+                                               </Col>
                                             </Row>
+                                         </View>
                                             </View>
-                                            </View>
-                                            :null}
                                             </View>
                                             </Grid>
                                            
@@ -1121,7 +1123,18 @@ const styles = StyleSheet.create({
     },
     slotBookedBgColor: {
         textAlign:'center',
-        backgroundColor:'#775DA3',
+        backgroundColor:  '#A9A9A9', //'#775DA3',
+        borderColor: '#000', 
+        marginTop:10, height: 30, 
+        borderRadius: 5, 
+        justifyContent:'center', 
+        marginRight:5,
+        paddingLeft:5,
+        paddingRight:5
+    },
+    slotSelectedBgColor: {
+        textAlign:'center',
+        backgroundColor: '#775DA3',
         borderColor: '#000', 
         marginTop:10, height: 30, 
         borderRadius: 5, 
@@ -1157,6 +1170,17 @@ const styles = StyleSheet.create({
         width: '30%',
         height: 30,
         margin: 5
+    },
+    availabilityBG: {
+        textAlign:'center',
+        borderColor: '#000', 
+        marginTop:10, 
+        height: 50,
+        borderRadius: 5, 
+        justifyContent:'center', 
+        marginRight:5, 
+        paddingLeft:5, 
+        paddingRight:5
     },
     customPadge: {
         backgroundColor: 'green',
