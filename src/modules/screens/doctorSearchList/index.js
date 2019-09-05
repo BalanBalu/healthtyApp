@@ -414,17 +414,16 @@ class doctorSearchList extends Component {
     }
 
     /* Click the Slots from Doctor List page */
-    onSlotPress = async (doctorData, selectedSlotItem, availableSlots, selectedSlotIndex) => {
-        var selectedHospitalId = selectedSlotItem.location.hospital_id;
-       
-       // await this.setState({ singleDataWithDoctorDetails: doctorData });
-        if (availableSlots[0].location.hospital_id === selectedHospitalId) {
+    onPressContinueForPaymentReview = async (doctorData, selectedSlotItem) => {
+     
+                console.log('is it coming here?')
             var confirmSlotDetails = {
                 ...doctorData,
                 slotData: selectedSlotItem
             };
+            console.log(confirmSlotDetails);
             this.props.navigation.navigate('Payment Review', { resultconfirmSlotDetails: confirmSlotDetails })
-        } 
+        
     }
     /* Click the Hospital location and names from Book Appointment Popup page */
     onClickedHospitalName = async (hospitalId) => {
@@ -479,10 +478,14 @@ class doctorSearchList extends Component {
         await this.setState({ selectedSlotIndex: index, confirmSlotDetails: confirmSlotDetails });
     }
 
-    navigateToBookAppointmentPage(doctorAvailabilityData) {
-        const doctorDetails = doctorAvailabilityData;
-        const slotData = doctorAvailabilityData.slotData[this.state.selectedDate]
-        this.props.navigation.navigate('Book Appointment', { doctorDetails: doctorDetails, slotList: slotData })
+    navigateToBookAppointmentPage(doctorAvailabilityData, doctorIdHostpitalId) {
+        
+        let selectedDate = this.state.selectedDatesByDoctorIds[doctorIdHostpitalId] || this.state.currentDate;
+                                                   
+        const slotData = doctorAvailabilityData.slotData[selectedDate];
+        console.log(slotData);
+        console.log(selectedDate);
+        this.props.navigation.navigate('Book Appointment', { doctorDetails: doctorAvailabilityData, slotList: slotData })
     }
     
  
@@ -503,11 +506,10 @@ class doctorSearchList extends Component {
               <TouchableOpacity disabled={item.isSlotBooked} style={item.isSlotBooked ? styles.slotBookedBgColor : selectedSlotIndex === index ? styles.slotSelectedBgColor : styles.slotDefaultBgColor} onPress={()=> { 
                    let { selectedSlotByDoctorIds }  = this.state;
                    selectedSlotByDoctorIds[doctorIdHostpitalId] = index;
-                   this.setState({ selectedSlotByDoctorIds });
-                   console.log(' showed Fee: '+ showedFee + 'Item Fee: ' +item.fee);  
+                   this.setState({ selectedSlotByDoctorIds , selectedSlotItem: item });
+                 
                    if((item.fee != showedFee)) {
-                        this.setState( { showedFee : item.fee})
-                       console.log('Updated showed Fee: '+ showedFee);  
+                       this.setState( { showedFee : item.fee})
                        if(showedFee != null) {
                          Toast.show({
                             text: 'Your Appointment Fee got Changed',
@@ -690,8 +692,8 @@ class doctorSearchList extends Component {
                          <Card style={{ padding: 2, borderRadius: 10, borderBottomWidth: 2 }}>
                             <List style={{borderBottomWidth:0}}>
                               <ListItem>
-                                <Grid>
-                                  <Row>
+                                <Grid >
+                                  <Row onPress={()=> this.navigateToBookAppointmentPage(item, item.doctorIdHostpitalId) }>
                                     <Col style={{width:'5%'}}>
                                         <Thumbnail square source={ renderProfileImage(item) } style={{ height: 60, width: 60 }} />
                                      </Col>
@@ -740,9 +742,7 @@ class doctorSearchList extends Component {
                                                 <Text style={{ fontFamily: 'OpenSans',fontSize:12,fontWeight:'bold',marginLeft:2 }}> {this.reviewMap.has(item.doctor_id) ? this.reviewMap.get(item.doctor_id).average_rating : ' 0'}</Text>
                                                 </View>
                                                 
-
-
-                                                </Col>
+                                        </Col>
                                                 <Col style={{width:"25%",marginTop:20}}>
                                                 
                                                 <Text note style={{ fontFamily: 'OpenSans',fontSize:12,marginLeft:5 ,}}> Favourite</Text>
@@ -823,7 +823,9 @@ class doctorSearchList extends Component {
                                                <Col style={{width:'30%'}}>
                                                </Col>
                                                <Col style={{width:'30%'}}>
-                                                  <TouchableOpacity style={{backgroundColor:'green', borderColor: '#000', marginTop:10, height: 30, borderRadius: 20,justifyContent:'center' ,marginLeft:5,marginRight:5,marginTop:-5 }}>
+                                                  <TouchableOpacity 
+                                                     onPress={() => { console.log('......Pressing....'); this.onPressContinueForPaymentReview(item, this.state.selectedSlotItem) }}
+                                                     style={{backgroundColor:'green', borderColor: '#000', marginTop:10, height: 30, borderRadius: 20,justifyContent:'center' ,marginLeft:5,marginRight:5,marginTop:-5 }}>
                                                      <Text style={{color:'#fff',fontSize:12,fontWeight:'bold',fontFamily:'OpenSans'}}>Continue </Text>
                                                   </TouchableOpacity> 
                                                </Col>
