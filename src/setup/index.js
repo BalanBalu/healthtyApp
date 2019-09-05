@@ -14,19 +14,22 @@ export default class App extends Component {
       super(props);
   } 
   componentDidMount() {
-    setInterval(() => {
+    // setInterval(() => {
       this.getMarkedAsReadedNotification();
-    },2000)
+    // },2000)
    
   }
 
   getMarkedAsReadedNotification = async () => {
     try {
       let userId = await AsyncStorage.getItem('userId');
-  
+          console.log('index run.....')
       let result = await fetchUserMarkedAsReadedNotification(userId);
+      console.log(JSON.stringify(result))
       if (result.success) {
         this.setState({ data: result.data })
+        const data = store.getState().notification.notificationCount;
+        console.log(data)
       }
 
     }

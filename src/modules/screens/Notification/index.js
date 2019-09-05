@@ -13,6 +13,7 @@ import { hasLoggedIn } from "../../providers/auth/auth.actions";
 import { formatDate, dateDiff } from '../../../setup/helpers';
 import Spinner from "../../../components/Spinner";
 
+
 class Notification extends Component {
     constructor(props) {
 
@@ -102,7 +103,7 @@ class Notification extends Component {
 
     render() {
         const { data, isLoading } = this.state;
-
+        
 
         return (
             < Container style={styles.container} >
@@ -183,9 +184,9 @@ class Notification extends Component {
                                         }
                                         keyExtractor={(item, index) => index.toString()} />
                                 </List>
-
+                               
                             </ ScrollView>
-
+                           
 
                     }
                 </Content>

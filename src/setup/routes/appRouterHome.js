@@ -60,7 +60,7 @@ import MedicineSearchList from '../../modules/screens/Pharmacy/MedicineSearchLis
 import MedicineCheckout from '../../modules/screens/Pharmacy/MedicineCheckout/MedicineChekout';
 import { store } from '../store';
 import { fetchUserNotification, UpDateUserNotification } from '../../modules/providers/notification/notification.actions'
-// import { Badge } from '../../../src/modules/common'
+
 const data = store.getState().notification.notificationCount;
 console.log('app router')
 console.log(data)
@@ -294,8 +294,8 @@ const HomeStack = createStackNavigator({
             <TouchableOpacity onPress={() => { navigation.navigate('Notification') }} >
               <View>
                 <Icon name="notifications" style={{ color: '#fff', marginRight: 10, fontFamily: 'opensans-semibold' }}></Icon>
-                <Text style={{ position: 'absolute', backgroundColor: 'red', color: 'white', borderRadius: 20, marginLeft: 10, padding: 2, marginTop: -7 }}>{7}</Text>
-                {/* <Badge/> */}
+               
+                <AuthLoadingScreen/>
               </View>
             </TouchableOpacity>
           </Col>
