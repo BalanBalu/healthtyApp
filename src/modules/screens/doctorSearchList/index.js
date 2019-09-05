@@ -415,7 +415,7 @@ class doctorSearchList extends Component {
 
     /* Click the Slots from Doctor List page */
     onPressContinueForPaymentReview = async (doctorData, selectedSlotItem) => {
-     
+            doctorData.doctorName = doctorData.first_name + ' ' + doctorData.last_name;
                 console.log('is it coming here?')
             var confirmSlotDetails = {
                 ...doctorData,
@@ -481,10 +481,8 @@ class doctorSearchList extends Component {
     navigateToBookAppointmentPage(doctorAvailabilityData, doctorIdHostpitalId) {
         
         let selectedDate = this.state.selectedDatesByDoctorIds[doctorIdHostpitalId] || this.state.currentDate;
-                                                   
         const slotData = doctorAvailabilityData.slotData[selectedDate];
-        console.log(slotData);
-        console.log(selectedDate);
+        doctorAvailabilityData.doctorId = doctorAvailabilityData.doctor_id;
         this.props.navigation.navigate('Book Appointment', { doctorDetails: doctorAvailabilityData, slotList: slotData })
     }
     
