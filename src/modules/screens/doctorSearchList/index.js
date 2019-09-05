@@ -110,8 +110,9 @@ class doctorSearchList extends Component {
         let servicesMatchedList = [];
         let experienceMatchedList = [];
         let availabilityMatchedList = [];
-
-        this.state.doctorData.forEach((doctorElement) => {
+        const { bookappointment: { doctorData } } = this.props;
+        
+        doctorData.forEach((doctorElement) => {
             let doctorIdHostpitalId = doctorElement.doctorIdHostpitalId
 
             if (filterData.gender_preference) {
@@ -129,13 +130,12 @@ class doctorSearchList extends Component {
                 })
             }
 
-            if (filterData.experience && doctorElement.experience) {
-                let updatedDate = moment(doctorElement.experience.updated_date);
-                let doctorExperienceMonth = dateDiff(updatedDate, moment(new Date()), 'months');
+            if (filterData.experience && doctorElement.calulatedExperience) {
+                let doctorExperienceMonths = (doctorElement.calulatedExperience.year || 0 * 12) +  doctorElement.calulatedExperience.month || 0
                 let filterValueExperienceInMonth = filterData.experience * 12; // value is returning as year to convert to months multiplies by 12 
-                 if (filterValueExperienceInMonth >= doctorExperienceMonth) {
+                 if (filterValueExperienceInMonth >= doctorExperienceMonths) {
                      experienceMatchedList.push(doctorIdHostpitalId);
-                  }
+                 }
                 
             }
             if (filterData.category) {
@@ -150,28 +150,27 @@ class doctorSearchList extends Component {
             if (filterData.service) {
                 let specialistArray = doctorElement.specialist ? doctorElement.specialist : [];
                 specialistArray.forEach((docSpecialist) => {
-                    if (docSpecialist.service.includes(filterData.service)) {
+                    if (filterData.service.includes(docSpecialist.service)) {
                         servicesMatchedList.push(doctorIdHostpitalId)
                     }
                 })
             }
+            if (availtyDateCount !== 0) {
+              for (i = 0; i < availtyDateCount; i++) {
+                let availabilityDate = formatDate(addTimeUnit(this.state.currentDate, i, 'days'), "YYYY-MM-DD");
+                if (doctorElement.slotData[availabilityDate]) {
+                    availabilityMatchedList.push(doctorElement.doctorIdHostpitalId)
+                }
+              }
+            }
         });
-
+        console.log('Services Matched list' + servicesMatchedList)
         let selectedFiltesArray = [];
 
         if (availtyDateCount !== 0) {
-            this.state.doctorDetails.forEach((slotDetailElement) => {
-                for (i = 0; i < availtyDateCount; i++) {
-                    let availabilityDate = formatDate(addTimeUnit(this.state.selectedDate, i, 'days'), "YYYY-MM-DD");
-                    if (slotDetailElement.slotData[availabilityDate]) {
-                        availabilityMatchedList.push(slotDetailElement.doctorIdHostpitalId)
-                    }
-                }
-            });
             selectedFiltesArray.push(availabilityMatchedList);
-
         }
-        console.log("selectedFiltesArray" + JSON.stringify(selectedFiltesArray))
+      
 
         if (filterData) {
             if (filterData.gender_preference) {
@@ -191,7 +190,7 @@ class doctorSearchList extends Component {
             }
         }
 /* Finally Rendered the Doctor Lists  */
-
+        console.log("selectedFiltesArray" + JSON.stringify(selectedFiltesArray))
         if (filterData || availtyDateCount !== 0 ) {
             console.log('Came Filter Availability and DocData , Filter only DocDatas  ')
             let filteredDocListArray = intersection(selectedFiltesArray);
@@ -615,6 +614,9 @@ class doctorSearchList extends Component {
             uniqueFilteredDocArray, searchedResultData, categories, singleDataWithDoctorDetails, singleHospitalDataSlots, reviewData, doctorList /* doctorDetails */} = this.state;
         return (
             <Container style={styles.container}>
+                <NavigationEvents
+                    onWillFocus={payload => { this.componentNavigationMount() }}
+                />
               <Content>
               <View>
                 <Card style={{ borderRadius: 7,paddingTop:5,paddingBottom:5 }}>
