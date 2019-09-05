@@ -7,9 +7,6 @@ import { StyleSheet, Image, AsyncStorage, TextInput, FlatList, TouchableOpacity 
 import { Loader } from '../../../../components/ContentLoader';
 import {getMyOrders} from '../../../providers/pharmacy/pharmacy.action'
 import { formatDate } from '../../../../setup/helpers';
-import { NavigationEvents } from 'react-navigation';
-
-
 
 class OrderDetails extends Component {
     constructor(props) {
@@ -60,14 +57,9 @@ class OrderDetails extends Component {
             <Container style={styles.container}>
                 {isLoading == true ? <Spinner color='blue' /> :
                     <Content style={styles.bodyContent}>
-                        <NavigationEvents
-              onWillFocus={payload => { if(payload.action.type=='Navigation/BACK'){this.getMedicineOrder()} }}
-            />
-                    <Grid style={styles.curvedGrid}>
+                   <Grid style={styles.curvedGrid}>
                     </Grid>
-
                         <Card transparent >
-
                         <Grid style={{ marginTop: -100, height: 100 }}>
                                 <Row style={{ justifyContent: 'center', width: '100%', marginTop: 30 }}>
                                     <Text style={{ fontFamily: 'OpenSans', fontWeight: 'bold', fontSize: 22, padding: 5,color:'#fff' }}>Your Order</Text>

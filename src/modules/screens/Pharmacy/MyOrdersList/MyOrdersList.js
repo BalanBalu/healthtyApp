@@ -6,7 +6,6 @@ import { StyleSheet, Image, AsyncStorage, TextInput, FlatList, TouchableOpacity 
 import { Loader } from '../../../../components/ContentLoader';
 import { getMedicineOrderList } from '../../../providers/pharmacy/pharmacy.action';
 import {formatDate} from '../../../../setup/helpers';
-import { NavigationEvents } from 'react-navigation';
 
 class MyOrdersList extends Component {
     constructor(props) {
@@ -111,10 +110,7 @@ class MyOrdersList extends Component {
               return (
             <Container style={styles.container}>
                 <Content style={styles.bodyContent}>
-                <NavigationEvents 
-              onWillFocus={payload => { if(payload.action.type=='Navigation/BACK'){this.medicineOrderList()} }}
-            />
-                {this.state.isLoading ? <Spinner color='blue' /> :
+                   {this.state.isLoading ? <Spinner color='blue' /> :
                         <Card>
                             {this.state.orderList.length !== 0 ? this.renderOrders() : this.renderNoOrders()}
                         </Card>}
