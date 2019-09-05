@@ -71,15 +71,11 @@ export const fetchUserMarkedAsReadedNotification = async (userId) => {
 
         } else {
             let count=respData.data.length
-         notificationId= respData.data.map(element => {
-
-               return element._id
-
-            }).join(',')
+       
             store.dispatch({
                 type: NOTIFICATION_RESPONSE,
                 message: respData.message,
-                notificationIds: notificationId,
+               
                 notificationCount: count
             })
 

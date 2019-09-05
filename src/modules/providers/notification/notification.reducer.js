@@ -8,7 +8,7 @@ export const notificationState = {
     details: null,
     success: false,
     notificationCount: null,
-    notificationIds:[],
+    
     
 }
 // State
@@ -39,7 +39,6 @@ export default (state = notificationState, action) => {
                 isLoading: false,
                 message: action.message,
                 notification: action.details,
-                notificationId: action.notificationIds,
                 notificationCount: action.notificationCount
 
             }

@@ -61,9 +61,9 @@ import MedicineCheckout from '../../modules/screens/Pharmacy/MedicineCheckout/Me
 import { store } from '../store';
 import { fetchUserNotification, UpDateUserNotification } from '../../modules/providers/notification/notification.actions'
 
-const data = store.getState().notification.notificationCount;
-console.log('app router')
-console.log(data)
+// const data = store.getState().notification.notificationCount;
+
+// console.log(data)
 const routes = {
   Home: {
     path: 'Home',

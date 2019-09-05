@@ -14,7 +14,7 @@ export default class App extends Component {
       super(props);
   } 
   componentDidMount() {
-    // setInterval(() => {
+    //  setInterval(() => {
       this.getMarkedAsReadedNotification();
     // },2000)
    
@@ -27,9 +27,9 @@ export default class App extends Component {
       let result = await fetchUserMarkedAsReadedNotification(userId);
       console.log(JSON.stringify(result))
       if (result.success) {
-        this.setState({ data: result.data })
-        const data = store.getState().notification.notificationCount;
-        console.log(data)
+       // this.setState({ data: result.data })
+        console.log('success')
+       
       }
 
     }
@@ -39,7 +39,11 @@ export default class App extends Component {
   
   }
   render() {
+    const data = store.getState().notification.notificationCount;
+    console.log(data)
+   
       return (
+       
       
         <Provider store={store} key="provider">
         <Root>   

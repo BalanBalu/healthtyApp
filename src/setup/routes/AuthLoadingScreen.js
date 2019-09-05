@@ -1,6 +1,6 @@
 import React from 'react';
 import {
-  AsyncStorage, Text
+  AsyncStorage, Text, View
 } from 'react-native';
 import { setUserLocally } from '../../modules/providers/auth/auth.actions';
 import { store } from '../store';
@@ -27,7 +27,11 @@ class AuthLoadingScreen extends React.Component {
     // screen will be unmounted and thrown away.
    
     this.props.navigation.navigate(token ? 'App' : 'App');
+
   };
+ 
+
+ 
   render() {
 
 
@@ -35,10 +39,14 @@ class AuthLoadingScreen extends React.Component {
     console.log(data)
     console.log('.............................................')
     // return null;
+   
     return (
-      < Text style={{ position: 'absolute', backgroundColor: 'red', color: 'white', borderRadius: 20, marginLeft: 10, padding: 2, marginTop: -7 }
-      }> {data}</Text >
+    <View>
+      {  data != null ?
+        < Text style={{ position: 'absolute', backgroundColor: 'red', color: 'white', borderRadius: 20, marginLeft: 10, padding: 2, marginTop: -7 }
+          }> {data}</Text > : null}</View>
     )
   }
 }
+ 
 export default AuthLoadingScreen;

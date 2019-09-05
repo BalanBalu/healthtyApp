@@ -1,7 +1,7 @@
 
 import React, { Component } from 'react';
-import { StyleSheet, AsyncStorage, FlatList, TouchableOpacity } from 'react-native';
-import { ScrollView } from 'react-native-gesture-handler';
+import { StyleSheet, AsyncStorage, FlatList, TouchableOpacity, ScrollView } from 'react-native';
+// import { ScrollView } from 'react-native-gesture-handler';
 import { NavigationEvents } from 'react-navigation';
 import {
     Container, Header, Title, Left, Body, Card, View, Text, Content, Col, Row, Icon, ListItem, List, Grid
@@ -34,7 +34,7 @@ class Notification extends Component {
             this.props.navigation.navigate("login");
             return;
         }
-        await this.getUserNotification();
+         await this.getUserNotification();
     }
 
     backNavigation = async (navigationData) => {
