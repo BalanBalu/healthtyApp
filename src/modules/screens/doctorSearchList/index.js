@@ -1,13 +1,11 @@
 import React, { Component } from 'react';
 import { Container, Content, Text, Toast, Button, Card, Item, List, ListItem, Left, Right, Thumbnail, Body, Icon, DatePicker } from 'native-base';
 import { login } from '../../providers/auth/auth.actions';
-import { messageShow, messageHide } from '../../providers/common/common.action';
 import { Col, Row, Grid } from 'react-native-easy-grid';
 import { connect } from 'react-redux'
-import { StyleSheet, Image, TouchableOpacity, View, FlatList, AsyncStorage, Slider } from 'react-native';
+import { StyleSheet, TouchableOpacity, View, FlatList, AsyncStorage, Slider } from 'react-native';
 import StarRating from 'react-native-star-rating';
-import { ScrollView } from 'react-native-gesture-handler';
-import Modal from "react-native-modal";
+
 import { insertDoctorsWishList, searchDoctorList, fetchAvailabilitySlots, getMultipleDoctorDetails, getDoctorsReviewsCount, getPatientWishList, SET_BOOK_APP_SLOT_DATA, SET_BOOK_APP_DOCTOR_DATA, SET_SELECTED_DATE } from '../../providers/bookappointment/bookappointment.action';
 import { formatDate, addMoment, addTimeUnit, getMoment,addDate,dateDiff, findArrayObj, intersection } from '../../../setup/helpers';
 import { Loader } from '../../../components/ContentLoader';
@@ -17,7 +15,6 @@ import Spinner from '../../../components/Spinner';
 import moment from 'moment';
 
 import { store } from '../../../setup/store';
-import Swiper from 'react-native-swiper';
 
 let conditionFromFilterPage;
 const NO_OF_SLOTS_SHOULD_SHOW_PER_SLIDE = 3;
