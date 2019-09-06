@@ -106,7 +106,7 @@ export default class PaymentReview extends Component {
                             </Row>
                         </Grid>
 
-                        <Grid style={{ borderBottomWidth: 0.3, color: '#f2f2f2', padding: 10, marginLeft: 10 }}>
+                        <Grid style={{ borderBottomWidth: 0, color: '#f2f2f2', padding: 10, marginLeft: 10 }}>
                             <Row>
                                 <Col style={{ width: '90%' }}>
                                     <Text note style={styles.customizedText}>Doctor</Text>
@@ -117,7 +117,7 @@ export default class PaymentReview extends Component {
                         </Grid>
 
                         {bookSlotDetails.slotData ?
-                            <RenderHospitalAddress gridStyle={{ padding: 10, marginLeft: 10, width: '100%' }}
+                            <RenderHospitalAddress gridStyle={{  marginLeft: 20, width: '100%'}}
                                 textStyle={styles.customizedText}
                                 hospotalNameTextStyle={{ fontFamily: 'OpenSans-SemiBold' }}
                                 hospitalAddress={bookSlotDetails.slotData && bookSlotDetails.slotData.location}
@@ -139,11 +139,11 @@ export default class PaymentReview extends Component {
                             </Row>
                         </Grid>
                         <Button block success style={{ borderRadius: 6, margin: 6 }} onPress={() => this.processToPayLater()}>
-                            <Text uppercase={false}>payLater</Text>
+                            <Text style={{fontSize:15,fontFamily:'OpenSans',fontWeight:"bold"}} uppercase={false}>Pay Later</Text>
                         </Button>
                         <Button block success style={{ padding: 10, borderRadius: 6, margin: 6, marginBottom: 20 }} onPress={() =>
                             this.confirmProceedPayment()}>
-                            <Text uppercase={false} >Pay Now</Text>
+                            <Text style={{fontSize:15,fontFamily:'OpenSans',fontWeight:"bold"}} uppercase={false} >Pay Now</Text>
                         </Button>
                     </ScrollView>
                 </Content>
