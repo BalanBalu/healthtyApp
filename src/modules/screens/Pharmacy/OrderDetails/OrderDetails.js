@@ -5,7 +5,6 @@ import { Container, Content, Text, Title, Header, Form, Textarea,
 import { Col, Row, Grid } from 'react-native-easy-grid';
 import { StyleSheet, Image, AsyncStorage, TextInput, FlatList, TouchableOpacity } from 'react-native';
 import { Loader } from '../../../../components/ContentLoader';
-import {getMyOrders} from '../../../providers/pharmacy/pharmacy.action'
 import { formatDate } from '../../../../setup/helpers';
 
 class OrderDetails extends Component {
@@ -17,31 +16,12 @@ class OrderDetails extends Component {
             isLoading:true,
         }
     }
-    componentDidMount(){
-      this.getMedicineOrder();   
-    }
+    async componentDidMount(){
+        const { navigation } = this.props;
+   await  this.setState({myOrderList: navigation.getParam('orderDetails'), isLoading:false})
+        }
    
-    async getMedicineOrder(){    
-        try {
-            this.setState({isLoading:true});
-          const { navigation } = this.props;
-         const orderId = navigation.getParam('orderId');
-         let response=await getMyOrders(orderId);
-        console.log('result :' + JSON.stringify(response));
-        if(response.success)
-        {
-         await this.setState({myOrderList:response.data[0]});
-        }   
-        this.setState({isLoading:false});
-             }
-        catch (e) {
-            console.log(e);
-        }   
-        finally{
-            this.setState({isLoading:false});
-        }            
-    }
-
+   
     noOrders() {
         return (
             <Item style={{ borderBottomWidth: 0, justifyContent: 'center', alignItems: 'center' }}>
@@ -99,7 +79,7 @@ class OrderDetails extends Component {
                                                         <View style={{ marginLeft: 20, flex: 1, flexDirection: 'row', marginTop: 25 }}>
 
                                                             <Text style={{ fontSize: 15, fontWeight: 'bold', fontFamily: 'OpenSans', color: '#3966c6' }}>Pharmacy :</Text>
-                                                            <Text style={{ fontSize: 15, fontFamily: 'OpenSans', marginLeft: 10 }}>{myOrderList.pharmacyInfo.name}</Text>
+                                                            <Text style={{ fontSize: 15, fontFamily: 'OpenSans', marginLeft: 10 }}>{item.pharmacyInfo.name}</Text>
 
                                                         </View>
                                                         <View style={{ marginLeft: 20, flex: 1, flexDirection: 'row', marginTop: 5 }}>

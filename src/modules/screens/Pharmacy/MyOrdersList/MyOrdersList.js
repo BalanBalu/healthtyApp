@@ -26,11 +26,9 @@ class MyOrdersList extends Component {
             this.setState({isLoading:true});
            let userId = await AsyncStorage.getItem('userId');
            let result = await getMedicineOrderList(userId);
-           console.log('result :' + JSON.stringify(result));
            if(result.success){
-            this.setState({  orderList: result.data });               
+            this.setState({  orderList: [result.data] });               
            }
-           console.log('orderList' + JSON.stringify(this.state.orderList));
             }
         catch (e) {
             console.log(e);
@@ -75,7 +73,7 @@ class MyOrdersList extends Component {
     extraData={this.state}
     keyExtractor={(item, index) => index.toString()}
     renderItem={({ item, index }) =>
-    <TouchableOpacity testID="orderDetailsNavigation" onPress={()=>this.props.navigation.navigate('OrderDetails',{ orderId : item._id})}>
+    <TouchableOpacity testID="orderDetailsNavigation" onPress={()=>this.props.navigation.navigate('OrderDetails',{ orderDetails : item})}>
     <Card style={{ marginTop: 10, padding: 5, height: 155, borderRadius: 5 }}>
     <Grid>
       <Row>
