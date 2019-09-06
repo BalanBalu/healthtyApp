@@ -25,7 +25,7 @@ class AppointmentDetails extends Component {
       userId: '',
       reviewData: {},
       doctorData: {},
-      isLoading: false,
+      isLoading: true,
       yearOfExperience: '',
       appointmentStatus: '',
       statusUpdateReason: ' ',
@@ -48,28 +48,27 @@ class AppointmentDetails extends Component {
       const appointmentId = navigation.getParam('appointmentId');
 
       await this.setState({ appointmentId: appointmentId });
-
+      console.log('if run')
       await this.appointmentDetailsGetById()
     }
     else {
 
       let doctorId = appointmentData.doctor_id;
       let appointmentId = appointmentData._id;
-      console.log('data')
-      console.log(appointmentData)
+     
       await this.setState({
         doctorId: doctorId, appointmentId: appointmentId,
-        userId: userId, data: appointmentData, 
+        userId: userId, data: appointmentData,
       })
 
       await new Promise.all([
         this.getDoctorDetails(),
         this.getUserReviews()
       ])
-
+      console.log('else run')
     }
 
-    await this.setState({ isLoading: true })
+    await this.setState({ isLoading: false })
   }
 
   /* Get Doctor Details */
@@ -150,9 +149,12 @@ class AppointmentDetails extends Component {
     this.getUserReviews();
     if (result.success) {
 
-      await this.setState({ doctorId: result.data[0].doctor_id, data: result.data[0] })
-      console.log(this.state.data)
-      this.getDoctorDetails()
+      await new Promise.all([
+      this.setState({ doctorId: result.data[0].doctor_id, data: result.data[0] }),
+     
+        this.getDoctorDetails()
+      ])
+      
 
     }
 
@@ -177,7 +179,7 @@ class AppointmentDetails extends Component {
 
   updateAppointmentStatus = async (data, updatedStatus) => {
     try {
-      this.setState({ isLoading: false });
+      this.setState({ isLoading: true });
       let requestData = {
         doctorId: data.doctor_id,
         userId: data.user_id,
@@ -190,7 +192,7 @@ class AppointmentDetails extends Component {
       debugger
       let userId = await AsyncStorage.getItem('userId');
       let result = await appointmentStatusUpdate(this.state.doctorId, this.state.appointmentId, requestData);
-      this.setState({ isLoading: true })
+      this.setState({ isLoading: false })
       let appointmentStatus = result.appointmentData.appointment_status;
 
       if (result.success) {
@@ -229,7 +231,7 @@ class AppointmentDetails extends Component {
 
       <Container style={styles.container}>
 
-        {isLoading == false ? <Loader style={'appointment'} /> :
+        {isLoading == true ? <Loader style={'appointment'} /> :
 
           <Content style={styles.bodyContent}>
             <NavigationEvents
@@ -243,7 +245,7 @@ class AppointmentDetails extends Component {
               <List>
                 <ListItem thumbnail noBorder>
                   <Left>
-                    
+
                     <Thumbnail square source={renderProfileImage(doctorData)} style={{ height: 86, width: 86 }} />
                   </Left>
                   <Body>
@@ -258,7 +260,7 @@ class AppointmentDetails extends Component {
 
                 <Grid>
                   <Col style={{ backgroundColor: 'transparent', borderRightWidth: 0.5, borderRightColor: 'gray', justifyContent: 'center' }}>
-                    <Text style={styles.topValue}> { data.fee!=undefined?data.fee:'N/A' } </Text>
+                    <Text style={styles.topValue}> {data.fee != undefined ? data.fee : 'N/A'} </Text>
                     <Text note style={styles.bottomValue}> Hourly Rate </Text>
                   </Col>
                   <Col style={{ backgroundColor: 'transparent', borderRightWidth: 0.5, borderRightColor: 'gray', justifyContent: 'center' }}>
