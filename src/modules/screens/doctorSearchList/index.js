@@ -30,7 +30,7 @@ class doctorSearchList extends Component {
         conditionFromFilterPage = null,  // for check FilterPage Values
 
             this.state = {
-                selectedSlotItem: {},
+                selectedSlotItemByDoctorIds: {},
               
                 doctorDetails: [],
                 selectedDate: formatDate(new Date(), 'YYYY-MM-DD'),
@@ -204,23 +204,29 @@ class doctorSearchList extends Component {
     /* Insert Doctors Favourite Lists  */
     addToWishList = async (doctorId) => {
         try {
+           const { patientWishListsDoctorIds } = this.state;
+           console.log(patientWishListsDoctorIds);
           let requestData = {
-             active: true
+             active: !patientWishListsDoctorIds.includes(doctorId)
           };
           let userId = await AsyncStorage.getItem('userId');
           if(userId) {
             let result = await insertDoctorsWishList(userId, doctorId, requestData);
             //   console.log('result'+JSON.stringify(result));
-
+            
             if (result.success) {
                 Toast.show({
                     text: result.message,
                     type: "success",
                     duration: 3000,
                 })
-                let wishLists = this.state.patientWishListsDoctorIds;
-                wishLists.push(doctorId)
-                this.setState({ patientWishListsDoctorIds: wishLists });
+                if(requestData.active) {
+                   patientWishListsDoctorIds.push(doctorId)
+                } else {
+                    let indexOfDoctorIdOnPatientWishList = patientWishListsDoctorIds.indexOf(doctorId);
+                    patientWishListsDoctorIds.splice(indexOfDoctorIdOnPatientWishList, 1);
+                }
+                this.setState({ patientWishListsDoctorIds: patientWishListsDoctorIds });
             }
          }
       }
@@ -392,10 +398,11 @@ class doctorSearchList extends Component {
     /* Change the Date from Date Picker */
     onDateChanged(selectedDate, doctorIdHostpitalId) {
         
-        let { selectedDatesByDoctorIds }  = this.state;
-        
+        let { selectedDatesByDoctorIds, selectedSlotByDoctorIds, selectedSlotItemByDoctorIds }  = this.state;
+        selectedSlotByDoctorIds[doctorIdHostpitalId] = -1;
+        selectedSlotItemByDoctorIds[doctorIdHostpitalId] = null;
         selectedDatesByDoctorIds[doctorIdHostpitalId] = selectedDate;
-        this.setState({ selectedDatesByDoctorIds });
+        this.setState({ selectedDatesByDoctorIds, selectedSlotItemByDoctorIds });
         if (this.processedDoctorAvailabilityDates.includes(selectedDate) === false) {
            let endDateMoment = addMoment(getMoment(selectedDate), 7, 'days');
            this.getAvailabilitySlots(this.state.getSearchedDoctorIds, getMoment(selectedDate), endDateMoment);
@@ -404,7 +411,7 @@ class doctorSearchList extends Component {
     }
 
     /* Click the Slots from Doctor List page */
-    onPressContinueForPaymentReview = async (doctorData, selectedSlotItem, doctorIdHostpitalId) => {
+    onPressContinueForPaymentReview = async (doctorData, selectedSlotItemByDoctor, doctorIdHostpitalId) => {
             let { selectedSlotByDoctorIds }  = this.state;
             if(selectedSlotByDoctorIds[doctorIdHostpitalId] === undefined) {
                 Toast.show({
@@ -420,7 +427,7 @@ class doctorSearchList extends Component {
                 console.log('is it coming here?')
             var confirmSlotDetails = {
                 ...doctorData,
-                slotData: selectedSlotItem
+                slotData: selectedSlotItemByDoctor
             };
             console.log(confirmSlotDetails);
             this.props.navigation.navigate('Payment Review', { resultconfirmSlotDetails: confirmSlotDetails })
@@ -428,12 +435,13 @@ class doctorSearchList extends Component {
     }
    async onSlotItemPress(doctorIdHostpitalId, item, index) {
        
-        let { selectedSlotByDoctorIds }  = this.state;
+        let { selectedSlotByDoctorIds, selectedSlotItemByDoctorIds }  = this.state;
         selectedSlotByDoctorIds[doctorIdHostpitalId] = index;
+        selectedSlotItemByDoctorIds[doctorIdHostpitalId] = item
        
-       await this.setState({ selectedSlotByDoctorIds : selectedSlotByDoctorIds, selectedSlotItem: item });
-       console.log( this.state.selectedSlotByDoctorIds);
-       console.log( selectedSlotIndex + '. and index :' +  index) ;
+        this.setState({ selectedSlotByDoctorIds : selectedSlotByDoctorIds, selectedSlotItemByDoctorIds });
+       console.log( item);
+      // console.log( selectedSlotIndex + '. and index :' +  index) ;
        /* if((item.fee != showedFee)) {
             this.setState( { showedFee : item.fee})
             if(showedFee != null) {
@@ -627,7 +635,7 @@ class doctorSearchList extends Component {
     render() {
         const { bookappointment: { slotData, selectedDate, doctorData } } = this.props;
         const { navigation } = this.props;
-        const { selectedDatesByDoctorIds, expandedDoctorIdHospitalsToShowSlotsData, patientWishListsDoctorIds, isLoggedIn, selectedSlotItem, 
+        const { selectedDatesByDoctorIds, expandedDoctorIdHospitalsToShowSlotsData, patientWishListsDoctorIds, isLoggedIn, selectedSlotItemByDoctorIds, 
              isLoading, isAvailabilityLoading, processedDoctorAvailabilityDates, 
             uniqueFilteredDocArray } = this.state;
         return (
@@ -767,7 +775,8 @@ class doctorSearchList extends Component {
                                                    let selectedDate = selectedDatesByDoctorIds[item.doctorIdHostpitalId] || this.state.currentDate;
                                                    return (
                                                       <Col style={{width:'30%',}} key={date}>
-                                                       <TouchableOpacity style={[styles.availabilityBG, selectedDate === date ? { backgroundColor:'#775DA3' } : { backgroundColor:'#ced6e0' } ]} onPress={() => this.onDateChanged( date, item.doctorIdHostpitalId)}>
+                                                       <TouchableOpacity style={[styles.availabilityBG, selectedDate === date ? { backgroundColor:'#775DA3' } : { backgroundColor:'#ced6e0' } ]} 
+                                                            onPress={() => this.onDateChanged( date, item.doctorIdHostpitalId)}>
                                                           <Text style={[{textAlign:'center',fontSize:12,fontFamily:'OpenSans'}, selectedDate === date ? { color:'#fff' } : { color:'#000' } ] }>{formatDate(moment(date), 'ddd, DD MMM')}</Text>
                                                           <Text style={[{textAlign:'center',fontSize:10,fontFamily:'OpenSans'}, selectedDate === date ? { color:'#fff' } : { color:'#000' } ] }>{ availableslotData.length === 0 ? 'No Slots Available' : availableslotData.length + ' Slots Available' }</Text>
                                                        
@@ -791,13 +800,13 @@ class doctorSearchList extends Component {
                                             </Row>
                                             <Row style={{marginTop:5}}>
                                                <Col style={{width:'40%'}}>
-                                                 <Text style={{color:'#000',fontSize:12,fontFamily:'OpenSans',marginLeft:-16}}>{ formatDate(selectedSlotItem.slotStartDateAndTime, 'ddd DD MMM, h:mm a')}</Text>
+                                                 <Text style={{color:'#000',fontSize:12,fontFamily:'OpenSans',marginLeft:-16}}>{ selectedSlotItemByDoctorIds[item.doctorIdHostpitalId] ? formatDate(selectedSlotItemByDoctorIds[item.doctorIdHostpitalId].slotStartDateAndTime, 'ddd DD MMM, h:mm a') : null }</Text>
                                                </Col>
                                                <Col style={{width:'30%'}}>
                                                </Col>
                                                <Col style={{width:'30%'}}>
                                                   <TouchableOpacity                                                                                                                   
-                                                     onPress={() => { console.log('......Pressing....'); this.onPressContinueForPaymentReview(item, this.state.selectedSlotItem, item.doctorIdHostpitalId) }}
+                                                     onPress={() => { console.log('......Pressing....'); this.onPressContinueForPaymentReview(item, item.doctorIdHostpitalId[item.doctorIdHostpitalId], item.doctorIdHostpitalId) }}
                                                      style={{backgroundColor:'green', borderColor: '#000', marginTop:10, height: 30, borderRadius: 20,justifyContent:'center' ,marginLeft:5,marginRight:5,marginTop:-5 }}>
                                                      <Text style={{color:'#fff',fontSize:12,fontWeight:'bold',fontFamily:'OpenSans'}}>Continue </Text>
                                                   </TouchableOpacity> 
