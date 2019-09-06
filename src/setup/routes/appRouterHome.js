@@ -335,6 +335,18 @@ const HomeStack = createStackNavigator({
       title: 'Appointment Info'
     }
   },
+  "CancelAppointment": {
+    screen: CancelAppointment,
+    navigationOptions: {
+      title: 'Cancel Appointment'
+    }
+  },
+  "InsertReview": {
+    screen: InsertReview,
+    navigationOptions: {
+      title: 'Rate and Review'
+    }
+  },
 
 },
   {

@@ -151,7 +151,8 @@ class AppointmentDetails extends Component {
     if (result.success) {
 
       await this.setState({ doctorId: result.data[0].doctor_id, data: result.data[0] })
-      console.log(this.state.data)
+      console.log('appointmentDetails')
+      console.log(JSON.stringify(this.state.data))
       this.getDoctorDetails()
 
     }
@@ -165,11 +166,25 @@ class AppointmentDetails extends Component {
 
   navigateAddReview() {
     this.state.data.prefix = this.state.doctorData.prefix;
+    const { navigation } = this.props;
 
 
-
+    const fromNotification = navigation.getParam('fromNotification');
+    console.log('fromNotification is.........')
+    console.log(fromNotification)
+    if (fromNotification == true || fromNotification != undefined) {
+      let doctorInfo = {
+        first_name: this.state.doctorData.first_name,
+        last_name: this.state.doctorData.last_name
+      }
+      this.state.data.doctorInfo = doctorInfo;
+    }
 
     this.props.navigation.push('InsertReview', { appointmentDetail: this.state.data })
+
+
+
+
 
   }
 
@@ -211,6 +226,17 @@ class AppointmentDetails extends Component {
 
   navigateCancelAppoointment() {
     this.state.data.prefix = this.state.doctorData.prefix;
+    const { navigation } = this.props;
+    const fromNotification = navigation.getParam('fromNotification');
+    console.log('fromNotification is.........')
+    console.log(fromNotification)
+    if (fromNotification == true || fromNotification != undefined) {
+      let doctorInfo = {
+        first_name: this.state.doctorData.first_name,
+        last_name: this.state.doctorData.last_name
+      }
+      this.state.data.doctorInfo = doctorInfo;
+    }
     this.props.navigation.navigate('CancelAppointment', { appointmentDetail: this.state.data })
 
   }
@@ -243,7 +269,7 @@ class AppointmentDetails extends Component {
               <List>
                 <ListItem thumbnail noBorder>
                   <Left>
-                    
+
                     <Thumbnail square source={renderProfileImage(doctorData)} style={{ height: 86, width: 86 }} />
                   </Left>
                   <Body>
@@ -258,7 +284,7 @@ class AppointmentDetails extends Component {
 
                 <Grid>
                   <Col style={{ backgroundColor: 'transparent', borderRightWidth: 0.5, borderRightColor: 'gray', justifyContent: 'center' }}>
-                    <Text style={styles.topValue}> { data.fee!=undefined?data.fee:'N/A' } </Text>
+                    <Text style={styles.topValue}> {data.fee != undefined ? data.fee : 'N/A'} </Text>
                     <Text note style={styles.bottomValue}> Hourly Rate </Text>
                   </Col>
                   <Col style={{ backgroundColor: 'transparent', borderRightWidth: 0.5, borderRightColor: 'gray', justifyContent: 'center' }}>

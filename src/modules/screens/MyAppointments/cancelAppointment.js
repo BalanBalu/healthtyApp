@@ -57,7 +57,7 @@ class CancelAppointment extends Component {
         let userId = await AsyncStorage.getItem('userId');
         let result = await appointmentStatusUpdate(this.state.doctorId, this.state.appointmentId, requestData);
         if (result.success) {
-           Toast.show({
+          Toast.show({
             text: 'Your appointment has been cancelled',
             duration: 3000
           })
@@ -67,7 +67,7 @@ class CancelAppointment extends Component {
           this.setState({ data: temp });
           this.props.navigation.navigate('AppointmentInfo', { data: this.state.data });
         }
-        else{
+        else {
           Toast.show({
             text: 'Kindly add a reason for Appointment Cancellation',
             type: "danger",
@@ -82,15 +82,15 @@ class CancelAppointment extends Component {
           duration: 3000
         })
       }
-      
-     
+
+
     }
     catch (e) {
       console.log(e);
     }
     finally {
       this.setState({ isLoading: false });
-  }
+    }
   }
 
   render() {
@@ -102,7 +102,7 @@ class CancelAppointment extends Component {
         <Content>
           {isLoading ? <Loader style={'list'} /> :
 
-            <Card style={{ borderRadius: 5, padding: 5,height:'200%' }}>
+            <Card style={{ borderRadius: 5, padding: 5, height: '200%' }}>
               <Card>
                 <CardItem style={styles.text}>
                   <Body>
@@ -115,7 +115,7 @@ class CancelAppointment extends Component {
                       <Text style={{ fontWeight: "bold" }}>
                         {formatDate(data.appointment_starttime, 'MMMM-DD-YYYY') + "   " +
                           formatDate(data.appointment_starttime, 'hh:mm A')}
-                      </Text> with {(data && data.prefix) + (data && data.doctorInfo.first_name) + " " + (data && data.doctorInfo.last_name)}</Text>
+                      </Text> with {(data && data.prefix || 'dr.') + (data && data.doctorInfo.first_name) + " " + (data && data.doctorInfo.last_name)}</Text>
                     <Text style={{ marginTop: 20, }}>What is the reason for Cancellation?</Text>
 
 
