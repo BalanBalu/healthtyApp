@@ -106,29 +106,30 @@ class CancelAppointment extends Component {
               <Card>
                 <CardItem style={styles.text}>
                   <Body>
-                    <Text > We understand life can get in the way! cancelling or missing your appointment too many times will result in your account being locked!</Text>
+                    <Text style={{fontFamily:'OpenSans',fontSize:15}}> We understand life can get in the way! cancelling or missing your appointment too many times will result in your account being locked!</Text>
                   </Body>
                 </CardItem>
                 <CardItem>
                   <Body>
-                    <Text style={{ marginTop: 2, }}>
-                      <Text style={{ fontWeight: "bold" }}>
+                    <Text style={{ marginTop: 2,fontFamily:'OpenSans',fontSize:15 }}>
+                      <Text style={{ fontWeight: "bold" ,fontFamily:'OpenSans',fontSize:15}}>
                         {formatDate(data.appointment_starttime, 'MMMM-DD-YYYY') + "   " +
                           formatDate(data.appointment_starttime, 'hh:mm A')}
+                     
                       </Text> with {(data && data.prefix || 'dr.') + (data && data.doctorInfo.first_name) + " " + (data && data.doctorInfo.last_name)}</Text>
-                    <Text style={{ marginTop: 20, }}>What is the reason for Cancellation?</Text>
+                    <Text style={{ marginTop: 20,fontFamily:'OpenSans',fontSize:15 }}>What is the reason for Cancellation?</Text>
 
 
                     <ListItem onPress={() => this.toggleRadio(0, "I am feeling better")}>
                       <Radio borderColor='black' selected={this.state.radioStatus[0]} onPress={() => this.toggleRadio(0, "I am feeling better")}
                         selectedColor={"#775DA3"} testID='checkOption_1Selected' />
-                      <Text style={{ marginLeft: 10, fontFamily: 'OpenSans' }}>I am feeling better</Text>
+                      <Text style={{ marginLeft: 10, fontFamily: 'OpenSans',fontSize:15}}>I am feeling better</Text>
                     </ListItem>
 
                     <ListItem onPress={() => this.toggleRadio(1, " am looking for sooner or faster")}>
                       <Radio selected={this.state.radioStatus[1]} onPress={() => this.toggleRadio(1, "Iam looking for sooner or faster")} color={"#775DA3"}
                         selectedColor={"#775DA3"} testID='checkOption_2Selected' />
-                      <Text style={{ marginLeft: 10, fontFamily: 'OpenSans' }}>I am looking for sooner or faster</Text>
+                      <Text style={{ marginLeft: 10, fontFamily: 'OpenSans',fontSize:15 }}>I am looking for sooner or faster</Text>
 
                     </ListItem>
 
@@ -136,7 +137,7 @@ class CancelAppointment extends Component {
                     <ListItem onPress={() => this.toggleRadio(2, "I will not be able to make this on the time")}>
                       <Radio selected={this.state.radioStatus[2]} onPress={() => this.toggleRadio(2, "I will not be able to make this on the time")} color={"#775DA3"}
                         selectedColor={"#775DA3"} testID='checkOption_3Selected' />
-                      <Text style={{ marginLeft: 10, fontFamily: 'OpenSans' }}>I will not be able to make this on the time</Text>
+                      <Text style={{ marginLeft: 10, fontFamily: 'OpenSans',fontSize:15}}>I will not be able to make this on the time</Text>
                     </ListItem>
 
 
@@ -144,19 +145,19 @@ class CancelAppointment extends Component {
                     <ListItem onPress={() => this.toggleRadio(3, "I want to reshedule with different type")}>
                       <Radio selected={this.state.radioStatus[3]} color="red" selectedColor="green" onPress={() => this.toggleRadio(3, "I want to reshedule with different type")} color={"#775DA3"}
                         selectedColor={"#775DA3"} testID='checkOption_4Selected' />
-                      <Text style={{ marginLeft: 10, fontFamily: 'OpenSans' }}>I want to reshedule with different type</Text>
+                      <Text style={{ marginLeft: 10, fontFamily: 'OpenSans',fontSize:15 }}>I want to reshedule with different type</Text>
                     </ListItem>
 
                     <ListItem onPress={() => this.toggleRadio(4, null)}>
                       <Radio selected={this.state.radioStatus[4]} onPress={() => this.toggleRadio(4, null)} color={"#775DA3"}
                         selectedColor={"#775DA3"} testID='checkOption_5Selected' />
-                      <Text style={{ marginLeft: 10, fontFamily: 'OpenSans' }}>Others</Text>
+                      <Text style={{ marginLeft: 10, fontFamily: 'OpenSans',fontSize:15 }}>Others</Text>
                     </ListItem>
 
                     {this.state.radioStatus[4] === true ?
                       <Col>
-                        <Text style={{ fontSize: 16, marginTop: 20 }}> Write your reason </Text>
-                        <TextInput style={{ height: 100, borderWidth: 1, marginTop: 20, width: 300 }}
+                        <Text style={{ fontSize: 15, marginTop: 20 ,fontFamily:'OpenSans'}}> Write your reason </Text>
+                        <TextInput style={{ height: 100, borderWidth: 1, marginTop: 20, width: 300 ,fontSize:15}}
                           placeholder="Write your reason here"
                           multiline={true}
                           textAlignVertical={'top'}
@@ -167,12 +168,12 @@ class CancelAppointment extends Component {
 
                     <Row style={{ marginTop: 10 }}>
                       <Button style={styles.button1} onPress={() => (this.cancelAppointment(data, 'CLOSED'))} testID='appointment_cancel'>
-                        <Text style={{ color: '#000' }}> SUBMIT</Text>
+                        <Text style={{ color: '#000',fontFamily:'OpenSans',fontSize:15 }}> SUBMIT</Text>
                       </Button>
 
 
                       <Button success style={styles.button2} onPress={() => this.props.navigation.navigate('AppointmentInfo')} testID='iconToEditContact'>
-                        <Text style={{ color: '#000' }}>CANCEL</Text>
+                        <Text style={{ color: '#000' ,fontFamily:'OpenSans',fontSize:15}}>CANCEL</Text>
                       </Button>
                     </Row>
 
@@ -206,7 +207,7 @@ const styles = StyleSheet.create({
   },
   text: {
     backgroundColor: "#c9cdcf",
-    fontSize: 14
+    fontSize: 15
   },
   button1: {
     backgroundColor: "#c9cdcf",

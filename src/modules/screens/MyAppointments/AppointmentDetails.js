@@ -273,8 +273,8 @@ class AppointmentDetails extends Component {
                     <Thumbnail square source={renderProfileImage(doctorData)} style={{ height: 86, width: 86 }} />
                   </Left>
                   <Body>
-                    <Text style={{ fontSize: 16 }}>{(doctorData && doctorData.prefix ? doctorData.prefix : 'Dr') + ('.') + (doctorData && doctorData.first_name) + " " + (doctorData && doctorData.last_name)},
-                      <Text style={{ fontSize: 10 }}>{education}</Text>
+                    <Text style={{ fontSize: 15,fontFamily:'OpenSans',fontWeight:'bold' }}>{(doctorData && doctorData.prefix ? doctorData.prefix : 'Dr') + ('.') + (doctorData && doctorData.first_name) + " " + (doctorData && doctorData.last_name)},
+                      <Text style={{ fontSize: 13,fontFamily:'OpenSans' }}>{education}</Text>
 
                     </Text>
                     <Text note style={styles.customText}>{specialist} </Text>
@@ -301,7 +301,7 @@ class AppointmentDetails extends Component {
                   <View style={{ marginLeft: 'auto', marginRight: 'auto' }}>
                     <Col style={{ width: 300, }}>
                       <Button disabled={true} block style={{ borderRadius: 10, backgroundColor: '#D7BDE2' }}>
-                        <Text style={{ color: 'black', fontSize: 16 }}>
+                        <Text style={{ color: 'black', fontSize: 15,fontFamily:'OpenSans',fontWeight:'bold' }}>
                           {this.state.appointmentStatus == 'APPROVED' ? 'APPROVED' :
                             data.appointment_status == 'PROPOSED_NEW_TIME' ? 'PROPOSED NEW TIME' :
                               data.appointment_status == 'PENDING_REVIEW' ? 'COMPLETED' :
@@ -317,16 +317,16 @@ class AppointmentDetails extends Component {
                   {data.appointment_status == 'APPROVED' || this.state.appointmentStatus === 'APPROVED' ?
                     <Col style={width = 'auto'}>
                       <Button block danger style={{ margin: 1, marginTop: 10, marginLeft: 1, borderRadius: 30, padding: 15, height: 40, width: "auto" }} onPress={() => this.navigateCancelAppoointment()} testID='cancelAppointment'>
-                        <Text style={{ textAlign: 'center', fontFamily: 'OpenSans', }}>CANCEL APPOINTMENT</Text>
+                        <Text style={{ textAlign: 'center', fontFamily: 'OpenSans',fontSize:15,fontWeight:'bold' }}>CANCEL APPOINTMENT</Text>
                       </Button>
                     </Col> :
                     data.appointment_status == 'PROPOSED_NEW_TIME' ?
                       <Item style={{ borderBottomWidth: 0, justifyContent: 'center' }}>
                         <Button success style={styles.statusButton} onPress={() => this.updateAppointmentStatus(data, 'APPROVED')} testID='approvedAppointment'>
-                          <Text style={{ textAlign: 'center', fontFamily: 'OpenSans', color: '#000' }}>ACCEPT</Text>
+                          <Text style={{ textAlign: 'center', fontFamily: 'OpenSans', color: '#000',fontSize:15,fontWeight:'bold' }}>ACCEPT</Text>
                         </Button>
                         <Button danger style={styles.Button2} onPress={() => this.navigateCancelAppoointment()} testID='appointmentCancel'>
-                          <Text style={{ textAlign: 'center', fontFamily: 'OpenSans', color: '#000' }}> CANCEL </Text></Button>
+                          <Text style={{ textAlign: 'center', fontFamily: 'OpenSans', color: '#000',fontSize:15,fontWeight:'bold'}}> CANCEL </Text></Button>
                       </Item> : null}
                 </Grid>
 
@@ -337,7 +337,7 @@ class AppointmentDetails extends Component {
               <Card style={{ backgroundColor: '#ffffff', borderRadius: 10, padding: 10 }}>
                 <Grid style={{ margin: 5 }}>
                   <Right>
-                    <Text>
+                    <Text style={{fontSize:15,fontFamily:'OpenSans'}}>
                       {formatDate(data.appointment_starttime, "dddd,MMMM DD-YYYY  hh:mm a")}
                     </Text>
                   </Right>
@@ -540,12 +540,19 @@ const styles = StyleSheet.create({
   },
   topValue: {
     marginLeft: 'auto',
-    marginRight: 'auto'
+    marginRight: 'auto',
+    fontFamily:'OpenSans',
+    fontSize:15,
+    fontWeight:'bold'
+
   },
   bottomValue:
   {
     marginLeft: 'auto',
-    marginRight: 'auto'
+    marginRight: 'auto',
+    fontSize:15,
+    fontFamily:'OpenSans',
+  
   },
   reviewButton: {
     marginTop: 12,
@@ -563,8 +570,7 @@ const styles = StyleSheet.create({
     fontFamily: 'OpenSans',
     color: '#000',
     fontSize: 15,
-    // alignItems: 'flex-start'
-    // marginRight: 45
+    
 
   },
   subtitlesText: {
@@ -572,6 +578,7 @@ const styles = StyleSheet.create({
     margin: 10,
     color: '#F2889B',
     fontFamily: 'opensans-semibold',
+    fontWeight:'bold'
 
   },
   titlesText: {
