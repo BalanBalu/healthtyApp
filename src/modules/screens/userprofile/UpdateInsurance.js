@@ -58,7 +58,7 @@ class UpdateInsurance extends Component {
         console.log('response' + JSON.stringify(response));
         if (response.success) {
             Toast.show({
-                text: 'Inusrance updated Successfully',
+                text:response.message,
                 type: "success",
                 duration: 3000,
             })
@@ -66,7 +66,7 @@ class UpdateInsurance extends Component {
 
         } else {
             Toast.show({
-                text: 'Fields should not be empty',
+                text:response.message,
                 type: "danger",
                 duration: 3000
             })
