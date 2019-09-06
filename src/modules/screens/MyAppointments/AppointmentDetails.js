@@ -59,7 +59,7 @@ class AppointmentDetails extends Component {
       console.log(appointmentData)
       await this.setState({
         doctorId: doctorId, appointmentId: appointmentId,
-        userId: userId, data: appointmentData, isLoading: true
+        userId: userId, data: appointmentData, 
       })
 
       await new Promise.all([
