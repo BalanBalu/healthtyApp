@@ -131,7 +131,7 @@ class UserDetails extends Component {
             <Container style={styles.Container}>
                 <Content contentContainerStyle={styles.bodyContent}>
                     <ScrollView>
-                    
+                    <View>
                         <Text style={styles.addressHeaderText}>Update User Details</Text>
 
                         <Form style={{marginTop:15}}>
@@ -246,7 +246,7 @@ class UserDetails extends Component {
                            
 
                         </Form>
-                       
+                        </View>
                     </ScrollView>
                 </Content>
                 <Spinner color='blue'
