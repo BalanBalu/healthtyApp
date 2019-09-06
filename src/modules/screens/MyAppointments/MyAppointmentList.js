@@ -424,7 +424,7 @@ class MyAppoinmentList extends Component {
 														</Item>
 														<Item style={{ borderBottomWidth: 0 }}>
 															<Text
-																style={{ fontFamily: "OpenSans", fontSize: 14 }}
+																style={{ fontFamily: "OpenSans", fontSize: 14,width:'60%' }}
 															>
 																{item.specialist}
 															</Text>
@@ -436,7 +436,7 @@ class MyAppoinmentList extends Component {
 																		starSize={20}
 																		containerStyle={{
 																			width: 100,
-																			marginLeft: "auto"
+																			marginLeft: "auto",
 																		}}
 																		disabled={false}
 																		maxStars={5}
@@ -495,7 +495,7 @@ class MyAppoinmentList extends Component {
 																	</Button>
 																	<Button style={styles.bookingButton} onPress={() => this.navigateToBookAppointmentPage(item)}>
 																		<Text style={styles.bookAgain1} testID='navigateBookAppointment'>
-																			book Again
+																			Book Again
 																</Text>
 																	</Button>
 																</Item>
