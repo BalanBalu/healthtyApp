@@ -27,7 +27,7 @@ class MyOrdersList extends Component {
            let userId = await AsyncStorage.getItem('userId');
            let result = await getMedicineOrderList(userId);
            if(result.success){
-            this.setState({  orderList: [result.data] });               
+            this.setState({  orderList: result.data });               
            }
             }
         catch (e) {
