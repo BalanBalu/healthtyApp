@@ -6,7 +6,7 @@ import { connect } from 'react-redux'
 import { StyleSheet, TouchableOpacity, View, FlatList, AsyncStorage, Slider } from 'react-native';
 import StarRating from 'react-native-star-rating';
 
-import { insertDoctorsWishList, searchDoctorList, fetchAvailabilitySlots, getMultipleDoctorDetails, getDoctorsReviewsCount, getPatientWishList, SET_BOOK_APP_SLOT_DATA, SET_BOOK_APP_DOCTOR_DATA, SET_SELECTED_DATE } from '../../providers/bookappointment/bookappointment.action';
+import { insertDoctorsWishList, searchDoctorList, fetchAvailabilitySlots, getMultipleDoctorDetails, getDoctorsReviewsCount, getPatientWishList, SET_BOOK_APP_SLOT_DATA, SET_BOOK_APP_DOCTOR_DATA, SET_SELECTED_DATE , getDoctorFaviouteList} from '../../providers/bookappointment/bookappointment.action';
 import { formatDate, addMoment, addTimeUnit, getMoment,addDate,dateDiff, findArrayObj, intersection } from '../../../setup/helpers';
 import { Loader } from '../../../components/ContentLoader';
 import { RenderHospitalAddress, renderProfileImage } from '../../common';
@@ -37,7 +37,6 @@ class doctorSearchList extends Component {
                 currentDate: formatDate(new Date(), 'YYYY-MM-DD'),
                 doctorData: [],
                 searchedResultData: [],
-                reviewData: null,
                 getSearchedDoctorIds: null,
                 nextAvailableSlotDate: '',
                 isLoading: false,
@@ -53,8 +52,10 @@ class doctorSearchList extends Component {
                 selectedDatesByDoctorIds: {},
                 selectedSlotByDoctorIds: {},
                 expandedDoctorIdHospitalsToShowSlotsData: [],
-                showedFee: null,
-                isLoggedIn: null
+                showedFeeByDoctorIds: {},
+                reviewsByDoctorIds : {},
+                isLoggedIn: null,
+                favouriteListCountByDoctorIds : {}
             }
     }
     
@@ -204,7 +205,7 @@ class doctorSearchList extends Component {
     /* Insert Doctors Favourite Lists  */
     addToWishList = async (doctorId) => {
         try {
-           const { patientWishListsDoctorIds } = this.state;
+           const { patientWishListsDoctorIds, favouriteListCountByDoctorIds } = this.state;
            console.log(patientWishListsDoctorIds);
           let requestData = {
              active: !patientWishListsDoctorIds.includes(doctorId)
@@ -221,8 +222,14 @@ class doctorSearchList extends Component {
                     duration: 3000,
                 })
                 if(requestData.active) {
-                   patientWishListsDoctorIds.push(doctorId)
+                  if(favouriteListCountByDoctorIds[doctorId]) {
+                        favouriteListCountByDoctorIds[doctorId] = favouriteListCountByDoctorIds[doctorId] + 1;
+                  }
+                  patientWishListsDoctorIds.push(doctorId)
                 } else {
+                    if(favouriteListCountByDoctorIds[doctorId]) {
+                      favouriteListCountByDoctorIds[doctorId] = favouriteListCountByDoctorIds[doctorId] - 1;
+                    }
                     let indexOfDoctorIdOnPatientWishList = patientWishListsDoctorIds.indexOf(doctorId);
                     patientWishListsDoctorIds.splice(indexOfDoctorIdOnPatientWishList, 1);
                 }
@@ -238,7 +245,7 @@ class doctorSearchList extends Component {
         try {
             let userId = await AsyncStorage.getItem('userId');
             let result = await getPatientWishList(userId);
-
+            
             if (result.success) {
                 let wishListDoctorsIds = [];
                 result.data.forEach(element => {
@@ -285,7 +292,7 @@ class doctorSearchList extends Component {
             await this.getAvailabilitySlots(doctorIds, startDate, endDate).catch(res => console.log("Exception" + res));
 
             this.getPatientReviews(doctorIds).catch(res => console.log("Exception on getPatientReviews" + res));
-            
+            this.getDoctorFaviouteList(doctorIds).catch(res => console.log("Exception on getPatient Wish List" + res));
             let doctorData = this.state.doctorData;
             let uniqueFilteredDocArray = []; 
             doctorData.forEach((element) => {
@@ -399,23 +406,25 @@ class doctorSearchList extends Component {
     onDateChanged(selectedDate, doctorIdHostpitalId) {
         
         let { selectedDatesByDoctorIds, selectedSlotByDoctorIds, selectedSlotItemByDoctorIds }  = this.state;
+       
+        selectedDatesByDoctorIds[doctorIdHostpitalId] = selectedDate;
         selectedSlotByDoctorIds[doctorIdHostpitalId] = -1;
         selectedSlotItemByDoctorIds[doctorIdHostpitalId] = null;
-        selectedDatesByDoctorIds[doctorIdHostpitalId] = selectedDate;
-        this.setState({ selectedDatesByDoctorIds, selectedSlotItemByDoctorIds });
+        
+        this.setState({ selectedDatesByDoctorIds, selectedSlotByDoctorIds, selectedSlotItemByDoctorIds});
+       
         if (this.processedDoctorAvailabilityDates.includes(selectedDate) === false) {
            let endDateMoment = addMoment(getMoment(selectedDate), 7, 'days');
            this.getAvailabilitySlots(this.state.getSearchedDoctorIds, getMoment(selectedDate), endDateMoment);
         }
-
     }
 
     /* Click the Slots from Doctor List page */
     onPressContinueForPaymentReview = async (doctorData, selectedSlotItemByDoctor, doctorIdHostpitalId) => {
-            let { selectedSlotByDoctorIds }  = this.state;
-            if(selectedSlotByDoctorIds[doctorIdHostpitalId] === undefined) {
+             console.log(selectedSlotItemByDoctor);   
+            if(!selectedSlotItemByDoctor) {
                 Toast.show({
-                    text: 'Please Select a Slot to continue the booking',
+                    text: 'Please Select a Slot to continue booking',
                     type : 'warning',
                     duration: 3000
                 })
@@ -424,6 +433,7 @@ class doctorSearchList extends Component {
        
 
             doctorData.doctorName = doctorData.first_name + ' ' + doctorData.last_name;
+            doctorData.doctorId = doctorData.doctor_id;
                 console.log('is it coming here?')
             var confirmSlotDetails = {
                 ...doctorData,
@@ -435,23 +445,24 @@ class doctorSearchList extends Component {
     }
    async onSlotItemPress(doctorIdHostpitalId, item, index) {
        
-        let { selectedSlotByDoctorIds, selectedSlotItemByDoctorIds }  = this.state;
+        let { selectedSlotByDoctorIds, selectedSlotItemByDoctorIds, showedFeeByDoctorIds }  = this.state;
         selectedSlotByDoctorIds[doctorIdHostpitalId] = index;
         selectedSlotItemByDoctorIds[doctorIdHostpitalId] = item
        
-        this.setState({ selectedSlotByDoctorIds : selectedSlotByDoctorIds, selectedSlotItemByDoctorIds });
+        this.setState({ selectedSlotByDoctorIds, selectedSlotItemByDoctorIds });
        console.log( item);
       // console.log( selectedSlotIndex + '. and index :' +  index) ;
-       /* if((item.fee != showedFee)) {
-            this.setState( { showedFee : item.fee})
-            if(showedFee != null) {
+       if((item.fee != showedFeeByDoctorIds[doctorIdHostpitalId])) {
+            if(showedFeeByDoctorIds[doctorIdHostpitalId] != undefined) {
               Toast.show({
-                 text: 'Your Appointment Fee got Changed',
+                 text: 'Appointment Fee Updated',
                  type:'warning',
                  duration: 3000
               });
             }
-        } */
+            showedFeeByDoctorIds[doctorIdHostpitalId] = item.fee
+            this.setState( { showedFeeByDoctorIds });
+        }
     }
     
     
@@ -459,15 +470,34 @@ class doctorSearchList extends Component {
     reviewMap = new Map();
     getPatientReviews = async (doctorIds) => {
         let resultReview = await getDoctorsReviewsCount(doctorIds);
-        // console.log('resultReview'+JSON.stringify(resultReview));
+        let { reviewsByDoctorIds }  = this.state;
+        
 
         if (resultReview.success) {
-
-            this.setState({ reviewData: resultReview.data });
-
             for (i = 0; i < resultReview.data.length; i++) {
                 this.reviewMap.set(resultReview.data[i]._id, resultReview.data[i]) // total_rating
+                reviewsByDoctorIds[resultReview.data[i]._id] = resultReview.data[i];
             }
+            console.log(reviewsByDoctorIds);
+            this.setState({ reviewsByDoctorIds });
+        }
+    }
+    getDoctorFaviouteList = async (doctorIds) => {
+      
+        let resultFavList = await getDoctorFaviouteList(doctorIds);
+        let { favouriteListCountByDoctorIds }  = this.state;
+                
+        if (resultFavList.success) {
+             for (i = 0; i < resultFavList.data.length; i++) {
+                 doctorId = resultFavList.data[i].wishList.doctor_id;
+                 if(favouriteListCountByDoctorIds[doctorId]) {
+                    favouriteListCountByDoctorIds[doctorId] = favouriteListCountByDoctorIds[doctorId] + 1
+                 } else {
+                    favouriteListCountByDoctorIds[doctorId] = 1;
+                 }
+             }
+            
+             this.setState({ favouriteListCountByDoctorIds });
         }
     }
 
@@ -636,13 +666,18 @@ class doctorSearchList extends Component {
         const { bookappointment: { slotData, selectedDate, doctorData } } = this.props;
         const { navigation } = this.props;
         const { selectedDatesByDoctorIds, expandedDoctorIdHospitalsToShowSlotsData, patientWishListsDoctorIds, isLoggedIn, selectedSlotItemByDoctorIds, 
-             isLoading, isAvailabilityLoading, processedDoctorAvailabilityDates, 
+            reviewsByDoctorIds, favouriteListCountByDoctorIds,
+             isLoading, isAvailabilityLoading, 
             uniqueFilteredDocArray } = this.state;
         return (
             <Container style={styles.container}>
                 <NavigationEvents
                     onWillFocus={payload => { this.componentNavigationMount() }}
                 />
+
+              { isLoading ? <Loader style='list' /> :
+                     
+
               <Content>
               <View>
                 <Card style={{ borderRadius: 7,paddingTop:5,paddingBottom:5 }}>
@@ -720,14 +755,14 @@ class doctorSearchList extends Component {
                                                                     maxStars={1}
                                                                 />
                                                                
-                                                <Text style={{ fontFamily: 'OpenSans',fontSize:12,fontWeight:'bold',marginLeft:2 }}> {this.reviewMap.has(item.doctor_id) ? this.reviewMap.get(item.doctor_id).average_rating : ' 0'}</Text>
+                                                <Text style={{ fontFamily: 'OpenSans',fontSize:12,fontWeight:'bold',marginLeft:2 }}> {reviewsByDoctorIds[item.doctor_id] !== undefined ? reviewsByDoctorIds[item.doctor_id].average_rating : ' 0'}</Text>
                                                 </View>
                                                 
                                         </Col>
                                                 <Col style={{width:"25%",marginTop:20}}>
                                                 
                                                 <Text note style={{ fontFamily: 'OpenSans',fontSize:12,marginLeft:5 ,}}> Favourite</Text>
-                                                <Text style={{ fontFamily: 'OpenSans',fontSize:12,marginLeft:5,fontWeight:'bold' }}> {item.Favorite}</Text>
+                                                <Text style={{ fontFamily: 'OpenSans',fontSize:12,marginLeft:5,fontWeight:'bold' }}> { favouriteListCountByDoctorIds[item.doctor_id] ? favouriteListCountByDoctorIds[item.doctor_id] : 0 }</Text>
 
 
                                                 </Col>
@@ -763,7 +798,7 @@ class doctorSearchList extends Component {
                                             <View>
                                             
                                                 <Row style={{marginTop:10}}>
-                                                <Text style={{fontSize:13,fontFamily:'OpenSans'}}>Select appoinment date And time</Text>
+                                                <Text style={{fontSize:13,fontFamily:'OpenSans'}}>Select appoinment date and time</Text>
                                             </Row>
 
                                             <Row style={{marginLeft:'auto',marginRight:'auto'}}  >
@@ -806,7 +841,7 @@ class doctorSearchList extends Component {
                                                </Col>
                                                <Col style={{width:'30%'}}>
                                                   <TouchableOpacity                                                                                                                   
-                                                     onPress={() => { console.log('......Pressing....'); this.onPressContinueForPaymentReview(item, item.doctorIdHostpitalId[item.doctorIdHostpitalId], item.doctorIdHostpitalId) }}
+                                                     onPress={() => { console.log('......Pressing....'); this.onPressContinueForPaymentReview(item, selectedSlotItemByDoctorIds[item.doctorIdHostpitalId], item.doctorIdHostpitalId) }}
                                                      style={{backgroundColor:'green', borderColor: '#000', marginTop:10, height: 30, borderRadius: 20,justifyContent:'center' ,marginLeft:5,marginRight:5,marginTop:-5 }}>
                                                      <Text style={{color:'#fff',fontSize:12,fontWeight:'bold',fontFamily:'OpenSans'}}>Continue </Text>
                                                   </TouchableOpacity> 
@@ -825,7 +860,8 @@ class doctorSearchList extends Component {
                                 </Card>
                         }/>
                        </View>
-                    </Content>
+                </Content> 
+            }
 
             </Container >
         )
