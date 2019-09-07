@@ -48,7 +48,7 @@ class AppointmentDetails extends Component {
       const appointmentId = navigation.getParam('appointmentId');
 
       await this.setState({ appointmentId: appointmentId });
-      console.log('if run')
+      
       await this.appointmentDetailsGetById()
     }
     else {
@@ -65,7 +65,7 @@ class AppointmentDetails extends Component {
         this.getDoctorDetails(),
         this.getUserReviews()
       ])
-      console.log('else run')
+     
     }
 
     await this.setState({ isLoading: false })
@@ -79,7 +79,7 @@ class AppointmentDetails extends Component {
       let resultDetails = await bindDoctorDetails(this.state.doctorId, fields);
 
       if (resultDetails.success) {
-        console.log(resultDetails.data)
+        
         await this.setState({ doctorData: resultDetails.data });
 
         let experience = 'N/A';
@@ -171,8 +171,8 @@ class AppointmentDetails extends Component {
 
 
     const fromNotification = navigation.getParam('fromNotification');
-    console.log('fromNotification is.........')
-    console.log(fromNotification)
+    
+    
     if (fromNotification == true || fromNotification != undefined) {
       let doctorInfo = {
         first_name: this.state.doctorData.first_name,
@@ -214,7 +214,7 @@ class AppointmentDetails extends Component {
           text: result.message,
           duration: 3000
         })
-        console.log(result)
+      
 
         this.setState({ appointmentStatus: appointmentStatus, data: result });
       }
@@ -229,8 +229,7 @@ class AppointmentDetails extends Component {
     this.state.data.prefix = this.state.doctorData.prefix;
     const { navigation } = this.props;
     const fromNotification = navigation.getParam('fromNotification');
-    console.log('fromNotification is.........')
-    console.log(fromNotification)
+    
     if (fromNotification == true || fromNotification != undefined) {
       let doctorInfo = {
         first_name: this.state.doctorData.first_name,
