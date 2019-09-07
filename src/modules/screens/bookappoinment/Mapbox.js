@@ -46,7 +46,7 @@ class Mapbox extends Component {
   }
 
   async componentDidMount() {
-    debugger
+    
     let isGranted = true;
     if (IS_ANDROID) {
       isGranted = await MapboxGL.requestAndroidLocationPermissions();

@@ -9,7 +9,7 @@ import {  fetchAvailabilitySlots,viewUserReviews, bindDoctorDetails } from '../.
 import Mapbox from './Mapbox';
 import { Loader } from '../../../components/ContentLoader';
 import moment from 'moment';
-import { renderProfileImage } from '../../common';
+import { renderProfileImage, getDoctorSpecialist, getDoctorEducation } from '../../common';
 
 
 let slotMap=new Map();
@@ -52,7 +52,7 @@ class BookAppoinment extends Component {
   async componentDidMount() {
 
     const { navigation } = this.props;
-    const availabilitySlots = navigation.getParam('fetchAvailabiltySlots')||false;
+    const availabilitySlots = navigation.getParam('fetchAvailabiltySlots') || false;
 
     if(availabilitySlots) {
       let endDateMoment = addMoment(this.state.currentDate, 7, 'days')
@@ -61,39 +61,15 @@ class BookAppoinment extends Component {
       await this.setState({doctorId:doctorId});
       console.log("doctorId");
       await this.getAvailabilitySlots(doctorId, moment(new Date()), endDateMoment);
+      this.getdoctorDetails(this.state.doctorId);
     } else {
       let doctorDetails = navigation.getParam('doctorDetails');
-      const slotList = navigation.getParam('slotList');
-      console.log('slotList'+JSON.stringify(slotList));
-      await this.setState({ doctorId: doctorDetails.doctorId });
-      if(slotList) {
-      if(slotList.length !== 0) {
-        let firstAvailableIndex = 0; 
-         for(let slotListIndex = 0; slotListIndex < slotList.length; slotListIndex++) {
-            console.log(slotList[slotListIndex]);
-            if(slotList[slotListIndex].isSlotBooked === false) {
-              firstAvailableIndex = slotListIndex;
-              break;
-            }
-         }
-         console.log(firstAvailableIndex);
-        await this.setState({item: { 
-          name:slotList[firstAvailableIndex].location.name,
-          no_and_street: slotList[firstAvailableIndex].location.location.address.no_and_street,
-          city: slotList[firstAvailableIndex].location.location.address.city,
-          state: slotList[firstAvailableIndex].location.location.address.state,
-          pin_code: slotList[firstAvailableIndex].location.location.pin_code
-        },
-          selectedSlotItem: slotList[firstAvailableIndex], 
-          doctorDetails, slotList, 
-          selectedSlotIndex: firstAvailableIndex
-        });
-      }
-    }
+      console.log('slotList'+JSON.stringify(doctorDetails));
+      await this.setState({ doctorId: doctorDetails.doctorId, doctordata: doctorDetails });
+      
   }
-  await this.getdoctorDetails(this.state.doctorId);
-  await this.getUserReviews(this.state.doctorId);
-  this.setState({ isLoading: false });
+    await this.getUserReviews(this.state.doctorId);
+    this.setState({ isLoading: false });
   }
 
 
@@ -137,7 +113,7 @@ displaylocation=async()=>{
 }
 
 enumarateDates(startDate, endDate) {
-  debugger
+  
   let now = startDate.clone();
   while (now.isSameOrBefore(endDate)) {
     this.processedAvailabilityDates.push(now.format('YYYY-MM-DD'));
@@ -165,7 +141,7 @@ enumarateDates(startDate, endDate) {
         this.setState({slotList: []})
       }
     } else {
-      debugger
+      
       let endDateMoment = addMoment(date, 7, 'days')
       this.getAvailabilitySlots(this.state.doctorId, moment(date), endDateMoment);
     } 
@@ -208,7 +184,8 @@ enumarateDates(startDate, endDate) {
       }
     }
   }
-
+ 
+  
 
   /* Get user Reviews*/
   getUserReviews = async (doctorId) => {
@@ -243,7 +220,7 @@ enumarateDates(startDate, endDate) {
 
   }
   navigateToPaymentReview() {
-    debugger
+    
     var confirmSlotDetails = {
       doctorId: this.state.doctordata.doctor_id,
       doctorName: this.state.doctordata.first_name + ' ' + this.state.doctordata.last_name,
@@ -307,14 +284,14 @@ enumarateDates(startDate, endDate) {
           <Grid >
             <Row >
               <Col style={{width:'5%',marginLeft:20,marginTop:10}}>
-                  <Thumbnail square source={{ uri: 'https://res.cloudinary.com/demo/image/upload/w_200,h_200,c_thumb,g_face,r_max/face_left.png' }} style={{ height: 60, width: 60 }} />
+                  <Thumbnail square source={renderProfileImage(doctordata)} style={{ height: 60, width: 60 }} />
                </Col>
                <Col style={{width:'78%'}}>
                   <Row style={{marginLeft:55,marginTop:10}}>
-                     <Text style={{ fontFamily: 'OpenSans',fontSize:12,fontWeight:'bold'}}>Dr.John Williams</Text>
+                     <Text style={{ fontFamily: 'OpenSans',fontSize:12,fontWeight:'bold'}}>{(doctordata.prefix || '') + (doctordata.first_name || '') + ' ' + (doctordata.last_name || '')}</Text>
                   </Row>
                   <Row style={{marginLeft:55,}}>
-                     <Text note  style={{ fontFamily: 'OpenSans',marginTop:-20 ,fontSize:11}}>MBBS, MD-DNB,Ophthalmology</Text>
+                     <Text note  style={{ fontFamily: 'OpenSans',marginTop:-20 ,fontSize:11}}>{(getDoctorEducation(doctordata.education)) + ', ' +  getDoctorSpecialist(doctordata.specialist)}</Text>
                   </Row>
                   {/* <Row style={{marginLeft:55,}}>
                  
@@ -337,7 +314,7 @@ enumarateDates(startDate, endDate) {
              <Row style={{marginBottom:10}}>
                  <Col style={{width:"25%",marginTop:15,}}>        
                    <Text note style={{ fontFamily: 'OpenSans',fontSize:12,textAlign:'center' }}> Experience</Text>
-                   <Text style={{ fontFamily: 'OpenSans',fontSize:12,fontWeight:'bold',textAlign:'center' }}> 12 yrs</Text>
+                   <Text style={{ fontFamily: 'OpenSans',fontSize:12,fontWeight:'bold',textAlign:'center' }}> {doctordata.calulatedExperience ? doctordata.calulatedExperience.year + ' Yrs' : 'N/A'}</Text>
                  </Col>
                  <Col style={{width:"25%",marginTop:15,}}>
                     <Text note style={{ fontFamily: 'OpenSans',fontSize:12,textAlign:'center' }}> Rating</Text>

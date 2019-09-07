@@ -104,8 +104,27 @@ export async function addToCart(medicineData, selectItem, operation) {
 
 export function medicineRateAfterOffer(item) {
     return parseInt(item.price) - ((parseInt(item.offer) / 100) * parseInt(item.price));
-
 }
+
+export function getDoctorSpecialist(specialistData) {
+    if (specialistData) {
+        return specialistData[0].category
+    }
+    return '';
+}
+export function getDoctorEducation(educationData) {
+    let degree = '';
+    if (educationData) {
+        educationData.forEach(eduData => {
+            degree += eduData.degree + ','
+        });
+        return degree.slice(0, -1);
+    }
+    return '';
+}
+
+
+
 export async function getUserNotification() {
     try {
        

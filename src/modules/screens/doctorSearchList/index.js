@@ -9,7 +9,7 @@ import StarRating from 'react-native-star-rating';
 import { insertDoctorsWishList, searchDoctorList, fetchAvailabilitySlots, getMultipleDoctorDetails, getDoctorsReviewsCount, getPatientWishList, SET_BOOK_APP_SLOT_DATA, SET_BOOK_APP_DOCTOR_DATA, SET_SELECTED_DATE } from '../../providers/bookappointment/bookappointment.action';
 import { formatDate, addMoment, addTimeUnit, getMoment,addDate,dateDiff, findArrayObj, intersection } from '../../../setup/helpers';
 import { Loader } from '../../../components/ContentLoader';
-import { RenderHospitalAddress, renderProfileImage } from '../../common';
+import { RenderHospitalAddress, renderProfileImage,  getDoctorSpecialist, getDoctorEducation  } from '../../common';
 import { NavigationEvents } from 'react-navigation';
 import Spinner from '../../../components/Spinner';
 import moment from 'moment';
@@ -307,7 +307,7 @@ class doctorSearchList extends Component {
     getDoctorDetails = async (doctorIds) => {
         try {
 
-            let fields = "first_name,last_name,prefix,dob,specialist,education,language,gender_preference,experience,profile_image";
+            let fields = "first_name,last_name,prefix,professional_statement,gender,specialist,education,language,gender_preference,experience,profile_image";
             let resultDoctorDetails = await getMultipleDoctorDetails(doctorIds, fields);
             console.log(resultDoctorDetails);
             if (resultDoctorDetails.success) {
@@ -445,26 +445,6 @@ class doctorSearchList extends Component {
     }
 
 
-    getDoctorSpecialist(doctorId) {
-        if (this.doctorDetailsMap.has(doctorId)) {
-            if (this.doctorDetailsMap.get(doctorId).specialist) {
-                return this.doctorDetailsMap.get(doctorId).specialist[0] ? this.doctorDetailsMap.get(doctorId).specialist[0].category : ''
-            }
-            return '';
-        }
-        return '';
-    }
-    getDoctorEducation(educationData) {
-        let degree = '';
-        if (educationData) {
-            educationData.forEach(eduData => {
-                degree += eduData.degree + ','
-            });
-            return degree.slice(0, -1);
-        }
-        return '';
-    }
-
     /* Click the Slots and Book Appointment on Popup page */
     onBookSlotsPress = async (item, index) => {
 
@@ -475,12 +455,9 @@ class doctorSearchList extends Component {
         await this.setState({ selectedSlotIndex: index, confirmSlotDetails: confirmSlotDetails });
     }
 
-    navigateToBookAppointmentPage(doctorAvailabilityData, doctorIdHostpitalId) {
-        
-        let selectedDate = this.state.selectedDatesByDoctorIds[doctorIdHostpitalId] || this.state.currentDate;
-        const slotData = doctorAvailabilityData.slotData[selectedDate];
-        doctorAvailabilityData.doctorId = doctorAvailabilityData.doctor_id;
-        this.props.navigation.navigate('Book Appointment', { doctorDetails: doctorAvailabilityData, slotList: slotData })
+    navigateToBookAppointmentPage(doctorData) {
+        doctorData.doctorId = doctorData.doctor_id;
+        this.props.navigation.navigate('Book Appointment', { doctorDetails: doctorData })
     }
     
  
@@ -697,7 +674,7 @@ class doctorSearchList extends Component {
                                            <Text style={{ fontFamily: 'OpenSans',fontSize:12,fontWeight:'bold'}}>{(item.prefix || '') + (item.first_name || '') + ' ' + (item.last_name || '')}</Text>
                                         </Row>
                                         <Row style={{marginLeft:55,}}>
-                                           <Text note  style={{ fontFamily: 'OpenSans',marginTop:2 ,fontSize:11}}>{(this.getDoctorEducation(item.education)) + ', ' +  this.getDoctorSpecialist(item.doctor_id)}</Text>
+                                           <Text note  style={{ fontFamily: 'OpenSans',marginTop:2 ,fontSize:11}}>{(getDoctorEducation(item.education)) + ', ' +  getDoctorSpecialist(item.specialist)}</Text>
                                         </Row>
                                         <Row style={{marginLeft:55,}}>
                                        
