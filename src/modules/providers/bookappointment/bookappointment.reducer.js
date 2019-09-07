@@ -1,11 +1,12 @@
 
-import { SET_BOOK_APP_SLOT_DATA, SET_BOOK_APP_DOCTOR_DATA, SET_SELECTED_DATE } from './bookappointment.action'
+import { SET_BOOK_APP_SLOT_DATA, SET_BOOK_APP_DOCTOR_DATA, SET_SELECTED_DATE, SET_SINGLE_DOCTOR_DATA } from './bookappointment.action'
 
 export const bookAppointmentData = {
     message: null,
     isLoading: false,
     selectedDate: null,
     doctorData: [],
+    singleDoctorData : null,
     slotData: []
   }
   // State
@@ -25,6 +26,11 @@ export const bookAppointmentData = {
         return {
           ...state,
           selectedDate: action.data
+        }
+      case SET_SINGLE_DOCTOR_DATA:
+        return {
+          ...state,
+          singleDoctorData: action.data
         }
       default:
         return state;

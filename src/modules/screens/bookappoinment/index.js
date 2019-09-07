@@ -5,7 +5,7 @@ import { connect } from 'react-redux'
 import { StyleSheet, Image, TouchableOpacity, View, FlatList, AsyncStorage, } from 'react-native';
 import StarRating from 'react-native-star-rating';
 import { formatDate, dateDiff, addMoment } from '../../../setup/helpers';
-import {  fetchAvailabilitySlots,viewUserReviews, bindDoctorDetails } from '../../providers/bookappointment/bookappointment.action';
+import {  fetchAvailabilitySlots,viewUserReviews, bindDoctorDetails, SET_SINGLE_DOCTOR_DATA } from '../../providers/bookappointment/bookappointment.action';
 import Mapbox from './Mapbox';
 import { Loader } from '../../../components/ContentLoader';
 import moment from 'moment';
@@ -34,15 +34,18 @@ class BookAppoinment extends Component {
       doctordata: {
         prefix: null
       },
-      selectedSlotIndex:0,
+      
       selectedSlotItem: null,
       fromBookAgainSelectedSlotItem:'',
       doctorId: '',
       reviews_length: '',
       doctorId:'',
       currentDate:formatDate(new Date(),'YYYY-MM-DD'), 
+      
       isLoading: true  ,
       pressTab: 1,   
+      selectedDate: formatDate(new Date(),'YYYY-MM-DD'),
+      selectedSlotIndex:0,
     }
 
   }
@@ -63,11 +66,11 @@ class BookAppoinment extends Component {
       await this.getAvailabilitySlots(doctorId, moment(new Date()), endDateMoment);
       this.getdoctorDetails(this.state.doctorId);
     } else {
-      let doctorDetails = navigation.getParam('doctorDetails');
-      console.log('slotList'+JSON.stringify(doctorDetails));
-      await this.setState({ doctorId: doctorDetails.doctorId, doctordata: doctorDetails });
-      
-  }
+      console.log(this.props);
+      const { bookappointment: {  singleDoctorData } } = this.props;
+      let doctorDetails = singleDoctorData;//navigation.getParam('doctorDetails');
+      this.setState({ doctorId: doctorDetails.doctorId, doctordata: doctorDetails });
+    }
     await this.getUserReviews(this.state.doctorId);
     this.setState({ isLoading: false });
   }
@@ -267,9 +270,20 @@ enumarateDates(startDate, endDate) {
     )
   }
 
+  getFeesBySelectedSlot(selectedSlotData, wholeSlotData, doctorIdHostpitalId ) {
+       
+    let  selectedSlotIndex = this.state.selectedSlotIndex || 0;
+    
+    if(!selectedSlotData) {
+        selectedSlotData = wholeSlotData[Object.keys(wholeSlotData)[0]]
+    }
+    selectedSlotFee = selectedSlotData[selectedSlotIndex].fee;
+    return selectedSlotFee;
+}
+
   render() {
     const { navigation } = this.props;
-    const { qualification, doctordata, isLoading } = this.state;
+    const { qualification, doctordata, isLoading, selectedDate } = this.state;
     const availabilitySlots = navigation.getParam('availabilitySlots')||false;
 
     const Language =['English','Hindi','Tamil','Telugu','Malayalam',
@@ -328,20 +342,20 @@ enumarateDates(startDate, endDate) {
                                               maxStars={1}
                                           />
                                          
-                          <Text style={{ fontFamily: 'OpenSans',fontSize:12,fontWeight:'bold',textAlign:'center' }}> 4.3</Text>
+                          <Text style={{ fontFamily: 'OpenSans',fontSize:12,fontWeight:'bold',textAlign:'center' }}>{doctordata.ratingData ? ' '+ doctordata.ratingData.average_rating : ' 0' }</Text>
                           </View>
                           
                   </Col>
                           <Col style={{width:"25%",marginTop:15,}}>
                           
                           <Text note style={{ fontFamily: 'OpenSans',fontSize:12,textAlign:'center'}}> Favourite</Text>
-                          <Text style={{ fontFamily: 'OpenSans',fontSize:12,fontWeight:'bold',textAlign:'center' }}> 75%</Text>
+                          <Text style={{ fontFamily: 'OpenSans',fontSize:12,fontWeight:'bold',textAlign:'center' }}> { doctordata.favouriteListCount || 0 }</Text>
 
 
                           </Col>
                           <Col style={{width:"25%",marginTop:15,}}>
                               <Text note style={{ fontFamily: 'OpenSans',fontSize:12,textAlign:'center' }}> Fees</Text>
-                              <Text  style={{ fontFamily: 'OpenSans',fontSize:12,fontWeight:'bold',textAlign:'center' }}>{'\u20B9'}250</Text>
+                              <Text  style={{ fontFamily: 'OpenSans',fontSize:12,fontWeight:'bold',textAlign:'center' }}>{'\u20B9'}{ doctordata.slotData ? this.getFeesBySelectedSlot(doctordata.slotData[selectedDate], doctordata.slotData, doctordata.doctorIdHostpitalId ) : null }</Text>
                           </Col>
                       </Row>
 
@@ -375,6 +389,228 @@ enumarateDates(startDate, endDate) {
         </Segment>
            
 </Row>
+{this.state.pressTab == 1 ? 
+  <Content>
+{doctordata.professional_statement ?    
+ <View>
+    <View style={{marginLeft:5,marginRight:5}}>
+      <Text note style={{ fontFamily: 'OpenSans',fontSize:12, }}>Description</Text>
+      <Text style={{fontFamily:'OpenSans',fontSize:12}}>{doctordata.professional_statement}</Text>
+    </View> 
+    <Row style={{marginLeft:5,marginRight:5,paddingBottom:5}}>
+        <Right><Text style={{ fontFamily: 'OpenSans',fontSize:15,color:'#775DA3' }}></Text></Right>
+    </Row>
+  </View> : null }
+ 
+ 
+ 
+ <View style={{marginLeft:5,marginRight:5,borderTopColor:'gray',borderTopWidth:0.7,paddingBottom:5}}>
+   <Row style={{marginTop:10}}>
+   <Icon name='ios-time' style={{fontSize:20}}/>
+   <Text  style={{ fontFamily: 'OpenSans',fontSize:13,fontWeight:'bold',marginLeft:10,marginTop:1 }}>Appoinment Time Slots</Text>
+   </Row>
+   <Row style={{marginLeft:'auto',marginRight:'auto'}}  >
+                                              
+                                              <Col style={{width:'8%'}}>
+                                               <Icon name='ios-arrow-back' style={{fontSize:25,marginTop:25}}/>
+                                               </Col>
+                                                   <Col style={{width:'22%',}}>
+                                                   <TouchableOpacity style={{textAlign:'center',backgroundColor:'#775DA3', borderColor: '#000', marginTop:10, height: 50, borderRadius: 5,justifyContent:'center' ,marginRight:5,paddingLeft:5,paddingRight:5}}>
+                                                       
+                                                       <Text style={{textAlign:'center',color:'#fff',fontSize:13,fontFamily:'OpenSans',fontWeight:'bold'}}>Mon</Text>
+                                                       <Text style={{textAlign:'center',color:'#fff',fontSize:12,fontFamily:'OpenSans'}}>25 Aug </Text>
+   
+                                                  </TouchableOpacity>
+                                                   </Col>
+                                                   <Col style={{width:'22%',}}>
+                                                   
+   
+                                                   <TouchableOpacity style={{textAlign:'center',backgroundColor:'#ced6e0', borderColor: '#000', marginTop:10, height: 50, borderRadius: 5,justifyContent:'center' ,marginRight:5,paddingLeft:5,paddingRight:5}}>
+                                                       
+                                                       <Text style={{textAlign:'center',color:'#000',fontSize:13,fontFamily:'OpenSans',fontWeight:'bold'}}>Mon</Text>
+                                                       <Text style={{textAlign:'center',color:'#000',fontSize:12,fontFamily:'OpenSans'}}>25 Aug </Text>
+   
+                                                  </TouchableOpacity>
+                                                   </Col>
+                                                   <Col style={{width:'22%',}}>
+                                                   <TouchableOpacity style={{textAlign:'center',backgroundColor:'#ced6e0', borderColor: '#000', marginTop:10, height: 50, borderRadius: 5,justifyContent:'center' ,marginRight:5,paddingLeft:5,paddingRight:5}}>
+                                                       
+                                                       <Text style={{textAlign:'center',color:'#000',fontSize:13,fontFamily:'OpenSans',fontWeight:'bold'}}>Mon</Text>
+                                                       <Text style={{textAlign:'center',color:'#000',fontSize:12,fontFamily:'OpenSans'}}>25 Aug </Text>
+   
+                                                  </TouchableOpacity>
+                                                   </Col>
+                                                   <Col style={{width:'22%',}}>
+                                                   
+   
+                                                   <TouchableOpacity style={{textAlign:'center',backgroundColor:'#ced6e0', borderColor: '#000', marginTop:10, height: 50, borderRadius: 5,justifyContent:'center' ,marginRight:5,paddingLeft:5,paddingRight:5}}>
+                                                       
+                                                       <Text style={{textAlign:'center',color:'#000',fontSize:13,fontFamily:'OpenSans',fontWeight:'bold'}}>Mon</Text>
+                                                       <Text style={{textAlign:'center',color:'#000',fontSize:12,fontFamily:'OpenSans'}}>25 Aug </Text>
+   
+                                                  </TouchableOpacity>
+                               
+                                                   </Col>
+                                                   <Col style={{width:'8%'}}>
+                                                   <Icon name='ios-arrow-forward' style={{fontSize:25,marginTop:25,marginLeft:5,marginRight:5}}/>
+   
+                                                   </Col>
+   
+                                                  
+                                             </Row>
+                                             <Row>
+                                             <Col style={{width:'8%'}}>
+                                               </Col>
+                                                   <Col style={{width:'22%',}}>
+                                                   <TouchableOpacity style={{textAlign:'center',backgroundColor:'#775DA3', borderColor: '#000', marginTop:10, height: 30, borderRadius: 5,justifyContent:'center' ,marginRight:5,paddingLeft:5,paddingRight:5}}>
+                                                       
+                                                   <Text style={{textAlign:'center',color:'#fff',fontSize:12,fontFamily:'OpenSans'}}>9:00 am </Text>
+   
+   
+                                                  </TouchableOpacity>
+                                                   </Col>
+                                                   <Col style={{width:'22%',}}>
+                                                   
+   
+                                                   <TouchableOpacity style={{textAlign:'center',backgroundColor:'#ced6e0', borderColor: '#000', marginTop:10, height: 30, borderRadius: 5,justifyContent:'center' ,marginRight:5,paddingLeft:5,paddingRight:5}}>
+                                                   <Text style={{textAlign:'center',color:'#000',fontSize:12,fontFamily:'OpenSans'}}>10:00 am </Text>
+   
+   
+                                                  </TouchableOpacity>
+                                                   </Col>
+                                                   <Col style={{width:'22%',}}>
+                                                   <TouchableOpacity style={{textAlign:'center',backgroundColor:'#ced6e0', borderColor: '#000', marginTop:10, height: 30, borderRadius: 5,justifyContent:'center' ,marginRight:5,paddingLeft:5,paddingRight:5}}>
+                                                       
+                                                   <Text style={{textAlign:'center',color:'#000',fontSize:12,fontFamily:'OpenSans'}}>11:00 am </Text>
+   
+                                                  </TouchableOpacity>
+                                                   </Col>
+                                                   <Col style={{width:'22%',}}>
+                                                   
+   
+                                                   <TouchableOpacity style={{textAlign:'center',backgroundColor:'#ced6e0', borderColor: '#000', marginTop:10, height: 30, borderRadius: 5,justifyContent:'center' ,marginRight:5,paddingLeft:5,paddingRight:5}}>
+                                                       
+                                                   <Text style={{textAlign:'center',color:'#000',fontSize:12,fontFamily:'OpenSans'}}>12:00 am </Text>
+   
+   
+                                                  </TouchableOpacity>
+                               
+                                                   </Col>
+                                                   <Col style={{width:'8%'}}>
+                                                   </Col>
+   
+                                                  
+                                             </Row>
+                                             <Row>
+                                             <Col style={{width:'8%'}}>
+                                               </Col>
+                                                   <Col style={{width:'22%',}}>
+                                                   <TouchableOpacity style={{textAlign:'center',backgroundColor:'#ced6e0', borderColor: '#000', marginTop:10, height: 30, borderRadius: 5,justifyContent:'center' ,marginRight:5,paddingLeft:5,paddingRight:5}}>
+                                                       
+                                                   <Text style={{textAlign:'center',color:'#000',fontSize:12,fontFamily:'OpenSans'}}>1:00 am </Text>
+   
+   
+                                                  </TouchableOpacity>
+                                                   </Col>
+                                                   <Col style={{width:'22%',}}>
+                                                   
+   
+                                                   <TouchableOpacity style={{textAlign:'center',backgroundColor:'#ced6e0', borderColor: '#000', marginTop:10, height: 30, borderRadius: 5,justifyContent:'center' ,marginRight:5,paddingLeft:5,paddingRight:5}}>
+                                                   <Text style={{textAlign:'center',color:'#000',fontSize:12,fontFamily:'OpenSans'}}>3:00 am </Text>
+   
+   
+                                                  </TouchableOpacity>
+                                                   </Col>
+                                                   <Col style={{width:'22%',}}>
+                                                  
+                                                   </Col>
+                                                   <Col style={{width:'22%',}}>
+                                                   
+   
+                                                   
+                               
+                                                   </Col>
+                                                   <Col style={{width:'8%'}}>
+                                                   </Col>
+   
+                                                  
+                                             </Row>
+                                 
+ </View>
+ <View style={{marginLeft:5,marginRight:5,borderTopColor:'gray',borderTopWidth:0.7,}}>
+   <Row style={{marginTop:10}}>
+   <Icon name='ios-home' style={{fontSize:20}}/>
+   <Text  style={{ fontFamily: 'OpenSans',fontSize:13,fontWeight:'bold',marginLeft:10,marginTop:1 }}>Manipal Hospital </Text>
+   </Row>
+   <Text  style={{ fontFamily: 'OpenSans',fontSize:13,marginLeft:26}}>560, 3rd Floor,9th A Main,Domlur </Text>
+   <Card transparent style={{ margin: 20, backgroundColor: '#ecf0f1' }}>
+ 
+         {this.state.slotList!==undefined?
+        <Card style={ { height: 250 }}>
+         {this.state.selectedSlotItem !== null  ? <Mapbox hospitalLocation={this.state.selectedSlotItem}/>  : null }        
+         <List>
+           <ListItem avatar>
+             <Left>
+               <Icon name="locate" style={{ color: '#7E49C3', fontSize: 20 }}></Icon>
+             </Left>
+             <Body>
+ 
+               <Text note style={{fontFamily:'OpenSans',fontSize:12}}>{this.state.item.name}</Text>
+               <Text note style={{fontFamily:'OpenSans',fontSize:12}}>{this.state.item.no_and_street}</Text>
+               <Text note style={{fontFamily:'OpenSans',fontSize:12}}>{this.state.item.city}</Text>
+               <Text note style={{fontFamily:'OpenSans',fontSize:12}}>{this.state.item.state}</Text>
+               <Text note style={{fontFamily:'OpenSans',fontSize:12}}>{this.state.item.pin_code}</Text>
+ 
+             </Body>
+             
+           </ListItem>
+         </List>
+       </Card>:null}
+       </Card>
+ </View>
+ <View style={{marginLeft:5,marginRight:5,borderTopColor:'gray',borderTopWidth:0.7,marginBottom:5}}>
+   <Row style={{marginTop:10}}>
+   <Icon name='ios-medkit' style={{fontSize:20}}/>
+   <Text  style={{ fontFamily: 'OpenSans',fontSize:13,fontWeight:'bold',marginLeft:10,marginTop:1 }}>Services</Text>
+   </Row>
+   <Text  style={{ fontFamily: 'OpenSans',fontSize:13,marginLeft:26}}>vitreoretinal Surgery</Text>
+   <Text  style={{ fontFamily: 'OpenSans',fontSize:13,marginLeft:26}}>Cataract Surgery</Text>
+ 
+ </View>
+ <View style={{marginLeft:5,marginRight:5,borderTopColor:'gray',borderTopWidth:1,}}>
+   <Row style={{marginTop:10}}>
+   <Icon name='ios-medkit' style={{fontSize:20}}/>
+   <Text  style={{ fontFamily: 'OpenSans',fontSize:13,fontWeight:'bold',marginLeft:10,marginTop:1 }}>Language Spoken</Text>
+   </Row>
+   <Row style={{marginLeft:20}}>
+   
+     <FlatList
+     data={Language}
+     horizontal={true}
+     renderItem={
+       ({ item }) =>
+       <View style={{marginLeft:10}}>
+   <TouchableOpacity 
+     
+        style={{ borderColor: '#000',borderWidth:1, marginTop:10, height: 25, borderRadius: 10,justifyContent:'center' ,padding:10 }}>
+   <Text style={{color:'#000',fontSize:12,fontWeight:'bold',fontFamily:'OpenSans'}}>{item}</Text>
+    </TouchableOpacity> 
+    </View>  
+   
+   
+     }/>
+   
+   </Row>
+   
+ <Row style={{justifyContent:'center',alignItems:'center',marginTop:20,}}>
+ <TouchableOpacity 
+     
+     style={{backgroundColor:'#775DA3', borderColor: '#000',  height: 30, borderRadius: 10,justifyContent:'center'  ,padding:10,marginLeft:10}}>
+ <Text style={{color:'#fff',fontSize:15,fontWeight:'bold',fontFamily:'OpenSans',textAlign:'center',padding:50}}>Book</Text>
+ </TouchableOpacity> 
+ </Row>
+ </View> 
+ </Content> : null }  
 
 {this.state.pressTab==2? 
   <Content>
@@ -431,224 +667,10 @@ enumarateDates(startDate, endDate) {
 
             </Card>
 </Content>
-:
+: null }
 
-<Content>
- <View style={{marginLeft:5,marginRight:5}}>
-<Text note style={{ fontFamily: 'OpenSans',fontSize:12, }}>Description</Text>
-<Text style={{fontFamily:'OpenSans',fontSize:12}}>Dr. James expert is ab avid learner and expert in performing Laser treatment.He has various national and international publications on his name</Text>
-</View>
-<Row style={{marginLeft:5,marginRight:5,paddingBottom:5}}>
-  <Right><Text style={{ fontFamily: 'OpenSans',fontSize:15,color:'#775DA3' }}>More</Text></Right>
-</Row>
-<View style={{marginLeft:5,marginRight:5,borderTopColor:'gray',borderTopWidth:0.7,paddingBottom:5}}>
-  <Row style={{marginTop:10}}>
-  <Icon name='ios-time' style={{fontSize:20}}/>
-  <Text  style={{ fontFamily: 'OpenSans',fontSize:13,fontWeight:'bold',marginLeft:10,marginTop:1 }}>Appoinment Time Slots</Text>
-  </Row>
-  <Row style={{marginLeft:'auto',marginRight:'auto'}}  >
-                                             
-                                             <Col style={{width:'8%'}}>
-                                              <Icon name='ios-arrow-back' style={{fontSize:25,marginTop:25}}/>
-                                              </Col>
-                                                  <Col style={{width:'22%',}}>
-                                                  <TouchableOpacity style={{textAlign:'center',backgroundColor:'#775DA3', borderColor: '#000', marginTop:10, height: 50, borderRadius: 5,justifyContent:'center' ,marginRight:5,paddingLeft:5,paddingRight:5}}>
-                                                      
-                                                      <Text style={{textAlign:'center',color:'#fff',fontSize:13,fontFamily:'OpenSans',fontWeight:'bold'}}>Mon</Text>
-                                                      <Text style={{textAlign:'center',color:'#fff',fontSize:12,fontFamily:'OpenSans'}}>25 Aug </Text>
-  
-                                                 </TouchableOpacity>
-                                                  </Col>
-                                                  <Col style={{width:'22%',}}>
-                                                  
-  
-                                                  <TouchableOpacity style={{textAlign:'center',backgroundColor:'#ced6e0', borderColor: '#000', marginTop:10, height: 50, borderRadius: 5,justifyContent:'center' ,marginRight:5,paddingLeft:5,paddingRight:5}}>
-                                                      
-                                                      <Text style={{textAlign:'center',color:'#000',fontSize:13,fontFamily:'OpenSans',fontWeight:'bold'}}>Mon</Text>
-                                                      <Text style={{textAlign:'center',color:'#000',fontSize:12,fontFamily:'OpenSans'}}>25 Aug </Text>
-  
-                                                 </TouchableOpacity>
-                                                  </Col>
-                                                  <Col style={{width:'22%',}}>
-                                                  <TouchableOpacity style={{textAlign:'center',backgroundColor:'#ced6e0', borderColor: '#000', marginTop:10, height: 50, borderRadius: 5,justifyContent:'center' ,marginRight:5,paddingLeft:5,paddingRight:5}}>
-                                                      
-                                                      <Text style={{textAlign:'center',color:'#000',fontSize:13,fontFamily:'OpenSans',fontWeight:'bold'}}>Mon</Text>
-                                                      <Text style={{textAlign:'center',color:'#000',fontSize:12,fontFamily:'OpenSans'}}>25 Aug </Text>
-  
-                                                 </TouchableOpacity>
-                                                  </Col>
-                                                  <Col style={{width:'22%',}}>
-                                                  
-  
-                                                  <TouchableOpacity style={{textAlign:'center',backgroundColor:'#ced6e0', borderColor: '#000', marginTop:10, height: 50, borderRadius: 5,justifyContent:'center' ,marginRight:5,paddingLeft:5,paddingRight:5}}>
-                                                      
-                                                      <Text style={{textAlign:'center',color:'#000',fontSize:13,fontFamily:'OpenSans',fontWeight:'bold'}}>Mon</Text>
-                                                      <Text style={{textAlign:'center',color:'#000',fontSize:12,fontFamily:'OpenSans'}}>25 Aug </Text>
-  
-                                                 </TouchableOpacity>
-                              
-                                                  </Col>
-                                                  <Col style={{width:'8%'}}>
-                                                  <Icon name='ios-arrow-forward' style={{fontSize:25,marginTop:25,marginLeft:5,marginRight:5}}/>
-  
-                                                  </Col>
-  
-                                                 
-                                            </Row>
-                                            <Row>
-                                            <Col style={{width:'8%'}}>
-                                              </Col>
-                                                  <Col style={{width:'22%',}}>
-                                                  <TouchableOpacity style={{textAlign:'center',backgroundColor:'#775DA3', borderColor: '#000', marginTop:10, height: 30, borderRadius: 5,justifyContent:'center' ,marginRight:5,paddingLeft:5,paddingRight:5}}>
-                                                      
-                                                  <Text style={{textAlign:'center',color:'#fff',fontSize:12,fontFamily:'OpenSans'}}>9:00 am </Text>
-  
-  
-                                                 </TouchableOpacity>
-                                                  </Col>
-                                                  <Col style={{width:'22%',}}>
-                                                  
-  
-                                                  <TouchableOpacity style={{textAlign:'center',backgroundColor:'#ced6e0', borderColor: '#000', marginTop:10, height: 30, borderRadius: 5,justifyContent:'center' ,marginRight:5,paddingLeft:5,paddingRight:5}}>
-                                                  <Text style={{textAlign:'center',color:'#000',fontSize:12,fontFamily:'OpenSans'}}>10:00 am </Text>
-  
-  
-                                                 </TouchableOpacity>
-                                                  </Col>
-                                                  <Col style={{width:'22%',}}>
-                                                  <TouchableOpacity style={{textAlign:'center',backgroundColor:'#ced6e0', borderColor: '#000', marginTop:10, height: 30, borderRadius: 5,justifyContent:'center' ,marginRight:5,paddingLeft:5,paddingRight:5}}>
-                                                      
-                                                  <Text style={{textAlign:'center',color:'#000',fontSize:12,fontFamily:'OpenSans'}}>11:00 am </Text>
-  
-                                                 </TouchableOpacity>
-                                                  </Col>
-                                                  <Col style={{width:'22%',}}>
-                                                  
-  
-                                                  <TouchableOpacity style={{textAlign:'center',backgroundColor:'#ced6e0', borderColor: '#000', marginTop:10, height: 30, borderRadius: 5,justifyContent:'center' ,marginRight:5,paddingLeft:5,paddingRight:5}}>
-                                                      
-                                                  <Text style={{textAlign:'center',color:'#000',fontSize:12,fontFamily:'OpenSans'}}>12:00 am </Text>
-  
-  
-                                                 </TouchableOpacity>
-                              
-                                                  </Col>
-                                                  <Col style={{width:'8%'}}>
-                                                  </Col>
-  
-                                                 
-                                            </Row>
-                                            <Row>
-                                            <Col style={{width:'8%'}}>
-                                              </Col>
-                                                  <Col style={{width:'22%',}}>
-                                                  <TouchableOpacity style={{textAlign:'center',backgroundColor:'#ced6e0', borderColor: '#000', marginTop:10, height: 30, borderRadius: 5,justifyContent:'center' ,marginRight:5,paddingLeft:5,paddingRight:5}}>
-                                                      
-                                                  <Text style={{textAlign:'center',color:'#000',fontSize:12,fontFamily:'OpenSans'}}>1:00 am </Text>
-  
-  
-                                                 </TouchableOpacity>
-                                                  </Col>
-                                                  <Col style={{width:'22%',}}>
-                                                  
-  
-                                                  <TouchableOpacity style={{textAlign:'center',backgroundColor:'#ced6e0', borderColor: '#000', marginTop:10, height: 30, borderRadius: 5,justifyContent:'center' ,marginRight:5,paddingLeft:5,paddingRight:5}}>
-                                                  <Text style={{textAlign:'center',color:'#000',fontSize:12,fontFamily:'OpenSans'}}>3:00 am </Text>
-  
-  
-                                                 </TouchableOpacity>
-                                                  </Col>
-                                                  <Col style={{width:'22%',}}>
-                                                 
-                                                  </Col>
-                                                  <Col style={{width:'22%',}}>
-                                                  
-  
-                                                  
-                              
-                                                  </Col>
-                                                  <Col style={{width:'8%'}}>
-                                                  </Col>
-  
-                                                 
-                                            </Row>
-                                
-</View>
-<View style={{marginLeft:5,marginRight:5,borderTopColor:'gray',borderTopWidth:0.7,}}>
-  <Row style={{marginTop:10}}>
-  <Icon name='ios-home' style={{fontSize:20}}/>
-  <Text  style={{ fontFamily: 'OpenSans',fontSize:13,fontWeight:'bold',marginLeft:10,marginTop:1 }}>Manipal Hospital </Text>
-  </Row>
-  <Text  style={{ fontFamily: 'OpenSans',fontSize:13,marginLeft:26}}>560, 3rd Floor,9th A Main,Domlur </Text>
-  <Card transparent style={{ margin: 20, backgroundColor: '#ecf0f1' }}>
 
-        {this.state.slotList!==undefined?
-       <Card style={ { height: 250 }}>
-        {this.state.selectedSlotItem !== null  ? <Mapbox hospitalLocation={this.state.selectedSlotItem}/>  : null }        
-        <List>
-          <ListItem avatar>
-            <Left>
-              <Icon name="locate" style={{ color: '#7E49C3', fontSize: 20 }}></Icon>
-            </Left>
-            <Body>
 
-              <Text note style={{fontFamily:'OpenSans',fontSize:12}}>{this.state.item.name}</Text>
-              <Text note style={{fontFamily:'OpenSans',fontSize:12}}>{this.state.item.no_and_street}</Text>
-              <Text note style={{fontFamily:'OpenSans',fontSize:12}}>{this.state.item.city}</Text>
-              <Text note style={{fontFamily:'OpenSans',fontSize:12}}>{this.state.item.state}</Text>
-              <Text note style={{fontFamily:'OpenSans',fontSize:12}}>{this.state.item.pin_code}</Text>
-
-            </Body>
-            
-          </ListItem>
-        </List>
-      </Card>:null}
-      </Card>
-</View>
-<View style={{marginLeft:5,marginRight:5,borderTopColor:'gray',borderTopWidth:0.7,marginBottom:5}}>
-  <Row style={{marginTop:10}}>
-  <Icon name='ios-medkit' style={{fontSize:20}}/>
-  <Text  style={{ fontFamily: 'OpenSans',fontSize:13,fontWeight:'bold',marginLeft:10,marginTop:1 }}>Services</Text>
-  </Row>
-  <Text  style={{ fontFamily: 'OpenSans',fontSize:13,marginLeft:26}}>vitreoretinal Surgery</Text>
-  <Text  style={{ fontFamily: 'OpenSans',fontSize:13,marginLeft:26}}>Cataract Surgery</Text>
-
-</View>
-<View style={{marginLeft:5,marginRight:5,borderTopColor:'gray',borderTopWidth:1,}}>
-  <Row style={{marginTop:10}}>
-  <Icon name='ios-medkit' style={{fontSize:20}}/>
-  <Text  style={{ fontFamily: 'OpenSans',fontSize:13,fontWeight:'bold',marginLeft:10,marginTop:1 }}>Language Spoken</Text>
-  </Row>
-  <Row style={{marginLeft:20}}>
-  
-    <FlatList
-    data={Language}
-    horizontal={true}
-    renderItem={
-      ({ item }) =>
-      <View style={{marginLeft:10}}>
-  <TouchableOpacity 
-    
-       style={{ borderColor: '#000',borderWidth:1, marginTop:10, height: 25, borderRadius: 10,justifyContent:'center' ,padding:10 }}>
-  <Text style={{color:'#000',fontSize:12,fontWeight:'bold',fontFamily:'OpenSans'}}>{item}</Text>
-   </TouchableOpacity> 
-   </View>  
-  
-  
-    }/>
-  
-  </Row>
-  
-<Row style={{justifyContent:'center',alignItems:'center',marginTop:20,}}>
-<TouchableOpacity 
-    
-    style={{backgroundColor:'#775DA3', borderColor: '#000',  height: 30, borderRadius: 10,justifyContent:'center'  ,padding:10,marginLeft:10}}>
-<Text style={{color:'#fff',fontSize:15,fontWeight:'bold',fontFamily:'OpenSans',textAlign:'center',padding:50}}>Book</Text>
-</TouchableOpacity> 
-</Row>
-</View> 
-</Content>
-}
 
                       </Content>
                       </Container>
@@ -1029,13 +1051,12 @@ enumarateDates(startDate, endDate) {
 
 }
 
-function bookAppointmentState(state) {
-
+function bookApppointmentState(state) {
   return {
-    user: state.bookAppointmentData
+      bookappointment: state.bookappointment
   }
 }
-export default connect(bookAppointmentState)(BookAppoinment)
+export default connect(bookApppointmentState)(BookAppoinment)
 
 
 const styles = StyleSheet.create({

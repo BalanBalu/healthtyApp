@@ -6,7 +6,7 @@ import { connect } from 'react-redux'
 import { StyleSheet, TouchableOpacity, View, FlatList, AsyncStorage, Slider } from 'react-native';
 import StarRating from 'react-native-star-rating';
 
-import { insertDoctorsWishList, searchDoctorList, fetchAvailabilitySlots, getMultipleDoctorDetails, getDoctorsReviewsCount, getPatientWishList, SET_BOOK_APP_SLOT_DATA, SET_BOOK_APP_DOCTOR_DATA, SET_SELECTED_DATE , getDoctorFaviouteList} from '../../providers/bookappointment/bookappointment.action';
+import { insertDoctorsWishList, searchDoctorList, fetchAvailabilitySlots, getMultipleDoctorDetails, getDoctorsReviewsCount, getPatientWishList, SET_BOOK_APP_SLOT_DATA, SET_BOOK_APP_DOCTOR_DATA, SET_SELECTED_DATE ,SET_SINGLE_DOCTOR_DATA, getDoctorFaviouteList} from '../../providers/bookappointment/bookappointment.action';
 import { formatDate, addMoment, addTimeUnit, getMoment,addDate,dateDiff, findArrayObj, intersection } from '../../../setup/helpers';
 import { Loader } from '../../../components/ContentLoader';
 import { RenderHospitalAddress, renderProfileImage,  getDoctorSpecialist, getDoctorEducation  } from '../../common';
@@ -502,8 +502,20 @@ class doctorSearchList extends Component {
     }
 
     navigateToBookAppointmentPage(doctorData) {
+        let { reviewsByDoctorIds, favouriteListCountByDoctorIds }  = this.state;
+        console.log()
         doctorData.doctorId = doctorData.doctor_id;
-        this.props.navigation.navigate('Book Appointment', { doctorDetails: doctorData })
+        let requestData = {
+           ...doctorData, 
+           ratingData: reviewsByDoctorIds[doctorData.doctor_id],
+           favouriteListCount : favouriteListCountByDoctorIds[doctorData.doctor_id] 
+        }
+        store.dispatch({
+            type: SET_SINGLE_DOCTOR_DATA,
+            data: requestData
+        })
+        console.log(requestData);
+        this.props.navigation.navigate('Book Appointment', { doctorId: doctorData.doctor_id })
     }
     
  
