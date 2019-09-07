@@ -8,7 +8,7 @@ import { connect } from 'react-redux'
 import { StyleSheet, Image, View, TouchableOpacity, AsyncStorage,ScrollView,FlatList } from 'react-native';
 // import { ScrollView, FlatList } from 'react-native-gesture-handler';
 import { catagries } from '../../providers/catagries/catagries.actions';
- import { getUserNotification } from '../../providers/notification/notification.actions'
+
 class Home extends Component {
     constructor(props) {
         super(props)
@@ -36,7 +36,7 @@ class Home extends Component {
        
         await this.getCatagries();
 
-         await getUserNotification();
+        
     }
 
     getCatagries = async () => {

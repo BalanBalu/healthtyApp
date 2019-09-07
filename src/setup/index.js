@@ -14,9 +14,9 @@ export default class App extends Component {
       super(props);
   } 
   componentDidMount() {
-    //  setInterval(() => {
+      setInterval(() => {
       this.getMarkedAsReadedNotification();
-    // },2000)
+     },10000)
    
   }
 
@@ -39,8 +39,7 @@ export default class App extends Component {
   
   }
   render() {
-    const data = store.getState().notification.notificationCount;
-    console.log(data)
+   
    
       return (
        
