@@ -2,7 +2,7 @@ import React,{Component} from 'react';
 import { View, Text, AsyncStorage} from "react-native";
 import { Icon } from 'native-base';
 import { Col, Row, Grid } from 'react-native-easy-grid';
-// import { fetchUserNotification, UpDateUserNotification } from '../../src/modules/providers/notification/notification.actions'
+
 
 
 export const RenderHospitalAddress = (props) => {
@@ -106,49 +106,3 @@ export function medicineRateAfterOffer(item) {
     return parseInt(item.price) - ((parseInt(item.offer) / 100) * parseInt(item.price));
 
 }
-// export async function getUserNotification() {
-//     try {
-       
-//         let userId = await AsyncStorage.getItem('userId');
-//     console.log(userId)
-//         let result = await fetchUserNotification(userId);
-//         console.log('hi notification')
-//         console.log(JSON.stringify(result))
-      
-        
-        
-
-//     }
-//     catch (e) {
-//         console.log(e);
-//     }
-   
-   
-// }
-
-
-// export  class Badge extends Component {
-//     constructor(props) {
-
-//         super(props);
-//         this.state = {
-//             data:''
-//         };
-//     }
-
-    
-  
-//     async componentDidMount() {
-//         let data = await AsyncStorage.getItem('notification');
-//         this.setState({data})
-//     }
-
-//     render() {
-//         const { data} = this.state;
-
-
-//         return (
-//             <Text style={{ position: 'absolute', backgroundColor: 'red', color: 'white', borderRadius: 20, marginLeft: 10, padding: 2, marginTop: -7 }}>{data}</Text>
-//         )
-//     }
-// }

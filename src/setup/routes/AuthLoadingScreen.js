@@ -20,18 +20,18 @@ class AuthLoadingScreen extends React.Component {
         await setUserLocally(token, user);
       }
     }
-   
-    console.log('authloading router')
-   
+
+
+
     // This will switch to the App screen or Auth screen and this loading
     // screen will be unmounted and thrown away.
-   
+
     this.props.navigation.navigate(token ? 'App' : 'App');
 
   };
- 
 
- 
+
+
   render() {
 
 
@@ -39,14 +39,14 @@ class AuthLoadingScreen extends React.Component {
     console.log(data)
     console.log('.............................................')
     // return null;
-   
+
     return (
-    <View>
-      {  data != null ?
-        < Text style={{ position: 'absolute', backgroundColor: 'red', color: 'white', borderRadius: 20, marginLeft: 10, padding: 2, marginTop: -7 }
-          }> {data}</Text > : null}</View>
+      <View style={{ marginTop: -40, }}>
+        {data != null ?
+          < Text style={{ position: 'absolute', backgroundColor: 'red', color: 'white', borderRadius: 5, height: 20, textAlign: 'center' }
+          }> 1000</Text > : null}</View>
     )
   }
 }
- 
+
 export default AuthLoadingScreen;
