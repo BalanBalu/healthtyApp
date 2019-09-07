@@ -367,7 +367,7 @@ class MyAppoinmentList extends Component {
 								<Text
 									style={{
 										fontFamily: "OpenSans",
-										fontSize: 14,
+										fontSize: 15,
 										marginTop: "10%"
 									}}
 									note
@@ -379,7 +379,7 @@ class MyAppoinmentList extends Component {
 										onPress={() =>
 											this.props.navigation.navigate("Home", { fromAppointment: true })
 										} testID='navigateToHome'>
-										<Text>Book Now</Text>
+										<Text style={{fontFamily:'Opensans',fontSize:15,fontWeight:'bold'}}>Book Now</Text>
 									</Button>
 								</Item>
 							</Card>
@@ -409,13 +409,13 @@ class MyAppoinmentList extends Component {
 
 														<Item style={{ borderBottomWidth: 0 }}>
 
-															<Text style={{ fontFamily: "OpenSans" }}>
+															<Text style={{ fontFamily: "OpenSans",fontSize:15,fontWeight:'bold'}}>
 																{(item.prefix != undefined ? item.prefix : 'Dr.') + item.appointmentResult.doctorInfo.first_name + " " + item.appointmentResult.doctorInfo.last_name}{" "}
 															</Text>
 															<Text
 																style={{
 																	fontFamily: "OpenSans",
-																	fontSize: 10,
+																	fontSize: 13,
 																	marginTop: "1%"
 																}}
 															>
@@ -424,7 +424,7 @@ class MyAppoinmentList extends Component {
 														</Item>
 														<Item style={{ borderBottomWidth: 0 }}>
 															<Text
-																style={{ fontFamily: "OpenSans", fontSize: 14 }}
+																style={{ fontFamily: "OpenSans", fontSize: 14,width:'60%' }}
 															>
 																{item.specialist}
 															</Text>
@@ -436,7 +436,7 @@ class MyAppoinmentList extends Component {
 																		starSize={20}
 																		containerStyle={{
 																			width: 100,
-																			marginLeft: "auto"
+																			marginLeft: "auto",
 																		}}
 																		disabled={false}
 																		maxStars={5}
@@ -449,18 +449,18 @@ class MyAppoinmentList extends Component {
 															{selectedIndex == 0 ?
 
 																(item.appointmentResult.appointment_status == "PENDING" ?
-																	<Text style={{ fontFamily: "OpenSans", fontSize: 12, color: "red" }} note>waiting for confirmation</Text>
+																	<Text style={{ fontFamily: "OpenSans", fontSize: 13, color: "red",fontWeight:'bold' }} note>waiting for confirmation</Text>
 																	: item.appointmentResult.appointment_status == "APPROVED" ?
-																		<Text style={{ fontFamily: "OpenSans", fontSize: 12, color: "green" }} note>	Appointment confirmed</Text>
+																		<Text style={{ fontFamily: "OpenSans", fontSize: 13, color: "green",fontWeight:'bold' }} note>	Appointment confirmed</Text>
 																		: item.appointmentResult.appointment_status == "CLOSED" ?
-																			<Text style={{ fontFamily: "OpenSans", fontSize: 12, color: "red" }} note	>Appointment cancelled</Text>
+																			<Text style={{ fontFamily: "OpenSans", fontSize: 13, color: "red",fontWeight:'bold' }} note	>Appointment cancelled</Text>
 																			: item.appointmentResult.appointment_status == "PROPOSED_NEW_TIME" &&
-																			<Text style={{ fontFamily: "OpenSans", fontSize: 12, color: "grey" }} note	> PROPOSED_NEW_TIME</Text>
+																			<Text style={{ fontFamily: "OpenSans", fontSize: 13, color: "grey" ,fontWeight:'bold'}} note	> PROPOSED_NEW_TIME</Text>
 																) :
 																(item.appointmentResult.appointment_status == "CLOSED" ?
-																	<Text style={{ fontFamily: "OpenSans", fontSize: 12, color: "red" }} note>	Appointment cancelled.	</Text>
+																	<Text style={{ fontFamily: "OpenSans", fontSize: 13, color: "red",fontWeight:'bold' }} note>	Appointment cancelled.	</Text>
 																	:
-																	<Text style={{ fontFamily: "OpenSans", fontSize: 12, color: "green" }} note>Appointment completed
+																	<Text style={{ fontFamily: "OpenSans", fontSize: 13, color: "green" ,fontWeight:'bold'}} note>Appointment completed
 																	</Text>
 																)
 
@@ -469,7 +469,7 @@ class MyAppoinmentList extends Component {
 														</Item>
 
 														<Text
-															style={{ fontFamily: "OpenSans", fontSize: 12 }}
+															style={{ fontFamily: "OpenSans", fontSize: 13 }}
 															note
 														>
 															{formatDate(
@@ -495,7 +495,7 @@ class MyAppoinmentList extends Component {
 																	</Button>
 																	<Button style={styles.bookingButton} onPress={() => this.navigateToBookAppointmentPage(item)}>
 																		<Text style={styles.bookAgain1} testID='navigateBookAppointment'>
-																			book Again
+																			Book Again
 																</Text>
 																	</Button>
 																</Item>
@@ -543,7 +543,9 @@ const styles = StyleSheet.create({
 		margin: 10
 	},
 	bookAgain1: {
-		fontSize: 12
+		fontSize: 13,
+		fontFamily:'OpenSans',
+		fontWeight:'bold'
 	},
 	bodyContent: {
 		padding: 5
