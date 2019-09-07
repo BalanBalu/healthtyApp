@@ -1,5 +1,5 @@
 import React,{Component} from 'react';
-import { View, Text, AsyncStorage} from "react-native";
+import { View, Text, AsyncStorage,StyleSheet} from "react-native";
 import { Icon } from 'native-base';
 import { Col, Row, Grid } from 'react-native-easy-grid';
 
