@@ -41,10 +41,11 @@ class AuthLoadingScreen extends React.Component {
     // return null;
 
     return (
-      <View style={{ marginTop: -40, }}>
+      // <View style={{ marginTop: -40, }}>
+    <View>
         {data != null ?
           < Text style={{ position: 'absolute', backgroundColor: 'red', color: 'white', borderRadius: 5, height: 20, textAlign: 'center' }
-          }> 1000</Text > : null}</View>
+          }> {data}</Text > : null}</View>
     )
   }
 }
