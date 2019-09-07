@@ -62,14 +62,14 @@ class UpdateContact extends Component {
                 let response = await userFiledsUpdate(userId, data);
                 if (response.success) {
                     Toast.show({
-                        text: 'Contact updated Successfully',
+                        text:response.message,
                         type: "success",
                         duration: 3000,
                     })
                     this.props.navigation.navigate('Profile');               
                 } else {
                     Toast.show({
-                        text:'Enter Secondary Mobile_No',
+                        text:response.message,
                         type: "danger",
                         duration: 3000
                     })           

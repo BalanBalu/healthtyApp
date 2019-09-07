@@ -153,6 +153,7 @@ export async function logout() {
   await AsyncStorage.removeItem('user')
   await AsyncStorage.removeItem('userId')
   await AsyncStorage.removeItem('profile')
+  await AsyncStorage.removeItem('isLoggedIn');
   store.dispatch({
     type: LOGOUT
   })
@@ -164,6 +165,7 @@ export async function  setUserLocally(token, userData) {
   
   await AsyncStorage.setItem('token', token)
   await AsyncStorage.setItem('userId', userData.userId)
+  await AsyncStorage.setItem('isLoggedIn', 'true');
   AsyncStorage.setItem('user', JSON.stringify(userData))
   axios.defaults.headers.common['x-access-token'] = token;
   axios.defaults.headers.common['userId'] = userData.userId;
