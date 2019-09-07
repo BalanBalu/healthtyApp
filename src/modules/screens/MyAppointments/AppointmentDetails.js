@@ -13,7 +13,7 @@ import { formatDate, dateDiff } from '../../../setup/helpers';
 
 import { Loader } from '../../../components/ContentLoader'
 import { RenderHospitalAddress } from '../../common';
-
+import { renderProfileImage } from '../../common'
 class AppointmentDetails extends Component {
   constructor(props) {
     super(props)
@@ -25,7 +25,7 @@ class AppointmentDetails extends Component {
       userId: '',
       reviewData: {},
       doctorData: {},
-      isLoading: false,
+      isLoading: true,
       yearOfExperience: '',
       appointmentStatus: '',
       statusUpdateReason: ' ',
@@ -48,33 +48,34 @@ class AppointmentDetails extends Component {
       const appointmentId = navigation.getParam('appointmentId');
 
       await this.setState({ appointmentId: appointmentId });
-
+      console.log('if run')
       await this.appointmentDetailsGetById()
     }
     else {
 
       let doctorId = appointmentData.doctor_id;
       let appointmentId = appointmentData._id;
+     
       await this.setState({
         doctorId: doctorId, appointmentId: appointmentId,
-        userId: userId, data: appointmentData, isLoading: true
+        userId: userId, data: appointmentData,
       })
 
       await new Promise.all([
         this.getDoctorDetails(),
         this.getUserReviews()
       ])
-
+      console.log('else run')
     }
 
-    await this.setState({ isLoading: true })
+    await this.setState({ isLoading: false })
   }
 
   /* Get Doctor Details */
   getDoctorDetails = async () => {
     try {
 
-      let fields = 'first_name,last_name,prefix,education,specialist,email,mobile_no,experience,hospital,language,professional_statement,fee';
+      let fields = 'first_name,last_name,prefix,education,specialist,email,mobile_no,experience,hospital,language,professional_statement,fee,profile_image';
       let resultDetails = await bindDoctorDetails(this.state.doctorId, fields);
 
       if (resultDetails.success) {
@@ -148,9 +149,12 @@ class AppointmentDetails extends Component {
     this.getUserReviews();
     if (result.success) {
 
-      await this.setState({ doctorId: result.data[0].doctor_id, data: result.data[0] })
-      console.log(this.state.data)
-      this.getDoctorDetails()
+      await new Promise.all([
+      this.setState({ doctorId: result.data[0].doctor_id, data: result.data[0] }),
+     
+        this.getDoctorDetails()
+      ])
+      
 
     }
 
@@ -175,7 +179,7 @@ class AppointmentDetails extends Component {
 
   updateAppointmentStatus = async (data, updatedStatus) => {
     try {
-      this.setState({ isLoading: false });
+      this.setState({ isLoading: true });
       let requestData = {
         doctorId: data.doctor_id,
         userId: data.user_id,
@@ -188,7 +192,7 @@ class AppointmentDetails extends Component {
       debugger
       let userId = await AsyncStorage.getItem('userId');
       let result = await appointmentStatusUpdate(this.state.doctorId, this.state.appointmentId, requestData);
-      this.setState({ isLoading: true })
+      this.setState({ isLoading: false })
       let appointmentStatus = result.appointmentData.appointment_status;
 
       if (result.success) {
@@ -196,6 +200,7 @@ class AppointmentDetails extends Component {
           text: result.message,
           duration: 3000
         })
+        console.log(result)
 
         this.setState({ appointmentStatus: appointmentStatus, data: result });
       }
@@ -226,7 +231,7 @@ class AppointmentDetails extends Component {
 
       <Container style={styles.container}>
 
-        {isLoading == false ? <Loader style={'appointment'} /> :
+        {isLoading == true ? <Loader style={'appointment'} /> :
 
           <Content style={styles.bodyContent}>
             <NavigationEvents
@@ -240,11 +245,12 @@ class AppointmentDetails extends Component {
               <List>
                 <ListItem thumbnail noBorder>
                   <Left>
-                    <Thumbnail square source={{ uri: 'https://static1.squarespace.com/static/582bbfef9de4bb07fe62ab18/t/5877b9ccebbd1a124af66dfe/1484241404624/Headshot+-+Circular.png?format=300w' }} style={{ height: 86, width: 86 }} />
+
+                    <Thumbnail square source={renderProfileImage(doctorData)} style={{ height: 86, width: 86 }} />
                   </Left>
                   <Body>
-                    <Text style={{ fontSize: 16 }}>{(doctorData && doctorData.prefix ? doctorData.prefix : 'Dr') + ('.') + (doctorData && doctorData.first_name) + " " + (doctorData && doctorData.last_name)},
-                      <Text style={{ fontSize: 10 }}>{education}</Text>
+                    <Text style={{ fontSize: 15,fontFamily:'OpenSans',fontWeight:'bold' }}>{(doctorData && doctorData.prefix ? doctorData.prefix : 'Dr') + ('.') + (doctorData && doctorData.first_name) + " " + (doctorData && doctorData.last_name)},
+                      <Text style={{ fontSize: 13,fontFamily:'OpenSans' }}>{education}</Text>
 
                     </Text>
                     <Text note style={styles.customText}>{specialist} </Text>
@@ -254,7 +260,7 @@ class AppointmentDetails extends Component {
 
                 <Grid>
                   <Col style={{ backgroundColor: 'transparent', borderRightWidth: 0.5, borderRightColor: 'gray', justifyContent: 'center' }}>
-                    <Text style={styles.topValue}> {data.fee} </Text>
+                    <Text style={styles.topValue}> {data.fee != undefined ? data.fee : 'N/A'} </Text>
                     <Text note style={styles.bottomValue}> Hourly Rate </Text>
                   </Col>
                   <Col style={{ backgroundColor: 'transparent', borderRightWidth: 0.5, borderRightColor: 'gray', justifyContent: 'center' }}>
@@ -271,7 +277,7 @@ class AppointmentDetails extends Component {
                   <View style={{ marginLeft: 'auto', marginRight: 'auto' }}>
                     <Col style={{ width: 300, }}>
                       <Button disabled={true} block style={{ borderRadius: 10, backgroundColor: '#D7BDE2' }}>
-                        <Text style={{ color: 'black', fontSize: 16 }}>
+                        <Text style={{ color: 'black', fontSize: 15,fontFamily:'OpenSans',fontWeight:'bold' }}>
                           {this.state.appointmentStatus == 'APPROVED' ? 'APPROVED' :
                             data.appointment_status == 'PROPOSED_NEW_TIME' ? 'PROPOSED NEW TIME' :
                               data.appointment_status == 'PENDING_REVIEW' ? 'COMPLETED' :
@@ -287,16 +293,16 @@ class AppointmentDetails extends Component {
                   {data.appointment_status == 'APPROVED' || this.state.appointmentStatus === 'APPROVED' ?
                     <Col style={width = 'auto'}>
                       <Button block danger style={{ margin: 1, marginTop: 10, marginLeft: 1, borderRadius: 30, padding: 15, height: 40, width: "auto" }} onPress={() => this.navigateCancelAppoointment()} testID='cancelAppointment'>
-                        <Text style={{ textAlign: 'center', fontFamily: 'OpenSans', }}>CANCEL APPOINTMENT</Text>
+                        <Text style={{ textAlign: 'center', fontFamily: 'OpenSans',fontSize:15,fontWeight:'bold' }}>CANCEL APPOINTMENT</Text>
                       </Button>
                     </Col> :
                     data.appointment_status == 'PROPOSED_NEW_TIME' ?
                       <Item style={{ borderBottomWidth: 0, justifyContent: 'center' }}>
                         <Button success style={styles.statusButton} onPress={() => this.updateAppointmentStatus(data, 'APPROVED')} testID='approvedAppointment'>
-                          <Text style={{ textAlign: 'center', fontFamily: 'OpenSans', color: '#000' }}>ACCEPT</Text>
+                          <Text style={{ textAlign: 'center', fontFamily: 'OpenSans', color: '#000',fontSize:15,fontWeight:'bold' }}>ACCEPT</Text>
                         </Button>
                         <Button danger style={styles.Button2} onPress={() => this.navigateCancelAppoointment()} testID='appointmentCancel'>
-                          <Text style={{ textAlign: 'center', fontFamily: 'OpenSans', color: '#000' }}> CANCEL </Text></Button>
+                          <Text style={{ textAlign: 'center', fontFamily: 'OpenSans', color: '#000',fontSize:15,fontWeight:'bold'}}> CANCEL </Text></Button>
                       </Item> : null}
                 </Grid>
 
@@ -307,7 +313,7 @@ class AppointmentDetails extends Component {
               <Card style={{ backgroundColor: '#ffffff', borderRadius: 10, padding: 10 }}>
                 <Grid style={{ margin: 5 }}>
                   <Right>
-                    <Text>
+                    <Text style={{fontSize:15,fontFamily:'OpenSans'}}>
                       {formatDate(data.appointment_starttime, "dddd,MMMM DD-YYYY  hh:mm a")}
                     </Text>
                   </Right>
@@ -510,12 +516,19 @@ const styles = StyleSheet.create({
   },
   topValue: {
     marginLeft: 'auto',
-    marginRight: 'auto'
+    marginRight: 'auto',
+    fontFamily:'OpenSans',
+    fontSize:15,
+    fontWeight:'bold'
+
   },
   bottomValue:
   {
     marginLeft: 'auto',
-    marginRight: 'auto'
+    marginRight: 'auto',
+    fontSize:15,
+    fontFamily:'OpenSans',
+  
   },
   reviewButton: {
     marginTop: 12,
@@ -533,8 +546,7 @@ const styles = StyleSheet.create({
     fontFamily: 'OpenSans',
     color: '#000',
     fontSize: 15,
-    // alignItems: 'flex-start'
-    // marginRight: 45
+    
 
   },
   subtitlesText: {
@@ -542,6 +554,7 @@ const styles = StyleSheet.create({
     margin: 10,
     color: '#F2889B',
     fontFamily: 'opensans-semibold',
+    fontWeight:'bold'
 
   },
   titlesText: {

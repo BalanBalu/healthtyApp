@@ -16,7 +16,8 @@ class UpdatePassword extends Component {
         this.state = {
             oldPassword: '',
             newPassword: '',
-            showPassword: true,
+            oldPasswordVisible: true,
+            newPasswordVisible: true,
             isLoading: false
         }
     }
@@ -25,7 +26,6 @@ class UpdatePassword extends Component {
         try {
             this.setState({ isLoading: true });
             let userId = await AsyncStorage.getItem('userId');
-            console.log(userId);
             let data = {
                 type: 'user',
                 userId: userId,
@@ -92,17 +92,17 @@ class UpdatePassword extends Component {
                                     <Icon name="briefcase" style={styles.centeredIcons}></Icon>
                                
                                 <Col style={styles.transparentLabel1}>
-<Row>
+                            <Row>
                                     <Input placeholder="Enter old password"
                                         secureTextEntry={true}  style={{fontSize:13,fontFamily:'OpenSans',marginTop:-5}}
                                         keyboardType="default"
                                         value={this.state.oldPassword}
-                                        secureTextEntry={this.state.showPassword}
+                                            secureTextEntry={this.state.oldPasswordVisible}
                                         onChangeText={(oldPassword) => this.setState({ oldPassword })}
                                         testID='enterOldPassword' />
-                                    <Icon active name="eye" style={{ fontSize: 20, marginTop: 10 }} onPress={() => this.setState({ showPassword: !this.state.showPassword })} />
+                                        <Icon active name="eye" style={{ fontSize: 20, marginTop: 10 }} onPress={() => this.setState({ oldPasswordVisible: !this.state.oldPasswordVisible })} />
 
-                                        </Row>
+                            </Row>
                                 </Col>
                                
 
@@ -112,15 +112,15 @@ class UpdatePassword extends Component {
                             <Col style={styles.transparentLabel1}>
                                 <Row>
                             <Input placeholder="Enter new password"
-                  secureTextEntry={true} style={{fontSize:13,fontFamily:'OpenSans',marginTop:-5}}
-                  keyboardType="default"
-                  value={this.state.newPassword}
-                  secureTextEntry={this.state.showPassword}
-                  onChangeText={(newPassword) => this.setState({ newPassword })}
-                  testID='enterNewPassword'
+                        secureTextEntry={true} style={{fontSize:13,fontFamily:'OpenSans',marginTop:-5}}
+                        keyboardType="default"
+                        value={this.state.newPassword}
+                                            secureTextEntry={this.state.newPasswordVisible}
+                        onChangeText={(newPassword) => this.setState({ newPassword })}
+                        testID='enterNewPassword'
 
-                />
-                <Icon active name='eye' style={{ fontSize: 20, marginTop: 10 }} onPress={() => this.setState({ showPassword: !this.state.showPassword })} />
+                        />
+                                        <Icon active name='eye' style={{ fontSize: 20, marginTop: 10 }} onPress={() => this.setState({ newPasswordVisible: !this.state.newPasswordVisible })} />
                 </Row>
                             </Col>
               
@@ -137,11 +137,6 @@ class UpdatePassword extends Component {
 
 
                         </Card>
-
-
-
-
-
 
                     </ScrollView>
                 </Content>

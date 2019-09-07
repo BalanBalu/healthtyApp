@@ -265,6 +265,22 @@ export const getPatientWishList = async (userId) => {
     }
   }
 }
+
+export const getDoctorFaviouteList = async (doctorId) => {
+  try {
+    let endPoint = 'doctor/wishList/' + doctorId;
+    console.log(endPoint)
+    let response = await getService(endPoint);
+    let respData = response.data;
+    return respData;
+  } catch (e) {
+    console.log(e.message);
+    return {
+      message: 'exception' + e,
+      success: false
+    }
+  }
+}
 // //get doctordetails using appointment Id notification page
 // export const getAppointmentDetails = async (appointmentId) => {
 //   try {
