@@ -6,7 +6,7 @@ import { connect } from 'react-redux'
 import { StyleSheet, TouchableOpacity, View, FlatList, AsyncStorage, Slider } from 'react-native';
 import StarRating from 'react-native-star-rating';
 
-import { insertDoctorsWishList, searchDoctorList, fetchAvailabilitySlots, getMultipleDoctorDetails, getDoctorsReviewsCount, getPatientWishList, SET_BOOK_APP_SLOT_DATA, SET_BOOK_APP_DOCTOR_DATA, SET_SELECTED_DATE ,SET_SINGLE_DOCTOR_DATA, getDoctorFaviouteList} from '../../providers/bookappointment/bookappointment.action';
+import { insertDoctorsWishList, searchDoctorList, fetchAvailabilitySlots, getMultipleDoctorDetails, getDoctorsReviewsCount, getPatientWishList, SET_BOOK_APP_SLOT_DATA, SET_BOOK_APP_DOCTOR_DATA, SET_SELECTED_DATE ,SET_SINGLE_DOCTOR_DATA, SET_PATIENT_WISH_LIST_DOC_IDS, SET_FAVORITE_DOCTOR_COUNT_BY_IDS, getDoctorFaviouteList} from '../../providers/bookappointment/bookappointment.action';
 import { formatDate, addMoment, addTimeUnit, getMoment,addDate,dateDiff, findArrayObj, intersection } from '../../../setup/helpers';
 import { Loader } from '../../../components/ContentLoader';
 import { RenderHospitalAddress, renderProfileImage,  getDoctorSpecialist, getDoctorEducation  } from '../../common';
@@ -55,7 +55,6 @@ class doctorSearchList extends Component {
                 showedFeeByDoctorIds: {},
                 reviewsByDoctorIds : {},
                 isLoggedIn: null,
-                favouriteListCountByDoctorIds : {}
             }
     }
     
@@ -205,7 +204,8 @@ class doctorSearchList extends Component {
     /* Insert Doctors Favourite Lists  */
     addToWishList = async (doctorId) => {
         try {
-           const { patientWishListsDoctorIds, favouriteListCountByDoctorIds } = this.state;
+           const { bookappointment: { patientWishListsDoctorIds, favouriteListCountByDoctorIds } } = this.props;  
+           
            console.log(patientWishListsDoctorIds);
           let requestData = {
              active: !patientWishListsDoctorIds.includes(doctorId)
@@ -233,12 +233,30 @@ class doctorSearchList extends Component {
                     let indexOfDoctorIdOnPatientWishList = patientWishListsDoctorIds.indexOf(doctorId);
                     patientWishListsDoctorIds.splice(indexOfDoctorIdOnPatientWishList, 1);
                 }
-                this.setState({ patientWishListsDoctorIds: patientWishListsDoctorIds });
-            }
+                store.dispatch({
+                    type: SET_PATIENT_WISH_LIST_DOC_IDS,
+                    data: patientWishListsDoctorIds
+                })
+                store.dispatch({
+                    type: SET_FAVORITE_DOCTOR_COUNT_BY_IDS,
+                    data: favouriteListCountByDoctorIds
+                })
+                
+            } else {
+            Toast.show({
+                text: result.message,
+                type: 'danger',
+                duration: 3000,
+            })
+           }
          }
       }
         catch (e) {
-            console.log(e);
+            Toast.show({
+                text: 'Exception Occured' + e,
+                type: "success",
+                duration: 3000,
+            })
         }
     }
     getPatientWishLists = async () => {
@@ -250,6 +268,10 @@ class doctorSearchList extends Component {
                 let wishListDoctorsIds = [];
                 result.data.forEach(element => {
                     wishListDoctorsIds.push(element.doctorInfo.doctor_id)
+                })
+                store.dispatch({
+                    type: SET_PATIENT_WISH_LIST_DOC_IDS,
+                    data: wishListDoctorsIds
                 })
                 this.setState({ patientWishListsDoctorIds: wishListDoctorsIds });
             }
@@ -485,7 +507,8 @@ class doctorSearchList extends Component {
     getDoctorFaviouteList = async (doctorIds) => {
       
         let resultFavList = await getDoctorFaviouteList(doctorIds);
-        let { favouriteListCountByDoctorIds }  = this.state;
+        const { bookappointment: { favouriteListCountByDoctorIds } } = this.props;  
+           
                 
         if (resultFavList.success) {
              for (i = 0; i < resultFavList.data.length; i++) {
@@ -496,19 +519,21 @@ class doctorSearchList extends Component {
                     favouriteListCountByDoctorIds[doctorId] = 1;
                  }
              }
-            
-             this.setState({ favouriteListCountByDoctorIds });
+             store.dispatch({
+                type: SET_FAVORITE_DOCTOR_COUNT_BY_IDS,
+                data: favouriteListCountByDoctorIds
+             })
         }
     }
 
     navigateToBookAppointmentPage(doctorData) {
-        let { reviewsByDoctorIds, favouriteListCountByDoctorIds }  = this.state;
+        let { reviewsByDoctorIds }  = this.state;
+            
         console.log()
         doctorData.doctorId = doctorData.doctor_id;
         let requestData = {
            ...doctorData, 
            ratingData: reviewsByDoctorIds[doctorData.doctor_id],
-           favouriteListCount : favouriteListCountByDoctorIds[doctorData.doctor_id] 
         }
         store.dispatch({
             type: SET_SINGLE_DOCTOR_DATA,
@@ -551,7 +576,7 @@ class doctorSearchList extends Component {
        
         let { selectedSlotByDoctorIds }  = this.state;
         selectedSlotIndex = selectedSlotByDoctorIds[doctorIdHostpitalId] || 0;
-        if(!selectedSlotData) {
+        if(selectedSlotData  === undefined) {
             selectedSlotData = wholeSlotData[Object.keys(wholeSlotData)[0]]
         }
         selectedIndex = selectedSlotData[selectedSlotIndex] ? selectedSlotIndex : 0;
@@ -651,10 +676,11 @@ class doctorSearchList extends Component {
     }
     
     render() {
-        const { bookappointment: { slotData, selectedDate, doctorData } } = this.props;
+       
+        const { bookappointment: { slotData, selectedDate, doctorData, patientWishListsDoctorIds, favouriteListCountByDoctorIds } } = this.props;
         const { navigation } = this.props;
-        const { selectedDatesByDoctorIds, expandedDoctorIdHospitalsToShowSlotsData, patientWishListsDoctorIds, isLoggedIn, selectedSlotItemByDoctorIds, 
-            reviewsByDoctorIds, favouriteListCountByDoctorIds,
+        const { selectedDatesByDoctorIds, expandedDoctorIdHospitalsToShowSlotsData, isLoggedIn, selectedSlotItemByDoctorIds, 
+            reviewsByDoctorIds,
              isLoading, isAvailabilityLoading, 
             uniqueFilteredDocArray } = this.state;
         return (

@@ -29,13 +29,16 @@ class Reviews extends Component {
    getUserReview = async () => {
         try {
             const {navigation} = this.props;
-            const doctorId= navigation.getParam('reviewDoctorId');
+            if(navigation)
+               doctorId= navigation.getParam('reviewDoctorId');
+             else 
+               doctorId= this.props.doctorId; 
             let userId = await AsyncStorage.getItem('userId');
             let result = await userReviews(doctorId, 'doctor');
             await this.setState({ isLoading: false, userId: userId });
             if (result.success) {
                  this.setState({ getReviewsData: result.data });
-                     }
+            }
         }
         catch (e) {
             console.log(e)

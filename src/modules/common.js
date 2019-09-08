@@ -108,7 +108,7 @@ export function medicineRateAfterOffer(item) {
 
 export function getDoctorSpecialist(specialistData) {
     if (specialistData) {
-        return specialistData[0].category
+        return specialistData[0] ? specialistData[0].category : '';
     }
     return '';
 }
