@@ -1,19 +1,19 @@
 import React, { Component } from 'react';
-import { Container, Content, Text, Title, Header, H3,Segment, Button, Card, List, ListItem, Left, Right, Thumbnail, Body, Icon, locations, ScrollView, Item, Toast,DatePicker , Footer} from 'native-base';
+import { Container, Content, Text ,Segment, Button, Card, List, ListItem, Right, Thumbnail, Body, Icon, Toast, Footer} from 'native-base';
 import { Col, Row, Grid } from 'react-native-easy-grid';
 import { connect } from 'react-redux'
-import { StyleSheet, Image, TouchableOpacity, View, FlatList, AsyncStorage, } from 'react-native';
+import { StyleSheet, TouchableOpacity, View, FlatList, AsyncStorage, } from 'react-native';
 import StarRating from 'react-native-star-rating';
-import { formatDate, dateDiff, addMoment, getMoment } from '../../../setup/helpers';
+import { formatDate, addMoment, getMoment } from '../../../setup/helpers';
 import {  fetchAvailabilitySlots, 
           insertDoctorsWishList, 
-          bindDoctorDetails, 
           SET_SINGLE_DOCTOR_DATA, 
           SET_PATIENT_WISH_LIST_DOC_IDS, 
           SET_FAVORITE_DOCTOR_COUNT_BY_IDS, 
           getDoctorFaviouteList , 
           getPatientWishList ,
-          getDoctorsReviewsCount
+          getDoctorsReviewsCount,
+          getMultipleDoctorDetails
         } from '../../providers/bookappointment/bookappointment.action';
 import moment from 'moment';
 import { renderDoctorImage, getDoctorSpecialist, getDoctorEducation } from '../../common';
@@ -27,7 +27,7 @@ showedHospitalDoctorId = null;
 selectedSlotLocationShowed = null;
 selectedSlotFee = null;
 showedFee = null;
-
+fields = "first_name,last_name,prefix,professional_statement,gender,specialist,education,language,gender_preference,experience,profile_image";
 class BookAppoinment extends Component {
   processedAvailabilityDates = [];
   constructor(props) {
@@ -149,12 +149,11 @@ enumarateDates(startDate, endDate) {
   /*Get doctor Qualification details*/
   getdoctorDetails = async (doctorId) => {
     console.log("doctor" + doctorId);
-    let fields = "first_name,last_name,prefix,professional_statement,language,gender,specialist,education,profile_image";
     console.log(fields+'fields');
-    let resultDoctorDetails = await bindDoctorDetails(doctorId, fields);
+    let resultDoctorDetails = await getMultipleDoctorDetails(doctorId, fields);
     console.log('resultDoctorDetails'+JSON.stringify(resultDoctorDetails))
     if (resultDoctorDetails.success) {
-        await this.setState({ doctorDetails : resultDoctorDetails.data});
+        await this.setState({ doctorDetails : resultDoctorDetails.data[0]});
     }
   }
   onSegemntClick(index){

@@ -15,7 +15,7 @@ import Spinner from '../../../components/Spinner';
 import moment from 'moment';
 
 import { store } from '../../../setup/store';
-
+let fields = "first_name,last_name,prefix,professional_statement,gender,specialist,education,language,gender_preference,experience,profile_image";            
 let conditionFromFilterPage;
 const NO_OF_SLOTS_SHOULD_SHOW_PER_SLIDE = 3;
 class doctorSearchList extends Component {
@@ -320,7 +320,6 @@ class doctorSearchList extends Component {
     getDoctorDetails = async (doctorIds) => {
         try {
 
-            let fields = "first_name,last_name,prefix,professional_statement,gender,specialist,education,language,gender_preference,experience,profile_image";
             let resultDoctorDetails = await getMultipleDoctorDetails(doctorIds, fields);
             console.log(resultDoctorDetails);
             if (resultDoctorDetails.success) {
