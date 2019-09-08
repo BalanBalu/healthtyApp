@@ -2,7 +2,7 @@ import React,{Component} from 'react';
 import { View, Text, AsyncStorage,StyleSheet} from "react-native";
 import { Icon } from 'native-base';
 import { Col, Row, Grid } from 'react-native-easy-grid';
-import { fetchUserNotification, UpDateUserNotification } from '../../src/modules/providers/notification/notification.actions'
+import { store } from '../setup/store';
 
 
 export const RenderHospitalAddress = (props) => {
@@ -135,29 +135,18 @@ export function getDoctorEducation(educationData) {
     }
     return '';
 }
-
-
-
 export async function getUserNotification() {
     try {
-       
         let userId = await AsyncStorage.getItem('userId');
-    
-        let result = await fetchUserNotification(userId);
-      
-        
-        
-
+        fetchUserNotification(userId);
     }
     catch (e) {
         console.log(e);
     }
-   
-   
 }
 
 
-export  class Badge extends Component {
+export class Badge extends Component {
     constructor(props) {
 
         super(props);
@@ -165,28 +154,18 @@ export  class Badge extends Component {
             data:''
         };
     }
-
-    
-  
-    async componentDidMount() {
-        let data = await AsyncStorage.getItem('notification');
-        this.setState({data})
-    }
-
+  async componentDidMount() {
+      if(store.getState()) {
+          if(store.getState().notification) {
+            const data = store.getState().notification.notificationCount;
+            this.setState({data})
+          }
+      }
+  }
     render() {
         const { data} = this.state;
-
-
         return (
             <Text style={{ position: 'absolute', backgroundColor: 'red', color: 'white', borderRadius: 20, marginLeft: 10, padding: 2, marginTop: -7 }}>{data}</Text>
         )
     }
 }
-
-const styles = StyleSheet.create({
-
-    textStyle:{
-        fontFamily:'OpenSans',
-        fontSize:13
-    }
-})

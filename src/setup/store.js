@@ -5,11 +5,13 @@ import user from '../modules/providers/auth/auth.reducer';
 import common from '../modules/providers/common/common.reducer';
 import profile from '../modules/providers/profile/profile.reducer';
 import bookappointment from '../modules/providers/bookappointment/bookappointment.reducer';
+import notification from '../modules/providers/notification/notification.reducer';
 const rootReducer = combineReducers({
     user,
     common,
     profile,
-    bookappointment
+  bookappointment,
+    notification,
 });
 
 export const store = createStore(
