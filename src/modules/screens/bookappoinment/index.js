@@ -359,7 +359,7 @@ onPressContinueForPaymentReview(doctorData, selectedSlotItem) {
   render() {
 
     const { bookappointment: { patientWishListsDoctorIds, favouriteListCountByDoctorIds, reviewsByDoctorIds } } = this.props;
-    const { qualification, doctordata, isLoading, selectedDate, selectedSlotItem, doctorId } = this.state;
+    const { qualification, doctordata, isLoading, selectedDate, selectedSlotItem, pressTab } = this.state;
     
    
     return (
@@ -440,13 +440,13 @@ onPressContinueForPaymentReview(doctorData, selectedSlotItem) {
             </Card>
        <Row style={{marginLeft:5,marginRight:5}}>
          <Segment>
-           <Button first style={{width:'33.33%',borderBottomColor:'#000',borderBottomWidth:4,alignItems:'center'}} onPress={()=>{this.onSegemntClick(1)}}>
+           <Button first style={[{width:'33.33%',borderBottomWidth:4,alignItems:'center'}, pressTab === 1 ? { borderBottomColor:'#775DA3' } : { borderBottomColor:'#000' }  ] } onPress={()=>{this.onSegemntClick(1)}}>
              <Text style={{color:'#000',fontSize:12,fontFamily:'OpenSans',textAlign:'center',marginLeft:20}}>About</Text>
            </Button>
-           <Button style={{width:'33.33%',borderBottomColor:'#775DA3',borderBottomWidth:4,alignItems:'center'}} onPress={()=>{this.onSegemntClick(2)}}>
+           <Button style={[{width:'33.33%',borderBottomWidth:4,alignItems:'center'} , pressTab === 2 ? { borderBottomColor:'#775DA3' } : { borderBottomColor:'#000' }]} onPress={()=>{this.onSegemntClick(2)}}>
              <Text style={{color:'#000',fontSize:12,fontFamily:'OpenSans',textAlign:'center',marginLeft:20}}>Reviews</Text>
            </Button>
-           <Button last active style={{width:'33.33%',borderBottomColor:'#000',borderBottomWidth:4,alignItems:'center'}} onPress={()=>{this.onSegemntClick(3)}}>
+           <Button last active style={[{width:'33.33%',borderBottomColor:'#000',borderBottomWidth:4,alignItems:'center'}, pressTab === 3 ? { borderBottomColor:'#775DA3' } : { borderBottomColor:'#000', }]} onPress={()=>{this.onSegemntClick(3)}}>
              <Text style={{color:'#000',fontSize:12,fontFamily:'OpenSans',marginLeft:20,textAlign:'center'}}>Services</Text>
            </Button>
          </Segment>
