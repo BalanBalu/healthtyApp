@@ -6,16 +6,16 @@ import { connect } from 'react-redux'
 import { StyleSheet, TouchableOpacity, View, FlatList, AsyncStorage, Slider } from 'react-native';
 import StarRating from 'react-native-star-rating';
 
-import { insertDoctorsWishList, searchDoctorList, fetchAvailabilitySlots, getMultipleDoctorDetails, getDoctorsReviewsCount, getPatientWishList, SET_BOOK_APP_SLOT_DATA, SET_BOOK_APP_DOCTOR_DATA, SET_SELECTED_DATE , getDoctorFaviouteList} from '../../providers/bookappointment/bookappointment.action';
-import { formatDate, addMoment, addTimeUnit, getMoment,addDate,dateDiff, findArrayObj, intersection } from '../../../setup/helpers';
+import { insertDoctorsWishList, searchDoctorList, fetchAvailabilitySlots, getMultipleDoctorDetails, getDoctorsReviewsCount, getPatientWishList, SET_BOOK_APP_SLOT_DATA, SET_BOOK_APP_DOCTOR_DATA, SET_SELECTED_DATE ,SET_SINGLE_DOCTOR_DATA, SET_PATIENT_WISH_LIST_DOC_IDS, SET_FAVORITE_DOCTOR_COUNT_BY_IDS, getDoctorFaviouteList} from '../../providers/bookappointment/bookappointment.action';
+import { formatDate, addMoment, addTimeUnit, getMoment, intersection } from '../../../setup/helpers';
 import { Loader } from '../../../components/ContentLoader';
-import { RenderHospitalAddress, renderProfileImage } from '../../common';
+import { RenderHospitalAddress, renderDoctorImage,  getDoctorSpecialist, getDoctorEducation  } from '../../common';
 import { NavigationEvents } from 'react-navigation';
 import Spinner from '../../../components/Spinner';
 import moment from 'moment';
 
 import { store } from '../../../setup/store';
-
+let fields = "first_name,last_name,prefix,professional_statement,gender,specialist,education,language,gender_preference,experience,profile_image";            
 let conditionFromFilterPage;
 const NO_OF_SLOTS_SHOULD_SHOW_PER_SLIDE = 3;
 class doctorSearchList extends Component {
@@ -41,7 +41,7 @@ class doctorSearchList extends Component {
                 nextAvailableSlotDate: '',
                 isLoading: false,
                 filterBySelectedAvailabilityDateCount: 0,
-                patientWishListsDoctorIds: [],
+                
                 filterData : null,
                 uniqueFilteredDocArray: [],
                 yearOfExperience: '',
@@ -53,9 +53,7 @@ class doctorSearchList extends Component {
                 selectedSlotByDoctorIds: {},
                 expandedDoctorIdHospitalsToShowSlotsData: [],
                 showedFeeByDoctorIds: {},
-                reviewsByDoctorIds : {},
                 isLoggedIn: null,
-                favouriteListCountByDoctorIds : {}
             }
     }
     
@@ -193,7 +191,6 @@ class doctorSearchList extends Component {
             let filteredDocListArray = intersection(selectedFiltesArray);
             await this.setState({ uniqueFilteredDocArray: filteredDocListArray })
             if (filteredDocListArray.length ===0) {
-                // this.noDoctorsAvailable();
                 Toast.show({
                     text: 'Doctors Not found!..Choose Filter again',
                     type: "danger",
@@ -205,7 +202,8 @@ class doctorSearchList extends Component {
     /* Insert Doctors Favourite Lists  */
     addToWishList = async (doctorId) => {
         try {
-           const { patientWishListsDoctorIds, favouriteListCountByDoctorIds } = this.state;
+           const { bookappointment: { patientWishListsDoctorIds, favouriteListCountByDoctorIds } } = this.props;  
+           
            console.log(patientWishListsDoctorIds);
           let requestData = {
              active: !patientWishListsDoctorIds.includes(doctorId)
@@ -233,31 +231,39 @@ class doctorSearchList extends Component {
                     let indexOfDoctorIdOnPatientWishList = patientWishListsDoctorIds.indexOf(doctorId);
                     patientWishListsDoctorIds.splice(indexOfDoctorIdOnPatientWishList, 1);
                 }
-                this.setState({ patientWishListsDoctorIds: patientWishListsDoctorIds });
-            }
+                store.dispatch({
+                    type: SET_PATIENT_WISH_LIST_DOC_IDS,
+                    data: patientWishListsDoctorIds
+                })
+                store.dispatch({
+                    type: SET_FAVORITE_DOCTOR_COUNT_BY_IDS,
+                    data: favouriteListCountByDoctorIds
+                })
+                
+            } else {
+            Toast.show({
+                text: result.message,
+                type: 'danger',
+                duration: 3000,
+            })
+           }
          }
       }
         catch (e) {
-            console.log(e);
+            Toast.show({
+                text: 'Exception Occured' + e,
+                type: "success",
+                duration: 3000,
+            })
         }
     }
     getPatientWishLists = async () => {
         try {
             let userId = await AsyncStorage.getItem('userId');
-            let result = await getPatientWishList(userId);
-            
-            if (result.success) {
-                let wishListDoctorsIds = [];
-                result.data.forEach(element => {
-                    wishListDoctorsIds.push(element.doctorInfo.doctor_id)
-                })
-                this.setState({ patientWishListsDoctorIds: wishListDoctorsIds });
-            }
+            getPatientWishList(userId);
         } catch (e) {
-            this.setState({ patientWishListsDoctorIds: [] });
             console.log(e);
         }
-
     }
 
 
@@ -270,7 +276,7 @@ class doctorSearchList extends Component {
 
         const userId = await AsyncStorage.getItem('userId');
         let resultData = await searchDoctorList(userId, searchedInputValues);
-        // console.log(' resultData'+JSON.stringify(resultData.data));
+        
         await this.setState({ searchedResultData: resultData.data });
         if (resultData.success) {
             let doctorIds = resultData.data.map((element) => {
@@ -313,7 +319,6 @@ class doctorSearchList extends Component {
     getDoctorDetails = async (doctorIds) => {
         try {
 
-            let fields = "first_name,last_name,prefix,dob,specialist,education,language,gender_preference,experience,profile_image";
             let resultDoctorDetails = await getMultipleDoctorDetails(doctorIds, fields);
             console.log(resultDoctorDetails);
             if (resultDoctorDetails.success) {
@@ -356,7 +361,6 @@ class doctorSearchList extends Component {
                             }
                         }
                     } else {
-                        console.log(doctorSlotData.slotData);
                         this.processedDoctorData.push(doctorSlotData);
                         this.processedDoctorIds.push(doctorSlotData.doctorIdHostpitalId);
                         let doctorDetailsData = this.doctorDetailsMap.get(doctorSlotData.doctorId)
@@ -417,6 +421,7 @@ class doctorSearchList extends Component {
            let endDateMoment = addMoment(getMoment(selectedDate), 7, 'days');
            this.getAvailabilitySlots(this.state.getSearchedDoctorIds, getMoment(selectedDate), endDateMoment);
         }
+        console.log('ended loading the onDateChanged')
     }
 
     /* Click the Slots from Doctor List page */
@@ -434,7 +439,6 @@ class doctorSearchList extends Component {
 
             doctorData.doctorName = doctorData.first_name + ' ' + doctorData.last_name;
             doctorData.doctorId = doctorData.doctor_id;
-                console.log('is it coming here?')
             var confirmSlotDetails = {
                 ...doctorData,
                 slotData: selectedSlotItemByDoctor
@@ -446,11 +450,12 @@ class doctorSearchList extends Component {
    async onSlotItemPress(doctorIdHostpitalId, item, index) {
        
         let { selectedSlotByDoctorIds, selectedSlotItemByDoctorIds, showedFeeByDoctorIds }  = this.state;
+
         selectedSlotByDoctorIds[doctorIdHostpitalId] = index;
         selectedSlotItemByDoctorIds[doctorIdHostpitalId] = item
        
         this.setState({ selectedSlotByDoctorIds, selectedSlotItemByDoctorIds });
-       console.log( item);
+       
       // console.log( selectedSlotIndex + '. and index :' +  index) ;
        if((item.fee != showedFeeByDoctorIds[doctorIdHostpitalId])) {
             if(showedFeeByDoctorIds[doctorIdHostpitalId] != undefined) {
@@ -463,71 +468,30 @@ class doctorSearchList extends Component {
             showedFeeByDoctorIds[doctorIdHostpitalId] = item.fee
             this.setState( { showedFeeByDoctorIds });
         }
+        console.log( item);
     }
     
-    
-    /* Get Patients Reviews*/
-    reviewMap = new Map();
     getPatientReviews = async (doctorIds) => {
-        let resultReview = await getDoctorsReviewsCount(doctorIds);
-        let { reviewsByDoctorIds }  = this.state;
-        
-
-        if (resultReview.success) {
-            for (i = 0; i < resultReview.data.length; i++) {
-                this.reviewMap.set(resultReview.data[i]._id, resultReview.data[i]) // total_rating
-                reviewsByDoctorIds[resultReview.data[i]._id] = resultReview.data[i];
-            }
-            console.log(reviewsByDoctorIds);
-            this.setState({ reviewsByDoctorIds });
-        }
+       getDoctorsReviewsCount(doctorIds);
     }
     getDoctorFaviouteList = async (doctorIds) => {
-      
-        let resultFavList = await getDoctorFaviouteList(doctorIds);
-        let { favouriteListCountByDoctorIds }  = this.state;
-                
-        if (resultFavList.success) {
-             for (i = 0; i < resultFavList.data.length; i++) {
-                 doctorId = resultFavList.data[i].wishList.doctor_id;
-                 if(favouriteListCountByDoctorIds[doctorId]) {
-                    favouriteListCountByDoctorIds[doctorId] = favouriteListCountByDoctorIds[doctorId] + 1
-                 } else {
-                    favouriteListCountByDoctorIds[doctorId] = 1;
-                 }
-             }
+       getDoctorFaviouteList(doctorIds);
+    }
+
+    navigateToBookAppointmentPage(doctorData) {
+       
             
-             this.setState({ favouriteListCountByDoctorIds });
+        console.log()
+        doctorData.doctorId = doctorData.doctor_id;
+        let requestData = {
+           ...doctorData, 
         }
-    }
-
-
-    getDoctorSpecialist(doctorId) {
-        if (this.doctorDetailsMap.has(doctorId)) {
-            if (this.doctorDetailsMap.get(doctorId).specialist) {
-                return this.doctorDetailsMap.get(doctorId).specialist[0] ? this.doctorDetailsMap.get(doctorId).specialist[0].category : ''
-            }
-            return '';
-        }
-        return '';
-    }
-    getDoctorEducation(educationData) {
-        let degree = '';
-        if (educationData) {
-            educationData.forEach(eduData => {
-                degree += eduData.degree + ','
-            });
-            return degree.slice(0, -1);
-        }
-        return '';
-    }
-
-    navigateToBookAppointmentPage(doctorAvailabilityData, doctorIdHostpitalId) {
-        
-        let selectedDate = this.state.selectedDatesByDoctorIds[doctorIdHostpitalId] || this.state.currentDate;
-        const slotData = doctorAvailabilityData.slotData[selectedDate];
-        doctorAvailabilityData.doctorId = doctorAvailabilityData.doctor_id;
-        this.props.navigation.navigate('Book Appointment', { doctorDetails: doctorAvailabilityData, slotList: slotData })
+        store.dispatch({
+            type: SET_SINGLE_DOCTOR_DATA,
+            data: requestData
+        })
+        console.log(requestData);
+        this.props.navigation.navigate('Book Appointment', { doctorId: doctorData.doctor_id })
     }
     
  
@@ -542,7 +506,7 @@ class doctorSearchList extends Component {
             <FlatList
               numColumns={4}
               data={slotsData}
-              extraData={this.state}
+              extraData={[this.state.selectedDatesByDoctorIds,this.state.selectedSlotByDoctorIds]}
               renderItem={({ item, index }) =>
             <Col style={{width:'23.5%'}}>
               <TouchableOpacity disabled={item.isSlotBooked} 
@@ -563,7 +527,7 @@ class doctorSearchList extends Component {
        
         let { selectedSlotByDoctorIds }  = this.state;
         selectedSlotIndex = selectedSlotByDoctorIds[doctorIdHostpitalId] || 0;
-        if(!selectedSlotData) {
+        if(selectedSlotData  === undefined) {
             selectedSlotData = wholeSlotData[Object.keys(wholeSlotData)[0]]
         }
         selectedIndex = selectedSlotData[selectedSlotIndex] ? selectedSlotIndex : 0;
@@ -620,22 +584,11 @@ class doctorSearchList extends Component {
     }
     
     
-    noAvailableSlots(doctorIdHostpitalId, slotData) {
-        let nextAvailableDate;
-        for (let nextAvailableSlotDate of Object.keys(slotData)) {
-            if (this.state.selectedDate < nextAvailableSlotDate) {
-                nextAvailableDate = nextAvailableSlotDate;
-                break;
-            }
-        }
+    noAvailableSlots() {
+        console.log('started-loading-no-slots-available');
         return (
             <Row style={{ justifyContent: 'center', marginTop: 20 }}>
-                <Button disabled style={{ alignItems: 'center', borderRadius: 10, backgroundColor: '#6e5c7b' }} onPress={() => { if (nextAvailableDate) {
-                      let { selectedDatesByDoctorIds }  = this.state;
-                      selectedDatesByDoctorIds[doctorIdHostpitalId] = nextAvailableDate;
-                      this.setState({ selectedDatesByDoctorIds });
-                }
-                 }}>
+                <Button disabled style={{ alignItems: 'center', borderRadius: 10, backgroundColor: '#6e5c7b' }}>
                  <Text>No Slots Available</Text>    
                 {/*nextAvailableDate ? <Text style={{ color: '#fff', fontFamily: 'OpenSans', fontWeight: 'bold', fontSize: 15 }}>Next Availability On {nextAvailableDate}</Text> : <Text style={{ color: '#fff', fontFamily: 'OpenSans', fontWeight: 'bold', fontSize: 16 }}> No Availablity for Next 7 Days</Text>*/}
                 </Button>
@@ -654,19 +607,13 @@ class doctorSearchList extends Component {
         }
         this.setState({ expandedDoctorIdHospitalsToShowSlotsData });
     }
-    noDoctorsAvailable() {
-        return (
-            <Item style={{ borderBottomWidth: 0, justifyContent: 'center', alignItems: 'center' }}>
-                <Text style={{ fontSize: 18, justifyContent: 'center', alignItems: 'center' }} > No Doctors available! </Text>
-            </Item>
-        )
-    }
+    
     
     render() {
-        const { bookappointment: { slotData, selectedDate, doctorData } } = this.props;
-        const { navigation } = this.props;
-        const { selectedDatesByDoctorIds, expandedDoctorIdHospitalsToShowSlotsData, patientWishListsDoctorIds, isLoggedIn, selectedSlotItemByDoctorIds, 
-            reviewsByDoctorIds, favouriteListCountByDoctorIds,
+       
+        const { bookappointment: {  doctorData, patientWishListsDoctorIds, favouriteListCountByDoctorIds, reviewsByDoctorIds } } = this.props;
+        const { selectedDatesByDoctorIds, expandedDoctorIdHospitalsToShowSlotsData, isLoggedIn, selectedSlotItemByDoctorIds, 
+            
              isLoading, isAvailabilityLoading, 
             uniqueFilteredDocArray } = this.state;
         return (
@@ -709,16 +656,16 @@ class doctorSearchList extends Component {
                             <List style={{borderBottomWidth:0}}>
                               <ListItem>
                                 <Grid >
-                                  <Row onPress={()=> this.navigateToBookAppointmentPage(item, item.doctorIdHostpitalId) }>
+                                  <Row onPress={()=> this.navigateToBookAppointmentPage(item) }>
                                     <Col style={{width:'5%'}}>
-                                        <Thumbnail square source={ renderProfileImage(item) } style={{ height: 60, width: 60 }} />
+                                        <Thumbnail square source={ renderDoctorImage(item) } style={{ height: 60, width: 60 }} />
                                      </Col>
                                      <Col style={{width:'78%'}}>
                                         <Row style={{marginLeft:55,}}>
                                            <Text style={{ fontFamily: 'OpenSans',fontSize:12,fontWeight:'bold'}}>{(item.prefix || '') + (item.first_name || '') + ' ' + (item.last_name || '')}</Text>
                                         </Row>
                                         <Row style={{marginLeft:55,}}>
-                                           <Text note  style={{ fontFamily: 'OpenSans',marginTop:2 ,fontSize:11}}>{(this.getDoctorEducation(item.education)) + ', ' +  this.getDoctorSpecialist(item.doctor_id)}</Text>
+                                           <Text note  style={{ fontFamily: 'OpenSans',marginTop:2 ,fontSize:11}}>{(getDoctorEducation(item.education)) + ', ' +  getDoctorSpecialist(item.specialist)}</Text>
                                         </Row>
                                         <Row style={{marginLeft:55,}}>
                                        
@@ -785,11 +732,11 @@ class doctorSearchList extends Component {
                                                 <Text note style={{ fontFamily: 'OpenSans',marginTop:15,fontSize:12,marginRight:50,fontWeight:'bold' }}> {this.getDisplayAvailableTime(item.slotData[selectedDatesByDoctorIds[item.doctorIdHostpitalId] || this.state.currentDate], item.slotData)}</Text>
                                               </Col>
                                                 <Col style={{width:"22%"}}>
-                                                <TouchableOpacity  onPress={()=>this.onBookPress(item.doctorIdHostpitalId)}  style={{ textAlign:'center',backgroundColor:'green',borderColor: '#000', marginTop:15, borderRadius: 20, height: 30,justifyContent:'center' ,marginLeft:5,marginRight:5 ,}}>
-                                                    <Text style={{textAlign:'center',color:'#fff',fontSize:12,fontWeight:'bold',fontFamily:'OpenSans'}}>BOOK </Text>
-                                                </TouchableOpacity>  
-                                               
-                                                </Col>
+                                                {!expandedDoctorIdHospitalsToShowSlotsData.includes(item.doctorIdHostpitalId) ? 
+                                                  <TouchableOpacity  onPress={()=>this.onBookPress(item.doctorIdHostpitalId)}  style={{ textAlign:'center',backgroundColor:'green',borderColor: '#000', marginTop:15, borderRadius: 20, height: 30,justifyContent:'center' ,marginLeft:5,marginRight:5 ,}}>
+                                                      <Text style={{textAlign:'center',color:'#fff',fontSize:12,fontWeight:'bold',fontFamily:'OpenSans'}}>BOOK </Text>
+                                                  </TouchableOpacity>  : null }
+                                               </Col>
                                                
                                             </Row>
                                            

@@ -1,12 +1,24 @@
 
-import { SET_BOOK_APP_SLOT_DATA, SET_BOOK_APP_DOCTOR_DATA, SET_SELECTED_DATE } from './bookappointment.action'
+import { 
+  SET_BOOK_APP_SLOT_DATA, 
+  SET_BOOK_APP_DOCTOR_DATA, 
+  SET_SELECTED_DATE, 
+  SET_SINGLE_DOCTOR_DATA, 
+  SET_PATIENT_WISH_LIST_DOC_IDS,
+  SET_FAVORITE_DOCTOR_COUNT_BY_IDS,
+  SET_DOCTORS_RATING_BY_IDS
+ } from './bookappointment.action'
 
 export const bookAppointmentData = {
     message: null,
     isLoading: false,
     selectedDate: null,
     doctorData: [],
-    slotData: []
+    singleDoctorData : null,
+    slotData: [],
+    patientWishListsDoctorIds : [],
+    favouriteListCountByDoctorIds : {},
+    reviewsByDoctorIds : {}
   }
   // State
   export default (state = bookAppointmentData, action) => {
@@ -26,6 +38,26 @@ export const bookAppointmentData = {
           ...state,
           selectedDate: action.data
         }
+      case SET_SINGLE_DOCTOR_DATA:
+        return {
+          ...state,
+          singleDoctorData: action.data
+        }
+      case SET_PATIENT_WISH_LIST_DOC_IDS:
+        return {
+          ...state,
+          patientWishListsDoctorIds: action.data
+        }
+      case SET_FAVORITE_DOCTOR_COUNT_BY_IDS:
+        return {
+          ...state,
+          favouriteListCountByDoctorIds: action.data
+        }  
+        case SET_DOCTORS_RATING_BY_IDS:
+        return {
+          ...state,
+          reviewsByDoctorIds: action.data
+        }  
       default:
         return state;
            

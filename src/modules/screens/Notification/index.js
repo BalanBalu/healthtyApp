@@ -57,11 +57,11 @@ class Notification extends Component {
         await this.setState({ notificationId: item._id })
         if (!item.mark_as_readed) {
             await this.upDateNotification('mark_as_readed')
-            this.props.navigation.push("AppointmentInfo", { appointmentId: item.appointment_id })
+            this.props.navigation.push("AppointmentInfo", { appointmentId: item.appointment_id,fromNotification:true })
 
         }
         else {
-            this.props.navigation.push("AppointmentInfo", { appointmentId: item.appointment_id })
+            this.props.navigation.push("AppointmentInfo", { appointmentId: item.appointment_id,fromNotification:true })
         }
     }
     upDateNotification = async (node) => {

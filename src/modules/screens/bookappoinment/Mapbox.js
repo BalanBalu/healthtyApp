@@ -30,7 +30,7 @@ const layerStyles = {
     lineWidth: 3,
   },
 };
-class Mapbox extends Component {
+class Mapbox extends React.PureComponent {
   constructor(props) {
     super(props)
 
@@ -38,7 +38,7 @@ class Mapbox extends Component {
       zoom: 12,
       route: null,
       coordinates : [ 77.5946, 12.9716 ],
-      center: null,
+      center: [ 77.5946, 12.9716 ],
       currentLocation: null,
       hospitaldestination: null,
       directions: {}
@@ -101,26 +101,40 @@ class Mapbox extends Component {
     const data = hospitalLocation // navigation.getParam('coordinates');
     //data.location.location.coordinates = [13.0694, 80.1948]; //chennai location
     hospitaldestination = [
-      data.location.location.coordinates[1],
-      data.location.location.coordinates[0]
+      data.location.coordinates[1],
+      data.location.coordinates[0]
     ]
     await this.setState({hospitaldestination : hospitaldestination })
-
-    navigator.geolocation.getCurrentPosition(this.success,  
-      (error) => alert(JSON.stringify(error)),
-      { enableHighAccuracy: true }
+    console.log('Setting hosptial Destination' + hospitaldestination)
+    
+    navigator.geolocation.getCurrentPosition(
+      this.success,  
+      
+      (error) =>  {
+        console.log(error); 
+        alert(JSON.stringify(error)) 
+      }
+      
     )
+    console.log('Finishd hosptial Destination')
   }
-    success = async (position) => 
-    {
-      try{
+
+
+
+    success = async (position) => {
+      console.log('Comming to User Locatuin')
+      try {
       const origin_coordinates = [position.coords.longitude, position.coords.latitude];
       this.setState({
         currentLocation: origin_coordinates,
       })
-      await this.fetchDirections();
+      console.log('Setting User Destination')
+     
     }catch(e){
       console.log(e);
+    } 
+    finally {
+      await this.fetchDirections();
     }
     }  
   
@@ -176,7 +190,7 @@ renderOrigin(coordinates) {
    
 
   render() {
-   
+    console.log('rendering map');
     return (
       
       <Container>

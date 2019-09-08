@@ -23,15 +23,8 @@ export default class App extends Component {
   getMarkedAsReadedNotification = async () => {
     try {
       let userId = await AsyncStorage.getItem('userId');
-          console.log('index run.....')
-      let result = await fetchUserMarkedAsReadedNotification(userId);
-      console.log(JSON.stringify(result))
-      if (result.success) {
-       // this.setState({ data: result.data })
-        console.log('success')
-       
-      }
-
+      console.log('Runnig notification');
+      fetchUserMarkedAsReadedNotification(userId);
     }
     catch (e) {
       console.log(e)

@@ -33,20 +33,7 @@ class AuthLoadingScreen extends React.Component {
 
 
   render() {
-
-
-    const data = store.getState().notification.notificationCount;
-    console.log(data)
-    console.log('.............................................')
-    // return null;
-
-    return (
-      // <View style={{ marginTop: -40, }}>
-    <View>
-        {data != null ?
-          < Text style={{ position: 'absolute', backgroundColor: 'red', color: 'white', borderRadius: 5, height: 20, textAlign: 'center' }
-          }> {data}</Text > : null}</View>
-    )
+     return null;
   }
 }
 
