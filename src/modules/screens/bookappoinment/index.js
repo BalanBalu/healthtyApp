@@ -21,7 +21,7 @@ import { store } from '../../../setup/store';
 import HospitalLocation from './HospitalLocation';
 import Reviews from '../Reviews'
 const NO_OF_SLOTS_SHOULD_SHOW_PER_SLIDE = 3;
-
+import { Loader } from '../../../components/ContentLoader';
 processedDoctorDetailsAndSlotData = null;
 showedHospitalDoctorId = null;
 selectedSlotLocationShowed = null;
@@ -364,6 +364,8 @@ onPressContinueForPaymentReview(doctorData, selectedSlotItem) {
    
     return (
 <Container style={styles.container}>
+{isLoading ?
+   <Loader style='appointment' /> : 
 <Content style={styles.bodyContent} contentContainerStyle={{ flex: 0 ,padding:10}}>
       
       <Card style={{  borderBottomWidth: 2 }}>
@@ -580,7 +582,7 @@ onPressContinueForPaymentReview(doctorData, selectedSlotItem) {
            </Card>} keyExtractor={(item, index) => index.toString()} />
       </Content> : null} 
 
-    </Content>
+    </Content> }
 
               <Footer style={{ backgroundColor: '#7E49C3', }}>
                   <Row>

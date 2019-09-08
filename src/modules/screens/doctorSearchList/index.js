@@ -7,7 +7,7 @@ import { StyleSheet, TouchableOpacity, View, FlatList, AsyncStorage, Slider } fr
 import StarRating from 'react-native-star-rating';
 
 import { insertDoctorsWishList, searchDoctorList, fetchAvailabilitySlots, getMultipleDoctorDetails, getDoctorsReviewsCount, getPatientWishList, SET_BOOK_APP_SLOT_DATA, SET_BOOK_APP_DOCTOR_DATA, SET_SELECTED_DATE ,SET_SINGLE_DOCTOR_DATA, SET_PATIENT_WISH_LIST_DOC_IDS, SET_FAVORITE_DOCTOR_COUNT_BY_IDS, getDoctorFaviouteList} from '../../providers/bookappointment/bookappointment.action';
-import { formatDate, addMoment, addTimeUnit, getMoment,addDate,dateDiff, findArrayObj, intersection } from '../../../setup/helpers';
+import { formatDate, addMoment, addTimeUnit, getMoment, intersection } from '../../../setup/helpers';
 import { Loader } from '../../../components/ContentLoader';
 import { RenderHospitalAddress, renderDoctorImage,  getDoctorSpecialist, getDoctorEducation  } from '../../common';
 import { NavigationEvents } from 'react-navigation';
@@ -191,7 +191,6 @@ class doctorSearchList extends Component {
             let filteredDocListArray = intersection(selectedFiltesArray);
             await this.setState({ uniqueFilteredDocArray: filteredDocListArray })
             if (filteredDocListArray.length ===0) {
-                // this.noDoctorsAvailable();
                 Toast.show({
                     text: 'Doctors Not found!..Choose Filter again',
                     type: "danger",
@@ -277,7 +276,7 @@ class doctorSearchList extends Component {
 
         const userId = await AsyncStorage.getItem('userId');
         let resultData = await searchDoctorList(userId, searchedInputValues);
-        // console.log(' resultData'+JSON.stringify(resultData.data));
+        
         await this.setState({ searchedResultData: resultData.data });
         if (resultData.success) {
             let doctorIds = resultData.data.map((element) => {
@@ -362,7 +361,6 @@ class doctorSearchList extends Component {
                             }
                         }
                     } else {
-                        console.log(doctorSlotData.slotData);
                         this.processedDoctorData.push(doctorSlotData);
                         this.processedDoctorIds.push(doctorSlotData.doctorIdHostpitalId);
                         let doctorDetailsData = this.doctorDetailsMap.get(doctorSlotData.doctorId)
@@ -423,6 +421,7 @@ class doctorSearchList extends Component {
            let endDateMoment = addMoment(getMoment(selectedDate), 7, 'days');
            this.getAvailabilitySlots(this.state.getSearchedDoctorIds, getMoment(selectedDate), endDateMoment);
         }
+        console.log('ended loading the onDateChanged')
     }
 
     /* Click the Slots from Doctor List page */
@@ -440,7 +439,6 @@ class doctorSearchList extends Component {
 
             doctorData.doctorName = doctorData.first_name + ' ' + doctorData.last_name;
             doctorData.doctorId = doctorData.doctor_id;
-                console.log('is it coming here?')
             var confirmSlotDetails = {
                 ...doctorData,
                 slotData: selectedSlotItemByDoctor
@@ -452,11 +450,12 @@ class doctorSearchList extends Component {
    async onSlotItemPress(doctorIdHostpitalId, item, index) {
        
         let { selectedSlotByDoctorIds, selectedSlotItemByDoctorIds, showedFeeByDoctorIds }  = this.state;
+
         selectedSlotByDoctorIds[doctorIdHostpitalId] = index;
         selectedSlotItemByDoctorIds[doctorIdHostpitalId] = item
        
         this.setState({ selectedSlotByDoctorIds, selectedSlotItemByDoctorIds });
-       console.log( item);
+       
       // console.log( selectedSlotIndex + '. and index :' +  index) ;
        if((item.fee != showedFeeByDoctorIds[doctorIdHostpitalId])) {
             if(showedFeeByDoctorIds[doctorIdHostpitalId] != undefined) {
@@ -469,6 +468,7 @@ class doctorSearchList extends Component {
             showedFeeByDoctorIds[doctorIdHostpitalId] = item.fee
             this.setState( { showedFeeByDoctorIds });
         }
+        console.log( item);
     }
     
     getPatientReviews = async (doctorIds) => {
@@ -506,7 +506,7 @@ class doctorSearchList extends Component {
             <FlatList
               numColumns={4}
               data={slotsData}
-              extraData={this.state}
+              extraData={[this.state.selectedDatesByDoctorIds,this.state.selectedSlotByDoctorIds]}
               renderItem={({ item, index }) =>
             <Col style={{width:'23.5%'}}>
               <TouchableOpacity disabled={item.isSlotBooked} 
@@ -584,22 +584,11 @@ class doctorSearchList extends Component {
     }
     
     
-    noAvailableSlots(doctorIdHostpitalId, slotData) {
-        let nextAvailableDate;
-        for (let nextAvailableSlotDate of Object.keys(slotData)) {
-            if (this.state.selectedDate < nextAvailableSlotDate) {
-                nextAvailableDate = nextAvailableSlotDate;
-                break;
-            }
-        }
+    noAvailableSlots() {
+        console.log('started-loading-no-slots-available');
         return (
             <Row style={{ justifyContent: 'center', marginTop: 20 }}>
-                <Button disabled style={{ alignItems: 'center', borderRadius: 10, backgroundColor: '#6e5c7b' }} onPress={() => { if (nextAvailableDate) {
-                      let { selectedDatesByDoctorIds }  = this.state;
-                      selectedDatesByDoctorIds[doctorIdHostpitalId] = nextAvailableDate;
-                      this.setState({ selectedDatesByDoctorIds });
-                }
-                 }}>
+                <Button disabled style={{ alignItems: 'center', borderRadius: 10, backgroundColor: '#6e5c7b' }}>
                  <Text>No Slots Available</Text>    
                 {/*nextAvailableDate ? <Text style={{ color: '#fff', fontFamily: 'OpenSans', fontWeight: 'bold', fontSize: 15 }}>Next Availability On {nextAvailableDate}</Text> : <Text style={{ color: '#fff', fontFamily: 'OpenSans', fontWeight: 'bold', fontSize: 16 }}> No Availablity for Next 7 Days</Text>*/}
                 </Button>
@@ -618,13 +607,7 @@ class doctorSearchList extends Component {
         }
         this.setState({ expandedDoctorIdHospitalsToShowSlotsData });
     }
-    noDoctorsAvailable() {
-        return (
-            <Item style={{ borderBottomWidth: 0, justifyContent: 'center', alignItems: 'center' }}>
-                <Text style={{ fontSize: 18, justifyContent: 'center', alignItems: 'center' }} > No Doctors available! </Text>
-            </Item>
-        )
-    }
+    
     
     render() {
        

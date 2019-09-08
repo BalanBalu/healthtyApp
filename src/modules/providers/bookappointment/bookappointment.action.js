@@ -88,7 +88,7 @@ export async function fetchAvailabilitySlots(doctorIds, dateFilter, patientGende
   try {
     let endPoint = 'doctors/' + doctorIds + '/availabilitySlots?startDate=' + dateFilter.startDate + '&endDate='+ dateFilter.endDate;
     if(patientGender)   endPoint + '&gender='+ patientGender;
-    console.log(endPoint);
+    
     let response = await getService(endPoint);
     let respData = response.data;
     return respData;
@@ -121,7 +121,7 @@ export async function getDoctorsReviewsCount(doctorIds) {
   try {
     let endPoint = 'user/reviewsCount/' + doctorIds;
     let response = await getService(endPoint);
-    console.log('response' + response);
+    
     let resultReview = response.data;
     if (resultReview.success) {
       const { bookappointment: { reviewsByDoctorIds } }  = store.getState(); 
@@ -255,7 +255,6 @@ export async function insertDoctorsWishList(userId, doctorId, requestData) {
     let endPoint = 'user/wishList/' + userId + '/' + doctorId
     let response = await putService(endPoint, requestData);
     let respData = response.data;
-    // console.log('respData'+JSON.stringify(respData))
     return respData;
   } catch (e) {
     return {
@@ -293,7 +292,7 @@ export const getPatientWishList = async (userId) => {
 export const getDoctorFaviouteList = async (doctorId) => {
   try {
     let endPoint = 'doctor/wishList/' + doctorId;
-    console.log(endPoint)
+    
     let response = await getService(endPoint);
     let resultFavList = response.data;
         favouriteListCountByDoctorIds = {};  
@@ -321,21 +320,6 @@ export const getDoctorFaviouteList = async (doctorId) => {
     }
   }
 }
-// //get doctordetails using appointment Id notification page
-// export const getAppointmentDetails = async (appointmentId) => {
-//   try {
-//     let endPoint = '/appointment/' + appointmentId;
-//     console.log(endPoint)
-//     let response = await getService(endPoint);
-//     let respData = response.data;
-//     return respData;
-//   } catch (e) {
-//     console.log(e.message);
-//     return {
-//       message: 'exception' + e,
-//       success: false
-//     }
-//   }
-// }
+
 
 
