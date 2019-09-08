@@ -41,12 +41,12 @@ export const Loader = (props) => {
       let height = Dimensions.get('window').height;
       let width = Dimensions.get('window').width;
       noOfList = height / 100; 
-      console.log(noOfList)
+     
       let array = [];
       for(let i = 0; i < noOfList; i++) {
         array.push( ( i * 100) + 35 )
       }
-     // console.log(array)
+     
       return <ContentLoader height={Dimensions.get('window').height} 
                             width={Dimensions.get('window').width}>
                 <Rect x="0" y="5" rx="3" ry="3" width={width} height="15" />

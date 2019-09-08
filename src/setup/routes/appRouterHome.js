@@ -58,8 +58,12 @@ import OrderPaymentPreview from '../../modules/screens/Pharmacy/OrderPaymentPrev
 import OrderMedicineDetails from '../../modules/screens/Pharmacy/OrderMedicineDetails/OrderMedicineDetails';
 import MedicineSearchList from '../../modules/screens/Pharmacy/MedicineSearchList/MedicineSearchList';
 import MedicineCheckout from '../../modules/screens/Pharmacy/MedicineCheckout/MedicineChekout';
-
+import { store } from '../store';
+import { fetchUserNotification, UpDateUserNotification } from '../../modules/providers/notification/notification.actions'
 import { Badge } from '../../../src/modules/common'
+// const data = store.getState().notification.notificationCount;
+
+// console.log(data)
 const routes = {
   Home: {
     path: 'Home',
@@ -187,8 +191,8 @@ const AppointMentstack1 = createStackNavigator({
     screen: Mapbox,
     navigationOptions: {
       title: 'Mapbox'
-   }
-  }, 
+    }
+  },
   Reviews: {
     screen: Reviews,
     navigationOptions: {
@@ -271,7 +275,7 @@ const myAppointmentsStack = createStackNavigator({
 const HomeStack = createStackNavigator({
   Home: {
     screen: Home,
-   navigationOptions: ({ navigation }) => ({
+    navigationOptions: ({ navigation }) => ({
 
       title: 'DashBoard',
       headerLeft: (
@@ -290,8 +294,8 @@ const HomeStack = createStackNavigator({
             <TouchableOpacity onPress={() => { navigation.navigate('Notification') }} >
               <View>
                 <Icon name="notifications" style={{ color: '#fff', marginRight: 10, fontFamily: 'opensans-semibold' }}></Icon>
-
-                 <Badge/>
+               
+                <Badge/>
               </View>
             </TouchableOpacity>
           </Col>
@@ -333,6 +337,18 @@ const HomeStack = createStackNavigator({
     screen: AppointmentDetails,
     navigationOptions: {
       title: 'Appointment Info'
+    }
+  },
+  "CancelAppointment": {
+    screen: CancelAppointment,
+    navigationOptions: {
+      title: 'Cancel Appointment'
+    }
+  },
+  "InsertReview": {
+    screen: InsertReview,
+    navigationOptions: {
+      title: 'Rate and Review'
     }
   },
 
@@ -406,8 +422,8 @@ const ProfileStack = createStackNavigator({
 
 
 const PharmacyStack = createStackNavigator({
-  Pharmacy:{ 
-    screen:PharmacyHome,
+  Pharmacy: {
+    screen: PharmacyHome,
     navigationOptions: ({ navigation }) => ({
       title: 'Medflic Pharmacy',
       headerLeft: (
@@ -429,7 +445,7 @@ const PharmacyStack = createStackNavigator({
       title: 'Search List'
     }
   },
-    MedicineCheckout: {
+  MedicineCheckout: {
     screen: MedicineCheckout,
     navigationOptions: {
       title: 'Checkout'
@@ -460,12 +476,12 @@ const PharmacyStack = createStackNavigator({
     }
   },
 
-  OrderPaymentAddress:{
-    screen:OrderPaymentAddress,
-    navigationOptions:{
-      title:'Order Payment Address'
+  OrderPaymentAddress: {
+    screen: OrderPaymentAddress,
+    navigationOptions: {
+      title: 'Order Payment Address'
     }
-} 
+  }
 },
   {
     defaultNavigationOptions: ({ navigation }) => ({
@@ -475,50 +491,50 @@ const PharmacyStack = createStackNavigator({
   });
 
 
-  const OrdersStack = createStackNavigator({
-    Orders:{ 
-      screen:MyOrdersList,
-      navigationOptions: ({ navigation }) => ({
-        title: 'Orders List',
-        headerLeft: (
-          <TouchableOpacity onPress={() => navigation.navigate('Home')}>
-            <Icon name="arrow-back" style={{ marginLeft: 18, color: '#fff', fontFamily: 'opensans-semibold' }}></Icon>
-          </TouchableOpacity>
-        ),
-      })
-    },
-    MyOrdersList: {
-      screen: MyOrdersList,
-      navigationOptions: {
-        title: 'Order List'
-      }
-    },
-  
-    OrderDetails: {
-      screen: OrderDetails,
-      navigationOptions: {
-        title: 'My Order'
-      }
-    },
-  
-    OrderMedicineDetails: {
-      screen: OrderMedicineDetails,
-      navigationOptions: {
-        title: 'Medicine Details'
-      }
-    }
-  
+const OrdersStack = createStackNavigator({
+  Orders: {
+    screen: MyOrdersList,
+    navigationOptions: ({ navigation }) => ({
+      title: 'Orders List',
+      headerLeft: (
+        <TouchableOpacity onPress={() => navigation.navigate('Home')}>
+          <Icon name="arrow-back" style={{ marginLeft: 18, color: '#fff', fontFamily: 'opensans-semibold' }}></Icon>
+        </TouchableOpacity>
+      ),
+    })
   },
-    {
-      defaultNavigationOptions: ({ navigation }) => ({
-        headerStyle: { backgroundColor: '#7E49C3', fontFamily: 'opensans-semibold' },
-        headerTintColor: 'white',
-      })
-    });
-  
+  MyOrdersList: {
+    screen: MyOrdersList,
+    navigationOptions: {
+      title: 'Order List'
+    }
+  },
 
-  
-  
+  OrderDetails: {
+    screen: OrderDetails,
+    navigationOptions: {
+      title: 'My Order'
+    }
+  },
+
+  OrderMedicineDetails: {
+    screen: OrderMedicineDetails,
+    navigationOptions: {
+      title: 'Medicine Details'
+    }
+  }
+
+},
+  {
+    defaultNavigationOptions: ({ navigation }) => ({
+      headerStyle: { backgroundColor: '#7E49C3', fontFamily: 'opensans-semibold' },
+      headerTintColor: 'white',
+    })
+  });
+
+
+
+
 
 
 const categoryStack = createStackNavigator({
@@ -569,8 +585,8 @@ const DrawerNavigator = createDrawerNavigator({
   Home: HomeStack,
   Profile: ProfileStack,
   "My Appointments": myAppointmentsStack,
-  Pharmacy:PharmacyStack,
-  Orders:OrdersStack
+  Pharmacy: PharmacyStack,
+  Orders: OrdersStack
 },
   {
     initialRouteName: 'Home'
@@ -585,7 +601,7 @@ export default createAppContainer(createSwitchNavigator(
     categoryStack,
     Appointments: AppointMentstack1,
     Pharmacy: PharmacyStack,
-    Orders:OrdersStack
+    Orders: OrdersStack
   },
   {
     initialRouteName: 'AuthLoading',

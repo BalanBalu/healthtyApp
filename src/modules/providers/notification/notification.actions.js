@@ -2,55 +2,28 @@
 
 
 import { postService, getService, putService } from '../../../setup/services/httpservices';
-export const NOTIFICATION_REQUEST = 'AUTH/NOTIFICATION/NOTIFICATION_REQUEST'
-export const NOTIFICATION_HAS_ERROR = 'AUTH/NOTIFICATION/NOTIFICATION_HAS_ERROR'
-export const NOTIFICATION_RESPONSE = 'AUTH/NOTIFICATION/NOTIFICATION_RESPONSE'
+
+export const NOTIFICATION_REQUEST = 'NOTIFICATION/NOTIFICATION_REQUEST'
+export const NOTIFICATION_HAS_ERROR = 'NOTIFICATION/NOTIFICATION_HAS_ERROR'
+export const NOTIFICATION_RESPONSE = 'NOTIFICATION/NOTIFICATION_RESPONSE'
 import { AsyncStorage } from 'react-native';
 import { store } from '../../../setup/store';
 
 /* Get Patient Notification List  */
 export const fetchUserNotification = async (userId) => {
     try {
-
+       
         let endPoint = '/notifications/' + userId;
-
+            
         let response = await getService(endPoint);
         let respData = response.data;
-
-        if (respData.error || !respData.success) {
-            store.dispatch({
-                type: NOTIFICATION_HAS_ERROR,
-                message: respData.message
-            })
-        } else {
-            let count = 0, notification = [];
-            respData.data.forEach(element => {
-               
-                if (element.mark_as_viewed == false) {
-                    console.log(element)
-                    notification.push(element._id)
-                    count++;
-                }
-
-            });
-            store.dispatch({
-                type: NOTIFICATION_RESPONSE,
-                message: respData.message,
-                details: respData.data,
-                notificationIds: notification
-            })
-               console.log(count)
-            await AsyncStorage.setItem('notification', count.toString())
-
-        }
         return respData;
 
     } catch (e) {
-        console.log(e);
-        store.dispatch({
+        return {
             type: NOTIFICATION_HAS_ERROR,
             message: e + ' Occured! Please Try again'
-        });
+        }
     }
 
 
@@ -77,8 +50,47 @@ export function setnotification(notificationData) {
 
     AsyncStorage.setItem('notificationCount', notificationData)
 
+}
+export const fetchUserMarkedAsReadedNotification = async (userId) => {
+    try {
+
+        let endPoint = '/notifications/' + userId ;
+
+        let response = await getService(endPoint);
+        let respData = response.data;
+        console.log(JSON.stringify(respData))
+        store.dispatch({
+            type: NOTIFICATION_REQUEST,
+            message: respData.message
+        })
+        if (respData.error || !respData.success) {
+            store.dispatch({
+                type: NOTIFICATION_HAS_ERROR,
+                message: e + ' Occured! Please Try again'
+            });
+
+        } else {
+            let count=respData.data.length
+       
+            store.dispatch({
+                type: NOTIFICATION_RESPONSE,
+                message: respData.message,
+               
+                notificationCount: count
+            })
 
 
+        }
+        return respData;
+
+    } catch (e) {
+       
+        store.dispatch({
+            type: NOTIFICATION_HAS_ERROR,
+            message: e + ' Occured! Please Try again'
+        });
+    }
 
 
 }
+
