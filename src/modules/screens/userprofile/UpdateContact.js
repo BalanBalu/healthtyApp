@@ -20,8 +20,8 @@ class UpdateContact extends Component {
             active: true,
             primary_mobile_no: null,
             isLoading: false,
-            numberType: '',
-            userData: []
+            userData:'',
+            primaryMobileNoText:''
         }
     }
 
@@ -33,74 +33,67 @@ class UpdateContact extends Component {
     bindContactValues() {
         const { navigation } = this.props;
         const userData = navigation.getParam('updatedata');
-        this.setState({ userData })
-
         this.setState({
             primary_mobile_no: userData.mobile_no,
+            primaryMobileNoText:'Primary Mobile_No Is Not Editable'
 
         })
         if (userData.secondary_mobiles) {
             this.setState({
                 type: userData.secondary_mobiles[0].type,
                 mobile_no: userData.secondary_mobiles[0].number,
-                active: userData.secondary_mobiles[0].active
+                active: userData.secondary_mobiles[0].active,
+                userData
             })
         }
 
     }
-    // }
-
-    handleContactUpdate = async () => {
-        const { mobile_no, type, userData } = this.state
-
-        try {
-            this.setState({ isLoading: true })
-            let userId = await AsyncStorage.getItem('userId');
-            if (type != userData.secondary_mobiles[0].type || mobile_no != userData.secondary_mobiles[0].number) {
-
+    commonUpdateContactMethod=async()=>{
+        let userId = await AsyncStorage.getItem('userId');
                 let data = {
                     secondary_mobiles: [
                         {
-                            type: type,
-                            number: mobile_no,
-                            active: true
+                            type:this.state.type,
+                            number:this.state.mobile_no,
+                            active:true
                         }]
 
                 };
                 let response = await userFiledsUpdate(userId, data);
                 if (response.success) {
                     Toast.show({
-                        text: 'Contact updated Successfully',
+                        text:response.message,
                         type: "success",
                         duration: 3000,
-
                     })
-                    this.setState({ isloading: false })
-                    this.props.navigation.navigate('Profile');
-
+                    this.props.navigation.navigate('Profile');               
                 } else {
                     Toast.show({
-                        text: 'Contact not updated',
+                        text:response.message,
                         type: "danger",
                         duration: 3000
-                    })
-
-
-
+                    })           
                 }
-            }
-            else {
-                this.setState({ isloading: false })
+                this.setState({ isLoading: false })
+
+    }
+    
+
+    handleContactUpdate = async () => {
+        const{mobile_no,type,userData}=this.state
+        try {
+            this.setState({ isLoading:true})
+            if(userData.secondary_mobiles!==undefined){                
+            if (type != userData.secondary_mobiles[0].type || mobile_no != userData.secondary_mobiles[0].number) {
+                this.commonUpdateContactMethod();
+            }else {
                 this.props.navigation.navigate('Profile');
-
             }
-
-
-        } catch (e) {
-            console.log(e);
+        }else{
+            this.commonUpdateContactMethod();
         }
-        finally {
-            this.setState({ isloading: false })
+        }catch (e) {
+        console.log(e);
         }
     }
 
@@ -113,17 +106,18 @@ class UpdateContact extends Component {
             <Container style={styles.container}>
                 <Spinner color='blue'
                     visible={this.state.isLoading}
-                    textContent={'Loading...'}
+                    textContent={'Please Wait Loading'}
                 />
 
 
 
-                <Content style={styles.bodyContent} contentContainerStyle={{ justifyContent: 'center', }}>
+                <Content contentContainerStyle={styles.bodyContent}>
                     <ScrollView>
+                        
                         {this.state.primary_mobile_no != null ?
-                            <Text style={{ fontFamily: 'OpenSans', marginTop: 70, marginLeft: 7, fontWeight: 'bold', fontSize: 22 }}>Primary Mobile_no</Text> : null}
+                            <Text style={styles.headerText}>Primary Mobile_no</Text> : null}
                         {this.state.primary_mobile_no != null ?
-                            <Card style={{ padding: 10, borderRadius: 10 }}>
+                            <Card style={styles.cardEmail}>
                                 <Item style={{ borderBottomWidth: 0 }}>
                                     <Icon name="call" style={styles.centeredIcons}></Icon>
 
@@ -133,16 +127,18 @@ class UpdateContact extends Component {
                                     </Right>
                                 </Item>
                             </Card> : null}
+                            <Text style={{fontFamily:'OpenSans',fontSize:12,color:'red',marginLeft:8}}>{this.state.primaryMobileNoText}</Text>
 
-                        <Text style={{ fontFamily: 'OpenSans', marginTop: 50, marginLeft: 7, fontWeight: 'bold', fontSize: 22 }}>Edit Secondary Mobile_No</Text>
-                        <Text style={{ color: 'gray', fontSize: 13, fontFamily: 'OpenSans', marginLeft: 6 }}>Update your secondary mobile_no</Text>
-                        <Card style={{ padding: 10, borderRadius: 10, marginBottom: 20 }}>
+                            <View style={{ marginTop: 30 }}>
+                        <Text style={styles.headerText}>Edit Secondary Mobile_No</Text>
+                       
+                        <Card style={styles.cardEmail}>
 
                             <Item style={{ borderBottomWidth: 0 }}>
-                                <Picker style={{ fontFamily: 'OpenSans' }}
+                                <Picker style={{ fontFamily: 'OpenSans'}}
                                     mode="dropdown"
                                     iosIcon={<Icon name="arrow-down" />}
-                                    textStyle={{ color: "#5cb85c" }}
+                                    textStyle={{ color: "#775DA3",backgroundColor: "gray", }}
                                     itemStyle={{
                                         backgroundColor: "gray",
                                         marginLeft: 0,
@@ -164,7 +160,7 @@ class UpdateContact extends Component {
 
                             <Item style={{ borderBottomWidth: 0 }}>
                                 <Icon name='call' style={styles.centeredIcons}></Icon>
-                                <Input placeholder="Edit Your Number" style={styles.transparentLabel} keyboardType="email-address"
+                                <Input placeholder="Edit Your Number" style={styles.transparentLabel} keyboardType="numeric"
                                     onChangeText={(mobile_no) => this.setState({ mobile_no })}
                                     value={String(this.state.mobile_no)}
                                     testID='updateContact' />
@@ -173,22 +169,20 @@ class UpdateContact extends Component {
 
 
 
-                            <Item style={{ borderBottomWidth: 0 }}>
+                            <Item style={{ borderBottomWidth: 0,marginTop: 35}}>
                                 <Right>
-                                    <Button success style={styles.updateButton} onPress={() => this.handleContactUpdate()} testID='clickUpdateContact'>
-                                        <Text uppercase={false} note style={{ color: '#fff', fontFamily: 'OpenSans' }}>Update</Text>
+                                    <Button success style={styles.button2} onPress={() => this.handleContactUpdate()} testID='clickUpdateContact'>
+                                        <Text uppercase={false} note style={styles.buttonText}>Update</Text>
                                     </Button>
                                 </Right>
                             </Item>
-
-
                         </Card>
 
+                      </View>
 
 
 
-
-
+                        
                     </ScrollView>
                 </Content >
 

@@ -8,14 +8,34 @@ import getTheme from '../theme/components';
 import material from '../theme/variables/material';
 import { AsyncStorage, Text } from 'react-native';
 import { setDoctorLocally } from '../modules/providers/auth/auth.actions';
-
+import { fetchUserNotification, UpDateUserNotification, fetchUserMarkedAsReadedNotification } from '../../src/modules/providers/notification/notification.actions';
 export default class App extends Component {
     constructor(props) {
       super(props);
-    } 
+  } 
+  componentDidMount() {
+      setInterval(() => {
+      this.getMarkedAsReadedNotification();
+     },10000)
+   
+  }
 
+  getMarkedAsReadedNotification = async () => {
+    try {
+      let userId = await AsyncStorage.getItem('userId');
+      console.log('Runnig notification');
+      fetchUserMarkedAsReadedNotification(userId);
+    }
+    catch (e) {
+      console.log(e)
+    }
+  
+  }
   render() {
+   
+   
       return (
+       
       
         <Provider store={store} key="provider">
         <Root>   

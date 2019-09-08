@@ -58,7 +58,7 @@ class UpdateInsurance extends Component {
         console.log('response' + JSON.stringify(response));
         if (response.success) {
             Toast.show({
-                text: 'Inusrance updated Successfully',
+                text:response.message,
                 type: "success",
                 duration: 3000,
             })
@@ -66,7 +66,7 @@ class UpdateInsurance extends Component {
 
         } else {
             Toast.show({
-                text: 'Fields should not be empty',
+                text:response.message,
                 type: "danger",
                 duration: 3000
             })
@@ -110,16 +110,16 @@ class UpdateInsurance extends Component {
             <Container style={styles.container}>
 
 
-                <Content style={styles.bodyContent} contentContainerStyle={{ justifyContent: 'center' }}>
+<Content contentContainerStyle={styles.bodyContent}>
+
                     <ScrollView>
                         <Spinner color='blue'
                             visible={this.state.isLoading}
                             textContent={'Loading...'}
                         />
 
-                        <Text style={{ fontFamily: 'OpenSans', marginLeft: 7, marginTop: 100, fontWeight: 'bold', fontSize: 22 }}>Edit Insurance</Text>
+                        <Text style={styles.headerText}>Edit Insurance</Text>
 
-                        <Text style={{ color: 'gray', fontSize: 13, fontFamily: 'OpenSans', marginTop: 10, marginLeft: 7 }}>Update your Insurance</Text>
                         <Card style={{ padding: 10, borderRadius: 10, marginTop: 20, height: 250, marginBottom: 20 }}>
 
 
@@ -142,10 +142,10 @@ class UpdateInsurance extends Component {
 
 
 
-                            <Item style={{ borderBottomWidth: 0 }}>
+                            <Item style={{ borderBottomWidth: 0, marginTop: 10}}>
                                 <Right>
-                                    <Button success style={styles.updateButton} onPress={() => this.handleInsuranceUpdate()} testID='clickUpdateInsurance'>
-                                        <Text uppercase={false} note style={{ color: '#fff', fontFamily: 'OpenSans' }}>Update</Text>
+                                    <Button success style={styles.button2} onPress={() => this.handleInsuranceUpdate()} testID='clickUpdateInsurance'>
+                                        <Text uppercase={false} note style={styles.buttonText}>Update</Text>
                                     </Button>
                                 </Right>
                             </Item>

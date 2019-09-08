@@ -1,91 +1,99 @@
 import React, { Component } from 'react';
-import { Container, Content, Text, Title, Header, View, Button, H3, Item, List, ListItem, Card, 
-    Input, Left, Right, Thumbnail, Body, Icon, Footer, FooterTab, Badge } from 'native-base';
-import LinearGradient from 'react-native-linear-gradient';
+import {
+    Container, Content, Text, View, Button, H3, Item, Card,
+    Input, Left, Right, Icon, Footer, Badge
+} from 'native-base';
 import { Col, Row, Grid } from 'react-native-easy-grid';
-import { connect } from 'react-redux'
 import { StyleSheet, Image, TouchableOpacity, AsyncStorage, FlatList } from 'react-native';
-import { ScrollView } from 'react-native-gesture-handler';
-import { getSearchedMedicines } from '../../../providers/pharmacy/pharmacy.action';
 import { NavigationEvents } from 'react-navigation';
+import { Loader } from '../../../../components/ContentLoader'
 import { addToCart, medicineRateAfterOffer } from '../../../common';
 
 class MedicineSearchList extends Component {
     constructor(props) {
         super(props)
-        console.log(this.props)
-        this.state={
-            value:[],
-            clickCard:null,
-            footerSelectedItem:'',
+        this.state = {
+            value: [],
+            clickCard: null,
+            footerSelectedItem: '',
             cartItems: [],
-            isLoading: false
-        }
-    }
-async componentDidMount(){
-    this.setState({clickCard:null});  
-    const keyword=this.props.navigation.getParam('medicineKeyword');
-    this.storeMedicineToCart()
-    await this.searchedMedicines(keyword); 
-
-};
-
-    searchedMedicines = async (keyword) => {
-        try {
-            let requestData = {
-                value: keyword           
-            };
-          
-            let result = await getSearchedMedicines(requestData);
-            this.setState({ value: result.data, isLoading: true })
-            }
-        catch (e) {
-            console.log(e);
-        }
-        finally {
-            this.setState({ isLoading: false });
+            isLoading: true
         }
     }
 
-    async addSubOperation(selectItem,operation){
-        let data = await addToCart(this.state.value, selectItem, operation);  
-       // console.log('data:'+JSON.stringify(data)  )
-        this.setState({footerSelectedItem:data.selectemItemData})       
+    componentDidMount() {
+        const temp = this.props.navigation.getParam('medicineList');
+        this.setState({ clickCard: null, value: temp });
+        this.storeMedicineToCart();
+    };
+
+    
+    backNavigation(payload) {
+        if (payload.action.type === 'Navigation/BACK') {
+            const temp = this.props.navigation.getParam('medicineList');
+            this.setState({ clickCard: null, value: temp });
+            this.storeMedicineToCart();
+        }
     }
 
-    onPressCard=async(item,index)=>{
-        this.setState({clickCard:index})
-        await this.setState({footerSelectedItem:item});
-       
+    // searchedMedicines = async (keyword) => {
+    //     try {
+    //         this.setState({ isLoading: true })
+    //         let requestData = {
+    //             value: keyword
+    //         };
+    //         let result = await getSearchedMedicines(requestData);
+    //         this.setState({ value: result.data, isLoading: true })
+    //     }
+    //     catch (e) {
+    //         console.log(e);
+    //     }
+    //     finally {
+    //         this.setState({ isLoading: false });
+    //     }
+    // }
 
-      }  
-  
-    storeMedicineToCart= async() =>{
+    async addSubOperation(selectItem, operation) {
+        let temp_userid = await AsyncStorage.getItem('userId')
+        let userId = JSON.stringify(temp_userid);
+        let data = await addToCart(this.state.value, selectItem, operation);
+        let cartItems = await AsyncStorage.getItem('cartItems-' + userId);
+        this.setState({ footerSelectedItem: data.selectemItemData, cartItems: JSON.parse(cartItems) })
+    }
+
+    onPressCard = async (item, index) => {
+        this.setState({ clickCard: index })
+        await this.setState({ footerSelectedItem: item });
+    }
+
+    storeMedicineToCart = async () => {
+        this.setState({ isLoading: true })
         let data = await AsyncStorage.getItem('userId')
         let userId = JSON.stringify(data);
-        
+
         medicineSearchMap = new Map();
-        if(this.state.value != undefined){
-        this.state.value.forEach(element =>{           
-            medicineSearchMap.set(element.medicine_id,element)
-        }) 
-    } 
-        const cartItems = await AsyncStorage.getItem('cartItems-'+userId);
-        if(Array.isArray(JSON.parse(cartItems)) == true){
-          this.setState({cartItems:JSON.parse(cartItems)})           
-            this.state.cartItems.forEach(element => {  
-                if(medicineSearchMap.get(element.medicine_id) != undefined){    
+        if (this.state.value != undefined) {
+            this.state.value.forEach(element => {
+                medicineSearchMap.set(element.medicine_id, element)
+            })
+        }
+
+        const cartItems = await AsyncStorage.getItem('cartItems-' + userId);
+        if (Array.isArray(JSON.parse(cartItems)) == true) {
+            this.setState({ cartItems: JSON.parse(cartItems) })
+            this.state.cartItems.forEach(element => {
+                if (medicineSearchMap.get(element.medicine_id) != undefined) {
                     medicineSearchMap.set(element.medicine_id, element);
                 }
             })
         }
 
-
-        let temp = [...medicineSearchMap.values()]   
-        this.setState({value:temp});   
-        // console.log('value222'+JSON.stringify(this.state.value));
+        let temp = await [...medicineSearchMap.values()]
+        await this.setState({ value: temp });
+        this.setState({ isLoading: false })
 
     }
+
     noMedicines() {
         return (
             <Item style={{ borderBottomWidth: 0, justifyContent: 'center', alignItems: 'center' }}>
@@ -94,12 +102,14 @@ async componentDidMount(){
         )
     }
     render() {
-        const {value} =this.state;
+        const { value, isLoading } = this.state;
         return (
             <Container style={styles.container}>
-                 <NavigationEvents
-					onWillFocus={payload => { this.componentDidMount() }}
-				/>
+                <NavigationEvents
+                    onWillFocus={payload => { this.backNavigation(payload) }}
+                />
+                {isLoading == true ? <Loader style={'list'} /> :
+
                 <Content>
                     <Grid style={styles.curvedGrid}>
                     </Grid>
@@ -114,22 +124,22 @@ async componentDidMount(){
                             </Col>
                         </Row>
                     </Grid>
-                       
-                    {this.state.value==null?this.noMedicines():
-                     <FlatList data={value}
-                     extraData={this.state}
-                     keyExtractor={(item, index) => index.toString()}
+
+                    {this.state.value == '' ? this.noMedicines() :
+                        <FlatList data={value}
+                            extraData={this.state}
+                            keyExtractor={(item, index) => index.toString()}
                             renderItem={({ item, index }) =>
-                                <TouchableOpacity onPress={()=>this.onPressCard(item,index)} testID='selectMedicineToList'>
+                                <TouchableOpacity onPress={() => this.onPressCard(item, index)} testID='selectMedicineToList'>
 
                                     <Card style={{ padding: 10, marginTop: 20, }}>
                                         <View style={{ width: 'auto', flex: 1, flexDirection: 'row' }}>
 
                                             <Right>
-                                            {this.state.clickCard!==index?<Icon  style={{ color: '#5cb75d', marginTop: 20, }} />
-                                                :<Icon name="checkmark-circle" style={{ color: '#5cb75d', marginTop: 20, }} />} 
-                                             </Right>
-                                             </View>
+                                                {this.state.clickCard !== index ? <Icon style={{ color: '#5cb75d', marginTop: 20, }} />
+                                                    : <Icon name="checkmark-circle" style={{ color: '#5cb75d', marginTop: 20, }} />}
+                                            </Right>
+                                        </View>
 
                                         <Grid>
                                             <Col style={{ width: '25%' }}>
@@ -141,7 +151,7 @@ async componentDidMount(){
                                                         backgroundColor: 'green', right: 0, top: 0, justifyContent: 'center', alignItems: 'center',
                                                         borderColor: 'green', borderWidth: 1
                                                     }}>
-                                                        <Text style={{ padding: 5, backgroundColor: 'transparent', color: 'white', fontSize: 13 }}>{item.offer}</Text>
+                                                        <Text style={{ padding: 5, backgroundColor: 'transparent', textAlign: "center", color: 'white', fontSize: 13 }}>{item.offer}</Text>
 
                                                     </View>
                                                 </View>
@@ -160,25 +170,26 @@ async componentDidMount(){
                                         </Grid>
 
                                     </Card>
-                                    </TouchableOpacity> 
+                                </TouchableOpacity>
                             } />
-                        }
+                    }
 
 
                 </Content>
-                {this.state.clickCard!==null?<Footer style={{ backgroundColor: '#7E49C3', }}>
+                }
+                {this.state.clickCard !== null ? <Footer style={{ backgroundColor: '#7E49C3', }}>
 
                     <Row>
                         <Col style={{ flexDirection: 'row', justifyContent: 'center', marginTop: 12 }}>
-                        <TouchableOpacity onPress={()=>this.addSubOperation(this.state.footerSelectedItem,"sub")} testID='decreaseMedicine'>
+                            <TouchableOpacity onPress={() => this.addSubOperation(this.state.footerSelectedItem, "sub")} testID='decreaseMedicine'>
                                 <View style={{ padding: 0, justifyContent: 'center', borderWidth: 1, borderColor: 'black', width: 40, height: 35, backgroundColor: 'white' }}>
                                     <Text style={{ fontSize: 40, textAlign: 'center', marginTop: -5, color: 'black' }}>-</Text>
                                 </View>
                             </TouchableOpacity>
                             <View>
-                            <Text style={{ marginLeft: 5, color: 'white', fontSize: 20 }}>{this.state.footerSelectedItem.selectedQuantity==undefined?0:this.state.footerSelectedItem.selectedQuantity}</Text>
+                                <Text style={{ marginLeft: 5, color: 'white', fontSize: 20 }}>{this.state.footerSelectedItem.selectedQuantity == undefined ? 0 : this.state.footerSelectedItem.selectedQuantity}</Text>
                             </View>
-                            <TouchableOpacity onPress={()=>this.addSubOperation(this.state.footerSelectedItem,"add")} testID='addMedicine'>
+                            <TouchableOpacity onPress={() => this.addSubOperation(this.state.footerSelectedItem, "add")} testID='addMedicine'>
                                 <View style={{ padding: 0, justifyContent: 'center', borderWidth: 1, borderColor: 'black', width: 40, height: 35, marginLeft: 5, backgroundColor: 'white' }}>
                                     <Text style={{
                                         fontSize: 20, textAlign: 'center', marginTop: -5,
@@ -189,18 +200,20 @@ async componentDidMount(){
                         </Col>
 
                         <Col style={{ marginRight: 40 }} >
-                            <Button success style={{ borderRadius: 10, marginTop: 10, marginLeft: 45, height: 40, justifyContent: 'center' }} onPress={()=> this.props.navigation.navigate('PharmacyCart')} testID='viewToCartPage'>
+                            <Button success style={{ borderRadius: 10, marginTop: 10, marginLeft: 45, height: 40, justifyContent: 'center' }} onPress={() => this.props.navigation.navigate('PharmacyCart')} testID='viewToCartPage'>
 
 
                                 <Row style={{ justifyContent: 'center', }}>
 
                                     <Icon name='ios-cart' onPress={() => this.props.navigation.navigate('PharmacyCart')} />
 
-                                    <Text style={{ marginLeft: -25, marginTop: 2, }} >VIEW CART</Text>
+                                    <Text style={{ marginLeft: -15, marginTop: 2, }} >VIEW CART</Text>
+
                                     <View>
-                                        <Text style={{ position: 'absolute', height: 20, width: 20, fontSize: 13, backgroundColor: '#ffa723', top: 0, marginLeft: -105, borderRadius: 20, marginTop: -10 }}>
-                                            20
-                                        </Text>
+                                        {this.state.cartItems.length != 0 ?
+                                            <Text style={{ position: 'absolute', height: 20, width: 20, fontSize: 13, backgroundColor: '#ffa723', top: 0, marginLeft: -110, borderRadius: 20, marginTop: -13, textAlign: "center" }}>
+                                                {this.state.cartItems.length}
+                                            </Text> : null}
                                     </View>
                                 </Row>
                             </Button>
@@ -208,13 +221,14 @@ async componentDidMount(){
 
                     </Row>
 
-                </Footer>:null
-            }
-            </Container > 
+                </Footer> : null
+                }
+                
+            </Container >
         )
-       }
-       }             
-                        
+    }
+}
+
 
 export default MedicineSearchList
 const styles = StyleSheet.create({

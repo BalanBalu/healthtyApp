@@ -2,7 +2,7 @@ import { Platform } from 'react-native';
 export const IS_ANDROID = Platform.OS === 'android';
 export const IS_IOS = Platform.OS === 'ios';
 
-export const API_URL = 'http://192.168.1.3:3200/api/';
+export const API_URL = 'http://ec2-13-234-232-60.ap-south-1.compute.amazonaws.com:3000/api/';
 
 
 export const RAZOR_KEY = 'rzp_test_Cq2ADxwBVYKNlL';

@@ -1,9 +1,11 @@
 // App Imports
-import { isEmpty } from '../../../setup/helpers';
+import { store} from '../../../setup/store';
 import {
   SET_USER, LOGIN_REQUEST, LOGIN_RESPONSE, LOGOUT, LOGIN_HAS_ERROR, AUTH_REQUEST, AUTH_HAS_ERROR, AUTH_RESPONSE, OTP_CODE_GENERATED, NEW_PASSWORD,
   REDIRECT_NOTICE, RESET_REDIRECT_NOTICE
 } from './auth.actions';
+
+
 import { statement } from '@babel/template';
 
 
@@ -13,6 +15,8 @@ export const userInitialState = {
   isLoading: false,
   isAuthenticated: false,
   details: null,
+
+ 
   success: false,
   userId: null,
   isPasswordChanged: false,
@@ -101,6 +105,7 @@ export default (state = userInitialState, action) => {
       }
     case LOGOUT:
       return userInitialState;
+  
 
     default:
       return state;
