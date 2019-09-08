@@ -38,7 +38,7 @@ class BookAppoinment extends Component {
       isLoading: true  ,
       pressTab: 1,   
       selectedDate: formatDate(new Date(),'YYYY-MM-DD'),
-      selectedSlotIndex: 0,
+      selectedSlotIndex: -1,
       sliderPageIndex: 0,
       doctordata: {
         prefix: null,
