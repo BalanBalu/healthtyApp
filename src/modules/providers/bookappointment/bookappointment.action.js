@@ -6,6 +6,8 @@ export const SET_SELECTED_DATE = 'BOOK_APP/SELECTED_DATE';
 export const SET_SINGLE_DOCTOR_DATA = 'BOOK_APP/SINGLE_DOCTOR_DATA';
 export const SET_PATIENT_WISH_LIST_DOC_IDS = 'BOOK/PATIENT_WISH_LIST_DOC_IDS';
 export const SET_FAVORITE_DOCTOR_COUNT_BY_IDS = 'BOOK/FAVORITE_DOCTOR_COUNT_BY_IDS';
+export const SET_DOCTORS_RATING_BY_IDS = 'BOOK/DOCTORS_RATING_BY_IDS'; 
+import { store } from '../../../setup/store';
 /* Book the Doctor Appointment module  */
 export async function bookAppointment(bookSlotDetails, isLoading = true) {
   try {
@@ -120,8 +122,19 @@ export async function getDoctorsReviewsCount(doctorIds) {
     let endPoint = 'user/reviewsCount/' + doctorIds;
     let response = await getService(endPoint);
     console.log('response' + response);
-    let respData = response.data;
-    return respData;
+    let resultReview = response.data;
+    if (resultReview.success) {
+      const { bookappointment: { reviewsByDoctorIds } }  = store.getState(); 
+      for (i = 0; i < resultReview.data.length; i++) {
+        reviewsByDoctorIds[resultReview.data[i]._id] = resultReview.data[i];
+      }
+      store.dispatch({
+        type: SET_DOCTORS_RATING_BY_IDS,
+        data : reviewsByDoctorIds
+      })
+  }
+    return resultReview;
+
 
   } catch (e) {
     return {
@@ -256,8 +269,18 @@ export const getPatientWishList = async (userId) => {
   try {
     let endPoint = 'user/wishList/' + userId;
     let response = await getService(endPoint);
-    let respData = response.data;
-    return respData;
+    let result = response.data;
+    if (result.success) {
+      let wishListDoctorsIds = [];
+      result.data.forEach(element => {
+          wishListDoctorsIds.push(element.doctorInfo.doctor_id)
+      })
+      store.dispatch({
+          type: SET_PATIENT_WISH_LIST_DOC_IDS,
+          data: wishListDoctorsIds
+      })
+    }
+    return result;
   } catch (e) {
     console.log(e.message);
     return {
@@ -272,8 +295,24 @@ export const getDoctorFaviouteList = async (doctorId) => {
     let endPoint = 'doctor/wishList/' + doctorId;
     console.log(endPoint)
     let response = await getService(endPoint);
-    let respData = response.data;
-    return respData;
+    let resultFavList = response.data;
+        favouriteListCountByDoctorIds = {};  
+        if (resultFavList.success) {
+             for (i = 0; i < resultFavList.data.length; i++) {
+                 doctorId = resultFavList.data[i].wishList.doctor_id;
+                 if(favouriteListCountByDoctorIds[doctorId]) {
+                    favouriteListCountByDoctorIds[doctorId] = favouriteListCountByDoctorIds[doctorId] + 1
+                 } else {
+                    favouriteListCountByDoctorIds[doctorId] = 1;
+                 }
+             }
+             store.dispatch({
+                type: SET_FAVORITE_DOCTOR_COUNT_BY_IDS,
+                data: favouriteListCountByDoctorIds
+             })
+        }
+
+    return resultFavList;
   } catch (e) {
     console.log(e.message);
     return {

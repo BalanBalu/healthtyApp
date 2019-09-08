@@ -5,9 +5,18 @@ import { connect } from 'react-redux'
 import { StyleSheet, Image, TouchableOpacity, View, FlatList, AsyncStorage, } from 'react-native';
 import StarRating from 'react-native-star-rating';
 import { formatDate, dateDiff, addMoment, getMoment } from '../../../setup/helpers';
-import {  fetchAvailabilitySlots, insertDoctorsWishList, viewUserReviews, bindDoctorDetails, SET_SINGLE_DOCTOR_DATA, SET_PATIENT_WISH_LIST_DOC_IDS , SET_FAVORITE_DOCTOR_COUNT_BY_IDS} from '../../providers/bookappointment/bookappointment.action';
+import {  fetchAvailabilitySlots, 
+          insertDoctorsWishList, 
+          bindDoctorDetails, 
+          SET_SINGLE_DOCTOR_DATA, 
+          SET_PATIENT_WISH_LIST_DOC_IDS, 
+          SET_FAVORITE_DOCTOR_COUNT_BY_IDS, 
+          getDoctorFaviouteList , 
+          getPatientWishList ,
+          getDoctorsReviewsCount
+        } from '../../providers/bookappointment/bookappointment.action';
 import moment from 'moment';
-import { renderProfileImage, getDoctorSpecialist, getDoctorEducation } from '../../common';
+import { renderDoctorImage, getDoctorSpecialist, getDoctorEducation } from '../../common';
 import { store } from '../../../setup/store';
 import HospitalLocation from './HospitalLocation';
 import Reviews from '../Reviews'
@@ -25,26 +34,7 @@ class BookAppoinment extends Component {
     super(props)
 
     this.state = {
-      item: {
-        name: '',
-        no_and_street: '',
-        city: '',
-        state: '',
-        pin_code: ''
-      },
-      qualification: '',
-      data: {},
-     
-      reviewdata: null,
-      
-      
       selectedSlotItem: null,
-      fromBookAgainSelectedSlotItem:'',
-     
-      reviews_length: '',
-     
-      currentDate:formatDate(new Date(),'YYYY-MM-DD'), 
-      
       isLoading: true  ,
       pressTab: 1,   
       selectedDate: formatDate(new Date(),'YYYY-MM-DD'),
@@ -67,21 +57,28 @@ class BookAppoinment extends Component {
 
     const { navigation } = this.props;
     const availabilitySlots = navigation.getParam('fetchAvailabiltySlots') || false;
-
+    this.setState({ isLoading: true });
     if(availabilitySlots) {
-      let endDateMoment = addMoment(this.state.currentDate, 7, 'days')
-      const doctorId = navigation.getParam('doctorId')|| false;
-  
-      await this.setState({doctorId:doctorId});
-      console.log("doctorId");
+      let endDateMoment = addMoment(this.state.selectedDate, 7, 'days')
+      const doctorId = navigation.getParam('doctorId') || false;
+      
+    
+      getDoctorFaviouteList(doctorId);
+      getDoctorsReviewsCount(doctorId);
+      await this.getdoctorDetails(doctorId);
+     
+      let userId = await AsyncStorage.getItem('userId');
+      if(userId) {
+        getPatientWishList(userId);
+      }
       await this.getAvailabilitySlots(doctorId, moment(new Date()), endDateMoment);
-      this.getdoctorDetails(this.state.doctorId);
+      await this.getLocationDataBySelectedSlot(this.state.doctordata.slotData[this.state.selectedDate],this.state.doctordata.slotData, this.state.selectedSlotIndex);
+      await this.setState({doctorId:doctorId});
     } else {
+
         const { bookappointment: {  singleDoctorData } } = this.props;
-        
         this.processedDoctorDetailsAndSlotData = singleDoctorData;
         this.getLocationDataBySelectedSlot(singleDoctorData.slotData[this.state.selectedDate],singleDoctorData.slotData, this.state.selectedSlotIndex)
-        
         let doctorDetails = {
           ...singleDoctorData
         }
@@ -90,7 +87,7 @@ class BookAppoinment extends Component {
         await this.setState({ doctorId: singleDoctorData.doctorId, doctordata: singleDoctorData, doctorDetails });
         console.log(this.state.doctorDetails);
     }
-    await this.getUserReviews(this.state.doctorId);
+   
     this.setState({ isLoading: false });
   }
 
@@ -101,7 +98,6 @@ class BookAppoinment extends Component {
     console.log('started loading get availability');
     this.setState({ isAvailabilityLoading: true });
         try {
-        
           let totalSlotsInWeek = {
             startDate: formatDate(startDate, 'YYYY-MM-DD'),
             endDate: formatDate(endDate, 'YYYY-MM-DD')
@@ -122,6 +118,7 @@ class BookAppoinment extends Component {
                   ...doctorDetailsData,
                   slotData: doctorSlotData.slotData,
                 }
+                
                 this.processedDoctorDetailsAndSlotData = obj;
             }
           }
@@ -130,7 +127,8 @@ class BookAppoinment extends Component {
              type: SET_SINGLE_DOCTOR_DATA,
              data: this.processedDoctorDetailsAndSlotData
           })
-          await this.setState({ doctorData: this.processedDoctorDetailsAndSlotData });
+          console.log(this.processedDoctorDetailsAndSlotData);
+          await this.setState({ doctordata: this.processedDoctorDetailsAndSlotData });
         }
         } catch (error) {
             console.log(error);
@@ -148,61 +146,19 @@ enumarateDates(startDate, endDate) {
   console.log(this.processedAvailabilityDates);
 }
 
-  relativeTimeView(review_date) {
-    try {
-        var postedDate = review_date;
-        var currentDate = new Date();
-        var relativeDate = dateDiff(postedDate, currentDate, 'days');
-        // console.log('difference : ' + relativeDate);
-        if (relativeDate > 30) {
-            return formatDate(review_date, "DD-MM-YYYY")
-        } else {
-            return moment(review_date, "YYYYMMDD").fromNow();
-        }
-    }
-    catch (e) {
-        console.log(e)
-    }
-}
-
   /*Get doctor Qualification details*/
   getdoctorDetails = async (doctorId) => {
-    console.log("doctor");
+    console.log("doctor" + doctorId);
     let fields = "first_name,last_name,prefix,professional_statement,language,gender,specialist,education,profile_image";
     console.log(fields+'fields');
     let resultDoctorDetails = await bindDoctorDetails(doctorId, fields);
     console.log('resultDoctorDetails'+JSON.stringify(resultDoctorDetails))
     if (resultDoctorDetails.success) {
-      this.setState({ doctordata: resultDoctorDetails.data});
-      console.log(JSON.stringify(this.state.doctordata)+'doctordata');
-      /*Doctor degree*/
-      if (resultDoctorDetails.data.education) {
-
-        let temp = this.state.doctordata.education.map((val) => {
-          return val.degree;
-        }).join();
-        this.setState({ qualification: temp });
-      }
+        await this.setState({ doctorDetails : resultDoctorDetails.data});
     }
   }
- 
-  
-
-  /* Get user Reviews*/
-  getUserReviews = async (doctorId) => {
-    console.log(" get reviews");
-    let resultReview = await viewUserReviews('doctor', doctorId, '?limit=2');
-    console.log('resultReview : ' + JSON.stringify (resultReview));
-    if (resultReview.success) {
-      this.setState({ reviewdata: resultReview.data });
-      this.setState({ reviews_length: this.state.reviewdata.length });//  reviews length
-    }
-
-  }
-
   onSegemntClick(index){
-
-    this.setState({pressTab: index})
+      this.setState({pressTab: index})
   }
 
   noAvailableSlots() {    
@@ -284,20 +240,17 @@ addToWishList = async (doctorId) => {
   }
 }
 
-getLocationDataBySelectedSlot(SlotDataForTheSelectedDay, wholeSlotData, slotIndex) {
-  console.log(SlotDataForTheSelectedDay)
-  console.log(wholeSlotData)
-  console.log(slotIndex);
+getLocationDataBySelectedSlot(slotDataForTheSelectedDay, wholeSlotData, slotIndex) {
   
   let  selectedSlotIndex = slotIndex >= 0 ? slotIndex : 0;
   
-  if(SlotDataForTheSelectedDay === undefined) {
+  if(slotDataForTheSelectedDay === undefined) {
     console.log('Selected Slot For the day is Undefined');
-    SlotDataForTheSelectedDay = wholeSlotData[Object.keys(wholeSlotData)[0]]
+    slotDataForTheSelectedDay = wholeSlotData[Object.keys(wholeSlotData)[0]]
   }
-  if(SlotDataForTheSelectedDay) {
-    this.selectedSlotLocationShowed  = SlotDataForTheSelectedDay[selectedSlotIndex].location;
-    this.selectedSlotFee  = SlotDataForTheSelectedDay[selectedSlotIndex].fee;
+  if(slotDataForTheSelectedDay) {
+    this.selectedSlotLocationShowed  = slotDataForTheSelectedDay[selectedSlotIndex].location;
+    this.selectedSlotFee  = slotDataForTheSelectedDay[selectedSlotIndex].fee;
   }
   return this.selectedSlotLocationShowed;
 }
@@ -347,8 +300,9 @@ onDateChanged(date) {
   }
 }
 async onSlotItemPress( item, index) {
+
   const { doctordata, selectedDate } = this.state;
-    
+  console.log(item);  
   let currentHostpitalId = item.location.hospital_id;
   let previouslyShowedHospitalId = this.selectedSlotLocationShowed.hospital_id;
   
@@ -405,7 +359,7 @@ onPressContinueForPaymentReview(doctorData, selectedSlotItem) {
 
   render() {
 
-    const { bookappointment: { patientWishListsDoctorIds, favouriteListCountByDoctorIds } } = this.props;
+    const { bookappointment: { patientWishListsDoctorIds, favouriteListCountByDoctorIds, reviewsByDoctorIds } } = this.props;
     const { qualification, doctordata, isLoading, selectedDate, selectedSlotItem, doctorId } = this.state;
     
    
@@ -418,7 +372,7 @@ onPressContinueForPaymentReview(doctorData, selectedSlotItem) {
           <Grid >
             <Row >
               <Col style={{width:'5%',marginLeft:20,marginTop:10}}>
-                  <Thumbnail square source={renderProfileImage(doctordata)} style={{ height: 60, width: 60 }} />
+                  <Thumbnail square source={renderDoctorImage(doctordata)} style={{ height: 60, width: 60 }} />
                </Col>
                <Col style={{width:'78%'}}>
                   <Row style={{marginLeft:55,marginTop:10}}>
@@ -427,12 +381,7 @@ onPressContinueForPaymentReview(doctorData, selectedSlotItem) {
                   <Row style={{marginLeft:55,}}>
                      <Text note  style={{ fontFamily: 'OpenSans',marginTop:-20 ,fontSize:11}}>{(getDoctorEducation(doctordata.education)) + ', ' +  getDoctorSpecialist(doctordata.specialist)}</Text>
                   </Row>
-                  {/* <Row style={{marginLeft:55,}}>
-                 
-                     <Text style={{ fontFamily: 'OpenSans',marginTop:5,fontSize:12,fontWeight:'bold' }}>
-                       Seesha Hospital
-                     </Text>
-                  </Row> */}
+                  
                </Col>
                 <Col style={{width:'17%'}}>
                    <Icon name="heart" onPress={()=>this.addToWishList(doctordata.doctor_id)} 
@@ -459,7 +408,7 @@ onPressContinueForPaymentReview(doctorData, selectedSlotItem) {
                                       disabled={true}
                                       rating={1}
                                       maxStars={1}/>
-                            <Text style={{ fontFamily: 'OpenSans',fontSize:12,fontWeight:'bold',textAlign:'center' }}>{doctordata.ratingData ? ' '+ doctordata.ratingData.average_rating : ' 0' }</Text>
+                            <Text style={{ fontFamily: 'OpenSans',fontSize:12,fontWeight:'bold',textAlign:'center' }}>{reviewsByDoctorIds[doctordata.doctor_id] ? ' '+ reviewsByDoctorIds[doctordata.doctor_id].average_rating : ' 0' }</Text>
                           </View>
                   </Col>
                           <Col style={{width:"25%",marginTop:15,}}>
@@ -571,7 +520,7 @@ onPressContinueForPaymentReview(doctorData, selectedSlotItem) {
         </View>
       </View>
 
-        {doctordata.doctorId ? this.renderHospitalLocation(this.selectedSlotLocationShowed, doctordata.doctorId) : null}
+       {this.renderHospitalLocation(this.selectedSlotLocationShowed, doctordata.doctorId)}
       
       {doctordata.awards ? 
         <View style={{marginLeft:5,marginRight:5,borderTopColor:'gray',borderTopWidth:0.7,marginBottom:5}}>
@@ -1025,6 +974,11 @@ onPressContinueForPaymentReview(doctorData, selectedSlotItem) {
   }
   
   renderHospitalLocation = (hopitalLocationData, doctorId) => {
+      console.log(doctorId);
+      console.log(hopitalLocationData);
+      if(!hopitalLocationData) {
+        return null;
+      } 
       let doctorIdHospitalId = doctorId + '-' + hopitalLocationData.hospital_id;
       console.log(doctorIdHospitalId);
       return hopitalLocationData ? <HospitalLocation number={doctorIdHospitalId} hopitalLocationData={hopitalLocationData} /> : null 

@@ -5,7 +5,8 @@ import {
   SET_SELECTED_DATE, 
   SET_SINGLE_DOCTOR_DATA, 
   SET_PATIENT_WISH_LIST_DOC_IDS,
-  SET_FAVORITE_DOCTOR_COUNT_BY_IDS
+  SET_FAVORITE_DOCTOR_COUNT_BY_IDS,
+  SET_DOCTORS_RATING_BY_IDS
  } from './bookappointment.action'
 
 export const bookAppointmentData = {
@@ -16,7 +17,8 @@ export const bookAppointmentData = {
     singleDoctorData : null,
     slotData: [],
     patientWishListsDoctorIds : [],
-    favouriteListCountByDoctorIds : {}
+    favouriteListCountByDoctorIds : {},
+    reviewsByDoctorIds : {}
   }
   // State
   export default (state = bookAppointmentData, action) => {
@@ -50,6 +52,11 @@ export const bookAppointmentData = {
         return {
           ...state,
           favouriteListCountByDoctorIds: action.data
+        }  
+        case SET_DOCTORS_RATING_BY_IDS:
+        return {
+          ...state,
+          reviewsByDoctorIds: action.data
         }  
       default:
         return state;

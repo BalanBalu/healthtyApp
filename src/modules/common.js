@@ -79,6 +79,19 @@ export function renderProfileImage(data) {
     }
     return (source)
 } 
+export function renderDoctorImage(data) {
+    let source = null;
+    if (data.profile_image) {
+        source = { uri: data.profile_image.imageURL }
+    } else if (data.gender == 'M') {
+        source = require('../../assets/images/profile_male.png')
+    } else if (data.gender == 'F') {
+        source = require('../../assets/images/profile_female.png')
+    } else {
+        source = require('../../assets/images/profile_common.png')
+    }
+    return (source)
+} 
 
 export async function addToCart(medicineData, selectItem, operation) {
     let userId = JSON.stringify(await AsyncStorage.getItem('userId'))    

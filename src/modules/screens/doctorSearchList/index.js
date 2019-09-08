@@ -9,7 +9,7 @@ import StarRating from 'react-native-star-rating';
 import { insertDoctorsWishList, searchDoctorList, fetchAvailabilitySlots, getMultipleDoctorDetails, getDoctorsReviewsCount, getPatientWishList, SET_BOOK_APP_SLOT_DATA, SET_BOOK_APP_DOCTOR_DATA, SET_SELECTED_DATE ,SET_SINGLE_DOCTOR_DATA, SET_PATIENT_WISH_LIST_DOC_IDS, SET_FAVORITE_DOCTOR_COUNT_BY_IDS, getDoctorFaviouteList} from '../../providers/bookappointment/bookappointment.action';
 import { formatDate, addMoment, addTimeUnit, getMoment,addDate,dateDiff, findArrayObj, intersection } from '../../../setup/helpers';
 import { Loader } from '../../../components/ContentLoader';
-import { RenderHospitalAddress, renderProfileImage,  getDoctorSpecialist, getDoctorEducation  } from '../../common';
+import { RenderHospitalAddress, renderDoctorImage,  getDoctorSpecialist, getDoctorEducation  } from '../../common';
 import { NavigationEvents } from 'react-navigation';
 import Spinner from '../../../components/Spinner';
 import moment from 'moment';
@@ -41,7 +41,7 @@ class doctorSearchList extends Component {
                 nextAvailableSlotDate: '',
                 isLoading: false,
                 filterBySelectedAvailabilityDateCount: 0,
-                patientWishListsDoctorIds: [],
+                
                 filterData : null,
                 uniqueFilteredDocArray: [],
                 yearOfExperience: '',
@@ -53,7 +53,6 @@ class doctorSearchList extends Component {
                 selectedSlotByDoctorIds: {},
                 expandedDoctorIdHospitalsToShowSlotsData: [],
                 showedFeeByDoctorIds: {},
-                reviewsByDoctorIds : {},
                 isLoggedIn: null,
             }
     }
@@ -262,24 +261,10 @@ class doctorSearchList extends Component {
     getPatientWishLists = async () => {
         try {
             let userId = await AsyncStorage.getItem('userId');
-            let result = await getPatientWishList(userId);
-            
-            if (result.success) {
-                let wishListDoctorsIds = [];
-                result.data.forEach(element => {
-                    wishListDoctorsIds.push(element.doctorInfo.doctor_id)
-                })
-                store.dispatch({
-                    type: SET_PATIENT_WISH_LIST_DOC_IDS,
-                    data: wishListDoctorsIds
-                })
-                this.setState({ patientWishListsDoctorIds: wishListDoctorsIds });
-            }
+            getPatientWishList(userId);
         } catch (e) {
-            this.setState({ patientWishListsDoctorIds: [] });
             console.log(e);
         }
-
     }
 
 
@@ -487,53 +472,20 @@ class doctorSearchList extends Component {
         }
     }
     
-    
-    /* Get Patients Reviews*/
-    reviewMap = new Map();
     getPatientReviews = async (doctorIds) => {
-        let resultReview = await getDoctorsReviewsCount(doctorIds);
-        let { reviewsByDoctorIds }  = this.state;
-        
-
-        if (resultReview.success) {
-            for (i = 0; i < resultReview.data.length; i++) {
-                this.reviewMap.set(resultReview.data[i]._id, resultReview.data[i]) // total_rating
-                reviewsByDoctorIds[resultReview.data[i]._id] = resultReview.data[i];
-            }
-            console.log(reviewsByDoctorIds);
-            this.setState({ reviewsByDoctorIds });
-        }
+       getDoctorsReviewsCount(doctorIds);
     }
     getDoctorFaviouteList = async (doctorIds) => {
-      
-        let resultFavList = await getDoctorFaviouteList(doctorIds);
-        const { bookappointment: { favouriteListCountByDoctorIds } } = this.props;  
-           
-                
-        if (resultFavList.success) {
-             for (i = 0; i < resultFavList.data.length; i++) {
-                 doctorId = resultFavList.data[i].wishList.doctor_id;
-                 if(favouriteListCountByDoctorIds[doctorId]) {
-                    favouriteListCountByDoctorIds[doctorId] = favouriteListCountByDoctorIds[doctorId] + 1
-                 } else {
-                    favouriteListCountByDoctorIds[doctorId] = 1;
-                 }
-             }
-             store.dispatch({
-                type: SET_FAVORITE_DOCTOR_COUNT_BY_IDS,
-                data: favouriteListCountByDoctorIds
-             })
-        }
+       getDoctorFaviouteList(doctorIds);
     }
 
     navigateToBookAppointmentPage(doctorData) {
-        let { reviewsByDoctorIds }  = this.state;
+       
             
         console.log()
         doctorData.doctorId = doctorData.doctor_id;
         let requestData = {
            ...doctorData, 
-           ratingData: reviewsByDoctorIds[doctorData.doctor_id],
         }
         store.dispatch({
             type: SET_SINGLE_DOCTOR_DATA,
@@ -677,10 +629,9 @@ class doctorSearchList extends Component {
     
     render() {
        
-        const { bookappointment: { slotData, selectedDate, doctorData, patientWishListsDoctorIds, favouriteListCountByDoctorIds } } = this.props;
-        const { navigation } = this.props;
+        const { bookappointment: {  doctorData, patientWishListsDoctorIds, favouriteListCountByDoctorIds, reviewsByDoctorIds } } = this.props;
         const { selectedDatesByDoctorIds, expandedDoctorIdHospitalsToShowSlotsData, isLoggedIn, selectedSlotItemByDoctorIds, 
-            reviewsByDoctorIds,
+            
              isLoading, isAvailabilityLoading, 
             uniqueFilteredDocArray } = this.state;
         return (
@@ -725,7 +676,7 @@ class doctorSearchList extends Component {
                                 <Grid >
                                   <Row onPress={()=> this.navigateToBookAppointmentPage(item) }>
                                     <Col style={{width:'5%'}}>
-                                        <Thumbnail square source={ renderProfileImage(item) } style={{ height: 60, width: 60 }} />
+                                        <Thumbnail square source={ renderDoctorImage(item) } style={{ height: 60, width: 60 }} />
                                      </Col>
                                      <Col style={{width:'78%'}}>
                                         <Row style={{marginLeft:55,}}>
