@@ -1,11 +1,10 @@
 import React, { Component } from 'react';
 import { Container, Content, Text, Button, H3, Item, List, CheckBox, Left, Right, Picker, Body, Icon, Card, Input, Toast, View } from 'native-base';
 import { userFiledsUpdate } from '../../providers/auth/auth.actions';
-import { AsyncStorage } from 'react-native';
+import { AsyncStorage, ScrollView } from 'react-native';
 import { connect } from 'react-redux'
 import styles from './style.js';
 import Spinner from '../../../components/Spinner';
-import { ScrollView } from 'react-native-gesture-handler';
 
 
 
