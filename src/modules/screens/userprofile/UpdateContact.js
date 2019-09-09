@@ -1,11 +1,10 @@
 import React, { Component } from 'react';
 import { Container, Content, Text, Button, H3, Item, List, CheckBox, Left, Right, Picker, Body, Icon, Card, Input, Toast, View } from 'native-base';
 import { userFiledsUpdate } from '../../providers/auth/auth.actions';
-import { AsyncStorage } from 'react-native';
+import { AsyncStorage, ScrollView } from 'react-native';
 import { connect } from 'react-redux'
 import styles from './style.js';
 import Spinner from '../../../components/Spinner';
-import { ScrollView } from 'react-native-gesture-handler';
 
 
 
@@ -20,8 +19,8 @@ class UpdateContact extends Component {
             active: true,
             primary_mobile_no: null,
             isLoading: false,
-            userData:'',
-            primaryMobileNoText:''
+            userData: '',
+            primaryMobileNoText: ''
         }
     }
 
@@ -35,7 +34,7 @@ class UpdateContact extends Component {
         const userData = navigation.getParam('updatedata');
         this.setState({
             primary_mobile_no: userData.mobile_no,
-            primaryMobileNoText:'Primary Mobile_No Is Not Editable'
+            primaryMobileNoText: 'Primary Mobile_No Is Not Editable'
 
         })
         if (userData.secondary_mobiles) {
@@ -48,56 +47,75 @@ class UpdateContact extends Component {
         }
 
     }
-    commonUpdateContactMethod=async()=>{
+    commonUpdateContactMethod = async () => {
         let userId = await AsyncStorage.getItem('userId');
-                let data = {
-                    secondary_mobiles: [
-                        {
-                            type:this.state.type,
-                            number:this.state.mobile_no,
-                            active:true
-                        }]
+        let data = {
+            secondary_mobiles: [
+                {
+                    type: this.state.type,
+                    number: this.state.mobile_no,
+                    active: true
+                }]
 
-                };
-                let response = await userFiledsUpdate(userId, data);
-                if (response.success) {
-                    Toast.show({
-                        text:response.message,
-                        type: "success",
-                        duration: 3000,
-                    })
-                    this.props.navigation.navigate('Profile');               
-                } else {
-                    Toast.show({
-                        text:response.message,
-                        type: "danger",
-                        duration: 3000
-                    })           
-                }
-                this.setState({ isLoading: false })
+        };
+        let response = await userFiledsUpdate(userId, data);
+        if (response.success) {
+            Toast.show({
+                text: response.message,
+                type: "success",
+                duration: 3000,
+            })
+            this.props.navigation.navigate('Profile');
+        } else {
+            Toast.show({
+                text: response.message,
+                type: "danger",
+                duration: 3000
+            })
+        }
+        this.setState({ isLoading: false })
 
     }
-    
+
 
     handleContactUpdate = async () => {
-        const{mobile_no,type,userData}=this.state
+        const { mobile_no, type, userData } = this.state
         try {
-            this.setState({ isLoading:true})
-            if(userData.secondary_mobiles!==undefined){                
-            if (type != userData.secondary_mobiles[0].type || mobile_no != userData.secondary_mobiles[0].number) {
+            this.setState({ isLoading: true })
+            if (userData.secondary_mobiles !== undefined && this.validateMobile_No() === true) {
+                if (type != userData.secondary_mobiles[0].type || mobile_no != userData.secondary_mobiles[0].number) {
+                    this.commonUpdateContactMethod();
+                } else {
+                    this.props.navigation.navigate('Profile');
+                }
+            } else if (this.validateMobile_No() === true){
                 this.commonUpdateContactMethod();
-            }else {
-                this.props.navigation.navigate('Profile');
             }
-        }else{
-            this.commonUpdateContactMethod();
+        } catch (e) {
+            console.log(e);
         }
-        }catch (e) {
-        console.log(e);
+        finally{
+            this.setState({ isLoading: false })
+
         }
     }
 
-
+    validateMobile_No() {
+        const regex = new RegExp('^[0-9]+$')  //Support only numbers
+        if (regex.test(this.state.mobile_no) === false) {
+            //this.setState({ updateButton: true });
+            if (this.state.mobile_no != '') {
+                Toast.show({
+                    text: 'The entered number is invalid',
+                    type: "danger",
+                    duration: 3000
+                });
+            }
+            return false;
+        } else {
+            return true;
+        }
+    }
 
     render() {
 
@@ -113,7 +131,7 @@ class UpdateContact extends Component {
 
                 <Content contentContainerStyle={styles.bodyContent}>
                     <ScrollView>
-                        
+
                         {this.state.primary_mobile_no != null ?
                             <Text style={styles.headerText}>Primary Mobile_no</Text> : null}
                         {this.state.primary_mobile_no != null ?
@@ -127,62 +145,63 @@ class UpdateContact extends Component {
                                     </Right>
                                 </Item>
                             </Card> : null}
-                            <Text style={{fontFamily:'OpenSans',fontSize:12,color:'red',marginLeft:8}}>{this.state.primaryMobileNoText}</Text>
+                        {this.state.primary_mobile_no != null ?
+                            <Text style={{ fontFamily: 'OpenSans', fontSize: 12, color: 'red', marginLeft: 8 }}>{this.state.primaryMobileNoText}</Text>
+                            : null}
+                        <View style={{ marginTop: 30 }}>
+                            <Text style={styles.headerText}>Edit Secondary Mobile_No</Text>
 
-                            <View style={{ marginTop: 30 }}>
-                        <Text style={styles.headerText}>Edit Secondary Mobile_No</Text>
-                       
-                        <Card style={styles.cardEmail}>
+                            <Card style={styles.cardEmail}>
 
-                            <Item style={{ borderBottomWidth: 0 }}>
-                                <Picker style={{ fontFamily: 'OpenSans'}}
-                                    mode="dropdown"
-                                    iosIcon={<Icon name="arrow-down" />}
-                                    textStyle={{ color: "#775DA3",backgroundColor: "gray", }}
-                                    itemStyle={{
-                                        backgroundColor: "gray",
-                                        marginLeft: 0,
-                                        paddingLeft: 10
-                                    }}
-                                    itemTextStyle={{ color: '#788ad2' }}
-                                    style={{ width: 25 }}
-                                    onValueChange={val => this.setState({ type: val })}
-                                    selectedValue={String(this.state.type)}
-                                >
-                                    {this.numberCategory.map((type, key) => {
-                                        return <Picker.Item label={String(type)} value={String(type)} key={key}
-                                            testID='pickType' />
-                                    })}
+                                <Item style={{ borderBottomWidth: 0 }}>
+                                    <Picker style={{ fontFamily: 'OpenSans' }}
+                                        mode="dropdown"
+                                        iosIcon={<Icon name="arrow-down" />}
+                                        textStyle={{ color: "#775DA3", backgroundColor: "gray", }}
+                                        itemStyle={{
+                                            backgroundColor: "gray",
+                                            marginLeft: 0,
+                                            paddingLeft: 10
+                                        }}
+                                        itemTextStyle={{ color: '#788ad2' }}
+                                        style={{ width: 25 }}
+                                        onValueChange={val => this.setState({ type: val })}
+                                        selectedValue={String(this.state.type)}
+                                    >
+                                        {this.numberCategory.map((type, key) => {
+                                            return <Picker.Item label={String(type)} value={String(type)} key={key}
+                                                testID='pickType' />
+                                        })}
 
-                                </Picker>
-                            </Item>
-
-
-                            <Item style={{ borderBottomWidth: 0 }}>
-                                <Icon name='call' style={styles.centeredIcons}></Icon>
-                                <Input placeholder="Edit Your Number" style={styles.transparentLabel} keyboardType="numeric"
-                                    onChangeText={(mobile_no) => this.setState({ mobile_no })}
-                                    value={String(this.state.mobile_no)}
-                                    testID='updateContact' />
-                            </Item>
+                                    </Picker>
+                                </Item>
 
 
-
-
-                            <Item style={{ borderBottomWidth: 0,marginTop: 35}}>
-                                <Right>
-                                    <Button success style={styles.button2} onPress={() => this.handleContactUpdate()} testID='clickUpdateContact'>
-                                        <Text uppercase={false} note style={styles.buttonText}>Update</Text>
-                                    </Button>
-                                </Right>
-                            </Item>
-                        </Card>
-
-                      </View>
+                                <Item style={{ borderBottomWidth: 0 }}>
+                                    <Icon name='call' style={styles.centeredIcons}></Icon>
+                                    <Input placeholder="Edit Your Number" style={styles.transparentLabel} keyboardType="numeric"
+                                        onChangeText={(mobile_no) => this.setState({ mobile_no })}
+                                        value={String(this.state.mobile_no)}
+                                        testID='updateContact' />
+                                </Item>
 
 
 
-                        
+
+                                <Item style={{ borderBottomWidth: 0, marginTop: 35 }}>
+                                    <Right>
+                                        <Button success style={styles.button2} onPress={() => this.handleContactUpdate()} testID='clickUpdateContact'>
+                                            <Text uppercase={false} note style={styles.buttonText}>Update</Text>
+                                        </Button>
+                                    </Right>
+                                </Item>
+                            </Card>
+
+                        </View>
+
+
+
+
                     </ScrollView>
                 </Content >
 

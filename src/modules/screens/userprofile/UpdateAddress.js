@@ -5,9 +5,8 @@ import {
 } from 'native-base';
 import { userFiledsUpdate, logout } from '../../providers/auth/auth.actions';
 import { connect } from 'react-redux'
-import { Image, BackHandler, AsyncStorage, TouchableHighlight } from 'react-native';
+import { Image, BackHandler, AsyncStorage, TouchableHighlight, ScrollView } from 'react-native';
 import styles from './style.js';
-import { ScrollView } from 'react-native-gesture-handler';
 import Spinner from '../../../components/Spinner';
 class UserDetails extends Component {
     constructor(props) {
@@ -86,7 +85,7 @@ class UserDetails extends Component {
         //this.setState({ updateButton: false });
         if (regex.test(this.state.city) === false) {
             //this.setState({ updateButton: true });
-            if (this.state.city != '') {
+            if (this.state.city !== '') {
                 Toast.show({
                     text: 'The entered city is invalid',
                     type: "danger",
@@ -98,12 +97,29 @@ class UserDetails extends Component {
             return true;
         }
     }
-
+     
+    validatePincode(){
+        const regex = new RegExp('^[0-9]+$')  //Support numbers
+        if (regex.test(this.state.pin_code) === false) {
+            //this.setState({ updateButton: true });
+            if (this.state.pin_code !== '') {
+                Toast.show({
+                    text: 'The entered pin_code is invalid',
+                    type: "danger",
+                    duration: 3000
+                });
+            }
+            return false;
+        } else {
+            return true;
+        }
+    }
+//!/^[0-9]+$/.test(z)
     async userUpdate() {
         try {
             const { userData, no_and_street, address_line_1, address_line_2, city, pin_code } = this.state
             this.setState({ isLoading: true });
-            if (userData.address !== undefined && this.validateCity() == true) {
+            if (userData.address !== undefined && this.validateCity() == true && this.validatePincode() == true) {
                 if (no_and_street != userData.address.address.no_and_street || address_line_1 != userData.address.address.address_line_1 ||
                     address_line_2 != userData.address.address.address_line_2 || city != userData.address.address.city ||
                     pin_code != userData.address.address.pin_code) {
@@ -111,7 +127,7 @@ class UserDetails extends Component {
                 } else {
                     this.props.navigation.navigate('Profile');
                 }
-            } else if (this.validateCity() == true) {
+            } else if (this.validateCity() == true && this.validatePincode() == true) {
                 this.commonUpdateAddressMethod();
             }
         } catch (e) {
@@ -156,7 +172,7 @@ class UserDetails extends Component {
                                 </Item>
 
                                 <Item style={{ borderBottomWidth: 0 }}>
-                                    <Text style={styles.subText}>Address Line1</Text>
+                                    <Text style={styles.subText}>Address Line 1</Text>
                                 </Item>
                                 <Item style={{ borderBottomWidth: 0 }}>
                                     <Input
@@ -174,7 +190,7 @@ class UserDetails extends Component {
                                     />
                                 </Item>
                                 <Item style={{ borderBottomWidth: 0 }}>
-                                    <Text style={styles.subText}>Address Line2</Text>
+                                    <Text style={styles.subText}>Address Line 2</Text>
                                 </Item>
                                 <Item style={{ borderBottomWidth: 0 }}>
                                     <Input
@@ -223,11 +239,11 @@ class UserDetails extends Component {
                                         placeholder="Enter Pincode"
                                         style={styles.transparentLabel2}
                                         value={this.state.pin_code}
-                                        autoFocus={this.state.isFocusKeyboard}
+                                        // autoFocus={this.state.isFocusKeyboard}
                                         ref={(input) => { this.city = input; }}
                                         keyboardType="numeric"
-                                        returnKeyType={'next'}
-                                        onChangeText={pin_code => this.setState({ pin_code })}
+                                        returnKeyType={'done'}
+                                        onChangeText={pin => this.setState({ pin_code: pin })}
                                         autoCapitalize='none'
                                         blurOnSubmit={false}
                                         onSubmitEditing={() => { this.userUpdate() }}
