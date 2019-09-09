@@ -4,13 +4,12 @@ import {
     FooterTab, H3, Toast
 } from 'native-base';
 import { connect } from 'react-redux'
-import { Image, BackHandler, AsyncStorage } from 'react-native';
+import { Image, BackHandler, AsyncStorage, ScrollView } from 'react-native';
 
 import { userFiledsUpdate, logout } from '../../providers/auth/auth.actions';
 import styles from '../../screens/auth/styles';
 import Spinner from '../../../components/Spinner';
 import { subTimeUnit } from "../../../setup/helpers";
-import { ScrollView } from 'react-native-gesture-handler';
 
 class UserDetails extends Component {
     constructor(props) {

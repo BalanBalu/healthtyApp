@@ -82,21 +82,40 @@ class UpdateContact extends Component {
         const { mobile_no, type, userData } = this.state
         try {
             this.setState({ isLoading: true })
-            if (userData.secondary_mobiles !== undefined) {
+            if (userData.secondary_mobiles !== undefined && this.validateMobile_No() === true) {
                 if (type != userData.secondary_mobiles[0].type || mobile_no != userData.secondary_mobiles[0].number) {
                     this.commonUpdateContactMethod();
                 } else {
                     this.props.navigation.navigate('Profile');
                 }
-            } else {
+            } else if (this.validateMobile_No() === true){
                 this.commonUpdateContactMethod();
             }
         } catch (e) {
             console.log(e);
         }
+        finally{
+            this.setState({ isLoading: false })
+
+        }
     }
 
-
+    validateMobile_No() {
+        const regex = new RegExp('^[0-9]+$')  //Support only numbers
+        if (regex.test(this.state.mobile_no) === false) {
+            //this.setState({ updateButton: true });
+            if (this.state.mobile_no != '') {
+                Toast.show({
+                    text: 'The entered number is invalid',
+                    type: "danger",
+                    duration: 3000
+                });
+            }
+            return false;
+        } else {
+            return true;
+        }
+    }
 
     render() {
 
