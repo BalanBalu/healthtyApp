@@ -7,6 +7,7 @@ export const SET_SINGLE_DOCTOR_DATA = 'BOOK_APP/SINGLE_DOCTOR_DATA';
 export const SET_PATIENT_WISH_LIST_DOC_IDS = 'BOOK/PATIENT_WISH_LIST_DOC_IDS';
 export const SET_FAVORITE_DOCTOR_COUNT_BY_IDS = 'BOOK/FAVORITE_DOCTOR_COUNT_BY_IDS';
 export const SET_DOCTORS_RATING_BY_IDS = 'BOOK/DOCTORS_RATING_BY_IDS'; 
+export const SET_FILTERED_DOCTOR_DATA = 'BOOK/FILTERED_DOCTOR_DATA';
 import { store } from '../../../setup/store';
 /* Book the Doctor Appointment module  */
 export async function bookAppointment(bookSlotDetails, isLoading = true) {
@@ -58,7 +59,10 @@ export async function searchDoctorList(userId, searchInputvalues, isLoading = tr
   try {
     let endPoint = 'user/' + userId + '/filters/doctors';
     let response = await postService(endPoint, searchInputvalues);
+    console.log("searchInputvalues");
+    console.log(searchInputvalues);
     let respData = response.data;
+    console.log(respData);
     return respData;
   } catch (e) {
     return {
@@ -121,8 +125,9 @@ export async function viewUserReviews(type, id, limit) {
 export async function getDoctorsReviewsCount(doctorIds) {
   try {
     let endPoint = 'user/reviewsCount/' + doctorIds;
+    console.log('Exception on Review Count ');
     let response = await getService(endPoint);
-    
+     
     let resultReview = response.data;
     if (resultReview.success) {
       const { bookappointment: { reviewsByDoctorIds } }  = store.getState(); 
@@ -134,10 +139,12 @@ export async function getDoctorsReviewsCount(doctorIds) {
         data : reviewsByDoctorIds
       })
   }
+  
     return resultReview;
 
 
   } catch (e) {
+    
     return {
       message: 'exception' + e,
       success: false

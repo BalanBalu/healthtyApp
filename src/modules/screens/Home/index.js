@@ -247,7 +247,7 @@ class Home extends Component {
                                                             </LinearGradient>
 
                                                             <Text style={styles.textcenter}>{item.category_name}</Text>
-                                                            <Text note style={{ textAlign: 'center',fontFamily:'OpenSans',fontSize:15 }}>100 Doctors</Text>
+                                                           {/* <Text note style={{ textAlign: 'center',fontFamily:'OpenSans',fontSize:15 }}>100 Doctors</Text> */}
                                                         </Col>
                                                     </Item>
                                                 </Grid>
