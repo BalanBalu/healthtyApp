@@ -78,7 +78,6 @@ export default class PaymentReview extends Component {
 
     }
 
-
     render() {
         const { bookSlotDetails } = this.state;
         return (
