@@ -5,7 +5,7 @@ import LinearGradient from 'react-native-linear-gradient';
 import { Col, Row, Grid } from 'react-native-easy-grid';
 import { connect } from 'react-redux'
 
-import { StyleSheet, Image, View, TouchableOpacity, AsyncStorage,ScrollView,FlatList } from 'react-native';
+import { StyleSheet, Image, View, TouchableOpacity, AsyncStorage, ScrollView, FlatList } from 'react-native';
 // import { ScrollView, FlatList } from 'react-native-gesture-handler';
 import { catagries } from '../../providers/catagries/catagries.actions';
 
@@ -33,10 +33,10 @@ class Home extends Component {
         this.props.navigation.navigate('login');
     }
     async componentDidMount() {
-       
+
         await this.getCatagries();
 
-        
+
     }
 
     getCatagries = async () => {
@@ -47,7 +47,7 @@ class Home extends Component {
             if (result.success) { }
 
             this.setState({ data: result.data, isLoading: true })
-            console.log('category Data' + JSON.stringify(this.state.data));
+
             let limitedData = [];
 
             for (let limtedNumber = 0; limtedNumber < 6; limtedNumber++) {
@@ -151,7 +151,7 @@ class Home extends Component {
                 <Content keyboardShouldPersistTaps={'handled'} style={styles.bodyContent}>
                     <Row style={{ backgroundColor: 'white', borderColor: '#000', borderWidth: 1, borderRadius: 20, }}>
 
-                    <Input placeholder="Search Symptoms/Services"
+                        <Input placeholder="Search Symptoms/Services"
                             style={{ color: 'gray', fontFamily: 'OpenSans', fontSize: 13 }}
                             placeholderTextColor="gray"
                             value={this.state.searchValue}
@@ -189,11 +189,11 @@ class Home extends Component {
                                     onPress={() => this.props.navigation.navigate("Doctor List", {
                                         resultData: [{
                                             type: item.name,
-                                            value: item.name==='symptoms'?[item.value]:item.value
+                                            value: item.name === 'symptoms' ? [item.value] : item.value
                                         }]
                                     })}
                                 >
-                                    <Text style={{ padding: 10,fontFamily:'OpenSans',fontSize:13}}>{item.value}</Text>
+                                    <Text style={{ padding: 10, fontFamily: 'OpenSans', fontSize: 13 }}>{item.value}</Text>
                                     <Right>
                                         <Text uppercase={true} style={{ color: 'gray', padding: 10, marginRight: 10, fontSize: 13, fontFamily: 'OpenSans-Bold' }}>{item.name}</Text>
                                     </Right>
@@ -230,7 +230,7 @@ class Home extends Component {
 
                             <Row>
 
-                                <ListItem style={{borderBottomWidth:0}}>
+                                <ListItem style={{ borderBottomWidth: 0 }}>
                                     <ScrollView horizontal={false}>
                                         <FlatList
                                             horizontal={true}
@@ -247,14 +247,14 @@ class Home extends Component {
                                                             </LinearGradient>
 
                                                             <Text style={styles.textcenter}>{item.category_name}</Text>
-                                                            <Text note style={{ textAlign: 'center',fontFamily:'OpenSans',fontSize:15 }}>100 Doctors</Text>
+                                                            <Text note style={{ textAlign: 'center', fontFamily: 'OpenSans', fontSize: 15 }}>100 Doctors</Text>
                                                         </Col>
                                                     </Item>
                                                 </Grid>
                                             }
                                             keyExtractor={(item, index) => index.toString()}
                                         />
- 
+
 
                                     </ScrollView></ListItem>
 
@@ -268,7 +268,7 @@ class Home extends Component {
                     >
                         <Text style={{ fontFamily: 'OpenSans', fontSize: 15 }}>You Can Save A Life</Text>
                         <Button block style={{ margin: 10, borderRadius: 20, backgroundColor: '#74579E' }}>
-                            <Text uppercase={true} style={{fontFamily:'OpenSans',fontSize:15,fontWeight:'bold'}}>REPORT ACCIDENT NOW</Text>
+                            <Text uppercase={true} style={{ fontFamily: 'OpenSans', fontSize: 15, fontWeight: 'bold' }}>REPORT ACCIDENT NOW</Text>
                         </Button>
 
                         <Text style={{ textAlign: 'right', fontSize: 15, fontFamily: 'OpenSans', color: '#000' }}>5002 Fast Growing Ambulance</Text>
@@ -281,8 +281,8 @@ class Home extends Component {
                         style={{ borderRadius: 10, padding: 10, borderBottomWidth: 0, fontFamily: 'OpenSans', marginTop: 5 }} >
                         <Grid style={{ padding: 10 }}>
                             <Col style={{ width: '75%' }}>
-                                <Text style={{ fontFamily: 'OpenSans', color: 'white', fontSize: 15}}>Video Consultation</Text>
-                                <Text note style={{ color: 'white', fontFamily: 'OpenSans', marginTop: 'auto', marginBottom: 'auto',fontSize:15 }}>Have A Video Visit With A Certified HealthCare - Doctors</Text>
+                                <Text style={{ fontFamily: 'OpenSans', color: 'white', fontSize: 15 }}>Video Consultation</Text>
+                                <Text note style={{ color: 'white', fontFamily: 'OpenSans', marginTop: 'auto', marginBottom: 'auto', fontSize: 15 }}>Have A Video Visit With A Certified HealthCare - Doctors</Text>
 
                             </Col>
 
@@ -440,7 +440,7 @@ const styles = StyleSheet.create({
     },
     titleText: {
         fontSize: 15,
-        fontWeight:'bold',
+        fontWeight: 'bold',
         padding: 5,
         backgroundColor: '#775DA3',
         borderRadius: 20,
@@ -463,7 +463,7 @@ const styles = StyleSheet.create({
         marginLeft: 'auto',
         marginRight: 'auto',
         marginTop: 10,
-        fontWeight:'bold'
+        fontWeight: 'bold'
     },
 
     offerText1: {
@@ -478,7 +478,7 @@ const styles = StyleSheet.create({
         marginLeft: 'auto',
         marginRight: 'auto',
         marginTop: 8,
-        fontWeight:'bold'
+        fontWeight: 'bold'
     }
 
 });

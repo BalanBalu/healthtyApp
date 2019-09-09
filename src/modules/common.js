@@ -1,5 +1,5 @@
-import React,{Component} from 'react';
-import { View, Text, AsyncStorage,StyleSheet} from "react-native";
+import React, { Component } from 'react';
+import { View, Text, AsyncStorage, StyleSheet } from "react-native";
 import { Icon } from 'native-base';
 import { Col, Row, Grid } from 'react-native-easy-grid';
 import { store } from '../setup/store';
@@ -46,7 +46,7 @@ export const RenderHospitalAddress = (props) => {
 }
 
 export const RenderPatientAddress = (props) => {
-    
+
     const { gridStyle } = props
     return (
 
@@ -78,7 +78,7 @@ export function renderProfileImage(data) {
         source = require('../../assets/images/profile_common.png')
     }
     return (source)
-} 
+}
 export function renderDoctorImage(data) {
     let source = null;
     if (data.profile_image) {
@@ -91,28 +91,28 @@ export function renderDoctorImage(data) {
         source = require('../../assets/images/profile_common.png')
     }
     return (source)
-} 
+}
 
 export async function addToCart(medicineData, selectItem, operation) {
-    let userId = JSON.stringify(await AsyncStorage.getItem('userId'))    
+    let userId = JSON.stringify(await AsyncStorage.getItem('userId'))
     let itemQuantity;
-    if(operation==="add"){           
-    itemQuantity = (selectItem.selectedQuantity==undefined?0:selectItem.selectedQuantity);
-    selectItem.selectedQuantity=++itemQuantity;    
-    }else{
-        if(selectItem.selectedQuantity>0){
-        itemQuantity=selectItem.selectedQuantity;
-        selectItem.selectedQuantity = --itemQuantity;
-        }     
-    }     
-   let cart =[];
-        medicineData.filter(element=>{
-           if( element.selectedQuantity>=1){
-               cart.push(element);
-           }
-       })
-       await AsyncStorage.setItem('cartItems-'+userId, JSON.stringify(cart))
-       return{selectemItemData: selectItem}
+    if (operation === "add") {
+        itemQuantity = (selectItem.selectedQuantity == undefined ? 0 : selectItem.selectedQuantity);
+        selectItem.selectedQuantity = ++itemQuantity;
+    } else {
+        if (selectItem.selectedQuantity > 0) {
+            itemQuantity = selectItem.selectedQuantity;
+            selectItem.selectedQuantity = --itemQuantity;
+        }
+    }
+    let cart = [];
+    medicineData.filter(element => {
+        if (element.selectedQuantity >= 1) {
+            cart.push(element);
+        }
+    })
+    await AsyncStorage.setItem('cartItems-' + userId, JSON.stringify(cart))
+    return { selectemItemData: selectItem }
 }
 
 export function medicineRateAfterOffer(item) {
@@ -151,20 +151,23 @@ export class Badge extends Component {
 
         super(props);
         this.state = {
-            data:''
+            data: null,
         };
     }
-  async componentDidMount() {
-      if(store.getState()) {
-          if(store.getState().notification) {
-            const data = store.getState().notification.notificationCount;
-            this.setState({data})
-          }
-      }
-  }
+    async componentDidMount() {
+        if (store.getState()) {
+            if (store.getState().notification) {
+                const data = store.getState().notification.notificationCount;
+                this.setState({ data })
+            }
+        }
+    }
     render() {
-        const { data} = this.state;
+        const { data } = this.state;
+        console.log('notification Count in common ' + data)
         return (
+
+
             <Text style={{ position: 'absolute', backgroundColor: 'red', color: 'white', borderRadius: 20, marginLeft: 10, padding: 2, marginTop: -7 }}>{data}</Text>
         )
     }
