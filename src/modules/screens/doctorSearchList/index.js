@@ -293,6 +293,7 @@ class doctorSearchList extends Component {
         this.setState({ isLoading: true });
         const { navigation } = this.props;
         const searchedInputValues = navigation.getParam('resultData');
+        console.log(searchedInputValues);
         let endDateMoment = addMoment(this.state.selectedDate, 7, 'days')
 
         const userId = await AsyncStorage.getItem('userId');
@@ -315,17 +316,18 @@ class doctorSearchList extends Component {
 
             this.setState({ isLoading: true });
             await this.getDoctorDetails(doctorIds).catch(res => console.log("Exception on  getDoctorDetails: " + res));
-
+            await this.getPatientReviews(doctorIds).catch(res => console.log("Exception on getPatientReviews" + res));
+            
             await this.getAvailabilitySlots(doctorIds, startDate, endDate).catch(res => console.log("Exception" + res));
 
-            await this.getPatientReviews(doctorIds).catch(res => console.log("Exception on getPatientReviews" + res));
             this.getDoctorFaviouteList(doctorIds).catch(res => console.log("Exception on getPatient Wish List" + res));
             let doctorData = this.state.doctorData;
-            this.sortByTopRatings(doctorData);
+            
+            
             doctorData.forEach((element) => {
                 doctorDataInMap.set(String(element.doctorIdHostpitalId), element) 
             });
-           /* store.dispatch({
+            /*store.dispatch({
                 type: SET_FILTERED_DOCTOR_DATA,
                 data: doctorData
             }) */
@@ -406,9 +408,9 @@ class doctorSearchList extends Component {
                     type: SET_BOOK_APP_DOCTOR_DATA,
                     data: this.processedDoctorDetailsData
                 })
+                this.sortByTopRatings(this.processedDoctorDetailsData);
                 console.log(this.processedDoctorDetailsData);
-               
-                await this.setState({ doctorDetails: this.processedDoctorData, doctorData: this.processedDoctorDetailsData });
+                this.setState({ doctorDetails: this.processedDoctorData, doctorData: this.processedDoctorDetailsData });
             }
         } catch (e) {
             this.setState({ doctorDetails: [] });
@@ -599,8 +601,8 @@ class doctorSearchList extends Component {
     }
     sortByTopRatings(filteredDoctorData) {
         const { bookappointment: {  reviewsByDoctorIds } } = this.props;
-       
-        filteredDoctorData.sort(function(a, b) {
+       console.log(reviewsByDoctorIds);
+        filteredData = filteredDoctorData.sort(function(a, b) {
             let ratingA = 0;
             let ratingB = 0;
             if(reviewsByDoctorIds[a.doctor_id]) {
@@ -618,7 +620,7 @@ class doctorSearchList extends Component {
         });
         store.dispatch({
             type: SET_FILTERED_DOCTOR_DATA,
-            data: filteredDoctorData
+            data: filteredData
         })
         if(currentDoctorOrder === 'ASC') {
             currentDoctorOrder = 'DESC';
