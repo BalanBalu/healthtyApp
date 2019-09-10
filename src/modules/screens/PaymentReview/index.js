@@ -109,7 +109,7 @@ export default class PaymentReview extends Component {
                             <Row>
                                 <Col style={{ width: '90%' }}>
                                     <Text note style={styles.customizedText}>Doctor</Text>
-                                    <Text style={styles.customizedText}>{bookSlotDetails.prefix ? bookSlotDetails.prefix : 'Dr'}. {bookSlotDetails.doctorName}</Text>
+                                    <Text style={styles.customizedText}>{bookSlotDetails.prefix || ''} {bookSlotDetails.doctorName}</Text>
                                 </Col>
 
                             </Row>

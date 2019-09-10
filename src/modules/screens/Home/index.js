@@ -8,6 +8,10 @@ import { connect } from 'react-redux'
 import { StyleSheet, Image, View, TouchableOpacity, AsyncStorage, ScrollView, FlatList } from 'react-native';
 // import { ScrollView, FlatList } from 'react-native-gesture-handler';
 import { catagries } from '../../providers/catagries/catagries.actions';
+import { MAP_BOX_PUBLIC_TOKEN , IS_ANDROID } from '../../../setup/config';
+import MapboxGL from '@react-native-mapbox-gl/maps';
+MapboxGL.setAccessToken(MAP_BOX_PUBLIC_TOKEN);
+
 
 class Home extends Component {
     constructor(props) {
@@ -18,7 +22,8 @@ class Home extends Component {
             catagary: [],
             searchValue: null,
             totalSpecialistDataArry: [],
-            visibleClearIcon: ''
+            visibleClearIcon: '',
+            locationCordinates : []
 
         };
         this.arrayData = []
@@ -33,10 +38,40 @@ class Home extends Component {
         this.props.navigation.navigate('login');
     }
     async componentDidMount() {
+        this.getCatagries();
+    let isGranted = true;
+    if (IS_ANDROID) {
+      isGranted = await MapboxGL.requestAndroidLocationPermissions();
+      await this.setState({
+         isAndroidPermissionGranted: isGranted,
+         isFetchingAndroidPermission: false,
+       });
+     }
 
-        await this.getCatagries();
+      if(isGranted) {
+        console.log('Comming to get Locatuin')
+       //await this.getUserLocation();
+       navigator.geolocation.getCurrentPosition(position => {
+            console.log('Comming to User Locatuin')
+            
+            const origin_coordinates = [position.coords.latitude, position.coords.longitude, ];
+            this.setState({ locationCordinates : origin_coordinates })
+            console.log('Your Orgin is ' + origin_coordinates); 
+      
+       }),
+       error =>  {
+        console.log(error); 
+        alert(JSON.stringify(error)) 
+       }, {enableHighAccuracy: false, timeout: 50000}
+    }
+       
 
 
+    }
+    getUserLocation() {
+        console.log('getting Geo to User Locatuin')
+        debugger
+        
     }
 
     getCatagries = async () => {
@@ -90,11 +125,21 @@ class Home extends Component {
             {
                 type: 'symptoms',
                 value: [this.state.searchValue]
-            }]
+            },
+            {
+                type: 'geo',
+                value: {
+                    coordinates : this.state.locationCordinates,
+                    maxDistance: 30
+                }
+            }
+        ]
             if (this.state.searchValue == null) {
                 alert("We can't Find the Empty Values");
             }
             else {
+                console.log('serachInputvalues in Homepage')
+                console.log(serachInputvalues);
                 this.props.navigation.navigate('Doctor List', { resultData: serachInputvalues })
             }
         } catch (e) {
@@ -105,6 +150,13 @@ class Home extends Component {
         let serachInputvalues = [{
             type: 'category',
             value: categoryName
+        },
+        {
+            type: 'geo',
+            value: {
+                coordinates : this.state.locationCordinates,
+                maxDistance: 30
+            }
         }]
         this.props.navigation.navigate('Doctor List', { resultData: serachInputvalues })
     }
@@ -189,8 +241,14 @@ class Home extends Component {
                                     onPress={() => this.props.navigation.navigate("Doctor List", {
                                         resultData: [{
                                             type: item.name,
-                                            value: item.name === 'symptoms' ? [item.value] : item.value
-                                        }]
+                                            value: item.name==='symptoms'?[item.value]:item.value
+                                        } /*,  {
+                                            type: 'geo',
+                                            value: {
+                                                coordinates : this.state.locationCordinates,
+                                                maxDistance: 1000
+                                            }
+                                        } */]
                                     })}
                                 >
                                     <Text style={{ padding: 10, fontFamily: 'OpenSans', fontSize: 13 }}>{item.value}</Text>
@@ -247,7 +305,7 @@ class Home extends Component {
                                                             </LinearGradient>
 
                                                             <Text style={styles.textcenter}>{item.category_name}</Text>
-                                                            <Text note style={{ textAlign: 'center', fontFamily: 'OpenSans', fontSize: 15 }}>100 Doctors</Text>
+                                                           {/* <Text note style={{ textAlign: 'center',fontFamily:'OpenSans',fontSize:15 }}>100 Doctors</Text> */}
                                                         </Col>
                                                     </Item>
                                                 </Grid>

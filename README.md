@@ -35,3 +35,44 @@ Change this
          Run sh SelectDefaultXcode.sh
        
     See the Video https://www.youtube.com/watch?v=hE-F0QqTwnI
+
+
+
+React native not getting the user Location on IOS
+    Can confirm my RN 0.54.0 build was accepted in iTunes Connect with the following temporary change to node_modules/react-native/Libraries/Geolocation/RCTLocationObserver.m:
+
+Before:
+
+if ([[NSBundle mainBundle] objectForInfoDictionaryKey:@"NSLocationAlwaysUsageDescription"] &&
+    [_locationManager respondsToSelector:@selector(requestAlwaysAuthorization)]) {
+    [_locationManager requestAlwaysAuthorization];
+
+    // On iOS 9+ we also need to enable background updates
+    NSArray *backgroundModes  = [[NSBundle mainBundle] objectForInfoDictionaryKey:@"UIBackgroundModes"];
+    if (backgroundModes && [backgroundModes containsObject:@"location"]) {
+      if ([_locationManager respondsToSelector:@selector(setAllowsBackgroundLocationUpdates:)]) {
+        [_locationManager setAllowsBackgroundLocationUpdates:YES];
+      }
+    }
+  } else if ([[NSBundle mainBundle] objectForInfoDictionaryKey:@"NSLocationWhenInUseUsageDescription"] &&
+    [_locationManager respondsToSelector:@selector(requestWhenInUseAuthorization)]) {
+    [_locationManager requestWhenInUseAuthorization];
+  }
+After:
+
+// Request location access permission
+  /*if ([[NSBundle mainBundle] objectForInfoDictionaryKey:@"NSLocationAlwaysUsageDescription"] &&
+    [_locationManager respondsToSelector:@selector(requestAlwaysAuthorization)]) {
+    [_locationManager requestAlwaysAuthorization];
+
+    // On iOS 9+ we also need to enable background updates
+    NSArray *backgroundModes  = [[NSBundle mainBundle] objectForInfoDictionaryKey:@"UIBackgroundModes"];
+    if (backgroundModes && [backgroundModes containsObject:@"location"]) {
+      if ([_locationManager respondsToSelector:@selector(setAllowsBackgroundLocationUpdates:)]) {
+        [_locationManager setAllowsBackgroundLocationUpdates:YES];
+      }
+    }
+  } else */if ([[NSBundle mainBundle] objectForInfoDictionaryKey:@"NSLocationWhenInUseUsageDescription"] &&
+    [_locationManager respondsToSelector:@selector(requestWhenInUseAuthorization)]) {
+    [_locationManager requestWhenInUseAuthorization];
+  }

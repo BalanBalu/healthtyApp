@@ -409,8 +409,8 @@ class MyAppoinmentList extends Component {
 
 														<Item style={{ borderBottomWidth: 0 }}>
 
-															<Text style={{ fontFamily: "OpenSans", fontSize: 15, fontWeight: 'bold' }}>
-																{(item.prefix != undefined ? item.prefix : 'Dr.') + item.appointmentResult.doctorInfo.first_name + " " + item.appointmentResult.doctorInfo.last_name}{" "}
+															<Text style={{ fontFamily: "OpenSans",fontSize:15,fontWeight:'bold'}}>
+																{(item.prefix != undefined ? item.prefix : ' ') + item.appointmentResult.doctorInfo.first_name + " " + item.appointmentResult.doctorInfo.last_name}{" "}
 															</Text>
 															<Text
 																style={{

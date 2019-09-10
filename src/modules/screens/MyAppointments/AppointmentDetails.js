@@ -273,7 +273,7 @@ class AppointmentDetails extends Component {
                     <Thumbnail square source={renderProfileImage(doctorData)} style={{ height: 86, width: 86 }} />
                   </Left>
                   <Body>
-                    <Text style={{ fontSize: 15,fontFamily:'OpenSans',fontWeight:'bold' }}>{(doctorData && doctorData.prefix ? doctorData.prefix : 'Dr') + ('.') + (doctorData && doctorData.first_name) + " " + (doctorData && doctorData.last_name)},
+                    <Text style={{ fontSize: 15,fontFamily:'OpenSans',fontWeight:'bold' }}>{(doctorData && doctorData.prefix ? doctorData.prefix : '') +  + (doctorData && doctorData.first_name) + " " + (doctorData && doctorData.last_name)},
                       <Text style={{ fontSize: 13,fontFamily:'OpenSans' }}>{education}</Text>
 
                     </Text>
