@@ -409,8 +409,8 @@ class MyAppoinmentList extends Component {
 
 														<Item style={{ borderBottomWidth: 0 }}>
 
-															<Text style={{ fontFamily: "OpenSans",fontSize:15,fontWeight:'bold'}}>
-																{(item.prefix != undefined ? item.prefix : ' ') + item.appointmentResult.doctorInfo.first_name + " " + item.appointmentResult.doctorInfo.last_name}{" "}
+															<Text style={{ fontFamily: "OpenSans", fontSize: 15, fontWeight: 'bold' }}>
+																{(item.prefix != undefined ? item.prefix : '') + item.appointmentResult.doctorInfo.first_name + " " + item.appointmentResult.doctorInfo.last_name}{" "}
 															</Text>
 															<Text
 																style={{
@@ -435,7 +435,7 @@ class MyAppoinmentList extends Component {
 																		fullStarColor="#FF9500"
 																		starSize={15}
 																		containerStyle={{
-																			width: 100,
+																			width: 80,
 																			marginLeft: "auto",
 																		}}
 																		disabled={false}
@@ -467,21 +467,21 @@ class MyAppoinmentList extends Component {
 
 														</Item>
 
-														<Text style={{ fontFamily: "OpenSans", fontSize: 13 }} note>
+														<Text style={{ fontFamily: "OpenSans", fontSize: 11 }} note>
 															{formatDate(item.appointmentResult.appointment_starttime, "dddd,MMMM DD-YYYY  hh:mm a")}</Text>
-															
-														
-			
-																
-																
-														
-													
+
+
+
+
+
+
+
 
 														{selectedIndex == 1 &&
 															item.appointmentResult.appointment_status ==
 															"PENDING_REVIEW" ? (
 																<Item style={{ borderBottomWidth: 0 }}>
-																	<Right style={(styles.marginRight = 110)}>
+																	<Right style={(styles.marginRight = -2)}>
 																		<Button
 																			style={styles.shareButton}
 																			onPress={() => this.navigateAddReview(item)}
@@ -492,8 +492,8 @@ class MyAppoinmentList extends Component {
 
 																				Add Review
 																</Text>
-																		</Button>
-																	</Right>
+																		</Button></Right>
+
 																	<Right style={(styles.marginRight = 5)}>
 
 																		<Button style={styles.bookingButton} onPress={() => this.navigateToBookAppointmentPage(item)}>
@@ -503,11 +503,13 @@ class MyAppoinmentList extends Component {
 																		</Button>
 																	</Right>
 																</Item>
+
 															) : (
 																selectedIndex === 1 && (
-																	<Item style={{ borderBottomWidth: 0 }}>
-																		<Right style={(styles.marginRight = 5)}>
 
+
+																	<Item style={{ borderBottomWidth: 0 }}>
+																		<Right style={(styles.marginRight = 10)}>
 																			<Button style={styles.bookingButton} onPress={() => this.navigateToBookAppointmentPage(item)} testID='navigateBookingPage'>
 																				<Text style={styles.bookAgain1}>
 																					Book Again
@@ -515,6 +517,7 @@ class MyAppoinmentList extends Component {
 																			</Button>
 																		</Right>
 																	</Item>
+
 																)
 															)}
 													</Body>
