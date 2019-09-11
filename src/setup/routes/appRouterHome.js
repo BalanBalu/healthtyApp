@@ -260,7 +260,13 @@ const myAppointmentsStack = createStackNavigator({
     navigationOptions: {
       title: 'Rate and Review'
     }
-  }
+  },
+  "Book Appointment": {
+    screen: BookAppoinment,
+    navigationOptions: {
+      title: 'Book Appointment'
+    }
+  },
 
 },
   {
