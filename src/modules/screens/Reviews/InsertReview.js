@@ -71,9 +71,10 @@ class InsertReview extends Component {
   submitReview = async () => {
     try {
       let userId = this.state.data.user_id;
-      let overallrating = (this.state.cleanness_rating + this.state.staff_rating + this.state.wait_time_rating) / 3;
+      if (this.state.wait_time_rating != 0 || this.state.staff_rating != 0 || this.state.cleanness_rating != 0) {
+        let overallrating = (this.state.cleanness_rating + this.state.staff_rating + this.state.wait_time_rating) / 3;
 
-      if (this.state.comments != null) {
+
         let insertReviewData = {
           user_id: userId,
           doctor_id: this.state.data.doctor_id,
@@ -96,11 +97,12 @@ class InsertReview extends Component {
           // await this.updateAppointmentStatus(this.state.data, 'COMPLETED')
 
           this.props.navigation.pop();
+          
 
         }
       } else {
         Toast.show({
-          text: 'Kindly add a comment for your Review',
+          text: 'Kindly give a rating for your Review',
           duration: 3000
         })
       }
@@ -185,11 +187,11 @@ class InsertReview extends Component {
                   </Row> */}
                   <Row style={{ marginTop: 20, marginLeft: -10 }}>
                     <Checkbox status={this.state.isAnonymous ? 'checked' : 'unchecked'} color="green" onPress={() => this.setState({ isAnonymous: !this.state.isAnonymous })} />
-                    <Text style={{ marginLeft: 5, marginTop: 7}}>Would you like to give as Anonymous</Text>
+                    <Text style={{ marginLeft: 5, marginTop: 7 }}>Would you like to give as Anonymous</Text>
                   </Row>
                   <Row style={{ marginTop: 10, marginLeft: -10 }} >
                     <Checkbox status={this.state.doctorRecommended ? 'checked' : 'unchecked'} color="green" onPress={() => this.setState({ doctorRecommended: !this.state.doctorRecommended })} />
-                    <Text style={{ marginLeft: 5, marginTop: 7}}>Do you recommend this doctor</Text>
+                    <Text style={{ marginLeft: 5, marginTop: 7 }}>Do you recommend this doctor</Text>
                   </Row>
 
                   <Text style={{ fontSize: 16, marginTop: 20 }}>
