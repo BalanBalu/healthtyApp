@@ -5,6 +5,7 @@ import {
   Container, Header, Title, Left, Right, Body, Button, Card, Toast, CardItem, Row, Grid, View,
   Text, Thumbnail, Content, CheckBox
 } from 'native-base';
+import { Checkbox } from 'react-native-paper';
 //import {ScrollView} from 'react-native-gesture-handler';
 //import Icon from 'react-native-vector-icons/FontAwesome';
 import { addReview } from '../../providers/bookappointment/bookappointment.action'
@@ -174,13 +175,21 @@ class InsertReview extends Component {
 
                     />
                   </Row>
-                  <Row style={{ marginTop: 20, marginLeft: -10 }}>
+                  {/* <Row style={{ marginTop: 20, marginLeft: -10 }}>
                     <CheckBox checked={this.state.isAnonymous} color="green" onPress={() => this.setState({ isAnonymous: !this.state.isAnonymous })} ></CheckBox>
                     <Text style={{ marginLeft: 20 }}>Would you like to give as Anonymous</Text>
                   </Row>
                   <Row style={{ marginTop: 10, marginLeft: -10 }} >
                     <CheckBox checked={this.state.doctorRecommended} color="green" onPress={() => this.setState({ doctorRecommended: !this.state.doctorRecommended })} ></CheckBox>
                     <Text style={{ marginLeft: 20 }}>Do you recommend this doctor</Text>
+                  </Row> */}
+                  <Row style={{ marginTop: 20, marginLeft: -10 }}>
+                    <Checkbox status={this.state.isAnonymous ? 'checked' : 'unchecked'} color="green" onPress={() => this.setState({ isAnonymous: !this.state.isAnonymous })} />
+                    <Text style={{ marginLeft: 5, marginTop: 7}}>Would you like to give as Anonymous</Text>
+                  </Row>
+                  <Row style={{ marginTop: 10, marginLeft: -10 }} >
+                    <Checkbox status={this.state.doctorRecommended ? 'checked' : 'unchecked'} color="green" onPress={() => this.setState({ doctorRecommended: !this.state.doctorRecommended })} />
+                    <Text style={{ marginLeft: 5, marginTop: 7}}>Do you recommend this doctor</Text>
                   </Row>
 
                   <Text style={{ fontSize: 16, marginTop: 20 }}>
