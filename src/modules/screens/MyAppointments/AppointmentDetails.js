@@ -26,7 +26,7 @@ class AppointmentDetails extends Component {
       reviewData: {},
       doctorData: {},
       isLoading: true,
-      yearOfExperience: '',
+     
       appointmentStatus: '',
       statusUpdateReason: ' ',
       education: '',
@@ -83,19 +83,7 @@ class AppointmentDetails extends Component {
 
         await this.setState({ doctorData: resultDetails.data });
 
-        let experience = 'N/A';
-        if (resultDetails.data.experience != undefined) {
-          let updatedDate = moment(this.state.doctorData.experience.updated_date);
-          let experienceInYear = dateDiff(updatedDate, new Date(), 'year');
-          let experienceInMonth = dateDiff(updatedDate, new Date(), 'months');
-          let year = (moment(this.state.doctorData.experience.year) + experienceInYear);
-          let month = (moment(this.state.doctorData.experience.month)) + experienceInMonth;
-          experience = experienceInYear + year;
-          if (month >= 12) {
-            experience++;
-          }
-        }
-        await this.setState({ yearOfExperience: experience });
+        
 
         let educationDetails = '';
         if (resultDetails.data.education != undefined) {
@@ -250,7 +238,7 @@ class AppointmentDetails extends Component {
 
 
 
-    const { data, reviewData, doctorData, education, yearOfExperience, specialist, hospital, isLoading } = this.state;
+    const { data, reviewData, doctorData, education,  specialist, hospital, isLoading } = this.state;
 
     return (
 
