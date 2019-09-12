@@ -134,7 +134,7 @@ class InsertReview extends Component {
             <Card>
               <CardItem style={styles.text}>
                 <Body>
-                  <Text > How was your visit with {(data && data.prefix != undefined ? data && data.prefix:' ') + (data && data.doctorInfo.first_name) + " " + (data && data.doctorInfo.last_name)} ? help other patients by leaving a Review </Text>
+                  <Text > How was your visit with {(data && data.prefix != undefined ? data && data.prefix:'') + (data && data.doctorInfo.first_name) + " " + (data && data.doctorInfo.last_name)} ? help other patients by leaving a Review </Text>
                 </Body>
               </CardItem>
               <CardItem>
@@ -143,7 +143,7 @@ class InsertReview extends Component {
                     <Text style={{ fontWeight: "bold" }}>
                       {formatDate(data.appointment_starttime, 'MMMM-DD-YYYY') + "   " +
                         formatDate(data[0] && data[0].appointment_starttime, 'hh:mm A')}
-                    </Text> with {(data && data.prefix != undefined ? data && data.prefix : ' ') + (data && data.doctorInfo.first_name) + " " + (data && data.doctorInfo.last_name)}</Text>
+                    </Text> with {(data && data.prefix != undefined ? data && data.prefix :'') + (data && data.doctorInfo.first_name) + " " + (data && data.doctorInfo.last_name)}</Text>
                   <Row style={{ marginTop: 20 }}>
                     <Text style={{ fontSize: 16 }}>Cleanliness</Text>
                     <StarRating fullStarColor='#FF9500' starSize={20} containerStyle={{ width: 110, marginLeft: 50 }}
