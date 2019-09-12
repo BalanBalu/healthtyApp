@@ -137,7 +137,7 @@ class InsertReview extends Component {
             <Card>
               <CardItem style={styles.text}>
                 <Body>
-                  <Text > How was your visit with {(data && data.prefix != undefined ? data && data.prefix : '') + (data && data.doctorInfo.first_name) + " " + (data && data.doctorInfo.last_name)} ? help other patients by leaving a Review </Text>
+                  <Text > How was your visit with {(data && data.prefix != undefined ? data && data.prefix:'') + (data && data.doctorInfo.first_name) + " " + (data && data.doctorInfo.last_name)} ? help other patients by leaving a Review </Text>
                 </Body>
               </CardItem>
               <CardItem>

@@ -58,7 +58,7 @@ export const fetchUserMarkedAsReadedNotification = async (userId) => {
 
         let response = await getService(endPoint);
         let respData = response.data;
-        console.log(JSON.stringify(respData))
+        
         store.dispatch({
             type: NOTIFICATION_REQUEST,
             message: respData.message
@@ -70,12 +70,15 @@ export const fetchUserMarkedAsReadedNotification = async (userId) => {
             });
 
         } else {
-            let count=respData.data.length
-       
+            let count = respData.data.length
+            console.log('notificationCount'+count)
+            let notificationIds = respData.data.map(element => {
+                return element._id;
+       }).join(',')
             store.dispatch({
                 type: NOTIFICATION_RESPONSE,
                 message: respData.message,
-               
+                notificationIds:notificationIds,
                 notificationCount: count
             })
 
