@@ -138,10 +138,10 @@ class MyAppoinmentList extends Component {
 							return categories.category;
 						}).join(",");
 					}
-					
-						 
-					
-					doctorInfo.set(doctorData.doctor_id, { degree: educationDetails, specialist: speaciallistDetails, prefix: doctorData.prefix ,profile_image: doctorData.profile_image,gender:doctorData.gender})
+
+
+
+					doctorInfo.set(doctorData.doctor_id, { degree: educationDetails, specialist: speaciallistDetails, prefix: doctorData.prefix, profile_image: doctorData.profile_image, gender: doctorData.gender })
 
 
 				});
@@ -198,7 +198,7 @@ class MyAppoinmentList extends Component {
 				}).join(",");
 
 				let speciallistResult = await getMultipleDoctorDetails(doctorIds, "specialist,education,prefix,profile_image,gender");
-				
+
 				speciallistResult.data.forEach(doctorData => {
 
 					let educationDetails = ' ', speaciallistDetails = '';
@@ -217,9 +217,9 @@ class MyAppoinmentList extends Component {
 						}).join(",");
 
 					}
-					
-				
-					doctorInfo.set(doctorData.doctor_id, { degree: educationDetails, specialist: speaciallistDetails, prefix: doctorData.prefix, profile_image: doctorData.profile_image ,gender:doctorData.gender})
+
+
+					doctorInfo.set(doctorData.doctor_id, { degree: educationDetails, specialist: speaciallistDetails, prefix: doctorData.prefix, profile_image: doctorData.profile_image, gender: doctorData.gender })
 
 
 				});
@@ -285,14 +285,14 @@ class MyAppoinmentList extends Component {
 
 		}
 	};
-    
+
 
 	navigateAddReview(item) {
 		let data = item.appointmentResult;
 		data.prefix = item.prefix
 		console.log(data)
-		this.props.navigation.navigate('InsertReview', { appointmentDetail:data })
-		
+		this.props.navigation.navigate('InsertReview', { appointmentDetail: data })
+
 	}
 
 	handleIndexChange = index => {
@@ -307,7 +307,7 @@ class MyAppoinmentList extends Component {
 
 		});
 	};
-	
+
 
 
 	navigateToBookAppointmentPage(item) {
@@ -379,7 +379,7 @@ class MyAppoinmentList extends Component {
 										onPress={() =>
 											this.props.navigation.navigate("Home", { fromAppointment: true })
 										} testID='navigateToHome'>
-										<Text style={{fontFamily:'Opensans',fontSize:15,fontWeight:'bold'}}>Book Now</Text>
+										<Text style={{ fontFamily: 'Opensans', fontSize: 15, fontWeight: 'bold' }}>Book Now</Text>
 									</Button>
 								</Item>
 							</Card>
@@ -399,18 +399,18 @@ class MyAppoinmentList extends Component {
 													} testID='navigateAppointmentInfo'
 												>
 													<Left>
-														 <Thumbnail
-																square
+														<Thumbnail
+															square
 															source={renderProfileImage(item)}
-																style={{ height: 60, width: 60 }}
-															/>
+															style={{ height: 60, width: 60 }}
+														/>
 													</Left>
 													<Body>
 
 														<Item style={{ borderBottomWidth: 0 }}>
 
-															<Text style={{ fontFamily: "OpenSans",fontSize:15,fontWeight:'bold'}}>
-																{(item.prefix != undefined ? item.prefix : ' ') + item.appointmentResult.doctorInfo.first_name + " " + item.appointmentResult.doctorInfo.last_name}{" "}
+															<Text style={{ fontFamily: "OpenSans", fontSize: 15, fontWeight: 'bold' }}>
+																{(item.prefix != undefined ? item.prefix : '') + item.appointmentResult.doctorInfo.first_name + " " + item.appointmentResult.doctorInfo.last_name}{" "}
 															</Text>
 															<Text
 																style={{
@@ -424,7 +424,7 @@ class MyAppoinmentList extends Component {
 														</Item>
 														<Item style={{ borderBottomWidth: 0 }}>
 															<Text
-																style={{ fontFamily: "OpenSans", fontSize: 14,width:'60%' }}
+																style={{ fontFamily: "OpenSans", fontSize: 14, width: '60%' }}
 															>
 																{item.specialist}
 															</Text>
@@ -433,9 +433,9 @@ class MyAppoinmentList extends Component {
 																item.ratting != undefined && (
 																	<StarRating
 																		fullStarColor="#FF9500"
-																		starSize={20}
+																		starSize={15}
 																		containerStyle={{
-																			width: 100,
+																			width: 80,
 																			marginLeft: "auto",
 																		}}
 																		disabled={false}
@@ -449,60 +449,67 @@ class MyAppoinmentList extends Component {
 															{selectedIndex == 0 ?
 
 																(item.appointmentResult.appointment_status == "PENDING" ?
-																	<Text style={{ fontFamily: "OpenSans", fontSize: 13, color: "red",fontWeight:'bold' }} note>waiting for confirmation</Text>
+																	<Text style={{ fontFamily: "OpenSans", fontSize: 13, color: "red", fontWeight: 'bold' }} note>waiting for confirmation</Text>
 																	: item.appointmentResult.appointment_status == "APPROVED" ?
-																		<Text style={{ fontFamily: "OpenSans", fontSize: 13, color: "green",fontWeight:'bold' }} note>	Appointment confirmed</Text>
+																		<Text style={{ fontFamily: "OpenSans", fontSize: 13, color: "green", fontWeight: 'bold' }} note>Appointment confirmed</Text>
 																		: item.appointmentResult.appointment_status == "CLOSED" ?
-																			<Text style={{ fontFamily: "OpenSans", fontSize: 13, color: "red",fontWeight:'bold' }} note	>Appointment cancelled</Text>
+																			<Text style={{ fontFamily: "OpenSans", fontSize: 13, color: "red", fontWeight: 'bold' }} note	>Appointment cancelled</Text>
 																			: item.appointmentResult.appointment_status == "PROPOSED_NEW_TIME" &&
-																			<Text style={{ fontFamily: "OpenSans", fontSize: 13, color: "grey" ,fontWeight:'bold'}} note	> PROPOSED_NEW_TIME</Text>
+																			<Text style={{ fontFamily: "OpenSans", fontSize: 13, color: "grey", fontWeight: 'bold' }} note	>PROPOSED_NEW_TIME</Text>
 																) :
 																(item.appointmentResult.appointment_status == "CLOSED" ?
-																	<Text style={{ fontFamily: "OpenSans", fontSize: 13, color: "red",fontWeight:'bold' }} note>	Appointment cancelled.	</Text>
+																	<Text style={{ fontFamily: "OpenSans", fontSize: 13, color: "red", fontWeight: 'bold' }} note>Appointment cancelled.</Text>
 																	:
-																	<Text style={{ fontFamily: "OpenSans", fontSize: 13, color: "green" ,fontWeight:'bold'}} note>Appointment completed
-																	</Text>
+																	<Text style={{ fontFamily: "OpenSans", fontSize: 13, color: "green", fontWeight: 'bold' }} note>Appointment completed</Text>
 																)
 
 															}
 
 														</Item>
 
-														<Text
-															style={{ fontFamily: "OpenSans", fontSize: 13 }}
-															note
-														>
-															{formatDate(
-																item.appointmentResult.appointment_starttime,
-																"dddd,MMMM DD-YYYY  hh:mm a"
-															)}
-														</Text>
+														<Text style={{ fontFamily: "OpenSans", fontSize: 11 }} note>
+															{formatDate(item.appointmentResult.appointment_starttime, "dddd,MMMM DD-YYYY  hh:mm a")}</Text>
+
+
+
+
+
+
+
 
 														{selectedIndex == 1 &&
 															item.appointmentResult.appointment_status ==
 															"PENDING_REVIEW" ? (
 																<Item style={{ borderBottomWidth: 0 }}>
-																	<Button
-																		style={styles.shareButton}
-																		onPress={() => this.navigateAddReview(item)}
-																		
-																		 testID='navigateInsertReview'
-																	>
-																		<Text style={styles.bookAgain1}>
-																			{" "}
-																			Add To Review
+																	<Right style={(styles.marginRight = -2)}>
+																		<Button
+																			style={styles.shareButton}
+																			onPress={() => this.navigateAddReview(item)}
+
+																			testID='navigateInsertReview'
+																		>
+																			<Text style={styles.bookAgain1}>
+
+																				Add Review
 																</Text>
-																	</Button>
-																	<Button style={styles.bookingButton} onPress={() => this.navigateToBookAppointmentPage(item)}>
-																		<Text style={styles.bookAgain1} testID='navigateBookAppointment'>
-																			Book Again
+																		</Button></Right>
+
+																	<Right style={(styles.marginRight = 5)}>
+
+																		<Button style={styles.bookingButton} onPress={() => this.navigateToBookAppointmentPage(item)}>
+																			<Text style={styles.bookAgain1} testID='navigateBookAppointment'>
+																				Book Again
 																</Text>
-																	</Button>
+																		</Button>
+																	</Right>
 																</Item>
+
 															) : (
 																selectedIndex === 1 && (
+
+
 																	<Item style={{ borderBottomWidth: 0 }}>
-																		<Right style={(styles.marginRight = 5)}>
+																		<Right style={(styles.marginRight = 10)}>
 																			<Button style={styles.bookingButton} onPress={() => this.navigateToBookAppointmentPage(item)} testID='navigateBookingPage'>
 																				<Text style={styles.bookAgain1}>
 																					Book Again
@@ -510,6 +517,7 @@ class MyAppoinmentList extends Component {
 																			</Button>
 																		</Right>
 																	</Item>
+
 																)
 															)}
 													</Body>
@@ -544,8 +552,8 @@ const styles = StyleSheet.create({
 	},
 	bookAgain1: {
 		fontSize: 13,
-		fontFamily:'OpenSans',
-		fontWeight:'bold'
+		fontFamily: 'OpenSans',
+		fontWeight: 'bold'
 	},
 	bodyContent: {
 		padding: 5
