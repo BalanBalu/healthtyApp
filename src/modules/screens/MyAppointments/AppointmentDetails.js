@@ -278,7 +278,7 @@ class AppointmentDetails extends Component {
                     <Text note style={styles.bottomValue}> Fee </Text>
                   </Col>
                   <Col style={{ backgroundColor: 'transparent', borderRightWidth: 0.5, borderRightColor: 'gray', justifyContent: 'center' }}>
-                    <Text style={styles.topValue}> {doctorData.experience.year != undefined && doctorData.experience.year != 0 ? doctorData.experience.year + ' yrs' : 'N/A'} </Text>
+                    <Text style={styles.topValue}> {doctorData.calulatedExperience.year != undefined && doctorData.calulatedExperience.year != 0 ? doctorData.calulatedExperience.year + ' yrs' : 'N/A'} </Text>
                     <Text note style={styles.bottomValue}> Experience</Text>
                   </Col>
                   <Col style={{ backgroundColor: 'transparent', justifyContent: 'center', marginLeft: 'auto', marginRight: 'auto' }}>
@@ -383,7 +383,7 @@ class AppointmentDetails extends Component {
                                 rating={reviewData[0] && reviewData[0].overall_rating}
 
                               />
-                              <Text note style={styles.customText}>{reviewData[0] && reviewData[0].comments} </Text>
+                              <Text note style={styles.customText}>{reviewData[0] && reviewData[0].comments != undefined ? reviewData[0] && reviewData[0].comments:null}} </Text>
                             </Body>
                           </ListItem>
                           :
