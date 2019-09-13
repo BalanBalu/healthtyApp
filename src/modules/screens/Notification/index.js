@@ -48,12 +48,13 @@ class Notification extends Component {
         try {
             await this.setState({ isLoading: false })
             if (navigationData.action) {
-                console.log(navigationData.action.type)
                 if (navigationData.action.type === 'Navigation/BACK') {
-                   this.getUserNotification();
-                    await this.setState({ isLoading: true })
+                    
+                  await this.getUserNotification();
+                   
                 }
             }
+            await this.setState({ isLoading: true })
         } catch (e) {
             console.log(e)
         }
@@ -61,15 +62,12 @@ class Notification extends Component {
     }
     updateNavigation = async (item) => {
         
-        // let vari = store.subscribe().notification.notificationCount
-       
-        // console.log('After subscribe')
-        // console.log(store.getstate().notification.notificationCount)
+        
         await this.setState({ notificationId: item._id })
-        if (!item.mark_as_readed) {
+        if (!item.mark_as_viewed) {
             await this.upDateNotification('mark_as_viewed')
             this.props.navigation.push("AppointmentInfo", { appointmentId: item.appointment_id,fromNotification:true })
-              console.log('on press work')
+              
         }
         else {
             this.props.navigation.push("AppointmentInfo", { appointmentId: item.appointment_id,fromNotification:true })
