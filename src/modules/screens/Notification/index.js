@@ -60,7 +60,7 @@ class Notification extends Component {
 
     }
     updateNavigation = async (item) => {
-        console.log(this.props.notification.notificationIds);
+        
         // let vari = store.subscribe().notification.notificationCount
        
         // console.log('After subscribe')
@@ -69,7 +69,7 @@ class Notification extends Component {
         if (!item.mark_as_readed) {
             await this.upDateNotification('mark_as_readed')
             this.props.navigation.push("AppointmentInfo", { appointmentId: item.appointment_id,fromNotification:true })
-
+              console.log('on press work')
         }
         else {
             this.props.navigation.push("AppointmentInfo", { appointmentId: item.appointment_id,fromNotification:true })
@@ -77,9 +77,12 @@ class Notification extends Component {
     }
     upDateNotification = async (node) => {
         try {
-
-            let result = await UpDateUserNotification(node, this.state.notificationId);
-
+           
+            if (this.state.notificationId) {
+               
+                let result = await UpDateUserNotification(node, this.state.notificationId);
+               
+            }
         }
         catch (e) {
             console.log(e);
@@ -91,9 +94,9 @@ class Notification extends Component {
     try {
 
         let userId = await AsyncStorage.getItem('userId');
-        console.log(userId)
+       
         let result = await fetchUserNotification(userId);
-        console.log(result.data)
+        
         if (result.success) {
             this.setState({data:result.data})
         }
