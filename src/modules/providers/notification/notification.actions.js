@@ -54,7 +54,7 @@ export function setnotification(notificationData) {
 export const fetchUserMarkedAsReadedNotification = async (userId) => {
     try {
 
-        let endPoint = '/notifications/' + userId+'?mark_as_viewed=false'
+        let endPoint = '/notifications/' + userId+'?mark_as_readed=false'
 
         let response = await getService(endPoint);
         let respData = response.data;

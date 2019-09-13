@@ -38,8 +38,8 @@ class Notification extends Component {
        
         await new Promise.all([
             this.getUserNotification(),
-            this.upDateNotification('mark_as_viewed')
-        ])
+            this.upDateNotification('mark_as_readed')
+        ])    
         await this.setState({ isLoading: true })
          
     }
@@ -67,7 +67,7 @@ class Notification extends Component {
         // console.log(store.getstate().notification.notificationCount)
         await this.setState({ notificationId: item._id })
         if (!item.mark_as_readed) {
-            await this.upDateNotification('mark_as_readed')
+            await this.upDateNotification('mark_as_viewed')
             this.props.navigation.push("AppointmentInfo", { appointmentId: item.appointment_id,fromNotification:true })
               console.log('on press work')
         }
@@ -163,7 +163,7 @@ class Notification extends Component {
                                             <Card style={{ borderRadius: 5, width: 'auto', }}>
                                                 {/* <View style={{ borderWidth: 1, borderColor: '#c9cdcf', marginTop: 10 }} /> */}
                                                 <TouchableOpacity onPress={() => this.updateNavigation(item)}>
-                                                    <View style={{ backgroundColor: (item.mark_as_readed == false) ? '#f5e6ff' : null }}>
+                                                    <View style={{ backgroundColor: (item.mark_as_viewed == false) ? '#f5e6ff' : null }}>
 
                                                         <Col>
                                                             {dateDiff(new Date(item.created_date), new Date(), 'days') > 30 ?
