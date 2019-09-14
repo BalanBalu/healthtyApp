@@ -6,6 +6,7 @@ import {
   Container, Header, Title, Left, Right, Body, Button, Card, Toast, CardItem, Row, Grid, View,
   Text, Thumbnail, Content, CheckBox, Item
 } from 'native-base';
+import { Checkbox } from 'react-native-paper';
 //import {ScrollView} from 'react-native-gesture-handler';
 //import Icon from 'react-native-vector-icons/FontAwesome';
 import { addReview } from '../../providers/bookappointment/bookappointment.action'
@@ -72,9 +73,10 @@ class InsertReview extends Component {
   submitReview = async () => {
     try {
       let userId = this.state.data.user_id;
-      let overallrating = (this.state.cleanness_rating + this.state.staff_rating + this.state.wait_time_rating) / 3;
+      if (this.state.wait_time_rating != 0 || this.state.staff_rating != 0 || this.state.cleanness_rating != 0) {
+        let overallrating = (this.state.cleanness_rating + this.state.staff_rating + this.state.wait_time_rating) / 3;
 
-      if (this.state.comments != null) {
+
         let insertReviewData = {
           user_id: userId,
           doctor_id: this.state.data.doctor_id,
@@ -143,10 +145,10 @@ class InsertReview extends Component {
               <CardItem>
                 <Body>
                   <Text style={{ marginTop: 5, }}>
-                    <Text style={{ fontWeight: "bold" }}>
+                    Your appointment with {(data && data.prefix != undefined ? data && data.prefix : '') + (data && data.doctorInfo.first_name) + " " + (data && data.doctorInfo.last_name)} on <Text style={{ fontWeight: "bold" }}>
                       {formatDate(data.appointment_starttime, 'MMMM-DD-YYYY') + "   " +
-                        formatDate(data[0] && data[0].appointment_starttime, 'hh:mm A')}
-                    </Text> with {(data && data.prefix != undefined ? data && data.prefix : '') + (data && data.doctorInfo.first_name) + " " + (data && data.doctorInfo.last_name)}</Text>
+                        formatDate(data.appointment_starttime, 'hh:mm A')}
+                    </Text> </Text>
                   <Row style={{ marginTop: 20 }}>
                     <Text style={{ fontSize: 16 }}>Cleanliness</Text>
                     <StarRating fullStarColor='#FF9500' starSize={20} containerStyle={{ width: 110, marginLeft: 50 }}
@@ -177,13 +179,21 @@ class InsertReview extends Component {
 
                     />
                   </Row>
-                  <Row style={{ marginTop: 20, marginLeft: -10 }}>
+                  {/* <Row style={{ marginTop: 20, marginLeft: -10 }}>
                     <CheckBox checked={this.state.isAnonymous} color="green" onPress={() => this.setState({ isAnonymous: !this.state.isAnonymous })} ></CheckBox>
                     <Text style={{ marginLeft: 20 }}>Would you like to give as Anonymous</Text>
                   </Row>
                   <Row style={{ marginTop: 10, marginLeft: -10 }} >
                     <CheckBox checked={this.state.doctorRecommended} color="green" onPress={() => this.setState({ doctorRecommended: !this.state.doctorRecommended })} ></CheckBox>
                     <Text style={{ marginLeft: 20 }}>Do you recommend this doctor</Text>
+                  </Row> */}
+                  <Row style={{ marginTop: 20, marginLeft: -10 }}>
+                    <Checkbox status={this.state.isAnonymous ? 'checked' : 'unchecked'} color="green" onPress={() => this.setState({ isAnonymous: !this.state.isAnonymous })} />
+                    <Text style={{ marginLeft: 5, marginTop: 7 }}>Would you like to give as Anonymous</Text>
+                  </Row>
+                  <Row style={{ marginTop: 10, marginLeft: -10 }} >
+                    <Checkbox status={this.state.doctorRecommended ? 'checked' : 'unchecked'} color="green" onPress={() => this.setState({ doctorRecommended: !this.state.doctorRecommended })} />
+                    <Text style={{ marginLeft: 5, marginTop: 7 }}>Do you recommend this doctor</Text>
                   </Row>
 
                   <Text style={{ fontSize: 16, marginTop: 20 }}>
