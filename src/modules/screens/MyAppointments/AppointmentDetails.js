@@ -77,8 +77,7 @@ class AppointmentDetails extends Component {
 
       let fields = 'first_name,last_name,prefix,education,specialist,email,mobile_no,experience,hospital,language,professional_statement,fee,profile_image';
       let resultDetails = await bindDoctorDetails(this.state.doctorId, fields);
-      console.log('getdoctorDetails');
-      console.log(resultDetails.data)
+     
       if (resultDetails.success) {
 
         await this.setState({ doctorData: resultDetails.data });
@@ -280,7 +279,7 @@ class AppointmentDetails extends Component {
                   <Col style={{ backgroundColor: 'transparent', borderRightWidth: 0.5, borderRightColor: 'gray', justifyContent: 'center' }}>
                     {doctorData.experience.isPrivate == true ?
                       <Text style={styles.topValue}>  N/A </Text> :
-                      <Text style={styles.topValue}> {doctorData.calulatedExperience.year != undefined && doctorData.calulatedExperience.year != 0 ? doctorData.calulatedExperience.year + ' yrs' : 'N/A'} </Text>
+                      <Text style={styles.topValue}> {doctorData.calulatedExperience.year != 0 ? doctorData.calulatedExperience.year + ' yrs' : 'N/A'} </Text>
                       }
                     <Text note style={styles.bottomValue}> Experience</Text>
                   </Col>
