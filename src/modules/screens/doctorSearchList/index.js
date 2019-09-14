@@ -3,7 +3,7 @@ import { Container, Content, Text, Toast, Button,Spinner, Card, Item, List,  Lis
 import { login } from '../../providers/auth/auth.actions';
 import { Col, Row, Grid } from 'react-native-easy-grid';
 import { connect } from 'react-redux'
-import { StyleSheet, TouchableOpacity, View, FlatList, AsyncStorage,  Slider, ProgressViewIOS , Platform} from 'react-native';
+import { StyleSheet, TouchableOpacity, View, FlatList, AsyncStorage, Dimensions } from 'react-native';
 import StarRating from 'react-native-star-rating';
 
 import { insertDoctorsWishList, searchDoctorList, fetchAvailabilitySlots, 
@@ -408,7 +408,6 @@ class doctorSearchList extends Component {
                     type: SET_BOOK_APP_DOCTOR_DATA,
                     data: this.processedDoctorDetailsData
                 })
-                this.sortByTopRatings(this.processedDoctorDetailsData);
                 console.log(this.processedDoctorDetailsData);
                 this.setState({ doctorDetails: this.processedDoctorData, doctorData: this.processedDoctorDetailsData });
             }
@@ -525,16 +524,17 @@ class doctorSearchList extends Component {
         let { selectedSlotByDoctorIds , showedFee}  = this.state;
         let selectedSlotIndex = selectedSlotByDoctorIds[doctorIdHostpitalId] !== undefined ? selectedSlotByDoctorIds[doctorIdHostpitalId] : -1
         console.log('Selected slot index:' + selectedSlotIndex);
+        const {width} = Dimensions.get('screen');
+        const itemWidth = (width) / 4;
         return (
             <Row>
               {/* <Col style={{width:'8%'}}></Col> */}
-             
             <FlatList
               numColumns={4}
               data={slotsData}
               extraData={[this.state.selectedDatesByDoctorIds, this.state.selectedSlotByDoctorIds]}
               renderItem={({ item, index }) =>
-            <Col style={{width:'25%'}}>
+            <Col style={{width: itemWidth - 10 }}>
               <TouchableOpacity disabled={item.isSlotBooked} 
                     style={item.isSlotBooked ? styles.slotBookedBgColor : selectedSlotIndex === index ? 
                            styles.slotSelectedBgColor : styles.slotDefaultBgColor} 
@@ -830,12 +830,14 @@ class doctorSearchList extends Component {
         )
     }
     renderDatesOnFlatlist(slotData, selectedDate,doctorIdHostpitalId ) {
+      
         const reducer = (accumulator, currentValue) => { 
             if(!currentValue.isSlotBooked)
                return 1 + accumulator;
             else 
                return accumulator    
         }
+       
         return ( 
             
             <FlatList
