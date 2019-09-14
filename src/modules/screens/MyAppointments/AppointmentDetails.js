@@ -279,8 +279,9 @@ class AppointmentDetails extends Component {
                   </Col>
                   <Col style={{ backgroundColor: 'transparent', borderRightWidth: 0.5, borderRightColor: 'gray', justifyContent: 'center' }}>
                     {doctorData.experience.isPrivate == true ?
+                      <Text style={styles.topValue}>  N/A </Text> :
                       <Text style={styles.topValue}> {doctorData.calulatedExperience.year != undefined && doctorData.calulatedExperience.year != 0 ? doctorData.calulatedExperience.year + ' yrs' : 'N/A'} </Text>
-                      : <Text style={styles.topValue}>  N/A </Text>}
+                      }
                     <Text note style={styles.bottomValue}> Experience</Text>
                   </Col>
                   <Col style={{ backgroundColor: 'transparent', justifyContent: 'center', marginLeft: 'auto', marginRight: 'auto' }}>
