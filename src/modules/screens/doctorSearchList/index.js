@@ -719,7 +719,7 @@ class doctorSearchList extends Component {
                                                 </Col>
                                                 <Col style={{width:"25%",marginTop:20}}>
                                                     <Text note style={{ fontFamily: 'OpenSans',fontSize:12,marginLeft:5, }}> Fees</Text>
-                                                    <Text  style={{ fontFamily: 'OpenSans',fontSize:12,fontWeight:'bold',marginLeft:5 }}> {this.getFeesBySelectedSlot(item.slotData[selectedDatesByDoctorIds[item.doctorIdHostpitalId] || this.state.currentDate], item.slotData, item.doctorIdHostpitalId )}</Text>
+                                                    <Text  style={{ fontFamily: 'OpenSans',fontSize:12,fontWeight:'bold',marginLeft:5 }}>{'\u20B9'}{this.getFeesBySelectedSlot(item.slotData[selectedDatesByDoctorIds[item.doctorIdHostpitalId] || this.state.currentDate], item.slotData, item.doctorIdHostpitalId )}</Text>
                                                 </Col>
                                             </Row>
                                            
@@ -798,13 +798,15 @@ class doctorSearchList extends Component {
     }
     renderDatesOnFlatlist(slotData, selectedDate,doctorIdHostpitalId ) {
       
-        const reducer = (accumulator, currentValue) => { 
+        const reducer = (accumulator, currentValue, currentIndex, souceArray) => { 
             if(!currentValue.isSlotBooked)
                return 1 + accumulator;
+            else if(souceArray.length -1 === currentIndex) {
+                return accumulator == 0 ? 'No': accumulator; 
+            }
             else 
                return accumulator    
         }
-       
         return ( 
             
             <FlatList
