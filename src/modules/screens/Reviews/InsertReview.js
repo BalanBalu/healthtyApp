@@ -1,9 +1,10 @@
 import React, { Component } from 'react';
-import { StyleSheet, Image, TextInput, Dimensions, AsyncStorage } from 'react-native';
+
+import { StyleSheet, Image, TextInput, Dimensions, AsyncStorage, Modal } from 'react-native';
 import StarRating from 'react-native-star-rating';
 import {
   Container, Header, Title, Left, Right, Body, Button, Card, Toast, CardItem, Row, Grid, View,
-  Text, Thumbnail, Content, CheckBox
+  Text, Thumbnail, Content, CheckBox, Item
 } from 'native-base';
 //import {ScrollView} from 'react-native-gesture-handler';
 //import Icon from 'react-native-vector-icons/FontAwesome';
@@ -25,7 +26,8 @@ class InsertReview extends Component {
       data: '',
       doctorId: '',
       appointmentId: '',
-      isRefresh: 'false'
+      isRefresh: 'false',
+      ratingIndicatePopUp: false,
     }
   }
 
@@ -44,7 +46,7 @@ class InsertReview extends Component {
     let doctorId = reviewData.doctor_id;
     let appointmentId = reviewData._id;
     await this.setState({ userId: userId, doctorId: doctorId, appointmentId: appointmentId, data: reviewData });
-    
+
   }
 
   updateAppointmentStatus = async (data, updatedStatus) => {
@@ -61,7 +63,7 @@ class InsertReview extends Component {
 
       let userId = await AsyncStorage.getItem('userId');
       let result = await appointmentStatusUpdate(data.doctor_id, data._id, requestData);
-      
+
     } catch (e) {
       console.log(e);
     }
@@ -71,7 +73,7 @@ class InsertReview extends Component {
     try {
       let userId = this.state.data.user_id;
       let overallrating = (this.state.cleanness_rating + this.state.staff_rating + this.state.wait_time_rating) / 3;
-     
+
       if (this.state.comments != null) {
         let insertReviewData = {
           user_id: userId,
@@ -85,23 +87,24 @@ class InsertReview extends Component {
           comments: this.state.comments,
           is_doctor_recommended: this.state.doctorRecommended,
         };
-        
+
         let result = await addReview(userId, insertReviewData);
-       
+
 
         if (result.success) {
-          
+
           // this.state.data.appointment_status = 'COMPLETED';
           // await this.updateAppointmentStatus(this.state.data, 'COMPLETED')
-         
+
           this.props.navigation.pop();
-          
+
         }
       } else {
-        Toast.show({
-          text: 'Kindly add a comment for your Review',
-          duration: 3000
-        })
+        this.setState({ ratingIndicatePopUp: true })
+        // Toast.show({
+        //   text: 'Kindly add a comment for your Review',
+        //   duration: 3000
+        // })
       }
     }
     catch (e) {
@@ -134,7 +137,7 @@ class InsertReview extends Component {
             <Card>
               <CardItem style={styles.text}>
                 <Body>
-                  <Text > How was your visit with {(data && data.prefix != undefined ? data && data.prefix:'') + (data && data.doctorInfo.first_name) + " " + (data && data.doctorInfo.last_name)} ? help other patients by leaving a Review </Text>
+                  <Text > How was your visit with {(data && data.prefix != undefined ? data && data.prefix : '') + (data && data.doctorInfo.first_name) + " " + (data && data.doctorInfo.last_name)} ? help other patients by leaving a Review </Text>
                 </Body>
               </CardItem>
               <CardItem>
@@ -143,7 +146,7 @@ class InsertReview extends Component {
                     <Text style={{ fontWeight: "bold" }}>
                       {formatDate(data.appointment_starttime, 'MMMM-DD-YYYY') + "   " +
                         formatDate(data[0] && data[0].appointment_starttime, 'hh:mm A')}
-                    </Text> with {(data && data.prefix != undefined ? data && data.prefix :'') + (data && data.doctorInfo.first_name) + " " + (data && data.doctorInfo.last_name)}</Text>
+                    </Text> with {(data && data.prefix != undefined ? data && data.prefix : '') + (data && data.doctorInfo.first_name) + " " + (data && data.doctorInfo.last_name)}</Text>
                   <Row style={{ marginTop: 20 }}>
                     <Text style={{ fontSize: 16 }}>Cleanliness</Text>
                     <StarRating fullStarColor='#FF9500' starSize={20} containerStyle={{ width: 110, marginLeft: 50 }}
@@ -206,6 +209,41 @@ class InsertReview extends Component {
                     </Right></Row>
 
                 </Body>
+                <Modal
+                  visible={this.state.ratingIndicatePopUp}
+                  transparent={true}
+                  animationType={'fade'}
+                >
+                  <View style={{
+                    flex: 1,
+                    flexDirection: 'column',
+                    justifyContent: 'center',
+                    alignItems: 'center',
+                    backgroundColor: 'rgba(0,0,0,0.5)'
+                  }}>
+                    <View style={{
+                      width: '100%',
+                      // Dimensions.get('screen').width,
+                      height: '25%', backgroundColor: '#fff',
+                      borderColor: 'gray',
+                      borderWidth: 3,
+                      padding: 10,
+                      borderRadius: 5
+                    }}>
+
+                      {/* <Item regular rounded style={{ borderColor: '#000', borderWidth: 2, marginTop: 20 }}> */}
+                      <Text> Kindly give rating for your Review   </Text>
+                      {/* </Item> */}
+                      <Row style={{ marginTop: 10 }}>
+                        <Left style={{ marginLeft: 15 }} >
+                          <Button block success style={{ marginTop: 15, borderRadius: 5, width: 50 }} onPress={() => this.setState({ ratingIndicatePopUp: false })} testID='okButton'>
+                            <Text style={{ fontFamily: 'OpenSans' }}> Ok</Text>
+                          </Button>
+                        </Left></Row>
+                    </View>
+
+                  </View>
+                </Modal>
 
               </CardItem>
             </Card>

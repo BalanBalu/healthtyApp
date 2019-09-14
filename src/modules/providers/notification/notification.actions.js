@@ -54,11 +54,11 @@ export function setnotification(notificationData) {
 export const fetchUserMarkedAsReadedNotification = async (userId) => {
     try {
 
-        let endPoint = '/notifications/' + userId ;
+        let endPoint = '/notifications/' + userId+'?mark_as_readed=false'
 
         let response = await getService(endPoint);
         let respData = response.data;
-        
+       
         store.dispatch({
             type: NOTIFICATION_REQUEST,
             message: respData.message
@@ -71,7 +71,7 @@ export const fetchUserMarkedAsReadedNotification = async (userId) => {
 
         } else {
             let count = respData.data.length
-            console.log('notificationCount'+count)
+            
             let notificationIds = respData.data.map(element => {
                 return element._id;
        }).join(',')

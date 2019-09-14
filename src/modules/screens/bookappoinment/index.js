@@ -13,6 +13,7 @@ import {  fetchAvailabilitySlots,
           getDoctorFaviouteList , 
           getPatientWishList ,
           getDoctorsReviewsCount,
+          addToWishListDoctor,
           getMultipleDoctorDetails
         } from '../../providers/bookappointment/bookappointment.action';
 import moment from 'moment';
@@ -58,7 +59,6 @@ class BookAppoinment extends Component {
  
 
   async componentDidMount() {
-
     const { navigation } = this.props;
     const availabilitySlots = navigation.getParam('fetchAvailabiltySlots') || false;
     this.setState({ isLoading: true });
@@ -95,6 +95,8 @@ class BookAppoinment extends Component {
     }
     this.setState({ isLoading: false, slotDatesToShow : this.slotDatesToShow });
   }
+  
+   
  
  
   /*FromAppointment list(Get availability slots)*/
@@ -169,7 +171,7 @@ enumarateDates(startDate, endDate) {
   noAvailableSlots() {    
     return (
       <View style={{alignItems:'center'}}>
-         <Text style={{ fontSize:15,borderColor:'gray',borderRadius:5,alignItems:'center'}} >No slots are available </Text>
+         <Text style={{ marginTop: 10, fontSize:15,borderColor:'gray',borderRadius:5,alignItems:'center'}} >No slots available </Text>
       </View>
     )
   }
@@ -202,42 +204,15 @@ enumarateDates(startDate, endDate) {
 
 addToWishList = async (doctorId) => {
   try {
-    const { bookappointment: { patientWishListsDoctorIds, favouriteListCountByDoctorIds } } = this.props;
-     console.log(patientWishListsDoctorIds);
-    let requestData = {
-       active: !patientWishListsDoctorIds.includes(doctorId)
-    };
-    let userId = await AsyncStorage.getItem('userId');
-    if(userId) {
-      let result = await insertDoctorsWishList(userId, doctorId, requestData);
-      if (result.success) {
-          Toast.show({
-              text: result.message,
-              type: "success",
-              duration: 3000,
-          })
-          if(requestData.active) {
-            if(favouriteListCountByDoctorIds[doctorId]) {
-                  favouriteListCountByDoctorIds[doctorId] = favouriteListCountByDoctorIds[doctorId] + 1;
-            }
-            patientWishListsDoctorIds.push(doctorId)
-          } else {
-              if(favouriteListCountByDoctorIds[doctorId]) {
-                favouriteListCountByDoctorIds[doctorId] = favouriteListCountByDoctorIds[doctorId] - 1;
-              }
-              let indexOfDoctorIdOnPatientWishList = patientWishListsDoctorIds.indexOf(doctorId);
-              patientWishListsDoctorIds.splice(indexOfDoctorIdOnPatientWishList, 1);
-          }
-          store.dispatch({
-            type: SET_PATIENT_WISH_LIST_DOC_IDS,
-            data: patientWishListsDoctorIds
-          })
-          store.dispatch({
-            type: SET_FAVORITE_DOCTOR_COUNT_BY_IDS,
-            data: favouriteListCountByDoctorIds
-         })
-      }
-   }
+       let userId = await AsyncStorage.getItem('userId');
+       let result = await addToWishListDoctor(doctorId, userId);
+       if(result)
+        Toast.show({
+            text: result.message,
+            type: "success",
+            duration: 3000,
+        })
+        this.setState( { refreshCount : this.state.refreshCount + 1});
 }
   catch (e) {
       console.log(e);
@@ -515,14 +490,15 @@ onPressContinueForPaymentReview(doctorData, selectedSlotItem) {
            </Row>
              <Row style={{marginTop:5}}>
                <Col style={{width:'40%'}}>
-                 <Text style={{color:'#000',fontSize:12,fontFamily:'OpenSans'}}>{ selectedSlotItem ? formatDate(selectedSlotItem.slotStartDateAndTime, 'ddd DD MMM, h:mm a') : null }</Text>
+                 <Text style={{ marginTop: 2, marginBottom: 2, color:'#000',fontSize:12,fontFamily:'OpenSans'}}>{ selectedSlotItem ? formatDate(selectedSlotItem.slotStartDateAndTime, 'ddd DD MMM, h:mm a') : null }</Text>
                </Col>
               <Col style={{width:'35%'}}></Col>
               <Col style={{width:'25%'}}>
-                  <TouchableOpacity onPress={() => { console.log('......Pressing....'); this.onPressContinueForPaymentReview(doctorData, selectedSlotItem) }}
+                {/* <TouchableOpacity onPress={() => { console.log('......Pressing....'); this.onPressContinueForPaymentReview(doctorData, selectedSlotItem) }}
                       style={{backgroundColor:'green', borderColor: '#000', marginTop:10, height: 30, borderRadius: 20,justifyContent:'center', marginLeft:5,marginRight:5,marginTop:-5 }}>
                       <Text style={{color:'#fff',fontSize:12,fontWeight:'bold',fontFamily:'OpenSans', justifyContent: 'center', alignItems : 'center', marginLeft:'35%', marginTop:-5, marginBottom : -5 }}>Book</Text>
-                 </TouchableOpacity> 
+                 </TouchableOpacity>  
+                */}
               </Col>
            </Row>
         </View>

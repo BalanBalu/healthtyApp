@@ -126,13 +126,13 @@ class Home extends Component {
                 type: 'symptoms',
                 value: [this.state.searchValue]
             },
-            {
+           /* {
                 type: 'geo',
                 value: {
                     coordinates : this.state.locationCordinates,
                     maxDistance: 30
                 }
-            }
+            } */
         ]
             if (this.state.searchValue == null) {
                 alert("We can't Find the Empty Values");

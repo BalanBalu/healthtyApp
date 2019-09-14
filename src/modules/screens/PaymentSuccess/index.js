@@ -25,6 +25,19 @@ class PaymentSuccess extends Component {
         await this.setState({ successBookSlotDetails: successBookSlotDetails });
         console.log('successBookSlotDetails' + JSON.stringify(this.state.successBookSlotDetails))
     }
+    renderHospitalLocation(hospitalAddress) {
+         
+        return (
+            <Row style={styles.rowDetail}>
+               <Text style={{textAlign:'center',fontFamily:'OpenSans',fontSize:16}}>Address</Text>
+                    <Right>
+                        <Text style={{textAlign:'center',fontFamily:'OpenSans',fontSize:16,color:'#545454'}}>{hospitalAddress.name}</Text>
+                         <Text style={{textAlign:'center',fontFamily:'OpenSans',fontSize:14,color:'#7B7B7B',fontStyle: 'italic'}}>{hospitalAddress.location.address.no_and_street}, {hospitalAddress.location.address.city}</Text>
+                         <Text style={{textAlign:'center',fontFamily:'OpenSans',fontSize:14,color:'#7B7B7B',fontStyle: 'italic'}}>{hospitalAddress.location.address.state}, {hospitalAddress.location.address.pin_code}</Text>
+                    </Right>
+                </Row>
+         )
+    }
     render() {
         const { navigation } = this.props;
         const { successBookSlotDetails } = this.state;
@@ -49,7 +62,7 @@ class PaymentSuccess extends Component {
                                      </Col>
                                      <Col style={{width:'75%',marginTop:10}}>
                                          <Row>
-                                         <Text style={styles.docHeading}>S.Marry Jain </Text>
+                                         <Text style={styles.docHeading}> {successBookSlotDetails.prefix ? successBookSlotDetails.prefix : ''} {successBookSlotDetails.doctorName} </Text>
                                          <Text style={styles.Degree}>(M.B.B.S)</Text>
                                          </Row>
                                          <Row style={{marginTop:-12}}>
@@ -58,41 +71,15 @@ class PaymentSuccess extends Component {
                                          </Row>
                                      </Col>
                              </Row>
-                             <Row style={{marginTop:10,marginLeft:10,marginRight:10}}>
-                                   
-                                    <Text style={{textAlign:'center',fontFamily:'OpenSans',fontSize:16,}}>Date and Time</Text>
-                                     
-                                         <Right>
-                                         <Text style={{fontFamily:'OpenSans',fontSize:16,color:'#545454'}}>02nd Sept, 2019 </Text>
-                                         <Text style={{fontFamily:'OpenSans',fontSize:14,color:'#7B7B7B',fontStyle: 'italic'}}>04.03 PM</Text>
-                                         </Right>
-                                         
-                                    
-
-                                  
-
-                                   
-                             </Row>
-                             <Row style={styles.rowDetail}>
-                                  
-                                    <Text style={{textAlign:'center',fontFamily:'OpenSans',fontSize:16}}>Address</Text>
-                                 
-                                     
-                                         <Right>
-                                         <Text style={{textAlign:'center',fontFamily:'OpenSans',fontSize:16,color:'#545454'}}>Apollo Hospitals </Text>
-                                     <Text style={{textAlign:'center',fontFamily:'OpenSans',fontSize:14,color:'#7B7B7B',fontStyle: 'italic'}}>Jubilee Hills, Hyderabad</Text>
-                                     <Text style={{textAlign:'center',fontFamily:'OpenSans',fontSize:14,color:'#7B7B7B',fontStyle: 'italic'}}>Telungana, 290000</Text>
-                                         </Right>
-                                     
-
-                                    
-                             </Row>
+                             {successBookSlotDetails.slotData ? this.renderHospitalLocation(successBookSlotDetails.slotData.location) : null}
+                            
+                             
                              <Row style={styles.rowDetail}>                           
                                  
                                     <Text style={{textAlign:'center',fontFamily:'OpenSans',fontSize:16,}}>Doctor Fee</Text>
                                  
                                          <Right>
-                                         <Text style={{textAlign:'center',fontFamily:'OpenSans',fontSize:16,color:'#545454'}}>Rs.150 </Text>
+                                         <Text style={{textAlign:'center',fontFamily:'OpenSans',fontSize:16,color:'#545454'}}>{'\u20B9'}{successBookSlotDetails.slotData.fee} </Text>
 
                                          </Right>
                                    
@@ -108,7 +95,11 @@ class PaymentSuccess extends Component {
                                   
                              </Row>
                           </Card>
-                        <Button block style={{ marginTop: 15, borderRadius: 10, marginBottom: 10,backgroundColor:'#5bb85d' }}><Text style={styles.customizedText}> Home </Text></Button>
+                            <Button onPress={() => navigation.navigate('Home')}
+                                block style={{ marginTop: 15, borderRadius: 10, marginBottom: 10,backgroundColor:'#5bb85d' }}>
+                                 <Text style={styles.customizedText}> Home </Text>
+                            </Button>
+                            
                         </Content>
                 </ScrollView>
             </Container>
