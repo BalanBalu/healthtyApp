@@ -65,8 +65,12 @@ class PaymentPage extends Component {
         
         if(userBasicData !== null) {
            this.userBasicData = JSON.parse(userBasicData);
-           this.userBasicData.email ? this.userBasicData.email : BASIC_DEFAULT.email 
-           this.userBasicData.mobile_no ? this.userBasicData.mobile_no : BASIC_DEFAULT.mobile_no 
+           if(!this.userBasicData.email) {
+               this.userBasicData.email = BASIC_DEFAULT.email 
+           }
+           if(!this.userBasicData.mobile_no) {
+              this.userBasicData.mobile_no = BASIC_DEFAULT.mobile_no 
+           }
         } else {
             this.userBasicData = BASIC_DEFAULT
         }

@@ -411,6 +411,12 @@ const ProfileStack = createStackNavigator({
       title: 'Update Address'
     }
   },
+  "Book Appointment": {
+    screen: BookAppoinment,
+    navigationOptions: {
+      title: 'Book Appointment'
+    }
+  },
 },
   {
     defaultNavigationOptions: ({ navigation }) => ({

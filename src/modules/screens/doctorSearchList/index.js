@@ -45,7 +45,6 @@ class doctorSearchList extends Component {
 
             this.state = {
                 selectedSlotItemByDoctorIds: {},
-                doctorDetails: [],
                 selectedDate: formatDate(new Date(), 'YYYY-MM-DD'),
                 currentDate: formatDate(new Date(), 'YYYY-MM-DD'),
                 doctorData: [],
@@ -53,6 +52,7 @@ class doctorSearchList extends Component {
                 getSearchedDoctorIds: null,
                 nextAvailableSlotDate: '',
                 isLoading: true,
+                isAvailabilityLoading: false,
                 filterBySelectedAvailabilityDateCount: 0,
                 filterData : null,
                 yearOfExperience: '',
@@ -71,24 +71,21 @@ class doctorSearchList extends Component {
     navigateToFilters() {
         this.props.navigation.navigate('Filters', { 
             doctorData: this.state.doctorData, 
-            doctorDetailsWitSlots: this.state.doctorDetails,  
+            doctorDetailsWitSlots: this.state.doctorData,  
             filterData : this.state.filterData,
             filterBySelectedAvailabilityDateCount: this.state.filterBySelectedAvailabilityDateCount
         })
     }
     componentDidMount = async () => {
-        store.dispatch({
-            type: SET_SELECTED_DATE,
-            data: this.state.selectedDate
-        });
         let userId = await AsyncStorage.getItem('userId');
+        this.getPatientSearchData();
         if(userId) {
-           this.setState({ isLoggedIn : true })
            this.getPatientWishLists();
+           this.setState({ isLoggedIn : true })
         } else {
             this.setState({ isLoggedIn : false }) 
         }
-        this.getPatientSearchData();
+       
         
     }
     componentNavigationMount = async () => {
@@ -246,7 +243,7 @@ class doctorSearchList extends Component {
                   patientWishListsDoctorIds.push(doctorId)
                 } else {
                     if(favouriteListCountByDoctorIds[doctorId]) {
-                      favouriteListCountByDoctorIds[doctorId] = favouriteListCountByDoctorIds[doctorId] - 1;
+                        favouriteListCountByDoctorIds[doctorId] = favouriteListCountByDoctorIds[doctorId] - 1;
                     }
                     let indexOfDoctorIdOnPatientWishList = patientWishListsDoctorIds.indexOf(doctorId);
                     patientWishListsDoctorIds.splice(indexOfDoctorIdOnPatientWishList, 1);
@@ -310,27 +307,64 @@ class doctorSearchList extends Component {
             this.setState({ isLoading: false })
         }
     }
+    processFinalData(resultData) {
+         
+        for (let docCount = 0; docCount < resultData.length; docCount++) {
+            let doctorSlotData = resultData[docCount];
+            if (this.processedDoctorIds.includes(doctorSlotData.doctorIdHostpitalId)) { // condition to append another week conditions
+                let index = this.processedDoctorIds.indexOf(doctorSlotData.doctorIdHostpitalId);
+                //let processedSlotData = this.processedDoctorData[index].slotData;
+                for (var key in doctorSlotData.slotData) {
+                    if (this.processedDoctorDetailsData[index].slotData[key] === undefined) {
+                        this.processedDoctorDetailsData[index].slotData[key] = doctorSlotData.slotData[key]
+                    }
+                }
+            } else {
+                this.processedDoctorIds.push(doctorSlotData.doctorIdHostpitalId);
+                let doctorDetailsData = this.doctorDetailsMap.get(doctorSlotData.doctorId)
+                let obj = {
+                    ...doctorDetailsData,
+                    doctorIdHostpitalId: doctorSlotData.doctorIdHostpitalId,
+                    slotData: doctorSlotData.slotData,
+                    location: doctorSlotData.slotData[Object.keys(doctorSlotData.slotData)[0]].length > 0 ?  doctorSlotData.slotData[Object.keys(doctorSlotData.slotData)[0]][0].location : null,
+                }
+                this.processedDoctorDetailsData.push(obj);
+            }
+    }
+        store.dispatch({
+            type: SET_BOOK_APP_DOCTOR_DATA,
+            data: this.processedDoctorDetailsData
+        })
+        store.dispatch({
+            type: SET_FILTERED_DOCTOR_DATA,
+            data: this.processedDoctorDetailsData
+        })
+        console.log(this.processedDoctorDetailsData);
+        this.setState( { refreshCount : this.state.refreshCount  +1 });
+        return this.processedDoctorDetailsData;
+        //this.setState({ doctorData: this.processedDoctorDetailsData });
    
+    }
     async getDoctorAllDetails(doctorIds, startDate, endDate) {
         try {
-
             this.setState({ isLoading: true });
-            await this.getDoctorDetails(doctorIds).catch(res => console.log("Exception on  getDoctorDetails: " + res));
-            await this.getPatientReviews(doctorIds).catch(res => console.log("Exception on getPatientReviews" + res));
+             
+            const [ resultDoctorDetails, slotData, patientReviesResult, favResult ] =  await Promise.all([
+                this.getDoctorDetails(doctorIds).catch(res => console.log("Exception on  getDoctorDetails: " + res)),
+                this.getAvailabilitySlots(doctorIds, startDate, endDate).catch(res => console.log("Exception" + res)),
+                getDoctorsReviewsCount(doctorIds).catch(res => console.log("Exception on getPatientReviews" + res)),
+                getDoctorFaviouteList(doctorIds).catch(res => console.log("Exception on getPatient Wish List" + res))
+            ]);
+            resultDoctorDetails.forEach((element) => {
+                this.doctorDetailsMap.set(element.doctor_id, element) // total_rating
+            });
             
-            await this.getAvailabilitySlots(doctorIds, startDate, endDate).catch(res => console.log("Exception" + res));
-
-            this.getDoctorFaviouteList(doctorIds).catch(res => console.log("Exception on getPatient Wish List" + res));
-            let doctorData = this.state.doctorData;
-            
-            
+            let doctorData = this.processFinalData(slotData);
+           
+            this.setState( { refreshCount : this.state.refreshCount  + 1 });
             doctorData.forEach((element) => {
                 doctorDataInMap.set(String(element.doctorIdHostpitalId), element) 
             });
-            /*store.dispatch({
-                type: SET_FILTERED_DOCTOR_DATA,
-                data: doctorData
-            }) */
         } catch (error) {
             console.log('exception on getting multiple Requests');
             console.log(error)
@@ -343,13 +377,12 @@ class doctorSearchList extends Component {
 
     getDoctorDetails = async (doctorIds) => {
         try {
-
+            let doctorData = [];
             let resultDoctorDetails = await getMultipleDoctorDetails(doctorIds, fields);
             console.log(resultDoctorDetails);
             if (resultDoctorDetails.success) {
-                resultDoctorDetails.data.forEach((element) => {
-                    this.doctorDetailsMap.set(element.doctor_id, element) // total_rating
-                })
+                doctorData = resultDoctorDetails.data;
+                return doctorData;
             }
             console.log('finished loading get Doctor Details');
 
@@ -357,12 +390,22 @@ class doctorSearchList extends Component {
             console.log(ex);
             console.log('Exception occured on getMultplieDocDetail')
         }
+        return doctorData;
     }
+
+   async callGetAvailabilitySlot(getSearchedDoctorIds, startDate, endDate) {
+    this.setState({ isAvailabilityLoading: true });
+        let result = await this.getAvailabilitySlots(getSearchedDoctorIds, startDate, endDate);
+       this.processFinalData(result);
+       this.setState({ isAvailabilityLoading: false });
+   
+    }    
 
     /* get the  Doctors Availability Slots */
     getAvailabilitySlots = async (getSearchedDoctorIds, startDate, endDate) => {
         console.log('started loading get availability');
-        this.setState({ isAvailabilityLoading: true });
+      
+        let availabilityData = [];
         this.enumarateDates(startDate, endDate)
         try {
             let totalSlotsInWeek = {
@@ -370,54 +413,17 @@ class doctorSearchList extends Component {
                 endDate: formatDate(endDate, 'YYYY-MM-DD')
             }
             let resultData = await fetchAvailabilitySlots(getSearchedDoctorIds, totalSlotsInWeek);
+           
             if (resultData.success) {
-                // console.log(resultData.data);
-
-                for (let docCount = 0; docCount < resultData.data.length; docCount++) {
-                    let doctorSlotData = resultData.data[docCount];
-                    if (this.processedDoctorIds.includes(doctorSlotData.doctorIdHostpitalId)) { // condition to append another week conditions
-                        let index = this.processedDoctorIds.indexOf(doctorSlotData.doctorIdHostpitalId);
-                        //let processedSlotData = this.processedDoctorData[index].slotData;
-                        for (var key in doctorSlotData.slotData) {
-                            if (this.processedDoctorData[index].slotData[key] === undefined) {
-                                this.processedDoctorData[index].slotData[key] = doctorSlotData.slotData[key]
-                            }
-                            if (this.processedDoctorDetailsData[index].slotData[key] === undefined) {
-                                this.processedDoctorDetailsData[index].slotData[key] = doctorSlotData.slotData[key]
-                            }
-                        }
-                    } else {
-                        this.processedDoctorData.push(doctorSlotData);
-                        this.processedDoctorIds.push(doctorSlotData.doctorIdHostpitalId);
-                        let doctorDetailsData = this.doctorDetailsMap.get(doctorSlotData.doctorId)
-                        let obj = {
-                            ...doctorDetailsData,
-                            doctorIdHostpitalId: doctorSlotData.doctorIdHostpitalId,
-                            slotData: doctorSlotData.slotData,
-                            location: doctorSlotData.slotData[Object.keys(doctorSlotData.slotData)[0]].length > 0 ?  doctorSlotData.slotData[Object.keys(doctorSlotData.slotData)[0]][0].location : null,
-                        }
-                        this.processedDoctorDetailsData.push(obj);
-                    }
-            }
-                store.dispatch({
-                    type: SET_BOOK_APP_SLOT_DATA,
-                    data: this.processedDoctorData
-                })
-                
-                store.dispatch({
-                    type: SET_BOOK_APP_DOCTOR_DATA,
-                    data: this.processedDoctorDetailsData
-                })
-                console.log(this.processedDoctorDetailsData);
-                this.setState({ doctorDetails: this.processedDoctorData, doctorData: this.processedDoctorDetailsData });
+                availabilityData = resultData.data
+                return availabilityData
             }
         } catch (e) {
-            this.setState({ doctorDetails: [] });
             console.log(e);
         }
-        finally {
-            this.setState({ isAvailabilityLoading: false });
-        }
+       
+        return availabilityData;
+        
     }
    async enumarateDates(startDate, endDate) {
         let now = startDate.clone();
@@ -425,7 +431,7 @@ class doctorSearchList extends Component {
             this.processedDoctorAvailabilityDates.push(now.format('YYYY-MM-DD'));
             now = now.add(1, 'day');
         }
-        await this.setState({ processedDoctorAvailabilityDates : this.processedDoctorAvailabilityDates });
+        this.setState({ processedDoctorAvailabilityDates : this.processedDoctorAvailabilityDates });
         console.log('Process Dates are ' + this.state.processedDoctorAvailabilityDates);
        
     }
@@ -443,7 +449,9 @@ class doctorSearchList extends Component {
        
         if (this.processedDoctorAvailabilityDates.includes(selectedDate) === false) {
            let endDateMoment = addMoment(getMoment(selectedDate), 7, 'days');
-           this.getAvailabilitySlots(this.state.getSearchedDoctorIds, getMoment(selectedDate), endDateMoment);
+           
+           this.callGetAvailabilitySlot(this.state.getSearchedDoctorIds, getMoment(selectedDate), endDateMoment);
+           
         }
         console.log('ended loading the onDateChanged')
     }
@@ -495,13 +503,9 @@ class doctorSearchList extends Component {
         console.log( item);
     }
     
-    getPatientReviews = async (doctorIds) => {
-       console.log('coming to get review Count ');
-        getDoctorsReviewsCount(doctorIds);
-    }
-    getDoctorFaviouteList = async (doctorIds) => {
-       getDoctorFaviouteList(doctorIds);
-    }
+   
+     
+    
 
     navigateToBookAppointmentPage(doctorData) {
        
@@ -633,7 +637,7 @@ class doctorSearchList extends Component {
     
     render() {
        
-        const { bookappointment: {  doctorData, patientWishListsDoctorIds, favouriteListCountByDoctorIds, reviewsByDoctorIds, filteredDoctorData } } = this.props;
+        const { bookappointment: { patientWishListsDoctorIds, favouriteListCountByDoctorIds, reviewsByDoctorIds, filteredDoctorData } } = this.props;
         const { selectedDatesByDoctorIds, expandedDoctorIdHospitalsToShowSlotsData, isLoggedIn, selectedSlotItemByDoctorIds, 
             processedDoctorAvailabilityDates,
              isLoading, isAvailabilityLoading
@@ -743,8 +747,8 @@ class doctorSearchList extends Component {
                                         </Col>
                                                 <Col style={{width:"25%",marginTop:20}}>
                                                 
-                                                <Text note style={{ fontFamily: 'OpenSans',fontSize:12,marginLeft:5 ,}}> Favourite</Text>
-                                                <Text style={{ fontFamily: 'OpenSans',fontSize:12,marginLeft:5,fontWeight:'bold' }}> { favouriteListCountByDoctorIds[item.doctor_id] ? favouriteListCountByDoctorIds[item.doctor_id] : 0 }</Text>
+                                                <Text note style={{ fontFamily: 'OpenSans',fontSize:12,marginLeft:5 }}> Favourite</Text>
+                                                <Text style={{ fontFamily: 'OpenSans',fontSize:12,marginLeft:5,fontWeight:'bold' }}> {favouriteListCountByDoctorIds[item.doctor_id] !== undefined ? favouriteListCountByDoctorIds[item.doctor_id] : ' emty' }</Text>
 
 
                                                 </Col>
@@ -782,8 +786,6 @@ class doctorSearchList extends Component {
                                                 <Row style={{marginTop:10}}>
                                                 <Text style={{fontSize:13,fontFamily:'OpenSans'}}>Select appoinment date and time</Text>
                                             </Row>
-                                            {isAvailabilityLoading && !isLoading ? <Spinner/> : null}      
-                                             {/* <Spinner visible={isAvailabilityLoading && !isLoading}/>      */}
                                               {this.renderDatesOnFlatlist(item.slotData, selectedDatesByDoctorIds[item.doctorIdHostpitalId] || this.state.currentDate, item.doctorIdHostpitalId)}
                                               {  
                                                  item.slotData[selectedDatesByDoctorIds[item.doctorIdHostpitalId] || this.state.currentDate] !== undefined ?
@@ -850,8 +852,9 @@ class doctorSearchList extends Component {
                 let lastProcessedDate = this.processedDoctorAvailabilityDates[endIndex - 1];
                 let startMoment = getMoment(lastProcessedDate).add(1,'day');
                 let endDateMoment = addMoment(lastProcessedDate, 7, 'days')
-                if(this.state.isAvailabilityLoading === false)
-                    this.getAvailabilitySlots(this.state.getSearchedDoctorIds,startMoment, endDateMoment)
+                if(this.state.isAvailabilityLoading === false) { 
+                   this.callGetAvailabilitySlot(this.state.getSearchedDoctorIds,startMoment, endDateMoment);
+                }
             }}
             renderItem={({ item }) => 
             <Col style={{ width:100, justifyContent: 'center' }}>

@@ -169,7 +169,7 @@ enumarateDates(startDate, endDate) {
   noAvailableSlots() {    
     return (
       <View style={{alignItems:'center'}}>
-         <Text style={{ fontSize:15,borderColor:'gray',borderRadius:5,alignItems:'center'}} >No slots are available </Text>
+         <Text style={{ marginTop: 10, fontSize:15,borderColor:'gray',borderRadius:5,alignItems:'center'}} >No slots available </Text>
       </View>
     )
   }
@@ -515,14 +515,15 @@ onPressContinueForPaymentReview(doctorData, selectedSlotItem) {
            </Row>
              <Row style={{marginTop:5}}>
                <Col style={{width:'40%'}}>
-                 <Text style={{color:'#000',fontSize:12,fontFamily:'OpenSans'}}>{ selectedSlotItem ? formatDate(selectedSlotItem.slotStartDateAndTime, 'ddd DD MMM, h:mm a') : null }</Text>
+                 <Text style={{ marginTop: 2, marginBottom: 2, color:'#000',fontSize:12,fontFamily:'OpenSans'}}>{ selectedSlotItem ? formatDate(selectedSlotItem.slotStartDateAndTime, 'ddd DD MMM, h:mm a') : null }</Text>
                </Col>
               <Col style={{width:'35%'}}></Col>
               <Col style={{width:'25%'}}>
-                  <TouchableOpacity onPress={() => { console.log('......Pressing....'); this.onPressContinueForPaymentReview(doctorData, selectedSlotItem) }}
+                {/* <TouchableOpacity onPress={() => { console.log('......Pressing....'); this.onPressContinueForPaymentReview(doctorData, selectedSlotItem) }}
                       style={{backgroundColor:'green', borderColor: '#000', marginTop:10, height: 30, borderRadius: 20,justifyContent:'center', marginLeft:5,marginRight:5,marginTop:-5 }}>
                       <Text style={{color:'#fff',fontSize:12,fontWeight:'bold',fontFamily:'OpenSans', justifyContent: 'center', alignItems : 'center', marginLeft:'35%', marginTop:-5, marginBottom : -5 }}>Book</Text>
-                 </TouchableOpacity> 
+                 </TouchableOpacity>  
+                */}
               </Col>
            </Row>
         </View>

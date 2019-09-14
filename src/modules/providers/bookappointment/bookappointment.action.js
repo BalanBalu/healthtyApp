@@ -125,7 +125,7 @@ export async function viewUserReviews(type, id, limit) {
 export async function getDoctorsReviewsCount(doctorIds) {
   try {
     let endPoint = 'user/reviewsCount/' + doctorIds;
-    console.log('Exception on Review Count ');
+    
     let response = await getService(endPoint);
      
     let resultReview = response.data;
@@ -282,6 +282,7 @@ export const getPatientWishList = async (userId) => {
       result.data.forEach(element => {
           wishListDoctorsIds.push(element.doctorInfo.doctor_id)
       })
+      console.log(wishListDoctorsIds);
       store.dispatch({
           type: SET_PATIENT_WISH_LIST_DOC_IDS,
           data: wishListDoctorsIds
@@ -305,14 +306,17 @@ export const getDoctorFaviouteList = async (doctorId) => {
     let resultFavList = response.data;
         favouriteListCountByDoctorIds = {};  
         if (resultFavList.success) {
+           
              for (i = 0; i < resultFavList.data.length; i++) {
                  doctorId = resultFavList.data[i].wishList.doctor_id;
+                
                  if(favouriteListCountByDoctorIds[doctorId]) {
                     favouriteListCountByDoctorIds[doctorId] = favouriteListCountByDoctorIds[doctorId] + 1
                  } else {
                     favouriteListCountByDoctorIds[doctorId] = 1;
                  }
              }
+             console.log(favouriteListCountByDoctorIds);
              store.dispatch({
                 type: SET_FAVORITE_DOCTOR_COUNT_BY_IDS,
                 data: favouriteListCountByDoctorIds
