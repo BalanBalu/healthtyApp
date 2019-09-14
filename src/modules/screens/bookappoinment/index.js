@@ -596,12 +596,15 @@ onPressContinueForPaymentReview(doctorData, selectedSlotItem) {
       return hopitalLocationData ? <HospitalLocation number={doctorIdHospitalId} hopitalLocationData={hopitalLocationData} /> : null 
   }
   renderDatesOnFlatlist(slotData, selectedDate ) {
-    const reducer = (accumulator, currentValue) => { 
+    const reducer = (accumulator, currentValue, currentIndex, souceArray) => { 
       if(!currentValue.isSlotBooked)
          return 1 + accumulator;
+      else if(souceArray.length -1 === currentIndex) {
+          return accumulator == 0 ? 'No': accumulator; 
+      }
       else 
          return accumulator    
-     }
+    }
     return ( 
         <FlatList
         horizontal={true}

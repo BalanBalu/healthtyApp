@@ -15,7 +15,9 @@ class PaymentSuccess extends Component {
         super(props)
 
         this.state = {
-            successBookSlotDetails: {},
+            successBookSlotDetails: {
+               
+            }
         }
     }
 
@@ -58,7 +60,7 @@ class PaymentSuccess extends Component {
                          
                           <Row style={{borderTopColor:'gray',borderTopWidth:0.5,marginTop:10,marginLeft:10,padding:15,marginRight:10}}>
                                     <Col style={{width:'25%',}}>
-                                        <Thumbnail square source={{ uri: 'https://res.cloudinary.com/demo/image/upload/w_200,h_200,c_thumb,g_face,r_max/face_left.png' }}  style={{ height: 60, width: 60 }} />
+                                        <Thumbnail square source={ renderDoctorImage(successBookSlotDetails) }  style={{ height: 60, width: 60 }} />
                                      </Col>
                                      <Col style={{width:'75%',marginTop:10}}>
                                          <Row>
@@ -79,7 +81,7 @@ class PaymentSuccess extends Component {
                                     <Text style={{textAlign:'center',fontFamily:'OpenSans',fontSize:16,}}>Doctor Fee</Text>
                                  
                                          <Right>
-                                         <Text style={{textAlign:'center',fontFamily:'OpenSans',fontSize:16,color:'#545454'}}>{'\u20B9'}{successBookSlotDetails.slotData.fee} </Text>
+                                         <Text style={{textAlign:'center',fontFamily:'OpenSans',fontSize:16,color:'#545454'}}>{'\u20B9'}{successBookSlotDetails.slotData && successBookSlotDetails.slotData.fee} </Text>
 
                                          </Right>
                                    
@@ -104,64 +106,6 @@ class PaymentSuccess extends Component {
                 </ScrollView>
             </Container>
 
-                        //  <Grid style={{ alignItems: 'center' }}>
-                        //     <Row>
-                        //         <Col style={{ alignItems: 'center' }}>
-                        //             <Icon name='ios-checkmark' style={{ color: 'green', fontSize: 50, alignItems: 'center' }}></Icon>
-                        //             <H3 style={{ textAlign: 'center', fontFamily: 'OpenSans' }}> Success</H3>
-                        //             <Text note style={{ textAlign: 'center', fontFamily: 'OpenSans' }}> Thank You For Choosing Our Service And Trust Our Doctors To Take Care Your Health</Text>
-                        //         </Col>
-                        //     </Row>
-                        // </Grid>
-
-                        // <Card style={{ padding: 15, borderRadius: 10, marginTop: 10 }}>
-                         
-                        //     <Grid>
-                        //         <Row>
-                        //             <Body>
-                        //                 {
-                        //                     successBookSlotDetails.profile_image != undefined
-                        //                         ? <Thumbnail square source={{ uri: successBookSlotDetails.profile_image.imageURL }} style={{ height: 60, width: 60 }} />
-                        //                         : <Thumbnail square source={{ uri: 'https://res.cloudinary.com/demo/image/upload/w_200,h_200,c_thumb,g_face,r_max/face_left.png' }} style={{ height: 80, width: 80 }} />
-                        //                 }
-                        //             </Body>
-                        //         </Row>
-
-                        //         <Row style={{ marginTop: 20 }}>
-                        //             <Col style={{ alignItems: 'center' }}>
-                        //                 <Text note style={styles.customizedText}>Doctor</Text>
-                        //                 <Text style={styles.customizedText}>{successBookSlotDetails.prefix ? successBookSlotDetails.prefix : 'Dr'}. {successBookSlotDetails.doctorName}</Text>
-
-                        //             </Col>
-                        //         </Row>
-
-                        //         <Row style={{ marginTop: 20 }}>
-                        //             <Col style={{ alignItems: 'center' }}>
-                        //                 <Text style={styles.customizedText} note>Date And Time</Text>
-                        //                 <Text style={styles.customizedText}>{successBookSlotDetails.slotData && successBookSlotDetails.slotData.slotDate}</Text>
-                        //                 <Text style={styles.customizedText}>{successBookSlotDetails.slotData && formatDate(successBookSlotDetails.slotData.slotStartDateAndTime, 'hh:mm a')}</Text>
-                        //             </Col>
-                        //         </Row>
-
-                        //         <Row style={{ marginTop: 20 }}>
-                                 
-                        //             <Text style={styles.customizedText}>Address</Text>
-                        //             {successBookSlotDetails.slotData ?
-                        //                 <RenderHospitalAddress gridStyle={{ padding: 10, marginLeft: 10, width: '100%' }}
-                        //                     textStyle={styles.customizedText}
-                        //                     hospotalNameTextStyle={{ fontFamily: 'OpenSans-SemiBold' }}
-                        //                     hospitalAddress={successBookSlotDetails.slotData && successBookSlotDetails.slotData.location}
-                        //                 />
-                        //                 : null}
-
-                                
-                        //         </Row>
-
-                        //     </Grid>
-
-                        // </Card>
-                        // <Button block success style={{ marginTop: 10, borderRadius: 20, marginBottom: 10 }} onPress={() => navigation.navigate('Home')}><Text style={styles.customizedText}> Home </Text></Button> 
-                 
         )
     }
 
