@@ -52,10 +52,6 @@ class MyAppoinmentList extends Component {
 			upComingData: [],
 			pastData: [],
 			userId: null,
-			reviewData: [],
-			upcommingSpecialist: [],
-			pastSpecialist: [],
-			speciallist: [],
 			loading: true,
 			isRefreshing: false,
 			isNavigation: true
@@ -134,9 +130,13 @@ class MyAppoinmentList extends Component {
 							return education.degree;
 						}).join(",");
 					} if (doctorData.specialist != undefined) {
-						speaciallistDetails = doctorData.specialist.map(categories => {
-							return categories.category;
-						}).join(",");
+						let specialistArray = []
+						doctorData.specialist.map(categories => {
+							if (specialistArray.includes(categories.category)) {
+								specialistArray.push(categories.category)
+							}
+						})
+						speaciallistDetails = specialistArray.join(",");
 					}
 
 
@@ -201,7 +201,7 @@ class MyAppoinmentList extends Component {
 
 				speciallistResult.data.forEach(doctorData => {
 
-					let educationDetails = ' ', speaciallistDetails = '';
+					let educationDetails = ' ', speaciallistDetails = [];
 					if (doctorData.education != undefined) {
 						educationDetails = doctorData.education.map(education => {
 
@@ -211,15 +211,23 @@ class MyAppoinmentList extends Component {
 
 					}
 
+					// if (doctorData.specialist != undefined) {
+					// 	speaciallistDetails = doctorData.specialist.map(categories => {
+					// 		return categories.category;
+					// 	}).join(",");
+
+					// }
 					if (doctorData.specialist != undefined) {
-						speaciallistDetails = doctorData.specialist.map(categories => {
-							return categories.category;
-						}).join(",");
+
+						doctorData.specialist.map(categories => {
+							if (!speaciallistDetails.includes(categories.category)) {
+								speaciallistDetails.push(categories.category)
+							}
+						})
 
 					}
 
-
-					doctorInfo.set(doctorData.doctor_id, { degree: educationDetails, specialist: speaciallistDetails, prefix: doctorData.prefix, profile_image: doctorData.profile_image, gender: doctorData.gender })
+					doctorInfo.set(doctorData.doctor_id, { degree: educationDetails, specialist: speaciallistDetails.toString(), prefix: doctorData.prefix, profile_image: doctorData.profile_image, gender: doctorData.gender })
 
 
 				});
