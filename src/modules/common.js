@@ -29,7 +29,7 @@ export const RenderHospitalAddress = (props) => {
                         <View>
                             <Text note style={props.textStyle}>{props.hospitalAddress.location.address.no_and_street + ', '}</Text>
                             <Text note style={props.textStyle}>{props.hospitalAddress.location.address.city}</Text>
-                            
+
                             {renderHalfAddress === true ? null :
                                 <View>
                                     <Text note style={props.textStyle}>{props.hospitalAddress.location.address.state}</Text>
@@ -163,10 +163,9 @@ export class Badge extends Component {
     }
     render() {
         const { data } = this.state;
-        console.log('notification Count in common ' + data)
         return (
 
-
+            data != null &&
             <Text style={{ position: 'absolute', backgroundColor: 'red', color: 'white', borderRadius: 20, marginLeft: 10, padding: 2, marginTop: -7 }}>{data}</Text>
         )
     }

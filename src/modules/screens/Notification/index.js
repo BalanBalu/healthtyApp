@@ -38,8 +38,8 @@ class Notification extends Component {
        
         await new Promise.all([
             this.getUserNotification(),
-            this.upDateNotification('mark_as_viewed')
-        ])
+            this.upDateNotification('mark_as_readed')
+        ])    
         await this.setState({ isLoading: true })
          
     }
@@ -48,28 +48,26 @@ class Notification extends Component {
         try {
             await this.setState({ isLoading: false })
             if (navigationData.action) {
-                console.log(navigationData.action.type)
                 if (navigationData.action.type === 'Navigation/BACK') {
-                   this.getUserNotification();
-                    await this.setState({ isLoading: true })
+                    
+                  await this.getUserNotification();
+                   
                 }
             }
+            await this.setState({ isLoading: true })
         } catch (e) {
             console.log(e)
         }
 
     }
     updateNavigation = async (item) => {
-        console.log(this.props.notification.notificationIds);
-        // let vari = store.subscribe().notification.notificationCount
-       
-        // console.log('After subscribe')
-        // console.log(store.getstate().notification.notificationCount)
+        
+        
         await this.setState({ notificationId: item._id })
-        if (!item.mark_as_readed) {
-            await this.upDateNotification('mark_as_readed')
+        if (!item.mark_as_viewed) {
+            await this.upDateNotification('mark_as_viewed')
             this.props.navigation.push("AppointmentInfo", { appointmentId: item.appointment_id,fromNotification:true })
-
+              
         }
         else {
             this.props.navigation.push("AppointmentInfo", { appointmentId: item.appointment_id,fromNotification:true })
@@ -77,9 +75,12 @@ class Notification extends Component {
     }
     upDateNotification = async (node) => {
         try {
-
-            let result = await UpDateUserNotification(node, this.state.notificationId);
-
+           
+            if (this.state.notificationId) {
+               
+                let result = await UpDateUserNotification(node, this.state.notificationId);
+               
+            }
         }
         catch (e) {
             console.log(e);
@@ -91,9 +92,9 @@ class Notification extends Component {
     try {
 
         let userId = await AsyncStorage.getItem('userId');
-        console.log(userId)
+       
         let result = await fetchUserNotification(userId);
-        console.log(result.data)
+        
         if (result.success) {
             this.setState({data:result.data})
         }
@@ -159,8 +160,8 @@ class Notification extends Component {
 
                                             <Card style={{ borderRadius: 5, width: 'auto', }}>
                                                 {/* <View style={{ borderWidth: 1, borderColor: '#c9cdcf', marginTop: 10 }} /> */}
-                                                <TouchableOpacity onPress={() => this.updateNavigation(item)}>
-                                                    <View style={{ backgroundColor: (item.mark_as_readed == false) ? '#f5e6ff' : null }}>
+                                                <TouchableOpacity onPress={() => this.updateNavigation(item)} testID='notificationView'>
+                                                    <View style={{ backgroundColor: (item.mark_as_viewed == false) ? '#f5e6ff' : null }}>
 
                                                         <Col>
                                                             {dateDiff(new Date(item.created_date), new Date(), 'days') > 30 ?
