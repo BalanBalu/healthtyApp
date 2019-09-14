@@ -257,20 +257,6 @@ export async function appointmentStatusUpdate(doctorId, appointmentId, requestDa
 
 /* Insert Doctors  Favourite List */
 
-export async function insertDoctorsWishList(userId, doctorId, requestData) {
-  try {
-
-    let endPoint = 'user/wishList/' + userId + '/' + doctorId
-    let response = await putService(endPoint, requestData);
-    let respData = response.data;
-    return respData;
-  } catch (e) {
-    return {
-      message: 'exception' + e,
-      success: false
-    }
-  }
-}
 /* Get Patient Total Favourite Doctors List  */
 export const getPatientWishList = async (userId) => {
   try {
@@ -326,6 +312,67 @@ export const getDoctorFaviouteList = async (doctorId) => {
     return resultFavList;
   } catch (e) {
     console.log(e.message);
+    return {
+      message: 'exception' + e,
+      success: false
+    }
+  }
+}
+
+export const addToWishListDoctor = async (doctorId, userId) => {
+  try {
+     const { bookappointment: { patientWishListsDoctorIds, favouriteListCountByDoctorIds } } =  store.getState(); 
+     let result = null;
+     console.log(patientWishListsDoctorIds);
+    let requestData = {
+       active: !patientWishListsDoctorIds.includes(doctorId)
+    };
+    
+    if(userId) {
+       result = await insertDoctorsWishList(userId, doctorId, requestData);
+      //   console.log('result'+JSON.stringify(result));
+      if (result.success) {
+          if(requestData.active) {
+            if(favouriteListCountByDoctorIds[doctorId]) {
+                  favouriteListCountByDoctorIds[doctorId] = favouriteListCountByDoctorIds[doctorId] + 1;
+            } else {
+              favouriteListCountByDoctorIds[doctorId] = 1
+            }
+            patientWishListsDoctorIds.push(doctorId)
+          } else {
+              if(favouriteListCountByDoctorIds[doctorId]) {
+                  favouriteListCountByDoctorIds[doctorId] = favouriteListCountByDoctorIds[doctorId] - 1;
+              } else {
+                  favouriteListCountByDoctorIds[doctorId] = 0;    
+              }
+              let indexOfDoctorIdOnPatientWishList = patientWishListsDoctorIds.indexOf(doctorId);
+              patientWishListsDoctorIds.splice(indexOfDoctorIdOnPatientWishList, 1);
+          }
+          store.dispatch({
+              type: SET_PATIENT_WISH_LIST_DOC_IDS,
+              data: patientWishListsDoctorIds
+          })
+          store.dispatch({
+              type: SET_FAVORITE_DOCTOR_COUNT_BY_IDS,
+              data: favouriteListCountByDoctorIds
+          })
+     }
+      return result;
+   }
+}
+  catch (e) {
+    console.log(e);
+  }
+}
+
+export async function insertDoctorsWishList(userId, doctorId, requestData) {
+  try {
+
+    let endPoint = 'user/wishList/' + userId + '/' + doctorId
+    let response = await putService(endPoint, requestData);
+    let respData = response.data;
+    return respData;
+  } catch (e) {
     return {
       message: 'exception' + e,
       success: false

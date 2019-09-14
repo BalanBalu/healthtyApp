@@ -17,6 +17,7 @@ import { insertDoctorsWishList, searchDoctorList, fetchAvailabilitySlots,
     SET_PATIENT_WISH_LIST_DOC_IDS, 
     SET_FAVORITE_DOCTOR_COUNT_BY_IDS, 
     SET_FILTERED_DOCTOR_DATA,
+    addToWishListDoctor,
     getDoctorFaviouteList} from '../../providers/bookappointment/bookappointment.action';
 import { formatDate, addMoment, addTimeUnit, getMoment, intersection } from '../../../setup/helpers';
 import { Loader } from '../../../components/ContentLoader';
@@ -85,20 +86,29 @@ class doctorSearchList extends Component {
         } else {
             this.setState({ isLoggedIn : false }) 
         }
-       
-        
     }
+    componentWillMount() {
+        console.log('Updating.....');
+       
+    }
+    componentDidCatch() {
+        console.log('Updating.....');
+    }
+
     componentNavigationMount = async () => {
+        console.log('is Navigation Mount is working');
+        this.setState( { refreshCount : this.state.refreshCount + 1 });
         const { navigation } = this.props;
         const filterData = navigation.getParam('filterData');
-
-        const filterBySelectedAvailabilityDateCount = navigation.getParam('filterBySelectedAvailabilityDateCount');
-        conditionFromFilterPage = navigation.getParam('ConditionFromFilter');
-        await this.setState({ filterData: filterData, filterBySelectedAvailabilityDateCount: filterBySelectedAvailabilityDateCount })
-        if (conditionFromFilterPage == true) {
-            console.log('comming FilterPage');
-            this.renderDoctorListByFilteredData(filterData, filterBySelectedAvailabilityDateCount)
-        }
+          if(filterData) {
+            const filterBySelectedAvailabilityDateCount = navigation.getParam('filterBySelectedAvailabilityDateCount');
+            conditionFromFilterPage = navigation.getParam('ConditionFromFilter');
+            await this.setState({ filterData: filterData, filterBySelectedAvailabilityDateCount: filterBySelectedAvailabilityDateCount })
+            if (conditionFromFilterPage == true) {
+              console.log('comming FilterPage');
+              this.renderDoctorListByFilteredData(filterData, filterBySelectedAvailabilityDateCount)
+            }
+        }   
     }
 
     renderDoctorListByFilteredData = async (filterData, availtyDateCount) => {
@@ -218,63 +228,18 @@ class doctorSearchList extends Component {
     }
     /* Insert Doctors Favourite Lists  */
     addToWishList = async (doctorId) => {
-        try {
-           const { bookappointment: { patientWishListsDoctorIds, favouriteListCountByDoctorIds } } = this.props;  
-           
-           console.log(patientWishListsDoctorIds);
-          let requestData = {
-             active: !patientWishListsDoctorIds.includes(doctorId)
-          };
-          let userId = await AsyncStorage.getItem('userId');
-          if(userId) {
-            let result = await insertDoctorsWishList(userId, doctorId, requestData);
-            //   console.log('result'+JSON.stringify(result));
-            
-            if (result.success) {
-                Toast.show({
-                    text: result.message,
-                    type: "success",
-                    duration: 3000,
-                })
-                if(requestData.active) {
-                  if(favouriteListCountByDoctorIds[doctorId]) {
-                        favouriteListCountByDoctorIds[doctorId] = favouriteListCountByDoctorIds[doctorId] + 1;
-                  }
-                  patientWishListsDoctorIds.push(doctorId)
-                } else {
-                    if(favouriteListCountByDoctorIds[doctorId]) {
-                        favouriteListCountByDoctorIds[doctorId] = favouriteListCountByDoctorIds[doctorId] - 1;
-                    }
-                    let indexOfDoctorIdOnPatientWishList = patientWishListsDoctorIds.indexOf(doctorId);
-                    patientWishListsDoctorIds.splice(indexOfDoctorIdOnPatientWishList, 1);
-                }
-                store.dispatch({
-                    type: SET_PATIENT_WISH_LIST_DOC_IDS,
-                    data: patientWishListsDoctorIds
-                })
-                store.dispatch({
-                    type: SET_FAVORITE_DOCTOR_COUNT_BY_IDS,
-                    data: favouriteListCountByDoctorIds
-                })
-                this.setState( { refreshCount : this.state.refreshCount  + 1 });
-                
-            } else {
-            Toast.show({
-                text: result.message,
-                type: 'danger',
-                duration: 3000,
-            })
-           }
-         }
-      }
-        catch (e) {
-            Toast.show({
-                text: 'Exception Occured' + e,
-                type: "success",
-                duration: 3000,
-            })
-        }
-    }
+       let userId = await AsyncStorage.getItem('userId');
+       let result = await addToWishListDoctor(doctorId, userId);
+       if(result)
+        Toast.show({
+            text: result.message,
+            type: "success",
+            duration: 3000,
+        })
+        this.setState( { refreshCount : this.state.refreshCount + 1});
+    }    
+
+
     getPatientWishLists = async () => {
         try {
             let userId = await AsyncStorage.getItem('userId');
