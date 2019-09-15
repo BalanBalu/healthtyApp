@@ -134,6 +134,22 @@ export function getDoctorEducation(educationData) {
     }
     return '';
 }
+export function getDoctorExperience(calulatedExperience) {
+    if(!calulatedExperience) {
+        return  'N/A'
+    } 
+    if(calulatedExperience.isPrivate === true) {
+        return  'N/A'
+    } 
+    if(calulatedExperience.year == 0) {
+        month = calulatedExperience.month;
+        return `${month} Month` + month <= 1 ? '' : 's'
+    } else {
+      year = calulatedExperience.year;
+      return `${year} Year` + ( year <= 1 ? '' : 's')
+    }
+  }
+
 export async function getUserNotification() {
     try {
         let userId = await AsyncStorage.getItem('userId');

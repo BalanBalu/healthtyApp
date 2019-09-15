@@ -17,7 +17,7 @@ import {  fetchAvailabilitySlots,
           getMultipleDoctorDetails
         } from '../../providers/bookappointment/bookappointment.action';
 import moment from 'moment';
-import { renderDoctorImage, getDoctorSpecialist, getDoctorEducation } from '../../common';
+import { renderDoctorImage, getDoctorSpecialist, getDoctorEducation, getDoctorExperience } from '../../common';
 import { store } from '../../../setup/store';
 import HospitalLocation from './HospitalLocation';
 import Reviews from '../Reviews'
@@ -377,7 +377,7 @@ onPressContinueForPaymentReview(doctorData, selectedSlotItem) {
              <Row style={{marginBottom:10}}>
                   <Col style={{width:"25%",marginTop:15,}}>        
                    <Text note style={{ fontFamily: 'OpenSans',fontSize:12,textAlign:'center' }}> Experience</Text>
-                   <Text style={{ fontFamily: 'OpenSans',fontSize:12,fontWeight:'bold',textAlign:'center' }}> {doctorData.calulatedExperience ? doctorData.calulatedExperience.year + ' Yrs' : 'N/A'}</Text>
+                   <Text style={{ fontFamily: 'OpenSans',fontSize:12,fontWeight:'bold',textAlign:'center' }}> {getDoctorExperience(doctorData.calulatedExperience)}</Text>
                   </Col>
                   <Col style={{width:"25%",marginTop:15,}}>
                     <Text note style={{ fontFamily: 'OpenSans',fontSize:12,textAlign:'center' }}> Rating</Text>

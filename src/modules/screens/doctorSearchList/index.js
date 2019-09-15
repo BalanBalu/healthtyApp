@@ -21,7 +21,10 @@ import { insertDoctorsWishList, searchDoctorList, fetchAvailabilitySlots,
     getDoctorFaviouteList} from '../../providers/bookappointment/bookappointment.action';
 import { formatDate, addMoment, addTimeUnit, getMoment, intersection } from '../../../setup/helpers';
 import { Loader } from '../../../components/ContentLoader';
-import { RenderHospitalAddress, renderDoctorImage,  getDoctorSpecialist, getDoctorEducation  } from '../../common';
+import { renderDoctorImage,  
+         getDoctorSpecialist,
+         getDoctorEducation,
+         getDoctorExperience  } from '../../common';
 import { NavigationEvents } from 'react-navigation';
 //import Spinner from '../../../components/Spinner';
 import moment from 'moment';
@@ -700,7 +703,7 @@ class doctorSearchList extends Component {
                                    <Row>
                                        <Col style={{width:"25%",marginTop:20}}>        
                                          <Text note style={{ fontFamily: 'OpenSans',fontSize:12,marginLeft:5, }}> Experience</Text>
-                                         <Text style={{ fontFamily: 'OpenSans',fontSize:12,marginLeft:5,fontWeight:'bold' }}> {item.calulatedExperience ? item.calulatedExperience.year + ' Yrs' : 'N/A'}</Text>
+                                         <Text style={{ fontFamily: 'OpenSans',fontSize:12,marginLeft:5,fontWeight:'bold' }}>{getDoctorExperience(item.calulatedExperience)}</Text>
                                        </Col>
                                        <Col style={{width:"25%",marginTop:20}}>
                                           <Text note style={{ fontFamily: 'OpenSans',fontSize:12,marginLeft:5, }}> Rating</Text>
@@ -721,7 +724,7 @@ class doctorSearchList extends Component {
                                                 <Col style={{width:"25%",marginTop:20}}>
                                                 
                                                 <Text note style={{ fontFamily: 'OpenSans',fontSize:12,marginLeft:5 }}> Favourite</Text>
-                                                <Text style={{ fontFamily: 'OpenSans',fontSize:12,marginLeft:5,fontWeight:'bold' }}> {favouriteListCountByDoctorIds[item.doctor_id] !== undefined ? favouriteListCountByDoctorIds[item.doctor_id] : ' emty' }</Text>
+                                                <Text style={{ fontFamily: 'OpenSans',fontSize:12,marginLeft:5,fontWeight:'bold' }}> {favouriteListCountByDoctorIds[item.doctor_id] !== undefined ? favouriteListCountByDoctorIds[item.doctor_id] : ' 0' }</Text>
 
 
                                                 </Col>
