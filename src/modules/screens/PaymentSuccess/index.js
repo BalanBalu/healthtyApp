@@ -4,10 +4,10 @@ import { login } from '../../providers/auth/auth.actions';
 import { messageShow, messageHide } from '../../providers/common/common.action';
 import { Col, Row, Grid } from 'react-native-easy-grid';
 import { connect } from 'react-redux'
-import { StyleSheet, Image, TouchableOpacity, View } from 'react-native';
+import { StyleSheet, Image, TouchableOpacity, View , BackHandler} from 'react-native';
 import { formatDate } from '../../../setup/helpers';
 import { ScrollView } from 'react-native-gesture-handler';
-import { RenderHospitalAddress ,renderDoctorImage,   } from '../../common'
+import { RenderHospitalAddress ,renderDoctorImage, getDoctorSpecialist, getDoctorEducation   } from '../../common'
 
 
 class PaymentSuccess extends Component {
@@ -17,15 +17,25 @@ class PaymentSuccess extends Component {
         this.state = {
             successBookSlotDetails: {
                
-            }
+            },
+            paymentMethod: null
+            
         }
     }
 
     async componentDidMount() {
+        BackHandler.addEventListener('hardwareBackPress', this.onBackButtonPressed);
         const { navigation } = this.props;
         const successBookSlotDetails = navigation.getParam('successBookSlotDetails');
-        await this.setState({ successBookSlotDetails: successBookSlotDetails });
+        const paymentMethod =  navigation.getParam('paymentMethod');
+        await this.setState({ successBookSlotDetails: successBookSlotDetails, paymentMethod: paymentMethod });
         console.log('successBookSlotDetails' + JSON.stringify(this.state.successBookSlotDetails))
+    }
+    componentWillUnmount() {
+        BackHandler.removeEventListener('hardwareBackPress', this.onBackButtonPressed);
+    }
+    onBackButtonPressed() {
+        return true;
     }
     renderHospitalLocation(hospitalAddress) {
          
@@ -42,7 +52,7 @@ class PaymentSuccess extends Component {
     }
     render() {
         const { navigation } = this.props;
-        const { successBookSlotDetails } = this.state;
+        const { successBookSlotDetails, paymentMethod } = this.state;
         return (
 
             <Container style={styles.container}>
@@ -65,10 +75,10 @@ class PaymentSuccess extends Component {
                                      <Col style={{width:'75%',marginTop:10}}>
                                          <Row>
                                          <Text style={styles.docHeading}> {successBookSlotDetails.prefix ? successBookSlotDetails.prefix : ''} {successBookSlotDetails.doctorName} </Text>
-                                         <Text style={styles.Degree}>(M.B.B.S)</Text>
+                                         <Text style={styles.Degree}>{getDoctorEducation(successBookSlotDetails.education)}</Text>
                                          </Row>
                                          <Row style={{marginTop:-12}}>
-                                         <Text style={{fontFamily:'OpenSans',fontSize:14,color:'#535353',fontStyle: 'italic'}}>Heart Specialist</Text>
+                                         <Text style={{fontFamily:'OpenSans',fontSize:14,color:'#535353',fontStyle: 'italic'}}>{getDoctorSpecialist(successBookSlotDetails.specialist)}</Text>
 
                                          </Row>
                                      </Col>
@@ -91,7 +101,7 @@ class PaymentSuccess extends Component {
                                     <Text style={{textAlign:'center',fontFamily:'OpenSans',fontSize:16,}}>Payment Method </Text>
                                      
                                          <Right>
-                                         <Text style={{textAlign:'center',fontFamily:'OpenSans',fontSize:16,color:'#545454'}}>Card </Text>
+                                         <Text style={{textAlign:'center',fontFamily:'OpenSans',fontSize:16,color:'#545454'}}>{paymentMethod}</Text>
 
                                          </Right>
                                   

@@ -67,7 +67,7 @@ export default class PaymentReview extends Component {
         console.log('Book Appointment Payment Update Response ');
         console.log(response);
         if (response.success) {
-            this.props.navigation.navigate('paymentsuccess', { successBookSlotDetails: this.state.bookSlotDetails });
+            this.props.navigation.navigate('paymentsuccess', { successBookSlotDetails: this.state.bookSlotDetails, paymentMethod: 'Cash' });
         } else {
             Toast.show({
                 text: response.message,

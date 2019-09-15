@@ -6,10 +6,7 @@ import { StyleSheet, TouchableOpacity, View, FlatList, AsyncStorage, } from 'rea
 import StarRating from 'react-native-star-rating';
 import { formatDate, addMoment, getMoment } from '../../../setup/helpers';
 import {  fetchAvailabilitySlots, 
-          insertDoctorsWishList, 
           SET_SINGLE_DOCTOR_DATA, 
-          SET_PATIENT_WISH_LIST_DOC_IDS, 
-          SET_FAVORITE_DOCTOR_COUNT_BY_IDS, 
           getDoctorFaviouteList , 
           getPatientWishList ,
           getDoctorsReviewsCount,
@@ -51,7 +48,8 @@ class BookAppoinment extends Component {
       showedFee: undefined,
       doctorId: null,
       slotDatesToShow : [],
-      isAvailabilityLoading: false
+      isAvailabilityLoading: false,
+      isLoggedIn: false
     }
 
   }
@@ -64,16 +62,16 @@ class BookAppoinment extends Component {
     this.setState({ isLoading: true });
     let startDateMoment =getMoment(new Date());
     let endDateMoment = addMoment(this.state.selectedDate, 7, 'days')
+    let userId = await AsyncStorage.getItem('userId');
+    if(userId) {
+      this.setState({ isLoggedIn : true });
+    }
     if(availabilitySlots) {
-      
       const doctorId = navigation.getParam('doctorId') || false;
-      
-    
       getDoctorFaviouteList(doctorId);
       getDoctorsReviewsCount(doctorId);
       await this.getdoctorDetails(doctorId);
-     
-      let userId = await AsyncStorage.getItem('userId');
+      
       if(userId) {
         getPatientWishList(userId);
       }
@@ -339,7 +337,7 @@ onPressContinueForPaymentReview(doctorData, selectedSlotItem) {
   render() {
 
     const { bookappointment: { patientWishListsDoctorIds, favouriteListCountByDoctorIds, reviewsByDoctorIds } } = this.props;
-    const { qualification, doctorData, isLoading, selectedDate, selectedSlotItem, pressTab } = this.state;
+    const { qualification, doctorData, isLoading, selectedDate, selectedSlotItem, pressTab, isLoggedIn } = this.state;
     
    
     return (
@@ -365,9 +363,10 @@ onPressContinueForPaymentReview(doctorData, selectedSlotItem) {
                   
                </Col>
                 <Col style={{width:'17%'}}>
+                {isLoggedIn  ? 
                    <Icon name="heart" onPress={()=>this.addToWishList(doctorData.doctor_id)} 
                       style={patientWishListsDoctorIds.includes(doctorData.doctor_id) ? {  color: '#B22222', fontSize:20 ,marginTop:10} : {  color: '#000000', fontSize:20 ,marginTop:10}}>
-                    </Icon>
+                  </Icon> : null }
                    {/* <Row>
                      <Text style={{ fontFamily: 'OpenSans',marginTop:20,fontSize:12,marginLeft:5 }}> 2.6km</Text>
                    </Row> */}

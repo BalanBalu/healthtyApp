@@ -10,7 +10,6 @@ import { bookAppointment, createPaymentRazor } from '../../providers/bookappoint
 import { putService , getService} from '../../../setup/services/httpservices';
 import Razorpay from '../../../components/Razorpay';
 import { RAZOR_KEY , BASIC_DEFAULT} from '../../../setup/config';
-import { updatePaymentDetails } from '../PaymentReview'
 import BookAppointmentPaymentUpdate from '../../providers/bookappointment/bookAppointment';
 import { TouchableOpacity } from 'react-native-gesture-handler';
 
@@ -26,7 +25,7 @@ class PaymentPage extends Component {
             userEntry: '',
             password: '',
             loginErrorMsg: '',
-            paymentOption: 'CREDIT_CARD', // setting default option to be card
+            paymentOption: null, //'CREDIT_CARD', // setting default option to be card
             selectedSavedCardId: null,
             cardPaymentDetails: {
                 name: null,
@@ -44,7 +43,8 @@ class PaymentPage extends Component {
             bookSlotDetails: null,
             isLoading: false,
             isHidden: false,
-            coupenCodeText: null
+            coupenCodeText: null,
+            paymentMethodTitleCase : null
         }
         this.BookAppointmentPaymentUpdate = new BookAppointmentPaymentUpdate();
     }
@@ -105,11 +105,13 @@ class PaymentPage extends Component {
                 'card[expiry_month]': selectedSavedCardArr[0].expiry_m_y.split('/')[0],
                 'card[expiry_year]': selectedSavedCardArr[0].expiry_m_y.split('/')[1],
             }
+            let paymentMethodTitleCase = selectedSavedCardArr[0].card_type === 'CREDIT_CARD' ? 'Credit Card' : 'Debit Card'
+            this.setState({ paymentMethodTitleCase: paymentMethodTitleCase });
            
             if(selectedSavedCardArr[0].card_holder_name) {
                 //data['card[name]'] = selectedSavedCardArr[0].card_holder_name;
             }
-            console.log(data);  
+             
             this.razorpayChekout(data)
         }
         else if(this.state.paymentOption !== null) {
@@ -138,23 +140,28 @@ class PaymentPage extends Component {
                 'card[expiry_month]': this.state.cardPaymentDetails.monthyear.split('/')[0],
                 'card[expiry_year]': this.state.cardPaymentDetails.monthyear.split('/')[1],
             }
-            console.log(data);
-            this.setState({ pay_card_type: getPayCardType(this.state.cardPaymentDetails.number) });
+           
+            let paymentMethodTitleCase = this.state.paymentOption === 'CREDIT_CARD' ? 'Credit Card' : 'Debit Card'
+            this.setState({ pay_card_type: getPayCardType(this.state.cardPaymentDetails.number) , paymentMethodTitleCase: paymentMethodTitleCase });
         } else if (this.state.paymentOption === 'NET_BANKING') {
             data = {
                 method: 'netbanking',
                 bank: this.state.selectedNetBank
             }
+            this.setState({ paymentMethodTitleCase: 'Net Banking' });
         } else if (this.state.paymentOption === 'WALLET') {
+            debugger
             data = {
                 method: 'wallet',
-                bank: this.selectedWallet
+                wallet: this.state.selectedWallet
             }
+            this.setState({ paymentMethodTitleCase: this.state.selectedWallet });
         } else if (this.state.paymentOption === 'UPI') {
             data = {
                 method: 'upi',
                 vpa: this.state.upiVPA
             }
+            this.setState({ paymentMethodTitleCase: 'UPI' });
         }
            this.razorpayChekout(data)
         }   
@@ -174,13 +181,13 @@ class PaymentPage extends Component {
         console.log(options);
         Razorpay.open(options).then((data) => {
             // handle success
-            this.updatePaymentDetails(true, data, 'razor');
+            this.updatePaymentDetails(true, data, 'online');
             if(this.state.saveCardCheckbox) {
                 this.storeCardData();
             }
         }).catch((error) => {
             // handle failure 
-             this.updatePaymentDetails(false, error, 'razor');
+             this.updatePaymentDetails(false, error, 'online');
         });
     }
    async updatePaymentDetails(isSuccess, data, modeOfPayment) {
@@ -188,7 +195,11 @@ class PaymentPage extends Component {
     let response = await this.BookAppointmentPaymentUpdate.updatePaymentDetails(isSuccess, data, modeOfPayment, this.state.bookSlotDetails, 'APPOINTMENT', this.userId);
     console.log(response);
     if(response.success) {
-        this.props.navigation.navigate('paymentsuccess', { successBookSlotDetails: this.state.bookSlotDetails });
+        let paymentMethod; 
+        if(this.state.paymentOption) {
+
+        }
+        this.props.navigation.navigate('paymentsuccess', { successBookSlotDetails: this.state.bookSlotDetails, paymentMethod : this.state.paymentMethodTitleCase });
     } else {
         Toast.show({
             text: response.message,
