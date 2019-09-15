@@ -27,9 +27,16 @@ import { NavigationEvents } from 'react-navigation';
 import moment from 'moment';
 
 import { store } from '../../../setup/store';
-let fields = "first_name,last_name,prefix,professional_statement,gender,specialist,education,language,gender_preference,experience,profile_image";            
+let fields = "first_name,last_name,prefix,professional_statement,gender,specialist,education,language,experience,profile_image";            
 let conditionFromFilterPage;
 const NO_OF_SLOTS_SHOULD_SHOW_PER_SLIDE = 3;
+const SELECTED_EXPERIENCE_START_END_YEARS = {
+    10 : { start : 0, end : 10 },
+    20 : { start : 10, end : 20 },
+    30 : { start : 20, end : 30 },
+    40 : { start : 40, end : 100 }
+} 
+
 let  currentDoctorOrder = 'ASC'; 
 let doctorDataInMap = new Map();
 class doctorSearchList extends Component {
@@ -71,8 +78,6 @@ class doctorSearchList extends Component {
     
     navigateToFilters() {
         this.props.navigation.navigate('Filters', { 
-            doctorData: this.state.doctorData, 
-            doctorDetailsWitSlots: this.state.doctorData,  
             filterData : this.state.filterData,
             filterBySelectedAvailabilityDateCount: this.state.filterBySelectedAvailabilityDateCount
         })
@@ -87,13 +92,7 @@ class doctorSearchList extends Component {
             this.setState({ isLoggedIn : false }) 
         }
     }
-    componentWillMount() {
-        console.log('Updating.....');
-       
-    }
-    componentDidCatch() {
-        console.log('Updating.....');
-    }
+    
 
     componentNavigationMount = async () => {
         console.log('is Navigation Mount is working');
@@ -124,28 +123,32 @@ class doctorSearchList extends Component {
         
         doctorData.forEach((doctorElement) => {
             let doctorIdHostpitalId = doctorElement.doctorIdHostpitalId
-
-            if (filterData.gender_preference) {
-                if (doctorElement.gender_preference.includes(filterData.gender_preference)) {
+            debugger
+            if (filterData.gender) {
+                if (doctorElement.gender === filterData.gender) {
                     genderPreferenceMatchedList.push(doctorIdHostpitalId);
                 }
             }
             if (filterData.language) {
                 doctorElement.language.forEach((docLanguage) => {
                     filterData.language.forEach((filLanguage) => {
-                        if (docLanguage.includes(filLanguage)) {
+                      if (docLanguage.toLowerCase().includes(filLanguage.toLowerCase())) {
                             languageMatchedList.push(doctorIdHostpitalId)
-                        }
+                      }
                     })
                 })
             }
-
+            
             if (filterData.experience && doctorElement.calulatedExperience) {
-                let doctorExperienceMonths = (doctorElement.calulatedExperience.year || 0 * 12) +  doctorElement.calulatedExperience.month || 0
-                let filterValueExperienceInMonth = filterData.experience * 12; // value is returning as year to convert to months multiplies by 12 
-                 if (filterValueExperienceInMonth >= doctorExperienceMonths) {
+                let doctorExperienceMonths = ((doctorElement.calulatedExperience.year || 0) * 12) +  doctorElement.calulatedExperience.month || 0
+                let selectedFilterInYearStartEnd = SELECTED_EXPERIENCE_START_END_YEARS[filterData.experience]; 
+                
+                let filteredStartMonth = selectedFilterInYearStartEnd.start * 12;
+                let filteredEndMonth = selectedFilterInYearStartEnd.end * 12;
+                
+                if(doctorExperienceMonths > filteredStartMonth && doctorExperienceMonths <= filteredEndMonth) {
                      experienceMatchedList.push(doctorIdHostpitalId);
-                 }
+                }
                 
             }
             if (filterData.category) {
@@ -183,7 +186,7 @@ class doctorSearchList extends Component {
       
        
         if (filterData) {
-            if (filterData.gender_preference) {
+            if (filterData.gender) {
                 selectedFiltesArray.push(genderPreferenceMatchedList);
                 console.log('genderPreferenceMatchedList:' +genderPreferenceMatchedList)
             }
@@ -208,6 +211,7 @@ class doctorSearchList extends Component {
         if (filterData || availtyDateCount !== 0 ) {
             console.log('Came Filter Availability and DocData , Filter only DocDatas  ')
             let filteredDocListArray = intersection(selectedFiltesArray);
+            let filteredDocData = [];
              if (filteredDocListArray.length ===0) {
                 Toast.show({
                     text: 'Doctors Not found!..Choose Filter again',
@@ -215,15 +219,14 @@ class doctorSearchList extends Component {
                     duration: 5000,
                 })
             } else {
-                let filteredDocData = [];
                 filteredDocListArray.forEach(doctorIdHospitalId => {
                    filteredDocData.push(doctorDataInMap.get(String(doctorIdHospitalId)));
                 });
-                store.dispatch({
-                    type: SET_FILTERED_DOCTOR_DATA,
-                    data: filteredDocData
-                }) 
             }
+            store.dispatch({
+                type: SET_FILTERED_DOCTOR_DATA,
+                data: filteredDocData
+            }) 
         }
     }
     /* Insert Doctors Favourite Lists  */
@@ -260,7 +263,7 @@ class doctorSearchList extends Component {
 
         const userId = await AsyncStorage.getItem('userId');
         let resultData = await searchDoctorList(userId, searchedInputValues);
-        
+        console.log('Result of patient Search Data ' + JSON.stringify(resultData));
         await this.setState({ searchedResultData: resultData.data });
         if (resultData.success) {
             let doctorIds = resultData.data.map((element) => {
@@ -269,6 +272,14 @@ class doctorSearchList extends Component {
             this.setState({ getSearchedDoctorIds: doctorIds });
             this.getDoctorAllDetails(this.state.getSearchedDoctorIds, getMoment(this.state.selectedDate), endDateMoment);// for getting multiple Doctor details,Reviews ,ReviewCount,etc....
         } else {
+            store.dispatch({
+                type: SET_BOOK_APP_DOCTOR_DATA,
+                data: []
+            })
+            store.dispatch({
+                type: SET_FILTERED_DOCTOR_DATA,
+                data: []
+            })
             this.setState({ isLoading: false })
         }
     }
@@ -359,8 +370,8 @@ class doctorSearchList extends Component {
     }
 
    async callGetAvailabilitySlot(getSearchedDoctorIds, startDate, endDate) {
-    this.setState({ isAvailabilityLoading: true });
-        let result = await this.getAvailabilitySlots(getSearchedDoctorIds, startDate, endDate);
+       this.setState({ isAvailabilityLoading: true });
+       let result = await this.getAvailabilitySlots(getSearchedDoctorIds, startDate, endDate);
        this.processFinalData(result);
        this.setState({ isAvailabilityLoading: false });
    
@@ -473,9 +484,6 @@ class doctorSearchList extends Component {
     
 
     navigateToBookAppointmentPage(doctorData) {
-       
-            
-        
         doctorData.doctorId = doctorData.doctor_id;
         let requestData = {
            ...doctorData, 

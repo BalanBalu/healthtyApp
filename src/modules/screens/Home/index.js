@@ -151,13 +151,13 @@ class Home extends Component {
             type: 'category',
             value: categoryName
         },
-        {
+       /* {
             type: 'geo',
             value: {
                 coordinates : this.state.locationCordinates,
                 maxDistance: 30
             }
-        }]
+        } */]
         this.props.navigation.navigate('Doctor List', { resultData: serachInputvalues })
     }
 

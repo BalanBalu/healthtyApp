@@ -4,9 +4,9 @@ import { Container, Body, Picker, Button, Card, Text, Item, Row, View, Col, Cont
 import SectionedMultiSelect from 'react-native-sectioned-multi-select';
 import { NavigationEvents } from 'react-navigation';
 import { ScrollView } from 'react-native-gesture-handler';
-
+import { connect } from 'react-redux'
 let filterData = {};  //for send only selected Filtered Values and Store the Previous selected filter values 
-export default class Filters extends Component {
+class Filters extends Component {
 
     constructor(props) {
         super(props)
@@ -21,16 +21,17 @@ export default class Filters extends Component {
             language: [],
             genderIndex: 0,
             selectAvailabilityIndex: 0,
-            selectExperinceIndex: '',
+            selectExperinceIndex: {},
             selectedServices:[],
             viewDoctors_button: true
         }
     }
 
     async componentDidMount() {
-
-        const { navigation } = this.props;
-        const doctorData = navigation.getParam('doctorData');
+        debugger
+        const { bookappointment: { doctorData }, navigation } = this.props;
+       
+       
         // const selectedServicesList = navigation.getParam('selectedServicesList');
         const filterData = navigation.getParam('filterData');
         const filterBySelectedAvailabilityDateCount = navigation.getParam('filterBySelectedAvailabilityDateCount')
@@ -40,12 +41,12 @@ export default class Filters extends Component {
             this.clickFilterByAvailabilityDates(filterBySelectedAvailabilityDateCount, false);
         }
         if(filterData) {
-            if(filterData.gender_preference) {
-                if(filterData.gender_preference === 'M') {
+            if(filterData.gender) {
+                if(filterData.gender === 'M') {
                     this.clickGenderInButton(1, 'M', false)
-                } else if(filterData.gender_preference === 'F') {
+                } else if(filterData.gender === 'F') {
                     this.clickGenderInButton(2, 'F', false)
-                } else if(filterData.gender_preference === 'O') {
+                } else if(filterData.gender === 'O') {
                     this.clickGenderInButton(3, 'O', false)
                 }
             }
@@ -118,7 +119,7 @@ export default class Filters extends Component {
         }
         this.setState({ genderIndex: genderIndex });
         this.setState({ genderSelected: genderSelected, viewDoctors_button: false })
-        filterData.gender_preference = genderSelected;
+        filterData.gender = genderSelected;
     }
     /* Get the selected Availability Date  */
     clickFilterByAvailabilityDates = (index, bySelect) => {
@@ -167,7 +168,7 @@ export default class Filters extends Component {
                         {/* first card */}
 
                         <Card style={{ padding: 10, borderRadius: 10, width: 'auto' }}>
-                            <Text style={{ backgroundColor: 'whitesmoke', borderBottomColor: '#c9cdcf', borderBottomWidth: 2, }}>Gender Preference</Text>
+                            <Text style={{ backgroundColor: 'whitesmoke', borderBottomColor: '#c9cdcf', borderBottomWidth: 2, }}>Gender</Text>
                             <Row style={{ justifyContent: 'center', marginTop: 10 }}>
                                 <Col>
                                     <Button bordered
@@ -423,6 +424,13 @@ export default class Filters extends Component {
         );
     }
 }
+function bookApppointmentState(state) {
+    return {
+        bookappointment: state.bookappointment
+    }
+}
+export default connect(bookApppointmentState)(Filters)
+
 const styles = StyleSheet.create({
     container: {
         backgroundColor: '#c9cdcf',
