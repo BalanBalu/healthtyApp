@@ -40,7 +40,7 @@ import {
 } from "../../providers/bookappointment/bookappointment.action";
 import noAppointmentImage from "../../../../assets/images/noappointment.png";
 import Spinner from "../../../components/Spinner";
-import { renderProfileImage } from '../../common'
+import { renderProfileImage ,getAllEducation,getAllSpecialist} from '../../common'
 
 class MyAppoinmentList extends Component {
 	constructor(props) {
@@ -130,13 +130,15 @@ class MyAppoinmentList extends Component {
 
 
 					if (doctorData.education != undefined) {
-						educationDetails = doctorData.education.map(education => {
-							return education.degree;
-						}).join(",");
+						educationDetails =  getAllEducation(doctorData.education)
+						//  doctorData.education.map(education => {
+						// 	return education.degree;
+						// }).join(",");
 					} if (doctorData.specialist != undefined) {
-						speaciallistDetails = doctorData.specialist.map(categories => {
-							return categories.category;
-						}).join(",");
+						speaciallistDetails =   getAllSpecialist(doctorData.specialist)
+						// doctorData.specialist.map(categories => {
+						// 	return categories.category;
+						// }).join(",");
 					}
 
 
@@ -202,20 +204,20 @@ class MyAppoinmentList extends Component {
 				speciallistResult.data.forEach(doctorData => {
 
 					let educationDetails = ' ', speaciallistDetails = '';
-					if (doctorData.education != undefined) {
-						educationDetails = doctorData.education.map(education => {
+					
+					 if (doctorData.education != undefined) {
+						educationDetails=getAllEducation(doctorData.education)
+					// 	educationDetails = doctorData.education.map(education => {
 
-							return education.degree;
-						}).join(",");
+					// 		return education.degree;
+					// 	}).join(",");
 
 
 					}
 
 					if (doctorData.specialist != undefined) {
-						speaciallistDetails = doctorData.specialist.map(categories => {
-							return categories.category;
-						}).join(",");
-
+						speaciallistDetails= getAllSpecialist(doctorData.specialist)
+                       
 					}
 
 

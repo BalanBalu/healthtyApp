@@ -13,7 +13,7 @@ import { formatDate, dateDiff } from '../../../setup/helpers';
 
 import { Loader } from '../../../components/ContentLoader'
 import { RenderHospitalAddress } from '../../common';
-import { renderProfileImage } from '../../common'
+import { renderProfileImage ,getAllEducation,getAllSpecialist} from '../../common'
 class AppointmentDetails extends Component {
   constructor(props) {
     super(props)
@@ -86,16 +86,18 @@ class AppointmentDetails extends Component {
 
         let educationDetails = '';
         if (resultDetails.data.education != undefined) {
-          educationDetails = resultDetails.data.education.map(education => {
-            return education.degree;
-          }).join(",");
+          educationDetails =getAllEducation(resultDetails.data.education)
+          // resultDetails.data.education.map(education => {
+          //   return education.degree;
+          // }).join(",");
         }
         this.setState({ education: educationDetails })
         let specialistDetails = '';
         if (resultDetails.data.specialist != undefined) {
-          specialistDetails = resultDetails.data.specialist.map(categories => {
-            return categories.category;
-          }).join(",");
+          specialistDetails = getAllSpecialist(resultDetails.data.specialist) 
+          // resultDetails.data.specialist.map(categories => {
+          //   return categories.category;
+          // }).join(",");
         }
         this.setState({ specialist: specialistDetails })
         if (resultDetails.data.hospital != undefined) {
@@ -238,7 +240,7 @@ class AppointmentDetails extends Component {
 
 
     const { data, reviewData, doctorData, education,  specialist, hospital, isLoading } = this.state;
-
+      console.log(doctorData);
     return (
 
       <Container style={styles.container}>
@@ -262,7 +264,7 @@ class AppointmentDetails extends Component {
                   </Left>
                   <Body>
 
-                    <Text style={{ fontSize: 15, fontFamily: 'OpenSans', fontWeight: 'bold' }}>{doctorData && doctorData.prefix != undefined ? doctorData && doctorData.prefix : '' + + doctorData && doctorData.first_name + " " + doctorData && doctorData.last_name},
+                    <Text style={{ fontSize: 15, fontFamily: 'OpenSans', fontWeight: 'bold' }}>{(doctorData && doctorData.prefix != undefined ? doctorData && doctorData.prefix : '') +(  doctorData && doctorData.first_name )+ " " + (doctorData && doctorData.last_name)},
                       <Text style={{ fontSize: 13, fontFamily: 'OpenSans' }}>{education}</Text>
 
                     </Text>

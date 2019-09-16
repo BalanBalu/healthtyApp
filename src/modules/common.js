@@ -186,3 +186,32 @@ export class Badge extends Component {
         )
     }
 }
+
+
+export  function getAllEducation(data) {
+
+   let  educationDetails=[] ;
+     data.map(education => {
+       if(!educationDetails.includes(education.degree)){
+        educationDetails.push(education.degree)
+       }
+       
+    })
+    educationDetails=educationDetails.join(",");
+    return  educationDetails;
+
+
+}
+export function getAllSpecialist(data) {
+       let speaciallistDetails=[];
+    data.map(categories => {
+        if(!speaciallistDetails.includes(categories.category)){
+        speaciallistDetails.push( categories.category);
+        }
+    })
+    speaciallistDetails=  speaciallistDetails.join(",");
+    console.log('specialist')
+    console.log(speaciallistDetails)
+      return speaciallistDetails
+        
+}
