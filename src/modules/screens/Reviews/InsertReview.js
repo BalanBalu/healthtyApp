@@ -22,7 +22,7 @@ class InsertReview extends Component {
       cleanness_rating: 0,
       staff_rating: 0,
       wait_time_rating: 0,
-      comments: null,
+      comments: ' ',
       doctorRecommended: false,
       data: '',
       doctorId: '',
@@ -72,10 +72,11 @@ class InsertReview extends Component {
 
   submitReview = async () => {
     try {
+      console.log('cpme submit review')
       let userId = this.state.data.user_id;
       if (this.state.wait_time_rating != 0 || this.state.staff_rating != 0 || this.state.cleanness_rating != 0) {
         let overallrating = (this.state.cleanness_rating + this.state.staff_rating + this.state.wait_time_rating) / 3;
-
+        console.log('condition true')
 
         let insertReviewData = {
           user_id: userId,
@@ -91,7 +92,7 @@ class InsertReview extends Component {
         };
 
         let result = await addReview(userId, insertReviewData);
-
+        console.log(JSON.stringify(result))
 
         if (result.success) {
 

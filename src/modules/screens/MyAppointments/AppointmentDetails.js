@@ -387,7 +387,7 @@ class AppointmentDetails extends Component {
                                 rating={reviewData[0] && reviewData[0].overall_rating}
 
                               />
-                              <Text note style={styles.customText}>{reviewData[0] && reviewData[0].comments != undefined ? reviewData[0] && reviewData[0].comments:null}} </Text>
+                              <Text note style={styles.customText}>{reviewData[0] && reviewData[0].comments} </Text>
                             </Body>
                           </ListItem>
                           :
