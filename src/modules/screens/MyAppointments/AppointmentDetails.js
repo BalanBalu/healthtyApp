@@ -26,7 +26,7 @@ class AppointmentDetails extends Component {
       reviewData: {},
       doctorData: {},
       isLoading: true,
-     
+
       appointmentStatus: '',
       statusUpdateReason: ' ',
       education: '',
@@ -77,12 +77,12 @@ class AppointmentDetails extends Component {
 
       let fields = 'first_name,last_name,prefix,education,specialist,email,mobile_no,experience,hospital,language,professional_statement,fee,profile_image';
       let resultDetails = await bindDoctorDetails(this.state.doctorId, fields);
-     
+
       if (resultDetails.success) {
 
         await this.setState({ doctorData: resultDetails.data });
 
-        
+
 
         let educationDetails = '';
         if (resultDetails.data.education != undefined) {
@@ -91,13 +91,16 @@ class AppointmentDetails extends Component {
           }).join(",");
         }
         this.setState({ education: educationDetails })
-        let specialistDetails = '';
+        let specialistDetails = [];
         if (resultDetails.data.specialist != undefined) {
-          specialistDetails = resultDetails.data.specialist.map(categories => {
-            return categories.category;
-          }).join(",");
+          resultDetails.data.specialist.map(categories => {
+            if (!specialistDetails.includes(categories.category)) {
+              specialistDetails.push(categories.category)
+            }
+
+          })
         }
-        this.setState({ specialist: specialistDetails })
+        this.setState({ specialist: specialistDetails.toString() })
         if (resultDetails.data.hospital != undefined) {
           resultDetails.data.hospital.map(hospital_id => {
             if (hospital_id.hospital_id == this.state.data.hospital_id)
@@ -237,7 +240,7 @@ class AppointmentDetails extends Component {
 
 
 
-    const { data, reviewData, doctorData, education,  specialist, hospital, isLoading } = this.state;
+    const { data, reviewData, doctorData, education, specialist, hospital, isLoading } = this.state;
 
     return (
 
@@ -273,14 +276,14 @@ class AppointmentDetails extends Component {
 
                 <Grid>
                   <Col style={{ backgroundColor: 'transparent', borderRightWidth: 0.5, borderRightColor: 'gray', justifyContent: 'center' }}>
-                    <Text style={styles.topValue}> {data.fee != undefined && data.fee != 0? data.fee : 'N/A'} </Text>
+                    <Text style={styles.topValue}> {data.fee != undefined && data.fee != 0 ? data.fee : 'N/A'} </Text>
                     <Text note style={styles.bottomValue}> Fee </Text>
                   </Col>
                   <Col style={{ backgroundColor: 'transparent', borderRightWidth: 0.5, borderRightColor: 'gray', justifyContent: 'center' }}>
                     {doctorData.experience.isPrivate == true ?
                       <Text style={styles.topValue}>  N/A </Text> :
                       <Text style={styles.topValue}> {doctorData.calulatedExperience.year != 0 ? doctorData.calulatedExperience.year + ' yrs' : 'N/A'} </Text>
-                      }
+                    }
                     <Text note style={styles.bottomValue}> Experience</Text>
                   </Col>
                   <Col style={{ backgroundColor: 'transparent', justifyContent: 'center', marginLeft: 'auto', marginRight: 'auto' }}>
@@ -385,7 +388,7 @@ class AppointmentDetails extends Component {
                                 rating={reviewData[0] && reviewData[0].overall_rating}
 
                               />
-                              <Text note style={styles.customText}>{reviewData[0] && reviewData[0].comments != undefined ? reviewData[0] && reviewData[0].comments:null}} </Text>
+                              <Text note style={styles.customText}>{reviewData[0] && reviewData[0].comments != undefined ? reviewData[0] && reviewData[0].comments : null}} </Text>
                             </Body>
                           </ListItem>
                           :
