@@ -131,20 +131,10 @@ class MyAppoinmentList extends Component {
 						// 	return education.degree;
 						// }).join(",");
 					} if (doctorData.specialist != undefined) {
-<<<<<<< HEAD
 						speaciallistDetails =   getAllSpecialist(doctorData.specialist)
 						// doctorData.specialist.map(categories => {
 						// 	return categories.category;
 						// }).join(",");
-=======
-						let specialistArray = []
-						doctorData.specialist.map(categories => {
-							if (specialistArray.includes(categories.category)) {
-								specialistArray.push(categories.category)
-							}
-						})
-						speaciallistDetails = specialistArray.join(",");
->>>>>>> 87c7ed30c4a6e63ef71795ffb1c2bdaa1c2544a0
 					}
 
 
@@ -209,17 +199,11 @@ class MyAppoinmentList extends Component {
 
 				speciallistResult.data.forEach(doctorData => {
 
-<<<<<<< HEAD
 					let educationDetails = ' ', speaciallistDetails = '';
 					
 					 if (doctorData.education != undefined) {
 						educationDetails=getAllEducation(doctorData.education)
 					// 	educationDetails = doctorData.education.map(education => {
-=======
-					let educationDetails = ' ', speaciallistDetails = [];
-					if (doctorData.education != undefined) {
-						educationDetails = doctorData.education.map(education => {
->>>>>>> 87c7ed30c4a6e63ef71795ffb1c2bdaa1c2544a0
 
 					// 		return education.degree;
 					// 	}).join(",");
@@ -234,20 +218,11 @@ class MyAppoinmentList extends Component {
 
 					// }
 					if (doctorData.specialist != undefined) {
-<<<<<<< HEAD
 						speaciallistDetails= getAllSpecialist(doctorData.specialist)
                        
 					}
-=======
 
-						doctorData.specialist.map(categories => {
-							if (!speaciallistDetails.includes(categories.category)) {
-								speaciallistDetails.push(categories.category)
-							}
-						})
->>>>>>> 87c7ed30c4a6e63ef71795ffb1c2bdaa1c2544a0
-
-					}
+					
 
 					doctorInfo.set(doctorData.doctor_id, { degree: educationDetails, specialist: speaciallistDetails.toString(), prefix: doctorData.prefix, profile_image: doctorData.profile_image, gender: doctorData.gender })
 
