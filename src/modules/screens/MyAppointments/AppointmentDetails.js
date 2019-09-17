@@ -94,19 +94,10 @@ class AppointmentDetails extends Component {
         this.setState({ education: educationDetails })
         let specialistDetails = [];
         if (resultDetails.data.specialist != undefined) {
-<<<<<<< HEAD
           specialistDetails = getAllSpecialist(resultDetails.data.specialist) 
           // resultDetails.data.specialist.map(categories => {
           //   return categories.category;
           // }).join(",");
-=======
-          resultDetails.data.specialist.map(categories => {
-            if (!specialistDetails.includes(categories.category)) {
-              specialistDetails.push(categories.category)
-            }
-
-          })
->>>>>>> 87c7ed30c4a6e63ef71795ffb1c2bdaa1c2544a0
         }
         this.setState({ specialist: specialistDetails.toString() })
         if (resultDetails.data.hospital != undefined) {
@@ -248,13 +239,8 @@ class AppointmentDetails extends Component {
 
 
 
-<<<<<<< HEAD
-    const { data, reviewData, doctorData, education,  specialist, hospital, isLoading } = this.state;
-      console.log(doctorData);
-=======
     const { data, reviewData, doctorData, education, specialist, hospital, isLoading } = this.state;
 
->>>>>>> 87c7ed30c4a6e63ef71795ffb1c2bdaa1c2544a0
     return (
 
       <Container style={styles.container}>
