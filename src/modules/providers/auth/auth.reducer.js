@@ -5,7 +5,7 @@ import {
   REDIRECT_NOTICE, RESET_REDIRECT_NOTICE
 } from './auth.actions';
 
-
+import{ notificationState} from '../notification/notification.reducer';
 import { statement } from '@babel/template';
 
 
@@ -104,7 +104,11 @@ export default (state = userInitialState, action) => {
         needToRedirect: false
       }
     case LOGOUT:
-      return userInitialState;
+      console.log(JSON.stringify(notificationState))
+      return{
+         userInitialState,
+        notificationState
+      }
   
 
     default:
