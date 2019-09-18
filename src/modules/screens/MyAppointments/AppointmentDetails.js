@@ -9,11 +9,11 @@ import StarRating from 'react-native-star-rating';
 import moment from 'moment';
 import { NavigationEvents } from 'react-navigation';
 import { viewUserReviews, bindDoctorDetails, appointmentStatusUpdate, appointmentDetails } from '../../providers/bookappointment/bookappointment.action';
-import { formatDate, dateDiff } from '../../../setup/helpers';
+import { formatDate, dateDiff ,getAllEducation,getAllSpecialist} from '../../../setup/helpers';
 
 import { Loader } from '../../../components/ContentLoader'
 import { RenderHospitalAddress } from '../../common';
-import { renderProfileImage ,getAllEducation,getAllSpecialist} from '../../common'
+import { renderProfileImage } from '../../common'
 class AppointmentDetails extends Component {
   constructor(props) {
     super(props)
@@ -87,17 +87,13 @@ class AppointmentDetails extends Component {
         let educationDetails = '';
         if (resultDetails.data.education != undefined) {
           educationDetails =getAllEducation(resultDetails.data.education)
-          // resultDetails.data.education.map(education => {
-          //   return education.degree;
-          // }).join(",");
+          
         }
         this.setState({ education: educationDetails })
-        let specialistDetails = [];
+        let specialistDetails = '';
         if (resultDetails.data.specialist != undefined) {
           specialistDetails = getAllSpecialist(resultDetails.data.specialist) 
-          // resultDetails.data.specialist.map(categories => {
-          //   return categories.category;
-          // }).join(",");
+          
         }
         this.setState({ specialist: specialistDetails.toString() })
         if (resultDetails.data.hospital != undefined) {
@@ -466,7 +462,8 @@ class AppointmentDetails extends Component {
 
                 </List>
               </Card>
-              {doctorData.language != undefined ?
+            
+              {doctorData.language .length!= 0 ?
                 <Card style={{ backgroundColor: '#ffffff', borderRadius: 10, padding: 10 }}>
 
                   <Grid style={{ margin: 5 }}>

@@ -28,19 +28,12 @@ import { NavigationEvents } from 'react-navigation';
 
 import { userReviews } from "../../providers/profile/profile.action";
 import { hasLoggedIn } from "../../providers/auth/auth.actions";
-import {
-	formatDate,
-	addTimeUnit,
-	subTimeUnit
-} from "../../../setup/helpers";
-import {
-	getUserAppointments,
-	viewUserReviews,
-	getMultipleDoctorDetails
-} from "../../providers/bookappointment/bookappointment.action";
+import {formatDate,addTimeUnit,subMoment,addMoment,subTimeUnit ,getAllEducation,getAllSpecialist} from "../../../setup/helpers";
+import {getUserAppointments,viewUserReviews,getMultipleDoctorDetails} from "../../providers/bookappointment/bookappointment.action";
 import noAppointmentImage from "../../../../assets/images/noappointment.png";
 import Spinner from "../../../components/Spinner";
-import { renderProfileImage ,getAllEducation,getAllSpecialist} from '../../common'
+import { renderProfileImage } from '../../common'
+// import moment from "moment";
 
 class MyAppoinmentList extends Component {
 	constructor(props) {
@@ -103,12 +96,19 @@ class MyAppoinmentList extends Component {
 	upCommingAppointment = async () => {
 		try {
 			let userId = await AsyncStorage.getItem("userId");
+			//upcomming filter utc format
+			// let filters = {
+			// 	startDate: moment().utc(),
+			// 	endDate: addMoment(new Date(), 1, "years").utc()
+			// };
+		
 			let filters = {
-				startDate: new Date(),
+				startDate:new Date(),
 				endDate: addTimeUnit(new Date(), 1, "years")
 			};
+			
 			let upCommingAppointmentResult = await getUserAppointments(userId, filters);
-
+              
 			if (upCommingAppointmentResult.success) {
 				let doctorInfo = new Map();
 				upCommingAppointmentResult = upCommingAppointmentResult.data;
@@ -127,14 +127,10 @@ class MyAppoinmentList extends Component {
 
 					if (doctorData.education != undefined) {
 						educationDetails =  getAllEducation(doctorData.education)
-						//  doctorData.education.map(education => {
-						// 	return education.degree;
-						// }).join(",");
+						
 					} if (doctorData.specialist != undefined) {
 						speaciallistDetails =   getAllSpecialist(doctorData.specialist)
-						// doctorData.specialist.map(categories => {
-						// 	return categories.category;
-						// }).join(",");
+						
 					}
 
 
@@ -170,10 +166,17 @@ class MyAppoinmentList extends Component {
 	pastAppointment = async () => {
 		try {
 			let userId = await AsyncStorage.getItem("userId");
+	 
+			//utc format in filter Date result Didnot come
+		//	 let filters = { startDate: moment().utc(),
+			// 	endDate: subMoment(new Date(), 1, "years").utc() };
+		
 
-			let filters = { endDate: new Date(), startDate: subTimeUnit(new Date(), 1, "years") };
+			let filters = { startDate:new Date(),
+				          endDate: subTimeUnit(new Date(), 1, "years") };
 
 			let pastAppointmentResult = await getUserAppointments(userId, filters);
+		      
 			let viewUserReviewResult = await viewUserReviews("user", userId, '?skip=0');
 
 			if (pastAppointmentResult.success) {
@@ -202,21 +205,12 @@ class MyAppoinmentList extends Component {
 					let educationDetails = ' ', speaciallistDetails = '';
 					
 					 if (doctorData.education != undefined) {
-						educationDetails=getAllEducation(doctorData.education)
-					// 	educationDetails = doctorData.education.map(education => {
-
-					// 		return education.degree;
-					// 	}).join(",");
+					
 
 
 					}
 
-					// if (doctorData.specialist != undefined) {
-					// 	speaciallistDetails = doctorData.specialist.map(categories => {
-					// 		return categories.category;
-					// 	}).join(",");
-
-					// }
+				
 					if (doctorData.specialist != undefined) {
 						speaciallistDetails= getAllSpecialist(doctorData.specialist)
                        
@@ -234,27 +228,6 @@ class MyAppoinmentList extends Component {
 				let pastDoctorDetails = [];
 				pastAppointmentResult.map((doctorData, index) => {
 
-
-
-					// let ratting;
-					// if (doctorData.appointment_status == "COMPLETED") {
-
-					// 	viewUserReviewResult.map(viewUserReview => {
-
-
-
-
-					// 		if (doctorData._id === viewUserReview.appointment_id) {
-					// 			console.log('pastAppointmentResult' + doctorData._id + '=review' + viewUserReview.appointment_id);
-
-					// 			ratting = viewUserReview.overall_rating
-
-
-					// 		}
-
-					// 	});
-
-					// }
 					let ratting;
 					if (doctorData.appointment_status == "COMPLETED") {
 						let rating = reviewRate.get(doctorData._id);
@@ -295,7 +268,7 @@ class MyAppoinmentList extends Component {
 	navigateAddReview(item) {
 		let data = item.appointmentResult;
 		data.prefix = item.prefix
-		console.log(data)
+		
 		this.props.navigation.navigate('InsertReview', { appointmentDetail: data })
 
 	}
