@@ -171,3 +171,19 @@ export function getAllSpecialist(data) {
      return speaciallistDetails
        
 }
+
+export function getAllId(data) {
+
+let dataIds =[];
+ data.map((element, index) => {
+ if( !dataIds.includes(element.doctor_id)){
+  dataIds.push( element.doctor_id)
+ }
+  
+  
+})
+let value=dataIds.join(",");
+
+return value
+
+}

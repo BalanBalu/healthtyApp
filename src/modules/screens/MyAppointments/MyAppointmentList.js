@@ -28,7 +28,7 @@ import { NavigationEvents } from 'react-navigation';
 
 import { userReviews } from "../../providers/profile/profile.action";
 import { hasLoggedIn } from "../../providers/auth/auth.actions";
-import {formatDate,addTimeUnit,subMoment,addMoment,subTimeUnit ,getAllEducation,getAllSpecialist} from "../../../setup/helpers";
+import {formatDate,addTimeUnit,subMoment,addMoment,subTimeUnit ,getAllEducation,getAllSpecialist,getAllId} from "../../../setup/helpers";
 import {getUserAppointments,viewUserReviews,getMultipleDoctorDetails} from "../../providers/bookappointment/bookappointment.action";
 import noAppointmentImage from "../../../../assets/images/noappointment.png";
 import Spinner from "../../../components/Spinner";
@@ -112,11 +112,13 @@ class MyAppoinmentList extends Component {
 			if (upCommingAppointmentResult.success) {
 				let doctorInfo = new Map();
 				upCommingAppointmentResult = upCommingAppointmentResult.data;
+				console.log(upCommingAppointmentResult.length)
+				let doctorIds = getAllId(upCommingAppointmentResult) 
+				// let doctorIds = upCommingAppointmentResult.map(appointmentResult => {
 
-				let doctorIds = upCommingAppointmentResult.map(appointmentResult => {
+				// 	return appointmentResult.doctor_id;
+				// }).join(",");
 
-					return appointmentResult.doctor_id;
-				}).join(",");
 
 				let speciallistResult = await getMultipleDoctorDetails(doctorIds, "specialist,education,prefix,profile_image,gender");
 
@@ -192,11 +194,13 @@ class MyAppoinmentList extends Component {
 
 					})
 				}
+           
+	let doctorIds = getAllId(pastAppointmentResult) 
+				console.log(doctorIds)
+				// .map((appointmentResult, index) => {
 
-				let doctorIds = pastAppointmentResult.map((appointmentResult, index) => {
-
-					return appointmentResult.doctor_id;
-				}).join(",");
+				// 	return appointmentResult.doctor_id;
+				// }).join(",");
 
 				let speciallistResult = await getMultipleDoctorDetails(doctorIds, "specialist,education,prefix,profile_image,gender");
 
