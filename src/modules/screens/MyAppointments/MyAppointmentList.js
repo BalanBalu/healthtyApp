@@ -174,11 +174,11 @@ class MyAppoinmentList extends Component {
 			// 	endDate: subMoment(new Date(), 1, "years").utc() };
 		
 
-			let filters = { startDate:new Date(),
-				          endDate: subTimeUnit(new Date(), 1, "years") };
+			let filters = { startDate:subTimeUnit(new Date(), 1, "years"),
+				          endDate: new Date() };
 
 			let pastAppointmentResult = await getUserAppointments(userId, filters);
-		      
+		      console.log(JSON.stringify(pastAppointmentResult));
 			let viewUserReviewResult = await viewUserReviews("user", userId, '?skip=0');
 
 			if (pastAppointmentResult.success) {
