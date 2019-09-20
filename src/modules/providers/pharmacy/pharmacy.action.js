@@ -51,10 +51,10 @@ export async function getMedicineDetails() {
 
   /* Medicine Order List */
 
-  export async function getMedicineOrderList(user_id) {
+  export async function getMedicineOrderList(userId) {
     try {
       
-      let endPoint = 'ordersDetails/' + user_id + '&fields='+ order_items;
+      let endPoint = 'ordersDetails?userId='+userId;
       console.log(endPoint);
       let response = await getService(endPoint);
       let respData = response.data;
@@ -67,26 +67,6 @@ export async function getMedicineDetails() {
     }
   }
 
-
-
-
-
-  /*get specific order list*/
-export async function getMyOrders(orderId) {
-  try {
-    
-    let endPoint = 'ordersDetails?orderId='+orderId
-    console.log(endPoint);
-    let response = await getService(endPoint);
-    let respData = response.data;
-    return respData;  
-  } catch (e) {
-    return {
-      message: 'exception' + e,
-      success: false
-    }
-  }
-}
 
 /*get pharmacy list*/
 export async function getpharmacy(pharmacy_id) {
