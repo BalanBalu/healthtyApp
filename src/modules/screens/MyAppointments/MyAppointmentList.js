@@ -210,7 +210,7 @@ class MyAppoinmentList extends Component {
 					
 					 if (doctorData.education != undefined) {
 					
-
+						educationDetails =  getAllEducation(doctorData.education)
 
 					}
 
