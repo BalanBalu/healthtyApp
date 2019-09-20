@@ -582,7 +582,7 @@ class PaymentPage extends Component {
                                 <Card style={{ marginTop: 15, backgroundColor: '#fff', height: 60 }}>
                                     <View>
                                         <SectionedMultiSelect
-                                            items={this.availableNetBankingData}
+                                            items={this.availableNetBankingData.filter((ele, index)=> { return index >= 5 })}
                                             uniqueKey="code"
                                             selectText="Choose Other Banks"
                                             color={{ primary: '#3f51b5' }}

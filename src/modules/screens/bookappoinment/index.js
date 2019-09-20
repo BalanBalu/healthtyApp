@@ -358,7 +358,7 @@ onPressContinueForPaymentReview(doctorData, selectedSlotItem) {
                      <Text style={{ fontFamily: 'OpenSans',fontSize:12,fontWeight:'bold'}}>{(doctorData.prefix ? doctorData.prefix + '. ' : '') + (doctorData.first_name || '') + ' ' + (doctorData.last_name || '')}</Text>
                   </Row>
                   <Row style={{marginLeft:55,}}>
-                     <Text note  style={{ fontFamily: 'OpenSans',marginTop:-20 ,fontSize:11}}>{(getDoctorEducation(doctorData.education)) + ', ' +  getDoctorSpecialist(doctorData.specialist)}</Text>
+                     <Text note  style={{ fontFamily: 'OpenSans',marginTop:-20 ,fontSize:11}}>{(getDoctorEducation(doctorData.education)) + ' ' + getDoctorSpecialist(doctorData.specialist)}</Text>
                   </Row>
                   
                </Col>

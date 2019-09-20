@@ -482,12 +482,12 @@ const styles = StyleSheet.create({
     },
     viewDocButtonBgGreeen: {
         borderRadius: 10,
-        backgroundColor: '#69f025',
+        backgroundColor: '#775DA3',
         height: 48
     },
     viewDocButtonBgGray: {
         borderRadius: 10,
-        backgroundColor: '#698d52',
+        backgroundColor: '#A9A9A9',
         height: 48
     }
 
