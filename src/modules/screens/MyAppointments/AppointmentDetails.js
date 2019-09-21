@@ -12,8 +12,8 @@ import { viewUserReviews, bindDoctorDetails, appointmentStatusUpdate, appointmen
 import { formatDate, dateDiff } from '../../../setup/helpers';
 
 import { Loader } from '../../../components/ContentLoader'
-import { RenderHospitalAddress } from '../../common';
-import { renderProfileImage } from '../../common'
+
+import { renderProfileImage , RenderHospitalAddress,getAllEducation,getAllSpecialist} from '../../common'
 class AppointmentDetails extends Component {
   constructor(props) {
     super(props)
@@ -86,19 +86,14 @@ class AppointmentDetails extends Component {
 
         let educationDetails = '';
         if (resultDetails.data.education != undefined) {
-          educationDetails = resultDetails.data.education.map(education => {
-            return education.degree;
-          }).join(",");
+          educationDetails =getAllEducation(resultDetails.data.education)
+          
         }
         this.setState({ education: educationDetails })
-        let specialistDetails = [];
+        let specialistDetails = '';
         if (resultDetails.data.specialist != undefined) {
-          resultDetails.data.specialist.map(categories => {
-            if (!specialistDetails.includes(categories.category)) {
-              specialistDetails.push(categories.category)
-            }
-
-          })
+          specialistDetails = getAllSpecialist(resultDetails.data.specialist) 
+          
         }
         this.setState({ specialist: specialistDetails.toString() })
         if (resultDetails.data.hospital != undefined) {
@@ -265,7 +260,7 @@ class AppointmentDetails extends Component {
                   </Left>
                   <Body>
 
-                    <Text style={{ fontSize: 15, fontFamily: 'OpenSans', fontWeight: 'bold' }}>{doctorData && doctorData.prefix != undefined ? doctorData && doctorData.prefix : '' + + doctorData && doctorData.first_name + " " + doctorData && doctorData.last_name},
+                    <Text style={{ fontSize: 15, fontFamily: 'OpenSans', fontWeight: 'bold' }}>{(doctorData && doctorData.prefix != undefined ? doctorData && doctorData.prefix : '') +(  doctorData && doctorData.first_name )+ " " + (doctorData && doctorData.last_name)},
                       <Text style={{ fontSize: 13, fontFamily: 'OpenSans' }}>{education}</Text>
 
                     </Text>
@@ -388,7 +383,7 @@ class AppointmentDetails extends Component {
                                 rating={reviewData[0] && reviewData[0].overall_rating}
 
                               />
-                              <Text note style={styles.customText}>{reviewData[0] && reviewData[0].comments != undefined ? reviewData[0] && reviewData[0].comments : null}} </Text>
+                              <Text note style={styles.customText}>{reviewData[0] && reviewData[0].comments} </Text>
                             </Body>
                           </ListItem>
                           :
@@ -467,7 +462,8 @@ class AppointmentDetails extends Component {
 
                 </List>
               </Card>
-              {doctorData.language != undefined ?
+            
+              {doctorData.language .length!= 0 ?
                 <Card style={{ backgroundColor: '#ffffff', borderRadius: 10, padding: 10 }}>
 
                   <Grid style={{ margin: 5 }}>
