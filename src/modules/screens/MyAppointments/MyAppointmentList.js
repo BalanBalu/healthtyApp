@@ -28,11 +28,11 @@ import { NavigationEvents } from 'react-navigation';
 
 import { userReviews } from "../../providers/profile/profile.action";
 import { hasLoggedIn } from "../../providers/auth/auth.actions";
-import {formatDate,addTimeUnit,subMoment,addMoment,subTimeUnit ,getAllEducation,getAllSpecialist,getAllId} from "../../../setup/helpers";
+import {formatDate,addTimeUnit,subMoment,addMoment,subTimeUnit ,getAllId} from "../../../setup/helpers";
 import {getUserAppointments,viewUserReviews,getMultipleDoctorDetails} from "../../providers/bookappointment/bookappointment.action";
 import noAppointmentImage from "../../../../assets/images/noappointment.png";
 import Spinner from "../../../components/Spinner";
-import { renderProfileImage } from '../../common'
+import { renderProfileImage,getAllEducation,getAllSpecialist } from '../../common'
 // import moment from "moment";
 
 class MyAppoinmentList extends Component {

@@ -9,11 +9,11 @@ import StarRating from 'react-native-star-rating';
 import moment from 'moment';
 import { NavigationEvents } from 'react-navigation';
 import { viewUserReviews, bindDoctorDetails, appointmentStatusUpdate, appointmentDetails } from '../../providers/bookappointment/bookappointment.action';
-import { formatDate, dateDiff ,getAllEducation,getAllSpecialist} from '../../../setup/helpers';
+import { formatDate, dateDiff } from '../../../setup/helpers';
 
 import { Loader } from '../../../components/ContentLoader'
-import { RenderHospitalAddress } from '../../common';
-import { renderProfileImage } from '../../common'
+
+import { renderProfileImage , RenderHospitalAddress,getAllEducation,getAllSpecialist} from '../../common'
 class AppointmentDetails extends Component {
   constructor(props) {
     super(props)
