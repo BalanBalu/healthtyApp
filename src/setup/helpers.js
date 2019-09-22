@@ -143,7 +143,15 @@ export function intersection() {
   return result;
 }
 
-
+export function isOnlyLetter(inputtxt) {
+   var letters = /^[A-Za-z, ]+$/;
+   if(!inputtxt) return  false;
+   if(inputtxt.match(letters)) {
+      return true;
+   } else {
+     return false;
+   }
+}
 
 
 export function getAllId(data) {

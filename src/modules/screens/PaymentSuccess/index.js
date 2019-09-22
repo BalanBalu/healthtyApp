@@ -74,7 +74,7 @@ class PaymentSuccess extends Component {
                                      </Col>
                                      <Col style={{width:'75%',marginTop:10}}>
                                          <Row>
-                                         <Text style={styles.docHeading}> {successBookSlotDetails.prefix ? successBookSlotDetails.prefix : ''} {successBookSlotDetails.doctorName} </Text>
+                                         <Text style={styles.docHeading}>{successBookSlotDetails.prefix ? successBookSlotDetails.prefix : ''}{successBookSlotDetails.doctorName} </Text>
                                          <Text style={styles.Degree}>{getDoctorEducation(successBookSlotDetails.education)}</Text>
                                          </Row>
                                          <Row style={{marginTop:-12}}>
