@@ -6,9 +6,9 @@ import { Col, Row, Grid } from 'react-native-easy-grid';
 import { connect } from 'react-redux'
 import { StyleSheet, Image, AsyncStorage, TouchableOpacity, View,TextInput } from 'react-native';
 import { validateBooking } from '../../providers/bookappointment/bookappointment.action';
-import { formatDate } from '../../../setup/helpers';
+import { formatDate , isOnlyLetter} from '../../../setup/helpers';
 import Spinner from '../../../components/Spinner';
-import { RenderHospitalAddress } from '../../common';
+import { RenderHospitalAddress,renderDoctorImage, getDoctorEducation, getDoctorSpecialist, getAllSpecialist } from '../../common';
 //import RazorpayCheckout from 'react-native-razorpay';
 import { ScrollView } from 'react-native-gesture-handler';
 //import appIcon from '../../../../assets/Icon.png';
@@ -39,6 +39,14 @@ export default class PaymentReview extends Component {
         await this.setState({ bookSlotDetails: bookSlotDetails });
     }
     async confirmProceedPayment() {
+        let { diseaseDescription } = this.state.bookSlotDetails;
+        if(!isOnlyLetter(diseaseDescription)) {
+            Toast.show({
+                text: 'Please enter valid Reason',
+                duration: 3000
+            })
+            return
+        }
         this.setState({ isLoading: true });
         const bookingSlotData = this.state.bookSlotDetails
         const reqData = {
@@ -62,6 +70,15 @@ export default class PaymentReview extends Component {
 
     }
     async processToPayLater() {
+        let { diseaseDescription } = this.state.bookSlotDetails;
+        if(!isOnlyLetter(diseaseDescription)) {
+            Toast.show({
+                text: 'Please enter valid Reason',
+                duration: 3000
+            })
+            return
+        }
+        console.log(this.state.bookSlotDetails);
         const userId = await AsyncStorage.getItem('userId');
         this.BookAppointmentPaymentUpdate = new BookAppointmentPaymentUpdate();
         let response = await this.BookAppointmentPaymentUpdate.updatePaymentDetails(true, {}, 'cash', this.state.bookSlotDetails, 'APPOINTMENT', userId);
@@ -90,41 +107,44 @@ export default class PaymentReview extends Component {
                     <CardItem header style={styles.cardItem}>
                      <Grid>
                       <Col style={{alignItems:'center'}}>
-                      <Thumbnail square source={{ uri: 'https://res.cloudinary.com/demo/image/upload/w_200,h_200,c_thumb,g_face,r_max/face_left.png' }} style={{width:100,height:100,marginTop:-60}}/>
-                       <Text style={styles.cardItemText}>Reshma Guptha (M.B.B.S)</Text>
-                       <Text style={styles. cardItemText2}>Heart Specialist</Text>
+                      <Thumbnail square source={ renderDoctorImage(bookSlotDetails) } style={{width:100,height:100,marginTop:-60}}/>
+                       <Text style={styles.cardItemText}>{bookSlotDetails.prefix || ''} {bookSlotDetails.doctorName} {getDoctorEducation(bookSlotDetails.education)}</Text>
+                       <Text style={styles. cardItemText2}>{getAllSpecialist(bookSlotDetails.specialist)}</Text>
                       </Col>
                      </Grid>
                     </CardItem>
                  </Card>
                 <Card style={styles.innerCard}>
                 <Grid>
-                  <Row style={{marginTop:10,marginLeft:10}} >
+                  {/* <Row style={{marginTop:10,marginLeft:10}} >
                    <Icon name="ios-medkit" style={{fontSize:20,marginTop:-5}}/>
                    <Text note style={styles.diseaseText}>Typhoid</Text>
-                  </Row>
-                 <View style={{marginTop:10,marginLeft:10}} >
-                 <Row>
+                  </Row> */}
+                  {bookSlotDetails.slotData ? 
+            <View style={{marginTop:10,marginLeft:10}} >
+              <Row>
                 <Icon name="ios-pin" style={{fontSize:20}}/>
                 <Col>
-                <Text  style={styles.hospitalText}>Mahatma Gandhi Hospital</Text>
-                <Text note style={styles.hosAddressText}>Tonk Rd, near India International School,Ricco Industrial Area,Sitapura,Jaipur,Rajasthan- 600122.</Text>
+                <Text  style={styles.hospitalText}>{bookSlotDetails.slotData.location.name}</Text>
+                <Text note style={styles.hosAddressText}>{bookSlotDetails.slotData.location.location.address.no_and_street + ', '}
+                    {bookSlotDetails.slotData.location.location.address.city + ', '} 
+                    {bookSlotDetails.slotData.location.location.address.state + '-'} {bookSlotDetails.slotData.location.location.address.pin_code}.</Text>
                 </Col>
                 </Row>
-              </View>
+              </View> : null}
               <Row style={{ borderTopColor:'gray', borderTopWidth:1,marginTop:10}}>
                <Col style={{ borderRightColor:'gray', borderRightWidth:1,marginTop:5,alignItems:'center'}}>
                 <Icon name='md-calendar' style={{color:'#0055A5',fontSize:40}} />
-                <Text style={{color:'#0055A5'}}>15th November, 2019</Text>
+                <Text style={{color:'#0055A5'}}>{bookSlotDetails.slotData && formatDate(bookSlotDetails.slotData.slotStartDateAndTime, 'Do MMMM, YYYY')}</Text>
                </Col>
                <Col style={{alignItems:'center',marginTop:5}}>
                 <Icon name="md-clock" style={{color:'green',fontSize:40}}/>
-                <Text style={{color:'green'}}>07.00 PM - 08.00 PM</Text>
+                <Text style={{color:'green'}}>{bookSlotDetails.slotData && formatDate(bookSlotDetails.slotData.slotStartDateAndTime, 'hh:mm A')} - {bookSlotDetails.slotData && formatDate(bookSlotDetails.slotData.slotEndDateAndTime, 'hh:mm A')}</Text>
                 </Col>
               </Row>
             </Grid>
            <CardItem footer style={styles.cardItem2}>
-             <Text style={styles.cardItemText3} >Total Fees - RS.500 /-</Text>
+             <Text style={styles.cardItemText3} >Total Fees - {'\u20B9'}{bookSlotDetails.slotData && bookSlotDetails.slotData.fee}</Text>
             </CardItem>
             </Card>
               <View>
@@ -134,88 +154,30 @@ export default class PaymentReview extends Component {
                   </Row>
                  <Form style={{marginRight:1,marginLeft:-13}}>
                     <Item>
-                      <TextInput multiline={true} placeholder="Write Reason...." style={styles.textInput} />
+                      <TextInput 
+                        onChangeText={(diseaseDescription)=> { 
+                            var bookSlotDetails = {...this.state.bookSlotDetails}
+                            bookSlotDetails.diseaseDescription = diseaseDescription;
+                            this.setState({bookSlotDetails})  
+                        }}
+                      multiline={true} placeholder="Write Reason...." 
+                      style={styles.textInput} />
                     </Item>
                     </Form>
                   </View>
                   <Row style={{justifyContent:'center',}}>
-                <Button  style={styles.payButton}>
-                 <Text style={styles.payButtonText}>Pay Now</Text>
-                 </Button>
-                 <Button  style={styles.payButton1}>
+                <Button  style={styles.payButton} 
+                    onPress={() => this.confirmProceedPayment()} >
+                    <Text style={styles.payButtonText}>Pay Now</Text>
+                </Button>
+                 <Button  style={styles.payButton1} onPress={() => this.processToPayLater()}>
                  <Text style={styles.payButtonText}>Pay Later</Text>
                  </Button>
              </Row>
             </View>
           </Content>
       </Container>
-            // <Container style={styles.container}>
-
-            //     <Content style={styles.bodyContent}>
-            //         <ScrollView>
-            //             <Spinner color='blue'
-            //                 visible={this.state.isLoading}
-            //                 textContent={'Loading...'}
-            //             />
-
-            //             <Grid style={{ borderBottomWidth: 0.3, color: 'gray', padding: 10, marginLeft: 10 }}>
-            //                 <Row>
-            //                     <Col style={{ width: '90%' }}>
-
-            //                         <Text style={styles.customizedText} note>Date And Time</Text>
-            //                         <Text style={styles.customizedText}>{bookSlotDetails.slotData && formatDate(bookSlotDetails.slotData.slotStartDateAndTime, 'DD MMMM, YYYY')}</Text>
-            //                         <Text style={styles.customizedText}>{bookSlotDetails.slotData && formatDate(bookSlotDetails.slotData.slotStartDateAndTime, 'hh:mm A')} to {bookSlotDetails.slotData && formatDate(bookSlotDetails.slotData.slotEndDateAndTime, 'hh:mm A')}</Text>
-            //                         <Text note style={styles.customizedText}></Text>
-
-            //                     </Col>
-
-            //                 </Row>
-            //             </Grid>
-
-            //             <Grid style={{ borderBottomWidth: 0, color: '#f2f2f2', padding: 10, marginLeft: 10 }}>
-            //                 <Row>
-            //                     <Col style={{ width: '90%' }}>
-            //                         <Text note style={styles.customizedText}>Doctor</Text>
-            //                         <Text style={styles.customizedText}>{bookSlotDetails.prefix || ''} {bookSlotDetails.doctorName}</Text>
-            //                     </Col>
-
-            //                 </Row>
-            //             </Grid>
-
-            //             {bookSlotDetails.slotData ?
-            //                 <RenderHospitalAddress gridStyle={{  marginLeft: 20, width: '100%'}}
-            //                     textStyle={styles.customizedText}
-            //                     hospotalNameTextStyle={{ fontFamily: 'OpenSans-SemiBold' }}
-            //                     hospitalAddress={bookSlotDetails.slotData && bookSlotDetails.slotData.location}
-            //                 />
-            //                 : null}
-
-            //             <Grid style={{ borderBottomWidth: 0.3, color: '#f2f2f2', padding: 10, marginLeft: 10 }}>
-
-            //             </Grid>
-
-            //             <Grid style={{ borderBottomWidth: 0.3, color: '#f2f2f2', padding: 10, marginLeft: 10 }}>
-            //                 <Row>
-            //                     <Col style={{ width: '90%' }}>
-            //                         <Text style={styles.customizedText}>fee</Text>
-            //                     </Col>
-            //                     <Col style={{ width: '90%' }}>
-            //                         <Text style={styles.customizedText}>{bookSlotDetails.slotData && bookSlotDetails.slotData.fee}</Text>
-            //                     </Col>
-            //                 </Row>
-            //             </Grid>
-            //             <Button block success style={{ borderRadius: 6, margin: 6 }} onPress={() => this.processToPayLater()}>
-            //                 <Text style={{fontSize:15,fontFamily:'OpenSans',fontWeight:"bold"}} uppercase={false}>Pay Later</Text>
-            //             </Button>
-            //             <Button block success style={{ padding: 10, borderRadius: 6, margin: 6, marginBottom: 20 }} onPress={() =>
-            //                 this.confirmProceedPayment()}>
-            //                 <Text style={{fontSize:15,fontFamily:'OpenSans',fontWeight:"bold"}} uppercase={false} >Pay Now</Text>
-            //             </Button>
-            //         </ScrollView>
-            //     </Content>
-
-            // </Container>
-
+           
         )
     }
 

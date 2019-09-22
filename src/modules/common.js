@@ -143,7 +143,7 @@ export function getDoctorExperience(calulatedExperience) {
     } 
     if(calulatedExperience.year == 0) {
         month = calulatedExperience.month;
-        return `${month} Month` + month <= 1 ? '' : 's'
+        return `${month} Month` + (month <= 1 ? '' : 's')
     } else {
       year = calulatedExperience.year;
       return `${year} Year` + ( year <= 1 ? '' : 's')
@@ -204,15 +204,18 @@ export  function getAllEducation(data) {
   
   }
   export function getAllSpecialist(data) {
-        let speaciallistDetails=[];
-     data.map(categories => {
-         if(!speaciallistDetails.includes(categories.category)){
-         speaciallistDetails.push( categories.category);
-         }
-     })
-     speaciallistDetails=  speaciallistDetails.join(",");
-    
-       return speaciallistDetails
+    let speaciallistDetails=[];
+    if(data) {
+        data.map(categories => {
+          if(!speaciallistDetails.includes(categories.category)){
+                speaciallistDetails.push( categories.category);
+          }
+        })
+        speaciallistDetails=  speaciallistDetails.join(",");
+        return speaciallistDetails
+    } else {
+        return ''
+    }
          
   }
   
