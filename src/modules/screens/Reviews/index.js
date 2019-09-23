@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import {
     Container, Content, View, Text, Title, Header, H3, Button, Item, CardItem, Row, Col,
-    List, ListItem, Left, Right, Card, Thumbnail, Body, Icon, ScrollView, Spinner
+    List, ListItem, Left, Right, Card, Thumbnail, Body, Icon, ScrollView, Spinner,Grid
 } from 'native-base';
 import { StyleSheet, TouchableOpacity, AsyncStorage, FlatList } from 'react-native';
 import moment from 'moment';
@@ -21,6 +21,7 @@ class Reviews extends Component {
             isLoading: true,
             reviewLikeColor: false,
             userId: null,
+            starCount: 3.5
                 }
     }
     componentDidMount() {
@@ -44,7 +45,11 @@ class Reviews extends Component {
             console.log(e)
         }
     }
-
+    onStarRatingPress(rating) {
+        this.setState({
+          starCount: rating
+        });
+      }
     insertUserLikes = async (item) => {
         try {
             let reviewerId = await AsyncStorage.getItem('userId');
@@ -211,13 +216,92 @@ class Reviews extends Component {
     }
 
     render() {
+        const Review = [{name:'Reshma  Guptha',Date:'23/09/2019',review:'"dfhyjgh   sdgdfgghfghfhfgffnfh   mkjssgffgd  gfhgghgfhdgdgdgdfgd  dghdhfgfg hshfgdfshjghjshjsgjh  bgkshafhjsgahgafafdfdg  sdgf ahjkds  jjc......,',likes:'100'},
+        {name:'Anupriya',Date:'29/08/2019',review:'"dfhyjgh  mkjssgffgd  dghd hfgfg hshfgdfshj ghjshjsgjh  bgkshafhjsgahgafafdf  sdgakfjk  sdgf ahjkds  jjc......,',likes:'140'}]
         return (
             <Container style={styles.container}>
                 <Content style={styles.bodyContent}>
-                    {this.state.isLoading ? <Spinner color='blue' /> :
+                   
+                    <FlatList
+                    data={Review}
+                    renderItem={({item})=>
+                <Grid>
+                   <Row style={{marginTop:20,borderTopColor:'gray',borderTopWidth:0.5,paddingTop:20}}>
+                   <Col style={{width:'15%'}}>
+                      <Thumbnail square source={{ uri: 'https://res.cloudinary.com/demo/image/upload/w_200,h_200,c_thumb,g_face,r_max/face_left.png' }} style={{width:60,height:60,}}/>
+                      </Col>
+                      <Col style={{width:'60%',marginTop:5,marginLeft:15}}>
+                      <Text style={styles.name}>{item.name}</Text>
+                      </Col>
+                      <Col style={{width:'25%',marginTop:8}}>
+                      <Text style={styles.date}>{item.Date}</Text>
+                      </Col>
+                    </Row>
+                    <Row style={{marginLeft:60,marginTop:-20}}>
+                        <Col style={{alignItems:'center',borderRightColor:'gray',borderRightWidth:0.5}}>
+                        <StarRating
+                         fullStarColor='#FF9500'
+                         starSize={15}
+                         containerStyle={{ width: 80,marginLeft:5 }}
+                         disabled={false}
+                         maxStars={5}
+                         rating={this.state.starCount}
+                         selectedStar={(rating) => this.onStarRatingPress(rating)}
+                        />
+                         <Text style={styles.ratingText}>Cleanliness</Text>
+                        </Col>
+                        <Col style={{alignItems:'center',borderRightColor:'gray',borderRightWidth:0.5}}>
+                        <StarRating
+                         fullStarColor='#FF9500'
+                         starSize={15}
+                         containerStyle={{ width: 80,marginLeft:5 }}
+                         disabled={false}
+                         maxStars={5}
+                         rating={this.state.starCount}
+                         selectedStar={(rating) => this.onStarRatingPress(rating)}
+                        />
+                         <Text style={styles.ratingText}>Staff</Text>
+                        </Col>
+                        <Col style={{alignItems:'center'}}>
+                        <StarRating
+                         fullStarColor='#FF9500'
+                         starSize={15}
+                         containerStyle={{ width: 80,marginLeft:5 }}
+                         disabled={false}
+                         maxStars={5}
+                         rating={this.state.starCount}
+                         selectedStar={(rating) => this.onStarRatingPress(rating)}
+                        />
+                         <Text style={styles.ratingText}>Wait Time</Text>
+                        </Col>
+                    </Row>
+                    <Row style={{marginLeft:70,marginTop:10,}}>
+                        
+                        <Text note style={{fontFamily:'OpenSans',fontSize:12,width:'100%'}}>{item.review}<Text style={{fontFamily:'OpenSans',fontSize:12,}}>Read more</Text></Text> 
+
+                        
+                    </Row>
+                    <Row style={{marginLeft:70,marginTop:10}}>
+                        <Col>
+                        <Row>
+                            <Icon name="heart" style={{fontSize:20,color:'red'}} />
+                            <Text style={styles.textContent}>{item.likes}{' '}Likes</Text>
+                            <Icon name="ios-undo" style={{fontSize:20,color:'green',marginLeft:20}}/>
+                            <Text style={styles.textContent}>Reply</Text>
+                        </Row>
+                        
+                        </Col>
+                      
+                     </Row>
+                </Grid>
+                
+                    }/>
+                   
+
+                    {/* {this.state.isLoading ? <Spinner color='blue' /> :
                         <Card>
                             {this.state.getReviewsData == null ? this.renderNoReviews() : this.renderReviews()}
-                        </Card>}
+                        </Card>} */}
                 </Content>
             </Container>
         )
@@ -226,8 +310,8 @@ class Reviews extends Component {
 
 
 const styles = StyleSheet.create({
-    container: {
-        padding: 5
+    bodyContent: {
+       
     },
 
     button1: {
@@ -253,6 +337,27 @@ const styles = StyleSheet.create({
         backgroundColor: 'white',
         borderWidth: 1,
         marginBottom: 5
+    },
+    name:{
+        fontFamily:'OpenSans',
+        fontSize:12,
+        fontWeight:'bold',
+         width:'80%'
+    },
+    date:{
+        fontFamily:'OpenSans',
+        fontSize:12,
+    },
+    ratingText:{
+        fontFamily:'OpenSans',
+        fontSize:12,
+        fontWeight:'bold',
+        marginTop:10
+    },
+    textContent:{
+        fontFamily:'OpenSans',
+        fontSize:12,
+        marginLeft:3
     }
 }
 )
