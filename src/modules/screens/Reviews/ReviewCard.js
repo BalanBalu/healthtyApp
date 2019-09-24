@@ -80,7 +80,10 @@ function getLikesCount(item) {
     let likesCount = 0
     let reviewId = item._id;
     if(item.reactionData) {
-        likesCount = item.reactionData.length
+        likesCountData = item.reactionData.filter(element => 
+            (element.reaction_type === "LIKE" && element.active === true))
+        
+        likesCount = likesCountData.length  
     }
     return currentLikedRewiedIds[reviewId] === true ? (likesCount + 1) : likesCount;
 }
