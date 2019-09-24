@@ -103,10 +103,9 @@ export default (state = userInitialState, action) => {
       }
     case LOGOUT:
       
-      return{
-         userInitialState,
+      return userInitialState,
         
-      }
+      
   
 
     default:
