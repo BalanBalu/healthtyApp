@@ -1,5 +1,5 @@
 import {
-    NOTIFICATION_REQUEST, NOTIFICATION_RESPONSE, NOTIFICATION_HAS_ERROR,
+    NOTIFICATION_REQUEST, NOTIFICATION_RESPONSE, NOTIFICATION_HAS_ERROR,NOTIFICATION_RESET
 } from '../notification/notification.actions';
 export const notificationState = {
     message: null,
@@ -44,6 +44,14 @@ export default (state = notificationState, action) => {
                 notificationIds:action.notificationIds,
 
             }
+            case NOTIFICATION_RESET:
+
+                return {
+                    ...state,
+                    notificationCount: null,
+                    notificationIds:null,
+    
+                }
 
         default:
             return state;
