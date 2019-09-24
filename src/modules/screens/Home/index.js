@@ -9,7 +9,6 @@ import { StyleSheet, Image, View, TouchableOpacity, AsyncStorage, ScrollView, Fl
 // import { ScrollView, FlatList } from 'react-native-gesture-handler';
 import { catagries } from '../../providers/catagries/catagries.actions';
 import { MAP_BOX_PUBLIC_TOKEN , IS_ANDROID } from '../../../setup/config';
-import RNAndroidLocationEnabler from 'react-native-android-location-enabler';
 import MapboxGL from '@react-native-mapbox-gl/maps';
 MapboxGL.setAccessToken(MAP_BOX_PUBLIC_TOKEN);
 
