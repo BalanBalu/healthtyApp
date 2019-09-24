@@ -8,6 +8,7 @@ import StarRating from 'react-native-star-rating';
 import { renderProfileImage } from '../../common';
 import { formatDate, dateDiff, getMoment, subString } from '../../../setup/helpers';
 import { userReviews, insertLikesDataForReviews } from '../../providers/profile/profile.action';
+currentLikedRewiedIds = {};
 function relativeTimeView(review_date) {
     try {
         var postedDate = review_date;
@@ -35,12 +36,16 @@ function getCommentsToRender(comments) {
     }
 }
 function getReactionColor (item, reactionerId) {
-    console.log('item'+JSON.stringify(item.reactionData))
+    let reviewId = item._id;
+    if(currentLikedRewiedIds[reviewId] !== undefined) {
+        return currentLikedRewiedIds[reviewId]
+    }
+
     if(item.reactionData !=undefined ) {
         let reactionerLiked = false;
-       item.reactionData.some((reactionElement)=> {
-         if(reactionElement.reviewer_id === reactionerId && reactionElement.active === true) {
-            returnreactionerLiked = true;
+       item.reactionData.some(reactionElement=> {
+         if(reactionElement.reviewer_id == reactionerId && reactionElement.active === true) {
+            reactionerLiked = true;
             return
          }
        })
@@ -49,16 +54,26 @@ function getReactionColor (item, reactionerId) {
         return false
     } 
 }
-async function insertUserLikes(item, reviewerId)  {
+async function insertUserLikes(item, reviewerId, props)  {
     try {
+        debugger
+        isAlreadyLiked = getReactionColor(item, reviewerId);
+        console.log(isAlreadyLiked);
+        
         let reviewId = item._id;
          let reactionData = {
             reviewerType: 'USER',
             reactionType: 'LIKE',
-            active: true
+            active: !isAlreadyLiked
         }
-        let result = await insertLikesDataForReviews(reviewId, reviewerId, reactionData)
         
+        
+        console.log(props);
+        console.log(reactionData);
+        let result = await insertLikesDataForReviews(reviewId, reviewerId, reactionData)
+        currentLikedRewiedIds[reviewId] = reactionData.active;
+        console.log(result);
+        props.refreshCount();
         if (result.success) {
            
           
@@ -68,9 +83,17 @@ async function insertUserLikes(item, reviewerId)  {
         console.log(e)
     }
 }
+function getLikesCount(item) {
+    let likesCount = 0
+    let reviewId = item._id;
+    if(item.reactionData) {
+        likesCount = item.reactionData.length
+    }
+    return currentLikedRewiedIds[reviewId] === true ? (likesCount + 1) : likesCount;
+}
 export const RenderReviewData = (props) => {
     const { item, userId } = props;
-    console.log(item);
+    console.log('Is Refreshing');
     return  ( 
         <Grid>
             <Row style={{marginTop:20,borderTopColor:'gray',borderTopWidth:0.5,paddingTop:20}}>
@@ -128,11 +151,11 @@ export const RenderReviewData = (props) => {
             <Row style={{marginLeft:70,marginTop:10}}>
                 <Col>
                     <Row>
-                      <TouchableOpacity style={{flexDirection : 'row'}} onPress={()=> insertUserLikes(item, userId)}>
+                      <TouchableOpacity style={{flexDirection : 'row'}} onPress={()=> insertUserLikes(item, userId, props)}>
                         <Icon name="heart" style={getReactionColor(item, userId) ? { fontSize: 20 , color : 'red'} : { fontSize: 20 } } />
                       
                       </TouchableOpacity>  
-                        <Text style={styles.textContent}>{item.reactionData ? item.reactionData.length : 0 }{' '}Likes</Text> 
+                        <Text style={styles.textContent}>{getLikesCount(item)}{' '}Likes</Text> 
                         {/* <Icon name="ios-undo" style={{fontSize:20,color:'green',marginLeft:20}}/>
                         <Text style={styles.textContent}>Reply</Text> */}
                     </Row>

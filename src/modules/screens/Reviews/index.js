@@ -21,8 +21,9 @@ class Reviews extends Component {
             isLoading: true,
             reviewLikeColor: false,
             userId: null,
-            starCount: 3.5
-                }
+            starCount: 3.5,
+            refreshCount : 0
+        }
     }
     componentDidMount() {
         this.getUserReview();
@@ -52,6 +53,7 @@ class Reviews extends Component {
       }
     insertUserLikes = async (item) => {
         try {
+            debugger
             let reviewerId = await AsyncStorage.getItem('userId');
             let reviewId = item._id;
              let reactionData = {
@@ -234,11 +236,13 @@ class Reviews extends Component {
                    
                     <FlatList
                     data={this.state.getReviewsData}
+                    extraData={this.state.refreshCount}
                     keyExtractor={(item, index) => index.toString()}
                     renderItem={({item})=>
                         <RenderReviewData 
                             item={item}
                             userId={this.state.userId}
+                            refreshCount={()=> this.setState({ refreshCount : this.state.refreshCount + 1}) }
                         />
                 
                     }/>
