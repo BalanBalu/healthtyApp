@@ -175,7 +175,7 @@ class OrderPaymentAddress extends Component {
                 <Card transparent>
                     <Grid style={{ marginTop: 5 }}>
                         <Col>
-                            <Text style={{ fontSize: 16, fontFamily: 'OpenSans', marginLeft: 5 }}>E-mail</Text>
+                            <Text style={{ fontSize: 14, fontFamily: 'OpenSans', marginLeft: 5 }}>E-mail</Text>
 
                             <Input
                                 placeholder="E-mail"
@@ -193,7 +193,7 @@ class OrderPaymentAddress extends Component {
 
                         </Col>
                         <Col>
-                            <Text style={{ fontSize: 16, fontFamily: 'OpenSans', marginLeft: 5 }}>Phone</Text>
+                            <Text style={{ fontSize: 14, fontFamily: 'OpenSans', marginLeft: 5 }}>Phone</Text>
                             <Input
                                 placeholder="Phone_No"
                                 style={styles.transparentLabel}
@@ -212,8 +212,8 @@ class OrderPaymentAddress extends Component {
                     </Grid>
                     <Grid style={{ marginTop: 5 }}>
                         <Col>
-                            <Text style={{ fontSize: 16, fontFamily: 'OpenSans', fontWeight: 'bold', marginLeft: 5 }}> Delivery Address</Text>
-                            <Text style={{ fontSize: 16, fontFamily: 'OpenSans', marginTop: 8 }}> Door_No and Street </Text>
+                            <Text style={{ fontSize: 14, fontFamily: 'OpenSans', fontWeight: 'bold', }}> Delivery Address</Text>
+                            <Text style={{ fontSize: 14, fontFamily: 'OpenSans', marginTop: 15 }}> Door_No and Street </Text>
 
                             <Input
                                 placeholder="Enter Door_No ,Street"
@@ -233,7 +233,7 @@ class OrderPaymentAddress extends Component {
                     </Grid>
                     <Grid style={{ marginTop: 5 }}>
                         <Col>
-                            <Text style={{ fontSize: 16, fontFamily: 'OpenSans', marginTop: 8 }}> City Or Town </Text>
+                            <Text style={{ fontSize: 14, fontFamily: 'OpenSans', marginTop: 10 }}> City Or Town </Text>
                             <Input
                                 placeholder="Enter City name"
                                 style={styles.addressLabel}
@@ -252,7 +252,7 @@ class OrderPaymentAddress extends Component {
                     </Grid>
                     <Grid style={{ marginTop: 5 }}>
                         <Col>
-                            <Text style={{ fontSize: 16, fontFamily: 'OpenSans', marginTop: 8 }}> State and Country </Text>
+                            <Text style={{ fontSize: 14, fontFamily: 'OpenSans', marginTop: 10 }}> State and Country </Text>
                             <Input
                                 placeholder="Enter State and Country"
                                 style={styles.addressLabel}
@@ -270,7 +270,7 @@ class OrderPaymentAddress extends Component {
                     </Grid>
                     <Grid style={{ marginTop: 5 }}>
                         <Col>
-                            <Text style={{ fontSize: 16, fontFamily: 'OpenSans', marginTop: 8 }}> Pin Code </Text>
+                            <Text style={{ fontSize: 14, fontFamily: 'OpenSans', marginTop: 10 }}> Pin Code </Text>
                             <Input
                                 placeholder="Enter Pin code"
                                 style={styles.transparentLabel}
@@ -302,14 +302,14 @@ class OrderPaymentAddress extends Component {
                     <Grid style={styles.curvedGrid}>
 
                     </Grid>
-                    <View style={{ marginTop: -85, height: 100 }}>
+                    <View style={{ marginTop: -95, height: 100 }}>
                         <Row>
                             <Col style={{ width: '30%', alignItems: 'center' }}>
                                 <Text style={styles.normalText}>Date</Text>
                             </Col>
-                            <Col style={{ width: '40%', alignItems: 'center' }}>
-                            </Col>
                             <Col style={{ width: '30%', alignItems: 'center' }}>
+                            </Col>
+                            <Col style={{ width: '40%', alignItems: 'center' }}>
                                 <Text style={styles.normalText}>{currentDate}</Text>
                             </Col>
                         </Row>
@@ -372,15 +372,18 @@ const styles = StyleSheet.create({
 
 
     curvedGrid: {
-        borderRadius: 800,
-        width: '200%',
-        height: 690,
-        marginLeft: -200,
-        marginTop: -600,
+        width: 250,
+        height: 250,
+        borderRadius: 125,
+        marginTop:-135,
+        marginLeft:'auto',
+        marginRight:'auto',
+        backgroundColor: '#745DA6',
+        transform: [
+          {scaleX: 2}
+        ],
         position: 'relative',
-        bottom: 0,
         overflow: 'hidden',
-        backgroundColor: '#745DA6'
     },
 
     loginButton: {

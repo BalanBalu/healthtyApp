@@ -108,43 +108,41 @@ class PharmacyCart extends Component {
                    keyExtractor={(item, index) => index.toString()}
                    renderItem={({ item, index }) =>
 
-                <Card style={{ marginTop: 10, padding: 5, height: 180 }}>
+                <Card style={{ marginTop: 10, padding: 10,  }}>
                   <Grid>
                     <Row >
-                      <Image source={{ uri: 'https://static01.nyt.com/images/2019/03/05/opinion/05Fixes-1/05Fixes-1-articleLarge.jpg?quality=75&auto=webp&disable=upscale' }} style={{
-                                        width: 100, height: 100, borderRadius: 10, marginTop: 20 }} />
+                        <Col style={{width:'30%'}}>
+                        <Image source={{ uri: 'https://static01.nyt.com/images/2019/03/05/opinion/05Fixes-1/05Fixes-1-articleLarge.jpg?quality=75&auto=webp&disable=upscale' }} style={{
+                                        width: 100, height: 100, borderRadius: 10,  }} />
 
-                        <View style={{ width: '75%', }}>
-                            <Text style={styles.labelTop}>{item.medicine_name} </Text>
-                        </View>
-                     </Row>
-
-                        <View style={{ marginLeft: 105, flex: 1, flexDirection: 'row', marginTop: 15 }}>
-                          <Row>
-                            <Text style={styles.subText}>{'\u20B9'}{medicineRateAfterOffer(item)}</Text>
+                        </Col>
+                        <Col style={{width:'70%',marginTop:-20}}>
+                        <Text style={styles.labelTop}>{item.medicine_name} </Text>
+                        <Row style={{marginTop:10}}>
+                        <Text style={styles.subText}>{'\u20B9'}{medicineRateAfterOffer(item)}</Text>
                             <Text style={{ marginLeft: 10, marginTop: 2, color: 'gray', fontSize: 15, textDecorationLine: 'line-through', textDecorationStyle: 'solid', textDecorationColor: 'gray' }}>
                                             {'\u20B9'}{item.price}</Text>
                             <Text style={{ fontFamily: 'OpenSans', fontSize: 15, color: '#ffa723', marginLeft: 20, fontWeight: 'bold' }}> {'Get'+ ' ' +item.offer+ '%' +' ' +'Off'}</Text>
-
-                          </Row>
-                        </View>
-                                
-                        <View style={{ flex: 1, flexDirection: 'row', marginLeft: 110 }}>
-                          <Button style={{ padding: 0, justifyContent: 'center', borderWidth: 1, borderColor: '#c26c57', width: 30, height: 25, marginLeft: 5, backgroundColor: 'white' }} onPress={()=>this.decrease(index)} testID='decreaseMedicine'>
-                             <Text style={{ fontSize: 25, justifyContent: 'flex-start', textAlign: 'center', marginTop: -5, marginRight:10, color: '#c26c57', fontWeight: 'bold' }}>-</Text>
-                          </Button>
-                         <View>
-                                       <TextInput type='number' min='1' style={{ marginLeft: 5, marginTop: -5, color: '#c26c57' }} >{item.selectedQuantity}</TextInput>
-                         </View>
-
-                          <Button style={{ padding: 0, justifyContent: 'center', borderWidth: 1, borderColor: '#c26c57', width: 30, height: 25, marginLeft: 5, backgroundColor: 'white' }} onPress={()=>this.increase(index)} testID='increaseMedicine'>
-                             <Text style={{ fontSize: 20, justifyContent: 'flex-start', textAlign: 'center', marginTop: -5, marginRight:10, color: '#c26c57', fontWeight: 'bold' }}>+</Text>
-                          </Button>
-                        
-                        <TouchableOpacity style={{ marginLeft: 50, alignItems: 'center'}} onPress={()=> this.removeMedicine(index)} testID='removeMedicineToCart'>
+                        </Row>
+                        <Row style={{marginTop:10}}>
+                        <TouchableOpacity  onPress={()=>this.decrease(index)} testID='decreaseMedicine'>
+                                <View style={{ padding: 0, justifyContent: 'center', borderWidth: 1, borderColor: '#c26c57', width: 35, height: 25, backgroundColor: 'white' }}>
+                                    <Text style={{ fontSize: 40, textAlign: 'center', marginTop: -5, color: 'black' }}>-</Text>
+                                </View>
+                            </TouchableOpacity>
+                            <TextInput type='number' min='1' style={{ marginLeft: 5, marginTop: -10, color: '#c26c57' }} >{item.selectedQuantity}</TextInput>
+                            <TouchableOpacity  onPress={()=>this.increase(index)} testID='increaseMedicine'>
+                                <View style={{ padding: 0, justifyContent: 'center', borderWidth: 1, borderColor: '#c26c57', width: 35, height: 25, backgroundColor: 'white' }}>
+                                    <Text style={{ fontSize: 20, textAlign: 'center', marginTop: -5, color: 'black' }}>+</Text>
+                                </View>
+                            </TouchableOpacity>
+                      
+                          <TouchableOpacity style={{ marginLeft: 50, alignItems: 'center'}} onPress={()=> this.removeMedicine(index)} testID='removeMedicineToCart'>
                            <Icon style={{ fontSize: 30, color: 'red', marginTop: -4 }} name='ios-trash' />
                          </TouchableOpacity>  
-                    </View>
+                        </Row>
+                        </Col>
+                     </Row>
                   </Grid>
                 </Card>
                 
@@ -198,15 +196,18 @@ const styles = StyleSheet.create({
 
 
     curvedGrid: {
-        borderRadius: 800,
-        width: '200%',
-        height: 690,
-        marginLeft: -200,
-        marginTop: -600,
+        width: 250,
+        height: 250,
+        borderRadius: 125,
+        marginTop:-135,
+        marginLeft:'auto',
+        marginRight:'auto',
+        backgroundColor: '#745DA6',
+        transform: [
+          {scaleX: 2}
+        ],
         position: 'relative',
-        bottom: 0,
         overflow: 'hidden',
-        backgroundColor: '#745DA6'
     },
 
     loginButton: {
@@ -232,7 +233,7 @@ const styles = StyleSheet.create({
     {
         fontFamily: 'OpenSans',
         fontSize: 18,
-        marginLeft: 10,
+        marginLeft: 5,
         marginTop: 15,
         fontWeight: 'bold'
     },

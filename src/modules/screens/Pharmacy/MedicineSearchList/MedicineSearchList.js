@@ -134,17 +134,14 @@ class MedicineSearchList extends Component {
 
                                     <Card style={{ padding: 10, marginTop: 20, }}>
                                         <View style={{ width: 'auto', flex: 1, flexDirection: 'row' }}>
-
                                             <Right>
-                                                {this.state.clickCard !== index ? <Icon style={{ color: '#5cb75d', marginTop: 20, }} />
-                                                    : <Icon name="checkmark-circle" style={{ color: '#5cb75d', marginTop: 20, }} />}
+                                                {this.state.clickCard !== index ? <Icon style={{ color: '#5cb75d',  }} />
+                                                    : <Icon name="checkmark-circle" style={{ color: '#5cb75d', }} />}
                                             </Right>
                                         </View>
 
-                                        <Grid>
+                                        <Grid style={{marginTop:-35}}>
                                             <Col style={{ width: '25%' }}>
-                                                <View>
-
                                                     <Image source={{ uri: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQE-GVencCM4e7LuKxP2SaFTbONdLA1BiOGz96ICf1fkBixV-Tv' }} style={styles.customImage} />
                                                     <View style={{
                                                         position: 'absolute', width: 30, height: 30, borderRadius: 20, marginLeft: 5,
@@ -152,12 +149,8 @@ class MedicineSearchList extends Component {
                                                         borderColor: 'green', borderWidth: 1
                                                     }}>
                                                         <Text style={{ padding: 5, backgroundColor: 'transparent', textAlign: "center", color: 'white', fontSize: 13 }}>{item.offer}</Text>
-
-                                                    </View>
-                                                </View>
+                                                    </View>   
                                             </Col>
-
-
                                             <Col style={{ marginLeft: 20, width: '70%', alignItems: 'flex-start', justifyContent: 'center', marginTop: 10 }}>
                                                 <Text style={styles.normalText}>{item.medicine_name}</Text>
                                                 <Row>
@@ -252,15 +245,18 @@ const styles = StyleSheet.create({
 
     curvedGrid:
     {
-        borderRadius: 800,
-        width: '200%',
-        height: 690,
-        marginLeft: -200,
-        marginTop: -600,
+        width: 250,
+        height: 250,
+        borderRadius: 125,
+        marginTop:-135,
+        marginLeft:'auto',
+        marginRight:'auto',
+        backgroundColor: '#745DA6',
+        transform: [
+          {scaleX: 2}
+        ],
         position: 'relative',
-        bottom: 0,
         overflow: 'hidden',
-        backgroundColor: '#745DA6'
 
     },
 
