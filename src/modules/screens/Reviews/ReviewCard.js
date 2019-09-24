@@ -57,6 +57,7 @@ function getReactionColor (item, reactionerId) {
 async function insertUserLikes(item, reviewerId, props)  {
     try {
         debugger
+    if(reviewerId) {
         isAlreadyLiked = getReactionColor(item, reviewerId);
         console.log(isAlreadyLiked);
         
@@ -66,18 +67,10 @@ async function insertUserLikes(item, reviewerId, props)  {
             reactionType: 'LIKE',
             active: !isAlreadyLiked
         }
-        
-        
-        console.log(props);
-        console.log(reactionData);
-        let result = await insertLikesDataForReviews(reviewId, reviewerId, reactionData)
+        insertLikesDataForReviews(reviewId, reviewerId, reactionData)
         currentLikedRewiedIds[reviewId] = reactionData.active;
-        console.log(result);
         props.refreshCount();
-        if (result.success) {
-           
-          
-        }
+      }
     }
     catch (e) {
         console.log(e)
