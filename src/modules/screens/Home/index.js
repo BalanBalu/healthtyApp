@@ -80,6 +80,7 @@ class Home extends Component {
       }
      } else {
         navigator.geolocation.getCurrentPosition(position => {
+          console.log('Your Orgin is ' + position);
           const origin_coordinates = [position.coords.latitude, position.coords.longitude, ];
           this.setState({ locationCordinates : origin_coordinates })
          
