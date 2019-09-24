@@ -12,6 +12,7 @@ export const AUTH_RESPONSE = 'AUTH_RESPONSE'
 export const NEW_PASSWORD = 'AUTH/NEW_PASSWORD';
 export const REDIRECT_NOTICE = 'AUTH/REDIRECT_NOTICE';
 export const RESET_REDIRECT_NOTICE = 'AUTH/RESET_REDIRECT_NOTICE';
+import {NOTIFICATION_RESET} from '../notification/notification.actions'
 import { store } from '../../../setup/store';
 
 import axios from 'axios';
@@ -156,6 +157,9 @@ export async function logout() {
   await AsyncStorage.removeItem('isLoggedIn');
   store.dispatch({
     type: LOGOUT
+  }),
+  store.dispatch({
+    type: NOTIFICATION_RESET
   })
 }
 
