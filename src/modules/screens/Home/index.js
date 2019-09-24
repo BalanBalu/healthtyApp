@@ -5,10 +5,11 @@ import LinearGradient from 'react-native-linear-gradient';
 import { Col, Row, Grid } from 'react-native-easy-grid';
 import { connect } from 'react-redux'
 
-import { StyleSheet, Image, View, TouchableOpacity, AsyncStorage, ScrollView, FlatList } from 'react-native';
+import { StyleSheet, Image, View, TouchableOpacity, AsyncStorage, ScrollView, FlatList, NativeModules } from 'react-native';
 // import { ScrollView, FlatList } from 'react-native-gesture-handler';
 import { catagries } from '../../providers/catagries/catagries.actions';
 import { MAP_BOX_PUBLIC_TOKEN , IS_ANDROID } from '../../../setup/config';
+import RNAndroidLocationEnabler from 'react-native-android-location-enabler';
 import MapboxGL from '@react-native-mapbox-gl/maps';
 MapboxGL.setAccessToken(MAP_BOX_PUBLIC_TOKEN);
 
@@ -37,31 +38,55 @@ class Home extends Component {
         logout();
         this.props.navigation.navigate('login');
     }
+    timeout(ms) {
+        return new Promise(resolve => setTimeout(resolve, ms));
+     }
     async componentDidMount() {
         this.getCatagries();
     let isGranted = true;
     if (IS_ANDROID) {
+       
       isGranted = await MapboxGL.requestAndroidLocationPermissions();
       await this.setState({
          isAndroidPermissionGranted: isGranted,
          isFetchingAndroidPermission: false,
        });
-     }
-
-      if(isGranted) {
-        console.log('Comming to get Locatuin')
-       //await this.getUserLocation();
-       navigator.geolocation.getCurrentPosition(position => {
-            console.log('Comming to User Locatuin')
-            
-            const origin_coordinates = [position.coords.latitude, position.coords.longitude, ];
-            this.setState({ locationCordinates : origin_coordinates })
-            console.log('Your Orgin is ' + origin_coordinates); 
-      
-       }),
-       error =>  {
-        console.log(error); 
-        alert(JSON.stringify(error)) 
+       if(isGranted) {
+            const { RNAndroidLocationEnabler } = NativeModules;
+            RNAndroidLocationEnabler.promptForEnableLocationIfNeeded({interval: 10000, fastInterval: 5000}).then(async (data) => {
+               
+                if(data === 'enabled') {
+                   await this.timeout(500);
+                }
+             navigator.geolocation.getCurrentPosition(position => {
+                const origin_coordinates = [position.coords.latitude, position.coords.longitude, ];
+                this.setState({ locationCordinates : origin_coordinates })
+               
+                console.log('Your Orgin is ' + origin_coordinates); 
+             }), error => {
+               console.log(error); 
+               alert(JSON.stringify(error)) 
+             }, 
+             { timeout: 500000000, enableHighAccuracy: true };
+        
+       }).catch(err => {
+            alert("Please Enable Your Location to Provide the Better Results");
+         // The user has not accepted to enable the location services or something went wrong during the process
+         // "err" : { "code" : "ERR00|ERR01|ERR02", "message" : "message"}
+         // codes : 
+         //  - ERR00 : The user has clicked on Cancel button in the popup
+         //  - ERR01 : If the Settings change are unavailable
+         //  - ERR02 : If the popup has failed to open
+       }); 
+      }
+     } else {
+        navigator.geolocation.getCurrentPosition(position => {
+          const origin_coordinates = [position.coords.latitude, position.coords.longitude, ];
+          this.setState({ locationCordinates : origin_coordinates })
+         
+        }),
+        error =>  {
+            console.log(error); 
        }, {enableHighAccuracy: false, timeout: 50000}
     }
        
