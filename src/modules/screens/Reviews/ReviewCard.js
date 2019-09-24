@@ -148,7 +148,9 @@ export const RenderReviewData = (props) => {
                 <Col>
                     <Row>
                       <TouchableOpacity style={{flexDirection : 'row'}} onPress={()=> insertUserLikes(item, userId, props)}>
-                        <Icon name="heart" style={getReactionColor(item, userId) ? { fontSize: 20 , color : 'red'} : { fontSize: 20 } } />
+                        
+                       {userId ?  <Icon name="heart" style={getReactionColor(item, userId) ? { fontSize: 20 , color : 'red'} : { fontSize: 20 } } />
+                        : null }
                       
                       </TouchableOpacity>  
                         <Text style={styles.textContent}>{getLikesCount(item)}{' '}Likes</Text> 
