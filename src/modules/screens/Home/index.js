@@ -9,6 +9,7 @@ import { StyleSheet, Image, View, TouchableOpacity, AsyncStorage, ScrollView, Fl
 // import { ScrollView, FlatList } from 'react-native-gesture-handler';
 import { catagries } from '../../providers/catagries/catagries.actions';
 import { MAP_BOX_PUBLIC_TOKEN , IS_ANDROID } from '../../../setup/config';
+import RNAndroidLocationEnabler from 'react-native-android-location-enabler';
 import MapboxGL from '@react-native-mapbox-gl/maps';
 MapboxGL.setAccessToken(MAP_BOX_PUBLIC_TOKEN);
 
@@ -51,7 +52,7 @@ class Home extends Component {
          isFetchingAndroidPermission: false,
        });
        if(isGranted) {
-            const { RNAndroidLocationEnabler } = NativeModules;
+           
             RNAndroidLocationEnabler.promptForEnableLocationIfNeeded({interval: 10000, fastInterval: 5000}).then(async (data) => {
                
                 if(data === 'enabled') {
@@ -65,8 +66,7 @@ class Home extends Component {
              }), error => {
                console.log(error); 
                alert(JSON.stringify(error)) 
-             }, 
-             { timeout: 500000000, enableHighAccuracy: true };
+             }, { timeout: 50000, enableHighAccuracy: true };
         
        }).catch(err => {
             alert("Please Enable Your Location to Provide the Better Results");
