@@ -106,11 +106,20 @@ export default class PaymentReview extends Component {
                  <Card transparent>
                     <CardItem header style={styles.cardItem}>
                      <Grid>
-                      <Col style={{alignItems:'center'}}>
+                      {/* <Col style={{alignItems:'center'}}>
                       <Thumbnail square source={ renderDoctorImage(bookSlotDetails) } style={{width:100,height:100,marginTop:-60}}/>
                        <Text style={styles.cardItemText}>{bookSlotDetails.prefix || ''} {bookSlotDetails.doctorName} {getDoctorEducation(bookSlotDetails.education)}</Text>
                        <Text style={styles. cardItemText2}>{getAllSpecialist(bookSlotDetails.specialist)}</Text>
-                      </Col>
+                      </Col> */}
+                       <Row>
+                         <Col style={{width:'25%',}}>
+                            <Thumbnail square source={renderDoctorImage(bookSlotDetails)}   style={{ height: 70, width: 70, borderRadius: 10 }} />
+                         </Col> 
+                         <Col style={{width:'80%',marginTop:10}}>
+                            <Text style={styles.cardItemText}>{bookSlotDetails.prefix || ''} {bookSlotDetails.doctorName} {getDoctorEducation(bookSlotDetails.education)}</Text>
+                            <Text style={styles. cardItemText2}>{getAllSpecialist(bookSlotDetails.specialist)}</Text>
+                          </Col>
+                       </Row>
                      </Grid>
                     </CardItem>
                  </Card>
