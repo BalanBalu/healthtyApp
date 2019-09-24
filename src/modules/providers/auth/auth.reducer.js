@@ -4,8 +4,6 @@ import {
   SET_USER, LOGIN_REQUEST, LOGIN_RESPONSE, LOGOUT, LOGIN_HAS_ERROR, AUTH_REQUEST, AUTH_HAS_ERROR, AUTH_RESPONSE, OTP_CODE_GENERATED, NEW_PASSWORD,
   REDIRECT_NOTICE, RESET_REDIRECT_NOTICE
 } from './auth.actions';
-
-
 import { statement } from '@babel/template';
 
 
@@ -105,6 +103,8 @@ export default (state = userInitialState, action) => {
       }
     case LOGOUT:
       return userInitialState;
+        
+      
   
 
     default:
