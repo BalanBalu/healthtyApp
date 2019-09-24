@@ -102,8 +102,7 @@ export default (state = userInitialState, action) => {
         needToRedirect: false
       }
     case LOGOUT:
-      
-      return userInitialState,
+      return userInitialState;
         
       
   
