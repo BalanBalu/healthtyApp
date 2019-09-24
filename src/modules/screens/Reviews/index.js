@@ -54,18 +54,7 @@ class Reviews extends Component {
     }
 
     render() {
-        const Review = [{
-            name:'Reshma  Guptha',Date:'23/09/2019',
-            cleanlinessRating: 4, 
-            staffRating: 3, waitTimeRating :3,
-            review:'"dfhyjgh   sdgdfgghfghfhfgffnfh   mkjssgffgd  gfhgghgfhdgdgdgdfgd  dghdhfgfg hshfgdfshjghjshjsgjh  bgkshafhjsgahgafafdfdg  sdgf ahjkds  jjc......,',likes:'100'
-        },
-        {
-            name:'Anupriya',Date:'29/08/2019',
-            cleanlinessRating: 4, staffRating: 3, waitTimeRating :3,
-            review:'"dfhyjgh  mkjssgffgd  dghd hfgfg hshfgdfshj ghjshjsgjh  bgkshafhjsgahgafafdf  sdgakfjk  sdgf ahjkds  jjc......,',
-            likes:'140'
-        }]
+       
         return (
             <Container style={styles.container}>
                 <Content style={styles.bodyContent}>
