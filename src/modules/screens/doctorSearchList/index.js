@@ -739,7 +739,7 @@ class doctorSearchList extends Component {
                                             <Row style={{borderTopColor:'#000',borderTopWidth:0.4,marginTop:5}} >
                                                 <Col style={{width:"8%"}}>
                                                 
-                                                <Icon name='ios-time' style={{fontSize:20,marginTop:15}}/>
+                                                <Icon name='ios-time' style={{fontSize:20,marginTop:12}}/>
 
                                                 </Col>
                                                 <Col style={{width:"70%"}}>
@@ -748,7 +748,7 @@ class doctorSearchList extends Component {
                                               </Col>
                                                 <Col style={{width:"22%"}}>
                                                 {!expandedDoctorIdHospitalsToShowSlotsData.includes(item.doctorIdHostpitalId) ? 
-                                                  <TouchableOpacity  onPress={()=>this.onBookPress(item.doctorIdHostpitalId)}  style={{ textAlign:'center',backgroundColor:'green',borderColor: '#000', marginTop:15, borderRadius: 20, height: 30,justifyContent:'center' ,marginLeft:5,marginRight:5 ,}}>
+                                                  <TouchableOpacity  onPress={()=>this.onBookPress(item.doctorIdHostpitalId)}  style={{ textAlign:'center',backgroundColor:'green',borderColor: '#000', marginTop:10, borderRadius: 20, height: 30,justifyContent:'center' ,marginLeft:5,marginRight:5 ,}}>
                                                       <Text style={{textAlign:'center',color:'#fff',fontSize:12,fontWeight:'bold',fontFamily:'OpenSans'}}>BOOK </Text>
                                                   </TouchableOpacity>  : null }
                                                </Col>
@@ -782,7 +782,7 @@ class doctorSearchList extends Component {
                                                <Col style={{width:'30%'}}>
                                                   <TouchableOpacity                                                                                                                   
                                                      onPress={() => { console.log('......Pressing....'); this.onPressContinueForPaymentReview(item, selectedSlotItemByDoctorIds[item.doctorIdHostpitalId], item.doctorIdHostpitalId) }}
-                                                     style={{backgroundColor:'green', borderColor: '#000', marginTop:10, height: 30, borderRadius: 20,justifyContent:'center' ,marginLeft:5,marginRight:5,marginTop:-5 }}>
+                                                     style={{backgroundColor:'green', borderColor: '#000', height: 30, borderRadius: 20,justifyContent:'center' ,marginLeft:5,marginRight:5,marginTop:-5 }}>
                                                      <Text style={{color:'#fff',fontSize:12,fontWeight:'bold',fontFamily:'OpenSans'}}>Continue </Text>
                                                   </TouchableOpacity> 
                                                </Col>
