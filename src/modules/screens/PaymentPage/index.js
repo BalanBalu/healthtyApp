@@ -1,9 +1,9 @@
 import React, { Component } from 'react';
-import { Container, Content, Text, Button, FooterTab, Card, Footer, Icon, Input, CheckBox, Toast, Form,Right} from 'native-base';
+import { Container, Content, Text, Button, FooterTab, Card, Footer, Icon, Input,Toast, Form,Right} from 'native-base';
 import { Col, Row, Grid } from 'react-native-easy-grid';
 import { StyleSheet, Image, View, AsyncStorage,TextInput} from 'react-native';
 import SectionedMultiSelect from 'react-native-sectioned-multi-select';
-import { RadioButton } from 'react-native-paper';
+import { RadioButton ,Checkbox} from 'react-native-paper';
 
 import { getAvailableNetBanking, getAvailableWallet, luhnCheck, getPayCardType } from '../../../setup/paymentMethods';
 import { bookAppointment, createPaymentRazor } from '../../providers/bookappointment/bookappointment.action';
@@ -39,7 +39,7 @@ class PaymentPage extends Component {
             amount: 100,
             selectedItems: [],
             savedCards: [],
-            saveCardCheckbox: true,
+             checked:false,
             bookSlotDetails: null,
             isLoading: false,
             isHidden: false,
@@ -428,6 +428,7 @@ class PaymentPage extends Component {
 
     renderCreditDebitCard(cardType) {
         const { cardPaymentDetails } = this.state;
+        const { checked } = this.state;
         return (
             <Content>
                 <View style={{ backgroundColor: '#fff', marginLeft: 10, marginRight: 10, borderBottomColor: '#000', borderBottomWidth: 0.6 }}>
@@ -511,8 +512,17 @@ class PaymentPage extends Component {
                                 <Row>
                                     <Col>
                                         <Row>
-                                            <CheckBox checked={this.state.saveCardCheckbox} color="grey" onPress={()=> this.setState({ saveCardCheckbox : !this.state.saveCardCheckbox })} ></CheckBox>
-                                            <Text style={{ marginLeft: 15, color: 'gray', fontFamily: 'OpenSans', }}>Save creditcard Information</Text>
+                                        <Checkbox color="green"
+                   borderStyle={{ borderColor: '#F44336', 
+                   backfaceVisibility: 'visible',
+                   borderRadius: 18,
+                   borderWidth: 1,
+                   padding: 2,}}
+                    status={checked ? 'checked' : 'unchecked'}
+                    onPress={() => { this.setState({ checked: !checked }); }}
+                     />
+                                            {/* <CheckBox checked={this.state.saveCardCheckbox} color="grey" onPress={()=> this.setState({ saveCardCheckbox : !this.state.saveCardCheckbox })} ></CheckBox> */}
+                                            <Text style={{ marginLeft: 10, color: 'gray', fontFamily: 'OpenSans',marginTop:8 }}>Save creditcard Information</Text>
                                         </Row>
                                     </Col>
                                 </Row>
