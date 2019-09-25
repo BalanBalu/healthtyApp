@@ -116,7 +116,7 @@ export default class PaymentReview extends Component {
                             <Thumbnail square source={renderDoctorImage(bookSlotDetails)}   style={{ height: 70, width: 70, borderRadius: 10 }} />
                          </Col> 
                          <Col style={{width:'80%',marginTop:10}}>
-                            <Text style={styles.cardItemText}>{bookSlotDetails.prefix || ''}{bookSlotDetails.doctorName}{getDoctorEducation(bookSlotDetails.education)}</Text>
+                            <Text style={styles.cardItemText}>{bookSlotDetails.prefix || ''} {bookSlotDetails.doctorName} {getDoctorEducation(bookSlotDetails.education)}</Text>
                             <Text style={styles. cardItemText2}>{getAllSpecialist(bookSlotDetails.specialist)}</Text>
                           </Col>
                        </Row>
