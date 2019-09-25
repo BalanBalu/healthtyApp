@@ -325,12 +325,12 @@ class AppointmentDetails extends Component {
 
             <Card transparent style={{ margin: 20, backgroundColor: '#ecf0f1' }}>
               <Card style={{ backgroundColor: '#ffffff', borderRadius: 10, padding: 10 }}>
-                <Grid style={{ margin: 5 }}>
-                  <Right>
-                    <Text style={{ fontSize: 15, fontFamily: 'OpenSans' }}>
+                <Grid style={{ margin: 5 ,justifyContent:'center'}}>
+                  
+                    <Text style={{ fontSize: 15, fontFamily: 'OpenSans',textAlign:'center' }}>
                       {formatDate(data.appointment_starttime, "dddd,MMMM DD-YYYY  hh:mm a")}
                     </Text>
-                  </Right>
+                 
 
                 </Grid>
 
