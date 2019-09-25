@@ -206,21 +206,20 @@ const styles = StyleSheet.create({
          cardItemText:{
          fontFamily:'OpenSans',
          fontSize:20,
-        height:30,
         fontWeight:'bold',
          color:'#FFF',paddingBottom:-10
          },
          cardItemText2:{
              fontFamily:'OpenSans',
              fontSize:14,
-            height:30,
             fontWeight:'bold',
              color:'#FFF',
-            paddingBottom:-10
+            paddingBottom:-10,
+            width:'90%'
              },
              cardItemText3:{
                  fontFamily:'OpenSans',
-                 fontSize:22,
+                 fontSize:18,
                 height:30,
                 fontWeight:'bold',
                  color:'#FFF',paddingBottom:-10

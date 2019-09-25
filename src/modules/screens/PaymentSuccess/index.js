@@ -74,10 +74,10 @@ class PaymentSuccess extends Component {
                                      </Col>
                                      <Col style={{width:'75%',marginTop:10}}>
                                          <Row>
-                                         <Text style={styles.docHeading}>{successBookSlotDetails.prefix ? successBookSlotDetails.prefix : ''}{successBookSlotDetails.doctorName} </Text>
-                                         <Text style={styles.Degree}>{getDoctorEducation(successBookSlotDetails.education)}</Text>
+                                         <Text style={styles.docHeading}>{successBookSlotDetails.prefix ? successBookSlotDetails.prefix : ''} {successBookSlotDetails.doctorName} {' '}
+                                         <Text style={styles.Degree}>{getDoctorEducation(successBookSlotDetails.education)}</Text> </Text>
                                          </Row>
-                                         <Row style={{marginTop:-12}}>
+                                         <Row>
                                          <Text style={{fontFamily:'OpenSans',fontSize:14,color:'#535353',fontStyle: 'italic'}}>{getDoctorSpecialist(successBookSlotDetails.specialist)}</Text>
 
                                          </Row>
@@ -186,12 +186,16 @@ const styles = StyleSheet.create({
     },
     docHeading:{
         fontFamily:'OpenSans',
-        fontSize:20
+        fontSize:16,
+        fontWeight:'bold',
+        
     },
     Degree:{
         fontFamily:'OpenSans',
         fontSize:14,
-        marginTop:8
+        marginTop:8,
+        fontWeight:'bold',
+      
     },
     rowDetail:{
         marginTop:15,
