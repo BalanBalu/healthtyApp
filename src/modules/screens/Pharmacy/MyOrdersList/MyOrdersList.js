@@ -107,11 +107,11 @@ class MyOrdersList extends Component {
     render() {
               return (
             <Container style={styles.container}>
-                <Content style={styles.bodyContent}>
+                 <Content style={styles.bodyContent}>
                    {this.state.isLoading ? <Spinner color='blue' /> :
-                        <Card>
+                        <View style={{justifyContent:'center',alignItems:'center',height:650}}>
                             {this.state.orderList.length !== 0 ? this.renderOrders() : this.renderNoOrders()}
-                        </Card>}
+                        </View>}
                 </Content>
             </Container>
         )
