@@ -127,15 +127,18 @@ const styles = StyleSheet.create({
 
 
     curvedGrid: {
-        borderRadius: 800,
-        width: '200%',
-        height: 690,
-        marginLeft: -150,
-        marginTop: -600,
-        // position: 'relative',
-        bottom: 0,
+        width: 250,
+        height: 250,
+        borderRadius: 125,
+        marginTop:-135,
+        marginLeft:'auto',
+        marginRight:'auto',
+        backgroundColor: '#745DA6',
+        transform: [
+          {scaleX: 2}
+        ],
+        position: 'relative',
         overflow: 'hidden',
-        backgroundColor: '#745DA6'
     },
 
     loginButton: {

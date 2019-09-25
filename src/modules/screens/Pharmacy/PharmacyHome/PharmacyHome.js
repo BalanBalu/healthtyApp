@@ -165,7 +165,7 @@ finally {
                     <Grid style={styles.curvedGrid}>
                     </Grid>
                    
-                            <View style={{marginTop:-65}}>
+                            <View style={{marginTop:-90,marginLeft:15}}>
                                 <Autocomplete style={{ borderBottomWidth: 0, backgroundColor: '#F1F1F1', borderRadius: 5, padding:6, width: '60%', marginLeft:49,borderBottomRightRadius: 0, borderTopRightRadius: 0}} 
                                 data={this.state.searchMedicine!=undefined?(selectedMedicineName.length === 1 && comp(this.state.keyword, selectedMedicineName[0].medicine_name) ? [] : selectedMedicineName):selectedMedicineName}
                                     defaultValue={this.state.keyword}
@@ -180,7 +180,7 @@ finally {
                                   keyExtractor={(item, index) => index.toString()} />
                             </View>
                              
-                            <View style={{marginTop:70,position:'absolute'}}>
+                            <View style={{marginTop:70,position:'absolute',marginLeft:40}}>
                                    <Button style={{ backgroundColor: '#000', borderRadius: 10, height:40, marginTop:-42, marginLeft:260, borderBottomLeftRadius: 0, borderTopLeftRadius: 0 }}  onPress={()=>this.onSearchPress(selectedMedicineName)} testID='searchMedicine'>
                                         <Icon name="ios-search" style={{ color: 'white' }}/>
                             </Button>
@@ -188,11 +188,10 @@ finally {
                         
                            
 
-                    <View style={{ marginLeft: 'auto', marginRight: 'auto', marginTop:55 }}>
+                    <View style={{ marginLeft: 'auto', marginRight: 'auto', marginTop:75 }}>
                         <Button style={{ justifyContent: "center", backgroundColor: '#745DA6', borderRadius: 5 }} onPress={() => this.props.navigation.navigate('UploadPrescription')} testID="clickButtonToUploadPrescription">
-                            <Icon style={{ fontSize: 30}} name='ios-cloud-upload'>
-                                <Text style={{ padding: 2, color: '#fff'}}>Upload your prescription</Text>
-                            </Icon>
+                            <Icon style={{ fontSize: 30}} name='md-cloud-upload'/>   
+                            <Text style={{ color: '#fff',marginLeft:-25}}>Upload your prescription</Text>
                         </Button>
                     </View>
                    
@@ -285,7 +284,7 @@ finally {
 
                                     <Text style={{ marginLeft: -25, marginTop: 2, }}>VIEW CART</Text>
                                    {this.state.cartItems.length!=0? <View>
-                                        <Text style={{ position: 'absolute', height: 20, width: 20, fontSize: 13, backgroundColor: '#ffa723', top: 0, marginLeft: -105, borderRadius: 20, marginTop: -10 }}>
+                                        <Text style={{ position: 'absolute', height: 20, width: 20, fontSize: 13, backgroundColor: '#ffa723', top: 0, marginLeft: -105, borderRadius: 20, marginTop: -10,textAlign:'center' }}>
                                             {this.state.cartItems.length}
                                         </Text>     
                                    </View>:null }  
@@ -325,15 +324,19 @@ const styles = StyleSheet.create({
         marginBottom: 'auto'
     },
     curvedGrid: {
-        borderRadius: 800,
-        width: '200%',
-        height: 690,
-        marginLeft: -200,
-        marginTop: -600,
+        width: 250,
+        height: 250,
+        borderRadius: 125,
+        marginTop:-135,
+        marginLeft:'auto',
+        marginRight:'auto',
+        backgroundColor: '#745DA6',
+        transform: [
+          {scaleX: 2}
+        ],
         position: 'relative',
-        bottom: 0,
         overflow: 'hidden',
-        backgroundColor: '#745DA6'
+        
     },
     searchBox: {
         width: '50%',
