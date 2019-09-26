@@ -161,35 +161,45 @@ let value=dataIds.join(",");
 return value
 
 }
-export function statusValue(data){
-  switch(data){
- case "PENDING":
-  return{
+export const statusValue={
+  
+  "PENDING":
+  {
     text:'waiting for confirmation',
     color:'red'
-  }
-  case "APPROVED":
- return {
+  },
+  "APPROVED":
+ {
     text:'Appointment confirmed',
     color:'green'
-  }
-  case "PROPOSED_NEW_TIME":
-    return {
+  },
+  "COMPLETED":
+  {
+    text:'Appointment completed',
+    color:'green'
+  },
+  "PENDING_REVIEW":
+  {
+    text:'Appointment completed',
+    color:'green'
+  },
+   "PROPOSED_NEW_TIME":
+     {
     text:'PROPOSED_NEW_TIME',
     color:'grey'
-  }
- case "CLOSED":
-   return{
-    text:'Not Response ',
+  },
+  "CLOSED":
+  {
+    text:'No Response',
     color:'red'
-  }
-  case "CANCELED":
-   return{
+  },
+   "CANCELED":
+  {
     text:'Appointment cancelled',
     color:'red'
   }
 }
 
-}
+
 
 

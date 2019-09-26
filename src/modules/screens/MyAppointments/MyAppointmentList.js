@@ -53,6 +53,7 @@ class MyAppoinmentList extends Component {
 	}
 
 	async componentDidMount() {
+		console.log('statusValue'+JSON.stringify(statusValue))
 		const isLoggedIn = await hasLoggedIn(this.props);
 		if (!isLoggedIn) {
 			this.props.navigation.navigate("login");
@@ -366,6 +367,8 @@ class MyAppoinmentList extends Component {
 											data={data}
 											extraData={data}
 											renderItem={({ item, index }) => (
+
+ 
 												<ListItem
 													avatar
 													onPress={() =>
@@ -421,22 +424,19 @@ class MyAppoinmentList extends Component {
 																	/>
 																)}
 														</Item>
-														
+											
 														<Item style={{ borderBottomWidth: 0 }}>
-														
-															{selectedIndex == 0 ?
-                                                              
-															
-																	<Text style={{ fontFamily: "OpenSans", fontSize: 13, color:statusValue(item.appointmentResult.appointment_status).color, fontWeight: 'bold' }} note>{statusValue(item.appointmentResult.appointment_status).text}</Text>
-																	
-																 :
-																(item.appointmentResult.appointment_status == "CLOSED" ?
-																	<Text style={{ fontFamily: "OpenSans", fontSize: 13, color: "red", fontWeight: 'bold' }} note>Appointment cancelled.</Text>
-																	:
-																	<Text style={{ fontFamily: "OpenSans", fontSize: 13, color: "green", fontWeight: 'bold' }} note>Appointment completed</Text>
-																)
+												
+														{/* {selectedIndex == 0 ?  */}
+																	<Text style={{ fontFamily: "OpenSans", fontSize: 13, color:statusValue[item.appointmentResult.appointment_status].color, fontWeight: 'bold' }} note>{statusValue[item.appointmentResult.appointment_status].text}</Text>	
+														     	 {/* :
+															// 	(item.appointmentResult.appointment_status == "CLOSED" ?
+															// 		<Text style={{ fontFamily: "OpenSans", fontSize: 13, color: "red", fontWeight: 'bold' }} note>Appointment cancelled.</Text>
+															// 		:
+															// 		<Text style={{ fontFamily: "OpenSans", fontSize: 13, color: "green", fontWeight: 'bold' }} note>Appointment completed</Text>
+															// 	)
 
-															}
+															// } */}
 
 														</Item>
 
