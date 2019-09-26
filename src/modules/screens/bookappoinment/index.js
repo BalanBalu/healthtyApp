@@ -49,7 +49,8 @@ class BookAppoinment extends Component {
       doctorId: null,
       slotDatesToShow : [],
       isAvailabilityLoading: false,
-      isLoggedIn: false
+      isLoggedIn: false,
+      hidden:false
     }
 
   }
@@ -332,7 +333,16 @@ onPressContinueForPaymentReview(doctorData, selectedSlotItem) {
   };
   this.props.navigation.navigate('Payment Review', { resultconfirmSlotDetails: confirmSlotDetails })
  }
-
+ toggle(){
+  if(this.state.hidden==false){
+    alert('true')
+    this.setState({hidden:true})
+  }
+ else{
+   alert('false')
+   this.setState({hidden:false})
+ }
+}
 
   render() {
 
@@ -541,6 +551,42 @@ onPressContinueForPaymentReview(doctorData, selectedSlotItem) {
    </View> 
 
   </Content> : null }  
+
+  <View style={{marginLeft:5,marginRight:5,borderTopColor:'gray',borderTopWidth:1,}}>
+        <Row style={{marginTop:10}}>
+        <Icon name='ios-medkit' style={{fontSize:20}}/>
+        <Text  style={{ fontFamily: 'OpenSans',fontSize:13,fontWeight:'bold',marginLeft:10,marginTop:1 }}>Services</Text>
+      </Row>
+      <TouchableOpacity onPress={()=>this.toggle()}>
+        <Row style={{marginLeft:20,marginTop:20,borderTopColor:'gray',borderTopWidth:0.5}}>
+        <Col style={{width:'22%',paddingTop:10}}>
+              <Image square source={require('../../../../assets/images/Acupuncturist.jpg')}  style={{ height: 50, width: 50,borderRadius:5 }} />
+            </Col>
+            <Col style={{width:'83%',marginTop:10,paddingTop:10}}>
+               <Text style={{fontFamily:'OpenSans',fontSize:13,fontWeight:'bold',width:'90%'}}>Dentist</Text>
+               <Text style={{fontFamily:'OpenSans',fontSize:10,fontStyle:'italic'}}>20 services</Text>
+            </Col>
+
+          </Row>
+          </TouchableOpacity>
+          {this.state.hidden==true?
+          <View>
+          <Row style={{marginLeft:100,borderTopColor:'gray',borderTopWidth:0.5}}>
+          <Text style={{fontSize:18}}>{'\u2022'}</Text>
+          <Text style={{flex: 1, paddingLeft: 5,fontSize:10,fontFamily:'OpenSans',marginTop:6}}>General</Text>
+
+          </Row>
+          <Row style={{marginLeft:100,}}>
+          <Text style={{fontSize:18}}>{'\u2022'}</Text>
+          <Text style={{flex: 1, paddingLeft: 5,fontSize:10,fontFamily:'OpenSans',marginTop:6}}>Allergology</Text>
+
+          </Row>
+          </View>
+          :null}
+          </View>
+
+
+
 
     {this.state.pressTab==2 ? <Reviews doctorId={doctorData.doctor_id}/> : null }
     
