@@ -192,6 +192,7 @@ class AppointmentDetails extends Component {
       debugger
       let userId = await AsyncStorage.getItem('userId');
       let result = await appointmentStatusUpdate(this.state.doctorId, this.state.appointmentId, requestData);
+     
       this.setState({ isLoading: false })
       let appointmentStatus = result.appointmentData.appointment_status;
 
@@ -345,7 +346,7 @@ class AppointmentDetails extends Component {
                   </ListItem>
                 </List>
               </Card>
-              {data.appointment_status == 'CLOSED' || data.appointment_status == 'APPROVED' || data.appointment_status == 'PENDING' || data.appointment_status == 'PROPOSED_NEW_TIME' ? null :
+              {data.appointment_status == 'CANCELED'||data.appointment_status == 'CLOSED'|| data.appointment_status == 'APPROVED' || data.appointment_status == 'PENDING' || data.appointment_status == 'PROPOSED_NEW_TIME' ? null :
                 (data.appointment_status == 'PENDING_REVIEW' || reviewData.length === 0) ?
                   <Card style={{ margin: 10, padding: 10, borderRadius: 10 }}>
                     <List>

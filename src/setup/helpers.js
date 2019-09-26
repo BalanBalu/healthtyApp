@@ -180,6 +180,11 @@ export function statusValue(data){
   }
  case "CLOSED":
    return{
+    text:'Not Response ',
+    color:'red'
+  }
+  case "CANCELED":
+   return{
     text:'Appointment cancelled',
     color:'red'
   }
