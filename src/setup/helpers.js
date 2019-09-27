@@ -169,3 +169,45 @@ let value=dataIds.join(",");
 return value
 
 }
+export const statusValue={
+  
+  "PENDING":
+  {
+    text:'waiting for confirmation',
+    color:'red'
+  },
+  "APPROVED":
+ {
+    text:'Appointment confirmed',
+    color:'green'
+  },
+  "COMPLETED":
+  {
+    text:'Appointment completed',
+    color:'green'
+  },
+  "PENDING_REVIEW":
+  {
+    text:'Appointment completed',
+    color:'green'
+  },
+   "PROPOSED_NEW_TIME":
+     {
+    text:'PROPOSED_NEW_TIME',
+    color:'grey'
+  },
+  "CLOSED":
+  {
+    text:'No Response',
+    color:'red'
+  },
+   "CANCELED":
+  {
+    text:'Appointment cancelled',
+    color:'red'
+  }
+}
+
+
+
+
