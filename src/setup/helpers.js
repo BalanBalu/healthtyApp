@@ -9,7 +9,6 @@ export function renderIf(condition, renderFn) {
 export function subString(string, length = 0) {
   return string.length > length ? `${string.substr(0, length)}...` : string
 }
-
 // Duplicate object
 export function duplicate(object) {
   return Object.assign({}, object)
@@ -88,6 +87,9 @@ export function subTimeUnit(date, amount, unit) {
 
 export function getMoment(date) {
   return moment(date)
+}
+export function getUnixTimeStamp(date) {
+  return moment(date).unix();
 }
 export function findArrayObj(array, findNode, findValue) {
   let returnObj;

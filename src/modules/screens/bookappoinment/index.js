@@ -4,7 +4,7 @@ import { Col, Row, Grid } from 'react-native-easy-grid';
 import { connect } from 'react-redux'
 import { StyleSheet, TouchableOpacity, View, FlatList, AsyncStorage, } from 'react-native';
 import StarRating from 'react-native-star-rating';
-import { formatDate, addMoment, getMoment } from '../../../setup/helpers';
+import { formatDate, addMoment, getMoment, getUnixTimeStamp } from '../../../setup/helpers';
 import {  fetchAvailabilitySlots, 
           SET_SINGLE_DOCTOR_DATA, 
           getDoctorFaviouteList , 
@@ -176,13 +176,16 @@ enumarateDates(startDate, endDate) {
 
   haveAvailableSlots(slotsData) {
     let { selectedSlotIndex } = this.state;
+    const sortByStartTime = (a, b) => {
+      let startTimeSortA = getUnixTimeStamp(a.slotStartDateAndTime);
+      let startTimeSortB = getUnixTimeStamp(b.slotStartDateAndTime);
+      return startTimeSortA - startTimeSortB;
+    }
     return (
-      // <Row>
-      //   <Col style={{width:'8%'}}></Col>
-       
+      
       <FlatList
         numColumns={4}
-        data={slotsData}
+        data={slotsData.sort(sortByStartTime)}
         extraData={[this.state.selectedDate,this.state.selectedSlotIndex]}
         renderItem={( { item, index }) =>
        <Col style={{width:'25%'}}>
