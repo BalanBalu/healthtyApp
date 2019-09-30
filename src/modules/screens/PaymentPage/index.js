@@ -584,7 +584,7 @@ class PaymentPage extends Component {
                                         <SectionedMultiSelect
                                             items={this.availableNetBankingData.filter((ele, index)=> { return index >= 5 })}
                                             uniqueKey="code"
-                                            selectText="Choose Other Banks"
+                                            selectText="Other Banks"
                                             color={{ primary: '#3f51b5' }}
                                             showDropDowns={true}
                                             single={true}
