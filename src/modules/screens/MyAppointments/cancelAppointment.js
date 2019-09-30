@@ -15,7 +15,7 @@ class CancelAppointment extends Component {
       data: '',
       doctorId: '',
       appointmentId: '',
-      statusUpdateReason: '',
+      statusUpdateReason:'',
       isLoading: false,
       radioStatus: [false, false, false, false, false],
 
@@ -26,7 +26,9 @@ class CancelAppointment extends Component {
   toggleRadio = async (radioSelect, reasonSelect) => {
     let tempArray = [false, false, false, false, false];
     tempArray[radioSelect] = true;
+
     await this.setState({ radioStatus: tempArray, statusUpdateReason: reasonSelect });
+     
   }
   async componentDidMount() {
 
@@ -41,8 +43,9 @@ class CancelAppointment extends Component {
   /* Cancel Appoiontment Status */
   cancelAppointment = async (data, updatedStatus) => {
     try {
-
-      if (this.state.statusUpdateReason != null) {
+      console.log(this.state.statusUpdateReason)
+      if (this.state.statusUpdateReason != '') {
+        console.log('true')
         this.setState({ isLoading: true });
         let requestData = {
           doctorId: data.doctor_id,
@@ -56,9 +59,10 @@ class CancelAppointment extends Component {
 
         let userId = await AsyncStorage.getItem('userId');
         let result = await appointmentStatusUpdate(this.state.doctorId, this.state.appointmentId, requestData);
+           console.log(result)
         if (result.success) {
           Toast.show({
-            text: 'Your appointment has been cancelled',
+            text: 'Your appointment has been canceled',
             duration: 3000
           })
           let temp = this.state.data;
@@ -167,7 +171,7 @@ class CancelAppointment extends Component {
                       : null}
 
                     <Row style={{ marginTop: 10 }}>
-                      <Button style={styles.button1} onPress={() => (this.cancelAppointment(data, 'CLOSED'))} testID='appointment_cancel'>
+                      <Button style={styles.button1} onPress={() => (this.cancelAppointment(data, 'CANCELED'))} testID='appointment_cancel'>
                         <Text style={{ color: '#000',fontFamily:'OpenSans',fontSize:15 }}> SUBMIT</Text>
                       </Button>
 

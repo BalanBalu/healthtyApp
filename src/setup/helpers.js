@@ -9,7 +9,6 @@ export function renderIf(condition, renderFn) {
 export function subString(string, length = 0) {
   return string.length > length ? `${string.substr(0, length)}...` : string
 }
-
 // Duplicate object
 export function duplicate(object) {
   return Object.assign({}, object)
@@ -88,6 +87,9 @@ export function subTimeUnit(date, amount, unit) {
 
 export function getMoment(date) {
   return moment(date)
+}
+export function getUnixTimeStamp(date) {
+  return moment(date).unix();
 }
 export function findArrayObj(array, findNode, findValue) {
   let returnObj;
@@ -169,3 +171,45 @@ let value=dataIds.join(",");
 return value
 
 }
+export const statusValue={
+  
+  "PENDING":
+  {
+    text:'waiting for confirmation',
+    color:'red'
+  },
+  "APPROVED":
+ {
+    text:'Appointment confirmed',
+    color:'green'
+  },
+  "COMPLETED":
+  {
+    text:'Appointment completed',
+    color:'green'
+  },
+  "PENDING_REVIEW":
+  {
+    text:'Appointment completed',
+    color:'green'
+  },
+   "PROPOSED_NEW_TIME":
+     {
+    text:'PROPOSED_NEW_TIME',
+    color:'grey'
+  },
+  "CLOSED":
+  {
+    text:'No Response',
+    color:'red'
+  },
+   "CANCELED":
+  {
+    text:'Appointment cancelled',
+    color:'red'
+  }
+}
+
+
+
+

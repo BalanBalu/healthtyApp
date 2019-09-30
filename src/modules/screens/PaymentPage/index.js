@@ -1,9 +1,9 @@
 import React, { Component } from 'react';
-import { Container, Content, Text, Button, FooterTab, Card, Footer, Icon, Input, CheckBox, Toast, Form,Right} from 'native-base';
+import { Container, Content, Text, Button, FooterTab, Card, Footer, Icon, Input,Toast, Form,Right} from 'native-base';
 import { Col, Row, Grid } from 'react-native-easy-grid';
 import { StyleSheet, Image, View, AsyncStorage,TextInput} from 'react-native';
 import SectionedMultiSelect from 'react-native-sectioned-multi-select';
-import { RadioButton } from 'react-native-paper';
+import { RadioButton ,Checkbox} from 'react-native-paper';
 
 import { getAvailableNetBanking, getAvailableWallet, luhnCheck, getPayCardType } from '../../../setup/paymentMethods';
 import { putService , getService} from '../../../setup/services/httpservices';
@@ -39,6 +39,7 @@ class PaymentPage extends Component {
             selectedItems: [],
             savedCards: [],
             saveCardCheckbox: true,
+           
             bookSlotDetails: null,
             isLoading: false,
             isHidden: false,
@@ -427,6 +428,7 @@ class PaymentPage extends Component {
 
     renderCreditDebitCard(cardType) {
         const { cardPaymentDetails } = this.state;
+        
         return (
             <Content>
                 <View style={{ backgroundColor: '#fff', marginLeft: 10, marginRight: 10, borderBottomColor: '#000', borderBottomWidth: 0.6 }}>
@@ -509,10 +511,18 @@ class PaymentPage extends Component {
                             <Grid style={{ marginTop: 10, marginRight: 10, marginLeft: 10 }}>
                                 <Row>
                                     <Col>
-                                        <Row>
-                                            <CheckBox checked={this.state.saveCardCheckbox} color="grey" onPress={()=> this.setState({ saveCardCheckbox : !this.state.saveCardCheckbox })} ></CheckBox>
-                                            <Text style={{ marginLeft: 15, color: 'gray', fontFamily: 'OpenSans', }}>Save creditcard Information</Text>
-                                        </Row>
+                                      <Row>
+                                        <Checkbox color="green"
+                                             borderStyle={{ borderColor: '#F44336', 
+                                             backfaceVisibility: 'visible',
+                                             borderRadius: 18,
+                                             borderWidth: 1,
+                                             padding: 2,}}
+                                             status={this.state.saveCardCheckbox ? 'checked' : 'unchecked'}
+                                             onPress={()=> this.setState({ saveCardCheckbox : !this.state.saveCardCheckbox })}        
+                                        />
+                                        <Text style={{ marginLeft: 10, color: 'gray', fontFamily: 'OpenSans',marginTop:8 }}>Save card for faster transaction</Text>
+                                      </Row>
                                     </Col>
                                 </Row>
                             </Grid>
@@ -583,7 +593,7 @@ class PaymentPage extends Component {
                                         <SectionedMultiSelect
                                             items={this.availableNetBankingData.filter((ele, index)=> { return index >= 5 })}
                                             uniqueKey="code"
-                                            selectText="Choose Other Banks"
+                                            selectText="Other Banks"
                                             color={{ primary: '#3f51b5' }}
                                             showDropDowns={true}
                                             single={true}

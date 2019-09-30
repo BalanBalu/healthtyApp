@@ -28,7 +28,7 @@ import { NavigationEvents } from 'react-navigation';
 
 import { userReviews } from "../../providers/profile/profile.action";
 import { hasLoggedIn } from "../../providers/auth/auth.actions";
-import {formatDate,addTimeUnit,subMoment,addMoment,subTimeUnit ,getAllId} from "../../../setup/helpers";
+import {formatDate,addTimeUnit,subMoment,addMoment,subTimeUnit ,getAllId,statusValue} from "../../../setup/helpers";
 import {getUserAppointments,viewUserReviews,getMultipleDoctorDetails} from "../../providers/bookappointment/bookappointment.action";
 import noAppointmentImage from "../../../../assets/images/noappointment.png";
 import Spinner from "../../../components/Spinner";
@@ -53,6 +53,7 @@ class MyAppoinmentList extends Component {
 	}
 
 	async componentDidMount() {
+		console.log('statusValue'+JSON.stringify(statusValue))
 		const isLoggedIn = await hasLoggedIn(this.props);
 		if (!isLoggedIn) {
 			this.props.navigation.navigate("login");
@@ -112,12 +113,9 @@ class MyAppoinmentList extends Component {
 			if (upCommingAppointmentResult.success) {
 				let doctorInfo = new Map();
 				upCommingAppointmentResult = upCommingAppointmentResult.data;
-				console.log(upCommingAppointmentResult.length)
+				
 				let doctorIds = getAllId(upCommingAppointmentResult) 
-				// let doctorIds = upCommingAppointmentResult.map(appointmentResult => {
-
-				// 	return appointmentResult.doctor_id;
-				// }).join(",");
+				
 
 
 				let speciallistResult = await getMultipleDoctorDetails(doctorIds, "specialist,education,prefix,profile_image,gender");
@@ -178,7 +176,7 @@ class MyAppoinmentList extends Component {
 				          endDate: new Date() };
 
 			let pastAppointmentResult = await getUserAppointments(userId, filters);
-		      console.log(JSON.stringify(pastAppointmentResult));
+		    
 			let viewUserReviewResult = await viewUserReviews("user", userId, '?skip=0');
 
 			if (pastAppointmentResult.success) {
@@ -196,11 +194,8 @@ class MyAppoinmentList extends Component {
 				}
            
 	let doctorIds = getAllId(pastAppointmentResult) 
-				console.log(doctorIds)
-				// .map((appointmentResult, index) => {
-
-				// 	return appointmentResult.doctor_id;
-				// }).join(",");
+				
+				
 
 				let speciallistResult = await getMultipleDoctorDetails(doctorIds, "specialist,education,prefix,profile_image,gender");
 
@@ -227,7 +222,7 @@ class MyAppoinmentList extends Component {
 
 				});
 
-
+                 console.log(doctorInfo)
 
 				let pastDoctorDetails = [];
 				pastAppointmentResult.map((doctorData, index) => {
@@ -372,6 +367,8 @@ class MyAppoinmentList extends Component {
 											data={data}
 											extraData={data}
 											renderItem={({ item, index }) => (
+
+ 
 												<ListItem
 													avatar
 													onPress={() =>
@@ -427,25 +424,19 @@ class MyAppoinmentList extends Component {
 																	/>
 																)}
 														</Item>
+											
 														<Item style={{ borderBottomWidth: 0 }}>
-															{selectedIndex == 0 ?
+												
+														{/* {selectedIndex == 0 ?  */}
+																	<Text style={{ fontFamily: "OpenSans", fontSize: 13, color:statusValue[item.appointmentResult.appointment_status].color, fontWeight: 'bold' }} note>{statusValue[item.appointmentResult.appointment_status].text}</Text>	
+														     	 {/* :
+															// 	(item.appointmentResult.appointment_status == "CLOSED" ?
+															// 		<Text style={{ fontFamily: "OpenSans", fontSize: 13, color: "red", fontWeight: 'bold' }} note>Appointment cancelled.</Text>
+															// 		:
+															// 		<Text style={{ fontFamily: "OpenSans", fontSize: 13, color: "green", fontWeight: 'bold' }} note>Appointment completed</Text>
+															// 	)
 
-																(item.appointmentResult.appointment_status == "PENDING" ?
-																	<Text style={{ fontFamily: "OpenSans", fontSize: 13, color: "red", fontWeight: 'bold' }} note>waiting for confirmation</Text>
-																	: item.appointmentResult.appointment_status == "APPROVED" ?
-																		<Text style={{ fontFamily: "OpenSans", fontSize: 13, color: "green", fontWeight: 'bold' }} note>Appointment confirmed</Text>
-																		: item.appointmentResult.appointment_status == "CLOSED" ?
-																			<Text style={{ fontFamily: "OpenSans", fontSize: 13, color: "red", fontWeight: 'bold' }} note	>Appointment cancelled</Text>
-																			: item.appointmentResult.appointment_status == "PROPOSED_NEW_TIME" &&
-																			<Text style={{ fontFamily: "OpenSans", fontSize: 13, color: "grey", fontWeight: 'bold' }} note	>PROPOSED_NEW_TIME</Text>
-																) :
-																(item.appointmentResult.appointment_status == "CLOSED" ?
-																	<Text style={{ fontFamily: "OpenSans", fontSize: 13, color: "red", fontWeight: 'bold' }} note>Appointment cancelled.</Text>
-																	:
-																	<Text style={{ fontFamily: "OpenSans", fontSize: 13, color: "green", fontWeight: 'bold' }} note>Appointment completed</Text>
-																)
-
-															}
+															// } */}
 
 														</Item>
 

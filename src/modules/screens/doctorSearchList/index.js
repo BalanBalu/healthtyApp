@@ -13,9 +13,8 @@ import {  searchDoctorList, fetchAvailabilitySlots,
     SET_SINGLE_DOCTOR_DATA, 
     SET_FILTERED_DOCTOR_DATA,
     addToWishListDoctor,
-    getDoctorFaviouteList 
-} from '../../providers/bookappointment/bookappointment.action';
-import { formatDate, addMoment, addTimeUnit, getMoment, intersection } from '../../../setup/helpers';
+    getDoctorFaviouteList} from '../../providers/bookappointment/bookappointment.action';
+import { formatDate, addMoment, addTimeUnit, getMoment, intersection, getUnixTimeStamp  } from '../../../setup/helpers';
 import { Loader } from '../../../components/ContentLoader';
 import { renderDoctorImage,  
          getDoctorSpecialist,
@@ -500,12 +499,17 @@ class doctorSearchList extends Component {
         console.log('Selected slot index:' + selectedSlotIndex);
         const {width} = Dimensions.get('screen');
         const itemWidth = (width) / 4;
+        const sortByStartTime = (a, b) => {
+            let startTimeSortA = getUnixTimeStamp(a.slotStartDateAndTime);
+            let startTimeSortB = getUnixTimeStamp(b.slotStartDateAndTime);
+            return startTimeSortA - startTimeSortB;
+        }
         return (
             <Row>
               {/* <Col style={{width:'8%'}}></Col> */}
             <FlatList
               numColumns={4}
-              data={slotsData}
+              data={slotsData.sort(sortByStartTime)}
               extraData={[this.state.selectedDatesByDoctorIds, this.state.selectedSlotByDoctorIds]}
               renderItem={({ item, index }) =>
             <Col style={{width: itemWidth - 10 }}>
