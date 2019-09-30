@@ -9,13 +9,19 @@ export default StyleSheet.create({
 
     },
     bodyContent: {
-    
         flex:1,
         flexDirection:'row',
         alignItems:'center',
         justifyContent:'center',
        paddingLeft:30,
        paddingRight:30
+    },
+    bodyContent1: {
+        flex: 1,
+        flexDirection: 'row',
+        paddingLeft: 30,
+        paddingRight: 30,
+        marginTop: 30
     },
     textStyle:
     {
@@ -214,7 +220,9 @@ export default StyleSheet.create({
         padding: 10, 
         borderRadius: 10, 
         marginTop: 10, 
-        justifyContent: 'center'
+        justifyContent: 'center',
+        borderColor: '#775DA3',
+        borderWidth:2
     },
     buttonText:{
         fontFamily:'OpenSans',
