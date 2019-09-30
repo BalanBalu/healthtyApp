@@ -1,5 +1,17 @@
 import React, { Component } from 'react';
-import { Container, Content, Text ,Segment, Button, Card, List, ListItem, Right, Thumbnail, Body, Icon, Toast, Footer} from 'native-base';
+import { Container, 
+         Content, Text,
+         Segment, 
+         Button,
+         Card, 
+         Right, 
+         Thumbnail,
+         Icon, 
+         Toast,
+         Item, 
+         Footer, 
+         Spinner 
+      } from 'native-base';
 import { Col, Row, Grid } from 'react-native-easy-grid';
 import { connect } from 'react-redux'
 import { StyleSheet, TouchableOpacity, View, FlatList, AsyncStorage,Image } from 'react-native';
@@ -13,6 +25,9 @@ import {  fetchAvailabilitySlots,
           addToWishListDoctor,
           getMultipleDoctorDetails
         } from '../../providers/bookappointment/bookappointment.action';
+
+import { userReviews } from '../../providers/profile/profile.action';
+
 import moment from 'moment';
 import { renderDoctorImage, getDoctorSpecialist, getDoctorEducation, getDoctorExperience } from '../../common';
 import { store } from '../../../setup/store';
@@ -20,22 +35,24 @@ import HospitalLocation from './HospitalLocation';
 import Reviews from '../Reviews'
 const NO_OF_SLOTS_SHOULD_SHOW_PER_SLIDE = 3;
 import { Loader } from '../../../components/ContentLoader';
+import { CATEGORY_BASE_URL} from '../../../setup/config';
+import { RenderReviewData } from '../Reviews/ReviewCard';
 processedDoctorDetailsAndSlotData = null;
 showedHospitalDoctorId = null;
 selectedSlotLocationShowed = null;
 selectedSlotFee = null;
 showedFee = null;
-
-
 fields = "first_name,last_name,prefix,professional_statement,gender,specialist,education,language,gender_preference,experience,profile_image";
+
 class BookAppoinment extends Component {
   processedAvailabilityDates = [];
+
   constructor(props) {
     super(props)
 
     this.state = {
       selectedSlotItem: null,
-      isLoading: true  ,
+      isLoading: true,
       pressTab: 1,   
       selectedDate: formatDate(new Date(),'YYYY-MM-DD'),
       selectedSlotIndex: -1,
@@ -50,7 +67,14 @@ class BookAppoinment extends Component {
       slotDatesToShow : [],
       isAvailabilityLoading: false,
       isLoggedIn: false,
-      hidden:false
+      servicesByCategories: [],
+      hidden:false,
+      categoryShownObj: {},
+      isLoadedUserReview: false,
+      reviewData: [],
+      reviewRefreshCount: 0,
+      userId: null,
+      isReviewLoading: false
     }
 
   }
@@ -65,7 +89,7 @@ class BookAppoinment extends Component {
     let endDateMoment = addMoment(this.state.selectedDate, 7, 'days')
     let userId = await AsyncStorage.getItem('userId');
     if(userId) {
-      this.setState({ isLoggedIn : true });
+      this.setState({ isLoggedIn : true, userId  });
     }
     if(availabilitySlots) {
       const doctorId = navigation.getParam('doctorId') || false;
@@ -89,10 +113,44 @@ class BookAppoinment extends Component {
         }
         delete doctorDetails.slotData;
         delete doctorDetails.location;
-        await this.setState({ doctorId: singleDoctorData.doctorId, doctorData: singleDoctorData, doctorDetails });
+        const servicesByCategories = this.formSerivesByCategories(singleDoctorData.specialist);
+        await this.setState({ doctorId: singleDoctorData.doctorId, doctorData: singleDoctorData, doctorDetails, servicesByCategories });
+
         console.log(this.state.doctorDetails);
     }
     this.setState({ isLoading: false, slotDatesToShow : this.slotDatesToShow });
+  }
+
+
+
+  formSerivesByCategories = (specialists) => {
+    let servicesByCategories = [];
+    let procesedCategories = [];
+    if(specialists) {
+      specialists.forEach(element => {
+          let procesedCategoryIndex = procesedCategories.indexOf(element.category_id);
+          if(procesedCategoryIndex === -1) {
+            let obj = {
+              category_id: element.category_id,
+              category_name: element.category, 
+              isServiceShown: false,
+              services : [{
+                   service_id: element.service_id,
+                   service_name: element.service   
+                }]
+            }
+            servicesByCategories.push(obj);
+            procesedCategories.push(element.category_id);
+          } else {
+             servicesByCategories[procesedCategoryIndex].services.push({
+              service_id: element.service_id,
+              service_name: element.service   
+           }) 
+          }
+      });
+    }
+    procesedCategories = null;
+    return servicesByCategories;
   }
   
    
@@ -153,6 +211,19 @@ enumarateDates(startDate, endDate) {
   console.log(this.processedAvailabilityDates);
 }
 
+getUserReview = async ( doctorId ) => {
+  try {
+      this.setState( { isReviewLoading : true })
+      let result = await userReviews(doctorId, 'doctor');
+      this.setState( { isReviewLoading : false });
+      if (result.success) {
+           this.setState({ reviewData: result.data, isLoadedUserReview: true });
+      }
+  }
+  catch (e) {
+      console.log(e)
+  }
+}
   /*Get doctor Qualification details*/
   getdoctorDetails = async (doctorId) => {
     console.log("doctor" + doctorId);
@@ -333,28 +404,17 @@ onPressContinueForPaymentReview(doctorData, selectedSlotItem) {
   };
   this.props.navigation.navigate('Payment Review', { resultconfirmSlotDetails: confirmSlotDetails })
  }
- toggle(){
-  if(this.state.hidden==false){
-    this.setState({hidden:true})
-  }
- else{
-   this.setState({hidden:false})
- }
-}
-
+ 
   render() {
 
     const { bookappointment: { patientWishListsDoctorIds, favouriteListCountByDoctorIds, reviewsByDoctorIds } } = this.props;
-    const { qualification, doctorData, isLoading, selectedDate, selectedSlotItem, pressTab, isLoggedIn } = this.state;
-    const Service =[{Specialities:' Immunologist',TotalServices:'10 Services',service1:'allergy',service2:'asthma'},
-    {Specialities:'cardiologist',TotalServices:'20 Services',service1:'heart failure',service2:'non-invasive testing',service3:'valve disease'},{Specialities:'Infertility Specialist',TotalServices:'10 Services',service1:'lifestyle & conception Advice',service2:'extending the biological clock'},
-    {Specialities:'Dentist',TotalServices:'10 Services',service1:'dental surgery',service2:'teeth cleaning',service3:'prevent dental disorder'}]
-  
-    return (
-<Container style={styles.container}>
-{isLoading ?
+    const { doctorData, isLoading, selectedDate, selectedSlotItem, pressTab, isLoggedIn , servicesByCategories, categoryShownObj,isLoadedUserReview, reviewData, isReviewLoading} = this.state;
+    
+return (
+  <Container style={styles.container}>
+  {isLoading ?
    <Loader style='appointment' /> : 
-<Content style={styles.bodyContent} contentContainerStyle={{ flex: 0 ,padding:10}}>
+    <Content style={styles.bodyContent} contentContainerStyle={{ flex: 0 ,padding:10}}>
       
       <Card style={{  borderBottomWidth: 2 }}>
      
@@ -429,15 +489,18 @@ onPressContinueForPaymentReview(doctorData, selectedSlotItem) {
             </Card>
        <Row style={{marginLeft:5,marginRight:5}}>
          <Segment>
-           <Button first style={[{width:'33.33%',borderBottomWidth:4,alignItems:'center'}, pressTab === 1 ? { borderBottomColor:'#775DA3' } : { borderBottomColor:'#000' }  ] } onPress={()=>{this.onSegemntClick(1)}}>
-             <Text style={{color:'#000',fontSize:12,fontFamily:'OpenSans',textAlign:'center',marginLeft:20}}>About</Text>
+           <Button first style={[{width:'50%',borderBottomWidth:4,alignItems:'center', justifyContent : 'center' }, pressTab === 1 ? { borderBottomColor:'#775DA3' } : { borderBottomColor:'#000' }  ] } onPress={()=>{this.onSegemntClick(1)}}>
+             <Text style={{color:'#000',fontSize:12,fontFamily:'OpenSans',textAlign:'center' }}>About</Text>
            </Button>
-           <Button style={[{width:'33.33%',borderBottomWidth:4,alignItems:'center'} , pressTab === 2 ? { borderBottomColor:'#775DA3' } : { borderBottomColor:'#000' }]} onPress={()=>{this.onSegemntClick(2)}}>
-             <Text style={{color:'#000',fontSize:12,fontFamily:'OpenSans',textAlign:'center',marginLeft:20}}>Reviews</Text>
+           <Button style={[{width:'50%',borderBottomWidth:4,  alignContent :'center',  justifyContent : 'center' } , pressTab === 2 ? { borderBottomColor:'#775DA3' } : { borderBottomColor:'#000' }]} onPress={()=>{ 
+               if(!isLoadedUserReview) {
+                  this.getUserReview(doctorData.doctor_id);
+               }
+               this.onSegemntClick(2)
+            }}>
+             <Text style={{color:'#000',fontSize:12,fontFamily:'OpenSans',textAlign:'center' }}>Reviews</Text>
            </Button>
-           <Button last active style={[{width:'33.33%',borderBottomColor:'#000',borderBottomWidth:4,alignItems:'center'}, pressTab === 3 ? { borderBottomColor:'#775DA3' } : { borderBottomColor:'#000', }]} onPress={()=>{this.onSegemntClick(3)}}>
-             <Text style={{color:'#000',fontSize:12,fontFamily:'OpenSans',marginLeft:20,textAlign:'center'}}>Services</Text>
-           </Button>
+          
          </Segment>
       </Row>
 
@@ -529,97 +592,96 @@ onPressContinueForPaymentReview(doctorData, selectedSlotItem) {
          } keyExtractor={(item, index) => index.toString()}/> 
         </View> : null }
  
-      <View style={{marginLeft:5,marginRight:5,borderTopColor:'gray',borderTopWidth:1,}}>
+       <View style={{marginLeft:5,marginRight:5,borderTopColor:'gray',borderTopWidth:1,}}>
+          <Row style={{marginTop:10}}>
+            <Icon name='ios-medkit' style={{fontSize:20}}/>
+            <Text  style={{ fontFamily: 'OpenSans',fontSize:13,fontWeight:'bold',marginLeft:10,marginTop:1 }}>Language Spoken</Text>
+          </Row>
+      
+          <Row style={{marginLeft:20}}>
+            <FlatList
+              data={doctorData.language}
+              extraData={doctorData.language}
+              horizontal={true}
+              renderItem={({ item }) =>
+              <View style={{marginLeft:10}}>
+                <View style={{ borderColor: '#000', borderWidth:1, marginTop:10, height: 25, borderRadius: 10,justifyContent:'center'  }}>
+                  <Text style={{color:'#000', fontSize:12,fontWeight:'bold',fontFamily:'OpenSans', padding : 3 }}>{item}</Text>
+                </View> 
+              </View>  
+              } keyExtractor={(item, index) => index.toString()} />
+          </Row>
+        </View> 
+
+      <View style={{marginLeft:5,marginRight:5,borderTopColor:'gray',borderTopWidth:1,marginTop:10}}>
         <Row style={{marginTop:10}}>
-        <Icon name='ios-medkit' style={{fontSize:20}}/>
-        <Text  style={{ fontFamily: 'OpenSans',fontSize:13,fontWeight:'bold',marginLeft:10,marginTop:1 }}>Language Spoken</Text>
-      </Row>
-        <Row style={{marginLeft:20}}>
-   
-     <FlatList
-       data={doctorData.language}
-       extraData={doctorData.language}
-       horizontal={true}
-       renderItem={ ({ item }) =>
-         <View style={{marginLeft:10}}>
-            <View style={{ borderColor: '#000', borderWidth:1, marginTop:10, height: 25, borderRadius: 10,justifyContent:'center'  }}>
-             <Text style={{color:'#000', fontSize:12,fontWeight:'bold',fontFamily:'OpenSans', padding : 3 }}>{item}</Text>
-           </View> 
-        </View>  
-     } keyExtractor={(item, index) => index.toString()} />
-   </Row>
-   </View> 
-
-  </Content> : null }  
-
-
-  <View style={{marginLeft:5,marginRight:5,borderTopColor:'gray',borderTopWidth:1,marginTop:10}}>
-        <Row style={{marginTop:10}}>
-        <Icon name='ios-medkit' style={{fontSize:20}}/>
-        <Text  style={{ fontFamily: 'OpenSans',fontSize:13,fontWeight:'bold',marginLeft:10,marginTop:1 }}>Services</Text>
-      </Row>
+          <Icon name='ios-medkit' style={{fontSize:20}}/>
+          <Text  style={{ fontFamily: 'OpenSans',fontSize:13,fontWeight:'bold',marginLeft:10,marginTop:1 }}>Services</Text>
+        </Row>
       <FlatList
-         data={Service}
-         renderItem={
-         ({ item }) =>
-  <View>
-      <TouchableOpacity onPress={()=>this.toggle()}>
-        <Row style={{marginLeft:20,marginTop:20,borderTopColor:'gray',borderTopWidth:0.5}}>
-        <Col style={{width:'22%',paddingTop:10}}>
-              <Image square source={require('../../../../assets/images/Acupuncturist.jpg')}  style={{ height: 50, width: 50,borderRadius:5 }} />
-            </Col>
-            <Col style={{width:'83%',marginTop:10,paddingTop:10}}>
-               <Text style={{fontFamily:'OpenSans',fontSize:13,fontWeight:'bold',width:'90%'}}>{item.Specialities}</Text>
-               <Text style={{fontFamily:'OpenSans',fontSize:12,fontStyle:'italic'}}>{item.TotalServices}</Text>
-            </Col>
-
-          </Row>
+          data={servicesByCategories}
+          extraData={categoryShownObj}
+          keyExtractor={(item, index) => index.toString()}
+          renderItem={({ item }) =>
+      <View>
+         <TouchableOpacity onPress={()=> {
+            var categoryShownObj = {...this.state.categoryShownObj}
+            categoryShownObj[item.category_id] = !categoryShownObj[item.category_id];
+            this.setState({categoryShownObj})
+            console.log(CATEGORY_BASE_URL + item.category_id + '.png');
+         } }>
+            <Row style={{marginLeft:20,marginTop:20,borderTopColor:'gray',borderTopWidth:0.5}}>
+              <Col style={{width:'22%',paddingTop:10}}>
+                <Image square source={ { uri : CATEGORY_BASE_URL + item.category_id + '.png' }}  
+                     style={{ height: 50, width: 50,borderRadius:5 }} />
+              </Col>
+              <Col style={{width:'83%',marginTop:10,paddingTop:10}}>
+                <Text style={{fontFamily:'OpenSans',fontSize:13,fontWeight:'bold',width:'90%'}}>{item.category_name}</Text>
+                <Text style={{fontFamily:'OpenSans',fontSize:12,fontStyle:'italic'}}>{item.services.length} {item.services.length === 1 ? 'Service' : 'Services' }</Text>
+              </Col>
+            </Row>
           </TouchableOpacity>
-          {this.state.hidden==true?
-          <View>
-          <Row style={{marginLeft:100,borderTopColor:'gray',borderTopWidth:0.5}}>
-          <Text style={{fontSize:18}}>{'\u2022'}</Text>
-          <Text style={{flex: 1, paddingLeft: 5,fontSize:12,fontFamily:'OpenSans',marginTop:6}}>{item.service1}</Text>
-
-          </Row>
-          <Row style={{marginLeft:100,}}>
-          <Text style={{fontSize:18}}>{'\u2022'}</Text>
-          <Text style={{flex: 1, paddingLeft: 5,fontSize:12,fontFamily:'OpenSans',marginTop:6}}>{item.service2}</Text>
-
-          </Row>
-          </View>
-          :null}
-          </View>
-}/>
-          </View>
-
-
-
-
-
-    {this.state.pressTab==2 ? <Reviews doctorId={doctorData.doctor_id}/> : null }
-    
-    {this.state.pressTab === 3 ?        
-      <Content>
+            {categoryShownObj[item.category_id] === true ?   
+              <FlatList
+                data={item.services}
+                extraData={categoryShownObj}
+                keyExtractor={(item, index) => index.toString()}
+                renderItem={({ item }) =>
+                  <Row style={{marginLeft:100,borderTopColor:'gray',borderTopWidth:0.5}}>
+                    <Text style={{fontSize:18}}>{'\u2022'}</Text>
+                    <Text style={{flex: 1, paddingLeft: 5,fontSize:12,fontFamily:'OpenSans',marginTop:6}}>{item.service_name}</Text>
+                  </Row>
+              }/>
+            : null }
+         
+       </View>}/>
+    </View>
+        
+    </Content> : null }  
+      
+      {this.state.pressTab === 2 ? 
+      <Content style={styles.bodyContent}>
+      {isReviewLoading === true ? <Spinner color='blue' /> :    
+        reviewData.length === 0 ? 
+        <Item style={{ borderBottomWidth: 0, justifyContent: 'center', alignItems: 'center', height: 300 }}>
+            <Text style={{ fontSize: 20, justifyContent: 'center', alignItems: 'center' }}>No reviews yet</Text>
+        </Item> : 
         <FlatList
-          data={doctorData.specialist}
-          extraData={doctorData.specialist}
-          renderItem={ ({ item }) =>
-           <Card style={{ backgroundColor: '#ffffff', borderRadius: 10}}>
-            <List>
-              <ListItem avatar>
-                <Body>
-                  <Text numberOfLines={1} style={{fontFamily:'OpenSans-Bold',fontSize:14}}> {item.category} </Text>
-                  <Text style={{ fontSize: 12,  marginTop:5,fontFamily:'OpenSans',fontSize:12 }}>  {item.service} </Text>
-                  
-                </Body>
-              </ListItem>
-                      
-            </List>
-           </Card>} keyExtractor={(item, index) => index.toString()} />
-      </Content> : null} 
-
-        </Content> }
+          data={reviewData}
+          extraData={[this.state.reviewRefreshCount, reviewData ]}
+          keyExtractor={(item, index) => index.toString()}
+          renderItem={({item})=>
+              <RenderReviewData 
+                  item={item}
+                  userId={this.state.userId}
+                  refreshCount={()=> this.setState({ reviewRefreshCount : this.state.reviewRefreshCount + 1}) }
+              />
+          }/>
+      } 
+       </Content> : null }
+    
+    
+    </Content> }
 
               <Footer style={{ backgroundColor: '#7E49C3', }}>
                   <Row>
