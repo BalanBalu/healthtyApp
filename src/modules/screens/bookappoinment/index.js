@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import { Container, Content, Text ,Segment, Button, Card, List, ListItem, Right, Thumbnail, Body, Icon, Toast, Footer} from 'native-base';
 import { Col, Row, Grid } from 'react-native-easy-grid';
 import { connect } from 'react-redux'
-import { StyleSheet, TouchableOpacity, View, FlatList, AsyncStorage, } from 'react-native';
+import { StyleSheet, TouchableOpacity, View, FlatList, AsyncStorage,Image } from 'react-native';
 import StarRating from 'react-native-star-rating';
 import { formatDate, addMoment, getMoment } from '../../../setup/helpers';
 import {  fetchAvailabilitySlots, 
@@ -335,11 +335,9 @@ onPressContinueForPaymentReview(doctorData, selectedSlotItem) {
  }
  toggle(){
   if(this.state.hidden==false){
-    alert('true')
     this.setState({hidden:true})
   }
  else{
-   alert('false')
    this.setState({hidden:false})
  }
 }
@@ -348,8 +346,10 @@ onPressContinueForPaymentReview(doctorData, selectedSlotItem) {
 
     const { bookappointment: { patientWishListsDoctorIds, favouriteListCountByDoctorIds, reviewsByDoctorIds } } = this.props;
     const { qualification, doctorData, isLoading, selectedDate, selectedSlotItem, pressTab, isLoggedIn } = this.state;
-    
-   
+    const Service =[{Specialities:' Immunologist',TotalServices:'10 Services',service1:'allergy',service2:'asthma'},
+    {Specialities:'cardiologist',TotalServices:'20 Services',service1:'heart failure',service2:'non-invasive testing',service3:'valve disease'},{Specialities:'Infertility Specialist',TotalServices:'10 Services',service1:'lifestyle & conception Advice',service2:'extending the biological clock'},
+    {Specialities:'Dentist',TotalServices:'10 Services',service1:'dental surgery',service2:'teeth cleaning',service3:'prevent dental disorder'}]
+  
     return (
 <Container style={styles.container}>
 {isLoading ?
@@ -552,19 +552,25 @@ onPressContinueForPaymentReview(doctorData, selectedSlotItem) {
 
   </Content> : null }  
 
-  <View style={{marginLeft:5,marginRight:5,borderTopColor:'gray',borderTopWidth:1,}}>
+
+  <View style={{marginLeft:5,marginRight:5,borderTopColor:'gray',borderTopWidth:1,marginTop:10}}>
         <Row style={{marginTop:10}}>
         <Icon name='ios-medkit' style={{fontSize:20}}/>
         <Text  style={{ fontFamily: 'OpenSans',fontSize:13,fontWeight:'bold',marginLeft:10,marginTop:1 }}>Services</Text>
       </Row>
+      <FlatList
+         data={Service}
+         renderItem={
+         ({ item }) =>
+  <View>
       <TouchableOpacity onPress={()=>this.toggle()}>
         <Row style={{marginLeft:20,marginTop:20,borderTopColor:'gray',borderTopWidth:0.5}}>
         <Col style={{width:'22%',paddingTop:10}}>
               <Image square source={require('../../../../assets/images/Acupuncturist.jpg')}  style={{ height: 50, width: 50,borderRadius:5 }} />
             </Col>
             <Col style={{width:'83%',marginTop:10,paddingTop:10}}>
-               <Text style={{fontFamily:'OpenSans',fontSize:13,fontWeight:'bold',width:'90%'}}>Dentist</Text>
-               <Text style={{fontFamily:'OpenSans',fontSize:10,fontStyle:'italic'}}>20 services</Text>
+               <Text style={{fontFamily:'OpenSans',fontSize:13,fontWeight:'bold',width:'90%'}}>{item.Specialities}</Text>
+               <Text style={{fontFamily:'OpenSans',fontSize:12,fontStyle:'italic'}}>{item.TotalServices}</Text>
             </Col>
 
           </Row>
@@ -573,17 +579,20 @@ onPressContinueForPaymentReview(doctorData, selectedSlotItem) {
           <View>
           <Row style={{marginLeft:100,borderTopColor:'gray',borderTopWidth:0.5}}>
           <Text style={{fontSize:18}}>{'\u2022'}</Text>
-          <Text style={{flex: 1, paddingLeft: 5,fontSize:10,fontFamily:'OpenSans',marginTop:6}}>General</Text>
+          <Text style={{flex: 1, paddingLeft: 5,fontSize:12,fontFamily:'OpenSans',marginTop:6}}>{item.service1}</Text>
 
           </Row>
           <Row style={{marginLeft:100,}}>
           <Text style={{fontSize:18}}>{'\u2022'}</Text>
-          <Text style={{flex: 1, paddingLeft: 5,fontSize:10,fontFamily:'OpenSans',marginTop:6}}>Allergology</Text>
+          <Text style={{flex: 1, paddingLeft: 5,fontSize:12,fontFamily:'OpenSans',marginTop:6}}>{item.service2}</Text>
 
           </Row>
           </View>
           :null}
           </View>
+}/>
+          </View>
+
 
 
 
