@@ -40,7 +40,7 @@ class PaymentPage extends Component {
             selectedItems: [],
             savedCards: [],
             saveCardCheckbox: true,
-             checked:false,
+           
             bookSlotDetails: null,
             isLoading: false,
             isHidden: false,
@@ -522,7 +522,7 @@ class PaymentPage extends Component {
                                              status={this.state.saveCardCheckbox ? 'checked' : 'unchecked'}
                                              onPress={()=> this.setState({ saveCardCheckbox : !this.state.saveCardCheckbox })}        
                                         />
-                                        <Text style={{ marginLeft: 10, color: 'gray', fontFamily: 'OpenSans',marginTop:8 }}>Save creditcard Information</Text>
+                                        <Text style={{ marginLeft: 10, color: 'gray', fontFamily: 'OpenSans',marginTop:8 }}>Save card for faster transaction</Text>
                                       </Row>
                                     </Col>
                                 </Row>
