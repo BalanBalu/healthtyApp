@@ -9,19 +9,19 @@ export default StyleSheet.create({
 
     },
     bodyContent: {
-        flex:1,
-        flexDirection:'row',
-        alignItems:'center',
-        justifyContent:'center',
-       paddingLeft:30,
-       paddingRight:30
+        flex: 1,
+        flexDirection: 'row',
+        alignItems: 'center',
+        justifyContent: 'center',
+        paddingLeft: 30,
+        paddingRight: 30
     },
     bodyContent1: {
         flex: 1,
         flexDirection: 'row',
         paddingLeft: 30,
         paddingRight: 30,
-        marginTop: 30
+        marginTop: 50
     },
     textStyle:
     {
@@ -60,9 +60,9 @@ export default StyleSheet.create({
         backgroundColor: '#775DA3',
         borderRadius: 5,
         fontFamily: 'OpenSans',
-       marginLeft:15,
-       marginRight:15
-        
+        marginLeft: 15,
+        marginRight: 15
+
     },
     transparentLabel:
     {
@@ -71,7 +71,7 @@ export default StyleSheet.create({
         height: 45,
         marginTop: 10,
         borderRadius: 5,
-        
+
         fontFamily: 'OpenSans',
         fontSize: 13
 
@@ -83,7 +83,7 @@ export default StyleSheet.create({
         height: 45,
         marginTop: 10,
         borderRadius: 5,
-        
+
         fontFamily: 'OpenSans',
         marginRight: 15,
         fontSize: 13
@@ -96,13 +96,13 @@ export default StyleSheet.create({
         height: 45,
         marginTop: 10,
         borderRadius: 5,
-        fontSize:13,
+        fontSize: 13,
         paddingLeft: 20,
         fontFamily: 'OpenSans',
         marginRight: 15,
         fontSize: 13,
         borderBottomLeftRadius: 0,
-         borderTopLeftRadius: 0, 
+        borderTopLeftRadius: 0,
 
     },
     welcome:
@@ -185,7 +185,7 @@ export default StyleSheet.create({
     button2: {
 
         borderRadius: 10,
-        backgroundColor:'#775DA3',
+        backgroundColor: '#775DA3',
         justifyContent: 'center',
         padding: 10,
         marginTop: 10,
@@ -202,40 +202,40 @@ export default StyleSheet.create({
         width: '97%',
 
     },
-    headerText:{
+    headerText: {
 
-        fontFamily: 'OpenSans', 
-        marginLeft: 7, 
-        fontWeight: 'bold', 
-        fontSize: 20   
+        fontFamily: 'OpenSans',
+        marginLeft: 7,
+        fontWeight: 'bold',
+        fontSize: 20
     },
-    addressHeaderText:{
+    addressHeaderText: {
 
-        fontFamily: 'OpenSans', 
-        marginLeft: 15, 
-        fontWeight: 'bold', 
-        fontSize: 20   
+        fontFamily: 'OpenSans',
+        marginLeft: 15,
+        fontWeight: 'bold',
+        fontSize: 20
     },
-    cardEmail:{
-        padding: 10, 
-        borderRadius: 10, 
-        marginTop: 10, 
+    cardEmail: {
+        padding: 10,
+        borderRadius: 10,
+        marginTop: 10,
         justifyContent: 'center',
         borderColor: '#775DA3',
-        borderWidth:2
+        borderWidth: 2
     },
-    buttonText:{
-        fontFamily:'OpenSans',
-        fontSize:15,
-        fontWeight:'bold',
-        color:'#fff',
-        
-    },
-    subText:{
+    buttonText: {
         fontFamily: 'OpenSans',
-         fontSize: 15, 
-        fontWeight:'bold',
-        marginTop:5
+        fontSize: 15,
+        fontWeight: 'bold',
+        color: '#fff',
+
+    },
+    subText: {
+        fontFamily: 'OpenSans',
+        fontSize: 15,
+        fontWeight: 'bold',
+        marginTop: 5
     }
 });
 
