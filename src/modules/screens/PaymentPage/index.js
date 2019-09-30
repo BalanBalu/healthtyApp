@@ -39,6 +39,7 @@ class PaymentPage extends Component {
             amount: 100,
             selectedItems: [],
             savedCards: [],
+            saveCardCheckbox: true,
              checked:false,
             bookSlotDetails: null,
             isLoading: false,
@@ -518,10 +519,9 @@ class PaymentPage extends Component {
                    borderRadius: 18,
                    borderWidth: 1,
                    padding: 2,}}
-                    status={checked ? 'checked' : 'unchecked'}
-                    onPress={() => { this.setState({ checked: !checked }); }}
-                     />
-                                            {/* <CheckBox checked={this.state.saveCardCheckbox} color="grey" onPress={()=> this.setState({ saveCardCheckbox : !this.state.saveCardCheckbox })} ></CheckBox> */}
+                    status={this.state.saveCardCheckbox ? 'checked' : 'unchecked'}
+                    onPress={()=> this.setState({ saveCardCheckbox : !this.state.saveCardCheckbox })}        />
+                                            {/* <CheckBox checked={} color="grey" onPress={()=> this.setState({ saveCardCheckbox : !this.state.saveCardCheckbox })} ></CheckBox> */}
                                             <Text style={{ marginLeft: 10, color: 'gray', fontFamily: 'OpenSans',marginTop:8 }}>Save creditcard Information</Text>
                                         </Row>
                                     </Col>
