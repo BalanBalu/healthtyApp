@@ -28,19 +28,12 @@ import { NavigationEvents } from 'react-navigation';
 
 import { userReviews } from "../../providers/profile/profile.action";
 import { hasLoggedIn } from "../../providers/auth/auth.actions";
-import {
-	formatDate,
-	addTimeUnit,
-	subTimeUnit
-} from "../../../setup/helpers";
-import {
-	getUserAppointments,
-	viewUserReviews,
-	getMultipleDoctorDetails
-} from "../../providers/bookappointment/bookappointment.action";
+import {formatDate,addTimeUnit,subMoment,addMoment,subTimeUnit ,getAllId,statusValue} from "../../../setup/helpers";
+import {getUserAppointments,viewUserReviews,getMultipleDoctorDetails} from "../../providers/bookappointment/bookappointment.action";
 import noAppointmentImage from "../../../../assets/images/noappointment.png";
 import Spinner from "../../../components/Spinner";
-import { renderProfileImage } from '../../common'
+import { renderProfileImage,getAllEducation,getAllSpecialist } from '../../common'
+// import moment from "moment";
 
 class MyAppoinmentList extends Component {
 	constructor(props) {
@@ -52,10 +45,6 @@ class MyAppoinmentList extends Component {
 			upComingData: [],
 			pastData: [],
 			userId: null,
-			reviewData: [],
-			upcommingSpecialist: [],
-			pastSpecialist: [],
-			speciallist: [],
 			loading: true,
 			isRefreshing: false,
 			isNavigation: true
@@ -64,6 +53,7 @@ class MyAppoinmentList extends Component {
 	}
 
 	async componentDidMount() {
+		console.log('statusValue'+JSON.stringify(statusValue))
 		const isLoggedIn = await hasLoggedIn(this.props);
 		if (!isLoggedIn) {
 			this.props.navigation.navigate("login");
@@ -107,20 +97,26 @@ class MyAppoinmentList extends Component {
 	upCommingAppointment = async () => {
 		try {
 			let userId = await AsyncStorage.getItem("userId");
+			//upcomming filter utc format
+			// let filters = {
+			// 	startDate: moment().utc(),
+			// 	endDate: addMoment(new Date(), 1, "years").utc()
+			// };
+		
 			let filters = {
-				startDate: new Date(),
+				startDate:new Date(),
 				endDate: addTimeUnit(new Date(), 1, "years")
 			};
+			
 			let upCommingAppointmentResult = await getUserAppointments(userId, filters);
-
+              
 			if (upCommingAppointmentResult.success) {
 				let doctorInfo = new Map();
 				upCommingAppointmentResult = upCommingAppointmentResult.data;
+				
+				let doctorIds = getAllId(upCommingAppointmentResult) 
+				
 
-				let doctorIds = upCommingAppointmentResult.map(appointmentResult => {
-
-					return appointmentResult.doctor_id;
-				}).join(",");
 
 				let speciallistResult = await getMultipleDoctorDetails(doctorIds, "specialist,education,prefix,profile_image,gender");
 
@@ -130,18 +126,16 @@ class MyAppoinmentList extends Component {
 
 
 					if (doctorData.education != undefined) {
-						educationDetails = doctorData.education.map(education => {
-							return education.degree;
-						}).join(",");
+						educationDetails =  getAllEducation(doctorData.education)
+						
 					} if (doctorData.specialist != undefined) {
-						speaciallistDetails = doctorData.specialist.map(categories => {
-							return categories.category;
-						}).join(",");
+						speaciallistDetails =   getAllSpecialist(doctorData.specialist)
+						
 					}
-					
-						 
-					
-					doctorInfo.set(doctorData.doctor_id, { degree: educationDetails, specialist: speaciallistDetails, prefix: doctorData.prefix ,profile_image: doctorData.profile_image,gender:doctorData.gender})
+
+
+
+					doctorInfo.set(doctorData.doctor_id, { degree: educationDetails, specialist: speaciallistDetails, prefix: doctorData.prefix, profile_image: doctorData.profile_image, gender: doctorData.gender })
 
 
 				});
@@ -172,10 +166,17 @@ class MyAppoinmentList extends Component {
 	pastAppointment = async () => {
 		try {
 			let userId = await AsyncStorage.getItem("userId");
+	 
+			//utc format in filter Date result Didnot come
+		//	 let filters = { startDate: moment().utc(),
+			// 	endDate: subMoment(new Date(), 1, "years").utc() };
+		
 
-			let filters = { endDate: new Date(), startDate: subTimeUnit(new Date(), 1, "years") };
+			let filters = { startDate:subTimeUnit(new Date(), 1, "years"),
+				          endDate: new Date() };
 
 			let pastAppointmentResult = await getUserAppointments(userId, filters);
+		    
 			let viewUserReviewResult = await viewUserReviews("user", userId, '?skip=0');
 
 			if (pastAppointmentResult.success) {
@@ -191,65 +192,41 @@ class MyAppoinmentList extends Component {
 
 					})
 				}
-
-				let doctorIds = pastAppointmentResult.map((appointmentResult, index) => {
-
-					return appointmentResult.doctor_id;
-				}).join(",");
+           
+	let doctorIds = getAllId(pastAppointmentResult) 
+				
+				
 
 				let speciallistResult = await getMultipleDoctorDetails(doctorIds, "specialist,education,prefix,profile_image,gender");
-				
+
 				speciallistResult.data.forEach(doctorData => {
 
 					let educationDetails = ' ', speaciallistDetails = '';
-					if (doctorData.education != undefined) {
-						educationDetails = doctorData.education.map(education => {
-
-							return education.degree;
-						}).join(",");
-
-
-					}
-
-					if (doctorData.specialist != undefined) {
-						speaciallistDetails = doctorData.specialist.map(categories => {
-							return categories.category;
-						}).join(",");
-
-					}
 					
+					 if (doctorData.education != undefined) {
+					
+						educationDetails =  getAllEducation(doctorData.education)
+
+					}
+
 				
-					doctorInfo.set(doctorData.doctor_id, { degree: educationDetails, specialist: speaciallistDetails, prefix: doctorData.prefix, profile_image: doctorData.profile_image ,gender:doctorData.gender})
+					if (doctorData.specialist != undefined) {
+						speaciallistDetails= getAllSpecialist(doctorData.specialist)
+                       
+					}
+
+					
+
+					doctorInfo.set(doctorData.doctor_id, { degree: educationDetails, specialist: speaciallistDetails.toString(), prefix: doctorData.prefix, profile_image: doctorData.profile_image, gender: doctorData.gender })
 
 
 				});
 
-
+                 console.log(doctorInfo)
 
 				let pastDoctorDetails = [];
 				pastAppointmentResult.map((doctorData, index) => {
 
-
-
-					// let ratting;
-					// if (doctorData.appointment_status == "COMPLETED") {
-
-					// 	viewUserReviewResult.map(viewUserReview => {
-
-
-
-
-					// 		if (doctorData._id === viewUserReview.appointment_id) {
-					// 			console.log('pastAppointmentResult' + doctorData._id + '=review' + viewUserReview.appointment_id);
-
-					// 			ratting = viewUserReview.overall_rating
-
-
-					// 		}
-
-					// 	});
-
-					// }
 					let ratting;
 					if (doctorData.appointment_status == "COMPLETED") {
 						let rating = reviewRate.get(doctorData._id);
@@ -285,14 +262,14 @@ class MyAppoinmentList extends Component {
 
 		}
 	};
-    
+
 
 	navigateAddReview(item) {
 		let data = item.appointmentResult;
 		data.prefix = item.prefix
-		console.log(data)
-		this.props.navigation.navigate('InsertReview', { appointmentDetail:data })
 		
+		this.props.navigation.navigate('InsertReview', { appointmentDetail: data })
+
 	}
 
 	handleIndexChange = index => {
@@ -307,7 +284,7 @@ class MyAppoinmentList extends Component {
 
 		});
 	};
-	
+
 
 
 	navigateToBookAppointmentPage(item) {
@@ -379,7 +356,7 @@ class MyAppoinmentList extends Component {
 										onPress={() =>
 											this.props.navigation.navigate("Home", { fromAppointment: true })
 										} testID='navigateToHome'>
-										<Text style={{fontFamily:'Opensans',fontSize:15,fontWeight:'bold'}}>Book Now</Text>
+										<Text style={{ fontFamily: 'Opensans', fontSize: 15, fontWeight: 'bold' }}>Book Now</Text>
 									</Button>
 								</Item>
 							</Card>
@@ -390,6 +367,8 @@ class MyAppoinmentList extends Component {
 											data={data}
 											extraData={data}
 											renderItem={({ item, index }) => (
+
+ 
 												<ListItem
 													avatar
 													onPress={() =>
@@ -399,18 +378,18 @@ class MyAppoinmentList extends Component {
 													} testID='navigateAppointmentInfo'
 												>
 													<Left>
-														 <Thumbnail
-																square
+														<Thumbnail
+															square
 															source={renderProfileImage(item)}
-																style={{ height: 60, width: 60 }}
-															/>
+															style={{ height: 60, width: 60 }}
+														/>
 													</Left>
 													<Body>
 
 														<Item style={{ borderBottomWidth: 0 }}>
 
-															<Text style={{ fontFamily: "OpenSans",fontSize:15,fontWeight:'bold'}}>
-																{(item.prefix != undefined ? item.prefix : 'Dr.') + item.appointmentResult.doctorInfo.first_name + " " + item.appointmentResult.doctorInfo.last_name}{" "}
+															<Text style={{ fontFamily: "OpenSans", fontSize: 15, fontWeight: 'bold' }}>
+																{(item.prefix != undefined ? item.prefix : '') + item.appointmentResult.doctorInfo.first_name + " " + item.appointmentResult.doctorInfo.last_name}{" "}
 															</Text>
 															<Text
 																style={{
@@ -424,7 +403,7 @@ class MyAppoinmentList extends Component {
 														</Item>
 														<Item style={{ borderBottomWidth: 0 }}>
 															<Text
-																style={{ fontFamily: "OpenSans", fontSize: 14,width:'60%' }}
+																style={{ fontFamily: "OpenSans", fontSize: 14, width: '60%' }}
 															>
 																{item.specialist}
 															</Text>
@@ -433,9 +412,9 @@ class MyAppoinmentList extends Component {
 																item.ratting != undefined && (
 																	<StarRating
 																		fullStarColor="#FF9500"
-																		starSize={20}
+																		starSize={15}
 																		containerStyle={{
-																			width: 100,
+																			width: 80,
 																			marginLeft: "auto",
 																		}}
 																		disabled={false}
@@ -445,64 +424,65 @@ class MyAppoinmentList extends Component {
 																	/>
 																)}
 														</Item>
+											
 														<Item style={{ borderBottomWidth: 0 }}>
-															{selectedIndex == 0 ?
+												
+														{/* {selectedIndex == 0 ?  */}
+																	<Text style={{ fontFamily: "OpenSans", fontSize: 13, color:statusValue[item.appointmentResult.appointment_status].color, fontWeight: 'bold' }} note>{statusValue[item.appointmentResult.appointment_status].text}</Text>	
+														     	 {/* :
+															// 	(item.appointmentResult.appointment_status == "CLOSED" ?
+															// 		<Text style={{ fontFamily: "OpenSans", fontSize: 13, color: "red", fontWeight: 'bold' }} note>Appointment cancelled.</Text>
+															// 		:
+															// 		<Text style={{ fontFamily: "OpenSans", fontSize: 13, color: "green", fontWeight: 'bold' }} note>Appointment completed</Text>
+															// 	)
 
-																(item.appointmentResult.appointment_status == "PENDING" ?
-																	<Text style={{ fontFamily: "OpenSans", fontSize: 13, color: "red",fontWeight:'bold' }} note>waiting for confirmation</Text>
-																	: item.appointmentResult.appointment_status == "APPROVED" ?
-																		<Text style={{ fontFamily: "OpenSans", fontSize: 13, color: "green",fontWeight:'bold' }} note>	Appointment confirmed</Text>
-																		: item.appointmentResult.appointment_status == "CLOSED" ?
-																			<Text style={{ fontFamily: "OpenSans", fontSize: 13, color: "red",fontWeight:'bold' }} note	>Appointment cancelled</Text>
-																			: item.appointmentResult.appointment_status == "PROPOSED_NEW_TIME" &&
-																			<Text style={{ fontFamily: "OpenSans", fontSize: 13, color: "grey" ,fontWeight:'bold'}} note	> PROPOSED_NEW_TIME</Text>
-																) :
-																(item.appointmentResult.appointment_status == "CLOSED" ?
-																	<Text style={{ fontFamily: "OpenSans", fontSize: 13, color: "red",fontWeight:'bold' }} note>	Appointment cancelled.	</Text>
-																	:
-																	<Text style={{ fontFamily: "OpenSans", fontSize: 13, color: "green" ,fontWeight:'bold'}} note>Appointment completed
-																	</Text>
-																)
-
-															}
+															// } */}
 
 														</Item>
 
-														<Text
-															style={{ fontFamily: "OpenSans", fontSize: 13 }}
-															note
-														>
-															{formatDate(
-																item.appointmentResult.appointment_starttime,
-																"dddd,MMMM DD-YYYY  hh:mm a"
-															)}
-														</Text>
+														<Text style={{ fontFamily: "OpenSans", fontSize: 11 }} note>
+															{formatDate(item.appointmentResult.appointment_starttime, "dddd,MMMM DD-YYYY  hh:mm a")}</Text>
+
+
+
+
+
+
+
 
 														{selectedIndex == 1 &&
 															item.appointmentResult.appointment_status ==
 															"PENDING_REVIEW" ? (
 																<Item style={{ borderBottomWidth: 0 }}>
-																	<Button
-																		style={styles.shareButton}
-																		onPress={() => this.navigateAddReview(item)}
-																		
-																		 testID='navigateInsertReview'
-																	>
-																		<Text style={styles.bookAgain1}>
-																			{" "}
-																			Add To Review
+																	<Right style={(styles.marginRight = -2)}>
+																		<Button
+																			style={styles.shareButton}
+																			onPress={() => this.navigateAddReview(item)}
+
+																			testID='navigateInsertReview'
+																		>
+																			<Text style={styles.bookAgain1}>
+
+																				Add Review
 																</Text>
-																	</Button>
-																	<Button style={styles.bookingButton} onPress={() => this.navigateToBookAppointmentPage(item)}>
-																		<Text style={styles.bookAgain1} testID='navigateBookAppointment'>
-																			Book Again
+																		</Button></Right>
+
+																	<Right style={(styles.marginRight = 5)}>
+
+																		<Button style={styles.bookingButton} onPress={() => this.navigateToBookAppointmentPage(item)}>
+																			<Text style={styles.bookAgain1} testID='navigateBookAppointment'>
+																				Book Again
 																</Text>
-																	</Button>
+																		</Button>
+																	</Right>
 																</Item>
+
 															) : (
 																selectedIndex === 1 && (
+
+
 																	<Item style={{ borderBottomWidth: 0 }}>
-																		<Right style={(styles.marginRight = 5)}>
+																		<Right style={(styles.marginRight = 10)}>
 																			<Button style={styles.bookingButton} onPress={() => this.navigateToBookAppointmentPage(item)} testID='navigateBookingPage'>
 																				<Text style={styles.bookAgain1}>
 																					Book Again
@@ -510,6 +490,7 @@ class MyAppoinmentList extends Component {
 																			</Button>
 																		</Right>
 																	</Item>
+
 																)
 															)}
 													</Body>
@@ -544,8 +525,8 @@ const styles = StyleSheet.create({
 	},
 	bookAgain1: {
 		fontSize: 13,
-		fontFamily:'OpenSans',
-		fontWeight:'bold'
+		fontFamily: 'OpenSans',
+		fontWeight: 'bold'
 	},
 	bodyContent: {
 		padding: 5

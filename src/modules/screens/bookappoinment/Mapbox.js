@@ -3,11 +3,10 @@ import { connect } from 'react-redux'
 import { Container } from 'native-base';
 import { View, } from 'react-native';
 import MapboxGL from '@react-native-mapbox-gl/maps';
-import {IS_ANDROID } from '../../../setup/config';
+import {IS_ANDROID, MAP_BOX_TOKEN } from '../../../setup/config';
 import MapboxDirectionsFactory from '@mapbox/mapbox-sdk/services/directions';
-let token = 'sk.eyJ1IjoidmFpcmFpc2F0aGlzaCIsImEiOiJjand4NWV2djQwZGFkNDNtejhkYXVwbW0zIn0.SxLkBv_NwpDKUIl-e499rg';
-const directionsClient = MapboxDirectionsFactory({accessToken : token});
-MapboxGL.setAccessToken(token);
+const directionsClient = MapboxDirectionsFactory({accessToken : MAP_BOX_TOKEN});
+MapboxGL.setAccessToken(MAP_BOX_TOKEN);
 import {lineString as makeLineString} from '@turf/helpers';
 
 const layerStyles = {

@@ -5,9 +5,14 @@ import LinearGradient from 'react-native-linear-gradient';
 import { Col, Row, Grid } from 'react-native-easy-grid';
 import { connect } from 'react-redux'
 
-import { StyleSheet, Image, View, TouchableOpacity, AsyncStorage,ScrollView,FlatList } from 'react-native';
+import { StyleSheet, Image, View, TouchableOpacity, AsyncStorage, ScrollView, FlatList, NativeModules } from 'react-native';
 // import { ScrollView, FlatList } from 'react-native-gesture-handler';
 import { catagries } from '../../providers/catagries/catagries.actions';
+import { MAP_BOX_PUBLIC_TOKEN , IS_ANDROID } from '../../../setup/config';
+import RNAndroidLocationEnabler from 'react-native-android-location-enabler';
+import MapboxGL from '@react-native-mapbox-gl/maps';
+MapboxGL.setAccessToken(MAP_BOX_PUBLIC_TOKEN);
+
 
 class Home extends Component {
     constructor(props) {
@@ -18,7 +23,8 @@ class Home extends Component {
             catagary: [],
             searchValue: null,
             totalSpecialistDataArry: [],
-            visibleClearIcon: ''
+            visibleClearIcon: '',
+            locationCordinates : []
 
         };
         this.arrayData = []
@@ -32,10 +38,64 @@ class Home extends Component {
         logout();
         this.props.navigation.navigate('login');
     }
+    timeout(ms) {
+        return new Promise(resolve => setTimeout(resolve, ms));
+     }
     async componentDidMount() {
+        this.getCatagries();
+    let isGranted = true;
+    if (IS_ANDROID) {
        
-        await this.getCatagries();
+      isGranted = await MapboxGL.requestAndroidLocationPermissions();
+      await this.setState({
+         isAndroidPermissionGranted: isGranted,
+         isFetchingAndroidPermission: false,
+       });
+       if(isGranted) {
+           
+            RNAndroidLocationEnabler.promptForEnableLocationIfNeeded({interval: 10000, fastInterval: 5000}).then(async (data) => {
+               
+                if(data === 'enabled') {
+                   await this.timeout(500);
+                }
+             navigator.geolocation.getCurrentPosition(position => {
+                const origin_coordinates = [position.coords.latitude, position.coords.longitude, ];
+                this.setState({ locationCordinates : origin_coordinates })
+               
+                console.log('Your Orgin is ' + origin_coordinates); 
+             }), error => {
+               console.log(error); 
+               alert(JSON.stringify(error)) 
+             }, { timeout: 50000, enableHighAccuracy: true };
+        
+       }).catch(err => {
+            alert("Please Enable Your Location to Provide the Better Results");
+         // The user has not accepted to enable the location services or something went wrong during the process
+         // "err" : { "code" : "ERR00|ERR01|ERR02", "message" : "message"}
+         // codes : 
+         //  - ERR00 : The user has clicked on Cancel button in the popup
+         //  - ERR01 : If the Settings change are unavailable
+         //  - ERR02 : If the popup has failed to open
+       }); 
+      }
+     } else {
+        navigator.geolocation.getCurrentPosition(position => {
+          console.log('Your Orgin is ' + position);
+          const origin_coordinates = [position.coords.latitude, position.coords.longitude, ];
+          this.setState({ locationCordinates : origin_coordinates })
+         
+        }),
+        error =>  {
+            console.log(error); 
+       }, {enableHighAccuracy: false, timeout: 50000}
+    }
+       
 
+
+    }
+    getUserLocation() {
+        console.log('getting Geo to User Locatuin')
+        debugger
         
     }
 
@@ -47,7 +107,7 @@ class Home extends Component {
             if (result.success) { }
 
             this.setState({ data: result.data, isLoading: true })
-            console.log('category Data' + JSON.stringify(this.state.data));
+
             let limitedData = [];
 
             for (let limtedNumber = 0; limtedNumber < 6; limtedNumber++) {
@@ -90,11 +150,21 @@ class Home extends Component {
             {
                 type: 'symptoms',
                 value: [this.state.searchValue]
-            }]
+            },
+           /* {
+                type: 'geo',
+                value: {
+                    coordinates : this.state.locationCordinates,
+                    maxDistance: 30
+                }
+            } */
+        ]
             if (this.state.searchValue == null) {
                 alert("We can't Find the Empty Values");
             }
             else {
+                console.log('serachInputvalues in Homepage')
+                console.log(serachInputvalues);
                 this.props.navigation.navigate('Doctor List', { resultData: serachInputvalues })
             }
         } catch (e) {
@@ -105,7 +175,14 @@ class Home extends Component {
         let serachInputvalues = [{
             type: 'category',
             value: categoryName
-        }]
+        },
+       /* {
+            type: 'geo',
+            value: {
+                coordinates : this.state.locationCordinates,
+                maxDistance: 30
+            }
+        } */]
         this.props.navigation.navigate('Doctor List', { resultData: serachInputvalues })
     }
 
@@ -151,7 +228,7 @@ class Home extends Component {
                 <Content keyboardShouldPersistTaps={'handled'} style={styles.bodyContent}>
                     <Row style={{ backgroundColor: 'white', borderColor: '#000', borderWidth: 1, borderRadius: 20, }}>
 
-                    <Input placeholder="Search Symptoms/Services"
+                        <Input placeholder="Search Symptoms/Services"
                             style={{ color: 'gray', fontFamily: 'OpenSans', fontSize: 13 }}
                             placeholderTextColor="gray"
                             value={this.state.searchValue}
@@ -190,10 +267,16 @@ class Home extends Component {
                                         resultData: [{
                                             type: item.name,
                                             value: item.name==='symptoms'?[item.value]:item.value
-                                        }]
+                                        } /*,  {
+                                            type: 'geo',
+                                            value: {
+                                                coordinates : this.state.locationCordinates,
+                                                maxDistance: 1000
+                                            }
+                                        } */]
                                     })}
                                 >
-                                    <Text style={{ padding: 10,fontFamily:'OpenSans',fontSize:13}}>{item.value}</Text>
+                                    <Text style={{ padding: 10, fontFamily: 'OpenSans', fontSize: 13 }}>{item.value}</Text>
                                     <Right>
                                         <Text uppercase={true} style={{ color: 'gray', padding: 10, marginRight: 10, fontSize: 13, fontFamily: 'OpenSans-Bold' }}>{item.name}</Text>
                                     </Right>
@@ -230,7 +313,7 @@ class Home extends Component {
 
                             <Row>
 
-                                <ListItem style={{borderBottomWidth:0}}>
+                                <ListItem style={{ borderBottomWidth: 0 }}>
                                     <ScrollView horizontal={false}>
                                         <FlatList
                                             horizontal={true}
@@ -247,14 +330,14 @@ class Home extends Component {
                                                             </LinearGradient>
 
                                                             <Text style={styles.textcenter}>{item.category_name}</Text>
-                                                            <Text note style={{ textAlign: 'center',fontFamily:'OpenSans',fontSize:15 }}>100 Doctors</Text>
+                                                           {/* <Text note style={{ textAlign: 'center',fontFamily:'OpenSans',fontSize:15 }}>100 Doctors</Text> */}
                                                         </Col>
                                                     </Item>
                                                 </Grid>
                                             }
                                             keyExtractor={(item, index) => index.toString()}
                                         />
- 
+
 
                                     </ScrollView></ListItem>
 
@@ -268,7 +351,7 @@ class Home extends Component {
                     >
                         <Text style={{ fontFamily: 'OpenSans', fontSize: 15 }}>You Can Save A Life</Text>
                         <Button block style={{ margin: 10, borderRadius: 20, backgroundColor: '#74579E' }}>
-                            <Text uppercase={true} style={{fontFamily:'OpenSans',fontSize:15,fontWeight:'bold'}}>REPORT ACCIDENT NOW</Text>
+                            <Text uppercase={true} style={{ fontFamily: 'OpenSans', fontSize: 15, fontWeight: 'bold' }}>REPORT ACCIDENT NOW</Text>
                         </Button>
 
                         <Text style={{ textAlign: 'right', fontSize: 15, fontFamily: 'OpenSans', color: '#000' }}>5002 Fast Growing Ambulance</Text>
@@ -281,8 +364,8 @@ class Home extends Component {
                         style={{ borderRadius: 10, padding: 10, borderBottomWidth: 0, fontFamily: 'OpenSans', marginTop: 5 }} >
                         <Grid style={{ padding: 10 }}>
                             <Col style={{ width: '75%' }}>
-                                <Text style={{ fontFamily: 'OpenSans', color: 'white', fontSize: 15}}>Video Consultation</Text>
-                                <Text note style={{ color: 'white', fontFamily: 'OpenSans', marginTop: 'auto', marginBottom: 'auto',fontSize:15 }}>Have A Video Visit With A Certified HealthCare - Doctors</Text>
+                                <Text style={{ fontFamily: 'OpenSans', color: 'white', fontSize: 15 }}>Video Consultation</Text>
+                                <Text note style={{ color: 'white', fontFamily: 'OpenSans', marginTop: 'auto', marginBottom: 'auto', fontSize: 15 }}>Have A Video Visit With A Certified HealthCare - Doctors</Text>
 
                             </Col>
 
@@ -440,7 +523,7 @@ const styles = StyleSheet.create({
     },
     titleText: {
         fontSize: 15,
-        fontWeight:'bold',
+        fontWeight: 'bold',
         padding: 5,
         backgroundColor: '#775DA3',
         borderRadius: 20,
@@ -463,7 +546,7 @@ const styles = StyleSheet.create({
         marginLeft: 'auto',
         marginRight: 'auto',
         marginTop: 10,
-        fontWeight:'bold'
+        fontWeight: 'bold'
     },
 
     offerText1: {
@@ -478,7 +561,7 @@ const styles = StyleSheet.create({
         marginLeft: 'auto',
         marginRight: 'auto',
         marginTop: 8,
-        fontWeight:'bold'
+        fontWeight: 'bold'
     }
 
 });

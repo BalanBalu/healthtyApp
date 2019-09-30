@@ -1,16 +1,15 @@
 import React, { Component } from 'react';
-import { Container, Content, Text, Button, FooterTab, Card, Footer, Icon, Input, CheckBox, Toast, Form,Right} from 'native-base';
+import { Container, Content, Text, Button, FooterTab, Card, Footer, Icon, Input,Toast, Form,Right} from 'native-base';
 import { Col, Row, Grid } from 'react-native-easy-grid';
 import { StyleSheet, Image, View, AsyncStorage,TextInput} from 'react-native';
 import SectionedMultiSelect from 'react-native-sectioned-multi-select';
-import { RadioButton } from 'react-native-paper';
+import { RadioButton ,Checkbox} from 'react-native-paper';
 
 import { getAvailableNetBanking, getAvailableWallet, luhnCheck, getPayCardType } from '../../../setup/paymentMethods';
 import { bookAppointment, createPaymentRazor } from '../../providers/bookappointment/bookappointment.action';
 import { putService , getService} from '../../../setup/services/httpservices';
 import Razorpay from '../../../components/Razorpay';
 import { RAZOR_KEY , BASIC_DEFAULT} from '../../../setup/config';
-import { updatePaymentDetails } from '../PaymentReview'
 import BookAppointmentPaymentUpdate from '../../providers/bookappointment/bookAppointment';
 import { TouchableOpacity } from 'react-native-gesture-handler';
 
@@ -26,7 +25,7 @@ class PaymentPage extends Component {
             userEntry: '',
             password: '',
             loginErrorMsg: '',
-            paymentOption: 'CREDIT_CARD', // setting default option to be card
+            paymentOption: null, //'CREDIT_CARD', // setting default option to be card
             selectedSavedCardId: null,
             cardPaymentDetails: {
                 name: null,
@@ -41,10 +40,12 @@ class PaymentPage extends Component {
             selectedItems: [],
             savedCards: [],
             saveCardCheckbox: true,
+           
             bookSlotDetails: null,
             isLoading: false,
             isHidden: false,
-            coupenCodeText: null
+            coupenCodeText: null,
+            paymentMethodTitleCase : null
         }
         this.BookAppointmentPaymentUpdate = new BookAppointmentPaymentUpdate();
     }
@@ -65,8 +66,12 @@ class PaymentPage extends Component {
         
         if(userBasicData !== null) {
            this.userBasicData = JSON.parse(userBasicData);
-           this.userBasicData.email ? this.userBasicData.email : BASIC_DEFAULT.email 
-           this.userBasicData.mobile_no ? this.userBasicData.mobile_no : BASIC_DEFAULT.mobile_no 
+           if(!this.userBasicData.email) {
+               this.userBasicData.email = BASIC_DEFAULT.email 
+           }
+           if(!this.userBasicData.mobile_no) {
+              this.userBasicData.mobile_no = BASIC_DEFAULT.mobile_no 
+           }
         } else {
             this.userBasicData = BASIC_DEFAULT
         }
@@ -101,11 +106,13 @@ class PaymentPage extends Component {
                 'card[expiry_month]': selectedSavedCardArr[0].expiry_m_y.split('/')[0],
                 'card[expiry_year]': selectedSavedCardArr[0].expiry_m_y.split('/')[1],
             }
+            let paymentMethodTitleCase = selectedSavedCardArr[0].card_type === 'CREDIT_CARD' ? 'Credit Card' : 'Debit Card'
+            this.setState({ paymentMethodTitleCase: paymentMethodTitleCase });
            
             if(selectedSavedCardArr[0].card_holder_name) {
                 //data['card[name]'] = selectedSavedCardArr[0].card_holder_name;
             }
-            console.log(data);  
+             
             this.razorpayChekout(data)
         }
         else if(this.state.paymentOption !== null) {
@@ -134,23 +141,28 @@ class PaymentPage extends Component {
                 'card[expiry_month]': this.state.cardPaymentDetails.monthyear.split('/')[0],
                 'card[expiry_year]': this.state.cardPaymentDetails.monthyear.split('/')[1],
             }
-            console.log(data);
-            this.setState({ pay_card_type: getPayCardType(this.state.cardPaymentDetails.number) });
+           
+            let paymentMethodTitleCase = this.state.paymentOption === 'CREDIT_CARD' ? 'Credit Card' : 'Debit Card'
+            this.setState({ pay_card_type: getPayCardType(this.state.cardPaymentDetails.number) , paymentMethodTitleCase: paymentMethodTitleCase });
         } else if (this.state.paymentOption === 'NET_BANKING') {
             data = {
                 method: 'netbanking',
                 bank: this.state.selectedNetBank
             }
+            this.setState({ paymentMethodTitleCase: 'Net Banking' });
         } else if (this.state.paymentOption === 'WALLET') {
+            debugger
             data = {
                 method: 'wallet',
-                bank: this.selectedWallet
+                wallet: this.state.selectedWallet
             }
+            this.setState({ paymentMethodTitleCase: this.state.selectedWallet });
         } else if (this.state.paymentOption === 'UPI') {
             data = {
                 method: 'upi',
                 vpa: this.state.upiVPA
             }
+            this.setState({ paymentMethodTitleCase: 'UPI' });
         }
            this.razorpayChekout(data)
         }   
@@ -170,13 +182,13 @@ class PaymentPage extends Component {
         console.log(options);
         Razorpay.open(options).then((data) => {
             // handle success
-            this.updatePaymentDetails(true, data, 'razor');
+            this.updatePaymentDetails(true, data, 'online');
             if(this.state.saveCardCheckbox) {
                 this.storeCardData();
             }
         }).catch((error) => {
             // handle failure 
-             this.updatePaymentDetails(false, error, 'razor');
+             this.updatePaymentDetails(false, error, 'online');
         });
     }
    async updatePaymentDetails(isSuccess, data, modeOfPayment) {
@@ -184,7 +196,11 @@ class PaymentPage extends Component {
     let response = await this.BookAppointmentPaymentUpdate.updatePaymentDetails(isSuccess, data, modeOfPayment, this.state.bookSlotDetails, 'APPOINTMENT', this.userId);
     console.log(response);
     if(response.success) {
-        this.props.navigation.navigate('paymentsuccess', { successBookSlotDetails: this.state.bookSlotDetails });
+        let paymentMethod; 
+        if(this.state.paymentOption) {
+
+        }
+        this.props.navigation.navigate('paymentsuccess', { successBookSlotDetails: this.state.bookSlotDetails, paymentMethod : this.state.paymentMethodTitleCase });
     } else {
         Toast.show({
             text: response.message,
@@ -413,6 +429,7 @@ class PaymentPage extends Component {
 
     renderCreditDebitCard(cardType) {
         const { cardPaymentDetails } = this.state;
+        
         return (
             <Content>
                 <View style={{ backgroundColor: '#fff', marginLeft: 10, marginRight: 10, borderBottomColor: '#000', borderBottomWidth: 0.6 }}>
@@ -495,10 +512,18 @@ class PaymentPage extends Component {
                             <Grid style={{ marginTop: 10, marginRight: 10, marginLeft: 10 }}>
                                 <Row>
                                     <Col>
-                                        <Row>
-                                            <CheckBox checked={this.state.saveCardCheckbox} color="grey" onPress={()=> this.setState({ saveCardCheckbox : !this.state.saveCardCheckbox })} ></CheckBox>
-                                            <Text style={{ marginLeft: 15, color: 'gray', fontFamily: 'OpenSans', }}>Save creditcard Information</Text>
-                                        </Row>
+                                      <Row>
+                                        <Checkbox color="green"
+                                             borderStyle={{ borderColor: '#F44336', 
+                                             backfaceVisibility: 'visible',
+                                             borderRadius: 18,
+                                             borderWidth: 1,
+                                             padding: 2,}}
+                                             status={this.state.saveCardCheckbox ? 'checked' : 'unchecked'}
+                                             onPress={()=> this.setState({ saveCardCheckbox : !this.state.saveCardCheckbox })}        
+                                        />
+                                        <Text style={{ marginLeft: 10, color: 'gray', fontFamily: 'OpenSans',marginTop:8 }}>Save card for faster transaction</Text>
+                                      </Row>
                                     </Col>
                                 </Row>
                             </Grid>
@@ -567,9 +592,9 @@ class PaymentPage extends Component {
                                 <Card style={{ marginTop: 15, backgroundColor: '#fff', height: 60 }}>
                                     <View>
                                         <SectionedMultiSelect
-                                            items={this.availableNetBankingData}
+                                            items={this.availableNetBankingData.filter((ele, index)=> { return index >= 5 })}
                                             uniqueKey="code"
-                                            selectText="Choose Other Banks"
+                                            selectText="Other Banks"
                                             color={{ primary: '#3f51b5' }}
                                             showDropDowns={true}
                                             single={true}

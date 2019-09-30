@@ -6,6 +6,7 @@ import { postService, getService, putService } from '../../../setup/services/htt
 export const NOTIFICATION_REQUEST = 'NOTIFICATION/NOTIFICATION_REQUEST'
 export const NOTIFICATION_HAS_ERROR = 'NOTIFICATION/NOTIFICATION_HAS_ERROR'
 export const NOTIFICATION_RESPONSE = 'NOTIFICATION/NOTIFICATION_RESPONSE'
+export const NOTIFICATION_RESET = 'NOTIFICATION/NOTIFICATION_RESET'
 import { AsyncStorage } from 'react-native';
 import { store } from '../../../setup/store';
 
@@ -17,6 +18,11 @@ export const fetchUserNotification = async (userId) => {
             
         let response = await getService(endPoint);
         let respData = response.data;
+        if(respData.success){
+            store.dispatch({
+                type: NOTIFICATION_RESET,
+              })
+        }
         return respData;
 
     } catch (e) {
@@ -46,19 +52,15 @@ export const UpDateUserNotification = async (updateNode, notificationIds) => {
     }
 }
 
-export function setnotification(notificationData) {
 
-    AsyncStorage.setItem('notificationCount', notificationData)
-
-}
 export const fetchUserMarkedAsReadedNotification = async (userId) => {
     try {
 
-        let endPoint = '/notifications/' + userId ;
+        let endPoint = '/notifications/' + userId+'?mark_as_readed=false'
 
         let response = await getService(endPoint);
         let respData = response.data;
-        console.log(JSON.stringify(respData))
+       
         store.dispatch({
             type: NOTIFICATION_REQUEST,
             message: respData.message
@@ -70,17 +72,21 @@ export const fetchUserMarkedAsReadedNotification = async (userId) => {
             });
 
         } else {
-            let count=respData.data.length
-       
+            let count = respData.data.length
+            
+            let notificationIds = respData.data.map(element => {
+                return element._id;
+       }).join(',')
             store.dispatch({
                 type: NOTIFICATION_RESPONSE,
                 message: respData.message,
-               
+                notificationIds:notificationIds,
                 notificationCount: count
             })
 
 
         }
+       
         return respData;
 
     } catch (e) {

@@ -12,7 +12,7 @@ import { fetchUserNotification, UpDateUserNotification } from '../../providers/n
 import { hasLoggedIn } from "../../providers/auth/auth.actions";
 import { formatDate, dateDiff } from '../../../setup/helpers';
 import Spinner from "../../../components/Spinner";
-
+import { store } from '../../../setup/store';
 
 class Notification extends Component {
     constructor(props) {
@@ -20,7 +20,7 @@ class Notification extends Component {
         super(props);
         this.state = {
             data: [],
-            notificationId: [],
+            notificationId: null,
 
             isLoading: false
         };
@@ -34,31 +34,40 @@ class Notification extends Component {
             this.props.navigation.navigate("login");
             return;
         }
-         await this.getUserNotification();
+        await this.setState({ notificationId: this.props.notification.notificationIds });
+       
+        await new Promise.all([
+            this.getUserNotification(),
+            this.upDateNotification('mark_as_readed')
+        ])    
+        await this.setState({ isLoading: true })
+         
     }
 
     backNavigation = async (navigationData) => {
         try {
             await this.setState({ isLoading: false })
             if (navigationData.action) {
-                console.log(navigationData.action.type)
                 if (navigationData.action.type === 'Navigation/BACK') {
-                   this.getUserNotification();
-                    await this.setState({ isLoading: false })
+                    
+                  await this.getUserNotification();
+                   
                 }
             }
+            await this.setState({ isLoading: true })
         } catch (e) {
             console.log(e)
         }
 
     }
     updateNavigation = async (item) => {
-
+        
+        
         await this.setState({ notificationId: item._id })
-        if (!item.mark_as_readed) {
-            await this.upDateNotification('mark_as_readed')
+        if (!item.mark_as_viewed) {
+            await this.upDateNotification('mark_as_viewed')
             this.props.navigation.push("AppointmentInfo", { appointmentId: item.appointment_id,fromNotification:true })
-
+              
         }
         else {
             this.props.navigation.push("AppointmentInfo", { appointmentId: item.appointment_id,fromNotification:true })
@@ -66,9 +75,12 @@ class Notification extends Component {
     }
     upDateNotification = async (node) => {
         try {
-
-            let result = await UpDateUserNotification(node, this.state.notificationId);
-
+           
+            if (this.state.notificationId) {
+               
+                let result = await UpDateUserNotification(node, this.state.notificationId);
+               
+            }
         }
         catch (e) {
             console.log(e);
@@ -80,13 +92,14 @@ class Notification extends Component {
     try {
 
         let userId = await AsyncStorage.getItem('userId');
-        console.log(userId)
+       
         let result = await fetchUserNotification(userId);
+        
         if (result.success) {
             this.setState({data:result.data})
         }
         
-        console.log(JSON.stringify(result))
+        
 
 
 
@@ -109,7 +122,7 @@ class Notification extends Component {
             < Container style={styles.container} >
                 {/* <NavigationEvents onwillBlur={payload => { this.componentWillMount() }} /> */}
                 <Content>
-                    {isLoading === true ?
+                    {isLoading === false ?
                         <Spinner
                             color="blue"
                             style={[styles.containers, styles.horizontal]}
@@ -117,7 +130,7 @@ class Notification extends Component {
                             size={"large"}
                             overlayColor="none"
                             cancelable={false}
-                        /> : data === undefined ? null : data.length == undefined ?
+                        /> : data === undefined ? null : data.length == 0 ?
 
                             <View style={{
                                 flex: 1,
@@ -147,7 +160,7 @@ class Notification extends Component {
 
                                             <Card style={{ borderRadius: 5, width: 'auto', }}>
                                                 {/* <View style={{ borderWidth: 1, borderColor: '#c9cdcf', marginTop: 10 }} /> */}
-                                                <TouchableOpacity onPress={() => this.updateNavigation(item)}>
+                                                <TouchableOpacity onPress={() => this.updateNavigation(item)} testID='notificationView'>
                                                     <View style={{ backgroundColor: (item.mark_as_viewed == false) ? '#f5e6ff' : null }}>
 
                                                         <Col>

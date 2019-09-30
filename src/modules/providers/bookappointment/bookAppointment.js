@@ -51,7 +51,7 @@ export default class BookAppointmentPaymentUpdate {
         let bookAppointmentData = {
             userId: userId,
             doctorId: bookSlotDetails.doctorId,
-            description: "something",
+            description: bookSlotDetails.diseaseDescription || '',
             fee: bookSlotDetails.slotData.fee,
             startTime: bookSlotDetails.slotData.slotStartDateAndTime,
             endTime: bookSlotDetails.slotData.slotEndDateAndTime,

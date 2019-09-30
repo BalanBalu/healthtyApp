@@ -1,11 +1,11 @@
 import React, { Component } from 'react';
-import { Container, Content, Text, Title, Header, Form, Textarea, Button, H3, Item, List, ListItem, Card, Input, Left, Right, Thumbnail, Body, Icon, Footer, FooterTab, Picker, Segment, CheckBox, View, Badge } from 'native-base';
+import { Container, Content, Text, Title, Header, Form, Textarea, 
+    Button, H3, Item, List, ListItem, Card, Input, Left, Right, 
+    Thumbnail, Body, Icon, Footer, FooterTab, Picker, Segment, CheckBox, View, Badge, Spinner } from 'native-base';
 import { Col, Row, Grid } from 'react-native-easy-grid';
 import { StyleSheet, Image, AsyncStorage, TextInput, FlatList, TouchableOpacity } from 'react-native';
 import { Loader } from '../../../../components/ContentLoader';
-import {getMyOrders} from '../../../providers/pharmacy/pharmacy.action'
-import { formatDate } from '../../../../setup/helpers'
-
+import { formatDate } from '../../../../setup/helpers';
 
 class OrderDetails extends Component {
     constructor(props) {
@@ -16,15 +16,12 @@ class OrderDetails extends Component {
             isLoading:true,
         }
     }
-    componentDidMount(){
-        this.getMedicineOrder();        
-    }
-    getMedicineOrder=async()=>{
-        let orderId="5d418339170fc31bd0c3a5cb"
-        await this.setState({orderId:orderId});
-        let response=await getMyOrders(this.state.orderId);
-        await this.setState({myOrderList:response.data[0],isLoading:false});
-    }
+    async componentDidMount(){
+        const { navigation } = this.props;
+   await  this.setState({myOrderList: navigation.getParam('orderDetails'), isLoading:false})
+        }
+   
+   
     noOrders() {
         return (
             <Item style={{ borderBottomWidth: 0, justifyContent: 'center', alignItems: 'center' }}>
@@ -34,23 +31,21 @@ class OrderDetails extends Component {
     }
 
     render() {
+        const { navigation } = this.props;
         const { isLoading,myOrderList } = this.state;
         return (
             <Container style={styles.container}>
-
-                {isLoading == true ? <Loader style='list' /> :
+                {isLoading == true ? <Spinner color='blue' /> :
                     <Content style={styles.bodyContent}>
-                    <Grid style={styles.curvedGrid}>
+                   <Grid style={styles.curvedGrid}>
                     </Grid>
-
                         <Card transparent >
-
                         <Grid style={{ marginTop: -100, height: 100 }}>
                                 <Row style={{ justifyContent: 'center', width: '100%', marginTop: 30 }}>
                                     <Text style={{ fontFamily: 'OpenSans', fontWeight: 'bold', fontSize: 22, padding: 5,color:'#fff' }}>Your Order</Text>
                                 </Row>
                             </Grid>
-                            {myOrderList===undefined?this.noOrders():
+                            {myOrderList===undefined? this.noOrders():
                                                 
                             <View style={{padding: 5, borderRadius: 10, borderColor: '#8e44ad', borderWidth:2}}>
                                            
@@ -64,6 +59,8 @@ class OrderDetails extends Component {
                                         extraData={this.state}
                                         keyExtractor={(item, index) => index.toString()}
                                         renderItem={({ item, index }) =>
+                        <TouchableOpacity testID="medicineOrderNavigation" 
+                        onPress={()=>this.props.navigation.navigate('OrderMedicineDetails')}>
 
                                             <View style={{ marginTop: 10, padding: 5, height: 160, borderTopColor: '#000', borderTopWidth: 1 }}>
                                                 <Grid>
@@ -75,7 +72,6 @@ class OrderDetails extends Component {
 
 
                                                     </View>
-
                                                     <View>
                                                         <View style={{ marginLeft: 20, marginTop: 20}}>
                                                             <Text style={styles.labelTop}>{item.medicine_name} </Text>
@@ -83,41 +79,35 @@ class OrderDetails extends Component {
                                                         <View style={{ marginLeft: 20, flex: 1, flexDirection: 'row', marginTop: 25 }}>
 
                                                             <Text style={{ fontSize: 15, fontWeight: 'bold', fontFamily: 'OpenSans', color: '#3966c6' }}>Pharmacy :</Text>
-                                                            <Text style={{ fontSize: 15, fontFamily: 'OpenSans', marginLeft: 10 }}>{myOrderList.pharmacyInfo.name}</Text>
+                                                            <Text style={{ fontSize: 15, fontFamily: 'OpenSans', marginLeft: 10 }}>{item.pharmacyInfo.name}</Text>
 
                                                         </View>
                                                         <View style={{ marginLeft: 20, flex: 1, flexDirection: 'row', marginTop: 5 }}>
 
                                                             <Text style={{ fontSize: 15, fontWeight: 'bold', fontFamily: 'OpenSans', color: '#3966c6' }}>Quantity :</Text>
                                                             <Text style={{ fontSize: 15, fontFamily: 'OpenSans', marginLeft: 10 }}>{item.quantity}</Text>
-                                                            <Text style={{ fontSize: 15, fontWeight: 'bold', fontFamily: 'OpenSans', marginLeft: 20, color: '#3966c6' }}>Total :</Text>
+                                                            <Text style={{ fontSize: 15, fontWeight: 'bold', fontFamily: 'OpenSans', marginLeft: 20, color: '#3966c6' }}>Amount :</Text>
                                                             <Text style={styles.subText}>{'\u20B9'}{item.price}</Text>
 
                                                         </View>
                                                     </View>
                                                 </Grid>
                                             </View>
-
-                                        } />
-                                    
-                                
+                                            </TouchableOpacity> 
+                                        } />                               
                                     </View>
                             }
                                 
-                        </Card>
-
+                        </Card>             
                     </Content>}
-            </Container >
+            </Container>
         )
     }
 }
 
 
 export default OrderDetails
-
-
 const styles = StyleSheet.create({
-
     container:
     {
         backgroundColor: '#ffffff',
@@ -137,15 +127,18 @@ const styles = StyleSheet.create({
 
 
     curvedGrid: {
-        borderRadius: 800,
-        width: '200%',
-        height: 690,
-        marginLeft: -150,
-        marginTop: -600,
-        // position: 'relative',
-        bottom: 0,
+        width: 250,
+        height: 250,
+        borderRadius: 125,
+        marginTop:-135,
+        marginLeft:'auto',
+        marginRight:'auto',
+        backgroundColor: '#745DA6',
+        transform: [
+          {scaleX: 2}
+        ],
+        position: 'relative',
         overflow: 'hidden',
-        backgroundColor: '#745DA6'
     },
 
     loginButton: {
