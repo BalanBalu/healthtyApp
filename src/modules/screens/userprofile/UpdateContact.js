@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { Container, Content, Text, Button, H3, Item, List, CheckBox, Left, Right, Picker, Body, Icon, Card, Input, Toast, View } from 'native-base';
+import { Container, Content, Text, Button, H3, Item, List, CheckBox, Row, Col, Left, Right, Picker, Body, Icon, Card, Input, Toast, View } from 'native-base';
 import { userFiledsUpdate } from '../../providers/auth/auth.actions';
 import { AsyncStorage, ScrollView } from 'react-native';
 import { connect } from 'react-redux'
@@ -32,9 +32,10 @@ class UpdateContact extends Component {
     bindContactValues() {
         const { navigation } = this.props;
         const userData = navigation.getParam('updatedata');
+        console.log("userData" + JSON.stringify(userData))
         this.setState({
             primary_mobile_no: userData.mobile_no,
-            primaryMobileNoText: 'Primary Mobile_No Is Not Editable'
+            // primaryMobileNoText: 'Primary Mobile_No Is Not Editable'
 
         })
         if (userData.secondary_mobiles) {
@@ -50,6 +51,7 @@ class UpdateContact extends Component {
     commonUpdateContactMethod = async () => {
         let userId = await AsyncStorage.getItem('userId');
         let data = {
+            mobile_no: this.state.primary_mobile_no,
             secondary_mobiles: [
                 {
                     type: this.state.type,
@@ -79,22 +81,22 @@ class UpdateContact extends Component {
 
 
     handleContactUpdate = async () => {
-        const { mobile_no, type, userData } = this.state
+        const { mobile_no, type, userData, primary_mobile_no } = this.state
         try {
             this.setState({ isLoading: true })
-            if (userData.secondary_mobiles !== undefined && this.validateMobile_No() === true) {
-                if (type != userData.secondary_mobiles[0].type || mobile_no != userData.secondary_mobiles[0].number) {
+            if (userData.mobile_no !== undefined && userData.secondary_mobiles !== undefined && this.validateMobile_No() === true) {
+                if (primary_mobile_no!= userData.mobile_no|| type != userData.secondary_mobiles[0].type || mobile_no != userData.secondary_mobiles[0].number) {
                     this.commonUpdateContactMethod();
                 } else {
                     this.props.navigation.navigate('Profile');
                 }
-            } else if (this.validateMobile_No() === true){
+            } else if (this.validateMobile_No() === true) {
                 this.commonUpdateContactMethod();
             }
         } catch (e) {
             console.log(e);
         }
-        finally{
+        finally {
             this.setState({ isLoading: false })
 
         }
@@ -127,33 +129,26 @@ class UpdateContact extends Component {
                     textContent={'Please Wait Loading'}
                 />
 
-
-
-                <Content contentContainerStyle={styles.bodyContent}>
+                <Content contentContainerStyle={styles.bodyContent1}>
                     <ScrollView>
-
-                        {this.state.primary_mobile_no != null ?
-                            <Text style={styles.headerText}>Primary Mobile_no</Text> : null}
-                        {this.state.primary_mobile_no != null ?
-                            <Card style={styles.cardEmail}>
+                        <View style={{ marginTop: 10,padding:10 }}>
+                            <Text style={styles.headerText}>Update Mobile Number</Text>
+                            <View style={styles.cardEmail}>
                                 <Item style={{ borderBottomWidth: 0 }}>
-                                    <Icon name="call" style={styles.centeredIcons}></Icon>
+                                    <Col>
+                                        <Text>Primary Mobile_no</Text>
+                                        <Row>
+                                            <Icon name="call" style={styles.centeredIcons}></Icon>
+                                            <Input placeholder="Edit Your Number" style={styles.transparentLabel} keyboardType="numeric"
+                                                onChangeText={(primary_mobile_no) => this.setState({ primary_mobile_no })}
+                                                value={String(this.state.primary_mobile_no)}
+                                                testID='updatePrimaryContact' />
+                                        </Row>
+                                    </Col>
 
-                                    <Text style={styles.customText}>{this.state.primary_mobile_no}</Text>
-                                    <Right>
-                                        <Icon style={{ color: 'gray', fontSize: 25 }} name='ios-lock' />
-                                    </Right>
                                 </Item>
-                            </Card> : null}
-                        {this.state.primary_mobile_no != null ?
-                            <Text style={{ fontFamily: 'OpenSans', fontSize: 12, color: 'red', marginLeft: 8 }}>{this.state.primaryMobileNoText}</Text>
-                            : null}
-                        <View style={{ marginTop: 30 }}>
-                            <Text style={styles.headerText}>Edit Secondary Mobile_No</Text>
-
-                            <Card style={styles.cardEmail}>
-
                                 <Item style={{ borderBottomWidth: 0 }}>
+
                                     <Picker style={{ fontFamily: 'OpenSans' }}
                                         mode="dropdown"
                                         iosIcon={<Icon name="arrow-down" />}
@@ -188,20 +183,15 @@ class UpdateContact extends Component {
 
 
 
-                                <Item style={{ borderBottomWidth: 0, marginTop: 35 }}>
+                                <Item style={{ borderBottomWidth: 0, marginTop: 15 }}>
                                     <Right>
                                         <Button success style={styles.button2} onPress={() => this.handleContactUpdate()} testID='clickUpdateContact'>
                                             <Text uppercase={false} note style={styles.buttonText}>Update</Text>
                                         </Button>
                                     </Right>
                                 </Item>
-                            </Card>
-
+                            </View>
                         </View>
-
-
-
-
                     </ScrollView>
                 </Content >
 
