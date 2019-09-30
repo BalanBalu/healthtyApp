@@ -429,7 +429,7 @@ class PaymentPage extends Component {
 
     renderCreditDebitCard(cardType) {
         const { cardPaymentDetails } = this.state;
-        const { checked } = this.state;
+        
         return (
             <Content>
                 <View style={{ backgroundColor: '#fff', marginLeft: 10, marginRight: 10, borderBottomColor: '#000', borderBottomWidth: 0.6 }}>
@@ -512,18 +512,18 @@ class PaymentPage extends Component {
                             <Grid style={{ marginTop: 10, marginRight: 10, marginLeft: 10 }}>
                                 <Row>
                                     <Col>
-                                        <Row>
+                                      <Row>
                                         <Checkbox color="green"
-                   borderStyle={{ borderColor: '#F44336', 
-                   backfaceVisibility: 'visible',
-                   borderRadius: 18,
-                   borderWidth: 1,
-                   padding: 2,}}
-                    status={this.state.saveCardCheckbox ? 'checked' : 'unchecked'}
-                    onPress={()=> this.setState({ saveCardCheckbox : !this.state.saveCardCheckbox })}        />
-                                            {/* <CheckBox checked={} color="grey" onPress={()=> this.setState({ saveCardCheckbox : !this.state.saveCardCheckbox })} ></CheckBox> */}
-                                            <Text style={{ marginLeft: 10, color: 'gray', fontFamily: 'OpenSans',marginTop:8 }}>Save creditcard Information</Text>
-                                        </Row>
+                                             borderStyle={{ borderColor: '#F44336', 
+                                             backfaceVisibility: 'visible',
+                                             borderRadius: 18,
+                                             borderWidth: 1,
+                                             padding: 2,}}
+                                             status={this.state.saveCardCheckbox ? 'checked' : 'unchecked'}
+                                             onPress={()=> this.setState({ saveCardCheckbox : !this.state.saveCardCheckbox })}        
+                                        />
+                                        <Text style={{ marginLeft: 10, color: 'gray', fontFamily: 'OpenSans',marginTop:8 }}>Save creditcard Information</Text>
+                                      </Row>
                                     </Col>
                                 </Row>
                             </Grid>
