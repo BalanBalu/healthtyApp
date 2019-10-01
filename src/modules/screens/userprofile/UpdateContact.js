@@ -85,139 +85,141 @@ class UpdateContact extends Component {
                     type: "danger",
                     duration: 3000
                 })
-            }}
+            }
+        }
         catch (e) {
             console.log(e);
         }
         finally {
             this.setState({ isLoading: false });
         }
-        }
+    }
 
 
     handleContactUpdate = async () => {
-            const { mobile_no, type, userData, primary_mobile_no } = this.state
-            try {
-                this.setState({ isLoading: true })
-                if (primary_mobile_no !== undefined && userData.secondary_mobiles !== undefined && this.validateMobile_No() === true) {
-                    if (primary_mobile_no != userData.mobile_no || type != userData.secondary_mobiles[0].type || mobile_no != userData.secondary_mobiles[0].number) {
-                        this.commonUpdateContactMethod();
-                    } else {
-                        this.props.navigation.navigate('Profile');
-                    }
-                } else if (this.validateMobile_No() === true) {
+        const { mobile_no, type, userData, primary_mobile_no } = this.state
+        try {
+            this.setState({ isLoading: true })
+            if (primary_mobile_no !== undefined && userData.secondary_mobiles !== undefined && this.validateMobile_No() === true) {
+                if (primary_mobile_no != userData.mobile_no || type != userData.secondary_mobiles[0].type || mobile_no != userData.secondary_mobiles[0].number) {
                     this.commonUpdateContactMethod();
+                } else {
+                    this.props.navigation.navigate('Profile');
                 }
-            } catch (e) {
-                console.log(e);
+            } else if (this.validateMobile_No() === true) {
+                this.commonUpdateContactMethod();
             }
-            finally {
-                this.setState({ isLoading: false })
-
-            }
+        } catch (e) {
+            console.log(e);
         }
+        finally {
+            this.setState({ isLoading: false })
 
-        validateMobile_No() {
-            const regex = new RegExp('^[0-9]+$')  //Support only numbers
-            if (regex.test(this.state.mobile_no) === false || regex.test(this.state.primary_mobile_no) === false) {
-                //this.setState({ updateButton: true });
-
-                if (this.state.mobile_no != '' || this.state.primary_mobile_no) {
-                    Toast.show({
-                        text: 'The entered number is invalid',
-                        type: "danger",
-                        duration: 3000
-                    });
-                }
-                return false;
-            } else {
-                return true;
-            }
         }
-
-        render() {
-
-
-            return (
-                <Container style={styles.container}>
-                    <Spinner color='blue'
-                        visible={this.state.isLoading}
-                        textContent={'Please Wait Loading'}
-                    />
-
-                    <Content contentContainerStyle={styles.bodyContent1}>
-                        <ScrollView>
-                            <View style={{ marginTop: 10, padding: 10 }}>
-                                <Text style={styles.headerText}>Update Mobile Number</Text>
-                                <View style={styles.cardEmail}>
-
-                                    <Item style={{ borderBottomWidth: 0 }}>
-                                        <Col>
-                                            <Text>Primary Mobile_no</Text>
-                                            <Row>
-                                                <Icon name="call" style={styles.centeredIcons}></Icon>
-                                                <Input placeholder="Edit Your Number" style={styles.transparentLabel} keyboardType="numeric"
-                                                    onChangeText={(primary_mobile_no) => this.setState({ primary_mobile_no })}
-                                                    value={String(this.state.primary_mobile_no)}
-                                                    testID='updatePrimaryContact' />
-                                            </Row>
-                                        </Col>
-
-                                    </Item>
-                                    <Item style={{ borderBottomWidth: 0 }}>
-
-                                        <Picker style={{ fontFamily: 'OpenSans' }}
-                                            mode="dropdown"
-                                            iosIcon={<Icon name="arrow-down" />}
-                                            textStyle={{ color: "#775DA3", backgroundColor: "gray", }}
-                                            itemStyle={{
-                                                backgroundColor: "gray",
-                                                marginLeft: 0,
-                                                paddingLeft: 10
-                                            }}
-                                            itemTextStyle={{ color: '#788ad2' }}
-                                            style={{ width: 25 }}
-                                            onValueChange={val => this.setState({ type: val })}
-                                            selectedValue={String(this.state.type)}
-                                        >
-                                            {this.numberCategory.map((type, key) => {
-                                                return <Picker.Item label={String(type)} value={String(type)} key={key}
-                                                    testID='pickType' />
-                                            })}
-
-                                        </Picker>
-                                    </Item>
-
-
-                                    <Item style={{ borderBottomWidth: 0 }}>
-                                        <Icon name='call' style={styles.centeredIcons}></Icon>
-                                        <Input placeholder="Edit Your Number" style={styles.transparentLabel} keyboardType="numeric"
-                                            onChangeText={(mobile_no) => this.setState({ mobile_no })}
-                                            value={String(this.state.mobile_no)}
-                                            testID='updateContact' />
-                                    </Item>
-
-
-
-
-                                    <Item style={{ borderBottomWidth: 0, marginTop: 15 }}>
-                                        <Right>
-                                            <Button success style={styles.button2} onPress={() => this.handleContactUpdate()} testID='clickUpdateContact'>
-                                                <Text uppercase={false} note style={styles.buttonText}>Update</Text>
-                                            </Button>
-                                        </Right>
-                                    </Item>
-                                </View>
-                            </View>
-                        </ScrollView>
-                    </Content >
-
-                </Container>
-
-            )
-        }
-
     }
+
+    validateMobile_No() {
+        const regex = new RegExp('^[0-9]+$')  //Support only numbers
+        if (regex.test(this.state.mobile_no) === false || regex.test(this.state.primary_mobile_no) === false) {
+            //this.setState({ updateButton: true });
+
+            if (this.state.mobile_no != '' || this.state.primary_mobile_no) {
+                Toast.show({
+                    text: 'The entered number is invalid',
+                    type: "danger",
+                    duration: 3000
+                });
+            }
+            return false;
+        } else {
+            return true;
+        }
+    }
+
+    render() {
+
+
+        return (
+            <Container style={styles.container}>
+                <Spinner color='blue'
+                    visible={this.state.isLoading}
+                    textContent={'Please Wait Loading'}
+                />
+
+                <Content contentContainerStyle={styles.bodyContent1}>
+                    <ScrollView>
+                        <View style={{ marginTop: 10, padding: 10 }}>
+                            <Text style={styles.headerText}>Update Mobile Number</Text>
+                            <View style={styles.cardEmail}>
+
+                                <Item style={{ borderBottomWidth: 0 }}>
+                                    <Col>
+                                        <Text>Primary Mobile_no</Text>
+                                        <Row>
+                                            <Icon name="call" style={styles.centeredIcons}></Icon>
+                                            <Input placeholder="Edit Your Number" style={styles.transparentLabel} keyboardType="numeric"
+                                                onChangeText={(primary_mobile_no) => this.setState({ primary_mobile_no })}
+                                                value={String(this.state.primary_mobile_no)}
+                                                testID='updatePrimaryContact' />
+                                        </Row>
+                                    </Col>
+
+                                </Item>
+                                <Item style={{ borderBottomWidth: 0 }}>
+
+                                    <Picker style={{ fontFamily: 'OpenSans' }}
+                                        mode="dropdown"
+                                        iosIcon={<Icon name="ios-arrow-down" style={{ marginLeft: 110, color: 'gray' }} />}
+                                        note={false}
+                                        textStyle={{ color: "#775DA3", backgroundColor: "gray", }}
+                                        itemStyle={{
+                                            backgroundColor: "gray",
+                                            marginLeft: 0,
+                                            paddingLeft: 10
+                                        }}
+                                        itemTextStyle={{ color: '#788ad2' }}
+                                        style={{ width: 25 }}
+                                        onValueChange={val => this.setState({ type: val })}
+                                        selectedValue={String(this.state.type)}
+                                    >
+                                        {this.numberCategory.map((type, key) => {
+                                            return <Picker.Item label={String(type)} value={String(type)} key={key}
+                                                testID='pickType' />
+                                        })}
+
+                                    </Picker>
+                                </Item>
+
+
+                                <Item style={{ borderBottomWidth: 0 }}>
+                                    <Icon name='call' style={styles.centeredIcons}></Icon>
+                                    <Input placeholder="Edit Your Number" style={styles.transparentLabel} keyboardType="numeric"
+                                        onChangeText={(mobile_no) => this.setState({ mobile_no })}
+                                        value={String(this.state.mobile_no)}
+                                        testID='updateContact' />
+                                </Item>
+
+
+
+
+                                <Item style={{ borderBottomWidth: 0, marginTop: 15 }}>
+                                    <Right>
+                                        <Button success style={styles.button2} onPress={() => this.handleContactUpdate()} testID='clickUpdateContact'>
+                                            <Text uppercase={false} note style={styles.buttonText}>Update</Text>
+                                        </Button>
+                                    </Right>
+                                </Item>
+                            </View>
+                        </View>
+                    </ScrollView>
+                </Content >
+
+            </Container>
+
+        )
+    }
+
+}
 function profileState(state) {
 
     return {
