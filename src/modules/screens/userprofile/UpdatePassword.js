@@ -74,7 +74,7 @@ class UpdatePassword extends Component {
         return (
             <Container style={styles.container}>
 
-                <Content contentContainerStyle={styles.bodyContent1}>
+                <Content contentContainerStyle={styles.bodyContent}>
                     <ScrollView>
                         <Spinner color='blue'
                             visible={this.state.isLoading}
