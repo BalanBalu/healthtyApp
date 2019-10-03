@@ -1,21 +1,16 @@
 import React, { Component } from 'react';
-import { Container, Content, Text, Toast, Button,Spinner, Card, Item, List,  ListItem, Left, Right, Thumbnail, Body, Icon, DatePicker } from 'native-base';
-import { login } from '../../providers/auth/auth.actions';
+import { Container, Content, Text, Toast, Button, Card, Item, List,  ListItem, Left, Thumbnail, Icon } from 'native-base';
 import { Col, Row, Grid } from 'react-native-easy-grid';
 import { connect } from 'react-redux'
 import { StyleSheet, TouchableOpacity, View, FlatList, AsyncStorage, Dimensions } from 'react-native';
 import StarRating from 'react-native-star-rating';
 
-import { insertDoctorsWishList, searchDoctorList, fetchAvailabilitySlots, 
+import {  searchDoctorList, fetchAvailabilitySlots, 
     getMultipleDoctorDetails, 
     getDoctorsReviewsCount, 
     getPatientWishList, 
-    SET_BOOK_APP_SLOT_DATA, 
     SET_BOOK_APP_DOCTOR_DATA, 
-    SET_SELECTED_DATE,
     SET_SINGLE_DOCTOR_DATA, 
-    SET_PATIENT_WISH_LIST_DOC_IDS, 
-    SET_FAVORITE_DOCTOR_COUNT_BY_IDS, 
     SET_FILTERED_DOCTOR_DATA,
     addToWishListDoctor,
     getDoctorFaviouteList} from '../../providers/bookappointment/bookappointment.action';
@@ -26,13 +21,11 @@ import { renderDoctorImage,
          getDoctorEducation,
          getDoctorExperience  } from '../../common';
 import { NavigationEvents } from 'react-navigation';
-//import Spinner from '../../../components/Spinner';
 import moment from 'moment';
 
 import { store } from '../../../setup/store';
 let fields = "first_name,last_name,prefix,professional_statement,gender,specialist,education,language,experience,profile_image";            
 let conditionFromFilterPage;
-const NO_OF_SLOTS_SHOULD_SHOW_PER_SLIDE = 3;
 const SELECTED_EXPERIENCE_START_END_YEARS = {
     10 : { start : 0, end : 10 },
     20 : { start : 10, end : 20 },

@@ -6,7 +6,6 @@ import SectionedMultiSelect from 'react-native-sectioned-multi-select';
 import { RadioButton ,Checkbox} from 'react-native-paper';
 
 import { getAvailableNetBanking, getAvailableWallet, luhnCheck, getPayCardType } from '../../../setup/paymentMethods';
-import { bookAppointment, createPaymentRazor } from '../../providers/bookappointment/bookappointment.action';
 import { putService , getService} from '../../../setup/services/httpservices';
 import Razorpay from '../../../components/Razorpay';
 import { RAZOR_KEY , BASIC_DEFAULT} from '../../../setup/config';
