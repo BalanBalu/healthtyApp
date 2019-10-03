@@ -131,7 +131,7 @@ class UpdateContact extends Component {
 
                                 <Item style={{ borderBottomWidth: 0 }}>
                                     <Col>
-                                        <Text>Primary Mobile_no</Text>
+                                        <Text>Primary Mobile Number</Text>
                                         <Row>
                                             <Icon name="call" style={styles.centeredIcons}></Icon>
                                             <Input placeholder="Edit Your Number" style={styles.transparentLabel} keyboardType="numeric"
@@ -145,7 +145,7 @@ class UpdateContact extends Component {
 
                                 <Item style={{ borderBottomWidth: 0, marginTop: 10 }}>
                                     <Col>
-                                        <Text>Secondary Mobile_no</Text>
+                                        <Text>Secondary Mobile Number</Text>
                                         <Row>
                                             <Icon name='call' style={styles.centeredIcons}></Icon>
                                             <Input placeholder="Edit Your Number" style={styles.transparentLabel} keyboardType="numeric"
