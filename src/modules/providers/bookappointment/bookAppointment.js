@@ -5,10 +5,11 @@ export default class BookAppointmentPaymentUpdate {
   
   async updatePaymentDetails(isSuccess, data, modeOfPayment, bookSlotDetails, serviceType, userId) {
     try {
+        let paymentId = data.razorpay_payment_id ? data.razorpay_payment_id : modeOfPayment === 'cash' ? 'cash_' + new Date().getTime() : 'pay_err_' + new Date().getTime();
         let paymentData = {
             payer_id: userId,
             payer_type: 'user',
-            payment_id: data.razorpay_payment_id || modeOfPayment === 'cash' ? 'cash_' + new Date().getTime() : 'pay_err_' + new Date().getTime(),
+            payment_id: paymentId,
             amount: bookSlotDetails.slotData.fee,
             amount_paid: !isSuccess || modeOfPayment === 'cash' ? 0 : bookSlotDetails.slotData.fee,
             amount_due: !isSuccess || modeOfPayment === 'cash' ? bookSlotDetails.slotData.fee : 0,
@@ -24,7 +25,7 @@ export default class BookAppointmentPaymentUpdate {
         console.log(resultData);
         if (resultData.success) {
             if (isSuccess) {
-               let bookAppointmentResponse = await this.updateNewBookAppointment(bookSlotDetails,  userId);
+               let bookAppointmentResponse = await this.updateNewBookAppointment(bookSlotDetails,  userId, paymentId);
                return bookAppointmentResponse;
             } else {
                 return {
@@ -45,7 +46,7 @@ export default class BookAppointmentPaymentUpdate {
         }
     }
   }
- async updateNewBookAppointment(bookSlotDetails, userId) {
+ async updateNewBookAppointment(bookSlotDetails, userId, paymentId) {
     try {
        
         let bookAppointmentData = {
@@ -59,7 +60,8 @@ export default class BookAppointmentPaymentUpdate {
             status_by: "Patient",
             statusUpdateReason: "NEW_BOOKING",
             hospital_id: bookSlotDetails.slotData.location.hospital_id,
-            booked_from: "Mobile"
+            booked_from: "Mobile",
+            payment_id: paymentId
         }
         let resultData = await bookAppointment(bookAppointmentData);
         console.log(resultData)
