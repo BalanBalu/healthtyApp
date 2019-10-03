@@ -192,14 +192,17 @@ class PaymentPage extends Component {
     }
    async updatePaymentDetails(isSuccess, data, modeOfPayment) {
     this.setState({ isLoading: true  })
-    let response = await this.BookAppointmentPaymentUpdate.updatePaymentDetails(isSuccess, data, modeOfPayment, this.state.bookSlotDetails, 'APPOINTMENT', this.userId);
+    let response = await this.BookAppointmentPaymentUpdate.updatePaymentDetails(isSuccess, data, modeOfPayment, this.state.bookSlotDetails, 'APPOINTMENT', this.userId, this.state.paymentMethodTitleCase);
     console.log(response);
     if(response.success) {
         let paymentMethod; 
         if(this.state.paymentOption) {
 
         }
-        this.props.navigation.navigate('paymentsuccess', { successBookSlotDetails: this.state.bookSlotDetails, paymentMethod : this.state.paymentMethodTitleCase });
+        this.props.navigation.navigate('paymentsuccess', { 
+            successBookSlotDetails: this.state.bookSlotDetails, 
+            paymentMethod : this.state.paymentMethodTitleCase 
+        });
     } else {
         Toast.show({
             text: response.message,

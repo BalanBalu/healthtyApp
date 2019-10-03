@@ -3,7 +3,7 @@ import { bookAppointment, createPaymentRazor } from './bookappointment.action';
 export default class BookAppointmentPaymentUpdate {
 
   
-  async updatePaymentDetails(isSuccess, data, modeOfPayment, bookSlotDetails, serviceType, userId) {
+  async updatePaymentDetails(isSuccess, data, modeOfPayment, bookSlotDetails, serviceType, userId, paymentMethod) {
     try {
         let paymentId = data.razorpay_payment_id ? data.razorpay_payment_id : modeOfPayment === 'cash' ? 'cash_' + new Date().getTime() : 'pay_err_' + new Date().getTime();
         let paymentData = {
@@ -19,6 +19,7 @@ export default class BookAppointmentPaymentUpdate {
             is_error: !isSuccess,
             error_message: data.description || null,
             payment_mode: modeOfPayment,
+            payment_method: paymentMethod
         }
         
         let resultData = await createPaymentRazor(paymentData);

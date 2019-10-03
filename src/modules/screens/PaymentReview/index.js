@@ -81,7 +81,7 @@ export default class PaymentReview extends Component {
         console.log(this.state.bookSlotDetails);
         const userId = await AsyncStorage.getItem('userId');
         this.BookAppointmentPaymentUpdate = new BookAppointmentPaymentUpdate();
-        let response = await this.BookAppointmentPaymentUpdate.updatePaymentDetails(true, {}, 'cash', this.state.bookSlotDetails, 'APPOINTMENT', userId);
+        let response = await this.BookAppointmentPaymentUpdate.updatePaymentDetails(true, {}, 'cash', this.state.bookSlotDetails, 'APPOINTMENT', userId, 'cash');
         console.log('Book Appointment Payment Update Response ');
         console.log(response);
         if (response.success) {
