@@ -58,7 +58,7 @@ class Profile extends Component {
             let data = await AsyncStorage.getItem('profile');
             result = JSON.parse(data);
             if (result == null) {
-                let fields = "first_name,last_name,gender,dob,mobile_no,secondary_mobiles,email,secondary_emails,insurance,address,is_blood_donor,is_available_blood_donate,blood_group,profile_image"
+                let fields = "first_name,last_name,gender,dob,mobile_no,secondary_mobile,email,secondary_emails,insurance,address,is_blood_donor,is_available_blood_donate,blood_group,profile_image"
                 let userId = await AsyncStorage.getItem('userId');
                 let result = await fetchUserProfile(userId, fields);
                 if (this.props.profile.success) {
@@ -420,24 +420,20 @@ class Profile extends Component {
                                     <TouchableOpacity onPress={() => this.editProfile('UpdateContact')} testID="onPressUpdateContact">
                                         <Text style={styles.customText}>Contact</Text>
                                         <Text note style={styles.customText1}>{data.mobile_no}</Text>
-                                        {data.secondary_mobiles !== undefined && data.secondary_mobiles[0].number != '' ?
-                                            <FlatList
-                                                data={this.state.data.secondary_mobiles}
-                                                renderItem={({ item }) => (
-                                                    <List>
-                                                        <Text style={styles.customText}>Secondary</Text>
-                                                        <Text note style={styles.customText1}>{item.number}</Text>
-                                                    </List>
-                                                )}
-                                                keyExtractor={(item, index) => index.toString()}
-                                            />
+                                        {data.secondary_mobile !== undefined ?
+                                            <Col>
+                                                <Text style={styles.customText}>Secondary</Text>
+                                                <Text note style={styles.customText1}>{data.secondary_mobile}</Text>
+
+                                            </Col>
+
                                             : <Button transparent>
                                                 <Icon name='add' style={{ color: 'gray' }} />
                                                 <Text uppercase={false} style={styles.customText} onPress={() => this.editProfile('UpdateContact')} testID="onPressAddContactNumber">Add Contact Number</Text>
                                             </Button>}
                                     </TouchableOpacity>
                                 </Body>
-                                {data.secondary_mobiles != undefined ?
+                                {data.secondary_mobile != undefined ?
                                     <Right>
                                         <Icon name="create" style={{ color: 'black' }} onPress={() => this.editProfile('UpdateContact')} testID="iconToUpdateContact"></Icon>
                                     </Right> : null}

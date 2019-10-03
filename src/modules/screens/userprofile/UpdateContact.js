@@ -14,13 +14,11 @@ class UpdateContact extends Component {
     constructor(props) {
         super(props)
         this.state = {
-            type: null,
-            mobile_no: '',
+            secondary_mobile_no: '',
             active: true,
             primary_mobile_no: '',
             isLoading: false,
-            userData: '',
-            primaryMobileNoText: ''
+            userData: ''
         }
     }
 
@@ -32,66 +30,62 @@ class UpdateContact extends Component {
     bindContactValues() {
         const { navigation } = this.props;
         const userData = navigation.getParam('updatedata');
+        console.log("userData" + JSON.stringify(userData))
         if (userData.mobile_no) {
             this.setState({
-                primary_mobile_no: userData.mobile_no,
+                primary_mobile_no: userData.mobile_no
             })
         }
-        if (userData.secondary_mobiles) {
+        if (userData.secondary_mobile) {
             this.setState({
-                type: userData.secondary_mobiles[0].type,
-                mobile_no: userData.secondary_mobiles[0].number,
-                active: userData.secondary_mobiles[0].active,
-                userData
+                secondary_mobile_no: userData.secondary_mobile
             })
         }
 
     }
     commonUpdateContactMethod = async () => {
-        const { mobile_no, userData, primary_mobile_no } = this.state
+        const { secondary_mobile_no, userData, primary_mobile_no } = this.state
         try {
             this.setState({ isLoading: true })
-            let userId = await AsyncStorage.getItem('userId');
-            if (primary_mobile_no != userData.mobile_no || mobile_no != userData.secondary_mobiles[0].number) {
-            let data = {
-                mobile_no: primary_mobile_no,
-                secondary_mobiles: [
-                    {
-                        type: "Secondary",
-                        number: mobile_no,
-                        active: true
-                    }]
-            };
-            if (data.mobile_no != data.secondary_mobiles[0].number) {
-                let response = await userFiledsUpdate(userId, data);
+            if (primary_mobile_no != undefined && (userData.mobile_no !== primary_mobile_no || userData.secondary_mobile !== secondary_mobile_no)) {
+                let userId = await AsyncStorage.getItem('userId');
+                let data = {
+                    mobile_no: primary_mobile_no,
+                    secondary_mobile: secondary_mobile_no
+                };
 
-                if (response.success) {
-                    Toast.show({
-                        text: response.message,
-                        type: "success",
-                        duration: 3000,
-                    })
-                    this.props.navigation.navigate('Profile');
+                if (data.secondary_mobile == '' || data.secondary_mobile == undefined)
+                    delete data["secondary_mobile"]
+
+                if (data.mobile_no != data.secondary_mobile) {
+                    let response = await userFiledsUpdate(userId, data);
+                    console.log("response" + JSON.stringify(response))
+                    if (response.success) {
+                        Toast.show({
+                            text: response.message,
+                            type: "success",
+                            duration: 3000,
+                        })
+                        this.props.navigation.navigate('Profile');
+                    } else {
+                        Toast.show({
+                            text: response.message,
+                            type: "danger",
+                            duration: 3000
+                        })
+                    }
                 } else {
                     Toast.show({
-                        text: response.message,
+                        text: 'Cannot have the same mobile_no. Kindly enter a new number',
                         type: "danger",
                         duration: 3000
                     })
                 }
-                this.setState({ isLoading: false })
             } else {
-                Toast.show({
-                    text: 'Cannot have the same mobile_no. Kindly enter a new number',
-                    type: "danger",
-                    duration: 3000
-                })
-            }
-        }
-            else {
                 this.props.navigation.navigate('Profile');
             }
         }
+
         catch (e) {
             console.log(e);
         }
@@ -100,13 +94,14 @@ class UpdateContact extends Component {
         }
     }
 
+  
     validateMobile_No(number, type) {
         const regex = new RegExp('^[0-9]+$')  //Support only numbers
         if (type === 'Primary') {
             this.setState({ primary_mobile_no: number })
         }
         else {
-            this.setState({ mobile_no: number })
+            this.setState({ secondary_mobile_no: number })
         }
         if (regex.test(number) === false) {
             if (number != '') {
@@ -116,6 +111,7 @@ class UpdateContact extends Component {
                     duration: 3000
                 });
             }
+
         }
     }
 
@@ -154,7 +150,7 @@ class UpdateContact extends Component {
                                             <Icon name='call' style={styles.centeredIcons}></Icon>
                                             <Input placeholder="Edit Your Number" style={styles.transparentLabel} keyboardType="numeric"
                                                 onChangeText={number => this.validateMobile_No(number, 'Secondary')}
-                                                value={String(this.state.mobile_no)}
+                                                value={String(this.state.secondary_mobile_no)}
                                                 testID='updateContact' />
                                         </Row>
                                     </Col>
