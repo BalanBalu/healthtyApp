@@ -53,16 +53,13 @@ class UpdateContact extends Component {
                     mobile_no: primary_mobile_no,
                     secondary_mobile: secondary_mobile_no
                 };
-
-                if (data.secondary_mobile == '' || data.secondary_mobile == undefined)
-                    delete data["secondary_mobile"]
-
+               
                 if (data.mobile_no != data.secondary_mobile) {
                     let response = await userFiledsUpdate(userId, data);
                     console.log("response" + JSON.stringify(response))
                     if (response.success) {
                         Toast.show({
-                            text: response.message,
+                            text: "Contacts has been saved",
                             type: "success",
                             duration: 3000,
                         })
