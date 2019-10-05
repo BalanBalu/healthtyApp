@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import { createStackNavigator, createAppContainer, createSwitchNavigator, createDrawerNavigator } from 'react-navigation';
 import AuthLoadingScreen from './AuthLoadingScreen';
-
+import SideBar from './SideBar';
 import Home from "../../modules/screens/Home";
 import Profile from "../../modules/screens/userprofile";
 import UpdateEmail from "../../modules/screens/userprofile/UpdateEmail";
@@ -359,6 +359,9 @@ const HomeStack = createStackNavigator({
     Orders: {
       screen: MyOrdersList
     } 
+  },
+  {
+    contentComponent: props => <SideBar {...props} />
   },
     {
       initialRouteName: 'Home'
