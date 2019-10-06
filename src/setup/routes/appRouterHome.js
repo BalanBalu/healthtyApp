@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import { createStackNavigator, createAppContainer, createSwitchNavigator, createDrawerNavigator } from 'react-navigation';
 import AuthLoadingScreen from './AuthLoadingScreen';
-
+import SideBar from './SideBar';
 import Home from "../../modules/screens/Home";
 import Profile from "../../modules/screens/userprofile";
 import UpdateEmail from "../../modules/screens/userprofile/UpdateEmail";
@@ -94,17 +94,12 @@ const HomeStack = createStackNavigator({
           <Col>
             <TouchableOpacity onPress={() => { navigation.navigate('Notification') }} >
               <View>
-                <Icon name="notifications" style={{ color: '#fff', marginRight: 10, fontFamily: 'opensans-semibold' }}></Icon>
-               
+                <Icon name="notifications" style={{ color: '#fff', marginRight: 15, fontFamily: 'opensans-semibold' }}></Icon>
                 <Badge/>
               </View>
             </TouchableOpacity>
           </Col>
-          <Col>
-            <TouchableOpacity onPress={() => { logout(); navigation.navigate('login') }}>
-              <Icon name="log-out" style={{ marginRight: 5, color: '#fff', fontFamily: 'opensans-semibold' }}></Icon>
-            </TouchableOpacity>
-          </Col>
+        
         </Grid>
       ),
     })
@@ -347,9 +342,6 @@ const HomeStack = createStackNavigator({
     Home: {
       screen: HomeStack,
     },
-    Profile: {
-      screen: Profile,
-    },
     "My Appointments":{
      screen: MyAppoinmentList
     },
@@ -358,13 +350,22 @@ const HomeStack = createStackNavigator({
     },
     Orders: {
       screen: MyOrdersList
-    } 
+    }
+  },
+  {
+    contentComponent: props => <SideBar {...props} />
   },
     {
       initialRouteName: 'Home'
     })
   
-  
+  export const DragwerLogos = {
+    Home: require('../../../assets/images/drawerIcons/Home.png'),
+    Profile: require('../../../assets/images/drawerIcons/Profile.png'),
+    "My Appointments": require('../../../assets/images/drawerIcons/MyAppointments.png'),
+    Pharmacy: require('../../../assets/images/drawerIcons/Pharmacy.png'),
+    Orders: require('../../../assets/images/drawerIcons/Orders.png')
+  }
   export default createAppContainer(createSwitchNavigator(
     {
       AuthLoading: AuthLoadingScreen,
