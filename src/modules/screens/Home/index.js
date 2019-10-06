@@ -8,7 +8,7 @@ import { StyleSheet, Image, View, TouchableOpacity, AsyncStorage, ScrollView, Fl
 // import { ScrollView, FlatList } from 'react-native-gesture-handler';
 import { catagries, getSpecialistDataSuggestions } from '../../providers/catagries/catagries.actions';
 import { MAP_BOX_PUBLIC_TOKEN , IS_ANDROID } from '../../../setup/config';
-import RNAndroidLocationEnabler from 'react-native-android-location-enabler';
+//import RNAndroidLocationEnabler from 'react-native-android-location-enabler';
 import MapboxGL from '@react-native-mapbox-gl/maps';
 MapboxGL.setAccessToken(MAP_BOX_PUBLIC_TOKEN);
 
@@ -51,6 +51,7 @@ class Home extends Component {
     async componentDidMount() {
         this.getCatagries();
     let isGranted = true;
+   
     if (IS_ANDROID) {
        
       isGranted = await MapboxGL.requestAndroidLocationPermissions();
@@ -85,7 +86,9 @@ class Home extends Component {
          //  - ERR02 : If the popup has failed to open
        }); 
       }
-     } else {
+     } else { 
+      
+       
         navigator.geolocation.getCurrentPosition(position => {
           console.log('Your Orgin is ' + position);
           const origin_coordinates = [position.coords.latitude, position.coords.longitude, ];
@@ -96,10 +99,7 @@ class Home extends Component {
             console.log(error); 
        }, {enableHighAccuracy: false, timeout: 50000}
     }
-       
-
-
-    }
+  }
     getUserLocation() {
         console.log('getting Geo to User Locatuin')
         debugger
@@ -127,37 +127,7 @@ class Home extends Component {
             console.log(e);
         }
     }
-
-    // searchDoctorListModule = async () => {
-    //     try {
-    //         let serachInputvalues = [{
-    //             type: 'service',
-    //             value: [this.state.searchValue]
-    //         },
-    //         {
-    //             type: 'symptoms',
-    //             value: [this.state.searchValue]
-    //         },
-    //        /* {
-    //             type: 'geo',
-    //             value: {
-    //                 coordinates : this.state.locationCordinates,
-    //                 maxDistance: 30
-    //             }
-    //         } */
-    //     ]
-    //         if (this.state.searchValue == null) {
-    //             alert("We can't Find the Empty Values");
-    //         }
-    //         else {
-    //             console.log('serachInputvalues in Homepage')
-    //             console.log(serachInputvalues);
-    //             this.props.navigation.navigate('Doctor List', { resultData: serachInputvalues })
-    //         }
-    //     } catch (e) {
-    //         console.log(e);
-    //     }
-    // }
+    
     navigateToCategorySearch(categoryName) {
         let serachInputvalues = [{
             type: 'category',
@@ -174,31 +144,29 @@ class Home extends Component {
     }
 count=0;
 callSuggestionService=async(enteredText)=>{
-
-console.log('clicked :'+this.count++)
-const userId = await AsyncStorage.getItem('userId');
-locationData=  {
-    "coordinates" :this.state.locationCordinates,
-        "maxDistance":775437
+ console.log('clicked :'+this.count++)
+    const userId = await AsyncStorage.getItem('userId');
+    locationData=  {
+      "coordinates": this.state.locationCordinates,
+      "maxDistance": 775437
     }
 
-let specialistResultData = await getSpecialistDataSuggestions(userId, enteredText, locationData);
+    let specialistResultData = await getSpecialistDataSuggestions(userId, enteredText, locationData);
 // console.log('specialistResultData.data' + JSON.stringify(specialistResultData.data))
-if (specialistResultData.success) {
+  if (specialistResultData.success) {
     await this.setState({
         totalSpecialistDataArry: specialistResultData.data,
         searchValue: enteredText,
     });
-}
-else {
-    await this.setState({
+  } else {
+      await this.setState({
         totalSpecialistDataArry:[]});
-    Toast.show({
-        text: 'No KeyWords Found By near Location',
-        type: 'danger',
-        duration: 3000
-    })
-}
+        Toast.show({
+          text: 'No KeyWords Found By near Location',
+          type: 'danger',
+          duration: 3000
+        })
+    }
  }
     /* Filter the Specialist and Services on Search Box  */
     
@@ -271,7 +239,7 @@ else {
                                     onPress={() => this.props.navigation.navigate("Doctor List", {
                                         resultData: [{
                                             type: item.type,
-                                            value: item.type==='symptoms'?[item.value]:item.value
+                                            value: item.type === 'symptoms' ? [item.value]: item.value
                                         } /*,  {
                                             type: 'geo',
                                             value: {
