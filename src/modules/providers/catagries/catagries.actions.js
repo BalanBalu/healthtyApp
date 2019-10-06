@@ -6,6 +6,20 @@ export const CATAGRIES_REQUEST = 'CATAGRIES/CATAGRIES_REQUEST'
 export const CATAGRIES_RESPONSE = 'CATAGRIES/CATAGRIES_RESPONSE'
 export const CATAGRIES_ERROR = 'CATAGRIES/CATAGRIES_ERROR'
 
+export async function getSpecialistDataSuggestions(userId, keyWord,locationData) {
+  try {
+    let endPoint = 'doctor/searchKeys/'+userId +'/'+keyWord;    
+    let response = await postService(endPoint, locationData);
+    let respData = response.data;
+        // console.log('respData'+JSON.stringify(respData))
+    return respData;
+  } catch (e) {
+    return {
+      message: 'exception' + e,
+      success: false
+    }
+  }
+}
 
 export async function catagries ( isLoading = true) {
   try {

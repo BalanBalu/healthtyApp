@@ -1,18 +1,27 @@
 import React, { Component } from 'react';
-import { Container, Content, Text, Title, Header, Button, H3, Item, List, ListItem, Spinner, Card, Input, Left, Right, Thumbnail, Body, Icon, Footer, FooterTab } from 'native-base';
+import { Container, Content, Text,Toast, Title, Header, Button, H3, Item, List, ListItem, Spinner, Card, Input, Left, Right, Thumbnail, Body, Icon, Footer, FooterTab } from 'native-base';
 import { login, logout } from '../../providers/auth/auth.actions';
 import LinearGradient from 'react-native-linear-gradient';
 import { Col, Row, Grid } from 'react-native-easy-grid';
 import { connect } from 'react-redux'
-
 import { StyleSheet, Image, View, TouchableOpacity, AsyncStorage, ScrollView, FlatList, NativeModules } from 'react-native';
 // import { ScrollView, FlatList } from 'react-native-gesture-handler';
-import { catagries } from '../../providers/catagries/catagries.actions';
+import { catagries, getSpecialistDataSuggestions } from '../../providers/catagries/catagries.actions';
 import { MAP_BOX_PUBLIC_TOKEN , IS_ANDROID } from '../../../setup/config';
-import RNAndroidLocationEnabler from 'react-native-android-location-enabler';
+//import RNAndroidLocationEnabler from 'react-native-android-location-enabler';
 import MapboxGL from '@react-native-mapbox-gl/maps';
 MapboxGL.setAccessToken(MAP_BOX_PUBLIC_TOKEN);
 
+const debounce = (fun, delay) => {
+    let timer = null;
+    return function (...args) {
+        const context = this;
+        timer && clearTimeout(timer);
+        timer = setTimeout(() => {
+            fun.apply(context, args);
+        }, delay);
+    };
+}
 
 class Home extends Component {
     constructor(props) {
@@ -25,10 +34,8 @@ class Home extends Component {
             totalSpecialistDataArry: [],
             visibleClearIcon: '',
             locationCordinates : []
-
         };
-        this.arrayData = []
-
+        this.callSuggestionService = debounce(this.callSuggestionService, 500); 
     }
     navigetToCategories() {
         this.props.navigation.navigate('Categories', { data: this.state.data })
@@ -44,6 +51,7 @@ class Home extends Component {
     async componentDidMount() {
         this.getCatagries();
     let isGranted = true;
+   
     if (IS_ANDROID) {
        
       isGranted = await MapboxGL.requestAndroidLocationPermissions();
@@ -78,7 +86,9 @@ class Home extends Component {
          //  - ERR02 : If the popup has failed to open
        }); 
       }
-     } else {
+     } else { 
+      
+       
         navigator.geolocation.getCurrentPosition(position => {
           console.log('Your Orgin is ' + position);
           const origin_coordinates = [position.coords.latitude, position.coords.longitude, ];
@@ -89,10 +99,7 @@ class Home extends Component {
             console.log(error); 
        }, {enableHighAccuracy: false, timeout: 50000}
     }
-       
-
-
-    }
+  }
     getUserLocation() {
         console.log('getting Geo to User Locatuin')
         debugger
@@ -116,61 +123,11 @@ class Home extends Component {
             }
             this.setState({ catagary: limitedData });
 
-            let totalSpecialistDataArry = [];
-
-            this.state.data.forEach((dataElement) => {
-                let categoryObject = { name: 'category', value: dataElement.category_name };
-                totalSpecialistDataArry.push(categoryObject);
-
-                dataElement.services.forEach((serviceEle) => {
-                    let serviceObject = { name: 'service', value: serviceEle.service };
-                    totalSpecialistDataArry.push(serviceObject);
-                    if (serviceEle.symptoms != undefined) {
-                        serviceEle.symptoms.forEach((symptomsEle) => {
-                            let symptomObject = { name: 'symptoms', value: symptomsEle };
-                            totalSpecialistDataArry.push(symptomObject)
-                        })
-                    }
-                })
-            })
-            await this.setState({ totalSpecialistDataArry: totalSpecialistDataArry })
-
-
         } catch (e) {
             console.log(e);
         }
     }
-
-    searchDoctorListModule = async () => {
-        try {
-            let serachInputvalues = [{
-                type: 'service',
-                value: [this.state.searchValue]
-            },
-            {
-                type: 'symptoms',
-                value: [this.state.searchValue]
-            },
-           /* {
-                type: 'geo',
-                value: {
-                    coordinates : this.state.locationCordinates,
-                    maxDistance: 30
-                }
-            } */
-        ]
-            if (this.state.searchValue == null) {
-                alert("We can't Find the Empty Values");
-            }
-            else {
-                console.log('serachInputvalues in Homepage')
-                console.log(serachInputvalues);
-                this.props.navigation.navigate('Doctor List', { resultData: serachInputvalues })
-            }
-        } catch (e) {
-            console.log(e);
-        }
-    }
+    
     navigateToCategorySearch(categoryName) {
         let serachInputvalues = [{
             type: 'category',
@@ -185,26 +142,41 @@ class Home extends Component {
         } */]
         this.props.navigation.navigate('Doctor List', { resultData: serachInputvalues })
     }
+count=0;
+callSuggestionService=async(enteredText)=>{
+ console.log('clicked :'+this.count++)
+    const userId = await AsyncStorage.getItem('userId');
+    locationData=  {
+      "coordinates": this.state.locationCordinates,
+      "maxDistance": 775437
+    }
 
+    let specialistResultData = await getSpecialistDataSuggestions(userId, enteredText, locationData);
+// console.log('specialistResultData.data' + JSON.stringify(specialistResultData.data))
+  if (specialistResultData.success) {
+    await this.setState({
+        totalSpecialistDataArry: specialistResultData.data,
+        searchValue: enteredText,
+    });
+  } else {
+      await this.setState({
+        totalSpecialistDataArry:[]});
+        Toast.show({
+          text: 'No KeyWords Found By near Location',
+          type: 'danger',
+          duration: 3000
+        })
+    }
+ }
     /* Filter the Specialist and Services on Search Box  */
-    SearchFilterFunction = async (enteredText) => {
+    
+    SearchKeyWordFunction = async (enteredText) => {
         await this.setState({ visibleClearIcon: enteredText })
-
-        this.arrayData = this.state.totalSpecialistDataArry;
-        let newData = this.arrayData.filter(function (item) {
-            let itemData = item.value ? item.value.toUpperCase() : ''.toUpperCase();
-            let textData = enteredText.toUpperCase();
-            return itemData.indexOf(textData) > -1;
-        });
-
-        this.setState({
-            totalSpecialistDataArry: newData,
-            searchValue: enteredText,
-        });
+        this.callSuggestionService(enteredText);  // Call the Suggestion API with Debounce method
     }
 
     clearTotalText = () => {
-        this.setState({ searchValue: '' })
+        this.setState({ visibleClearIcon: '', totalSpecialistDataArry: null })
     };
 
     itemSaperatedByListView = () => {
@@ -219,7 +191,6 @@ class Home extends Component {
         );
     };
 
-
     render() {
         const { fromAppointment } = this.state
         return (
@@ -227,18 +198,20 @@ class Home extends Component {
             <Container style={styles.container}>
                 <Content keyboardShouldPersistTaps={'handled'} style={styles.bodyContent}>
                     <Row style={{ backgroundColor: 'white', borderColor: '#000', borderWidth: 1, borderRadius: 20, }}>
-
+                    <Left>
+                            <Icon name="ios-search" style={{ color: '#000' }} />
+                        </Left>
                         <Input placeholder="Search Symptoms/Services"
                             style={{ color: 'gray', fontFamily: 'OpenSans', fontSize: 13 }}
                             placeholderTextColor="gray"
-                            value={this.state.searchValue}
+                            value={this.state.visibleClearIcon}
                             keyboardType={'email-address'}
                             autoFocus={fromAppointment}
                             // onChangeText={searchValue => this.setState({ searchValue })}
-                            onChangeText={enteredText => this.SearchFilterFunction(enteredText)}
+                            onChangeText={enteredText =>this.SearchKeyWordFunction(enteredText) }
                             underlineColorAndroid="transparent"
                             blurOnSubmit={false}
-                            onSubmitEditing={() => { this.searchDoctorListModule(); }}
+                            // onSubmitEditing={() => { this.searchDoctorListModule(); }}
                         />
 
                         <Right>
@@ -248,9 +221,9 @@ class Home extends Component {
                                         <Icon name="ios-close" style={{ fontSize: 30, color: 'gray', marginLeft: 50 }} />
                                     </Button>
                                     : null}
-                                <Button Button transparent onPress={() => this.searchDoctorListModule()}>
+                                {/* <Button Button transparent onPress={() => this.searchDoctorListModule()}>
                                     <Icon name="ios-search" style={{ color: '#000' }} />
-                                </Button>
+                                </Button> */}
                             </Row>
 
                         </Right>
@@ -265,8 +238,8 @@ class Home extends Component {
                                 <Row
                                     onPress={() => this.props.navigation.navigate("Doctor List", {
                                         resultData: [{
-                                            type: item.name,
-                                            value: item.name==='symptoms'?[item.value]:item.value
+                                            type: item.type,
+                                            value: item.type === 'symptoms' ? [item.value]: item.value
                                         } /*,  {
                                             type: 'geo',
                                             value: {
@@ -278,7 +251,7 @@ class Home extends Component {
                                 >
                                     <Text style={{ padding: 10, fontFamily: 'OpenSans', fontSize: 13 }}>{item.value}</Text>
                                     <Right>
-                                        <Text uppercase={true} style={{ color: 'gray', padding: 10, marginRight: 10, fontSize: 13, fontFamily: 'OpenSans-Bold' }}>{item.name}</Text>
+                                        <Text uppercase={true} style={{ color: 'gray', padding: 10, marginRight: 10, fontSize: 13, fontFamily: 'OpenSans-Bold' }}>{item.type}</Text>
                                     </Right>
                                 </Row>
                             )}
