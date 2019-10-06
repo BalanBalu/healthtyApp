@@ -32,8 +32,14 @@ class SideBar extends React.Component {
   renderProfileImageOrLogo() {
     data = this.activeUserData;
     let source = null;
+    if(!data || this.state.hasLoggedIn === false) 
+      return require('../../../assets/images/Logo.png');
+    
     if (data.profile_image) {
-        source = { uri: data.profile_image.imageURL }
+       if(data.profile_image) 
+         source = { uri: data.profile_image.imageURL } 
+       else 
+         source = require('../../../assets/images/Logo.png')
     } else {
         source = require('../../../assets/images/Logo.png')
     }
@@ -68,7 +74,7 @@ async getBasicData() {
                <Col style={{width:'75%'}}>
                 {hasLoggedIn ?  
                    <View>
-                    <Text style={{fontFamily:'OpenSans',fontSize:18,fontWeight:'bold',color:'#fff'}}>{this.activeUserData.first_name}</Text>
+                    <Text style={{fontFamily:'OpenSans',fontSize:18,fontWeight:'bold',color:'#fff'}}>{this.activeUserData && this.activeUserData.first_name}</Text>
                     <Text onPress={()=> this.props.navigation.navigate('Profile')}
                     style={{fontFamily:'OpenSans',fontSize:13,color:'#fff'}}>View Profile</Text>
                    </View>
