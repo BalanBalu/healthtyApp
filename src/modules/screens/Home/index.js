@@ -198,11 +198,12 @@ callSuggestionService=async(enteredText)=>{
             <Container style={styles.container}>
                 <Content keyboardShouldPersistTaps={'handled'} style={styles.bodyContent}>
                     <Row style={{ backgroundColor: 'white', borderColor: '#000', borderWidth: 1, borderRadius: 20, }}>
-                    <Left>
-                            <Icon name="ios-search" style={{ color: '#000' }} />
-                        </Left>
+                    <Col size={1}> 
+                        <Icon name="ios-search" style={{ color: '#000', margin: 10 }} />
+                    </Col>
+                      <Col size={7}> 
                         <Input placeholder="Search Symptoms/Services"
-                            style={{ color: 'gray', fontFamily: 'OpenSans', fontSize: 13 }}
+                            style={{ color: 'gray', fontFamily: 'OpenSans', fontSize: 13,  }}
                             placeholderTextColor="gray"
                             value={this.state.visibleClearIcon}
                             keyboardType={'email-address'}
@@ -213,12 +214,13 @@ callSuggestionService=async(enteredText)=>{
                             blurOnSubmit={false}
                             // onSubmitEditing={() => { this.searchDoctorListModule(); }}
                         />
+                        </Col>
 
-                        <Right>
+                        <Col size={1.3}>
                             <Row>
                                 {this.state.visibleClearIcon != '' ?
                                     <Button Button transparent onPress={() => this.clearTotalText()}>
-                                        <Icon name="ios-close" style={{ fontSize: 30, color: 'gray', marginLeft: 50 }} />
+                                        <Icon name="ios-close" style={{ fontSize: 30, color: 'gray' }} />
                                     </Button>
                                     : null}
                                 {/* <Button Button transparent onPress={() => this.searchDoctorListModule()}>
@@ -226,7 +228,7 @@ callSuggestionService=async(enteredText)=>{
                                 </Button> */}
                             </Row>
 
-                        </Right>
+                        </Col>
 
                     </Row>
 
