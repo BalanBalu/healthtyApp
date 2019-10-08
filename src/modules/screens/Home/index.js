@@ -176,8 +176,8 @@ callSuggestionService=async(enteredText)=>{
                    </Row>   
 
                     <Row style={{ backgroundColor: 'white', borderColor: '#000', borderWidth: 1, borderRadius: 20, }}>
-                    <Col size={1}> 
-                        <Icon name="ios-search" style={{ color: '#000', margin: 10 }} />
+                    <Col size={1.1}> 
+                        <Icon name="ios-search" style={{ color: '#000', marginTop: 10, marginBottom: 10, marginLeft : 10 }} />
                     </Col>
                       <Col size={7}> 
                         <Input 
