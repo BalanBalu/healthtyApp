@@ -41,6 +41,14 @@ class Locations extends Component {
         <Container>
           <Content>
             {isLoading ?  <Spinner color='blue' /> : null }   
+            <View style={styles.container}>
+                  <TouchableOpacity style={styles.fab} onPress={() =>{
+                        CurrentLocation.getCurrentPosition();
+                        this.props.navigation.navigate("Home")
+                   }}>
+                  <Icon name="locate" style={styles.text}></Icon>
+                  </TouchableOpacity>
+                </View>
         
             <FlatList
                 data={locations}
@@ -62,15 +70,7 @@ class Locations extends Component {
                 keyExtractor={(item, index) => index.toString()}
             />
            
-                <View style={styles.container}>
-                  <TouchableOpacity style={styles.fab} onPress={() =>{
-                        CurrentLocation.getCurrentPosition();
-                        this.props.navigation.navigate("Home")
-                   }}>
-                  <Icon name="locate" style={styles.text}></Icon>
-                  </TouchableOpacity>
-                </View>
-        
+                
              </Content>
                
             </Container>

@@ -213,23 +213,27 @@ callSuggestionService=async(enteredText)=>{
 
                     {this.state.searchValue != null ?
                         <FlatList
-                            data={this.state.totalSpecialistDataArry}
+                            data={this.state.totalSpecialistDataArry ? [{ value : 'All Doctors in ' + ( isSearchByCurrentLocation === true ? 'Your Location' :  patientSearchLocationName ), type : ' ' }].concat(this.state.totalSpecialistDataArry) : [] }
                             ItemSeparatorComponent={this.itemSaperatedByListView}
-                            renderItem={({ item }) => (
+                            renderItem={({ item, index }) => (
                                 <Row
-                                    onPress={() => this.props.navigation.navigate("Doctor List", {
-                                        resultData: [{
-                                            type: item.type,
-                                            value: item.type === 'symptoms' ? [item.value]: item.value
-                                        },  {
-                                            type: 'geo',
-                                            value: {
+                                    onPress={() => { 
+                                        let requestData = [{
+                                             type: 'geo',
+                                             value: {
                                                 coordinates: locationCordinates,
                                                 maxDistance: MAX_DISTANCE_TO_COVER
-                                            }
+                                             }
                                         }]
-                                    })}
-                                >
+                                        if(index !== 0) {
+                                            requestData.push({
+                                                type: item.type,
+                                                value: item.type === 'symptoms' ? [item.value]: item.value
+                                            })
+                                        }
+                                          this.props.navigation.navigate("Doctor List", { resultData: requestData }) 
+                                        }}
+                                    >
                                     <Text style={{ padding: 10, fontFamily: 'OpenSans', fontSize: 13 }}>{item.value}</Text>
                                     <Right>
                                         <Text uppercase={true} style={{ color: 'gray', padding: 10, marginRight: 10, fontSize: 13, fontFamily: 'OpenSans-Bold' }}>{item.type}</Text>
