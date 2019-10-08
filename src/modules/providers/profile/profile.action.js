@@ -33,7 +33,7 @@ export async function fetchUserProfile(userId, fields, isLoading = true) {
         type: PROFILE_RESPONSE,
         details: respData.data
       })
-      storeBasicProfile(respData.data)
+      //storeBasicProfile(respData.data)
       return respData.data
     }
     
@@ -50,7 +50,7 @@ export async function fetchUserProfile(userId, fields, isLoading = true) {
   }  
 }
 
-function storeBasicProfile(result) { 
+export function storeBasicProfile(result) { 
   AsyncStorage.setItem('basicProfileData', JSON.stringify({
     first_name: result.first_name,
     last_name: result.last_name,

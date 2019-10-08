@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import { Container, Content, Text, Title, Header, H3, Button, Card, List, ListItem, View, Left, Right, Toast, Thumbnail, Body, Icon, locations, ProgressBar, Item, Radio } from 'native-base';
-import { fetchUserProfile } from '../../providers/profile/profile.action';
+import { fetchUserProfile, storeBasicProfile } from '../../providers/profile/profile.action';
 import { getPatientWishList } from '../../providers/bookappointment/bookappointment.action';
 import { hasLoggedIn, userFiledsUpdate } from '../../providers/auth/auth.actions';
 import { Col, Row, Grid } from 'react-native-easy-grid';
@@ -63,6 +63,7 @@ class Profile extends Component {
                 let result = await fetchUserProfile(userId, fields);
                 if (this.props.profile.success) {
                     AsyncStorage.setItem('profile', JSON.stringify(result))
+                    storeBasicProfile(result);
                     this.setState({ data: result, gender: result.gender });
                     if (result.profile_image) {
                         this.setState({ imageSource: result.profile_image.imageURL });

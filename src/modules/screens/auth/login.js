@@ -11,7 +11,7 @@ import { login, RESET_REDIRECT_NOTICE } from '../../providers/auth/auth.actions'
 import styles from '../../screens/auth/styles'
 import Spinner from '../../../components/Spinner';
 import { store } from '../../../setup/store';
-import { fetchUserProfile } from '../../providers/profile/profile.action';
+import { fetchUserProfile, storeBasicProfile } from '../../providers/profile/profile.action';
 
 class Login extends Component {
   constructor(props) {
@@ -68,7 +68,10 @@ class Login extends Component {
     try {
             let userId = await AsyncStorage.getItem('userId');
             let fields = "first_name,last_name,gender,dob,mobile_no,email,profile_image"
-            fetchUserProfile(userId, fields);
+            let result = await fetchUserProfile(userId, fields);
+            if (!result.error) {
+              storeBasicProfile(result)
+            }
            
      }
     catch (e) {
