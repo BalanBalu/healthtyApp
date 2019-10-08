@@ -51,6 +51,7 @@ import OrderMedicineDetails from '../../modules/screens/Pharmacy/OrderMedicineDe
 import MedicineSearchList from '../../modules/screens/Pharmacy/MedicineSearchList/MedicineSearchList';
 import MedicineCheckout from '../../modules/screens/Pharmacy/MedicineCheckout/MedicineChekout';
 import { Badge } from '../../../src/modules/common'
+import Locations from '../../modules/screens/Home/Locations';
 
 const AuthRoutes = {
   login: {
@@ -105,6 +106,12 @@ const HomeStack = createStackNavigator({
     })
   },
   // ================Categories  ===============
+  Locations: {
+    screen: Locations,
+    navigationOptions: ({ navigation }) => ({
+      title: 'Locations',
+    })
+  },
   Categories: {
     screen: Categories,
     navigationOptions: ({ navigation }) => ({

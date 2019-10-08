@@ -5,12 +5,16 @@ import LinearGradient from 'react-native-linear-gradient';
 import { Col, Row, Grid } from 'react-native-easy-grid';
 import { connect } from 'react-redux'
 import { StyleSheet, Image, View, TouchableOpacity, AsyncStorage, ScrollView, FlatList, NativeModules } from 'react-native';
-// import { ScrollView, FlatList } from 'react-native-gesture-handler';
+
+import { SET_PATIENT_LOCATION_DATA  } from '../../providers/bookappointment/bookappointment.action';
 import { catagries, getSpecialistDataSuggestions } from '../../providers/catagries/catagries.actions';
 import { MAP_BOX_PUBLIC_TOKEN , IS_ANDROID } from '../../../setup/config';
-//import RNAndroidLocationEnabler from 'react-native-android-location-enabler';
+import RNAndroidLocationEnabler from 'react-native-android-location-enabler';
 import MapboxGL from '@react-native-mapbox-gl/maps';
+import { store } from '../../../setup/store';
+import CurrentLocation from './CurrentLocation';
 MapboxGL.setAccessToken(MAP_BOX_PUBLIC_TOKEN);
+const MAX_DISTANCE_TO_COVER = 30000; // in meters
 
 const debounce = (fun, delay) => {
     let timer = null;
@@ -33,7 +37,6 @@ class Home extends Component {
             searchValue: null,
             totalSpecialistDataArry: [],
             visibleClearIcon: '',
-            locationCordinates : []
         };
         this.callSuggestionService = debounce(this.callSuggestionService, 500); 
     }
@@ -50,56 +53,8 @@ class Home extends Component {
      }
     async componentDidMount() {
         this.getCatagries();
-    let isGranted = true;
-   
-    if (IS_ANDROID) {
-       
-      isGranted = await MapboxGL.requestAndroidLocationPermissions();
-      await this.setState({
-         isAndroidPermissionGranted: isGranted,
-         isFetchingAndroidPermission: false,
-       });
-       if(isGranted) {
-           
-            RNAndroidLocationEnabler.promptForEnableLocationIfNeeded({interval: 10000, fastInterval: 5000}).then(async (data) => {
-               
-                if(data === 'enabled') {
-                   await this.timeout(500);
-                }
-             navigator.geolocation.getCurrentPosition(position => {
-                const origin_coordinates = [position.coords.latitude, position.coords.longitude, ];
-                this.setState({ locationCordinates : origin_coordinates })
-               
-                console.log('Your Orgin is ' + origin_coordinates); 
-             }), error => {
-               console.log(error); 
-               alert(JSON.stringify(error)) 
-             }, { timeout: 50000, enableHighAccuracy: true };
-        
-       }).catch(err => {
-            alert("Please Enable Your Location to Provide the Better Results");
-         // The user has not accepted to enable the location services or something went wrong during the process
-         // "err" : { "code" : "ERR00|ERR01|ERR02", "message" : "message"}
-         // codes : 
-         //  - ERR00 : The user has clicked on Cancel button in the popup
-         //  - ERR01 : If the Settings change are unavailable
-         //  - ERR02 : If the popup has failed to open
-       }); 
-      }
-     } else { 
-      
-       
-        navigator.geolocation.getCurrentPosition(position => {
-          console.log('Your Orgin is ' + position);
-          const origin_coordinates = [position.coords.latitude, position.coords.longitude, ];
-          this.setState({ locationCordinates : origin_coordinates })
-         
-        }),
-        error =>  {
-            console.log(error); 
-       }, {enableHighAccuracy: false, timeout: 50000}
+        CurrentLocation.getCurrentPosition();
     }
-  }
     getUserLocation() {
         console.log('getting Geo to User Locatuin')
         debugger
@@ -129,26 +84,29 @@ class Home extends Component {
     }
     
     navigateToCategorySearch(categoryName) {
+        const { bookappointment: { locationCordinates } } = this.props;
+       
         let serachInputvalues = [{
             type: 'category',
             value: categoryName
         },
-       /* {
+        {
             type: 'geo',
             value: {
-                coordinates : this.state.locationCordinates,
-                maxDistance: 30
+                coordinates : locationCordinates,
+                maxDistance: MAX_DISTANCE_TO_COVER
             }
-        } */]
+        }]
         this.props.navigation.navigate('Doctor List', { resultData: serachInputvalues })
     }
 count=0;
 callSuggestionService=async(enteredText)=>{
  console.log('clicked :'+this.count++)
     const userId = await AsyncStorage.getItem('userId');
+    const { bookappointment: { locationCordinates } } = this.props;
     locationData=  {
-      "coordinates": this.state.locationCordinates,
-      "maxDistance": 775437
+      "coordinates": locationCordinates,
+      "maxDistance": MAX_DISTANCE_TO_COVER
     }
 
     let specialistResultData = await getSpecialistDataSuggestions(userId, enteredText, locationData);
@@ -192,17 +150,38 @@ callSuggestionService=async(enteredText)=>{
     };
 
     render() {
-        const { fromAppointment } = this.state
+        const { fromAppointment } = this.state;
+        const { bookappointment: { patientSearchLocationName, locationCordinates, isSearchByCurrentLocation } } = this.props;
+        
         return (
 
             <Container style={styles.container}>
                 <Content keyboardShouldPersistTaps={'handled'} style={styles.bodyContent}>
+                   <Row style={{marginBottom: 5}}>
+                   {isSearchByCurrentLocation === true ? 
+                   <Col size={10} style={{ flexDirection : 'row' }}>  
+                      <Text uppercase={false} style={{ paddingLeft: 10, color: 'gray', fontSize: 10, fontFamily: 'OpenSans-SemiBold' }}>You are searching </Text>
+                      <Text uppercase={false} style={{ color: 'gray', fontSize: 10, fontFamily: 'OpenSans-Bold' }}>Near by</Text>
+                      <Text uppercase={false} style={{ color: 'gray', fontSize: 10, fontFamily: 'OpenSans-SemiBold' }}> Hostpitals</Text>
+                    
+                    </Col> : 
+                     <Col size={10} style={{ flexDirection : 'row' }}>  
+                        <Text uppercase={false} style={{ paddingLeft: 10, color: 'gray', fontSize: 10, fontFamily: 'OpenSans-SemiBold' }}>You are searching Hospitals on </Text>
+                        <Text uppercase={false} style={{ color: 'gray', fontSize: 10, fontFamily: 'OpenSans-Bold' }}>{patientSearchLocationName}</Text>
+                    </Col>
+                    } 
+                    <Col size={2}>
+                        <Text onPress={()=> this.props.navigation.navigate('Locations')} uppercase={true} style={{ color: 'gray', fontSize: 10, fontFamily: 'OpenSans-SemiBold' }}>Change</Text>
+                    </Col>  
+                   </Row>   
+
                     <Row style={{ backgroundColor: 'white', borderColor: '#000', borderWidth: 1, borderRadius: 20, }}>
                     <Col size={1}> 
                         <Icon name="ios-search" style={{ color: '#000', margin: 10 }} />
                     </Col>
                       <Col size={7}> 
-                        <Input placeholder="Search Symptoms/Services"
+                        <Input 
+                            placeholder="Search Symptoms/Services"
                             style={{ color: 'gray', fontFamily: 'OpenSans', fontSize: 13,  }}
                             placeholderTextColor="gray"
                             value={this.state.visibleClearIcon}
@@ -242,13 +221,13 @@ callSuggestionService=async(enteredText)=>{
                                         resultData: [{
                                             type: item.type,
                                             value: item.type === 'symptoms' ? [item.value]: item.value
-                                        } /*,  {
+                                        },  {
                                             type: 'geo',
                                             value: {
-                                                coordinates : this.state.locationCordinates,
-                                                maxDistance: 1000
+                                                coordinates: locationCordinates,
+                                                maxDistance: MAX_DISTANCE_TO_COVER
                                             }
-                                        } */]
+                                        }]
                                     })}
                                 >
                                     <Text style={{ padding: 10, fontFamily: 'OpenSans', fontSize: 13 }}>{item.value}</Text>
@@ -423,7 +402,7 @@ callSuggestionService=async(enteredText)=>{
 function homeState(state) {
 
     return {
-        user: state.user
+        bookappointment: state.bookappointment
     }
 }
 export default connect(homeState)(Home)

@@ -50,7 +50,8 @@
   "rnpm": {
     "assets": [
       "./assets/fonts/",
-      "./assets/icons/"
+      "./assets/icons/",
+      "./assets/images/"
     ]
   }
 }

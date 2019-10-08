@@ -7,7 +7,8 @@ import {
   SET_PATIENT_WISH_LIST_DOC_IDS,
   SET_FAVORITE_DOCTOR_COUNT_BY_IDS,
   SET_DOCTORS_RATING_BY_IDS,
-  SET_FILTERED_DOCTOR_DATA
+  SET_FILTERED_DOCTOR_DATA,
+  SET_PATIENT_LOCATION_DATA
  } from './bookappointment.action'
 
 export const bookAppointmentData = {
@@ -20,7 +21,10 @@ export const bookAppointmentData = {
     patientWishListsDoctorIds : [],
     favouriteListCountByDoctorIds : {},
     reviewsByDoctorIds : {}, 
-    filteredDoctorData : []
+    filteredDoctorData : [],
+    patientSearchLocationName: null,
+    locationCordinates: null,
+    isSearchByCurrentLocation: true
   }
   // State
   export default (state = bookAppointmentData, action) => {
@@ -64,7 +68,15 @@ export const bookAppointmentData = {
         return {
             ...state,
             filteredDoctorData: action.data
-        }  
+        }
+      case SET_PATIENT_LOCATION_DATA: {
+        return {
+          ...state,
+          locationCordinates: action.center,
+          patientSearchLocationName: action.locationName,
+          isSearchByCurrentLocation: action.isSearchByCurrentLocation
+        }
+      }    
       default:
         return state;
            
