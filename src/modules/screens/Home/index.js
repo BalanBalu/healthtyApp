@@ -112,18 +112,21 @@ callSuggestionService=async(enteredText)=>{
     let specialistResultData = await getSpecialistDataSuggestions(userId, enteredText, locationData);
 // console.log('specialistResultData.data' + JSON.stringify(specialistResultData.data))
   if (specialistResultData.success) {
-    await this.setState({
+       this.setState({
         totalSpecialistDataArry: specialistResultData.data,
         searchValue: enteredText,
     });
   } else {
-      await this.setState({
-        totalSpecialistDataArry:[]});
-        Toast.show({
+      
+       this.setState({
+            totalSpecialistDataArry:[],  
+            searchValue: enteredText
+        });
+       /* Toast.show({
           text: 'No KeyWords Found By near Location',
           type: 'danger',
           duration: 3000
-        })
+        }) */
     }
  }
     /* Filter the Specialist and Services on Search Box  */
@@ -134,7 +137,7 @@ callSuggestionService=async(enteredText)=>{
     }
 
     clearTotalText = () => {
-        this.setState({ visibleClearIcon: '', totalSpecialistDataArry: null })
+        this.setState({ visibleClearIcon: null, totalSpecialistDataArry: null, searchValue: null })
     };
 
     itemSaperatedByListView = () => {
@@ -213,7 +216,8 @@ callSuggestionService=async(enteredText)=>{
 
                     {this.state.searchValue != null ?
                         <FlatList
-                            data={this.state.totalSpecialistDataArry ? [{ value : 'All Doctors in ' + ( isSearchByCurrentLocation === true ? 'Your Location' :  patientSearchLocationName ), type : ' ' }].concat(this.state.totalSpecialistDataArry) : [] }
+                            data={this.state.totalSpecialistDataArry ? [{ value : 'All Doctors in ' + ( isSearchByCurrentLocation === true ? 'Your Location' :  patientSearchLocationName ), type : ' ' }].concat(this.state.totalSpecialistDataArry) : [{ value : 'All Doctors in ' + ( isSearchByCurrentLocation === true ? 'Your Location' :  patientSearchLocationName ), type : ' ' }] }
+                            extraData={[this.state.searchValue, this.state.totalSpecialistDataArry]}
                             ItemSeparatorComponent={this.itemSaperatedByListView}
                             renderItem={({ item, index }) => (
                                 <Row
