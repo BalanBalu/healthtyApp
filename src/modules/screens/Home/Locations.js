@@ -1,8 +1,8 @@
 import React, { Component } from 'react';
-import { Text, Right, Container, Content, Icon , Spinner } from 'native-base';
-import { Col, Row, Grid } from 'react-native-easy-grid';
+import { Text, Container, Icon , Spinner } from 'native-base';
+import { Row } from 'react-native-easy-grid';
 import { connect } from 'react-redux'
-import { StyleSheet,  View, TouchableOpacity, FlatList, ScrollView } from 'react-native';
+import { StyleSheet,  View, TouchableOpacity, FlatList } from 'react-native';
 
 import { store } from '../../../setup/store';
 import { SET_PATIENT_LOCATION_DATA , getLocations } from '../../providers/bookappointment/bookappointment.action';
@@ -39,17 +39,9 @@ class Locations extends Component {
         const { locations, isLoading } = this.state
         return (
         <Container>
-          <Content>
+         
             {isLoading ?  <Spinner color='blue' /> : null }   
-            <View style={styles.container}>
-                  <TouchableOpacity style={styles.fab} onPress={() =>{
-                        CurrentLocation.getCurrentPosition();
-                        this.props.navigation.navigate("Home")
-                   }}>
-                  <Icon name="locate" style={styles.text}></Icon>
-                  </TouchableOpacity>
-                </View>
-        
+            <View style={{ flex: 1 }}>
             <FlatList
                 data={locations}
                 ItemSeparatorComponent={this.itemSaperatedByListView}
@@ -70,8 +62,15 @@ class Locations extends Component {
                 keyExtractor={(item, index) => index.toString()}
             />
            
-                
-             </Content>
+                  <View>
+                    <TouchableOpacity style={styles.fab} onPress={() =>{
+                        CurrentLocation.getCurrentPosition();
+                        this.props.navigation.navigate("Home")
+                    }}>
+                    <Icon name="locate" style={styles.text}></Icon>
+                    </TouchableOpacity>
+                  </View> 
+             </View>
                
             </Container>
         )
