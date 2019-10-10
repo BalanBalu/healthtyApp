@@ -42,6 +42,7 @@ class AppointmentDetails extends Component {
     const userId = await AsyncStorage.getItem('userId');
     const { navigation } = this.props;
     const appointmentData = navigation.getParam('data');
+    console.log(appointmentData)
 
 
     if (appointmentData == undefined) {
@@ -197,13 +198,18 @@ class AppointmentDetails extends Component {
       let appointmentStatus = result.appointmentData.appointment_status;
 
       if (result.success) {
+        let temp= this.state.data
+    temp.doctor_id=result.appointmentData.doctor_id;
+    temp.appointment_starttime=result.appointmentData.appointment_starttime;
+    temp.appointment_endtime=result.appointmentData.appointment_endtime;
         Toast.show({
           text: result.message,
           duration: 3000
         })
 
 
-        this.setState({ appointmentStatus: appointmentStatus, data: result });
+        this.setState({ appointmentStatus: appointmentStatus, data: temp });
+        
       }
     }
     catch (e) {
@@ -216,7 +222,7 @@ class AppointmentDetails extends Component {
     this.state.data.prefix = this.state.doctorData.prefix;
     const { navigation } = this.props;
     const fromNotification = navigation.getParam('fromNotification');
-
+    
     if (fromNotification == true || fromNotification != undefined) {
       let doctorInfo = {
         first_name: this.state.doctorData.first_name,
@@ -224,6 +230,7 @@ class AppointmentDetails extends Component {
       }
       this.state.data.doctorInfo = doctorInfo;
     }
+
     this.props.navigation.navigate('CancelAppointment', { appointmentDetail: this.state.data })
 
   }

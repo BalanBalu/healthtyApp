@@ -34,6 +34,7 @@ class CancelAppointment extends Component {
 
     const { navigation } = this.props;
     const cancelData = navigation.getParam('appointmentDetail');
+    console.log(cancelData)
     let doctorId = cancelData.doctor_id;
     let appointmentId = cancelData._id;
     await this.setState({ doctorId: doctorId, appointmentId: appointmentId, data: cancelData });
@@ -43,13 +44,14 @@ class CancelAppointment extends Component {
   /* Cancel Appoiontment Status */
   cancelAppointment = async (data, updatedStatus) => {
     try {
+      let userId = await AsyncStorage.getItem('userId');
       console.log(this.state.statusUpdateReason)
       if (this.state.statusUpdateReason != '') {
         console.log('true')
         this.setState({ isLoading: true });
         let requestData = {
           doctorId: data.doctor_id,
-          userId: data.user_id,
+          userId: userId,
           startTime: data.appointment_starttime,
           endTime: data.appointment_endtime,
           status: updatedStatus,
@@ -57,7 +59,7 @@ class CancelAppointment extends Component {
           status_by: 'USER'
         };
 
-        let userId = await AsyncStorage.getItem('userId');
+   
         let result = await appointmentStatusUpdate(this.state.doctorId, this.state.appointmentId, requestData);
            console.log(result)
         if (result.success) {
@@ -68,6 +70,7 @@ class CancelAppointment extends Component {
           let temp = this.state.data;
           temp.appointment_status = result.appointmentData.appointment_status;
           temp.status_update_reason = result.appointmentData.status_update_reason;
+          
           this.setState({ data: temp });
           this.props.navigation.navigate('AppointmentInfo', { data: this.state.data });
         }
