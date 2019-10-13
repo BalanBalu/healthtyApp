@@ -58,7 +58,7 @@ export default class BookAppointmentPaymentUpdate {
             startTime: bookSlotDetails.slotData.slotStartDateAndTime,
             endTime: bookSlotDetails.slotData.slotEndDateAndTime,
             status: "PENDING",
-            status_by: "Patient",
+            status_by: "USER",
             statusUpdateReason: "NEW_BOOKING",
             hospital_id: bookSlotDetails.slotData.location.hospital_id,
             booked_from: "Mobile",
