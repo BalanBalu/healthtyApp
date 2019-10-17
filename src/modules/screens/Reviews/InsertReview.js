@@ -3,7 +3,7 @@ import React, { Component } from 'react';
 import { StyleSheet, Image, TextInput, Dimensions, AsyncStorage, Modal } from 'react-native';
 import StarRating from 'react-native-star-rating';
 import {
-  Container, Header, Title, Left, Right, Body, Button, Card, Toast, CardItem, Row, Grid, View,
+  Container, Header, Title, Left, Right, Body, Button, Card, Toast, CardItem, Row, Grid, View,Col,
   Text, Thumbnail, Content, CheckBox, Item
 } from 'native-base';
 import { Checkbox } from 'react-native-paper';
@@ -235,7 +235,7 @@ class InsertReview extends Component {
                     <View style={{
                       width: '100%',
                       // Dimensions.get('screen').width,
-                      height: '25%', backgroundColor: '#fff',
+                      height: '15%', backgroundColor: '#fff',
                       borderColor: 'gray',
                       borderWidth: 3,
                       padding: 10,
@@ -243,14 +243,19 @@ class InsertReview extends Component {
                     }}>
 
                       {/* <Item regular rounded style={{ borderColor: '#000', borderWidth: 2, marginTop: 20 }}> */}
-                      <Text> Kindly give rating for your Review   </Text>
+                   
                       {/* </Item> */}
-                      <Row style={{ marginTop: 10 }}>
-                        <Left style={{ marginLeft: 15 }} >
-                          <Button block success style={{ marginTop: 15, borderRadius: 5, width: 50 }} onPress={() => this.setState({ ratingIndicatePopUp: false })} testID='okButton'>
-                            <Text style={{ fontFamily: 'OpenSans' }}> Ok</Text>
+                      <Row style={{ marginTop: 10,justifyContent:'center' }}>
+                        <Col style={{justifyContent:'center',width:'80%',marginTop:-30}}>
+                        <Text style={{ fontFamily: 'OpenSans',textAlign:'center', }}> Kindly give rating for your Review! </Text>
+
+                        </Col>
+                        <Col style={{width:'20%',marginTop: 30,justifyContent:'center'}}>
+                          <Button  success style={{ borderRadius: 10,height:35,paddingLeft:5,paddingRight:5}} onPress={() => this.setState({ ratingIndicatePopUp: false })} testID='okButton'>
+                            <Text style={{ fontFamily: 'OpenSans',}}> Ok</Text>
                           </Button>
-                        </Left></Row>
+                        </Col>
+                        </Row>
                     </View>
 
                   </View>
