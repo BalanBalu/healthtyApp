@@ -164,9 +164,10 @@ finally {
                 <Content >
                     <Grid style={styles.curvedGrid}>
                     </Grid>
-                   
-                            <View style={{marginTop:-90,marginLeft:15}}>
-                                <Autocomplete style={{ borderBottomWidth: 0, backgroundColor: '#F1F1F1', borderRadius: 5, padding:6, width: '60%', marginLeft:49,borderBottomRightRadius: 0, borderTopRightRadius: 0}} 
+                    
+                   <Row style={{marginTop:-90,justifyContent:'center',marginLeft:-10}}>
+                            <Col style={{width: '50%',height:40}}>
+                                <Autocomplete style={{ borderBottomWidth: 0, backgroundColor: '#F1F1F1', borderRadius: 5,padding:10,borderBottomRightRadius: 0, borderTopRightRadius: 0}} 
                                 data={this.state.searchMedicine!=undefined?(selectedMedicineName.length === 1 && comp(this.state.keyword, selectedMedicineName[0].medicine_name) ? [] : selectedMedicineName):selectedMedicineName}
                                     defaultValue={this.state.keyword}
                                     onChangeText={text => this.setState({ keyword:text })}
@@ -178,14 +179,14 @@ finally {
                                         </TouchableOpacity>
                                     )}
                                   keyExtractor={(item, index) => index.toString()} />
-                            </View>
+                            </Col>
                              
-                            <View style={{marginTop:70,position:'absolute',marginLeft:40}}>
-                                   <Button style={{ backgroundColor: '#000', borderRadius: 10, height:40, marginTop:-42, marginLeft:260, borderBottomLeftRadius: 0, borderTopLeftRadius: 0 }}  onPress={()=>this.onSearchPress(selectedMedicineName)} testID='searchMedicine'>
+                            <Col style={{position:'absolute',marginTop:3,height:40}}>
+                                   <Button style={{ backgroundColor: '#000', borderRadius: 10,marginLeft:250, borderBottomLeftRadius: 0, borderTopLeftRadius: 0 }}  onPress={()=>this.onSearchPress(selectedMedicineName)} testID='searchMedicine'>
                                         <Icon name="ios-search" style={{ color: 'white' }}/>
                             </Button>
-                            </View>                          
-                        
+                            </Col>                          
+                        </Row>
                            
 
                     <View style={{ marginLeft: 'auto', marginRight: 'auto', marginTop:75 }}>
