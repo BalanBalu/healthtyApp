@@ -1,48 +1,54 @@
 import React, { Component } from 'react';
-import { Container, Content, Text, Toast, Button, Card, Item, List,  ListItem, Left, Thumbnail, Icon } from 'native-base';
+import { Container, Content, Text, Toast, Button, Card, Item, List, ListItem, Left, Thumbnail, Icon } from 'native-base';
 import { Col, Row, Grid } from 'react-native-easy-grid';
 import { connect } from 'react-redux'
 import { StyleSheet, TouchableOpacity, View, FlatList, AsyncStorage, Dimensions } from 'react-native';
 import StarRating from 'react-native-star-rating';
 
-import {  searchDoctorList, fetchAvailabilitySlots, 
-    getMultipleDoctorDetails, 
-    getDoctorsReviewsCount, 
-    getPatientWishList, 
-    SET_BOOK_APP_DOCTOR_DATA, 
-    SET_SINGLE_DOCTOR_DATA, 
+import {
+    searchDoctorList, fetchAvailabilitySlots,
+    getMultipleDoctorDetails,
+    getDoctorsReviewsCount,
+    getPatientWishList,
+    SET_BOOK_APP_DOCTOR_DATA,
+    SET_SINGLE_DOCTOR_DATA,
     SET_FILTERED_DOCTOR_DATA,
     addToWishListDoctor,
-    getDoctorFaviouteList} from '../../providers/bookappointment/bookappointment.action';
-import { formatDate, addMoment, addTimeUnit, getMoment, intersection, getUnixTimeStamp  } from '../../../setup/helpers';
+    getDoctorFaviouteList,
+    getAllDoctorsActiveSponsorDetails,
+    updateSponsorViewCount
+} from '../../providers/bookappointment/bookappointment.action';
+import { formatDate, addMoment, addTimeUnit, getMoment, intersection, getUnixTimeStamp } from '../../../setup/helpers';
 import { Loader } from '../../../components/ContentLoader';
-import { renderDoctorImage,  
-         getDoctorSpecialist,
-         getDoctorEducation,
-         getDoctorExperience  } from '../../common';
+import {
+    renderDoctorImage,
+    getDoctorSpecialist,
+    getDoctorEducation,
+    getDoctorExperience
+} from '../../common';
 import { NavigationEvents } from 'react-navigation';
 import moment from 'moment';
 
 import { store } from '../../../setup/store';
-let fields = "first_name,last_name,prefix,professional_statement,gender,specialist,education,language,experience,profile_image";            
+let fields = "first_name,last_name,prefix,professional_statement,gender,specialist,education,language,experience,profile_image";
 let conditionFromFilterPage;
 const SELECTED_EXPERIENCE_START_END_YEARS = {
-    10 : { start : 0, end : 10 },
-    20 : { start : 10, end : 20 },
-    30 : { start : 20, end : 30 },
-    40 : { start : 40, end : 100 }
-} 
+    10: { start: 0, end: 10 },
+    20: { start: 10, end: 20 },
+    30: { start: 20, end: 30 },
+    40: { start: 40, end: 100 }
+}
 
-let  currentDoctorOrder = 'ASC'; 
+let currentDoctorOrder = 'ASC';
 let doctorDataInMap = new Map();
 class doctorSearchList extends Component {
     processedDoctorIds = [];
     processedDoctorData = [];
     processedDoctorDetailsData = [];
     processedDoctorAvailabilityDates = [];
-   
+
     doctorDetailsMap = new Map();
-    
+
     constructor(props) {
         super(props)
         conditionFromFilterPage = null,  // for check FilterPage Values
@@ -58,10 +64,10 @@ class doctorSearchList extends Component {
                 isLoading: true,
                 isAvailabilityLoading: false,
                 filterBySelectedAvailabilityDateCount: 0,
-                filterData : null,
+                filterData: null,
                 yearOfExperience: '',
                 processedDoctorAvailabilityDates: [],
-                sliderPageIndex : 0,
+                sliderPageIndex: 0,
                 sliderPageIndexesByDoctorIds: {},
                 selectedDatesByDoctorIds: {},
                 selectedSlotByDoctorIds: {},
@@ -71,39 +77,39 @@ class doctorSearchList extends Component {
                 refreshCount: 0
             }
     }
-    
+
     navigateToFilters() {
-        this.props.navigation.navigate('Filters', { 
-            filterData : this.state.filterData,
+        this.props.navigation.navigate('Filters', {
+            filterData: this.state.filterData,
             filterBySelectedAvailabilityDateCount: this.state.filterBySelectedAvailabilityDateCount
         })
     }
     componentDidMount = async () => {
         let userId = await AsyncStorage.getItem('userId');
         this.getPatientSearchData();
-        if(userId) {
-           this.getPatientWishLists();
-           this.setState({ isLoggedIn : true })
+        if (userId) {
+            this.getPatientWishLists();
+            this.setState({ isLoggedIn: true })
         } else {
-            this.setState({ isLoggedIn : false }) 
+            this.setState({ isLoggedIn: false })
         }
     }
-    
+
 
     componentNavigationMount = async () => {
         console.log('is Navigation Mount is working');
-        this.setState( { refreshCount : this.state.refreshCount + 1 });
+        this.setState({ refreshCount: this.state.refreshCount + 1 });
         const { navigation } = this.props;
         const filterData = navigation.getParam('filterData');
-          if(filterData) {
+        if (filterData) {
             const filterBySelectedAvailabilityDateCount = navigation.getParam('filterBySelectedAvailabilityDateCount');
             conditionFromFilterPage = navigation.getParam('ConditionFromFilter');
             await this.setState({ filterData: filterData, filterBySelectedAvailabilityDateCount: filterBySelectedAvailabilityDateCount })
             if (conditionFromFilterPage == true) {
-              console.log('comming FilterPage');
-              this.renderDoctorListByFilteredData(filterData, filterBySelectedAvailabilityDateCount)
+                console.log('comming FilterPage');
+                this.renderDoctorListByFilteredData(filterData, filterBySelectedAvailabilityDateCount)
             }
-        }   
+        }
     }
 
     renderDoctorListByFilteredData = async (filterData, availtyDateCount) => {
@@ -116,7 +122,7 @@ class doctorSearchList extends Component {
         let experienceMatchedList = [];
         let availabilityMatchedList = [];
         const { bookappointment: { doctorData } } = this.props;
-        
+
         doctorData.forEach((doctorElement) => {
             let doctorIdHostpitalId = doctorElement.doctorIdHostpitalId
             debugger
@@ -128,24 +134,24 @@ class doctorSearchList extends Component {
             if (filterData.language) {
                 doctorElement.language.forEach((docLanguage) => {
                     filterData.language.forEach((filLanguage) => {
-                      if (docLanguage.toLowerCase().includes(filLanguage.toLowerCase())) {
+                        if (docLanguage.toLowerCase().includes(filLanguage.toLowerCase())) {
                             languageMatchedList.push(doctorIdHostpitalId)
-                      }
+                        }
                     })
                 })
             }
-            
+
             if (filterData.experience && doctorElement.calulatedExperience) {
-                let doctorExperienceMonths = ((doctorElement.calulatedExperience.year || 0) * 12) +  doctorElement.calulatedExperience.month || 0
-                let selectedFilterInYearStartEnd = SELECTED_EXPERIENCE_START_END_YEARS[filterData.experience]; 
-                
+                let doctorExperienceMonths = ((doctorElement.calulatedExperience.year || 0) * 12) + doctorElement.calulatedExperience.month || 0
+                let selectedFilterInYearStartEnd = SELECTED_EXPERIENCE_START_END_YEARS[filterData.experience];
+
                 let filteredStartMonth = selectedFilterInYearStartEnd.start * 12;
                 let filteredEndMonth = selectedFilterInYearStartEnd.end * 12;
-                
-                if(doctorExperienceMonths > filteredStartMonth && doctorExperienceMonths <= filteredEndMonth) {
-                     experienceMatchedList.push(doctorIdHostpitalId);
+
+                if (doctorExperienceMonths > filteredStartMonth && doctorExperienceMonths <= filteredEndMonth) {
+                    experienceMatchedList.push(doctorIdHostpitalId);
                 }
-                
+
             }
             if (filterData.category) {
                 let specialistArray = doctorElement.specialist ? doctorElement.specialist : [];
@@ -165,50 +171,50 @@ class doctorSearchList extends Component {
                 })
             }
             if (availtyDateCount !== 0) {
-              for (i = 0; i < availtyDateCount; i++) {
-                let availabilityDate = formatDate(addTimeUnit(this.state.currentDate, i, 'days'), "YYYY-MM-DD");
-                if (doctorElement.slotData[availabilityDate]) {
-                    availabilityMatchedList.push(doctorElement.doctorIdHostpitalId)
+                for (i = 0; i < availtyDateCount; i++) {
+                    let availabilityDate = formatDate(addTimeUnit(this.state.currentDate, i, 'days'), "YYYY-MM-DD");
+                    if (doctorElement.slotData[availabilityDate]) {
+                        availabilityMatchedList.push(doctorElement.doctorIdHostpitalId)
+                    }
                 }
-              }
             }
         });
-        
+
         let selectedFiltesArray = [];
 
         if (availtyDateCount !== 0) {
             selectedFiltesArray.push(availabilityMatchedList);
         }
-      
-       
+
+
         if (filterData) {
             if (filterData.gender) {
                 selectedFiltesArray.push(genderPreferenceMatchedList);
-                console.log('genderPreferenceMatchedList:' +genderPreferenceMatchedList)
+                console.log('genderPreferenceMatchedList:' + genderPreferenceMatchedList)
             }
             if (filterData.language) {
                 selectedFiltesArray.push(languageMatchedList);
-                console.log('languageMatchedList:' +languageMatchedList)
+                console.log('languageMatchedList:' + languageMatchedList)
             }
             if (filterData.experience) {
                 selectedFiltesArray.push(experienceMatchedList);
-                console.log('experienceMatchedList:' +experienceMatchedList)
+                console.log('experienceMatchedList:' + experienceMatchedList)
             }
             if (filterData.category) {
                 selectedFiltesArray.push(categoryMatchedList);
             }
             if (filterData.service) {
                 selectedFiltesArray.push(servicesMatchedList);
-                console.log('servicesMatchedList:' +servicesMatchedList)
+                console.log('servicesMatchedList:' + servicesMatchedList)
             }
         }
-/* Finally Rendered the Doctor Lists  */
+        /* Finally Rendered the Doctor Lists  */
         console.log("selectedFiltesArray" + JSON.stringify(selectedFiltesArray))
-        if (filterData || availtyDateCount !== 0 ) {
+        if (filterData || availtyDateCount !== 0) {
             console.log('Came Filter Availability and DocData , Filter only DocDatas  ')
             let filteredDocListArray = intersection(selectedFiltesArray);
             let filteredDocData = [];
-             if (filteredDocListArray.length ===0) {
+            if (filteredDocListArray.length === 0) {
                 Toast.show({
                     text: 'Doctors Not found!..Choose Filter again',
                     type: "danger",
@@ -216,27 +222,27 @@ class doctorSearchList extends Component {
                 })
             } else {
                 filteredDocListArray.forEach(doctorIdHospitalId => {
-                   filteredDocData.push(doctorDataInMap.get(String(doctorIdHospitalId)));
+                    filteredDocData.push(doctorDataInMap.get(String(doctorIdHospitalId)));
                 });
             }
             store.dispatch({
                 type: SET_FILTERED_DOCTOR_DATA,
                 data: filteredDocData
-            }) 
+            })
         }
     }
     /* Insert Doctors Favourite Lists  */
     addToWishList = async (doctorId) => {
-       let userId = await AsyncStorage.getItem('userId');
-       let result = await addToWishListDoctor(doctorId, userId);
-       if(result)
-        Toast.show({
-            text: result.message,
-            type: "success",
-            duration: 3000,
-        })
-        this.setState( { refreshCount : this.state.refreshCount + 1});
-    }    
+        let userId = await AsyncStorage.getItem('userId');
+        let result = await addToWishListDoctor(doctorId, userId);
+        if (result)
+            Toast.show({
+                text: result.message,
+                type: "success",
+                duration: 3000,
+            })
+        this.setState({ refreshCount: this.state.refreshCount + 1 });
+    }
 
 
     getPatientWishLists = async () => {
@@ -280,7 +286,7 @@ class doctorSearchList extends Component {
         }
     }
     processFinalData(resultData) {
-         
+
         for (let docCount = 0; docCount < resultData.length; docCount++) {
             let doctorSlotData = resultData[docCount];
             if (this.processedDoctorIds.includes(doctorSlotData.doctorIdHostpitalId)) { // condition to append another week conditions
@@ -298,11 +304,11 @@ class doctorSearchList extends Component {
                     ...doctorDetailsData,
                     doctorIdHostpitalId: doctorSlotData.doctorIdHostpitalId,
                     slotData: doctorSlotData.slotData,
-                    location: doctorSlotData.slotData[Object.keys(doctorSlotData.slotData)[0]].length > 0 ?  doctorSlotData.slotData[Object.keys(doctorSlotData.slotData)[0]][0].location : null,
+                    location: doctorSlotData.slotData[Object.keys(doctorSlotData.slotData)[0]].length > 0 ? doctorSlotData.slotData[Object.keys(doctorSlotData.slotData)[0]][0].location : null,
                 }
                 this.processedDoctorDetailsData.push(obj);
             }
-    }
+        }
         store.dispatch({
             type: SET_BOOK_APP_DOCTOR_DATA,
             data: this.processedDoctorDetailsData
@@ -312,30 +318,42 @@ class doctorSearchList extends Component {
             data: this.processedDoctorDetailsData
         })
         console.log(this.processedDoctorDetailsData);
-        this.setState( { refreshCount : this.state.refreshCount  +1 });
+        this.setState({ refreshCount: this.state.refreshCount + 1 });
         return this.processedDoctorDetailsData;
-        //this.setState({ doctorData: this.processedDoctorDetailsData });
-   
+        this.setState({ doctorData: this.processedDoctorDetailsData });
+
     }
     async getDoctorAllDetails(doctorIds, startDate, endDate) {
         try {
             this.setState({ isLoading: true });
-             
-            const [ resultDoctorDetails, slotData, patientReviesResult, favResult ] =  await Promise.all([
+
+            const [resultDoctorDetails, slotData, patientReviesResult, favResult, getActiveSponsorDetails] = await Promise.all([
                 this.getDoctorDetails(doctorIds).catch(res => console.log("Exception on  getDoctorDetails: " + res)),
                 this.getAvailabilitySlots(doctorIds, startDate, endDate).catch(res => console.log("Exception" + res)),
                 getDoctorsReviewsCount(doctorIds).catch(res => console.log("Exception on getPatientReviews" + res)),
-                getDoctorFaviouteList(doctorIds).catch(res => console.log("Exception on getPatient Wish List" + res))
+                getDoctorFaviouteList(doctorIds).catch(res => console.log("Exception on getPatient Wish List" + res)),
+                getAllDoctorsActiveSponsorDetails(doctorIds).catch(res => console.log("Exception on get All Doctors ActiveSponsor Details" + res))
+
             ]);
+
+            console.log('There is No Active Sponsors for given list of Doctors' + JSON.stringify(getActiveSponsorDetails))
+            if (getActiveSponsorDetails.data) {
+                let sponsorIdArray = [];
+                getActiveSponsorDetails.data.map((ele) => {
+                    sponsorIdArray.push(ele._id)
+                });
+                this.updateSponsorViewersCount(sponsorIdArray)
+            };
+
             resultDoctorDetails.forEach((element) => {
                 this.doctorDetailsMap.set(element.doctor_id, element) // total_rating
             });
-            
+
             let doctorData = this.processFinalData(slotData);
-           
-            this.setState( { refreshCount : this.state.refreshCount  + 1 });
+
+            this.setState({ refreshCount: this.state.refreshCount + 1 });
             doctorData.forEach((element) => {
-                doctorDataInMap.set(String(element.doctorIdHostpitalId), element) 
+                doctorDataInMap.set(String(element.doctorIdHostpitalId), element)
             });
         } catch (error) {
             console.log('exception on getting multiple Requests');
@@ -343,8 +361,17 @@ class doctorSearchList extends Component {
         } finally {
             this.setState({ isLoading: false });
         }
+    };
+    /* Update Active Sponsors count for Doctors */
+    updateSponsorViewersCount = async (sponsorIdArray) => {
+        let userId = await AsyncStorage.getItem('userId');
+        if (!userId) userId = "NO_USER"
+        let sponsorIds = {
+            sponsorIds: sponsorIdArray
+        }
+        let resultData = await updateSponsorViewCount(userId, sponsorIds);
+        console.log('successfully updated Doctors Sponsors counts ' + JSON.stringify(resultData.updatedResult))
     }
-
     /*Get doctor specialist and Degree details*/
 
     getDoctorDetails = async (doctorIds) => {
@@ -365,18 +392,18 @@ class doctorSearchList extends Component {
         return doctorData;
     }
 
-   async callGetAvailabilitySlot(getSearchedDoctorIds, startDate, endDate) {
-       this.setState({ isAvailabilityLoading: true });
-       let result = await this.getAvailabilitySlots(getSearchedDoctorIds, startDate, endDate);
-       this.processFinalData(result);
-       this.setState({ isAvailabilityLoading: false });
-   
-    }    
+    async callGetAvailabilitySlot(getSearchedDoctorIds, startDate, endDate) {
+        this.setState({ isAvailabilityLoading: true });
+        let result = await this.getAvailabilitySlots(getSearchedDoctorIds, startDate, endDate);
+        this.processFinalData(result);
+        this.setState({ isAvailabilityLoading: false });
+
+    }
 
     /* get the  Doctors Availability Slots */
     getAvailabilitySlots = async (getSearchedDoctorIds, startDate, endDate) => {
         console.log('started loading get availability');
-      
+
         let availabilityData = [];
         this.enumarateDates(startDate, endDate)
         try {
@@ -385,7 +412,7 @@ class doctorSearchList extends Component {
                 endDate: formatDate(endDate, 'YYYY-MM-DD')
             }
             let resultData = await fetchAvailabilitySlots(getSearchedDoctorIds, totalSlotsInWeek);
-           
+
             if (resultData.success) {
                 availabilityData = resultData.data
                 return availabilityData
@@ -393,96 +420,96 @@ class doctorSearchList extends Component {
         } catch (e) {
             console.log(e);
         }
-       
+
         return availabilityData;
-        
+
     }
-   async enumarateDates(startDate, endDate) {
+    async enumarateDates(startDate, endDate) {
         let now = startDate.clone();
         while (now.isSameOrBefore(endDate)) {
             this.processedDoctorAvailabilityDates.push(now.format('YYYY-MM-DD'));
             now = now.add(1, 'day');
         }
-        this.setState({ processedDoctorAvailabilityDates : this.processedDoctorAvailabilityDates });
+        this.setState({ processedDoctorAvailabilityDates: this.processedDoctorAvailabilityDates });
         console.log('Process Dates are ' + this.state.processedDoctorAvailabilityDates);
-       
+
     }
 
     /* Change the Date from Date Picker */
     onDateChanged(selectedDate, doctorIdHostpitalId) {
-        
-        let { selectedDatesByDoctorIds, selectedSlotByDoctorIds, selectedSlotItemByDoctorIds }  = this.state;
-       
+
+        let { selectedDatesByDoctorIds, selectedSlotByDoctorIds, selectedSlotItemByDoctorIds } = this.state;
+
         selectedDatesByDoctorIds[doctorIdHostpitalId] = selectedDate;
         selectedSlotByDoctorIds[doctorIdHostpitalId] = -1;
         selectedSlotItemByDoctorIds[doctorIdHostpitalId] = null;
-        
-        this.setState({ selectedDatesByDoctorIds, selectedSlotByDoctorIds, selectedSlotItemByDoctorIds, refreshCount : this.state.refreshCount + 1});
-       
+
+        this.setState({ selectedDatesByDoctorIds, selectedSlotByDoctorIds, selectedSlotItemByDoctorIds, refreshCount: this.state.refreshCount + 1 });
+
         if (this.processedDoctorAvailabilityDates.includes(selectedDate) === false) {
-           let endDateMoment = addMoment(getMoment(selectedDate), 7, 'days');
-           
-           this.callGetAvailabilitySlot(this.state.getSearchedDoctorIds, getMoment(selectedDate), endDateMoment);
-           
+            let endDateMoment = addMoment(getMoment(selectedDate), 7, 'days');
+
+            this.callGetAvailabilitySlot(this.state.getSearchedDoctorIds, getMoment(selectedDate), endDateMoment);
+
         }
         console.log('ended loading the onDateChanged')
     }
 
     /* Click the Slots from Doctor List page */
     onPressContinueForPaymentReview = async (doctorData, selectedSlotItemByDoctor, doctorIdHostpitalId) => {
-             console.log(selectedSlotItemByDoctor);   
-            if(!selectedSlotItemByDoctor) {
-                Toast.show({
-                    text: 'Please Select a Slot to continue booking',
-                    type : 'warning',
-                    duration: 3000
-                })
-                return;
-            }
-       
+         console.log(selectedSlotItemByDoctor);   
+        if (!selectedSlotItemByDoctor) {
+            Toast.show({
+                text: 'Please Select a Slot to continue booking',
+                type: 'warning',
+                duration: 3000
+            })
+            return;
+        }
 
-            doctorData.doctorName = doctorData.first_name + ' ' + doctorData.last_name;
-            doctorData.doctorId = doctorData.doctor_id;
-            var confirmSlotDetails = {
-                ...doctorData,
-                slotData: selectedSlotItemByDoctor
-            };
-            console.log(confirmSlotDetails);
-            this.props.navigation.navigate('Payment Review', { resultconfirmSlotDetails: confirmSlotDetails })
-        
+
+        doctorData.doctorName = doctorData.first_name + ' ' + doctorData.last_name;
+        doctorData.doctorId = doctorData.doctor_id;
+        var confirmSlotDetails = {
+            ...doctorData,
+            slotData: selectedSlotItemByDoctor
+        };
+        console.log(confirmSlotDetails);
+        this.props.navigation.navigate('Payment Review', { resultconfirmSlotDetails: confirmSlotDetails })
+
     }
-   async onSlotItemPress(doctorIdHostpitalId, item, index) {
-       
-        let { selectedSlotByDoctorIds, selectedSlotItemByDoctorIds, showedFeeByDoctorIds }  = this.state;
+    async onSlotItemPress(doctorIdHostpitalId, item, index) {
+
+        let { selectedSlotByDoctorIds, selectedSlotItemByDoctorIds, showedFeeByDoctorIds } = this.state;
 
         selectedSlotByDoctorIds[doctorIdHostpitalId] = index;
         selectedSlotItemByDoctorIds[doctorIdHostpitalId] = item
-       
-        this.setState({ selectedSlotByDoctorIds, selectedSlotItemByDoctorIds, refreshCount : this.state.refreshCount + 1 });
-       
-      // console.log( selectedSlotIndex + '. and index :' +  index) ;
-       if((item.fee != showedFeeByDoctorIds[doctorIdHostpitalId])) {
-            if(showedFeeByDoctorIds[doctorIdHostpitalId] != undefined) {
-              Toast.show({
-                 text: 'Appointment Fee Updated',
-                 type:'warning',
-                 duration: 3000
-              });
+
+        this.setState({ selectedSlotByDoctorIds, selectedSlotItemByDoctorIds, refreshCount: this.state.refreshCount + 1 });
+
+        console.log( selectedSlotIndex + '. and index :' +  index) ;
+        if ((item.fee != showedFeeByDoctorIds[doctorIdHostpitalId])) {
+            if (showedFeeByDoctorIds[doctorIdHostpitalId] != undefined) {
+                Toast.show({
+                    text: 'Appointment Fee Updated',
+                    type: 'warning',
+                    duration: 3000
+                });
             }
             showedFeeByDoctorIds[doctorIdHostpitalId] = item.fee
-            this.setState( { showedFeeByDoctorIds });
+            this.setState({ showedFeeByDoctorIds });
         }
         console.log( item);
     }
-    
-   
-     
-    
+
+
+
+
 
     navigateToBookAppointmentPage(doctorData) {
         doctorData.doctorId = doctorData.doctor_id;
         let requestData = {
-           ...doctorData, 
+            ...doctorData,
         }
         store.dispatch({
             type: SET_SINGLE_DOCTOR_DATA,
@@ -491,13 +518,13 @@ class doctorSearchList extends Component {
         console.log(requestData);
         this.props.navigation.navigate('Book Appointment', { doctorId: doctorData.doctor_id, processedAvailabilityDates: this.processedDoctorAvailabilityDates })
     }
-    
- 
+
+
     haveAvailableSlots(doctorIdHostpitalId, slotsData) {
-        let { selectedSlotByDoctorIds , showedFee}  = this.state;
+        let { selectedSlotByDoctorIds, showedFee } = this.state;
         let selectedSlotIndex = selectedSlotByDoctorIds[doctorIdHostpitalId] !== undefined ? selectedSlotByDoctorIds[doctorIdHostpitalId] : -1
         console.log('Selected slot index:' + selectedSlotIndex);
-        const {width} = Dimensions.get('screen');
+        const { width } = Dimensions.get('screen');
         const itemWidth = (width) / 4;
         const sortByStartTime = (a, b) => {
             let startTimeSortA = getUnixTimeStamp(a.slotStartDateAndTime);
@@ -506,32 +533,32 @@ class doctorSearchList extends Component {
         }
         return (
             <Row>
-              {/* <Col style={{width:'8%'}}></Col> */}
-            <FlatList
-              numColumns={4}
-              data={slotsData.sort(sortByStartTime)}
-              extraData={[this.state.selectedDatesByDoctorIds, this.state.selectedSlotByDoctorIds]}
-              renderItem={({ item, index }) =>
-            <Col style={{width: itemWidth - 10 }}>
-              <TouchableOpacity disabled={item.isSlotBooked} 
-                    style={item.isSlotBooked ? styles.slotBookedBgColor : selectedSlotIndex === index ? 
-                           styles.slotSelectedBgColor : styles.slotDefaultBgColor} 
-                    onPress={() => this.onSlotItemPress(doctorIdHostpitalId, item, index )}>
-               <Text style={item.isSlotBooked ? styles.slotBookedTextColor : selectedSlotIndex === index ? styles.slotBookedTextColor : styles.slotDefaultTextColor}> {formatDate(item.slotStartDateAndTime, 'hh:mm A')} </Text>
-              {/* item.isSlotBooked ? <Text style={styles.slotBookedTextColor}>Booked</Text> : null */}
-              </TouchableOpacity>
-            </Col>
-      } 
-      keyExtractor={(item, index) => index.toString()}/>
-         {/* <Col style={{width:'8%'}}></Col> */}
-      </Row>
+                {/* <Col style={{width:'8%'}}></Col> */}
+                <FlatList
+                    numColumns={4}
+                    data={slotsData.sort(sortByStartTime)}
+                    extraData={[this.state.selectedDatesByDoctorIds, this.state.selectedSlotByDoctorIds]}
+                    renderItem={({ item, index }) =>
+                        <Col style={{ width: itemWidth - 10 }}>
+                            <TouchableOpacity disabled={item.isSlotBooked}
+                                style={item.isSlotBooked ? styles.slotBookedBgColor : selectedSlotIndex === index ?
+                                    styles.slotSelectedBgColor : styles.slotDefaultBgColor}
+                                onPress={() => this.onSlotItemPress(doctorIdHostpitalId, item, index)}>
+                                <Text style={item.isSlotBooked ? styles.slotBookedTextColor : selectedSlotIndex === index ? styles.slotBookedTextColor : styles.slotDefaultTextColor}> {formatDate(item.slotStartDateAndTime, 'hh:mm A')} </Text>
+                                {/* item.isSlotBooked ? <Text style={styles.slotBookedTextColor}>Booked</Text> : null */}
+                            </TouchableOpacity>
+                        </Col>
+                    }
+                    keyExtractor={(item, index) => index.toString()} />
+                {/* <Col style={{width:'8%'}}></Col> */}
+            </Row>
         )
     }
-    getFeesBySelectedSlot(selectedSlotData,wholeSlotData, doctorIdHostpitalId ) {
-       
-        let { selectedSlotByDoctorIds }  = this.state;
+    getFeesBySelectedSlot(selectedSlotData, wholeSlotData, doctorIdHostpitalId) {
+
+        let { selectedSlotByDoctorIds } = this.state;
         selectedSlotIndex = selectedSlotByDoctorIds[doctorIdHostpitalId] || 0;
-        if(selectedSlotData  === undefined) {
+        if (selectedSlotData === undefined) {
             selectedSlotData = wholeSlotData[Object.keys(wholeSlotData)[0]]
         }
         selectedIndex = selectedSlotData[selectedSlotIndex] ? selectedSlotIndex : 0;
@@ -539,308 +566,308 @@ class doctorSearchList extends Component {
         return selectedSlotFee;
     }
 
-    getDisplayAvailableTime =(selectedSlotData, wholeSlotData) => {
-        
-        if(selectedSlotData) {
+    getDisplayAvailableTime = (selectedSlotData, wholeSlotData) => {
+
+        if (selectedSlotData) {
             let startTime = moment(selectedSlotData[0].slotStartDateAndTime).format('h:mm a');
-            let endTime =  moment(selectedSlotData[selectedSlotData.length - 1 ].slotEndDateAndTime).format('h:mm a');
+            let endTime = moment(selectedSlotData[selectedSlotData.length - 1].slotEndDateAndTime).format('h:mm a');
             return 'Available ' + startTime + ' - ' + endTime;
         } else {
-            if(wholeSlotData[Object.keys(wholeSlotData)[0]].length > 0) {  
+            if (wholeSlotData[Object.keys(wholeSlotData)[0]].length > 0) {
                 selectedSlotData = wholeSlotData[Object.keys(wholeSlotData)[0]]
                 let availableOn = moment(selectedSlotData[0].slotStartDateAndTime).format('ddd, DD MMM YY');
                 return 'Available On ' + availableOn;
             }
         }
     }
-    
+
     noAvailableSlots() {
         console.log('started-loading-no-slots-available');
         return (
             <Row style={{ justifyContent: 'center', marginTop: 20 }}>
                 <Button disabled style={{ alignItems: 'center', borderRadius: 10, backgroundColor: '#6e5c7b' }}>
-                 <Text>No Slots Available</Text>    
-                {/*nextAvailableDate ? <Text style={{ color: '#fff', fontFamily: 'OpenSans', fontWeight: 'bold', fontSize: 15 }}>Next Availability On {nextAvailableDate}</Text> : <Text style={{ color: '#fff', fontFamily: 'OpenSans', fontWeight: 'bold', fontSize: 16 }}> No Availablity for Next 7 Days</Text>*/}
+                    <Text>No Slots Available</Text>
+                    {/*nextAvailableDate ? <Text style={{ color: '#fff', fontFamily: 'OpenSans', fontWeight: 'bold', fontSize: 15 }}>Next Availability On {nextAvailableDate}</Text> : <Text style={{ color: '#fff', fontFamily: 'OpenSans', fontWeight: 'bold', fontSize: 16 }}> No Availablity for Next 7 Days</Text>*/}
                 </Button>
             </Row>
         )
     }
-   
+
 
     onBookPress(doctorIdHospitalId) {
         console.log('you have pressed onBookPress');
         const { expandedDoctorIdHospitalsToShowSlotsData } = this.state;
-        if(expandedDoctorIdHospitalsToShowSlotsData.indexOf(doctorIdHospitalId) !== -1) {
+        if (expandedDoctorIdHospitalsToShowSlotsData.indexOf(doctorIdHospitalId) !== -1) {
             expandedDoctorIdHospitalsToShowSlotsData.splice(expandedDoctorIdHospitalsToShowSlotsData.indexOf(doctorIdHospitalId), 1)
         } else {
             expandedDoctorIdHospitalsToShowSlotsData.push(doctorIdHospitalId);
         }
-        this.setState({ expandedDoctorIdHospitalsToShowSlotsData, refreshCount : this.state.refreshCount + 1 });
+        this.setState({ expandedDoctorIdHospitalsToShowSlotsData, refreshCount: this.state.refreshCount + 1 });
     }
     sortByTopRatings(filteredDoctorData) {
-        const { bookappointment: {  reviewsByDoctorIds } } = this.props;
-       console.log(reviewsByDoctorIds);
-        filteredData = filteredDoctorData.sort(function(a, b) {
+        const { bookappointment: { reviewsByDoctorIds } } = this.props;
+           console.log(reviewsByDoctorIds);
+        filteredData = filteredDoctorData.sort(function (a, b) {
             let ratingA = 0;
             let ratingB = 0;
-            if(reviewsByDoctorIds[a.doctor_id]) {
-                ratingA = reviewsByDoctorIds[a.doctor_id].average_rating || 0 
+            if (reviewsByDoctorIds[a.doctor_id]) {
+                ratingA = reviewsByDoctorIds[a.doctor_id].average_rating || 0
             };
-            if(reviewsByDoctorIds[b.doctor_id]) {
+            if (reviewsByDoctorIds[b.doctor_id]) {
                 ratingB = reviewsByDoctorIds[b.doctor_id].average_rating || 0
             }
-            if(currentDoctorOrder === 'ASC') {
-               return ratingB - ratingA;
-            } else if(currentDoctorOrder === 'DESC') {
-                return  ratingA - ratingB;
+            if (currentDoctorOrder === 'ASC') {
+                return ratingB - ratingA;
+            } else if (currentDoctorOrder === 'DESC') {
+                return ratingA - ratingB;
             }
-             
+
         });
         store.dispatch({
             type: SET_FILTERED_DOCTOR_DATA,
             data: filteredData
         })
-        if(currentDoctorOrder === 'ASC') {
+        if (currentDoctorOrder === 'ASC') {
             currentDoctorOrder = 'DESC';
-        } else if(currentDoctorOrder === 'DESC') {
+        } else if (currentDoctorOrder === 'DESC') {
             currentDoctorOrder = 'ASC';
         }
-        this.setState( { refreshCount : this.state.refreshCount  + 1 });
+        this.setState({ refreshCount: this.state.refreshCount + 1 });
     }
-    
-    
+
+
     render() {
-       
+
         const { bookappointment: { patientWishListsDoctorIds, favouriteListCountByDoctorIds, reviewsByDoctorIds, filteredDoctorData } } = this.props;
-        const { selectedDatesByDoctorIds, expandedDoctorIdHospitalsToShowSlotsData, isLoggedIn, selectedSlotItemByDoctorIds, 
+        const { selectedDatesByDoctorIds, expandedDoctorIdHospitalsToShowSlotsData, isLoggedIn, selectedSlotItemByDoctorIds,
             processedDoctorAvailabilityDates,
-             isLoading, isAvailabilityLoading
-             } = this.state;
+            isLoading, isAvailabilityLoading
+        } = this.state;
         return (
             <Container style={styles.container}>
                 <NavigationEvents
                     onWillFocus={payload => { this.componentNavigationMount() }}
                 />
 
-              { isLoading ? <Loader style='list' /> :
-                     
+                {isLoading ? <Loader style='list' /> :
 
-              <Content>
-              <View>
-                <Card style={{ borderRadius: 7,paddingTop:5,paddingBottom:5 }}>
-                    <Grid>
-                      <Row>
-                        <Col style={{ width: '55%',  flexDirection: 'row' }} onPress={() => this.sortByTopRatings(filteredDoctorData)}>
-                          <Left>
-                            <Icon name='ios-arrow-down' style={{ color: '#000', marginLeft: 50, fontSize: 20 }} />
-                          </Left>
-                          <Text uppercase={false} style={{ fontFamily: 'OpenSans', color: '#000', fontSize: 13, textAlign: 'center',marginLeft:20,marginTop:5 }}>Top Rated </Text>
-                          
-                        </Col> 
-                        {/* <Col style={{ width:'45%',alignItems: 'flex-start', flexDirection: 'row', }} onPress={() => this.navigateToFilters()}>
+
+                    <Content>
+                        <View>
+                            <Card style={{ borderRadius: 7, paddingTop: 5, paddingBottom: 5 }}>
+                                <Grid>
+                                    <Row>
+                                        <Col style={{ width: '55%', flexDirection: 'row' }} onPress={() => this.sortByTopRatings(filteredDoctorData)}>
+                                            <Left>
+                                                <Icon name='ios-arrow-down' style={{ color: '#000', marginLeft: 50, fontSize: 20 }} />
+                                            </Left>
+                                            <Text uppercase={false} style={{ fontFamily: 'OpenSans', color: '#000', fontSize: 13, textAlign: 'center', marginLeft: 20, marginTop: 5 }}>Top Rated </Text>
+
+                                        </Col>
+                                        {/* <Col style={{ width:'45%',alignItems: 'flex-start', flexDirection: 'row', }} onPress={() => this.navigateToFilters()}>
                                 <Row>
                                   <Text uppercase={false} style={{ fontFamily: 'OpenSans', color: '#000', fontSize: 13, marginLeft: 8,textAlign: 'center',marginTop:5 }}>Top Rated </Text>
                                   <Right><Icon name='ios-funnel' style={{ color: 'gray', marginRight:20, }}/></Right>
                                  
                                 </Row>  
                         </Col> */}
-                             <View style={{borderRightWidth: 1, borderRightColor: 'gray',paddingLeft:20,marginRight:20}}/>  
-                          <Col style={{ width:'45%',alignItems: 'flex-start', flexDirection: 'row', }} onPress={() => this.navigateToFilters()}>
-                                <Row>
-                                  <Left><Icon name='ios-funnel' style={{ color: 'gray' }}/></Left>
-                                  <Text uppercase={false} style={{ fontFamily: 'OpenSans', color: '#000', fontSize: 13, marginLeft: 8,textAlign: 'center',marginTop:5 }}>Filters </Text>
-                                </Row>  
-                        </Col>
-                       </Row>
-                    </Grid>
-                </Card>
-                
-                    {filteredDoctorData.length === 0 ?    
-                       <Item style={{ borderBottomWidth: 0, justifyContent: 'center', alignItems: 'center' }}>
-                          <Text style={{ fontSize: 18, justifyContent: 'center', alignItems: 'center' }} > No Doctors available! </Text>
-                       </Item>
-                    : 
-                    <FlatList
-                        data={filteredDoctorData}
-                        extraData={this.state.refreshCount}
-                        keyExtractor={(item, index) => index.toString()}
-                        renderItem={({ item }) => 
-                         <Card style={{ padding: 2, borderRadius: 10, borderBottomWidth: 2 }}>
-                            <List style={{borderBottomWidth:0}}>
-                              <ListItem>
-                                <Grid >
-                                  <Row onPress={()=> this.navigateToBookAppointmentPage(item) }>
-                                    <Col style={{width:'5%'}}>
-                                        <Thumbnail square source={ renderDoctorImage(item) } style={{ height: 60, width: 60 }} />
-                                     </Col>
-                                     <Col style={{width:'78%'}}>
-                                        <Row style={{marginLeft:55,}}>
-                                           <Text style={{ fontFamily: 'OpenSans',fontSize:12,fontWeight:'bold'}}>{(item.prefix ? item.prefix + '. ' : '' ) + (item.first_name || '') + ' ' + (item.last_name || '')}</Text>
-                                        </Row>
-                                        <Row style={{marginLeft:55,}}>
-                                           <Text note  style={{ fontFamily: 'OpenSans',marginTop:2 ,fontSize:11}}>{(getDoctorEducation(item.education)) + ' ' +  getDoctorSpecialist(item.specialist)}</Text>
-                                        </Row>
-                                        <Row style={{marginLeft:55,}}>
-                                       
-                                           <Text style={{ fontFamily: 'OpenSans',marginTop:5,fontSize:12,fontWeight:'bold' }}>
-                                              {item.location.location.address.city + ' - ' + item.location.name}
-                                           </Text>
-                                        </Row>
-                                     </Col>
-                                      <Col style={{width:'17%'}}>
-                                          {isLoggedIn  ? 
-                                             <Icon name="heart" onPress={()=>this.addToWishList(item.doctor_id)} 
-                                                style={patientWishListsDoctorIds.includes(item.doctor_id) ? { marginLeft:20, color: '#B22222', fontSize:20 } : {marginLeft:20, borderColor: '#fff',fontSize:20}}>
-                                             </Icon> : null }
-                                         {/* <Row>
+                                        <View style={{ borderRightWidth: 1, borderRightColor: 'gray', paddingLeft: 20, marginRight: 20 }} />
+                                        <Col style={{ width: '45%', alignItems: 'flex-start', flexDirection: 'row', }} onPress={() => this.navigateToFilters()}>
+                                            <Row>
+                                                <Left><Icon name='ios-funnel' style={{ color: 'gray' }} /></Left>
+                                                <Text uppercase={false} style={{ fontFamily: 'OpenSans', color: '#000', fontSize: 13, marginLeft: 8, textAlign: 'center', marginTop: 5 }}>Filters </Text>
+                                            </Row>
+                                        </Col>
+                                    </Row>
+                                </Grid>
+                            </Card>
+
+                            {filteredDoctorData.length === 0 ?
+                                <Item style={{ borderBottomWidth: 0, justifyContent: 'center', alignItems: 'center' }}>
+                                    <Text style={{ fontSize: 18, justifyContent: 'center', alignItems: 'center' }} > No Doctors available! </Text>
+                                </Item>
+                                :
+                                <FlatList
+                                    data={filteredDoctorData}
+                                    extraData={this.state.refreshCount}
+                                    keyExtractor={(item, index) => index.toString()}
+                                    renderItem={({ item }) =>
+                                        <Card style={{ padding: 2, borderRadius: 10, borderBottomWidth: 2 }}>
+                                            <List style={{ borderBottomWidth: 0 }}>
+                                                <ListItem>
+                                                    <Grid >
+                                                        <Row onPress={() => this.navigateToBookAppointmentPage(item)}>
+                                                            <Col style={{ width: '5%' }}>
+                                                                <Thumbnail square source={renderDoctorImage(item)} style={{ height: 60, width: 60 }} />
+                                                            </Col>
+                                                            <Col style={{ width: '78%' }}>
+                                                                <Row style={{ marginLeft: 55, }}>
+                                                                    <Text style={{ fontFamily: 'OpenSans', fontSize: 12, fontWeight: 'bold' }}>{(item.prefix ? item.prefix + '. ' : '') + (item.first_name || '') + ' ' + (item.last_name || '')}</Text>
+                                                                </Row>
+                                                                <Row style={{ marginLeft: 55, }}>
+                                                                    <Text note style={{ fontFamily: 'OpenSans', marginTop: 2, fontSize: 11 }}>{(getDoctorEducation(item.education)) + ' ' + getDoctorSpecialist(item.specialist)}</Text>
+                                                                </Row>
+                                                                <Row style={{ marginLeft: 55, }}>
+
+                                                                    <Text style={{ fontFamily: 'OpenSans', marginTop: 5, fontSize: 12, fontWeight: 'bold' }}>
+                                                                        {item.location.location.address.city + ' - ' + item.location.name}
+                                                                    </Text>
+                                                                </Row>
+                                                            </Col>
+                                                            <Col style={{ width: '17%' }}>
+                                                                {isLoggedIn ?
+                                                                    <Icon name="heart" onPress={() => this.addToWishList(item.doctor_id)}
+                                                                        style={patientWishListsDoctorIds.includes(item.doctor_id) ? { marginLeft: 20, color: '#B22222', fontSize: 20 } : { marginLeft: 20, borderColor: '#fff', fontSize: 20 }}>
+                                                                    </Icon> : null}
+                                                                {/* <Row>
                                            <Text style={{ fontFamily: 'OpenSans',marginTop:20,fontSize:12,marginLeft:5 }}> 2.6km</Text>
                                          </Row> */}
-                                       </Col> 
-                                   </Row>
-                                 
-                                   <Row>
-                                       <Col style={{width:"25%",marginTop:20}}>        
-                                         <Text note style={{ fontFamily: 'OpenSans',fontSize:12,marginLeft:5, }}> Experience</Text>
-                                         <Text style={{ fontFamily: 'OpenSans',fontSize:12,marginLeft:5,fontWeight:'bold' }}>{getDoctorExperience(item.calulatedExperience)}</Text>
-                                       </Col>
-                                       <Col style={{width:"25%",marginTop:20}}>
-                                          <Text note style={{ fontFamily: 'OpenSans',fontSize:12,marginLeft:5, }}> Rating</Text>
-                                                <View style={{flexDirection:'row',marginLeft:10}}>
-                                                <StarRating 
-                                                    fullStarColor='#FF9500' 
-                                                    starSize={12} width={85} 
-                                                    containerStyle={{ marginLeft:15,marginTop:2}} 
-                                                                    disabled={true}
-                                                                    rating={1}
-                                                                    maxStars={1}
-                                                                />
-                                                               
-                                                <Text style={{ fontFamily: 'OpenSans',fontSize:12,fontWeight:'bold',marginLeft:2 }}> {reviewsByDoctorIds[item.doctor_id] !== undefined ? reviewsByDoctorIds[item.doctor_id].average_rating : ' 0'}</Text>
-                                                </View>
-                                                
-                                        </Col>
-                                                <Col style={{width:"25%",marginTop:20}}>
-                                                
-                                                <Text note style={{ fontFamily: 'OpenSans',fontSize:12,marginLeft:5 }}> Favourite</Text>
-                                                <Text style={{ fontFamily: 'OpenSans',fontSize:12,marginLeft:5,fontWeight:'bold' }}> {favouriteListCountByDoctorIds[item.doctor_id] !== undefined ? favouriteListCountByDoctorIds[item.doctor_id] : ' 0' }</Text>
+                                                            </Col>
+                                                        </Row>
+
+                                                        <Row>
+                                                            <Col style={{ width: "25%", marginTop: 20 }}>
+                                                                <Text note style={{ fontFamily: 'OpenSans', fontSize: 12, marginLeft: 5, }}> Experience</Text>
+                                                                <Text style={{ fontFamily: 'OpenSans', fontSize: 12, marginLeft: 5, fontWeight: 'bold' }}>{getDoctorExperience(item.calulatedExperience)}</Text>
+                                                            </Col>
+                                                            <Col style={{ width: "25%", marginTop: 20 }}>
+                                                                <Text note style={{ fontFamily: 'OpenSans', fontSize: 12, marginLeft: 5, }}> Rating</Text>
+                                                                <View style={{ flexDirection: 'row', marginLeft: 10 }}>
+                                                                    <StarRating
+                                                                        fullStarColor='#FF9500'
+                                                                        starSize={12} width={85}
+                                                                        containerStyle={{ marginLeft: 15, marginTop: 2 }}
+                                                                        disabled={true}
+                                                                        rating={1}
+                                                                        maxStars={1}
+                                                                    />
+
+                                                                    <Text style={{ fontFamily: 'OpenSans', fontSize: 12, fontWeight: 'bold', marginLeft: 2 }}> {reviewsByDoctorIds[item.doctor_id] !== undefined ? reviewsByDoctorIds[item.doctor_id].average_rating : ' 0'}</Text>
+                                                                </View>
+
+                                                            </Col>
+                                                            <Col style={{ width: "25%", marginTop: 20 }}>
+
+                                                                <Text note style={{ fontFamily: 'OpenSans', fontSize: 12, marginLeft: 5 }}> Favourite</Text>
+                                                                <Text style={{ fontFamily: 'OpenSans', fontSize: 12, marginLeft: 5, fontWeight: 'bold' }}> {favouriteListCountByDoctorIds[item.doctor_id] !== undefined ? favouriteListCountByDoctorIds[item.doctor_id] : ' 0'}</Text>
 
 
-                                                </Col>
-                                                <Col style={{width:"25%",marginTop:20}}>
-                                                    <Text note style={{ fontFamily: 'OpenSans',fontSize:12,marginLeft:5, }}> Fees</Text>
-                                                    <Text  style={{ fontFamily: 'OpenSans',fontSize:12,fontWeight:'bold',marginLeft:5 }}>{'\u20B9'}{this.getFeesBySelectedSlot(item.slotData[selectedDatesByDoctorIds[item.doctorIdHostpitalId] || this.state.currentDate], item.slotData, item.doctorIdHostpitalId )}</Text>
-                                                </Col>
-                                            </Row>
-                                           
-                                           
+                                                            </Col>
+                                                            <Col style={{ width: "25%", marginTop: 20 }}>
+                                                                <Text note style={{ fontFamily: 'OpenSans', fontSize: 12, marginLeft: 5, }}> Fees</Text>
+                                                                <Text style={{ fontFamily: 'OpenSans', fontSize: 12, fontWeight: 'bold', marginLeft: 5 }}>{'\u20B9'}{this.getFeesBySelectedSlot(item.slotData[selectedDatesByDoctorIds[item.doctorIdHostpitalId] || this.state.currentDate], item.slotData, item.doctorIdHostpitalId)}</Text>
+                                                            </Col>
+                                                        </Row>
 
-                                            <Row style={{borderTopColor:'#000',borderTopWidth:0.4,marginTop:5}} >
-                                                <Col style={{width:"8%"}}>
-                                                
-                                                <Icon name='ios-time' style={{fontSize:20,marginTop:12}}/>
 
-                                                </Col>
-                                                <Col style={{width:"70%"}}>
-                                                
-                                                <Text note style={{ fontFamily: 'OpenSans',marginTop:15,fontSize:12,marginRight:50,fontWeight:'bold' }}> {this.getDisplayAvailableTime(item.slotData[selectedDatesByDoctorIds[item.doctorIdHostpitalId] || this.state.currentDate], item.slotData)}</Text>
-                                              </Col>
-                                                <Col style={{width:"22%"}}>
-                                                {!expandedDoctorIdHospitalsToShowSlotsData.includes(item.doctorIdHostpitalId) ? 
-                                                  <TouchableOpacity  onPress={()=>this.onBookPress(item.doctorIdHostpitalId)}  style={{ textAlign:'center',backgroundColor:'green',borderColor: '#000', marginTop:10, borderRadius: 20, height: 30,justifyContent:'center' ,marginLeft:5,marginRight:5 ,}}>
-                                                      <Text style={{textAlign:'center',color:'#fff',fontSize:12,fontWeight:'bold',fontFamily:'OpenSans'}}>BOOK </Text>
-                                                  </TouchableOpacity>  : null }
-                                               </Col>
-                                               
-                                            </Row>
-                                           
-                                            {expandedDoctorIdHospitalsToShowSlotsData.includes(item.doctorIdHostpitalId) ? 
-                                           
-                                            <View>
-                                            
-                                                <Row style={{marginTop:10}}>
-                                                <Text style={{fontSize:13,fontFamily:'OpenSans'}}>Select appoinment date and time</Text>
-                                            </Row>
-                                              {this.renderDatesOnFlatlist(item.slotData, selectedDatesByDoctorIds[item.doctorIdHostpitalId] || this.state.currentDate, item.doctorIdHostpitalId)}
-                                              {  
-                                                 item.slotData[selectedDatesByDoctorIds[item.doctorIdHostpitalId] || this.state.currentDate] !== undefined ?
-                                                   this.haveAvailableSlots(item.doctorIdHostpitalId,item.slotData[selectedDatesByDoctorIds[item.doctorIdHostpitalId] || this.state.currentDate]) 
-                                                   : this.noAvailableSlots(item.doctorIdHostpitalId, item.slotData)
-                                              }
 
-                                         <View style={{borderTopColor:'#000',borderTopWidth:0.5,marginTop:10}}>
-                                            <Row style={{marginTop:10}}>
-                                                <Text note style={{fontSize:12,fontFamily:'OpenSans'}}>Selected Appointment on</Text>
-                                            </Row>
-                                            <Row style={{marginTop:5}}>
-                                               <Col style={{width:'40%'}}>
-                                                 <Text style={{color:'#000',fontSize:12,fontFamily:'OpenSans',marginLeft:-16}}>{ selectedSlotItemByDoctorIds[item.doctorIdHostpitalId] ? formatDate(selectedSlotItemByDoctorIds[item.doctorIdHostpitalId].slotStartDateAndTime, 'ddd DD MMM, h:mm a') : null }</Text>
-                                               </Col>
-                                               <Col style={{width:'30%'}}>
-                                               </Col>
-                                               <Col style={{width:'30%'}}>
-                                                  <TouchableOpacity                                                                                                                   
-                                                     onPress={() => { console.log('......Pressing....'); this.onPressContinueForPaymentReview(item, selectedSlotItemByDoctorIds[item.doctorIdHostpitalId], item.doctorIdHostpitalId) }}
-                                                     style={{backgroundColor:'green', borderColor: '#000', height: 30, borderRadius: 20,justifyContent:'center' ,marginLeft:5,marginRight:5,marginTop:-5 }}>
-                                                     <Text style={{color:'#fff',fontSize:12,fontWeight:'bold',fontFamily:'OpenSans'}}>Continue </Text>
-                                                  </TouchableOpacity> 
-                                               </Col>
-                                            </Row>
-                                         </View>
-                                         
-                                            </View> : null }
-                                           
-                                            </Grid>
-                                            
-                                        </ListItem>
+                                                        <Row style={{ borderTopColor: '#000', borderTopWidth: 0.4, marginTop: 5 }} >
+                                                            <Col style={{ width: "8%" }}>
 
-                                        
-                                    </List>
-                                </Card>
-                        }/> 
-                    }
-                       </View>
-                </Content> 
-            }
+                                                                <Icon name='ios-time' style={{ fontSize: 20, marginTop: 12 }} />
+
+                                                            </Col>
+                                                            <Col style={{ width: "70%" }}>
+
+                                                                <Text note style={{ fontFamily: 'OpenSans', marginTop: 15, fontSize: 12, marginRight: 50, fontWeight: 'bold' }}> {this.getDisplayAvailableTime(item.slotData[selectedDatesByDoctorIds[item.doctorIdHostpitalId] || this.state.currentDate], item.slotData)}</Text>
+                                                            </Col>
+                                                            <Col style={{ width: "22%" }}>
+                                                                {!expandedDoctorIdHospitalsToShowSlotsData.includes(item.doctorIdHostpitalId) ?
+                                                                    <TouchableOpacity onPress={() => this.onBookPress(item.doctorIdHostpitalId)} style={{ textAlign: 'center', backgroundColor: 'green', borderColor: '#000', marginTop: 10, borderRadius: 20, height: 30, justifyContent: 'center', marginLeft: 5, marginRight: 5, }}>
+                                                                        <Text style={{ textAlign: 'center', color: '#fff', fontSize: 12, fontWeight: 'bold', fontFamily: 'OpenSans' }}>BOOK </Text>
+                                                                    </TouchableOpacity> : null}
+                                                            </Col>
+
+                                                        </Row>
+
+                                                        {expandedDoctorIdHospitalsToShowSlotsData.includes(item.doctorIdHostpitalId) ?
+
+                                                            <View>
+
+                                                                <Row style={{ marginTop: 10 }}>
+                                                                    <Text style={{ fontSize: 13, fontFamily: 'OpenSans' }}>Select appoinment date and time</Text>
+                                                                </Row>
+                                                                {this.renderDatesOnFlatlist(item.slotData, selectedDatesByDoctorIds[item.doctorIdHostpitalId] || this.state.currentDate, item.doctorIdHostpitalId)}
+                                                                {
+                                                                    item.slotData[selectedDatesByDoctorIds[item.doctorIdHostpitalId] || this.state.currentDate] !== undefined ?
+                                                                        this.haveAvailableSlots(item.doctorIdHostpitalId, item.slotData[selectedDatesByDoctorIds[item.doctorIdHostpitalId] || this.state.currentDate])
+                                                                        : this.noAvailableSlots(item.doctorIdHostpitalId, item.slotData)
+                                                                }
+
+                                                                <View style={{ borderTopColor: '#000', borderTopWidth: 0.5, marginTop: 10 }}>
+                                                                    <Row style={{ marginTop: 10 }}>
+                                                                        <Text note style={{ fontSize: 12, fontFamily: 'OpenSans' }}>Selected Appointment on</Text>
+                                                                    </Row>
+                                                                    <Row style={{ marginTop: 5 }}>
+                                                                        <Col style={{ width: '40%' }}>
+                                                                            <Text style={{ color: '#000', fontSize: 12, fontFamily: 'OpenSans', marginLeft: -16 }}>{selectedSlotItemByDoctorIds[item.doctorIdHostpitalId] ? formatDate(selectedSlotItemByDoctorIds[item.doctorIdHostpitalId].slotStartDateAndTime, 'ddd DD MMM, h:mm a') : null}</Text>
+                                                                        </Col>
+                                                                        <Col style={{ width: '30%' }}>
+                                                                        </Col>
+                                                                        <Col style={{ width: '30%' }}>
+                                                                            <TouchableOpacity
+                                                                                onPress={() => { console.log('......Pressing....'); this.onPressContinueForPaymentReview(item, selectedSlotItemByDoctorIds[item.doctorIdHostpitalId], item.doctorIdHostpitalId) }}
+                                                                                style={{ backgroundColor: 'green', borderColor: '#000', height: 30, borderRadius: 20, justifyContent: 'center', marginLeft: 5, marginRight: 5, marginTop: -5 }}>
+                                                                                <Text style={{ color: '#fff', fontSize: 12, fontWeight: 'bold', fontFamily: 'OpenSans' }}>Continue </Text>
+                                                                            </TouchableOpacity>
+                                                                        </Col>
+                                                                    </Row>
+                                                                </View>
+
+                                                            </View> : null}
+
+                                                    </Grid>
+
+                                                </ListItem>
+
+
+                                            </List>
+                                        </Card>
+                                    } />
+                            }
+                        </View>
+                    </Content>
+                }
 
             </Container >
         )
     }
-    renderDatesOnFlatlist(slotData, selectedDate,doctorIdHostpitalId ) {
-      
-        const reducer = (accumulator, currentValue, currentIndex, souceArray) => { 
-            if(!currentValue.isSlotBooked)
-               return 1 + accumulator;
-            else if(souceArray.length -1 === currentIndex) {
-                return accumulator == 0 ? 'No': accumulator; 
+    renderDatesOnFlatlist(slotData, selectedDate, doctorIdHostpitalId) {
+
+        const reducer = (accumulator, currentValue, currentIndex, souceArray) => {
+            if (!currentValue.isSlotBooked)
+                return 1 + accumulator;
+            else if (souceArray.length - 1 === currentIndex) {
+                return accumulator == 0 ? 'No' : accumulator;
             }
-            else 
-               return accumulator    
+            else
+                return accumulator
         }
-        return ( 
-            
+        return (
+
             <FlatList
-            horizontal={true}
-            data={this.processedDoctorAvailabilityDates}
-            extraData={[ this.state.selectedDatesByDoctorIds, this.state.selectedSlotItemByDoctorIds ]}
-            onEndReachedThreshold={1}
-            onEndReached={({ distanceFromEnd }) => {
-                let endIndex = this.processedDoctorAvailabilityDates.length
-                let lastProcessedDate = this.processedDoctorAvailabilityDates[endIndex - 1];
-                let startMoment = getMoment(lastProcessedDate).add(1,'day');
-                let endDateMoment = addMoment(lastProcessedDate, 7, 'days')
-                if(this.state.isAvailabilityLoading === false) { 
-                   this.callGetAvailabilitySlot(this.state.getSearchedDoctorIds,startMoment, endDateMoment);
-                }
-            }}
-            renderItem={({ item }) => 
-            <Col style={{ width:100, justifyContent: 'center' }}>
-             <TouchableOpacity  style={[styles.availabilityBG, selectedDate === item ? { backgroundColor:'#775DA3' } : { backgroundColor:'#ced6e0' } ]} 
-               onPress={() => this.onDateChanged( item, doctorIdHostpitalId)}>
-                <Text style={[{textAlign:'center',fontSize:12,fontFamily:'OpenSans'}, selectedDate === item ? { color:'#fff' } : { color:'#000' } ] }>{formatDate(moment(item), 'ddd, DD MMM')}</Text>
-                <Text style={[{textAlign:'center',fontSize:10,fontFamily:'OpenSans'}, selectedDate === item ? { color:'#fff' } : { color:'#000' } ] }>{ slotData[item] ? slotData[item].reduce(reducer, 0) + ' Slots Available' : 'No Slots Available' }</Text>
-             </TouchableOpacity>
-            </Col>   
-        } keyExtractor={(item, index) => index.toString()} />
+                horizontal={true}
+                data={this.processedDoctorAvailabilityDates}
+                extraData={[this.state.selectedDatesByDoctorIds, this.state.selectedSlotItemByDoctorIds]}
+                onEndReachedThreshold={1}
+                onEndReached={({ distanceFromEnd }) => {
+                    let endIndex = this.processedDoctorAvailabilityDates.length
+                    let lastProcessedDate = this.processedDoctorAvailabilityDates[endIndex - 1];
+                    let startMoment = getMoment(lastProcessedDate).add(1, 'day');
+                    let endDateMoment = addMoment(lastProcessedDate, 7, 'days')
+                    if (this.state.isAvailabilityLoading === false) {
+                        this.callGetAvailabilitySlot(this.state.getSearchedDoctorIds, startMoment, endDateMoment);
+                    }
+                }}
+                renderItem={({ item }) =>
+                    <Col style={{ width: 100, justifyContent: 'center' }}>
+                        <TouchableOpacity style={[styles.availabilityBG, selectedDate === item ? { backgroundColor: '#775DA3' } : { backgroundColor: '#ced6e0' }]}
+                            onPress={() => this.onDateChanged(item, doctorIdHostpitalId)}>
+                            <Text style={[{ textAlign: 'center', fontSize: 12, fontFamily: 'OpenSans' }, selectedDate === item ? { color: '#fff' } : { color: '#000' }]}>{formatDate(moment(item), 'ddd, DD MMM')}</Text>
+                            <Text style={[{ textAlign: 'center', fontSize: 10, fontFamily: 'OpenSans' }, selectedDate === item ? { color: '#fff' } : { color: '#000' }]}>{slotData[item] ? slotData[item].reduce(reducer, 0) + ' Slots Available' : 'No Slots Available'}</Text>
+                        </TouchableOpacity>
+                    </Col>
+                } keyExtractor={(item, index) => index.toString()} />
         )
     }
 
@@ -867,51 +894,51 @@ const styles = StyleSheet.create({
     },
 
     slotDefaultBgColor: {
-        textAlign:'center',
-        backgroundColor:'#ced6e0', 
-        borderColor: '#000', 
-        marginTop:10, 
-        height: 30, 
-        borderRadius: 5, 
-        justifyContent:'center' ,
-        marginRight:5,
-        paddingLeft:5,
-        paddingRight:5
+        textAlign: 'center',
+        backgroundColor: '#ced6e0',
+        borderColor: '#000',
+        marginTop: 10,
+        height: 30,
+        borderRadius: 5,
+        justifyContent: 'center',
+        marginRight: 5,
+        paddingLeft: 5,
+        paddingRight: 5
     },
-    slotDefaultTextColor : {
-        textAlign:'center',
-        color:'#000',
-        fontSize:12,
-        fontFamily:'OpenSans'
+    slotDefaultTextColor: {
+        textAlign: 'center',
+        color: '#000',
+        fontSize: 12,
+        fontFamily: 'OpenSans'
     },
     slotBookedBgColor: {
-        textAlign:'center',
-        backgroundColor:  '#A9A9A9', //'#775DA3',
-        borderColor: '#000', 
-        marginTop:10, height: 30, 
-        borderRadius: 5, 
-        justifyContent:'center', 
-        marginRight:5,
-        paddingLeft:5,
-        paddingRight:5
+        textAlign: 'center',
+        backgroundColor: '#A9A9A9', //'#775DA3',
+        borderColor: '#000',
+        marginTop: 10, height: 30,
+        borderRadius: 5,
+        justifyContent: 'center',
+        marginRight: 5,
+        paddingLeft: 5,
+        paddingRight: 5
     },
     slotSelectedBgColor: {
-        textAlign:'center',
+        textAlign: 'center',
         backgroundColor: '#775DA3',
-        borderColor: '#000', 
-        marginTop:10, 
-        height: 30, 
-        borderRadius: 5, 
-        justifyContent:'center', 
-        marginRight:5,
-        paddingLeft:5,
-        paddingRight:5
+        borderColor: '#000',
+        marginTop: 10,
+        height: 30,
+        borderRadius: 5,
+        justifyContent: 'center',
+        marginRight: 5,
+        paddingLeft: 5,
+        paddingRight: 5
     },
     slotBookedTextColor: {
-        textAlign:'center',
-        color:'#fff',
-        fontSize:12,
-        fontFamily:'OpenSans'
+        textAlign: 'center',
+        color: '#fff',
+        fontSize: 12,
+        fontFamily: 'OpenSans'
     },
     slotBookedBgColorFromModal: {
         backgroundColor: '#878684',
@@ -936,15 +963,15 @@ const styles = StyleSheet.create({
         margin: 5
     },
     availabilityBG: {
-        textAlign:'center',
-        borderColor: '#000', 
-        marginTop:10, 
+        textAlign: 'center',
+        borderColor: '#000',
+        marginTop: 10,
         height: 50,
-        borderRadius: 5, 
-        justifyContent:'center', 
-        marginRight:5, 
-        paddingLeft:5, 
-        paddingRight:5
+        borderRadius: 5,
+        justifyContent: 'center',
+        marginRight: 5,
+        paddingLeft: 5,
+        paddingRight: 5
     },
     customPadge: {
         backgroundColor: 'green',
