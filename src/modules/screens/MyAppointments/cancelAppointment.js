@@ -5,6 +5,7 @@ import { appointmentStatusUpdate } from '../../providers/bookappointment/bookapp
 import { formatDate } from '../../../setup/helpers';
 
 import { Loader } from '../../../components/ContentLoader'
+import Spinner from '../../../components/Spinner';
 
 
 class CancelAppointment extends Component {
@@ -65,7 +66,8 @@ class CancelAppointment extends Component {
         if (result.success) {
           Toast.show({
             text: 'Your appointment has been canceled',
-            duration: 3000
+            duration: 3000,
+            type: 'success'
           })
           let temp = this.state.data;
           temp.appointment_status = result.appointmentData.appointment_status;
@@ -75,8 +77,9 @@ class CancelAppointment extends Component {
           this.props.navigation.navigate('AppointmentInfo', { data: this.state.data });
         }
         else {
+          
           Toast.show({
-            text: 'Kindly add a reason for Appointment Cancellation',
+            text: result.message,
             type: "danger",
             duration: 3000
           })
@@ -107,7 +110,9 @@ class CancelAppointment extends Component {
 
       <Container style={styles.container}>
         <Content>
-          {isLoading ? <Loader style={'list'} /> :
+          
+          <Spinner visible={isLoading}/>
+          
 
             <Card style={{ borderRadius: 5, padding: 5, height: '200%' }}>
               <Card>
@@ -174,13 +179,13 @@ class CancelAppointment extends Component {
                       : null}
 
                     <Row style={{ marginTop: 10 }}>
-                      <Button style={styles.button1} onPress={() => (this.cancelAppointment(data, 'CANCELED'))} testID='appointment_cancel'>
-                        <Text style={{ color: '#000',fontFamily:'OpenSans',fontSize:15 }}> SUBMIT</Text>
+                      <Button style={styles.button1} onPress={() => this.props.navigation.navigate('AppointmentInfo')}  testID='appointment_cancel'>
+                        <Text style={{ color: '#000',fontFamily:'OpenSans',fontSize:13 }}>Back</Text>
                       </Button>
 
 
-                      <Button success style={styles.button2} onPress={() => this.props.navigation.navigate('AppointmentInfo')} testID='iconToEditContact'>
-                        <Text style={{ color: '#000' ,fontFamily:'OpenSans',fontSize:15}}>CANCEL</Text>
+                      <Button danger style={styles.button2} onPress={() => this.cancelAppointment(data, 'CANCELED')} testID='iconToEditContact'>
+                        <Text style={{ color: '#FFF' ,fontFamily:'OpenSans',fontSize:13 }}>Cancel</Text>
                       </Button>
                     </Row>
 
@@ -189,7 +194,7 @@ class CancelAppointment extends Component {
                 </CardItem>
               </Card>
             </Card>
-          }
+          
         </Content>
 
       </Container>
@@ -222,7 +227,7 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     padding: 1,
     marginTop: 15,
-    width: '30%',
+    width: '40%',
 
 
   },
@@ -234,7 +239,7 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     padding: 30,
     marginTop: 15,
-    width: '70%',
+    width: '60%',
 
   }
 
