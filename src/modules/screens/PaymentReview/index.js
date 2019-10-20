@@ -1,17 +1,12 @@
 import React, { Component } from 'react';
-import { Container, Toast, Content, Text, Title,Form, Header, H3, Button, Item, Card, CardItem, List, ListItem, Left, Right, Footer, Thumbnail, Body, Icon, Input, CheckBox } from 'native-base';
+import { Container, Toast, Content, Text, Form, Button, Item, Card, CardItem, Thumbnail,  Icon } from 'native-base';
 import { hasLoggedIn } from '../../providers/auth/auth.actions';
-import { messageShow, messageHide } from '../../providers/common/common.action';
 import { Col, Row, Grid } from 'react-native-easy-grid';
-import { connect } from 'react-redux'
-import { StyleSheet, Image, AsyncStorage, TouchableOpacity, View,TextInput } from 'react-native';
+import { StyleSheet, AsyncStorage, View,TextInput } from 'react-native';
 import { validateBooking } from '../../providers/bookappointment/bookappointment.action';
 import { formatDate , isOnlyLetter} from '../../../setup/helpers';
 import Spinner from '../../../components/Spinner';
-import { RenderHospitalAddress,renderDoctorImage, getDoctorEducation, getDoctorSpecialist, getAllSpecialist } from '../../common';
-//import RazorpayCheckout from 'react-native-razorpay';
-import { ScrollView } from 'react-native-gesture-handler';
-//import appIcon from '../../../../assets/Icon.png';
+import { renderDoctorImage, getDoctorEducation, getAllSpecialist } from '../../common';
 
 import BookAppointmentPaymentUpdate from '../../providers/bookappointment/bookAppointment';
 
@@ -47,7 +42,7 @@ export default class PaymentReview extends Component {
             })
             return
         }
-        this.setState({ isLoading: true });
+        this.setState({ isLoading: true, spinnerText: "Please Wait" });
         const bookingSlotData = this.state.bookSlotDetails
         const reqData = {
             doctorId: bookingSlotData.doctorId,
@@ -55,7 +50,7 @@ export default class PaymentReview extends Component {
             endTime: bookingSlotData.slotData.slotEndDateAndTime,
         }
         validationResult = await validateBooking(reqData)
-        this.setState({ isLoading: false });
+        this.setState({ isLoading: false, spinnerText: ' ' });
         if (validationResult.success) {
             const amount = this.state.bookSlotDetails.slotData.fee;
             this.props.navigation.navigate('paymentPage', { service_type: 'APPOINTMENT', bookSlotDetails: this.state.bookSlotDetails, amount: amount })
@@ -78,12 +73,13 @@ export default class PaymentReview extends Component {
             })
             return
         }
+        this.setState({ isLoading: true, spinnerText: "We are Booking your Appoinmtent" })
         console.log(this.state.bookSlotDetails);
         const userId = await AsyncStorage.getItem('userId');
         this.BookAppointmentPaymentUpdate = new BookAppointmentPaymentUpdate();
         let response = await this.BookAppointmentPaymentUpdate.updatePaymentDetails(true, {}, 'cash', this.state.bookSlotDetails, 'APPOINTMENT', userId, 'cash');
         console.log('Book Appointment Payment Update Response ');
-        console.log(response);
+        
         if (response.success) {
             this.props.navigation.navigate('paymentsuccess', { successBookSlotDetails: this.state.bookSlotDetails, paymentMethod: 'Cash' });
         } else {
@@ -93,15 +89,19 @@ export default class PaymentReview extends Component {
                 duration: 3000
             })
         }
-
+        this.setState({ isLoading: false, spinnerText: ' ' }); 
     }
 
     render() {
-        const { bookSlotDetails } = this.state;
+        const { bookSlotDetails, isLoading, spinnerText } = this.state;
         return (
 
             <Container>
                 <Content style={{padding:15}}>
+                    <Spinner
+                       visible={isLoading}
+                       textContent={spinnerText}
+                    />
                     <View style={{marginBottom:20}}>
                  <Card transparent>
                     <CardItem header style={styles.cardItem}>

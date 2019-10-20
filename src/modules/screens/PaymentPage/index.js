@@ -11,7 +11,7 @@ import Razorpay from '../../../components/Razorpay';
 import { RAZOR_KEY , BASIC_DEFAULT} from '../../../setup/config';
 import BookAppointmentPaymentUpdate from '../../providers/bookappointment/bookAppointment';
 import { TouchableOpacity } from 'react-native-gesture-handler';
-
+import Spinner from '../../../components/Spinner';
 class PaymentPage extends Component {
     availableNetBankingData = [];
     availableWallets = [];
@@ -44,7 +44,8 @@ class PaymentPage extends Component {
             isLoading: false,
             isHidden: false,
             coupenCodeText: null,
-            paymentMethodTitleCase : null
+            paymentMethodTitleCase : null,
+            isPaymentSuccess: false
         }
         this.BookAppointmentPaymentUpdate = new BookAppointmentPaymentUpdate();
     }
@@ -190,8 +191,11 @@ class PaymentPage extends Component {
              this.updatePaymentDetails(false, error, 'online');
         });
     }
+
    async updatePaymentDetails(isSuccess, data, modeOfPayment) {
-    this.setState({ isLoading: true  })
+    
+    
+    this.setState({ isLoading: true , isPaymentSuccess: isSuccess })
     let response = await this.BookAppointmentPaymentUpdate.updatePaymentDetails(isSuccess, data, modeOfPayment, this.state.bookSlotDetails, 'APPOINTMENT', this.userId, this.state.paymentMethodTitleCase);
     console.log(response);
     if(response.success) {
@@ -210,7 +214,7 @@ class PaymentPage extends Component {
             duration: 3000
         })
     }
-    this.setState({ isLoading: false });  
+    this.setState({ isLoading: false });     
   }
  
     handlingCardNumber(number) {
@@ -285,10 +289,14 @@ class PaymentPage extends Component {
 
     render() {
 
-        const { savedCards } = this.state;
+        const { savedCards , isLoading , isPaymentSuccess} = this.state;
         return (
             <Container style={styles.container}>
                 <Content style={styles.bodyContent}>
+                    <Spinner
+                       visible={isLoading}
+                       textContent={isPaymentSuccess ? "We are Booking your Appoinmtent" : "Please wait..."}
+                    />
                     <Row style={{ marginTop: 10, marginLeft: 15 }}>
                         <Col style={{ width: '60%' }}>
                             <Text style={{ fontSize: 20, fontFamily: 'OpenSans', fontWeight: 'bold', }}>Select Options To Pay</Text>
