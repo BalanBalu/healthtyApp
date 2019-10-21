@@ -4,8 +4,7 @@
   "private": true,
   "scripts": {
     "start": "node node_modules/react-native/local-cli/cli.js start",
-    "test": "jest",
-    "preinstall": "git clone https://sathishkrish20@bitbucket.org/sathishkrish20/react-native-customui.git && mv react-native-customui ../react-native-customui"
+    "test": "jest"
   },
   "dependencies": {
     "@mapbox/mapbox-sdk": "^0.6.0",
@@ -16,8 +15,8 @@
     "moment": "^2.24.0",
     "native-base": "^2.12.0",
     "prop-types": "^15.7.2",
-    "react": "16.6.3",
-    "react-native": "0.58.6",
+    "react": "16.8.3",
+    "react-native": "0.59.10",
     "react-native-android-location-enabler": "~1.1.0",
     "react-native-autocomplete-input": "^4.1.0",
     "react-native-customui": "file:../react-native-customui",
