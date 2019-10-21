@@ -8,6 +8,7 @@ export const SET_PATIENT_WISH_LIST_DOC_IDS = 'BOOK/PATIENT_WISH_LIST_DOC_IDS';
 export const SET_FAVORITE_DOCTOR_COUNT_BY_IDS = 'BOOK/FAVORITE_DOCTOR_COUNT_BY_IDS';
 export const SET_DOCTORS_RATING_BY_IDS = 'BOOK/DOCTORS_RATING_BY_IDS'; 
 export const SET_FILTERED_DOCTOR_DATA = 'BOOK/FILTERED_DOCTOR_DATA';
+export const SET_PATIENT_LOCATION_DATA = 'BOOK/SET_PATIENT_LOCATION_DATA';
 import { store } from '../../../setup/store';
 /* Book the Doctor Appointment module  */
 export async function bookAppointment(bookSlotDetails, isLoading = true) {
@@ -378,6 +379,21 @@ export async function insertDoctorsWishList(userId, doctorId, requestData) {
       success: false
     }
   }
+}
+ 
+export async function getLocations() {
+    try {
+  
+      let endPoint = 'hospital/locations'
+      let response = await getService(endPoint);
+      let respData = response.data;
+      return respData;
+    } catch (e) {
+      return {
+        message: 'exception' + e,
+        success: false
+      }
+    }
 }
 
 

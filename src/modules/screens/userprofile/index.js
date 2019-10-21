@@ -1,15 +1,14 @@
 import React, { Component } from 'react';
-import { Container, Content, Text, Title, Header, H3, Button, Card, List, ListItem, View, Left, Right, Toast, Thumbnail, Body, Icon, locations, ScrollView, ProgressBar, Item, Radio } from 'native-base';
-import { fetchUserProfile } from '../../providers/profile/profile.action';
+import { Container, Content, Text, Title, Header, H3, Button, Card, List, ListItem, View, Left, Right, Toast, Thumbnail, Body, Icon, locations, ProgressBar, Item, Radio } from 'native-base';
+import { fetchUserProfile, storeBasicProfile } from '../../providers/profile/profile.action';
 import { getPatientWishList } from '../../providers/bookappointment/bookappointment.action';
 import { hasLoggedIn, userFiledsUpdate } from '../../providers/auth/auth.actions';
 import { Col, Row, Grid } from 'react-native-easy-grid';
 import { connect } from 'react-redux';
 import { dateDiff } from '../../../setup/helpers';
 import LinearGradient from 'react-native-linear-gradient';
-import { StyleSheet, AsyncStorage, TouchableOpacity } from 'react-native';
+import { StyleSheet, AsyncStorage, TouchableOpacity, FlatList } from 'react-native';
 import Modal from "react-native-modal";
-import { FlatList } from 'react-native-gesture-handler';
 import { NavigationEvents } from 'react-navigation';
 import { Loader } from '../../../components/ContentLoader'
 import ImagePicker from 'react-native-image-picker';
@@ -54,14 +53,17 @@ class Profile extends Component {
     /*Get userProfile*/
     getUserProfile = async () => {
         try {
+            console.log("result")
+
             let data = await AsyncStorage.getItem('profile');
             result = JSON.parse(data);
             if (result == null) {
-                let fields = "first_name,last_name,gender,dob,mobile_no,secondary_mobiles,email,secondary_emails,insurance,address,is_blood_donor,is_available_blood_donate,blood_group,profile_image"
+                let fields = "first_name,last_name,gender,dob,mobile_no,secondary_mobile,email,secondary_emails,insurance,address,is_blood_donor,is_available_blood_donate,blood_group,profile_image"
                 let userId = await AsyncStorage.getItem('userId');
                 let result = await fetchUserProfile(userId, fields);
                 if (this.props.profile.success) {
                     AsyncStorage.setItem('profile', JSON.stringify(result))
+                    storeBasicProfile(result);
                     this.setState({ data: result, gender: result.gender });
                     if (result.profile_image) {
                         this.setState({ imageSource: result.profile_image.imageURL });
@@ -70,6 +72,8 @@ class Profile extends Component {
             }
             else {
                 this.setState({ data: result, gender: result.gender });
+                console.log("data" + JSON.stringify(this.state.data))
+
                 if (result.profile_image != undefined) {
                     this.setState({ imageSource: result.profile_image.imageURL });
                 }
@@ -252,7 +256,7 @@ class Profile extends Component {
                                         </View>
 
                                         <View style={{ flexDirection: 'row', marginTop: 10, marginLeft: 30 }}>
-                                            <Text style={{ marginLeft: 'auto', marginRight: 'auto', padding: 5, fontFamily: 'OpenSans', backgroundColor: '#fff', borderRadius: 10, marginTop: 5, width: '100%', textAlign: 'center',fontSize:15 }} onPress={() => this.editProfile('UpdateUserDetails')}>{data.first_name + " " + data.last_name}
+                                            <Text style={{ marginLeft: 'auto', marginRight: 'auto', padding: 5, fontFamily: 'OpenSans', backgroundColor: '#fff', borderRadius: 10, marginTop: 5, width: '100%', textAlign: 'center', fontSize: 15 }} onPress={() => this.editProfile('UpdateUserDetails')}>{data.first_name + " " + data.last_name}
                                             </Text>
 
 
@@ -289,26 +293,26 @@ class Profile extends Component {
 
                                 <Modal isVisible={this.state.modalVisible} >
                                     <Card style={{ padding: 10, borderRadius: 7, height: 150, justifyContent: 'center' }}>
-                                        <H3 style={{ fontFamily: 'OpenSans', marginTop: 15,fontSize:15 }}>Update Gender</H3>
+                                        <H3 style={{ fontFamily: 'OpenSans', marginTop: 15, fontSize: 15 }}>Update Gender</H3>
                                         <ListItem noBorder>
 
                                             <Radio selected={this.state.gender === 'M'} onPress={() => this.onPressRadio('M')} style={{ marginLeft: 2, }} color={"#775DA3"}
-                                                selectedColor={"#775DA3"} testID="clickMale"/>
-                                            <Text style={{ marginLeft: 10, fontFamily: 'OpenSans',fontSize:15 }}>Male</Text>
+                                                selectedColor={"#775DA3"} testID="clickMale" />
+                                            <Text style={{ marginLeft: 10, fontFamily: 'OpenSans', fontSize: 15 }}>Male</Text>
 
                                             <Radio selected={this.state.gender === 'F'} onPress={() => this.onPressRadio('F')} style={{ marginLeft: 10 }} color={"#775DA3"}
                                                 selectedColor={"#775DA3"} testID="clickFemale" />
-                                            <Text style={{ marginLeft: 10, fontFamily: 'OpenSans',fontSize:15 }}>Female</Text>
+                                            <Text style={{ marginLeft: 10, fontFamily: 'OpenSans', fontSize: 15 }}>Female</Text>
 
                                             <Radio selected={this.state.gender === 'O'} onPress={() => this.onPressRadio('O')} style={{ marginLeft: 10 }} color={"#775DA3"}
                                                 selectedColor={"#775DA3"} testID="clickOther" />
-                                            <Text style={{ marginLeft: 10 ,fontFamily: 'OpenSans',fontSize:15}}>Other</Text>
+                                            <Text style={{ marginLeft: 10, fontFamily: 'OpenSans', fontSize: 15 }}>Other</Text>
 
                                         </ListItem>
 
                                         <Button style={styles.updateButton} onPress={() => this.updateGender()}
-                                        testID="updateGenderButton">
-                                            <Text uppercase={false} style={{ fontFamily: 'OpenSans',fontSize:15}}>Update</Text>
+                                            testID="updateGenderButton">
+                                            <Text uppercase={false} style={{ fontFamily: 'OpenSans', fontSize: 15 }}>Update</Text>
                                         </Button>
 
                                     </Card>
@@ -399,7 +403,7 @@ class Profile extends Component {
                                 </Body>
                                 {data.address ?
                                     <Right>
-                                        <Icon name="create" style={{ color: 'black' }} onPress={() => this.editProfile('UpdateAddress')} testID="iconToUpdateAddress"/>
+                                        <Icon name="create" style={{ color: 'black' }} onPress={() => this.editProfile('UpdateAddress')} testID="iconToUpdateAddress" />
                                     </Right>
                                     : null}
 
@@ -417,24 +421,20 @@ class Profile extends Component {
                                     <TouchableOpacity onPress={() => this.editProfile('UpdateContact')} testID="onPressUpdateContact">
                                         <Text style={styles.customText}>Contact</Text>
                                         <Text note style={styles.customText1}>{data.mobile_no}</Text>
-                                        {data.secondary_mobiles != undefined ?
-                                            <FlatList
-                                                data={this.state.data.secondary_mobiles}
-                                                renderItem={({ item }) => (
-                                                    <List>
-                                                        <Text style={styles.customText}>{item.type}</Text>
-                                                        <Text note style={styles.customText1}>{item.number}</Text>
-                                                    </List>
-                                                )}
-                                                keyExtractor={(item, index) => index.toString()}
-                                            />
+                                        {data.secondary_mobile !== undefined ?
+                                            <Col>
+                                                <Text style={styles.customText}>Secondary</Text>
+                                                <Text note style={styles.customText1}>{data.secondary_mobile}</Text>
+
+                                            </Col>
+
                                             : <Button transparent>
                                                 <Icon name='add' style={{ color: 'gray' }} />
-                                                <Text uppercase={false} style={styles.customText} onPress={() => this.editProfile('UpdateContact')} testID="onPressAddSecondaryContactText">Add Secondary Contact</Text>
+                                                <Text uppercase={false} style={styles.customText} onPress={() => this.editProfile('UpdateContact')} testID="onPressAddContactNumber">Add Contact Number</Text>
                                             </Button>}
                                     </TouchableOpacity>
                                 </Body>
-                                {data.secondary_mobiles != undefined ?
+                                {data.secondary_mobile != undefined ?
                                     <Right>
                                         <Icon name="create" style={{ color: 'black' }} onPress={() => this.editProfile('UpdateContact')} testID="iconToUpdateContact"></Icon>
                                     </Right> : null}
@@ -507,10 +507,10 @@ class Profile extends Component {
                                                 <Thumbnail square source={{ uri: 'https://res.cloudinary.com/demo/image/upload/w_200,h_200,c_thumb,g_face,r_max/face_left.png' }} style={{ height: 40, width: 40 }} />
                                             </Left>
                                             <Body>
-                                                <Text style={{fontFamily:'OpenSans',fontSize:15}}> {item.doctorInfo.prefix ? item.doctorInfo.prefix : ''} {item.doctorInfo.first_name + " " + item.doctorInfo.last_name} </Text>
+                                                <Text style={{ fontFamily: 'OpenSans', fontSize: 15 }}> {item.doctorInfo.prefix ? item.doctorInfo.prefix : ''} {item.doctorInfo.first_name + " " + item.doctorInfo.last_name} </Text>
                                             </Body>
                                             <Right>
-                                                <Button style={styles.docbutton}><Text style={{ fontFamily: 'OpenSans', fontSize: 12 }} onPress={() => this.props.navigation.navigate('Book Appointment',{doctorId:item.doctorInfo.doctor_id, fetchAvailabiltySlots : true })}> Book Again</Text></Button>
+                                                <Button style={styles.docbutton}><Text style={{ fontFamily: 'OpenSans', fontSize: 12 }} onPress={() => this.props.navigation.navigate('Book Appointment', { doctorId: item.doctorInfo.doctor_id, fetchAvailabiltySlots: true })}> Book Again</Text></Button>
                                             </Right>
 
                                         </ListItem>
@@ -554,12 +554,12 @@ const styles = StyleSheet.create({
     },
     customText:
     {
-fontSize:15,
+        fontSize: 15,
         fontFamily: 'OpenSans',
     },
     customText1:
     {
-fontSize:13,
+        fontSize: 13,
         fontFamily: 'OpenSans',
     },
     logo: {
@@ -583,14 +583,14 @@ fontSize:13,
         marginLeft: 'auto',
         marginRight: 'auto',
         fontFamily: 'OpenSans',
-        fontSize:15
+        fontSize: 15
     },
     bottomValue:
     {
         marginLeft: 'auto',
         marginRight: 'auto',
         fontFamily: 'OpenSans',
-        fontSize:13
+        fontSize: 13
     },
     updateButton:
     {

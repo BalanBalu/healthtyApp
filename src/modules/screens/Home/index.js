@@ -1,18 +1,31 @@
 import React, { Component } from 'react';
-import { Container, Content, Text, Title, Header, Button, H3, Item, List, ListItem, Spinner, Card, Input, Left, Right, Thumbnail, Body, Icon, Footer, FooterTab } from 'native-base';
+import { Container, Content, Text,Toast, Title, Header, Button, H3, Item, List, ListItem, Spinner, Card, Input, Left, Right, Thumbnail, Body, Icon, Footer, FooterTab } from 'native-base';
 import { login, logout } from '../../providers/auth/auth.actions';
 import LinearGradient from 'react-native-linear-gradient';
 import { Col, Row, Grid } from 'react-native-easy-grid';
 import { connect } from 'react-redux'
-
 import { StyleSheet, Image, View, TouchableOpacity, AsyncStorage, ScrollView, FlatList, NativeModules } from 'react-native';
-// import { ScrollView, FlatList } from 'react-native-gesture-handler';
-import { catagries } from '../../providers/catagries/catagries.actions';
+
+import { SET_PATIENT_LOCATION_DATA  } from '../../providers/bookappointment/bookappointment.action';
+import { catagries, getSpecialistDataSuggestions } from '../../providers/catagries/catagries.actions';
 import { MAP_BOX_PUBLIC_TOKEN , IS_ANDROID } from '../../../setup/config';
 import RNAndroidLocationEnabler from 'react-native-android-location-enabler';
 import MapboxGL from '@react-native-mapbox-gl/maps';
+import { store } from '../../../setup/store';
+import CurrentLocation from './CurrentLocation';
 MapboxGL.setAccessToken(MAP_BOX_PUBLIC_TOKEN);
+const MAX_DISTANCE_TO_COVER = 30000; // in meters
 
+const debounce = (fun, delay) => {
+    let timer = null;
+    return function (...args) {
+        const context = this;
+        timer && clearTimeout(timer);
+        timer = setTimeout(() => {
+            fun.apply(context, args);
+        }, delay);
+    };
+}
 
 class Home extends Component {
     constructor(props) {
@@ -24,11 +37,8 @@ class Home extends Component {
             searchValue: null,
             totalSpecialistDataArry: [],
             visibleClearIcon: '',
-            locationCordinates : []
-
         };
-        this.arrayData = []
-
+        this.callSuggestionService = debounce(this.callSuggestionService, 500); 
     }
     navigetToCategories() {
         this.props.navigation.navigate('Categories', { data: this.state.data })
@@ -43,55 +53,7 @@ class Home extends Component {
      }
     async componentDidMount() {
         this.getCatagries();
-    let isGranted = true;
-    if (IS_ANDROID) {
-       
-      isGranted = await MapboxGL.requestAndroidLocationPermissions();
-      await this.setState({
-         isAndroidPermissionGranted: isGranted,
-         isFetchingAndroidPermission: false,
-       });
-       if(isGranted) {
-           
-            RNAndroidLocationEnabler.promptForEnableLocationIfNeeded({interval: 10000, fastInterval: 5000}).then(async (data) => {
-               
-                if(data === 'enabled') {
-                   await this.timeout(500);
-                }
-             navigator.geolocation.getCurrentPosition(position => {
-                const origin_coordinates = [position.coords.latitude, position.coords.longitude, ];
-                this.setState({ locationCordinates : origin_coordinates })
-               
-                console.log('Your Orgin is ' + origin_coordinates); 
-             }), error => {
-               console.log(error); 
-               alert(JSON.stringify(error)) 
-             }, { timeout: 50000, enableHighAccuracy: true };
-        
-       }).catch(err => {
-            alert("Please Enable Your Location to Provide the Better Results");
-         // The user has not accepted to enable the location services or something went wrong during the process
-         // "err" : { "code" : "ERR00|ERR01|ERR02", "message" : "message"}
-         // codes : 
-         //  - ERR00 : The user has clicked on Cancel button in the popup
-         //  - ERR01 : If the Settings change are unavailable
-         //  - ERR02 : If the popup has failed to open
-       }); 
-      }
-     } else {
-        navigator.geolocation.getCurrentPosition(position => {
-          console.log('Your Orgin is ' + position);
-          const origin_coordinates = [position.coords.latitude, position.coords.longitude, ];
-          this.setState({ locationCordinates : origin_coordinates })
-         
-        }),
-        error =>  {
-            console.log(error); 
-       }, {enableHighAccuracy: false, timeout: 50000}
-    }
-       
-
-
+        CurrentLocation.getCurrentPosition();
     }
     getUserLocation() {
         console.log('getting Geo to User Locatuin')
@@ -116,95 +78,66 @@ class Home extends Component {
             }
             this.setState({ catagary: limitedData });
 
-            let totalSpecialistDataArry = [];
-
-            this.state.data.forEach((dataElement) => {
-                let categoryObject = { name: 'category', value: dataElement.category_name };
-                totalSpecialistDataArry.push(categoryObject);
-
-                dataElement.services.forEach((serviceEle) => {
-                    let serviceObject = { name: 'service', value: serviceEle.service };
-                    totalSpecialistDataArry.push(serviceObject);
-                    if (serviceEle.symptoms != undefined) {
-                        serviceEle.symptoms.forEach((symptomsEle) => {
-                            let symptomObject = { name: 'symptoms', value: symptomsEle };
-                            totalSpecialistDataArry.push(symptomObject)
-                        })
-                    }
-                })
-            })
-            await this.setState({ totalSpecialistDataArry: totalSpecialistDataArry })
-
-
         } catch (e) {
             console.log(e);
         }
     }
-
-    searchDoctorListModule = async () => {
-        try {
-            let serachInputvalues = [{
-                type: 'service',
-                value: [this.state.searchValue]
-            },
-            {
-                type: 'symptoms',
-                value: [this.state.searchValue]
-            },
-           /* {
-                type: 'geo',
-                value: {
-                    coordinates : this.state.locationCordinates,
-                    maxDistance: 30
-                }
-            } */
-        ]
-            if (this.state.searchValue == null) {
-                alert("We can't Find the Empty Values");
-            }
-            else {
-                console.log('serachInputvalues in Homepage')
-                console.log(serachInputvalues);
-                this.props.navigation.navigate('Doctor List', { resultData: serachInputvalues })
-            }
-        } catch (e) {
-            console.log(e);
-        }
-    }
+    
     navigateToCategorySearch(categoryName) {
+        const { bookappointment: { locationCordinates } } = this.props;
+       
         let serachInputvalues = [{
             type: 'category',
             value: categoryName
         },
-       /* {
+        {
             type: 'geo',
             value: {
-                coordinates : this.state.locationCordinates,
-                maxDistance: 30
+                coordinates : locationCordinates,
+                maxDistance: MAX_DISTANCE_TO_COVER
             }
-        } */]
+        }]
         this.props.navigation.navigate('Doctor List', { resultData: serachInputvalues })
     }
+count=0;
+callSuggestionService=async(enteredText)=>{
+ console.log('clicked :'+this.count++)
+    const userId = await AsyncStorage.getItem('userId');
+    const { bookappointment: { locationCordinates } } = this.props;
+    locationData=  {
+      "coordinates": locationCordinates,
+      "maxDistance": MAX_DISTANCE_TO_COVER
+    }
 
+    let specialistResultData = await getSpecialistDataSuggestions(userId, enteredText, locationData);
+// console.log('specialistResultData.data' + JSON.stringify(specialistResultData.data))
+  if (specialistResultData.success) {
+       this.setState({
+        totalSpecialistDataArry: specialistResultData.data,
+        searchValue: enteredText,
+    });
+  } else {
+      
+       this.setState({
+            totalSpecialistDataArry:[],  
+            searchValue: enteredText
+        });
+       /* Toast.show({
+          text: 'No KeyWords Found By near Location',
+          type: 'danger',
+          duration: 3000
+        }) */
+    }
+ }
     /* Filter the Specialist and Services on Search Box  */
-    SearchFilterFunction = async (enteredText) => {
+    
+    SearchKeyWordFunction = async (enteredText) => {
         await this.setState({ visibleClearIcon: enteredText })
-
-        this.arrayData = this.state.totalSpecialistDataArry;
-        let newData = this.arrayData.filter(function (item) {
-            let itemData = item.value ? item.value.toUpperCase() : ''.toUpperCase();
-            let textData = enteredText.toUpperCase();
-            return itemData.indexOf(textData) > -1;
-        });
-
-        this.setState({
-            totalSpecialistDataArry: newData,
-            searchValue: enteredText,
-        });
+        this.callSuggestionService(enteredText);  // Call the Suggestion API with Debounce method
     }
 
     clearTotalText = () => {
-        this.setState({ searchValue: '' })
+        this.setState({ visibleClearIcon: null, totalSpecialistDataArry: null, searchValue: null })
     };
 
     itemSaperatedByListView = () => {
@@ -219,66 +152,95 @@ class Home extends Component {
         );
     };
 
-
     render() {
-        const { fromAppointment } = this.state
+        const { fromAppointment } = this.state;
+        const { bookappointment: { patientSearchLocationName, locationCordinates, isSearchByCurrentLocation } } = this.props;
+        
         return (
 
             <Container style={styles.container}>
                 <Content keyboardShouldPersistTaps={'handled'} style={styles.bodyContent}>
-                    <Row style={{ backgroundColor: 'white', borderColor: '#000', borderWidth: 1, borderRadius: 20, }}>
+                   <Row style={{marginBottom: 5}}>
+                   {isSearchByCurrentLocation === true ? 
+                   <Col size={10} style={{ flexDirection : 'row' }}>  
+                      <Text uppercase={false} style={{ paddingLeft: 10, color: 'gray', fontSize: 10, fontFamily: 'OpenSans-SemiBold' }}>You are searching </Text>
+                      <Text uppercase={false} style={{ color: 'gray', fontSize: 10, fontFamily: 'OpenSans-Bold' }}>Near by</Text>
+                      <Text uppercase={false} style={{ color: 'gray', fontSize: 10, fontFamily: 'OpenSans-SemiBold' }}> Hostpitals</Text>
+                    
+                    </Col> : 
+                     <Col size={10} style={{ flexDirection : 'row' }}>  
+                        <Text uppercase={false} style={{ paddingLeft: 10, color: 'gray', fontSize: 10, fontFamily: 'OpenSans-SemiBold' }}>You are searching Hospitals on </Text>
+                        <Text uppercase={false} style={{ color: 'gray', fontSize: 10, fontFamily: 'OpenSans-Bold' }}>{patientSearchLocationName}</Text>
+                    </Col>
+                    } 
+                    <Col size={2}>
+                        <Text onPress={()=> this.props.navigation.navigate('Locations')} uppercase={true} style={{ color: 'gray', fontSize: 10, fontFamily: 'OpenSans-SemiBold' }}>Change</Text>
+                    </Col>  
+                   </Row>   
 
-                        <Input placeholder="Search Symptoms/Services"
-                            style={{ color: 'gray', fontFamily: 'OpenSans', fontSize: 13 }}
+                    <Row style={{ backgroundColor: 'white', borderColor: '#000', borderWidth: 1, borderRadius: 20, }}>
+                    <Col size={1.1}> 
+                        <Icon name="ios-search" style={{ color: '#000', marginTop: 10, marginBottom: 10, marginLeft : 10 }} />
+                    </Col>
+                      <Col size={7}> 
+                        <Input 
+                            placeholder="Search Symptoms/Services"
+                            style={{ color: 'gray', fontFamily: 'OpenSans', fontSize: 13,  }}
                             placeholderTextColor="gray"
-                            value={this.state.searchValue}
+                            value={this.state.visibleClearIcon}
                             keyboardType={'email-address'}
                             autoFocus={fromAppointment}
                             // onChangeText={searchValue => this.setState({ searchValue })}
-                            onChangeText={enteredText => this.SearchFilterFunction(enteredText)}
+                            onChangeText={enteredText =>this.SearchKeyWordFunction(enteredText) }
                             underlineColorAndroid="transparent"
                             blurOnSubmit={false}
-                            onSubmitEditing={() => { this.searchDoctorListModule(); }}
+                            // onSubmitEditing={() => { this.searchDoctorListModule(); }}
                         />
+                        </Col>
 
-                        <Right>
+                        <Col size={1.3}>
                             <Row>
                                 {this.state.visibleClearIcon != '' ?
                                     <Button Button transparent onPress={() => this.clearTotalText()}>
-                                        <Icon name="ios-close" style={{ fontSize: 30, color: 'gray', marginLeft: 50 }} />
+                                        <Icon name="ios-close" style={{ fontSize: 30, color: 'gray' }} />
                                     </Button>
                                     : null}
-                                <Button Button transparent onPress={() => this.searchDoctorListModule()}>
+                                {/* <Button Button transparent onPress={() => this.searchDoctorListModule()}>
                                     <Icon name="ios-search" style={{ color: '#000' }} />
-                                </Button>
+                                </Button> */}
                             </Row>
 
-                        </Right>
+                        </Col>
 
                     </Row>
 
                     {this.state.searchValue != null ?
                         <FlatList
-                            data={this.state.totalSpecialistDataArry}
+                            data={this.state.totalSpecialistDataArry ? [{ value : 'All Doctors in ' + ( isSearchByCurrentLocation === true ? 'Your Location' :  patientSearchLocationName ), type : ' ' }].concat(this.state.totalSpecialistDataArry) : [{ value : 'All Doctors in ' + ( isSearchByCurrentLocation === true ? 'Your Location' :  patientSearchLocationName ), type : ' ' }] }
+                            extraData={[this.state.searchValue, this.state.totalSpecialistDataArry]}
                             ItemSeparatorComponent={this.itemSaperatedByListView}
-                            renderItem={({ item }) => (
+                            renderItem={({ item, index }) => (
                                 <Row
-                                    onPress={() => this.props.navigation.navigate("Doctor List", {
-                                        resultData: [{
-                                            type: item.name,
-                                            value: item.name==='symptoms'?[item.value]:item.value
-                                        } /*,  {
-                                            type: 'geo',
-                                            value: {
-                                                coordinates : this.state.locationCordinates,
-                                                maxDistance: 1000
-                                            }
-                                        } */]
-                                    })}
-                                >
+                                    onPress={() => { 
+                                        let requestData = [{
+                                             type: 'geo',
+                                             value: {
+                                                coordinates: locationCordinates,
+                                                maxDistance: MAX_DISTANCE_TO_COVER
+                                             }
+                                        }]
+                                        if(index !== 0) {
+                                            requestData.push({
+                                                type: item.type,
+                                                value: item.type === 'symptoms' ? [item.value]: item.value
+                                            })
+                                        }
+                                          this.props.navigation.navigate("Doctor List", { resultData: requestData }) 
+                                        }}
+                                    >
                                     <Text style={{ padding: 10, fontFamily: 'OpenSans', fontSize: 13 }}>{item.value}</Text>
                                     <Right>
-                                        <Text uppercase={true} style={{ color: 'gray', padding: 10, marginRight: 10, fontSize: 13, fontFamily: 'OpenSans-Bold' }}>{item.name}</Text>
+                                        <Text uppercase={true} style={{ color: 'gray', padding: 10, marginRight: 10, fontSize: 13, fontFamily: 'OpenSans-Bold' }}>{item.type}</Text>
                                     </Right>
                                 </Row>
                             )}
@@ -448,7 +410,7 @@ class Home extends Component {
 function homeState(state) {
 
     return {
-        user: state.user
+        bookappointment: state.bookappointment
     }
 }
 export default connect(homeState)(Home)

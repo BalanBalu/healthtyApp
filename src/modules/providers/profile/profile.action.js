@@ -33,6 +33,7 @@ export async function fetchUserProfile(userId, fields, isLoading = true) {
         type: PROFILE_RESPONSE,
         details: respData.data
       })
+      //storeBasicProfile(respData.data)
       return respData.data
     }
     
@@ -49,6 +50,17 @@ export async function fetchUserProfile(userId, fields, isLoading = true) {
   }  
 }
 
+export function storeBasicProfile(result) { 
+  AsyncStorage.setItem('basicProfileData', JSON.stringify({
+    first_name: result.first_name,
+    last_name: result.last_name,
+    dob: result.dob,
+    profile_image: result.profile_image,
+    gender: result.gender,
+    mobile_no :result.mobile_no,
+    email: result.email
+  }))
+}
 
 // get user reviews
 
