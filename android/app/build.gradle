@@ -152,7 +152,7 @@ dependencies {
     implementation project(':react-native-android-location-enabler')
     implementation "com.android.support:appcompat-v7:${rootProject.ext.supportLibVersion}"
     implementation "com.facebook.react:react-native:+"  // From node_modules
-    implementation "com.facebook.react:react-native:0.58.6"
+    implementation "com.facebook.react:react-native:0.59.10"
     compile (name: "razorpay-android", ext: 'aar')
     implementation project(':react-native-customui')
 

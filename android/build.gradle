@@ -13,7 +13,7 @@ buildscript {
         jcenter()
     }
     dependencies {
-        classpath 'com.android.tools.build:gradle:3.2.1'
+        classpath 'com.android.tools.build:gradle:3.3.0'
 
         // NOTE: Do not place your application dependencies here; they belong
         // in the individual module build.gradle files
@@ -43,7 +43,7 @@ subprojects {
      resolutionStrategy.eachDependency { details ->
         if (details.requested.group == 'com.facebook.react'
               && !details.requested.name.contains('multidex') ) {
-           details.useVersion "0.58.6"
+           details.useVersion "0.59.10"
         }
      }
   }
