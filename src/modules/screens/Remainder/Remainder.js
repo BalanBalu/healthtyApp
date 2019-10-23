@@ -55,26 +55,26 @@ class Remainder extends Component {
     };
     render() {
       const Slots= [{time:'10:00',timeperiod:'Am'},{time:'11:00',timeperiod:'Am'},{time:'12:00',timeperiod:'Am'},
-   {time:'10:00',timeperiod:'Am'},{time:'11:00',timeperiod:'Am'},{time:'12:00',timeperiod:'Am'}]
+   {time:'10:00',timeperiod:'Am'},{time:'11:00',timeperiod:'Am'},{time:'12:00',timeperiod:'Am'}
+  ]
       const { isDateTimePickerVisible,selectedDate } = this.state;
         return (
             <Container>
             <Content style={{padding:30}}>
-                <View style={{marginBottom:50}}>
+                <View style={{marginBottom:30}}>
                      
                        <View >
-                         <Text style={{fontFamily:'OpenSans',fontSize:16,marginTop:10}}>What medicine would you like to add ?</Text>
+                         <Text style={styles.NumText}>What medicine would you like to add ?</Text>
                          <Form>
-                         <Autocomplete style={{ height: 45, backgroundColor: '#F1F1F1', paddingLeft: 10, borderRadius: 5,marginTop:5}}/>   
+                         <Autocomplete style={styles.autoField}/>   
                          </Form>
                  </View>
                  <View>
-                 <Text style={{fontFamily:'OpenSans',fontSize:16,marginTop:10}}>What form is the medicine ?</Text>
+                 <Text style={styles.NumText}>What form is the medicine ?</Text>
                  <Form style={{marginTop:5}}>
                    <Card picker style={{height:40,justifyContent:'center'}}>
                      <Picker
                        mode="dropdown"
-                       iosIcon={<Icon name="arrow-down" />}
                        style={{ width: undefined }}
                        placeholder="Select your SIM"
                        placeholderStyle={{ color: "#bfc6ea" }}
@@ -94,12 +94,11 @@ class Remainder extends Component {
                  </Form>
                  </View>
                  <View>
-                 <Text style={{fontFamily:'OpenSans',fontSize:16,marginTop:10}}>What strength is the medicine ?</Text>
+                 <Text style={styles.NumText}>What strength is the medicine ?</Text>
                  <Form style={{marginTop:5}}>
                     <Card picker style={{height:40,justifyContent:'center'}}>
                       <Picker
                         mode="dropdown"
-                        iosIcon={<Icon name="arrow-down" />}
                         style={{ width: undefined }}
                         placeholder="Select your SIM"
                         placeholderStyle={{ color: "#bfc6ea" }}
@@ -116,7 +115,7 @@ class Remainder extends Component {
                     </Card>
                  </Form>
                 <View>
-                <Text style={{fontFamily:'OpenSans',fontSize:16,marginTop:10}}>Do you need to take this medicine every day ?</Text>
+                <Text style={styles.NumText}>Do you need to take this medicine every day ?</Text>
                 <Item style={{ marginTop: 10, borderBottomWidth: 0,  }}>
               <RadioButton.Group
               onValueChange={value => this.setState({ takemed: value }) }
@@ -137,7 +136,7 @@ class Remainder extends Component {
            </Item>
            </View>
           <View>
-             <Text style={{fontFamily:'OpenSans',fontSize:16,marginTop:10}}>How often do you take it ?</Text>
+             <Text style={styles.NumText}>How often do you take it ?</Text>
              <View style={{flexDirection:'row'}}>
                <Text style={{fontFamily:'OpenSans',fontSize:13,marginTop:15}}>Choose Your Time</Text>
                <View style={{alignItems:'flex-start',marginTop:10,marginLeft:10}}>
@@ -151,7 +150,7 @@ class Remainder extends Component {
                     isVisible={isDateTimePickerVisible}
                     onConfirm={this.handleDatePicked}
 								    onCancel={this.hideDateTimePicker}
-									  datePickerModeAndroid='spinner'
+									  datePickerModeAndroid='default'
 								   />
                 </TouchableOpacity>
               </View>
@@ -166,10 +165,10 @@ class Remainder extends Component {
             renderItem={
             ({ item }) =>
              <Col style={{width:'25%',alignItems:'center',marginTop:10,marginLeft:20}}>
-              <TouchableOpacity style={{borderRadius:20,borderColor:'#7f49c3',borderWidth:2,backgroundColor:'#fff',padding:6,height:30,paddingHorizontal: 15}}>
+              <TouchableOpacity style={styles.touchbutton}>
              <Row>
-             <Text style={{color:'#7f49c3',textAlign:'center',fontSize:10,fontWeight:'bold',marginTop:1,}}>{item.time}</Text>
-             <Text style={{color:'#fff',textAlign:'center',backgroundColor:'#7f49c3',borderBottomLeftRadius:0,borderTopLeftRadius:0,borderRadius:8,fontSize:10,fontWeight:'bold',marginLeft:3,paddingHorizontal: 5}}>{item.timeperiod}</Text>
+             <Text style={styles.timeText}>{item.time}</Text>
+             <Text style={styles.periodText}>{item.timeperiod}</Text>
             </Row> 
   
            </TouchableOpacity>
@@ -243,6 +242,42 @@ const styles = StyleSheet.create({
            fontWeight:'bold',
             color:'#fff'
         },
+        NumText:{
+          fontFamily:'OpenSans',
+          fontSize:16,
+          marginTop:10
+        },
+        autoField:{
+          height: 45, 
+          backgroundColor: '#F1F1F1', 
+          paddingLeft: 10,
+          borderRadius: 5,
+          marginTop:5
+        },
+        touchbutton:{
+          borderRadius:5,
+          borderColor:'#7f49c3',
+          borderWidth:2,
+          backgroundColor:'#fff',
+          padding:6,
+          height:30,
+          paddingHorizontal: 15
+        },
+        timeText:{
+          textAlign:'center',
+          fontSize:10,
+          fontWeight:'bold',
+          marginTop:1,
+        },
+        periodText:{
+          textAlign:'center',
+          borderBottomLeftRadius:0,
+          borderTopLeftRadius:0,
+          fontSize:10,
+          fontWeight:'bold',
+          marginLeft:3,
+          paddingHorizontal: 5
+        }
   
 
 })
