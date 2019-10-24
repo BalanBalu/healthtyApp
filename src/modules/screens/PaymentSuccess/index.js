@@ -86,6 +86,12 @@ class PaymentSuccess extends Component {
                              {successBookSlotDetails.slotData ? this.renderHospitalLocation(successBookSlotDetails.slotData.location) : null}
                             
                              
+                             <Row style={styles.rowDetail}>
+                             <Text style={{textAlign:'center',fontFamily:'OpenSans',fontSize:16,}}>Date & Time</Text>
+                             <Right>
+                                <Text style={{textAlign:'center',fontFamily:'OpenSans',fontSize:16,color:'#545454'}}>19/11/2019,10:00 PM </Text>
+                            </Right>
+                             </Row>
                              <Row style={styles.rowDetail}>                           
                                  
                                     <Text style={{textAlign:'center',fontFamily:'OpenSans',fontSize:16,}}>Doctor Fee</Text>
