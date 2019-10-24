@@ -6,19 +6,24 @@ import { store } from './store'
 import { StyleProvider, Root } from 'native-base';
 import getTheme from '../theme/components';
 import material from '../theme/variables/material';
-import { AsyncStorage, Text } from 'react-native';
-import { setDoctorLocally } from '../modules/providers/auth/auth.actions';
+import { AsyncStorage, Alert } from 'react-native';
 
-import { fetchUserNotification, UpDateUserNotification, fetchUserMarkedAsReadedNotification } from '../../src/modules/providers/notification/notification.actions';
+//import firebase from 'react-native-firebase';
+import { fetchUserMarkedAsReadedNotification } from '../../src/modules/providers/notification/notification.actions';
+import NotifService from './NotifService';
 export default class App extends Component {
     constructor(props) {
       super(props);
+      this.state = {
+        senderId: "607089059424"
+      };
+      this.notif = new NotifService(this.onRegister.bind(this), this.onNotif.bind(this));
   } 
   componentDidMount() {
       setInterval(() => {
       this.getMarkedAsReadedNotification();
      },1000)
-   
+     //this.checkPermission();
   }
 
   getMarkedAsReadedNotification = async () => {
@@ -30,7 +35,49 @@ export default class App extends Component {
     catch (e) {
       console.log(e)
     }
-  
+  }
+ /* async checkPermission() {
+    const enabled = await firebase.messaging().hasPermission();
+    if (enabled) {
+        this.getToken();
+    } else {
+        this.requestPermission();
+    }
+  }
+  async getToken() {
+    let fcmToken = await AsyncStorage.getItem('fcmToken');
+    if (!fcmToken) {
+        fcmToken = await firebase.messaging().getToken();
+        if (fcmToken) {
+            // user has a device token
+            console.log('fcmToken: ' +  fcmToken)
+            await AsyncStorage.setItem('fcmToken', fcmToken);
+        }
+    }
+  }
+  async requestPermission() {
+    try {
+        await firebase.messaging().requestPermission();
+        // User has authorised
+        this.getToken();
+    } catch (error) {
+        // User has rejected permissions
+        console.log('permission rejected');
+    }
+  }*/
+  onRegister(token) {
+    Alert.alert("Registered !", JSON.stringify(token));
+    console.log(token);
+    this.setState({ registerToken: token.token, gcmRegistered: true });
+  }
+
+  onNotif(notif) {
+    console.log(notif);
+    Alert.alert(notif.title, notif.message);
+  }
+
+  handlePerm(perms) {
+    Alert.alert("Permissions", JSON.stringify(perms));
   }
   render() {
    
