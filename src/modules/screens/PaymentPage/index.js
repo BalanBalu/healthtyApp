@@ -171,23 +171,25 @@ class PaymentPage extends Component {
     razorpayChekout(paymentMethodData) {
         
         const options = {
-            description: 'Pay for your Health',
+            description: this.state.bookSlotDetails.diseaseDescription || 'Pay for your Health',
             currency: 'INR',
             key_id: RAZOR_KEY,
             amount: this.state.amount * 100, // here the value is consider as paise so, we have to multiply to 100 
             email: this.userBasicData.email,
             contact: this.userBasicData.mobile_no,
-            ...paymentMethodData
+            ...paymentMethodData,
+            'notes[message]': 'New Appointment Booking: ' + this.userId 
         }
-        console.log(options);
+        console.log(JSON.stringify(options));
         Razorpay.open(options).then((data) => {
             // handle success
+            console.log(data);
             this.updatePaymentDetails(true, data, 'online');
             if(this.state.saveCardCheckbox) {
                 this.storeCardData();
             }
         }).catch((error) => {
-            // handle failure 
+            console.log(error);
              this.updatePaymentDetails(false, error, 'online');
         });
     }
