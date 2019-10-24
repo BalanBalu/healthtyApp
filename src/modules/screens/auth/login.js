@@ -7,7 +7,7 @@ import { connect } from 'react-redux'
 import { Image, TouchableOpacity, View, ScrollView, AsyncStorage } from 'react-native';
 import { Checkbox } from 'react-native-paper';
 
-import { login, RESET_REDIRECT_NOTICE } from '../../providers/auth/auth.actions';
+import { login, RESET_REDIRECT_NOTICE, userFiledsUpdate } from '../../providers/auth/auth.actions';
 import styles from '../../screens/auth/styles'
 import Spinner from '../../../components/Spinner';
 import { store } from '../../../setup/store';
@@ -48,6 +48,7 @@ class Login extends Component {
             })
             return
           }
+          this.updateDeviceToken(this.props.user.details.userId);  // update Unique Device_Token 
           this.props.navigation.navigate('Home');
         } else {
           this.setState({ loginErrorMsg: this.props.user.message })
@@ -63,7 +64,33 @@ class Login extends Component {
       console.log(e);
     }
   }
-
+  
+  updateDeviceToken=async(userId)=>{
+      try {
+          const deviceToken = await AsyncStorage.getItem('deviceToken')
+          let requestData = {
+              device_token:deviceToken
+          }
+          let response = await userFiledsUpdate(userId, requestData);
+          // console.log(response);
+          if (response.success) {
+              Toast.show({
+                  text: 'Device Token updated successfully',
+                  type: "success",
+                  duration: 1000
+              });
+          }
+          else {
+              Toast.show({
+                  text: response.message,
+                  type: "danger",
+                  duration: 1000
+              });
+          }
+      } catch (e) {
+          console.log(e);
+      }
+  }
   getUserProfile = async () => {
     try {
             let userId = await AsyncStorage.getItem('userId');
