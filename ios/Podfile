@@ -13,6 +13,7 @@ target 'medflic' do
 
     #pod 'react-native-image-picker', :path => '../node_modules/react-native-image-picker'
 
+
   end
 
   target 'medflicTests' do
@@ -25,7 +26,7 @@ end
 
  # Flexbox Layout Manager Used By React Native
  pod 'yoga', :path => '../node_modules/react-native/ReactCommon/yoga/Yoga.podspec'
-
+ pod 'Firebase/Analytics'
  # React Native
  pod 'React', path: '../node_modules/react-native', subspecs: [
    # Comment out any unneeded subspecs to reduce bundle size.
