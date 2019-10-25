@@ -61,7 +61,7 @@ class Categories extends Component {
                     </Col>
                     <Col style={{ padding: 1,
     backgroundColor: '#FF9502',
-    borderRadius: 20,marginTop:10,justifyContent:'center',width:'100%'}}>
+    borderRadius: 20,marginTop:10,justifyContent:'center',width:'100%',alignItems:'center'}}>
                     
 <Text style={styles.titleText}>{item.category_name}</Text>
 
@@ -128,7 +128,7 @@ const styles = StyleSheet.create({
     color: 'white',
     textAlign: 'center',
     fontFamily: 'OpenSans',
-    marginTop: 5
+    
   },
 
 
