@@ -554,50 +554,51 @@ class PaymentPage extends Component {
                     <View style={{ borderColor: '#000', borderWidth: 1, backgroundColor: '#f2f2f2', borderRadius: 5, marginLeft: 10, marginRight: 10, marginTop: 10, marginBottom: 10 }}>
                         <View style={{ marginTop: 10, marginBottom: 10 }}>
                             <Grid style={{ marginRight: 10, marginLeft: 10 }}>
-                                <Row>
-
-                                    <Col style={{ width: '50%', alignItems: 'center',justifyContent:'center'}} onPress={() => this.setState({ selectedNetBank: 'SBIN', selectedItems:[] })}>
-                                      <TouchableOpacity style={selectedNetBank === 'SBIN' ? {borderColor:'red',borderWidth:1,padding:15} : {padding:15} }>
+                              
+                                
+                                
+                               <Row>
+                                    <Col style={{ width: '50%', alignItems: 'center',borderColor:'red',borderWidth:1}} >
+                                      <TouchableOpacity style={selectedNetBank === 'SBIN' ? {padding:15,} : {padding:15}} onPress={() => this.setState({ selectedNetBank: 'SBIN', selectedItems:[] })}>
                                         <Image source={require('../../../../assets/images/statebank.png')} style={{ width: 50, height: 50, }} />
                                         <Text style={{ fontSize: 15, fontFamily: 'OpenSans', marginTop: 5, textAlign: 'center' }}>State Bank</Text>
                                       </TouchableOpacity> 
                                     </Col>
 
-                                    <Col style={{ width: '50%', alignItems: 'center' }} onPress={() => this.setState({ selectedNetBank: 'UTIB', selectedItems:[] })}>
-                                    <TouchableOpacity style={selectedNetBank === 'UTIB' ? {borderColor:'red',borderWidth:1,padding:15} : {padding:15} }>
-
-                                        <Image source={require('../../../../assets/images/Axisbank.jpg')} style={{ width: 50, height: 50, }} />
+                                    <Col style={{ width: '50%', alignItems: 'center',borderColor:'red',borderWidth:1,marginLeft:5}} >
+                                    <TouchableOpacity style={selectedNetBank === 'UTIB' ? {padding:15} : {padding:15}} onPress={() => this.setState({ selectedNetBank: 'UTIB', selectedItems:[] })}>
+                                     <Image source={require('../../../../assets/images/Axisbank.jpg')} style={{ width: 50, height: 50, }} />
                                         <Text style={{ fontSize: 15, fontFamily: 'OpenSans', marginTop: 5, textAlign: 'center' }}>Axis Bank</Text>
                                     </TouchableOpacity>
                                     </Col>
                                     
-                                </Row>
+                                </Row> 
                                 <Row style={{ marginTop: 10 }}>
-                                   <Col style={{ width: '50%', alignItems: 'center' }}
-                                        onPress={() => this.setState({ selectedNetBank: 'ICIC', selectedItems:[] })}>
-                                       <TouchableOpacity style={selectedNetBank === 'ICIC' ? {borderColor:'red',borderWidth:1,padding:15}: { padding:15 } }>
+                                   <Col style={{ width: '50%', alignItems: 'center', borderColor:'red',borderWidth:1}}
+                                       >
+                                       <TouchableOpacity style={selectedNetBank === 'ICIC' ? {padding:15}: { padding:15 }}  onPress={() => this.setState({ selectedNetBank: 'ICIC', selectedItems:[] })}>
 
                                         <Image source={require('../../../../assets/images/ICICI.jpg')} style={{ width: 50, height: 50, }}/>
                                         <Text style={{ fontSize: 15, fontFamily: 'OpenSans', marginTop: 5, textAlign: 'center' }}>ICICI Bank</Text>
                                     </TouchableOpacity>
                                     </Col>
-                                    <Col style={{ width: '50%', alignItems: 'center' }}
-                                         onPress={() => this.setState({ selectedNetBank: 'HDFC', selectedItems: [] })}>
-                                       <TouchableOpacity style={selectedNetBank === 'HDFC' ?  {borderColor:'red',borderWidth:1,padding:15} : {padding:15}}>
+                                    <Col style={{ width: '50%', alignItems: 'center',borderColor:'red',borderWidth:1,marginLeft:5 }}
+                                         >
+                                       <TouchableOpacity style={selectedNetBank === 'HDFC' ?  {padding:15} : {padding:15}} onPress={() => this.setState({ selectedNetBank: 'HDFC', selectedItems: [] })}>
                                           <Image source={require('../../../../assets/images/HDFCbank.png')} style={{ width: 50, height: 50, }} />
                                           <Text style={{ fontSize: 15, fontFamily: 'OpenSans', marginTop: 5, textAlign: 'center' }}>HDFC Bank</Text>
                                     </TouchableOpacity>
                                     </Col>
                                 </Row>
                                 <Row style={{ marginTop: 10 }}>
-                                    <Col style={{ width: '50%', alignItems: 'center' }}
-                                         onPress={() => this.setState({ selectedNetBank: 'IDIB', selectedItems: [] })}>
-                                      <TouchableOpacity style={selectedNetBank === 'IDIB' ? {borderColor:'red',borderWidth:1,padding:15} : {padding:15} }>
+                                    <Col style={{ width: '50%', alignItems: 'center',borderColor:'red',borderWidth:1 }}
+                                        >
+                                      <TouchableOpacity style={selectedNetBank === 'IDIB' ? {padding:15} : {padding:15}}  onPress={() => this.setState({ selectedNetBank: 'IDIB', selectedItems: [] })}>
                                         <Image source={require('../../../../assets/images/Indianbank.png')} style={{ width: 50, height: 50, }} />
                                         <Text style={{ fontSize: 15, fontFamily: 'OpenSans', marginTop: 5, textAlign: 'center' }}>Indian Bank</Text>
                                     </TouchableOpacity>
                                     </Col>
-                                    <Col style={{ width: '50%' }}>
+                                    <Col style={{ width: '50%',marginLeft:5}}>
 
                                     </Col>
                                 </Row>
@@ -670,16 +671,16 @@ class PaymentPage extends Component {
                         <View style={{ marginTop: 10, marginBottom: 10 }}>
                             <Grid style={{ marginRight: 10, marginLeft: 10, alignItems: 'center' }}>
                                 <Row >
-                                    <Col style={{ width: '50%', alignItems: 'center' }}
-                                        onPress={() => this.setState({ selectedWallet: 'olamoney' })}>
-                                        <TouchableOpacity style={selectedWallet === 'olamoney' ? {borderColor:'red',borderWidth:1,padding:15} : {padding:15} }>
+                                    <Col style={{ width: '50%', alignItems: 'center',borderColor:'red',borderWidth:1, }}
+                                        >
+                                        <TouchableOpacity style={selectedWallet === 'olamoney' ? {padding:15} : {padding:15}} onPress={() => this.setState({ selectedWallet: 'olamoney' })}>
                                             <Image source={require('../../../../assets/images/Ola.jpg')} style={{ width: 50, height: 50, }} />
                                             <Text style={{ fontSize: 15, fontFamily: 'OpenSans', marginTop: 5, textAlign: 'center' }}>Ola Wallet</Text>
                                         </TouchableOpacity>
                                     </Col>
-                                    <Col style={{ width: '50%', alignItems: 'center' }}
-                                         onPress={() => this.setState({ selectedWallet: 'payzapp' })}>
-                                         <TouchableOpacity style={selectedWallet === 'payzapp' ? {borderColor:'red',borderWidth:1,padding:15} : {padding:15} }>
+                                    <Col style={{ width: '50%', alignItems: 'center',borderColor:'red',borderWidth:1,marginLeft:5 }}
+                                         >
+                                         <TouchableOpacity style={selectedWallet === 'payzapp' ? {padding:15} : {padding:15}} onPress={() => this.setState({ selectedWallet: 'payzapp' })}>
                                        
                                         <Image source={require('../../../../assets/images/payzapp.png')} style={{ width: 50, height: 50, }} />
                                         <Text style={{ fontSize: 15, fontFamily: 'OpenSans', marginTop: 5, textAlign: 'center' }}>PayZapp</Text>
@@ -687,14 +688,14 @@ class PaymentPage extends Component {
                                     </Col>
                                     </Row>
                                     <Row style={{ marginTop: 10, }}>
-                                    <Col style={{ width: '55%', alignItems: 'center' }}
-                                         onPress={() => this.setState({ selectedWallet: 'freecharge' })}>
-                                       <TouchableOpacity style={selectedWallet === 'freecharge' ? {borderColor:'red',borderWidth:1,padding:15} : {padding:15} }>
+                                    <Col style={{ width: '50%', alignItems: 'center',borderColor:'red',borderWidth:1, }}
+                                         >
+                                       <TouchableOpacity style={selectedWallet === 'freecharge' ? {padding:15} : {padding:15}} onPress={() => this.setState({ selectedWallet: 'freecharge' })}>
                                           <Image source={require('../../../../assets/images/freecharge.png')} style={{ width: 50, height: 50, }} />
                                           <Text style={{ fontSize: 15, fontFamily: 'OpenSans', marginTop: 5, textAlign: 'center' }}>FreeCharge</Text>
                                        </TouchableOpacity>
                                     </Col>
-                                    <Col style={{ width: '50%', alignItems: 'center' }}>
+                                    <Col style={{ width: '50%', alignItems: 'center',borderColor:'red',borderWidth:1,marginLeft:5}}>
                                       
                                     </Col>
                                 </Row>
