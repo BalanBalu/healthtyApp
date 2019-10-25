@@ -65,10 +65,10 @@ export default class App extends Component {
         console.log('permission rejected');
     }
   }*/
-  onRegister(token) {
-    Alert.alert("Registered !", JSON.stringify(token));
-    console.log(token);
-    this.setState({ registerToken: token.token, gcmRegistered: true });
+  onRegister=async(token)=> {
+    // Alert.alert("Registered !", JSON.stringify(token));
+    await AsyncStorage.setItem('deviceToken',  token.token);
+    // this.setState({ registerToken: token.token, gcmRegistered: true });
   }
 
   onNotif(notif) {
