@@ -67,6 +67,7 @@
 		AD66AED6E4A74425BBE93453 /* libRNVectorIcons-tvOS.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 4C32883541B749C8AAA46260 /* libRNVectorIcons-tvOS.a */; };
 		ADBDB9381DFEBF1600ED6528 /* libRCTBlob.a in Frameworks */ = {isa = PBXBuildFile; fileRef = ADBDB9271DFEBF0700ED6528 /* libRCTBlob.a */; };
 		B86FCA072362A7F400A37008 /* libRNCPushNotificationIOS.a in Frameworks */ = {isa = PBXBuildFile; fileRef = B86FC9D82362A7D600A37008 /* libRNCPushNotificationIOS.a */; };
+		B86FCA092362AED900A37008 /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = B86FCA082362AED900A37008 /* GoogleService-Info.plist */; };
 		B8C4B71E230CA26E0041511A /* libRazorpay.a in Frameworks */ = {isa = PBXBuildFile; fileRef = B8C4B71D230CA2580041511A /* libRazorpay.a */; };
 		B8C4B720230CA2BC0041511A /* Razorpay.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = B8C4B71F230CA2BC0041511A /* Razorpay.framework */; };
 		B8C4B721230CA2BC0041511A /* Razorpay.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = B8C4B71F230CA2BC0041511A /* Razorpay.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
@@ -521,6 +522,7 @@
 		ADD3E751ED16895C2259AC9F /* libPods-medflic-tvOSTests.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-medflic-tvOSTests.a"; sourceTree = BUILT_PRODUCTS_DIR; };
 		B612383D8AB14E0F9C742767 /* rubicon-icon-font.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = "rubicon-icon-font.ttf"; path = "../node_modules/native-base/Fonts/rubicon-icon-font.ttf"; sourceTree = "<group>"; };
 		B86FC9D12362A7D600A37008 /* PushNotificationIOS.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = PushNotificationIOS.xcodeproj; path = "../node_modules/@react-native-community/push-notification-ios/ios/PushNotificationIOS.xcodeproj"; sourceTree = "<group>"; };
+		B86FCA082362AED900A37008 /* GoogleService-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "GoogleService-Info.plist"; sourceTree = "<group>"; };
 		B873C85A2290043B002BDEB1 /* opensans-bold.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "opensans-bold.ttf"; sourceTree = "<group>"; };
 		B873C85B2290043F002BDEB1 /* opensans-regular.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "opensans-regular.ttf"; sourceTree = "<group>"; };
 		B873C85C22900443002BDEB1 /* opensans-semibold.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "opensans-semibold.ttf"; sourceTree = "<group>"; };
@@ -704,6 +706,7 @@
 		13B07FAE1A68108700A75B9A /* medflic */ = {
 			isa = PBXGroup;
 			children = (
+				B86FCA082362AED900A37008 /* GoogleService-Info.plist */,
 				B8E5BC4B23629A6100309CC8 /* medflic.entitlements */,
 				008F07F21AC5B25A0029DE68 /* main.jsbundle */,
 				13B07FAF1A68108700A75B9A /* AppDelegate.h */,
@@ -1581,6 +1584,7 @@
 				4560F0C4358A4DBD842B3FC1 /* Feather.ttf in Resources */,
 				42D4601D297D42C4A39A27DC /* FontAwesome5_Brands.ttf in Resources */,
 				D27F7D97A3704A34A2E7D326 /* FontAwesome5_Regular.ttf in Resources */,
+				B86FCA092362AED900A37008 /* GoogleService-Info.plist in Resources */,
 				541B5BC5CF344839A22DC14F /* FontAwesome5_Solid.ttf in Resources */,
 				7D4D848D95AC4F7DB2ABC92F /* Ionicons.ttf in Resources */,
 				3BA60476F3864508B2DB8D63 /* MaterialCommunityIcons.ttf in Resources */,
