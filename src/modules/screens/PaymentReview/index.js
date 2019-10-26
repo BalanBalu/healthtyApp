@@ -103,7 +103,7 @@ export default class PaymentReview extends Component {
                        textContent={spinnerText}
                     />
                     <View style={{marginBottom:20}}>
-                 <Card transparent>
+                 <Card transparent >
                     <CardItem header style={styles.cardItem}>
                      <Grid>
                       {/* <Col style={{alignItems:'center'}}>
@@ -112,7 +112,7 @@ export default class PaymentReview extends Component {
                        <Text style={styles. cardItemText2}>{getAllSpecialist(bookSlotDetails.specialist)}</Text>
                       </Col> */}
                        <Row>
-                         <Col style={{width:'25%',}}>
+                         <Col style={{width:'25%',justifyContent:'center'}}>
                             <Thumbnail square source={renderDoctorImage(bookSlotDetails)}   style={{ height: 70, width: 70, borderRadius: 10 }} />
                          </Col> 
                          <Col style={{width:'80%',marginTop:10}}>
@@ -143,12 +143,12 @@ export default class PaymentReview extends Component {
               </View> : null}
               <Row style={{ borderTopColor:'gray', borderTopWidth:1,marginTop:10}}>
                <Col style={{ borderRightColor:'gray', borderRightWidth:1,marginTop:5,alignItems:'center'}}>
-                <Icon name='md-calendar' style={{color:'#0055A5',fontSize:40}} />
-                <Text style={{color:'#0055A5'}}>{bookSlotDetails.slotData && formatDate(bookSlotDetails.slotData.slotStartDateAndTime, 'Do MMMM, YYYY')}</Text>
+                <Icon name='md-calendar' style={{color:'#0055A5',fontSize:30}} />
+                <Text style={{color:'#0055A5',fontFamily:'OpenSans',fontSize:14}}>{bookSlotDetails.slotData && formatDate(bookSlotDetails.slotData.slotStartDateAndTime, 'Do MMMM, YYYY')}</Text>
                </Col>
                <Col style={{alignItems:'center',marginTop:5}}>
-                <Icon name="md-clock" style={{color:'green',fontSize:40}}/>
-                <Text style={{color:'green'}}>{bookSlotDetails.slotData && formatDate(bookSlotDetails.slotData.slotStartDateAndTime, 'hh:mm A')} - {bookSlotDetails.slotData && formatDate(bookSlotDetails.slotData.slotEndDateAndTime, 'hh:mm A')}</Text>
+                <Icon name="md-clock" style={{color:'green',fontSize:30}}/>
+                <Text style={{color:'green',fontFamily:'OpenSans',fontSize:14}}>{bookSlotDetails.slotData && formatDate(bookSlotDetails.slotData.slotStartDateAndTime, 'hh:mm A')} - {bookSlotDetails.slotData && formatDate(bookSlotDetails.slotData.slotEndDateAndTime, 'hh:mm A')}</Text>
                 </Col>
               </Row>
             </Grid>
@@ -158,7 +158,7 @@ export default class PaymentReview extends Component {
             </Card>
               <View>
                   <Row>
-                  <Icon name="create" style={{fontSize:20,marginLeft:10, marginTop:15,}}/>
+                  <Icon name="create" style={{fontSize:20,marginLeft:10, marginTop:20,}}/>
                   <Text style={styles.subText}> Your Reason For Checkup</Text>
                   </Row>
                  <Form style={{marginRight:1,marginLeft:-13}}>
@@ -200,26 +200,26 @@ const styles = StyleSheet.create({
          borderTopLeftRadius:10,
         borderTopRightRadius:10,
         justifyContent:'center',
-        height:100,
-         marginTop:50
+         marginTop:20,
+       
          },
          cardItemText:{
          fontFamily:'OpenSans',
-         fontSize:20,
+         fontSize:14,
         fontWeight:'bold',
-         color:'#FFF',paddingBottom:-10
+         color:'#FFF',
          },
          cardItemText2:{
+          marginTop:5,
              fontFamily:'OpenSans',
-             fontSize:14,
-            fontWeight:'bold',
+             fontSize:12,
              color:'#FFF',
-            paddingBottom:-10,
+            lineHeight:15,
             width:'90%'
              },
              cardItemText3:{
                  fontFamily:'OpenSans',
-                 fontSize:18,
+                 fontSize:16,
                 height:30,
                 fontWeight:'bold',
                  color:'#FFF',paddingBottom:-10
@@ -247,20 +247,20 @@ const styles = StyleSheet.create({
       },
       diseaseText:{
         fontFamily:'OpenSans',
-        fontSize:16,
+        fontSize:14,
         marginLeft:10,
         fontStyle:'italic',
         marginTop:-5
     },
     hospitalText:{
         fontFamily:'OpenSans',
-        fontSize:16,
+        fontSize:14,
         marginLeft:15,
         width:"80%"
     },
     hosAddressText:{
         fontFamily:'OpenSans',
-        fontSize:16,
+        fontSize:14,
         marginLeft:15,
         fontStyle: 'italic',
         width:"80%",
@@ -275,26 +275,27 @@ const styles = StyleSheet.create({
         borderBottomRightRadius:10,
         justifyContent:'center',
         height:40,
-         marginTop:10
+         marginTop:10,
+        alignItems:'center'
          },
     cardItemText:{
         fontFamily:'OpenSans',
-        fontSize:16,
+        fontSize:14,
         fontWeight:'bold',
         color:'#FFF'
          },
         subText:{
             fontFamily:'Opensans',
-            fontSize:18,
+            fontSize:16,
             fontWeight:'bold',
-            marginTop:15,
+            marginTop:20,
             marginLeft:5
           },
           textInput:{
             borderColor:'gray',
             borderRadius:10,
             borderWidth:0.5,
-            height:80,
+            height:100,
             fontSize:14,
             textAlignVertical: 'top',
             width:'100%',
@@ -303,7 +304,7 @@ const styles = StyleSheet.create({
             paddingBottom: 10,
             borderRadius: 10,
             paddingRight: 10,
-            marginTop:10
+            marginTop:15
           },
           payButton:{
             borderRadius:10,
@@ -322,7 +323,7 @@ const styles = StyleSheet.create({
           },
           payButtonText:{
             fontFamily:'OpenSans',
-            fontSize:18,
+            fontSize:14,
             color:'#fff',
             textAlign:'center',
             fontWeight:'bold'
