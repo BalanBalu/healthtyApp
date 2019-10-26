@@ -85,6 +85,7 @@ export async function createPaymentRazor(paymentData) {
     let respData = response.data;
     return respData;
   } catch (e) {
+    console.log(e);
     return {
       message: 'exception' + e,
       success: false

@@ -312,7 +312,7 @@ class AppointmentDetails extends Component {
                   </View>
                 </Grid>
                 <Grid style={{ marginTop: 5 }}>
-                  {data.appointment_status == 'APPROVED' || this.state.appointmentStatus === 'APPROVED' ?
+                  {data.appointment_status == 'APPROVED' || this.state.appointmentStatus === 'APPROVED' || data.appointment_status == 'PENDING'  ?
                     <Col style={width = 'auto'}>
                       <Button block danger style={{ margin: 1, marginTop: 10, marginLeft: 1, borderRadius: 30, padding: 15, height: 40, width: "auto" }} onPress={() => this.navigateCancelAppoointment()} testID='cancelAppointment'>
                         <Text style={{ textAlign: 'center', fontFamily: 'OpenSans', fontSize: 15, fontWeight: 'bold' }}>CANCEL APPOINTMENT</Text>

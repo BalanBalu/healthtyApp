@@ -1,17 +1,12 @@
 import React, { Component } from 'react';
-import { Container, Toast, Content, Text, Title,Form, Header, H3, Button, Item, Card, CardItem, List, ListItem, Left, Right, Footer, Thumbnail, Body, Icon, Input, CheckBox } from 'native-base';
+import { Container, Toast, Content, Text, Form, Button, Item, Card, CardItem, Thumbnail,  Icon } from 'native-base';
 import { hasLoggedIn } from '../../providers/auth/auth.actions';
-import { messageShow, messageHide } from '../../providers/common/common.action';
 import { Col, Row, Grid } from 'react-native-easy-grid';
-import { connect } from 'react-redux'
-import { StyleSheet, Image, AsyncStorage, TouchableOpacity, View,TextInput } from 'react-native';
+import { StyleSheet, AsyncStorage, View,TextInput } from 'react-native';
 import { validateBooking } from '../../providers/bookappointment/bookappointment.action';
 import { formatDate , isOnlyLetter} from '../../../setup/helpers';
 import Spinner from '../../../components/Spinner';
-import { RenderHospitalAddress,renderDoctorImage, getDoctorEducation, getDoctorSpecialist, getAllSpecialist } from '../../common';
-//import RazorpayCheckout from 'react-native-razorpay';
-import { ScrollView } from 'react-native-gesture-handler';
-//import appIcon from '../../../../assets/Icon.png';
+import { renderDoctorImage, getDoctorEducation, getAllSpecialist } from '../../common';
 
 import BookAppointmentPaymentUpdate from '../../providers/bookappointment/bookAppointment';
 
@@ -47,7 +42,7 @@ export default class PaymentReview extends Component {
             })
             return
         }
-        this.setState({ isLoading: true });
+        this.setState({ isLoading: true, spinnerText: "Please Wait" });
         const bookingSlotData = this.state.bookSlotDetails
         const reqData = {
             doctorId: bookingSlotData.doctorId,
@@ -55,7 +50,7 @@ export default class PaymentReview extends Component {
             endTime: bookingSlotData.slotData.slotEndDateAndTime,
         }
         validationResult = await validateBooking(reqData)
-        this.setState({ isLoading: false });
+        this.setState({ isLoading: false, spinnerText: ' ' });
         if (validationResult.success) {
             const amount = this.state.bookSlotDetails.slotData.fee;
             this.props.navigation.navigate('paymentPage', { service_type: 'APPOINTMENT', bookSlotDetails: this.state.bookSlotDetails, amount: amount })
@@ -78,12 +73,13 @@ export default class PaymentReview extends Component {
             })
             return
         }
+        this.setState({ isLoading: true, spinnerText: "We are Booking your Appoinmtent" })
         console.log(this.state.bookSlotDetails);
         const userId = await AsyncStorage.getItem('userId');
         this.BookAppointmentPaymentUpdate = new BookAppointmentPaymentUpdate();
         let response = await this.BookAppointmentPaymentUpdate.updatePaymentDetails(true, {}, 'cash', this.state.bookSlotDetails, 'APPOINTMENT', userId, 'cash');
         console.log('Book Appointment Payment Update Response ');
-        console.log(response);
+        
         if (response.success) {
             this.props.navigation.navigate('paymentsuccess', { successBookSlotDetails: this.state.bookSlotDetails, paymentMethod: 'Cash' });
         } else {
@@ -93,17 +89,21 @@ export default class PaymentReview extends Component {
                 duration: 3000
             })
         }
-
+        this.setState({ isLoading: false, spinnerText: ' ' }); 
     }
 
     render() {
-        const { bookSlotDetails } = this.state;
+        const { bookSlotDetails, isLoading, spinnerText } = this.state;
         return (
 
             <Container>
                 <Content style={{padding:15}}>
+                    <Spinner
+                       visible={isLoading}
+                       textContent={spinnerText}
+                    />
                     <View style={{marginBottom:20}}>
-                 <Card transparent>
+                 <Card transparent >
                     <CardItem header style={styles.cardItem}>
                      <Grid>
                       {/* <Col style={{alignItems:'center'}}>
@@ -112,7 +112,7 @@ export default class PaymentReview extends Component {
                        <Text style={styles. cardItemText2}>{getAllSpecialist(bookSlotDetails.specialist)}</Text>
                       </Col> */}
                        <Row>
-                         <Col style={{width:'25%',}}>
+                         <Col style={{width:'25%',justifyContent:'center'}}>
                             <Thumbnail square source={renderDoctorImage(bookSlotDetails)}   style={{ height: 70, width: 70, borderRadius: 10 }} />
                          </Col> 
                          <Col style={{width:'80%',marginTop:10}}>
@@ -143,12 +143,12 @@ export default class PaymentReview extends Component {
               </View> : null}
               <Row style={{ borderTopColor:'gray', borderTopWidth:1,marginTop:10}}>
                <Col style={{ borderRightColor:'gray', borderRightWidth:1,marginTop:5,alignItems:'center'}}>
-                <Icon name='md-calendar' style={{color:'#0055A5',fontSize:40}} />
-                <Text style={{color:'#0055A5'}}>{bookSlotDetails.slotData && formatDate(bookSlotDetails.slotData.slotStartDateAndTime, 'Do MMMM, YYYY')}</Text>
+                <Icon name='md-calendar' style={{color:'#0055A5',fontSize:30}} />
+                <Text style={{color:'#0055A5',fontFamily:'OpenSans',fontSize:14}}>{bookSlotDetails.slotData && formatDate(bookSlotDetails.slotData.slotStartDateAndTime, 'Do MMMM, YYYY')}</Text>
                </Col>
                <Col style={{alignItems:'center',marginTop:5}}>
-                <Icon name="md-clock" style={{color:'green',fontSize:40}}/>
-                <Text style={{color:'green'}}>{bookSlotDetails.slotData && formatDate(bookSlotDetails.slotData.slotStartDateAndTime, 'hh:mm A')} - {bookSlotDetails.slotData && formatDate(bookSlotDetails.slotData.slotEndDateAndTime, 'hh:mm A')}</Text>
+                <Icon name="md-clock" style={{color:'green',fontSize:30}}/>
+                <Text style={{color:'green',fontFamily:'OpenSans',fontSize:14}}>{bookSlotDetails.slotData && formatDate(bookSlotDetails.slotData.slotStartDateAndTime, 'hh:mm A')} - {bookSlotDetails.slotData && formatDate(bookSlotDetails.slotData.slotEndDateAndTime, 'hh:mm A')}</Text>
                 </Col>
               </Row>
             </Grid>
@@ -158,7 +158,7 @@ export default class PaymentReview extends Component {
             </Card>
               <View>
                   <Row>
-                  <Icon name="create" style={{fontSize:20,marginLeft:10, marginTop:15,}}/>
+                  <Icon name="create" style={{fontSize:20,marginLeft:10, marginTop:20,}}/>
                   <Text style={styles.subText}> Your Reason For Checkup</Text>
                   </Row>
                  <Form style={{marginRight:1,marginLeft:-13}}>
@@ -200,26 +200,26 @@ const styles = StyleSheet.create({
          borderTopLeftRadius:10,
         borderTopRightRadius:10,
         justifyContent:'center',
-        height:100,
-         marginTop:50
+         marginTop:20,
+       
          },
          cardItemText:{
          fontFamily:'OpenSans',
-         fontSize:20,
+         fontSize:14,
         fontWeight:'bold',
-         color:'#FFF',paddingBottom:-10
+         color:'#FFF',
          },
          cardItemText2:{
+          marginTop:5,
              fontFamily:'OpenSans',
-             fontSize:14,
-            fontWeight:'bold',
+             fontSize:12,
              color:'#FFF',
-            paddingBottom:-10,
+            lineHeight:15,
             width:'90%'
              },
              cardItemText3:{
                  fontFamily:'OpenSans',
-                 fontSize:18,
+                 fontSize:16,
                 height:30,
                 fontWeight:'bold',
                  color:'#FFF',paddingBottom:-10
@@ -247,20 +247,20 @@ const styles = StyleSheet.create({
       },
       diseaseText:{
         fontFamily:'OpenSans',
-        fontSize:16,
+        fontSize:14,
         marginLeft:10,
         fontStyle:'italic',
         marginTop:-5
     },
     hospitalText:{
         fontFamily:'OpenSans',
-        fontSize:16,
+        fontSize:14,
         marginLeft:15,
         width:"80%"
     },
     hosAddressText:{
         fontFamily:'OpenSans',
-        fontSize:16,
+        fontSize:14,
         marginLeft:15,
         fontStyle: 'italic',
         width:"80%",
@@ -275,26 +275,27 @@ const styles = StyleSheet.create({
         borderBottomRightRadius:10,
         justifyContent:'center',
         height:40,
-         marginTop:10
+         marginTop:10,
+        alignItems:'center'
          },
     cardItemText:{
         fontFamily:'OpenSans',
-        fontSize:16,
+        fontSize:14,
         fontWeight:'bold',
         color:'#FFF'
          },
         subText:{
             fontFamily:'Opensans',
-            fontSize:18,
+            fontSize:16,
             fontWeight:'bold',
-            marginTop:15,
+            marginTop:20,
             marginLeft:5
           },
           textInput:{
             borderColor:'gray',
             borderRadius:10,
             borderWidth:0.5,
-            height:80,
+            height:100,
             fontSize:14,
             textAlignVertical: 'top',
             width:'100%',
@@ -303,7 +304,7 @@ const styles = StyleSheet.create({
             paddingBottom: 10,
             borderRadius: 10,
             paddingRight: 10,
-            marginTop:10
+            marginTop:15
           },
           payButton:{
             borderRadius:10,
@@ -322,7 +323,7 @@ const styles = StyleSheet.create({
           },
           payButtonText:{
             fontFamily:'OpenSans',
-            fontSize:18,
+            fontSize:14,
             color:'#fff',
             textAlign:'center',
             fontWeight:'bold'

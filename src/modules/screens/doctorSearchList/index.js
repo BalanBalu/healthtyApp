@@ -860,7 +860,7 @@ class doctorSearchList extends Component {
                     }
                 }}
                 renderItem={({ item }) =>
-                    <Col style={{ width: 100, justifyContent: 'center' }}>
+                    <Col style={{ justifyContent: 'center' }}>
                         <TouchableOpacity style={[styles.availabilityBG, selectedDate === item ? { backgroundColor: '#775DA3' } : { backgroundColor: '#ced6e0' }]}
                             onPress={() => this.onDateChanged(item, doctorIdHostpitalId)}>
                             <Text style={[{ textAlign: 'center', fontSize: 12, fontFamily: 'OpenSans' }, selectedDate === item ? { color: '#fff' } : { color: '#000' }]}>{formatDate(moment(item), 'ddd, DD MMM')}</Text>
