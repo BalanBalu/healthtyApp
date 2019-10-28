@@ -27,9 +27,10 @@ class PaymentSuccess extends Component {
         BackHandler.addEventListener('hardwareBackPress', this.onBackButtonPressed);
         const { navigation } = this.props;
         const successBookSlotDetails = navigation.getParam('successBookSlotDetails');
+        console.log(successBookSlotDetails);
         const paymentMethod =  navigation.getParam('paymentMethod');
         await this.setState({ successBookSlotDetails: successBookSlotDetails, paymentMethod: paymentMethod });
-        console.log('successBookSlotDetails' + JSON.stringify(this.state.successBookSlotDetails))
+        console.log(paymentMethod);
     }
     componentWillUnmount() {
         BackHandler.removeEventListener('hardwareBackPress', this.onBackButtonPressed);
@@ -89,7 +90,7 @@ class PaymentSuccess extends Component {
                              <Row style={styles.rowDetail}>
                              <Text style={styles.mainText}>Date & Time</Text>
                              <Right>
-                                <Text style={styles.subText}>19/11/2019,10:00 PM </Text>
+                                <Text style={styles.subText}> {formatDate(successBookSlotDetails.slotData && successBookSlotDetails.slotData.slotStartDateAndTime,'YYYY-MM-DD,mm:hh a')} </Text>
                             </Right>
                              </Row>
                              <Row style={styles.rowDetail}>                           
