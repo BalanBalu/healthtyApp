@@ -10,6 +10,43 @@ export const SET_DOCTORS_RATING_BY_IDS = 'BOOK/DOCTORS_RATING_BY_IDS';
 export const SET_FILTERED_DOCTOR_DATA = 'BOOK/FILTERED_DOCTOR_DATA';
 export const SET_PATIENT_LOCATION_DATA = 'BOOK/SET_PATIENT_LOCATION_DATA';
 import { store } from '../../../setup/store';
+
+
+/*  get All Sponsors data details from Sponsors collection*/
+export const getAllDoctorsActiveSponsorDetails = async (doctorIds) => {
+  try {
+    let endPoint = 'sponsor/'+ doctorIds;
+    let response = await getService(endPoint);
+    let respData = response.data;
+// console.log('respData'+JSON.stringify(respData))
+    return respData;
+  } catch (e) {
+
+    return {
+      message: 'exception' + e,
+      success: false
+    }
+  }
+}
+
+
+/* Update Sponsor Viewers Counts */
+export async function updateSponsorViewCount(userId, sponsorIds) {
+  try {
+    let endPoint =  'updateSponsorViewers/' + userId
+    let response = await putService(endPoint, sponsorIds);
+    let respData = response.data;
+// console.log('respData'+JSON.stringify(respData))
+    return respData;
+  } catch (e) {
+    return {
+      message: 'exception' + e,
+      success: false
+    }
+  }
+}
+
+
 /* Book the Doctor Appointment module  */
 export async function bookAppointment(bookSlotDetails, isLoading = true) {
   try {
