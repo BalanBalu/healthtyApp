@@ -5,7 +5,7 @@ import { FlatList } from 'react-native-gesture-handler';
 import CalendarStrip from 'react-native-calendar-strip';
 
 
-class Reminders extends Component {
+class Reminder extends Component {
     constructor(props) {
         super(props)
         this.state = {
@@ -75,7 +75,7 @@ const Reaminder=[{medname:'Acentaminophen',content:'10 mg',count:'1 pill(s)',tim
     }
 }
 
-export default Reminders
+export default Reminder
 
 const styles = StyleSheet.create({
 

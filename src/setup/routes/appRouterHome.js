@@ -37,7 +37,8 @@ import Mapbox from "../../modules/screens/bookappoinment/Mapbox";
 import AppointmentDetails from '../../modules/screens/MyAppointments/AppointmentDetails';
 import MyAppoinmentList from '../../modules/screens/MyAppointments/MyAppointmentList';
 import CancelAppointment from "../../modules/screens/MyAppointments/cancelAppointment";
-
+import AddReminder from '../../modules/screens/Reminder/AddReminder'
+import Reminder from '../../modules/screens/Reminder/Reminders'
 import PharmacyHome from '../../modules/screens/Pharmacy/PharmacyHome/PharmacyHome';
 import MyOrdersList from '../../modules/screens/Pharmacy/MyOrdersList/MyOrdersList';
 import OrderDetails from '../../modules/screens/Pharmacy/OrderDetails/OrderDetails';
@@ -334,8 +335,32 @@ const HomeStack = createStackNavigator({
     navigationOptions: {
       title: 'Medicine Details'
     }
-  }
+  },
+  // ============== Reminder =================
 
+  Reminder: {
+    screen: Reminder,
+    navigationOptions: ({ navigation }) => ({
+      title: 'Reminder',
+      headerRight: (
+       
+            <TouchableOpacity onPress={() => { navigation.navigate('AddReminder') }} style={{backgroundColor:'#ffffff',borderRadius:10,height:30,paddingLeft:10,paddingRight:10,marginRight:10,}}>
+              <Row>
+                <Icon name="ios-add-circle" style={{ color: '#7E49C3', fontFamily: 'opensans-semibold',fontSize:20,marginTop:3}}></Icon>
+                <Text style={{fontFamily:'OpenSans',fontSize:14,marginLeft:5,fontWeight:'bold',marginTop:5}}>Add</Text>
+              </Row>
+            </TouchableOpacity>
+            
+          
+      ),
+    })
+  },
+  AddReminder: {
+    screen: AddReminder,
+    navigationOptions: {
+      title: 'Add Reminder'
+    }
+  },
 },
   {
     defaultNavigationOptions: ({ navigation }) => ({
@@ -357,6 +382,9 @@ const HomeStack = createStackNavigator({
     },
     Orders: {
       screen: MyOrdersList
+    },
+    Reminder: {
+      screen: Reminder
     }
   },
   {
@@ -371,7 +399,8 @@ const HomeStack = createStackNavigator({
     Profile: require('../../../assets/images/drawerIcons/Profile.png'),
     "My Appointments": require('../../../assets/images/drawerIcons/MyAppointments.png'),
     Pharmacy: require('../../../assets/images/drawerIcons/Pharmacy.png'),
-    Orders: require('../../../assets/images/drawerIcons/Orders.png')
+    Orders: require('../../../assets/images/drawerIcons/Orders.png'),
+    Reminder:require('../../../assets/images/drawerIcons/Orders.png')
   }
   export default createAppContainer(createSwitchNavigator(
     {
