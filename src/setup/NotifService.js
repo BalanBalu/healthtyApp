@@ -11,7 +11,7 @@ export default class NotifService {
     this.lastId = 0;
   }
 
-  configure(onRegister, onNotification, gcm = "607089059424") {
+  configure(onRegister, onNotification, gcm = "1087315005258") {
     console.log(gcm)
     PushNotification.configure({
       // (optional) Called when Token is generated (iOS and Android)

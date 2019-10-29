@@ -15,11 +15,11 @@ export default class App extends Component {
     constructor(props) {
       super(props);
       this.state = {
-        senderId: "607089059424"
+        senderId: "1087315005258"
       };
       this.notif = new NotifService(this.onRegister.bind(this), this.onNotif.bind(this));
   } 
-  componentDidMount() {
+  componentDidMount() {  
       setInterval(() => {
       this.getMarkedAsReadedNotification();
      },1000)
@@ -67,6 +67,7 @@ export default class App extends Component {
   }*/
   onRegister=async(token)=> {
     // Alert.alert("Registered !", JSON.stringify(token));
+    console.log('deviceToken'+JSON.stringify(token))
     await AsyncStorage.setItem('deviceToken',  token.token);
     // this.setState({ registerToken: token.token, gcmRegistered: true });
   }
