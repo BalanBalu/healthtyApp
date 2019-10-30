@@ -801,22 +801,22 @@ class doctorSearchList extends Component {
                                                                 }
 
                                                                 <View style={{ borderTopColor: '#000', borderTopWidth: 0.5, marginTop: 10 }}>
-                                                                    <Row style={{ marginTop: 10 }}>
-                                                                        <Text note style={{ fontSize: 12, fontFamily: 'OpenSans' }}>Selected Appointment on</Text>
-                                                                    </Row>
-                                                                    <Row style={{ marginTop: 5 }}>
-                                                                        <Col style={{ width: '40%' }}>
-                                                                            <Text style={{ color: '#000', fontSize: 12, fontFamily: 'OpenSans', marginLeft: -16 }}>{selectedSlotItemByDoctorIds[item.doctorIdHostpitalId] ? formatDate(selectedSlotItemByDoctorIds[item.doctorIdHostpitalId].slotStartDateAndTime, 'ddd DD MMM, h:mm a') : null}</Text>
-                                                                        </Col>
-                                                                        <Col style={{ width: '30%' }}>
-                                                                        </Col>
-                                                                        <Col style={{ width: '30%' }}>
+                                                                <Row style={{ marginTop: 10 }}>
+                                                                  <Col size={10} style={{ alignContent: 'flex-start', alignItems: 'flex-start' }}>
+                                                                    <Text note style={{ fontSize: 12, alignSelf: 'flex-start', fontFamily: 'OpenSans' }}>Selected Appointment on</Text>
+                                                                    <Text style={{ alignSelf: 'flex-start', color: '#000', fontSize: 12, fontFamily: 'OpenSans',  marginTop:5 }}>{selectedSlotItemByDoctorIds[item.doctorIdHostpitalId] ? formatDate(selectedSlotItemByDoctorIds[item.doctorIdHostpitalId].slotStartDateAndTime, 'ddd DD MMM, h:mm a') : null}</Text>
+                                                                  </Col>
+                                                                 
+                                                                 {/* <Col style={{ width: '35%' }}></Col> */}
+
+                                                                        <Col size={4}>
                                                                             <TouchableOpacity
                                                                                 onPress={() => { console.log('......Pressing....'); this.onPressContinueForPaymentReview(item, selectedSlotItemByDoctorIds[item.doctorIdHostpitalId], item.doctorIdHostpitalId) }}
                                                                                 style={{ backgroundColor: 'green', borderColor: '#000', height: 30, borderRadius: 20, justifyContent: 'center', marginLeft: 5, marginRight: 5, marginTop: -5 }}>
                                                                                 <Text style={{ color: '#fff', fontSize: 12, fontWeight: 'bold', fontFamily: 'OpenSans' }}>Continue </Text>
                                                                             </TouchableOpacity>
-                                                                        </Col>
+                                                                        </Col>  
+
                                                                     </Row>
                                                                 </View>
 
