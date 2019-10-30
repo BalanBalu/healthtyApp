@@ -88,11 +88,19 @@ class PaymentSuccess extends Component {
                             
                              
                              <Row style={styles.rowDetail}>
-                             <Text style={styles.mainText}>Date & Time</Text>
+                             <Text style={styles.mainText}>Date</Text>
                              <Right>
-                                <Text style={styles.subText}> {formatDate(successBookSlotDetails.slotData && successBookSlotDetails.slotData.slotStartDateAndTime,'YYYY-MM-DD,mm:hh a')} </Text>
+                                <Text style={styles.subText}> {successBookSlotDetails.slotData && formatDate(successBookSlotDetails.slotData.slotStartDateAndTime,'Do MMMM, YYYY')} </Text>
                             </Right>
                              </Row>
+
+                             <Row style={styles.rowDetail}>
+                             <Text style={styles.mainText}>Time</Text>
+                             <Right>
+                                <Text style={styles.subText}> {successBookSlotDetails.slotData && formatDate(successBookSlotDetails.slotData.slotStartDateAndTime,'hh:mm A')} </Text>
+                            </Right>
+                             </Row>
+                            
                              <Row style={styles.rowDetail}>                           
                                  
                                     <Text style={styles.mainText}>Doctor Fee</Text>
