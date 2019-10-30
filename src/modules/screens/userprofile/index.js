@@ -139,7 +139,7 @@ class Profile extends Component {
     }
 
     editProfile(screen) {
-        this.props.navigation.navigate(screen, { screen: screen, updatedata: this.state.data || '' })
+        this.props.navigation.navigate(screen, { screen: screen, fromProfile: true, updatedata: this.state.data || '' })
     }
 
     /*Upload profile pic*/

@@ -218,4 +218,8 @@ export  function getAllEducation(data) {
     }
          
   }
+
+export const bloodGroupList = ['Select Blood Group', 'A+', 'O+', 'B+', 'AB+', 'A-', 'O-', 'B-', 'AB-']
+
+
   
