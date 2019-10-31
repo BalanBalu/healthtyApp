@@ -27,9 +27,10 @@ class PaymentSuccess extends Component {
         BackHandler.addEventListener('hardwareBackPress', this.onBackButtonPressed);
         const { navigation } = this.props;
         const successBookSlotDetails = navigation.getParam('successBookSlotDetails');
+        console.log(successBookSlotDetails);
         const paymentMethod =  navigation.getParam('paymentMethod');
         await this.setState({ successBookSlotDetails: successBookSlotDetails, paymentMethod: paymentMethod });
-        console.log('successBookSlotDetails' + JSON.stringify(this.state.successBookSlotDetails))
+        console.log(paymentMethod);
     }
     componentWillUnmount() {
         BackHandler.removeEventListener('hardwareBackPress', this.onBackButtonPressed);
@@ -43,7 +44,7 @@ class PaymentSuccess extends Component {
             <Row style={styles.rowDetail}>
                <Text style={{textAlign:'center',fontFamily:'OpenSans',fontSize:16}}>Address</Text>
                     <Right>
-                        <Text style={{textAlign:'center',fontFamily:'OpenSans',fontSize:16,color:'#545454'}}>{hospitalAddress.name}</Text>
+                        <Text style={styles.subText}>{hospitalAddress.name}</Text>
                          <Text style={{textAlign:'center',fontFamily:'OpenSans',fontSize:14,color:'#7B7B7B',fontStyle: 'italic'}}>{hospitalAddress.location.address.no_and_street}, {hospitalAddress.location.address.city}</Text>
                          <Text style={{textAlign:'center',fontFamily:'OpenSans',fontSize:14,color:'#7B7B7B',fontStyle: 'italic'}}>{hospitalAddress.location.address.state}, {hospitalAddress.location.address.pin_code}</Text>
                     </Right>
@@ -86,22 +87,36 @@ class PaymentSuccess extends Component {
                              {successBookSlotDetails.slotData ? this.renderHospitalLocation(successBookSlotDetails.slotData.location) : null}
                             
                              
+                             <Row style={styles.rowDetail}>
+                             <Text style={styles.mainText}>Date</Text>
+                             <Right>
+                                <Text style={styles.subText}> {successBookSlotDetails.slotData && formatDate(successBookSlotDetails.slotData.slotStartDateAndTime,'Do MMMM, YYYY')} </Text>
+                            </Right>
+                             </Row>
+
+                             <Row style={styles.rowDetail}>
+                             <Text style={styles.mainText}>Time</Text>
+                             <Right>
+                                <Text style={styles.subText}> {successBookSlotDetails.slotData && formatDate(successBookSlotDetails.slotData.slotStartDateAndTime,'hh:mm A')} </Text>
+                            </Right>
+                             </Row>
+                            
                              <Row style={styles.rowDetail}>                           
                                  
-                                    <Text style={{textAlign:'center',fontFamily:'OpenSans',fontSize:16,}}>Doctor Fee</Text>
+                                    <Text style={styles.mainText}>Doctor Fee</Text>
                                  
                                          <Right>
-                                         <Text style={{textAlign:'center',fontFamily:'OpenSans',fontSize:16,color:'#545454'}}>{'\u20B9'}{successBookSlotDetails.slotData && successBookSlotDetails.slotData.fee} </Text>
+                                         <Text style={styles.subText}>{'\u20B9'}{successBookSlotDetails.slotData && successBookSlotDetails.slotData.fee} </Text>
 
                                          </Right>
                                    
                              </Row>
                              <Row style={{marginTop:15,marginLeft:10,marginRight:10,marginBottom:20}}>                             
                            
-                                    <Text style={{textAlign:'center',fontFamily:'OpenSans',fontSize:16,}}>Payment Method </Text>
+                                    <Text style={styles.mainText}>Payment Method </Text>
                                      
                                          <Right>
-                                         <Text style={{textAlign:'center',fontFamily:'OpenSans',fontSize:16,color:'#545454'}}>{paymentMethod}</Text>
+                                         <Text style={styles.subText}>{paymentMethod}</Text>
 
                                          </Right>
                                   
@@ -201,5 +216,16 @@ const styles = StyleSheet.create({
         marginTop:15,
         marginLeft:10,
         marginRight:10
+    },
+    mainText:{
+        textAlign:'center',
+        fontFamily:'OpenSans',
+        fontSize:16,
+    },
+    subText:{
+        textAlign:'center',
+        fontFamily:'OpenSans',
+        fontSize:16,
+        color:'#545454'
     }
 });

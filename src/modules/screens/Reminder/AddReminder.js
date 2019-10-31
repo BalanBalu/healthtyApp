@@ -7,7 +7,7 @@ import { RadioButton } from 'react-native-paper';
 import DateTimePicker from 'react-native-modal-datetime-picker';
 import {formatDate} from "../../../setup/helpers";
 
-class Reminder extends Component {
+class AddReminder extends Component {
     constructor(props) {
         super(props)
         this.state = {
@@ -186,7 +186,7 @@ class Reminder extends Component {
     }
 }
 
-export default Reminder
+export default AddReminder
 
 const styles = StyleSheet.create({
 
