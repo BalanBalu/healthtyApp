@@ -53,8 +53,6 @@ class Profile extends Component {
     /*Get userProfile*/
     getUserProfile = async () => {
         try {
-            console.log("result")
-
             let data = await AsyncStorage.getItem('profile');
             result = JSON.parse(data);
             if (result == null) {
@@ -72,8 +70,6 @@ class Profile extends Component {
             }
             else {
                 this.setState({ data: result, gender: result.gender });
-                console.log("data" + JSON.stringify(this.state.data))
-
                 if (result.profile_image != undefined) {
                     this.setState({ imageSource: result.profile_image.imageURL });
                 }
@@ -388,12 +384,11 @@ class Profile extends Component {
                                         {data.address ?
                                             <View>
                                                 <Text note style={styles.customText1}>{data.address.address.no_and_street + ', '
-                                                    + data.address.address.address_line_1 + ', '
-                                                    + data.address.address.address_line_2 + ', '
-                                                    + data.address.address.city + ', '
-                                                    + data.address.address.pin_code
-                                                }
-                                                </Text>
+                                                    + data.address.address.address_line_1 }</Text>
+                                                <Text note style={styles.customText1}>{data.address.address.city + ', '
+                                                    + data.address.address.state}</Text>
+                                                <Text note style={styles.customText1}>{data.address.address.country + ', '
+                                                    + data.address.address.pin_code}</Text>
                                             </View> :
                                             <Button transparent onPress={() => this.editProfile('UpdateAddress')}>
                                                 <Icon name='add' style={{ color: 'gray' }} />

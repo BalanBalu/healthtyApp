@@ -29,30 +29,6 @@ class UserDetails extends Component {
 
         }
     }
-    // componentDidMount() {
-    //     BackHandler.addEventListener('hardwareBackPress', this.handleBackButton);
-    //     this.bindValues();
-    // }
-
-    // async bindValues() {
-    //     const { navigation } = this.props;
-    //     const userData = navigation.getParam('updatedata');
-    //     console.log('userData'+JSON.stringify(userData));
-    //      const fromProfile = navigation.getParam('fromProfile') || false
-    //     if (fromProfile) {
-    //       if(userData.dob) {
-    //         await this.setState({dob : new Date(userData.dob),
-    //             firstName: userData.first_name,
-    //             lastName: userData.last_name
-    //         }) 
-    //          console.log(this.state.dob+'dob');
-    //       }        
-    //       }
-    //     }
-
-    // componentWillUnmount() {
-    //     BackHandler.removeEventListener('hardwareBackPress', this.handleBackButton);
-    // }
 
     validateFirstNameLastName = async (text, type) => {
         const regex = new RegExp('^[\ba-zA-Z ]+$')  //Support letter with space
@@ -67,7 +43,6 @@ class UserDetails extends Component {
             this.setState({ errorMsg: '' })
         }
     }
-
 
     userUpdate = async () => {
         try {
@@ -123,17 +98,6 @@ class UserDetails extends Component {
             });
             console.log(e);
         }
-    }
-
-    navigateFunc() {
-        console.log("isBloodDonor" + this.state.isBloodDonor)
-
-        if (this.state.isBloodDonor == true) {
-            console.log("isBloodDonor" + this.state.isBloodDonor)
-            this.props.navigation.navigate('UpdateAddress')
-        }
-        else
-            this.props.navigation.navigate('login')
     }
 
 
