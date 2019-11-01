@@ -28,6 +28,8 @@ class Login extends Component {
 
   doLogin = async () => {
     try {
+      const deviceToken = await AsyncStorage.getItem('deviceToken')
+
       if (this.state.userEntry != '' && this.state.password != '') {
         let requestData = {
           userEntry: this.state.userEntry,
@@ -48,9 +50,8 @@ class Login extends Component {
             })
             return
           }
-
-          const deviceToken = await AsyncStorage.getItem('deviceToken')
           if (deviceToken != null) this.updateDeviceToken(this.props.user.details.userId, deviceToken);  // update Unique Device_Tokens 
+        
           this.props.navigation.navigate('Home');
         } else {
           this.setState({ loginErrorMsg: this.props.user.message })

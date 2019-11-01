@@ -45,7 +45,7 @@ export default class BookAppointmentPaymentUpdate {
        return {
             message: error,
             success: false
-        }
+        } 
     }
   }
  async updateNewBookAppointment(bookSlotDetails, userId, paymentId) {
@@ -54,7 +54,8 @@ export default class BookAppointmentPaymentUpdate {
 
         let bookAppointmentData = {
             userId: userId,
-            deviceTokens:deviceTokens,
+            patDeviceTokens:deviceTokens,
+            docDeviceTokens:bookSlotDetails.device_tokens,     
             doctorId: bookSlotDetails.doctorId,
             description: bookSlotDetails.diseaseDescription || '',
             fee: bookSlotDetails.slotData.fee,
