@@ -220,7 +220,7 @@ const styles = StyleSheet.create({
     width:'30%',
     borderRightColor:'gray',
     borderRightWidth:1,
-    height:600,
+    height:800,
     position:'absolute'
   },
   searchText:{
