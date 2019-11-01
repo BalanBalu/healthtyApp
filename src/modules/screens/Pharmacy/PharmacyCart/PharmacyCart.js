@@ -125,7 +125,9 @@ class PharmacyCart extends Component {
                             <Text style={{ fontFamily: 'OpenSans', fontSize: 15, color: '#ffa723', marginLeft: 20, fontWeight: 'bold' }}> {'Get'+ ' ' +item.offer+ '%' +' ' +'Off'}</Text>
                         </Row>
                         <Row style={{marginTop:10}}>
-                        <TouchableOpacity  onPress={()=>this.decrease(index)} testID='decreaseMedicine'>
+                            <Col style={{width:'50%'}}>
+                                <Row>
+                            <TouchableOpacity  onPress={()=>this.decrease(index)} testID='decreaseMedicine'>
                                 <View style={{ padding: 0, justifyContent: 'center', borderWidth: 1, borderColor: '#c26c57', width: 35, height: 25, backgroundColor: 'white' }}>
                                     <Text style={{ fontSize: 40, textAlign: 'center', marginTop: -5, color: 'black' }}>-</Text>
                                 </View>
@@ -136,10 +138,16 @@ class PharmacyCart extends Component {
                                     <Text style={{ fontSize: 20, textAlign: 'center', marginTop: -5, color: 'black' }}>+</Text>
                                 </View>
                             </TouchableOpacity>
+                            </Row>
+                            </Col>
+                            <Col style={{width:'50%',marginLeft:-60}}>
+                            <TouchableOpacity style={{ marginLeft: 50, alignItems: 'center'}} onPress={()=> this.removeMedicine(index)} testID='removeMedicineToCart'>
+                                <Icon style={{ fontSize: 30, color: 'red', marginTop: -4 }} name='ios-trash' />
+                            </TouchableOpacity>  
+                            </Col>
+                        
                       
-                          <TouchableOpacity style={{ marginLeft: 50, alignItems: 'center'}} onPress={()=> this.removeMedicine(index)} testID='removeMedicineToCart'>
-                           <Icon style={{ fontSize: 30, color: 'red', marginTop: -4 }} name='ios-trash' />
-                         </TouchableOpacity>  
+                         
                         </Row>
                         </Col>
                      </Row>
