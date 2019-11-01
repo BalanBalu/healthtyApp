@@ -14,24 +14,34 @@ class bloodDonation extends Component {
             }
           
     render() {
+     const bloodGrp = [{group:'A+'},{group:'A-'},{group:'B+'},{group:'B+'},{group:'AB+'},{group:'AB-'},{group:'O+'},{group:'O-'},
+     {group:'A1+'},{group:'A1-'},{group:'A2+'},{group:'A2-'},{group:'A1B+'},{group:'A1B-'},{group:'A2B+'},{group:'A2B-'}]
+     const country = [{name:'BANGLADESH'},{name:'INDIA'},{name:'MALAYSIA'},{name:'NEPAL'},{name:'OMAN'},{name:'SRI LANKA'},
+     {name:'YEMEN'},{name:'BANGLADESH'}] 
+     const state =[{name:'kerala'},{name:'Assam'},{name:'Bihar'},{name:'Candigarh'},{name:'Delhi'},{name:'Goa'},
+     {name:'Gujarat'},{name:'Himachal pradesh'},{name:'Haryana'},{name:'Haryana'}] 
+     const district = [{name:'Palakkad'},{name:'Alapuzha'},{name:'Ernakulam'},{name:'Idukki'},{name:'Kannur'},{name:'Kasaragod'},
+     {name:'Kollam'},{name:'kottayam'},{name:'Kozhikode'},{name:'Malapuram'}]
      
-        return (
+     const city = [{name:'Sreekrishnapuram'},{name:'Agali'},{name:'Alathur'},{name:'Chittur'},{name:'Coyalmannam'},
+     {name:'kollengode'},{name:'Malapuram'},{name:'Manarkkad'},{name:'Ottapalam'},{name:'Pattambi'},{name:'Thirthala'}]
+     return (
             <Container>
             <Content style={{padding:5}}>
                 <View style={{marginBottom:50}}>
                       <View style={{flexDirection:'row',flex:1}}>
                       <View style={{width:'30%',}}>
                         </View>
-                           
-                          <View style={{width:'70%',position:'relative'}}>
-                          <ScrollView>
-                        
-                          <ListItem style={{justifyContent:'center'}}>
-                          <Text style={{fontFamily:'OpenSans',fontSize:16,fontWeight:'bold',}}>Blood Group</Text>
+                           <View style={{width:'70%',}}>
+                         <ListItem style={{justifyContent:'center'}}>
+                          <Text style={styles.textHead}>Blood Group</Text>
                           </ListItem>
+                          <FlatList 
+                          data={bloodGrp}
+                          renderItem={({item})=>
                           <ListItem >
                            <Left>
-                             <Text style={{fontFamily:'OpenSans',fontSize:14,}}>A+</Text>
+                             <Text style={styles.subText}>{item.group}</Text>
                            </Left>
                            <Right>
                               <Radio
@@ -40,182 +50,22 @@ class bloodDonation extends Component {
                                       />
                            </Right>
                          </ListItem>
-                         <ListItem >
-                           <Left>
-                             <Text style={{fontFamily:'OpenSans',fontSize:14,}}>A-</Text>
-                           </Left>
-                           <Right>
-                              <Radio
-                                   selectedColor={"#007bff"}
-                                   selected={false}
-                                      />
-                           </Right>
-                         </ListItem>
-                         <ListItem >
-                           <Left>
-                             <Text style={{fontFamily:'OpenSans',fontSize:14,}}>B+</Text>
-                           </Left>
-                           <Right>
-                              <Radio
-                                   selectedColor={"#007bff"}
-                                   selected={false}
-                                      />
-                           </Right>
-                         </ListItem>
-                         <ListItem >
-                           <Left>
-                             <Text style={{fontFamily:'OpenSans',fontSize:14,}}>B-</Text>
-                           </Left>
-                           <Right>
-                              <Radio
-                                   selectedColor={"#007bff"}
-                                   selected={false}
-                                      />
-                           </Right>
-                         </ListItem>
-                         <ListItem >
-                           <Left>
-                             <Text style={{fontFamily:'OpenSans',fontSize:14,}}>AB+</Text>
-                           </Left>
-                           <Right>
-                              <Radio
-                                   selectedColor={"#007bff"}
-                                   selected={false}
-                                      />
-                           </Right>
-                         </ListItem>
-                         <ListItem >
-                           <Left>
-                             <Text style={{fontFamily:'OpenSans',fontSize:14,}}>AB-</Text>
-                           </Left>
-                           <Right>
-                              <Radio
-                                   selectedColor={"#007bff"}
-                                   selected={false}
-                                      />
-                           </Right>
-                         </ListItem>
-                         <ListItem >
-                           <Left>
-                             <Text style={{fontFamily:'OpenSans',fontSize:14,}}>O+</Text>
-                           </Left>
-                           <Right>
-                              <Radio
-                                   selectedColor={"#007bff"}
-                                   selected={false}
-                                      />
-                           </Right>
-                         </ListItem>
-                         <ListItem >
-                           <Left>
-                             <Text style={{fontFamily:'OpenSans',fontSize:14,}}>O-</Text>
-                           </Left>
-                           <Right>
-                              <Radio
-                                   selectedColor={"#007bff"}
-                                   selected={false}
-                                      />
-                           </Right>
-                         </ListItem>
-                         <ListItem >
-                           <Left>
-                             <Text style={{fontFamily:'OpenSans',fontSize:14,}}>A1+</Text>
-                           </Left>
-                           <Right>
-                              <Radio
-                                   selectedColor={"#007bff"}
-                                   selected={false}
-                                      />
-                           </Right>
-                         </ListItem>
-                         <ListItem >
-                           <Left>
-                             <Text style={{fontFamily:'OpenSans',fontSize:14,}}>A1-</Text>
-                           </Left>
-                           <Right>
-                              <Radio
-                                   selectedColor={"#007bff"}
-                                   selected={false}
-                                      />
-                           </Right>
-                         </ListItem>
-                         <ListItem >
-                           <Left>
-                             <Text style={{fontFamily:'OpenSans',fontSize:14,}}>A2+</Text>
-                           </Left>
-                           <Right>
-                              <Radio
-                                   selectedColor={"#007bff"}
-                                   selected={false}
-                                      />
-                           </Right>
-                         </ListItem>
-                         <ListItem >
-                           <Left>
-                             <Text style={{fontFamily:'OpenSans',fontSize:14,}}>A2-</Text>
-                           </Left>
-                           <Right>
-                              <Radio
-                                   selectedColor={"#007bff"}
-                                   selected={false}
-                                      />
-                           </Right>
-                         </ListItem>
-                         <ListItem >
-                           <Left>
-                             <Text style={{fontFamily:'OpenSans',fontSize:14,}}>A1B+</Text>
-                           </Left>
-                           <Right>
-                              <Radio
-                                   selectedColor={"#007bff"}
-                                   selected={false}
-                                      />
-                           </Right>
-                         </ListItem>
-                         <ListItem >
-                           <Left>
-                             <Text style={{fontFamily:'OpenSans',fontSize:14,}}>A1B-</Text>
-                           </Left>
-                           <Right>
-                              <Radio
-                                   selectedColor={"#007bff"}
-                                   selected={false}
-                                      />
-                           </Right>
-                         </ListItem>
-                         <ListItem >
-                           <Left>
-                             <Text style={{fontFamily:'OpenSans',fontSize:14,}}>A2B+</Text>
-                           </Left>
-                           <Right>
-                              <Radio
-                                   selectedColor={"#007bff"}
-                                   selected={false}
-                                      />
-                           </Right>
-                         </ListItem>
-                         <ListItem >
-                           <Left>
-                             <Text style={{fontFamily:'OpenSans',fontSize:14,}}>A2B-</Text>
-                           </Left>
-                           <Right>
-                              <Radio
-                                   selectedColor={"#007bff"}
-                                   selected={false}
-                                      />
-                           </Right>
-                         </ListItem> 
+                          }/>
+                        
                         
 
 
 
                           
                            {/* <ListItem style={{justifyContent:'center'}}>
-                          <Text style={{fontFamily:'OpenSans',fontSize:16,fontWeight:'bold',}}>Country</Text>
+                          <Text style={styles.textHead}>Country</Text>
                           </ListItem>
+                           <FlatList
+                               data={country}
+                               renderItem={({item})=>
                            <ListItem >
                            <Left>
-                             <Text style={{fontFamily:'OpenSans',fontSize:14,}}>BANGLADESH</Text>
+                             <Text style={styles.subText}>{item.name}</Text>
                            </Left>
                            <Right>
                               <Radio
@@ -224,80 +74,18 @@ class bloodDonation extends Component {
                                       />
                            </Right>
                          </ListItem>
-                         <ListItem >
-                           <Left>
-                             <Text style={{fontFamily:'OpenSans',fontSize:14,}}>INDIA</Text>
-                           </Left>
-                           <Right>
-                              <Radio
-                                   selectedColor={"#007bff"}
-                                   selected={false}
-                                      />
-                           </Right>
-                         </ListItem>
-                         <ListItem >
-                           <Left>
-                             <Text style={{fontFamily:'OpenSans',fontSize:14,}}>MALAYSIA</Text>
-                           </Left>
-                           <Right>
-                              <Radio
-                                   selectedColor={"#007bff"}
-                                   selected={false}
-                                      />
-                           </Right>
-                         </ListItem>
-                         <ListItem >
-                           <Left>
-                             <Text style={{fontFamily:'OpenSans',fontSize:14,}}>NEPAL</Text>
-                           </Left>
-                           <Right>
-                              <Radio
-                                   selectedColor={"#007bff"}
-                                   selected={false}
-                                      />
-                           </Right>
-                         </ListItem>
-                         <ListItem >
-                           <Left>
-                             <Text style={{fontFamily:'OpenSans',fontSize:14,}}>OMAN</Text>
-                           </Left>
-                           <Right>
-                              <Radio
-                                   selectedColor={"#007bff"}
-                                   selected={false}
-                                      />
-                           </Right>
-                         </ListItem>
-                         <ListItem >
-                           <Left>
-                             <Text style={{fontFamily:'OpenSans',fontSize:14,}}>SRI LANKA</Text>
-                           </Left>
-                           <Right>
-                              <Radio
-                                   selectedColor={"#007bff"}
-                                   selected={false}
-                                      />
-                           </Right>
-                         </ListItem>
-                         <ListItem >
-                           <Left>
-                             <Text style={{fontFamily:'OpenSans',fontSize:14,}}>YEMEN</Text>
-                           </Left>
-                           <Right>
-                              <Radio
-                                   selectedColor={"#007bff"}
-                                   selected={false}
-                                      />
-                           </Right>
-                         </ListItem> */}
+                          }/> */}
 
                         
-                         {/* <ListItem style={{justifyContent:'center'}}>
-                          <Text style={{fontFamily:'OpenSans',fontSize:16,fontWeight:'bold',}}>State</Text>
+                          {/* <ListItem style={{justifyContent:'center'}}>
+                          <Text style={styles.textHead}>State</Text>
                           </ListItem>
-                         <ListItem >
+                            <FlatList
+                               data={state}
+                               renderItem={({item})=>
+                           <ListItem >
                            <Left>
-                             <Text style={{fontFamily:'OpenSans',fontSize:14,}}>Assam</Text>
+                             <Text style={styles.subText}>{item.name}</Text>
                            </Left>
                            <Right>
                               <Radio
@@ -306,105 +94,20 @@ class bloodDonation extends Component {
                                       />
                            </Right>
                          </ListItem>
-                         <ListItem >
-                           <Left>
-                             <Text style={{fontFamily:'OpenSans',fontSize:14,}}>Bihar</Text>
-                           </Left>
-                           <Right>
-                              <Radio
-                                   selectedColor={"#007bff"}
-                                   selected={false}
-                                      />
-                           </Right>
-                         </ListItem>
-                         <ListItem >
-                           <Left>
-                             <Text style={{fontFamily:'OpenSans',fontSize:14,}}>Candigarh</Text>
-                           </Left>
-                           <Right>
-                              <Radio
-                                   selectedColor={"#007bff"}
-                                   selected={false}
-                                      />
-                           </Right>
-                         </ListItem>
-                         <ListItem >
-                           <Left>
-                             <Text style={{fontFamily:'OpenSans',fontSize:14,}}>Delhi</Text>
-                           </Left>
-                           <Right>
-                              <Radio
-                                   selectedColor={"#007bff"}
-                                   selected={false}
-                                      />
-                           </Right>
-                         </ListItem>
-                         <ListItem >
-                           <Left>
-                             <Text style={{fontFamily:'OpenSans',fontSize:14,}}>Goa</Text>
-                           </Left>
-                           <Right>
-                              <Radio
-                                   selectedColor={"#007bff"}
-                                   selected={false}
-                                      />
-                           </Right>
-                         </ListItem>
-                         <ListItem >
-                           <Left>
-                             <Text style={{fontFamily:'OpenSans',fontSize:14,}}>Gujarat</Text>
-                           </Left>
-                           <Right>
-                              <Radio
-                                   selectedColor={"#007bff"}
-                                   selected={false}
-                                      />
-                           </Right>
-                         </ListItem>
-                         <ListItem >
-                           <Left>
-                             <Text style={{fontFamily:'OpenSans',fontSize:14,}}>Haryana</Text>
-                           </Left>
-                           <Right>
-                              <Radio
-                                   selectedColor={"#007bff"}
-                                   selected={false}
-                                      />
-                           </Right>
-                         </ListItem>
-                         <ListItem >
-                           <Left>
-                             <Text style={{fontFamily:'OpenSans',fontSize:14,}}>Himachal pradesh</Text>
-                           </Left>
-                           <Right>
-                              <Radio
-                                   selectedColor={"#007bff"}
-                                   selected={false}
-                                      />
-                           </Right>
-                         </ListItem>
-                         <ListItem >
-                           <Left>
-                             <Text style={{fontFamily:'OpenSans',fontSize:14,}}>Kerala</Text>
-                           </Left>
-                           <Right>
-                              <Radio
-                                   selectedColor={"#007bff"}
-                                   selected={false}
-                                      />
-                           </Right>
-                         </ListItem> */}
-
-
+                        
+                            }/> */}
 
                          
                        
                        {/* <ListItem style={{justifyContent:'center'}}>
-                          <Text style={{fontFamily:'OpenSans',fontSize:16,fontWeight:'bold',}}>District</Text>
+                          <Text style={styles.textHead}>District</Text>
                           </ListItem>
+                          <FlatList 
+                          data={district}
+                          renderItem={({item})=>
                           <ListItem >
                            <Left>
-                             <Text style={{fontFamily:'OpenSans',fontSize:14,}}>Alapuzha</Text>
+                             <Text style={styles.subText}>{item.name}</Text>
                            </Left>
                            <Right>
                               <Radio
@@ -413,117 +116,22 @@ class bloodDonation extends Component {
                                       />
                            </Right>
                          </ListItem>
-                         <ListItem >
-                           <Left>
-                             <Text style={{fontFamily:'OpenSans',fontSize:14,}}>Ernakulam</Text>
-                           </Left>
-                           <Right>
-                              <Radio
-                                   selectedColor={"#007bff"}
-                                   selected={false}
-                                      />
-                           </Right>
-                         </ListItem>
-                         <ListItem >
-                           <Left>
-                             <Text style={{fontFamily:'OpenSans',fontSize:14,}}>Idukki</Text>
-                           </Left>
-                           <Right>
-                              <Radio
-                                   selectedColor={"#007bff"}
-                                   selected={false}
-                                      />
-                           </Right>
-                         </ListItem>
-                         <ListItem >
-                           <Left>
-                             <Text style={{fontFamily:'OpenSans',fontSize:14,}}>Kannur</Text>
-                           </Left>
-                           <Right>
-                              <Radio
-                                   selectedColor={"#007bff"}
-                                   selected={false}
-                                      />
-                           </Right>
-                         </ListItem>
-                         <ListItem >
-                           <Left>
-                             <Text style={{fontFamily:'OpenSans',fontSize:14,}}>Kasaragod</Text>
-                           </Left>
-                           <Right>
-                              <Radio
-                                   selectedColor={"#007bff"}
-                                   selected={false}
-                                      />
-                           </Right>
-                         </ListItem>
-                         <ListItem >
-                           <Left>
-                             <Text style={{fontFamily:'OpenSans',fontSize:14,}}>Kollam</Text>
-                           </Left>
-                           <Right>
-                              <Radio
-                                   selectedColor={"#007bff"}
-                                   selected={false}
-                                      />
-                           </Right>
-                         </ListItem>
-                         <ListItem >
-                           <Left>
-                             <Text style={{fontFamily:'OpenSans',fontSize:14,}}>kottayam</Text>
-                           </Left>
-                           <Right>
-                              <Radio
-                                   selectedColor={"#007bff"}
-                                   selected={false}
-                                      />
-                           </Right>
-                         </ListItem>
-                         <ListItem >
-                           <Left>
-                             <Text style={{fontFamily:'OpenSans',fontSize:14,}}>Kozhikode</Text>
-                           </Left>
-                           <Right>
-                              <Radio
-                                   selectedColor={"#007bff"}
-                                   selected={false}
-                                      />
-                           </Right>
-                         </ListItem>
-                         <ListItem >
-                           <Left>
-                             <Text style={{fontFamily:'OpenSans',fontSize:14,}}>Malapuram</Text>
-                           </Left>
-                           <Right>
-                              <Radio
-                                   selectedColor={"#007bff"}
-                                   selected={false}
-                                      />
-                           </Right>
-                         </ListItem>
-                         <ListItem >
-                           <Left>
-                             <Text style={{fontFamily:'OpenSans',fontSize:14,}}>Palakkad</Text>
-                           </Left>
-                           <Right>
-                              <Radio
-                                   selectedColor={"#007bff"}
-                                   selected={false}
-                                      />
-                           </Right>
-                         </ListItem> */}
+
+                           }/> */}
 
 
 
 
 
-                          {/* <ListItem style={{justifyContent:'center'}}>
-                          <Text style={{fontFamily:'OpenSans',fontSize:16,fontWeight:'bold',}}>City</Text>
+                     {/* <ListItem style={{justifyContent:'center'}}>
+                          <Text style={styles.textHead}>City</Text>
                           </ListItem>
-                         
+                           <FlatList
+                             data={city}
+                             renderItem={({item})=>
                           <ListItem >
                            <Left>
-                             <Text style={{fontFamily:'OpenSans',fontSize:14,}}>Agali</Text>
+                             <Text style={styles.subText}>{item.name}</Text>
                            </Left>
                            <Right>
                               <Radio
@@ -532,170 +140,63 @@ class bloodDonation extends Component {
                                       />
                            </Right>
                          </ListItem>
-                         <ListItem >
-                           <Left>
-                             <Text style={{fontFamily:'OpenSans',fontSize:14,}}>Alathur</Text>
-                           </Left>
-                           <Right>
-                              <Radio
-                                   selectedColor={"#007bff"}
-                                   selected={false}
-                                      />
-                           </Right>
-                         </ListItem>
-                         <ListItem >
-                           <Left>
-                             <Text style={{fontFamily:'OpenSans',fontSize:14,}}>Chittur</Text>
-                           </Left>
-                           <Right>
-                              <Radio
-                                   selectedColor={"#007bff"}
-                                   selected={false}
-                                      />
-                           </Right>
-                         </ListItem>
-                         <ListItem >
-                           <Left>
-                             <Text style={{fontFamily:'OpenSans',fontSize:14,}}>kollengode</Text>
-                           </Left>
-                           <Right>
-                              <Radio
-                                   selectedColor={"#007bff"}
-                                   selected={false}
-                                      />
-                           </Right>
-                         </ListItem>
-                         <ListItem >
-                           <Left>
-                             <Text style={{fontFamily:'OpenSans',fontSize:14,}}>Mannarkad</Text>
-                           </Left>
-                           <Right>
-                              <Radio
-                                   selectedColor={"#007bff"}
-                                   selected={false}
-                                      />
-                           </Right>
-                         </ListItem>
-                         <ListItem >
-                           <Left>
-                             <Text style={{fontFamily:'OpenSans',fontSize:14,}}>Ottapalam</Text>
-                           </Left>
-                           <Right>
-                              <Radio
-                                   selectedColor={"#007bff"}
-                                   selected={false}
-                                      />
-                           </Right>
-                         </ListItem>
-                         <ListItem >
-                           <Left>
-                             <Text style={{fontFamily:'OpenSans',fontSize:14,}}>Pattambi</Text>
-                           </Left>
-                           <Right>
-                              <Radio
-                                   selectedColor={"#007bff"}
-                                   selected={false}
-                                      />
-                           </Right>
-                         </ListItem>
-                         <ListItem >
-                           <Left>
-                             <Text style={{fontFamily:'OpenSans',fontSize:14,}}>Sreekrishnapuram</Text>
-                           </Left>
-                           <Right>
-                              <Radio
-                                   selectedColor={"#007bff"}
-                                   selected={false}
-                                      />
-                           </Right>
-                         </ListItem>
-                         <ListItem >
-                           <Left>
-                             <Text style={{fontFamily:'OpenSans',fontSize:14,}}>Thrithala</Text>
-                           </Left>
-                           <Right>
-                              <Radio
-                                   selectedColor={"#007bff"}
-                                   selected={false}
-                                      />
-                           </Right>
-                         </ListItem>
-                         <ListItem >
-                           <Left>
-                             <Text style={{fontFamily:'OpenSans',fontSize:14,}}>Coyalmannam</Text>
-                           </Left>
-                           <Right>
-                              <Radio
-                                   selectedColor={"#007bff"}
-                                   selected={false}
-                                      />
-                           </Right>
-                         </ListItem> */}
+                           }/> */}
                          
-
-                         </ScrollView>
-                           </View>
-                          
-                    
-                            </View>
-                       
-                      
-                      
-               </View>
+                      </View>
+                   </View>
+                </View>
               </Content>
-              <View style={{width:'30%',borderRightColor:'gray',borderRightWidth:1,height:600,position:'absolute'}}>
-                              
-                              <List style={{marginLeft:-20}}>
-                              <ListItem style={{justifyContent:'center'}}>
-                              <Text style={{fontFamily:'OpenSans',fontSize:16,fontWeight:'bold'}}>Categories</Text>
-                                </ListItem>
-                              
-                                <ListItem style={{backgroundColor:'#784EBC',paddingLeft:10}}>
-                                  <Left>
-                                  <Text style={{fontFamily:'OpenSans',fontSize:14,color:'#fff'}}>Blood Group</Text>
-                                  </Left>
-                                  <Right>
-                                    <Icon name="ios-arrow-forward" style={{fontSize:25}}/>
-                                  </Right>
-                                </ListItem>
-                                <ListItem style={{paddingLeft:10}}>
-                                <Left>
-                                  <Text style={{fontFamily:'OpenSans',fontSize:14}}>Country</Text>
-                                  </Left>
-                                  <Right>
-                                    <Icon name="ios-arrow-forward" style={{fontSize:25}}/>
-                                  </Right>
-                                </ListItem>
-                                <ListItem style={{paddingLeft:10}}>
-                                <Left>
-                                  <Text style={{fontFamily:'OpenSans',fontSize:14}}>State</Text>
-                                  </Left>
-                                  <Right>
-                                    <Icon name="ios-arrow-forward" style={{fontSize:25}}/>
-                                  </Right>
-                                </ListItem>
-                                <ListItem style={{paddingLeft:10}}>
-                                <Left>
-                                  <Text style={{fontFamily:'OpenSans',fontSize:14,}}>District</Text>
-                                  </Left>
-                                  <Right>
-                                    <Icon name="ios-arrow-forward" style={{fontSize:25}}/>
-                                  </Right>
-                                </ListItem>
-                                <ListItem style={{paddingLeft:10}}>
-                                <Left>
-                                  <Text style={{fontFamily:'OpenSans',fontSize:14,}}>City</Text>
-                                  </Left>
-                                  <Right>
-                                    <Icon name="ios-arrow-forward" style={{fontSize:25}}/>
-                                  </Right>
-                                </ListItem>
-                              </List>
-                           </View>
-                         
+              <View style={styles.ViewStyle}>
+               <List style={{marginLeft:-20}}>
+                <ListItem style={{justifyContent:'center'}}>
+                <Text style={styles.textHead}>Categories</Text>
+                  </ListItem>
+                
+                  <ListItem style={{backgroundColor:'#784EBC',paddingLeft:10}}>
+                    <Left>
+                    <Text style={{fontFamily:'OpenSans',fontSize:14,color:'#fff'}}>Blood Group</Text>
+                    </Left>
+                    <Right>
+                      <Icon name="ios-arrow-forward" style={{fontSize:25}}/>
+                    </Right>
+                  </ListItem>
+                  <ListItem style={{paddingLeft:10}}>
+                  <Left>
+                    <Text style={{fontFamily:'OpenSans',fontSize:14}}>Country</Text>
+                    </Left>
+                    <Right>
+                      <Icon name="ios-arrow-forward" style={{fontSize:25}}/>
+                    </Right>
+                  </ListItem>
+                  <ListItem style={{paddingLeft:10}}>
+                  <Left>
+                    <Text style={{fontFamily:'OpenSans',fontSize:14}}>State</Text>
+                    </Left>
+                    <Right>
+                      <Icon name="ios-arrow-forward" style={{fontSize:25}}/>
+                    </Right>
+                  </ListItem>
+                  <ListItem style={{paddingLeft:10}}>
+                  <Left>
+                    <Text style={{fontFamily:'OpenSans',fontSize:14,}}>District</Text>
+                    </Left>
+                    <Right>
+                      <Icon name="ios-arrow-forward" style={{fontSize:25}}/>
+                    </Right>
+                  </ListItem>
+                  <ListItem style={{paddingLeft:10}}>
+                  <Left>
+                    <Text style={{fontFamily:'OpenSans',fontSize:14,}}>City</Text>
+                    </Left>
+                    <Right>
+                      <Icon name="ios-arrow-forward" style={{fontSize:25}}/>
+                    </Right>
+                  </ListItem>
+                </List>
+              </View>
               <Footer style={{ backgroundColor: '#7E49C3', }}>
                 <TouchableOpacity  style={{justifyContent:'center'}}>
-                <Text style={{alignItems:'center',fontFamily:'OpenSans',fontSize:18,fontWeight:'bold',color:'#fff'}}>Search</Text>
+                <Text style={styles.searchText}>Search</Text>
                   </TouchableOpacity>
               </Footer>
           </Container>
@@ -706,29 +207,27 @@ class bloodDonation extends Component {
 export default bloodDonation
 
 const styles = StyleSheet.create({
-   NumText:{
-       fontFamily:'OpenSans',
-       fontSize:16
-   },
-   transparentLabel:{
-       backgroundColor:'#F1F1F1',
-       height:40,
-       marginTop:10,
-       borderRadius:5,
-       paddingLeft:20,
-       fontFamily:'OpenSans',
-       fontSize:15
-   } ,
-   contentView:{
-    marginTop:5,
-     height: 45, 
-     alignItems: 'center', 
-     backgroundColor: '#EBEBEB',
-     
- },
- subTitle:{
+  textHead:{
     fontFamily:'OpenSans',
-    fontSize:15,
-    marginLeft:20
+    fontSize:16,
+    fontWeight:'bold',
   },
+  subText:{
+    fontFamily:'OpenSans',
+    fontSize:14,
+  },
+  ViewStyle:{
+    width:'30%',
+    borderRightColor:'gray',
+    borderRightWidth:1,
+    height:600,
+    position:'absolute'
+  },
+  searchText:{
+    alignItems:'center',
+    fontFamily:'OpenSans',
+    fontSize:18,
+    fontWeight:'bold',
+    color:'#fff'
+  }
 })
