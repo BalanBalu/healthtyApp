@@ -88,6 +88,7 @@ class Profile extends Component {
             if (result.success) {
                 this.setState({ favouriteList: result.data });
             }
+            console.log("favouriteList" + JSON.stringify(this.state.favouriteList))
         }
         catch (e) {
             console.log(e)
@@ -505,7 +506,7 @@ class Profile extends Component {
                                                 <Thumbnail square source={renderDoctorImage(item.doctorInfo)} style={{ height: 60, width: 60 }} />
                                             </Left>
                                             <Body>
-                                                <Text style={{ fontFamily: 'OpenSans', fontSize: 15 }}> {item.doctorInfo.prefix ? item.doctorInfo.prefix : ''} {item.doctorInfo.first_name + " " + item.doctorInfo.last_name} </Text>
+                                                <Text style={{ fontFamily: 'OpenSans', fontSize: 15 }}> {item.doctorInfo.prefix ? item.doctorInfo.prefix : 'Dr.'} {item.doctorInfo.first_name + " " + item.doctorInfo.last_name} </Text>
                                             </Body>
                                             <Right>
                                                 <Button style={styles.docbutton}><Text style={{ fontFamily: 'OpenSans', fontSize: 12 }} onPress={() => this.props.navigation.navigate('Book Appointment', { doctorId: item.doctorInfo.doctor_id, fetchAvailabiltySlots: true })}> Book Again</Text></Button>
