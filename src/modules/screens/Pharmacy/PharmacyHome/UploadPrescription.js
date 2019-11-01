@@ -164,7 +164,7 @@ class UploadPrescription extends Component {
         return (
             <Container style={styles.container}>
                 {isLoading == true ? <Loader style={'appointment'} /> :
-                    <Content>
+                    <Content >
                         <ScrollView>
                             <View style={{ marginTop: 25 }}>
                                 <Autocomplete style={{ borderBottomWidth: 0, backgroundColor: '#F1F1F1', borderRadius: 5, padding: 5, width: '76%', marginLeft: 48 }} 
@@ -200,9 +200,9 @@ class UploadPrescription extends Component {
                                 </Row>
                             </View>
 
-                            <View style={{ padding: 10, marginTop: 25 }}>
+                            <View style={{ padding: 10, marginTop: 20 }}>
                                 <Text style={{ marginLeft: 38, fontFamily: 'OpenSans', fontSize: 15 }}>Comments(optional)</Text>
-                                <TextInput style={{ borderWidth: 0.5, textAlignVertical: 'top', borderRadius: 5, height: 100, width: '80%', marginLeft: 'auto', marginRight: 'auto' }}
+                                <TextInput style={{ borderWidth: 0.5, textAlignVertical: 'top', borderRadius: 5, height: 100, width: '80%', marginLeft: 'auto', marginRight: 'auto',marginTop:10 }}
                                     placeholder=" Type your comments here"
                                     placeholderTextColor={'gray'}
                                     multiline={true} />
@@ -211,13 +211,13 @@ class UploadPrescription extends Component {
 
                             </View>
 
-                            <Row style={{ alignSelf: 'center', justifyContent: 'center', marginTop: 10, marginLeft: 13, width: '66%', alignItems: 'center' }}>
-                                <Col style={{ width: '75%', alignItems: 'center' }}>
-                                    <Button disabled={this.state.uploadButton} style={{ borderRadius: 5, height: 35, padding: 50, color: 'gray' }} onPress={() => { this.uploadImageToServer(this.state.imageSource, selectedPharmacy) }}>
+                            <Row style={{ alignSelf: 'center', justifyContent: 'center', marginTop: 10, paddingLeft: 50,paddingRight:50, alignItems: 'center' }}>
+                                <Col style={{ width: '60%', alignItems: 'center',marginLeft:60 }}>
+                                    <Button disabled={this.state.uploadButton} style={{ borderRadius: 5, height: 35, padding: 35, color: 'gray' }} onPress={() => { this.uploadImageToServer(this.state.imageSource, selectedPharmacy) }}>
                                         <Text style={{ fontSize: 12 }}>UPLOAD</Text>
                                     </Button>
                                 </Col>
-                                <Col style={{ width: '45%', alignItems: 'center' }}>
+                                <Col style={{ width: '40%', alignItems: 'center',marginRight:10 }}>
                                     <Button style={{ borderRadius: 5, height: 35, padding: 15 }} onPress={() => this.props.navigation.navigate('Pharmacy')}>
                                         <Text style={{ fontSize: 12 }} >CANCEL</Text>
                                     </Button>
@@ -244,11 +244,11 @@ const styles = StyleSheet.create({
     {
         marginLeft: 'auto',
         marginRight: 'auto',
-        marginTop: 25,
+        marginTop: 20,
         height: 250,
         width: 310,
         borderColor: '#f5f5f5',
-        marginTop: 30
+       
     },
     searchBox: {
         width: '100%',
