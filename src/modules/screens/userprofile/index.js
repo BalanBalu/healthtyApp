@@ -13,6 +13,7 @@ import { NavigationEvents } from 'react-navigation';
 import { Loader } from '../../../components/ContentLoader'
 import ImagePicker from 'react-native-image-picker';
 import { uploadMultiPart } from '../../../setup/services/httpservices'
+import { renderDoctorImage } from '../../common';
 
 class Profile extends Component {
 
@@ -384,7 +385,7 @@ class Profile extends Component {
                                         {data.address ?
                                             <View>
                                                 <Text note style={styles.customText1}>{data.address.address.no_and_street + ', '
-                                                    + data.address.address.address_line_1 }</Text>
+                                                    + data.address.address.address_line_1}</Text>
                                                 <Text note style={styles.customText1}>{data.address.address.city + ', '
                                                     + data.address.address.state}</Text>
                                                 <Text note style={styles.customText1}>{data.address.address.country + ', '
@@ -490,6 +491,8 @@ class Profile extends Component {
                         </List>
 
                         {this.state.favouriteList.length === 0 ? null :
+                            <Card style={{ padding: 10 }}>
+
                             <List>
                                 <Text style={styles.titleText}>Your Doctors</Text>
 
@@ -499,7 +502,7 @@ class Profile extends Component {
                                     renderItem={({ item }) => (
                                         <ListItem avatar noBorder>
                                             <Left>
-                                                <Thumbnail square source={{ uri: 'https://res.cloudinary.com/demo/image/upload/w_200,h_200,c_thumb,g_face,r_max/face_left.png' }} style={{ height: 40, width: 40 }} />
+                                                <Thumbnail square source={renderDoctorImage(item.doctorInfo)} style={{ height: 60, width: 60 }} />
                                             </Left>
                                             <Body>
                                                 <Text style={{ fontFamily: 'OpenSans', fontSize: 15 }}> {item.doctorInfo.prefix ? item.doctorInfo.prefix : ''} {item.doctorInfo.first_name + " " + item.doctorInfo.last_name} </Text>
@@ -512,7 +515,8 @@ class Profile extends Component {
                                     )}
                                     keyExtractor={(item, index) => index.toString()}
                                 />
-                            </List>}
+                            </List>
+                            </Card>}
                     </Content>}
 
 
