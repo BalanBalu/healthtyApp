@@ -13,7 +13,7 @@ import { NavigationEvents } from 'react-navigation';
 import { Loader } from '../../../components/ContentLoader'
 import ImagePicker from 'react-native-image-picker';
 import { uploadMultiPart } from '../../../setup/services/httpservices'
-import { renderDoctorImage } from '../../common';
+import { renderDoctorImage, renderProfileImage } from '../../common';
 
 class Profile extends Component {
 
@@ -88,7 +88,6 @@ class Profile extends Component {
             if (result.success) {
                 this.setState({ favouriteList: result.data });
             }
-            console.log("favouriteList" + JSON.stringify(this.state.favouriteList))
         }
         catch (e) {
             console.log(e)
@@ -247,7 +246,8 @@ class Profile extends Component {
                                     <Col style={{ width: '55%' }} >
                                         {imageSource != undefined ?
                                             <Thumbnail style={styles.profileImage} source={{ uri: imageSource }} /> :
-                                            <Thumbnail style={styles.profileImage} source={{ uri: 'https://res.cloudinary.com/demo/image/upload/w_200,h_200,c_thumb,g_face,r_max/face_left.png' }} />}
+                                            <Thumbnail style={styles.profileImage} square source={renderProfileImage(data)} />
+                                        }
 
                                         <View style={{ marginLeft: 80, marginTop: -20, justifyContent: 'center' }}>
                                             <Icon name="camera" style={{ fontSize: 20 }} onPress={() => this.selectPhotoTapped()} testID="cameraIconTapped" />
@@ -494,29 +494,29 @@ class Profile extends Component {
                         {this.state.favouriteList.length === 0 ? null :
                             <Card style={{ padding: 10 }}>
 
-                            <List>
-                                <Text style={styles.titleText}>Your Doctors</Text>
+                                <List>
+                                    <Text style={styles.titleText}>Your Doctors</Text>
 
 
-                                <FlatList
-                                    data={this.state.favouriteList}
-                                    renderItem={({ item }) => (
-                                        <ListItem avatar noBorder>
-                                            <Left>
-                                                <Thumbnail square source={renderDoctorImage(item.doctorInfo)} style={{ height: 60, width: 60 }} />
-                                            </Left>
-                                            <Body>
-                                                <Text style={{ fontFamily: 'OpenSans', fontSize: 15 }}> {item.doctorInfo.prefix ? item.doctorInfo.prefix : 'Dr.'} {item.doctorInfo.first_name + " " + item.doctorInfo.last_name} </Text>
-                                            </Body>
-                                            <Right>
-                                                <Button style={styles.docbutton}><Text style={{ fontFamily: 'OpenSans', fontSize: 12 }} onPress={() => this.props.navigation.navigate('Book Appointment', { doctorId: item.doctorInfo.doctor_id, fetchAvailabiltySlots: true })}> Book Again</Text></Button>
-                                            </Right>
+                                    <FlatList
+                                        data={this.state.favouriteList}
+                                        renderItem={({ item }) => (
+                                            <ListItem avatar noBorder>
+                                                <Left>
+                                                    <Thumbnail square source={renderDoctorImage(item.doctorInfo)} style={{ height: 60, width: 60 }} />
+                                                </Left>
+                                                <Body>
+                                                    <Text style={{ fontFamily: 'OpenSans', fontSize: 15 }}> {item.doctorInfo.prefix ? item.doctorInfo.prefix : 'Dr.'} {item.doctorInfo.first_name + " " + item.doctorInfo.last_name} </Text>
+                                                </Body>
+                                                <Right>
+                                                    <Button style={styles.docbutton}><Text style={{ fontFamily: 'OpenSans', fontSize: 12 }} onPress={() => this.props.navigation.navigate('Book Appointment', { doctorId: item.doctorInfo.doctor_id, fetchAvailabiltySlots: true })}> Book Again</Text></Button>
+                                                </Right>
 
-                                        </ListItem>
-                                    )}
-                                    keyExtractor={(item, index) => index.toString()}
-                                />
-                            </List>
+                                            </ListItem>
+                                        )}
+                                        keyExtractor={(item, index) => index.toString()}
+                                    />
+                                </List>
                             </Card>}
                     </Content>}
 
