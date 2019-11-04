@@ -130,24 +130,23 @@ class OrderPaymentAddress extends Component {
                             <Card style={{ padding: 10, marginTop: 20 }}>
                                 <TouchableOpacity onPress={() => this.selectAddressRadioButton(index, item)}>
                                     <Row>
-                                        <Col style={{ width: '6%' }}>
+                                        <Col style={{ width: '10%' }}>
                                             <Radio
                                                 selected={this.state.selectedRadioButton[index]} color="green"
                                             />
 
                                         </Col>
-                                        <Col style={{ width: '95%' }}>
-                                            {item.fullName != undefined ? <Text style={{ fontSize: 14, fontFamily: 'OpenSans', marginLeft: 20, marginTop: 3, fontWeight: 'bold' }}>{item.fullName}</Text> :
+                                        <Col style={{ width: '90%' }}>
+                                            {item.fullName != undefined ? <Text style={{ fontSize: 14, fontFamily: 'OpenSans', marginLeft: 10, marginTop: 3, fontWeight: 'bold' }}>{item.fullName}</Text> :
                                                 <Text style={{ fontSize: 14, fontFamily: 'OpenSans', marginLeft: 20, marginTop: 3, fontWeight: 'bold' }}>{deliveryAddressArray[0].fullName}</Text>
 
                                             }
-                                        </Col>
-                                    </Row>
+
                                     <Text style={styles.customText}>{item.email}</Text>
                                     <Text style={styles.customText}>{item.mobile_no}</Text>
                                     {item.address ?
                                         <View>
-                                            <Text style={{ fontSize: 14, fontFamily: 'OpenSans', marginLeft: 40, marginTop: 4, fontWeight: 'bold' }}>Delivery Address</Text>
+                                            <Text style={{ fontSize: 14, fontFamily: 'OpenSans', marginLeft: 10, marginTop: 4, fontWeight: 'bold' }}>Delivery Address</Text>
                                             <Row>
                                                 <Text style={styles.customText}>{item.address.no_and_street}
                                                 </Text>
@@ -160,6 +159,9 @@ class OrderPaymentAddress extends Component {
                                             </Row>
                                         </View>
                                         : null}
+                                        </Col>
+                                    </Row>
+                                   
                                 </TouchableOpacity>
                             </Card>
                         } />
@@ -328,7 +330,7 @@ class OrderPaymentAddress extends Component {
 
                     <Card transparent style={{ padding: 10, marginTop: 20, }}>
                         <Text style={{ fontFamily: 'OpenSans', fontWeight: 'bold', fontSize: 18, padding: 5 }}>AddressInfo</Text>
-                        <Segment >
+                        <Segment>
                             <Button active={this.state.activePage === 1}
                                 onPress={this.selectComponent(1)}><Text uppercase={false}>DefaultAddress</Text>
 
@@ -408,7 +410,7 @@ const styles = StyleSheet.create({
     },
     customText:
     {
-        marginLeft: 40,
+        marginLeft: 10,
         fontFamily: 'OpenSans',
         fontSize: 13,
         marginTop: 3,
