@@ -5,7 +5,7 @@ import { FlatList } from 'react-native-gesture-handler';
 import Autocomplete from '../../../components/Autocomplete'
 
 
-class donationDetails extends Component {
+class BloodDonersList extends Component {
     constructor(props) {
         super(props)
         this.state = {
@@ -56,7 +56,7 @@ class donationDetails extends Component {
     }
 }
 
-export default donationDetails
+export default BloodDonersList
 
 const styles = StyleSheet.create({
    nameTxt:{
