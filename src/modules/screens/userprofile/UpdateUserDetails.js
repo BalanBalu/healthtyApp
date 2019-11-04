@@ -14,7 +14,8 @@ import {
 } from "../../../setup/helpers";
 import { RadioButton } from 'react-native-paper';
 import Spinner from '../../../components/Spinner';
-const bloodGroupList = ['Select Blood Group', 'A+', 'O+', 'B+', 'AB+', 'A-', 'O-', 'B-', 'AB-']
+import { bloodGroupList } from "../../common";
+
 
 class UpdateUserDetails extends Component {
     constructor(props) {
