@@ -2,17 +2,31 @@ import React, { Component } from 'react';
 import { Container, Content, View, Text, Item, Spinner,Card,Picker, Radio,Row,Col,Form,Button,Icon,Input } from 'native-base';
 import {StyleSheet,TextInput,TouchableOpacity} from 'react-native'
 import { FlatList } from 'react-native-gesture-handler';
-import Autocomplete from '../../../components/Autocomplete'
+import {bloodDonationList }from '../../providers/profile/profile.action';
 
 
 class BloodDonersList extends Component {
     constructor(props) {
         super(props)
         this.state = {
+          data:[],
+         
          
         }
+        
     }
-    
+    componentDidMount(){
+      this.getBlooddonationDetail()
+    }
+   getBlooddonationDetail= async()=>{
+     let result = await bloodDonationList();
+     if(result.success){
+       this.setState({data:result.data})
+     }
+     console.log(result)
+
+     }
+
     render() {
       const donarDetail = [{name:'Mukesh Kannan',mobileNo:9978778865,status:'Available',bloodGrp:'A+'},
       {name:'Anusha Krishna',mobileNo:9978778845,status:'Available',bloodGrp:'A+'},{name:'Dharmalingam',mobileNo:9956757655,status:'Available',bloodGrp:'A+'},
@@ -23,25 +37,25 @@ class BloodDonersList extends Component {
             <Content style={{padding:20}}>
                 <View style={{marginBottom:50}}>
                   <FlatList
-                  data={donarDetail}
+                  data={this.state.data.userList}
                   renderItem={({item})=>
                   <Card style={{padding:10}}>
                   <Row >
                     <Col style={{width:'85%',paddingTop:10,}}>
-                      <Text style={styles.nameTxt}>{item.name}</Text>
+                      <Text style={styles.nameTxt}>{item.first_name}</Text>
                       <Row style={{marginTop:10}}>
                         <Col style={{width:'50%'}}>
-                        <Text style={styles.mobTxt}>{item.mobileNo}</Text>
+                        <Text style={styles.mobTxt}>{item.mobile_no}</Text>
                         </Col>
                         <Col style={{width:'50%'}}>
-                        <Button style={styles.statButton}><Text style={styles.statText}>{item.status}</Text></Button>
+                        <Text style={styles.statButton}>Available</Text>
                         </Col>
                        
                         </Row>
                     </Col>
                     <Col style={{width:'15%',paddingTop:10,justifyContent:'center'}}>
                       <View style={styles.circleView}>
-                      <Text style={styles.circleText}>{item.bloodGrp}</Text>
+                      <Text style={styles.circleText}>A+</Text>
                       </View>
                 
                     </Col>
@@ -72,9 +86,11 @@ const styles = StyleSheet.create({
   statButton:{
     borderColor:'green',
     borderWidth:1,
-    height:25,
     backgroundColor:'#fff',
-    borderRadius:5
+    borderRadius:5,
+    textAlign:'center',
+    width:'50%',
+    padding:2
   },
   statText:{
     fontFamily:'OpenSans',
