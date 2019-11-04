@@ -53,6 +53,8 @@ import MedicineSearchList from '../../modules/screens/Pharmacy/MedicineSearchLis
 import MedicineCheckout from '../../modules/screens/Pharmacy/MedicineCheckout/MedicineChekout';
 import { Badge } from '../../../src/modules/common'
 import Locations from '../../modules/screens/Home/Locations';
+import BloodDonersList from '../../modules/screens/bloodDonation/BloodDonersList';
+import BloodDonerFilters from '../../modules/screens/bloodDonation/BloodDonerFilters';
 
 const AuthRoutes = {
   login: {
@@ -129,6 +131,32 @@ const HomeStack = createStackNavigator({
     screen: Notification,
     navigationOptions: ({ navigation }) => ({
       title: 'Notification',
+    })
+  },
+  BloodDonerFilters: {
+    screen: BloodDonerFilters,
+    navigationOptions: ({ navigation }) => ({
+      title: 'Filter',
+    })
+  },
+  BloodDonersList: {
+    screen: BloodDonersList,
+    navigationOptions:({ navigation }) => ({
+      title: 'Blood Doners',
+      headerRight: (
+        <Grid>
+
+          <Col>
+            <TouchableOpacity onPress={() => { navigation.navigate('BloodDonerFilters') }} >
+              <View>
+                <Icon name="ios-funnel" style={{ color: '#fff', marginRight: 15, fontFamily: 'opensans-semibold' }}></Icon>
+                <Badge/>
+              </View>
+            </TouchableOpacity>
+          </Col>
+        
+        </Grid>
+      ),
     })
   },
   ///  =============Appointments Stack ==================
@@ -373,6 +401,9 @@ const HomeStack = createStackNavigator({
   const DrawerNavigator = createDrawerNavigator({
     Home: {
       screen: HomeStack,
+    },
+    BloodDonersList: {
+      screen: BloodDonersList,
     },
     "My Appointments":{
      screen: MyAppoinmentList
