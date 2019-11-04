@@ -13,12 +13,24 @@ class Categories extends Component {
   constructor(props) {
     super(props)
     this.state = {
-      data: this.props.navigation.state.params.data,
+      data:[],
     }
   }
   componentDidMount() {
-    console.log(' this.state.data' + JSON.stringify(this.state.data));
+    this.getCatagries();
   }
+  getCatagries = async () => {
+    try {
+        let result = await catagries();
+        if (result.success) { 
+            this.setState({ data: result.data })
+        }
+    } catch (e) {
+        console.log(e);
+    } finally {
+        this.setState( { isLoading : false });
+    }
+}
 
   navigateToCategorySearch(categoryName) {
     console.log(categoryName);

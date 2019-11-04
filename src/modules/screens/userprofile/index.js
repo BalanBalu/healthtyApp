@@ -13,6 +13,7 @@ import { NavigationEvents } from 'react-navigation';
 import { Loader } from '../../../components/ContentLoader'
 import ImagePicker from 'react-native-image-picker';
 import { uploadMultiPart } from '../../../setup/services/httpservices'
+import { renderDoctorImage, renderProfileImage } from '../../common';
 
 class Profile extends Component {
 
@@ -53,8 +54,6 @@ class Profile extends Component {
     /*Get userProfile*/
     getUserProfile = async () => {
         try {
-            console.log("result")
-
             let data = await AsyncStorage.getItem('profile');
             result = JSON.parse(data);
             if (result == null) {
@@ -72,8 +71,6 @@ class Profile extends Component {
             }
             else {
                 this.setState({ data: result, gender: result.gender });
-                console.log("data" + JSON.stringify(this.state.data))
-
                 if (result.profile_image != undefined) {
                     this.setState({ imageSource: result.profile_image.imageURL });
                 }
@@ -139,7 +136,7 @@ class Profile extends Component {
     }
 
     editProfile(screen) {
-        this.props.navigation.navigate(screen, { screen: screen, updatedata: this.state.data || '' })
+        this.props.navigation.navigate(screen, { screen: screen, fromProfile: true, updatedata: this.state.data || '' })
     }
 
     /*Upload profile pic*/
@@ -249,7 +246,8 @@ class Profile extends Component {
                                     <Col style={{ width: '55%' }} >
                                         {imageSource != undefined ?
                                             <Thumbnail style={styles.profileImage} source={{ uri: imageSource }} /> :
-                                            <Thumbnail style={styles.profileImage} source={{ uri: 'https://res.cloudinary.com/demo/image/upload/w_200,h_200,c_thumb,g_face,r_max/face_left.png' }} />}
+                                            <Thumbnail style={styles.profileImage} square source={renderProfileImage(data)} />
+                                        }
 
                                         <View style={{ marginLeft: 80, marginTop: -20, justifyContent: 'center' }}>
                                             <Icon name="camera" style={{ fontSize: 20 }} onPress={() => this.selectPhotoTapped()} testID="cameraIconTapped" />
@@ -388,12 +386,11 @@ class Profile extends Component {
                                         {data.address ?
                                             <View>
                                                 <Text note style={styles.customText1}>{data.address.address.no_and_street + ', '
-                                                    + data.address.address.address_line_1 + ', '
-                                                    + data.address.address.address_line_2 + ', '
-                                                    + data.address.address.city + ', '
-                                                    + data.address.address.pin_code
-                                                }
-                                                </Text>
+                                                    + data.address.address.address_line_1}</Text>
+                                                <Text note style={styles.customText1}>{data.address.address.city + ', '
+                                                    + data.address.address.state}</Text>
+                                                <Text note style={styles.customText1}>{data.address.address.country + ', '
+                                                    + data.address.address.pin_code}</Text>
                                             </View> :
                                             <Button transparent onPress={() => this.editProfile('UpdateAddress')}>
                                                 <Icon name='add' style={{ color: 'gray' }} />
@@ -495,29 +492,32 @@ class Profile extends Component {
                         </List>
 
                         {this.state.favouriteList.length === 0 ? null :
-                            <List>
-                                <Text style={styles.titleText}>Your Doctors</Text>
+                            <Card style={{ padding: 10 }}>
+
+                                <List>
+                                    <Text style={styles.titleText}>Your Doctors</Text>
 
 
-                                <FlatList
-                                    data={this.state.favouriteList}
-                                    renderItem={({ item }) => (
-                                        <ListItem avatar noBorder>
-                                            <Left>
-                                                <Thumbnail square source={{ uri: 'https://res.cloudinary.com/demo/image/upload/w_200,h_200,c_thumb,g_face,r_max/face_left.png' }} style={{ height: 40, width: 40 }} />
-                                            </Left>
-                                            <Body>
-                                                <Text style={{ fontFamily: 'OpenSans', fontSize: 15 }}> {item.doctorInfo.prefix ? item.doctorInfo.prefix : ''} {item.doctorInfo.first_name + " " + item.doctorInfo.last_name} </Text>
-                                            </Body>
-                                            <Right>
-                                                <Button style={styles.docbutton}><Text style={{ fontFamily: 'OpenSans', fontSize: 12 }} onPress={() => this.props.navigation.navigate('Book Appointment', { doctorId: item.doctorInfo.doctor_id, fetchAvailabiltySlots: true })}> Book Again</Text></Button>
-                                            </Right>
+                                    <FlatList
+                                        data={this.state.favouriteList}
+                                        renderItem={({ item }) => (
+                                            <ListItem avatar noBorder>
+                                                <Left>
+                                                    <Thumbnail square source={renderDoctorImage(item.doctorInfo)} style={{ height: 60, width: 60 }} />
+                                                </Left>
+                                                <Body>
+                                                    <Text style={{ fontFamily: 'OpenSans', fontSize: 15 }}> {item.doctorInfo.prefix ? item.doctorInfo.prefix : 'Dr.'} {item.doctorInfo.first_name + " " + item.doctorInfo.last_name} </Text>
+                                                </Body>
+                                                <Right>
+                                                    <Button style={styles.docbutton}><Text style={{ fontFamily: 'OpenSans', fontSize: 12 }} onPress={() => this.props.navigation.navigate('Book Appointment', { doctorId: item.doctorInfo.doctor_id, fetchAvailabiltySlots: true })}> Book Again</Text></Button>
+                                                </Right>
 
-                                        </ListItem>
-                                    )}
-                                    keyExtractor={(item, index) => index.toString()}
-                                />
-                            </List>}
+                                            </ListItem>
+                                        )}
+                                        keyExtractor={(item, index) => index.toString()}
+                                    />
+                                </List>
+                            </Card>}
                     </Content>}
 
 

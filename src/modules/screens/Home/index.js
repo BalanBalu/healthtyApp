@@ -63,23 +63,15 @@ class Home extends Component {
 
     getCatagries = async () => {
         try {
-            let result = await catagries();
-
-
-            if (result.success) { }
-
-            this.setState({ data: result.data, isLoading: true })
-
-            let limitedData = [];
-
-            for (let limtedNumber = 0; limtedNumber < 6; limtedNumber++) {
-                if (result.data[limtedNumber] !== undefined)
-                    limitedData.push(result.data[limtedNumber]);
+            const searchQueris = 'services=0&skip=0&limit=6';
+            let result = await catagries(searchQueris);
+            if (result.success) { 
+                this.setState({ catagary: result.data })
             }
-            this.setState({ catagary: limitedData });
-
         } catch (e) {
             console.log(e);
+        } finally {
+            this.setState( { isLoading : false });
         }
     }
     

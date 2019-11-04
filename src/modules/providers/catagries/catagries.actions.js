@@ -21,14 +21,16 @@ export async function getSpecialistDataSuggestions(userId, keyWord,locationData)
   }
 }
 
-export async function catagries ( isLoading = true) {
+export async function catagries ( searchQueries = '') {
   try {
     store.dispatch({
       type: CATAGRIES_REQUEST,
-      isLoading 
     })     
     let endPoint = 'category_services'
- // console.log(endPoint);   
+    if(searchQueries !== '') {
+      endPoint = endPoint + '?' + searchQueries;
+    }
+    console.log(endPoint);   
     let response = await getService(endPoint); 
     let respData = response.data;    
    
