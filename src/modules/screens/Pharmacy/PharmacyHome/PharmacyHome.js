@@ -167,7 +167,7 @@ finally {
                     
                    <Row style={{marginTop:-90,}}>
                             <Col style={{width: '50%',justifyContent:'center',marginLeft:80}}>
-                                <Autocomplete style={{  backgroundColor: '#F1F1F1', borderRadius: 5,borderBottomRightRadius: 0, borderTopRightRadius: 0}} 
+                                <Autocomplete style={{  backgroundColor: '#F1F1F1', borderRadius: 5,borderBottomRightRadius: 0, borderTopRightRadius: 0,padding:14}} 
                                 data={this.state.searchMedicine!=undefined?(selectedMedicineName.length === 1 && comp(this.state.keyword, selectedMedicineName[0].medicine_name) ? [] : selectedMedicineName):selectedMedicineName}
                                     defaultValue={this.state.keyword}
                                     onChangeText={text => this.setState({ keyword:text })}
