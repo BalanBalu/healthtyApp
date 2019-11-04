@@ -30,7 +30,7 @@ import { NavigationEvents } from 'react-navigation';
 import moment from 'moment';
 
 import { store } from '../../../setup/store';
-let fields = "first_name,last_name,prefix,professional_statement,gender,specialist,education,language,experience,profile_image,device_tokens";
+let fields = "first_name,last_name,prefix,professional_statement,gender,specialist,education,language,experience,profile_image";
 let conditionFromFilterPage;
 const SELECTED_EXPERIENCE_START_END_YEARS = {
     10: { start: 0, end: 10 },
@@ -476,7 +476,6 @@ class doctorSearchList extends Component {
 
         doctorData.doctorName = doctorData.first_name + ' ' + doctorData.last_name;
         doctorData.doctorId = doctorData.doctor_id;
-        // doctorData.device_tokens = doctorData.device_tokens;
         var confirmSlotDetails = {
             ...doctorData,
             slotData: selectedSlotItemByDoctor

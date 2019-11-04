@@ -1,5 +1,4 @@
 import { bookAppointment, createPaymentRazor } from './bookappointment.action';
-import { AsyncStorage } from 'react-native';
 
 export default class BookAppointmentPaymentUpdate {
 
@@ -50,12 +49,8 @@ export default class BookAppointmentPaymentUpdate {
   }
  async updateNewBookAppointment(bookSlotDetails, userId, paymentId) {
     try {
-        const deviceTokens = await AsyncStorage.getItem('deviceToken')
-
         let bookAppointmentData = {
             userId: userId,
-            patDeviceTokens:deviceTokens,
-            docDeviceTokens:bookSlotDetails.device_tokens,     
             doctorId: bookSlotDetails.doctorId,
             description: bookSlotDetails.diseaseDescription || '',
             fee: bookSlotDetails.slotData.fee,

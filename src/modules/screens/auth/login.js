@@ -82,13 +82,6 @@ class Login extends Component {
           duration: 1000
         });
       }
-      else {
-        Toast.show({
-          text: "The Device Token already Updated",
-          type: "warning",
-          duration: 1000
-        });
-      }
     } catch (e) {
       console.log(e);
     }
