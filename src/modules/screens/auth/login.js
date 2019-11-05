@@ -29,6 +29,7 @@ class Login extends Component {
   doLogin = async () => {
     try {
       const deviceToken = await AsyncStorage.getItem('deviceToken')
+      const isDeviceTokenUpdated = await AsyncStorage.getItem('isDeviceTokenUpdated')
 
       if (this.state.userEntry != '' && this.state.password != '') {
         let requestData = {
@@ -50,7 +51,7 @@ class Login extends Component {
             })
             return
           }
-          if (deviceToken != null) this.updateDeviceToken(this.props.user.details.userId, deviceToken);  // update Unique Device_Tokens 
+          if (deviceToken != null && isDeviceTokenUpdated !='true') this.updateDeviceToken(this.props.user.details.userId, deviceToken);  // update Unique Device_Tokens 
         
           this.props.navigation.navigate('Home');
         } else {
@@ -76,6 +77,7 @@ class Login extends Component {
       let response = await userFiledsUpdate(userId, requestData);
       // console.log('device_token response'+JSON.stringify(response));
       if (response.success) {
+        await AsyncStorage.setItem('isDeviceTokenUpdated', 'true');
         Toast.show({
           text: 'Device Token updated successfully',
           type: "success",
