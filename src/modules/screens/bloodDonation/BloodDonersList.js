@@ -10,31 +10,50 @@ class BloodDonersList extends Component {
         super(props)
         this.state = {
           data:[],
+          isloading:false
          
          
         }
         
     }
     componentDidMount(){
-      this.getBlooddonationDetail()
+      this.getBlooddonationDetail();
+      this.setState({ isloading: true});
     }
    getBlooddonationDetail= async()=>{
      let result = await bloodDonationList();
-     if(result.success){
-       this.setState({data:result.data})
+     if(!result.success){
+       this.setState({data:result.data,isloading: false})
+     
+    
      }
+    
      console.log(result)
+    
 
+     
      }
 
     render() {
-      const donarDetail = [{name:'Mukesh Kannan',mobileNo:9978778865,status:'Available',bloodGrp:'A+'},
-      {name:'Anusha Krishna',mobileNo:9978778845,status:'Available',bloodGrp:'A+'},{name:'Dharmalingam',mobileNo:9956757655,status:'Available',bloodGrp:'A+'},
-      {name:'Mujeeb',mobileNo:9998778823,status:'Available',bloodGrp:'A+'},{name:'Rahul E',mobileNo:9999778878,status:'Available',bloodGrp:'A+'},
-      {name:'Krishna Prasad',mobileNo:9999978867,status:'Available',bloodGrp:'A+'},  ]
+      const {isloading,data} = this.state;
         return (
             <Container>
+             
+               
+           
             <Content style={{padding:20}}>
+            {isloading == false ? 
+             <Spinner 
+             color="blue"
+             visible={true}
+             size={"large"}
+             overlayColor="none"
+             cancelable={false}/>: data === undefined ? null : data.length == 0 ?
+              <View style={{alignItems:'center',justifyContent:'center',height:550}}>
+                 <Text> No Blood Donors</Text>
+              </View>
+              
+              :
                 <View style={{marginBottom:50}}>
                   <FlatList
                   data={this.state.data.userList}
@@ -48,23 +67,25 @@ class BloodDonersList extends Component {
                         <Text style={styles.mobTxt}>{item.mobile_no}</Text>
                         </Col>
                         <Col style={{width:'50%'}}>
-                        <Text style={styles.statButton}>Available</Text>
-                        </Col>
-                       
+                     {item.is_available_blood_donate == true ?
+                     <Text style={styles.statButton}>Available</Text>
+                     :null
+                    }
+                    </Col>
                         </Row>
                     </Col>
                     <Col style={{width:'15%',paddingTop:10,justifyContent:'center'}}>
                       <View style={styles.circleView}>
-                      <Text style={styles.circleText}>A+</Text>
+                      <Text style={styles.circleText}>{item.blood_group}</Text>
                       </View>
                 
                     </Col>
                   </Row>
                   </Card>
-                  }/>
-                
-               </View>
+                  }/>  
+               </View> }
               </Content>
+             
           </Container>
         )
     }
@@ -89,8 +110,10 @@ const styles = StyleSheet.create({
     backgroundColor:'#fff',
     borderRadius:5,
     textAlign:'center',
-    width:'50%',
-    padding:2
+    width:'60%',
+    paddingLeft:4,
+    paddingRight:4,
+    height:25
   },
   statText:{
     fontFamily:'OpenSans',
