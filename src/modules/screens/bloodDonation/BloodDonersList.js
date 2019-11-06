@@ -18,29 +18,25 @@ class BloodDonersList extends Component {
     }
     componentDidMount(){
       this.getBlooddonationDetail();
-      this.setState({ isloading: true});
+     
     }
    getBlooddonationDetail= async()=>{
+    try {
      let result = await bloodDonationList();
-     if(!result.success){
-       this.setState({data:result.data,isloading: false})
-     
-    
-     }
-    
-     console.log(result)
-    
+     if(result.success){
+       this.setState({data:result.data})
+      }
+    await this.setState({ isloading: true })
+} catch (e) {
+    console.log(e)
+}
 
-     
-     }
+}
 
     render() {
       const {isloading,data} = this.state;
         return (
             <Container>
-             
-               
-           
             <Content style={{padding:20}}>
             {isloading == false ? 
              <Spinner 
@@ -52,25 +48,34 @@ class BloodDonersList extends Component {
               <View style={{alignItems:'center',justifyContent:'center',height:550}}>
                  <Text> No Blood Donors</Text>
               </View>
-              
               :
                 <View style={{marginBottom:50}}>
                   <FlatList
-                  data={this.state.data.userList}
+                  data={this.state.data.userList }
                   renderItem={({item})=>
                   <Card style={{padding:10}}>
                   <Row >
                     <Col style={{width:'85%',paddingTop:10,}}>
-                      <Text style={styles.nameTxt}>{item.first_name}</Text>
-                      <Row style={{marginTop:10}}>
-                        <Col style={{width:'50%'}}>
-                        <Text style={styles.mobTxt}>{item.mobile_no}</Text>
-                        </Col>
-                        <Col style={{width:'50%'}}>
-                     {item.is_available_blood_donate == true ?
+                      <Row>
+                      <Col style={{width:'50%'}}>
+                      <Text style={styles.nameTxt}>{item.first_name +' '+item.last_name}</Text>
+                      </Col>
+                      <Col style={{width:'50%'}}>
+                      {item.is_available_blood_donate == true ?
                      <Text style={styles.statButton}>Available</Text>
                      :null
                     }
+                     
+                      </Col>
+                      </Row>
+                    
+                      <Row style={{marginTop:5}}>
+                        <Col style={{width:'50%'}}>
+                        <Text style={styles.mobTxt}>{item.mobile_no}</Text>
+                       
+                        </Col>
+                        <Col style={{width:'50%'}}>
+                        <Text style={styles.cityTxt}>{item.address.address.city}</Text>
                     </Col>
                         </Row>
                     </Col>
@@ -83,7 +88,8 @@ class BloodDonersList extends Component {
                   </Row>
                   </Card>
                   }/>  
-               </View> }
+               </View>
+            }
               </Content>
              
           </Container>
@@ -97,6 +103,7 @@ const styles = StyleSheet.create({
    nameTxt:{
     fontFamily:'OpenSans',
     fontSize:16,
+    textAlign:'auto',
     fontWeight:'bold'
    },
   mobTxt:{
@@ -104,16 +111,22 @@ const styles = StyleSheet.create({
     fontSize:16,
     marginTop:2
   },
+  cityTxt:{
+    fontFamily:'OpenSans',
+    fontSize:16,
+    marginTop:2,
+    marginLeft:5
+   
+  },
   statButton:{
-    borderColor:'green',
-    borderWidth:1,
-    backgroundColor:'#fff',
+    backgroundColor:'green',
     borderRadius:5,
     textAlign:'center',
     width:'60%',
     paddingLeft:4,
     paddingRight:4,
-    height:25
+    height:25,
+    color:'#fff'
   },
   statText:{
     fontFamily:'OpenSans',
