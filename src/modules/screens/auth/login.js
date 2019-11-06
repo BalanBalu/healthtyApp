@@ -28,9 +28,6 @@ class Login extends Component {
 
   doLogin = async () => {
     try {
-      const deviceToken = await AsyncStorage.getItem('deviceToken')
-      const isDeviceTokenUpdated = await AsyncStorage.getItem('isDeviceTokenUpdated')
-
       if (this.state.userEntry != '' && this.state.password != '') {
         let requestData = {
           userEntry: this.state.userEntry,
@@ -50,9 +47,7 @@ class Login extends Component {
               type: RESET_REDIRECT_NOTICE
             })
             return
-          }
-          if (deviceToken != null && isDeviceTokenUpdated !='true') this.updateDeviceToken(this.props.user.details.userId, deviceToken);  // update Unique Device_Tokens 
-        
+          }        
           this.props.navigation.navigate('Home');
         } else {
           this.setState({ loginErrorMsg: this.props.user.message })
@@ -63,26 +58,6 @@ class Login extends Component {
         }
       } else {
         this.setState({ loginErrorMsg: "Your login credentials are not valid" })
-      }
-    } catch (e) {
-      console.log(e);
-    }
-  }
-
-  updateDeviceToken = async (userId, deviceToken) => {
-    try {
-      let requestData = {
-        device_token: deviceToken,
-      }
-      let response = await userFiledsUpdate(userId, requestData);
-      // console.log('device_token response'+JSON.stringify(response));
-      if (response.success) {
-        await AsyncStorage.setItem('isDeviceTokenUpdated', 'true');
-        Toast.show({
-          text: 'Device Token updated successfully',
-          type: "success",
-          duration: 1000
-        });
       }
     } catch (e) {
       console.log(e);

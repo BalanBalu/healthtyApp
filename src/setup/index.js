@@ -3,12 +3,12 @@ import RoutesHome from './routes/appRouterHome';
 //import RoutesLogin from './routes/appRouterLogin';
 import { Provider } from 'react-redux';
 import { store } from './store'
-import { StyleProvider, Root } from 'native-base';
+import { StyleProvider, Root, Toast } from 'native-base';
 import getTheme from '../theme/components';
 import material from '../theme/variables/material';
 import { AsyncStorage, Alert } from 'react-native';
 import { FIREBASE_SENDER_ID } from './config'
-
+import { userFiledsUpdate } from '../modules/providers/auth/auth.actions';
 //import firebase from 'react-native-firebase';
 import { fetchUserMarkedAsReadedNotification } from '../../src/modules/providers/notification/notification.actions';
 import NotifService from './NotifService';
@@ -67,10 +67,32 @@ export default class App extends Component {
     }
   }*/
   onRegister=async(token)=> {
-    // Alert.alert("Registered !", JSON.stringify(token));
-    console.log('deviceToken'+JSON.stringify(token))
-    await AsyncStorage.setItem('deviceToken',  token.token);
-    // this.setState({ registerToken: token.token, gcmRegistered: true });
+    const userId = await AsyncStorage.getItem('userId');
+    const isDeviceTokenUpdated = await AsyncStorage.getItem('isDeviceTokenUpdated');
+    let deviceToken=token.token;
+if(isDeviceTokenUpdated !='true' && userId !=null){
+  if (deviceToken != null) this.updateDeviceToken(userId, deviceToken);  // update Unique Device_Tokens 
+}
+  }
+
+  updateDeviceToken = async (userId, deviceToken) => {
+    try {
+      let requestData = {
+        device_token: deviceToken,
+      }
+      let response = await userFiledsUpdate(userId, requestData);
+      // console.log('device_token response'+JSON.stringify(response));
+      if (response.success) {
+        await AsyncStorage.setItem('isDeviceTokenUpdated', 'true');
+        Toast.show({
+          text: 'Device Token updated successfully',
+          type: "success",
+          duration: 1000
+        });
+      }
+    } catch (e) {
+      console.log(e);
+    }
   }
 
   onNotif(notif) {
