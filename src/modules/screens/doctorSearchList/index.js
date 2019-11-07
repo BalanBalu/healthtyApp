@@ -569,7 +569,12 @@ class doctorSearchList extends Component {
         }
         selectedIndex = selectedSlotData[selectedSlotIndex] ? selectedSlotIndex : 0;
         selectedSlotFee = selectedSlotData[selectedIndex].fee;
-        return selectedSlotFee;
+        selectedSlotFeeWithoutOffer = selectedSlotData[selectedIndex].feeWithoutOffer;
+
+        return {
+           fee: selectedSlotFee,
+           feeWithoutOffer: selectedSlotFeeWithoutOffer
+        }
     }
 
     getDisplayAvailableTime = (selectedSlotData, wholeSlotData) => {
@@ -698,7 +703,24 @@ class doctorSearchList extends Component {
                                     extraData={this.state.refreshCount}
                                     keyExtractor={(item, index) => index.toString()}
                                     renderItem={({ item }) =>
-                                        <Card style={{ padding: 2, borderRadius: 10, borderBottomWidth: 2 }}>
+                                        this.renderDoctorCard(item)
+                                    } />
+                            }
+                        </View>
+                    </Content>
+                }
+
+            </Container >
+        )
+    }
+    renderDoctorCard(item) {
+        const { bookappointment: { patientWishListsDoctorIds, favouriteListCountByDoctorIds, reviewsByDoctorIds } } = this.props;
+        const { selectedDatesByDoctorIds, expandedDoctorIdHospitalsToShowSlotsData, isLoggedIn, selectedSlotItemByDoctorIds,
+        
+        } = this.state;
+       const { fee, feeWithoutOffer } = this.getFeesBySelectedSlot(item.slotData[selectedDatesByDoctorIds[item.doctorIdHostpitalId] || this.state.currentDate], item.slotData, item.doctorIdHostpitalId)
+        return (
+            <Card style={{ padding: 2, borderRadius: 10, borderBottomWidth: 2 }}>
                                             <List style={{ borderBottomWidth: 0 }}>
                                                 <ListItem>
                                                     <Grid >
@@ -761,8 +783,14 @@ class doctorSearchList extends Component {
                                                             </Col>
                                                             <Col style={{ width: "25%", marginTop: 20 }}>
                                                                 <Text note style={{ fontFamily: 'OpenSans', fontSize: 12, marginLeft: 5, }}> Fees</Text>
-                                                                <Text style={{ fontFamily: 'OpenSans', fontSize: 12, fontWeight: 'bold', marginLeft: 5 }}>{'\u20B9'}{this.getFeesBySelectedSlot(item.slotData[selectedDatesByDoctorIds[item.doctorIdHostpitalId] || this.state.currentDate], item.slotData, item.doctorIdHostpitalId)}</Text>
-                                                            </Col>
+                                                                <Text style={{ fontFamily: 'OpenSans', fontSize: 12, fontWeight: 'bold', marginLeft: 5 }}>{'\u20B9'}{fee} {' '}
+                                                                 {fee !== feeWithoutOffer ?  
+                                                                   <Text style={{ fontFamily: 'OpenSans', fontWeight: 'normal', fontSize: 12, textDecorationLine: 'line-through', textDecorationStyle: 'solid' }}>
+                                                                      {'\u20B9'}{feeWithoutOffer}</Text> : null
+                                                                 }
+                                                          
+                                                                </Text>
+                                                                 </Col>
                                                         </Row>
 
 
@@ -829,15 +857,9 @@ class doctorSearchList extends Component {
 
                                             </List>
                                         </Card>
-                                    } />
-                            }
-                        </View>
-                    </Content>
-                }
-
-            </Container >
         )
     }
+
     renderDatesOnFlatlist(slotData, selectedDate, doctorIdHostpitalId) {
 
         const reducer = (accumulator, currentValue, currentIndex, souceArray) => {
