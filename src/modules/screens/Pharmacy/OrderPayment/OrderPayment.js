@@ -30,24 +30,24 @@ class OrderPayment extends Component {
 
 
                     <View style={{ marginTop: -85, height: 100 }}>
-                        <Row>
-                            <Col style={{ width: '30%', alignItems: 'center' }}>
+                        <Row style={{paddingLeft:10,paddingRight:10 }}>
+                            <Col style={{ width: '35%', alignItems: 'center' }}>
                                 <Text style={styles.normalText}>Date</Text>
                             </Col>
-                            <Col style={{ width: '40%', alignItems: 'center' }}>
+                            <Col style={{ width: '25%', alignItems: 'center' }}>
                             </Col>
-                            <Col style={{ width: '30%', alignItems: 'center' }}>
+                            <Col style={{ width: '40%', alignItems: 'center' }}>
                                 <Text style={styles.normalText}>Jan 24,2019</Text>
                             </Col>
                         </Row>
 
-                        <Row style={{ marginTop: -28 }}>
-                            <Col style={{ width: '30%', alignItems: 'center', marginLeft: 12 }}>
+                        <Row style={{ marginTop: -28,paddingLeft:10,paddingRight:10 }}>
+                            <Col style={{ width: '35%', alignItems: 'center', marginLeft: 12 }}>
                                 <Text style={styles.normalText}>TotalBill</Text>
                             </Col>
-                            <Col style={{ width: '40%', alignItems: 'center' }}>
+                            <Col style={{ width: '25%', alignItems: 'center' }}>
                             </Col>
-                            <Col style={{ width: '30%', alignItems: 'center', marginLeft: -30 }}>
+                            <Col style={{ width: '40%', alignItems: 'center', marginLeft: -30 }}>
                                 <Text style={styles.normalText}>Rs.100</Text>
                             </Col>
                         </Row>
@@ -195,7 +195,7 @@ const styles = StyleSheet.create({
     normalText:
     {
         fontFamily: 'OpenSans',
-        fontSize: 16,
+        fontSize: 14,
         color: '#fff',
         fontWeight: 'bold'
     },

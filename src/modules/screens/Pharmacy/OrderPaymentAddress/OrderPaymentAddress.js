@@ -305,24 +305,24 @@ class OrderPaymentAddress extends Component {
 
                     </Grid>
                     <View style={{ marginTop: -95, height: 100 }}>
-                        <Row>
-                            <Col style={{ width: '30%', alignItems: 'center' }}>
+                        <Row style={{paddingLeft:10,paddingRight:10 }}>
+                            <Col style={{ width: '35%', alignItems: 'flex-start' }}>
                                 <Text style={styles.normalText}>Date</Text>
                             </Col>
-                            <Col style={{ width: '30%', alignItems: 'center' }}>
+                            <Col style={{ width: '25%', alignItems: 'center' }}>
                             </Col>
-                            <Col style={{ width: '40%', alignItems: 'center' }}>
+                            <Col style={{ width: '40%', alignItems: 'flex-end' }}>
                                 <Text style={styles.normalText}>{currentDate}</Text>
                             </Col>
                         </Row>
 
-                        <Row style={{ marginTop: -28 }}>
-                            <Col style={{ width: '30%', alignItems: 'center', marginLeft: 12 }}>
+                        <Row style={{ marginTop: -28,paddingLeft:10,paddingRight:10 }}>
+                            <Col style={{ width: '35%', alignItems: 'flex-start', }}>
                                 <Text style={styles.normalText}>TotalBill</Text>
                             </Col>
-                            <Col style={{ width: '40%', alignItems: 'center' }}>
+                            <Col style={{ width: '25%', alignItems: 'center' }}>
                             </Col>
-                            <Col style={{ width: '30%', alignItems: 'center', marginLeft: -30 }}>
+                            <Col style={{ width: '40%', alignItems: 'flex-end',  }}>
                                 <Text style={styles.normalText}>Rs.100</Text>
                             </Col>
                         </Row>
@@ -331,7 +331,7 @@ class OrderPaymentAddress extends Component {
                     <Card transparent style={{ padding: 10, marginTop: 20, }}>
                         <Text style={{ fontFamily: 'OpenSans', fontWeight: 'bold', fontSize: 18, padding: 5 }}>AddressInfo</Text>
                         <Segment>
-                            <Button active={this.state.activePage === 1}
+                            <Button active={this.state.activePage === 1} style={{borderLeftColor:'#fff',borderLeftWidth:1}}
                                 onPress={this.selectComponent(1)}><Text uppercase={false}>DefaultAddress</Text>
 
                             </Button>
@@ -396,7 +396,7 @@ const styles = StyleSheet.create({
     normalText:
     {
         fontFamily: 'OpenSans',
-        fontSize: 16,
+        fontSize: 14,
         color: '#fff',
         fontWeight: 'bold'
     },
