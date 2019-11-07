@@ -666,14 +666,20 @@ class doctorSearchList extends Component {
                     <Content>
                         <View>
                             <Card style={{ borderRadius: 7, paddingTop: 5, paddingBottom: 5 }}>
-                                <Grid>
+                                
                                     <Row>
-                                        <Col style={{ width: '55%', flexDirection: 'row' }} onPress={() => this.sortByTopRatings(filteredDoctorData)}>
-                                            <Left>
-                                                <Icon name='ios-arrow-down' style={{ color: '#000', marginLeft: 50, fontSize: 20 }} />
-                                            </Left>
-                                            <Text uppercase={false} style={{ fontFamily: 'OpenSans', color: '#000', fontSize: 13, textAlign: 'center', marginLeft: 20, marginTop: 5 }}>Top Rated </Text>
+                                        <Col style={{ width: '55%', flexDirection: 'row' ,marginLeft:5,}} onPress={() => this.sortByTopRatings(filteredDoctorData)}>
+                                        <Row>
+                                                <Col style={{width:'15%'}}>
+                                                <Icon name='ios-arrow-down' style={{ color: '#000', fontSize: 20,marginTop:5}} />
 
+                                                </Col>
+                                                <Col style={{width:'85%'}}>
+                                                <Text uppercase={false} style={{ fontFamily: 'OpenSans', color: '#000', fontSize: 13, textAlign: 'center',  marginTop: 5 }}>Top Rated </Text>
+
+                                                </Col>
+                                          
+                                            </Row>
                                         </Col>
                                         {/* <Col style={{ width:'45%',alignItems: 'flex-start', flexDirection: 'row', }} onPress={() => this.navigateToFilters()}>
                                 <Row>
@@ -682,15 +688,19 @@ class doctorSearchList extends Component {
                                  
                                 </Row>  
                         </Col> */}
-                                        <View style={{ borderRightWidth: 1, borderRightColor: 'gray', paddingLeft: 20, marginRight: 20 }} />
-                                        <Col style={{ width: '45%', alignItems: 'flex-start', flexDirection: 'row', }} onPress={() => this.navigateToFilters()}>
-                                            <Row>
-                                                <Left><Icon name='ios-funnel' style={{ color: 'gray' }} /></Left>
-                                                <Text uppercase={false} style={{ fontFamily: 'OpenSans', color: '#000', fontSize: 13, marginLeft: 8, textAlign: 'center', marginTop: 5 }}>Filters </Text>
+                                        
+                                        <Col style={{ width: '45%', alignItems: 'flex-start', flexDirection: 'row',borderLeftColor:'gray',borderLeftWidth:1 }} onPress={() => this.navigateToFilters()}>
+                                            <Row >
+                                            <Col style={{width:'35%',marginLeft:10}}>
+                                      <Icon name='ios-funnel' style={{ color: 'gray' }} />
+                                                </Col>
+                                                <Col style={{width:'65%'}}>
+                                                <Text uppercase={false} style={{ fontFamily: 'OpenSans', color: '#000', fontSize: 13, marginTop: 5 ,marginLeft:5,width:'100%'}}>Filters </Text>
+                                                </Col>
                                             </Row>
                                         </Col>
                                     </Row>
-                                </Grid>
+                               
                             </Card>
 
                             {filteredDoctorData.length === 0 ?
