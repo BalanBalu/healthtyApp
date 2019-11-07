@@ -3,34 +3,32 @@ import { Container, Content, View, Text, Item, Spinner,Card,Picker, Radio,Row,Co
 import {StyleSheet,TextInput,TouchableOpacity} from 'react-native'
 import { FlatList } from 'react-native-gesture-handler';
 import {bloodDonationList }from '../../providers/profile/profile.action';
-
-
 class BloodDonersList extends Component {
     constructor(props) {
         super(props)
         this.state = {
           data:[],
           isloading:false
-         
-         
         }
         
     }
     componentDidMount(){
       this.getBlooddonationDetail();
-     
     }
    getBlooddonationDetail= async()=>{
     try {
      let result = await bloodDonationList();
      if(result.success){
-       this.setState({data:result.data})
+      let user = result.data.userList 
+      let doctor = result.data.doctorList
+        user.concat(doctor);
+        console.log(user)
+        await this.setState({data:user})
       }
     await this.setState({ isloading: true })
 } catch (e) {
     console.log(e)
 }
-
 }
 
     render() {
@@ -51,7 +49,7 @@ class BloodDonersList extends Component {
               :
                 <View style={{marginBottom:50}}>
                   <FlatList
-                  data={this.state.data.userList }
+                  data={this.state.data}
                   renderItem={({item})=>
                   <Card style={{padding:10}}>
                   <Row >
@@ -65,8 +63,7 @@ class BloodDonersList extends Component {
                      <Text style={styles.statButton}>Available</Text>
                      :null
                     }
-                     
-                      </Col>
+                     </Col>
                       </Row>
                     
                       <Row style={{marginTop:5}}>
@@ -90,8 +87,7 @@ class BloodDonersList extends Component {
                   }/>  
                </View>
             }
-              </Content>
-             
+              </Content> 
           </Container>
         )
     }
@@ -115,8 +111,7 @@ const styles = StyleSheet.create({
     fontFamily:'OpenSans',
     fontSize:16,
     marginTop:2,
-    marginLeft:5
-   
+    marginLeft:5 
   },
   statButton:{
     backgroundColor:'green',
