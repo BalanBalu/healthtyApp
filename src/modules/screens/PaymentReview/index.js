@@ -4,7 +4,7 @@ import { hasLoggedIn } from '../../providers/auth/auth.actions';
 import { Col, Row, Grid } from 'react-native-easy-grid';
 import { StyleSheet, AsyncStorage, View,TextInput } from 'react-native';
 import { validateBooking } from '../../providers/bookappointment/bookappointment.action';
-import { formatDate , isOnlyLetter} from '../../../setup/helpers';
+import { formatDate , isOnlyLetter, toTitleCase } from '../../../setup/helpers';
 import Spinner from '../../../components/Spinner';
 import { renderDoctorImage, getDoctorEducation, getAllSpecialist } from '../../common';
 
@@ -175,13 +175,15 @@ export default class PaymentReview extends Component {
                     </Form>
                   </View>
                   <Row style={{justifyContent:'center',}}>
+                  <Button  style={styles.payButton1} onPress={() => this.processToPayLater()}>
+                    <Text style={styles.payButtonText}>Pay at {bookSlotDetails.slotData && toTitleCase(bookSlotDetails.slotData.location.type)}</Text>
+                 </Button>
+                
                 <Button  style={styles.payButton} 
                     onPress={() => this.confirmProceedPayment()} >
-                    <Text style={styles.payButtonText}>Pay Now</Text>
+                    <Text style={styles.payButtonText}>Pay at Online</Text>
                 </Button>
-                 <Button  style={styles.payButton1} onPress={() => this.processToPayLater()}>
-                 <Text style={styles.payButtonText}>Pay Later</Text>
-                 </Button>
+               
              </Row>
             </View>
           </Content>
@@ -310,15 +312,16 @@ const styles = StyleSheet.create({
             borderRadius:10,
             height:40,
             marginTop:20,
-            padding:30,
+            marginLeft: 15,
+            padding:10,
             backgroundColor:'#149C00'
           },
-          payButton1:{
+          payButton1: {
             borderRadius:10,
             height:40,
-            marginTop:20,
-            padding:20,
-            marginLeft:20,
+            marginTop: 20,
+            padding: 10,
+            marginLeft: 10,
             backgroundColor:'#0055A5'
           },
           payButtonText:{

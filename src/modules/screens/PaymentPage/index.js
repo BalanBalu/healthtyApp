@@ -383,26 +383,30 @@ class PaymentPage extends Component {
                         value={this.state.paymentOption}>
                         <Row style={{ borderBottomColor: '#000', borderBottomWidth: 0.6, backgroundColor: '#fff', padding: 15, marginLeft: 10, marginRight: 10 }}>
                             <RadioButton value="CREDIT_CARD" />
-                            <Text style={{ marginTop: 8, fontFamily: 'OpenSans', fontSize: 15 }}>Credit Card</Text>
+                            <Text onPress={()=> this.setState({ paymentOption : 'CREDIT_CARD' })}
+                             style={{ marginTop: 8, fontFamily: 'OpenSans', fontSize: 15 }}>Credit Card</Text>
                         </Row>
                         {this.state.paymentOption === "CREDIT_CARD" ? this.renderCreditDebitCard('Credit') : null}
 
                         <Row style={{ borderBottomColor: '#000', borderBottomWidth: 0.6, backgroundColor: '#fff', padding: 15, marginLeft: 10, marginRight: 10 }}>
                             <RadioButton value="DEBIT_CARD" />
-                            <Text style={{ marginTop: 8, fontFamily: 'OpenSans', fontSize: 15 }}>Debit Card</Text>
+                            <Text onPress={()=> this.setState({ paymentOption : 'DEBIT_CARD' })}
+                            style={{ marginTop: 8, fontFamily: 'OpenSans', fontSize: 15 }}>Debit Card</Text>
                         </Row>
 
                         {this.state.paymentOption === "DEBIT_CARD" ? this.renderCreditDebitCard('Debit') : null}
 
                         <Row style={{ borderBottomColor: '#000', borderBottomWidth: 0.6, backgroundColor: '#fff', padding: 15, marginLeft: 10, marginRight: 10 }}>
                             <RadioButton value="NET_BANKING" />
-                            <Text style={{ marginTop: 8, fontFamily: 'OpenSans', fontSize: 15 }}>Net Banking</Text>
+                            <Text onPress={()=> this.setState({ paymentOption : 'NET_BANKING' })}
+                            style={{ marginTop: 8, fontFamily: 'OpenSans', fontSize: 15 }}>Net Banking</Text>
                         </Row>
                         {this.state.paymentOption === "NET_BANKING" ? this.renderNetBanking() : null}
 
                         <Row style={{ borderBottomColor: '#000', borderBottomWidth: 0.6, backgroundColor: '#fff', padding: 15, marginLeft: 10, marginRight: 10 }}>
                             <RadioButton value="UPI" />
-                            <Text style={{ marginTop: 8, fontFamily: 'OpenSans', fontSize: 15 }}>UPI</Text>
+                            <Text onPress={()=> this.setState({ paymentOption : 'UPI' })}
+                            style={{ marginTop: 8, fontFamily: 'OpenSans', fontSize: 15 }}>UPI</Text>
                         </Row>
                         {this.state.paymentOption === "UPI" ? this.renderUPI() : null}
 
@@ -412,7 +416,8 @@ class PaymentPage extends Component {
 
                             <Col style={{ width: '80%', flexDirection: 'row' }}>
                                 <RadioButton value="WALLET" />
-                                <Text style={{ marginTop: 8, fontFamily: 'OpenSans', fontSize: 15 }}>Wallet</Text>
+                                <Text onPress={()=> this.setState({ paymentOption : 'WALLET' })}
+                                style={{ marginTop: 8, fontFamily: 'OpenSans', fontSize: 15 }}>Wallet</Text>
                             </Col>
 
                             {/* <Col style={{ width: '20%' }}>
@@ -719,19 +724,22 @@ class PaymentPage extends Component {
                             {/* <Text style={{ color: '#000', fontFamily: 'OpenSans', fontWeight: 'bold', fontSize: 15, marginTop: 8, }}
                             >SBI</Text> */}
                         </Row>
-                        <Row>
+                        <Row onPress={()=> this.setState({ selectedSavedCardId: valueOfCreditCard.card_id, paymentOption: null }) }>
                             <Text style={{ fontSize: 15, marginTop: 5 }}>{valueOfCreditCard.card_number.substring(0, 4)} **** **** {valueOfCreditCard.card_number.substring(12, 16)}</Text>
                             <Text style={{ fontSize: 15 }}></Text>
                             <Text style={{ fontSize: 10, marginLeft: 10, marginTop: 5, color: 'blue', fontWeight: 'bold' }}>{valueOfCreditCard.pay_type_card}</Text>
                         </Row>
 
-                        <Row>
-                            <Text style={{ color: 'gray', fontFamily: 'OpenSans', fontSize: 12, marginTop: 5 }}>provide Valid CVV</Text>
+                        <Row  onPress={()=> this.setState({ selectedSavedCardId: valueOfCreditCard.card_id, paymentOption: null }) }
+                             >
+                            <Text 
+                              style={{ color: 'gray', fontFamily: 'OpenSans', fontSize: 12, marginTop: 5 }}>provide Valid CVV</Text>
                             <View style={{ width: '25%', alignItems: 'center' }}>
                                 <Form>
 
                                     <Input placeholder="CVV"
                                         maxLength={3}
+                                        onFocus={()=> this.setState({ selectedSavedCardId: valueOfCreditCard.card_id, paymentOption: null }) }
                                         keyboardType={'numeric'}
                                         secureTextEntry={true}
                                         value={this.state[valueOfCreditCard.card_id + '-savedCardCVV']}

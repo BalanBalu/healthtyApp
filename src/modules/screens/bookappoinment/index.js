@@ -41,6 +41,7 @@ processedDoctorDetailsAndSlotData = null;
 showedHospitalDoctorId = null;
 selectedSlotLocationShowed = null;
 selectedSlotFee = null;
+selectedSlotFeeWithoutOffer = null;
 showedFee = null;
 fields = "first_name,last_name,prefix,professional_statement,gender,specialist,education,language,gender_preference,experience,profile_image";
 
@@ -303,6 +304,7 @@ getLocationDataBySelectedSlot(slotDataForTheSelectedDay, wholeSlotData, slotInde
   if(slotDataForTheSelectedDay) {
     this.selectedSlotLocationShowed  = slotDataForTheSelectedDay[selectedSlotIndex].location;
     this.selectedSlotFee  = slotDataForTheSelectedDay[selectedSlotIndex].fee;
+    this.selectedSlotFeeWithoutOffer =  slotDataForTheSelectedDay[selectedSlotIndex].feeWithoutOffer
   }
   return this.selectedSlotLocationShowed;
 }
@@ -362,6 +364,8 @@ async onSlotItemPress( item, index) {
     this.getLocationDataBySelectedSlot(doctorData.slotData[selectedDate], doctorData.slotData, index);
       
     this.selectedSlotFee = item.fee;
+    this.selectedSlotFeeWithoutOffer = item.feeWithoutOffer
+
  console.log( item);
  if(currentHostpitalId !== previouslyShowedHospitalId && (item.fee != this.showedFee)) {
     if(this.showedFee != null) {
@@ -473,7 +477,12 @@ return (
                           </Col>
                           <Col style={{width:"25%",marginTop:15,}}>
                               <Text note style={{ fontFamily: 'OpenSans',fontSize:12,textAlign:'center' }}> Fees</Text>
-                              <Text  style={{ fontFamily: 'OpenSans',fontSize:12,fontWeight:'bold',textAlign:'center' }}>{'\u20B9'}{this.selectedSlotFee}</Text>
+                                  <Text  style={{ fontFamily: 'OpenSans',fontSize:12, fontWeight:'bold',textAlign:'center' }}>{'\u20B9'}{this.selectedSlotFee}{' '} 
+                                  { this.selectedSlotFee !== this.selectedSlotFeeWithoutOffer ?  
+                                      <Text style={{ fontWeight:'normal', fontFamily: 'OpenSans', fontSize: 12, textDecorationLine: 'line-through', textDecorationStyle: 'solid' }}>
+                                          {'\u20B9'}{this.selectedSlotFeeWithoutOffer}</Text> : null
+                                  }
+                                  </Text>
                           </Col>
                       </Row>
 
