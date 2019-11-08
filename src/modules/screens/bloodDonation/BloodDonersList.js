@@ -41,7 +41,7 @@ getAddress(address){
   }
   getName(name){
     if(name.first_name != undefined || name.last_name != undefined ){
-      return  `${name.first_name1 || ''} ${name.last_name1 || ''}`
+      return  `${name.first_name || ''} ${name.last_name || ''}`
     }
     else
     {
