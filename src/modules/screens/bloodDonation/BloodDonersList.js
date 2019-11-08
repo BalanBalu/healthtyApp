@@ -56,6 +56,14 @@ getAddress(address){
       return 'No Number'
     }
   }
+  getBloodGrp(blood_group){
+    if(blood_group != undefined) {
+      return blood_group 
+    } else
+    {
+      return 'N/A'
+    }
+  }
   
     render() {
       const {isloading,data} = this.state;
@@ -104,7 +112,7 @@ getAddress(address){
                     </Col>
                     <Col style={{width:'15%',paddingTop:10,justifyContent:'center'}}>
                       <View style={styles.circleView}>
-                      <Text style={styles.circleText}>{item.blood_group}</Text>
+                      <Text style={styles.circleText}>{this.getBloodGrp(item.blood_group)}</Text>
                       </View>
                 
                     </Col>
@@ -163,7 +171,7 @@ const styles = StyleSheet.create({
   },
   circleText:{
     fontFamily:'OpenSans',
-    fontSize:20,
+    fontSize:18,
     textAlign:'center',
     fontWeight:'bold',
     color:'#fff'
