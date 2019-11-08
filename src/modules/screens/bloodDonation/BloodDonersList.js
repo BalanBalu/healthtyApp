@@ -14,6 +14,7 @@ class BloodDonersList extends Component {
     }
     componentDidMount(){
       this.getBlooddonationDetail();
+      
     }
    getBlooddonationDetail= async()=>{
     try {
@@ -30,7 +31,23 @@ class BloodDonersList extends Component {
     console.log(e)
 }
 }
-
+getAddress(address){
+  if(address != undefined){
+    return  address.address.city
+  }else
+  {
+    return 'No Address'
+  }
+  }
+  getName(name){
+    if(name.first_name != undefined || name.last_name != undefined ){
+      return  `${name.first_name1 || ''} ${name.last_name1 || ''}`
+    }
+    else
+    {
+      return 'unKnown'
+    }
+  }
     render() {
       const {isloading,data} = this.state;
         return (
@@ -56,7 +73,7 @@ class BloodDonersList extends Component {
                     <Col style={{width:'85%',paddingTop:10,}}>
                       <Row>
                       <Col style={{width:'50%'}}>
-                      <Text style={styles.nameTxt}>{item.first_name +' '+item.last_name}</Text>
+                      <Text style={styles.nameTxt}>{this.getName(item)}</Text>
                       </Col>
                       <Col style={{width:'50%'}}>
                       {item.is_available_blood_donate == true ?
@@ -72,7 +89,7 @@ class BloodDonersList extends Component {
                        
                         </Col>
                         <Col style={{width:'50%'}}>
-                        <Text style={styles.cityTxt}>{item.address.address.city}</Text>
+                        <Text style={styles.cityTxt}>{this.getAddress(item.address)}</Text>
                     </Col>
                         </Row>
                     </Col>
