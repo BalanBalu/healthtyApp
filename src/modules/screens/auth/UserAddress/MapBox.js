@@ -3,14 +3,14 @@ import { View, StyleSheet, Image, PermissionsAndroid, AsyncStorage } from 'react
 
 import MapboxGL from '@react-native-mapbox-gl/maps';
 
-import { IS_ANDROID } from '../../common';
+import { IS_ANDROID } from '../../../common';
 import { Container, Toast, Body, Button, Text, Item, Input, Icon, Card, CardItem, Label, Form, Content, Picker } from 'native-base';
 import { MAP_BOX_TOKEN } from '../../../../setup/config';
 import axios from 'axios';
-import { userFiledsUpdate } from '../../providers/auth/auth.actions';
+import { userFiledsUpdate } from '../../../providers/auth/auth.actions';
 MapboxGL.setAccessToken(MAP_BOX_TOKEN);
 import Qs from 'qs';
-import Spinner from '../../../components/Spinner';
+import Spinner from '../../../../components/Spinner';
 
 export default class MapBox extends React.Component {
     _requests = [];
@@ -36,19 +36,13 @@ export default class MapBox extends React.Component {
             }
         }
         this.onPress = this.onPress.bind(this);
-        console.log("this.onPress" + JSON.stringify(this.onPress))
-
         this.onRegionDidChange = this.onRegionDidChange.bind(this);
-        console.log("this.onRegionDidChange" + JSON.stringify(this.onRegionDidChange))
         this.onRegionIsChanging = this.onRegionIsChanging.bind(this);
-        console.log("this.onRegionIsChanging" + JSON.stringify(this.onRegionIsChanging))
         this.onDidFinishLoadingMap = this.onDidFinishLoadingMap.bind(this);
-        console.log("this.onDidFinishLoadingMap" + JSON.stringify(this.onDidFinishLoadingMap))
 
     }
 
     componentDidMount() {
-        console.log("signup2")
         if (IS_ANDROID) {
             PermissionsAndroid.requestMultiple(
                 [PermissionsAndroid.PERMISSIONS.ACCESS_FINE_LOCATION,
@@ -69,7 +63,6 @@ export default class MapBox extends React.Component {
         const fromProfile = navigation.getParam('fromProfile') || false
         showAllAddressFields = navigation.getParam('mapEdit') || false
         let locationData = this.props.navigation.getParam('locationData');
-        console.log(locationData);
         this.formUserAddress(locationData)
 
         this.setState({ coordinates: locationData.center, fromProfile, showAllAddressFields })
@@ -104,8 +97,7 @@ export default class MapBox extends React.Component {
         } else {
             locationFullText = locationData.place_name;
         }
-        console.log(locationFullText);
-        //this.setState({ hospitalAddress: { ...this.state.hospitalAddress, name: locationData.text }, locationFullText });
+        this.setState({  address: { ...this.state.address}, locationFullText });
         this.setState({ center: locationData.center })
     }
 
@@ -127,20 +119,26 @@ export default class MapBox extends React.Component {
                     coordinates: [Lnglat[1], Lnglat[0]],
                     type: 'Point',
                     address: this.state.address
-                },
-                active: true
+                }
+               
             }
 
-            // const { navigation } = this.props;
-            // console.log(this.state.fromProfile);
-            // if (this.state.fromProfile && navigation.getParam('hospitalId')) {
-            //     hospitalUpdateData.hospital_id = navigation.getParam('hospitalId');
-            // }
-            //console.log(hospitalUpdateData);
-            let doctorId = await AsyncStorage.getItem('doctorId');
-            let result = await userFiledsUpdate(doctorId, userAddressData);
+            const userId = await AsyncStorage.getItem('userId')
+            let result = await userFiledsUpdate(userId, userAddressData);
             this.setState({ loading: false });
-            if (result.success === false) {
+            if (result.success) {
+                Toast.show({
+                    text: result.message,
+                    type: 'success',
+                    duration: 3000,
+                })
+                if (this.state.fromProfile)
+                    this.props.navigation.navigate('Profile');
+                else {
+                    this.props.navigation.navigate('login');
+                }
+            }
+            else {
                 Toast.show({
                     text: result.message,
                     type: 'warning',
@@ -152,19 +150,6 @@ export default class MapBox extends React.Component {
                     buttonStyle: { backgroundColor: "#5cb85c" }
                 })
                 return
-            }
-            else {
-
-                Toast.show({
-                    text: result.message,
-                    type: 'success',
-                    duration: 3000,
-                })
-                if (this.state.fromProfile)
-                    this.props.navigation.pop();
-                else {
-                    this.props.navigation.navigate('login');
-                }
             }
 
             console.log(result);
@@ -196,7 +181,7 @@ export default class MapBox extends React.Component {
                 headers: {
                     'Content-Type': null,
                     'x-access-token': null,
-                    'doctorId': null
+                    'userId': null
                 }
             });
             let locationData = resp.data.features[0];
@@ -320,7 +305,7 @@ export default class MapBox extends React.Component {
                                     <Input placeholder="Location" style={styles.transparentLabel}
                                         value={this.state.locationFullText}
                                         //editable={false}
-                                        onFocus={() => this.props.navigation.navigate('UpdateAddress')}
+                                        onFocus={() => this.props.navigation.navigate('UserAddress')}
                                         onChangeText={locationFullText => this.setState({ locationFullText })} />
                                 </Item>
 

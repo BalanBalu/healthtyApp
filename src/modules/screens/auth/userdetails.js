@@ -64,7 +64,7 @@ class UserDetails extends Component {
 
                 if (response.success) {
                     if (this.state.isBloodDonor == true) {
-                        this.props.navigation.navigate('UpdateAddress')
+                        this.props.navigation.navigate('UserAddress')
 
                     }
                     else{

@@ -385,8 +385,8 @@ class Profile extends Component {
                                         <Text style={styles.customText}>Address</Text>
                                         {data.address ?
                                             <View>
-                                                <Text note style={styles.customText1}>{data.address.address.no_and_street + ', '
-                                                    + data.address.address.address_line_1}</Text>
+                                                <Text note style={styles.customText1}>{data.address.address.no_and_street + ','}
+                                                <Text note style={styles.customText1}>{data.address.address.address_line_1 ? data.address.address.address_line_1 : " "}</Text></Text>
                                                 <Text note style={styles.customText1}>{data.address.address.city + ', '
                                                     + data.address.address.state}</Text>
                                                 <Text note style={styles.customText1}>{data.address.address.country + ', '

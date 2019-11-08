@@ -9,7 +9,7 @@ let publicToken = 'pk.eyJ1IjoidmFpcmFpc2F0aGlzaCIsImEiOiJjanRyZnFvN2YwcGo3NGRxc2
 import MapBox from './MapBox';
 import { connect } from 'react-redux';
 
-class UpdateAddress extends Component {
+class UserAddress extends Component {
 
     constructor(props) {
         super(props);
@@ -19,12 +19,7 @@ class UpdateAddress extends Component {
         }
     }
     getSelectedLocationDate = (locationData) => {
-        console.log("signup1")
-        const { navigation } = this.props;
-        const fromProfile = navigation.getParam('fromProfile') || false
-
-        this.props.navigation.navigate('MapBox', { locationData: locationData, fromProfile }),
-            console.log('Location Data Success');
+        this.props.navigation.navigate('MapBox', { locationData: locationData })
     }
 
     render() {
@@ -64,12 +59,12 @@ class UpdateAddress extends Component {
 
 
 }
-export default UpdateAddress;
+export default UserAddress;
 const routes = {
     UserLocation: {
         name: 'UserLocation',
         path: 'UserLocation',
-        screen: UpdateAddress,
+        screen: UserAddress,
     },
     MapBox: {
         name: 'MapBox',

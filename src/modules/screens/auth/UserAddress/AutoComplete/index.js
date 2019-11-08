@@ -84,8 +84,6 @@ export default class MapboxAutocomplete extends Component {
         this.state = {
             text: ''
         }
-        console.log('comsfnas');
-
     }
 
     setAddressText = address => this.setState({ text: address })
@@ -251,7 +249,6 @@ export default class MapboxAutocomplete extends Component {
     }
 
     _handleChangeText = (text) => {
-        console.log('atleast this is coming ?');
         this._onChangeText(text);
 
         const onChangeText = this.props
@@ -276,7 +273,6 @@ export default class MapboxAutocomplete extends Component {
         if (this.props.renderRow) {
             return this.props.renderRow(rowData);
         }
-        //console.log(rowData);
         let firstRowLine = rowData.text;
         if (rowData.address) {
             firstRowLine = `${rowData.address} ${rowData.text}`
@@ -354,7 +350,6 @@ export default class MapboxAutocomplete extends Component {
     }
     _onPress = (rowData) => {
         this.props.onPress(rowData)
-        //console.log(rowData);
     }
     _renderSeparator = (sectionID, rowID) => {
         if (rowID == this.state.dataSource.length - 1) {
