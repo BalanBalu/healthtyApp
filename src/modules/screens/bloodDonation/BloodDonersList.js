@@ -48,6 +48,15 @@ getAddress(address){
       return 'unKnown'
     }
   }
+  getPhone(mobile_no){
+    if(mobile_no != undefined) {
+      return mobile_no 
+    } else
+    {
+      return 'No Number'
+    }
+  }
+  
     render() {
       const {isloading,data} = this.state;
         return (
@@ -85,7 +94,7 @@ getAddress(address){
                     
                       <Row style={{marginTop:5}}>
                         <Col style={{width:'50%'}}>
-                        <Text style={styles.mobTxt}>{item.mobile_no}</Text>
+                        <Text style={styles.mobTxt}>{this.getPhone(item.mobile_no)}</Text>
                        
                         </Col>
                         <Col style={{width:'50%'}}>
