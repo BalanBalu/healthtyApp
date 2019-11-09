@@ -167,11 +167,12 @@ finally {
                     
                    <Row style={{marginTop:-90,}}>
                             <Col style={{width: '50%',justifyContent:'center',marginLeft:80}}>
-                                <Autocomplete style={{  backgroundColor: '#F1F1F1', borderRadius: 5,borderBottomRightRadius: 0, borderTopRightRadius: 0,padding:14}} 
+                                <Autocomplete style={{  backgroundColor: '#F1F1F1', borderRadius: 5,borderBottomRightRadius: 0, borderTopRightRadius: 0,padding:14,paddingLeft:20,paddingTop:10}} 
                                 data={this.state.searchMedicine!=undefined?(selectedMedicineName.length === 1 && comp(this.state.keyword, selectedMedicineName[0].medicine_name) ? [] : selectedMedicineName):selectedMedicineName}
                                     defaultValue={this.state.keyword}
                                     onChangeText={text => this.setState({ keyword:text })}
                                     placeholder='Search Medicine'
+                                    
                                     listStyle={{ marginLeft: 49, width: '71%', }}
                                     renderItem={({ item }) => (
                                         <TouchableOpacity onPress={() => this.setState({ keyword: selectedMedicineName[0].medicine_name==='Medicine Not Found'?null:item.medicine_name})}>
