@@ -34,9 +34,8 @@ class BloodDonersList extends Component {
 getAddress(address){
   if(address != undefined){
     return  address.address.city
-  }else
-  {
-    return 'No Address'
+  }else {
+    return null
   }
   }
   getName(name){
