@@ -480,9 +480,7 @@ class doctorSearchList extends Component {
             ...doctorData,
             slotData: selectedSlotItemByDoctor
         };
-        console.log(confirmSlotDetails);
         this.props.navigation.navigate('Payment Review', { resultconfirmSlotDetails: confirmSlotDetails })
-
     }
     async onSlotItemPress(doctorIdHostpitalId, item, index) {
 
