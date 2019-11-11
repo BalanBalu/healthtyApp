@@ -137,6 +137,23 @@ export async function bloodDonationList() {
   } 
 }
   
+export async function bloodDonationFilter() {
+  try {
+    let endPoint = '/blood_donors_details';  
+    let response = await getService(endPoint); 
+    console.log('response'+response);
+    let respData = response.data;
+    console.log('respData'+JSON.stringify(respData));
+
+    return respData;   
+  }
+   catch (e) {
+    return {
+      message: 'exception' + e,
+      success: false
+    }
+  } 
+}
 
  
 

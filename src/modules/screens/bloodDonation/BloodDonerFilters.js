@@ -3,16 +3,53 @@ import { Container, Content, View, Text,Left, Item,Right,Footer,List,ListItem, S
 import {StyleSheet,TextInput,TouchableOpacity,ScrollView} from 'react-native'
 import { FlatList } from 'react-native-gesture-handler';
 import Autocomplete from '../../../components/Autocomplete'
+import {bloodDonationFilter }from '../../providers/profile/profile.action';
 
 
 class BloodDonerFilters extends Component {
      constructor(props) {
                 super(props)
                 this.state = {
-                   
+                   data:[],
+        hidden1: false,
+        hidden2: false,
                 }
             }
           
+componentDidMount(){
+  this. getBlooddonationfilterList();
+}
+
+         getBlooddonationfilterList= async()=>{
+               let result = await bloodDonationFilter();
+               if(result.success){
+                 this.setState({data:result.data})
+               }
+          
+               console.log(result)
+               }
+
+          toggle1(){
+                if(this.state.hidden1==false){
+                    
+                    this.setState({hidden1:true})
+                  }
+                 else{
+                 
+                  this.setState({hidden1:false})
+              }
+               }
+               toggle2(){
+                if(this.state.hidden2==false){
+                    
+                    this.setState({hidden2:true})
+                  }
+                 else{
+                 
+                  this.setState({hidden2:false})
+              }
+               }
+          
     render() {
      const bloodGrp = [{group:'A+'},{group:'A-'},{group:'B+'},{group:'B+'},{group:'AB+'},{group:'AB-'},{group:'O+'},{group:'O-'},
      {group:'A1+'},{group:'A1-'},{group:'A2+'},{group:'A2-'},{group:'A1B+'},{group:'A1B-'},{group:'A2B+'},{group:'A2B-'}]
@@ -33,7 +70,7 @@ class BloodDonerFilters extends Component {
                       <View style={{width:'30%',}}>
                         </View>
                            <View style={{width:'70%',}}>
-                         <ListItem style={{justifyContent:'center'}}>
+                         {/* <ListItem style={{justifyContent:'center'}}>
                           <Text style={styles.textHead}>Blood Group</Text>
                           </ListItem>
                           <FlatList 
@@ -50,22 +87,23 @@ class BloodDonerFilters extends Component {
                                       />
                            </Right>
                          </ListItem>
-                          }/>
+                          }/> */}
                         
                         
 
 
 
-                          
-                           {/* <ListItem style={{justifyContent:'center'}}>
+                          {this.state.hidden1 == true ?
+                          <View>
+                           <ListItem style={{justifyContent:'center'}}>
                           <Text style={styles.textHead}>Country</Text>
                           </ListItem>
                            <FlatList
-                               data={country}
+                               data={this.state.data.countryListArray}
                                renderItem={({item})=>
                            <ListItem >
                            <Left>
-                             <Text style={styles.subText}>{item.name}</Text>
+                             <Text style={styles.subText}>{item}</Text>
                            </Left>
                            <Right>
                               <Radio
@@ -74,18 +112,21 @@ class BloodDonerFilters extends Component {
                                       />
                            </Right>
                          </ListItem>
-                          }/> */}
-
+                          }/> 
+                          </View>
+                          :null}
                         
-                          {/* <ListItem style={{justifyContent:'center'}}>
+                        {this.state.hidden2 == true ?
+                        <View>
+                          <ListItem style={{justifyContent:'center'}}>
                           <Text style={styles.textHead}>State</Text>
                           </ListItem>
                             <FlatList
-                               data={state}
+                               data={this.state.data.stateListArray}
                                renderItem={({item})=>
                            <ListItem >
                            <Left>
-                             <Text style={styles.subText}>{item.name}</Text>
+                             <Text style={styles.subText}>{item}</Text>
                            </Left>
                            <Right>
                               <Radio
@@ -95,8 +136,9 @@ class BloodDonerFilters extends Component {
                            </Right>
                          </ListItem>
                         
-                            }/> */}
-
+                            }/>
+                            </View>
+                          : null}
                          
                        
                        {/* <ListItem style={{justifyContent:'center'}}>
@@ -127,11 +169,11 @@ class BloodDonerFilters extends Component {
                           <Text style={styles.textHead}>City</Text>
                           </ListItem>
                            <FlatList
-                             data={city}
+                             data={this.state.data.cityListArray}
                              renderItem={({item})=>
                           <ListItem >
                            <Left>
-                             <Text style={styles.subText}>{item.name}</Text>
+                             <Text style={styles.subText}>{item}</Text>
                            </Left>
                            <Right>
                               <Radio
@@ -153,32 +195,40 @@ class BloodDonerFilters extends Component {
                   </ListItem>
                 
                   <ListItem style={{backgroundColor:'#784EBC',paddingLeft:10}}>
-                    <Left>
+                    <Left> 
+                    <TouchableOpacity > 
                     <Text style={{fontFamily:'OpenSans',fontSize:14,color:'#fff'}}>Blood Group</Text>
+                    </TouchableOpacity>
                     </Left>
                     <Right>
                       <Icon name="ios-arrow-forward" style={{fontSize:25}}/>
                     </Right>
                   </ListItem>
                   <ListItem style={{paddingLeft:10}}>
+                  <TouchableOpacity onPress={()=>this.toggle1()} style={{flexDirection:'row'}}>
                   <Left>
                     <Text style={{fontFamily:'OpenSans',fontSize:14}}>Country</Text>
                     </Left>
                     <Right>
                       <Icon name="ios-arrow-forward" style={{fontSize:25}}/>
                     </Right>
+                    </TouchableOpacity>
                   </ListItem>
                   <ListItem style={{paddingLeft:10}}>
-                  <Left>
+                  <TouchableOpacity onPress={()=>this.toggle2()} style={{flexDirection:'row'}}>
+                    <Left>
                     <Text style={{fontFamily:'OpenSans',fontSize:14}}>State</Text>
                     </Left>
                     <Right>
                       <Icon name="ios-arrow-forward" style={{fontSize:25}}/>
                     </Right>
+                    </TouchableOpacity>
                   </ListItem>
                   <ListItem style={{paddingLeft:10}}>
                   <Left>
+                    <TouchableOpacity>
                     <Text style={{fontFamily:'OpenSans',fontSize:14,}}>District</Text>
+                    </TouchableOpacity>
                     </Left>
                     <Right>
                       <Icon name="ios-arrow-forward" style={{fontSize:25}}/>
@@ -186,7 +236,9 @@ class BloodDonerFilters extends Component {
                   </ListItem>
                   <ListItem style={{paddingLeft:10}}>
                   <Left>
+                  <TouchableOpacity>
                     <Text style={{fontFamily:'OpenSans',fontSize:14,}}>City</Text>
+                    </TouchableOpacity>
                     </Left>
                     <Right>
                       <Icon name="ios-arrow-forward" style={{fontSize:25}}/>
