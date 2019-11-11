@@ -212,13 +212,13 @@ class UploadPrescription extends Component {
                             </View>
 
                             <Row style={{ alignSelf: 'center', justifyContent: 'center', marginTop: 10, paddingLeft: 50,paddingRight:50, alignItems: 'center' }}>
-                                <Col style={{ width: '60%', alignItems: 'center',marginLeft:60 }}>
+                                <Col style={{ width: '60%', justifyContent: 'center',marginLeft:55 }}>
                                     <Button disabled={this.state.uploadButton} style={{ borderRadius: 5, height: 35, padding: 35, color: 'gray' }} onPress={() => { this.uploadImageToServer(this.state.imageSource, selectedPharmacy) }}>
                                         <Text style={{ fontSize: 12 }}>UPLOAD</Text>
                                     </Button>
                                 </Col>
-                                <Col style={{ width: '40%', alignItems: 'center',marginRight:10 }}>
-                                    <Button style={{ borderRadius: 5, height: 35, padding: 15 }} onPress={() => this.props.navigation.navigate('Pharmacy')}>
+                                <Col style={{ width: '40%', justifyContent: 'center',marginLeft:5 }}>
+                                    <Button style={{ borderRadius: 5, height: 35,}} onPress={() => this.props.navigation.navigate('Pharmacy')}>
                                         <Text style={{ fontSize: 12 }} >CANCEL</Text>
                                     </Button>
                                 </Col>

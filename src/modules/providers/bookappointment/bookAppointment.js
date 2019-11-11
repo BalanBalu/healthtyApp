@@ -44,12 +44,11 @@ export default class BookAppointmentPaymentUpdate {
        return {
             message: error,
             success: false
-        }
+        } 
     }
   }
  async updateNewBookAppointment(bookSlotDetails, userId, paymentId) {
     try {
-       
         let bookAppointmentData = {
             userId: userId,
             doctorId: bookSlotDetails.doctorId,

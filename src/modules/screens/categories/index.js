@@ -56,11 +56,12 @@ class Categories extends Component {
                   {isLoading ? <Spinner color='blue' /> : null}
                   <TouchableOpacity onPress={() => this.navigateToCategorySearch(item.category_name)}>
 
-                    <Col style={{width:'100%'}}>
+                    <Col style={{width:'90%',}}>
                       <LinearGradient
                         colors={['#7357A2', '#62BFE4']} style={{
                           flex: 1,
                           borderRadius: 10,
+                        
                         }}>
                         <Image
                           source={{ uri: item.imageBaseURL + '/' + item.category_id + '.png' }} style={styles.customImage}
@@ -71,9 +72,9 @@ class Categories extends Component {
                       
 
                     </Col>
-                    <Col style={{ padding: 1,
+                    <Col style={{ padding: 8,
     backgroundColor: '#FF9502',
-    borderRadius: 20,marginTop:10,justifyContent:'center',width:'100%',alignItems:'center'}}>
+    borderRadius: 20,marginTop:10,justifyContent:'center',width:'90%',alignItems:'center'}}>
                     
 <Text style={styles.titleText}>{item.category_name}</Text>
 
@@ -136,9 +137,8 @@ const styles = StyleSheet.create({
 
   titleText: {
     fontSize: 12,
-   
+  
     color: 'white',
-    textAlign: 'center',
     fontFamily: 'OpenSans',
     
   },

@@ -196,7 +196,7 @@ class BloodDonerFilters extends Component {
               </View>
               <Footer style={{ backgroundColor: '#7E49C3', }}>
                 <TouchableOpacity  style={{justifyContent:'center'}}>
-                <Text style={styles.searchText}>Search</Text>
+                <Text style={styles.searchText}>Filter</Text>
                   </TouchableOpacity>
               </Footer>
           </Container>
@@ -226,7 +226,7 @@ const styles = StyleSheet.create({
   searchText:{
     alignItems:'center',
     fontFamily:'OpenSans',
-    fontSize:18,
+    fontSize:20,
     fontWeight:'bold',
     color:'#fff'
   }

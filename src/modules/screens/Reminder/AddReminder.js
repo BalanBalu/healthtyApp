@@ -54,8 +54,8 @@ class AddReminder extends Component {
        this.hideDateTimePicker();
     };
     render() {
-      const Slots= [{time:'10:00',timeperiod:'Am'},{time:'11:00',timeperiod:'Am'},{time:'12:00',timeperiod:'Am'},
-   {time:'10:00',timeperiod:'Am'},{time:'11:00',timeperiod:'Am'},{time:'12:00',timeperiod:'Am'}
+      const Slots= [{time:'10:00',timeperiod:'am'},{time:'11:00',timeperiod:'am'},{time:'12:00',timeperiod:'am'},
+   {time:'10:00',timeperiod:'am'},{time:'11:00',timeperiod:'am'},{time:'12:00',timeperiod:'am'}
   ]
       const { isDateTimePickerVisible,selectedDate } = this.state;
         return (
@@ -259,13 +259,13 @@ const styles = StyleSheet.create({
           borderColor:'#7f49c3',
           borderWidth:2,
           backgroundColor:'#fff',
-          padding:6,
+          padding:4,
           height:30,
           paddingHorizontal: 15
         },
         timeText:{
           textAlign:'center',
-          fontSize:10,
+          fontSize:12,
           fontWeight:'bold',
           marginTop:1,
         },
@@ -273,7 +273,7 @@ const styles = StyleSheet.create({
           textAlign:'center',
           borderBottomLeftRadius:0,
           borderTopLeftRadius:0,
-          fontSize:10,
+          fontSize:12,
           fontWeight:'bold',
           marginLeft:3,
           paddingHorizontal: 5
