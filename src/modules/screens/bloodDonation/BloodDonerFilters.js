@@ -88,10 +88,6 @@ componentDidMount(){
                            </Right>
                          </ListItem>
                           }/> */}
-                        
-                        
-
-
 
                           {this.state.hidden1 == true ?
                           <View>
