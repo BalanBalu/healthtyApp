@@ -944,10 +944,11 @@ const styles = StyleSheet.create({
         color: '#000',
         fontSize: 12,
         fontFamily: 'OpenSans',
-        width:'100%'
+        paddingLeft: 5,
+        paddingRight: 5
     },
     slotBookedBgColor: {
-       
+        textAlign: 'center',
         backgroundColor: '#A9A9A9', //'#775DA3',
         borderColor: '#000',
         marginTop: 10, height: 30,
@@ -965,6 +966,8 @@ const styles = StyleSheet.create({
         borderRadius: 5,
         justifyContent: 'center',
         marginRight: 5,
+        paddingLeft: 5,
+        paddingRight: 5
      
     },
     slotBookedTextColor: {
