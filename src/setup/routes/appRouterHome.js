@@ -26,11 +26,12 @@ import PaymentSuccess from "../../modules/screens/PaymentSuccess";
 import InsertReview from '../../modules/screens/Reviews/InsertReview';
 import WishList from "../../modules/screens/wishList";
 import Notification from "../../modules/screens/Notification";
-
+import Chat from "../../modules/screens/chat";
 import { Col, Grid, Row } from 'react-native-easy-grid';
 import { logout } from '../../modules/providers/auth/auth.actions';
 import { TouchableOpacity, Image, Text, AppRegistry, AsyncStorage } from 'react-native'
-
+import AvailableDoctor from '../../modules/screens/chat/AvailableDoctor'
+import PreviousChat from '../../modules/screens/chat/PreviousChat'
 import menuIcon from '../../../assets/images/menu.png';
 import BookAppoinment from "../../modules/screens/bookappoinment";
 import Mapbox from "../../modules/screens/bookappoinment/Mapbox";
@@ -70,11 +71,30 @@ const AuthRoutes = {
     screen: userdetails,
   }
 }
+const ChatRoutes = {
+  Chat: {
+    screen: Chat,
+  }, 
+  AvailableDoctor: {
+    screen: AvailableDoctor,
+  }, 
+  PreviousChat: {
+    screen: PreviousChat,
+  }, 
+
+}
 
 const AuthStack = createStackNavigator(AuthRoutes, {
   initialRouteName: 'login',
   headerMode: "none",
   navigationOptions: { headerVisible: false }
+
+})
+const ChatStack = createStackNavigator(ChatRoutes, {
+  initialRouteName: 'Chat',
+  headerMode: "none",
+  navigationOptions: { headerVisible: false }
+
 })
 
 const HomeStack = createStackNavigator({
@@ -83,6 +103,7 @@ const HomeStack = createStackNavigator({
     navigationOptions: ({ navigation }) => ({
 
       title: 'DashBoard',
+   
       headerLeft: (
         <TouchableOpacity onPress={() => navigation.toggleDrawer()}>
           <Image
@@ -396,7 +417,9 @@ const HomeStack = createStackNavigator({
       headerTintColor: 'white',
     })
   })
+   
 
+  
 
   const DrawerNavigator = createDrawerNavigator({
     Home: {
@@ -413,6 +436,9 @@ const HomeStack = createStackNavigator({
     },
     Orders: {
       screen: MyOrdersList
+    },
+    Chat: {
+      screen: Chat
     },
     Reminder: {
       screen: Reminder
@@ -431,13 +457,16 @@ const HomeStack = createStackNavigator({
     "My Appointments": require('../../../assets/images/drawerIcons/MyAppointments.png'),
     Pharmacy: require('../../../assets/images/drawerIcons/Pharmacy.png'),
     Orders: require('../../../assets/images/drawerIcons/Orders.png'),
-    Reminder:require('../../../assets/images/drawerIcons/Orders.png')
+    Reminder:require('../../../assets/images/drawerIcons/Orders.png'),
+    Chat:require('../../../assets/images/drawerIcons/Orders.png')
+
   }
   export default createAppContainer(createSwitchNavigator(
     {
       AuthLoading: AuthLoadingScreen,
       App: DrawerNavigator,
       Auth: AuthStack,
+      Chat: ChatStack
     },
     {
       initialRouteName: 'AuthLoading',
