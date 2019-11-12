@@ -664,14 +664,20 @@ class doctorSearchList extends Component {
                     <Content>
                         <View>
                             <Card style={{ borderRadius: 7, paddingTop: 5, paddingBottom: 5 }}>
-                                <Grid>
+                                
                                     <Row>
-                                        <Col style={{ width: '55%', flexDirection: 'row' }} onPress={() => this.sortByTopRatings(filteredDoctorData)}>
-                                            <Left>
-                                                <Icon name='ios-arrow-down' style={{ color: '#000', marginLeft: 50, fontSize: 20 }} />
-                                            </Left>
-                                            <Text uppercase={false} style={{ fontFamily: 'OpenSans', color: '#000', fontSize: 13, textAlign: 'center', marginLeft: 20, marginTop: 5 }}>Top Rated </Text>
+                                        <Col style={{ width: '55%', flexDirection: 'row' ,marginLeft:5,}} onPress={() => this.sortByTopRatings(filteredDoctorData)}>
+                                        <Row>
+                                                <Col style={{width:'15%'}}>
+                                                <Icon name='ios-arrow-down' style={{ color: '#000', fontSize: 20,marginTop:5}} />
 
+                                                </Col>
+                                                <Col style={{width:'85%'}}>
+                                                <Text uppercase={false} style={{ fontFamily: 'OpenSans', color: '#000', fontSize: 13, textAlign: 'center',  marginTop: 5 }}>Top Rated </Text>
+
+                                                </Col>
+                                          
+                                            </Row>
                                         </Col>
                                         {/* <Col style={{ width:'45%',alignItems: 'flex-start', flexDirection: 'row', }} onPress={() => this.navigateToFilters()}>
                                 <Row>
@@ -680,15 +686,19 @@ class doctorSearchList extends Component {
                                  
                                 </Row>  
                         </Col> */}
-                                        <View style={{ borderRightWidth: 1, borderRightColor: 'gray', paddingLeft: 20, marginRight: 20 }} />
-                                        <Col style={{ width: '45%', alignItems: 'flex-start', flexDirection: 'row', }} onPress={() => this.navigateToFilters()}>
-                                            <Row>
-                                                <Left><Icon name='ios-funnel' style={{ color: 'gray' }} /></Left>
-                                                <Text uppercase={false} style={{ fontFamily: 'OpenSans', color: '#000', fontSize: 13, marginLeft: 8, textAlign: 'center', marginTop: 5 }}>Filters </Text>
+                                        
+                                        <Col style={{ width: '45%', alignItems: 'flex-start', flexDirection: 'row',borderLeftColor:'gray',borderLeftWidth:1 }} onPress={() => this.navigateToFilters()}>
+                                            <Row >
+                                            <Col style={{width:'35%',marginLeft:10}}>
+                                      <Icon name='ios-funnel' style={{ color: 'gray' }} />
+                                                </Col>
+                                                <Col style={{width:'65%'}}>
+                                                <Text uppercase={false} style={{ fontFamily: 'OpenSans', color: '#000', fontSize: 13, marginTop: 5 ,marginLeft:5,width:'100%'}}>Filters </Text>
+                                                </Col>
                                             </Row>
                                         </Col>
                                     </Row>
-                                </Grid>
+                               
                             </Card>
 
                             {filteredDoctorData.length === 0 ?
@@ -752,7 +762,7 @@ class doctorSearchList extends Component {
                                                         </Row>
 
                                                         <Row>
-                                                            <Col style={{ width: "25%", marginTop: 20 }}>
+                                                            <Col style={{ width: "30%", marginTop: 20 }}>
                                                                 <Text note style={{ fontFamily: 'OpenSans', fontSize: 12, marginLeft: 5, }}> Experience</Text>
                                                                 <Text style={{ fontFamily: 'OpenSans', fontSize: 12, marginLeft: 5, fontWeight: 'bold' }}>{getDoctorExperience(item.calulatedExperience)}</Text>
                                                             </Col>
@@ -779,7 +789,7 @@ class doctorSearchList extends Component {
 
 
                                                             </Col>
-                                                            <Col style={{ width: "25%", marginTop: 20 }}>
+                                                            <Col style={{ width: "20%", marginTop: 20 }}>
                                                                 <Text note style={{ fontFamily: 'OpenSans', fontSize: 12, marginLeft: 5, }}> Fees</Text>
                                                                 <Text style={{ fontFamily: 'OpenSans', fontSize: 12, fontWeight: 'bold', marginLeft: 5 }}>{'\u20B9'}{fee} {' '}
                                                                  {fee !== feeWithoutOffer ?  
@@ -794,18 +804,18 @@ class doctorSearchList extends Component {
 
 
                                                         <Row style={{ borderTopColor: '#000', borderTopWidth: 0.4, marginTop: 5 }} >
-                                                            <Col style={{ width: "8%" }}>
+                                                            <Col style={{ width: "5%" }}>
 
                                                                 <Icon name='ios-time' style={{ fontSize: 20, marginTop: 12 }} />
 
                                                             </Col>
-                                                            <Col style={{ width: "70%" }}>
+                                                            <Col style={{ width: "77%" }}>
 
                                                                 <Text note style={{ fontFamily: 'OpenSans', marginTop: 15, fontSize: 12, marginRight: 50, fontWeight: 'bold' }}> {this.getDisplayAvailableTime(item.slotData[selectedDatesByDoctorIds[item.doctorIdHostpitalId] || this.state.currentDate], item.slotData)}</Text>
                                                             </Col>
-                                                            <Col style={{ width: "22%" }}>
+                                                            <Col style={{ width: "18%" }}>
                                                                 {!expandedDoctorIdHospitalsToShowSlotsData.includes(item.doctorIdHostpitalId) ?
-                                                                    <TouchableOpacity onPress={() => this.onBookPress(item.doctorIdHostpitalId)} style={{ textAlign: 'center', backgroundColor: 'green', borderColor: '#000', marginTop: 10, borderRadius: 20, height: 30, justifyContent: 'center', marginLeft: 5, marginRight: 5, }}>
+                                                                    <TouchableOpacity onPress={() => this.onBookPress(item.doctorIdHostpitalId)} style={{ textAlign: 'center', backgroundColor: 'green', borderColor: '#000', marginTop: 10, borderRadius: 20, height: 30, justifyContent: 'center',  }}>
                                                                         <Text style={{ textAlign: 'center', color: '#fff', fontSize: 12, fontWeight: 'bold', fontFamily: 'OpenSans' }}>BOOK </Text>
                                                                     </TouchableOpacity> : null}
                                                             </Col>
@@ -887,10 +897,10 @@ class doctorSearchList extends Component {
                 }}
                 renderItem={({ item }) =>
                     <Col style={{ justifyContent: 'center' }}>
-                        <TouchableOpacity style={[styles.availabilityBG, selectedDate === item ? { backgroundColor: '#775DA3' } : { backgroundColor: '#ced6e0' }]}
+                        <TouchableOpacity style={[styles.availabilityBG, selectedDate === item ? { backgroundColor: '#775DA3',alignItems:'center' } : { backgroundColor: '#ced6e0',alignItems:'center' }]}
                             onPress={() => this.onDateChanged(item, doctorIdHostpitalId)}>
-                            <Text style={[{ textAlign: 'center', fontSize: 12, fontFamily: 'OpenSans' }, selectedDate === item ? { color: '#fff' } : { color: '#000' }]}>{formatDate(moment(item), 'ddd, DD MMM')}</Text>
-                            <Text style={[{ textAlign: 'center', fontSize: 10, fontFamily: 'OpenSans' }, selectedDate === item ? { color: '#fff' } : { color: '#000' }]}>{slotData[item] ? slotData[item].reduce(reducer, 0) + ' Slots Available' : 'No Slots Available'}</Text>
+                            <Text style={[{ fontSize: 12, fontFamily: 'OpenSans' }, selectedDate === item ? { color: '#fff' } : { color: '#000' }]}>{formatDate(moment(item), 'ddd, DD MMM')}</Text>
+                            <Text style={[{ fontSize: 10, fontFamily: 'OpenSans' }, selectedDate === item ? { color: '#fff' } : { color: '#000' }]}>{slotData[item] ? slotData[item].reduce(reducer, 0) + ' Slots Available' : 'No Slots Available'}</Text>
                         </TouchableOpacity>
                     </Col>
                 } keyExtractor={(item, index) => index.toString()} />
@@ -928,25 +938,23 @@ const styles = StyleSheet.create({
         borderRadius: 5,
         justifyContent: 'center',
         marginRight: 5,
-        paddingLeft: 5,
-        paddingRight: 5
+       
     },
     slotDefaultTextColor: {
-        textAlign: 'center',
         color: '#000',
         fontSize: 12,
-        fontFamily: 'OpenSans'
+        fontFamily: 'OpenSans',
+        width:'100%'
     },
     slotBookedBgColor: {
-        textAlign: 'center',
+       
         backgroundColor: '#A9A9A9', //'#775DA3',
         borderColor: '#000',
         marginTop: 10, height: 30,
         borderRadius: 5,
         justifyContent: 'center',
         marginRight: 5,
-        paddingLeft: 5,
-        paddingRight: 5
+      
     },
     slotSelectedBgColor: {
         textAlign: 'center',
@@ -957,11 +965,9 @@ const styles = StyleSheet.create({
         borderRadius: 5,
         justifyContent: 'center',
         marginRight: 5,
-        paddingLeft: 5,
-        paddingRight: 5
+     
     },
     slotBookedTextColor: {
-        textAlign: 'center',
         color: '#fff',
         fontSize: 12,
         fontFamily: 'OpenSans'
@@ -969,24 +975,22 @@ const styles = StyleSheet.create({
     slotBookedBgColorFromModal: {
         backgroundColor: '#878684',
         borderRadius: 5,
-        width: '30%',
+        
         height: 30,
-        margin: 5
+        
     },
     slotDefaultBg: {
         backgroundColor: '#2652AC',
         borderRadius: 5,
-        width: '30%',
+        
         height: 30,
-        margin: 5
+        
     },
     slotSelectedBg: {
         backgroundColor: '#808080',
         borderRadius: 5,
-
-        width: '30%',
         height: 30,
-        margin: 5
+       
     },
     availabilityBG: {
         textAlign: 'center',
