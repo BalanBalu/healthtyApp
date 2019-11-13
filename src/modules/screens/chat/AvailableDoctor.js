@@ -23,9 +23,9 @@ class AvailableDoctor extends Component {
             <Container>
             <Content >
             <FlatList 
-data={Details}
-renderItem={({item})=>
-            <Row style={{borderBottomColor:'gray',borderBottomWidth:0.5,marginLeft:10,marginRight:10,paddingTop:10,paddingBottom:10}}>
+             data={Details}
+             renderItem={({item})=>
+            <Row style={styles.RowStyle}>
                   <Col style={{width:'15%'}}>
                      <Thumbnail square source={{ uri: 'https://res.cloudinary.com/demo/image/upload/w_200,h_200,c_thumb,g_face,r_max/face_left.png' }} style={{width:50,height:50,position:'relative'}}/>
                      <View style={styles.circle} />
@@ -102,6 +102,14 @@ const styles = StyleSheet.create({
         position:'absolute',
         marginLeft:40,
         marginTop:5
+    },
+    RowStyle:{
+        borderBottomColor:'gray',
+        borderBottomWidth:0.5,
+        marginLeft:10,
+        marginRight:10,
+        paddingTop:10,
+        paddingBottom:10
     }
 
 })

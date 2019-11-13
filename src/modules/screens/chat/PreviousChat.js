@@ -21,11 +21,11 @@ class PreviousChat extends Component {
         {Drname:'Dr.Ajay kumar',date:'10h',status:'Hello',msg:6,}]
         return (
             <Container>
-            <Content>
-<FlatList 
-data={Details}
-renderItem={({item})=>
-            <Row style={{borderBottomColor:'gray',borderBottomWidth:0.5,marginLeft:10,marginRight:10,paddingTop:10,paddingBottom:10}}>
+             <Content>
+              <FlatList 
+               data={Details}
+                renderItem={({item})=>
+                <Row style={styles.rowStyle}>
                   <Col style={{width:'15%'}}>
                      <Thumbnail square source={{ uri: 'https://res.cloudinary.com/demo/image/upload/w_200,h_200,c_thumb,g_face,r_max/face_left.png' }} style={{width:50,height:50,position:'relative'}}/>
                      <View style={styles.circle} />
@@ -42,8 +42,6 @@ renderItem={({item})=>
                         <Col style={{width:'20%'}}>
                         <Text style={styles.msg}>{item.msg}</Text>
                         </Col>
-                    
-                 
                     </Row>
                       </Col>
                       
@@ -92,6 +90,14 @@ circle: {
     position:'absolute',
     marginLeft:40,
     marginTop:5
+},
+rowStyle:{
+    borderBottomColor:'gray',
+    borderBottomWidth:0.5,
+    marginLeft:10,
+    marginRight:10,
+    paddingTop:10,
+    paddingBottom:10
 }
 
 })

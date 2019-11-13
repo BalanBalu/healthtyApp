@@ -23,21 +23,21 @@ class Chat extends Component {
                 <View style={{backgroundColor: '#7E49C3',}}>
                     <Row style={{marginTop:10}}>
                     <Left>
-                    <Text style={{color:'#FFF',fontFamily:'OpenSans',fontSize:20,fontWeight:'bold',marginLeft:20}}>Medflic</Text>
+                    <Text style={styles.HeaderText}>Medflic</Text>
                     </Left>
                     <Right>
-                    <Icon name="md-more" style={{ color: '#fff', marginRight: 15, fontFamily: 'opensans-semibold' }}></Icon>
+                    <Icon name="md-more" style={{ color: '#fff', marginRight: 15,  }}></Icon>
                     </Right>
                     </Row>
                     <View style={{marginTop:20}}>
-                    <Text style={{color:'#FFF',fontFamily:'OpenSans',fontSize:14,fontWeight:'bold',marginLeft:20}}>Search for Doctors</Text>
+                    <Text style={styles.SubText}>Search for Doctors</Text>
 
-                    <Row style={{ backgroundColor: 'white', borderColor: '#000', borderRadius: 20,height:30,marginRight:20,marginLeft:20,marginTop:10 }}>
+                    <Row style={styles.SearchRow}>
                     
                       <Col size={9.1} style={{justifyContent:'center',}}> 
                         <Input 
                             placeholder="Search for Symptoms,Categories,etc"
-                            style={{ color: 'gray', fontFamily: 'OpenSans', fontSize: 10, padding:5,paddingLeft:10 }}
+                            style={styles.inputfield}
                             placeholderTextColor="gray"
                             keyboardType={'email-address'}
                             underlineColorAndroid="transparent"
@@ -46,14 +46,14 @@ class Chat extends Component {
                         />
                         </Col>
                         <Col size={0.9} style={{justifyContent:'center',borderRightRadius:10}}> 
-                        <View style={{backgroundColor:'#7E49C3',width:'85%',alignItems:'center',borderTopRightRadius:20,borderBottomRightRadius:20,marginTop: 2, marginBottom: 2,}}>
+                        <View style={styles.SearchStyle}>
                         <Icon name="ios-search" style={{ color: '#fff', fontSize:20,padding:2}} />
 
                         </View>
                     </Col>
                         </Row>
 
-                       <Row style={{marginTop:10}}>
+                       <Row style={{marginTop:10,justifyContent:'center'}}>
 					<Button style={styles.segButtonActive1} >
 						<Text style={styles.segText}>Available Doctors</Text>
 					</Button>
@@ -85,7 +85,7 @@ const styles = StyleSheet.create({
 		borderBottomWidth: 2,
 		paddingBottom: -10,
 		paddingTop: -10,
-		padding: 30
+		padding: 28
 
     },
     segButtonActive1: {
@@ -95,7 +95,7 @@ const styles = StyleSheet.create({
         borderBottomColor: '#7E49C3',
 		paddingBottom: -10,
 		paddingTop: -10,
-		padding: 30
+		padding: 28
 
     },
     segText: {
@@ -104,6 +104,45 @@ const styles = StyleSheet.create({
 		fontSize: 16,
 		color: '#fff',
 
-	},
+    },
+    HeaderText:{
+        color:'#FFF',
+        fontFamily:'OpenSans',
+        fontSize:20,
+        fontWeight:'bold',
+        marginLeft:20
+    },
+    SubText:{
+        color:'#FFF',
+        fontFamily:'OpenSans',
+        fontSize:14,
+        fontWeight:'bold',
+        marginLeft:20
+    },
+    SearchRow:{
+        backgroundColor: 'white', 
+        borderColor: '#000', 
+        borderRadius: 20,
+        height:30,
+        marginRight:20,
+        marginLeft:20,
+        marginTop:10 
+    },
+    inputfield:{
+        color: 'gray', 
+        fontFamily: 'OpenSans', 
+        fontSize: 10, 
+        padding:5,
+        paddingLeft:10
+    },
+    SearchStyle:{
+        backgroundColor:'#7E49C3',
+        width:'85%',
+        alignItems:'center',
+        borderTopRightRadius:20,
+        borderBottomRightRadius:20,
+        marginTop: 2, 
+        marginBottom: 2
+    }
 
 })
