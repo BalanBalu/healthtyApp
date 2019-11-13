@@ -20,8 +20,7 @@ export default class MapBox extends React.Component {
         this.state = {
             fromProfile: false,
             loading: false,
-            coordinates:
-                null,
+            coordinates: [],
             center: [],
             zoom: 12,
             isFinisedLoading: false,
@@ -52,22 +51,28 @@ export default class MapBox extends React.Component {
                     message: 'App needs location permission to find your position.'
                 }
             ).then(granted => {
+                // if (granted) {
+                //     this.getCurrentLocation()
+                // }
                 console.log(granted);
             }).catch(err => {
                 console.warn(err);
             });
         }
 
+        console.log("IS_ANDROID" + IS_ANDROID)
         this._isMounted = true;
         const { navigation } = this.props;
         const fromProfile = navigation.getParam('fromProfile') || false
+        console.log("fromProfile" + fromProfile)
         showAllAddressFields = navigation.getParam('mapEdit') || false
         let locationData = this.props.navigation.getParam('locationData');
-        this.formUserAddress(locationData)
-
-        this.setState({ coordinates: locationData.center, fromProfile, showAllAddressFields })
+        console.log("locationData" + JSON.stringify(locationData))
+        if (locationData) {
+            this.formUserAddress(locationData)
+            this.setState({ coordinates: locationData.center, fromProfile, showAllAddressFields })
+        }
     }
-
     formUserAddress(locationData) {
         let locationFullText = '';
         if (locationData.context) {
@@ -97,8 +102,27 @@ export default class MapBox extends React.Component {
         } else {
             locationFullText = locationData.place_name;
         }
-        this.setState({  address: { ...this.state.address}, locationFullText });
+        this.setState({ address: { ...this.state.address }, locationFullText });
         this.setState({ center: locationData.center })
+    }
+    getCurrentLocation() {
+        try {
+            console.log("current location")
+            navigator.geolocation.getCurrentPosition(position => {
+                const origin_coordinates = [position.coords.latitude, position.coords.longitude];
+                this.setState({
+                    coordinates: origin_coordinates,
+                })
+                console.log("position " + JSON.stringify(position))
+            }), error => {
+                console.log(error);
+                alert(JSON.stringify(error))
+            }
+
+        }
+        catch (e) {
+            console.log(e);
+        }
     }
 
     updateAddressObject(addressNode, value) {
@@ -114,13 +138,13 @@ export default class MapBox extends React.Component {
             this.setState({ loading: true })
             let Lnglat = this.state.center;
             let userAddressData = {
-               
+
                 address: {
                     coordinates: [Lnglat[1], Lnglat[0]],
                     type: 'Point',
                     address: this.state.address
                 }
-               
+
             }
 
             const userId = await AsyncStorage.getItem('userId')
@@ -163,6 +187,10 @@ export default class MapBox extends React.Component {
     }
 
     async onRegionDidChange() {
+        console.log("onRegionDidChange" + this.state.coordinates)
+        console.log("onRegionDidChange" + this.state.isFinisedLoading)
+
+
         // Toast.show({
         //     text: 'Region Did Change',
         //     duration : 3000
@@ -171,9 +199,11 @@ export default class MapBox extends React.Component {
         //const center = await this._map.getCenter();
         if (this.state.isFinisedLoading) {
             const zoom = await this._map.getZoom();
+            console.log("onRegionDidChangezoom" + zoom)
+
             const center = this.state.center;
             this.setState({ coordinates: center, zoom });
-
+            console.log("onRegionDidChange" + this.state.coordinates)
             let fullPath = `https://api.mapbox.com/geocoding/v5/mapbox.places/${center[0]},${center[1]}.json?types=poi&access_token=${MAP_BOX_TOKEN}`;
 
             //this._request(center[0].toFixed(2), center[1].toFixed(2))
@@ -193,7 +223,10 @@ export default class MapBox extends React.Component {
 
 
     async onRegionIsChanging() {
+        console.log("isFinisedLoading1" + this.state.isFinisedLoading)
+
         if (this.state.isFinisedLoading) {
+            console.log("isFinisedLoading" + this.state.isFinisedLoading)
             const center = await this._map.getCenter();
             this.setState({ center: center });
         }
@@ -210,10 +243,13 @@ export default class MapBox extends React.Component {
     }
 
     _abortRequests = () => {
+        console.log("about reqttttttt")
+
         this._requests.map(i => i.abort());
         this._requests = [];
     }
     _request = (lng, lat) => {
+        console.log("requestttt")
         this._abortRequests();
         if (lng && lat) {
             const request = new XMLHttpRequest();
@@ -258,12 +294,13 @@ export default class MapBox extends React.Component {
                     visible={this.state.isLoading}
                     textContent={'Please wait Loading...'}
                 />
-                
+
                 <View style={{ flex: 1 }}>
                     {this.state.coordinates !== null ?
                         <MapboxGL.MapView
                             ref={(c) => this._map = c}
                             style={{ flex: 1 }}
+                            // showUserLocation={true}
                             compassEnabled={false}
                             onRegionDidChange={this.onRegionDidChange}
                             regionDidChangeDebounceTime={500}
@@ -277,7 +314,9 @@ export default class MapBox extends React.Component {
                                     centerCoordinate={this.state.coordinates}
                                     animationDuration={2000}
                                 /> : null}
-
+                            {console.log("MapboxGL.Camera   " + this.state.coordinates)}
+                            {console.log("MapboxGL.center   " + this.state.center)}
+                            {console.log("zoom   " + this.state.zoom)}
 
                             {<MapboxGL.PointAnnotation
                                 id={'Map Center Pin'}
@@ -319,34 +358,6 @@ export default class MapBox extends React.Component {
 
                     <Content style={styles.bodyContent}>
                         <Form>
-                            {/* <Item style={styles.transparentLabel}>
-                                <Picker style={{ fontFamily: 'OpenSans', fontSize: 14, backgroundColor: '#F1F1F1' }}
-                                    mode="dropdown"
-                                    placeholder="Select Type"
-                                    iosIcon={<Icon name="arrow-down" />}
-                                    placeholder="Select Type"
-                                    textStyle={{ color: "gray", fontFamily: 'OpenSans' }}
-                                    itemStyle={{
-                                        backgroundColor: "gray",
-                                        marginLeft: 0,
-                                        paddingLeft: 10
-                                    }}
-                                    onValueChange={(typeValue) => this.setState({ hospitalAddress: { ...this.state.hospitalAddress, type: typeValue } })}
-                                    itemTextStyle={{ color: '#788ad2' }}
-                                    style={{ width: undefined }}
-                                    selectedValue={this.state.hospitalAddress.type}
-                                >
-                                    <Picker.Item label="Hospital" value="HOSPITAL" />
-                                    <Picker.Item label="Clinic" value="CLINIC" />
-
-                                </Picker>
-                            </Item>
-                            <Item floatingLabel>
-                                <Label>Hospital Name</Label>
-                                <Input placeholder="Hospital Name" style={styles.transparentLabel}
-                                    value={this.state.hospitalAddress.name}
-                                    onChangeText={hospitalName => this.setState({ hospitalAddress: { ...this.state.hospitalAddress, name: hospitalName } })} />
-                            </Item> */}
                             <Item floatingLabel>
                                 <Label>No And Street</Label>
                                 <Input placeholder="No And Street" style={styles.transparentLabel}
