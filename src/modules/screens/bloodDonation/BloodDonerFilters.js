@@ -4,6 +4,7 @@ import {StyleSheet,TextInput,TouchableOpacity,ScrollView} from 'react-native'
 import { FlatList } from 'react-native-gesture-handler';
 import Autocomplete from '../../../components/Autocomplete'
 import {bloodDonationFilter }from '../../providers/profile/profile.action';
+import { bloodGroupList } from "../../common";
 
 
 class BloodDonerFilters extends Component {
@@ -12,7 +13,7 @@ class BloodDonerFilters extends Component {
                 this.state = {
                    data:[],
         hidden1: false,
-        hidden2: false,
+        selectedOne:null
                 }
             }
           
@@ -29,39 +30,14 @@ componentDidMount(){
                console.log(result)
                }
 
-          toggle1(){
-                if(this.state.hidden1==false){
-                    
-                    this.setState({hidden1:true})
-                  }
-                 else{
-                 
-                  this.setState({hidden1:false})
-              }
+          toggle1(create){  
+                    this.setState({selectedOne: create }) 
                }
-               toggle2(){
-                if(this.state.hidden2==false){
-                    
-                    this.setState({hidden2:true})
-                  }
-                 else{
-                 
-                  this.setState({hidden2:false})
-              }
-               }
+               
           
     render() {
-     const bloodGrp = [{group:'A+'},{group:'A-'},{group:'B+'},{group:'B+'},{group:'AB+'},{group:'AB-'},{group:'O+'},{group:'O-'},
-     {group:'A1+'},{group:'A1-'},{group:'A2+'},{group:'A2-'},{group:'A1B+'},{group:'A1B-'},{group:'A2B+'},{group:'A2B-'}]
-     const country = [{name:'BANGLADESH'},{name:'INDIA'},{name:'MALAYSIA'},{name:'NEPAL'},{name:'OMAN'},{name:'SRI LANKA'},
-     {name:'YEMEN'},{name:'BANGLADESH'}] 
-     const state =[{name:'kerala'},{name:'Assam'},{name:'Bihar'},{name:'Candigarh'},{name:'Delhi'},{name:'Goa'},
-     {name:'Gujarat'},{name:'Himachal pradesh'},{name:'Haryana'},{name:'Haryana'}] 
-     const district = [{name:'Palakkad'},{name:'Alapuzha'},{name:'Ernakulam'},{name:'Idukki'},{name:'Kannur'},{name:'Kasaragod'},
-     {name:'Kollam'},{name:'kottayam'},{name:'Kozhikode'},{name:'Malapuram'}]
-     
-     const city = [{name:'Sreekrishnapuram'},{name:'Agali'},{name:'Alathur'},{name:'Chittur'},{name:'Coyalmannam'},
-     {name:'kollengode'},{name:'Malapuram'},{name:'Manarkkad'},{name:'Ottapalam'},{name:'Pattambi'},{name:'Thirthala'}]
+    
+    const {selectedOne} = this.state
      return (
             <Container>
             <Content style={{padding:5}}>
@@ -70,15 +46,17 @@ componentDidMount(){
                       <View style={{width:'30%',}}>
                         </View>
                            <View style={{width:'70%',}}>
-                         {/* <ListItem style={{justifyContent:'center'}}>
+                           {this.state.selectedOne == 'BLOODGROUP' ?
+                               <View>
+                         <ListItem style={{justifyContent:'center'}}>
                           <Text style={styles.textHead}>Blood Group</Text>
                           </ListItem>
                           <FlatList 
-                          data={bloodGrp}
-                          renderItem={({item})=>
+                          data={bloodGroupList}
+                          renderItem={({item,index})=>
                           <ListItem >
                            <Left>
-                             <Text style={styles.subText}>{item.group}</Text>
+                             <Text style={styles.subText}>{item}</Text>
                            </Left>
                            <Right>
                               <Radio
@@ -87,9 +65,11 @@ componentDidMount(){
                                       />
                            </Right>
                          </ListItem>
-                          }/> */}
+                          }/> 
+                          </View>
+                       :null}
 
-                          {this.state.hidden1 == true ?
+                          {this.state.selectedOne == 'COUNTRY' ?
                           <View>
                            <ListItem style={{justifyContent:'center'}}>
                           <Text style={styles.textHead}>Country</Text>
@@ -112,7 +92,7 @@ componentDidMount(){
                           </View>
                           :null}
                         
-                        {this.state.hidden2 == true ?
+                        {this.state.selectedOne == 'STATE' ?
                         <View>
                           <ListItem style={{justifyContent:'center'}}>
                           <Text style={styles.textHead}>State</Text>
@@ -136,16 +116,17 @@ componentDidMount(){
                             </View>
                           : null}
                          
-                       
-                       {/* <ListItem style={{justifyContent:'center'}}>
+                       {this.state.selectedOne == 'DISTRICT'?
+                       <View>
+                      <ListItem style={{justifyContent:'center'}}>
                           <Text style={styles.textHead}>District</Text>
                           </ListItem>
                           <FlatList 
-                          data={district}
+                          data={this.state.data.districtListArray}
                           renderItem={({item})=>
                           <ListItem >
                            <Left>
-                             <Text style={styles.subText}>{item.name}</Text>
+                             <Text style={styles.subText}>{item}</Text>
                            </Left>
                            <Right>
                               <Radio
@@ -155,13 +136,15 @@ componentDidMount(){
                            </Right>
                          </ListItem>
 
-                           }/> */}
+                           }/> 
+                           </View>
+:null}
 
 
+                    {this.state.selectedOne == 'CITY' ?
+                    <View>
 
-
-
-                     {/* <ListItem style={{justifyContent:'center'}}>
+                   <ListItem style={{justifyContent:'center'}}>
                           <Text style={styles.textHead}>City</Text>
                           </ListItem>
                            <FlatList
@@ -178,8 +161,9 @@ componentDidMount(){
                                       />
                            </Right>
                          </ListItem>
-                           }/> */}
-                         
+                           }/> 
+                         </View>
+                         :null}
                       </View>
                    </View>
                 </View>
@@ -190,18 +174,19 @@ componentDidMount(){
                 <Text style={styles.textHead}>Categories</Text>
                   </ListItem>
                 
-                  <ListItem style={{backgroundColor:'#784EBC',paddingLeft:10}}>
+                  <ListItem style={selectedOne === 'BLOODGROUP' ? {backgroundColor:'#784EBC',paddingLeft:10} : {paddingLeft:10}}>
+                  <TouchableOpacity  onPress={()=>this.toggle1('BLOODGROUP',)}  style={{flexDirection:'row'}}> 
                     <Left> 
-                    <TouchableOpacity > 
-                    <Text style={{fontFamily:'OpenSans',fontSize:14,color:'#fff'}}>Blood Group</Text>
-                    </TouchableOpacity>
+                    <Text style={{fontFamily:'OpenSans',fontSize:14,}}>Blood Group</Text>
+                   
                     </Left>
                     <Right>
                       <Icon name="ios-arrow-forward" style={{fontSize:25}}/>
                     </Right>
+                    </TouchableOpacity>
                   </ListItem>
-                  <ListItem style={{paddingLeft:10}}>
-                  <TouchableOpacity onPress={()=>this.toggle1()} style={{flexDirection:'row'}}>
+                  <ListItem style={selectedOne === 'COUNTRY' ? {backgroundColor:'#784EBC',paddingLeft:10} : {paddingLeft:10}}>
+                  <TouchableOpacity onPress={()=>this.toggle1('COUNTRY')} style={{flexDirection:'row'}}>
                   <Left>
                     <Text style={{fontFamily:'OpenSans',fontSize:14}}>Country</Text>
                     </Left>
@@ -210,8 +195,8 @@ componentDidMount(){
                     </Right>
                     </TouchableOpacity>
                   </ListItem>
-                  <ListItem style={{paddingLeft:10}}>
-                  <TouchableOpacity onPress={()=>this.toggle2()} style={{flexDirection:'row'}}>
+                  <ListItem style={selectedOne === 'STATE' ? {backgroundColor:'#784EBC',paddingLeft:10} : {paddingLeft:10}}>
+                  <TouchableOpacity onPress={()=>this.toggle1('STATE' )} style={{flexDirection:'row'}}>
                     <Left>
                     <Text style={{fontFamily:'OpenSans',fontSize:14}}>State</Text>
                     </Left>
@@ -220,25 +205,25 @@ componentDidMount(){
                     </Right>
                     </TouchableOpacity>
                   </ListItem>
-                  <ListItem style={{paddingLeft:10}}>
-                  <Left>
-                    <TouchableOpacity>
+                  <ListItem style={selectedOne === 'DISTRICT' ? {backgroundColor:'#784EBC',paddingLeft:10} : {paddingLeft:10}}>
+                  <TouchableOpacity onPress={()=>this.toggle1('DISTRICT' )} style={{flexDirection:'row'}}>
+                 <Left>
                     <Text style={{fontFamily:'OpenSans',fontSize:14,}}>District</Text>
-                    </TouchableOpacity>
                     </Left>
                     <Right>
                       <Icon name="ios-arrow-forward" style={{fontSize:25}}/>
                     </Right>
+                    </TouchableOpacity>
                   </ListItem>
-                  <ListItem style={{paddingLeft:10}}>
+                  <ListItem style={selectedOne === 'CITY' ? {backgroundColor:'#784EBC',paddingLeft:10} : {paddingLeft:10}}>
+                  <TouchableOpacity onPress={()=>this.toggle1('CITY')} style={{flexDirection:'row'}}>
                   <Left>
-                  <TouchableOpacity>
                     <Text style={{fontFamily:'OpenSans',fontSize:14,}}>City</Text>
-                    </TouchableOpacity>
                     </Left>
                     <Right>
                       <Icon name="ios-arrow-forward" style={{fontSize:25}}/>
                     </Right>
+                    </TouchableOpacity>
                   </ListItem>
                 </List>
               </View>
