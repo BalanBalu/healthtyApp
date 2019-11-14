@@ -11,7 +11,7 @@ import { userFiledsUpdate } from '../../../providers/auth/auth.actions';
 MapboxGL.setAccessToken(MAP_BOX_TOKEN);
 import Qs from 'qs';
 import Spinner from '../../../../components/Spinner';
-
+import locationIcon from '../../../../../assets/marker.png'
 export default class MapBox extends React.Component {
     _requests = [];
     _isMounted = false;
@@ -20,7 +20,7 @@ export default class MapBox extends React.Component {
         this.state = {
             fromProfile: false,
             loading: false,
-            coordinates: [],
+            coordinates: null,
             center: [],
             zoom: 12,
             isFinisedLoading: false,
@@ -51,28 +51,26 @@ export default class MapBox extends React.Component {
                     message: 'App needs location permission to find your position.'
                 }
             ).then(granted => {
-                // if (granted) {
-                //     this.getCurrentLocation()
-                // }
                 console.log(granted);
             }).catch(err => {
                 console.warn(err);
             });
         }
 
-        console.log("IS_ANDROID" + IS_ANDROID)
         this._isMounted = true;
         const { navigation } = this.props;
         const fromProfile = navigation.getParam('fromProfile') || false
-        console.log("fromProfile" + fromProfile)
         showAllAddressFields = navigation.getParam('mapEdit') || false
         let locationData = this.props.navigation.getParam('locationData');
-        console.log("locationData" + JSON.stringify(locationData))
         if (locationData) {
             this.formUserAddress(locationData)
             this.setState({ coordinates: locationData.center, fromProfile, showAllAddressFields })
         }
+        else{
+            this.getCurrentLocation();
+        }
     }
+
     formUserAddress(locationData) {
         let locationFullText = '';
         if (locationData.context) {
@@ -111,7 +109,7 @@ export default class MapBox extends React.Component {
             navigator.geolocation.getCurrentPosition(position => {
                 const origin_coordinates = [position.coords.latitude, position.coords.longitude];
                 this.setState({
-                    coordinates: origin_coordinates,
+                    coordinates: origin_coordinates, center: origin_coordinates,
                 })
                 console.log("position " + JSON.stringify(position))
             }), error => {
@@ -128,7 +126,6 @@ export default class MapBox extends React.Component {
     updateAddressObject(addressNode, value) {
         let statusCopy = Object.assign({}, this.state);
         statusCopy.address[addressNode] = value;
-        // statusCopy.hospitalAddress.address[addressNode] = value;
         this.setState(statusCopy);
     }
 
@@ -187,23 +184,11 @@ export default class MapBox extends React.Component {
     }
 
     async onRegionDidChange() {
-        console.log("onRegionDidChange" + this.state.coordinates)
-        console.log("onRegionDidChange" + this.state.isFinisedLoading)
-
-
-        // Toast.show({
-        //     text: 'Region Did Change',
-        //     duration : 3000
-        // })
-        //const center = this.state.center;
-        //const center = await this._map.getCenter();
         if (this.state.isFinisedLoading) {
             const zoom = await this._map.getZoom();
-            console.log("onRegionDidChangezoom" + zoom)
 
             const center = this.state.center;
             this.setState({ coordinates: center, zoom });
-            console.log("onRegionDidChange" + this.state.coordinates)
             let fullPath = `https://api.mapbox.com/geocoding/v5/mapbox.places/${center[0]},${center[1]}.json?types=poi&access_token=${MAP_BOX_TOKEN}`;
 
             //this._request(center[0].toFixed(2), center[1].toFixed(2))
@@ -223,10 +208,8 @@ export default class MapBox extends React.Component {
 
 
     async onRegionIsChanging() {
-        console.log("isFinisedLoading1" + this.state.isFinisedLoading)
 
         if (this.state.isFinisedLoading) {
-            console.log("isFinisedLoading" + this.state.isFinisedLoading)
             const center = await this._map.getCenter();
             this.setState({ center: center });
         }
@@ -243,13 +226,10 @@ export default class MapBox extends React.Component {
     }
 
     _abortRequests = () => {
-        console.log("about reqttttttt")
-
         this._requests.map(i => i.abort());
         this._requests = [];
     }
     _request = (lng, lat) => {
-        console.log("requestttt")
         this._abortRequests();
         if (lng && lat) {
             const request = new XMLHttpRequest();
@@ -300,24 +280,32 @@ export default class MapBox extends React.Component {
                         <MapboxGL.MapView
                             ref={(c) => this._map = c}
                             style={{ flex: 1 }}
-                            // showUserLocation={true}
+                            showUserLocation={true}
+                            styleURL={MapboxGL.StyleURL.Street}
                             compassEnabled={false}
                             onRegionDidChange={this.onRegionDidChange}
                             regionDidChangeDebounceTime={500}
                             onRegionIsChanging={this.onRegionIsChanging}
                             onDidFinishLoadingMap={this.onDidFinishLoadingMap}
                         >
-
+                           
                             {this.state.coordinates !== null ?
                                 <MapboxGL.Camera
                                     zoomLevel={this.state.zoom}
                                     centerCoordinate={this.state.coordinates}
                                     animationDuration={2000}
+                                    animationMode={'flyTo'}
                                 /> : null}
                             {console.log("MapboxGL.Camera   " + this.state.coordinates)}
                             {console.log("MapboxGL.center   " + this.state.center)}
-                            {console.log("zoom   " + this.state.zoom)}
 
+                            <MapboxGL.UserLocation
+                                visible={true}
+                                renderMode="normal" />
+                                
+                            <MapboxGL.Images
+                                images={{ example: locationIcon }}
+                            />
                             {<MapboxGL.PointAnnotation
                                 id={'Map Center Pin'}
                                 title={this.state.locationFullText}
