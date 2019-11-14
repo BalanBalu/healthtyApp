@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
-import { Container, Content, View, Text,Right, Item,Input,Card,Grid,Left,Icon,Thumbnail, Spinner,Footer, Radio,Row,Col,Form,Button } from 'native-base';
-import {StyleSheet,TextInput} from 'react-native'
+import { Container, Content, View, Text,Right, Item,Input,Card,Grid,Left,Icon,Thumbnail, Spinner,Footer, Radio,Row,Col,Form,Button, } from 'native-base';
+import {StyleSheet,TextInput,Image} from 'react-native'
 import { FlatList } from 'react-native-gesture-handler';
 
 
@@ -17,161 +17,165 @@ class IndividualChat extends Component {
         return (
             <Container>
             <Content>
-            <Row style={{marginLeft:10,marginRight:10,marginTop:10}}>
+                <View>
+                {/* <View style={{height:600,position:'relative'}}>
+            <Image source={require('../../../../assets/images/mobile.jpg')} style={{flex:1, width: null, height: null,}}/>
+            </View> */}
+           
+            <Item style={styles.mainItem}>
                        <Right>
-                     <Row>
-                         <View style={{justifyContent:'center',padding:2}}>
+                     <Item style={{borderBottomWidth:0}}>
+                         <View style={styles.viewStyle}>
                            <Text style={{fontFamily:'OpenSans',fontSize:8,color:'gray'}}>12.32 PM</Text>
                            </View>
-                           <View style={{justifyContent:'center',padding:2}}>
+                           <View style={styles.viewStyle}>
                            <Card style={{borderRadius:10,backgroundColor:'#7E49C3',}}>
-                           <Text style={{fontFamily:'OpenSans',fontSize:10,color:'#fff',padding:10}}>Hello,can i talk to Dr.Mukesh
+                           <Text style={styles.textstyle}>Hello,can i talk to Dr.Mukesh
                            </Text>
                            </Card>
                            </View>
                           
-                           <View style={{justifyContent:'center',padding:2}}>
+                           <View style={styles.viewStyle}>
                            <Thumbnail square source={{ uri: 'https://res.cloudinary.com/demo/image/upload/w_200,h_200,c_thumb,g_face,r_max/face_left.png' }} style={{width:40,height:40,}}/>
                            </View>
-                           </Row> 
+                           </Item> 
                        </Right>
-                       </Row> 
+                       </Item> 
 
 
-                       <Row style={{marginLeft:10,marginRight:10,marginTop:10}}>
+                       <Item style={styles.mainItem}>
                <Left>
-                     <Row>  
-                     <View style={{justifyContent:'center',padding:2}}>
+                     <Item style={{borderBottomWidth:0}}>  
+                     <View style={styles.viewStyle}>
                           <Thumbnail square source={{ uri: 'https://res.cloudinary.com/demo/image/upload/w_200,h_200,c_thumb,g_face,r_max/face_left.png' }} style={{width:40,height:40,}}/>
                       </View>
                          
-                      <View style={{justifyContent:'center',padding:2}}>
+                      <View style={styles.viewStyle}>
                           <Card style={{borderRadius:10,backgroundColor:'#fff',}}>
-                          <Text style={{fontFamily:'OpenSans',fontSize:10,color:'#000',padding:10}}>He has gone out on business Can I help You?</Text>
+                          <Text style={styles.textstyle2}>He has gone out on business Can I help You?</Text>
                           </Card>
                          </View>
-                         <View style={{justifyContent:'center',padding:2}}>
+                         <View style={styles.viewStyle}>
                           <Text style={{fontFamily:'OpenSans',fontSize:8,color:'gray'}}>12.32 PM</Text>
                        </View>
-                       </Row>
+                       </Item>
                        </Left>   
-                        </Row>
+                        </Item>
 
 
-                        <Row style={{marginLeft:10,marginRight:10,marginTop:10}}>
+                        <Item style={styles.mainItem}>
                        <Right >
-                     <Row >
-                         <View style={{justifyContent:'center',padding:2}}>
+                     <Item style={{borderBottomWidth:0}}>
+                         <View style={styles.viewStyle}>
                            <Text style={{fontFamily:'OpenSans',fontSize:8,color:'gray'}}>12.32 PM</Text>
                            </View>
                            <View style={{justifyContent:'center',padding:2,width:'60%'}}>
                            <Card style={{borderRadius:10,backgroundColor:'#7E49C3'}}>
-                           <Text style={{fontFamily:'OpenSans',fontSize:10,color:'#fff',padding:10,}}>I am Balan... All the goods supplied by your firm
+                           <Text style={styles.textstyle}>I am Balan... All the goods supplied by your firm
                            were delivered.However,some flower vases were broken.Please ask him if they will be replaced.Also tell him that
                            I'll make the payment in two days time.
                            </Text>
                            </Card>
                            </View>
                           
-                           <View style={{justifyContent:'center',padding:2}}>
+                           <View style={styles.viewStyle}>
                            <Thumbnail square source={{ uri: 'https://res.cloudinary.com/demo/image/upload/w_200,h_200,c_thumb,g_face,r_max/face_left.png' }} style={{width:40,height:40,}}/>
                            </View>
-                           </Row> 
+                           </Item> 
                        </Right>
-                       </Row> 
-                       <Row style={{marginLeft:10,marginRight:10,marginTop:10}}>
+                       </Item> 
+                       <Item style={styles.mainItem}>
                <Left>
-                     <Row>  
-                     <View style={{justifyContent:'center',padding:2}}>
+                     <Item style={{borderBottomWidth:0}}>  
+                     <View style={styles.viewStyle}>
                           <Thumbnail square source={{ uri: 'https://res.cloudinary.com/demo/image/upload/w_200,h_200,c_thumb,g_face,r_max/face_left.png' }} style={{width:40,height:40,}}/>
                       </View>
                          
                       <View style={{justifyContent:'center',padding:2,width:'60%'}}>
                           <Card style={{borderRadius:10,backgroundColor:'#fff',}}>
-                          <Text style={{fontFamily:'OpenSans',fontSize:10,color:'#000',padding:10}}>I will inform him when he comes back and will ask himto get back to you. </Text>
+                          <Text style={styles.textstyle2}>I will inform him when he comes back and will ask himto get back to you. </Text>
                           </Card>
                          </View>
-                         <View style={{justifyContent:'center',padding:2}}>
+                         <View style={styles.viewStyle}>
                           <Text style={{fontFamily:'OpenSans',fontSize:8,color:'gray'}}>12.32 PM</Text>
                        </View>
-                       </Row>
+                       </Item>
                        </Left>   
                       
                   
-              </Row>
+              </Item>
 
-              <Row style={{marginLeft:10,marginRight:10,marginTop:10}}>
+              <Item style={styles.mainItem}>
                        <Right>
-                     <Row>
-                         <View style={{justifyContent:'center',padding:2}}>
+                     <Item style={{borderBottomWidth:0}}>
+                         <View style={styles.viewStyle}>
                            <Text style={{fontFamily:'OpenSans',fontSize:8,color:'gray'}}>12.32 PM</Text>
                            </View>
-                           <View style={{justifyContent:'center',padding:2}}>
+                           <View style={styles.viewStyle}>
                            <Card style={{borderRadius:10,backgroundColor:'#7E49C3',}}>
-                           <Text style={{fontFamily:'OpenSans',fontSize:10,color:'#fff',padding:10}}>Thank you
+                           <Text style={styles.textstyle}>Thank you
                            </Text>
                            </Card>
                            </View>
                           
-                           <View style={{justifyContent:'center',padding:2}}>
+                           <View style={styles.viewStyle}>
                            <Thumbnail square source={{ uri: 'https://res.cloudinary.com/demo/image/upload/w_200,h_200,c_thumb,g_face,r_max/face_left.png' }} style={{width:40,height:40,}}/>
                            </View>
-                           </Row> 
+                           </Item> 
                        </Right>
-                       </Row> 
+                       </Item> 
 
-               <Row style={{marginLeft:10,marginRight:10,marginTop:10}}>
+               <Item style={styles.mainItem}>
                <Left>
-                     <Row>  
-                     <View style={{justifyContent:'center',padding:2}}>
+                     <Item style={{borderBottomWidth:0}}>  
+                     <View style={styles.viewStyle}>
                           <Thumbnail square source={{ uri: 'https://res.cloudinary.com/demo/image/upload/w_200,h_200,c_thumb,g_face,r_max/face_left.png' }} style={{width:40,height:40,}}/>
                       </View>
                          
-                      <View style={{justifyContent:'center',padding:2}}>
+                      <View style={styles.viewStyle}>
                           <Card style={{borderRadius:10,backgroundColor:'#fff',}}>
-                          <Text style={{fontFamily:'OpenSans',fontSize:10,color:'#000',padding:10}}>Hello,is this Bala?</Text>
+                          <Text style={styles.textstyle2}>Hello,is this Bala?</Text>
                           </Card>
                          </View>
-                         <View style={{justifyContent:'center',padding:2}}>
+                         <View style={styles.viewStyle}>
                           <Text style={{fontFamily:'OpenSans',fontSize:8,color:'gray'}}>12.32 PM</Text>
                        </View>
-                       </Row>
+                       </Item>
                        </Left>   
                       
                   
-              </Row>
+              </Item>
 
-              <Row style={{marginLeft:10,marginRight:10,marginTop:10}}>
+              <Item style={styles.mainItem}>
                        <Right>
-                     <Row>
-                         <View style={{justifyContent:'center',padding:2}}>
+                     <Item style={{borderBottomWidth:0}}>
+                         <View style={styles.viewStyle}>
                            <Text style={{fontFamily:'OpenSans',fontSize:8,color:'gray'}}>12.32 PM</Text>
                            </View>
-                           <View style={{justifyContent:'center',padding:2}}>
+                           <View style={styles.viewStyle}>
                            <Card style={{borderRadius:10,backgroundColor:'#7E49C3',}}>
-                           <Text style={{fontFamily:'OpenSans',fontSize:10,color:'#fff',padding:10}}>Yes
+                           <Text style={styles.textstyle}>Yes
                            </Text>
                            </Card>
                            </View>
                           
-                           <View style={{justifyContent:'center',padding:2}}>
+                           <View style={styles.viewStyle}>
                            <Thumbnail square source={{ uri: 'https://res.cloudinary.com/demo/image/upload/w_200,h_200,c_thumb,g_face,r_max/face_left.png' }} style={{width:40,height:40,}}/>
                            </View>
-                           </Row> 
+                           </Item> 
                        </Right>
-                       </Row> 
-                  
-              
+                       </Item> 
+                    </View>    
             </Content>
-            <Footer style={{ backgroundColor: '#7E49C3',justifyContent:'center' }}>
+             <Footer style={styles.footerStyle}>
                 <Row style={{alignItems:'center',justifyContent:'center'}}>
-                    <Col style={{width:'15%',justifyContent:'center',alignItems:'center'}}>
+                    <Col style={styles.col1}>
                     <View style={styles.circle}>
                     <Icon name="ios-camera" style={{ color: '#7E49C3', fontSize:25,padding:2}} />
 
                     </View>
                     </Col>
-                    <Col style={{width:'70%',justifyContent:'center',alignItems:'center'}}>
+                    <Col style={styles.col2}>
                     <Row style={styles.SearchRow}>
                     
                     <Col size={9} style={{justifyContent:'center',}}> 
@@ -193,7 +197,7 @@ class IndividualChat extends Component {
                   </Col>
                       </Row>
                     </Col>
-                    <Col style={{width:'15%',justifyContent:'center',alignItems:'center'}}>
+                    <Col style={styles.col1}>
                     <View style={styles.circle}>
                     <Icon name="ios-send" style={{ color: '#7E49C3', fontSize:30,padding:2,transform: [{ rotate: '45deg'}]}} />
 
@@ -234,6 +238,40 @@ const styles = StyleSheet.create({
     viewStyle:{
         justifyContent:'center',
         padding:2
+    },
+    mainItem:{
+        marginLeft:10,
+        marginRight:10,
+        marginTop:10,
+        borderBottomWidth:0,
+          
+       
+    },
+    textstyle:{
+        fontFamily:'OpenSans',
+        fontSize:10,
+        color:'#fff',
+        padding:10
+    },
+    textstyle2:{
+        fontFamily:'OpenSans',
+        fontSize:10,
+        color:'#000',
+        padding:10
+    },
+    footerStyle:{
+        backgroundColor: '#7E49C3',
+        justifyContent:'center' 
+    },
+    col1:{
+        width:'15%',
+        justifyContent:'center',
+        alignItems:'center'
+    },
+    col2:{
+        width:'70%',
+        justifyContent:'center',
+        alignItems:'center' 
     }
 
 })

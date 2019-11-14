@@ -95,14 +95,6 @@ const HomeStack = createStackNavigator({
 
       headerRight: (
         <Grid>
-           <Col>
-            <TouchableOpacity onPress={() => { navigation.navigate('IndividualChat') }} >
-              <View>
-                <Icon name="ios-settings" style={{ color: '#fff', marginRight: 15, fontFamily: 'opensans-semibold' }}></Icon>
-                <Badge/>
-              </View>
-            </TouchableOpacity>
-          </Col>
           <Col>
             <TouchableOpacity onPress={() => { navigation.navigate('Notification') }} >
               <View>
