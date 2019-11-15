@@ -137,7 +137,7 @@ class UserDetails extends Component {
                                         onChangeText={text => this.validateFirstNameLastName(text, "lastName")}
                                         autoCapitalize='none'
                                         blurOnSubmit={false}
-                                        onSubmitEditing={() => { this.lastName.focus(); }}
+                                        // onSubmitEditing={() => { this.lastName.focus(); }}
                                     />
                                 </Item>
 

@@ -165,7 +165,7 @@ class UpdateUserDetails extends Component {
                                         onChangeText={text => this.validateFirstNameLastName(text, "Lastname")}
                                         autoCapitalize='none'
                                         blurOnSubmit={false}
-                                        onSubmitEditing={() => { this.lastName._root.focus(this.setState({ focus: true })); }}
+                                        // onSubmitEditing={() => { this.lastName._root.focus(this.setState({ focus: true })); }}
                                         testID="editLastName"
                                     />
                                 </Item>
