@@ -5,6 +5,7 @@ import { FlatList } from 'react-native-gesture-handler';
 import Autocomplete from '../../../components/Autocomplete'
 import {bloodDonationFilter }from '../../providers/profile/profile.action';
 import { bloodGroupList } from "../../common";
+import { RadioButton, } from 'react-native-paper';
 
 
 class BloodDonerFilters extends Component {
@@ -13,7 +14,8 @@ class BloodDonerFilters extends Component {
                 this.state = {
                    data:[],
         hidden1: false,
-        selectedOne:null
+        selectedOne:null,
+        onSelect:1
                 }
             }
           
@@ -53,16 +55,17 @@ componentDidMount(){
                           </ListItem>
                           <FlatList 
                           data={bloodGroupList}
+                          keyExtractor={(item, index) => index.toString()}
                           renderItem={({item,index})=>
                           <ListItem >
                            <Left>
                              <Text style={styles.subText}>{item}</Text>
                            </Left>
                            <Right>
-                              <Radio
-                                   selectedColor={"#007bff"}
-                                   selected={false}
-                                      />
+                           <RadioButton.Group   onValueChange={onSelect => this.setState({ onSelect })}
+                           value={this.state.onSelect}> 
+                                <RadioButton value={item}/>
+                              </RadioButton.Group>
                            </Right>
                          </ListItem>
                           }/> 
@@ -75,17 +78,18 @@ componentDidMount(){
                           <Text style={styles.textHead}>Country</Text>
                           </ListItem>
                            <FlatList
-                               data={this.state.data.countryListArray}
+                               data={this.state.data.userAddressList.countryList}
+                               keyExtractor={(item, index) => index.toString()}
                                renderItem={({item})=>
                            <ListItem >
                            <Left>
                              <Text style={styles.subText}>{item}</Text>
                            </Left>
                            <Right>
-                              <Radio
-                                   selectedColor={"#007bff"}
-                                   selected={false}
-                                      />
+                           <RadioButton.Group   onValueChange={onSelect => this.setState({ onSelect })}
+                           value={this.state.onSelect}> 
+                                <RadioButton value={item}/>
+                              </RadioButton.Group>
                            </Right>
                          </ListItem>
                           }/> 
@@ -98,17 +102,18 @@ componentDidMount(){
                           <Text style={styles.textHead}>State</Text>
                           </ListItem>
                             <FlatList
-                               data={this.state.data.stateListArray}
+                               data={this.state.data.userAddressList.stateList}
+                               keyExtractor={(item, index) => index.toString()}
                                renderItem={({item})=>
                            <ListItem >
                            <Left>
                              <Text style={styles.subText}>{item}</Text>
                            </Left>
                            <Right>
-                              <Radio
-                                   selectedColor={"#007bff"}
-                                   selected={false}
-                                      />
+                           <RadioButton.Group   onValueChange={onSelect => this.setState({ onSelect })}
+                           value={this.state.onSelect}> 
+                                <RadioButton value={item}/>
+                              </RadioButton.Group>
                            </Right>
                          </ListItem>
                         
@@ -122,17 +127,18 @@ componentDidMount(){
                           <Text style={styles.textHead}>District</Text>
                           </ListItem>
                           <FlatList 
-                          data={this.state.data.districtListArray}
+                          data={this.state.data.userAddressList.districtList}
+                          keyExtractor={(item, index) => index.toString()}
                           renderItem={({item})=>
                           <ListItem >
                            <Left>
                              <Text style={styles.subText}>{item}</Text>
                            </Left>
                            <Right>
-                              <Radio
-                                   selectedColor={"#007bff"}
-                                   selected={false}
-                                      />
+                           <RadioButton.Group   onValueChange={onSelect => this.setState({ onSelect })}
+                           value={this.state.onSelect}> 
+                                <RadioButton value={item}/>
+                              </RadioButton.Group>
                            </Right>
                          </ListItem>
 
@@ -148,17 +154,18 @@ componentDidMount(){
                           <Text style={styles.textHead}>City</Text>
                           </ListItem>
                            <FlatList
-                             data={this.state.data.cityListArray}
+                             data={this.state.data.userAddressList.cityList}
+                             keyExtractor={(item, index) => index.toString()}
                              renderItem={({item})=>
                           <ListItem >
                            <Left>
                              <Text style={styles.subText}>{item}</Text>
                            </Left>
                            <Right>
-                              <Radio
-                                   selectedColor={"#007bff"}
-                                   selected={false}
-                                      />
+                           <RadioButton.Group   onValueChange={onSelect => this.setState({ onSelect })}
+                           value={this.state.onSelect}> 
+                                <RadioButton value={item}/>
+                              </RadioButton.Group>
                            </Right>
                          </ListItem>
                            }/> 
