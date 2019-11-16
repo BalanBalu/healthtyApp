@@ -90,13 +90,6 @@ const AuthStack = createStackNavigator(AuthRoutes, {
   navigationOptions: { headerVisible: false }
 
 })
-const ChatStack = createStackNavigator(ChatRoutes, {
-  initialRouteName: 'Chat',
-  headerMode: "none",
-  navigationOptions: { headerVisible: false }
-
-})
-
 const HomeStack = createStackNavigator({
   Home: {
     screen: Home,
@@ -304,6 +297,14 @@ const HomeStack = createStackNavigator({
       title: 'Success'
     }
   },
+  // ============Chat ========================
+  Chat: {
+    screen: Chat,
+    navigationOptions: {
+      title: 'Online Chat'
+    }
+  },
+
   // ============== Pharmacy =================
   Pharmacy: {
     screen: PharmacyHome,
@@ -465,8 +466,7 @@ const HomeStack = createStackNavigator({
     {
       AuthLoading: AuthLoadingScreen,
       App: DrawerNavigator,
-      Auth: AuthStack,
-      Chat: ChatStack
+      Auth: AuthStack
     },
     {
       initialRouteName: 'AuthLoading',

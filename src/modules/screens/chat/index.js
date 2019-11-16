@@ -20,15 +20,8 @@ class Chat extends Component {
         return (
             <Container>
             <Content>
-                <View style={{backgroundColor: '#7E49C3',}}>
-                    <Row style={{marginTop:10}}>
-                    <Left>
-                    <Text style={styles.HeaderText}>Medflic</Text>
-                    </Left>
-                    <Right>
-                    <Icon name="md-more" style={{ color: '#fff', marginRight: 15,  }}></Icon>
-                    </Right>
-                    </Row>
+                <View style={{backgroundColor: '#7E49C3'}}>
+                    
                     <View style={{marginTop:20}}>
                     <Text style={styles.SubText}>Search for Doctors</Text>
 
@@ -45,13 +38,12 @@ class Chat extends Component {
                           
                         />
                         </Col>
-                        <Col size={0.9} style={{justifyContent:'center',borderRightRadius:10}}> 
+                         <Col size={0.9} style={{justifyContent:'center',borderRightRadius:10}}> 
                         <View style={styles.SearchStyle}>
-                        <Icon name="ios-search" style={{ color: '#fff', fontSize:20,padding:2}} />
-
+                            <Icon name="ios-search" style={{ color: '#fff', fontSize:20,padding:2}} />
                         </View>
-                    </Col>
-                        </Row>
+                      </Col>
+                    </Row>
 
                        <Row style={{marginTop:10,justifyContent:'center'}}>
 					<Button style={styles.segButtonActive1} >
@@ -62,13 +54,14 @@ class Chat extends Component {
 						<Text style={styles.segText}>Previous Chats</Text>
 					</Button>
                     </Row>
+                </View>
                     <View>
                         <PreviousChat/> 
                         {/* <AvailableDoctor/> */}
                     </View>
                     </View>
                     
-                </View>
+               
             </Content>
             </Container>
         )
