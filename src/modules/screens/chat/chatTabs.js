@@ -62,8 +62,8 @@ class ChatTabBar extends React.Component {
           <Text
             size={30}
             style={{
-                color : this.props.activeTab === i ? 'rgb(204,204,204)' : 'rgb(59,89,152)',
-                borderBottomColor: this.props.activeTab !== i ? 'rgb(204,204,204)' : 'rgb(59,89,152)',
+                color : this.props.activeTab === i ? 'rgb(255,255,255)' : 'rgb(255,255,255)',
+                borderBottomColor: this.props.activeTab !== i ? 'rgb(255,255,255)' : 'rgb(255,255,255)',
                 borderBottomEndRadius: 20,
                 
             }
