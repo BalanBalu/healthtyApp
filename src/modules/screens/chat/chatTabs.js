@@ -4,6 +4,7 @@ import {
   Text,
   View,
   TouchableOpacity,
+  Animated
 } from 'react-native';
 import Icon from 'react-native-vector-icons/Ionicons';
 
@@ -37,8 +38,22 @@ class ChatTabBar extends React.Component {
     const blue = 152 + (204 - 152) * progress;
     return `rgb(${red}, ${green}, ${blue})`;
   }
+ 
 
   render() {
+    const containerWidth = this.props.containerWidth;
+    const numberOfTabs = this.props.tabs.length;
+    const tabUnderlineStyle = {
+      position: 'absolute',
+      width: containerWidth / numberOfTabs,
+      height: 4,
+      backgroundColor: '#FFF',
+      bottom: 0,
+    };
+    const translateX = this.props.scrollValue.interpolate({
+        inputRange: [0, 1],
+        outputRange: [0,  containerWidth / numberOfTabs],
+    });
       console.log(this.props.activeTab);
     return <View style={[styles.tabs, this.props.style, ]}>
       {this.props.tabs.map((tab, i) => {
@@ -46,11 +61,29 @@ class ChatTabBar extends React.Component {
           
           <Text
             size={30}
-            style={{color : this.props.activeTab === i ? 'rgb(204,204,204)' : 'rgb(59,89,152)' }}
+            style={{
+                color : this.props.activeTab === i ? 'rgb(204,204,204)' : 'rgb(59,89,152)',
+                borderBottomColor: this.props.activeTab !== i ? 'rgb(204,204,204)' : 'rgb(59,89,152)',
+                borderBottomEndRadius: 20,
+                
+            }
+                
+            }
         >{tab}</Text>
          
         </TouchableOpacity>;
       })}
+      <Animated.View
+          style={[
+            tabUnderlineStyle,
+            {
+              transform: [
+                { translateX },
+              ]
+            },
+            this.props.underlineStyle,
+          ]}
+        />
     </View>;
   }
 }
@@ -63,14 +96,14 @@ const styles = StyleSheet.create({
     paddingBottom: 10,
   },
   tabs: {
-    height: 45,
+    height: 50,
     flexDirection: 'row',
-    paddingTop: 5,
+    justifyContent: 'space-around',
     borderWidth: 1,
     borderTopWidth: 0,
     borderLeftWidth: 0,
     borderRightWidth: 0,
-    borderBottomColor: 'rgba(0,0,0,0.05)',
+    borderColor: '#ccc',
   },
 });
 
