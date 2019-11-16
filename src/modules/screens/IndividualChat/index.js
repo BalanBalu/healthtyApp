@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import { Container, Content, View, Text,Right, Item,Input,Card,Grid,Left,Icon,Thumbnail, Spinner,Footer, Radio,Row,Col,Form,Button, } from 'native-base';
-import {StyleSheet,TextInput,Image} from 'react-native'
+import {StyleSheet,TextInput,ImageBackground} from 'react-native'
 import { FlatList } from 'react-native-gesture-handler';
 
 
@@ -18,9 +18,8 @@ class IndividualChat extends Component {
             <Container>
             <Content>
                 <View>
-                {/* <View style={{height:600,position:'relative'}}>
-            <Image source={require('../../../../assets/images/mobile.jpg')} style={{flex:1, width: null, height: null,}}/>
-            </View> */}
+                
+            <ImageBackground source={require('../../../../assets/images/mobile.jpg')} style={{flex:1, width: null, height: null,}}>
            
             <Item style={styles.mainItem}>
                        <Right>
@@ -165,6 +164,7 @@ class IndividualChat extends Component {
                            </Item> 
                        </Right>
                        </Item> 
+                       </ImageBackground>
                     </View>    
             </Content>
              <Footer style={styles.footerStyle}>
