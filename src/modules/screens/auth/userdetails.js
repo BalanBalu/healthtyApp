@@ -64,18 +64,17 @@ class UserDetails extends Component {
 
                 if (response.success) {
                     if (this.state.isBloodDonor == true) {
-                        this.props.navigation.navigate('UpdateAddress')
-
+                        this.props.navigation.navigate('MapBox')
                     }
-                    else{
-                    Toast.show({
+                    else {
+                       Toast.show({
                         text: 'Your Profile has been completed, Please Login to Continue',
                         type: "success",
                         duration: 3000
-                    });
-                    logout();
-                    this.props.navigation.navigate('login');
-                }
+                      });
+                      logout();
+                      this.props.navigation.navigate('login');
+                    }
                 }
                 else {
                     Toast.show({

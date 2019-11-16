@@ -16,6 +16,8 @@ import login from "../../modules/screens/auth/login";
 import signup from "../../modules/screens/auth/signup";
 import forgotpassword from "../../modules/screens/auth/forgotpassword";
 import userdetails from "../../modules/screens/auth/userdetails";
+import UserAddress from "../../modules/screens/auth/UserAddress";
+import MapBox from "../../modules/screens/auth/UserAddress/MapBox";
 import Reviews from "../../modules/screens/Reviews";
 import doctorSearchList from "../../modules/screens/doctorSearchList";
 import FilterList from "../../modules/screens/FilterList";
@@ -68,7 +70,14 @@ const AuthRoutes = {
   },
   userdetails: {
     screen: userdetails,
-  }
+  },
+  UserAddress: {
+    screen: UserAddress,
+  },
+    MapBox: {
+    screen: MapBox,
+  },
+
 }
 
 const AuthStack = createStackNavigator(AuthRoutes, {
@@ -219,6 +228,12 @@ const HomeStack = createStackNavigator({
     screen: UpdateUserDetails,
     navigationOptions: {
       title: 'Update User Details'
+    }
+  },
+  MapBox: {
+    screen: MapBox,
+    navigationOptions: {
+      title: 'Search Location'
     }
   },
   UpdateAddress: {
