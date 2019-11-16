@@ -11,12 +11,14 @@ import UpdateInsurance from "../../modules/screens/userprofile/UpdateInsurance";
 import UpdateUserDetails from "../../modules/screens/userprofile/UpdateUserDetails";
 import UpdateAddress from "../../modules/screens/userprofile/UpdateAddress";
 import { Icon, View,Thumbnail } from 'native-base';
-import IndividualChat from '../../modules/screens/IndividualChat'
+import IndividualChat from '../../modules/screens/chat/individualChat'
 import Categories from "../../modules/screens/categories";
 import login from "../../modules/screens/auth/login";
 import signup from "../../modules/screens/auth/signup";
 import forgotpassword from "../../modules/screens/auth/forgotpassword";
 import userdetails from "../../modules/screens/auth/userdetails";
+import UserAddress from "../../modules/screens/auth/UserAddress";
+import MapBox from "../../modules/screens/auth/UserAddress/MapBox";
 import Reviews from "../../modules/screens/Reviews";
 import doctorSearchList from "../../modules/screens/doctorSearchList";
 import FilterList from "../../modules/screens/FilterList";
@@ -27,7 +29,7 @@ import PaymentSuccess from "../../modules/screens/PaymentSuccess";
 import InsertReview from '../../modules/screens/Reviews/InsertReview';
 import WishList from "../../modules/screens/wishList";
 import Notification from "../../modules/screens/Notification";
-
+import Chat from "../../modules/screens/chat";
 import { Col, Grid, Row } from 'react-native-easy-grid';
 import { logout } from '../../modules/providers/auth/auth.actions';
 import { TouchableOpacity, Image, Text, AppRegistry, AsyncStorage, } from 'react-native'
@@ -69,21 +71,29 @@ const AuthRoutes = {
   },
   userdetails: {
     screen: userdetails,
-  }
+  },
+  UserAddress: {
+    screen: UserAddress,
+  },
+    MapBox: {
+    screen: MapBox,
+  },
+
 }
 
 const AuthStack = createStackNavigator(AuthRoutes, {
   initialRouteName: 'login',
   headerMode: "none",
   navigationOptions: { headerVisible: false }
-})
 
+})
 const HomeStack = createStackNavigator({
   Home: {
     screen: Home,
     navigationOptions: ({ navigation }) => ({
 
       title: 'DashBoard',
+   
       headerLeft: (
         <TouchableOpacity onPress={() => navigation.toggleDrawer()}>
           <Image
@@ -160,46 +170,7 @@ const HomeStack = createStackNavigator({
       ),
     })
   },
-  IndividualChat: {
-    screen: IndividualChat,
-    navigationOptions:({ navigation }) => ({
-      headerLeft: (
-        <Grid>
-<Col>
-<TouchableOpacity>
-<Icon name="ios-arrow-round-back" style={{ color: '#fff',marginLeft:15,fontSize:40}}/>
-
-</TouchableOpacity>
-</Col>
-          <Col>
-          <TouchableOpacity style={{marginLeft:15}}>
-        <Thumbnail square source={{ uri: 'https://res.cloudinary.com/demo/image/upload/w_200,h_200,c_thumb,g_face,r_max/face_left.png' }} style={{width:45,height:45,}}/>
-       
-        </TouchableOpacity>
-          </Col>
-          <Col style={{marginLeft:15}}>
-          <Text style={{fontFamily:'OpenSans',fontSize:16,fontWeight:'bold',color:'#fff'}}>Dr.Mukesh kannan</Text>
-          <Text style={{fontFamily:'OpenSans',fontSize:14,color:'#fff',}}>Online</Text>
-
-          </Col>
-          </Grid>
-       
-      ),
-      headerRight: (
-        <Grid>
-          <Col>
-            <TouchableOpacity  >
-              <View style={{flexDirection:'row',}}>
-                <Icon name="ios-attach" style={{ color: '#fff',marginRight: 20,transform: [{ rotate: '45deg'}]}}/>
-                <Icon name="md-more" style={{ color: '#fff', marginRight: 15,  }}></Icon>
-              </View>
-            </TouchableOpacity>
-          </Col>
-        
-        </Grid>
-      ),
-    })
-  },
+  
   ///  =============Appointments Stack ==================
   "My Appointments": {
     screen: MyAppoinmentList,
@@ -260,6 +231,12 @@ const HomeStack = createStackNavigator({
     screen: UpdateUserDetails,
     navigationOptions: {
       title: 'Update User Details'
+    }
+  },
+  MapBox: {
+    screen: MapBox,
+    navigationOptions: {
+      title: 'Search Location'
     }
   },
   UpdateAddress: {
@@ -325,6 +302,49 @@ const HomeStack = createStackNavigator({
       title: 'Success'
     }
   },
+  // ============Chat ========================
+  Chat: {
+    screen: Chat,
+    navigationOptions: {
+      title: 'Online Chat'
+    }
+  },
+  IndividualChat: {
+    screen: IndividualChat,
+    navigationOptions:({ navigation }) => ({
+    headerLeft: (
+    <Grid>
+      <Col>
+        <TouchableOpacity>
+          <Icon name="ios-arrow-round-back" style={{ color: '#fff',marginLeft:15,fontSize:40}}/>
+        </TouchableOpacity>
+      </Col>
+      <Col>
+        <TouchableOpacity style={{marginLeft:15}}>
+           <Thumbnail square source={{ uri: 'https://res.cloudinary.com/demo/image/upload/w_200,h_200,c_thumb,g_face,r_max/face_left.png' }} style={{width:45,height:45,}}/>
+       </TouchableOpacity>
+      </Col>
+      <Col style={{marginLeft:15}}>
+        <Text style={{fontFamily:'OpenSans',fontSize:16,fontWeight:'bold',color:'#fff'}}>Dr.Mukesh kannan</Text>
+        <Text style={{fontFamily:'OpenSans',fontSize:14,color:'#fff',}}>Online</Text>
+      </Col>
+    </Grid>
+    ),
+    headerRight: (
+      <Grid>
+        <Col>
+          <TouchableOpacity  >
+            <View style={{flexDirection:'row',}}>
+              <Icon name="ios-attach" style={{ color: '#fff',marginRight: 20,transform: [{ rotate: '45deg'}]}}/>
+              <Icon name="md-more" style={{ color: '#fff', marginRight: 15,  }}></Icon>
+            </View>
+          </TouchableOpacity>
+        </Col>
+      </Grid>
+     ),
+    })
+  },
+
   // ============== Pharmacy =================
   Pharmacy: {
     screen: PharmacyHome,
@@ -438,7 +458,9 @@ const HomeStack = createStackNavigator({
       headerTintColor: 'white',
     })
   })
+   
 
+  
 
   const DrawerNavigator = createDrawerNavigator({
     Home: {
@@ -455,6 +477,12 @@ const HomeStack = createStackNavigator({
     },
     Orders: {
       screen: MyOrdersList
+    },
+    Chat: {
+      screen: Chat
+    },
+    IndividualChat: {
+      screen: IndividualChat
     },
     Reminder: {
       screen: Reminder
@@ -473,13 +501,15 @@ const HomeStack = createStackNavigator({
     "My Appointments": require('../../../assets/images/drawerIcons/MyAppointments.png'),
     Pharmacy: require('../../../assets/images/drawerIcons/Pharmacy.png'),
     Orders: require('../../../assets/images/drawerIcons/Orders.png'),
-    Reminder:require('../../../assets/images/drawerIcons/Orders.png')
+    Reminder:require('../../../assets/images/drawerIcons/Orders.png'),
+    Chat:require('../../../assets/images/drawerIcons/Orders.png')
+
   }
   export default createAppContainer(createSwitchNavigator(
     {
       AuthLoading: AuthLoadingScreen,
       App: DrawerNavigator,
-      Auth: AuthStack,
+      Auth: AuthStack
     },
     {
       initialRouteName: 'AuthLoading',

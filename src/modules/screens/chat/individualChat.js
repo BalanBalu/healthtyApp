@@ -19,7 +19,7 @@ class IndividualChat extends Component {
             <Content>
                 <View>
                 
-            <ImageBackground source={require('../../../../assets/images/mobile.jpg')} style={{flex:1, width: null, height: null,}}>
+            <ImageBackground source={require('../../../../assets/images/statebank.png')} style={{flex:1, width: null, height: null,}}>
            
             <Item style={styles.mainItem}>
                        <Right>
