@@ -7,7 +7,7 @@ import { IS_ANDROID } from '../../../common';
 import { Container, Toast, Body, Button, Text, Item, Input, Icon, Card, CardItem, Label, Form, Content, Picker } from 'native-base';
 import { MAP_BOX_TOKEN } from '../../../../setup/config';
 import axios from 'axios';
-import { userFiledsUpdate } from '../../../providers/auth/auth.actions';
+import { userFiledsUpdate, logout } from '../../../providers/auth/auth.actions';
 MapboxGL.setAccessToken(MAP_BOX_TOKEN);
 import Qs from 'qs';
 import Spinner from '../../../../components/Spinner';
@@ -163,7 +163,6 @@ export default class MapBox extends React.Component {
                     type: 'Point',
                     address: this.state.address
                 }
-
             }
 
             const userId = await AsyncStorage.getItem('userId')
@@ -178,6 +177,7 @@ export default class MapBox extends React.Component {
                 if (this.state.fromProfile)
                     this.props.navigation.navigate('Profile');
                 else {
+                    logout();
                     this.props.navigation.navigate('login');
                 }
             }
