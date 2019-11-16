@@ -58,6 +58,8 @@ import { Badge } from '../../../src/modules/common'
 import Locations from '../../modules/screens/Home/Locations';
 import BloodDonersList from '../../modules/screens/bloodDonation/BloodDonersList';
 import BloodDonerFilters from '../../modules/screens/bloodDonation/BloodDonerFilters';
+import PreviousChats from '../../modules/screens/chat/PreviousChat';
+import AvailableDoctors4Chat from '../../modules/screens/chat/AvailableDoctor';
 
 const AuthRoutes = {
   login: {
@@ -309,6 +311,18 @@ const HomeStack = createStackNavigator({
       title: 'Online Chat'
     }
   },
+  "Chat Service": {
+    screen: AvailableDoctors4Chat,
+    navigationOptions: {
+      title: 'Availabile Doctors'
+    }
+  },
+  "My Chats": {
+    screen: PreviousChats,
+    navigationOptions: {
+      title: 'Chats'
+    }
+  },
   IndividualChat: {
     screen: IndividualChat,
     navigationOptions:({ navigation }) => ({
@@ -478,11 +492,11 @@ const HomeStack = createStackNavigator({
     Orders: {
       screen: MyOrdersList
     },
-    Chat: {
-      screen: Chat
+    "Chat Service": {
+      screen: AvailableDoctors4Chat
     },
-    IndividualChat: {
-      screen: IndividualChat
+    "My Chats": {
+      screen : PreviousChats
     },
     Reminder: {
       screen: Reminder

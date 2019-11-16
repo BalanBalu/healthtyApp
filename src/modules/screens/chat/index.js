@@ -22,7 +22,7 @@ class Chat extends Component {
             <Content>
                 <View style={{backgroundColor: '#7E49C3'}}>
                     
-                    <View style={{marginTop:20}}>
+                <View style={{marginTop:20}}>
                     <Text style={styles.SubText}>Search for Doctors</Text>
 
                     <Row style={styles.SearchRow}>
@@ -38,7 +38,7 @@ class Chat extends Component {
                           
                         />
                         </Col>
-                         <Col size={0.9} style={{justifyContent:'center',borderRightRadius:10}}> 
+                        <Col size={0.9} style={{justifyContent:'center',borderRightRadius:10}}> 
                         <View style={styles.SearchStyle}>
                             <Icon name="ios-search" style={{ color: '#fff', fontSize:20,padding:2}} />
                         </View>

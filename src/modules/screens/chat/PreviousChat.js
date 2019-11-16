@@ -4,7 +4,7 @@ import {StyleSheet,TextInput} from 'react-native'
 import { FlatList } from 'react-native-gesture-handler';
 
 
-class PreviousChat extends Component {
+class PreviousChats extends Component {
     constructor(props) {
         super(props)
         this.state = {
@@ -53,7 +53,7 @@ class PreviousChat extends Component {
     }
 }
 
-export default PreviousChat
+export default PreviousChats
 
 const styles = StyleSheet.create({
 docname:{
