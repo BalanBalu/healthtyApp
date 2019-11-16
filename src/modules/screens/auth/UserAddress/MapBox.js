@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { View, StyleSheet, Image, PermissionsAndroid, AsyncStorage } from 'react-native';
+import { View, StyleSheet, Image, PermissionsAndroid, AsyncStorage, TouchableOpacity } from 'react-native';
 
 import MapboxGL from '@react-native-mapbox-gl/maps';
 
@@ -29,6 +29,7 @@ export default class MapBox extends React.Component {
             address: {
                 no_and_street: null,
                 city: null,
+                district: null,
                 state: null,
                 country: null,
                 pin_code: null
@@ -64,23 +65,47 @@ export default class MapBox extends React.Component {
         let locationData = this.props.navigation.getParam('locationData');
         if (locationData) {
             this.formUserAddress(locationData)
-            this.setState({ coordinates: locationData.center, fromProfile, showAllAddressFields })
+            this.setState({ coordinates: locationData.center, fromProfile, showAllAddressFields})
         }
         else {
             this.getCurrentLocation();
         }
     }
- getCurrentLocation() {
+ async getCurrentLocation() {
         console.log("current location")
-        navigator.geolocation.getCurrentPosition(position => {
-            const origin_coordinates = [position.coords.latitude, position.coords.longitude];
-            this.setState({
-                coordinates: origin_coordinates, center: origin_coordinates,
+        navigator.geolocation.getCurrentPosition(async (position) => {
+            const origin_coordinates = [ position.coords.longitude, position.coords.latitude ];
+           await this.setState({
+                center: origin_coordinates,
+                coordinates: origin_coordinates,
+                zoom: 12, 
+                isFinisedLoading: true
             })
+            this.updtateLocation(origin_coordinates);
             console.log("position " + JSON.stringify(position))
+        
         }), error => {
             console.log(error);
-            }, { enableHighAccuracy: true, timeout: 50000, maximumAge: 1000}
+        }, { enableHighAccuracy: true, timeout: 50000, maximumAge: 1000}
+    }
+
+    async updtateLocation(center) {
+       
+            let fullPath = `https://api.mapbox.com/geocoding/v5/mapbox.places/${center[0]},${center[1]}.json?types=poi&access_token=${MAP_BOX_TOKEN}`;
+
+            //this._request(center[0].toFixed(2), center[1].toFixed(2))
+            let resp = await axios.get(fullPath, {
+                headers: {
+                    'Content-Type': null,
+                    'x-access-token': null,
+                    'userId': null
+                }
+            });
+            let locationData = resp.data.features[0];
+            if (locationData) {
+                this.formUserAddress(locationData);
+            }
+        
     }
 
     formUserAddress(locationData) {
@@ -96,7 +121,7 @@ export default class MapBox extends React.Component {
                         this.updateAddressObject('no_and_street', textValue);
                         break
                     case 'district':
-                        this.updateAddressObject('city', textValue);
+                        this.updateAddressObject('district', textValue);
                         break
                     case 'region':
                         this.updateAddressObject('state', textValue);
@@ -182,6 +207,7 @@ export default class MapBox extends React.Component {
 
     async onRegionDidChange() {
         if (this.state.isFinisedLoading) {
+            console.log('region is chaning')
             const zoom = await this._map.getZoom();
             console.log("zoom" + zoom)
             const center = this.state.center;
@@ -289,16 +315,16 @@ export default class MapBox extends React.Component {
                             onRegionIsChanging={this.onRegionIsChanging}
                             onDidFinishLoadingMap={this.onDidFinishLoadingMap}
                             centerCoordinate={this.state.coordinates}
-                             zoomLevel={this.state.zoom}
                         >
 
-                            {this.state.locationFullText !== null ?
+                           
                                 <MapboxGL.Camera
                                     zoomLevel={this.state.zoom}
                                     centerCoordinate={this.state.coordinates}
                                     animationDuration={2000}
                                    
-                                />  :null}                          
+                                />  
+                            {/*this.state.locationFullText !== null ? null : null*/}                          
 
                             <MapboxGL.UserLocation
                                 visible={true}
@@ -313,9 +339,18 @@ export default class MapBox extends React.Component {
                                 title={this.state.locationFullText}
                                 coordinate={this.state.center}>
                                </MapboxGL.PointAnnotation>:null}
-                        </MapboxGL.MapView> : null}
-                </View>
+                        </MapboxGL.MapView>
+                          
+                        : null}
+                         <View style={[styles.containerForBubble, {bottom: 0}]}>
+                            <TouchableOpacity style={styles.fab} onPress={() => this.getCurrentLocation()}>
+                                <Icon color = {'white'} name="locate" style={styles.text}></Icon>
+                            </TouchableOpacity>
 
+                         </View>
+                     
+                </View>
+                
                 {!this.state.showAllAddressFields ?
                     <Card>
                         <CardItem bordered>
@@ -351,6 +386,12 @@ export default class MapBox extends React.Component {
                                 <Input placeholder="City" style={styles.transparentLabel}
                                     value={this.state.address.city}
                                     onChangeText={value => this.updateAddressObject('city', value)} />
+                            </Item>
+                            <Item floatingLabel >
+                                <Label>District</Label>
+                                <Input placeholder="District" style={styles.transparentLabel}
+                                    value={this.state.address.district}
+                                    onChangeText={value => this.updateAddressObject('district', value)} />
                             </Item>
                             <Item floatingLabel>
                                 <Label>State</Label>
@@ -393,6 +434,30 @@ const styles = StyleSheet.create({
     container: {
         flex: 1
     },
+    containerForBubble: {
+        borderRadius: 30,
+        position: 'absolute',
+        bottom: 10,
+        alignSelf: 'flex-end',
+        left: 0,
+        right: 0,
+        paddingVertical: 16,
+        minHeight: 60,
+        alignItems: 'center',
+        justifyContent: 'space-between',
+        backgroundColor: 'transparent',
+      },
+      fab:{
+        height: 50,
+        width: 50,
+        borderRadius: 200,
+        position: 'absolute',
+        bottom: 20,
+        right: 30,
+        justifyContent: 'center',
+        alignItems: 'center',
+        backgroundColor:'#686cc3',
+      },
     header: {
         backgroundColor: '#f6f8fa',
         textAlign: 'center',
@@ -407,12 +472,10 @@ const styles = StyleSheet.create({
         fontFamily: 'OpenSans',
     },
     transparentLabel: {
-        borderBottomColor: 'transparent',
-        backgroundColor: '#F1F1F1',
-        height: 45,
-        marginTop: 10,
-        borderRadius: 5,
-        paddingLeft: 20,
+         borderBottomColor: 'transparent',
+         height: 45,
+         marginTop: 5,
+         borderRadius: 5,
         color: '#000',
         fontFamily: 'OpenSans',
     },
