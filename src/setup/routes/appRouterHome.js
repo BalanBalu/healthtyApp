@@ -10,7 +10,8 @@ import UpdatePassword from "../../modules/screens/userprofile/UpdatePassword";
 import UpdateInsurance from "../../modules/screens/userprofile/UpdateInsurance";
 import UpdateUserDetails from "../../modules/screens/userprofile/UpdateUserDetails";
 import UpdateAddress from "../../modules/screens/userprofile/UpdateAddress";
-import { Icon, View } from 'native-base';
+import { Icon, View,Thumbnail } from 'native-base';
+import IndividualChat from '../../modules/screens/chat/individualChat'
 import Categories from "../../modules/screens/categories";
 import login from "../../modules/screens/auth/login";
 import signup from "../../modules/screens/auth/signup";
@@ -31,9 +32,8 @@ import Notification from "../../modules/screens/Notification";
 import Chat from "../../modules/screens/chat";
 import { Col, Grid, Row } from 'react-native-easy-grid';
 import { logout } from '../../modules/providers/auth/auth.actions';
-import { TouchableOpacity, Image, Text, AppRegistry, AsyncStorage } from 'react-native'
-import AvailableDoctor from '../../modules/screens/chat/AvailableDoctor'
-import PreviousChat from '../../modules/screens/chat/PreviousChat'
+import { TouchableOpacity, Image, Text, AppRegistry, AsyncStorage, } from 'react-native'
+
 import menuIcon from '../../../assets/images/menu.png';
 import BookAppoinment from "../../modules/screens/bookappoinment";
 import Mapbox from "../../modules/screens/bookappoinment/Mapbox";
@@ -80,18 +80,6 @@ const AuthRoutes = {
   },
 
 }
-const ChatRoutes = {
-  Chat: {
-    screen: Chat,
-  }, 
-  AvailableDoctor: {
-    screen: AvailableDoctor,
-  }, 
-  PreviousChat: {
-    screen: PreviousChat,
-  }, 
-
-}
 
 const AuthStack = createStackNavigator(AuthRoutes, {
   initialRouteName: 'login',
@@ -117,7 +105,6 @@ const HomeStack = createStackNavigator({
 
       headerRight: (
         <Grid>
-
           <Col>
             <TouchableOpacity onPress={() => { navigation.navigate('Notification') }} >
               <View>
@@ -166,6 +153,7 @@ const HomeStack = createStackNavigator({
     screen: BloodDonersList,
     navigationOptions:({ navigation }) => ({
       title: 'Blood Donors',
+     
       headerRight: (
         <Grid>
 
@@ -182,6 +170,7 @@ const HomeStack = createStackNavigator({
       ),
     })
   },
+  
   ///  =============Appointments Stack ==================
   "My Appointments": {
     screen: MyAppoinmentList,
@@ -293,6 +282,7 @@ const HomeStack = createStackNavigator({
       title: 'Reviews'
     }
   },
+  
   "Payment Review": {
     screen: PaymentReview,
     navigationOptions: {
@@ -318,6 +308,41 @@ const HomeStack = createStackNavigator({
     navigationOptions: {
       title: 'Online Chat'
     }
+  },
+  IndividualChat: {
+    screen: IndividualChat,
+    navigationOptions:({ navigation }) => ({
+    headerLeft: (
+    <Grid>
+      <Col>
+        <TouchableOpacity>
+          <Icon name="ios-arrow-round-back" style={{ color: '#fff',marginLeft:15,fontSize:40}}/>
+        </TouchableOpacity>
+      </Col>
+      <Col>
+        <TouchableOpacity style={{marginLeft:15}}>
+           <Thumbnail square source={{ uri: 'https://res.cloudinary.com/demo/image/upload/w_200,h_200,c_thumb,g_face,r_max/face_left.png' }} style={{width:45,height:45,}}/>
+       </TouchableOpacity>
+      </Col>
+      <Col style={{marginLeft:15}}>
+        <Text style={{fontFamily:'OpenSans',fontSize:16,fontWeight:'bold',color:'#fff'}}>Dr.Mukesh kannan</Text>
+        <Text style={{fontFamily:'OpenSans',fontSize:14,color:'#fff',}}>Online</Text>
+      </Col>
+    </Grid>
+    ),
+    headerRight: (
+      <Grid>
+        <Col>
+          <TouchableOpacity  >
+            <View style={{flexDirection:'row',}}>
+              <Icon name="ios-attach" style={{ color: '#fff',marginRight: 20,transform: [{ rotate: '45deg'}]}}/>
+              <Icon name="md-more" style={{ color: '#fff', marginRight: 15,  }}></Icon>
+            </View>
+          </TouchableOpacity>
+        </Col>
+      </Grid>
+     ),
+    })
   },
 
   // ============== Pharmacy =================
@@ -455,6 +480,9 @@ const HomeStack = createStackNavigator({
     },
     Chat: {
       screen: Chat
+    },
+    IndividualChat: {
+      screen: IndividualChat
     },
     Reminder: {
       screen: Reminder
