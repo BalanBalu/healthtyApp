@@ -2,10 +2,10 @@ import React, { Component } from 'react';
 import { Container, Content, View, Text, Item,Left,Right,Input,Spinner,Segment, Radio,Row,Col,Form,Button,Icon } from 'native-base';
 import {StyleSheet,TextInput} from 'react-native'
 import { FlatList } from 'react-native-gesture-handler';
- import PreviousChat from './PreviousChat';
-// import AvailableDoctor from './AvailableDoctor';
-
-
+import PreviousChat from './PreviousChat';
+import AvailableDoctor from './AvailableDoctor';
+import ScrollableTabView from 'react-native-scrollable-tab-view';
+import ChatTabs from './chatTabs'
 
 class Chat extends Component {
     constructor(props) {
@@ -45,19 +45,16 @@ class Chat extends Component {
                       </Col>
                     </Row>
 
-                       <Row style={{marginTop:10,justifyContent:'center'}}>
-					<Button style={styles.segButtonActive1} >
-						<Text style={styles.segText}>Available Doctors</Text>
-					</Button>
-
-					<Button style={styles.segButtonActive } >
-						<Text style={styles.segText}>Previous Chats</Text>
-					</Button>
-                    </Row>
+                    
                 </View>
                     <View>
-                        <PreviousChat/> 
-                        {/* <AvailableDoctor/> */}
+                    <ScrollableTabView renderTabBar={() => <ChatTabs />}>
+                        <AvailableDoctor style={{ color: '#FFF'}} tabLabel="Available Doctors" />
+                        <PreviousChat tabLabel="Chats" />
+                       
+                  </ScrollableTabView>
+
+                       
                     </View>
                     </View>
                     
