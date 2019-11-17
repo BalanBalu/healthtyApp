@@ -61,7 +61,7 @@ getAllChatsByUserId = async(userId) => {
             status: convoData.status,
             doctorInfo: convoData.doctorInfo,
             userInfo : convoData.userInfo,
-            chat_id: convoData.chat_id
+            chat_id: convoData.conversation_id_chat
         }
         if(convoData.conversationLstSnippet && convoData.conversationLstSnippet.messages && convoData.conversationLstSnippet.messages[0]) {
             const lstMessageData = convoData.conversationLstSnippet.messages[0];
