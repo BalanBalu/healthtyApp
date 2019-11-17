@@ -103,7 +103,8 @@ getAllChatsByUserId = async(userId) => {
             { chatInfo: {
                 chat_id: item.chat_id,
                 doctorInfo: item.doctorInfo, 
-                userInfo: item.userInfo
+                userInfo: item.userInfo,
+                status: item.status
               }
             })
         }>

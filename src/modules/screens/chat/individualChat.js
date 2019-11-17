@@ -8,7 +8,8 @@ import {
 import SocketIOClient from 'socket.io-client';
 import { CHAT_API_URL } from '../../../setup/config';
 import axios from 'axios';
-import { getRelativeTime } from '../../../setup/helpers'
+import { getRelativeTime } from '../../../setup/helpers';
+import { possibleChatStatus } from '../../../Constants/Chat';
 
 class IndividualChat extends Component {
     constructor(props) {
@@ -20,14 +21,15 @@ class IndividualChat extends Component {
             userId: null,
             messages: [],
             typing: '',
-            messageRecieveCount: 0
+            messageRecieveCount: 0,
+            status: null
         }
         this.onReceivedMessage = this.onReceivedMessage.bind(this);
         this.onSend = this.onSend.bind(this);
         this.setTyping = this.setTyping.bind(this);
     }
    async componentDidMount() {
-        const {  chat_id, doctorInfo, userInfo } = this.props.navigation.getParam('chatInfo')
+        const {  chat_id, doctorInfo, userInfo , status} = this.props.navigation.getParam('chatInfo')
         this.props.navigation.setParams({
             appBar: {
                 title: doctorInfo.doctor_name,
@@ -35,7 +37,7 @@ class IndividualChat extends Component {
             }
         });
         const userId = await AsyncStorage.getItem('userId');
-        this.setState({ chat_id, doctorInfo, userInfo, userId });
+        this.setState({ chat_id, doctorInfo, userInfo, userId, status });
       
         this.socket = SocketIOClient(CHAT_API_URL, {
                 query: {
@@ -45,10 +47,6 @@ class IndividualChat extends Component {
         const conversationId = chat_id;
         this.socket.on(conversationId +'-message', this.onReceivedMessage);
         this.getMessages();
-        //  setTimeout(() => {
-        //     this.scrollView.scrollToEnd();
-        // }, 100)
-        
     }
     getMessages = async () => {
         const { chat_id , messageRecieveCount} = this.state;
@@ -71,12 +69,13 @@ class IndividualChat extends Component {
 
     onSend = async() => {
         const { chat_id, typing , userId, messages} = this.state;
+        if(!typing) return false; 
         const messageRequest = {
             "conversation_id": chat_id,
             "member_id": userId,
             message: typing
         }
-        let resp = await axios.post(CHAT_API_URL + '/api/message', messageRequest);
+        axios.post(CHAT_API_URL + '/api/message', messageRequest);
        /* const previouseMessage =  messages;
         messageRequest.created_at = new Date();
         previouseMessage.unshift(messageRequest);
@@ -84,14 +83,12 @@ class IndividualChat extends Component {
             typing: '',
             messages: previouseMessage
         }); */
-        console.log(resp);
     }
     setTyping(text) {
         this.socket.emit('userTyping', { message: 'User is typing'} );
         this.setState({ typing: text })
     }
     onReceivedMessage(mess) {
-        console.log(mess);
         const previouseMessage =  this.state.messages;
         const { messageRecieveCount } = this.state;
         previouseMessage.unshift(mess);
@@ -100,66 +97,18 @@ class IndividualChat extends Component {
             messages: previouseMessage,
             messageRecieveCount: messageRecieveCount + 1
         });
-        console.log('On Received Message' + JSON.stringify(mess))
         this.scrollToBottom();
     }
 scrollToBottom() {
-    this.flatList_Ref.scrollToOffset({ 
-        offset: 0,
-        animated: true 
-    });
+    if(this.flatList_Ref) {
+        this.flatList_Ref.scrollToOffset({ 
+            offset: 0,
+            animated: true 
+        });
+    }
 }
 render() {
-    const { messages, userId, doctorInfo, userInfo } = this.state;
-    /*  const newMessages = [];
-    messages.forEach(function(item, index) {
-       if(item.member_id === userId ) {
-        newMessages.push(
-           <Item style={styles.mainItem}>
-            <Right>
-             <Item style={{borderBottomWidth:0}}>
-                <View style={styles.viewStyle}>
-                   <Text style={{fontFamily:'OpenSans',fontSize:8,color:'gray'}}>{getRelativeTime(item.created_at)}</Text>
-                </View>
-                <View style={styles.viewStyle}>
-                   <Card style={{borderRadius:10,backgroundColor:'#7E49C3',}}>
-                    <Text style={styles.textstyle}>{item.message}</Text>
-                   </Card>
-                </View>
-                <View style={styles.viewStyle}>
-                   <Thumbnail square source={ renderProfileImage(userInfo) }/>
-                </View>
-             </Item> 
-            </Right>
-           </Item> 
-        )}
-           else { 
-            newMessages.push(
-                <Item style={styles.mainItem}>
-                  <Left>
-                    <Item style={{borderBottomWidth:0}}>  
-                        <View style={styles.viewStyle}>
-                            <Thumbnail square source={ renderDoctorImage(doctorInfo) }/>
-                        </View>
-                         
-                        <View style={styles.viewStyle}>
-                            <Card style={{borderRadius:10,backgroundColor:'#fff',}}>
-                                <Text style={styles.textstyle2}>{item.message}</Text>
-                            </Card>
-                        </View>
-                        <View style={styles.viewStyle}>
-                          <Text style={{fontFamily:'OpenSans',fontSize:8,color:'gray'}}>{getRelativeTime(item.created_at)}</Text>
-                        </View>
-                    </Item>
-                  </Left>   
-                </Item>
-           )
-        }
-      }); 
-       <ScrollView ref={(ref) => { this.scrollView = ref }} style={styles.messages}>
-             {newMessages}
-           </ScrollView>   
-    */
+    const { messages, userId, doctorInfo, userInfo, status } = this.state;
     return (
      <Container>
        
@@ -223,16 +172,16 @@ render() {
        
         
              <Footer style={styles.footerStyle}>
+                {status === possibleChatStatus.APPROVED ?  
                 <Row style={{alignItems:'center',justifyContent:'center'}}>
-                    <Col style={styles.col1}>
+                  {/* <Col style={styles.col1}>
                     <View style={styles.circle}>
-                    <Icon name="ios-camera" style={{ color: '#7E49C3', fontSize:25,padding:2}} />
-
+                       <Icon name="ios-camera" style={{ color: '#7E49C3', fontSize:25,padding:2}} />
                     </View>
-                    </Col>
-                    <Col style={styles.col2}>
-                    <Row style={styles.SearchRow}>
+                  </Col> */}
                     
+                <Col style={styles.col2}>
+                  <Row style={styles.SearchRow}>
                     <Col size={9} style={{justifyContent:'center',}}> 
                       <Input 
                           placeholder="Start conversation..."
@@ -245,27 +194,42 @@ render() {
                           blurOnSubmit={false}
                           onSubmitEditing={() => this.onSend() }
                       />
-                      </Col>
+                    </Col>
                       {/* <Col size={1} style={{justifyContent:'center',borderRightRadius:10}}> 
                         <Icon name="ios-mic" style={{ color: '#7E49C3', fontSize:20,padding:2}} />
                       </Col> */}
-                    </Row>
+                  </Row>
                 </Col>
-                  
-                    <TouchableOpacity
-                       disabled={this.state.typing.length === 0}
-                        style={styles.circle}>
-                        <Icon name="ios-send" 
-                            style={{ color: '#7E49C3', fontSize:30,padding:2,
-                            transform: [{ rotate: '45deg'}]}}
-                            onPress={this.onSend}
-                        />
-                    </TouchableOpacity>
-                   
+                <TouchableOpacity
+                    disabled={this.state.typing.length === 0}
+                    style={[styles.circle, { marginLeft: 10 }]}>
+                    <Icon name="ios-send" 
+                        style={{ color: '#7E49C3', fontSize:30,padding:2,
+                        transform: [{ rotate: '45deg'}]}}
+                        onPress={this.onSend}
+                    />
+                </TouchableOpacity>
+                </Row> : 
+                <Row>
+                    <Col style={{ alignContent: 'center', alignItems: 'center', justifyContent: 'center' }}>
+                        <Text  style={{ color: '#FFF', fontSize:18,padding:2, alignSelf: 'center', alignItems: 'center' }}>{this.getInActiveChatMessageByStatus(status)}</Text>
+                    </Col>
                 </Row>
+            } 
             </Footer>
            </Container>
         )
+    }
+    getInActiveChatMessageByStatus(status) {
+        if(status === possibleChatStatus.CANCELED) {
+            return 'Your Chat has cancelled by the Doctor, and Your Amount will get Refunded to your Original Mode of Payment'
+        } else if(status === possibleChatStatus.CLOSED) {
+            return 'Your Chat has been Completed. Hope You will get well soon, Thank you for choosing our Service '
+        } else if(status === possibleChatStatus.PAYMENT_IN_PROGRESS) {
+            return 'Your Payment is not Completed, please complete your payment to start the chat with doctor'
+        } else if(status === possibleChatStatus.PENDING) {
+            return 'You have initiated the chat, please wait for Doctor Approval. thank you for your patience'
+        }
     }
 }
 
