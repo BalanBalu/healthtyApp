@@ -41,3 +41,18 @@ export const updateChat = async (chatId, request) => {
         }
     }
 }
+
+export const getAllChats = async (userId, request) => {
+    try {
+        let endPoint = '/chat/user/'+ userId;
+        let response = await getService(endPoint);
+        let respData = response.data;
+        return respData;
+    } catch (e) {
+        return {
+            success: false,
+            message: e + ' Occured! Please Try again'
+        }
+    }
+}
+

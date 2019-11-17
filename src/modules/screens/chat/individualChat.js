@@ -2,14 +2,30 @@ import React, { Component } from 'react';
 import { Container, Content, View, Text,Right, Item,Input,Card,Grid,Left,Icon,Thumbnail, Spinner,Footer, Radio,Row,Col,Form,Button, } from 'native-base';
 import {StyleSheet,TextInput,ImageBackground} from 'react-native'
 import { FlatList } from 'react-native-gesture-handler';
+import {
+    renderDoctorImage, renderProfileImage
+} from '../../common';
 
 
 class IndividualChat extends Component {
     constructor(props) {
         super(props)
         this.state = {
-           
+            chat_id: null, 
+            doctorInfo: null, 
+            userInfo: null
         }
+    }
+    componentDidMount() {
+        const {  chat_id, doctorInfo, userInfo } = this.props.navigation.getParam('chatInfo')
+        this.props.navigation.setParams({
+            appBar: {
+                title: doctorInfo.doctor_name,
+                profile_image: renderDoctorImage(doctorInfo)
+            }
+        });
+        this.setState({ chat_id, doctorInfo, userInfo });
+
     }
 
 

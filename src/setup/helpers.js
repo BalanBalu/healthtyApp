@@ -84,6 +84,9 @@ export function addTimeUnit(date, amount, unit) {
 export function subTimeUnit(date, amount, unit) {
   return moment(date).subtract(amount, unit).toDate();
 }
+export function getRelativeTime(dateTime) {
+ return  moment(dateTime).fromNow()
+}
 
 export function getMoment(date) {
   return moment(date)
