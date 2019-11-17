@@ -58,7 +58,7 @@ import { Badge } from '../../../src/modules/common'
 import Locations from '../../modules/screens/Home/Locations';
 import BloodDonersList from '../../modules/screens/bloodDonation/BloodDonersList';
 import BloodDonerFilters from '../../modules/screens/bloodDonation/BloodDonerFilters';
-import PreviousChats from '../../modules/screens/chat/PreviousChat';
+import MyChats from '../../modules/screens/chat/MyChats';
 import AvailableDoctors4Chat from '../../modules/screens/chat/AvailableDoctor';
 
 const AuthRoutes = {
@@ -318,7 +318,7 @@ const HomeStack = createStackNavigator({
     }
   },
   "My Chats": {
-    screen: PreviousChats,
+    screen: MyChats,
     navigationOptions: {
       title: 'Chats'
     }
@@ -329,22 +329,22 @@ const HomeStack = createStackNavigator({
     headerLeft: (
     <Grid>
       <Col>
-        <TouchableOpacity>
-          <Icon name="ios-arrow-round-back" style={{ color: '#fff',marginLeft:15,fontSize:40}}/>
+        <TouchableOpacity onPress={()=> navigation.pop()}>
+          <Icon name="ios-arrow-back" style={{ color: '#fff',marginLeft:15, justifyContent: 'center' , fontSize:30}}/>
         </TouchableOpacity>
       </Col>
       <Col>
         <TouchableOpacity style={{marginLeft:15}}>
-           <Thumbnail square source={{ uri: 'https://res.cloudinary.com/demo/image/upload/w_200,h_200,c_thumb,g_face,r_max/face_left.png' }} style={{width:45,height:45,}}/>
+           <Thumbnail source={navigation.getParam('appBar', { profile_image: { uri: 'https://res.cloudinary.com/demo/image/upload/w_200,h_200,c_thumb,g_face,r_max/face_left.png' }}).profile_image} style={{width:45,height:45,}}/>
        </TouchableOpacity>
       </Col>
       <Col style={{marginLeft:15}}>
-        <Text style={{fontFamily:'OpenSans',fontSize:16,fontWeight:'bold',color:'#fff'}}>Dr.Mukesh kannan</Text>
-        <Text style={{fontFamily:'OpenSans',fontSize:14,color:'#fff',}}>Online</Text>
+        <Text style={{fontFamily:'OpenSans',fontSize:16,fontWeight:'bold',color:'#fff'}}>{navigation.getParam('appBar', {title: ''}).title}</Text>
+        <Text style={{fontFamily:'OpenSans',fontSize:14,color:'#fff',}}>{navigation.getParam('appBar', {isOnline: ''}).isOnline}</Text>
       </Col>
     </Grid>
     ),
-    headerRight: (
+    /*headerRight: (
       <Grid>
         <Col>
           <TouchableOpacity  >
@@ -355,7 +355,7 @@ const HomeStack = createStackNavigator({
           </TouchableOpacity>
         </Col>
       </Grid>
-     ),
+     ),*/
     })
   },
 
@@ -496,7 +496,7 @@ const HomeStack = createStackNavigator({
       screen: AvailableDoctors4Chat
     },
     "My Chats": {
-      screen : PreviousChats
+      screen : MyChats
     },
     Reminder: {
       screen: Reminder

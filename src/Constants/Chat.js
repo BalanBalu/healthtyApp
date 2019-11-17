@@ -1,0 +1,7 @@
+export const possibleChatStatus = {
+    PAYMENT_IN_PROGRESS :'PAYMENT_IN_PROGRESS',
+    PENDING: 'PENDING',
+    APPROVED: 'APPROVED',
+    CANCELED: 'CANCELED',
+    CLOSED: 'CLOSED'
+  }

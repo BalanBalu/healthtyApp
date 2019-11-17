@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import { Container, Content, View, Text, Item,Left,Right,Input,Spinner,Segment, Radio,Row,Col,Form,Button,Icon } from 'native-base';
 import {StyleSheet,TextInput} from 'react-native'
 import { FlatList } from 'react-native-gesture-handler';
-import PreviousChat from './PreviousChat';
+import PreviousChat from './MyChats';
 import AvailableDoctor from './AvailableDoctor';
 import ScrollableTabView from 'react-native-scrollable-tab-view';
 import ChatTabs from './chatTabs'
