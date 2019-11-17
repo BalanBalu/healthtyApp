@@ -8,7 +8,7 @@ import { RadioButton ,Checkbox} from 'react-native-paper';
 import { getAvailableNetBanking, getAvailableWallet, luhnCheck, getPayCardType } from '../../../setup/paymentMethods';
 import { putService , getService} from '../../../setup/services/httpservices';
 import Razorpay from '../../../components/Razorpay';
-import { RAZOR_KEY , BASIC_DEFAULT} from '../../../setup/config';
+import { RAZOR_KEY , BASIC_DEFAULT, SERVICE_TYPES } from '../../../setup/config';
 import BookAppointmentPaymentUpdate from '../../providers/bookappointment/bookAppointment';
 import { TouchableOpacity } from 'react-native-gesture-handler';
 import Spinner from '../../../components/Spinner';
@@ -197,18 +197,23 @@ class PaymentPage extends Component {
    async updatePaymentDetails(isSuccess, data, modeOfPayment) {
     
     
-    this.setState({ isLoading: true , isPaymentSuccess: isSuccess })
-    let response = await this.BookAppointmentPaymentUpdate.updatePaymentDetails(isSuccess, data, modeOfPayment, this.state.bookSlotDetails, 'APPOINTMENT', this.userId, this.state.paymentMethodTitleCase);
+    this.setState({ isLoading: true, isPaymentSuccess: isSuccess })
+    const { serviceType, bookSlotDetails, paymentMethodTitleCase } = this.state;
+    let response = await this.BookAppointmentPaymentUpdate.updatePaymentDetails(isSuccess, data, modeOfPayment, bookSlotDetails, serviceType, this.userId, paymentMethodTitleCase);
     console.log(response);
     if(response.success) {
-        let paymentMethod; 
-        if(this.state.paymentOption) {
-
+        if(serviceType === SERVICE_TYPES.APPOINTMENT) {
+           this.props.navigation.navigate('paymentsuccess', { 
+               successBookSlotDetails: bookSlotDetails, 
+               paymentMethod : paymentMethodTitleCase 
+            });
+        } else if( serviceType === SERVICE_TYPES.CHAT) {
+            Toast.show({
+                text: 'Paymenet Success for Chat' + bookSlotDetails.chatId,
+                type: 'warning',
+                duration: 3000
+            })
         }
-        this.props.navigation.navigate('paymentsuccess', { 
-            successBookSlotDetails: this.state.bookSlotDetails, 
-            paymentMethod : this.state.paymentMethodTitleCase 
-        });
     } else {
         Toast.show({
             text: response.message,

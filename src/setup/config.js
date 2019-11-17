@@ -11,3 +11,7 @@ export const BASIC_DEFAULT = {
     mobile_no: '9164932823'
 }
 export const FIREBASE_SENDER_ID = "607089059424";
+export const SERVICE_TYPES = {
+    APPOINTMENT: 'APPOINTMENT',
+    CHAT:'CHAT'
+}

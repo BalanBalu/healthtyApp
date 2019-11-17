@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { Container, Content, View, Text, Item,Input, Spinner,Thumbnail,Icon, Radio,Row,Col,Form,Button } from 'native-base';
+import { Container, Content, View, Text, Item,Input, Spinner,Thumbnail,Icon, Radio,Row,Col,Form,Button, Toast } from 'native-base';
 import {StyleSheet,TextInput, AsyncStorage , TouchableOpacity } from 'react-native'
 import { FlatList } from 'react-native-gesture-handler';
 import { hasLoggedIn } from "../../providers/auth/auth.actions";
@@ -7,16 +7,19 @@ import {
     searchDoctorList
 } from '../../providers/bookappointment/bookappointment.action';
 import {
-    fetchAvailableDoctors4Chat
+    fetchAvailableDoctors4Chat, createChat
 } from '../../providers/chat/chat.action';
 import {
     renderDoctorImage,
 } from '../../common';
+import { possibleChatStatus } from '../../../Constants/Chat';
+import { SERVICE_TYPES } from '../../../setup/config'
 class AvailableDoctors4Chat extends Component {
     constructor(props) {
         super(props)
         this.state = {
-            availableChatDoctors: []
+            availableChatDoctors: [],
+            userId: null
         }
     }
 async componentDidMount() {
@@ -77,15 +80,53 @@ async componentDidMount() {
        console.log('availableDocData');
        console.log(availableDocData);
  }
+
+ onBookButtonPress4Payment = async(doctorId, fee) => {
+    try {
+     this.setState({ isLoading: true });
+     const { userId } = this.state;
+     const amount = fee;
+      
+     const createChatRequest = {
+        user_id: userId,
+        doctor_id: doctorId,
+        status: possibleChatStatus.PAYMENT_IN_PROGRESS,
+        fee: fee,
+        status_by: 'USER',
+        statusUpdateReason: 'NEW CONVERSATION'
+     }
+     const createChatResponse = await createChat(createChatRequest)
+     this.setState({ isLoading: false });
+     if(createChatResponse.success) {
+        console.log(createChatResponse);
+        this.props.navigation.navigate('paymentPage', { 
+            service_type: SERVICE_TYPES.CHAT, 
+            bookSlotDetails: { 
+                doctorId : doctorId,
+                fee: amount,
+                chatId: createChatResponse.conversation_id    
+            }, amount: amount }
+        );
+     } else {
+        Toast.show({
+            text: createChatResponse.message,
+            duration: 3000,
+            type: 'danger'
+        })
+     }
+    } catch (error) {
+      Toast.show({
+        text: 'Excption Occured'  +error,
+        duration: 3000,
+        type: 'danger'
+      })
+  }
+    
+ }
      render() {
-         const { availableChatDoctors, keyword } = this.state;
-        let Details = [{Drname:'Dr.Mukesh Kannan',status:'Get well soon',msg:'Message',Rs:20},
-        {Drname:'Dr.Pradeep Nataraj',status:'Be healthy',msg:'Message',Rs:20},
-        {Drname:'Dr.Bhuvaneswari',status:'Have a nice day',msg:'Message',Rs:20},
-        {Drname:'Dr.Bala Subramanian',status:'Be happy',msg:'Message',Rs:20},
-        {Drname:'Dr.Ajay kumar',status:'Hello',msg:'Message',Rs:20}]
+        const { availableChatDoctors, keyword } = this.state;
         return (
-            <Container>
+          <Container>
             <Content>
                 
                 <View style={{backgroundColor: '#7E49C3'}}> 
@@ -115,7 +156,7 @@ async componentDidMount() {
                     </View>
                
 
-            <FlatList
+              <FlatList
                 style={{marginTop: 10}}
                 extraData={availableChatDoctors}    
                 data={availableChatDoctors}
@@ -128,30 +169,41 @@ async componentDidMount() {
                        <View style={styles.circle} />
                     </Col>
                    
-                   <Col style={{width:'85%',marginTop:5,marginLeft:15}}>
-                   
-                    <Row>
-                      <Col style={{width:'75%'}}>
-                        <Text style={styles.docname}>{item.prefix || ''} {item.first_name || ''} {item.last_name || ''}</Text>
-                      </Col>
-                      <Col style={{width:'25%',alignItems:'center'}}>
-                        <Text style={styles.msgStyle}>{'\u20B9'}{item.chat_service_config.chat_fee}</Text>
-                      </Col>
-                    </Row>
-                    <Row>
-                      <Col style={{width:'100%'}}>
-                        <Text style={styles.status}>{item.category}</Text>
-                      </Col>
-                      {/* <Col style={{width:'25%',alignItems:'center'}}>
-                        <Text style={styles.msgStyle}>{'item.msg'}</Text>
-                      </Col> */}
-                    </Row>
-                   </Col>
+                    <Col style={{width:'70%'}}>
+                      <Row>
+                         <Col style={{width:'75%'}}>
+                            <Text style={styles.docname}>{item.prefix || ''} {item.first_name || ''} {item.last_name || ''}</Text>
+                        </Col>
+                      </Row>
+                      <Row>
+                        <Col style={{width:'100%'}}>
+                            <Text style={styles.status}>{item.category}</Text>
+                        </Col>
+                      </Row>
+                    </Col>
+                    
+                    
+                    <Col style={{width:'15%' }}>
+                        <Row>
+                            <Col style={{alignItems:'center'}}>
+                                <Text style={styles.msgStyle}>{'\u20B9'}{item.chat_service_config.chat_fee}</Text>
+                            </Col>
+                        </Row>
+                        <Row>
+                            <Col style={{ alignItems: 'center' }}>
+                                <TouchableOpacity onPress={() => this.onBookButtonPress4Payment(item.doctor_id, item.chat_service_config.chat_fee)} 
+                                    style={{ textAlign: 'center', backgroundColor: 'green', borderColor: '#000', marginTop: 10, borderRadius: 20, height: 25, justifyContent: 'center' }}>
+                                    <Text style={{ textAlign: 'center', color: '#fff', fontSize: 12,padding: 3, fontWeight: 'bold', fontFamily: 'OpenSans' }}>Chat</Text>
+                                </TouchableOpacity>
+                            </Col>
+                        </Row>
+                    </Col>
                  </Row>
-}/>
+              }
+              keyExtractor={(item, index) => index.toString()}/>
             </Content>
-            </Container>
-        )
+        </Container>
+      )
     }
 }
 

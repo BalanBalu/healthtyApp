@@ -7,7 +7,7 @@ import { validateBooking } from '../../providers/bookappointment/bookappointment
 import { formatDate , isOnlyLetter, toTitleCase } from '../../../setup/helpers';
 import Spinner from '../../../components/Spinner';
 import { renderDoctorImage, getDoctorEducation, getAllSpecialist } from '../../common';
-
+import { SERVICE_TYPES } from '../../../setup/config';
 import BookAppointmentPaymentUpdate from '../../providers/bookappointment/bookAppointment';
 
 export default class PaymentReview extends Component {
@@ -53,7 +53,7 @@ export default class PaymentReview extends Component {
         this.setState({ isLoading: false, spinnerText: ' ' });
         if (validationResult.success) {
             const amount = this.state.bookSlotDetails.slotData.fee;
-            this.props.navigation.navigate('paymentPage', { service_type: 'APPOINTMENT', bookSlotDetails: this.state.bookSlotDetails, amount: amount })
+            this.props.navigation.navigate('paymentPage', { service_type:  SERVICE_TYPES.APPOINTMENT, bookSlotDetails: this.state.bookSlotDetails, amount: amount })
         } else {
             console.log(validationResult);
             Toast.show({
@@ -77,7 +77,7 @@ export default class PaymentReview extends Component {
         console.log(this.state.bookSlotDetails);
         const userId = await AsyncStorage.getItem('userId');
         this.BookAppointmentPaymentUpdate = new BookAppointmentPaymentUpdate();
-        let response = await this.BookAppointmentPaymentUpdate.updatePaymentDetails(true, {}, 'cash', this.state.bookSlotDetails, 'APPOINTMENT', userId, 'cash');
+        let response = await this.BookAppointmentPaymentUpdate.updatePaymentDetails(true, {}, 'cash', this.state.bookSlotDetails, SERVICE_TYPES.APPOINTMENT, userId, 'cash');
         console.log('Book Appointment Payment Update Response ');
         
         if (response.success) {
