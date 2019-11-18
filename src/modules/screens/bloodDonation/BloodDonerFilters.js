@@ -35,7 +35,12 @@ componentDidMount(){
           toggle1(create){  
                     this.setState({selectedOne: create }) 
                }
-               
+        pressed(item){
+                this.setState({onSelect:item})
+                console.log(item)
+              } 
+
+              
           
     render() {
     
@@ -57,17 +62,25 @@ componentDidMount(){
                           data={bloodGroupList}
                           keyExtractor={(item, index) => index.toString()}
                           renderItem={({item,index})=>
+                        
                           <ListItem >
+                              <TouchableOpacity 
+                       onPress={()=>this.pressed(item)}
+                          style={{flexDirection:'row'}}
+                          >
                            <Left>
                              <Text style={styles.subText}>{item}</Text>
                            </Left>
                            <Right>
                            <RadioButton.Group   onValueChange={onSelect => this.setState({ onSelect })}
-                           value={this.state.onSelect}> 
+                           value={this.state.onSelect}
+                           > 
                                 <RadioButton value={item}/>
                               </RadioButton.Group>
                            </Right>
+                           </TouchableOpacity>
                          </ListItem>
+                       
                           }/> 
                           </View>
                        :null}
@@ -82,6 +95,10 @@ componentDidMount(){
                                keyExtractor={(item, index) => index.toString()}
                                renderItem={({item})=>
                            <ListItem >
+                               <TouchableOpacity 
+                       onPress={()=>this.pressed(item)}
+                          style={{flexDirection:'row'}}
+                          >
                            <Left>
                              <Text style={styles.subText}>{item}</Text>
                            </Left>
@@ -91,6 +108,7 @@ componentDidMount(){
                                 <RadioButton value={item}/>
                               </RadioButton.Group>
                            </Right>
+                           </TouchableOpacity>
                          </ListItem>
                           }/> 
                           </View>
@@ -106,6 +124,10 @@ componentDidMount(){
                                keyExtractor={(item, index) => index.toString()}
                                renderItem={({item})=>
                            <ListItem >
+                              <TouchableOpacity 
+                       onPress={()=>this.pressed(item)}
+                          style={{flexDirection:'row'}}
+                          >
                            <Left>
                              <Text style={styles.subText}>{item}</Text>
                            </Left>
@@ -115,6 +137,7 @@ componentDidMount(){
                                 <RadioButton value={item}/>
                               </RadioButton.Group>
                            </Right>
+                           </TouchableOpacity>
                          </ListItem>
                         
                             }/>
@@ -131,6 +154,10 @@ componentDidMount(){
                           keyExtractor={(item, index) => index.toString()}
                           renderItem={({item})=>
                           <ListItem >
+                             <TouchableOpacity 
+                       onPress={()=>this.pressed(item)}
+                          style={{flexDirection:'row'}}
+                          >
                            <Left>
                              <Text style={styles.subText}>{item}</Text>
                            </Left>
@@ -140,6 +167,7 @@ componentDidMount(){
                                 <RadioButton value={item}/>
                               </RadioButton.Group>
                            </Right>
+                           </TouchableOpacity>
                          </ListItem>
 
                            }/> 
@@ -158,6 +186,10 @@ componentDidMount(){
                              keyExtractor={(item, index) => index.toString()}
                              renderItem={({item})=>
                           <ListItem >
+                             <TouchableOpacity 
+                       onPress={()=>this.pressed(item)}
+                          style={{flexDirection:'row'}}
+                          >
                            <Left>
                              <Text style={styles.subText}>{item}</Text>
                            </Left>
@@ -167,6 +199,7 @@ componentDidMount(){
                                 <RadioButton value={item}/>
                               </RadioButton.Group>
                            </Right>
+                           </TouchableOpacity>
                          </ListItem>
                            }/> 
                          </View>
