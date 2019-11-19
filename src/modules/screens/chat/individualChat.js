@@ -179,7 +179,13 @@ style={{width:'100%',height:'100%',marginTop:-200}}/>
 
             {/* </ImageBackground> */}
            
-       
+            <Row style={{position: 'absolute', left: 0, right: 0, bottom: 0}}>
+           <Right style={{marginRight:10}}>
+            <Button style={{backgroundColor:'red',borderRadius:5,height:30}}>
+                   <Text style={styles.buttonText}>CLOSE</Text>
+                   </Button>
+            </Right>
+            </Row>
             </Content>
              <Footer style={styles.footerStyle}>
                 {/* {status === possibleChatStatus.APPROVED ?  
