@@ -157,7 +157,8 @@ dependencies {
        transitive = false
     }
    // implementation project(':react-native-firebase')
-    
+     implementation 'com.facebook.fresco:fresco:1.10.0'
+     implementation 'com.facebook.fresco:animated-gif:1.10.0'
     implementation project(':react-native-android-location-enabler')
     
     implementation "com.android.support:appcompat-v7:${rootProject.ext.supportLibVersion}"
