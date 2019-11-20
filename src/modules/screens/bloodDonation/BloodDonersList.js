@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import { Container, Content, View, Text, Item, Spinner,Card,Picker, Radio,Row,Col,Form,Button,Icon,Input } from 'native-base';
-import {StyleSheet,TextInput,TouchableOpacity} from 'react-native'
+import {StyleSheet,TextInput,TouchableOpacity} from 'react-native';
+import { NavigationEvents } from 'react-navigation';
 import { FlatList } from 'react-native-gesture-handler';
 import {bloodDonationList }from '../../providers/profile/profile.action';
 class BloodDonersList extends Component {
@@ -14,7 +15,7 @@ class BloodDonersList extends Component {
     }
     componentDidMount(){
       this.getBlooddonationDetail();
-      
+     
     }
    getBlooddonationDetail= async()=>{
     try {
@@ -64,6 +65,31 @@ getAddress(address){
     }
   }
   
+  bindbloodListValues(){
+    console.log('come bind')
+    const { navigation } = this.props;
+   let filterData = navigation.getParam('data');
+   this.setState({data:filterData})
+   console.log(filterData)
+  }
+  backNavigation = async (navigationData) => {
+    
+    try {
+      console.log('backnavigation active')
+        await this.setState({ isLoading: false })
+        if (navigationData.action) {
+            // if (navigationData.action.type === 'Navigation/BACK') {
+                console.log('haii')
+              await this.bindbloodListValues();
+               
+            // }
+        }
+        await this.setState({ isLoading: true })
+    } catch (e) {
+        console.log(e)
+    }
+
+}
     render() {
       const {isloading,data} = this.state;
         return (
@@ -81,6 +107,9 @@ getAddress(address){
               </View>
               :
                 <View style={{marginBottom:50}}>
+                   <NavigationEvents
+                                    onWillFocus={payload => { this.backNavigation(payload) }}
+                                />
                   <FlatList
                   data={this.state.data}
                   renderItem={({item})=>

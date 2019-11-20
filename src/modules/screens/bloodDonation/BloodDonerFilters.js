@@ -3,7 +3,7 @@ import { Container, Content, View, Text,Left, Item,Right,Footer,List,ListItem, S
 import {StyleSheet,TextInput,TouchableOpacity,ScrollView} from 'react-native'
 import { FlatList } from 'react-native-gesture-handler';
 import Autocomplete from '../../../components/Autocomplete'
-import {bloodDonationFilter }from '../../providers/profile/profile.action';
+import {bloodDonationFilter,getfilteredBloodList}from '../../providers/profile/profile.action';
 import { bloodGroupList } from "../../common";
 import { RadioButton, } from 'react-native-paper';
 
@@ -13,10 +13,12 @@ class BloodDonerFilters extends Component {
                 super(props)
                 this.state = {
                    data:[],
-        hidden1: false,
-        selectedOne:null,
-        onSelect:1
+                   hidden1: false,
+                   selectedOne:null,
+                   filteredList:[],
+                   isloading:false
                 }
+        this.filterData=[];
             }
           
           componentDidMount(){
@@ -24,42 +26,76 @@ class BloodDonerFilters extends Component {
              }
 
          getBlooddonationfilterList= async()=>{
-               let result = await bloodDonationFilter();
+                 try {
+             let result = await bloodDonationFilter();
                if(result.success){
                  this.setState({data:result.data})
                }
-          
-               console.log(result)
-               }
+             await this.setState({ isloading: true })
+               } catch (e) {
+                 console.log(e)
+               }
+               }
 
           toggle1(create){  
                     this.setState({selectedOne: create }) 
                }
-        pressed(item){
-                this.setState({onSelect:item})
-                console.log(item)
-              } 
-        filterCountrylist(){
-          
+      
+         bloodGroupList(value){
+           const result= {
+             type:bloodGroupList,
+             value:value
+           }
+           this.filterData.push(result);
+           console.log(this.filterData)
+         }
+        Countrylist(value){
+          const result ={
+            type:'address.address.country',
+            value:value
+          }
+          this.filterData.push(result);
+          console.log(this.filterData)
               }
-        filterStatelist(){
-          
+        Statelist(value){
+          const result ={
+            type:'address.address.state',
+            value:value
+          }
+          this.filterData.push(result);
+          console.log(this.filterData)
               }
-        filterDistrictlist(){
-          
+        Districtlist(value){
+          const result ={
+            type:'address.address.district',
+            value:value
+          }
+          this.filterData.push(result);
+          console.log(this.filterData)
+              }
+      Citylist(value){
+        const result ={
+          type:'address.address.city',
+          value:value
+        }
+        this.filterData.push(result);
+        console.log(this.filterData)
             }
-      filterCitylist(){
-          
-            }
-      filteredTotalDataList(){
-
+     async filteredTotalDataList(){
+     let filterListData = await getfilteredBloodList(this.filterData)
+       if (filterListData.success){
+          console.log(filterListData)
+        await this.setState({filteredList:this.filterData.data})
+       }
+       this.props.navigation.navigate('BloodDonersList',{data:filterListData.data});
+         console.log(filterListData)
               }    
           
     render() {
     
     const {selectedOne} = this.state
      return (
-            <Container>
+            <Container> 
             <Content style={{padding:5}}>
                 <View style={{marginBottom:50}}>
                       <View style={{flexDirection:'row',flex:1}}>
@@ -78,7 +114,7 @@ class BloodDonerFilters extends Component {
                         
                           <ListItem >
                               <TouchableOpacity 
-                       onPress={()=>this.pressed(item)}
+                       onPress={()=>this.bloodGroupList(item)}
                           style={{flexDirection:'row'}}
                           >
                            <Left>
@@ -109,7 +145,7 @@ class BloodDonerFilters extends Component {
                                renderItem={({item})=>
                            <ListItem >
                                <TouchableOpacity 
-                       onPress={()=>this.pressed(item)}
+                       onPress={()=>this.Countrylist(item)}
                           style={{flexDirection:'row'}}
                           >
                            <Left>
@@ -138,7 +174,7 @@ class BloodDonerFilters extends Component {
                                renderItem={({item})=>
                            <ListItem >
                               <TouchableOpacity 
-                       onPress={()=>this.pressed(item)}
+                       onPress={()=>this.Statelist(item)}
                           style={{flexDirection:'row'}}
                           >
                            <Left>
@@ -168,7 +204,7 @@ class BloodDonerFilters extends Component {
                           renderItem={({item})=>
                           <ListItem >
                              <TouchableOpacity 
-                       onPress={()=>this.pressed(item)}
+                       onPress={()=>this.Districtlist(item)}
                           style={{flexDirection:'row'}}
                           >
                            <Left>
@@ -200,7 +236,7 @@ class BloodDonerFilters extends Component {
                              renderItem={({item})=>
                           <ListItem >
                              <TouchableOpacity 
-                       onPress={()=>this.pressed(item)}
+                       onPress={()=>this.Citylist(item)}
                           style={{flexDirection:'row'}}
                           >
                            <Left>
@@ -281,7 +317,7 @@ class BloodDonerFilters extends Component {
                 </List>
               </View>
               <Footer style={{ backgroundColor: '#7E49C3', }}>
-                <TouchableOpacity onPress={()=>this.filteredDataList()} style={{justifyContent:'center'}}>
+                <TouchableOpacity onPress={()=>this.filteredTotalDataList()} style={{justifyContent:'center'}}>
                 <Text style={styles.searchText}>Filter</Text>
                   </TouchableOpacity>
               </Footer>

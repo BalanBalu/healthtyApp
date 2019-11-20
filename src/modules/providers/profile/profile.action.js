@@ -7,7 +7,7 @@ export const REVIEWS_RESPONSE = 'PROFILE/REVIEWS_RESPONSE'
 export const REVIEWS_ERROR = 'PROFILE/REVIEWS_ERROR'
 
 import { store } from '../../../setup/store'
-import { getService, putService } from '../../../setup/services/httpservices';
+import { getService, putService,postService } from '../../../setup/services/httpservices';
 
 /*get doctor profile*/
 export async function fetchUserProfile(userId, fields, isLoading = true) {
@@ -158,10 +158,10 @@ export async function bloodDonationFilter() {
     }
   } 
 }
-export async function getfilteredBloodList() {
+export async function getfilteredBloodList(Data) {
   try {
     let endPoint = '/bloodDonors/location';    
-    let response = await postService(endPoint, locationData);
+    let response = await postService(endPoint,Data);
     let respData = response.data;
     console.log('respData'+JSON.stringify(respData))
     return respData;
