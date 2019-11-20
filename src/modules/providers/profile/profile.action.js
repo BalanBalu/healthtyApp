@@ -158,6 +158,21 @@ export async function bloodDonationFilter() {
     }
   } 
 }
+export async function getfilteredBloodList() {
+  try {
+    let endPoint = '/bloodDonors/location';    
+    let response = await postService(endPoint, locationData);
+    let respData = response.data;
+    console.log('respData'+JSON.stringify(respData))
+    return respData;
+  } catch (e) {
+    return {
+      message: 'exception' + e,
+      success: false
+    }
+  }
+}
+
 
  
 

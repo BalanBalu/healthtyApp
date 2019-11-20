@@ -19,9 +19,9 @@ class BloodDonerFilters extends Component {
                 }
             }
           
-componentDidMount(){
-  this. getBlooddonationfilterList();
-}
+          componentDidMount(){
+             this. getBlooddonationfilterList();
+             }
 
          getBlooddonationfilterList= async()=>{
                let result = await bloodDonationFilter();
@@ -39,8 +39,21 @@ componentDidMount(){
                 this.setState({onSelect:item})
                 console.log(item)
               } 
+        filterCountrylist(){
+          
+              }
+        filterStatelist(){
+          
+              }
+        filterDistrictlist(){
+          
+            }
+      filterCitylist(){
+          
+            }
+      filteredTotalDataList(){
 
-              
+              }    
           
     render() {
     
@@ -91,7 +104,7 @@ componentDidMount(){
                           <Text style={styles.textHead}>Country</Text>
                           </ListItem>
                            <FlatList
-                               data={this.state.data.userAddressList.countryList}
+                               data={this.state.data.countryList}
                                keyExtractor={(item, index) => index.toString()}
                                renderItem={({item})=>
                            <ListItem >
@@ -120,7 +133,7 @@ componentDidMount(){
                           <Text style={styles.textHead}>State</Text>
                           </ListItem>
                             <FlatList
-                               data={this.state.data.userAddressList.stateList}
+                               data={this.state.data.stateList}
                                keyExtractor={(item, index) => index.toString()}
                                renderItem={({item})=>
                            <ListItem >
@@ -150,7 +163,7 @@ componentDidMount(){
                           <Text style={styles.textHead}>District</Text>
                           </ListItem>
                           <FlatList 
-                          data={this.state.data.userAddressList.districtList}
+                          data={this.state.data.districtList}
                           keyExtractor={(item, index) => index.toString()}
                           renderItem={({item})=>
                           <ListItem >
@@ -182,7 +195,7 @@ componentDidMount(){
                           <Text style={styles.textHead}>City</Text>
                           </ListItem>
                            <FlatList
-                             data={this.state.data.userAddressList.cityList}
+                             data={this.state.data.cityList}
                              keyExtractor={(item, index) => index.toString()}
                              renderItem={({item})=>
                           <ListItem >
@@ -268,7 +281,7 @@ componentDidMount(){
                 </List>
               </View>
               <Footer style={{ backgroundColor: '#7E49C3', }}>
-                <TouchableOpacity  style={{justifyContent:'center'}}>
+                <TouchableOpacity onPress={()=>this.filteredDataList()} style={{justifyContent:'center'}}>
                 <Text style={styles.searchText}>Filter</Text>
                   </TouchableOpacity>
               </Footer>
