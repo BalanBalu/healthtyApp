@@ -49,7 +49,7 @@ class Chat extends Component {
                 </View>
                     <View>
                     <ScrollableTabView renderTabBar={() => <ChatTabs />}>
-                        <AvailableDoctor style={{ color: '#FFF'}} tabLabel="Available Doctors" />
+                        <AvailableDoctor  tabLabel="Available Doctors" />
                         <PreviousChat tabLabel="Chats" />
                        
                   </ScrollableTabView>
