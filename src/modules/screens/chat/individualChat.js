@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import { Container, Content, View, Text,Right, Item,Input,Card,Grid,Left,Icon,Thumbnail, Spinner,Footer, Radio,Row,Col,Form,Button, } from 'native-base';
-import {StyleSheet,TextInput,ImageBackground, FlatList, ScrollView, AsyncStorage, TouchableOpacity ,Image} from 'react-native'
+import {StyleSheet,TextInput,ImageBackground, FlatList, ScrollView, AsyncStorage, TouchableOpacity } from 'react-native'
 import {
     renderDoctorImage, renderProfileImage
 } from '../../common';
@@ -111,20 +111,10 @@ render() {
     const { messages, userId, doctorInfo, userInfo, status } = this.state;
     return (
      <Container>
-       <Content>
-           
-           <View style={{height:550,justifyContent:'center',alignItems:'center'}}>
-          
-           <Image
-source={require('../../../../assets/animation/request.gif')}
-style={{width:'100%',height:'100%',marginTop:-200}}/>
- 
- <View style={{marginTop:-100}}>
-               <Text style={{fontFamily:'OpenSans',fontSize:16,textAlign:'center',lineHeight:25,}}>Mr.Gladstan wants to chat with you about his mentioned reason</Text>
-           </View>
-           </View>
+       
+       
             {/* <ImageBackground source={require('../../../../assets/images/statebank.png')} style={{flex:1, width: null, height: null,}}> */}
-            {/* <FlatList 
+            <FlatList 
                 data={messages}
                 extraData={this.state.messageRecieveCount}
                 inverted
@@ -175,23 +165,19 @@ style={{width:'100%',height:'100%',marginTop:-200}}/>
                 </View>
                  
                 } keyExtractor={(item, index) => index.toString()}
-            /> */}
+            /> 
 
             {/* </ImageBackground> */}
            
-            <Row style={{position: 'absolute', left: 0, right: 0, bottom: 0}}>
-           <Right style={{marginRight:10}}>
-            <Button style={{backgroundColor:'red',borderRadius:5,height:30}}>
-                   <Text style={styles.buttonText}>CLOSE</Text>
-                   </Button>
-            </Right>
-            </Row>
-            </Content>
+           
              <Footer style={styles.footerStyle}>
-                {/* {status === possibleChatStatus.APPROVED ?  
+              {status === possibleChatStatus.APPROVED ?  
                 <Row style={{alignItems:'center',justifyContent:'center'}}>
-                
-                    
+                 {/* <Col style={styles.col1}>
+                    <View style={styles.circle}>
+                       <Icon name="ios-camera" style={{ color: '#7E49C3', fontSize:25,padding:2}} />
+                    </View>
+                  </Col> */}  
                 <Col style={styles.col2}>
                   <Row style={styles.SearchRow}>
                     <Col size={9} style={{justifyContent:'center',}}> 
@@ -207,7 +193,9 @@ style={{width:'100%',height:'100%',marginTop:-200}}/>
                           onSubmitEditing={() => this.onSend() }
                       />
                     </Col>
-                 
+                  {/* <Col size={1} style={{justifyContent:'center',borderRightRadius:10}}> 
+                        <Icon name="ios-mic" style={{ color: '#7E49C3', fontSize:20,padding:2}} />
+                      </Col> */}
                   </Row>
                 </Col>
                 <TouchableOpacity
@@ -225,15 +213,8 @@ style={{width:'100%',height:'100%',marginTop:-200}}/>
                         <Text  style={{ color: '#FFF', fontSize:18,padding:2, alignSelf: 'center', alignItems: 'center' }}>{this.getInActiveChatMessageByStatus(status)}</Text>
                     </Col>
                 </Row>
-            }  */}
-             <Row style={{justifyContent:'center',}}>
-                <Button  style={styles.cancelButton} >
-                    <Text style={styles.buttonText}>CANCEL</Text>
-                </Button>
-                 <Button  style={styles.approveButton} >
-                       <Text style={styles.buttonText}>APPROVED</Text>
-                 </Button>
-             </Row>
+            }  
+             
             </Footer>
            </Container>
         )
@@ -314,27 +295,4 @@ const styles = StyleSheet.create({
         justifyContent:'center',
         alignItems:'center' 
     },
-    buttonText:{
-        fontFamily:'OpenSans',
-        fontSize:16,
-        color:'#fff',
-        textAlign:'center',
-        fontWeight:'bold'
-      },
-      cancelButton:{
-        borderRadius:10,
-        height:40,
-        marginTop:8,
-        padding:30,
-        backgroundColor:'#4765FF'
-      },
-      approveButton:{
-        borderRadius:10,
-        height:40,
-        marginTop:8,
-        padding:20,
-        marginLeft:20,
-        backgroundColor:'#6FC41A'
-      },
-
 })
