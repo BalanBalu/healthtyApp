@@ -387,10 +387,11 @@ class Profile extends Component {
                                             <View>
                                                 <Text note style={styles.customText1}>{data.address.address.no_and_street + ','}
                                                 <Text note style={styles.customText1}>{data.address.address.address_line_1 ? data.address.address.address_line_1 : " "}</Text></Text>
-                                                <Text note style={styles.customText1}>{data.address.address.city + ', '
-                                                    + data.address.address.state}</Text>
-                                                <Text note style={styles.customText1}>{data.address.address.country + ', '
-                                                    + data.address.address.pin_code}</Text>
+                                                <Text note style={styles.customText1}>{data.address.address.district + ', '
+                                                    + data.address.address.city}</Text>
+                                                <Text note style={styles.customText1}>{data.address.address.state + ', '
+                                                    + data.address.address.country}</Text>
+                                                <Text note style={styles.customText1}>{data.address.address.pin_code}</Text>
                                             </View> :
                                             <Button transparent onPress={() => this.editProfile('UpdateAddress')}>
                                                 <Icon name='add' style={{ color: 'gray' }} />
