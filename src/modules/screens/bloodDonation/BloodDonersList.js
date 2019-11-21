@@ -71,6 +71,7 @@ getAddress(address){
    let filterData = navigation.getParam('data');
    this.setState({data:filterData})
    console.log(filterData)
+   
   }
   backNavigation = async (navigationData) => {
     

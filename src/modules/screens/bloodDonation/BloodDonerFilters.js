@@ -14,7 +14,7 @@ class BloodDonerFilters extends Component {
                 this.state = {
                    data:[],
                    hidden1: false,
-                   selectedOne:null,
+                   selectedOne:'BLOODGROUP',
                    filteredList:[],
                    isloading:false
                 }
@@ -43,11 +43,12 @@ class BloodDonerFilters extends Component {
       
          bloodGroupList(value){
            const result= {
-             type:bloodGroupList,
+             type: "blood_group",
              value:value
            }
            this.filterData.push(result);
            console.log(this.filterData)
+           this.setState({onSelect:value})
          }
         Countrylist(value){
           const result ={
@@ -56,6 +57,7 @@ class BloodDonerFilters extends Component {
           }
           this.filterData.push(result);
           console.log(this.filterData)
+          this.setState({onSelect:value})
               }
         Statelist(value){
           const result ={
@@ -64,6 +66,7 @@ class BloodDonerFilters extends Component {
           }
           this.filterData.push(result);
           console.log(this.filterData)
+          this.setState({onSelect:value})
               }
         Districtlist(value){
           const result ={
@@ -72,6 +75,7 @@ class BloodDonerFilters extends Component {
           }
           this.filterData.push(result);
           console.log(this.filterData)
+          this.setState({onSelect:value})
               }
       Citylist(value){
         const result ={
@@ -80,6 +84,7 @@ class BloodDonerFilters extends Component {
         }
         this.filterData.push(result);
         console.log(this.filterData)
+        this.setState({onSelect:value})
             }
      async filteredTotalDataList(){
      let filterListData = await getfilteredBloodList(this.filterData)
@@ -102,7 +107,7 @@ class BloodDonerFilters extends Component {
                       <View style={{width:'30%',}}>
                         </View>
                            <View style={{width:'70%',}}>
-                           {this.state.selectedOne == 'BLOODGROUP' ?
+                          {this.state.selectedOne == 'BLOODGROUP' ? 
                                <View>
                          <ListItem style={{justifyContent:'center'}}>
                           <Text style={styles.textHead}>Blood Group</Text>
@@ -132,7 +137,7 @@ class BloodDonerFilters extends Component {
                        
                           }/> 
                           </View>
-                       :null}
+                     :null}
 
                           {this.state.selectedOne == 'COUNTRY' ?
                           <View>
@@ -264,7 +269,7 @@ class BloodDonerFilters extends Component {
                   </ListItem>
                 
                   <ListItem style={selectedOne === 'BLOODGROUP' ? {backgroundColor:'#784EBC',paddingLeft:10} : {paddingLeft:10}}>
-                  <TouchableOpacity  onPress={()=>this.toggle1('BLOODGROUP',)}  style={{flexDirection:'row'}}> 
+                  <TouchableOpacity  onPress={()=>this.toggle1('BLOODGROUP')}  style={{flexDirection:'row'}}> 
                     <Left> 
                     <Text style={{fontFamily:'OpenSans',fontSize:14,}}>Blood Group</Text>
                    
