@@ -124,7 +124,8 @@ getAddress(address){
                       <Col style={{width:'50%'}}>
                       {item.is_available_blood_donate == true ?
                      <Text style={styles.statButton}>Available</Text>
-                     :null
+                     :
+                     <Text style={styles.statButton}>Not Available</Text>
                     }
                      </Col>
                       </Row>
@@ -174,17 +175,18 @@ const styles = StyleSheet.create({
     fontFamily:'OpenSans',
     fontSize:16,
     marginTop:2,
-    marginLeft:5 
+    marginLeft:5 ,
   },
   statButton:{
     backgroundColor:'green',
     borderRadius:5,
     textAlign:'center',
-    width:'60%',
-    paddingLeft:4,
-    paddingRight:4,
+    width:'70%',
     height:25,
-    color:'#fff'
+    color:'#fff',
+    fontSize:14,
+    fontWeight:'bold',
+   paddingTop:2
   },
   statText:{
     fontFamily:'OpenSans',
