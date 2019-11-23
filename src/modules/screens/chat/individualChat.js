@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import { Container, Content, View, Text,Right, Item,Input,Card,Grid,Left,Icon,Thumbnail, Spinner,Footer, Radio,Row,Col,Form,Button, } from 'native-base';
-import {StyleSheet,TextInput,ImageBackground, FlatList, ScrollView, AsyncStorage, TouchableOpacity } from 'react-native'
+import {StyleSheet,TextInput,ImageBackground, FlatList, ScrollView, AsyncStorage, TouchableOpacity,YellowBox } from 'react-native'
 import {
     renderDoctorImage, renderProfileImage
 } from '../../common';
@@ -10,26 +10,67 @@ import { CHAT_API_URL } from '../../../setup/config';
 import axios from 'axios';
 import { getRelativeTime } from '../../../setup/helpers';
 import { possibleChatStatus } from '../../../Constants/Chat';
+import { connect } from 'react-redux';
+import { store } from '../../../setup/store';
 
+import { SET_LAST_MESSAGES_DATA, updateChatUpdatedTime } from '../../providers/chat/chat.action';
+import { NavigationEvents } from "react-navigation";
+YellowBox.ignoreWarnings(['Remote debugger']);
 class IndividualChat extends Component {
+    _isMounted = false;
     constructor(props) {
         super(props)
         this.state = {
-            chat_id: null, 
+            conversation_id: null, 
             doctorInfo: null, 
             userInfo: null,
             userId: null,
             messages: [],
             typing: '',
-            messageRecieveCount: 0,
+            messageRecieveCount: -1,
             status: null
         }
         this.onReceivedMessage = this.onReceivedMessage.bind(this);
         this.onSend = this.onSend.bind(this);
         this.setTyping = this.setTyping.bind(this);
+    } 
+    onWillBlur() {
+        this._isMounted = false;
+        const {  conversation_id, status, messageRecieveCount, messages } = this.state;
+        const {  conversationLstSnippet, index , chat_id } = this.props.navigation.getParam('chatInfo');
+        const { chat: { myChatList } } = this.props;
+        if(messageRecieveCount > 0) {
+            if(conversationLstSnippet && conversationLstSnippet.messages) {
+                const lastMessageOnState = messages[0];
+                let lastMessage = {
+                    created_at: lastMessageOnState.created_at,
+                    member_id: lastMessageOnState.member_id,
+                    message: lastMessageOnState.message
+                }
+                myChatList[index].last_chat_updated = lastMessageOnState.created_at;
+                myChatList[index].conversationLstSnippet.messages[0] = lastMessage;
+                myChatList[index].status = status
+                myChatList[index].unreadCount = 0;
+                store.dispatch({
+                    type: SET_LAST_MESSAGES_DATA,
+                    data: myChatList
+                })
+                updateChatUpdatedTime(chat_id)
+            }
+        } else {
+            myChatList[index].unreadCount = 0;
+            store.dispatch({
+                type: SET_LAST_MESSAGES_DATA,
+                data: myChatList
+            })
+        }
+            console.log('Calling and messageRecieveCount is :' + messageRecieveCount);
+        
     }
+  
    async componentDidMount() {
-        const {  chat_id, doctorInfo, userInfo , status} = this.props.navigation.getParam('chatInfo')
+        this._isMounted = true;
+        const {  conversation_id, doctorInfo, userInfo , status } = this.props.navigation.getParam('chatInfo');
         this.props.navigation.setParams({
             appBar: {
                 title: doctorInfo.doctor_name,
@@ -37,21 +78,53 @@ class IndividualChat extends Component {
             }
         });
         const userId = await AsyncStorage.getItem('userId');
-        this.setState({ chat_id, doctorInfo, userInfo, userId, status });
+        
+        this.setState({ conversation_id, doctorInfo, userInfo, userId, status });
       
         this.socket = SocketIOClient(CHAT_API_URL, {
                 query: {
                    member_id: userId 
-                }
+                },
+                autoConnect: true, 
+                reconnectionDelay: 1000, 
+                reconnection: true, 
+                transports: ['websocket'], 
+                agent: false, // [2] Please don't set this to true upgrade: false, 
+                rejectUnauthorized: false 
         });
-        const conversationId = chat_id;
-        this.socket.on(conversationId +'-message', this.onReceivedMessage);
+        this.socket.on(conversation_id +'-message', this.onReceivedMessage);
+        
         this.getMessages();
     }
+    fetchPrivateChatStatus = async(conversation_id) => {
+        try {
+          this.setState({ isLoading: true });
+          const chatList = await getPrivateChatStatus(conversation_id);
+          console.log(chatList);
+          if(chatList.success === true) {
+              this.setState({ myChatList: chatList.data })
+          } else {
+              Toast.show({
+                  text: chatList.message, 
+                  duration: 3000,
+                  type: 'danger'
+              })
+          }
+        } catch (error) {
+              Toast.show({
+                  text: 'Something went wrong' +error, 
+                  duration: 3000,
+                  type: 'danger'
+              })
+        }  finally {
+          this.setState({ isLoading: false });
+        }
+      }
+      
     getMessages = async () => {
-        const { chat_id , messageRecieveCount} = this.state;
-        console.log(chat_id)
-        let resp = await axios.get(`${CHAT_API_URL}/api/conversation/${chat_id}/messages`);
+        const { conversation_id , messageRecieveCount } = this.state;
+        console.log(conversation_id)
+        let resp = await axios.get(`${CHAT_API_URL}/api/conversation/${conversation_id}/messages`);
         let respBody = resp.data; 
         console.log(respBody);
         this.setState({
@@ -68,14 +141,16 @@ class IndividualChat extends Component {
     } */
 
     onSend = async() => {
-        const { chat_id, typing , userId, messages} = this.state;
+        const { conversation_id, typing , userId, messages} = this.state;
         if(!typing) return false; 
         const messageRequest = {
-            "conversation_id": chat_id,
+            "conversation_id": conversation_id,
             "member_id": userId,
             message: typing
         }
-        axios.post(CHAT_API_URL + '/api/message', messageRequest);
+        if (this._isMounted) {
+            axios.post(CHAT_API_URL + '/api/message', messageRequest);
+        }
        /* const previouseMessage =  messages;
         messageRequest.created_at = new Date();
         previouseMessage.unshift(messageRequest);
@@ -89,19 +164,25 @@ class IndividualChat extends Component {
         this.setState({ typing: text })
     }
     onReceivedMessage(mess) {
+        console.log('Reving from Private Chat')
         const previouseMessage =  this.state.messages;
+        if(previouseMessage.length === 0) {
+            this.setState({ status: possibleChatStatus.APPROVED });
+        }
         const { messageRecieveCount } = this.state;
         previouseMessage.unshift(mess);
         this.setState({
             typing: '',
             messages: previouseMessage,
-            messageRecieveCount: messageRecieveCount + 1
+            messageRecieveCount: messageRecieveCount + 1,
         });
+       
         this.scrollToBottom();
     }
 scrollToBottom() {
     if(this.flatList_Ref) {
-        this.flatList_Ref.scrollToOffset({ 
+   
+      this.flatList_Ref.scrollToOffset({ 
             offset: 0,
             animated: true 
         });
@@ -112,12 +193,14 @@ render() {
     return (
      <Container>
        
-           
+       <NavigationEvents
+              onWillBlur={payload => this.onWillBlur() }
+            />
             {/* <ImageBackground source={require('../../../../assets/images/statebank.png')} style={{flex:1, width: null, height: null,}}> */}
             <FlatList 
                 data={messages}
+               inverted 
                 extraData={this.state.messageRecieveCount}
-                inverted
                 ref={ref => {
                     this.flatList_Ref = ref;  // <------ ADD Ref for the Flatlist 
                 }}
@@ -165,21 +248,19 @@ render() {
                 </View>
                  
                 } keyExtractor={(item, index) => index.toString()}
-            />
+            /> 
 
             {/* </ImageBackground> */}
            
-       
-        
+           
              <Footer style={styles.footerStyle}>
-                {status === possibleChatStatus.APPROVED ?  
+              {status === possibleChatStatus.APPROVED ?  
                 <Row style={{alignItems:'center',justifyContent:'center'}}>
-                  {/* <Col style={styles.col1}>
+                 {/* <Col style={styles.col1}>
                     <View style={styles.circle}>
                        <Icon name="ios-camera" style={{ color: '#7E49C3', fontSize:25,padding:2}} />
                     </View>
-                  </Col> */}
-                    
+                  </Col> */}  
                 <Col style={styles.col2}>
                   <Row style={styles.SearchRow}>
                     <Col size={9} style={{justifyContent:'center',}}> 
@@ -195,7 +276,7 @@ render() {
                           onSubmitEditing={() => this.onSend() }
                       />
                     </Col>
-                      {/* <Col size={1} style={{justifyContent:'center',borderRightRadius:10}}> 
+                  {/* <Col size={1} style={{justifyContent:'center',borderRightRadius:10}}> 
                         <Icon name="ios-mic" style={{ color: '#7E49C3', fontSize:20,padding:2}} />
                       </Col> */}
                   </Row>
@@ -215,7 +296,8 @@ render() {
                         <Text  style={{ color: '#FFF', fontSize:18,padding:2, alignSelf: 'center', alignItems: 'center' }}>{this.getInActiveChatMessageByStatus(status)}</Text>
                     </Col>
                 </Row>
-            } 
+            }  
+             
             </Footer>
            </Container>
         )
@@ -233,8 +315,13 @@ render() {
     }
 }
 
-export default IndividualChat
 
+function chatState(state) {
+    return {
+        chat: state.chat
+    }
+}
+export default connect(chatState)(IndividualChat)
 const styles = StyleSheet.create({
 
   circle: {
@@ -295,6 +382,5 @@ const styles = StyleSheet.create({
         width:'70%',
         justifyContent:'center',
         alignItems:'center' 
-    }
-
+    },
 })

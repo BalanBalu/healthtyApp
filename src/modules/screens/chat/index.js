@@ -35,8 +35,7 @@ class Chat extends Component {
                             keyboardType={'email-address'}
                             underlineColorAndroid="transparent"
                             blurOnSubmit={false}
-                          
-                        />
+                       />
                         </Col>
                         <Col size={0.9} style={{justifyContent:'center',borderRightRadius:10}}> 
                         <View style={styles.SearchStyle}>

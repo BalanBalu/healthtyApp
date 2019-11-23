@@ -7,11 +7,13 @@ import { StyleProvider, Root, Toast } from 'native-base';
 import getTheme from '../theme/components';
 import material from '../theme/variables/material';
 import { AsyncStorage, Alert } from 'react-native';
-import { FIREBASE_SENDER_ID } from './config'
+import { FIREBASE_SENDER_ID , CHAT_API_URL } from './config'
 import { userFiledsUpdate } from '../modules/providers/auth/auth.actions';
 //import firebase from 'react-native-firebase';
-import { fetchUserMarkedAsReadedNotification } from '../../src/modules/providers/notification/notification.actions';
+import { fetchUserMarkedAsReadedNotification } from '../modules/providers/notification/notification.actions';
+import { SET_LAST_MESSAGES_DATA } from '../modules/providers/chat/chat.action';
 import NotifService from './NotifService';
+import SocketIOClient from 'socket.io-client';
 export default class App extends Component {
     constructor(props) {
       super(props);
@@ -20,13 +22,58 @@ export default class App extends Component {
       };
       this.notif = new NotifService(this.onRegister.bind(this), this.onNotif.bind(this));
   } 
-  componentDidMount() {  
+  async componentDidMount() {  
+      const userId = await AsyncStorage.getItem('userId');
+      if(userId) {
+        this.initializeSocket(userId);
+      }
       setInterval(() => {
       this.getMarkedAsReadedNotification();
-     },1000)
+     },10000)
      //this.checkPermission();
   }
 
+  initializeSocket(userId) {
+    this.socket = SocketIOClient(CHAT_API_URL, {
+      query: {
+         member_id: userId 
+      },
+      autoConnect: true, 
+      reconnectionDelay: 1000, 
+      reconnection: true, 
+      transports: ['websocket'], 
+      agent: false, // [2] Please don't set this to true upgrade: false, 
+    });
+    this.socket.on(userId +'-member-message', this.onReceivedMessage);
+  }
+  onReceivedMessage = (recievedMessage) => {
+    const recievedConvesationId = recievedMessage.conversation_id;
+    console.log('On Recieve from APP.js');
+    console.log(store.getState().chat);
+    const myChatList = store.getState().chat.myChatList;
+    myChatList.some(element => {
+      if(recievedConvesationId === element.conversation_id_chat) {
+        const conversationLstSnippet = element.conversationLstSnippet;
+        if(conversationLstSnippet && conversationLstSnippet.messages) {
+          
+          let lastMessage = {
+              created_at: recievedMessage.created_at,
+              member_id: recievedMessage.member_id,
+              message: recievedMessage.message,
+          }
+          element.unreadCount = element.unreadCount ? element.unreadCount + 1 : 1
+          element.last_chat_updated = recievedMessage.created_at;
+          element.conversationLstSnippet.messages[0] = lastMessage;
+        }
+        return true;
+      }
+    })
+    store.dispatch({
+      type: SET_LAST_MESSAGES_DATA,
+      data: myChatList
+    })
+    
+  }
   getMarkedAsReadedNotification = async () => {
     try {
       let userId = await AsyncStorage.getItem('userId');
@@ -66,31 +113,24 @@ export default class App extends Component {
         console.log('permission rejected');
     }
   }*/
-  onRegister=async(token)=> {
+onRegister=async(token)=> {
     const userId = await AsyncStorage.getItem('userId');
     const isDeviceTokenUpdated = await AsyncStorage.getItem('isDeviceTokenUpdated');
     let deviceToken=token.token;
-if(isDeviceTokenUpdated !='true' && userId !=null){
-  if (deviceToken != null) this.updateDeviceToken(userId, deviceToken);  // update Unique Device_Tokens 
-}
+  if(isDeviceTokenUpdated !='true' && userId !=null){
+    if (deviceToken != null) 
+      this.updateDeviceToken(userId, deviceToken);  // update Unique Device_Tokens 
   }
+}
 
   updateDeviceToken = async (userId, deviceToken) => {
     try {
       let requestData = {
         device_token: deviceToken,
       }
-      let response = await userFiledsUpdate(userId, requestData);
-      // console.log('device_token response'+JSON.stringify(response));
-      if (response.success) {
-        await AsyncStorage.setItem('isDeviceTokenUpdated', 'true');
-        Toast.show({
-          text: 'Device Token updated successfully',
-          type: "success",
-          duration: 1000
-        });
-      }
-    } catch (e) {
+      userFiledsUpdate(userId, requestData);
+      AsyncStorage.setItem('isDeviceTokenUpdated', 'true');
+      } catch (e) {
       console.log(e);
     }
   }

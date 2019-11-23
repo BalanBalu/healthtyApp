@@ -1,9 +1,11 @@
 import React, { Component } from 'react';
 import { Container, Content, View, Text,Thumbnail,Row,Col, Toast } from 'native-base';
-import {StyleSheet, FlatList, AsyncStorage , TouchableOpacity} from 'react-native'
+import {StyleSheet, FlatList, AsyncStorage , TouchableOpacity, BackHandler} from 'react-native'
+import { NavigationEvents } from "react-navigation";
 import { hasLoggedIn } from "../../providers/auth/auth.actions";
+
 import {
-    getAllChats
+    getAllChats, SET_LAST_MESSAGES_DATA
 } from '../../providers/chat/chat.action';
 import {
     renderDoctorImage, renderProfileImage
@@ -11,16 +13,19 @@ import {
 import { getRelativeTime } from '../../../setup/helpers'
 import { possibleChatStatus } from '../../../Constants/Chat';
 import { SERVICE_TYPES } from '../../../setup/config'
-
+import { connect } from 'react-redux';
+import { store } from '../../../setup/store';
 class MyChats extends Component {
     constructor(props) {
         super(props)
         this.state = {
-            myChatList: [],
-            isLoading: false
+           
+            isLoading: false,
+            refreshCountByBack: 0
         }
     }
 async componentDidMount() {
+    BackHandler.addEventListener("hardwareBackPress", this.onBackPress);
     const isLoggedIn = await hasLoggedIn(this.props);
     if (!isLoggedIn) {
         this.props.navigation.navigate("login");
@@ -28,15 +33,41 @@ async componentDidMount() {
     }
     let userId = await AsyncStorage.getItem("userId");
     this.setState({ userId });
-    this.getAllChatsByUserId(userId)
+   // this.getAllChatsByUserId(userId)
     
 }
+componentWillUnmount() {
+    BackHandler.removeEventListener("hardwareBackPress", this.onBackPress);
+}
+componentWillMount() {
+        console.log('Hey Calling Here');
+}
+componentWillReceiveProps() {
+    console.log('Hey Calling');
+}
+UNSAFE_componentWillMount() {
+    console.log('Hey');
+}
+onBackPress = () => {
+    const { dispatch, navigation } = this.props;
+    if (navigation.index === 0) {
+      return false;
+    }
+    navigation.navigate('Home');
+    //(NavigationActions.navigate('Home'));
+    return true;
+  };
 getAllChatsByUserId = async(userId) => {
   try {
     this.setState({ isLoading: true });
     const chatList = await getAllChats(userId);
+    console.log(chatList);
     if(chatList.success === true) {
-        this.setState({ myChatList: chatList.data })
+        store.dispatch({
+            type: SET_LAST_MESSAGES_DATA,
+            data: chatList.data
+        })
+        console.log(chatList.data);
     } else {
         Toast.show({
             text: chatList.message, 
@@ -56,12 +87,15 @@ getAllChatsByUserId = async(userId) => {
 }
     getUserOrDoctorDataToDisplay = (convoData) => {
         let obj = {
+            chat_id: convoData.chat_id,
             name : convoData.doctorInfo && (convoData.doctorInfo.prefix ? convoData.doctorInfo.prefix + '.' : '') + convoData.doctorInfo.doctor_name,
             profileImage: renderDoctorImage(convoData.doctorInfo),
             status: convoData.status,
             doctorInfo: convoData.doctorInfo,
             userInfo : convoData.userInfo,
-            chat_id: convoData.conversation_id_chat
+            conversation_id: convoData.conversation_id_chat,
+            conversationLstSnippet: convoData.conversationLstSnippet,
+            unreadCount : convoData.unreadCount
         }
         if(convoData.conversationLstSnippet && convoData.conversationLstSnippet.messages && convoData.conversationLstSnippet.messages[0]) {
             const lstMessageData = convoData.conversationLstSnippet.messages[0];
@@ -81,30 +115,34 @@ getAllChatsByUserId = async(userId) => {
     }
  
     render() {
-        const { myChatList } = this.state;
+        const { chat: { myChatList } } = this.props;
+        console.log(myChatList);
+        const { refreshCountByBack } = this.state;
+       
     return (
         <Container>
+            <NavigationEvents
+              onDidFocus={payload => { this.state.refreshCountByBack = this.state.refreshCountByBack + 1; console.log('did focus', payload)}}
+            />
             <Content>
               <FlatList 
                 data={myChatList}
-                extraData={myChatList}
-                renderItem={( { item })=>
+                extraData={[myChatList,refreshCountByBack ]}
+                renderItem={( { item, index })=>
                   item ? 
-                    this.renderChatInfo( this.getUserOrDoctorDataToDisplay(item)) 
+                    this.renderChatInfo(this.getUserOrDoctorDataToDisplay(item), index) 
                   : null
                 } keyExtractor={(item, index) => index.toString()}/>
             </Content>
             </Container>
         )
     }
-    renderChatInfo(item) {
+    renderChatInfo(item, index) {
     return <TouchableOpacity onPress={()=> 
             this.props.navigation.navigate('IndividualChat', 
             { chatInfo: {
-                chat_id: item.chat_id,
-                doctorInfo: item.doctorInfo, 
-                userInfo: item.userInfo,
-                status: item.status
+                ...item,
+                index: index
               }
             })
         }>
@@ -120,11 +158,12 @@ getAllChatsByUserId = async(userId) => {
                     </Row>
                     <Row>
                         <Col style={{width:'80%'}}>
-                            <Text style={styles.status}>{item.message} </Text>
+                            <Text style={[styles.status, item.unreadCount > 0 ? { fontWeight : 'bold' } : { fontWeight: 'normal' } ]}>{item.message} </Text>
                         </Col>
-                        {/* <Col style={{width:'20%'}}>
-                            <Text style={styles.msg}>{item.msg}</Text>
-                        </Col> */}
+
+                        {item.unreadCount > 0 ? <Col style={{width:'20%'}}>
+                            <Text style={styles.msg}>{item.unreadCount}</Text>
+                        </Col> : null }
                     </Row>
                 </Col>
             </Row>
@@ -132,8 +171,12 @@ getAllChatsByUserId = async(userId) => {
     }
 
 }
-
-export default MyChats
+function chatState(state) {
+    return {
+        chat: state.chat
+    }
+}
+export default connect(chatState)(MyChats)
 
 const styles = StyleSheet.create({
 docname:{
