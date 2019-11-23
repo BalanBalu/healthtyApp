@@ -12,6 +12,7 @@ import { MAP_BOX_PUBLIC_TOKEN , IS_ANDROID } from '../../../setup/config';
 import RNAndroidLocationEnabler from 'react-native-android-location-enabler';
 import MapboxGL from '@react-native-mapbox-gl/maps';
 import { store } from '../../../setup/store';
+import { getAllChats, SET_LAST_MESSAGES_DATA } from '../../providers/chat/chat.action'
 import CurrentLocation from './CurrentLocation';
 MapboxGL.setAccessToken(MAP_BOX_PUBLIC_TOKEN);
 const MAX_DISTANCE_TO_COVER = 30000; // in meters
@@ -53,6 +54,10 @@ class Home extends Component {
      }
     async componentDidMount() {
         this.getCatagries();
+        let userId = await AsyncStorage.getItem("userId");
+        if(userId) {
+            this.getAllChatsByUserId(userId);
+        }
         CurrentLocation.getCurrentPosition();
     }
     getUserLocation() {
@@ -74,6 +79,28 @@ class Home extends Component {
             this.setState( { isLoading : false });
         }
     }
+
+    getAllChatsByUserId = async(userId) => {
+        try {
+            console.log('Calling getAllChatsByUserId' );
+          const chatList = await getAllChats(userId);
+          console.log('Got the data', chatList);
+          if(chatList.success === true) {
+              store.dispatch({
+                  type: SET_LAST_MESSAGES_DATA,
+                  data: chatList.data
+              })
+              console.log(chatList.data);
+          } 
+        } catch (error) {
+              Toast.show({
+                  text: 'Something went wrong' +error, 
+                  duration: 3000,
+                  type: 'danger'
+              })
+        }
+      }
+      
     
     navigateToCategorySearch(categoryName) {
         const { bookappointment: { locationCordinates } } = this.props;
@@ -402,7 +429,8 @@ callSuggestionService=async(enteredText)=>{
 function homeState(state) {
 
     return {
-        bookappointment: state.bookappointment
+        bookappointment: state.bookappointment,
+        chat: state.chat
     }
 }
 export default connect(homeState)(Home)

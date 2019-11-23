@@ -3,12 +3,15 @@ import { Container, Content, View, Text, Item, Spinner, Radio,Row,Col,Form,Butto
 import {StyleSheet,TextInput,Image} from 'react-native'
 
 
-class successMsg extends Component {
+class SuccessChatPaymentPage extends Component {
     constructor(props) {
         super(props)
         this.state = {
            
         }
+        setTimeout(() => {
+            this.props.navigation.navigate('My Chats');
+        }, 1500);
     }
 
     render() {
@@ -28,7 +31,7 @@ style={{width:'100%',height:'100%',}}/>
     }
 }
 
-export default successMsg
+export default SuccessChatPaymentPage
 
 const styles = StyleSheet.create({
 

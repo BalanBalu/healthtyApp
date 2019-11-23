@@ -208,8 +208,9 @@ class PaymentPage extends Component {
                paymentMethod : paymentMethodTitleCase 
             });
         } else if( serviceType === SERVICE_TYPES.CHAT) {
+            this.props.navigation.navigate('SuccessChat');
             Toast.show({
-                text: 'Paymenet Success for Chat' + bookSlotDetails.chatId,
+                text: 'Paymenet Success for Chat',
                 type: 'warning',
                 duration: 3000
             })

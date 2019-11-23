@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { createStackNavigator, createAppContainer, createSwitchNavigator, createDrawerNavigator } from 'react-navigation';
+import { createStackNavigator, createAppContainer, createSwitchNavigator, createDrawerNavigator, NavigationBackAction } from 'react-navigation';
 import AuthLoadingScreen from './AuthLoadingScreen';
 import SideBar from './SideBar';
 import Home from "../../modules/screens/Home";
@@ -32,7 +32,7 @@ import Notification from "../../modules/screens/Notification";
 import Chat from "../../modules/screens/chat";
 import { Col, Grid, Row } from 'react-native-easy-grid';
 import { logout } from '../../modules/providers/auth/auth.actions';
-import { TouchableOpacity, Image, Text, AppRegistry, AsyncStorage, } from 'react-native'
+import { TouchableOpacity, Image, Text, Platform,TouchableNativeFeedback } from 'react-native'
 
 import menuIcon from '../../../assets/images/menu.png';
 import BookAppoinment from "../../modules/screens/bookappoinment";
@@ -60,6 +60,7 @@ import BloodDonersList from '../../modules/screens/bloodDonation/BloodDonersList
 import BloodDonerFilters from '../../modules/screens/bloodDonation/BloodDonerFilters';
 import MyChats from '../../modules/screens/chat/MyChats';
 import AvailableDoctors4Chat from '../../modules/screens/chat/AvailableDoctor';
+import SuccessChatPaymentPage from '../../modules/screens/chat/successMsg';
 
 const AuthRoutes = {
   login: {
@@ -319,10 +320,34 @@ const HomeStack = createStackNavigator({
   },
   "My Chats": {
     screen: MyChats,
+    navigationOptions: ({ navigation }) => ({
+      title: 'Chats',
+      headerLeft: (
+        <TouchableOpacity onPress={() => navigation.navigate('Home')}>
+          <Row style={{ alignItems: 'center', justifyContent: 'center' }}>
+          <Icon 
+            style={
+              Platform.OS === "ios"
+                  ? { marginBottom: -4, width: 25, marginLeft: 9,color: "#FFF" }
+                  : { marginBottom: -4, width: 25, marginLeft: 20, color: "#FFF" }
+            }
+            size={Platform.OS === "ios" ? 35 : 24}
+            name={Platform.OS === "ios" ? "ios-arrow-back" : "md-arrow-back"}
+          /> 
+          {Platform.OS === "ios" ?   
+             <Text style={{fontFamily:'OpenSans',fontSize:16, color:'#FFF', marginLeft: 5, fontWeight:'300' }}>Back</Text> : null } 
+        </Row> 
+        </TouchableOpacity>
+      ),
+     })
+  },
+  "SuccessChat": {
+    screen: SuccessChatPaymentPage,
     navigationOptions: {
-      title: 'Chats'
+      title: 'Success'
     }
   },
+  
   IndividualChat: {
     screen: IndividualChat,
     navigationOptions:({ navigation }) => ({
