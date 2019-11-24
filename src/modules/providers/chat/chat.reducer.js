@@ -34,8 +34,6 @@ sortChatListByUpdatedDate = (data) => {
        } else {
         lastUpdatedDateB = b.last_chat_updated;
        }
-       console.log(lastUpdatedDateA);
-       console.log(lastUpdatedDateB);
        return new Date(lastUpdatedDateB) - new Date(lastUpdatedDateA)
     })
     

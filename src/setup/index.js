@@ -15,7 +15,8 @@ import { SET_LAST_MESSAGES_DATA } from '../modules/providers/chat/chat.action';
 import NotifService from './NotifService';
 import SocketIOClient from 'socket.io-client';
 export default class App extends Component {
-    constructor(props) {
+  userId = null;  
+  constructor(props) {
       super(props);
       this.state = {
         senderId: FIREBASE_SENDER_ID
@@ -25,6 +26,7 @@ export default class App extends Component {
   async componentDidMount() {  
       const userId = await AsyncStorage.getItem('userId');
       if(userId) {
+        this.userId =  userId;
         this.initializeSocket(userId);
       }
       setInterval(() => {
@@ -49,30 +51,31 @@ export default class App extends Component {
   onReceivedMessage = (recievedMessage) => {
     const recievedConvesationId = recievedMessage.conversation_id;
     console.log('On Recieve from APP.js');
-    console.log(store.getState().chat);
     const myChatList = store.getState().chat.myChatList;
-    myChatList.some(element => {
+    if(this.userId && recievedMessage.member_id !== this.userId) {
+      myChatList.some(element => {
       if(recievedConvesationId === element.conversation_id_chat) {
         const conversationLstSnippet = element.conversationLstSnippet;
-        if(conversationLstSnippet && conversationLstSnippet.messages) {
-          
+        if(!conversationLstSnippet.messageInfo) {
+          conversationLstSnippet['messageInfo'] = {};
+        }
           let lastMessage = {
               created_at: recievedMessage.created_at,
               member_id: recievedMessage.member_id,
               message: recievedMessage.message,
           }
-          element.unreadCount = element.unreadCount ? element.unreadCount + 1 : 1
+          element.conversationLstSnippet.messageInfo.unreadCount = element.conversationLstSnippet.messageInfo.unreadCount ? element.conversationLstSnippet.messageInfo.unreadCount + 1 : 1
           element.last_chat_updated = recievedMessage.created_at;
-          element.conversationLstSnippet.messages[0] = lastMessage;
-        }
+          element.conversationLstSnippet.messageInfo.latestMessage = lastMessage;
+        
         return true;
       }
     })
-    store.dispatch({
-      type: SET_LAST_MESSAGES_DATA,
-      data: myChatList
-    })
-    
+      store.dispatch({
+        type: SET_LAST_MESSAGES_DATA,
+        data: myChatList
+      })
+    }
   }
   getMarkedAsReadedNotification = async () => {
     try {

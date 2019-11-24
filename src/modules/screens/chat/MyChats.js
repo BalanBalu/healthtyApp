@@ -39,35 +39,25 @@ async componentDidMount() {
 componentWillUnmount() {
     BackHandler.removeEventListener("hardwareBackPress", this.onBackPress);
 }
-componentWillMount() {
-        console.log('Hey Calling Here');
-}
-componentWillReceiveProps() {
-    console.log('Hey Calling');
-}
-UNSAFE_componentWillMount() {
-    console.log('Hey');
-}
+
 onBackPress = () => {
     const { dispatch, navigation } = this.props;
     if (navigation.index === 0) {
       return false;
     }
     navigation.navigate('Home');
-    //(NavigationActions.navigate('Home'));
     return true;
   };
 getAllChatsByUserId = async(userId) => {
   try {
     this.setState({ isLoading: true });
     const chatList = await getAllChats(userId);
-    console.log(chatList);
+   
     if(chatList.success === true) {
         store.dispatch({
             type: SET_LAST_MESSAGES_DATA,
             data: chatList.data
         })
-        console.log(chatList.data);
     } else {
         Toast.show({
             text: chatList.message, 
@@ -95,12 +85,13 @@ getAllChatsByUserId = async(userId) => {
             userInfo : convoData.userInfo,
             conversation_id: convoData.conversation_id_chat,
             conversationLstSnippet: convoData.conversationLstSnippet,
-            unreadCount : convoData.unreadCount
+            
         }
-        if(convoData.conversationLstSnippet && convoData.conversationLstSnippet.messages && convoData.conversationLstSnippet.messages[0]) {
-            const lstMessageData = convoData.conversationLstSnippet.messages[0];
+        if(convoData.conversationLstSnippet && convoData.conversationLstSnippet.messageInfo && convoData.conversationLstSnippet.messageInfo.latestMessage) {
+            const lstMessageData = convoData.conversationLstSnippet.messageInfo.latestMessage;
             obj.message = lstMessageData.message;
-            obj.messageUpdated_time = getRelativeTime(lstMessageData.created_at) 
+            obj.messageUpdated_time = getRelativeTime(lstMessageData.created_at);
+            obj.unreadCount = convoData.conversationLstSnippet.messageInfo.unreadCount
         } else {
             if(convoData.status === possibleChatStatus.PAYMENT_IN_PROGRESS) {
                 obj.message = 'Payment is not completed, Please Complete your Payment and Continue',
@@ -116,13 +107,12 @@ getAllChatsByUserId = async(userId) => {
  
     render() {
         const { chat: { myChatList } } = this.props;
-        console.log(myChatList);
         const { refreshCountByBack } = this.state;
        
     return (
         <Container>
             <NavigationEvents
-              onDidFocus={payload => { this.state.refreshCountByBack = this.state.refreshCountByBack + 1; console.log('did focus', payload)}}
+              onDidFocus={payload => this.state.refreshCountByBack = this.state.refreshCountByBack + 1 }
             />
             <Content>
               <FlatList 
@@ -138,7 +128,7 @@ getAllChatsByUserId = async(userId) => {
         )
     }
     renderChatInfo(item, index) {
-    return <TouchableOpacity onPress={()=> 
+        return <TouchableOpacity onPress={()=> 
             this.props.navigation.navigate('IndividualChat', 
             { chatInfo: {
                 ...item,
