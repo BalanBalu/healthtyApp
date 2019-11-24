@@ -39,15 +39,7 @@ async componentDidMount() {
 componentWillUnmount() {
     BackHandler.removeEventListener("hardwareBackPress", this.onBackPress);
 }
-componentWillMount() {
-        console.log('Hey Calling Here');
-}
-componentWillReceiveProps() {
-    console.log('Hey Calling');
-}
-UNSAFE_componentWillMount() {
-    console.log('Hey');
-}
+
 onBackPress = () => {
     const { dispatch, navigation } = this.props;
     if (navigation.index === 0) {
@@ -60,13 +52,12 @@ getAllChatsByUserId = async(userId) => {
   try {
     this.setState({ isLoading: true });
     const chatList = await getAllChats(userId);
-    console.log(chatList);
+   
     if(chatList.success === true) {
         store.dispatch({
             type: SET_LAST_MESSAGES_DATA,
             data: chatList.data
         })
-        console.log(chatList.data);
     } else {
         Toast.show({
             text: chatList.message, 
@@ -121,7 +112,7 @@ getAllChatsByUserId = async(userId) => {
     return (
         <Container>
             <NavigationEvents
-              onDidFocus={payload => { this.state.refreshCountByBack = this.state.refreshCountByBack + 1; console.log('did focus', payload)}}
+              onDidFocus={payload => this.state.refreshCountByBack = this.state.refreshCountByBack + 1 }
             />
             <Content>
               <FlatList 
@@ -137,8 +128,7 @@ getAllChatsByUserId = async(userId) => {
         )
     }
     renderChatInfo(item, index) {
-        console.log(item);
-    return <TouchableOpacity onPress={()=> 
+        return <TouchableOpacity onPress={()=> 
             this.props.navigation.navigate('IndividualChat', 
             { chatInfo: {
                 ...item,

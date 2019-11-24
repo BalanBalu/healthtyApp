@@ -109,37 +109,12 @@ class IndividualChat extends Component {
         
         this.getMessages();
     }
-    fetchPrivateChatStatus = async(conversation_id) => {
-        try {
-          this.setState({ isLoading: true });
-          const chatList = await getPrivateChatStatus(conversation_id);
-          console.log(chatList);
-          if(chatList.success === true) {
-              this.setState({ myChatList: chatList.data })
-          } else {
-              Toast.show({
-                  text: chatList.message, 
-                  duration: 3000,
-                  type: 'danger'
-              })
-          }
-        } catch (error) {
-              Toast.show({
-                  text: 'Something went wrong' +error, 
-                  duration: 3000,
-                  type: 'danger'
-              })
-        }  finally {
-          this.setState({ isLoading: false });
-        }
-      }
       
     getMessages = async () => {
         const { conversation_id , messageRecieveCount } = this.state;
         console.log(conversation_id)
         let resp = await axios.get(`${CHAT_API_URL}/api/conversation/${conversation_id}/messages`);
         let respBody = resp.data; 
-        console.log(respBody);
         this.setState({
             messages: respBody.data,
             messageRecieveCount: messageRecieveCount + 1
@@ -177,7 +152,7 @@ class IndividualChat extends Component {
         this.setState({ typing: text })
     }
     onReceivedMessage(mess) {
-        console.log('Reving from Private Chat', mess)
+        console.log('Reving from Private Chat')
         const previouseMessage =  this.state.messages;
         if(previouseMessage.length === 0) {
             this.setState({ status: possibleChatStatus.APPROVED });
