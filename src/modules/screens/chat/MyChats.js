@@ -54,7 +54,6 @@ onBackPress = () => {
       return false;
     }
     navigation.navigate('Home');
-    //(NavigationActions.navigate('Home'));
     return true;
   };
 getAllChatsByUserId = async(userId) => {
@@ -95,12 +94,13 @@ getAllChatsByUserId = async(userId) => {
             userInfo : convoData.userInfo,
             conversation_id: convoData.conversation_id_chat,
             conversationLstSnippet: convoData.conversationLstSnippet,
-            unreadCount : convoData.unreadCount
+            
         }
-        if(convoData.conversationLstSnippet && convoData.conversationLstSnippet.messages && convoData.conversationLstSnippet.messages[0]) {
-            const lstMessageData = convoData.conversationLstSnippet.messages[0];
+        if(convoData.conversationLstSnippet && convoData.conversationLstSnippet.messageInfo && convoData.conversationLstSnippet.messageInfo.latestMessage) {
+            const lstMessageData = convoData.conversationLstSnippet.messageInfo.latestMessage;
             obj.message = lstMessageData.message;
-            obj.messageUpdated_time = getRelativeTime(lstMessageData.created_at) 
+            obj.messageUpdated_time = getRelativeTime(lstMessageData.created_at);
+            obj.unreadCount = convoData.conversationLstSnippet.messageInfo.unreadCount
         } else {
             if(convoData.status === possibleChatStatus.PAYMENT_IN_PROGRESS) {
                 obj.message = 'Payment is not completed, Please Complete your Payment and Continue',
@@ -116,7 +116,6 @@ getAllChatsByUserId = async(userId) => {
  
     render() {
         const { chat: { myChatList } } = this.props;
-        console.log(myChatList);
         const { refreshCountByBack } = this.state;
        
     return (
@@ -138,6 +137,7 @@ getAllChatsByUserId = async(userId) => {
         )
     }
     renderChatInfo(item, index) {
+        console.log(item);
     return <TouchableOpacity onPress={()=> 
             this.props.navigation.navigate('IndividualChat', 
             { chatInfo: {

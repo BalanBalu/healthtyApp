@@ -40,7 +40,12 @@ class IndividualChat extends Component {
         const {  conversationLstSnippet, index , chat_id } = this.props.navigation.getParam('chatInfo');
         const { chat: { myChatList } } = this.props;
         if(messageRecieveCount > 0) {
-            if(conversationLstSnippet && conversationLstSnippet.messages) {
+            
+           
+            if(conversationLstSnippet) {
+                if(!conversationLstSnippet.messageInfo) {
+                    conversationLstSnippet['messageInfo'] = {};
+                }
                 const lastMessageOnState = messages[0];
                 let lastMessage = {
                     created_at: lastMessageOnState.created_at,
@@ -48,24 +53,29 @@ class IndividualChat extends Component {
                     message: lastMessageOnState.message
                 }
                 myChatList[index].last_chat_updated = lastMessageOnState.created_at;
-                myChatList[index].conversationLstSnippet.messages[0] = lastMessage;
+                myChatList[index].conversationLstSnippet.messageInfo.latestMessage = lastMessage;
                 myChatList[index].status = status
-                myChatList[index].unreadCount = 0;
+                myChatList[index].conversationLstSnippet.messageInfo.unreadCount = 0;
                 store.dispatch({
                     type: SET_LAST_MESSAGES_DATA,
                     data: myChatList
                 })
-                updateChatUpdatedTime(chat_id)
+                this.updateMessagesAsReaded();
+                updateChatUpdatedTime(chat_id);
+                
             }
         } else {
-            myChatList[index].unreadCount = 0;
-            store.dispatch({
-                type: SET_LAST_MESSAGES_DATA,
-                data: myChatList
-            })
+            if(conversationLstSnippet) {
+                if(!conversationLstSnippet.messageInfo) {
+                    conversationLstSnippet['messageInfo'] = {};
+                }
+                myChatList[index].conversationLstSnippet.messageInfo.unreadCount = 0;
+                store.dispatch({
+                    type: SET_LAST_MESSAGES_DATA,
+                    data: myChatList
+                })
+            }
         }
-            console.log('Calling and messageRecieveCount is :' + messageRecieveCount);
-        
     }
   
    async componentDidMount() {
@@ -164,7 +174,7 @@ class IndividualChat extends Component {
         this.setState({ typing: text })
     }
     onReceivedMessage(mess) {
-        console.log('Reving from Private Chat')
+        console.log('Reving from Private Chat', mess)
         const previouseMessage =  this.state.messages;
         if(previouseMessage.length === 0) {
             this.setState({ status: possibleChatStatus.APPROVED });
@@ -188,6 +198,17 @@ scrollToBottom() {
         });
     }
 }
+
+  updateMessagesAsReaded = async() => {
+    try {
+        const { conversation_id , userId } = this.state;
+        let endPoint = `${CHAT_API_URL}/api/readers/conversation/${conversation_id}/member/${userId}`;
+        axios.put(endPoint, {});
+    } catch (error) {
+        console.log(error)
+    }
+}
+
 render() {
     const { messages, userId, doctorInfo, userInfo, status } = this.state;
     return (
