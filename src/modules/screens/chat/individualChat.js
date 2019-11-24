@@ -69,7 +69,10 @@ class IndividualChat extends Component {
                 if(!conversationLstSnippet.messageInfo) {
                     conversationLstSnippet['messageInfo'] = {};
                 }
-                myChatList[index].conversationLstSnippet.messageInfo.unreadCount = 0;
+                if(myChatList[index].conversationLstSnippet.messageInfo.unreadCount > 0) {
+                    this.updateMessagesAsReaded();
+                    myChatList[index].conversationLstSnippet.messageInfo.unreadCount = 0;
+                }
                 store.dispatch({
                     type: SET_LAST_MESSAGES_DATA,
                     data: myChatList
