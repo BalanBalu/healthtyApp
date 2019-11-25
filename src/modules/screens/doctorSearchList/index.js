@@ -751,6 +751,7 @@ class doctorSearchList extends Component {
                                                                 </Row>
                                                             </Col>
                                                             <Col style={{ width: '17%' }}>
+                                                            <TouchableOpacity>
                                                                 {isLoggedIn ?
                                                                     <Icon name="heart" onPress={() => this.addToWishList(item.doctor_id)}
                                                                         style={patientWishListsDoctorIds.includes(item.doctor_id) ? { marginLeft: 20, color: '#B22222', fontSize: 20 } : { marginLeft: 20, borderColor: '#fff', fontSize: 20 }}>
@@ -758,6 +759,7 @@ class doctorSearchList extends Component {
                                                                 {/* <Row>
                                            <Text style={{ fontFamily: 'OpenSans',marginTop:20,fontSize:12,marginLeft:5 }}> 2.6km</Text>
                                          </Row> */}
+                                                            </TouchableOpacity>
                                                             </Col>
                                                         </Row>
 
@@ -767,8 +769,8 @@ class doctorSearchList extends Component {
                                                                 <Text style={{ fontFamily: 'OpenSans', fontSize: 12, marginLeft: 5, fontWeight: 'bold' }}>{getDoctorExperience(item.calulatedExperience)}</Text>
                                                             </Col>
                                                             <Col style={{ width: "25%", marginTop: 20 }}>
-                                                                <Text note style={{ fontFamily: 'OpenSans', fontSize: 12, marginLeft: 5, }}> Rating</Text>
-                                                                <View style={{ flexDirection: 'row', marginLeft: 10 }}>
+                                                                <Text note style={{ fontFamily: 'OpenSans', fontSize: 12, textAlign:'center', }}> Rating</Text>
+                                                                <View style={{ flexDirection:'row',alignItems:'center',justifyContent:'center'}}>
                                                                     <StarRating
                                                                         fullStarColor='#FF9500'
                                                                         starSize={12} width={85}
@@ -790,10 +792,10 @@ class doctorSearchList extends Component {
 
                                                             </Col>
                                                             <Col style={{ width: "20%", marginTop: 20 }}>
-                                                                <Text note style={{ fontFamily: 'OpenSans', fontSize: 12, marginLeft: 5, }}> Fees</Text>
-                                                                <Text style={{ fontFamily: 'OpenSans', fontSize: 12, fontWeight: 'bold', marginLeft: 5 }}>{'\u20B9'}{fee} {' '}
+                                                                <Text note style={{ fontFamily: 'OpenSans', fontSize: 12, textAlign:'center' }}> Fees</Text>
+                                                                <Text style={{ fontFamily: 'OpenSans', fontSize: 12, fontWeight: 'bold', textAlign:'center',marginLeft:10 }}>{'\u20B9'}{fee} {' '}
                                                                  {fee !== feeWithoutOffer ?  
-                                                                   <Text style={{ fontFamily: 'OpenSans', fontWeight: 'normal', fontSize: 12, textDecorationLine: 'line-through', textDecorationStyle: 'solid' }}>
+                                                                   <Text style={{ fontFamily: 'OpenSans', fontWeight: 'normal', fontSize: 12, textDecorationLine: 'line-through', textDecorationStyle: 'solid',textAlign:'center' }}>
                                                                       {'\u20B9'}{feeWithoutOffer}</Text> : null
                                                                  }
                                                           
@@ -930,50 +932,53 @@ const styles = StyleSheet.create({
     },
 
     slotDefaultBgColor: {
-        textAlign: 'center',
+       
         backgroundColor: '#ced6e0',
         borderColor: '#000',
         marginTop: 10,
         height: 30,
         borderRadius: 5,
-        justifyContent: 'center',
-        marginRight: 5,
+        justifyContent:'center',
+        marginLeft:5
+       
        
     },
     slotDefaultTextColor: {
         color: '#000',
         fontSize: 12,
         fontFamily: 'OpenSans',
-        paddingLeft: 5,
-        paddingRight: 5
+        textAlign:'center'
+        
     },
     slotBookedBgColor: {
-        textAlign: 'center',
+       
         backgroundColor: '#A9A9A9', //'#775DA3',
         borderColor: '#000',
         marginTop: 10, height: 30,
         borderRadius: 5,
-        justifyContent: 'center',
-        marginRight: 5,
+     justifyContent:'center',
+     marginLeft:5
+
       
     },
     slotSelectedBgColor: {
-        textAlign: 'center',
+        
         backgroundColor: '#775DA3',
         borderColor: '#000',
         marginTop: 10,
         height: 30,
-        borderRadius: 5,
-        justifyContent: 'center',
-        marginRight: 5,
-        paddingLeft: 5,
-        paddingRight: 5
+        borderRadius: 6,
+        justifyContent:'center',
+        marginLeft:5
+
+       
      
     },
     slotBookedTextColor: {
         color: '#fff',
         fontSize: 12,
-        fontFamily: 'OpenSans'
+        fontFamily: 'OpenSans',
+        textAlign:'center'
     },
     slotBookedBgColorFromModal: {
         backgroundColor: '#878684',
