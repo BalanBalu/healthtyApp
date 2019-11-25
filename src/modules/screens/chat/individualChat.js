@@ -136,6 +136,23 @@ class IndividualChat extends Component {
             "member_id": userId,
             message: typing
         }
+        const newMessage = {
+            conversation_id: conversation_id,
+            created_at:  new Date().toISOString(),
+            member_id: userId,
+            message: typing,
+            readers: [ userId ],
+            updated_at: new Date().toISOString(),
+        }
+        const previouseMessage =  this.state.messages;
+        const { messageRecieveCount } = this.state;
+        previouseMessage.unshift(newMessage);
+        this.setState({
+            typing: '',
+            messages: previouseMessage,
+            messageRecieveCount: messageRecieveCount + 1,
+        });
+
         if (this._isMounted) {
             axios.post(CHAT_API_URL + '/api/message', messageRequest);
         }
@@ -152,19 +169,20 @@ class IndividualChat extends Component {
         this.setState({ typing: text })
     }
     onReceivedMessage(mess) {
-        console.log('Reving from Private Chat')
-        const previouseMessage =  this.state.messages;
-        if(previouseMessage.length === 0) {
-            this.setState({ status: possibleChatStatus.APPROVED });
+        console.log('Reving from Private Chat', mess);
+         const { messageRecieveCount, userId } = this.state;
+         if(mess.member_id !==  userId) {
+            const previouseMessage =  this.state.messages;
+            if(previouseMessage.length === 0) {
+                this.setState({ status: possibleChatStatus.APPROVED });
+            }
+            previouseMessage.unshift(mess);
+            this.setState({
+                typing: '',
+                messages: previouseMessage,
+                messageRecieveCount: messageRecieveCount + 1,
+            });
         }
-        const { messageRecieveCount } = this.state;
-        previouseMessage.unshift(mess);
-        this.setState({
-            typing: '',
-            messages: previouseMessage,
-            messageRecieveCount: messageRecieveCount + 1,
-        });
-       
         this.scrollToBottom();
     }
 scrollToBottom() {

@@ -15,6 +15,8 @@ import { possibleChatStatus } from '../../../Constants/Chat';
 import { SERVICE_TYPES } from '../../../setup/config'
 import { connect } from 'react-redux';
 import { store } from '../../../setup/store';
+
+
 class MyChats extends Component {
     constructor(props) {
         super(props)
@@ -27,19 +29,22 @@ class MyChats extends Component {
 async componentDidMount() {
     BackHandler.addEventListener("hardwareBackPress", this.onBackPress);
     const isLoggedIn = await hasLoggedIn(this.props);
+    const { navigation } = this.props;
     if (!isLoggedIn) {
         this.props.navigation.navigate("login");
         return;
     }
     let userId = await AsyncStorage.getItem("userId");
     this.setState({ userId });
-   // this.getAllChatsByUserId(userId)
+    const fromSuccessPage = navigation.getParam('fromSuccessPage') || false
+    if(fromSuccessPage) {
+        this.getAllChatsByUserId(userId)
+    }
     
 }
-componentWillUnmount() {
+removeBackHandlerListerner () {
     BackHandler.removeEventListener("hardwareBackPress", this.onBackPress);
 }
-
 onBackPress = () => {
     const { dispatch, navigation } = this.props;
     if (navigation.index === 0) {
@@ -85,7 +90,6 @@ getAllChatsByUserId = async(userId) => {
             userInfo : convoData.userInfo,
             conversation_id: convoData.conversation_id_chat,
             conversationLstSnippet: convoData.conversationLstSnippet,
-            
         }
         if(convoData.conversationLstSnippet && convoData.conversationLstSnippet.messageInfo && convoData.conversationLstSnippet.messageInfo.latestMessage) {
             const lstMessageData = convoData.conversationLstSnippet.messageInfo.latestMessage;
@@ -113,6 +117,7 @@ getAllChatsByUserId = async(userId) => {
         <Container>
             <NavigationEvents
               onDidFocus={payload => this.state.refreshCountByBack = this.state.refreshCountByBack + 1 }
+              onWillBlur={payload => this.removeBackHandlerListerner()}
             />
             <Content>
               <FlatList 
