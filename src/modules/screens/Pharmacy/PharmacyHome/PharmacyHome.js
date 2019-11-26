@@ -166,24 +166,23 @@ finally {
                     </Grid>
                     
                    <Row style={{marginTop:-90,}}>
-                            <Col style={{width: '50%',justifyContent:'center',marginLeft:80}}>
-                                <Autocomplete style={{  backgroundColor: '#F1F1F1', borderRadius: 5,borderBottomRightRadius: 0, borderTopRightRadius: 0,padding:14,paddingLeft:20,paddingTop:10}} 
+                            <Col style={{width: '50%',justifyContent:'center',marginLeft:70}}>
+                                <Autocomplete style={{  backgroundColor: '#F1F1F1', borderRadius: 5,borderBottomRightRadius: 0, borderTopRightRadius: 0,padding:14,paddingTop:10}} 
                                 data={this.state.searchMedicine!=undefined?(selectedMedicineName.length === 1 && comp(this.state.keyword, selectedMedicineName[0].medicine_name) ? [] : selectedMedicineName):selectedMedicineName}
                                     defaultValue={this.state.keyword}
                                     onChangeText={text => this.setState({ keyword:text })}
                                     placeholder='Search Medicine'
-                                    
                                     listStyle={{ marginLeft: 49, width: '71%', }}
                                     renderItem={({ item }) => (
-                                        <TouchableOpacity onPress={() => this.setState({ keyword: selectedMedicineName[0].medicine_name==='Medicine Not Found'?null:item.medicine_name})}>
-                                         <Text style={{fontSize: 15,color:'gray',borderBottomWidth:0.3,padding:3}}>{item.medicine_name}</Text>
+                                        <TouchableOpacity onPress={() => this.setState({ keyword: selectedMedicineName[0].medicine_name==='Medicine Not Found'?null:item.medicine_name})} >
+                                         <Text style={{fontSize: 15,color:'gray',borderBottomWidth:0.3,padding:3,}}>{item.medicine_name}</Text>
                                         </TouchableOpacity>
                                     )}
                                   keyExtractor={(item, index) => index.toString()} />
                             </Col>
                              
-                            <Col style={{position:'absolute',marginTop:0.2,justifyContent:'center',marginLeft:260}}>
-                                   <Button block style={{ backgroundColor: '#000', borderRadius: 10, borderBottomLeftRadius: 0, borderTopLeftRadius: 0 }}  onPress={()=>this.onSearchPress(selectedMedicineName)} testID='searchMedicine'>
+                            <Col style={{position:'absolute',marginTop:0.1,justifyContent:'center',marginLeft:250}}>
+                                   <Button block style={{ backgroundColor: '#000', borderRadius: 10, borderBottomLeftRadius: 0, borderTopLeftRadius: 0,marginTop:2 }}  onPress={()=>this.onSearchPress(selectedMedicineName)} testID='searchMedicine'>
                                         <Icon name="ios-search" style={{ color: 'white' }}/>
                             </Button>
                             </Col>                          
@@ -191,10 +190,10 @@ finally {
                            
 
                     <View style={{ marginLeft: 'auto', marginRight: 'auto', marginTop:75 }}>
-                        <Button style={{ justifyContent: "center", backgroundColor: '#745DA6', borderRadius: 5 }} onPress={() => this.props.navigation.navigate('UploadPrescription')} testID="clickButtonToUploadPrescription">
-                            <Icon style={{ fontSize: 30}} name='md-cloud-upload'/>   
-                            <Text style={{ color: '#fff',marginLeft:-25}}>Upload your prescription</Text>
-                        </Button>
+                        <TouchableOpacity style={{ justifyContent: "center", backgroundColor: '#745DA6', borderRadius: 5,flexDirection:'row',paddingLeft:10,paddingRight:10,paddingTop:5,paddingBottom:5}} onPress={() => this.props.navigation.navigate('UploadPrescription')} testID="clickButtonToUploadPrescription">
+                            <Icon style={{ fontSize: 30,color:'#fff'}} name='md-cloud-upload'/>   
+                            <Text style={{ color: '#fff',marginLeft:5,marginTop:4}}>Upload your prescription</Text>
+                        </TouchableOpacity>
                     </View>
                    
                     <Card transparent >

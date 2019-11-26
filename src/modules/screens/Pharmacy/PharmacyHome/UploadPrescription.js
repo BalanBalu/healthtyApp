@@ -166,13 +166,13 @@ class UploadPrescription extends Component {
                 {isLoading == true ? <Loader style={'appointment'} /> :
                     <Content >
                         <ScrollView>
-                            <View style={{ marginTop: 25 }}>
-                                <Autocomplete style={{ borderBottomWidth: 0, backgroundColor: '#F1F1F1', borderRadius: 5, padding: 5, width: '76%', marginLeft: 48 }} 
+                            <View style={{ marginTop: 10 }}>
+                                <Autocomplete style={{ borderBottomWidth: 0, backgroundColor: '#F1F1F1', borderRadius: 5, padding: 5, width: '85%',marginLeft: 'auto',marginRight: 'auto',}} 
                                 data={this.state.pharmacyList!==undefined?(selectedPharmacy.length === 1 && comp(this.state.keyword, selectedPharmacy[0].name) ? [] : selectedPharmacy):selectedPharmacy}
                                     defaultValue={this.state.keyword}
                                     onChangeText={text => this.setState({ keyword: text })}
                                     placeholder='Select Pharmacy'
-                                    listStyle={{ position: 'relative', marginLeft: 45, width: '70%', marginTop: -3.5 }}
+                                    listStyle={{ position: 'relative',  marginLeft: 'auto',marginRight: 'auto', width: '100%', marginTop: -3.5 }}
                                     renderItem={({ item }) => (
                                         <TouchableOpacity onPress={() => this.setState({ keyword:selectedPharmacy[0].name==='Pharmacy not found'?null:item.name })}>
                                             <Text style={{ fontFamily: 'OpenSans', borderBottomWidth: 0.3, color: 'gray', marginTop: 2, fontSize: 14 }}>{item.name}</Text>
@@ -200,9 +200,9 @@ class UploadPrescription extends Component {
                                 </Row>
                             </View>
 
-                            <View style={{ padding: 10, marginTop: 20 }}>
-                                <Text style={{ marginLeft: 38, fontFamily: 'OpenSans', fontSize: 15 }}>Comments(optional)</Text>
-                                <TextInput style={{ borderWidth: 0.5, textAlignVertical: 'top', borderRadius: 5, height: 100, width: '80%', marginLeft: 'auto', marginRight: 'auto',marginTop:10 }}
+                            <View style={{ padding: 25, marginTop: 10 }}>
+                                <Text style={{  fontFamily: 'OpenSans', fontSize: 15 }}>Comments(optional)</Text>
+                                <TextInput style={{ borderWidth: 0.5, textAlignVertical: 'top', borderRadius: 5, height: 100, width: '100%',marginTop:10 }}
                                     placeholder=" Type your comments here"
                                     placeholderTextColor={'gray'}
                                     multiline={true} />
@@ -217,7 +217,7 @@ class UploadPrescription extends Component {
                                         <Text style={{ fontSize: 12 }}>UPLOAD</Text>
                                     </Button>
                                 </Col>
-                                <Col style={{ width: '40%', justifyContent: 'center',marginLeft:5 }}>
+                                <Col style={{ width: '40%', justifyContent: 'center',marginLeft:30 }}>
                                     <Button style={{ borderRadius: 5, height: 35,}} onPress={() => this.props.navigation.navigate('Pharmacy')}>
                                         <Text style={{ fontSize: 12 }} >CANCEL</Text>
                                     </Button>
@@ -244,7 +244,7 @@ const styles = StyleSheet.create({
     {
         marginLeft: 'auto',
         marginRight: 'auto',
-        marginTop: 20,
+        marginTop: 10,
         height: 250,
         width: 310,
         borderColor: '#f5f5f5',
