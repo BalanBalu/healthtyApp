@@ -160,13 +160,13 @@ class Filters extends Component {
         const { genderIndex, selectAvailabilityIndex, selectExperinceIndex } = this.state;
         return (
             <Container style={styles.container}>
-                <Content style={{ padding: 5 }}>
+                <Content style={{ padding: 5, }}>
                     <ScrollView>
                         <NavigationEvents
                             onWillFocus={payload => { this.componentDidMount() }}
                         />
                         {/* first card */}
-
+                    <View style={{marginBottom:20}}>
                         <Card style={{ padding: 10, borderRadius: 10, width: 'auto' }}>
                             <Text style={{ backgroundColor: 'whitesmoke', borderBottomColor: '#c9cdcf', borderBottomWidth: 2, }}>Gender</Text>
                             <Row style={{ justifyContent: 'center', marginTop: 10 }}>
@@ -176,8 +176,8 @@ class Filters extends Component {
                                         onPress={() => this.clickGenderInButton(1, "M", true)}
                                     >
                                         <View style={{ marginLeft: 'auto', marginRight: 'auto' }}>
-                                            <Icon style={{ fontSize: 30, marginLeft: 'auto', marginRight: 'auto' }} name='male' />
-                                            <Text style={{ textAlign: 'center', fontSize: 12 }}>Male</Text>
+                                            <Icon style={{ fontSize: 20, marginLeft: 'auto', marginRight: 'auto' }} name='male' />
+                                            <Text style={{ textAlign: 'center', fontSize: 12,textAlign:'center' }}>Male</Text>
                                         </View>
 
                                     </Button>
@@ -188,8 +188,8 @@ class Filters extends Component {
                                         onPress={() => this.clickGenderInButton(2, "F", true)}
                                     >
                                         <View style={{ marginLeft: 'auto', marginRight: 'auto' }}>
-                                            <Icon style={{ fontSize: 30, marginLeft: 'auto', marginRight: 'auto', }} name='female' />
-                                            <Text style={{ textAlign: 'center', fontSize: 12, }}>Female</Text>
+                                            <Icon style={{ fontSize: 20, marginLeft: 'auto', marginRight: 'auto', }} name='female' />
+                                            <Text style={{ textAlign: 'center', fontSize: 12,textAlign:'center' }}>Female</Text>
                                         </View>
 
                                     </Button>
@@ -200,9 +200,9 @@ class Filters extends Component {
 
                                         onPress={() => this.clickGenderInButton(3, "O", true )} >
                                         <View style={{ marginLeft: 'auto', marginRight: 'auto' }}>
-                                            <Icon style={{ fontSize: 30, marginLeft: 'auto', marginRight: 'auto', }} name='female' />
+                                            <Icon style={{ fontSize: 20, marginLeft: 'auto', marginRight: 'auto', }} name='female' />
 
-                                            <Text style={{ textAlign: 'center', fontSize: 12, }}>Others</Text>
+                                            <Text style={{ textAlign: 'center', fontSize: 12,textAlign:'center' }}>Others</Text>
                                         </View>
                                     </Button>
                                 </Col>
@@ -223,8 +223,8 @@ class Filters extends Component {
                                     >
                                         <View style={{ marginLeft: 'auto', marginRight: 'auto' }}>
 
-                                            <Icon style={{ fontSize: 30, marginLeft: 'auto', marginRight: 'auto', }} name='female' />
-                                            <Text style={{ textAlign: 'center', fontSize: 12, }}>Today</Text>
+                                            <Icon style={{ fontSize: 20, marginLeft: 'auto', marginRight: 'auto', }} name='female' />
+                                            <Text style={{ textAlign: 'center', fontSize: 12,textAlign:'center' }}>Today</Text>
 
                                         </View>
 
@@ -236,14 +236,14 @@ class Filters extends Component {
                                         style={selectAvailabilityIndex === 3 ? styles.selectedGenderColor : styles.defaultColor}
 
                                     >
-                                        <View style={{ marginLeft: 'auto', marginRight: 'auto' }}>
+                                       <View style={{ marginLeft: 'auto', marginRight: 'auto' }}>
 
-                                            <Icon style={{ fontSize: 30, marginLeft: 'auto', marginRight: 'auto' }} name='female' />
+                                            <Icon style={{ fontSize: 20, marginLeft: 'auto', marginRight: 'auto' }} name='female' />
 
 
-                                            <Text style={{ textAlign: 'center', fontSize: 12 }}>Next 3 Days</Text>
+                                            <Text style={{ textAlign: 'center', fontSize: 12,textAlign:'center' }}>Next 3 Days</Text>
 
-                                        </View>
+                                            </View>
 
                                     </Button>
                                 </Col>
@@ -253,8 +253,8 @@ class Filters extends Component {
                                         onPress={() => this.clickFilterByAvailabilityDates(7, true)}
                                     >
                                         <View style={{ marginLeft: 'auto', marginRight: 'auto' }}>
-                                            <Icon style={{ fontSize: 30, marginLeft: 'auto', marginRight: 'auto', }} name='female' />
-                                            <Text style={{ textAlign: 'center', fontSize: 12, }}>Next 7 Days</Text>
+                                            <Icon style={{ fontSize: 20, marginLeft: 'auto', marginRight: 'auto', }} name='female' />
+                                            <Text style={{ textAlign: 'center', fontSize: 12,textAlign:'center' }}>Next 7 Days</Text>
                                         </View>
                                     </Button>
 
@@ -276,8 +276,8 @@ class Filters extends Component {
                                     >
                                         <View style={{ marginLeft: 'auto', marginRight: 'auto' }}>
 
-                                            <Icon style={{ fontSize: 30, marginLeft: 'auto', marginRight: 'auto', }} name='female' />
-                                            <Text style={{ textAlign: 'center', fontSize: 12, }}>0-10 years</Text>
+                                            <Icon style={{ fontSize: 20, marginLeft: 'auto', marginRight: 'auto', }} name='female' />
+                                            <Text style={{ textAlign: 'center', fontSize: 12,textAlign:'center' }}>0-10 years</Text>
                                         </View>
                                     </Button>
                                 </Col>
@@ -290,8 +290,8 @@ class Filters extends Component {
                                     >
                                         <View style={{ marginLeft: 'auto', marginRight: 'auto' }}>
 
-                                            <Icon style={{ fontSize: 30, marginLeft: 'auto', marginRight: 'auto' }} name='female' />
-                                            <Text style={{ textAlign: 'center', fontSize: 12 }}>10-20 years</Text>
+                                            <Icon style={{ fontSize: 20, marginLeft: 'auto', marginRight: 'auto' }} name='female' />
+                                            <Text style={{ textAlign: 'center', fontSize: 12,textAlign:'center'}}>10-20 years</Text>
 
                                         </View>
 
@@ -305,8 +305,8 @@ class Filters extends Component {
                                     >
                                         <View style={{ marginLeft: 'auto', marginRight: 'auto' }}>
 
-                                            <Icon style={{ fontSize: 30, marginLeft: 'auto', marginRight: 'auto', }} name='female' />
-                                            <Text style={{ textAlign: 'center', fontSize: 12, }}>20-30 years</Text>
+                                            <Icon style={{ fontSize: 20, marginLeft: 'auto', marginRight: 'auto', }} name='female' />
+                                            <Text style={{ textAlign: 'center', fontSize: 12,textAlign:'center' }}>20-30 years</Text>
 
                                         </View>
 
@@ -320,15 +320,15 @@ class Filters extends Component {
                                     >
                                         <View style={{ marginLeft: 'auto', marginRight: 'auto' }}>
 
-                                            <Icon style={{ fontSize: 30, marginLeft: 'auto', marginRight: 'auto', }} name='female' />
-                                            <Text style={{ textAlign: 'center', fontSize: 12, }}>Above 30 </Text>
+                                            <Icon style={{ fontSize: 20, marginLeft: 'auto', marginRight: 'auto', }} name='female' />
+                                            <Text style={{ textAlign: 'center', fontSize: 12,textAlign:'center' }}>Above 30 </Text>
                                         </View>
                                     </Button>
                                 </Col>
                             </Row>
                         </Card>
                         <View>
-                            <Card style={{ backgroundColor: '#fff', borderRadius: 10, height: 50 }}>
+                            <Card style={{ backgroundColor: '#fff', borderRadius: 10, height: 45 }}>
                                 <View style={{ justifyContent: 'center' }}>
 
                                     <SectionedMultiSelect style={{ height: 100 }}
@@ -384,7 +384,7 @@ class Filters extends Component {
 
 
                         <View>
-                            <Card style={{ backgroundColor: '#fff', borderRadius: 10, height: 50 }}>
+                            <Card style={{ backgroundColor: '#fff', borderRadius: 10, height: 45 }}>
                                 <View style={{ justifyContent: 'center' }}>
 
                                     <SectionedMultiSelect style={{ height: 100 }}
@@ -414,8 +414,9 @@ class Filters extends Component {
 
                             <Button block success disabled={this.state.viewDoctors_button} style={this.state.viewDoctors_button === true ? styles.viewDocButtonBgGray : styles.viewDocButtonBgGreeen}
                                 onPress={this.sendFilteredData}>
-                                <Text style={{ fontFamily: 'OpenSans', }}>View Doctors</Text>
+                                <Text style={{ fontFamily: 'OpenSans',fontWeight:'bold' }}>View Doctors</Text>
                             </Button>
+                        </View>
                         </View>
                     </ScrollView>
                 </Content>
@@ -434,51 +435,43 @@ export default connect(bookApppointmentState)(Filters)
 const styles = StyleSheet.create({
     container: {
         backgroundColor: '#c9cdcf',
-        padding: 5
     },
 
     defaultExpColor: {
         borderRadius: 10,
-        padding: 20,
-        height: 80,
         width: '90%',
         borderWidth: 10,
-        height: 80,
+        height: 50,
     },
     selectedExpColor: {
         borderRadius: 10,
-        padding: 20,
-        height: 80,
+        height: 50,
         width: '90%',
         borderWidth: 10,
-        height: 80,
         backgroundColor: 'green',
 
     },
     defaultGenderColor: {
         borderRadius: 10,
-        padding: 30,
         width: '90%',
         marginLeft: 10,
         borderWidth: 50,
-        height: 75,
+        height: 50,
     },
     selectedGenderColor: {
         borderRadius: 10,
-        padding: 30,
         width: '90%',
         marginLeft: 10,
         borderWidth: 50,
-        height: 75,
+        height: 50,
         backgroundColor: 'green',
     },
     defaultColor: {
         borderRadius: 10,
-        padding: 30,
         width: '90%',
         marginLeft: 10,
         borderWidth: 50,
-        height: 75,
+        height: 50,
     },
     viewDocButtonBgGreeen: {
         borderRadius: 10,
