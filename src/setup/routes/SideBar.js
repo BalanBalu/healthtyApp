@@ -75,8 +75,9 @@ async getBasicData() {
                 {hasLoggedIn ?  
                    <View>
                     <Text style={{fontFamily:'OpenSans',fontSize:18,fontWeight:'bold',color:'#fff'}}>{this.activeUserData && this.activeUserData.first_name}</Text>
-                    <Text onPress={()=> this.props.navigation.navigate('Profile')}
-                    style={{fontFamily:'OpenSans',fontSize:13,color:'#fff'}}>View Profile</Text>
+                   <TouchableOpacity onPress={()=> this.props.navigation.navigate('Profile')}>
+                    <Text style={{fontFamily:'OpenSans',fontSize:13,color:'#fff'}}>View Profile</Text>
+                    </TouchableOpacity>
                    </View>
                  : 
                    <View style={{alignItems:'center',marginLeft:-95}}>
@@ -96,21 +97,13 @@ async getBasicData() {
             dataArray={items}
             renderRow={data => {
               return (
-                <ListItem style={{borderBottomWidth:0}}
+                <ListItem style={{borderBottomWidth:0,height:45}}
                   button
                   onPress={() => this.props.navigation.navigate(data.routeName)}>
-                      <View>
-                      <Row>
-                          <Col style={{width:'15%'}}>
                           <Image square source={DragwerLogos[data.key]} 
                           style={{ height: 20, width: 20}}
-                            />
-                          </Col>
-                          <Col style={{width:'85%',alignItems:'flex-start'}}>
-                          <Text style={{fontFamily:'OpenSans',fontSize:15,}}>{data.key}</Text>
-                          </Col>
-                      </Row>
-                      </View>
+                            />  
+                          <Text style={{fontFamily:'OpenSans',fontSize:15,marginLeft:20}}>{data.key}</Text>  
                 </ListItem>
               );
             }}
