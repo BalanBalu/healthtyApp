@@ -84,12 +84,23 @@ export function addTimeUnit(date, amount, unit) {
 export function subTimeUnit(date, amount, unit) {
   return moment(date).subtract(amount, unit).toDate();
 }
+export function getRelativeTime(dateTime) {
+ return  moment(dateTime).fromNow()
+}
 
 export function getMoment(date) {
   return moment(date)
 }
 export function getUnixTimeStamp(date) {
   return moment(date).unix();
+}
+export function toTitleCase(str) {
+  return str.replace(
+      /\w\S*/g,
+      function(txt) {
+          return txt.charAt(0).toUpperCase() + txt.substr(1).toLowerCase();
+      }
+  );
 }
 export function findArrayObj(array, findNode, findValue) {
   let returnObj;

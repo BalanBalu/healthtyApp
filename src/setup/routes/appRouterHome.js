@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { createStackNavigator, createAppContainer, createSwitchNavigator, createDrawerNavigator } from 'react-navigation';
+import { createStackNavigator, createAppContainer, createSwitchNavigator, createDrawerNavigator, NavigationBackAction } from 'react-navigation';
 import AuthLoadingScreen from './AuthLoadingScreen';
 import SideBar from './SideBar';
 import Home from "../../modules/screens/Home";
@@ -10,12 +10,15 @@ import UpdatePassword from "../../modules/screens/userprofile/UpdatePassword";
 import UpdateInsurance from "../../modules/screens/userprofile/UpdateInsurance";
 import UpdateUserDetails from "../../modules/screens/userprofile/UpdateUserDetails";
 import UpdateAddress from "../../modules/screens/userprofile/UpdateAddress";
-import { Icon, View } from 'native-base';
+import { Icon, View,Thumbnail } from 'native-base';
+import IndividualChat from '../../modules/screens/chat/individualChat'
 import Categories from "../../modules/screens/categories";
 import login from "../../modules/screens/auth/login";
 import signup from "../../modules/screens/auth/signup";
 import forgotpassword from "../../modules/screens/auth/forgotpassword";
 import userdetails from "../../modules/screens/auth/userdetails";
+import UserAddress from "../../modules/screens/auth/UserAddress";
+import MapBox from "../../modules/screens/auth/UserAddress/MapBox";
 import Reviews from "../../modules/screens/Reviews";
 import doctorSearchList from "../../modules/screens/doctorSearchList";
 import FilterList from "../../modules/screens/FilterList";
@@ -26,10 +29,10 @@ import PaymentSuccess from "../../modules/screens/PaymentSuccess";
 import InsertReview from '../../modules/screens/Reviews/InsertReview';
 import WishList from "../../modules/screens/wishList";
 import Notification from "../../modules/screens/Notification";
-
+import Chat from "../../modules/screens/chat";
 import { Col, Grid, Row } from 'react-native-easy-grid';
 import { logout } from '../../modules/providers/auth/auth.actions';
-import { TouchableOpacity, Image, Text, AppRegistry, AsyncStorage } from 'react-native'
+import { TouchableOpacity, Image, Text, Platform,TouchableNativeFeedback } from 'react-native'
 
 import menuIcon from '../../../assets/images/menu.png';
 import BookAppoinment from "../../modules/screens/bookappoinment";
@@ -37,7 +40,8 @@ import Mapbox from "../../modules/screens/bookappoinment/Mapbox";
 import AppointmentDetails from '../../modules/screens/MyAppointments/AppointmentDetails';
 import MyAppoinmentList from '../../modules/screens/MyAppointments/MyAppointmentList';
 import CancelAppointment from "../../modules/screens/MyAppointments/cancelAppointment";
-
+import AddReminder from '../../modules/screens/Reminder/AddReminder'
+import Reminder from '../../modules/screens/Reminder/Reminders'
 import PharmacyHome from '../../modules/screens/Pharmacy/PharmacyHome/PharmacyHome';
 import MyOrdersList from '../../modules/screens/Pharmacy/MyOrdersList/MyOrdersList';
 import OrderDetails from '../../modules/screens/Pharmacy/OrderDetails/OrderDetails';
@@ -52,6 +56,11 @@ import MedicineSearchList from '../../modules/screens/Pharmacy/MedicineSearchLis
 import MedicineCheckout from '../../modules/screens/Pharmacy/MedicineCheckout/MedicineChekout';
 import { Badge } from '../../../src/modules/common'
 import Locations from '../../modules/screens/Home/Locations';
+import BloodDonersList from '../../modules/screens/bloodDonation/BloodDonersList';
+import BloodDonerFilters from '../../modules/screens/bloodDonation/BloodDonerFilters';
+import MyChats from '../../modules/screens/chat/MyChats';
+import AvailableDoctors4Chat from '../../modules/screens/chat/AvailableDoctor';
+import SuccessChatPaymentPage from '../../modules/screens/chat/successMsg';
 
 const AuthRoutes = {
   login: {
@@ -65,21 +74,29 @@ const AuthRoutes = {
   },
   userdetails: {
     screen: userdetails,
-  }
+  },
+  UserAddress: {
+    screen: UserAddress,
+  },
+    MapBox: {
+    screen: MapBox,
+  },
+
 }
 
 const AuthStack = createStackNavigator(AuthRoutes, {
   initialRouteName: 'login',
   headerMode: "none",
   navigationOptions: { headerVisible: false }
-})
 
+})
 const HomeStack = createStackNavigator({
   Home: {
     screen: Home,
     navigationOptions: ({ navigation }) => ({
 
       title: 'DashBoard',
+   
       headerLeft: (
         <TouchableOpacity onPress={() => navigation.toggleDrawer()}>
           <Image
@@ -91,7 +108,6 @@ const HomeStack = createStackNavigator({
 
       headerRight: (
         <Grid>
-
           <Col>
             <TouchableOpacity onPress={() => { navigation.navigate('Notification') }} >
               <View>
@@ -130,6 +146,34 @@ const HomeStack = createStackNavigator({
       title: 'Notification',
     })
   },
+  BloodDonerFilters: {
+    screen: BloodDonerFilters,
+    navigationOptions: ({ navigation }) => ({
+      title: 'Filter',
+    })
+  },
+  BloodDonersList: {
+    screen: BloodDonersList,
+    navigationOptions:({ navigation }) => ({
+      title: 'Blood Donors',
+     
+      headerRight: (
+        <Grid>
+
+          <Col>
+            <TouchableOpacity onPress={() => { navigation.navigate('BloodDonerFilters') }} >
+              <View>
+                <Icon name="ios-funnel" style={{ color: '#fff', marginRight: 15, fontFamily: 'opensans-semibold' }}></Icon>
+                <Badge/>
+              </View>
+            </TouchableOpacity>
+          </Col>
+        
+        </Grid>
+      ),
+    })
+  },
+  
   ///  =============Appointments Stack ==================
   "My Appointments": {
     screen: MyAppoinmentList,
@@ -192,6 +236,12 @@ const HomeStack = createStackNavigator({
       title: 'Update User Details'
     }
   },
+  MapBox: {
+    screen: MapBox,
+    navigationOptions: {
+      title: 'Search Location'
+    }
+  },
   UpdateAddress: {
     screen: UpdateAddress,
     navigationOptions: {
@@ -235,6 +285,7 @@ const HomeStack = createStackNavigator({
       title: 'Reviews'
     }
   },
+  
   "Payment Review": {
     screen: PaymentReview,
     navigationOptions: {
@@ -254,6 +305,85 @@ const HomeStack = createStackNavigator({
       title: 'Success'
     }
   },
+  // ============Chat ========================
+  Chat: {
+    screen: Chat,
+    navigationOptions: {
+      title: 'Online Chat'
+    }
+  },
+  "Chat Service": {
+    screen: AvailableDoctors4Chat,
+    navigationOptions: {
+      title: 'Availabile Doctors'
+    }
+  },
+  "My Chats": {
+    screen: MyChats,
+    navigationOptions: ({ navigation }) => ({
+      title: 'Chats',
+      headerLeft: (
+        <TouchableOpacity onPress={() => navigation.navigate('Home')}>
+          <Row style={{ alignItems: 'center', justifyContent: 'center' }}>
+          <Icon 
+            style={
+              Platform.OS === "ios"
+                  ? { marginBottom: -4, width: 25, marginLeft: 9,color: "#FFF" }
+                  : { marginBottom: -4, width: 25, marginLeft: 20, color: "#FFF" }
+            }
+            size={Platform.OS === "ios" ? 35 : 24}
+            name={Platform.OS === "ios" ? "ios-arrow-back" : "md-arrow-back"}
+          /> 
+          {Platform.OS === "ios" ?   
+             <Text style={{fontFamily:'OpenSans',fontSize:16, color:'#FFF', marginLeft: 5, fontWeight:'300' }}>Back</Text> : null } 
+        </Row> 
+        </TouchableOpacity>
+      ),
+     })
+  },
+  "SuccessChat": {
+    screen: SuccessChatPaymentPage,
+    navigationOptions: {
+      title: 'Success'
+    }
+  },
+  
+  IndividualChat: {
+    screen: IndividualChat,
+    navigationOptions:({ navigation }) => ({
+    headerLeft: (
+    <Grid>
+      <Col>
+        <TouchableOpacity onPress={()=> navigation.pop()}>
+          <Icon name="ios-arrow-back" style={{ color: '#fff',marginLeft:15, justifyContent: 'center' , fontSize:30}}/>
+        </TouchableOpacity>
+      </Col>
+      <Col>
+        <TouchableOpacity style={{marginLeft:15}}>
+           <Thumbnail source={navigation.getParam('appBar', { profile_image: { uri: 'https://res.cloudinary.com/demo/image/upload/w_200,h_200,c_thumb,g_face,r_max/face_left.png' }}).profile_image} style={{width:45,height:45,}}/>
+       </TouchableOpacity>
+      </Col>
+      <Col style={{marginLeft:15}}>
+        <Text style={{fontFamily:'OpenSans',fontSize:16,fontWeight:'bold',color:'#fff'}}>{navigation.getParam('appBar', {title: ''}).title}</Text>
+        <Text style={{fontFamily:'OpenSans',fontSize:14,color:'#fff',}}>{navigation.getParam('appBar', {isOnline: ''}).isOnline}</Text>
+      </Col>
+    </Grid>
+    ),
+    /*headerRight: (
+      <Grid>
+        <Col>
+          <TouchableOpacity  >
+            <View style={{flexDirection:'row',}}>
+              <Icon name="ios-attach" style={{ color: '#fff',marginRight: 20,transform: [{ rotate: '45deg'}]}}/>
+              <Icon name="md-more" style={{ color: '#fff', marginRight: 15,  }}></Icon>
+            </View>
+          </TouchableOpacity>
+        </Col>
+      </Grid>
+     ),*/
+    })
+  },
+
   // ============== Pharmacy =================
   Pharmacy: {
     screen: PharmacyHome,
@@ -334,8 +464,32 @@ const HomeStack = createStackNavigator({
     navigationOptions: {
       title: 'Medicine Details'
     }
-  }
+  },
+  // ============== Reminder =================
 
+  Reminder: {
+    screen: Reminder,
+    navigationOptions: ({ navigation }) => ({
+      title: 'Reminder',
+      headerRight: (
+       
+            <TouchableOpacity onPress={() => { navigation.navigate('AddReminder') }} style={{backgroundColor:'#ffffff',borderRadius:10,height:30,paddingLeft:10,paddingRight:10,marginRight:10,}}>
+              <Row>
+                <Icon name="ios-add-circle" style={{ color: '#7E49C3', fontFamily: 'opensans-semibold',fontSize:20,marginTop:3}}></Icon>
+                <Text style={{fontFamily:'OpenSans',fontSize:14,marginLeft:5,fontWeight:'bold',marginTop:5}}>Add</Text>
+              </Row>
+            </TouchableOpacity>
+            
+          
+      ),
+    })
+  },
+  AddReminder: {
+    screen: AddReminder,
+    navigationOptions: {
+      title: 'Add Reminder'
+    }
+  },
 },
   {
     defaultNavigationOptions: ({ navigation }) => ({
@@ -343,11 +497,16 @@ const HomeStack = createStackNavigator({
       headerTintColor: 'white',
     })
   })
+   
 
+  
 
   const DrawerNavigator = createDrawerNavigator({
     Home: {
       screen: HomeStack,
+    },
+    BloodDonersList: {
+      screen: BloodDonersList,
     },
     "My Appointments":{
      screen: MyAppoinmentList
@@ -357,6 +516,15 @@ const HomeStack = createStackNavigator({
     },
     Orders: {
       screen: MyOrdersList
+    },
+    "Chat Service": {
+      screen: AvailableDoctors4Chat
+    },
+    "My Chats": {
+      screen : MyChats
+    },
+    Reminder: {
+      screen: Reminder
     }
   },
   {
@@ -371,13 +539,16 @@ const HomeStack = createStackNavigator({
     Profile: require('../../../assets/images/drawerIcons/Profile.png'),
     "My Appointments": require('../../../assets/images/drawerIcons/MyAppointments.png'),
     Pharmacy: require('../../../assets/images/drawerIcons/Pharmacy.png'),
-    Orders: require('../../../assets/images/drawerIcons/Orders.png')
+    Orders: require('../../../assets/images/drawerIcons/Orders.png'),
+    Reminder:require('../../../assets/images/drawerIcons/Orders.png'),
+    Chat:require('../../../assets/images/drawerIcons/Orders.png')
+
   }
   export default createAppContainer(createSwitchNavigator(
     {
       AuthLoading: AuthLoadingScreen,
       App: DrawerNavigator,
-      Auth: AuthStack,
+      Auth: AuthStack
     },
     {
       initialRouteName: 'AuthLoading',

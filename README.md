@@ -76,3 +76,5 @@ After:
     [_locationManager respondsToSelector:@selector(requestWhenInUseAuthorization)]) {
     [_locationManager requestWhenInUseAuthorization];
   }
+
+  https://stackoverflow.com/questions/45610448/socket-io-opening-multiple-connections-with-react-native

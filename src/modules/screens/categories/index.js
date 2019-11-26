@@ -13,12 +13,24 @@ class Categories extends Component {
   constructor(props) {
     super(props)
     this.state = {
-      data: this.props.navigation.state.params.data,
+      data:[],
     }
   }
   componentDidMount() {
-    console.log(' this.state.data' + JSON.stringify(this.state.data));
+    this.getCatagries();
   }
+  getCatagries = async () => {
+    try {
+        let result = await catagries();
+        if (result.success) { 
+            this.setState({ data: result.data })
+        }
+    } catch (e) {
+        console.log(e);
+    } finally {
+        this.setState( { isLoading : false });
+    }
+}
 
   navigateToCategorySearch(categoryName) {
     console.log(categoryName);
@@ -40,17 +52,16 @@ class Categories extends Component {
             extraData={this.state}
             renderItem={({ item, index }) =>
               <Grid style={{ marginTop: 10, justifyContent: 'center', padding: 5 }}>
-                <Item>
+               
                   {isLoading ? <Spinner color='blue' /> : null}
                   <TouchableOpacity onPress={() => this.navigateToCategorySearch(item.category_name)}>
 
-                    <Col>
+                    <Col style={{width:'90%',}}>
                       <LinearGradient
                         colors={['#7357A2', '#62BFE4']} style={{
                           flex: 1,
-
                           borderRadius: 10,
-                          padding: 6
+                        
                         }}>
                         <Image
                           source={{ uri: item.imageBaseURL + '/' + item.category_id + '.png' }} style={styles.customImage}
@@ -58,11 +69,19 @@ class Categories extends Component {
                         />
                       </LinearGradient>
 
-                      <Text style={styles.titleText}>{item.category_name}</Text>
+                      
 
                     </Col>
+                    <Col style={{ padding: 8,
+    backgroundColor: '#FF9502',
+    borderRadius: 20,marginTop:10,justifyContent:'center',width:'90%',alignItems:'center'}}>
+                    
+<Text style={styles.titleText}>{item.category_name}</Text>
+
+                    </Col>
+                 
                   </TouchableOpacity>
-                </Item>
+                
               </Grid>
             }
             keyExtractor={(item, index) => index.toString()}
@@ -118,16 +137,10 @@ const styles = StyleSheet.create({
 
   titleText: {
     fontSize: 12,
-    padding: 5,
-    backgroundColor: '#FF9502',
-    borderRadius: 20,
+  
     color: 'white',
-    width: 110,
-    textAlign: 'center',
     fontFamily: 'OpenSans',
-    marginLeft: 'auto',
-    marginRight: 'auto',
-    marginTop: 5
+    
   },
 
 

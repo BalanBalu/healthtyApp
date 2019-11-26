@@ -130,24 +130,23 @@ class OrderPaymentAddress extends Component {
                             <Card style={{ padding: 10, marginTop: 20 }}>
                                 <TouchableOpacity onPress={() => this.selectAddressRadioButton(index, item)}>
                                     <Row>
-                                        <Col style={{ width: '6%' }}>
+                                        <Col style={{ width: '10%' }}>
                                             <Radio
                                                 selected={this.state.selectedRadioButton[index]} color="green"
                                             />
 
                                         </Col>
-                                        <Col style={{ width: '95%' }}>
-                                            {item.fullName != undefined ? <Text style={{ fontSize: 14, fontFamily: 'OpenSans', marginLeft: 20, marginTop: 3, fontWeight: 'bold' }}>{item.fullName}</Text> :
+                                        <Col style={{ width: '90%' }}>
+                                            {item.fullName != undefined ? <Text style={{ fontSize: 14, fontFamily: 'OpenSans', marginLeft: 10, marginTop: 3, fontWeight: 'bold' }}>{item.fullName}</Text> :
                                                 <Text style={{ fontSize: 14, fontFamily: 'OpenSans', marginLeft: 20, marginTop: 3, fontWeight: 'bold' }}>{deliveryAddressArray[0].fullName}</Text>
 
                                             }
-                                        </Col>
-                                    </Row>
+
                                     <Text style={styles.customText}>{item.email}</Text>
                                     <Text style={styles.customText}>{item.mobile_no}</Text>
                                     {item.address ?
                                         <View>
-                                            <Text style={{ fontSize: 14, fontFamily: 'OpenSans', marginLeft: 40, marginTop: 4, fontWeight: 'bold' }}>Delivery Address</Text>
+                                            <Text style={{ fontSize: 14, fontFamily: 'OpenSans', marginLeft: 10, marginTop: 4, fontWeight: 'bold' }}>Delivery Address</Text>
                                             <Row>
                                                 <Text style={styles.customText}>{item.address.no_and_street}
                                                 </Text>
@@ -160,6 +159,9 @@ class OrderPaymentAddress extends Component {
                                             </Row>
                                         </View>
                                         : null}
+                                        </Col>
+                                    </Row>
+                                   
                                 </TouchableOpacity>
                             </Card>
                         } />
@@ -303,24 +305,24 @@ class OrderPaymentAddress extends Component {
 
                     </Grid>
                     <View style={{ marginTop: -95, height: 100 }}>
-                        <Row>
-                            <Col style={{ width: '30%', alignItems: 'center' }}>
+                        <Row style={{paddingLeft:10,paddingRight:10 }}>
+                            <Col style={{ width: '35%', alignItems: 'flex-start' }}>
                                 <Text style={styles.normalText}>Date</Text>
                             </Col>
-                            <Col style={{ width: '30%', alignItems: 'center' }}>
+                            <Col style={{ width: '25%', alignItems: 'center' }}>
                             </Col>
-                            <Col style={{ width: '40%', alignItems: 'center' }}>
+                            <Col style={{ width: '40%', alignItems: 'flex-end' }}>
                                 <Text style={styles.normalText}>{currentDate}</Text>
                             </Col>
                         </Row>
 
-                        <Row style={{ marginTop: -28 }}>
-                            <Col style={{ width: '30%', alignItems: 'center', marginLeft: 12 }}>
+                        <Row style={{ marginTop: -28,paddingLeft:10,paddingRight:10 }}>
+                            <Col style={{ width: '35%', alignItems: 'flex-start', }}>
                                 <Text style={styles.normalText}>TotalBill</Text>
                             </Col>
-                            <Col style={{ width: '40%', alignItems: 'center' }}>
+                            <Col style={{ width: '25%', alignItems: 'center' }}>
                             </Col>
-                            <Col style={{ width: '30%', alignItems: 'center', marginLeft: -30 }}>
+                            <Col style={{ width: '40%', alignItems: 'flex-end',  }}>
                                 <Text style={styles.normalText}>Rs.100</Text>
                             </Col>
                         </Row>
@@ -328,8 +330,8 @@ class OrderPaymentAddress extends Component {
 
                     <Card transparent style={{ padding: 10, marginTop: 20, }}>
                         <Text style={{ fontFamily: 'OpenSans', fontWeight: 'bold', fontSize: 18, padding: 5 }}>AddressInfo</Text>
-                        <Segment >
-                            <Button active={this.state.activePage === 1}
+                        <Segment>
+                            <Button active={this.state.activePage === 1} style={{borderLeftColor:'#fff',borderLeftWidth:1}}
                                 onPress={this.selectComponent(1)}><Text uppercase={false}>DefaultAddress</Text>
 
                             </Button>
@@ -394,7 +396,7 @@ const styles = StyleSheet.create({
     normalText:
     {
         fontFamily: 'OpenSans',
-        fontSize: 16,
+        fontSize: 14,
         color: '#fff',
         fontWeight: 'bold'
     },
@@ -408,7 +410,7 @@ const styles = StyleSheet.create({
     },
     customText:
     {
-        marginLeft: 40,
+        marginLeft: 10,
         fontFamily: 'OpenSans',
         fontSize: 13,
         marginTop: 3,

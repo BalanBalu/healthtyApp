@@ -1,8 +1,10 @@
 import React, { Component } from 'react';
-import { View, Text, AsyncStorage, StyleSheet } from "react-native";
+import { View, Text, AsyncStorage, Platform } from "react-native";
 import { Icon } from 'native-base';
 import { Col, Row, Grid } from 'react-native-easy-grid';
 import { store } from '../setup/store';
+export const IS_ANDROID = Platform.OS === 'android';
+export const IS_IOS = Platform.OS === 'ios';
 
 
 export const RenderHospitalAddress = (props) => {
@@ -70,11 +72,11 @@ export function renderProfileImage(data) {
     if (data.profile_image) {
         source = { uri: data.profile_image.imageURL }
     } else if (data.gender == 'M') {
-        source = require('../../assets/images/profile_male.png')
+        source = require('../../assets/images/male_user.png')
     } else if (data.gender == 'F') {
-        source = require('../../assets/images/profile_female.png')
+        source = require('../../assets/images/Female.png')
     } else {
-        source = require('../../assets/images/profile_common.png')
+        source = require('../../assets/images/male_user.png')
     }
     return (source)
 }
@@ -182,7 +184,7 @@ export class Badge extends Component {
         return (
 
             data != null &&
-            <Text style={{ position: 'absolute', backgroundColor: 'red', color: 'white', borderRadius: 20, marginLeft: 10, padding: 2, marginTop: -7 }}>{data}</Text>
+            <Text style={{ position: 'absolute', backgroundColor: 'red', color: 'white', borderRadius: 20, marginLeft: 10, padding: 2, marginTop: -7,paddingLeft:5,paddingRight:5}}>{data}</Text>
         )
     }
 }
@@ -218,4 +220,8 @@ export  function getAllEducation(data) {
     }
          
   }
+
+export const bloodGroupList = ['Select Blood Group', 'A+', 'O+', 'B+', 'AB+', 'A-', 'O-', 'B-', 'AB-']
+
+
   
