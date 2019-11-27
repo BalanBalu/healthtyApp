@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { StyleSheet } from 'react-native';
+import { StyleSheet,TouchableOpacity } from 'react-native';
 import { Container, Body, Picker, Button, Card, Text, Item, Row, View, Col, Content, Icon, Header, Left, Title, ListItem } from 'native-base';
 import SectionedMultiSelect from 'react-native-sectioned-multi-select';
 import { NavigationEvents } from 'react-navigation';
@@ -327,11 +327,11 @@ class Filters extends Component {
                                 </Col>
                             </Row>
                         </Card>
-                        <View>
-                            <Card style={{ backgroundColor: '#fff', borderRadius: 10, height: 45 }}>
-                                <View style={{ justifyContent: 'center' }}>
-
-                                    <SectionedMultiSelect style={{ height: 100 }}
+                       
+                          
+                               
+                        <TouchableOpacity style={{ backgroundColor: '#fff',borderRadius: 10,height:60 ,marginTop: 10}}>
+                                    <SectionedMultiSelect 
                                         items={this.state.languageData}
                                         uniqueKey='value'
                                         displayKey='value'
@@ -348,15 +348,13 @@ class Filters extends Component {
                                         colors={{ primary: '#18c971' }}
                                         showCancelButton={true}
                                         animateDropDowns={true}
-
+                                      
 
                                         testID='languageSelected'
                                     />
-                                </View>
-                            </Card>
-                        </View>
-
-                        <Item style={{ borderBottomWidth: 0, height: 40, backgroundColor: '#fff', borderRadius: 10 }}>
+                               
+                               </TouchableOpacity>
+                        <Item style={{ borderBottomWidth: 0, height: 40, backgroundColor: '#fff', borderRadius: 10,marginTop: 10 }}>
                             <Picker style={{ fontFamily: 'OpenSans' }}
                                 mode="dropdown"
                                 placeholder="Select Category"
@@ -383,11 +381,9 @@ class Filters extends Component {
                         </Item>
 
 
-                        <View>
-                            <Card style={{ backgroundColor: '#fff', borderRadius: 10, height: 45 }}>
-                                <View style={{ justifyContent: 'center' }}>
+                        <TouchableOpacity style={{ backgroundColor: '#fff',borderRadius: 10,height:60,marginTop: 10 }}>
 
-                                    <SectionedMultiSelect style={{ height: 100 }}
+                                    <SectionedMultiSelect 
                                         items={this.state.serviceList}
                                         uniqueKey='value'
                                         displayKey='value'
@@ -406,9 +402,7 @@ class Filters extends Component {
                                         animateDropDowns={true}
                                         testID='servicesSelected'
                                     />
-                                </View>
-                            </Card>
-                        </View>
+                            </TouchableOpacity>
 
                         <View style={{ paddingTop: 5 }}>
 
@@ -441,11 +435,10 @@ const styles = StyleSheet.create({
         borderRadius: 10,
         width: '90%',
         borderWidth: 10,
-        height: 50,
+       
     },
     selectedExpColor: {
         borderRadius: 10,
-        height: 50,
         width: '90%',
         borderWidth: 10,
         backgroundColor: 'green',
@@ -456,14 +449,14 @@ const styles = StyleSheet.create({
         width: '90%',
         marginLeft: 10,
         borderWidth: 50,
-        height: 50,
+    
     },
     selectedGenderColor: {
         borderRadius: 10,
         width: '90%',
         marginLeft: 10,
         borderWidth: 50,
-        height: 50,
+      
         backgroundColor: 'green',
     },
     defaultColor: {
@@ -471,17 +464,19 @@ const styles = StyleSheet.create({
         width: '90%',
         marginLeft: 10,
         borderWidth: 50,
-        height: 50,
+       
     },
     viewDocButtonBgGreeen: {
         borderRadius: 10,
         backgroundColor: '#775DA3',
-        height: 48
+       
+        marginTop:10
     },
     viewDocButtonBgGray: {
         borderRadius: 10,
         backgroundColor: '#A9A9A9',
-        height: 48
+
+        marginTop:10
     }
 
 })
