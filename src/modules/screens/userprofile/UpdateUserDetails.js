@@ -62,7 +62,7 @@ class UpdateUserDetails extends Component {
     }
 
     validateFirstNameLastName = async (text, type) => {
-        const regex = new RegExp('^[\ba-zA-Z ]+$')  //Support letter with space
+        const regex = new RegExp('^[a-zA-Z]{1}')  //Support letter with space
         if (type === "Firstname") {
             this.setState({ firstName: text, updateButton: false });
         } else {
@@ -112,21 +112,24 @@ class UpdateUserDetails extends Component {
                     this.setState({ isLoading: false });
                 }
             } else {
-
-                this.props.navigation.navigate('Profile');
+                Toast.show({
+                    text: "Entered details are already exist. Kindly enter a new details",
+                    type: "warning",
+                    duration: 3000
+                })
             }
 
         }
-
 
         catch (e) {
             Toast.show({
                 text: 'Exception Occured' + e,
                 duration: 3000
             });
-
-
             console.log(e);
+        }
+        finally {
+            this.setState({ isLoading: false });
         }
     }
 
@@ -244,7 +247,7 @@ class UpdateUserDetails extends Component {
                                 />
 
                                 <View>
-                                    <Button disabled={this.state.updateButton} primary style={styles.addressButton} block onPress={() => this.userUpdate()}>
+                                    <Button disabled={this.state.updateButton} primary style={styles.addressButton} block onPress={() => this.userUpdate()} testID="updateBasicDetails">
                                         <Text style={styles.buttonText}>Update</Text>
                                     </Button>
                                 </View>
