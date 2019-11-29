@@ -293,7 +293,7 @@ class Profile extends Component {
                                         <Text style={styles.topValue}>Gender </Text>
 
                                     </View>
-                                    <Text note style={styles.bottomValue}>{data.gender} </Text>
+                                    <Text note style={styles.bottomValue}>{data.gender === 'M' ? 'Male' : data.gender === 'F' ? 'Female' : data.gender === 'O' ? 'Others' : null} </Text>
 
                                 </Col>
 
