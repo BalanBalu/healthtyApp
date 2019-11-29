@@ -1,17 +1,16 @@
 import React, { Component } from 'react';
 import {
   Container, Content, Button, Text, Form, Item, Input, Header, Footer, FooterTab, Right,
-  Grid, Toast, KeyboardAvoidingView, Icon, Row
+  Spinner, Toast, Icon, Row
 } from 'native-base';
 import { connect } from 'react-redux'
 import { Image, TouchableOpacity, View, ScrollView, AsyncStorage } from 'react-native';
 import { Checkbox } from 'react-native-paper';
-
-import { login, RESET_REDIRECT_NOTICE, userFiledsUpdate } from '../../providers/auth/auth.actions';
+import { login, RESET_REDIRECT_NOTICE } from '../../providers/auth/auth.actions';
 import styles from '../../screens/auth/styles'
-import Spinner from '../../../components/Spinner';
 import { store } from '../../../setup/store';
 import { fetchUserProfile, storeBasicProfile } from '../../providers/profile/profile.action';
+import { validateEmailAddress } from '../../screens/../common';
 
 class Login extends Component {
   constructor(props) {
@@ -26,18 +25,18 @@ class Login extends Component {
     }
   }
 
-  doLogin = async () => {
-    try {
-      if (this.state.userEntry != '' && this.state.password != '') {
+/*  Do Login with Credentials  */
+doLogin = async () => {
+  const { userEntry, password } = this.state;
+      try {
         let requestData = {
-          userEntry: this.state.userEntry,
-          password: this.state.password,
+          userEntry: userEntry,
+          password: password,
           type: 'user'
         };
-
-        let result = await login(requestData);
-        console.log('result' + JSON.stringify(result))
-        console.log(this.props.user);
+        if ((userEntry && password) !== '') {
+          if (validateEmailAddress(userEntry) == true) {
+         await login(requestData);   // Do Login Process
         if (this.props.user.isAuthenticated) {
           this.getUserProfile();
           if (this.props.user.needToRedirect === true) {
@@ -51,14 +50,17 @@ class Login extends Component {
           this.props.navigation.navigate('Home');
         } else {
           this.setState({ loginErrorMsg: this.props.user.message })
-          Toast.show({
-            text: this.props.user.message,
-            timeout: 50000
-          })
         }
       } else {
-        this.setState({ loginErrorMsg: "Your login credentials are not valid" })
+         this.setState({ loginErrorMsg: 'Email address is not valid' });
       }
+    }
+    else {
+      this.setState({ loginErrorMsg: 'Please enter Email and Password' });
+    }
+    setTimeout(async () => {   // set Time out for Disable the Error Messages
+      await this.setState({ loginErrorMsg: '' });
+    }, 3000);
     } catch (e) {
       console.log(e);
     }
@@ -68,10 +70,7 @@ class Login extends Component {
       let userId = await AsyncStorage.getItem('userId');
       let fields = "first_name,last_name,gender,dob,mobile_no,email,profile_image"
       let result = await fetchUserProfile(userId, fields);
-      if (!result.error) {
-        storeBasicProfile(result)
-      }
-
+      if (!result.error) storeBasicProfile(result)
     }
     catch (e) {
       console.log(e);
@@ -79,27 +78,20 @@ class Login extends Component {
   }
   render() {
     const { user: { isLoading } } = this.props;
-    const { loginErrorMsg } = this.state;
-    const { checked } = this.state;
+    const { userEntry, password, showPassword,checked, loginErrorMsg } = this.state;
     return (
       <Container style={styles.container}>
         <Content contentContainerStyle={styles.bodyContent}>
           <ScrollView>
-            <Spinner color='blue'
-              visible={isLoading}
-              textContent={'Loading...'}
-            />
             <View >
               <Text style={styles.welcome}>Welcome To Patient Medflic</Text>
               <Image source={{ uri: 'https://static1.squarespace.com/static/582bbfef9de4bb07fe62ab18/t/5877b9ccebbd1a124af66dfe/1484241404624/Headshot+-+Circular.png?format=300w' }} style={styles.logo} />
-
-
               <Form>
-
                 <Item style={{ borderBottomWidth: 0, marginTop: 20 }}>
-                  <Input placeholder="Email Or Phone" style={styles.transparentLabel}
+                  <Input placeholder="Enter your email" style={styles.transparentLabel}
+                    ref={(input) => { this.enterTextInputEmail = input; }}
                     returnKeyType={'next'}
-                    value={this.state.userEntry}
+                    value={userEntry}
                     keyboardType={'email-address'}
                     onChangeText={userEntry => this.setState({ userEntry })}
                     autoCapitalize='none'
@@ -113,25 +105,17 @@ class Login extends Component {
                     ref={(input) => { this.userEntry = input; }}
                     secureTextEntry={true}
                     returnKeyType={'done'}
-                    value={this.state.password}
-                    secureTextEntry={this.state.showPassword}
+                    value={password}
+                    secureTextEntry={showPassword}
                     autoCapitalize='none'
                     onChangeText={password => this.setState({ password })}
-                    blurOnSubmit={false}
-                    onSubmitEditing={() => { this.doLogin(); }}
-
+                    // blurOnSubmit={false}
+                    onSubmitEditing={() => { (userEntry && password) != '' ? this.doLogin() : this.enterTextInputEmail._root.focus() }}
                   />
-                  <Icon active name='eye' style={{ fontSize: 20, marginTop: 10 }} onPress={() => this.setState({ showPassword: !this.state.showPassword })} />
+                  <Icon active name='eye' style={{ fontSize: 20, marginTop: 10 }} onPress={() => this.setState({ showPassword: !showPassword })} />
                 </Item>
-
-
                 <Row style={{ marginTop: 20, borderBottomWidth: 0 }}>
-
                   <Item style={{ borderBottomWidth: 0 }}>
-                    {/* <CheckBox  checked={this.state.conditionCheck}
-
-                    color="green" onPress={() => this.setState({ conditionCheck: !this.state.conditionCheck })} style={{borderRadius:5}}
-                  ></CheckBox> */}
                     <Checkbox color="green"
                       borderStyle={{
                         borderColor: '#F44336',
@@ -145,24 +129,22 @@ class Login extends Component {
                     />
                     <Text style={{ marginLeft: 5, color: 'gray', fontFamily: 'OpenSans', fontSize: 15 }}>Remember me</Text>
                   </Item>
-
                   <Right>
                     <TouchableOpacity onPress={() => this.props.navigation.navigate('forgotpassword')}>
                       <Text style={styles.customText}> Forgot Password</Text>
                     </TouchableOpacity>
                   </Right>
                 </Row>
-
+                {isLoading ? <Spinner color='blue' /> : null}
                 <Button style={styles.loginButton} block primary
                   disabled={isLoading}
                   onPress={() => this.doLogin()}>
                   <Text style={styles.ButtonText}>Sign In</Text>
                 </Button>
-                <Text style={{ color: 'red', paddingLeft: 20, fontSize: 15, fontFamily: 'OpenSans', marginBottom: 30 }}>{loginErrorMsg != null ? '*' + loginErrorMsg : null}</Text>
+                <Text style={{ color: 'red', marginLeft: 15, marginTop: 10 }}>{loginErrorMsg}</Text>
               </Form>
             </View>
           </ScrollView>
-
         </Content>
         <Footer >
           <FooterTab style={{ backgroundColor: '#F2F2F2', }}>
@@ -172,14 +154,11 @@ class Login extends Component {
           </FooterTab>
         </Footer>
       </Container>
-
     )
   }
-
 }
 
 function loginState(state) {
-
   return {
     user: state.user
   }

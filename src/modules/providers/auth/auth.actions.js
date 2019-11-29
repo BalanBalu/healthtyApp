@@ -66,9 +66,9 @@ export async function generateOTP(reqData) {
       type: AUTH_REQUEST,
       isLoading: true
     })
-    console.log('comign to Generate OTP after dispathc');
     let endPoint = 'auth/requestCodeFP'
     let response = await postService(endPoint, reqData);
+    let responseData = response.data
     if (response.error || response.success == false) {
       store.dispatch({
         type: LOGIN_HAS_ERROR,
@@ -80,7 +80,7 @@ export async function generateOTP(reqData) {
       type: OTP_CODE_GENERATED,
       userId: response.data.userId
     })
-    return
+    return responseData
   } catch (e) {
     console.log(e);
     store.dispatch({
@@ -99,26 +99,21 @@ export async function changePassword(reqData) {
     })
     let endPoint = 'auth/changePassword/'
     let response = await postService(endPoint, reqData);
-    let respData = response.data;
-    console.log(response);
-    if (!respData.success || respData.error) {
+    let responseData = response.data
+     if (response.data.success == true) {
       store.dispatch({
-        type: AUTH_HAS_ERROR,
-        message: respData.error || respData.message
+        type: NEW_PASSWORD,
+        newPassword: true,
+        message:response.data.message
       })
-      return;
     }
-
     store.dispatch({
-      type: AUTH_RESPONSE,
-      message: respData.message
-    });
-    store.dispatch({
-      type: NEW_PASSWORD,
-      isPasswordChanged: true
+      type: AUTH_HAS_ERROR,
+      error: response.data.error || response.data.message
     })
+    return responseData
   }
-  catch (e) {
+   catch (e) {
     console.log(e);
     store.dispatch({
       type: AUTH_HAS_ERROR,

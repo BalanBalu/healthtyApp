@@ -68,6 +68,12 @@ export default StyleSheet.create({
         marginLeft: 15,
         borderRadius: 5,
     },
+    loginButtonDisable: {
+        marginTop: 20,
+        backgroundColor: '#9777c7',
+        marginLeft: 15,
+        borderRadius: 5,
+    },
     detailsButton: {
         backgroundColor: '#775DA3',
         marginLeft: 15,

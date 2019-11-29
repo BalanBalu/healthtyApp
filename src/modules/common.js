@@ -137,20 +137,20 @@ export function getDoctorEducation(educationData) {
     return '';
 }
 export function getDoctorExperience(calulatedExperience) {
-    if(!calulatedExperience) {
-        return  'N/A'
-    } 
-    if(calulatedExperience.isPrivate === true) {
-        return  'N/A'
-    } 
-    if(calulatedExperience.year == 0) {
+    if (!calulatedExperience) {
+        return 'N/A'
+    }
+    if (calulatedExperience.isPrivate === true) {
+        return 'N/A'
+    }
+    if (calulatedExperience.year == 0) {
         month = calulatedExperience.month;
         return `${month} Month` + (month <= 1 ? '' : 's')
     } else {
-      year = calulatedExperience.year;
-      return `${year} Year` + ( year <= 1 ? '' : 's')
+        year = calulatedExperience.year;
+        return `${year} Year` + (year <= 1 ? '' : 's')
     }
-  }
+}
 
 export async function getUserNotification() {
     try {
@@ -184,44 +184,58 @@ export class Badge extends Component {
         return (
 
             data != null &&
-            <Text style={{ position: 'absolute', backgroundColor: 'red', color: 'white', borderRadius: 20, marginLeft: 10, padding: 2, marginTop: -7,paddingLeft:5,paddingRight:5}}>{data}</Text>
+            <Text style={{ position: 'absolute', backgroundColor: 'red', color: 'white', borderRadius: 20, marginLeft: 10, padding: 2, marginTop: -7, paddingLeft: 5, paddingRight: 5 }}>{data}</Text>
         )
     }
 }
 
 
 
-export  function getAllEducation(data) {
+export function getAllEducation(data) {
 
-    let  educationDetails=[] ;
-      data.map(education => {
-        if(!educationDetails.includes(education.degree)){
-         educationDetails.push(education.degree)
+    let educationDetails = [];
+    data.map(education => {
+        if (!educationDetails.includes(education.degree)) {
+            educationDetails.push(education.degree)
         }
-        
-     })
-     educationDetails=educationDetails.join(",");
-     return  educationDetails;
-  
-  
-  }
-  export function getAllSpecialist(data) {
-    let speaciallistDetails=[];
-    if(data) {
+
+    })
+    educationDetails = educationDetails.join(",");
+    return educationDetails;
+
+
+}
+export function getAllSpecialist(data) {
+    let speaciallistDetails = [];
+    if (data) {
         data.map(categories => {
-          if(!speaciallistDetails.includes(categories.category)){
-                speaciallistDetails.push( categories.category);
-          }
+            if (!speaciallistDetails.includes(categories.category)) {
+                speaciallistDetails.push(categories.category);
+            }
         })
-        speaciallistDetails=  speaciallistDetails.join(",");
+        speaciallistDetails = speaciallistDetails.join(",");
         return speaciallistDetails
     } else {
         return ''
     }
-         
-  }
+
+}
 
 export const bloodGroupList = ['Select Blood Group', 'A+', 'O+', 'B+', 'AB+', 'A-', 'O-', 'B-', 'AB-']
 
+export function validateEmailAddress(text) {
+    let reg = /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/;
+    if (reg.test(text) === false) return false;
+    else return true;
+}
 
-  
+export const debounce = (fun, delay) => {
+    let timer = null;
+    return function (...args) {
+        const context = this;
+        timer && clearTimeout(timer);
+        timer = setTimeout(() => {
+            fun.apply(context, args);
+        }, delay);
+    };
+}

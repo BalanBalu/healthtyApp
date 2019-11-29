@@ -1,13 +1,12 @@
 import React, { Component } from 'react';
 import {
     Container, Content, Button, Text, Form, Item, Input, Header, Footer,
-    FooterTab, Icon, Right, Body, Left, CheckBox, Radio, H3, H2, H1, Toast
+    FooterTab, Icon, Right, Body, Left, CheckBox, Radio, H3, H2, H1, Toast, Spinner
 } from 'native-base';
 import { login, signUp } from '../../providers/auth/auth.actions';
 import { connect } from 'react-redux'
 import { StyleSheet, Image, View } from 'react-native';
 import styles from '../../screens/auth/styles';
-import Spinner from '../../../components/Spinner';
 import { ScrollView } from 'react-native-gesture-handler';
 import { RadioButton,Checkbox } from 'react-native-paper';
 
@@ -20,7 +19,7 @@ class Signup extends Component {
             password: '',
             gender: 'M',
             radioStatus: [true, false, false],
-            conditionCheckErrorMsg: '',
+            errorMsg: '',
             checked: false,
             showPassword: true
         }
@@ -79,11 +78,10 @@ class Signup extends Component {
 
     render() {
         const { user: { isLoading } } = this.props;
-        const { checked } = this.state;
+        const { userEmail, password,showPassword, checked, errorMsg } = this.state;
         return (
 
             <Container style={styles.container}>
-                
                 <Content contentContainerStyle={styles.bodyContent}>
                     <ScrollView>
                     <View >
@@ -92,11 +90,10 @@ class Signup extends Component {
                         <Form style={{ marginBottom: 50 }}>
                             
                             <Item style={{ borderBottomWidth: 0, marginTop: 20 }}>
-                                <Input placeholder="Email Or Phone" style={styles.transparentLabel}
+                                <Input placeholder="Enter your Email " style={styles.transparentLabel}
                                     returnKeyType={'next'}
                                     keyboardType={'email-address'}
-                                    value={this.state.userEmail}
-                                    keyboardType={'email-address'}
+                                    value={userEmail}
                                     onChangeText={userEmail => this.setState({ userEmail })}
                                     blurOnSubmit={false}
                                     onSubmitEditing={() => { this.userEmail._root.focus(); }}
@@ -107,18 +104,16 @@ class Signup extends Component {
                                 <Input placeholder="Password" style={{ fontSize: 15,paddingLeft: 20, }}
                                     ref={(input) => { this.userEmail = input; }}
                                     returnKeyType={'done'}
-                                    value={this.state.password}
-                                    secureTextEntry={this.state.showPassword}
+                                    value={password}
+                                    secureTextEntry={showPassword}
                                     keyboardType={'default'}
                                     onChangeText={password => this.setState({ password })}
-                                    blurOnSubmit={false}
+                                    // blurOnSubmit={false}
                                     maxLength={16}
-                                    onSubmitEditing={() => { this.doSignUp(); }} />
-
+                                     />
                                 <Icon active name='eye' style={{ fontSize: 20 }} onPress={() => this.setState({ showPassword: !this.state.showPassword })} />
                             </Item>
                             <Item style={{ marginTop: 20, borderBottomWidth: 0, marginLeft: 20 }}>
-
                             <RadioButton.Group
                                onValueChange={value => this.setState({ gender: value }) }
                                 value={this.state.gender}>
@@ -136,46 +131,21 @@ class Signup extends Component {
                                     }}>Others</Text>  
                                       
                              </RadioButton.Group>       
-                                {/* <Radio selected={this.state.radioStatus[0]} onPress={() => this.toggleRadio("0", "M")} color={"#775DA3"}
-                                    selectedColor={"#775DA3"} />
-                                <Text style={{
-                                    marginLeft: 10, fontFamily: 'OpenSans',fontSize:15
-                                }}>Male</Text>
-
-                                <Radio selected={this.state.radioStatus[1]} onPress={() => this.toggleRadio("1", "F")} style={{ marginLeft: 20 }} color={"#775DA3"}
-                                    selectedColor={"#775DA3"} />
-                                <Text style={{
-                                    marginLeft: 40, fontFamily: 'OpenSans',fontSize:15
-                                }}>Female</Text>
-
-                                <Radio selected={this.state.radioStatus[2]} onPress={() => this.toggleRadio("2", "O")} style={{ marginLeft: 30 }} color={"#775DA3"}
-                                    selectedColor={"#775DA3"} />
-                                <Text style={{
-                                    marginLeft: 40, fontFamily: 'OpenSans',fontSize:15
-                                }}>Other</Text> */}
                             </Item>
-
-
                             <Item style={{ borderBottomWidth: 0, marginTop: 5, marginLeft: 20 }}>
-                                {/* <CheckBox checked={this.state.conditionCheck} color="green" style={{ borderRadius:5}} onPress={() => this.setState({ conditionCheck: !this.state.conditionCheck })} ></CheckBox> */}
                                 <Checkbox  color="green" 
                                  status={checked ? 'checked' : 'unchecked'}
                                  onPress={() => { this.setState({ checked: !checked }); }}
                                   />
                                 <Text style={{ marginLeft:5, color: 'gray', fontFamily: 'OpenSans', fontSize: 13, }}>I Accept the Medflic Terms And Conditions</Text>
                             </Item>
-
-                            <Spinner color='blue'
-                                visible={isLoading}
-                                textContent={'Loading...'}
-                            />
-
-                            <Button style={styles.loginButton} block primary onPress={() => this.doSignUp()}>
-
-                                <Text style={styles.ButtonText}>Sign Up</Text>
-                            </Button>
-                            <Text style={{ color: 'red',fontSize:15,fontFamily:'OpenSans' }}>{this.state.conditionCheckErrorMsg} </Text>
-
+                            {isLoading ? <Spinner color='blue' /> : null}
+                                <Button
+                                    style={(userEmail && password) == '' ? styles.loginButtonDisable : styles.loginButton}
+                                    block success disabled={(userEmail && password) == ''} onPress={() => this.doSignUp()}>
+                                    <Text style={styles.ButtonText}>Sign Up</Text>
+                                </Button>
+                                <Text style={{ color: 'red', marginLeft: 15, marginTop: 10 }}>{errorMsg}</Text>
                         </Form>
                         </View>
                     </ScrollView>
