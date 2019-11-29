@@ -9,7 +9,6 @@ import UpdateContact from "../../modules/screens/userprofile/UpdateContact";
 import UpdatePassword from "../../modules/screens/userprofile/UpdatePassword";
 import UpdateInsurance from "../../modules/screens/userprofile/UpdateInsurance";
 import UpdateUserDetails from "../../modules/screens/userprofile/UpdateUserDetails";
-import UpdateAddress from "../../modules/screens/userprofile/UpdateAddress";
 import { Icon, View,Thumbnail } from 'native-base';
 import IndividualChat from '../../modules/screens/chat/individualChat'
 import Categories from "../../modules/screens/categories";
@@ -242,12 +241,7 @@ const HomeStack = createStackNavigator({
       title: 'Search Location'
     }
   },
-  UpdateAddress: {
-    screen: UpdateAddress,
-    navigationOptions: {
-      title: 'Update Address'
-    }
-  },
+  
   // ========Appointment stack ==========
   "Doctor List": {
     screen: doctorSearchList,

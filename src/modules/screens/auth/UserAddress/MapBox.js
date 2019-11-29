@@ -65,10 +65,14 @@ export default class MapBox extends React.Component {
         const fromProfile = navigation.getParam('fromProfile') || false
         showAllAddressFields = navigation.getParam('mapEdit') || false
         let locationData = this.props.navigation.getParam('locationData');
+        if(fromProfile){
+            await this.setState({ fromProfile: true, showAllAddressFields: true })
+       
         if (locationData) {
             this.formUserAddress(locationData)
             await this.setState({ coordinates: locationData.center, fromProfile, showAllAddressFields })
         }
+    }
         else {
             this.getCurrentLocation();
         }
