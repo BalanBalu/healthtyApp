@@ -200,7 +200,7 @@ class UploadPrescription extends Component {
                                 </Row>
                             </View>
 
-                            <View style={{ padding: 25, marginTop: 10 }}>
+                            <View style={{ padding: 25,}}>
                                 <Text style={{  fontFamily: 'OpenSans', fontSize: 15 }}>Comments(optional)</Text>
                                 <TextInput style={{ borderWidth: 0.5, textAlignVertical: 'top', borderRadius: 5, height: 100, width: '100%',marginTop:10 }}
                                     placeholder=" Type your comments here"
@@ -211,7 +211,7 @@ class UploadPrescription extends Component {
 
                             </View>
 
-                            <Row style={{ alignSelf: 'center', justifyContent: 'center', marginTop: 10, paddingLeft: 50,paddingRight:50, alignItems: 'center' }}>
+                            <Row style={{ alignSelf: 'center', justifyContent: 'center', paddingLeft: 50,paddingRight:50, alignItems: 'center' }}>
                                 <Col style={{ width: '60%', justifyContent: 'center',marginLeft:55 }}>
                                     <Button disabled={this.state.uploadButton} style={{ borderRadius: 5, height: 35, padding: 35, color: 'gray' }} onPress={() => { this.uploadImageToServer(this.state.imageSource, selectedPharmacy) }}>
                                         <Text style={{ fontSize: 12 }}>UPLOAD</Text>
@@ -244,7 +244,6 @@ const styles = StyleSheet.create({
     {
         marginLeft: 'auto',
         marginRight: 'auto',
-        marginTop: 10,
         height: 250,
         width: 310,
         borderColor: '#f5f5f5',

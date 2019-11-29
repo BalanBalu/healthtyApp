@@ -172,11 +172,13 @@ finally {
                                     defaultValue={this.state.keyword}
                                     onChangeText={text => this.setState({ keyword:text })}
                                     placeholder='Search Medicine'
-                                    listStyle={{ marginLeft: 49, width: '71%', }}
+                                    listStyle={{ width: '100%', }}
                                     renderItem={({ item }) => (
-                                        <TouchableOpacity onPress={() => this.setState({ keyword: selectedMedicineName[0].medicine_name==='Medicine Not Found'?null:item.medicine_name})} >
+                                        <View>
+                                        <TouchableOpacity onPress={() => this.setState({ keyword: selectedMedicineName[0].medicine_name==='Medicine Not Found'?null:item.medicine_name})}  >
                                          <Text style={{fontSize: 15,color:'gray',borderBottomWidth:0.3,padding:3,}}>{item.medicine_name}</Text>
                                         </TouchableOpacity>
+                                        </View>
                                     )}
                                   keyExtractor={(item, index) => index.toString()} />
                             </Col>
