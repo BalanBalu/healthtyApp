@@ -25,42 +25,42 @@ class Login extends Component {
     }
   }
 
-/*  Do Login with Credentials  */
-doLogin = async () => {
-  const { userEntry, password } = this.state;
-      try {
-        let requestData = {
-          userEntry: userEntry,
-          password: password,
-          type: 'user'
-        };
-        if ((userEntry && password) !== '') {
-          if (validateEmailAddress(userEntry) == true) {
-         await login(requestData);   // Do Login Process
-        if (this.props.user.isAuthenticated) {
-          this.getUserProfile();
-          if (this.props.user.needToRedirect === true) {
-            let redirectNoticeData = this.props.user.redirectNotice;
-            this.props.navigation.navigate(redirectNoticeData.routeName, redirectNoticeData.stateParams);
-            store.dispatch({
-              type: RESET_REDIRECT_NOTICE
-            })
-            return
-          }        
-          this.props.navigation.navigate('Home');
+  /*  Do Login with Credentials  */
+  doLogin = async () => {
+    const { userEntry, password } = this.state;
+    try {
+      let requestData = {
+        userEntry: userEntry,
+        password: password,
+        type: 'user'
+      };
+      if ((userEntry && password) !== '') {
+        if (validateEmailAddress(userEntry) == true) {
+          await login(requestData);   // Do Login Process
+          if (this.props.user.isAuthenticated) {
+            this.getUserProfile();
+            if (this.props.user.needToRedirect === true) {
+              let redirectNoticeData = this.props.user.redirectNotice;
+              this.props.navigation.navigate(redirectNoticeData.routeName, redirectNoticeData.stateParams);
+              store.dispatch({
+                type: RESET_REDIRECT_NOTICE
+              })
+              return
+            }
+            this.props.navigation.navigate('Home');
+          } else {
+            this.setState({ loginErrorMsg: this.props.user.message })
+          }
         } else {
-          this.setState({ loginErrorMsg: this.props.user.message })
+          this.setState({ loginErrorMsg: 'Email address is not valid' });
         }
-      } else {
-         this.setState({ loginErrorMsg: 'Email address is not valid' });
       }
-    }
-    else {
-      this.setState({ loginErrorMsg: 'Please enter Email and Password' });
-    }
-    setTimeout(async () => {   // set Time out for Disable the Error Messages
-      await this.setState({ loginErrorMsg: '' });
-    }, 3000);
+      else {
+        this.setState({ loginErrorMsg: 'Please enter Email and Password' });
+      }
+      setTimeout(async () => {   // set Time out for Disable the Error Messages
+        await this.setState({ loginErrorMsg: '' });
+      }, 3000);
     } catch (e) {
       console.log(e);
     }
@@ -78,7 +78,7 @@ doLogin = async () => {
   }
   render() {
     const { user: { isLoading } } = this.props;
-    const { userEntry, password, showPassword,checked, loginErrorMsg } = this.state;
+    const { userEntry, password, showPassword, checked, loginErrorMsg } = this.state;
     return (
       <Container style={styles.container}>
         <Content contentContainerStyle={styles.bodyContent}>

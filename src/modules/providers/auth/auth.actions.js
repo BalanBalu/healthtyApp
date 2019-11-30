@@ -14,8 +14,35 @@ export const REDIRECT_NOTICE = 'AUTH/REDIRECT_NOTICE';
 export const RESET_REDIRECT_NOTICE = 'AUTH/RESET_REDIRECT_NOTICE';
 import {NOTIFICATION_RESET} from '../notification/notification.actions'
 import { store } from '../../../setup/store';
-
 import axios from 'axios';
+
+
+
+
+
+export async function generateOtpCodeForCreateAccount(reqData) {
+  try {
+    let endPoint = 'auth/generateOtpForCreateAccount'
+    let response = await postService(endPoint, reqData);
+    let responseData = response.data;
+    return responseData
+  } catch (e) {
+    console.log(e);
+  }
+}
+
+export async function verifyOtpCodeForCreateAccount(reqData) {
+  try {
+    let endPoint = 'auth/verifyOtpForCreateAccount'
+    let response = await postService(endPoint, reqData);
+    let responseData = response.data;
+    return responseData
+  }
+  catch (e) {
+    console.log(e);
+  }
+}
+
 
 export async function login(userCredentials, isLoading = true) {
   try {

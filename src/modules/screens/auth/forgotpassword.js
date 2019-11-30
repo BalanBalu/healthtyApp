@@ -19,7 +19,7 @@ class Forgotpassword extends Component {
             errorMessage: '',
             userEntry: '',
             showPassword: true,
-            isPasswordMatch:false
+            isPasswordMatch: false
         }
         this.checkMatchPasswords = debounce(this.checkMatchPasswords, 500);
     }
@@ -67,7 +67,7 @@ class Forgotpassword extends Component {
             })
         }
     }
-    
+
     /*  Change the New Password using Generated OTP Code  */
     changePassword = async () => {
         const { otpCode, password, isPasswordMatch } = this.state;
@@ -120,7 +120,7 @@ class Forgotpassword extends Component {
                         value={userEntry}
                         keyboardType={'email-address'}
                         onChangeText={userEntry => this.setState({ userEntry })}
-                        onSubmitEditing={() => { userEntry!==''?this.generateOtpCode():null }}
+                        onSubmitEditing={() => { userEntry !== '' ? this.generateOtpCode() : null }}
                     />
                 </Item>
                 {isLoading ? <Spinner color='blue' /> : null}
