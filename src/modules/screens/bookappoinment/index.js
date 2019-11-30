@@ -440,16 +440,18 @@ return (
                   
                </Col>
                 <Col style={{width:'17%'}}>
-                  <TouchableOpacity>
+                 
                 {isLoggedIn  ? 
-                   <Icon name="heart" onPress={()=>this.addToWishList(doctorData.doctor_id)} 
+                 <TouchableOpacity>
+                    <Icon name="heart" onPress={()=>this.addToWishList(doctorData.doctor_id)} 
                       style={patientWishListsDoctorIds.includes(doctorData.doctor_id) ? {  color: '#B22222', fontSize:20 ,marginTop:10} : {  color: '#000000', fontSize:20 ,marginTop:10}}>
-                  </Icon> : null }
+                    </Icon> 
+                  </TouchableOpacity> 
+                  : null }
                    {/* <Row>
                      <Text style={{ fontFamily: 'OpenSans',marginTop:20,fontSize:12,marginLeft:5 }}> 2.6km</Text>
                    </Row> */}
-                 </TouchableOpacity> 
-                 </Col> 
+                  </Col> 
              </Row>
            
              <Row style={{marginBottom:10}}>
