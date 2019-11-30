@@ -182,10 +182,7 @@ callSuggestionService=async(enteredText)=>{
                    <Row style={{marginBottom: 5}}>
                    {isSearchByCurrentLocation === true ? 
                    <Col size={10} style={{ flexDirection : 'row' }}>  
-                      <Text uppercase={false} style={{ paddingLeft: 10, color: 'gray', fontSize: 10, fontFamily: 'OpenSans-SemiBold' }}>You are searching </Text>
-                      <Text uppercase={false} style={{ color: 'gray', fontSize: 10, fontFamily: 'OpenSans-Bold' }}>Near by</Text>
-                      <Text uppercase={false} style={{ color: 'gray', fontSize: 10, fontFamily: 'OpenSans-SemiBold' }}> Hostpitals</Text>
-                    
+                      <Text uppercase={false} style={{ paddingLeft: 10, color: 'gray', fontSize: 10, fontFamily: 'OpenSans-SemiBold' }}>You are searching Near by Hostpitals</Text>
                     </Col> : 
                      <Col size={10} style={{ flexDirection : 'row' }}>  
                         <Text uppercase={false} style={{ paddingLeft: 10, color: 'gray', fontSize: 10, fontFamily: 'OpenSans-SemiBold' }}>You are searching Hospitals on </Text>
@@ -199,7 +196,9 @@ callSuggestionService=async(enteredText)=>{
 
                     <Row style={{ backgroundColor: 'white', borderColor: '#000', borderWidth: 1, borderRadius: 20, }}>
                     <Col size={1.1}> 
-                        <Icon name="ios-search" style={{ color: '#000', marginTop: 10, marginBottom: 10, marginLeft : 10 }} />
+                    <TouchableOpacity style={{ marginTop: 10, marginBottom: 10, marginLeft : 10}}>
+                        <Icon name="ios-search" style={{ color: '#000' }} />
+                     </TouchableOpacity>
                     </Col>
                       <Col size={7}> 
                         <Input 
@@ -273,27 +272,17 @@ callSuggestionService=async(enteredText)=>{
 
                         <Grid>
                             <Row >
-                                <Left  >
-
+                                <Left >
                                     <Text style={{ fontFamily: 'OpenSans', fontSize: 15 }}>Categories</Text>
                                 </Left>
                                 <Body >
 
                                 </Body>
                                 <Right>
-
-
-                                    <Text style={styles.titleText} onPress={() => this.navigetToCategories()}>View All</Text>
-
-
+                                   <Text style={styles.titleText} onPress={() => this.navigetToCategories()}>View All</Text>
                                 </Right>
-
-
-
                             </Row>
-
                             <Row>
-
                                 <ListItem style={{ borderBottomWidth: 0 }}>
                                     <ScrollView horizontal={false}>
                                         <FlatList
@@ -318,26 +307,18 @@ callSuggestionService=async(enteredText)=>{
                                             }
                                             keyExtractor={(item, index) => index.toString()}
                                         />
-
-
-                                    </ScrollView></ListItem>
-
-                            </Row>
-
-                        </Grid>
-
-                    </Card>
-
-                    <Card style={{ backgroundColor: '#ffeaa7', padding: 10, borderRadius: 10 }}
-                    >
+                                      </ScrollView>
+                                    </ListItem>
+                                 </Row>
+                             </Grid>
+                  </Card>
+                  <Card style={{ backgroundColor: '#ffeaa7', padding: 10, borderRadius: 10 }}>
                         <Text style={{ fontFamily: 'OpenSans', fontSize: 15 }}>You Can Save A Life</Text>
                         <Button block style={{ margin: 10, borderRadius: 20, backgroundColor: '#74579E' }}>
                             <Text uppercase={true} style={{ fontFamily: 'OpenSans', fontSize: 15, fontWeight: 'bold' }}>REPORT ACCIDENT NOW</Text>
                         </Button>
-
-                        <Text style={{ textAlign: 'right', fontSize: 15, fontFamily: 'OpenSans', color: '#000' }}>5002 Fast Growing Ambulance</Text>
-
-                    </Card>
+                       <Text style={{ textAlign: 'right', fontSize: 15, fontFamily: 'OpenSans', color: '#000' }}>5002 Fast Growing Ambulance</Text>
+                  </Card>
 
 
                     <LinearGradient
@@ -346,7 +327,7 @@ callSuggestionService=async(enteredText)=>{
                         <Grid style={{ padding: 10 }}>
                             <Col style={{ width: '75%' }}>
                                 <Text style={{ fontFamily: 'OpenSans', color: 'white', fontSize: 15 }}>Video Consultation</Text>
-                                <Text note style={{ color: 'white', fontFamily: 'OpenSans', marginTop: 'auto', marginBottom: 'auto', fontSize: 15 }}>Have A Video Visit With A Certified HealthCare - Doctors</Text>
+                                <Text note style={{ color: 'white', fontFamily: 'OpenSans', marginTop: 'auto', marginBottom: 'auto', fontSize: 15,lineHeight:25}}>Have A Video Visit With A Certified HealthCare - Doctors</Text>
 
                             </Col>
 
@@ -374,7 +355,7 @@ callSuggestionService=async(enteredText)=>{
 
                             <Row>
                                 <Col>
-                                    <Text note style={{ fontFamily: 'OpenSans', color: 'white', marginTop: 15 }}>Medflic Pharmacy Offers You Online Convenience For Ordering, Monitoring And Receiving Prescription For You And Your Family.</Text>
+                                    <Text note style={{ fontFamily: 'OpenSans', color: 'white', marginTop: 15,lineHeight:20 }}>Medflic Pharmacy Offers You Online Convenience For Ordering, Monitoring And Receiving Prescription For You And Your Family.</Text>
                                 </Col>
                             </Row>
                         </Grid>

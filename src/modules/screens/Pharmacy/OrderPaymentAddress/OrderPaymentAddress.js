@@ -309,9 +309,9 @@ class OrderPaymentAddress extends Component {
                             <Col style={{ width: '35%', alignItems: 'flex-start' }}>
                                 <Text style={styles.normalText}>Date</Text>
                             </Col>
-                            <Col style={{ width: '25%', alignItems: 'center' }}>
+                            <Col style={{ width: '20%', alignItems: 'center' }}>
                             </Col>
-                            <Col style={{ width: '40%', alignItems: 'flex-end' }}>
+                            <Col style={{ width: '45%', alignItems: 'flex-end' }}>
                                 <Text style={styles.normalText}>{currentDate}</Text>
                             </Col>
                         </Row>
@@ -320,23 +320,23 @@ class OrderPaymentAddress extends Component {
                             <Col style={{ width: '35%', alignItems: 'flex-start', }}>
                                 <Text style={styles.normalText}>TotalBill</Text>
                             </Col>
-                            <Col style={{ width: '25%', alignItems: 'center' }}>
+                            <Col style={{ width: '20%', alignItems: 'center' }}>
                             </Col>
-                            <Col style={{ width: '40%', alignItems: 'flex-end',  }}>
+                            <Col style={{ width: '45%', alignItems: 'flex-end',  }}>
                                 <Text style={styles.normalText}>Rs.100</Text>
                             </Col>
                         </Row>
                     </View>
 
                     <Card transparent style={{ padding: 10, marginTop: 20, }}>
-                        <Text style={{ fontFamily: 'OpenSans', fontWeight: 'bold', fontSize: 18, padding: 5 }}>AddressInfo</Text>
+                        <Text style={{ fontFamily: 'OpenSans', fontWeight: 'bold', fontSize: 18, padding: 5 }}>Address Info</Text>
                         <Segment>
                             <Button active={this.state.activePage === 1} style={{borderLeftColor:'#fff',borderLeftWidth:1}}
-                                onPress={this.selectComponent(1)}><Text uppercase={false}>DefaultAddress</Text>
+                                onPress={this.selectComponent(1)}><Text uppercase={false}>Default Address</Text>
 
                             </Button>
                             <Button active={this.state.activePage === 2}
-                                onPress={this.selectComponent(2)}><Text uppercase={false}>AddNewAddress</Text>
+                                onPress={this.selectComponent(2)}><Text uppercase={false}>Add New Address</Text>
 
                             </Button>
                         </Segment>

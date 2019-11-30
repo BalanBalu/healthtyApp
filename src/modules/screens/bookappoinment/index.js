@@ -440,14 +440,18 @@ return (
                   
                </Col>
                 <Col style={{width:'17%'}}>
+                 
                 {isLoggedIn  ? 
-                   <Icon name="heart" onPress={()=>this.addToWishList(doctorData.doctor_id)} 
+                 <TouchableOpacity>
+                    <Icon name="heart" onPress={()=>this.addToWishList(doctorData.doctor_id)} 
                       style={patientWishListsDoctorIds.includes(doctorData.doctor_id) ? {  color: '#B22222', fontSize:20 ,marginTop:10} : {  color: '#000000', fontSize:20 ,marginTop:10}}>
-                  </Icon> : null }
+                    </Icon> 
+                  </TouchableOpacity> 
+                  : null }
                    {/* <Row>
                      <Text style={{ fontFamily: 'OpenSans',marginTop:20,fontSize:12,marginLeft:5 }}> 2.6km</Text>
                    </Row> */}
-                 </Col> 
+                  </Col> 
              </Row>
            
              <Row style={{marginBottom:10}}>
@@ -457,7 +461,7 @@ return (
                   </Col>
                   <Col style={{width:"25%",marginTop:15,}}>
                     <Text note style={{ fontFamily: 'OpenSans',fontSize:12,textAlign:'center' }}> Rating</Text>
-                          <View style={{flexDirection:'row',textAlign:'center',marginLeft:30}}>
+                          <View style={{flexDirection:'row',alignItems:'center',justifyContent:'center'}}>
                             <StarRating 
                               fullStarColor='#FF9500' 
                               starSize={12} width={85} 
@@ -477,7 +481,7 @@ return (
                           </Col>
                           <Col style={{width:"25%",marginTop:15,}}>
                               <Text note style={{ fontFamily: 'OpenSans',fontSize:12,textAlign:'center' }}> Fees</Text>
-                                  <Text  style={{ fontFamily: 'OpenSans',fontSize:12, fontWeight:'bold',textAlign:'center' }}>{'\u20B9'}{this.selectedSlotFee}{' '} 
+                                  <Text  style={{ fontFamily: 'OpenSans',fontSize:12, fontWeight:'bold',textAlign:'center',marginLeft:10 }}>{'\u20B9'}{this.selectedSlotFee}{' '} 
                                   { this.selectedSlotFee !== this.selectedSlotFeeWithoutOffer ?  
                                       <Text style={{ fontWeight:'normal', fontFamily: 'OpenSans', fontSize: 12, textDecorationLine: 'line-through', textDecorationStyle: 'solid' }}>
                                           {'\u20B9'}{this.selectedSlotFeeWithoutOffer}</Text> : null
@@ -501,17 +505,17 @@ return (
             </Card>
        <Row style={{marginLeft:5,marginRight:5}}>
          <Segment>
-           <Button first style={[{width:'50%',borderBottomWidth:4,alignItems:'center', justifyContent : 'center' }, pressTab === 1 ? { borderBottomColor:'#775DA3' } : { borderBottomColor:'#000' }  ] } onPress={()=>{this.onSegemntClick(1)}}>
+           <TouchableOpacity first style={[{width:'50%',borderBottomWidth:4,alignItems:'center', justifyContent : 'center' }, pressTab === 1 ? { borderBottomColor:'#775DA3' } : { borderBottomColor:'#000' }  ] } onPress={()=>{this.onSegemntClick(1)}}>
              <Text style={{color:'#000',fontSize:12,fontFamily:'OpenSans',textAlign:'center' }}>About</Text>
-           </Button>
-           <Button style={[{width:'50%',borderBottomWidth:4,  alignContent :'center',  justifyContent : 'center' } , pressTab === 2 ? { borderBottomColor:'#775DA3' } : { borderBottomColor:'#000' }]} onPress={()=>{ 
+           </TouchableOpacity>
+           <TouchableOpacity style={[{width:'50%',borderBottomWidth:4,  alignContent :'center',  justifyContent : 'center' } , pressTab === 2 ? { borderBottomColor:'#775DA3' } : { borderBottomColor:'#000' }]} onPress={()=>{ 
                if(!isLoadedUserReview) {
                   this.getUserReview(doctorData.doctor_id);
                }
                this.onSegemntClick(2)
             }}>
              <Text style={{color:'#000',fontSize:12,fontFamily:'OpenSans',textAlign:'center' }}>Reviews</Text>
-           </Button>
+           </TouchableOpacity>
           
          </Segment>
       </Row>
@@ -753,7 +757,7 @@ return (
         <TouchableOpacity  style={[styles.availabilityBG, selectedDate === item ? { backgroundColor:'#775DA3' } : { backgroundColor:'#ced6e0' } ]} 
           onPress={() => this.onDateChanged( item )}>
            <Text style={[{textAlign:'center',fontSize:12,fontFamily:'OpenSans'}, selectedDate === item ? { color:'#fff' } : { color:'#000' } ] }>{formatDate(moment(item), 'ddd, DD MMM')}</Text>
-           <Text style={[{textAlign:'center',fontSize:10,fontFamily:'OpenSans'}, selectedDate === item ? { color:'#fff' } : { color:'#000' } ] }>{ slotData[item] ? slotData[item].reduce(reducer, 0) + ' Slots Available' : 'No Slots Available' }</Text>
+           <Text style={[{textAlign:'center',fontSize:10,fontFamily:'OpenSans',lineHeight:11}, selectedDate === item ? { color:'#fff' } : { color:'#000' } ] }>{ slotData[item] ? slotData[item].reduce(reducer, 0) + ' Slots Available' : 'No Slots Available' }</Text>
         </TouchableOpacity>
       </Col>   
     } keyExtractor={(item, index) => index.toString()} />
@@ -919,26 +923,23 @@ const styles = StyleSheet.create({
     margin: 5
   },
   slotBookedBgColor: {
-    textAlign:'center',
     backgroundColor:  '#A9A9A9', //'#775DA3',
     borderColor: '#000', 
     marginTop:10, height: 30, 
     borderRadius: 5, 
     justifyContent:'center', 
-    marginRight:5,
-    paddingLeft:5,
-    paddingRight:5
+    marginLeft:5,
+  
 },
 slotSelectedBgColor: {
-    textAlign:'center',
+   
     backgroundColor: '#775DA3',
     borderColor: '#000', 
     marginTop:10, height: 30, 
     borderRadius: 5, 
     justifyContent:'center', 
-    marginRight:5,
-    paddingLeft:5,
-    paddingRight:5
+    marginLeft:5,
+
 },
 slotBookedTextColor: {
     textAlign:'center',
@@ -947,16 +948,13 @@ slotBookedTextColor: {
     fontFamily:'OpenSans'
 },
 slotDefaultBgColor: {
-  textAlign:'center',
   backgroundColor:'#ced6e0', 
   borderColor: '#000', 
   marginTop:10, 
   height: 30, 
   borderRadius: 5, 
   justifyContent:'center' ,
-  marginRight:5,
-  paddingLeft:5,
-  paddingRight:5
+  marginLeft:5,
 },
 slotDefaultTextColor : {
   textAlign:'center',
