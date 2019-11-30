@@ -53,22 +53,21 @@ class Profile extends Component {
     /*Get userProfile*/
     getUserProfile = async () => {
         try {
-                let fields = "first_name,last_name,gender,dob,mobile_no,secondary_mobile,email,secondary_email,insurance,address,is_blood_donor,is_available_blood_donate,blood_group,profile_image"
+            let fields = "first_name,last_name,gender,dob,mobile_no,secondary_mobile,email,secondary_email,insurance,address,is_blood_donor,is_available_blood_donate,blood_group,profile_image"
 
-                let userId = await AsyncStorage.getItem('userId');
-                let result = await fetchUserProfile(userId, fields);
+            let userId = await AsyncStorage.getItem('userId');
+            let result = await fetchUserProfile(userId, fields);
 
-                if (result) {
-                    this.setState({ data: result });
+            if (result) {
+                this.setState({ data: result });
+                storeBasicProfile(result);
 
-                    storeBasicProfile(result);
-                    
-                    if (result.profile_image) {
-                        this.setState({ imageSource: result.profile_image.imageURL });
-                    }
+                if (result.profile_image) {
+                    this.setState({ imageSource: result.profile_image.imageURL });
                 }
-            
             }
+
+        }
         catch (e) {
             console.log(e);
         }
@@ -95,7 +94,10 @@ class Profile extends Component {
     }
 
     editAddress(address) {
-        console.log("Address: " + JSON.stringify(address))
+        if(address===null){
+            this.props.navigation.navigate('UserAddress', { fromProfile: true })
+        }
+        else{
         let locationAndContext = location(address.address);
         let latLng = address.coordinates;
         let addrressData = {
@@ -145,9 +147,9 @@ class Profile extends Component {
                 context: contextData
             }
 
+        }
     }
     }
-
     /*Upload profile pic*/
     selectPhotoTapped() {
 
@@ -343,7 +345,7 @@ class Profile extends Component {
                                 </Left>
 
                                 <Body>
-                                    <TouchableOpacity onPress={() => this.editAddress(data.address)} testID="onPressAddress">
+                                    <TouchableOpacity onPress={() => {this.editAddress(data.address) }} testID="onPressAddress">
                                         <Text style={styles.customText}>Address</Text>
                                         {data.address ?
                                             <View>
@@ -355,7 +357,7 @@ class Profile extends Component {
                                                     + data.address.address.country}</Text>
                                                 <Text note style={styles.customText1}>{data.address.address.pin_code}</Text>
                                             </View> :
-                                            <Button transparent onPress={() => this.editProfile('MapBox')}>
+                                            <Button transparent onPress={() => this.props.navigation.navigate('UserAddress', { fromProfile: true })}>
                                                 <Icon name='add' style={{ color: 'gray' }} />
                                                 <Text uppercase={false} style={styles.customText}>Add Address</Text>
                                             </Button>}
@@ -381,7 +383,7 @@ class Profile extends Component {
                                     <TouchableOpacity onPress={() => this.editProfile('UpdateContact')} testID="onPressUpdateContact">
                                         <Text style={styles.customText}>Contact</Text>
                                         <Text note style={styles.customText1}>{data.mobile_no}</Text>
-                                        {data.secondary_mobile !== '' ?
+                                        {data.secondary_mobile !==undefined ?
                                             <Col>
                                                 <Text style={styles.customText}>Secondary</Text>
                                                 <Text note style={styles.customText1}>{data.secondary_mobile}</Text>
