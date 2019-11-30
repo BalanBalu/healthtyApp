@@ -154,7 +154,7 @@ const styles = StyleSheet.create({
     },
 
     bodyContent: {
-        padding: 20
+        padding: 10
 
     },
     customizedText: {
@@ -178,7 +178,6 @@ const styles = StyleSheet.create({
     },
     mainCard:{
         borderRadius:10,
-        marginTop:20
     },
     circleIcon:{
         color: '#5cb75d',
