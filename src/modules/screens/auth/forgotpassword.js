@@ -115,7 +115,7 @@ class Forgotpassword extends Component {
 
         return (
             <View>
-                <Item style={{ borderBottomWidth: 0 }}>
+                <Item style={{ borderBottomWidth: 0 , marginLeft: 16}}>
                     <Input placeholder="Enter your email" style={styles.transparentLabel2}
                         value={userEntry}
                         keyboardType={'email-address'}
@@ -138,8 +138,8 @@ class Forgotpassword extends Component {
 
         return (
             <View>
-                <Item style={{ borderBottomWidth: 0 }}>
-                    <Input placeholder="Enter your OTP" style={styles.transparentLabel2}
+                <Item style={{ borderBottomWidth: 0,  marginLeft: 17 }}>
+                    <Input placeholder="Enter your OTP" style={styles.transparentLabel}
                         keyboardType="numeric"
                         value={otpCode}
                         onChangeText={otpCode => this.setState({ otpCode })}
@@ -148,8 +148,7 @@ class Forgotpassword extends Component {
                         blurOnSubmit={false}
                     />
                 </Item>
-
-                <Item success style={styles.transparentLabel3}>
+                <Item style={styles.passwordTransparentLabel}>
                     <Input placeholder="Enter new password" style={{ fontSize: 15, paddingLeft: 20, }}
                         ref={(input) => { this.enterOtpTextInput = input; }}
                         secureTextEntry={this.state.showPassword}
@@ -160,7 +159,7 @@ class Forgotpassword extends Component {
                     />
                     {password.length >= 6 ? <Icon active name='ios-checkmark' style={{ fontSize: 34 }} /> : <Icon active name='ios-close' style={{ color: '#d00729', fontSize: 34 }} />}
                 </Item>
-                <Item success style={styles.transparentLabel3}>
+                <Item style={styles.passwordTransparentLabel}>
                     <Input placeholder="Retype new password" style={{ fontSize: 15, paddingLeft: 20, }}
                         ref={(input) => { this.enterNewPassTextInput = input; }}
                         secureTextEntry={this.state.showPassword}

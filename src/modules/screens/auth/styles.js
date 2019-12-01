@@ -27,6 +27,18 @@ export default StyleSheet.create({
         fontWeight:'bold',
         fontFamily: 'OpenSans',
     },
+    passwordTransparentLabel:{
+        borderBottomWidth: 0,
+        borderBottomColor: 'transparent',
+        backgroundColor: '#F1F1F1',
+        height: 45,
+        marginTop: 20,
+        borderRadius: 5,
+        fontFamily: 'OpenSans',
+        fontSize: 15,
+        marginLeft:17
+    },
+
     transparentLabel: {
         borderBottomColor: 'transparent',
         backgroundColor: '#F1F1F1',

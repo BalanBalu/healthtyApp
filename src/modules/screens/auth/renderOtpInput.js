@@ -1,9 +1,8 @@
 import React, { Component } from 'react';
-import { StyleSheet } from 'react-native';
-import { View, Button, Text, Toast, Content, Container } from 'native-base';
-import { connect } from 'react-redux';
+import { StyleSheet, TouchableOpacity } from 'react-native';
+import { View, Button, Text, Toast, Content, Container, Row, Left, Right } from 'native-base'; import { connect } from 'react-redux';
 import OtpInputs from '../../../components/OtpInputText/OtpInput';
-import { signUp, login, verifyOtpCodeForCreateAccount } from '../../providers/auth/auth.actions';
+import { generateOtpCodeForCreateAccount, verifyOtpCodeForCreateAccount } from '../../providers/auth/auth.actions';
 import Spinner from '../../../components/Spinner'
 
 class RenderOtpInput extends Component {
@@ -13,13 +12,16 @@ class RenderOtpInput extends Component {
             otp: '',
             requestData: {},
             errorMsg: '',
+            isVerifyingEmail: false,
+            isGeneratedOtp: false,
             isLoading: false
         };
     }
     async componentDidMount() {
-        let requestData = this.props.navigation.getParam("requestData")
+        let requestData = this.props.navigation.getParam("reqDataForGenerateOtpCode")
         await this.setState({ requestData })
-        console.log('requestData::::::::::::::' + JSON.stringify(requestData))
+        console.log('requestData::::::::::::::' + JSON.stringify(requestData));
+        await this.generateOtpCode();
     }
 
     getEnteredOtpCode = async (otp) => {
@@ -28,45 +30,24 @@ class RenderOtpInput extends Component {
             this.verifyOtpCode();
     }
 
-    /*  verify Email using Entered OTP Code   */
-    verifyOtpCode = async () => {
-        const { requestData, otp } = this.state;
+    generateOtpCode = async () => {
+        const { requestData } = this.state;
         try {
             this.setState({ isLoading: true });
-            let loginData = {
-                userEntry: requestData.email,
-                password: requestData.password,
-                type: 'user'
-            };
-            let reqVerifyOtpCodeData = {
+            let reqDataForGenerateOtpCode = {
                 appType: 'user',
-                email: requestData.email,
-                "otp": otp
+                email: requestData.email
             }
-            let reqOtpVerifiedResponse = await verifyOtpCodeForCreateAccount(reqVerifyOtpCodeData)
-            if (reqOtpVerifiedResponse.success == true) {
-                await signUp(requestData);        // Do SignUp Process
-                if (!this.props.user.signUpSuccess)
-                    // this.setState({ errorMsg: this.props.user.message })
-                await login(loginData);  // Do SignIn Process after SignUp is Done
-                if (this.props.user.isAuthenticated) {
-                    Toast.show({
-                        text: requestData.email + "  Email details successfully verified",
-                        type: "success",
-                        duration: 4000
-                    });
-                    this.props.navigation.navigate('userdetails');
-                } else {
-                    this.setState({ errorMsg: this.props.user.message })
-                }
+            let reqOtpResponse = await generateOtpCodeForCreateAccount(reqDataForGenerateOtpCode) //  Generate OTP code for Create DR medflic Account
+            if (reqOtpResponse.success == true) {
+                await this.setState({ isGeneratedOtp: true });
+            } else {
+                this.setState({ errorMsg: JSON.stringify(reqOtpResponse.error) + "  Skip to Continue" })
             }
-            else {
-                this.setState({ errorMsg: reqOtpVerifiedResponse.error })
-            }
+            this.setState({ isLoading: false });
             setTimeout(async () => {   // set Time out for Disable the Error Messages
                 await this.setState({ errorMsg: '' });
             }, 3000);
-            this.setState({ isLoading: false });
         } catch (e) {
             this.setState({ isLoading: false });
             Toast.show({
@@ -76,21 +57,74 @@ class RenderOtpInput extends Component {
         }
     }
 
+    /*  verify Email using Entered OTP Code   */
+    verifyOtpCode = async () => {
+        const { requestData, otp } = this.state;
+        try {
+            this.setState({ isVerifyingEmail: true, isLoading: true });
+            let reqDataForVerifyOtpCode = {
+                appType: 'user',
+                userId: requestData.userId,
+                "otp": otp
+            }
+            let reqOtpVerifiedResponse = await verifyOtpCodeForCreateAccount(reqDataForVerifyOtpCode)
+            if (reqOtpVerifiedResponse.success == true) {
+                Toast.show({
+                    text: reqOtpVerifiedResponse.message,
+                    type: "success",
+                    duration: 4000
+                })
+                this.props.navigation.navigate('userdetails');
+            }
+            else {
+                this.setState({ errorMsg: reqOtpVerifiedResponse.error })
+            }
+            this.setState({ isLoading: false,isVerifyingEmail:false });
+            setTimeout(async () => {   // set Time out for Disable the Error Messages
+                await this.setState({ errorMsg: '' });
+            }, 4000);
+        } catch (e) {
+            this.setState({ isLoading: false });
+            Toast.show({
+                text: 'Something Went Wrong' + e,
+                duration: 3000
+            })
+        }
+    }
+
+
+
+
     render() {
-        const { otp, requestData, isLoading, errorMsg } = this.state;
+        const { otp, requestData, isVerifyingEmail, isGeneratedOtp, isLoading, errorMsg } = this.state;
 
         return (
             <Container>
-                <Spinner
+                {isVerifyingEmail == true ? <Spinner
                     visible={isLoading}
-                    textContent={'Please Wait Loading....'}
-                />
+                    textContent={'Please Wait Email is Verifying ....'}
+                /> : <Spinner
+                        visible={isLoading}
+                        textContent={'Generating OTP....'}
+                    />}
                 <Content padder style={{ backgroundColor: '#fff' }}>
                     <View style={styles.container}>
-                        <Text style={{ color: 'black', fontFamily: 'OpenSans', fontSize: 20 }}>VERIFY DETAILS</Text>
-                        <Text style={{ color: 'gray', fontSize: 15 }}>OTP sent to {requestData.email}</Text>
+                        <Row>
+                            <Left>
+                                <Text style={{ color: 'black', fontFamily: 'OpenSans', fontSize: 20 }}>VERIFY DETAILS</Text>
+                            </Left>
+                            <Right>
+                                <TouchableOpacity onPress={() => this.props.navigation.navigate('userdetails')}>
+                                    <Text style={{ color: '#6888f2', fontSize: 15, textAlign: 'right' }}>SKIP</Text>
+                                </TouchableOpacity>
+                            </Right>
+                        </Row>
+                        {isGeneratedOtp == true ? <Text style={{ color: 'gray', fontSize: 15 }}>OTP sent to {requestData.email}</Text> : <Text style={{ color: 'gray', fontSize: 15 }}>OTP couldn't sent to {requestData.email} Please Contact Our @Support_Team!</Text>}
                         <Text style={{ marginTop: 10, fontSize: 13 }}>Enter OTP</Text>
                         <OtpInputs getOtp={(otp) => this.getEnteredOtpCode(otp)} />
+                        <TouchableOpacity onPress={() => this.generateOtpCode()}>
+                            <Text style={{ color: '#1caed6', marginLeft: 10, fontSize: 13, textAlign: 'right' }}>RESEND OTP</Text>
+                        </TouchableOpacity>
                         <Button
                             style={otp.length != 6 ? styles.loginButtonDisable : styles.loginButton}
                             block success disabled={otp.length != 6} onPress={() => this.verifyOtpCode()}>
