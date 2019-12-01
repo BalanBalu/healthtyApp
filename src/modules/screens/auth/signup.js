@@ -3,7 +3,7 @@ import {
     Container, Content, Button, Text, Form, Item, Input, Header, Footer,
     FooterTab, Icon, Right, Body, Left, CheckBox, Radio, H3, H2, H1, Toast, Spinner
 } from 'native-base';
-import { signUp, login } from '../../providers/auth/auth.actions';
+import { signUp } from '../../providers/auth/auth.actions';
 import { validateEmailAddress } from '../../common';
 import { connect } from 'react-redux'
 import { StyleSheet, Image, View } from 'react-native';
@@ -26,68 +26,49 @@ class Signup extends Component {
             isLoading: false
         }
     }
-    toggleRadio = (radioSelect, genderSelect) => {
+    toggleRadio = async (radioSelect, genderSelect) => {
         let tempArray = [false, false, false];
         tempArray[radioSelect] = true;
-        this.setState({ radioStatus: tempArray });
-        this.setState({ gender: genderSelect });
+        await this.setState({ radioStatus: tempArray, gender: genderSelect });
     }
     doSignUp = async () => {
         const { userEmail, password, checked, gender } = this.state;
         try {
-            if (checked === true) {
-                if (validateEmailAddress(userEmail) == true) {
-                    let requestData = {
-                        email: userEmail,
-                        password: password,
-                        gender: gender,
-                        type: 'user'
-                    };
-                    let loginData = {
-                        userEntry: userEmail,
-                        password: password,
-                        type: 'user'
-                    }
-                    this.setState({ isLoading: true })
-                    await signUp(requestData);        // Do SignUp Process
-                    if (this.props.user.success) {
-                        await login(loginData);  // Do SignIn Process after SignUp is Done
-                        if (this.props.user.isAuthenticated) {
-                            let reqDataForGenerateOtpCode = {
-                                appType: 'user',
-                                email: userEmail,
-                                userId: this.props.user.userId,
-                            }
-                            Toast.show({
-                                text: "Your Account Successfully created",
-                                type: "success",
-                                duration: 4000
-                            });
-                            this.props.navigation.navigate('renderOtpInput', { reqDataForGenerateOtpCode: reqDataForGenerateOtpCode });
-                        } else {
-                            this.setState({ errorMsg: this.props.user.message })
-                        }
-                    } else {
-                        this.setState({ errorMsg: this.props.user.message })
-                    }
-                }
-                else {
-                    this.setState({ errorMsg: 'Please enter the valid Email address' })
-                }
-            } else {
-                this.setState({ errorMsg: 'agree to the terms and conditions to continue' })
+            if (checked === false) {
+                this.setState({ errorMsg: 'Please agree to the terms and conditions to continue' });
+                return false;
             }
-            this.setState({ isLoading: false })
-            setTimeout(async () => {   // set Time out for Disable the Error Messages
-                await this.setState({ errorMsg: '' });
-            }, 3000);
+            if (validateEmailAddress(userEmail) == false) {
+                this.setState({ errorMsg: 'Please enter the valid Email address' })
+                return false;
+            }
+            this.setState({ errorMsg: '', isLoading: true });
+            let requestData = {
+                email: userEmail,
+                password: password,
+                gender: gender,
+                type: 'user'
+            };
+            await signUp(requestData);        // Do SignUp Process
+            if (this.props.user.success) {
+                let loginData = {
+                    userEntry: userEmail,
+                    password: password,
+                    type: 'user'
+                }
+                this.props.navigation.navigate('renderOtpInput', { loginData: loginData });
+            } else {
+                this.setState({ errorMsg: this.props.user.message })
+            }
         } catch (e) {
-            this.setState({ isLoading: false })
             Toast.show({
                 text: 'Something Went Wrong' + e,
                 duration: 3000,
                 type: "danger"
             })
+        }
+        finally {
+            this.setState({ isLoading: false })
         }
     }
 
