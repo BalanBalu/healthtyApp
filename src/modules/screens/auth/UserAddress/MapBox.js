@@ -66,27 +66,28 @@ export default class MapBox extends React.Component {
         showAllAddressFields = navigation.getParam('mapEdit') || false
         let locationData = this.props.navigation.getParam('locationData');
 
-        if(fromProfile){
-            await this.setState({ fromProfile: true, showAllAddressFields: true })
-        if (locationData) {
-            this.formUserAddress(locationData)
-            await this.setState({ coordinates: locationData.center, fromProfile, showAllAddressFields })
+        if (fromProfile) {
+            await this.setState({ fromProfile: true })
+            if (locationData) {
+                this.formUserAddress(locationData)
+                await this.setState({ coordinates: locationData.center, fromProfile, showAllAddressFields })
+            }
+            else {
+                this.getCurrentLocation();
+            }
         }
-       
-    }
         else {
             this.getCurrentLocation();
         }
     }
 
-    backNavigation(navigationData) {
-
+     backNavigation(navigationData) {
         if (navigationData.action) {
             if (navigationData.action.type === 'Navigation/NAVIGATE') {
                 let searchLocationData = this.props.navigation.getParam('locationData')
                 if (searchLocationData) {
                     this.formUserAddress(searchLocationData)
-                    this.setState({ coordinates: searchLocationData.center })
+                     this.setState({ coordinates: searchLocationData.center })
 
                 }
             }
@@ -366,7 +367,7 @@ export default class MapBox extends React.Component {
 
                 </View>
 
-                {!this.state.showAllAddressFields ?
+                {this.state.showAllAddressFields == false ?
                     <Card>
                         <CardItem bordered>
                             <Body>
@@ -376,7 +377,7 @@ export default class MapBox extends React.Component {
                                     <Input placeholder="Location" style={styles.transparentLabel}
                                         value={this.state.locationFullText}
                                         //editable={false}
-                                        onFocus={() => this.props.navigation.navigate('UserAddress')}
+                                        onFocus={() => { this.state.fromProfile ? this.props.navigation.navigate('UserAddress', { fromProfile: true }) : this.props.navigation.navigate('UserAddress') }}
                                         onChangeText={locationFullText => this.setState({ locationFullText })} />
                                 </Item>
 

@@ -94,61 +94,61 @@ class Profile extends Component {
     }
 
     editAddress(address) {
-        if(address===null){
-            this.props.navigation.navigate('UserAddress', { fromProfile: true })
+        if (address === null) {
+            this.editProfile('MapBox')
         }
-        else{
-        let locationAndContext = location(address.address);
-        let latLng = address.coordinates;
-        let addrressData = {
-            center: [latLng[1], latLng[0]],
-            place_name: locationAndContext.placeName,
-            context: locationAndContext.context
-        }
-        this.props.navigation.navigate('MapBox', {
-            locationData: addrressData,
-            fromProfile: true,
-            mapEdit: true
-        });
-
-        function location(locationObj) {
-            let placeName = '';
-            let contextData = [];
-            Object.keys(locationObj).forEach(keyEle => {
-                let obj = {
-                    "text": locationObj[keyEle]
-                };
-                switch (keyEle) {
-                    case 'no_and_street':
-                        obj.id = 'locality.123';
-                        break;
-                    case 'city':
-                        obj.id = 'place.123';
-                        break;
-                    case 'district':
-                        obj.id = 'district.123';
-                        break;
-                    case 'state':
-                        obj.id = 'region.123';
-                        break;
-                    case 'country':
-                        obj.id = 'country.123';
-                        break;
-                    case 'pin_code':
-                        obj.id = 'pin_code.123';
-                        break;
-                }
-                contextData.push(obj);
-                placeName += locationObj[keyEle] + ', ';
+        else {
+            let locationAndContext = location(address.address);
+            let latLng = address.coordinates;
+            let addrressData = {
+                center: [latLng[1], latLng[0]],
+                place_name: locationAndContext.placeName,
+                context: locationAndContext.context
+            }
+            this.props.navigation.navigate('MapBox', {
+                locationData: addrressData,
+                fromProfile: true,
+                mapEdit: true
             });
 
-            return {
-                placeName: placeName.slice(0, -2),
-                context: contextData
-            }
+            function location(locationObj) {
+                let placeName = '';
+                let contextData = [];
+                Object.keys(locationObj).forEach(keyEle => {
+                    let obj = {
+                        "text": locationObj[keyEle]
+                    };
+                    switch (keyEle) {
+                        case 'no_and_street':
+                            obj.id = 'locality.123';
+                            break;
+                        case 'city':
+                            obj.id = 'place.123';
+                            break;
+                        case 'district':
+                            obj.id = 'district.123';
+                            break;
+                        case 'state':
+                            obj.id = 'region.123';
+                            break;
+                        case 'country':
+                            obj.id = 'country.123';
+                            break;
+                        case 'pin_code':
+                            obj.id = 'pin_code.123';
+                            break;
+                    }
+                    contextData.push(obj);
+                    placeName += locationObj[keyEle] + ', ';
+                });
 
+                return {
+                    placeName: placeName.slice(0, -2),
+                    context: contextData
+                }
+
+            }
         }
-    }
     }
     /*Upload profile pic*/
     selectPhotoTapped() {
@@ -265,7 +265,7 @@ class Profile extends Component {
                                         </View>
 
                                         <View style={{ flexDirection: 'row', marginTop: 10, marginLeft: 30 }}>
-                                            <Text style={{ marginLeft: 'auto', marginRight: 'auto', padding: 5, fontFamily: 'OpenSans', backgroundColor: '#fff', borderRadius: 10, marginTop: 5, width: '100%', textAlign: 'center', fontSize: 15 }} onPress={() => this.editProfile('UpdateUserDetails')}>{data.first_name + " " + data.last_name}
+                                            <Text style={{ marginLeft: 'auto', marginRight: 'auto', padding: 5, fontFamily: 'OpenSans', backgroundColor: '#fff', borderRadius: 10, marginTop: 5, width: '100%', textAlign: 'center', fontSize: 15 }} onPress={() => this.editProfile('UpdateUserDetails')}>{data.first_name ? data.first_name + " " : data.last_name?data.last_name:null}
                                             </Text>
 
 
@@ -345,7 +345,7 @@ class Profile extends Component {
                                 </Left>
 
                                 <Body>
-                                    <TouchableOpacity onPress={() => {this.editAddress(data.address) }} testID="onPressAddress">
+                                    <TouchableOpacity onPress={() => { this.editAddress(data.address) }} testID="onPressAddress">
                                         <Text style={styles.customText}>Address</Text>
                                         {data.address ?
                                             <View>
@@ -357,7 +357,7 @@ class Profile extends Component {
                                                     + data.address.address.country}</Text>
                                                 <Text note style={styles.customText1}>{data.address.address.pin_code}</Text>
                                             </View> :
-                                            <Button transparent onPress={() => this.props.navigation.navigate('UserAddress', { fromProfile: true })}>
+                                            <Button transparent onPress={() => this.editProfile('MapBox')}>
                                                 <Icon name='add' style={{ color: 'gray' }} />
                                                 <Text uppercase={false} style={styles.customText}>Add Address</Text>
                                             </Button>}
@@ -383,7 +383,7 @@ class Profile extends Component {
                                     <TouchableOpacity onPress={() => this.editProfile('UpdateContact')} testID="onPressUpdateContact">
                                         <Text style={styles.customText}>Contact</Text>
                                         <Text note style={styles.customText1}>{data.mobile_no}</Text>
-                                        {data.secondary_mobile !==undefined ?
+                                        {data.secondary_mobile !== undefined ?
                                             <Col>
                                                 <Text style={styles.customText}>Secondary</Text>
                                                 <Text note style={styles.customText1}>{data.secondary_mobile}</Text>
