@@ -123,13 +123,13 @@ class RenderOtpInput extends Component {
             <Container>
                 {nextPageLoading == true ? <Spinner
                     visible={isLoading}
-                    textContent={'Next Page Is Loading....'}
+                    textContent={'Please wait... Loading'}
                 /> : isVerifyingEmail == true ? <Spinner
                     visible={isLoading}
-                    textContent={'Please Wait Email is Verifying ....'}
+                    textContent={'Please Wait... Email is Verifying'}
                 /> : <Spinner
                             visible={isLoading}
-                            textContent={'Generating OTP....'}
+                            textContent={'Please Wait... Generating OTP'}
                         />}
                 <Content padder style={{ backgroundColor: '#fff' }}>
                     <View style={styles.container}>
