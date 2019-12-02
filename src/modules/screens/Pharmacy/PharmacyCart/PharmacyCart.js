@@ -122,7 +122,7 @@ class PharmacyCart extends Component {
                         <Text style={styles.subText}>{'\u20B9'}{medicineRateAfterOffer(item)}</Text>
                             <Text style={{ marginLeft: 10, marginTop: 2, color: 'gray', fontSize: 15, textDecorationLine: 'line-through', textDecorationStyle: 'solid', textDecorationColor: 'gray' }}>
                                             {'\u20B9'}{item.price}</Text>
-                            <Text style={{ fontFamily: 'OpenSans', fontSize: 15, color: '#ffa723', marginLeft: 20, fontWeight: 'bold' }}> {'Get'+ ' ' +item.offer+ '%' +' ' +'Off'}</Text>
+                            <Text style={{ fontFamily: 'OpenSans', fontSize: 15, color: '#ffa723', marginLeft: 5, fontWeight: 'bold' }}> {'Get'+ ' ' +item.offer+ '%' +' ' +'Off'}</Text>
                         </Row>
                         <Row style={{marginTop:10,marginLeft:20}}>
                             <Col style={{width:'50%'}}>

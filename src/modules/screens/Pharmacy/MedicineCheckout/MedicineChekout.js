@@ -26,15 +26,10 @@ class MedicineCheckout extends Component {
                     <Grid style={styles.curvedGrid}>
                     </Grid>
                     <Grid style={{ marginTop: -100, height: 100 }}>
-                        <Row>
-                            <View style={{ width: '80%', marginTop: 'auto', marginBottom: 'auto', alignItems: 'center' }}>
-                                <Item style={{ borderBottomWidth: 0 }}>
-                                    <Text style={{ fontFamily: 'OpenSans', color: '#fff', marginLeft: 80 }}>Delivery Addresses Info Page</Text>
+                      
+                                <Item style={{ borderBottomWidth: 0 ,marginRight:'auto',marginLeft:'auto' }}>
+                                    <Text style={{ fontFamily: 'OpenSans', color: '#fff', textAlign:'center',}}>Delivery Addresses Info Page</Text>
                                 </Item>
-                            </View>
-                            <Col style={{ width: '10%' }}>
-                            </Col>
-                        </Row>
                     </Grid>
 
                     <Card transparent style={{ padding: 5, marginTop: 40 }}>

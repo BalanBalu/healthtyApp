@@ -144,11 +144,11 @@ export default class PaymentReview extends Component {
               <Row style={{ borderTopColor:'gray', borderTopWidth:1,marginTop:10}}>
                <Col style={{ borderRightColor:'gray', borderRightWidth:1,marginTop:5,alignItems:'center'}}>
                 <Icon name='md-calendar' style={{color:'#0055A5',fontSize:30}} />
-                <Text style={{color:'#0055A5',fontFamily:'OpenSans',fontSize:14}}>{bookSlotDetails.slotData && formatDate(bookSlotDetails.slotData.slotStartDateAndTime, 'Do MMMM, YYYY')}</Text>
+                <Text style={{color:'#0055A5',fontFamily:'OpenSans',fontSize:12}}>{bookSlotDetails.slotData && formatDate(bookSlotDetails.slotData.slotStartDateAndTime, 'Do MMMM, YYYY')}</Text>
                </Col>
                <Col style={{alignItems:'center',marginTop:5}}>
                 <Icon name="md-clock" style={{color:'green',fontSize:30}}/>
-                <Text style={{color:'green',fontFamily:'OpenSans',fontSize:14}}>{bookSlotDetails.slotData && formatDate(bookSlotDetails.slotData.slotStartDateAndTime, 'hh:mm A')} - {bookSlotDetails.slotData && formatDate(bookSlotDetails.slotData.slotEndDateAndTime, 'hh:mm A')}</Text>
+                <Text style={{color:'green',fontFamily:'OpenSans',fontSize:12}}>{bookSlotDetails.slotData && formatDate(bookSlotDetails.slotData.slotStartDateAndTime, 'hh:mm A')} - {bookSlotDetails.slotData && formatDate(bookSlotDetails.slotData.slotEndDateAndTime, 'hh:mm A')}</Text>
                 </Col>
               </Row>
             </Grid>
@@ -181,7 +181,7 @@ export default class PaymentReview extends Component {
                 
                 <Button  style={styles.payButton} 
                     onPress={() => this.confirmProceedPayment()} >
-                    <Text style={styles.payButtonText}>Pay at Online</Text>
+                    <Text style={styles.payButtonText}>Pay Online</Text>
                 </Button>
                
              </Row>
@@ -312,7 +312,7 @@ const styles = StyleSheet.create({
             borderRadius:10,
             height:40,
             marginTop:20,
-            marginLeft: 15,
+            marginLeft: 30,
             padding:10,
             backgroundColor:'#149C00'
           },
