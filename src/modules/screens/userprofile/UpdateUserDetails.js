@@ -184,7 +184,7 @@ class UpdateUserDetails extends Component {
                                         minimumDate={new Date(1940, 0, 1)}
                                         maximumDate={subTimeUnit(new Date(), 1, 'year')}
                                         androidMode={"default"}
-                                        placeHolderText={formatDate(this.state.dob, "DD/MM/YYYY")}
+                                        placeHolderText={this.state.dob !== undefined ? formatDate(this.state.dob, "DD/MM/YYYY") : "Date Of Birth"}
                                         textStyle={{ fontSize: 13, color: "#5A5A5A" }}
                                         value={this.state.dob}
                                         placeHolderTextStyle={{ fontSize: 13, color: "#5A5A5A" }}
