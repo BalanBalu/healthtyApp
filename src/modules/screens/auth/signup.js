@@ -10,7 +10,7 @@ import styles from '../../screens/auth/styles';
 import Spinner from '../../../components/Spinner';
 import { ScrollView } from 'react-native-gesture-handler';
 import { RadioButton,Checkbox } from 'react-native-paper';
-
+const mainBg = require('../../../../assets/images/MainBg.jpg')
 class Signup extends Component {
     constructor(props) {
         super(props)
@@ -83,7 +83,7 @@ class Signup extends Component {
         return (
 
             <Container style={styles.container}>
-             <ImageBackground source={require('../../../../assets/images/MainBg.jpg')} style={{width: '100%', height: '100%'}}>
+             <ImageBackground source={mainBg} style={{width: '100%', height: '100%'}}>
 
                 <Content contentContainerStyle={styles.authBodyContent}>
                    

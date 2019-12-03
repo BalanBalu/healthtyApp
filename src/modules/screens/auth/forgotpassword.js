@@ -8,7 +8,7 @@ import { store } from '../../../setup/store';
 import { ScrollView } from 'react-native-gesture-handler';
 
 //import console = require('console');
-
+const mainBg = require('../../../../assets/images/MainBg.jpg')
 
 class Forgotpassword extends Component {
     constructor(props) {
@@ -147,7 +147,7 @@ class Forgotpassword extends Component {
 
         return (
             <Container style={styles.container}>
-                 <ImageBackground source={require('../../../../assets/images/MainBg.jpg')} style={{width: '100%', height: '100%'}}>
+                 <ImageBackground source={mainBg} style={{width: '100%', height: '100%'}}>
 
               <Content contentContainerStyle={styles.authBodyContent}>
                 <ScrollView>

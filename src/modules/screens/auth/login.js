@@ -12,7 +12,7 @@ import styles from '../../screens/auth/styles'
 import Spinner from '../../../components/Spinner';
 import { store } from '../../../setup/store';
 import { fetchUserProfile, storeBasicProfile } from '../../providers/profile/profile.action';
-
+const mainBg  = require('../../../../assets/images/MainBg.jpg')
 class Login extends Component {
   constructor(props) {
     super(props)
@@ -83,7 +83,7 @@ class Login extends Component {
     const { checked } = this.state;
     return (
       <Container style={styles.container}>
-                   <ImageBackground source={require('../../../../assets/images/MainBg.jpg')} style={{width: '100%', height: '100%'}}>
+                   <ImageBackground source={mainBg} style={{width: '100%', height: '100%'}}>
 
         <Content contentContainerStyle={styles.authBodyContent}>
           <ScrollView>
