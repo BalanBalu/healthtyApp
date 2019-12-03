@@ -55,9 +55,9 @@ class ReportIssue extends Component {
 
         }
         if(issueFor=='Appointment'){
-          let a=this.props.navigation.getParam('reportedId')
+         
           data.appointment_id=this.props.navigation.getParam('reportedId')
-       
+         
         }
         else if(issueFor=='chat'){
           data.chat_id=this.props.navigation.getParam('reportedId')

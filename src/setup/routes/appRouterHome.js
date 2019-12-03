@@ -195,7 +195,7 @@ const HomeStack = createStackNavigator({
     headerRight: (
     <Grid>
       <Col>
-        <TouchableOpacity onPress={() => { navigation.navigate('ReportIssue',{issueFor:'Appointment'}) }} style={{ marginLeft:15,paddingRight:10,paddingTop:10,paddingBottom:10,paddingLeft:10}} >
+        <TouchableOpacity onPress={() => { navigation.navigate('ReportIssue',{issueFor:'Appointment',reportedId:navigation.getParam('reportedId')}) }} style={{ marginLeft:15,paddingRight:10,paddingTop:10,paddingBottom:10,paddingLeft:10}} >
           <Icon name="ios-more" style={{ color: '#fff',justifyContent: 'center' , fontSize:30}}/>
         </TouchableOpacity>
       </Col>
