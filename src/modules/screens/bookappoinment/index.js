@@ -440,15 +440,17 @@ return (
                   
                </Col>
                 <Col style={{width:'17%'}}>
-                  <TouchableOpacity>
+                 
                 {isLoggedIn  ? 
-                   <Icon name="heart" onPress={()=>this.addToWishList(doctorData.doctor_id)} 
-                      style={patientWishListsDoctorIds.includes(doctorData.doctor_id) ? {  color: '#B22222', fontSize:20 ,marginTop:10} : {  color: '#000000', fontSize:20 ,marginTop:10}}>
-                  </Icon> : null }
+                 <TouchableOpacity>
+                    <Icon name="heart" onPress={()=>this.addToWishList(doctorData.doctor_id)} 
+                        style={patientWishListsDoctorIds.includes(doctorData.doctor_id) ? {  color: '#B22222', fontSize:20 ,marginTop:10} : {  color: '#000000', fontSize:20 ,marginTop:10}}>
+                    </Icon> 
+                  </TouchableOpacity> : null }
                    {/* <Row>
                      <Text style={{ fontFamily: 'OpenSans',marginTop:20,fontSize:12,marginLeft:5 }}> 2.6km</Text>
                    </Row> */}
-                 </TouchableOpacity> 
+                
                  </Col> 
              </Row>
            
@@ -464,27 +466,26 @@ return (
                               fullStarColor='#FF9500' 
                               starSize={12} width={85} 
                               containerStyle={{marginTop:2}} 
-                                      disabled={true}
+                              disabled={true}
                                       rating={1}
                                       maxStars={1}/>
                             <Text style={{ fontFamily: 'OpenSans',fontSize:12,fontWeight:'bold',textAlign:'center' }}>{reviewsByDoctorIds[doctorData.doctor_id] ? ' '+ reviewsByDoctorIds[doctorData.doctor_id].average_rating : ' 0' }</Text>
                           </View>
                   </Col>
-                          <Col style={{width:"25%",marginTop:15,}}>
+                          <Col style={{width:"20%",marginTop:15,}}>
                           
                           <Text note style={{ fontFamily: 'OpenSans',fontSize:12,textAlign:'center'}}> Favourite</Text>
                           <Text style={{ fontFamily: 'OpenSans',fontSize:12,fontWeight:'bold',textAlign:'center' }}> { favouriteListCountByDoctorIds[doctorData.doctor_id] ? favouriteListCountByDoctorIds[doctorData.doctor_id] : 0  }</Text>
-
-
                           </Col>
-                          <Col style={{width:"25%",marginTop:15,}}>
+                          <Col style={{width:"30%",marginTop:15,}}>
                               <Text note style={{ fontFamily: 'OpenSans',fontSize:12,textAlign:'center' }}> Fees</Text>
-                                  <Text  style={{ fontFamily: 'OpenSans',fontSize:12, fontWeight:'bold',textAlign:'center',marginLeft:10 }}>{'\u20B9'}{this.selectedSlotFee}{' '} 
-                                  </Text>
+                                  <Text  style={{ fontFamily: 'OpenSans',fontSize:12, fontWeight:'bold', textAlign:'center',marginLeft:10 }}>{'\u20B9'}{this.selectedSlotFee}{' '} 
+                                  
                                   { this.selectedSlotFee !== this.selectedSlotFeeWithoutOffer ?  
                                       <Text style={{ fontWeight:'normal', fontFamily: 'OpenSans', fontSize: 12, textDecorationLine: 'line-through', textDecorationStyle: 'solid',marginLeft:8,textAlign:'center'  }}>
                                           {'\u20B9'}{this.selectedSlotFeeWithoutOffer}</Text> : null
                                   }
+                                  </Text>
                                  
                           </Col>
                       </Row>
