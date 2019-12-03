@@ -91,11 +91,12 @@ class Login extends Component {
               visible={isLoading}
               textContent={'Loading...'}
             />
-              <Text uppercase="true"  style={[styles.welcome,{color:'#fff'}]}> Medflic</Text>
+              <Text uppercase={true}  
+                style={[styles.welcome, {color:'#fff'}]}> Medflic</Text>
 
 <Card style={{borderRadius:10,padding:5,marginTop:20}}>
   <View style={{marginLeft:10,marginRight:10}}>
-  <Text uppercase="true" style={[styles.cardHead,{color:'#775DA3'}]}>Login</Text>
+  <Text uppercase={true} style={[styles.cardHead,{color:'#775DA3'}]}>Login</Text>
               <Form>
               <Label style={{marginTop: 20,fontSize:15,color:'#775DA3',fontWeight:'bold'}}>Email / Phone</Label>
                 <Item style={{ borderBottomWidth: 0 ,marginLeft:'auto',marginRight:'auto',}}>
@@ -134,7 +135,7 @@ class Login extends Component {
 
                     color="green" onPress={() => this.setState({ conditionCheck: !this.state.conditionCheck })} style={{borderRadius:5}}
                   ></CheckBox> */}
-                  <Left style={{flexDirection:'row'}}>
+                  {/* <Left style={{flexDirection:'row'}}>
                     <Checkbox color="#775DA3"
                       borderStyle={{
                         borderColor: '#F44336',
@@ -146,7 +147,7 @@ class Login extends Component {
                       onPress={() => { this.setState({ checked: !checked }); }}
                     />
                     <Text style={{ marginLeft: 2, color: 'gray', fontFamily: 'OpenSans', fontSize: 15, marginTop:10,color:'#775DA3',}}>Remember me</Text>
-                    </Left>
+                    </Left> */}
 
                   <Right>
                     <TouchableOpacity onPress={() => this.props.navigation.navigate('forgotpassword')}>

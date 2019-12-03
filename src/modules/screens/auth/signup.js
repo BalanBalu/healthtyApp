@@ -91,7 +91,7 @@ class Signup extends Component {
                         <Text style={[styles.signUpHead,{color:'#fff'}]}>List Your Practice to Reach millions of Peoples</Text>
                         <Card style={{borderRadius:10,padding:5,marginTop:20}}>
                         <View style={{marginLeft:10,marginRight:10}}>
-                          <Text uppercase="true" style={[styles.cardHead,{color:'#775DA3'}]}>Signup</Text>
+                          <Text uppercase={true} style={[styles.cardHead,{color:'#775DA3'}]}>Signup</Text>
                         <Form>
                         <Label style={{marginTop: 20,fontSize:15,color:'#775DA3',fontWeight:'bold'}}>Email / Phone</Label>
                             <Item style={{ borderBottomWidth: 0,marginLeft:'auto',marginRight:'auto' }}>
