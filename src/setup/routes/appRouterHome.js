@@ -60,7 +60,7 @@ import BloodDonerFilters from '../../modules/screens/bloodDonation/BloodDonerFil
 import MyChats from '../../modules/screens/chat/MyChats';
 import AvailableDoctors4Chat from '../../modules/screens/chat/AvailableDoctor';
 import SuccessChatPaymentPage from '../../modules/screens/chat/successMsg';
-
+import ReportIssue from '../../modules/screens/ReportIssue';
 const AuthRoutes = {
   login: {
     screen: login,
@@ -180,10 +180,33 @@ const HomeStack = createStackNavigator({
       title: 'Appointments',
     }
   },
+  // "AppointmentInfo": {
+  //   screen: AppointmentDetails,
+  //   navigationOptions: {
+  //     title: 'Appointment Info'
+  //   }
+  // },
   "AppointmentInfo": {
     screen: AppointmentDetails,
+    
+    navigationOptions:({ navigation }) => ({
+      title:"Appointment info",
+    headerRight: (
+    <Grid>
+      <Col>
+        <TouchableOpacity onPress={() => { navigation.navigate('ReportIssue',{issueFor:'Appointment'}) }} style={{ marginLeft:15,paddingRight:10,paddingTop:10,paddingBottom:10,paddingLeft:10}} >
+          <Icon name="ios-more" style={{ color: '#fff',justifyContent: 'center' , fontSize:30}}/>
+        </TouchableOpacity>
+      </Col>
+    </Grid>
+    ),
+   
+    })
+  },
+  ReportIssue: {
+    screen: ReportIssue,
     navigationOptions: {
-      title: 'Appointment Info'
+      title: 'Report issue'
     }
   },
   "CancelAppointment": {
