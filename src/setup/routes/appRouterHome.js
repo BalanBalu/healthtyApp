@@ -180,28 +180,11 @@ const HomeStack = createStackNavigator({
       title: 'Appointments',
     }
   },
-  // "AppointmentInfo": {
-  //   screen: AppointmentDetails,
-  //   navigationOptions: {
-  //     title: 'Appointment Info'
-  //   }
-  // },
   "AppointmentInfo": {
     screen: AppointmentDetails,
-    
-    navigationOptions:({ navigation }) => ({
-      title:"Appointment info",
-    headerRight: (
-    <Grid>
-      <Col>
-        <TouchableOpacity onPress={() => { navigation.navigate('ReportIssue',{issueFor:'Appointment'}) }} style={{ marginLeft:15,paddingRight:10,paddingTop:10,paddingBottom:10,paddingLeft:10}} >
-          <Icon name="ios-more" style={{ color: '#fff',justifyContent: 'center' , fontSize:30}}/>
-        </TouchableOpacity>
-      </Col>
-    </Grid>
-    ),
-   
-    })
+    navigationOptions: {
+      title: 'Appointment Info'
+    }
   },
   ReportIssue: {
     screen: ReportIssue,
