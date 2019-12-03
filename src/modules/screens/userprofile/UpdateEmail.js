@@ -5,6 +5,7 @@ import { AsyncStorage, ScrollView } from 'react-native';
 import { connect } from 'react-redux'
 import styles from './style.js';
 import Spinner from '../../../components/Spinner';
+import { validateEmailAddress } from '../../common';
 
 
 
@@ -13,12 +14,10 @@ class UpdateEmail extends Component {
     constructor(props) {
         super(props)
         this.state = {
-            email: null,
-            type: null,
-            active: true,
+            secondary_email: null,
             primary_email: null,
             isLoading: false,
-            userEmail: '',
+            existingEmail:null
         }
     }
 
@@ -33,36 +32,29 @@ class UpdateEmail extends Component {
             fromProfile: true,
             primary_email: userData.email,
         })
-        if (userData.secondary_emails) {
+        if (userData.secondary_email) {
             this.setState({
-                email: userData.secondary_emails[0].email_id,
-                type: userData.secondary_emails[0].type,
-                active: userData.secondary_emails[0].active,
-                userEmail: userData.secondary_emails[0].email_id
-
-            })
+                secondary_email: userData.secondary_email,
+                 existingEmail: userData.secondary_email })
         }
 
     }
 
     handleEmailUpdate = async () => {
         debugger
-        const { userEmail, email } = this.state
+        const { existingEmail, secondary_email, primary_email } = this.state
         try {
             this.setState({ isLoading: true });
             let userId = await AsyncStorage.getItem('userId');
-            if (userEmail != email) {
+            if (existingEmail != secondary_email && primary_email != secondary_email) {
                 let data = {
-                    secondary_emails: [{
-                        email_id: email,
-                        type: "Secondary",
-                        active: this.state.active
-                    }]
+                    secondary_email: secondary_email     
                 };
+                if(validateEmailAddress(this.state.secondary_email) == true){
                 let response = await userFiledsUpdate(userId, data);
                 if (response.success) {
                     Toast.show({
-                        text: 'Email updated Successfully',
+                        text: 'Your Email Id is updated Successfully',
                         type: "success",
                         duration: 3000,
 
@@ -78,9 +70,20 @@ class UpdateEmail extends Component {
                 }
             }
             else {
-                this.props.navigation.navigate('Profile');
+                Toast.show({
+                    text: 'Please Enter the valid Email Address',
+                    type: "danger",
+                    duration: 4000
+                })
             }
-
+        }
+            else {
+                Toast.show({
+                    text:'Entered Email Address is already exist.Enter the new Email Id',
+                    type: "warning",
+                    duration: 4000
+                })
+            }
 
         } catch (e) {
             console.log(e);
@@ -126,8 +129,8 @@ class UpdateEmail extends Component {
                                 <Item style={{ borderBottomWidth: 0, }}>
                                     <Icon name='mail' style={styles.centeredIcons}></Icon>
                                     <Input placeholder="Edit Your Secondary Email" style={styles.transparentLabel} keyboardType="email-address"
-                                        onChangeText={(email) => this.setState({ email })}
-                                        value={this.state.email}
+                                        onChangeText={(secondary_email) => this.setState({ secondary_email })}
+                                        value={this.state.secondary_email}
                                         testID='updateEmail' />
                                 </Item>
 

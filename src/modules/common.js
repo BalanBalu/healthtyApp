@@ -223,5 +223,10 @@ export  function getAllEducation(data) {
 
 export const bloodGroupList = ['Select Blood Group', 'A+', 'O+', 'B+', 'AB+', 'A-', 'O-', 'B-', 'AB-']
 
-
+//Email validation
+export function validateEmailAddress(text) {
+    let reg = /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/;
+    if (reg.test(text) === false) return false;
+    else return true;
+}
   

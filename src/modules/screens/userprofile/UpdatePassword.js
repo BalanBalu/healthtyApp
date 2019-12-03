@@ -33,7 +33,6 @@ class UpdatePassword extends Component {
             };
             if (data.oldPassword != data.newPassword) {
                 let result = await updateNewPassword(data);
-                console.log('result' + JSON.stringify(result));
                 if (result.success) {
                     await Toast.show({
                         text: 'Your Password is changed Successfully',
