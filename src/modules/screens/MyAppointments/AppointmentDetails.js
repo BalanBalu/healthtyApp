@@ -47,7 +47,7 @@ class AppointmentDetails extends Component {
 
     if (appointmentData == undefined) {
       const appointmentId = navigation.getParam('appointmentId');
-
+      this.props.navigation.setParams({reportedId:appointmentId});
       await this.setState({ appointmentId: appointmentId });
 
       await this.appointmentDetailsGetById()
@@ -56,7 +56,7 @@ class AppointmentDetails extends Component {
 
       let doctorId = appointmentData.doctor_id;
       let appointmentId = appointmentData._id;
-
+      this.props.navigation.setParams({reportedId:appointmentId});
       await this.setState({
         doctorId: doctorId, appointmentId: appointmentId,
         userId: userId, data: appointmentData,
