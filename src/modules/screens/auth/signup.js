@@ -83,7 +83,7 @@ class Signup extends Component {
         return (
 
             <Container style={styles.container}>
-                                   <ImageBackground source={require('../../../../assets/images/MainBg.jpg')} style={{width: '100%', height: '100%'}}>
+             <ImageBackground source={require('../../../../assets/images/MainBg.jpg')} style={{width: '100%', height: '100%'}}>
 
                 <Content contentContainerStyle={styles.authBodyContent}>
                    

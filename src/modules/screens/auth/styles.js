@@ -30,7 +30,7 @@ export default StyleSheet.create({
     },
     welcome:
     {
-        fontSize: 30,
+        fontSize: 25,
         textAlign: 'center',
         marginTop: 30,
         fontWeight:'bold',
@@ -39,7 +39,7 @@ export default StyleSheet.create({
     },
     signUpHead:
     {
-        fontSize: 25,
+        fontSize: 20,
         textAlign: 'center',
         marginTop: 30,
         fontWeight:'bold',
@@ -48,7 +48,7 @@ export default StyleSheet.create({
     },
     cardHead:
     {
-        fontSize: 25,
+        fontSize: 18,
         textAlign: 'center',
         marginTop: 10,
         fontWeight:'bold',
@@ -63,6 +63,18 @@ export default StyleSheet.create({
         paddingLeft: 20,
         fontFamily: 'OpenSans',
         fontSize: 15
+    },
+    userDetailLabel:{
+        borderBottomColor: 'transparent',
+        backgroundColor: '#F1F1F1',
+        height: 45,
+        marginTop: 10,
+        borderRadius: 5,
+        fontFamily: 'OpenSans',
+        fontSize: 15,
+        marginLeft:'auto',
+        marginRight:'auto',
+        paddingLeft:8
     },
     authTransparentLabel: {
         borderBottomColor: 'transparent',
@@ -133,6 +145,15 @@ export default StyleSheet.create({
     },
     loginButton1: {
         marginTop: 20,
+        backgroundColor: '#775DA3',
+        borderRadius: 20,
+        justifyContent:'center',
+        paddingRight:35,
+        paddingLeft:35,
+        paddingBottom:8,
+        paddingTop:8
+    },
+    UserButton1: { 
         backgroundColor: '#775DA3',
         borderRadius: 20,
         justifyContent:'center',
