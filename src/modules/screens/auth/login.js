@@ -1,10 +1,10 @@
 import React, { Component } from 'react';
 import {
   Container, Content, Button, Text, Form, Item, Input, Header, Footer, FooterTab, Right,
-  Grid, Toast, KeyboardAvoidingView, Icon, Row
+  Grid, Toast, KeyboardAvoidingView, Icon, Row,Card,Label,Left
 } from 'native-base';
 import { connect } from 'react-redux'
-import { Image, TouchableOpacity, View, ScrollView, AsyncStorage } from 'react-native';
+import { Image, TouchableOpacity, View, ScrollView, AsyncStorage ,ImageBackground} from 'react-native';
 import { Checkbox } from 'react-native-paper';
 
 import { login, RESET_REDIRECT_NOTICE, userFiledsUpdate } from '../../providers/auth/auth.actions';
@@ -83,21 +83,24 @@ class Login extends Component {
     const { checked } = this.state;
     return (
       <Container style={styles.container}>
-        <Content contentContainerStyle={styles.bodyContent}>
+                   <ImageBackground source={require('../../../../assets/images/MainBg.jpg')} style={{width: '100%', height: '100%'}}>
+
+        <Content contentContainerStyle={styles.authBodyContent}>
           <ScrollView>
             <Spinner color='blue'
               visible={isLoading}
               textContent={'Loading...'}
             />
-            <View >
-              <Text style={styles.welcome}>Welcome To Patient Medflic</Text>
-              <Image source={{ uri: 'https://static1.squarespace.com/static/582bbfef9de4bb07fe62ab18/t/5877b9ccebbd1a124af66dfe/1484241404624/Headshot+-+Circular.png?format=300w' }} style={styles.logo} />
+              <Text uppercase={true}  
+                style={[styles.welcome, {color:'#fff'}]}> Medflic</Text>
 
-
+<Card style={{borderRadius:10,padding:5,marginTop:20}}>
+  <View style={{marginLeft:10,marginRight:10}}>
+  <Text uppercase={true} style={[styles.cardHead,{color:'#775DA3'}]}>Login</Text>
               <Form>
-
-                <Item style={{ borderBottomWidth: 0, marginTop: 20 }}>
-                  <Input placeholder="Email Or Phone" style={styles.transparentLabel}
+              <Label style={{marginTop: 20,fontSize:15,color:'#775DA3',fontWeight:'bold'}}>Email / Phone</Label>
+                <Item style={{ borderBottomWidth: 0 ,marginLeft:'auto',marginRight:'auto',}}>
+                  <Input placeholder="Email Or Phone" style={styles.authTransparentLabel}
                     returnKeyType={'next'}
                     value={this.state.userEntry}
                     keyboardType={'email-address'}
@@ -107,9 +110,9 @@ class Login extends Component {
                     onSubmitEditing={() => { this.userEntry._root.focus(); }}
                   />
                 </Item>
-
-                <Item success style={styles.transparentLabel1}>
-                  <Input placeholder="Password" style={{ fontSize: 15, fontFamily: 'OpenSans', paddingLeft: 20, }}
+                <Label style={{fontSize:15,marginTop:10,color:'#775DA3',fontWeight:'bold'}}>Password</Label>
+                <Item   style={[styles.authTransparentLabel1,{marginTop:10,marginLeft:'auto',marginRight:'auto'}]}>
+                  <Input placeholder="Password" style={{ fontSize: 15, fontFamily: 'OpenSans', paddingLeft: 15, }}
                     ref={(input) => { this.userEntry = input; }}
                     secureTextEntry={true}
                     returnKeyType={'done'}
@@ -121,56 +124,60 @@ class Login extends Component {
                     onSubmitEditing={() => { this.doLogin(); }}
 
                   />
-                  <Icon active name='eye' style={{ fontSize: 20, marginTop: 10 }} onPress={() => this.setState({ showPassword: !this.state.showPassword })} />
+                  <Icon active name='eye' style={{ fontSize: 20, marginTop: 5,color:'#775DA3' }} onPress={() => this.setState({ showPassword: !this.state.showPassword })} />
                 </Item>
 
 
-                <Row style={{ marginTop: 20, borderBottomWidth: 0 }}>
+                <Row style={{ marginTop: 20, }}>
 
-                  <Item style={{ borderBottomWidth: 0 }}>
+                  
                     {/* <CheckBox  checked={this.state.conditionCheck}
 
                     color="green" onPress={() => this.setState({ conditionCheck: !this.state.conditionCheck })} style={{borderRadius:5}}
                   ></CheckBox> */}
-                    <Checkbox color="green"
+                  {/* <Left style={{flexDirection:'row'}}>
+                    <Checkbox color="#775DA3"
                       borderStyle={{
                         borderColor: '#F44336',
                         backfaceVisibility: 'visible',
                         borderRadius: 18,
                         borderWidth: 1,
-                        padding: 2,
                       }}
                       status={checked ? 'checked' : 'unchecked'}
                       onPress={() => { this.setState({ checked: !checked }); }}
                     />
-                    <Text style={{ marginLeft: 5, color: 'gray', fontFamily: 'OpenSans', fontSize: 15 }}>Remember me</Text>
-                  </Item>
+                    <Text style={{ marginLeft: 2, color: 'gray', fontFamily: 'OpenSans', fontSize: 15, marginTop:10,color:'#775DA3',}}>Remember me</Text>
+                    </Left> */}
 
                   <Right>
                     <TouchableOpacity onPress={() => this.props.navigation.navigate('forgotpassword')}>
-                      <Text style={styles.customText}> Forgot Password</Text>
+                      <Text style={styles.customText}> Forgot Password?</Text>
                     </TouchableOpacity>
                   </Right>
                 </Row>
+<View style={{alignItems:'center',justifyContent:'center'}}>
 
-                <Button style={styles.loginButton} block primary
+             <TouchableOpacity small style={styles.loginButton1} 
                   disabled={isLoading}
                   onPress={() => this.doLogin()}>
-                  <Text style={styles.ButtonText}>Sign In</Text>
-                </Button>
-                <Text style={{ color: 'red', paddingLeft: 20, fontSize: 15, fontFamily: 'OpenSans', marginBottom: 30 }}>{loginErrorMsg != null ? '*' + loginErrorMsg : null}</Text>
+                  <Text uppercase={true} style={styles.ButtonText}>Login </Text>
+                </TouchableOpacity>
+                <Text style={{ color: 'red', fontSize: 15, fontFamily: 'OpenSans',marginTop:2  }}>{loginErrorMsg != null ? '*' + loginErrorMsg : null}</Text>
+</View>
+                
+              <Item style={{marginLeft:'auto',marginRight:'auto',borderBottomWidth:0,marginBottom:10}}>
+              <Text uppercase={false} style={{ color: '#000', fontSize: 15, fontFamily: 'OpenSans',color:'#775DA3' }}>Don't Have An Account ?</Text>
+              <TouchableOpacity  onPress={() => this.props.navigation.navigate('signup')} style={styles.smallSignUpButton}>
+              <Text uppercase={true} style={{ color: '#000', fontSize: 10, fontFamily: 'OpenSans',fontWeight:'bold',color:'#fff' }}> SignUp</Text>
+              </TouchableOpacity>
+              </Item>
               </Form>
-            </View>
+              </View>
+              </Card>
           </ScrollView>
 
         </Content>
-        <Footer >
-          <FooterTab style={{ backgroundColor: '#F2F2F2', }}>
-            <Button full onPress={() => this.props.navigation.navigate('signup')}>
-              <Text uppercase={false} style={{ color: '#000', fontSize: 15, fontFamily: 'OpenSans' }}>Don't Have An Account ? SignUp</Text>
-            </Button>
-          </FooterTab>
-        </Footer>
+        </ImageBackground>
       </Container>
 
     )
