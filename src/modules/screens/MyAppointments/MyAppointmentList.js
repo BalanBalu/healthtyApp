@@ -33,6 +33,7 @@ import {getUserAppointments,viewUserReviews,getMultipleDoctorDetails} from "../.
 import noAppointmentImage from "../../../../assets/images/noappointment.png";
 import Spinner from "../../../components/Spinner";
 import { renderProfileImage,getAllEducation,getAllSpecialist } from '../../common'
+import moment from "moment";
 // import moment from "moment";
 
 class MyAppoinmentList extends Component {
@@ -62,8 +63,8 @@ class MyAppoinmentList extends Component {
 		let userId = await AsyncStorage.getItem("userId");
 		this.setState({ userId });
 		await new Promise.all([
-			this.upCommingAppointment(),
-			this.pastAppointment()
+			await this.upCommingAppointment(),
+		    await this.pastAppointment()
 		])
 		await this.setState({ isLoading: true, isNavigation: false })
 
@@ -104,10 +105,10 @@ class MyAppoinmentList extends Component {
 			// };
 		
 			let filters = {
-				startDate:new Date(),
-				endDate: addTimeUnit(new Date(), 1, "years")
+				startDate:new Date().toUTCString(),
+				endDate: addTimeUnit(new Date(), 1, "years").toUTCString()
 			};
-			
+		
 			let upCommingAppointmentResult = await getUserAppointments(userId, filters);
               
 			if (upCommingAppointmentResult.success) {
@@ -172,8 +173,8 @@ class MyAppoinmentList extends Component {
 			// 	endDate: subMoment(new Date(), 1, "years").utc() };
 		
 
-			let filters = { startDate:subTimeUnit(new Date(), 1, "years"),
-				          endDate: new Date() };
+			let filters = { startDate:subTimeUnit(new Date(), 1, "years").toUTCString(),
+				          endDate:  addTimeUnit(new Date(),10,'minutes').toUTCString() };
 
 			let pastAppointmentResult = await getUserAppointments(userId, filters);
 		    
@@ -228,11 +229,9 @@ class MyAppoinmentList extends Component {
 				pastAppointmentResult.map((doctorData, index) => {
 
 					let ratting;
-					if (doctorData.appointment_status == "COMPLETED") {
+					if (doctorData.is_review_added==true) {
 						let rating = reviewRate.get(doctorData._id);
 						ratting = rating.ratting;
-
-
 
 					}
 					let details = doctorInfo.get(doctorData.doctor_id)
