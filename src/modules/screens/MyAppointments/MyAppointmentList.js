@@ -63,8 +63,8 @@ class MyAppoinmentList extends Component {
 		let userId = await AsyncStorage.getItem("userId");
 		this.setState({ userId });
 		await new Promise.all([
-			await this.upCommingAppointment(),
-		    await this.pastAppointment()
+			 this.upCommingAppointment(),
+		     this.pastAppointment()
 		])
 		await this.setState({ isLoading: true, isNavigation: false })
 
@@ -372,7 +372,7 @@ class MyAppoinmentList extends Component {
 													avatar
 													onPress={() =>
 														this.props.navigation.navigate("AppointmentInfo", {
-															data: item.appointmentResult
+															data: item.appointmentResult,selectedIndex:selectedIndex
 														})
 													} testID='navigateAppointmentInfo'
 												>
