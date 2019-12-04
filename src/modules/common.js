@@ -257,5 +257,10 @@ export const appointmentIssue = [
     { id: 5, value: 'Others' }
 ]
 
-
+//Email validation
+export function validateEmailAddress(text) {
+    let reg = /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/;
+    if (reg.test(text) === false) return false;
+    else return true;
+}
   

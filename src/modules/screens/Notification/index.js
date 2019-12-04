@@ -1,4 +1,3 @@
-
 import React, { Component } from 'react';
 import { StyleSheet, AsyncStorage, FlatList, TouchableOpacity, ScrollView } from 'react-native';
 // import { ScrollView } from 'react-native-gesture-handler';
@@ -158,37 +157,37 @@ class Notification extends Component {
 
 
 
-                                            <Card style={{ borderRadius: 5, width: 'auto', }}>
+                                            <Card style={{ borderRadius: 5, width: 'auto',padding:15 }}>
                                                 {/* <View style={{ borderWidth: 1, borderColor: '#c9cdcf', marginTop: 10 }} /> */}
                                                 <TouchableOpacity onPress={() => this.updateNavigation(item)} testID='notificationView'>
                                                     <View style={{ backgroundColor: (item.mark_as_viewed == false) ? '#f5e6ff' : null }}>
 
-                                                        <Col>
+                                                       
                                                             {dateDiff(new Date(item.created_date), new Date(), 'days') > 30 ?
 
-                                                                <Text style={{ fontSize: 15, fontFamily: 'OpenSans', marginLeft: 265, marginTop: 5 }}>
-                                                                    {formatDate(new Date(item.created_date), "DD-MM-YYYY")}
+                                                                <Text style={{ fontSize: 12, fontFamily: 'OpenSans', textAlign:'right', marginTop: 5,}}>
+                                                                   {formatDate(new Date(item.created_date), "DD-MM-YYYY")} 
                                                                 </Text> :
 
                                                                 <Text style={{
-                                                                    fontSize: 15, fontFamily: 'OpenSans',
-                                                                    marginLeft: 265, marginTop: 5
+                                                                    fontSize: 12, fontFamily: 'OpenSans',
+                                                                     marginTop: 5,textAlign:'right',
                                                                 }}>
                                                                     {moment(new Date(item.created_date), "YYYYMMDD").fromNow()}
                                                                 </Text>
                                                             }
-                                                        </Col>
+                                                       
 
-                                                        <Col>
+                                                        
 
                                                             <Text style={{
-                                                                fontSize: 15, fontFamily: 'OpenSans', marginTop: 10,
-                                                                color: '#000', marginLeft: 20, marginRight: 20
+                                                                fontSize: 14, fontFamily: 'OpenSans', marginTop: 10,
+                                                                color: '#000',textAlign:'auto',lineHeight:20
                                                             }}>{item.notification_message} </Text>
 
 
 
-                                                        </Col>
+                                                       
 
                                                     </View>
                                                 </TouchableOpacity>
@@ -237,6 +236,3 @@ function notificationState(state) {
 }
 export default connect(notificationState)(Notification)
 //export default Notification
-
-
-

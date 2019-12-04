@@ -1,14 +1,14 @@
 import React, { Component } from 'react';
-import { View, Container, Content, Button, Text, Form, Item, Input, Footer, FooterTab, H3, Toast, Icon } from 'native-base';
+import { View, Container, Content, Button, Text, Form, Item, Input,Card, Footer, FooterTab, H3, Toast, Icon,Label } from 'native-base';
 import { generateOTP, changePassword, LOGOUT } from '../../providers/auth/auth.actions';
 import { connect } from 'react-redux';
-import { StyleSheet, Image } from 'react-native'
+import { StyleSheet, Image,ImageBackground,TouchableOpacity} from 'react-native'
 import styles from '../../screens/auth/styles';
 import { store } from '../../../setup/store';
 import { ScrollView } from 'react-native-gesture-handler';
 
 //import console = require('console');
-
+const mainBg = require('../../../../assets/images/MainBg.jpg')
 
 class Forgotpassword extends Component {
     constructor(props) {
@@ -74,8 +74,10 @@ class Forgotpassword extends Component {
     renderEnterEmail() {
         const { user: { isLoading } } = this.props;
         return (
-            <View>
-                    <Item style={{ borderBottomWidth: 0, marginLeft: 16}}>
+           
+               <View>
+                   <Label style={{fontSize:15,marginTop:10,color:'#775DA3',fontWeight:'bold'}}>Email / Phone</Label>
+                    <Item style={{ borderBottomWidth: 0,marginTop:10}}>
                         <Input placeholder="Email Or Phone" style={styles.transparentLabel2}
                             value={this.state.userEntry}
                             keyboardType={'email-address'}
@@ -87,19 +89,23 @@ class Forgotpassword extends Component {
                         />
                     </Item>
 
-                    <Button style={styles.loginButton} block primary onPress={() => this.requestOTP()}>
+                    <Button style={styles.forgotButton} block primary onPress={() => this.requestOTP()}>
                         <Text>Send OTP</Text>
                     </Button>
               
                     </View>
+                   
         )
     }
     renderAfterOtpGenerated() {
         const { user: { isLoading } } = this.props;
         return (
+          
            <View>
-                    <Item style={{ borderBottomWidth: 0, marginLeft: 17 }}>
-                        <Input placeholder="Enter OTP" style={styles.transparentLabel}
+                 <Label style={{fontSize:15,marginTop:10,color:'#775DA3',fontWeight:'bold'}}>OTP</Label>
+
+                    <Item style={{ borderBottomWidth: 0,marginTop:10 }}>
+                        <Input placeholder="Enter OTP" style={styles.authTransparentLabel}
                             keyboardType={'email-address'}
                             autoFocus={true}
                             autoCapitalize='none'
@@ -110,9 +116,10 @@ class Forgotpassword extends Component {
                             blurOnSubmit={false}
                         />
                     </Item>
+                    <Label style={{fontSize:15,marginTop:10,color:'#775DA3',fontWeight:'bold'}}>Password</Label>
 
-                    <Item style={{ borderBottomWidth: 0, marginLeft: 17 }}>
-                        <Input placeholder="New Password" style={styles.transparentLabel}
+                    <Item style={{ borderBottomWidth: 0,marginTop:10  }}>
+                        <Input placeholder="New Password" style={styles.authTransparentLabel}
                             ref={(input) => { this.otpCode = input; }}
                             //getRef={(input) => { this.otpCode = input; }}
                             secureTextEntry={true}
@@ -126,11 +133,12 @@ class Forgotpassword extends Component {
                         <Icon active name='eye' style={{ fontSize: 20, marginTop: 10 }} onPress={() => this.setState({ showPassword: !this.state.showPassword })} />
                     </Item>
 
-                    <Button style={styles.loginButton} block primary onPress={() => this.changePassword()}>
+                    <Button style={styles.forgotButton} block primary onPress={() => this.changePassword()}>
                         <Text>Reset Password</Text>
                     </Button>
 
                     </View>
+                   
         )
     }
     render() {
@@ -139,12 +147,13 @@ class Forgotpassword extends Component {
 
         return (
             <Container style={styles.container}>
-              <Content contentContainerStyle={styles.bodyContent}>
-                    <ScrollView>
-                    <View >
+                 <ImageBackground source={mainBg} style={{width: '100%', height: '100%'}}>
 
-                        <H3 style={styles.welcome}>Forgot Password</H3>
-                        <Image source={{ uri: 'https://static1.squarespace.com/static/582bbfef9de4bb07fe62ab18/t/5877b9ccebbd1a124af66dfe/1484241404624/Headshot+-+Circular.png?format=300w' }} style={styles.logo} />
+              <Content contentContainerStyle={styles.authBodyContent}>
+                <ScrollView>
+                        <Text style={[styles.welcome,{color:'#fff'}]}>Forgot Password</Text>
+                        <Card style={{borderRadius:10,padding:5,marginTop:20,paddingTop:5,paddingBottom:5}}>
+                     <View style={{marginLeft:10,marginRight:10}}>
 
                         <Form>
                             {/* <View style={styles.errorMessage}>
@@ -157,18 +166,19 @@ class Forgotpassword extends Component {
                         </Form>
                         </View>
 
-                    </ScrollView>
+                   
+                    <Item style={{marginLeft:'auto',marginRight:'auto',borderBottomWidth:0,marginBottom:10,marginTop:10}}>
+              <Text uppercase={false} style={{ color: '#000', fontSize: 15, fontFamily: 'OpenSans',color:'#775DA3' }}>Go Back To</Text>
+              <TouchableOpacity  onPress={() => this.props.navigation.navigate('login')} style={styles.smallSignUpButton}>
+              <Text uppercase={true} style={{ color: '#000', fontSize: 10, fontFamily: 'OpenSans',fontWeight:'bold',color:'#fff' }}> SignIn</Text>
+              </TouchableOpacity>
+              </Item>
+              </Card>
+              </ScrollView>
                 </Content>
 
-                <Footer >
-                    <FooterTab style={{ backgroundColor: '#F2F2F2', }}>
-                        <Button full onPress={() => this.props.navigation.navigate('login')}>
-                            <Text uppercase={false} style={{
-                                color: '#000', fontSize: 15, fontFamily: 'OpenSans',
-                            }}>Go Back To SignIn</Text>
-                        </Button>
-                    </FooterTab>
-                </Footer>
+               
+                </ImageBackground>
             </Container>
         )
     }

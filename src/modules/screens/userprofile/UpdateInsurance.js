@@ -26,11 +26,8 @@ class UpdateInsurance extends Component {
     }
 
     bindInsuranceValues() {
-        console.log("nind values")
         const { navigation } = this.props;
         const userData = navigation.getParam('updatedata');
-        console.log(userData);
-
 
         if (userData.insurance) {
             this.setState({
@@ -43,9 +40,7 @@ class UpdateInsurance extends Component {
     }
 
     commonUpdateInsuranceMethod = async () => {
-        console.log("console");
         let userId = await AsyncStorage.getItem('userId');
-        console.log(userId)
         let data = {
             insurance: [{
                 insurance_no: this.state.insurance_no,
@@ -53,9 +48,7 @@ class UpdateInsurance extends Component {
                 active: true
             }]
         };
-        console.log(data);
         let response = await userFiledsUpdate(userId, data);
-        console.log('response' + JSON.stringify(response));
         if (response.success) {
             Toast.show({
                 text:response.message,
@@ -75,11 +68,8 @@ class UpdateInsurance extends Component {
     }
 
     handleInsuranceUpdate = async () => {
-        console.log("pdate")
         const { userData, insurance_no, insurance_provider } = this.state
-        console.log(userData.insurance);
         try {
-            console.log("try");
             this.setState({ isLoading: true });
             if (userData.insurance !== undefined) {
                 if (insurance_no != userData.insurance[0].insurance_no ||
@@ -94,7 +84,6 @@ class UpdateInsurance extends Component {
                 this.commonUpdateInsuranceMethod();
             }
         } catch (e) {
-            console.log("catch")
             console.log(e);
         }
 

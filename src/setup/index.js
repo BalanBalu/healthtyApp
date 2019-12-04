@@ -6,7 +6,7 @@ import { store } from './store'
 import { StyleProvider, Root, Toast } from 'native-base';
 import getTheme from '../theme/components';
 import material from '../theme/variables/material';
-import { AsyncStorage, Alert } from 'react-native';
+import { AsyncStorage, Alert , YellowBox } from 'react-native';
 import { FIREBASE_SENDER_ID , CHAT_API_URL } from './config'
 import { userFiledsUpdate } from '../modules/providers/auth/auth.actions';
 //import firebase from 'react-native-firebase';
@@ -14,6 +14,9 @@ import { fetchUserMarkedAsReadedNotification } from '../modules/providers/notifi
 import { SET_LAST_MESSAGES_DATA } from '../modules/providers/chat/chat.action';
 import NotifService from './NotifService';
 import SocketIOClient from 'socket.io-client';
+YellowBox.ignoreWarnings([
+  'Unrecognized WebSocket connection option(s) `agent`, `perMessageDeflate`, `pfx`, `key`, `passphrase`, `cert`, `ca`, `ciphers`, `rejectUnauthorized`. Did you mean to put these under `headers`?'
+]);
 export default class App extends Component {
   userId = null;  
   constructor(props) {

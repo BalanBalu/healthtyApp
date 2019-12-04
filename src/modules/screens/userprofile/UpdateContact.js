@@ -30,7 +30,6 @@ class UpdateContact extends Component {
     bindContactValues() {
         const { navigation } = this.props;
         const userData = navigation.getParam('updatedata');
-        console.log("userData" + JSON.stringify(userData))
         if (userData.mobile_no) {
             this.setState({
                 primary_mobile_no: userData.mobile_no
@@ -47,16 +46,14 @@ class UpdateContact extends Component {
         const { secondary_mobile_no, userData, primary_mobile_no } = this.state
         try {
             this.setState({ isLoading: true })
-            if (primary_mobile_no != undefined && (userData.mobile_no !== primary_mobile_no || userData.secondary_mobile !== secondary_mobile_no)) {
+            if (primary_mobile_no != undefined && primary_mobile_no != secondary_mobile_no) {
+
                 let userId = await AsyncStorage.getItem('userId');
                 let data = {
                     mobile_no: primary_mobile_no,
                     secondary_mobile: secondary_mobile_no
                 };
-               
-                if (data.mobile_no != data.secondary_mobile) {
                     let response = await userFiledsUpdate(userId, data);
-                    console.log("response" + JSON.stringify(response))
                     if (response.success) {
                         Toast.show({
                             text: "Contacts has been saved",
@@ -73,14 +70,12 @@ class UpdateContact extends Component {
                     }
                 } else {
                     Toast.show({
-                        text: 'Cannot have the same mobile_no. Kindly enter a new number',
+                        text: 'Cannot have the same mobile no. Kindly enter a new number',
                         type: "danger",
                         duration: 3000
                     })
                 }
-            } else {
-                this.props.navigation.navigate('Profile');
-            }
+            
         }
 
         catch (e) {
@@ -91,7 +86,7 @@ class UpdateContact extends Component {
         }
     }
 
-  
+
     validateMobile_No(number, type) {
         const regex = new RegExp('^[0-9]+$')  //Support only numbers
         if (type === 'Primary') {
