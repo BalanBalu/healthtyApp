@@ -204,10 +204,6 @@ class Profile extends Component {
             var res = await uploadMultiPart(endPoint, formData);
             const response = res.data;
             if (response.success) {
-                let result = await AsyncStorage.getItem('profile');
-                const storeResult = JSON.parse(result);
-                storeResult.profile_image = response.profile_image
-                await AsyncStorage.setItem('profile', JSON.stringify(storeResult));
                 this.setState({
                     imageSource: imagePath
                 });
@@ -345,7 +341,7 @@ class Profile extends Component {
                                 </Left>
 
                                 <Body>
-                                    <TouchableOpacity onPress={() => { this.editAddress(data.address) }} testID="onPressAddress">
+                                    <TouchableOpacity onPress={() =>  this.editAddress(data.address) } testID="onPressAddress">
                                         <Text style={styles.customText}>Address</Text>
                                         {data.address ?
                                             <View>
@@ -365,7 +361,7 @@ class Profile extends Component {
                                 </Body>
                                 {data.address ?
                                     <Right>
-                                        <Icon name="create" style={{ color: 'black' }} onPress={() => this.editProfile('MapBox')} testID="iconToUpdateAddress" />
+                                        <Icon name="create" style={{ color: 'black' }} onPress={() => this.editAddress(data.address)} testID="iconToUpdateAddress" />
                                     </Right>
                                     : null}
 
