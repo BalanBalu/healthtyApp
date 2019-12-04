@@ -182,20 +182,9 @@ const HomeStack = createStackNavigator({
   },
   "AppointmentInfo": {
     screen: AppointmentDetails,
-    
-    navigationOptions:({ navigation }) => ({
-      title:"Appointment info",
-    headerRight: (
-    <Grid>
-      <Col>
-        <TouchableOpacity onPress={() => { navigation.navigate('ReportIssue',{issueFor:'Appointment',reportedId:navigation.getParam('reportedId')}) }} style={{ marginLeft:15,paddingRight:10,paddingTop:10,paddingBottom:10,paddingLeft:10}} >
-          <Icon name="ios-more" style={{ color: '#fff',justifyContent: 'center' , fontSize:30}}/>
-        </TouchableOpacity>
-      </Col>
-    </Grid>
-    ),
-   
-    })
+    navigationOptions: {
+      title: "Appointment info"
+    }
   },
   ReportIssue: {
     screen: ReportIssue,
