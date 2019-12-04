@@ -14,6 +14,8 @@ import MapboxGL from '@react-native-mapbox-gl/maps';
 import { store } from '../../../setup/store';
 import { getAllChats, SET_LAST_MESSAGES_DATA } from '../../providers/chat/chat.action'
 import CurrentLocation from './CurrentLocation';
+import Swiper from 'react-native-swiper'
+
 MapboxGL.setAccessToken(MAP_BOX_PUBLIC_TOKEN);
 const MAX_DISTANCE_TO_COVER = 30000; // in meters
 
@@ -179,58 +181,67 @@ callSuggestionService=async(enteredText)=>{
 
             <Container style={styles.container}>
                 <Content keyboardShouldPersistTaps={'handled'} style={styles.bodyContent}>
-                   <Row style={{marginBottom: 5}}>
+                   <Row style={{marginBottom: 5,marginTop:5}}>
                    {isSearchByCurrentLocation === true ? 
-                   <Col size={10} style={{ flexDirection : 'row' }}>  
-                      <Text uppercase={false} style={{ paddingLeft: 10, color: 'gray', fontSize: 10, fontFamily: 'OpenSans-SemiBold' }}>You are searching Near by Hostpitals</Text>
+                   <Col size={10}>  
+                   <Row>
+                   <Icon name="ios-pin" style={{color:'#775DA3',fontSize:18,paddingLeft: 10,}}/>
+                     <Text uppercase={false} style={{ marginLeft:5, color: '#775DA3', fontSize: 14, fontFamily: 'OpenSans-SemiBold',fontWeight:'bold' }}>Ambattur</Text>
+                     </Row>
+                      <Text uppercase={false} style={{ paddingLeft: 10, color: 'gray', fontSize: 12, fontFamily: 'OpenSans-SemiBold',marginTop:2 }}>You are searching Near by Hostpitals</Text>
                     </Col> : 
                      <Col size={10} style={{ flexDirection : 'row' }}>  
                         <Text uppercase={false} style={{ paddingLeft: 10, color: 'gray', fontSize: 10, fontFamily: 'OpenSans-SemiBold' }}>You are searching Hospitals on </Text>
                         <Text uppercase={false} style={{ color: 'gray', fontSize: 10, fontFamily: 'OpenSans-Bold' }}>{patientSearchLocationName}</Text>
                     </Col>
                     } 
-                    <Col size={2}>
-                        <Text onPress={()=> this.props.navigation.navigate('Locations')} uppercase={true} style={{ color: 'gray', fontSize: 10, fontFamily: 'OpenSans-SemiBold' }}>Change</Text>
+                    <Col size={4.2}>
+                    <TouchableOpacity onPress={()=> this.props.navigation.navigate('Locations')}  style={{paddingLeft:20,paddingRight:20,paddingBottom:5,borderRadius:5,color:'#fff',flexDirection:'row'}}>
+        <Text uppercase={true} style={{ color: '#775DA3', fontSize: 13, fontFamily: 'OpenSans-SemiBold' }}>Change</Text>
+         <Icon name="ios-arrow-forward" style={{color:'#775DA3',fontSize:18,marginLeft:5}}/>
+        <Icon name="ios-arrow-forward" style={{color:'#775DA3',fontSize:18,marginLeft:2}}/>
+
+     </TouchableOpacity>
+                       
                     </Col>  
                    </Row>   
 
-                    <Row style={{ backgroundColor: 'white', borderColor: '#000', borderWidth: 1, borderRadius: 20, }}>
-                    <Col size={1.1}> 
-                    <TouchableOpacity style={{ marginTop: 10, marginBottom: 10, marginLeft : 10}}>
-                        <Icon name="ios-search" style={{ color: '#000' }} />
-                     </TouchableOpacity>
-                    </Col>
-                      <Col size={7}> 
+                 
+                    <Row style={styles.SearchRow}>
+                    <Col size={0.9} style={styles.SearchStyle}> 
+                        <TouchableOpacity style={{justifyContent:'center'}}>
+                            <Icon name="ios-search" style={{ color: '#fff', fontSize:20,padding:2}} />
+                        </TouchableOpacity>
+                      </Col>
+                      <Col size={8.1} style={{justifyContent:'center',}}> 
                         <Input 
-                            placeholder="Search Symptoms/Services"
-                            style={{ color: 'gray', fontFamily: 'OpenSans', fontSize: 13,  }}
+                            placeholder="Search for Symptoms/Services,etc"
+                            style={styles.inputfield}
                             placeholderTextColor="gray"
-                            value={this.state.visibleClearIcon}
                             keyboardType={'email-address'}
                             autoFocus={fromAppointment}
                             // onChangeText={searchValue => this.setState({ searchValue })}
                             onChangeText={enteredText =>this.SearchKeyWordFunction(enteredText) }
                             underlineColorAndroid="transparent"
                             blurOnSubmit={false}
-                            // onSubmitEditing={() => { this.searchDoctorListModule(); }}
-                        />
+                       />
                         </Col>
-
-                        <Col size={1.3}>
-                            <Row>
+                        <Col size={1.0} style={{justifyContent:'center'}}>
                                 {this.state.visibleClearIcon != '' ?
-                                    <Button Button transparent onPress={() => this.clearTotalText()}>
-                                        <Icon name="ios-close" style={{ fontSize: 30, color: 'gray' }} />
+                                    <Button  transparent onPress={() => this.clearTotalText()} style={{justifyContent:'flex-start',marginLeft:-10}}>
+                                        <Icon name="ios-close" style={{ fontSize: 25, color: 'gray' }} />
                                     </Button>
                                     : null}
                                 {/* <Button Button transparent onPress={() => this.searchDoctorListModule()}>
                                     <Icon name="ios-search" style={{ color: '#000' }} />
                                 </Button> */}
-                            </Row>
-
                         </Col>
-
+                       
                     </Row>
+
+                    
+             
+
 
                     {this.state.searchValue != null ?
                         <FlatList
@@ -256,9 +267,9 @@ callSuggestionService=async(enteredText)=>{
                                           this.props.navigation.navigate("Doctor List", { resultData: requestData }) 
                                         }}
                                     >
-                                    <Text style={{ padding: 10, fontFamily: 'OpenSans', fontSize: 13 }}>{item.value}</Text>
+                                    <Text style={{marginTop:2, fontFamily: 'OpenSans', fontSize: 12,color: '#775DA3',paddingLeft: 10,  }}>{item.value}</Text> 
                                     <Right>
-                                        <Text uppercase={true} style={{ color: 'gray', padding: 10, marginRight: 10, fontSize: 13, fontFamily: 'OpenSans-Bold' }}>{item.type}</Text>
+                                        <Text uppercase={true} style={{ color: 'gray', marginTop:2, marginRight: 10,color: '#775DA3', fontSize: 12, fontFamily: 'OpenSans-Bold',paddingLeft: 10,  }}>{item.type}</Text>
                                     </Right>
                                 </Row>
                             )}
@@ -267,6 +278,105 @@ callSuggestionService=async(enteredText)=>{
                             keyExtractor={(item, index) => index.toString()}
                         />
                         : null}
+
+
+
+<View>
+    <Text style={{ fontFamily: 'OpenSans', fontSize: 15 ,marginLeft:10,marginTop:10}}>Available Blood Donors</Text>
+   <View style={{flex:1,marginLeft:10,marginRight:10}}>
+    <Swiper style={styles.wrapper} 
+    autoplay={true}
+    loop={true}
+    showsButtons={true}
+    height={150}>
+        <View style={styles.slide1}>
+            {/* <Image source={require('../../../../assets/images/Ola.jpg')} style={{height:'100%',width:'100%'}} /> */}
+            <Text style={styles.text}>Hello Swiper</Text>
+        </View>
+        <View style={styles.slide2}>
+        {/* <Image source={require('../../../../assets/images/Ola.jpg')} style={{height:'100%',width:'100%'}} /> */}
+        <Text style={styles.text}>Beautiful</Text>
+        </View>
+        <View style={styles.slide3}>
+        {/* <Image source={require('../../../../assets/images/Ola.jpg')} style={{height:'100%',width:'100%'}} /> */}
+        <Text style={styles.text}>And simple</Text>
+        </View>
+      </Swiper>
+      </View>
+</View>
+
+<View style={{marginLeft:10,marginTop:10,marginRight:10}}>
+    <Text style={{ fontFamily: 'OpenSans', fontSize: 15 ,}}>Categories</Text>
+    <View style={{backgroundColor:'#f5f5f5',marginTop:5}}>
+  <Row style={{marginTop:10,marginBottom:10}}>
+  <FlatList
+   data={this.state.catagary}
+   extraData={this.state}
+   numColumns={3}
+   renderItem={({ item, index }) =>
+    <Col style={{ flex: 1, alignItems: "center", justifyContent: "center",width:'25%',marginTop:10}}>
+   <TouchableOpacity onPress={() => this.navigateToCategorySearch(item.category_name)}>
+    <View style={{  borderRadius: 10, overflow: 'hidden' }}>
+      <View style={{ height: 50, width: 80, overflow: 'hidden', backgroundColor: "#fff",justifyContent:'center',alignItems:'center'}}>
+        <Image
+        source={require('../../../../assets/images/InfertilitySpecialist.png')}
+          style={{
+            width: 40,height:40,alignItems:'center'
+          }}
+        />
+      </View>
+      <View style={{ padding: 10, width: 80,borderTopColor:'#000',borderTopWidth:0.3,backgroundColor:'#fff',paddingTop:5 }}>
+        <Text style={{fontSize:8,textAlign:'center'}}>{item.category_name}</Text>
+      </View>
+    </View>
+    </TouchableOpacity>
+  </Col>
+    
+    }
+    keyExtractor={(item, index) => index.toString()}
+/>
+
+  </Row>
+  <Row style={{marginTop:10,marginBottom:10}}>
+  <Right>
+     <TouchableOpacity onPress={() => this.navigetToCategories()} style={{paddingLeft:20,paddingRight:20,paddingBottom:5,paddingTop:5,borderRadius:5,color:'#fff',flexDirection:'row'}}>
+        <Text style={{ color: '#775DA3', fontSize: 15, textAlign: 'center',fontWeight:'bold'}}>View All</Text>
+         <Icon name="ios-arrow-forward" style={{color:'#775DA3',fontSize:20,marginLeft:5}}/>
+        <Icon name="ios-arrow-forward" style={{color:'#775DA3',fontSize:20,marginLeft:5}}/>
+
+     </TouchableOpacity>
+ </Right>
+  </Row>
+    </View>
+</View>
+
+
+<View>
+    <Text style={{ fontFamily: 'OpenSans', fontSize: 15 ,marginLeft:10,marginTop:10}}>Online Pharmacy Service</Text>
+   <View style={{flex:1,marginLeft:10,marginRight:10}}>
+    <Swiper style={styles.wrapper} 
+    autoplay={true}
+    loop={true}
+    showsButtons={true}
+    height={150}>
+        <View style={styles.slide1}>
+            {/* <Image source={require('../../../../assets/images/Ola.jpg')} style={{height:'100%',width:'100%'}} /> */}
+            <Text style={styles.text}>Hello Swiper</Text>
+        </View>
+        <View style={styles.slide2}>
+        {/* <Image source={require('../../../../assets/images/Ola.jpg')} style={{height:'100%',width:'100%'}} /> */}
+        <Text style={styles.text}>Beautiful</Text>
+        </View>
+        <View style={styles.slide3}>
+        {/* <Image source={require('../../../../assets/images/Ola.jpg')} style={{height:'100%',width:'100%'}} /> */}
+        <Text style={styles.text}>And simple</Text>
+        </View>
+      </Swiper>
+      </View>
+</View>
+
+
+
 
                     <Card style={{ padding: 10, borderRadius: 10 }}>
 
@@ -525,6 +635,57 @@ const styles = StyleSheet.create({
         marginRight: 'auto',
         marginTop: 8,
         fontWeight: 'bold'
-    }
+    },
+    SearchRow:{
+        backgroundColor: 'white', 
+        borderColor: '#000',
+        borderWidth:0.5, 
+        height:35,
+        marginRight:10,
+        marginLeft:10,
+        marginTop:5 
+    },
+    SearchStyle:{
+        backgroundColor:'#7E49C3',
+        width:'85%',
+        alignItems:'center',
+        justifyContent:'center',
+        borderRightColor:'#000',
+        borderRightWidth:0.5
+    },
+    inputfield:{
+        color: 'gray', 
+        fontFamily: 'OpenSans', 
+        fontSize: 12, 
+        padding:5,
+        paddingLeft:10
+    },
+    wrapper: {
+      marginTop:5,
+      borderRadius:2
+    },
+  slide1: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    backgroundColor: '#9DD6EB',
+  },
+  slide2: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    backgroundColor: '#97CAE5'
+  },
+  slide3: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    backgroundColor: '#92BBD9'
+  },
+  text: {
+    color: '#fff',
+    fontSize: 30,
+    fontWeight: 'bold'
+  }
 
 });
