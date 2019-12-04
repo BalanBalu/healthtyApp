@@ -228,6 +228,7 @@ export const appointmentIssue = [
     { id: 2, value: 'My promo code did not apply' },
     { id: 3, value: 'Money deducted but not refunded' },
     { id: 4, value: 'Faced issues during transactions?' },
+    { id: 5, value: 'Others' }
   ]
   
   export const pharmacyIssue = [
@@ -236,6 +237,7 @@ export const appointmentIssue = [
     { id: 2, value: 'Appointment booked but not yet received a confirmation message' },
     { id: 3, value: 'Money deducted but not refunded' },
     { id: 4, value: 'Faced issues during transactions?' },
+    { id: 5, value: 'Others' }
   ]
   
   export const chatIssue = [
@@ -244,13 +246,16 @@ export const appointmentIssue = [
     { id: 2, value: 'My promo code did not apply' },
     { id: 3, value: 'Money deducted but not refunded' },
     { id: 4, value: 'Faced issues during transactions?' },
+    { id: 5, value: 'Others' }
   ]
   export const paymentIssue = [
     { id: 0, value: 'Money deducted but not any appointment booked.' },
     { id: 1, value: 'Booking process is not familier' },
     { id: 2, value: 'Appointment booked but not yet received a confirmation message' },
     { id: 3, value: 'Money deducted but not refunded' },
-    { id: 4, value: 'Faced issues during transactions?' }]
+    { id: 4, value: 'Faced issues during transactions?' },
+    { id: 5, value: 'Others' }
+]
 
 
   
