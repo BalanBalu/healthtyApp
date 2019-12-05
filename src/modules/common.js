@@ -258,4 +258,11 @@ export function validateEmailAddress(text) {
     if (reg.test(text) === false) return false;
     else return true;
 }
+
+export function validateName(text) {
+    let regex = new RegExp('^[a-zA-Z]{1}');
+    if (regex.test(text) === false) return false;
+    else return true;
+}
+
   
