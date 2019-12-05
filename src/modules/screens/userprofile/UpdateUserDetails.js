@@ -14,7 +14,7 @@ import {
 } from "../../../setup/helpers";
 import { RadioButton } from 'react-native-paper';
 import Spinner from '../../../components/Spinner';
-import { bloodGroupList } from "../../common";
+import { bloodGroupList, validateName } from "../../common";
 
 
 class UpdateUserDetails extends Component {
@@ -94,6 +94,7 @@ class UpdateUserDetails extends Component {
                 };
 
                 const userId = await AsyncStorage.getItem('userId')
+                if (validateName(this.state.first_name || this.state.last_name) == true) {
                 let response = await userFiledsUpdate(userId, requestData);
                 if (response.success) {
                     Toast.show({
@@ -110,6 +111,14 @@ class UpdateUserDetails extends Component {
                         duration: 3000
                     });
                     this.setState({ isLoading: false });
+                }
+            }
+                else {
+                    Toast.show({
+                        text: 'Name can contain only alphabets',
+                        type: "danger",
+                        duration: 3000
+                    });
                 }
             } else {
                 Toast.show({
@@ -153,7 +162,7 @@ class UpdateUserDetails extends Component {
                                         value={this.state.firstName}
                                         keyboardType={'default'}
                                         returnKeyType={"next"}
-                                        onChangeText={text => this.validateFirstNameLastName(text, "Firstname")}
+                                        onChangeText={text => this.setState({firstName:text})}
                                         autoCapitalize='none'
                                         blurOnSubmit={false}
                                         onSubmitEditing={() => { this.firstName._root.focus(); }} testID="editFirstName"
@@ -165,7 +174,7 @@ class UpdateUserDetails extends Component {
                                         ref={(input) => { this.firstName = input; }}
                                         value={this.state.lastName}
                                         keyboardType={'default'}
-                                        onChangeText={text => this.validateFirstNameLastName(text, "Lastname")}
+                                        onChangeText={text => this.setState({ lastName: text })}
                                         autoCapitalize='none'
                                         blurOnSubmit={false}
                                         // onSubmitEditing={() => { this.lastName._root.focus(this.setState({ focus: true })); }}
