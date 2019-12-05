@@ -5,7 +5,7 @@ import { AsyncStorage, ScrollView } from 'react-native';
 import { connect } from 'react-redux'
 import styles from './style.js';
 import Spinner from '../../../components/Spinner';
-
+import { validateName } from '../../common'
 
 
 
@@ -40,33 +40,52 @@ class UpdateInsurance extends Component {
     }
 
     commonUpdateInsuranceMethod = async () => {
-        let userId = await AsyncStorage.getItem('userId');
-        let data = {
-            insurance: [{
-                insurance_no: this.state.insurance_no,
-                insurance_provider: this.state.insurance_provider,
-                active: true
-            }]
-        };
-        let response = await userFiledsUpdate(userId, data);
-        if (response.success) {
-            Toast.show({
-                text:response.message,
-                type: "success",
-                duration: 3000,
-            })
-            this.props.navigation.navigate('Profile');
+        try {
+            this.setState({ isLoading: true });
+            let userId = await AsyncStorage.getItem('userId');
+            let data = {
+                insurance: [{
+                    insurance_no: this.state.insurance_no,
+                    insurance_provider: this.state.insurance_provider,
+                    active: true
+                }]
+            };
+            if (validateName(this.state.insurance_provider) == true) {
 
-        } else {
-            Toast.show({
-                text:response.message,
-                type: "danger",
-                duration: 3000
-            })
+                let response = await userFiledsUpdate(userId, data);
+                if (response.success) {
+                    Toast.show({
+                        text: response.message,
+                        type: "success",
+                        duration: 3000,
+                    })
+                    this.props.navigation.navigate('Profile');
+
+                } else {
+                    Toast.show({
+                        text: response.message,
+                        type: "danger",
+                        duration: 3000
+                    })
+                }
+                this.setState({ isLoading: false });
+            }
+            else {
+                this.setState({ isLoading: false });
+                Toast.show({
+                    text: 'Name can contain only alphabets',
+                    type: "danger",
+                    duration: 3000
+                });
+            }
         }
-        this.setState({ isLoading: false });
+        catch (e) {
+            console.log(e);
+        }
+        finally {
+            this.setState({ isLoading: false });
+        }
     }
-
     handleInsuranceUpdate = async () => {
         const { userData, insurance_no, insurance_provider } = this.state
         try {
@@ -99,7 +118,7 @@ class UpdateInsurance extends Component {
             <Container style={styles.container}>
 
 
-<Content contentContainerStyle={styles.bodyContent}>
+                <Content contentContainerStyle={styles.bodyContent}>
 
                     <ScrollView>
                         <Spinner color='blue'
@@ -131,7 +150,7 @@ class UpdateInsurance extends Component {
 
 
 
-                            <Item style={{ borderBottomWidth: 0, marginTop: 10}}>
+                            <Item style={{ borderBottomWidth: 0, marginTop: 10 }}>
                                 <Right>
                                     <Button success style={styles.button2} onPress={() => this.handleInsuranceUpdate()} testID='clickUpdateInsurance'>
                                         <Text uppercase={false} note style={styles.buttonText}>Update</Text>
