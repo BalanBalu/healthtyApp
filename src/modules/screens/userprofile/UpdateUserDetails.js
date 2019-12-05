@@ -61,24 +61,6 @@ class UpdateUserDetails extends Component {
         })
     }
 
-    validateFirstNameLastName = async (text, type) => {
-        const regex = new RegExp('^[a-zA-Z]{1}')  //Support letter with space
-        if (type === "Firstname") {
-            this.setState({ firstName: text, updateButton: false });
-        } else {
-            this.setState({ lastName: text, updateButton: false });
-        }
-        if (regex.test(text) === false) {
-            this.setState({ updateButton: true });
-            if (text !== '') {
-                Toast.show({
-                    text: 'Please enter only alphabets',
-                    type: "danger",
-                    duration: 3000
-                });
-            }
-        }
-    }
 
     userUpdate = async () => {
         const { userData, firstName, lastName, dob, gender, selectedBloodGroup } = this.state
