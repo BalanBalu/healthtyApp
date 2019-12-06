@@ -70,7 +70,7 @@ class Home extends Component {
 
     getCatagries = async () => {
         try {
-            const searchQueris = 'services=0&skip=0&limit=6';
+            const searchQueris = 'services=0&skip=0&limit=9';
             let result = await catagries(searchQueris);
             if (result.success) { 
                 this.setState({ catagary: result.data })
@@ -181,7 +181,7 @@ callSuggestionService=async(enteredText)=>{
 
             <Container style={styles.container}>
                 <Content keyboardShouldPersistTaps={'handled'} style={styles.bodyContent}>
-                   <Row style={{marginBottom: 5,marginTop:5}}>
+                   {/* <Row style={{marginBottom: 5,marginTop:5}}>
                    {isSearchByCurrentLocation === true ? 
                    <Col size={10}>  
                    <Row>
@@ -204,7 +204,7 @@ callSuggestionService=async(enteredText)=>{
      </TouchableOpacity>
                        
                     </Col>  
-                   </Row>   
+                   </Row>    */}
 
                  
                     <Row style={styles.SearchRow}>
@@ -217,7 +217,7 @@ callSuggestionService=async(enteredText)=>{
                         <Input 
                             placeholder="Search for Symptoms/Services,etc"
                             style={styles.inputfield}
-                            placeholderTextColor="gray"
+                            placeholderTextColor="#e2e2e2"
                             keyboardType={'email-address'}
                             autoFocus={fromAppointment}
                             // onChangeText={searchValue => this.setState({ searchValue })}
@@ -280,110 +280,126 @@ callSuggestionService=async(enteredText)=>{
                         : null}
 
 
+                    <Grid style={{flex:1,marginLeft:10,marginRight:10,marginTop:10}}>
+                    <Col style={{width:'33.33%',}}>
+                       <TouchableOpacity onPress={() => this.props.navigation.navigate("BloodDonerFilters")}>
+                        <Card style={{  borderRadius: 10, overflow: 'hidden' }}>
+                          <Row style={{ height: 100, width: '100%', overflow: 'hidden', backgroundColor: "#fff",justifyContent:'center',alignItems:'center'}}>
+                            <Image
+                            source={require('../../../../assets/images/blood.jpeg')}
+                              style={{
+                                width: '100%',height:'100%',alignItems:'center'
+                              }}
+                            />
+                          </Row>
+                     <Row style={{ padding: 10, width: '100%',borderTopColor:'#000',borderTopWidth:0.3,backgroundColor:'#fff',paddingTop:5,justifyContent:'center' }}>
+                       <Col style={{width:'100%'}}>
+                       <Text style={{fontSize:10,textAlign:'center',fontWeight:'bold'}}>Available Blood Donors</Text>
+                       <Text style={{fontSize:10,marginTop:5,textAlign:'center',}}> donate blood </Text>
+                                     
+                          </Col>
+                        </Row>
+                      </Card>
+                      </TouchableOpacity>
+                      </Col>
 
-<View>
-    <Text style={{ fontFamily: 'OpenSans', fontSize: 15 ,marginLeft:10,marginTop:10}}>Available Blood Donors</Text>
-   <View style={{flex:1,marginLeft:10,marginRight:10}}>
-    <Swiper style={styles.wrapper} 
-    autoplay={true}
-    loop={true}
-    showsButtons={true}
-    height={150}>
-        <View style={styles.slide1}>
-            {/* <Image source={require('../../../../assets/images/Ola.jpg')} style={{height:'100%',width:'100%'}} /> */}
-            <Text style={styles.text}>Hello Swiper</Text>
-        </View>
-        <View style={styles.slide2}>
-        {/* <Image source={require('../../../../assets/images/Ola.jpg')} style={{height:'100%',width:'100%'}} /> */}
-        <Text style={styles.text}>Beautiful</Text>
-        </View>
-        <View style={styles.slide3}>
-        {/* <Image source={require('../../../../assets/images/Ola.jpg')} style={{height:'100%',width:'100%'}} /> */}
-        <Text style={styles.text}>And simple</Text>
-        </View>
-      </Swiper>
-      </View>
-</View>
-
-<View style={{marginLeft:10,marginTop:10,marginRight:10}}>
-    <Text style={{ fontFamily: 'OpenSans', fontSize: 15 ,}}>Categories</Text>
-    <View style={{backgroundColor:'#f5f5f5',marginTop:5}}>
-  <Row style={{marginTop:10,marginBottom:10}}>
-  <FlatList
-   data={this.state.catagary}
-   extraData={this.state}
-   numColumns={3}
-   renderItem={({ item, index }) =>
-    <Col style={{ flex: 1, alignItems: "center", justifyContent: "center",width:'25%',marginTop:10}}>
-   <TouchableOpacity onPress={() => this.navigateToCategorySearch(item.category_name)}>
-    <View style={{  borderRadius: 10, overflow: 'hidden' }}>
-      <View style={{ height: 50, width: 80, overflow: 'hidden', backgroundColor: "#fff",justifyContent:'center',alignItems:'center'}}>
-        <Image
-        source={require('../../../../assets/images/InfertilitySpecialist.png')}
-          style={{
-            width: 40,height:40,alignItems:'center'
-          }}
-        />
-      </View>
-      <View style={{ padding: 10, width: 80,borderTopColor:'#000',borderTopWidth:0.3,backgroundColor:'#fff',paddingTop:5 }}>
-        <Text style={{fontSize:8,textAlign:'center'}}>{item.category_name}</Text>
-      </View>
-    </View>
-    </TouchableOpacity>
-  </Col>
-    
-    }
-    keyExtractor={(item, index) => index.toString()}
-/>
-
-  </Row>
-  <Row style={{marginTop:10,marginBottom:10}}>
-  <Right>
-     <TouchableOpacity onPress={() => this.navigetToCategories()} style={{paddingLeft:20,paddingRight:20,paddingBottom:5,paddingTop:5,borderRadius:5,color:'#fff',flexDirection:'row'}}>
-        <Text style={{ color: '#775DA3', fontSize: 15, textAlign: 'center',fontWeight:'bold'}}>View All</Text>
-         <Icon name="ios-arrow-forward" style={{color:'#775DA3',fontSize:20,marginLeft:5}}/>
-        <Icon name="ios-arrow-forward" style={{color:'#775DA3',fontSize:20,marginLeft:5}}/>
-
-     </TouchableOpacity>
- </Right>
-  </Row>
-    </View>
-</View>
-
-
-<View>
-    <Text style={{ fontFamily: 'OpenSans', fontSize: 15 ,marginLeft:10,marginTop:10}}>Online Pharmacy Service</Text>
-   <View style={{flex:1,marginLeft:10,marginRight:10}}>
-    <Swiper style={styles.wrapper} 
-    autoplay={true}
-    loop={true}
-    showsButtons={true}
-    height={150}>
-        <View style={styles.slide1}>
-            {/* <Image source={require('../../../../assets/images/Ola.jpg')} style={{height:'100%',width:'100%'}} /> */}
-            <Text style={styles.text}>Hello Swiper</Text>
-        </View>
-        <View style={styles.slide2}>
-        {/* <Image source={require('../../../../assets/images/Ola.jpg')} style={{height:'100%',width:'100%'}} /> */}
-        <Text style={styles.text}>Beautiful</Text>
-        </View>
-        <View style={styles.slide3}>
-        {/* <Image source={require('../../../../assets/images/Ola.jpg')} style={{height:'100%',width:'100%'}} /> */}
-        <Text style={styles.text}>And simple</Text>
-        </View>
-      </Swiper>
-      </View>
-</View>
-
-
-
-
+                      <Col style={{width:'33.33%',}}>
+                    <TouchableOpacity onPress={() => this.props.navigation.navigate("Chat Service")}>
+                              <Card style={{  borderRadius: 10, overflow: 'hidden' }}>
+                             <Row style={{ height: 100, width: '100%', overflow: 'hidden', backgroundColor: "#fff",justifyContent:'center',alignItems:'center'}}>
+                            <Image
+                            source={require('../../../../assets/images/Chat.jpg')}
+                              style={{
+                                width: '100%',height:'100%',alignItems:'center'
+                              }}
+                            />
+                          </Row>
+                          <Row style={{ padding: 10, width:'100%',borderTopColor:'#000',borderTopWidth:0.3,backgroundColor:'#fff',paddingTop:5,justifyContent:'center'}}>
+                          <Col style={{width:'100%',}}>
+                          <Text style={{fontSize:10,textAlign:'center',fontWeight:'bold'}}> Chat</Text>
+                            <Text style={{fontSize:10,marginTop:5,textAlign:'center',}}> Chat with Top doctor</Text>
+                        </Col>
+      
+                       </Row>
+                     </Card>
+                             </TouchableOpacity>
+                             </Col>
+                             <Col style={{width:'33.33%',}}>
+                            <TouchableOpacity onPress={() => this.props.navigation.navigate("Pharmacy")}>
+                             <Card style={{  borderRadius: 10, overflow: 'hidden' }}>
+                               <Row style={{ height: 100, width: '100%', overflow: 'hidden', backgroundColor: "#fff",justifyContent:'center',alignItems:'center'}}>
+                                 <Image
+                                 source={require('../../../../assets/images/pharmacy.jpg')}
+                                   style={{
+                                     width: '100%',height:'100%',alignItems:'center'
+                                   }}
+                                 />
+                               </Row>
+                               <Row style={{ padding: 10, width:'100%',borderTopColor:'#000',borderTopWidth:0.3,backgroundColor:'#fff',paddingTop:5,justifyContent:'center'}}>
+                                <Col style={{width:'100%',}}>
+                                <Text style={{fontSize:10,textAlign:'center',fontWeight:'bold'}}> Pharmacy</Text>
+                                 <Text style={{fontSize:10,marginTop:5,textAlign:'center',}}> Medicine and Health</Text>
+                                </Col>
+                                 
+                               </Row>
+                             </Card>
+                             </TouchableOpacity>
+                           </Col>
+                             </Grid>
+                             <View style={{marginLeft:10,marginRight:10}}>
+                             <Row style={{marginTop:5,marginBottom:5}}>
+                                 <Left>
+                                 <Text style={{ fontFamily: 'OpenSans', fontSize: 15 ,fontWeight:'bold'}}>Categories</Text>
+                             </Left>
+                             <Right>
+                                <TouchableOpacity onPress={() => this.navigetToCategories()} style={{paddingLeft:20,paddingRight:20,paddingBottom:5,paddingTop:5,borderRadius:5,color:'#fff',flexDirection:'row'}}>
+                                   <Text style={{ color: '#775DA3', fontSize: 13, textAlign: 'center',fontWeight:'bold'}}>View All</Text>
+                                </TouchableOpacity>
+                            </Right>
+                             </Row>
+                             
+                               <View>
+                             <Row style={{marginTop:5,}}>
+                             <FlatList
+                              numColumns={3}
+                              data={this.state.catagary}
+                              extraData={this.state}
+                              renderItem={({ item, index }) =>
+                               <Col style={{flex:3,alignItems: "center", justifyContent: "center",width:'25%', borderColor:'gray', borderRadius:5,flexDirection:'row',
+                                 borderWidth:0.1, shadowColor: '#000',
+                                  shadowOffset: { width: 0, height: 0.5 },
+                                  shadowOpacity: 0.1,
+                                  shadowRadius: 5,  
+                                  elevation: 2,padding:3,marginRight:8,marginTop:8,marginBottom:5}}>
+                                     <TouchableOpacity onPress={() => this.navigateToCategorySearch(item.category_name)} style={{justifyContent:'center',alignItems:'center'}}>
+                                    
+                                        <Row style={{ height: 50, width: 80, overflow: 'hidden', backgroundColor: "#fff",justifyContent:'center',alignItems:'center',flexDirection:'column'}}>
+                                          <Image
+                                             source={{ uri: item.imageBaseURL + '/' + item.category_id + '.png' }}
+                                            style={{
+                                              width: 50,height:50,alignItems:'center'
+                                            }}
+                                          />
+                                        </Row>
+                                        <Row style={{  width: 80,backgroundColor:'#fff',paddingTop:5,justifyContent:'center'}}>
+                                          <Text style={{fontSize:10,textAlign:'center'}}>{item.category_name}</Text>
+                                        </Row>
+                                    
+                                      </TouchableOpacity>
+                                  </Col> 
+                                     }
+                                     keyExtractor={(item, index) => index.toString()}
+                                 /> 
+                                  </Row>
+                                </View>
+                            </View>
+{/* 
                     <Card style={{ padding: 10, borderRadius: 10 }}>
 
                         <Grid>
                             <Row >
                                 <Left >
-                                    <Text style={{ fontFamily: 'OpenSans', fontSize: 15 }}>Categories</Text>
+                                    <Text style={{ fontFamily: 'OpenSans', fontSize: 15,fontWeight:'bold' }}>Categories</Text>
                                 </Left>
                                 <Body >
 
@@ -407,10 +423,10 @@ callSuggestionService=async(enteredText)=>{
                                                                 colors={['#5758BB', '#9980FA']} style={{ borderRadius: 10, padding: 5, height: 100, width: 100, marginLeft: 'auto', marginRight: 'auto' }}>
                                                                 <Image
                                                                     source={{ uri: item.imageBaseURL + '/' + item.category_id + '.png' }} style={styles.customImage} />
-                                                            </LinearGradient>
+                                                            </LinearGradient> */}
 
-                                                            <Text style={styles.textcenter}>{item.category_name}</Text>
-                                                           {/* <Text note style={{ textAlign: 'center',fontFamily:'OpenSans',fontSize:15 }}>100 Doctors</Text> */}
+                                                            {/* <Text style={styles.textcenter}>{item.category_name}</Text> */}
+                                                           {/* <Text note style={{ textAlign: 'center',fontFamily:'OpenSans',fontSize:15 }}>100 Doctors</Text>
                                                         </Col>
                                                     </Item>
                                                 </Grid>
@@ -421,16 +437,16 @@ callSuggestionService=async(enteredText)=>{
                                     </ListItem>
                                  </Row>
                              </Grid>
-                  </Card>
-                  <Card style={{ backgroundColor: '#ffeaa7', padding: 10, borderRadius: 10 }}>
+                  </Card> */}
+                  {/* <Card style={{ backgroundColor: '#ffeaa7', padding: 10, borderRadius: 10 }}>
                         <Text style={{ fontFamily: 'OpenSans', fontSize: 15 }}>You Can Save A Life</Text>
                         <Button block style={{ margin: 10, borderRadius: 20, backgroundColor: '#74579E' }}>
                             <Text uppercase={true} style={{ fontFamily: 'OpenSans', fontSize: 15, fontWeight: 'bold' }}>REPORT ACCIDENT NOW</Text>
                         </Button>
                        <Text style={{ textAlign: 'right', fontSize: 15, fontFamily: 'OpenSans', color: '#000' }}>5002 Fast Growing Ambulance</Text>
-                  </Card>
+                  </Card> */}
 
-
+{/* 
                     <LinearGradient
                         colors={['#7E49C3', '#C86DD7']}
                         style={{ borderRadius: 10, padding: 10, borderBottomWidth: 0, fontFamily: 'OpenSans', marginTop: 5 }} >
@@ -447,14 +463,14 @@ callSuggestionService=async(enteredText)=>{
                         </Grid>
 
 
-                    </LinearGradient>
+                    </LinearGradient> */}
 
 
-                    <LinearGradient
+                    {/* <LinearGradient
                         colors={['#F58949', '#E0C084']}
                         style={{ borderRadius: 10, padding: 10, borderBottomWidth: 0, fontFamily: 'OpenSans', marginTop: 10, marginBottom: 10 }} >
                         <Grid>
-                            <Row onPress={() => this.props.navigation.navigate("Pharmacy")}>
+                            <Row >
                                 <Col style={{ width: '75%' }}>
                                     <Text style={{ fontFamily: 'OpenSans', color: 'white', marginTop: 10, fontSize: 15 }}>Online Pharmacy Services</Text>
                                 </Col>
@@ -489,7 +505,7 @@ callSuggestionService=async(enteredText)=>{
                             </Col>
                         </Grid>
 
-                    </LinearGradient>
+                    </LinearGradient> */}
 
 
                 </Content>
@@ -643,7 +659,7 @@ const styles = StyleSheet.create({
         height:35,
         marginRight:10,
         marginLeft:10,
-        marginTop:5 
+        marginTop:5,borderRadius:20
     },
     SearchStyle:{
         backgroundColor:'#7E49C3',
@@ -651,7 +667,9 @@ const styles = StyleSheet.create({
         alignItems:'center',
         justifyContent:'center',
         borderRightColor:'#000',
-        borderRightWidth:0.5
+        borderRightWidth:0.5,
+        borderBottomLeftRadius:20,
+        borderTopLeftRadius:20
     },
     inputfield:{
         color: 'gray', 
