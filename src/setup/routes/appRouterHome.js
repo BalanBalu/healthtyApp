@@ -134,7 +134,7 @@ const HomeStack = createStackNavigator({
         </Grid>
       ),
       headerStyle: {
-        backgroundColor: '#775DA3',
+        backgroundColor: '#7F49C3',
         height:60
       },
     })
