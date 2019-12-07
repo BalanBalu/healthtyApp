@@ -76,7 +76,7 @@ class UpdateUserDetails extends Component {
                 };
 
                 const userId = await AsyncStorage.getItem('userId')
-                if (validateName(this.state.first_name || this.state.last_name) == true) {
+                if (validateName(this.state.first_name) == true) {
                 let response = await userFiledsUpdate(userId, requestData);
                 if (response.success) {
                     Toast.show({
