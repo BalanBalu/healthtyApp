@@ -24,7 +24,8 @@ export const bookAppointmentData = {
     filteredDoctorData : [],
     patientSearchLocationName: null,
     locationCordinates: null,
-    isSearchByCurrentLocation: true
+    isSearchByCurrentLocation: true,
+    locationUpdatedCount: 0
   }
   // State
   export default (state = bookAppointmentData, action) => {
@@ -70,11 +71,14 @@ export const bookAppointmentData = {
             filteredDoctorData: action.data
         }
       case SET_PATIENT_LOCATION_DATA: {
+        locationUpdatedCount = bookAppointmentData.locationUpdatedCount + 1;
+        bookAppointmentData.locationUpdatedCount = locationUpdatedCount;
         return {
           ...state,
           locationCordinates: action.center,
           patientSearchLocationName: action.locationName,
-          isSearchByCurrentLocation: action.isSearchByCurrentLocation
+          isSearchByCurrentLocation: action.isSearchByCurrentLocation,
+          locationUpdatedCount: locationUpdatedCount
         }
       }    
       default:

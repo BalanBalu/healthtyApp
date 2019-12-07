@@ -33,6 +33,7 @@ const debounce = (fun, delay) => {
 }
 
 class Home extends Component {
+    locationUpdatedCount = 0;
     constructor(props) {
         super(props)
         this.state = {
@@ -64,12 +65,7 @@ class Home extends Component {
         }
         CurrentLocation.getCurrentPosition();
     }
-    getUserLocation() {
-        console.log('getting Geo to User Locatuin')
-        debugger
-        
-    }
-
+    
     getCatagries = async () => {
         try {
             const searchQueris = 'services=0&skip=0&limit=9';
@@ -175,11 +171,32 @@ callSuggestionService=async(enteredText)=>{
             />
         );
     };
-
+   /* navigationUpdated = false;
+    setNavigationParams() {
+        const { bookappointment: { isLocationUpdated }, navigation } = this.props;
+        if(isLocationUpdated)  
+        navigation.setParams({
+            appBar: {
+                isOnline: 'YEs',
+                locationName: 'Ambathur'
+            }
+        });
+        this.navigationUpdated = true;
+    } */
     render() {
         const { fromAppointment } = this.state;
-        const { bookappointment: { patientSearchLocationName, locationCordinates, isSearchByCurrentLocation } } = this.props;
-        
+        const { bookappointment: { patientSearchLocationName, locationCordinates, isSearchByCurrentLocation, locationUpdatedCount }, navigation } = this.props;
+        if(locationUpdatedCount !== this.locationUpdatedCount) {
+            navigation.setParams({
+                appBar: {
+                    isOnline: 'YEs',
+                    locationName: patientSearchLocationName,
+                    locationCapta: isSearchByCurrentLocation ? 'You are searching Near by Hostpitals' : 'You are searching Hospitals on ' + patientSearchLocationName
+                }
+            });
+           console.log('is it Updating here?')
+           this.locationUpdatedCount = locationUpdatedCount; 
+        }
         return (
 
         <Container style={styles.container}>
