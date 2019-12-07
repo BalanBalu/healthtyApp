@@ -14,7 +14,9 @@ import MapboxGL from '@react-native-mapbox-gl/maps';
 import { store } from '../../../setup/store';
 import { getAllChats, SET_LAST_MESSAGES_DATA } from '../../providers/chat/chat.action'
 import CurrentLocation from './CurrentLocation';
-import Swiper from 'react-native-swiper'
+const bloodImg = require('../../../../assets/images/blood.jpeg');
+const chatImg = require('../../../../assets/images/Chat.jpg');
+const pharmacyImg = require('../../../../assets/images/pharmacy.jpg');
 
 MapboxGL.setAccessToken(MAP_BOX_PUBLIC_TOKEN);
 const MAX_DISTANCE_TO_COVER = 30000; // in meters
@@ -73,6 +75,7 @@ class Home extends Component {
             const searchQueris = 'services=0&skip=0&limit=9';
             let result = await catagries(searchQueris);
             if (result.success) { 
+                console.log(result.data);
                 this.setState({ catagary: result.data })
             }
         } catch (e) {
@@ -179,41 +182,16 @@ callSuggestionService=async(enteredText)=>{
         
         return (
 
-            <Container style={styles.container}>
-                <Content keyboardShouldPersistTaps={'handled'} style={styles.bodyContent}>
-                   {/* <Row style={{marginBottom: 5,marginTop:5}}>
-                   {isSearchByCurrentLocation === true ? 
-                   <Col size={10}>  
-                   <Row>
-                   <Icon name="ios-pin" style={{color:'#775DA3',fontSize:18,paddingLeft: 10,}}/>
-                     <Text uppercase={false} style={{ marginLeft:5, color: '#775DA3', fontSize: 14, fontFamily: 'OpenSans-SemiBold',fontWeight:'bold' }}>Ambattur</Text>
-                     </Row>
-                      <Text uppercase={false} style={{ paddingLeft: 10, color: 'gray', fontSize: 12, fontFamily: 'OpenSans-SemiBold',marginTop:2 }}>You are searching Near by Hostpitals</Text>
-                    </Col> : 
-                     <Col size={10} style={{ flexDirection : 'row' }}>  
-                        <Text uppercase={false} style={{ paddingLeft: 10, color: 'gray', fontSize: 10, fontFamily: 'OpenSans-SemiBold' }}>You are searching Hospitals on </Text>
-                        <Text uppercase={false} style={{ color: 'gray', fontSize: 10, fontFamily: 'OpenSans-Bold' }}>{patientSearchLocationName}</Text>
-                    </Col>
-                    } 
-                    <Col size={4.2}>
-                    <TouchableOpacity onPress={()=> this.props.navigation.navigate('Locations')}  style={{paddingLeft:20,paddingRight:20,paddingBottom:5,borderRadius:5,color:'#fff',flexDirection:'row'}}>
-        <Text uppercase={true} style={{ color: '#775DA3', fontSize: 13, fontFamily: 'OpenSans-SemiBold' }}>Change</Text>
-         <Icon name="ios-arrow-forward" style={{color:'#775DA3',fontSize:18,marginLeft:5}}/>
-        <Icon name="ios-arrow-forward" style={{color:'#775DA3',fontSize:18,marginLeft:2}}/>
-
-     </TouchableOpacity>
-                       
-                    </Col>  
-                   </Row>    */}
-
-                 
-                    <Row style={styles.SearchRow}>
+        <Container style={styles.container}>
+            <Content keyboardShouldPersistTaps={'handled'} style={styles.bodyContent}>
+                  
+                <Row style={styles.SearchRow}>
                     <Col size={0.9} style={styles.SearchStyle}> 
                         <TouchableOpacity style={{justifyContent:'center'}}>
                             <Icon name="ios-search" style={{ color: '#fff', fontSize:20,padding:2}} />
                         </TouchableOpacity>
-                      </Col>
-                      <Col size={8.1} style={{justifyContent:'center',}}> 
+                    </Col>
+                    <Col size={8.1} style={{justifyContent:'center',}}> 
                         <Input 
                             placeholder="Search for Symptoms/Services,etc"
                             style={styles.inputfield}
@@ -286,7 +264,7 @@ callSuggestionService=async(enteredText)=>{
                         <Card style={{  borderRadius: 10, overflow: 'hidden' }}>
                           <Row style={{ height: 100, width: '100%', overflow: 'hidden', backgroundColor: "#fff",justifyContent:'center',alignItems:'center'}}>
                             <Image
-                            source={require('../../../../assets/images/blood.jpeg')}
+                            source={bloodImg}
                               style={{
                                 width: '100%',height:'100%',alignItems:'center'
                               }}
@@ -308,7 +286,7 @@ callSuggestionService=async(enteredText)=>{
                               <Card style={{  borderRadius: 10, overflow: 'hidden' }}>
                              <Row style={{ height: 100, width: '100%', overflow: 'hidden', backgroundColor: "#fff",justifyContent:'center',alignItems:'center'}}>
                             <Image
-                            source={require('../../../../assets/images/Chat.jpg')}
+                            source={chatImg}
                               style={{
                                 width: '100%',height:'100%',alignItems:'center'
                               }}
@@ -329,7 +307,7 @@ callSuggestionService=async(enteredText)=>{
                              <Card style={{  borderRadius: 10, overflow: 'hidden' }}>
                                <Row style={{ height: 100, width: '100%', overflow: 'hidden', backgroundColor: "#fff",justifyContent:'center',alignItems:'center'}}>
                                  <Image
-                                 source={require('../../../../assets/images/pharmacy.jpg')}
+                                 source={pharmacyImg}
                                    style={{
                                      width: '100%',height:'100%',alignItems:'center'
                                    }}
@@ -363,30 +341,52 @@ callSuggestionService=async(enteredText)=>{
                              <FlatList
                               numColumns={3}
                               data={this.state.catagary}
-                              extraData={this.state}
+                              extraData={this.state.catagary}
                               renderItem={({ item, index }) =>
-                               <Col style={{flex:3,alignItems: "center", justifyContent: "center",width:'25%', borderColor:'gray', borderRadius:5,flexDirection:'row',
-                                 borderWidth:0.1, shadowColor: '#000',
-                                  shadowOffset: { width: 0, height: 0.5 },
-                                  shadowOpacity: 0.1,
-                                  shadowRadius: 5,  
-                                  elevation: 2,padding:3,marginRight:8,marginTop:8,marginBottom:5}}>
-                                     <TouchableOpacity onPress={() => this.navigateToCategorySearch(item.category_name)} style={{justifyContent:'center',alignItems:'center'}}>
-                                    
-                                        <Row style={{ height: 50, width: 80, overflow: 'hidden', backgroundColor: "#fff",justifyContent:'center',alignItems:'center',flexDirection:'column'}}>
-                                          <Image
-                                             source={{ uri: item.imageBaseURL + '/' + item.category_id + '.png' }}
-                                            style={{
-                                              width: 50,height:50,alignItems:'center'
-                                            }}
-                                          />
-                                        </Row>
-                                        <Row style={{  width: 80,backgroundColor:'#fff',paddingTop:5,justifyContent:'center'}}>
-                                          <Text style={{fontSize:10,textAlign:'center'}}>{item.category_name}</Text>
-                                        </Row>
-                                    
-                                      </TouchableOpacity>
-                                  </Col> 
+                                    <Col style={{
+                                            flex:3,
+                                            alignItems: "center", 
+                                            justifyContent: "center", 
+                                            borderColor:'gray', 
+                                            borderRadius:5, 
+                                            flexDirection:'row',
+                                            borderWidth:0.1, 
+                                            shadowColor: '#000',
+                                            shadowOffset: { width: 0, height: 0.5 },
+                                            shadowOpacity: 0.1,
+                                            shadowRadius: 5,  
+                                            elevation: 2,
+                                            padding:1,
+                                            marginLeft: 8,
+                                            marginRight:8,
+                                            marginTop:8,
+                                            marginBottom:1 }}>
+                                            <Row style={{ width : '33%'}}>   
+                                                <TouchableOpacity onPress={() => this.navigateToCategorySearch(item.category_name)} 
+                                                                  style={{justifyContent:'center',alignItems:'center'}}>
+                                        
+                                                <Row style={{   
+                                                        height: 50, width: 100, 
+                                                        overflow: 'hidden',
+                                                        justifyContent:'center', 
+                                                        backgroundColor: '#fff', 
+                                                        alignItems:'center',
+                                                        flexDirection:'column'}
+                                                }>
+                                                <Image
+                                                     source={{ uri: item.imageBaseURL + '/' + item.category_id + '.png'  }}
+                                                      style={{
+                                                        width: 50,height:50, alignItems:'center'
+                                                      }}
+                                                />
+                                                </Row>
+                                                <Row style={{  width: 100, height: 40, backgroundColor:'#fff',paddingTop:5,justifyContent:'center'}}>
+                                                    <Text style={{fontSize:10,textAlign:'center'}}>{item.category_name}</Text>
+                                                </Row>
+                                                </TouchableOpacity>
+                                            </Row>
+                                     
+                                    </Col> 
                                      }
                                      keyExtractor={(item, index) => index.toString()}
                                  /> 
