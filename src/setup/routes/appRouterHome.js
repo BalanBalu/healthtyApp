@@ -93,16 +93,31 @@ const HomeStack = createStackNavigator({
   Home: {
     screen: Home,
     navigationOptions: ({ navigation }) => ({
-
-      title: 'DashBoard',
    
       headerLeft: (
-        <TouchableOpacity onPress={() => navigation.toggleDrawer()}>
+        <Row>
+        <TouchableOpacity onPress={() => navigation.toggleDrawer()} style={{flexDirection:'row',marginTop:10}}>
           <Image
-            style={{ marginLeft: 18, tintColor: 'white' }}
+            style={{ marginLeft: 18, tintColor: '#fff' }}
             source={menuIcon}
           />
         </TouchableOpacity>
+      
+        <Row style={{marginBottom: 5,marginTop:5,marginLeft:5}}>
+                   <Col size={10}>  
+                   <TouchableOpacity onPress={()=> this.props.navigation.navigate('Locations')}>
+                   <View style={{flexDirection:'row'}}>
+                   <Icon name="ios-pin" style={{color:'#fff',fontSize:18,paddingLeft: 10,}}/>
+                     <Text uppercase={false} style={{ marginLeft:5, color: '#fff', fontSize: 14, fontFamily: 'OpenSans-SemiBold',fontWeight:'bold' }}>Ambattur</Text>
+                     <Icon name="ios-arrow-down" style={{color:'#fff',fontSize:18,paddingLeft: 10,marginTop:2}}/>
+                     </View>
+                     </TouchableOpacity>
+                      <Text uppercase={false} style={{ paddingLeft: 10, color: '#fff', fontSize: 12, fontFamily: 'OpenSans-SemiBold',marginTop:2 }}>You are searching Near by Hostpitals</Text>
+                    </Col> 
+                   </Row>   
+
+       
+        </Row>
       ),
 
       headerRight: (
@@ -118,6 +133,10 @@ const HomeStack = createStackNavigator({
         
         </Grid>
       ),
+      headerStyle: {
+        backgroundColor: '#7F49C3',
+        height:60
+      },
     })
   },
   // ================Categories  ===============
