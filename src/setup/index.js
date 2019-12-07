@@ -90,50 +90,17 @@ export default class App extends Component {
       console.log(e)
     }
   }
-  /* async checkPermission() {
-     const enabled = await firebase.messaging().hasPermission();
-     if (enabled) {
-         this.getToken();
-     } else {
-         this.requestPermission();
-     }
-   }
-   async getToken() {
-     let fcmToken = await AsyncStorage.getItem('fcmToken');
-     if (!fcmToken) {
-         fcmToken = await firebase.messaging().getToken();
-         if (fcmToken) {
-             // user has a device token
-             console.log('fcmToken: ' +  fcmToken)
-             await AsyncStorage.setItem('fcmToken', fcmToken);
-         }
-     }
-   }
-   async requestPermission() {
-     try {
-         await firebase.messaging().requestPermission();
-         // User has authorised
-         this.getToken();
-     } catch (error) {
-         // User has rejected permissions
-         console.log('permission rejected');
-     }
-   }*/
+  
   onRegister = async (token) => {
     const userId = await AsyncStorage.getItem('userId');
-    const isDeviceTokenUpdated = await AsyncStorage.getItem('isDeviceTokenUpdated');
+    const updatedDeviceToken  = await AsyncStorage.getItem('updatedDeviceToken');
     let deviceToken = token.token;
-    let mergedTokenWithUserId = deviceToken.slice(deviceToken.length - 15) + '_' + userId;
-    if (userId != null && isDeviceTokenUpdated == null) {  //for 1st time update Token login Condition
-      if (deviceToken != null)
+    if (userId != null && deviceToken != null) {
+      let mergedTokenWithUserId = userId + '_' + deviceToken.slice(deviceToken.length - 15);
+      if (mergedTokenWithUserId !== updatedDeviceToken)
         await this.updateDeviceToken(userId, deviceToken, mergedTokenWithUserId);  // update Unique Device_Tokens 
     }
-    else {
-      if (userId != null) {
-        if (mergedTokenWithUserId != isDeviceTokenUpdated)  // for 2nd time update Token Login condition
-          await this.updateDeviceToken(userId, deviceToken, mergedTokenWithUserId);  // update Unique Device_Tokens 
-      }
-    }
+    
   }
 
   updateDeviceToken = async (userId, deviceToken, mergedTokenWithUserId) => {
@@ -143,7 +110,7 @@ export default class App extends Component {
       }
       let updateResponse = await userFiledsUpdate(userId, requestData);
       if (updateResponse.success == true) {
-        await AsyncStorage.setItem('isDeviceTokenUpdated', mergedTokenWithUserId);
+        await AsyncStorage.setItem('updatedDeviceToken', mergedTokenWithUserId);
       }
     } catch (e) {
       console.log(e);
