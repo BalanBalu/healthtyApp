@@ -261,7 +261,7 @@ class Profile extends Component {
                                         </View>
 
                                         <View style={{ flexDirection: 'row', marginTop: 10, marginLeft: 30 }}>
-                                            <Text style={{ marginLeft: 'auto', marginRight: 'auto', padding: 5, fontFamily: 'OpenSans', backgroundColor: '#fff', borderRadius: 10, marginTop: 5, width: '100%', textAlign: 'center', fontSize: 15 }} onPress={() => this.editProfile('UpdateUserDetails')}>{data.first_name ? data.first_name + " " : data.last_name?data.last_name:null}
+                                            <Text style={styles.nameStyle} onPress={() => this.editProfile('UpdateUserDetails')}>{data.first_name ? data.first_name + " " : ''}<Text style={styles.nameStyle}>{data.last_name ? data.last_name : ''}</Text>
                                             </Text>
 
 
@@ -341,7 +341,7 @@ class Profile extends Component {
                                 </Left>
 
                                 <Body>
-                                    <TouchableOpacity onPress={() =>  this.editAddress(data.address) } testID="onPressAddress">
+                                    <TouchableOpacity onPress={() => this.editAddress(data.address)} testID="onPressAddress">
                                         <Text style={styles.customText}>Address</Text>
                                         {data.address ?
                                             <View>
@@ -630,8 +630,18 @@ const styles = StyleSheet.create({
         backgroundColor: '#CDDC39',
 
     },
-
-
+    nameStyle: {
+        marginLeft: 'auto',
+        marginRight: 'auto',
+        padding: 5,
+        fontFamily: 'OpenSans',
+        backgroundColor: '#fff',
+        borderRadius: 10,
+        marginTop: 5,
+        width: '100%',
+        textAlign: 'center',
+        fontSize: 15
+    }
 
 });
 

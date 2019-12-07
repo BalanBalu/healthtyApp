@@ -14,7 +14,7 @@ import {
 } from "../../../setup/helpers";
 import { RadioButton } from 'react-native-paper';
 import Spinner from '../../../components/Spinner';
-import { bloodGroupList } from "../../common";
+import { bloodGroupList, validateName } from "../../common";
 
 
 class UpdateUserDetails extends Component {
@@ -61,24 +61,6 @@ class UpdateUserDetails extends Component {
         })
     }
 
-    validateFirstNameLastName = async (text, type) => {
-        const regex = new RegExp('^[a-zA-Z]{1}')  //Support letter with space
-        if (type === "Firstname") {
-            this.setState({ firstName: text, updateButton: false });
-        } else {
-            this.setState({ lastName: text, updateButton: false });
-        }
-        if (regex.test(text) === false) {
-            this.setState({ updateButton: true });
-            if (text !== '') {
-                Toast.show({
-                    text: 'Please enter only alphabets',
-                    type: "danger",
-                    duration: 3000
-                });
-            }
-        }
-    }
 
     userUpdate = async () => {
         const { userData, firstName, lastName, dob, gender, selectedBloodGroup } = this.state
@@ -94,6 +76,7 @@ class UpdateUserDetails extends Component {
                 };
 
                 const userId = await AsyncStorage.getItem('userId')
+                if (validateName(this.state.first_name) == true) {
                 let response = await userFiledsUpdate(userId, requestData);
                 if (response.success) {
                     Toast.show({
@@ -110,6 +93,14 @@ class UpdateUserDetails extends Component {
                         duration: 3000
                     });
                     this.setState({ isLoading: false });
+                }
+            }
+                else {
+                    Toast.show({
+                        text: 'Name can contain only alphabets',
+                        type: "danger",
+                        duration: 3000
+                    });
                 }
             } else {
                 Toast.show({
@@ -153,7 +144,7 @@ class UpdateUserDetails extends Component {
                                         value={this.state.firstName}
                                         keyboardType={'default'}
                                         returnKeyType={"next"}
-                                        onChangeText={text => this.validateFirstNameLastName(text, "Firstname")}
+                                        onChangeText={text => this.setState({firstName:text})}
                                         autoCapitalize='none'
                                         blurOnSubmit={false}
                                         onSubmitEditing={() => { this.firstName._root.focus(); }} testID="editFirstName"
@@ -165,7 +156,7 @@ class UpdateUserDetails extends Component {
                                         ref={(input) => { this.firstName = input; }}
                                         value={this.state.lastName}
                                         keyboardType={'default'}
-                                        onChangeText={text => this.validateFirstNameLastName(text, "Lastname")}
+                                        onChangeText={text => this.setState({ lastName: text })}
                                         autoCapitalize='none'
                                         blurOnSubmit={false}
                                         // onSubmitEditing={() => { this.lastName._root.focus(this.setState({ focus: true })); }}
