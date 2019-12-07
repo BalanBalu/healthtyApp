@@ -497,7 +497,7 @@ class AppointmentDetails extends Component {
                     </ListItem>
                   </List>
                 </Card> : null}
-                {data.appointment_status=='CANCELED'?
+              
                 <Card style={{ backgroundColor: '#ffffff', borderRadius: 10, padding: 10 }}>
 
                   <Grid style={{ margin: 5 }}>
@@ -510,7 +510,7 @@ class AppointmentDetails extends Component {
                   <Grid style={{ marginTop: 5 }}>
                   <View style={{ marginLeft: 'auto', marginRight: 'auto' }}>
                     <Col style={{ width: 300, }}>
-                      <Button TouchableOpacity onPress={() => { this.props.navigation.navigate('ReportIssue',{issueFor:'Appointment',reportedId:data._id })}} block style={{ borderRadius: 10, backgroundColor: '#D7BDE2' }}>
+                      <Button TouchableOpacity onPress={() => { this.props.navigation.navigate('ReportIssue',{issueFor:'Appointment',reportedId:data._id })} } block success  style={styles.reviewButton}  >
                         <Text style={{ color: 'black', fontSize: 15, fontFamily: 'OpenSans', fontWeight: 'bold' }}>
                           Report Issue
                         </Text>
@@ -521,7 +521,7 @@ class AppointmentDetails extends Component {
                   </View>
                 </Grid>
                 
-                </Card> : null}
+                </Card> 
             </Card>
           </Content>
         }
