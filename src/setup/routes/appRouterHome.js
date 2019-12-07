@@ -103,7 +103,6 @@ const HomeStack = createStackNavigator({
             source={menuIcon}
           />
         </TouchableOpacity>
-        { console.log(navigation.getParam('appBar', {isOnline: ''}).isOnline)}
         <Row style={{marginBottom: 5,marginTop:5,marginLeft:5}}>
                    <Col size={10}>  
                    <TouchableOpacity onPress={()=> navigation.navigate('Locations')}>

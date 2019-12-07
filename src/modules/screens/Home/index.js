@@ -189,7 +189,6 @@ callSuggestionService=async(enteredText)=>{
         if(locationUpdatedCount !== this.locationUpdatedCount) {
             navigation.setParams({
                 appBar: {
-                    isOnline: 'YEs',
                     locationName: patientSearchLocationName,
                     locationCapta: isSearchByCurrentLocation ? 'You are searching Near by Hostpitals' : 'You are searching Hospitals on ' + patientSearchLocationName
                 }
