@@ -225,40 +225,27 @@ render() {
               <View>   
                 {item.member_id === userId ? 
                  <Item style={styles.mainItem}>
-                    <Right>
-                     <Item style={{borderBottomWidth:0}}>
-                        <View style={styles.viewStyle}>
-                           <Text style={{fontFamily:'OpenSans',fontSize:8,color:'gray'}}>{getRelativeTime(item.created_at)}</Text>
-                        </View>
-                        <View style={styles.viewStyle}>
-                           <Card style={{borderRadius:10,backgroundColor:'#7E49C3',}}>
+                    <Right >
+                        <View style={{flexDirection:'row',alignItems:'center'}}>
+                    <Text style={{fontFamily:'OpenSans',fontSize:10,color:'gray',}}>{getRelativeTime(item.created_at)}</Text>
+                    <Card style={{borderRadius:10,backgroundColor:'#7E49C3',}}>
                             <Text style={styles.textstyle}>{item.message}</Text>
                            </Card>
-                        </View>
-                        <View style={styles.viewStyle}>
                            <Thumbnail square source={ renderProfileImage(userInfo) }/>
-                        </View>
-                     </Item> 
+                           </View>
                     </Right>
                 </Item> 
 
                 :     
-                <Item style={styles.mainItem}>
+                <Item style={styles.mainItem1}>
                   <Left>
-                    <Item style={{borderBottomWidth:0}}>  
-                        <View style={styles.viewStyle}>
-                            <Thumbnail square source={ renderDoctorImage(doctorInfo) }/>
-                        </View>
-                         
-                        <View style={styles.viewStyle}>
-                            <Card style={{borderRadius:10,backgroundColor:'#fff',}}>
+                  <View style={{flexDirection:'row',alignItems:'center'}}>
+                  <Thumbnail square source={ renderDoctorImage(doctorInfo) }/>
+                  <Card style={{borderRadius:10,backgroundColor:'#fff',}}>
                                 <Text style={styles.textstyle2}>{item.message}</Text>
                             </Card>
-                        </View>
-                        <View style={styles.viewStyle}>
-                          <Text style={{fontFamily:'OpenSans',fontSize:8,color:'gray'}}>{getRelativeTime(item.created_at)}</Text>
-                        </View>
-                    </Item>
+                            <Text style={{fontFamily:'OpenSans',fontSize:10,color:'gray'}}>{getRelativeTime(item.created_at)}</Text>
+                           </View>
                   </Left>   
                 </Item>
             }
@@ -282,12 +269,14 @@ render() {
                   <Row style={styles.SearchRow}>
                     <Col size={9} style={{justifyContent:'center',}}> 
                       <Input 
-                          placeholder="Start conversation..."
+                          placeholder="Start Conversation..."
                           style={styles.inputfield}
+                          multiline={true}
                           value={this.state.typing}
                           returnKeyType={'done'}
                           onChangeText={(text) => this.setTyping(text)}
                           placeholderTextColor="gray"
+                     
                           underlineColorAndroid="transparent"
                           blurOnSubmit={false}
                           onSubmitEditing={() => this.onSend() }
@@ -358,33 +347,46 @@ const styles = StyleSheet.create({
     inputfield:{
         color: 'gray', 
         fontFamily: 'OpenSans', 
-        fontSize: 10, 
+        fontSize: 14, 
         padding:5,
-        paddingLeft:10
+        paddingLeft:10,
+        textAlignVertical: "top",
+     
     },
     viewStyle:{
         justifyContent:'center',
-        padding:2
+        padding:2,
     },
     mainItem:{
-        marginLeft:10,
-        marginRight:10,
+      marginLeft:150,
         marginTop:10,
         borderBottomWidth:0,
+        paddingRight:10
           
        
     },
+    mainItem1:{
+        marginRight:150,
+          marginTop:10,
+          borderBottomWidth:0,
+          paddingLeft:10
+            
+         
+      },
     textstyle:{
         fontFamily:'OpenSans',
-        fontSize:10,
+        fontSize:14,
         color:'#fff',
-        padding:10
+        padding:10,
+        lineHeight:20
+      
     },
     textstyle2:{
         fontFamily:'OpenSans',
-        fontSize:10,
+        fontSize:14,
         color:'#000',
-        padding:10
+        padding:10,
+        lineHeight:20
     },
     footerStyle:{
         backgroundColor: '#7E49C3',
