@@ -64,7 +64,7 @@ class Categories extends Component {
                         
                         }}>
                         <Image
-                          source={{ uri: item.imageBaseURL + '/' + item.category_id + '.png' }} style={styles.customImage}
+                          source={{ uri: item.imageBaseURL + 'white/' + item.category_id + '.png' }} style={styles.customImage}
                         //  source={{ uri: 'http://pluspng.com/img-png/orthopedics-png--350.png' }} style={styles.customImage}
                         />
                       </LinearGradient>

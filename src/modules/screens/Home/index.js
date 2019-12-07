@@ -385,19 +385,22 @@ callSuggestionService=async(enteredText)=>{
                                                         height: 50, width: 100, 
                                                         overflow: 'hidden',
                                                         justifyContent:'center', 
-                                                        backgroundColor: '#fff', 
                                                         alignItems:'center',
                                                         flexDirection:'column'}
                                                 }>
                                                 <Image
-                                                     source={{ uri: item.imageBaseURL + '/' + item.category_id + '.png'  }}
+                                                     source={{ uri: item.imageBaseURL + item.category_id + '.png'  }}
                                                       style={{
                                                         width: 50,height:50, alignItems:'center'
                                                       }}
                                                 />
                                                 </Row>
-                                                <Row style={{  width: 100, height: 40, backgroundColor:'#fff',paddingTop:5,justifyContent:'center'}}>
-                                                    <Text style={{fontSize:10,textAlign:'center'}}>{item.category_name}</Text>
+                                                <Row style={{  width: 100, height: 40, 
+                                                            //backgroundColor:'#fff',
+                                                            paddingTop:5,
+                                                            alignContent: 'center',
+                                                            justifyContent:'center'}}>
+                                                    <Text style={{fontSize:12, textAlign:'center', padding: 2}}>{item.category_name}</Text>
                                                 </Row>
                                                 </TouchableOpacity>
                                             </Row>
