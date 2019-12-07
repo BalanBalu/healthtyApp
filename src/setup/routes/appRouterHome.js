@@ -202,7 +202,7 @@ const HomeStack = createStackNavigator({
   "AppointmentInfo": {
     screen: AppointmentDetails,
     navigationOptions: {
-      title: 'Appointment Info'
+      title: "Appointment info"
     }
   },
   ReportIssue: {

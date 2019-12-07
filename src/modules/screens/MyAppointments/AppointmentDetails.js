@@ -32,6 +32,7 @@ class AppointmentDetails extends Component {
       education: '',
       specialist: '',
       hospital: [],
+      selectedTab:null,
 
 
     }
@@ -56,10 +57,11 @@ class AppointmentDetails extends Component {
 
       let doctorId = appointmentData.doctor_id;
       let appointmentId = appointmentData._id;
+      const selectedTab = navigation.getParam('selectedIndex');
       this.props.navigation.setParams({reportedId:appointmentId});
       await this.setState({
         doctorId: doctorId, appointmentId: appointmentId,
-        userId: userId, data: appointmentData,
+        userId: userId, data: appointmentData,selectedTab
       })
 
       await new Promise.all([
@@ -243,7 +245,7 @@ class AppointmentDetails extends Component {
 
 
 
-    const { data, reviewData, doctorData, education, specialist, hospital, isLoading } = this.state;
+    const { data, reviewData, doctorData, education, specialist, hospital, isLoading ,selectedTab} = this.state;
 
     return (
 
@@ -312,7 +314,8 @@ class AppointmentDetails extends Component {
                   </View>
                 </Grid>
                 <Grid style={{ marginTop: 5 }}>
-                  {data.appointment_status == 'APPROVED' || this.state.appointmentStatus === 'APPROVED' || data.appointment_status == 'PENDING'  ?
+                { selectedTab==0?
+                  data.appointment_status == 'APPROVED' || this.state.appointmentStatus === 'APPROVED' || data.appointment_status == 'PENDING'  ?
                     <Col style={width = 'auto'}>
                       <Button block danger style={{ margin: 1, marginTop: 10, marginLeft: 1, borderRadius: 30, padding: 15, height: 40, width: "auto" }} onPress={() => this.navigateCancelAppoointment()} testID='cancelAppointment'>
                         <Text style={{ textAlign: 'center', fontFamily: 'OpenSans', fontSize: 15, fontWeight: 'bold' }}>CANCEL APPOINTMENT</Text>
@@ -325,7 +328,7 @@ class AppointmentDetails extends Component {
                         </Button>
                         <Button danger style={styles.Button2} onPress={() => this.navigateCancelAppoointment()} testID='appointmentCancel'>
                           <Text style={{ textAlign: 'center', fontFamily: 'OpenSans', color: '#000', fontSize: 15, fontWeight: 'bold' }}> CANCEL </Text></Button>
-                      </Item> : null}
+                      </Item> : null:null }
                 </Grid>
 
               </List>
@@ -494,6 +497,31 @@ class AppointmentDetails extends Component {
                     </ListItem>
                   </List>
                 </Card> : null}
+              
+                <Card style={{ backgroundColor: '#ffffff', borderRadius: 10, padding: 10 }}>
+
+                  <Grid style={{ margin: 5 }}>
+                    <Col style={{ width: '10%' }}>
+                      <Icon name="apps" style={styles.customIcon}></Icon>
+                    </Col>
+                    <Col style={{ width: '90%', alignItems: 'flex-start' }}>
+                      <Text style={styles.titlesText}> Payment Report </Text></Col>
+                  </Grid>
+                  <Grid style={{ marginTop: 5 }}>
+                  <View style={{ marginLeft: 'auto', marginRight: 'auto' }}>
+                    <Col style={{ width: 300, }}>
+                      <Button TouchableOpacity onPress={() => { this.props.navigation.navigate('ReportIssue',{issueFor:'Appointment',reportedId:data._id })} } block success  style={styles.reviewButton}  >
+                        <Text style={{ color: 'black', fontSize: 15, fontFamily: 'OpenSans', fontWeight: 'bold' }}>
+                          Report Issue
+                        </Text>
+                      </Button>
+
+                    </Col>
+
+                  </View>
+                </Grid>
+                
+                </Card> 
             </Card>
           </Content>
         }

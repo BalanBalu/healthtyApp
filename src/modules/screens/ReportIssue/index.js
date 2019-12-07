@@ -1,6 +1,6 @@
 
 import React, { Component } from 'react';
-import { Container, Content, View, Text, Item,  Radio,Row,Col,Form,Button,Toast } from 'native-base';
+import { Container, Content, View, Text, Item,  Radio,Row,Col,Form,Button,Toast,Footer } from 'native-base';
 import {StyleSheet,TextInput,AsyncStorage} from 'react-native'
 import { FlatList } from 'react-native-gesture-handler';
 import Spinner from "../../../components/Spinner";
@@ -55,9 +55,9 @@ class ReportIssue extends Component {
 
         }
         if(issueFor=='Appointment'){
-          let a=this.props.navigation.getParam('reportedId')
+         
           data.appointment_id=this.props.navigation.getParam('reportedId')
-       
+         
         }
         else if(issueFor=='chat'){
           data.chat_id=this.props.navigation.getParam('reportedId')
@@ -111,15 +111,15 @@ class ReportIssue extends Component {
 							    overlayColor="none"
 							    cancelable={false}
 						     /> : null }
-                <View style={{marginBottom:50}}>
+                <View style={{marginBottom:40}}>
                 <Text style={{fontFamily:'OpenSans',fontSize:20,textAlign:'center',fontWeight:'bold'}}>{this.state.issueFor + ' Issue'}</Text>
-                     {/* <Text style={{fontFamily:'OpenSans',fontSize:20,textAlign:'center',fontWeight:'bold'}}>Payment Issue</Text> */}
+ 
                      <Form>
                        <View >
                          <FlatList data={issue}
                             keyExtractor={(item, index) => index.toString()}
                          renderItem={({item})=>
-                         <Row style={{marginTop:20}}>
+                         <Row style={{marginTop:10}}>
                           <Col style={{width:'10%'}}>
                           <RadioButton.Group 
                                 onValueChange={value => { 
@@ -145,17 +145,14 @@ class ReportIssue extends Component {
                          
                          
                  </View>
-                     <Text style={{fontFamily:'OpenSans',fontSize:20,textAlign:'center',marginTop:20,fontWeight:'bold'}}>Others</Text>
-                 <View>
-                    <Item style={{borderBottomWidth:0,marginTop:10}}>
-                      <TextInput 
-                        
-                      multiline={true} placeholder="Describe your isuues...." 
-                      style={styles.textInput} />
-                    </Item>
-                 </View>
+                  
              
-                <Row style={{justifyContent:'center',}}>
+               
+          </Form>
+      </View>
+    </Content>
+    <Footer style={{backgroundColor:'white'}}>
+    <Row style={{justifyContent:'center',marginTop:-10}}>
                 <Button  style={styles.ReportButton}  onPress={()=>this.props.navigation.pop()}>
                     <Text style={styles.ReportButtonText}>CANCEL</Text>
                 </Button>
@@ -163,9 +160,7 @@ class ReportIssue extends Component {
                        <Text style={styles.ReportButtonText}>REPORT</Text>
                  </Button>
              </Row>
-          </Form>
-      </View>
-    </Content>
+    </Footer>
 </Container>
         )
     }
@@ -230,4 +225,24 @@ const styles = StyleSheet.create({
     backgroundColor:'#e32726'
   },
 
-});
+})
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
