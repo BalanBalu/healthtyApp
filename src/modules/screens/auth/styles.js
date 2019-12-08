@@ -54,18 +54,6 @@ export default StyleSheet.create({
         fontWeight:'bold',
         fontFamily: 'OpenSans',
     },
-    passwordTransparentLabel:{
-        borderBottomWidth: 0,
-        borderBottomColor: 'transparent',
-        backgroundColor: '#F1F1F1',
-        height: 45,
-        marginTop: 20,
-        borderRadius: 5,
-        fontFamily: 'OpenSans',
-        fontSize: 15,
-        marginLeft:17
-    },
-
     transparentLabel: {
         borderBottomColor: 'transparent',
         backgroundColor: '#F1F1F1',
@@ -141,10 +129,9 @@ export default StyleSheet.create({
         marginLeft: 15,
         borderRadius: 5,
     },
-    loginButtonDisable: {
+    forgotButtonDisable: {
         marginTop: 20,
         backgroundColor: '#9777c7',
-        marginLeft: 15,
         borderRadius: 5,
     },
     forgotButton: {
@@ -164,6 +151,16 @@ export default StyleSheet.create({
     loginButton1: {
         marginTop: 20,
         backgroundColor: '#775DA3',
+        borderRadius: 20,
+        justifyContent:'center',
+        paddingRight:35,
+        paddingLeft:35,
+        paddingBottom:8,
+        paddingTop:8
+    },
+    loginButton1Disable: {
+        marginTop: 20,
+        backgroundColor: '#9777c7',
         borderRadius: 20,
         justifyContent:'center',
         paddingRight:35,
