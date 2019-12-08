@@ -23,7 +23,6 @@ class Profile extends Component {
         super(props);
         this.state = {
             data: {},
-            gender: '',
             starCount: 3.5,
             userId: '',
             modalVisible: false,
@@ -54,30 +53,26 @@ class Profile extends Component {
     /*Get userProfile*/
     getUserProfile = async () => {
         try {
-            let data = await AsyncStorage.getItem('profile');
-            result = JSON.parse(data);
-            if (result == null) {
-                let fields = "first_name,last_name,gender,dob,mobile_no,secondary_mobile,email,secondary_emails,insurance,address,is_blood_donor,is_available_blood_donate,blood_group,profile_image"
-                let userId = await AsyncStorage.getItem('userId');
-                let result = await fetchUserProfile(userId, fields);
-                if (this.props.profile.success) {
-                    AsyncStorage.setItem('profile', JSON.stringify(result))
-                    storeBasicProfile(result);
-                    this.setState({ data: result, gender: result.gender });
-                    if (result.profile_image) {
-                        this.setState({ imageSource: result.profile_image.imageURL });
-                    }
-                }
-            }
-            else {
-                this.setState({ data: result, gender: result.gender });
-                if (result.profile_image != undefined) {
+            let fields = "first_name,last_name,gender,dob,mobile_no,secondary_mobile,email,secondary_email,insurance,address,is_blood_donor,is_available_blood_donate,blood_group,profile_image"
+
+            let userId = await AsyncStorage.getItem('userId');
+            let result = await fetchUserProfile(userId, fields);
+
+            if (result) {
+                this.setState({ data: result });
+                storeBasicProfile(result);
+
+                if (result.profile_image) {
                     this.setState({ imageSource: result.profile_image.imageURL });
                 }
             }
+
         }
         catch (e) {
             console.log(e);
+        }
+        finally {
+            this.setState({ isLoading: false });
         }
     }
 
@@ -94,51 +89,67 @@ class Profile extends Component {
         }
     }
 
-    /*Update Gender*/
-    updateGender = async () => {
-        try {
-            const userId = await AsyncStorage.getItem('userId')
-            let requestData = {
-                gender: this.state.gender
-            }
-            let response = await userFiledsUpdate(userId, requestData);
-            console.log(response);
-            if (response.success) {
-                Toast.show({
-                    text: 'Gender updated successfuly',
-                    type: "success",
-                    duration: 3000
-                });
-            }
-            else {
-                Toast.show({
-                    text: response.message,
-                    type: "danger",
-                    duration: 3000
-                });
-            }
-            this.setState({ modalVisible: !this.state.modalVisible });
-
-        } catch (e) {
-            console.log(e);
-        }
-    }
-
-    /*Open the Modal box*/
-    modalBoxOpen() {
-        this.setState({ modalVisible: !this.state.modalVisible });
-    }
-
-
-    /*Press Radio button*/
-    onPressRadio(value) {
-        this.setState({ gender: value })
-    }
-
     editProfile(screen) {
         this.props.navigation.navigate(screen, { screen: screen, fromProfile: true, updatedata: this.state.data || '' })
     }
 
+    editAddress(address) {
+        if (address === null) {
+            this.editProfile('MapBox')
+        }
+        else {
+            let locationAndContext = location(address.address);
+            let latLng = address.coordinates;
+            let addrressData = {
+                center: [latLng[1], latLng[0]],
+                place_name: locationAndContext.placeName,
+                context: locationAndContext.context
+            }
+            this.props.navigation.navigate('MapBox', {
+                locationData: addrressData,
+                fromProfile: true,
+                mapEdit: true
+            });
+
+            function location(locationObj) {
+                let placeName = '';
+                let contextData = [];
+                Object.keys(locationObj).forEach(keyEle => {
+                    let obj = {
+                        "text": locationObj[keyEle]
+                    };
+                    switch (keyEle) {
+                        case 'no_and_street':
+                            obj.id = 'locality.123';
+                            break;
+                        case 'city':
+                            obj.id = 'place.123';
+                            break;
+                        case 'district':
+                            obj.id = 'district.123';
+                            break;
+                        case 'state':
+                            obj.id = 'region.123';
+                            break;
+                        case 'country':
+                            obj.id = 'country.123';
+                            break;
+                        case 'pin_code':
+                            obj.id = 'pin_code.123';
+                            break;
+                    }
+                    contextData.push(obj);
+                    placeName += locationObj[keyEle] + ', ';
+                });
+
+                return {
+                    placeName: placeName.slice(0, -2),
+                    context: contextData
+                }
+
+            }
+        }
+    }
     /*Upload profile pic*/
     selectPhotoTapped() {
 
@@ -193,10 +204,6 @@ class Profile extends Component {
             var res = await uploadMultiPart(endPoint, formData);
             const response = res.data;
             if (response.success) {
-                let result = await AsyncStorage.getItem('profile');
-                const storeResult = JSON.parse(result);
-                storeResult.profile_image = response.profile_image
-                await AsyncStorage.setItem('profile', JSON.stringify(storeResult));
                 this.setState({
                     imageSource: imagePath
                 });
@@ -219,7 +226,7 @@ class Profile extends Component {
     }
     render() {
         const { profile: { isLoading } } = this.props;
-        const { data, gender, imageSource } = this.state;
+        const { data, imageSource } = this.state;
         return (
 
             <Container style={styles.container}>
@@ -254,7 +261,7 @@ class Profile extends Component {
                                         </View>
 
                                         <View style={{ flexDirection: 'row', marginTop: 10, marginLeft: 30 }}>
-                                            <Text style={{ marginLeft: 'auto', marginRight: 'auto', padding: 5, fontFamily: 'OpenSans', backgroundColor: '#fff', borderRadius: 10, marginTop: 5, width: '100%', textAlign: 'center', fontSize: 15 }} onPress={() => this.editProfile('UpdateUserDetails')}>{data.first_name + " " + data.last_name}
+                                            <Text style={styles.nameStyle} onPress={() => this.editProfile('UpdateUserDetails')}>{data.first_name ? data.first_name + " " : ''}<Text style={styles.nameStyle}>{data.last_name ? data.last_name : ''}</Text>
                                             </Text>
 
 
@@ -284,41 +291,9 @@ class Profile extends Component {
                                         <Text style={styles.topValue}>Gender </Text>
 
                                     </View>
-                                    <Text note style={styles.bottomValue}>{gender} </Text>
+                                    <Text note style={styles.bottomValue}>{data.gender === 'M' ? 'Male' : data.gender === 'F' ? 'Female' : data.gender === 'O' ? 'Others' : null} </Text>
 
                                 </Col>
-
-
-                                <Modal isVisible={this.state.modalVisible} >
-                                    <Card style={{ padding: 10, borderRadius: 7, height: 150, justifyContent: 'center' }}>
-                                        <H3 style={{ fontFamily: 'OpenSans', marginTop: 15, fontSize: 15 }}>Update Gender</H3>
-                                        <ListItem noBorder>
-
-                                            <Radio selected={this.state.gender === 'M'} onPress={() => this.onPressRadio('M')} style={{ marginLeft: 2, }} color={"#775DA3"}
-                                                selectedColor={"#775DA3"} testID="clickMale" />
-                                            <Text style={{ marginLeft: 10, fontFamily: 'OpenSans', fontSize: 15 }}>Male</Text>
-
-                                            <Radio selected={this.state.gender === 'F'} onPress={() => this.onPressRadio('F')} style={{ marginLeft: 10 }} color={"#775DA3"}
-                                                selectedColor={"#775DA3"} testID="clickFemale" />
-                                            <Text style={{ marginLeft: 10, fontFamily: 'OpenSans', fontSize: 15 }}>Female</Text>
-
-                                            <Radio selected={this.state.gender === 'O'} onPress={() => this.onPressRadio('O')} style={{ marginLeft: 10 }} color={"#775DA3"}
-                                                selectedColor={"#775DA3"} testID="clickOther" />
-                                            <Text style={{ marginLeft: 10, fontFamily: 'OpenSans', fontSize: 15 }}>Other</Text>
-
-                                        </ListItem>
-
-                                        <Button style={styles.updateButton} onPress={() => this.updateGender()}
-                                            testID="updateGenderButton">
-                                            <Text uppercase={false} style={{ fontFamily: 'OpenSans', fontSize: 15 }}>Update</Text>
-                                        </Button>
-
-                                    </Card>
-
-                                </Modal>
-
-
-
 
                                 <Col style={{ backgroundColor: 'transparent', justifyContent: 'center', marginLeft: 'auto', marginRight: 'auto' }}>
                                     <Text style={styles.topValue}>Blood</Text>
@@ -326,10 +301,6 @@ class Profile extends Component {
                                 </Col>
                             </Grid>
                         </Card>
-
-
-
-
                         <List>
                             <Text style={styles.titleText}>Personal details..</Text>
 
@@ -344,19 +315,8 @@ class Profile extends Component {
                                     <TouchableOpacity onPress={() => this.editProfile('UpdateEmail')} testID="onPressEmail">
                                         <Text style={styles.customText}>Email</Text>
                                         <Text note style={styles.customText1}>{data.email}</Text>
-                                        {data.secondary_emails != undefined ?
-                                            <FlatList
-                                                data={data.secondary_emails}
-                                                renderItem={({ item }) => (
-                                                    <List>
+                                        {data.secondary_email != undefined ? <Text note style={styles.customText1}>{data.secondary_email}</Text>
 
-                                                        <Text style={styles.customText}>{item.type}</Text>
-                                                        <Text note style={styles.customText1}>{item.email_id}</Text>
-
-                                                    </List>
-                                                )}
-                                                keyExtractor={(item, index) => index.toString()}
-                                            />
                                             : <Button transparent>
                                                 <Icon name='add' style={{ color: 'gray' }} />
                                                 <Text uppercase={false} style={styles.customText} onPress={() => this.editProfile('UpdateEmail')} testID="onPressAddSecondaryEmail">Add Secondary email</Text>
@@ -365,7 +325,7 @@ class Profile extends Component {
                                 </Body>
 
 
-                                {data.secondary_emails != undefined ?
+                                {data.secondary_email != undefined ?
 
                                     <Right>
                                         <Icon name="create" style={{ color: 'black' }} onPress={() => this.editProfile('UpdateEmail')} testID="iconToUpdateEmail" />
@@ -381,19 +341,19 @@ class Profile extends Component {
                                 </Left>
 
                                 <Body>
-                                    <TouchableOpacity onPress={() => this.editProfile('UpdateAddress')} testID="onPressAddress">
+                                    <TouchableOpacity onPress={() => this.editAddress(data.address)} testID="onPressAddress">
                                         <Text style={styles.customText}>Address</Text>
                                         {data.address ?
                                             <View>
                                                 <Text note style={styles.customText1}>{data.address.address.no_and_street + ','}
-                                                <Text note style={styles.customText1}>{data.address.address.address_line_1 ? data.address.address.address_line_1 : " "}</Text></Text>
+                                                    <Text note style={styles.customText1}>{data.address.address.address_line_1 ? data.address.address.address_line_1 : " "}</Text></Text>
                                                 <Text note style={styles.customText1}>{data.address.address.district + ', '
                                                     + data.address.address.city}</Text>
                                                 <Text note style={styles.customText1}>{data.address.address.state + ', '
                                                     + data.address.address.country}</Text>
                                                 <Text note style={styles.customText1}>{data.address.address.pin_code}</Text>
                                             </View> :
-                                            <Button transparent onPress={() => this.editProfile('UpdateAddress')}>
+                                            <Button transparent onPress={() => this.editProfile('MapBox')}>
                                                 <Icon name='add' style={{ color: 'gray' }} />
                                                 <Text uppercase={false} style={styles.customText}>Add Address</Text>
                                             </Button>}
@@ -401,7 +361,7 @@ class Profile extends Component {
                                 </Body>
                                 {data.address ?
                                     <Right>
-                                        <Icon name="create" style={{ color: 'black' }} onPress={() => this.editProfile('UpdateAddress')} testID="iconToUpdateAddress" />
+                                        <Icon name="create" style={{ color: 'black' }} onPress={() => this.editAddress(data.address)} testID="iconToUpdateAddress" />
                                     </Right>
                                     : null}
 
@@ -510,7 +470,7 @@ class Profile extends Component {
                                                     <Text style={{ fontFamily: 'OpenSans', fontSize: 15 }}> {item.doctorInfo.prefix ? item.doctorInfo.prefix : 'Dr.'} {item.doctorInfo.first_name + " " + item.doctorInfo.last_name} </Text>
                                                 </Body>
                                                 <Right>
-                                                    <Button style={styles.docbutton}><Text style={{ fontFamily: 'OpenSans', fontSize: 12 }} onPress={() => this.props.navigation.navigate('Book Appointment', { doctorId: item.doctorInfo.doctor_id, fetchAvailabiltySlots: true })}> Book Again</Text></Button>
+                                                    <Button style={styles.docbutton}><Text style={{ fontFamily: 'OpenSans', fontSize: 12 }} onPress={() => this.props.navigation.navigate('Book Appointment', { doctorId: item.doctorInfo.doctor_id, fetchAvailabiltySlots: true })} testID="navigateBookAppointment"> Book Again</Text></Button>
                                                 </Right>
 
                                             </ListItem>
@@ -670,8 +630,18 @@ const styles = StyleSheet.create({
         backgroundColor: '#CDDC39',
 
     },
-
-
+    nameStyle: {
+        marginLeft: 'auto',
+        marginRight: 'auto',
+        padding: 5,
+        fontFamily: 'OpenSans',
+        backgroundColor: '#fff',
+        borderRadius: 10,
+        marginTop: 5,
+        width: '100%',
+        textAlign: 'center',
+        fontSize: 15
+    }
 
 });
 

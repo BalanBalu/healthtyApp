@@ -82,8 +82,9 @@ getAddress(address){
               :
                 <View style={{marginBottom:50}}>
                   <FlatList
-                  data={this.state.data}
-                  renderItem={({item})=>
+                    data={this.state.data}
+                    keyExtractor={(item, index) => index.toString()}
+                    renderItem={({item})=>
                   <Card style={{padding:10}}>
                   <Row >
                     <Col style={{width:'85%',paddingTop:10,}}>

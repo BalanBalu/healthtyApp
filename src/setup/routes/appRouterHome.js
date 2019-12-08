@@ -9,7 +9,6 @@ import UpdateContact from "../../modules/screens/userprofile/UpdateContact";
 import UpdatePassword from "../../modules/screens/userprofile/UpdatePassword";
 import UpdateInsurance from "../../modules/screens/userprofile/UpdateInsurance";
 import UpdateUserDetails from "../../modules/screens/userprofile/UpdateUserDetails";
-import UpdateAddress from "../../modules/screens/userprofile/UpdateAddress";
 import { Icon, View,Thumbnail } from 'native-base';
 import IndividualChat from '../../modules/screens/chat/individualChat'
 import Categories from "../../modules/screens/categories";
@@ -62,7 +61,7 @@ import BloodDonerFilters from '../../modules/screens/bloodDonation/BloodDonerFil
 import MyChats from '../../modules/screens/chat/MyChats';
 import AvailableDoctors4Chat from '../../modules/screens/chat/AvailableDoctor';
 import SuccessChatPaymentPage from '../../modules/screens/chat/successMsg';
-
+import ReportIssue from '../../modules/screens/ReportIssue';
 const AuthRoutes = {
   login: {
     screen: login,
@@ -98,16 +97,31 @@ const HomeStack = createStackNavigator({
   Home: {
     screen: Home,
     navigationOptions: ({ navigation }) => ({
-
-      title: 'DashBoard',
-   
+      
       headerLeft: (
-        <TouchableOpacity onPress={() => navigation.toggleDrawer()}>
+       
+        <Row>
+        <TouchableOpacity onPress={() => navigation.toggleDrawer()} style={{flexDirection:'row',marginTop:10}}>
           <Image
-            style={{ marginLeft: 18, tintColor: 'white' }}
+            style={{ marginLeft: 18, tintColor: '#fff' }}
             source={menuIcon}
           />
         </TouchableOpacity>
+        <Row style={{marginBottom: 5,marginTop:5,marginLeft:5}}>
+                   <Col size={10}>  
+                   <TouchableOpacity onPress={()=> navigation.navigate('Locations')}>
+                   <View style={{flexDirection:'row'}}>
+                    <Icon name="ios-pin" style={{color:'#fff',fontSize:18,paddingLeft: 10,}}/>
+                     <Text uppercase={false} style={{ marginLeft:5, color: '#fff', fontSize: 14, fontFamily: 'OpenSans-SemiBold',fontWeight:'bold' }}>{navigation.getParam('appBar', {locationName: ' '}).locationName}</Text>
+                        <Icon name="ios-arrow-down" style={{color:'#fff',fontSize:18,paddingLeft: 10,marginTop:2}}/>
+                     </View>
+                     </TouchableOpacity>
+                      <Text uppercase={false} style={{ paddingLeft: 10, color: '#fff', fontSize: 12, fontFamily: 'OpenSans-SemiBold',marginTop:2 }}>{navigation.getParam('appBar', {locationCapta: 'You are searching Near by Hostpitals'}).locationCapta}</Text>
+                    </Col> 
+                   </Row>   
+
+       
+        </Row>
       ),
 
       headerRight: (
@@ -123,6 +137,10 @@ const HomeStack = createStackNavigator({
         
         </Grid>
       ),
+      headerStyle: {
+        backgroundColor: '#7F49C3',
+        height:60
+      },
     })
   },
   // ================Categories  ===============
@@ -188,7 +206,13 @@ const HomeStack = createStackNavigator({
   "AppointmentInfo": {
     screen: AppointmentDetails,
     navigationOptions: {
-      title: 'Appointment Info'
+      title: "Appointment info"
+    }
+  },
+  ReportIssue: {
+    screen: ReportIssue,
+    navigationOptions: {
+      title: 'Report issue'
     }
   },
   "CancelAppointment": {
@@ -246,12 +270,7 @@ const HomeStack = createStackNavigator({
       title: 'Search Location'
     }
   },
-  UpdateAddress: {
-    screen: UpdateAddress,
-    navigationOptions: {
-      title: 'Update Address'
-    }
-  },
+  
   // ========Appointment stack ==========
   "Doctor List": {
     screen: doctorSearchList,

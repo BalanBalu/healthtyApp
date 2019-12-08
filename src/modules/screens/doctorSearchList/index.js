@@ -764,17 +764,18 @@ class doctorSearchList extends Component {
                                                         </Row>
 
                                                         <Row>
-                                                            <Col style={{ width: "30%", marginTop: 20 }}>
-                                                                <Text note style={{ fontFamily: 'OpenSans', fontSize: 12, marginLeft: 5, }}> Experience</Text>
-                                                                <Text style={{ fontFamily: 'OpenSans', fontSize: 12, marginLeft: 5, fontWeight: 'bold' }}>{getDoctorExperience(item.calulatedExperience)}</Text>
+                                                            <Col style={{ width: "25%", marginTop: 20 }}>
+                                                                <Text note style={{ fontFamily: 'OpenSans', fontSize: 12,  }}> Experience</Text>
+                                                                <Text style={{ fontFamily: 'OpenSans', fontSize: 12,  fontWeight: 'bold' }}>{getDoctorExperience(item.calulatedExperience)}</Text>
                                                             </Col>
                                                             <Col style={{ width: "25%", marginTop: 20 }}>
                                                                 <Text note style={{ fontFamily: 'OpenSans', fontSize: 12, textAlign:'center', }}> Rating</Text>
                                                                 <View style={{ flexDirection:'row',alignItems:'center',justifyContent:'center'}}>
                                                                     <StarRating
                                                                         fullStarColor='#FF9500'
-                                                                        starSize={12} width={85}
-                                                                        containerStyle={{ marginLeft: 15, marginTop: 2 }}
+                                                                        starSize={12} 
+                                                                        width={85}
+                                                                        containerStyle={{ marginTop: 2 }}
                                                                         disabled={true}
                                                                         rating={1}
                                                                         maxStars={1}
@@ -784,23 +785,19 @@ class doctorSearchList extends Component {
                                                                 </View>
 
                                                             </Col>
-                                                            <Col style={{ width: "25%", marginTop: 20 }}>
-
+                                                            <Col style={{ width: "20%", marginTop: 20 }}>
                                                                 <Text note style={{ fontFamily: 'OpenSans', fontSize: 12, marginLeft: 5 }}> Favourite</Text>
                                                                 <Text style={{ fontFamily: 'OpenSans', fontSize: 12, marginLeft: 5, fontWeight: 'bold' }}> {favouriteListCountByDoctorIds[item.doctor_id] !== undefined ? favouriteListCountByDoctorIds[item.doctor_id] : ' 0'}</Text>
-
-
                                                             </Col>
-                                                            <Col style={{ width: "20%", marginTop: 20 }}>
+                                                            <Col style={{ width: "30%", marginTop: 20 }}>
                                                                 <Text note style={{ fontFamily: 'OpenSans', fontSize: 12, textAlign:'center' }}> Fees</Text>
                                                                 <Text style={{ fontFamily: 'OpenSans', fontSize: 12, fontWeight: 'bold', textAlign:'center',marginLeft:10 }}>{'\u20B9'}{fee} {' '}
                                                                  {fee !== feeWithoutOffer ?  
                                                                    <Text style={{ fontFamily: 'OpenSans', fontWeight: 'normal', fontSize: 12, textDecorationLine: 'line-through', textDecorationStyle: 'solid',textAlign:'center' }}>
                                                                       {'\u20B9'}{feeWithoutOffer}</Text> : null
                                                                  }
-                                                          
                                                                 </Text>
-                                                                 </Col>
+                                                            </Col>
                                                         </Row>
 
 
