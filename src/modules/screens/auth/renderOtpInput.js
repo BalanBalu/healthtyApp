@@ -50,7 +50,7 @@ class RenderOtpInput extends Component {
                 console.log(reqOtpResponse);
                 await this.setState({ isGeneratedOtp: true, userId: reqOtpResponse.userId });
             } else {
-                this.setState({ errorMsg: JSON.stringify(reqOtpResponse.error) + "  Skip to Continue", userId: reqOtpResponse.userId })
+                this.setState({ errorMsg: reqOtpResponse.error, userId: reqOtpResponse.userId })
             }
         } catch (e) {
             Toast.show({
@@ -137,11 +137,6 @@ class RenderOtpInput extends Component {
                             <Left>
                                 <Text style={{ color: 'black', fontFamily: 'OpenSans', fontSize: 20 }}>VERIFY DETAILS</Text>
                             </Left>
-                            <Right>
-                                <TouchableOpacity onPress={() => this.doLoginAndContinueBasicDetailsUpdate()}>
-                                    <Text style={{ color: '#6888f2', fontSize: 15, textAlign: 'right' }}>SKIP</Text>
-                                </TouchableOpacity>
-                            </Right>
                         </Row>
                         {isGeneratedOtp == true ? <Text style={{ color: 'gray', fontSize: 15 }}>OTP sent to {requestData.email}</Text> : <Text style={{ color: 'gray', fontSize: 15 }}>OTP couldn't sent to {requestData.email} Please Contact Our @Support_Team!</Text>}
                         <Text style={{ marginTop: 10, fontSize: 13 }}>Enter OTP</Text>
