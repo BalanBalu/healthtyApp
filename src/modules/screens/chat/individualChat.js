@@ -266,7 +266,7 @@ render() {
                        <Icon name="ios-camera" style={{ color: '#7E49C3', fontSize:25,padding:2}} />
                     </View>
                   </Col> */} 
-                  <Col size={1} style={{justifyContent:'center',alignContent:'center'}}>
+                  <Col size={1.3} style={{justifyContent:'center',alignContent:'center'}}>
                   </Col>
                 <Col size={7} style={styles.col2}>
              
@@ -290,7 +290,7 @@ render() {
                      />
                     
                      </Col>
-                     <Col size={2} style={{justifyContent:'center',alignContent:'center'}}>
+                     <Col size={2.5} style={{justifyContent:'center',alignContent:'center'}}>
                      <TouchableOpacity
                     disabled={this.state.typing.length === 0}
                     style={[styles.circle, { marginLeft: 10 }]}>
