@@ -28,7 +28,8 @@ class IndividualChat extends Component {
             messages: [],
             typing: '',
             messageRecieveCount: -1,
-            status: null
+            status: null,
+            height: 0
         }
         this.onReceivedMessage = this.onReceivedMessage.bind(this);
         this.onSend = this.onSend.bind(this);
@@ -259,35 +260,38 @@ render() {
            
              <Footer style={styles.footerStyle}>
               {status === possibleChatStatus.APPROVED ?  
-                <Row style={{alignItems:'center',justifyContent:'center'}}>
+                <Row style={{alignItems:'center',justifyContent:'center', flex:1}}>
                  {/* <Col style={styles.col1}>
                     <View style={styles.circle}>
                        <Icon name="ios-camera" style={{ color: '#7E49C3', fontSize:25,padding:2}} />
                     </View>
-                  </Col> */}  
-                <Col style={styles.col2}>
-                  <Row style={styles.SearchRow}>
-                    <Col size={9} style={{justifyContent:'center',}}> 
-                      <Input 
-                          placeholder="Start Conversation..."
-                          style={styles.inputfield}
+                  </Col> */} 
+                  <Col size={1} style={{justifyContent:'center',alignContent:'center'}}>
+                  </Col>
+                <Col size={7} style={styles.col2}>
+             
+                <TextInput
+                       placeholder="Start Conversation..."
+                       multiline={true}
+                       onContentSizeChange={(event) => {
+                           this.setState({ height: event.nativeEvent.contentSize.height })
+                       }}
+                       style={[styles.default, {height: Math.max(35, this.state.height)}]}
+                       value={this.state.typing}
+                       placeholder="Start Conversation..."
                           multiline={true}
-                          value={this.state.typing}
                           returnKeyType={'done'}
                           onChangeText={(text) => this.setTyping(text)}
                           placeholderTextColor="gray"
-                     
                           underlineColorAndroid="transparent"
+                          
                           blurOnSubmit={false}
                           onSubmitEditing={() => this.onSend() }
-                      />
-                    </Col>
-                  {/* <Col size={1} style={{justifyContent:'center',borderRightRadius:10}}> 
-                        <Icon name="ios-mic" style={{ color: '#7E49C3', fontSize:20,padding:2}} />
-                      </Col> */}
-                  </Row>
-                </Col>
-                <TouchableOpacity
+                     />
+                    
+                     </Col>
+                     <Col size={2} style={{justifyContent:'center',alignContent:'center'}}>
+                     <TouchableOpacity
                     disabled={this.state.typing.length === 0}
                     style={[styles.circle, { marginLeft: 10 }]}>
                     <Icon name="ios-send" 
@@ -296,6 +300,28 @@ render() {
                         onPress={this.onSend}
                     />
                 </TouchableOpacity>
+                        </Col>            
+                      {/* <Input 
+                          placeholder="Start Conversation..."
+                          style={styles.inputfield}
+                          multiline={true}
+                          value={this.state.typing}
+                          returnKeyType={'done'}
+                          onChangeText={(text) => this.setTyping(text)}
+                          placeholderTextColor="gray"
+                     
+                          
+                          blurOnSubmit={false}
+                          onSubmitEditing={() => this.onSend() }
+                      /> */}
+                
+                  {/* <Col size={1} style={{justifyContent:'center',borderRightRadius:10}}> 
+                        <Icon name="ios-mic" style={{ color: '#7E49C3', fontSize:20,padding:2}} />
+                      </Col> */}
+                 
+               
+                
+              
                 </Row> : 
                 <Row>
                     <Col style={{ alignContent: 'center', alignItems: 'center', justifyContent: 'center' }}>
@@ -338,19 +364,12 @@ const styles = StyleSheet.create({
         alignItems:'center',
         justifyContent:'center'
     },
-    SearchRow:{
-        backgroundColor: 'white', 
-        borderColor: '#000', 
-        borderRadius: 20,
-        height:35,
-    },
     inputfield:{
         color: 'gray', 
         fontFamily: 'OpenSans', 
         fontSize: 14, 
         padding:5,
         paddingLeft:10,
-        textAlignVertical: "top",
      
     },
     viewStyle:{
@@ -390,7 +409,8 @@ const styles = StyleSheet.create({
     },
     footerStyle:{
         backgroundColor: '#7E49C3',
-        justifyContent:'center' 
+        justifyContent:'center' ,
+     
     },
     col1:{
         width:'15%',
@@ -398,8 +418,17 @@ const styles = StyleSheet.create({
         alignItems:'center'
     },
     col2:{
-        width:'70%',
         justifyContent:'center',
-        alignItems:'center' 
+        alignItems:'center' ,
     },
+    default:{
+        backgroundColor: 'white', 
+        borderColor: '#000', 
+        borderRadius: 20,
+        borderWidth:0.5,
+        width:250, 
+        position: 'absolute',
+
+      
+    }
 })
