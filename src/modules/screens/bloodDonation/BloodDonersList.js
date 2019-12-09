@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import { Container, Content, View, Text, Item, Spinner,Card,Picker, Radio,Row,Col,Form,Button,Icon,Input } from 'native-base';
-import {StyleSheet,TextInput,TouchableOpacity} from 'react-native';
+import {StyleSheet,TextInput,TouchableOpacity,Image} from 'react-native';
 import { NavigationEvents } from 'react-navigation';
 import { FlatList } from 'react-native-gesture-handler';
 import {bloodDonationList }from '../../providers/profile/profile.action';
@@ -95,8 +95,29 @@ getAddress(address){
       const {isloading,data} = this.state;
         return (
             <Container>
-            <Content style={{padding:20}}>
-            {isloading == false ? 
+            <Content style={{padding:8}}>
+  <Card style={{padding:2,marginTop:5}}>      
+  <Row style={{borderBottomWidth:0,marginTop:5}}>
+    <Col size={1.5} style={{justifyContent:'center'}}>
+    <Image source={require("../../../../assets/images/Blooddrop.png")} style={{height:60,width:60}}/>
+    </Col>
+    <Col size={7.5} style={{marginTop:10,marginLeft:5}}>
+     
+     <Text style={{fontFamily:'OpenSans',fontSize:15}}>S.Mukesh Kannan</Text>
+      <Row >
+        <Icon name="ios-pin" style={{color:'blue',fontSize:15}}/>
+      <Text style={{color:'gray',fontSize:13,fontFamily:'OpenSans'}}> Ambattur,Chennai</Text>
+      </Row>
+     
+    </Col>
+    <Col size={1} style={{borderLeftColor:'gray',borderLeftWidth:0.4,paddingLeft:10,justifyContent:'center',marginTop:8,marginBottom:8}}>
+      <Icon name="ios-call" style={{color:'green',fontSize:35}}/>
+    </Col>
+  
+  </Row>
+  </Card>   
+
+            {/* {isloading == false ? 
              <Spinner 
              color="blue"
              visible={true}
@@ -150,8 +171,9 @@ getAddress(address){
                   </Card>
                   }/>  
                </View>
-            }
+            } */}
               </Content> 
+
           </Container>
         )
     }
