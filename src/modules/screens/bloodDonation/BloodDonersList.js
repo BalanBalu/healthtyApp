@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { Container, Content, View, Text, Item, Spinner,Card,Picker, Radio,Row,Col,Form,Button,Icon,Input } from 'native-base';
+import { Container, Content, View, Text, Item, Spinner,Card,Picker, Radio,Row,Col,Form,Button,Icon,Input,Footer } from 'native-base';
 import {StyleSheet,TextInput,TouchableOpacity,Image} from 'react-native';
 import { NavigationEvents } from 'react-navigation';
 import { FlatList } from 'react-native-gesture-handler';
@@ -99,14 +99,15 @@ getAddress(address){
   <Card style={{padding:2,marginTop:5}}>      
   <Row style={{borderBottomWidth:0,marginTop:5}}>
     <Col size={1.5} style={{justifyContent:'center'}}>
-    <Image source={require("../../../../assets/images/Blooddrop.png")} style={{height:60,width:60}}/>
+    <Image source={require("../../../../assets/images/Blooddrop.png")} style={{height:65,width:65,position:'relative'}}/>
+   <Text style={{fontFamily:'OpenSans',fontSize:15,position:'absolute',marginLeft:25,fontWeight:'bold',paddingTop:10,color:'#fff'}}>A+</Text>
     </Col>
     <Col size={7.5} style={{marginTop:10,marginLeft:5}}>
      
      <Text style={{fontFamily:'OpenSans',fontSize:15}}>S.Mukesh Kannan</Text>
       <Row >
-        <Icon name="ios-pin" style={{color:'blue',fontSize:15}}/>
-      <Text style={{color:'gray',fontSize:13,fontFamily:'OpenSans'}}> Ambattur,Chennai</Text>
+        <Icon name="ios-pin" style={{color:'blue',fontSize:15,marginTop:5}}/>
+      <Text style={{color:'gray',fontSize:13,fontFamily:'OpenSans',marginTop:5}}> Ambattur,Chennai</Text>
       </Row>
      
     </Col>
@@ -174,6 +175,17 @@ getAddress(address){
             } */}
               </Content> 
 
+              <Footer style={styles.footerStyle}> 
+                <Row style={{alignItems:'center',justifyContent:'center',marginLeft:20,
+    marginRight:20}}> 
+                   <Col style={{width:'70%'}}>
+                   <Text style={{fontFamily:'OpenSans',fontSize:15,color:'#fff'}}>Interested in Blood Donation?</Text>
+                  </Col> 
+                  <Col>
+                  <TouchableOpacity style={{paddingTop:5,paddingBottom:5,paddingLeft:10,paddingRight:10,backgroundColor:'green',borderRadius:5}}><Text style={{fontFamily:'OpenSans',fontSize:12,color:'#fff'}}>Register Now</Text></TouchableOpacity>
+                  </Col>
+                    </Row>
+                    </Footer>
           </Container>
         )
     }
@@ -228,5 +240,10 @@ const styles = StyleSheet.create({
     textAlign:'center',
     fontWeight:'bold',
     color:'#fff'
-  }
+  },
+  footerStyle:{
+    backgroundColor: '#7E49C3',
+    justifyContent:'center' ,
+    
+},
 })
