@@ -230,15 +230,11 @@ render() {
                     <Card style={{borderRadius:10,backgroundColor:'#7E49C3',}}>
                       
                             <Text style={styles.textstyle}>{item.message}</Text>
-                            {dateDiff(new Date(item.created_date), new Date(), 'days') > 30 ?
+                           
                             <Text style={{fontFamily:'OpenSans',fontSize:8,color:'gray',bottom:0,right:0,textAlign:'right',color:'#fff',padding:5,}}>
-                            {(formatDate(new Date(item.created_date), "YYYY-MM-DD HH MM"))}  
+                            {formatDate(item.created_date, "YYYY-MM-DD HH:MM")}  
                             </Text>
-                           :
-                           <Text style={{fontFamily:'OpenSans',fontSize:8,color:'gray',bottom:0,right:0,textAlign:'right',color:'#fff',padding:5,}}>
-                             {getRelativeTime(item.created_date)}
-                           </Text>
-                            }
+                         
                            </Card>
                            <Thumbnail square source={ renderProfileImage(userInfo) }/>
                            </View>
@@ -252,16 +248,11 @@ render() {
                   <Thumbnail square source={ renderDoctorImage(doctorInfo) }/>
                   <Card style={{borderRadius:10,backgroundColor:'#fff',}}>
                                 <Text style={styles.textstyle2}>{item.message}</Text>
-                                {dateDiff(new Date(item.created_date), new Date(), 'days') > 30 ?
+                              
                             <Text style={{fontFamily:'OpenSans',fontSize:8,color:'gray',bottom:0,right:0,textAlign:'right',color:'#fff',padding:5,}}>
-                            {(formatDate(new Date(item.created_date), "YYYY-MM-DD HH MM"))}  
+                             {formatDate(item.created_date, "YYYY-MM-DD HH:MM")}   
                             </Text>
-                           :
-                           <Text style={{fontFamily:'OpenSans',fontSize:8,color:'gray',bottom:0,right:0,textAlign:'right',color:'#fff',padding:5,}}>
-                             {getRelativeTime(item.created_date)}
-                           </Text>
-                            }
-
+                        
                             </Card>
                            </View>
                   </Left>   
