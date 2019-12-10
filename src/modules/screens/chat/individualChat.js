@@ -4,11 +4,10 @@ import {StyleSheet,TextInput,ImageBackground, FlatList, ScrollView, AsyncStorage
 import {
     renderDoctorImage, renderProfileImage
 } from '../../common';
-
 import SocketIOClient from 'socket.io-client';
 import { CHAT_API_URL } from '../../../setup/config';
 import axios from 'axios';
-import { getRelativeTime } from '../../../setup/helpers';
+import { getRelativeTime,dateDiff,formatDate } from '../../../setup/helpers';
 import { possibleChatStatus } from '../../../Constants/Chat';
 import { connect } from 'react-redux';
 import { store } from '../../../setup/store';
@@ -228,9 +227,18 @@ render() {
                  <Item style={styles.mainItem}>
                     <Right >
                         <View style={{flexDirection:'row',alignItems:'center'}}>
-                    <Text style={{fontFamily:'OpenSans',fontSize:10,color:'gray',}}>{getRelativeTime(item.created_at)}</Text>
                     <Card style={{borderRadius:10,backgroundColor:'#7E49C3',}}>
+                      
                             <Text style={styles.textstyle}>{item.message}</Text>
+                            {dateDiff(new Date(item.created_date), new Date(), 'days') > 30 ?
+                            <Text style={{fontFamily:'OpenSans',fontSize:8,color:'gray',bottom:0,right:0,textAlign:'right',color:'#fff',padding:5,}}>
+                            {(formatDate(new Date(item.created_date), "YYYY-MM-DD HH MM"))}  
+                            </Text>
+                           :
+                           <Text style={{fontFamily:'OpenSans',fontSize:8,color:'gray',bottom:0,right:0,textAlign:'right',color:'#fff',padding:5,}}>
+                             {getRelativeTime(item.created_date)}
+                           </Text>
+                            }
                            </Card>
                            <Thumbnail square source={ renderProfileImage(userInfo) }/>
                            </View>
@@ -244,8 +252,17 @@ render() {
                   <Thumbnail square source={ renderDoctorImage(doctorInfo) }/>
                   <Card style={{borderRadius:10,backgroundColor:'#fff',}}>
                                 <Text style={styles.textstyle2}>{item.message}</Text>
+                                {dateDiff(new Date(item.created_date), new Date(), 'days') > 30 ?
+                            <Text style={{fontFamily:'OpenSans',fontSize:8,color:'gray',bottom:0,right:0,textAlign:'right',color:'#fff',padding:5,}}>
+                            {(formatDate(new Date(item.created_date), "YYYY-MM-DD HH MM"))}  
+                            </Text>
+                           :
+                           <Text style={{fontFamily:'OpenSans',fontSize:8,color:'gray',bottom:0,right:0,textAlign:'right',color:'#fff',padding:5,}}>
+                             {getRelativeTime(item.created_date)}
+                           </Text>
+                            }
+
                             </Card>
-                            <Text style={{fontFamily:'OpenSans',fontSize:10,color:'gray'}}>{getRelativeTime(item.created_at)}</Text>
                            </View>
                   </Left>   
                 </Item>
@@ -396,16 +413,17 @@ const styles = StyleSheet.create({
         fontFamily:'OpenSans',
         fontSize:14,
         color:'#fff',
-        padding:10,
-        lineHeight:20
+        padding:1,
+        lineHeight:20,
       
     },
     textstyle2:{
         fontFamily:'OpenSans',
         fontSize:14,
         color:'#000',
-        padding:10,
-        lineHeight:20
+        padding:1,
+        lineHeight:20,
+      
     },
     footerStyle:{
         backgroundColor: '#7E49C3',
