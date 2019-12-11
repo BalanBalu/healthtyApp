@@ -19,7 +19,9 @@ class BloodDonersList extends Component {
     }
    getBlooddonationDetail= async()=>{
     try {
-     let result = await bloodDonationList();
+      let data =[]
+     let result = await bloodDonationList(data);
+     console.log(result)
      if(result.success){
       let user = result.data.userList 
       let doctor = result.data.doctorList
@@ -96,29 +98,11 @@ getAddress(address){
         return (
             <Container>
             <Content style={{padding:8}}>
-  <Card style={{padding:2,marginTop:5}}>      
-  <Row style={{borderBottomWidth:0,marginTop:5}}>
-    <Col size={1.5} style={{justifyContent:'center'}}>
-    <Image source={require("../../../../assets/images/Blooddrop.png")} style={{height:65,width:65,position:'relative'}}/>
-   <Text style={{fontFamily:'OpenSans',fontSize:15,position:'absolute',marginLeft:25,fontWeight:'bold',paddingTop:10,color:'#fff'}}>A+</Text>
-    </Col>
-    <Col size={7.5} style={{marginTop:10,marginLeft:5}}>
-     
-     <Text style={{fontFamily:'OpenSans',fontSize:15}}>S.Mukesh Kannan</Text>
-      <Row >
-        <Icon name="ios-pin" style={{color:'blue',fontSize:15,marginTop:5}}/>
-      <Text style={{color:'gray',fontSize:13,fontFamily:'OpenSans',marginTop:5}}> Ambattur,Chennai</Text>
-      </Row>
-     
-    </Col>
-    <Col size={1} style={{borderLeftColor:'gray',borderLeftWidth:0.4,paddingLeft:10,justifyContent:'center',marginTop:8,marginBottom:8}}>
-      <Icon name="ios-call" style={{color:'green',fontSize:35}}/>
-    </Col>
   
-  </Row>
-  </Card>   
 
-            {/* {isloading == false ? 
+
+
+            {isloading == false ? 
              <Spinner 
              color="blue"
              visible={true}
@@ -136,43 +120,70 @@ getAddress(address){
                   <FlatList
                   data={this.state.data}
                   renderItem={({item})=>
-                  <Card style={{padding:10}}>
-                  <Row >
-                    <Col style={{width:'85%',paddingTop:10,}}>
-                      <Row>
-                      <Col style={{width:'50%'}}>
-                      <Text style={styles.nameTxt}>{this.getName(item)}</Text>
-                      </Col>
-                      <Col style={{width:'50%'}}>
-                      {item.is_available_blood_donate == true ?
-                     <Text style={styles.statButton}>Available</Text>
-                     :
-                     <Text style={styles.statButton}>Not Available</Text>
-                    }
-                     </Col>
-                      </Row>
+<Card style={{padding:2,marginTop:5}}>      
+  <Row style={{borderBottomWidth:0,marginTop:5}}>
+    <Col size={1.5} style={{justifyContent:'center'}}>
+    <Image source={require("../../../../assets/images/Blooddrop.png")} style={{height:65,width:65,position:'relative'}}/>
+   <Text style={{fontFamily:'OpenSans',fontSize:15,position:'absolute',marginLeft:25,fontWeight:'bold',paddingTop:10,color:'#fff'}}>{this.getBloodGrp(item.blood_group)}</Text>
+    </Col>
+    <Col size={7.5} style={{marginTop:10,marginLeft:5}}>
+     
+     <Text style={{fontFamily:'OpenSans',fontSize:15}}>{this.getName(item)}</Text>
+      <Row >
+        <Icon name="ios-pin" style={{color:'blue',fontSize:15,marginTop:5}}/>
+      <Text style={{color:'gray',fontSize:13,fontFamily:'OpenSans',marginTop:5}}> Ambattur,Chennai</Text>
+      </Row>
+     
+    </Col>
+    <Col size={1} style={{borderLeftColor:'gray',borderLeftWidth:0.4,paddingLeft:10,justifyContent:'center',marginTop:8,marginBottom:8}}>
+      <Icon name="ios-call" style={{color:'green',fontSize:35}}/>
+    </Col>
+  
+  </Row>
+  </Card>   
+
+
+
+
+
+
+                  // <Card style={{padding:10}}>
+                  // <Row >
+                  //   <Col style={{width:'85%',paddingTop:10,}}>
+                  //     <Row>
+                  //     <Col style={{width:'50%'}}>
+                  //     <Text style={styles.nameTxt}>{this.getName(item)}</Text>
+                  //     </Col>
+                  //     <Col style={{width:'50%'}}>
+                  //     {item.is_available_blood_donate == true ?
+                  //    <Text style={styles.statButton}>Available</Text>
+                  //    :
+                  //    <Text style={styles.statButton}>Not Available</Text>
+                  //   }
+                  //    </Col>
+                  //     </Row>
                     
-                      <Row style={{marginTop:5}}>
-                        <Col style={{width:'50%'}}>
-                        <Text style={styles.mobTxt}>{this.getPhone(item.mobile_no)}</Text>
+                  //     <Row style={{marginTop:5}}>
+                  //       <Col style={{width:'50%'}}>
+                  //       <Text style={styles.mobTxt}>{this.getPhone(item.mobile_no)}</Text>
                        
-                        </Col>
-                        <Col style={{width:'50%'}}>
-                        <Text style={styles.cityTxt}>{this.getAddress(item.address)}</Text>
-                    </Col>
-                        </Row>
-                    </Col>
-                    <Col style={{width:'15%',paddingTop:10,justifyContent:'center'}}>
-                      <View style={styles.circleView}>
-                      <Text style={styles.circleText}>{this.getBloodGrp(item.blood_group)}</Text>
-                      </View>
+                  //       </Col>
+                  //       <Col style={{width:'50%'}}>
+                  //       <Text style={styles.cityTxt}>{this.getAddress(item.address)}</Text>
+                  //   </Col>
+                  //       </Row>
+                  //   </Col>
+                  //   <Col style={{width:'15%',paddingTop:10,justifyContent:'center'}}>
+                  //     <View style={styles.circleView}>
+                  //     <Text style={styles.circleText}>{this.getBloodGrp(item.blood_group)}</Text>
+                  //     </View>
                 
-                    </Col>
-                  </Row>
-                  </Card>
+                  //   </Col>
+                  // </Row>
+                  // </Card>
                   }/>  
                </View>
-            } */}
+            }
               </Content> 
 
               <Footer style={styles.footerStyle}> 

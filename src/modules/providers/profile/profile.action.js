@@ -119,10 +119,10 @@ export async function insertLikesDataForReviews(reviewId, reviewerId,reactionDat
   } 
 }
   
-export async function bloodDonationList() {
+export async function bloodDonationList(data) {
   try {
-    let endPoint = '/blood_doners';  
-    let response = await getService(endPoint); 
+    let endPoint = '/bloodDonors';  
+    let response = await postService(endPoint, data); 
     console.log('response'+response);
     let respData = response.data;
     console.log('respData'+JSON.stringify(respData));
@@ -140,15 +140,14 @@ export async function bloodDonationList() {
 
 
 
-
-export async function bloodDonationFilter() {
+export async function bloodDonationFilter(data) {
   try {
-    let endPoint = '/blood_donors_details';  
-    let response = await getService(endPoint); 
+    let endPoint = '/bloodDonors/filters';  
+    let response = await postService(endPoint, data); 
     console.log('response'+response);
+    console.log(JSON.stringify(response))
     let respData = response.data;
     console.log('respData'+JSON.stringify(respData));
-
     return respData;   
   }
    catch (e) {
@@ -157,20 +156,6 @@ export async function bloodDonationFilter() {
       success: false
     }
   } 
-}
-export async function getfilteredBloodList(Data) {
-  try {
-    let endPoint = '/bloodDonors/location';    
-    let response = await postService(endPoint,Data);
-    let respData = response.data;
-    console.log('respData'+JSON.stringify(respData))
-    return respData;
-  } catch (e) {
-    return {
-      message: 'exception' + e,
-      success: false
-    }
-  }
 }
 
 
