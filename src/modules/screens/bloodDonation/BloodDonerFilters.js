@@ -3,7 +3,7 @@ import { Container, Content, View, Text,Left, Item,Right,Footer,List,ListItem, S
 import {StyleSheet,TextInput,TouchableOpacity,ScrollView} from 'react-native'
 import { FlatList } from 'react-native-gesture-handler';
 import Autocomplete from '../../../components/Autocomplete'
-import {bloodDonationFilter,getfilteredBloodList}from '../../providers/profile/profile.action';
+import {bloodDonationFilter,bloodDonationList}from '../../providers/profile/profile.action';
 import { bloodGroupList } from "../../common";
 import { RadioButton, } from 'react-native-paper';
 
@@ -52,6 +52,11 @@ class BloodDonerFilters extends Component {
                }
       
          bloodGroupList(value){
+         let a=  this.filterData.findIndex(x => x.type ==="blood_group")
+         if(a!=-1){
+          this.filterData.splice(a,1)
+         }
+          console.log(a)
            const result= {
              type: "blood_group",
              value:value
@@ -62,6 +67,10 @@ class BloodDonerFilters extends Component {
            this.filterApiCall();
          }
         Countrylist(value){
+          let a=  this.filterData.findIndex(x => x.type ==="address.address.country")
+          if(a!=-1){
+           this.filterData.splice(a,1)
+          }
           const result ={
             type:'address.address.country',
             value:value
@@ -72,6 +81,10 @@ class BloodDonerFilters extends Component {
           this.filterApiCall();
               }
         Statelist(value){
+          let a=  this.filterData.findIndex(x => x.type ==="address.address.state")
+          if(a!=-1){
+           this.filterData.splice(a,1)
+          }
           const result ={
             type:'address.address.state',
             value:value
@@ -82,6 +95,10 @@ class BloodDonerFilters extends Component {
           this.filterApiCall();
               }
         Districtlist(value){
+          let a=  this.filterData.findIndex(x => x.type ==="address.address.district")
+          if(a!=-1){
+           this.filterData.splice(a,1)
+          }
           const result ={
             type:'address.address.district',
             value:value
@@ -92,6 +109,10 @@ class BloodDonerFilters extends Component {
           this.filterApiCall();
               }
       Citylist(value){
+        let a=  this.filterData.findIndex(x => x.type ==="address.address.city")
+        if(a!=-1){
+         this.filterData.splice(a,1)
+        }
         const result ={
           type:'address.address.city',
           value:value
@@ -102,13 +123,24 @@ class BloodDonerFilters extends Component {
         this.filterApiCall();
             }
 
-            filteredTotalDataList1(result) {
-             
-              if(data.result!=0){
-               this.props.navigation.navigate('BloodDonersList',{data:result}) 
-                 console.log(result)
-               this.setState({filteredList:this.filterData.data})
+         async  filteredTotalDataList1() {
+           console.log('comes filtewr data')
+              let user =[], doctor=[];
+             console.log(JSON.stringify(this.filterData))
+             let result = await bloodDonationList(this.filterData);
+             console.log(result)
+             if(result.success){
+               user = result.data.userList 
+              doctor = result.data.doctorList
+                user.concat(doctor);
+                console.log(user)
+                await this.setState({data:user})
               }
+              
+               this.props.navigation.navigate('BloodDonersList',{data:user}) 
+                 console.log(result)
+              
+              
            }
     //  async filteredTotalDataList(){
     //  let filterListData = await getfilteredBloodList(this.filterData)
@@ -181,7 +213,7 @@ class BloodDonerFilters extends Component {
                              <Text style={styles.subText}>{item}</Text>
                            </Left>
                            <Right>
-                           <RadioButton.Group  onValueChange={onSelect => this.Countrylist(onSelect)}
+                           <RadioButton.Group  onValueChange={value => this.Countrylist(value)}
                            value={this.state.onSelect}> 
                                 <RadioButton value={item}/>
                               </RadioButton.Group>
@@ -210,7 +242,7 @@ class BloodDonerFilters extends Component {
                              <Text style={styles.subText}>{item}</Text>
                            </Left>
                            <Right>
-                           <RadioButton.Group   onValueChange={onSelect => this.Satelist(onSelect)}
+                           <RadioButton.Group   onValueChange={value => this.Statelist(value)}
                            value={this.state.onSelect}> 
                                 <RadioButton value={item}/>
                               </RadioButton.Group>
