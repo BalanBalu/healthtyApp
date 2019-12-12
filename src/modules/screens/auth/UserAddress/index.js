@@ -19,7 +19,9 @@ class UserAddress extends Component {
         }
     }
     getSelectedLocationDate = (locationData) => {
-        this.props.navigation.navigate('MapBox', { locationData: locationData })
+        const { navigation } = this.props;
+        const fromProfile = navigation.getParam('fromProfile') || false
+        this.props.navigation.navigate('MapBox', { locationData: locationData, fromProfile})
     }
 
     render() {

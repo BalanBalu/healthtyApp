@@ -156,7 +156,6 @@ export async function logout() {
   await AsyncStorage.removeItem('profile')
   await AsyncStorage.removeItem('isLoggedIn');
   await AsyncStorage.removeItem('basicProfileData');
-  await AsyncStorage.setItem('isDeviceTokenUpdated', 'false');
   store.dispatch({
     type: LOGOUT
   }),

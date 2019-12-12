@@ -4,6 +4,7 @@ import { MAP_BOX_PUBLIC_TOKEN , IS_ANDROID } from '../../../setup/config';
 import RNAndroidLocationEnabler from 'react-native-android-location-enabler';
 import MapboxGL from '@react-native-mapbox-gl/maps';
 import { store } from '../../../setup/store';
+import Axios from 'axios';
 MapboxGL.setAccessToken(MAP_BOX_PUBLIC_TOKEN);
 
 export default class CurrentLocation {
@@ -24,14 +25,19 @@ export default class CurrentLocation {
                          await this.timeout(1000);
                       }
                       console.log('You ARE RUNNING ON ANDROID')
-                   navigator.geolocation.getCurrentPosition(position => {
+                   navigator.geolocation.getCurrentPosition(async (position) => {
                       const origin_coordinates = [position.coords.latitude, position.coords.longitude, ];
+                      const currentLocInfoByGeoIP = await Axios.get('https://geolocation-db.com/json/');
+                      let currentLocationCity = '';
+                      if(currentLocInfoByGeoIP.status === 200) {
+                        currentLocationCity = currentLocInfoByGeoIP.data ? currentLocInfoByGeoIP.data.city : ''
+                      }
                       store.dispatch({
                           type: SET_PATIENT_LOCATION_DATA,
                           center: origin_coordinates,
-                          isSearchByCurrentLocation: true
+                          isSearchByCurrentLocation: true,
+                          locationName: currentLocationCity
                       }) 
-                      console.log('Your Orgin is ' + JSON.stringify(origin_coordinates)); 
                    }), error => {
                      console.log(error); 
                      alert(JSON.stringify(error)) 
@@ -48,15 +54,20 @@ export default class CurrentLocation {
              }); 
             }
            } else { 
-            
-             
-              navigator.geolocation.getCurrentPosition(position => {
-                console.log('Your Orgin is ' + JSON.stringify(position));
+              navigator.geolocation.getCurrentPosition(async (position) => {
                 const origin_coordinates = [position.coords.latitude, position.coords.longitude, ];
+                const currentLocInfoByGeoIP = await Axios.get('https://geolocation-db.com/json/');
+                let currentLocationCity = '';
+                
+                if(currentLocInfoByGeoIP.status === 200) {
+                  currentLocationCity = currentLocInfoByGeoIP.data ? currentLocInfoByGeoIP.data.city : ''
+                  console.log('Fetching the location by ip success');
+                }
                 store.dispatch({
                   type: SET_PATIENT_LOCATION_DATA,
                   center: origin_coordinates,
-                  isSearchByCurrentLocation: true
+                  isSearchByCurrentLocation: true,
+                  locationName: currentLocationCity
                 }) 
               }),
               error =>  {
