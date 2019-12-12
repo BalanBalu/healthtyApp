@@ -34,7 +34,6 @@ class BloodDonerFilters extends Component {
          getBlooddonationfilterList= async(data)=>{
                  try {
           //let data=[]
-          alert(data)
              let result = await bloodDonationFilter(data);
                if(result.success){
                  this.setState({data:result.data})
@@ -52,11 +51,10 @@ class BloodDonerFilters extends Component {
                }
       
          bloodGroupList(value){
-         let a=  this.filterData.findIndex(x => x.type ==="blood_group")
-         if(a!=-1){
-          this.filterData.splice(a,1)
+         let bloodlist=  this.filterData.findIndex(list => list.type ==="blood_group")
+         if(bloodlist!=-1){
+          this.filterData.splice(bloodlist,1)
          }
-          console.log(a)
            const result= {
              type: "blood_group",
              value:value
@@ -67,9 +65,9 @@ class BloodDonerFilters extends Component {
            this.filterApiCall();
          }
         Countrylist(value){
-          let a=  this.filterData.findIndex(x => x.type ==="address.address.country")
-          if(a!=-1){
-           this.filterData.splice(a,1)
+          let countrylist=  this.filterData.findIndex(list => list.type ==="address.address.country")
+          if(countrylist!=-1){
+           this.filterData.splice(countrylist,1)
           }
           const result ={
             type:'address.address.country',
@@ -81,9 +79,9 @@ class BloodDonerFilters extends Component {
           this.filterApiCall();
               }
         Statelist(value){
-          let a=  this.filterData.findIndex(x => x.type ==="address.address.state")
-          if(a!=-1){
-           this.filterData.splice(a,1)
+          let statelist=  this.filterData.findIndex(list => list.type ==="address.address.state")
+          if(statelist!=-1){
+           this.filterData.splice(statelist,1)
           }
           const result ={
             type:'address.address.state',
@@ -95,9 +93,9 @@ class BloodDonerFilters extends Component {
           this.filterApiCall();
               }
         Districtlist(value){
-          let a=  this.filterData.findIndex(x => x.type ==="address.address.district")
-          if(a!=-1){
-           this.filterData.splice(a,1)
+          let dislist=  this.filterData.findIndex(list => list.type ==="address.address.district")
+          if(dislist!=-1){
+           this.filterData.splice(dislist,1)
           }
           const result ={
             type:'address.address.district',
@@ -109,9 +107,9 @@ class BloodDonerFilters extends Component {
           this.filterApiCall();
               }
       Citylist(value){
-        let a=  this.filterData.findIndex(x => x.type ==="address.address.city")
-        if(a!=-1){
-         this.filterData.splice(a,1)
+        let cityList=  this.filterData.findIndex(list => list.type ==="address.address.city")
+        if(cityList!=-1){
+         this.filterData.splice(cityList,1)
         }
         const result ={
           type:'address.address.city',
