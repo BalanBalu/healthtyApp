@@ -22,17 +22,19 @@ class BloodDonerFilters extends Component {
             }
           
           componentDidMount(){
-             this. getBlooddonationfilterList();
+             this. getBlooddonationfilterList(this.filterData);
              }
-             filterApiCall=async()=>{
-              console.log("filterApi calls");
-               let totalData = await bloodDonationFilter(this.filterData);
-               console.log(totalData);
+            filterApiCall=async()=>{
+              this. getBlooddonationfilterList(this.filterData);
+            //   console.log("filterApi calls");
+            //    let totalData = await bloodDonationFilter(this.filterData);
+            //    console.log(totalData);
 
-             }
-         getBlooddonationfilterList= async()=>{
+           }
+         getBlooddonationfilterList= async(data)=>{
                  try {
-          let data=[]
+          //let data=[]
+          alert(data)
              let result = await bloodDonationFilter(data);
                if(result.success){
                  this.setState({data:result.data})
