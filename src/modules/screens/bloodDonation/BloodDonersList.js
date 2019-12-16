@@ -36,7 +36,7 @@ class BloodDonersList extends Component {
 }
 getAddress(address){
   if(address != undefined){
-    return  address.address.city
+    return  `${address.address.city || ''} , ${address.address.district || ''}`
   }else {
     return null
   }
@@ -98,10 +98,6 @@ getAddress(address){
         return (
             <Container>
             <Content style={{padding:8}}>
-  
-
-
-
             {isloading == false ? 
              <Spinner 
              color="blue"
@@ -120,27 +116,24 @@ getAddress(address){
                   <FlatList
                   data={this.state.data}
                   renderItem={({item})=>
-<Card style={{padding:2,marginTop:5}}>      
-  <Row style={{borderBottomWidth:0,marginTop:5}}>
-    <Col size={1.5} style={{justifyContent:'center'}}>
-    <Image source={require("../../../../assets/images/Blooddrop.png")} style={{height:65,width:65,position:'relative'}}/>
-   <Text style={{fontFamily:'OpenSans',fontSize:15,position:'absolute',marginLeft:25,fontWeight:'bold',paddingTop:10,color:'#fff'}}>{this.getBloodGrp(item.blood_group)}</Text>
-    </Col>
-    <Col size={7.5} style={{marginTop:10,marginLeft:5}}>
-     
-     <Text style={{fontFamily:'OpenSans',fontSize:15}}>{this.getName(item)}</Text>
-      <Row >
-        <Icon name="ios-pin" style={{color:'blue',fontSize:15,marginTop:5}}/>
-      <Text style={{color:'gray',fontSize:13,fontFamily:'OpenSans',marginTop:5}}> Ambattur,Chennai</Text>
-      </Row>
-     
-    </Col>
-    <Col size={1} style={{borderLeftColor:'gray',borderLeftWidth:0.4,paddingLeft:10,justifyContent:'center',marginTop:8,marginBottom:8}}>
-      <Icon name="ios-call" style={{color:'green',fontSize:35}}/>
-    </Col>
-  
-  </Row>
-  </Card>   
+                        <Card style={{padding:2,marginTop:5}}>      
+                            <Row style={{borderBottomWidth:0,marginTop:5}}>
+                              <Col size={1.5} style={{justifyContent:'center'}}>
+                                 <Image source={require("../../../../assets/images/Blooddrop.png")} style={{height:65,width:65,position:'relative'}}/>
+                                 <Text style={{fontFamily:'OpenSans',fontSize:15,position:'absolute',marginLeft:25,fontWeight:'bold',paddingTop:10,color:'#fff'}}>{this.getBloodGrp(item.blood_group)}</Text>
+                              </Col>
+                              <Col size={7.5} style={{marginTop:10,marginLeft:5}}>
+                                  <Text style={{fontFamily:'OpenSans',fontSize:15}}>{this.getName(item)}</Text>
+                              <Row>
+                                   <Icon name="ios-pin" style={{color:'#1D96F2',fontSize:15,marginTop:5}}/>
+                                   <Text style={{color:'gray',fontSize:13,fontFamily:'OpenSans',marginTop:5}}> {this.getAddress(item.address)}</Text>
+                              </Row>
+                             </Col>
+                             <Col size={1} style={{borderLeftColor:'gray',borderLeftWidth:0.4,paddingLeft:10,justifyContent:'center',marginTop:8,marginBottom:8}}>
+                                <Icon name="ios-call" style={{color:'#08BF01',fontSize:35}}/>
+                             </Col>
+                            </Row>
+                          </Card>   
 
 
 
@@ -185,7 +178,6 @@ getAddress(address){
                </View>
             }
               </Content> 
-
               <Footer style={styles.footerStyle}> 
                 <Row style={{alignItems:'center',justifyContent:'center',marginLeft:20,
     marginRight:20}}> 
@@ -193,7 +185,7 @@ getAddress(address){
                    <Text style={{fontFamily:'OpenSans',fontSize:15,color:'#fff'}}>Interested in Blood Donation?</Text>
                   </Col> 
                   <Col>
-                  <TouchableOpacity style={{paddingTop:5,paddingBottom:5,paddingLeft:10,paddingRight:10,backgroundColor:'green',borderRadius:5}}><Text style={{fontFamily:'OpenSans',fontSize:12,color:'#fff'}}>Register Now</Text></TouchableOpacity>
+                  <TouchableOpacity style={{paddingTop:5,paddingBottom:5,paddingLeft:10,paddingRight:10,backgroundColor:'#08BF01',borderRadius:5}}><Text style={{fontFamily:'OpenSans',fontSize:12,color:'#fff',textAlign:'center'}}>Register Now</Text></TouchableOpacity>
                   </Col>
                     </Row>
                     </Footer>

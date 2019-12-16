@@ -26,10 +26,7 @@ class BloodDonerFilters extends Component {
              }
             filterApiCall=async()=>{
               this. getBlooddonationfilterList(this.filterData);
-            //   console.log("filterApi calls");
-            //    let totalData = await bloodDonationFilter(this.filterData);
-            //    console.log(totalData);
-
+          
            }
          getBlooddonationfilterList= async(data)=>{
                  try {
@@ -140,15 +137,7 @@ class BloodDonerFilters extends Component {
               
               
            }
-    //  async filteredTotalDataList(){
-    //  let filterListData = await getfilteredBloodList(this.filterData)
-    //    if (filterListData.success){
-    //       console.log(filterListData)
-    //     await this.setState({filteredList:this.filterData.data})
-    //    }
-    //    this.props.navigation.navigate('BloodDonersList',{data:filterListData.data});
-    //      console.log(filterListData)
-    //           }    
+     
           
     render() {
     
