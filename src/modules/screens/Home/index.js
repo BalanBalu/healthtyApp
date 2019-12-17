@@ -17,6 +17,7 @@ import CurrentLocation from './CurrentLocation';
 const bloodImg = require('../../../../assets/images/blood.jpeg');
 const chatImg = require('../../../../assets/images/Chat.jpg');
 const pharmacyImg = require('../../../../assets/images/pharmacy.jpg');
+import OfflineNotice from '../../../components/offlineNotice'
 
 MapboxGL.setAccessToken(MAP_BOX_PUBLIC_TOKEN);
 const MAX_DISTANCE_TO_COVER = 30000; // in meters
@@ -199,8 +200,9 @@ callSuggestionService=async(enteredText)=>{
         return (
 
         <Container style={styles.container}>
+                  <OfflineNotice/> 
             <Content keyboardShouldPersistTaps={'handled'} style={styles.bodyContent}>
-                  
+
                 <Row style={styles.SearchRow}>
                     <Col size={0.9} style={styles.SearchStyle}> 
                         <TouchableOpacity style={{justifyContent:'center'}}>
