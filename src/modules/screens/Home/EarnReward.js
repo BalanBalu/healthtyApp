@@ -20,20 +20,20 @@ class EarnReward extends Component {
         return (
             <Container style={styles.container}>
               <Content style={styles.bodyContent}>
-                    <View>
-                <Text style={{textAlign:'center',fontFamily:'OpenSans',fontSize:18,color:'#7E49C3'}}>Free Rewards !</Text>
-                <Text style={{textAlign:'center',fontFamily:'OpenSans',fontSize:18,color:'gray',marginTop:20,lineHeight:30}}>Invite your friends to join Medflic and get upto Rs.100 /-</Text>
+                    <View style={{marginTop:25}}>
+                <Text style={styles.mainHead}>Free Rewards !</Text>
+                <Text style={styles.subHead}>Invite your friends to join Medflic and get upto Rs.100 /-</Text>
                 <View style={{justifyContent:'center',alignItems:'center',marginTop:20}}>
                 <Image
                       source={require('../../../../assets/images/gift.png')}
                      style={{
-                            width: 120,height:120,alignItems:'center'
+                            width: 140,height:140,alignItems:'center'
                          }}
                      />
                      </View>
                      <View style={{marginTop:30}}>
-                             <Card style={{  borderRadius: 10,marginLeft:15,marginRight:15}}>
-                          <Row style={{ height: 60, width: '100%', overflow: 'hidden', backgroundColor: "#fff",borderRadius:10,}}>
+                             <Card style={styles.mainCard}>
+                          <Row style={styles.MainRow}>
                            <Col style={{width:'70%'}}>
                            <ImageBackground 
                             source={require('../../../../assets/images/bg.png')}
@@ -41,30 +41,28 @@ class EarnReward extends Component {
                                 width: '100%',height:'100%',alignItems:'center',justifyContent:'center'
                               }}
                             >
-                                <Text style={{color:'#775DA3',fontSize:14,textAlign:'left',marginLeft:15,lineHeight:20,}}>Invite 25 peoples to Get Branded Watch absolutely free!!!</Text>
+                                <Text style={styles.innerText}>Invite 25 peoples to Get Branded Watch absolutely free!!!</Text>
                                 </ImageBackground>
                            </Col> 
                            <Col style={{width:'30%',}}>
                         
                           <Image
-                                  source={require('../../../../assets/images/imagebgshape.png')}
+                                  source={require('../../../../assets/images/imagebgwatch.png')}
                                   style={{
-                                    width: '130%',height:'130%',marginTop:-10,marginLeft:-18
+                                    width: '130%',height:'130%',marginTop:-10,marginLeft:-1
                                   }}
-                                />
-                                  
-                             
+                                />                            
                            </Col>
                           </Row>
                           </Card>
                              </View>
-                             <Text style={{textAlign:'center',fontFamily:'OpenSans',fontSize:18,color:'gray',marginTop:30,lineHeight:30}}>Your Code</Text>
-                             <Text style={{textAlign:'center',fontFamily:'OpenSans',fontSize:18,color:'#7E49C3',marginTop:10}}>8GV57</Text>
-<View style={{alignItems:'center',justifyContent:'center'}}>
-<TouchableOpacity style={{backgroundColor:'#7E49C3',borderRadius:20,paddingLeft:40,paddingRight:40,paddingTop:8,paddingBottom:8,marginTop:20}}>
-    <Text style={{textAlign:'center',fontFamily:'OpenSans',fontSize:18,color:'#fff',}}>Share</Text>
-</TouchableOpacity>
-</View>
+                             <Text style={styles.codeText}>Your Code</Text>
+                             <Text style={styles.numText}>8GV57</Text>
+                         <View style={{alignItems:'center',justifyContent:'center'}}>
+                               <TouchableOpacity style={styles.touchbutton}>
+                                   <Text style={styles.touchText}>Share</Text>
+                               </TouchableOpacity>
+                         </View>
                  </View>
                 </Content>
             </Container>
@@ -75,6 +73,73 @@ class EarnReward extends Component {
 
 const styles = StyleSheet.create({
    
+  mainHead:{
+    textAlign:'center',
+    fontFamily:'OpenSans',
+    fontSize:18,
+    color:'#7E49C3',
+    fontWeight:'700'
+  },
+  subHead:{
+    textAlign:'center',
+    fontFamily:'OpenSans',
+    fontSize:18,
+    color:'gray',
+    marginTop:20,
+    lineHeight:30
+  },
+  mainCard:{
+    borderRadius: 10,
+    marginLeft:15,
+    marginRight:15
+  },
+  MainRow:{
+    height: 60, 
+    width: '100%', 
+    overflow: 'hidden', 
+    backgroundColor: "#fff",
+    borderRadius:10,
+  },
+  codeText:{
+    textAlign:'center',
+    fontFamily:'OpenSans',
+    fontSize:18,
+    color:'gray',
+    marginTop:30,
+    lineHeight:30
+  },
+  numText:{
+    textAlign:'center',
+    fontFamily:'OpenSans',
+    fontSize:18,
+    color:'#7E49C3',
+    marginTop:10,
+    fontWeight:'700'
+  },
+  touchbutton:{
+    backgroundColor:'#7E49C3',
+    borderRadius:20,
+    paddingLeft:40,
+    paddingRight:40,
+    paddingTop:8,
+    paddingBottom:8,
+    marginTop:20
+  },
+  touchText:{
+    textAlign:'center',
+    fontFamily:'OpenSans',
+    fontSize:18,
+    color:'#fff',
+    fontWeight:'700'
+  },
+  innerText:{
+    color:'#775DA3',
+    fontSize:14,
+    textAlign:'left',
+    marginLeft:15,
+    lineHeight:20,
+    fontWeight:'500'
+  }
 })
 
 export default EarnReward

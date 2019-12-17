@@ -343,7 +343,7 @@ callSuggestionService=async(enteredText)=>{
                              <View style={{marginLeft:10,marginRight:10,marginBottom:20}}>
                              <Row style={{marginTop:5,marginBottom:5}}>
                                  <Left>
-                                 <Text style={{ fontFamily: 'OpenSans', fontSize: 15 ,fontWeight:'bold'}}>Categories</Text>
+                                 <Text style={styles.mainHead}>Categories</Text>
                              </Left>
                              <Right>
                                 <TouchableOpacity onPress={() => this.navigetToCategories()} style={{paddingLeft:20,paddingRight:20,paddingBottom:5,paddingTop:5,borderRadius:5,color:'#fff',flexDirection:'row'}}>
@@ -411,9 +411,9 @@ callSuggestionService=async(enteredText)=>{
                                  /> 
                                   </Row>
                                 </View>
-                                <Row style={{marginTop:5,marginBottom:5}}>
+                                <Row style={{marginTop:10,marginBottom:5}}>
                                  <Left>
-                                 <Text style={{ fontFamily: 'OpenSans', fontSize: 15 ,fontWeight:'bold'}}>Refer and Earn!</Text>
+                                 <Text style={styles.mainHead}>Refer and Earn!</Text>
                              </Left>
                              </Row>
                              <View>
@@ -426,7 +426,7 @@ callSuggestionService=async(enteredText)=>{
                                 width: '100%',height:'100%',alignItems:'center',justifyContent:'center'
                               }}
                             >
-                                <Text style={{color:'#775DA3',fontSize:14,textAlign:'left',marginLeft:15,lineHeight:20,}}>Invite People And Get Cash Rewards Upto Rs.100 /-</Text>
+                                <Text style={styles.innerText}>Invite People And Get Cash Rewards Upto Rs.100 /-</Text>
                                 </ImageBackground>
                            </Col> 
                            <Col style={{width:'30%',}}>
@@ -759,5 +759,17 @@ const styles = StyleSheet.create({
     fontWeight: 'bold'
   },
  
-
+mainHead:{
+    fontFamily: 'OpenSans', 
+    fontSize: 15 ,
+    fontWeight:'bold'
+},
+innerText:{
+    color:'#775DA3',
+    fontSize:14,
+    textAlign:'left',
+    marginLeft:15,
+    lineHeight:20,
+    fontWeight:'500'
+}
 });
