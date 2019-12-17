@@ -337,9 +337,10 @@ class doctorSearchList extends Component {
             
           
              console.log('There is No Active Sponsors for given list of Doctors' + JSON.stringify(getActiveSponsorDetails))
-            if (getActiveSponsorDetails.status) {
+            if (getActiveSponsorDetails.data) {
                 let sponsorIdArray = [];
-                getActiveSponsorDetails.status.map((ele) => {
+             
+                getActiveSponsorDetails.data.map((ele) => {
                     sponsorIdArray.push(ele._id)
                 });
                 this.updateSponsorViewersCount(sponsorIdArray)
