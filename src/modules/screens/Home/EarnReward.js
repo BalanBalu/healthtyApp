@@ -1,18 +1,79 @@
 import React, { Component } from 'react';
 import {
     Container, Content, View, Text, Title, Header, H3, Button, Item, CardItem, Row, Col,
-    List, ListItem, Left, Right, Card, Thumbnail, Body, Icon, ScrollView, Spinner,Grid
+    List, ListItem, Left, Right, Card, Thumbnail, Body, Icon, ScrollView,Grid
 } from 'native-base';
-import { StyleSheet, TouchableOpacity, AsyncStorage, FlatList, Image,ImageBackground} from 'react-native';
-
+import { StyleSheet, TouchableOpacity, AsyncStorage, FlatList, Image,ImageBackground,Share} from 'react-native';
+import { fetchUserProfile } from '../../providers/profile/profile.action';
+import { hasLoggedIn } from "../../providers/auth/auth.actions";
+import Spinner from "../../../components/Spinner";
+import{ SHARE_URL} from '../../../setup/config'
 
 class EarnReward extends Component {
     constructor(props) {
         super(props)
         this.state = {
-           
+          isLoading:false,
+          data:[]
         }
     }
+   async componentDidMount(){
+      // const isLoggedIn = await hasLoggedIn(this.props);
+      //   if (!isLoggedIn) {
+      //       this.props.navigation.navigate("login");
+      //       return;
+      //   }
+      this.getReferCode()
+    }
+    getReferCode = async () => {
+      try {
+          let fields = "refer_code"
+  let result={}
+          // let userId = await AsyncStorage.getItem('userId');
+          // let result = await fetchUserProfile(userId, fields);
+    
+          if (result) {
+              this.setState({ data: result ,isLoading:true});
+          }
+          else{
+            
+            result.refer_code='456789'
+            this.setState({ data:result ,isLoading:true})
+          }
+
+
+      }
+      catch (e) {
+          console.log(e);
+      }
+      finally {
+          this.setState({ isLoading: true });
+      }
+  }
+  onShare = async () => {
+    try {
+ 
+
+      const result = await Share.share({
+        message:
+          'Join me on medflic a doctor  appointment booking app',
+        url:'http://user/medflic/'
+      });
+alert(JSON.stringify(result))
+      if (result.action === Share.sharedAction) {
+        if (result.activityType) {
+          // shared with activity type of result.activityType
+        } else {
+          // shared
+        }
+      } else if (result.action === Share.dismissedAction) {
+        // dismissed
+      }
+    } catch (error) {
+      alert(error.message);
+    }
+  };
+
    
 
     render() {
@@ -20,6 +81,15 @@ class EarnReward extends Component {
         return (
             <Container style={styles.container}>
               <Content style={styles.bodyContent}>
+              {this.state.isLoading === false ?
+                        <Spinner
+                            color="blue"
+                            style={[styles.containers, styles.horizontal]}
+                            visible={true}
+                            size={"large"}
+                            overlayColor="none"
+                            cancelable={false}
+                        /> :
                     <View style={{marginTop:25}}>
                 <Text style={styles.mainHead}>Free Rewards !</Text>
                 <Text style={styles.subHead}>Invite your friends to join Medflic and get upto Rs.100 /-</Text>
@@ -57,13 +127,13 @@ class EarnReward extends Component {
                           </Card>
                              </View>
                              <Text style={styles.codeText}>Your Code</Text>
-                             <Text style={styles.numText}>8GV57</Text>
+                                <Text style={styles.numText}>{this.state.data.refer_code||''}</Text>
                          <View style={{alignItems:'center',justifyContent:'center'}}>
-                               <TouchableOpacity style={styles.touchbutton}>
+                               <TouchableOpacity style={styles.touchbutton} onPress={this.onShare}>
                                    <Text style={styles.touchText}>Share</Text>
                                </TouchableOpacity>
                          </View>
-                 </View>
+                 </View>}
                 </Content>
             </Container>
         )

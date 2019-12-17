@@ -411,6 +411,7 @@ callSuggestionService=async(enteredText)=>{
                                  /> 
                                   </Row>
                                 </View>
+                                
                                 <Row style={{marginTop:10,marginBottom:5}}>
                                  <Left>
                                  <Text style={styles.mainHead}>Refer and Earn!</Text>
@@ -418,6 +419,7 @@ callSuggestionService=async(enteredText)=>{
                              </Row>
                              <View>
                              <Card style={{  borderRadius: 10,}}>
+                                 <TouchableOpacity onPress={()=>this.props.navigation.navigate("EarnReward")}>
                           <Row style={{ height: 60, width: '100%', overflow: 'hidden', backgroundColor: "#fff",borderRadius:10,}}>
                            <Col style={{width:'70%'}}>
                            <ImageBackground 
@@ -441,6 +443,7 @@ callSuggestionService=async(enteredText)=>{
                              
                            </Col>
                           </Row>
+                          </TouchableOpacity>
                           </Card>
                              </View>
                             </View>
