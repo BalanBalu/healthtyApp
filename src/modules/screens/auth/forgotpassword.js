@@ -1,11 +1,12 @@
 import React, { Component } from 'react';
-import { View, Container, Content, Button, Text, Form, Item, Input, Card, Footer, FooterTab, Spinner, Toast, Icon, Label, Row } from 'native-base';
+import { View, Container, Content, Button, Text, Form, Item, Input, Card, Footer, FooterTab, Toast, Icon, Label, Row } from 'native-base';
 import { generateOTP, changePassword } from '../../providers/auth/auth.actions';
 import { connect } from 'react-redux';
 import { StyleSheet, Image, ImageBackground, TouchableOpacity } from 'react-native'
 import styles from '../../screens/auth/styles';
 import { ScrollView } from 'react-native-gesture-handler';
 import { debounce, validateEmailAddress } from '../../common';
+import Spinner from '../../../components/Spinner';
 const mainBg = require('../../../../assets/images/MainBg.jpg')
 
 class Forgotpassword extends Component {
@@ -41,7 +42,7 @@ class Forgotpassword extends Component {
                 this.setState({ errorMessage: 'Email address is not valid' });
                 return false;
             }
-            await this.setState({ isLoading: true })
+            await this.setState({ errorMessage: '', isLoading: true })
             let reqData = {
                 userEntry: userEntry,
                 type: 'user'
@@ -77,7 +78,7 @@ class Forgotpassword extends Component {
                 this.setState({ errorMessage: 'Passwords do not match' });
                 return false;
             }
-            await this.setState({ isLoading: true })
+            await this.setState({ errorMessage: '', isLoading: true })
             let reqData = {
                 userId: this.props.user.userId,
                 otp: otpCode,
@@ -126,7 +127,11 @@ class Forgotpassword extends Component {
                         onSubmitEditing={() => { userEntry !== '' ? this.generateOtpCode() : null }}
                     />
                 </Item>
-                {isLoading ? <Spinner color='blue' /> : null}
+                {isLoading ?
+                    <Spinner
+                        visible={isLoading}
+                        textContent={'Please Wait...Generating OTP'}
+                    /> : null}
                 <Button
                     style={userEntry == '' ? styles.forgotButtonDisable : styles.forgotButton}
                     block success disabled={userEntry == ''} onPress={() => this.generateOtpCode()}>
@@ -180,7 +185,11 @@ class Forgotpassword extends Component {
                     />
                     {isPasswordMatch == true ? <Icon active name='ios-checkmark' style={{ fontSize: 34, color: '#329932' }} /> : <Icon active name='ios-close' style={{ color: '#d00729', fontSize: 34 }} />}
                 </Item>
-                {isLoading ? <Spinner color='blue' /> : null}
+                {isLoading ?
+                    <Spinner
+                        visible={isLoading}
+                        textContent={'Please Wait...Loading'}
+                    /> : null}
                 <Button
                     style={(otpCode && password && confirmPassword) == '' ? styles.forgotButtonDisable : styles.forgotButton}
                     block success disabled={(otpCode && password && confirmPassword) == ''} onPress={() => this.changePassword()}>

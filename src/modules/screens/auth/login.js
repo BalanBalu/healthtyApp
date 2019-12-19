@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import {
   Container, Content, Button, Text, Form, Item, Input, Header, Footer, FooterTab, Right,
-  Grid, Toast, KeyboardAvoidingView, Icon, Row, Card, Label, Left, Spinner
+  Grid, Toast, KeyboardAvoidingView, Icon, Row, Card, Label, Left
 } from 'native-base';
 import { connect } from 'react-redux'
 import { Image, TouchableOpacity, View, ScrollView, AsyncStorage, ImageBackground } from 'react-native';
@@ -10,7 +10,8 @@ import styles from '../../screens/auth/styles'
 import { store } from '../../../setup/store';
 import { fetchUserProfile, storeBasicProfile } from '../../providers/profile/profile.action';
 import { validateEmailAddress } from '../../screens/../common';
-const mainBg = require('../../../../assets/images/MainBg.jpg')
+const mainBg = require('../../../../assets/images/MainBg.jpg');
+import Spinner from '../../../components/Spinner';
 
 class Login extends Component {
   constructor(props) {
@@ -19,7 +20,7 @@ class Login extends Component {
     this.state = {
       userEntry: '',
       password: '',
-      loginErrorMsg: null,
+      loginErrorMsg: '',
       checked: false,
       showPassword: true
     }
@@ -29,7 +30,7 @@ class Login extends Component {
   doLogin = async () => {
     const { userEntry, password } = this.state;
     try {
-
+      await this.setState({ loginErrorMsg: '' })
       if ((userEntry && password) == '') {
         this.setState({ loginErrorMsg: 'Please enter Email and Password' });
         return false;
@@ -82,7 +83,7 @@ class Login extends Component {
   }
   render() {
     const { user: { isLoading } } = this.props;
-    const { userEntry, password, showPassword, checked, loginErrorMsg } = this.state;
+    const { userEntry, password, showPassword, loginErrorMsg } = this.state;
     return (
       <Container style={styles.container}>
         <ImageBackground source={mainBg} style={{ width: '100%', height: '100%' }}>
@@ -133,11 +134,11 @@ class Login extends Component {
                         </TouchableOpacity>
                       </Right>
                     </Row>
-
-                    {isLoading ? <Spinner color='blue'
-                      visible={isLoading}
-                      textContent={'Loading...'}
-                    /> : null}
+                    {isLoading ?
+                      <Spinner
+                        visible={isLoading}
+                        textContent={'Please Wait...Loading'}
+                      /> : null}
                     <View style={{ alignItems: 'center', justifyContent: 'center' }}>
                       <TouchableOpacity small
                         style={(userEntry && password) == '' ? styles.loginButton1Disable : styles.loginButton1}

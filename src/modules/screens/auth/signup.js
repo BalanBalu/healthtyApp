@@ -145,10 +145,11 @@ class Signup extends Component {
                                             />
                                             <Text style={{ marginLeft: 2, color: 'gray', fontFamily: 'OpenSans', fontSize: 13, }}>I Accept the Medflic Terms And Conditions</Text>
                                         </Item>
-                                        <Spinner color='blue'
-                                            visible={isLoading}
-                                            textContent={'Loading...'}
-                                        />
+                                        {isLoading ?
+                                            <Spinner
+                                                visible={isLoading}
+                                                textContent={'Loading...'}
+                                            /> : null}
                                         <View style={{ alignItems: 'center', justifyContent: 'center', marginBottom: 10 }}>
                                             <TouchableOpacity small
                                                 style={(userEmail && password) == '' ? styles.loginButton1Disable : styles.loginButton1}

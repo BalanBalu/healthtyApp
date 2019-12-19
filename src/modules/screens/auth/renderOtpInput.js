@@ -1,9 +1,10 @@
 import React, { Component } from 'react';
 import { StyleSheet, TouchableOpacity } from 'react-native';
-import { View, Button, Text, Toast, Content, Container, Row, Left, Right } from 'native-base'; import { connect } from 'react-redux';
+import { View, Button, Text, Toast, Content, Container, Row, Left, Right, Card, Item } from 'native-base';
+import { connect } from 'react-redux';
 import OtpInputs from '../../../components/OtpInputText/OtpInput';
 import { login, generateOtpCodeForCreateAccount, verifyOtpCodeForCreateAccount } from '../../providers/auth/auth.actions';
-import Spinner from '../../../components/Spinner'
+import Spinner from '../../../components/Spinner';
 
 class RenderOtpInput extends Component {
     constructor(props) {
@@ -14,7 +15,6 @@ class RenderOtpInput extends Component {
             errorMsg: '',
             isVerifyingEmail: false,
             isGeneratedOtp: false,
-            nextPageLoading: false,
             isLoading: false
         };
     }
@@ -58,6 +58,9 @@ class RenderOtpInput extends Component {
                 duration: 3000
             })
         }
+        finally {
+            this.setState({ isLoading: false });
+        }
     }
 
     /*  verify Email using Entered OTP Code   */
@@ -96,7 +99,7 @@ class RenderOtpInput extends Component {
 
     async doLoginAndContinueBasicDetailsUpdate() {
         try {
-            this.setState({ nextPageLoading: true, isLoading: true });
+            this.setState({ isLoading: true });
             const loginData = this.props.navigation.getParam("loginData");
             await login(loginData);  // Do SignIn Process after SignUp is Done
             if (this.props.user.isAuthenticated) {
@@ -115,22 +118,18 @@ class RenderOtpInput extends Component {
     }
 
 
-
     render() {
-        const { otp, requestData, isVerifyingEmail, isGeneratedOtp, nextPageLoading, isLoading, errorMsg } = this.state;
+        const { otp, requestData, isVerifyingEmail, isGeneratedOtp, isLoading, errorMsg } = this.state;
 
         return (
             <Container>
-                {nextPageLoading == true ? <Spinner
-                    visible={isLoading}
-                    textContent={'Please wait... Loading'}
-                /> : isVerifyingEmail == true ? <Spinner
+                {isVerifyingEmail == true ? <Spinner
                     visible={isLoading}
                     textContent={'Please Wait... Email is Verifying'}
                 /> : <Spinner
-                            visible={isLoading}
-                            textContent={'Please Wait... Generating OTP'}
-                        />}
+                        visible={isLoading}
+                        textContent={'Please Wait... Generating OTP'}
+                    />}
                 <Content padder style={{ backgroundColor: '#fff' }}>
                     <View style={styles.container}>
                         <Row>
@@ -151,6 +150,12 @@ class RenderOtpInput extends Component {
                         </Button>
                         <Text style={{ color: 'red', marginLeft: 15, marginTop: 10 }}>{errorMsg}</Text>
                     </View>
+                    <Item style={{ marginLeft: 'auto', marginRight: 'auto', borderBottomWidth: 0, marginBottom: 10, marginTop: 10 }}>
+                        <Text uppercase={false} style={{ color: '#000', fontSize: 16, fontFamily: 'OpenSans', color: '#775DA3' }}>Go Back To</Text>
+                        <TouchableOpacity onPress={() => this.props.navigation.navigate('login')} style={styles.smallSignInButton}>
+                            <Text uppercase={true} style={{ color: '#000', fontSize: 12, fontFamily: 'OpenSans', fontWeight: 'bold', color: '#fff' }}> Sign In</Text>
+                        </TouchableOpacity>
+                    </Item>
                 </Content>
             </Container>
         );
@@ -175,6 +180,15 @@ const styles = StyleSheet.create({
         backgroundColor: '#9777c7',
         marginLeft: 15,
         borderRadius: 5,
+    },
+    smallSignInButton: {
+        backgroundColor: '#775DA3',
+        marginLeft: 15,
+        borderRadius: 20,
+        paddingRight: 20,
+        paddingLeft: 20,
+        paddingBottom: 10,
+        paddingTop: 10
     },
 });
 
