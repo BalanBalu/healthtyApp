@@ -147,7 +147,7 @@ class Forgotpassword extends Component {
 
         return (
             <Container style={styles.container}>
-                 <ImageBackground source={mainBg} style={{width: '100%', height: '100%'}}>
+                 <ImageBackground source={mainBg} style={{width: '100%', height: '100%', flex: 1 }}>
 
               <Content contentContainerStyle={styles.authBodyContent}>
                 <ScrollView>
