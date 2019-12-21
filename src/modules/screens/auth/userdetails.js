@@ -107,7 +107,7 @@ class UserDetails extends Component {
         return (
 
             <Container style={styles.container}>
-                                   <ImageBackground source={require('../../../../assets/images/MainBg.jpg')} style={{width: '100%', height: '100%'}}>
+                                   <ImageBackground source={require('../../../../assets/images/MainBg.jpg')} style={{width: '100%', height: '100%', flex: 1 }}>
 
                 <Content contentContainerStyle={styles.authBodyContent}>
                     <ScrollView>
@@ -209,15 +209,14 @@ class UserDetails extends Component {
                                     <Text style={styles.ButtonText}>Submit</Text>
                                 </TouchableOpacity>
                                 </View>
-
-                                <Item style={{marginLeft:'auto',marginRight:'auto',borderBottomWidth:0,marginBottom:10,marginTop:10}}>
-              <Text uppercase={false} style={{ color: '#000', fontSize: 15, fontFamily: 'OpenSans',color:'#775DA3' }}>Already Have An Account ?</Text>
-              <TouchableOpacity  onPress={() => this.props.navigation.navigate('login')} style={styles.smallSignUpButton}>
-              <Text uppercase={true} style={{ color: '#000', fontSize: 10, fontFamily: 'OpenSans',fontWeight:'bold',color:'#fff' }}> SignIn</Text>
-              </TouchableOpacity>
-              </Item>
                             </Form>
                             </View>
+                            <Item style={{marginLeft:'auto',marginRight:'auto',borderBottomWidth:0,marginBottom:10,marginTop:10}}>
+              <Text uppercase={false} style={{ color: '#000', fontSize: 14, fontFamily: 'OpenSans',color:'#775DA3' }}>Already Have An Account ?</Text>
+              <TouchableOpacity  onPress={() => this.props.navigation.navigate('login')} style={styles.smallSignUpButton}>
+              <Text uppercase={true} style={{ color: '#000', fontSize: 10, fontFamily: 'OpenSans',fontWeight:'bold',color:'#fff' }}> Sign In</Text>
+              </TouchableOpacity>
+              </Item>
                             </Card>
                         </View>
                     </ScrollView>
