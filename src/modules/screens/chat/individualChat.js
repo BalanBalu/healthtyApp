@@ -429,6 +429,7 @@ const styles = StyleSheet.create({
     col2:{
         justifyContent:'center',
         alignItems:'center' ,
+        marginTop:40
     },
     default:{
         backgroundColor: 'white', 
@@ -437,7 +438,10 @@ const styles = StyleSheet.create({
         borderWidth:0.5,
         width:250, 
         position: 'absolute',
-
+        bottom:0,
+       justifyContent:'center',
+       alignItems:'center',
+       
       
     }
 })
