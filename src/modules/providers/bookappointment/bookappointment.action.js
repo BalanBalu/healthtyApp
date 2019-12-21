@@ -15,10 +15,11 @@ import { store } from '../../../setup/store';
 /*  get All Sponsors data details from Sponsors collection*/
 export const getAllDoctorsActiveSponsorDetails = async (doctorIds) => {
   try {
-    let endPoint = 'sponsor/'+ doctorIds;
+    let endPoint = 'sponsor/'+ doctorIds+'?active_sponsor=true';
     let response = await getService(endPoint);
     let respData = response.data;
-// console.log('respData'+JSON.stringify(respData))
+    
+
     return respData;
   } catch (e) {
 
