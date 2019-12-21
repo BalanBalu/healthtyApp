@@ -5,8 +5,6 @@ import { FlatList } from 'react-native-gesture-handler';
 import Autocomplete from '../../../components/Autocomplete'
 import {bloodDonationFilter,bloodDonationList}from '../../providers/profile/profile.action'
 import { RadioButton, } from 'react-native-paper';
-
-
 class BloodDonerFilters extends Component {
      constructor(props) {
                 super(props)

@@ -118,11 +118,11 @@ getAddress(address){
                   renderItem={({item})=>
                         <Card style={{padding:2,marginTop:5}}>      
                             <Row style={{borderBottomWidth:0,marginTop:5}}>
-                              <Col size={1.5} style={{justifyContent:'center'}}>
-                                 <Image source={require("../../../../assets/images/Blooddrop.png")} style={{height:75,width:75,position:'relative'}}/>
-                                 <Text style={{fontFamily:'OpenSans',fontSize:15,position:'absolute',marginLeft:26,fontWeight:'bold',paddingTop:12,color:'#fff'}}>{this.getBloodGrp(item.blood_group)}</Text>
+                              <Col size={2} style={{justifyContent:'center'}}>
+                                 <Image source={require("../../../../assets/images/Blooddrop.png")} style={{height:80,width:80,position:'relative'}}/>
+                                 <Text style={{fontFamily:'OpenSans',fontSize:15,position:'absolute',marginLeft:28,fontWeight:'bold',paddingTop:20,color:'#fff',width:'100%'}}>{this.getBloodGrp(item.blood_group)}</Text>
                               </Col>
-                              <Col size={7.5} style={{marginTop:15,marginLeft:5}}>
+                              <Col size={7} style={{marginTop:15,marginLeft:10}}>
                                   <Text style={{fontFamily:'OpenSans',fontSize:15}}>{this.getName(item)}</Text>
                               <Row>
                                    <Icon name="ios-pin" style={{color:'#1D96F2',fontSize:15,marginTop:10}}/>
