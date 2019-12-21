@@ -303,7 +303,7 @@ render() {
                     disabled={this.state.typing.length === 0}
                     style={[styles.circle, { marginLeft: 10 }]}>
                     <Icon name="ios-send" 
-                        style={{ color: '#7E49C3', fontSize:30,padding:2,
+                        style={{ color: '#fff', fontSize:30,padding:2,
                         transform: [{ rotate: '45deg'}]}}
                         onPress={this.onSend}
                     />
@@ -368,7 +368,7 @@ const styles = StyleSheet.create({
         width: 35,
         height: 35,
         borderRadius: 35/2,
-        backgroundColor: '#fff',
+        backgroundColor: '#7E49C3',
         alignItems:'center',
         justifyContent:'center'
     },
@@ -417,7 +417,7 @@ const styles = StyleSheet.create({
       
     },
     footerStyle:{
-        backgroundColor: '#7E49C3',
+        backgroundColor: '#fff',
         justifyContent:'center' ,
      
     },
