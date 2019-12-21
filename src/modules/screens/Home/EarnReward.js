@@ -18,29 +18,26 @@ class EarnReward extends Component {
         }
     }
    async componentDidMount(){
-      // const isLoggedIn = await hasLoggedIn(this.props);
-      //   if (!isLoggedIn) {
-      //       this.props.navigation.navigate("login");
-      //       return;
-      //   }
+      const isLoggedIn = await hasLoggedIn(this.props);
+        if (!isLoggedIn) {
+            this.props.navigation.navigate("login");
+            return;
+        }
       this.getReferCode()
     }
     getReferCode = async () => {
       try {
           let fields = "refer_code"
   let result={}
-          // let userId = await AsyncStorage.getItem('userId');
-          // let result = await fetchUserProfile(userId, fields);
+          let userId = await AsyncStorage.getItem('userId');
+          result = await fetchUserProfile(userId, fields);
     
-          if (result) {
-              this.setState({ data: result ,isLoading:true});
+          if (result.refer_code) {
+        
+              this.setState({ data: result});
           }
-          else{
-            
-            result.refer_code='456789'
-            this.setState({ data:result ,isLoading:true})
-          }
-
+          
+          this.setState({ isLoading:true});
 
       }
       catch (e) {
@@ -52,25 +49,29 @@ class EarnReward extends Component {
   }
   onShare = async () => {
     try {
- 
-
+     let  inviteId=' '
+       if(this.state.data.refer_code){
+      inviteId='?referal_code='+this.state.data.refer_code;
+      
+       }
       const result = await Share.share({
         message:
-          'Join me on medflic a doctor  appointment booking app',
-        url:'http://user/medflic/'
-      });
-alert(JSON.stringify(result))
+           'Join me on medflic a doctor  appointment booking app http://medflicinvite.com'+inviteId
+       
+        });
+
       if (result.action === Share.sharedAction) {
         if (result.activityType) {
           // shared with activity type of result.activityType
         } else {
           // shared
         }
-      } else if (result.action === Share.dismissedAction) {
-        // dismissed
-      }
+      } 
+      // else if (result.action === Share.dismissedAction) {
+      //   // dismissed
+      // }
     } catch (error) {
-      alert(error.message);
+      console.log(error.message);
     }
   };
 
