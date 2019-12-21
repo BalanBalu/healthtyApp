@@ -157,10 +157,10 @@ class Notification extends Component {
 
 
 
-                                            <Card style={{ borderRadius: 5, width: 'auto',padding:15 }}>
+                                            <Card style={{ borderRadius: 5, width: 'auto',padding:15,backgroundColor: (item.mark_as_viewed == false) ? '#f5e6ff' : null}}>
                                                 {/* <View style={{ borderWidth: 1, borderColor: '#c9cdcf', marginTop: 10 }} /> */}
                                                 <TouchableOpacity onPress={() => this.updateNavigation(item)} testID='notificationView'>
-                                                    <View style={{ backgroundColor: (item.mark_as_viewed == false) ? '#f5e6ff' : null }}>
+                                                    <View >
 
                                                        
                                                             {dateDiff(new Date(item.created_date), new Date(), 'days') > 30 ?
