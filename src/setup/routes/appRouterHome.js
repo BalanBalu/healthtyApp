@@ -560,12 +560,13 @@ const HomeStack = createStackNavigator({
   export const DragwerLogos = {
     Home: require('../../../assets/images/drawerIcons/Home.png'),
     Profile: require('../../../assets/images/drawerIcons/Profile.png'),
-    "My Appointments": require('../../../assets/images/drawerIcons/MyAppointments.png'),
+    "My Appointments": require('../../../assets/images/drawerIcons/Appointments.png'),
     Pharmacy: require('../../../assets/images/drawerIcons/Pharmacy.png'),
     Orders: require('../../../assets/images/drawerIcons/Orders.png'),
-    Reminder:require('../../../assets/images/drawerIcons/Orders.png'),
-    Chat:require('../../../assets/images/drawerIcons/Orders.png')
-
+    Reminder:require('../../../assets/images/drawerIcons/Reminder.png'),
+    "My Chats":require('../../../assets/images/drawerIcons/Chat.png'),
+    "Chat Service": require('../../../assets/images/drawerIcons/Chat.png'),
+    BloodDonersList: require('../../../assets/images/drawerIcons/Blooddonars.png'),
   }
   export default createAppContainer(createSwitchNavigator(
     {

@@ -141,10 +141,10 @@ export default StyleSheet.create({
     },
     smallSignUpButton: {
         backgroundColor: '#775DA3',
-        marginLeft: 15,
+        marginLeft: 10,
         borderRadius: 20,
         paddingRight:15,
-        paddingLeft:15,
+        paddingLeft:10,
         paddingBottom:5,
         paddingTop:5
     },

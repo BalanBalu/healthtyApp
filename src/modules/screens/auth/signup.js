@@ -78,13 +78,13 @@ class Signup extends Component {
         const { userEmail, password, showPassword, checked, gender, errorMsg } = this.state;
         return (
             <Container style={styles.container}>
-                <ImageBackground source={mainBg} style={{ width: '100%', height: '100%' }}>
+                <ImageBackground source={mainBg} style={{ width: '100%', height: '100%',  flex: 1 }}>
                     <Content contentContainerStyle={styles.authBodyContent}>
                         <View >
                             <Text style={[styles.signUpHead, { color: '#fff' }]}>List Your Practice to Reach millions of Peoples</Text>
                             <Card style={{ borderRadius: 10, padding: 5, marginTop: 20 }}>
                                 <View style={{ marginLeft: 10, marginRight: 10 }}>
-                                    <Text uppercase={true} style={[styles.cardHead, { color: '#775DA3' }]}>Signup</Text>
+                                    <Text uppercase={true} style={[styles.cardHead, { color: '#775DA3' }]}>Sign Up</Text>
                                     <Form>
                                         <Label style={{ marginTop: 20, fontSize: 15, color: '#775DA3', fontWeight: 'bold' }}>Email / Phone</Label>
                                         <Item style={{ borderBottomWidth: 0, marginLeft: 'auto', marginRight: 'auto' }}>
@@ -143,7 +143,7 @@ class Signup extends Component {
                                                 status={checked ? 'checked' : 'unchecked'}
                                                 onPress={() => { this.setState({ checked: !checked }); }}
                                             />
-                                            <Text style={{ marginLeft: 2, color: 'gray', fontFamily: 'OpenSans', fontSize: 13, }}>I Accept the Medflic Terms And Conditions</Text>
+                                            <Text style={{ color: 'gray', fontFamily: 'OpenSans', fontSize: 12, }}>I Accept the Medflic Terms And Conditions</Text>
                                         </Item>
                                         {isLoading ?
                                             <Spinner
@@ -163,7 +163,7 @@ class Signup extends Component {
                                 <Item style={{ marginLeft: 'auto', marginRight: 'auto', borderBottomWidth: 0, marginBottom: 10 }}>
                                     <Text uppercase={false} style={{ color: '#000', fontSize: 15, fontFamily: 'OpenSans', color: '#775DA3' }}>Already Have An Account ?</Text>
                                     <TouchableOpacity onPress={() => this.props.navigation.navigate('login')} style={styles.smallSignUpButton}>
-                                        <Text uppercase={true} style={{ color: '#fff', fontSize: 10, fontFamily: 'OpenSans', fontWeight: 'bold' }}>SignIn</Text>
+                                        <Text uppercase={true} style={{ color: '#fff', fontSize: 10, fontFamily: 'OpenSans', fontWeight: 'bold' }}>Sign In</Text>
                                     </TouchableOpacity>
                                 </Item>
                             </Card>

@@ -51,16 +51,17 @@ class Categories extends Component {
             data={this.state.data}
             extraData={this.state}
             renderItem={({ item, index }) =>
-              <Grid style={{ marginTop: 10, justifyContent: 'center', padding: 5 }}>
+              <Grid style={{ marginTop: 10, justifyContent: 'center', padding: 5, }}>
                
                   {isLoading ? <Spinner color='blue' /> : null}
-                  <TouchableOpacity onPress={() => this.navigateToCategorySearch(item.category_name)}>
+                  <TouchableOpacity onPress={() => this.navigateToCategorySearch(item.category_name)} style={{alignItems:'center',marginBottom:5}}>
 
                     <Col style={{width:'90%',}}>
                       <LinearGradient
                         colors={['#7357A2', '#62BFE4']} style={{
                           flex: 1,
                           borderRadius: 10,
+
                         
                         }}>
                         <Image
@@ -72,9 +73,9 @@ class Categories extends Component {
                       
 
                     </Col>
-                    <Col style={{ padding: 8,
+                    <Col style={{ padding: 2,
     backgroundColor: '#FF9502',
-    borderRadius: 20,marginTop:10,justifyContent:'center',width:'90%',alignItems:'center'}}>
+    borderRadius: 5,marginTop:10,justifyContent:'center',width:'90%',alignItems:'center'}}>
                     
 <Text style={styles.titleText}>{item.category_name}</Text>
 
@@ -137,7 +138,7 @@ const styles = StyleSheet.create({
 
   titleText: {
     fontSize: 12,
-  
+  textAlign:'center',
     color: 'white',
     fontFamily: 'OpenSans',
     

@@ -334,10 +334,12 @@ class doctorSearchList extends Component {
                 getDoctorFaviouteList(doctorIds).catch(res => console.log("Exception on getPatient Wish List" + res)),
                 getAllDoctorsActiveSponsorDetails(doctorIds).catch(res => console.log("Exception on get All Doctors ActiveSponsor Details" + res))
             ]);
-
+            
+          
              console.log('There is No Active Sponsors for given list of Doctors' + JSON.stringify(getActiveSponsorDetails))
             if (getActiveSponsorDetails.data) {
                 let sponsorIdArray = [];
+             
                 getActiveSponsorDetails.data.map((ele) => {
                     sponsorIdArray.push(ele._id)
                 });
@@ -364,12 +366,14 @@ class doctorSearchList extends Component {
     /* Update Active Sponsors count for Doctors */
     updateSponsorViewersCount = async (sponsorIdArray) => {
       try {
+          
         let userId = await AsyncStorage.getItem('userId');
         if (!userId) userId = "NO_USER"
         let sponsorIds = {
             sponsorIds: sponsorIdArray
         }
         let resultData = await updateSponsorViewCount(userId, sponsorIds);
+        // console.log('.....................................................................................................')
         console.log('successfully updated Doctors Sponsors counts ' + JSON.stringify(resultData.updatedResult))
       } catch (ex) {
           return {

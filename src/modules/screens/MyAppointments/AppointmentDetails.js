@@ -4,7 +4,7 @@ import {
   Thumbnail, Body, Icon, Toast, View
 } from 'native-base';
 import { Col, Row, Grid } from 'react-native-easy-grid';
-import { StyleSheet, AsyncStorage } from 'react-native';
+import { StyleSheet, AsyncStorage ,TouchableOpacity} from 'react-native';
 import StarRating from 'react-native-star-rating';
 import moment from 'moment';
 import { NavigationEvents } from 'react-navigation';
@@ -361,18 +361,17 @@ class AppointmentDetails extends Component {
                   <Card style={{ margin: 10, padding: 10, borderRadius: 10 }}>
                     <List>
                       <Text style={styles.titlesText}>Review</Text>
-                      <ListItem>
-                        <Grid>
-                          <Col style={{ width: '50%' }}>
-                            <Button block success style={styles.reviewButton} onPress={() => this.navigateAddReview()} testID='addFeedBack'>
+                      
+                        
+                         <View style={{justifyContent:'center',alignItems:'center'}}>
+                            <TouchableOpacity block success style={styles.reviewButton} onPress={() => this.navigateAddReview()} testID='addFeedBack'>
                               {/* <Icon name='add' /> */}
-                              <Text style={styles.customText}> ADD FEEDBACK </Text>
+                              <Text style={{ color: '#fff', fontSize: 14, fontFamily: 'OpenSans', fontWeight: 'bold',textAlign:'center',marginTop:5 }}> ADD FEEDBACK </Text>
                               <Icon name="create" style={styles.editProfilePencil}></Icon>
 
-                            </Button>
-                          </Col>
-                        </Grid>
-                      </ListItem>
+                            </TouchableOpacity>
+                            </View>
+                     
                     </List>
                   </Card>
                   : (data.appointment_status == 'COMPLETED' || reviewData.length !== 0) ?
@@ -507,19 +506,19 @@ class AppointmentDetails extends Component {
                     <Col style={{ width: '90%', alignItems: 'flex-start' }}>
                       <Text style={styles.titlesText}> Payment Report </Text></Col>
                   </Grid>
-                  <Grid style={{ marginTop: 5 }}>
-                  <View style={{ marginLeft: 'auto', marginRight: 'auto' }}>
-                    <Col style={{ width: 300, }}>
-                      <Button TouchableOpacity onPress={() => { this.props.navigation.navigate('ReportIssue',{issueFor:'Appointment',reportedId:data._id })} } block success  style={styles.reviewButton}  >
-                        <Text style={{ color: 'black', fontSize: 15, fontFamily: 'OpenSans', fontWeight: 'bold' }}>
+                
+                  <View style={{ alignItems:'center',justifyContent:'center',marginTop: 5}}>
+                   
+                      <TouchableOpacity onPress={() => { this.props.navigation.navigate('ReportIssue',{issueFor:'Appointment',reportedId:data._id })} } block success  style={styles.reviewButton}  >
+                        <Text style={{ color: '#fff', fontSize: 14, fontFamily: 'OpenSans', fontWeight: 'bold',textAlign:'center',marginTop:5 }}>
                           Report Issue
                         </Text>
-                      </Button>
+                      </TouchableOpacity>
 
-                    </Col>
+                    
 
                   </View>
-                </Grid>
+              
                 
                 </Card> 
             </Card>
@@ -569,7 +568,7 @@ const styles = StyleSheet.create({
     marginLeft: 'auto',
     marginRight: 'auto',
     fontFamily: 'OpenSans',
-    fontSize: 15,
+    fontSize: 13,
     fontWeight: 'bold'
 
   },
@@ -577,20 +576,21 @@ const styles = StyleSheet.create({
   {
     marginLeft: 'auto',
     marginRight: 'auto',
-    fontSize: 15,
+    fontSize: 13,
     fontFamily: 'OpenSans',
 
   },
   reviewButton: {
     marginTop: 12,
     backgroundColor: '#775DA3',
-    marginLeft: 75,
     borderRadius: 10,
-    width: 170,
     height: 40,
     color: 'white',
-    fontSize: 12,
-    textAlign: 'center'
+    paddingLeft:20,
+    paddingRight:20,
+    paddingBottom:5,
+    paddingTop:5,
+    flexDirection:'row'
   },
   customText:
   {
@@ -666,8 +666,9 @@ const styles = StyleSheet.create({
   },
   editProfilePencil: {
     color: 'white',
-    marginLeft: '1%',
-    fontSize: 25
+    marginLeft: 2,
+    fontSize: 20,
+    marginTop:5
   }
 
 

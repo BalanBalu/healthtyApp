@@ -86,7 +86,7 @@ class Login extends Component {
     const { userEntry, password, showPassword, loginErrorMsg } = this.state;
     return (
       <Container style={styles.container}>
-        <ImageBackground source={mainBg} style={{ width: '100%', height: '100%' }}>
+        <ImageBackground source={mainBg} style={{ width: '100%', height: '100%', flex: 1 }}>
           <Content contentContainerStyle={styles.authBodyContent}>
             <ScrollView>
               <Text uppercase={true}
@@ -150,9 +150,9 @@ class Login extends Component {
                     </View>
 
                     <Item style={{ marginLeft: 'auto', marginRight: 'auto', borderBottomWidth: 0, marginBottom: 10 }}>
-                      <Text uppercase={false} style={{ color: '#000', fontSize: 15, fontFamily: 'OpenSans', color: '#775DA3' }}>Don't Have An Account ?</Text>
+                      <Text uppercase={false} style={{ color: '#000', fontSize: 14, fontFamily: 'OpenSans', color: '#775DA3' }}>Don't Have An Account ?</Text>
                       <TouchableOpacity onPress={() => this.props.navigation.navigate('signup')} style={styles.smallSignUpButton}>
-                        <Text uppercase={true} style={{ color: '#000', fontSize: 10, fontFamily: 'OpenSans', fontWeight: 'bold', color: '#fff' }}> SignUp</Text>
+                        <Text uppercase={true} style={{ color: '#000', fontSize: 10, fontFamily: 'OpenSans', fontWeight: 'bold', color: '#fff' }}> Sign Up</Text>
                       </TouchableOpacity>
                     </Item>
                   </Form>
