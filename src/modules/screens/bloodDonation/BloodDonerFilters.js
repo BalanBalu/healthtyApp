@@ -3,8 +3,7 @@ import { Container, Content, View, Text,Left, Item,Right,Footer,List,ListItem, S
 import {StyleSheet,TextInput,TouchableOpacity,ScrollView} from 'react-native'
 import { FlatList } from 'react-native-gesture-handler';
 import Autocomplete from '../../../components/Autocomplete'
-import {bloodDonationFilter,bloodDonationList}from '../../providers/profile/profile.action';
-import { bloodGroupList } from "../../common";
+import {bloodDonationFilter,bloodDonationList}from '../../providers/profile/profile.action'
 import { RadioButton, } from 'react-native-paper';
 
 
@@ -16,7 +15,8 @@ class BloodDonerFilters extends Component {
                    hidden1: false,
                    selectedOne:'BLOODGROUP',
                    filteredList:[],
-                   isloading:false
+                   isloading:false,
+                   onSelect:''
                 }
         this.filterData=[];
             }
@@ -48,6 +48,8 @@ class BloodDonerFilters extends Component {
                }
       
          bloodGroupList(value){
+           console.log(this.filterData)
+           
          let bloodlist=  this.filterData.findIndex(list => list.type ==="blood_group")
          if(bloodlist!=-1){
           this.filterData.splice(bloodlist,1)
@@ -60,6 +62,7 @@ class BloodDonerFilters extends Component {
            console.log(this.filterData)
            this.setState({onSelect:value})
            this.filterApiCall();
+
          }
         Countrylist(value){
           let countrylist=  this.filterData.findIndex(list => list.type ==="address.address.country")
@@ -156,7 +159,7 @@ class BloodDonerFilters extends Component {
                           <Text style={styles.textHead}>Blood Group</Text>
                           </ListItem>
                           <FlatList 
-                          data={bloodGroupList}
+                          data={this.state.data.bloodGroupList}
                           keyExtractor={(item, index) => index.toString()}
                           renderItem={({item,index})=>
                         

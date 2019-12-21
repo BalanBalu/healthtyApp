@@ -119,14 +119,14 @@ getAddress(address){
                         <Card style={{padding:2,marginTop:5}}>      
                             <Row style={{borderBottomWidth:0,marginTop:5}}>
                               <Col size={1.5} style={{justifyContent:'center'}}>
-                                 <Image source={require("../../../../assets/images/Blooddrop.png")} style={{height:65,width:65,position:'relative'}}/>
-                                 <Text style={{fontFamily:'OpenSans',fontSize:15,position:'absolute',marginLeft:25,fontWeight:'bold',paddingTop:10,color:'#fff'}}>{this.getBloodGrp(item.blood_group)}</Text>
+                                 <Image source={require("../../../../assets/images/Blooddrop.png")} style={{height:75,width:75,position:'relative'}}/>
+                                 <Text style={{fontFamily:'OpenSans',fontSize:15,position:'absolute',marginLeft:26,fontWeight:'bold',paddingTop:12,color:'#fff'}}>{this.getBloodGrp(item.blood_group)}</Text>
                               </Col>
-                              <Col size={7.5} style={{marginTop:10,marginLeft:5}}>
+                              <Col size={7.5} style={{marginTop:15,marginLeft:5}}>
                                   <Text style={{fontFamily:'OpenSans',fontSize:15}}>{this.getName(item)}</Text>
                               <Row>
-                                   <Icon name="ios-pin" style={{color:'#1D96F2',fontSize:15,marginTop:5}}/>
-                                   <Text style={{color:'gray',fontSize:13,fontFamily:'OpenSans',marginTop:5}}> {this.getAddress(item.address)}</Text>
+                                   <Icon name="ios-pin" style={{color:'#1D96F2',fontSize:15,marginTop:10}}/>
+                                   <Text style={{color:'gray',fontSize:13,fontFamily:'OpenSans',marginTop:10}}> {this.getAddress(item.address)}</Text>
                               </Row>
                              </Col>
                              <Col size={1} style={{borderLeftColor:'gray',borderLeftWidth:0.4,paddingLeft:10,justifyContent:'center',marginTop:8,marginBottom:8}}>
