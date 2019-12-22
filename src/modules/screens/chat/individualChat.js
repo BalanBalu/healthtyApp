@@ -236,7 +236,7 @@ render() {
                             <Card style={{borderRadius:10,backgroundColor:'#7E49C3',}}>
                                 <Text style={styles.textstyle}>{item.message}</Text>
                                 <Text style={{fontFamily:'OpenSans',fontSize:8,color:'gray',bottom:0,right:0,textAlign:'right',color:'#fff',padding:5,}}>
-                                    {formatDate(item.created_at, "DD, MMM, YYYY  hh:mm:ss A")}  
+                                    {formatDate(item.created_at, "MMM DD, YYYY  hh:mm:ss A")}  
                                 </Text>
                             </Card>
                                 <Thumbnail square source={ renderProfileImage(userInfo) }/>
@@ -259,7 +259,7 @@ render() {
                                     right:0,
                                     textAlign:'right',
                                     padding:5}}>
-                                        {formatDate(item.created_at, "DD, MMM, YYYY  hh:mm:ss A")}   
+                                        {formatDate(item.created_at, "MMM DD, YYYY  hh:mm:ss A")}   
                                 </Text>
                             </Card>
                         </View>
@@ -299,14 +299,6 @@ render() {
                         underlineColorAndroid="transparent"
                         blurOnSubmit={false}
                         onSubmitEditing={this.onSend}
-                        onKeyPress={(e) => {
-                            if(e.nativeEvent.key == "Enter" ){
-                                setTimeout(() => {
-                                    Keyboard.dismiss();
-                                    this.setState( { typing : ''})
-                                })
-                            }
-                        }}
                         clearButtonMode='while-editing'
                      />
                     
