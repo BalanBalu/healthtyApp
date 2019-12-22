@@ -133,7 +133,8 @@ class IndividualChat extends Component {
         const { conversation_id, typing , userId, messages} = this.state;
        
         if(!typing) return false; 
-        
+    setTimeout(async () => {
+                                
         const messageRequest = {
             "conversation_id": conversation_id,
             "member_id": userId,
@@ -160,6 +161,7 @@ class IndividualChat extends Component {
         if (this._isMounted) {
             axios.post(CHAT_API_URL + '/api/message', messageRequest);
         }
+    })
        /* const previouseMessage =  messages;
         messageRequest.created_at = new Date();
         previouseMessage.unshift(messageRequest);
@@ -299,8 +301,10 @@ render() {
                         onSubmitEditing={this.onSend}
                         onKeyPress={(e) => {
                             if(e.nativeEvent.key == "Enter" ){
-                                Keyboard.dismiss();
-                                this.onSend();
+                                setTimeout(() => {
+                                    Keyboard.dismiss();
+                                    this.setState( { typing : ''})
+                                })
                             }
                         }}
                         clearButtonMode='while-editing'
