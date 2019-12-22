@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import { Container, Content, View, Text,Right, Item,Input,Card,Grid,Left,Icon,Thumbnail, Spinner,Footer, Radio,Row,Col,Form,Button, } from 'native-base';
-import {StyleSheet,TextInput,ImageBackground, FlatList, ScrollView, AsyncStorage, TouchableOpacity,YellowBox } from 'react-native'
+import {StyleSheet,TextInput,ImageBackground, FlatList, ScrollView, AsyncStorage, TouchableOpacity,YellowBox, Keyboard } from 'react-native'
 import {
     renderDoctorImage, renderProfileImage
 } from '../../common';
@@ -119,6 +119,7 @@ class IndividualChat extends Component {
             messages: respBody.data,
             messageRecieveCount: messageRecieveCount + 1
         })
+        console.log(respBody);
         this.scrollToBottom();
         
     }
@@ -130,7 +131,9 @@ class IndividualChat extends Component {
 
     onSend = async() => {
         const { conversation_id, typing , userId, messages} = this.state;
+       
         if(!typing) return false; 
+        
         const messageRequest = {
             "conversation_id": conversation_id,
             "member_id": userId,
@@ -147,11 +150,12 @@ class IndividualChat extends Component {
         const previouseMessage =  this.state.messages;
         const { messageRecieveCount } = this.state;
         previouseMessage.unshift(newMessage);
-        this.setState({
+        await this.setState({
             typing: '',
             messages: previouseMessage,
             messageRecieveCount: messageRecieveCount + 1,
         });
+        console.log('Coming here', this.state.typing);
 
         if (this._isMounted) {
             axios.post(CHAT_API_URL + '/api/message', messageRequest);
@@ -213,10 +217,10 @@ render() {
        <NavigationEvents
               onWillBlur={payload => this.onWillBlur() }
             />
-            {/* <ImageBackground source={require('../../../../assets/images/statebank.png')} style={{flex:1, width: null, height: null,}}> */}
             <FlatList 
                 data={messages}
-               inverted 
+                style={{ marginBottom : this.state.height - 20 }}
+                inverted 
                 extraData={this.state.messageRecieveCount}
                 ref={ref => {
                     this.flatList_Ref = ref;  // <------ ADD Ref for the Flatlist 
@@ -224,46 +228,46 @@ render() {
                 renderItem={( { item }) =>
               <View>   
                 {item.member_id === userId ? 
-                 <Item style={styles.mainItem}>
-                    <Right >
+                <Item style={styles.mainItem}>
+                    <Right>
                         <View style={{flexDirection:'row',alignItems:'center'}}>
-                    <Card style={{borderRadius:10,backgroundColor:'#7E49C3',}}>
-                      
-                            <Text style={styles.textstyle}>{item.message}</Text>
-                           
-                            <Text style={{fontFamily:'OpenSans',fontSize:8,color:'gray',bottom:0,right:0,textAlign:'right',color:'#fff',padding:5,}}>
-                            {formatDate(item.created_date, "YYYY-MM-DD HH:MM")}  
-                            </Text>
-                         
-                           </Card>
-                           <Thumbnail square source={ renderProfileImage(userInfo) }/>
-                           </View>
+                            <Card style={{borderRadius:10,backgroundColor:'#7E49C3',}}>
+                                <Text style={styles.textstyle}>{item.message}</Text>
+                                <Text style={{fontFamily:'OpenSans',fontSize:8,color:'gray',bottom:0,right:0,textAlign:'right',color:'#fff',padding:5,}}>
+                                    {formatDate(item.created_at, "DD, MMM, YYYY  hh:mm:ss A")}  
+                                </Text>
+                            </Card>
+                                <Thumbnail square source={ renderProfileImage(userInfo) }/>
+                        </View>
                     </Right>
                 </Item> 
 
                 :     
                 <Item style={styles.mainItem1}>
-                  <Left>
-                  <View style={{flexDirection:'row',alignItems:'center'}}>
-                  <Thumbnail square source={ renderDoctorImage(doctorInfo) }/>
-                  <Card style={{borderRadius:10,backgroundColor:'#fff',}}>
+                    <Left>
+                        <View style={{flexDirection:'row',alignItems:'center'}}>
+                            <Thumbnail square source={ renderDoctorImage(doctorInfo) }/>
+                            <Card style={{borderRadius:10,backgroundColor:'#fff',}}>
                                 <Text style={styles.textstyle2}>{item.message}</Text>
-                              
-                            <Text style={{fontFamily:'OpenSans',fontSize:8,color:'gray',bottom:0,right:0,textAlign:'right',color:'#fff',padding:5,}}>
-                             {formatDate(item.created_date, "YYYY-MM-DD HH:MM")}   
-                            </Text>
-                        
+                                <Text style={{
+                                    fontFamily:'OpenSans',
+                                    fontSize:8,
+                                    color: 'gray', 
+                                    bottom:0,
+                                    right:0,
+                                    textAlign:'right',
+                                    padding:5}}>
+                                        {formatDate(item.created_at, "DD, MMM, YYYY  hh:mm:ss A")}   
+                                </Text>
                             </Card>
-                           </View>
-                  </Left>   
+                        </View>
+                    </Left>   
                 </Item>
             }
                 </View>
                  
                 } keyExtractor={(item, index) => index.toString()}
             /> 
-
-            {/* </ImageBackground> */}
            
            
              <Footer style={styles.footerStyle}>
@@ -279,53 +283,41 @@ render() {
                 <Col size={7} style={styles.col2}>
              
                 <TextInput
-                       placeholder="Start Conversation..."
-                       multiline={true}
-                       onContentSizeChange={(event) => {
-                           this.setState({ height: event.nativeEvent.contentSize.height })
-                       }}
-                       style={[styles.default, {height: Math.max(35, this.state.height)}]}
-                       value={this.state.typing}
-                       placeholder="Start Conversation..."
-                          multiline={true}
-                          returnKeyType={'done'}
-                          onChangeText={(text) => this.setTyping(text)}
-                          placeholderTextColor="gray"
-                          underlineColorAndroid="transparent"
-                          
-                          blurOnSubmit={false}
-                          onSubmitEditing={() => this.onSend() }
+                        placeholder="Start Conversation..."
+                        multiline={true}
+                        onContentSizeChange={(event) => {
+                           this.setState({ height: Math.min(120, event.nativeEvent.contentSize.height) })
+                        }}
+                        style={[styles.default, { height: Math.max(40, this.state.height) }]}
+                        value={this.state.typing}
+                        placeholder="Start Conversation..."
+                        returnKeyType={'done'}
+                        onChangeText={(text) => this.setTyping(text)}
+                        placeholderTextColor="gray"
+                        underlineColorAndroid="transparent"
+                        blurOnSubmit={false}
+                        onSubmitEditing={this.onSend}
+                        onKeyPress={(e) => {
+                            if(e.nativeEvent.key == "Enter" ){
+                                Keyboard.dismiss();
+                                this.onSend();
+                            }
+                        }}
+                        clearButtonMode='while-editing'
                      />
                     
                      </Col>
                      <Col size={2.5} style={{justifyContent:'center',alignContent:'center'}}>
                      <TouchableOpacity
-                    disabled={this.state.typing.length === 0}
-                    style={[styles.circle, { marginLeft: 10 }]}>
-                    <Icon name="ios-send" 
-                        style={{ color: '#fff', fontSize:30,padding:2,
-                        transform: [{ rotate: '45deg'}]}}
-                        onPress={this.onSend}
-                    />
+                        disabled={this.state.typing.length === 0}
+                        style={[styles.circle, { marginLeft: 10 }]}>
+                       <Icon name="ios-send" 
+                           style={{ color: '#fff', fontSize:30,padding:2,
+                           transform: [{ rotate: '45deg'}]}}
+                           onPress={this.onSend}
+                        />
                 </TouchableOpacity>
                         </Col>            
-                      {/* <Input 
-                          placeholder="Start Conversation..."
-                          style={styles.inputfield}
-                          multiline={true}
-                          value={this.state.typing}
-                          returnKeyType={'done'}
-                          onChangeText={(text) => this.setTyping(text)}
-                          placeholderTextColor="gray"
-                     
-                          
-                          blurOnSubmit={false}
-                          onSubmitEditing={() => this.onSend() }
-                      /> */}
-                
-                  {/* <Col size={1} style={{justifyContent:'center',borderRightRadius:10}}> 
-                        <Icon name="ios-mic" style={{ color: '#7E49C3', fontSize:20,padding:2}} />
-                      </Col> */}
                  
                
                 
@@ -435,12 +427,13 @@ const styles = StyleSheet.create({
         backgroundColor: 'white', 
         borderColor: '#000', 
         borderRadius: 20,
+        padding: 15,
+        maxHeight: 120,
         borderWidth:0.5,
-        width:250, 
+        width: 250, 
         position: 'absolute',
         bottom:0,
-       justifyContent:'center',
-       alignItems:'center',
+        justifyContent: 'center'
        
       
     }
