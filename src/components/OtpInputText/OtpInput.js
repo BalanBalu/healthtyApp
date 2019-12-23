@@ -25,6 +25,7 @@ class OtpInput extends Component {
                     <Item style={{ borderBottomWidth: 2, borderBottomColor: '#9777c7', marginTop: 10, }}>
                         <Input
                             style={[styles.inputRadius, { borderRadius: 10 }]}
+                            maxLength={1}
                             keyboardType="numeric"
                             onChangeText={v => this.focusNext(j, v)}
                             onKeyPress={e => this.focusPrevious(e.nativeEvent.key, j)}
