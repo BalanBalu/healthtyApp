@@ -789,11 +789,11 @@ class doctorSearchList extends Component {
                                                                 </View>
 
                                                             </Col>
-                                                            <Col style={{ width: "20%", marginTop: 20 }}>
+                                                            <Col style={{ width: "25%", marginTop: 20 }}>
                                                                 <Text note style={{ fontFamily: 'OpenSans', fontSize: 12, marginLeft: 5 }}> Favourite</Text>
                                                                 <Text style={{ fontFamily: 'OpenSans', fontSize: 12, marginLeft: 5, fontWeight: 'bold' }}> {favouriteListCountByDoctorIds[item.doctor_id] !== undefined ? favouriteListCountByDoctorIds[item.doctor_id] : ' 0'}</Text>
                                                             </Col>
-                                                            <Col style={{ width: "30%", marginTop: 20 }}>
+                                                            <Col style={{ width: "25%", marginTop: 20 }}>
                                                                 <Text note style={{ fontFamily: 'OpenSans', fontSize: 12, textAlign:'center' }}> Fees</Text>
                                                                 <Text style={{ fontFamily: 'OpenSans', fontSize: 12, fontWeight: 'bold', textAlign:'center',marginLeft:10 }}>{'\u20B9'}{fee} {' '}
                                                                  {fee !== feeWithoutOffer ?  
@@ -812,13 +812,13 @@ class doctorSearchList extends Component {
                                                                 <Icon name='ios-time' style={{ fontSize: 20, marginTop: 12 }} />
 
                                                             </Col>
-                                                            <Col style={{ width: "77%" }}>
+                                                            <Col style={{ width: "80%" }}>
 
                                                                 <Text note style={{ fontFamily: 'OpenSans', marginTop: 15, fontSize: 12, marginRight: 50, fontWeight: 'bold' }}> {this.getDisplayAvailableTime(item.slotData[selectedDatesByDoctorIds[item.doctorIdHostpitalId] || this.state.currentDate], item.slotData)}</Text>
                                                             </Col>
-                                                            <Col style={{ width: "18%" }}>
+                                                            <Col style={{ width: "15%" }}>
                                                                 {!expandedDoctorIdHospitalsToShowSlotsData.includes(item.doctorIdHostpitalId) ?
-                                                                    <TouchableOpacity onPress={() => this.onBookPress(item.doctorIdHostpitalId)} style={{ textAlign: 'center', backgroundColor: 'green', borderColor: '#000', marginTop: 10, borderRadius: 20, height: 30, justifyContent: 'center',  }}>
+                                                                    <TouchableOpacity onPress={() => this.onBookPress(item.doctorIdHostpitalId)} style={{ textAlign: 'center', backgroundColor: 'green', borderColor: '#000', marginTop: 10, borderRadius: 20, height: 30, justifyContent: 'center',paddingLeft:1,paddingRight:1, }}>
                                                                         <Text style={{ textAlign: 'center', color: '#fff', fontSize: 12, fontWeight: 'bold', fontFamily: 'OpenSans' }}>BOOK </Text>
                                                                     </TouchableOpacity> : null}
                                                             </Col>
