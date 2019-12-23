@@ -4,7 +4,7 @@ import { login, logout } from '../../providers/auth/auth.actions';
 import LinearGradient from 'react-native-linear-gradient';
 import { Col, Row, Grid } from 'react-native-easy-grid';
 import { connect } from 'react-redux'
-import { StyleSheet, Image, View, TouchableOpacity, AsyncStorage, ScrollView, FlatList, NativeModules } from 'react-native';
+import { StyleSheet, Image, View, TouchableOpacity, AsyncStorage, ScrollView, FlatList, NativeModules,ImageBackground } from 'react-native';
 
 import { SET_PATIENT_LOCATION_DATA  } from '../../providers/bookappointment/bookappointment.action';
 import { catagries, getSpecialistDataSuggestions } from '../../providers/catagries/catagries.actions';
@@ -342,10 +342,10 @@ callSuggestionService=async(enteredText)=>{
                              </TouchableOpacity>
                            </Col>
                              </Grid>
-                             <View style={{marginLeft:10,marginRight:10}}>
+                             <View style={{marginLeft:10,marginRight:10,marginBottom:20}}>
                              <Row style={{marginTop:5,marginBottom:5}}>
                                  <Left>
-                                 <Text style={{ fontFamily: 'OpenSans', fontSize: 15 ,fontWeight:'bold'}}>Categories</Text>
+                                 <Text style={styles.mainHead}>Categories</Text>
                              </Left>
                              <Right>
                                 <TouchableOpacity onPress={() => this.navigetToCategories()} style={{paddingLeft:20,paddingRight:20,paddingBottom:5,paddingTop:5,borderRadius:5,color:'#fff',flexDirection:'row'}}>
@@ -413,7 +413,44 @@ callSuggestionService=async(enteredText)=>{
                                  /> 
                                   </Row>
                                 </View>
+                                
+                                <Row style={{marginTop:10,marginBottom:5}}>
+                                 <Left>
+                                 <Text style={styles.mainHead}>Refer and Earn!</Text>
+                             </Left>
+                             </Row>
+                             <View>
+                             <Card style={{  borderRadius: 10,}}>
+                                 <TouchableOpacity onPress={()=>this.props.navigation.navigate("EarnReward")}>
+                          <Row style={{ height: 60, width: '100%', overflow: 'hidden', backgroundColor: "#fff",borderRadius:10,}}>
+                           <Col style={{width:'70%'}}>
+                           <ImageBackground 
+                            source={require('../../../../assets/images/bg.png')}
+                              style={{
+                                width: '100%',height:'100%',alignItems:'center',justifyContent:'center'
+                              }}
+                            >
+                                <Text style={styles.innerText}>Invite People And Get Cash Rewards Upto Rs.100 /-</Text>
+                                </ImageBackground>
+                           </Col> 
+                           <Col style={{width:'30%',}}>
+                        
+                          <Image
+                                  source={require('../../../../assets/images/imagebgshape.png')}
+                                  style={{
+                                    width: '130%',height:'130%',marginTop:-10,marginLeft:-18
+                                  }}
+                                />
+                                  
+                             
+                           </Col>
+                          </Row>
+                          </TouchableOpacity>
+                          </Card>
+                             </View>
                             </View>
+
+                            
 {/* 
                     <Card style={{ padding: 10, borderRadius: 10 }}>
 
@@ -725,6 +762,19 @@ const styles = StyleSheet.create({
     color: '#fff',
     fontSize: 30,
     fontWeight: 'bold'
-  }
-
+  },
+ 
+mainHead:{
+    fontFamily: 'OpenSans', 
+    fontSize: 15 ,
+    fontWeight:'bold'
+},
+innerText:{
+    color:'#775DA3',
+    fontSize:14,
+    textAlign:'left',
+    marginLeft:15,
+    lineHeight:20,
+    fontWeight:'500'
+}
 });

@@ -62,6 +62,8 @@ import MyChats from '../../modules/screens/chat/MyChats';
 import AvailableDoctors4Chat from '../../modules/screens/chat/AvailableDoctor';
 import SuccessChatPaymentPage from '../../modules/screens/chat/successMsg';
 import ReportIssue from '../../modules/screens/ReportIssue';
+import EarnReward from '../../modules/screens/Home/EarnReward'
+
 const AuthRoutes = {
   login: {
     screen: login,
@@ -142,6 +144,12 @@ const HomeStack = createStackNavigator({
         height:60
       },
     })
+  },
+  EarnReward: {
+    screen: EarnReward,
+    navigationOptions: {
+      title: 'Refer and Earn'
+    }
   },
   // ================Categories  ===============
   Locations: {
