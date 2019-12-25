@@ -26,10 +26,8 @@ class BloodDonerFilters extends Component {
         this.filterData=[];
             }
           
-        async  componentDidMount(){
-         
+        async  componentDidMount(){  
              let result = await bloodDonationFilter(this.filterData);
-            console.log(JSON.stringify( result ))
                  if(result.success){
                    this.setState({ bloodList:result.data.bloodGroupList,
                     stateList:result.data.stateList,
@@ -39,16 +37,12 @@ class BloodDonerFilters extends Component {
                  
           }
                await this.setState({ isloading: true })
-           
              }
-          //   filterApiCall=async()=>{
-            
-          
-          //  }
-         getBlooddonationfilterList= async(data)=>{
-                 try {
-          
-            const{bloodSelect,
+
+        getBlooddonationfilterList= async(data)=>{
+         try {
+            const{
+            bloodSelect,
             countrySelect,
             stateSelect,
             citySelect,
@@ -59,7 +53,6 @@ class BloodDonerFilters extends Component {
             if(bloodSelect==null){
                      this.setState({ bloodList:result.data.bloodGroupList})
                    }
-            
                 if(countrySelect==null){
                 await this.setState({ countryList:result.data.countryList})
                }
@@ -82,34 +75,27 @@ class BloodDonerFilters extends Component {
                }
                }
 
-          toggle1(create){  
+          selectedData(create){  
                     this.setState({selectedOne: create }) 
                }
       
-       async   clickedBloodDonorAvailableList(value, type){
-        
+       async   clickedBloodDonorAvailableList(value, type){   
      let object ={
          type:type,
          value:value
        }
-      
-         let bloodlist=  this.filterData.findIndex(list => list.type ===type)
-         alert(bloodlist)
+
+         let bloodlist=  this.filterData.findIndex(list => list.type === type)
+        
          if(bloodlist!=-1){
           this.filterData.splice(bloodlist,1)
          }
-      
-    
-        
-         
-         
-           this.filterData.push(object);
-         
-            
+           this.filterData.push(object);  
            if(type=='blood_group'){
             await   this.setState({bloodSelect:value,countrySelect:null,stateSelect:null,districtSelect:null,citySelect:null})
-             bloodlist=  this.filterData.findIndex(list => list.type ==='blood_group')
-       
+             bloodlist=  this.filterData.findIndex(list => list.type === type)
+             
+
          if(bloodlist!=-1){
            this.filterData=[];
           this.filterData.push(object)
@@ -119,7 +105,9 @@ class BloodDonerFilters extends Component {
                  let temp=[]
                 await   this.setState({countrySelect:value,stateSelect:null,districtSelect:null,citySelect:null})
                  bloodlist=  this.filterData.findIndex(list => list.type ==='blood_group')
-                 let countryIndex=  this.filterData.findIndex(list => list.type ==='address.address.country')
+
+
+         let countryIndex=  this.filterData.findIndex(list => list.type ==='address.address.country')
          
          if(bloodlist!=-1){
          temp.push(this.filterData[bloodlist])
@@ -135,9 +123,9 @@ class BloodDonerFilters extends Component {
                     let temp=[]
             
                  bloodlist=  this.filterData.findIndex(list => list.type ==='blood_group')
-                 let countryIndex=  this.filterData.findIndex(list => list.type ==='address.address.country')
-                 let stateIndex=  this.filterData.findIndex(list => list.type ==='address.address.state')
-         
+
+         let countryIndex=  this.filterData.findIndex(list => list.type ==='address.address.country')
+         let stateIndex=  this.filterData.findIndex(list => list.type ==='address.address.state')
          if(bloodlist!=-1){
          temp.push(this.filterData[bloodlist])
          }
@@ -154,54 +142,50 @@ class BloodDonerFilters extends Component {
                         await   this.setState({districtSelect:value,citySelect:null})
                         let temp=[]
             
-                 bloodlist=  this.filterData.findIndex(list => list.type ==='blood_group')
-                 let countryIndex=  this.filterData.findIndex(list => list.type ==='address.address.country')
-                 let stateIndex=  this.filterData.findIndex(list => list.type ==='address.address.state')
-                 let districtIndex=  this.filterData.findIndex(list => list.type ==='address.address.district')
-         
+             bloodlist=  this.filterData.findIndex(list => list.type ==='blood_group')
+         let countryIndex=  this.filterData.findIndex(list => list.type ==='address.address.country')
+         let stateIndex=  this.filterData.findIndex(list => list.type ==='address.address.state')
+         let districtIndex=  this.filterData.findIndex(list => list.type ==='address.address.district')
          if(bloodlist!=-1){
          temp.push(this.filterData[bloodlist])
          }
-         if(countryIndex!=-1){
-          temp.push(this.filterData[countryIndex])
+            if(countryIndex!=-1){
+              temp.push(this.filterData[countryIndex])
          }
-         if(stateIndex!=-1){
-          temp.push(this.filterData[stateIndex])
+            if(stateIndex!=-1){
+             temp.push(this.filterData[stateIndex])
          }
-         if(districtIndex!=-1){
-          temp.push(this.filterData[districtIndex])
+            if(districtIndex!=-1){
+            temp.push(this.filterData[districtIndex])
          }
-         this.filterData=[]
-         this.filterData=temp
-                           }
-                           if(type=='address.address.city'){
-                            await   this.setState({citySelect:value})
-                            let bloodlist=  this.filterData.findIndex(list => list.type ===type)
+           this.filterData=[]
+           this.filterData=temp
+         }
+             if(type=='address.address.city'){
+            await   this.setState({citySelect:value})
+            let bloodlist=  this.filterData.findIndex(list => list.type === 'blood_group')
        
          if(bloodlist!=-1){
           this.filterData.splice(bloodlist,1)
          }
-                               }
-                               await  this.getBlooddonationfilterList(this.filterData);
+         }
+          await  this.getBlooddonationfilterList(this.filterData);
 
          }
     
          async  filteredTotalDataList1() {
-           console.log('comes filtewr data')
               let user =[], doctor=[];
-             console.log(JSON.stringify(this.filterData))
              let result = await bloodDonationList(this.filterData);
-             console.log(result)
              if(result.success){
                user = result.data.userList 
               doctor = result.data.doctorList
                 user.concat(doctor);
-                console.log(user)
+               
                 await this.setState({data:user})
               }
               
                this.props.navigation.navigate('BloodDonersList',{data:user}) 
-                 console.log(result)
+                
               
               
            }
@@ -380,7 +364,7 @@ class BloodDonerFilters extends Component {
                   </ListItem>
                 
                   <ListItem style={selectedOne === 'BLOODGROUP' ? {backgroundColor:'#784EBC',paddingLeft:10} : {paddingLeft:10}}>
-                  <TouchableOpacity  onPress={()=>this.toggle1('BLOODGROUP')}  style={{flexDirection:'row'}}> 
+                  <TouchableOpacity  onPress={()=>this.selectedData('BLOODGROUP')}  style={{flexDirection:'row'}}> 
                     <Left> 
                     <Text style={{fontFamily:'OpenSans',fontSize:14,}}>Blood Group</Text>
                    
@@ -391,7 +375,7 @@ class BloodDonerFilters extends Component {
                     </TouchableOpacity>
                   </ListItem>
                   <ListItem style={selectedOne === 'COUNTRY' ? {backgroundColor:'#784EBC',paddingLeft:10} : {paddingLeft:10}}>
-                  <TouchableOpacity onPress={()=>this.toggle1('COUNTRY')} style={{flexDirection:'row'}}>
+                  <TouchableOpacity onPress={()=>this.selectedData('COUNTRY')} style={{flexDirection:'row'}}>
                   <Left>
                     <Text style={{fontFamily:'OpenSans',fontSize:14}}>Country</Text>
                     </Left>
@@ -401,7 +385,7 @@ class BloodDonerFilters extends Component {
                     </TouchableOpacity>
                   </ListItem>
                   <ListItem style={selectedOne === 'STATE' ? {backgroundColor:'#784EBC',paddingLeft:10} : {paddingLeft:10}}>
-                  <TouchableOpacity onPress={()=>this.toggle1('STATE' )} style={{flexDirection:'row'}}>
+                  <TouchableOpacity onPress={()=>this.selectedData('STATE' )} style={{flexDirection:'row'}}>
                     <Left>
                     <Text style={{fontFamily:'OpenSans',fontSize:14}}>State</Text>
                     </Left>
@@ -411,7 +395,7 @@ class BloodDonerFilters extends Component {
                     </TouchableOpacity>
                   </ListItem>
                   <ListItem style={selectedOne === 'DISTRICT' ? {backgroundColor:'#784EBC',paddingLeft:10} : {paddingLeft:10}}>
-                  <TouchableOpacity onPress={()=>this.toggle1('DISTRICT' )} style={{flexDirection:'row'}}>
+                  <TouchableOpacity onPress={()=>this.selectedData('DISTRICT' )} style={{flexDirection:'row'}}>
                  <Left>
                     <Text style={{fontFamily:'OpenSans',fontSize:14,}}>District</Text>
                     </Left>
@@ -421,7 +405,7 @@ class BloodDonerFilters extends Component {
                     </TouchableOpacity>
                   </ListItem>
                   <ListItem style={selectedOne === 'CITY' ? {backgroundColor:'#784EBC',paddingLeft:10} : {paddingLeft:10}}>
-                  <TouchableOpacity onPress={()=>this.toggle1('CITY')} style={{flexDirection:'row'}}>
+                  <TouchableOpacity onPress={()=>this.selectedData('CITY')} style={{flexDirection:'row'}}>
                   <Left>
                     <Text style={{fontFamily:'OpenSans',fontSize:14,}}>City</Text>
                     </Left>

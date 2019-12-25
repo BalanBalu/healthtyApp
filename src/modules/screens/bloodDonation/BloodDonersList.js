@@ -21,12 +21,10 @@ class BloodDonersList extends Component {
     try {
       let data =[]
      let result = await bloodDonationList(data);
-     console.log(result)
      if(result.success){
       let user = result.data.userList 
       let doctor = result.data.doctorList
         user.concat(doctor);
-        console.log(user)
         await this.setState({data:user})
       }
     await this.setState({ isloading: true })
@@ -68,26 +66,25 @@ getAddress(address){
   }
   
   bindbloodListValues(){
-    console.log('come bind')
     const { navigation } = this.props;
    let filterData = navigation.getParam('data');
    this.setState({data:filterData})
-   console.log(filterData)
+ 
    
   }
-  backNavigation = async (navigationData) => {
-    
+   backNavigation = async (navigationData) => {
     try {
-      console.log('backnavigation active')
+     
         await this.setState({ isLoading: false })
         if (navigationData.action) {
             // if (navigationData.action.type === 'Navigation/BACK') {
-                console.log('haii')
+            
               await this.bindbloodListValues();
                
             // }
         }
         await this.setState({ isLoading: true })
+        await this.getBlooddonationDetail();
     } catch (e) {
         console.log(e)
     }
@@ -98,6 +95,9 @@ getAddress(address){
         return (
             <Container>
             <Content style={{padding:8}}>
+                 {/* <NavigationEvents
+            onWillFocus={payload => { this.componentDidMount(payload) }}
+          /> */}
             {isloading == false ? 
              <Spinner 
              color="blue"
@@ -111,7 +111,9 @@ getAddress(address){
               :
                 <View style={{marginBottom:50}}>
                    <NavigationEvents
-                                    onWillFocus={payload => { this.backNavigation(payload) }}
+                    
+                                    onWillFocus={payload => { this.backNavigation(payload)}}
+
                                 />
                   <FlatList
                   data={this.state.data}
