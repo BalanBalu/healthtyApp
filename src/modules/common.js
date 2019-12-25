@@ -270,4 +270,9 @@ export function validateName(text) {
     else return true;
 }
 
-  
+export function validateMobileNumber(number) {
+       var regPattern = '^([0|+[0-9]{1,5})?([7-9][0-9]{9})$';
+       var regPatternForMob = new RegExp(regPattern);
+        if (regPatternForMob.test(number)) return true;
+         else return false;
+}

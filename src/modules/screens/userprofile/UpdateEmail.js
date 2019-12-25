@@ -17,7 +17,7 @@ class UpdateEmail extends Component {
             secondary_email: null,
             primary_email: null,
             isLoading: false,
-            existingEmail:null
+            existingEmail: null
         }
     }
 
@@ -35,7 +35,8 @@ class UpdateEmail extends Component {
         if (userData.secondary_email) {
             this.setState({
                 secondary_email: userData.secondary_email,
-                 existingEmail: userData.secondary_email })
+                existingEmail: userData.secondary_email
+            })
         }
 
     }
@@ -46,44 +47,47 @@ class UpdateEmail extends Component {
         try {
             this.setState({ isLoading: true });
             let userId = await AsyncStorage.getItem('userId');
-            if (existingEmail != secondary_email && primary_email != secondary_email) {
-                let data = {
-                    secondary_email: secondary_email     
-                };
-                if(validateEmailAddress(this.state.secondary_email) == true){
-                let response = await userFiledsUpdate(userId, data);
-                if (response.success) {
-                    Toast.show({
-                        text: 'Your Email Id is updated Successfully',
-                        type: "success",
-                        duration: 3000,
+            let data = {
+                secondary_email: secondary_email
+            };
 
-                    })
-                    this.props.navigation.navigate('Profile');
-                } else {
-                    Toast.show({
-                        text: 'The entered email is invalid',
-                        type: "danger",
-                        duration: 3000
-                    })
+            if (validateEmailAddress(this.state.secondary_email) == true) {
+                if (existingEmail != secondary_email && primary_email != secondary_email) {
 
+                    let response = await userFiledsUpdate(userId, data);
+                    if (response.success) {
+                        Toast.show({
+                            text: 'Your email id is updated successfully',
+                            type: "success",
+                            duration: 3000,
+
+                        })
+                        this.props.navigation.navigate('Profile');
+                    } else {
+                        Toast.show({
+                            text: 'The entered email is invalid',
+                            type: "danger",
+                            duration: 3000
+                        })
+
+                    }
+                }
+                else {
+                    Toast.show({
+                        text: 'Entered Email Address is already exist.Enter the new Email Id',
+                        type: "warning",
+                        duration: 4000
+                    })
                 }
             }
             else {
                 Toast.show({
-                    text: 'Please Enter the valid Email Address',
+                    text: 'Kindly enter valid mail id',
                     type: "danger",
                     duration: 4000
                 })
             }
-        }
-            else {
-                Toast.show({
-                    text:'Entered Email Address is already exist.Enter the new Email Id',
-                    type: "warning",
-                    duration: 4000
-                })
-            }
+
 
         } catch (e) {
             console.log(e);
@@ -100,14 +104,15 @@ class UpdateEmail extends Component {
             <Container style={styles.container}>
                 <Content contentContainerStyle={styles.bodyContent}>
                     <ScrollView>
-                      
-                            <View>
+
+                        <View>
                             {this.state.primary_email != null ? <Text style={styles.headerText}>Primary Email</Text> : null}
                             <Card style={styles.cardEmail}>
                                 {this.state.primary_email != null ?
                                     <Item style={{ borderBottomWidth: 0 }}>
-                                        <Icon name='mail' style={styles.centeredIcons}></Icon>
-
+                                        <Left>
+                                            <Icon name='mail' style={styles.centeredIcons}></Icon>
+                                        </Left>
                                         <Text style={styles.customText}>{this.state.primary_email}</Text>
                                         <Right>
                                             <Icon style={{ color: 'gray', fontSize: 25 }} name='ios-lock' />
@@ -118,7 +123,7 @@ class UpdateEmail extends Component {
 
                         </View>
                         <View style={{ marginTop: 30 }}>
-                            <Text style={ styles.headerText}>Secondary Email</Text>
+                            <Text style={styles.headerText}>Secondary Email</Text>
 
                             <Card style={styles.cardEmail}>
 
@@ -153,7 +158,7 @@ class UpdateEmail extends Component {
                                 </Item>
                             </Card>
                         </View>
-                       
+
                     </ScrollView>
                 </Content >
             </Container>

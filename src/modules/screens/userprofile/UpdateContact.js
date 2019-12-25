@@ -5,7 +5,7 @@ import { AsyncStorage, ScrollView } from 'react-native';
 import { connect } from 'react-redux'
 import styles from './style.js';
 import Spinner from '../../../components/Spinner';
-
+import { validateMobileNumber } from '../../common'
 
 
 class UpdateContact extends Component {
@@ -46,36 +46,62 @@ class UpdateContact extends Component {
         const { secondary_mobile_no, userData, primary_mobile_no } = this.state
         try {
             this.setState({ isLoading: true })
-            if (primary_mobile_no != undefined && primary_mobile_no != secondary_mobile_no) {
+            if (primary_mobile_no != '') {
+                if (secondary_mobile_no != '') {
 
-                let userId = await AsyncStorage.getItem('userId');
-                let data = {
-                    mobile_no: primary_mobile_no,
-                    secondary_mobile: secondary_mobile_no
-                };
-                    let response = await userFiledsUpdate(userId, data);
-                    if (response.success) {
-                        Toast.show({
-                            text: "Contacts has been saved",
-                            type: "success",
-                            duration: 3000,
-                        })
-                        this.props.navigation.navigate('Profile');
+                    if (primary_mobile_no != secondary_mobile_no) {
+
+                        let userId = await AsyncStorage.getItem('userId');
+                        let data = {
+                            mobile_no: primary_mobile_no,
+                            secondary_mobile: secondary_mobile_no
+                        };
+                        if (validateMobileNumber(primary_mobile_no || secondary_mobile_no) == true) {
+
+                            let response = await userFiledsUpdate(userId, data);
+                            if (response.success) {
+                                Toast.show({
+                                    text: "Contacts has been saved",
+                                    type: "success",
+                                    duration: 3000,
+                                })
+                                this.props.navigation.navigate('Profile');
+                            } else {
+                                Toast.show({
+                                    text: response.message,
+                                    type: "danger",
+                                    duration: 3000
+                                })
+                            }
+                        } else {
+                            Toast.show({
+                                text: 'Contact field must contain number',
+                                type: "danger",
+                                duration: 3000
+                            })
+                        }
                     } else {
                         Toast.show({
-                            text: response.message,
+                            text: 'User details already exists',
                             type: "danger",
                             duration: 3000
                         })
                     }
-                } else {
+                }
+                else {
                     Toast.show({
-                        text: 'Cannot have the same mobile no. Kindly enter a new number',
+                        text: 'Kindly enter your secondary contact number',
                         type: "danger",
                         duration: 3000
                     })
                 }
-            
+            } else {
+                Toast.show({
+                    text: 'Kindly enter your primary contact',
+                    type: "danger",
+                    duration: 3000
+                })
+            }
         }
 
         catch (e) {
@@ -87,25 +113,6 @@ class UpdateContact extends Component {
     }
 
 
-    validateMobile_No(number, type) {
-        const regex = new RegExp('^[0-9]+$')  //Support only numbers
-        if (type === 'Primary') {
-            this.setState({ primary_mobile_no: number })
-        }
-        else {
-            this.setState({ secondary_mobile_no: number })
-        }
-        if (regex.test(number) === false) {
-            if (number != '') {
-                Toast.show({
-                    text: 'The entered number is invalid',
-                    type: "danger",
-                    duration: 3000
-                });
-            }
-
-        }
-    }
 
     render() {
         return (
@@ -127,7 +134,7 @@ class UpdateContact extends Component {
                                         <Row>
                                             <Icon name="call" style={styles.centeredIcons}></Icon>
                                             <Input placeholder="Edit Your Number" style={styles.transparentLabel} keyboardType="numeric"
-                                                onChangeText={number => this.validateMobile_No(number, 'Primary')}
+                                                onChangeText={number => this.setState({ primary_mobile_no: number })}
                                                 value={String(this.state.primary_mobile_no)}
                                                 testID='updatePrimaryContact' />
                                         </Row>
@@ -141,7 +148,7 @@ class UpdateContact extends Component {
                                         <Row>
                                             <Icon name='call' style={styles.centeredIcons}></Icon>
                                             <Input placeholder="Edit Your Number" style={styles.transparentLabel} keyboardType="numeric"
-                                                onChangeText={number => this.validateMobile_No(number, 'Secondary')}
+                                                onChangeText={number => this.setState({ secondary_mobile_no: number })}
                                                 value={String(this.state.secondary_mobile_no)}
                                                 testID='updateContact' />
                                         </Row>
