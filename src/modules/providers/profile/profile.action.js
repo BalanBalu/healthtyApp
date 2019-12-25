@@ -123,10 +123,7 @@ export async function bloodDonationList(data) {
   try {
     let endPoint = '/bloodDonors';  
     let response = await postService(endPoint, data); 
-    console.log('response'+response);
     let respData = response.data;
-    console.log('respData'+JSON.stringify(respData));
-
     return respData;   
   }
    catch (e) {

@@ -5,118 +5,115 @@ import { NavigationEvents } from 'react-navigation';
 import { FlatList } from 'react-native-gesture-handler';
 import {bloodDonationList }from '../../providers/profile/profile.action';
 class BloodDonersList extends Component {
-    constructor(props) {
-        super(props)
-        this.state = {
-          data:[],
-          isloading:false
-        }
-        
-    }
-    componentDidMount(){
-      this.getBlooddonationDetail();
-     
-    }
-   getBlooddonationDetail= async()=>{
-    try {
-      let data =[]
-     let result = await bloodDonationList(data);
-     if(result.success){
-      let user = result.data.userList 
-      let doctor = result.data.doctorList
-        user.concat(doctor);
-        await this.setState({data:user})
-      }
-    await this.setState({ isloading: true })
-} catch (e) {
-    console.log(e)
-}
-}
-getAddress(address){
-  if(address != undefined){
-    return  `${address.address.city || ''} , ${address.address.district || ''}`
-  }else {
-    return null
-  }
-  }
-  getName(name){
-    if(name.first_name != undefined || name.last_name != undefined ){
-      return  `${name.first_name || ''} ${name.last_name || ''}`
-    }
-    else
-    {
-      return 'unKnown'
-    }
-  }
-  getPhone(mobile_no){
-    if(mobile_no != undefined) {
-      return mobile_no 
-    } else
-    {
-      return 'No Number'
-    }
-  }
-  getBloodGrp(blood_group){
-    if(blood_group != undefined) {
-      return blood_group 
-    } else
-    {
-      return 'N/A'
+  constructor(props) {
+    super(props)
+    this.state = {
+      data: [],
+      isloading: false
     }
   }
   
-  bindbloodListValues(){
-    const { navigation } = this.props;
-   let filterData = navigation.getParam('data');
-   this.setState({data:filterData})
- 
-   
+  componentDidMount() {
+    this.getBlooddonationDetail();
   }
-   backNavigation = async (navigationData) => {
+  getBlooddonationDetail = async () => {
     try {
-     
-        await this.setState({ isLoading: false })
-        if (navigationData.action) {
-            // if (navigationData.action.type === 'Navigation/BACK') {
-            
-              await this.bindbloodListValues();
-               
-            // }
-        }
-        await this.setState({ isLoading: true })
-        await this.getBlooddonationDetail();
+      this.setState({
+        isloading: true
+      })
+      let data = []
+      let result = await bloodDonationList(data);
+      if (result.success) {
+        let user = result.data.userList
+        let doctor = result.data.doctorList
+        user.concat(doctor);
+        await this.setState({ data: user })
+      }
     } catch (e) {
-        console.log(e)
+      console.log(e)
+    } finally {
+      this.setState({ isloading: false })
+    }
+  }
+  getAddress(address) {
+    if (address != undefined) {
+      return `${address.address.city || ''} , ${address.address.district || ''}`
+    } else {
+      return null
+    }
+  }
+  getName(name) {
+    if (name.first_name != undefined || name.last_name != undefined) {
+      return `${name.first_name || ''} ${name.last_name || ''}`
+    } else {
+      return 'unKnown'
+    }
+  }
+  getPhone(mobile_no) {
+    if (mobile_no != undefined) {
+      return mobile_no
+    } else {
+      return 'No Number'
+    }
+  }
+  getBloodGrp(blood_group) {
+    if (blood_group != undefined) {
+      return blood_group
+    } else {
+      return 'N/A'
+    }
+  }
+
+  bindbloodListValues() {
+    const {
+      navigation
+    } = this.props;
+    let filterData = navigation.getParam('data');
+    this.setState({
+      data: filterData
+    })
+  }
+  backNavigation = async (navigationData) => {
+    try {
+      if (navigationData.action) {
+        // if (navigationData.action.type === 'Navigation/BACK') {
+
+        await this.bindbloodListValues();
+
+        // }
+      }
+      await this.getBlooddonationDetail();
+    } catch (e) {
+      console.log(e)
     }
 
-}
+  }
     render() {
-      const {isloading,data} = this.state;
+      const { isloading, data} = this.state;
         return (
             <Container>
             <Content style={{padding:8}}>
-                 {/* <NavigationEvents
-            onWillFocus={payload => { this.componentDidMount(payload) }}
-          /> */}
-            {isloading == false ? 
-             <Spinner 
-             color="blue"
-             visible={true}
-             size={"large"}
-             overlayColor="none"
-             cancelable={false}/>: data === undefined ? null : data.length == 0 ?
-              <View style={{alignItems:'center',justifyContent:'center',height:550}}>
-                 <Text> No Blood Donors</Text>
-              </View>
+           
+            {isloading == true ? 
+              <Spinner 
+                color="blue"
+                visible={true}
+                size={"large"}
+                overlayColor="none"
+                cancelable={false}/> : null } 
+             
+             { data.length == 0 ?
+                <View style={{alignItems:'center',justifyContent:'center',height:550}}>
+                  <Text> No Blood Donors</Text>
+                </View>
               :
                 <View style={{marginBottom:50}}>
                    <NavigationEvents
-                    
-                                    onWillFocus={payload => { this.backNavigation(payload)}}
-
-                                />
+                      onWillFocus={payload => { this.backNavigation(payload)}}/>
+                  
                   <FlatList
                   data={this.state.data}
+                  keyExtractor={(item, index) => index.toString()}
                   renderItem={({item})=>
                         <Card style={{padding:2,marginTop:5}}>      
                             <Row style={{borderBottomWidth:0,marginTop:5}}>
