@@ -5,37 +5,78 @@ import { FlatList } from 'react-native-gesture-handler';
 import Autocomplete from '../../../components/Autocomplete'
 import {bloodDonationFilter,bloodDonationList}from '../../providers/profile/profile.action'
 import { RadioButton, } from 'react-native-paper';
+import { object } from 'prop-types';
 class BloodDonerFilters extends Component {
      constructor(props) {
                 super(props)
                 this.state = {
-                   data:[],
-                   hidden1: false,
+                    bloodList:[],
+                    stateList:[],
+                    countryList:[],
+                    cityList:[],
+                    districtList:[],
                    selectedOne:'BLOODGROUP',
-                   filteredList:[],
                    isloading:false,
-                   onSelect:''
+                   bloodSelect:null,
+                   countrySelect:null,
+                   stateSelect:null,
+                   citySelect:null,
+                   districtSelect:null
                 }
         this.filterData=[];
             }
           
-          componentDidMount(){
-             this. getBlooddonationfilterList(this.filterData);
+        async  componentDidMount(){
+         
+             let result = await bloodDonationFilter(this.filterData);
+            console.log(JSON.stringify( result ))
+                 if(result.success){
+                   this.setState({ bloodList:result.data.bloodGroupList,
+                    stateList:result.data.stateList,
+                   countryList:result.data.countryList,
+                   cityList:result.data.cityList,
+                    districtList:result.data.districtList})
+                 
+          }
+               await this.setState({ isloading: true })
+           
              }
-            filterApiCall=async()=>{
-              this. getBlooddonationfilterList(this.filterData);
+          //   filterApiCall=async()=>{
+            
           
-           }
+          //  }
          getBlooddonationfilterList= async(data)=>{
                  try {
-          //let data=[]
+          
+            const{bloodSelect,
+            countrySelect,
+            stateSelect,
+            citySelect,
+            districtSelect}=this.state
              let result = await bloodDonationFilter(data);
                if(result.success){
-                 this.setState({data:result.data})
-                  console.log(result)
-                
+       
+            if(bloodSelect==null){
+                     this.setState({ bloodList:result.data.bloodGroupList})
+                   }
+            
+                if(countrySelect==null){
+                await this.setState({ countryList:result.data.countryList})
                }
+          if(stateSelect==null){
+                  await this.setState({ stateList:result.data.stateList})
+                 }
+            if(citySelect==null){
+                     await this.setState({  cityList:result.data.cityList})
+                   }
+              if(districtSelect==null){
+                     await  this.setState({ districtList:result.data.districtList})
+                     }
+        
+               }
+               
              await this.setState({ isloading: true })
+             return true
                } catch (e) {
                  console.log(e)
                }
@@ -45,80 +86,106 @@ class BloodDonerFilters extends Component {
                     this.setState({selectedOne: create }) 
                }
       
-         bloodGroupList(value){
-           console.log(this.filterData)
-           
-         let bloodlist=  this.filterData.findIndex(list => list.type ==="blood_group")
+       async   clickedBloodDonorAvailableList(value, type){
+        
+     let object ={
+         type:type,
+         value:value
+       }
+      
+         let bloodlist=  this.filterData.findIndex(list => list.type ===type)
+         alert(bloodlist)
          if(bloodlist!=-1){
           this.filterData.splice(bloodlist,1)
          }
-           const result= {
-             type: "blood_group",
-             value:value
-           }
-           this.filterData.push(result);
-           console.log(this.filterData)
-           this.setState({onSelect:value})
-           this.filterApiCall();
+      
+    
+        
+         
+         
+           this.filterData.push(object);
+         
+            
+           if(type=='blood_group'){
+            await   this.setState({bloodSelect:value,countrySelect:null,stateSelect:null,districtSelect:null,citySelect:null})
+             bloodlist=  this.filterData.findIndex(list => list.type ==='blood_group')
+       
+         if(bloodlist!=-1){
+           this.filterData=[];
+          this.filterData.push(object)
+         }
+               }
+               if(type=='address.address.country'){
+                 let temp=[]
+                await   this.setState({countrySelect:value,stateSelect:null,districtSelect:null,citySelect:null})
+                 bloodlist=  this.filterData.findIndex(list => list.type ==='blood_group')
+                 let countryIndex=  this.filterData.findIndex(list => list.type ==='address.address.country')
+         
+         if(bloodlist!=-1){
+         temp.push(this.filterData[bloodlist])
+         }
+         if(countryIndex!=-1){
+          temp.push(this.filterData[countryIndex])
+         }
+         this.filterData=[]
+         this.filterData=temp
+                   }
+                   if(type=='address.address.state'){
+                    await   this.setState({stateSelect:value,districtSelect:null,citySelect:null})
+                    let temp=[]
+            
+                 bloodlist=  this.filterData.findIndex(list => list.type ==='blood_group')
+                 let countryIndex=  this.filterData.findIndex(list => list.type ==='address.address.country')
+                 let stateIndex=  this.filterData.findIndex(list => list.type ==='address.address.state')
+         
+         if(bloodlist!=-1){
+         temp.push(this.filterData[bloodlist])
+         }
+         if(countryIndex!=-1){
+          temp.push(this.filterData[countryIndex])
+         }
+         if(stateIndex!=-1){
+          temp.push(this.filterData[stateIndex])
+         }
+         this.filterData=[]
+         this.filterData=temp
+                       }
+                       if(type=='address.address.district'){
+                        await   this.setState({districtSelect:value,citySelect:null})
+                        let temp=[]
+            
+                 bloodlist=  this.filterData.findIndex(list => list.type ==='blood_group')
+                 let countryIndex=  this.filterData.findIndex(list => list.type ==='address.address.country')
+                 let stateIndex=  this.filterData.findIndex(list => list.type ==='address.address.state')
+                 let districtIndex=  this.filterData.findIndex(list => list.type ==='address.address.district')
+         
+         if(bloodlist!=-1){
+         temp.push(this.filterData[bloodlist])
+         }
+         if(countryIndex!=-1){
+          temp.push(this.filterData[countryIndex])
+         }
+         if(stateIndex!=-1){
+          temp.push(this.filterData[stateIndex])
+         }
+         if(districtIndex!=-1){
+          temp.push(this.filterData[districtIndex])
+         }
+         this.filterData=[]
+         this.filterData=temp
+                           }
+                           if(type=='address.address.city'){
+                            await   this.setState({citySelect:value})
+                            let bloodlist=  this.filterData.findIndex(list => list.type ===type)
+       
+         if(bloodlist!=-1){
+          this.filterData.splice(bloodlist,1)
+         }
+                               }
+                               await  this.getBlooddonationfilterList(this.filterData);
 
          }
-        Countrylist(value){
-          let countrylist=  this.filterData.findIndex(list => list.type ==="address.address.country")
-          if(countrylist!=-1){
-           this.filterData.splice(countrylist,1)
-          }
-          const result ={
-            type:'address.address.country',
-            value:value
-          }
-          this.filterData.push(result);
-          console.log(this.filterData)
-          this.setState({onSelect:value})
-          this.filterApiCall();
-              }
-        Statelist(value){
-          let statelist=  this.filterData.findIndex(list => list.type ==="address.address.state")
-          if(statelist!=-1){
-           this.filterData.splice(statelist,1)
-          }
-          const result ={
-            type:'address.address.state',
-            value:value
-          }
-          this.filterData.push(result);
-          console.log(this.filterData)
-          this.setState({onSelect:value})
-          this.filterApiCall();
-              }
-        Districtlist(value){
-          let dislist=  this.filterData.findIndex(list => list.type ==="address.address.district")
-          if(dislist!=-1){
-           this.filterData.splice(dislist,1)
-          }
-          const result ={
-            type:'address.address.district',
-            value:value
-          }
-          this.filterData.push(result);
-          console.log(this.filterData)
-          this.setState({onSelect:value})
-          this.filterApiCall();
-              }
-      Citylist(value){
-        let cityList=  this.filterData.findIndex(list => list.type ==="address.address.city")
-        if(cityList!=-1){
-         this.filterData.splice(cityList,1)
-        }
-        const result ={
-          type:'address.address.city',
-          value:value
-        }
-        this.filterData.push(result);
-        console.log(this.filterData)
-        this.setState({onSelect:value})
-        this.filterApiCall();
-            }
-
+    
          async  filteredTotalDataList1() {
            console.log('comes filtewr data')
               let user =[], doctor=[];
@@ -157,21 +224,21 @@ class BloodDonerFilters extends Component {
                           <Text style={styles.textHead}>Blood Group</Text>
                           </ListItem>
                           <FlatList 
-                          data={this.state.data.bloodGroupList}
+                          data={this.state.bloodList}
                           keyExtractor={(item, index) => index.toString()}
                           renderItem={({item,index})=>
                         
                           <ListItem >
                               <TouchableOpacity 
-                       onPress={()=>this.bloodGroupList(item)}
+                       onPress={()=>this.clickedBloodDonorAvailableList(item,'blood_group')}
                           style={{flexDirection:'row'}}
                           >
                            <Left>
                              <Text style={styles.subText}>{item}</Text>
                            </Left>
                            <Right>
-                           <RadioButton.Group   onValueChange={onSelect => this.bloodGroupList(onSelect)}
-                           value={this.state.onSelect}
+                           <RadioButton.Group   onValueChange={value => this.clickedBloodDonorAvailableList(value,'blood_group')}
+                           value={this.state.bloodSelect}
                            > 
                                 <RadioButton value={item}/>
                               </RadioButton.Group>
@@ -189,20 +256,20 @@ class BloodDonerFilters extends Component {
                           <Text style={styles.textHead}>Country</Text>
                           </ListItem>
                            <FlatList
-                               data={this.state.data.countryList}
+                               data={this.state.countryList}
                                keyExtractor={(item, index) => index.toString()}
                                renderItem={({item})=>
                            <ListItem >
                                <TouchableOpacity 
-                       onPress={()=>this.Countrylist(item)}
+                       onPress={()=>this.clickedBloodDonorAvailableList(item,'address.address.country')}
                           style={{flexDirection:'row'}}
                           >
                            <Left>
                              <Text style={styles.subText}>{item}</Text>
                            </Left>
                            <Right>
-                           <RadioButton.Group  onValueChange={value => this.Countrylist(value)}
-                           value={this.state.onSelect}> 
+                           <RadioButton.Group  onValueChange={value => this.clickedBloodDonorAvailableList(value,'address.address.country')}
+                           value={this.state.countrySelect}> 
                                 <RadioButton value={item}/>
                               </RadioButton.Group>
                            </Right>
@@ -218,20 +285,20 @@ class BloodDonerFilters extends Component {
                           <Text style={styles.textHead}>State</Text>
                           </ListItem>
                             <FlatList
-                               data={this.state.data.stateList}
+                               data={this.state.stateList}
                                keyExtractor={(item, index) => index.toString()}
                                renderItem={({item})=>
                            <ListItem >
                               <TouchableOpacity 
-                       onPress={()=>this.Statelist(item)}
+                       onPress={()=>this.clickedBloodDonorAvailableList(item,'address.address.state')}
                           style={{flexDirection:'row'}}
                           >
                            <Left>
                              <Text style={styles.subText}>{item}</Text>
                            </Left>
                            <Right>
-                           <RadioButton.Group   onValueChange={value => this.Statelist(value)}
-                           value={this.state.onSelect}> 
+                           <RadioButton.Group   onValueChange={value => this.clickedBloodDonorAvailableList(value,'address.address.state')}
+                           value={this.state.stateSelect}> 
                                 <RadioButton value={item}/>
                               </RadioButton.Group>
                            </Right>
@@ -248,20 +315,20 @@ class BloodDonerFilters extends Component {
                           <Text style={styles.textHead}>District</Text>
                           </ListItem>
                           <FlatList 
-                          data={this.state.data.districtList}
+                          data={this.state.districtList}
                           keyExtractor={(item, index) => index.toString()}
                           renderItem={({item})=>
                           <ListItem >
                              <TouchableOpacity 
-                       onPress={()=>this.Districtlist(item)}
+                       onPress={()=>this.clickedBloodDonorAvailableList(item,'address.address.district')}
                           style={{flexDirection:'row'}}
                           >
                            <Left>
                              <Text style={styles.subText}>{item}</Text>
                            </Left>
                            <Right>
-                           <RadioButton.Group   onValueChange={onSelect => this.Districtlist(onSelect)}
-                           value={this.state.onSelect}> 
+                           <RadioButton.Group   onValueChange={value => this.clickedBloodDonorAvailableList(value,'address.address.district')}
+                           value={this.state.districtSelect}> 
                                 <RadioButton value={item}/>
                               </RadioButton.Group>
                            </Right>
@@ -280,20 +347,20 @@ class BloodDonerFilters extends Component {
                           <Text style={styles.textHead}>City</Text>
                           </ListItem>
                            <FlatList
-                             data={this.state.data.cityList}
+                             data={this.state.cityList}
                              keyExtractor={(item, index) => index.toString()}
                              renderItem={({item})=>
                           <ListItem >
                              <TouchableOpacity 
-                       onPress={()=>this.Citylist(item)}
+                       onPress={()=>this.clickedBloodDonorAvailableList(item,'address.address.city')}
                           style={{flexDirection:'row'}}
                           >
                            <Left>
                              <Text style={styles.subText}>{item}</Text>
                            </Left>
                            <Right>
-                           <RadioButton.Group   onValueChange={onSelect => this.Citylist(onSelect)}
-                           value={this.state.onSelect}> 
+                           <RadioButton.Group   onValueChange={value => this.clickedBloodDonorAvailableList(value,'address.address.city')}
+                           value={this.state.citySelect}> 
                                 <RadioButton value={item}/>
                               </RadioButton.Group>
                            </Right>
