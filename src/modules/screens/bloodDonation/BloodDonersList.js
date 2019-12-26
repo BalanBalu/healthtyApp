@@ -24,6 +24,7 @@ class BloodDonersList extends Component {
       let data = []
       let result = await bloodDonationList(data);
       if (result.success) {
+        console.log(result)
         let user = result.data.userList
         let doctor = result.data.doctorList
         user.concat(doctor);
@@ -37,7 +38,7 @@ class BloodDonersList extends Component {
   }
   getAddress(address) {
     if (address != undefined) {
-      return `${address.address.city || ''} , ${address.address.district || ''}`
+      return `${address.address.district || ''}`
     } else {
       return null
     }
@@ -92,8 +93,9 @@ class BloodDonersList extends Component {
       const { isloading, data} = this.state;
         return (
             <Container>
-            <Content style={{padding:8}}>
            
+             
+            <Content style={{padding:8}}>
             {isloading == true ? 
               <Spinner 
                 color="blue"
@@ -101,7 +103,7 @@ class BloodDonersList extends Component {
                 size={"large"}
                 overlayColor="none"
                 cancelable={false}/> : null } 
-             
+           
              { data.length == 0 ?
                 <View style={{alignItems:'center',justifyContent:'center',height:550}}>
                   <Text> No Blood Donors</Text>
@@ -118,18 +120,23 @@ class BloodDonersList extends Component {
                         <Card style={{padding:2,marginTop:5}}>      
                             <Row style={{borderBottomWidth:0,marginTop:5}}>
                               <Col size={2} style={{justifyContent:'center'}}>
-                                 <Image source={require("../../../../assets/images/Blooddrop.png")} style={{height:80,width:80,position:'relative'}}/>
-                                 <Text style={{fontFamily:'OpenSans',fontSize:15,position:'absolute',marginLeft:28,fontWeight:'bold',paddingTop:20,color:'#fff',width:'100%'}}>{this.getBloodGrp(item.blood_group)}</Text>
+                                 <Image source={require("../../../../assets/images/BloodDrop.png")} style={{height:95,width:95,position:'relative'}}/>
+                                 <Text style={{fontFamily:'OpenSans',fontSize:15,position:'absolute',fontWeight:'bold',paddingTop:20,color:'#fff',width:'100%',textAlign:'center',marginLeft:10}}>{this.getBloodGrp(item.blood_group)}</Text>
                               </Col>
-                              <Col size={7} style={{marginTop:15,marginLeft:10}}>
+                              <Col size={7} style={{marginTop:25,marginLeft:10}}>
                                   <Text style={{fontFamily:'OpenSans',fontSize:15}}>{this.getName(item)}</Text>
                               <Row>
-                                   <Icon name="ios-pin" style={{color:'#1D96F2',fontSize:15,marginTop:10}}/>
-                                   <Text style={{color:'gray',fontSize:13,fontFamily:'OpenSans',marginTop:10}}> {this.getAddress(item.address)}</Text>
+                                  <Col size={3}style={{flexDirection:'row'}}>
+                                  <Icon name="ios-pin" style={{color:'#1D96F2',fontSize:15,marginTop:10}}/>
+                                   <Text style={{color:'gray',fontSize:13,fontFamily:'OpenSans',marginTop:10,marginLeft:2}}> {this.getAddress(item.address)}</Text>
+                                   <View size={1}style={{borderLeftColor:'gray',borderLeftWidth:1,marginTop:10,marginBottom:15,marginLeft:10}}/>
+                                   <Icon name="ios-call" style={{color:'#1D96F2',fontSize:15,marginTop:12,marginLeft:10}}/>
+                                   <Text style={{color:'gray',fontSize:13,fontFamily:'OpenSans',marginTop:10,marginLeft:2}}> {this.getPhone(item.mobile_no)}</Text>
+                                  </Col> 
                               </Row>
                              </Col>
-                             <Col size={1} style={{borderLeftColor:'gray',borderLeftWidth:0.4,paddingLeft:10,justifyContent:'center',marginTop:8,marginBottom:8}}>
-                                <Icon name="ios-call" style={{color:'#08BF01',fontSize:35}}/>
+                             <Col size={1} style={{justifyContent:'center',}}>
+                                <Icon name="logo-whatsapp" style={{color:'#08BF01',fontSize:35}}/>
                              </Col>
                             </Row>
                           </Card>   
