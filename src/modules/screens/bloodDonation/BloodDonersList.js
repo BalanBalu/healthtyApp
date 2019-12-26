@@ -51,12 +51,15 @@ class BloodDonersList extends Component {
     }
   }
   getPhone(mobile_no) {
-    if (mobile_no != undefined) {
-      return mobile_no
-    } else {
-      return 'No Number'
-    }
+    if(mobile_no!= undefined){
+    let totalNum = mobile_no.slice(0,7)
+      return totalNum 
   }
+      else {
+        return 'No Number'
+      }
+    }
+
   getBloodGrp(blood_group) {
     if (blood_group != undefined) {
       return blood_group
@@ -131,7 +134,7 @@ class BloodDonersList extends Component {
                                    <Text style={{color:'gray',fontSize:13,fontFamily:'OpenSans',marginTop:10,marginLeft:2}}> {this.getAddress(item.address)}</Text>
                                    <View size={1}style={{borderLeftColor:'gray',borderLeftWidth:1,marginTop:10,marginBottom:15,marginLeft:10}}/>
                                    <Icon name="ios-call" style={{color:'#1D96F2',fontSize:15,marginTop:12,marginLeft:10}}/>
-                                   <Text style={{color:'gray',fontSize:13,fontFamily:'OpenSans',marginTop:10,marginLeft:2}}> {this.getPhone(item.mobile_no)}</Text>
+                                   <Text   style={{color:'gray',fontSize:13,fontFamily:'OpenSans',marginTop:10,marginLeft:2}}> {this.getPhone(item.mobile_no)}...</Text>
                                   </Col> 
                               </Row>
                              </Col>
@@ -140,46 +143,6 @@ class BloodDonersList extends Component {
                              </Col>
                             </Row>
                           </Card>   
-
-
-
-
-
-
-                  // <Card style={{padding:10}}>
-                  // <Row >
-                  //   <Col style={{width:'85%',paddingTop:10,}}>
-                  //     <Row>
-                  //     <Col style={{width:'50%'}}>
-                  //     <Text style={styles.nameTxt}>{this.getName(item)}</Text>
-                  //     </Col>
-                  //     <Col style={{width:'50%'}}>
-                  //     {item.is_available_blood_donate == true ?
-                  //    <Text style={styles.statButton}>Available</Text>
-                  //    :
-                  //    <Text style={styles.statButton}>Not Available</Text>
-                  //   }
-                  //    </Col>
-                  //     </Row>
-                    
-                  //     <Row style={{marginTop:5}}>
-                  //       <Col style={{width:'50%'}}>
-                  //       <Text style={styles.mobTxt}>{this.getPhone(item.mobile_no)}</Text>
-                       
-                  //       </Col>
-                  //       <Col style={{width:'50%'}}>
-                  //       <Text style={styles.cityTxt}>{this.getAddress(item.address)}</Text>
-                  //   </Col>
-                  //       </Row>
-                  //   </Col>
-                  //   <Col style={{width:'15%',paddingTop:10,justifyContent:'center'}}>
-                  //     <View style={styles.circleView}>
-                  //     <Text style={styles.circleText}>{this.getBloodGrp(item.blood_group)}</Text>
-                  //     </View>
-                
-                  //   </Col>
-                  // </Row>
-                  // </Card>
                   }/>  
                </View>
             }
