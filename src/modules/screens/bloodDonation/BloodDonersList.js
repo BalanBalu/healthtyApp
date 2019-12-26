@@ -1,127 +1,193 @@
 import React, { Component } from 'react';
-import { Container, Content, View, Text, Item, Spinner,Card,Picker, Radio,Row,Col,Form,Button,Icon,Input } from 'native-base';
-import {StyleSheet,TextInput,TouchableOpacity} from 'react-native'
+import { Container, Content, View, Text, Item, Spinner,Card,Picker, Radio,Row,Col,Form,Button,Icon,Input,Footer } from 'native-base';
+import {StyleSheet,TextInput,TouchableOpacity,Image} from 'react-native';
+import { NavigationEvents } from 'react-navigation';
 import { FlatList } from 'react-native-gesture-handler';
 import {bloodDonationList }from '../../providers/profile/profile.action';
 class BloodDonersList extends Component {
-    constructor(props) {
-        super(props)
-        this.state = {
-          data:[],
-          isloading:false
-        }
-        
-    }
-    componentDidMount(){
-      this.getBlooddonationDetail();
-      
-    }
-   getBlooddonationDetail= async()=>{
-    try {
-     let result = await bloodDonationList();
-     if(result.success){
-      let user = result.data.userList 
-      let doctor = result.data.doctorList
-        user.concat(doctor);
-        console.log(user)
-        await this.setState({data:user})
-      }
-    await this.setState({ isloading: true })
-} catch (e) {
-    console.log(e)
-}
-}
-getAddress(address){
-  if(address != undefined){
-    return  address.address.city
-  }else {
-    return null
-  }
-  }
-  getName(name){
-    if(name.first_name != undefined || name.last_name != undefined ){
-      return  `${name.first_name || ''} ${name.last_name || ''}`
-    }
-    else
-    {
-      return 'unKnown'
-    }
-  }
-  getPhone(mobile_no){
-    if(mobile_no != undefined) {
-      return mobile_no 
-    } else
-    {
-      return 'No Number'
-    }
-  }
-  getBloodGrp(blood_group){
-    if(blood_group != undefined) {
-      return blood_group 
-    } else
-    {
-      return 'N/A'
+  constructor(props) {
+    super(props)
+    this.state = {
+      data: [],
+      isloading: false
     }
   }
   
+  componentDidMount() {
+    this.getBlooddonationDetail();
+  }
+  getBlooddonationDetail = async () => {
+    try {
+      this.setState({
+        isloading: true
+      })
+      let data = []
+      let result = await bloodDonationList(data);
+      if (result.success) {
+        let user = result.data.userList
+        let doctor = result.data.doctorList
+        user.concat(doctor);
+        await this.setState({ data: user })
+      }
+    } catch (e) {
+      console.log(e)
+    } finally {
+      this.setState({ isloading: false })
+    }
+  }
+  getAddress(address) {
+    if (address != undefined) {
+      return `${address.address.city || ''} , ${address.address.district || ''}`
+    } else {
+      return null
+    }
+  }
+  getName(name) {
+    if (name.first_name != undefined || name.last_name != undefined) {
+      return `${name.first_name || ''} ${name.last_name || ''}`
+    } else {
+      return 'unKnown'
+    }
+  }
+  getPhone(mobile_no) {
+    if (mobile_no != undefined) {
+      return mobile_no
+    } else {
+      return 'No Number'
+    }
+  }
+  getBloodGrp(blood_group) {
+    if (blood_group != undefined) {
+      return blood_group
+    } else {
+      return 'N/A'
+    }
+  }
+
+  bindbloodListValues() {
+    const {
+      navigation
+    } = this.props;
+    let filterData = navigation.getParam('data');
+    this.setState({
+      data: filterData
+    })
+  }
+  backNavigation = async (navigationData) => {
+    try {
+      if (navigationData.action) {
+        // if (navigationData.action.type === 'Navigation/BACK') {
+
+        await this.bindbloodListValues();
+
+        // }
+      }
+      await this.getBlooddonationDetail();
+    } catch (e) {
+      console.log(e)
+    }
+
+  }
     render() {
-      const {isloading,data} = this.state;
+      const { isloading, data} = this.state;
         return (
             <Container>
-            <Content style={{padding:20}}>
-            {isloading == false ? 
-             <Spinner 
-             color="blue"
-             visible={true}
-             size={"large"}
-             overlayColor="none"
-             cancelable={false}/>: data === undefined ? null : data.length == 0 ?
-              <View style={{alignItems:'center',justifyContent:'center',height:550}}>
-                 <Text> No Blood Donors</Text>
-              </View>
+            <Content style={{padding:8}}>
+           
+            {isloading == true ? 
+              <Spinner 
+                color="blue"
+                visible={true}
+                size={"large"}
+                overlayColor="none"
+                cancelable={false}/> : null } 
+             
+             { data.length == 0 ?
+                <View style={{alignItems:'center',justifyContent:'center',height:550}}>
+                  <Text> No Blood Donors</Text>
+                </View>
               :
                 <View style={{marginBottom:50}}>
+                   <NavigationEvents
+                      onWillFocus={payload => { this.backNavigation(payload)}}/>
+                  
                   <FlatList
-                    data={this.state.data}
-                    keyExtractor={(item, index) => index.toString()}
-                    renderItem={({item})=>
-                  <Card style={{padding:10}}>
-                  <Row >
-                    <Col style={{width:'85%',paddingTop:10,}}>
-                      <Row>
-                      <Col style={{width:'50%'}}>
-                      <Text style={styles.nameTxt}>{this.getName(item)}</Text>
-                      </Col>
-                      <Col style={{width:'50%'}}>
-                      {item.is_available_blood_donate == true ?
-                     <Text style={styles.statButton}>Available</Text>
-                     :null
-                    }
-                     </Col>
-                      </Row>
+                  data={this.state.data}
+                  keyExtractor={(item, index) => index.toString()}
+                  renderItem={({item})=>
+                        <Card style={{padding:2,marginTop:5}}>      
+                            <Row style={{borderBottomWidth:0,marginTop:5}}>
+                              <Col size={2} style={{justifyContent:'center'}}>
+                                 <Image source={require("../../../../assets/images/Blooddrop.png")} style={{height:80,width:80,position:'relative'}}/>
+                                 <Text style={{fontFamily:'OpenSans',fontSize:15,position:'absolute',marginLeft:28,fontWeight:'bold',paddingTop:20,color:'#fff',width:'100%'}}>{this.getBloodGrp(item.blood_group)}</Text>
+                              </Col>
+                              <Col size={7} style={{marginTop:15,marginLeft:10}}>
+                                  <Text style={{fontFamily:'OpenSans',fontSize:15}}>{this.getName(item)}</Text>
+                              <Row>
+                                   <Icon name="ios-pin" style={{color:'#1D96F2',fontSize:15,marginTop:10}}/>
+                                   <Text style={{color:'gray',fontSize:13,fontFamily:'OpenSans',marginTop:10}}> {this.getAddress(item.address)}</Text>
+                              </Row>
+                             </Col>
+                             <Col size={1} style={{borderLeftColor:'gray',borderLeftWidth:0.4,paddingLeft:10,justifyContent:'center',marginTop:8,marginBottom:8}}>
+                                <Icon name="ios-call" style={{color:'#08BF01',fontSize:35}}/>
+                             </Col>
+                            </Row>
+                          </Card>   
+
+
+
+
+
+
+                  // <Card style={{padding:10}}>
+                  // <Row >
+                  //   <Col style={{width:'85%',paddingTop:10,}}>
+                  //     <Row>
+                  //     <Col style={{width:'50%'}}>
+                  //     <Text style={styles.nameTxt}>{this.getName(item)}</Text>
+                  //     </Col>
+                  //     <Col style={{width:'50%'}}>
+                  //     {item.is_available_blood_donate == true ?
+                  //    <Text style={styles.statButton}>Available</Text>
+                  //    :
+                  //    <Text style={styles.statButton}>Not Available</Text>
+                  //   }
+                  //    </Col>
+                  //     </Row>
                     
-                      <Row style={{marginTop:5}}>
-                        <Col style={{width:'50%'}}>
-                        <Text style={styles.mobTxt}>{this.getPhone(item.mobile_no)}</Text>
+                  //     <Row style={{marginTop:5}}>
+                  //       <Col style={{width:'50%'}}>
+                  //       <Text style={styles.mobTxt}>{this.getPhone(item.mobile_no)}</Text>
                        
-                        </Col>
-                        <Col style={{width:'50%'}}>
-                        <Text style={styles.cityTxt}>{this.getAddress(item.address)}</Text>
-                    </Col>
-                        </Row>
-                    </Col>
-                    <Col style={{width:'15%',paddingTop:10,justifyContent:'center'}}>
-                      <View style={styles.circleView}>
-                      <Text style={styles.circleText}>{this.getBloodGrp(item.blood_group)}</Text>
-                      </View>
+                  //       </Col>
+                  //       <Col style={{width:'50%'}}>
+                  //       <Text style={styles.cityTxt}>{this.getAddress(item.address)}</Text>
+                  //   </Col>
+                  //       </Row>
+                  //   </Col>
+                  //   <Col style={{width:'15%',paddingTop:10,justifyContent:'center'}}>
+                  //     <View style={styles.circleView}>
+                  //     <Text style={styles.circleText}>{this.getBloodGrp(item.blood_group)}</Text>
+                  //     </View>
                 
-                    </Col>
-                  </Row>
-                  </Card>
+                  //   </Col>
+                  // </Row>
+                  // </Card>
                   }/>  
                </View>
             }
               </Content> 
+              <Footer style={styles.footerStyle}> 
+                <Row style={{alignItems:'center',justifyContent:'center',marginLeft:20,
+    marginRight:20}}> 
+                   <Col style={{width:'70%'}}>
+                   <Text style={{fontFamily:'OpenSans',fontSize:15,color:'#fff'}}>Interested in Blood Donation?</Text>
+                  </Col> 
+                  <Col>
+                  <TouchableOpacity style={{paddingTop:5,paddingBottom:5,paddingLeft:10,paddingRight:10,backgroundColor:'#08BF01',borderRadius:5}}><Text style={{fontFamily:'OpenSans',fontSize:12,color:'#fff',textAlign:'center'}}>Register Now</Text></TouchableOpacity>
+                  </Col>
+                    </Row>
+                    </Footer>
           </Container>
         )
     }
@@ -145,17 +211,18 @@ const styles = StyleSheet.create({
     fontFamily:'OpenSans',
     fontSize:16,
     marginTop:2,
-    marginLeft:5 
+    marginLeft:5 ,
   },
   statButton:{
     backgroundColor:'green',
     borderRadius:5,
     textAlign:'center',
-    width:'60%',
-    paddingLeft:4,
-    paddingRight:4,
+    width:'70%',
     height:25,
-    color:'#fff'
+    color:'#fff',
+    fontSize:14,
+    fontWeight:'bold',
+   paddingTop:2
   },
   statText:{
     fontFamily:'OpenSans',
@@ -175,5 +242,10 @@ const styles = StyleSheet.create({
     textAlign:'center',
     fontWeight:'bold',
     color:'#fff'
-  }
+  },
+  footerStyle:{
+    backgroundColor: '#7E49C3',
+    justifyContent:'center' ,
+    
+},
 })
