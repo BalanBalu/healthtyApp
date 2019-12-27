@@ -17,7 +17,9 @@ class UpdateEmail extends Component {
             secondary_email: null,
             primary_email: null,
             isLoading: false,
-            existingEmail: null
+            existingEmail: null,
+            errorMsg: '',
+
         }
     }
 
@@ -42,17 +44,21 @@ class UpdateEmail extends Component {
     }
 
     handleEmailUpdate = async () => {
-        debugger
         const { existingEmail, secondary_email, primary_email } = this.state
         try {
-            this.setState({ isLoading: true });
+            if (validateEmailAddress(secondary_email) == false) {
+                this.setState({ errorMsg: 'Kindly enter valid mail id' })
+                return false;
+            }
+            if (existingEmail === secondary_email || primary_email === secondary_email) {
+                this.setState({ errorMsg: 'Entered email id is already exist.Enter the new email id' })
+                return false;
+            }
+            this.setState({ errorMsg: '', isLoading: true });
             let userId = await AsyncStorage.getItem('userId');
             let data = {
                 secondary_email: secondary_email
             };
-
-            if (validateEmailAddress(this.state.secondary_email) == true) {
-                if (existingEmail != secondary_email && primary_email != secondary_email) {
 
                     let response = await userFiledsUpdate(userId, data);
                     if (response.success) {
@@ -71,24 +77,7 @@ class UpdateEmail extends Component {
                         })
 
                     }
-                }
-                else {
-                    Toast.show({
-                        text: 'Entered Email Address is already exist.Enter the new Email Id',
-                        type: "warning",
-                        duration: 4000
-                    })
-                }
-            }
-            else {
-                Toast.show({
-                    text: 'Kindly enter valid mail id',
-                    type: "danger",
-                    duration: 4000
-                })
-            }
-
-
+               
         } catch (e) {
             console.log(e);
         }
@@ -139,10 +128,13 @@ class UpdateEmail extends Component {
                                         testID='updateEmail' />
                                 </Item>
 
-                                <Spinner color='blue'
+                                <Text style={{ color: 'red', marginLeft: 15, marginTop: 5 }}>{this.state.errorMsg}</Text>
+
+                                {this.state.isLoading ? <Spinner color='blue'
                                     visible={this.state.isLoading}
-                                    textContent={'Loading...'}
-                                />
+                                    textContent={'Please wait Loading'}
+                                /> : null}
+
 
 
 

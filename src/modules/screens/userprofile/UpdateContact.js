@@ -18,7 +18,10 @@ class UpdateContact extends Component {
             active: true,
             primary_mobile_no: '',
             isLoading: false,
-            userData: ''
+            userData: '',
+            errorMsg: '',
+            existingSecNumber: ''
+
         }
     }
 
@@ -32,72 +35,59 @@ class UpdateContact extends Component {
         const userData = navigation.getParam('updatedata');
         if (userData.mobile_no) {
             this.setState({
-                primary_mobile_no: userData.mobile_no
+                primary_mobile_no: userData.mobile_no,
             })
         }
         if (userData.secondary_mobile) {
             this.setState({
-                secondary_mobile_no: userData.secondary_mobile
+                secondary_mobile_no: userData.secondary_mobile,
+                existingSecNumber: userData.secondary_mobile
+
             })
         }
 
     }
     commonUpdateContactMethod = async () => {
-        const { secondary_mobile_no, userData, primary_mobile_no } = this.state
+        const { secondary_mobile_no, existingSecNumber, primary_mobile_no } = this.state
         try {
-            this.setState({ isLoading: true })
-            if (primary_mobile_no != '') {
-                if (secondary_mobile_no != '') {
+            this.setState({ isLoading: true });
 
-                    if (primary_mobile_no != secondary_mobile_no) {
+            if (primary_mobile_no == '') {
+                this.setState({ errorMsg: 'Kindly enter your primary contact' })
+                return false;
+            }
+            if (secondary_mobile_no == '') {
+                this.setState({ errorMsg: 'Kindly enter your secondary contact number' })
+                return false;
+            }
+            if (primary_mobile_no == secondary_mobile_no || existingSecNumber == secondary_mobile_no) {
+                this.setState({ errorMsg: 'User details already exists' })
+                return false;
+            }
+            if (validateMobileNumber(primary_mobile_no && secondary_mobile_no) == false) {
+                this.setState({ errorMsg: 'Contact field must contain number' })
+                return false;
+            }
 
-                        let userId = await AsyncStorage.getItem('userId');
-                        let data = {
-                            mobile_no: primary_mobile_no,
-                            secondary_mobile: secondary_mobile_no
-                        };
-                        if (validateMobileNumber(primary_mobile_no || secondary_mobile_no) == true) {
+            this.setState({ errorMsg: '', isLoading: true });
 
-                            let response = await userFiledsUpdate(userId, data);
-                            if (response.success) {
-                                Toast.show({
-                                    text: "Contacts has been saved",
-                                    type: "success",
-                                    duration: 3000,
-                                })
-                                this.props.navigation.navigate('Profile');
-                            } else {
-                                Toast.show({
-                                    text: response.message,
-                                    type: "danger",
-                                    duration: 3000
-                                })
-                            }
-                        } else {
-                            Toast.show({
-                                text: 'Contact field must contain number',
-                                type: "danger",
-                                duration: 3000
-                            })
-                        }
-                    } else {
-                        Toast.show({
-                            text: 'User details already exists',
-                            type: "danger",
-                            duration: 3000
-                        })
-                    }
-                }
-                else {
-                    Toast.show({
-                        text: 'Kindly enter your secondary contact number',
-                        type: "danger",
-                        duration: 3000
-                    })
-                }
+
+            let userId = await AsyncStorage.getItem('userId');
+            let data = {
+                mobile_no: primary_mobile_no,
+                secondary_mobile: secondary_mobile_no
+            };
+            let response = await userFiledsUpdate(userId, data);
+            if (response.success) {
+                Toast.show({
+                    text: "Contacts has been saved",
+                    type: "success",
+                    duration: 3000,
+                })
+                this.props.navigation.navigate('Profile');
             } else {
                 Toast.show({
-                    text: 'Kindly enter your primary contact',
+                    text: response.message,
                     type: "danger",
                     duration: 3000
                 })
@@ -154,6 +144,7 @@ class UpdateContact extends Component {
                                         </Row>
                                     </Col>
                                 </Item>
+                                <Text style={{ color: 'red', marginLeft: 15, marginTop: 5 }}>{this.state.errorMsg}</Text>
 
 
 

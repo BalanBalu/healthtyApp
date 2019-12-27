@@ -189,7 +189,8 @@ export default class MapBox extends React.Component {
             }
 
             const userId = await AsyncStorage.getItem('userId')
-            if (validateName((this.state.address.no_and_street && this.state.address.city && this.state.address.district && this.state.address.state && this.state.address.country)) === true) {
+            let validate = (validateName(this.state.address.city && this.state.address.district && this.state.address.state && this.state.address.country));
+            if(validate===true){
                 if (validatePincode(this.state.address.pin_code) == true) {
 
                     let result = await userFiledsUpdate(userId, userAddressData);
@@ -340,21 +341,23 @@ export default class MapBox extends React.Component {
                 />
 
                 <View style={{ flex: 1 }}>
-                    <Row style={styles.SearchRow}>
-                        <Col size={0.9} style={styles.SearchStyle}>
-                            <TouchableOpacity style={{ justifyContent: 'center' }}>
-                                <Icon name="ios-search" style={{ color: '#fff', fontSize: 20, padding: 2 }} />
-                            </TouchableOpacity>
-                        </Col>
-                        <Col size={9.1} style={{ justifyContent: 'center', }}>
-                            <Input placeholder=" Search Location"
-                                value={this.state.locationFullText}
-                                style={styles.inputfield}
-                                placeholderTextColor="black"
-                                onFocus={() => { this.state.fromProfile ? this.props.navigation.navigate('UserAddress', { fromProfile: true }) : this.props.navigation.navigate('UserAddress') }}
-                                onChangeText={locationFullText => this.setState({ locationFullText })} />
-                        </Col>
-                    </Row>
+                    {this.state.showAllAddressFields == false ?
+
+                        <Row style={styles.SearchRow}>
+                            <Col size={0.9} style={styles.SearchStyle}>
+                                <TouchableOpacity style={{ justifyContent: 'center' }}>
+                                    <Icon name="ios-search" style={{ color: '#fff', fontSize: 20, padding: 2 }} />
+                                </TouchableOpacity>
+                            </Col>
+                            <Col size={9.1} style={{ justifyContent: 'center', }}>
+                                <Input placeholder=" Search Location"
+                                    value={this.state.locationFullText}
+                                    style={styles.inputfield}
+                                    placeholderTextColor="black"
+                                    onFocus={() => { this.state.fromProfile ? this.props.navigation.navigate('UserAddress', { fromProfile: true }) : this.props.navigation.navigate('UserAddress') }}
+                                    onChangeText={locationFullText => this.setState({ locationFullText })} />
+                            </Col>
+                        </Row> : null}
                     {this.state.coordinates !== null ?
                         <MapboxGL.MapView
                             ref={(c) => this._map = c}
