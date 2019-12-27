@@ -265,6 +265,7 @@ export function validateEmailAddress(text) {
 }
 
 export function validateName(text) {
+    console.log(text)
     let regex = new RegExp('^[a-zA-Z]{1}');
     if (regex.test(text) === false) return false;
     else return true;
@@ -276,3 +277,9 @@ export function validateMobileNumber(number) {
         if (regPatternForMob.test(number)) return true;
          else return false;
 }
+export function validatePincode(number) {
+    const regex = new RegExp('^[0-9]+$')  //Support only numbers
+    if (regex.test(number) === false) return false;
+    else return true;
+}
+
