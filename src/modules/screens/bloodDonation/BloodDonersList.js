@@ -1,15 +1,16 @@
 import React, { Component } from 'react';
-import { Container, Content, View, Text, Item, Spinner,Card,Picker, Radio,Row,Col,Form,Button,Icon,Input,Footer } from 'native-base';
+import { Container, Content, View, Text, Item,Card,Picker, Radio,Row,Col,Form,Button,Icon,Input,Footer } from 'native-base';
 import {StyleSheet,TextInput,TouchableOpacity,Image} from 'react-native';
 import { NavigationEvents } from 'react-navigation';
 import { FlatList } from 'react-native-gesture-handler';
 import {bloodDonationList }from '../../providers/profile/profile.action';
+import Spinner from '../../../components/Spinner'
 class BloodDonersList extends Component {
   constructor(props) {
     super(props)
     this.state = {
       data: [],
-      isloading: false
+      isLoading: false
     }
   }
   
@@ -19,7 +20,7 @@ class BloodDonersList extends Component {
   getBlooddonationDetail = async () => {
     try {
       this.setState({
-        isloading: true
+        isLoading: true
       })
       let data = []
       let result = await bloodDonationList(data);
@@ -33,7 +34,7 @@ class BloodDonersList extends Component {
     } catch (e) {
       console.log(e)
     } finally {
-      this.setState({ isloading: false })
+      this.setState({ isLoading: false })
     }
   }
   getAddress(address) {
@@ -52,8 +53,9 @@ class BloodDonersList extends Component {
   }
   getPhone(mobile_no) {
     if(mobile_no!= undefined){
+
     let totalNum = mobile_no.slice(0,7)
-      return totalNum 
+      return totalNum +'...'
   }
       else {
         return 'No Number'
@@ -81,33 +83,33 @@ class BloodDonersList extends Component {
     try {
       if (navigationData.action) {
         // if (navigationData.action.type === 'Navigation/BACK') {
-
+          console.log(navigationData);
         await this.bindbloodListValues();
 
         // }
-      }
+      }else{
       await this.getBlooddonationDetail();
+    }
     } catch (e) {
       console.log(e)
     }
 
   }
     render() {
-      const { isloading, data} = this.state;
+      const { isLoading, data} = this.state;
         return (
             <Container>
            
              
             <Content style={{padding:8}}>
-            {isloading == true ? 
-              <Spinner 
-                color="blue"
-                visible={true}
-                size={"large"}
-                overlayColor="none"
-                cancelable={false}/> : null } 
+            {isLoading == true ? 
+               <Spinner color='blue'
+               visible={isLoading}
+               overlayColor="none"
+               textContent={'Loading...'}
+           />:
            
-             { data.length == 0 ?
+             data.length == 0 ?
                 <View style={{alignItems:'center',justifyContent:'center',height:550}}>
                   <Text> No Blood Donors</Text>
                 </View>
@@ -134,7 +136,7 @@ class BloodDonersList extends Component {
                                    <Text style={{color:'gray',fontSize:13,fontFamily:'OpenSans',marginTop:10,marginLeft:2}}> {this.getAddress(item.address)}</Text>
                                    <View size={1}style={{borderLeftColor:'gray',borderLeftWidth:1,marginTop:10,marginBottom:15,marginLeft:10}}/>
                                    <Icon name="ios-call" style={{color:'#1D96F2',fontSize:15,marginTop:12,marginLeft:10}}/>
-                                   <Text   style={{color:'gray',fontSize:13,fontFamily:'OpenSans',marginTop:10,marginLeft:2}}> {this.getPhone(item.mobile_no)}...</Text>
+                                   <Text   style={{color:'gray',fontSize:13,fontFamily:'OpenSans',marginTop:10,marginLeft:2}}> {this.getPhone(item.mobile_no)}</Text>
                                   </Col> 
                               </Row>
                              </Col>
