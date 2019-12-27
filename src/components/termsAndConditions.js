@@ -15,7 +15,7 @@ class TermsAndConditions extends Component {
     return (
         <Container style={styles.container}>
         <Content>
-          <View>
+          <View style={{marginTop:15}}>
           <Row style={{backgroundColor:'#7E49C3'}}>
             <Col style={{marginLeft:10, width:'25%'}}>
             <Image source={require('../../assets/images/Logo.png')} style={{height:50,width:50}}/>
@@ -25,7 +25,7 @@ class TermsAndConditions extends Component {
             </Col>
           </Row>
 
-<View style={{padding:12}}>
+<View style={{padding:20, marginTop:10}}>
 
           <H3 style={{fontSize:15}}>We hope you love using Medflic. We really do. This document contains important information that you need to consider before making an important decision.</H3>
           
@@ -33,7 +33,7 @@ class TermsAndConditions extends Component {
           
           <Text style={termsStyles.normalText}>The following terms and conditions constitute an agreement between you and Medflic, Inc. (“Medflic,” “we,” or “us”), the operator of medflic.com (the “Site”) and related websites, applications, services and mobile applications provided by Medflic and on/in which these Terms of Use are posted or referenced (collectively, the “Services”). These terms of use (the “Terms of Use”), together with our 
           
-          <H3 style={termsStyles.urlStyle}> PRIVACY POLICY, ACCEPTABLE USE POLICY </H3> and  <H3 style={{fontSize:15, color:'#5055d7', fontWeight:'bold', lineHeight:25}}>ADDITIONAL TERMS </H3> (each of which are incorporated herein by reference, and collectively, this “Agreement”) govern your use of the Services, whether or not you have created an account. You must agree to and accept all of the terms of this Agreement, or you don’t have the right to use the Services.
+          <H3 style={termsStyles.urlStyle}> PRIVACY POLICY, ACCEPTABLE USE POLICY </H3> and  <H3 style={termsStyles.urlStyle}>ADDITIONAL TERMS </H3> (each of which are incorporated herein by reference, and collectively, this “Agreement”) govern your use of the Services, whether or not you have created an account. You must agree to and accept all of the terms of this Agreement, or you don’t have the right to use the Services.
 </Text>
 
 <H3 style={termsStyles.capsText}>" BY USING OR OTHERWISE ACCESSING THE SERVICES AND/OR BY CREATING AN ACCOUNT WITH US, YOU AGREE TO THE TERMS OF THIS AGREEMENT, INCLUDING THE INFORMATION PRACTICES DISCLOSED IN OUR PRIVACY POLICY, THE USE RESTRICTIONS IN THE ACCEPTABLE USE POLICY AND THE TERMS AND CONDITIONS IN THE ADDITIONAL TERMS. IF YOU DO NOT AGREE WITH THIS AGREEMENT, YOU CANNOT USE THE SERVICES. ARBITRATION NOTICE AND CLASS ACTION WAIVER: YOU AGREE THAT DISPUTES BETWEEN YOU AND US WILL BE RESOLVED BY BINDING, INDIVIDUAL ARBITRATION AND THAT YOU WAIVE YOUR RIGHT TO PARTICIPATE IN A CLASS OR COLLECTIVE ACTION LAWSUIT, OR CLASS OR COLLECTIVE ARBITRATION. "
@@ -63,7 +63,7 @@ We do not recommend or endorse any specific tests, Healthcare Providers, procedu
 
           <H3 style={termsStyles.mainHeading}>3. NO DOCTOR PATIENT RELATIONSHIP</H3>  
           <H3 style={termsStyles.capsText}>
-          DOCTORS, DENTISTS, NURSES, PHYSICAL THERAPIST AND OTHER MEDICAL PROFESSIONALS USE THE SERVICES TO SHARE CONTENT WITH YOU, BUT YOUR USE OF THIS CONTENT IS NOT A SUBSTITUTE FOR HEALTHCARE. NO LICENSED MEDICAL PROFESSIONAL/PATIENT RELATIONSHIP IS CREATED WHEN YOU USE THE SERVICES OR CONTENT. THIS IS TRUE WHETHER SUCH CONTENT IS PROVIDED BY OR THROUGH THE USE OF THE SERVICES OR THROUGH ANY OTHER COMMUNICATIONS FROM MEDFLIC INCLUDING, WITHOUT LIMITATION, THE “FIND A DOCTOR” FEATURE, MEDFLIC ANSWERS, MEDFLIC BLOG, MEDFLIC SOCIAL CHANNELS, MEDFLIC EMAILS OR TEXT MESSAGE LINKS TO OTHER SITES, OR ANY ASSISTANCE WE MAY PROVIDE TO HELP YOU FIND AN APPROPRIATE HEALTHCARE PROVIDER IN ANY FIELD.
+          " DOCTORS, DENTISTS, NURSES, PHYSICAL THERAPIST AND OTHER MEDICAL PROFESSIONALS USE THE SERVICES TO SHARE CONTENT WITH YOU, BUT YOUR USE OF THIS CONTENT IS NOT A SUBSTITUTE FOR HEALTHCARE. NO LICENSED MEDICAL PROFESSIONAL/PATIENT RELATIONSHIP IS CREATED WHEN YOU USE THE SERVICES OR CONTENT. THIS IS TRUE WHETHER SUCH CONTENT IS PROVIDED BY OR THROUGH THE USE OF THE SERVICES OR THROUGH ANY OTHER COMMUNICATIONS FROM MEDFLIC INCLUDING, WITHOUT LIMITATION, THE “FIND A DOCTOR” FEATURE, MEDFLIC ANSWERS, MEDFLIC BLOG, MEDFLIC SOCIAL CHANNELS, MEDFLIC EMAILS OR TEXT MESSAGE LINKS TO OTHER SITES, OR ANY ASSISTANCE WE MAY PROVIDE TO HELP YOU FIND AN APPROPRIATE HEALTHCARE PROVIDER IN ANY FIELD. "
 </H3>
 <Text style={termsStyles.normalText}>
 Medflic encourages Healthcare Providers to use the Services responsibly, but we have no control over, and cannot guarantee the availability of, any Healthcare Provider at any particular time. We will not be liable for cancelled or otherwise unfulfilled appointments, or any injury or loss resulting therefrom, or for any other injury or loss resulting or arising from, or related to, the use of the Site or Services whatsoever.
@@ -130,8 +130,8 @@ Protecting patient privacy and keeping your information secure are among our big
 
 <Text style={termsStyles.normalText}>
 You are also responsible for reviewing and complying with the terms set forth in our 
-<H3 style={termsStyles.urlStyle}> Acceptable Use Policy.
- </H3> 
+<H3 style={termsStyles.urlStyle}> Acceptable Use Policy
+ </H3> .
 </Text>
 
 <Text style={termsStyles.normalText}>
@@ -169,9 +169,8 @@ We may from time to time add new features to the Services, substitute a new serv
 </Text>
 <Text style={termsStyles.normalText}>
 Some Services may have additional terms (including, without limitation, policies, guidelines, and rules) that will further govern your use of that particular Service and supplement this Agreement. If you choose to register for, access or use any such Services, you may be presented with such additional terms, which may also be found in the   
-<H3 style={termsStyles.urlStyle}>
-  Additional Terms
-</H3>
+ <H3 style={termsStyles.urlStyle}> Additional Terms
+ </H3>
 .  By using those Services, you agree to comply with any such additional terms, which are incorporated by reference into this Agreement.
 </Text>
 
@@ -185,9 +184,8 @@ Some Services may have additional terms (including, without limitation, policies
           </H3>  
           <Text style={termsStyles.normalText}>
           You will have the opportunity to submit feedback regarding your experiences with Healthcare Providers you find through the Services, to submit inquiries concerning possible medical needs and to participate in the other interactive or community features of the Site (collectively, “Posted Information”). It is important that you act responsibly when providing Posted Information. Your Posted Information must comply with our    
-          <H3 style={termsStyles.urlStyle}>
-          Acceptable Use Policy.
-</H3>
+<H3 style={termsStyles.urlStyle}> Acceptable Use Policy
+</H3> .
 </Text>
 <Text style={termsStyles.normalText}>
 Medflic reserves the right to investigate and, at our discretion, take appropriate legal action against anyone who violates these Terms of Use or the Acceptable Use Policy, including without limitation, removing any offending communication from the Services and terminating the account of such violators or blocking your use of the Services.
@@ -208,18 +206,17 @@ By posting Posted Information through the Services, you agree to and hereby do g
 We created Medflic to improve patients’ healthcare experience, and we want your experience with Medflic to be exceptional. While we work hard to make that happen, you acknowledge that we have no control over, and no duty to take any action regarding: (a) which users gain access to the Site and/or the Services, (b) what Content you access, (c) what effects the Content may have on you, (d) how you may interpret or use the Content, or (e) what actions you may take as a result of having been exposed to the Content. You release us from all liability for you having acquired, you are having not acquired, or your use of Content. We make no representations or warranties regarding suggestions or recommendations of services or products offered or purchased through the Site and/or the Services. We have no special relationship with or fiduciary duty to you. WE PROVIDE THE SERVICES “AS IS” AND “AS AVAILABLE.”
 </Text>
 <Text style={termsStyles.capsText}>
-
- WE MAKE NO EXPRESS OR IMPLIED WARRANTIES OR GUARANTEES ABOUT THE SERVICES. TO THE MAXIMUM EXTENT PERMITTED BY LAW, WE HEREBY DISCLAIM ALL SUCH WARRANTIES, INCLUDING ALL STATUTORY WARRANTIES, WITH RESPECT TO THE SERVICES AND THE SITE, INCLUDING, WITHOUT LIMITATION, ANY WARRANTIES THAT THE SERVICES ARE MERCHANTABLE, OF SATISFACTORY QUALITY, ACCURATE, FIT FOR A PARTICULAR PURPOSE OR NEED, OR NON-INFRINGING. WE DO NOT GUARANTEE THAT THE RESULTS THAT MAY BE OBTAINED FROM THE USE OF THE SERVICES WILL BE EFFECTIVE, RELIABLE OR ACCURATE OR WILL MEET YOUR REQUIREMENTS. WE DO NOT GUARANTEE THAT YOU WILL BE ABLE TO ACCESS OR USE THE SERVICES (EITHER DIRECTLY OR THROUGH THIRD-PARTY NETWORKS) AT TIMES OR LOCATIONS OF YOUR CHOOSING. WE ARE NOT RESPONSIBLE FOR THE ACCURACY, RELIABILITY, TIMELINESS OR COMPLETENESS OF INFORMATION PROVIDED BY USERS OF THE SERVICES OR ANY OTHER DATA OR INFORMATION PROVIDED OR RECEIVED THROUGH THE SERVICES.EXCEPT AS EXPRESSLY SET FORTH HEREIN, MEDFLIC MAKES NO WARRANTIES ABOUT THE INFORMATION SYSTEMS, SOFTWARE AND FUNCTIONS MADE ACCESSIBLE THROUGH THE SERVICES OR ANY OTHER SECURITY ASSOCIATED WITH THE TRANSMISSION OF SENSITIVE INFORMATION. MEDFLIC DOES NOT WARRANT THAT THE SITE OR THE SERVICES WILL OPERATE ERROR-FREE, BUG-FREE OR FREE FROM DEFECTS, THAT LOSS OF DATA WILL NOT OCCUR, OR THAT THE SERVICES, SOFTWARE OR SITE ARE FREE OF COMPUTER VIRUSES, CONTAMINANTS OR OTHER HARMFUL ITEMS.
+" WE MAKE NO EXPRESS OR IMPLIED WARRANTIES OR GUARANTEES ABOUT THE SERVICES. TO THE MAXIMUM EXTENT PERMITTED BY LAW, WE HEREBY DISCLAIM ALL SUCH WARRANTIES, INCLUDING ALL STATUTORY WARRANTIES, WITH RESPECT TO THE SERVICES AND THE SITE, INCLUDING, WITHOUT LIMITATION, ANY WARRANTIES THAT THE SERVICES ARE MERCHANTABLE, OF SATISFACTORY QUALITY, ACCURATE, FIT FOR A PARTICULAR PURPOSE OR NEED, OR NON-INFRINGING. WE DO NOT GUARANTEE THAT THE RESULTS THAT MAY BE OBTAINED FROM THE USE OF THE SERVICES WILL BE EFFECTIVE, RELIABLE OR ACCURATE OR WILL MEET YOUR REQUIREMENTS. WE DO NOT GUARANTEE THAT YOU WILL BE ABLE TO ACCESS OR USE THE SERVICES (EITHER DIRECTLY OR THROUGH THIRD-PARTY NETWORKS) AT TIMES OR LOCATIONS OF YOUR CHOOSING. WE ARE NOT RESPONSIBLE FOR THE ACCURACY, RELIABILITY, TIMELINESS OR COMPLETENESS OF INFORMATION PROVIDED BY USERS OF THE SERVICES OR ANY OTHER DATA OR INFORMATION PROVIDED OR RECEIVED THROUGH THE SERVICES.EXCEPT AS EXPRESSLY SET FORTH HEREIN, MEDFLIC MAKES NO WARRANTIES ABOUT THE INFORMATION SYSTEMS, SOFTWARE AND FUNCTIONS MADE ACCESSIBLE THROUGH THE SERVICES OR ANY OTHER SECURITY ASSOCIATED WITH THE TRANSMISSION OF SENSITIVE INFORMATION. MEDFLIC DOES NOT WARRANT THAT THE SITE OR THE SERVICES WILL OPERATE ERROR-FREE, BUG-FREE OR FREE FROM DEFECTS, THAT LOSS OF DATA WILL NOT OCCUR, OR THAT THE SERVICES, SOFTWARE OR SITE ARE FREE OF COMPUTER VIRUSES, CONTAMINANTS OR OTHER HARMFUL ITEMS. "
  </Text>
 
 <H3 style={termsStyles.mainHeading}>13. GENERAL LIMITATION OF LIABILITY
           </H3>  
           <Text style={termsStyles.capsText}>
-          WHILE WE’RE ALWAYS IMPROVING, AND WE HOPE YOU HAVE AN EXCELLENT EXPERIENCE WITH MEDFLIC, YOUR SOLE AND EXCLUSIVE REMEDY FOR ANY DISPUTE WITH US IS THE CANCELLATION OF YOUR ACCOUNT. IN NO EVENT SHALL OUR CUMULATIVE LIABILITY TO YOU FOR ANY AND ALL CLAIMS RELATING TO OR ARISING OUT OF YOUR USE OF THE SERVICES OR THE SITE, REGARDLESS OF THE FORM OF ACTION, EXCEED THE GREATER OF: (a) THE TOTAL AMOUNT OF FEES, IF ANY, THAT YOU PAID TO CREATE OR MAINTAIN AN ACCOUNT WITH THE SITE OR THE SERVICES, OR (b) ₹100; EXCEPT THAT, FOR ANY AND ALL CLAIMS RELATING TO OR ARISING OUT OF YOUR USE OF THE TRANSACTION PROCESSING SERVICES (AS DEFINED IN THE ADDITIONAL TERMS), IN NO EVENT SHALL OUR CUMULATIVE LIABILITY THEREOF REGARDLESS OF THE FORM OF ACTION EXCEED THE TOTAL AMOUNT OF TRANSACTION PROCESSING FEES (AS DESCRIBED IN THE ADDITIONAL TERMS), IF ANY, REMITTED TO AND RETAINED BY MEDFLIC FOR PROVIDING TRANSACTION PROCESSING SERVICES FOR APPOINTMENTS MADE BY YOU IN THE THREE (3) MONTHS PRIOR TO THE EVENT GIVING RISE TO THE APPLICABLE CLAIM.
+         " WHILE WE’RE ALWAYS IMPROVING, AND WE HOPE YOU HAVE AN EXCELLENT EXPERIENCE WITH MEDFLIC, YOUR SOLE AND EXCLUSIVE REMEDY FOR ANY DISPUTE WITH US IS THE CANCELLATION OF YOUR ACCOUNT. IN NO EVENT SHALL OUR CUMULATIVE LIABILITY TO YOU FOR ANY AND ALL CLAIMS RELATING TO OR ARISING OUT OF YOUR USE OF THE SERVICES OR THE SITE, REGARDLESS OF THE FORM OF ACTION, EXCEED THE GREATER OF: (a) THE TOTAL AMOUNT OF FEES, IF ANY, THAT YOU PAID TO CREATE OR MAINTAIN AN ACCOUNT WITH THE SITE OR THE SERVICES, OR (b) ₹100; EXCEPT THAT, FOR ANY AND ALL CLAIMS RELATING TO OR ARISING OUT OF YOUR USE OF THE TRANSACTION PROCESSING SERVICES (AS DEFINED IN THE ADDITIONAL TERMS), IN NO EVENT SHALL OUR CUMULATIVE LIABILITY THEREOF REGARDLESS OF THE FORM OF ACTION EXCEED THE TOTAL AMOUNT OF TRANSACTION PROCESSING FEES (AS DESCRIBED IN THE ADDITIONAL TERMS), IF ANY, REMITTED TO AND RETAINED BY MEDFLIC FOR PROVIDING TRANSACTION PROCESSING SERVICES FOR APPOINTMENTS MADE BY YOU IN THE THREE (3) MONTHS PRIOR TO THE EVENT GIVING RISE TO THE APPLICABLE CLAIM. "
           </Text>
 
           <Text style={termsStyles.capsText}>
-IN NO EVENT SHALL WE BE LIABLE TO YOU (OR TO ANY THIRD PARTY CLAIMING UNDER OR THROUGH YOU) FOR ANY INDIRECT, SPECIAL, INCIDENTAL, CONSEQUENTIAL OR EXEMPLARY DAMAGES ARISING FROM YOUR USE OF, OR INABILITY TO USE, THE SITE AND/OR THE SERVICES.THESE EXCLUSIONS APPLY TO ANY CLAIMS FOR LOST PROFITS, LOST DATA, LOSS OF GOODWILL, COMPUTER FAILURE OR MALFUNCTION, ANY OTHER COMMERCIAL DAMAGES OR LOSSES, OR MEDICAL MALPRACTICE OR NEGLIGENCE OF HEALTHCARE PROVIDERS UTILIZED THROUGH USE OF THE SERVICES, EVEN IF WE KNEW OR SHOULD HAVE KNOWN OF THE POSSIBILITY OF SUCH DAMAGES. BECAUSE SOME STATES OR JURISDICTIONS DO NOT ALLOW THE EXCLUSION OR THE LIMITATION OF LIABILITY FOR CONSEQUENTIAL OR INCIDENTAL DAMAGES, IN SUCH STATES OR JURISDICTIONS, OUR LIABILITY SHALL BE LIMITED IN ACCORDANCE HEREIN TO THE MAXIMUM EXTENT PERMITTED BY LAW.
+" IN NO EVENT SHALL WE BE LIABLE TO YOU (OR TO ANY THIRD PARTY CLAIMING UNDER OR THROUGH YOU) FOR ANY INDIRECT, SPECIAL, INCIDENTAL, CONSEQUENTIAL OR EXEMPLARY DAMAGES ARISING FROM YOUR USE OF, OR INABILITY TO USE, THE SITE AND/OR THE SERVICES.THESE EXCLUSIONS APPLY TO ANY CLAIMS FOR LOST PROFITS, LOST DATA, LOSS OF GOODWILL, COMPUTER FAILURE OR MALFUNCTION, ANY OTHER COMMERCIAL DAMAGES OR LOSSES, OR MEDICAL MALPRACTICE OR NEGLIGENCE OF HEALTHCARE PROVIDERS UTILIZED THROUGH USE OF THE SERVICES, EVEN IF WE KNEW OR SHOULD HAVE KNOWN OF THE POSSIBILITY OF SUCH DAMAGES. BECAUSE SOME STATES OR JURISDICTIONS DO NOT ALLOW THE EXCLUSION OR THE LIMITATION OF LIABILITY FOR CONSEQUENTIAL OR INCIDENTAL DAMAGES, IN SUCH STATES OR JURISDICTIONS, OUR LIABILITY SHALL BE LIMITED IN ACCORDANCE HEREIN TO THE MAXIMUM EXTENT PERMITTED BY LAW. "
 </Text>
 
 <H3 style={termsStyles.mainHeading}>14. TERMINATION
@@ -245,9 +242,8 @@ Your affirmative act of using the Services and/or creating an account constitute
 
 <Text style={termsStyles.normalText}>
 Please review our 
-<H3 style={termsStyles.urlStyle}>  Acceptable Use Polic 
-</H3>
- for our copyright dispute policy.
+<H3 style={termsStyles.urlStyle}>  Acceptable Use Policy 
+</H3> for our copyright dispute policy.
 </Text>
 
 < Text style={termsStyles.normalTextWithBold}>
@@ -306,7 +302,7 @@ You must be 18 years of age or over, or the legal age to form a binding contract
 If you do not qualify under these Terms of Use, do not use the Site or Services. Use of the Services is void where prohibited by applicable law, and the right to access the Site is revoked in such jurisdictions. By using the Site and/or the Services, you represent and warrant that you have the right, authority, and capacity to enter into these Terms of Use. The Site is administered in the India and intended for India users only; any use outside of the India. or use related to activities outside of the India is prohibited and at the user’s own risk. Users are responsible for compliance with any local, state or federal laws applicable to their use of the Services or the Site.
 </Text>
 
-<View style={{backgroundColor:'#7E49C3', marginTop:10}}>
+<View style={{backgroundColor:'#666666', marginTop:10}}>
 <Text style={{textAlign:'center',fontSize:15,color:'#fff', paddingTop:15, paddingBottom:15}}>Copyright © 2017 All Direction Source Tech</Text>
 
 </View>
@@ -323,10 +319,10 @@ const termsStyles = StyleSheet.create({
     fontSize:14, marginTop:10, lineHeight:25
   },
   normalTextWithBold:{
-    fontSize:15, marginTop:10,fontWeight:'bold', color:'black'
+    fontSize:15, marginTop:10, color:'black'
   },
   urlStyle: {
-    fontSize:15,color:'#5055d7', fontWeight:'bold', lineHeight:25
+    fontSize:14,color:'#5055d7', fontWeight:'bold', lineHeight:25
   },
   offlineText: {
     color: '#fff'
@@ -335,7 +331,7 @@ const termsStyles = StyleSheet.create({
     fontSize:14, marginTop:10, lineHeight:25
   },
   mainHeading:{
-    fontSize:18, marginTop:10
+    fontSize:18, marginTop:20, fontWeight:'bold'
   }
 });
 
