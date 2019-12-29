@@ -269,7 +269,7 @@ class Filters extends Component {
                   </Text>
                             </View>
                             <Row style={{ marginTop: 10 }}>
-                                <Col>
+                                <Col style={{marginLeft:5}}>
                                     <Button bordered
                                         style={selectExperinceIndex === 10 ? styles.selectedExpColor : styles.defaultExpColor}
                                         onPress={() => this.clickFilterByExperince(10, true)}
@@ -281,7 +281,7 @@ class Filters extends Component {
                                         </View>
                                     </Button>
                                 </Col>
-                                <Col>
+                                <Col style={{marginLeft:5}}>
                                     <Button bordered
 
                                         style={selectExperinceIndex === 20 ? styles.selectedExpColor : styles.defaultExpColor}
@@ -297,7 +297,7 @@ class Filters extends Component {
 
                                     </Button>
                                 </Col>
-                                <Col>
+                                <Col style={{marginLeft:5}}>
                                     <Button bordered
 
                                         style={selectExperinceIndex === 30 ? styles.selectedExpColor : styles.defaultExpColor}
@@ -312,7 +312,7 @@ class Filters extends Component {
 
                                     </Button>
                                 </Col>
-                                <Col>
+                                <Col style={{marginLeft:5}}>
                                     <Button bordered
                                         style={selectExperinceIndex === 40 ? styles.selectedExpColor : styles.defaultExpColor}
                                         onPress={() => this.clickFilterByExperince(40, true )}
@@ -433,16 +433,15 @@ const styles = StyleSheet.create({
 
     defaultExpColor: {
         borderRadius: 10,
-        width: '90%',
         borderWidth: 10,
+    
        
     },
     selectedExpColor: {
         borderRadius: 10,
-        width: '90%',
         borderWidth: 10,
         backgroundColor: 'green',
-
+        
     },
     defaultGenderColor: {
         borderRadius: 10,

@@ -507,17 +507,20 @@ class AppointmentDetails extends Component {
                       <Text style={styles.titlesText}> Payment Report </Text></Col>
                   </Grid>
                 
-                  <View style={{ alignItems:'center',justifyContent:'center',marginTop: 5}}>
-                   
+                
+                  <ListItem avatar noBorder style={{ borderLeftWidth: 8, borderColor: "#F29727", marginBottom: -5 }}>
+                    <Body>
+                    <View style={{ alignItems:'center',justifyContent:'center',marginTop: 5}}>
                       <TouchableOpacity onPress={() => { this.props.navigation.navigate('ReportIssue',{issueFor:'Appointment',reportedId:data._id })} } block success  style={styles.reviewButton}  >
                         <Text style={{ color: '#fff', fontSize: 14, fontFamily: 'OpenSans', fontWeight: 'bold',textAlign:'center',marginTop:5 }}>
                           Report Issue
                         </Text>
                       </TouchableOpacity>
+                      </View>
+                      </Body>
+                    </ListItem>
 
-                    
-
-                  </View>
+                 
               
                 
                 </Card> 
