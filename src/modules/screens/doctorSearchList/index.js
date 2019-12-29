@@ -750,7 +750,7 @@ class doctorSearchList extends Component {
                                                                 <Row style={{ marginLeft: 55, }}>
 
                                                                     <Text style={{ fontFamily: 'OpenSans', marginTop: 5, fontSize: 12, fontWeight: 'bold' }}>
-                                                                        {item.location.location.address.city + ' - ' + item.location.name}
+                                                                        {item.location.name + ' - ' + item.location.location.address.city }
                                                                     </Text>
                                                                 </Row>
                                                             </Col>
