@@ -29,8 +29,9 @@ class UpdateUserDetails extends Component {
             fromProfile: false,
             isLoading: false,
             selectedBloodGroup: null,
-            updateButton: false,
             userData: '',
+            errorMsg: '',
+
         }
     }
     componentDidMount() {
@@ -65,49 +66,42 @@ class UpdateUserDetails extends Component {
     userUpdate = async () => {
         const { userData, firstName, lastName, dob, gender, selectedBloodGroup } = this.state
         try {
-            this.setState({ isLoading: true, updateButton: false });
-            if (userData.first_name != firstName || userData.last_name != lastName || userData.dob != dob || userData.gender != gender || userData.blood_group != selectedBloodGroup) {
-                let requestData = {
-                    first_name: firstName,
-                    last_name: lastName,
-                    dob: dob,
-                    gender: gender,
-                    blood_group: selectedBloodGroup
-                };
-
-                const userId = await AsyncStorage.getItem('userId')
-                if (validateName(this.state.first_name) == true) {
-                let response = await userFiledsUpdate(userId, requestData);
-                if (response.success) {
-                    Toast.show({
-                        text: 'Your Profile has been Updated',
-                        type: "success",
-                        duration: 3000
-                    });
-                    this.props.navigation.navigate('Profile');
-                }
-                else {
-                    Toast.show({
-                        text: response.message,
-                        type: "danger",
-                        duration: 3000
-                    });
-                    this.setState({ isLoading: false });
-                }
+            if (firstName == undefined || lastName == undefined || dob == undefined || gender == undefined || selectedBloodGroup == undefined) {
+                this.setState({ errorMsg: 'Kindly fill all the fields...' })
+                return false;
             }
-                else {
-                    Toast.show({
-                        text: 'Name can contain only alphabets',
-                        type: "danger",
-                        duration: 3000
-                    });
+                if (validateName(firstName && lastName) == false) {
+                    this.setState({ errorMsg: 'First name and last name fields must contain alphabets' })
+                    return false;
                 }
-            } else {
+        
+            
+            this.setState({ errorMsg: '', isLoading: true });
+            let requestData = {
+                first_name: firstName,
+                last_name: lastName,
+                dob: dob,
+                gender: gender,
+                blood_group: selectedBloodGroup
+            };
+            console.log("lastName" + lastName)
+            const userId = await AsyncStorage.getItem('userId')
+            let response = await userFiledsUpdate(userId, requestData);
+            if (response.success) {
                 Toast.show({
-                    text: "Entered details are already exist. Kindly enter a new details",
-                    type: "warning",
+                    text: 'Your Profile has been Updated',
+                    type: "success",
                     duration: 3000
-                })
+                });
+                this.props.navigation.navigate('Profile');
+            }
+            else {
+                Toast.show({
+                    text: response.message,
+                    type: "danger",
+                    duration: 3000
+                });
+                this.setState({ isLoading: false });
             }
 
         }
@@ -130,9 +124,6 @@ class UpdateUserDetails extends Component {
         return (
 
             <Container >
-
-
-
                 <Content contentContainerStyle={styles.bodyContent}>
                     <ScrollView>
                         <Text style={styles.headerText}>Update Your Details</Text>
@@ -144,7 +135,7 @@ class UpdateUserDetails extends Component {
                                         value={this.state.firstName}
                                         keyboardType={'default'}
                                         returnKeyType={"next"}
-                                        onChangeText={text => this.setState({firstName:text})}
+                                        onChangeText={text => this.setState({ firstName: text })}
                                         autoCapitalize='none'
                                         blurOnSubmit={false}
                                         onSubmitEditing={() => { this.firstName._root.focus(); }} testID="editFirstName"
@@ -156,6 +147,7 @@ class UpdateUserDetails extends Component {
                                         ref={(input) => { this.firstName = input; }}
                                         value={this.state.lastName}
                                         keyboardType={'default'}
+                                        returnKeyType={"done"}
                                         onChangeText={text => this.setState({ lastName: text })}
                                         autoCapitalize='none'
                                         blurOnSubmit={false}
@@ -231,14 +223,15 @@ class UpdateUserDetails extends Component {
                                         <Text style={{ marginLeft: 10, fontFamily: 'OpenSans', fontSize: 15 }}>Others</Text>
                                     </RadioButton.Group>
                                 </Item>
+                                <Text style={{ color: 'red', marginLeft: 15, marginTop: 5 }}>{this.state.errorMsg}</Text>
 
-                                <Spinner color='blue'
+                                {this.state.isLoading ? <Spinner color='blue'
                                     visible={this.state.isLoading}
                                     textContent={'Please wait Loading'}
-                                />
+                                /> : null}
 
                                 <View>
-                                    <Button disabled={this.state.updateButton} primary style={styles.addressButton} block onPress={() => this.userUpdate()} testID="updateBasicDetails">
+                                    <Button primary style={styles.addressButton} block onPress={() => this.userUpdate()} testID="updateBasicDetails">
                                         <Text style={styles.buttonText}>Update</Text>
                                     </Button>
                                 </View>

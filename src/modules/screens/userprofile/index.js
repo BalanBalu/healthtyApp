@@ -379,7 +379,7 @@ class Profile extends Component {
                                     <TouchableOpacity onPress={() => this.editProfile('UpdateContact')} testID="onPressUpdateContact">
                                         <Text style={styles.customText}>Contact</Text>
                                         <Text note style={styles.customText1}>{data.mobile_no}</Text>
-                                        {data.secondary_mobile !== undefined ?
+                                        {data.secondary_mobile !== '' ?
                                             <Col>
                                                 <Text style={styles.customText}>Secondary</Text>
                                                 <Text note style={styles.customText1}>{data.secondary_mobile}</Text>
@@ -467,7 +467,7 @@ class Profile extends Component {
                                                     <Thumbnail square source={renderDoctorImage(item.doctorInfo)} style={{ height: 60, width: 60 }} />
                                                 </Left>
                                                 <Body>
-                                                    <Text style={{ fontFamily: 'OpenSans', fontSize: 15 }}> {item.doctorInfo.prefix ? item.doctorInfo.prefix : 'Dr.'} {item.doctorInfo.first_name + " " + item.doctorInfo.last_name} </Text>
+                                                    <Text style={{ fontFamily: 'OpenSans', fontSize: 15, width: '100%' }}> {item.doctorInfo.prefix ? item.doctorInfo.prefix : 'Dr.'} {item.doctorInfo.first_name + " " + item.doctorInfo.last_name} </Text>
                                                 </Body>
                                                 <Right>
                                                     <Button style={styles.docbutton}><Text style={{ fontFamily: 'OpenSans', fontSize: 12 }} onPress={() => this.props.navigation.navigate('Book Appointment', { doctorId: item.doctorInfo.doctor_id, fetchAvailabiltySlots: true })} testID="navigateBookAppointment"> Book Again</Text></Button>
