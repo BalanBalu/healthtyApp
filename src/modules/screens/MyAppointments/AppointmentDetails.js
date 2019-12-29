@@ -318,16 +318,16 @@ class AppointmentDetails extends Component {
                   data.appointment_status == 'APPROVED' || this.state.appointmentStatus === 'APPROVED' || data.appointment_status == 'PENDING'  ?
                     <Col style={width = 'auto'}>
                       <Button block danger style={{ margin: 1, marginTop: 10, marginLeft: 1, borderRadius: 30, padding: 15, height: 40, width: "auto" }} onPress={() => this.navigateCancelAppoointment()} testID='cancelAppointment'>
-                        <Text style={{ textAlign: 'center', fontFamily: 'OpenSans', fontSize: 15, fontWeight: 'bold' }}>CANCEL APPOINTMENT</Text>
+                        <Text style={{ textAlign: 'center', fontFamily: 'OpenSans', fontSize: 14, fontWeight: 'bold' }}>CANCEL APPOINTMENT</Text>
                       </Button>
                     </Col> :
                     data.appointment_status == 'PROPOSED_NEW_TIME' ?
                       <Item style={{ borderBottomWidth: 0, justifyContent: 'center' }}>
                         <Button success style={styles.statusButton} onPress={() => this.updateAppointmentStatus(data, 'APPROVED')} testID='approvedAppointment'>
-                          <Text style={{ textAlign: 'center', fontFamily: 'OpenSans', color: '#000', fontSize: 15, fontWeight: 'bold' }}>ACCEPT</Text>
+                          <Text style={{ textAlign: 'center', fontFamily: 'OpenSans', color: '#000', fontSize: 14, fontWeight: 'bold' }}>ACCEPT</Text>
                         </Button>
                         <Button danger style={styles.Button2} onPress={() => this.navigateCancelAppoointment()} testID='appointmentCancel'>
-                          <Text style={{ textAlign: 'center', fontFamily: 'OpenSans', color: '#000', fontSize: 15, fontWeight: 'bold' }}> CANCEL </Text></Button>
+                          <Text style={{ textAlign: 'center', fontFamily: 'OpenSans', color: '#000', fontSize: 14, fontWeight: 'bold' }}> CANCEL </Text></Button>
                       </Item> : null:null }
                 </Grid>
 
@@ -654,7 +654,7 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     padding: 30,
     marginTop: 15,
-    width: '70%',
+    width: '60%',
 
 
   },
@@ -664,7 +664,7 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     padding: 1,
     marginTop: 15,
-    width: '30%',
+    width: '40%',
 
   },
   editProfilePencil: {
