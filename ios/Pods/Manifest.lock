@@ -58,6 +58,7 @@ PODS:
     - nanopb/encode (= 0.3.901)
   - nanopb/decode (0.3.901)
   - nanopb/encode (0.3.901)
+  - QBImagePickerController (3.4.0)
   - React (0.59.10):
     - React/Core (= 0.59.10)
   - react-native-mapbox-gl (7.0.4):
@@ -98,6 +99,11 @@ PODS:
     - React/Core
     - React/fishhook
     - React/RCTBlob
+  - RNImageCropPicker (0.24.1):
+    - QBImagePickerController
+    - React/Core
+    - RSKImageCropper
+  - RSKImageCropper (2.2.3)
   - yoga (0.59.10.React)
 
 DEPENDENCIES:
@@ -119,10 +125,11 @@ DEPENDENCIES:
   - React/RCTText (from `../node_modules/react-native`)
   - React/RCTVibration (from `../node_modules/react-native`)
   - React/RCTWebSocket (from `../node_modules/react-native`)
+  - RNImageCropPicker (from `../node_modules/react-native-image-crop-picker`)
   - yoga (from `../node_modules/react-native/ReactCommon/yoga/Yoga.podspec`)
 
 SPEC REPOS:
-  https://github.com/cocoapods/specs.git:
+  https://github.com/CocoaPods/Specs.git:
     - boost-for-react-native
     - DoubleConversion
     - Firebase
@@ -133,6 +140,9 @@ SPEC REPOS:
     - GoogleAppMeasurement
     - GoogleUtilities
     - nanopb
+  trunk:
+    - QBImagePickerController
+    - RSKImageCropper
 
 EXTERNAL SOURCES:
   Folly:
@@ -141,6 +151,8 @@ EXTERNAL SOURCES:
     :path: "../node_modules/react-native"
   react-native-mapbox-gl:
     :path: "../node_modules/@react-native-mapbox-gl/maps"
+  RNImageCropPicker:
+    :path: "../node_modules/react-native-image-crop-picker"
   yoga:
     :path: "../node_modules/react-native/ReactCommon/yoga/Yoga.podspec"
 
@@ -156,10 +168,13 @@ SPEC CHECKSUMS:
   GoogleAppMeasurement: 51d8d9ea48f0ca44484d29cfbdef976fbd4fc336
   GoogleUtilities: 996e0db07153674fd1b54b220fda3a3dc3547cba
   nanopb: 2901f78ea1b7b4015c860c2fdd1ea2fee1a18d48
+  QBImagePickerController: d54cf93db6decf26baf6ed3472f336ef35cae022
   React: 36d0768f9e93be2473b37e7fa64f92c1d5341eef
   react-native-mapbox-gl: e5e1921140b7e2ae2e4e1d917f4c91ad13da3f25
+  RNImageCropPicker: 6134b66a3d5bc13e2895a97c630a4254006902b4
+  RSKImageCropper: a446db0e8444a036b34f3c43db01b2373baa4b2a
   yoga: 684513b14b03201579ba3cee20218c9d1298b0cc
 
-PODFILE CHECKSUM: 7cec4ab8760a194cb6845794ef5ee11d7fd09b5c
+PODFILE CHECKSUM: 953fa853c1857d60558d1c8d3063915f62c1efb0
 
-COCOAPODS: 1.6.2
+COCOAPODS: 1.8.4
