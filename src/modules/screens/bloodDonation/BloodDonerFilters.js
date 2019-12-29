@@ -447,11 +447,13 @@ class BloodDonerFilters extends Component {
                   </ListItem>
                 </List>
               </View>
-              <Footer style={{ backgroundColor: '#7E49C3', }}>
-                <TouchableOpacity onPress={()=>this.filteredTotalDataList1()} style={{justifyContent:'center'}}>
-                <Text style={styles.searchText}>Filter</Text>
-                  </TouchableOpacity>
+              <TouchableOpacity onPress={()=>this.filteredTotalDataList1()} style={{ backgroundColor: '#7E49C3'}}>
+              <Footer style={{ backgroundColor: '#7E49C3',justifyContent:'center',alignItems:'center' }}>
+                
+                <Text uppercase={true} style={styles.searchText}>search</Text>
+                 
               </Footer>
+              </TouchableOpacity>
           </Container>
         )
     }
@@ -477,7 +479,7 @@ const styles = StyleSheet.create({
     position:'absolute'
   },
   searchText:{
-    alignItems:'center',
+    textAlign:'center',
     fontFamily:'OpenSans',
     fontSize:20,
     fontWeight:'bold',
