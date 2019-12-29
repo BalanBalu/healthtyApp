@@ -152,6 +152,7 @@ android {
 }
 
 dependencies {
+    implementation project(':react-native-image-crop-picker')
     implementation project(':react-native-push-notification')
     implementation(project(':react-native-firebase')) {   
        transitive = false
@@ -167,7 +168,6 @@ dependencies {
     compile (name: "razorpay-android", ext: 'aar')
     implementation project(':react-native-customui')
 
-    implementation project(':react-native-image-picker')
     implementation project(':@react-native-mapbox-gl_maps')
     implementation project(':react-native-svg')
     implementation project(':react-native-linear-gradient')
