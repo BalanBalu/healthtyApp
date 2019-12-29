@@ -125,7 +125,7 @@ class BloodDonersList extends Component {
                         <Card style={{padding:2,marginTop:5}}>      
                             <Row style={{borderBottomWidth:0,marginTop:5}}>
                               <Col size={2} style={{justifyContent:'center'}}>
-                                 <Image source={require("../../../../assets/images/BloodDrop.png")} style={{height:95,width:95,position:'relative'}}/>
+                                 <Image source={require("../../../../assets/images/Blooddrop.png")} style={{height:95,width:95,position:'relative'}}/>
                                  <Text style={{fontFamily:'OpenSans',fontSize:15,position:'absolute',fontWeight:'bold',paddingTop:20,color:'#fff',width:'100%',textAlign:'center',marginLeft:10}}>{this.getBloodGrp(item.blood_group)}</Text>
                               </Col>
                               <Col size={7} style={{marginTop:25,marginLeft:10}}>
