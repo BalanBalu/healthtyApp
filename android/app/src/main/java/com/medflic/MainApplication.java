@@ -3,13 +3,13 @@ package com.medflic;
 import android.app.Application;
 import com.horcrux.svg.SvgPackage;
 import com.facebook.react.ReactApplication;
+import com.reactnative.ivpusic.imagepicker.PickerPackage;
 import com.dieam.reactnativepushnotification.ReactNativePushNotificationPackage;
 
 import io.invertase.firebase.RNFirebasePackage;
 
 
 import com.heanoria.library.reactnative.locationenabler.RNAndroidLocationEnablerPackage;
-import com.imagepicker.ImagePickerPackage;
 import com.mapbox.rctmgl.RCTMGLPackage;
 import com.BV.LinearGradient.LinearGradientPackage;
 import com.swmansion.gesturehandler.react.RNGestureHandlerPackage;
@@ -36,10 +36,10 @@ public class MainApplication extends Application implements ReactApplication {
     protected List<ReactPackage> getPackages() {
       return Arrays.<ReactPackage>asList(
           new MainReactPackage(),
+            new PickerPackage(),
             new ReactNativePushNotificationPackage(),
           new RNFirebasePackage(),
           new RNAndroidLocationEnablerPackage(),
-          new ImagePickerPackage(),
           new SvgPackage(),
 		      new LinearGradientPackage(),
           new RNGestureHandlerPackage(),

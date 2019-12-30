@@ -111,7 +111,7 @@ class ReportIssue extends Component {
 							    overlayColor="none"
 							    cancelable={false}
 						     /> : null }
-                <View style={{marginBottom:40}}>
+                <View style={{marginBottom:40,}}>
                 <Text style={{fontFamily:'OpenSans',fontSize:20,textAlign:'center',fontWeight:'bold'}}>{this.state.issueFor + ' Issue'}</Text>
  
                      <Form>
@@ -119,28 +119,32 @@ class ReportIssue extends Component {
                          <FlatList data={issue}
                             keyExtractor={(item, index) => index.toString()}
                          renderItem={({item})=>
+                         <View>
                          <Row style={{marginTop:10}}>
-                          <Col style={{width:'10%'}}>
+                         
                           <RadioButton.Group 
                                 onValueChange={value => { 
                                   this.setState({ quesNo: value  })}}
                                 value={this.state.quesNo}> 
                                 <RadioButton value={item.id} style={{marginTop:-5}}/>
                               </RadioButton.Group>
-                          </Col>
-                          <Col style={{width:'90%',marginTop:10}}>
-                            <Text style={{fontFamily:'OpenSans',fontSize:16,lineHeight:20}}>{item.value}</Text>
+                   
+                            <Text style={{fontFamily:'OpenSans',fontSize:16,lineHeight:20,marginLeft:10,marginTop:8,width:'80%'}}>{item.value}</Text>
+                            </Row>
                             {this.state.quesNo==item.id?
                              <Row style={{marginTop:10,marginBottom:10}}>
-                             <Col >
-                           <TextInput 
+                             <Col size={1.5}>
+                             </Col>
+                             <Col size={8.5}>
+                             <TextInput 
                                  onChangeText={complaint => this.setState({ complaint })}
                                  multiline={true} placeholder="Reason......" 
                                  style={styles.textInput1} />
-                         </Col></Row>:null}
-                          </Col>
+                             </Col>
+                           </Row>:null}
+                          </View>
                           
-                         </Row>
+                         
                          }/>
                          
                          

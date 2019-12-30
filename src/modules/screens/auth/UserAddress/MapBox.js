@@ -2,8 +2,8 @@ import React, { Component } from 'react';
 import { View, StyleSheet, Image, PermissionsAndroid, AsyncStorage, TouchableOpacity } from 'react-native';
 
 import MapboxGL from '@react-native-mapbox-gl/maps';
-
-import { IS_ANDROID } from '../../../common';
+import { Col, Row, Grid } from 'react-native-easy-grid';
+import { IS_ANDROID, validatePincode, validateName } from '../../../common';
 import { Container, Toast, Body, Button, Text, Item, Input, Icon, Card, CardItem, Label, Form, Content, Picker } from 'native-base';
 import { MAP_BOX_TOKEN } from '../../../../setup/config';
 import axios from 'axios';
@@ -81,13 +81,13 @@ export default class MapBox extends React.Component {
         }
     }
 
-     backNavigation(navigationData) {
+    backNavigation(navigationData) {
         if (navigationData.action) {
             if (navigationData.action.type === 'Navigation/NAVIGATE') {
                 let searchLocationData = this.props.navigation.getParam('locationData')
                 if (searchLocationData) {
                     this.formUserAddress(searchLocationData)
-                     this.setState({ coordinates: searchLocationData.center })
+                    this.setState({ coordinates: searchLocationData.center })
 
                 }
             }
@@ -178,11 +178,9 @@ export default class MapBox extends React.Component {
 
     async updateAddressData() {
         try {
-
             this.setState({ loading: true })
             let Lnglat = this.state.center;
             let userAddressData = {
-
                 address: {
                     coordinates: [Lnglat[1], Lnglat[0]],
                     type: 'Point',
@@ -191,34 +189,53 @@ export default class MapBox extends React.Component {
             }
 
             const userId = await AsyncStorage.getItem('userId')
-            let result = await userFiledsUpdate(userId, userAddressData);
-            this.setState({ loading: false });
-            if (result.success) {
-                Toast.show({
-                    text: result.message,
-                    type: 'success',
-                    duration: 3000,
-                })
-                if (this.state.fromProfile)
-                    this.props.navigation.navigate('Profile');
-                else {
-                    logout();
-                    this.props.navigation.navigate('login');
+            let validate = (validateName(this.state.address.city && this.state.address.district && this.state.address.state && this.state.address.country));
+            if(validate===true){
+                if (validatePincode(this.state.address.pin_code) == true) {
+
+                    let result = await userFiledsUpdate(userId, userAddressData);
+                    this.setState({ loading: false });
+                    if (result.success) {
+                        Toast.show({
+                            text: result.message,
+                            type: 'success',
+                            duration: 3000,
+                        })
+                        if (this.state.fromProfile)
+                            this.props.navigation.navigate('Profile');
+                        else {
+                            logout();
+                            this.props.navigation.navigate('login');
+                        }
+                    }
+                    else {
+                        Toast.show({
+                            text: result.message,
+                            type: 'warning',
+                            duration: 3000,
+                            buttonText: "Okay",
+                            buttonTextStyle: {
+                                color: "#008000"
+                            },
+                            buttonStyle: { backgroundColor: "#5cb85c" }
+                        })
+                        return
+                    }
+                } else {
+                    Toast.show({
+                        text: 'Pincode field must contain numbers',
+                        type: 'warning',
+                        duration: 3000,
+                    })
                 }
-            }
-            else {
+            } else {
                 Toast.show({
-                    text: result.message,
+                    text: 'Kindly enter valid address',
                     type: 'warning',
                     duration: 3000,
-                    buttonText: "Okay",
-                    buttonTextStyle: {
-                        color: "#008000"
-                    },
-                    buttonStyle: { backgroundColor: "#5cb85c" }
                 })
-                return
             }
+
 
         } catch (e) {
             Toast.show({
@@ -324,6 +341,23 @@ export default class MapBox extends React.Component {
                 />
 
                 <View style={{ flex: 1 }}>
+                    {this.state.showAllAddressFields == false ?
+
+                        <Row style={styles.SearchRow}>
+                            <Col size={0.9} style={styles.SearchStyle}>
+                                <TouchableOpacity style={{ justifyContent: 'center' }}>
+                                    <Icon name="ios-search" style={{ color: '#fff', fontSize: 20, padding: 2 }} />
+                                </TouchableOpacity>
+                            </Col>
+                            <Col size={9.1} style={{ justifyContent: 'center', }}>
+                                <Input placeholder=" Search Location"
+                                    value={this.state.locationFullText}
+                                    style={styles.inputfield}
+                                    placeholderTextColor="black"
+                                    onFocus={() => { this.state.fromProfile ? this.props.navigation.navigate('UserAddress', { fromProfile: true }) : this.props.navigation.navigate('UserAddress') }}
+                                    onChangeText={locationFullText => this.setState({ locationFullText })} />
+                            </Col>
+                        </Row> : null}
                     {this.state.coordinates !== null ?
                         <MapboxGL.MapView
                             ref={(c) => this._map = c}
@@ -371,16 +405,6 @@ export default class MapBox extends React.Component {
                     <Card>
                         <CardItem bordered>
                             <Body>
-
-                                <Item floatingLabel>
-                                    <Label>Location</Label>
-                                    <Input placeholder="Location" style={styles.transparentLabel}
-                                        value={this.state.locationFullText}
-                                        //editable={false}
-                                        onFocus={() => { this.state.fromProfile ? this.props.navigation.navigate('UserAddress', { fromProfile: true }) : this.props.navigation.navigate('UserAddress') }}
-                                        onChangeText={locationFullText => this.setState({ locationFullText })} />
-                                </Item>
-
                                 <Button iconLeft block success onPress={() => this.setState({ showAllAddressFields: true })}>
                                     <Icon name='paper-plane'></Icon>
                                     <Text>Confirm Location</Text>
@@ -522,5 +546,32 @@ const styles = StyleSheet.create({
         fontFamily: 'OpenSans',
         marginLeft: 15,
         marginBottom: 10
+    },
+    SearchStyle: {
+        backgroundColor: '#7E49C3',
+        width: '85%',
+        alignItems: 'center',
+        justifyContent: 'center',
+        borderRightColor: '#000',
+        borderRightWidth: 0.5,
+        borderBottomLeftRadius: 5,
+        borderTopLeftRadius: 5
+    },
+    SearchRow: {
+        backgroundColor: 'white',
+        borderColor: '#000',
+        borderWidth: 0.5,
+        height: 35,
+        marginRight: 10,
+        marginLeft: 10,
+        marginTop: 5,
+        borderRadius: 5
+    },
+    inputfield: {
+        color: 'black',
+        fontFamily: 'OpenSans',
+        fontSize: 12,
+        padding: 5,
+        paddingLeft: 10
     },
 });
