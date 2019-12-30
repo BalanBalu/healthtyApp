@@ -13,7 +13,7 @@ import { formatDate, dateDiff } from '../../../setup/helpers';
 
 import { Loader } from '../../../components/ContentLoader'
 
-import { renderProfileImage , RenderHospitalAddress,getAllEducation,getAllSpecialist} from '../../common'
+import { renderProfileImage , RenderHospitalAddress,getAllEducation,getAllSpecialist,getName,getDoctorExperience} from '../../common'
 class AppointmentDetails extends Component {
   constructor(props) {
     super(props)
@@ -270,7 +270,7 @@ class AppointmentDetails extends Component {
                   </Left>
                   <Body>
 
-                    <Text style={{ fontSize: 15, fontFamily: 'OpenSans', fontWeight: 'bold' }}>{(doctorData && doctorData.prefix != undefined ? doctorData && doctorData.prefix : '') +(  doctorData && doctorData.first_name )+ " " + (doctorData && doctorData.last_name)},
+                    <Text style={{ fontSize: 15, fontFamily: 'OpenSans', fontWeight: 'bold' }}>{(doctorData && doctorData.prefix != undefined ? doctorData && doctorData.prefix : '') +(getName(doctorData))+','}
                       <Text style={{ fontSize: 13, fontFamily: 'OpenSans' }}>{education}</Text>
 
                     </Text>
@@ -285,10 +285,8 @@ class AppointmentDetails extends Component {
                     <Text note style={styles.bottomValue}> Fee </Text>
                   </Col>
                   <Col style={{ backgroundColor: 'transparent', borderRightWidth: 0.5, borderRightColor: 'gray', justifyContent: 'center' }}>
-                    {doctorData.experience.isPrivate == true ?
-                      <Text style={styles.topValue}>  N/A </Text> :
-                      <Text style={styles.topValue}> {doctorData.calulatedExperience.year != 0 ? doctorData.calulatedExperience.year + ' yrs' : 'N/A'} </Text>
-                    }
+                  
+                  <Text style={styles.topValue}> {getDoctorExperience(doctorData.calulatedExperience)} </Text>
                     <Text note style={styles.bottomValue}> Experience</Text>
                   </Col>
                   <Col style={{ backgroundColor: 'transparent', justifyContent: 'center', marginLeft: 'auto', marginRight: 'auto' }}>
@@ -473,7 +471,7 @@ class AppointmentDetails extends Component {
                 </List>
               </Card>
             
-              {doctorData.language .length!= 0 ?
+              {doctorData.language!=undefined&&doctorData.language .length!= 0 ?
                 <Card style={{ backgroundColor: '#ffffff', borderRadius: 10, padding: 10 }}>
 
                   <Grid style={{ margin: 5 }}>

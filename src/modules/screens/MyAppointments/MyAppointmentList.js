@@ -32,7 +32,7 @@ import {formatDate,addTimeUnit,subMoment,addMoment,subTimeUnit ,getAllId,statusV
 import {getUserAppointments,viewUserReviews,getMultipleDoctorDetails} from "../../providers/bookappointment/bookappointment.action";
 import noAppointmentImage from "../../../../assets/images/noappointment.png";
 import Spinner from "../../../components/Spinner";
-import { renderProfileImage,getAllEducation,getAllSpecialist } from '../../common'
+import { renderProfileImage,getAllEducation,getAllSpecialist,getName } from '../../common'
 import moment from "moment";
 // import moment from "moment";
 
@@ -388,7 +388,7 @@ class MyAppoinmentList extends Component {
 														<Item style={{ borderBottomWidth: 0 }}>
 
 															<Text style={{ fontFamily: "OpenSans", fontSize: 15, fontWeight: 'bold' }}>
-																{(item.prefix != undefined ? item.prefix : '') + item.appointmentResult.doctorInfo.first_name + " " + item.appointmentResult.doctorInfo.last_name}{" "}
+																{(item.prefix != undefined ? item.prefix : '') + getName(item.appointmentResult.doctorInfo)}
 															</Text>
 															<Text
 																style={{
