@@ -26,6 +26,7 @@ end
 
  # Flexbox Layout Manager Used By React Native
  pod 'yoga', :path => '../node_modules/react-native/ReactCommon/yoga/Yoga.podspec'
+ 
  pod 'Firebase/Analytics'
  # React Native
  pod 'React', path: '../node_modules/react-native', subspecs: [
@@ -49,7 +50,7 @@ end
 
  # Mapbox
  pod 'react-native-mapbox-gl', :path => '../node_modules/@react-native-mapbox-gl/maps'
-
+ pod 'RNImageCropPicker', :path =>  '../node_modules/react-native-image-crop-picker'
  # Third party
  pod 'Folly', :podspec => '../node_modules/react-native/third-party-podspecs/Folly.podspec'
 

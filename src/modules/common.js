@@ -137,20 +137,20 @@ export function getDoctorEducation(educationData) {
     return '';
 }
 export function getDoctorExperience(calulatedExperience) {
-    if(!calulatedExperience) {
-        return  'N/A'
-    } 
-    if(calulatedExperience.isPrivate === true) {
-        return  'N/A'
-    } 
-    if(calulatedExperience.year == 0) {
+    if (!calulatedExperience) {
+        return 'N/A'
+    }
+    if (calulatedExperience.isPrivate === true) {
+        return 'N/A'
+    }
+    if (calulatedExperience.year == 0) {
         month = calulatedExperience.month;
         return `${month} Month` + (month <= 1 ? '' : 's')
     } else {
-      year = calulatedExperience.year;
-      return `${year} Year` + ( year <= 1 ? '' : 's')
+        year = calulatedExperience.year;
+        return `${year} Year` + (year <= 1 ? '' : 's')
     }
-  }
+}
 
 export async function getUserNotification() {
     try {
@@ -184,42 +184,42 @@ export class Badge extends Component {
         return (
 
             data != null &&
-            <Text style={{ position: 'absolute', backgroundColor: 'red', color: 'white', borderRadius: 20, marginLeft: 10, padding: 2, marginTop: -7,paddingLeft:5,paddingRight:5}}>{data}</Text>
+            <Text style={{ position: 'absolute', backgroundColor: 'red', color: 'white', borderRadius: 20, marginLeft: 10, padding: 2, marginTop: -7, paddingLeft: 5, paddingRight: 5 }}>{data}</Text>
         )
     }
 }
 
 
 
-export  function getAllEducation(data) {
+export function getAllEducation(data) {
 
-    let  educationDetails=[] ;
-      data.map(education => {
-        if(!educationDetails.includes(education.degree)){
-         educationDetails.push(education.degree)
+    let educationDetails = [];
+    data.map(education => {
+        if (!educationDetails.includes(education.degree)) {
+            educationDetails.push(education.degree)
         }
-        
-     })
-     educationDetails=educationDetails.join(",");
-     return  educationDetails;
-  
-  
-  }
-  export function getAllSpecialist(data) {
-    let speaciallistDetails=[];
-    if(data) {
+
+    })
+    educationDetails = educationDetails.join(",");
+    return educationDetails;
+
+
+}
+export function getAllSpecialist(data) {
+    let speaciallistDetails = [];
+    if (data) {
         data.map(categories => {
-          if(!speaciallistDetails.includes(categories.category)){
-                speaciallistDetails.push( categories.category);
-          }
+            if (!speaciallistDetails.includes(categories.category)) {
+                speaciallistDetails.push(categories.category);
+            }
         })
-        speaciallistDetails=  speaciallistDetails.join(",");
+        speaciallistDetails = speaciallistDetails.join(",");
         return speaciallistDetails
     } else {
         return ''
     }
-         
-  }
+
+}
 
 export const bloodGroupList = ['Select Blood Group', 'A+', 'O+', 'B+', 'AB+', 'A-', 'O-', 'B-', 'AB-']
 export const appointmentIssue = [
@@ -229,26 +229,26 @@ export const appointmentIssue = [
     { id: 3, value: 'Money deducted but not refunded' },
     { id: 4, value: 'Faced issues during transactions?' },
     { id: 5, value: 'Others' }
-  ]
-  
-  export const pharmacyIssue = [
+]
+
+export const pharmacyIssue = [
     { id: 0, value: 'Money deducted but not any appointment booked.' },
     { id: 1, value: 'Booking process is not familier' },
     { id: 2, value: 'Appointment booked but not yet received a confirmation message' },
     { id: 3, value: 'Money deducted but not refunded' },
     { id: 4, value: 'Faced issues during transactions?' },
     { id: 5, value: 'Others' }
-  ]
-  
-  export const chatIssue = [
+]
+
+export const chatIssue = [
     { id: 0, value: 'If you see "Your payment was declined due to an issue with your account"' },
     { id: 1, value: 'You accidentally entered incorrect credit/debit card details like name on the card, card number, CVV, 3D secure PIN and expiry date incorrect.' },
     { id: 2, value: 'My promo code did not apply' },
     { id: 3, value: 'Money deducted but not refunded' },
     { id: 4, value: 'Faced issues during transactions?' },
     { id: 5, value: 'Others' }
-  ]
-  export const paymentIssue = [
+]
+export const paymentIssue = [
     { id: 0, value: 'Money deducted but not any appointment booked.' },
     { id: 1, value: 'Booking process is not familier' },
     { id: 2, value: 'Appointment booked but not yet received a confirmation message' },
@@ -270,4 +270,15 @@ export function validateName(text) {
     else return true;
 }
 
-  
+export function validateMobileNumber(number) {
+    var regPattern = '^([0|+[0-9]{1,5})?([7-9][0-9]{9})$';
+    var regPatternForMob = new RegExp(regPattern);
+    if (regPatternForMob.test(number)) return true;
+    else return false;
+}
+export function validatePincode(number) {
+    const regex = new RegExp('^[0-9]+$')  //Support only numbers
+    if (regex.test(number) === false) return false;
+    else return true;
+}
+

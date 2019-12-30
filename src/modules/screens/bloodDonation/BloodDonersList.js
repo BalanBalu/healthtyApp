@@ -1,15 +1,16 @@
 import React, { Component } from 'react';
-import { Container, Content, View, Text, Item, Spinner,Card,Picker, Radio,Row,Col,Form,Button,Icon,Input,Footer } from 'native-base';
+import { Container, Content, View, Text, Item,Card,Picker, Radio,Row,Col,Form,Button,Icon,Input,Footer } from 'native-base';
 import {StyleSheet,TextInput,TouchableOpacity,Image} from 'react-native';
 import { NavigationEvents } from 'react-navigation';
 import { FlatList } from 'react-native-gesture-handler';
 import {bloodDonationList }from '../../providers/profile/profile.action';
+import Spinner from '../../../components/Spinner'
 class BloodDonersList extends Component {
   constructor(props) {
     super(props)
     this.state = {
       data: [],
-      isloading: false
+      isLoading: false
     }
   }
   
@@ -19,11 +20,12 @@ class BloodDonersList extends Component {
   getBlooddonationDetail = async () => {
     try {
       this.setState({
-        isloading: true
+        isLoading: true
       })
       let data = []
       let result = await bloodDonationList(data);
       if (result.success) {
+        console.log(result)
         let user = result.data.userList
         let doctor = result.data.doctorList
         user.concat(doctor);
@@ -32,12 +34,12 @@ class BloodDonersList extends Component {
     } catch (e) {
       console.log(e)
     } finally {
-      this.setState({ isloading: false })
+      this.setState({ isLoading: false })
     }
   }
   getAddress(address) {
     if (address != undefined) {
-      return `${address.address.city || ''} , ${address.address.district || ''}`
+      return `${address.address.district || ''}`
     } else {
       return null
     }
@@ -50,12 +52,16 @@ class BloodDonersList extends Component {
     }
   }
   getPhone(mobile_no) {
-    if (mobile_no != undefined) {
-      return mobile_no
-    } else {
-      return 'No Number'
-    }
+    if(mobile_no!= undefined){
+
+    let totalNum = mobile_no.slice(0,7)
+      return totalNum +'...'
   }
+      else {
+        return 'No Number'
+      }
+    }
+
   getBloodGrp(blood_group) {
     if (blood_group != undefined) {
       return blood_group
@@ -77,32 +83,33 @@ class BloodDonersList extends Component {
     try {
       if (navigationData.action) {
         // if (navigationData.action.type === 'Navigation/BACK') {
-
+          console.log(navigationData);
         await this.bindbloodListValues();
 
         // }
-      }
+      }else{
       await this.getBlooddonationDetail();
+    }
     } catch (e) {
       console.log(e)
     }
 
   }
     render() {
-      const { isloading, data} = this.state;
+      const { isLoading, data} = this.state;
         return (
             <Container>
-            <Content style={{padding:8}}>
            
-            {isloading == true ? 
-              <Spinner 
-                color="blue"
-                visible={true}
-                size={"large"}
-                overlayColor="none"
-                cancelable={false}/> : null } 
              
-             { data.length == 0 ?
+            <Content style={{padding:8}}>
+            {isLoading == true ? 
+               <Spinner color='blue'
+               visible={isLoading}
+               overlayColor="none"
+               textContent={'Loading...'}
+           />:
+           
+             data.length == 0 ?
                 <View style={{alignItems:'center',justifyContent:'center',height:550}}>
                   <Text> No Blood Donors</Text>
                 </View>
@@ -118,61 +125,26 @@ class BloodDonersList extends Component {
                         <Card style={{padding:2,marginTop:5}}>      
                             <Row style={{borderBottomWidth:0,marginTop:5}}>
                               <Col size={2} style={{justifyContent:'center'}}>
-                                 <Image source={require("../../../../assets/images/Blooddrop.png")} style={{height:80,width:80,position:'relative'}}/>
-                                 <Text style={{fontFamily:'OpenSans',fontSize:15,position:'absolute',marginLeft:28,fontWeight:'bold',paddingTop:20,color:'#fff',width:'100%'}}>{this.getBloodGrp(item.blood_group)}</Text>
+                                 <Image source={require("../../../../assets/images/Blooddrop.png")} style={{height:95,width:95,position:'relative'}}/>
+                                 <Text style={{fontFamily:'OpenSans',fontSize:15,position:'absolute',fontWeight:'bold',paddingTop:20,color:'#fff',width:'100%',textAlign:'center',marginLeft:10}}>{this.getBloodGrp(item.blood_group)}</Text>
                               </Col>
-                              <Col size={7} style={{marginTop:15,marginLeft:10}}>
+                              <Col size={7} style={{marginTop:25,marginLeft:10}}>
                                   <Text style={{fontFamily:'OpenSans',fontSize:15}}>{this.getName(item)}</Text>
                               <Row>
-                                   <Icon name="ios-pin" style={{color:'#1D96F2',fontSize:15,marginTop:10}}/>
-                                   <Text style={{color:'gray',fontSize:13,fontFamily:'OpenSans',marginTop:10}}> {this.getAddress(item.address)}</Text>
+                                  <Col size={3}style={{flexDirection:'row'}}>
+                                  <Icon name="ios-pin" style={{color:'#1D96F2',fontSize:15,marginTop:10}}/>
+                                   <Text style={{color:'gray',fontSize:13,fontFamily:'OpenSans',marginTop:10,marginLeft:2}}> {this.getAddress(item.address)}</Text>
+                                   <View size={1}style={{borderLeftColor:'gray',borderLeftWidth:1,marginTop:10,marginBottom:15,marginLeft:10}}/>
+                                   <Icon name="ios-call" style={{color:'#1D96F2',fontSize:15,marginTop:12,marginLeft:10}}/>
+                                   <Text   style={{color:'gray',fontSize:13,fontFamily:'OpenSans',marginTop:10,marginLeft:2}}> {this.getPhone(item.mobile_no)}</Text>
+                                  </Col> 
                               </Row>
                              </Col>
-                             <Col size={1} style={{borderLeftColor:'gray',borderLeftWidth:0.4,paddingLeft:10,justifyContent:'center',marginTop:8,marginBottom:8}}>
-                                <Icon name="ios-call" style={{color:'#08BF01',fontSize:35}}/>
+                             <Col size={1} style={{justifyContent:'center',}}>
+                                <Icon name="logo-whatsapp" style={{color:'#08BF01',fontSize:35}}/>
                              </Col>
                             </Row>
                           </Card>   
-
-
-
-
-
-
-                  // <Card style={{padding:10}}>
-                  // <Row >
-                  //   <Col style={{width:'85%',paddingTop:10,}}>
-                  //     <Row>
-                  //     <Col style={{width:'50%'}}>
-                  //     <Text style={styles.nameTxt}>{this.getName(item)}</Text>
-                  //     </Col>
-                  //     <Col style={{width:'50%'}}>
-                  //     {item.is_available_blood_donate == true ?
-                  //    <Text style={styles.statButton}>Available</Text>
-                  //    :
-                  //    <Text style={styles.statButton}>Not Available</Text>
-                  //   }
-                  //    </Col>
-                  //     </Row>
-                    
-                  //     <Row style={{marginTop:5}}>
-                  //       <Col style={{width:'50%'}}>
-                  //       <Text style={styles.mobTxt}>{this.getPhone(item.mobile_no)}</Text>
-                       
-                  //       </Col>
-                  //       <Col style={{width:'50%'}}>
-                  //       <Text style={styles.cityTxt}>{this.getAddress(item.address)}</Text>
-                  //   </Col>
-                  //       </Row>
-                  //   </Col>
-                  //   <Col style={{width:'15%',paddingTop:10,justifyContent:'center'}}>
-                  //     <View style={styles.circleView}>
-                  //     <Text style={styles.circleText}>{this.getBloodGrp(item.blood_group)}</Text>
-                  //     </View>
-                
-                  //   </Col>
-                  // </Row>
-                  // </Card>
                   }/>  
                </View>
             }

@@ -384,7 +384,7 @@ callSuggestionService=async(enteredText)=>{
                                                                   style={{justifyContent:'center',alignItems:'center'}}>
                                         
                                                 <Row style={{   
-                                                        height: 50, width: 100, 
+                                                      width:'100%', 
                                                         overflow: 'hidden',
                                                         justifyContent:'center', 
                                                         alignItems:'center',
@@ -397,7 +397,7 @@ callSuggestionService=async(enteredText)=>{
                                                       }}
                                                 />
                                                 </Row>
-                                                <Row style={{  width: 100, height: 40, 
+                                                <Row style={{   width:'100%',  
                                                             //backgroundColor:'#fff',
                                                             paddingTop:5,
                                                             alignContent: 'center',
@@ -423,7 +423,7 @@ callSuggestionService=async(enteredText)=>{
                              <Card style={{  borderRadius: 10,}}>
                                  <TouchableOpacity onPress={()=>this.props.navigation.navigate("EarnReward")}>
                           <Row style={{ height: 60, width: '100%', overflow: 'hidden', backgroundColor: "#fff",borderRadius:10,}}>
-                           <Col style={{width:'70%'}}>
+                           <Col style={{width:'70%',}}>
                            <ImageBackground 
                             source={require('../../../../assets/images/bg.png')}
                               style={{
@@ -775,6 +775,7 @@ innerText:{
     textAlign:'left',
     marginLeft:15,
     lineHeight:20,
-    fontWeight:'500'
+    fontWeight:'500',
+    
 }
 });
