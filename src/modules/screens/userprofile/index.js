@@ -7,11 +7,12 @@ import { Col, Row, Grid } from 'react-native-easy-grid';
 import { connect } from 'react-redux';
 import { dateDiff } from '../../../setup/helpers';
 import LinearGradient from 'react-native-linear-gradient';
-import { StyleSheet, AsyncStorage, TouchableOpacity, FlatList } from 'react-native';
-import Modal from "react-native-modal";
+import { StyleSheet, AsyncStorage, TouchableOpacity, FlatList, Modal } from 'react-native';
+// import Modal from "react-native-modal";
 import { NavigationEvents } from 'react-navigation';
 import { Loader } from '../../../components/ContentLoader'
-import ImagePicker from 'react-native-image-picker';
+// import ImagePicker from 'react-native-image-picker';
+import ImagePicker from 'react-native-image-crop-picker';
 import { uploadMultiPart } from '../../../setup/services/httpservices'
 import { renderDoctorImage, renderProfileImage } from '../../common';
 
@@ -30,6 +31,8 @@ class Profile extends Component {
             imageSource: null,
             file_name: '',
             isLoading: false,
+            selectOptionPoopup: false
+
         };
 
     }
@@ -44,6 +47,10 @@ class Profile extends Component {
         this.getfavouritesList();
 
     }
+    componentWillUnmount() {
+        this.setState({ selectOptionPoopup: false });
+    }
+
     onStarRatingPress(rating) {
         this.setState({
             starCount: rating
@@ -151,63 +158,67 @@ class Profile extends Component {
         }
     }
     /*Upload profile pic*/
-    selectPhotoTapped() {
+    uploadProfilePicture(type) {
 
-        const options = {
-            quality: 1.0,
-            maxWidth: 500,
-            maxHeight: 500,
-            storageOptions: {
-                skipBackup: true
-            }
-        };
-        ImagePicker.showImagePicker(options, (response) => {
-            console.log('Response = ', response);
+        if (type == "Camera") {
+            ImagePicker.openCamera({
+                cropping: true,
+                width: 500,
+                height: 500,
+                cropperCircleOverlay: true,
+                compressImageMaxWidth: 640,
+                compressImageMaxHeight: 480,
+                freeStyleCropEnabled: true,
+            }).then(image => {
+                this.setState({ selectOptionPoopup: false });
+                console.log(image);
+                this.uploadImageToServer(image);
+            }).catch(ex => {
+                this.setState({ selectOptionPoopup: false });
+                console.log(ex);
+            });
+        } else {
+            ImagePicker.openPicker({
+                width: 300,
+                height: 400,
+                cropping: true,
+                cropperCircleOverlay: true,
+                freeStyleCropEnabled: true,
+                avoidEmptySpaceAroundImage: true,
+            }).then(image => {
+                console.log(image);
 
-            if (response.didCancel) {
-                console.log('User cancelled photo picker');
-            }
-            else if (response.error) {
-                console.log('ImagePicker Error: ', response.error);
-            }
-            else if (response.customButton) {
-                console.log('User tapped custom button: ', response.customButton);
-            }
-            else {
-                console.log("response is running")
-                let source = { uri: response.uri };
-
-                this.setState({
-                    imageSource: source.uri,
-
-                });
-                this.uploadImageToServer(response.uri);
-
-            }
-        });
+                this.setState({ selectOptionPoopup: false });
+                this.uploadImageToServer(image);
+            }).catch(ex => {
+                this.setState({ selectOptionPoopup: false });
+                console.log(ex);
+            });
+        }
     }
 
     /*Store image into api folder*/
-    uploadImageToServer = async (imagePath) => {
+    uploadImageToServer = async (image) => {
         try {
-            console.log("Image uploading");
             const userId = await AsyncStorage.getItem('userId')
-
             var formData = new FormData();
-            formData.append('profile', {
-                uri: imagePath,
-                type: 'image/jpeg',
+            formData.append('profilePic', {
+                uri: image.path,
+                type: image.mime,
                 name: 'photo.jpg'
             });
-            debugger
             let endPoint = `user/${userId}/upload/profile`
             var res = await uploadMultiPart(endPoint, formData);
             const response = res.data;
             if (response.success) {
                 this.setState({
-                    imageSource: imagePath
+                    imageSource: image.path,
                 });
-
+                Toast.show({
+                    text: 'Profile picture uploaded successfully',
+                    type: 'success',
+                    duration: 3000,
+                })
             } else {
                 Toast.show({
                     text: 'Problem Uploading Profile Picture',
@@ -224,6 +235,8 @@ class Profile extends Component {
             console.log(e);
         }
     }
+
+
     render() {
         const { profile: { isLoading } } = this.props;
         const { data, imageSource } = this.state;
@@ -257,7 +270,7 @@ class Profile extends Component {
                                         }
 
                                         <View style={{ marginLeft: 80, marginTop: -20, justifyContent: 'center' }}>
-                                            <Icon name="camera" style={{ fontSize: 20 }} onPress={() => this.selectPhotoTapped()} testID="cameraIconTapped" />
+                                            <Icon name="camera" style={{ fontSize: 20 }} onPress={() => this.setState({ selectOptionPoopup: true })} testID="cameraIconTapped" />
                                         </View>
 
                                         <View style={{ flexDirection: 'row', marginTop: 10, marginLeft: 30 }}>
@@ -279,6 +292,52 @@ class Profile extends Component {
 
                             </Grid>
                         </LinearGradient>
+                        <Modal
+                            visible={this.state.selectOptionPoopup}
+                            transparent={true}
+                            animationType={'fade'}
+                        >
+                            <View style={{
+                                flex: 1,
+                                flexDirection: 'column',
+                                justifyContent: 'center',
+                                alignItems: 'center',
+                                backgroundColor: 'rgba(0,0,0,0.5)'
+                            }}>
+                                <View style={{
+                                    width: '80%',
+                                    height: '35%', backgroundColor: '#fff',
+                                    borderColor: 'gray',
+                                    borderWidth: 3,
+                                    padding: 30,
+                                    borderRadius: 5
+                                }}>
+
+
+                                    <Text style={{ fontSize: 26, fontFamily: 'OpenSans', fontWeight: 'bold', textAlign: 'center' }}> Select a Photo  </Text>
+                                    {/* </Item> */}
+                                    <Row style={{ marginTop: 10 }}>
+                                        <Col>
+                                            <TouchableOpacity onPress={() => this.uploadProfilePicture("Camera")} testID='chooseCemara'>
+                                                <Text style={{ fontSize: 20, fontFamily: 'OpenSans', marginLeft: 10, marginTop: 10 }}>Take Photo</Text>
+                                            </TouchableOpacity>
+                                            <TouchableOpacity onPress={() => this.uploadProfilePicture("Library")} testID='chooselibrary'>
+                                                <Text style={{ fontSize: 20, fontFamily: 'OpenSans', marginLeft: 10, marginTop: 10 }}>Choose from Library</Text>
+                                            </TouchableOpacity>
+                                        </Col>
+                                    </Row>
+                                    <Row style={{ marginTop: 50 }}>
+                                        <Right style={{ marginTop: 15, marginLeft: 15 }} >
+                                            <Button transparent style={{ marginTop: 15 }} onPress={() => this.setState({ selectOptionPoopup: false })} testID='cancleButton'>
+                                                <Text style={{ fontFamily: 'OpenSans', fontSize: 20, }}> Cancel</Text>
+                                            </Button>
+                                        </Right>
+                                    </Row>
+                                </View>
+
+                            </View>
+                        </Modal>
+
                         <Card>
                             <Grid style={{ padding: 10 }}>
                                 <Col style={{ backgroundColor: 'transparent', borderRightWidth: 0.5, borderRightColor: 'gray', marginLeft: 'auto', marginRight: 'auto' }}>
@@ -379,7 +438,7 @@ class Profile extends Component {
                                     <TouchableOpacity onPress={() => this.editProfile('UpdateContact')} testID="onPressUpdateContact">
                                         <Text style={styles.customText}>Contact</Text>
                                         <Text note style={styles.customText1}>{data.mobile_no}</Text>
-                                        {data.secondary_mobile !== undefined ?
+                                        {data.secondary_mobile !== '' ?
                                             <Col>
                                                 <Text style={styles.customText}>Secondary</Text>
                                                 <Text note style={styles.customText1}>{data.secondary_mobile}</Text>
@@ -467,7 +526,7 @@ class Profile extends Component {
                                                     <Thumbnail square source={renderDoctorImage(item.doctorInfo)} style={{ height: 60, width: 60 }} />
                                                 </Left>
                                                 <Body>
-                                                    <Text style={{ fontFamily: 'OpenSans', fontSize: 15 }}> {item.doctorInfo.prefix ? item.doctorInfo.prefix : 'Dr.'} {item.doctorInfo.first_name + " " + item.doctorInfo.last_name} </Text>
+                                                    <Text style={{ fontFamily: 'OpenSans', fontSize: 15, width: '100%' }}> {item.doctorInfo.prefix ? item.doctorInfo.prefix : 'Dr.'} {item.doctorInfo.first_name + " " + item.doctorInfo.last_name} </Text>
                                                 </Body>
                                                 <Right>
                                                     <Button style={styles.docbutton}><Text style={{ fontFamily: 'OpenSans', fontSize: 12 }} onPress={() => this.props.navigation.navigate('Book Appointment', { doctorId: item.doctorInfo.doctor_id, fetchAvailabiltySlots: true })} testID="navigateBookAppointment"> Book Again</Text></Button>

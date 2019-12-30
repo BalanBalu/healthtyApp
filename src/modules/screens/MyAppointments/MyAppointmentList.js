@@ -555,17 +555,15 @@ const styles = StyleSheet.create({
 		justifyContent: "center"
 	},
 	shareButton: {
-		marginTop: 12,
+		marginTop: 10,
 		backgroundColor: "gray",
-		marginRight: 5,
-
+		marginRight: 1,
 		borderRadius: 10,
 		width: "auto",
 		height: 30,
 		color: "white",
-		fontSize: 1,
-		textAlign: "center",
-		justifyContent: "center"
+		fontSize: 12,
+		textAlign: "center"
 	},
 	customButton: {
 		alignItems: "center",

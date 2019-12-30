@@ -5,7 +5,7 @@ import { AsyncStorage, ScrollView } from 'react-native';
 import { connect } from 'react-redux'
 import styles from './style.js';
 import Spinner from '../../../components/Spinner';
-
+import { validateMobileNumber } from '../../common'
 
 
 class UpdateContact extends Component {
@@ -18,7 +18,10 @@ class UpdateContact extends Component {
             active: true,
             primary_mobile_no: '',
             isLoading: false,
-            userData: ''
+            userData: '',
+            errorMsg: '',
+            existingSecNumber: ''
+
         }
     }
 
@@ -32,50 +35,63 @@ class UpdateContact extends Component {
         const userData = navigation.getParam('updatedata');
         if (userData.mobile_no) {
             this.setState({
-                primary_mobile_no: userData.mobile_no
+                primary_mobile_no: userData.mobile_no,
             })
         }
         if (userData.secondary_mobile) {
             this.setState({
-                secondary_mobile_no: userData.secondary_mobile
+                secondary_mobile_no: userData.secondary_mobile,
+                existingSecNumber: userData.secondary_mobile
+
             })
         }
 
     }
     commonUpdateContactMethod = async () => {
-        const { secondary_mobile_no, userData, primary_mobile_no } = this.state
+        const { secondary_mobile_no, existingSecNumber, primary_mobile_no } = this.state
         try {
-            this.setState({ isLoading: true })
-            if (primary_mobile_no != undefined && primary_mobile_no != secondary_mobile_no) {
+            this.setState({ isLoading: true });
 
-                let userId = await AsyncStorage.getItem('userId');
-                let data = {
-                    mobile_no: primary_mobile_no,
-                    secondary_mobile: secondary_mobile_no
-                };
-                    let response = await userFiledsUpdate(userId, data);
-                    if (response.success) {
-                        Toast.show({
-                            text: "Contacts has been saved",
-                            type: "success",
-                            duration: 3000,
-                        })
-                        this.props.navigation.navigate('Profile');
-                    } else {
-                        Toast.show({
-                            text: response.message,
-                            type: "danger",
-                            duration: 3000
-                        })
-                    }
-                } else {
-                    Toast.show({
-                        text: 'Cannot have the same mobile no. Kindly enter a new number',
-                        type: "danger",
-                        duration: 3000
-                    })
-                }
-            
+            if (primary_mobile_no == '') {
+                this.setState({ errorMsg: 'Kindly enter your primary contact' })
+                return false;
+            }
+            if (secondary_mobile_no == '') {
+                this.setState({ errorMsg: 'Kindly enter your secondary contact number' })
+                return false;
+            }
+            if (primary_mobile_no == secondary_mobile_no || existingSecNumber == secondary_mobile_no) {
+                this.setState({ errorMsg: 'User details already exists' })
+                return false;
+            }
+            if (validateMobileNumber(primary_mobile_no && secondary_mobile_no) == false) {
+                this.setState({ errorMsg: 'Contact field must contain number' })
+                return false;
+            }
+
+            this.setState({ errorMsg: '', isLoading: true });
+
+
+            let userId = await AsyncStorage.getItem('userId');
+            let data = {
+                mobile_no: primary_mobile_no,
+                secondary_mobile: secondary_mobile_no
+            };
+            let response = await userFiledsUpdate(userId, data);
+            if (response.success) {
+                Toast.show({
+                    text: "Contacts has been saved",
+                    type: "success",
+                    duration: 3000,
+                })
+                this.props.navigation.navigate('Profile');
+            } else {
+                Toast.show({
+                    text: response.message,
+                    type: "danger",
+                    duration: 3000
+                })
+            }
         }
 
         catch (e) {
@@ -87,25 +103,6 @@ class UpdateContact extends Component {
     }
 
 
-    validateMobile_No(number, type) {
-        const regex = new RegExp('^[0-9]+$')  //Support only numbers
-        if (type === 'Primary') {
-            this.setState({ primary_mobile_no: number })
-        }
-        else {
-            this.setState({ secondary_mobile_no: number })
-        }
-        if (regex.test(number) === false) {
-            if (number != '') {
-                Toast.show({
-                    text: 'The entered number is invalid',
-                    type: "danger",
-                    duration: 3000
-                });
-            }
-
-        }
-    }
 
     render() {
         return (
@@ -127,7 +124,7 @@ class UpdateContact extends Component {
                                         <Row>
                                             <Icon name="call" style={styles.centeredIcons}></Icon>
                                             <Input placeholder="Edit Your Number" style={styles.transparentLabel} keyboardType="numeric"
-                                                onChangeText={number => this.validateMobile_No(number, 'Primary')}
+                                                onChangeText={number => this.setState({ primary_mobile_no: number })}
                                                 value={String(this.state.primary_mobile_no)}
                                                 testID='updatePrimaryContact' />
                                         </Row>
@@ -141,12 +138,13 @@ class UpdateContact extends Component {
                                         <Row>
                                             <Icon name='call' style={styles.centeredIcons}></Icon>
                                             <Input placeholder="Edit Your Number" style={styles.transparentLabel} keyboardType="numeric"
-                                                onChangeText={number => this.validateMobile_No(number, 'Secondary')}
+                                                onChangeText={number => this.setState({ secondary_mobile_no: number })}
                                                 value={String(this.state.secondary_mobile_no)}
                                                 testID='updateContact' />
                                         </Row>
                                     </Col>
                                 </Item>
+                                <Text style={{ color: 'red', marginLeft: 15, marginTop: 5 }}>{this.state.errorMsg}</Text>
 
 
 

@@ -194,7 +194,7 @@ class UserDetails extends Component {
                                         onPress={() => { this.setState({ checked: !checked }); }}
                                     /> */}
                                     <Checkbox status={this.state.isBloodDonor ? 'checked' : 'unchecked'} color="#775DA3" onPress={() => this.setState({ isBloodDonor: !this.state.isBloodDonor })} testID='privateCheckbox'></Checkbox>
-                                    <Text style={{ marginLeft: 2, color: 'gray', fontFamily: 'OpenSans', fontSize: 13,marginTop:10 }}>Are you blood donor</Text>
+                                    <Text style={{ marginLeft: 2, color: '#775DA3', fontFamily: 'OpenSans', fontSize: 14,marginTop:10,fontWeight:'bold' }}>Are you blood donor</Text>
                                 </Row>
                                 <View>
                                 <Text style={{ paddingLeft: 20, fontSize: 15, fontFamily: 'OpenSans', color: 'red' }}> {this.state.errorMsg}</Text>
