@@ -288,3 +288,9 @@ export function validateMobileNumber(number) {
     if (regPatternForMob.test(number)) return true;
     else return false;
 }
+
+export function validatePincode(number) {
+    const regex = new RegExp('^[0-9]+$')  //Support only numbers
+    if (regex.test(number) === false) return false;
+    else return true;
+}
