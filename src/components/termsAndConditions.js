@@ -1,8 +1,7 @@
 import React, { Component } from 'react';
-import { View, Text, Image, Dimensions, StyleSheet } from 'react-native';
+import { View, Text, Image, StyleSheet, TouchableOpacity } from 'react-native';
 import styles from '../modules/screens/auth/styles';
-import { Container, Content, Row, Col,H2, H3,H5, Button, Card, List, Left, Right, Toast, Thumbnail, Body, Icon, locations, ProgressBar, Item, Radio } from 'native-base';
-const { width={} } = Dimensions.get('window');
+import { Container, Header, Content, Row, Col,H2, H3, Button, Card, Left, Right, Body, Icon, Title  } from 'native-base';
 
 class TermsAndConditions extends Component {
   constructor() {
@@ -11,19 +10,29 @@ class TermsAndConditions extends Component {
     }
   }
   render() {
-    const {  } = this.state;
-    return (
+    return ( 
         <Container style={styles.container}>
         <Content>
-          <View style={{marginTop:15}}>
-          <Row style={{backgroundColor:'#7E49C3'}}>
+        <Header  style={{backgroundColor:'#7E49C3'}}>
+          <Left>
+            <Button transparent onPress={() => this.props.navigation.navigate('signup')}>
+              <Icon name='arrow-back' />
+            </Button>
+          </Left>
+           <Body>
+            <Title>Terms and Conditions</Title>
+          </Body> 
+        </Header>
+
+          <View style={{marginTop:10}}>
+          {/* <Row style={{backgroundColor:'#7E49C3'}}>
             <Col style={{marginLeft:10, width:'25%'}}>
             <Image source={require('../../assets/images/Logo.png')} style={{height:50,width:50}}/>
             </Col>
             <Col  style={{justifyContent:'center',alignItems:'center', width:'46%'}} >
             <Text style={{fontSize:20,textAlign:'center',color:'#fff', }}>Term and Conditions</Text>
             </Col>
-          </Row>
+          </Row> */}
 
 <View style={{padding:20, marginTop:10}}>
 

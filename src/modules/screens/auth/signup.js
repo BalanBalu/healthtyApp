@@ -171,8 +171,10 @@ class Signup extends Component {
                                  status={checked ? 'checked' : 'unchecked'}
                                  onPress={() => { this.setState({ checked: !checked }); }}
                                   />
-              <TouchableOpacity onPress={() => this.props.navigation.navigate('termsAndConditions')}>
-                                  <Text style={{  color: 'gray', fontFamily: 'OpenSans', fontSize: 12,}}>I Accept the Medflic Terms And Conditions</Text>
+                                  <Text style={{  color: 'gray', fontFamily: 'OpenSans', fontSize: 13,}}>I Accept the Medflic </Text>
+                                  <TouchableOpacity onPress={() => this.props.navigation.navigate('termsAndConditions')}>
+
+                                  <Text style={{  color: '#5055d7', fontFamily: 'OpenSans', fontSize: 13,}}> Terms And Conditions</Text>
 
                                   </TouchableOpacity>
                             </Item>
