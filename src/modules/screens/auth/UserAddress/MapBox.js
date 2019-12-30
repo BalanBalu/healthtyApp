@@ -341,8 +341,6 @@ export default class MapBox extends React.Component {
                 />
 
                 <View style={{ flex: 1 }}>
-                    {this.state.showAllAddressFields == false ?
-
                         <Row style={styles.SearchRow}>
                             <Col size={0.9} style={styles.SearchStyle}>
                                 <TouchableOpacity style={{ justifyContent: 'center' }}>
@@ -357,7 +355,7 @@ export default class MapBox extends React.Component {
                                     onFocus={() => { this.state.fromProfile ? this.props.navigation.navigate('UserAddress', { fromProfile: true }) : this.props.navigation.navigate('UserAddress') }}
                                     onChangeText={locationFullText => this.setState({ locationFullText })} />
                             </Col>
-                        </Row> : null}
+                        </Row> 
                     {this.state.coordinates !== null ?
                         <MapboxGL.MapView
                             ref={(c) => this._map = c}

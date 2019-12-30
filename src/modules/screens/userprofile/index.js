@@ -202,7 +202,7 @@ class Profile extends Component {
         try {
             const userId = await AsyncStorage.getItem('userId')
             var formData = new FormData();
-            formData.append('profilePic', {
+            formData.append('profile', {
                 uri: image.path,
                 type: image.mime,
                 name: 'photo.jpg'
