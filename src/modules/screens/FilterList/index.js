@@ -354,28 +354,29 @@ class Filters extends Component {
                                     />
                                
                                </TouchableOpacity>
-                        <Item last style={{ borderBottomWidth: 0, height: 40, backgroundColor: '#fff', borderRadius: 10,marginTop: 10 }}>
-                            <Picker style={{ fontFamily: 'OpenSans' }}
+                        <Item last style={{ borderBottomWidth: 0, height: 40, backgroundColor: '#fff', borderRadius: 10,marginTop: 10,}}>
+                            <Picker style={{ fontFamily: 'OpenSans',}}
                                 mode="dropdown"
                                 placeholder='Select categories'
                                 placeholderStyle = {{fontSize:15,marginLeft:-5}} 
-                                iosIcon={<Icon name="ios-arrow-down"  style={{color:'gray',}}/>}
+                                iosIcon={<Icon name="ios-arrow-down"  style={{color:'gray',textAlign:'right'}}/>}
                                 note={false}
                                 textStyle={{ color: "gray",left:0,marginLeft:-5}}
                                 itemStyle={{
                                     backgroundColor: "#fff",
                                     paddingLeft: 10,
                                     fontSize: 16,
+                                   
                                     
                                 }}
                                 itemTextStyle={{ color: 'gray' }}
-                                style={{ width: undefined }}
+                                style={{ width: '85%' }}
                                 onValueChange={this.onSelectedCategoryChange}
                                 selectedValue={this.state.selectedCategory}
                             >
                                 {this.state.categoryList.map((category, key) => {
                                     return <Picker.Item label={String(category.value)} value={String(category.value)} key={key}
-                                    />
+                                  />
                                 })
                                 }
                             </Picker>

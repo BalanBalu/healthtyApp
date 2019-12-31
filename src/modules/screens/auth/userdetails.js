@@ -154,14 +154,13 @@ class UserDetails extends Component {
                                         mode="dropdown"
                                         placeholder='Select Blood Group'
                                         placeholderStyle = {{fontSize:15,marginLeft:-5}} 
-                                        iosIcon={<Icon name="ios-arrow-down" />}
+                                        iosIcon={<Icon name="ios-arrow-down"  style={{color:'gray',fontSize:20}}/>}
                                         textStyle={{ color: "gray",left:0,marginLeft:-5}}
                                         note={false}
                                         itemStyle={{
                                             backgroundColor: "gray",
                                             paddingLeft: 10,
-                                            fontSize: 16,
-                                            
+                                            fontSize: 16,        
                                         }}
                                         itemTextStyle={{ color: '#5cb85c', }}
                                         style={{ width: undefined }}
