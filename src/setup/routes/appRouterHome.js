@@ -342,7 +342,7 @@ const HomeStack = createStackNavigator({
   "Chat Service": {
     screen: AvailableDoctors4Chat,
     navigationOptions: {
-      title: 'Availabile Doctors'
+      title: 'Available Doctors'
     }
   },
   "My Chats": {
@@ -532,7 +532,7 @@ const HomeStack = createStackNavigator({
     Home: {
       screen: HomeStack,
     },
-    BloodDonersList: {
+    "Blood Doners": {
       screen: BloodDonersList,
     },
     "My Appointments":{
@@ -570,7 +570,7 @@ const HomeStack = createStackNavigator({
     Reminder:require('../../../assets/images/drawerIcons/Reminder.png'),
     "My Chats":require('../../../assets/images/drawerIcons/Chat.png'),
     "Chat Service": require('../../../assets/images/drawerIcons/Chat.png'),
-    BloodDonersList: require('../../../assets/images/drawerIcons/Blooddonars.png'),
+    "Blood Doners": require('../../../assets/images/drawerIcons/Blooddonars.png'),
   }
   export default createAppContainer(createSwitchNavigator(
     {
