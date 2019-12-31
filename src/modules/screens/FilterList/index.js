@@ -354,20 +354,22 @@ class Filters extends Component {
                                     />
                                
                                </TouchableOpacity>
-                        <Item style={{ borderBottomWidth: 0, height: 40, backgroundColor: '#fff', borderRadius: 10,marginTop: 10 }}>
+                        <Item last style={{ borderBottomWidth: 0, height: 40, backgroundColor: '#fff', borderRadius: 10,marginTop: 10 }}>
                             <Picker style={{ fontFamily: 'OpenSans' }}
                                 mode="dropdown"
-                                placeholder="Select Category"
-                                iosIcon={<Icon name="arrow-down" style={{ fontSize: 10 }}
-                                />}
-                                textStyle={{ color: "#5cb85c" }}
+                                placeholder='Select categories'
+                                placeholderStyle = {{fontSize:15,marginLeft:-5}} 
+                                iosIcon={<Icon name="ios-arrow-down"  style={{color:'gray',}}/>}
+                                note={false}
+                                textStyle={{ color: "gray",left:0,marginLeft:-5}}
                                 itemStyle={{
-                                    backgroundColor: "white",
-                                    marginLeft: 0,
-                                    paddingLeft: 10
+                                    backgroundColor: "#fff",
+                                    paddingLeft: 10,
+                                    fontSize: 16,
+                                    
                                 }}
                                 itemTextStyle={{ color: 'gray' }}
-                                style={{ width: 25 }}
+                                style={{ width: undefined }}
                                 onValueChange={this.onSelectedCategoryChange}
                                 selectedValue={this.state.selectedCategory}
                             >
