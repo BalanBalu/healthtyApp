@@ -12,28 +12,18 @@ class TermsAndConditions extends Component {
   render() {
     return ( 
         <Container style={styles.container}>
+           <Header style={{backgroundColor:'#7E49C3'}}>
+          <Row >
+            <Col style={{marginLeft:10, marginTop:10, width:'25%'}}>
+            <Image source={require('../../assets/images/Logo.png')} style={{height:40,width:40}}/>
+            </Col>
+            <Col  style={{justifyContent:'center', width:'75%'}} >
+            <Text style={{fontSize:20,color:'#fff', }}>Terms and Conditions</Text>
+            </Col>
+          </Row>
+</Header>
         <Content>
-        <Header  style={{backgroundColor:'#7E49C3'}}>
-          <Left>
-            <Button transparent onPress={() => this.props.navigation.navigate('signup')}>
-              <Icon name='arrow-back' />
-            </Button>
-          </Left>
-           <Body>
-            <Title>Terms and Conditions</Title>
-          </Body> 
-        </Header>
-
-          <View style={{marginTop:10}}>
-          {/* <Row style={{backgroundColor:'#7E49C3'}}>
-            <Col style={{marginLeft:10, width:'25%'}}>
-            <Image source={require('../../assets/images/Logo.png')} style={{height:50,width:50}}/>
-            </Col>
-            <Col  style={{justifyContent:'center',alignItems:'center', width:'46%'}} >
-            <Text style={{fontSize:20,textAlign:'center',color:'#fff', }}>Term and Conditions</Text>
-            </Col>
-          </Row> */}
-
+         
 <View style={{padding:20, marginTop:10}}>
 
           <H3 style={{fontSize:15}}>We hope you love using Medflic. We really do. This document contains important information that you need to consider before making an important decision.</H3>
@@ -315,10 +305,11 @@ If you do not qualify under these Terms of Use, do not use the Site or Services.
 <Text style={{textAlign:'center',fontSize:15,color:'#fff', paddingTop:15, paddingBottom:15}}>Copyright © 2017 All Direction Source Tech</Text>
 
 </View>
-          </View>
-          </View>
-     
+          </View>     
         </Content>
+        <TouchableOpacity style={termsStyles.backButton} onPress={() => this.props.navigation.navigate('signup')}>
+<Text style={{color:'#fff', fontSize:13}}>BACK</Text>         
+   </TouchableOpacity>
 </Container>
     )
     }
@@ -341,7 +332,22 @@ const termsStyles = StyleSheet.create({
   },
   mainHeading:{
     fontSize:18, marginTop:20, fontWeight:'bold'
-  }
+  },
+  backButton:{
+  position:'absolute',
+  bottom:0,
+  right:0,
+   marginRight:15,
+    backgroundColor:'#7E49C3',
+     padding:12, marginBottom:12,
+      borderRadius: 20,
+      paddingLeft:24,
+      paddingRight:24,
+      paddingTop:5,
+      paddingBottom:7,
+      shadowColor:'gray',
+      elevation:2
+},
 });
 
 export default TermsAndConditions
