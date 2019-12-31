@@ -15,6 +15,7 @@ import Categories from "../../modules/screens/categories";
 import login from "../../modules/screens/auth/login";
 import signup from "../../modules/screens/auth/signup";
 import forgotpassword from "../../modules/screens/auth/forgotpassword";
+import renderOtpInput from "../../modules/screens/auth/renderOtpInput";
 import userdetails from "../../modules/screens/auth/userdetails";
 import UserAddress from "../../modules/screens/auth/UserAddress";
 import MapBox from "../../modules/screens/auth/UserAddress/MapBox";
@@ -72,6 +73,9 @@ const AuthRoutes = {
   },
   forgotpassword: {
     screen: forgotpassword,
+  },
+  renderOtpInput: {
+    screen: renderOtpInput,
   },
   userdetails: {
     screen: userdetails,

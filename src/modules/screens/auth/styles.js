@@ -129,6 +129,11 @@ export default StyleSheet.create({
         marginLeft: 15,
         borderRadius: 5,
     },
+    forgotButtonDisable: {
+        marginTop: 20,
+        backgroundColor: '#9777c7',
+        borderRadius: 5,
+    },
     forgotButton: {
         marginTop: 20,
         backgroundColor: '#775DA3',
@@ -146,6 +151,16 @@ export default StyleSheet.create({
     loginButton1: {
         marginTop: 20,
         backgroundColor: '#775DA3',
+        borderRadius: 20,
+        justifyContent:'center',
+        paddingRight:35,
+        paddingLeft:35,
+        paddingBottom:8,
+        paddingTop:8
+    },
+    loginButton1Disable: {
+        marginTop: 20,
+        backgroundColor: '#9777c7',
         borderRadius: 20,
         justifyContent:'center',
         paddingRight:35,
