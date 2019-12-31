@@ -1,87 +1,82 @@
 import React, { Component } from 'react';
 import {
     Container, Content, Button, Text, Form, Item, Input, Header, Footer,
-    FooterTab, Icon, Right, Body, Left, CheckBox, Radio, H3, H2, H1, Toast,Card,Label
+    FooterTab, Icon, Right, Body, Left, CheckBox, Radio, H3, H2, H1, Toast, Card, Label
 } from 'native-base';
-import { login, signUp } from '../../providers/auth/auth.actions';
+import { signUp } from '../../providers/auth/auth.actions';
+import { validateEmailAddress } from '../../common';
 import { connect } from 'react-redux'
-import { StyleSheet, Image, View ,TouchableOpacity,ImageBackground} from 'react-native';
+import { StyleSheet, Image, View, TouchableOpacity, ImageBackground } from 'react-native';
 import styles from '../../screens/auth/styles';
-import Spinner from '../../../components/Spinner';
-import { ScrollView } from 'react-native-gesture-handler';
-import { RadioButton,Checkbox } from 'react-native-paper';
+import { RadioButton, Checkbox } from 'react-native-paper';
+import Spinner from '../../../components/Spinner'
 const mainBg = require('../../../../assets/images/MainBg.jpg')
+
 class Signup extends Component {
     constructor(props) {
         super(props)
 
         this.state = {
-            userEmail: '',  //Enter both Email Or Mobile Number
+            userEmail: '',
             password: '',
             gender: 'M',
             radioStatus: [true, false, false],
-            conditionCheckErrorMsg: '',
+            errorMsg: '',
             checked: false,
-            showPassword: true
+            showPassword: true,
+            isLoading: false
         }
     }
-    toggleRadio = (radioSelect, genderSelect) => {
+    toggleRadio = async (radioSelect, genderSelect) => {
         let tempArray = [false, false, false];
         tempArray[radioSelect] = true;
-        this.setState({ radioStatus: tempArray });
-        this.setState({ gender: genderSelect });
+        await this.setState({ radioStatus: tempArray, gender: genderSelect });
     }
     doSignUp = async () => {
+        const { userEmail, password, checked, gender } = this.state;
         try {
-            if (this.state.checked === true) {
-                let requestData = {
-                    email: this.state.userEmail,
-                    password: this.state.password,
-                    gender: this.state.gender,
-                    type: 'user'
-                };
+            if (checked === false) {
+                this.setState({ errorMsg: 'Please agree to the terms and conditions to continue' });
+                return false;
+            }
+            if (validateEmailAddress(userEmail) == false) {
+                this.setState({ errorMsg: 'Please enter the valid Email address' })
+                return false;
+            }
+            this.setState({ errorMsg: '', isLoading: true });
+            let requestData = {
+                email: userEmail,
+                password: password,
+                gender: gender,
+                type: 'user'
+            };
+            await signUp(requestData);        // Do SignUp Process
+            if (this.props.user.success) {
                 let loginData = {
-                    userEntry: this.state.userEmail,
-                    password: this.state.password,
+                    userEntry: userEmail,
+                    password: password,
                     type: 'user'
                 }
-
-                await signUp(requestData);
-                console.log(this.props.user);
-                if (this.props.user.success) {
-                    Toast.show({
-                        text: this.props.user.message,
-                        duration: 3000
-                    });
-                    await login(loginData);
-                    if (this.props.user.isAuthenticated) {
-                        this.props.navigation.navigate('userdetails')
-                    } else {
-                        Toast.show({
-                            text: this.props.user.message,
-                            duration: 3000
-                        });
-                    }
-                } else {
-                    Toast.show({
-                        text: this.props.user.message,
-                        duration: 3000
-                    });
-                    return
-                }
+                this.props.navigation.navigate('renderOtpInput', { loginData: loginData });
             } else {
-                this.setState({ conditionCheckErrorMsg: 'Kindly agree to the terms and conditions' });
+                this.setState({ errorMsg: this.props.user.message })
             }
         } catch (e) {
-            console.log(e);
+            Toast.show({
+                text: 'Something Went Wrong' + e,
+                duration: 3000,
+                type: "danger"
+            })
+        }
+        finally {
+            this.setState({ isLoading: false })
         }
     }
 
     render() {
         const { user: { isLoading } } = this.props;
-        const { checked } = this.state;
+        const { userEmail, password, showPassword, checked, gender, errorMsg } = this.state;
         return (
-
             <Container style={styles.container}>
              <ImageBackground source={mainBg} style={{width: '100%', height: '100%', flex: 1 }}>
 
@@ -201,21 +196,12 @@ class Signup extends Component {
               </Item>
                         </Card>
                         </View>
-                 
-                </Content>
-               </ImageBackground>
+                    </Content>
+                </ImageBackground>
             </Container>
-
         )
-
-
-
-
     }
-
 }
-
-
 
 function signUpState(state) {
     return {
