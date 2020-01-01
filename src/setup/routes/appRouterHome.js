@@ -32,6 +32,8 @@ import Notification from "../../modules/screens/Notification";
 import Chat from "../../modules/screens/chat";
 import { Col, Grid, Row } from 'react-native-easy-grid';
 import { logout } from '../../modules/providers/auth/auth.actions';
+import termsAndConditions from '../../components/termsAndConditions'
+
 import { TouchableOpacity, Image, Text, Platform,TouchableNativeFeedback } from 'react-native'
 
 import menuIcon from '../../../assets/images/menu.png';
@@ -86,6 +88,10 @@ const AuthRoutes = {
     MapBox: {
     screen: MapBox,
   },
+  termsAndConditions: {
+    screen: termsAndConditions,
+  },
+  
 
 }
 
