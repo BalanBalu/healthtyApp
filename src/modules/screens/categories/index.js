@@ -23,7 +23,7 @@ class Categories extends Component {
     try {
         let result = await catagries();
         if (result.success) { 
-            this.setState({ data: result.data })
+            await this.setState({ data: result.data })
         }
     } catch (e) {
         console.log(e);
@@ -47,46 +47,86 @@ class Categories extends Component {
     return (
       <Container style={styles.container}>
         <Content style={styles.bodyContent}>
-          <FlatList horizontal={false} numColumns={3}
+          <View style={{marginBottom:10}}>
+          <FlatList horizontal={false} numColumns={2}
             data={this.state.data}
             extraData={this.state}
             renderItem={({ item, index }) =>
-              <Grid style={{ marginTop: 10, justifyContent: 'center', padding: 5, }}>
-               
-                  {isLoading ? <Spinner color='blue' /> : null}
-                  <TouchableOpacity onPress={() => this.navigateToCategorySearch(item.category_name)} style={{alignItems:'center',marginBottom:5}}>
 
-                    <Col style={{width:'90%',}}>
-                      <LinearGradient
-                        colors={['#7357A2', '#62BFE4']} style={{
-                          flex: 1,
-                          borderRadius: 10,
+            <Col style={{
+              alignItems: "center", 
+              justifyContent: "center", 
+              borderColor:'gray', 
+              borderRadius:5, 
+              flexDirection:'row',
+              borderWidth:0.1, 
+              shadowColor: '#000',
+              shadowOffset: { width: 0, height: 0.5 },
+              shadowOpacity: 0.1,
+              shadowRadius: 5,  
+              elevation: 2,
+              padding:1,
+              marginTop:8,
+              marginLeft:12,
+              marginBottom:1,width:'45%',flexDirection:'row',backgroundColor:'#fafafa' }}>
+             
+                  <TouchableOpacity onPress={() => this.navigateToCategorySearch(item.category_name)} 
+                                    style={{justifyContent:'center',alignItems:'center',width:'100%',paddingTop:5,paddingBottom:5}}>
+          
+                  
+                  <Image
+                        source={{ uri: item.imageBaseURL + item.category_id + '.png'  }}
+                        style={{
+                          width: 50,height:50, alignItems:'center'
+                        }}
+                  />
+                 
+                  
+                      <Text style={{fontSize:12, textAlign:'center', padding: 2}}>{item.category_name}</Text>
+                
+                  </TouchableOpacity>
+           
+                  
+      </Col> 
+
+            
+//               <Grid style={{ marginTop: 10, justifyContent: 'center', padding: 5, }}>
+               
+//                   {isLoading ? <Spinner color='blue' /> : null}
+//                   <TouchableOpacity onPress={() => this.navigateToCategorySearch(item.category_name)} style={{alignItems:'center',marginBottom:5}}>
+
+//                     <Col style={{width:'90%',}}>
+//                       <LinearGradient
+//                         colors={['#7357A2', '#62BFE4']} style={{
+//                           flex: 1,
+//                           borderRadius: 10,
 
                         
-                        }}>
-                        <Image
-                          source={{ uri: item.imageBaseURL + 'white/' + item.category_id + '.png' }} style={styles.customImage}
-                        //  source={{ uri: 'http://pluspng.com/img-png/orthopedics-png--350.png' }} style={styles.customImage}
-                        />
-                      </LinearGradient>
+//                         }}>
+//                         <Image
+//                           source={{ uri: item.imageBaseURL + 'white/' + item.category_id + '.png' }} style={styles.customImage}
+//                         //  source={{ uri: 'http://pluspng.com/img-png/orthopedics-png--350.png' }} style={styles.customImage}
+//                         />
+//                       </LinearGradient>
 
                       
 
-                    </Col>
-                    <Col style={{ padding: 2,
-    backgroundColor: '#FF9502',
-    borderRadius: 5,marginTop:10,justifyContent:'center',width:'90%',alignItems:'center'}}>
+//                     </Col>
+//                     <Col style={{ padding: 2,
+//     backgroundColor: '#FF9502',
+//     borderRadius: 5,marginTop:10,justifyContent:'center',width:'90%',alignItems:'center'}}>
                     
-<Text style={styles.titleText}>{item.category_name}</Text>
+// <Text style={styles.titleText}>{item.category_name}</Text>
 
-                    </Col>
+//                     </Col>
                  
-                  </TouchableOpacity>
+//                   </TouchableOpacity>
                 
-              </Grid>
+//               </Grid>
             }
             keyExtractor={(item, index) => index.toString()}
           />
+          </View>
         </Content>
       </Container>
 
