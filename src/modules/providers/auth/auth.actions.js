@@ -14,8 +14,35 @@ export const REDIRECT_NOTICE = 'AUTH/REDIRECT_NOTICE';
 export const RESET_REDIRECT_NOTICE = 'AUTH/RESET_REDIRECT_NOTICE';
 import {NOTIFICATION_RESET} from '../notification/notification.actions'
 import { store } from '../../../setup/store';
-
 import axios from 'axios';
+
+
+
+
+
+export async function generateOtpCodeForCreateAccount(reqData) {
+  try {
+    let endPoint = 'auth/generateOtpForCreateAccount'
+    let response = await postService(endPoint, reqData);
+    let responseData = response.data;
+    return responseData
+  } catch (e) {
+    console.log(e);
+  }
+}
+
+export async function verifyOtpCodeForCreateAccount(reqData) {
+  try {
+    let endPoint = 'auth/verifyOtpForCreateAccount'
+    let response = await postService(endPoint, reqData);
+    let responseData = response.data;
+    return responseData
+  }
+  catch (e) {
+    console.log(e);
+  }
+}
+
 
 export async function login(userCredentials, isLoading = true) {
   try {
@@ -66,9 +93,9 @@ export async function generateOTP(reqData) {
       type: AUTH_REQUEST,
       isLoading: true
     })
-    console.log('comign to Generate OTP after dispathc');
     let endPoint = 'auth/requestCodeFP'
     let response = await postService(endPoint, reqData);
+    let responseData = response.data
     if (response.error || response.success == false) {
       store.dispatch({
         type: LOGIN_HAS_ERROR,
@@ -80,7 +107,7 @@ export async function generateOTP(reqData) {
       type: OTP_CODE_GENERATED,
       userId: response.data.userId
     })
-    return
+    return responseData
   } catch (e) {
     console.log(e);
     store.dispatch({
@@ -99,26 +126,21 @@ export async function changePassword(reqData) {
     })
     let endPoint = 'auth/changePassword/'
     let response = await postService(endPoint, reqData);
-    let respData = response.data;
-    console.log(response);
-    if (!respData.success || respData.error) {
+    let responseData = response.data
+     if (response.data.success == true) {
       store.dispatch({
-        type: AUTH_HAS_ERROR,
-        message: respData.error || respData.message
+        type: NEW_PASSWORD,
+        newPassword: true,
+        message:response.data.message
       })
-      return;
     }
-
     store.dispatch({
-      type: AUTH_RESPONSE,
-      message: respData.message
-    });
-    store.dispatch({
-      type: NEW_PASSWORD,
-      isPasswordChanged: true
+      type: AUTH_HAS_ERROR,
+      error: response.data.error || response.data.message
     })
+    return responseData
   }
-  catch (e) {
+   catch (e) {
     console.log(e);
     store.dispatch({
       type: AUTH_HAS_ERROR,

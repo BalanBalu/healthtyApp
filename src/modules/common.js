@@ -270,15 +270,27 @@ export function validateName(text) {
     else return true;
 }
 
+export const debounce = (fun, delay) => {
+    let timer = null;
+    return function (...args) {
+        const context = this;
+        timer && clearTimeout(timer);
+        timer = setTimeout(() => {
+            fun.apply(context, args);
+        }, delay);
+    };
+}
+
+
 export function validateMobileNumber(number) {
     var regPattern = '^([0|+[0-9]{1,5})?([7-9][0-9]{9})$';
     var regPatternForMob = new RegExp(regPattern);
     if (regPatternForMob.test(number)) return true;
     else return false;
 }
+
 export function validatePincode(number) {
     const regex = new RegExp('^[0-9]+$')  //Support only numbers
     if (regex.test(number) === false) return false;
     else return true;
 }
-

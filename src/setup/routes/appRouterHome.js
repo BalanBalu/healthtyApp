@@ -15,6 +15,7 @@ import Categories from "../../modules/screens/categories";
 import login from "../../modules/screens/auth/login";
 import signup from "../../modules/screens/auth/signup";
 import forgotpassword from "../../modules/screens/auth/forgotpassword";
+import renderOtpInput from "../../modules/screens/auth/renderOtpInput";
 import userdetails from "../../modules/screens/auth/userdetails";
 import UserAddress from "../../modules/screens/auth/UserAddress";
 import MapBox from "../../modules/screens/auth/UserAddress/MapBox";
@@ -31,6 +32,8 @@ import Notification from "../../modules/screens/Notification";
 import Chat from "../../modules/screens/chat";
 import { Col, Grid, Row } from 'react-native-easy-grid';
 import { logout } from '../../modules/providers/auth/auth.actions';
+import termsAndConditions from '../../components/termsAndConditions'
+
 import { TouchableOpacity, Image, Text, Platform,TouchableNativeFeedback } from 'react-native'
 
 import menuIcon from '../../../assets/images/menu.png';
@@ -73,6 +76,9 @@ const AuthRoutes = {
   forgotpassword: {
     screen: forgotpassword,
   },
+  renderOtpInput: {
+    screen: renderOtpInput,
+  },
   userdetails: {
     screen: userdetails,
   },
@@ -82,6 +88,10 @@ const AuthRoutes = {
     MapBox: {
     screen: MapBox,
   },
+  termsAndConditions: {
+    screen: termsAndConditions,
+  },
+  
 
 }
 
