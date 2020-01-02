@@ -23,7 +23,7 @@ class Categories extends Component {
     try {
         let result = await catagries();
         if (result.success) { 
-            await this.setState({ data: result.data })
+            this.setState({ data: result.data })
         }
     } catch (e) {
         console.log(e);
@@ -48,6 +48,7 @@ class Categories extends Component {
       <Container style={styles.container}>
         <Content style={styles.bodyContent}>
           <View style={{marginBottom:10}}>
+          {isLoading ? <Spinner color='blue' /> : null}
           <FlatList horizontal={false} numColumns={2}
             data={this.state.data}
             extraData={this.state}
