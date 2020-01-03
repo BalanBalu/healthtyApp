@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { Container, Content, Text, Title, Header, H3, Button, Card, List, ListItem, View, Left, Right, Toast, Thumbnail, Body, Icon, locations, ProgressBar, Item, Radio } from 'native-base';
+import { Container, Content, Text, Title, Header, H3, Button, Card, List, ListItem, View, Left, Right, Toast, Thumbnail, Body, Icon, locations, ProgressBar, Item, Radio, Switch } from 'native-base';
 import { fetchUserProfile, storeBasicProfile } from '../../providers/profile/profile.action';
 import { getPatientWishList } from '../../providers/bookappointment/bookappointment.action';
 import { hasLoggedIn, userFiledsUpdate } from '../../providers/auth/auth.actions';
@@ -31,7 +31,8 @@ class Profile extends Component {
             imageSource: null,
             file_name: '',
             isLoading: false,
-            selectOptionPoopup: false
+            selectOptionPoopup: false,
+            isBloodDonor: false
 
         };
 
@@ -93,6 +94,38 @@ class Profile extends Component {
         }
         catch (e) {
             console.log(e)
+        }
+    }
+    updateBloodDonor = async () => {
+        const userId = await AsyncStorage.getItem('userId')
+        try {
+            let requestData = {
+                is_blood_donor: this.state.isBloodDonor
+            };
+            let response = await userFiledsUpdate(userId, requestData);
+            if (response.success) {
+                Toast.show({
+                    text: response.message,
+                    type: "success",
+                    duration: 3000
+                });
+            }
+            else {
+                Toast.show({
+                    text: response.message,
+                    type: "danger",
+                    duration: 3000
+                });
+                this.setState({ isLoading: false });
+            }
+
+        }
+
+        catch (e) {
+            console.log(e);
+        }
+        finally {
+            this.setState({ isLoading: false });
         }
     }
 
@@ -392,7 +425,31 @@ class Profile extends Component {
 
                             </ListItem>
 
+                            <ListItem avatar>
 
+                                <Left>
+                                    <Icon name="ios-flame" style={{ color: '#7E49C3', marginTop: 5 }}></Icon>
+                                </Left>
+
+                                <Body >
+                                    <Text style={styles.customText}>Blood Donor</Text>
+                                </Body>
+
+                                <Right style={{ justifyContent: 'center', alignItems: 'center',marginTop:-10 }}>
+                                    <Switch
+                                        value={data.is_blood_donor}
+                                        style={{ marginTop: 15, }}
+                                        onValueChange={value => {
+                                            this.setState({ isBloodDonor: !this.state.isBloodDonor }), this.updateBloodDonor()
+                                            if (value === true) {
+                                                if (data.address === undefined) {
+                                                    this.editProfile('MapBox')
+                                                }
+                                            }
+                                        }}
+                                    />
+                                </Right>
+                            </ListItem>
                             <ListItem avatar>
 
                                 <Left>
@@ -438,7 +495,7 @@ class Profile extends Component {
                                     <TouchableOpacity onPress={() => this.editProfile('UpdateContact')} testID="onPressUpdateContact">
                                         <Text style={styles.customText}>Contact</Text>
                                         <Text note style={styles.customText1}>{data.mobile_no}</Text>
-                                        {data.secondary_mobile !== '' ?
+                                        {data.secondary_mobile !== undefined ?
                                             <Col>
                                                 <Text style={styles.customText}>Secondary</Text>
                                                 <Text note style={styles.customText1}>{data.secondary_mobile}</Text>
@@ -526,7 +583,7 @@ class Profile extends Component {
                                                     <Thumbnail square source={renderDoctorImage(item.doctorInfo)} style={{ height: 60, width: 60 }} />
                                                 </Left>
                                                 <Body>
-                                                    <Text style={{ fontFamily: 'OpenSans', fontSize: 15, width: '100%' }}> {item.doctorInfo.prefix ? item.doctorInfo.prefix+'.' : 'Dr.'} {item.doctorInfo.first_name + " " + item.doctorInfo.last_name} </Text>
+                                                    <Text style={{ fontFamily: 'OpenSans', fontSize: 15, width: '100%' }}> {item.doctorInfo.prefix ? item.doctorInfo.prefix + '.' : 'Dr.'} {item.doctorInfo.first_name + " " + item.doctorInfo.last_name} </Text>
                                                 </Body>
                                                 <Right>
                                                     <Button style={styles.docbutton}><Text style={{ fontFamily: 'OpenSans', fontSize: 12 }} onPress={() => this.props.navigation.navigate('Book Appointment', { doctorId: item.doctorInfo.doctor_id, fetchAvailabiltySlots: true })} testID="navigateBookAppointment"> Book Again</Text></Button>

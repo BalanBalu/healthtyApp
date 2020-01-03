@@ -309,22 +309,7 @@ export default class MapBox extends React.Component {
                     textContent={'Please wait Loading...'}
                 />
                 <View style={{ flex: 1 }}>
-                    {/* {this.state.showAllAddressFields == false ?
-<Row style={styles.SearchRow}>
-<Col size={0.9} style={styles.SearchStyle}>
-<TouchableOpacity style={{ justifyContent: 'center' }}>
-<Icon name="ios-search" style={{ color: '#fff', fontSize: 20, padding: 2 }} />
-</TouchableOpacity>
-</Col>
-<Col size={9.1} style={{ justifyContent: 'center', }}>
-<Input placeholder=" Search Location"
-value={this.state.locationFullText}
-style={styles.inputfield}
-placeholderTextColor="black"
-onFocus={() => { this.state.fromProfile ? this.props.navigation.navigate('UserAddress', { fromProfile: true }) : this.props.navigation.navigate('UserAddress') }}
-onChangeText={locationFullText => this.setState({ locationFullText })} />
-</Col>
-</Row> : null} */}
+
                     {this.state.coordinates !== null ?
                         <MapboxGL.MapView
                             ref={(c) => this._map = c}
@@ -437,18 +422,7 @@ onChangeText={locationFullText => this.setState({ locationFullText })} />
                                 onChangeText={locationFullText => this.setState({ locationFullText })} />
                         </View>
                     </Row>
-                    {/* <Row style={styles.SearchRow1}>
-<Col size={0.9} style={styles.SearchStyle}>
-</Col>
-<Col size={9.1} style={{ justifyContent: 'center', }}>
-<Input placeholder=" Search Location"
-value={this.state.locationFullText}
-style={styles.inputfield}
-placeholderTextColor="black"
-onFocus={() => { this.state.fromProfile ? this.props.navigation.navigate('UserAddress', { fromProfile: true }) : this.props.navigation.navigate('UserAddress') }}
-onChangeText={locationFullText => this.setState({ locationFullText })} />
-</Col> */}
-                    {/* </Row> */}
+
                 </View>
             </Container>
 
