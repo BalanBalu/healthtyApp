@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import { Container, Content, View, Text, Item,Card,Picker, Radio,Row,Col,Form,Button,Icon,Input,Footer } from 'native-base';
-import {StyleSheet,TextInput,TouchableOpacity,Image} from 'react-native';
+import {StyleSheet,TextInput,TouchableOpacity,Image,Linking,Platform,} from 'react-native';
 import { NavigationEvents } from 'react-navigation';
 import { FlatList } from 'react-native-gesture-handler';
 import {bloodDonationList }from '../../providers/profile/profile.action';
@@ -95,6 +95,22 @@ class BloodDonersList extends Component {
     }
 
   }
+
+  dialCall = (number) => {
+    let phoneNumber = '';
+    if (Platform.OS === 'android') { phoneNumber = `tel:${number}`; }
+    else {phoneNumber = `telprompt:${number}`; }
+    Linking.canOpenURL(phoneNumber)
+    .then(supported => {
+    if (!supported) {
+        Alert.alert('Phone number is not available');
+      } else {
+        return Linking.openURL(phoneNumber);
+    }
+    })
+    .catch(err => console.log(err));
+    };
+    
     render() {
       const { isLoading, data} = this.state;
         return (
@@ -124,24 +140,25 @@ class BloodDonersList extends Component {
                   renderItem={({item})=>
                         <Card style={{padding:2,marginTop:5}}>      
                             <Row style={{borderBottomWidth:0,marginTop:5}}>
-                              <Col size={2} style={{justifyContent:'center'}}>
+                              <Col size={2} style={{justifyContent:'center',marginLeft:-10}}>
                                  <Image source={require("../../../../assets/images/Blooddrop.png")} style={{height:95,width:95,position:'relative'}}/>
-                                 <Text style={{fontFamily:'OpenSans',fontSize:15,position:'absolute',fontWeight:'bold',paddingTop:20,color:'#fff',width:'100%',textAlign:'center',marginLeft:10}}>{this.getBloodGrp(item.blood_group)}</Text>
+                                 <Text style={{fontFamily:'OpenSans',fontSize:15,position:'absolute',fontWeight:'bold',paddingTop:20,color:'#fff',width:'100%',textAlign:'center',marginLeft:16}}>{this.getBloodGrp(item.blood_group)}</Text>
                               </Col>
-                              <Col size={7} style={{marginTop:25,marginLeft:10}}>
+                              <Col size={6.5} style={{marginTop:25,marginLeft:10}}>
                                   <Text style={{fontFamily:'OpenSans',fontSize:15}}>{this.getName(item)}</Text>
                               <Row>
                                   <Col size={3}style={{flexDirection:'row'}}>
                                   <Icon name="ios-pin" style={{color:'#1D96F2',fontSize:15,marginTop:10}}/>
                                    <Text style={{color:'gray',fontSize:13,fontFamily:'OpenSans',marginTop:10,marginLeft:2}}> {this.getAddress(item.address)}</Text>
-                                   <View size={1}style={{borderLeftColor:'gray',borderLeftWidth:1,marginTop:10,marginBottom:15,marginLeft:10}}/>
-                                   <Icon name="ios-call" style={{color:'#1D96F2',fontSize:15,marginTop:12,marginLeft:10}}/>
+                                   <View size={1}style={{borderLeftColor:'gray',borderLeftWidth:1,marginTop:12,marginBottom:20,marginLeft:10}}/>
                                    <Text   style={{color:'gray',fontSize:13,fontFamily:'OpenSans',marginTop:10,marginLeft:2}}> {this.getPhone(item.mobile_no)}</Text>
                                   </Col> 
                               </Row>
                              </Col>
-                             <Col size={1} style={{justifyContent:'center',}}>
-                                <Icon name="logo-whatsapp" style={{color:'#08BF01',fontSize:35}}/>
+                             <Col size={1.5} style={{justifyContent:'center',}}>
+                               <TouchableOpacity  onPress={()=>{this.dialCall(item.mobile_no)}}>
+                                <Icon name="ios-call" style={{color:'#08BF01',fontSize:35}}/>
+                                </TouchableOpacity>
                              </Col>
                             </Row>
                           </Card>   
@@ -156,7 +173,7 @@ class BloodDonersList extends Component {
                    <Text style={{fontFamily:'OpenSans',fontSize:15,color:'#fff'}}>Interested in Blood Donation?</Text>
                   </Col> 
                   <Col>
-                  <TouchableOpacity style={{paddingTop:5,paddingBottom:5,paddingLeft:10,paddingRight:10,backgroundColor:'#08BF01',borderRadius:5}}><Text style={{fontFamily:'OpenSans',fontSize:12,color:'#fff',textAlign:'center'}}>Register Now</Text></TouchableOpacity>
+                  <TouchableOpacity  onPress={()=> this.props.navigation.navigate('Profile')} style={{paddingTop:5,paddingBottom:5,paddingLeft:10,paddingRight:10,backgroundColor:'#08BF01',borderRadius:5}}><Text style={{fontFamily:'OpenSans',fontSize:12,color:'#fff',textAlign:'center'}}>Register Now</Text></TouchableOpacity>
                   </Col>
                     </Row>
                     </Footer>
