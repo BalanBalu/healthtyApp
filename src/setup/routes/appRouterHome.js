@@ -278,6 +278,12 @@ const HomeStack = createStackNavigator({
       title: 'Update User Details'
     }
   },
+  UserAddress: {
+    screen: UserAddress,
+    navigationOptions: {
+      title: 'Search Location'
+    }
+  },
   MapBox: {
     screen: MapBox,
     navigationOptions: {
