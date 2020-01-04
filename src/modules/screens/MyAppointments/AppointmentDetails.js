@@ -23,7 +23,7 @@ class AppointmentDetails extends Component {
       appointmentId: '',
       doctorId: '',
       userId: '',
-      reviewData: {},
+      reviewData: [],
       doctorData: {},
       isLoading: true,
 
@@ -82,7 +82,7 @@ class AppointmentDetails extends Component {
       let resultDetails = await bindDoctorDetails(this.state.doctorId, fields);
 
       if (resultDetails.success) {
-
+        console.log(resultDetails.data)
         await this.setState({ doctorData: resultDetails.data });
 
 
@@ -120,7 +120,7 @@ class AppointmentDetails extends Component {
   getUserReviews = async () => {
     try {
       let resultReview = await viewUserReviews('appointment', this.state.appointmentId, '?skip=0');
-
+       console.log(resultReview)
       if (resultReview.success) {
         this.setState({ reviewData: resultReview.data });
       }
@@ -134,6 +134,7 @@ class AppointmentDetails extends Component {
   appointmentDetailsGetById = async () => {
 
     let result = await appointmentDetails(this.state.appointmentId);
+    console.log(result)
 
     this.getUserReviews();
     if (result.success) {
@@ -237,7 +238,10 @@ class AppointmentDetails extends Component {
 
   }
 
-
+async backNavigation(){
+  await this.setState({isLoading:true})
+  this.componentDidMount()
+}
 
 
   render() {
@@ -255,7 +259,7 @@ class AppointmentDetails extends Component {
 
           <Content style={styles.bodyContent}>
             <NavigationEvents
-              onWillFocus={payload => { this.componentDidMount() }}
+              onWillFocus={payload => { this.backNavigation() }}
 
             />
             <Grid style={{ backgroundColor: '#7E49C3', height: 200 }}>
@@ -286,7 +290,7 @@ class AppointmentDetails extends Component {
                   </Col>
                   <Col style={{ backgroundColor: 'transparent', borderRightWidth: 0.5, borderRightColor: 'gray', justifyContent: 'center' }}>
                   
-                  <Text style={styles.topValue}> {getDoctorExperience(doctorData.calulatedExperience)} </Text>
+                  <Text style={styles.topValue}> {getDoctorExperience(data.doctorInfo.experience)} </Text>
                     <Text note style={styles.bottomValue}> Experience</Text>
                   </Col>
                   <Col style={{ backgroundColor: 'transparent', justifyContent: 'center', marginLeft: 'auto', marginRight: 'auto' }}>
@@ -355,7 +359,7 @@ class AppointmentDetails extends Component {
                 </List>
               </Card>
               {data.appointment_status == 'CANCELED'||data.appointment_status == 'CLOSED'|| data.appointment_status == 'APPROVED' || data.appointment_status == 'PENDING' || data.appointment_status == 'PROPOSED_NEW_TIME' ? null :
-                (data.appointment_status == 'PENDING_REVIEW' || reviewData.length === 0) ?
+                (data.appointment_status == 'COMPLETED'&&reviewData.length==0)? 
                   <Card style={{ margin: 10, padding: 10, borderRadius: 10 }}>
                     <List>
                       <Text style={styles.titlesText}>Review</Text>
@@ -372,7 +376,7 @@ class AppointmentDetails extends Component {
                      
                     </List>
                   </Card>
-                  : (data.appointment_status == 'COMPLETED' || reviewData.length !== 0) ?
+                  : (reviewData.length!=0)?
 
                     <Card style={{ margin: 10, padding: 10, borderRadius: 10 }}>
                       <List>

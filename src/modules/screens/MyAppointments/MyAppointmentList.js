@@ -174,10 +174,11 @@ class MyAppoinmentList extends Component {
 		
 
 			let filters = { startDate:subTimeUnit(new Date(), 1, "years").toUTCString(),
-				          endDate:  addTimeUnit(new Date(),10,'minutes').toUTCString() };
-
+						  endDate:  new Date().toUTCString() };
+						
+         console.log(userId)
 			let pastAppointmentResult = await getUserAppointments(userId, filters);
-		    
+		    console.log(JSON.stringify(pastAppointmentResult))
 			let viewUserReviewResult = await viewUserReviews("user", userId, '?skip=0');
 
 			if (pastAppointmentResult.success) {
@@ -409,6 +410,7 @@ class MyAppoinmentList extends Component {
 
 															{selectedIndex == 1 &&
 																item.ratting != undefined && (
+																
 																	<StarRating
 																		fullStarColor="#FF9500"
 																		starSize={15}
@@ -450,8 +452,7 @@ class MyAppoinmentList extends Component {
 
 
 														{selectedIndex == 1 &&
-															item.appointmentResult.appointment_status ==
-															"PENDING_REVIEW" ? (
+															item.appointmentResult.appointment_status =="COMPLETED"&&item.appointmentResult.is_review_added==undefined? (
 																<Item style={{ borderBottomWidth: 0 }}>
 																	<Right style={(styles.marginRight = -2)}>
 																		<Button
