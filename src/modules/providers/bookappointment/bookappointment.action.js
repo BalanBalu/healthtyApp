@@ -214,6 +214,10 @@ export const appointment = async (userId, filters, isLoading = true) => {
 export const getUserAppointments = async (userId, filters) => {
   try {
     let endPoint = 'appointments/user/' + userId + '?startDate=' + filters.startDate + '&endDate=' + filters.endDate;
+    if(filters.on_going_appointment) {
+      endPoint += '&on_going_appointment=1' 
+    }
+    console.log(endPoint);
     let response = await getService(endPoint);
     let respData = response.data;
     return respData;
