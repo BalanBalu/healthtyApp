@@ -283,10 +283,14 @@ async backNavigation(){
                     <Col style={{ width: 300, }}>
                       <Button disabled={true} block style={{ borderRadius: 10, backgroundColor: '#D7BDE2' }}>
                         <Text style={{ color: 'black', fontSize: 15, fontFamily: 'OpenSans', fontWeight: 'bold' }}>
-                          {this.state.appointmentStatus == 'APPROVED' ? 'APPROVED' :
-                            data.appointment_status == 'PROPOSED_NEW_TIME' ? 'PROPOSED NEW TIME' :
+                          { 
+                            data.onGoingAppointment === true ? 'ONGOING' 
+                            : 
+                            this.state.appointmentStatus == 'APPROVED' ? 'APPROVED' :
+                              data.appointment_status == 'PROPOSED_NEW_TIME' ? 'PROPOSED NEW TIME' :
                               data.appointment_status == 'PENDING_REVIEW' ? 'COMPLETED' :
-                                data.appointment_status || this.state.appointStatus}
+                              data.appointment_status || this.state.appointStatus
+                          } 
                         </Text>
                       </Button>
 
