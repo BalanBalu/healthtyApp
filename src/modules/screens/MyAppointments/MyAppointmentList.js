@@ -84,7 +84,8 @@ class MyAppoinmentList extends Component {
 			let userId = await AsyncStorage.getItem("userId");
 			let filters = {
 				startDate: new Date().toUTCString(),
-				endDate: addTimeUnit(new Date(), 1, "years").toUTCString()
+				endDate: addTimeUnit(new Date(), 1, "years").toUTCString(),
+				on_going_appointment: true
 			};
 			let upCommingAppointmentResult = await getUserAppointments(userId, filters);
 			if (upCommingAppointmentResult.success) {
@@ -142,7 +143,7 @@ class MyAppoinmentList extends Component {
 			let userId = await AsyncStorage.getItem("userId");
 			let filters = {
 				startDate: subTimeUnit(new Date(), 1, "years").toUTCString(),
-				endDate: addTimeUnit(new Date(), 1, 'minutes').toUTCString()
+				endDate: addTimeUnit(new Date(), 1, 'millisecond').toUTCString()
 			};
 
 			let pastAppointmentResult = await getUserAppointments(userId, filters);
@@ -399,9 +400,12 @@ return (
 														</Item>
 											
 														<Item style={{ borderBottomWidth: 0 }}>
-												
-																	<Text style={{ fontFamily: "OpenSans", fontSize: 13, color:statusValue[item.appointmentResult.appointment_status].color, fontWeight: 'bold' }} note>{statusValue[item.appointmentResult.appointment_status].text}</Text>	
-												
+															{item.appointmentResult.onGoingAppointment ? 
+																<Text style={{ fontFamily: "OpenSans", fontSize: 13, color: 'green', fontWeight: 'bold' }} note>{'Appointment Ongoing'}</Text>		
+																:
+																<Text style={{ fontFamily: "OpenSans", fontSize: 13, color:statusValue[item.appointmentResult.appointment_status].color, fontWeight: 'bold' }} note>{statusValue[item.appointmentResult.appointment_status].text}</Text>	
+															}
+																
 
 														</Item>
 
