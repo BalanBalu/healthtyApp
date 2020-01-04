@@ -24,9 +24,14 @@ class UserDetails extends Component {
             checked: false,
             selectedBloodGroup: null,
             isBloodDonor: false,
-            isLoading: false
-        }
-    }
+            isLoading: false,
+
+            };
+          }
+        
+         
+      
+
 
     validateFirstNameLastName = async (text, type) => {
         const regex = new RegExp('^[\ba-zA-Z ]+$')  //Support letter with space
@@ -143,18 +148,21 @@ class UserDetails extends Component {
                                         onDateChange={dob => { console.log(dob); this.setState({ dob }) }}
                                         disabled={false}
                                     /></Row>
-                                <Item style={[styles.userDetailLabel,{borderBottomWidth: 0 }]}>
+                                    <View style={{marginLeft:2}}>
+                                <Item last style={[styles.userDetailLabel,{borderBottomWidth: 0,paddingLeft: 0, marginLeft: 0  }]}>
                                     <Picker style={styles.userDetailLabel}
                                         mode="dropdown"
-                                        iosIcon={<Icon name="arrow-down" />}
-                                        textStyle={{ color: "#5cb85c", marginLeft: 35 }}
+                                        placeholder='Select Blood Group'
+                                        placeholderStyle = {{fontSize:15,marginLeft:-5}} 
+                                        iosIcon={<Icon name="ios-arrow-down"  style={{color:'gray',fontSize:20}}/>}
+                                        textStyle={{ color: "gray",left:0,marginLeft:-5}}
                                         note={false}
                                         itemStyle={{
                                             backgroundColor: "gray",
                                             paddingLeft: 10,
-                                            fontSize: 10,
+                                            fontSize: 16,        
                                         }}
-                                        itemTextStyle={{ color: '#5cb85c', marginLeft: 35 }}
+                                        itemTextStyle={{ color: '#5cb85c', }}
                                         style={{ width: undefined }}
                                         onValueChange={(sample) => { this.setState({ selectedBloodGroup: sample }) }}
                                         selectedValue={selectedBloodGroup}
@@ -166,8 +174,10 @@ class UserDetails extends Component {
                                         })
                                         }
                                     </Picker>
+                                 
                                 </Item>
-                                <Row style={{marginTop:5}}>
+                                </View>
+                                <Row style={{marginTop:5,marginLeft:5}}>
                                     {/* <Checkbox color="green"
                                         status={checked ? 'checked' : 'unchecked'}
                                         onPress={() => { this.setState({ checked: !checked }); }}
