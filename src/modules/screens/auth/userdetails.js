@@ -24,9 +24,14 @@ class UserDetails extends Component {
             checked: false,
             selectedBloodGroup: null,
             isBloodDonor: false,
-            isLoading: false
-        }
-    }
+            isLoading: false,
+
+            };
+          }
+        
+         
+      
+
 
     validateFirstNameLastName = async (text, type) => {
         const regex = new RegExp('^[\ba-zA-Z ]+$')  //Support letter with space
@@ -126,49 +131,55 @@ class UserDetails extends Component {
                                                 />
                                             </Item>
 
-                                            <Row style={styles.authTransparentLabel}>
-                                                <Icon name='calendar' style={{ color: '#775DA3', marginTop: 8 }} />
-                                                <DatePicker style={styles.userDetailLabel}
-                                                    defaultDate={dob}
-                                                    timeZoneOffsetInMinutes={undefined}
-                                                    modalTransparent={false}
-                                                    minimumDate={new Date(1940, 0, 1)}
-                                                    maximumDate={subTimeUnit(new Date(), 1, 'year')}
-                                                    animationType={"fade"}
-                                                    androidMode={"default"}
-                                                    placeHolderText="Date Of Birth"
-                                                    textStyle={{ color: "#5A5A5A" }}
-                                                    value={dob}
-                                                    placeHolderTextStyle={{ color: "#5A5A5A" }}
-                                                    onDateChange={dob => { console.log(dob); this.setState({ dob }) }}
-                                                    disabled={false}
-                                                /></Row>
-                                            <Item style={[styles.userDetailLabel, { borderBottomWidth: 0 }]}>
-                                                <Picker style={styles.userDetailLabel}
-                                                    mode="dropdown"
-                                                    iosIcon={<Icon name="arrow-down" />}
-                                                    textStyle={{ color: "#5cb85c", marginLeft: 35 }}
-                                                    note={false}
-                                                    itemStyle={{
-                                                        backgroundColor: "gray",
-                                                        paddingLeft: 10,
-                                                        fontSize: 10,
-                                                    }}
-                                                    itemTextStyle={{ color: '#5cb85c', marginLeft: 35 }}
-                                                    style={{ width: undefined }}
-                                                    onValueChange={(sample) => { this.setState({ selectedBloodGroup: sample }) }}
-                                                    selectedValue={selectedBloodGroup}
-                                                    testID="editBloodGroup"
-                                                >
-                                                    {bloodGroupList.map((value, key) => {
-                                                        return <Picker.Item label={String(value)} value={String(value)} key={key}
-                                                        />
-                                                    })
-                                                    }
-                                                </Picker>
-                                            </Item>
-                                            <Row style={{ marginTop: 5 }}>
-                                                {/* <Checkbox color="green"
+                                <Row style={styles.authTransparentLabel}>
+                                    <Icon name='calendar' style={{ color: '#775DA3',marginTop:8}} />
+                                    <DatePicker style={styles.userDetailLabel}
+                                        defaultDate={dob}
+                                        timeZoneOffsetInMinutes={undefined}
+                                        modalTransparent={false}
+                                        minimumDate={new Date(1940, 0, 1)}
+                                        maximumDate={subTimeUnit(new Date(), 1, 'year')}
+                                        animationType={"fade"}
+                                        androidMode={"default"}
+                                        placeHolderText="Date Of Birth"
+                                        textStyle={{ color: "#5A5A5A" }}
+                                        value={dob}
+                                        placeHolderTextStyle={{ color: "#5A5A5A" }}
+                                        onDateChange={dob => { console.log(dob); this.setState({ dob }) }}
+                                        disabled={false}
+                                    />
+                                </Row>
+                                    <View style={{marginLeft:2}}>
+                                <Item last style={[styles.userDetailLabel,{borderBottomWidth: 0,paddingLeft: 0, marginLeft: 0  }]}>
+                                    <Picker style={styles.userDetailLabel}
+                                        mode="dropdown"
+                                        placeholder='Select Blood Group'
+                                        placeholderStyle = {{fontSize:15,marginLeft:-5}} 
+                                        iosIcon={<Icon name="ios-arrow-down"  style={{color:'gray',fontSize:20}}/>}
+                                        textStyle={{ color: "gray",left:0,marginLeft:-5}}
+                                        note={false}
+                                        itemStyle={{
+                                            backgroundColor: "gray",
+                                            paddingLeft: 10,
+                                            fontSize: 16,        
+                                        }}
+                                        itemTextStyle={{ color: '#5cb85c', }}
+                                        style={{ width: undefined }}
+                                        onValueChange={(sample) => { this.setState({ selectedBloodGroup: sample }) }}
+                                        selectedValue={selectedBloodGroup}
+                                        testID="editBloodGroup"
+                                    >
+                                        {bloodGroupList.map((value, key) => {
+                                            return <Picker.Item label={String(value)} value={String(value)} key={key}
+                                            />
+                                        })
+                                        }
+                                    </Picker>
+                                 
+                                </Item>
+                                </View>
+                                <Row style={{marginTop:5,marginLeft:5}}>
+                                    {/* <Checkbox color="green"
                                         status={checked ? 'checked' : 'unchecked'}
                                         onPress={() => { this.setState({ checked: !checked }); }}
                                     /> */}
