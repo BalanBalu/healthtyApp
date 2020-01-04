@@ -705,14 +705,15 @@ class PaymentPage extends Component {
                     <View style={{ borderColor: '#000', borderWidth: 1, backgroundColor: '#f2f2f2', borderRadius: 5, marginLeft: 10, marginRight: 10, marginTop: 10, marginBottom: 10 }}>
                         <View style={{ marginTop: 10, marginBottom: 10 }}>
                             <Grid style={{ marginRight: 10, marginLeft: 10, alignItems: 'center' }}>
-                                <Row >
-                                    <Col style={selectedWallet === 'olamoney' ? {width: '50%', alignItems: 'center',borderColor:'red',borderWidth:1,} : {width: '50%', alignItems: 'center'}}
+                                <Row>
+                                    <Col style={selectedWallet === 'freecharge' ? {width: '50%', alignItems: 'center',borderColor:'red',borderWidth:1,} : {width: '50%', alignItems: 'center'}}
                                         >
-                                        <TouchableOpacity style={{padding:15}} onPress={() => this.setState({ selectedWallet: 'olamoney' })}>
-                                            <Image source={require('../../../../assets/images/Ola.jpg')} style={{ width: 50, height: 50, }} />
-                                            <Text style={{ fontSize: 15, fontFamily: 'OpenSans', marginTop: 5, textAlign: 'center' }}>Ola Wallet</Text>
+                                        <TouchableOpacity style={{padding:15}} onPress={() => this.setState({ selectedWallet: 'freecharge' })}>
+                                            <Image source={require('../../../../assets/images/freecharge.png')} style={{ width: 50, height: 50, }} />
+                                            <Text style={{ fontSize: 15, fontFamily: 'OpenSans', marginTop: 5, textAlign: 'center' }}>FreeCharge</Text>
                                         </TouchableOpacity>
                                     </Col>
+
                                     <Col style={selectedWallet === 'payzapp' ? {width: '50%', alignItems: 'center',borderColor:'red',borderWidth:1,} : {width: '50%', alignItems: 'center'}}
                                          >
                                          <TouchableOpacity style={{padding:15}} onPress={() => this.setState({ selectedWallet: 'payzapp' })}>
@@ -722,18 +723,7 @@ class PaymentPage extends Component {
                                         </TouchableOpacity>
                                     </Col>
                                     </Row>
-                                    <Row style={{ marginTop: 10, }}>
-                                    <Col style={selectedWallet === 'freecharge' ? {width: '50%', alignItems: 'center',borderColor:'red',borderWidth:1,} : {width: '50%', alignItems: 'center'}} 
-                                         >
-                                       <TouchableOpacity style={{padding:15}} onPress={() => this.setState({ selectedWallet: 'freecharge' })}>
-                                          <Image source={require('../../../../assets/images/freecharge.png')} style={{ width: 50, height: 50, }} />
-                                          <Text style={{ fontSize: 15, fontFamily: 'OpenSans', marginTop: 5, textAlign: 'center' }}>FreeCharge</Text>
-                                       </TouchableOpacity>
-                                    </Col>
-                                    <Col style={{ width: '50%', alignItems: 'center',marginLeft:5}}>
-                                      
-                                    </Col>
-                                </Row>
+                                   
                             </Grid>
                         </View>
                     </View>

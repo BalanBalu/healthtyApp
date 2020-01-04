@@ -1,26 +1,6 @@
 import React, { Component } from "react";
-import {
-	View,
-	Text,
-	Button,
-	List,
-	ListItem,
-	Left,
-	Right,
-	Thumbnail,
-	Item,
-	Card,
-	Body,
-
-} from "native-base";
-import {
-	StyleSheet,
-	Image,
-	AsyncStorage,
-	FlatList,
-	ScrollView,
-	ActivityIndicator
-} from "react-native";
+import { View, Text, Button, List, ListItem, Left, Right, Thumbnail, Item, Card, Body } from "native-base";
+import { StyleSheet, Image, AsyncStorage, FlatList, ScrollView, ActivityIndicator } from "react-native";
 import StarRating from "react-native-star-rating";
 import { Col, Row, Grid } from "react-native-easy-grid";
 import SegmentedControlTab from "react-native-segmented-control-tab";
@@ -54,111 +34,104 @@ class MyAppoinmentList extends Component {
 	}
 
 	async componentDidMount() {
-		console.log('statusValue'+JSON.stringify(statusValue))
+		console.log('statusValue' + JSON.stringify(statusValue))
 		const isLoggedIn = await hasLoggedIn(this.props);
 		if (!isLoggedIn) {
 			this.props.navigation.navigate("login");
 			return;
 		}
 		let userId = await AsyncStorage.getItem("userId");
-		this.setState({ userId });
+		this.setState({
+			userId
+		});
 		await new Promise.all([
-			 this.upCommingAppointment(),
-		     this.pastAppointment()
+			this.upCommingAppointment(),
+			this.pastAppointment()
 		])
-		await this.setState({ isLoading: true, isNavigation: false })
+		await this.setState({
+			isLoading: true,
+			isNavigation: false
+		})
 
 	}
 
 	backNavigation = async (navigationData) => {
 		if (!this.state.isNavigation) {
 			if (navigationData.action) {
-
-				await this.setState({ isLoading: false })
-
+				await this.setState({
+					isLoading: false
+				})
 				if (navigationData.action.type === 'Navigation/BACK' || navigationData.action.type === 'Navigation/NAVIGATE' || navigationData.action.type === 'Navigation/POP') {
 					if (this.state.selectedIndex == 0) {
-
-
 						await this.upCommingAppointment();
-						await this.setState({ isLoading: true })
-
+						await this.setState({
+							isLoading: true
+						})
 					} else {
 						await this.pastAppointment();
-						await this.setState({ isLoading: true, data: this.state.pastData })
+						await this.setState({
+							isLoading: true,
+							data: this.state.pastData
+						})
 					}
-
 				}
 			}
-
 		}
-
 	}
 
 	upCommingAppointment = async () => {
 		try {
 			let userId = await AsyncStorage.getItem("userId");
-			//upcomming filter utc format
-			// let filters = {
-			// 	startDate: moment().utc(),
-			// 	endDate: addMoment(new Date(), 1, "years").utc()
-			// };
-		
 			let filters = {
-				startDate:new Date().toUTCString(),
+				startDate: new Date().toUTCString(),
 				endDate: addTimeUnit(new Date(), 1, "years").toUTCString()
 			};
-		
 			let upCommingAppointmentResult = await getUserAppointments(userId, filters);
-              
 			if (upCommingAppointmentResult.success) {
 				let doctorInfo = new Map();
 				upCommingAppointmentResult = upCommingAppointmentResult.data;
-				
-				let doctorIds = getAllId(upCommingAppointmentResult) 
-				
 
-
+				let doctorIds = getAllId(upCommingAppointmentResult)
 				let speciallistResult = await getMultipleDoctorDetails(doctorIds, "specialist,education,prefix,profile_image,gender");
-
+				
 				speciallistResult.data.forEach(doctorData => {
-
-					let educationDetails = ' ', speaciallistDetails = '';
-
+					let educationDetails = ' ';
+					let speaciallistDetails = '';
 
 					if (doctorData.education != undefined) {
-						educationDetails =  getAllEducation(doctorData.education)
-						
-					} if (doctorData.specialist != undefined) {
-						speaciallistDetails =   getAllSpecialist(doctorData.specialist)
-						
+						educationDetails = getAllEducation(doctorData.education)
+					}
+					if (doctorData.specialist != undefined) {
+						speaciallistDetails = getAllSpecialist(doctorData.specialist)
 					}
 
-
-
-					doctorInfo.set(doctorData.doctor_id, { degree: educationDetails, specialist: speaciallistDetails, prefix: doctorData.prefix, profile_image: doctorData.profile_image, gender: doctorData.gender })
-
-
+					doctorInfo.set(doctorData.doctor_id, {
+						degree: educationDetails,
+						specialist: speaciallistDetails,
+						prefix: doctorData.prefix,
+						profile_image: doctorData.profile_image,
+						gender: doctorData.gender
+					})
 				});
 
 				let upcommingInfo = [];
 				upCommingAppointmentResult.map(doctorData => {
-
-
-
 					let details = doctorInfo.get(doctorData.doctor_id)
-
-					upcommingInfo.push({ appointmentResult: doctorData, specialist: details.specialist, degree: details.degree, prefix: details.prefix, profile_image: details.profile_image });
-
-
-
+					upcommingInfo.push({
+						appointmentResult: doctorData,
+						specialist: details.specialist,
+						degree: details.degree,
+						prefix: details.prefix,
+						profile_image: details.profile_image
+					});
 				})
 				upcommingInfo.sort(function (firstVarlue, secandValue) {
 					return firstVarlue.appointmentResult.appointment_starttime < secandValue.appointmentResult.appointment_starttime ? -1 : 0
 				})
-				this.setState({ upComingData: upcommingInfo, data: upcommingInfo });
-
-
+				this.setState({
+					upComingData: upcommingInfo,
+					data: upcommingInfo
+				});
 			}
 		} catch (e) {
 			console.log(e);
@@ -167,17 +140,13 @@ class MyAppoinmentList extends Component {
 	pastAppointment = async () => {
 		try {
 			let userId = await AsyncStorage.getItem("userId");
-	 
-			//utc format in filter Date result Didnot come
-		//	 let filters = { startDate: moment().utc(),
-			// 	endDate: subMoment(new Date(), 1, "years").utc() };
-		
-
-			let filters = { startDate:subTimeUnit(new Date(), 1, "years").toUTCString(),
-				          endDate:  addTimeUnit(new Date(),10,'minutes').toUTCString() };
+			let filters = {
+				startDate: subTimeUnit(new Date(), 1, "years").toUTCString(),
+				endDate: addTimeUnit(new Date(), 1, 'minutes').toUTCString()
+			};
 
 			let pastAppointmentResult = await getUserAppointments(userId, filters);
-		    
+
 			let viewUserReviewResult = await viewUserReviews("user", userId, '?skip=0');
 
 			if (pastAppointmentResult.success) {
@@ -189,60 +158,74 @@ class MyAppoinmentList extends Component {
 				let reviewRate = new Map();
 				if (viewUserReviewResult != undefined) {
 					viewUserReviewResult.map(review => {
-						reviewRate.set(review.appointment_id, { ratting: review.overall_rating })
+						reviewRate.set(review.appointment_id, {
+							ratting: review.overall_rating
+						})
 
 					})
 				}
-           
-	let doctorIds = getAllId(pastAppointmentResult) 
-				
-				
+
+				let doctorIds = getAllId(pastAppointmentResult)
+
+
 
 				let speciallistResult = await getMultipleDoctorDetails(doctorIds, "specialist,education,prefix,profile_image,gender");
 
 				speciallistResult.data.forEach(doctorData => {
 
-					let educationDetails = ' ', speaciallistDetails = '';
-					
-					 if (doctorData.education != undefined) {
-					
-						educationDetails =  getAllEducation(doctorData.education)
+					let educationDetails = ' ',
+						speaciallistDetails = '';
+
+					if (doctorData.education != undefined) {
+
+						educationDetails = getAllEducation(doctorData.education)
 
 					}
 
-				
+
 					if (doctorData.specialist != undefined) {
-						speaciallistDetails= getAllSpecialist(doctorData.specialist)
-                       
+						speaciallistDetails = getAllSpecialist(doctorData.specialist)
+
 					}
 
-					
 
-					doctorInfo.set(doctorData.doctor_id, { degree: educationDetails, specialist: speaciallistDetails.toString(), prefix: doctorData.prefix, profile_image: doctorData.profile_image, gender: doctorData.gender })
+
+					doctorInfo.set(doctorData.doctor_id, {
+						degree: educationDetails,
+						specialist: speaciallistDetails.toString(),
+						prefix: doctorData.prefix,
+						profile_image: doctorData.profile_image,
+						gender: doctorData.gender
+					})
 
 
 				});
 
-                 console.log(doctorInfo)
+				console.log(doctorInfo)
 
 				let pastDoctorDetails = [];
 				pastAppointmentResult.map((doctorData, index) => {
 
-					let ratting;
-					if (doctorData.is_review_added==true) {
-						let rating = reviewRate.get(doctorData._id);
-						ratting = rating.ratting;
+						let ratting;
+						if (doctorData.is_review_added == true) {
+							let rating = reviewRate.get(doctorData._id);
+							ratting = rating.ratting;
+
+						}
+						let details = doctorInfo.get(doctorData.doctor_id)
+						pastDoctorDetails.push({
+							appointmentResult: doctorData,
+							specialist: details.specialist,
+							degree: details.degree,
+							ratting: ratting,
+							prefix: details.prefix,
+							profile_image: details.profile_image
+
+						});
+
+
 
 					}
-					let details = doctorInfo.get(doctorData.doctor_id)
-					pastDoctorDetails.push({
-						appointmentResult: doctorData, specialist: details.specialist, degree: details.degree, ratting: ratting, prefix: details.prefix, profile_image: details.profile_image
-
-					});
-
-
-
-				}
 
 				)
 
@@ -250,14 +233,17 @@ class MyAppoinmentList extends Component {
 					return firstVarlue.appointmentResult.appointment_starttime > secandValue.appointmentResult.appointment_starttime ? -1 : 0
 				})
 
-				this.setState({ pastData: pastDoctorDetails });
+				this.setState({
+					pastData: pastDoctorDetails
+				});
 
 			}
 		} catch (e) {
 			console.log(e);
-		}
-		finally {
-			this.setState({ isLoading: false })
+		} finally {
+			this.setState({
+				isLoading: false
+			})
 
 		}
 	};
@@ -266,8 +252,10 @@ class MyAppoinmentList extends Component {
 	navigateAddReview(item) {
 		let data = item.appointmentResult;
 		data.prefix = item.prefix
-		
-		this.props.navigation.navigate('InsertReview', { appointmentDetail: data })
+
+		this.props.navigation.navigate('InsertReview', {
+			appointmentDetail: data
+		})
 
 	}
 
@@ -289,7 +277,10 @@ class MyAppoinmentList extends Component {
 	navigateToBookAppointmentPage(item) {
 
 		let doctorId = item.appointmentResult.doctor_id;
-		this.props.navigation.navigate('Book Appointment', { doctorId: doctorId, fetchAvailabiltySlots: true })
+		this.props.navigation.navigate('Book Appointment', {
+			doctorId: doctorId,
+			fetchAvailabiltySlots: true
+		})
 	}
 
 	render() {
