@@ -4,7 +4,7 @@ import { StyleSheet, Image, TextInput, Dimensions, AsyncStorage, Modal } from 'r
 import StarRating from 'react-native-star-rating';
 import {
   Container, Header, Title, Left, Right, Body, Button, Card, Toast, CardItem, Row, Grid, View,Col,
-  Text, Thumbnail, Content, CheckBox, Item
+  Text, Thumbnail, Content, CheckBox, Item, Input
 } from 'native-base';
 import { Checkbox } from 'react-native-paper';
 //import {ScrollView} from 'react-native-gesture-handler';
@@ -22,7 +22,7 @@ class InsertReview extends Component {
       cleanness_rating: 0,
       staff_rating: 0,
       wait_time_rating: 0,
-      comments: ' ',
+      comments: 'sas',
       doctorRecommended: false,
       data: '',
       doctorId: '',
@@ -195,13 +195,15 @@ class InsertReview extends Component {
                   <Text style={{ fontSize: 16, marginTop: 20 }}>
                     Write your review
                       </Text>
-                  <TextInput
+                  <Input
                     style={{ height: 100, borderWidth: 1, marginTop: 20, width: 300 }}
+                    returnKeyType={'next'}
                     multiline={true}
-                    placeholder="Write your reviews here"
+                    keyboardType={'default'}
                     textAlignVertical={'top'}
-                    onChangeText={(comments) => this.setState({ comments })}
-                  />
+                    onChangeText={(comments) => {
+                      this.setState({ comments })}
+                    }/>
 
                   <Row style={{ marginTop: 10 }}>
                     <Right>
