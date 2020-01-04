@@ -8,7 +8,7 @@ import { StyleSheet, AsyncStorage ,TouchableOpacity} from 'react-native';
 import StarRating from 'react-native-star-rating';
 import moment from 'moment';
 import { NavigationEvents } from 'react-navigation';
-import { viewUserReviews, bindDoctorDetails, appointmentStatusUpdate, appointmentDetails } from '../../providers/bookappointment/bookappointment.action';
+import { viewUserReviews, bindDoctorDetails, appointmentStatusUpdate, appointmentDetails,getPaymentInfomation } from '../../providers/bookappointment/bookappointment.action';
 import { formatDate, dateDiff } from '../../../setup/helpers';
 
 import { Loader } from '../../../components/ContentLoader'
@@ -33,6 +33,7 @@ class AppointmentDetails extends Component {
       specialist: '',
       hospital: [],
       selectedTab:null,
+      paymentDetails:{},
 
 
     }
@@ -65,6 +66,7 @@ class AppointmentDetails extends Component {
       })
 
       await new Promise.all([
+        this.getPaymentInfo(appointmentData.payment_id),
         this.getDoctorDetails(),
         this.getUserReviews()
       ])
@@ -141,18 +143,28 @@ class AppointmentDetails extends Component {
 
       await new Promise.all([
         this.setState({ doctorId: result.data[0].doctor_id, data: result.data[0] }),
-
+        this.getPaymentInfo(result.data[0].payment_id),
         this.getDoctorDetails()
       ])
 
 
     }
 
+  }
+  getPaymentInfo = async (paymentId) => {
+    try{
+      console.log("paymentId")
+      console.log(paymentId)
+let result=await getPaymentInfomation(paymentId);
+console.log(JSON.stringify(result))
+   if(result.success){
+     this.setState({paymentDetails:result.data[0]})
+   }
 
-
-
-
-
+    }
+    catch(e){
+      console.log(e)
+    }
   }
 
   navigateAddReview() {
@@ -249,7 +261,7 @@ async backNavigation(){
 
 
 
-    const { data, reviewData, doctorData, education, specialist, hospital, isLoading ,selectedTab} = this.state;
+    const { data, reviewData, doctorData, education, specialist, hospital, isLoading ,selectedTab,paymentDetails} = this.state;
 
     return (
 
@@ -290,11 +302,11 @@ async backNavigation(){
                   </Col>
                   <Col style={{ backgroundColor: 'transparent', borderRightWidth: 0.5, borderRightColor: 'gray', justifyContent: 'center' }}>
                   
-                  <Text style={styles.topValue}> {getDoctorExperience(data.doctorInfo.experience)} </Text>
+                  <Text style={styles.topValue}> {getDoctorExperience(data.calulatedExperience)} </Text>
                     <Text note style={styles.bottomValue}> Experience</Text>
                   </Col>
                   <Col style={{ backgroundColor: 'transparent', justifyContent: 'center', marginLeft: 'auto', marginRight: 'auto' }}>
-                    <Text style={styles.topValue}>Card </Text>
+                    <Text style={styles.topValue}>{paymentDetails.payment_method||'N/A'} </Text>
                     <Text note style={styles.bottomValue}> Paid Method </Text>
                   </Col>
                 </Grid>
