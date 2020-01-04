@@ -12,7 +12,7 @@ import {formatDate,addTimeUnit,subMoment,addMoment,subTimeUnit ,getAllId,statusV
 import {getUserAppointments,viewUserReviews,getMultipleDoctorDetails} from "../../providers/bookappointment/bookappointment.action";
 import noAppointmentImage from "../../../../assets/images/noappointment.png";
 import Spinner from "../../../components/Spinner";
-import { renderProfileImage,getAllEducation,getAllSpecialist } from '../../common'
+import { renderProfileImage,getAllEducation,getAllSpecialist,getName } from '../../common'
 import moment from "moment";
 // import moment from "moment";
 
@@ -146,12 +146,10 @@ class MyAppoinmentList extends Component {
 			};
 
 			let pastAppointmentResult = await getUserAppointments(userId, filters);
-
 			let viewUserReviewResult = await viewUserReviews("user", userId, '?skip=0');
 
 			if (pastAppointmentResult.success) {
 				pastAppointmentResult = pastAppointmentResult.data;
-
 				viewUserReviewResult = viewUserReviewResult.data;
 
 				let doctorInfo = new Map();
@@ -164,11 +162,7 @@ class MyAppoinmentList extends Component {
 
 					})
 				}
-
 				let doctorIds = getAllId(pastAppointmentResult)
-
-
-
 				let speciallistResult = await getMultipleDoctorDetails(doctorIds, "specialist,education,prefix,profile_image,gender");
 
 				speciallistResult.data.forEach(doctorData => {
@@ -177,19 +171,11 @@ class MyAppoinmentList extends Component {
 						speaciallistDetails = '';
 
 					if (doctorData.education != undefined) {
-
 						educationDetails = getAllEducation(doctorData.education)
-
 					}
-
-
 					if (doctorData.specialist != undefined) {
 						speaciallistDetails = getAllSpecialist(doctorData.specialist)
-
 					}
-
-
-
 					doctorInfo.set(doctorData.doctor_id, {
 						degree: educationDetails,
 						specialist: speaciallistDetails.toString(),
@@ -292,39 +278,35 @@ class MyAppoinmentList extends Component {
 
 		} = this.state;
 
-		return (
-			<View style={styles.container}>
-				<NavigationEvents
-					onWillFocus={payload => { this.backNavigation(payload) }}
-				/>
-				<Card transparent>
-					<SegmentedControlTab
-						tabsContainerStyle={{
-							width: 250,
-							marginLeft: "auto",
-							marginRight: "auto",
-							marginTop: "auto"
-						}}
-						values={["Upcoming", "Past"]}
-						selectedIndex={this.state.selectedIndex}
-						onTabPress={this.handleIndexChange}
-						activeTabStyle={{
-							backgroundColor: "#775DA3",
-							borderColor: "#775DA3"
-						}}
-						tabStyle={{ borderColor: "#775DA3" }}
-					/>
-
-					{isLoading == true ? (
-						data.length === 0 ? (
-							<Card
-								transparent
-								style={{
+return (
+	<View style={styles.container}>
+		<NavigationEvents
+			onWillFocus={payload => { this.backNavigation(payload) }}
+		/>
+		<Card transparent>
+			<SegmentedControlTab
+				tabsContainerStyle={{
+					width: 250,
+					marginLeft: "auto",
+					marginRight: "auto",
+					marginTop: "auto"
+				}}
+				values={["Upcoming", "Past"]}
+				selectedIndex={this.state.selectedIndex}
+				onTabPress={this.handleIndexChange}
+				activeTabStyle={{
+					backgroundColor: "#775DA3",
+					borderColor: "#775DA3"
+				}}
+				tabStyle={{ borderColor: "#775DA3" }}/>
+			
+			{isLoading == true ? (
+				data.length === 0 ? (
+					<Card transparent style={{
 									alignItems: "center",
 									justifyContent: "center",
 									marginTop: "20%"
-								}}
-							>
+					}}>
 								<Thumbnail
 									square
 									source={noAppointmentImage}
@@ -379,7 +361,7 @@ class MyAppoinmentList extends Component {
 														<Item style={{ borderBottomWidth: 0 }}>
 
 															<Text style={{ fontFamily: "OpenSans", fontSize: 15, fontWeight: 'bold' }}>
-																{(item.prefix != undefined ? item.prefix : '') + item.appointmentResult.doctorInfo.first_name + " " + item.appointmentResult.doctorInfo.last_name}{" "}
+																{(item.prefix != undefined ? item.prefix : '') + getName(item.appointmentResult.doctorInfo)}
 															</Text>
 															<Text
 																style={{
@@ -400,6 +382,7 @@ class MyAppoinmentList extends Component {
 
 															{selectedIndex == 1 &&
 																item.ratting != undefined && (
+																
 																	<StarRating
 																		fullStarColor="#FF9500"
 																		starSize={15}
@@ -417,16 +400,8 @@ class MyAppoinmentList extends Component {
 											
 														<Item style={{ borderBottomWidth: 0 }}>
 												
-														{/* {selectedIndex == 0 ?  */}
 																	<Text style={{ fontFamily: "OpenSans", fontSize: 13, color:statusValue[item.appointmentResult.appointment_status].color, fontWeight: 'bold' }} note>{statusValue[item.appointmentResult.appointment_status].text}</Text>	
-														     	 {/* :
-															// 	(item.appointmentResult.appointment_status == "CLOSED" ?
-															// 		<Text style={{ fontFamily: "OpenSans", fontSize: 13, color: "red", fontWeight: 'bold' }} note>Appointment cancelled.</Text>
-															// 		:
-															// 		<Text style={{ fontFamily: "OpenSans", fontSize: 13, color: "green", fontWeight: 'bold' }} note>Appointment completed</Text>
-															// 	)
-
-															// } */}
+												
 
 														</Item>
 
@@ -441,8 +416,7 @@ class MyAppoinmentList extends Component {
 
 
 														{selectedIndex == 1 &&
-															item.appointmentResult.appointment_status ==
-															"PENDING_REVIEW" ? (
+															item.appointmentResult.appointment_status =="COMPLETED"&&item.appointmentResult.is_review_added==undefined? (
 																<Item style={{ borderBottomWidth: 0 }}>
 																	<Right style={(styles.marginRight = -2)}>
 																		<Button

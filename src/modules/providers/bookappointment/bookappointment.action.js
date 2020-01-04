@@ -435,5 +435,33 @@ export async function getLocations() {
     }
 }
 
+export const getPaymentInfomation = async (paymentId) => {
+  try{    
+        
+    let endPoint =  '/payment/' + paymentId;  
+  
+    let response = await getService(endPoint);
+    
+    let respData = response.data;
+    
+      if(respData.error || respData.success == false) {         
+        return{
+          success: respData.success,
+          message: respData.error,
+        }
+      } else {            
+         
+        return respData;  
+               
+      }
+      
+  } catch (e){       
+     
+      return {
+        success : false,
+        message: 'Exception Occured'+e
+      }; 
+  }
+}
 
 
