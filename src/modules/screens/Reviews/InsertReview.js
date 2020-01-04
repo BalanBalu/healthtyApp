@@ -22,7 +22,7 @@ class InsertReview extends Component {
       cleanness_rating: 0,
       staff_rating: 0,
       wait_time_rating: 0,
-      comments: 'sas',
+      comments: '',
       doctorRecommended: false,
       data: '',
       doctorId: '',
