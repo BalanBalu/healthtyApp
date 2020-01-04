@@ -178,7 +178,7 @@ const HomeStack = createStackNavigator({
       title: 'Filter',
     })
   },
-  BloodDonersList: {
+  "Blood Doners": {
     screen: BloodDonersList,
     navigationOptions:({ navigation }) => ({
       title: 'Blood Donors',
