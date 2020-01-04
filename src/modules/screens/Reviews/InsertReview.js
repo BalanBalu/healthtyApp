@@ -95,12 +95,14 @@ class InsertReview extends Component {
         console.log(JSON.stringify(result))
 
         if (result.success) {
-
-          // this.state.data.appointment_status = 'COMPLETED';
-          // await this.updateAppointmentStatus(this.state.data, 'COMPLETED')
-
-          this.props.navigation.pop();
-
+        
+          const { navigation } = this.props;
+          const { routeName, key } = navigation.getParam('prevState');
+          if(routeName === 'AppointmentInfo') {
+            navigation.navigate({ routeName, key, params: { hasReloadReview: true } });
+          } else {
+            navigation.pop()
+          }
         }
       } else {
         this.setState({ ratingIndicatePopUp: true })
@@ -180,14 +182,7 @@ class InsertReview extends Component {
 
                     />
                   </Row>
-                  {/* <Row style={{ marginTop: 20, marginLeft: -10 }}>
-                    <CheckBox checked={this.state.isAnonymous} color="green" onPress={() => this.setState({ isAnonymous: !this.state.isAnonymous })} ></CheckBox>
-                    <Text style={{ marginLeft: 20 }}>Would you like to give as Anonymous</Text>
-                  </Row>
-                  <Row style={{ marginTop: 10, marginLeft: -10 }} >
-                    <CheckBox checked={this.state.doctorRecommended} color="green" onPress={() => this.setState({ doctorRecommended: !this.state.doctorRecommended })} ></CheckBox>
-                    <Text style={{ marginLeft: 20 }}>Do you recommend this doctor</Text>
-                  </Row> */}
+                  
                   <Row style={{ marginTop: 20, marginLeft: -10 }}>
                     <Checkbox status={this.state.isAnonymous ? 'checked' : 'unchecked'} color="green" onPress={() => this.setState({ isAnonymous: !this.state.isAnonymous })} />
                     <Text style={{ marginLeft: 5, marginTop: 7 }}>Would you like to give as Anonymous</Text>
@@ -208,10 +203,6 @@ class InsertReview extends Component {
                     onChangeText={(comments) => this.setState({ comments })}
                   />
 
-                  {/* <TextInput
-                    style={{ height: 80, borderWidth: 1, width: 'auto' }}
-                   
-                  /> */}
                   <Row style={{ marginTop: 10 }}>
                     <Right>
                       <Button style={styles.button1}

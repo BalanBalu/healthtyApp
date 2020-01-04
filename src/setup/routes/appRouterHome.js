@@ -15,6 +15,7 @@ import Categories from "../../modules/screens/categories";
 import login from "../../modules/screens/auth/login";
 import signup from "../../modules/screens/auth/signup";
 import forgotpassword from "../../modules/screens/auth/forgotpassword";
+import renderOtpInput from "../../modules/screens/auth/renderOtpInput";
 import userdetails from "../../modules/screens/auth/userdetails";
 import UserAddress from "../../modules/screens/auth/UserAddress";
 import MapBox from "../../modules/screens/auth/UserAddress/MapBox";
@@ -31,6 +32,8 @@ import Notification from "../../modules/screens/Notification";
 import Chat from "../../modules/screens/chat";
 import { Col, Grid, Row } from 'react-native-easy-grid';
 import { logout } from '../../modules/providers/auth/auth.actions';
+import termsAndConditions from '../../components/termsAndConditions'
+
 import { TouchableOpacity, Image, Text, Platform,TouchableNativeFeedback } from 'react-native'
 
 import menuIcon from '../../../assets/images/menu.png';
@@ -73,6 +76,9 @@ const AuthRoutes = {
   forgotpassword: {
     screen: forgotpassword,
   },
+  renderOtpInput: {
+    screen: renderOtpInput,
+  },
   userdetails: {
     screen: userdetails,
   },
@@ -82,6 +88,10 @@ const AuthRoutes = {
     MapBox: {
     screen: MapBox,
   },
+  termsAndConditions: {
+    screen: termsAndConditions,
+  },
+  
 
 }
 
@@ -178,7 +188,7 @@ const HomeStack = createStackNavigator({
       title: 'Filter',
     })
   },
-  BloodDonersList: {
+  "Blood Doners": {
     screen: BloodDonersList,
     navigationOptions:({ navigation }) => ({
       title: 'Blood Donors',
@@ -268,6 +278,12 @@ const HomeStack = createStackNavigator({
       title: 'Update User Details'
     }
   },
+  UserAddress: {
+    screen: UserAddress,
+    navigationOptions: {
+      title: 'Search Location'
+    }
+  },
   MapBox: {
     screen: MapBox,
     navigationOptions: {
@@ -342,7 +358,7 @@ const HomeStack = createStackNavigator({
   "Chat Service": {
     screen: AvailableDoctors4Chat,
     navigationOptions: {
-      title: 'Availabile Doctors'
+      title: 'Available Doctors'
     }
   },
   "My Chats": {
@@ -532,7 +548,7 @@ const HomeStack = createStackNavigator({
     Home: {
       screen: HomeStack,
     },
-    BloodDonersList: {
+    "Blood Doners": {
       screen: BloodDonersList,
     },
     "My Appointments":{
@@ -570,7 +586,7 @@ const HomeStack = createStackNavigator({
     Reminder:require('../../../assets/images/drawerIcons/Reminder.png'),
     "My Chats":require('../../../assets/images/drawerIcons/Chat.png'),
     "Chat Service": require('../../../assets/images/drawerIcons/Chat.png'),
-    BloodDonersList: require('../../../assets/images/drawerIcons/Blooddonars.png'),
+    "Blood Doners": require('../../../assets/images/drawerIcons/Blooddonars.png'),
   }
   export default createAppContainer(createSwitchNavigator(
     {

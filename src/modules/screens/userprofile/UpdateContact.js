@@ -64,7 +64,7 @@ class UpdateContact extends Component {
                 this.setState({ errorMsg: 'User details already exists' })
                 return false;
             }
-            if (validateMobileNumber(primary_mobile_no && secondary_mobile_no) == false) {
+            if (validateMobileNumber(primary_mobile_no || secondary_mobile_no) == false) {
                 this.setState({ errorMsg: 'Contact field must contain number' })
                 return false;
             }

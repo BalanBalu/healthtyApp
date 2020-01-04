@@ -5,7 +5,7 @@ import { AsyncStorage, ScrollView } from 'react-native';
 import { connect } from 'react-redux'
 import styles from './style.js';
 import Spinner from '../../../components/Spinner';
-import { validateName } from '../../common'
+import { validateName, validatePassword } from '../../common'
 
 
 
@@ -16,7 +16,9 @@ class UpdateInsurance extends Component {
             insurance_no: '',
             insurance_provider: '',
             isLoading: false,
-            userData: ''
+            userData: '',
+            errorMsg: '',
+            noErrorMsg: ''
 
         }
     }
@@ -41,7 +43,6 @@ class UpdateInsurance extends Component {
 
     commonUpdateInsuranceMethod = async () => {
         try {
-            this.setState({ isLoading: true });
             let userId = await AsyncStorage.getItem('userId');
             let data = {
                 insurance: [{
@@ -50,34 +51,27 @@ class UpdateInsurance extends Component {
                     active: true
                 }]
             };
-            if (validateName(this.state.insurance_provider) == true) {
+            
+             this.setState({ errorMsg: '', noErrorMsg: '', isLoading: true });
 
-                let response = await userFiledsUpdate(userId, data);
-                if (response.success) {
-                    Toast.show({
-                        text: response.message,
-                        type: "success",
-                        duration: 3000,
-                    })
-                    this.props.navigation.navigate('Profile');
-
-                } else {
-                    Toast.show({
-                        text: response.message,
-                        type: "danger",
-                        duration: 3000
-                    })
-                }
-                this.setState({ isLoading: false });
-            }
-            else {
-                this.setState({ isLoading: false });
+            let response = await userFiledsUpdate(userId, data);
+            if (response.success) {
                 Toast.show({
-                    text: 'Name can contain only alphabets',
+                    text: response.message,
+                    type: "success",
+                    duration: 3000,
+                })
+                this.props.navigation.navigate('Profile');
+
+            } else {
+                Toast.show({
+                    text: "Insurance number must contain minimum 0f 5 and maximum of 15 characters",
                     type: "danger",
-                    duration: 3000
-                });
+                    duration: 5000
+                })
             }
+            this.setState({ isLoading: false });
+
         }
         catch (e) {
             console.log(e);
@@ -86,6 +80,28 @@ class UpdateInsurance extends Component {
             this.setState({ isLoading: false });
         }
     }
+    validateProviderName = async (text) => {
+        this.setState({ insurance_provider: text });
+        if (validateName(this.state.insurance_provider) == false) {
+            this.setState({ errorMsg: 'Insurance provider field must contain alphabets' })
+            return false;
+        }
+        else {
+            this.setState({ errorMsg: '' })
+        }
+    }
+    validateInsuranceNo = async (text) => {
+        this.setState({ insurance_no: text });
+        if (validatePassword(this.state.insurance_no) == false) {
+            this.setState({ noErrorMsg: 'Insurance number can not be empty' })
+            return false;
+        }
+        else {
+            this.setState({ noErrorMsg: '' })
+        }
+    }
+   
+
     handleInsuranceUpdate = async () => {
         const { userData, insurance_no, insurance_provider } = this.state
         try {
@@ -128,28 +144,29 @@ class UpdateInsurance extends Component {
 
                         <Text style={styles.headerText}>Edit Insurance</Text>
 
-                        <Card style={{ padding: 10, borderRadius: 10, marginTop: 20, height: 250, marginBottom: 20 }}>
+                        <Card style={{ padding: 10, borderRadius: 10, marginTop: 20, marginBottom: 20 }}>
 
 
                             <Item style={{ borderBottomWidth: 0, marginTop: 25 }}>
                                 <Icon name='heartbeat' type='FontAwesome' style={styles.centeredIcons}></Icon>
                                 <Input placeholder="Edit insurance number" style={styles.transparentLabel} keyboardType="email-address"
-                                    onChangeText={(insurance_no) => this.setState({ insurance_no })}
+                                    onChangeText={(insurance_no) => this.validateInsuranceNo( insurance_no )}
                                     value={this.state.insurance_no}
                                     testID='updateInsuranceNo' />
                             </Item>
-
+                            {this.state.noErrorMsg ?
+                                <Text style={{ color: 'red', marginLeft: 15, marginTop: 5 }}>{this.state.noErrorMsg}</Text>
+                                : null}
                             <Item style={{ borderBottomWidth: 0, marginTop: 25 }}>
                                 <Icon name='heartbeat' type='FontAwesome' style={styles.centeredIcons}></Icon>
                                 <Input placeholder="Edit insurance provider" style={styles.transparentLabel} keyboardType="email-address"
-                                    onChangeText={(insurance_provider) => this.setState({ insurance_provider })}
+                                    onChangeText={(insurance_provider) => this.validateProviderName(insurance_provider)}
                                     value={this.state.insurance_provider}
                                     testID='updateInsuranceProvider' />
                             </Item>
-
-
-
-
+                            {this.state.errorMsg ?
+                                <Text style={{ color: 'red', marginLeft: 15, marginTop: 5 }}>{this.state.errorMsg}</Text>
+                                : null}
                             <Item style={{ borderBottomWidth: 0, marginTop: 10 }}>
                                 <Right>
                                     <Button success style={styles.button2} onPress={() => this.handleInsuranceUpdate()} testID='clickUpdateInsurance'>

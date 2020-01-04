@@ -1,6 +1,6 @@
+
 import React, { Component } from 'react';
 import { View, StyleSheet, Image, PermissionsAndroid, AsyncStorage, TouchableOpacity } from 'react-native';
-
 import MapboxGL from '@react-native-mapbox-gl/maps';
 import { Col, Row, Grid } from 'react-native-easy-grid';
 import { IS_ANDROID, validatePincode, validateName } from '../../../common';
@@ -13,7 +13,6 @@ import Qs from 'qs';
 import Spinner from '../../../../components/Spinner';
 import locationIcon from '../../../../../assets/marker.png'
 import { NavigationEvents } from 'react-navigation';
-
 export default class MapBox extends React.Component {
     _requests = [];
     _isMounted = false;
@@ -41,9 +40,7 @@ export default class MapBox extends React.Component {
         this.onRegionDidChange = this.onRegionDidChange.bind(this);
         this.onRegionIsChanging = this.onRegionIsChanging.bind(this);
         this.onDidFinishLoadingMap = this.onDidFinishLoadingMap.bind(this);
-
     }
-
     async componentDidMount() {
         if (IS_ANDROID) {
             PermissionsAndroid.requestMultiple(
@@ -59,13 +56,11 @@ export default class MapBox extends React.Component {
                 console.warn(err);
             });
         }
-
         this._isMounted = true;
         const { navigation } = this.props;
         const fromProfile = navigation.getParam('fromProfile') || false
         showAllAddressFields = navigation.getParam('mapEdit') || false
         let locationData = this.props.navigation.getParam('locationData');
-
         if (fromProfile) {
             await this.setState({ fromProfile: true })
             if (locationData) {
@@ -80,7 +75,6 @@ export default class MapBox extends React.Component {
             this.getCurrentLocation();
         }
     }
-
     backNavigation(navigationData) {
         if (navigationData.action) {
             if (navigationData.action.type === 'Navigation/NAVIGATE') {
@@ -88,12 +82,10 @@ export default class MapBox extends React.Component {
                 if (searchLocationData) {
                     this.formUserAddress(searchLocationData)
                     this.setState({ coordinates: searchLocationData.center })
-
                 }
             }
         }
     }
-
 
     async getCurrentLocation() {
         navigator.geolocation.getCurrentPosition(async (position) => {
@@ -105,16 +97,12 @@ export default class MapBox extends React.Component {
                 isFinisedLoading: true
             })
             this.updtateLocation(origin_coordinates);
-
         }), error => {
             console.log(error);
         }, { enableHighAccuracy: true, timeout: 50000, maximumAge: 1000 }
     }
-
     async updtateLocation(center) {
-
         let fullPath = `https://api.mapbox.com/geocoding/v5/mapbox.places/${center[0]},${center[1]}.json?types=poi&access_token=${MAP_BOX_TOKEN}`;
-
         //this._request(center[0].toFixed(2), center[1].toFixed(2))
         let resp = await axios.get(fullPath, {
             headers: {
@@ -127,9 +115,7 @@ export default class MapBox extends React.Component {
         if (locationData) {
             this.formUserAddress(locationData);
         }
-
     }
-
     formUserAddress(locationData) {
         let locationFullText = '';
         if (locationData.context) {
@@ -137,7 +123,6 @@ export default class MapBox extends React.Component {
                 let textValue = locationData.context[i].text;
                 locationFullText += textValue + ', '
                 let contextType = locationData.context[i].id.split('.')[0];
-
                 switch (contextType) {
                     case 'locality':
                         this.updateAddressObject('no_and_street', textValue);
@@ -169,13 +154,11 @@ export default class MapBox extends React.Component {
 
 
 
-
     updateAddressObject(addressNode, value) {
         let statusCopy = Object.assign({}, this.state);
         statusCopy.address[addressNode] = value;
         this.setState(statusCopy);
     }
-
     async updateAddressData() {
         try {
             this.setState({ loading: true })
@@ -187,12 +170,10 @@ export default class MapBox extends React.Component {
                     address: this.state.address
                 }
             }
-
             const userId = await AsyncStorage.getItem('userId')
             let validate = (validateName(this.state.address.city && this.state.address.district && this.state.address.state && this.state.address.country));
-            if(validate===true){
+            if (validate === true) {
                 if (validatePincode(this.state.address.pin_code) == true) {
-
                     let result = await userFiledsUpdate(userId, userAddressData);
                     this.setState({ loading: false });
                     if (result.success) {
@@ -236,7 +217,6 @@ export default class MapBox extends React.Component {
                 })
             }
 
-
         } catch (e) {
             Toast.show({
                 text: 'Exception Occured' + e,
@@ -245,14 +225,12 @@ export default class MapBox extends React.Component {
             })
         }
     }
-
     async onRegionDidChange() {
         if (this.state.isFinisedLoading) {
             const zoom = await this._map.getZoom();
             const center = this.state.center;
             this.setState({ coordinates: center, zoom });
             let fullPath = `https://api.mapbox.com/geocoding/v5/mapbox.places/${center[0]},${center[1]}.json?types=poi&access_token=${MAP_BOX_TOKEN}`;
-
             //this._request(center[0].toFixed(2), center[1].toFixed(2))
             let resp = await axios.get(fullPath, {
                 headers: {
@@ -268,25 +246,20 @@ export default class MapBox extends React.Component {
         }
     }
 
-
     async onRegionIsChanging() {
-
         if (this.state.isFinisedLoading) {
             const center = await this._map.getCenter();
             this.setState({ center: center });
         }
     }
-
     async onDidFinishLoadingMap() {
         await this.setState({ isFinisedLoading: true })
     }
-
     async onPress(e) {
         // const pointInView = await this._map.getPointInView(e.geometry.coordinates);
         // this.setState({pointInView});
         // console.log(this.state.pointInView);
     }
-
     _abortRequests = () => {
         this._requests.map(i => i.abort());
         this._requests = [];
@@ -302,12 +275,10 @@ export default class MapBox extends React.Component {
                 if (request.readyState !== 4) {
                     return;
                 }
-
                 if (request.status === 200 && request.status !== 0) {
                     const responseJSON = JSON.parse(request.responseText);
                     if (typeof responseJSON.features !== 'undefined') {
                         if (this._isMounted === true) {
-
                         }
                     }
                     if (typeof responseJSON.error_message !== 'undefined') {
@@ -321,13 +292,11 @@ export default class MapBox extends React.Component {
             url = 'https://api.mapbox.com/geocoding/v5/mapbox.places/' + lng + ',' + lat + '.json' + '?' + Qs.stringify({
                 types: 'poi',
                 access_token: MAP_BOX_TOKEN,
-
             })
             request.open('GET', url);
             request.send();
         }
     }
-
 
     render() {
         return (
@@ -339,25 +308,8 @@ export default class MapBox extends React.Component {
                     visible={this.state.isLoading}
                     textContent={'Please wait Loading...'}
                 />
-
                 <View style={{ flex: 1 }}>
-                    {this.state.showAllAddressFields == false ?
 
-                        <Row style={styles.SearchRow}>
-                            <Col size={0.9} style={styles.SearchStyle}>
-                                <TouchableOpacity style={{ justifyContent: 'center' }}>
-                                    <Icon name="ios-search" style={{ color: '#fff', fontSize: 20, padding: 2 }} />
-                                </TouchableOpacity>
-                            </Col>
-                            <Col size={9.1} style={{ justifyContent: 'center', }}>
-                                <Input placeholder=" Search Location"
-                                    value={this.state.locationFullText}
-                                    style={styles.inputfield}
-                                    placeholderTextColor="black"
-                                    onFocus={() => { this.state.fromProfile ? this.props.navigation.navigate('UserAddress', { fromProfile: true }) : this.props.navigation.navigate('UserAddress') }}
-                                    onChangeText={locationFullText => this.setState({ locationFullText })} />
-                            </Col>
-                        </Row> : null}
                     {this.state.coordinates !== null ?
                         <MapboxGL.MapView
                             ref={(c) => this._map = c}
@@ -371,15 +323,12 @@ export default class MapBox extends React.Component {
                             onDidFinishLoadingMap={this.onDidFinishLoadingMap}
                             centerCoordinate={this.state.coordinates}
                         >
-
                             {this.state.coordinates !== null ?
                                 <MapboxGL.Camera
                                     zoomLevel={this.state.zoom}
                                     centerCoordinate={this.state.coordinates}
                                     animationDuration={2000}
-
                                 /> : null}
-
                             <MapboxGL.Images
                                 images={{ location: locationIcon }}
                             />
@@ -390,17 +339,13 @@ export default class MapBox extends React.Component {
                                     coordinate={this.state.center}>
                                 </MapboxGL.PointAnnotation> : null}
                         </MapboxGL.MapView>
-
                         : null}
                     <View style={[styles.containerForBubble, { bottom: 0 }]}>
                         <TouchableOpacity style={styles.fab} onPress={() => this.getCurrentLocation()}>
                             <Icon color={'white'} name="locate" style={styles.text}></Icon>
                         </TouchableOpacity>
-
                     </View>
-
                 </View>
-
                 {this.state.showAllAddressFields == false ?
                     <Card>
                         <CardItem bordered>
@@ -412,7 +357,6 @@ export default class MapBox extends React.Component {
                             </Body>
                         </CardItem>
                     </Card> :
-
                     <Content style={styles.bodyContent}>
                         <Form>
                             <Item floatingLabel>
@@ -453,24 +397,38 @@ export default class MapBox extends React.Component {
                                     onChangeText={value => this.updateAddressObject('pin_code', value)} />
                             </Item>
 
-
                             <Button success iconLeft style={styles.loginButton} block onPress={() => this.updateAddressData()}>
                                 <Icon name='paper-plane'></Icon>
                                 <Text>Update</Text>
                             </Button>
 
 
-
                         </Form>
                     </Content>
                 }
-            </Container>
+                <View style={{ position: 'absolute', }}>
+                    <Row style={styles.SearchRow1}>
+                        <View style={styles.SearchStyle} >
+                            <TouchableOpacity style={{ justifyContent: 'center' }}>
+                                <Icon name="ios-search" style={{ color: '#fff', fontSize: 20, padding: 2 }} />
+                            </TouchableOpacity>
+                        </View>
+                        <View style={{ justifyContent: 'center', width: '90%' }}>
+                            <Input placeholder=" Search Location"
+                                value={this.state.locationFullText}
+                                style={styles.inputfield}
+                                placeholderTextColor="black"
+                                onFocus={() => { this.state.fromProfile ? this.props.navigation.navigate('UserAddress', { fromProfile: true }) : this.props.navigation.navigate('UserAddress') }}
+                                onChangeText={locationFullText => this.setState({ locationFullText })} />
+                        </View>
+                    </Row>
 
+                </View>
+            </Container>
 
         )
     }
 }
-
 const styles = StyleSheet.create({
     container: {
         flex: 1
@@ -549,13 +507,13 @@ const styles = StyleSheet.create({
     },
     SearchStyle: {
         backgroundColor: '#7E49C3',
-        width: '85%',
+        width: '10%',
         alignItems: 'center',
         justifyContent: 'center',
         borderRightColor: '#000',
         borderRightWidth: 0.5,
         borderBottomLeftRadius: 5,
-        borderTopLeftRadius: 5
+        borderTopLeftRadius: 5,
     },
     SearchRow: {
         backgroundColor: 'white',
@@ -564,8 +522,8 @@ const styles = StyleSheet.create({
         height: 35,
         marginRight: 10,
         marginLeft: 10,
-        marginTop: 5,
-        borderRadius: 5
+        borderRadius: 5,
+        marginTop: 50
     },
     inputfield: {
         color: 'black',
@@ -573,5 +531,15 @@ const styles = StyleSheet.create({
         fontSize: 12,
         padding: 5,
         paddingLeft: 10
+    },
+    SearchRow1: {
+        backgroundColor: 'white',
+        borderColor: '#000',
+        borderWidth: 0.5,
+        height: 35,
+        marginRight: 10,
+        marginLeft: 10,
+        borderRadius: 5,
+        marginTop: 35
     },
 });

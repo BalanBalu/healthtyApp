@@ -278,7 +278,7 @@ callSuggestionService=async(enteredText)=>{
 
                     <Grid style={{flex:1,marginLeft:10,marginRight:10,marginTop:10}}>
                     <Col style={{width:'33.33%',}}>
-                       <TouchableOpacity onPress={() => this.props.navigation.navigate("BloodDonersList")}>
+                       <TouchableOpacity onPress={() => this.props.navigation.navigate("Blood Doners")}>
                         <Card style={{  borderRadius: 10, overflow: 'hidden' }}>
                           <Row style={{ height: 100, width: '100%', overflow: 'hidden', backgroundColor: "#fff",justifyContent:'center',alignItems:'center'}}>
                             <Image
