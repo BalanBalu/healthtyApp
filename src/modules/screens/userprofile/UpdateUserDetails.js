@@ -62,6 +62,22 @@ class UpdateUserDetails extends Component {
         })
     }
 
+    validateFirstNameLastName = async (text, type) => {
+        if (type === "Firstname") {
+            this.setState({ firstName: text });
+        } else {
+            this.setState({ lastName: text });
+        }
+
+        if (validateName(this.state.lastName || this.state.firstName) == false) {
+            this.setState({ errorMsg: 'First name and last name fields must contain alphabets' })
+            return false;
+        }
+        else {
+            this.setState({ errorMsg: '' })
+        }
+
+    }
 
     userUpdate = async () => {
         const { userData, firstName, lastName, dob, gender, selectedBloodGroup } = this.state
@@ -70,11 +86,6 @@ class UpdateUserDetails extends Component {
                 this.setState({ errorMsg: 'Kindly fill all the fields...' })
                 return false;
             }
-                if (validateName(firstName && lastName) == false) {
-                    this.setState({ errorMsg: 'First name and last name fields must contain alphabets' })
-                    return false;
-                }
-        
             
             this.setState({ errorMsg: '', isLoading: true });
             let requestData = {
@@ -135,7 +146,7 @@ class UpdateUserDetails extends Component {
                                         value={this.state.firstName}
                                         keyboardType={'default'}
                                         returnKeyType={"next"}
-                                        onChangeText={text => this.setState({ firstName: text })}
+                                        onChangeText={text => this.validateFirstNameLastName(text, 'Firstname' )}
                                         autoCapitalize='none'
                                         blurOnSubmit={false}
                                         onSubmitEditing={() => { this.firstName._root.focus(); }} testID="editFirstName"
@@ -148,7 +159,7 @@ class UpdateUserDetails extends Component {
                                         value={this.state.lastName}
                                         keyboardType={'default'}
                                         returnKeyType={"done"}
-                                        onChangeText={text => this.setState({ lastName: text })}
+                                        onChangeText={text => this.validateFirstNameLastName(text,'LastName')}
                                         autoCapitalize='none'
                                         blurOnSubmit={false}
                                         // onSubmitEditing={() => { this.lastName._root.focus(this.setState({ focus: true })); }}
