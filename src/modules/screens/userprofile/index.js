@@ -32,7 +32,7 @@ class Profile extends Component {
             file_name: '',
             isLoading: false,
             selectOptionPoopup: false,
-            isBloodDonor: false
+            is_blood_donor: false
 
         };
 
@@ -67,7 +67,7 @@ class Profile extends Component {
             let result = await fetchUserProfile(userId, fields);
 
             if (result) {
-                this.setState({ data: result });
+                this.setState({ data: result, is_blood_donor: result.is_blood_donor });
                 storeBasicProfile(result);
 
                 if (result.profile_image) {
@@ -100,7 +100,7 @@ class Profile extends Component {
         const userId = await AsyncStorage.getItem('userId')
         try {
             let requestData = {
-                is_blood_donor: this.state.isBloodDonor
+                is_blood_donor: this.state.is_blood_donor
             };
             let response = await userFiledsUpdate(userId, requestData);
             if (response.success) {
@@ -437,10 +437,11 @@ class Profile extends Component {
 
                                 <Right style={{ justifyContent: 'center', alignItems: 'center',marginTop:-10 }}>
                                     <Switch
-                                        value={data.is_blood_donor}
+                                        value={this.state.is_blood_donor}
                                         style={{ marginTop: 15, }}
                                         onValueChange={value => {
-                                            this.setState({ isBloodDonor: !this.state.isBloodDonor }), this.updateBloodDonor()
+                                            this.setState({ is_blood_donor: !this.state.is_blood_donor })
+                                            this.updateBloodDonor()
                                             if (value === true) {
                                                 if (data.address === undefined) {
                                                     this.editProfile('MapBox')
