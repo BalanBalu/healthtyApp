@@ -214,6 +214,10 @@ export const appointment = async (userId, filters, isLoading = true) => {
 export const getUserAppointments = async (userId, filters) => {
   try {
     let endPoint = 'appointments/user/' + userId + '?startDate=' + filters.startDate + '&endDate=' + filters.endDate;
+    if(filters.on_going_appointment) {
+      endPoint += '&on_going_appointment=1' 
+    }
+    console.log(endPoint);
     let response = await getService(endPoint);
     let respData = response.data;
     return respData;
@@ -435,5 +439,33 @@ export async function getLocations() {
     }
 }
 
+export const getPaymentInfomation = async (paymentId) => {
+  try{    
+        
+    let endPoint =  '/payment/' + paymentId;  
+  
+    let response = await getService(endPoint);
+    
+    let respData = response.data;
+    
+      if(respData.error || respData.success == false) {         
+        return{
+          success: respData.success,
+          message: respData.error,
+        }
+      } else {            
+         
+        return respData;  
+               
+      }
+      
+  } catch (e){       
+     
+      return {
+        success : false,
+        message: 'Exception Occured'+e
+      }; 
+  }
+}
 
 

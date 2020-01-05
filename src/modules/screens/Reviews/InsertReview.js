@@ -4,7 +4,7 @@ import { StyleSheet, Image, TextInput, Dimensions, AsyncStorage, Modal } from 'r
 import StarRating from 'react-native-star-rating';
 import {
   Container, Header, Title, Left, Right, Body, Button, Card, Toast, CardItem, Row, Grid, View,Col,
-  Text, Thumbnail, Content, CheckBox, Item
+  Text, Thumbnail, Content, CheckBox, Item, Input
 } from 'native-base';
 import { Checkbox } from 'react-native-paper';
 //import {ScrollView} from 'react-native-gesture-handler';
@@ -22,7 +22,7 @@ class InsertReview extends Component {
       cleanness_rating: 0,
       staff_rating: 0,
       wait_time_rating: 0,
-      comments: ' ',
+      comments: '',
       doctorRecommended: false,
       data: '',
       doctorId: '',
@@ -95,12 +95,14 @@ class InsertReview extends Component {
         console.log(JSON.stringify(result))
 
         if (result.success) {
-
-          // this.state.data.appointment_status = 'COMPLETED';
-          // await this.updateAppointmentStatus(this.state.data, 'COMPLETED')
-
-          this.props.navigation.pop();
-
+        
+          const { navigation } = this.props;
+          const { routeName, key } = navigation.getParam('prevState');
+          if(routeName === 'AppointmentInfo') {
+            navigation.navigate({ routeName, key, params: { hasReloadReview: true } });
+          } else {
+            navigation.pop()
+          }
         }
       } else {
         this.setState({ ratingIndicatePopUp: true })
@@ -180,14 +182,7 @@ class InsertReview extends Component {
 
                     />
                   </Row>
-                  {/* <Row style={{ marginTop: 20, marginLeft: -10 }}>
-                    <CheckBox checked={this.state.isAnonymous} color="green" onPress={() => this.setState({ isAnonymous: !this.state.isAnonymous })} ></CheckBox>
-                    <Text style={{ marginLeft: 20 }}>Would you like to give as Anonymous</Text>
-                  </Row>
-                  <Row style={{ marginTop: 10, marginLeft: -10 }} >
-                    <CheckBox checked={this.state.doctorRecommended} color="green" onPress={() => this.setState({ doctorRecommended: !this.state.doctorRecommended })} ></CheckBox>
-                    <Text style={{ marginLeft: 20 }}>Do you recommend this doctor</Text>
-                  </Row> */}
+                  
                   <Row style={{ marginTop: 20, marginLeft: -10 }}>
                     <Checkbox status={this.state.isAnonymous ? 'checked' : 'unchecked'} color="green" onPress={() => this.setState({ isAnonymous: !this.state.isAnonymous })} />
                     <Text style={{ marginLeft: 5, marginTop: 7 }}>Would you like to give as Anonymous</Text>
@@ -200,18 +195,16 @@ class InsertReview extends Component {
                   <Text style={{ fontSize: 16, marginTop: 20 }}>
                     Write your review
                       </Text>
-                  <TextInput
+                  <Input
                     style={{ height: 100, borderWidth: 1, marginTop: 20, width: 300 }}
+                    returnKeyType={'next'}
                     multiline={true}
-                    placeholder="Write your reviews here"
+                    keyboardType={'default'}
                     textAlignVertical={'top'}
-                    onChangeText={(comments) => this.setState({ comments })}
-                  />
+                    onChangeText={(comments) => {
+                      this.setState({ comments })}
+                    }/>
 
-                  {/* <TextInput
-                    style={{ height: 80, borderWidth: 1, width: 'auto' }}
-                   
-                  /> */}
                   <Row style={{ marginTop: 10 }}>
                     <Right>
                       <Button style={styles.button1}

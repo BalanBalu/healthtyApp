@@ -168,7 +168,7 @@ class UpdateUserDetails extends Component {
                                 </Item>
 
                                 <Item style={{ borderBottomWidth: 0, backgroundColor: '#F1F1F1', height: 45, marginRight: 15, marginTop: 10, borderRadius: 5, }}>
-                                    <Icon name='calendar' style={{ paddingLeft: 20, color: '#775DA3' }} />
+                                    <Icon name='calendar' style={{marginLeft:10,  color: '#775DA3' }} />
                                     <DatePicker style={styles.transparentLabel2}
                                         defaultDate={this.state.dob}
                                         timeZoneOffsetInMinutes={undefined}
@@ -188,19 +188,19 @@ class UpdateUserDetails extends Component {
                                     />
 
                                 </Item>
-                                <Item style={{ borderBottomWidth: 0, marginRight: 15, height: 45, backgroundColor: '#F1F1F1', marginTop: 10, borderRadius: 5 }}>
+                                <Item  last  style={{ borderBottomWidth: 0, marginRight: 15, height: 45, backgroundColor: '#F1F1F1', marginTop: 10, borderRadius: 5 }}>
                                     <Picker style={styles.transparentLabel2}
                                         mode="dropdown"
-                                        iosIcon={<Icon name="arrow-down" />}
-                                        textStyle={{ color: "#5cb85c" }}
+                                        placeholderStyle = {{fontSize:15,marginLeft:-5}} 
+                                        iosIcon={<Icon name="ios-arrow-down" style={{color:'gray',fontSize:20}}/>}
+                                        textStyle={{ color: "gray",left:0,marginLeft:-5}}
                                         note={false}
                                         itemStyle={{
                                             backgroundColor: "gray",
-
                                             paddingLeft: 10,
-                                            fontSize: 10,
+                                            fontSize: 16,     
                                         }}
-                                        itemTextStyle={{ color: '#5cb85c' }}
+                                        itemTextStyle={{ color: '#5cb85c', }}
                                         style={{ width: undefined }}
                                         onValueChange={(sample) => { this.setState({ selectedBloodGroup: sample }) }}
                                         selectedValue={this.state.selectedBloodGroup}

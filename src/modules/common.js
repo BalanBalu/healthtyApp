@@ -145,6 +145,9 @@ export function getDoctorExperience(calulatedExperience) {
     }
     if (calulatedExperience.year == 0) {
         month = calulatedExperience.month;
+        if(month==0){
+            return 'N/A'
+        }
         return `${month} Month` + (month <= 1 ? '' : 's')
     } else {
         year = calulatedExperience.year;
@@ -161,6 +164,17 @@ export async function getUserNotification() {
         console.log(e);
     }
 }
+export function getName(data) {
+    let name = 'unKnown'
+    if (data) {
+      if (data.first_name != undefined || data.last_name != undefined) {
+        name = `${data.first_name || ''} ${data.last_name || ''}`
+  
+      }
+    }
+    return name
+  
+  }
 
 
 export class Badge extends Component {
