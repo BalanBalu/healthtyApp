@@ -198,8 +198,7 @@ export class Badge extends Component {
         return (
 
             data != null &&
-            <Text style={{ position: 'absolute', backgroundColor: 'red', color: 'white', borderRadius: 20, marginLeft: 10, padding: 2, marginTop: -7, paddingLeft: 5, paddingRight: 5 }}>{data}</Text>
-        )
+            <Text style={{ position: 'absolute', backgroundColor: 'red', color: 'white', borderRadius: 20/2,  marginTop: -7, width:undefined,height:undefined,padding:2,fontSize:10 }}>{data}</Text>        )
     }
 }
 
