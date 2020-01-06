@@ -48,8 +48,7 @@ class Categories extends Component {
       <Container style={styles.container}>
         <Content style={styles.bodyContent}>
           <View style={{marginBottom:10}}>
-          {isLoading ? <Spinner color='blue' /> : null}
-          <FlatList horizontal={false} numColumns={1}
+          <FlatList horizontal={false} numColumns={2}
             data={this.state.data}
             extraData={this.state}
             renderItem={({ item, index }) =>
@@ -59,43 +58,29 @@ class Categories extends Component {
               justifyContent: "center", 
               borderColor:'gray', 
               borderRadius:5, 
-              flexDirection:'row', 
+              flexDirection:'row',
+              borderWidth:0.1, 
               shadowColor: '#000',
               shadowOffset: { width: 0, height: 0.5 },
-              shadowOpacity: 0.1,
+              shadowOpacity: 0.5,
               shadowRadius: 5,  
-              elevation: 0,
+              elevation: 10,
               padding:1,
-              marginTop:8,
-              marginLeft:12,
-              marginBottom:1,width:'94%',flexDirection:'row',backgroundColor:'#F5F5F5' }}>
+              marginTop:20,
+              marginLeft:20,
+              marginBottom:1,width:'41.5%',flexDirection:'row',backgroundColor:'#fafafa' ,paddingTop:20,paddingBottom:20}}>
              
                   <TouchableOpacity onPress={() => this.navigateToCategorySearch(item.category_name)} 
-                                    style={{justifyContent:'center',alignItems:'center',width:'100%',paddingTop:5,paddingBottom:5,flexDirection:'row'}}>
-            
-            <Row> 
-              <Col size={6} style={{justifyContent:'center'}}>
-              <Text style={{fontSize:14, marginLeft:20, padding: 2,fontWeight:'700'}}>{item.category_name}</Text>
-
-            </Col>
-            <Col size={4} style={{alignItems:'flex-end',marginRight:20}}>
-            <Image
-                          source={{ uri: item.imageBaseURL + item.category_id + '.png'  }}
-                       
+                                    style={{justifyContent:'center',alignItems:'center',width:'100%',paddingTop:5,paddingBottom:5}}>
+                  <Image
+                        source={{ uri: item.imageBaseURL + item.category_id + '.png'  }}
                         style={{
                           width: 50,height:50, alignItems:'center'
                         }}
                   />
-            </Col>
-                 
-                 
-                 
-                  
-                 </Row>
+                      <Text style={{fontSize:12, textAlign:'center', padding: 2,fontWeight:'200',marginTop:5}}>{item.category_name}</Text>
                 
-                  </TouchableOpacity>
-           
-                  
+                  </TouchableOpacity>          
       </Col> 
 
             
@@ -161,7 +146,8 @@ const styles = StyleSheet.create({
   },
 
   bodyContent: {
-    padding: 5
+    padding: 5,
+    backgroundColor:'#DCDCDC'
   },
   textcenter: {
     marginLeft: 'auto',
