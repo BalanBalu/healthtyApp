@@ -66,9 +66,9 @@ class Categories extends Component {
               shadowRadius: 5,  
               elevation: 10,
               padding:1,
-              marginTop:20,
-              marginLeft:20,
-              marginBottom:1,width:'41.5%',flexDirection:'row',backgroundColor:'#fafafa' ,paddingTop:20,paddingBottom:20}}>
+              marginTop:12,
+              marginLeft:12,
+              marginBottom:1,width:'45%',flexDirection:'row',backgroundColor:'#fafafa' ,paddingTop:20,paddingBottom:20}}>
              
                   <TouchableOpacity onPress={() => this.navigateToCategorySearch(item.category_name)} 
                                     style={{justifyContent:'center',alignItems:'center',width:'100%',paddingTop:5,paddingBottom:5}}>
