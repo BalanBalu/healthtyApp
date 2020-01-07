@@ -70,7 +70,7 @@ class UpdateUserDetails extends Component {
         }
 
         if (validateName(this.state.lastName || this.state.firstName) == false) {
-            this.setState({ errorMsg: 'First name and last name fields must contain alphabets' })
+            this.setState({ errorMsg: 'First name and last name Should not Contain any Special Characters' })
             return false;
         }
         else {
