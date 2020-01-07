@@ -70,22 +70,25 @@ class BloodDonersList extends Component {
     }
   }
 
-  bindbloodListValues() {
+  bindbloodListValues=async()=> {
     const {
       navigation
     } = this.props;
-    let filterData = navigation.getParam('data');
-    this.setState({
-      data: filterData
-    })
+    let filterData = navigation.getParam('filteredData');
+    if (filterData != undefined){
+      await this.setState({
+        data: filterData
+      })
+    }
+    else{
+      await this.getBlooddonationDetail();
+    }
   }
   backNavigation = async (navigationData) => {
     try {
       if (navigationData.action) {
         // if (navigationData.action.type === 'Navigation/BACK') {
-          console.log(navigationData);
         await this.bindbloodListValues();
-
         // }
       }else{
       await this.getBlooddonationDetail();
@@ -133,7 +136,7 @@ class BloodDonersList extends Component {
                 <View style={{marginBottom:50}}>
                    <NavigationEvents
                       onWillFocus={payload => { this.backNavigation(payload)}}/>
-                  
+                 
                   <FlatList
                   data={this.state.data}
                   keyExtractor={(item, index) => index.toString()}
