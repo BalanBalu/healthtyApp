@@ -13,7 +13,7 @@ import { formatDate, dateDiff } from '../../../setup/helpers';
 
 import { Loader } from '../../../components/ContentLoader'
 
-import { renderProfileImage , RenderHospitalAddress,getAllEducation,getAllSpecialist,getName,getDoctorExperience} from '../../common'
+import { renderDoctorImage , RenderHospitalAddress,getAllEducation,getAllSpecialist,getName,getDoctorExperience} from '../../common'
 class AppointmentDetails extends Component {
   constructor(props) {
     super(props)
@@ -32,7 +32,7 @@ class AppointmentDetails extends Component {
       education: '',
       specialist: '',
       hospital: [],
-      selectedTab:null,
+      selectedTab:0,
       paymentDetails:{},
 
 
@@ -51,7 +51,6 @@ class AppointmentDetails extends Component {
       await this.setState({ appointmentId: appointmentId });
       await new Promise.all([
         this.appointmentDetailsGetById(),
-        this.getDoctorDetails(),
         this.getUserReviews(),
       ]);
     }
@@ -130,7 +129,9 @@ appointmentDetailsGetById = async () => {
     let result = await appointmentDetails(this.state.appointmentId);
     if (result.success) {
       this.setState({ doctorId: result.data[0].doctor_id, data: result.data[0] }),
-      this.getPaymentInfo(result.data[0].payment_id);
+      await new Promise.all([
+      this.getDoctorDetails(),
+      this.getPaymentInfo(result.data[0].payment_id)])
     }
   } catch (error) {
     console.error(error);
@@ -249,11 +250,11 @@ async backNavigation(){
                 <ListItem thumbnail noBorder>
                   <Left>
 
-                    <Thumbnail square source={renderProfileImage(doctorData)} style={{ height: 86, width: 86 }} />
+                    <Thumbnail square source={renderDoctorImage(doctorData)} style={{ height: 86, width: 86 }} />
                   </Left>
                   <Body>
 
-                    <Text style={{ fontSize: 15, fontFamily: 'OpenSans', fontWeight: 'bold' }}>{(doctorData && doctorData.prefix != undefined ? doctorData && doctorData.prefix : '') +(getName(doctorData))+','}
+                    <Text style={{ fontSize: 15, fontFamily: 'OpenSans', fontWeight: 'bold' }}>{(doctorData && doctorData.prefix != undefined ? doctorData && doctorData.prefix+' ' : '') +(getName(doctorData))+','}
                       <Text style={{ fontSize: 13, fontFamily: 'OpenSans' }}>{education}</Text>
 
                     </Text>
