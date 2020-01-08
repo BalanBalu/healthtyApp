@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 
-import { StyleSheet, Image, TextInput, Dimensions, AsyncStorage, Modal, TouchableOpacity, TextInput } from 'react-native';
+import { StyleSheet, Image, Dimensions, AsyncStorage, Modal, TouchableOpacity, TextInput } from 'react-native';
 import StarRating from 'react-native-star-rating';
 import {
   Container, Header, Title, Left, Right, Body, Button, Card, Toast, CardItem, Row, Grid, View, Col,
@@ -219,15 +219,15 @@ class InsertReview extends Component {
                             />
                           </Right>
                         </Row>
-                        <Row style={{ marginTop: 20 }}>
-                          <Col style={{ marginLeft: 10, flexDirection: 'row', width: '49%' }}>
+                        <Row style={{ marginTop: 20, marginLeft: 14, marginRight: 20 }}>
+                          <Col style={{ flexDirection: 'row', width: '45%', alignItems: "flex-start", justifyContent: 'flex-start' }}>
                             <Checkbox color="#3C98EC" size={5}
                               status={checked ? 'checked' : 'unchecked'}
                               onPress={() => { this.setState({ checked: !checked }); }}
                               style={{ height: 5, width: 5 }} />
                             <Text style={{ color: '#3C98EC', marginTop: 10, fontSize: 12 }}>Anonymous</Text>
                           </Col>
-                          <Col style={{ flexDirection: 'row', width: '51%' }}>
+                          <Col style={{ flexDirection: 'row', width: '55%', alignItems: "flex-start", justifyContent: 'flex-start' }}>
 
                             <Checkbox color="#3C98EC" size={5}
                               status={checked ? 'checked' : 'unchecked'}
@@ -251,11 +251,11 @@ class InsertReview extends Component {
                             } />
                         </View>
                       </View>
-                      <Row style={{ marginLeft: 20, marginTop: 10, marginRight: 20 }}>
+                      <Row style={{ marginLeft: 20, marginTop: 10, marginRight: 20, }}>
 
-                        <Col style={{ width: '48%' }}>
+                        <Col style={{ width: '50%' }}>
                         </Col>
-                        <Col style={{ width: '52%', flexDirection: 'row' }}>
+                        <Col style={{ width: '50%', flexDirection: 'row', alignItems: 'flex-end', justifyContent: 'flex-end' }}>
                           <TouchableOpacity style={{ backgroundColor: '#959595', paddingLeft: 20, paddingRight: 20, paddingTop: 1, paddingBottom: 3, borderRadius: 2 }}><Text uppercase={true} style={{ color: '#FFF', fontSize: 12, }} >Cancel</Text></TouchableOpacity>
                           <TouchableOpacity style={{ backgroundColor: '#349631', paddingLeft: 20, paddingRight: 20, paddingTop: 1, paddingBottom: 3, borderRadius: 2, marginLeft: 10 }}><Text uppercase={true} style={{ color: '#FFF', fontSize: 12 }}>Submit</Text></TouchableOpacity>
                         </Col>
