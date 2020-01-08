@@ -35,19 +35,19 @@ class InsertReview extends Component {
 
   async componentDidMount() {
 
-    const { navigation } = this.props;
-    const reviewData = navigation.getParam('appointmentDetail');
-    console.log('reviewData:')
-    console.log(reviewData);
+    // const { navigation } = this.props;
+    // const reviewData = navigation.getParam('appointmentDetail');
+    // console.log('reviewData:')
+    // console.log(reviewData);
 
-    // let reviewData=finalReviewData.data.appointmentResult;
+    // // let reviewData=finalReviewData.data.appointmentResult;
 
 
-    let userId = reviewData.user_id;
+    // let userId = reviewData.user_id;
 
-    let doctorId = reviewData.doctor_id;
-    let appointmentId = reviewData._id;
-    await this.setState({ userId: userId, doctorId: doctorId, appointmentId: appointmentId, data: reviewData });
+    // let doctorId = reviewData.doctor_id;
+    // let appointmentId = reviewData._id;
+    // await this.setState({ userId: userId, doctorId: doctorId, appointmentId: appointmentId, data: reviewData });
 
   }
 
@@ -138,35 +138,14 @@ class InsertReview extends Component {
     const { data, checked } = this.state;
     return (
       < Container style={styles.container} >
-        <Content>
+        <Content 
+        style={{
+            backgroundColor: '#fff',
+            position: 'absolute', 
+            bottom: 0
+          }}>
 
-          <View>
-            <Modal
-              animationType="slide"
-              transparent={true}
-              visible={this.state.modalVisible}
-            >
-              <View style={{
-                flex: 1,
-                flexDirection: 'column',
-                justifyContent: 'flex-end',
-                alignItems: 'center',
-                height: '50%',
-                transparent: 'rgba(0,0,0,0.7)',
-                overlayColor: 'rgba(0, 0, 0, 0.7)',
-                backgroundColor: 'rgba(0,0,0,0.2)'
-
-              }}>
-                <View style={{
-                  width: '95%',
-                  height: '55%', backgroundColor: '#fff',
-
-
-                  borderRadius: 5,
-
-                }}>
-                  <Content>
-                    <Grid>
+                  <Grid>
                       <Row style={{ backgroundColor: '#7F49C3', paddingTop: 10, paddingBottom: 10, paddingLeft: 10, paddingRight: 10, borderTopLeftRadius: 5, borderTopRightRadius: 5 }}>
                         <Left>
                           <Text style={{ color: '#fff', fontSize: 16 }}>Mukesh Kumar</Text>
@@ -263,13 +242,8 @@ class InsertReview extends Component {
 
                       </Row>
                     </Grid>
-                  </Content>
+                 
 
-
-                </View>
-              </View>
-            </Modal>
-          </View>
 
 
 
@@ -421,9 +395,11 @@ export default InsertReview
 
 const styles = StyleSheet.create({
   container: {
-    backgroundColor: 'gray',
-    padding: 5
-
+    backgroundColor: 'transparent',
+    padding: 10,
+    width: '100%',
+    position: 'absolute', 
+    bottom: 0 ,
   },
 
   card: {
