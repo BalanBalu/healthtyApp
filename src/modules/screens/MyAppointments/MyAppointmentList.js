@@ -12,7 +12,7 @@ import {formatDate,addTimeUnit,subMoment,addMoment,subTimeUnit ,getAllId,statusV
 import {getUserAppointments,viewUserReviews,getMultipleDoctorDetails} from "../../providers/bookappointment/bookappointment.action";
 import noAppointmentImage from "../../../../assets/images/noappointment.png";
 import Spinner from "../../../components/Spinner";
-import { renderProfileImage,getAllEducation,getAllSpecialist,getName } from '../../common'
+import { renderProfileImage,renderDoctorImage,getAllEducation,getAllSpecialist,getName } from '../../common'
 import moment from "moment";
 // import moment from "moment";
 
@@ -353,7 +353,7 @@ return (
 													<Left>
 														<Thumbnail
 															square
-															source={renderProfileImage(item)}
+															source={renderDoctorImage(item)}
 															style={{ height: 60, width: 60 }}
 														/>
 													</Left>
@@ -362,7 +362,7 @@ return (
 														<Item style={{ borderBottomWidth: 0 }}>
 
 															<Text style={{ fontFamily: "OpenSans", fontSize: 15, fontWeight: 'bold' }}>
-																{(item.prefix != undefined ? item.prefix : '') + getName(item.appointmentResult.doctorInfo)}
+																{(item.prefix != undefined ? item.prefix+' ' : '') + getName(item.appointmentResult.doctorInfo)}
 															</Text>
 															<Text
 																style={{

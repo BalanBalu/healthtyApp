@@ -230,7 +230,7 @@ async backNavigation(){
 
   render() {
     const { data, reviewData, doctorData, education, specialist, hospital, isLoading ,selectedTab,paymentDetails} = this.state;
-
+      console.log(data)
     return (
 
       <Container style={styles.container}>
@@ -301,13 +301,13 @@ async backNavigation(){
                 </Grid>
                 <Grid style={{ marginTop: 5 }}>
                 { selectedTab==0?
-                  data.appointment_status == 'APPROVED' || this.state.appointmentStatus === 'APPROVED' || data.appointment_status == 'PENDING'  ?
+                 data.onGoingAppointment !== true&&(data.appointment_status == 'APPROVED' || this.state.appointmentStatus === 'APPROVED' || data.appointment_status == 'PENDING')  ?
                     <Col style={width = 'auto'}>
                       <Button block danger style={{ margin: 1, marginTop: 10, marginLeft: 1, borderRadius: 30, padding: 15, height: 40, width: "auto" }} onPress={() => this.navigateCancelAppoointment()} testID='cancelAppointment'>
                         <Text style={{ textAlign: 'center', fontFamily: 'OpenSans', fontSize: 14, fontWeight: 'bold' }}>CANCEL APPOINTMENT</Text>
                       </Button>
                     </Col> :
-                    data.appointment_status == 'PROPOSED_NEW_TIME' ?
+                    data.onGoingAppointment !== true && data.appointment_status == 'PROPOSED_NEW_TIME' ?
                       <Item style={{ borderBottomWidth: 0, justifyContent: 'center' }}>
                         <Button success style={styles.statusButton} onPress={() => this.updateAppointmentStatus(data, 'APPROVED')} testID='approvedAppointment'>
                           <Text style={{ textAlign: 'center', fontFamily: 'OpenSans', color: '#000', fontSize: 14, fontWeight: 'bold' }}>ACCEPT</Text>
