@@ -4,7 +4,7 @@ import {
   Thumbnail, Body, Icon, Toast, View
 } from 'native-base';
 import { Col, Row, Grid } from 'react-native-easy-grid';
-import { StyleSheet, AsyncStorage, TouchableOpacity,Modal } from 'react-native';
+import { StyleSheet, AsyncStorage, TouchableOpacity, Modal } from 'react-native';
 import StarRating from 'react-native-star-rating';
 import moment from 'moment';
 import { NavigationEvents } from 'react-navigation';
@@ -60,7 +60,7 @@ class AppointmentDetails extends Component {
       let appointmentId = appointmentData._id;
       const selectedTab = navigation.getParam('selectedIndex');
       this.props.navigation.setParams({ reportedId: appointmentId });
-     
+
       if (appointmentData.appointment_status == 'COMPLETED' && appointmentData.is_review_added == undefined) {
         await this.setState({ modalVisible: true })
       }
@@ -127,7 +127,7 @@ class AppointmentDetails extends Component {
     catch (e) {
       console.error(e);
     }
-    
+
 
   }
 
@@ -162,8 +162,8 @@ class AppointmentDetails extends Component {
 
   navigateAddReview() {
     this.setState({
-			modalVisible :true
-		});
+      modalVisible: true
+    });
     // this.state.data.prefix = this.state.doctorData.prefix;
     // const { navigation } = this.props;
     // const fromNotification = navigation.getParam('fromNotification');
@@ -239,35 +239,28 @@ class AppointmentDetails extends Component {
       }
     };
   }
- async  getvisble(val){
-	try{
-		// let {reviewIndex,pastData}=this.state
-    //   if(reviewIndex!=-1){
-		//   pastData=pastData[reviewIndex]
-		//   pastData.ratting=val.overall_rating;
-		//   pastData.appointmentResult.is_review_added=true
-		//   this.setState({pastData})
-		  
-    // }
-    await this.setState({ isLoading: true })
-		this.setState({
-			modalVisible :val.visible
-    });
-    if(val.overall_rating){
-    
-      this.getUserReviews()
+  async  getvisble(val) {
+    try {
+      await this.setState({ isLoading: true })
+      this.setState({
+        modalVisible: val.visible
+      });
+      if (val.overall_rating) {
+
+        this.getUserReviews()
+      }
+    } catch (e) {
+      console.log(e)
     }
-  }catch(e){
-    console.log(e)
+    finally {
+      await this.setState({ isLoading: false })
+    }
   }
-  finally{
-    await this.setState({ isLoading: false })  }
-		}
 
 
   render() {
     const { data, reviewData, doctorData, education, specialist, hospital, isLoading, selectedTab, paymentDetails } = this.state;
-    
+
     return (
 
       <Container style={styles.container}>
@@ -543,27 +536,27 @@ class AppointmentDetails extends Component {
                 </ListItem>
 
                 <View style={{ height: 300, position: 'absolute', bottom: 0 }}>
-              <Modal
-                animationType="slide"
-                transparent={true}
-                containerStyle={{ justifyContent: 'flex-end' }}
-                visible={this.state.modalVisible}
-              >
-                <InsertReview
-                  // props={this.props}
-                  data={this.state.data}
-                  popupVisible={this.getvisble.bind(this)}
+                  <Modal
+                    animationType="slide"
+                    transparent={true}
+                    containerStyle={{ justifyContent: 'flex-end' }}
+                    visible={this.state.modalVisible}
+                  >
+                    <InsertReview
+                      // props={this.props}
+                      data={this.state.data}
+                      popupVisible={this.getvisble.bind(this)}
 
-                >
+                    >
 
-                </InsertReview>
-              </Modal>
-            </View>
+                    </InsertReview>
+                  </Modal>
+                </View>
 
 
               </Card>
             </Card>
-          
+
           </Content>
         }
       </Container>
