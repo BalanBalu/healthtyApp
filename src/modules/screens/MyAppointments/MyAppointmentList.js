@@ -30,13 +30,15 @@ class MyAppoinmentList extends Component {
 			loading: true,
 			isRefreshing: false,
 			isNavigation: true,
-			modalVisible: false
+			modalVisible: false,
+			reviewData:{},
+			reviewIndex:-1
 
 		};
 	}
 
 	async componentDidMount() {
-		console.log('statusValue' + JSON.stringify(statusValue))
+		
 		const isLoggedIn = await hasLoggedIn(this.props);
 		if (!isLoggedIn) {
 			this.props.navigation.navigate("login");
@@ -190,7 +192,6 @@ class MyAppoinmentList extends Component {
 
 				});
 
-				console.log(doctorInfo)
 
 				let pastDoctorDetails = [];
 				pastAppointmentResult.map((doctorData, index) => {
@@ -238,7 +239,7 @@ class MyAppoinmentList extends Component {
 	};
 
 
-	navigateAddReview(item) {
+	navigateAddReview(item,index) {
 		/*let data = item.appointmentResult;
 		data.prefix = item.prefix
 
@@ -246,12 +247,27 @@ class MyAppoinmentList extends Component {
 			appointmentDetail: data
 		}) */
 		this.setState({
-			modalVisible: true
+			modalVisible: true,reviewData:item.appointmentResult,reviewIndex:index
 		})
-		console.log(this.state.modalVisible);
+		
+		
 		
 
 	}
+	getvisble(val){
+		alert(JSON.stringify(val));
+		let {reviewIndex,pastData}=this.state
+      if(reviewIndex!=-1){
+		  pastData=pastData[reviewIndex]
+		  pastData.ratting=val.overall_rating;
+		  pastData.appointmentResult.is_review_added=true
+		  this.setState({pastData})
+		  
+	  }
+		this.setState({
+			modalVisible :val.visible
+		});
+		}
 
 	handleIndexChange = index => {
 
@@ -285,6 +301,7 @@ class MyAppoinmentList extends Component {
 			isLoading,
 
 		} = this.state;
+
 
 return (
 	<View style={styles.container}>
@@ -427,12 +444,12 @@ return (
 
 
 														{selectedIndex == 1 &&
-															item.appointmentResult.appointment_status =="COMPLETED"&&item.appointmentResult.is_review_added==undefined? (
+															item.appointmentResult.appointment_status =="COMPLETED"&&(item.appointmentResult.is_review_added==undefined||item.appointmentResult.is_review_added==false)? (
 																<Item style={{ borderBottomWidth: 0 }}>
 																	<Right style={(styles.marginRight = -2)}>
 																		<Button
 																			style={styles.shareButton}
-																			onPress={() => this.navigateAddReview(item)}
+																			onPress={() => this.navigateAddReview(item,index)}
 
 																			testID='navigateInsertReview'
 																		>
@@ -494,7 +511,12 @@ return (
 		containerStyle={{ justifyContent: 'flex-end' }}
 		visible={this.state.modalVisible}
 	>
-		<InsertReview props={this.props}>
+		<InsertReview 
+		props={this.props}
+		data={this.state.reviewData}
+		popupVisible={this.getvisble.bind(this)}
+
+		>
 
 		</InsertReview>
 	</Modal>
