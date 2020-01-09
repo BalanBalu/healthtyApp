@@ -30,7 +30,6 @@ export class InsertReview extends Component {
       appointmentId: '',
       isRefresh: 'false',
       ratingIndicatePopUp: false,
-
       anonymousChecked: false,
       recommendChecked: false
 
