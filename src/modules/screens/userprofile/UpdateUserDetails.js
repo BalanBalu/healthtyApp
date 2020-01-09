@@ -69,7 +69,7 @@ class UpdateUserDetails extends Component {
             this.setState({ lastName: text });
         }
 
-        if (validateName(this.state.lastName || this.state.firstName) == false) {
+        if (validateName(this.state.lastName && this.state.firstName) == false) {
             this.setState({ errorMsg: 'First name and last name Should not Contain any Special Characters' })
             return false;
         }
