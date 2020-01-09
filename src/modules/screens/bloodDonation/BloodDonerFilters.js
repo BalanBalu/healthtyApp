@@ -23,7 +23,7 @@ class BloodDonerFilters extends Component {
       citySelect: null,
       districtSelect: null
     }
-    this.filterData = [];
+  this.filterData = [];
   }
 
   async componentDidMount() {
@@ -106,6 +106,7 @@ class BloodDonerFilters extends Component {
   }
 
   async clickedBloodDonorAvailableList(value, type) {
+
     let object = {
       type: type,
       value: value
@@ -115,10 +116,12 @@ class BloodDonerFilters extends Component {
 
 
     if (bloodlist != -1) {
+
       this.filterData.splice(bloodlist, 1)
     }
+    if(value != "None"){
     this.filterData.push(object);
-
+    }
 
     if (type == 'blood_group') {
       await this.setState({
