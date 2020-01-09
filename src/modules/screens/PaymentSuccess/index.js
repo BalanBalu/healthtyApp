@@ -41,7 +41,7 @@ class PaymentSuccess extends Component {
     renderHospitalLocation(hospitalAddress) {
          
         return (
-            <Row style={styles.rowDetail}>
+            <Row style={styles.rowDetail1}>
                <Text style={{textAlign:'center',fontFamily:'OpenSans',fontSize:16}}>Address</Text>
                     <Right>
                         <Text style={styles.subText}>{hospitalAddress.name}</Text>
@@ -111,7 +111,7 @@ class PaymentSuccess extends Component {
                                          </Right>
                                    
                              </Row>
-                             <Row style={{marginTop:15,marginLeft:10,marginRight:10,marginBottom:20}}>                             
+                             <Row style={{marginTop:15,marginLeft:10,marginRight:10,marginBottom:10}}>                             
                            
                                     <Text style={styles.mainText}>Payment Method </Text>
                                      
@@ -123,7 +123,7 @@ class PaymentSuccess extends Component {
                              </Row>
                           </Card>
                             <Button onPress={() => navigation.navigate('Home')}
-                                block style={{ marginTop: 15, borderRadius: 10, marginBottom: 10,backgroundColor:'#5bb85d' }}>
+                                block style={{ marginTop: 5, borderRadius: 10, marginBottom: 10,backgroundColor:'#5bb85d' }}>
                                  <Text style={styles.customizedText}> Home </Text>
                             </Button>
                             
@@ -181,12 +181,12 @@ const styles = StyleSheet.create({
     },
     circleIcon:{
         color: '#5cb75d',
-        fontSize:100
+        fontSize:60
     },
     successHeading:{
         textAlign:'center',
         fontFamily:'OpenSans',
-        fontSize:24,
+        fontSize:18,
         fontWeight:'bold'
     },
     subText:{
@@ -212,7 +212,11 @@ const styles = StyleSheet.create({
       
     },
     rowDetail:{
-        marginTop:15,
+        marginTop:10,
+        marginLeft:10,
+        marginRight:10
+    },
+    rowDetail1:{
         marginLeft:10,
         marginRight:10
     },
@@ -221,10 +225,5 @@ const styles = StyleSheet.create({
         fontFamily:'OpenSans',
         fontSize:16,
     },
-    subText:{
-        textAlign:'center',
-        fontFamily:'OpenSans',
-        fontSize:16,
-        color:'#545454'
-    }
+  
 });
