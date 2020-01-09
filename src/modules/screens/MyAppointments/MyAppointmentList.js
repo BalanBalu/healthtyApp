@@ -1,6 +1,6 @@
 import React, { Component } from "react";
 import { View, Text, Button, List, ListItem, Left, Right, Thumbnail, Item, Card, Body } from "native-base";
-import { StyleSheet, Image, AsyncStorage, FlatList, ScrollView, ActivityIndicator } from "react-native";
+import { StyleSheet, Image, AsyncStorage, FlatList, ScrollView, ActivityIndicator, Modal } from "react-native";
 import StarRating from "react-native-star-rating";
 import { Col, Row, Grid } from "react-native-easy-grid";
 import SegmentedControlTab from "react-native-segmented-control-tab";
@@ -15,6 +15,7 @@ import Spinner from "../../../components/Spinner";
 import { renderProfileImage,renderDoctorImage,getAllEducation,getAllSpecialist,getName } from '../../common'
 import moment from "moment";
 // import moment from "moment";
+import InsertReview from '../Reviews/InsertReview';
 
 class MyAppoinmentList extends Component {
 	constructor(props) {
@@ -28,7 +29,8 @@ class MyAppoinmentList extends Component {
 			userId: null,
 			loading: true,
 			isRefreshing: false,
-			isNavigation: true
+			isNavigation: true,
+			modalVisible: false
 
 		};
 	}
@@ -237,12 +239,17 @@ class MyAppoinmentList extends Component {
 
 
 	navigateAddReview(item) {
-		let data = item.appointmentResult;
+		/*let data = item.appointmentResult;
 		data.prefix = item.prefix
 
 		this.props.navigation.navigate('InsertReview', {
 			appointmentDetail: data
+		}) */
+		this.setState({
+			modalVisible: true
 		})
+		console.log(this.state.modalVisible);
+		
 
 	}
 
@@ -480,7 +487,21 @@ return (
 							/>
 						)}
 				</Card>
+	<View style={{ height : 300, position: 'absolute', bottom: 0 }}>
+	<Modal
+		animationType="slide"
+		transparent={true}
+		containerStyle={{ justifyContent: 'flex-end' }}
+		visible={this.state.modalVisible}
+	>
+		<InsertReview props={this.props}>
+
+		</InsertReview>
+	</Modal>
+	</View>
+	
 			</View>
+
 		);
 	}
 }

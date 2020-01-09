@@ -1,9 +1,9 @@
 import React, { Component } from 'react';
 
-import { StyleSheet, Image, TextInput, Dimensions, AsyncStorage, Modal } from 'react-native';
+import { StyleSheet, Image, Dimensions, AsyncStorage, Modal, TouchableOpacity, TextInput } from 'react-native';
 import StarRating from 'react-native-star-rating';
 import {
-  Container, Header, Title, Left, Right, Body, Button, Card, Toast, CardItem, Row, Grid, View,Col,
+  Container, Header, Title, Left, Right, Body, Button, Card, Toast, CardItem, Row, Grid, View, Col,
   Text, Thumbnail, Content, CheckBox, Item, Input
 } from 'native-base';
 import { Checkbox } from 'react-native-paper';
@@ -29,24 +29,25 @@ class InsertReview extends Component {
       appointmentId: '',
       isRefresh: 'false',
       ratingIndicatePopUp: false,
+      checked: false,
     }
   }
 
   async componentDidMount() {
 
-    const { navigation } = this.props;
-    const reviewData = navigation.getParam('appointmentDetail');
-    console.log('reviewData:')
-    console.log(reviewData);
+    // const { navigation } = this.props;
+    // const reviewData = navigation.getParam('appointmentDetail');
+    // console.log('reviewData:')
+    // console.log(reviewData);
 
-    // let reviewData=finalReviewData.data.appointmentResult;
+    // // let reviewData=finalReviewData.data.appointmentResult;
 
 
-    let userId = reviewData.user_id;
+    // let userId = reviewData.user_id;
 
-    let doctorId = reviewData.doctor_id;
-    let appointmentId = reviewData._id;
-    await this.setState({ userId: userId, doctorId: doctorId, appointmentId: appointmentId, data: reviewData });
+    // let doctorId = reviewData.doctor_id;
+    // let appointmentId = reviewData._id;
+    // await this.setState({ userId: userId, doctorId: doctorId, appointmentId: appointmentId, data: reviewData });
 
   }
 
@@ -95,10 +96,10 @@ class InsertReview extends Component {
         console.log(JSON.stringify(result))
 
         if (result.success) {
-        
+
           const { navigation } = this.props;
           const { routeName, key } = navigation.getParam('prevState');
-          if(routeName === 'AppointmentInfo') {
+          if (routeName === 'AppointmentInfo') {
             navigation.navigate({ routeName, key, params: { hasReloadReview: true } });
           } else {
             navigation.pop()
@@ -134,10 +135,136 @@ class InsertReview extends Component {
   }
 
   render() {
-    const { data } = this.state;
+    const { data, checked } = this.state;
     return (
       < Container style={styles.container} >
-        <Content>
+        <Content 
+        style={{
+            backgroundColor: '#fff',
+            position: 'absolute', 
+            bottom: 0
+          }}>
+
+                  <Grid>
+                      <Row style={{ backgroundColor: '#7F49C3', paddingTop: 10, paddingBottom: 10, paddingLeft: 10, paddingRight: 10, borderTopLeftRadius: 5, borderTopRightRadius: 5 }}>
+                        <Left>
+                          <Text style={{ color: '#fff', fontSize: 16 }}>Mukesh Kumar</Text>
+                        </Left>
+                        <Right>
+                          <Text style={{ color: '#fff', fontSize: 12 }}>January 2,2020 - 05.30 PM</Text>
+                        </Right>
+                      </Row>
+                      <View>
+
+                        <Row style={{ marginTop: 20 }}>
+                          <Left style={{ marginLeft: 20 }}>
+                            <Text style={{ fontFamily: 'OpenSans', fontSize: 16 }}>Cleanliness</Text>
+                          </Left>
+                          <Right style={{ marginRight: 20 }}>
+                            <StarRating fullStarColor='#FF9500' starSize={15} containerStyle={{ width: 110, marginLeft: 50 }}
+                              disabled={false}
+                              maxStars={5}
+                              rating={this.state.cleanness_rating}
+                              selectedStar={(rating) => this.CleanlinessStarRating(rating)}
+
+                            />
+                          </Right>
+                        </Row>
+                        <Row style={{ marginTop: 20 }}>
+                          <Left style={{ marginLeft: 20 }}>
+                            <Text style={{ fontFamily: 'OpenSans', fontSize: 16 }}>Staff</Text>
+                          </Left>
+                          <Right style={{ marginRight: 20 }}>
+                            <StarRating fullStarColor='#FF9500' starSize={15} containerStyle={{ width: 110, marginLeft: 97 }}
+                              disabled={false}
+                              maxStars={5}
+                              rating={this.state.staff_rating}
+                              selectedStar={(rating) => this.staffStarRating(rating)}
+
+                            />
+                          </Right>
+                        </Row>
+                        <Row style={{ marginTop: 20 }}>
+                          <Left style={{ marginLeft: 20 }}>
+                            <Text style={{ fontFamily: 'OpenSans', fontSize: 16 }}>Wait Time</Text>
+                          </Left>
+                          <Right style={{ marginRight: 20 }}>
+                            <StarRating fullStarColor='#FF9500' starSize={15} containerStyle={{ width: 110, marginLeft: 60 }}
+                              disabled={false}
+                              maxStars={5}
+                              rating={this.state.wait_time_rating}
+                              selectedStar={(rating) => this.waittimeStarRating(rating)}
+
+                            />
+                          </Right>
+                        </Row>
+                        <Row style={{ marginTop: 20, marginLeft: 14, marginRight: 20 }}>
+                          <Col style={{ flexDirection: 'row', width: '45%', alignItems: "flex-start", justifyContent: 'flex-start' }}>
+                            <Checkbox color="#3C98EC" size={5}
+                              status={checked ? 'checked' : 'unchecked'}
+                              onPress={() => { this.setState({ checked: !checked }); }}
+                              style={{ height: 5, width: 5 }} />
+                            <Text style={{ color: '#3C98EC', marginTop: 10, fontSize: 12 }}>Anonymous</Text>
+                          </Col>
+                          <Col style={{ flexDirection: 'row', width: '55%', alignItems: "flex-start", justifyContent: 'flex-start' }}>
+
+                            <Checkbox color="#3C98EC" size={5}
+                              status={checked ? 'checked' : 'unchecked'}
+                              onPress={() => { this.setState({ checked: !checked }); }}
+                            />
+
+                            <Text style={{ color: '#3C98EC', fontSize: 12, marginTop: 10 }}>Recommend this Doctor</Text>
+                          </Col>
+                        </Row>
+                        <View style={{ marginLeft: 20, marginTop: 10, marginRight: 20 }}>
+                          <TextInput
+                            style={{ height: 80, borderWidth: 1, marginTop: 10, width: "100%", borderRadius: 5, fontSize: 14 }}
+                            returnKeyType={'next'}
+                            placeholder="Write Your Reviews"
+                            multiline={true}
+                            keyboardType={'default'}
+                            textAlignVertical={'top'}
+                            onChangeText={(comments) => {
+                              this.setState({ comments })
+                            }
+                            } />
+                        </View>
+                      </View>
+                      <Row style={{ marginLeft: 20, marginTop: 10, marginRight: 20, }}>
+
+                        <Col style={{ width: '50%' }}>
+                        </Col>
+                        <Col style={{ width: '50%', flexDirection: 'row', alignItems: 'flex-end', justifyContent: 'flex-end' }}>
+                          <TouchableOpacity style={{ backgroundColor: '#959595', paddingLeft: 20, paddingRight: 20, paddingTop: 1, paddingBottom: 3, borderRadius: 2 }}><Text uppercase={true} style={{ color: '#FFF', fontSize: 12, }} >Cancel</Text></TouchableOpacity>
+                          <TouchableOpacity style={{ backgroundColor: '#349631', paddingLeft: 20, paddingRight: 20, paddingTop: 1, paddingBottom: 3, borderRadius: 2, marginLeft: 10 }}><Text uppercase={true} style={{ color: '#FFF', fontSize: 12 }}>Submit</Text></TouchableOpacity>
+                        </Col>
+
+
+                      </Row>
+                    </Grid>
+                 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+          {/* 
           <Card style={{ borderRadius: 5, padding: 5, }}>
             <Card>
               <CardItem style={styles.text}>
@@ -233,12 +360,12 @@ class InsertReview extends Component {
                       borderWidth: 3,
                       padding: 10,
                       borderRadius: 5
-                    }}>
+                    }}> */}
 
-                      {/* <Item regular rounded style={{ borderColor: '#000', borderWidth: 2, marginTop: 20 }}> */}
-                   
-                      {/* </Item> */}
-                      <Row style={{ marginTop: 10,justifyContent:'center' }}>
+          {/* <Item regular rounded style={{ borderColor: '#000', borderWidth: 2, marginTop: 20 }}> */}
+
+          {/* </Item> */}
+          {/* <Row style={{ marginTop: 10,justifyContent:'center' }}>
                         <Col style={{justifyContent:'center',width:'80%',marginTop:-30}}>
                         <Text style={{ fontFamily: 'OpenSans',textAlign:'center', }}> Kindly give rating for your Review! </Text>
 
@@ -256,7 +383,7 @@ class InsertReview extends Component {
 
               </CardItem>
             </Card>
-          </Card>
+          </Card> */}
         </Content>
       </Container >
     );
@@ -268,9 +395,11 @@ export default InsertReview
 
 const styles = StyleSheet.create({
   container: {
-    backgroundColor: 'gray',
-    padding: 5
-
+    backgroundColor: 'transparent',
+    padding: 10,
+    width: '100%',
+    position: 'absolute', 
+    bottom: 0 ,
   },
 
   card: {
