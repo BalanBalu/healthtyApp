@@ -288,7 +288,7 @@ callSuggestionService=async(enteredText)=>{
                               }}
                             />
                           </Row>
-                     <Row style={{ padding: 10, width: '100%',borderTopColor:'#000',borderTopWidth:0.3,backgroundColor:'#fff',paddingTop:5,justifyContent:'center' }}>
+                     <Row style={{ padding: 10, height: 65,width: '100%',borderTopColor:'#000',borderTopWidth:0.3,backgroundColor:'#fff',paddingTop:5,justifyContent:'center' }}>
                        <Col style={{width:'100%'}}>
                        <Text style={{fontSize:10,textAlign:'center',fontWeight:'bold'}}>Available Blood Donors</Text>
                        <Text style={{fontSize:10,marginTop:5,textAlign:'center',}}> donate blood </Text>
@@ -310,7 +310,7 @@ callSuggestionService=async(enteredText)=>{
                               }}
                             />
                           </Row>
-                          <Row style={{ padding: 10, width:'100%',borderTopColor:'#000',borderTopWidth:0.3,backgroundColor:'#fff',paddingTop:5,justifyContent:'center'}}>
+                          <Row style={{ padding: 10,height: 65, width:'100%',borderTopColor:'#000',borderTopWidth:0.3,backgroundColor:'#fff',paddingTop:5,justifyContent:'center'}}>
                           <Col style={{width:'100%',}}>
                           <Text style={{fontSize:10,textAlign:'center',fontWeight:'bold'}}> Chat</Text>
                             <Text style={{fontSize:10,marginTop:5,textAlign:'center',}}> Chat with Top doctor</Text>
@@ -331,7 +331,7 @@ callSuggestionService=async(enteredText)=>{
                                    }}
                                  />
                                </Row>
-                               <Row style={{ padding: 10, width:'100%',borderTopColor:'#000',borderTopWidth:0.3,backgroundColor:'#fff',paddingTop:5,justifyContent:'center'}}>
+                               <Row style={{ padding: 10,height: 65, width:'100%',borderTopColor:'#000',borderTopWidth:0.3,backgroundColor:'#fff',paddingTop:5,justifyContent:'center'}}>
                                 <Col style={{width:'100%',}}>
                                 <Text style={{fontSize:10,textAlign:'center',fontWeight:'bold'}}> Pharmacy</Text>
                                  <Text style={{fontSize:10,marginTop:5,textAlign:'center',}}> Medicine and Health</Text>
@@ -355,58 +355,30 @@ callSuggestionService=async(enteredText)=>{
                              </Row>
                              
                                <View>
-                             <Row style={{marginTop:5,}}>
+                             <Row >
                              <FlatList
                               numColumns={3}
                               data={this.state.catagary}
                               extraData={this.state.catagary}
                               renderItem={({ item, index }) =>
-                                    <Col style={{
-                                            flex:3,
-                                            alignItems: "center", 
-                                            justifyContent: "center", 
-                                            borderColor:'gray', 
-                                            borderRadius:5, 
-                                            flexDirection:'row',
-                                            borderWidth:0.1, 
-                                            shadowColor: '#000',
-                                            shadowOffset: { width: 0, height: 0.5 },
-                                            shadowOpacity: 0.1,
-                                            shadowRadius: 5,  
-                                            elevation: 2,
-                                            padding:1,
-                                            marginLeft: 8,
-                                            marginRight:8,
-                                            marginTop:8,
-                                            marginBottom:1 }}>
-                                            <Row style={{ width : '33%'}}>   
+                                    <Col style={styles.maincol}>
+                                            
                                                 <TouchableOpacity onPress={() => this.navigateToCategorySearch(item.category_name)} 
-                                                                  style={{justifyContent:'center',alignItems:'center'}}>
+                                                                  style={{justifyContent: 'center', alignItems: 'center', width: '100%', paddingTop: 5, paddingBottom: 5,}}>
                                         
-                                                <Row style={{   
-                                                      width:'100%', 
-                                                        overflow: 'hidden',
-                                                        justifyContent:'center', 
-                                                        alignItems:'center',
-                                                        flexDirection:'column'}
-                                                }>
+                                                <Row style={{height: 45, width: '100%',justifyContent: 'center', alignItems: 'center',}} >
                                                 <Image
                                                      source={{ uri: item.imageBaseURL + item.category_id + '.png'  }}
                                                       style={{
                                                         width: 50,height:50, alignItems:'center'
                                                       }}
                                                 />
-                                                </Row>
-                                                <Row style={{   width:'100%',  
-                                                            //backgroundColor:'#fff',
-                                                            paddingTop:5,
-                                                            alignContent: 'center',
-                                                            justifyContent:'center'}}>
-                                                    <Text style={{fontSize:12, textAlign:'center', padding: 2}}>{item.category_name}</Text>
-                                                </Row>
+                                              </Row>
+                                              <Row style={{height: 40, width: '100%',justifyContent: 'center', alignItems: 'center',}} >
+                                                    <Text style={{fontSize: 10, textAlign: 'center', fontWeight: '200', marginTop: 5,paddingLeft: 5, paddingRight: 5, paddingTop: 1, paddingBottom: 1 }}>{item.category_name}</Text>
+                                                    </Row>
                                                 </TouchableOpacity>
-                                            </Row>
-                                     
+                                          
                                     </Col> 
                                      }
                                      keyExtractor={(item, index) => index.toString()}
@@ -777,5 +749,25 @@ innerText:{
     lineHeight:20,
     fontWeight:'500',
     
+},
+maincol:{
+    flex:1,
+    alignItems: "center", 
+    justifyContent: "center", 
+    borderColor:'gray', 
+    borderRadius:5, 
+    flexDirection:'row',
+    borderWidth:0.1, 
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 0.5 },
+    shadowOpacity: 0.1,
+    shadowRadius: 5,  
+    elevation: 2,
+    padding:1,
+    marginLeft: 5,
+    marginRight:8,
+    marginTop:8,
+    width: '30%',
+     flexDirection: 'row',
 }
 });
