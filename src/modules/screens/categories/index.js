@@ -14,6 +14,7 @@ class Categories extends Component {
     super(props)
     this.state = {
       data: [],
+      categoriesMain: []
     }
   }
   componentDidMount() {
@@ -23,7 +24,7 @@ class Categories extends Component {
     try {
       let result = await catagries();
       if (result.success) {
-        this.setState({ data: result.data })
+        this.setState({ data: result.data , categoriesMain : result.data })
       }
     } catch (e) {
       console.log(e);
@@ -42,12 +43,22 @@ class Categories extends Component {
     this.props.navigation.navigate('Doctor List', { resultData: serachInputvalues })
   }
 
-  render() {
-    const { user: { isLoading } } = this.props;
+  filterCategories(searchValue) {
+    console.log(this.state.data);
+    const { categoriesMain } = this.state;
+    if(!searchValue) {
+      this.setState({ searchValue, data: categoriesMain });
+    } else {
+      const filteredCategories = categoriesMain.filter(ele => 
+         ele.category_name.toLowerCase().search(searchValue.toLowerCase()) !== -1 
+      );
+      this.setState({ searchValue, data: filteredCategories })
+    }
+  }
+
+  renderStickeyHeader() {
     return (
-      <Container style={styles.container}>
-        <Content style={styles.bodyContent}>
-          <View style={{ marginBottom: 10 }}>
+      <View style={{ width: '100%' }} >
             <Text style={{ fontFamily: 'OpenSans', fontSize: 12, marginLeft: 10, marginTop: 10 }}>Search Doctors by their specialism</Text>
             <Row style={styles.SearchRow}>
 
@@ -57,9 +68,7 @@ class Categories extends Component {
                   style={styles.inputfield}
                   placeholderTextColor="#e2e2e2"
                   keyboardType={'email-address'}
-
-                  // onChangeText={searchValue => this.setState({ searchValue })}
-
+                  onChangeText={searchValue => this.filterCategories(searchValue)}
                   underlineColorAndroid="transparent"
                   blurOnSubmit={false}
                 />
@@ -71,14 +80,24 @@ class Categories extends Component {
               </Col>
 
             </Row>
-            <View style={{ marginTop: 5, }}>
+            </View>
+    )
+  }
+  render() {
+    const { user: { isLoading } } = this.props;
+    const { data  } = this.state;
+
+    
+    return (
+      <Container style={styles.container}>
+        <Content style={styles.bodyContent}>
+          <View style={{  marginBottom: 10 }}>
               <FlatList horizontal={false} numColumns={3}
                 data={this.state.data}
                 extraData={this.state}
+                ListHeaderComponent={this.renderStickeyHeader()}
                 renderItem={({ item, index }) =>
-
                   <Col style={styles.mainCol}>
-
                     <TouchableOpacity onPress={() => this.navigateToCategorySearch(item.category_name)}
                       style={{ justifyContent: 'center', alignItems: 'center', width: '100%', paddingTop: 5, paddingBottom: 5 }}>
                       <Image
@@ -88,51 +107,14 @@ class Categories extends Component {
                         }}
                       />
                       <Text style={{ fontSize: 10, textAlign: 'center', fontWeight: '200', marginTop: 5, backgroundColor: '#FDFDB3', paddingLeft: 5, paddingRight: 5, paddingTop: 1, paddingBottom: 1 }}>{item.category_name}</Text>
-
                     </TouchableOpacity>
                   </Col>
-
-
-                  //               <Grid style={{ marginTop: 10, justifyContent: 'center', padding: 5, }}>
-
-                  //                   {isLoading ? <Spinner color='blue' /> : null}
-                  //                   <TouchableOpacity onPress={() => this.navigateToCategorySearch(item.category_name)} style={{alignItems:'center',marginBottom:5}}>
-
-                  //                     <Col style={{width:'90%',}}>
-                  //                       <LinearGradient
-                  //                         colors={['#7357A2', '#62BFE4']} style={{
-                  //                           flex: 1,
-                  //                           borderRadius: 10,
-
-
-                  //                         }}>
-                  //                         <Image
-                  //                           source={{ uri: item.imageBaseURL + 'white/' + item.category_id + '.png' }} style={styles.customImage}
-                  //                         //  source={{ uri: 'http://pluspng.com/img-png/orthopedics-png--350.png' }} style={styles.customImage}
-                  //                         />
-                  //                       </LinearGradient>
-
-
-
-                  //                     </Col>
-                  //                     <Col style={{ padding: 2,
-                  //     backgroundColor: '#FF9502',
-                  //     borderRadius: 5,marginTop:10,justifyContent:'center',width:'90%',alignItems:'center'}}>
-
-                  // <Text style={styles.titleText}>{item.category_name}</Text>
-
-                  //                     </Col>
-
-                  //                   </TouchableOpacity>
-
-                  //               </Grid>
                 }
                 keyExtractor={(item, index) => index.toString()}
               />
-            </View>
           </View>
         </Content>
-      </Container>
+    </Container>
 
     )
   }
