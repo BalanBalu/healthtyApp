@@ -308,3 +308,10 @@ export function validatePincode(number) {
     if (regex.test(number) === false) return false;
     else return true;
 }
+
+export function acceptNumbersOnly(value) {
+    const regex = new RegExp(/[- #*;,.<>\{\}\[\]\\\/]/gi, '');  //did't support White spaces
+    if (regex.test(value) === false) return false;
+    else return true;
+  }
+  
