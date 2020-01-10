@@ -232,7 +232,7 @@ class MyAppoinmentList extends Component {
 			console.log(e);
 		} finally {
 			this.setState({
-				isLoading: false
+				isLoading: true
 			})
 
 		}
@@ -254,18 +254,20 @@ class MyAppoinmentList extends Component {
 		
 
 	}
-	getvisble(val){
-		alert(JSON.stringify(val));
-		let {reviewIndex,pastData}=this.state
-      if(reviewIndex!=-1){
-		  pastData=pastData[reviewIndex]
-		  pastData.ratting=val.overall_rating;
-		  pastData.appointmentResult.is_review_added=true
-		  this.setState({pastData})
-		  
+	async getvisble(val){
+		
+	  if(val.updatedVisible==true){
+		await this.setState({
+			isLoading: false,
+		})
+		  this.pastAppointment();
+		  await this.setState({
+			isLoading: true,
+			data: this.state.pastData
+		})
 	  }
 		this.setState({
-			modalVisible :val.visible
+			modalVisible :false
 		});
 		}
 
@@ -424,7 +426,7 @@ return (
 														</Item>
 											
 														<Item style={{ borderBottomWidth: 0 }}>
-															{item.appointmentResult.onGoingAppointment ? 
+															{ item.appointmentResult.appointment_status =="APPROVED" &&item.appointmentResult.onGoingAppointment ? 
 																<Text style={{ fontFamily: "OpenSans", fontSize: 13, color: 'green', fontWeight: 'bold' }} note>{'Appointment Ongoing'}</Text>		
 																:
 																<Text style={{ fontFamily: "OpenSans", fontSize: 13, color:statusValue[item.appointmentResult.appointment_status].color, fontWeight: 'bold' }} note>{statusValue[item.appointmentResult.appointment_status].text}</Text>	

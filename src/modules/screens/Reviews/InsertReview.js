@@ -14,6 +14,7 @@ import { formatDate } from '../../../setup/helpers';
 import { appointmentStatusUpdate } from '../../providers/bookappointment/bookappointment.action';
 import { getName } from '../../common';
 
+
 export class InsertReview extends Component {
   constructor(props) {
     super(props)
@@ -34,6 +35,7 @@ export class InsertReview extends Component {
       recommendChecked: false
 
     }
+    
   }
 
   async componentDidMount() {
@@ -82,11 +84,8 @@ export class InsertReview extends Component {
       const { data, isAnonymous, wait_time_rating, staff_rating, cleanness_rating, comments, doctorRecommended } = this.state
       let insertReviewData = {}, overallrating
       if (reviewCondition == 'ADD') {
-        console.log('condition true')
-
         if (wait_time_rating != 0 || staff_rating != 0 || cleanness_rating != 0) {
           overallrating = (cleanness_rating + staff_rating + wait_time_rating) / 3;
-
           insertReviewData = {
             user_id: userId,
             doctor_id: data.doctor_id,
@@ -98,32 +97,27 @@ export class InsertReview extends Component {
             overall_rating: overallrating,
             comments: comments,
             is_doctor_recommended: doctorRecommended,
-
             is_review_added: true,
           };
         }
         else {
           this.setState({ ratingIndicatePopUp: true })
-
+               return true
         }
       }
       else {
         if (data.is_review_added != false || data.is_review_added == undefined) {
           insertReviewData = {
-
             is_review_added: false,
             user_id: userId,
             doctor_id: data.doctor_id,
             appointment_id: data._id,
-
           };
         }
         else {
-          console.log('hi')
           let data = {
             visible: false,
-            updatedVisible: true
-
+            
           }
           this.props.popupVisible(data);
         }
@@ -134,8 +128,7 @@ export class InsertReview extends Component {
       if (result.success) {
         let data = {
           visible: false,
-
-          overall_rating: overallrating
+          updatedVisible: true
         }
         this.props.popupVisible(data);
 
@@ -245,7 +238,9 @@ export class InsertReview extends Component {
 
                   <Text style={{ color: '#3C98EC', fontSize: 12, marginTop: 10 }}>Recommend this Doctor</Text>
                 </Col>
+               
               </Row>
+              {ratingIndicatePopUp == true ? <Text style={{ color: 'red', fontSize: 12, marginTop: 10 }}>kindly give me ratting</Text> : null}
               <View style={{ marginLeft: 20, marginTop: 10, marginRight: 20 }}>
                 <TextInput
                   style={{ height: 80, borderWidth: 1, marginTop: 10, width: "100%", borderRadius: 5, fontSize: 14 }}
@@ -260,7 +255,7 @@ export class InsertReview extends Component {
                   } />
               </View>
             </View>
-            {ratingIndicatePopUp == true ? <Text style={{ color: '#3C98EC', fontSize: 12, marginTop: 10 }}>Recommend this Doctor</Text> : null}
+           
             <Row style={{ marginLeft: 20, marginTop: 10, marginRight: 20, }}>
 
               <Col style={{ width: '50%' }}>

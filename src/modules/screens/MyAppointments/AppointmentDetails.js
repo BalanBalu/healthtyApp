@@ -27,7 +27,7 @@ class AppointmentDetails extends Component {
       doctorData: {},
       isLoading: true,
 
-      appointmentStatus: '',
+      // appointmentStatus: '',
       statusUpdateReason: ' ',
       education: '',
       specialist: '',
@@ -195,17 +195,19 @@ class AppointmentDetails extends Component {
 
       let result = await appointmentStatusUpdate(this.state.doctorId, this.state.appointmentId, requestData);
       this.setState({ isLoading: false })
-      let appointmentStatus = result.appointmentData.appointment_status;
+      // let appointmentStatus = result.appointmentData.appointment_status;
       if (result.success) {
         let temp = this.state.data
         temp.doctor_id = result.appointmentData.doctor_id;
         temp.appointment_starttime = result.appointmentData.appointment_starttime;
         temp.appointment_endtime = result.appointmentData.appointment_endtime;
+        temp.appointment_status=result.appointmentData.appointment_status
         Toast.show({
           text: result.message,
           duration: 3000
         })
-        this.setState({ appointmentStatus: appointmentStatus, data: temp });
+        // this.setState({ appointmentStatus: appointmentStatus, data: temp });
+        this.setState({data: temp });
       }
     }
     catch (e) {
@@ -243,9 +245,9 @@ class AppointmentDetails extends Component {
     try {
       await this.setState({ isLoading: true })
       this.setState({
-        modalVisible: val.visible
+        modalVisible: false
       });
-      if (val.overall_rating) {
+       if(val.updatedVisible==true) {
 
         this.getUserReviews()
       }
@@ -300,7 +302,7 @@ class AppointmentDetails extends Component {
                   </Col>
                   <Col style={{ backgroundColor: 'transparent', borderRightWidth: 0.5, borderRightColor: 'gray', justifyContent: 'center' }}>
 
-                    <Text style={styles.topValue}> {getDoctorExperience(data.calulatedExperience)} </Text>
+                    <Text style={styles.topValue}> {getDoctorExperience(doctorData.calulatedExperience)} </Text>
                     <Text note style={styles.bottomValue}> Experience</Text>
                   </Col>
                   <Col style={{ backgroundColor: 'transparent', justifyContent: 'center', marginLeft: 'auto', marginRight: 'auto' }}>
@@ -315,12 +317,11 @@ class AppointmentDetails extends Component {
                       <Button disabled={true} block style={{ borderRadius: 10, backgroundColor: '#D7BDE2' }}>
                         <Text style={{ color: 'black', fontSize: 15, fontFamily: 'OpenSans', fontWeight: 'bold' }}>
                           {
-                            data.onGoingAppointment === true ? 'ONGOING'
-                              :
-                              this.state.appointmentStatus == 'APPROVED' ? 'APPROVED' :
+                            data.appointment_status == 'APPROVED'&& data.onGoingAppointment === true ? 'ONGOING'
+                            :
                                 data.appointment_status == 'PROPOSED_NEW_TIME' ? 'PROPOSED NEW TIME' :
                                   data.appointment_status == 'PENDING_REVIEW' ? 'COMPLETED' :
-                                    data.appointment_status || this.state.appointStatus
+                                    data.appointment_status 
                           }
                         </Text>
                       </Button>
