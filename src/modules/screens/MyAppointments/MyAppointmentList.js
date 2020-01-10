@@ -257,18 +257,19 @@ class MyAppoinmentList extends Component {
 	async getvisble(val){
 		
 	  if(val.updatedVisible==true){
-		await this.setState({
-			isLoading: false,
-		})
-		  this.pastAppointment();
+		this.setState({
+			modalVisible :false,isLoading: false
+		});
+		  await this.pastAppointment();
 		  await this.setState({
 			isLoading: true,
 			data: this.state.pastData
 		})
 	  }
-		this.setState({
-			modalVisible :false
-		});
+	  this.setState({
+		modalVisible :false
+	});
+
 		}
 
 	handleIndexChange = index => {
