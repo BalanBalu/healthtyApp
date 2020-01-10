@@ -171,8 +171,7 @@ export default class MapBox extends React.Component {
                 }
             }
             const userId = await AsyncStorage.getItem('userId')
-            let validate = (validateName(this.state.address.city && this.state.address.district && this.state.address.state && this.state.address.country));
-            if (validate === true) {
+            if (validateName(this.state.address.country || this.state.address.district || this.state.address.state || this.state.address.city)) {
                 if (validatePincode(this.state.address.pin_code) == true) {
                     let result = await userFiledsUpdate(userId, userAddressData);
                     this.setState({ loading: false });
