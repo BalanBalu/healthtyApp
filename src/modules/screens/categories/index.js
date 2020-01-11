@@ -7,6 +7,7 @@ import { Col, Row, Grid } from 'react-native-easy-grid';
 import { connect } from 'react-redux'
 import { StyleSheet, Image, TouchableOpacity, View, FlatList } from 'react-native';
 import { catagries } from '../../providers/catagries/catagries.actions';
+import { toDataUrl  } from '../../../setup/helpers';
 
 
 class Categories extends Component {
@@ -24,7 +25,14 @@ class Categories extends Component {
     try {
       let result = await catagries();
       if (result.success) {
-        this.setState({ data: result.data , categoriesMain : result.data })
+        this.setState({ data: result.data, categoriesMain: result.data })
+        for(let i = 0 ; i< result.data.length; i++) {
+          const item = result.data[i];
+          imageURL = item.imageBaseURL + item.category_id + '.png';
+          base64ImageDataRes =  await toDataUrl(imageURL)
+          result.data[i].base64ImageData = base64ImageDataRes;
+          this.setState({ data: result.data, categoriesMain: result.data })
+        }
       }
     } catch (e) {
       console.log(e);
@@ -55,6 +63,7 @@ class Categories extends Component {
       this.setState({ searchValue, data: filteredCategories })
     }
   }
+
 
   renderStickeyHeader() {
     return (
@@ -101,12 +110,20 @@ class Categories extends Component {
                     <TouchableOpacity onPress={() => this.navigateToCategorySearch(item.category_name)}
                       style={{ justifyContent: 'center', alignItems: 'center', width: '100%', paddingTop: 5, paddingBottom: 5 }}>
                       <Image
-                        source={{ uri: item.imageBaseURL + item.category_id + '.png' }}
+                        source={{ uri:  item.base64ImageData /* item.imageBaseURL + item.category_id + '.png' */ }}
                         style={{
                           width: 60, height: 60, alignItems: 'center'
                         }}
                       />
-                      <Text style={{ fontSize: 10, textAlign: 'center', fontWeight: '200', marginTop: 5, backgroundColor: '#FDFDB3', paddingLeft: 5, paddingRight: 5, paddingTop: 1, paddingBottom: 1 }}>{item.category_name}</Text>
+                      <Text style={{ fontSize: 10, 
+                          textAlign: 'center', 
+                          fontWeight: '200', 
+                          marginTop: 5, 
+                         
+                          paddingLeft: 5, 
+                          paddingRight: 5, 
+                          paddingTop: 1,
+                          paddingBottom: 1 }}>{item.category_name}</Text>
                     </TouchableOpacity>
                   </Col>
                 }

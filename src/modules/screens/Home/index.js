@@ -17,7 +17,8 @@ import CurrentLocation from './CurrentLocation';
 const bloodImg = require('../../../../assets/images/blood.jpeg');
 const chatImg = require('../../../../assets/images/Chat.jpg');
 const pharmacyImg = require('../../../../assets/images/pharmacy.jpg');
-import OfflineNotice from '../../../components/offlineNotice'
+import OfflineNotice from '../../../components/offlineNotice';
+import { toDataUrl } from '../../../setup/helpers';
 
 MapboxGL.setAccessToken(MAP_BOX_PUBLIC_TOKEN);
 const MAX_DISTANCE_TO_COVER = 30000; // in meters
@@ -44,6 +45,7 @@ class Home extends Component {
             searchValue: null,
             totalSpecialistDataArry: [],
             visibleClearIcon: '',
+            categryCount : 0
         };
         this.callSuggestionService = debounce(this.callSuggestionService, 500);
     }
@@ -68,18 +70,27 @@ class Home extends Component {
     }
 
     getCatagries = async () => {
-        try {
-            const searchQueris = 'services=0&skip=0&limit=9';
-            let result = await catagries(searchQueris);
-            if (result.success) {
-                console.log(result.data);
-                this.setState({ catagary: result.data })
+      try {
+        const searchQueris = 'services=0&skip=0&limit=9';
+        let result = await catagries(searchQueris);
+        
+        if (result.success) {
+            this.setState({ catagary: result.data, categryCount : this.state.categryCount + 1 })
+            for(let i = 0 ; i< result.data.length; i++) {
+                const item = result.data[i];
+                const imageURL = item.imageBaseURL + item.category_id + '.png';
+                const base64ImageDataRes =  await toDataUrl(imageURL)
+                result.data[i].base64ImageData = base64ImageDataRes;
+               
             }
-        } catch (e) {
-            console.log(e);
-        } finally {
-            this.setState({ isLoading: false });
+            this.setState({ catagary: result.data, categryCount : this.state.categryCount + 1 })
+           
         }
+      } catch (e) {
+            console.log(e);
+      } finally {
+            this.setState({ isLoading: false });
+      }
     }
 
     getAllChatsByUserId = async (userId) => {
@@ -194,7 +205,6 @@ class Home extends Component {
                     locationCapta: isSearchByCurrentLocation ? 'You are searching Near by Hostpitals' : 'You are searching Hospitals on ' + patientSearchLocationName
                 }
             });
-            console.log('is it Updating here?')
             this.locationUpdatedCount = locationUpdatedCount;
         }
         return (
@@ -359,7 +369,7 @@ class Home extends Component {
                                 <FlatList
                                     numColumns={3}
                                     data={this.state.catagary}
-                                    extraData={this.state.catagary}
+                                    extraData={this.state.categryCount}
                                     renderItem={({ item, index }) =>
                                         <Col style={styles.maincol}>
 
@@ -368,7 +378,7 @@ class Home extends Component {
 
                                                 <Row style={{ height: 45, width: '100%', justifyContent: 'center', alignItems: 'center', }} >
                                                     <Image
-                                                        source={{ uri: item.imageBaseURL + item.category_id + '.png' }}
+                                                        source={{ uri:  item.base64ImageData /*item.imageBaseURL + item.category_id + '.png' */ }}
                                                         style={{
                                                             width: 50, height: 50, alignItems: 'center'
                                                         }}
