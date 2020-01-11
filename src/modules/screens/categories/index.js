@@ -8,6 +8,8 @@ import { connect } from 'react-redux'
 import { StyleSheet, Image, TouchableOpacity, View, FlatList } from 'react-native';
 import { catagries } from '../../providers/catagries/catagries.actions';
 import { toDataUrl  } from '../../../setup/helpers';
+import { MAX_DISTANCE_TO_COVER  } from '../../../setup/config';
+
 
 
 class Categories extends Component {
@@ -43,10 +45,17 @@ class Categories extends Component {
 
   navigateToCategorySearch(categoryName) {
     console.log(categoryName);
+    const { bookappointment: { locationCordinates } } = this.props;
     let serachInputvalues = [{
       type: 'category',
       value: categoryName
-
+    },
+    {
+      type: 'geo',
+      value: {
+          coordinates: locationCordinates,
+          maxDistance: MAX_DISTANCE_TO_COVER
+      }
     }]
     this.props.navigation.navigate('Doctor List', { resultData: serachInputvalues })
   }
@@ -141,7 +150,8 @@ class Categories extends Component {
 function appoinmentsState(state) {
 
   return {
-    user: state.user
+    user: state.user,
+    bookappointment: state.bookappointment
   }
 }
 export default connect(appoinmentsState, { login, messageShow, messageHide })(Categories)

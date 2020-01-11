@@ -1,7 +1,7 @@
 import { Platform } from 'react-native';
 export const IS_ANDROID = Platform.OS === 'android';
 export const IS_IOS = Platform.OS === 'ios';
-export const API_URL = 'http://localhost:3000/api/';
+export const API_URL = 'http://medflic-1802539957.ap-south-1.elb.amazonaws.com:3000/api/';
 export const CATEGORY_BASE_URL = API_URL.substring(0, API_URL.length - 4) + 'images/category/';
 export const CHAT_API_URL = 'http://medflic-1802539957.ap-south-1.elb.amazonaws.com:3200';
 
@@ -17,4 +17,4 @@ export const SERVICE_TYPES = {
     APPOINTMENT: 'APPOINTMENT',
     CHAT:'CHAT'
 }
-
+export const MAX_DISTANCE_TO_COVER = 30000; // in meters Doctor Can be search Within in the AREA

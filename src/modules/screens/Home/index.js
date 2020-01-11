@@ -8,7 +8,7 @@ import { StyleSheet, Image, View, TouchableOpacity, AsyncStorage, ScrollView, Fl
 
 import { SET_PATIENT_LOCATION_DATA } from '../../providers/bookappointment/bookappointment.action';
 import { catagries, getSpecialistDataSuggestions } from '../../providers/catagries/catagries.actions';
-import { MAP_BOX_PUBLIC_TOKEN, IS_ANDROID } from '../../../setup/config';
+import { MAP_BOX_PUBLIC_TOKEN, IS_ANDROID , MAX_DISTANCE_TO_COVER } from '../../../setup/config';
 import RNAndroidLocationEnabler from 'react-native-android-location-enabler';
 import MapboxGL from '@react-native-mapbox-gl/maps';
 import { store } from '../../../setup/store';
@@ -21,7 +21,6 @@ import OfflineNotice from '../../../components/offlineNotice';
 import { toDataUrl } from '../../../setup/helpers';
 
 MapboxGL.setAccessToken(MAP_BOX_PUBLIC_TOKEN);
-const MAX_DISTANCE_TO_COVER = 30000; // in meters
 
 const debounce = (fun, delay) => {
     let timer = null;
@@ -50,7 +49,9 @@ class Home extends Component {
         this.callSuggestionService = debounce(this.callSuggestionService, 500);
     }
     navigetToCategories() {
-        this.props.navigation.navigate('Categories', { data: this.state.data })
+        this.props.navigation.navigate('Categories', { 
+            data: this.state.data 
+        })
     }
 
     doLogout() {
