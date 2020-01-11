@@ -266,10 +266,11 @@ class MyAppoinmentList extends Component {
 			data: this.state.pastData
 		})
 	  }
+	  else{
 	  this.setState({
 		modalVisible :false
 	});
-
+	  }
 		}
 
 	handleIndexChange = index => {

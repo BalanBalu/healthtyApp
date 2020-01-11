@@ -115,23 +115,31 @@ export class InsertReview extends Component {
           };
         }
         else {
-          let data = {
+          let obj = {
             visible: false,
-            
+            updatedVisible:false   
           }
-          this.props.popupVisible(data);
+          this.props.popupVisible(obj);
         }
       }
       let result = await addReview(userId, insertReviewData);
       console.log(JSON.stringify(result))
 
       if (result.success) {
-        let data = {
+       
+        if(reviewCondition=='SKIP'){
+           obj = {
+            visible: false,
+            updatedVisible: false
+          }
+        }
+        else{
+          obj = {
           visible: false,
           updatedVisible: true
         }
-        this.props.popupVisible(data);
-
+        this.props.popupVisible(obj);
+      }
       }
     }
 
