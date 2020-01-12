@@ -271,13 +271,15 @@ class Home extends Component {
                                                 value: item.type === 'symptoms' ? [item.value] : item.value
                                             })
                                         }
-                                        this.props.navigation.navigate("Doctor List", { resultData: requestData })
-                                    }}
-                                >
-                                    <Text style={{ marginTop: 2, fontFamily: 'OpenSans', fontSize: 12, color: '#775DA3', paddingLeft: 10, }}>{item.value}</Text>
-                                    <Right>
-                                        <Text uppercase={true} style={{ color: 'gray', marginTop: 2, marginRight: 10, color: '#775DA3', fontSize: 12, fontFamily: 'OpenSans-Bold', paddingLeft: 10, }}>{item.type}</Text>
-                                    </Right>
+                                          this.props.navigation.navigate("Doctor List", { resultData: requestData }) 
+                                        }}
+                                    >
+                                         <Col size={7.5}>
+                                    <Text style={{marginTop:2, fontFamily: 'OpenSans', fontSize: 12,color: '#775DA3',paddingLeft: 10,  }}>{item.value}</Text> 
+                                    </Col>
+                                    <Col size={2.5}>
+                                        <Text uppercase={true} style={{ color: 'gray', marginTop:2, marginRight: 10,color: '#775DA3', fontSize: 12, fontFamily: 'OpenSans-Bold',paddingLeft: 10,  }}>{item.type}</Text>
+                                    </Col>
                                 </Row>
                             )}
                             enableEmptySections={true}

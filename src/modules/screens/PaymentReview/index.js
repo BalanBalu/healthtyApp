@@ -162,7 +162,7 @@ export default class PaymentReview extends Component {
                   <Text style={styles.subText}> Your Reason For Checkup</Text>
                   </Row>
                  <Form style={{marginRight:1,marginLeft:-13}}>
-                    <Item>
+                    <Item style={{borderBottomWidth:0}}>
                       <TextInput 
                         onChangeText={(diseaseDescription)=> { 
                             var bookSlotDetails = {...this.state.bookSlotDetails}
@@ -312,7 +312,7 @@ const styles = StyleSheet.create({
             borderRadius:10,
             height:40,
             marginTop:20,
-            marginLeft: 30,
+            marginLeft:25,
             padding:10,
             backgroundColor:'#149C00'
           },
@@ -320,8 +320,6 @@ const styles = StyleSheet.create({
             borderRadius:10,
             height:40,
             marginTop: 20,
-            padding: 10,
-            marginLeft: 10,
             backgroundColor:'#0055A5'
           },
           payButtonText:{
