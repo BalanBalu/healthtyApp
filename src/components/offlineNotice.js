@@ -5,14 +5,14 @@ const { width={} } = Dimensions.get('window');
 RenderOffline = () => {
   return (
     <View style={styles.offlineContainer}>
-      <Text style={styles.offlineText}>could not connect to Internet</Text>
+      <Text style={styles.offlineText}>>No Internet connection</Text>
     </View>
   );
 }
 RenderOnline = () => {
   return (
     <View style={styles.onlineContainer}>
-      <Text style={styles.offlineText}> We are back...Online</Text>
+      <Text style={styles.offlineText}> We are back Online...</Text>
     </View>
   );
 }

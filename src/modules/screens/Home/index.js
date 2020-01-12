@@ -227,7 +227,7 @@ class Home extends Component {
                                 placeholderTextColor="#e2e2e2"
                                 keyboardType={'email-address'}
                                 autoFocus={fromAppointment}
-                                // onChangeText={searchValue => this.setState({ searchValue })}
+                                value={this.state.visibleClearIcon}
                                 onChangeText={enteredText => this.SearchKeyWordFunction(enteredText)}
                                 underlineColorAndroid="transparent"
                                 blurOnSubmit={false}
