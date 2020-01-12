@@ -19,128 +19,83 @@ export class InsertReview extends Component {
   constructor(props) {
     super(props)
     this.state = {
-      isAnonymous: false,
-      isAnonymousErrorMsg: '',
+     
       cleanness_rating: 0,
       staff_rating: 0,
       wait_time_rating: 0,
       comments: '',
-      doctorRecommended: false,
-      data: this.props.data,
+      isDoctorRecommended: false,
+      isAnonymous: false,
+      isAnonymousErrorMsg: '',
+      data: {},
       doctorId: '',
       appointmentId: '',
       isRefresh: 'false',
       ratingIndicatePopUp: false,
-      anonymousChecked: false,
-      recommendChecked: false
-
     }
     
   }
 
   async componentDidMount() {
 
-    // const { navigation } = this.props;
-    // const reviewData = navigation.getParam('appointmentDetail');
-    // console.log('reviewData:')
-    // console.log(reviewData);
-
-    // // let reviewData=finalReviewData.data.appointmentResult;
-
-
-    // let userId = reviewData.user_id;
-
-    // let doctorId = reviewData.doctor_id;
-    // let appointmentId = reviewData._id;
-    // await this.setState({ userId: userId, doctorId: doctorId, appointmentId: appointmentId, data: reviewData });
-
+    const { data } = this.props;
+     let userId = data.user_id;
+     let doctorId = data.doctor_id;
+     let appointmentId = data._id;
+     await this.setState({ userId: userId, doctorId: doctorId, appointmentId: appointmentId, data: data });
   }
 
-  updateAppointmentStatus = async (data, updatedStatus) => {
-    try {
-      let requestData = {
-        doctorId: data.doctor_id,
-        userId: data.user_id,
-        startTime: data.appointment_starttime,
-        endTime: data.appointment_endtime,
-        status: updatedStatus,
-        statusUpdateReason: ' ',
-        status_by: 'USER'
-      };
-
-      let userId = await AsyncStorage.getItem('userId');
-      let result = await appointmentStatusUpdate(data.doctor_id, data._id, requestData);
-
-    } catch (e) {
-      console.log(e);
-    }
-  }
-
+ 
   submitReview = async (reviewCondition) => {
     try {
       console.log('cpme submit review')
-      let userId = this.state.data.user_id;
+      
+      const { userId, appointmentId, doctorId  } = this.state;
 
-      const { data, isAnonymous, wait_time_rating, staff_rating, cleanness_rating, comments, doctorRecommended } = this.state
-      let insertReviewData = {}, overallrating
+      const { data, isAnonymous, wait_time_rating, staff_rating, cleanness_rating, comments, isDoctorRecommended } = this.state
+     
       if (reviewCondition == 'ADD') {
         if (wait_time_rating != 0 || staff_rating != 0 || cleanness_rating != 0) {
-          overallrating = (cleanness_rating + staff_rating + wait_time_rating) / 3;
-          insertReviewData = {
+          const overallrating = (cleanness_rating + staff_rating + wait_time_rating) / 3;
+         const insertReviewData = {
             user_id: userId,
-            doctor_id: data.doctor_id,
-            appointment_id: data._id,
+            doctor_id: doctorId,
+            appointment_id: appointmentId,
             is_anonymous: isAnonymous,
             wait_time_rating: wait_time_rating,
             staff_rating: staff_rating, // 1 to 5
             cleanness_rating: cleanness_rating,
             overall_rating: overallrating,
             comments: comments,
-            is_doctor_recommended: doctorRecommended,
+            is_doctor_recommended: isDoctorRecommended,
             is_review_added: true,
           };
+          let result = await addReview(userId, insertReviewData);
+          this.props.popupVisible({
+            visible: false,
+            updatedVisible: true
+          });
+          console.log(JSON.stringify(result))
         }
         else {
           this.setState({ ratingIndicatePopUp: true })
-               return true
+          return true
         }
       }
       else {
-        if (data.is_review_added != false || data.is_review_added == undefined) {
-          insertReviewData = {
+          const insertReviewData = {
             is_review_added: false,
             user_id: userId,
             doctor_id: data.doctor_id,
             appointment_id: data._id,
           };
-        }
-        else {
-          let obj = {
-            visible: false,
-            updatedVisible:false   
-          }
-          this.props.popupVisible(obj);
-        }
-      }
-      let result = await addReview(userId, insertReviewData);
-      console.log(JSON.stringify(result))
-
-      if (result.success) {
-       
-        if(reviewCondition=='SKIP'){
-           obj = {
+          let result = await addReview(userId, insertReviewData);
+          console.log(JSON.stringify(result))
+          this.props.popupVisible({
             visible: false,
             updatedVisible: false
-          }
+          });
         }
-        else{
-          obj = {
-          visible: false,
-          updatedVisible: true
-        }
-        this.props.popupVisible(obj);
-      }
-      }
     }
 
     catch (e) {
@@ -165,8 +120,7 @@ export class InsertReview extends Component {
   }
 
   render() {
-    const { data, checked, anonymousChecked, recommendChecked, ratingIndicatePopUp } = this.state;
-    console.log(data)
+    const { data, checked, isAnonymous, isDoctorRecommended, ratingIndicatePopUp } = this.state;
     return (
       < Container style={styles.container} >
         <Content
@@ -232,23 +186,23 @@ export class InsertReview extends Component {
               <Row style={{ marginTop: 20, marginLeft: 14, marginRight: 20 }}>
                 <Col style={{ flexDirection: 'row', width: '45%', alignItems: "flex-start", justifyContent: 'flex-start' }}>
                   <Checkbox color="#3C98EC" size={5}
-                    status={anonymousChecked ? 'checked' : 'unchecked'}
-                    onPress={() => { this.setState({ anonymousChecked: !anonymousChecked }); }}
+                    status={isAnonymous ? 'checked' : 'unchecked'}
+                    onPress={() => { this.setState({ isAnonymous: !isAnonymous }); }}
                     style={{ height: 5, width: 5 }} />
                   <Text style={{ color: '#3C98EC', marginTop: 10, fontSize: 12 }}>Anonymous</Text>
                 </Col>
                 <Col style={{ flexDirection: 'row', width: '55%', alignItems: "flex-start", justifyContent: 'flex-start' }}>
 
                   <Checkbox color="#3C98EC" size={5}
-                    status={recommendChecked ? 'checked' : 'unchecked'}
-                    onPress={() => { this.setState({ recommendChecked: !recommendChecked }); }}
+                    status={isDoctorRecommended ? 'checked' : 'unchecked'}
+                    onPress={() => { this.setState({ isDoctorRecommended: !isDoctorRecommended }); }}
                   />
 
                   <Text style={{ color: '#3C98EC', fontSize: 12, marginTop: 10 }}>Recommend this Doctor</Text>
                 </Col>
                
               </Row>
-              {ratingIndicatePopUp == true ? <Text style={{ color: 'red', fontSize: 12, marginTop: 10 }}>kindly give me ratting</Text> : null}
+              {ratingIndicatePopUp == true ? <Text style={{ color: 'red', fontSize: 12, marginTop: 10 }}>Add Rating to Continue</Text> : null}
               <View style={{ marginLeft: 20, marginTop: 10, marginRight: 20 }}>
                 <TextInput
                   style={{ height: 80, borderWidth: 1, marginTop: 10, width: "100%", borderRadius: 5, fontSize: 14 }}
@@ -277,147 +231,6 @@ export class InsertReview extends Component {
             </Row>
           </Grid>
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-          {/* 
-          <Card style={{ borderRadius: 5, padding: 5, }}>
-            <Card>
-              <CardItem style={styles.text}>
-                <Body>
-                  <Text > How was your visit with {(data && data.prefix != undefined ? data && data.prefix : '') + (data && data.doctorInfo.first_name) + " " + (data && data.doctorInfo.last_name)} ? help other patients by leaving a Review </Text>
-                </Body>
-              </CardItem>
-              <CardItem>
-                <Body>
-                  <Text style={{ marginTop: 5, }}>
-                    Your appointment with {(data && data.prefix != undefined ? data && data.prefix : '') + (data && data.doctorInfo.first_name) + " " + (data && data.doctorInfo.last_name)} on <Text style={{ fontWeight: "bold" }}>
-                      {formatDate(data.appointment_starttime, 'MMMM-DD-YYYY') + "   " +
-                        formatDate(data.appointment_starttime, 'hh:mm A')}
-                    </Text> </Text>
-                  <Row style={{ marginTop: 20 }}>
-                    <Text style={{ fontSize: 16 }}>Cleanliness</Text>
-                    <StarRating fullStarColor='#FF9500' starSize={20} containerStyle={{ width: 110, marginLeft: 50 }}
-                      disabled={false}
-                      maxStars={5}
-                      rating={this.state.cleanness_rating}
-                      selectedStar={(rating) => this.CleanlinessStarRating(rating)}
-
-                    />
-                  </Row>
-                  <Row style={{ marginTop: 30 }}>
-                    <Text style={{ fontSize: 16 }}>Staff</Text>
-                    <StarRating fullStarColor='#FF9500' starSize={20} containerStyle={{ width: 110, marginLeft: 97 }}
-                      disabled={false}
-                      maxStars={5}
-                      rating={this.state.staff_rating}
-                      selectedStar={(rating) => this.staffStarRating(rating)}
-
-                    />
-                  </Row>
-                  <Row style={{ marginTop: 30 }}>
-                    <Text style={{ fontSize: 16 }}>Wait Time</Text>
-                    <StarRating fullStarColor='#FF9500' starSize={20} containerStyle={{ width: 110, marginLeft: 60 }}
-                      disabled={false}
-                      maxStars={5}
-                      rating={this.state.wait_time_rating}
-                      selectedStar={(rating) => this.waittimeStarRating(rating)}
-
-                    />
-                  </Row>
-                  
-                  <Row style={{ marginTop: 20, marginLeft: -10 }}>
-                    <Checkbox status={this.state.isAnonymous ? 'checked' : 'unchecked'} color="green" onPress={() => this.setState({ isAnonymous: !this.state.isAnonymous })} />
-                    <Text style={{ marginLeft: 5, marginTop: 7 }}>Would you like to give as Anonymous</Text>
-                  </Row>
-                  <Row style={{ marginTop: 10, marginLeft: -10 }} >
-                    <Checkbox status={this.state.doctorRecommended ? 'checked' : 'unchecked'} color="green" onPress={() => this.setState({ doctorRecommended: !this.state.doctorRecommended })} />
-                    <Text style={{ marginLeft: 5, marginTop: 7 }}>Do you recommend this doctor</Text>
-                  </Row>
-
-                  <Text style={{ fontSize: 16, marginTop: 20 }}>
-                    Write your review
-                      </Text>
-                  <Input
-                    style={{ height: 100, borderWidth: 1, marginTop: 20, width: 300 }}
-                    returnKeyType={'next'}
-                    multiline={true}
-                    keyboardType={'default'}
-                    textAlignVertical={'top'}
-                    onChangeText={(comments) => {
-                      this.setState({ comments })}
-                    }/>
-
-                  <Row style={{ marginTop: 10 }}>
-                    <Right>
-                      <Button style={styles.button1}
-                        onPress={() => this.submitReview()}>
-                        <Text>SUBMIT </Text></Button>
-                    </Right></Row>
-
-                </Body>
-                <Modal
-                  visible={this.state.ratingIndicatePopUp}
-                  transparent={true}
-                  animationType={'fade'}
-                >
-                  <View style={{
-                    flex: 1,
-                    flexDirection: 'column',
-                    justifyContent: 'center',
-                    alignItems: 'center',
-                    backgroundColor: 'rgba(0,0,0,0.5)'
-                  }}>
-                    <View style={{
-                      width: '100%',
-                      // Dimensions.get('screen').width,
-                      height: '15%', backgroundColor: '#fff',
-                      borderColor: 'gray',
-                      borderWidth: 3,
-                      padding: 10,
-                      borderRadius: 5
-                    }}> */}
-
-          {/* <Item regular rounded style={{ borderColor: '#000', borderWidth: 2, marginTop: 20 }}> */}
-
-          {/* </Item> */}
-          {/* <Row style={{ marginTop: 10,justifyContent:'center' }}>
-                        <Col style={{justifyContent:'center',width:'80%',marginTop:-30}}>
-                        <Text style={{ fontFamily: 'OpenSans',textAlign:'center', }}> Kindly give rating for your Review! </Text>
-
-                        </Col>
-                        <Col style={{width:'20%',marginTop: 30,justifyContent:'center'}}>
-                          <Button  success style={{ borderRadius: 10,height:35,paddingLeft:5,paddingRight:5}} onPress={() => this.setState({ ratingIndicatePopUp: false })} testID='okButton'>
-                            <Text style={{ fontFamily: 'OpenSans',}}> Ok</Text>
-                          </Button>
-                        </Col>
-                        </Row>
-                    </View>
-
-                  </View>
-                </Modal>
-
-              </CardItem>
-            </Card>
-          </Card> */}
         </Content>
       </Container >
     );

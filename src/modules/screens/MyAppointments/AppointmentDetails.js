@@ -164,17 +164,6 @@ class AppointmentDetails extends Component {
     this.setState({
       modalVisible: true
     });
-    // this.state.data.prefix = this.state.doctorData.prefix;
-    // const { navigation } = this.props;
-    // const fromNotification = navigation.getParam('fromNotification');
-    // if (fromNotification == true) {
-    //   let doctorInfo = {
-    //     first_name: this.state.doctorData.first_name,
-    //     last_name: this.state.doctorData.last_name
-    //   }
-    //   this.state.data.doctorInfo = doctorInfo;
-    // }
-    // navigation.push('InsertReview', { appointmentDetail: this.state.data, prevState: navigation.state })
   }
 
   /* Update Appoiontment Status */
@@ -243,13 +232,9 @@ class AppointmentDetails extends Component {
   }
   async  getvisble(val) {
     try {
-      await this.setState({ isLoading: true })
-      this.setState({
-        modalVisible: false
-      });
-       if(val.updatedVisible==true) {
-
-        this.getUserReviews()
+      await this.setState({ isLoading: true, modalVisible : false })
+      if(val.updatedVisible==true) {
+          this.getUserReviews()
       }
     } catch (e) {
       console.log(e)
@@ -544,9 +529,8 @@ class AppointmentDetails extends Component {
                     visible={this.state.modalVisible}
                   >
                     <InsertReview
-                      // props={this.props}
                       data={this.state.data}
-                      popupVisible={this.getvisble.bind(this)}
+                      popupVisible={(data) => this.getvisble(data)}
 
                     >
 

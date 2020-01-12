@@ -38,7 +38,7 @@ class MyAppoinmentList extends Component {
 	}
 
 	async componentDidMount() {
-		
+		await this.setState({ isLoading: true })
 		const isLoggedIn = await hasLoggedIn(this.props);
 		if (!isLoggedIn) {
 			this.props.navigation.navigate("login");
@@ -53,7 +53,7 @@ class MyAppoinmentList extends Component {
 			this.pastAppointment()
 		])
 		await this.setState({
-			isLoading: true,
+			isLoading: false,
 			isNavigation: false
 		})
 
@@ -63,18 +63,18 @@ class MyAppoinmentList extends Component {
 		if (!this.state.isNavigation) {
 			if (navigationData.action) {
 				await this.setState({
-					isLoading: false
+					isLoading: true
 				})
 				if (navigationData.action.type === 'Navigation/BACK' || navigationData.action.type === 'Navigation/NAVIGATE' || navigationData.action.type === 'Navigation/POP') {
 					if (this.state.selectedIndex == 0) {
 						await this.upCommingAppointment();
 						await this.setState({
-							isLoading: true
+							isLoading: false
 						})
 					} else {
 						await this.pastAppointment();
 						await this.setState({
-							isLoading: true,
+							isLoading: false,
 							data: this.state.pastData
 						})
 					}
@@ -144,6 +144,9 @@ class MyAppoinmentList extends Component {
 	};
 	pastAppointment = async () => {
 		try {
+			this.setState({
+				isLoading: true
+			})
 			let userId = await AsyncStorage.getItem("userId");
 			let filters = {
 				startDate: subTimeUnit(new Date(), 1, "years").toUTCString(),
@@ -188,11 +191,7 @@ class MyAppoinmentList extends Component {
 						profile_image: doctorData.profile_image,
 						gender: doctorData.gender
 					})
-
-
 				});
-
-
 				let pastDoctorDetails = [];
 				pastAppointmentResult.map((doctorData, index) => {
 
@@ -212,17 +211,11 @@ class MyAppoinmentList extends Component {
 							profile_image: details.profile_image
 
 						});
-
-
-
 					}
-
 				)
-
 				pastDoctorDetails.sort(function (firstVarlue, secandValue) {
 					return firstVarlue.appointmentResult.appointment_starttime > secandValue.appointmentResult.appointment_starttime ? -1 : 0
 				})
-
 				this.setState({
 					pastData: pastDoctorDetails
 				});
@@ -232,7 +225,7 @@ class MyAppoinmentList extends Component {
 			console.log(e);
 		} finally {
 			this.setState({
-				isLoading: true
+				isLoading: false
 			})
 
 		}
@@ -240,38 +233,19 @@ class MyAppoinmentList extends Component {
 
 
 	navigateAddReview(item,index) {
-		/*let data = item.appointmentResult;
-		data.prefix = item.prefix
-
-		this.props.navigation.navigate('InsertReview', {
-			appointmentDetail: data
-		}) */
 		this.setState({
 			modalVisible: true,reviewData:item.appointmentResult,reviewIndex:index
 		})
-		
-		
-		
-
 	}
 	async getvisble(val){
-		
-	  if(val.updatedVisible==true){
-		this.setState({
-			modalVisible :false,isLoading: false
-		});
-		  await this.pastAppointment();
-		  await this.setState({
-			isLoading: true,
+	  this.setState({ modalVisible : false });
+	  if(val.updatedVisible == true) {
+		 await this.pastAppointment();
+		 await this.setState({
 			data: this.state.pastData
-		})
+		 })
 	  }
-	  else{
-	  this.setState({
-		modalVisible :false
-	});
-	  }
-		}
+	}
 
 	handleIndexChange = index => {
 
@@ -299,12 +273,7 @@ class MyAppoinmentList extends Component {
 
 	render() {
 		const {
-			data,
-			selectedIndex,
-
-			isLoading,
-
-		} = this.state;
+			data, selectedIndex, isLoading	} = this.state;
 
 
 return (
@@ -329,7 +298,18 @@ return (
 				}}
 				tabStyle={{ borderColor: "#775DA3" }}/>
 			
-			{isLoading == true ? (
+			{isLoading == true ?
+			(
+				<Spinner
+					color="blue"
+					style={[styles.containers, styles.horizontal]}
+					visible={true}
+					size={"large"}
+					overlayColor="none"
+					cancelable={false}
+				/>
+			) : 
+			(
 				data.length === 0 ? (
 					<Card transparent style={{
 									alignItems: "center",
@@ -439,14 +419,6 @@ return (
 
 														<Text style={{ fontFamily: "OpenSans", fontSize: 11 }} note>
 															{formatDate(item.appointmentResult.appointment_starttime, "dddd,MMMM DD-YYYY  hh:mm a")}</Text>
-
-
-
-
-
-
-
-
 														{selectedIndex == 1 &&
 															item.appointmentResult.appointment_status =="COMPLETED"&&(item.appointmentResult.is_review_added==undefined||item.appointmentResult.is_review_added==false)? (
 																<Item style={{ borderBottomWidth: 0 }}>
@@ -497,16 +469,7 @@ return (
 									</List>
 								</ScrollView>
 							)
-					) : (
-							<Spinner
-								color="blue"
-								style={[styles.containers, styles.horizontal]}
-								visible={true}
-								size={"large"}
-								overlayColor="none"
-								cancelable={false}
-							/>
-						)}
+					)}
 				</Card>
 	<View style={{ height : 300, position: 'absolute', bottom: 0 }}>
 	<Modal
@@ -516,10 +479,9 @@ return (
 		visible={this.state.modalVisible}
 	>
 		<InsertReview 
-		props={this.props}
-		data={this.state.reviewData}
-		popupVisible={this.getvisble.bind(this)}
-
+			props={this.props}
+		    data={this.state.reviewData}
+			popupVisible={(data) => this.getvisble(data)}
 		>
 
 		</InsertReview>

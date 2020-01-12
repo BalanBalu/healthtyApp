@@ -5,7 +5,6 @@ import { appointmentStatusUpdate } from '../../providers/bookappointment/bookapp
 import { formatDate } from '../../../setup/helpers';
 
 import { Loader } from '../../../components/ContentLoader'
-import {onlySpaceNotallowed} from '../../common'
 import Spinner from '../../../components/Spinner';
 
 
@@ -48,7 +47,7 @@ class CancelAppointment extends Component {
     try {
       let userId = await AsyncStorage.getItem('userId');
       console.log(this.state.statusUpdateReason)
-      if (this.state.statusUpdateReason != ''&&onlySpaceNotallowed(this.state.statusUpdateReason)==true) {
+      if (this.state.statusUpdateReason != '') {
         console.log('true')
         this.setState({ isLoading: true });
         let requestData = {
