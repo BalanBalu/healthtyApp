@@ -1,6 +1,6 @@
 import React, { Component } from "react";
 import { View, Text, Button, List, ListItem, Left, Right, Thumbnail, Item, Card, Body } from "native-base";
-import { StyleSheet, Image, AsyncStorage, FlatList, ScrollView, ActivityIndicator } from "react-native";
+import { StyleSheet, Image, AsyncStorage, FlatList, ScrollView, ActivityIndicator, Modal } from "react-native";
 import StarRating from "react-native-star-rating";
 import { Col, Row, Grid } from "react-native-easy-grid";
 import SegmentedControlTab from "react-native-segmented-control-tab";
@@ -12,9 +12,10 @@ import {formatDate,addTimeUnit,subMoment,addMoment,subTimeUnit ,getAllId,statusV
 import {getUserAppointments,viewUserReviews,getMultipleDoctorDetails} from "../../providers/bookappointment/bookappointment.action";
 import noAppointmentImage from "../../../../assets/images/noappointment.png";
 import Spinner from "../../../components/Spinner";
-import { renderProfileImage,getAllEducation,getAllSpecialist,getName } from '../../common'
+import { renderProfileImage,renderDoctorImage,getAllEducation,getAllSpecialist,getName } from '../../common'
 import moment from "moment";
 // import moment from "moment";
+import InsertReview from '../Reviews/InsertReview';
 
 class MyAppoinmentList extends Component {
 	constructor(props) {
@@ -28,13 +29,16 @@ class MyAppoinmentList extends Component {
 			userId: null,
 			loading: true,
 			isRefreshing: false,
-			isNavigation: true
+			isNavigation: true,
+			modalVisible: false,
+			reviewData:{},
+			reviewIndex:-1
 
 		};
 	}
 
 	async componentDidMount() {
-		console.log('statusValue' + JSON.stringify(statusValue))
+		
 		const isLoggedIn = await hasLoggedIn(this.props);
 		if (!isLoggedIn) {
 			this.props.navigation.navigate("login");
@@ -188,7 +192,6 @@ class MyAppoinmentList extends Component {
 
 				});
 
-				console.log(doctorInfo)
 
 				let pastDoctorDetails = [];
 				pastAppointmentResult.map((doctorData, index) => {
@@ -229,22 +232,46 @@ class MyAppoinmentList extends Component {
 			console.log(e);
 		} finally {
 			this.setState({
-				isLoading: false
+				isLoading: true
 			})
 
 		}
 	};
 
 
-	navigateAddReview(item) {
-		let data = item.appointmentResult;
+	navigateAddReview(item,index) {
+		/*let data = item.appointmentResult;
 		data.prefix = item.prefix
 
 		this.props.navigation.navigate('InsertReview', {
 			appointmentDetail: data
+		}) */
+		this.setState({
+			modalVisible: true,reviewData:item.appointmentResult,reviewIndex:index
 		})
+		
+		
+		
 
 	}
+	async getvisble(val){
+		
+	  if(val.updatedVisible==true){
+		this.setState({
+			modalVisible :false,isLoading: false
+		});
+		  await this.pastAppointment();
+		  await this.setState({
+			isLoading: true,
+			data: this.state.pastData
+		})
+	  }
+	  else{
+	  this.setState({
+		modalVisible :false
+	});
+	  }
+		}
 
 	handleIndexChange = index => {
 
@@ -278,6 +305,7 @@ class MyAppoinmentList extends Component {
 			isLoading,
 
 		} = this.state;
+
 
 return (
 	<View style={styles.container}>
@@ -353,7 +381,7 @@ return (
 													<Left>
 														<Thumbnail
 															square
-															source={renderProfileImage(item)}
+															source={renderDoctorImage(item)}
 															style={{ height: 60, width: 60 }}
 														/>
 													</Left>
@@ -362,7 +390,7 @@ return (
 														<Item style={{ borderBottomWidth: 0 }}>
 
 															<Text style={{ fontFamily: "OpenSans", fontSize: 15, fontWeight: 'bold' }}>
-																{(item.prefix != undefined ? item.prefix : '') + getName(item.appointmentResult.doctorInfo)}
+																{(item.prefix != undefined ? item.prefix+' ' : '') + getName(item.appointmentResult.doctorInfo)}
 															</Text>
 															<Text
 																style={{
@@ -400,7 +428,7 @@ return (
 														</Item>
 											
 														<Item style={{ borderBottomWidth: 0 }}>
-															{item.appointmentResult.onGoingAppointment ? 
+															{ item.appointmentResult.appointment_status =="APPROVED" &&item.appointmentResult.onGoingAppointment ? 
 																<Text style={{ fontFamily: "OpenSans", fontSize: 13, color: 'green', fontWeight: 'bold' }} note>{'Appointment Ongoing'}</Text>		
 																:
 																<Text style={{ fontFamily: "OpenSans", fontSize: 13, color:statusValue[item.appointmentResult.appointment_status].color, fontWeight: 'bold' }} note>{statusValue[item.appointmentResult.appointment_status].text}</Text>	
@@ -420,12 +448,12 @@ return (
 
 
 														{selectedIndex == 1 &&
-															item.appointmentResult.appointment_status =="COMPLETED"&&item.appointmentResult.is_review_added==undefined? (
+															item.appointmentResult.appointment_status =="COMPLETED"&&(item.appointmentResult.is_review_added==undefined||item.appointmentResult.is_review_added==false)? (
 																<Item style={{ borderBottomWidth: 0 }}>
 																	<Right style={(styles.marginRight = -2)}>
 																		<Button
 																			style={styles.shareButton}
-																			onPress={() => this.navigateAddReview(item)}
+																			onPress={() => this.navigateAddReview(item,index)}
 
 																			testID='navigateInsertReview'
 																		>
@@ -480,7 +508,26 @@ return (
 							/>
 						)}
 				</Card>
+	<View style={{ height : 300, position: 'absolute', bottom: 0 }}>
+	<Modal
+		animationType="slide"
+		transparent={true}
+		containerStyle={{ justifyContent: 'flex-end' }}
+		visible={this.state.modalVisible}
+	>
+		<InsertReview 
+		props={this.props}
+		data={this.state.reviewData}
+		popupVisible={this.getvisble.bind(this)}
+
+		>
+
+		</InsertReview>
+	</Modal>
+	</View>
+	
 			</View>
+
 		);
 	}
 }

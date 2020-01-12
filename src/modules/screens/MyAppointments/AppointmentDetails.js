@@ -4,16 +4,16 @@ import {
   Thumbnail, Body, Icon, Toast, View
 } from 'native-base';
 import { Col, Row, Grid } from 'react-native-easy-grid';
-import { StyleSheet, AsyncStorage ,TouchableOpacity} from 'react-native';
+import { StyleSheet, AsyncStorage, TouchableOpacity, Modal } from 'react-native';
 import StarRating from 'react-native-star-rating';
 import moment from 'moment';
 import { NavigationEvents } from 'react-navigation';
-import { viewUserReviews, bindDoctorDetails, appointmentStatusUpdate, appointmentDetails,getPaymentInfomation } from '../../providers/bookappointment/bookappointment.action';
+import { viewUserReviews, bindDoctorDetails, appointmentStatusUpdate, appointmentDetails, getPaymentInfomation } from '../../providers/bookappointment/bookappointment.action';
 import { formatDate, dateDiff } from '../../../setup/helpers';
 
 import { Loader } from '../../../components/ContentLoader'
-
-import { renderProfileImage , RenderHospitalAddress,getAllEducation,getAllSpecialist,getName,getDoctorExperience} from '../../common'
+import { InsertReview } from '../Reviews/InsertReview'
+import { renderDoctorImage, RenderHospitalAddress, getAllEducation, getAllSpecialist, getName, getDoctorExperience } from '../../common'
 class AppointmentDetails extends Component {
   constructor(props) {
     super(props)
@@ -27,13 +27,14 @@ class AppointmentDetails extends Component {
       doctorData: {},
       isLoading: true,
 
-      appointmentStatus: '',
+      // appointmentStatus: '',
       statusUpdateReason: ' ',
       education: '',
       specialist: '',
       hospital: [],
-      selectedTab:null,
-      paymentDetails:{},
+      selectedTab: 0,
+      paymentDetails: {},
+      modalVisible: false,
 
 
     }
@@ -44,14 +45,13 @@ class AppointmentDetails extends Component {
     const userId = await AsyncStorage.getItem('userId');
     const { navigation } = this.props;
     const appointmentData = navigation.getParam('data');
-    
+
     if (appointmentData == undefined) {
       const appointmentId = navigation.getParam('appointmentId');
-      this.props.navigation.setParams({reportedId:appointmentId});
+      this.props.navigation.setParams({ reportedId: appointmentId });
       await this.setState({ appointmentId: appointmentId });
       await new Promise.all([
         this.appointmentDetailsGetById(),
-        this.getDoctorDetails(),
         this.getUserReviews(),
       ]);
     }
@@ -59,10 +59,14 @@ class AppointmentDetails extends Component {
       let doctorId = appointmentData.doctor_id;
       let appointmentId = appointmentData._id;
       const selectedTab = navigation.getParam('selectedIndex');
-      this.props.navigation.setParams({reportedId:appointmentId});
+      this.props.navigation.setParams({ reportedId: appointmentId });
+
+      if (appointmentData.appointment_status == 'COMPLETED' && appointmentData.is_review_added == undefined) {
+        await this.setState({ modalVisible: true })
+      }
       await this.setState({
         doctorId: doctorId, appointmentId: appointmentId,
-        userId: userId, data: appointmentData,selectedTab
+        userId: userId, data: appointmentData, selectedTab
       })
 
       await new Promise.all([
@@ -90,20 +94,21 @@ class AppointmentDetails extends Component {
         }
         let specialistDetails = '';
         if (resultDetails.data.specialist != undefined) {
-          specialistDetails = getAllSpecialist(resultDetails.data.specialist) 
+          specialistDetails = getAllSpecialist(resultDetails.data.specialist)
         }
         let hospitalData = [];
         if (resultDetails.data.hospital != undefined) {
           resultDetails.data.hospital.map(hospital_ele => {
             if (hospital_ele.hospital_id == this.state.data.hospital_id)
-              hospitalData =  hospital_ele;
-            })
-        }
-        this.setState({ education: educationDetails, 
-            doctorData: resultDetails.data, 
-            specialist: specialistDetails.toString(),
-            hospital: hospitalData
+              hospitalData = hospital_ele;
           })
+        }
+        this.setState({
+          education: educationDetails,
+          doctorData: resultDetails.data,
+          specialist: specialistDetails.toString(),
+          hospital: hospitalData
+        })
       }
     }
     catch (e) {
@@ -123,44 +128,53 @@ class AppointmentDetails extends Component {
       console.error(e);
     }
 
-  }
-
-appointmentDetailsGetById = async () => {
-  try {
-    let result = await appointmentDetails(this.state.appointmentId);
-    if (result.success) {
-      this.setState({ doctorId: result.data[0].doctor_id, data: result.data[0] }),
-      this.getPaymentInfo(result.data[0].payment_id);
-    }
-  } catch (error) {
-    console.error(error);
-  }
 
   }
-getPaymentInfo = async (paymentId) => {
-  try {
-    let result=await getPaymentInfomation(paymentId);
-    if(result.success){
-      this.setState({paymentDetails:result.data[0]})
+
+  appointmentDetailsGetById = async () => {
+    try {
+      let result = await appointmentDetails(this.state.appointmentId);
+      if (result.success) {
+        this.setState({ doctorId: result.data[0].doctor_id, data: result.data[0] }),
+          await new Promise.all([
+            this.getDoctorDetails(),
+            this.getPaymentInfo(result.data[0].payment_id)])
+      }
+      if (result.data[0].appointment_status == 'COMPLETED' && result.data[0].is_review_added == undefined) {
+        await this.setState({ modalVisible: true })
+      }
+    } catch (error) {
+      console.error(error);
+    }
+
+  }
+  getPaymentInfo = async (paymentId) => {
+    try {
+      let result = await getPaymentInfomation(paymentId);
+      if (result.success) {
+        this.setState({ paymentDetails: result.data[0] })
+      }
+    }
+    catch (e) {
+      console.log(e)
     }
   }
-  catch(e){
-    console.log(e)
-  }
-}
 
   navigateAddReview() {
-    this.state.data.prefix = this.state.doctorData.prefix;
-    const { navigation } = this.props;
-    const fromNotification = navigation.getParam('fromNotification');
-    if (fromNotification == true) {
-      let doctorInfo = {
-        first_name: this.state.doctorData.first_name,
-        last_name: this.state.doctorData.last_name
-      }
-      this.state.data.doctorInfo = doctorInfo;
-    }
-      navigation.push('InsertReview', { appointmentDetail: this.state.data, prevState: navigation.state })
+    this.setState({
+      modalVisible: true
+    });
+    // this.state.data.prefix = this.state.doctorData.prefix;
+    // const { navigation } = this.props;
+    // const fromNotification = navigation.getParam('fromNotification');
+    // if (fromNotification == true) {
+    //   let doctorInfo = {
+    //     first_name: this.state.doctorData.first_name,
+    //     last_name: this.state.doctorData.last_name
+    //   }
+    //   this.state.data.doctorInfo = doctorInfo;
+    // }
+    // navigation.push('InsertReview', { appointmentDetail: this.state.data, prevState: navigation.state })
   }
 
   /* Update Appoiontment Status */
@@ -178,21 +192,23 @@ getPaymentInfo = async (paymentId) => {
         statusUpdateReason: this.state.statusUpdateReason,
         status_by: 'USER'
       };
-      
+
       let result = await appointmentStatusUpdate(this.state.doctorId, this.state.appointmentId, requestData);
       this.setState({ isLoading: false })
-        let appointmentStatus = result.appointmentData.appointment_status;
-        if (result.success) {
-            let temp = this.state.data
-            temp.doctor_id = result.appointmentData.doctor_id;
-            temp.appointment_starttime = result.appointmentData.appointment_starttime;
-            temp.appointment_endtime = result.appointmentData.appointment_endtime;
-          Toast.show({
-            text: result.message,
-            duration: 3000
-          })
-          this.setState({ appointmentStatus: appointmentStatus, data: temp });
-        }
+      // let appointmentStatus = result.appointmentData.appointment_status;
+      if (result.success) {
+        let temp = this.state.data
+        temp.doctor_id = result.appointmentData.doctor_id;
+        temp.appointment_starttime = result.appointmentData.appointment_starttime;
+        temp.appointment_endtime = result.appointmentData.appointment_endtime;
+        temp.appointment_status=result.appointmentData.appointment_status
+        Toast.show({
+          text: result.message,
+          duration: 3000
+        })
+        // this.setState({ appointmentStatus: appointmentStatus, data: temp });
+        this.setState({data: temp });
+      }
     }
     catch (e) {
       console.log(e);
@@ -204,7 +220,7 @@ getPaymentInfo = async (paymentId) => {
     this.state.data.prefix = this.state.doctorData.prefix;
     const { navigation } = this.props;
     const fromNotification = navigation.getParam('fromNotification');
-    
+
     if (fromNotification == true || fromNotification != undefined) {
       let doctorInfo = {
         first_name: this.state.doctorData.first_name,
@@ -217,18 +233,35 @@ getPaymentInfo = async (paymentId) => {
 
   }
 
-async backNavigation(){
-  const { navigation } = this.props;
-  if(navigation.state.params) {
-    if(navigation.state.params.hasReloadReview) {
-      this.getUserReviews();
+  async backNavigation() {
+    const { navigation } = this.props;
+    if (navigation.state.params) {
+      if (navigation.state.params.hasReloadReview) {
+        this.getUserReviews();
+      }
+    };
+  }
+  async  getvisble(val) {
+    try {
+      await this.setState({ isLoading: true })
+      this.setState({
+        modalVisible: false
+      });
+       if(val.updatedVisible==true) {
+
+        this.getUserReviews()
+      }
+    } catch (e) {
+      console.log(e)
     }
-  };
-}
+    finally {
+      await this.setState({ isLoading: false })
+    }
+  }
 
 
   render() {
-    const { data, reviewData, doctorData, education, specialist, hospital, isLoading ,selectedTab,paymentDetails} = this.state;
+    const { data, reviewData, doctorData, education, specialist, hospital, isLoading, selectedTab, paymentDetails } = this.state;
 
     return (
 
@@ -249,11 +282,11 @@ async backNavigation(){
                 <ListItem thumbnail noBorder>
                   <Left>
 
-                    <Thumbnail square source={renderProfileImage(doctorData)} style={{ height: 86, width: 86 }} />
+                    <Thumbnail square source={renderDoctorImage(doctorData)} style={{ height: 86, width: 86 }} />
                   </Left>
                   <Body>
 
-                    <Text style={{ fontSize: 15, fontFamily: 'OpenSans', fontWeight: 'bold' }}>{(doctorData && doctorData.prefix != undefined ? doctorData && doctorData.prefix : '') +(getName(doctorData))+','}
+                    <Text style={{ fontSize: 15, fontFamily: 'OpenSans', fontWeight: 'bold' }}>{(doctorData && doctorData.prefix != undefined ? doctorData && doctorData.prefix + ' ' : '') + (getName(doctorData)) + ','}
                       <Text style={{ fontSize: 13, fontFamily: 'OpenSans' }}>{education}</Text>
 
                     </Text>
@@ -268,12 +301,12 @@ async backNavigation(){
                     <Text note style={styles.bottomValue}> Fee </Text>
                   </Col>
                   <Col style={{ backgroundColor: 'transparent', borderRightWidth: 0.5, borderRightColor: 'gray', justifyContent: 'center' }}>
-                  
-                  <Text style={styles.topValue}> {getDoctorExperience(data.calulatedExperience)} </Text>
+
+                    <Text style={styles.topValue}> {getDoctorExperience(doctorData.calulatedExperience)} </Text>
                     <Text note style={styles.bottomValue}> Experience</Text>
                   </Col>
                   <Col style={{ backgroundColor: 'transparent', justifyContent: 'center', marginLeft: 'auto', marginRight: 'auto' }}>
-                    <Text style={styles.topValue}>{paymentDetails.payment_method||'N/A'} </Text>
+                    <Text style={styles.topValue}>{paymentDetails.payment_method || 'N/A'} </Text>
                     <Text note style={styles.bottomValue}> Paid Method </Text>
                   </Col>
                 </Grid>
@@ -283,14 +316,13 @@ async backNavigation(){
                     <Col style={{ width: 300, }}>
                       <Button disabled={true} block style={{ borderRadius: 10, backgroundColor: '#D7BDE2' }}>
                         <Text style={{ color: 'black', fontSize: 15, fontFamily: 'OpenSans', fontWeight: 'bold' }}>
-                          { 
-                            data.onGoingAppointment === true ? 'ONGOING' 
-                            : 
-                            this.state.appointmentStatus == 'APPROVED' ? 'APPROVED' :
-                              data.appointment_status == 'PROPOSED_NEW_TIME' ? 'PROPOSED NEW TIME' :
-                              data.appointment_status == 'PENDING_REVIEW' ? 'COMPLETED' :
-                              data.appointment_status || this.state.appointStatus
-                          } 
+                          {
+                            data.appointment_status == 'APPROVED'&& data.onGoingAppointment === true ? 'ONGOING'
+                            :
+                                data.appointment_status == 'PROPOSED_NEW_TIME' ? 'PROPOSED NEW TIME' :
+                                  data.appointment_status == 'PENDING_REVIEW' ? 'COMPLETED' :
+                                    data.appointment_status 
+                          }
                         </Text>
                       </Button>
 
@@ -299,21 +331,21 @@ async backNavigation(){
                   </View>
                 </Grid>
                 <Grid style={{ marginTop: 5 }}>
-                { selectedTab==0?
-                  data.appointment_status == 'APPROVED' || this.state.appointmentStatus === 'APPROVED' || data.appointment_status == 'PENDING'  ?
-                    <Col style={width = 'auto'}>
-                      <Button block danger style={{ margin: 1, marginTop: 10, marginLeft: 1, borderRadius: 30, padding: 15, height: 40, width: "auto" }} onPress={() => this.navigateCancelAppoointment()} testID='cancelAppointment'>
-                        <Text style={{ textAlign: 'center', fontFamily: 'OpenSans', fontSize: 14, fontWeight: 'bold' }}>CANCEL APPOINTMENT</Text>
-                      </Button>
-                    </Col> :
-                    data.appointment_status == 'PROPOSED_NEW_TIME' ?
-                      <Item style={{ borderBottomWidth: 0, justifyContent: 'center' }}>
-                        <Button success style={styles.statusButton} onPress={() => this.updateAppointmentStatus(data, 'APPROVED')} testID='approvedAppointment'>
-                          <Text style={{ textAlign: 'center', fontFamily: 'OpenSans', color: '#000', fontSize: 14, fontWeight: 'bold' }}>ACCEPT</Text>
+                  {selectedTab == 0 ?
+                    data.onGoingAppointment !== true && (data.appointment_status == 'APPROVED' || this.state.appointmentStatus === 'APPROVED' || data.appointment_status == 'PENDING') ?
+                      <Col style={width = 'auto'}>
+                        <Button block danger style={{ margin: 1, marginTop: 10, marginLeft: 1, borderRadius: 30, padding: 15, height: 40, width: "auto" }} onPress={() => this.navigateCancelAppoointment()} testID='cancelAppointment'>
+                          <Text style={{ textAlign: 'center', fontFamily: 'OpenSans', fontSize: 14, fontWeight: 'bold' }}>CANCEL APPOINTMENT</Text>
                         </Button>
-                        <Button danger style={styles.Button2} onPress={() => this.navigateCancelAppoointment()} testID='appointmentCancel'>
-                          <Text style={{ textAlign: 'center', fontFamily: 'OpenSans', color: '#000', fontSize: 14, fontWeight: 'bold' }}> CANCEL </Text></Button>
-                      </Item> : null:null }
+                      </Col> :
+                      data.onGoingAppointment !== true && data.appointment_status == 'PROPOSED_NEW_TIME' ?
+                        <Item style={{ borderBottomWidth: 0, justifyContent: 'center' }}>
+                          <Button success style={styles.statusButton} onPress={() => this.updateAppointmentStatus(data, 'APPROVED')} testID='approvedAppointment'>
+                            <Text style={{ textAlign: 'center', fontFamily: 'OpenSans', color: '#000', fontSize: 14, fontWeight: 'bold' }}>ACCEPT</Text>
+                          </Button>
+                          <Button danger style={styles.Button2} onPress={() => this.navigateCancelAppoointment()} testID='appointmentCancel'>
+                            <Text style={{ textAlign: 'center', fontFamily: 'OpenSans', color: '#000', fontSize: 14, fontWeight: 'bold' }}> CANCEL </Text></Button>
+                        </Item> : null : null}
                 </Grid>
 
               </List>
@@ -321,12 +353,12 @@ async backNavigation(){
 
             <Card transparent style={{ margin: 20, backgroundColor: '#ecf0f1' }}>
               <Card style={{ backgroundColor: '#ffffff', borderRadius: 10, padding: 10 }}>
-                <Grid style={{ margin: 5 ,justifyContent:'center'}}>
-                  
-                    <Text style={{ fontSize: 15, fontFamily: 'OpenSans',textAlign:'center' }}>
-                      {formatDate(data.appointment_starttime, "dddd,MMMM DD-YYYY  hh:mm a")}
-                    </Text>
-                 
+                <Grid style={{ margin: 5, justifyContent: 'center' }}>
+
+                  <Text style={{ fontSize: 15, fontFamily: 'OpenSans', textAlign: 'center' }}>
+                    {formatDate(data.appointment_starttime, "dddd,MMMM DD-YYYY  hh:mm a")}
+                  </Text>
+
 
                 </Grid>
 
@@ -341,63 +373,63 @@ async backNavigation(){
                   </ListItem>
                 </List>
               </Card>
-              { (data.appointment_status == 'COMPLETED' && reviewData.length === 0) ? 
+              {(data.appointment_status == 'COMPLETED' && reviewData.length === 0) ?
+                <Card style={{ margin: 10, padding: 10, borderRadius: 10 }}>
+                  <List>
+                    <Text style={styles.titlesText}>Review</Text>
+
+
+                    <View style={{ justifyContent: 'center', alignItems: 'center' }}>
+                      <TouchableOpacity block success style={styles.reviewButton} onPress={() => this.navigateAddReview()} testID='addFeedBack'>
+                        {/* <Icon name='add' /> */}
+                        <Text style={{ color: '#fff', fontSize: 14, fontFamily: 'OpenSans', fontWeight: 'bold', textAlign: 'center', marginTop: 5 }}> ADD FEEDBACK </Text>
+                        <Icon name="create" style={styles.editProfilePencil}></Icon>
+
+                      </TouchableOpacity>
+                    </View>
+
+                  </List>
+                </Card>
+                : (data.appointment_status == 'COMPLETED' && reviewData.length !== 0) ?
+
                   <Card style={{ margin: 10, padding: 10, borderRadius: 10 }}>
                     <List>
                       <Text style={styles.titlesText}>Review</Text>
-                      
-                        
-                         <View style={{justifyContent:'center',alignItems:'center'}}>
-                            <TouchableOpacity block success style={styles.reviewButton} onPress={() => this.navigateAddReview()} testID='addFeedBack'>
-                              {/* <Icon name='add' /> */}
-                              <Text style={{ color: '#fff', fontSize: 14, fontFamily: 'OpenSans', fontWeight: 'bold',textAlign:'center',marginTop:5 }}> ADD FEEDBACK </Text>
-                              <Icon name="create" style={styles.editProfilePencil}></Icon>
+                      {reviewData[0] && reviewData[0].is_anonymous == true ?
 
-                            </TouchableOpacity>
-                            </View>
-                     
+                        <ListItem avatar>
+                          <Left>
+                            <Thumbnail square source={{ uri: 'https://static1.squarespace.com/static/582bbfef9de4bb07fe62ab18/t/5877b9ccebbd1a124af66dfe/1484241404624/Headshot+-+Circular.png?format=300w' }} style={{ height: 40, width: 40 }} />
+                          </Left>
+                          <Body>
+                            <Text>Medflic User</Text>
+                            <StarRating fullStarColor='#FF9500' starSize={15} width={100} containerStyle={{ width: 100 }}
+                              disabled={false}
+                              maxStars={5}
+                              rating={reviewData[0] && reviewData[0].overall_rating}
+
+                            />
+                            <Text note style={styles.customText}>{reviewData[0] && reviewData[0].comments} </Text>
+                          </Body>
+                        </ListItem>
+                        :
+                        <ListItem avatar>
+                          <Left>
+                            <Thumbnail square source={{ uri: 'https://static1.squarespace.com/static/582bbfef9de4bb07fe62ab18/t/5877b9ccebbd1a124af66dfe/1484241404624/Headshot+-+Circular.png?format=300w' }} style={{ height: 40, width: 40 }} />
+                          </Left>
+                          <Body>
+                            <Text style={{ fontFamily: 'OpenSans', fontSize: 20 }}>{(reviewData[0] && reviewData[0].userInfo.first_name) + " " + (reviewData[0] && reviewData[0].userInfo.last_name)}</Text>
+                            <StarRating fullStarColor='#FF9500' starSize={15} width={100} containerStyle={{ width: 100 }}
+                              disabled={false}
+                              maxStars={5}
+                              rating={reviewData[0] && reviewData[0].overall_rating}
+
+                            />
+                            <Text note style={styles.customText}>{reviewData[0] && reviewData[0].comments} </Text>
+                          </Body>
+                        </ListItem>}
                     </List>
-                  </Card>
-                  : (data.appointment_status == 'COMPLETED' && reviewData.length !== 0) ?
-
-                    <Card style={{ margin: 10, padding: 10, borderRadius: 10 }}>
-                      <List>
-                        <Text style={styles.titlesText}>Review</Text>
-                        {reviewData[0] && reviewData[0].is_anonymous == true ?
-
-                          <ListItem avatar>
-                            <Left>
-                              <Thumbnail square source={{ uri: 'https://static1.squarespace.com/static/582bbfef9de4bb07fe62ab18/t/5877b9ccebbd1a124af66dfe/1484241404624/Headshot+-+Circular.png?format=300w' }} style={{ height: 40, width: 40 }} />
-                            </Left>
-                            <Body>
-                              <Text>Medflic User</Text>
-                              <StarRating fullStarColor='#FF9500' starSize={15} width={100} containerStyle={{ width: 100 }}
-                                disabled={false}
-                                maxStars={5}
-                                rating={reviewData[0] && reviewData[0].overall_rating}
-
-                              />
-                              <Text note style={styles.customText}>{reviewData[0] && reviewData[0].comments} </Text>
-                            </Body>
-                          </ListItem>
-                          :
-                          <ListItem avatar>
-                            <Left>
-                              <Thumbnail square source={{ uri: 'https://static1.squarespace.com/static/582bbfef9de4bb07fe62ab18/t/5877b9ccebbd1a124af66dfe/1484241404624/Headshot+-+Circular.png?format=300w' }} style={{ height: 40, width: 40 }} />
-                            </Left>
-                            <Body>
-                              <Text style={{ fontFamily: 'OpenSans', fontSize: 20 }}>{(reviewData[0] && reviewData[0].userInfo.first_name) + " " + (reviewData[0] && reviewData[0].userInfo.last_name)}</Text>
-                              <StarRating fullStarColor='#FF9500' starSize={15} width={100} containerStyle={{ width: 100 }}
-                                disabled={false}
-                                maxStars={5}
-                                rating={reviewData[0] && reviewData[0].overall_rating}
-
-                              />
-                              <Text note style={styles.customText}>{reviewData[0] && reviewData[0].comments} </Text>
-                            </Body>
-                          </ListItem>}
-                      </List>
-                    </Card> : null}
+                  </Card> : null}
 
               <Card style={{ backgroundColor: '#ffffff', borderRadius: 10, padding: 10 }}>
                 <Grid style={{ margin: 5 }}>
@@ -456,8 +488,8 @@ async backNavigation(){
 
                 </List>
               </Card>
-            
-              {doctorData.language!=undefined&&doctorData.language .length!= 0 ?
+
+              {doctorData.language != undefined && doctorData.language.length != 0 ?
                 <Card style={{ backgroundColor: '#ffffff', borderRadius: 10, padding: 10 }}>
 
                   <Grid style={{ margin: 5 }}>
@@ -480,35 +512,52 @@ async backNavigation(){
                     </ListItem>
                   </List>
                 </Card> : null}
-              
-                <Card style={{ backgroundColor: '#ffffff', borderRadius: 10, padding: 10 }}>
 
-                  <Grid style={{ margin: 5 }}>
-                    <Col style={{ width: '10%' }}>
-                      <Icon name="apps" style={styles.customIcon}></Icon>
-                    </Col>
-                    <Col style={{ width: '90%', alignItems: 'flex-start' }}>
-                      <Text style={styles.titlesText}> Payment Report </Text></Col>
-                  </Grid>
-                
-                
-                  <ListItem avatar noBorder style={{ borderLeftWidth: 8, borderColor: "#F29727", marginBottom: -5 }}>
-                    <Body>
-                    <View style={{ alignItems:'center',justifyContent:'center',marginTop: 5}}>
-                      <TouchableOpacity onPress={() => { this.props.navigation.navigate('ReportIssue',{issueFor:'Appointment',reportedId:data._id })} } block success  style={styles.reviewButton}  >
-                        <Text style={{ color: '#fff', fontSize: 14, fontFamily: 'OpenSans', fontWeight: 'bold',textAlign:'center',marginTop:5 }}>
+              <Card style={{ backgroundColor: '#ffffff', borderRadius: 10, padding: 10 }}>
+
+                <Grid style={{ margin: 5 }}>
+                  <Col style={{ width: '10%' }}>
+                    <Icon name="apps" style={styles.customIcon}></Icon>
+                  </Col>
+                  <Col style={{ width: '90%', alignItems: 'flex-start' }}>
+                    <Text style={styles.titlesText}> Payment Report </Text></Col>
+                </Grid>
+
+
+                <ListItem avatar noBorder style={{ borderLeftWidth: 8, borderColor: "#F29727", marginBottom: -5 }}>
+                  <Body>
+                    <View style={{ alignItems: 'center', justifyContent: 'center', marginTop: 5 }}>
+                      <TouchableOpacity onPress={() => { this.props.navigation.navigate('ReportIssue', { issueFor: 'Appointment', reportedId: data._id }) }} block success style={styles.reviewButton}  >
+                        <Text style={{ color: '#fff', fontSize: 14, fontFamily: 'OpenSans', fontWeight: 'bold', textAlign: 'center', marginTop: 5 }}>
                           Report Issue
                         </Text>
                       </TouchableOpacity>
-                      </View>
-                      </Body>
-                    </ListItem>
+                    </View>
+                  </Body>
+                </ListItem>
 
-                 
-              
-                
-                </Card> 
+                <View style={{ height: 300, position: 'absolute', bottom: 0 }}>
+                  <Modal
+                    animationType="slide"
+                    transparent={true}
+                    containerStyle={{ justifyContent: 'flex-end' }}
+                    visible={this.state.modalVisible}
+                  >
+                    <InsertReview
+                      // props={this.props}
+                      data={this.state.data}
+                      popupVisible={this.getvisble.bind(this)}
+
+                    >
+
+                    </InsertReview>
+                  </Modal>
+                </View>
+
+
+              </Card>
             </Card>
+
           </Content>
         }
       </Container>
@@ -573,11 +622,11 @@ const styles = StyleSheet.create({
     borderRadius: 10,
     height: 40,
     color: 'white',
-    paddingLeft:20,
-    paddingRight:20,
-    paddingBottom:5,
-    paddingTop:5,
-    flexDirection:'row'
+    paddingLeft: 20,
+    paddingRight: 20,
+    paddingBottom: 5,
+    paddingTop: 5,
+    flexDirection: 'row'
   },
   customText:
   {
@@ -655,7 +704,7 @@ const styles = StyleSheet.create({
     color: 'white',
     marginLeft: 2,
     fontSize: 20,
-    marginTop:5
+    marginTop: 5
   }
 
 

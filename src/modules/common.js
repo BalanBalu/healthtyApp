@@ -283,6 +283,11 @@ export function validateName(text) {
     if (regex.test(text) === false) return false;
     else return true;
 }
+export function onlySpaceNotallowed(text) {
+    let regex =/^(?!\s*$)[-a-zA-Z0-9_:,.' ']{1,100}$/;
+    if (regex.test(text) === false) return false;
+    else return true;
+}
 
 export const debounce = (fun, delay) => {
     let timer = null;
