@@ -164,6 +164,7 @@ class AppointmentDetails extends Component {
     this.setState({
       modalVisible: true
     });
+  
   }
 
   /* Update Appoiontment Status */
@@ -225,11 +226,12 @@ class AppointmentDetails extends Component {
   async backNavigation() {
     const { navigation } = this.props;
     if (navigation.state.params) {
-      if (navigation.state.params.hasReloadReview) {
-        this.getUserReviews();
+      if (navigation.state.params.hasReloadReportIssue) {
+      //  this.getUserReviews();  // Reload the Reported issues when they reload
       }
     };
   }
+
   async  getvisble(val) {
     try {
       await this.setState({ isLoading: true, modalVisible : false })
@@ -512,7 +514,15 @@ class AppointmentDetails extends Component {
                 <ListItem avatar noBorder style={{ borderLeftWidth: 8, borderColor: "#F29727", marginBottom: -5 }}>
                   <Body>
                     <View style={{ alignItems: 'center', justifyContent: 'center', marginTop: 5 }}>
-                      <TouchableOpacity onPress={() => { this.props.navigation.navigate('ReportIssue', { issueFor: 'Appointment', reportedId: data._id }) }} block success style={styles.reviewButton}  >
+                      <TouchableOpacity 
+                        onPress={() => { 
+                          this.props.navigation.push('ReportIssue', { 
+                            issueFor: 'Appointment', reportedId: data._id, 
+                            prevState: this.props.navigation.state }) 
+                          }} 
+                        block success 
+                        style={styles.reviewButton
+                      }>
                         <Text style={{ color: '#fff', fontSize: 14, fontFamily: 'OpenSans', fontWeight: 'bold', textAlign: 'center', marginTop: 5 }}>
                           Report Issue
                         </Text>
