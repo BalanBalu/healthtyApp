@@ -28,7 +28,13 @@ class BloodDonerFilters extends Component {
 
   async componentDidMount() {
     let result = await bloodDonationFilter(this.filterData);
+
     if (result.success) {
+      result.data.bloodGroupList.unshift("None")
+      result.data.stateList.unshift("None")
+      result.data.countryList.unshift("None")
+      result.data.cityList.unshift("None")
+      result.data.districtList.unshift("None")
       this.setState({
         bloodList: result.data.bloodGroupList,
         stateList: result.data.stateList,
@@ -56,7 +62,8 @@ class BloodDonerFilters extends Component {
       if (result.success) {
 
         if (bloodSelect == null) {
-          this.setState({
+
+           this.setState({
             bloodList: result.data.bloodGroupList
           })
         }
@@ -106,10 +113,13 @@ class BloodDonerFilters extends Component {
 
     let bloodlist = this.filterData.findIndex(list => list.type === type)
 
+    
     if (bloodlist != -1) {
       this.filterData.splice(bloodlist, 1)
     }
     this.filterData.push(object);
+
+    
     if (type == 'blood_group') {
       await this.setState({
         bloodSelect: value,
