@@ -198,8 +198,7 @@ export class Badge extends Component {
         return (
 
             data != null &&
-            <Text style={{ position: 'absolute', backgroundColor: 'red', color: 'white', borderRadius: 20, marginLeft: 10, padding: 2, marginTop: -7, paddingLeft: 5, paddingRight: 5 }}>{data}</Text>
-        )
+            <Text style={{ position: 'absolute', backgroundColor: 'red', color: 'white', borderRadius: 20/2,  marginTop: -7, width:undefined,height:undefined,padding:2,fontSize:10 }}>{data}</Text>        )
     }
 }
 
@@ -283,6 +282,11 @@ export function validateName(text) {
     if (regex.test(text) === false) return false;
     else return true;
 }
+export function stringHasOnlySpace(text) {
+    let regex =/^(?!\s*$)[-a-zA-Z0-9_:,.' ']{1,100}$/;
+    if (regex.test(text) === false) return false;
+    else return true;
+}
 
 export const debounce = (fun, delay) => {
     let timer = null;
@@ -308,3 +312,10 @@ export function validatePincode(number) {
     if (regex.test(number) === false) return false;
     else return true;
 }
+
+export function acceptNumbersOnly(value) {
+    const regex = new RegExp(/[- #*;,.<>\{\}\[\]\\\/]/gi, '');  //did't support White spaces
+    if (regex.test(value) === false) return false;
+    else return true;
+  }
+  

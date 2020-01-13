@@ -475,12 +475,12 @@ class BookAppoinment extends Component {
                       <Text style={{ fontFamily: 'OpenSans', fontSize: 12, fontWeight: 'bold', textAlign: 'center' }}>{reviewsByDoctorIds[doctorData.doctor_id] ? ' ' + reviewsByDoctorIds[doctorData.doctor_id].average_rating : ' 0'}</Text>
                     </View>
                   </Col>
-                  <Col style={{ width: "20%", marginTop: 15, }}>
+                  <Col style={{ width: "25%", marginTop: 15, }}>
 
                     <Text note style={{ fontFamily: 'OpenSans', fontSize: 12, textAlign: 'center' }}> Favourite</Text>
                     <Text style={{ fontFamily: 'OpenSans', fontSize: 12, fontWeight: 'bold', textAlign: 'center' }}> {favouriteListCountByDoctorIds[doctorData.doctor_id] ? favouriteListCountByDoctorIds[doctorData.doctor_id] : 0}</Text>
                   </Col>
-                  <Col style={{ width: "30%", marginTop: 15, }}>
+                  <Col style={{ width: "25%", marginTop: 15,}}>
                     <Text note style={{ fontFamily: 'OpenSans', fontSize: 12, textAlign: 'center' }}> Fees</Text>
                     <Text style={{ fontFamily: 'OpenSans', fontSize: 12, fontWeight: 'bold', textAlign: 'center', marginLeft: 10 }}>{'\u20B9'}{this.selectedSlotFee}{' '}
 

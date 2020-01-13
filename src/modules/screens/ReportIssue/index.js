@@ -6,7 +6,7 @@ import { FlatList } from 'react-native-gesture-handler';
 import Spinner from "../../../components/Spinner";
  import { RadioButton } from 'react-native-paper';
 
-import {appointmentIssue,pharmacyIssue,chatIssue,paymentIssue} from '../../common';
+import {appointmentIssue, pharmacyIssue, chatIssue  } from '../../common';
 
 import{ insertReportIssue } from '../../providers/reportIssue/reportIssue.action';
 
@@ -42,7 +42,7 @@ class ReportIssue extends Component {
       try {
         this.setState({ isLoading: true });
         const {quesNo,complaint,issueFor,issue}=this.state;
-        if(complaint!=null){
+        if(complaint != null ) {
           
         let userId = await AsyncStorage.getItem('userId');
         let data={
@@ -55,17 +55,13 @@ class ReportIssue extends Component {
 
         }
         if(issueFor=='Appointment'){
-         
-          data.appointment_id=this.props.navigation.getParam('reportedId')
-         
+            data.appointment_id = this.props.navigation.getParam('reportedId')
         }
-        else if(issueFor=='chat'){
+        else if (issueFor == 'chat'){
           data.chat_id=this.props.navigation.getParam('reportedId')
-
         }
         else if(issueFor=='Pharmacy'){
-          data.pharmacy_id=this.props.navigation.getParam('reportedId')
-
+          data.pharmacy_id= this.props.navigation.getParam('reportedId')
         }
           let response = await insertReportIssue(userId, data);
         
@@ -76,7 +72,10 @@ class ReportIssue extends Component {
                type: 'success',
               duration: 3000,
             })
-            this.props.navigation.pop();
+            const { navigation } = this.props;
+            const { routeName, key } = navigation.getParam('prevState');
+            navigation.navigate({ routeName, key, params: { hasReloadReportIssue: true } });
+          
           }
         
         } 

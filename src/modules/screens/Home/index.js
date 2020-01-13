@@ -8,7 +8,7 @@ import { StyleSheet, Image, View, TouchableOpacity, AsyncStorage, ScrollView, Fl
 
 import { SET_PATIENT_LOCATION_DATA } from '../../providers/bookappointment/bookappointment.action';
 import { catagries, getSpecialistDataSuggestions } from '../../providers/catagries/catagries.actions';
-import { MAP_BOX_PUBLIC_TOKEN, IS_ANDROID } from '../../../setup/config';
+import { MAP_BOX_PUBLIC_TOKEN, IS_ANDROID , MAX_DISTANCE_TO_COVER } from '../../../setup/config';
 import RNAndroidLocationEnabler from 'react-native-android-location-enabler';
 import MapboxGL from '@react-native-mapbox-gl/maps';
 import { store } from '../../../setup/store';
@@ -17,10 +17,10 @@ import CurrentLocation from './CurrentLocation';
 const bloodImg = require('../../../../assets/images/blood.jpeg');
 const chatImg = require('../../../../assets/images/Chat.jpg');
 const pharmacyImg = require('../../../../assets/images/pharmacy.jpg');
-import OfflineNotice from '../../../components/offlineNotice'
+import OfflineNotice from '../../../components/offlineNotice';
+import { toDataUrl } from '../../../setup/helpers';
 
 MapboxGL.setAccessToken(MAP_BOX_PUBLIC_TOKEN);
-const MAX_DISTANCE_TO_COVER = 30000; // in meters
 
 const debounce = (fun, delay) => {
     let timer = null;
@@ -44,11 +44,14 @@ class Home extends Component {
             searchValue: null,
             totalSpecialistDataArry: [],
             visibleClearIcon: '',
+            categryCount : 0
         };
         this.callSuggestionService = debounce(this.callSuggestionService, 500);
     }
     navigetToCategories() {
-        this.props.navigation.navigate('Categories', { data: this.state.data })
+        this.props.navigation.navigate('Categories', { 
+            data: this.state.data 
+        })
     }
 
     doLogout() {
@@ -68,18 +71,27 @@ class Home extends Component {
     }
 
     getCatagries = async () => {
-        try {
-            const searchQueris = 'services=0&skip=0&limit=9';
-            let result = await catagries(searchQueris);
-            if (result.success) {
-                console.log(result.data);
-                this.setState({ catagary: result.data })
+      try {
+        const searchQueris = 'services=0&skip=0&limit=9';
+        let result = await catagries(searchQueris);
+        
+        if (result.success) {
+            this.setState({ catagary: result.data, categryCount : this.state.categryCount + 1 })
+            for(let i = 0 ; i< result.data.length; i++) {
+                const item = result.data[i];
+                const imageURL = item.imageBaseURL + item.category_id + '.png';
+                const base64ImageDataRes =  await toDataUrl(imageURL)
+                result.data[i].base64ImageData = base64ImageDataRes;
+               
             }
-        } catch (e) {
-            console.log(e);
-        } finally {
-            this.setState({ isLoading: false });
+            this.setState({ catagary: result.data, categryCount : this.state.categryCount + 1 })
+           
         }
+      } catch (e) {
+            console.log(e);
+      } finally {
+            this.setState({ isLoading: false });
+      }
     }
 
     getAllChatsByUserId = async (userId) => {
@@ -194,7 +206,6 @@ class Home extends Component {
                     locationCapta: isSearchByCurrentLocation ? 'You are searching Near by Hostpitals' : 'You are searching Hospitals on ' + patientSearchLocationName
                 }
             });
-            console.log('is it Updating here?')
             this.locationUpdatedCount = locationUpdatedCount;
         }
         return (
@@ -216,7 +227,7 @@ class Home extends Component {
                                 placeholderTextColor="#e2e2e2"
                                 keyboardType={'email-address'}
                                 autoFocus={fromAppointment}
-                                // onChangeText={searchValue => this.setState({ searchValue })}
+                                value={this.state.visibleClearIcon}
                                 onChangeText={enteredText => this.SearchKeyWordFunction(enteredText)}
                                 underlineColorAndroid="transparent"
                                 blurOnSubmit={false}
@@ -260,13 +271,15 @@ class Home extends Component {
                                                 value: item.type === 'symptoms' ? [item.value] : item.value
                                             })
                                         }
-                                        this.props.navigation.navigate("Doctor List", { resultData: requestData })
-                                    }}
-                                >
-                                    <Text style={{ marginTop: 2, fontFamily: 'OpenSans', fontSize: 12, color: '#775DA3', paddingLeft: 10, }}>{item.value}</Text>
-                                    <Right>
-                                        <Text uppercase={true} style={{ color: 'gray', marginTop: 2, marginRight: 10, color: '#775DA3', fontSize: 12, fontFamily: 'OpenSans-Bold', paddingLeft: 10, }}>{item.type}</Text>
-                                    </Right>
+                                          this.props.navigation.navigate("Doctor List", { resultData: requestData }) 
+                                        }}
+                                    >
+                                         <Col size={7.5}>
+                                    <Text style={{marginTop:2, fontFamily: 'OpenSans', fontSize: 12,color: '#775DA3',paddingLeft: 10,  }}>{item.value}</Text> 
+                                    </Col>
+                                    <Col size={2.5}>
+                                        <Text uppercase={true} style={{ color: 'gray', marginTop:2, marginRight: 10,color: '#775DA3', fontSize: 12, fontFamily: 'OpenSans-Bold',paddingLeft: 10,  }}>{item.type}</Text>
+                                    </Col>
                                 </Row>
                             )}
                             enableEmptySections={true}
@@ -359,7 +372,7 @@ class Home extends Component {
                                 <FlatList
                                     numColumns={3}
                                     data={this.state.catagary}
-                                    extraData={this.state.catagary}
+                                    extraData={this.state.categryCount}
                                     renderItem={({ item, index }) =>
                                         <Col style={styles.maincol}>
 
@@ -368,7 +381,7 @@ class Home extends Component {
 
                                                 <Row style={{ height: 45, width: '100%', justifyContent: 'center', alignItems: 'center', }} >
                                                     <Image
-                                                        source={{ uri: item.imageBaseURL + item.category_id + '.png' }}
+                                                        source={{ uri:  item.base64ImageData /*item.imageBaseURL + item.category_id + '.png' */ }}
                                                         style={{
                                                             width: 50, height: 50, alignItems: 'center'
                                                         }}

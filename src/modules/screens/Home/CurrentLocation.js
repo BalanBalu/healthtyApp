@@ -1,6 +1,6 @@
 
 import { SET_PATIENT_LOCATION_DATA  } from '../../providers/bookappointment/bookappointment.action';
-import { MAP_BOX_PUBLIC_TOKEN , IS_ANDROID } from '../../../setup/config';
+import { MAP_BOX_PUBLIC_TOKEN , IS_ANDROID, MAP_BOX_TOKEN } from '../../../setup/config';
 import RNAndroidLocationEnabler from 'react-native-android-location-enabler';
 import MapboxGL from '@react-native-mapbox-gl/maps';
 import { store } from '../../../setup/store';
@@ -56,13 +56,27 @@ export default class CurrentLocation {
            } else { 
               navigator.geolocation.getCurrentPosition(async (position) => {
                 const origin_coordinates = [position.coords.latitude, position.coords.longitude, ];
-                const currentLocInfoByGeoIP = await Axios.get('https://geolocation-db.com/json/');
+               
+                let fullPath = `https://api.mapbox.com/geocoding/v5/mapbox.places/${origin_coordinates[1]},${origin_coordinates[0]}.json?types=poi&access_token=${MAP_BOX_TOKEN}`;
+                //this._request(center[0].toFixed(2), center[1].toFixed(2))
+                let resp = await Axios.get(fullPath, {
+                    headers: {
+                        'Content-Type': null,
+                        'x-access-token': null,
+                        'userId': null
+                    }
+                });
+                let locationData = resp.data.features[0];
                 let currentLocationCity = '';
-                
-                if(currentLocInfoByGeoIP.status === 200) {
-                  currentLocationCity = currentLocInfoByGeoIP.data ? currentLocInfoByGeoIP.data.city : ''
-                  console.log('Fetching the location by ip success');
+                if (locationData) {
+                  if (locationData.context) {
+                   placeData = locationData.context.find(ele => {
+                      return ele.id.split('.')[0] === 'place'; 
+                   })
+                   currentLocationCity = placeData ? placeData.text : '';
+                  }
                 }
+        
                 store.dispatch({
                   type: SET_PATIENT_LOCATION_DATA,
                   center: origin_coordinates,

@@ -43,6 +43,14 @@ class Signup extends Component {
                 this.setState({ errorMsg: 'Please enter the valid Email address' })
                 return false;
             }
+            if (password.length < 6) {
+                this.setState({ errorMsg: "Password is required Min 6 Characters" });
+                return false;
+            }
+            if (password.length > 16) {
+                this.setState({ errorMsg: "Password Accepted Max 16 Characters only" });
+                return false
+            }
             this.setState({ errorMsg: '', isLoading: true });
             let requestData = {
                 email: userEmail,
@@ -72,129 +80,108 @@ class Signup extends Component {
             this.setState({ isLoading: false })
         }
     }
-
+    onPasswordTextChanged(value) {
+        // code to remove White Spaces from text field
+        this.setState({ password: value.replace(/\s/g, "") });
+    }
     render() {
         const { user: { isLoading } } = this.props;
         const { userEmail, password, showPassword, checked, gender, errorMsg } = this.state;
         return (
             <Container style={styles.container}>
-             <ImageBackground source={mainBg} style={{width: '100%', height: '100%', flex: 1 }}>
+                <ImageBackground source={mainBg} style={{ width: '100%', height: '100%', flex: 1 }}>
+                    <Content contentContainerStyle={styles.authBodyContent}>
+                        <View >
+                            <Text style={[styles.signUpHead, { color: '#fff' }]}>List Your Practice to Reach millions of Peoples</Text>
+                            <Card style={{ borderRadius: 10, padding: 5, marginTop: 20 }}>
+                                <View style={{ marginLeft: 10, marginRight: 10 }}>
+                                    <Text uppercase={true} style={[styles.cardHead, { color: '#775DA3' }]}>Sign up</Text>
+                                    <Form>
+                                        <Label style={{ marginTop: 20, fontSize: 15, color: '#775DA3', fontWeight: 'bold' }}>Email / Phone</Label>
+                                        <Item style={{ borderBottomWidth: 0, marginLeft: 'auto', marginRight: 'auto' }}>
+                                            <Input placeholder="Email Or Phone" style={styles.authTransparentLabel}
+                                                returnKeyType={'next'}
+                                                keyboardType={'email-address'}
+                                                value={userEmail}
+                                                keyboardType={'email-address'}
+                                                onChangeText={userEmail => this.setState({ userEmail })}
+                                                blurOnSubmit={false}
+                                                onSubmitEditing={() => { this.userEmail._root.focus(); }}
+                                            />
+                                        </Item>
+                                        <Label style={{ fontSize: 15, marginTop: 10, color: '#775DA3', fontWeight: 'bold' }}>Password</Label>
 
-                <Content contentContainerStyle={styles.authBodyContent}>
-                   
-                    <View >
-                        <Text style={[styles.signUpHead,{color:'#fff'}]}>List Your Practice to Reach millions of Peoples</Text>
-                        <Card style={{borderRadius:10,padding:5,marginTop:20}}>
-                        <View style={{marginLeft:10,marginRight:10}}>
-                          <Text uppercase={true} style={[styles.cardHead,{color:'#775DA3'}]}>Sign up</Text>
-                        <Form>
-                        <Label style={{marginTop: 20,fontSize:15,color:'#775DA3',fontWeight:'bold'}}>Email / Phone</Label>
-                            <Item style={{ borderBottomWidth: 0,marginLeft:'auto',marginRight:'auto' }}>
-                                <Input placeholder="Email Or Phone" style={styles.authTransparentLabel}
-                                    returnKeyType={'next'}
-                                    keyboardType={'email-address'}
-                                    value={this.state.userEmail}
-                                    keyboardType={'email-address'}
-                                    onChangeText={userEmail => this.setState({ userEmail })}
-                                    blurOnSubmit={false}
-                                    onSubmitEditing={() => { this.userEmail._root.focus(); }}
-                                />
-                            </Item>
-                            <Label style={{fontSize:15,marginTop:10,color:'#775DA3',fontWeight:'bold'}}>Password</Label>
+                                        <Item style={[styles.authTransparentLabel1, { marginTop: 10, marginLeft: 'auto', marginRight: 'auto' }]}>
+                                            <Input placeholder="Password" style={{ fontSize: 15, paddingLeft: 15, }}
+                                                ref={(input) => { this.userEmail = input; }}
+                                                returnKeyType={'done'}
+                                                value={password}
+                                                secureTextEntry={showPassword}
+                                                keyboardType={'default'}
+                                                onChangeText={password => this.onPasswordTextChanged(password)}
+                                            // blurOnSubmit={false}
+                                            // maxLength={16}
+                                            />
+                                            {showPassword == true ? <Icon active name='eye' style={{ fontSize: 20, marginTop: 5, color: '#775DA3' }} onPress={() => this.setState({ showPassword: !showPassword })} />
+                                                : <Icon active name='eye-off' style={{ fontSize: 20, marginTop: 5, color: '#775DA3' }} onPress={() => this.setState({ showPassword: !showPassword })} />
+                                            }
+                                        </Item>
+                                        <View style={{ marginTop: 10, borderBottomWidth: 0, flexDirection: 'row' }}>
 
-                            <Item  style={[styles.authTransparentLabel1,{marginTop:10,marginLeft:'auto',marginRight:'auto'}]}>
-                                <Input placeholder="Password" style={{ fontSize: 15,paddingLeft: 15, }}
-                                    ref={(input) => { this.userEmail = input; }}
-                                    returnKeyType={'done'}
-                                    value={this.state.password}
-                                    secureTextEntry={this.state.showPassword}
-                                    keyboardType={'default'}
-                                    onChangeText={password => this.setState({ password })}
-                                    blurOnSubmit={false}
-                                    maxLength={16}
-                                    onSubmitEditing={() => { this.doSignUp(); }} />
-
-                                <Icon active name='eye' style={{ fontSize: 20,color:'#775DA3' }} onPress={() => this.setState({ showPassword: !this.state.showPassword })} />
-                            </Item>
-                            <View style={{ marginTop: 10, borderBottomWidth: 0, flexDirection:'row' }}>
-
-                            <RadioButton.Group
-                               onValueChange={value => this.setState({ gender: value }) }
-                                value={this.state.gender}>
-                                    <View style={{flexDirection:'row'}}>
-                                  <RadioButton value="M"/>
-                                  <Text style={{
-                                         fontFamily: 'OpenSans',fontSize:15,marginTop:8
-                                    }}>Male</Text> 
-                                    </View> 
-                                    <View style={{flexDirection:'row',marginLeft:20}}>
-                                  <RadioButton value="F"  />
-                                  <Text style={{
-                                         fontFamily: 'OpenSans',fontSize:15,marginTop:8
-                                    }}>Female</Text>  
-                                    </View>
-                                    <View style={{flexDirection:'row',marginLeft:20}}>
-                                  <RadioButton value="O"  />
-                                  <Text style={{
-                                        fontFamily: 'OpenSans',fontSize:15,marginTop:8
-                                    }}>Others</Text>  
-                                      </View>
-                             </RadioButton.Group>       
-                                {/* <Radio selected={this.state.radioStatus[0]} onPress={() => this.toggleRadio("0", "M")} color={"#775DA3"}
-                                    selectedColor={"#775DA3"} />
-                                <Text style={{
-                                    marginLeft: 10, fontFamily: 'OpenSans',fontSize:15
-                                }}>Male</Text>
-
-                                <Radio selected={this.state.radioStatus[1]} onPress={() => this.toggleRadio("1", "F")} style={{ marginLeft: 20 }} color={"#775DA3"}
-                                    selectedColor={"#775DA3"} />
-                                <Text style={{
-                                    marginLeft: 40, fontFamily: 'OpenSans',fontSize:15
-                                }}>Female</Text>
-
-                                <Radio selected={this.state.radioStatus[2]} onPress={() => this.toggleRadio("2", "O")} style={{ marginLeft: 30 }} color={"#775DA3"}
-                                    selectedColor={"#775DA3"} />
-                                <Text style={{
-                                    marginLeft: 40, fontFamily: 'OpenSans',fontSize:15
-                                }}>Other</Text> */}
-                            </View>
-
-
-                            <Item style={{ borderBottomWidth: 0, marginTop: 5, marginLeft:'auto',marginRight:'auto'}}>
-                                {/* <CheckBox checked={this.state.conditionCheck} color="green" style={{ borderRadius:5}} onPress={() => this.setState({ conditionCheck: !this.state.conditionCheck })} ></CheckBox> */}
-                                <Checkbox  color="#775DA3" 
-                                 status={checked ? 'checked' : 'unchecked'}
-                                 onPress={() => { this.setState({ checked: !checked }); }}
-                                  />
-                                  <Text style={{  color: 'gray', fontFamily: 'OpenSans', fontSize: 13,}}>I Accept the Medflic </Text>
-                                  <TouchableOpacity onPress={() => this.props.navigation.navigate('termsAndConditions')}>
-
-                                  <Text style={{  color: '#5055d7', fontFamily: 'OpenSans', fontSize: 13,}}> Terms And Conditions</Text>
-
-                                  </TouchableOpacity>
-                            </Item>
-
-                            <Spinner color='blue'
-                                visible={isLoading}
-                                textContent={'Loading...'}
-                            />
-                     <View style={{alignItems:'center',justifyContent:'center',marginBottom:10}}>
-
-                            <TouchableOpacity small style={styles.loginButton1} onPress={() => this.doSignUp()}>
-
-                                <Text uppercase={true} style={styles.ButtonText}>Sign Up</Text>
-                            </TouchableOpacity>
-                            <Text style={{ color: 'red',fontSize:15,fontFamily:'OpenSans' }}>{this.state.conditionCheckErrorMsg} </Text>
-                    </View>
-                        </Form>
-                        </View>
-                 <Item style={{marginLeft:'auto',marginRight:'auto',borderBottomWidth:0,marginBottom:10}}>
-              <Text uppercase={false} style={{ color: '#000', fontSize: 15, fontFamily: 'OpenSans',color:'#775DA3' }}>Already Have An Account ?</Text>
-              <TouchableOpacity onPress={() => this.props.navigation.navigate('login')} style={styles.smallSignUpButton}>
-                            <Text uppercase={true} style={{ color: '#fff', fontSize: 10, fontFamily: 'OpenSans',fontWeight:'bold' }}>Sign In</Text>
-              </TouchableOpacity>
-              </Item>
-                        </Card>
+                                            <RadioButton.Group
+                                                onValueChange={value => this.setState({ gender: value })}
+                                                value={gender}>
+                                                <View style={{ flexDirection: 'row' }}>
+                                                    <RadioButton value="M" />
+                                                    <Text style={{
+                                                        fontFamily: 'OpenSans', fontSize: 15, marginTop: 8
+                                                    }}>Male</Text>
+                                                </View>
+                                                <View style={{ flexDirection: 'row', marginLeft: 20 }}>
+                                                    <RadioButton value="F" />
+                                                    <Text style={{
+                                                        fontFamily: 'OpenSans', fontSize: 15, marginTop: 8
+                                                    }}>Female</Text>
+                                                </View>
+                                                <View style={{ flexDirection: 'row', marginLeft: 20 }}>
+                                                    <RadioButton value="O" />
+                                                    <Text style={{
+                                                        fontFamily: 'OpenSans', fontSize: 15, marginTop: 8
+                                                    }}>Others</Text>
+                                                </View>
+                                            </RadioButton.Group>
+                                        </View>
+                                        <Item style={{ borderBottomWidth: 0, marginTop: 5, marginLeft: 'auto', marginRight: 'auto' }}>
+                                            <Checkbox color="#775DA3"
+                                                status={checked ? 'checked' : 'unchecked'}
+                                                onPress={() => { this.setState({ checked: !checked }); }}
+                                            />
+                                            <Text style={{ color: 'gray', fontFamily: 'OpenSans', fontSize: 13, }}>I Accept the Medflic </Text>
+                                            <TouchableOpacity onPress={() => this.props.navigation.navigate('termsAndConditions')}>
+                                                <Text style={{ color: '#5055d7', fontFamily: 'OpenSans', fontSize: 13, }}> Terms And Conditions</Text>
+                                            </TouchableOpacity>
+                                        </Item>
+                                        <Spinner color='blue'
+                                            visible={isLoading}
+                                            textContent={'Loading...'}
+                                        />
+                                        <View style={{ alignItems: 'center', justifyContent: 'center', marginBottom: 10 }}>
+                                            <TouchableOpacity small
+                                                style={(userEmail && password) == '' ? styles.loginButton1Disable : styles.loginButton1}
+                                                block success disabled={(userEmail && password) == ''} onPress={() => this.doSignUp()}>
+                                                <Text uppercase={true} style={styles.ButtonText}>Sign Up</Text>
+                                            </TouchableOpacity>
+                                            <Text style={{ color: 'red', fontSize: 15, fontFamily: 'OpenSans' }}>{errorMsg} </Text>
+                                        </View>
+                                    </Form>
+                                </View>
+                                <Item style={{ marginLeft: 'auto', marginRight: 'auto', borderBottomWidth: 0, marginBottom: 10 }}>
+                                    <Text uppercase={false} style={{ color: '#000', fontSize: 15, fontFamily: 'OpenSans', color: '#775DA3' }}>Already Have An Account ?</Text>
+                                    <TouchableOpacity onPress={() => this.props.navigation.navigate('login')} style={styles.smallSignUpButton}>
+                                        <Text uppercase={true} style={{ color: '#fff', fontSize: 10, fontFamily: 'OpenSans', fontWeight: 'bold' }}>Sign In</Text>
+                                    </TouchableOpacity>
+                                </Item>
+                            </Card>
                         </View>
                     </Content>
                 </ImageBackground>

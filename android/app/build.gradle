@@ -104,8 +104,8 @@ android {
         applicationId "com.medflic"
         minSdkVersion rootProject.ext.minSdkVersion
         targetSdkVersion rootProject.ext.targetSdkVersion
-        versionCode 2
-        versionName "1.1"
+        versionCode 3
+        versionName "1.2"
     }
     splits {
         abi {
@@ -117,7 +117,7 @@ android {
     }
 	 signingConfigs {
         release {
-            if (project.findProperty('APP_DEPLOYMENT_ENV').equals('DEV')) {
+           if (project.findProperty('APP_DEPLOYMENT_ENV').equals('DEV')) {
                 storeFile file(MYAPP_RELEASE_STORE_FILE)
                 storePassword MYAPP_RELEASE_STORE_PASSWORD
                 keyAlias MYAPP_RELEASE_KEY_ALIAS

@@ -17,4 +17,4 @@ export const SERVICE_TYPES = {
     APPOINTMENT: 'APPOINTMENT',
     CHAT:'CHAT'
 }
-
+export const MAX_DISTANCE_TO_COVER = 30000; // in meters Doctor Can be search Within in the AREA
