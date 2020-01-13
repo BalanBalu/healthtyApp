@@ -8,7 +8,7 @@ import { StyleSheet, AsyncStorage, TouchableOpacity, Modal } from 'react-native'
 import StarRating from 'react-native-star-rating';
 import moment from 'moment';
 import { NavigationEvents } from 'react-navigation';
-import { viewUserReviews, bindDoctorDetails, appointmentStatusUpdate, appointmentDetails, getPaymentInfomation } from '../../providers/bookappointment/bookappointment.action';
+import { viewUserReviews, bindDoctorDetails, appointmentStatusUpdate, appointmentDetails, getPaymentInfomation,getUserRepportDetails } from '../../providers/bookappointment/bookappointment.action';
 import { formatDate, dateDiff } from '../../../setup/helpers';
 
 import { Loader } from '../../../components/ContentLoader'
@@ -24,6 +24,7 @@ class AppointmentDetails extends Component {
       doctorId: '',
       userId: '',
       reviewData: [],
+      reportData:[],
       doctorData: {},
       isLoading: true,
 
@@ -53,6 +54,7 @@ class AppointmentDetails extends Component {
       await new Promise.all([
         this.appointmentDetailsGetById(),
         this.getUserReviews(),
+        this.getUserReport(),
       ]);
     }
     else {
@@ -72,7 +74,8 @@ class AppointmentDetails extends Component {
       await new Promise.all([
         this.getPaymentInfo(appointmentData.payment_id),
         this.getDoctorDetails(),
-        this.getUserReviews()
+        this.getUserReviews(),
+        this.getUserReport(),
       ])
 
     }
@@ -122,6 +125,21 @@ class AppointmentDetails extends Component {
       let resultReview = await viewUserReviews('appointment', this.state.appointmentId, '?skip=0');
       if (resultReview.success) {
         this.setState({ reviewData: resultReview.data });
+      }
+    }
+    catch (e) {
+      console.error(e);
+    }
+
+
+  }
+  getUserReport = async () => {
+    try {
+      let resultReport = await getUserRepportDetails('appointment', this.state.appointmentId, '?skip=1');
+      alert(JSON.stringify(resultReport))
+      if (resultReport.success) {
+        alert(JSON.stringify(resultReport))
+        this.setState({ reportData: resultReport.data });
       }
     }
     catch (e) {
@@ -227,7 +245,7 @@ class AppointmentDetails extends Component {
     const { navigation } = this.props;
     if (navigation.state.params) {
       if (navigation.state.params.hasReloadReportIssue) {
-      //  this.getUserReviews();  // Reload the Reported issues when they reload
+        this.getUserReport();  // Reload the Reported issues when they reload
       }
     };
   }
@@ -248,7 +266,7 @@ class AppointmentDetails extends Component {
 
 
   render() {
-    const { data, reviewData, doctorData, education, specialist, hospital, isLoading, selectedTab, paymentDetails } = this.state;
+    const { data, reviewData,reportData, doctorData, education, specialist, hospital, isLoading, selectedTab, paymentDetails } = this.state;
 
     return (
 
@@ -513,6 +531,8 @@ class AppointmentDetails extends Component {
 
                 <ListItem avatar noBorder style={{ borderLeftWidth: 8, borderColor: "#F29727", marginBottom: -5 }}>
                   <Body>
+                    {reportData.length!=0?
+                  <Text note style={styles.customText}>{reportData[0] && reportData[0].complaint} </Text>:null}
                     <View style={{ alignItems: 'center', justifyContent: 'center', marginTop: 5 }}>
                       <TouchableOpacity 
                         onPress={() => { 
