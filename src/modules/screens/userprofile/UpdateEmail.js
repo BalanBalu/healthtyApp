@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { Container, Content, Text, Button, H3, Item, List, CheckBox, Left, Right, Thumbnail, Body, Icon, Card, Input, Toast, View, Row } from 'native-base';
+import { Container, Content, Text, Button, H3, Item, List,Col, CheckBox, Left, Right, Thumbnail, Body, Icon, Card, Input, Toast, View, Row } from 'native-base';
 import { userFiledsUpdate } from '../../providers/auth/auth.actions';
 import { AsyncStorage, ScrollView } from 'react-native';
 import { connect } from 'react-redux'
@@ -60,24 +60,24 @@ class UpdateEmail extends Component {
                 secondary_email: secondary_email
             };
 
-                    let response = await userFiledsUpdate(userId, data);
-                    if (response.success) {
-                        Toast.show({
-                            text: 'Your email id is updated successfully',
-                            type: "success",
-                            duration: 3000,
+            let response = await userFiledsUpdate(userId, data);
+            if (response.success) {
+                Toast.show({
+                    text: 'Your email id is updated successfully',
+                    type: "success",
+                    duration: 3000,
 
-                        })
-                        this.props.navigation.navigate('Profile');
-                    } else {
-                        Toast.show({
-                            text: 'The entered email is invalid',
-                            type: "danger",
-                            duration: 3000
-                        })
+                })
+                this.props.navigation.navigate('Profile');
+            } else {
+                Toast.show({
+                    text: 'The entered email is invalid',
+                    type: "danger",
+                    duration: 3000
+                })
 
-                    }
-               
+            }
+
         } catch (e) {
             console.log(e);
         }
@@ -98,15 +98,17 @@ class UpdateEmail extends Component {
                             {this.state.primary_email != null ? <Text style={styles.headerText}>Primary Email</Text> : null}
                             <Card style={styles.cardEmail}>
                                 {this.state.primary_email != null ?
-                                    <Item style={{ borderBottomWidth: 0 }}>
-                                        <Left>
+                                    <Row style={{ borderBottomWidth: 0 }}>
+                                        <Col size={1.2}>
                                             <Icon name='mail' style={styles.centeredIcons}></Icon>
-                                        </Left>
+                                        </Col>
+                                        <Col size={8.3}>
                                         <Text style={styles.customText}>{this.state.primary_email}</Text>
-                                        <Right>
+                                        </Col>
+                                        <Col size={0.5}>
                                             <Icon style={{ color: 'gray', fontSize: 25 }} name='ios-lock' />
-                                        </Right>
-                                    </Item>
+                                        </Col>
+                                    </Row>
                                     : null}</Card>
                             <Text style={{ color: 'gray', fontSize: 16 }}>Primary email is not editable</Text>
 

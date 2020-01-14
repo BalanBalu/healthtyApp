@@ -318,4 +318,10 @@ export function acceptNumbersOnly(value) {
     if (regex.test(value) === false) return false;
     else return true;
   }
+export function validatePassword(value) {
+    const regex = new RegExp('^[^\\s]+$');  //did't support White spaces
+    if (regex.test(value) === false) return false;
+    else return true;
+}
+
   

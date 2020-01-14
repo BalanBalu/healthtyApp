@@ -68,6 +68,7 @@ class Profile extends Component {
 
             if (result) {
                 this.setState({ data: result, is_blood_donor: result.is_blood_donor });
+                console.log(this.state.data.secondary_mobile)
                 storeBasicProfile(result);
 
                 if (result.profile_image) {
@@ -103,22 +104,23 @@ class Profile extends Component {
                 is_blood_donor: this.state.is_blood_donor
             };
             let response = await userFiledsUpdate(userId, requestData);
-            if (response.success) {
-                Toast.show({
-                    text: response.message,
-                    type: "success",
-                    duration: 3000
-                });
+            if (this.state.data.address !== undefined) {
+                if (response.success) {
+                    Toast.show({
+                        text: response.message,
+                        type: "success",
+                        duration: 3000
+                    });
+                }
+                else {
+                    Toast.show({
+                        text: response.message,
+                        type: "danger",
+                        duration: 3000
+                    });
+                    this.setState({ isLoading: false });
+                }
             }
-            else {
-                Toast.show({
-                    text: response.message,
-                    type: "danger",
-                    duration: 3000
-                });
-                this.setState({ isLoading: false });
-            }
-
         }
 
         catch (e) {
@@ -134,6 +136,7 @@ class Profile extends Component {
     }
 
     editAddress(address) {
+        try{
         if (address === null) {
             this.editProfile('MapBox')
         }
@@ -190,9 +193,15 @@ class Profile extends Component {
             }
         }
     }
+        catch (e) {
+            console.log(e);
+        }
+        finally {
+            this.setState({ isLoading: false });
+        }
+}
     /*Upload profile pic*/
     uploadProfilePicture(type) {
-
         if (type == "Camera") {
             ImagePicker.openCamera({
                 cropping: true,
@@ -435,18 +444,18 @@ class Profile extends Component {
                                     <Text style={styles.customText}>Blood Donor</Text>
                                 </Body>
 
-                                <Right style={{ justifyContent: 'center', alignItems: 'center',marginTop:-10 }}>
+                                <Right style={{ justifyContent: 'center', alignItems: 'center', marginTop: -10 }}>
                                     <Switch
                                         value={this.state.is_blood_donor}
                                         style={{ marginTop: 15, }}
                                         onValueChange={value => {
                                             this.setState({ is_blood_donor: !this.state.is_blood_donor })
-                                            this.updateBloodDonor()
                                             if (value === true) {
                                                 if (data.address === undefined) {
                                                     this.editProfile('MapBox')
                                                 }
                                             }
+                                            this.updateBloodDonor()
                                         }}
                                     />
                                 </Right>
