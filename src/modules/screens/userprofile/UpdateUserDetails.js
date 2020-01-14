@@ -30,7 +30,10 @@ class UpdateUserDetails extends Component {
             isLoading: false,
             selectedBloodGroup: null,
             userData: '',
+            updateButton: true,
             errorMsg: '',
+            firstNameMsg: '',
+            lastNameMsg: ''
 
         }
     }
@@ -58,23 +61,31 @@ class UpdateUserDetails extends Component {
             firstName: userData.first_name,
             lastName: userData.last_name,
             gender: userData.gender,
-            selectedBloodGroup: userData.blood_group || null
+            selectedBloodGroup: userData.blood_group || null,
+            updateButton: true
+
         })
     }
 
-    validateFirstNameLastName = async (text, type) => {
+    onChangeFirstnameAndLastname = async (text, type) => {
         if (type === "Firstname") {
-            this.setState({ firstName: text });
-        } else {
-            this.setState({ lastName: text });
+           await this.setState({ firstName: text });
+        }
+        if (type === "LastName") {
+            await this.setState({ lastName: text });
         }
 
-        if (validateName(this.state.lastName && this.state.firstName) == false) {
-            this.setState({ errorMsg: 'First name and last name Should not Contain any Special Characters' })
+        if (this.state.firstName && validateName(this.state.firstName) == false) {
+            this.setState({ firstNameMsg: 'Firstname must be a Characters' })
+            return false;
+        }
+        if (this.state.lastName && validateName(this.state.lastName) == false) {
+            this.setState({ lastNameMsg: 'Lastname must be a Characters' })
             return false;
         }
         else {
-            this.setState({ errorMsg: '' })
+            this.setState({ firstNameMsg: '', lastNameMsg: '', updateButton: false });
+
         }
 
     }
@@ -86,8 +97,8 @@ class UpdateUserDetails extends Component {
                 this.setState({ errorMsg: 'Kindly fill all the fields...' })
                 return false;
             }
-            
-            this.setState({ errorMsg: '', isLoading: true });
+
+            this.setState({ errorMsg: '', firstNameMsg: '', lastNameMsg: '', isLoading: true, updateButton: false });
             let requestData = {
                 first_name: firstName,
                 last_name: lastName,
@@ -137,6 +148,11 @@ class UpdateUserDetails extends Component {
             <Container >
                 <Content contentContainerStyle={styles.bodyContent}>
                     <ScrollView>
+                        {this.state.isLoading ? <Spinner color='blue'
+                            visible={this.state.isLoading}
+                            textContent={'Please wait Loading'}
+                        /> : null}
+
                         <Text style={styles.headerText}>Update Your Details</Text>
                         <View style={{ marginLeft: -10 }}>
                             <Form style={{ marginTop: 10 }}>
@@ -146,29 +162,29 @@ class UpdateUserDetails extends Component {
                                         value={this.state.firstName}
                                         keyboardType={'default'}
                                         returnKeyType={"next"}
-                                        onChangeText={text => this.validateFirstNameLastName(text, 'Firstname' )}
+                                        onChangeText={text => this.onChangeFirstnameAndLastname(text, 'Firstname')}
                                         autoCapitalize='none'
                                         blurOnSubmit={false}
                                         onSubmitEditing={() => { this.firstName._root.focus(); }} testID="editFirstName"
                                     />
                                 </Item>
-
+                                {this.state.firstNameMsg ? <Text style={{ paddingLeft: 20, fontSize: 15, fontFamily: 'OpenSans', color: 'red' }}>{this.state.firstNameMsg}</Text> : null}
                                 <Item style={{ borderBottomWidth: 0, }}>
                                     <Input placeholder="Last Name" style={styles.transparentLabel2}
                                         ref={(input) => { this.firstName = input; }}
                                         value={this.state.lastName}
                                         keyboardType={'default'}
                                         returnKeyType={"done"}
-                                        onChangeText={text => this.validateFirstNameLastName(text,'LastName')}
+                                        onChangeText={text => this.onChangeFirstnameAndLastname(text, 'LastName')}
                                         autoCapitalize='none'
                                         blurOnSubmit={false}
                                         // onSubmitEditing={() => { this.lastName._root.focus(this.setState({ focus: true })); }}
                                         testID="editLastName"
                                     />
                                 </Item>
-
+                                {this.state.lastNameMsg ? <Text style={{ paddingLeft: 20, fontSize: 15, fontFamily: 'OpenSans', color: 'red' }}>{this.state.lastNameMsg}</Text> : null}
                                 <Item style={{ borderBottomWidth: 0, backgroundColor: '#F1F1F1', height: 45, marginRight: 15, marginTop: 10, borderRadius: 5, }}>
-                                    <Icon name='calendar' style={{marginLeft:10,  color: '#775DA3' }} />
+                                    <Icon name='calendar' style={{ marginLeft: 10, color: '#775DA3' }} />
                                     <DatePicker style={styles.transparentLabel2}
                                         defaultDate={this.state.dob}
                                         timeZoneOffsetInMinutes={undefined}
@@ -182,27 +198,27 @@ class UpdateUserDetails extends Component {
                                         textStyle={{ fontSize: 13, color: "#5A5A5A" }}
                                         value={this.state.dob}
                                         placeHolderTextStyle={{ fontSize: 13, color: "#5A5A5A" }}
-                                        onDateChange={dob => { console.log(dob); this.setState({ dob }) }}
+                                        onDateChange={dob => { console.log(dob); this.setState({ dob, updateButton: false }) }}
                                         disabled={false}
                                         testID="editDateOfBirth"
                                     />
 
                                 </Item>
-                                <Item  last  style={{ borderBottomWidth: 0, marginRight: 15, height: 45, backgroundColor: '#F1F1F1', marginTop: 10, borderRadius: 5 }}>
+                                <Item last style={{ borderBottomWidth: 0, marginRight: 15, height: 45, backgroundColor: '#F1F1F1', marginTop: 10, borderRadius: 5 }}>
                                     <Picker style={styles.transparentLabel2}
                                         mode="dropdown"
-                                        placeholderStyle = {{fontSize:15,marginLeft:-5}} 
-                                        iosIcon={<Icon name="ios-arrow-down" style={{color:'gray',fontSize:20}}/>}
-                                        textStyle={{ color: "gray",left:0,marginLeft:-5}}
+                                        placeholderStyle={{ fontSize: 15, marginLeft: -5 }}
+                                        iosIcon={<Icon name="ios-arrow-down" style={{ color: 'gray', fontSize: 20 }} />}
+                                        textStyle={{ color: "gray", left: 0, marginLeft: -5 }}
                                         note={false}
                                         itemStyle={{
                                             backgroundColor: "gray",
                                             paddingLeft: 10,
-                                            fontSize: 16,     
+                                            fontSize: 16,
                                         }}
                                         itemTextStyle={{ color: '#5cb85c', }}
                                         style={{ width: undefined }}
-                                        onValueChange={(sample) => { this.setState({ selectedBloodGroup: sample }) }}
+                                        onValueChange={(sample) => { this.setState({ selectedBloodGroup: sample, updateButton: false }) }}
                                         selectedValue={this.state.selectedBloodGroup}
                                         testID="editBloodGroup"
                                     >
@@ -220,7 +236,7 @@ class UpdateUserDetails extends Component {
 
                                 <Item style={{ marginTop: 20, borderBottomWidth: 0, marginLeft: 20 }}>
                                     <RadioButton.Group
-                                        onValueChange={value => this.setState({ gender: value })}
+                                        onValueChange={value => this.setState({ gender: value, updateButton: false })}
                                         value={this.state.gender}>
                                         <RadioButton value="M" />
                                         <Text style={{ marginLeft: 10, fontFamily: 'OpenSans', fontSize: 15 }}>Male</Text>
@@ -236,13 +252,8 @@ class UpdateUserDetails extends Component {
                                 </Item>
                                 <Text style={{ color: 'red', marginLeft: 15, marginTop: 5 }}>{this.state.errorMsg}</Text>
 
-                                {this.state.isLoading ? <Spinner color='blue'
-                                    visible={this.state.isLoading}
-                                    textContent={'Please wait Loading'}
-                                /> : null}
-
                                 <View>
-                                    <Button primary style={styles.addressButton} block onPress={() => this.userUpdate()} testID="updateBasicDetails">
+                                    <Button primary disabled={this.state.updateButton} style={this.state.updateButton ? styles.addressButtonDisable : styles.addressButton} block onPress={() => this.userUpdate()} testID="updateBasicDetails">
                                         <Text style={styles.buttonText}>Update</Text>
                                     </Button>
                                 </View>
