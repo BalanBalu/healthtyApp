@@ -64,6 +64,15 @@ export default StyleSheet.create({
         marginRight: 15
 
     },
+    addressButtonDisable: {
+        marginTop: 12,
+        backgroundColor: '#9777c7',
+        borderRadius: 5,
+        fontFamily: 'OpenSans',
+        marginLeft: 15,
+        marginRight: 15
+
+    },
     transparentLabel:
     {
         borderBottomColor: 'transparent',
