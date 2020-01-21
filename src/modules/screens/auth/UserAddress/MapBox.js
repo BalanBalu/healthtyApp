@@ -3,7 +3,7 @@ import React, { Component } from 'react';
 import { View, StyleSheet, Image, PermissionsAndroid, AsyncStorage, TouchableOpacity } from 'react-native';
 import MapboxGL from '@react-native-mapbox-gl/maps';
 import { Col, Row, Grid } from 'react-native-easy-grid';
-import { IS_ANDROID, validatePincode, validateName } from '../../../common';
+import { IS_ANDROID, validatePincode, validateName,validatePassword } from '../../../common';
 import { Container, Toast, Body, Button, Text, Item, Input, Icon, Card, CardItem, Label, Form, Content, Picker } from 'native-base';
 import { MAP_BOX_TOKEN } from '../../../../setup/config';
 import axios from 'axios';
@@ -88,18 +88,23 @@ export default class MapBox extends React.Component {
     }
 
     async getCurrentLocation() {
-        navigator.geolocation.getCurrentPosition(async (position) => {
-            const origin_coordinates = [position.coords.longitude, position.coords.latitude];
-            await this.setState({
-                center: origin_coordinates,
-                coordinates: origin_coordinates,
-                zoom: 12,
-                isFinisedLoading: true
-            })
-            this.updtateLocation(origin_coordinates);
-        }), error => {
-            console.log(error);
-        }, { enableHighAccuracy: true, timeout: 50000, maximumAge: 1000 }
+        try {
+            navigator.geolocation.getCurrentPosition(async (position) => {
+                const origin_coordinates = [position.coords.longitude, position.coords.latitude];
+                await this.setState({
+                    center: origin_coordinates,
+                    coordinates: origin_coordinates,
+                    zoom: 12,
+                    isFinisedLoading: true
+                })
+                this.updtateLocation(origin_coordinates);
+            }), error => {
+                console.log(error);
+            }, { enableHighAccuracy: true, timeout: 50000, maximumAge: 1000 }
+        }
+        catch (e) {
+            console.log(e)
+        }
     }
     async updtateLocation(center) {
         let fullPath = `https://api.mapbox.com/geocoding/v5/mapbox.places/${center[0]},${center[1]}.json?types=poi&access_token=${MAP_BOX_TOKEN}`;
@@ -171,50 +176,93 @@ export default class MapBox extends React.Component {
                 }
             }
             const userId = await AsyncStorage.getItem('userId')
-            if (validateName(this.state.address.country || this.state.address.district || this.state.address.state || this.state.address.city)) {
-                if (validatePincode(this.state.address.pin_code) == true) {
-                    let result = await userFiledsUpdate(userId, userAddressData);
-                    this.setState({ loading: false });
-                    if (result.success) {
-                        Toast.show({
-                            text: result.message,
-                            type: 'success',
-                            duration: 3000,
-                        })
-                        if (this.state.fromProfile)
-                            this.props.navigation.navigate('Profile');
-                        else {
-                            logout();
-                            this.props.navigation.navigate('login');
+            if (validatePassword(this.state.address.no_and_street)) {
+            if (validateName(this.state.address.city)) {
+                if (validateName(this.state.address.district)) {
+
+                    if (validateName(this.state.address.state)) {
+
+                        if (validateName(this.state.address.country)) {
+
+                            if (validatePincode(this.state.address.pin_code) == true) {
+                                let result = await userFiledsUpdate(userId, userAddressData);
+                                this.setState({ loading: false });
+                                if (result.success) {
+                                    if (this.state.fromProfile) {
+                                        Toast.show({
+                                            text: result.message,
+                                            type: 'success',
+                                            duration: 3000,
+                                        })
+                                        this.props.navigation.navigate('Profile');
+                                    }
+                                    else {
+                                        logout();
+                                        Toast.show({
+                                            text: "Click Here Login to continue",
+                                            type: 'success',
+                                            duration: 3000,
+                                        })
+                                        this.props.navigation.navigate('login');
+                                    }
+                                }
+                                else {
+                                    Toast.show({
+                                        text: result.message,
+                                        type: 'warning',
+                                        duration: 3000,
+                                        buttonText: "Okay",
+                                        buttonTextStyle: {
+                                            color: "#008000"
+                                        },
+                                        buttonStyle: { backgroundColor: "#5cb85c" }
+                                    })
+                                    return
+                                }
+
+                            } else {
+                                Toast.show({
+                                    text: 'Pincode field must contain numbers',
+                                    type: 'warning',
+                                    duration: 3000,
+                                })
+                            }
+                        } else {
+                            Toast.show({
+                                text: 'Country should not contains white spaces and any Special Character',
+                                type: 'danger',
+                                duration: 5000
+                            })
                         }
-                    }
-                    else {
+                    } else {
                         Toast.show({
-                            text: result.message,
-                            type: 'warning',
-                            duration: 3000,
-                            buttonText: "Okay",
-                            buttonTextStyle: {
-                                color: "#008000"
-                            },
-                            buttonStyle: { backgroundColor: "#5cb85c" }
+                            text: 'State should not contains white spaces and any Special Character',
+                            type: 'danger',
+                            duration: 5000
                         })
-                        return
                     }
                 } else {
                     Toast.show({
-                        text: 'Pincode field must contain numbers',
-                        type: 'warning',
-                        duration: 3000,
+                        text: 'District should not contains white spaces and any Special Character',
+                        type: 'danger',
+                        duration: 5000
                     })
                 }
             } else {
                 Toast.show({
-                    text: 'Kindly enter valid address',
-                    type: 'warning',
-                    duration: 3000,
+                    text: 'City should not contains white spaces and any Special Character',
+                    type: 'danger',
+                    duration: 5000
                 })
             }
+            } else {
+                Toast.show({
+                    text: "No and street can't Accept White spaces",
+                    type: 'danger',
+                    duration: 5000
+                })
+            }
+
 
         } catch (e) {
             Toast.show({

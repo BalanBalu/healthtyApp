@@ -51,8 +51,8 @@ class UpdateInsurance extends Component {
                     active: true
                 }]
             };
-            
-             this.setState({ errorMsg: '', noErrorMsg: '', isLoading: true });
+
+            this.setState({ errorMsg: '', noErrorMsg: '', isLoading: true });
 
             let response = await userFiledsUpdate(userId, data);
             if (response.success) {
@@ -81,8 +81,8 @@ class UpdateInsurance extends Component {
         }
     }
     validateProviderName = async (text) => {
-        this.setState({ insurance_provider: text });
-        if (validateName(this.state.insurance_provider) == false) {
+        await this.setState({ insurance_provider: text });
+        if (this.state.insurance_provider && validateName(this.state.insurance_provider) == false) {
             this.setState({ errorMsg: 'Insurance provider field must contain alphabets' })
             return false;
         }
@@ -91,8 +91,8 @@ class UpdateInsurance extends Component {
         }
     }
     validateInsuranceNo = async (text) => {
-        this.setState({ insurance_no: text });
-        if (validatePassword(this.state.insurance_no) == false) {
+        await this.setState({ insurance_no: text });
+        if (this.state.insurance_no && validatePassword(this.state.insurance_no) == false) {
             this.setState({ noErrorMsg: 'Insurance number can not be empty' })
             return false;
         }
@@ -100,7 +100,7 @@ class UpdateInsurance extends Component {
             this.setState({ noErrorMsg: '' })
         }
     }
-   
+
 
     handleInsuranceUpdate = async () => {
         const { userData, insurance_no, insurance_provider } = this.state
@@ -150,7 +150,7 @@ class UpdateInsurance extends Component {
                             <Item style={{ borderBottomWidth: 0, marginTop: 25 }}>
                                 <Icon name='heartbeat' type='FontAwesome' style={styles.centeredIcons}></Icon>
                                 <Input placeholder="Edit insurance number" style={styles.transparentLabel} keyboardType="email-address"
-                                    onChangeText={(insurance_no) => this.validateInsuranceNo( insurance_no )}
+                                    onChangeText={(insurance_no) => this.validateInsuranceNo(insurance_no)}
                                     value={this.state.insurance_no}
                                     testID='updateInsuranceNo' />
                             </Item>

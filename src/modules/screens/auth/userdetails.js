@@ -63,7 +63,7 @@ class UserDetails extends Component {
                 let updateResponse = await userFiledsUpdate(userId, requestData);
                 if (updateResponse.success) {
                     Toast.show({
-                        text: 'Your Profile has been completed, Please Login to Continue',
+                        text: 'Your Profile has been completed',
                         type: "success",
                         duration: 3000
                     });
