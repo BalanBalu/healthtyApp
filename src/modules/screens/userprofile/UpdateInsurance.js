@@ -155,7 +155,7 @@ class UpdateInsurance extends Component {
                                     testID='updateInsuranceNo' />
                             </Item>
                             {this.state.noErrorMsg ?
-                                <Text style={{ color: 'red', marginLeft: 15, marginTop: 5 }}>{this.state.noErrorMsg}</Text>
+                                <Text style={{ paddingLeft: 20, fontSize: 15, fontFamily: 'OpenSans', color: 'red' }}>{this.state.noErrorMsg}</Text>
                                 : null}
                             <Item style={{ borderBottomWidth: 0, marginTop: 25 }}>
                                 <Icon name='heartbeat' type='FontAwesome' style={styles.centeredIcons}></Icon>
@@ -165,7 +165,7 @@ class UpdateInsurance extends Component {
                                     testID='updateInsuranceProvider' />
                             </Item>
                             {this.state.errorMsg ?
-                                <Text style={{ color: 'red', marginLeft: 15, marginTop: 5 }}>{this.state.errorMsg}</Text>
+                                <Text style={{ paddingLeft: 20, fontSize: 15, fontFamily: 'OpenSans', color: 'red' }}>{this.state.errorMsg}</Text>
                                 : null}
                             <Item style={{ borderBottomWidth: 0, marginTop: 10 }}>
                                 <Right>
