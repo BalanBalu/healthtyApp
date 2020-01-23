@@ -1,3 +1,4 @@
+
 import React, { Component } from 'react';
 import { Container, Content, Text, Title, Header, H3, Button, Card, List, ListItem, View, Left, Right, Toast, Thumbnail, Body, Icon, locations, ProgressBar, Item, Radio, Switch } from 'native-base';
 import { fetchUserProfile, storeBasicProfile } from '../../providers/profile/profile.action';
@@ -68,7 +69,6 @@ class Profile extends Component {
 
             if (result) {
                 this.setState({ data: result, is_blood_donor: result.is_blood_donor });
-                console.log(this.state.data.secondary_mobile)
                 storeBasicProfile(result);
 
                 if (result.profile_image) {
@@ -136,70 +136,75 @@ class Profile extends Component {
     }
 
     editAddress(address) {
-        try{
-        if (address === null) {
-            this.editProfile('MapBox')
-        }
-        else {
-            let locationAndContext = location(address.address);
-            let latLng = address.coordinates;
-            let addrressData = {
-                center: [latLng[1], latLng[0]],
-                place_name: locationAndContext.placeName,
-                context: locationAndContext.context
+        try {
+            debugger
+            if (address === null) {
+                this.editProfile('MapBox')
             }
-            this.props.navigation.navigate('MapBox', {
-                locationData: addrressData,
-                fromProfile: true,
-                mapEdit: true
-            });
-
-            function location(locationObj) {
-                let placeName = '';
-                let contextData = [];
-                Object.keys(locationObj).forEach(keyEle => {
-                    let obj = {
-                        "text": locationObj[keyEle]
-                    };
-                    switch (keyEle) {
-                        case 'no_and_street':
-                            obj.id = 'locality.123';
-                            break;
-                        case 'city':
-                            obj.id = 'place.123';
-                            break;
-                        case 'district':
-                            obj.id = 'district.123';
-                            break;
-                        case 'state':
-                            obj.id = 'region.123';
-                            break;
-                        case 'country':
-                            obj.id = 'country.123';
-                            break;
-                        case 'pin_code':
-                            obj.id = 'pin_code.123';
-                            break;
-                    }
-                    contextData.push(obj);
-                    placeName += locationObj[keyEle] + ', ';
+            else {
+                let locationAndContext = location(address.address);
+                let latLng = address.coordinates;
+                let addrressData = {
+                    no_and_street: address.address.no_and_street,
+                    center: [latLng[1], latLng[0]],
+                    place_name: locationAndContext.placeName,
+                    context: locationAndContext.context
+                }
+                this.props.navigation.navigate('MapBox', {
+                    locationData: addrressData,
+                    fromProfile: true,
+                    mapEdit: true
                 });
 
-                return {
-                    placeName: placeName.slice(0, -2),
-                    context: contextData
-                }
+                function location(locationObj) {
+                    let placeName = '';
+                    let contextData = [];
+                    Object.keys(locationObj).forEach(keyEle => {
+                        let obj = {
+                            "text": locationObj[keyEle]
+                        };
+                        switch (keyEle) {
+                            case 'no_and_street':
+                                obj.id = 'no_and_street.123';
+                                break;
+                            case 'address_line_1':
+                                obj.id = 'locality.123';
+                                break;
+                            case 'city':
+                                obj.id = 'place.123';
+                                break;
+                            case 'district':
+                                obj.id = 'district.123';
+                                break;
+                            case 'state':
+                                obj.id = 'region.123';
+                                break;
+                            case 'country':
+                                obj.id = 'country.123';
+                                break;
+                            case 'pin_code':
+                                obj.id = 'pin_code.123';
+                                break;
+                        }
+                        contextData.push(obj);
+                        placeName += locationObj[keyEle] + ', ';
+                    });
 
+                    return {
+                        placeName: placeName.slice(0, -2),
+                        context: contextData
+                    }
+
+                }
             }
         }
-    }
         catch (e) {
             console.log(e);
         }
         finally {
             this.setState({ isLoading: false });
         }
-}
+    }
     /*Upload profile pic*/
     uploadProfilePicture(type) {
         if (type == "Camera") {
@@ -770,5 +775,7 @@ const styles = StyleSheet.create({
     }
 
 });
+
+
 
 
