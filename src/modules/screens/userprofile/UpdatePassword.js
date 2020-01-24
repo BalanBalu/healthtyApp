@@ -25,7 +25,6 @@ class UpdatePassword extends Component {
 
     handlePasswordUpdate = async () => {
         try {
-            console.log(this.state.oldPassword)
             if (this.state.oldPassword == '') {
                 this.setState({ errorMsg: 'Kindly enter the old password' })
                 return false;
@@ -84,25 +83,14 @@ class UpdatePassword extends Component {
         }
     }
 
-    validateChangePassword = async (type, text) => {
+    onPasswordTextChanged(type,value) {
         if (type === "OldPassword") {
-            await this.setState({ oldPassword: text });
+            this.setState({ oldPassword: value.replace(/\s/g, "") });
         }
         if (type === 'NewPassword') {
-            await this.setState({ newPassword: text });
+            this.setState({ newPassword: value.replace(/\s/g, "") });
         }
-
-        if (validatePassword((this.state.newPassword) || (this.state.oldPassword)) === false) {
-            this.setState({ errorMsg: "Password can't Accept White spaces" })
-            return false;
-        }
-
-        else {
-            this.setState({ errorMsg: '' })
-        }
-
     }
-
     render() {
 
         return (
@@ -131,7 +119,7 @@ class UpdatePassword extends Component {
                                             keyboardType="default"
                                             value={this.state.oldPassword}
                                             secureTextEntry={this.state.oldPasswordVisible}
-                                            onChangeText={(oldPassword) => this.validateChangePassword("OldPassword", oldPassword)}
+                                            onChangeText={(oldPassword) => this.onPasswordTextChanged("OldPassword", oldPassword)}
                                             testID='enterOldPassword' />
                                         {this.state.oldPasswordVisible == true ?
                                             <Icon active name="ios-eye-off" style={{ fontSize: 25, marginTop: 10 }} onPress={() => this.setState({ oldPasswordVisible: !this.state.oldPasswordVisible })}
@@ -151,7 +139,7 @@ class UpdatePassword extends Component {
                                             keyboardType="default"
                                             value={this.state.newPassword}
                                             secureTextEntry={this.state.newPasswordVisible}
-                                            onChangeText={(newPassword) => this.validateChangePassword("NewPassword", newPassword)}
+                                            onChangeText={(newPassword) => this.onPasswordTextChanged("NewPassword", newPassword)}
                                             testID='enterNewPassword' />
                                         {this.state.newPasswordVisible == true ?
                                             <Icon active name="ios-eye-off" style={{ fontSize: 25, marginTop: 10 }} onPress={() => this.setState({ newPasswordVisible: !this.state.newPasswordVisible })}
@@ -161,7 +149,7 @@ class UpdatePassword extends Component {
                                 </Col>
 
                             </Item>
-                            {this.state.errorMsg ? <Text style={{ paddingLeft: 20, fontSize: 15, fontFamily: 'OpenSans', color: 'red' }}>{this.state.errorMsg}</Text> : null}
+                            {this.state.errorMsg ? <Text style={{ paddingLeft: 20, fontSize: 13, fontFamily: 'OpenSans', color: 'red' }}>{this.state.errorMsg}</Text> : null}
 
                             <Item style={{ borderBottomWidth: 0, marginTop: 10 }}>
                                 <Right>

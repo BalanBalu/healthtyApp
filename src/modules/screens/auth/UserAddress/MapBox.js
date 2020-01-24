@@ -3,7 +3,7 @@ import React, { Component } from 'react';
 import { View, StyleSheet, Image, PermissionsAndroid, AsyncStorage, TouchableOpacity } from 'react-native';
 import MapboxGL from '@react-native-mapbox-gl/maps';
 import { Col, Row, Grid } from 'react-native-easy-grid';
-import { IS_ANDROID, validatePincode, validateName, validatePassword } from '../../../common';
+import { IS_ANDROID, validatePincode, validateName, validatePassword, acceptNumbersOnly } from '../../../common';
 import { Container, Toast, Body, Button, Text, Item, Input, Icon, Card, CardItem, Label, Form, Content, Picker } from 'native-base';
 import { MAP_BOX_TOKEN } from '../../../../setup/config';
 import axios from 'axios';
@@ -178,99 +178,83 @@ export default class MapBox extends React.Component {
                 address: {
                     coordinates: [Lnglat[1], Lnglat[0]],
                     type: 'Point',
-                    address: this.state.no_and_street,
                     address: this.state.address
                 }
             }
             const userId = await AsyncStorage.getItem('userId')
-            if (validatePassword(this.state.address.no_and_street)) {
-                if (validateName(this.state.address.city)) {
-                    if (validateName(this.state.address.district)) {
+            // console.log(this.state.address.district)
+            if (validateName(this.state.address.city)) {
+                if (validateName(this.state.address.district)) {
 
-                        if (validateName(this.state.address.state)) {
+                    if (validateName(this.state.address.state)) {
 
-                            if (validateName(this.state.address.country)) {
+                        if (validateName(this.state.address.country)) {
 
-                                if (validatePincode(this.state.address.pin_code) == true) {
-                                    let result = await userFiledsUpdate(userId, userAddressData);
-                                    this.setState({ loading: false });
-                                    if (result.success) {
-                                        if (this.state.fromProfile) {
-                                            Toast.show({
-                                                text: result.message,
-                                                type: 'success',
-                                                duration: 3000,
-                                            })
-                                            this.props.navigation.navigate('Profile');
-                                        }
-                                        else {
-                                            logout();
-                                            Toast.show({
-                                                text: "Click Here Login to continue",
-                                                type: 'success',
-                                                duration: 3000,
-                                            })
-                                            this.props.navigation.navigate('login');
-                                        }
-                                    }
-                                    else {
-                                        Toast.show({
-                                            text: result.message,
-                                            type: 'warning',
-                                            duration: 3000,
-                                            buttonText: "Okay",
-                                            buttonTextStyle: {
-                                                color: "#008000"
-                                            },
-                                            buttonStyle: { backgroundColor: "#5cb85c" }
-                                        })
-                                        return
-                                    }
-
-                                } else {
+                            let result = await userFiledsUpdate(userId, userAddressData);
+                            this.setState({ loading: false });
+                            if (result.success) {
+                                if (this.state.fromProfile) {
                                     Toast.show({
-                                        text: 'Pincode field must contain numbers',
-                                        type: 'warning',
+                                        text: result.message,
+                                        type: 'success',
                                         duration: 3000,
                                     })
+                                    this.props.navigation.navigate('Profile');
                                 }
-                            } else {
-                                Toast.show({
-                                    text: 'Country should not contains white spaces and any Special Character',
-                                    type: 'danger',
-                                    duration: 5000
-                                })
+                                else {
+                                    logout();
+                                    Toast.show({
+                                        text: "Click Here Login to continue",
+                                        type: 'success',
+                                        duration: 3000,
+                                    })
+                                    this.props.navigation.navigate('login');
+                                }
                             }
+                            else {
+                                Toast.show({
+                                    text: result.message,
+                                    type: 'warning',
+                                    duration: 3000,
+                                    buttonText: "Okay",
+                                    buttonTextStyle: {
+                                        color: "#008000"
+                                    },
+                                    buttonStyle: { backgroundColor: "#5cb85c" }
+                                })
+                                return
+                            }
+
+                            
                         } else {
                             Toast.show({
-                                text: 'State should not contains white spaces and any Special Character',
+                                text: 'Country should not contains white spaces and any Special Character',
                                 type: 'danger',
                                 duration: 5000
                             })
                         }
                     } else {
                         Toast.show({
-                            text: 'District should not contains white spaces and any Special Character',
+                            text: 'State should not contains white spaces and any Special Character',
                             type: 'danger',
                             duration: 5000
                         })
                     }
                 } else {
                     Toast.show({
-                        text: 'City should not contains white spaces and any Special Character',
+                        text: 'District should not contains white spaces and any Special Character',
                         type: 'danger',
                         duration: 5000
                     })
                 }
             } else {
                 Toast.show({
-                    text: "No and street can't Accept White spaces",
+                    text: 'City should not contains white spaces and any Special Character',
                     type: 'danger',
                     duration: 5000
                 })
             }
-
-
+           
         } catch (e) {
             Toast.show({
                 text: 'Exception Occured' + e,
@@ -351,7 +335,14 @@ export default class MapBox extends React.Component {
             request.send();
         }
     }
-
+    onChangedNoAndStreet(value) {
+        // code to remove White Spaces from text field
+        this.updateAddressObject( 'no_and_street', value.replace(/\s/g, "") );
+    }
+    onChangedAddressLine1(value) {
+        // code to remove White Spaces from text field
+        this.updateAddressObject('address_line_1', value.replace(/\s/g, ""));
+    }
     render() {
         return (
             <Container>
@@ -413,18 +404,18 @@ export default class MapBox extends React.Component {
                     </Card> :
                     <Content style={styles.bodyContent}>
                         <Form>
-                            
+
                             <Item floatingLabel>
                                 <Label>No And Street</Label>
                                 <Input placeholder="No And Street" style={styles.transparentLabel}
                                     value={this.state.address.no_and_street}
-                                    onChangeText={value => this.updateAddressObject('no_and_street', value)} />
+                                    onChangeText={value => this.onChangedNoAndStreet(value)} />
                             </Item>
                             <Item floatingLabel>
                                 <Label>Address Line 1</Label>
                                 <Input placeholder="Address Line 1" style={styles.transparentLabel}
                                     value={this.state.address.address_line_1}
-                                    onChangeText={value => this.updateAddressObject('address_line_1', value)} />
+                                    onChangeText={value => this.onChangedAddressLine1(value)} />
                             </Item>
                             <Item floatingLabel >
                                 <Label>City</Label>
@@ -442,7 +433,7 @@ export default class MapBox extends React.Component {
                                 <Label>State</Label>
                                 <Input placeholder="State" style={styles.transparentLabel}
                                     value={this.state.address.state}
-                                    onChangeText={value => this.updateAddressObject('state', value)} />
+                                    onChangeText={value =>this.updateAddressObject('state', value)} />
                             </Item>
                             <Item floatingLabel>
                                 <Label>Country</Label>
@@ -455,7 +446,7 @@ export default class MapBox extends React.Component {
                                 <Input placeholder="Pin Code" style={styles.transparentLabel}
                                     keyboardType="numeric"
                                     value={this.state.address.pin_code}
-                                    onChangeText={value => this.updateAddressObject('pin_code', value)} />
+                                    onChangeText={value => acceptNumbersOnly(value) == false ? this.updateAddressObject('pin_code', value) : null} />
                             </Item>
 
                             <Button success iconLeft style={styles.loginButton} block onPress={() => this.updateAddressData()}>

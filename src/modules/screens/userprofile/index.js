@@ -449,7 +449,7 @@ class Profile extends Component {
                                     <Text style={styles.customText}>Blood Donor</Text>
                                 </Body>
 
-                                <Right style={{ justifyContent: 'center', alignItems: 'center', marginTop: -10 }}>
+                                <Right style={{ justifyContent: 'center', alignItems: 'center', marginTop: -15 }}>
                                     <Switch
                                         value={this.state.is_blood_donor}
                                         style={{ marginTop: 15, }}
@@ -512,7 +512,7 @@ class Profile extends Component {
                                         <Text note style={styles.customText1}>{data.mobile_no}</Text>
                                         {data.secondary_mobile !== undefined ?
                                             <Col>
-                                                <Text style={styles.customText}>Secondary</Text>
+                                                <Text style={styles.customText}>{data.secondary_mobile !== '' ?"Secondary":null}</Text>
                                                 <Text note style={styles.customText1}>{data.secondary_mobile}</Text>
 
                                             </Col>
