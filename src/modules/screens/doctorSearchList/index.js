@@ -742,9 +742,9 @@ class doctorSearchList extends Component {
 
                                                                     <Text style={{ fontFamily: 'OpenSans', fontSize: 12, fontWeight: 'bold' }}>{(item.prefix ? item.prefix + '. ' : '') + (item.first_name || '') + ' ' + (item.last_name || '')}</Text>
 
-                                                                    <Text style={{ fontFamily: 'OpenSans', marginTop: 2, fontSize: 10, marginTop: 5, color: '#a9a9a9' }}>{(getDoctorEducation(item.education)) + ' ' + getDoctorSpecialist(item.specialist)}</Text>
+                                                                    <Text style={{ fontFamily: 'OpenSans', marginTop: 2, fontSize: 10, marginTop: 5, color: '#808080' }}>{(getDoctorEducation(item.education)) + ' ' + getDoctorSpecialist(item.specialist)}</Text>
 
-                                                                    <Text style={{ fontFamily: 'OpenSans', marginTop: 2, fontSize: 10, marginTop: 5, color: '#a9a9a9' }}>6 years of Experience</Text>
+                                                                    <Text style={{ fontFamily: 'OpenSans', marginTop: 2, fontSize: 10, marginTop: 5, color: '#808080' }}>6 years of Experience</Text>
 
                                                                 </Col>
                                                             </Row>
