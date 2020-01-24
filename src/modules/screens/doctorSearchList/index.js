@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import { Container, Content, Text, Toast, Button, Card, Item, List, ListItem, Left, Thumbnail, Icon } from 'native-base';
 import { Col, Row, Grid } from 'react-native-easy-grid';
 import { connect } from 'react-redux'
-import { StyleSheet, TouchableOpacity, View, FlatList, AsyncStorage, Dimensions } from 'react-native';
+import { StyleSheet, TouchableOpacity, View, FlatList, AsyncStorage, Dimensions, ScrollView,Image } from 'react-native';
 import StarRating from 'react-native-star-rating';
 
 import {
@@ -334,12 +334,12 @@ class doctorSearchList extends Component {
                 getDoctorFaviouteList(doctorIds).catch(res => console.log("Exception on getPatient Wish List" + res)),
                 getAllDoctorsActiveSponsorDetails(doctorIds).catch(res => console.log("Exception on get All Doctors ActiveSponsor Details" + res))
             ]);
-            
-          
-             console.log('There is No Active Sponsors for given list of Doctors' + JSON.stringify(getActiveSponsorDetails))
+
+
+            console.log('There is No Active Sponsors for given list of Doctors' + JSON.stringify(getActiveSponsorDetails))
             if (getActiveSponsorDetails.data) {
                 let sponsorIdArray = [];
-             
+
                 getActiveSponsorDetails.data.map((ele) => {
                     sponsorIdArray.push(ele._id)
                 });
@@ -365,22 +365,22 @@ class doctorSearchList extends Component {
     };
     /* Update Active Sponsors count for Doctors */
     updateSponsorViewersCount = async (sponsorIdArray) => {
-      try {
-          
-        let userId = await AsyncStorage.getItem('userId');
-        if (!userId) userId = "NO_USER"
-        let sponsorIds = {
-            sponsorIds: sponsorIdArray
+        try {
+
+            let userId = await AsyncStorage.getItem('userId');
+            if (!userId) userId = "NO_USER"
+            let sponsorIds = {
+                sponsorIds: sponsorIdArray
+            }
+            let resultData = await updateSponsorViewCount(userId, sponsorIds);
+            // console.log('.....................................................................................................')
+            console.log('successfully updated Doctors Sponsors counts ' + JSON.stringify(resultData.updatedResult))
+        } catch (ex) {
+            return {
+                success: false,
+                message: 'Exception ' + ex
+            }
         }
-        let resultData = await updateSponsorViewCount(userId, sponsorIds);
-        // console.log('.....................................................................................................')
-        console.log('successfully updated Doctors Sponsors counts ' + JSON.stringify(resultData.updatedResult))
-      } catch (ex) {
-          return {
-              success: false, 
-              message: 'Exception ' + ex
-          }
-      }
     }
     /*Get doctor specialist and Degree details*/
 
@@ -467,7 +467,7 @@ class doctorSearchList extends Component {
 
     /* Click the Slots from Doctor List page */
     onPressContinueForPaymentReview = async (doctorData, selectedSlotItemByDoctor, doctorIdHostpitalId) => {
-         console.log(selectedSlotItemByDoctor);   
+        console.log(selectedSlotItemByDoctor);
         if (!selectedSlotItemByDoctor) {
             Toast.show({
                 text: 'Please Select a Slot to continue booking',
@@ -495,7 +495,7 @@ class doctorSearchList extends Component {
 
         this.setState({ selectedSlotByDoctorIds, selectedSlotItemByDoctorIds, refreshCount: this.state.refreshCount + 1 });
 
-        console.log( selectedSlotIndex + '. and index :' +  index) ;
+        console.log(selectedSlotIndex + '. and index :' + index);
         if ((item.fee != showedFeeByDoctorIds[doctorIdHostpitalId])) {
             if (showedFeeByDoctorIds[doctorIdHostpitalId] != undefined) {
                 Toast.show({
@@ -507,7 +507,7 @@ class doctorSearchList extends Component {
             showedFeeByDoctorIds[doctorIdHostpitalId] = item.fee
             this.setState({ showedFeeByDoctorIds });
         }
-        console.log( item);
+        console.log(item);
     }
 
 
@@ -574,8 +574,8 @@ class doctorSearchList extends Component {
         selectedSlotFeeWithoutOffer = selectedSlotData[selectedIndex].feeWithoutOffer;
 
         return {
-           fee: selectedSlotFee,
-           feeWithoutOffer: selectedSlotFeeWithoutOffer
+            fee: selectedSlotFee,
+            feeWithoutOffer: selectedSlotFeeWithoutOffer
         }
     }
 
@@ -619,7 +619,7 @@ class doctorSearchList extends Component {
     }
     sortByTopRatings(filteredDoctorData) {
         const { bookappointment: { reviewsByDoctorIds } } = this.props;
-           console.log(reviewsByDoctorIds);
+        console.log(reviewsByDoctorIds);
         filteredData = filteredDoctorData.sort(function (a, b) {
             let ratingA = 0;
             let ratingB = 0;
@@ -666,50 +666,224 @@ class doctorSearchList extends Component {
 
 
                     <Content>
+
+
                         <View>
                             <Card style={{ borderRadius: 7, paddingTop: 5, paddingBottom: 5 }}>
-                                
-                                    <Row>
-                                        <Col style={{ width: '55%', flexDirection: 'row' ,marginLeft:5,}} onPress={() => this.sortByTopRatings(filteredDoctorData)}>
+
+                                <Row>
+                                    <Col style={{ width: '55%', flexDirection: 'row', marginLeft: 5, }} onPress={() => this.sortByTopRatings(filteredDoctorData)}>
                                         <Row>
-                                                <Col style={{width:'15%'}}>
-                                                <Icon name='ios-arrow-down' style={{ color: '#000', fontSize: 20,marginTop:5}} />
+                                            <Col style={{ width: '15%' }}>
+                                                <Icon name='ios-arrow-down' style={{ color: '#000', fontSize: 20, marginTop: 5 }} />
 
-                                                </Col>
-                                                <Col style={{width:'85%'}}>
-                                                <Text uppercase={false} style={{ fontFamily: 'OpenSans', color: '#000', fontSize: 13, textAlign: 'center',  marginTop: 5 }}>Top Rated </Text>
+                                            </Col>
+                                            <Col style={{ width: '85%' }}>
+                                                <Text uppercase={false} style={{ fontFamily: 'OpenSans', color: '#000', fontSize: 13, textAlign: 'center', marginTop: 5 }}>Top Rated </Text>
 
-                                                </Col>
-                                          
-                                            </Row>
-                                        </Col>
-                                        {/* <Col style={{ width:'45%',alignItems: 'flex-start', flexDirection: 'row', }} onPress={() => this.navigateToFilters()}>
+                                            </Col>
+
+                                        </Row>
+                                    </Col>
+                                    {/* <Col style={{ width:'45%',alignItems: 'flex-start', flexDirection: 'row', }} onPress={() => this.navigateToFilters()}>
                                 <Row>
                                   <Text uppercase={false} style={{ fontFamily: 'OpenSans', color: '#000', fontSize: 13, marginLeft: 8,textAlign: 'center',marginTop:5 }}>Top Rated </Text>
                                   <Right><Icon name='ios-funnel' style={{ color: 'gray', marginRight:20, }}/></Right>
                                  
                                 </Row>  
                         </Col> */}
-                                        
-                                        <Col style={{ width: '45%', alignItems: 'flex-start', flexDirection: 'row',borderLeftColor:'gray',borderLeftWidth:1 }} onPress={() => this.navigateToFilters()}>
-                                            <Row >
-                                            <Col style={{width:'35%',marginLeft:10}}>
-                                      <Icon name='ios-funnel' style={{ color: 'gray' }} />
-                                                </Col>
-                                                <Col style={{width:'65%'}}>
-                                                <Text uppercase={false} style={{ fontFamily: 'OpenSans', color: '#000', fontSize: 13, marginTop: 5 ,marginLeft:5,width:'100%'}}>Filters </Text>
-                                                </Col>
-                                            </Row>
-                                        </Col>
-                                    </Row>
-                               
+
+                                    <Col style={{ width: '45%', alignItems: 'flex-start', flexDirection: 'row', borderLeftColor: 'gray', borderLeftWidth: 1 }} onPress={() => this.navigateToFilters()}>
+                                        <Row >
+                                            <Col style={{ width: '35%', marginLeft: 10 }}>
+                                                <Icon name='ios-funnel' style={{ color: 'gray' }} />
+                                            </Col>
+                                            <Col style={{ width: '65%' }}>
+                                                <Text uppercase={false} style={{ fontFamily: 'OpenSans', color: '#000', fontSize: 13, marginTop: 5, marginLeft: 5, width: '100%' }}>Filters </Text>
+                                            </Col>
+                                        </Row>
+                                    </Col>
+                                </Row>
+
                             </Card>
 
+                            
                             {filteredDoctorData.length === 0 ?
                                 <Item style={{ borderBottomWidth: 0, justifyContent: 'center', alignItems: 'center' }}>
                                     <Text style={{ fontSize: 18, justifyContent: 'center', alignItems: 'center' }} > No Doctors available! </Text>
                                 </Item>
                                 :
+                                <View>
+                                    <View style={{borderBottomColor:'#B6B6B6',borderBottomWidth:0.5,paddingBottom:8}}>
+                    <Text style={{ fontFamily: 'OpenSans', fontSize: 12 ,marginLeft:10}}>Recommended <Text style={{ color: '#775DA3', fontFamily: 'OpenSans', fontSize: 12 }}>Prime Doctors</Text> in Hearing Specialist near you</Text>
+                   
+                    <ScrollView
+                        horizontal={true}
+                        style={{marginTop:8}}
+                    >
+                         <FlatList
+                          horizontal
+                                    data={filteredDoctorData}
+                                    extraData={this.state.refreshCount}
+                                    keyExtractor={(item, index) => index.toString()}
+                                    renderItem={({ item }) =>
+
+                       <Card style={{ padding: 10, borderRadius: 10, borderBottomWidth: 2 ,marginLeft:10}}>
+                            <Grid>
+                            <Row>
+                                <Col size={2}>
+                                <Thumbnail square source={renderDoctorImage(item)} style={{ height: 50, width: 50 }} />
+                                    <View style={{position:'absolute',marginTop:35,marginLeft:26}}>
+                                    <Image square source={require('../../../../assets/images/viplogo.png')} style={{ height: 20, width: 20 }} />
+    
+                                    </View>
+                                </Col>
+                                <Col size={8} style={{marginLeft:10}}>
+                               
+                               
+                                            <Text style={{ fontFamily: 'OpenSans', fontSize: 12, fontWeight: 'bold' }}>{(item.prefix ? item.prefix + '. ' : '') + (item.first_name || '') + ' ' + (item.last_name || '')}</Text>
+                                      
+                                       
+                                            <Text note style={{ fontFamily: 'OpenSans', marginTop: 2, fontSize: 10,marginTop:5 }}>{(getDoctorEducation(item.education)) + ' ' + getDoctorSpecialist(item.specialist)}</Text>
+                                      
+                                       
+
+                                            <Text note style={{ fontFamily: 'OpenSans', marginTop: 2, fontSize: 10,marginTop:5 }}>6 years of Experience</Text>
+                                       
+                                        
+                                      
+                                </Col>
+                            </Row>
+                            <Row style={{marginTop:10}}>
+                            <Text note style={{ fontFamily: 'OpenSans', fontSize: 10, textAlign: 'center',marginTop:2 }}> Rating -</Text>
+                                        <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'center',marginLeft:5 }}>
+                                            <StarRating
+                                                fullStarColor='#FF9500'
+                                                starSize={12}
+                                                width={85}
+                                                containerStyle={{ marginTop: 2 }}
+                                                disabled={true}
+                                                rating={1}
+                                                maxStars={1}
+                                            />
+
+                                            <Text style={{ fontFamily: 'OpenSans', fontSize: 10, fontWeight: 'bold', marginLeft: 2,marginTop:2 }}> {reviewsByDoctorIds[item.doctor_id] !== undefined ? reviewsByDoctorIds[item.doctor_id].average_rating : ' 0'}</Text>
+                                        </View>
+
+                                        <Text note style={{ fontFamily: 'OpenSans', fontSize: 10, textAlign: 'center',marginLeft:10 ,marginTop:2}}> Fees -</Text>
+                                        <Text style={{ fontFamily: 'OpenSans', fontSize: 10, fontWeight: 'bold', textAlign: 'center', marginLeft: 5 ,marginTop:2}}> {'\u20B9'}100</Text>
+
+                                        <TouchableOpacity onPress={() => this.onBookPress(item.doctorIdHostpitalId)} style={{  backgroundColor: '#7F49C3', borderRadius: 10,marginLeft:10,paddingLeft:15,paddingRight:15,paddingTop:2,paddingBottom:2,justifyContent:'center', }}>
+                                                <Text style={{ textAlign: 'center', color: '#fff', fontSize: 10, fontWeight: 'bold', fontFamily: 'OpenSans' }}>BOOK </Text>
+                                            </TouchableOpacity>        
+                            </Row>
+                            </Grid>
+                        </Card>}/>
+                        {/* <Card style={{ padding: 10, borderRadius: 10, borderBottomWidth: 2 ,marginLeft:10}}>
+                            <Grid>
+                            <Row>
+                                <Col size={2}>
+                                    <Thumbnail square source={{ uri: 'https://res.cloudinary.com/demo/image/upload/w_200,h_200,c_thumb,g_face,r_max/face_left.png' }} style={{ height: 50, width: 50 }} />
+                                    <View style={{position:'absolute',marginTop:35,marginLeft:26}}>
+                                    <Image square source={require('../../../../assets/images/viplogo.png')} style={{ height: 20, width: 20 }} />
+    
+                                    </View>
+                                </Col>
+                                <Col size={8} style={{marginLeft:10}}>
+                               
+                               
+                                            <Text style={{ fontFamily: 'OpenSans', fontSize: 12, fontWeight: 'bold' }}>Dr.S.Mukesh Kannan</Text>
+                                      
+                                       
+                                            <Text note style={{ fontFamily: 'OpenSans', marginTop: 2, fontSize: 10,marginTop:5 }}>B.D.S,B.D.S Hearing Specialist</Text>
+                                      
+                                       
+
+                                            <Text note style={{ fontFamily: 'OpenSans', marginTop: 2, fontSize: 10,marginTop:5 }}>6 years of Experience</Text>
+                                       
+                                        
+                                      
+                                </Col>
+                            </Row>
+                            <Row style={{marginTop:10}}>
+                            <Text note style={{ fontFamily: 'OpenSans', fontSize: 10, textAlign: 'center',marginTop:2 }}> Rating -</Text>
+                                        <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'center',marginLeft:5 }}>
+                                            <StarRating
+                                                fullStarColor='#FF9500'
+                                                starSize={12}
+                                                width={85}
+                                                containerStyle={{ marginTop: 2 }}
+                                                disabled={true}
+                                                rating={1}
+                                                maxStars={1}
+                                            />
+
+                                            <Text style={{ fontFamily: 'OpenSans', fontSize: 10, fontWeight: 'bold', marginLeft: 2,marginTop:2 }}>3</Text>
+                                        </View>
+
+                                        <Text note style={{ fontFamily: 'OpenSans', fontSize: 10, textAlign: 'center',marginLeft:10 ,marginTop:2}}> Fees -</Text>
+                                        <Text style={{ fontFamily: 'OpenSans', fontSize: 10, fontWeight: 'bold', textAlign: 'center', marginLeft: 5 ,marginTop:2}}> {'\u20B9'}100</Text>
+
+                                        <TouchableOpacity onPress={() => this.onBookPress(item.doctorIdHostpitalId)} style={{  backgroundColor: '#7F49C3', borderRadius: 10,marginLeft:10,paddingLeft:15,paddingRight:15,paddingTop:2,paddingBottom:2,justifyContent:'center', }}>
+                                                <Text style={{ textAlign: 'center', color: '#fff', fontSize: 10, fontWeight: 'bold', fontFamily: 'OpenSans' }}>BOOK </Text>
+                                            </TouchableOpacity>        
+                            </Row>
+                            </Grid>
+                        </Card>
+                        <Card style={{ padding: 10, borderRadius: 10, borderBottomWidth: 2 ,marginLeft:10}}>
+                            <Grid>
+                            <Row>
+                                <Col size={2}>
+                                    <Thumbnail square source={{ uri: 'https://res.cloudinary.com/demo/image/upload/w_200,h_200,c_thumb,g_face,r_max/face_left.png' }} style={{ height: 50, width: 50 }} />
+                                    <View style={{position:'absolute',marginTop:35,marginLeft:26}}>
+                                    <Image square source={require('../../../../assets/images/viplogo.png')} style={{ height: 20, width: 20 }} />
+    
+                                    </View>
+                                </Col>
+                                <Col size={8} style={{marginLeft:10}}>
+                               
+                               
+                                            <Text style={{ fontFamily: 'OpenSans', fontSize: 12, fontWeight: 'bold' }}>Dr.S.Mukesh Kannan</Text>
+                                      
+                                       
+                                            <Text note style={{ fontFamily: 'OpenSans', marginTop: 2, fontSize: 10,marginTop:5 }}>B.D.S,B.D.S Hearing Specialist</Text>
+                                      
+                                       
+
+                                            <Text note style={{ fontFamily: 'OpenSans', marginTop: 2, fontSize: 10,marginTop:5 }}>6 years of Experience</Text>
+                                       
+                                        
+                                      
+                                </Col>
+                            </Row>
+                            <Row style={{marginTop:10}}>
+                            <Text note style={{ fontFamily: 'OpenSans', fontSize: 10, textAlign: 'center',marginTop:2 }}> Rating -</Text>
+                                        <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'center',marginLeft:5 }}>
+                                            <StarRating
+                                                fullStarColor='#FF9500'
+                                                starSize={12}
+                                                width={85}
+                                                containerStyle={{ marginTop: 2 }}
+                                                disabled={true}
+                                                rating={1}
+                                                maxStars={1}
+                                            />
+
+                                            <Text style={{ fontFamily: 'OpenSans', fontSize: 10, fontWeight: 'bold', marginLeft: 2,marginTop:2 }}>3</Text>
+                                        </View>
+
+                                        <Text note style={{ fontFamily: 'OpenSans', fontSize: 10, textAlign: 'center',marginLeft:10 ,marginTop:2}}> Fees -</Text>
+                                        <Text style={{ fontFamily: 'OpenSans', fontSize: 10, fontWeight: 'bold', textAlign: 'center', marginLeft: 5 ,marginTop:2}}> {'\u20B9'}100</Text>
+
+                                        <TouchableOpacity onPress={() => this.onBookPress(item.doctorIdHostpitalId)} style={{  backgroundColor: '#7F49C3', borderRadius: 10,marginLeft:10,paddingLeft:15,paddingRight:15,paddingTop:2,paddingBottom:2,justifyContent:'center', }}>
+                                                <Text style={{ textAlign: 'center', color: '#fff', fontSize: 10, fontWeight: 'bold', fontFamily: 'OpenSans' }}>BOOK </Text>
+                                            </TouchableOpacity>        
+                            </Row>
+                            </Grid>
+                        </Card> */}
+                    </ScrollView>
+                </View>
+                
                                 <FlatList
                                     data={filteredDoctorData}
                                     extraData={this.state.refreshCount}
@@ -717,7 +891,7 @@ class doctorSearchList extends Component {
                                     renderItem={({ item }) =>
                                         this.renderDoctorCard(item)
                                     } />
-                            }
+                         </View>   }
                         </View>
                     </Content>
                 }
@@ -728,146 +902,150 @@ class doctorSearchList extends Component {
     renderDoctorCard(item) {
         const { bookappointment: { patientWishListsDoctorIds, favouriteListCountByDoctorIds, reviewsByDoctorIds } } = this.props;
         const { selectedDatesByDoctorIds, expandedDoctorIdHospitalsToShowSlotsData, isLoggedIn, selectedSlotItemByDoctorIds,
-        
-        } = this.state;
-       const { fee, feeWithoutOffer } = this.getFeesBySelectedSlot(item.slotData[selectedDatesByDoctorIds[item.doctorIdHostpitalId] || this.state.currentDate], item.slotData, item.doctorIdHostpitalId)
-        return (
-            <Card style={{ padding: 2, borderRadius: 10, borderBottomWidth: 2 }}>
-                                            <List style={{ borderBottomWidth: 0 }}>
-                                                <ListItem>
-                                                    <Grid >
-                                                        <Row onPress={() => this.navigateToBookAppointmentPage(item)}>
-                                                            <Col style={{ width: '5%' }}>
-                                                                <Thumbnail square source={renderDoctorImage(item)} style={{ height: 60, width: 60 }} />
-                                                            </Col>
-                                                            <Col style={{ width: '78%' }}>
-                                                                <Row style={{ marginLeft: 55, }}>
-                                                                    <Text style={{ fontFamily: 'OpenSans', fontSize: 12, fontWeight: 'bold' }}>{(item.prefix ? item.prefix + '. ' : '') + (item.first_name || '') + ' ' + (item.last_name || '')}</Text>
-                                                                </Row>
-                                                                <Row style={{ marginLeft: 55, }}>
-                                                                    <Text note style={{ fontFamily: 'OpenSans', marginTop: 2, fontSize: 11 }}>{(getDoctorEducation(item.education)) + ' ' + getDoctorSpecialist(item.specialist)}</Text>
-                                                                </Row>
-                                                                <Row style={{ marginLeft: 55, }}>
 
-                                                                    <Text style={{ fontFamily: 'OpenSans', marginTop: 5, fontSize: 12, fontWeight: 'bold' }}>
-                                                                        {item.location.name + ' - ' + item.location.location.address.city }
-                                                                    </Text>
-                                                                </Row>
-                                                            </Col>
-                                                            <Col style={{ width: '17%' }}>
-                                                            <TouchableOpacity>
-                                                                {isLoggedIn ?
-                                                                    <Icon name="heart" onPress={() => this.addToWishList(item.doctor_id)}
-                                                                        style={patientWishListsDoctorIds.includes(item.doctor_id) ? { marginLeft: 20, color: '#B22222', fontSize: 20 } : { marginLeft: 20, borderColor: '#fff', fontSize: 20 }}>
-                                                                    </Icon> : null}
-                                                                {/* <Row>
+        } = this.state;
+        const { fee, feeWithoutOffer } = this.getFeesBySelectedSlot(item.slotData[selectedDatesByDoctorIds[item.doctorIdHostpitalId] || this.state.currentDate], item.slotData, item.doctorIdHostpitalId)
+        return (
+            <View>
+                
+                <Card style={{ padding: 2, borderRadius: 10, borderBottomWidth: 2 }}>
+                    <List style={{ borderBottomWidth: 0 }}>
+                        <ListItem>
+                            <Grid >
+                                <Row onPress={() => this.navigateToBookAppointmentPage(item)}>
+                                    <Col style={{ width: '5%' }}>
+                                        <Thumbnail square source={renderDoctorImage(item)} style={{ height: 60, width: 60 }} />
+                                      
+                                    </Col>
+                                    <Col style={{ width: '78%' }}>
+                                        <Row style={{ marginLeft: 55, }}>
+                                            <Text style={{ fontFamily: 'OpenSans', fontSize: 12, fontWeight: 'bold' }}>{(item.prefix ? item.prefix + '. ' : '') + (item.first_name || '') + ' ' + (item.last_name || '')}</Text>
+                                        </Row>
+                                        <Row style={{ marginLeft: 55, }}>
+                                            <Text note style={{ fontFamily: 'OpenSans', marginTop: 2, fontSize: 11 }}>{(getDoctorEducation(item.education)) + ' ' + getDoctorSpecialist(item.specialist)}</Text>
+                                        </Row>
+                                        <Row style={{ marginLeft: 55, }}>
+
+                                            <Text  note style={{ fontFamily: 'OpenSans', marginTop: 5, fontSize: 11,  }}>
+                                                {item.location.name + ' - ' + item.location.location.address.city}
+                                            </Text>
+                                        </Row>
+                                    </Col>
+                                    <Col style={{ width: '17%' }}>
+                                        <TouchableOpacity>
+                                            {isLoggedIn ?
+                                                <Icon name="heart" onPress={() => this.addToWishList(item.doctor_id)}
+                                                    style={patientWishListsDoctorIds.includes(item.doctor_id) ? { marginLeft: 20, color: '#B22222', fontSize: 20 } : { marginLeft: 20, borderColor: '#fff', fontSize: 20 }}>
+                                                </Icon> : null}
+                                            {/* <Row>
                                            <Text style={{ fontFamily: 'OpenSans',marginTop:20,fontSize:12,marginLeft:5 }}> 2.6km</Text>
                                          </Row> */}
-                                                            </TouchableOpacity>
-                                                            </Col>
-                                                        </Row>
+                                        </TouchableOpacity>
+                                    </Col>
+                                </Row>
 
-                                                        <Row>
-                                                            <Col style={{ width: "25%", marginTop: 20 }}>
-                                                                <Text note style={{ fontFamily: 'OpenSans', fontSize: 12,  }}> Experience</Text>
-                                                                <Text style={{ fontFamily: 'OpenSans', fontSize: 12,  fontWeight: 'bold' }}>{getDoctorExperience(item.calulatedExperience)}</Text>
-                                                            </Col>
-                                                            <Col style={{ width: "25%", marginTop: 20 }}>
-                                                                <Text note style={{ fontFamily: 'OpenSans', fontSize: 12, textAlign:'center', }}> Rating</Text>
-                                                                <View style={{ flexDirection:'row',alignItems:'center',justifyContent:'center'}}>
-                                                                    <StarRating
-                                                                        fullStarColor='#FF9500'
-                                                                        starSize={12} 
-                                                                        width={85}
-                                                                        containerStyle={{ marginTop: 2 }}
-                                                                        disabled={true}
-                                                                        rating={1}
-                                                                        maxStars={1}
-                                                                    />
+                                <Row>
+                                    <Col style={{ width: "25%", marginTop: 20 }}>
+                                        <Text note style={{ fontFamily: 'OpenSans', fontSize: 12, }}> Experience</Text>
+                                        <Text style={{ fontFamily: 'OpenSans', fontSize: 12, fontWeight: 'bold' }}>{getDoctorExperience(item.calulatedExperience)}</Text>
+                                    </Col>
+                                    <Col style={{ width: "25%", marginTop: 20 }}>
+                                        <Text note style={{ fontFamily: 'OpenSans', fontSize: 12, textAlign: 'center', }}> Rating</Text>
+                                        <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'center' }}>
+                                            <StarRating
+                                                fullStarColor='#FF9500'
+                                                starSize={12}
+                                                width={85}
+                                                containerStyle={{ marginTop: 2 }}
+                                                disabled={true}
+                                                rating={1}
+                                                maxStars={1}
+                                            />
 
-                                                                    <Text style={{ fontFamily: 'OpenSans', fontSize: 12, fontWeight: 'bold', marginLeft: 2 }}> {reviewsByDoctorIds[item.doctor_id] !== undefined ? reviewsByDoctorIds[item.doctor_id].average_rating : ' 0'}</Text>
-                                                                </View>
+                                            <Text style={{ fontFamily: 'OpenSans', fontSize: 12, fontWeight: 'bold', marginLeft: 2 }}> {reviewsByDoctorIds[item.doctor_id] !== undefined ? reviewsByDoctorIds[item.doctor_id].average_rating : ' 0'}</Text>
+                                        </View>
 
-                                                            </Col>
-                                                            <Col style={{ width: "25%", marginTop: 20 }}>
-                                                                <Text note style={{ fontFamily: 'OpenSans', fontSize: 12, marginLeft: 5 }}> Favourite</Text>
-                                                                <Text style={{ fontFamily: 'OpenSans', fontSize: 12, marginLeft: 5, fontWeight: 'bold' }}> {favouriteListCountByDoctorIds[item.doctor_id] !== undefined ? favouriteListCountByDoctorIds[item.doctor_id] : ' 0'}</Text>
-                                                            </Col>
-                                                            <Col style={{ width: "25%", marginTop: 20 }}>
-                                                                <Text note style={{ fontFamily: 'OpenSans', fontSize: 12, textAlign:'center' }}> Fees</Text>
-                                                                <Text style={{ fontFamily: 'OpenSans', fontSize: 12, fontWeight: 'bold', textAlign:'center',marginLeft:10 }}>{'\u20B9'}{fee} {' '}
-                                                                 {fee !== feeWithoutOffer ?  
-                                                                   <Text style={{ fontFamily: 'OpenSans', fontWeight: 'normal', fontSize: 12, textDecorationLine: 'line-through', textDecorationStyle: 'solid',textAlign:'center' }}>
-                                                                      {'\u20B9'}{feeWithoutOffer}</Text> : null
-                                                                 }
-                                                                </Text>
-                                                            </Col>
-                                                        </Row>
-
-
-
-                                                        <Row style={{ borderTopColor: '#000', borderTopWidth: 0.4, marginTop: 5 }} >
-                                                            <Col style={{ width: "5%" }}>
-
-                                                                <Icon name='ios-time' style={{ fontSize: 20, marginTop: 12 }} />
-
-                                                            </Col>
-                                                            <Col style={{ width: "80%" }}>
-
-                                                                <Text note style={{ fontFamily: 'OpenSans', marginTop: 15, fontSize: 12, marginRight: 50, fontWeight: 'bold' }}> {this.getDisplayAvailableTime(item.slotData[selectedDatesByDoctorIds[item.doctorIdHostpitalId] || this.state.currentDate], item.slotData)}</Text>
-                                                            </Col>
-                                                            <Col style={{ width: "15%" }}>
-                                                                {!expandedDoctorIdHospitalsToShowSlotsData.includes(item.doctorIdHostpitalId) ?
-                                                                    <TouchableOpacity onPress={() => this.onBookPress(item.doctorIdHostpitalId)} style={{ textAlign: 'center', backgroundColor: 'green', borderColor: '#000', marginTop: 10, borderRadius: 20, height: 30, justifyContent: 'center',paddingLeft:1,paddingRight:1, }}>
-                                                                        <Text style={{ textAlign: 'center', color: '#fff', fontSize: 12, fontWeight: 'bold', fontFamily: 'OpenSans' }}>BOOK </Text>
-                                                                    </TouchableOpacity> : null}
-                                                            </Col>
-
-                                                        </Row>
-
-                                                        {expandedDoctorIdHospitalsToShowSlotsData.includes(item.doctorIdHostpitalId) ?
-
-                                                            <View>
-
-                                                                <Row style={{ marginTop: 10 }}>
-                                                                    <Text style={{ fontSize: 13, fontFamily: 'OpenSans' }}>Select appoinment date and time</Text>
-                                                                </Row>
-                                                                {this.renderDatesOnFlatlist(item.slotData, selectedDatesByDoctorIds[item.doctorIdHostpitalId] || this.state.currentDate, item.doctorIdHostpitalId)}
-                                                                {
-                                                                    item.slotData[selectedDatesByDoctorIds[item.doctorIdHostpitalId] || this.state.currentDate] !== undefined ?
-                                                                        this.haveAvailableSlots(item.doctorIdHostpitalId, item.slotData[selectedDatesByDoctorIds[item.doctorIdHostpitalId] || this.state.currentDate])
-                                                                        : this.noAvailableSlots(item.doctorIdHostpitalId, item.slotData)
-                                                                }
-
-                                                                <View style={{ borderTopColor: '#000', borderTopWidth: 0.5, marginTop: 10 }}>
-                                                                <Row style={{ marginTop: 10 }}>
-                                                                  <Col size={10} style={{ alignContent: 'flex-start', alignItems: 'flex-start' }}>
-                                                                    <Text note style={{ fontSize: 12, alignSelf: 'flex-start', fontFamily: 'OpenSans' }}>Selected Appointment on</Text>
-                                                                    <Text style={{ alignSelf: 'flex-start', color: '#000', fontSize: 12, fontFamily: 'OpenSans',  marginTop:5 }}>{selectedSlotItemByDoctorIds[item.doctorIdHostpitalId] ? formatDate(selectedSlotItemByDoctorIds[item.doctorIdHostpitalId].slotStartDateAndTime, 'ddd DD MMM, h:mm a') : null}</Text>
-                                                                  </Col>
-                                                                 
-                                                                 {/* <Col style={{ width: '35%' }}></Col> */}
-
-                                                                        <Col size={4}>
-                                                                            <TouchableOpacity
-                                                                                onPress={() => { console.log('......Pressing....'); this.onPressContinueForPaymentReview(item, selectedSlotItemByDoctorIds[item.doctorIdHostpitalId], item.doctorIdHostpitalId) }}
-                                                                                style={{ backgroundColor: 'green', borderColor: '#000', height: 30, borderRadius: 20, justifyContent: 'center', marginLeft: 5, marginRight: 5, marginTop: -5 }}>
-                                                                                <Text style={{ color: '#fff', fontSize: 12, fontWeight: 'bold', fontFamily: 'OpenSans' }}>Continue </Text>
-                                                                            </TouchableOpacity>
-                                                                        </Col>  
-
-                                                                    </Row>
-                                                                </View>
-
-                                                            </View> : null}
-
-                                                    </Grid>
-
-                                                </ListItem>
+                                    </Col>
+                                    <Col style={{ width: "25%", marginTop: 20 }}>
+                                        <Text note style={{ fontFamily: 'OpenSans', fontSize: 12, marginLeft: 5 }}> Favourite</Text>
+                                        <Text style={{ fontFamily: 'OpenSans', fontSize: 12, marginLeft: 5, fontWeight: 'bold' }}> {favouriteListCountByDoctorIds[item.doctor_id] !== undefined ? favouriteListCountByDoctorIds[item.doctor_id] : ' 0'}</Text>
+                                    </Col>
+                                    <Col style={{ width: "25%", marginTop: 20 }}>
+                                        <Text note style={{ fontFamily: 'OpenSans', fontSize: 12, textAlign: 'center' }}> Fees</Text>
+                                        <Text style={{ fontFamily: 'OpenSans', fontSize: 12, fontWeight: 'bold', textAlign: 'center', marginLeft: 10 }}>{'\u20B9'}{fee} {' '}
+                                            {fee !== feeWithoutOffer ?
+                                                <Text style={{ fontFamily: 'OpenSans', fontWeight: 'normal', fontSize: 12, textDecorationLine: 'line-through', textDecorationStyle: 'solid', textAlign: 'center' }}>
+                                                    {'\u20B9'}{feeWithoutOffer}</Text> : null
+                                            }
+                                        </Text>
+                                    </Col>
+                                </Row>
 
 
-                                            </List>
-                                        </Card>
+
+                                <Row style={{ borderTopColor: '#000', borderTopWidth: 0.4, marginTop: 5 }} >
+                                    <Col style={{ width: "5%" }}>
+
+                                        <Icon name='ios-time' style={{ fontSize: 20, marginTop: 12 }} />
+
+                                    </Col>
+                                    <Col style={{ width: "80%" }}>
+
+                                        <Text note style={{ fontFamily: 'OpenSans', marginTop: 15, fontSize: 12, marginRight: 50, fontWeight: 'bold' }}> {this.getDisplayAvailableTime(item.slotData[selectedDatesByDoctorIds[item.doctorIdHostpitalId] || this.state.currentDate], item.slotData)}</Text>
+                                    </Col>
+                                    <Col style={{ width: "15%" }}>
+                                        {!expandedDoctorIdHospitalsToShowSlotsData.includes(item.doctorIdHostpitalId) ?
+                                            <TouchableOpacity onPress={() => this.onBookPress(item.doctorIdHostpitalId)} style={{ textAlign: 'center', backgroundColor: 'green', borderColor: '#000', marginTop: 10, borderRadius: 20, height: 30, justifyContent: 'center', paddingLeft: 1, paddingRight: 1, }}>
+                                                <Text style={{ textAlign: 'center', color: '#fff', fontSize: 12, fontWeight: 'bold', fontFamily: 'OpenSans' }}>BOOK </Text>
+                                            </TouchableOpacity> : null}
+                                    </Col>
+
+                                </Row>
+
+                                {expandedDoctorIdHospitalsToShowSlotsData.includes(item.doctorIdHostpitalId) ?
+
+                                    <View>
+
+                                        <Row style={{ marginTop: 10 }}>
+                                            <Text style={{ fontSize: 13, fontFamily: 'OpenSans' }}>Select appoinment date and time</Text>
+                                        </Row>
+                                        {this.renderDatesOnFlatlist(item.slotData, selectedDatesByDoctorIds[item.doctorIdHostpitalId] || this.state.currentDate, item.doctorIdHostpitalId)}
+                                        {
+                                            item.slotData[selectedDatesByDoctorIds[item.doctorIdHostpitalId] || this.state.currentDate] !== undefined ?
+                                                this.haveAvailableSlots(item.doctorIdHostpitalId, item.slotData[selectedDatesByDoctorIds[item.doctorIdHostpitalId] || this.state.currentDate])
+                                                : this.noAvailableSlots(item.doctorIdHostpitalId, item.slotData)
+                                        }
+
+                                        <View style={{ borderTopColor: '#000', borderTopWidth: 0.5, marginTop: 10 }}>
+                                            <Row style={{ marginTop: 10 }}>
+                                                <Col size={10} style={{ alignContent: 'flex-start', alignItems: 'flex-start' }}>
+                                                    <Text note style={{ fontSize: 12, alignSelf: 'flex-start', fontFamily: 'OpenSans' }}>Selected Appointment on</Text>
+                                                    <Text style={{ alignSelf: 'flex-start', color: '#000', fontSize: 12, fontFamily: 'OpenSans', marginTop: 5 }}>{selectedSlotItemByDoctorIds[item.doctorIdHostpitalId] ? formatDate(selectedSlotItemByDoctorIds[item.doctorIdHostpitalId].slotStartDateAndTime, 'ddd DD MMM, h:mm a') : null}</Text>
+                                                </Col>
+
+                                                {/* <Col style={{ width: '35%' }}></Col> */}
+
+                                                <Col size={4}>
+                                                    <TouchableOpacity
+                                                        onPress={() => { console.log('......Pressing....'); this.onPressContinueForPaymentReview(item, selectedSlotItemByDoctorIds[item.doctorIdHostpitalId], item.doctorIdHostpitalId) }}
+                                                        style={{ backgroundColor: 'green', borderColor: '#000', height: 30, borderRadius: 20, justifyContent: 'center', marginLeft: 5, marginRight: 5, marginTop: -5 }}>
+                                                        <Text style={{ color: '#fff', fontSize: 12, fontWeight: 'bold', fontFamily: 'OpenSans' }}>Continue </Text>
+                                                    </TouchableOpacity>
+                                                </Col>
+
+                                            </Row>
+                                        </View>
+
+                                    </View> : null}
+
+                            </Grid>
+
+                        </ListItem>
+
+
+                    </List>
+                </Card>
+            </View>
         )
     }
 
@@ -900,7 +1078,7 @@ class doctorSearchList extends Component {
                 }}
                 renderItem={({ item }) =>
                     <Col style={{ justifyContent: 'center' }}>
-                        <TouchableOpacity style={[styles.availabilityBG, selectedDate === item ? { backgroundColor: '#775DA3',alignItems:'center' } : { backgroundColor: '#ced6e0',alignItems:'center' }]}
+                        <TouchableOpacity style={[styles.availabilityBG, selectedDate === item ? { backgroundColor: '#775DA3', alignItems: 'center' } : { backgroundColor: '#ced6e0', alignItems: 'center' }]}
                             onPress={() => this.onDateChanged(item, doctorIdHostpitalId)}>
                             <Text style={[{ fontSize: 12, fontFamily: 'OpenSans' }, selectedDate === item ? { color: '#fff' } : { color: '#000' }]}>{formatDate(moment(item), 'ddd, DD MMM')}</Text>
                             <Text style={[{ fontSize: 10, fontFamily: 'OpenSans' }, selectedDate === item ? { color: '#fff' } : { color: '#000' }]}>{slotData[item] ? slotData[item].reduce(reducer, 0) + ' Slots Available' : 'No Slots Available'}</Text>
@@ -933,73 +1111,73 @@ const styles = StyleSheet.create({
     },
 
     slotDefaultBgColor: {
-       
+
         backgroundColor: '#ced6e0',
         borderColor: '#000',
         marginTop: 10,
         height: 30,
         borderRadius: 5,
-        justifyContent:'center',
-        marginLeft:5
-       
-       
+        justifyContent: 'center',
+        marginLeft: 5
+
+
     },
     slotDefaultTextColor: {
         color: '#000',
         fontSize: 12,
         fontFamily: 'OpenSans',
-        textAlign:'center'
-        
+        textAlign: 'center'
+
     },
     slotBookedBgColor: {
-       
+
         backgroundColor: '#A9A9A9', //'#775DA3',
         borderColor: '#000',
         marginTop: 10, height: 30,
         borderRadius: 5,
-     justifyContent:'center',
-     marginLeft:5
+        justifyContent: 'center',
+        marginLeft: 5
 
-      
+
     },
     slotSelectedBgColor: {
-        
+
         backgroundColor: '#775DA3',
         borderColor: '#000',
         marginTop: 10,
         height: 30,
         borderRadius: 6,
-        justifyContent:'center',
-        marginLeft:5
+        justifyContent: 'center',
+        marginLeft: 5
 
-       
-     
+
+
     },
     slotBookedTextColor: {
         color: '#fff',
         fontSize: 12,
         fontFamily: 'OpenSans',
-        textAlign:'center'
+        textAlign: 'center'
     },
     slotBookedBgColorFromModal: {
         backgroundColor: '#878684',
         borderRadius: 5,
-        
+
         height: 30,
-        
+
     },
     slotDefaultBg: {
         backgroundColor: '#2652AC',
         borderRadius: 5,
-        
+
         height: 30,
-        
+
     },
     slotSelectedBg: {
         backgroundColor: '#808080',
         borderRadius: 5,
         height: 30,
-       
+
     },
     availabilityBG: {
         textAlign: 'center',
