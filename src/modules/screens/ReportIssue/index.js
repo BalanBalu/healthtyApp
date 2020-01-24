@@ -6,7 +6,7 @@ import { FlatList } from 'react-native-gesture-handler';
 import Spinner from "../../../components/Spinner";
  import { RadioButton } from 'react-native-paper';
 
-import {appointmentIssue, pharmacyIssue, chatIssue  } from '../../common';
+import {appointmentIssue, pharmacyIssue, chatIssue,stringHasOnlySpace  } from '../../common';
 
 import{ insertReportIssue } from '../../providers/reportIssue/reportIssue.action';
 
@@ -42,7 +42,7 @@ class ReportIssue extends Component {
       try {
         this.setState({ isLoading: true });
         const {quesNo,complaint,issueFor,issue}=this.state;
-        if(complaint != null ) {
+        if(complaint != null&& stringHasOnlySpace(complaint)) {
           
         let userId = await AsyncStorage.getItem('userId');
         let data={
@@ -50,7 +50,8 @@ class ReportIssue extends Component {
           sender_id:userId,
           report_by:'USER',
           issue_type:issue[quesNo].value,
-          complaint:complaint
+          complaint:complaint,
+           report_status:'OPEN'
          
 
         }
@@ -76,6 +77,14 @@ class ReportIssue extends Component {
             const { routeName, key } = navigation.getParam('prevState');
             navigation.navigate({ routeName, key, params: { hasReloadReportIssue: true } });
           
+          }
+          else{
+            Toast.show({
+              text:response.message,
+               type: 'dangers',
+              duration: 3000,
+            })
+
           }
         
         } 
