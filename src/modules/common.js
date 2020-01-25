@@ -324,4 +324,19 @@ export function validatePassword(value) {
     else return true;
 }
 
+export function getHospitalHeadeName(location) {
+    if (!location) return ''
+    if (location)
+      return `${location.name}`;
+    else
+      return ''
   
+  
+  }
+  export function getHospitalName(location) {
+    if (!location) return ''
+    if (location)
+      return `${location.location.address.no_and_street}, ${location.location.address.city}, ${location.location.address.state}, ${location.location.address.pin_code}`;
+    else
+      return ''
+  }

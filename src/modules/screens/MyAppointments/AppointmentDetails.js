@@ -13,7 +13,7 @@ import { formatDate, dateDiff } from '../../../setup/helpers';
 
 import { Loader } from '../../../components/ContentLoader'
 import { InsertReview } from '../Reviews/InsertReview'
-import { renderDoctorImage, RenderHospitalAddress, getAllEducation, getAllSpecialist, getName, getDoctorExperience } from '../../common'
+import { renderDoctorImage, RenderHospitalAddress, getAllEducation, getAllSpecialist, getName, getDoctorExperience,getHospitalHeadeName,getHospitalName } from '../../common'
 class AppointmentDetails extends Component {
   constructor(props) {
     super(props)
@@ -136,9 +136,9 @@ class AppointmentDetails extends Component {
   getUserReport = async () => {
     try {
       let resultReport = await getUserRepportDetails('appointment', this.state.appointmentId, '?skip=1');
-      alert(JSON.stringify(resultReport))
+
       if (resultReport.success) {
-        alert(JSON.stringify(resultReport))
+        
         this.setState({ reportData: resultReport.data });
       }
     }
@@ -325,7 +325,7 @@ class AppointmentDetails extends Component {
                   <Col size={4}>
                   <Row style={{marginTop:10 }}>
                     <Button  style={styles.confirmButton} onPress={() => this.doAccept(data, 'APPROVED')}>
-                     <Text  style={styles.ButtonText}>CANCEL  </Text>
+                     <Text  style={styles.ButtonText}>ACCEPT</Text>
                     </Button>
                   </Row>
                   <Row style={{marginTop:10 }}>
@@ -408,8 +408,8 @@ class AppointmentDetails extends Component {
                </Col>
               <Col style={{width:'92%',paddingTop:5}}>
                  <Text style={styles.innerSubText}>Hospital</Text>
-                 <Text  style={styles.subTextInner1}>getHospitalHeadeName(data.location)</Text>
-                 <Text note style={styles.subTextInner1}>getHospitalName(data.location)</Text>
+                 <Text  style={styles.subTextInner1}>{getHospitalHeadeName(hospital)}</Text>
+                 <Text note style={styles.subTextInner1}>{getHospitalName(hospital)}</Text>
               </Col>
             </Row>
             <Row style={styles.rowSubText}>
