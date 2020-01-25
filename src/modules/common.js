@@ -277,17 +277,11 @@ export function validateEmailAddress(text) {
     else return true;
 }
 
-export function validateName(text) {
-    let regex = new RegExp('^[a-zA-Z]{1}');
-    if (regex.test(text) === false) return false;
-    else return true;
-}
 export function stringHasOnlySpace(text) {
     let regex =/^(?!\s*$)[-a-zA-Z0-9_:,.' ']{1,100}$/;
     if (regex.test(text) === false) return false;
     else return true;
 }
-
 export const debounce = (fun, delay) => {
     let timer = null;
     return function (...args) {
@@ -324,4 +318,8 @@ export function validatePassword(value) {
     else return true;
 }
 
-  
+export function validateName(text) {
+    let regex = /^(?!\s*$)[-a-zA-Z_:,.' ']{1,100}$/;
+    if (regex.test(text) === false) return false;
+    else return true;
+}

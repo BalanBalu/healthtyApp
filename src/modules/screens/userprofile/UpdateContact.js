@@ -50,26 +50,6 @@ class UpdateContact extends Component {
         }
 
     }
-    onChangeNumber = async (type, number) => {
-        if (type == "Primary") {
-            await this.setState({ primary_mobile_no: number });
-        }
-        if (type == "Secondary") {
-            await this.setState({ secondary_mobile_no: number });
-        }
-        if (this.state.primary_mobile_no && acceptNumbersOnly(this.state.primary_mobile_no) === true) {
-            this.setState({ primaryNoErrMsg: 'Primary contact field must contains number' })
-            return false;
-        }
-        if (this.state.secondary_mobile_no && acceptNumbersOnly(this.state.secondary_mobile_no) === true) {
-            this.setState({ secNoErrMsg: 'Secondary contact field must contains number' })
-            return false;
-        }
-        else {
-            this.setState({ primaryNoErrMsg: '', secNoErrMsg: '' })
-        }
-
-    }
 
     commonUpdateContactMethod = async () => {
         const { secondary_mobile_no, existingSecNumber, primary_mobile_no, existingPrimaryNo } = this.state
@@ -136,7 +116,7 @@ class UpdateContact extends Component {
                                         <Row>
                                             <Icon name="call" style={styles.centeredIcons}></Icon>
                                             <Input placeholder="Edit Your Number" style={styles.transparentLabel} keyboardType="numeric"
-                                                onChangeText={number => this.onChangeNumber("Primary", number)}
+                                                onChangeText={primary_mobile_no => acceptNumbersOnly(primary_mobile_no) == false ? this.setState({ primary_mobile_no}):null}
                                                 value={String(this.state.primary_mobile_no)}
                                                 testID='updatePrimaryContact' />
                                         </Row>
@@ -150,7 +130,7 @@ class UpdateContact extends Component {
                                         <Row>
                                             <Icon name='call' style={styles.centeredIcons}></Icon>
                                             <Input placeholder="Edit Your Number" style={styles.transparentLabel} keyboardType="numeric"
-                                                onChangeText={number => this.onChangeNumber("Secondary", number)}
+                                                onChangeText={secondary_mobile_no => acceptNumbersOnly(secondary_mobile_no) == false ? this.setState({ secondary_mobile_no }) : null}
                                                 value={String(this.state.secondary_mobile_no)}
                                                 testID='updateContact' />
                                         </Row>

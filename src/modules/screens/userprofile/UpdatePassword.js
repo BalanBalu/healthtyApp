@@ -19,17 +19,33 @@ class UpdatePassword extends Component {
             oldPasswordVisible: true,
             newPasswordVisible: true,
             isLoading: false,
-            errorMsg:'',
+            errorMsg: '',
         }
     }
 
     handlePasswordUpdate = async () => {
         try {
+            if (this.state.oldPassword == '') {
+                this.setState({ errorMsg: 'Kindly enter the old password' })
+                return false;
+            }
+            if (this.state.newPassword == '') {
+                this.setState({ errorMsg: 'Kindly enter the new password' })
+                return false;
+            }
+            if ((this.state.oldPassword && this.state.newPassword).length < 6) {
+                this.setState({ errorMsg: "Password is required Min 6 Characters" });
+                return false;
+            }
+            if ((this.state.oldPassword && this.state.newPassword).length > 16) {
+                this.setState({ errorMsg: "Password Accepted Max 16 Characters only" });
+                return false
+            }
             if (this.state.oldPassword == this.state.newPassword) {
                 this.setState({ errorMsg: 'Cannot have the same password. Kindly enter a new Password' })
                 return false;
             }
-            this.setState({ errorMsg:'', isLoading: true });
+            this.setState({ errorMsg: '', isLoading: true });
             let userId = await AsyncStorage.getItem('userId');
             let data = {
                 type: 'user',
@@ -38,25 +54,25 @@ class UpdatePassword extends Component {
                 newPassword: this.state.newPassword
             };
 
-                let result = await updateNewPassword(data);
-                if (result.success) {
-                    await Toast.show({
-                        text: 'Your Password is changed Successfully',
-                        type: "success",
-                        duration: 3000,
+            let result = await updateNewPassword(data);
+            if (result.success) {
+                await Toast.show({
+                    text: 'Your Password is changed Successfully',
+                    type: "success",
+                    duration: 3000,
 
-                    })
-                    this.props.navigation.navigate('Profile');
+                })
+                this.props.navigation.navigate('Profile');
 
-                }
-                else {
-                    await Toast.show({
-                        text: result.message,
-                        type: "danger",
-                        duration: 3000
-                    })
-                }
-           
+            }
+            else {
+                await Toast.show({
+                    text: result.message,
+                    type: "danger",
+                    duration: 3000
+                })
+            }
+
             this.setState({ isLoading: false });
 
         } catch (e) {
@@ -67,24 +83,14 @@ class UpdatePassword extends Component {
         }
     }
 
-    validateChangePassword = async (type, text) => {
+    onPasswordTextChanged(type,value) {
         if (type === "OldPassword") {
-            this.setState({ oldPassword: text });
-        } else {
-            this.setState({ newPassword: text });
+            this.setState({ oldPassword: value.replace(/\s/g, "") });
         }
-
-        if (validatePassword((this.state.newPassword) || (this.state.oldPassword))  === false) {
-            this.setState({ errorMsg: "Password can't Accept White spaces"})
-            return false;
+        if (type === 'NewPassword') {
+            this.setState({ newPassword: value.replace(/\s/g, "") });
         }
-        
-        else {
-            this.setState({ errorMsg: '' })
-        }
-
     }
-
     render() {
 
         return (
@@ -113,7 +119,7 @@ class UpdatePassword extends Component {
                                             keyboardType="default"
                                             value={this.state.oldPassword}
                                             secureTextEntry={this.state.oldPasswordVisible}
-                                            onChangeText={(oldPassword) => this.validateChangePassword("OldPassword", oldPassword )}
+                                            onChangeText={(oldPassword) => this.onPasswordTextChanged("OldPassword", oldPassword)}
                                             testID='enterOldPassword' />
                                         {this.state.oldPasswordVisible == true ?
                                             <Icon active name="ios-eye-off" style={{ fontSize: 25, marginTop: 10 }} onPress={() => this.setState({ oldPasswordVisible: !this.state.oldPasswordVisible })}
@@ -133,8 +139,8 @@ class UpdatePassword extends Component {
                                             keyboardType="default"
                                             value={this.state.newPassword}
                                             secureTextEntry={this.state.newPasswordVisible}
-                                            onChangeText={(newPassword) => this.validateChangePassword("NewPassword", newPassword)}
-                                            testID='enterNewPassword'/> 
+                                            onChangeText={(newPassword) => this.onPasswordTextChanged("NewPassword", newPassword)}
+                                            testID='enterNewPassword' />
                                         {this.state.newPasswordVisible == true ?
                                             <Icon active name="ios-eye-off" style={{ fontSize: 25, marginTop: 10 }} onPress={() => this.setState({ newPasswordVisible: !this.state.newPasswordVisible })}
                                             /> : <Icon active name="ios-eye" style={{ fontSize: 25, marginTop: 10 }} onPress={() => this.setState({ newPasswordVisible: !this.state.newPasswordVisible })} />}
@@ -143,7 +149,7 @@ class UpdatePassword extends Component {
                                 </Col>
 
                             </Item>
-                            <Text style={{ color: 'red', marginLeft: 15, marginTop: 5 }}>{this.state.errorMsg}</Text>
+                            {this.state.errorMsg ? <Text style={{ paddingLeft: 20, fontSize: 13, fontFamily: 'OpenSans', color: 'red' }}>{this.state.errorMsg}</Text> : null}
 
                             <Item style={{ borderBottomWidth: 0, marginTop: 10 }}>
                                 <Right>
