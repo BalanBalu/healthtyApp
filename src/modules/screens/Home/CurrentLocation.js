@@ -23,8 +23,6 @@ export default class CurrentLocation {
       if (isGranted) {
 
         RNAndroidLocationEnabler.promptForEnableLocationIfNeeded({ interval: 10000, fastInterval: 5000 }).then(async (data) => {
-          console.log('Hey it is coming here.....');
-          console.log(data);
           if (data === 'enabled') {
             await this.timeout(1000);
           }
@@ -32,7 +30,6 @@ export default class CurrentLocation {
           navigator.geolocation.getCurrentPosition(async (position) => {
             const origin_coordinates = [position.coords.latitude, position.coords.longitude,];
             let fullPath = `https://api.mapbox.com/geocoding/v5/mapbox.places/${origin_coordinates[1]},${origin_coordinates[0]}.json?types=poi&access_token=${MAP_BOX_TOKEN}`;
-            //this._request(center[0].toFixed(2), center[1].toFixed(2))
             let resp = await Axios.get(fullPath, {
               headers: {
                 'Content-Type': null,
