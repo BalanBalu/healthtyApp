@@ -9,7 +9,7 @@ import StarRating from 'react-native-star-rating';
 import moment from 'moment';
 import { NavigationEvents } from 'react-navigation';
 import { viewUserReviews, bindDoctorDetails, appointmentStatusUpdate, appointmentDetails, getPaymentInfomation,getUserRepportDetails } from '../../providers/bookappointment/bookappointment.action';
-import { formatDate, dateDiff } from '../../../setup/helpers';
+import { formatDate, dateDiff,statusValue } from '../../../setup/helpers';
 
 import { Loader } from '../../../components/ContentLoader'
 import { InsertReview } from '../Reviews/InsertReview'
@@ -225,6 +225,7 @@ class AppointmentDetails extends Component {
 
 
   navigateCancelAppoointment() {
+    try{
     this.state.data.prefix = this.state.doctorData.prefix;
     const { navigation } = this.props;
     const fromNotification = navigation.getParam('fromNotification');
@@ -238,7 +239,10 @@ class AppointmentDetails extends Component {
     }
 
     this.props.navigation.navigate('CancelAppointment', { appointmentDetail: this.state.data })
-
+  }
+  catch(e){
+    console.log(e)
+  }
   }
 
   async backNavigation() {
@@ -288,7 +292,13 @@ class AppointmentDetails extends Component {
                              <Thumbnail square source={renderDoctorImage(doctorData)}   style={{ height: 70, width: 70, borderRadius: 10 }} /> 
                          </Col> 
                          <Col style={{width:'80%',marginTop:10}}>
+                           <Row>
                              <Text  style={styles.Textname} >{(doctorData && doctorData.prefix != undefined ? doctorData && doctorData.prefix + ' ' : '') + (getName(doctorData)) + ','}</Text>
+                             <Text style={{ fontSize: 13, fontFamily: 'OpenSans',fontWeight:'normal' }}>{education}</Text>
+                             </Row>
+                             <Row style={{marginTop:10,marginLeft:5}}>
+                             <Text  style={styles.Textname} >{specialist} </Text>
+                             </Row>
                             {/* <Text style={styles. cardItemText2}>{getUserGenderAndAge(data && data.userInfo)}</Text>  */}
                          </Col>
                        </Row>
@@ -309,42 +319,52 @@ class AppointmentDetails extends Component {
                       <Text note style={styles.subText2}>{paymentDetails.payment_method||0}</Text>
                     </Row>
                   </Col>
-                {data.appointment_status=='APPROVED'||data.appointment_status == 'PENDING' ?
+                  {selectedTab == 0 ?
+                  data.onGoingAppointment !== true && (data.appointment_status == 'APPROVED' || this.state.appointmentStatus === 'APPROVED' || data.appointment_status == 'PENDING') ?
                   <Col size={4}>
                      <Row style={{marginTop:10 }}>
-                       <Button  style={styles.confirmButton} onPress={() => this.doAccept(data, 'APPROVED')}>
-                        <Text  style={styles.ButtonText}>CANCEL APPOINTMENT </Text>
+                       <Button  style={styles.confirmButton} onPress={() => this.navigateCancelAppoointment()}>
+                        <Text  style={styles.ButtonText}>CANCEL</Text>
                        </Button>
                      </Row>
-                     <Row style={{marginTop:10 }}>
-                       <Button style={styles.postponeButton}  onPress={() => { 	this.props.navigation.push('proposeNewTime', { data:data})}}>
-                          <Text capitalise={true} style={styles.ButtonText}>POSTPONE</Text>
-                       </Button>
-                     </Row>
-                  </Col>:  data.appointment_status == 'PROPOSED_NEW_TIME' ?
+                  </Col>: data.onGoingAppointment !== true && data.appointment_status == 'PROPOSED_NEW_TIME' ?
                   <Col size={4}>
                   <Row style={{marginTop:10 }}>
-                    <Button  style={styles.confirmButton} onPress={() => this.doAccept(data, 'APPROVED')}>
+                    <Button  style={styles.confirmButton} onPress={() => this.updateAppointmentStatus(data, 'APPROVED')}>
                      <Text  style={styles.ButtonText}>ACCEPT</Text>
                     </Button>
                   </Row>
                   <Row style={{marginTop:10 }}>
-                    <Button style={styles.postponeButton}  onPress={() => { 	this.props.navigation.push('proposeNewTime', { data:data})}}>
-                       <Text capitalise={true} style={styles.ButtonText}>POSTPONE</Text>
+                    <Button style={styles.postponeButton}  onPress={() =>  this.navigateCancelAppoointment()}>
+                       <Text capitalise={true} style={styles.ButtonText}>CANCEL</Text>
                     </Button>
                   </Row>
-               </Col>
-                  : data.appointment_status == 'APPROVED' &&  formatDate(data.appointment_endtime, 'YYYY-MM-DD hh:mm') <formatDate(new Date(), 'YYYY-MM-DD hh:mm') ?
-
-                     <Col size={4}>
-                       <Row style={{marginTop:10 }}>
-                   <Button  style={[styles.confirmButton, { backgroundColor : '#08BF01'}]}   onPress={() => this.doAccept(data, 'COMPLETED')}>
-                 <Text style={styles.ButtonText}>COMPLETED</Text>
-                       </Button>
-                       </Row>
-                  </Col>: data.appointment_status == 'APPROVED'&& data.onGoingAppointment === true && 
-                  <Text style={{marginLeft:20, fontSize: 15, fontFamily: 'OpenSans', fontWeight: 'bold',color:'green' }}>ONGOING</Text>
-                  }
+               </Col>: <Col size={4}>
+                     
+                     <View style={{ alignItems:'center' }}>
+                        <Icon name={statusValue[data.appointment_status].icon} 
+                              style={{
+                                color: statusValue[data.appointment_status].color,
+                                fontSize:35
+                              }} />
+                  
+                     <Text capitalise={true} style={[styles.textApproved,{color:statusValue[data.appointment_status].color}]}>{data.appointment_status}</Text>
+                     </View>
+                 </Col>
+                  // : data.appointment_status == 'APPROVED'&& data.onGoingAppointment === true && 
+                  // <Text style={{marginLeft:20, fontSize: 15, fontFamily: 'OpenSans', fontWeight: 'bold',color:'green' }}>ONGOING</Text>
+                 : <Col size={4}>
+                     
+                 <View style={{ alignItems:'center' }}>
+                    <Icon name={statusValue[data.appointment_status].icon} 
+                          style={{
+                            color: statusValue[data.appointment_status].color,
+                            fontSize:35
+                          }} />
+              
+                 <Text capitalise={true} style={[styles.textApproved,{color:statusValue[data.appointment_status].color}]}>{data.appointment_status}</Text>
+                 </View>
+             </Col> }
               </Row>
             </Grid>
            <CardItem footer style={styles.cardItem2}>
@@ -463,7 +483,7 @@ class AppointmentDetails extends Component {
                  <Text style={styles.innerSubText}>Payment Report</Text>
                  {reportData.length!=0?
               <Text note style={styles.subTextInner1}>{reportData[reportData.length-1] && reportData[reportData.length-1].complaint||' '}</Text>:null}
-              <View style={{ alignItems: 'center', justifyContent: 'center', marginTop: 5 }}>
+              <View style={{ alignItems: 'center', justifyContent: 'center', marginTop: 5,marginBottom:10 }}>
                       <TouchableOpacity 
                         onPress={() => { 
                           this.props.navigation.push('ReportIssue', { 
@@ -500,7 +520,7 @@ class AppointmentDetails extends Component {
                  <Icon name="ios-add-circle" style={{fontSize:20,}}/>
               </Col>
               <Col style={{width:'92%',paddingTop:5}}>
-                 <Text style={styles.innerSubText}>Add feedback</Text>
+                 <Text style={styles.innerSubText}>Add Feedback</Text>
                <View style={{ justifyContent: 'center', alignItems: 'center' }}>
                <TouchableOpacity block success style={styles.reviewButton} onPress={() => this.navigateAddReview()} testID='addFeedBack'>
                 
