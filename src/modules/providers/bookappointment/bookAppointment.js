@@ -17,7 +17,7 @@ export default class BookAppointmentPaymentUpdate {
             amount: bookSlotDetails.slotData.fee,
             credit_point_discount_amount: bookSlotDetails.creditPointDiscountAmount, 
             coupon_code_discount_amount: bookSlotDetails.couponCodeDiscountAmount,
-            amount_paid: !isSuccess || modeOfPayment === 'cash' ? 0 : bookSlotDetails.slotData.fee,
+            amount_paid: !isSuccess || modeOfPayment === 'cash' ? 0 : bookSlotDetails.finalAmountToPayByOnline,
             amount_due: !isSuccess || modeOfPayment === 'cash' ? bookSlotDetails.slotData.fee : 0,
             currency: 'INR',
             service_type: serviceType,
