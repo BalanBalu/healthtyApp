@@ -40,12 +40,14 @@ const SELECTED_EXPERIENCE_START_END_YEARS = {
 }
 
 let currentDoctorOrder = 'ASC';
-let doctorDataInMap = new Map();
+let doctorDataWithAviablityInMap = new Map();
+
 class doctorSearchList extends Component {
     processedDoctorIds = [];
     processedDoctorData = [];
     processedDoctorDetailsData = [];
     processedDoctorAvailabilityDates = [];
+    sponsorIdWithHospitalIdArray = [];
 
     doctorDetailsMap = new Map();
 
@@ -222,7 +224,7 @@ class doctorSearchList extends Component {
                 })
             } else {
                 filteredDocListArray.forEach(doctorIdHospitalId => {
-                    filteredDocData.push(doctorDataInMap.get(String(doctorIdHospitalId)));
+                    filteredDocData.push(doctorDataWithAviablityInMap.get(String(doctorIdHospitalId)));
                 });
             }
             store.dispatch({
@@ -265,14 +267,18 @@ class doctorSearchList extends Component {
 
         const userId = await AsyncStorage.getItem('userId');
         let resultData = await searchDoctorList(userId, searchedInputValues);
-        console.log('Result of patient Search Data ' + JSON.stringify(resultData));
+        
         await this.setState({ searchedResultData: resultData.data });
         if (resultData.success) {
             let doctorIds = resultData.data.map((element) => {
-                return element.doctor_id
-            }).join(',');
+                const docObj = {
+                    doctorId : element.doctor_id,
+                    hospitalIds: element.hospital ? element.hospital.map(hosp => hosp.hospital_id) : [] 
+                }
+                return docObj
+            });
             this.setState({ getSearchedDoctorIds: doctorIds });
-            this.getDoctorAllDetails(this.state.getSearchedDoctorIds, getMoment(this.state.selectedDate), endDateMoment);// for getting multiple Doctor details,Reviews ,ReviewCount,etc....
+            this.getDoctorAllDetails(doctorIds, getMoment(this.state.selectedDate), endDateMoment);// for getting multiple Doctor details,Reviews ,ReviewCount,etc....
         } else {
             store.dispatch({
                 type: SET_BOOK_APP_DOCTOR_DATA,
@@ -306,6 +312,9 @@ class doctorSearchList extends Component {
                     slotData: doctorSlotData.slotData,
                     location: doctorSlotData.slotData[Object.keys(doctorSlotData.slotData)[0]].length > 0 ? doctorSlotData.slotData[Object.keys(doctorSlotData.slotData)[0]][0].location : null,
                 }
+                if(this.sponsorIdWithHospitalIdArray.includes(doctorSlotData.doctorIdHostpitalId)) {
+                    obj.isDoctorHosptalSponsored = true;
+                }
                 this.processedDoctorDetailsData.push(obj);
             }
         }
@@ -320,29 +329,31 @@ class doctorSearchList extends Component {
         console.log(this.processedDoctorDetailsData);
         this.setState({ refreshCount: this.state.refreshCount + 1 });
         return this.processedDoctorDetailsData;
-        this.setState({ doctorData: this.processedDoctorDetailsData });
-
     }
-    async getDoctorAllDetails(doctorIds, startDate, endDate) {
+    async getDoctorAllDetails(doctorIdHospitalIds, startDate, endDate) {
         try {
             this.setState({ isLoading: true });
-
-            const [resultDoctorDetails, slotData, patientReviesResult, favResult, getActiveSponsorDetails] = await Promise.all([
+            const doctorIds = doctorIdHospitalIds.map(doc => doc.doctorId);
+            console.log(doctorIds);
+            const [resultDoctorDetails, slotData, patientReviesResult, favResult, activeSponsorDetails] = await Promise.all([
                 this.getDoctorDetails(doctorIds).catch(res => console.log("Exception on  getDoctorDetails: " + res)),
-                this.getAvailabilitySlots(doctorIds, startDate, endDate).catch(res => console.log("Exception" + res)),
+                this.getAvailabilitySlots(doctorIdHospitalIds, startDate, endDate).catch(res => console.log("Exception" + res)),
                 getDoctorsReviewsCount(doctorIds).catch(res => console.log("Exception on getPatientReviews" + res)),
                 getDoctorFaviouteList(doctorIds).catch(res => console.log("Exception on getPatient Wish List" + res)),
                 getAllDoctorsActiveSponsorDetails(doctorIds).catch(res => console.log("Exception on get All Doctors ActiveSponsor Details" + res))
             ]);
-
-
-            console.log('There is No Active Sponsors for given list of Doctors' + JSON.stringify(getActiveSponsorDetails))
-            if (getActiveSponsorDetails.data) {
+            console.log('There is No Active Sponsors for given list of Doctors' + JSON.stringify(activeSponsorDetails))
+            if (activeSponsorDetails.data) {
                 let sponsorIdArray = [];
 
-                getActiveSponsorDetails.data.map((ele) => {
+                activeSponsorDetails.data.map((ele) => {
                     sponsorIdArray.push(ele._id)
+                    const hospitalId = ele.location[0] && ele.location[0].hospital_id;
+                    if(hospitalId) {
+                        this.sponsorIdWithHospitalIdArray.push(ele.doctor_id + '-' + hospitalId); 
+                    }   
                 });
+                console.log('Hopital Array:' +this.sponsorIdWithHospitalIdArray);
                 this.updateSponsorViewersCount(sponsorIdArray)
             };
 
@@ -351,10 +362,10 @@ class doctorSearchList extends Component {
             });
 
             let doctorData = this.processFinalData(slotData);
-
+            console.log(doctorData);
             this.setState({ refreshCount: this.state.refreshCount + 1 });
             doctorData.forEach((element) => {
-                doctorDataInMap.set(String(element.doctorIdHostpitalId), element)
+                doctorDataWithAviablityInMap.set(String(element.doctorIdHostpitalId), element)
             });
         } catch (error) {
             console.log('exception on getting multiple Requests');
@@ -373,7 +384,6 @@ class doctorSearchList extends Component {
                 sponsorIds: sponsorIdArray
             }
             let resultData = await updateSponsorViewCount(userId, sponsorIds);
-            // console.log('.....................................................................................................')
             console.log('successfully updated Doctors Sponsors counts ' + JSON.stringify(resultData.updatedResult))
         } catch (ex) {
             return {
@@ -648,13 +658,59 @@ class doctorSearchList extends Component {
         this.setState({ refreshCount: this.state.refreshCount + 1 });
     }
 
+    renderSponsorDoctorList(item) {
+        const { bookappointment: {  reviewsByDoctorIds } } = this.props;
+        return <Card style={{ padding: 10, borderRadius: 10, borderBottomWidth: 2, marginLeft: 10 }}>
+        <Grid>
+            <Row>
+                <Col size={2}>
+                    <Thumbnail square source={renderDoctorImage(item)} style={{ height: 50, width: 50 }} />
+                    <View style={{ position: 'absolute', marginTop: 35, marginLeft: 26 }}>
+                        <Image square source={require('../../../../assets/images/viplogo.png')} style={{ height: 20, width: 20 }} />
 
+                    </View>
+                </Col>
+                <Col size={8} style={{ marginLeft: 10 }}>
+
+                    <Text style={{ fontFamily: 'OpenSans', fontSize: 12, fontWeight: 'bold' }}>{(item.prefix ? item.prefix + '. ' : '') + (item.first_name || '') + ' ' + (item.last_name || '')}</Text>
+
+                    <Text style={{ fontFamily: 'OpenSans', marginTop: 2, fontSize: 10, marginTop: 5, color: '#808080' }}>{(getDoctorEducation(item.education)) + ' ' + getDoctorSpecialist(item.specialist)}</Text>
+
+                    <Text style={{ fontFamily: 'OpenSans', marginTop: 2, fontSize: 10, marginTop: 5, color: '#808080' }}>6 years of Experience</Text>
+
+                </Col>
+            </Row>
+            <Row style={{ marginTop: 10 }}>
+                <Text note style={{ fontFamily: 'OpenSans', fontSize: 10, textAlign: 'center', marginTop: 2 }}> Rating -</Text>
+                <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'center', marginLeft: 5 }}>
+                    <StarRating
+                        fullStarColor='#FF9500'
+                        starSize={12}
+                        width={85}
+                        containerStyle={{ marginTop: 2 }}
+                        disabled={true}
+                        rating={1}
+                        maxStars={1}
+                    />
+
+                    <Text style={{ fontFamily: 'OpenSans', fontSize: 10, fontWeight: 'bold', marginLeft: 2, marginTop: 2 }}> {reviewsByDoctorIds[item.doctor_id] !== undefined ? reviewsByDoctorIds[item.doctor_id].average_rating : ' 0'}</Text>
+                </View>
+
+                <Text note style={{ fontFamily: 'OpenSans', fontSize: 10, textAlign: 'center', marginLeft: 10, marginTop: 2 }}> Fees -</Text>
+                <Text style={{ fontFamily: 'OpenSans', fontSize: 10, fontWeight: 'bold', textAlign: 'center', marginLeft: 5, marginTop: 2 }}> {'\u20B9'}100</Text>
+
+                <TouchableOpacity onPress={() => this.onBookPress(item.doctorIdHostpitalId)} style={{ backgroundColor: '#7F49C3', borderRadius: 10, marginLeft: 10, paddingLeft: 15, paddingRight: 15, paddingTop: 2, paddingBottom: 2, justifyContent: 'center', }}>
+                    <Text style={{ textAlign: 'center', color: '#fff', fontSize: 10, fontWeight: 'bold', fontFamily: 'OpenSans' }}>BOOK </Text>
+                </TouchableOpacity>
+            </Row>
+        </Grid>
+    </Card>
+    }
     render() {
 
-        const { bookappointment: { patientWishListsDoctorIds, favouriteListCountByDoctorIds, reviewsByDoctorIds, filteredDoctorData } } = this.props;
-        const { selectedDatesByDoctorIds, expandedDoctorIdHospitalsToShowSlotsData, isLoggedIn, selectedSlotItemByDoctorIds,
-            processedDoctorAvailabilityDates,
-            isLoading, isAvailabilityLoading
+        const { bookappointment: {  reviewsByDoctorIds, filteredDoctorData } } = this.props;
+        const { 
+            isLoading
         } = this.state;
         return (
             <Container style={styles.container}>
@@ -663,11 +719,7 @@ class doctorSearchList extends Component {
                 />
 
                 {isLoading ? <Loader style='list' /> :
-
-
                     <Content>
-
-
                         <View>
                             <Card style={{ borderRadius: 7, paddingTop: 5, paddingBottom: 5 }}>
 
@@ -676,25 +728,14 @@ class doctorSearchList extends Component {
                                         <Row>
                                             <Col style={{ width: '15%' }}>
                                                 <Icon name='ios-arrow-down' style={{ color: '#000', fontSize: 20, marginTop: 5 }} />
-
                                             </Col>
                                             <Col style={{ width: '85%' }}>
                                                 <Text uppercase={false} style={{ fontFamily: 'OpenSans', color: '#000', fontSize: 13, textAlign: 'center', marginTop: 5 }}>Top Rated </Text>
-
                                             </Col>
-
                                         </Row>
                                     </Col>
-                                    {/* <Col style={{ width:'45%',alignItems: 'flex-start', flexDirection: 'row', }} onPress={() => this.navigateToFilters()}>
-                                <Row>
-                                  <Text uppercase={false} style={{ fontFamily: 'OpenSans', color: '#000', fontSize: 13, marginLeft: 8,textAlign: 'center',marginTop:5 }}>Top Rated </Text>
-                                  <Right><Icon name='ios-funnel' style={{ color: 'gray', marginRight:20, }}/></Right>
-                                 
-                                </Row>  
-                        </Col> */}
-
                                     <Col style={{ width: '45%', alignItems: 'flex-start', flexDirection: 'row', borderLeftColor: 'gray', borderLeftWidth: 1 }} onPress={() => this.navigateToFilters()}>
-                                        <Row >
+                                        <Row>
                                             <Col style={{ width: '35%', marginLeft: 10 }}>
                                                 <Icon name='ios-funnel' style={{ color: 'gray' }} />
                                             </Col>
@@ -704,9 +745,7 @@ class doctorSearchList extends Component {
                                         </Row>
                                     </Col>
                                 </Row>
-
                             </Card>
-
 
                             {filteredDoctorData.length === 0 ?
                                 <Item style={{ borderBottomWidth: 0, justifyContent: 'center', alignItems: 'center' }}>
@@ -727,52 +766,8 @@ class doctorSearchList extends Component {
                                                 extraData={this.state.refreshCount}
                                                 keyExtractor={(item, index) => index.toString()}
                                                 renderItem={({ item }) =>
-
-                                                    <Card style={{ padding: 10, borderRadius: 10, borderBottomWidth: 2, marginLeft: 10 }}>
-                                                        <Grid>
-                                                            <Row>
-                                                                <Col size={2}>
-                                                                    <Thumbnail square source={renderDoctorImage(item)} style={{ height: 50, width: 50 }} />
-                                                                    <View style={{ position: 'absolute', marginTop: 35, marginLeft: 26 }}>
-                                                                        <Image square source={require('../../../../assets/images/viplogo.png')} style={{ height: 20, width: 20 }} />
-
-                                                                    </View>
-                                                                </Col>
-                                                                <Col size={8} style={{ marginLeft: 10 }}>
-
-                                                                    <Text style={{ fontFamily: 'OpenSans', fontSize: 12, fontWeight: 'bold' }}>{(item.prefix ? item.prefix + '. ' : '') + (item.first_name || '') + ' ' + (item.last_name || '')}</Text>
-
-                                                                    <Text style={{ fontFamily: 'OpenSans', marginTop: 2, fontSize: 10, marginTop: 5, color: '#808080' }}>{(getDoctorEducation(item.education)) + ' ' + getDoctorSpecialist(item.specialist)}</Text>
-
-                                                                    <Text style={{ fontFamily: 'OpenSans', marginTop: 2, fontSize: 10, marginTop: 5, color: '#808080' }}>6 years of Experience</Text>
-
-                                                                </Col>
-                                                            </Row>
-                                                            <Row style={{ marginTop: 10 }}>
-                                                                <Text note style={{ fontFamily: 'OpenSans', fontSize: 10, textAlign: 'center', marginTop: 2 }}> Rating -</Text>
-                                                                <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'center', marginLeft: 5 }}>
-                                                                    <StarRating
-                                                                        fullStarColor='#FF9500'
-                                                                        starSize={12}
-                                                                        width={85}
-                                                                        containerStyle={{ marginTop: 2 }}
-                                                                        disabled={true}
-                                                                        rating={1}
-                                                                        maxStars={1}
-                                                                    />
-
-                                                                    <Text style={{ fontFamily: 'OpenSans', fontSize: 10, fontWeight: 'bold', marginLeft: 2, marginTop: 2 }}> {reviewsByDoctorIds[item.doctor_id] !== undefined ? reviewsByDoctorIds[item.doctor_id].average_rating : ' 0'}</Text>
-                                                                </View>
-
-                                                                <Text note style={{ fontFamily: 'OpenSans', fontSize: 10, textAlign: 'center', marginLeft: 10, marginTop: 2 }}> Fees -</Text>
-                                                                <Text style={{ fontFamily: 'OpenSans', fontSize: 10, fontWeight: 'bold', textAlign: 'center', marginLeft: 5, marginTop: 2 }}> {'\u20B9'}100</Text>
-
-                                                                <TouchableOpacity onPress={() => this.onBookPress(item.doctorIdHostpitalId)} style={{ backgroundColor: '#7F49C3', borderRadius: 10, marginLeft: 10, paddingLeft: 15, paddingRight: 15, paddingTop: 2, paddingBottom: 2, justifyContent: 'center', }}>
-                                                                    <Text style={{ textAlign: 'center', color: '#fff', fontSize: 10, fontWeight: 'bold', fontFamily: 'OpenSans' }}>BOOK </Text>
-                                                                </TouchableOpacity>
-                                                            </Row>
-                                                        </Grid>
-                                                    </Card>} />
+                                                   item.isDoctorHosptalSponsored === true ? this.renderSponsorDoctorList(item) : null 
+                                                }/>
 
                                         </ScrollView>
                                     </View>
@@ -782,8 +777,8 @@ class doctorSearchList extends Component {
                                         extraData={this.state.refreshCount}
                                         keyExtractor={(item, index) => index.toString()}
                                         renderItem={({ item }) =>
-                                            this.renderDoctorCard(item)
-                                        } />
+                                        item.isDoctorHosptalSponsored === true ?   this.renderDoctorCard(item)  : this.renderDoctorCard(item) 
+                                    } />
                                 </View>}
                         </View>
                     </Content>
