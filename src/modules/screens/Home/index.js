@@ -1,15 +1,13 @@
 import React, { Component } from 'react';
-import { Container, Content, Text, Toast, Title, Header, Button, H3, Item, List, ListItem, Spinner, Card, Input, Left, Right, Thumbnail, Body, Icon, Footer, FooterTab } from 'native-base';
-import { login, logout } from '../../providers/auth/auth.actions';
-import LinearGradient from 'react-native-linear-gradient';
+import { Container, Content, Text, Toast,  Button, Card, Input, Left, Right, Icon } from 'native-base';
+import { logout } from '../../providers/auth/auth.actions';
 import { Col, Row, Grid } from 'react-native-easy-grid';
 import { connect } from 'react-redux'
-import { StyleSheet, Image, View, TouchableOpacity, AsyncStorage, ScrollView, FlatList, NativeModules, ImageBackground } from 'react-native';
+import { StyleSheet, Image, View, TouchableOpacity, AsyncStorage, FlatList, ImageBackground } from 'react-native';
 
-import { SET_PATIENT_LOCATION_DATA } from '../../providers/bookappointment/bookappointment.action';
+import { fetchUserProfile, AVAILABLE_CREDIT_POINTS } from '../../providers/profile/profile.action';
 import { catagries, getSpecialistDataSuggestions } from '../../providers/catagries/catagries.actions';
 import { MAP_BOX_PUBLIC_TOKEN, IS_ANDROID , MAX_DISTANCE_TO_COVER } from '../../../setup/config';
-import RNAndroidLocationEnabler from 'react-native-android-location-enabler';
 import MapboxGL from '@react-native-mapbox-gl/maps';
 import { store } from '../../../setup/store';
 import { getAllChats, SET_LAST_MESSAGES_DATA } from '../../providers/chat/chat.action'
@@ -66,8 +64,19 @@ class Home extends Component {
         let userId = await AsyncStorage.getItem("userId");
         if (userId) {
             this.getAllChatsByUserId(userId);
+            this.getReferalPoints(userId);
         }
         CurrentLocation.getCurrentPosition();
+    }
+    getReferalPoints= async (userId) => {
+        let fields = "credit_points"
+        let result = await fetchUserProfile(userId, fields);
+        if(result) {
+            store.dispatch({
+                type: AVAILABLE_CREDIT_POINTS,
+                credit_points: result.credit_points || 0 
+            })
+        }
     }
 
     getCatagries = async () => {
@@ -184,18 +193,7 @@ class Home extends Component {
             />
         );
     };
-    /* navigationUpdated = false;
-     setNavigationParams() {
-         const { bookappointment: { isLocationUpdated }, navigation } = this.props;
-         if(isLocationUpdated)  
-         navigation.setParams({
-             appBar: {
-                 isOnline: 'YEs',
-                 locationName: 'Ambathur'
-             }
-         });
-         this.navigationUpdated = true;
-     } */
+    
     render() {
         const { fromAppointment } = this.state;
         const { bookappointment: { patientSearchLocationName, locationCordinates, isSearchByCurrentLocation, locationUpdatedCount }, navigation } = this.props;
@@ -239,9 +237,6 @@ class Home extends Component {
                                     <Icon name="ios-close" style={{ fontSize: 25, color: 'gray' }} />
                                 </Button>
                                 : null}
-                            {/* <Button Button transparent onPress={() => this.searchDoctorListModule()}>
-                                    <Icon name="ios-search" style={{ color: '#000' }} />
-                                </Button> */}
                         </Col>
 
                     </Row>
@@ -435,142 +430,8 @@ class Home extends Component {
                         </View>
                     </View>
 
-
-                    {/* 
-                    <Card style={{ padding: 10, borderRadius: 10 }}>
-
-                        <Grid>
-                            <Row >
-                                <Left >
-                                    <Text style={{ fontFamily: 'OpenSans', fontSize: 15,fontWeight:'bold' }}>Categories</Text>
-                                </Left>
-                                <Body >
-
-                                </Body>
-                                <Right>
-                                   <Text style={styles.titleText} onPress={() => this.navigetToCategories()}>View All</Text>
-                                </Right>
-                            </Row>
-                            <Row>
-                                <ListItem style={{ borderBottomWidth: 0 }}>
-                                    <ScrollView horizontal={false}>
-                                        <FlatList
-                                            horizontal={true}
-                                            data={this.state.catagary}
-                                            extraData={this.state}
-                                            renderItem={({ item, index }) =>
-                                                <Grid style={{ marginTop: 10 }}>
-                                                    <Item style={styles.column} onPress={() => this.navigateToCategorySearch(item.category_name)}>
-                                                        <Col>
-                                                            <LinearGradient
-                                                                colors={['#5758BB', '#9980FA']} style={{ borderRadius: 10, padding: 5, height: 100, width: 100, marginLeft: 'auto', marginRight: 'auto' }}>
-                                                                <Image
-                                                                    source={{ uri: item.imageBaseURL + '/' + item.category_id + '.png' }} style={styles.customImage} />
-                                                            </LinearGradient> */}
-
-                    {/* <Text style={styles.textcenter}>{item.category_name}</Text> */}
-                    {/* <Text note style={{ textAlign: 'center',fontFamily:'OpenSans',fontSize:15 }}>100 Doctors</Text>
-                                                        </Col>
-                                                    </Item>
-                                                </Grid>
-                                            }
-                                            keyExtractor={(item, index) => index.toString()}
-                                        />
-                                      </ScrollView>
-                                    </ListItem>
-                                 </Row>
-                             </Grid>
-                  </Card> */}
-                    {/* <Card style={{ backgroundColor: '#ffeaa7', padding: 10, borderRadius: 10 }}>
-                        <Text style={{ fontFamily: 'OpenSans', fontSize: 15 }}>You Can Save A Life</Text>
-                        <Button block style={{ margin: 10, borderRadius: 20, backgroundColor: '#74579E' }}>
-                            <Text uppercase={true} style={{ fontFamily: 'OpenSans', fontSize: 15, fontWeight: 'bold' }}>REPORT ACCIDENT NOW</Text>
-                        </Button>
-                       <Text style={{ textAlign: 'right', fontSize: 15, fontFamily: 'OpenSans', color: '#000' }}>5002 Fast Growing Ambulance</Text>
-                  </Card> */}
-
-                    {/* 
-                    <LinearGradient
-                        colors={['#7E49C3', '#C86DD7']}
-                        style={{ borderRadius: 10, padding: 10, borderBottomWidth: 0, fontFamily: 'OpenSans', marginTop: 5 }} >
-                        <Grid style={{ padding: 10 }}>
-                            <Col style={{ width: '75%' }}>
-                                <Text style={{ fontFamily: 'OpenSans', color: 'white', fontSize: 15 }}>Video Consultation</Text>
-                                <Text note style={{ color: 'white', fontFamily: 'OpenSans', marginTop: 'auto', marginBottom: 'auto', fontSize: 15,lineHeight:25}}>Have A Video Visit With A Certified HealthCare - Doctors</Text>
-
-                            </Col>
-
-                            <Col style={{ width: '25%' }}>
-                                <Image source={{ uri: 'https://odoc.life/wp-content/uploads/2018/06/oDoc-Video-Call-iPhone-X.png' }} style={{ height: 150, width: 100, borderColor: '#fff', borderWidth: 2, borderRadius: 10 }} />
-                            </Col>
-                        </Grid>
-
-
-                    </LinearGradient> */}
-
-
-                    {/* <LinearGradient
-                        colors={['#F58949', '#E0C084']}
-                        style={{ borderRadius: 10, padding: 10, borderBottomWidth: 0, fontFamily: 'OpenSans', marginTop: 10, marginBottom: 10 }} >
-                        <Grid>
-                            <Row >
-                                <Col style={{ width: '75%' }}>
-                                    <Text style={{ fontFamily: 'OpenSans', color: 'white', marginTop: 10, fontSize: 15 }}>Online Pharmacy Services</Text>
-                                </Col>
-                                <Col style={{ width: '25%' }}>
-                                    <Text style={styles.offerText1}>25% offers</Text>
-                                </Col>
-                            </Row>
-
-                            <Row>
-                                <Col>
-                                    <Text note style={{ fontFamily: 'OpenSans', color: 'white', marginTop: 15,lineHeight:20 }}>Medflic Pharmacy Offers You Online Convenience For Ordering, Monitoring And Receiving Prescription For You And Your Family.</Text>
-                                </Col>
-                            </Row>
-                        </Grid>
-
-                        <Grid style={{ padding: 10 }}>
-                            <Col style={{ width: '33.33%' }}>
-                                <Image source={{ uri: 'https://static1.squarespace.com/static/582bbfef9de4bb07fe62ab18/t/5877b9ccebbd1a124af66dfe/1484241404624/Headshot+-+Circular.png?format=300w' }} style={styles.pharmImage} />
-
-                                <Text style={styles.offerText}>Geriatrics</Text>
-
-                            </Col>
-                            <Col style={{ width: '33.33%' }}>
-                                <Image source={{ uri: 'https://static1.squarespace.com/static/582bbfef9de4bb07fe62ab18/t/5877b9ccebbd1a124af66dfe/1484241404624/Headshot+-+Circular.png?format=300w' }} style={styles.pharmImage} />
-
-                                <Text style={styles.offerText}>Geriatrics</Text>
-                            </Col>
-                            <Col style={{ width: '33.33%' }}>
-                                <Image source={{ uri: 'https://static1.squarespace.com/static/582bbfef9de4bb07fe62ab18/t/5877b9ccebbd1a124af66dfe/1484241404624/Headshot+-+Circular.png?format=300w' }} style={styles.pharmImage} />
-
-                                <Text style={styles.offerText}>Geriatrics</Text>
-                            </Col>
-                        </Grid>
-
-                    </LinearGradient> */}
-
-
                 </Content>
-
-                {/* <Footer>
-                    <FooterTab style={{ backgroundColor: '#7E49C3' }}>
-                        <Button >
-                            <Icon name="apps" />
-                        </Button>
-                        <Button>
-                            <Icon name="chatbubbles" />
-                        </Button>
-                        <Button >
-                            <Icon active name="notifications" />
-                        </Button>
-                        <Button>
-                            <Icon name="person" />
-                        </Button>
-                    </FooterTab>
-                </Footer>*/}
             </Container>
-
         )
     }
 
@@ -580,7 +441,8 @@ function homeState(state) {
 
     return {
         bookappointment: state.bookappointment,
-        chat: state.chat
+        chat: state.chat,
+        profile: state.profile
     }
 }
 export default connect(homeState)(Home)

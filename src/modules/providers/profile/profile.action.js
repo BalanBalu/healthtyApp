@@ -4,7 +4,8 @@ export const PROFILE_RESPONSE = 'PROFILE/PROFILE_RESPONSE'
 export const PROFILE_ERROR = 'PROFILE/PROFILE_ERROR'
 export const REVIEWS_REQUEST = 'PROFILE/REVIEWS_REQUEST'
 export const REVIEWS_RESPONSE = 'PROFILE/REVIEWS_RESPONSE'
-export const REVIEWS_ERROR = 'PROFILE/REVIEWS_ERROR'
+export const REVIEWS_ERROR = 'PROFILE/REVIEWS_ERROR';
+export const AVAILABLE_CREDIT_POINTS = 'PROFILE/AVAILABLE_CREDIT_POINTS';
 
 import { store } from '../../../setup/store'
 import { getService, putService,postService } from '../../../setup/services/httpservices';

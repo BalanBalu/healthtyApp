@@ -8,10 +8,11 @@ import { RadioButton ,Checkbox} from 'react-native-paper';
 import { getAvailableNetBanking, getAvailableWallet, luhnCheck, getPayCardType } from '../../../setup/paymentMethods';
 import { putService , getService} from '../../../setup/services/httpservices';
 import Razorpay from '../../../components/Razorpay';
-import { RAZOR_KEY , BASIC_DEFAULT, SERVICE_TYPES } from '../../../setup/config';
+import { RAZOR_KEY , BASIC_DEFAULT, SERVICE_TYPES , MAX_PERCENT_APPLY_BY_CREDIT_POINTS } from '../../../setup/config';
 import BookAppointmentPaymentUpdate from '../../providers/bookappointment/bookAppointment';
 import { TouchableOpacity } from 'react-native-gesture-handler';
 import Spinner from '../../../components/Spinner';
+import { connect } from 'react-redux';
 class PaymentPage extends Component {
     availableNetBankingData = [];
     availableWallets = [];
@@ -45,7 +46,11 @@ class PaymentPage extends Component {
             isHidden: false,
             coupenCodeText: null,
             paymentMethodTitleCase : null,
-            isPaymentSuccess: false
+            isPaymentSuccess: false,
+            creditPointsApplied: false,
+            creditPointDiscountAmount: 0,
+            couponCodeDiscountAmount: 0
+            
         }
         this.BookAppointmentPaymentUpdate = new BookAppointmentPaymentUpdate();
     }
@@ -53,7 +58,6 @@ class PaymentPage extends Component {
          this.userId = await AsyncStorage.getItem('userId');
        
         const { navigation } = this.props;
-        
         const bookSlotDetails = navigation.getParam('bookSlotDetails');
         const serviceType = navigation.getParam('service_type');
         const amount = navigation.getParam('amount');
@@ -169,12 +173,13 @@ class PaymentPage extends Component {
     }
 
     razorpayChekout(paymentMethodData) {
-        
+        const { amount, creditPointDiscountAmount, couponCodeDiscountAmount } = this.state;
+        let finalAmountToPayByOnline = amount - ( creditPointDiscountAmount + couponCodeDiscountAmount);
         const options = {
             description: this.state.bookSlotDetails.diseaseDescription || 'Pay for your Health',
             currency: 'INR',
             key_id: RAZOR_KEY,
-            amount: this.state.amount * 100, // here the value is consider as paise so, we have to multiply to 100 
+            amount: finalAmountToPayByOnline * 100, // here the value is consider as paise so, we have to multiply to 100 
             email: this.userBasicData.email,
             contact: this.userBasicData.mobile_no,
             ...paymentMethodData,
@@ -195,35 +200,38 @@ class PaymentPage extends Component {
     }
 
    async updatePaymentDetails(isSuccess, data, modeOfPayment) {
-    
-    
-    this.setState({ isLoading: true, isPaymentSuccess: isSuccess })
-    const { serviceType, bookSlotDetails, paymentMethodTitleCase } = this.state;
-    let response = await this.BookAppointmentPaymentUpdate.updatePaymentDetails(isSuccess, data, modeOfPayment, bookSlotDetails, serviceType, this.userId, paymentMethodTitleCase);
-    console.log(response);
-    if(response.success) {
-        if(serviceType === SERVICE_TYPES.APPOINTMENT) {
-           this.props.navigation.navigate('paymentsuccess', { 
-               successBookSlotDetails: bookSlotDetails, 
-               paymentMethod : paymentMethodTitleCase 
-            });
-        } else if( serviceType === SERVICE_TYPES.CHAT) {
-            this.props.navigation.navigate('SuccessChat');
+        this.setState({ isLoading: true, isPaymentSuccess: isSuccess })
+        const { serviceType, bookSlotDetails, paymentMethodTitleCase, creditPointDiscountAmount, couponCodeDiscountAmount } = this.state;
+        const bookSlotDetailsWithDiscoutData = {
+            ...bookSlotDetails,
+            creditPointDiscountAmount,
+            couponCodeDiscountAmount
+        }
+        let response = await this.BookAppointmentPaymentUpdate.updatePaymentDetails(isSuccess, data, modeOfPayment, bookSlotDetailsWithDiscoutData, serviceType, this.userId, paymentMethodTitleCase);
+        console.log(response);
+        if(response.success) {
+            if(serviceType === SERVICE_TYPES.APPOINTMENT) {
+                this.props.navigation.navigate('paymentsuccess', { 
+                    successBookSlotDetails: bookSlotDetails, 
+                    paymentMethod : paymentMethodTitleCase 
+                });
+            } else if( serviceType === SERVICE_TYPES.CHAT) {
+                this.props.navigation.navigate('SuccessChat');
+                Toast.show({
+                    text: 'Paymenet Success for Chat',
+                    type: 'warning',
+                    duration: 3000
+                })
+            }
+        } else {
             Toast.show({
-                text: 'Paymenet Success for Chat',
+                text: response.message,
                 type: 'warning',
                 duration: 3000
             })
         }
-    } else {
-        Toast.show({
-            text: response.message,
-            type: 'warning',
-            duration: 3000
-        })
+        this.setState({ isLoading: false });     
     }
-    this.setState({ isLoading: false });     
-  }
  
     handlingCardNumber(number) {
         var cardPaymentDetails = { ...this.state.cardPaymentDetails }
@@ -292,12 +300,32 @@ class PaymentPage extends Component {
         this.setState({ selectedItems: selectedItems, selectedNetBank : selectedItems[0] });
     } 
     onCouponPress(coupenCodeText) {
-        this.setState({isHidden: true, coupenCodeText : coupenCodeText.toUpperCase()})
-      }
+        this.setState({ coupenCodeText : coupenCodeText.toUpperCase()})
+    }
+    async setPaymentByCreditApplied() {
+        const hasCreditApplied =  !this.state.creditPointsApplied;
+        if(hasCreditApplied === true) {
+            const maxDicountAmountByCreditPoints = this.getMaximumAmountToBeDiscountByCreditPoints();
+            this.setState({ creditPointDiscountAmount: maxDicountAmountByCreditPoints , creditPointsApplied : hasCreditApplied});
+        } else {
+            this.setState({ creditPointDiscountAmount: 0, creditPointsApplied : hasCreditApplied });
+        }
+    }
+    getMaximumAmountToBeDiscountByCreditPoints() {
+        const { amount } = this.state;
+        const { profile: {  availableCreditPoints } } = this.props;
+         
+        let maxDicountAmountByCreditPoints = (amount * MAX_PERCENT_APPLY_BY_CREDIT_POINTS) / 100;
+        if(availableCreditPoints < maxDicountAmountByCreditPoints) {
+            maxDicountAmountByCreditPoints = availableCreditPoints;
+        }
+        return maxDicountAmountByCreditPoints;
+    }
 
     render() {
 
-        const { savedCards , isLoading , isPaymentSuccess} = this.state;
+        const { savedCards , isLoading , isPaymentSuccess, amount, couponCodeDiscountAmount, creditPointDiscountAmount } = this.state;
+        const maxDicountAmountByCreditPoints = this.getMaximumAmountToBeDiscountByCreditPoints();
         return (
             <Container style={styles.container}>
                 <Content style={styles.bodyContent}>
@@ -305,26 +333,80 @@ class PaymentPage extends Component {
                        visible={isLoading}
                        textContent={isPaymentSuccess ? "We are Booking your Appoinmtent" : "Please wait..."}
                     />
-                    <Row style={{ marginTop: 10, marginLeft: 15 }}>
-                        <Col style={{ width: '60%' }}>
+                    <Grid style={{ marginTop: 10, marginLeft: 15 }}>
+                        <Row style={{ width: '60%' }}>
                             <Text style={{ fontSize: 20, fontFamily: 'OpenSans', fontWeight: 'bold', }}>Select Options To Pay</Text>
-                        </Col>
-                        <Col style={{ width: '50%' }}>
-                            <Text style={{ marginLeft: 40, fontSize: 20, fontFamily: 'OpenSans', fontWeight: 'bold' }}>{'  '}{'\u20B9'}{this.state.amount}</Text>
-                        </Col>
-                    </Row>
+                        </Row>
+                        
+                        <Row>
+                          <Col style={{ width: '60%' }}>
+                            <Text style={{ fontFamily: 'OpenSans', }}> Amount </Text>
+                          </Col>
+                          <Col style={{ width: '50%' }}>
+                            <Text style={{ marginLeft: 40, fontFamily: 'OpenSans' }}>{'  '}{'\u20B9'}{amount}</Text>
+                          </Col>
+                        </Row>
+                       
+                        <Row>
+                          <Col style={{ width: '60%' }}>
+                            <Text style={{ fontFamily: 'OpenSans' }}> Credit Points </Text>
+                          </Col>
+                          <Col style={{ width: '50%' }}>
+                            <Text style={{ marginLeft: 40, fontFamily: 'OpenSans' }}>{'  '}{'\u20B9'}{creditPointDiscountAmount}</Text>
+                          </Col>
+                        </Row>
+                        
+                        <Row>
+                          <Col style={{ width: '60%' }}>
+                            <Text style={{ fontFamily: 'OpenSans' }}> Coupon Discount </Text>
+                          </Col>
+                          <Col style={{ width: '50%' }}>
+                            <Text style={{ marginLeft: 40, fontFamily: 'OpenSans' }}>{'  '}{'\u20B9'}{couponCodeDiscountAmount}</Text>
+                          </Col>
+                        </Row>
+                        
 
-                    <Row style={{ borderBottomColor: '#000', borderBottomWidth: 0.6, backgroundColor: '#fff', padding: 15, marginLeft: 10, marginRight: 10 }}>
-                            <Text style={{ marginTop: 8, fontFamily: 'OpenSans', fontSize: 15 }}>Apply Coupons</Text>
-                    </Row>
-                    <View style={{ backgroundColor: '#fff', marginLeft: 10, marginRight: 10, borderBottomColor: '#000', borderBottomWidth: 0.6 }}>
-                    <View style={{ borderColor: '#000', borderWidth: 1, backgroundColor: '#f2f2f2', borderRadius: 5, marginLeft: 10, marginRight: 10, marginTop: 10, marginBottom: 10 }}>
-                        <View style={{ marginTop: 10, marginBottom: 10 }}>
-                            <Grid style={{ marginRight: 10, marginLeft: 10 }}>
-                                <Col>
-                                
+                        <Row style={{borderTopColor: '#000', borderTopWidth: 1, marginTop: 10, marginBottom: 5 }}>
+                          <Col style={{ width: '60%', marginTop: 5 }}>
+                            <Text style={{ fontFamily: 'OpenSans' }}> Final Amount </Text>
+                          </Col>
+                          <Col style={{ width: '50%', marginTop: 5 }}>
+                            <Text style={{ marginLeft: 40, fontFamily: 'OpenSans' }}>{'  '}{'\u20B9'}{ amount - ( creditPointDiscountAmount + couponCodeDiscountAmount ) }</Text>
+                          </Col>
+                        </Row>
+                    </Grid>
+                    
+                    {maxDicountAmountByCreditPoints > 0 ? 
+                    <Grid style={{ backgroundColor: '#fff'}}>
+                        <Row style={{ padding: 1, marginLeft: 10, marginRight: 10 }}>
+                            <Text style={{ fontSize: 15, fontFamily: 'OpenSans', color: 'gray', marginTop: 10, }}>CREDIT POINTS</Text>
+                        </Row>
+                        <Row style={{ borderBottomColor: '#000', borderBottomWidth: 0.6, paddingLeft: 15, paddingBottom: 15, paddingTop: 5 }}>
+                          <Checkbox color="green"
+                            borderStyle={{ borderColor: '#F44336', 
+                            backfaceVisibility: 'visible',
+                            borderRadius: 18,
+                            borderWidth: 1,
+                            padding: 2,}}
+                            status={this.state.creditPointsApplied ? 'checked' : 'unchecked'}
+                            onPress={()=> this.setPaymentByCreditApplied()}        
+                          />
+                          <Text style={{ color: 'gray', fontFamily: 'OpenSans' }}> Apply Your {maxDicountAmountByCreditPoints} Credit Points to Pay your Appointment</Text>
+                        </Row>
+                    </Grid> : null }                 
+                   
+                    <Grid style={{ backgroundColor: '#fff'}}>       
+                        <Row style={{ padding: 1, marginLeft: 10, marginRight: 10 }}>
+                            <Text style={{ fontSize: 15, fontFamily: 'OpenSans', color: 'gray', marginTop: 10, }}>COUPONS</Text>
+                        </Row>
+                        
+                        <View style={{ backgroundColor: '#fff', marginLeft: 10, marginRight: 10, borderBottomColor: '#000', borderBottomWidth: 0.6 }}>
+                            <View style={{ borderColor: '#000', borderWidth: 1, backgroundColor: '#f2f2f2', borderRadius: 5, marginLeft: 10, marginRight: 10, marginTop: 10, marginBottom: 10 }}>
+                                <View style={{ marginTop: 10, marginBottom: 10 }}>
+                                    <Grid style={{ marginRight: 10, marginLeft: 10 }}>
+                                    <Col>
                                     <Form>
-                                        
+
                                     <Input underlineColorAndroid='gray' placeholder="Enter Your 'Coupon' Code here" style={styles.transparentLabel}
                                         getRef={(input) => { this.enterCouponCode = input; }}
                                         keyboardType={'default'}
@@ -335,12 +417,9 @@ class PaymentPage extends Component {
                                     />
                                       
                                     </Form>
-                                     
                                     <Row>
-                                    <Right>
-                                    {this.state.isHidden ? 
-                                        <Button  style={{marginTop:10,backgroundColor:'#2ecc71',color:'#fff',borderRadius:10}}><Text style={{fontSize:15,fontFamily:'OpenSans',fontWeight:'bold'}}>submit</Text></Button>
-                                        :null}
+                                        <Right>
+                                            <Button style={{marginTop:10,backgroundColor:'#2ecc71',color:'#fff',borderRadius:10}}><Text style={{fontSize:15,fontFamily:'OpenSans',fontWeight:'bold'}}>submit</Text></Button>
                                         </Right>
                                     </Row>
                                 </Col>
@@ -348,6 +427,7 @@ class PaymentPage extends Component {
                             </View>
                             </View>
                             </View>
+                        </Grid>
                    
                    {savedCards.length !== 0 ? <Row>
                         <Text style={{ fontSize: 15, fontFamily: 'OpenSans', color: 'gray', marginTop: 40, marginLeft: 15 }}>SAVED CARDS</Text>
@@ -465,7 +545,9 @@ class PaymentPage extends Component {
                     backgroundColor: '#fff'
                 }}>
                     <FooterTab style={{ backgroundColor: '#fff', }}>
-                        <Button block onPress={() => this.makePaymentMethod()} block style={styles.paymentButton}><Text style={{ fontSize: 15, fontFamily: 'OpenSans', fontWeight: 'bold' }}>Pay</Text></Button>
+                        <Button block onPress={() => this.makePaymentMethod()} block style={styles.paymentButton}>
+                            <Text style={{ fontSize: 15, fontFamily: 'OpenSans', fontWeight: 'bold' }}>Pay</Text>
+                        </Button>
                     </FooterTab>
                 </Footer>
             </Container >
@@ -776,12 +858,12 @@ class PaymentPage extends Component {
     }
 
 }
-
-
-
-
-
-export default (PaymentPage)
+function propState(state) {
+    return {
+        profile: state.profile
+    }
+}
+export default connect(propState)(PaymentPage)
 
 
 const styles = StyleSheet.create({

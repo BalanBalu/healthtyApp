@@ -548,33 +548,8 @@ class BookAppoinment extends Component {
                   <Row style={{ marginTop: 10 }}>
                     <Text style={{ fontSize: 13, fontFamily: 'OpenSans' }}>Select appoinment date and time</Text>
                   </Row>
-                  {/*  <Row style={{marginLeft:'auto',marginRight:'auto'}}  >
-          <Col style={{width:'8%'}}>
-             <Icon name='ios-arrow-back' onPress={() => this.slidePrevious()} style={{fontSize:25,marginTop:25}}/>
-          </Col> 
-          this.getAvailabilityDateSliderData().map(date => {
-            
-             let availableslotData = doctorData.slotData ? doctorData.slotData[date] ? doctorData.slotData[date] : [] : [];
-             let selectDate = this.state.selectedDate;
-             console.log(availableslotData);
-               return (
-                <Col style={{width:'28%',}} key={date}>
-                   <TouchableOpacity style={[styles.availabilityBG, selectDate === date ? { backgroundColor:'#775DA3' } : { backgroundColor:'#ced6e0' } ]} 
-                      onPress={() => this.onDateChanged(date)}>
-                        <Text style={[{textAlign:'center',fontSize:12,fontFamily:'OpenSans'}, selectDate === date ? { color:'#fff' } : { color:'#000' } ] }>{formatDate(moment(date), 'ddd, DD MMM')}</Text>
-                       <Text style={[{textAlign:'center',fontSize:10,fontFamily:'OpenSans'}, selectDate === date ? { color:'#fff' } : { color:'#000' } ] }>{ availableslotData.length === 0 ? 'No Slots Available' : availableslotData.length + ' Slots Available' }</Text>
-                     </TouchableOpacity>
-                </Col>
-              ) 
-          }) }
-          <Col style={{width:'8%'}}>
-              <Icon name='ios-arrow-forward' onPress={()=>this.slideNext()} style={{fontSize:25,marginTop:25,marginLeft:5,marginRight:5}}/>
-          </Col>
-      </Row> */}
-
+                
                   {this.renderDatesOnFlatlist(doctorData.slotData, selectedDate)}
-
-
                   {
                     doctorData.slotData[selectedDate] !== undefined ?
                       this.haveAvailableSlots(doctorData.slotData[selectedDate])
@@ -589,14 +564,8 @@ class BookAppoinment extends Component {
                       <Col style={{ width: '40%' }}>
                         <Text style={{ marginTop: 2, marginBottom: 2, color: '#000', fontSize: 12, fontFamily: 'OpenSans' }}>{selectedSlotItem ? formatDate(selectedSlotItem.slotStartDateAndTime, 'ddd DD MMM, h:mm a') : null}</Text>
                       </Col>
-                      <Col style={{ width: '35%' }}></Col>
-                      <Col style={{ width: '25%' }}>
-                        {/* <TouchableOpacity onPress={() => { console.log('......Pressing....'); this.onPressContinueForPaymentReview(doctorData, selectedSlotItem) }}
-                      style={{backgroundColor:'green', borderColor: '#000', marginTop:10, height: 30, borderRadius: 20,justifyContent:'center', marginLeft:5,marginRight:5,marginTop:-5 }}>
-                      <Text style={{color:'#fff',fontSize:12,fontWeight:'bold',fontFamily:'OpenSans', justifyContent: 'center', alignItems : 'center', marginLeft:'35%', marginTop:-5, marginBottom : -5 }}>Book</Text>
-                 </TouchableOpacity>  
-                */}
-                      </Col>
+                        <Col style={{ width: '35%' }}></Col>
+                        <Col style={{ width: '25%' }}></Col>
                     </Row>
                   </View>
                 </View>

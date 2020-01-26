@@ -67,8 +67,9 @@ class UserDetails extends Component {
                         type: "success",
                         duration: 3000
                     });
-                    if (isBloodDonor == true) this.props.navigation.navigate('MapBox')
-                    else {
+                    if (isBloodDonor == true) {
+                        this.props.navigation.navigate('MapBox')
+                    } else {
                         logout();
                         this.props.navigation.navigate('login');
                     }
@@ -179,12 +180,9 @@ class UserDetails extends Component {
                                 </Item>
                                 </View>
                                 <Row style={{marginTop:5,marginLeft:5}}>
-                                    {/* <Checkbox color="green"
-                                        status={checked ? 'checked' : 'unchecked'}
-                                        onPress={() => { this.setState({ checked: !checked }); }}
-                                    /> */}
-                                                <Checkbox status={this.state.isBloodDonor ? 'checked' : 'unchecked'} color="#775DA3" onPress={() => this.setState({ isBloodDonor: !this.state.isBloodDonor })} testID='privateCheckbox'></Checkbox>
-                                                <Text style={{ marginLeft: 2, color: '#775DA3', fontFamily: 'OpenSans', fontSize: 14, marginTop: 10, fontWeight: 'bold' }}>Are you blood donor</Text>
+                                   
+                                         <Checkbox status={this.state.isBloodDonor ? 'checked' : 'unchecked'} color="#775DA3" onPress={() => this.setState({ isBloodDonor: !this.state.isBloodDonor })} testID='privateCheckbox'></Checkbox>
+                                                <Text style={{ marginLeft: 2, color: '#775DA3', fontFamily: 'OpenSans', fontSize: 14, fontWeight: 'bold' }}>Are you blood donor</Text>
                                             </Row>
                                             <View>
                                                 <Text style={{ paddingLeft: 20, fontSize: 15, fontFamily: 'OpenSans', color: 'red' }}> {errorMsg}</Text>

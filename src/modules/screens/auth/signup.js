@@ -24,7 +24,8 @@ class Signup extends Component {
             errorMsg: '',
             checked: false,
             showPassword: true,
-            isLoading: false
+            isLoading: false,
+            referralCode: null
         }
     }
     toggleRadio = async (radioSelect, genderSelect) => {
@@ -33,7 +34,7 @@ class Signup extends Component {
         await this.setState({ radioStatus: tempArray, gender: genderSelect });
     }
     doSignUp = async () => {
-        const { userEmail, password, checked, gender } = this.state;
+        const { userEmail, password, checked, gender, referralCode } = this.state;
         try {
             if (checked === false) {
                 this.setState({ errorMsg: 'Please agree to the terms and conditions to continue' });
@@ -58,6 +59,10 @@ class Signup extends Component {
                 gender: gender,
                 type: 'user'
             };
+            if(referralCode) {
+                requestData.refer_code = referralCode
+            }
+            debugger
             await signUp(requestData);        // Do SignUp Process
             if (this.props.user.success) {
                 let loginData = {
@@ -86,7 +91,7 @@ class Signup extends Component {
     }
     render() {
         const { user: { isLoading } } = this.props;
-        const { userEmail, password, showPassword, checked, gender, errorMsg } = this.state;
+        const { userEmail, password, showPassword, checked, gender, errorMsg, referralCode } = this.state;
         return (
             <Container style={styles.container}>
                 <ImageBackground source={mainBg} style={{ width: '100%', height: '100%', flex: 1 }}>
@@ -114,18 +119,33 @@ class Signup extends Component {
                                         <Item style={[styles.authTransparentLabel1, { marginTop: 10, marginLeft: 'auto', marginRight: 'auto' }]}>
                                             <Input placeholder="Password" style={{ fontSize: 15, paddingLeft: 15, }}
                                                 ref={(input) => { this.userEmail = input; }}
-                                                returnKeyType={'done'}
+                                                returnKeyType={'next'}
                                                 value={password}
                                                 secureTextEntry={showPassword}
                                                 keyboardType={'default'}
                                                 onChangeText={password => this.onPasswordTextChanged(password)}
-                                            // blurOnSubmit={false}
+                                                blurOnSubmit={false}
+                                                onSubmitEditing={() => { this.userPassword._root.focus(); }}
                                             // maxLength={16}
                                             />
                                             {showPassword == true ? <Icon active name='eye' style={{ fontSize: 20, marginTop: 5, color: '#775DA3' }} onPress={() => this.setState({ showPassword: !showPassword })} />
                                                 : <Icon active name='eye-off' style={{ fontSize: 20, marginTop: 5, color: '#775DA3' }} onPress={() => this.setState({ showPassword: !showPassword })} />
                                             }
                                         </Item>
+
+                                        <Label style={{ marginTop: 20, fontSize: 15, color: '#775DA3', fontWeight: 'bold' }}>Referral Code</Label>
+                                        <Item style={{ borderBottomWidth: 0, marginLeft: 'auto', marginRight: 'auto' }}>
+                                            <Input placeholder="Referral Code (Optional)" style={styles.authTransparentLabel}
+                                                ref={(input) => { this.userPassword = input; }}
+                                                returnKeyType={'done'}
+                                                keyboardType={'default'}
+                                                autoCapitalize={'characters'}
+                                                value={referralCode}
+                                                onChangeText={referralCode => this.setState({ referralCode })}
+                                            />
+                                        </Item>
+                                        
+                                        
                                         <View style={{ marginTop: 10, borderBottomWidth: 0, flexDirection: 'row' }}>
 
                                             <RadioButton.Group
