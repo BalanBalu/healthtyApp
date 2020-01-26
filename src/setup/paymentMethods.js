@@ -110,8 +110,6 @@ export const getAvailableNetBanking = () => {
         code: key
     };
    });
-
- console.log(JSON.stringify(finalData));
  return finalData;
 }
 
@@ -122,7 +120,6 @@ export const getAvailableWallet = () => {
             return key;
         }
    });
- console.log(JSON.stringify(finalData));
  return finalData;
 }
 
