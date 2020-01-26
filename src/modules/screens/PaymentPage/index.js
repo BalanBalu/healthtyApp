@@ -189,23 +189,24 @@ class PaymentPage extends Component {
         Razorpay.open(options).then((data) => {
             // handle success
             console.log(data);
-            this.updatePaymentDetails(true, data, 'online');
+            this.updatePaymentDetails(true, data, 'online', finalAmountToPayByOnline);
             if(this.state.saveCardCheckbox) {
                 this.storeCardData();
             }
         }).catch((error) => {
             console.log(error);
-             this.updatePaymentDetails(false, error, 'online');
+             this.updatePaymentDetails(false, error, 'online', finalAmountToPayByOnline);
         });
     }
 
-   async updatePaymentDetails(isSuccess, data, modeOfPayment) {
+   async updatePaymentDetails(isSuccess, data, modeOfPayment, finalAmountToPayByOnline) {
         this.setState({ isLoading: true, isPaymentSuccess: isSuccess })
         const { serviceType, bookSlotDetails, paymentMethodTitleCase, creditPointDiscountAmount, couponCodeDiscountAmount } = this.state;
         const bookSlotDetailsWithDiscoutData = {
             ...bookSlotDetails,
             creditPointDiscountAmount,
-            couponCodeDiscountAmount
+            couponCodeDiscountAmount,
+            finalAmountToPayByOnline
         }
         let response = await this.BookAppointmentPaymentUpdate.updatePaymentDetails(isSuccess, data, modeOfPayment, bookSlotDetailsWithDiscoutData, serviceType, this.userId, paymentMethodTitleCase);
         console.log(response);
