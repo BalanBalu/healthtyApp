@@ -5,7 +5,7 @@ import { Col, Row, Grid } from 'react-native-easy-grid';
 import { connect } from 'react-redux'
 import { StyleSheet, Image, View, TouchableOpacity, AsyncStorage, FlatList, ImageBackground } from 'react-native';
 
-import { fetchUserProfile, AVAILABLE_CREDIT_POINTS } from '../../providers/profile/profile.action';
+import { getReferalPoints } from '../../providers/profile/profile.action';
 import { catagries, getSpecialistDataSuggestions } from '../../providers/catagries/catagries.actions';
 import { MAP_BOX_PUBLIC_TOKEN, IS_ANDROID , MAX_DISTANCE_TO_COVER } from '../../../setup/config';
 import MapboxGL from '@react-native-mapbox-gl/maps';
@@ -64,21 +64,11 @@ class Home extends Component {
         let userId = await AsyncStorage.getItem("userId");
         if (userId) {
             this.getAllChatsByUserId(userId);
-            this.getReferalPoints(userId);
+            getReferalPoints(userId);
         }
         CurrentLocation.getCurrentPosition();
     }
-    getReferalPoints= async (userId) => {
-        let fields = "credit_points"
-        let result = await fetchUserProfile(userId, fields);
-        if(result) {
-            store.dispatch({
-                type: AVAILABLE_CREDIT_POINTS,
-                credit_points: result.credit_points || 0 
-            })
-        }
-    }
-
+    
     getCatagries = async () => {
       try {
         const searchQueris = 'services=0&skip=0&limit=9';

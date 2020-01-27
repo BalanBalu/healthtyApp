@@ -10,6 +10,7 @@ import { putService , getService} from '../../../setup/services/httpservices';
 import Razorpay from '../../../components/Razorpay';
 import { RAZOR_KEY , BASIC_DEFAULT, SERVICE_TYPES , MAX_PERCENT_APPLY_BY_CREDIT_POINTS } from '../../../setup/config';
 import BookAppointmentPaymentUpdate from '../../providers/bookappointment/bookAppointment';
+import { getReferalPoints } from '../../providers/profile/profile.action';
 import { TouchableOpacity } from 'react-native-gesture-handler';
 import Spinner from '../../../components/Spinner';
 import { connect } from 'react-redux';
@@ -212,6 +213,12 @@ class PaymentPage extends Component {
         console.log(response);
         if(response.success) {
             if(serviceType === SERVICE_TYPES.APPOINTMENT) {
+                const {creditPointsApplied } =  this.state;
+                if(creditPointsApplied === true) {
+                    setTimeout(()=> {
+                        getReferalPoints(this.userId);
+                    }, 3000)
+                }
                 this.props.navigation.navigate('paymentsuccess', { 
                     successBookSlotDetails: bookSlotDetails, 
                     paymentMethod : paymentMethodTitleCase 
