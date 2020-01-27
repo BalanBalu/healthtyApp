@@ -3,7 +3,7 @@ import { StyleSheet, TextInput, AsyncStorage } from 'react-native';
 import { Container, Radio, Button, Card, Grid, ListItem, List, View, Text, Toast, CardItem, Right, Body, Content, Input, Item, Row, Col } from 'native-base';
 import { appointmentStatusUpdate } from '../../providers/bookappointment/bookappointment.action';
 import { formatDate } from '../../../setup/helpers';
-
+import{onlySpaceNotAllowed } from '../../common';
 import { Loader } from '../../../components/ContentLoader'
 import Spinner from '../../../components/Spinner';
 
@@ -46,8 +46,7 @@ class CancelAppointment extends Component {
   cancelAppointment = async (data, updatedStatus) => {
     try {
       let userId = await AsyncStorage.getItem('userId');
-      console.log(this.state.statusUpdateReason)
-      if (this.state.statusUpdateReason != '') {
+      if (onlySpaceNotAllowed(this.state.statusUpdateReason) == true) {
         console.log('true')
         this.setState({ isLoading: true });
         let requestData = {

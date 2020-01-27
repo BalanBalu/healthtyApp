@@ -337,3 +337,13 @@ export function validateName(text) {
     if (regex.test(text) === false) return false;
     else return true;
 }
+export function onlySpaceNotAllowed(text) {
+         if(text){
+         if(text.trim()!=' ')return false
+    else return true;
+         }
+         else{
+             return false 
+
+         }
+         }
