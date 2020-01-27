@@ -106,7 +106,6 @@ class UpdateUserDetails extends Component {
                 gender: gender,
                 blood_group: selectedBloodGroup
             };
-            console.log("lastName" + lastName)
             const userId = await AsyncStorage.getItem('userId')
             let response = await userFiledsUpdate(userId, requestData);
             if (response.success) {

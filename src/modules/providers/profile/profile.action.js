@@ -4,7 +4,10 @@ export const PROFILE_RESPONSE = 'PROFILE/PROFILE_RESPONSE'
 export const PROFILE_ERROR = 'PROFILE/PROFILE_ERROR'
 export const REVIEWS_REQUEST = 'PROFILE/REVIEWS_REQUEST'
 export const REVIEWS_RESPONSE = 'PROFILE/REVIEWS_RESPONSE'
-export const REVIEWS_ERROR = 'PROFILE/REVIEWS_ERROR'
+export const REVIEWS_ERROR = 'PROFILE/REVIEWS_ERROR';
+export const AVAILABLE_CREDIT_POINTS = 'PROFILE/AVAILABLE_CREDIT_POINTS';
+export const SET_REFER_CODE = 'PROFILE/SET_REFER_CODE';
+
 
 import { store } from '../../../setup/store'
 import { getService, putService,postService } from '../../../setup/services/httpservices';
@@ -153,6 +156,24 @@ export async function bloodDonationFilter(data) {
       success: false
     }
   } 
+}
+
+export const getReferalPoints = async (userId) => {
+  let fields = "credit_points,refer_code"
+  let result = await fetchUserProfile(userId, fields);
+  console.log(result);
+  if(result) {
+      store.dispatch({
+          type: AVAILABLE_CREDIT_POINTS,
+          credit_points: result.credit_points || 0 
+      })
+      if (result.refer_code) {
+          store.dispatch({
+            type: SET_REFER_CODE,
+            data: result.refer_code
+          })
+      }
+  }
 }
 
 
