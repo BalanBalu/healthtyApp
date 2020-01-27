@@ -183,7 +183,6 @@ export default class MapBox extends React.Component {
             }
             const userId = await AsyncStorage.getItem('userId')
             // console.log(this.state.address.district)
-            if (validatePassword(this.state.address.no_and_street)) {
             if (validateName(this.state.address.city)) {
                 if (validateName(this.state.address.district)) {
 
@@ -255,13 +254,7 @@ export default class MapBox extends React.Component {
                     duration: 5000
                 })
             }
-            } else {
-                Toast.show({
-                    text: "No and street can't accept white spaces",
-                    type: 'danger',
-                    duration: 5000
-                })
-            }
+           
            
         } catch (e) {
             Toast.show({
