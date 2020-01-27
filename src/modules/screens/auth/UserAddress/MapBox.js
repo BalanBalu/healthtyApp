@@ -183,6 +183,7 @@ export default class MapBox extends React.Component {
             }
             const userId = await AsyncStorage.getItem('userId')
             // console.log(this.state.address.district)
+            if (validatePassword(this.state.address.no_and_street)) {
             if (validateName(this.state.address.city)) {
                 if (validateName(this.state.address.district)) {
 
@@ -250,6 +251,13 @@ export default class MapBox extends React.Component {
             } else {
                 Toast.show({
                     text: 'City should not contains white spaces and any Special Character',
+                    type: 'danger',
+                    duration: 5000
+                })
+            }
+            } else {
+                Toast.show({
+                    text: "No and street can't accept white spaces",
                     type: 'danger',
                     duration: 5000
                 })
@@ -335,14 +343,7 @@ export default class MapBox extends React.Component {
             request.send();
         }
     }
-    onChangedNoAndStreet(value) {
-        // code to remove White Spaces from text field
-        this.updateAddressObject( 'no_and_street', value.replace(/\s/g, "") );
-    }
-    onChangedAddressLine1(value) {
-        // code to remove White Spaces from text field
-        this.updateAddressObject('address_line_1', value.replace(/\s/g, ""));
-    }
+    
     render() {
         return (
             <Container>
@@ -409,13 +410,13 @@ export default class MapBox extends React.Component {
                                 <Label>No And Street</Label>
                                 <Input placeholder="No And Street" style={styles.transparentLabel}
                                     value={this.state.address.no_and_street}
-                                    onChangeText={value => this.onChangedNoAndStreet(value)} />
+                                    onChangeText={value => this.updateAddressObject('no_and_street', value)} />
                             </Item>
                             <Item floatingLabel>
                                 <Label>Address Line 1</Label>
                                 <Input placeholder="Address Line 1" style={styles.transparentLabel}
                                     value={this.state.address.address_line_1}
-                                    onChangeText={value => this.onChangedAddressLine1(value)} />
+                                    onChangeText={value => this.updateAddressObject('address_line_1', value)} />
                             </Item>
                             <Item floatingLabel >
                                 <Label>City</Label>
@@ -449,7 +450,7 @@ export default class MapBox extends React.Component {
                                     onChangeText={value => acceptNumbersOnly(value) == false ? this.updateAddressObject('pin_code', value) : null} />
                             </Item>
 
-                            <Button success iconLeft style={styles.loginButton} block onPress={() => this.updateAddressData()}>
+                            <Button success style={styles.loginButton} block onPress={() => this.updateAddressData()}>
                                 <Icon name='paper-plane'></Icon>
                                 <Text>Update</Text>
                             </Button>
