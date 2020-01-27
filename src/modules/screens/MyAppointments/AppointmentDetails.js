@@ -339,7 +339,13 @@ class AppointmentDetails extends Component {
                        <Text capitalise={true} style={styles.ButtonText}>CANCEL</Text>
                     </Button>
                   </Row>
-               </Col>: <Col size={4}>
+               </Col>:
+               data.appointment_status == 'APPROVED'&& data.onGoingAppointment === true ?
+               <Col size={4}>
+               <Text style={{marginLeft:16, fontSize: 15, fontFamily: 'OpenSans', fontWeight: 'bold',color:'green' }}>ONGOING</Text>
+               </Col>
+               :
+                <Col size={4}>
                      
                      <View style={{ alignItems:'center' }}>
                         <Icon name={statusValue[data.appointment_status].icon} 
@@ -351,8 +357,7 @@ class AppointmentDetails extends Component {
                      <Text capitalise={true} style={[styles.textApproved,{color:statusValue[data.appointment_status].color}]}>{data.appointment_status}</Text>
                      </View>
                  </Col>
-                  // : data.appointment_status == 'APPROVED'&& data.onGoingAppointment === true && 
-                  // <Text style={{marginLeft:20, fontSize: 15, fontFamily: 'OpenSans', fontWeight: 'bold',color:'green' }}>ONGOING</Text>
+                  
                  : <Col size={4}>
                      
                  <View style={{ alignItems:'center' }}>
@@ -392,7 +397,7 @@ class AppointmentDetails extends Component {
 
 
             <Grid>
-            {formatDate(data.appointment_starttime,'DD/MM/YYYY')==formatDate(new Date(),'DD/MM/YYYY')&&data.appointment_status=='APPROVED'?
+            {/* {formatDate(data.appointment_starttime,'DD/MM/YYYY')==formatDate(new Date(),'DD/MM/YYYY')&&data.appointment_status=='APPROVED'?
             <Row style={styles.rowStyle}>
               <TouchableOpacity style={styles.touchableStyle}>
                 <Row>
@@ -400,7 +405,7 @@ class AppointmentDetails extends Component {
                 <Text style={styles.touchableText}>Upload Your Prescription</Text>
                 </Row>
               </TouchableOpacity>
-            </Row>:null}
+            </Row>:null} */}
             <View style={{marginTop:10}}>
             <Row style={styles.rowSubText}>
                <Col style={{width:'8%',paddingTop:5}}>
