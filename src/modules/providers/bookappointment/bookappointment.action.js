@@ -161,6 +161,22 @@ export async function viewUserReviews(type, id, limit) {
     }
   }
 }
+export async function getUserRepportDetails(type, reportedId, limit) {
+  try {
+    let endPoint =  'report/'+type+'/'+reportedId+limit;
+    let response = await getService(endPoint);
+
+    let respData = response.data;
+    return respData;
+
+  } catch (e) {
+    return {
+      message: 'exception' + e,
+      success: false
+    }
+  }
+}
+
 
 export async function getDoctorsReviewsCount(doctorIds) {
   try {

@@ -318,6 +318,20 @@ export function validatePassword(value) {
     else return true;
 }
 
+export function getHospitalHeadeName(location) {
+    if (!location) return ''
+    if (location)
+      return `${location.name}`;
+    else
+      return ''
+}
+export function getHospitalName(location) {
+    if (!location) return ''
+    if (location)
+      return `${location.location.address.no_and_street}, ${location.location.address.city}, ${location.location.address.state}, ${location.location.address.pin_code}`;
+    else
+      return ''
+}
 export function validateName(text) {
     let regex = /^(?!\s*$)[-a-zA-Z_:,.' ']{1,100}$/;
     if (regex.test(text) === false) return false;

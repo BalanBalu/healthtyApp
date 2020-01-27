@@ -1,6 +1,6 @@
 import React, { Component } from "react";
 import { View, Text, Button, List, ListItem, Left, Right, Thumbnail, Item, Card, Body } from "native-base";
-import { StyleSheet, Image, AsyncStorage, FlatList, ScrollView, ActivityIndicator, Modal } from "react-native";
+import { StyleSheet, Image, AsyncStorage, FlatList, ScrollView, ActivityIndicator, Modal,TouchableOpacity,TouchableHighlight } from "react-native";
 import StarRating from "react-native-star-rating";
 import { Col, Row, Grid } from "react-native-easy-grid";
 import SegmentedControlTab from "react-native-segmented-control-tab";
@@ -342,32 +342,28 @@ return (
 								</Item>
 							</Card>
 						) : (
-								<ScrollView>
-									<List>
+							
 										<FlatList
 											data={data}
 											extraData={data}
 											renderItem={({ item, index }) => (
-
- 
-												<ListItem
-													avatar
-													onPress={() =>
-														this.props.navigation.navigate("AppointmentInfo", {
-															data: item.appointmentResult,selectedIndex:selectedIndex
-														})
-													} testID='navigateAppointmentInfo'
-												>
-													<Left>
+												<Card  transparent>
+								               <TouchableOpacity  onPress={() =>
+													this.props.navigation.navigate("AppointmentInfo", {
+														data: item.appointmentResult,selectedIndex:selectedIndex
+													})
+												} testID='navigateAppointmentInfo'>
+													<Row>
+														<Col size={2}>
 														<Thumbnail
 															square
 															source={renderDoctorImage(item)}
 															style={{ height: 60, width: 60 }}
 														/>
-													</Left>
-													<Body>
+													</Col>
+													<Col size={8}>
 
-														<Item style={{ borderBottomWidth: 0 }}>
+														<Row style={{ borderBottomWidth: 0 }}>
 
 															<Text style={{ fontFamily: "OpenSans", fontSize: 15, fontWeight: 'bold' }}>
 																{(item.prefix != undefined ? item.prefix+' ' : '') + getName(item.appointmentResult.doctorInfo)}
@@ -381,8 +377,8 @@ return (
 															>
 																{item.degree}
 															</Text>
-														</Item>
-														<Item style={{ borderBottomWidth: 0 }}>
+														</Row>
+														<Row style={{ borderBottomWidth: 0 }}>
 															<Text
 																style={{ fontFamily: "OpenSans", fontSize: 14, width: '60%' }}
 															>
@@ -405,9 +401,9 @@ return (
 
 																	/>
 																)}
-														</Item>
+														</Row>
 											
-														<Item style={{ borderBottomWidth: 0 }}>
+														<Row style={{ borderBottomWidth: 0 }}>
 															{ item.appointmentResult.appointment_status =="APPROVED" &&item.appointmentResult.onGoingAppointment ? 
 																<Text style={{ fontFamily: "OpenSans", fontSize: 13, color: 'green', fontWeight: 'bold' }} note>{'Appointment Ongoing'}</Text>		
 																:
@@ -415,13 +411,13 @@ return (
 															}
 																
 
-														</Item>
+														</Row>
 
 														<Text style={{ fontFamily: "OpenSans", fontSize: 11 }} note>
 															{formatDate(item.appointmentResult.appointment_starttime, "dddd,MMMM DD-YYYY  hh:mm a")}</Text>
 														{selectedIndex == 1 &&
 															item.appointmentResult.appointment_status =="COMPLETED"&&(item.appointmentResult.is_review_added==undefined||item.appointmentResult.is_review_added==false)? (
-																<Item style={{ borderBottomWidth: 0 }}>
+																<Row style={{ borderBottomWidth: 0 }}>
 																	<Right style={(styles.marginRight = -2)}>
 																		<Button
 																			style={styles.shareButton}
@@ -443,13 +439,13 @@ return (
 																</Text>
 																		</Button>
 																	</Right>
-																</Item>
+																</Row>
 
 															) : (
 																selectedIndex === 1 && (
 
 
-																	<Item style={{ borderBottomWidth: 0 }}>
+																	<Row style={{ borderBottomWidth: 0 }}>
 																		<Right style={(styles.marginRight = 10)}>
 																			<Button style={styles.bookingButton} onPress={() => this.navigateToBookAppointmentPage(item)} testID='navigateBookingPage'>
 																				<Text style={styles.bookAgain1}>
@@ -457,17 +453,18 @@ return (
 																		</Text>
 																			</Button>
 																		</Right>
-																	</Item>
+																	</Row>
 
 																)
 															)}
-													</Body>
-												</ListItem>
+													</Col>
+													</Row>
+												</TouchableOpacity>
+												</Card>
 											)}
 											keyExtractor={(item, index) => index.toString()}
 										/>
-									</List>
-								</ScrollView>
+								
 							)
 					)}
 				</Card>

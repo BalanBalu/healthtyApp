@@ -204,37 +204,44 @@ export const statusValue={
   "PENDING":
   {
     text:'waiting for confirmation',
-    color:'red'
+    color:'red',
+    icon: 'checkmark-circle'
   },
   "APPROVED":
  {
     text:'Appointment confirmed',
-    color:'green'
+    color:'green',
+    icon: 'checkmark-circle'
   },
   "COMPLETED":
   {
     text:'Appointment completed',
-    color:'green'
+    color:'green',
+    icon: 'checkmark-circle'
   },
   "PENDING_REVIEW":
   {
     text:'Appointment completed',
-    color:'green'
+    color:'green',
+    icon: 'checkmark-circle'
   },
    "PROPOSED_NEW_TIME":
      {
     text:'PROPOSED_NEW_TIME',
-    color:'grey'
+    color:'grey',
+    icon: 'back-in-time'
   },
   "CLOSED":
   {
     text:'No Response',
-    color:'red'
+    color:'red',
+    icon: 'closecircleo'
   },
    "CANCELED":
   {
     text:'Appointment cancelled',
-    color:'red'
+    color:'red',
+    icon: 'closecircleo'
   }
 }
 
