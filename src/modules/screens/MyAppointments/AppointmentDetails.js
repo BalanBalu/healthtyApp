@@ -292,12 +292,12 @@ class AppointmentDetails extends Component {
                              <Thumbnail square source={renderDoctorImage(doctorData)}   style={{ height: 70, width: 70, borderRadius: 10 }} /> 
                          </Col> 
                          <Col style={{width:'80%',marginTop:10}}>
-                           <Row>
-                             <Text  style={styles.Textname} >{(doctorData && doctorData.prefix != undefined ? doctorData && doctorData.prefix + ' ' : '') + (getName(doctorData)) + ','}</Text>
-                             <Text style={{ fontSize: 13, fontFamily: 'OpenSans',fontWeight:'normal' }}>{education}</Text>
+                            <Row>
+                              <Text  style={styles.Textname} >{(doctorData && doctorData.prefix != undefined ? doctorData.prefix + '' : '') + (getName(doctorData)) + ' '}</Text>
+                              <Text note style={{ fontSize: 13, fontFamily: 'OpenSans',fontWeight:'normal' }}>{education}</Text>
                              </Row>
-                             <Row style={{marginTop:10,marginLeft:5}}>
-                             <Text  style={styles.Textname} >{specialist} </Text>
+                             <Row style={{ alignSelf: 'flex-start'  }}>
+                                <Text  style={styles.specialistTextStyle} >{specialist} </Text>
                              </Row>
                             {/* <Text style={styles. cardItemText2}>{getUserGenderAndAge(data && data.userInfo)}</Text>  */}
                          </Col>
@@ -351,8 +351,6 @@ class AppointmentDetails extends Component {
                      <Text capitalise={true} style={[styles.textApproved,{color:statusValue[data.appointment_status].color}]}>{data.appointment_status}</Text>
                      </View>
                  </Col>
-                  // : data.appointment_status == 'APPROVED'&& data.onGoingAppointment === true && 
-                  // <Text style={{marginLeft:20, fontSize: 15, fontFamily: 'OpenSans', fontWeight: 'bold',color:'green' }}>ONGOING</Text>
                  : <Col size={4}>
                      
                  <View style={{ alignItems:'center' }}>
@@ -634,24 +632,30 @@ const styles = StyleSheet.create({
 
   },
 
-  cardItem:{
+    cardItem:{
      borderTopLeftRadius:10,
      borderTopRightRadius:10,
      justifyContent:'center',
      height:100,
-  },
-     cardItemText2:{
+    },
+    cardItemText2:{
          fontFamily:'OpenSans',
          fontSize:13,
          marginTop: 5,
          fontStyle:'italic',
          width:'90%'
     },
-Textname:{
-   fontSize:14,
-  fontFamily:'OpenSans',
-  fontWeight:'bold'
-},
+    Textname:{
+      fontSize:14,
+      fontFamily:'OpenSans',
+      fontWeight:'bold'
+    },
+    specialistTextStyle:{
+      fontSize:12,
+      fontFamily:'OpenSans',
+      fontWeight:'normal',
+     
+    },
     subText1:{
       fontSize:13,
       fontFamily:'OpenSans',
@@ -700,11 +704,10 @@ Textname:{
       marginTop:20
     },
     touchableStyle:{
-     borderColor:'#4765FF',
-     borderWidth:2,
-     borderRadius:5,
-     padding:8
-
+      borderColor:'#4765FF',
+      borderWidth:2,
+      borderRadius:5,
+      padding:8
     },
     touchableText:{
       fontFamily:'OpenSans',
@@ -721,22 +724,22 @@ Textname:{
       marginRight:10,
       marginTop:10
     },
- innerSubText:{
-  fontSize:13,
-  fontFamily:'OpenSans',
-  fontWeight:'bold',
-  marginBottom:5
- },
- subTextInner1:{
-  fontSize:12,
-  fontFamily:'OpenSans',
-  marginBottom:5
- },
-
- downText:{
-  fontSize:12,fontFamily:'OpenSans',
- },
-         cardItemText3:{
+    innerSubText:{
+      fontSize:13,
+      fontFamily:'OpenSans',
+      fontWeight:'bold',
+      marginBottom:5
+    },
+    subTextInner1:{
+      fontSize:12,
+      fontFamily:'OpenSans',
+      marginBottom:5
+    },
+    downText:{
+      fontSize:12,
+      fontFamily:'OpenSans',
+    },
+    cardItemText3:{
              fontFamily:'OpenSans',
              fontSize:18,
             height:30,

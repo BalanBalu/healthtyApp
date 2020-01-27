@@ -5,9 +5,9 @@ import { possibleChatStatus } from '../../../Constants/Chat'
 export default class BookAppointmentPaymentUpdate {
 
   
-  async updatePaymentDetails(isSuccess, data, modeOfPayment, bookSlotDetails, serviceType, userId, paymentMethod) {
+  async updatePaymentDetails(isSuccess, razorPayRespData, modeOfPayment, bookSlotDetails, serviceType, userId, paymentMethod) {
     try {
-        let paymentId = data.razorpay_payment_id ? data.razorpay_payment_id : modeOfPayment === 'cash' ? 'cash_' + new Date().getTime() : 'pay_err_' + new Date().getTime();
+        let paymentId = razorPayRespData.razorpay_payment_id ? razorPayRespData.razorpay_payment_id : modeOfPayment === 'cash' ? 'cash_' + new Date().getTime() : 'pay_err_' + new Date().getTime();
         let paymentData = null;
         if(serviceType === SERVICE_TYPES.APPOINTMENT) {
            paymentData = {
@@ -15,13 +15,15 @@ export default class BookAppointmentPaymentUpdate {
             payer_type: 'user',
             payment_id: paymentId,
             amount: bookSlotDetails.slotData.fee,
-            amount_paid: !isSuccess || modeOfPayment === 'cash' ? 0 : bookSlotDetails.slotData.fee,
+            credit_point_discount_amount: bookSlotDetails.creditPointDiscountAmount, 
+            coupon_code_discount_amount: bookSlotDetails.couponCodeDiscountAmount,
+            amount_paid: !isSuccess || modeOfPayment === 'cash' ? 0 : bookSlotDetails.finalAmountToPayByOnline,
             amount_due: !isSuccess || modeOfPayment === 'cash' ? bookSlotDetails.slotData.fee : 0,
             currency: 'INR',
             service_type: serviceType,
             booking_from: 'APPLICATION',
             is_error: !isSuccess,
-            error_message: data.description || null,
+            error_message: razorPayRespData.description || null,
             payment_mode: modeOfPayment,
             payment_method: paymentMethod
           }
@@ -33,7 +35,7 @@ export default class BookAppointmentPaymentUpdate {
                     return bookAppointmentResponse;
                 } else {
                     return {
-                        message: data.description,
+                        message: razorPayRespData.description,
                         success: false,
                     };
                 }
@@ -55,7 +57,7 @@ export default class BookAppointmentPaymentUpdate {
                 service_type: serviceType,
                 booking_from: 'APPLICATION',
                 is_error: !isSuccess,
-                error_message: data.description || null,
+                error_message: razorPayRespData.description || null,
                 payment_mode: modeOfPayment,
                 payment_method: paymentMethod
               }

@@ -1,11 +1,12 @@
-import {  PROFILE_REQUEST, PROFILE_RESPONSE, PROFILE_ERROR, REVIEWS_REQUEST, REVIEWS_RESPONSE, REVIEWS_ERROR } from './profile.action';
+import {  PROFILE_REQUEST, PROFILE_RESPONSE, PROFILE_ERROR, REVIEWS_REQUEST, REVIEWS_RESPONSE, REVIEWS_ERROR, AVAILABLE_CREDIT_POINTS, SET_REFER_CODE } from './profile.action';
 
 // Initial State
 export const initialState = {
     message: null,
     isLoading: false,
     details: null,
-    success: false
+    success: false,
+    availableCreditPoints: 0
   }
 
   // State
@@ -57,7 +58,16 @@ export default (state = initialState, action) => {
           message: action.message,
           isLoading: false
         }
-  
+        case AVAILABLE_CREDIT_POINTS:
+            return {
+              ...state,
+              availableCreditPoints: action.credit_points
+            }
+        case SET_REFER_CODE:
+          return {
+            ...state,
+            refer_code: action.data
+          }    
         
       default:
         return state;

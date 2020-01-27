@@ -8,13 +8,11 @@ import { fetchUserProfile } from '../../providers/profile/profile.action';
 import { hasLoggedIn } from "../../providers/auth/auth.actions";
 import Spinner from "../../../components/Spinner";
 import{ SHARE_URL} from '../../../setup/config'
-
+import { connect } from 'react-redux';
 class EarnReward extends Component {
     constructor(props) {
         super(props)
         this.state = {
-          isLoading:false,
-          data:[]
         }
     }
    async componentDidMount(){
@@ -23,45 +21,21 @@ class EarnReward extends Component {
             this.props.navigation.navigate("login");
             return;
         }
-      this.getReferCode()
     }
-    getReferCode = async () => {
-      try {
-          let fields = "refer_code"
-  let result={}
-          let userId = await AsyncStorage.getItem('userId');
-          result = await fetchUserProfile(userId, fields);
     
-          if (result.refer_code) {
-        
-              this.setState({ data: result});
-          }
-          
-          this.setState({ isLoading:true});
-
-      }
-      catch (e) {
-          console.log(e);
-      }
-      finally {
-          this.setState({ isLoading: true });
-      }
-  }
   onShare = async () => {
     try {
-     let  inviteId=' '
-       if(this.state.data.refer_code){
-      inviteId='?referal_code='+this.state.data.refer_code;
-      
+      const { profile: {  refer_code } } = this.props;
+      let  inviteId=' ';
+       if(refer_code){
+          inviteId = '?referal_code=' + refer_code;
        }
-      const result = await Share.share({
-        message:
-           'Join me on medflic a doctor  appointment booking app http://medflicinvite.com'+inviteId
-       
-        });
-
-      if (result.action === Share.sharedAction) {
-        if (result.activityType) {
+        const result = await Share.share({
+          message:
+            'Join me on medflic a doctor  appointment booking app http://medflicinvite.com'+inviteId
+          });
+        if (result.action === Share.sharedAction) {
+          if (result.activityType) {
           // shared with activity type of result.activityType
         } else {
           // shared
@@ -78,21 +52,17 @@ class EarnReward extends Component {
    
 
     render() {
-       
+      const { profile: {  availableCreditPoints, refer_code } } = this.props;
         return (
             <Container style={styles.container}>
               <Content style={styles.bodyContent}>
-              {this.state.isLoading === false ?
-                        <Spinner
-                            color="blue"
-                            style={[styles.containers, styles.horizontal]}
-                            visible={true}
-                            size={"large"}
-                            overlayColor="none"
-                            cancelable={false}
-                        /> :
                     <View style={{marginTop:25}}>
                 <Text style={styles.mainHead}>Free Rewards !</Text>
+                <Text style={[styles.mainHead, { marginTop: 10,  color: 'grey' }]}>Your Reward Points</Text>
+                
+                <Text style={[styles.mainHead, { marginTop: 10, fontWeight: 'bold', borderColor: '#7E49C3', borderWidth: 2, borderRadius: 25, padding: 10, alignSelf: 'center'  }]}>{availableCreditPoints}</Text>
+                
+                
                 <Text style={styles.subHead}>Invite your friends to join Medflic and get upto Rs.100 /-</Text>
                 <View style={{justifyContent:'center',alignItems:'center',marginTop:20}}>
                 <Image
@@ -128,13 +98,13 @@ class EarnReward extends Component {
                           </Card>
                              </View>
                              <Text style={styles.codeText}>Your Code</Text>
-                                <Text style={styles.numText}>{this.state.data.refer_code||''}</Text>
+                                <Text style={styles.numText}>{ refer_code|| ''}</Text>
                          <View style={{alignItems:'center',justifyContent:'center'}}>
                                <TouchableOpacity style={styles.touchbutton} onPress={this.onShare}>
                                    <Text style={styles.touchText}>Share</Text>
                                </TouchableOpacity>
                          </View>
-                 </View>}
+                 </View>
                 </Content>
             </Container>
         )
@@ -212,5 +182,9 @@ const styles = StyleSheet.create({
     fontWeight:'500'
   }
 })
-
-export default EarnReward
+function propState(state) {
+  return {
+      profile: state.profile
+  }
+}
+export default connect(propState)(EarnReward)

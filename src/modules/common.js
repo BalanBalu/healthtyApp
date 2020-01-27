@@ -277,17 +277,11 @@ export function validateEmailAddress(text) {
     else return true;
 }
 
-export function validateName(text) {
-    let regex = new RegExp('^[a-zA-Z]{1}');
-    if (regex.test(text) === false) return false;
-    else return true;
-}
 export function stringHasOnlySpace(text) {
     let regex =/^(?!\s*$)[-a-zA-Z0-9_:,.' ']{1,100}$/;
     if (regex.test(text) === false) return false;
     else return true;
 }
-
 export const debounce = (fun, delay) => {
     let timer = null;
     return function (...args) {
@@ -330,13 +324,16 @@ export function getHospitalHeadeName(location) {
       return `${location.name}`;
     else
       return ''
-  
-  
-  }
-  export function getHospitalName(location) {
+}
+export function getHospitalName(location) {
     if (!location) return ''
     if (location)
       return `${location.location.address.no_and_street}, ${location.location.address.city}, ${location.location.address.state}, ${location.location.address.pin_code}`;
     else
       return ''
-  }
+}
+export function validateName(text) {
+    let regex = /^(?!\s*$)[-a-zA-Z_:,.' ']{1,100}$/;
+    if (regex.test(text) === false) return false;
+    else return true;
+}
