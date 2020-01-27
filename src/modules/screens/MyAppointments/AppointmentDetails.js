@@ -1,19 +1,19 @@
 import React, { Component } from 'react';
 import {
   Container, Content, Text, Button, Item, Card, List, ListItem, Left, Right,
-  Thumbnail, Body, Icon, Toast, View
+  Thumbnail, Body, Icon, Toast, View,CardItem
 } from 'native-base';
 import { Col, Row, Grid } from 'react-native-easy-grid';
 import { StyleSheet, AsyncStorage, TouchableOpacity, Modal } from 'react-native';
 import StarRating from 'react-native-star-rating';
 import moment from 'moment';
 import { NavigationEvents } from 'react-navigation';
-import { viewUserReviews, bindDoctorDetails, appointmentStatusUpdate, appointmentDetails, getPaymentInfomation } from '../../providers/bookappointment/bookappointment.action';
-import { formatDate, dateDiff } from '../../../setup/helpers';
+import { viewUserReviews, bindDoctorDetails, appointmentStatusUpdate, appointmentDetails, getPaymentInfomation,getUserRepportDetails } from '../../providers/bookappointment/bookappointment.action';
+import { formatDate, dateDiff,statusValue } from '../../../setup/helpers';
 
 import { Loader } from '../../../components/ContentLoader'
 import { InsertReview } from '../Reviews/InsertReview'
-import { renderDoctorImage, RenderHospitalAddress, getAllEducation, getAllSpecialist, getName, getDoctorExperience } from '../../common'
+import { renderDoctorImage, RenderHospitalAddress, getAllEducation, getAllSpecialist, getName, getDoctorExperience,getHospitalHeadeName,getHospitalName } from '../../common'
 class AppointmentDetails extends Component {
   constructor(props) {
     super(props)
@@ -24,6 +24,7 @@ class AppointmentDetails extends Component {
       doctorId: '',
       userId: '',
       reviewData: [],
+      reportData:[],
       doctorData: {},
       isLoading: true,
 
@@ -53,6 +54,7 @@ class AppointmentDetails extends Component {
       await new Promise.all([
         this.appointmentDetailsGetById(),
         this.getUserReviews(),
+        this.getUserReport(),
       ]);
     }
     else {
@@ -72,7 +74,8 @@ class AppointmentDetails extends Component {
       await new Promise.all([
         this.getPaymentInfo(appointmentData.payment_id),
         this.getDoctorDetails(),
-        this.getUserReviews()
+        this.getUserReviews(),
+        this.getUserReport(),
       ])
 
     }
@@ -122,6 +125,21 @@ class AppointmentDetails extends Component {
       let resultReview = await viewUserReviews('appointment', this.state.appointmentId, '?skip=0');
       if (resultReview.success) {
         this.setState({ reviewData: resultReview.data });
+      }
+    }
+    catch (e) {
+      console.error(e);
+    }
+
+
+  }
+  getUserReport = async () => {
+    try {
+      let resultReport = await getUserRepportDetails('appointment', this.state.appointmentId, '?skip=1');
+
+      if (resultReport.success) {
+        
+        this.setState({ reportData: resultReport.data });
       }
     }
     catch (e) {
@@ -207,6 +225,7 @@ class AppointmentDetails extends Component {
 
 
   navigateCancelAppoointment() {
+    try{
     this.state.data.prefix = this.state.doctorData.prefix;
     const { navigation } = this.props;
     const fromNotification = navigation.getParam('fromNotification');
@@ -220,14 +239,17 @@ class AppointmentDetails extends Component {
     }
 
     this.props.navigation.navigate('CancelAppointment', { appointmentDetail: this.state.data })
-
+  }
+  catch(e){
+    console.log(e)
+  }
   }
 
   async backNavigation() {
     const { navigation } = this.props;
     if (navigation.state.params) {
       if (navigation.state.params.hasReloadReportIssue) {
-      //  this.getUserReviews();  // Reload the Reported issues when they reload
+        this.getUserReport();  // Reload the Reported issues when they reload
       }
     };
   }
@@ -248,272 +270,218 @@ class AppointmentDetails extends Component {
 
 
   render() {
-    const { data, reviewData, doctorData, education, specialist, hospital, isLoading, selectedTab, paymentDetails } = this.state;
+    const { data, reviewData,reportData, doctorData, education, specialist, hospital, isLoading, selectedTab, paymentDetails } = this.state;
 
     return (
-
-      <Container style={styles.container}>
-
+ <Container style={styles.container}>
+        <Content style={styles.bodyContent}>
         {isLoading == true ? <Loader style={'appointment'} /> :
-
-          <Content style={styles.bodyContent}>
-            <NavigationEvents
-              onWillFocus={payload => { this.backNavigation() }}
-
-            />
-            <Grid style={{ backgroundColor: '#7E49C3', height: 200 }}>
-            </Grid>
-
-            <Card style={styles.customCard}>
-              <List>
-                <ListItem thumbnail noBorder>
-                  <Left>
-
-                    <Thumbnail square source={renderDoctorImage(doctorData)} style={{ height: 86, width: 86 }} />
-                  </Left>
-                  <Body>
-
-                    <Text style={{ fontSize: 15, fontFamily: 'OpenSans', fontWeight: 'bold' }}>{(doctorData && doctorData.prefix != undefined ? doctorData && doctorData.prefix + ' ' : '') + (getName(doctorData)) + ','}
-                      <Text style={{ fontSize: 13, fontFamily: 'OpenSans' }}>{education}</Text>
-
-                    </Text>
-                    <Text note style={styles.customText}>{specialist} </Text>
-                  </Body>
-
-                </ListItem>
-
-                <Grid>
-                  <Col style={{ backgroundColor: 'transparent', borderRightWidth: 0.5, borderRightColor: 'gray', justifyContent: 'center' }}>
-                    <Text style={styles.topValue}> {data.fee != undefined && data.fee != 0 ? data.fee : 'N/A'} </Text>
-                    <Text note style={styles.bottomValue}> Fee </Text>
+             <View style={{marginBottom:20}}>
+               <Card  style={{
+	                  borderRadius:10,
+			            }}>   
+                    <NavigationEvents
+					            onWillFocus={payload => { this.backNavigation(payload) }}
+				            />   
+                
+                    <CardItem header style={styles.cardItem}>
+                  
+                     <Grid>
+                       <Row>
+                         <Col style={{width:'25%',}}>
+                             <Thumbnail square source={renderDoctorImage(doctorData)}   style={{ height: 70, width: 70, borderRadius: 10 }} /> 
+                         </Col> 
+                         <Col style={{width:'80%',marginTop:10}}>
+                            <Row>
+                              <Text  style={styles.Textname} >{(doctorData && doctorData.prefix != undefined ? doctorData.prefix + '' : '') + (getName(doctorData)) + ' '}</Text>
+                              <Text note style={{ fontSize: 13, fontFamily: 'OpenSans',fontWeight:'normal' }}>{education}</Text>
+                             </Row>
+                             <Row style={{ alignSelf: 'flex-start'  }}>
+                                <Text  style={styles.specialistTextStyle} >{specialist} </Text>
+                             </Row>
+                            {/* <Text style={styles. cardItemText2}>{getUserGenderAndAge(data && data.userInfo)}</Text>  */}
+                         </Col>
+                       </Row>
+                     </Grid>
+                    </CardItem>
+                   
+                   <Grid>
+                  <Row>
+                    <Col size={6}>
+                     <Row style={{marginTop:10,marginLeft:5}}>
+                      <Text style={styles.subText1}>Experience</Text>
+                      <Text style={styles.subText2}>-</Text>
+                      <Text note style={styles.subText2}>{getDoctorExperience(doctorData.calulatedExperience)}</Text>
+                     </Row>
+                    <Row style={{marginTop:10,marginLeft:5}}>
+                      <Text style={styles.subText1}>Payment Method</Text>
+                      <Text style={styles.subText2}>-</Text>
+                      <Text note style={styles.subText2}>{paymentDetails.payment_method||0}</Text>
+                    </Row>
                   </Col>
-                  <Col style={{ backgroundColor: 'transparent', borderRightWidth: 0.5, borderRightColor: 'gray', justifyContent: 'center' }}>
-
-                    <Text style={styles.topValue}> {getDoctorExperience(doctorData.calulatedExperience)} </Text>
-                    <Text note style={styles.bottomValue}> Experience</Text>
-                  </Col>
-                  <Col style={{ backgroundColor: 'transparent', justifyContent: 'center', marginLeft: 'auto', marginRight: 'auto' }}>
-                    <Text style={styles.topValue}>{paymentDetails.payment_method || 'N/A'} </Text>
-                    <Text note style={styles.bottomValue}> Paid Method </Text>
-                  </Col>
-                </Grid>
-
-                <Grid style={{ marginTop: 5 }}>
-                  <View style={{ marginLeft: 'auto', marginRight: 'auto' }}>
-                    <Col style={{ width: 300, }}>
-                      <Button disabled={true} block style={{ borderRadius: 10, backgroundColor: '#D7BDE2' }}>
-                        <Text style={{ color: 'black', fontSize: 15, fontFamily: 'OpenSans', fontWeight: 'bold' }}>
-                          {
-                            data.appointment_status == 'APPROVED'&& data.onGoingAppointment === true ? 'ONGOING'
-                            :
-                                data.appointment_status == 'PROPOSED_NEW_TIME' ? 'PROPOSED NEW TIME' :
-                                  data.appointment_status == 'PENDING_REVIEW' ? 'COMPLETED' :
-                                    data.appointment_status 
-                          }
-                        </Text>
-                      </Button>
-
-                    </Col>
-
-                  </View>
-                </Grid>
-                <Grid style={{ marginTop: 5 }}>
                   {selectedTab == 0 ?
-                    data.onGoingAppointment !== true && (data.appointment_status == 'APPROVED' || this.state.appointmentStatus === 'APPROVED' || data.appointment_status == 'PENDING') ?
-                      <Col style={width = 'auto'}>
-                        <Button block danger style={{ margin: 1, marginTop: 10, marginLeft: 1, borderRadius: 30, padding: 15, height: 40, width: "auto" }} onPress={() => this.navigateCancelAppoointment()} testID='cancelAppointment'>
-                          <Text style={{ textAlign: 'center', fontFamily: 'OpenSans', fontSize: 14, fontWeight: 'bold' }}>CANCEL APPOINTMENT</Text>
-                        </Button>
-                      </Col> :
-                      data.onGoingAppointment !== true && data.appointment_status == 'PROPOSED_NEW_TIME' ?
-                        <Item style={{ borderBottomWidth: 0, justifyContent: 'center' }}>
-                          <Button success style={styles.statusButton} onPress={() => this.updateAppointmentStatus(data, 'APPROVED')} testID='approvedAppointment'>
-                            <Text style={{ textAlign: 'center', fontFamily: 'OpenSans', color: '#000', fontSize: 14, fontWeight: 'bold' }}>ACCEPT</Text>
-                          </Button>
-                          <Button danger style={styles.Button2} onPress={() => this.navigateCancelAppoointment()} testID='appointmentCancel'>
-                            <Text style={{ textAlign: 'center', fontFamily: 'OpenSans', color: '#000', fontSize: 14, fontWeight: 'bold' }}> CANCEL </Text></Button>
-                        </Item> : null : null}
-                </Grid>
+                  data.onGoingAppointment !== true && (data.appointment_status == 'APPROVED' || this.state.appointmentStatus === 'APPROVED' || data.appointment_status == 'PENDING') ?
+                  <Col size={4}>
+                     <Row style={{marginTop:10 }}>
+                       <Button  style={styles.confirmButton} onPress={() => this.navigateCancelAppoointment()}>
+                        <Text  style={styles.ButtonText}>CANCEL</Text>
+                       </Button>
+                     </Row>
+                  </Col>: data.onGoingAppointment !== true && data.appointment_status == 'PROPOSED_NEW_TIME' ?
+                  <Col size={4}>
+                  <Row style={{marginTop:10 }}>
+                    <Button  style={styles.confirmButton} onPress={() => this.updateAppointmentStatus(data, 'APPROVED')}>
+                     <Text  style={styles.ButtonText}>ACCEPT</Text>
+                    </Button>
+                  </Row>
+                  <Row style={{marginTop:10 }}>
+                    <Button style={styles.postponeButton}  onPress={() =>  this.navigateCancelAppoointment()}>
+                       <Text capitalise={true} style={styles.ButtonText}>CANCEL</Text>
+                    </Button>
+                  </Row>
+               </Col>: <Col size={4}>
+                     
+                     <View style={{ alignItems:'center' }}>
+                        <Icon name={statusValue[data.appointment_status].icon} 
+                              style={{
+                                color: statusValue[data.appointment_status].color,
+                                fontSize:35
+                              }} />
+                  
+                     <Text capitalise={true} style={[styles.textApproved,{color:statusValue[data.appointment_status].color}]}>{data.appointment_status}</Text>
+                     </View>
+                 </Col>
+                 : <Col size={4}>
+                     
+                 <View style={{ alignItems:'center' }}>
+                    <Icon name={statusValue[data.appointment_status].icon} 
+                          style={{
+                            color: statusValue[data.appointment_status].color,
+                            fontSize:35
+                          }} />
+              
+                 <Text capitalise={true} style={[styles.textApproved,{color:statusValue[data.appointment_status].color}]}>{data.appointment_status}</Text>
+                 </View>
+             </Col> }
+              </Row>
+            </Grid>
+           <CardItem footer style={styles.cardItem2}>
+             <Grid>
+              <Row style={{height:25,marginRight:5}} >
+                <Col style={{width:'50%',}}>
+                  <Row>
+                    <Icon name='md-calendar' style={styles.iconStyle}/>
+                    <Text style={styles.timeText}>{formatDate(data.appointment_starttime,'Do MMM,YYYY')}</Text>
+                    
+                  </Row>
+                </Col>
+                <Col style={{width:'50%',marginLeft:5,}}>
+                 <Row>
+                   <Icon name="md-clock" style={styles.iconStyle}/>
+                   <Text style={styles.timeText}>{formatDate(data.appointment_starttime,'hh:mm a') +'-' + formatDate(data.appointment_endtime,'hh:mm a')}</Text>
+                  
+                 </Row>
+                </Col>
+                </Row>
+               </Grid>
+             </CardItem>
+           
+          </Card>
 
-              </List>
-            </Card>
 
-            <Card transparent style={{ margin: 20, backgroundColor: '#ecf0f1' }}>
-              <Card style={{ backgroundColor: '#ffffff', borderRadius: 10, padding: 10 }}>
-                <Grid style={{ margin: 5, justifyContent: 'center' }}>
-
-                  <Text style={{ fontSize: 15, fontFamily: 'OpenSans', textAlign: 'center' }}>
-                    {formatDate(data.appointment_starttime, "dddd,MMMM DD-YYYY  hh:mm a")}
+            <Grid>
+            {formatDate(data.appointment_starttime,'DD/MM/YYYY')==formatDate(new Date(),'DD/MM/YYYY')&&data.appointment_status=='APPROVED'?
+            <Row style={styles.rowStyle}>
+              <TouchableOpacity style={styles.touchableStyle}>
+                <Row>
+                <Icon name='md-cloud-upload' style={{color:'#4765FF',fontSize:25}}/>
+                <Text style={styles.touchableText}>Upload Your Prescription</Text>
+                </Row>
+              </TouchableOpacity>
+            </Row>:null}
+            <View style={{marginTop:10}}>
+            <Row style={styles.rowSubText}>
+               <Col style={{width:'8%',paddingTop:5}}>
+                 <Icon name="ios-medkit" style={{fontSize:20,}}/>
+              </Col>
+              <Col style={{width:'92%',paddingTop:5}}>
+                 <Text style={styles.innerSubText}>Diesease</Text>
+              <Text note style={styles.subTextInner1}>{data.disease_description||''}</Text>
+              </Col>
+            </Row>
+           
+            {data.patient_statment!=undefined?
+            <Row  style={styles.rowSubText}>
+               <Col style={{width:'8%',paddingTop:5}}>
+                <Icon name="ios-create" style={{fontSize:20,}}/>
+              </Col>
+              <Col style={{width:'92%',paddingTop:5}}>
+                 <Text style={styles.innerSubText}>Patient Stament</Text>
+                 <Text note style={styles.subTextInner1}>{data.disease_description}</Text>
+              </Col>
+            </Row>:null}
+            <Row  style={styles.rowSubText}>
+               <Col style={{width:'8%',paddingTop:5}}>
+                 <Icon name="ios-pin" style={{fontSize:20,}}/>
+               </Col>
+              <Col style={{width:'92%',paddingTop:5}}>
+                 <Text style={styles.innerSubText}>Hospital</Text>
+                 <Text  style={styles.subTextInner1}>{getHospitalHeadeName(hospital)}</Text>
+                 <Text note style={styles.subTextInner1}>{getHospitalName(hospital)}</Text>
+              </Col>
+            </Row>
+            <Row style={styles.rowSubText}>
+               <Col style={{width:'8%',paddingTop:5}}>
+                 <Icon name="ios-contact" style={{fontSize:20,}}/>
+              </Col>
+              <Col style={{width:'92%',paddingTop:5}}>
+                 <Text style={styles.innerSubText}>Personal Details</Text>
+                 <Row style={{marginTop:10}}>
+              <Col style={{width:'25%'}}>
+                  <Text style={styles.downText}>Email
                   </Text>
-
-
-                </Grid>
-
-                <List>
-                  <ListItem avatar >
-                    {doctorData.hospital ?
-                      <RenderHospitalAddress gridStyle={{ width: '10%' }}
-                        hospotalNameTextStyle={styles.customText}
-                        textStyle={styles.customText}
-                        hospitalAddress={hospital}
-                      /> : null}
-                  </ListItem>
-                </List>
-              </Card>
-              {(data.appointment_status == 'COMPLETED' && reviewData.length === 0) ?
-                <Card style={{ margin: 10, padding: 10, borderRadius: 10 }}>
-                  <List>
-                    <Text style={styles.titlesText}>Review</Text>
-
-
-                    <View style={{ justifyContent: 'center', alignItems: 'center' }}>
-                      <TouchableOpacity block success style={styles.reviewButton} onPress={() => this.navigateAddReview()} testID='addFeedBack'>
-                        {/* <Icon name='add' /> */}
-                        <Text style={{ color: '#fff', fontSize: 14, fontFamily: 'OpenSans', fontWeight: 'bold', textAlign: 'center', marginTop: 5 }}> ADD FEEDBACK </Text>
-                        <Icon name="create" style={styles.editProfilePencil}></Icon>
-
-                      </TouchableOpacity>
-                    </View>
-
-                  </List>
-                </Card>
-                : (data.appointment_status == 'COMPLETED' && reviewData.length !== 0) ?
-
-                  <Card style={{ margin: 10, padding: 10, borderRadius: 10 }}>
-                    <List>
-                      <Text style={styles.titlesText}>Review</Text>
-                      {reviewData[0] && reviewData[0].is_anonymous == true ?
-
-                        <ListItem avatar>
-                          <Left>
-                            <Thumbnail square source={{ uri: 'https://static1.squarespace.com/static/582bbfef9de4bb07fe62ab18/t/5877b9ccebbd1a124af66dfe/1484241404624/Headshot+-+Circular.png?format=300w' }} style={{ height: 40, width: 40 }} />
-                          </Left>
-                          <Body>
-                            <Text>Medflic User</Text>
-                            <StarRating fullStarColor='#FF9500' starSize={15} width={100} containerStyle={{ width: 100 }}
-                              disabled={false}
-                              maxStars={5}
-                              rating={reviewData[0] && reviewData[0].overall_rating}
-
-                            />
-                            <Text note style={styles.customText}>{reviewData[0] && reviewData[0].comments} </Text>
-                          </Body>
-                        </ListItem>
-                        :
-                        <ListItem avatar>
-                          <Left>
-                            <Thumbnail square source={{ uri: 'https://static1.squarespace.com/static/582bbfef9de4bb07fe62ab18/t/5877b9ccebbd1a124af66dfe/1484241404624/Headshot+-+Circular.png?format=300w' }} style={{ height: 40, width: 40 }} />
-                          </Left>
-                          <Body>
-                            <Text style={{ fontFamily: 'OpenSans', fontSize: 20 }}>{(reviewData[0] && reviewData[0].userInfo.first_name) + " " + (reviewData[0] && reviewData[0].userInfo.last_name)}</Text>
-                            <StarRating fullStarColor='#FF9500' starSize={15} width={100} containerStyle={{ width: 100 }}
-                              disabled={false}
-                              maxStars={5}
-                              rating={reviewData[0] && reviewData[0].overall_rating}
-
-                            />
-                            <Text note style={styles.customText}>{reviewData[0] && reviewData[0].comments} </Text>
-                          </Body>
-                        </ListItem>}
-                    </List>
-                  </Card> : null}
-
-              <Card style={{ backgroundColor: '#ffffff', borderRadius: 10, padding: 10 }}>
-                <Grid style={{ margin: 5 }}>
-                  <Col style={{ width: '10%' }}>
-                    <Icon name="apps" style={styles.customIcon}></Icon>
-                  </Col>
-                  <Col style={{ width: '90%', alignItems: 'flex-start' }}>
-                    <Text style={styles.titlesText}>Disease</Text></Col>
-
-                </Grid>
-
-
-                <List>
-                  <ListItem avatar noBorder style={{ borderLeftWidth: 8, borderColor: "#F29727", marginBottom: -5 }}>
-                    <Left >
-                    </Left>
-                    <Body>
-                      <Text style={styles.customText}>
-
-                        {data.disease_description}
-
-                      </Text>
-
-                    </Body>
-
-                  </ListItem>
-
-                </List>
-
-              </Card>
-              <Card style={{ backgroundColor: '#ffffff', borderRadius: 10, padding: 10 }}>
-
-
-                <Grid style={{ margin: 5 }}>
-                  <Col style={{ width: '10%' }}>
-                    <Icon name="apps" style={styles.customIcon}></Icon>
-                  </Col>
-                  <Col style={{ width: '90%', alignItems: 'flex-start' }}>
-                    <Text style={styles.titlesText}>Personal Details</Text></Col>
-
-                </Grid>
-                <List>
-                  <ListItem avatar noBorder style={{ borderLeftWidth: 8, borderColor: "#F29727", marginBottom: -5 }}>
-                    <Body>
-                      <Text style={styles.customText}>Email</Text>
-                      <Text style={styles.customText}>{doctorData && doctorData.email} </Text>
-                    </Body>
-                  </ListItem>
-
-                  <ListItem avatar noBorder style={{ borderLeftWidth: 8, borderColor: "#F29727", marginBottom: -5 }}>
-                    <Body>
-                      <Text style={styles.customText}>Contact</Text>
-                      <Text note style={styles.customText}>{doctorData && doctorData.mobile_no} </Text>
-                    </Body>
-                  </ListItem>
-
-                </List>
-              </Card>
-
-              {doctorData.language != undefined && doctorData.language.length != 0 ?
-                <Card style={{ backgroundColor: '#ffffff', borderRadius: 10, padding: 10 }}>
-
-                  <Grid style={{ margin: 5 }}>
-                    <Col style={{ width: '10%' }}>
-                      <Icon name="apps" style={styles.customIcon}></Icon>
-                    </Col>
-                    <Col style={{ width: '90%', alignItems: 'flex-start' }}>
-                      <Text style={styles.titlesText}>Languages speaks By Doctor</Text></Col>
-                  </Grid>
-
-                  <List>
-                    <ListItem avatar noBorder style={{ borderLeftWidth: 8, borderColor: "#F29727", marginBottom: -5 }}>
-                      <Left >
-                      </Left>
-                      <Body>
-                        <Text style={styles.customText}>
-                          {doctorData.language && doctorData.language.toString()}
-                        </Text>
-                      </Body>
-                    </ListItem>
-                  </List>
-                </Card> : null}
-
-              <Card style={{ backgroundColor: '#ffffff', borderRadius: 10, padding: 10 }}>
-
-                <Grid style={{ margin: 5 }}>
-                  <Col style={{ width: '10%' }}>
-                    <Icon name="apps" style={styles.customIcon}></Icon>
-                  </Col>
-                  <Col style={{ width: '90%', alignItems: 'flex-start' }}>
-                    <Text style={styles.titlesText}> Payment Report </Text></Col>
-                </Grid>
-
-
-                <ListItem avatar noBorder style={{ borderLeftWidth: 8, borderColor: "#F29727", marginBottom: -5 }}>
-                  <Body>
-                    <View style={{ alignItems: 'center', justifyContent: 'center', marginTop: 5 }}>
+              </Col>
+              <Col  style={{width:'10%'}}>
+                <Text style={styles.downText}>:</Text>
+              </Col>
+              <Col  style={{width:'65%'}}>
+            <Text note style={styles.downText}>{doctorData && doctorData.email}</Text>
+              </Col>
+            </Row>
+            <Row style={{marginTop:10}}>
+              <Col style={{width:'25%'}}>
+                  <Text style={styles.downText}>Contact
+                  </Text>
+              </Col>
+              <Col  style={{width:'10%'}}>
+                <Text style={styles.downText}>:</Text>
+              </Col>
+              <Col  style={{width:'65%'}}>
+            <Text note style={styles.downText}>{doctorData && doctorData.mobile_no||'N/A'} </Text>
+              </Col>
+            </Row>
+              </Col>
+            </Row>
+            
+            {doctorData.language != undefined && doctorData.language.length != 0 ?
+            <Row style={styles.rowSubText}>
+               <Col style={{width:'8%',paddingTop:5}}>
+                 <Icon name="ios-book" style={{fontSize:20,}}/>
+              </Col>
+              <Col style={{width:'92%',paddingTop:5}}>
+                 <Text style={styles.innerSubText}>Languages speaks By Doctor</Text>
+              <Text note style={styles.subTextInner1}>{doctorData.language && doctorData.language.toString()}</Text>
+              </Col>
+            </Row>:null}
+            <Row style={styles.rowSubText}>
+               <Col style={{width:'8%',paddingTop:5}}>
+                 <Icon name="ios-document" style={{fontSize:20,}}/>
+              </Col>
+              <Col style={{width:'92%',paddingTop:5}}>
+                 <Text style={styles.innerSubText}>Payment Report</Text>
+                 {reportData.length!=0?
+              <Text note style={styles.subTextInner1}>{reportData[reportData.length-1] && reportData[reportData.length-1].complaint||' '}</Text>:null}
+              <View style={{ alignItems: 'center', justifyContent: 'center', marginTop: 5,marginBottom:10 }}>
                       <TouchableOpacity 
                         onPress={() => { 
                           this.props.navigation.push('ReportIssue', { 
@@ -528,10 +496,103 @@ class AppointmentDetails extends Component {
                         </Text>
                       </TouchableOpacity>
                     </View>
-                  </Body>
-                </ListItem>
+              </Col>
+            </Row>
+            {data.appointment_status == 'COMPLETED' && reviewData.length !== 0 ?
+            <Row style={styles.rowSubText}>
+               <Col style={{width:'8%',paddingTop:5}}>
+                 <Icon name="ios-medkit" style={{fontSize:20,}}/>
+              </Col>
+              <Col style={{width:'92%',paddingTop:5}}>
+                 <Text style={styles.innerSubText}>Review</Text>
+                 
+                 <StarRating fullStarColor='#FF9500' starSize={15} width={100} containerStyle={{ width: 100 }}
+                 disabled={false}
+                 maxStars={5}
+                 rating={reviewData[0] && reviewData[0].overall_rating}
+               /></Col>
+               </Row>:
+               data.appointment_status == 'COMPLETED' && reviewData.length == 0 ? 
+               <Row style={styles.rowSubText}>
+               <Col style={{width:'8%',paddingTop:5}}>
+                 <Icon name="ios-add-circle" style={{fontSize:20,}}/>
+              </Col>
+              <Col style={{width:'92%',paddingTop:5}}>
+                 <Text style={styles.innerSubText}>Add Feedback</Text>
+               <View style={{ justifyContent: 'center', alignItems: 'center' }}>
+               <TouchableOpacity block success style={styles.reviewButton} onPress={() => this.navigateAddReview()} testID='addFeedBack'>
+                
+                 <Text style={{ color: '#fff', fontSize: 14, fontFamily: 'OpenSans', fontWeight: 'bold', textAlign: 'center', marginTop: 5 }}> ADD FEEDBACK </Text>
+                 <Icon name="create" style={styles.editProfilePencil}></Icon>
 
-                <View style={{ height: 300, position: 'absolute', bottom: 0 }}>
+               </TouchableOpacity>
+             </View>
+              {/* <Text note style={styles.subTextInner1}>{reviewData[0] && reviewData[0].comments||''}</Text> */}
+              
+              </Col>
+            </Row>:null
+  }
+          
+          
+            <Row style={{marginLeft:10,marginRight:10,marginTop:10}}>
+              <Col style={{width:'8%',paddingTop:5}}>
+                 <Icon name="ios-cash" style={{fontSize:20,}}/>
+              </Col>
+              <Col style={{width:'92%',paddingTop:5}}>
+                <Text style={styles.innerSubText}>Payment Info</Text>
+               <Row style={{marginTop:10}}>
+                <Col style={{width:'60%'}}>
+                  <Text style={styles.downText}>Total Fee
+                  </Text>
+                </Col>
+                <Col  style={{width:'25%'}}>
+                    <Text style={styles.downText}>-</Text>
+                </Col>
+                <Col  style={{width:'15%'}}>
+                   <Text note style={styles.downText}>{"Rs."+(paymentDetails.amount!=undefined?paymentDetails.amount:0)+"/-"}</Text>
+                </Col>
+            </Row>
+            <Row style={{marginTop:10}}>
+              <Col style={{width:'60%'}}>
+                  <Text style={styles.downText}>Payment Made
+                  </Text>
+              </Col>
+              <Col  style={{width:'25%'}}>
+                <Text style={styles.downText}>-</Text>
+              </Col>
+              <Col  style={{width:'15%'}}>
+                <Text note style={styles.downText}>{"Rs."+(paymentDetails.amount_paid!=undefined?paymentDetails.amount_paid:0 )+"/-"}</Text>
+              </Col>
+            </Row>
+            <Row style={{marginTop:10}}>
+              <Col style={{width:'60%'}}>
+                 <Text style={styles.downText}>Payment Due
+                  </Text>
+              </Col>
+              <Col  style={{width:'25%'}}>
+                <Text style={styles.downText}>-</Text>
+              </Col>
+              <Col  style={{width:'15%'}}>
+                <Text note style={styles.downText}>{"Rs."+(paymentDetails.amount_due!=undefined?paymentDetails.amount_due:0 )+"/-"}</Text>
+              </Col>
+            </Row>
+            <Row style={{marginTop:10}}>
+              <Col style={{width:'60%'}}>
+                <Text style={styles.downText}>Payment Method
+                </Text></Col>
+              <Col  style={{width:'25%'}}>
+                <Text style={styles.downText}>-</Text>
+              </Col>
+              <Col  style={{width:'15%'}}>
+                <Text note style={styles.downText}>{paymentDetails.payment_method|| 0 }</Text>
+              </Col>
+            </Row>
+           </Col>
+          </Row>
+        </View>
+       </Grid>
+     </View>}
+     <View style={{ height: 300, position: 'absolute', bottom: 0 }}>
                   <Modal
                     animationType="slide"
                     transparent={true}
@@ -548,14 +609,9 @@ class AppointmentDetails extends Component {
                   </Modal>
                 </View>
 
-
-              </Card>
-            </Card>
-
-          </Content>
-        }
-      </Container>
-
+     </Content>
+              </Container>
+     
     )
 
   }
@@ -572,11 +628,201 @@ const styles = StyleSheet.create({
   },
 
   bodyContent: {
-    // paddingLeft: 20,
-    // paddingRight: 20,
+    padding:10
 
   },
 
+    cardItem:{
+     borderTopLeftRadius:10,
+     borderTopRightRadius:10,
+     justifyContent:'center',
+     height:100,
+    },
+    cardItemText2:{
+         fontFamily:'OpenSans',
+         fontSize:13,
+         marginTop: 5,
+         fontStyle:'italic',
+         width:'90%'
+    },
+    Textname:{
+      fontSize:14,
+      fontFamily:'OpenSans',
+      fontWeight:'bold'
+    },
+    specialistTextStyle:{
+      fontSize:12,
+      fontFamily:'OpenSans',
+      fontWeight:'normal',
+     
+    },
+    subText1:{
+      fontSize:13,
+      fontFamily:'OpenSans',
+      fontWeight:'bold'
+    },
+    subText2:{
+      fontSize:13,
+      fontFamily:'OpenSans',
+      marginLeft:5
+    },
+    confirmButton:{
+      backgroundColor:'#6FC41A',
+      height:30,
+      padding:17,
+      borderRadius:5
+    },
+    ButtonText:{
+      color:'#fff',
+      fontSize:10,
+      fontWeight:'bold',
+    },
+    textApproved:{
+      fontSize:12,
+      fontWeight:'bold',
+    },
+    postponeButton:{
+      backgroundColor:'#4765FF',
+      height:30,
+      padding:11,
+      borderRadius:5
+    },
+    timeText:{
+      fontFamily:'OpenSans',
+      fontSize:15,
+      fontWeight:'bold',
+      color:'#FFF',
+      marginLeft:-10
+    },
+    iconStyle:{
+      fontSize:20,
+      color:'#FFF'
+    },
+    rowStyle:{
+      justifyContent:'center',
+      alignItems:'center',
+      marginTop:20
+    },
+    touchableStyle:{
+      borderColor:'#4765FF',
+      borderWidth:2,
+      borderRadius:5,
+      padding:8
+    },
+    touchableText:{
+      fontFamily:'OpenSans',
+      fontSize:15,
+      fontWeight:'bold',
+      color:'#4765FF',
+      marginTop:4,
+      marginLeft:5
+    },
+    rowSubText:{
+      marginLeft:10,
+      borderBottomColor:'gray',
+      borderBottomWidth:0.5,
+      marginRight:10,
+      marginTop:10
+    },
+    innerSubText:{
+      fontSize:13,
+      fontFamily:'OpenSans',
+      fontWeight:'bold',
+      marginBottom:5
+    },
+    subTextInner1:{
+      fontSize:12,
+      fontFamily:'OpenSans',
+      marginBottom:5
+    },
+    downText:{
+      fontSize:12,
+      fontFamily:'OpenSans',
+    },
+    cardItemText3:{
+             fontFamily:'OpenSans',
+             fontSize:18,
+            height:30,
+            fontWeight:'bold',
+             color:'#FFF',paddingBottom:-10
+             },
+    card: {
+      padding: 10,
+      paddingTop: 10,
+      paddingBottom: 10,
+      borderRadius: 10,
+      paddingRight: 10,
+      paddingLeft: 10,
+      borderColor: 'gray',
+      borderWidth: 0.5,
+      margin: 5,
+      width: '98%',
+      justifyContent: 'center',
+      alignItems: 'center'
+
+  },
+  innerCard:{
+    marginTop:-5,  
+    borderBottomLeftRadius:10,
+    borderBottomRightRadius:10,
+    padding:5
+  },
+  diseaseText:{
+    fontFamily:'OpenSans',
+    fontSize:16,
+    marginLeft:10,
+    fontStyle:'italic',
+    marginTop:-5
+},
+hospitalText:{
+    fontFamily:'OpenSans',
+    fontSize:16,
+    marginLeft:15,
+    width:"80%"
+},
+hosAddressText:{
+    fontFamily:'OpenSans',
+    fontSize:16,
+    marginLeft:15,
+    fontStyle: 'italic',
+    width:"80%",
+    marginTop:5
+},
+cardItem2:{
+     backgroundColor:'#784EBC',
+     marginBottom:-10,
+     borderBottomLeftRadius:10,
+     borderBottomRightRadius:10,
+     justifyContent:'center',
+     alignItems:"center",
+     height:35,
+     marginTop:10
+},
+ cardItemText:{
+    fontFamily:'OpenSans',
+    fontSize:16,
+    fontWeight:'bold',
+    color:'#FFF'
+     },
+    subText:{
+        fontFamily:'Opensans',
+        fontSize:18,
+        fontWeight:'bold',
+        marginTop:15,
+        marginLeft:5
+      },
+  customHead:
+  {
+    fontFamily: 'OpenSans',
+  },
+  customText:
+  {
+
+    fontFamily: 'OpenSans',
+    color: '#000',
+    fontSize: 14,
+
+  },
 
   logo: {
     height: 80,
@@ -588,27 +834,105 @@ const styles = StyleSheet.create({
 
   customCard: {
     borderRadius: 20,
-    padding: 15,
-    marginTop: -180,
-    marginLeft: 20,
-    marginRight: 20,
+    padding: 7,
+    marginTop: -150,
+    marginLeft: 15,
+    marginRight: 15,
+    fontFamily: 'OpenSans',
 
   },
   topValue: {
     marginLeft: 'auto',
     marginRight: 'auto',
     fontFamily: 'OpenSans',
-    fontSize: 13,
-    fontWeight: 'bold'
-
   },
   bottomValue:
   {
     marginLeft: 'auto',
     marginRight: 'auto',
-    fontSize: 13,
     fontFamily: 'OpenSans',
+    fontSize: 12
+  },
 
+
+  subtitlesText: {
+    fontSize: 15,
+    padding: 4,
+    margin: 10,
+    backgroundColor: '#FF9500',
+    color: '#fff',
+    width: 160,
+    fontFamily: 'opensans-semibold',
+    textAlign: 'center',
+    borderRadius: 10
+
+  },
+
+  customIcons:
+  {
+    backgroundColor: 'red',
+    borderRadius: 20,
+    justifyContent: 'center',
+    color: '#fff',
+    marginLeft: 'auto',
+    marginRight: 'auto',
+    textAlign: 'center',
+    // borderColor: 'red',
+    // borderWidth: 2,
+    fontSize: 25,
+    height: 25,
+    width: 25,
+    fontWeight: 'bold'
+
+  },
+  leftButton:
+  {
+    height: 45,
+    width: '98%',
+    backgroundColor: '#23D972',
+    borderRadius: 5,
+    alignItems: 'center',
+    marginLeft: 2,
+    marginRight: 2,
+    textAlign: 'center',
+    justifyContent: 'center',
+    fontSize: 15
+  },
+  rightButton: {
+    height: 45,
+    width: '98%',
+    backgroundColor: '#745DA6',
+    borderRadius: 5,
+    marginLeft: 2,
+    marginRight: 2,
+    textAlign: 'center',
+    justifyContent: 'center',
+    fontSize: 10
+  },
+  customPadge: {
+    color: 'white',
+    textAlign: 'center',
+    fontFamily: 'OpenSans',
+    fontSize: 10,
+    padding: 5,
+  },
+  customTouch: {
+    borderRadius: 5,
+    height: 45,
+    width: '30%',
+    backgroundColor: '#775DA3',
+    textAlign: 'center',
+    justifyContent: 'center',
+    margin: 5
+  },
+  customSelectedTouch: {
+    backgroundColor: '#A9A9A9',
+    borderRadius: 5,
+    height: 45,
+    width: '30%',
+    textAlign: 'center',
+    justifyContent: 'center',
+    margin: 5
   },
   reviewButton: {
     marginTop: 12,
@@ -621,85 +945,8 @@ const styles = StyleSheet.create({
     paddingBottom: 5,
     paddingTop: 5,
     flexDirection: 'row'
-  },
-  customText:
-  {
-    fontFamily: 'OpenSans',
-    color: '#000',
-    fontSize: 15,
-
-
-  },
-  subtitlesText: {
-    fontSize: 15,
-    margin: 10,
-    color: '#F2889B',
-    fontFamily: 'opensans-semibold',
-    fontWeight: 'bold'
-
-  },
-  titlesText: {
-    fontSize: 15,
-    color: '#F2889B',
-    fontFamily: 'opensans-semibold'
-
-  },
-  customIcon:
-  {
-    height: 30,
-    width: 30,
-    backgroundColor: 'gray',
-    color: 'white',
-    borderRadius: 8,
-    fontSize: 19,
-    paddingLeft: 8,
-    paddingRight: 6,
-    paddingTop: 6,
-    paddingBottom: 6
-
-  },
-  rowText:
-  {
-    fontFamily: 'OpenSans',
-    color: '#000',
-    fontSize: 16,
-    margin: 10
-  },
-  statusButton: {
-    // margin: 1,
-    // marginLeft: 20,
-    // marginTop: 10,
-    // borderRadius: 30,
-    // padding: 15,
-    // height: 35,
-    // width: "auto"
-
-
-
-    borderRadius: 10,
-
-    justifyContent: 'center',
-    padding: 30,
-    marginTop: 15,
-    width: '60%',
-
-
-  },
-  Button2: {
-    borderRadius: 10,
-    marginLeft: 5,
-    justifyContent: 'center',
-    padding: 1,
-    marginTop: 15,
-    width: '40%',
-
-  },
-  editProfilePencil: {
-    color: 'white',
-    marginLeft: 2,
-    fontSize: 20,
-    marginTop: 5
   }
 
 
-});
+})
+
