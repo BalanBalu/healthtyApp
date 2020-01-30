@@ -516,10 +516,9 @@ const HomeStack = createStackNavigator({
       title: 'Reminder',
       headerRight: (
        
-            <TouchableOpacity onPress={() => { navigation.navigate('AddReminder') }} style={{backgroundColor:'#ffffff',borderRadius:10,height:30,paddingLeft:10,paddingRight:10,marginRight:10,}}>
+            <TouchableOpacity onPress={() => { navigation.navigate('AddReminder') }} style={{marginRight:20,marginTop:5}}>
               <Row>
-                <Icon name="ios-add-circle" style={{ color: '#7E49C3', fontFamily: 'opensans-semibold',fontSize:20,marginTop:3}}></Icon>
-                <Text style={{fontFamily:'OpenSans',fontSize:14,marginLeft:5,fontWeight:'bold',marginTop:5}}>Add</Text>
+                <Icon name="ios-add" style={{ color: '#fff', fontFamily: 'opensans-semibold',fontSize:40,marginTop:3}}></Icon>
               </Row>
             </TouchableOpacity>
             

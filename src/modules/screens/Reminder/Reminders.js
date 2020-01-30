@@ -15,60 +15,63 @@ class Reminder extends Component {
 
 
     render() {
-const Reaminder=[{medname:'Acentaminophen',content:'10 mg',count:'1 pill(s)',time:'7:00 AM',remtime:'* Your Remainder Time is at 7:00 AM, Oct 24'},
-{medname:'Acentaminophen',content:'10 mg',count:'1 pill(s)',time:'10:00 AM',remtime:'* Your Remainder Time is at 10:00 AM, Oct 24'},
-{medname:'Acentaminophen',content:'10 mg',count:'1 pill(s)',time:'1:00 PM',remtime:'* Your Remainder Time is at 1:00 PM, Oct 24'},
-{medname:'Acentaminophen',content:'10 mg',count:'1 pill(s)',time:'4:00 PM',remtime:'* Your Remainder Time is at 4:00 PM, Oct 24'},
-{medname:'Acentaminophen',content:'10 mg',count:'1 pill(s)',time:'9:00 PM',remtime:'* Your Remainder Time is at 9:00 PM, Oct 24'}]
+const Reaminder=[{medname:'Acentaminophen',content:'10 mg   1 pill(s)',time:'7:00 AM',remtime:'Your Remainder Time is at 7:00 AM, Oct 24,2019.'},
+{medname:'Acentaminophen',content:'13 mg   1 pill(s)',time:'10:00 AM',remtime:'Your Remainder Time is at 10:00 AM, Oct 24,2019.'},
+{medname:'Acentaminophen',content:'15 mg   1 pill(s)',time:'11:00 AM',remtime:'Your Remainder Time is at 1:00 PM, Oct 24,2019.'},
+{medname:'Acentaminophen',content:'20 mg   1 pill(s)',time:'4:00 PM',remtime:'Your Remainder Time is at 4:00 PM, Oct 24,2019.'},
+{medname:'Acentaminophen',content:'10 mg   1 pill(s)',time:'9:00 PM',remtime:'Your Remainder Time is at 9:00 PM, Oct 24,2019.'}]
         return (
             <Container>
-              <Content>
+              <Content style={{backgroundColor:'#F1F1F1'}}>
+                <View style={{paddingBottom:10,backgroundColor:'#FFF'}}>
                 <CalendarStrip
                    calendarAnimation={{ type: 'sequence', duration: 30 }}
                    selection={'border'}
                    selectionAnimation={{ duration: 300, borderWidth: 1 }}
                    style={{ paddingTop: 2, paddingBottom: 2 }}
                    calendarHeaderStyle={{ color: 'gray' }}
-                   calendarColor={'#F1F1F1'}
-                   highlightColor={'#2BCA2F'}
+                   calendarColor={'#fff'}
+                   highlightColor={'#7F49C3'}
                    dateNumberStyle={{ color: 'gray' }}
                    dateNameStyle={{ color: 'gray' }}
-                    highlightDateNumberStyle={{ color: 'yellow', backgroundColor: '#2BCA2F', borderRadius: 15, padding: 5, height: 30, width: 30, fontSize: 12 }}
-                    highlightDateNameStyle={{ color: '#2BCA2F' }}
+                    highlightDateNumberStyle={{ color: 'white', backgroundColor: '#7F49C3', borderRadius: 15, padding: 5, height: 30, width: 30, fontSize: 12 }}
+                    highlightDateNameStyle={{ color: '#7F49C3' }}
                     borderHighlightColor={'white'}
                     iconContainer={{ flex: 0.1 }}
-                   /> 
-                  <View style={{marginLeft:30,marginRight:30}}>
-                    <FlatList data={Reaminder}
+                   />
+                   <Text style={{color: '#7F49C3',textAlign:'center',marginTop:2,fontFamily:'OpenSans',fontWeight:"500"}}>Today</Text>
+                   </View>      
+                   <FlatList data={Reaminder}
                     renderItem={({item})=>
-                    <Card style={{borderRadius:5,marginTop:10}}>
-                     <Grid>
-                      <Row style={{marginTop:5}}>
-                       <Col style={styles.col1}>
-                        <View style={{marginLeft:15}}>
-                          <Text style={styles.mednamestyle}>{item.medname}</Text>
-                          <Text  style={styles.innerText}>{item.content}</Text>
-                          <Text  style={styles.innerText}>{item.count}</Text>
-                          </View> 
+                   <View style={{marginLeft:15,marginRight:15,}}> 
+                   <Card style={{marginTop:15}}>
+                     <Grid style={{paddingBottom:10}}>
+                     <Row style={{backgroundColor:'#7F49C3',paddingTop:5,paddingBottom:5}}>
+                       <Col>
+                       <Text style={{marginLeft:15,color:'#FFF'}}>{item.time}</Text>
                        </Col>
-                       <Col style={styles.col2}>
-                         <Row>
-                          <Left>
-                          <Text style={styles.timestyle}>{item.time}</Text>
-                            </Left> 
-                           <Right>
-                           <Switch value={true} />
-                           </Right>
-                           </Row>
+                       <Col style={{alignItems:'flex-end',justifyContent:'center'}}>
+                        <Switch style={{ transform: [{ scaleX: .8 }, { scaleY: .8 }],backgroundColor:'fff'}} trackColor={{true: '#6FC41A', false: 'grey'}} 
+                           thumbColor={"white"}
+      onValueChange={this.toggleSwitch}
+      value={true}/>
                        </Col>
-                      </Row>
+                     </Row>
+                     <Row style={{marginTop:10}}>
+                       <Col>
+                       <Text style={{marginLeft:15,fontFamily:'OpenSans',fontWeight:'500'}}>{item.medname}</Text>
+                       </Col>
+                       <Col>
+        <Text style={{textAlign:'right',marginRight:5,fontSize:12,color:'#6c6c6c',fontWeight:"100",marginTop:3}}>{item.content} </Text>
+                       </Col>
+                     </Row>
+                     <Row style={{marginTop:10}}>
+        <Text style={{marginLeft:15,color:'#2fbf1c',fontSize:12,fontFamily:'OpenSans',fontWeight:"300"}}>{item.remtime}</Text>
+                     </Row>
                      </Grid>
-                    <View style={{marginTop:5,borderTopColor:'gray',borderTopWidth:1,}}> 
-                      <Text style={styles.remText}>{item.remtime}</Text>
-                    </View>
-                 </Card>
+                   </Card>
+                   </View>
                     }/>
-                </View>
               </Content>
           </Container>
         )
