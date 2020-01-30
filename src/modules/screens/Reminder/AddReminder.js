@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
-import { Container, Content, View, Text, Item,Card, Spinner,Picker,Icon, Radio,Row,Col,Form,Button } from 'native-base';
-import {StyleSheet,TextInput,TouchableOpacity} from 'react-native'
+import { Container, Content, View, Text, Item,Card, Spinner,Picker,Icon, Radio,Row,Col,Form,Button, Input } from 'native-base';
+import {StyleSheet,TextInput,TouchableOpacity,ScrollView,Image} from 'react-native'
 import { FlatList } from 'react-native-gesture-handler';
 import Autocomplete from '../../../components/Autocomplete'
 import { RadioButton } from 'react-native-paper';
@@ -60,19 +60,22 @@ class AddReminder extends Component {
       const { isDateTimePickerVisible,selectedDate } = this.state;
         return (
             <Container>
+              <ScrollView>
             <Content style={{padding:20}}>
                 <View style={{marginBottom:30}}>
                      
-                       <View >
+                        <View >
                          <Text style={styles.NumText}>What medicine would you like to add ?</Text>
                          <Form>
-                         <Autocomplete style={styles.autoField}/>   
+                         <TextInput style={styles.autoField} placeholder="Medicine name"/>   
                          </Form>
                  </View>
                  <View>
-                 <Text style={styles.NumText}>What form is the medicine ?</Text>
+                   <Row>
+                   <Col>
+                 <Text style={styles.NumText}>From of Medicine</Text>
                  <Form style={{marginTop:5}}>
-                   <Card picker style={{height:40,justifyContent:'center'}}>
+                   <Card picker style={{height:40,width:150,justifyContent:'center'}}>
                      <Picker
                        mode="dropdown"
                        style={{ width: undefined }}
@@ -92,12 +95,12 @@ class AddReminder extends Component {
                      </Picker>
                    </Card>
                  </Form>
-                 </View>
-                 <View>
-                 <Text style={styles.NumText}>What strength is the medicine ?</Text>
+                 </Col>
+                 <Col>
+                 <Text style={styles.NumText}>strength of Medicine</Text>
                  <Form style={{marginTop:5}}>
-                    <Card picker style={{height:40,justifyContent:'center'}}>
-                      <Picker
+                 <Card picker style={{height:40,width:150,justifyContent:'center'}}>
+                 <Picker
                         mode="dropdown"
                         style={{ width: undefined }}
                         placeholder="Select your SIM"
@@ -112,31 +115,129 @@ class AddReminder extends Component {
                         <Picker.Item label="mEq" value="key3" />
                         <Picker.Item label="mg" value="key4" />
                       </Picker>
-                    </Card>
+                 </Card>
                  </Form>
+                 </Col>
+                 </Row>
+                 </View>
                 <View>
-                <Text style={styles.NumText}>Do you need to take this medicine every day ?</Text>
+                <Text style={styles.NumText}>How often would you take this Medicine</Text>
                 <Item style={{ marginTop: 10, borderBottomWidth: 0,  }}>
-              <RadioButton.Group
+                <RadioButton.Group>
+                <RadioButton.Group
               onValueChange={value => this.setState({ takemed: value }) }
-               value={this.state.takemed}>
-                <View style={{flexDirection:'row'}}>
-                   <RadioButton value="yes" />
+               value={this.state.takemed}></RadioButton.Group>
+               <View style={{flexDirection:'row'}}>
+                   <RadioButton value="yes"  uncheckedColor={'#1296db'} color={'#1296db'}/>
                  <Text style={{
-                        fontFamily: 'OpenSans',fontSize:15,marginTop:8
-                   }}>yes</Text> 
+                        fontFamily: 'OpenSans',fontSize:13,marginTop:8
+                   }}>Everyday</Text> 
                 </View>
                 <View style={{flexDirection:'row',marginLeft:10}}>
-                  <RadioButton value="Only as needed" style={{marginLeft:20}}/>
+                  <RadioButton value="Only as needed"  uncheckedColor={'#1296db'} color={'#1296db'} style={{marginLeft:20}}/>
                  <Text style={{
-                        fontFamily: 'OpenSans',fontSize:15,marginTop:8
-                   }}>Only as needed</Text>
+                        fontFamily: 'OpenSans',fontSize:13,marginTop:8
+                   }}>Only when i needed</Text>
                 </View>
-            </RadioButton.Group>   
-           </Item>
-           </View>
-          <View>
-             <Text style={styles.NumText}>How often do you take it ?</Text>
+                </RadioButton.Group> 
+                </Item>
+            </View>
+            <View>
+            <Form style={{marginTop:5}}>
+              <Row>
+                <Col size={3}>
+            <Text style={styles.NumText}>Select Date</Text>
+            </Col>
+            <Col size={7}>
+            <Card picker style={{height:40,justifyContent:'center'}}>
+                 <Picker
+                        mode="dropdown"
+                        style={{ width: undefined }}
+                        placeholder="Select your SIM"
+                        placeholderStyle={{ color: "#bfc6ea" }}
+                        placeholderIconColor="#007aff"
+                        selectedValue={this.state.selected3}
+                        onValueChange={this.onValueChange3.bind(this)}
+                      >
+                        <Picker.Item label="30-01-2020" value="key0" />
+                        <Picker.Item label="31-01-2020" value="key1" />
+                        <Picker.Item label="01-02-2020" value="key2" />
+                        <Picker.Item label="02-02-2020" value="key3" />
+                        <Picker.Item label="03-02-2020" value="key4" />
+                        <Picker.Item label="04-02-2020" value="key4" />
+                      </Picker>
+                 </Card>
+            </Col>
+            </Row>
+            </Form>
+            </View>
+            <View>
+              <Row>
+                <Col size={4}>
+                <Text style={styles.NumText}>Choose your time</Text>
+                </Col>
+                <Col size={3.5}> 
+            <Card picker style={{height:40,Width:10,justifyContent:'center'}}>
+                 <Picker
+                        mode="dropdown"
+                        style={{ width: undefined }}
+                        placeholder="Time"
+                        placeholderStyle={{ color: "#bfc6ea" }}
+                        placeholderIconColor="#007aff"
+                        selectedValue={this.state.selected3}
+                        onValueChange={this.onValueChange3.bind(this)}
+                      >
+                        <Picker.Item label="05:00" value="key0" />
+                        <Picker.Item label="06:00" value="key1" />
+                        <Picker.Item label="07:00" value="key2" />
+                        <Picker.Item label="08:00" value="key3" />
+                        <Picker.Item label="09:00" value="key4" />
+                        <Picker.Item label="10:00" value="key4" />
+                      </Picker>
+                 </Card>
+            </Col>
+            <Col size={2.5}>
+            <Button  style={styles.RemainderButton} >
+                  <Text style={styles.RemainderButtonText}>Add</Text>
+              </Button>
+            </Col>
+                </Row>
+                </View>
+                <View style={{backgroundColor:'#F1F1F1',justifyContent:'center',alignItems:'center'}}>
+                  <Image source={require('../../../../assets/images/Remindericon.png')} style={{height:100,width:100}}/>
+
+
+                  
+                </View>
+
+
+
+
+
+            
+            
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+                {/*<View>
+             
              <Row>
 <Col size={3.5}>
 <Text style={{fontFamily:'OpenSans',fontSize:13,marginTop:15}}>Choose Your Time</Text>
@@ -187,9 +288,10 @@ class AddReminder extends Component {
         </Row>
         <Button block style={styles.buttonStyle}><Text style={styles.customizedText}> Submit </Text></Button>
         </View>
-     </View>
+     </View> */}
     </View>
     </Content>
+    </ScrollView>
 </Container>
         )
     }
@@ -232,11 +334,12 @@ const styles = StyleSheet.create({
     fontWeight:'bold'
   },
   RemainderButton:{
-    borderRadius:10,
-    height:30,
-    marginTop:11,
+    borderRadius:5,
+    height:40,
+    marginTop:5,
     marginLeft:10,
-    backgroundColor:'#878787'
+    padding:5,
+    backgroundColor:'#1296db'
   },
   buttonStyle:{
           marginTop: 15, 
