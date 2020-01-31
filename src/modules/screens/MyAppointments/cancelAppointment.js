@@ -46,8 +46,8 @@ class CancelAppointment extends Component {
   cancelAppointment = async (data, updatedStatus) => {
     try {
       let userId = await AsyncStorage.getItem('userId');
+    
       if (onlySpaceNotAllowed(this.state.statusUpdateReason) == true) {
-        console.log('true')
         this.setState({ isLoading: true });
         let requestData = {
           doctorId: data.doctor_id,

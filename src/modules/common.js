@@ -338,12 +338,12 @@ export function validateName(text) {
     else return true;
 }
 export function onlySpaceNotAllowed(text) {
-         if(text){
-         if(text.trim()!=' ')return false
-    else return true;
-         }
-         else{
-             return false 
-
-         }
+          if(text){
+         if(text.trim())return true
+          else return false;
+          }
+          else{
+            return false  
+          }
+         
          }
