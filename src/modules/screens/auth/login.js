@@ -9,7 +9,7 @@ import { login, RESET_REDIRECT_NOTICE } from '../../providers/auth/auth.actions'
 import styles from '../../screens/auth/styles'
 import { store } from '../../../setup/store';
 import { fetchUserProfile, storeBasicProfile } from '../../providers/profile/profile.action';
-import { validateEmailAddress } from '../../screens/../common';
+import { acceptNumbersOnly } from '../../screens/../common';
 const mainBg = require('../../../../assets/images/MainBg.jpg');
 import Spinner from '../../../components/Spinner';
 
@@ -35,10 +35,10 @@ class Login extends Component {
         this.setState({ loginErrorMsg: 'Please enter Email and Password' });
         return false;
       }
-      if (validateEmailAddress(userEntry) == false) {
-        this.setState({ loginErrorMsg: 'Email address is not valid' });
-        return false;
-      }
+      // if (validateEmailAddress(userEntry) == false) {
+      //   this.setState({ loginErrorMsg: 'Email address is not valid' });
+      //   return false;
+      // }
       let requestData = {
         userEntry: userEntry,
         password: password,
@@ -98,12 +98,12 @@ class Login extends Component {
                   <Form>
                     <Label style={{ marginTop: 20, fontSize: 15, color: '#775DA3', fontWeight: 'bold' }}>Email / Phone</Label>
                     <Item style={{ borderBottomWidth: 0, marginLeft: 'auto', marginRight: 'auto', }}>
-                      <Input placeholder="Email Or Phone" style={styles.authTransparentLabel}
+                      <Input placeholder="Mobile Number" style={styles.authTransparentLabel}
                         ref={(input) => { this.enterTextInputEmail = input; }}
                         returnKeyType={'next'}
                         value={userEntry}
-                        keyboardType={'email-address'}
-                        onChangeText={userEntry => this.setState({ userEntry })}
+                        keyboardType={"number-pad"}
+                        onChangeText={userEntry => acceptNumbersOnly(userEntry) == false ? this.setState({ userEntry }) : null}
                         autoCapitalize='none'
                         blurOnSubmit={false}
                         onSubmitEditing={() => { this.userEntry._root.focus(); }}
