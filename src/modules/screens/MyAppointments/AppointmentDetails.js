@@ -63,9 +63,7 @@ class AppointmentDetails extends Component {
       const selectedTab = navigation.getParam('selectedIndex');
       this.props.navigation.setParams({ reportedId: appointmentId });
 
-      if (appointmentData.appointment_status == 'COMPLETED' && appointmentData.is_review_added == undefined) {
-        await this.setState({ modalVisible: true })
-      }
+     
       await this.setState({
         doctorId: doctorId, appointmentId: appointmentId,
         userId: userId, data: appointmentData, selectedTab
@@ -77,6 +75,9 @@ class AppointmentDetails extends Component {
         this.getUserReviews(),
         this.getUserReport(),
       ])
+      if (appointmentData.appointment_status == 'COMPLETED' && appointmentData.is_review_added == undefined) {
+        await this.setState({ modalVisible: true })
+      }
 
     }
 
