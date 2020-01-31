@@ -65,7 +65,7 @@ class AddReminder extends Component {
                 <View style={{marginBottom:30}}>
                      
                         <View >
-                         <Text style={styles.NumText}>What medicine would you like to add ?</Text>
+                         <Text style={styles.NumText}>What Medicine would you like to add ?</Text>
                          <Form>
                          <TextInput style={styles.autoField} placeholder="Medicine name"/>   
                          </Form>
@@ -75,7 +75,8 @@ class AddReminder extends Component {
                    <Col>
                  <Text style={styles.NumText}>From of Medicine</Text>
                  <Form style={{marginTop:5}}>
-                   <Card picker style={{height:40,width:150,justifyContent:'center'}}>
+
+                   <View picker style={{height:40,width:150,justifyContent:'center',backgroundColor:'#F1F1F1',borderRadius:5}}>
                      <Picker
                        mode="dropdown"
                        style={{ width: undefined }}
@@ -93,13 +94,13 @@ class AddReminder extends Component {
                        <Picker.Item label="Inhales" value="key4" />
                        <Picker.Item label="Other" value="key4" />
                      </Picker>
-                   </Card>
+                   </View>
                  </Form>
                  </Col>
                  <Col>
-                 <Text style={styles.NumText}>strength of Medicine</Text>
+                 <Text style={styles.NumText}>Strength of Medicine</Text>
                  <Form style={{marginTop:5}}>
-                 <Card picker style={{height:40,width:150,justifyContent:'center'}}>
+                 <View picker style={{height:40,width:150,justifyContent:'center',backgroundColor:'#F1F1F1',borderRadius:5}}>
                  <Picker
                         mode="dropdown"
                         style={{ width: undefined }}
@@ -115,7 +116,7 @@ class AddReminder extends Component {
                         <Picker.Item label="mEq" value="key3" />
                         <Picker.Item label="mg" value="key4" />
                       </Picker>
-                 </Card>
+                 </View>
                  </Form>
                  </Col>
                  </Row>
@@ -149,7 +150,7 @@ class AddReminder extends Component {
             <Text style={styles.NumText}>Select Date</Text>
             </Col>
             <Col size={7}>
-            <Card picker style={{height:40,justifyContent:'center'}}>
+            <View picker style={{height:40,justifyContent:'center',backgroundColor:'#F1F1F1',borderRadius:5}}>
                  <Picker
                         mode="dropdown"
                         style={{ width: undefined }}
@@ -166,18 +167,18 @@ class AddReminder extends Component {
                         <Picker.Item label="03-02-2020" value="key4" />
                         <Picker.Item label="04-02-2020" value="key4" />
                       </Picker>
-                 </Card>
+                 </View>
             </Col>
             </Row>
             </Form>
             </View>
             <View>
               <Row>
-                <Col size={4}>
+                <Col size={4}  style={{mariginTop:10}}>
                 <Text style={styles.NumText}>Choose your time</Text>
                 </Col>
-                <Col size={3.5}> 
-            <Card picker style={{height:40,Width:10,justifyContent:'center'}}>
+                <Col size={3.5}  style={{mariginTop:10}}> 
+            <View picker style={{marginTop:5,height:40,Width:10,justifyContent:'center',backgroundColor:'#F1F1F1',borderRadius:5}}>
                  <Picker
                         mode="dropdown"
                         style={{ width: undefined }}
@@ -194,21 +195,72 @@ class AddReminder extends Component {
                         <Picker.Item label="09:00" value="key4" />
                         <Picker.Item label="10:00" value="key4" />
                       </Picker>
-                 </Card>
+                 </View>
             </Col>
-            <Col size={2.5}>
+            <Col size={2.5}  style={{mariginTop:10}}>
             <Button  style={styles.RemainderButton} >
                   <Text style={styles.RemainderButtonText}>Add</Text>
               </Button>
             </Col>
                 </Row>
                 </View>
-                <View style={{backgroundColor:'#F1F1F1',justifyContent:'center',alignItems:'center'}}>
-                  <Image source={require('../../../../assets/images/Remindericon.png')} style={{height:100,width:100}}/>
+                <View style={{backgroundColor:'#F1F1F1',marginTop:30,paddingBottom:10}}>
+                  <View>
+                <Text style={{marginBottom:5,marginTop:10,textAlign:'center'}}>Preview</Text>
+                  {/* <Image source={require('../../../../assets/images/Remindericon.png')} style={{height:150,width:150}}/>
+                  <Text style={{color:'#d83939'}}>No Reminder is avaialble now!</Text> */}
+                  </View>
+                  <View style={{backgroundColor:'#fff',marginLeft:20,marginRight:20,borderRadius:5,mariginTop:30}}>
+                    <Row style={{marginTop:10}}>
+                      <Col>
+                  <Text style={{marginLeft:10}}>Meclizine</Text>
+                  </Col>
+                  <Col>
+                  <Text style={{fontSize:10,marginTop:5,marginLeft:-40,color:'#6f6f6f'}}>(Pill, 10 mg)</Text>
+                  </Col>
+                  <Col size={-1}>
+                  <Icon  style={{fontSize:20,color:'#bd0f10',alignItems:'flex-end',justifyContent:'flex-end',marginRight:15}} name="ios-close-circle"/>
+                  </Col>          
+                  </Row>
+                  <Row style={{marginBottom:10}}>
+                    <Col>
+                    <Text style={{marginLeft:10,color:'#43be39'}}>10.00 AM</Text>
+                    </Col>
+                    <Col>
+                    <Text style={{fontSize:10,marginLeft:-55,marginTop:5,color:'#6f6f6f'}}>(From 28/01/2020 - 10/02/2020)</Text>
+                    </Col>
+                  </Row>
+                  </View>
+
+                  <View style={{backgroundColor:'#fff',marginLeft:20,marginRight:20,borderRadius:5,mariginTop:10}}>
+                    <Row style={{marginTop:10}}>
+                      <Col>
+                  <Text style={{marginLeft:10}}>Empagliflozin</Text>
+                  </Col>
+                  <Col>
+                  <Text style={{fontSize:10,marginTop:5,marginLeft:-10,color:'#6f6f6f'}}>(Pill, 10 mg)</Text>
+                  </Col>
+                  <Col size={-1}>
+                  <Icon  style={{fontSize:20,color:'#bd0f10',alignItems:'flex-end',justifyContent:'flex-end',marginRight:15}} name="ios-close-circle"/>
+                  </Col>          
+                  </Row>
+                  <Row style={{marginBottom:10}}>
+                    <Col>
+                    <Text style={{marginLeft:10,color:'#43be39'}}>05.00 PM</Text>
+                    </Col>
+                    <Col>
+                    <Text style={{fontSize:10,marginLeft:-55,marginTop:5,color:'#6f6f6f'}}>(15/02/2020)</Text>
+                    </Col>
+                  </Row>
+                  </View>
 
 
-                  
-                </View>
+                 </View>
+                 <View style={{marginTop:10}}>
+                 <Button  style={{marginTop:5,paddingLeft:100,backgroundColor:'#1296db',height:-40,borderRadius:5}} > 
+                  <Text style={{width:475,fontWeight:'bold'}}>SET REMINDER</Text>
+              </Button>
+              </View>
 
 
 
