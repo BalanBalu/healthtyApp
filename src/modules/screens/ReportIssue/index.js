@@ -6,7 +6,7 @@ import { FlatList } from 'react-native-gesture-handler';
 import Spinner from "../../../components/Spinner";
  import { RadioButton } from 'react-native-paper';
 
-import {appointmentIssue, pharmacyIssue, chatIssue,stringHasOnlySpace  } from '../../common';
+import {appointmentIssue, pharmacyIssue, chatIssue,onlySpaceNotAllowed  } from '../../common';
 
 import{ insertReportIssue } from '../../providers/reportIssue/reportIssue.action';
 
@@ -42,7 +42,7 @@ class ReportIssue extends Component {
       try {
         this.setState({ isLoading: true });
         const {quesNo,complaint,issueFor,issue}=this.state;
-        if(complaint != null&& stringHasOnlySpace(complaint)) {
+        if(onlySpaceNotAllowed(complaint)==true) {
           
         let userId = await AsyncStorage.getItem('userId');
         let data={

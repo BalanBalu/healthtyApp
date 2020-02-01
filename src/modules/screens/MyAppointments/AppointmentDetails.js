@@ -63,9 +63,7 @@ class AppointmentDetails extends Component {
       const selectedTab = navigation.getParam('selectedIndex');
       this.props.navigation.setParams({ reportedId: appointmentId });
 
-      if (appointmentData.appointment_status == 'COMPLETED' && appointmentData.is_review_added == undefined) {
-        await this.setState({ modalVisible: true })
-      }
+     
       await this.setState({
         doctorId: doctorId, appointmentId: appointmentId,
         userId: userId, data: appointmentData, selectedTab
@@ -77,6 +75,9 @@ class AppointmentDetails extends Component {
         this.getUserReviews(),
         this.getUserReport(),
       ])
+      if (appointmentData.appointment_status == 'COMPLETED' && appointmentData.is_review_added == undefined) {
+        await this.setState({ modalVisible: true })
+      }
 
     }
 
@@ -169,6 +170,7 @@ class AppointmentDetails extends Component {
   getPaymentInfo = async (paymentId) => {
     try {
       let result = await getPaymentInfomation(paymentId);
+      console.log(result)
       if (result.success) {
         this.setState({ paymentDetails: result.data[0] })
       }
@@ -285,8 +287,12 @@ class AppointmentDetails extends Component {
 				            />   
                 
                     <CardItem header style={styles.cardItem}>
-                  
+                                        
+
                      <Grid>
+                       {data.token_no? 
+        <Text  style={{textAlign:'right',fontSize:14,marginTop:-15}} >{"Ref no :"+data.token_no}</Text>
+                       :null}
                        <Row>
                          <Col style={{width:'25%',}}>
                              <Thumbnail square source={renderDoctorImage(doctorData)}   style={{ height: 70, width: 70, borderRadius: 10 }} /> 
@@ -330,16 +336,22 @@ class AppointmentDetails extends Component {
                   </Col>: data.onGoingAppointment !== true && data.appointment_status == 'PROPOSED_NEW_TIME' ?
                   <Col size={4}>
                   <Row style={{marginTop:10 }}>
-                    <Button  style={styles.confirmButton} onPress={() => this.updateAppointmentStatus(data, 'APPROVED')}>
+                    <Button  style={[styles.postponeButton,,{backgroundColor :'#6FC41A'}]} onPress={() => this.updateAppointmentStatus(data, 'APPROVED')}>
                      <Text  style={styles.ButtonText}>ACCEPT</Text>
                     </Button>
                   </Row>
                   <Row style={{marginTop:10 }}>
-                    <Button style={styles.postponeButton}  onPress={() =>  this.navigateCancelAppoointment()}>
+                    <Button  danger style={[styles.postponeButton]}  onPress={() =>  this.navigateCancelAppoointment()}>
                        <Text capitalise={true} style={styles.ButtonText}>CANCEL</Text>
                     </Button>
                   </Row>
-               </Col>: <Col size={4}>
+               </Col>:
+               data.appointment_status == 'APPROVED'&& data.onGoingAppointment === true ?
+               <Col size={4}>
+               <Text style={{marginLeft:16, fontSize: 15, fontFamily: 'OpenSans', fontWeight: 'bold',color:'green' }}>ONGOING</Text>
+               </Col>
+               :
+                <Col size={4}>
                      
                      <View style={{ alignItems:'center' }}>
                         <Icon name={statusValue[data.appointment_status].icon} 
@@ -390,7 +402,7 @@ class AppointmentDetails extends Component {
 
 
             <Grid>
-            {formatDate(data.appointment_starttime,'DD/MM/YYYY')==formatDate(new Date(),'DD/MM/YYYY')&&data.appointment_status=='APPROVED'?
+            {/* {formatDate(data.appointment_starttime,'DD/MM/YYYY')==formatDate(new Date(),'DD/MM/YYYY')&&data.appointment_status=='APPROVED'?
             <Row style={styles.rowStyle}>
               <TouchableOpacity style={styles.touchableStyle}>
                 <Row>
@@ -398,8 +410,20 @@ class AppointmentDetails extends Component {
                 <Text style={styles.touchableText}>Upload Your Prescription</Text>
                 </Row>
               </TouchableOpacity>
-            </Row>:null}
+            </Row>:null} */}
             <View style={{marginTop:10}}>
+              { data.previous_data&&data.appointment_status=='PROPOSED_NEW_TIME'?
+              
+            <Row style={styles.rowSubText}>
+               <Col style={{width:'8%',paddingTop:5}}>
+                 <Icon name="md-calendar" style={{fontSize:20,}}/>
+              </Col>
+              <Col style={{width:'92%',paddingTop:5}}>
+                 <Text style={styles.innerSubText}>Previous Appointment Time</Text>
+              <Text note style={styles.subTextInner1}>{formatDate(data.previous_data.appointment_starttime,'Do MMM,YYYY')+'  '+formatDate(data.previous_data.appointment_starttime,'hh:mm a') +'-' + formatDate(data.previous_data.appointment_endtime,'hh:mm a')}</Text>
+              </Col>
+            </Row>:null}
+          
             <Row style={styles.rowSubText}>
                <Col style={{width:'8%',paddingTop:5}}>
                  <Icon name="ios-medkit" style={{fontSize:20,}}/>
@@ -409,7 +433,7 @@ class AppointmentDetails extends Component {
               <Text note style={styles.subTextInner1}>{data.disease_description||''}</Text>
               </Col>
             </Row>
-           
+            
             {data.patient_statment!=undefined?
             <Row  style={styles.rowSubText}>
                <Col style={{width:'8%',paddingTop:5}}>
@@ -510,12 +534,15 @@ class AppointmentDetails extends Component {
                  disabled={false}
                  maxStars={5}
                  rating={reviewData[0] && reviewData[0].overall_rating}
-               /></Col>
+               />
+                 <Text note style={styles.subTextInner1}>{reviewData[0] && reviewData[0].comments||''}</Text> 
+               </Col>
                </Row>:
                data.appointment_status == 'COMPLETED' && reviewData.length == 0 ? 
                <Row style={styles.rowSubText}>
                <Col style={{width:'8%',paddingTop:5}}>
                  <Icon name="ios-add-circle" style={{fontSize:20,}}/>
+               
               </Col>
               <Col style={{width:'92%',paddingTop:5}}>
                  <Text style={styles.innerSubText}>Add Feedback</Text>
@@ -527,7 +554,7 @@ class AppointmentDetails extends Component {
 
                </TouchableOpacity>
              </View>
-              {/* <Text note style={styles.subTextInner1}>{reviewData[0] && reviewData[0].comments||''}</Text> */}
+             
               
               </Col>
             </Row>:null
@@ -545,10 +572,10 @@ class AppointmentDetails extends Component {
                   <Text style={styles.downText}>Total Fee
                   </Text>
                 </Col>
-                <Col  style={{width:'25%'}}>
+                <Col  style={{width:'15%'}}>
                     <Text style={styles.downText}>-</Text>
                 </Col>
-                <Col  style={{width:'15%'}}>
+                <Col  style={{width:'25%'}}>
                    <Text note style={styles.downText}>{"Rs."+(paymentDetails.amount!=undefined?paymentDetails.amount:0)+"/-"}</Text>
                 </Col>
             </Row>
@@ -557,10 +584,10 @@ class AppointmentDetails extends Component {
                   <Text style={styles.downText}>Payment Made
                   </Text>
               </Col>
-              <Col  style={{width:'25%'}}>
+              <Col  style={{width:'15%'}}>
                 <Text style={styles.downText}>-</Text>
               </Col>
-              <Col  style={{width:'15%'}}>
+              <Col  style={{width:'25%'}}>
                 <Text note style={styles.downText}>{"Rs."+(paymentDetails.amount_paid!=undefined?paymentDetails.amount_paid:0 )+"/-"}</Text>
               </Col>
             </Row>
@@ -569,10 +596,10 @@ class AppointmentDetails extends Component {
                  <Text style={styles.downText}>Payment Due
                   </Text>
               </Col>
-              <Col  style={{width:'25%'}}>
+              <Col  style={{width:'15%'}}>
                 <Text style={styles.downText}>-</Text>
               </Col>
-              <Col  style={{width:'15%'}}>
+              <Col  style={{width:'25%'}}>
                 <Text note style={styles.downText}>{"Rs."+(paymentDetails.amount_due!=undefined?paymentDetails.amount_due:0 )+"/-"}</Text>
               </Col>
             </Row>
@@ -580,10 +607,10 @@ class AppointmentDetails extends Component {
               <Col style={{width:'60%'}}>
                 <Text style={styles.downText}>Payment Method
                 </Text></Col>
-              <Col  style={{width:'25%'}}>
+              <Col  style={{width:'15%'}}>
                 <Text style={styles.downText}>-</Text>
               </Col>
-              <Col  style={{width:'15%'}}>
+              <Col  style={{width:'25%'}}>
                 <Text note style={styles.downText}>{paymentDetails.payment_method|| 0 }</Text>
               </Col>
             </Row>
@@ -682,7 +709,7 @@ const styles = StyleSheet.create({
       fontWeight:'bold',
     },
     postponeButton:{
-      backgroundColor:'#4765FF',
+      // backgroundColor:'#4765FF',
       height:30,
       padding:11,
       borderRadius:5

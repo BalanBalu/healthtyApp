@@ -337,8 +337,13 @@ export function validateName(text) {
     if (regex.test(text) === false) return false;
     else return true;
 }
-export function OnlyAlphaNumericAndCommaSlash(text) {
-    let regex = /^(?!\s*$)[-a-zA-Z0-9:,.' ']{1,100}$/;
-    if (regex.test(text) === false) return false;
-    else return true;
-}
+export function onlySpaceNotAllowed(text) {
+          if(text){
+         if(text.trim())return true
+          else return false;
+          }
+          else{
+            return false  
+          }
+         
+         }
