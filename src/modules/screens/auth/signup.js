@@ -40,10 +40,7 @@ class Signup extends Component {
                 this.setState({ errorMsg: 'Please agree to the terms and conditions to continue' });
                 return false;
             }
-            // if (validateEmailAddress(userEmail) == false) {
-            //     this.setState({ errorMsg: 'Please enter the valid Email address' })
-            //     return false;
-            // }
+           
             if (password.length < 6) {
                 this.setState({ errorMsg: "Password is required Min 6 Characters" });
                 return false;
@@ -62,7 +59,6 @@ class Signup extends Component {
             if (referralCode) {
                 requestData.refer_code = referralCode
             }
-            debugger
             await signUp(requestData);        // Do SignUp Process
             if (this.props.user.success) {
                 let loginData = {
@@ -102,13 +98,13 @@ class Signup extends Component {
                                 <View style={{ marginLeft: 10, marginRight: 10 }}>
                                     <Text uppercase={true} style={[styles.cardHead, { color: '#775DA3' }]}>Sign up</Text>
                                     <Form>
-                                        <Label style={{ marginTop: 20, fontSize: 15, color: '#775DA3', fontWeight: 'bold' }}>Email / Phone</Label>
+                                        <Label style={{ marginTop: 20, fontSize: 15, color: '#775DA3', fontWeight: 'bold' }}>Mobile Number</Label>
                                         <Item style={{ borderBottomWidth: 0, marginLeft: 'auto', marginRight: 'auto' }}>
                                             <Input placeholder="Mobile Number" style={styles.authTransparentLabel}
                                                 returnKeyType={'next'}
                                                 value={mobile_no}
                                                 keyboardType={"number-pad"}
-                                                onChangeText={mobile_no => acceptNumbersOnly(mobile_no) == false ? this.setState({ mobile_no }) : null}
+                                                onChangeText={mobile_no => acceptNumbersOnly(mobile_no) == true || mobile_no === '' ? this.setState({ mobile_no }) : null}
                                                 blurOnSubmit={false}
                                                 onSubmitEditing={() => { this.mobile_no._root.focus(); }}
                                             />

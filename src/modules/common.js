@@ -308,9 +308,9 @@ export function validatePincode(number) {
 }
 
 export function acceptNumbersOnly(value) {
-    const regex = new RegExp(/[- #*;,.<>\{\}\[\]\\\/]/gi, '');  //did't support White spaces
-    if (regex.test(value) === false) return false;
-    else return true;
+    const regex = new RegExp('^[0-9]+$');  
+    const result = regex.test(value);
+    return result
   }
 export function validatePassword(value) {
     const regex = new RegExp('^[^\\s]+$');  //did't support White spaces

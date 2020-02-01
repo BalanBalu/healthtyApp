@@ -440,7 +440,7 @@ export default class MapBox extends React.Component {
                                 <Input placeholder="Pin Code" style={styles.transparentLabel}
                                     keyboardType="numeric"
                                     value={this.state.address.pin_code}
-                                    onChangeText={value => acceptNumbersOnly(value) == false ? this.updateAddressObject('pin_code', value) : null} />
+                                    onChangeText={value => acceptNumbersOnly(value) == true || value === '' ? this.updateAddressObject('pin_code', value) : null} />
                             </Item>
 
                             <Button success style={styles.loginButton} block onPress={() => this.updateAddressData()}>
