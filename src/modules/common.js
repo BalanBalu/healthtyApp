@@ -333,7 +333,12 @@ export function getHospitalName(location) {
       return ''
 }
 export function validateName(text) {
-    let regex = /^(?!\s*$)[-a-zA-Z_:,.' ']{1,100}$/;
+    let regex = /^(?!\s*$)[-a-zA-Z_:' ']{1,100}$/;
+    if (regex.test(text) === false) return false;
+    else return true;
+}
+export function OnlyAlphaNumericAndCommaSlash(text) {
+    let regex = /^(?!\s*$)[-a-zA-Z0-9:,.' ']{1,100}$/;
     if (regex.test(text) === false) return false;
     else return true;
 }
