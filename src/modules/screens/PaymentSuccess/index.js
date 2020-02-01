@@ -18,7 +18,8 @@ class PaymentSuccess extends Component {
             successBookSlotDetails: {
 
             },
-            paymentMethod: null
+            paymentMethod: null,
+            tokenNo: null
 
         }
     }
@@ -29,7 +30,8 @@ class PaymentSuccess extends Component {
         const successBookSlotDetails = navigation.getParam('successBookSlotDetails');
         console.log(successBookSlotDetails);
         const paymentMethod = navigation.getParam('paymentMethod');
-        await this.setState({ successBookSlotDetails: successBookSlotDetails, paymentMethod: paymentMethod });
+        const tokenNo = navigation.getParam('tokenNo');
+        await this.setState({ successBookSlotDetails: successBookSlotDetails, paymentMethod: paymentMethod, tokenNo });
         console.log(paymentMethod);
     }
     componentWillUnmount() {
@@ -53,7 +55,7 @@ class PaymentSuccess extends Component {
     }
     render() {
         const { navigation } = this.props;
-        const { successBookSlotDetails, paymentMethod } = this.state;
+        const { successBookSlotDetails, paymentMethod , tokenNo} = this.state;
         return (
 
             <Container style={styles.container}>
@@ -84,9 +86,15 @@ class PaymentSuccess extends Component {
                                     </Row>
                                 </Col>
                             </Row>
+                            <Row style={styles.rowDetail}>
+                                <Text style={styles.mainText}>Token Number</Text>
+                                <Right>
+                                    <Text style={[styles.subText, { fontWeight: 'bold' }]}> {tokenNo} </Text>
+                                </Right>
+                            </Row>  
                             {successBookSlotDetails.slotData ? this.renderHospitalLocation(successBookSlotDetails.slotData.location) : null}
 
-
+                            
                             <Row style={styles.rowDetail}>
                                 <Text style={styles.mainText}>Date</Text>
                                 <Right>

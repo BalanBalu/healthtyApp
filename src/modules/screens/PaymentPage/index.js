@@ -221,7 +221,8 @@ class PaymentPage extends Component {
                 }
                 this.props.navigation.navigate('paymentsuccess', { 
                     successBookSlotDetails: bookSlotDetails, 
-                    paymentMethod : paymentMethodTitleCase 
+                    paymentMethod : paymentMethodTitleCase ,
+                    tokenNo: response.tokenNo
                 });
             } else if( serviceType === SERVICE_TYPES.CHAT) {
                 this.props.navigation.navigate('SuccessChat');
