@@ -534,12 +534,15 @@ class AppointmentDetails extends Component {
                  disabled={false}
                  maxStars={5}
                  rating={reviewData[0] && reviewData[0].overall_rating}
-               /></Col>
+               />
+                 <Text note style={styles.subTextInner1}>{reviewData[0] && reviewData[0].comments||''}</Text> 
+               </Col>
                </Row>:
                data.appointment_status == 'COMPLETED' && reviewData.length == 0 ? 
                <Row style={styles.rowSubText}>
                <Col style={{width:'8%',paddingTop:5}}>
                  <Icon name="ios-add-circle" style={{fontSize:20,}}/>
+               
               </Col>
               <Col style={{width:'92%',paddingTop:5}}>
                  <Text style={styles.innerSubText}>Add Feedback</Text>
@@ -551,7 +554,7 @@ class AppointmentDetails extends Component {
 
                </TouchableOpacity>
              </View>
-              {/* <Text note style={styles.subTextInner1}>{reviewData[0] && reviewData[0].comments||''}</Text> */}
+             
               
               </Col>
             </Row>:null
@@ -564,17 +567,6 @@ class AppointmentDetails extends Component {
               </Col>
               <Col style={{width:'92%',paddingTop:5}}>
                 <Text style={styles.innerSubText}>Payment Info</Text>
-                <Row style={{marginTop:10}}>
-              <Col style={{width:'60%'}}>
-                <Text style={styles.downText}>Token
-                </Text></Col>
-              <Col  style={{width:'15%'}}>
-                <Text style={styles.downText}>-</Text>
-              </Col>
-              <Col  style={{width:'25%'}}>
-                <Text note style={styles.downText}>{data.token_no|| 0 }</Text>
-              </Col>
-            </Row>
                <Row style={{marginTop:10}}>
                 <Col style={{width:'60%'}}>
                   <Text style={styles.downText}>Total Fee
