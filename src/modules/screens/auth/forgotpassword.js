@@ -38,10 +38,7 @@ class Forgotpassword extends Component {
     generateOtpCode = async () => {
         const { userEntry } = this.state;
         try {
-            if (validateEmailAddress(userEntry) == false) {
-                this.setState({ errorMessage: 'Email address is not valid' });
-                return false;
-            }
+            
             await this.setState({ errorMessage: '', isLoading: true })
             let reqData = {
                 userEntry: userEntry,
@@ -151,7 +148,7 @@ class Forgotpassword extends Component {
                         autoFocus={true}
                         autoCapitalize='none'
                         value={otpCode}
-                        onChangeText={otpCode => acceptNumbersOnly(otpCode) == false ? this.setState({ otpCode }) : null}
+                        onChangeText={otpCode => acceptNumbersOnly(otpCode) == true || otpCode === '' ? this.setState({ otpCode }) : null}
                         maxLength={6}
                         returnKeyType={'next'}
                         onSubmitEditing={() => { this.enterOtpTextInput._root.focus(); }}

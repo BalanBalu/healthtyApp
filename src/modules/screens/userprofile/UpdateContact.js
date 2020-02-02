@@ -116,7 +116,7 @@ class UpdateContact extends Component {
                                         <Row>
                                             <Icon name="call" style={styles.centeredIcons}></Icon>
                                             <Input placeholder="Edit Your Number" style={styles.transparentLabel} keyboardType="numeric"
-                                                onChangeText={primary_mobile_no => acceptNumbersOnly(primary_mobile_no) == false ? this.setState({ primary_mobile_no}):null}
+                                                onChangeText={primary_mobile_no => acceptNumbersOnly(primary_mobile_no) == true || primary_mobile_no === '' ? this.setState({ primary_mobile_no}):null}
                                                 value={String(this.state.primary_mobile_no)}
                                                 testID='updatePrimaryContact' />
                                         </Row>
@@ -130,7 +130,7 @@ class UpdateContact extends Component {
                                         <Row>
                                             <Icon name='call' style={styles.centeredIcons}></Icon>
                                             <Input placeholder="Edit Your Number" style={styles.transparentLabel} keyboardType="numeric"
-                                                onChangeText={secondary_mobile_no => acceptNumbersOnly(secondary_mobile_no) == false ? this.setState({ secondary_mobile_no }) : null}
+                                                onChangeText={secondary_mobile_no => acceptNumbersOnly(secondary_mobile_no) == true || secondary_mobile_no === '' ? this.setState({ secondary_mobile_no }) : null}
                                                 value={String(this.state.secondary_mobile_no)}
                                                 testID='updateContact' />
                                         </Row>

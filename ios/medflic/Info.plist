@@ -24,7 +24,7 @@
 	<key>CFBundlePackageType</key>
 	<string>APPL</string>
 	<key>CFBundleShortVersionString</key>
-	<string>5.0</string>
+	<string>6</string>
 	<key>CFBundleSignature</key>
 	<string>????</string>
 	<key>CFBundleVersion</key>
@@ -45,11 +45,11 @@
 		</dict>
 	</dict>
 	<key>NSCameraUsageDescription</key>
-	<string>Allow $(PRODUCT_NAME) to access your camera to upload your image as well as the hospital photos </string>
+	<string>Allow $(PRODUCT_NAME) to access your camera to upload Profile image as well as the hospital Images</string>
 	<key>NSLocationAlwaysUsageDescription</key>
-	<string>$(PRODUCT_NAME) helps you to show near by doctors and hospitals</string>
+	<string>$(PRODUCT_NAME) helps you to show nearest doctors and hospitals</string>
 	<key>NSLocationWhenInUseUsageDescription</key>
-	<string>$(PRODUCT_NAME) helps you to show near by doctors and hospitals</string>
+	<string>$(PRODUCT_NAME) helps you to show nearest doctors and hospitals</string>
 	<key>NSMicrophoneUsageDescription</key>
 	<string>$(PRODUCT_NAME) would like to use your microphone (for videos)</string>
 	<key>NSPhotoLibraryAddUsageDescription</key>
