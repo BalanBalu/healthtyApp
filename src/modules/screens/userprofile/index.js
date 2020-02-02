@@ -507,23 +507,12 @@ class Profile extends Component {
                                 </Left>
 
                                 <Body>
-                                    <TouchableOpacity onPress={() => this.editProfile('UpdateContact')} testID="onPressUpdateContact">
+                                    <View testID="onPressUpdateContact">
                                         <Text style={styles.customText}>Contact</Text>
                                         <Text note style={styles.customText1}>{data.mobile_no}</Text>
-                                        {data.secondary_mobile !== undefined ?
-                                            <Col>
-                                                <Text style={styles.customText}>{data.secondary_mobile !== '' ?"Secondary":null}</Text>
-                                                <Text note style={styles.customText1}>{data.secondary_mobile}</Text>
-
-                                            </Col>
-
-                                            : <Button transparent>
-                                                <Icon name='add' style={{ color: 'gray' }} />
-                                                <Text uppercase={false} style={styles.customText} onPress={() => this.editProfile('UpdateContact')} testID="onPressAddContactNumber">Add Contact Number</Text>
-                                            </Button>}
-                                    </TouchableOpacity>
+                                    </View>
                                 </Body>
-                                {data.secondary_mobile != undefined ?
+                                {data.mobile_no === undefined ?
                                     <Right>
                                         <Icon name="create" style={{ color: 'black' }} onPress={() => this.editProfile('UpdateContact')} testID="iconToUpdateContact"></Icon>
                                     </Right> : null}
