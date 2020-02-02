@@ -92,14 +92,14 @@ class Login extends Component {
                 <View style={{ marginLeft: 10, marginRight: 10 }}>
                   <Text uppercase={true} style={[styles.cardHead, { color: '#775DA3' }]}>Login</Text>
                   <Form>
-                    <Label style={{ marginTop: 20, fontSize: 15, color: '#775DA3', fontWeight: 'bold' }}>Mobile Number</Label>
+                    <Label style={{ marginTop: 20, fontSize: 15, color: '#775DA3', fontWeight: 'bold' }}>Mobile Number/ Email</Label>
                     <Item style={{ borderBottomWidth: 0, marginLeft: 'auto', marginRight: 'auto', }}>
-                      <Input placeholder="Mobile Number" style={styles.authTransparentLabel}
+                      <Input placeholder="Mobile Number / Email" style={styles.authTransparentLabel}
                         ref={(input) => { this.enterTextInputEmail = input; }}
                         returnKeyType={'next'}
                         value={userEntry}
-                        keyboardType={"number-pad"}
-                        onChangeText={userEntry => acceptNumbersOnly(userEntry) == true || userEntry === '' ? this.setState({ userEntry }) : null}
+                        keyboardType={"default"}
+                        onChangeText={userEntry =>  this.setState({ userEntry })/*acceptNumbersOnly(userEntry) == true || userEntry === '' ? this.setState({ userEntry }) : null */}
                         autoCapitalize='none'
                         blurOnSubmit={false}
                         onSubmitEditing={() => { this.userEntry._root.focus(); }}
