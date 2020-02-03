@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { Container, Content, View, Text, Item,Card, Spinner,Picker,Icon, Radio,Row,Col,Form,Button, Input } from 'native-base';
+import { Container, Content, View, Text, Item,Card, Spinner,Picker,Icon, Radio,Row,Col,Form,Button, Input,Grid } from 'native-base';
 import {StyleSheet,TextInput,TouchableOpacity,ScrollView,Image} from 'react-native'
 import { FlatList } from 'react-native-gesture-handler';
 import Autocomplete from '../../../components/Autocomplete'
@@ -13,7 +13,7 @@ class AddReminder extends Component {
         this.state = {
           selected2: undefined,
          selected3:undefined,
-          takemed:'Yes',
+          takemed:null,
           selectedDate:new Date() ,
           minimumDate:new Date(),
         }
@@ -28,6 +28,26 @@ class AddReminder extends Component {
     onValueChange3(value) {
       this.setState({
         selected3: value
+      });
+    }
+    onValueChange4(value) {
+      this.setState({
+        selected4: value
+      });
+    }
+    onValueChange5(value) {
+      this.setState({
+        selected5: value
+      });
+    }
+    onValueChange6(value) {
+      this.setState({
+        selected6: value
+      });
+    }
+    onValueChange7(value) {
+      this.setState({
+        selected7: value
       });
     }
    
@@ -124,41 +144,84 @@ class AddReminder extends Component {
                 <View>
                 <Text style={styles.NumText}>How often would you take this Medicine</Text>
                 <Item style={{ marginTop: 10, borderBottomWidth: 0,  }}>
-                <RadioButton.Group>
+                
                 <RadioButton.Group
               onValueChange={value => this.setState({ takemed: value }) }
-               value={this.state.takemed}></RadioButton.Group>
-               <View style={{flexDirection:'row'}}>
-                   <RadioButton value="yes"  uncheckedColor={'#1296db'} color={'#1296db'}/>
+               value={this.state.takemed}>
+                <View style={{flexDirection:'row'}}>
+                   <RadioButton value="yes" color={'#1296db'} uncheckedColor={'#1296db'} />
                  <Text style={{
-                        fontFamily: 'OpenSans',fontSize:13,marginTop:8
+                        fontFamily: 'OpenSans',fontSize:15,marginTop:8
                    }}>Everyday</Text> 
                 </View>
                 <View style={{flexDirection:'row',marginLeft:10}}>
-                  <RadioButton value="Only as needed"  uncheckedColor={'#1296db'} color={'#1296db'} style={{marginLeft:20}}/>
+                  <RadioButton value="Only as needed" style={{marginLeft:20}} color={'#1296db'} uncheckedColor={'#1296db'}/>
                  <Text style={{
-                        fontFamily: 'OpenSans',fontSize:13,marginTop:8
-                   }}>Only when i needed</Text>
+                        fontFamily: 'OpenSans',fontSize:15,marginTop:8
+                   }}>Only when I need</Text>
                 </View>
-                </RadioButton.Group> 
+            </RadioButton.Group>
+
+              
                 </Item>
             </View>
+
+
+
+          
             <View>
-            <Form style={{marginTop:5}}>
+            <Form style={{marginTop:5,marginBottom:5}}>
               <Row>
                 <Col size={3}>
             <Text style={styles.NumText}>Select Date</Text>
             </Col>
             <Col size={7}>
-            <View picker style={{height:40,justifyContent:'center',backgroundColor:'#F1F1F1',borderRadius:5}}>
+            <View style={{marginBottom:15}}>
+              <Row>
+                <Col size={3.5}  style={{mariginTop:10}}> 
+                <View style={{alignItems:'flex-start',marginTop:10,marginLeft:10}}>
+                 <TouchableOpacity onPress={this.showDateTimePicker} style={{width:500,backgroundColor:'#f1f1f1'}}>
+                   <Text style={{marginLeft:-5}} style={styles.tochText}>{formatDate(selectedDate, 'DD/MM/YYYY')}</Text>
+                   <DateTimePicker
+                    mode='date'
+				   				  minimumDate={new Date()}
+				   				  date={selectedDate}
+                    isVisible={isDateTimePickerVisible}
+                    onConfirm={this.handleDatePicked}
+								    onCancel={this.hideDateTimePicker}
+									  datePickerModeAndroid='default'
+								   />
+                </TouchableOpacity>
+              </View>
+              </Col>
+              </Row>
+              </View>
+
+            </Col>
+            </Row>
+            </Form>
+            </View>  
+
+
+
+
+
+{/* <View style={{marginBottom:10}}>
+            <Form style={{marginTop:5}}>
+              <Row>
+                <Col size={3}>
+            <Text style={styles.NumText}>Select Date</Text>
+            </Col>
+            <Col size={3} style={{marginLeft:-20}} >
+            <View picker style={{height:40,width:100,justifyContent:'center',backgroundColor:'#F1F1F1',borderRadius:5}}>
                  <Picker
                         mode="dropdown"
                         style={{ width: undefined }}
                         placeholder="Select your SIM"
                         placeholderStyle={{ color: "#bfc6ea" }}
                         placeholderIconColor="#007aff"
-                        selectedValue={this.state.selected3}
-                        onValueChange={this.onValueChange3.bind(this)}
+                        selectedValue={this.state.selected5}
+                        onValueChange={this.onValueChange5.bind(this)}
                       >
                         <Picker.Item label="30-01-2020" value="key0" />
                         <Picker.Item label="31-01-2020" value="key1" />
@@ -169,135 +232,44 @@ class AddReminder extends Component {
                       </Picker>
                  </View>
             </Col>
+            <Col size={3}>
+            <View picker style={{height:40,width:100,justifyContent:'center',backgroundColor:'#F1F1F1',borderRadius:5}}>
+                 <Picker
+                        mode="dropdown"
+                        style={{ width: undefined }}
+                        placeholder="Select your SIM"
+                        placeholderStyle={{ color: "#bfc6ea" }}
+                        placeholderIconColor="#007aff"
+                        selectedValue={this.state.selected6}
+                        onValueChange={this.onValueChange6.bind(this)}
+                      >
+                        <Picker.Item label="30-01-2020" value="key0" />
+                       <Picker.Item label="31-01-2020" value="key1" />
+                       <Picker.Item label="01-02-2020" value="key2" />
+                       <Picker.Item label="02-02-2020" value="key3" />
+                       <Picker.Item label="03-02-2020" value="key4" />
+                       <Picker.Item label="04-02-2020" value="key4" />
+                       <Picker.Item label="05-02-2020" value="key4" />
+                      </Picker>
+                 </View>
+            </Col>
+            
             </Row>
             </Form>
-            </View>
-            <View>
+            </View> */}
+
+           
+
+            
+            
+            <View style={{marginBottom:15}}>
               <Row>
                 <Col size={4}  style={{mariginTop:10}}>
                 <Text style={styles.NumText}>Choose your time</Text>
                 </Col>
                 <Col size={3.5}  style={{mariginTop:10}}> 
-            <View picker style={{marginTop:5,height:40,Width:10,justifyContent:'center',backgroundColor:'#F1F1F1',borderRadius:5}}>
-                 <Picker
-                        mode="dropdown"
-                        style={{ width: undefined }}
-                        placeholder="Time"
-                        placeholderStyle={{ color: "#bfc6ea" }}
-                        placeholderIconColor="#007aff"
-                        selectedValue={this.state.selected3}
-                        onValueChange={this.onValueChange3.bind(this)}
-                      >
-                        <Picker.Item label="05:00" value="key0" />
-                        <Picker.Item label="06:00" value="key1" />
-                        <Picker.Item label="07:00" value="key2" />
-                        <Picker.Item label="08:00" value="key3" />
-                        <Picker.Item label="09:00" value="key4" />
-                        <Picker.Item label="10:00" value="key4" />
-                      </Picker>
-                 </View>
-            </Col>
-            <Col size={2.5}  style={{mariginTop:10}}>
-            <Button  style={styles.RemainderButton} >
-                  <Text style={styles.RemainderButtonText}>Add</Text>
-              </Button>
-            </Col>
-                </Row>
-                </View>
-                <View style={{backgroundColor:'#F1F1F1',marginTop:30,paddingBottom:10}}>
-                  <View>
-                <Text style={{marginBottom:5,marginTop:10,textAlign:'center'}}>Preview</Text>
-                  {/* <Image source={require('../../../../assets/images/Remindericon.png')} style={{height:150,width:150}}/>
-                  <Text style={{color:'#d83939'}}>No Reminder is avaialble now!</Text> */}
-                  </View>
-                  <View style={{backgroundColor:'#fff',marginLeft:20,marginRight:20,borderRadius:5,mariginTop:30}}>
-                    <Row style={{marginTop:10}}>
-                      <Col>
-                  <Text style={{marginLeft:10}}>Meclizine</Text>
-                  </Col>
-                  <Col>
-                  <Text style={{fontSize:10,marginTop:5,marginLeft:-40,color:'#6f6f6f'}}>(Pill, 10 mg)</Text>
-                  </Col>
-                  <Col size={-1}>
-                  <Icon  style={{fontSize:20,color:'#bd0f10',alignItems:'flex-end',justifyContent:'flex-end',marginRight:15}} name="ios-close-circle"/>
-                  </Col>          
-                  </Row>
-                  <Row style={{marginBottom:10}}>
-                    <Col>
-                    <Text style={{marginLeft:10,color:'#43be39'}}>10.00 AM</Text>
-                    </Col>
-                    <Col>
-                    <Text style={{fontSize:10,marginLeft:-55,marginTop:5,color:'#6f6f6f'}}>(From 28/01/2020 - 10/02/2020)</Text>
-                    </Col>
-                  </Row>
-                  </View>
-
-                  <View style={{backgroundColor:'#fff',marginLeft:20,marginRight:20,borderRadius:5,mariginTop:10}}>
-                    <Row style={{marginTop:10}}>
-                      <Col>
-                  <Text style={{marginLeft:10}}>Empagliflozin</Text>
-                  </Col>
-                  <Col>
-                  <Text style={{fontSize:10,marginTop:5,marginLeft:-10,color:'#6f6f6f'}}>(Pill, 10 mg)</Text>
-                  </Col>
-                  <Col size={-1}>
-                  <Icon  style={{fontSize:20,color:'#bd0f10',alignItems:'flex-end',justifyContent:'flex-end',marginRight:15}} name="ios-close-circle"/>
-                  </Col>          
-                  </Row>
-                  <Row style={{marginBottom:10}}>
-                    <Col>
-                    <Text style={{marginLeft:10,color:'#43be39'}}>05.00 PM</Text>
-                    </Col>
-                    <Col>
-                    <Text style={{fontSize:10,marginLeft:-55,marginTop:5,color:'#6f6f6f'}}>(15/02/2020)</Text>
-                    </Col>
-                  </Row>
-                  </View>
-
-
-                 </View>
-                 <View style={{marginTop:10}}>
-                 <Button  style={{marginTop:5,paddingLeft:100,backgroundColor:'#1296db',height:-40,borderRadius:5}} > 
-                  <Text style={{width:475,fontWeight:'bold'}}>SET REMINDER</Text>
-              </Button>
-              </View>
-
-
-
-
-
-            
-            
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-                {/*<View>
-             
-             <Row>
-<Col size={3.5}>
-<Text style={{fontFamily:'OpenSans',fontSize:13,marginTop:15}}>Choose Your Time</Text>
-</Col>
-<Col size={4}>
-<View style={{alignItems:'flex-start',marginTop:10,marginLeft:10}}>
+                <View style={{alignItems:'flex-start',marginTop:10,marginLeft:10}}>
                  <TouchableOpacity onPress={this.showDateTimePicker} style={styles.toucableOpacity}>
-                   <Icon name='md-clock' style={styles.tocuhIcon} />
                    <Text style={styles.tochText}>{formatDate(selectedDate, 'HH:MM a')}</Text>
                    <DateTimePicker
                     mode='time'
@@ -310,37 +282,81 @@ class AddReminder extends Component {
 								   />
                 </TouchableOpacity>
               </View>
-</Col>
-<Col size={2.5}>
-<Button  style={styles.RemainderButton} >
+            </Col>
+            <Col size={2.5}  style={{mariginTop:10}}>
+            <Button  style={styles.RemainderButton} >
                   <Text style={styles.RemainderButtonText}>Add</Text>
               </Button>
-</Col>
-               
-              
-             
-              </Row>
-           <Row style={{marginTop:10, borderColor:'gray',borderWidth:1,borderRadius:5,padding:10,justifyContent:"center"}}>
-            <FlatList
-             data={Slots}
-            numColumns={3}
-            renderItem={
-            ({ item }) =>
-             <Col style={{width:'25%',alignItems:'center',marginTop:10,marginLeft:20}}>
-              <TouchableOpacity style={styles.touchbutton}>
-             <Row>
-             <Text style={styles.timeText}>{item.time}</Text>
-             <Text style={styles.periodText}>{item.timeperiod}</Text>
-            </Row> 
-  
-           </TouchableOpacity>
-              
             </Col>
-           }/>
-        </Row>
-        <Button block style={styles.buttonStyle}><Text style={styles.customizedText}> Submit </Text></Button>
-        </View>
-     </View> */}
+                </Row>
+                </View>
+                {/* <View style={{backgroundColor:'#F1F1F1',marginTop:10,paddingBottom:10}}> 
+                  <View>
+                <Text style={{marginBottom:5,marginTop:10,textAlign:'center'}}>Preview</Text> 
+                  <Image source={require('../../../../assets/images/Remindericon.png')} style={{height:150,width:150,marginLeft:90}}/>
+                  <Text style={{color:'#d83939',textAlign:'center'}}>No Reminder is avaialble now!</Text>  
+                  </View>
+                  </View> */}
+
+                
+
+
+              <Grid style={{backgroundColor:'#f1f1f1',marginLeft:10,marginRight:10,paddingBottom:10,marginTop:10,borderRadius:5}}>
+                <Text style={{textAlign:'center',marginTop:10}}>Preview</Text>
+              <Row style={{backgroundColor:'#FFF',marginTop:10,marginLeft:10,marginRight:10,borderRadius:5}}>
+<Col size={8.5}>
+  <Row style={{marginTop:5}}>
+  <Col size={5}>
+  <Text style={{marginLeft:10}}>Meclizine</Text>
+  </Col>
+  <Col size={5}>
+  <Text style={{marginLeft:-35,fontSize:10,marginTop:5,color:'#6f6f6f'}}>(Pill, 10 mg)</Text>
+  </Col>
+  </Row>
+  <Row style={{marginBottom:5}}>
+  <Col size={5}>
+  <Text style={{marginLeft:10,color:'#43be39'}}>10.00 AM</Text>
+  </Col>
+  <Col size={5}>
+  <Text style={{fontSize:10,marginTop:5,color:'#6f6f6f',marginLeft:-35}}>(From 28/01/2020 - 10/02/2020)</Text>
+  </Col>
+  </Row>
+  </Col>
+  <Col size={1.5} style={{justifyContent:'center',alignItem:'center'}}>
+  <Icon  style={{fontSize:20,color:'#bd0f10',alignItems:'flex-end',justifyContent:'flex-end',marginRight:15}} name="ios-close-circle"/>
+  </Col>
+</Row>
+<Row style={{backgroundColor:'#FFF',marginTop:10,marginLeft:10,marginRight:10,marginBottom:20,borderRadius:5}}>
+<Col size={8.5}>
+  <Row style={{marginTop:5}}>
+  <Col size={5}>
+  <Text style={{marginLeft:10}}>Empagliflozin</Text>
+  </Col>
+  <Col size={5}>
+  <Text style={{fontSize:10,marginTop:5,color:'#6f6f6f',marginLeft:-5}}>(Pill, 10 mg)</Text>
+
+  </Col>
+  </Row>
+  <Row style={{marginBottom:5}}>
+  <Col size={5}>
+  <Text style={{marginLeft:10,color:'#43be39'}}>05.00 PM</Text>
+  </Col>
+  <Col size={5}>
+  <Text style={{fontSize:10,marginTop:5,color:'#6f6f6f',marginLeft:-35}}>(15/02/2020)</Text>
+  </Col>
+  </Row>
+  </Col>
+  <Col size={1.5} style={{justifyContent:'center',alignItem:'center'}}>
+  <Icon  style={{fontSize:20,color:'#bd0f10',alignItems:'flex-end',justifyContent:'flex-end',marginRight:15}} name="ios-close-circle"/>
+  </Col>
+</Row>
+              </Grid>
+              
+                 <View style={{marginTop:10}}>
+                 <Button  style={{marginTop:5,width:320,paddingLeft:100,backgroundColor:'#1296db',height:-40,borderRadius:5}} > 
+                  <Text style={{width:475,fontWeight:'bold'}}>SET REMINDER</Text>
+              </Button>
+              </View>
     </View>
     </Content>
     </ScrollView>
@@ -357,24 +373,16 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     paddingLeft:15,
     paddingRight: 15,
-    borderColor:'gray',
-    borderWidth:1,
+   backgroundColor:'#f1f1f1',
     justifyContent:'center',
-    borderRadius:10,
-    shadowOffset:{ width: 0, height: 0, },
-    shadowColor: '#EBEBEB',
-    shadowOpacity: 1.0,
   },
-  tocuhIcon:{
-    padding: 5, 
-    
-    fontSize:20
-  },
+  
   tochText:{
     marginTop:7 ,
+    marginBottom:7,
     fontFamily: 'OpenSans', 
-    fontSize: 13,
-    fontWeight:'bold'
+    fontSize: 16,
+    
   },
  
 
@@ -445,3 +453,11 @@ const styles = StyleSheet.create({
   
 
 })
+
+
+
+
+
+
+
+
