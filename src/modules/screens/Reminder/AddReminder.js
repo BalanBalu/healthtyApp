@@ -168,20 +168,21 @@ class AddReminder extends Component {
 
 
 
-          
+{/*           
             <View>
-            <Form style={{marginTop:5,marginBottom:5}}>
+            <Form style={{marginTop:5}}>
               <Row>
                 <Col size={3}>
             <Text style={styles.NumText}>Select Date</Text>
             </Col>
-            <Col size={7}>
+            <Col size={7} style={{width:150}}>
             <View style={{marginBottom:15}}>
               <Row>
                 <Col size={3.5}  style={{mariginTop:10}}> 
-                <View style={{alignItems:'flex-start',marginTop:10,marginLeft:10}}>
-                 <TouchableOpacity onPress={this.showDateTimePicker} style={{width:500,backgroundColor:'#f1f1f1'}}>
-                   <Text style={{marginLeft:-5}} style={styles.tochText}>{formatDate(selectedDate, 'DD/MM/YYYY')}</Text>
+                <View style={{alignItems:'flex-start',marginTop:5,marginRight:40}}>
+                 <TouchableOpacity onPress={this.showDateTimePicker} style={{width:225,backgroundColor:'#f1f1f1',flexDirection:'row'}}>
+                 <Icon name='md-calendar' style={{padding: 5,marginLeft:50,fontSize:20,marginTop:1,color:'#1296db'}} />
+                   <Text style={{marginTop:7, marginBottom:7,marginLeft:5,fontFamily: 'OpenSans',fontSize:13,textAlign:'center',}}>{formatDate(selectedDate, 'DD/MM/YYYY')}</Text>
                    <DateTimePicker
                     mode='date'
 				   				  minimumDate={new Date()}
@@ -200,77 +201,76 @@ class AddReminder extends Component {
             </Col>
             </Row>
             </Form>
-            </View>  
+            </View>     */}
 
 
 
 
 
-{/* <View style={{marginBottom:10}}>
+  <View>
             <Form style={{marginTop:5}}>
               <Row>
                 <Col size={3}>
             <Text style={styles.NumText}>Select Date</Text>
             </Col>
-            <Col size={3} style={{marginLeft:-20}} >
-            <View picker style={{height:40,width:100,justifyContent:'center',backgroundColor:'#F1F1F1',borderRadius:5}}>
-                 <Picker
-                        mode="dropdown"
-                        style={{ width: undefined }}
-                        placeholder="Select your SIM"
-                        placeholderStyle={{ color: "#bfc6ea" }}
-                        placeholderIconColor="#007aff"
-                        selectedValue={this.state.selected5}
-                        onValueChange={this.onValueChange5.bind(this)}
-                      >
-                        <Picker.Item label="30-01-2020" value="key0" />
-                        <Picker.Item label="31-01-2020" value="key1" />
-                        <Picker.Item label="01-02-2020" value="key2" />
-                        <Picker.Item label="02-02-2020" value="key3" />
-                        <Picker.Item label="03-02-2020" value="key4" />
-                        <Picker.Item label="04-02-2020" value="key4" />
-                      </Picker>
-                 </View>
-            </Col>
-            <Col size={3}>
-            <View picker style={{height:40,width:100,justifyContent:'center',backgroundColor:'#F1F1F1',borderRadius:5}}>
-                 <Picker
-                        mode="dropdown"
-                        style={{ width: undefined }}
-                        placeholder="Select your SIM"
-                        placeholderStyle={{ color: "#bfc6ea" }}
-                        placeholderIconColor="#007aff"
-                        selectedValue={this.state.selected6}
-                        onValueChange={this.onValueChange6.bind(this)}
-                      >
-                        <Picker.Item label="30-01-2020" value="key0" />
-                       <Picker.Item label="31-01-2020" value="key1" />
-                       <Picker.Item label="01-02-2020" value="key2" />
-                       <Picker.Item label="02-02-2020" value="key3" />
-                       <Picker.Item label="03-02-2020" value="key4" />
-                       <Picker.Item label="04-02-2020" value="key4" />
-                       <Picker.Item label="05-02-2020" value="key4" />
-                      </Picker>
-                 </View>
-            </Col>
-            
+            <Col size={7} style={{width:150}}>
+            <View style={{marginBottom:10}}>
+              <Row>
+                <Col size={3.5}  style={{mariginTop:10}}> 
+                <View style={{marginTop:5,}}>
+                 <TouchableOpacity onPress={this.showDateTimePicker} style={{width:110,backgroundColor:'#f1f1f1',flexDirection:'row'}}>
+                 <Icon name='md-calendar' style={{padding:4,fontSize:20,color:'#1296db',marginTop:1}} />
+                   <Text style={{marginTop:7,marginBottom:7,fontFamily: 'OpenSans',fontSize: 13,textAlign:'center',marginLeft:5}}>{formatDate(selectedDate, 'DD/MM/YYYY')}</Text>
+                   <DateTimePicker
+                    mode='date'
+				   				  minimumDate={new Date()}
+				   				  date={selectedDate}
+                    isVisible={isDateTimePickerVisible}
+                    onConfirm={this.handleDatePicked}
+								    onCancel={this.hideDateTimePicker}
+									  datePickerModeAndroid='default'
+								   />
+                </TouchableOpacity>
+              </View>
+              </Col>
+              <Col size={3.5}  style={{mariginTop:10,marginLeft:-10}}> 
+                <View style={{marginTop:5,}}>
+                 <TouchableOpacity onPress={this.showDateTimePicker} style={{marginLeft:10,width:110,backgroundColor:'#f1f1f1',flexDirection:'row'}}>
+                 <Icon name='md-calendar' style={{padding: 4,fontSize:20,color:'#1296db',marginTop:1}} />
+                   <Text style={{marginTop:7,marginBottom:7,fontFamily: 'OpenSans',fontSize: 13,textAlign:'center',marginLeft:5}}>{formatDate(selectedDate, 'DD/MM/YYYY')}</Text>
+                   <DateTimePicker
+                    mode='date'
+				   				  minimumDate={new Date()}
+				   				  date={selectedDate}
+                    isVisible={isDateTimePickerVisible}
+                    onConfirm={this.handleDatePicked}
+								    onCancel={this.hideDateTimePicker}
+									  datePickerModeAndroid='default'
+								   />
+                </TouchableOpacity>
+              </View>
+              </Col>
+              </Row>
+              </View>
+              </Col>
             </Row>
             </Form>
-            </View> */}
+            </View>   
 
            
 
             
             
-            <View style={{marginBottom:15}}>
+            <View style={{marginBottom:10}}>
               <Row>
-                <Col size={4}  style={{mariginTop:10}}>
+                <Col size={4}  style={{mariginTop:5}}>
                 <Text style={styles.NumText}>Choose your time</Text>
                 </Col>
-                <Col size={3.5}  style={{mariginTop:10}}> 
-                <View style={{alignItems:'flex-start',marginTop:10,marginLeft:10}}>
+                <Col size={3.5}  style={{mariginTop:5,}}> 
+                <View style={{alignItems:'flex-start',marginTop:5,padding:1}}>
                  <TouchableOpacity onPress={this.showDateTimePicker} style={styles.toucableOpacity}>
-                   <Text style={styles.tochText}>{formatDate(selectedDate, 'HH:MM a')}</Text>
+                 <Icon name='ios-clock' style={styles.tocuhIcon} />
+                   <Text style={{marginTop:7,marginBottom:7,fontFamily: 'OpenSans',fontSize: 13,textAlign:'center',marginLeft:5}}>{formatDate(selectedDate, 'HH:MM A')}</Text>
                    <DateTimePicker
                     mode='time'
 				   				  minimumDate={new Date()}
@@ -290,18 +290,18 @@ class AddReminder extends Component {
             </Col>
                 </Row>
                 </View>
-                {/* <View style={{backgroundColor:'#F1F1F1',marginTop:10,paddingBottom:10}}> 
+                <View style={{backgroundColor:'#F1F1F1',marginTop:10,paddingBottom:10}}> 
                   <View>
                 <Text style={{marginBottom:5,marginTop:10,textAlign:'center'}}>Preview</Text> 
                   <Image source={require('../../../../assets/images/Remindericon.png')} style={{height:150,width:150,marginLeft:90}}/>
                   <Text style={{color:'#d83939',textAlign:'center'}}>No Reminder is avaialble now!</Text>  
                   </View>
-                  </View> */}
+                  </View> 
 
                 
 
 
-              <Grid style={{backgroundColor:'#f1f1f1',marginLeft:10,marginRight:10,paddingBottom:10,marginTop:10,borderRadius:5}}>
+              {/* <Grid style={{backgroundColor:'#f1f1f1',marginLeft:10,marginRight:10,paddingBottom:10,marginTop:10,borderRadius:5}}>
                 <Text style={{textAlign:'center',marginTop:10}}>Preview</Text>
               <Row style={{backgroundColor:'#FFF',marginTop:10,marginLeft:10,marginRight:10,borderRadius:5}}>
 <Col size={8.5}>
@@ -351,7 +351,7 @@ class AddReminder extends Component {
   </Col>
 </Row>
               </Grid>
-              
+               */}
                  <View style={{marginTop:10}}>
                  <Button  style={{marginTop:5,width:320,paddingLeft:100,backgroundColor:'#1296db',height:-40,borderRadius:5}} > 
                   <Text style={{width:475,fontWeight:'bold'}}>SET REMINDER</Text>
@@ -371,10 +371,17 @@ const styles = StyleSheet.create({
 
   toucableOpacity:{
     flexDirection: 'row',
-    paddingLeft:15,
-    paddingRight: 15,
+    paddingLeft:5,
+    paddingRight: 5,
    backgroundColor:'#f1f1f1',
     justifyContent:'center',
+  },
+
+  tocuhIcon:{
+    padding: 5, 
+    fontSize:20,
+    marginTop:1,
+    color:'#1296db'
   },
   
   tochText:{
@@ -382,6 +389,7 @@ const styles = StyleSheet.create({
     marginBottom:7,
     fontFamily: 'OpenSans', 
     fontSize: 16,
+    textAlign:'center',
     
   },
  
@@ -417,7 +425,7 @@ const styles = StyleSheet.create({
         NumText:{
           fontFamily:'OpenSans',
           fontSize:16,
-          marginTop:10
+          marginTop:10,
         },
         autoField:{
           height: 45, 
