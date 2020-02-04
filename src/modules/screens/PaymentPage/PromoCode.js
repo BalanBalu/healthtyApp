@@ -1,11 +1,7 @@
 import React, { Component } from 'react';
 import { Container, Content, Text, Button, FooterTab, Card, Footer, Icon, Input, Toast, Form, Right, Left, Grid, Row, Col } from 'native-base';
 import { StyleSheet, Image, View, AsyncStorage, TextInput, TouchableOpacity } from 'react-native';
-
-
-
-
-
+import getPromodataList from '../../providers/PromoCode/promo.action'
 
 class PromoCode extends Component {
     constructor(props) {
@@ -15,10 +11,25 @@ class PromoCode extends Component {
         }
     }
 
+componentDidMount(){
+ this.getPromolistDatas(data)
+}
+
+
+getPromolistDatas=()=>async (data)=>{
+    try{
+        let result = await getPromodataList(data)
+        if(result.success){
+            console.log(result);
+        }
+    }
+    catch (e) {
+        console.log(e)
+      }
+}
     onCouponPress(coupenCodeText) {
         this.setState({ coupenCodeText: coupenCodeText.toUpperCase() })
     }
-
 
     render() {
         return (
@@ -59,43 +70,187 @@ class PromoCode extends Component {
                         </View>
                         <Grid style={{ marginRight: 20, marginLeft: 20, marginTop: 10 }}>
                             <Row >
-                                <Col size={5}>
-                                    <Text style={{ fontSize: 16, fontWeight: '500', textAlign: 'left', fontStyle: 'italic' }}>MEDFLIC</Text>
+                                <Col size={4}>
+                                    <Row style={{ padding: 5, backgroundColor: '#F3EBF8', justifyContent: 'center' }}>
+                                        <Left>
+                                            <Image source={require('../..//../../assets/images/Logo.png')} style={{ height: 20, width: 20 }} />
+                                        </Left>
+
+                                        <Text style={{ fontSize: 16, fontWeight: '500', textAlign: 'center', lineHeight: 30 }}>M E D S 5 0</Text>
+                                    </Row>
+
+
                                 </Col>
-                                <Col size={5}>
-                                    <Text style={{ color: '#C1C1C1', fontSize: 12, fontFamily: 'OPenSans', textAlign: 'right' }}> RECOMMENDED</Text>
+                                <Col size={6}>
+                                    <Text style={{ color: '#775DA3', fontSize: 15, fontFamily: 'OPenSans', textAlign: 'right', fontWeight: 'bold', marginTop: 10, marginRight: 10 }}> APPLY</Text>
                                 </Col>
                             </Row>
 
                             <Row style={{ borderBottomColor: '#C1C1C1', borderBottomWidth: 0.3, paddingBottom: 10, marginTop: 10 }}>
                                 {/* <Text>50% OFF up to {'\u20B9'}150 0n 3 orders</Text> */}
-                                <Text style={{ fontFamily: 'OpenSans', fontSize: 14, }}>50% OFF on your first Order</Text>
+                                <Text style={{ fontFamily: 'OpenSans', fontSize: 14, }}>50% OFF on your first Booking</Text>
                             </Row>
                             <Row style={{ marginTop: 10 }}>
                                 {/* <Text>50% OFF up to {'\u20B9'}150 0n 3 orders</Text> */}
-                                <Text style={{ fontFamily: 'OpenSans', fontSize: 12, textAlign: 'left', color: '#33333' }}>Use code MEDS45 and get 50% off on orders above {'\u20B9'}120,Maximum discount {'\u20B9'}100.</Text>
+                                <Text style={{ fontFamily: 'OpenSans', fontSize: 12, textAlign: 'left', color: '#33333', lineHeight: 20 }}>Use code MEDS45 and get 50% off on orders above {'\u20B9'}120,Maximum discount {'\u20B9'}100.</Text>
                             </Row>
-                            <Row style={{ marginTop: 5, borderBottomColor: '#C1C1C1', borderBottomWidth: 0.3 }}>
-                                <Text style={{ color: '#378DDF', fontSize: 12 }}>View Details</Text>
+                            <Row style={{ marginTop: 5, marginBottom: 5 }}>
+                                <Text style={{ color: '#378DDF', fontSize: 12, fontWeight: 'bold' }}>+ MORE</Text>
                             </Row>
-                            <Row style={{ borderBottomColor: '#C1C1C1', borderBottomWidth: 0.3, paddingBottom: 10 }}>
-                                <Col size={4} style={{ marginTop: 5, }}>
-                                    <Row style={{ padding: 5, backgroundColor: '#F3EBF8' }}>
-                                        <Col size={3}>
-                                            <Image source={require('../..//../../assets/images/Logo.png')} style={{ height: 20, width: 20 }} />
-                                        </Col>
-                                        <Col size={7}>
-                                            <Text style={{ fontSize: 16, fontWeight: '500', textAlign: 'left', }}>MEDS50</Text>
-                                        </Col>
+
+                            {/* <View>
+                                <Row style={{ marginTop: 10 }}>
+                                    <Text style={{ fontFamily: 'OpenSans', fontSize: 12, textAlign: 'left', color: '#33333' }}>Terms & Conditions Apply</Text>
+                                </Row>
+                                <Row style={{ marginTop: 10 }}>
+                                    <Text style={{ fontSize: 30, marginTop: -12 }}>{'\u2022'}</Text>
+                                    <Text style={{ fontFamily: 'OpenSans', fontSize: 12, textAlign: 'left', color: '#33333', marginLeft: 10 }}> Valid in select cities only</Text>
+
+                                </Row>
+                                <Row style={{ marginTop: 10 }}>
+                                    <Text style={{ fontSize: 30, marginTop: -12 }}>{'\u2022'}</Text>
+                                    <Text style={{ fontFamily: 'OpenSans', fontSize: 12, textAlign: 'left', color: '#33333', marginLeft: 10 }}>Offer is Valid on all modes of payments</Text>
+                                </Row>
+                                <Row style={{ marginTop: 10 }}>
+                                    <Text style={{ fontSize: 30, marginTop: -12 }}>{'\u2022'}</Text>
+                                    <Text style={{ fontFamily: 'OpenSans', fontSize: 12, textAlign: 'left', color: '#33333', marginLeft: 10 }}>Offer is Valid only on select Pharmacy</Text>
+                                </Row>
+                                <Row style={{ marginTop: 10 }}>
+                                    <Text style={{ fontSize: 30, marginTop: -12 }}>{'\u2022'}</Text>
+                                    <Text style={{ fontFamily: 'OpenSans', fontSize: 12, textAlign: 'left', color: '#33333', marginLeft: 10 }}>Other T&Cs may apply</Text>
+                                </Row>
+                                <Row style={{ marginTop: 10 }}>
+                                    <Text style={{ fontSize: 30, marginTop: -12 }}>{'\u2022'}</Text>
+                                    <Text style={{ fontFamily: 'OpenSans', fontSize: 12, textAlign: 'left', color: '#33333', marginLeft: 10 }}>Offer valid till Mar 01,2020 23:59 PM</Text>
+                                </Row>
+                            </View> */}
+
+                            <Row style={{ borderBottomColor: '#C1C1C1', borderBottomWidth: 0.3, paddingBottom: 10, }} />
+
+
+                        </Grid>
+
+                        <Grid style={{ marginRight: 20, marginLeft: 20, marginTop: 10 }}>
+
+                            <Row >
+                                <Col size={4}>
+                                    <Row style={{ padding: 5, backgroundColor: '#F3EBF8', justifyContent: 'center' }}>
+                                        <Left>
+                                            <Image source={require('../..//../../assets/images/statebank.png')} style={{ height: 20, width: 20 }} />
+                                        </Left>
+
+                                        <Text style={{ fontSize: 16, fontWeight: '500', textAlign: 'center', lineHeight: 30 }}>S B I 1 2 5</Text>
                                     </Row>
+
+
                                 </Col>
                                 <Col size={6}>
-                                    <Text style={{ color: '#775DA3', fontSize: 12, fontFamily: 'OPenSans', textAlign: 'right', fontWeight: 'bold', marginTop: 15 }}> APPLY</Text>
+                                    <Text style={{ color: '#775DA3', fontSize: 15, fontFamily: 'OPenSans', textAlign: 'right', fontWeight: 'bold', marginTop: 10, marginRight: 10 }}> APPLY</Text>
                                 </Col>
                             </Row>
+                            <Row style={{ borderBottomColor: '#C1C1C1', borderBottomWidth: 0.3, paddingBottom: 10, marginTop: 10 }}>
+                                {/* <Text>50% OFF up to {'\u20B9'}150 0n 3 orders</Text> */}
+                                <Text style={{ fontFamily: 'OpenSans', fontSize: 14, }}>50% OFF on your first Booking</Text>
+                            </Row>
+                            <Row style={{ marginTop: 10 }}>
+                                {/* <Text>50% OFF up to {'\u20B9'}150 0n 3 orders</Text> */}
+                                <Text style={{ fontFamily: 'OpenSans', fontSize: 12, textAlign: 'left', color: '#33333', lineHeight: 20 }}>Use code MEDS45 and get 50% off on orders above {'\u20B9'}120,Maximum discount {'\u20B9'}100.</Text>
+                            </Row>
+                            <Row style={{ marginTop: 5, marginBottom: 5 }}>
+                                <Text style={{ color: '#378DDF', fontSize: 12, fontWeight: 'bold' }}>+ MORE</Text>
+                            </Row>
+
+                            {/* <View>
+                                <Row style={{ marginTop: 10 }}>
+                                    <Text style={{ fontFamily: 'OpenSans', fontSize: 12, textAlign: 'left', color: '#33333' }}>Terms & Conditions Apply</Text>
+                                </Row>
+                                <Row style={{ marginTop: 10 }}>
+                                    <Text style={{ fontSize: 30, marginTop: -12 }}>{'\u2022'}</Text>
+                                    <Text style={{ fontFamily: 'OpenSans', fontSize: 12, textAlign: 'left', color: '#33333', marginLeft: 10 }}> Valid in select cities only</Text>
+
+                                </Row>
+                                <Row style={{ marginTop: 10 }}>
+                                    <Text style={{ fontSize: 30, marginTop: -12 }}>{'\u2022'}</Text>
+                                    <Text style={{ fontFamily: 'OpenSans', fontSize: 12, textAlign: 'left', color: '#33333', marginLeft: 10 }}>Offer is Valid on all modes of payments</Text>
+                                </Row>
+                                <Row style={{ marginTop: 10 }}>
+                                    <Text style={{ fontSize: 30, marginTop: -12 }}>{'\u2022'}</Text>
+                                    <Text style={{ fontFamily: 'OpenSans', fontSize: 12, textAlign: 'left', color: '#33333', marginLeft: 10 }}>Offer is Valid only on select Pharmacy</Text>
+                                </Row>
+                                <Row style={{ marginTop: 10 }}>
+                                    <Text style={{ fontSize: 30, marginTop: -12 }}>{'\u2022'}</Text>
+                                    <Text style={{ fontFamily: 'OpenSans', fontSize: 12, textAlign: 'left', color: '#33333', marginLeft: 10 }}>Other T&Cs may apply</Text>
+                                </Row>
+                                <Row style={{ marginTop: 10 }}>
+                                    <Text style={{ fontSize: 30, marginTop: -12 }}>{'\u2022'}</Text>
+                                    <Text style={{ fontFamily: 'OpenSans', fontSize: 12, textAlign: 'left', color: '#33333', marginLeft: 10 }}>Offer valid till Mar 01,2020 23:59 PM</Text>
+                                </Row>
+                            </View> */}
+
+                            <Row style={{ borderBottomColor: '#C1C1C1', borderBottomWidth: 0.3, paddingBottom: 10, }} />
                         </Grid>
 
 
+
+                        <Grid style={{ marginRight: 20, marginLeft: 20, marginTop: 10 }}>
+                            <Row >
+                                <Col size={4}>
+                                    <Row style={{ padding: 5, backgroundColor: '#F3EBF8', justifyContent: 'center' }}>
+                                        <Left>
+                                            <Image source={require('../..//../../assets/images/HDFCbank.png')} style={{ height: 20, width: 20 }} />
+                                        </Left>
+
+                                        <Text style={{ fontSize: 16, fontWeight: '500', textAlign: 'center', lineHeight: 30 }}>H D F 1 0 5</Text>
+                                    </Row>
+
+
+                                </Col>
+                                <Col size={6}>
+                                    <Text style={{ color: '#775DA3', fontSize: 15, fontFamily: 'OPenSans', textAlign: 'right', fontWeight: 'bold', marginTop: 10, marginRight: 10 }}> APPLY</Text>
+                                </Col>
+                            </Row>
+
+                            <Row style={{ borderBottomColor: '#C1C1C1', borderBottomWidth: 0.3, paddingBottom: 10, marginTop: 10 }}>
+                                {/* <Text>50% OFF up to {'\u20B9'}150 0n 3 orders</Text> */}
+                                <Text style={{ fontFamily: 'OpenSans', fontSize: 14, }}>50% OFF on your first Booking</Text>
+                            </Row>
+                            <Row style={{ marginTop: 10 }}>
+                                {/* <Text>50% OFF up to {'\u20B9'}150 0n 3 orders</Text> */}
+                                <Text style={{ fontFamily: 'OpenSans', fontSize: 12, textAlign: 'left', color: '#33333', lineHeight: 20 }}>Use code MEDS45 and get 50% off on orders above {'\u20B9'}120,Maximum discount {'\u20B9'}100.</Text>
+                            </Row>
+                            <Row style={{ marginTop: 5, marginBottom: 5 }}>
+                                <Text style={{ color: '#378DDF', fontSize: 12, fontWeight: 'bold' }}>+ MORE</Text>
+                            </Row>
+
+                            {/* <View>
+                                <Row style={{ marginTop: 10 }}>
+                                    <Text style={{ fontFamily: 'OpenSans', fontSize: 12, textAlign: 'left', color: '#33333' }}>Terms & Conditions Apply</Text>
+                                </Row>
+                                <Row style={{ marginTop: 10 }}>
+                                    <Text style={{ fontSize: 30, marginTop: -12 }}>{'\u2022'}</Text>
+                                    <Text style={{ fontFamily: 'OpenSans', fontSize: 12, textAlign: 'left', color: '#33333', marginLeft: 10 }}> Valid in select cities only</Text>
+
+                                </Row>
+                                <Row style={{ marginTop: 10 }}>
+                                    <Text style={{ fontSize: 30, marginTop: -12 }}>{'\u2022'}</Text>
+                                    <Text style={{ fontFamily: 'OpenSans', fontSize: 12, textAlign: 'left', color: '#33333', marginLeft: 10 }}>Offer is Valid on all modes of payments</Text>
+                                </Row>
+                                <Row style={{ marginTop: 10 }}>
+                                    <Text style={{ fontSize: 30, marginTop: -12 }}>{'\u2022'}</Text>
+                                    <Text style={{ fontFamily: 'OpenSans', fontSize: 12, textAlign: 'left', color: '#33333', marginLeft: 10 }}>Offer is Valid only on select Pharmacy</Text>
+                                </Row>
+                                <Row style={{ marginTop: 10 }}>
+                                    <Text style={{ fontSize: 30, marginTop: -12 }}>{'\u2022'}</Text>
+                                    <Text style={{ fontFamily: 'OpenSans', fontSize: 12, textAlign: 'left', color: '#33333', marginLeft: 10 }}>Other T&Cs may apply</Text>
+                                </Row>
+                                <Row style={{ marginTop: 10 }}>
+                                    <Text style={{ fontSize: 30, marginTop: -12 }}>{'\u2022'}</Text>
+                                    <Text style={{ fontFamily: 'OpenSans', fontSize: 12, textAlign: 'left', color: '#33333', marginLeft: 10 }}>Offer valid till Mar 01,2020 23:59 PM</Text>
+                                </Row>
+                            </View> */}
+
+                            <Row style={{ borderBottomColor: '#C1C1C1', borderBottomWidth: 0.3, paddingBottom: 10, }} />
+                        </Grid>
                     </View>
 
 
