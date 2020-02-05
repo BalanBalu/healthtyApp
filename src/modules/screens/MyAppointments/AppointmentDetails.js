@@ -329,7 +329,7 @@ class AppointmentDetails extends Component {
                   data.onGoingAppointment !== true && (data.appointment_status == 'APPROVED' || this.state.appointmentStatus === 'APPROVED' || data.appointment_status == 'PENDING') ?
                   <Col size={4}>
                      <Row style={{marginTop:10 }}>
-                       <Button  style={styles.confirmButton} onPress={() => this.navigateCancelAppoointment()}>
+                       <Button  danger style={[styles.postponeButton]}  onPress={() => this.navigateCancelAppoointment()}>
                         <Text  style={styles.ButtonText}>CANCEL</Text>
                        </Button>
                      </Row>
