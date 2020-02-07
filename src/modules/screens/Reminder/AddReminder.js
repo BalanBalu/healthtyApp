@@ -225,6 +225,14 @@ class AddReminder extends Component {
       }
     }
   
+    _showDateTimePicker = () => this.setState({ isDateTimePickerVisible: true });
+
+  _hideDateTimePicker = () => this.setState({ isDateTimePickerVisible: false });
+
+  _handleDatePicked = (date) => {
+    console.log('A date has been picked: ', date);
+    this._hideDateTimePicker();
+  };
     render() {
 
       const Slots= [{time:'10:00',timeperiod:'am'},{time:'11:00',timeperiod:'am'},{time:'12:00',timeperiod:'am'},
@@ -337,16 +345,13 @@ class AddReminder extends Component {
    <Row>
      <Col size={3.5}  style={{mariginTop:10}}> 
      <View style={{marginTop:5,}}>
-      <TouchableOpacity onPress={this.showDateTimePicker} style={{width:110,backgroundColor:'#f1f1f1',flexDirection:'row'}}>
+      <TouchableOpacity onPress={this._showDateTimePicker} style={{width:110,backgroundColor:'#f1f1f1',flexDirection:'row'}}>
       <Icon name='md-calendar' style={{padding:4,fontSize:20,color:'#1296db',marginTop:1}} />
         <Text style={{marginTop:7,marginBottom:7,fontFamily: 'OpenSans',fontSize: 13,textAlign:'center',marginLeft:5}}>{formatDate(selectedDate, 'DD/MM/YYYY')}</Text>
         <DateTimePicker
-         mode='time'
-          minimumDate={new Date()}
-          date={selectedDate}
-         isVisible={isDateTimePickerVisible}
-         onConfirm={this.handleDatePicked}
-         onCancel={this.hideDateTimePicker}
+         
+         onConfirm={this._handleDatePicked}
+         onCancel={this._hideDateTimePicker}
          
         />
      </TouchableOpacity>
@@ -354,16 +359,13 @@ class AddReminder extends Component {
    </Col>
    <Col size={3.5}  style={{mariginTop:10,marginLeft:-10}}> 
      <View style={{marginTop:5,}}>
-      <TouchableOpacity onPress={this.showDateTimePicker} style={{marginLeft:10,width:110,backgroundColor:'#f1f1f1',flexDirection:'row'}}>
+      <TouchableOpacity onPress={this._showDateTimePicker} style={{marginLeft:10,width:110,backgroundColor:'#f1f1f1',flexDirection:'row'}}>
       <Icon name='md-calendar' style={{padding: 4,fontSize:20,color:'#1296db',marginTop:1}} />
         <Text style={{marginTop:7,marginBottom:7,fontFamily: 'OpenSans',fontSize: 13,textAlign:'center',marginLeft:5}}>{formatDate(selectedDate, 'DD/MM/YYYY')}</Text>
         <DateTimePicker
-         mode='time'
-          minimumDate={new Date()}
-          date={selectedDate}
-         isVisible={isDateTimePickerVisible}
-         onConfirm={this.handleDatePicked}
-         onCancel={this.hideDateTimePicker}
+         mode='date'
+         onConfirm={this._handleDatePicked}
+         onCancel={this._hideDateTimePicker}
          
         />
      </TouchableOpacity>
@@ -397,18 +399,15 @@ class AddReminder extends Component {
               <Row>
                 <Col size={3.5}  style={{mariginTop:10}}> 
                 <View style={{alignItems:'flex-start',marginTop:5,marginRight:40}}>
-                 <TouchableOpacity onPress={this.showDateTimePicker} style={{width:225,backgroundColor:'#f1f1f1',flexDirection:'row'}}>
+                 <TouchableOpacity onPress={this._showDateTimePicker} style={{width:225,backgroundColor:'#f1f1f1',flexDirection:'row'}}>
                  <Icon name='md-calendar' style={{padding: 5,marginLeft:50,fontSize:20,marginTop:1,color:'#1296db'}} />
                    <Text style={{marginTop:7, marginBottom:7,marginLeft:5,fontFamily: 'OpenSans',fontSize:13,textAlign:'center',}}>{formatDate(selectedDate, 'DD/MM/YYYY')}</Text>
                    <DateTimePicker
-                    mode='date'
-				   				  minimumDate={new Date()}
-				   				  date={selectedDate}
-                    isVisible={isDateTimePickerVisible}
-                    onConfirm={this.handleDatePicked}
-								    onCancel={this.hideDateTimePicker}
-									  datePickerModeAndroid='default'
-								   />
+         isVisible={this.state.isDateTimePickerVisible}
+         onConfirm={this._handleDatePicked}
+         onCancel={this._hideDateTimePicker}
+         
+        />
                 </TouchableOpacity>
               </View>
               </Col>
@@ -432,18 +431,15 @@ class AddReminder extends Component {
                 </Col>
                 <Col size={3.5}  style={{mariginTop:5,}}> 
                 <View style={{alignItems:'flex-start',marginTop:5,padding:1}}>
-                 <TouchableOpacity onPress={this.showDateTimePicker} style={styles.toucableOpacity}>
+                 <TouchableOpacity onPress={this._showDateTimePicker} style={styles.toucableOpacity}>
                  <Icon name='ios-clock' style={styles.tocuhIcon} />
                    <Text style={{marginTop:7,marginBottom:7,fontFamily: 'OpenSans',fontSize: 13,textAlign:'center',marginLeft:5}}>{formatDate(selectedDate, 'HH:MM A')}</Text>
                    <DateTimePicker
-                    mode='time'
-				   				  minimumDate={new Date()}
-				   				  date={selectedDate}
-                    isVisible={isDateTimePickerVisible}
-                    onConfirm={this.handleDatePicked}
-								    onCancel={this.hideDateTimePicker}
-									  datePickerModeAndroid='default'
-								   />
+         isVisible={this.state.isDateTimePickerVisible}
+         onConfirm={this._handleDatePicked}
+         onCancel={this._hideDateTimePicker}
+         
+        />
                 </TouchableOpacity>
               </View>
             </Col>
