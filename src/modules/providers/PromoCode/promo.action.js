@@ -1,4 +1,7 @@
-export const getPromodataList= async (data)=>{
+import { getService, putService,postService } from '../../../setup/services/httpservices';
+
+
+export const getPromodataList = async (data) => { 
     try {
     let endPoint = "/admin/promoCode";
     let response =  await postService(endPoint,data);
@@ -15,3 +18,4 @@ catch(e){
     }
 }
 }
+
