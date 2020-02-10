@@ -36,6 +36,7 @@ class AppointmentDetails extends Component {
       selectedTab: 0,
       paymentDetails: {},
       modalVisible: false,
+      proposedVisible:false,
 
 
     }
@@ -77,6 +78,10 @@ class AppointmentDetails extends Component {
       ])
       if (appointmentData.appointment_status == 'COMPLETED' && appointmentData.is_review_added == undefined) {
         await this.setState({ modalVisible: true })
+      }
+      let checkProposedNewTime= await AsyncStorage.getItem(this.state.appointmentId)
+      if (appointmentData.appointment_status == 'PROPOSED_NEW_TIME'&&checkProposedNewTime!='SKIP') {
+        await this.setState({ proposedVisible: true })
       }
 
     }
@@ -159,8 +164,13 @@ class AppointmentDetails extends Component {
             this.getDoctorDetails(),
             this.getPaymentInfo(result.data[0].payment_id)])
       }
+
       if (result.data[0].appointment_status == 'COMPLETED' && result.data[0].is_review_added == undefined) {
         await this.setState({ modalVisible: true })
+      }
+      let checkProposedNewTime= await AsyncStorage.getItem(this.state.appointmentId)
+      if (result.data[0].appointment_status == 'PROPOSED_NEW_TIME'&&checkProposedNewTime!=='SKIP') {
+        await this.setState({ proposedVisible: true })
       }
     } catch (error) {
       console.error(error);
@@ -226,7 +236,7 @@ class AppointmentDetails extends Component {
   }
 
 
-  navigateCancelAppoointment() {
+ async  navigateCancelAppoointment() {
     try{
     this.state.data.prefix = this.state.doctorData.prefix;
     const { navigation } = this.props;
@@ -239,7 +249,7 @@ class AppointmentDetails extends Component {
       }
       this.state.data.doctorInfo = doctorInfo;
     }
-
+   await  this.setState({proposedVisible:false})
     this.props.navigation.navigate('CancelAppointment', { appointmentDetail: this.state.data })
   }
   catch(e){
@@ -268,6 +278,11 @@ class AppointmentDetails extends Component {
     finally {
       await this.setState({ isLoading: false })
     }
+  }
+  async SkipAction(){
+    await AsyncStorage.setItem(this.state.appointmentId, 'SKIP')
+  
+    this.setState({proposedVisible:false})
   }
 
 
@@ -336,7 +351,7 @@ class AppointmentDetails extends Component {
                   </Col>: data.onGoingAppointment !== true && data.appointment_status == 'PROPOSED_NEW_TIME' ?
                   <Col size={4}>
                   <Row style={{marginTop:10 }}>
-                    <Button  style={[styles.postponeButton,,{backgroundColor :'#6FC41A'}]} onPress={() => this.updateAppointmentStatus(data, 'APPROVED')}>
+                    <Button  style={[styles.postponeButton,{backgroundColor :'#6FC41A'}]} onPress={() => this.updateAppointmentStatus(data, 'APPROVED')}>
                      <Text  style={styles.ButtonText}>ACCEPT</Text>
                     </Button>
                   </Row>
@@ -635,6 +650,70 @@ class AppointmentDetails extends Component {
                     </InsertReview>
                   </Modal>
                 </View>
+                <Modal
+        visible={this.state.proposedVisible}
+        transparent={true}
+        animationType={'fade'}
+     >
+              <View style={{
+                flex: 1,
+                flexDirection: 'column',
+                justifyContent: 'center',
+                alignItems: 'center',
+                backgroundColor: 'rgba(0,0,0,0.5)'
+              }}>
+                <View style={{
+                  width: '80%',
+                  height: '20%',
+                  backgroundColor: '#fff',
+                  borderColor: 'gray',
+                  borderWidth: 3,
+                  padding: 10,
+                  borderRadius: 10
+                }}>
+
+                  <Text style={{ fontSize: 14, fontFamily: 'OpenSans', fontWeight: 'bold', textAlign: 'center', marginTop: 10 }}>{'Doctor has rescheduled the appointment'}</Text>
+                  <Row style={{justifyContent:'center'}}>
+                  <Text style={{ fontSize: 12, fontFamily: 'OpenSans', textAlign: 'center', marginTop: 10 ,color:'red',textDecorationLine: 'line-through', textDecorationStyle: 'double', textDecorationColor: 'gray'}}>{formatDate(data.appointment_starttime," DD/MMM - hh:mm a")}</Text>
+                  <Text style={{ fontSize: 12, fontFamily: 'OpenSans', textAlign: 'center', marginTop: 10 }}> to</Text>
+
+                  <Text style={{ fontSize: 12, fontFamily: 'OpenSans', textAlign: 'center', marginTop: 10 ,color:'green'}}>{formatDate(data.appointment_starttime," DD/MMM - hh:mm a")}</Text>
+                  </Row>
+                  <Row style={{ marginTop: 15, justifyContent: 'flex-end', marginBottom: 15 }}>
+                  <Col size={2}></Col>
+                       <Col size={8} >
+                         <Row>
+                        
+                           <Col size={3}>
+                           <TouchableOpacity  style={{ paddingLeft:10,paddingRight:10,paddingTop:2,paddingBottom:2}}
+                     onPress={() => this.SkipAction()} testID='confirmButton'>
+                       
+                      <Text style={{ fontFamily: 'OpenSans', fontSize: 14, textAlign: 'center',color:'#775DA3' }}>{'Skip'}</Text>
+                    </TouchableOpacity>
+                           </Col>
+                           <Col size={3.3} style={{marginRight:5}} >
+                           <TouchableOpacity style={{backgroundColor :'#6FC41A',paddingLeft:10,paddingRight:10,paddingTop:2,paddingBottom:2,borderRadius:5 ,}} onPress={() => this.updateAppointmentStatus(data, 'APPROVED')} testID='confirmButton'>
+                      <Text style={{ fontFamily: 'OpenSans', fontSize: 12, textAlign: 'center',color:'#fff'}}>{'ACCEPT'}</Text>
+                    </TouchableOpacity>
+                           </Col>
+                           <Col size={3.3}>
+                           <TouchableOpacity danger style={{paddingLeft:10,paddingRight:10,paddingTop:2,paddingBottom:2,borderRadius:5,backgroundColor:'red'}} onPress={() => this.navigateCancelAppoointment()} testID='cancelButton'>
+                      <Text style={{ fontFamily: 'OpenSans', fontSize: 12, textAlign: 'center',color:'#fff' }}> { 'CANCEL' }</Text>
+                    </TouchableOpacity>
+                           </Col>
+                         </Row>
+                      
+                    
+                   
+                   
+                   
+                       </Col>
+                  
+                  </Row>
+                </View>
+
+              </View>
+            </Modal> 
 
      </Content>
               </Container>
