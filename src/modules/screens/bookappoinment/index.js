@@ -177,7 +177,8 @@ class BookAppoinment extends Component {
         endDate: formatDate(endDate, 'YYYY-MM-DD')
       }
       let resultData = await fetchAvailabilitySlots(fromAppointmentDoctorId, totalSlotsInWeek);
-      if (resultData.success) {
+      console.log(resultData);
+      if (resultData.success === true && resultData.data.length > 0 ) {
         for (let docCount = 0; docCount < resultData.data.length; docCount++) {
           let doctorSlotData = resultData.data[docCount];
           if (this.processedDoctorDetailsAndSlotData) {
@@ -202,6 +203,19 @@ class BookAppoinment extends Component {
           data: this.processedDoctorDetailsAndSlotData
         })
         console.log(this.processedDoctorDetailsAndSlotData);
+        await this.setState({ doctorData: this.processedDoctorDetailsAndSlotData || { } });
+      } else {
+        console.log(obj);
+        let doctorDetailsData = this.state.doctorDetails; //this.doctorDetailsMap.get(doctorSlotData.doctorId)
+        let obj = {
+          ...doctorDetailsData,
+          slotData: {}
+        }
+        this.processedDoctorDetailsAndSlotData = obj;
+        store.dispatch({
+          type: SET_SINGLE_DOCTOR_DATA,
+          data: this.processedDoctorDetailsAndSlotData
+        })
         await this.setState({ doctorData: this.processedDoctorDetailsAndSlotData });
       }
     } catch (error) {

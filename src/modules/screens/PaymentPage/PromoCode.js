@@ -85,9 +85,33 @@ class PromoCode extends Component {
                 <Content>
                     <View style={{ backgroundColor: '#fff', }}>
                         <View style={{ backgroundColor: '#f2f2f2' }}>
-                            <Row style={{ marginTop: 20, paddingBottom: 20 }}>
-                                <Text style={{ marginRight: 20, marginLeft: 20, fontFamily: 'OpenSans', fontSize: 16, }}>Available Coupons</Text>
-                            </Row>
+                            <View style={{ marginTop: 10, marginBottom: 10, paddingBottom: 10 }}>
+                                <Grid style={{ marginRight: 15, marginLeft: 15 }}>
+                                    <Col>
+                                        <Form>
+                                            <Input placeholder="Enter Your 'Coupon' Code here" style={styles.transparentLabel}
+                                                placeholderTextColor="#C1C1C1"
+                                                getRef={(input) => { this.enterCouponCode = input; }}
+                                                keyboardType={'default'}
+                                                returnKeyType={'go'}
+                                                multiline={false}
+                                                value={this.state.coupenCodeText}
+                                                onChangeText={enterCouponCode => this.onCouponPress(enterCouponCode)}
+                                            />
+
+                                        </Form>
+                                        <Row style={{ position: 'absolute' }}>
+                                            <Right>
+                                                {/* <Button style={{marginTop:10,backgroundColor:'#2ecc71',color:'#fff',borderRadius:10}}><Text style={{fontSize:15,fontFamily:'OpenSans',fontWeight:'bold'}}>submit</Text></Button> */}
+                                                <TouchableOpacity style={{ marginTop: 23, marginRight: 15 }} onPress={() => this.OnCopyedValue()}>
+                                                    <Text style={{ fontSize: 15, fontFamily: 'OpenSans', fontWeight: 'bold', color: '#775DA3' }}>{alert(this.state.coupenCodeText)}APPLY</Text>
+                                                </TouchableOpacity>
+                                            </Right>
+                                        </Row>
+                                    </Col>
+                                </Grid>
+                            </View>
+                            <Text style={{ paddingBottom: 10, marginRight: 20, marginLeft: 20, fontFamily: 'OpenSans', fontSize: 14 }}>Available Coupons</Text>
                         </View>
                         <FlatList
                             data={this.state.data}
