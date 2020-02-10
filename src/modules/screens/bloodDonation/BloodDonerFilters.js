@@ -60,9 +60,12 @@ class BloodDonerFilters extends Component {
       } = this.state
       let result = await bloodDonationFilter(data);
       if (result.success) {
-
+        result.data.bloodGroupList.unshift("None")
+      result.data.stateList.unshift("None")
+      result.data.countryList.unshift("None")
+      result.data.cityList.unshift("None")
+      result.data.districtList.unshift("None")
         if (bloodSelect == null) {
-
           this.setState({
             bloodList: result.data.bloodGroupList
           })
