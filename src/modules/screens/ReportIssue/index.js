@@ -6,7 +6,7 @@ import { FlatList } from 'react-native-gesture-handler';
 import Spinner from "../../../components/Spinner";
  import { RadioButton } from 'react-native-paper';
 
-import {appointmentIssue,pharmacyIssue,chatIssue,paymentIssue} from '../../common';
+import {appointmentIssue, pharmacyIssue, chatIssue,onlySpaceNotAllowed  } from '../../common';
 
 import{ insertReportIssue } from '../../providers/reportIssue/reportIssue.action';
 
@@ -42,7 +42,7 @@ class ReportIssue extends Component {
       try {
         this.setState({ isLoading: true });
         const {quesNo,complaint,issueFor,issue}=this.state;
-        if(complaint!=null){
+        if(onlySpaceNotAllowed(complaint)==true) {
           
         let userId = await AsyncStorage.getItem('userId');
         let data={
@@ -50,22 +50,19 @@ class ReportIssue extends Component {
           sender_id:userId,
           report_by:'USER',
           issue_type:issue[quesNo].value,
-          complaint:complaint
+          complaint:complaint,
+           report_status:'OPEN'
          
 
         }
         if(issueFor=='Appointment'){
-         
-          data.appointment_id=this.props.navigation.getParam('reportedId')
-         
+            data.appointment_id = this.props.navigation.getParam('reportedId')
         }
-        else if(issueFor=='chat'){
+        else if (issueFor == 'chat'){
           data.chat_id=this.props.navigation.getParam('reportedId')
-
         }
         else if(issueFor=='Pharmacy'){
-          data.pharmacy_id=this.props.navigation.getParam('reportedId')
-
+          data.pharmacy_id= this.props.navigation.getParam('reportedId')
         }
           let response = await insertReportIssue(userId, data);
         
@@ -76,7 +73,18 @@ class ReportIssue extends Component {
                type: 'success',
               duration: 3000,
             })
-            this.props.navigation.pop();
+            const { navigation } = this.props;
+            const { routeName, key } = navigation.getParam('prevState');
+            navigation.navigate({ routeName, key, params: { hasReloadReportIssue: true } });
+          
+          }
+          else{
+            Toast.show({
+              text:response.message,
+               type: 'dangers',
+              duration: 3000,
+            })
+
           }
         
         } 

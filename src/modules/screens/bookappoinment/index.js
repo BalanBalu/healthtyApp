@@ -45,7 +45,7 @@ selectedSlotLocationShowed = null;
 selectedSlotFee = null;
 selectedSlotFeeWithoutOffer = null;
 showedFee = null;
-fields = "first_name,last_name,prefix,professional_statement,gender,specialist,education,language,gender_preference,experience,profile_image";
+fields = "first_name,last_name,prefix,professional_statement,gender,specialist,education,language,gender_preference,experience,profile_image,hospital";
 
 class BookAppoinment extends Component {
   processedAvailabilityDates = [];
@@ -78,7 +78,8 @@ class BookAppoinment extends Component {
       reviewRefreshCount: 0,
       userId: null,
       isReviewLoading: false,
-      showMoreOption: false
+      showMoreOption: false,
+      doctorIdWithHosId: []
     }
 
   }
@@ -96,16 +97,24 @@ class BookAppoinment extends Component {
       this.setState({ isLoggedIn: true, userId });
     }
     if (availabilitySlots) {
-      const doctorId = navigation.getParam('doctorId') || false;
+      const doctorId = navigation.getParam('doctorId');
       getDoctorFaviouteList(doctorId);
       getDoctorsReviewsCount(doctorId);
-      await this.getdoctorDetails(doctorId);
-
+      const resultDoctorDetails = await this.getdoctorDetails(doctorId);
       if (userId) {
         getPatientWishList(userId);
       }
-      this.setState({ doctorId: doctorId });
-      await this.getAvailabilitySlots(doctorId, startDateMoment, endDateMoment);
+      console.log(resultDoctorDetails.data[0]);
+      availableHospitalIds = resultDoctorDetails.data[0].hospital ? resultDoctorDetails.data[0].hospital.map(ele => ele.hospital_id) : [];
+      console.log('availableHospitalIds', availableHospitalIds);
+      await this.setState({ doctorDetails: resultDoctorDetails.data[0], doctorId: doctorId });
+      const docIdWithHosId = [{
+        doctorId: doctorId,
+        include_all_hospitals: true
+      }]
+      await this.setState( { doctorIdWithHosId: docIdWithHosId })
+     
+      await this.getAvailabilitySlots(docIdWithHosId, startDateMoment, endDateMoment);
       await this.getLocationDataBySelectedSlot(this.state.doctorData.slotData[this.state.selectedDate], this.state.doctorData.slotData, this.state.selectedSlotIndex);
     } else {
       this.processedAvailabilityDates = navigation.getParam('processedAvailabilityDates');
@@ -170,7 +179,8 @@ class BookAppoinment extends Component {
         endDate: formatDate(endDate, 'YYYY-MM-DD')
       }
       let resultData = await fetchAvailabilitySlots(fromAppointmentDoctorId, totalSlotsInWeek);
-      if (resultData.success) {
+      console.log('resultData', resultData);
+      if (resultData.success === true && resultData.data.length > 0 ) {
         for (let docCount = 0; docCount < resultData.data.length; docCount++) {
           let doctorSlotData = resultData.data[docCount];
           if (this.processedDoctorDetailsAndSlotData) {
@@ -195,6 +205,19 @@ class BookAppoinment extends Component {
           data: this.processedDoctorDetailsAndSlotData
         })
         console.log(this.processedDoctorDetailsAndSlotData);
+        await this.setState({ doctorData: this.processedDoctorDetailsAndSlotData || { } });
+      } else {
+        console.log(obj);
+        let doctorDetailsData = this.state.doctorDetails; //this.doctorDetailsMap.get(doctorSlotData.doctorId)
+        let obj = {
+          ...doctorDetailsData,
+          slotData: {}
+        }
+        this.processedDoctorDetailsAndSlotData = obj;
+       store.dispatch({
+          type: SET_SINGLE_DOCTOR_DATA,
+          data: this.processedDoctorDetailsAndSlotData
+        })
         await this.setState({ doctorData: this.processedDoctorDetailsAndSlotData });
       }
     } catch (error) {
@@ -230,12 +253,9 @@ class BookAppoinment extends Component {
   }
   /*Get doctor Qualification details*/
   getdoctorDetails = async (doctorId) => {
-    console.log("doctor" + doctorId);
-    console.log(fields + 'fields');
-    let resultDoctorDetails = await getMultipleDoctorDetails(doctorId, fields);
-    console.log('resultDoctorDetails' + JSON.stringify(resultDoctorDetails))
+    let resultDoctorDetails = await getMultipleDoctorDetails(doctorId, fields).catch(ex => { console.log('Exception on Getting Doctor Details'); return { success: false, data : [] } } );
     if (resultDoctorDetails.success) {
-      await this.setState({ doctorDetails: resultDoctorDetails.data[0] });
+      return resultDoctorDetails;
     }
   }
   onSegemntClick(index) {
@@ -353,7 +373,11 @@ class BookAppoinment extends Component {
     this.setState({ selectedDate, selectedSlotIndex, selectedSlotItem });
     if (this.processedAvailabilityDates.includes(selectedDate) === false) {
       let endDateMoment = addMoment(getMoment(selectedDate), 7, 'days');
-      this.getAvailabilitySlots(this.state.doctorId, getMoment(selectedDate), endDateMoment);
+      const availabilityRequest = [{
+        doctorId: this.state.doctorId,
+        include_all_hospitals: true
+      }]
+      this.getAvailabilitySlots(availabilityRequest, getMoment(selectedDate), endDateMoment);
     }
   }
   async onSlotItemPress(item, index) {
@@ -475,12 +499,12 @@ class BookAppoinment extends Component {
                       <Text style={{ fontFamily: 'OpenSans', fontSize: 12, fontWeight: 'bold', textAlign: 'center' }}>{reviewsByDoctorIds[doctorData.doctor_id] ? ' ' + reviewsByDoctorIds[doctorData.doctor_id].average_rating : ' 0'}</Text>
                     </View>
                   </Col>
-                  <Col style={{ width: "20%", marginTop: 15, }}>
+                  <Col style={{ width: "25%", marginTop: 15, }}>
 
                     <Text note style={{ fontFamily: 'OpenSans', fontSize: 12, textAlign: 'center' }}> Favourite</Text>
                     <Text style={{ fontFamily: 'OpenSans', fontSize: 12, fontWeight: 'bold', textAlign: 'center' }}> {favouriteListCountByDoctorIds[doctorData.doctor_id] ? favouriteListCountByDoctorIds[doctorData.doctor_id] : 0}</Text>
                   </Col>
-                  <Col style={{ width: "30%", marginTop: 15, }}>
+                  <Col style={{ width: "25%", marginTop: 15,}}>
                     <Text note style={{ fontFamily: 'OpenSans', fontSize: 12, textAlign: 'center' }}> Fees</Text>
                     <Text style={{ fontFamily: 'OpenSans', fontSize: 12, fontWeight: 'bold', textAlign: 'center', marginLeft: 10 }}>{'\u20B9'}{this.selectedSlotFee}{' '}
 
@@ -544,33 +568,8 @@ class BookAppoinment extends Component {
                   <Row style={{ marginTop: 10 }}>
                     <Text style={{ fontSize: 13, fontFamily: 'OpenSans' }}>Select appoinment date and time</Text>
                   </Row>
-                  {/*  <Row style={{marginLeft:'auto',marginRight:'auto'}}  >
-          <Col style={{width:'8%'}}>
-             <Icon name='ios-arrow-back' onPress={() => this.slidePrevious()} style={{fontSize:25,marginTop:25}}/>
-          </Col> 
-          this.getAvailabilityDateSliderData().map(date => {
-            
-             let availableslotData = doctorData.slotData ? doctorData.slotData[date] ? doctorData.slotData[date] : [] : [];
-             let selectDate = this.state.selectedDate;
-             console.log(availableslotData);
-               return (
-                <Col style={{width:'28%',}} key={date}>
-                   <TouchableOpacity style={[styles.availabilityBG, selectDate === date ? { backgroundColor:'#775DA3' } : { backgroundColor:'#ced6e0' } ]} 
-                      onPress={() => this.onDateChanged(date)}>
-                        <Text style={[{textAlign:'center',fontSize:12,fontFamily:'OpenSans'}, selectDate === date ? { color:'#fff' } : { color:'#000' } ] }>{formatDate(moment(date), 'ddd, DD MMM')}</Text>
-                       <Text style={[{textAlign:'center',fontSize:10,fontFamily:'OpenSans'}, selectDate === date ? { color:'#fff' } : { color:'#000' } ] }>{ availableslotData.length === 0 ? 'No Slots Available' : availableslotData.length + ' Slots Available' }</Text>
-                     </TouchableOpacity>
-                </Col>
-              ) 
-          }) }
-          <Col style={{width:'8%'}}>
-              <Icon name='ios-arrow-forward' onPress={()=>this.slideNext()} style={{fontSize:25,marginTop:25,marginLeft:5,marginRight:5}}/>
-          </Col>
-      </Row> */}
-
+                
                   {this.renderDatesOnFlatlist(doctorData.slotData, selectedDate)}
-
-
                   {
                     doctorData.slotData[selectedDate] !== undefined ?
                       this.haveAvailableSlots(doctorData.slotData[selectedDate])
@@ -585,14 +584,8 @@ class BookAppoinment extends Component {
                       <Col style={{ width: '40%' }}>
                         <Text style={{ marginTop: 2, marginBottom: 2, color: '#000', fontSize: 12, fontFamily: 'OpenSans' }}>{selectedSlotItem ? formatDate(selectedSlotItem.slotStartDateAndTime, 'ddd DD MMM, h:mm a') : null}</Text>
                       </Col>
-                      <Col style={{ width: '35%' }}></Col>
-                      <Col style={{ width: '25%' }}>
-                        {/* <TouchableOpacity onPress={() => { console.log('......Pressing....'); this.onPressContinueForPaymentReview(doctorData, selectedSlotItem) }}
-                      style={{backgroundColor:'green', borderColor: '#000', marginTop:10, height: 30, borderRadius: 20,justifyContent:'center', marginLeft:5,marginRight:5,marginTop:-5 }}>
-                      <Text style={{color:'#fff',fontSize:12,fontWeight:'bold',fontFamily:'OpenSans', justifyContent: 'center', alignItems : 'center', marginLeft:'35%', marginTop:-5, marginBottom : -5 }}>Book</Text>
-                 </TouchableOpacity>  
-                */}
-                      </Col>
+                        <Col style={{ width: '35%' }}></Col>
+                        <Col style={{ width: '25%' }}></Col>
                     </Row>
                   </View>
                 </View>
@@ -754,8 +747,13 @@ class BookAppoinment extends Component {
           let lastProcessedDate = this.processedAvailabilityDates[endIndex - 1];
           let startMoment = getMoment(lastProcessedDate).add(1, 'day');
           let endDateMoment = addMoment(lastProcessedDate, 7, 'days')
-          if (this.state.isAvailabilityLoading === false)
-            this.getAvailabilitySlots(this.state.doctorId, startMoment, endDateMoment);
+          if (this.state.isAvailabilityLoading === false) {
+            const availabilityRequest = [{
+              doctorId: this.state.doctorId,
+              include_all_hospitals: true
+            }]
+            this.getAvailabilitySlots(availabilityRequest, startMoment, endDateMoment);
+          }
         }}
         renderItem={({ item }) =>
           <Col style={{ width: 100, justifyContent: 'center' }}>

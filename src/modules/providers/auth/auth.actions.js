@@ -279,6 +279,18 @@ export async function userFiledsUpdate(userId, data) {
     }
   }
 }
+export async function updatePrimaryContact(userId, data) {
+  try {
+    let endPoint = 'user/' + userId + '/primary_contact';
+    let response = await putService(endPoint, data);
+    return response.data;
+  } catch (e) {
+    return {
+      message: 'exception' + e,
+      success: false
+    }
+  }
+}
 
 /*Update User Profile Picture*/
 export async function updateProfilePicture(userId, data) {

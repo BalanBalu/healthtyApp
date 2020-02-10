@@ -131,10 +131,10 @@ export async function addReview(userId, insertUserReviews, isLoading = true) {
 
 export async function fetchAvailabilitySlots(doctorIds, dateFilter, patientGender) {
   try {
-    let endPoint = 'doctors/' + doctorIds + '/availabilitySlots?startDate=' + dateFilter.startDate + '&endDate='+ dateFilter.endDate;
+    let endPoint = 'doctors/' + 'availabilitySlots?startDate=' + dateFilter.startDate + '&endDate='+ dateFilter.endDate;
     if(patientGender)   endPoint + '&gender='+ patientGender;
     
-    let response = await getService(endPoint);
+    let response = await postService(endPoint, doctorIds);
     let respData = response.data;
     return respData;
   } catch (e) {
@@ -161,6 +161,22 @@ export async function viewUserReviews(type, id, limit) {
     }
   }
 }
+export async function getUserRepportDetails(type, reportedId, limit) {
+  try {
+    let endPoint =  'report/'+type+'/'+reportedId+limit;
+    let response = await getService(endPoint);
+
+    let respData = response.data;
+    return respData;
+
+  } catch (e) {
+    return {
+      message: 'exception' + e,
+      success: false
+    }
+  }
+}
+
 
 export async function getDoctorsReviewsCount(doctorIds) {
   try {

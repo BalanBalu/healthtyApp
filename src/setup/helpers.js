@@ -182,42 +182,66 @@ let value=dataIds.join(",");
 return value
 
 }
+
+export function toDataUrl(url) {
+  return new Promise((resolve, reject) => {
+    var xhr = new XMLHttpRequest();
+    xhr.onload = function() {
+        var reader = new FileReader();
+        reader.onloadend = function() {
+          resolve(reader.result);
+        }
+        reader.readAsDataURL(xhr.response);
+    };
+    xhr.open('GET', url);
+    xhr.responseType = 'blob';
+    xhr.send();
+  });
+}
+
 export const statusValue={
   
   "PENDING":
   {
     text:'waiting for confirmation',
-    color:'red'
+    color:'red',
+    icon: 'checkmark-circle'
   },
   "APPROVED":
  {
     text:'Appointment confirmed',
-    color:'green'
+    color:'green',
+    icon: 'checkmark-circle'
   },
   "COMPLETED":
   {
     text:'Appointment completed',
-    color:'green'
+    color:'green',
+    icon: 'checkmark-circle'
   },
   "PENDING_REVIEW":
   {
     text:'Appointment completed',
-    color:'green'
+    color:'green',
+    icon: 'checkmark-circle'
   },
    "PROPOSED_NEW_TIME":
      {
     text:'PROPOSED_NEW_TIME',
-    color:'grey'
+    color:'grey',
+    icon: 'md-timer'
   },
   "CLOSED":
   {
     text:'No Response',
-    color:'red'
+    color:'red',
+    icon: 'ios-close-circleo'
   },
    "CANCELED":
   {
     text:'Appointment cancelled',
-    color:'red'
+    color:'red',
+    icon: 'ios-close-circle'
   }
 }
 

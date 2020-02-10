@@ -20,11 +20,11 @@ class RenderOtpInput extends Component {
     }
     async componentDidMount() {
         const loginData = this.props.navigation.getParam("loginData");
-        this.setState({ isLoading: true });
+        // this.setState({ isLoading: true });
         console.log(this.props.user)
         let requestData = {
             appType: 'user',
-            email: loginData.userEntry
+            userEntry: loginData.userEntry
         }
         await this.setState({ requestData });
         await this.generateOtpCode();
@@ -33,24 +33,24 @@ class RenderOtpInput extends Component {
 
     getEnteredOtpCode = async (otp) => {
         await this.setState({ otp });
-        if (this.state.otp.length == 6)
+        if (this.state.otp.length === 6)
             this.verifyOtpCode();
     }
     /*  Generate OTP code for Created Account  */
     generateOtpCode = async () => {
         const { requestData } = this.state;
         try {
-            this.setState({ errorMsg: '' })
+            this.setState({ errorMsg: '', isLoading: true })
             let reqDataForGenerateOtpCode = {
                 appType: 'user',
-                email: requestData.email
+                userEntry: requestData.userEntry
             }
             let reqOtpResponse = await generateOtpCodeForCreateAccount(reqDataForGenerateOtpCode) //  Generate OTP code for Create DR medflic Account
             if (reqOtpResponse.success == true) {
                 console.log(reqOtpResponse);
-                await this.setState({ isGeneratedOtp: true, userId: reqOtpResponse.userId });
+                await this.setState({ isGeneratedOtp: true, reqOtpResponseObject: reqOtpResponse });
             } else {
-                this.setState({ errorMsg: reqOtpResponse.error, userId: reqOtpResponse.userId })
+                this.setState({ errorMsg: JSON.stringify(reqOtpResponse.error) + "  Go Back to Sign In Page", reqOtpResponseObject: reqOtpResponse })
             }
         } catch (e) {
             Toast.show({
@@ -65,12 +65,12 @@ class RenderOtpInput extends Component {
 
     /*  verify Email using Entered OTP Code   */
     verifyOtpCode = async () => {
-        const { otp, userId } = this.state;
+        const { otp, reqOtpResponseObject } = this.state;
         try {
             this.setState({ isVerifyingEmail: true, isLoading: true, errorMsg: '' });
             let reqDataForVerifyOtpCode = {
                 appType: 'user',
-                userId: userId,
+                userId: reqOtpResponseObject.userId,
                 "otp": otp
             }
             let reqOtpVerifiedResponse = await verifyOtpCodeForCreateAccount(reqDataForVerifyOtpCode)
@@ -119,7 +119,7 @@ class RenderOtpInput extends Component {
 
 
     render() {
-        const { otp, requestData, isVerifyingEmail, isGeneratedOtp, isLoading, errorMsg } = this.state;
+        const { otp, requestData, isVerifyingEmail, isGeneratedOtp, reqOtpResponseObject, isLoading, errorMsg } = this.state;
 
         return (
             <Container>
@@ -137,7 +137,7 @@ class RenderOtpInput extends Component {
                                 <Text style={{ color: 'black', fontFamily: 'OpenSans', fontSize: 20 }}>VERIFY DETAILS</Text>
                             </Left>
                         </Row>
-                        {isGeneratedOtp == true ? <Text style={{ color: 'gray', fontSize: 15 }}>OTP sent to {requestData.email}</Text> : <Text style={{ color: 'gray', fontSize: 15 }}>OTP couldn't sent to {requestData.email} Please Contact Our @Support_Team!</Text>}
+                        {isGeneratedOtp == true ? <Text style={{ color: 'gray', fontSize: 15 }}>{reqOtpResponseObject.message}</Text> : <Text style={{ color: 'gray', fontSize: 15 }}>OTP couldn't sent to {requestData.email} Please Contact Our @Support_Team!</Text>}
                         <Text style={{ marginTop: 10, fontSize: 13 }}>Enter OTP</Text>
                         <OtpInputs getOtp={(otp) => this.getEnteredOtpCode(otp)} />
                         <TouchableOpacity onPress={() => this.generateOtpCode()}>

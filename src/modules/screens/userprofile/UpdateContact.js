@@ -1,11 +1,11 @@
 import React, { Component } from 'react';
 import { Container, Content, Text, Button, H3, Item, List, CheckBox, Row, Col, Left, Right, Picker, Body, Icon, Card, Input, Toast, View } from 'native-base';
-import { userFiledsUpdate } from '../../providers/auth/auth.actions';
+import { updatePrimaryContact } from '../../providers/auth/auth.actions';
 import { AsyncStorage, ScrollView } from 'react-native';
 import { connect } from 'react-redux'
 import styles from './style.js';
 import Spinner from '../../../components/Spinner';
-import { validateMobileNumber } from '../../common'
+import { acceptNumbersOnly } from '../../common'
 
 
 class UpdateContact extends Component {
@@ -20,7 +20,10 @@ class UpdateContact extends Component {
             isLoading: false,
             userData: '',
             errorMsg: '',
-            existingSecNumber: ''
+            primaryNoErrMsg: '',
+            secNoErrMsg: '',
+            existingSecNumber: '',
+            OTPRequestSend: false
 
         }
     }
@@ -36,6 +39,7 @@ class UpdateContact extends Component {
         if (userData.mobile_no) {
             this.setState({
                 primary_mobile_no: userData.mobile_no,
+                existingPrimaryNo: userData.mobile_no
             })
         }
         if (userData.secondary_mobile) {
@@ -47,37 +51,33 @@ class UpdateContact extends Component {
         }
 
     }
-    commonUpdateContactMethod = async () => {
-        const { secondary_mobile_no, existingSecNumber, primary_mobile_no } = this.state
-        try {
-            this.setState({ isLoading: true });
 
+    onPressMobileNumUpdate() {
+        const { OTPRequestSend } = this.state;
+        if(OTPRequestSend === false) {
+
+        }
+        
+    }
+
+    commonUpdateContactMethod = async () => {
+        const { secondary_mobile_no, existingSecNumber, primary_mobile_no, existingPrimaryNo } = this.state
+        try {
             if (primary_mobile_no == '') {
-                this.setState({ errorMsg: 'Kindly enter your primary contact' })
+                this.setState({ primaryNoErrMsg: 'Kindly enter your primary contact' })
                 return false;
             }
-            if (secondary_mobile_no == '') {
-                this.setState({ errorMsg: 'Kindly enter your secondary contact number' })
-                return false;
-            }
-            if (primary_mobile_no == secondary_mobile_no || existingSecNumber == secondary_mobile_no) {
+            if (primary_mobile_no == secondary_mobile_no || (existingPrimaryNo == primary_mobile_no && existingSecNumber == secondary_mobile_no)) {
                 this.setState({ errorMsg: 'User details already exists' })
                 return false;
             }
-            if (validateMobileNumber(primary_mobile_no || secondary_mobile_no) == false) {
-                this.setState({ errorMsg: 'Contact field must contain number' })
-                return false;
-            }
 
-            this.setState({ errorMsg: '', isLoading: true });
-
-
+            this.setState({ errorMsg: '', primaryNoErrMsg: '', secNoErrMsg: '', isLoading: true });
             let userId = await AsyncStorage.getItem('userId');
             let data = {
                 mobile_no: primary_mobile_no,
-                secondary_mobile: secondary_mobile_no
             };
-            let response = await userFiledsUpdate(userId, data);
+            let response = await updatePrimaryContact(userId, data);
             if (response.success) {
                 Toast.show({
                     text: "Contacts has been saved",
@@ -124,27 +124,28 @@ class UpdateContact extends Component {
                                         <Row>
                                             <Icon name="call" style={styles.centeredIcons}></Icon>
                                             <Input placeholder="Edit Your Number" style={styles.transparentLabel} keyboardType="numeric"
-                                                onChangeText={number => this.setState({ primary_mobile_no: number })}
+                                                onChangeText={primary_mobile_no => acceptNumbersOnly(primary_mobile_no) == true || primary_mobile_no === '' ? this.setState({ primary_mobile_no}):null}
                                                 value={String(this.state.primary_mobile_no)}
                                                 testID='updatePrimaryContact' />
                                         </Row>
                                     </Col>
 
                                 </Item>
-
-                                <Item style={{ borderBottomWidth: 0, marginTop: 10 }}>
+                                {this.state.primaryNoErrMsg ? <Text style={{ color: 'red', marginLeft: 15, marginTop: 5 }}>{this.state.primaryNoErrMsg}</Text> : null}
+                                {/* <Item style={{ borderBottomWidth: 0, marginTop: 10 }}>
                                     <Col>
                                         <Text>Secondary Mobile Number</Text>
                                         <Row>
                                             <Icon name='call' style={styles.centeredIcons}></Icon>
                                             <Input placeholder="Edit Your Number" style={styles.transparentLabel} keyboardType="numeric"
-                                                onChangeText={number => this.setState({ secondary_mobile_no: number })}
+                                                onChangeText={secondary_mobile_no => acceptNumbersOnly(secondary_mobile_no) == true || secondary_mobile_no === '' ? this.setState({ secondary_mobile_no }) : null}
                                                 value={String(this.state.secondary_mobile_no)}
                                                 testID='updateContact' />
                                         </Row>
                                     </Col>
-                                </Item>
-                                <Text style={{ color: 'red', marginLeft: 15, marginTop: 5 }}>{this.state.errorMsg}</Text>
+                                </Item> 
+                                {this.state.secNoErrMsg ? <Text style={{ color: 'red', marginLeft: 15, marginTop: 5 }}>{this.state.secNoErrMsg}</Text> : null} */}
+                                {this.state.errorMsg ? <Text style={{ color: 'red', marginLeft: 15, marginTop: 5 }}>{this.state.errorMsg}</Text> : null}
 
 
 

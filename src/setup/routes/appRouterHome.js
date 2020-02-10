@@ -571,6 +571,7 @@ const HomeStack = createStackNavigator({
     }
   },
   {
+    overlayColor: 'rgba(0, 0, 0, 0.7)',
     contentComponent: props => <SideBar {...props} />
   },
     {

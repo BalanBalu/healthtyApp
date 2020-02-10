@@ -15,7 +15,11 @@ import { SET_LAST_MESSAGES_DATA } from '../modules/providers/chat/chat.action';
 import NotifService from './NotifService';
 import SocketIOClient from 'socket.io-client';
 YellowBox.ignoreWarnings([
-  'Unrecognized WebSocket connection option(s) `agent`, `perMessageDeflate`, `pfx`, `key`, `passphrase`, `cert`, `ca`, `ciphers`, `rejectUnauthorized`. Did you mean to put these under `headers`?'
+  'Unrecognized WebSocket connection option(s) `agent`, `perMessageDeflate`, `pfx`, `key`, `passphrase`, `cert`, `ca`, `ciphers`, `rejectUnauthorized`. Did you mean to put these under `headers`?',
+  'Warning: Slider has been extracted from react-native core ',
+  'Warning: ViewPagerAndroid has been extracted from react-nati',
+  'Warning: Async Storage has been extracted from react-native core and ',
+  'Warning: NetInfo has been extracted from react-native core and will',
 ]);
 export default class App extends Component {
   userId = null;
