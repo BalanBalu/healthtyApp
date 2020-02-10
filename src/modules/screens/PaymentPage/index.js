@@ -342,25 +342,46 @@ class PaymentPage extends Component {
                         visible={isLoading}
                         textContent={isPaymentSuccess ? "We are Booking your Appoinmtent" : "Please wait..."}
                     />
-                    <View style={{ paddingTop: 20, paddingBottom: 20, backgroundColor: '#f2f2f2', }}>
-                        <TouchableOpacity onPress={() => this.props.navigation.navigate('PromoCode')}>
-                            <Row style={{ padding: 1, paddingRight: 20, paddingLeft: 15, paddingTop: 15, paddingBottom: 15, backgroundColor: '#fff' }}>
-                                <Left>
-                                    <Text style={{ fontSize: 15, fontFamily: 'OpenSans', fontWeight: 'bold' }}>APPLY COUPON</Text>
-                                </Left>
-                                <Right>
-                                    <Icon name="ios-arrow-forward" style={{ fontSize: 25, color: '#C1C1C1' }} />
-                                </Right>
-                            </Row>
-                        </TouchableOpacity>
+                    <View style={{ backgroundColor: '#f2f2f2' }}>
+                        <View style={{ marginTop: 10, marginBottom: 10, paddingBottom: 10 }}>
+                            <Text style={{ fontSize: 15, fontFamily: 'OpenSans', fontWeight: 'bold', marginLeft: 15, }}>Select Options To Pay</Text>
+                            <Grid style={{ marginRight: 15, marginLeft: 15, marginTop: 5 }}>
+                                <Col>
+                                    <Form>
+                                        <Input placeholder="Enter Your 'Coupon' Code here" style={styles.transparentLabel}
+                                            placeholderTextColor="#C1C1C1"
+                                            getRef={(input) => { this.enterCouponCode = input; }}
+                                            keyboardType={'default'}
+                                            returnKeyType={'go'}
+                                            multiline={false}
+                                            value={this.state.coupenCodeText}
+                                            onChangeText={enterCouponCode => this.onCouponPress(enterCouponCode)}
+                                        />
+
+                                    </Form>
+                                    <Row style={{ position: 'absolute' }}>
+                                        <Right>
+                                            {/* <Button style={{marginTop:10,backgroundColor:'#2ecc71',color:'#fff',borderRadius:10}}><Text style={{fontSize:15,fontFamily:'OpenSans',fontWeight:'bold'}}>submit</Text></Button> */}
+                                            <TouchableOpacity style={{ marginTop: 23, marginRight: 15 }} onPress={() => this.OnCopyedValue()}>
+                                                <Text style={{ fontSize: 15, fontFamily: 'OpenSans', fontWeight: 'bold', color: '#775DA3' }}>APPLY</Text>
+                                            </TouchableOpacity>
+                                        </Right>
+                                    </Row>
+                                </Col>
+                            </Grid>
+                        </View>
                     </View>
                     <Grid style={{ marginTop: 10, marginLeft: 15, backgroundColor: '#FFF' }}>
-                        <Row >
 
-                            <Text style={{ fontSize: 15, fontFamily: 'OpenSans', fontWeight: 'bold', }}>Select Options To Pay</Text>
-
+                        <Row style={{ marginTop: 10, marginLeft: -3 }}>
+                            <TouchableOpacity onPress={() => this.props.navigation.navigate("PromoCode")}>
+                                <Text style={{
+                                    fontFamily: 'OpenSans', fontSize: 16, color: '#775DA3', borderStyle: 'dotted', borderColor: '#775DA3',
+                                    borderWidth: 1,
+                                    borderRadius: 1,
+                                }}> Apply Promo Code </Text>
+                            </TouchableOpacity>
                         </Row>
-
                         <Row style={{ marginTop: 10, marginLeft: -3 }}>
                             <Col style={{ width: '75%' }}>
                                 <Text style={{ fontFamily: 'OpenSans', color: '#333333', fontSize: 13, }}> Amount </Text>
