@@ -308,9 +308,9 @@ export function validatePincode(number) {
 }
 
 export function acceptNumbersOnly(value) {
-    const regex = new RegExp(/[- #*;,.<>\{\}\[\]\\\/]/gi, '');  //did't support White spaces
-    if (regex.test(value) === false) return false;
-    else return true;
+    const regex = new RegExp('^[0-9]+$');  
+    const result = regex.test(value);
+    return result
   }
 export function validatePassword(value) {
     const regex = new RegExp('^[^\\s]+$');  //did't support White spaces
@@ -333,7 +333,17 @@ export function getHospitalName(location) {
       return ''
 }
 export function validateName(text) {
-    let regex = /^(?!\s*$)[-a-zA-Z_:,.' ']{1,100}$/;
+    let regex = /^(?!\s*$)[-a-zA-Z_:' ']{1,100}$/;
     if (regex.test(text) === false) return false;
     else return true;
 }
+export function onlySpaceNotAllowed(text) {
+          if(text){
+         if(text.trim())return true
+          else return false;
+          }
+          else{
+            return false  
+          }
+         
+         }

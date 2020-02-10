@@ -93,7 +93,7 @@ class UpdateUserDetails extends Component {
     userUpdate = async () => {
         const { userData, firstName, lastName, dob, gender, selectedBloodGroup } = this.state
         try {
-            if (firstName == undefined || lastName == undefined || dob == undefined || gender == undefined || selectedBloodGroup == undefined) {
+            if (firstName == undefined || lastName == undefined || dob == undefined || gender == undefined || selectedBloodGroup == undefined || selectedBloodGroup == 'Select Blood Group') {
                 this.setState({ errorMsg: 'Kindly fill all the fields...' })
                 return false;
             }

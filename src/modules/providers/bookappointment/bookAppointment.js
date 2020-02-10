@@ -135,6 +135,7 @@ export default class BookAppointmentPaymentUpdate {
             return {
                 message: resultData.message,
                 success: true,
+                tokenNo: resultData.tokenNo
             }
         } else {
             return {

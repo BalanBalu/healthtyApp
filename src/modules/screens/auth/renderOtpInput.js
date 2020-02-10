@@ -24,7 +24,7 @@ class RenderOtpInput extends Component {
         console.log(this.props.user)
         let requestData = {
             appType: 'user',
-            email: loginData.userEntry
+            userEntry: loginData.userEntry
         }
         await this.setState({ requestData });
         await this.generateOtpCode();
@@ -33,7 +33,7 @@ class RenderOtpInput extends Component {
 
     getEnteredOtpCode = async (otp) => {
         await this.setState({ otp });
-        if (this.state.otp.length == 6)
+        if (this.state.otp.length === 6)
             this.verifyOtpCode();
     }
     /*  Generate OTP code for Created Account  */
@@ -43,7 +43,7 @@ class RenderOtpInput extends Component {
             this.setState({ errorMsg: '', isLoading: true })
             let reqDataForGenerateOtpCode = {
                 appType: 'user',
-                email: requestData.email
+                userEntry: requestData.userEntry
             }
             let reqOtpResponse = await generateOtpCodeForCreateAccount(reqDataForGenerateOtpCode) //  Generate OTP code for Create DR medflic Account
             if (reqOtpResponse.success == true) {

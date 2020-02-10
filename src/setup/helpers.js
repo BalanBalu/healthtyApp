@@ -229,19 +229,19 @@ export const statusValue={
      {
     text:'PROPOSED_NEW_TIME',
     color:'grey',
-    icon: 'back-in-time'
+    icon: 'md-timer'
   },
   "CLOSED":
   {
     text:'No Response',
     color:'red',
-    icon: 'closecircleo'
+    icon: 'ios-close-circleo'
   },
    "CANCELED":
   {
     text:'Appointment cancelled',
     color:'red',
-    icon: 'closecircleo'
+    icon: 'ios-close-circle'
   }
 }
 

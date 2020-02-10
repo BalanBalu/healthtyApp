@@ -8,7 +8,6 @@ export const REVIEWS_ERROR = 'PROFILE/REVIEWS_ERROR';
 export const AVAILABLE_CREDIT_POINTS = 'PROFILE/AVAILABLE_CREDIT_POINTS';
 export const SET_REFER_CODE = 'PROFILE/SET_REFER_CODE';
 
-
 import { store } from '../../../setup/store'
 import { getService, putService,postService } from '../../../setup/services/httpservices';
 
@@ -159,7 +158,7 @@ export async function bloodDonationFilter(data) {
 }
 
 export const getReferalPoints = async (userId) => {
-  let fields = "credit_points,refer_code"
+  let fields = "credit_points,refer_code,mobile_no"
   let result = await fetchUserProfile(userId, fields);
   console.log(result);
   if(result) {
@@ -173,7 +172,17 @@ export const getReferalPoints = async (userId) => {
             data: result.refer_code
           })
       }
+      if(result.mobile_no === undefined || result.mobile_no === null )  {
+          return {
+            updateMobileNum : true
+          }
+      }
+      return {
+        success: true
+      }
+      
   }
+  
 }
 
 

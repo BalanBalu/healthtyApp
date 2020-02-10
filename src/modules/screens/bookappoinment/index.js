@@ -78,7 +78,8 @@ class BookAppoinment extends Component {
       reviewRefreshCount: 0,
       userId: null,
       isReviewLoading: false,
-      showMoreOption: false
+      showMoreOption: false,
+      doctorIdWithHosId: []
     }
 
   }
@@ -109,8 +110,9 @@ class BookAppoinment extends Component {
       await this.setState({ doctorDetails: resultDoctorDetails.data[0], doctorId: doctorId });
       const docIdWithHosId = [{
         doctorId: doctorId,
-        hospitalIds: availableHospitalIds
+        include_all_hospitals: true
       }]
+      await this.setState( { doctorIdWithHosId: docIdWithHosId })
      
       await this.getAvailabilitySlots(docIdWithHosId, startDateMoment, endDateMoment);
       await this.getLocationDataBySelectedSlot(this.state.doctorData.slotData[this.state.selectedDate], this.state.doctorData.slotData, this.state.selectedSlotIndex);
@@ -177,7 +179,8 @@ class BookAppoinment extends Component {
         endDate: formatDate(endDate, 'YYYY-MM-DD')
       }
       let resultData = await fetchAvailabilitySlots(fromAppointmentDoctorId, totalSlotsInWeek);
-      if (resultData.success) {
+      console.log('resultData', resultData);
+      if (resultData.success === true && resultData.data.length > 0 ) {
         for (let docCount = 0; docCount < resultData.data.length; docCount++) {
           let doctorSlotData = resultData.data[docCount];
           if (this.processedDoctorDetailsAndSlotData) {
@@ -202,6 +205,19 @@ class BookAppoinment extends Component {
           data: this.processedDoctorDetailsAndSlotData
         })
         console.log(this.processedDoctorDetailsAndSlotData);
+        await this.setState({ doctorData: this.processedDoctorDetailsAndSlotData || { } });
+      } else {
+        console.log(obj);
+        let doctorDetailsData = this.state.doctorDetails; //this.doctorDetailsMap.get(doctorSlotData.doctorId)
+        let obj = {
+          ...doctorDetailsData,
+          slotData: {}
+        }
+        this.processedDoctorDetailsAndSlotData = obj;
+       store.dispatch({
+          type: SET_SINGLE_DOCTOR_DATA,
+          data: this.processedDoctorDetailsAndSlotData
+        })
         await this.setState({ doctorData: this.processedDoctorDetailsAndSlotData });
       }
     } catch (error) {
@@ -357,7 +373,11 @@ class BookAppoinment extends Component {
     this.setState({ selectedDate, selectedSlotIndex, selectedSlotItem });
     if (this.processedAvailabilityDates.includes(selectedDate) === false) {
       let endDateMoment = addMoment(getMoment(selectedDate), 7, 'days');
-      this.getAvailabilitySlots(this.state.doctorId, getMoment(selectedDate), endDateMoment);
+      const availabilityRequest = [{
+        doctorId: this.state.doctorId,
+        include_all_hospitals: true
+      }]
+      this.getAvailabilitySlots(availabilityRequest, getMoment(selectedDate), endDateMoment);
     }
   }
   async onSlotItemPress(item, index) {
@@ -727,8 +747,13 @@ class BookAppoinment extends Component {
           let lastProcessedDate = this.processedAvailabilityDates[endIndex - 1];
           let startMoment = getMoment(lastProcessedDate).add(1, 'day');
           let endDateMoment = addMoment(lastProcessedDate, 7, 'days')
-          if (this.state.isAvailabilityLoading === false)
-            this.getAvailabilitySlots(this.state.doctorId, startMoment, endDateMoment);
+          if (this.state.isAvailabilityLoading === false) {
+            const availabilityRequest = [{
+              doctorId: this.state.doctorId,
+              include_all_hospitals: true
+            }]
+            this.getAvailabilitySlots(availabilityRequest, startMoment, endDateMoment);
+          }
         }}
         renderItem={({ item }) =>
           <Col style={{ width: 100, justifyContent: 'center' }}>

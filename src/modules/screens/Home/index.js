@@ -64,8 +64,16 @@ class Home extends Component {
         let userId = await AsyncStorage.getItem("userId");
         if (userId) {
             this.getAllChatsByUserId(userId);
-            getReferalPoints(userId);
-        }
+            res = await getReferalPoints(userId);
+            if(res.updateMobileNum === true) {
+                this.props.navigation.navigate('UpdateContact', { updatedata: {  } });
+                Toast.show({
+                    text: 'Plase Update Your Mobile Number and Continue',
+                    duration: 3000,
+                    type: 'warning'
+                })
+            }
+        }   
         CurrentLocation.getCurrentPosition();
     }
     
@@ -81,7 +89,6 @@ class Home extends Component {
                 const imageURL = item.imageBaseURL + item.category_id + '.png';
                 const base64ImageDataRes =  await toDataUrl(imageURL)
                 result.data[i].base64ImageData = base64ImageDataRes;
-               
             }
             this.setState({ catagary: result.data, categryCount : this.state.categryCount + 1 })
            
