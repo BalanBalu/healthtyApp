@@ -56,7 +56,7 @@ import OrderPaymentPreview from '../../modules/screens/Pharmacy/OrderPaymentPrev
 import OrderMedicineDetails from '../../modules/screens/Pharmacy/OrderMedicineDetails/OrderMedicineDetails';
 import MedicineSearchList from '../../modules/screens/Pharmacy/MedicineSearchList/MedicineSearchList';
 import MedicineCheckout from '../../modules/screens/Pharmacy/MedicineCheckout/MedicineChekout';
-import { Badge } from '../../../src/modules/common'
+import { Badge,BloodDonorFilterBadge} from '../../../src/modules/common'
 import Locations from '../../modules/screens/Home/Locations';
 import BloodDonersList from '../../modules/screens/bloodDonation/BloodDonersList';
 import BloodDonerFilters from '../../modules/screens/bloodDonation/BloodDonerFilters';
@@ -200,7 +200,7 @@ const HomeStack = createStackNavigator({
             <TouchableOpacity onPress={() => { navigation.navigate('BloodDonerFilters') }} >
               <View>
                 <Icon name="ios-funnel" style={{ color: '#fff', marginRight: 15, fontFamily: 'opensans-semibold' }}></Icon>
-                <Badge/>
+                <BloodDonorFilterBadge/>
               </View>
             </TouchableOpacity>
           </Col>

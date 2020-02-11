@@ -5,6 +5,7 @@ import { Col, Row, Grid } from 'react-native-easy-grid';
 import { store } from '../setup/store';
 export const IS_ANDROID = Platform.OS === 'android';
 export const IS_IOS = Platform.OS === 'ios';
+import { NavigationEvents } from 'react-navigation';
 
 
 export const RenderHospitalAddress = (props) => {
@@ -202,6 +203,40 @@ export class Badge extends Component {
     }
 }
 
+
+export class BloodDonorFilterBadge extends Component {
+    constructor(props) {
+
+        super(props);
+        this.state = {
+            data: null,
+        };
+    }
+ getDonorCount(data) {    
+  try {
+    if (data.action) {
+        const {
+            navigation
+          } = this.props;
+          let filterData = navigation.getParam('data1');
+          this.setState({data:filterData.length})
+        //   alert("filterData.length++++++++++++="+filterData.length)
+        }
+  } catch (e) {
+    console.log(e)
+  }
+}
+    render() {
+        const { data } = this.state;
+        return (
+            <View>
+            <NavigationEvents
+            onWillFocus={payload => { this.getDonorCount(payload) }} />
+           { data != null &&
+            <Text style={{ position: 'absolute', backgroundColor: 'red', color: 'white', borderRadius: 20/2,  marginTop: -7, width:undefined,height:undefined,padding:2,fontSize:10 }}>{data}</Text>
+           }</View>)
+    }
+}
 
 
 export function getAllEducation(data) {

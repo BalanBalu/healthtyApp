@@ -239,7 +239,7 @@ class BloodDonerFilters extends Component {
         data: user
       })
     }
-
+    this.props.navigation.setParams( {data1 : user})
     this.props.navigation.navigate('Blood Doners', {
       data: user
     })
