@@ -44,6 +44,7 @@ const SELECTED_EXPERIENCE_START_END_YEARS = {
 let currentDoctorOrder = 'ASC';
 let doctorDataWithAviablityInMap = new Map();
 const SHOW_NO_OF_PRIME_DOCS_ON_PRIME_LIST_SWIPPER_LIST = 2;
+
 class doctorSearchList extends Component {
     processedDoctorIds = [];
     processedDoctorData = [];
@@ -51,6 +52,7 @@ class doctorSearchList extends Component {
     processedDoctorAvailabilityDates = [];
     sponsorIdWithHospitalIdArray = [];
     doctorDetailsMap = new Map();
+    distanceMap = new Map();
     showNoOfPrimeDocsOnSwipperList;
     constructor(props) {
         super(props)
@@ -275,7 +277,10 @@ class doctorSearchList extends Component {
             let doctorIds = resultData.data.map((element) => {
                 const docObj = {
                     doctorId : element.doctor_id,
-                    hospitalIds: element.hospital ? element.hospital.map(hosp => hosp.hospital_id) : [] 
+                    hospitalIds: element.hospital ? element.hospital.map(hosp => {
+                      this.distanceMap.set(element.doctor_id + '-' + hosp.hospital_id,  hosp.distInKiloMeter)
+                      return hosp.hospital_id 
+                    }) : [] 
                 }
                 return docObj
             });
@@ -355,7 +360,7 @@ class doctorSearchList extends Component {
                 getAllDoctorsActiveSponsorDetails(doctorIds).catch(res => console.log("Exception on get All Doctors ActiveSponsor Details" + res))
             ]);
             console.log('There is No Active Sponsors for given list of Doctors' + JSON.stringify(activeSponsorDetails))
-            if (activeSponsorDetails.data) {
+           /* if (activeSponsorDetails.data) {
                 let sponsorIdArray = [];
 
                 activeSponsorDetails.data.map((ele) => {
@@ -367,7 +372,7 @@ class doctorSearchList extends Component {
                 });
                 console.log('Hopital Array:' +this.sponsorIdWithHospitalIdArray);
                 this.updateSponsorViewersCount(sponsorIdArray)
-            };
+            }; */
 
             resultDoctorDetails.forEach((element) => {
                 this.doctorDetailsMap.set(element.doctor_id, element) // total_rating
@@ -673,6 +678,19 @@ class doctorSearchList extends Component {
         this.setState({ refreshCount: this.state.refreshCount + 1 });
     }
 
+    getDistance(doctorIdHostpitalId) {
+      if(!isNaN(this.distanceMap.get(doctorIdHostpitalId))) {
+        if(this.distanceMap.get(doctorIdHostpitalId) > 0) {
+           const distanceInMeter = Number(this.distanceMap.get(doctorIdHostpitalId)).toFixed(3)
+           const distanceInNumber = Number(distanceInMeter.split('.')[1]);
+           return  distanceInNumber + 'm'
+        } else {
+            const distanceInKm = Number(this.distanceMap.get(doctorIdHostpitalId)).toFixed(1) + 'Km'
+            return distanceInKm;
+        }
+      }
+    }
+
     renderSponsorDoctorList(item) {
         const { bookappointment: {  reviewsByDoctorIds } } = this.props;
         const { selectedDatesByDoctorIds
@@ -852,12 +870,18 @@ class doctorSearchList extends Component {
                                                     </Icon> : null}
                                             </TouchableOpacity>
                                         </Row>
-                                        {item.primeDocOnNonPrimeList === true ? 
+                                    {item.primeDocOnNonPrimeList === true ? 
                                         <Row>
                                             <View style={{ position: 'absolute', marginLeft: 15, alignSelf: 'center' }}>
                                                 <Image square source={vipLogo} style={{ height: 30, width: 30 }} />
                                             </View>
-                                        </Row> : null }
+                                        </Row> 
+                                    :
+                                        <Row>
+                                             <Text style={{ fontFamily: 'OpenSans', marginTop:20,fontSize:12,marginLeft:15 }}>{this.getDistance(item.doctorIdHostpitalId)}</Text>
+                                        </Row> 
+                                    }
+                                      
                                     </Col>
                                 </Row>
 
@@ -899,7 +923,7 @@ class doctorSearchList extends Component {
                                 </Row>
 
 
-
+                                           
                                 <Row style={{ borderTopColor: '#000', borderTopWidth: 0.4, marginTop: 5 }} >
                                     <Col style={{ width: "5%" }}>
 
