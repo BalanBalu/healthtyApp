@@ -360,7 +360,7 @@ class doctorSearchList extends Component {
                 getAllDoctorsActiveSponsorDetails(doctorIds).catch(res => console.log("Exception on get All Doctors ActiveSponsor Details" + res))
             ]);
             console.log('There is No Active Sponsors for given list of Doctors' + JSON.stringify(activeSponsorDetails))
-           /* if (activeSponsorDetails.data) {
+            if (activeSponsorDetails.data) {
                 let sponsorIdArray = [];
 
                 activeSponsorDetails.data.map((ele) => {
@@ -372,7 +372,7 @@ class doctorSearchList extends Component {
                 });
                 console.log('Hopital Array:' +this.sponsorIdWithHospitalIdArray);
                 this.updateSponsorViewersCount(sponsorIdArray)
-            }; */
+            };
 
             resultDoctorDetails.forEach((element) => {
                 this.doctorDetailsMap.set(element.doctor_id, element) // total_rating
