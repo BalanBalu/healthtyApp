@@ -383,38 +383,38 @@ class PaymentPage extends Component {
                             </TouchableOpacity>
                         </Row>
                         <Row style={{ marginTop: 10, marginLeft: -3 }}>
-                            <Col style={{ width: '75%' }}>
+                            <Col style={{ width: '70%' }}>
                                 <Text style={{ fontFamily: 'OpenSans', color: '#333333', fontSize: 13, }}> Amount </Text>
                             </Col>
-                            <Col style={{ width: '25%' }}>
+                            <Col style={{ width: '30%' }}>
                                 <Text style={{ marginLeft: 40, fontFamily: 'OpenSans', fontSize: 13, color: '#333333' }}>{'  '}{'\u20B9'}{amount}</Text>
                             </Col>
                         </Row>
 
                         <Row style={{ marginTop: 10, marginLeft: -3 }}>
-                            <Col style={{ width: '75%' }}>
+                            <Col style={{ width: '70%' }}>
                                 <Text style={{ fontFamily: 'OpenSans', color: '#333333', fontSize: 13 }}> Credit Points </Text>
                             </Col>
-                            <Col style={{ width: '25%' }}>
+                            <Col style={{ width: '30%' }}>
                                 <Text style={{ marginLeft: 40, fontFamily: 'OpenSans', fontSize: 13, color: '#333333' }}>{'  '}{'\u20B9'}{creditPointDiscountAmount}</Text>
                             </Col>
                         </Row>
 
                         <Row style={{ marginTop: 10, marginLeft: -3 }}>
-                            <Col style={{ width: '75%' }}>
+                            <Col style={{ width: '70%' }}>
                                 <Text style={{ fontFamily: 'OpenSans', color: '#333333', fontSize: 13 }}> Coupon Discount </Text>
                             </Col>
-                            <Col style={{ width: '25%' }}>
+                            <Col style={{ width: '30%' }}>
                                 <Text style={{ marginLeft: 40, fontFamily: 'OpenSans', fontSize: 13, color: '#333333' }}>{'  '}{'\u20B9'}{couponCodeDiscountAmount}</Text>
                             </Col>
                         </Row>
 
 
                         <Row style={{ borderTopColor: '#C1C1C1', borderTopWidth: 0.3, marginTop: 10, marginBottom: 5, marginRight: 15, marginLeft: -3 }}>
-                            <Col style={{ width: '75%', marginTop: 5 }}>
+                            <Col style={{ width: '70%', marginTop: 5 }}>
                                 <Text style={{ fontFamily: 'OpenSans', fontWeight: 'bold', fontSize: 13 }}> Final Amount </Text>
                             </Col>
-                            <Col style={{ width: '25%', marginTop: 5 }}>
+                            <Col style={{ width: '30%', marginTop: 5 }}>
                                 <Text style={{ marginLeft: 40, fontFamily: 'OpenSans', fontWeight: 'bold', fontSize: 13 }}>{'  '}{'\u20B9'}{amount - (creditPointDiscountAmount + couponCodeDiscountAmount)}</Text>
                             </Col>
                         </Row>
@@ -426,7 +426,8 @@ class PaymentPage extends Component {
                             <Text style={{ fontSize: 15, fontFamily: 'OpenSans', fontWeight: 'bold', marginLeft: 15, }}>CREDIT POINTS</Text>
 
                             </Row>
-                            <Row style={{paddingLeft: 15, paddingTop: 10,alignItems:'center' }}>
+                            <Row style={{paddingLeft: 15, alignItems:'center'}}>
+                               
                                 <Checkbox color="green"
                                     borderStyle={{
                                         borderColor: '#F44336',
@@ -438,7 +439,7 @@ class PaymentPage extends Component {
                                     status={this.state.creditPointsApplied ? 'checked' : 'unchecked'}
                                     onPress={() => this.setPaymentByCreditApplied()}
                                 />
-                                <Text style={{ fontFamily: 'OpenSans', color: '#333333', fontSize: 13  }}> Apply Your {maxDicountAmountByCreditPoints} Credit Points to Pay your Appointment</Text>
+                                <Text style={{ fontFamily: 'OpenSans', color: '#333333', fontSize: 13,lineHeight:20,width:'90%',marginTop:20 }}>Apply Your {maxDicountAmountByCreditPoints} Credit Points to Pay your Appointment</Text>      
                             </Row>
                         </Grid> : null}
 
@@ -494,7 +495,7 @@ class PaymentPage extends Component {
                         </Grid>
                     </RadioButton.Group>
 
-                    <Row style={{ marginBottom: 10, paddingLeft: 15, paddingRight: 15, paddingTop: 15 }}>
+                    <Row style={{ marginBottom: 10, paddingLeft: 15, paddingRight: 15, paddingTop: 10 }}>
                         <Text style={{ fontSize: 15, fontFamily: 'OpenSans', fontWeight: 'bold' }}>Payment Options</Text>
                     </Row>
                     <RadioButton.Group
