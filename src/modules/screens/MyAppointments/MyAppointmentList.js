@@ -356,7 +356,7 @@ return (
 													<Row>
 														<Col size={2}>
 														<Thumbnail
-															square
+															circular
 															source={renderDoctorImage(item)}
 															style={{ height: 60, width: 60 }}
 														/>

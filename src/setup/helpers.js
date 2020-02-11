@@ -227,8 +227,8 @@ export const statusValue={
   },
    "PROPOSED_NEW_TIME":
      {
-    text:'PROPOSED_NEW_TIME',
-    color:'grey',
+    text:'PROPOSED NEW TIME',
+    color:'#3d70ff',
     icon: 'md-timer'
   },
   "CLOSED":
