@@ -422,10 +422,11 @@ class PaymentPage extends Component {
 
                     {maxDicountAmountByCreditPoints > 0 ?
                         <Grid style={{ backgroundColor: '#fff' }}>
-                            <Row style={{ padding: 1, marginLeft: 10, marginRight: 10 }}>
-                                <Text style={{ fontSize: 15, fontFamily: 'OpenSans', color: 'gray', marginTop: 10, }}>CREDIT POINTS</Text>
+                            <Row style={{marginTop:15}}>
+                            <Text style={{ fontSize: 15, fontFamily: 'OpenSans', fontWeight: 'bold', marginLeft: 15, }}>CREDIT POINTS</Text>
+
                             </Row>
-                            <Row style={{ borderBottomColor: '#000', borderBottomWidth: 0.3, paddingLeft: 15, paddingBottom: 15, paddingTop: 5 }}>
+                            <Row style={{paddingLeft: 15, paddingTop: 10,alignItems:'center' }}>
                                 <Checkbox color="green"
                                     borderStyle={{
                                         borderColor: '#F44336',
@@ -437,7 +438,7 @@ class PaymentPage extends Component {
                                     status={this.state.creditPointsApplied ? 'checked' : 'unchecked'}
                                     onPress={() => this.setPaymentByCreditApplied()}
                                 />
-                                <Text style={{ color: 'gray', fontFamily: 'OpenSans', fontSize: 13 }}> Apply Your {maxDicountAmountByCreditPoints} Credit Points to Pay your Appointment</Text>
+                                <Text style={{ fontFamily: 'OpenSans', color: '#333333', fontSize: 13  }}> Apply Your {maxDicountAmountByCreditPoints} Credit Points to Pay your Appointment</Text>
                             </Row>
                         </Grid> : null}
 
