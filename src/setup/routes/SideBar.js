@@ -108,10 +108,7 @@ async getBasicData() {
               );
             }}
           />
-        </Content>
-          
-          <View>
-           <List style={{position: 'absolute', Top: 0,marginTop:-35}}>
+          <List style={{marginTop:30 }}>
            <ListItem style={{borderBottomWidth:0,height:50}}>
                  <Icon name='ios-power' style={{fontSize:15,color:'#7D4ac1'
                 }}/>
@@ -121,6 +118,10 @@ async getBasicData() {
                  style={{fontFamily:'OpenSans',fontSize:15,marginLeft:20}}>{hasLoggedIn ? 'Sign Out' : 'Sign In' }</Text>
             </ListItem>
            </List>   
+        </Content>
+          
+          <View>
+           
            <Footer style={{marginTop:10,backgroundColor:'#fff',}}>
               <FooterTab style={{justifyContent:'center',alignItems:'center',backgroundColor:'#7f49c3'}}>
                 <Text style={{textAlign:'center',fontFamily:'OpenSans',fontWeight:'700',fontSize:20,color:'#fff'}}>MEDFLIC</Text>
