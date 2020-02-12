@@ -116,8 +116,6 @@ class BloodDonerFilters extends Component {
     }
 
     let bloodlist = this.filterData.findIndex(list => list.type === type)
-
-
     if (bloodlist != -1) {
 
       this.filterData.splice(bloodlist, 1)
@@ -231,6 +229,7 @@ class BloodDonerFilters extends Component {
       doctor = [];
     let result = await bloodDonationList(this.filterData);
     if (result.success) {
+      this.props.navigation.setParams( {filerCount: this.filterData.length})
       user = result.data.userList
       doctor = result.data.doctorList
       user.concat(doctor);
@@ -239,9 +238,9 @@ class BloodDonerFilters extends Component {
         data: user
       })
     }
-    this.props.navigation.setParams( {data1 : user})
+    
     this.props.navigation.navigate('Blood Doners', {
-      data: user
+      data: user,filerCount: this.filterData.length
     })
 
 
