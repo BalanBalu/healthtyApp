@@ -161,11 +161,6 @@ class Home extends Component {
                 totalSpecialistDataArry: [],
                 searchValue: enteredText
             });
-            /* Toast.show({
-               text: 'No KeyWords Found By near Location',
-               type: 'danger',
-               duration: 3000
-             }) */
         }
     }
     /* Filter the Specialist and Services on Search Box  */
