@@ -342,58 +342,79 @@ class PaymentPage extends Component {
                         visible={isLoading}
                         textContent={isPaymentSuccess ? "We are Booking your Appoinmtent" : "Please wait..."}
                     />
-                    <View style={{ paddingTop: 20, paddingBottom: 20, backgroundColor: '#f2f2f2', }}>
-                        <TouchableOpacity onPress={() => this.props.navigation.navigate('PromoCode')}>
-                            <Row style={{ padding: 1, paddingRight: 20, paddingLeft: 15, paddingTop: 15, paddingBottom: 15, backgroundColor: '#fff' }}>
-                                <Left>
-                                    <Text style={{ fontSize: 15, fontFamily: 'OpenSans', fontWeight: 'bold' }}>APPLY COUPON</Text>
-                                </Left>
-                                <Right>
-                                    <Icon name="ios-arrow-forward" style={{ fontSize: 25, color: '#C1C1C1' }} />
-                                </Right>
-                            </Row>
-                        </TouchableOpacity>
+                    <View style={{ backgroundColor: '#f2f2f2' }}>
+                        <View style={{ marginTop: 10, marginBottom: 10, paddingBottom: 10 }}>
+                            <Text style={{ fontSize: 15, fontFamily: 'OpenSans', fontWeight: 'bold', marginLeft: 15, }}>Select Options To Pay</Text>
+                            <Grid style={{ marginRight: 15, marginLeft: 15, marginTop: 5 }}>
+                                <Col>
+                                    <Form>
+                                        <Input placeholder="Enter Your 'Coupon' Code here" style={styles.transparentLabel}
+                                            placeholderTextColor="#C1C1C1"
+                                            getRef={(input) => { this.enterCouponCode = input; }}
+                                            keyboardType={'default'}
+                                            returnKeyType={'go'}
+                                            multiline={false}
+                                            value={this.state.coupenCodeText}
+                                            onChangeText={enterCouponCode => this.onCouponPress(enterCouponCode)}
+                                        />
+
+                                    </Form>
+                                    <Row style={{ position: 'absolute' }}>
+                                        <Right>
+                                            {/* <Button style={{marginTop:10,backgroundColor:'#2ecc71',color:'#fff',borderRadius:10}}><Text style={{fontSize:15,fontFamily:'OpenSans',fontWeight:'bold'}}>submit</Text></Button> */}
+                                            <TouchableOpacity style={{ marginTop: 23, marginRight: 15 }} onPress={() => this.OnCopyedValue()}>
+                                                <Text style={{ fontSize: 15, fontFamily: 'OpenSans', fontWeight: 'bold', color: '#775DA3' }}>APPLY</Text>
+                                            </TouchableOpacity>
+                                        </Right>
+                                    </Row>
+                                </Col>
+                            </Grid>
+                        </View>
                     </View>
                     <Grid style={{ marginTop: 10, marginLeft: 15, backgroundColor: '#FFF' }}>
-                        <Row >
-
-                            <Text style={{ fontSize: 15, fontFamily: 'OpenSans', fontWeight: 'bold', }}>Select Options To Pay</Text>
-
-                        </Row>
 
                         <Row style={{ marginTop: 10, marginLeft: -3 }}>
-                            <Col style={{ width: '75%' }}>
+                            <TouchableOpacity onPress={() => this.props.navigation.navigate("PromoCode")}>
+                                <Text style={{
+                                    fontFamily: 'OpenSans', fontSize: 16, color: '#775DA3', borderStyle: 'dotted', borderColor: '#775DA3',
+                                    borderWidth: 1,
+                                    borderRadius: 1,
+                                }}> Apply Promo Code </Text>
+                            </TouchableOpacity>
+                        </Row>
+                        <Row style={{ marginTop: 10, marginLeft: -3 }}>
+                            <Col style={{ width: '70%' }}>
                                 <Text style={{ fontFamily: 'OpenSans', color: '#333333', fontSize: 13, }}> Amount </Text>
                             </Col>
-                            <Col style={{ width: '25%' }}>
+                            <Col style={{ width: '30%' }}>
                                 <Text style={{ marginLeft: 40, fontFamily: 'OpenSans', fontSize: 13, color: '#333333' }}>{'  '}{'\u20B9'}{amount}</Text>
                             </Col>
                         </Row>
 
                         <Row style={{ marginTop: 10, marginLeft: -3 }}>
-                            <Col style={{ width: '75%' }}>
+                            <Col style={{ width: '70%' }}>
                                 <Text style={{ fontFamily: 'OpenSans', color: '#333333', fontSize: 13 }}> Credit Points </Text>
                             </Col>
-                            <Col style={{ width: '25%' }}>
+                            <Col style={{ width: '30%' }}>
                                 <Text style={{ marginLeft: 40, fontFamily: 'OpenSans', fontSize: 13, color: '#333333' }}>{'  '}{'\u20B9'}{creditPointDiscountAmount}</Text>
                             </Col>
                         </Row>
 
                         <Row style={{ marginTop: 10, marginLeft: -3 }}>
-                            <Col style={{ width: '75%' }}>
+                            <Col style={{ width: '70%' }}>
                                 <Text style={{ fontFamily: 'OpenSans', color: '#333333', fontSize: 13 }}> Coupon Discount </Text>
                             </Col>
-                            <Col style={{ width: '25%' }}>
+                            <Col style={{ width: '30%' }}>
                                 <Text style={{ marginLeft: 40, fontFamily: 'OpenSans', fontSize: 13, color: '#333333' }}>{'  '}{'\u20B9'}{couponCodeDiscountAmount}</Text>
                             </Col>
                         </Row>
 
 
                         <Row style={{ borderTopColor: '#C1C1C1', borderTopWidth: 0.3, marginTop: 10, marginBottom: 5, marginRight: 15, marginLeft: -3 }}>
-                            <Col style={{ width: '75%', marginTop: 5 }}>
+                            <Col style={{ width: '70%', marginTop: 5 }}>
                                 <Text style={{ fontFamily: 'OpenSans', fontWeight: 'bold', fontSize: 13 }}> Final Amount </Text>
                             </Col>
-                            <Col style={{ width: '25%', marginTop: 5 }}>
+                            <Col style={{ width: '30%', marginTop: 5 }}>
                                 <Text style={{ marginLeft: 40, fontFamily: 'OpenSans', fontWeight: 'bold', fontSize: 13 }}>{'  '}{'\u20B9'}{amount - (creditPointDiscountAmount + couponCodeDiscountAmount)}</Text>
                             </Col>
                         </Row>
@@ -401,10 +422,12 @@ class PaymentPage extends Component {
 
                     {maxDicountAmountByCreditPoints > 0 ?
                         <Grid style={{ backgroundColor: '#fff' }}>
-                            <Row style={{ padding: 1, marginLeft: 10, marginRight: 10 }}>
-                                <Text style={{ fontSize: 15, fontFamily: 'OpenSans', color: 'gray', marginTop: 10, }}>CREDIT POINTS</Text>
+                            <Row style={{marginTop:15}}>
+                            <Text style={{ fontSize: 15, fontFamily: 'OpenSans', fontWeight: 'bold', marginLeft: 15, }}>CREDIT POINTS</Text>
+
                             </Row>
-                            <Row style={{ borderBottomColor: '#000', borderBottomWidth: 0.3, paddingLeft: 15, paddingBottom: 15, paddingTop: 5 }}>
+                            <Row style={{paddingLeft: 15, alignItems:'center'}}>
+                               
                                 <Checkbox color="green"
                                     borderStyle={{
                                         borderColor: '#F44336',
@@ -416,7 +439,7 @@ class PaymentPage extends Component {
                                     status={this.state.creditPointsApplied ? 'checked' : 'unchecked'}
                                     onPress={() => this.setPaymentByCreditApplied()}
                                 />
-                                <Text style={{ color: 'gray', fontFamily: 'OpenSans', fontSize: 13 }}> Apply Your {maxDicountAmountByCreditPoints} Credit Points to Pay your Appointment</Text>
+                                <Text style={{ fontFamily: 'OpenSans', color: '#333333', fontSize: 13,lineHeight:20,width:'90%',marginTop:20 }}>Apply Your {maxDicountAmountByCreditPoints} Credit Points to Pay your Appointment</Text>      
                             </Row>
                         </Grid> : null}
 
@@ -472,7 +495,7 @@ class PaymentPage extends Component {
                         </Grid>
                     </RadioButton.Group>
 
-                    <Row style={{ marginBottom: 10, paddingLeft: 15, paddingRight: 15, paddingTop: 15 }}>
+                    <Row style={{ marginBottom: 10, paddingLeft: 15, paddingRight: 15, paddingTop: 10 }}>
                         <Text style={{ fontSize: 15, fontFamily: 'OpenSans', fontWeight: 'bold' }}>Payment Options</Text>
                     </Row>
                     <RadioButton.Group
