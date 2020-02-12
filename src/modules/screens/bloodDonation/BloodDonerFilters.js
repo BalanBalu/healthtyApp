@@ -405,14 +405,14 @@ class BloodDonerFilters extends Component {
 
         <View style={styles.ViewStyle}>
           <List style={{ marginLeft: -20 }}>
-            <ListItem style={{ justifyContent: 'center' }}>
+            <ListItem>
               <Text style={styles.textHead}>Categories</Text>
             </ListItem>
 
             <ListItem style={selectedOne === 'BLOODGROUP' ? { backgroundColor: '#784EBC', paddingLeft: 10 } : { paddingLeft: 10 }}>
               <TouchableOpacity onPress={() => this.selectedData('BLOODGROUP')} style={{ flexDirection: 'row' }}>
                 <Left>
-                  <Text style={{ fontFamily: 'OpenSans', fontSize: 14, }}>Blood Group</Text>
+                  <Text style={{ fontFamily: 'OpenSans', fontSize: 12, }}>Blood Group</Text>
 
                 </Left>
                 <Right>
@@ -423,7 +423,7 @@ class BloodDonerFilters extends Component {
             <ListItem style={selectedOne === 'COUNTRY' ? { backgroundColor: '#784EBC', paddingLeft: 10 } : { paddingLeft: 10 }}>
               <TouchableOpacity onPress={() => this.selectedData('COUNTRY')} style={{ flexDirection: 'row' }}>
                 <Left>
-                  <Text style={{ fontFamily: 'OpenSans', fontSize: 14 }}>Country</Text>
+                  <Text style={{ fontFamily: 'OpenSans', fontSize: 12 }}>Country</Text>
                 </Left>
                 <Right>
                   <Icon name="ios-arrow-forward" style={{ fontSize: 25 }} />
@@ -433,7 +433,7 @@ class BloodDonerFilters extends Component {
             <ListItem style={selectedOne === 'STATE' ? { backgroundColor: '#784EBC', paddingLeft: 10 } : { paddingLeft: 10 }}>
               <TouchableOpacity onPress={() => this.selectedData('STATE')} style={{ flexDirection: 'row' }}>
                 <Left>
-                  <Text style={{ fontFamily: 'OpenSans', fontSize: 14 }}>State</Text>
+                  <Text style={{ fontFamily: 'OpenSans', fontSize: 12 }}>State</Text>
                 </Left>
                 <Right>
                   <Icon name="ios-arrow-forward" style={{ fontSize: 25 }} />
@@ -443,7 +443,7 @@ class BloodDonerFilters extends Component {
             <ListItem style={selectedOne === 'DISTRICT' ? { backgroundColor: '#784EBC', paddingLeft: 10 } : { paddingLeft: 10 }}>
               <TouchableOpacity onPress={() => this.selectedData('DISTRICT')} style={{ flexDirection: 'row' }}>
                 <Left>
-                  <Text style={{ fontFamily: 'OpenSans', fontSize: 14, }}>District</Text>
+                  <Text style={{ fontFamily: 'OpenSans', fontSize: 12, }}>District</Text>
                 </Left>
                 <Right>
                   <Icon name="ios-arrow-forward" style={{ fontSize: 25 }} />
@@ -453,7 +453,7 @@ class BloodDonerFilters extends Component {
             <ListItem style={selectedOne === 'CITY' ? { backgroundColor: '#784EBC', paddingLeft: 10 } : { paddingLeft: 10 }}>
               <TouchableOpacity onPress={() => this.selectedData('CITY')} style={{ flexDirection: 'row' }}>
                 <Left>
-                  <Text style={{ fontFamily: 'OpenSans', fontSize: 14, }}>City</Text>
+                  <Text style={{ fontFamily: 'OpenSans', fontSize: 12, }}>City</Text>
                 </Left>
                 <Right>
                   <Icon name="ios-arrow-forward" style={{ fontSize: 25 }} />
@@ -479,13 +479,13 @@ export default BloodDonerFilters
 const styles = StyleSheet.create({
   textHead: {
     fontFamily: 'OpenSans',
-    fontSize: 16,
+    fontSize: 13.5,
     marginLeft: 10,
     fontWeight: 'bold',
   },
   subText: {
     fontFamily: 'OpenSans',
-    fontSize: 14,
+    fontSize: 12,
   },
   ViewStyle: {
     width: '30%',
@@ -497,7 +497,7 @@ const styles = StyleSheet.create({
   searchText: {
     textAlign: 'center',
     fontFamily: 'OpenSans',
-    fontSize: 20,
+    fontSize: 18,
     fontWeight: 'bold',
     color: '#fff'
   }
