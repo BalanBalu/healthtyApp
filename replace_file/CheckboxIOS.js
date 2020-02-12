@@ -1,9 +1,6 @@
-
 /* path "node_modules/react-native-paper/src/components/CheckboxIOS.js" */
 
-
 /* @flow */
-
 import * as React from 'react';
 import { StyleSheet, View } from 'react-native';
 import color from 'color';
@@ -79,6 +76,7 @@ class CheckboxIOS extends React.Component<Props> {
     const icon = indeterminate ? 'remove' : 'done';
 
     return (
+    <View style={{marginRight:10}}>
       <TouchableRipple
         {...rest}
         borderless
@@ -98,10 +96,10 @@ class CheckboxIOS extends React.Component<Props> {
             source={icon}
             size={18}
             color={"#fff"}
-         
           />
         </View>
       </TouchableRipple>
+      </View>
     );
   }
 }
@@ -110,9 +108,11 @@ const styles = StyleSheet.create({
   container: {
     borderRadius: 2,
      height:16, 
-     width:'7%',
+    
     borderColor:'#000',
-    borderWidth:0.5
+    borderWidth:0.5,
+    
+   
   },
   viewStyle:{
    marginTop:-3,

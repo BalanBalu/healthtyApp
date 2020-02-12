@@ -321,7 +321,7 @@ render() {
                 </Row> : 
                 <Row>
                     <Col style={{ alignContent: 'center', alignItems: 'center', justifyContent: 'center' }}>
-                        <Text  style={{ color: '#FFF', fontSize:18,padding:2, alignSelf: 'center', alignItems: 'center' }}>{this.getInActiveChatMessageByStatus(status)}</Text>
+                        <Text  style={{ color: '#7E49C3', fontSize:15,padding:2, textAlign:'center' }}>{this.getInActiveChatMessageByStatus(status)}</Text>
                     </Col>
                 </Row>
             }  

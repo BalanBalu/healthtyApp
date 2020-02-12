@@ -166,14 +166,14 @@ class Signup extends Component {
                                                 </View>
                                             </RadioButton.Group>
                                         </View>
-                                        <Item style={{ borderBottomWidth: 0, marginTop: 5, marginLeft: 'auto', marginRight: 'auto' }}>
+                                        <Item style={{ borderBottomWidth: 0, marginTop: 5,marginLeft:-1}}>
                                             <Checkbox color="#775DA3"
                                                 status={checked ? 'checked' : 'unchecked'}
                                                 onPress={() => { this.setState({ checked: !checked }); }}
                                             />
-                                            <Text style={{ color: 'gray', fontFamily: 'OpenSans', fontSize: 13, }}>I Accept the Medflic </Text>
+                                            <Text style={{ color: 'gray', fontFamily: 'OpenSans', fontSize: 12, }}>I Accept the Medflic </Text>
                                             <TouchableOpacity onPress={() => this.props.navigation.navigate('termsAndConditions')}>
-                                                <Text style={{ color: '#5055d7', fontFamily: 'OpenSans', fontSize: 13, }}> Terms And Conditions</Text>
+                                                <Text style={{ color: '#5055d7', fontFamily: 'OpenSans', fontSize: 13, }}>Terms And Conditions</Text>
                                             </TouchableOpacity>
                                         </Item>
                                         <Spinner color='blue'
