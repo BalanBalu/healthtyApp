@@ -5,7 +5,6 @@ import { Col, Row, Grid } from 'react-native-easy-grid';
 import { store } from '../setup/store';
 export const IS_ANDROID = Platform.OS === 'android';
 export const IS_IOS = Platform.OS === 'ios';
-
 export const RenderHospitalAddress = (props) => {
     const { headerStyle, hospotalNameTextStyle, gridStyle, renderHalfAddress } = props
     return (
@@ -200,7 +199,6 @@ export class Badge extends Component {
             <Text style={{ position: 'absolute', backgroundColor: 'red', color: 'white', borderRadius: 20/2,  marginTop: -7, width:undefined,height:undefined,padding:2,fontSize:10 }}>{data}</Text>        )
     }
 }
-
 
 export function getAllEducation(data) {
 
