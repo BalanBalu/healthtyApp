@@ -20,8 +20,7 @@ class AddReminder extends Component {
       medicinetake_time: moment().startOf('day').toDate(),
       medicinetake_date: moment().startOf('day').toDate(),
       medicinetake_start_date: moment().startOf('day').toDate(),
-      medicinetake_end_date: moment().endOf('day').toDate(),
-      // medicinetake_time: formatDate(new Date(), 'YYYY-MM-DD'),
+      medicinetake_end_date: moment().startOf('day').toDate(),
       selectedMedicineForm: null,
       selectMedicineStrength: null,
       medicinePeriod: "everyday",
@@ -32,82 +31,17 @@ class AddReminder extends Component {
       //takemed: 'yes',
       selectedDate: new Date(),
       minimumDate: new Date(),
-      isDatePickerVisible: false,
-      isTimePickerVisible: false
+      isDateTimePickerVisible: false,
+      isEndDateTimePickerVisible: false,
+      isOnlyDateTimePickerVisible: false,
+      isTimePickerVisible: false,
+      startDatePlaceholder: false,
+      enddatePlaceholder: false,
+      Timeplaceholder:false
     }
     this.pastSelectedDate = new Date(),
       this.upcommingSelectedDate = new Date()
   }
-
-
-  //       selected2: undefined,
-  //      selected3:undefined,
-  //       takemed:null,
-  //       selectedDate:new Date() ,
-  //       minimumDate:new Date(),
-
-
-  //     }
-  //     this.pastSelectedDate=new Date(),
-  //  this.upcommingSelectedDate=new Date()
-  // }
-  // onValueChange2(value) {
-  //   this.setState({
-  //     selected2: value
-  //   });
-  // }
-  // onValueChange3(value) {
-  //   this.setState({
-  //     selected3: value
-  //   });
-  // }
-  // onValueChange4(value) {
-  //   this.setState({
-  //     selected4: value
-  //   });
-  // }
-  // onValueChange5(value) {
-  //   this.setState({
-  //     selected5: value
-  //   });
-  // }
-  // onValueChange6(value) {
-  //   this.setState({
-  //     selected6: value
-  //   });
-  // }
-  // onValueChange7(value) {
-  //   this.setState({
-  //     selected7: value
-  //   });
-  // }
-
-  // showDateTimePicker = () => {
-  //   this.setState({ isDateTimePickerVisible: true });
-  // };
-
-  // hideDateTimePicker = () => {
-  //   this.setState({ isDateTimePickerVisible: false });
-  // };
-
-  // handleDatePicked =async(time) => {
-
-  //   this.setState({ selectedDate: new Date(time) });
-
-  /*	let filterData=	this.state.activeTab=='UPCOMING'? 
-      this.state.upcommingAppointmentData:this.state.pastAppointmentData
-     if(this.state.activeTab=='UPCOMING'){
-       this.upcommingSelectedDate=new Date(date)
-     }
-     else {
-       this.pastSelectedDate=new Date(date)
-     } */
-  //    this.hideDateTimePicker();
-  // };
-
-
-
-
 
 
   onValueChange2(value) {
@@ -123,47 +57,88 @@ class AddReminder extends Component {
 
   }
 
-  handleDatePicked = date => {
+  showTimePicker = () => {
+    this.setState({ isTimePickerVisible: true })
+  }
 
-    this.setState({ isTimePickerVisible: false });
-    let M = new Date(date).getMonth();
-    let Y = new Date(date).getFullYear();
-    let Time = moment().startOf('day').add(M, 'm').add(Y, 'y').toDate();
-    console.log('check date' + Time)
+  hideTimePicker = () => {
+    this.setState({ isTimePickerVisible: false })
+  }
+
+  handleTimePicker = (date) => {
+    this.setState({ timePlaceholder: true })
+    this.setState({ isTimePickerVisible: false })
+    let h = new Date(date).getHours();
+    let m = new Date(date).getMinutes();
+    let Time = moment().startOf('day').add(h, 'h').add(m, 'm').toDate();
+    console.log('check time' + Time.toString())
+
+    this.setState({ medicinetake_time: date });
+    console.log('medicinetake_time' + this.state.medicinetake_time)
+
+  }
+  showOnlyDateTimePicker = () => {
+    this.setState({ isOnlyDateTimePickerVisible: true })
+  }
+  hideOnlyDateTimePicker = () => {
+    this.setState({ isOnlyDateTimePickerVisible: false })
+  }
+  handleOnlyDateTimePicker = (date) => {
+    this.setState({ isOnlyDateTimePickerVisible: false })
+    let h = new Date(date).getHours();
+    let m = new Date(date).getMinutes();
+    let Time = moment().startOf('day').add(h, 'h').add(m, 'm').toDate();
+    console.log('check time' + Time.toString())
 
     this.setState({ medicinetake_date: date });
     console.log('medicinetake_date' + this.state.medicinetake_date)
+    this.hideOnlyDateTimePicker();
+  }
+
+
+  showendDateTimePicker = () => {
+    this.setState({ isEndDateTimePickerVisible: true })
+  }
+
+  hideendDateTimePicker = () => {
+    this.setState({ isEndDateTimePickerVisible: false })
+  }
+
+  handleEndDatePicked = date => {
+    this.setState({ endDatePlaceholder: true })
+    this.setState({ isEndDateTimePickerVisible: false })
+    let h = new Date(date).getHours();
+    let m = new Date(date).getMinutes();
+    let Time = moment().startOf('day').add(h, 'h').add(m, 'm').toDate();
+    console.log('check time' + Time.toString())
+
+    this.setState({ medicinetake_end_date: date });
+    console.log('medicinetake_end_date' + this.state.medicinetake_end_date)
+    this.hideendDateTimePicker();
+  }
+  showDateTimePicker = () => {
+    this.setState({ isDateTimePickerVisible: true });
+  };
+
+  hideDateTimePicker = () => {
+    this.setState({ isDateTimePickerVisible: false });
+  };
+
+
+
+  handleDatePicked = date => {
+    this.setState({ startDatePlaceholder: true })
+    this.setState({ isDateTimePickerVisible: false });
+    let h = new Date(date).getHours();
+    let m = new Date(date).getMinutes();
+    let Time = moment().startOf('day').add(h, 'h').add(m, 'm').toDate();
+    console.log('check time' + Time.toString())
 
     this.setState({ medicinetake_start_date: date });
     console.log('medicinetake_start_date' + this.state.medicinetake_start_date)
 
-    this.setState({ medicinetake_end_date: date });
-    console.log('medicinetake_end_date' + this.state.medicinetake_end_date)
-
-    this.setState({ isDatePickerVisible: false });
-  };
-
-
-
-  handleTimePicked = time => {
-
-    this.setState({ isDatePickerVisible: false });
-    let h = new Time(time).getHours();
-    let m = new Time(time).getMinutes();
-    let Time = moment().startOf('day').add(h, 'h').add(m, 'm').toDate();
-    console.log('check time' + Time.toString())
-
-    this.setState({ medicinetake_time: time });
-    console.log('medicinetake_time' + this.state.medicinetake_time)
-
-    this.setState({ medicinetake_starttime: time });
-    console.log('medicinetake_starttime' + this.state.medicinetake_starttime)
-
-    this.setState({ medicinetake_endtime: time });
-    console.log('medicinetake_endtime' + this.state.medicinetake_endtime)
-
-    this.setState({ isTimePickerVisible: false });
-  };
+    this.hideDateTimePicker();
+  }
 
   insertTimeValue = async () => {
     let temp = this.state.slots;
@@ -211,7 +186,7 @@ class AddReminder extends Component {
         console.log(this.state.slots)
         let medicinetake_start_date = this.state.slots[0]
         let medicinetake_end_date = this.state.slots[this.state.slots.length - 1];
-        console.log("medicinetake_start_date")
+        console.log("medicinetake_end_date")
         console.log(medicinetake_end_date)
 
         let userId = await AsyncStorage.getItem('userId');
@@ -251,36 +226,6 @@ class AddReminder extends Component {
     }
   }
 
-  showDatePicker = () => {
-    // alert(data)
-    // if (data == 1) {
-    //   this.setState({ isDatePickerVisible: true });
-    // }
-    // else if (data == 2) {
-    this.setState({ isDatePickerVisible: true });
-    // }
-  }
-
-  showTimePicker = () => this.setState({ isTimePickerVisible: true });
-
-
-
-  _hideDatePicker = () => this.setState({ isDatePickerVisible: !this.state.isDatePickerVisible });
-
-  _hideTimePicker = () => this.setState({ isTimePickerVisible: !this.state.isTimePickerVisible });
-
-  _handleDatePicked = (date) => {
-    console.log('A date has been picked: ', date);
-    this.setState({ medicinetake_start_date: date })
-    this._hideTimePicker();
-  };
-
-
-
-  _handleTimePicked = (time) => {
-    console.log('A time has been picked: ', time);
-    this._hideDatePicker();
-  };
 
 
 
@@ -289,7 +234,7 @@ class AddReminder extends Component {
     const Slots = [{ time: '10:00', timeperiod: 'am' }, { time: '11:00', timeperiod: 'am' }, { time: '12:00', timeperiod: 'am' },
     { time: '10:00', timeperiod: 'am' }, { time: '11:00', timeperiod: 'am' }, { time: '12:00', timeperiod: 'am' }
     ]
-    const { isTimePickerVisible, isDatePickerVisible, selectedDate, text, selectedMedicineForm, selectMedicineStrength, slots } = this.state;
+    const { isTimePickerVisible, isDatePickerVisible, isstartDatePickerVisible, isendDatePickerVisible, selectedDate, text, selectedMedicineForm, selectMedicineStrength, slots, isDateTimePickerVisible, isEndDateTimePickerVisible } = this.state;
     return (
       <Container>
         <ScrollView>
@@ -396,38 +341,49 @@ class AddReminder extends Component {
                           <Row>
                             <Col size={3.5} style={{ mariginTop: 10 }}>
                               <View style={{ marginTop: 5, }}>
-                                <TouchableOpacity onPress={this.showDatePicker} style={{ width: 110, backgroundColor: '#f1f1f1', flexDirection: 'row' }}>
+                                <TouchableOpacity onPress={() => { this.setState({ isDateTimePickerVisible: !this.state.isDateTimePickerVisible }) }} style={{ width: 110, backgroundColor: '#f1f1f1', flexDirection: 'row' }}>
                                   <Icon name='md-calendar' style={{ padding: 4, fontSize: 20, color: '#1296db', marginTop: 1 }} />
-                                  <Text style={{ marginTop: 7, marginBottom: 7, fontFamily: 'OpenSans', fontSize: 13, textAlign: 'center', marginLeft: 5 }}>{formatDate(this.state.medicinetake_start_date, 'DD/MM/YYYY')}</Text>
+                                  {this.state.startDatePlaceholder ?
+                                    <Text style={{ marginTop: 7, marginBottom: 7, fontFamily: 'OpenSans', fontSize: 13, textAlign: 'center', marginLeft: 5 }}>{formatDate(this.state.medicinetake_start_date, 'DD/MM/YYYY')}</Text> :
+                                    <Text style={{ marginTop: 7, marginBottom: 7, fontFamily: 'OpenSans', fontSize: 13, textAlign: 'center', marginLeft: 5 }}>Start Date</Text>
+
+                                  }
                                   <DateTimePicker
                                     mode={'date'}
                                     is24Hour={false}
                                     minimumDate={new Date()}
                                     date={this.state.medicinetake_start_date}
-                                    isVisible={this.state.isDatePickerVisible}
+                                    isVisible={this.state.isDateTimePickerVisible}
                                     onConfirm={this.handleDatePicked}
-                                    onCancel={() => this.setState({ isDatePickerVisible: false })}
+                                    onCancel={() => this.setState({ isDateTimePickerVisible: !this.state.isDateTimePickerVisible })}
                                     datePickerModeAndroid='default'
                                   />
                                 </TouchableOpacity>
                               </View>
                             </Col>
-                            {/* <Col size={3.5} style={{ mariginTop: 10, marginLeft: -10 }}>
+                            <Col size={3.5} style={{ mariginTop: 10, marginLeft: -10 }}>
                               <View style={{ marginTop: 5, }}>
-                                <TouchableOpacity onPress={this.showDatePicker(2)} style={{ marginLeft: 10, width: 110, backgroundColor: '#f1f1f1', flexDirection: 'row' }}>
+                                <TouchableOpacity onPress={() => { this.setState({ isEndDateTimePickerVisible: !this.state.isEndDateTimePickerVisible }) }} style={{ marginLeft: 10, width: 110, backgroundColor: '#f1f1f1', flexDirection: 'row' }}>
                                   <Icon name='md-calendar' style={{ padding: 4, fontSize: 20, color: '#1296db', marginTop: 1 }} />
-                                  <Text style={{ marginTop: 7, marginBottom: 7, fontFamily: 'OpenSans', fontSize: 13, textAlign: 'center', marginLeft: 5 }}>{formatDate(this.state.medicinetake_enddate, 'DD:MM:YYYY')}</Text>
-                                  <DateTimePicker
-                                    mode='date'
-                                    date={this.medicinetake_enddate}
-                                    isVisible={this.state.isDatePickerVisible}
-                                    onConfirm={this.handleDatePicked}
-                                    onCancel={() => this.setState({ isDatePickerVisible: false })}
+                                  {this.state.endDatePlaceholder ?
+                                    <Text style={{ marginTop: 7, marginBottom: 7, fontFamily: 'OpenSans', fontSize: 13, textAlign: 'center', marginLeft: 5 }}>{formatDate(this.state.medicinetake_end_date, 'DD/MM/YYYY')}</Text> :
+                                    <Text style={{ marginTop: 7, marginBottom: 7, fontFamily: 'OpenSans', fontSize: 13, textAlign: 'center', marginLeft: 5 }}>End Date</Text>
 
+                                  }
+
+                                  <DateTimePicker
+                                    mode={'date'}
+                                    is24Hour={false}
+                                    minimumDate={new Date()}
+                                    date={this.state.medicinetake_end_date}
+                                    isVisible={this.state.isEndDateTimePickerVisible}
+                                    onConfirm={this.handleEndDatePicked}
+                                    onCancel={() => this.setState({ isEndDateTimePickerVisible: !this.state.isEndDateTimePickerVisible })}
+                                    datePickerModeAndroid='default'
                                   />
                                 </TouchableOpacity>
                               </View>
-                            </Col> */}
+                            </Col>
                           </Row>
                         </View>
                       </Col>
@@ -446,7 +402,7 @@ class AddReminder extends Component {
 
 
                 <View>
-                  {/* <Form style={{ marginTop: 5 }}>
+                  <Form style={{ marginTop: 5 }}>
                     <Row>
                       <Col size={3}>
                         <Text style={styles.NumText}>Select Date</Text>
@@ -456,16 +412,17 @@ class AddReminder extends Component {
                           <Row>
                             <Col size={3.5} style={{ mariginTop: 10 }}>
                               <View style={{ alignItems: 'flex-start', marginTop: 5, marginRight: 40 }}>
-                                <TouchableOpacity onPress={this._showDatePicker} style={{ width: 225, backgroundColor: '#f1f1f1', flexDirection: 'row' }}>
+                                <TouchableOpacity onPress={() => { this.setState({ isOnlyDateTimePickerVisible: !this.state.isOnlyDateTimePickerVisible }) }} style={{ width: 225, backgroundColor: '#f1f1f1', flexDirection: 'row' }}>
                                   <Icon name='md-calendar' style={{ padding: 5, marginLeft: 50, fontSize: 20, marginTop: 1, color: '#1296db' }} />
-                                  <Text style={{ marginTop: 7, marginBottom: 7, marginLeft: 5, fontFamily: 'OpenSans', fontSize: 13, textAlign: 'center', }}>{formatDate(selectedDate, 'DD/MM/YYYY')}</Text>
+                                  <Text style={{ marginTop: 7, marginBottom: 7, marginLeft: 5, fontFamily: 'OpenSans', fontSize: 13, textAlign: 'center', }}>{formatDate(this.state.medicinetake_date, 'DD/MM/YYYY')}</Text>
                                   <DateTimePicker
-                                    mode='date'
-                                    date={this.medicinetake_date}
-                                    isVisible={this.state.isDatePickerVisible}
-                                    onConfirm={this._handleDatePicked}
-                                    onCancel={this._hideDatePicker}
-
+                                    mode={'date'}
+                                    minimumDate={new Date()}
+                                    date={this.state.medicinetake_date}
+                                    isVisible={this.state.isOnlyDateTimePickerVisible}
+                                    onConfirm={this.handleOnlyDateTimePicker}
+                                    onCancel={() => this.setState({ isOnlyDateTimePickerVisible: !this.state.isOnlyDateTimePickerVisible })}
+                                    datePickerModeAndroid='default'
                                   />
                                 </TouchableOpacity>
                               </View>
@@ -475,7 +432,7 @@ class AddReminder extends Component {
 
                       </Col>
                     </Row>
-                  </Form> */}
+                  </Form>
                 </View>
 
 
@@ -489,30 +446,27 @@ class AddReminder extends Component {
                     <Text style={styles.NumText}>Choose your time</Text>
                   </Col>
                   <Col size={3.5} style={{ mariginTop: 5, }}>
-                    {/* <View style={{ alignItems: 'flex-start', marginTop: 5, padding: 1 }}>
-                      <TouchableOpacity onPress={this._showTimePicker} style={styles.toucableOpacity}>
+                    <View style={{ alignItems: 'flex-start', marginTop: 5, padding: 1 }}>
+                      <TouchableOpacity onPress={() => { this.setState({ isTimePickerVisible: !this.state.isTimePickerVisible }) }} style={styles.toucableOpacity}>
                         <Icon name='ios-clock' style={styles.tocuhIcon} />
-                        <Text style={{ marginTop: 7, marginBottom: 7, fontFamily: 'OpenSans', fontSize: 13, textAlign: 'center', marginLeft: 5 }}>{formatDate(selectedDate, 'HH:MM A')}</Text>
-                        <DateTimePicker
-                          mode='time'
-                          isVisible={this.state.isTimePickerVisible}
-                          onConfirm={this._handleTimePicked}
-                          onCancel={this._hideTimePicker}
+                        <Text style={{ marginTop: 7, marginBottom: 7, fontFamily: 'OpenSans', fontSize: 13, textAlign: 'center', marginLeft: 5 }}>{formatDate(this.state.medicinetake_time, 'HH:MM A')}</Text>
 
+                        <DateTimePicker
+                          mode={'time'}
+                          minimumDate={new Date()}
+                          date={this.state.medicinetake_time}
+                          isVisible={this.state.isTimePickerVisible}
+                          onConfirm={this.handleTimePicker}
+                          onCancel={() => this.setState({ isTimePickerVisible: !this.state.isTimePickerVisible })}
+                          datePickerModeAndroid='default'
                         />
+
+
                       </TouchableOpacity>
-                    </View> */}
+                    </View>
                   </Col>
                   <Col size={2.5} style={{ mariginTop: 10 }}>
-                    <Button style={styles.RemainderButton}
-                      onPress={() => {
-                        if (Everyday) {
-
-
-                        }
-
-
-                      }}>
+                    <Button style={styles.RemainderButton} onPress={console.log(this.InsertReminderData())}>
                       <Text style={styles.RemainderButtonText}>Add</Text>
                     </Button>
                   </Col>
