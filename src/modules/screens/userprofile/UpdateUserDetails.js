@@ -55,21 +55,25 @@ class UpdateUserDetails extends Component {
     async bindValues() {
         const { navigation } = this.props;
         const userData = navigation.getParam('updatedata');
-        this.setState({ userData })
-        await this.setState({
-            dob: userData.dob,
-            firstName: userData.first_name,
-            lastName: userData.last_name,
-            gender: userData.gender,
-            selectedBloodGroup: userData.blood_group || null,
-            updateButton: true
+        const fromProfile = navigation.getParam('fromProfile') || false
+        console.log("dob" + this.state.dob)
+        if (fromProfile) {
+            await this.setState({
+                dob: userData.dob || null,
+                firstName: userData.first_name,
+                lastName: userData.last_name,
+                gender: userData.gender,
+                selectedBloodGroup: userData.blood_group || null,
+                updateButton: true,
+                userData
 
-        })
+            })
+        }
     }
 
     onChangeFirstnameAndLastname = async (text, type) => {
         if (type === "Firstname") {
-           await this.setState({ firstName: text });
+            await this.setState({ firstName: text });
         }
         if (type === "LastName") {
             await this.setState({ lastName: text });
@@ -107,6 +111,8 @@ class UpdateUserDetails extends Component {
                 blood_group: selectedBloodGroup
             };
             const userId = await AsyncStorage.getItem('userId')
+            let isProfileCompleted = await AsyncStorage.getItem('ProfileCompletionViaHome');
+            console.log(isProfileCompleted)
             let response = await userFiledsUpdate(userId, requestData);
             if (response.success) {
                 Toast.show({
@@ -114,7 +120,14 @@ class UpdateUserDetails extends Component {
                     type: "success",
                     duration: 3000
                 });
-                this.props.navigation.navigate('Profile');
+                if (isProfileCompleted == '1') {
+                    this.props.navigation.navigate('Home');
+                    await AsyncStorage.removeItem('ProfileCompletionViaHome')
+                }
+                else {
+                    this.props.navigation.navigate('Profile');
+                }
+
             }
             else {
                 Toast.show({
@@ -193,7 +206,7 @@ class UpdateUserDetails extends Component {
                                         minimumDate={new Date(1940, 0, 1)}
                                         maximumDate={subTimeUnit(new Date(), 1, 'year')}
                                         androidMode={"default"}
-                                        placeHolderText={this.state.dob !== undefined ? formatDate(this.state.dob, "DD/MM/YYYY") : "Date Of Birth"}
+                                        placeHolderText={this.state.dob !== null ? formatDate(this.state.dob, "DD/MM/YYYY") : "Date Of Birth"}
                                         textStyle={{ fontSize: 13, color: "#5A5A5A" }}
                                         value={this.state.dob}
                                         placeHolderTextStyle={{ fontSize: 13, color: "#5A5A5A" }}

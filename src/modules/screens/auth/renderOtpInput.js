@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { StyleSheet, TouchableOpacity } from 'react-native';
+import { StyleSheet, TouchableOpacity, AsyncStorage } from 'react-native';
 import { View, Button, Text, Toast, Content, Container, Row, Left, Right, Card, Item } from 'native-base';
 import { connect } from 'react-redux';
 import OtpInputs from '../../../components/OtpInputText/OtpInput';
@@ -102,9 +102,14 @@ class RenderOtpInput extends Component {
             this.setState({ isLoading: true });
             const loginData = this.props.navigation.getParam("loginData");
             await login(loginData);  // Do SignIn Process after SignUp is Done
+            let isProfileCompleted = await AsyncStorage.getItem('ProfileCompletionViaHome');
+            console.log(isProfileCompleted)
             if (this.props.user.isAuthenticated) {
                 this.props.navigation.navigate('userdetails');
-            } else {
+            } 
+            else if (isProfileCompleted == '1') {
+                this.props.navigation.navigate('UpdateUserDetails');
+            }else {
                 this.setState({ errorMsg: this.props.user.message });
             }
         } catch (error) {

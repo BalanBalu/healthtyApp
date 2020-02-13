@@ -1,13 +1,13 @@
 import React, { Component } from 'react';
-import { Container, Content, Text, Toast,  Button, Card, Input, Left, Right, Icon } from 'native-base';
+import { Container, Content, Text, Toast, Button, Card, Input, Left, Right, Icon } from 'native-base';
 import { logout } from '../../providers/auth/auth.actions';
 import { Col, Row, Grid } from 'react-native-easy-grid';
 import { connect } from 'react-redux'
-import { StyleSheet, Image, View, TouchableOpacity, AsyncStorage, FlatList, ImageBackground } from 'react-native';
+import { StyleSheet, Image, View, TouchableOpacity, AsyncStorage, FlatList, ImageBackground, Alert } from 'react-native';
 
-import { getReferalPoints } from '../../providers/profile/profile.action';
+import { getReferalPoints, fetchUserProfile } from '../../providers/profile/profile.action';
 import { catagries, getSpecialistDataSuggestions } from '../../providers/catagries/catagries.actions';
-import { MAP_BOX_PUBLIC_TOKEN, IS_ANDROID , MAX_DISTANCE_TO_COVER } from '../../../setup/config';
+import { MAP_BOX_PUBLIC_TOKEN, IS_ANDROID, MAX_DISTANCE_TO_COVER } from '../../../setup/config';
 import MapboxGL from '@react-native-mapbox-gl/maps';
 import { store } from '../../../setup/store';
 import { getAllChats, SET_LAST_MESSAGES_DATA } from '../../providers/chat/chat.action'
@@ -42,15 +42,19 @@ class Home extends Component {
             searchValue: null,
             totalSpecialistDataArry: [],
             visibleClearIcon: '',
-            categryCount : 0
+            categryCount: 0
         };
         this.callSuggestionService = debounce(this.callSuggestionService, 500);
+
     }
+
     navigetToCategories() {
-        this.props.navigation.navigate('Categories', { 
-            data: this.state.data 
+        this.props.navigation.navigate('Categories', {
+            data: this.state.data
         })
     }
+
+
 
     doLogout() {
         logout();
@@ -59,45 +63,103 @@ class Home extends Component {
     timeout(ms) {
         return new Promise(resolve => setTimeout(resolve, ms));
     }
+    getUserProfile = async () => {
+
+        let fields = "first_name,last_name,dob,mobile_no,address,blood_group,is_mobile_verified";
+        let userId = await AsyncStorage.getItem('userId');
+        let result = await fetchUserProfile(userId, fields);
+        const profileCompletionResp = this.checkForUserProfile(result);
+        if (profileCompletionResp.hasProfileUpdated === false) {
+            let loginData = {
+                userEntry: result.mobile_no,
+            }
+            Alert.alert(
+                "Alert",
+                "Your profile is not completed!Update to continue",
+                [
+                    {
+                        text: "Skip",
+                        onPress: () => {
+                            console.log("Cancel Pressed");
+                        },
+                        style: "cancel"
+                    },
+                    {
+                        text: "Update", onPress: () => {
+                            AsyncStorage.setItem('ProfileCompletionViaHome', '1'),
+                                (result.is_mobile_verified === undefined ? this.props.navigation.navigate(profileCompletionResp.navigation, { loginData: loginData }) :
+                                this.props.navigation.navigate(profileCompletionResp.navigation))
+
+                        }
+
+                    }
+                ],
+                { cancelable: false }
+            );
+
+        }
+    }
+
+    checkForUserProfile(result) {
+
+        if (result.is_mobile_verified === undefined) {
+            return {
+                hasProfileUpdated: false,
+                navigation: 'renderOtpInput'
+            }
+        }
+        else if (result.first_name == undefined || result.last_name == undefined || result.dob == undefined) {
+            return {
+                hasProfileUpdated: false,
+                navigation: 'UpdateUserDetails'
+            }
+        }
+        else {
+            return {
+                hasProfileUpdated: true,
+            }
+        }
+    }
     async componentDidMount() {
+        this.getUserProfile()
         this.getCatagries();
         let userId = await AsyncStorage.getItem("userId");
         if (userId) {
             this.getAllChatsByUserId(userId);
             res = await getReferalPoints(userId);
-            if(res.updateMobileNum === true) {
-                this.props.navigation.navigate('UpdateContact', { updatedata: {  } });
+            if (res.updateMobileNum === true) {
+                this.props.navigation.navigate('UpdateContact', { updatedata: {} });
                 Toast.show({
                     text: 'Plase Update Your Mobile Number and Continue',
                     duration: 3000,
                     type: 'warning'
                 })
             }
-        }   
+        }
         CurrentLocation.getCurrentPosition();
     }
-    
+
     getCatagries = async () => {
-      try {
-        const searchQueris = 'services=0&skip=0&limit=9';
-        let result = await catagries(searchQueris);
-        
-        if (result.success) {
-            this.setState({ catagary: result.data, categryCount : this.state.categryCount + 1 })
-            for(let i = 0 ; i< result.data.length; i++) {
-                const item = result.data[i];
-                const imageURL = item.imageBaseURL + item.category_id + '.png';
-                const base64ImageDataRes =  await toDataUrl(imageURL)
-                result.data[i].base64ImageData = base64ImageDataRes;
+        try {
+            const searchQueris = 'services=0&skip=0&limit=9';
+            let result = await catagries(searchQueris);
+
+            if (result.success) {
+                this.setState({ catagary: result.data, categryCount: this.state.categryCount + 1 })
+                for (let i = 0; i < result.data.length; i++) {
+                    const item = result.data[i];
+                    const imageURL = item.imageBaseURL + item.category_id + '.png';
+                    const base64ImageDataRes = await toDataUrl(imageURL)
+                    result.data[i].base64ImageData = base64ImageDataRes;
+                }
+                this.setState({ catagary: result.data, categryCount: this.state.categryCount + 1 })
+
             }
-            this.setState({ catagary: result.data, categryCount : this.state.categryCount + 1 })
-           
-        }
-      } catch (e) {
+        } catch (e) {
             console.log(e);
-      } finally {
+        } finally {
             this.setState({ isLoading: false });
-      }
+        }
     }
 
     getAllChatsByUserId = async (userId) => {
@@ -185,7 +247,7 @@ class Home extends Component {
             />
         );
     };
-    
+
     render() {
         const { fromAppointment } = this.state;
         const { bookappointment: { patientSearchLocationName, locationCordinates, isSearchByCurrentLocation, locationUpdatedCount }, navigation } = this.props;
@@ -243,7 +305,7 @@ class Home extends Component {
                             extraData={[this.state.searchValue, this.state.totalSpecialistDataArry]}
                             ItemSeparatorComponent={this.itemSaperatedByListView}
                             renderItem={({ item, index }) => (
-                                <Row 
+                                <Row
                                     onPress={() => {
                                         let requestData = [{
                                             type: 'geo',
@@ -258,14 +320,14 @@ class Home extends Component {
                                                 value: item.type === 'symptoms' ? [item.value] : item.value
                                             })
                                         }
-                                          this.props.navigation.navigate("Doctor List", { resultData: requestData }) 
-                                        }}
-                                    >
-                                         <Col size={7}>
-                                    <Text style={{marginTop:2, fontFamily: 'OpenSans', fontSize: 12,color: '#775DA3',paddingLeft: 10, }}>{item.value}</Text> 
+                                        this.props.navigation.navigate("Doctor List", { resultData: requestData })
+                                    }}
+                                >
+                                    <Col size={7}>
+                                        <Text style={{ marginTop: 2, fontFamily: 'OpenSans', fontSize: 12, color: '#775DA3', paddingLeft: 10, }}>{item.value}</Text>
                                     </Col>
                                     <Col size={3}>
-                                        <Text uppercase={true} style={{ color: 'gray', marginTop:2, marginRight: 10,color: '#775DA3', fontSize: 12, fontFamily: 'OpenSans-Bold',paddingLeft: 10,  }}>{item.type}</Text>
+                                        <Text uppercase={true} style={{ color: 'gray', marginTop: 2, marginRight: 10, color: '#775DA3', fontSize: 12, fontFamily: 'OpenSans-Bold', paddingLeft: 10, }}>{item.type}</Text>
                                     </Col>
                                 </Row>
                             )}
@@ -368,7 +430,7 @@ class Home extends Component {
 
                                                 <Row style={{ height: 45, width: '100%', justifyContent: 'center', alignItems: 'center', }} >
                                                     <Image
-                                                        source={{ uri:  item.base64ImageData /*item.imageBaseURL + item.category_id + '.png' */ }}
+                                                        source={{ uri: item.base64ImageData /*item.imageBaseURL + item.category_id + '.png' */ }}
                                                         style={{
                                                             width: 50, height: 50, alignItems: 'center'
                                                         }}
