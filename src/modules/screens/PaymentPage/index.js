@@ -369,18 +369,23 @@ class PaymentPage extends Component {
                                     </Row>
                                 </Col>
                             </Grid>
+                            <Row style={{marginRight: 15, marginLeft: 15, marginTop: 10}}>
+                                <Right style={{marginRight:5}}>
+                                <TouchableOpacity onPress={() => this.props.navigation.navigate("PromoCode")}>
+                                <Text style={{ fontSize: 12, fontFamily: 'OpenSans', fontWeight: 'bold',color: '#775DA3',borderBottomColor:'#775DA3',borderBottomWidth:0.5,borderStyle:'dotted', }}>Available Promo Codes</Text>
+                                </TouchableOpacity>
+                                </Right>
+                            </Row>
                         </View>
                     </View>
                     <Grid style={{ marginTop: 10, marginLeft: 15, backgroundColor: '#FFF' }}>
 
                         <Row style={{ marginTop: 10, marginLeft: -3 }}>
-                            <TouchableOpacity onPress={() => this.props.navigation.navigate("PromoCode")}>
+                           
                                 <Text style={{
-                                    fontFamily: 'OpenSans', fontSize: 16, color: '#775DA3', borderStyle: 'dotted', borderColor: '#775DA3',
-                                    borderWidth: 1,
-                                    borderRadius: 1,
-                                }}> Apply Promo Code </Text>
-                            </TouchableOpacity>
+                                   ontSize: 15, fontFamily: 'OpenSans', fontWeight: 'bold',
+                                }}> Payment Info</Text>
+                          
                         </Row>
                         <Row style={{ marginTop: 10, marginLeft: -3 }}>
                             <Col style={{ width: '70%' }}>
