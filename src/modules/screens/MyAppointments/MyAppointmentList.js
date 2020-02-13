@@ -150,10 +150,12 @@ class MyAppoinmentList extends Component {
 			let userId = await AsyncStorage.getItem("userId");
 			let filters = {
 				startDate: subTimeUnit(new Date(), 1, "years").toUTCString(),
-				endDate: addTimeUnit(new Date(), 1, 'millisecond').toUTCString()
+				endDate: addTimeUnit(new Date(), 1, 'millisecond').toUTCString(),
 			};
 
 			let pastAppointmentResult = await getUserAppointments(userId, filters);
+			console.log("===========================================================")
+			console.log(JSON.stringify(pastAppointmentResult))
 			let viewUserReviewResult = await viewUserReviews("user", userId, '?skip=0');
 
 			if (pastAppointmentResult.success) {

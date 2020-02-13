@@ -344,11 +344,11 @@ class AppointmentDetails extends Component {
                     </Row>
                   </Col>
                {data.appointment_status == 'APPROVED'&& data.onGoingAppointment === true ?
-               <Col size={4}>
+               <Col size={3}>
                <Text style={{marginLeft:16, fontSize: 15, fontFamily: 'OpenSans', fontWeight: 'bold',color:'green' }}>ONGOING</Text>
                </Col>
                :
-                <Col size={4}>
+                <Col size={3}>
                      
                      <View style={{ alignItems:'center',marginLeft:-25 }}>
                         <Icon name={statusValue[data.appointment_status].icon} 
@@ -379,7 +379,8 @@ class AppointmentDetails extends Component {
                        </Button>
                      </Row>
                   </Col>
-                  </Row>: data.onGoingAppointment !== true && data.appointment_status == 'PROPOSED_NEW_TIME' ?
+                  </Row>:
+                   data.onGoingAppointment !== true && data.appointment_status == 'PROPOSED_NEW_TIME' ?
                   <Row>
                   <Col size={4}>
                   <Row style={{marginTop:10 }}>
@@ -688,8 +689,8 @@ class AppointmentDetails extends Component {
                 backgroundColor: 'rgba(0,0,0,0.5)'
               }}>
                 <View style={{
-                  width: '80%',
-                  height: '20%',
+                  width: '95%',
+                  height: '25%',
                   backgroundColor: '#fff',
                   borderColor: 'gray',
                   borderWidth: 3,
@@ -697,7 +698,7 @@ class AppointmentDetails extends Component {
                   borderRadius: 10
                 }}>
                  
-                 <CardItem header header style={styles.cardItem3}>
+                 <CardItem header  style={styles.cardItem3}>
                   <Text style={{ fontSize: 13, fontFamily: 'OpenSans', fontWeight: 'bold', marginTop: -5,color:'#FFF',marginLeft:-5 }}>{'Doctor has Rescheduled the appointment !' }</Text></CardItem>
                   <Row style={{justifyContent:'center'}}>
                   <Col style={{width:'25%'}}>
@@ -710,10 +711,10 @@ class AppointmentDetails extends Component {
             </Row>
             <Row style={{justifyContent:'center'}}> 
             <Col style={{width:'30%'}}>
-                  <Text style={{ fontSize: 14, fontFamily: 'OpenSans', textAlign: 'center', marginTop: 10 ,color:'green'}}>{formatDate(data.appointment_starttime,"DD/MM/YYYY")}</Text>
+                  <Text style={{ fontSize: 14, fontFamily: 'OpenSans', textAlign: 'center', marginTop: 10 ,color:'green'}}>{data.previous_data?formatDate(data.previous_data.startDateTime,"DD/MM/YYYY"):null}</Text>
                   </Col>
             <Col style={{width:'70%'}}>
-                  <Text style={{ fontSize: 14, fontFamily: 'OpenSans', textAlign: 'center', marginTop: 10 ,color:'green'}}>{formatDate(data.appointment_starttime,"hh:mm a")+formatDate(data.appointment_starttime,"-hh:mm a")}</Text>
+                  <Text style={{ fontSize: 14, fontFamily: 'OpenSans', textAlign: 'center', marginTop: 10 ,color:'green'}}>{data.previous_data? formatDate(data.previous_data.startDateTime,"hh:mm a")+formatDate(data.previous_data.startDateTime,"-hh:mm a"):null}</Text>
                  </Col>
                  
                   </Row>
