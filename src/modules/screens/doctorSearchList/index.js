@@ -701,7 +701,7 @@ class doctorSearchList extends Component {
         <Grid onPress={() => this.navigateToBookAppointmentPage(item)}>
             <Row>
                 <Col size={2}>
-                    <Thumbnail square source={renderDoctorImage(item)} style={{ height: 50, width: 50 }} />
+                    <Thumbnail  source={renderDoctorImage(item)} style={{ height: 50, width: 50,borderRadius:50/2 }} />
                     <View style={{ position: 'absolute', marginTop: 35, alignSelf: 'flex-end' }}>
                         <Image square source={vipLogo} style={{ height: 20, width: 20 }} />
                     </View>
@@ -844,7 +844,7 @@ class doctorSearchList extends Component {
                             <Grid >
                                 <Row onPress={() => this.navigateToBookAppointmentPage(item)}>
                                     <Col style={{ width: '5%' }}>
-                                        <Thumbnail square source={renderDoctorImage(item)} style={{ height: 60, width: 60 }} />
+                                        <Thumbnail circle source={renderDoctorImage(item)} style={{ height: 60, width: 60,borderRadius:60/2 }} />
 
                                     </Col>
                                     <Col style={{ width: '78%' }}>

@@ -113,7 +113,7 @@ export default class PaymentReview extends Component {
                       </Col> */}
                        <Row>
                          <Col style={{width:'25%',justifyContent:'center'}}>
-                            <Thumbnail square source={renderDoctorImage(bookSlotDetails)}   style={{ height: 70, width: 70, borderRadius: 10 }} />
+                            <Thumbnail  source={renderDoctorImage(bookSlotDetails)}   style={{ height: 70, width: 70,borderRadius:70/2 }} />
                          </Col> 
                          <Col style={{width:'80%',marginTop:10}}>
                             <Text style={styles.cardItemText}>{bookSlotDetails.prefix || ''} {bookSlotDetails.doctorName} {getDoctorEducation(bookSlotDetails.education)}</Text>

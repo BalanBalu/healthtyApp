@@ -455,7 +455,7 @@ class BookAppoinment extends Component {
               <Grid >
                 <Row >
                   <Col style={{ width: '5%', marginLeft: 20, marginTop: 10 }}>
-                    <Thumbnail square source={renderDoctorImage(doctorData)} style={{ height: 60, width: 60 }} />
+                    <Thumbnail square source={renderDoctorImage(doctorData)} style={{ height: 60, width: 60,borderRadius:60/2 }} />
                   </Col>
                   <Col style={{ width: '78%' }}>
                     <Row style={{ marginLeft: 55, marginTop: 10 }}>
