@@ -97,7 +97,7 @@ async getBasicData() {
             dataArray={items}
             renderRow={data => {
               return (
-                <ListItem style={{borderBottomWidth:0,height:50}}
+                <ListItem style={{borderBottomWidth:0,height:45}}
                   button
                   onPress={() => this.props.navigation.navigate(data.routeName)}>
                           <Image square source={DragwerLogos[data.key]} 
@@ -108,14 +108,14 @@ async getBasicData() {
               );
             }}
           />
-          <List style={{marginTop:30 }}>
-           <ListItem style={{borderBottomWidth:0,height:50}}>
-                 <Icon name='ios-power' style={{fontSize:15,color:'#7D4ac1'
+          <List>
+           <ListItem style={{borderBottomWidth:0,height:50,marginTop:25}}>
+                 <Icon name='ios-power' style={{fontSize:15,color:'#7D4ac1',marginLeft:5
                 }}/>
              
          
                 <Text onPress={() => this.signInOrSignup(hasLoggedIn) } 
-                 style={{fontFamily:'OpenSans',fontSize:15,marginLeft:20}}>{hasLoggedIn ? 'Sign Out' : 'Sign In' }</Text>
+                 style={{fontFamily:'OpenSans',fontSize:15,marginLeft:22}}>{hasLoggedIn ? 'Sign Out' : 'Sign In' }</Text>
             </ListItem>
            </List>   
         </Content>
