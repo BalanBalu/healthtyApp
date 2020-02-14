@@ -36,6 +36,7 @@ class AppointmentDetails extends Component {
       selectedTab: 0,
       paymentDetails: {},
       modalVisible: false,
+      proposedVisible:false,
 
 
     }
@@ -77,6 +78,10 @@ class AppointmentDetails extends Component {
       ])
       if (appointmentData.appointment_status == 'COMPLETED' && appointmentData.is_review_added == undefined) {
         await this.setState({ modalVisible: true })
+      }
+      let checkProposedNewTime= await AsyncStorage.getItem(this.state.appointmentId)
+      if (appointmentData.appointment_status == 'PROPOSED_NEW_TIME'&&checkProposedNewTime!='SKIP') {
+        await this.setState({ proposedVisible: true })
       }
 
     }
@@ -159,8 +164,13 @@ class AppointmentDetails extends Component {
             this.getDoctorDetails(),
             this.getPaymentInfo(result.data[0].payment_id)])
       }
+
       if (result.data[0].appointment_status == 'COMPLETED' && result.data[0].is_review_added == undefined) {
         await this.setState({ modalVisible: true })
+      }
+      let checkProposedNewTime= await AsyncStorage.getItem(this.state.appointmentId)
+      if (result.data[0].appointment_status == 'PROPOSED_NEW_TIME'&&checkProposedNewTime!=='SKIP') {
+        await this.setState({ proposedVisible: true })
       }
     } catch (error) {
       console.error(error);
@@ -216,6 +226,9 @@ class AppointmentDetails extends Component {
           text: result.message,
           duration: 3000
         })
+        if(this.state.proposedVisible==true){
+          this.setState({proposedVisible: false });
+        }
         // this.setState({ appointmentStatus: appointmentStatus, data: temp });
         this.setState({data: temp });
       }
@@ -226,7 +239,7 @@ class AppointmentDetails extends Component {
   }
 
 
-  navigateCancelAppoointment() {
+ async  navigateCancelAppoointment() {
     try{
     this.state.data.prefix = this.state.doctorData.prefix;
     const { navigation } = this.props;
@@ -239,7 +252,7 @@ class AppointmentDetails extends Component {
       }
       this.state.data.doctorInfo = doctorInfo;
     }
-
+   await  this.setState({proposedVisible:false})
     this.props.navigation.navigate('CancelAppointment', { appointmentDetail: this.state.data })
   }
   catch(e){
@@ -269,6 +282,11 @@ class AppointmentDetails extends Component {
       await this.setState({ isLoading: false })
     }
   }
+  async SkipAction(){
+    await AsyncStorage.setItem(this.state.appointmentId, 'SKIP')
+  
+    this.setState({proposedVisible:false})
+  }
 
 
   render() {
@@ -291,15 +309,15 @@ class AppointmentDetails extends Component {
 
                      <Grid>
                        {data.token_no? 
-        <Text  style={{textAlign:'right',fontSize:14,marginTop:-15}} >{"Ref no :"+data.token_no}</Text>
+                             <Text  style={{textAlign:'right',fontSize:14,marginTop:-15}} >{"Ref no :"+data.token_no}</Text>
                        :null}
                        <Row>
                          <Col style={{width:'25%',}}>
-                             <Thumbnail square source={renderDoctorImage(doctorData)}   style={{ height: 70, width: 70, borderRadius: 10 }} /> 
+                             <Thumbnail circular source={renderDoctorImage(doctorData)}   style={{ height: 60, width: 60}} /> 
                          </Col> 
                          <Col style={{width:'80%',marginTop:10}}>
                             <Row>
-                              <Text  style={styles.Textname} >{(doctorData && doctorData.prefix != undefined ? doctorData.prefix + '' : '') + (getName(doctorData)) + ' '}</Text>
+                              <Text  style={styles.Textname} >{(doctorData && doctorData.prefix != undefined ? doctorData.prefix +' ' : '') + (getName(doctorData)) + ' '}</Text>
                               <Text note style={{ fontSize: 13, fontFamily: 'OpenSans',fontWeight:'normal' }}>{education}</Text>
                              </Row>
                              <Row style={{ alignSelf: 'flex-start'  }}>
@@ -314,7 +332,7 @@ class AppointmentDetails extends Component {
                    <Grid>
                   <Row>
                     <Col size={6}>
-                     <Row style={{marginTop:10,marginLeft:5}}>
+                     <Row style={{marginTop:10,marginLeft:5}} >
                       <Text style={styles.subText1}>Experience</Text>
                       <Text style={styles.subText2}>-</Text>
                       <Text note style={styles.subText2}>{getDoctorExperience(doctorData.calulatedExperience)}</Text>
@@ -325,57 +343,66 @@ class AppointmentDetails extends Component {
                       <Text note style={styles.subText2}>{paymentDetails.payment_method||0}</Text>
                     </Row>
                   </Col>
-                  {selectedTab == 0 ?
-                  data.onGoingAppointment !== true && (data.appointment_status == 'APPROVED' || this.state.appointmentStatus === 'APPROVED' || data.appointment_status == 'PENDING') ?
-                  <Col size={4}>
-                     <Row style={{marginTop:10 }}>
-                       <Button  style={styles.confirmButton} onPress={() => this.navigateCancelAppoointment()}>
-                        <Text  style={styles.ButtonText}>CANCEL</Text>
-                       </Button>
-                     </Row>
-                  </Col>: data.onGoingAppointment !== true && data.appointment_status == 'PROPOSED_NEW_TIME' ?
-                  <Col size={4}>
-                  <Row style={{marginTop:10 }}>
-                    <Button  style={[styles.postponeButton,,{backgroundColor :'#6FC41A'}]} onPress={() => this.updateAppointmentStatus(data, 'APPROVED')}>
-                     <Text  style={styles.ButtonText}>ACCEPT</Text>
-                    </Button>
-                  </Row>
-                  <Row style={{marginTop:10 }}>
-                    <Button  danger style={[styles.postponeButton]}  onPress={() =>  this.navigateCancelAppoointment()}>
-                       <Text capitalise={true} style={styles.ButtonText}>CANCEL</Text>
-                    </Button>
-                  </Row>
-               </Col>:
-               data.appointment_status == 'APPROVED'&& data.onGoingAppointment === true ?
-               <Col size={4}>
+               {data.appointment_status == 'APPROVED'&& data.onGoingAppointment === true ?
+               <Col size={3}>
                <Text style={{marginLeft:16, fontSize: 15, fontFamily: 'OpenSans', fontWeight: 'bold',color:'green' }}>ONGOING</Text>
                </Col>
                :
-                <Col size={4}>
+                <Col size={3}>
                      
-                     <View style={{ alignItems:'center' }}>
+                     <View style={{ alignItems:'center',marginLeft:-25 }}>
                         <Icon name={statusValue[data.appointment_status].icon} 
                               style={{
                                 color: statusValue[data.appointment_status].color,
                                 fontSize:35
                               }} />
                   
-                     <Text capitalise={true} style={[styles.textApproved,{color:statusValue[data.appointment_status].color}]}>{data.appointment_status}</Text>
+                     <Text capitalise={true} style={[styles.textApproved,{color:statusValue[data.appointment_status].color}]}>{data.appointment_status=='PROPOSED_NEW_TIME'?'PROPOSED NEW TIME':data.appointment_status}</Text>
                      </View>
                  </Col>
-                 : <Col size={4}>
-                     
-                 <View style={{ alignItems:'center' }}>
-                    <Icon name={statusValue[data.appointment_status].icon} 
-                          style={{
-                            color: statusValue[data.appointment_status].color,
-                            fontSize:35
-                          }} />
-              
-                 <Text capitalise={true} style={[styles.textApproved,{color:statusValue[data.appointment_status].color}]}>{data.appointment_status}</Text>
-                 </View>
-             </Col> }
+                  }
               </Row>
+
+              {selectedTab==0? data.onGoingAppointment !== true && (data.appointment_status == 'APPROVED' || this.state.appointmentStatus === 'APPROVED' || data.appointment_status == 'PENDING') ?
+                  <Row>
+                  <Col size={7}>
+                  <Row style={{marginTop:10 }}>
+                   
+                     <Text   note style={styles.subText3}>Do you need to cancel this appointment ?</Text>
+                    
+                  </Row>
+               </Col>
+                  <Col size={3}>
+                     <Row style={{marginTop:10 }}>
+                       <Button  danger style={[styles.postponeButton]}  onPress={() => this.navigateCancelAppoointment()}>
+                        <Text  style={styles.ButtonText}>CANCEL</Text>
+                       </Button>
+                     </Row>
+                  </Col>
+                  </Row>:
+                   data.onGoingAppointment !== true && data.appointment_status == 'PROPOSED_NEW_TIME' ?
+                  <Row>
+                  <Col size={4}>
+                  <Row style={{marginTop:10 }}>
+                   
+                     <Text note  style={styles.subText3}>Do you want to accept ?</Text>
+                    
+                  </Row>
+               </Col>
+                  <Col size={3}>
+                  <Row style={{marginTop:10 }}>
+                    <Button  style={[styles.postponeButton,{backgroundColor :'#6FC41A'}]} onPress={() => this.updateAppointmentStatus(data, 'APPROVED')}>
+                     <Text  style={styles.ButtonText}>ACCEPT</Text>
+                    </Button>
+                  </Row>
+                  </Col> 
+                  <Col size={3}>
+                  <Row style={{marginTop:10 }}>
+                    <Button  danger style={[styles.postponeButton]}  onPress={() =>  this.navigateCancelAppoointment()}>
+                       <Text capitalise={true} style={styles.ButtonText}>CANCEL</Text>
+                    </Button>
+                  </Row>
+               </Col></Row>:null:null}
             </Grid>
            <CardItem footer style={styles.cardItem2}>
              <Grid>
@@ -412,18 +439,32 @@ class AppointmentDetails extends Component {
               </TouchableOpacity>
             </Row>:null} */}
             <View style={{marginTop:10}}>
-              { data.previous_data&&data.appointment_status=='PROPOSED_NEW_TIME'?
-              
-            <Row style={styles.rowSubText}>
+            {data.appointment_status==='CANCELED'||data.appointment_status==='PROPOSED_NEW_TIME'?data.status_update_reason!=undefined&&
+           <View style={styles.rowSubText1}>
+           <Row style={styles.rowSubText}>
                <Col style={{width:'8%',paddingTop:5}}>
-                 <Icon name="md-calendar" style={{fontSize:20,}}/>
+                 <Icon name="ios-document" style={{fontSize:20,}}/>
+              </Col>
+              
+              <Col style={{width:'92%',paddingTop:5}}>
+                <Text style={styles.innerSubText1}>{data.appointment_status=='PROPOSED_NEW_TIME'?'Reson for reschedule':'Reson for cancelation'}</Text>
+              <Text note style={styles.subTextInner1}>{data.status_update_reason}</Text>
+              </Col>
+            </Row>
+            {data.previous_data!=undefined&&data.appointment_status==='PROPOSED_NEW_TIME'&&
+               <Row style={styles.rowSubText}>
+                 <Col style={{width:'8%',paddingTop:5}}>
+                 <Icon name="md-clock" style={{fontSize:20,}}/>
               </Col>
               <Col style={{width:'92%',paddingTop:5}}>
-                 <Text style={styles.innerSubText}>Previous Appointment Time</Text>
-              <Text note style={styles.subTextInner1}>{formatDate(data.previous_data.appointment_starttime,'Do MMM,YYYY')+'  '+formatDate(data.previous_data.appointment_starttime,'hh:mm a') +'-' + formatDate(data.previous_data.appointment_endtime,'hh:mm a')}</Text>
+              <Text style={styles.innerSubText1}>Previous Time</Text>
+              
+              <Text note style={styles.subTextInner1}>{formatDate(data.previous_data.startDateTime,'DD/MM/YYYY')}</Text>
+              <Text note style={styles.subTextInner1}>{formatDate(data.previous_data.startDateTime,'hh:mm a')+formatDate(data.previous_data.endDateTime,'-hh:mm a')}</Text>
               </Col>
-            </Row>:null}
-          
+              </Row>
+  }
+          </View>:null}
             <Row style={styles.rowSubText}>
                <Col style={{width:'8%',paddingTop:5}}>
                  <Icon name="ios-medkit" style={{fontSize:20,}}/>
@@ -635,6 +676,83 @@ class AppointmentDetails extends Component {
                     </InsertReview>
                   </Modal>
                 </View>
+                <Modal
+        visible={this.state.proposedVisible}
+        transparent={true}
+        animationType={'fade'}
+     >
+              <View style={{
+                flex: 1,
+                flexDirection: 'column',
+                justifyContent: 'center',
+                alignItems: 'center',
+                backgroundColor: 'rgba(0,0,0,0.5)'
+              }}>
+                <View style={{
+                  width: '95%',
+                  height: '25%',
+                  backgroundColor: '#fff',
+                  borderColor: 'gray',
+                  borderWidth: 3,
+                  padding: 10,
+                  borderRadius: 10
+                }}>
+                 
+                 <CardItem header  style={styles.cardItem3}>
+                  <Text style={{ fontSize: 13, fontFamily: 'OpenSans', fontWeight: 'bold', marginTop: -5,color:'#FFF',marginLeft:-5 }}>{'Doctor has Rescheduled the appointment !' }</Text></CardItem>
+                  <Row style={{justifyContent:'center'}}>
+                  <Col style={{width:'25%'}}>
+                  <Text style={{ fontSize: 12, fontFamily: 'OpenSans', textAlign: 'center', marginTop: 10 ,color:'red',textDecorationLine: 'line-through', textDecorationStyle: 'double', textDecorationColor: 'gray'}}>{formatDate(data.appointment_starttime,"DD/MM/YYYY")}</Text>
+                  </Col>
+                    <Col style={{width:'75%'}}>
+                  <Text style={{ fontSize: 12, fontFamily: 'OpenSans', textAlign: 'center', marginTop: 10 ,color:'red',textDecorationLine: 'line-through', textDecorationStyle: 'double', textDecorationColor: 'gray'}}>{formatDate(data.appointment_starttime,"hh:mm a")+formatDate(data.appointment_endtime,"-hh:mm a")}</Text>
+                  </Col>
+                 
+            </Row>
+            <Row style={{justifyContent:'center'}}> 
+            <Col style={{width:'30%'}}>
+                  <Text style={{ fontSize: 14, fontFamily: 'OpenSans', textAlign: 'center', marginTop: 10 ,color:'green'}}>{data.previous_data?formatDate(data.previous_data.startDateTime,"DD/MM/YYYY"):null}</Text>
+                  </Col>
+            <Col style={{width:'70%'}}>
+                  <Text style={{ fontSize: 14, fontFamily: 'OpenSans', textAlign: 'center', marginTop: 10 ,color:'green'}}>{data.previous_data? formatDate(data.previous_data.startDateTime,"hh:mm a")+formatDate(data.previous_data.startDateTime,"-hh:mm a"):null}</Text>
+                 </Col>
+                 
+                  </Row>
+                  <Row style={{ marginTop: 15, justifyContent: 'flex-end', marginBottom: 15 }}>
+                  <Col size={2}></Col>
+                       <Col size={8} >
+                         <Row>
+                        
+                           <Col size={3} style={{marginRight:3}}>
+                           <TouchableOpacity  style={{paddingLeft:10,paddingRight:10,paddingTop:2,paddingBottom:2,borderRadius:5,backgroundColor:'#775DA3'}}
+                     onPress={() => this.SkipAction()} testID='confirmButton'>
+                       
+                      <Text style={{ fontFamily: 'OpenSans', fontSize: 14, textAlign: 'center',color:'#fff' }}>{'Skip'}</Text>
+                    </TouchableOpacity>
+                           </Col>
+                           <Col size={3.4} style={{marginRight:3}} >
+                           <TouchableOpacity style={{backgroundColor :'#6FC41A',paddingLeft:10,paddingRight:10,paddingTop:2,paddingBottom:2,borderRadius:5 ,}} onPress={() => this.updateAppointmentStatus(data, 'APPROVED')} testID='confirmButton'>
+                      <Text style={{ fontFamily: 'OpenSans', fontSize: 12, textAlign: 'center',color:'#fff'}}>{'ACCEPT'}</Text>
+                    </TouchableOpacity>
+                           </Col>
+                           <Col size={3.6}>
+                           <TouchableOpacity danger style={{paddingLeft:10,paddingRight:10,paddingTop:2,paddingBottom:2,borderRadius:5,backgroundColor:'red'}} onPress={() => this.navigateCancelAppoointment()} testID='cancelButton'>
+                      <Text style={{ fontFamily: 'OpenSans', fontSize: 12, textAlign: 'center',color:'#fff' }}> { 'CANCEL' }</Text>
+                    </TouchableOpacity>
+                           </Col>
+                         </Row>
+                      
+                    
+                   
+                   
+                   
+                       </Col>
+                  
+                  </Row>
+                </View>
+
+              </View>
+            </Modal> 
 
      </Content>
               </Container>
@@ -693,6 +811,11 @@ const styles = StyleSheet.create({
       fontFamily:'OpenSans',
       marginLeft:5
     },
+    subText3:{
+      fontSize:12,
+      fontFamily:'OpenSans',
+      marginLeft:5
+    },
     confirmButton:{
       backgroundColor:'#6FC41A',
       height:30,
@@ -710,8 +833,8 @@ const styles = StyleSheet.create({
     },
     postponeButton:{
       // backgroundColor:'#4765FF',
-      height:30,
-      padding:11,
+      height:25,
+      padding:8,
       borderRadius:5
     },
     timeText:{
@@ -746,8 +869,8 @@ const styles = StyleSheet.create({
     },
     rowSubText:{
       marginLeft:10,
-      borderBottomColor:'gray',
-      borderBottomWidth:0.5,
+      // borderBottomColor:'gray',
+      // borderBottomWidth:0.5,
       marginRight:10,
       marginTop:10
     },
@@ -760,7 +883,7 @@ const styles = StyleSheet.create({
     subTextInner1:{
       fontSize:12,
       fontFamily:'OpenSans',
-      marginBottom:5
+       marginBottom:5
     },
     downText:{
       fontSize:12,
@@ -824,6 +947,19 @@ cardItem2:{
      alignItems:"center",
      height:35,
      marginTop:10
+},
+cardItem3:{
+   backgroundColor:'#784EBC',
+   marginBottom:-10,
+   borderTopLeftRadius:0,
+   borderTopRightRadius:0,
+   marginLeft: -10,
+		marginBottom: -10,
+		marginRight: -10,
+  //  justifyContent:'center',
+  //  alignItems:"center",ss
+   height:35,
+   marginTop:-10
 },
  cardItemText:{
     fontFamily:'OpenSans',
@@ -972,7 +1108,24 @@ cardItem2:{
     paddingBottom: 5,
     paddingTop: 5,
     flexDirection: 'row'
-  }
+  },
+  rowSubText1:{
+    marginLeft:10,
+   borderColor:'gray',
+    borderWidth:0.5,
+    borderRadius:5,
+     padding:5,
+    marginRight:10,
+
+    marginTop:10
+  },
+  innerSubText1: {
+    fontSize: 13,
+    fontFamily: 'OpenSans',
+    fontWeight: 'bold',
+    color: '#7558e5',
+    // marginBottom: 5
+  },
 
 
 })
