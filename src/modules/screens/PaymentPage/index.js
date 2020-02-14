@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { Container, Content, Text, Button, FooterTab, Card, Footer, Icon, Input, Toast, Form, Right, Left } from 'native-base';
+import { Container, Content, Text, Button, FooterTab, Card, Footer,Item, Icon, Input, Toast, Form, Right, Left } from 'native-base';
 import { Col, Row, Grid } from 'react-native-easy-grid';
 import { StyleSheet, Image, View, AsyncStorage, TextInput } from 'react-native';
 import SectionedMultiSelect from 'react-native-sectioned-multi-select';
@@ -380,7 +380,8 @@ class PaymentPage extends Component {
                             <Grid style={{ marginRight: 15, marginLeft: 15, marginTop: 5 }}>
                                 <Col>
                                     <Form>
-                                        <Input placeholder="Enter Your Coupon Code here" style={styles.transparentLabel}
+                                        <Item style={styles.transparentLabel1}>
+                                    <Input placeholder="Enter Your Coupon Code here" style={styles.firstTransparentLabel}
                                             placeholderTextColor="#C1C1C1"
                                             getRef={(input) => { this.enterCouponCode = input; }}
                                             keyboardType={'default'}
@@ -389,16 +390,11 @@ class PaymentPage extends Component {
                                             value={this.state.coupenCodeText}
                                             onChangeText={enterCouponCode => this.onCouponPress(enterCouponCode)}
                                         />
-
-                                    </Form>
-                                    <Row style={{ position: 'absolute' }}>
-                                        <Right>
-                                            {/* <Button style={{marginTop:10,backgroundColor:'#2ecc71',color:'#fff',borderRadius:10}}><Text style={{fontSize:15,fontFamily:'OpenSans',fontWeight:'bold'}}>submit</Text></Button> */}
-                                            <TouchableOpacity style={{ marginTop: 23, marginRight: 15 }} onPress={() => this.OnCopyedValue()}>
-                                                <Text style={{ fontSize: 15, fontFamily: 'OpenSans', fontWeight: 'bold', color: '#775DA3' }}>APPLY</Text>
+                                        <TouchableOpacity style={{ marginRight: 15,alignItems:'center',justifyContent:'center' }} >
+                                                <Text style={{ fontSize: 15, fontFamily: 'OpenSans', fontWeight: 'bold', color: '#775DA3',textAlign:'center' }}>APPLY</Text>
                                             </TouchableOpacity>
-                                        </Right>
-                                    </Row>
+                                       </Item>
+                                    </Form>
                                 </Col>
                             </Grid>
                             <Row style={{marginRight: 15, marginLeft: 15, marginTop: 10}}>
@@ -1006,6 +1002,25 @@ const styles = StyleSheet.create({
 
     },
     transparentLabel:
+    {
+        borderBottomColor: 'transparent',
+        color: '#000',
+        backgroundColor: '#fff',
+        height: 45,
+        marginTop: 10,
+        borderRadius: 5,
+        paddingLeft: 20,
+        fontFamily: 'OpenSans',
+        margin: 2,
+        fontSize: 12
+    },
+    firstTransparentLabel:
+    {
+        color: '#000',
+        fontFamily: 'OpenSans',
+        fontSize: 12
+    },
+    transparentLabel1:
     {
         borderBottomColor: 'transparent',
         color: '#000',
