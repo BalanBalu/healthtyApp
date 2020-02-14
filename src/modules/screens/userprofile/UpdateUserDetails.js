@@ -56,7 +56,6 @@ class UpdateUserDetails extends Component {
         const { navigation } = this.props;
         const userData = navigation.getParam('updatedata');
         const fromProfile = navigation.getParam('fromProfile') || false
-        console.log("dob" + this.state.dob)
         if (fromProfile) {
             await this.setState({
                 dob: userData.dob || null,
@@ -112,7 +111,7 @@ class UpdateUserDetails extends Component {
             };
             const userId = await AsyncStorage.getItem('userId')
             let isProfileCompleted = await AsyncStorage.getItem('ProfileCompletionViaHome');
-            console.log(isProfileCompleted)
+            console.log("isProfileCompleted UPdate user details is comming"+isProfileCompleted)
             let response = await userFiledsUpdate(userId, requestData);
             if (response.success) {
                 Toast.show({

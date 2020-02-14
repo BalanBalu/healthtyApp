@@ -103,7 +103,7 @@ class RenderOtpInput extends Component {
             const loginData = this.props.navigation.getParam("loginData");
             await login(loginData);  // Do SignIn Process after SignUp is Done
             let isProfileCompleted = await AsyncStorage.getItem('ProfileCompletionViaHome');
-            console.log(isProfileCompleted)
+            console.log("isProfileCompleted OTP page is comming" + isProfileCompleted)
             if (this.props.user.isAuthenticated) {
                 this.props.navigation.navigate('userdetails');
             } 

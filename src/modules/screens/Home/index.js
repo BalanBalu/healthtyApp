@@ -88,7 +88,7 @@ class Home extends Component {
                         text: "Update", onPress: () => {
                             AsyncStorage.setItem('ProfileCompletionViaHome', '1'),
                                 (result.is_mobile_verified === undefined ? this.props.navigation.navigate(profileCompletionResp.navigation, { loginData: loginData }) :
-                                this.props.navigation.navigate(profileCompletionResp.navigation))
+                                    this.props.navigation.navigate(profileCompletionResp.navigation))
 
                         }
 
@@ -121,22 +121,26 @@ class Home extends Component {
         }
     }
     async componentDidMount() {
-        this.getUserProfile()
-        this.getCatagries();
-        let userId = await AsyncStorage.getItem("userId");
-        if (userId) {
-            this.getAllChatsByUserId(userId);
-            res = await getReferalPoints(userId);
-            if (res.updateMobileNum === true) {
-                this.props.navigation.navigate('UpdateContact', { updatedata: {} });
-                Toast.show({
-                    text: 'Plase Update Your Mobile Number and Continue',
-                    duration: 3000,
-                    type: 'warning'
-                })
+        let isProfileCompleted = await AsyncStorage.getItem('ProfileCompletionViaHome');
+        if (isProfileCompleted !== '1') {
+            this.getUserProfile();
+        } else {
+            this.getCatagries();
+            let userId = await AsyncStorage.getItem("userId");
+            if (userId) {
+                this.getAllChatsByUserId(userId);
+                res = await getReferalPoints(userId);
+                if (res.updateMobileNum === true) {
+                    this.props.navigation.navigate('UpdateContact', { updatedata: {} });
+                    Toast.show({
+                        text: 'Plase Update Your Mobile Number and Continue',
+                        duration: 3000,
+                        type: 'warning'
+                    })
+                }
             }
+            CurrentLocation.getCurrentPosition();
         }
-        CurrentLocation.getCurrentPosition();
     }
 
     getCatagries = async () => {
