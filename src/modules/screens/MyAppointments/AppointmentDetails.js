@@ -332,7 +332,7 @@ class AppointmentDetails extends Component {
                    <Grid>
                   <Row>
                     <Col size={6}>
-                     <Row style={{marginTop:10,marginLeft:5}}>
+                     <Row style={{marginTop:10,marginLeft:5}} >
                       <Text style={styles.subText1}>Experience</Text>
                       <Text style={styles.subText2}>-</Text>
                       <Text note style={styles.subText2}>{getDoctorExperience(doctorData.calulatedExperience)}</Text>
