@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
-import { Container, Content, View, Text, Item, Card, Spinner, Picker, Icon, Radio, Row, Col, Form, Button, Input, Grid } from 'native-base';
-import { StyleSheet, TextInput, TouchableOpacity, ScrollView, Image } from 'react-native'
+import { Container, Content, View, Text, Item, Card, Spinner, Picker, Icon, Radio, Row, Col, Form, Button, Input, Grid, Toast } from 'native-base';
+import { StyleSheet, TextInput, TouchableOpacity, ScrollView, Image, AsyncStorage, } from 'react-native'
 import { FlatList } from 'react-native-gesture-handler';
 import Autocomplete from '../../../components/Autocomplete'
 import { RadioButton } from 'react-native-paper';
@@ -37,7 +37,9 @@ class AddReminder extends Component {
       isTimePickerVisible: false,
       startDatePlaceholder: false,
       enddatePlaceholder: false,
-      Timeplaceholder:false
+      Timeplaceholder: false,
+      previewdispaly: false,
+      data: []
     }
     this.pastSelectedDate = new Date(),
       this.upcommingSelectedDate = new Date()
@@ -66,6 +68,7 @@ class AddReminder extends Component {
   }
 
   handleTimePicker = (date) => {
+
     this.setState({ timePlaceholder: true })
     this.setState({ isTimePickerVisible: false })
     let h = new Date(date).getHours();
@@ -183,42 +186,46 @@ class AddReminder extends Component {
         //   console.log(a)
         //   return new Date('2020/01/01 ' + a) - new Date('2020/01/01 ' + b);
         // });
-        console.log(this.state.slots)
-        let medicinetake_start_date = this.state.slots[0]
-        let medicinetake_end_date = this.state.slots[this.state.slots.length - 1];
-        console.log("medicinetake_end_date")
-        console.log(medicinetake_end_date)
+        // console.log(this.state.slots)
+        // let medicinetake_start_date = this.state.slots[0]
+        // let medicinetake_end_date = this.state.slots[this.state.slots.length - 1];
+        // console.log("medicinetake_end_date")
+        // console.log(medicinetake_end_date)
 
         let userId = await AsyncStorage.getItem('userId');
-        let data = {
+        let priviewData = {
           medicine_name: this.state.medicine_name,
           medicine_form: this.state.selectedMedicineForm,
           medicine_strength: this.state.selectMedicineStrength,
-          medicinetake_time: this.state.slots,
+          medicinetake_time: this.state.medicinetake_time,
+          medicinetake_start_date: moment(this.state.medicinetake_start_date && this.state.medicinetake_date).toISOString(),
+          medicinetake_end_date: moment(this.state.medicinetake_end_date).toISOString(),
           remainder_type: String(this.state.medicinePeriod),
-          medicinetake_start_date: moment(medicinetake_start_date).toISOString(),
           is_remainder_enabled: true,
           active: true
         }
-        if (this.state.medicinePeriod == "everyday") {
-          data.medicinetake_end_date = moment(medicinetake_end_date).toISOString()
-        }
-        console.log(data)
-        let result = await addReminderdata(userId, data)
-        if (result.success) {
-          Toast.show({
-            text: result.message,
-            type: "success",
-            duration: 3000,
-          })
-        }
-        else {
-          Toast.show({
-            text: result.message,
-            type: "danger",
-            duration: 5000
-          })
-        }
+        temp=this.state.data
+        temp.push(priviewData)
+        let getData = JSON.stringify(data)
+        this.setState({ data: temp })
+        alert(this.state.data)
+        console.log("mani++++++++++++++++++++++++++" + getData)
+        this.setState({previewdispaly:true})
+        //     let result = await addReminderdata(userId, data)
+        //     if (result.success) {
+        //       Toast.show({
+        //         text: result.message,
+        //         type: "success",
+        //         duration: 3000,
+        //       })
+        //     }
+        //     else {
+        //       Toast.show({
+        //         text: result.message,
+        //         type: "danger",
+        //         duration: 5000
+        //       })
+        //     }
       }
     }
     catch (e) {
@@ -226,15 +233,17 @@ class AddReminder extends Component {
     }
   }
 
+  deleteData(index){
+    let temp = this.state.data;
+    let finalData = temp.slice(index,1)
+    console.log("finalData++++++++++++++++++++++++++++++"+finalData)
+    this.setState({data:finalData})
+  }
 
 
 
   render() {
-
-    const Slots = [{ time: '10:00', timeperiod: 'am' }, { time: '11:00', timeperiod: 'am' }, { time: '12:00', timeperiod: 'am' },
-    { time: '10:00', timeperiod: 'am' }, { time: '11:00', timeperiod: 'am' }, { time: '12:00', timeperiod: 'am' }
-    ]
-    const { isTimePickerVisible, isDatePickerVisible, isstartDatePickerVisible, isendDatePickerVisible, selectedDate, text, selectedMedicineForm, selectMedicineStrength, slots, isDateTimePickerVisible, isEndDateTimePickerVisible } = this.state;
+    const { isTimePickerVisible, isDatePickerVisible, isstartDatePickerVisible, isendDatePickerVisible, selectedDate, text, selectedMedicineForm, selectMedicineStrength, slots, isDateTimePickerVisible, isEndDateTimePickerVisible, data } = this.state;
     return (
       <Container>
         <ScrollView>
@@ -254,7 +263,7 @@ class AddReminder extends Component {
               <View>
                 <Row>
                   <Col>
-                    <Text style={styles.NumText}>From of Medicine</Text>
+                    <Text style={styles.NumText}>Form of Medicine</Text>
                     <Form style={{ marginTop: 5 }}>
 
                       <View picker style={{ height: 40, width: 150, justifyContent: 'center', backgroundColor: '#F1F1F1', borderRadius: 5 }}>
@@ -449,7 +458,11 @@ class AddReminder extends Component {
                     <View style={{ alignItems: 'flex-start', marginTop: 5, padding: 1 }}>
                       <TouchableOpacity onPress={() => { this.setState({ isTimePickerVisible: !this.state.isTimePickerVisible }) }} style={styles.toucableOpacity}>
                         <Icon name='ios-clock' style={styles.tocuhIcon} />
-                        <Text style={{ marginTop: 7, marginBottom: 7, fontFamily: 'OpenSans', fontSize: 13, textAlign: 'center', marginLeft: 5 }}>{formatDate(this.state.medicinetake_time, 'HH:MM A')}</Text>
+                        {this.state.timePlaceholder ?
+                          <Text style={{ marginTop: 7, marginBottom: 7, fontFamily: 'OpenSans', fontSize: 13, textAlign: 'center', marginLeft: 5 }}>{formatDate(this.state.medicinetake_time, 'HH:mm A')}</Text> :
+                          <Text style={{ marginTop: 7, marginBottom: 7, fontFamily: 'OpenSans', fontSize: 13, textAlign: 'center', marginLeft: 5 }}>Select time </Text>
+
+                        }
 
                         <DateTimePicker
                           mode={'time'}
@@ -466,74 +479,64 @@ class AddReminder extends Component {
                     </View>
                   </Col>
                   <Col size={2.5} style={{ mariginTop: 10 }}>
-                    <Button style={styles.RemainderButton} onPress={console.log(this.InsertReminderData())}>
+                    <Button style={styles.RemainderButton} onPress={this.InsertReminderData}>
                       <Text style={styles.RemainderButtonText}>Add</Text>
                     </Button>
                   </Col>
                 </Row>
               </View>
-              <View style={{ backgroundColor: '#F1F1F1', marginTop: 10, paddingBottom: 10 }}>
-                <View>
-                  <Text style={{ marginBottom: 5, marginTop: 10, textAlign: 'center' }}>Preview</Text>
-                  <Image source={require('../../../../assets/images/Remindericon.png')} style={{ height: 150, width: 150, marginLeft: 90 }} />
-                  <Text style={{ color: '#d83939', textAlign: 'center' }}>No Reminder is avaialble now!</Text>
-                </View>
-              </View>
+              {this.state.previewdispaly == true ?
+             
+              <View style={{ backgroundColor: '#f1f1f1', marginLeft: 10, marginRight: 10, paddingBottom: 10, marginTop: 10, borderRadius: 5 }}>
+                <Text style={{ textAlign: 'center', marginTop: 10 }}>Preview</Text>
 
 
+                <FlatList
+                  data={this.state.data}
+                  renderItem={({ item, index }) => (
+                    <Row style={{ backgroundColor: '#FFF', marginTop: 10, marginLeft: 10, marginRight: 10, borderRadius: 5 }}>
+                      <Col size={8.5}>
+                        <Row style={{ marginTop: 5 }}>
+                          <Col size={6}>
+                            <Text style={{ marginLeft: 10, fontsize: 14}}>{item.medicine_name}</Text>
+                          </Col>
+                          <Col size={5}>
+                            <Text style={{ marginLeft: 10, fontSize: 10, marginTop: 5, color: '#6f6f6f' }}>{item.medicine_form}</Text>
+                          </Col>
+                          <Col size={5}>
+                            <Text style={{ marginLeft: -35, fontSize: 10, marginTop: 5, color: '#6f6f6f' }}>{item.medicine_strength}</Text>
+                          </Col>
+                        </Row>
+                        <Row style={{ marginBottom: 5 }}>
+                          <Col size={5}>
+                            <Text style={{ marginLeft: 10, color: '#43be39' }}>{formatDate(item.medicinetake_time, 'HH:mm a')}</Text>
+                          </Col>
+                          <Col size={5}>
+                            <Text style={{ fontSize: 10, marginTop: 5, color: '#6f6f6f', marginLeft: -35 }}>{formatDate(item.medicinetake_start_date,'DD/MM/YYYY')} - {formatDate(item.medicinetake_end_date,'DD/MM/YYYY')}</Text>
+                          </Col>
+                        </Row>
+                      </Col>
+                      <Col size={1.5} style={{ justifyContent: 'center', alignItem: 'center' }}>
+                        <TouchableOpacity onPress={()=>{this.deleteData(index)}}>
+                        <Icon style={{ fontSize: 20, color: '#bd0f10', alignItems: 'flex-end', justifyContent: 'flex-end', marginRight: 15 }} name="ios-close-circle" />
 
+                      </TouchableOpacity>
 
-              {/* <Grid style={{backgroundColor:'#f1f1f1',marginLeft:10,marginRight:10,paddingBottom:10,marginTop:10,borderRadius:5}}>
-                <Text style={{textAlign:'center',marginTop:10}}>Preview</Text>
-              <Row style={{backgroundColor:'#FFF',marginTop:10,marginLeft:10,marginRight:10,borderRadius:5}}>
-<Col size={8.5}>
-  <Row style={{marginTop:5}}>
-  <Col size={5}>
-  <Text style={{marginLeft:10}}>Meclizine</Text>
-  </Col>
-  <Col size={5}>
-  <Text style={{marginLeft:-35,fontSize:10,marginTop:5,color:'#6f6f6f'}}>(Pill, 10 mg)</Text>
-  </Col>
-  </Row>
-  <Row style={{marginBottom:5}}>
-  <Col size={5}>
-  <Text style={{marginLeft:10,color:'#43be39'}}>10.00 AM</Text>
-  </Col>
-  <Col size={5}>
-  <Text style={{fontSize:10,marginTop:5,color:'#6f6f6f',marginLeft:-35}}>(From 28/01/2020 - 10/02/2020)</Text>
-  </Col>
-  </Row>
-  </Col>
-  <Col size={1.5} style={{justifyContent:'center',alignItem:'center'}}>
-  <Icon  style={{fontSize:20,color:'#bd0f10',alignItems:'flex-end',justifyContent:'flex-end',marginRight:15}} name="ios-close-circle"/>
-  </Col>
-</Row>
-<Row style={{backgroundColor:'#FFF',marginTop:10,marginLeft:10,marginRight:10,marginBottom:20,borderRadius:5}}>
-<Col size={8.5}>
-  <Row style={{marginTop:5}}>
-  <Col size={5}>
-  <Text style={{marginLeft:10}}>Empagliflozin</Text>
-  </Col>
-  <Col size={5}>
-  <Text style={{fontSize:10,marginTop:5,color:'#6f6f6f',marginLeft:-5}}>(Pill, 10 mg)</Text>
+                      </Col>
+                    </Row>
+                  )}
+                  keyExtractor={(item, index) => index.toString()}
+                />
+              </View>:
+               <View style={{ backgroundColor: '#F1F1F1', marginTop: 10, paddingBottom: 10 }}>
+ 
+               <View>
+                 <Text style={{ marginBottom: 5, marginTop: 10, textAlign: 'center' }}>Preview</Text>
+                 <Image source={require('../../../../assets/images/Remindericon.png')} style={{ height: 150, width: 150, marginLeft: 90 }} />
+                 <Text style={{ color: '#d83939', textAlign: 'center' }}>No Reminder is avaialble now!</Text>
+               </View>
+             </View>}
 
-  </Col>
-  </Row>
-  <Row style={{marginBottom:5}}>
-  <Col size={5}>
-  <Text style={{marginLeft:10,color:'#43be39'}}>05.00 PM</Text>
-  </Col>
-  <Col size={5}>
-  <Text style={{fontSize:10,marginTop:5,color:'#6f6f6f',marginLeft:-35}}>(15/02/2020)</Text>
-  </Col>
-  </Row>
-  </Col>
-  <Col size={1.5} style={{justifyContent:'center',alignItem:'center'}}>
-  <Icon  style={{fontSize:20,color:'#bd0f10',alignItems:'flex-end',justifyContent:'flex-end',marginRight:15}} name="ios-close-circle"/>
-  </Col>
-</Row>
-              </Grid>
-               */}
               <View style={{ marginTop: 10 }}>
                 <Button style={{ marginTop: 5, width: 320, paddingLeft: 100, backgroundColor: '#1296db', height: -40, borderRadius: 5 }} >
                   <Text style={{ width: 475, fontWeight: 'bold' }}>SET REMINDER</Text>
