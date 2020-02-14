@@ -96,6 +96,14 @@ class PaymentPage extends Component {
 
     makePaymentMethod() {
         let data;
+        if(this.state.selectedSavedCardId === null && this.state.paymentOption === null) {
+            Toast.show({
+                text: 'Select your Payment Option',
+                duration: 3000,
+                type: 'warning'
+            })
+            return false;
+        }
         if (this.state.selectedSavedCardId !== null) {
             var savedCards = this.state.savedCards;
             var selectedSavedCardId = this.state.selectedSavedCardId;
@@ -150,19 +158,43 @@ class PaymentPage extends Component {
                 let paymentMethodTitleCase = this.state.paymentOption === 'CREDIT_CARD' ? 'Credit Card' : 'Debit Card'
                 this.setState({ pay_card_type: getPayCardType(this.state.cardPaymentDetails.number), paymentMethodTitleCase: paymentMethodTitleCase });
             } else if (this.state.paymentOption === 'NET_BANKING') {
+                if(this.state.selectedNetBank === null) {
+                    Toast.show({
+                        text: 'Choose the Bank and Continue',
+                        duration: 3000,
+                        type: 'warning'
+                    })
+                    return false;
+                }
                 data = {
                     method: 'netbanking',
                     bank: this.state.selectedNetBank
                 }
                 this.setState({ paymentMethodTitleCase: 'Net Banking' });
             } else if (this.state.paymentOption === 'WALLET') {
-                debugger
+                if(this.state.selectedWallet === null) {
+                    Toast.show({
+                        text: 'Choose the Wallet and Continue',
+                        duration: 3000,
+                        type: 'warning'
+                    })
+                    return false;
+                }
                 data = {
                     method: 'wallet',
                     wallet: this.state.selectedWallet
                 }
                 this.setState({ paymentMethodTitleCase: this.state.selectedWallet });
             } else if (this.state.paymentOption === 'UPI') {
+                var result = /^\w+@\w+$/.test(this.state.upiVPA);
+                if(result === false) {
+                    Toast.show({
+                        text: 'Enter the valid UPI and Continue',
+                        duration: 3000,
+                        type: 'warning'
+                    })
+                    return false;
+                }
                 data = {
                     method: 'upi',
                     vpa: this.state.upiVPA
@@ -348,7 +380,7 @@ class PaymentPage extends Component {
                             <Grid style={{ marginRight: 15, marginLeft: 15, marginTop: 5 }}>
                                 <Col>
                                     <Form>
-                                        <Input placeholder="Enter Your 'Coupon' Code here" style={styles.transparentLabel}
+                                        <Input placeholder="Enter Your Coupon Code here" style={styles.transparentLabel}
                                             placeholderTextColor="#C1C1C1"
                                             getRef={(input) => { this.enterCouponCode = input; }}
                                             keyboardType={'default'}
@@ -975,8 +1007,8 @@ const styles = StyleSheet.create({
     },
     transparentLabel:
     {
-
         borderBottomColor: 'transparent',
+        color: '#000',
         backgroundColor: '#fff',
         height: 45,
         marginTop: 10,
