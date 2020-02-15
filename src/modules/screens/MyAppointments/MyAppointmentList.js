@@ -150,10 +150,12 @@ class MyAppoinmentList extends Component {
 			let userId = await AsyncStorage.getItem("userId");
 			let filters = {
 				startDate: subTimeUnit(new Date(), 1, "years").toUTCString(),
-				endDate: addTimeUnit(new Date(), 1, 'millisecond').toUTCString()
+				endDate: addTimeUnit(new Date(), 1, 'millisecond').toUTCString(),
 			};
 
 			let pastAppointmentResult = await getUserAppointments(userId, filters);
+			console.log("===========================================================")
+			console.log(JSON.stringify(pastAppointmentResult))
 			let viewUserReviewResult = await viewUserReviews("user", userId, '?skip=0');
 
 			if (pastAppointmentResult.success) {
@@ -247,14 +249,13 @@ class MyAppoinmentList extends Component {
 	  }
 	}
 
-	handleIndexChange = index => {
+	handleIndexChange = index => {   
 
 		let data = index === 0 ? this.state.upComingData : this.state.pastData;
 
 		this.setState({
 			...this.state,
 			selectedIndex: index,
-
 			data
 
 		});
@@ -356,7 +357,7 @@ return (
 													<Row>
 														<Col size={2}>
 														<Thumbnail
-															square
+															circular
 															source={renderDoctorImage(item)}
 															style={{ height: 60, width: 60 }}
 														/>
