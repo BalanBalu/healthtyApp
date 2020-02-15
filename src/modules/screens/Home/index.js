@@ -66,9 +66,9 @@ class Home extends Component {
         let userId = await AsyncStorage.getItem("userId");
         if (userId) {
             const {notification: { notificationCount },navigation}=this.props
-            navigation.setParams({
-                notificationBadgeCount: notificationCount
-             });
+                      navigation.setParams({
+                          notificationBadgeCount: notificationCount
+                        });
             this.getAllChatsByUserId(userId);
             this.getMarkedAsReadedNotification(userId)
             res = await getReferalPoints(userId);
@@ -195,7 +195,7 @@ class Home extends Component {
     };
     getMarkedAsReadedNotification = async (userId) => {
         try {
-         fetchUserMarkedAsReadedNotification(userId);
+        await fetchUserMarkedAsReadedNotification(userId);
          const {notification: { notificationCount },navigation}=this.props
          navigation.setParams({
              notificationBadgeCount: notificationCount
