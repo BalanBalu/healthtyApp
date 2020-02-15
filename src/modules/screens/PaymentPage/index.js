@@ -360,7 +360,7 @@ class PaymentPage extends Component {
         if (availableCreditPoints < maxDicountAmountByCreditPoints) {
             maxDicountAmountByCreditPoints = availableCreditPoints;
         }
-        return maxDicountAmountByCreditPoints;
+        return Math.round(maxDicountAmountByCreditPoints);
     }
 
     render() {

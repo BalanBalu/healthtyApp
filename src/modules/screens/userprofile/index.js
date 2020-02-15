@@ -584,13 +584,13 @@ class Profile extends Component {
                                         renderItem={({ item }) => (
                                             <ListItem avatar noBorder>
                                                 <Left>
-                                                    <Thumbnail square source={renderDoctorImage(item.doctorInfo)} style={{ height: 60, width: 60 }} />
+                                                    <Thumbnail square source={renderDoctorImage(item.doctorInfo)} style={{ height: 60, width: 60,borderRadius:60}} />
                                                 </Left>
                                                 <Body>
-                                                    <Text style={{ fontFamily: 'OpenSans', fontSize: 15, width: '100%' }}> {item.doctorInfo.prefix ? item.doctorInfo.prefix + '.' : 'Dr.'} {item.doctorInfo.first_name + " " + item.doctorInfo.last_name} </Text>
+                                                    <Text style={{ fontFamily: 'OpenSans', fontSize: 12, width: '100%' }}>{item.doctorInfo.prefix ? item.doctorInfo.prefix + '.' : 'Dr.'} {item.doctorInfo.first_name + " " + item.doctorInfo.last_name} </Text>
                                                 </Body>
                                                 <Right>
-                                                    <Button style={styles.docbutton}><Text style={{ fontFamily: 'OpenSans', fontSize: 12 }} onPress={() => this.props.navigation.navigate('Book Appointment', { doctorId: item.doctorInfo.doctor_id, fetchAvailabiltySlots: true })} testID="navigateBookAppointment"> Book Again</Text></Button>
+                                                    <TouchableOpacity style={styles.docbutton}><Text style={{ fontFamily: 'OpenSans', fontSize: 12,color:'#fff' ,textAlign:'center'}} onPress={() => this.props.navigation.navigate('Book Appointment', { doctorId: item.doctorInfo.doctor_id, fetchAvailabiltySlots: true })} testID="navigateBookAppointment"> Book Again</Text></TouchableOpacity>
                                                 </Right>
 
                                             </ListItem>
@@ -700,11 +700,15 @@ const styles = StyleSheet.create({
 
     },
     docbutton: {
-        height: 35,
+        height: 30,
         width: "auto",
         borderRadius: 20,
+        fontSize:10,
         backgroundColor: '#7357A2',
-        marginTop: 5
+        marginTop: 5,alignItems:'center',
+        justifyContent:'center',
+        paddingLeft:5,
+        paddingRight:5
 
     },
     profileIcon:
