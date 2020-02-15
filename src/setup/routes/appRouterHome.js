@@ -56,7 +56,7 @@ import OrderPaymentPreview from '../../modules/screens/Pharmacy/OrderPaymentPrev
 import OrderMedicineDetails from '../../modules/screens/Pharmacy/OrderMedicineDetails/OrderMedicineDetails';
 import MedicineSearchList from '../../modules/screens/Pharmacy/MedicineSearchList/MedicineSearchList';
 import MedicineCheckout from '../../modules/screens/Pharmacy/MedicineCheckout/MedicineChekout';
-import { Badge } from '../../../src/modules/common'
+import { Badge} from '../../../src/modules/common'
 import Locations from '../../modules/screens/Home/Locations';
 import BloodDonersList from '../../modules/screens/bloodDonation/BloodDonersList';
 import BloodDonerFilters from '../../modules/screens/bloodDonation/BloodDonerFilters';
@@ -198,16 +198,17 @@ const HomeStack = createStackNavigator({
      
       headerRight: (
         <Grid>
-
           <Col>
             <TouchableOpacity onPress={() => { navigation.navigate('BloodDonerFilters') }} >
               <View>
-                <Icon name="ios-funnel" style={{ color: '#fff', marginRight: 15, fontFamily: 'opensans-semibold' }}></Icon>
-                <Badge/>
+                <Icon name="ios-funnel" style={{ color: '#fff', marginRight: 15, fontFamily: 'opensans-semibold' }}></Icon> 
+                {navigation.getParam("filerCount")!=undefined && navigation.getParam("filerCount")!= 0 ?          
+                 <Text style={{ color: '#fff', marginRight: 15, fontFamily: 'opensans-semibold',backgroundColor:'red',borderRadius: 30/2,position:'absolute', marginTop: -7, width:undefined,height:undefined,padding:2,fontSize:10}}>{ navigation.getParam("filerCount")}</Text>        
+              : null        
+            }
               </View>
             </TouchableOpacity>
           </Col>
-        
         </Grid>
       ),
     })

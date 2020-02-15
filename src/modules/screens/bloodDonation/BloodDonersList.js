@@ -141,25 +141,30 @@ class BloodDonersList extends Component {
                   data={this.state.data}
                   keyExtractor={(item, index) => index.toString()}
                   renderItem={({ item }) =>
-                    <Card style={{ padding: 2, marginTop: 5 }}>
-                      <Row style={{ borderBottomWidth: 0, marginTop: 5 }}>
+                    <Card style={{ padding: 5, marginTop: 5 }}>
+                      <Row style={{ borderBottomWidth: 0,  }}>
                         <Col size={2} style={{ justifyContent: 'center', marginLeft: -10,alignItems:'center' }}>
                           <Image source={require("../../../../assets/images/Blooddrop.png")} style={{ height: 95, width: 95, position: 'relative' }} />
                           <Text style={{ fontFamily: 'OpenSans', fontSize: 15, position: 'absolute', fontWeight: 'bold', paddingTop: 20, color: '#fff', width: '100%', textAlign: 'center',  }}>{this.getBloodGrp(item.blood_group)}</Text>
                         </Col>
                         <Col size={6.5} style={{ marginTop: 25, marginLeft: 10 }}>
-                          <Text style={{ fontFamily: 'OpenSans', fontSize: 15 }}>{this.getName(item)}</Text>
+                          <Text style={{ fontFamily: 'OpenSans', fontSize: 13.5 }}>{this.getName(item)}</Text>
                           <Row>
-                            <Col size={3} style={{ flexDirection: 'row' }}>
-                              <Icon name="ios-pin" style={{ color: '#1D96F2', fontSize: 15, marginTop: 10 }} />
-                              <Text style={{ color: 'gray', fontSize: 13, fontFamily: 'OpenSans', marginTop: 10, marginLeft: 2 }}> {this.getAddress(item.address)}</Text>
-                              <View size={1} style={{ borderLeftColor: 'gray', borderLeftWidth: 1, marginTop: 12, marginBottom: 20, marginLeft: 10 }} />
-                              <Text style={{ color: 'gray', fontSize: 13, fontFamily: 'OpenSans', marginTop: 10, marginLeft: 2 }}> {this.getPhone(item.mobile_no)}</Text>
+                            <Col>
+                              <Row>
+                                <Col size={5} style={{ flexDirection: 'row' }}>
+                                <Icon name="ios-pin" style={{ color: '#1D96F2', fontSize: 15, marginTop: 10 }} />
+                              <Text style={{ color: 'gray', fontSize: 13, fontFamily: 'OpenSans', marginTop: 10, marginLeft: 2 }}>{this.getAddress(item.address)}</Text>
+                                </Col>
+                                <Col size={5}>
+                                <Text style={{ color: 'gray', fontSize: 13, fontFamily: 'OpenSans', marginTop: 10 ,borderLeftColor:'gray',borderLeftWidth:0.3,paddingLeft:5}}>{this.getPhone(item.mobile_no)}</Text>
+                                </Col>
+                              </Row>
                             </Col>
                           </Row>
                         </Col>
                         <Col size={1.5} style={{ justifyContent: 'center', }}>
-                          <TouchableOpacity onPress={() => { this.dialCall(item.mobile_no) }}>
+                          <TouchableOpacity onPress={() =>{ this.dialCall(item.mobile_no) }}>
                             <Icon name="ios-call" style={{ color: '#08BF01', fontSize: 35 }} />
                           </TouchableOpacity>
                         </Col>
@@ -175,10 +180,10 @@ class BloodDonersList extends Component {
             marginRight: 20
           }}>
             <Col style={{ width: '70%' }}>
-              <Text style={{ fontFamily: 'OpenSans', fontSize: 15, color: '#fff' }}>Interested in Blood Donation?</Text>
+              <Text style={{ fontFamily: 'OpenSans', fontSize: 12, color: '#fff' }}>Interested in Blood Donation?</Text>
             </Col>
             <Col>
-              <TouchableOpacity onPress={() => this.props.navigation.navigate('Profile')} style={{ paddingTop: 5, paddingBottom: 5, paddingLeft: 10, paddingRight: 10, backgroundColor: '#08BF01', borderRadius: 5 }}><Text style={{ fontFamily: 'OpenSans', fontSize: 12, color: '#fff', textAlign: 'center' }}>Register Now</Text></TouchableOpacity>
+              <TouchableOpacity onPress={() => this.props.navigation.navigate('Profile')} style={{ paddingTop: 5, paddingBottom: 5, paddingLeft: 10, paddingRight: 10, backgroundColor: '#08BF01', borderRadius: 5 }}><Text style={{ fontFamily: 'OpenSans', fontSize: 10, color: '#fff', textAlign: 'center' }}>Register Now</Text></TouchableOpacity>
             </Col>
           </Row>
         </Footer>
