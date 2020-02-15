@@ -208,7 +208,6 @@ class AddReminder extends Component {
         temp.push(priviewData)
         let getData = JSON.stringify(data)
         this.setState({ data: temp })
-        alert(this.state.data)
         console.log("mani++++++++++++++++++++++++++" + getData)
         this.setState({previewdispaly:true})
         //     let result = await addReminderdata(userId, data)
@@ -234,10 +233,13 @@ class AddReminder extends Component {
   }
 
   deleteData(index){
+    console.log("index"+index)
     let temp = this.state.data;
-    let finalData = temp.slice(index,1)
-    console.log("finalData++++++++++++++++++++++++++++++"+finalData)
-    this.setState({data:finalData})
+     temp.splice(index,1)
+    console.log("temp"+JSON.stringify(temp))
+    this.setState({data:temp})
+    console.log("data"+JSON.stringify(this.state.data))
+
   }
 
 
@@ -504,7 +506,7 @@ class AddReminder extends Component {
                             <Text style={{ marginLeft: 10, fontSize: 10, marginTop: 5, color: '#6f6f6f' }}>{item.medicine_form}</Text>
                           </Col>
                           <Col size={5}>
-                            <Text style={{ marginLeft: -35, fontSize: 10, marginTop: 5, color: '#6f6f6f' }}>{item.medicine_strength}</Text>
+                            <Text style={{ marginLeft: 10, fontSize: 10, marginTop: 5, color: '#6f6f6f' }}>{item.medicine_strength}</Text>
                           </Col>
                         </Row>
                         <Row style={{ marginBottom: 5 }}>
