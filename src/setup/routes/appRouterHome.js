@@ -138,7 +138,10 @@ const HomeStack = createStackNavigator({
             <TouchableOpacity onPress={() => { navigation.navigate('Notification') }} >
               <View>
                 <Icon name="notifications" style={{ color: '#fff', marginRight: 15, fontFamily: 'opensans-semibold' }}></Icon>
-                <Badge/>
+                { navigation.getParam('notificationBadgeCount')!=null?
+              <Text style={{ position: 'absolute', backgroundColor: 'red', color: 'white', borderRadius: 20/2,  marginTop: -7, width:undefined,height:undefined,padding:2,fontSize:10 }}>{navigation.getParam('notificationBadgeCount')>=100?'99+':navigation.getParam('notificationBadgeCount')}</Text>
+             :null} 
+             {/* <Badge /> */}
               </View>
             </TouchableOpacity>
           </Col>

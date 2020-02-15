@@ -344,16 +344,21 @@ return (
 							</Card>
 						) : (
 							
+							       
 										<FlatList
 											data={data}
 											extraData={data}
 											renderItem={({ item, index }) => (
-												<Card  transparent>
+												<Card  transparent style={{ borderBottomWidth: 0.3,paddingBottom:10,marginTop:10}}>
+													
 								               <TouchableOpacity  onPress={() =>
 													this.props.navigation.navigate("AppointmentInfo", {
 														data: item.appointmentResult,selectedIndex:selectedIndex
 													})
 												} testID='navigateAppointmentInfo'>
+														  {item.appointmentResult.token_no ?
+												<Text style={{ textAlign: 'right', fontSize: 14, marginTop: -5 }} >{"Ref no :"+ item.appointmentResult.token_no}</Text>
+												  : null }  
 													<Row>
 														<Col size={2}>
 														<Thumbnail
