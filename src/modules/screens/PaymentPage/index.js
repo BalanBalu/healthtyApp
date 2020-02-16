@@ -374,7 +374,7 @@ class PaymentPage extends Component {
                         visible={isLoading}
                         textContent={isPaymentSuccess ? "We are Booking your Appoinmtent" : "Please wait..."}
                     />
-                    <View style={{ backgroundColor: '#f2f2f2' }}>
+                 {/*   <View style={{ backgroundColor: '#f2f2f2' }}>
                         <View style={{ marginTop: 10, marginBottom: 10, paddingBottom: 10 }}>
                             <Text style={{ fontSize: 15, fontFamily: 'OpenSans', fontWeight: 'bold', marginLeft: 15, }}>Select Options To Pay</Text>
                             <Grid style={{ marginRight: 15, marginLeft: 15, marginTop: 5 }}>
@@ -405,7 +405,7 @@ class PaymentPage extends Component {
                                 </Right>
                             </Row>
                         </View>
-                    </View>
+                    </View> */}
                     <Grid style={{ marginTop: 10, marginLeft: 15, backgroundColor: '#FFF' }}>
 
                         <Row style={{ marginTop: 10, marginLeft: -3 }}>
@@ -459,7 +459,7 @@ class PaymentPage extends Component {
                             <Text style={{ fontSize: 15, fontFamily: 'OpenSans', fontWeight: 'bold', marginLeft: 15, }}>CREDIT POINTS</Text>
 
                             </Row>
-                            <Row style={{paddingLeft: 15, alignItems:'center'}}>
+                            <Row style={{paddingLeft: 15, alignItems:'center', marginTop: 10 }}>
                                
                                 <Checkbox color="green"
                                     borderStyle={{
@@ -472,7 +472,7 @@ class PaymentPage extends Component {
                                     status={this.state.creditPointsApplied ? 'checked' : 'unchecked'}
                                     onPress={() => this.setPaymentByCreditApplied()}
                                 />
-                                <Text style={{ fontFamily: 'OpenSans', color: '#333333', fontSize: 13,lineHeight:20,width:'90%',marginTop:20 }}>Apply Your {maxDicountAmountByCreditPoints} Credit Points to Pay your Appointment</Text>      
+                                <Text style={{ fontFamily: 'OpenSans', color: '#333333', fontSize: 13, width:'90%' }}>Apply Your {maxDicountAmountByCreditPoints} Credit Points to Pay your Appointment</Text>      
                             </Row>
                         </Grid> : null}
 
