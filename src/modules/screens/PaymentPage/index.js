@@ -715,7 +715,7 @@ class PaymentPage extends Component {
 
                             </Grid>
 
-                            <Grid style={{ marginTop: 10, marginRight: 10, marginLeft: 10 }}>
+                            <Grid style={{ marginTop: 10, marginLeft: 10 }}>
                                 <Row>
                                     <Col>
                                         <Row>
@@ -730,7 +730,7 @@ class PaymentPage extends Component {
                                                 status={this.state.saveCardCheckbox ? 'checked' : 'unchecked'}
                                                 onPress={() => this.setState({ saveCardCheckbox: !this.state.saveCardCheckbox })}
                                             />
-                                            <Text style={{ marginLeft: 10, color: 'gray', fontFamily: 'OpenSans', marginTop: 8 }}>Save card for faster transaction</Text>
+                                            <Text style={{  color: 'gray', fontFamily: 'OpenSans', marginTop: -3 }}>Save card for faster transaction</Text>
                                         </Row>
                                     </Col>
                                 </Row>
