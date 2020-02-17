@@ -26,6 +26,7 @@ class RenderOtpInput extends Component {
             appType: 'user',
             userEntry: loginData.userEntry
         }
+        console.log("requestData" + JSON.stringify(requestData))
         await this.setState({ requestData });
         await this.generateOtpCode();
         this.setState({ isLoading: false });
@@ -81,7 +82,11 @@ class RenderOtpInput extends Component {
                     type: "success",
                     duration: 4000
                 });
-                this.doLoginAndContinueBasicDetailsUpdate();
+                if (this.props.navigation.getParam("navigateBackToHome")) {
+                    this.props.navigation.navigate('Home');
+                } else {
+                    this.doLoginAndContinueBasicDetailsUpdate();
+                }
             }
             else {
                 this.setState({ errorMsg: reqOtpVerifiedResponse.error, isLoading: false })
@@ -102,14 +107,10 @@ class RenderOtpInput extends Component {
             this.setState({ isLoading: true });
             const loginData = this.props.navigation.getParam("loginData");
             await login(loginData);  // Do SignIn Process after SignUp is Done
-            let isProfileCompleted = await AsyncStorage.getItem('ProfileCompletionViaHome');
-            console.log("isProfileCompleted OTP page is comming" + isProfileCompleted)
             if (this.props.user.isAuthenticated) {
                 this.props.navigation.navigate('userdetails');
-            } 
-            else if (isProfileCompleted == '1') {
-                this.props.navigation.navigate('UpdateUserDetails');
-            }else {
+            }
+            else {
                 this.setState({ errorMsg: this.props.user.message });
             }
         } catch (error) {

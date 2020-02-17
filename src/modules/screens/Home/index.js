@@ -5,7 +5,7 @@ import { Col, Row, Grid } from 'react-native-easy-grid';
 import { connect } from 'react-redux'
 import { StyleSheet, Image, View, TouchableOpacity, AsyncStorage, FlatList, ImageBackground, Alert } from 'react-native';
 
-import { getReferalPoints, fetchUserProfile } from '../../providers/profile/profile.action';
+import { getReferalPoints } from '../../providers/profile/profile.action';
 import { catagries, getSpecialistDataSuggestions } from '../../providers/catagries/catagries.actions';
 import { MAP_BOX_PUBLIC_TOKEN, IS_ANDROID, MAX_DISTANCE_TO_COVER } from '../../../setup/config';
 import MapboxGL from '@react-native-mapbox-gl/maps';
@@ -65,80 +65,57 @@ class Home extends Component {
     timeout(ms) {
         return new Promise(resolve => setTimeout(resolve, ms));
     }
-    getUserProfile = async () => {
 
-        let fields = "first_name,last_name,dob,mobile_no,address,blood_group,is_mobile_verified";
-        let userId = await AsyncStorage.getItem('userId');
-        let result = await fetchUserProfile(userId, fields);
-        const profileCompletionResp = this.checkForUserProfile(result);
-        if (profileCompletionResp.hasProfileUpdated === false) {
-            let loginData = {
-                userEntry: result.mobile_no,
-            }
-            Alert.alert(
-                "Alert",
-                "Your profile is not completed!Update to continue",
-                [
-                    {
-                        text: "Skip",
-                        onPress: () => {
-                            console.log("Cancel Pressed");
-                        },
-                        style: "cancel"
-                    },
-                    {
-                        text: "Update", onPress: () => {
-                            AsyncStorage.setItem('ProfileCompletionViaHome', '1'),
-                                (result.is_mobile_verified === undefined ? this.props.navigation.navigate(profileCompletionResp.navigation, { loginData: loginData }) :
-                                    this.props.navigation.navigate(profileCompletionResp.navigation))
+    checkForUserProfile(res) {
 
-                        }
-
-                    }
-                ],
-                { cancelable: false }
-            );
-
+        if (res.hasOtpNotVerified === true) {
+            this.props.navigation.navigate('renderOtpInput', { loginData: { userEntry: res.mobile_no }, navigateBackToHome: true });
         }
-    }
-
-    checkForUserProfile(result) {
-
-        if (result.is_mobile_verified === undefined) {
-            return {
-                hasProfileUpdated: false,
-                navigation: 'renderOtpInput'
-            }
-        }
-        else if (result.first_name == undefined || result.last_name == undefined || result.dob == undefined) {
-            return {
-                hasProfileUpdated: false,
-                navigation: 'UpdateUserDetails'
-            }
-        }
-        else {
-            return {
-                hasProfileUpdated: true,
-            }
+        else if (res.updateBasicDetails === true) {
+            this.props.navigation.navigate('UpdateUserDetails');
         }
     }
     async componentDidMount() {
-        
+
         this.getCatagries();
         let userId = await AsyncStorage.getItem("userId");
         if (userId) {
             this.getAllChatsByUserId(userId);
             this.getMarkedAsReadedNotification(userId)
             res = await getReferalPoints(userId);
+            if (res.hasProfileUpdated == false) {
+                if (res.hasOtpNotVerified === true) {
+                    this.props.navigation.navigate('renderOtpInput', {
+                        loginData: { userEntry: res.mobile_no },
+                        navigateBackToHome: true
+                    });
+                    return;
+                }
 
-            if(res.updateMobileNum === true) {
-                this.props.navigation.navigate('UpdateContact', { updatedata: {  } });
-                Toast.show({
-                    text: 'Plase Update Your Mobile Number and Continue',
-                    duration: 3000,
-                    type: 'warning'
-                })
+                Alert.alert(
+                    "Alert",
+                    "Your profile is not completed!Update to continue",
+                    [
+                        {
+                            text: "Skip",
+                            onPress: () => {
+                                console.log("Cancel Pressed");
+                            },
+                            style: "cancel"
+                        },
+                        {
+                            text: "Update", onPress: () => {
+                                AsyncStorage.setItem('ProfileCompletionViaHome', '1'),
+                                    this.checkForUserProfile(res)
+
+                            }
+
+                        }
+                    ],
+                    { cancelable: false }
+                );
             }
+
             CurrentLocation.getCurrentPosition();
         }
     }
@@ -253,30 +230,30 @@ class Home extends Component {
     };
     getMarkedAsReadedNotification = async (userId) => {
         try {
-         await fetchUserMarkedAsReadedNotification(userId);
-         const {notification: { notificationCount }, navigation }=this.props
-         navigation.setParams({
-             notificationBadgeCount: notificationCount
-          });
+            await fetchUserMarkedAsReadedNotification(userId);
+            const { notification: { notificationCount }, navigation } = this.props
+            navigation.setParams({
+                notificationBadgeCount: notificationCount
+            });
         }
         catch (e) {
-          console.log(e)
+            console.log(e)
         }
-      }
-      backNavigation = async (navigationData) => {
+    }
+    backNavigation = async (navigationData) => {
         try {
-         let userId = await AsyncStorage.getItem('userId')
-         if(userId){
-            this.getMarkedAsReadedNotification(userId);
-         }
+            let userId = await AsyncStorage.getItem('userId')
+            if (userId) {
+                this.getMarkedAsReadedNotification(userId);
+            }
         } catch (e) {
             console.log(e)
         }
-      }
+    }
     render() {
         const { fromAppointment } = this.state;
         const { bookappointment: { patientSearchLocationName, locationCordinates, isSearchByCurrentLocation, locationUpdatedCount }, navigation } = this.props;
-       
+
         if (locationUpdatedCount !== this.locationUpdatedCount) {
             navigation.setParams({
                 appBar: {
@@ -285,16 +262,16 @@ class Home extends Component {
                 }
             });
             this.locationUpdatedCount = locationUpdatedCount;
-           
+
         }
         return (
 
             <Container style={styles.container}>
                 <OfflineNotice />
                 <Content keyboardShouldPersistTaps={'handled'} style={styles.bodyContent}>
-                <NavigationEvents
-					            onWillFocus={payload => { this.backNavigation(payload) }}
-				            /> 
+                    <NavigationEvents
+                        onWillFocus={payload => { this.backNavigation(payload) }}
+                    />
 
                     <Row style={styles.SearchRow}>
                         <Col size={0.9} style={styles.SearchStyle}>
