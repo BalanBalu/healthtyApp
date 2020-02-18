@@ -461,8 +461,8 @@ class BookAppoinment extends Component {
                     <Row style={{ marginLeft: 55, marginTop: 10 }}>
                       <Text style={{ fontFamily: 'OpenSans', fontSize: 12, fontWeight: 'bold' }}>{(doctorData.prefix ? doctorData.prefix + '. ' : '') + (doctorData.first_name || '') + ' ' + (doctorData.last_name || '')}</Text>
                     </Row>
-                    <Row style={{ marginLeft: 55, }}>
-                      <Text note style={{ fontFamily: 'OpenSans', marginTop: -20, fontSize: 11 }}>{(getDoctorEducation(doctorData.education)) + ' ' + getDoctorSpecialist(doctorData.specialist)}</Text>
+                    <Row style={{ marginLeft: 55,marginTop: 10 }}>
+                      <Text note style={{ fontFamily: 'OpenSans',fontSize: 11 }}>{(getDoctorEducation(doctorData.education)) + ' ' + getDoctorSpecialist(doctorData.specialist)}</Text>
                     </Row>
 
                   </Col>
@@ -595,7 +595,7 @@ class BookAppoinment extends Component {
                 {doctorData.awards ?
                   <View style={{ marginLeft: 5, marginRight: 5, borderTopColor: 'gray', borderTopWidth: 0.7, marginBottom: 5 }}>
                     <Row style={{ marginTop: 10 }}>
-                      <Icon name='ios-medkit' style={{ fontSize: 20 }} />
+                      <Icon name='ios-medkit' style={{ fontSize: 20,color:'gray'}} />
                       <Text style={{ fontFamily: 'OpenSans', fontSize: 13, fontWeight: 'bold', marginLeft: 10, marginTop: 1 }}>Awards</Text>
                     </Row>
                     <FlatList
@@ -608,7 +608,7 @@ class BookAppoinment extends Component {
 
                 <View style={{ marginLeft: 5, marginRight: 5, borderTopColor: 'gray', borderTopWidth: 1, }}>
                   <Row style={{ marginTop: 10 }}>
-                    <Icon name='ios-medkit' style={{ fontSize: 20 }} />
+                    <Icon name='ios-medkit' style={{ fontSize: 20,color:'gray' }} />
                     <Text style={{ fontFamily: 'OpenSans', fontSize: 13, fontWeight: 'bold', marginLeft: 10, marginTop: 1 }}>Language Spoken</Text>
                   </Row>
 
@@ -629,7 +629,7 @@ class BookAppoinment extends Component {
 
                 <View style={{ marginLeft: 5, marginRight: 5, borderTopColor: 'gray', borderTopWidth: 1, marginTop: 10 }}>
                   <Row style={{ marginTop: 10 }}>
-                    <Icon name='ios-medkit' style={{ fontSize: 20 }} />
+                    <Icon name='ios-medkit' style={{ fontSize: 20,color:'gray' }} />
                     <Text style={{ fontFamily: 'OpenSans', fontSize: 13, fontWeight: 'bold', marginLeft: 10, marginTop: 1 }}>Services</Text>
                   </Row>
                   <FlatList

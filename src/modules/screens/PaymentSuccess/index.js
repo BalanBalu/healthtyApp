@@ -73,7 +73,7 @@ class PaymentSuccess extends Component {
 
                             <Row style={{ borderTopColor: 'gray', borderTopWidth: 0.5, marginTop: 10, marginLeft: 10, padding: 15, marginRight: 10 }}>
                                 <Col style={{ width: '25%', }}>
-                                    <Thumbnail square source={renderDoctorImage(successBookSlotDetails)} style={{ height: 60, width: 60 }} />
+                                    <Thumbnail  source={renderDoctorImage(successBookSlotDetails)} style={{ height: 60, width: 60,borderRadius:60/3 }} />
                                 </Col>
                                 <Col style={{ width: '75%', marginTop: 10 }}>
                                     <Row>
