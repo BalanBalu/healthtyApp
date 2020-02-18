@@ -60,7 +60,7 @@ class AddReminder extends Component {
       const { isDateTimePickerVisible,selectedDate } = this.state;
         return (
             <Container>
-            <Content style={{padding:30}}>
+            <Content style={{padding:20}}>
                 <View style={{marginBottom:30}}>
                      
                        <View >
@@ -137,9 +137,12 @@ class AddReminder extends Component {
            </View>
           <View>
              <Text style={styles.NumText}>How often do you take it ?</Text>
-             <View style={{flexDirection:'row'}}>
-               <Text style={{fontFamily:'OpenSans',fontSize:13,marginTop:15}}>Choose Your Time</Text>
-               <View style={{alignItems:'flex-start',marginTop:10,marginLeft:10}}>
+             <Row>
+<Col size={3.5}>
+<Text style={{fontFamily:'OpenSans',fontSize:13,marginTop:15}}>Choose Your Time</Text>
+</Col>
+<Col size={4}>
+<View style={{alignItems:'flex-start',marginTop:10,marginLeft:10}}>
                  <TouchableOpacity onPress={this.showDateTimePicker} style={styles.toucableOpacity}>
                    <Icon name='md-clock' style={styles.tocuhIcon} />
                    <Text style={styles.tochText}>{formatDate(selectedDate, 'HH:MM a')}</Text>
@@ -154,10 +157,16 @@ class AddReminder extends Component {
 								   />
                 </TouchableOpacity>
               </View>
-              <Button  style={styles.RemainderButton} >
+</Col>
+<Col size={2.5}>
+<Button  style={styles.RemainderButton} >
                   <Text style={styles.RemainderButtonText}>Add</Text>
               </Button>
-              </View>
+</Col>
+               
+              
+             
+              </Row>
            <Row style={{marginTop:10, borderColor:'gray',borderWidth:1,borderRadius:5,padding:10,justifyContent:"center"}}>
             <FlatList
              data={Slots}
@@ -261,7 +270,7 @@ const styles = StyleSheet.create({
           backgroundColor:'#fff',
           padding:4,
           height:30,
-          paddingHorizontal: 15
+          
         },
         timeText:{
           textAlign:'center',

@@ -68,34 +68,34 @@ class MyOrdersList extends Component {
                             <View style={{
                                 padding: 5, marginTop: 20
                             }}>
-    <FlatList
-    data={orderList}
-    extraData={this.state}
-    keyExtractor={(item, index) => index.toString()}
-    renderItem={({ item, index }) =>
-    <TouchableOpacity testID="orderDetailsNavigation" onPress={()=>this.props.navigation.navigate('OrderDetails',{ orderDetails : item})}>
-    <Card style={{ marginTop: 10, padding: 5, height: 155, borderRadius: 5 }}>
-    <Grid>
-      <Row>
-      <Right><Text style={{fontFamily: 'OpenSans', fontSize: 16, color: '#e84393', marginRight: 10,
-       fontWeight: 'bold' }}>{formatDate(item.order_date,"dddd, MMMM DD-YYYY, hh:mm a")}</Text></Right>
-       </Row>
-     <View style={{ marginLeft: 10, marginTop: 20, flexDirection: 'row' }}>
-    <Text style={{ fontFamily: 'OpenSans', fontSize: 18, fontWeight: 'bold', color: '#3966c6' }}>Order Id </Text>
-    <Text style={{ fontFamily: 'OpenSans', fontSize: 16, marginLeft: 48, fontWeight: 'bold' }}>:  {item._id} </Text>
-     </View>
-   <View style={{ flexDirection: 'row', marginLeft: 10, marginTop: 5 }}>
-   <Text style={{ fontSize: 15, fontWeight: 'bold', fontFamily: 'OpenSans', color: '#3966c6' }}>No of Medicine </Text>
-   <Text style={{ fontSize: 15, fontFamily: 'OpenSans', marginLeft: 10, fontWeight: 'bold' }}>:  {item.order_items.length} </Text>
-    </View>
-    <View style={{ flexDirection: 'row', marginLeft: 10, marginTop: 5 }}>
-   <Text style={{ fontSize: 15, fontWeight: 'bold', fontFamily: 'OpenSans', color: '#3966c6' }}>Total </Text>
-   <Text style={styles.subText}>:{'  '}{'\u20B9'}{this.calcTotalAmount(item.order_items)}</Text>
-    </View>
-       </Grid>
-        </Card>
-        </TouchableOpacity>                      
-           } />                                                      
+                                    <FlatList
+                                    data={orderList}
+                                    extraData={this.state}
+                                    keyExtractor={(item, index) => index.toString()}
+                                    renderItem={({ item, index }) =>
+                                    <TouchableOpacity testID="orderDetailsNavigation" onPress={()=>this.props.navigation.navigate('OrderDetails',{ orderDetails : item})}>
+                                    <Card style={{ marginTop: 10, padding: 5, height: 155, borderRadius: 5 }}>
+                                    <Grid>
+                                      <Row>
+                                          <Right><Text style={{fontFamily: 'OpenSans', fontSize: 16, color: '#e84393', marginRight: 10,
+                                           fontWeight: 'bold' }}>{formatDate(item.order_date,"dddd, MMMM DD-YYYY, hh:mm a")}</Text></Right>
+                                       </Row>
+                                     <View style={{ marginLeft: 10, marginTop: 20, flexDirection: 'row' }}>
+                                         <Text style={{ fontFamily: 'OpenSans', fontSize: 18, fontWeight: 'bold', color: '#3966c6' }}>Order Id </Text>
+                                         <Text style={{ fontFamily: 'OpenSans', fontSize: 16, marginLeft: 48, fontWeight: 'bold' }}>:  {item._id} </Text>
+                                     </View>
+                                    <View style={{ flexDirection: 'row', marginLeft: 10, marginTop: 5 }}>
+                                        <Text style={{ fontSize: 15, fontWeight: 'bold', fontFamily: 'OpenSans', color: '#3966c6' }}>No of Medicine </Text>
+                                        <Text style={{ fontSize: 15, fontFamily: 'OpenSans', marginLeft: 10, fontWeight: 'bold' }}>:  {item.order_items.length} </Text>
+                                    </View>
+                                    <View style={{ flexDirection: 'row', marginLeft: 10, marginTop: 5 }}>
+                                         <Text style={{ fontSize: 15, fontWeight: 'bold', fontFamily: 'OpenSans', color: '#3966c6' }}>Total </Text>
+                                         <Text style={styles.subText}>:{'  '}{'\u20B9'}{this.calcTotalAmount(item.order_items)}</Text>
+                                    </View>
+                                       </Grid>
+                                        </Card>
+                                        </TouchableOpacity>                      
+                                           } />                                                      
                             </View>
                         </Card>
                     </Content>}

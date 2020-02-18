@@ -4,10 +4,12 @@ export const PROFILE_RESPONSE = 'PROFILE/PROFILE_RESPONSE'
 export const PROFILE_ERROR = 'PROFILE/PROFILE_ERROR'
 export const REVIEWS_REQUEST = 'PROFILE/REVIEWS_REQUEST'
 export const REVIEWS_RESPONSE = 'PROFILE/REVIEWS_RESPONSE'
-export const REVIEWS_ERROR = 'PROFILE/REVIEWS_ERROR'
+export const REVIEWS_ERROR = 'PROFILE/REVIEWS_ERROR';
+export const AVAILABLE_CREDIT_POINTS = 'PROFILE/AVAILABLE_CREDIT_POINTS';
+export const SET_REFER_CODE = 'PROFILE/SET_REFER_CODE';
 
 import { store } from '../../../setup/store'
-import { getService, putService } from '../../../setup/services/httpservices';
+import { getService, putService,postService } from '../../../setup/services/httpservices';
 
 /*get doctor profile*/
 export async function fetchUserProfile(userId, fields, isLoading = true) {
@@ -119,14 +121,11 @@ export async function insertLikesDataForReviews(reviewId, reviewerId,reactionDat
   } 
 }
   
-export async function bloodDonationList() {
+export async function bloodDonationList(data) {
   try {
-    let endPoint = '/blood_doners';  
-    let response = await getService(endPoint); 
-    console.log('response'+response);
+    let endPoint = '/bloodDonors';  
+    let response = await postService(endPoint, data); 
     let respData = response.data;
-    console.log('respData'+JSON.stringify(respData));
-
     return respData;   
   }
    catch (e) {
@@ -137,6 +136,55 @@ export async function bloodDonationList() {
   } 
 }
   
+
+
+
+export async function bloodDonationFilter(data) {
+  try {
+    let endPoint = '/bloodDonors/filters';  
+    let response = await postService(endPoint, data); 
+    console.log('response'+response);
+    console.log(JSON.stringify(response))
+    let respData = response.data;
+    console.log('respData'+JSON.stringify(respData));
+    return respData;   
+  }
+   catch (e) {
+    return {
+      message: 'exception' + e,
+      success: false
+    }
+  } 
+}
+
+export const getReferalPoints = async (userId) => {
+  let fields = "credit_points,refer_code,mobile_no"
+  let result = await fetchUserProfile(userId, fields);
+  console.log(result);
+  if(result) {
+      store.dispatch({
+          type: AVAILABLE_CREDIT_POINTS,
+          credit_points: result.credit_points || 0 
+      })
+      if (result.refer_code) {
+          store.dispatch({
+            type: SET_REFER_CODE,
+            data: result.refer_code
+          })
+      }
+      if(result.mobile_no === undefined || result.mobile_no === null )  {
+          return {
+            updateMobileNum : true
+          }
+      }
+      return {
+        success: true
+      }
+      
+  }
+  
+}
+
 
  
 

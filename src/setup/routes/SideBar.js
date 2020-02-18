@@ -75,8 +75,9 @@ async getBasicData() {
                 {hasLoggedIn ?  
                    <View>
                     <Text style={{fontFamily:'OpenSans',fontSize:18,fontWeight:'bold',color:'#fff'}}>{this.activeUserData && this.activeUserData.first_name}</Text>
-                    <Text onPress={()=> this.props.navigation.navigate('Profile')}
-                    style={{fontFamily:'OpenSans',fontSize:13,color:'#fff'}}>View Profile</Text>
+                   <TouchableOpacity onPress={()=> this.props.navigation.navigate('Profile')}>
+                    <Text style={{fontFamily:'OpenSans',fontSize:13,color:'#fff'}}>View Profile</Text>
+                    </TouchableOpacity>
                    </View>
                  : 
                    <View style={{alignItems:'center',marginLeft:-95}}>
@@ -96,40 +97,33 @@ async getBasicData() {
             dataArray={items}
             renderRow={data => {
               return (
-                <ListItem style={{borderBottomWidth:0}}
+                <ListItem style={{borderBottomWidth:0,height: 50 }}
                   button
                   onPress={() => this.props.navigation.navigate(data.routeName)}>
-                      <View>
-                      <Row>
-                          <Col style={{width:'15%'}}>
                           <Image square source={DragwerLogos[data.key]} 
                           style={{ height: 20, width: 20}}
-                            />
-                          </Col>
-                          <Col style={{width:'85%',alignItems:'flex-start'}}>
-                          <Text style={{fontFamily:'OpenSans',fontSize:15,}}>{data.key}</Text>
-                          </Col>
-                      </Row>
-                      </View>
+                            />  
+                          <Text style={{fontFamily:'OpenSans',fontSize:15,marginLeft:20}}>{data.key}</Text>  
                 </ListItem>
               );
             }}
           />
+          
         </Content>
+        <List>
+           <ListItem style={{borderBottomWidth:0,  marginTop: 40 }}>
+              <Icon name='ios-power' style={{fontSize:15,color:'#7D4ac1',marginLeft:5
+            }}/>
+            <Text onPress={() => this.signInOrSignup(hasLoggedIn) } 
+                style={{fontFamily:'OpenSans',fontSize:15,marginLeft:22}}>{hasLoggedIn ? 'Sign Out' : 'Sign In' }</Text>
+            </ListItem>
+        </List>  
           
           <View>
-           <Row style={{marginLeft:20,marginTop:-80}}>
-              <Col style={{width:'13%'}}>
-                 <Icon name='ios-power' style={{fontSize:20}}/>
-              </Col>
-              <Col style={{width:'87%'}}>
-                <Text onPress={() => this.signInOrSignup(hasLoggedIn) } 
-                 style={{fontFamily:'OpenSans',fontSize:15,}}>{hasLoggedIn ? 'Sign Out' : 'Sign In' }</Text>
-              </Col>
-           </Row>   
-           <Footer style={{marginTop:10,backgroundColor:'#fff', height: 15}}>
+           
+           <Footer style={{  height: 40, backgroundColor:'#fff',}}>
               <FooterTab style={{justifyContent:'center',alignItems:'center',backgroundColor:'#7f49c3'}}>
-                <Text style={{textAlign:'center',fontFamily:'OpenSans',fontWeight:'700',fontSize:25,color:'#fff'}}>MEDFLIC</Text>
+                <Text style={{textAlign:'center',fontFamily:'OpenSans',fontWeight:'700',fontSize:20,color:'#fff'}}>MEDFLIC</Text>
               </FooterTab>
            </Footer>
          </View>

@@ -5,7 +5,7 @@ import { AsyncStorage, ScrollView } from 'react-native';
 import { connect } from 'react-redux'
 import styles from './style.js';
 import Spinner from '../../../components/Spinner';
-
+import { validateName, validatePassword } from '../../common'
 
 
 
@@ -16,7 +16,9 @@ class UpdateInsurance extends Component {
             insurance_no: '',
             insurance_provider: '',
             isLoading: false,
-            userData: ''
+            userData: '',
+            errorMsg: '',
+            noErrorMsg: ''
 
         }
     }
@@ -26,11 +28,8 @@ class UpdateInsurance extends Component {
     }
 
     bindInsuranceValues() {
-        console.log("nind values")
         const { navigation } = this.props;
         const userData = navigation.getParam('updatedata');
-        console.log(userData);
-
 
         if (userData.insurance) {
             this.setState({
@@ -43,43 +42,69 @@ class UpdateInsurance extends Component {
     }
 
     commonUpdateInsuranceMethod = async () => {
-        console.log("console");
-        let userId = await AsyncStorage.getItem('userId');
-        console.log(userId)
-        let data = {
-            insurance: [{
-                insurance_no: this.state.insurance_no,
-                insurance_provider: this.state.insurance_provider,
-                active: true
-            }]
-        };
-        console.log(data);
-        let response = await userFiledsUpdate(userId, data);
-        console.log('response' + JSON.stringify(response));
-        if (response.success) {
-            Toast.show({
-                text:response.message,
-                type: "success",
-                duration: 3000,
-            })
-            this.props.navigation.navigate('Profile');
+        try {
+            let userId = await AsyncStorage.getItem('userId');
+            let data = {
+                insurance: [{
+                    insurance_no: this.state.insurance_no,
+                    insurance_provider: this.state.insurance_provider,
+                    active: true
+                }]
+            };
 
-        } else {
-            Toast.show({
-                text:response.message,
-                type: "danger",
-                duration: 3000
-            })
+            this.setState({ errorMsg: '', noErrorMsg: '', isLoading: true });
+
+            let response = await userFiledsUpdate(userId, data);
+            if (response.success) {
+                Toast.show({
+                    text: response.message,
+                    type: "success",
+                    duration: 3000,
+                })
+                this.props.navigation.navigate('Profile');
+
+            } else {
+                Toast.show({
+                    text: "Insurance number must contain minimum 0f 5 and maximum of 15 characters",
+                    type: "danger",
+                    duration: 5000
+                })
+            }
+            this.setState({ isLoading: false });
+
         }
-        this.setState({ isLoading: false });
+        catch (e) {
+            console.log(e);
+        }
+        finally {
+            this.setState({ isLoading: false });
+        }
+    }
+    validateProviderName = async (text) => {
+        await this.setState({ insurance_provider: text });
+        if (this.state.insurance_provider && validateName(this.state.insurance_provider) == false) {
+            this.setState({ errorMsg: 'Insurance provider field must contain alphabets' })
+            return false;
+        }
+        else {
+            this.setState({ errorMsg: '' })
+        }
+    }
+    validateInsuranceNo = async (text) => {
+        await this.setState({ insurance_no: text });
+        if (this.state.insurance_no && validatePassword(this.state.insurance_no) == false) {
+            this.setState({ noErrorMsg: 'Insurance number can not be empty' })
+            return false;
+        }
+        else {
+            this.setState({ noErrorMsg: '' })
+        }
     }
 
+
     handleInsuranceUpdate = async () => {
-        console.log("pdate")
         const { userData, insurance_no, insurance_provider } = this.state
-        console.log(userData.insurance);
         try {
-            console.log("try");
             this.setState({ isLoading: true });
             if (userData.insurance !== undefined) {
                 if (insurance_no != userData.insurance[0].insurance_no ||
@@ -94,7 +119,6 @@ class UpdateInsurance extends Component {
                 this.commonUpdateInsuranceMethod();
             }
         } catch (e) {
-            console.log("catch")
             console.log(e);
         }
 
@@ -110,7 +134,7 @@ class UpdateInsurance extends Component {
             <Container style={styles.container}>
 
 
-<Content contentContainerStyle={styles.bodyContent}>
+                <Content contentContainerStyle={styles.bodyContent}>
 
                     <ScrollView>
                         <Spinner color='blue'
@@ -120,29 +144,30 @@ class UpdateInsurance extends Component {
 
                         <Text style={styles.headerText}>Edit Insurance</Text>
 
-                        <Card style={{ padding: 10, borderRadius: 10, marginTop: 20, height: 250, marginBottom: 20 }}>
+                        <Card style={{ padding: 10, borderRadius: 10, marginTop: 20, marginBottom: 20 }}>
 
 
                             <Item style={{ borderBottomWidth: 0, marginTop: 25 }}>
                                 <Icon name='heartbeat' type='FontAwesome' style={styles.centeredIcons}></Icon>
                                 <Input placeholder="Edit insurance number" style={styles.transparentLabel} keyboardType="email-address"
-                                    onChangeText={(insurance_no) => this.setState({ insurance_no })}
+                                    onChangeText={(insurance_no) => this.validateInsuranceNo(insurance_no)}
                                     value={this.state.insurance_no}
                                     testID='updateInsuranceNo' />
                             </Item>
-
+                            {this.state.noErrorMsg ?
+                                <Text style={{ paddingLeft: 20, fontSize: 15, fontFamily: 'OpenSans', color: 'red' }}>{this.state.noErrorMsg}</Text>
+                                : null}
                             <Item style={{ borderBottomWidth: 0, marginTop: 25 }}>
                                 <Icon name='heartbeat' type='FontAwesome' style={styles.centeredIcons}></Icon>
                                 <Input placeholder="Edit insurance provider" style={styles.transparentLabel} keyboardType="email-address"
-                                    onChangeText={(insurance_provider) => this.setState({ insurance_provider })}
+                                    onChangeText={(insurance_provider) => this.validateProviderName(insurance_provider)}
                                     value={this.state.insurance_provider}
                                     testID='updateInsuranceProvider' />
                             </Item>
-
-
-
-
-                            <Item style={{ borderBottomWidth: 0, marginTop: 10}}>
+                            {this.state.errorMsg ?
+                                <Text style={{ paddingLeft: 20, fontSize: 15, fontFamily: 'OpenSans', color: 'red' }}>{this.state.errorMsg}</Text>
+                                : null}
+                            <Item style={{ borderBottomWidth: 0, marginTop: 10 }}>
                                 <Right>
                                     <Button success style={styles.button2} onPress={() => this.handleInsuranceUpdate()} testID='clickUpdateInsurance'>
                                         <Text uppercase={false} note style={styles.buttonText}>Update</Text>

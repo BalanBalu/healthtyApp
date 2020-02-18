@@ -96,10 +96,10 @@ export const RenderReviewData = (props) => {
                 <Col style={{width:'15%'}}>
                     <Thumbnail square source={renderProfileImage(item.userInfo)} style={{width:60,height:60,}}/>
                 </Col>
-                <Col style={{width:'60%',marginTop:5,marginLeft:15}}>
+                <Col style={{width:'55%',marginTop:5,marginLeft:15}}>
                     <Text style={styles.name}>{item.is_anonymous == true ? 'Medflic User' : item.userInfo.first_name + ' ' + item.userInfo.last_name} </Text>
                 </Col>
-                <Col style={{width:'25%',marginTop:8}}>
+                <Col style={{width:'30%',marginTop:8}}>
                     <Text style={styles.date}> {relativeTimeView(item.review_date)}</Text>
                 </Col>
             </Row>

@@ -1,5 +1,6 @@
+
 import React, { Component } from 'react';
-import { Container, Content, Text, Title, Header, H3, Button, Card, List, ListItem, View, Left, Right, Toast, Thumbnail, Body, Icon, locations, ProgressBar, Item, Radio } from 'native-base';
+import { Container, Content, Text, Title, Header, H3, Button, Card, List, ListItem, View, Left, Right, Toast, Thumbnail, Body, Icon, locations, ProgressBar, Item, Radio, Switch } from 'native-base';
 import { fetchUserProfile, storeBasicProfile } from '../../providers/profile/profile.action';
 import { getPatientWishList } from '../../providers/bookappointment/bookappointment.action';
 import { hasLoggedIn, userFiledsUpdate } from '../../providers/auth/auth.actions';
@@ -7,11 +8,12 @@ import { Col, Row, Grid } from 'react-native-easy-grid';
 import { connect } from 'react-redux';
 import { dateDiff } from '../../../setup/helpers';
 import LinearGradient from 'react-native-linear-gradient';
-import { StyleSheet, AsyncStorage, TouchableOpacity, FlatList } from 'react-native';
-import Modal from "react-native-modal";
+import { StyleSheet, AsyncStorage, TouchableOpacity, FlatList, Modal } from 'react-native';
+// import Modal from "react-native-modal";
 import { NavigationEvents } from 'react-navigation';
 import { Loader } from '../../../components/ContentLoader'
-import ImagePicker from 'react-native-image-picker';
+// import ImagePicker from 'react-native-image-picker';
+import ImagePicker from 'react-native-image-crop-picker';
 import { uploadMultiPart } from '../../../setup/services/httpservices'
 import { renderDoctorImage, renderProfileImage } from '../../common';
 
@@ -23,7 +25,6 @@ class Profile extends Component {
         super(props);
         this.state = {
             data: {},
-            gender: '',
             starCount: 3.5,
             userId: '',
             modalVisible: false,
@@ -31,6 +32,9 @@ class Profile extends Component {
             imageSource: null,
             file_name: '',
             isLoading: false,
+            selectOptionPoopup: false,
+            is_blood_donor: false
+
         };
 
     }
@@ -45,6 +49,10 @@ class Profile extends Component {
         this.getfavouritesList();
 
     }
+    componentWillUnmount() {
+        this.setState({ selectOptionPoopup: false });
+    }
+
     onStarRatingPress(rating) {
         this.setState({
             starCount: rating
@@ -54,30 +62,26 @@ class Profile extends Component {
     /*Get userProfile*/
     getUserProfile = async () => {
         try {
-            let data = await AsyncStorage.getItem('profile');
-            result = JSON.parse(data);
-            if (result == null) {
-                let fields = "first_name,last_name,gender,dob,mobile_no,secondary_mobile,email,secondary_emails,insurance,address,is_blood_donor,is_available_blood_donate,blood_group,profile_image"
-                let userId = await AsyncStorage.getItem('userId');
-                let result = await fetchUserProfile(userId, fields);
-                if (this.props.profile.success) {
-                    AsyncStorage.setItem('profile', JSON.stringify(result))
-                    storeBasicProfile(result);
-                    this.setState({ data: result, gender: result.gender });
-                    if (result.profile_image) {
-                        this.setState({ imageSource: result.profile_image.imageURL });
-                    }
-                }
-            }
-            else {
-                this.setState({ data: result, gender: result.gender });
-                if (result.profile_image != undefined) {
+            let fields = "first_name,last_name,gender,dob,mobile_no,secondary_mobile,email,secondary_email,insurance,address,is_blood_donor,is_available_blood_donate,blood_group,profile_image"
+
+            let userId = await AsyncStorage.getItem('userId');
+            let result = await fetchUserProfile(userId, fields);
+
+            if (result) {
+                this.setState({ data: result, is_blood_donor: result.is_blood_donor });
+                storeBasicProfile(result);
+
+                if (result.profile_image) {
                     this.setState({ imageSource: result.profile_image.imageURL });
                 }
             }
+
         }
         catch (e) {
             console.log(e);
+        }
+        finally {
+            this.setState({ isLoading: false });
         }
     }
 
@@ -93,114 +97,175 @@ class Profile extends Component {
             console.log(e)
         }
     }
-
-    /*Update Gender*/
-    updateGender = async () => {
+    updateBloodDonor = async () => {
+        const userId = await AsyncStorage.getItem('userId')
         try {
-            const userId = await AsyncStorage.getItem('userId')
             let requestData = {
-                gender: this.state.gender
-            }
+                is_blood_donor: this.state.is_blood_donor
+            };
             let response = await userFiledsUpdate(userId, requestData);
-            console.log(response);
-            if (response.success) {
-                Toast.show({
-                    text: 'Gender updated successfuly',
-                    type: "success",
-                    duration: 3000
-                });
+            if (this.state.data.address !== undefined) {
+                if (response.success) {
+                    Toast.show({
+                        text: response.message,
+                        type: "success",
+                        duration: 3000
+                    });
+                }
+                else {
+                    Toast.show({
+                        text: response.message,
+                        type: "danger",
+                        duration: 3000
+                    });
+                    this.setState({ isLoading: false });
+                }
             }
-            else {
-                Toast.show({
-                    text: response.message,
-                    type: "danger",
-                    duration: 3000
-                });
-            }
-            this.setState({ modalVisible: !this.state.modalVisible });
+        }
 
-        } catch (e) {
+        catch (e) {
             console.log(e);
         }
-    }
-
-    /*Open the Modal box*/
-    modalBoxOpen() {
-        this.setState({ modalVisible: !this.state.modalVisible });
-    }
-
-
-    /*Press Radio button*/
-    onPressRadio(value) {
-        this.setState({ gender: value })
+        finally {
+            this.setState({ isLoading: false });
+        }
     }
 
     editProfile(screen) {
         this.props.navigation.navigate(screen, { screen: screen, fromProfile: true, updatedata: this.state.data || '' })
     }
 
-    /*Upload profile pic*/
-    selectPhotoTapped() {
-
-        const options = {
-            quality: 1.0,
-            maxWidth: 500,
-            maxHeight: 500,
-            storageOptions: {
-                skipBackup: true
-            }
-        };
-        ImagePicker.showImagePicker(options, (response) => {
-            console.log('Response = ', response);
-
-            if (response.didCancel) {
-                console.log('User cancelled photo picker');
-            }
-            else if (response.error) {
-                console.log('ImagePicker Error: ', response.error);
-            }
-            else if (response.customButton) {
-                console.log('User tapped custom button: ', response.customButton);
+    editAddress(address) {
+        try {
+            debugger
+            if (address === null) {
+                this.editProfile('MapBox')
             }
             else {
-                console.log("response is running")
-                let source = { uri: response.uri };
-
-                this.setState({
-                    imageSource: source.uri,
-
+                let locationAndContext = location(address.address);
+                let latLng = address.coordinates;
+                let addrressData = {
+                    no_and_street: address.address.no_and_street,
+                    center: [latLng[1], latLng[0]],
+                    place_name: locationAndContext.placeName,
+                    context: locationAndContext.context
+                }
+                this.props.navigation.navigate('MapBox', {
+                    locationData: addrressData,
+                    fromProfile: true,
+                    mapEdit: true
                 });
-                this.uploadImageToServer(response.uri);
 
+                function location(locationObj) {
+                    let placeName = '';
+                    let contextData = [];
+                    Object.keys(locationObj).forEach(keyEle => {
+                        let obj = {
+                            "text": locationObj[keyEle]
+                        };
+                        switch (keyEle) {
+                            case 'no_and_street':
+                                obj.id = 'no_and_street.123';
+                                break;
+                            case 'address_line_1':
+                                obj.id = 'locality.123';
+                                break;
+                            case 'city':
+                                obj.id = 'place.123';
+                                break;
+                            case 'district':
+                                obj.id = 'district.123';
+                                break;
+                            case 'state':
+                                obj.id = 'region.123';
+                                break;
+                            case 'country':
+                                obj.id = 'country.123';
+                                break;
+                            case 'pin_code':
+                                obj.id = 'pin_code.123';
+                                break;
+                        }
+                        contextData.push(obj);
+                        placeName += locationObj[keyEle] + ', ';
+                    });
+
+                    return {
+                        placeName: placeName.slice(0, -2),
+                        context: contextData
+                    }
+
+                }
             }
-        });
+        }
+        catch (e) {
+            console.log(e);
+        }
+        finally {
+            this.setState({ isLoading: false });
+        }
+    }
+    /*Upload profile pic*/
+    uploadProfilePicture(type) {
+        if (type == "Camera") {
+            ImagePicker.openCamera({
+                cropping: true,
+                width: 500,
+                height: 500,
+                cropperCircleOverlay: true,
+                compressImageMaxWidth: 640,
+                compressImageMaxHeight: 480,
+                freeStyleCropEnabled: true,
+            }).then(image => {
+                this.setState({ selectOptionPoopup: false });
+                console.log(image);
+                this.uploadImageToServer(image);
+            }).catch(ex => {
+                this.setState({ selectOptionPoopup: false });
+                console.log(ex);
+            });
+        } else {
+            ImagePicker.openPicker({
+                width: 300,
+                height: 400,
+                cropping: true,
+                cropperCircleOverlay: true,
+                freeStyleCropEnabled: true,
+                avoidEmptySpaceAroundImage: true,
+            }).then(image => {
+                console.log(image);
+
+                this.setState({ selectOptionPoopup: false });
+                this.uploadImageToServer(image);
+            }).catch(ex => {
+                this.setState({ selectOptionPoopup: false });
+                console.log(ex);
+            });
+        }
     }
 
     /*Store image into api folder*/
-    uploadImageToServer = async (imagePath) => {
+    uploadImageToServer = async (image) => {
         try {
-            console.log("Image uploading");
             const userId = await AsyncStorage.getItem('userId')
-
             var formData = new FormData();
             formData.append('profile', {
-                uri: imagePath,
-                type: 'image/jpeg',
+                uri: image.path,
+                type: image.mime,
                 name: 'photo.jpg'
             });
-            debugger
             let endPoint = `user/${userId}/upload/profile`
             var res = await uploadMultiPart(endPoint, formData);
             const response = res.data;
             if (response.success) {
-                let result = await AsyncStorage.getItem('profile');
-                const storeResult = JSON.parse(result);
-                storeResult.profile_image = response.profile_image
-                await AsyncStorage.setItem('profile', JSON.stringify(storeResult));
                 this.setState({
-                    imageSource: imagePath
+                    imageSource: image.path,
                 });
-
+                Toast.show({
+                    text: 'Profile picture uploaded successfully',
+                    type: 'success',
+                    duration: 3000,
+                })
             } else {
                 Toast.show({
                     text: 'Problem Uploading Profile Picture',
@@ -217,9 +282,11 @@ class Profile extends Component {
             console.log(e);
         }
     }
+
+
     render() {
         const { profile: { isLoading } } = this.props;
-        const { data, gender, imageSource } = this.state;
+        const { data, imageSource } = this.state;
         return (
 
             <Container style={styles.container}>
@@ -250,11 +317,11 @@ class Profile extends Component {
                                         }
 
                                         <View style={{ marginLeft: 80, marginTop: -20, justifyContent: 'center' }}>
-                                            <Icon name="camera" style={{ fontSize: 20 }} onPress={() => this.selectPhotoTapped()} testID="cameraIconTapped" />
+                                            <Icon name="camera" style={{ fontSize: 20 }} onPress={() => this.setState({ selectOptionPoopup: true })} testID="cameraIconTapped" />
                                         </View>
 
                                         <View style={{ flexDirection: 'row', marginTop: 10, marginLeft: 30 }}>
-                                            <Text style={{ marginLeft: 'auto', marginRight: 'auto', padding: 5, fontFamily: 'OpenSans', backgroundColor: '#fff', borderRadius: 10, marginTop: 5, width: '100%', textAlign: 'center', fontSize: 15 }} onPress={() => this.editProfile('UpdateUserDetails')}>{data.first_name + " " + data.last_name}
+                                            <Text style={styles.nameStyle} onPress={() => this.editProfile('UpdateUserDetails')}>{data.first_name ? data.first_name + " " : ''}<Text style={styles.nameStyle}>{data.last_name ? data.last_name : ''}</Text>
                                             </Text>
 
 
@@ -272,6 +339,52 @@ class Profile extends Component {
 
                             </Grid>
                         </LinearGradient>
+                        <Modal
+                            visible={this.state.selectOptionPoopup}
+                            transparent={true}
+                            animationType={'fade'}
+                        >
+                            <View style={{
+                                flex: 1,
+                                flexDirection: 'column',
+                                justifyContent: 'center',
+                                alignItems: 'center',
+                                backgroundColor: 'rgba(0,0,0,0.5)'
+                            }}>
+                                <View style={{
+                                    width: '80%',
+                                    height: '35%', backgroundColor: '#fff',
+                                    borderColor: 'gray',
+                                    borderWidth: 3,
+                                    padding: 30,
+                                    borderRadius: 5
+                                }}>
+
+
+                                    <Text style={{ fontSize: 26, fontFamily: 'OpenSans', fontWeight: 'bold', textAlign: 'center' }}> Select a Photo  </Text>
+                                    {/* </Item> */}
+                                    <Row style={{ marginTop: 10 }}>
+                                        <Col>
+                                            <TouchableOpacity onPress={() => this.uploadProfilePicture("Camera")} testID='chooseCemara'>
+                                                <Text style={{ fontSize: 20, fontFamily: 'OpenSans', marginLeft: 10, marginTop: 10 }}>Take Photo</Text>
+                                            </TouchableOpacity>
+                                            <TouchableOpacity onPress={() => this.uploadProfilePicture("Library")} testID='chooselibrary'>
+                                                <Text style={{ fontSize: 20, fontFamily: 'OpenSans', marginLeft: 10, marginTop: 10 }}>Choose from Library</Text>
+                                            </TouchableOpacity>
+                                        </Col>
+                                    </Row>
+                                    <Row style={{ marginTop: 50 }}>
+                                        <Right style={{ marginTop: 15, marginLeft: 15 }} >
+                                            <Button transparent style={{ marginTop: 15 }} onPress={() => this.setState({ selectOptionPoopup: false })} testID='cancleButton'>
+                                                <Text style={{ fontFamily: 'OpenSans', fontSize: 20, }}> Cancel</Text>
+                                            </Button>
+                                        </Right>
+                                    </Row>
+                                </View>
+
+                            </View>
+                        </Modal>
+
                         <Card>
                             <Grid style={{ padding: 10 }}>
                                 <Col style={{ backgroundColor: 'transparent', borderRightWidth: 0.5, borderRightColor: 'gray', marginLeft: 'auto', marginRight: 'auto' }}>
@@ -284,41 +397,9 @@ class Profile extends Component {
                                         <Text style={styles.topValue}>Gender </Text>
 
                                     </View>
-                                    <Text note style={styles.bottomValue}>{gender} </Text>
+                                    <Text note style={styles.bottomValue}>{data.gender === 'M' ? 'Male' : data.gender === 'F' ? 'Female' : data.gender === 'O' ? 'Others' : null} </Text>
 
                                 </Col>
-
-
-                                <Modal isVisible={this.state.modalVisible} >
-                                    <Card style={{ padding: 10, borderRadius: 7, height: 150, justifyContent: 'center' }}>
-                                        <H3 style={{ fontFamily: 'OpenSans', marginTop: 15, fontSize: 15 }}>Update Gender</H3>
-                                        <ListItem noBorder>
-
-                                            <Radio selected={this.state.gender === 'M'} onPress={() => this.onPressRadio('M')} style={{ marginLeft: 2, }} color={"#775DA3"}
-                                                selectedColor={"#775DA3"} testID="clickMale" />
-                                            <Text style={{ marginLeft: 10, fontFamily: 'OpenSans', fontSize: 15 }}>Male</Text>
-
-                                            <Radio selected={this.state.gender === 'F'} onPress={() => this.onPressRadio('F')} style={{ marginLeft: 10 }} color={"#775DA3"}
-                                                selectedColor={"#775DA3"} testID="clickFemale" />
-                                            <Text style={{ marginLeft: 10, fontFamily: 'OpenSans', fontSize: 15 }}>Female</Text>
-
-                                            <Radio selected={this.state.gender === 'O'} onPress={() => this.onPressRadio('O')} style={{ marginLeft: 10 }} color={"#775DA3"}
-                                                selectedColor={"#775DA3"} testID="clickOther" />
-                                            <Text style={{ marginLeft: 10, fontFamily: 'OpenSans', fontSize: 15 }}>Other</Text>
-
-                                        </ListItem>
-
-                                        <Button style={styles.updateButton} onPress={() => this.updateGender()}
-                                            testID="updateGenderButton">
-                                            <Text uppercase={false} style={{ fontFamily: 'OpenSans', fontSize: 15 }}>Update</Text>
-                                        </Button>
-
-                                    </Card>
-
-                                </Modal>
-
-
-
 
                                 <Col style={{ backgroundColor: 'transparent', justifyContent: 'center', marginLeft: 'auto', marginRight: 'auto' }}>
                                     <Text style={styles.topValue}>Blood</Text>
@@ -326,10 +407,6 @@ class Profile extends Component {
                                 </Col>
                             </Grid>
                         </Card>
-
-
-
-
                         <List>
                             <Text style={styles.titleText}>Personal details..</Text>
 
@@ -344,19 +421,8 @@ class Profile extends Component {
                                     <TouchableOpacity onPress={() => this.editProfile('UpdateEmail')} testID="onPressEmail">
                                         <Text style={styles.customText}>Email</Text>
                                         <Text note style={styles.customText1}>{data.email}</Text>
-                                        {data.secondary_emails != undefined ?
-                                            <FlatList
-                                                data={data.secondary_emails}
-                                                renderItem={({ item }) => (
-                                                    <List>
+                                        {data.secondary_email != undefined ? <Text note style={styles.customText1}>{data.secondary_email}</Text>
 
-                                                        <Text style={styles.customText}>{item.type}</Text>
-                                                        <Text note style={styles.customText1}>{item.email_id}</Text>
-
-                                                    </List>
-                                                )}
-                                                keyExtractor={(item, index) => index.toString()}
-                                            />
                                             : <Button transparent>
                                                 <Icon name='add' style={{ color: 'gray' }} />
                                                 <Text uppercase={false} style={styles.customText} onPress={() => this.editProfile('UpdateEmail')} testID="onPressAddSecondaryEmail">Add Secondary email</Text>
@@ -365,7 +431,7 @@ class Profile extends Component {
                                 </Body>
 
 
-                                {data.secondary_emails != undefined ?
+                                {data.secondary_email != undefined ?
 
                                     <Right>
                                         <Icon name="create" style={{ color: 'black' }} onPress={() => this.editProfile('UpdateEmail')} testID="iconToUpdateEmail" />
@@ -373,7 +439,32 @@ class Profile extends Component {
 
                             </ListItem>
 
+                            <ListItem avatar>
 
+                                <Left>
+                                    <Icon name="ios-flame" style={{ color: '#7E49C3', marginTop: 5 }}></Icon>
+                                </Left>
+
+                                <Body >
+                                    <Text style={styles.customText}>Blood Donor</Text>
+                                </Body>
+
+                                <Right style={{ justifyContent: 'center', alignItems: 'center', marginTop: -15 }}>
+                                    <Switch
+                                        value={this.state.is_blood_donor}
+                                        style={{ marginTop: 15, }}
+                                        onValueChange={value => {
+                                            this.setState({ is_blood_donor: !this.state.is_blood_donor })
+                                            if (value === true) {
+                                                if (data.address === undefined) {
+                                                    this.editProfile('MapBox')
+                                                }
+                                            }
+                                            this.updateBloodDonor()
+                                        }}
+                                    />
+                                </Right>
+                            </ListItem>
                             <ListItem avatar>
 
                                 <Left>
@@ -381,19 +472,19 @@ class Profile extends Component {
                                 </Left>
 
                                 <Body>
-                                    <TouchableOpacity onPress={() => this.editProfile('UpdateAddress')} testID="onPressAddress">
+                                    <TouchableOpacity onPress={() => this.editAddress(data.address)} testID="onPressAddress">
                                         <Text style={styles.customText}>Address</Text>
                                         {data.address ?
                                             <View>
                                                 <Text note style={styles.customText1}>{data.address.address.no_and_street + ','}
-                                                <Text note style={styles.customText1}>{data.address.address.address_line_1 ? data.address.address.address_line_1 : " "}</Text></Text>
+                                                    <Text note style={styles.customText1}>{data.address.address.address_line_1 ? data.address.address.address_line_1 : " "}</Text></Text>
                                                 <Text note style={styles.customText1}>{data.address.address.district + ', '
                                                     + data.address.address.city}</Text>
                                                 <Text note style={styles.customText1}>{data.address.address.state + ', '
                                                     + data.address.address.country}</Text>
                                                 <Text note style={styles.customText1}>{data.address.address.pin_code}</Text>
                                             </View> :
-                                            <Button transparent onPress={() => this.editProfile('UpdateAddress')}>
+                                            <Button transparent onPress={() => this.editProfile('MapBox')}>
                                                 <Icon name='add' style={{ color: 'gray' }} />
                                                 <Text uppercase={false} style={styles.customText}>Add Address</Text>
                                             </Button>}
@@ -401,7 +492,7 @@ class Profile extends Component {
                                 </Body>
                                 {data.address ?
                                     <Right>
-                                        <Icon name="create" style={{ color: 'black' }} onPress={() => this.editProfile('UpdateAddress')} testID="iconToUpdateAddress" />
+                                        <Icon name="create" style={{ color: 'black' }} onPress={() => this.editAddress(data.address)} testID="iconToUpdateAddress" />
                                     </Right>
                                     : null}
 
@@ -416,23 +507,12 @@ class Profile extends Component {
                                 </Left>
 
                                 <Body>
-                                    <TouchableOpacity onPress={() => this.editProfile('UpdateContact')} testID="onPressUpdateContact">
+                                    <View testID="onPressUpdateContact">
                                         <Text style={styles.customText}>Contact</Text>
                                         <Text note style={styles.customText1}>{data.mobile_no}</Text>
-                                        {data.secondary_mobile !== undefined ?
-                                            <Col>
-                                                <Text style={styles.customText}>Secondary</Text>
-                                                <Text note style={styles.customText1}>{data.secondary_mobile}</Text>
-
-                                            </Col>
-
-                                            : <Button transparent>
-                                                <Icon name='add' style={{ color: 'gray' }} />
-                                                <Text uppercase={false} style={styles.customText} onPress={() => this.editProfile('UpdateContact')} testID="onPressAddContactNumber">Add Contact Number</Text>
-                                            </Button>}
-                                    </TouchableOpacity>
+                                    </View>
                                 </Body>
-                                {data.secondary_mobile != undefined ?
+                                {data.mobile_no === undefined ?
                                     <Right>
                                         <Icon name="create" style={{ color: 'black' }} onPress={() => this.editProfile('UpdateContact')} testID="iconToUpdateContact"></Icon>
                                     </Right> : null}
@@ -504,13 +584,13 @@ class Profile extends Component {
                                         renderItem={({ item }) => (
                                             <ListItem avatar noBorder>
                                                 <Left>
-                                                    <Thumbnail square source={renderDoctorImage(item.doctorInfo)} style={{ height: 60, width: 60 }} />
+                                                    <Thumbnail square source={renderDoctorImage(item.doctorInfo)} style={{ height: 60, width: 60,borderRadius:60}} />
                                                 </Left>
                                                 <Body>
-                                                    <Text style={{ fontFamily: 'OpenSans', fontSize: 15 }}> {item.doctorInfo.prefix ? item.doctorInfo.prefix : 'Dr.'} {item.doctorInfo.first_name + " " + item.doctorInfo.last_name} </Text>
+                                                    <Text style={{ fontFamily: 'OpenSans', fontSize: 12, width: '100%' }}>{item.doctorInfo.prefix ? item.doctorInfo.prefix + '.' : 'Dr.'} {item.doctorInfo.first_name + " " + item.doctorInfo.last_name} </Text>
                                                 </Body>
                                                 <Right>
-                                                    <Button style={styles.docbutton}><Text style={{ fontFamily: 'OpenSans', fontSize: 12 }} onPress={() => this.props.navigation.navigate('Book Appointment', { doctorId: item.doctorInfo.doctor_id, fetchAvailabiltySlots: true })}> Book Again</Text></Button>
+                                                    <TouchableOpacity style={styles.docbutton}><Text style={{ fontFamily: 'OpenSans', fontSize: 12,color:'#fff' ,textAlign:'center'}} onPress={() => this.props.navigation.navigate('Book Appointment', { doctorId: item.doctorInfo.doctor_id, fetchAvailabiltySlots: true })} testID="navigateBookAppointment"> Book Again</Text></TouchableOpacity>
                                                 </Right>
 
                                             </ListItem>
@@ -620,11 +700,15 @@ const styles = StyleSheet.create({
 
     },
     docbutton: {
-        height: 35,
+        height: 30,
         width: "auto",
         borderRadius: 20,
+        fontSize:10,
         backgroundColor: '#7357A2',
-        marginTop: 5
+        marginTop: 5,alignItems:'center',
+        justifyContent:'center',
+        paddingLeft:5,
+        paddingRight:5
 
     },
     profileIcon:
@@ -670,9 +754,21 @@ const styles = StyleSheet.create({
         backgroundColor: '#CDDC39',
 
     },
-
-
+    nameStyle: {
+        marginLeft: 'auto',
+        marginRight: 'auto',
+        padding: 5,
+        fontFamily: 'OpenSans',
+        backgroundColor: '#fff',
+        borderRadius: 10,
+        marginTop: 5,
+        width: '100%',
+        textAlign: 'center',
+        fontSize: 15
+    }
 
 });
+
+
 
 

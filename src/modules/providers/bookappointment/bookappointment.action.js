@@ -15,10 +15,11 @@ import { store } from '../../../setup/store';
 /*  get All Sponsors data details from Sponsors collection*/
 export const getAllDoctorsActiveSponsorDetails = async (doctorIds) => {
   try {
-    let endPoint = 'sponsor/'+ doctorIds;
+    let endPoint = 'sponsor/'+ doctorIds+'?active_sponsor=true';
     let response = await getService(endPoint);
     let respData = response.data;
-// console.log('respData'+JSON.stringify(respData))
+    
+
     return respData;
   } catch (e) {
 
@@ -130,10 +131,10 @@ export async function addReview(userId, insertUserReviews, isLoading = true) {
 
 export async function fetchAvailabilitySlots(doctorIds, dateFilter, patientGender) {
   try {
-    let endPoint = 'doctors/' + doctorIds + '/availabilitySlots?startDate=' + dateFilter.startDate + '&endDate='+ dateFilter.endDate;
+    let endPoint = 'doctors/' + 'availabilitySlots?startDate=' + dateFilter.startDate + '&endDate='+ dateFilter.endDate;
     if(patientGender)   endPoint + '&gender='+ patientGender;
     
-    let response = await getService(endPoint);
+    let response = await postService(endPoint, doctorIds);
     let respData = response.data;
     return respData;
   } catch (e) {
@@ -160,6 +161,22 @@ export async function viewUserReviews(type, id, limit) {
     }
   }
 }
+export async function getUserRepportDetails(type, reportedId, limit) {
+  try {
+    let endPoint =  'report/'+type+'/'+reportedId+limit;
+    let response = await getService(endPoint);
+
+    let respData = response.data;
+    return respData;
+
+  } catch (e) {
+    return {
+      message: 'exception' + e,
+      success: false
+    }
+  }
+}
+
 
 export async function getDoctorsReviewsCount(doctorIds) {
   try {
@@ -213,6 +230,10 @@ export const appointment = async (userId, filters, isLoading = true) => {
 export const getUserAppointments = async (userId, filters) => {
   try {
     let endPoint = 'appointments/user/' + userId + '?startDate=' + filters.startDate + '&endDate=' + filters.endDate;
+    if(filters.on_going_appointment) {
+      endPoint += '&on_going_appointment=1' 
+    }
+    console.log(endPoint);
     let response = await getService(endPoint);
     let respData = response.data;
     return respData;
@@ -434,5 +455,33 @@ export async function getLocations() {
     }
 }
 
+export const getPaymentInfomation = async (paymentId) => {
+  try{    
+        
+    let endPoint =  '/payment/' + paymentId;  
+  
+    let response = await getService(endPoint);
+    
+    let respData = response.data;
+    
+      if(respData.error || respData.success == false) {         
+        return{
+          success: respData.success,
+          message: respData.error,
+        }
+      } else {            
+         
+        return respData;  
+               
+      }
+      
+  } catch (e){       
+     
+      return {
+        success : false,
+        message: 'Exception Occured'+e
+      }; 
+  }
+}
 
 

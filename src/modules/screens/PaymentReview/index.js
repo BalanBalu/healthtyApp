@@ -81,7 +81,7 @@ export default class PaymentReview extends Component {
         console.log('Book Appointment Payment Update Response ');
         
         if (response.success) {
-            this.props.navigation.navigate('paymentsuccess', { successBookSlotDetails: this.state.bookSlotDetails, paymentMethod: 'Cash' });
+            this.props.navigation.navigate('paymentsuccess', { successBookSlotDetails: this.state.bookSlotDetails, paymentMethod: 'Cash', tokenNo: response.tokenNo });
         } else {
             Toast.show({
                 text: response.message,
@@ -113,7 +113,7 @@ export default class PaymentReview extends Component {
                       </Col> */}
                        <Row>
                          <Col style={{width:'25%',justifyContent:'center'}}>
-                            <Thumbnail square source={renderDoctorImage(bookSlotDetails)}   style={{ height: 70, width: 70, borderRadius: 10 }} />
+                            <Thumbnail  source={renderDoctorImage(bookSlotDetails)}   style={{ height: 70, width: 70,borderRadius:70/2 }} />
                          </Col> 
                          <Col style={{width:'80%',marginTop:10}}>
                             <Text style={styles.cardItemText}>{bookSlotDetails.prefix || ''} {bookSlotDetails.doctorName} {getDoctorEducation(bookSlotDetails.education)}</Text>
@@ -144,11 +144,11 @@ export default class PaymentReview extends Component {
               <Row style={{ borderTopColor:'gray', borderTopWidth:1,marginTop:10}}>
                <Col style={{ borderRightColor:'gray', borderRightWidth:1,marginTop:5,alignItems:'center'}}>
                 <Icon name='md-calendar' style={{color:'#0055A5',fontSize:30}} />
-                <Text style={{color:'#0055A5',fontFamily:'OpenSans',fontSize:14}}>{bookSlotDetails.slotData && formatDate(bookSlotDetails.slotData.slotStartDateAndTime, 'Do MMMM, YYYY')}</Text>
+                <Text style={{color:'#0055A5',fontFamily:'OpenSans',fontSize:12}}>{bookSlotDetails.slotData && formatDate(bookSlotDetails.slotData.slotStartDateAndTime, 'Do MMMM, YYYY')}</Text>
                </Col>
                <Col style={{alignItems:'center',marginTop:5}}>
                 <Icon name="md-clock" style={{color:'green',fontSize:30}}/>
-                <Text style={{color:'green',fontFamily:'OpenSans',fontSize:14}}>{bookSlotDetails.slotData && formatDate(bookSlotDetails.slotData.slotStartDateAndTime, 'hh:mm A')} - {bookSlotDetails.slotData && formatDate(bookSlotDetails.slotData.slotEndDateAndTime, 'hh:mm A')}</Text>
+                <Text style={{color:'green',fontFamily:'OpenSans',fontSize:12}}>{bookSlotDetails.slotData && formatDate(bookSlotDetails.slotData.slotStartDateAndTime, 'hh:mm A')} - {bookSlotDetails.slotData && formatDate(bookSlotDetails.slotData.slotEndDateAndTime, 'hh:mm A')}</Text>
                 </Col>
               </Row>
             </Grid>
@@ -162,7 +162,7 @@ export default class PaymentReview extends Component {
                   <Text style={styles.subText}> Your Reason For Checkup</Text>
                   </Row>
                  <Form style={{marginRight:1,marginLeft:-13}}>
-                    <Item>
+                    <Item style={{borderBottomWidth:0}}>
                       <TextInput 
                         onChangeText={(diseaseDescription)=> { 
                             var bookSlotDetails = {...this.state.bookSlotDetails}
@@ -181,7 +181,7 @@ export default class PaymentReview extends Component {
                 
                 <Button  style={styles.payButton} 
                     onPress={() => this.confirmProceedPayment()} >
-                    <Text style={styles.payButtonText}>Pay at Online</Text>
+                    <Text style={styles.payButtonText}>Pay Online</Text>
                 </Button>
                
              </Row>
@@ -312,7 +312,7 @@ const styles = StyleSheet.create({
             borderRadius:10,
             height:40,
             marginTop:20,
-            marginLeft: 15,
+            marginLeft:25,
             padding:10,
             backgroundColor:'#149C00'
           },
@@ -320,8 +320,6 @@ const styles = StyleSheet.create({
             borderRadius:10,
             height:40,
             marginTop: 20,
-            padding: 10,
-            marginLeft: 10,
             backgroundColor:'#0055A5'
           },
           payButtonText:{

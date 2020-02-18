@@ -3,7 +3,7 @@ import { StyleSheet, TextInput, AsyncStorage } from 'react-native';
 import { Container, Radio, Button, Card, Grid, ListItem, List, View, Text, Toast, CardItem, Right, Body, Content, Input, Item, Row, Col } from 'native-base';
 import { appointmentStatusUpdate } from '../../providers/bookappointment/bookappointment.action';
 import { formatDate } from '../../../setup/helpers';
-
+import{onlySpaceNotAllowed } from '../../common';
 import { Loader } from '../../../components/ContentLoader'
 import Spinner from '../../../components/Spinner';
 
@@ -46,9 +46,8 @@ class CancelAppointment extends Component {
   cancelAppointment = async (data, updatedStatus) => {
     try {
       let userId = await AsyncStorage.getItem('userId');
-      console.log(this.state.statusUpdateReason)
-      if (this.state.statusUpdateReason != '') {
-        console.log('true')
+    
+      if (onlySpaceNotAllowed(this.state.statusUpdateReason) == true) {
         this.setState({ isLoading: true });
         let requestData = {
           doctorId: data.doctor_id,
@@ -132,39 +131,43 @@ class CancelAppointment extends Component {
                     <Text style={{ marginTop: 20,fontFamily:'OpenSans',fontSize:15 }}>What is the reason for Cancellation?</Text>
 
 
-                    <ListItem onPress={() => this.toggleRadio(0, "I am feeling better")}>
+                    <Row onPress={() => this.toggleRadio(0, "I am feeling better")} style={{marginTop:10}}>
                       <Radio borderColor='black' selected={this.state.radioStatus[0]} onPress={() => this.toggleRadio(0, "I am feeling better")}
                         selectedColor={"#775DA3"} testID='checkOption_1Selected' />
-                      <Text style={{ marginLeft: 10, fontFamily: 'OpenSans',fontSize:15}}>I am feeling better</Text>
-                    </ListItem>
+                      <Text style={{ marginLeft: 10, fontFamily: 'OpenSans',fontSize:15,marginTop:3}}>I am feeling better</Text>
+                    </Row>
 
-                    <ListItem onPress={() => this.toggleRadio(1, " am looking for sooner or faster")}>
+                    <Row onPress={() => this.toggleRadio(1, " am looking for sooner or faster")} style={{marginTop:10}}>
                       <Radio selected={this.state.radioStatus[1]} onPress={() => this.toggleRadio(1, "Iam looking for sooner or faster")} color={"#775DA3"}
                         selectedColor={"#775DA3"} testID='checkOption_2Selected' />
-                      <Text style={{ marginLeft: 10, fontFamily: 'OpenSans',fontSize:15 }}>I am looking for sooner or faster</Text>
+                      <Text style={{ marginLeft: 10, fontFamily: 'OpenSans',fontSize:15,width:'95%',marginTop:3}}>I am looking for sooner or faster</Text>
 
-                    </ListItem>
+                    </Row>
 
 
-                    <ListItem onPress={() => this.toggleRadio(2, "I will not be able to make this on the time")}>
+                    <Row onPress={() => this.toggleRadio(2, "I will not be able to make this on the time")} style={{marginTop:10}}>
+                     
                       <Radio selected={this.state.radioStatus[2]} onPress={() => this.toggleRadio(2, "I will not be able to make this on the time")} color={"#775DA3"}
                         selectedColor={"#775DA3"} testID='checkOption_3Selected' />
-                      <Text style={{ marginLeft: 10, fontFamily: 'OpenSans',fontSize:15}}>I will not be able to make this on the time</Text>
-                    </ListItem>
+                     
+                      <Text style={{ marginLeft: 10, fontFamily: 'OpenSans',fontSize:15,width:'95%',marginTop:3}}>I will not be able to make this on the time</Text>
+
+                      
+                    </Row>
 
 
 
-                    <ListItem onPress={() => this.toggleRadio(3, "I want to reshedule with different type")}>
+                    <Row onPress={() => this.toggleRadio(3, "I want to reshedule with different type")} style={{marginTop:10}}>
                       <Radio selected={this.state.radioStatus[3]} color="red" selectedColor="green" onPress={() => this.toggleRadio(3, "I want to reshedule with different type")} color={"#775DA3"}
                         selectedColor={"#775DA3"} testID='checkOption_4Selected' />
-                      <Text style={{ marginLeft: 10, fontFamily: 'OpenSans',fontSize:15 }}>I want to reshedule with different type</Text>
-                    </ListItem>
+                      <Text style={{ marginLeft: 10, fontFamily: 'OpenSans',fontSize:15,width:'95%',marginTop:3}}>I want to reshedule with different type</Text>
+                    </Row>
 
-                    <ListItem onPress={() => this.toggleRadio(4, null)}>
+                    <Row onPress={() => this.toggleRadio(4, null)} style={{marginTop:10}}>
                       <Radio selected={this.state.radioStatus[4]} onPress={() => this.toggleRadio(4, null)} color={"#775DA3"}
                         selectedColor={"#775DA3"} testID='checkOption_5Selected' />
-                      <Text style={{ marginLeft: 10, fontFamily: 'OpenSans',fontSize:15 }}>Others</Text>
-                    </ListItem>
+                      <Text style={{ marginLeft: 10, fontFamily: 'OpenSans',fontSize:15,marginTop:3 }}>Others</Text>
+                    </Row>
 
                     {this.state.radioStatus[4] === true ?
                       <Col>
