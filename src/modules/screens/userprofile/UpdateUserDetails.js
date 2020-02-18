@@ -110,6 +110,7 @@ class UpdateUserDetails extends Component {
                 blood_group: selectedBloodGroup
             };
             const userId = await AsyncStorage.getItem('userId')
+            let isProfileCompleted = await AsyncStorage.getItem('ProfileCompletionViaHome');
             let response = await userFiledsUpdate(userId, requestData);
             if (response.success) {
                 Toast.show({
@@ -117,8 +118,12 @@ class UpdateUserDetails extends Component {
                     type: "success",
                     duration: 3000
                 });
+                if (isProfileCompleted == '1') {
+                    this.props.navigation.navigate('Home');
+                    await AsyncStorage.removeItem('ProfileCompletionViaHome')
+                }else{
                     this.props.navigation.navigate('Profile');
-
+                }
             }
             else {
                 Toast.show({
