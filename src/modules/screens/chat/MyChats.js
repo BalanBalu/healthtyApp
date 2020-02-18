@@ -143,7 +143,7 @@ getAllChatsByUserId = async(userId) => {
         }>
      <Row style={styles.rowStyle}>
                 <Col style={{width:'15%'}}>
-                    <Thumbnail square source={item.profileImage}/>
+                    <Thumbnail circle source={item.profileImage}/>
                     <View style={styles.circle} />
                 </Col>
                 <Col style={{width:'85%',marginTop:5,marginLeft:15}}>
