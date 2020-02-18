@@ -158,9 +158,8 @@ export async function bloodDonationFilter(data) {
 }
 
 export const getReferalPoints = async (userId) => {
-  let fields = "credit_points,is_mobile_verified,refer_code,mobile_no,first_name, last_name, dob, blood_group"
+  let fields = "credit_points,is_mobile_verified,refer_code,mobile_no,first_name,last_name,dob"
   let result = await fetchUserProfile(userId, fields);
-  console.log("result action is coming" + JSON.stringify(result))
   if (result) {
     store.dispatch({
       type: AVAILABLE_CREDIT_POINTS,

@@ -72,7 +72,7 @@ class Home extends Component {
             this.props.navigation.navigate('renderOtpInput', { loginData: { userEntry: res.mobile_no }, navigateBackToHome: true });
         }
         else if (res.updateBasicDetails === true) {
-            this.props.navigation.navigate('UpdateUserDetails');
+            this.props.navigation.navigate('userdetails', {updateBasicDetails: res.updateBasicDetails});
         }
     }
     async componentDidMount() {

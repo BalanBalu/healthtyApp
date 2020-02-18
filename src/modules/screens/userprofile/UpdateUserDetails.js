@@ -110,8 +110,6 @@ class UpdateUserDetails extends Component {
                 blood_group: selectedBloodGroup
             };
             const userId = await AsyncStorage.getItem('userId')
-            let isProfileCompleted = await AsyncStorage.getItem('ProfileCompletionViaHome');
-            console.log("isProfileCompleted UPdate user details is comming"+isProfileCompleted)
             let response = await userFiledsUpdate(userId, requestData);
             if (response.success) {
                 Toast.show({
@@ -119,13 +117,7 @@ class UpdateUserDetails extends Component {
                     type: "success",
                     duration: 3000
                 });
-                if (isProfileCompleted == '1') {
-                    this.props.navigation.navigate('Home');
-                    await AsyncStorage.removeItem('ProfileCompletionViaHome')
-                }
-                else {
                     this.props.navigation.navigate('Profile');
-                }
 
             }
             else {
@@ -205,7 +197,7 @@ class UpdateUserDetails extends Component {
                                         minimumDate={new Date(1940, 0, 1)}
                                         maximumDate={subTimeUnit(new Date(), 1, 'year')}
                                         androidMode={"default"}
-                                        placeHolderText={this.state.dob !== null ? formatDate(this.state.dob, "DD/MM/YYYY") : "Date Of Birth"}
+                                        placeHolderText={this.state.dob ? formatDate(this.state.dob, "DD/MM/YYYY") : "Date Of Birth"}
                                         textStyle={{ fontSize: 13, color: "#5A5A5A" }}
                                         value={this.state.dob}
                                         placeHolderTextStyle={{ fontSize: 13, color: "#5A5A5A" }}
