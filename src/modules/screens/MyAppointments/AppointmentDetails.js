@@ -47,7 +47,7 @@ class AppointmentDetails extends Component {
     const userId = await AsyncStorage.getItem('userId');
     const { navigation } = this.props;
     const appointmentData = navigation.getParam('data');
-
+ 
     if (appointmentData == undefined) {
       const appointmentId = navigation.getParam('appointmentId');
       this.props.navigation.setParams({ reportedId: appointmentId });
@@ -447,7 +447,7 @@ class AppointmentDetails extends Component {
               </Col>
               
               <Col style={{width:'92%',paddingTop:5}}>
-                <Text style={styles.innerSubText1}>{data.appointment_status=='PROPOSED_NEW_TIME'?'Reson for reschedule':'Reson for cancelation'}</Text>
+                <Text style={styles.innerSubText1}>{data.appointment_status=='PROPOSED_NEW_TIME'?'Reschedule by '+data.status_updated_by.toLowerCase():'Canceled by '+data.status_updated_by.toLowerCase()}</Text>
               <Text note style={styles.subTextInner1}>{data.status_update_reason}</Text>
               </Col>
             </Row>
@@ -702,19 +702,19 @@ class AppointmentDetails extends Component {
                   <Text style={{ fontSize: 13, fontFamily: 'OpenSans', fontWeight: 'bold', marginTop: -5,color:'#FFF',marginLeft:-5 }}>{'Doctor has Rescheduled the appointment !' }</Text></CardItem>
                   <Row style={{justifyContent:'center'}}>
                   <Col style={{width:'25%'}}>
-                  <Text style={{ fontSize: 12, fontFamily: 'OpenSans', textAlign: 'center', marginTop: 10 ,color:'red',textDecorationLine: 'line-through', textDecorationStyle: 'double', textDecorationColor: 'gray'}}>{formatDate(data.appointment_starttime,"DD/MM/YYYY")}</Text>
+                  <Text style={{ fontSize: 12, fontFamily: 'OpenSans', textAlign: 'center', marginTop: 10 ,color:'red',textDecorationLine: 'line-through', textDecorationStyle: 'double', textDecorationColor: 'gray'}}>{data.previous_data?formatDate(data.previous_data.startDateTime,"DD/MM/YYYY"):null}</Text>
                   </Col>
                     <Col style={{width:'75%'}}>
-                  <Text style={{ fontSize: 12, fontFamily: 'OpenSans', textAlign: 'center', marginTop: 10 ,color:'red',textDecorationLine: 'line-through', textDecorationStyle: 'double', textDecorationColor: 'gray'}}>{formatDate(data.appointment_starttime,"hh:mm a")+formatDate(data.appointment_endtime,"-hh:mm a")}</Text>
+                  <Text style={{ fontSize: 12, fontFamily: 'OpenSans', textAlign: 'center', marginTop: 10 ,color:'red',textDecorationLine: 'line-through', textDecorationStyle: 'double', textDecorationColor: 'gray'}}>{data.previous_data? formatDate(data.previous_data.startDateTime,"hh:mm a")+formatDate(data.previous_data.endDateTime,"-hh:mm a"):null}</Text>
                   </Col>
                  
             </Row>
             <Row style={{justifyContent:'center'}}> 
             <Col style={{width:'30%'}}>
-                  <Text style={{ fontSize: 14, fontFamily: 'OpenSans', textAlign: 'center', marginTop: 10 ,color:'green'}}>{data.previous_data?formatDate(data.previous_data.startDateTime,"DD/MM/YYYY"):null}</Text>
+                  <Text style={{ fontSize: 14, fontFamily: 'OpenSans', textAlign: 'center', marginTop: 10 ,color:'green'}}>{formatDate(data.appointment_starttime,"DD/MM/YYYY")}</Text>
                   </Col>
             <Col style={{width:'70%'}}>
-                  <Text style={{ fontSize: 14, fontFamily: 'OpenSans', textAlign: 'center', marginTop: 10 ,color:'green'}}>{data.previous_data? formatDate(data.previous_data.startDateTime,"hh:mm a")+formatDate(data.previous_data.startDateTime,"-hh:mm a"):null}</Text>
+                  <Text style={{ fontSize: 14, fontFamily: 'OpenSans', textAlign: 'center', marginTop: 10 ,color:'green'}}>{formatDate(data.appointment_starttime,"hh:mm a")+formatDate(data.appointment_endtime,"-hh:mm a")}</Text>
                  </Col>
                  
                   </Row>
