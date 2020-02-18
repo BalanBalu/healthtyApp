@@ -249,14 +249,13 @@ class MyAppoinmentList extends Component {
 	  }
 	}
 
-	handleIndexChange = index => {
+	handleIndexChange = index => {   
 
 		let data = index === 0 ? this.state.upComingData : this.state.pastData;
 
 		this.setState({
 			...this.state,
 			selectedIndex: index,
-
 			data
 
 		});

@@ -209,7 +209,7 @@ class Home extends Component {
         try {
          let userId = await AsyncStorage.getItem('userId')
          if(userId){
-         this.getMarkedAsReadedNotification(userId);
+            this.getMarkedAsReadedNotification(userId);
          }
         } catch (e) {
             console.log(e)
