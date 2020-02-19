@@ -1,5 +1,4 @@
 /* path: "node_modules/react-native-paper/src/components/RadioButtonIOS.js" */
-
 /* @flow */
 
 import * as React from 'react';
@@ -82,6 +81,7 @@ class RadioButtonIOS extends React.Component<Props> {
         .string();
     }
     return (
+      <View style={{paddingRight:10}}>
       <TouchableRipple
         {...rest}
         borderless
@@ -111,6 +111,7 @@ class RadioButtonIOS extends React.Component<Props> {
           />
         </View>
       </TouchableRipple>
+      </View>
     );
   }
 }

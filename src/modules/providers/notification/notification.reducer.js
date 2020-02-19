@@ -7,6 +7,9 @@ export const notificationState = {
     isAuthenticated: false,
     details: null,
     success: false,
+    notification: { 
+        notificationCount: 0
+    },
     notificationCount: null,
     notificationIds:null,
     
@@ -50,6 +53,9 @@ export default (state = notificationState, action) => {
                     ...state,
                     notificationCount: null,
                     notificationIds:null,
+                    notification: {
+                        notificationCount: 0
+                    }
     
                 }
 

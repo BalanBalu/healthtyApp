@@ -239,7 +239,7 @@ render() {
                                     {formatDate(item.created_at, "MMM DD, YYYY  hh:mm:ss A")}  
                                 </Text>
                             </Card>
-                                <Thumbnail square source={ renderProfileImage(userInfo) }/>
+                                <Thumbnail circle source={ renderProfileImage(userInfo) }/>
                         </View>
                     </Right>
                 </Item> 
@@ -248,7 +248,7 @@ render() {
                 <Item style={styles.mainItem1}>
                     <Left>
                         <View style={{flexDirection:'row',alignItems:'center'}}>
-                            <Thumbnail square source={ renderDoctorImage(doctorInfo) }/>
+                            <Thumbnail circle source={ renderDoctorImage(doctorInfo) }/>
                             <Card style={{borderRadius:10,backgroundColor:'#fff',}}>
                                 <Text style={styles.textstyle2}>{item.message}</Text>
                                 <Text style={{
@@ -321,7 +321,7 @@ render() {
                 </Row> : 
                 <Row>
                     <Col style={{ alignContent: 'center', alignItems: 'center', justifyContent: 'center' }}>
-                        <Text  style={{ color: '#FFF', fontSize:18,padding:2, alignSelf: 'center', alignItems: 'center' }}>{this.getInActiveChatMessageByStatus(status)}</Text>
+                        <Text  style={{ color: '#7E49C3', fontSize:15,padding:2, textAlign:'center' }}>{this.getInActiveChatMessageByStatus(status)}</Text>
                     </Col>
                 </Row>
             }  

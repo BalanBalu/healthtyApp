@@ -9,6 +9,7 @@ import { getReferalPoints } from '../../providers/profile/profile.action';
 import { catagries, getSpecialistDataSuggestions } from '../../providers/catagries/catagries.actions';
 import { MAP_BOX_PUBLIC_TOKEN, IS_ANDROID , MAX_DISTANCE_TO_COVER } from '../../../setup/config';
 import MapboxGL from '@react-native-mapbox-gl/maps';
+import { NavigationEvents } from 'react-navigation'
 import { store } from '../../../setup/store';
 import { getAllChats, SET_LAST_MESSAGES_DATA } from '../../providers/chat/chat.action'
 import CurrentLocation from './CurrentLocation';
@@ -17,6 +18,7 @@ const chatImg = require('../../../../assets/images/Chat.jpg');
 const pharmacyImg = require('../../../../assets/images/pharmacy.jpg');
 import OfflineNotice from '../../../components/offlineNotice';
 import { toDataUrl } from '../../../setup/helpers';
+import { fetchUserMarkedAsReadedNotification } from '../../providers/notification/notification.actions';
 
 MapboxGL.setAccessToken(MAP_BOX_PUBLIC_TOKEN);
 
@@ -64,7 +66,9 @@ class Home extends Component {
         let userId = await AsyncStorage.getItem("userId");
         if (userId) {
             this.getAllChatsByUserId(userId);
+            this.getMarkedAsReadedNotification(userId)
             res = await getReferalPoints(userId);
+
             if(res.updateMobileNum === true) {
                 this.props.navigation.navigate('UpdateContact', { updatedata: {  } });
                 Toast.show({
@@ -161,11 +165,6 @@ class Home extends Component {
                 totalSpecialistDataArry: [],
                 searchValue: enteredText
             });
-            /* Toast.show({
-               text: 'No KeyWords Found By near Location',
-               type: 'danger',
-               duration: 3000
-             }) */
         }
     }
     /* Filter the Specialist and Services on Search Box  */
@@ -190,10 +189,32 @@ class Home extends Component {
             />
         );
     };
-    
+    getMarkedAsReadedNotification = async (userId) => {
+        try {
+         await fetchUserMarkedAsReadedNotification(userId);
+         const {notification: { notificationCount }, navigation }=this.props
+         navigation.setParams({
+             notificationBadgeCount: notificationCount
+          });
+        }
+        catch (e) {
+          console.log(e)
+        }
+      }
+      backNavigation = async (navigationData) => {
+        try {
+         let userId = await AsyncStorage.getItem('userId')
+         if(userId){
+            this.getMarkedAsReadedNotification(userId);
+         }
+        } catch (e) {
+            console.log(e)
+        }
+      }
     render() {
         const { fromAppointment } = this.state;
         const { bookappointment: { patientSearchLocationName, locationCordinates, isSearchByCurrentLocation, locationUpdatedCount }, navigation } = this.props;
+       
         if (locationUpdatedCount !== this.locationUpdatedCount) {
             navigation.setParams({
                 appBar: {
@@ -202,12 +223,16 @@ class Home extends Component {
                 }
             });
             this.locationUpdatedCount = locationUpdatedCount;
+           
         }
         return (
 
             <Container style={styles.container}>
                 <OfflineNotice />
                 <Content keyboardShouldPersistTaps={'handled'} style={styles.bodyContent}>
+                <NavigationEvents
+					            onWillFocus={payload => { this.backNavigation(payload) }}
+				            /> 
 
                     <Row style={styles.SearchRow}>
                         <Col size={0.9} style={styles.SearchStyle}>
@@ -248,7 +273,7 @@ class Home extends Component {
                             extraData={[this.state.searchValue, this.state.totalSpecialistDataArry]}
                             ItemSeparatorComponent={this.itemSaperatedByListView}
                             renderItem={({ item, index }) => (
-                                <Row
+                                <Row 
                                     onPress={() => {
                                         let requestData = [{
                                             type: 'geo',
@@ -266,10 +291,10 @@ class Home extends Component {
                                           this.props.navigation.navigate("Doctor List", { resultData: requestData }) 
                                         }}
                                     >
-                                         <Col size={7.5}>
-                                    <Text style={{marginTop:2, fontFamily: 'OpenSans', fontSize: 12,color: '#775DA3',paddingLeft: 10,  }}>{item.value}</Text> 
+                                         <Col size={7}>
+                                    <Text style={{marginTop:2, fontFamily: 'OpenSans', fontSize: 12,color: '#775DA3',paddingLeft: 10, }}>{item.value}</Text> 
                                     </Col>
-                                    <Col size={2.5}>
+                                    <Col size={3}>
                                         <Text uppercase={true} style={{ color: 'gray', marginTop:2, marginRight: 10,color: '#775DA3', fontSize: 12, fontFamily: 'OpenSans-Bold',paddingLeft: 10,  }}>{item.type}</Text>
                                     </Col>
                                 </Row>
@@ -439,7 +464,9 @@ function homeState(state) {
     return {
         bookappointment: state.bookappointment,
         chat: state.chat,
-        profile: state.profile
+        profile: state.profile,
+        notification: state.notification
+
     }
 }
 export default connect(homeState)(Home)
