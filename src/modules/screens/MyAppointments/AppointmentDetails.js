@@ -121,12 +121,12 @@ class AppointmentDetails extends Component {
   /* get User reviews */
   getUserReviews = async () => {
     try {
-      if(this.state.data.is_review_added==true){
+     
       let resultReview = await viewUserReviews('appointment', this.state.appointmentId, '?skip=0');
       if (resultReview.success) {
         this.setState({ reviewData: resultReview.data });
       }
-    }
+  
     }
     catch (e) {
       console.error(e);
@@ -255,6 +255,7 @@ class AppointmentDetails extends Component {
 
   async  getvisble(val) {
     try {
+      alert(val.updatedVisible)
       await this.setState({ isLoading: true, modalVisible : false })
       if(val.updatedVisible==true) {
           this.getUserReviews()
