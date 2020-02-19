@@ -111,7 +111,7 @@ class AppointmentDetails extends Component {
           specialist: specialistDetails.toString(),
         })
       }
-      console.log(JSON.stringify(this.state.hospitalData))
+      
     }
     catch (e) {
       console.log(e);
@@ -174,7 +174,7 @@ class AppointmentDetails extends Component {
   getPaymentInfo = async (paymentId) => {
     try {
       let result = await getPaymentInfomation(paymentId);
-      console.log(result)
+     
       if (result.success) {
         this.setState({ paymentDetails: result.data[0] })
       }
@@ -209,7 +209,7 @@ class AppointmentDetails extends Component {
 
       let result = await appointmentStatusUpdate(this.state.doctorId, this.state.appointmentId, requestData);
       this.setState({ isLoading: false })
-      //  let appointmentStatus = result.appointmentData.appointment_status;
+      
       if (result.success) {
         let temp = this.state.data
     
