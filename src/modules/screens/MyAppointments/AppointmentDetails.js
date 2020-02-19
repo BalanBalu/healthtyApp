@@ -32,7 +32,6 @@ class AppointmentDetails extends Component {
       statusUpdateReason: ' ',
       education: '',
       specialist: '',
-      hospital: [],
       selectedTab: 0,
       paymentDetails: {},
       modalVisible: false,
@@ -47,7 +46,6 @@ class AppointmentDetails extends Component {
     const userId = await AsyncStorage.getItem('userId');
     const { navigation } = this.props;
     const appointmentData = navigation.getParam('data');
- 
     if (appointmentData == undefined) {
       const appointmentId = navigation.getParam('appointmentId');
       this.props.navigation.setParams({ reportedId: appointmentId });
@@ -84,7 +82,7 @@ class AppointmentDetails extends Component {
         await this.setState({ proposedVisible: true })
       }
 
-    }
+     }
 
     await this.setState({ isLoading: false })
   }
@@ -93,7 +91,7 @@ class AppointmentDetails extends Component {
   getDoctorDetails = async () => {
     try {
 
-      let fields = 'first_name,last_name,prefix,education,specialist,email,mobile_no,experience,hospital,language,professional_statement,fee,profile_image';
+      let fields = 'prefix,education,specialist,experience,language,professional_statement,profile_image';
       let resultDetails = await bindDoctorDetails(this.state.doctorId, fields);
 
       if (resultDetails.success) {
@@ -105,20 +103,15 @@ class AppointmentDetails extends Component {
         if (resultDetails.data.specialist != undefined) {
           specialistDetails = getAllSpecialist(resultDetails.data.specialist)
         }
-        let hospitalData = [];
-        if (resultDetails.data.hospital != undefined) {
-          resultDetails.data.hospital.map(hospital_ele => {
-            if (hospital_ele.hospital_id == this.state.data.hospital_id)
-              hospitalData = hospital_ele;
-          })
-        }
-        this.setState({
+    
+        
+       this.setState({
           education: educationDetails,
           doctorData: resultDetails.data,
           specialist: specialistDetails.toString(),
-          hospital: hospitalData
         })
       }
+      console.log(JSON.stringify(this.state.hospitalData))
     }
     catch (e) {
       console.log(e);
@@ -128,10 +121,12 @@ class AppointmentDetails extends Component {
   /* get User reviews */
   getUserReviews = async () => {
     try {
+      if(this.state.data.is_review_added==true){
       let resultReview = await viewUserReviews('appointment', this.state.appointmentId, '?skip=0');
       if (resultReview.success) {
         this.setState({ reviewData: resultReview.data });
       }
+    }
     }
     catch (e) {
       console.error(e);
@@ -151,7 +146,6 @@ class AppointmentDetails extends Component {
     catch (e) {
       console.error(e);
     }
-
 
   }
 
@@ -215,12 +209,10 @@ class AppointmentDetails extends Component {
 
       let result = await appointmentStatusUpdate(this.state.doctorId, this.state.appointmentId, requestData);
       this.setState({ isLoading: false })
-      // let appointmentStatus = result.appointmentData.appointment_status;
+      //  let appointmentStatus = result.appointmentData.appointment_status;
       if (result.success) {
         let temp = this.state.data
-        temp.doctor_id = result.appointmentData.doctor_id;
-        temp.appointment_starttime = result.appointmentData.appointment_starttime;
-        temp.appointment_endtime = result.appointmentData.appointment_endtime;
+    
         temp.appointment_status=result.appointmentData.appointment_status
         Toast.show({
           text: result.message,
@@ -229,7 +221,7 @@ class AppointmentDetails extends Component {
         if(this.state.proposedVisible==true){
           this.setState({proposedVisible: false });
         }
-        // this.setState({ appointmentStatus: appointmentStatus, data: temp });
+      
         this.setState({data: temp });
       }
     }
@@ -242,16 +234,8 @@ class AppointmentDetails extends Component {
  async  navigateCancelAppoointment() {
     try{
     this.state.data.prefix = this.state.doctorData.prefix;
-    const { navigation } = this.props;
-    const fromNotification = navigation.getParam('fromNotification');
-
-    if (fromNotification == true || fromNotification != undefined) {
-      let doctorInfo = {
-        first_name: this.state.doctorData.first_name,
-        last_name: this.state.doctorData.last_name
-      }
-      this.state.data.doctorInfo = doctorInfo;
-    }
+  
+  
    await  this.setState({proposedVisible:false})
     this.props.navigation.navigate('CancelAppointment', { appointmentDetail: this.state.data })
   }
@@ -290,7 +274,7 @@ class AppointmentDetails extends Component {
 
 
   render() {
-    const { data, reviewData,reportData, doctorData, education, specialist, hospital, isLoading, selectedTab, paymentDetails } = this.state;
+    const { data, reviewData,reportData, doctorData, education, specialist, isLoading, selectedTab, paymentDetails } = this.state;
 
     return (
  <Container style={styles.container}>
@@ -317,7 +301,7 @@ class AppointmentDetails extends Component {
                          </Col> 
                          <Col style={{width:'80%',marginTop:10}}>
                             <Row>
-                              <Text  style={styles.Textname} >{(doctorData && doctorData.prefix != undefined ? doctorData.prefix +' ' : '') + (getName(doctorData)) + ' '}</Text>
+                              <Text  style={styles.Textname} >{(doctorData && doctorData.prefix != undefined ? doctorData.prefix +' ' : '') + (getName(data.doctorInfo)) + ' '}</Text>
                               <Text note style={{ fontSize: 13, fontFamily: 'OpenSans',fontWeight:'normal' }}>{education}</Text>
                              </Row>
                              <Row style={{ alignSelf: 'flex-start'  }}>
@@ -348,6 +332,7 @@ class AppointmentDetails extends Component {
                <Text style={{marginLeft:16, fontSize: 15, fontFamily: 'OpenSans', fontWeight: 'bold',color:'green' }}>ONGOING</Text>
                </Col>
                :
+               data.appointment_status != undefined&&
                 <Col size={3}>
                      
                      <View style={{ alignItems:'center',marginLeft:-25 }}>
@@ -485,17 +470,18 @@ class AppointmentDetails extends Component {
                  <Text note style={styles.subTextInner1}>{data.disease_description}</Text>
               </Col>
             </Row>:null}
+            {data.location!=undefined&&
             <Row  style={styles.rowSubText}>
                <Col style={{width:'8%',paddingTop:5}}>
                  <Icon name="ios-pin" style={{fontSize:20,}}/>
                </Col>
               <Col style={{width:'92%',paddingTop:5}}>
                  <Text style={styles.innerSubText}>Hospital</Text>
-                 <Text  style={styles.subTextInner1}>{getHospitalHeadeName(hospital)}</Text>
-                 <Text note style={styles.subTextInner1}>{getHospitalName(hospital)}</Text>
+                 <Text  style={styles.subTextInner1}>{getHospitalHeadeName(data.location[0])}</Text>
+                 <Text note style={styles.subTextInner1}>{getHospitalName(data.location[0])}</Text>
               </Col>
-            </Row>
-            <Row style={styles.rowSubText}>
+            </Row>}
+            {/* <Row style={styles.rowSubText}>
                <Col style={{width:'8%',paddingTop:5}}>
                  <Icon name="ios-contact" style={{fontSize:20,}}/>
               </Col>
@@ -512,7 +498,7 @@ class AppointmentDetails extends Component {
               <Col  style={{width:'65%'}}>
             <Text note style={styles.downText}>{doctorData && doctorData.email}</Text>
               </Col>
-            </Row>
+            </Row> 
             <Row style={{marginTop:10}}>
               <Col style={{width:'25%'}}>
                   <Text style={styles.downText}>Contact
@@ -526,7 +512,7 @@ class AppointmentDetails extends Component {
               </Col>
             </Row>
               </Col>
-            </Row>
+            </Row>*/}
             
             {doctorData.language != undefined && doctorData.language.length != 0 ?
             <Row style={styles.rowSubText}>
