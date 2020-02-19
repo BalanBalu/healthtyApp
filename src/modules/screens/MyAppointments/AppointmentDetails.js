@@ -255,7 +255,7 @@ class AppointmentDetails extends Component {
 
   async  getvisble(val) {
     try {
-      alert(val.updatedVisible)
+     
       await this.setState({ isLoading: true, modalVisible : false })
       if(val.updatedVisible==true) {
           this.getUserReviews()
