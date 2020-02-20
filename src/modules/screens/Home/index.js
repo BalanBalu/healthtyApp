@@ -80,6 +80,10 @@ class Home extends Component {
         this.getCatagries();
         let userId = await AsyncStorage.getItem("userId");
         if (userId) {
+            const {notification: { notificationCount },navigation}=this.props
+                      navigation.setParams({
+                          notificationBadgeCount: notificationCount
+                        });
             this.getAllChatsByUserId(userId);
             this.getMarkedAsReadedNotification(userId)
             res = await getReferalPoints(userId);
@@ -230,11 +234,11 @@ class Home extends Component {
     };
     getMarkedAsReadedNotification = async (userId) => {
         try {
-            await fetchUserMarkedAsReadedNotification(userId);
-            const { notification: { notificationCount }, navigation } = this.props
-            navigation.setParams({
-                notificationBadgeCount: notificationCount
-            });
+        await fetchUserMarkedAsReadedNotification(userId);
+         const {notification: { notificationCount },navigation}=this.props
+         navigation.setParams({
+             notificationBadgeCount: notificationCount
+          });
         }
         catch (e) {
             console.log(e)
