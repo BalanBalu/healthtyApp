@@ -449,9 +449,7 @@ class BookAppoinment extends Component {
         {isLoading ?
           <Loader style='appointment' /> :
           <Content style={styles.bodyContent} contentContainerStyle={{ flex: 0, padding: 10 }}>
-
             <Card style={{ borderBottomWidth: 2 }}>
-
               <Grid >
                 <Row >
                   <Col style={{ width: '5%', marginLeft: 20, marginTop: 10 }}>
@@ -459,12 +457,13 @@ class BookAppoinment extends Component {
                   </Col>
                   <Col style={{ width: '78%' }}>
                     <Row style={{ marginLeft: 55, marginTop: 10 }}>
+                      <Col size={9}>
                       <Text style={{ fontFamily: 'OpenSans', fontSize: 12, fontWeight: 'bold' }}>{(doctorData.prefix ? doctorData.prefix + '. ' : '') + (doctorData.first_name || '') + ' ' + (doctorData.last_name || '')}</Text>
-                    </Row>
-                    <Row style={{ marginLeft: 55,marginTop: 10 }}>
-                      <Text note style={{ fontFamily: 'OpenSans',fontSize: 11 }}>{(getDoctorEducation(doctorData.education)) + ' ' + getDoctorSpecialist(doctorData.specialist)}</Text>
-                    </Row>
-
+                      <Text note style={{ fontFamily: 'OpenSans',fontSize: 11,marginTop:5 }}>{(getDoctorEducation(doctorData.education)) + ' ' + getDoctorSpecialist(doctorData.specialist)}</Text>
+                      </Col>
+                      <Col size={1}>
+                      </Col>
+                    </Row>  
                   </Col>
                   <Col style={{ width: '17%' }}>
 
