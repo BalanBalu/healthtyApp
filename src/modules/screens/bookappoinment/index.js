@@ -455,7 +455,7 @@ class BookAppoinment extends Component {
               <Grid >
                 <Row >
                   <Col style={{ width: '5%', marginLeft: 20, marginTop: 10 }}>
-                    <Thumbnail square source={renderDoctorImage(doctorData)} style={{ height: 60, width: 60 }} />
+                    <Thumbnail square source={renderDoctorImage(doctorData)} style={{ height: 60, width: 60,borderRadius:60/2 }} />
                   </Col>
                   <Col style={{ width: '78%' }}>
                     <Row style={{ marginLeft: 55, marginTop: 10 }}>
@@ -756,8 +756,8 @@ class BookAppoinment extends Component {
           }
         }}
         renderItem={({ item }) =>
-          <Col style={{ width: 100, justifyContent: 'center' }}>
-            <TouchableOpacity style={[styles.availabilityBG, selectedDate === item ? { backgroundColor: '#775DA3' } : { backgroundColor: '#ced6e0' }]}
+          <Col style={{justifyContent: 'center' }}>
+            <TouchableOpacity style={[styles.availabilityBG, selectedDate === item ? { backgroundColor: '#775DA3', alignItems: 'center' } : {  backgroundColor: '#ced6e0', alignItems: 'center'}]}
               onPress={() => this.onDateChanged(item)}>
               <Text style={[{ textAlign: 'center', fontSize: 12, fontFamily: 'OpenSans' }, selectedDate === item ? { color: '#fff' } : { color: '#000' }]}>{formatDate(moment(item), 'ddd, DD MMM')}</Text>
               <Text style={[{ textAlign: 'center', fontSize: 10, fontFamily: 'OpenSans', lineHeight: 11 }, selectedDate === item ? { color: '#fff' } : { color: '#000' }]}>{slotData[item] ? slotData[item].reduce(reducer, 0) + ' Slots Available' : 'No Slots Available'}</Text>
@@ -791,14 +791,14 @@ const styles = StyleSheet.create({
   },
   availabilityBG: {
     textAlign: 'center',
-    borderColor: '#000',
-    marginTop: 10,
-    height: 50,
-    borderRadius: 5,
-    justifyContent: 'center',
-    marginRight: 5,
-    paddingLeft: 5,
-    paddingRight: 5
+        borderColor: '#000',
+        marginTop: 10,
+        height: 50,
+        borderRadius: 5,
+        justifyContent: 'center',
+        marginRight: 5,
+        paddingLeft: 5,
+        paddingRight: 5
   },
 
   logo: {

@@ -97,7 +97,7 @@ async getBasicData() {
             dataArray={items}
             renderRow={data => {
               return (
-                <ListItem style={{borderBottomWidth:0,height:50}}
+                <ListItem style={{borderBottomWidth:0,height: 50 }}
                   button
                   onPress={() => this.props.navigation.navigate(data.routeName)}>
                           <Image square source={DragwerLogos[data.key]} 
@@ -108,20 +108,20 @@ async getBasicData() {
               );
             }}
           />
+          
         </Content>
+        <List>
+           <ListItem style={{borderBottomWidth:0,  marginTop: 40 }}>
+              <Icon name='ios-power' style={{fontSize:15,color:'#7D4ac1',marginLeft:5
+            }}/>
+            <Text onPress={() => this.signInOrSignup(hasLoggedIn) } 
+                style={{fontFamily:'OpenSans',fontSize:15,marginLeft:22}}>{hasLoggedIn ? 'Sign Out' : 'Sign In' }</Text>
+            </ListItem>
+        </List>  
           
           <View>
-           <List style={{position: 'absolute', Top: 0,marginTop:-35}}>
-           <ListItem style={{borderBottomWidth:0,height:50}}>
-                 <Icon name='ios-power' style={{fontSize:15,color:'#7D4ac1'
-                }}/>
-             
-         
-                <Text onPress={() => this.signInOrSignup(hasLoggedIn) } 
-                 style={{fontFamily:'OpenSans',fontSize:15,marginLeft:20}}>{hasLoggedIn ? 'Sign Out' : 'Sign In' }</Text>
-            </ListItem>
-           </List>   
-           <Footer style={{marginTop:10,backgroundColor:'#fff',}}>
+           
+           <Footer style={{  height: 40, backgroundColor:'#fff',}}>
               <FooterTab style={{justifyContent:'center',alignItems:'center',backgroundColor:'#7f49c3'}}>
                 <Text style={{textAlign:'center',fontFamily:'OpenSans',fontWeight:'700',fontSize:20,color:'#fff'}}>MEDFLIC</Text>
               </FooterTab>

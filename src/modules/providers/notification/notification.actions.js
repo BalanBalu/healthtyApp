@@ -61,6 +61,7 @@ export const fetchUserMarkedAsReadedNotification = async (userId) => {
         let response = await getService(endPoint);
         let respData = response.data;
        
+       
         store.dispatch({
             type: NOTIFICATION_REQUEST,
             message: respData.message
@@ -68,7 +69,7 @@ export const fetchUserMarkedAsReadedNotification = async (userId) => {
         if (respData.error || !respData.success) {
             store.dispatch({
                 type: NOTIFICATION_HAS_ERROR,
-                message: e + ' Occured! Please Try again'
+                message:'Occured! Please Try again'
             });
 
         } else {
