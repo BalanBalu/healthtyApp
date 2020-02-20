@@ -13,6 +13,9 @@ class reportIssueDetails extends Component {
         }
     }
     render() {
+        
+        const data =[{date:"Today, 20/02/2020 at 01.10 PM",content:"We have no special tie-ups,relationship or consideration with doctors in this regard as we want to be an independent unbiased site for patients.",
+    detail:"Through Medflic,yours chances of booking an appoinment are the same as using any other means."}]
         return (
             <Container>
                 <Content style={{ padding: 20 }}>
@@ -35,24 +38,24 @@ class reportIssueDetails extends Component {
                         </View>
                         </View>
                          {/* }/> */}
-                         {/* <FlatList
+                         <FlatList
                          data={data}
-                         renderItem={({ item }) => */}
+                         renderItem={({ item }) => 
                          <View>
                         <Row style={{ paddingBottom: 10, borderBottomColor: '#C1C1C1', borderBottomWidth: 0.3, marginTop: 30 }}>
                             <Left>
                                 <Text style={styles.reportText}>Replied By Medflic</Text>
                             </Left>
                             <Right>
-                                <Text style={styles.date}>Today, 20/02/2020 at 01.10 PM</Text>
+                        <Text style={styles.date}>{item.date}</Text>
                             </Right>
                         </Row>
                         <View style={{ marginTop: 10 }}>
                             <Text style={styles.contentText}>Hello Sir,
                            </Text>
-                            <Text style={[styles.contentText,{marginTop: 20}]}>We have no special tie-ups,relationship or consideration with doctors in this regard as we want to be an independent unbiased site for patients.
+                            <Text style={[styles.contentText,{marginTop: 20}]}>{item.content}
                             </Text>
-                            <Text style={[styles.contentText,{marginTop: 10} ]}>Through Medflic,yours chances of booking an appoinment are the same as using any other means.
+                            <Text style={[styles.contentText,{marginTop: 10} ]}>{item.detail}
                             </Text>
                             <Text style={[styles.boldContent,{marginTop: 20 }]}>Thanks,
                             </Text>
@@ -60,7 +63,7 @@ class reportIssueDetails extends Component {
                            </Text>
                         </View>
                         </View>
-                         {/* }/> */}
+                         }/> 
                         <View style={{ marginTop: 30 }}>
                             <Text style={styles.replyText}>Quick Reply
                             </Text>
