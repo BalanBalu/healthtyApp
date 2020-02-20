@@ -3,11 +3,11 @@ import { Container, Content, Text, Toast, Button, Card, Input, Left, Right, Icon
 import { logout } from '../../providers/auth/auth.actions';
 import { Col, Row, Grid } from 'react-native-easy-grid';
 import { connect } from 'react-redux'
-import { StyleSheet, Image, View, TouchableOpacity, AsyncStorage, FlatList, ImageBackground, Alert } from 'react-native';
+import { StyleSheet, Image, View, TouchableOpacity, AsyncStorage, FlatList, ImageBackground, Alert, Linking } from 'react-native';
 
-import { getReferalPoints } from '../../providers/profile/profile.action';
+import { getReferalPoints, getCurrentVersion } from '../../providers/profile/profile.action';
 import { catagries, getSpecialistDataSuggestions } from '../../providers/catagries/catagries.actions';
-import { MAP_BOX_PUBLIC_TOKEN, IS_ANDROID, MAX_DISTANCE_TO_COVER } from '../../../setup/config';
+import { MAP_BOX_PUBLIC_TOKEN, IS_ANDROID, MAX_DISTANCE_TO_COVER, CURRENT_PRODUCT_VERSION_CODE} from '../../../setup/config';
 import MapboxGL from '@react-native-mapbox-gl/maps';
 import { NavigationEvents } from 'react-navigation'
 import { store } from '../../../setup/store';
@@ -76,14 +76,21 @@ class Home extends Component {
         }
     }
     async componentDidMount() {
-
+        let productConfigVersion = await getCurrentVersion("CURRENT_PATIENT_MEDFLIC_VERSION")
+        console.log(productConfigVersion)
+        if (productConfigVersion.success) {
+            if (CURRENT_PRODUCT_VERSION_CODE !== productConfigVersion.data[0].value.version_code) {
+                await this.updateAppVersion(productConfigVersion);
+                return
+            }
+        }
         this.getCatagries();
         let userId = await AsyncStorage.getItem("userId");
         if (userId) {
-            const {notification: { notificationCount },navigation}=this.props
-                      navigation.setParams({
-                          notificationBadgeCount: notificationCount
-                        });
+            const { notification: { notificationCount }, navigation } = this.props
+            navigation.setParams({
+                notificationBadgeCount: notificationCount
+            });
             this.getAllChatsByUserId(userId);
             this.getMarkedAsReadedNotification(userId)
             res = await getReferalPoints(userId);
@@ -123,6 +130,51 @@ class Home extends Component {
             CurrentLocation.getCurrentPosition();
         }
     }
+
+
+    updateAppVersion = async (productConfigVersion) => {
+        console.log(productConfigVersion.data[0].value.force_update )
+        if (productConfigVersion.data[0].value.force_update == true) {
+            Alert.alert(
+                "Please Upgrade Your Application !",
+                "New version is available, Select update to update our app",
+                [
+                    {
+                        text: "UPDATE", onPress: () => {
+                            console.log('OK Pressed')
+                            Linking.openURL("https://play.google.com/store/apps/details?id=com.medflic&hl=en")
+                        }
+
+                    }
+                ],
+                { cancelable: false }
+            );
+        } else {
+            Alert.alert(
+                "Please Upgrade Your Application !",
+                "New version is available, Select update to update our app",
+                [
+                    {
+                        text: "Skip",
+                        onPress: () => {
+                            console.log("Cancel Pressed");
+                        },
+                        style: "cancel"
+                    },
+                    {
+                        text: "UPDATE", onPress: () => {
+                            console.log('OK Pressed')
+                            Linking.openURL("https://play.google.com/store/apps/details?id=com.medflic&hl=en")
+                        }
+
+                    }
+                ],
+                { cancelable: false }
+            );
+        }
+    }
+
+
 
     getCatagries = async () => {
         try {
@@ -234,11 +286,11 @@ class Home extends Component {
     };
     getMarkedAsReadedNotification = async (userId) => {
         try {
-        await fetchUserMarkedAsReadedNotification(userId);
-         const {notification: { notificationCount },navigation}=this.props
-         navigation.setParams({
-             notificationBadgeCount: notificationCount
-          });
+            await fetchUserMarkedAsReadedNotification(userId);
+            const { notification: { notificationCount }, navigation } = this.props
+            navigation.setParams({
+                notificationBadgeCount: notificationCount
+            });
         }
         catch (e) {
             console.log(e)

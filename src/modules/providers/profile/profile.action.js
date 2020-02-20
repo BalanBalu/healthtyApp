@@ -157,6 +157,23 @@ export async function bloodDonationFilter(data) {
   }
 }
 
+/*Get app current version  */
+export async function getCurrentVersion(type) {
+  try {
+    let endPoint = '/admin/productConfig/' + type;
+    let response = await getService(endPoint);
+    let respData = response.data;
+    return respData;
+
+  } catch (e) {
+    return {
+      message: 'exception' + e,
+      success: false
+    }
+  }
+}
+
+
 export const getReferalPoints = async (userId) => {
   let fields = "credit_points,is_mobile_verified,refer_code,mobile_no,first_name,last_name,dob"
   let result = await fetchUserProfile(userId, fields);

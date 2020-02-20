@@ -5,7 +5,7 @@ import {
 } from 'native-base';
 import { userFiledsUpdate, logout } from '../../providers/auth/auth.actions';
 import { connect } from 'react-redux'
-import { Row } from 'react-native-easy-grid';
+import { Row, Col } from 'react-native-easy-grid';
 
 import { Image, BackHandler, AsyncStorage, ScrollView } from 'react-native';
 import styles from './style.js';
@@ -242,22 +242,37 @@ class UpdateUserDetails extends Component {
                                 </Item>
 
 
-                                <Item style={{ marginTop: 20, borderBottomWidth: 0, marginLeft: 20 }}>
+                                <View style={{ marginTop: 20, borderBottomWidth: 0,marginLeft:5}}>
                                     <RadioButton.Group
                                         onValueChange={value => this.setState({ gender: value, updateButton: false })}
                                         value={this.state.gender}>
-                                        <RadioButton value="M" />
-                                        <Text style={{ marginLeft: 10, fontFamily: 'OpenSans', fontSize: 15 }}>Male</Text>
-                                        <View style={{ marginLeft: 20 }}>
-                                            <RadioButton value="F" />
-                                        </View>
-                                        <Text style={{ marginLeft: 10, fontFamily: 'OpenSans', fontSize: 15 }}>Female</Text>
-                                        <View style={{ marginLeft: 20 }}>
-                                            <RadioButton value="O" />
-                                        </View>
-                                        <Text style={{ marginLeft: 10, fontFamily: 'OpenSans', fontSize: 15 }}>Others</Text>
+                                            <Row>
+                                                <Col size={3.3}>
+                                                    <Row style={{alignItems:'center'}}>
+                                                    <RadioButton value="M" />
+                                                    <Text style={{  fontFamily: 'OpenSans', fontSize: 12 }}>Male</Text>
+                                                    </Row>
+                                                </Col>
+                                            <Col size={3.3}>
+                                                <Row style={{ alignItems: 'center' }}>
+                                                
+                                                    <RadioButton value="F" />
+                                               
+                                                <Text style={{  fontFamily: 'OpenSans', fontSize: 12 }}>Female</Text>
+                                                </Row>
+                                            </Col>
+                                            <Col size={3.3}>
+                                                <Row style={{ alignItems: 'center' }}>
+                                                
+                                                    <RadioButton value="O" />
+                                              
+                                                <Text style={{  fontFamily: 'OpenSans', fontSize: 12 }}>Others</Text>
+                                                </Row>
+                                            </Col>
+                                            </Row>                              
+                                        
                                     </RadioButton.Group>
-                                </Item>
+                                </View>
                                 <Text style={{ color: 'red', marginLeft: 15, marginTop: 5 }}>{this.state.errorMsg}</Text>
 
                                 <View>
