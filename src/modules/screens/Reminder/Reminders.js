@@ -67,6 +67,8 @@ class Reminder extends Component {
             <Text style={{ color: '#7F49C3', textAlign: 'center', marginTop: 2, fontFamily: 'OpenSans', fontWeight: "500" }}>Today</Text>
           </View>
           <FlatList data={data}
+                              keyExtractor={(item, index) => index.toString()}
+
             renderItem={({ item }) => (
               <View style={{ marginLeft: 15, marginRight: 15, }}>
                 <Card style={{ marginTop: 15 }}>
@@ -74,6 +76,8 @@ class Reminder extends Component {
                     <Row style={{ backgroundColor: '#7F49C3', paddingTop: 5, paddingBottom: 5 }}>
                       <Col>
                       <FlatList data={item.medicine_take_times}
+                                          keyExtractor={(item, index) => index.toString()}
+
             renderItem={({ item }) => (
              
             <Text style={{ marginLeft: 15, color: '#FFF' }}>{formatDate(item.medicine_take_times,'HH:mm A')}</Text>

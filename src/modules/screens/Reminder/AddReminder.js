@@ -41,10 +41,14 @@ class AddReminder extends Component {
       previewdisplay: false,
       data: [],
       arrayTakenTime: [],
-      
+      arrayeveryday: [],
+      arrryoneday: []
+
     }
     this.pastSelectedDate = new Date(),
       this.upcommingSelectedDate = new Date()
+    // alert(moment().startOf('day').toDate())
+    alert(new Date())
   }
 
 
@@ -175,7 +179,6 @@ class AddReminder extends Component {
 
   InsertReminderData = async () => {
     try {
-
       if ((this.state.medicine_name == null) || (this.state.selectedMedicineForm == null) || (this.state.selectedMedicineForm == "Select medicine Form") || (this.state.selectMedicineStrength == null) || (this.state.selectMedicineStrength == "Select medicine strength")) {
         Toast.show({
           text: 'Kindly fill all the fields to schedule your reminderTime slots',
@@ -205,17 +208,17 @@ class AddReminder extends Component {
           reminder_type: String(this.state.medicinePeriod),
           is_reminder_enabled: true,
           active: true,
-         
+
         }
 
         if (this.state.medicinePeriod === "everyday") {
           priviewData.medicine_take_start_date = moment(this.state.medicine_take_start_date).toISOString(),
-          priviewData.medicine_take_end_date = moment(this.state.medicine_take_end_date).toISOString()
-          }
-          else {
-            priviewData.medicine_take_one_date = moment(this.state.medicine_take_one_date).toISOString()
-          }
-  
+            priviewData.medicine_take_end_date = moment(this.state.medicine_take_end_date).toISOString()
+        }
+        else {
+          priviewData.medicine_take_one_date = moment(this.state.medicine_take_one_date).toISOString()
+        }
+
         temp = this.state.data
         temp.push(priviewData)
         let getData = JSON.stringify(data)
@@ -226,7 +229,7 @@ class AddReminder extends Component {
       }
     }
     catch (e) {
-      console.log(e)
+      console.log(e.message)
     }
   }
 
@@ -242,6 +245,7 @@ class AddReminder extends Component {
 
 
   AddReminderDatas = async () => {
+    alert('haai')
     try {
 
       if ((this.state.medicine_name == null) || (this.state.selectedMedicineForm == null) || (this.state.selectedMedicineForm == "Select medicine Form") || (this.state.selectMedicineStrength == null) || (this.state.selectMedicineStrength == "Select medicine strength")) {
@@ -265,15 +269,18 @@ class AddReminder extends Component {
           active: true
         }
         if (this.state.medicinePeriod === "everyday") {
-        data.medicine_take_start_date = moment(this.state.medicine_take_start_date).toISOString(),
-          data.medicine_take_end_date = moment(this.state.medicine_take_end_date).toISOString()
+          data.medicine_take_start_date = moment(this.state.medicine_take_start_date).toISOString(),
+            data.medicine_take_end_date = moment(this.state.medicine_take_end_date).toISOString()
         }
         else {
           data.medicine_take_one_date = moment(this.state.medicine_take_one_date).toISOString()
         }
-alert(JSON.stringify(data))
+        // alert(JSON.stringify(data))
         let result = await addReminderdata(userId, data)
+        console.log('result', result)
         if (result.success) {
+          alert('if')
+
           Toast.show({
             text: result.message,
             type: "success",
@@ -281,6 +288,7 @@ alert(JSON.stringify(data))
           })
         }
         else {
+          alert('else', result.message)
           Toast.show({
             text: result.message,
             type: "danger",
@@ -290,7 +298,7 @@ alert(JSON.stringify(data))
       }
     }
     catch (e) {
-      console.log(e)
+      console.log(e.message)
     }
   }
 
@@ -511,7 +519,7 @@ alert(JSON.stringify(data))
                       <TouchableOpacity onPress={() => { this.setState({ isTimePickerVisible: !this.state.isTimePickerVisible }) }} style={styles.toucableOpacity}>
                         <Icon name='ios-clock' style={styles.tocuhIcon} />
                         {this.state.timePlaceholder ?
-                          <Text style={{ marginTop: 7, marginBottom: 7, fontFamily: 'OpenSans', fontSize: 13, textAlign: 'center', marginLeft: 5 }}>{formatDate(this.state.medicine_take_times,'HH:mm A')}</Text> :
+                          <Text style={{ marginTop: 7, marginBottom: 7, fontFamily: 'OpenSans', fontSize: 13, textAlign: 'center', marginLeft: 5 }}>{formatDate(this.state.medicine_take_times, 'HH:mm A')}</Text> :
                           <Text style={{ marginTop: 7, marginBottom: 7, fontFamily: 'OpenSans', fontSize: 13, textAlign: 'center', marginLeft: 5 }}>Select time </Text>
 
                         }
@@ -562,17 +570,15 @@ alert(JSON.stringify(data))
                               <Text style={{ marginLeft: 10, color: '#43be39' }}>{formatDate(item.medicine_take_times, 'HH:mm a')}</Text>
                             </Col>
 
-
-
                             <Col size={5}>
-                              {this.state.medicinePeriod == "everyday"?
-                              
-                              <Text style={{ fontSize: 10, marginTop: 5, color: '#6f6f6f', marginLeft: -35 }}>{formatDate(item.medicine_take_start_date, 'DD/MM/YYYY')} - {formatDate(item.medicine_take_end_date, 'DD/MM/YYYY')}</Text>
-                              :   <Text style={{ fontSize: 10, marginTop: 5, color: '#6f6f6f', marginLeft: -35 }}>{formatDate(item.medicine_take_one_date, 'DD/MM/YYYY')}</Text>
-                    }
+                              {this.state.medicinePeriod == "everyday" ?
+
+                                <Text style={{ fontSize: 10, marginTop: 5, color: '#6f6f6f', marginLeft: -35 }}>{formatDate(item.medicine_take_start_date, 'DD/MM/YYYY')} - {formatDate(item.medicine_take_end_date, 'DD/MM/YYYY')}</Text>
+                                : <Text style={{ fontSize: 10, marginTop: 5, color: '#6f6f6f', marginLeft: -35 }}>{formatDate(item.medicine_take_one_date, 'DD/MM/YYYY')}</Text>
+                              }
                             </Col>
 
-                            
+
                           </Row>
                         </Col>
                         <Col size={1.5} style={{ justifyContent: 'center', alignItem: 'center' }}>
