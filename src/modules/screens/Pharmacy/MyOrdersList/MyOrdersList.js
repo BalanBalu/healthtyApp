@@ -47,9 +47,9 @@ class MyOrdersList extends Component {
     
     renderNoOrders() {
         return (
-            <Item style={{ borderBottomWidth: 0, justifyContent: 'center', alignItems: 'center', height: 300 }}>
-                <Text style={{ fontSize: 20, justifyContent: 'center', alignItems: 'center' }}>No orders yet</Text>
-            </Item>
+            <View style={{ flex: 1, justifyContent: "center", alignItems: "center" }}>
+                <Text style={{ fontSize: 20 }}>No orders yet</Text>
+            </View>
         )
     }
 
@@ -106,10 +106,10 @@ class MyOrdersList extends Component {
 
     render() {
               return (
-            <Container style={styles.container}>
-                 <Content style={styles.bodyContent}>
+            <Container >
+                 <Content contentContainerStyle={styles.BodyContent}>
                    {this.state.isLoading ? <Spinner color='blue' /> :
-                        <View style={{justifyContent:'center',alignItems:'center',height:650}}>
+                        <View  style={{justifyContent: "center", alignItems: "center" }}>
                             {this.state.orderList.length !== 0 ? this.renderOrders() : this.renderNoOrders()}
                         </View>}
                 </Content>
@@ -120,12 +120,12 @@ class MyOrdersList extends Component {
 
 export default MyOrdersList
 const styles = StyleSheet.create({
-    container:
-    {
-        backgroundColor: '#ffffff',
-    },
-    bodyContent: {
-        padding: 0
+    BodyContent: {
+        flex:1,
+        flexDirection:'row',
+        alignItems:'center',
+        justifyContent:'center',
+
     },
     customImage: {
         height: 50,
