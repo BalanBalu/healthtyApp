@@ -2,12 +2,9 @@ import React, { Component } from 'react';
 import { StyleSheet, TouchableOpacity } from 'react-native';
 import { Container, Body, Picker, Button, Card, Text, Item, Row, View, Col, Content, Icon, Header, Left, Radio, Title, ListItem } from 'native-base';
 import SectionedMultiSelect from 'react-native-sectioned-multi-select';
-import { NavigationEvents } from 'react-navigation';
-import { ScrollView } from 'react-native-gesture-handler';
-import { RadioButton } from 'react-native-paper';
-
 import { connect } from 'react-redux'
 let filterData = {};  //for send only selected Filtered Values and Store the Previous selected filter values 
+let selectedCount = 0
 class Filters extends Component {
 
     constructor(props) {
@@ -89,22 +86,18 @@ class Filters extends Component {
                 })
             }
         }
-        // let defaultPlaceHolderValue = { id: '0101', value: "Select Your Category" }
-        // sampleCategoryArray.unshift(defaultPlaceHolderValue)
         let setUniqueLanguages = new Set(sampleLangArray)
         setUniqueLanguages.forEach(element => {
             let sample = { value: element };
             multipleLanguages.push(sample);
         })
         await this.setState({ languageData: multipleLanguages, categoryList: sampleCategoryArray, serviceList: sampleServiceArray });
-        console.log('this.state.serviceList' + JSON.stringify(this.state.serviceList));
     }
 
     /* Send multiple Selected Filtered values  */
     sendFilteredData = async () => {
         console.log('filterData::', filterData)
         console.log('this.state.selectAvailabilityIndex::', this.state.selectAvailabilityIndex)
-
         this.props.navigation.navigate('Doctor List', {
             filterData: filterData,
             filterBySelectedAvailabilityDateCount: this.state.selectAvailabilityIndex, ConditionFromFilter: true
@@ -114,50 +107,77 @@ class Filters extends Component {
     clickGenderInButton = async (genderIndex, genderSelected, bySelect) => {
         if (genderIndex === this.state.genderIndex && bySelect) {
             genderIndex = 0,
-                genderSelected = ''
+                genderSelected = '',
+                selectedCount--
         }
-        this.setState({ genderIndex: genderIndex });
-        this.setState({ genderSelected: genderSelected, viewDoctors_button: false })
+        else {
+            selectedCount++
+        }
+        this.setState({ genderIndex, genderSelected });
         filterData.gender = genderSelected;
     }
     /* Get the selected Availability Date  */
     clickFilterByAvailabilityDates = (index, bySelect) => {
         if (index === this.state.selectAvailabilityIndex && bySelect) {
-            index = 0
+            index = 0,
+                selectedCount--
         }
-        this.setState({ selectAvailabilityIndex: index, viewDoctors_button: false })
+        else {
+            selectedCount++
+        }
+        this.setState({ selectAvailabilityIndex: index })
     }
 
     clickFilterByExperince = async (index, bySelect) => {
         if (index === this.state.selectExperinceIndex && bySelect) {
-            index = 0
+            index = 0,
+                selectedCount--
         }
-        this.setState({ selectExperinceIndex: index, viewDoctors_button: false })
+        else {
+            selectedCount++
+        }
+        this.setState({ selectExperinceIndex: index })
         filterData.experience = index;
-        console.log('filterData' + JSON.stringify(filterData))
     }
 
     onSelectedLanguagesChange = async (language) => {
-        this.setState({ language, viewDoctors_button: false });
+        this.state.language.length < language.length ? selectedCount++ : selectedCount--;
+        this.setState({ language });
         filterData.language = language;
     };
     onSelectedServiceChange = async (selectedServices) => {
-        await this.setState({ selectedServices, viewDoctors_button: false })
+        this.state.selectedServices.length < selectedServices.length ? selectedCount++ : selectedCount--;
+        await this.setState({ selectedServices })
         filterData.service = selectedServices;
-
-        console.log('selectedServices' + console.log(this.state.selectedServices))
     }
     onSelectedCategoryChange = async (selectedCategory) => {
-        alert('selectedCategory:::', selectedCategory)
-        // if (selectedCategory == 'Select Your Category') {
-        //     selectedCategory = null;
-        // }
-        this.setState({ selectedCategory, viewDoctors_button: false });
-        filterData.category = selectedCategory;
+        const checkCategory = String(selectedCategory);
+        if (this.state.selectedCategory.includes(checkCategory)) {
+            selectedCategory = [];
+            selectedCount--
+        }
+        else {
+            selectedCount++
+        }
+        const categoryItem = String(selectedCategory);
+        this.setState({ selectedCategory, categoryItem });
+        filterData.category = categoryItem;
     }
-
+    clearSelectedData = () => {  // Clear All selected Data
+        this.setState({
+            genderSelected: '',
+            selectedCategory: '',
+            language: [],
+            genderIndex: 0,
+            selectAvailabilityIndex: 0,
+            selectExperinceIndex: {},
+            selectedServices: [],
+        });
+        selectedCount = 0
+    }
     render() {
-        const { genderIndex, selectAvailabilityIndex, selectExperinceIndex } = this.state;
+        const { genderIndex, selectAvailabilityIndex, language, genderSelected, selectedCategory,
+            selectedServices, selectExperinceIndex } = this.state;
         return (
             <Container style={styles.container}>
                 <Content>
@@ -304,41 +324,6 @@ class Filters extends Component {
                             />
                         </TouchableOpacity>
                     </View>
-                    {/* 
-                        
-                    <View style={{ borderBottomColor: '#C1C1C1', borderBottomWidth: 0.5, paddingBottom: 10, marginTop: 10, marginLeft: 15, marginRight: 15 }}>
-                        <Text style={{ fontFamily: 'OpenSans', color: 'gray', fontSize: 13, }}>Selected your category</Text>
-                        <TouchableOpacity style={{ height: 60, marginTop: -15, marginLeft: -9.5 }}>
-                                <Picker style={{ fontFamily: 'OpenSans', }}
-                                    mode="dropdown"
-                                    placeholder='Select categories'
-                                    placeholderStyle={{ fontSize: 15, marginLeft: -5 }}
-                                    // iosIcon={<Icon name="ios-arrow-down" style={{ color: 'gray', textAlign: 'right' }} />}
-                                    note={false}
-                                    textStyle={{ color: "gray", left: 0, marginLeft: -5 }}
-                                    itemStyle={{
-                                        backgroundColor: "#fff",
-                                        paddingLeft: 10,
-                                        fontSize: 16,
-
-
-                                    }}
-                                    itemTextStyle={{ color: 'gray' }}
-                                    style={{ width: '85%' }}
-                                    onValueChange={this.onSelectedCategoryChange}
-                                    selectedValue={this.state.selectedCategory}
-                                >
-                                    {this.state.categoryList.map((category, key) => {
-                                        return <Picker.Item label={String(category.value)} value={String(category.value)} key={key}
-                                        />
-                                    })
-                                    }
-                                </Picker>
-                                </TouchableOpacity>
-                    </View> */}
-
-
-
 
                     <View style={{ borderBottomColor: '#C1C1C1', borderBottomWidth: 0.5, paddingBottom: 10, marginTop: 10, marginLeft: 15, marginRight: 15 }}>
                         <Text style={{ fontFamily: 'OpenSans', color: 'gray', fontSize: 13, }}>Selected your category</Text>
@@ -354,21 +339,20 @@ class Filters extends Component {
                                 items={this.state.categoryList}
                                 uniqueKey='value'
                                 displayKey='value'
-                                selectText='Category 1'
+                                selectText='Choose your Category  '
                                 searchPlaceholderText='Search Your Languages'
                                 modalWithTouchable={true}
                                 showDropDowns={true}
                                 hideSearch={false}
                                 showRemoveAll={true}
                                 showChips={false}
+                                single={true}
                                 readOnlyHeadings={false}
                                 onSelectedItemsChange={this.onSelectedCategoryChange}
                                 selectedItems={this.state.selectedCategory}
                                 colors={{ primary: '#18c971' }}
                                 showCancelButton={true}
                                 animateDropDowns={true}
-
-
                                 testID='languageSelected'
                             />
                         </TouchableOpacity>
@@ -407,13 +391,18 @@ class Filters extends Component {
                     </View>
                     <Row style={{ marginTop: 30, borderBottomWidth: 0, marginLeft: 10, marginRight: 10 }}>
                         <Col size={5} >
-                            <TouchableOpacity style={{ paddingTop: 10, paddingBottom: 10, paddingLeft: 15, paddingRight: 15, borderRadius: 30, borderColor: '#775DA3', borderWidth: 0.5 }}>
+                            <TouchableOpacity
+                                onPress={this.clearSelectedData}
+                                style={{ paddingTop: 10, paddingBottom: 10, paddingLeft: 15, paddingRight: 15, borderRadius: 30, borderColor: '#775DA3', borderWidth: 0.5 }}>
+                                <Text style={{marginBottom:-10, color: '#775DA3', fontFamily: 'OpenSans', fontSize: 15, fontWeight: '500' }}>{selectedCount}</Text>
                                 <Text style={{ color: '#775DA3', fontFamily: 'OpenSans', fontSize: 13, textAlign: 'center', fontWeight: '500' }}>Clear Filters</Text>
                             </TouchableOpacity>
                         </Col>
                         <Col size={5} style={{ marginLeft: 20 }}>
                             <TouchableOpacity
-                                block success disabled={this.state.viewDoctors_button} style={this.state.viewDoctors_button === true ? styles.viewDocButtonBgGray : styles.viewDocButtonBgGreeen}
+                                block success
+                                disabled={language.length != 0 || genderSelected || selectedCategory || selectedServices.length != 0 || selectAvailabilityIndex != 0 || Object.keys(selectExperinceIndex).length != 0 ? false : true}
+                                style={language.length != 0 || genderSelected || selectedCategory || selectedServices.length != 0 || selectAvailabilityIndex != 0 || Object.keys(selectExperinceIndex).length != 0 ? styles.viewDocButtonBgGreeen : styles.viewDocButtonBgGray}
                                 onPress={this.sendFilteredData}
                             >
                                 <Text style={{ color: '#000', fontFamily: 'OpenSans', fontSize: 13, textAlign: 'center', fontWeight: '500' }}>Apply</Text>
@@ -444,8 +433,6 @@ const styles = StyleSheet.create({
         elevation: 1, borderRadius: 5
 
     },
-
-
     selectedDaysColor: {
         paddingTop: 5,
         paddingBottom: 5,
@@ -474,21 +461,6 @@ const styles = StyleSheet.create({
         borderRadius: 5
     },
     defaultGenderColor: {
-        borderRadius: 10,
-        width: '90%',
-        marginLeft: 10,
-        borderWidth: 50,
-
-    },
-    selectedGenderColor: {
-        borderRadius: 10,
-        width: '90%',
-        marginLeft: 10,
-        borderWidth: 50,
-
-        backgroundColor: 'green',
-    },
-    defaultColor: {
         borderRadius: 10,
         width: '90%',
         marginLeft: 10,
