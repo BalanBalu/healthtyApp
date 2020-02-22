@@ -302,11 +302,16 @@ class AppointmentDetails extends Component {
                          </Col> 
                          <Col style={{width:'80%',marginTop:10}}>
                             <Row>
+                              <Col size={9}>
                               <Text  style={styles.Textname} >{(doctorData && doctorData.prefix != undefined ? doctorData.prefix +' ' : '') + (getName(data.doctorInfo)) + ' '}</Text>
                               <Text note style={{ fontSize: 13, fontFamily: 'OpenSans',fontWeight:'normal' }}>{education}</Text>
+                              <Text  style={styles.specialistTextStyle} >{specialist} </Text>
+                              </Col>
+                            <Col size={1}>
+                            </Col>
                              </Row>
                              <Row style={{ alignSelf: 'flex-start'  }}>
-                                <Text  style={styles.specialistTextStyle} >{specialist} </Text>
+                               
                              </Row>
                             {/* <Text style={styles. cardItemText2}>{getUserGenderAndAge(data && data.userInfo)}</Text>  */}
                          </Col>
@@ -794,6 +799,7 @@ const styles = StyleSheet.create({
       fontSize:12,
       fontFamily:'OpenSans',
       fontWeight:'normal',
+      marginTop:5
      
     },
     subText1:{

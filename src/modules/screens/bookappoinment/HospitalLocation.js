@@ -22,7 +22,7 @@ export default class HospitalLocation extends Component {
         <View style={{marginLeft:5,marginRight:5,borderTopColor:'gray',borderTopWidth:0.7,}}>
          
        <Row style={{marginTop:10}}>
-         <Icon name='ios-home' style={{fontSize:20}}/>
+         <Icon name='ios-home' style={{fontSize:20,color:'gray'}}/>
          <Text  style={{ fontFamily: 'OpenSans',fontSize:13,fontWeight:'bold',marginLeft:10,marginTop:1 }}>{hopitalLocationData.name}</Text>
       </Row>
          {/* <Text  style={{ fontFamily: 'OpenSans',fontSize:13,marginLeft:26}}>  {addressData.no_and_street + ', ' + addressData.city + ', ' + addressData.state } </Text> */}
