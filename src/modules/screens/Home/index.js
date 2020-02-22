@@ -7,7 +7,7 @@ import { StyleSheet, Image, View, TouchableOpacity, AsyncStorage, FlatList, Imag
 
 import { getReferalPoints, getCurrentVersion } from '../../providers/profile/profile.action';
 import { catagries, getSpecialistDataSuggestions } from '../../providers/catagries/catagries.actions';
-import { MAP_BOX_PUBLIC_TOKEN, IS_ANDROID, MAX_DISTANCE_TO_COVER, CURRENT_PRODUCT_VERSION_CODE} from '../../../setup/config';
+import { MAP_BOX_PUBLIC_TOKEN, IS_ANDROID, MAX_DISTANCE_TO_COVER, CURRENT_PRODUCT_VERSION_CODE } from '../../../setup/config';
 import MapboxGL from '@react-native-mapbox-gl/maps';
 import { NavigationEvents } from 'react-navigation'
 import { store } from '../../../setup/store';
@@ -76,23 +76,29 @@ class Home extends Component {
         }
     }
     async componentDidMount() {
-        let productConfigVersion = await getCurrentVersion("CURRENT_PATIENT_MEDFLIC_VERSION")
-        console.log(productConfigVersion)
-        if (productConfigVersion.success) {
-            if (CURRENT_PRODUCT_VERSION_CODE !== productConfigVersion.data[0].value.version_code) {
-                await this.updateAppVersion(productConfigVersion);
-                return
+        try {
+            if (IS_ANDROID) {
+                let productConfigVersion = await getCurrentVersion("CURRENT_PATIENT_MEDFLIC_VERSION")
+                console.log(productConfigVersion)
+                if (productConfigVersion.success) {
+                    if (CURRENT_PRODUCT_VERSION_CODE !== productConfigVersion.data[0].value.version_code) {
+                        await this.updateAppVersion(productConfigVersion);
+                    } else {
+                        this.otpAndBasicDetailsCompletion();
+                    }
+                }
+                else {
+                    this.otpAndBasicDetailsCompletion();
+                }
             }
+        } catch (ex) {
+            console.log(ex)
         }
-        this.getCatagries();
-        let userId = await AsyncStorage.getItem("userId");
-        if (userId) {
-            const { notification: { notificationCount }, navigation } = this.props
-            navigation.setParams({
-                notificationBadgeCount: notificationCount
-            });
-            this.getAllChatsByUserId(userId);
-            this.getMarkedAsReadedNotification(userId)
+    }
+
+    otpAndBasicDetailsCompletion = async () => {
+        try {
+            let userId = await AsyncStorage.getItem("userId");
             res = await getReferalPoints(userId);
             if (res.hasProfileUpdated == false) {
                 if (res.hasOtpNotVerified === true) {
@@ -110,6 +116,7 @@ class Home extends Component {
                         {
                             text: "Skip",
                             onPress: () => {
+                                this.initialFunction();
                                 console.log("Cancel Pressed");
                             },
                             style: "cancel"
@@ -126,14 +133,31 @@ class Home extends Component {
                     { cancelable: false }
                 );
             }
-
-            CurrentLocation.getCurrentPosition();
+        } catch (ex) {
+            console.log(ex)
+        }
+    }
+    initialFunction = async () => {
+        try {
+            this.getCatagries();
+            let userId = await AsyncStorage.getItem("userId");
+            if (userId) {
+                const { notification: { notificationCount }, navigation } = this.props
+                navigation.setParams({
+                    notificationBadgeCount: notificationCount
+                });
+                this.getAllChatsByUserId(userId);
+                this.getMarkedAsReadedNotification(userId)
+                CurrentLocation.getCurrentPosition();
+            }
+        }
+        catch (ex) {
+            console.log(ex)
         }
     }
 
 
     updateAppVersion = async (productConfigVersion) => {
-        console.log(productConfigVersion.data[0].value.force_update )
         if (productConfigVersion.data[0].value.force_update == true) {
             Alert.alert(
                 "Please Upgrade Your Application !",
@@ -157,6 +181,7 @@ class Home extends Component {
                     {
                         text: "Skip",
                         onPress: () => {
+                            this.otpAndBasicDetailsCompletion();
                             console.log("Cancel Pressed");
                         },
                         style: "cancel"
