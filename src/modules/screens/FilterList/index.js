@@ -1,9 +1,11 @@
 import React, { Component } from 'react';
 import { StyleSheet, TouchableOpacity } from 'react-native';
-import { Container, Body, Picker, Button, Card, Text, Item, Row, View, Col, Content, Icon, Header, Left, Title, ListItem } from 'native-base';
+import { Container, Body, Picker, Button, Card, Text, Item, Row, View, Col, Content, Icon, Header, Left, Radio, Title, ListItem } from 'native-base';
 import SectionedMultiSelect from 'react-native-sectioned-multi-select';
 import { NavigationEvents } from 'react-navigation';
 import { ScrollView } from 'react-native-gesture-handler';
+import { RadioButton } from 'react-native-paper';
+
 import { connect } from 'react-redux'
 let filterData = {};  //for send only selected Filtered Values and Store the Previous selected filter values 
 class Filters extends Component {
@@ -30,9 +32,6 @@ class Filters extends Component {
     async componentDidMount() {
         debugger
         const { bookappointment: { doctorData }, navigation } = this.props;
-
-
-        // const selectedServicesList = navigation.getParam('selectedServicesList');
         const filterData = navigation.getParam('filterData');
         const filterBySelectedAvailabilityDateCount = navigation.getParam('filterBySelectedAvailabilityDateCount')
         // console.log( 'Filter Data from Search List: ' + JSON.stringify(filterData));
@@ -79,7 +78,6 @@ class Filters extends Component {
             }
             if (this.state.doctorData[data].specialist) {
                 this.state.doctorData[data].specialist.forEach(element => {
-
                     if (!conditionCategoryArry.includes(element.category_id) && !conditionServiceArry.includes(element.service_id)) {
                         conditionCategoryArry.push(element.category_id);
                         conditionServiceArry.push(element.service_id);
@@ -91,8 +89,8 @@ class Filters extends Component {
                 })
             }
         }
-        let defaultPlaceHolderValue = { id: '0101', value: "Select Your Category" }
-        sampleCategoryArray.unshift(defaultPlaceHolderValue)
+        // let defaultPlaceHolderValue = { id: '0101', value: "Select Your Category" }
+        // sampleCategoryArray.unshift(defaultPlaceHolderValue)
         let setUniqueLanguages = new Set(sampleLangArray)
         setUniqueLanguages.forEach(element => {
             let sample = { value: element };
@@ -102,12 +100,11 @@ class Filters extends Component {
         console.log('this.state.serviceList' + JSON.stringify(this.state.serviceList));
     }
 
-    /* Go and select the Services from Service List page  */
-    goServiceListPage = async () => {
-        this.props.navigation.navigate('Services', { serviceList: this.state.serviceList })
-    }
     /* Send multiple Selected Filtered values  */
     sendFilteredData = async () => {
+        console.log('filterData::', filterData)
+        console.log('this.state.selectAvailabilityIndex::', this.state.selectAvailabilityIndex)
+
         this.props.navigation.navigate('Doctor List', {
             filterData: filterData,
             filterBySelectedAvailabilityDateCount: this.state.selectAvailabilityIndex, ConditionFromFilter: true
@@ -151,9 +148,10 @@ class Filters extends Component {
         console.log('selectedServices' + console.log(this.state.selectedServices))
     }
     onSelectedCategoryChange = async (selectedCategory) => {
-        if (selectedCategory == 'Select Your Category') {
-            selectedCategory = null;
-        }
+        alert('selectedCategory:::', selectedCategory)
+        // if (selectedCategory == 'Select Your Category') {
+        //     selectedCategory = null;
+        // }
         this.setState({ selectedCategory, viewDoctors_button: false });
         filterData.category = selectedCategory;
     }
@@ -162,206 +160,160 @@ class Filters extends Component {
         const { genderIndex, selectAvailabilityIndex, selectExperinceIndex } = this.state;
         return (
             <Container style={styles.container}>
-                <Content style={{ padding: 5, }}>
-                    <ScrollView>
-                        <NavigationEvents
-                            onWillFocus={payload => { this.componentDidMount() }}
-                        />
-                        {/* first card */}
-                        <View style={{ marginBottom: 20 }}>
-                            <Card style={{ padding: 10, borderRadius: 10, width: 'auto' }}>
-                                <Text style={{ backgroundColor: 'whitesmoke', borderBottomColor: '#c9cdcf', borderBottomWidth: 2, }}>Gender</Text>
-                                <Row style={{ justifyContent: 'center', marginTop: 10 }}>
-                                    <Col style={{ marginLeft: -5 }}>
-                                        <Button bordered
-                                            style={genderIndex === 1 ? styles.selectedGenderColor : styles.defaultGenderColor}
-                                            onPress={() => this.clickGenderInButton(1, "M", true)}
-                                        >
-                                            <View style={{ marginLeft: 'auto', marginRight: 'auto' }}>
-                                                <Icon style={{ fontSize: 20, marginLeft: 'auto', marginRight: 'auto' }} name='male' />
-                                                <Text style={{ textAlign: 'center', fontSize: 12, textAlign: 'center' }}>Male</Text>
-                                            </View>
+                <Content>
+                    <View style={{ borderBottomColor: '#C1C1C1', borderBottomWidth: 0.5, paddingBottom: 10, marginTop: 10, marginLeft: 15, marginRight: 15 }}>
+                        <Text style={{ fontFamily: 'OpenSans', color: 'gray', fontSize: 13, }}>Gender </Text>
+                        <Row style={{ marginTop: 10, borderBottomWidth: 0, }}>
 
-                                        </Button>
-                                    </Col>
-                                    <Col>
-                                        <Button bordered style={styles.defaultColor}
-                                            style={genderIndex === 2 ? styles.selectedGenderColor : styles.defaultColor}
-                                            onPress={() => this.clickGenderInButton(2, "F", true)}
-                                        >
-                                            <View style={{ marginLeft: 'auto', marginRight: 'auto' }}>
-                                                <Icon style={{ fontSize: 20, marginLeft: 'auto', marginRight: 'auto', }} name='female' />
-                                                <Text style={{ textAlign: 'center', fontSize: 12, textAlign: 'center' }}>Female</Text>
-                                            </View>
+                            <Col size={3.33} >
+                                <TouchableOpacity
+                                    onPress={() => this.clickGenderInButton(1, "M", true)}
+                                    style={{ alignItems: 'center', justifyContent: 'center', flexDirection: 'row' }}>
+                                    <Radio selected={genderIndex === 1 ? true : false} />
+                                    <Icon name="ios-man" style={{ fontSize: 20, marginLeft: 10, }} />
+                                    <Text style={{
+                                        fontFamily: 'OpenSans', fontSize: 13, marginLeft: 15, color: '#333333'
+                                    }}>Male</Text>
+                                </TouchableOpacity>
+                            </Col>
+                            <Col size={3.33} >
+                                <TouchableOpacity
+                                    onPress={() => this.clickGenderInButton(2, "F", true)}
 
-                                        </Button>
-                                    </Col>
-                                    <Col>
-                                        <Button bordered style={styles.defaultColor}
-                                            style={genderIndex === 3 ? styles.selectedGenderColor : styles.defaultGenderColor}
+                                    style={{ alignItems: 'center', justifyContent: 'center', flexDirection: 'row' }}>
+                                    <Radio selected={genderIndex === 2 ? true : false} />
+                                    <Icon name="ios-man" style={{ fontSize: 20, marginLeft: 10, }} />
+                                    <Text style={{
+                                        fontFamily: 'OpenSans', fontSize: 13, marginLeft: 15, color: '#333333'
+                                    }}>Female</Text>
+                                </TouchableOpacity>
+                            </Col>
+                            <Col size={3.33} >
+                                <TouchableOpacity
+                                    onPress={() => this.clickGenderInButton(3, "O", true)}
+                                    style={{ alignItems: 'center', justifyContent: 'center', flexDirection: 'row' }}>
+                                    <Radio selected={genderIndex === 3 ? true : false} />
+                                    <Text style={{
+                                        fontFamily: 'OpenSans', fontSize: 13, marginLeft: 15, color: '#333333'
+                                    }}>Others</Text>
+                                </TouchableOpacity>
+                            </Col>
 
-                                            onPress={() => this.clickGenderInButton(3, "O", true)} >
-                                            <View style={{ marginLeft: 'auto', marginRight: 'auto' }}>
-                                                <Icon style={{ fontSize: 20, marginLeft: 'auto', marginRight: 'auto', }} name='female' />
+                        </Row>
+                    </View>
 
-                                                <Text style={{ textAlign: 'center', fontSize: 12, textAlign: 'center' }}>Others</Text>
-                                            </View>
-                                        </Button>
-                                    </Col>
-                                </Row>
-                            </Card>
-                            {/* second card */}
+                    <View style={{ borderBottomColor: '#C1C1C1', borderBottomWidth: 0.5, paddingBottom: 20, marginTop: 10, marginLeft: 15, marginRight: 15 }}>
+                        <Text style={{ fontFamily: 'OpenSans', color: 'gray', fontSize: 13, }}>Availability Date & Time </Text>
+                        <Row style={{ marginTop: 10, borderBottomWidth: 0 }}>
+                            <Col size={3}>
+                                <TouchableOpacity
 
-                            <Card style={{ width: 'auto', padding: 10, borderRadius: 10, }}>
-                                <Text style={{
-                                    backgroundColor: 'whitesmoke', borderBottomColor: '#c9cdcf', borderBottomWidth: 2,
-                                    fontFamily: 'OpenSans',
-                                }}>Availability Time</Text>
-                                <Row style={{ marginTop: 10 }}>
-                                    <Col style={{ marginLeft: -5 }}>
-                                        <Button bordered style={styles.defaultColor}
-                                            onPress={() => this.clickFilterByAvailabilityDates(1, true)}
-                                            style={selectAvailabilityIndex === 1 ? styles.selectedGenderColor : styles.defaultColor}
-                                        >
-                                            <View style={{ marginLeft: 'auto', marginRight: 'auto' }}>
+                                    onPress={() => this.clickFilterByAvailabilityDates(1, true)}
+                                    style={selectAvailabilityIndex === 1 ? styles.selectedDaysColor : styles.defaultDaysColor}
+                                >
+                                    <Text style={{ color: '#333333', fontFamily: 'OpenSans', fontSize: 13, textAlign: 'center' }}>Tomorrow</Text>
+                                </TouchableOpacity>
+                            </Col>
+                            <Col size={3} style={{ marginLeft: 10 }}>
+                                <TouchableOpacity
 
-                                                <Icon style={{ fontSize: 20, marginLeft: 'auto', marginRight: 'auto', }} name='female' />
-                                                <Text style={{ textAlign: 'center', fontSize: 12, textAlign: 'center' }}>Today</Text>
+                                    onPress={() => this.clickFilterByAvailabilityDates(3, true)}
+                                    style={selectAvailabilityIndex === 3 ? styles.selectedDaysColor : styles.defaultDaysColor}
+                                >
+                                    <Text style={{ color: '#333333', fontFamily: 'OpenSans', fontSize: 13, textAlign: 'center' }}>Next 3 days</Text>
+                                </TouchableOpacity>
+                            </Col>
+                            <Col size={3} style={{ marginLeft: 10 }}>
+                                <TouchableOpacity
 
-                                            </View>
+                                    style={selectAvailabilityIndex === 7 ? styles.selectedDaysColor : styles.defaultDaysColor}
+                                    onPress={() => this.clickFilterByAvailabilityDates(7, true)}
+                                >
+                                    <Text style={{ color: '#333333', fontFamily: 'OpenSans', fontSize: 13, textAlign: 'center' }}>Next 7 days</Text>
+                                </TouchableOpacity>
+                            </Col>
+                        </Row>
+                    </View>
 
-                                        </Button>
-                                    </Col>
-                                    <Col>
-                                        <Button bordered style={styles.defaultColor}
-                                            onPress={() => this.clickFilterByAvailabilityDates(3, true)}
-                                            style={selectAvailabilityIndex === 3 ? styles.selectedGenderColor : styles.defaultColor}
+                    <View style={{ borderBottomColor: '#C1C1C1', borderBottomWidth: 0.5, paddingBottom: 20, marginTop: 10, marginLeft: 15, marginRight: 15 }}>
+                        <Text style={{ fontFamily: 'OpenSans', color: 'gray', fontSize: 13, }}>Work Experience</Text>
+                        <Row style={{ marginTop: 10, borderBottomWidth: 0 }}>
+                            <Col size={2.5}>
+                                <TouchableOpacity
+                                    style={selectExperinceIndex === 10 ? styles.selectedExperienceColor : styles.defaultExperienceColor}
+                                    onPress={() => this.clickFilterByExperince(10, true)}
+                                >
+                                    <Text style={{ color: '#333333', fontFamily: 'OpenSans', fontSize: 10, textAlign: 'center' }}>0-10 yrs</Text>
+                                </TouchableOpacity>
+                            </Col>
+                            <Col size={2.5} style={{ marginLeft: 10 }}>
+                                <TouchableOpacity
+                                    style={selectExperinceIndex === 20 ? styles.selectedExperienceColor : styles.defaultExperienceColor}
+                                    onPress={() => this.clickFilterByExperince(20, true)}
+                                >
+                                    <Text style={{ color: '#333333', fontFamily: 'OpenSans', fontSize: 10, textAlign: 'center' }}>10-20 yrs</Text>
+                                </TouchableOpacity>
+                            </Col>
+                            <Col size={2.5} style={{ marginLeft: 10 }}>
+                                <TouchableOpacity
+                                    style={selectExperinceIndex === 30 ? styles.selectedExperienceColor : styles.defaultExperienceColor}
+                                    onPress={() => this.clickFilterByExperince(30, true)}
+                                >
+                                    <Text style={{ color: '#333333', fontFamily: 'OpenSans', fontSize: 10, textAlign: 'center' }}>20-30 yrs</Text>
+                                </TouchableOpacity>
+                            </Col>
+                            <Col size={2.5} style={{ marginLeft: 10 }}>
+                                <TouchableOpacity
+                                    style={selectExperinceIndex === 40 ? styles.selectedExperienceColor : styles.defaultExperienceColor}
+                                    onPress={() => this.clickFilterByExperince(40, true)}
+                                >
+                                    <Text style={{ color: '#333333', fontFamily: 'OpenSans', fontSize: 10, textAlign: 'center' }}>Above 30</Text>
+                                </TouchableOpacity>
+                            </Col>
+                        </Row>
+                    </View>
 
-                                        >
-                                            <View style={{ marginLeft: 'auto', marginRight: 'auto' }}>
+                    <View style={{ borderBottomColor: '#C1C1C1', borderBottomWidth: 0.5, paddingBottom: 10, marginTop: 10, marginLeft: 15, marginRight: 15 }}>
+                        <Text style={{ fontFamily: 'OpenSans', color: 'gray', fontSize: 13, }}>Choose Spoken Languages</Text>
+                        <TouchableOpacity style={{ height: 60, marginTop: -15, marginLeft: -9.5 }}>
+                            <SectionedMultiSelect
+                                styles={{
+                                    selectToggleText: {
+                                        color: '#333333',
+                                        fontSize: 13
+                                    },
 
-                                                <Icon style={{ fontSize: 20, marginLeft: 'auto', marginRight: 'auto' }} name='female' />
-
-
-                                                <Text style={{ textAlign: 'center', fontSize: 12, textAlign: 'center' }}>Next 3 Days</Text>
-
-                                            </View>
-
-                                        </Button>
-                                    </Col>
-                                    <Col>
-                                        <Button bordered style={styles.defaultColor}
-                                            style={selectAvailabilityIndex === 7 ? styles.selectedGenderColor : styles.defaultColor}
-                                            onPress={() => this.clickFilterByAvailabilityDates(7, true)}
-                                        >
-                                            <View style={{ marginLeft: 'auto', marginRight: 'auto' }}>
-                                                <Icon style={{ fontSize: 20, marginLeft: 'auto', marginRight: 'auto', }} name='female' />
-                                                <Text style={{ textAlign: 'center', fontSize: 12, textAlign: 'center' }}>Next 7 Days</Text>
-                                            </View>
-                                        </Button>
-
-                                    </Col>
-                                </Row>
-                            </Card>
-                            {/* third card */}
-
-                            <Card style={{ padding: 10, borderRadius: 10, }}>
-                                <View>
-                                    <Text style={{ backgroundColor: 'whitesmoke', borderBottomColor: '#c9cdcf', borderBottomWidth: 1, fontFamily: 'OpenSans', }}>Work Experience
-                  </Text>
-                                </View>
-                                <Row style={{ marginTop: 10, paddingLeft: 5, paddingRight: 5 }}>
-                                    <Col size={2.5} style={{ marginLeft: -8 }}>
-                                        <Button bordered
-                                            style={selectExperinceIndex === 10 ? styles.selectedGenderColor : styles.defaultColor}
-                                            onPress={() => this.clickFilterByExperince(10, true)}
-                                        >
-                                            <View style={{ marginLeft: 'auto', marginRight: 'auto' }}>
-
-                                                <Icon style={{ fontSize: 20, marginLeft: 'auto', marginRight: 'auto', }} name='female' />
-                                                <Text style={{ textAlign: 'center', fontSize: 12, textAlign: 'center' }}>0-10 years</Text>
-                                            </View>
-                                        </Button>
-                                    </Col>
-                                    <Col size={2.5} >
-                                        <Button bordered
-
-                                            style={selectExperinceIndex === 20 ? styles.selectedGenderColor : styles.defaultColor}
-                                            onPress={() => this.clickFilterByExperince(20, true)}
-
-                                        >
-                                            <View style={{ marginLeft: 'auto', marginRight: 'auto' }}>
-
-                                                <Icon style={{ fontSize: 20, marginLeft: 'auto', marginRight: 'auto' }} name='female' />
-                                                <Text style={{ textAlign: 'center', fontSize: 12, textAlign: 'center' }}>10-20 years</Text>
-
-                                            </View>
-
-                                        </Button>
-                                    </Col>
-                                    <Col size={2.5}>
-                                        <Button bordered
-
-                                            style={selectExperinceIndex === 30 ? styles.selectedGenderColor : styles.defaultColor}
-                                            onPress={() => this.clickFilterByExperince(30, true)}
-                                        >
-                                            <View style={{ marginLeft: 'auto', marginRight: 'auto' }}>
-
-                                                <Icon style={{ fontSize: 20, marginLeft: 'auto', marginRight: 'auto', }} name='female' />
-                                                <Text style={{ textAlign: 'center', fontSize: 12, textAlign: 'center' }}>20-30 years</Text>
-
-                                            </View>
-
-                                        </Button>
-                                    </Col>
-                                    <Col size={2.5} >
-                                        <Button bordered
-                                            style={selectExperinceIndex === 40 ? styles.selectedGenderColor : styles.defaultColor}
-                                            onPress={() => this.clickFilterByExperince(40, true)}
-
-                                        >
-                                            <View style={{ marginLeft: 'auto', marginRight: 'auto' }}>
-
-                                                <Icon style={{ fontSize: 20, marginLeft: 'auto', marginRight: 'auto', }} name='female' />
-                                                <Text style={{ textAlign: 'center', fontSize: 12, textAlign: 'center' }}>Above 30 </Text>
-                                            </View>
-                                        </Button>
-                                    </Col>
-                                </Row>
-                            </Card>
-
-
-
-                            <TouchableOpacity style={{ backgroundColor: '#fff', borderRadius: 10, height: 60, marginTop: 10 }}>
-                                <SectionedMultiSelect
-                                    items={this.state.languageData}
-                                    uniqueKey='value'
-                                    displayKey='value'
-                                    selectText='Choose Languages You know'
-                                    searchPlaceholderText='Search Your Languages'
-                                    modalWithTouchable={true}
-                                    showDropDowns={true}
-                                    hideSearch={false}
-                                    showRemoveAll={true}
-                                    showChips={false}
-                                    readOnlyHeadings={false}
-                                    onSelectedItemsChange={this.onSelectedLanguagesChange}
-                                    selectedItems={this.state.language}
-                                    colors={{ primary: '#18c971' }}
-                                    showCancelButton={true}
-                                    animateDropDowns={true}
-
-
-                                    testID='languageSelected'
-                                />
-
-                            </TouchableOpacity>
-                            <Item last style={{ borderBottomWidth: 0, height: 40, backgroundColor: '#fff', borderRadius: 10, marginTop: 10, }}>
+                                }}
+                                items={this.state.languageData}
+                                uniqueKey='value'
+                                displayKey='value'
+                                selectText='Choose Languages you know'
+                                searchPlaceholderText='Search Your Languages'
+                                modalWithTouchable={true}
+                                showDropDowns={true}
+                                hideSearch={false}
+                                showRemoveAll={true}
+                                showChips={false}
+                                readOnlyHeadings={false}
+                                onSelectedItemsChange={this.onSelectedLanguagesChange}
+                                selectedItems={this.state.language}
+                                colors={{ primary: '#18c971' }}
+                                showCancelButton={true}
+                                animateDropDowns={true}
+                                testID='languageSelected'
+                            />
+                        </TouchableOpacity>
+                    </View>
+                    {/* 
+                        
+                    <View style={{ borderBottomColor: '#C1C1C1', borderBottomWidth: 0.5, paddingBottom: 10, marginTop: 10, marginLeft: 15, marginRight: 15 }}>
+                        <Text style={{ fontFamily: 'OpenSans', color: 'gray', fontSize: 13, }}>Selected your category</Text>
+                        <TouchableOpacity style={{ height: 60, marginTop: -15, marginLeft: -9.5 }}>
                                 <Picker style={{ fontFamily: 'OpenSans', }}
                                     mode="dropdown"
                                     placeholder='Select categories'
                                     placeholderStyle={{ fontSize: 15, marginLeft: -5 }}
-                                    iosIcon={<Icon name="ios-arrow-down" style={{ color: 'gray', textAlign: 'right' }} />}
+                                    // iosIcon={<Icon name="ios-arrow-down" style={{ color: 'gray', textAlign: 'right' }} />}
                                     note={false}
                                     textStyle={{ color: "gray", left: 0, marginLeft: -5 }}
                                     itemStyle={{
@@ -382,42 +334,92 @@ class Filters extends Component {
                                     })
                                     }
                                 </Picker>
+                                </TouchableOpacity>
+                    </View> */}
 
-                            </Item>
 
 
-                            <TouchableOpacity style={{ backgroundColor: '#fff', borderRadius: 10, height: 60, marginTop: 10 }}>
 
-                                <SectionedMultiSelect
-                                    items={this.state.serviceList}
-                                    uniqueKey='value'
-                                    displayKey='value'
-                                    selectText='Choose your Services  '
-                                    searchPlaceholderText='Search Your Services'
-                                    modalWithTouchable={true}
-                                    showDropDowns={true}
-                                    hideSearch={false}
-                                    showRemoveAll={true}
-                                    showChips={false}
-                                    readOnlyHeadings={false}
-                                    onSelectedItemsChange={this.onSelectedServiceChange}
-                                    selectedItems={this.state.selectedServices}
-                                    colors={{ primary: '#18c971' }}
-                                    showCancelButton={true}
-                                    animateDropDowns={true}
-                                    testID='servicesSelected'
-                                />
+                    <View style={{ borderBottomColor: '#C1C1C1', borderBottomWidth: 0.5, paddingBottom: 10, marginTop: 10, marginLeft: 15, marginRight: 15 }}>
+                        <Text style={{ fontFamily: 'OpenSans', color: 'gray', fontSize: 13, }}>Selected your category</Text>
+                        <TouchableOpacity style={{ height: 60, marginTop: -15, marginLeft: -9.5 }}>
+                            <SectionedMultiSelect
+                                styles={{
+                                    selectToggleText: {
+                                        color: '#333333',
+                                        fontSize: 13
+                                    },
+
+                                }}
+                                items={this.state.categoryList}
+                                uniqueKey='value'
+                                displayKey='value'
+                                selectText='Category 1'
+                                searchPlaceholderText='Search Your Languages'
+                                modalWithTouchable={true}
+                                showDropDowns={true}
+                                hideSearch={false}
+                                showRemoveAll={true}
+                                showChips={false}
+                                readOnlyHeadings={false}
+                                onSelectedItemsChange={this.onSelectedCategoryChange}
+                                selectedItems={this.state.selectedCategory}
+                                colors={{ primary: '#18c971' }}
+                                showCancelButton={true}
+                                animateDropDowns={true}
+
+
+                                testID='languageSelected'
+                            />
+                        </TouchableOpacity>
+                    </View>
+                    <View style={{ borderBottomColor: '#C1C1C1', borderBottomWidth: 0.5, paddingBottom: 10, marginTop: 10, marginLeft: 15, marginRight: 15 }}>
+                        <Text style={{ fontFamily: 'OpenSans', color: 'gray', fontSize: 13, }}>Selected service</Text>
+                        <TouchableOpacity style={{ height: 60, marginTop: -15, marginLeft: -9.5 }}>
+                            <SectionedMultiSelect
+                                styles={{
+                                    selectToggleText: {
+                                        color: '#333333',
+                                        fontSize: 13
+                                    },
+
+                                }}
+                                items={this.state.serviceList}
+                                uniqueKey='value'
+                                displayKey='value'
+                                selectText='Choose your Services  '
+                                selectToggleText={{ fontSize: 13 }}
+                                searchPlaceholderText='Search Your Services'
+                                modalWithTouchable={true}
+                                showDropDowns={true}
+                                hideSearch={false}
+                                showRemoveAll={true}
+                                showChips={false}
+                                readOnlyHeadings={false}
+                                onSelectedItemsChange={this.onSelectedServiceChange}
+                                selectedItems={this.state.selectedServices}
+                                colors={{ primary: '#18c971' }}
+                                showCancelButton={true}
+                                animateDropDowns={true}
+                                testID='languageSelected'
+                            />
+                        </TouchableOpacity>
+                    </View>
+                    <Row style={{ marginTop: 30, borderBottomWidth: 0, marginLeft: 10, marginRight: 10 }}>
+                        <Col size={5} >
+                            <TouchableOpacity style={{ paddingTop: 10, paddingBottom: 10, paddingLeft: 15, paddingRight: 15, borderRadius: 30, borderColor: '#775DA3', borderWidth: 0.5 }}>
+                                <Text style={{ color: '#775DA3', fontFamily: 'OpenSans', fontSize: 13, textAlign: 'center', fontWeight: '500' }}>Clear Filters</Text>
                             </TouchableOpacity>
-
-                            <View style={{ paddingTop: 5 }}>
-
-                                <Button block success disabled={this.state.viewDoctors_button} style={this.state.viewDoctors_button === true ? styles.viewDocButtonBgGray : styles.viewDocButtonBgGreeen}
-                                    onPress={this.sendFilteredData}>
-                                    <Text style={{ fontFamily: 'OpenSans', fontWeight: 'bold' }}>View Doctors</Text>
-                                </Button>
-                            </View>
-                        </View>
-                    </ScrollView>
+                        </Col>
+                        <Col size={5} style={{ marginLeft: 20 }}>
+                            <TouchableOpacity
+                                block success disabled={this.state.viewDoctors_button} style={this.state.viewDoctors_button === true ? styles.viewDocButtonBgGray : styles.viewDocButtonBgGreeen}
+                                onPress={this.sendFilteredData}
+                            >
+                                <Text style={{ color: '#000', fontFamily: 'OpenSans', fontSize: 13, textAlign: 'center', fontWeight: '500' }}>Apply</Text>
+                            </TouchableOpacity>
+                        </Col>
+                    </Row>
                 </Content>
             </Container >
 
@@ -432,22 +434,45 @@ function bookApppointmentState(state) {
 export default connect(bookApppointmentState)(Filters)
 
 const styles = StyleSheet.create({
-    container: {
-        backgroundColor: '#c9cdcf',
+    defaultDaysColor:
+    {
+        paddingTop: 5, paddingBottom: 5, paddingLeft: 15, paddingRight: 15, borderWidth: 0.1,
+        shadowColor: '#000',
+        shadowOffset: { width: 0, height: 0.5 },
+        shadowOpacity: 0.1,
+        shadowRadius: 5,
+        elevation: 1, borderRadius: 5
+
     },
 
-    // defaultColor: {
-    //     borderRadius: 10,
-    //     borderWidth: 10,
 
+    selectedDaysColor: {
+        paddingTop: 5,
+        paddingBottom: 5,
+        paddingLeft: 15,
+        paddingRight: 15,
+        backgroundColor: '#775DA3',
+        borderRadius: 5
+    },
 
-    // },
-    // selectedGenderColor: {
-    //     borderRadius: 10,
-    //     borderWidth: 10,
-    //     backgroundColor: 'green',
+    defaultExperienceColor:
+    {
+        paddingTop: 5,
+        paddingBottom: 5,
+        paddingLeft: 15,
+        paddingRight: 15,
+        borderRadius: 5
+    },
 
-    // },
+    selectedExperienceColor: {
+        paddingTop: 5,
+        paddingBottom: 5,
+        paddingLeft: 15,
+        paddingRight: 15,
+        borderColor: 'gray',
+        backgroundColor: '#775DA3',
+        borderRadius: 5
+    },
     defaultGenderColor: {
         borderRadius: 10,
         width: '90%',
@@ -471,16 +496,21 @@ const styles = StyleSheet.create({
 
     },
     viewDocButtonBgGreeen: {
-        borderRadius: 10,
-        backgroundColor: '#775DA3',
-
-        marginTop: 10
+        paddingTop: 10,
+        paddingBottom: 10,
+        paddingLeft: 15,
+        paddingRight: 15,
+        borderRadius: 30,
+        backgroundColor: '#775DA3'
     },
     viewDocButtonBgGray: {
-        borderRadius: 10,
-        backgroundColor: '#A9A9A9',
-
-        marginTop: 10
+        paddingTop: 10,
+        paddingBottom: 10,
+        paddingLeft: 15,
+        paddingRight: 15,
+        borderRadius: 30,
+        borderColor: '#775DA3',
+        borderWidth: 0.5
     }
 
 })
