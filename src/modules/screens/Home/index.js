@@ -78,7 +78,7 @@ class Home extends Component {
     async componentDidMount() {
         try {
             this.initialFunction();
-            if (!IS_ANDROID) {
+            if (IS_ANDROID) {
                 let productConfigVersion = await getCurrentVersion("CURRENT_PATIENT_MEDFLIC_VERSION")
                 console.log(productConfigVersion)
                 if (productConfigVersion.success) {
@@ -91,7 +91,9 @@ class Home extends Component {
                 else {
                     this.otpAndBasicDetailsCompletion();
                 }
-            }
+            } else 
+                this.otpAndBasicDetailsCompletion();
+            
         } catch (ex) {
             console.log(ex)
         }
@@ -140,6 +142,7 @@ class Home extends Component {
     initialFunction = async () => {
         try {
             this.getCatagries();
+            CurrentLocation.getCurrentPosition();
             let userId = await AsyncStorage.getItem("userId");
             if (userId) {
                 const { notification: { notificationCount }, navigation } = this.props
@@ -148,7 +151,6 @@ class Home extends Component {
                 });
                 this.getAllChatsByUserId(userId);
                 this.getMarkedAsReadedNotification(userId)
-                CurrentLocation.getCurrentPosition();
             }
         }
         catch (ex) {
