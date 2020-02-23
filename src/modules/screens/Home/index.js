@@ -77,7 +77,8 @@ class Home extends Component {
     }
     async componentDidMount() {
         try {
-            if (IS_ANDROID) {
+            this.initialFunction();
+            if (!IS_ANDROID) {
                 let productConfigVersion = await getCurrentVersion("CURRENT_PATIENT_MEDFLIC_VERSION")
                 console.log(productConfigVersion)
                 if (productConfigVersion.success) {
@@ -116,7 +117,6 @@ class Home extends Component {
                         {
                             text: "Skip",
                             onPress: () => {
-                                this.initialFunction();
                                 console.log("Cancel Pressed");
                             },
                             style: "cancel"
@@ -161,14 +161,13 @@ class Home extends Component {
         if (productConfigVersion.data[0].value.force_update == true) {
             Alert.alert(
                 "Please Upgrade Your Application !",
-                "New version is available, Select update to update our app",
+                "Update Medflic application to Newer Version",
                 [
                     {
                         text: "UPDATE", onPress: () => {
                             console.log('OK Pressed')
                             Linking.openURL("https://play.google.com/store/apps/details?id=com.medflic&hl=en")
                         }
-
                     }
                 ],
                 { cancelable: false }
@@ -176,7 +175,7 @@ class Home extends Component {
         } else {
             Alert.alert(
                 "Please Upgrade Your Application !",
-                "New version is available, Select update to update our app",
+                "Update Medflic application to Latest Version",
                 [
                     {
                         text: "Skip",
