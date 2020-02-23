@@ -3,7 +3,8 @@ import { StyleSheet, TouchableOpacity } from 'react-native';
 import { Container, Body, Picker, Button, Card, Text, Item, Row, View, Col, Content, Icon, Header, Left, Radio, Title, ListItem } from 'native-base';
 import SectionedMultiSelect from 'react-native-sectioned-multi-select';
 import { connect } from 'react-redux'
-let filterData = {};  //for send only selected Filtered Values and Store the Previous selected filter values 
+let filterDataObject = {};  //for send only selected Filtered Values and Store the Previous selected filter values 
+let globalOffilterBySelectedAvailabilityDateCount = 0;
 let selectedCount = 0
 class Filters extends Component {
 
@@ -16,47 +17,49 @@ class Filters extends Component {
             categoryList: [],
             sampleServiceArray: [],
             serviceList: [],
-            selectedCategory: '',
+            selectedCategory: [],
             language: [],
             genderIndex: 0,
             selectAvailabilityIndex: 0,
-            selectExperinceIndex: {},
+            selectExperinceIndex: 0,
             selectedServices: [],
-            viewDoctors_button: true
         }
     }
 
     async componentDidMount() {
-        debugger
         const { bookappointment: { doctorData }, navigation } = this.props;
         const filterData = navigation.getParam('filterData');
-        const filterBySelectedAvailabilityDateCount = navigation.getParam('filterBySelectedAvailabilityDateCount')
-        // console.log( 'Filter Data from Search List: ' + JSON.stringify(filterData));
-        //console.log(' filterBySelectedAvailabilityDateCount' + filterBySelectedAvailabilityDateCount);
-        if (filterBySelectedAvailabilityDateCount !== 0 && filterBySelectedAvailabilityDateCount !== undefined) {
-            this.clickFilterByAvailabilityDates(filterBySelectedAvailabilityDateCount, false);
+        const filterBySelectedAvailabilityDateCount = navigation.getParam('filterBySelectedAvailabilityDateCount');
+        console.log('Filter Data from Search List: ' + JSON.stringify(filterData));
+        console.log(' filterBySelectedAvailabilityDateCount' + filterBySelectedAvailabilityDateCount);
+        if (globalOffilterBySelectedAvailabilityDateCount != 0) {
+            if (filterBySelectedAvailabilityDateCount !== 0 && filterBySelectedAvailabilityDateCount !== undefined) {
+                this.clickFilterByAvailabilityDates(filterBySelectedAvailabilityDateCount, false, true);
+            }
         }
-        if (filterData) {
-            if (filterData.gender) {
-                if (filterData.gender === 'M') {
-                    this.clickGenderInButton(1, 'M', false)
-                } else if (filterData.gender === 'F') {
-                    this.clickGenderInButton(2, 'F', false)
-                } else if (filterData.gender === 'O') {
-                    this.clickGenderInButton(3, 'O', false)
+        if (Object.keys(filterDataObject).length != 0) { // condition for when click the Clear button and then press the back button and come back again Filter page (The previous selected filtered values from Doctor Search list page are Showing again)
+            if (filterData) {
+                if (filterData.gender) {
+                    if (filterData.gender === 'M') {
+                        this.clickGenderInButton(1, 'M', false, true)
+                    } else if (filterData.gender === 'F') {
+                        this.clickGenderInButton(2, 'F', false, true)
+                    } else if (filterData.gender === 'O') {
+                        this.clickGenderInButton(3, 'O', false, true)
+                    }
                 }
-            }
-            if (filterData.experience) {
-                this.clickFilterByExperince(filterData.experience, false);
-            }
-            if (filterData.language) {
-                this.onSelectedLanguagesChange(filterData.language);
-            }
-            if (filterData.category) {
-                this.onSelectedCategoryChange(filterData.category);
-            }
-            if (filterData.service) {
-                this.onSelectedServiceChange(filterData.service)
+                if (filterData.experience) {
+                    this.clickFilterByExperince(filterData.experience, false, true);
+                }
+                if (filterData.language) {
+                    this.onSelectedLanguagesChange(filterData.language, true);
+                }
+                if (filterData.category) {
+                    this.onSelectedCategoryChange(filterData.category, true);
+                }
+                if (filterData.service) {
+                    this.onSelectedServiceChange(filterData.service, true)
+                }
             }
         }
 
@@ -96,205 +99,226 @@ class Filters extends Component {
 
     /* Send multiple Selected Filtered values  */
     sendFilteredData = async () => {
-        console.log('filterData::', filterData)
+        console.log('filterDataObject::', filterDataObject)
         console.log('this.state.selectAvailabilityIndex::', this.state.selectAvailabilityIndex)
         this.props.navigation.navigate('Doctor List', {
-            filterData: filterData,
+            filterData: filterDataObject,
             filterBySelectedAvailabilityDateCount: this.state.selectAvailabilityIndex, ConditionFromFilter: true
         })
     }
     /*  Select GenderPreference */
-    clickGenderInButton = async (genderIndex, genderSelected, bySelect) => {
+    clickGenderInButton = async (genderIndex, genderSelected, bySelect, isFilteredData) => {
         if (genderIndex === this.state.genderIndex && bySelect) {
             genderIndex = 0,
                 genderSelected = '',
                 selectedCount--
         }
         else {
-            selectedCount++
+            if (!this.state.genderSelected) {
+                if (!isFilteredData) {
+                    selectedCount++
+                }
+            }
         }
         this.setState({ genderIndex, genderSelected });
-        filterData.gender = genderSelected;
+        filterDataObject.gender = genderSelected;
     }
     /* Get the selected Availability Date  */
-    clickFilterByAvailabilityDates = (index, bySelect) => {
+    clickFilterByAvailabilityDates = (index, bySelect, isFilteredData) => {
         if (index === this.state.selectAvailabilityIndex && bySelect) {
             index = 0,
                 selectedCount--
         }
         else {
-            selectedCount++
+            if (this.state.selectAvailabilityIndex === 0) {
+                if (!isFilteredData) {
+                    selectedCount++
+                }
+            }
         }
-        this.setState({ selectAvailabilityIndex: index })
+        this.setState({ selectAvailabilityIndex: index });
+        globalOffilterBySelectedAvailabilityDateCount = index;
     }
 
-    clickFilterByExperince = async (index, bySelect) => {
+    clickFilterByExperince = async (index, bySelect, isFilteredData) => {
         if (index === this.state.selectExperinceIndex && bySelect) {
             index = 0,
                 selectedCount--
         }
         else {
-            selectedCount++
+            if (this.state.selectExperinceIndex === 0) {
+                if (!isFilteredData) {
+                    selectedCount++
+                }
+            }
         }
         this.setState({ selectExperinceIndex: index })
-        filterData.experience = index;
+        filterDataObject.experience = index;
     }
 
-    onSelectedLanguagesChange = async (language) => {
-        this.state.language.length < language.length ? selectedCount++ : selectedCount--;
+    onSelectedLanguagesChange = async (language, isFilteredData) => {
+        if (this.state.language.length < language.length) {
+            if (!isFilteredData) {
+                selectedCount++;
+            }
+        }
+        else {
+            selectedCount--;
+        }
         this.setState({ language });
-        filterData.language = language;
+        filterDataObject.language = language;
     };
-    onSelectedServiceChange = async (selectedServices) => {
-        this.state.selectedServices.length < selectedServices.length ? selectedCount++ : selectedCount--;
+    onSelectedServiceChange = async (selectedServices, isFilteredData) => {
+        if (this.state.selectedServices.length < selectedServices.length) {
+            if (!isFilteredData) {
+                selectedCount++;
+            }
+        }
+        else {
+            selectedCount--;
+        }
         await this.setState({ selectedServices })
-        filterData.service = selectedServices;
+        filterDataObject.service = selectedServices;
     }
-    onSelectedCategoryChange = async (selectedCategory) => {
+    onSelectedCategoryChange = async (selectedCategory, isFilteredData) => {
         const checkCategory = String(selectedCategory);
         if (this.state.selectedCategory.includes(checkCategory)) {
             selectedCategory = [];
             selectedCount--
         }
         else {
-            selectedCount++
+            if (!isFilteredData) {
+                selectedCount++
+            }
         }
-        const categoryItem = String(selectedCategory);
-        this.setState({ selectedCategory, categoryItem });
-        filterData.category = categoryItem;
+        let categoryItem = String(selectedCategory);
+        this.setState({ selectedCategory });
+        filterDataObject.category = categoryItem;
     }
-    clearSelectedData = () => {  // Clear All selected Data
+    clearSelectedData = () => {  // Clear All selected Data when clicked the Clear filter option
         this.setState({
             genderSelected: '',
-            selectedCategory: '',
+            selectedCategory: [],
             language: [],
             genderIndex: 0,
             selectAvailabilityIndex: 0,
-            selectExperinceIndex: {},
+            selectExperinceIndex: 0,
             selectedServices: [],
         });
-        selectedCount = 0
+        selectedCount = 0;
+        globalOffilterBySelectedAvailabilityDateCount = 0;
+        filterDataObject = {};
     }
     render() {
         const { genderIndex, selectAvailabilityIndex, language, genderSelected, selectedCategory,
-            selectedServices, selectExperinceIndex } = this.state;
+            selectedServices, selectExperinceIndex, languageData, categoryList, serviceList } = this.state;
         return (
             <Container style={styles.container}>
                 <Content>
                     <View style={{ borderBottomColor: '#C1C1C1', borderBottomWidth: 0.5, paddingBottom: 10, marginTop: 10, marginLeft: 15, marginRight: 15 }}>
-                        <Text style={{ fontFamily: 'OpenSans', color: 'gray', fontSize: 13, }}>Gender </Text>
+                        <Text style={styles.headingLabelStyle}>Gender </Text>
                         <Row style={{ marginTop: 10, borderBottomWidth: 0, }}>
 
                             <Col size={3.33} >
                                 <TouchableOpacity
                                     onPress={() => this.clickGenderInButton(1, "M", true)}
-                                    style={{ alignItems: 'center', justifyContent: 'center', flexDirection: 'row' }}>
+                                    style={styles.genderTouchableStyles}>
                                     <Radio selected={genderIndex === 1 ? true : false} />
                                     <Icon name="ios-man" style={{ fontSize: 20, marginLeft: 10, }} />
-                                    <Text style={{
-                                        fontFamily: 'OpenSans', fontSize: 13, marginLeft: 15, color: '#333333'
-                                    }}>Male</Text>
+                                    <Text style={styles.genderTextStyles}>Male</Text>
                                 </TouchableOpacity>
                             </Col>
                             <Col size={3.33} >
                                 <TouchableOpacity
                                     onPress={() => this.clickGenderInButton(2, "F", true)}
-
-                                    style={{ alignItems: 'center', justifyContent: 'center', flexDirection: 'row' }}>
+                                    style={styles.genderTouchableStyles}>
                                     <Radio selected={genderIndex === 2 ? true : false} />
                                     <Icon name="ios-man" style={{ fontSize: 20, marginLeft: 10, }} />
-                                    <Text style={{
-                                        fontFamily: 'OpenSans', fontSize: 13, marginLeft: 15, color: '#333333'
-                                    }}>Female</Text>
+                                    <Text style={styles.genderTextStyles}>Female</Text>
                                 </TouchableOpacity>
                             </Col>
                             <Col size={3.33} >
                                 <TouchableOpacity
                                     onPress={() => this.clickGenderInButton(3, "O", true)}
-                                    style={{ alignItems: 'center', justifyContent: 'center', flexDirection: 'row' }}>
+                                    style={styles.genderTouchableStyles}>
                                     <Radio selected={genderIndex === 3 ? true : false} />
-                                    <Text style={{
-                                        fontFamily: 'OpenSans', fontSize: 13, marginLeft: 15, color: '#333333'
-                                    }}>Others</Text>
+                                    <Text style={styles.genderTextStyles}>Others</Text>
                                 </TouchableOpacity>
                             </Col>
-
                         </Row>
                     </View>
 
                     <View style={{ borderBottomColor: '#C1C1C1', borderBottomWidth: 0.5, paddingBottom: 20, marginTop: 10, marginLeft: 15, marginRight: 15 }}>
-                        <Text style={{ fontFamily: 'OpenSans', color: 'gray', fontSize: 13, }}>Availability Date & Time </Text>
+                        <Text style={styles.headingLabelStyle}>Availability Date & Time </Text>
                         <Row style={{ marginTop: 10, borderBottomWidth: 0 }}>
                             <Col size={3}>
                                 <TouchableOpacity
-
                                     onPress={() => this.clickFilterByAvailabilityDates(1, true)}
                                     style={selectAvailabilityIndex === 1 ? styles.selectedDaysColor : styles.defaultDaysColor}
                                 >
-                                    <Text style={{ color: '#333333', fontFamily: 'OpenSans', fontSize: 13, textAlign: 'center' }}>Tomorrow</Text>
+                                    <Text style={selectAvailabilityIndex === 1 ? styles.selectedDaysTextColor : styles.defaultDaysTextColor}
+                                    >Today</Text>
                                 </TouchableOpacity>
                             </Col>
                             <Col size={3} style={{ marginLeft: 10 }}>
                                 <TouchableOpacity
-
                                     onPress={() => this.clickFilterByAvailabilityDates(3, true)}
                                     style={selectAvailabilityIndex === 3 ? styles.selectedDaysColor : styles.defaultDaysColor}
                                 >
-                                    <Text style={{ color: '#333333', fontFamily: 'OpenSans', fontSize: 13, textAlign: 'center' }}>Next 3 days</Text>
+                                    <Text style={selectAvailabilityIndex === 3 ? styles.selectedDaysTextColor : styles.defaultDaysTextColor}>Next 3 days</Text>
                                 </TouchableOpacity>
                             </Col>
                             <Col size={3} style={{ marginLeft: 10 }}>
                                 <TouchableOpacity
-
                                     style={selectAvailabilityIndex === 7 ? styles.selectedDaysColor : styles.defaultDaysColor}
                                     onPress={() => this.clickFilterByAvailabilityDates(7, true)}
                                 >
-                                    <Text style={{ color: '#333333', fontFamily: 'OpenSans', fontSize: 13, textAlign: 'center' }}>Next 7 days</Text>
+                                    <Text style={selectAvailabilityIndex === 7 ? styles.selectedDaysTextColor : styles.defaultDaysTextColor}>Next 7 days</Text>
                                 </TouchableOpacity>
                             </Col>
                         </Row>
                     </View>
 
                     <View style={{ borderBottomColor: '#C1C1C1', borderBottomWidth: 0.5, paddingBottom: 20, marginTop: 10, marginLeft: 15, marginRight: 15 }}>
-                        <Text style={{ fontFamily: 'OpenSans', color: 'gray', fontSize: 13, }}>Work Experience</Text>
+                        <Text style={styles.headingLabelStyle}>Work Experience</Text>
                         <Row style={{ marginTop: 10, borderBottomWidth: 0 }}>
                             <Col size={2.5}>
                                 <TouchableOpacity
-                                    style={selectExperinceIndex === 10 ? styles.selectedExperienceColor : styles.defaultExperienceColor}
+                                    style={selectExperinceIndex === 10 ? styles.selectedExpColor : styles.defaultExpColor}
                                     onPress={() => this.clickFilterByExperince(10, true)}
                                 >
-                                    <Text style={{ color: '#333333', fontFamily: 'OpenSans', fontSize: 10, textAlign: 'center' }}>0-10 yrs</Text>
+                                    <Text style={selectExperinceIndex === 10 ? styles.selectedExpTextColor : styles.defaultExpTextColor}>0-10 yrs</Text>
                                 </TouchableOpacity>
                             </Col>
                             <Col size={2.5} style={{ marginLeft: 10 }}>
                                 <TouchableOpacity
-                                    style={selectExperinceIndex === 20 ? styles.selectedExperienceColor : styles.defaultExperienceColor}
+                                    style={selectExperinceIndex === 20 ? styles.selectedExpColor : styles.defaultExpColor}
                                     onPress={() => this.clickFilterByExperince(20, true)}
                                 >
-                                    <Text style={{ color: '#333333', fontFamily: 'OpenSans', fontSize: 10, textAlign: 'center' }}>10-20 yrs</Text>
+                                    <Text style={selectExperinceIndex === 20 ? styles.selectedExpTextColor : styles.defaultExpTextColor}>10-20 yrs</Text>
                                 </TouchableOpacity>
                             </Col>
                             <Col size={2.5} style={{ marginLeft: 10 }}>
                                 <TouchableOpacity
-                                    style={selectExperinceIndex === 30 ? styles.selectedExperienceColor : styles.defaultExperienceColor}
+                                    style={selectExperinceIndex === 30 ? styles.selectedExpColor : styles.defaultExpColor}
                                     onPress={() => this.clickFilterByExperince(30, true)}
                                 >
-                                    <Text style={{ color: '#333333', fontFamily: 'OpenSans', fontSize: 10, textAlign: 'center' }}>20-30 yrs</Text>
+                                    <Text style={selectExperinceIndex === 30 ? styles.selectedExpTextColor : styles.defaultExpTextColor}>20-30 yrs</Text>
                                 </TouchableOpacity>
                             </Col>
                             <Col size={2.5} style={{ marginLeft: 10 }}>
                                 <TouchableOpacity
-                                    style={selectExperinceIndex === 40 ? styles.selectedExperienceColor : styles.defaultExperienceColor}
+                                    style={selectExperinceIndex === 40 ? styles.selectedExpColor : styles.defaultExpColor}
                                     onPress={() => this.clickFilterByExperince(40, true)}
                                 >
-                                    <Text style={{ color: '#333333', fontFamily: 'OpenSans', fontSize: 10, textAlign: 'center' }}>Above 30</Text>
+                                    <Text style={selectExperinceIndex === 40 ? styles.selectedExpTextColor : styles.defaultExpTextColor}>Above 30</Text>
                                 </TouchableOpacity>
                             </Col>
                         </Row>
                     </View>
 
                     <View style={{ borderBottomColor: '#C1C1C1', borderBottomWidth: 0.5, paddingBottom: 10, marginTop: 10, marginLeft: 15, marginRight: 15 }}>
-                        <Text style={{ fontFamily: 'OpenSans', color: 'gray', fontSize: 13, }}>Choose Spoken Languages</Text>
+                        <Text style={styles.headingLabelStyle}>Choose Spoken Languages</Text>
                         <TouchableOpacity style={{ height: 60, marginTop: -15, marginLeft: -9.5 }}>
                             <SectionedMultiSelect
                                 styles={{
@@ -304,7 +328,7 @@ class Filters extends Component {
                                     },
 
                                 }}
-                                items={this.state.languageData}
+                                items={languageData}
                                 uniqueKey='value'
                                 displayKey='value'
                                 selectText='Choose Languages you know'
@@ -316,7 +340,7 @@ class Filters extends Component {
                                 showChips={false}
                                 readOnlyHeadings={false}
                                 onSelectedItemsChange={this.onSelectedLanguagesChange}
-                                selectedItems={this.state.language}
+                                selectedItems={language}
                                 colors={{ primary: '#18c971' }}
                                 showCancelButton={true}
                                 animateDropDowns={true}
@@ -326,7 +350,7 @@ class Filters extends Component {
                     </View>
 
                     <View style={{ borderBottomColor: '#C1C1C1', borderBottomWidth: 0.5, paddingBottom: 10, marginTop: 10, marginLeft: 15, marginRight: 15 }}>
-                        <Text style={{ fontFamily: 'OpenSans', color: 'gray', fontSize: 13, }}>Selected your category</Text>
+                        <Text style={styles.headingLabelStyle}>Selected your category</Text>
                         <TouchableOpacity style={{ height: 60, marginTop: -15, marginLeft: -9.5 }}>
                             <SectionedMultiSelect
                                 styles={{
@@ -336,7 +360,7 @@ class Filters extends Component {
                                     },
 
                                 }}
-                                items={this.state.categoryList}
+                                items={categoryList}
                                 uniqueKey='value'
                                 displayKey='value'
                                 selectText='Choose your Category  '
@@ -349,7 +373,7 @@ class Filters extends Component {
                                 single={true}
                                 readOnlyHeadings={false}
                                 onSelectedItemsChange={this.onSelectedCategoryChange}
-                                selectedItems={this.state.selectedCategory}
+                                selectedItems={selectedCategory}
                                 colors={{ primary: '#18c971' }}
                                 showCancelButton={true}
                                 animateDropDowns={true}
@@ -358,7 +382,7 @@ class Filters extends Component {
                         </TouchableOpacity>
                     </View>
                     <View style={{ borderBottomColor: '#C1C1C1', borderBottomWidth: 0.5, paddingBottom: 10, marginTop: 10, marginLeft: 15, marginRight: 15 }}>
-                        <Text style={{ fontFamily: 'OpenSans', color: 'gray', fontSize: 13, }}>Selected service</Text>
+                        <Text style={styles.headingLabelStyle}>Selected service</Text>
                         <TouchableOpacity style={{ height: 60, marginTop: -15, marginLeft: -9.5 }}>
                             <SectionedMultiSelect
                                 styles={{
@@ -368,7 +392,7 @@ class Filters extends Component {
                                     },
 
                                 }}
-                                items={this.state.serviceList}
+                                items={serviceList}
                                 uniqueKey='value'
                                 displayKey='value'
                                 selectText='Choose your Services  '
@@ -381,7 +405,7 @@ class Filters extends Component {
                                 showChips={false}
                                 readOnlyHeadings={false}
                                 onSelectedItemsChange={this.onSelectedServiceChange}
-                                selectedItems={this.state.selectedServices}
+                                selectedItems={selectedServices}
                                 colors={{ primary: '#18c971' }}
                                 showCancelButton={true}
                                 animateDropDowns={true}
@@ -389,29 +413,31 @@ class Filters extends Component {
                             />
                         </TouchableOpacity>
                     </View>
-                    <Row style={{ marginTop: 30, borderBottomWidth: 0, marginLeft: 10, marginRight: 10 }}>
-                        <Col size={5} >
-                            <TouchableOpacity
-                                onPress={this.clearSelectedData}
-                                style={{ paddingTop: 10, paddingBottom: 10, paddingLeft: 15, paddingRight: 15, borderRadius: 30, borderColor: '#775DA3', borderWidth: 0.5 }}>
-                                <Text style={{marginBottom:-10, color: '#775DA3', fontFamily: 'OpenSans', fontSize: 15, fontWeight: '500' }}>{selectedCount}</Text>
-                                <Text style={{ color: '#775DA3', fontFamily: 'OpenSans', fontSize: 13, textAlign: 'center', fontWeight: '500' }}>Clear Filters</Text>
-                            </TouchableOpacity>
-                        </Col>
-                        <Col size={5} style={{ marginLeft: 20 }}>
-                            <TouchableOpacity
-                                block success
-                                disabled={language.length != 0 || genderSelected || selectedCategory || selectedServices.length != 0 || selectAvailabilityIndex != 0 || Object.keys(selectExperinceIndex).length != 0 ? false : true}
-                                style={language.length != 0 || genderSelected || selectedCategory || selectedServices.length != 0 || selectAvailabilityIndex != 0 || Object.keys(selectExperinceIndex).length != 0 ? styles.viewDocButtonBgGreeen : styles.viewDocButtonBgGray}
-                                onPress={this.sendFilteredData}
-                            >
-                                <Text style={{ color: '#000', fontFamily: 'OpenSans', fontSize: 13, textAlign: 'center', fontWeight: '500' }}>Apply</Text>
-                            </TouchableOpacity>
-                        </Col>
-                    </Row>
+                    <View>
+                        <Row style={{ marginTop: 30, borderBottomWidth: 0, marginLeft: 10, marginRight: 10 }}>
+                            <Col size={5} >
+                                <TouchableOpacity
+                                    onPress={this.clearSelectedData}
+                                    style={{ paddingTop: 10, paddingBottom: 10, paddingLeft: 15, paddingRight: 15, borderRadius: 30, borderColor: '#775DA3', borderWidth: 0.5 }}>
+
+                                    <Text style={{ color: '#775DA3', fontFamily: 'OpenSans', fontSize: 13, textAlign: 'center', fontWeight: '500' }}>Clear Filters</Text>
+                                </TouchableOpacity>
+                            </Col>
+                            <Col size={5} style={{ marginLeft: 20 }}>
+                                <TouchableOpacity
+                                    block success
+                                    disabled={language.length != 0 || genderSelected || selectedCategory.length != 0 || selectedServices.length != 0 || selectAvailabilityIndex != 0 || selectExperinceIndex != 0 ? false : true}
+                                    style={language.length != 0 || genderSelected || selectedCategory.length != 0 || selectedServices.length != 0 || selectAvailabilityIndex != 0 || selectExperinceIndex != 0 ? styles.viewDocButtonBgGreeen : styles.viewDocButtonBgGray}
+                                    onPress={this.sendFilteredData}
+                                >
+                                    <Text style={language.length != 0 || genderSelected || selectedCategory.length != 0 || selectedServices.length != 0 || selectAvailabilityIndex != 0 || selectExperinceIndex != 0 ? styles.enabledApplyTextColor : styles.defaultApplyTextColor}>Apply</Text>
+                                </TouchableOpacity>
+                            </Col>
+                        </Row>
+                        {language.length != 0 || genderSelected || selectedCategory.length != 0 || selectedServices.length != 0 || selectAvailabilityIndex != 0 || selectExperinceIndex != 0 ? <Text style={{ color: '#000', fontFamily: 'OpenSans', fontSize: 12, fontWeight: '600', position: "absolute", backgroundColor: '#775DA3', height: 20, width: 25, borderRadius: 14, textAlign: 'center', marginLeft: 25, marginTop: 35 }}>{selectedCount}</Text> : null}
+                    </View>
                 </Content>
             </Container >
-
         );
     }
 }
@@ -442,7 +468,7 @@ const styles = StyleSheet.create({
         borderRadius: 5
     },
 
-    defaultExperienceColor:
+    defaultExpColor:
     {
         paddingTop: 5,
         paddingBottom: 5,
@@ -451,7 +477,7 @@ const styles = StyleSheet.create({
         borderRadius: 5
     },
 
-    selectedExperienceColor: {
+    selectedExpColor: {
         paddingTop: 5,
         paddingBottom: 5,
         paddingLeft: 15,
@@ -483,6 +509,33 @@ const styles = StyleSheet.create({
         borderRadius: 30,
         borderColor: '#775DA3',
         borderWidth: 0.5
-    }
+    },
+    defaultDaysTextColor: {
+        color: '#333333', fontFamily: 'OpenSans', fontSize: 13, textAlign: 'center'
+    },
+    selectedDaysTextColor: {
+        color: '#FFFFFF', fontFamily: 'OpenSans', fontSize: 13, textAlign: 'center'
 
+    },
+    defaultExpTextColor: {
+        color: '#333333', fontFamily: 'OpenSans', fontSize: 10, textAlign: 'center'
+    },
+    selectedExpTextColor: {
+        color: '#FFFFFF', fontFamily: 'OpenSans', fontSize: 10, textAlign: 'center'
+    },
+    defaultApplyTextColor: {
+        color: '#775DA3', fontFamily: 'OpenSans', fontSize: 13, textAlign: 'center', fontWeight: '500'
+    },
+    enabledApplyTextColor: {
+        color: '#FFFFFF', fontFamily: 'OpenSans', fontSize: 13, textAlign: 'center', fontWeight: '500'
+    },
+    headingLabelStyle: {
+        fontFamily: 'OpenSans', color: 'gray', fontSize: 13
+    },
+    genderTextStyles: {
+        fontFamily: 'OpenSans', fontSize: 13, marginLeft: 15, color: '#333333'
+    },
+    genderTouchableStyles: {
+        alignItems: 'center', justifyContent: 'center', flexDirection: 'row'
+    },
 })
