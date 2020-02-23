@@ -297,6 +297,8 @@ class Home extends Component {
                                     >
                                          <Col size={7}>
                                     <Text style={{marginTop:2, fontFamily: 'OpenSans', fontSize: 12,color: '#775DA3',paddingLeft: 10, }}>{item.value}</Text> 
+                                  {item.address? <Text style={{marginTop:2, fontFamily: 'OpenSans', fontSize: 12,color: '#9c9b9f',paddingLeft: 10, }}>{item.address}</Text>:null }
+
                                     </Col>
                                     <Col size={3}>
                                         <Text uppercase={true} style={{ color: 'gray', marginTop:2, marginRight: 10,color: '#775DA3', fontSize: 12, fontFamily: 'OpenSans-Bold',paddingLeft: 10,  }}>{item.type}</Text>
