@@ -15,7 +15,9 @@ export default class PaymentReview extends Component {
         super(props)
 
         this.state = {
-            bookSlotDetails: {},
+            bookSlotDetails: {
+              diseaseDescription: ''
+            },
             isLoading: false,
              
         }
@@ -35,10 +37,11 @@ export default class PaymentReview extends Component {
     }
     async confirmProceedPayment() {
         let { diseaseDescription } = this.state.bookSlotDetails;
-        if(!isOnlyLetter(diseaseDescription)) {
+        if(String(diseaseDescription).trim() === '') {
             Toast.show({
                 text: 'Please enter valid Reason',
-                duration: 3000
+                duration: 3000,
+                type: 'warning'
             })
             return
         }
@@ -66,10 +69,11 @@ export default class PaymentReview extends Component {
     }
     async processToPayLater() {
         let { diseaseDescription } = this.state.bookSlotDetails;
-        if(!isOnlyLetter(diseaseDescription)) {
+        if(!diseaseDescription || String(diseaseDescription).trim() === '') {
             Toast.show({
                 text: 'Please enter valid Reason',
-                duration: 3000
+                duration: 3000,
+                type: 'warning'
             })
             return
         }
