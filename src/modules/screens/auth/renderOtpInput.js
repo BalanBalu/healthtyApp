@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { StyleSheet, TouchableOpacity } from 'react-native';
+import { StyleSheet, TouchableOpacity, AsyncStorage } from 'react-native';
 import { View, Button, Text, Toast, Content, Container, Row, Left, Right, Card, Item } from 'native-base';
 import { connect } from 'react-redux';
 import OtpInputs from '../../../components/OtpInputText/OtpInput';
@@ -26,6 +26,7 @@ class RenderOtpInput extends Component {
             appType: 'user',
             userEntry: loginData.userEntry
         }
+        console.log("requestData" + JSON.stringify(requestData))
         await this.setState({ requestData });
         await this.generateOtpCode();
         this.setState({ isLoading: false });
@@ -81,7 +82,11 @@ class RenderOtpInput extends Component {
                     type: "success",
                     duration: 4000
                 });
-                this.doLoginAndContinueBasicDetailsUpdate();
+                if (this.props.navigation.getParam("navigateBackToHome")) {
+                    this.props.navigation.navigate('Home');
+                } else {
+                    this.doLoginAndContinueBasicDetailsUpdate();
+                }
             }
             else {
                 this.setState({ errorMsg: reqOtpVerifiedResponse.error, isLoading: false })
@@ -104,7 +109,8 @@ class RenderOtpInput extends Component {
             await login(loginData);  // Do SignIn Process after SignUp is Done
             if (this.props.user.isAuthenticated) {
                 this.props.navigation.navigate('userdetails');
-            } else {
+            }
+            else {
                 this.setState({ errorMsg: this.props.user.message });
             }
         } catch (error) {
