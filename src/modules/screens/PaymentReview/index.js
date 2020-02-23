@@ -37,7 +37,7 @@ export default class PaymentReview extends Component {
     }
     async confirmProceedPayment() {
         let { diseaseDescription } = this.state.bookSlotDetails;
-        if(String(diseaseDescription).trim() === '') {
+        if(!diseaseDescription || String(diseaseDescription).trim() === '') {
             Toast.show({
                 text: 'Please enter valid Reason',
                 duration: 3000,
