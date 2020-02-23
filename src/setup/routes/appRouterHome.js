@@ -22,7 +22,6 @@ import MapBox from "../../modules/screens/auth/UserAddress/MapBox";
 import Reviews from "../../modules/screens/Reviews";
 import doctorSearchList from "../../modules/screens/doctorSearchList";
 import FilterList from "../../modules/screens/FilterList";
-import ServicesList from "../../modules/screens/FilterList/Services";
 import PaymentPage from "../../modules/screens/PaymentPage";
 import PaymentReview from "../../modules/screens/PaymentReview";
 import PaymentSuccess from "../../modules/screens/PaymentSuccess";
@@ -306,12 +305,6 @@ const HomeStack = createStackNavigator({
     screen: FilterList,
     navigationOptions: {
       title: 'Filters'
-    }
-  },
-  Services: {
-    screen: ServicesList,
-    navigationOptions: {
-      title: 'ServicesList'
     }
   },
   "Book Appointment": {
