@@ -21,7 +21,7 @@ export default class MapBox extends React.Component {
         this.state = {
             fromProfile: false,
             loading: false,
-            coordinates: [],
+            coordinates: null,
             center: [],
             zoom: 12,
             isFinisedLoading: false,
@@ -44,7 +44,7 @@ export default class MapBox extends React.Component {
     }
     async componentDidMount() {
         if (IS_ANDROID) {
-            PermissionsAndroid.requestMultiple(
+           const granted= PermissionsAndroid.requestMultiple(
                 [PermissionsAndroid.PERMISSIONS.ACCESS_FINE_LOCATION,
                 PermissionsAndroid.PERMISSIONS.ACCESS_COARSE_LOCATION],
                 {
@@ -56,6 +56,8 @@ export default class MapBox extends React.Component {
             }).catch(err => {
                 console.warn(err);
             });
+            console.log("granted");
+            console.log(await granted);
         }
         this._isMounted = true;
         const { navigation } = this.props;
@@ -97,7 +99,7 @@ export default class MapBox extends React.Component {
                     center: origin_coordinates,
                     coordinates: origin_coordinates,
                     zoom: 12,
-                    isFinisedLoading: true
+                    // isFinisedLoading: true
                 })
                 this.updtateLocation(origin_coordinates);
             }), error => {
@@ -353,9 +355,10 @@ export default class MapBox extends React.Component {
                         <MapboxGL.MapView
                             ref={(c) => this._map = c}
                             style={{ flex: 1 }}
+                            compassEnabled={false}
                             showUserLocation={true}
                             styleURL={MapboxGL.StyleURL.Street}
-                            compassEnabled={false}
+                            
                             onRegionDidChange={this.onRegionDidChange}
                             regionDidChangeDebounceTime={500}
                             onRegionIsChanging={this.onRegionIsChanging}
