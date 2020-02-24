@@ -11,7 +11,6 @@ import { addReminderdata } from '../../providers/reminder/reminder.action.js';
 const medicineFormType = ["Select medicine Form", "Pill", "Solution", "Injection", "Powder", "Drops", "Inhales", "Other",]
 const medicineStrengthType = ["Select medicine strength", "g", "IU", "mcg", "mEg", "mg"]
 
-
 class AddReminder extends Component {
   constructor(props) {
     super(props)
@@ -41,14 +40,14 @@ class AddReminder extends Component {
       previewdisplay: false,
       data: [],
       arrayTakenTime: [],
-      arrayeveryday: [],
-      arrryoneday: []
+
 
     }
     this.pastSelectedDate = new Date(),
       this.upcommingSelectedDate = new Date()
-    // alert(moment().startOf('day').toDate())
-    alert(new Date())
+    // alert(moment().startOf('day').toDate())   
+    console.log('medicine_take_times' + moment().startOf('day').toDate())
+
   }
 
 
@@ -73,19 +72,19 @@ class AddReminder extends Component {
     this.setState({ isTimePickerVisible: false })
   }
 
-  handleTimePicker = (date) => {
-
+  handleTimePicker = async (date) => {
+    alert('time is picked')
     this.setState({ timePlaceholder: true })
     this.setState({ isTimePickerVisible: false })
     let h = new Date(date).getHours();
     let m = new Date(date).getMinutes();
     let Time = moment().startOf('day').add(h, 'h').add(m, 'm').toDate();
-    console.log('check time' + Time.toString())
-    let arrayTakenTime = this.state.arrayTakenTime;
-    arrayTakenTime.push(date)
-    this.setState({ medicine_take_times: date, arrayTakenTime });
+    console.log('check time::::::::::' + Time.toString())
+    // let arrayTakenTime = this.state.arrayTakenTime;
+    // arrayTakenTime.push(date)
+    await this.setState({ medicine_take_times: date });
 
-    console.log('medicine_take_times' + this.state.medicine_take_times)
+    console.log('medicine_take_times::::::::::::' + this.state.medicine_take_times)
 
   }
   showOnlyDateTimePicker = () => {
@@ -99,10 +98,10 @@ class AddReminder extends Component {
     let h = new Date(date).getHours();
     let m = new Date(date).getMinutes();
     let Time = moment().startOf('day').add(h, 'h').add(m, 'm').toDate();
-    console.log('check time' + Time.toString())
+    // console.log('check time' + Time.toString())
 
     this.setState({ medicine_take_one_date: date });
-    console.log('medicine_take_one_date' + this.state.medicine_take_one_date)
+    // console.log('medicine_take_one_date' + this.state.medicine_take_one_date)
     this.hideOnlyDateTimePicker();
   }
 
@@ -121,10 +120,10 @@ class AddReminder extends Component {
     let h = new Date(date).getHours();
     let m = new Date(date).getMinutes();
     let Time = moment().startOf('day').add(h, 'h').add(m, 'm').toDate();
-    console.log('check time' + Time.toString())
+    // console.log('check time' + Time.toString())
 
     this.setState({ medicine_take_end_date: date });
-    console.log('medicine_take_end_date' + this.state.medicine_take_end_date)
+    // console.log('medicine_take_end_date' + this.state.medicine_take_end_date)
     this.hideendDateTimePicker();
   }
   showDateTimePicker = () => {
@@ -143,21 +142,21 @@ class AddReminder extends Component {
     let h = new Date(date).getHours();
     let m = new Date(date).getMinutes();
     let Time = moment().startOf('day').add(h, 'h').add(m, 'm').toDate();
-    console.log('check time' + Time.toString())
+    // console.log('check time' + Time.toString())
 
     this.setState({ medicine_take_start_date: date });
-    console.log('medicine_take_start_date' + this.state.medicine_take_start_date)
+    // console.log('medicine_take_start_date' + this.state.medicine_take_start_date)
 
     this.hideDateTimePicker();
   }
 
   insertTimeValue = async () => {
     let temp = this.state.slots;
-    console.log("temp" + temp)
+    // console.log("temp" + temp)
 
-    console.log("medicine_take_times" + this.state.medicine_take_times)
+    // console.log("medicine_take_times" + this.state.medicine_take_times)
     const sample = this.state.medicine_take_times;
-    console.log("sample" + sample)
+    // console.log("sample" + sample)
 
     if (!temp.includes(sample)) {
       temp.push(sample)
@@ -165,12 +164,12 @@ class AddReminder extends Component {
         return new Date(a) > new Date(b) ? 1 : new Date(a) < new Date(b) ? -1 : 0;
       });
       this.setState({ slots: temp })
-      console.log("slots" + this.state.slots)
+      // console.log("slots++++++++++++++++++++++++" + this.state.slots)
 
     } else {
       alert("Duplicate entry");
     }
-    console.log("temp push " + temp)
+    // console.log("temp push" + temp)
 
     await this.setState({ slots: temp })
 
@@ -218,12 +217,12 @@ class AddReminder extends Component {
         else {
           priviewData.medicine_take_one_date = moment(this.state.medicine_take_one_date).toISOString()
         }
-
-        temp = this.state.data
+        let temp = [];
+        // temp = this.state.data
         temp.push(priviewData)
-        let getData = JSON.stringify(data)
-        this.setState({ data: temp })
-        console.log("mani++++++++++++++++++++++++++" + getData)
+        // let getData = JSON.stringify(temp)
+        await this.setState({ arrayTakenTime: temp, data: temp })
+        // console.log("mani++++++++++++++++++++++++++" + getData)
         this.setState({ previewdisplay: true })
 
       }
@@ -234,18 +233,17 @@ class AddReminder extends Component {
   }
 
   deleteData(index) {
-    console.log("index" + index)
-    let temp = this.state.data;
+    // console.log("index" + index)
+    let temp = this.state.arrayTakenTime;
     temp.splice(index, 1)
-    console.log("temp" + JSON.stringify(temp))
+    // console.log("temp" + JSON.stringify(temp))
     this.setState({ data: temp })
-    console.log("data" + JSON.stringify(this.state.data))
+    // console.log("data" + JSON.stringify(this.state.data))
 
   }
 
 
   AddReminderDatas = async () => {
-    alert('haai')
     try {
 
       if ((this.state.medicine_name == null) || (this.state.selectedMedicineForm == null) || (this.state.selectedMedicineForm == "Select medicine Form") || (this.state.selectMedicineStrength == null) || (this.state.selectMedicineStrength == "Select medicine strength")) {
@@ -271,15 +269,15 @@ class AddReminder extends Component {
         if (this.state.medicinePeriod === "everyday") {
           data.medicine_take_start_date = moment(this.state.medicine_take_start_date).toISOString(),
             data.medicine_take_end_date = moment(this.state.medicine_take_end_date).toISOString()
+
         }
         else {
-          data.medicine_take_one_date = moment(this.state.medicine_take_one_date).toISOString()
+          data.medicine_take_start_date = moment(this.state.medicine_take_start_date).toISOString()
         }
-        // alert(JSON.stringify(data))
+        alert(JSON.stringify(data))
         let result = await addReminderdata(userId, data)
-        console.log('result', result)
+        // console.log('result', result)
         if (result.success) {
-          alert('if')
 
           Toast.show({
             text: result.message,
@@ -298,6 +296,7 @@ class AddReminder extends Component {
       }
     }
     catch (e) {
+      alert(e.message)
       console.log(e.message)
     }
   }
@@ -549,6 +548,9 @@ class AddReminder extends Component {
               {this.state.previewdisplay == true ?
                 <View style={{ backgroundColor: '#f1f1f1', marginLeft: 10, marginRight: 10, paddingBottom: 10, marginTop: 10, borderRadius: 5 }}>
                   <Text style={{ textAlign: 'center', marginTop: 10 }}>Preview</Text>
+
+
+
                   <FlatList
                     data={this.state.data}
                     renderItem={({ item, index }) => (
@@ -566,6 +568,7 @@ class AddReminder extends Component {
                             </Col>
                           </Row>
                           <Row style={{ marginBottom: 5 }}>
+
                             <Col size={5}>
                               <Text style={{ marginLeft: 10, color: '#43be39' }}>{formatDate(item.medicine_take_times, 'HH:mm a')}</Text>
                             </Col>
