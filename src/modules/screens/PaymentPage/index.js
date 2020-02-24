@@ -155,7 +155,7 @@ class PaymentPage extends Component {
                     'card[expiry_year]': this.state.cardPaymentDetails.monthyear.split('/')[1],
                 }
 
-                let paymentMethodTitleCase = this.state.paymentOption === 'CREDIT_CARD' ? 'Credit Card' : 'Debit Card'
+                let paymentMethodTitleCase = 'Card'  // this.state.paymentOption === 'CREDIT_CARD' ? 'Credit Card' : 'Debit Card'
                 this.setState({ pay_card_type: getPayCardType(this.state.cardPaymentDetails.number), paymentMethodTitleCase: paymentMethodTitleCase });
             } else if (this.state.paymentOption === 'NET_BANKING') {
                 if(this.state.selectedNetBank === null) {
@@ -186,7 +186,8 @@ class PaymentPage extends Component {
                 }
                 this.setState({ paymentMethodTitleCase: this.state.selectedWallet });
             } else if (this.state.paymentOption === 'UPI') {
-                var result = /^\w+@\w+$/.test(this.state.upiVPA);
+                const re = /[a-zA-Z0-9\.\-]{2,256}\@[a-zA-Z][a-zA-Z]{2,64}/;
+                var result = re.test(this.state.upiVPA);
                 if(result === false) {
                     Toast.show({
                         text: 'Enter the valid UPI and Continue',
@@ -249,7 +250,7 @@ class PaymentPage extends Component {
                 if (creditPointsApplied === true) {
                     setTimeout(() => {
                         getReferalPoints(this.userId);
-                    }, 3000)
+                    }, 1000)
                 }
                 this.props.navigation.navigate('paymentsuccess', {
                     successBookSlotDetails: bookSlotDetails,
@@ -411,7 +412,7 @@ class PaymentPage extends Component {
                         <Row style={{ marginTop: 10, marginLeft: -3 }}>
                            
                                 <Text style={{
-                                   ontSize: 15, fontFamily: 'OpenSans', fontWeight: 'bold',
+                                   fontSize: 15, fontFamily: 'OpenSans', fontWeight: 'bold',
                                 }}> Payment Info</Text>
                           
                         </Row>
@@ -545,8 +546,9 @@ class PaymentPage extends Component {
                                 })
                             }
                         }}
-                        value={this.state.paymentOption}>
-                        <Row style={{ borderBottomColor: '#C1C1C1', borderBottomWidth: 0.3, backgroundColor: '#fff', paddingLeft: 15, paddingBottom: 15, paddingRight: 15, marginLeft: 10, marginRight: 10 }}>
+                        value={this.state.paymentOption}
+                    >
+                        {/* <Row style={{ borderBottomColor: '#C1C1C1', borderBottomWidth: 0.3, backgroundColor: '#fff', paddingLeft: 15, paddingBottom: 15, paddingRight: 15, marginLeft: 10, marginRight: 10 }}>
                             <Col style={{ width: '90%', }}>
                                 <TouchableOpacity onPress={() => this.setState({ paymentOption: 'CREDIT_CARD' })} style={{ flexDirection: 'row' }}>
                                     <RadioButton value="CREDIT_CARD" />
@@ -555,15 +557,13 @@ class PaymentPage extends Component {
                                 </TouchableOpacity>
                             </Col>
                         </Row>
-                        {this.state.paymentOption === "CREDIT_CARD" ? this.renderCreditDebitCard('Credit') : null}
+                        {this.state.paymentOption === "CREDIT_CARD" ? this.renderCreditDebitCard('Credit') : null} */}
 
                         <Row style={{ borderBottomColor: '#C1C1C1', borderBottomWidth: 0.3, backgroundColor: '#fff', padding: 15, marginLeft: 10, marginRight: 10 }}>
                             <Col style={{ width: '90%', }}>
                                 <TouchableOpacity onPress={() => this.setState({ paymentOption: 'DEBIT_CARD' })} style={{ flexDirection: 'row' }}>
                                     <RadioButton value="DEBIT_CARD" />
-                                    <Text
-                                        // onPress={()=> this.setState({ paymentOption : 'DEBIT_CARD' })}
-                                        style={{ marginTop: 8, fontFamily: 'OpenSans', fontSize: 14 }}>Debit Card</Text>
+                                    <Text style={{ marginTop: 8, fontFamily: 'OpenSans', fontSize: 14 }}>Debit/Credit Card</Text>
                                 </TouchableOpacity>
                             </Col>
                         </Row>
@@ -641,27 +641,7 @@ class PaymentPage extends Component {
                 <View style={{ backgroundColor: '#fff', marginLeft: 10, marginRight: 10, borderBottomColor: '#C1C1C1', borderBottomWidth: 0.3 }}>
                     <View style={{ borderColor: '#C1C1C1', borderWidth: 1, backgroundColor: '#f2f2f2', borderRadius: 5, marginLeft: 10, marginRight: 10, marginTop: 10, marginBottom: 10 }}>
                         <View style={{ marginTop: 10, marginBottom: 10 }}>
-                            <Grid style={{ marginRight: 10, marginLeft: 10 }}>
-                                <Col>
-                                    <Text style={styles.labelTop}>{cardType} Card Holder Name (Optional)</Text>
-                                    <Form>
-
-                                        <Input placeholder="Card Holder Name"
-                                            returnKeyType={'next'}
-                                            keyboardType={'default'}
-
-                                            value={cardPaymentDetails ? cardPaymentDetails.name : ''}
-                                            onChangeText={(text) => {
-                                                var cardPaymentDetails = { ...this.state.cardPaymentDetails }
-                                                cardPaymentDetails.name = text;
-                                                this.setState({ cardPaymentDetails })
-                                            }}
-                                            style={styles.transparentLabel} />
-
-                                    </Form>
-                                </Col>
-                            </Grid>
-
+                            
                             <Grid style={{ marginTop: 10, marginRight: 10, marginLeft: 10 }}>
                                 <Col>
                                     <Text style={styles.labelTop}>Card Number</Text>
@@ -674,7 +654,6 @@ class PaymentPage extends Component {
                                             onChangeText={(text) => this.handlingCardNumber(text)}
                                             value={cardPaymentDetails ? cardPaymentDetails.number : ''}
                                             style={styles.transparentLabel} />
-
                                     </Form>
                                 </Col>
                             </Grid>
@@ -714,6 +693,26 @@ class PaymentPage extends Component {
                                 </Col>
 
                             </Grid>
+                            <Grid style={{ marginRight: 10, marginLeft: 10 }}>
+                                <Col>
+                                    <Text style={styles.labelTop}>Card Holder Name (Optional)</Text>
+                                    <Form>
+
+                                        <Input placeholder="Card Holder Name"
+                                            returnKeyType={'next'}
+                                            keyboardType={'default'}
+                                            value={cardPaymentDetails ? cardPaymentDetails.name : ''}
+                                            onChangeText={(text) => {
+                                                var cardPaymentDetails = { ...this.state.cardPaymentDetails }
+                                                cardPaymentDetails.name = text;
+                                                this.setState({ cardPaymentDetails })
+                                            }}
+                                            style={styles.transparentLabel} />
+
+                                    </Form>
+                                </Col>
+                            </Grid>
+
 
                             <Grid style={{ marginTop: 10, marginLeft: 10 }}>
                                 <Row>
