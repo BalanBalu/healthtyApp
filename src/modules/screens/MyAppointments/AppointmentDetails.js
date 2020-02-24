@@ -14,6 +14,9 @@ import { formatDate, dateDiff,statusValue } from '../../../setup/helpers';
 import { Loader } from '../../../components/ContentLoader'
 import { InsertReview } from '../Reviews/InsertReview'
 import { renderDoctorImage, RenderHospitalAddress, getAllEducation, getAllSpecialist, getName, getDoctorExperience,getHospitalHeadeName,getHospitalName } from '../../common'
+
+const hasReviewButtonShow=true
+
 class AppointmentDetails extends Component {
   constructor(props) {
     super(props)
@@ -563,7 +566,7 @@ class AppointmentDetails extends Component {
                     </View>
               </Col>
             </Row>
-            {data.appointment_status == 'COMPLETED' && reviewData.length !== 0 ?
+            {data.appointment_status == 'COMPLETED' || reviewData.length !== 0 ?
             <Row style={styles.rowSubText}>
                <Col style={{width:'8%',paddingTop:5}}>
                  <Icon name="ios-medkit" style={{fontSize:20,}}/>
@@ -579,7 +582,7 @@ class AppointmentDetails extends Component {
                  <Text note style={styles.subTextInner1}>{reviewData[0] && reviewData[0].comments||''}</Text> 
                </Col>
                </Row>:
-               data.appointment_status == 'COMPLETED' && reviewData.length == 0 ? 
+               (data.appointment_status == 'COMPLETED' && reviewData.length == 0)||hasReviewButtonShow==true ? 
                <Row style={styles.rowSubText}>
                <Col style={{width:'8%',paddingTop:5}}>
                  <Icon name="ios-add-circle" style={{fontSize:20,}}/>
