@@ -8,11 +8,11 @@ import { NavigationEvents } from 'react-navigation';
 
 import { userReviews } from "../../providers/profile/profile.action";
 import { hasLoggedIn } from "../../providers/auth/auth.actions";
-import {formatDate,addTimeUnit,subMoment,addMoment,subTimeUnit ,getAllId,statusValue} from "../../../setup/helpers";
+import {formatDate,addTimeUnit,subTimeUnit ,getAllId,statusValue} from "../../../setup/helpers";
 import {getUserAppointments,viewUserReviews,getMultipleDoctorDetails} from "../../providers/bookappointment/bookappointment.action";
 import noAppointmentImage from "../../../../assets/images/noappointment.png";
 import Spinner from "../../../components/Spinner";
-import { renderProfileImage,renderDoctorImage,getAllEducation,getAllSpecialist,getName } from '../../common'
+import { renderDoctorImage,getAllEducation,getAllSpecialist,getName } from '../../common'
 import moment from "moment";
 // import moment from "moment";
 import InsertReview from '../Reviews/InsertReview';
@@ -48,10 +48,9 @@ class MyAppoinmentList extends Component {
 		this.setState({
 			userId
 		});
-		await new Promise.all([
-			this.upCommingAppointment(),
-			this.pastAppointment()
-		])
+		await this.upCommingAppointment(),
+			
+		
 		await this.setState({
 			isLoading: false,
 			isNavigation: false
@@ -68,15 +67,10 @@ class MyAppoinmentList extends Component {
 				if (navigationData.action.type === 'Navigation/BACK' || navigationData.action.type === 'Navigation/NAVIGATE' || navigationData.action.type === 'Navigation/POP') {
 					if (this.state.selectedIndex == 0) {
 						await this.upCommingAppointment();
-						await this.setState({
-							isLoading: false
-						})
+						
 					} else {
 						await this.pastAppointment();
-						await this.setState({
-							isLoading: false,
-							data: this.state.pastData
-						})
+						
 					}
 				}
 			}
@@ -85,6 +79,7 @@ class MyAppoinmentList extends Component {
 
 	upCommingAppointment = async () => {
 		try {
+			this.setState({isLoading: true})
 			let userId = await AsyncStorage.getItem("userId");
 			let filters = {
 				startDate: new Date().toUTCString(),
@@ -135,7 +130,8 @@ class MyAppoinmentList extends Component {
 				})
 				this.setState({
 					upComingData: upcommingInfo,
-					data: upcommingInfo
+					data: upcommingInfo,
+					isLoading: false
 				});
 			}
 		} catch (e) {
@@ -218,8 +214,8 @@ class MyAppoinmentList extends Component {
 				pastDoctorDetails.sort(function (firstVarlue, secandValue) {
 					return firstVarlue.appointmentResult.appointment_starttime > secandValue.appointmentResult.appointment_starttime ? -1 : 0
 				})
-				this.setState({
-					pastData: pastDoctorDetails
+				await this.setState({
+					pastData: pastDoctorDetails,data:pastDoctorDetails,	isLoading: false
 				});
 
 			}
@@ -243,15 +239,29 @@ class MyAppoinmentList extends Component {
 	  this.setState({ modalVisible : false });
 	  if(val.updatedVisible == true) {
 		 await this.pastAppointment();
-		 await this.setState({
-			data: this.state.pastData
-		 })
 	  }
 	}
 
-	handleIndexChange = index => {   
+	handleIndexChange = async(index) => {  
+		let data=[] 
+		if(index === 0){
+			if(this.state.upComingData.length==0){
+				await this.upCommingAppointment()
+			}else{
+               data=this.state.upComingData
+			}
 
-		let data = index === 0 ? this.state.upComingData : this.state.pastData;
+		}else{
+			if(this.state.pastData.length==0){
+				await this.pastAppointment()
+				data=this.state.pastData
+				
+			}
+			else{
+				data=this.state.pastData
+			}
+			
+		}
 
 		this.setState({
 			...this.state,
