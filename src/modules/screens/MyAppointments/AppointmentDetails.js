@@ -549,7 +549,21 @@ class AppointmentDetails extends Component {
               <Col style={{width:'92%',paddingTop:5}}>
                  <Text style={styles.innerSubText}>Payment Report</Text>
                  {reportData.length!=0?
-              <Text note style={styles.subTextInner1}>{reportData[reportData.length-1] && reportData[reportData.length-1].complaint||' '}</Text>:null}
+                 <View style={{borderRadius:5,borderColor:'grey',borderWidth:0.5,padding:5}} >
+                   <TouchableOpacity onPress={()=>{this.props.navigation.navigate('ReportDetails',{reportData:reportData,reportedId:data._id})}}>
+                 <Text note  style={[styles.subTextInner2,{marginLeft:10}]}>"You have raised Report for this appointment"</Text> 
+                  <Row>
+                    <Col size={9}>
+                    <Text note style={[styles.subTextInner1,{marginLeft:10}]}>{reportData[reportData.length - 1] && reportData[reportData.length - 1].complaint || ' '}</Text> 
+
+                    </Col>
+                    <Col size={1}>
+                  <Icon name='ios-arrow-forward' style={{fontSize:20,color:'grey'}}/>
+                   </Col>
+                  </Row>
+                  </TouchableOpacity>
+                  </View>: 
+            
               <View style={{ alignItems: 'center', justifyContent: 'center', marginTop: 5,marginBottom:10 }}>
                       <TouchableOpacity 
                         onPress={() => { 
@@ -565,6 +579,7 @@ class AppointmentDetails extends Component {
                         </Text>
                       </TouchableOpacity>
                     </View>
+  }
               </Col>
             </Row>
             {data.appointment_status == 'COMPLETED' || reviewData.length !== 0 ?
@@ -890,6 +905,13 @@ const styles = StyleSheet.create({
       fontFamily:'OpenSans',
        marginBottom:5
     },
+    subTextInner2: {
+      fontSize: 10,
+      color:"red",
+      fontFamily: 'OpenSans',
+      marginBottom: 5
+    },
+    
     downText:{
       fontSize:12,
       fontFamily:'OpenSans',

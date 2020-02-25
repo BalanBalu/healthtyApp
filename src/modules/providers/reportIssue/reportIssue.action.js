@@ -16,4 +16,20 @@ export async function insertReportIssue(userId,data, isLoading = true) {
       }
     }
   }
+  export async function upDateReportIssue(type,reportedId,replyProviderId,data, isLoading = true) {
+    try {
+      
+      let endPoint = '/report/'+type+'/'+reportedId+'/'+replyProviderId;
+      
+      let response = await putService(endPoint, data);
+        console.log(response)
+      let respData = response.data;
+      return respData;
+    } catch (e) {
+      return {
+        message: 'exception' + e,
+        success: false
+      }
+    }
+  }
   
