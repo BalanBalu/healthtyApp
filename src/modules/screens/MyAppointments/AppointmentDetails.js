@@ -160,7 +160,7 @@ class AppointmentDetails extends Component {
           await new Promise.all([
             this.getDoctorDetails(),
             this.getPaymentInfo(result.data[0].payment_id)])
-      }
+      
 
       if (result.data[0].appointment_status == 'COMPLETED' && result.data[0].is_review_added == undefined) {
         await this.setState({ modalVisible: true })
@@ -169,6 +169,7 @@ class AppointmentDetails extends Component {
       if (result.data[0].appointment_status == 'PROPOSED_NEW_TIME'&&checkProposedNewTime!=='SKIP') {
         await this.setState({ proposedVisible: true })
       }
+    }
     } catch (error) {
       console.error(error);
     }

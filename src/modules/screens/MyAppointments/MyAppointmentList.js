@@ -87,6 +87,8 @@ class MyAppoinmentList extends Component {
 				on_going_appointment: true
 			};
 			let upCommingAppointmentResult = await getUserAppointments(userId, filters);
+			console.log('upcomming==================================');
+			console.log(upCommingAppointmentResult)
 			if (upCommingAppointmentResult.success) {
 				let doctorInfo = new Map();
 				upCommingAppointmentResult = upCommingAppointmentResult.data;
@@ -136,6 +138,11 @@ class MyAppoinmentList extends Component {
 			}
 		} catch (e) {
 			console.log(e);
+		}finally {
+			this.setState({
+				isLoading: false
+			})
+
 		}
 	};
 	pastAppointment = async () => {
