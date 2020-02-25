@@ -39,7 +39,7 @@ class Reminder extends Component {
 
   render() {
     const { data } = this.state;
-
+console.log(this.state.data)
     // const Reaminder = [{ medname: 'Acentaminophen', content: '10 mg   1 pill(s)', time: '7:00 AM', remtime: 'Your Remainder Time is at 7:00 AM, Oct 24,2019.' },
     // { medname: 'Acentaminophen', content: '13 mg   1 pill(s)', time: '10:00 AM', remtime: 'Your Remainder Time is at 10:00 AM, Oct 24,2019.' },
     // { medname: 'Acentaminophen', content: '15 mg   1 pill(s)', time: '11:00 AM', remtime: 'Your Remainder Time is at 1:00 PM, Oct 24,2019.' },

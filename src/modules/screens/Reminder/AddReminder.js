@@ -23,6 +23,7 @@ class AddReminder extends Component {
       selectedMedicineForm: null,
       selectMedicineStrength: null,
       medicinePeriod: "everyday",
+      medicinepage: false,
       selected2: undefined,
       selected3: undefined,
       slots: [],
@@ -45,7 +46,6 @@ class AddReminder extends Component {
     }
     this.pastSelectedDate = new Date(),
       this.upcommingSelectedDate = new Date()
-    // alert(moment().startOf('day').toDate())   
     console.log('medicine_take_times' + moment().startOf('day').toDate())
 
   }
@@ -80,8 +80,6 @@ class AddReminder extends Component {
     let m = new Date(date).getMinutes();
     let Time = moment().startOf('day').add(h, 'h').add(m, 'm').toDate();
     console.log('check time::::::::::' + Time.toString())
-    // let arrayTakenTime = this.state.arrayTakenTime;
-    // arrayTakenTime.push(date)
     await this.setState({ medicine_take_times: date });
 
     console.log('medicine_take_times::::::::::::' + this.state.medicine_take_times)
@@ -164,14 +162,14 @@ class AddReminder extends Component {
         return new Date(a) > new Date(b) ? 1 : new Date(a) < new Date(b) ? -1 : 0;
       });
       this.setState({ slots: temp })
-      // console.log("slots++++++++++++++++++++++++" + this.state.slots)
+      
 
     } else {
       alert("Duplicate entry");
     }
-    // console.log("temp push" + temp)
+    
 
-    await this.setState({ slots: temp })
+    this.setState({ slots: temp })
 
   }
 
@@ -185,19 +183,7 @@ class AddReminder extends Component {
           duration: 3000
         });
       } else {
-        // let endDate = this.state.slots
-        // let sortingdata = endDate.sort(function (a, b) {
-        //   console.log("sorting data is coming???????????????????????????????????????????????????????")
-
-        //   console.log(a)
-        //   return new Date('2020/01/01 ' + a) - new Date('2020/01/01 ' + b);
-        // });
-        // console.log(this.state.slots)
-        // let medicine_take_start_date = this.state.slots[0]
-        // let medicine_take_end_date = this.state.slots[this.state.slots.length - 1];
-        // console.log("medicine_take_end_date")
-        // console.log(medicine_take_end_date)
-
+        
         let userId = await AsyncStorage.getItem('userId');
         let priviewData = {
           medicine_name: this.state.medicine_name,
@@ -218,9 +204,9 @@ class AddReminder extends Component {
           priviewData.medicine_take_one_date = moment(this.state.medicine_take_one_date).toISOString()
         }
         let temp = [];
-        // temp = this.state.data
+         temp = this.state.data
         temp.push(priviewData)
-        // let getData = JSON.stringify(temp)
+         let getData = JSON.stringify(temp)
         await this.setState({ arrayTakenTime: temp, data: temp })
         // console.log("mani++++++++++++++++++++++++++" + getData)
         this.setState({ previewdisplay: true })
@@ -301,6 +287,15 @@ class AddReminder extends Component {
     }
   }
 
+  medicinePage=()=>{
+    this.setState({medicinepage:true})
+  }
+
+  backPage=()=>{
+
+    this.setState({medicinepage:false})
+  }
+
   render() {
     const { isTimePickerVisible, isDatePickerVisible, isstartDatePickerVisible, isendDatePickerVisible, selectedDate, text, selectedMedicineForm, selectMedicineStrength, slots, isDateTimePickerVisible, isEndDateTimePickerVisible, data } = this.state;
     return (
@@ -308,68 +303,85 @@ class AddReminder extends Component {
         <ScrollView>
           <Content style={{ padding: 20 }}>
             <View style={{ marginBottom: 30 }}>
-
-              <View >
-                <Text style={styles.NumText}>What Medicine would you like to add ?</Text>
-                <Form>
-                  <TextInput style={styles.autoField}
-                    placeholder="Medicine name"
-                    onChangeText={(medicine_name) => this.setState({ medicine_name })}
-                    value={this.state.medicine_name}
-                  />
-                </Form>
-              </View>
+            {this.state.medicinepage == false ?
               <View>
-                <Row>
-                  <Col>
-                    <Text style={styles.NumText}>Form of Medicine</Text>
-                    <Form style={{ marginTop: 5 }}>
+                <View>
+                  <Text style={styles.NumText}>What Medicine would you like to add ?</Text>
+                  <Form>
+                    <TextInput style={styles.autoField}
+                      placeholder="Medicine name"
+                      onChangeText={(medicine_name) => this.setState({ medicine_name })}
+                      value={this.state.medicine_name}
+                    />
+                  </Form>
+                </View>
+                <View>
+                  <Row>
+                    <Col>
+                      <Text style={styles.NumText}>Form of Medicine</Text>
+                      <Form style={{ marginTop: 5 }}>
 
-                      <View picker style={{ height: 40, width: 150, justifyContent: 'center', backgroundColor: '#F1F1F1', borderRadius: 5 }}>
-                        <Picker
-                          mode="dropdown"
-                          style={{ width: undefined }}
-                          placeholder="Select your SIM"
-                          placeholderStyle={{ color: "#bfc6ea" }}
-                          placeholderIconColor="#007aff"
-                          onValueChange={(sample) => { this.setState({ selectedMedicineForm: sample }) }}
-                          selectedValue={selectedMedicineForm}
-                          testID="editMedicineForm"
-                        >
-                          {medicineFormType.map((value, key) => {
-                            return <Picker.Item label={String(value)} value={String(value)} key={key}
-                            />
-                          })
-                          }
-                        </Picker>
-                      </View>
-                    </Form>
-                  </Col>
-                  <Col>
-                    <Text style={styles.NumText}>Strength of Medicine</Text>
-                    <Form style={{ marginTop: 5 }}>
-                      <View picker style={{ height: 40, width: 150, justifyContent: 'center', backgroundColor: '#F1F1F1', borderRadius: 5 }}>
-                        <Picker
-                          mode="dropdown"
-                          style={{ width: undefined }}
-                          placeholder="Select your SIM"
-                          placeholderStyle={{ color: "#bfc6ea" }}
-                          placeholderIconColor="#007aff"
-                          onValueChange={(sample) => { this.setState({ selectMedicineStrength: sample }) }}
-                          selectedValue={selectMedicineStrength}
-                          testID="editMedicineStrength"
-                        >
-                          {medicineStrengthType.map((value, key) => {
-                            return <Picker.Item label={String(value)} value={String(value)} key={key}
-                            />
-                          })
-                          }
-                        </Picker>
-                      </View>
-                    </Form>
-                  </Col>
-                </Row>
-              </View>
+                        <View picker style={{ height: 40, width: 150, justifyContent: 'center', backgroundColor: '#F1F1F1', borderRadius: 5 }}>
+                          <Picker
+                            mode="dropdown"
+                            style={{ width: undefined }}
+                            placeholder="Select your SIM"
+                            placeholderStyle={{ color: "#bfc6ea" }}
+                            placeholderIconColor="#007aff"
+                            onValueChange={(sample) => { this.setState({ selectedMedicineForm: sample }) }}
+                            selectedValue={selectedMedicineForm}
+                            testID="editMedicineForm"
+                          >
+                            {medicineFormType.map((value, key) => {
+                              return <Picker.Item label={String(value)} value={String(value)} key={key}
+                              />
+                            })
+                            }
+                          </Picker>
+                        </View>
+                      </Form>
+                    </Col>
+                    <Col>
+                      <Text style={styles.NumText}>Strength of Medicine</Text>
+                      <Form style={{ marginTop: 5 }}>
+                        <View picker style={{ height: 40, width: 150, justifyContent: 'center', backgroundColor: '#F1F1F1', borderRadius: 5 }}>
+                          <Picker
+                            mode="dropdown"
+                            style={{ width: undefined }}
+                            placeholder="Select your SIM"
+                            placeholderStyle={{ color: "#bfc6ea" }}
+                            placeholderIconColor="#007aff"
+                            onValueChange={(sample) => { this.setState({ selectMedicineStrength: sample }) }}
+                            selectedValue={selectMedicineStrength}
+                            testID="editMedicineStrength"
+                          >
+                            {medicineStrengthType.map((value, key) => {
+                              return <Picker.Item label={String(value)} value={String(value)} key={key}
+                              />
+                            })
+                            }
+                          </Picker>
+                        </View>
+                      </Form>
+                    </Col>
+                  </Row>
+                  <Row>
+                    <Col size={2.5} style={{ mariginTop: 10 }}>
+                      <Button style={styles.NextButton} onPress={this.medicinePage}>
+                        <Text style={styles.NextButtonText}>Next</Text>
+                      </Button>
+                    </Col>
+                  </Row>
+                </View>
+              </View>:
+
+
+
+
+
+
+
+<View>
               <View>
                 <Text style={styles.NumText}>How often would you take this Medicine</Text>
                 <Item style={{ marginTop: 10, borderBottomWidth: 0, }}>
@@ -543,14 +555,19 @@ class AddReminder extends Component {
                     </Button>
                   </Col>
                 </Row>
+                <Row>
+                    <Col size={2.5} style={{ mariginTop: 10 }}>
+                      <Button style={styles.BackButton} onPress={this.backPage}>
+                        <Text style={styles.BackButtonText}>Back</Text>
+                      </Button>
+                    </Col>
+                  </Row>
               </View>
+              </View>}
 
               {this.state.previewdisplay == true ?
                 <View style={{ backgroundColor: '#f1f1f1', marginLeft: 10, marginRight: 10, paddingBottom: 10, marginTop: 10, borderRadius: 5 }}>
                   <Text style={{ textAlign: 'center', marginTop: 10 }}>Preview</Text>
-
-
-
                   <FlatList
                     data={this.state.data}
                     renderItem={({ item, index }) => (
@@ -648,8 +665,20 @@ const styles = StyleSheet.create({
     textAlign: 'center',
 
   },
-
-
+  NextButtonText: {
+    fontFamily: 'OpenSans',
+    fontSize: 14,
+    color: '#fff',
+    textAlign: 'center',
+    fontWeight: 'bold'
+  },
+  BackButtonText: {
+    fontFamily: 'OpenSans',
+    fontSize: 14,
+    color: '#fff',
+    textAlign: 'center',
+    fontWeight: 'bold'
+  },
   RemainderButtonText: {
     fontFamily: 'OpenSans',
     fontSize: 14,
@@ -663,6 +692,22 @@ const styles = StyleSheet.create({
     marginTop: 5,
     marginLeft: 10,
     padding: 5,
+    backgroundColor: '#1296db'
+  },
+  NextButton: {
+    borderRadius: 5,
+    height: 40,
+    marginTop: 5,
+    marginLeft: 245,
+    padding: 5,
+    backgroundColor: '#1296db'
+  },
+BackButton: {
+    borderRadius: 5,
+    height: 40,
+    marginTop: 5,
+    marginLeft: 5,
+    padding: 0,
     backgroundColor: '#1296db'
   },
   buttonStyle: {
