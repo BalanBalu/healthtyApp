@@ -109,7 +109,7 @@ class UpdateContact extends Component {
             <Container style={styles.container}>
                 <Spinner color='blue'
                     visible={this.state.isLoading}
-                    textContent={'Please Wait Loading'}
+                    textContent={'Loading...'}
                 />
 
                 <Content contentContainerStyle={styles.bodyContent1}>

@@ -100,7 +100,7 @@ class UpdatePassword extends Component {
                     <ScrollView>
                         <Spinner color='blue'
                             visible={this.state.isLoading}
-                            textContent={'Please wait updating...'}
+                            textContent={'Loading...'}
                         />
 
 

@@ -134,7 +134,7 @@ class UpdateEmail extends Component {
 
                                 {this.state.isLoading ? <Spinner color='blue'
                                     visible={this.state.isLoading}
-                                    textContent={'Please wait Loading'}
+                                    textContent={'Loading...'}
                                 /> : null}
 
 
