@@ -99,7 +99,7 @@ export default class MapBox extends React.Component {
                     center: origin_coordinates,
                     coordinates: origin_coordinates,
                     zoom: 12,
-                    // isFinisedLoading: true
+                    isFinisedLoading: true
                 })
                 this.updtateLocation(origin_coordinates);
             }), error => {
