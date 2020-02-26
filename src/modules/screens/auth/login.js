@@ -133,7 +133,7 @@ class Login extends Component {
                     {isLoading ?
                       <Spinner
                         visible={isLoading}
-                        textContent={'Please Wait...Loading'}
+                        textContent={'Loading...'}
                       /> : null}
                     <View style={{ alignItems: 'center', justifyContent: 'center' }}>
                       <TouchableOpacity small
