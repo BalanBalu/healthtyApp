@@ -75,11 +75,11 @@ console.log(this.state.data)
                   <Grid style={{ paddingBottom: 10 }}>
                     <Row style={{ backgroundColor: '#7F49C3', paddingTop: 5, paddingBottom: 5 }}>
                       <Col>
-                        <FlatList data={item.medicine_take_times}
+                        <FlatList 
+                        data={item.medicine_take_times}
+                        extraData={item}
                           keyExtractor={(item, index) => index.toString()}
-
                           renderItem={({ item }) => (
-
                             <Text style={{ marginLeft: 15, color: '#FFF' }}>{formatDate(item.medicine_take_times, 'HH:mm A')}</Text>
 
                           )} />
@@ -100,7 +100,8 @@ console.log(this.state.data)
                       </Col>
                     </Row>
                     <Row style={{ marginTop: 10 }}>
-                      <Text style={{ marginLeft: 15, color: '#2fbf1c', fontSize: 12, fontFamily: 'OpenSans', fontWeight: "300" }}>Your Remainder Time is at</Text>
+                      
+                          <Text style={{ marginLeft: 15, color: '#2fbf1c', fontSize: 12, fontFamily: 'OpenSans', fontWeight: "300" }}>Your Remainder Time is at {formatDate(item.medicine_take_start_date, 'DD/MM/YYYY')} - {formatDate(item.medicine_take_end_date, 'DD/MM/YYYY')}</Text>
                     </Row>
                   </Grid>
                 </Card>
