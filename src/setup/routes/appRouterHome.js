@@ -123,7 +123,7 @@ const HomeStack = createStackNavigator({
                         <Icon name="ios-arrow-down" style={{color:'#fff',fontSize:18,paddingLeft: 10,marginTop:2}}/>
                      </View>
                      </TouchableOpacity>
-                      <Text uppercase={false} style={{ paddingLeft: 10, color: '#fff', fontSize: 12, fontFamily: 'OpenSans-SemiBold',marginTop:2 }}>{navigation.getParam('appBar', {locationCapta: 'You are searching Near by Hostpitals'}).locationCapta}</Text>
+                      <Text uppercase={false} style={{ paddingLeft: 10, color: '#fff', fontSize: 12, fontFamily: 'OpenSans-SemiBold',marginTop:2 }}>{navigation.getParam('appBar', {locationCapta: 'You are searching Near by Hospitals'}).locationCapta}</Text>
                     </Col> 
                    </Row>   
 
