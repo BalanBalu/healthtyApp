@@ -131,10 +131,8 @@ class RenderOtpInput extends Component {
             <Container>
                 {isVerifyingEmail == true ? <Spinner
                     visible={isLoading}
-                    textContent={'Loading...'}
                 /> : <Spinner
                         visible={isLoading}
-                        textContent={'Loading...'}
                     />}
                 <Content padder style={{ backgroundColor: '#fff' }}>
                     <View style={styles.container}>

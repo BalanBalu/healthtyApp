@@ -187,7 +187,6 @@ class UserDetails extends Component {
                                                 <Text style={{ paddingLeft: 20, fontSize: 15, fontFamily: 'OpenSans', color: 'red' }}> {errorMsg}</Text>
                                                 <Spinner color='blue'
                                                     visible={isLoading}
-                                                    textContent={'Loading...'}
                                                 />
                                             </View>
 
