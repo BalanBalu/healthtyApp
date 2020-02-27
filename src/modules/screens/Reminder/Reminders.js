@@ -66,7 +66,73 @@ console.log(this.state.data)
             />
             <Text style={{ color: '#7F49C3', textAlign: 'center', marginTop: 2, fontFamily: 'OpenSans', fontWeight: "500" }}>Today</Text>
           </View>
+
+
+<View style={{paddingRight:10,paddingLeft:10}}>
           <FlatList data={data}
+            keyExtractor={(item, index) => index.toString()}
+
+            renderItem={({ item }) => (
+                    <Card style={{borderRadius:5,marginTop:10}}>
+                     <Grid>
+                      <Row style={{marginTop:5}}>
+                       <Col style={styles.col1}>
+                        <View style={{marginLeft:15}}>
+                          <Text style={styles.mednamestyle}>{item.medicine_name}</Text>
+                          <Text  style={styles.innerText}>{item.medicine_form}</Text>
+                          <Text  style={styles.innerText}>{item.medicine_strength}</Text>
+                          </View> 
+                       </Col>
+                       <Col style={styles.col2}>
+                         <Row>
+                        
+                         <Col size={8}>
+                        <FlatList 
+                        data={item.medicine_take_times}
+                        extraData={item}
+                          keyExtractor={(item, index) => index.toString()}
+                          renderItem={({ item }) => (
+                            <Text style={{ marginLeft: 15, color: '#000' }}>{formatDate(item.medicine_take_times, 'HH:mm A')}</Text>
+
+                          )} />
+                      </Col>
+                                      
+                           <Col size={2}>
+                           <Switch style={{ transform: [{ scaleX: .8 }, { scaleY: .8 }], backgroundColor: 'fff' }} trackColor={{ true: '#6FC41A', false: 'grey' }}
+                           trackColor={{ true: '#7F49C3'}}
+                          thumbColor={"#F2F2F2"}
+                          onValueChange={this.toggleSwitch}
+                          value={true} />
+                           </Col>
+                          
+                           </Row>
+                       </Col>
+                      </Row>
+                     </Grid>
+                    <View style={{marginTop:5,borderTopColor:'gray',borderTopWidth:1,}}> 
+                      <Text style={styles.remText}>Your Remainder Time is at {formatDate(item.medicine_take_start_date, 'DD/MM/YYYY')} - {formatDate(item.medicine_take_end_date, 'DD/MM/YYYY')}</Text>
+                    </View>
+                 </Card>
+             )}/>
+             </View>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+          {/* <FlatList data={data}
             keyExtractor={(item, index) => index.toString()}
 
             renderItem={({ item }) => (
@@ -106,7 +172,7 @@ console.log(this.state.data)
                   </Grid>
                 </Card>
               </View>
-            )} />
+            )} /> */}
         </Content>
       </Container>
     )
@@ -151,6 +217,6 @@ const styles = StyleSheet.create({
     paddingBottom: 5,
     paddingTop: 5,
     fontFamily: 'OpenSans',
-    fontSize: 14, color: 'green'
+    fontSize: 14, color: '#7F49C3'
   }
 })

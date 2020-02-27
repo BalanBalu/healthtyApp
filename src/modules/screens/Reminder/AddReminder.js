@@ -176,7 +176,8 @@ class AddReminder extends Component {
 
   InsertReminderData = async () => {
     try {
-      if ((this.state.medicine_name == null) || (this.state.selectedMedicineForm == null) || (this.state.selectedMedicineForm == "Select medicine Form") || (this.state.selectMedicineStrength == null) || (this.state.selectMedicineStrength == "Select medicine strength")) {
+      if ((this.state.medicine_name == null) || (this.state.selectedMedicineForm == null) || (this.state.selectedMedicineForm == "Select medicine Form") || (this.state.selectMedicineStrength == null) || (this.state.selectMedicineStrength == "Select medicine strength")) 
+      {
         Toast.show({
           text: 'Kindly fill all the fields to schedule your reminderTime slots',
           type: 'danger',
@@ -208,7 +209,7 @@ class AddReminder extends Component {
         temp.push(priviewData)
         let getData = JSON.stringify(temp)
         await this.setState({ arrayTakenTime: temp, data: temp })
-        // console.log("mani++++++++++++++++++++++++++" + getData)
+        console.log("mani++++++++++++++++++++++++++" + getData)
         this.setState({ previewdisplay: true })
 
       }
@@ -554,7 +555,9 @@ class AddReminder extends Component {
                     </Col>
                     <Col size={2.5} style={{ mariginTop: 10 }}>
                       <Button style={styles.RemainderButton} onPress={this.InsertReminderData}>
+                        
                         <Text style={styles.RemainderButtonText}>Add</Text>
+                  
                       </Button>
                     </Col>
                   </Row>
