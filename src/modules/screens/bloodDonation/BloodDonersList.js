@@ -125,7 +125,6 @@ class BloodDonersList extends Component {
             <Spinner color='blue'
               visible={isLoading}
               overlayColor="none"
-              textContent={'Loading...'}
             /> :
 
             data.length == 0 ?
