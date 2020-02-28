@@ -17,6 +17,28 @@ import { store } from '../../../setup/store';
 import axios from 'axios';
 
 
+export async function generateOtpForEmailAndMobile(reqData, userId) {
+  try {
+    let endPoint = '/auth/generateOtpForEmailAndMobile/'+userId;
+    let response = await postService(endPoint, reqData);
+    let responseData = response.data;
+    return responseData
+  } catch (e) {
+    console.log(e);
+  }
+}
+
+export async function verifyOtpForEmailAndMobileNo(reqData) {
+  try {
+    let endPoint = '/auth/verifyOtpForEmailAndMobileNo'
+    let response = await postService(endPoint, reqData);
+    let responseData = response.data;
+    return responseData
+  }
+  catch (e) {
+    console.log(e);
+  }
+}
 
 
 
@@ -311,6 +333,20 @@ export async function updateProfilePicture(userId, data) {
   }
 }
 
+// Update email id for Patient
+export async function userEmailUpdate(userId, data) {
+  try {
+    let endPoint = '/user/updateEmail/' + userId;
+    let response = await putService(endPoint, data);
+    await AsyncStorage.removeItem('profile');
+    return response.data;
+  } catch (e) {
+    return {
+      message: 'exception' + e,
+      success: false
+    }
+  }
+}
 
 
 

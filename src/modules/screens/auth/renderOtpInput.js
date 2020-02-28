@@ -3,7 +3,7 @@ import { StyleSheet, TouchableOpacity, AsyncStorage } from 'react-native';
 import { View, Button, Text, Toast, Content, Container, Row, Left, Right, Card, Item } from 'native-base';
 import { connect } from 'react-redux';
 import OtpInputs from '../../../components/OtpInputText/OtpInput';
-import { login, generateOtpCodeForCreateAccount, verifyOtpCodeForCreateAccount } from '../../providers/auth/auth.actions';
+import { login, generateOtpCodeForCreateAccount, verifyOtpCodeForCreateAccount, generateOtpForEmailAndMobile, verifyOtpForEmailAndMobileNo } from '../../providers/auth/auth.actions';
 import Spinner from '../../../components/Spinner';
 
 class RenderOtpInput extends Component {
@@ -20,6 +20,11 @@ class RenderOtpInput extends Component {
     }
     async componentDidMount() {
         const loginData = this.props.navigation.getParam("loginData");
+        const fromProfile = this.props.navigation.getParam('fromProfile') || false
+        console.log("fromProfile" + fromProfile)
+        if (fromProfile) {
+            this.setState({ fromProfile: true })
+        }
         // this.setState({ isLoading: true });
         console.log(this.props.user)
         let requestData = {
@@ -41,12 +46,19 @@ class RenderOtpInput extends Component {
     generateOtpCode = async () => {
         const { requestData } = this.state;
         try {
+            let reqOtpResponse;
+            let userId = await AsyncStorage.getItem('userId');
             this.setState({ errorMsg: '', isLoading: true })
             let reqDataForGenerateOtpCode = {
                 appType: 'user',
                 userEntry: requestData.userEntry
             }
-            let reqOtpResponse = await generateOtpCodeForCreateAccount(reqDataForGenerateOtpCode) //  Generate OTP code for Create DR medflic Account
+            if (this.state.fromProfile) {
+                console.log("userId:::"+userId)
+                reqOtpResponse = await generateOtpForEmailAndMobile(reqDataForGenerateOtpCode, userId)
+            } else {
+                reqOtpResponse = await generateOtpCodeForCreateAccount(reqDataForGenerateOtpCode) //  Generate OTP code for Create DR medflic Account
+            }
             if (reqOtpResponse.success == true) {
                 console.log(reqOtpResponse);
                 await this.setState({ isGeneratedOtp: true, reqOtpResponseObject: reqOtpResponse });
@@ -69,13 +81,30 @@ class RenderOtpInput extends Component {
         const { otp, reqOtpResponseObject } = this.state;
         try {
             this.setState({ isVerifyingEmail: true, isLoading: true, errorMsg: '' });
-            let reqDataForVerifyOtpCode = {
-                appType: 'user',
-                userId: reqOtpResponseObject.userId,
-                "otp": otp
+            let reqDataForVerifyOtpCode, reqOtpVerifiedResponse;
+            let userId = await AsyncStorage.getItem('userId');
+
+            if (this.state.fromProfile) {
+                reqDataForVerifyOtpCode = {
+                    appType: 'user',
+                    userId: userId,
+                    "otp": otp,
+                    verifyData: 'email'
+                }
+                reqOtpVerifiedResponse = await verifyOtpForEmailAndMobileNo(reqDataForVerifyOtpCode)
+
+            } else {
+                reqDataForVerifyOtpCode = {
+                    appType: 'user',
+                    userId: reqOtpResponseObject.userId,
+                    "otp": otp
+                }
+
+                reqOtpVerifiedResponse = await verifyOtpCodeForCreateAccount(reqDataForVerifyOtpCode)
             }
-            let reqOtpVerifiedResponse = await verifyOtpCodeForCreateAccount(reqDataForVerifyOtpCode)
+            console.log("reqOtpVerifiedResponse");
             console.log(reqOtpVerifiedResponse);
+
             if (reqOtpVerifiedResponse.success == true) {
                 Toast.show({
                     text: reqOtpVerifiedResponse.message,
@@ -84,6 +113,10 @@ class RenderOtpInput extends Component {
                 });
                 if (this.props.navigation.getParam("navigateBackToHome")) {
                     this.props.navigation.navigate('Home');
+                }
+                else if(this.state.fromProfile){
+                    this.props.navigation.navigate('Profile');
+
                 } else {
                     this.doLoginAndContinueBasicDetailsUpdate();
                 }
@@ -156,12 +189,12 @@ class RenderOtpInput extends Component {
                         </Button>
                         <Text style={{ color: 'red', marginLeft: 15, marginTop: 10 }}>{errorMsg}</Text>
                     </View>
-                    <Item style={{ marginLeft: 'auto', marginRight: 'auto', borderBottomWidth: 0, marginBottom: 10, marginTop: 10 }}>
+                    {/* <Item style={{ marginLeft: 'auto', marginRight: 'auto', borderBottomWidth: 0, marginBottom: 10, marginTop: 10 }}>
                         <Text uppercase={false} style={{ color: '#000', fontSize: 16, fontFamily: 'OpenSans', color: '#775DA3' }}>Go Back To</Text>
                         <TouchableOpacity onPress={() => this.props.navigation.navigate('login')} style={styles.smallSignInButton}>
                             <Text uppercase={true} style={{ color: '#000', fontSize: 12, fontFamily: 'OpenSans', fontWeight: 'bold', color: '#fff' }}> Sign In</Text>
                         </TouchableOpacity>
-                    </Item>
+                    </Item> */}
                 </Content>
             </Container>
         );

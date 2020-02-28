@@ -420,18 +420,17 @@ class Profile extends Component {
                                 <Body >
                                     <TouchableOpacity onPress={() => this.editProfile('UpdateEmail')} testID="onPressEmail">
                                         <Text style={styles.customText}>Email</Text>
-                                        <Text note style={styles.customText1}>{data.email}</Text>
-                                        {data.secondary_email != undefined ? <Text note style={styles.customText1}>{data.secondary_email}</Text>
+                                        {data.email != undefined ? <Text note style={styles.customText1}>{data.email}</Text>
 
                                             : <Button transparent>
                                                 <Icon name='add' style={{ color: 'gray' }} />
-                                                <Text uppercase={false} style={styles.customText} onPress={() => this.editProfile('UpdateEmail')} testID="onPressAddSecondaryEmail">Add Secondary email</Text>
+                                                <Text uppercase={false} style={styles.customText} onPress={() => this.editProfile('UpdateEmail')} testID="onPressAddSecondaryEmail">Add  email</Text>
                                             </Button>}
                                     </TouchableOpacity>
                                 </Body>
 
 
-                                {data.secondary_email != undefined ?
+                                {data.email != undefined ?
 
                                     <Right>
                                         <Icon name="create" style={{ color: 'black' }} onPress={() => this.editProfile('UpdateEmail')} testID="iconToUpdateEmail" />
