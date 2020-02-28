@@ -347,3 +347,29 @@ export function onlySpaceNotAllowed(text) {
           }
          
          }
+
+
+
+         
+export const reportStatusValue = {
+
+    "OPEN":
+    {
+      color: '#f1994d',
+    },
+    "INPROGRASS": {
+     
+      color: ' #5593fb',
+    },
+    "RESOLVED": {
+      color: '#6ec41b',
+    },
+    "CLOSED": {
+      color: 'red',
+    },
+    "undefined": { 
+      color: 'red',
+    }
+  }
+  
+  
