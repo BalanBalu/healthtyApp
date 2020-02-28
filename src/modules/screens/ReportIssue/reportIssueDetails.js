@@ -3,11 +3,12 @@ import { Container, Content, View, Text, Item, Radio, Row, Col, Form, Button, Fo
 import { StyleSheet, TextInput, AsyncStorage, TouchableOpacity, ScrollView } from 'react-native'
 import { FlatList } from 'react-native-gesture-handler';
 import { formatDate } from '../../../setup/helpers';
+
 import Spinner from "../../../components/Spinner";
 import { upDateReportIssue, getUserRepportDetails } from '../../providers/reportIssue/reportIssue.action';
 
 
-import { onlySpaceNotAllowed } from '../../common'
+import { onlySpaceNotAllowed,reportStatusValue } from '../../common'
 
 class reportIssueDetails extends Component {
   constructor(props) {
@@ -15,7 +16,7 @@ class reportIssueDetails extends Component {
     this.state = {
       data: null,
       reportedId: this.props.navigation.getParam('reportedId'),
-      comments: null,
+      comments: '',
       replyData: [],
       isLoading: false
 
@@ -44,7 +45,7 @@ class reportIssueDetails extends Component {
   upDateReportIssueData = async () => {
     try {
       this.setState({ isLoading: true });
-      reportedId = this.props.navigation.getParam('reportedId')
+      
       const { comments, data } = this.state;
       if (onlySpaceNotAllowed(comments) == true) {
         let userId = await AsyncStorage.getItem('userId');
@@ -60,7 +61,7 @@ class reportIssueDetails extends Component {
         if (response.success) {
           let temp = data.reply_data;
           temp.push(response.reportedData)
-          this.setState({ replyData: temp, comments: null })
+          this.setState({ replyData: temp, comments: '' })
           Toast.show({
             text: response.message,
             type: 'success',
@@ -95,7 +96,7 @@ class reportIssueDetails extends Component {
   }
 
   render() {
-    const { isLoading, data, replyData } = this.state
+    const { isLoading, data, replyData ,comments} = this.state
 
     //     const data =[{date:"Today, 20/02/2020 at 01.10 PM",content:"We have no special tie-ups,relationship or consideration with doctors in this regard as we want to be an independent unbiased site for patients.",
     // detail:"Through Medflic,yours chances of booking an appoinment are the same as using any other means."}]
@@ -120,11 +121,12 @@ class reportIssueDetails extends Component {
                       <Text style={styles.reportText}>{data.report_by == 'USER' ? 'Reported By You' : 'Reported By Doctor'}</Text>
                     </Left>
                     <Right>
-                      <Text style={styles.date}>{formatDate(data.created_date, 'dddd,DD/MM/YYYY at hh:mm a')}</Text>
+                    <Text style={[styles.date1,{color:reportStatusValue[data.report_status].color}]}>{data.report_status||''}</Text>
                     </Right>
                   </Row>
                   <View style={{ marginTop: 10 }}>
-                    <Text style={styles.contentText}>{data.complaint || ' '}</Text>
+                  <Text style={styles.contentText}>{data.issue_type}</Text>
+                    <Text  note style={styles.contentText}>{data.complaint +' Reported on '+formatDate(data.created_date, 'DD/MM/YYYY ')}</Text>
                   </View>
                 </View>
                 {replyData.length != 0 &&
@@ -138,7 +140,7 @@ class reportIssueDetails extends Component {
                             <Text style={styles.reportText}>{item.reply_provider_type == 'USER' ? 'Replied By You' : item.reply_provider_type == 'DOCTOR' ? 'Replied By Doctor' : 'Replied By Medflic'}</Text>
                           </Left>
                           <Right>
-                            <Text style={styles.date}>{formatDate(item.created_date, 'dddd,DD/MM/YYYY at hh:mm a')}</Text>
+                            <Text style={styles.date}>{formatDate(item.created_date, 'dddd,DD/MM/YYYY')+' at '+formatDate(item.created_date, 'hh:mm a')}</Text>
                           </Right>
                         </Row>
                         <View style={{ marginTop: 10 }}>
@@ -165,6 +167,7 @@ class reportIssueDetails extends Component {
                   <Text style={styles.replyText}>Quick Reply
                             </Text>
                   <TextInput
+                    value={comments}
                     onChangeText={comments => this.setState({ comments })}
                     multiline={true} placeholder="Type Your Reply......"
 
@@ -254,6 +257,12 @@ const styles = StyleSheet.create({
     fontSize: 10,
     color: '#fff',
     fontWeight: 'bold',
-  }
+  },
+  date1: {
+    fontWeight:'bold',
+    fontFamily: 'OpenSans',
+    fontSize: 14,
+    color: '#909090'
+  },
 
 })

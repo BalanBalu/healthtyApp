@@ -51,7 +51,7 @@ class AppointmentDetails extends Component {
     const appointmentData = navigation.getParam('data');
     if (appointmentData == undefined) {
       const appointmentId = navigation.getParam('appointmentId');
-      this.props.navigation.setParams({ reportedId: appointmentId });
+      // this.props.navigation.setParams({ reportedId: appointmentId });
       await this.setState({ appointmentId: appointmentId });
       await new Promise.all([
         this.appointmentDetailsGetById(),
@@ -63,7 +63,7 @@ class AppointmentDetails extends Component {
       let doctorId = appointmentData.doctor_id;
       let appointmentId = appointmentData._id;
       const selectedTab = navigation.getParam('selectedIndex');
-      this.props.navigation.setParams({ reportedId: appointmentId });
+      // this.props.navigation.setParams({ reportedId: appointmentId });
 
 
       await this.setState({
@@ -556,7 +556,7 @@ class AppointmentDetails extends Component {
                             <Text note style={[styles.subTextInner2, { marginLeft: 10 }]}>"You have raised Report for this appointment"</Text>
                             <Row>
                               <Col size={9}>
-                                <Text note style={[styles.subTextInner1, { marginLeft: 10 }]}>{reportData.complaint || ' '}</Text>
+                                <Text note style={[styles.subTextInner1, { marginLeft: 10 }]}>{reportData.issue_type || ' '}</Text>
 
                               </Col>
                               <Col size={1}>
