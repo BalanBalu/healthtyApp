@@ -1,101 +1,103 @@
 import React, { Component } from 'react';
-import { Container, Content, Toast, Text, Title, Header, Button, H3, Item, List, ListItem, Card, Input, Left, Right, Thumbnail, Body, Icon, View, Footer, FooterTab } from 'native-base';
+import { Container, Content, Toast, Text, Title, Header, Button, H3, Item, Form, List, ListItem, Card, Input, Left, Right, Thumbnail, Body, Icon, View, Footer, FooterTab } from 'native-base';
 import { Col, Row, Grid } from 'react-native-easy-grid';
-import { getMedicineDetails,getSearchedMedicines } from '../../../providers/pharmacy/pharmacy.action'
-import { StyleSheet, Image, FlatList, TouchableOpacity, AsyncStorage } from 'react-native';
+import { getMedicineDetails, getSearchedMedicines } from '../../../providers/pharmacy/pharmacy.action'
+import { StyleSheet, Image, FlatList, TouchableOpacity, AsyncStorage, ScrollView, Dimensions } from 'react-native';
 import { NavigationEvents } from 'react-navigation';
-import { addToCart,medicineRateAfterOffer } from '../../../common';
+import { addToCart, medicineRateAfterOffer } from '../../../common';
 import Autocomplete from '../../../../components/Autocomplete'
 import Spinner from '../../../../components/Spinner'
+const chatImg = require('../../../../../assets/images/Chat.jpg');
+const { width } = Dimensions.get('window');
 
 
-let  userId; 
+let userId;
 class PharmacyHome extends Component {
     constructor(props) {
-        super(props)       
-        this.state={
-            medicineData:[],
-            clickCard:null,
-            footerSelectedItem:'',
-            cartItems:[],
-            searchMedicine:[],
-            keyword:'',
-            isLoading:true
-            
-        }   
+        super(props)
+        this.state = {
+            medicineData: [],
+            clickCard: null,
+            footerSelectedItem: '',
+            cartItems: [],
+            searchMedicine: [],
+            keyword: '',
+            isLoading: true
+
+        }
     }
 
-    componentDidMount(){
-        this.setState({clickCard:null, isLoading:true});               
+    componentDidMount() {
+        this.setState({ clickCard: null, isLoading: true });
         this.getMedicineList();
     }
 
-    backNavigation(payload){
+    backNavigation(payload) {
         console.log(payload)
-        if(payload.action.type=='Navigation/BACK'){
-            this.setState({clickCard:null, isLoading:true});               
+        if (payload.action.type == 'Navigation/BACK') {
+            this.setState({ clickCard: null, isLoading: true });
             this.getMedicineList();
         }
     }
 
     /*Get medicine list*/
-    getMedicineList=async()=>{
-        try{
-        console.log("getmedicine");    
-       let temp_userid = await AsyncStorage.getItem('userId')
-       userId = JSON.stringify(temp_userid);  
-       console.log(userId);    
+    getMedicineList = async () => {
+        try {
+            console.log("getmedicine");
+            let temp_userid = await AsyncStorage.getItem('userId')
+            userId = JSON.stringify(temp_userid);
+            console.log(userId);
 
-        medicineSearchMap = new Map();
-        let result=await getMedicineDetails();
+            medicineSearchMap = new Map();
+            let result = await getMedicineDetails();
 
-        if(result.success){
-            console.log("reust.success")
-        result.data.forEach(element =>{           
-            medicineSearchMap.set(element.medicine_id,element)
+            if (result.success) {
+                console.log("reust.success")
+                result.data.forEach(element => {
+                    medicineSearchMap.set(element.medicine_id, element)
 
-        })  
-    }
-        
-        const cartItems = await AsyncStorage.getItem('cartItems-'+userId);
-        console.log(cartItems);
-        if(cartItems===null){
-            console.log("");
-        if(Array.isArray(JSON.parse(cartItems)) == true){
-          this.setState({cartItems:JSON.parse(cartItems)})           
-            this.state.cartItems.forEach(element => {  
-                if(medicineSearchMap.get(element.medicine_id) != undefined){    
-                    medicineSearchMap.set(element.medicine_id, element);
+                })
+            }
+
+            const cartItems = await AsyncStorage.getItem('cartItems-' + userId);
+            console.log(cartItems);
+            if (cartItems === null) {
+                console.log("");
+                if (Array.isArray(JSON.parse(cartItems)) == true) {
+                    this.setState({ cartItems: JSON.parse(cartItems) })
+                    this.state.cartItems.forEach(element => {
+                        if (medicineSearchMap.get(element.medicine_id) != undefined) {
+                            medicineSearchMap.set(element.medicine_id, element);
+                        }
+                    })
                 }
-            })
-        }
-    }
+            }
 
-        let temp = [...medicineSearchMap.values()]        
-        this.setState({medicineData:temp});
-        console.log('this.state.medicineData'+JSON.stringify(this.state.medicineData))      
-        this.setState({isLoading:false}) 
-    }
-catch(e){
-console.log(e)
-}
-finally {
-    this.setState({ isLoading: false });
-}
+            let temp = [...medicineSearchMap.values()]
+            this.setState({ medicineData: temp });
+            console.log('this.state.medicineData' + JSON.stringify(this.state.medicineData))
+            this.setState({ isLoading: false })
+        }
+        catch (e) {
+            console.log(e)
+        }
+        finally {
+            this.setState({ isLoading: false });
+        }
     }
 
     /*Search medicine*/
     searchMedicineByName = async () => {
         try {
             let requestData = {
-                value: this.state.keyword           
+                value: this.state.keyword
             };
-          
+
             let result = await getSearchedMedicines(requestData);
-            console.log('result'+JSON.stringify(result));
+            console.log('result' + JSON.stringify(result));
             await this.setState({ searchMedicine: result.data })
-            console.log('this.staete'+JSON.stringify(this.state.searchMedicine));
-            }
+            console.log('this.staete' + JSON.stringify(this.state.searchMedicine));
+        }
         catch (e) {
             console.log(e);
         }
@@ -103,65 +105,276 @@ finally {
 
 
 
-    onPressCard=async(item,index)=>{
-     this.setState({clickCard:index})
-     await this.setState({footerSelectedItem:item});
-   }
-
-   async addSubOperation(selectItem,operation){
-    let temp = await AsyncStorage.getItem('userId');
-    userId = JSON.stringify(temp);
-    let data = await addToCart(this.state.medicineData, selectItem, operation);
-    const cartItems = await AsyncStorage.getItem('cartItems-'+userId);    
-    this.setState({footerSelectedItem:data.selectemItemData,cartItems:JSON.parse(cartItems)})       
-   }
-
-   onSearchPress(selectedMedicineName) {
-       console.log(selectedMedicineName)
-       if(selectedMedicineName.length!=0){
-        this.props.navigation.navigate('medicineSearchList',{medicineList:selectedMedicineName}) 
-
-       }
+    onPressCard = async (item, index) => {
+        this.setState({ clickCard: index })
+        await this.setState({ footerSelectedItem: item });
     }
 
-    autoCompleteMedicineName(keyword){
+    async addSubOperation(selectItem, operation) {
+        let temp = await AsyncStorage.getItem('userId');
+        userId = JSON.stringify(temp);
+        let data = await addToCart(this.state.medicineData, selectItem, operation);
+        const cartItems = await AsyncStorage.getItem('cartItems-' + userId);
+        this.setState({ footerSelectedItem: data.selectemItemData, cartItems: JSON.parse(cartItems) })
+    }
+
+    onSearchPress(selectedMedicineName) {
+        console.log(selectedMedicineName)
+        if (selectedMedicineName.length != 0) {
+            this.props.navigation.navigate('medicineSearchList', { medicineList: selectedMedicineName })
+
+        }
+    }
+
+    autoCompleteMedicineName(keyword) {
         if (keyword === '' || keyword === undefined || keyword === null) {
             return [];
         }
         const { searchMedicine } = this.state;
-        var selectedMedicineName=[]
+        var selectedMedicineName = []
 
-        if(searchMedicine!=undefined){
-        const regex = new RegExp(`${keyword.trim()}`, 'i');
-        console.log(regex);        
-        selectedMedicineName = searchMedicine.filter(value => value.medicine_name.search(regex) >= 0);
-        console.log('selectedMedicineName'+JSON.stringify(selectedMedicineName));        
+        if (searchMedicine != undefined) {
+            const regex = new RegExp(`${keyword.trim()}`, 'i');
+            console.log(regex);
+            selectedMedicineName = searchMedicine.filter(value => value.medicine_name.search(regex) >= 0);
+            console.log('selectedMedicineName' + JSON.stringify(selectedMedicineName));
         }
 
-        if(selectedMedicineName.length==0){
-            let defaultValue={medicine_name:'Medicine Not Found'}
+        if (selectedMedicineName.length == 0) {
+            let defaultValue = { medicine_name: 'Medicine Not Found' }
             selectedMedicineName.push(defaultValue);
-        
+
         }
         return selectedMedicineName;
 
-        
+
     }
 
-     
+
     render() {
-        const {medicineData}=this.state
-        var selectedMedicineName=[]
-        selectedMedicineName=this.autoCompleteMedicineName(this.state.keyword);
+        const { medicineData } = this.state
+        var selectedMedicineName = []
+        selectedMedicineName = this.autoCompleteMedicineName(this.state.keyword);
         const comp = (a, b) => a.toLowerCase().trim() === b.toLowerCase().trim();
 
 
         return (
             <Container style={styles.container}>
-                <NavigationEvents
+                <Content style={{ backgroundColor: '#F5F5F5', padding: 10 }}>
+                    <Row>
+                        <Col size={6}>
+                            <Item style={styles.transparentLabel1}>
+                                <Input placeholder="Location" style={styles.firstTransparentLabel}
+                                    placeholderTextColor="#C1C1C1"
+                                    keyboardType={'default'}
+                                    returnKeyType={'go'}
+                                    multiline={false}
+                                />
+                                <TouchableOpacity style={{ alignItems: 'flex-end' }} >
+                                    <Icon name='ios-locate' style={{ color: '#775DA3', fontSize: 15 }} />
+                                </TouchableOpacity>
+                            </Item>
+                        </Col>
+                        <Col size={4} style={{ marginLeft: 5 }}>
+                            <TouchableOpacity style={{ backgroundColor: '#4B86EA', height: 30, borderRadius: 2 }}>
+                                <Row style={{ justifyContent: 'center', alignItems: 'center' }}>
+                                    <Col size={1.5} style={{ alignItems: 'center' }}>
+                                        <Icon name='locate' style={{ fontSize: 15, color: '#fff', }} />
+                                    </Col>
+                                    <Col size={8.5}  style={{ alignItems: 'center' }}>
+                                        <Text style={{ fontFamily: 'OpenSans', fontSize: 12, color: '#fff' }}>Upload Prescription</Text>
+                                    </Col>
+                                </Row>
+
+                            </TouchableOpacity>
+                        </Col>
+                    </Row>
+
+
+                    <ScrollView
+                        horizontal={true}
+                        showsHorizontalScrollIndicator={false}
+
+                    >
+                        <View style={{ borderColor: 'gray', borderWidth: 1, padding: 10, marginTop: 10, marginLeft: 10,backgroundColor:'#fff' }}>
+                            <Row>
+                                <Col size={5} >
+                                    <Image
+
+                                        source={chatImg} style={{
+                                            width: 100, height: 100, alignItems: 'center'
+                                        }}
+                                    />
+                                </Col>
+                                <Col size={5} style={{ marginLeft: 5 }}>
+                                    <Image
+
+                                        source={chatImg} style={{
+                                            width: 100, height: 100, alignItems: 'center'
+                                        }}
+                                    />
+                                </Col>
+                            </Row>
+
+
+                        </View>
+
+                        <View style={{ borderColor: 'gray', borderWidth: 1, padding: 10, marginTop: 10, marginLeft: 10 }}>
+                            <Row>
+                                <Col size={5} >
+                                    <Image
+
+                                        source={chatImg} style={{
+                                            width: 100, height: 100, alignItems: 'center'
+                                        }}
+                                    />
+                                </Col>
+                                <Col size={5} style={{ marginLeft: 5 }}>
+                                    <Image
+
+                                        source={chatImg} style={{
+                                            width: 100, height: 100, alignItems: 'center'
+                                        }}
+                                    />
+                                </Col>
+                            </Row>
+
+
+                        </View>
+
+                        <View style={{ borderColor: 'gray', borderWidth: 1, padding: 10, marginTop: 10 }}>
+                            <Row>
+                                <Col size={5} >
+                                    <Image
+
+                                        source={chatImg} style={{
+                                            width: 100, height: 100, alignItems: 'center'
+                                        }}
+                                    />
+                                </Col>
+                                <Col size={5} style={{ marginLeft: 5 }}>
+                                    <Image
+
+                                        source={chatImg} style={{
+                                            width: 100, height: 100, alignItems: 'center'
+                                        }}
+                                    />
+                                </Col>
+                            </Row>
+
+
+                        </View>
+
+                        <View style={{ borderColor: 'gray', borderWidth: 1, padding: 10, marginTop: 10 }}>
+                            <Row>
+                                <Col size={5} >
+                                    <Image
+
+                                        source={chatImg} style={{
+                                            width: 100, height: 100, alignItems: 'center'
+                                        }}
+                                    />
+                                </Col>
+                                <Col size={5} style={{ marginLeft: 5 }}>
+                                    <Image
+
+                                        source={chatImg} style={{
+                                            width: 100, height: 100, alignItems: 'center'
+                                        }}
+                                    />
+                                </Col>
+                            </Row>
+
+
+                        </View>
+
+                        <View style={{ borderColor: 'gray', borderWidth: 1, padding: 10, marginTop: 10 }}>
+                            <Row>
+                                <Col size={5} >
+                                    <Image
+
+                                        source={chatImg} style={{
+                                            width: 100, height: 100, alignItems: 'center'
+                                        }}
+                                    />
+                                </Col>
+                                <Col size={5} style={{ marginLeft: 5 }}>
+                                    <Image
+
+                                        source={chatImg} style={{
+                                            width: 100, height: 100, alignItems: 'center'
+                                        }}
+                                    />
+                                </Col>
+                            </Row>
+
+
+                        </View>
+
+                        <View style={{ borderColor: 'gray', borderWidth: 1, padding: 10, marginTop: 10 }}>
+                            <Row>
+                                <Col size={5} >
+                                    <Image
+
+                                        source={chatImg} style={{
+                                            width: 100, height: 100, alignItems: 'center'
+                                        }}
+                                    />
+                                </Col>
+                                <Col size={5} style={{ marginLeft: 5 }}>
+                                    <Image
+
+                                        source={chatImg} style={{
+                                            width: 100, height: 100, alignItems: 'center'
+                                        }}
+                                    />
+                                </Col>
+                            </Row>
+
+
+                        </View>
+
+                    </ScrollView>
+
+
+<View style={{backgroundColor:'#fff',marginLeft:10,marginRight:10,marginTop:10, padding: 10}}>
+<Row>
+<Col size={3.3} style={{alignItems:'center'}}>
+<Image
+
+source={chatImg} style={{
+    width: 60, height: 60, alignItems: 'center'
+}}
+/>
+<Text  style={{fontFamily:'OpenSans',fontSize:8,textAlign:'center'}}>Trusted Medicines</Text>
+</Col>
+<Col size={3.3}  style={{alignItems:'center'}}>
+<Image
+
+source={chatImg} style={{
+    width: 60, height: 60, alignItems: 'center'
+}}
+/>
+<Text  style={{fontFamily:'OpenSans',fontSize:8,textAlign:'center'}}>On Time Delivery</Text>
+
+</Col>
+<Col size={3.3}  style={{alignItems:'center'}}>
+<Image
+
+source={chatImg} style={{
+    width: 60, height: 60, alignItems: 'center'
+}}
+/>
+<Text  style={{fontFamily:'OpenSans',fontSize:8,textAlign:'center'}}>Safe & secure Payments</Text>
+</Col>
+</Row>
+</View>
+                </Content>
+
+                {/* <NavigationEvents
 					onWillFocus={payload => { this.backNavigation(payload) }}
-				/>
-                <Content >
+				/> */}
+                {/* <Content >
                     <Grid style={styles.curvedGrid}>
                     </Grid>
                     
@@ -254,9 +467,9 @@ finally {
                         </Grid>
                     }
                     </Card>
-                </Content>
-                
-                {this.state.clickCard!==null?<Footer style={{ backgroundColor: '#7E49C3', }}>
+                </Content> */}
+
+                {/* {this.state.clickCard!==null?<Footer style={{ backgroundColor: '#7E49C3', }}>
                     <Row>
                         <Col style={{ flexDirection: 'row', justifyContent: 'center', marginTop: 12 }}>
                             <TouchableOpacity onPress={()=>this.addSubOperation(this.state.footerSelectedItem,"sub")} testID='decreaseMedicineQuantity'>
@@ -298,7 +511,7 @@ finally {
                     </Row>
 
 
-                </Footer>:null}
+                </Footer>:null} */}
 
             </Container>
 
@@ -330,16 +543,16 @@ const styles = StyleSheet.create({
         width: 250,
         height: 250,
         borderRadius: 125,
-        marginTop:-135,
-        marginLeft:'auto',
-        marginRight:'auto',
+        marginTop: -135,
+        marginLeft: 'auto',
+        marginRight: 'auto',
         backgroundColor: '#745DA6',
         transform: [
-          {scaleX: 2}
+            { scaleX: 2 }
         ],
         position: 'relative',
         overflow: 'hidden',
-        
+
     },
     searchBox: {
         width: '50%',
@@ -348,10 +561,10 @@ const styles = StyleSheet.create({
         borderRadius: 10,
         height: 35,
         alignItems: 'center',
-        marginTop:-80,
+        marginTop: -80,
         marginBottom: 'auto',
         padding: 20,
-        flex:1
+        flex: 1
     },
     customColumn: {
         padding: 10,
@@ -368,5 +581,16 @@ const styles = StyleSheet.create({
         fontFamily: 'OpenSans',
         fontSize: 14,
         fontWeight: "bold"
+    },
+    firstTransparentLabel:
+    {
+        color: '#000',
+        fontFamily: 'OpenSans',
+        fontSize: 12
+    },
+    transparentLabel1: {
+        backgroundColor: '#fff',
+        height: 30,
+        borderRadius: 2
     }
 });
