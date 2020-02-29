@@ -62,7 +62,7 @@ class Profile extends Component {
     /*Get userProfile*/
     getUserProfile = async () => {
         try {
-            let fields = "first_name,last_name,gender,dob,mobile_no,secondary_mobile,email,secondary_email,insurance,address,is_blood_donor,is_available_blood_donate,blood_group,profile_image"
+            let fields = "first_name,last_name,gender,dob,mobile_no,secondary_mobile,email,secondary_email,insurance,address,is_blood_donor,is_available_blood_donate,blood_group,profile_image,is_email_verified"
 
             let userId = await AsyncStorage.getItem('userId');
             let result = await fetchUserProfile(userId, fields);
@@ -420,11 +420,11 @@ class Profile extends Component {
                                 <Body >
                                     <TouchableOpacity onPress={() => this.editProfile('UpdateEmail')} testID="onPressEmail">
                                         <Text style={styles.customText}>Email</Text>
-                                        {data.email != undefined ? <Text note style={styles.customText1}>{data.email}</Text>
+                                        {data.email != undefined && data.is_email_verified ? <Text note style={styles.customText1}>{data.email}</Text>
 
                                             : <Button transparent>
                                                 <Icon name='add' style={{ color: 'gray' }} />
-                                                <Text uppercase={false} style={styles.customText} onPress={() => this.editProfile('UpdateEmail')} testID="onPressAddSecondaryEmail">Add  email</Text>
+                                                <Text uppercase={false} style={styles.customText} onPress={() => this.editProfile('UpdateEmail')} testID="onPressAddSecondaryEmail">Add  your email</Text>
                                             </Button>}
                                     </TouchableOpacity>
                                 </Body>

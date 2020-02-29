@@ -48,7 +48,7 @@ class UpdateEmail extends Component {
                 email: this.state.email
             };
 
-            let response = await userEmailUpdate(userId, data);
+            let response = await userEmailUpdate(userId, data, 'user');
             if (response.success) {
                 Toast.show({
                     text: 'Your email id is updated successfully',

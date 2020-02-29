@@ -334,9 +334,9 @@ export async function updateProfilePicture(userId, data) {
 }
 
 // Update email id for Patient
-export async function userEmailUpdate(userId, data) {
+export async function userEmailUpdate(userId, data, type) {
   try {
-    let endPoint = '/user/updateEmail/' + userId;
+    let endPoint = '/user/updateEmail/' + userId + '/' + type;
     let response = await putService(endPoint, data);
     await AsyncStorage.removeItem('profile');
     return response.data;
