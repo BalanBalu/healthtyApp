@@ -346,7 +346,14 @@ class PaymentPage extends Component {
     }
     async storeCardData() {
         try {
+            debugger
             if (this.state.paymentOption === 'CREDIT_CARD' || this.state.paymentOption === 'DEBIT_CARD') {
+                let savedCards = this.state.savedCards;
+                var saveCard = savedCards.find(savedCards => {
+                    return savedCards.card_number === this.state.cardPaymentDetails.number.replace(/ /g, '');
+                });
+                console.log(saveCard)
+                
                 var cardRequestData = {
                     card_holder_name: this.state.cardPaymentDetails.name,
                     card_number: this.state.cardPaymentDetails.number.replace(/ /g, ''),
@@ -356,6 +363,10 @@ class PaymentPage extends Component {
                     user_type: 'user',
                     active: true
                 }
+                if(saveCard) {
+                    cardRequestData.card_id = saveCard.card_id;
+                }
+                console.log('cardRequestData ==> ', cardRequestData)
                 const userId = await AsyncStorage.getItem('userId');
                 let endPoint = 'user/payment/ ' + userId;
                 putService(endPoint, cardRequestData);
