@@ -27,19 +27,23 @@ class reportIssueDetails extends Component {
   }
   getUserReport = async () => {
     try {
+      this.setState({ isLoading: true });
       const userId = await AsyncStorage.getItem('userId');
       let resultReport = await getUserRepportDetails('appointment', userId, this.state.reportedId, true);
-      console.log(JSON.stringify(resultReport))
+     
       if (resultReport.success) {
 
         this.setState({ data: resultReport.data, replyData: resultReport.data.reply_data || [] });
 
       }
+      this.setState({ isLoading: false });
     }
     catch (e) {
       console.error(e);
     }
-
+     finally{
+      this.setState({ isLoading: false });
+     }
   }
 
   upDateReportIssueData = async () => {

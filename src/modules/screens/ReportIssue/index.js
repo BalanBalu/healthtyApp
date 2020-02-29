@@ -25,8 +25,15 @@ class ReportIssue extends Component {
     }
   }
   async componentDidMount() {
-    const { issueFor } = this.state
-    let type
+    this.getIssueList()
+    
+
+  }
+  getIssueList = async () => {
+    try{
+      this.setState({ isLoading: true });
+     const { issueFor } = this.state
+    let type ,  issueList =[]
     if (issueFor) {
       if (issueFor.serviceType == 'Appointment') {
 
@@ -35,7 +42,11 @@ class ReportIssue extends Component {
         }
         let reportIssueList = await getCurrentVersion(type)
         if (reportIssueList.success) {
-          let issueList = reportIssueList.data[0].value
+           issueList = reportIssueList.data[0].value
+           let obj={ 
+            issue_no:issueList.length+1 ,
+            issue : "Others" }
+            issueList.push(obj)
           this.setState({ issueList })
         }
 
@@ -49,7 +60,23 @@ class ReportIssue extends Component {
 
       }
     }
-
+    else{
+      let obj={ 
+        issue_no:issueList.length+1 ,
+        issue : "Others" }
+        issueList.push(obj)
+        
+      this.setState({ issueList:issueList })
+       
+    }
+    this.setState({ isLoading: false });
+  }
+  catch(e){
+    console.log(e)
+  }
+  finally{
+    this.setState({ isLoading: false });
+  }
   }
   insertReportIssueData = async () => {
     try {
