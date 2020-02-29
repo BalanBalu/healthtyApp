@@ -160,8 +160,8 @@ class PharmacyHome extends Component {
 
         return (
             <Container style={styles.container}>
-                <Content style={{ backgroundColor: '#F5F5F5', padding: 10 }}>
-                    <Row>
+                <Content style={{ backgroundColor: '#F5F5F5',}}>
+                    <Row style={{marginLeft:15,marginRight:15,marginTop:10}}>
                         <Col size={6}>
                             <Item style={styles.transparentLabel1}>
                                 <Input placeholder="Location" style={styles.firstTransparentLabel}
@@ -196,178 +196,252 @@ class PharmacyHome extends Component {
                         showsHorizontalScrollIndicator={false}
 
                     >
-                        <View style={{ borderColor: 'gray', borderWidth: 1, padding: 10, marginTop: 10, marginLeft: 10,backgroundColor:'#fff' }}>
-                            <Row>
-                                <Col size={5} >
-                                    <Image
+                        <View style={{ borderColor: 'gray', borderWidth: 1, marginTop: 10, marginLeft: 15,backgroundColor:'#fff' }}>
+                           
 
-                                        source={chatImg} style={{
-                                            width: 100, height: 100, alignItems: 'center'
-                                        }}
-                                    />
-                                </Col>
-                                <Col size={5} style={{ marginLeft: 5 }}>
-                                    <Image
-
-                                        source={chatImg} style={{
-                                            width: 100, height: 100, alignItems: 'center'
-                                        }}
-                                    />
-                                </Col>
-                            </Row>
+                        <Image
+                                            source={require('../../../../../assets/images/25offer-banner.jpg')}
+                                            style={{
+                                                width:235, height: 120, alignItems: 'center'
+                                            }}
+                                        />
 
 
                         </View>
 
-                        <View style={{ borderColor: 'gray', borderWidth: 1, padding: 10, marginTop: 10, marginLeft: 10 }}>
-                            <Row>
-                                <Col size={5} >
-                                    <Image
+                        <View style={{ borderColor: 'gray', borderWidth: 1, marginTop: 10, marginLeft: 5,backgroundColor:'#fff' }}>
+                           
 
-                                        source={chatImg} style={{
-                                            width: 100, height: 100, alignItems: 'center'
-                                        }}
-                                    />
-                                </Col>
-                                <Col size={5} style={{ marginLeft: 5 }}>
-                                    <Image
-
-                                        source={chatImg} style={{
-                                            width: 100, height: 100, alignItems: 'center'
-                                        }}
-                                    />
-                                </Col>
-                            </Row>
+                        <Image
+                                            source={require('../../../../../assets/images/20flatoff-banner.jpg')}
+                                            style={{
+                                                width:235, height: 120, alignItems: 'center'
+                                            }}
+                                        />
 
 
                         </View>
-
-                        <View style={{ borderColor: 'gray', borderWidth: 1, padding: 10, marginTop: 10 }}>
-                            <Row>
-                                <Col size={5} >
-                                    <Image
-
-                                        source={chatImg} style={{
-                                            width: 100, height: 100, alignItems: 'center'
-                                        }}
-                                    />
-                                </Col>
-                                <Col size={5} style={{ marginLeft: 5 }}>
-                                    <Image
-
-                                        source={chatImg} style={{
-                                            width: 100, height: 100, alignItems: 'center'
-                                        }}
-                                    />
-                                </Col>
-                            </Row>
-
-
-                        </View>
-
-                        <View style={{ borderColor: 'gray', borderWidth: 1, padding: 10, marginTop: 10 }}>
-                            <Row>
-                                <Col size={5} >
-                                    <Image
-
-                                        source={chatImg} style={{
-                                            width: 100, height: 100, alignItems: 'center'
-                                        }}
-                                    />
-                                </Col>
-                                <Col size={5} style={{ marginLeft: 5 }}>
-                                    <Image
-
-                                        source={chatImg} style={{
-                                            width: 100, height: 100, alignItems: 'center'
-                                        }}
-                                    />
-                                </Col>
-                            </Row>
-
-
-                        </View>
-
-                        <View style={{ borderColor: 'gray', borderWidth: 1, padding: 10, marginTop: 10 }}>
-                            <Row>
-                                <Col size={5} >
-                                    <Image
-
-                                        source={chatImg} style={{
-                                            width: 100, height: 100, alignItems: 'center'
-                                        }}
-                                    />
-                                </Col>
-                                <Col size={5} style={{ marginLeft: 5 }}>
-                                    <Image
-
-                                        source={chatImg} style={{
-                                            width: 100, height: 100, alignItems: 'center'
-                                        }}
-                                    />
-                                </Col>
-                            </Row>
-
-
-                        </View>
-
-                        <View style={{ borderColor: 'gray', borderWidth: 1, padding: 10, marginTop: 10 }}>
-                            <Row>
-                                <Col size={5} >
-                                    <Image
-
-                                        source={chatImg} style={{
-                                            width: 100, height: 100, alignItems: 'center'
-                                        }}
-                                    />
-                                </Col>
-                                <Col size={5} style={{ marginLeft: 5 }}>
-                                    <Image
-
-                                        source={chatImg} style={{
-                                            width: 100, height: 100, alignItems: 'center'
-                                        }}
-                                    />
-                                </Col>
-                            </Row>
-
-
-                        </View>
-
                     </ScrollView>
 
 
-<View style={{backgroundColor:'#fff',marginLeft:10,marginRight:10,marginTop:10, padding: 10}}>
-<Row>
-<Col size={3.3} style={{alignItems:'center'}}>
-<Image
 
-source={chatImg} style={{
-    width: 60, height: 60, alignItems: 'center'
+<View style={{marginTop:10,marginLeft:10,marginRight:10}}>
+    <Text  style={{fontFamily:'OpenSans',fontSize:15,fontWeight:"700"}}>Popular Medicines</Text>
+    <View>
+        <Row>
+            <Col size={5} style={{backgroundColor:'#fff',marginTop:10}}>
+            <Row style={{padding:5}}>
+<Col size={2}>
+<Image
+source={require('../../../../../assets/images/images.jpeg')}
+ style={{
+    width: 45, height: 45, alignItems: 'center'
 }}
 />
-<Text  style={{fontFamily:'OpenSans',fontSize:8,textAlign:'center'}}>Trusted Medicines</Text>
 </Col>
-<Col size={3.3}  style={{alignItems:'center'}}>
-<Image
-
-source={chatImg} style={{
-    width: 60, height: 60, alignItems: 'center'
-}}
-/>
-<Text  style={{fontFamily:'OpenSans',fontSize:8,textAlign:'center'}}>On Time Delivery</Text>
-
+<Col size={7} style={{marginLeft:15}}>
+<Text  style={{fontFamily:'OpenSans',fontSize:10,fontWeight:"700", color: '#775DA3'}}>Amlodipine</Text>
+<Text note style={{fontFamily:'OpenSans',fontSize:8}}>By Apollo Pharmacy</Text>
+<Row style={{marginTop:2}}>
+    <Text  style={{fontFamily:'OpenSans',fontSize:8,textDecorationLine:'line-through',textDecorationColor:'red',textDecorationStyle:'solid',color:'#ff4e42',marginTop:3}}>₹ 278.50</Text>
+    <Text  style={{fontFamily:'OpenSans',fontSize:10,fontWeight:'bold',marginLeft:5}}>₹ 205.50</Text>    
+    </Row>
 </Col>
-<Col size={3.3}  style={{alignItems:'center'}}>
+<Col size={1} style={{position:'absolute',marginTop:-10,marginLeft:130}}>
 <Image
-
-source={chatImg} style={{
-    width: 60, height: 60, alignItems: 'center'
+source={require('../../../../../assets/images/Badge.png')}
+style={{
+    width: 45, height: 45, alignItems: 'center'
 }}
 />
-<Text  style={{fontFamily:'OpenSans',fontSize:8,textAlign:'center'}}>Safe & secure Payments</Text>
+<Text style={{ fontFamily: 'OpenSans', fontSize: 8, position: 'absolute',color:'#fff',marginTop:13,marginLeft:16}}>20%</Text>
+<Text style={{ fontFamily: 'OpenSans', fontSize: 8, position: 'absolute',color:'#fff',marginTop:22,marginLeft:16,fontWeight:'700'}}>OFF</Text>
 </Col>
 </Row>
+<Row style={{marginBottom:5}}>
+       
+       <Col size={2}>
+       </Col>
+       <Col size={8}>
+           <Row>
+           <TouchableOpacity style={{borderColor:'#8dc63f',borderWidth:0.5,flexDirection:'row',paddingTop:2,paddingBottom:2,paddingLeft:7,paddingRight:7,borderRadius:2}}>
+           <Icon name="ios-cart" style={{fontSize:10,color:'#4e85e9'}}/>
+           <Text style={{fontFamily:'OpenSans',fontSize:8,color:'#4e85e9',marginLeft:2}}>Add to Cart</Text>
+       </TouchableOpacity>
+      
+   <TouchableOpacity style={{backgroundColor:'#8dc63f',flexDirection:'row',paddingTop:2,paddingBottom:2,paddingLeft:8,paddingRight:8,marginLeft:5,borderRadius:2}}>
+           <Icon name="ios-cart" style={{fontSize:10,color:'#fff'}}/>
+           <Text style={{fontFamily:'OpenSans',fontSize:8,color:'#fff',marginLeft:2}}>Buy Now</Text>
+       </TouchableOpacity>
+ 
+           </Row>
+       </Col>
+    
+</Row>
+</Col>
+<Col size={5} style={{backgroundColor:'#fff',marginLeft:5,marginTop:10}}>
+<Row style={{padding:5}}>
+<Col size={2}>
+<Image
+source={require('../../../../../assets/images/images.jpeg')}
+ style={{
+    width: 45, height: 45, alignItems: 'center'
+}}
+/>
+</Col>
+<Col size={7} style={{marginLeft:10}}>
+<Text  style={{fontFamily:'OpenSans',fontSize:10,fontWeight:"700", color: '#775DA3'}}>Amlodipine</Text>
+<Text note style={{fontFamily:'OpenSans',fontSize:8}}>By Apollo Pharmacy</Text>
+<Row style={{marginTop:2}}>
+    <Text  style={{fontFamily:'OpenSans',fontSize:8,textDecorationLine:'line-through',textDecorationColor:'red',textDecorationStyle:'solid',color:'#ff4e42',marginTop:3}}>₹ 278.50</Text>
+    <Text  style={{fontFamily:'OpenSans',fontSize:10,fontWeight:'bold',marginLeft:5}}>₹ 205.50</Text>    
+    </Row>
+   
+</Col>
+<Col size={1} style={{position:'absolute',marginTop:-10,marginLeft:130}}>
+<Image
+source={require('../../../../../assets/images/Badge.png')}
+style={{
+    width: 45, height: 45, alignItems: 'center'
+}}
+/>
+<Text style={{ fontFamily: 'OpenSans', fontSize: 8, position: 'absolute',color:'#fff',marginTop:13,marginLeft:16}}>20%</Text>
+<Text style={{ fontFamily: 'OpenSans', fontSize: 8, position: 'absolute',color:'#fff',marginTop:22,marginLeft:16,fontWeight:'700'}}>OFF</Text>
+</Col>
+</Row>
+<Row style={{marginBottom:5}}>
+       
+       <Col size={2}>
+       </Col>
+       <Col size={8}>
+           <Row>
+           <TouchableOpacity style={{borderColor:'#8dc63f',borderWidth:0.5,flexDirection:'row',paddingTop:2,paddingBottom:2,paddingLeft:7,paddingRight:7,borderRadius:2}}>
+           <Icon name="ios-cart" style={{fontSize:10,color:'#4e85e9'}}/>
+           <Text style={{fontFamily:'OpenSans',fontSize:8,color:'#4e85e9',marginLeft:2}}>Add to Cart</Text>
+       </TouchableOpacity>
+      
+   <TouchableOpacity style={{backgroundColor:'#8dc63f',flexDirection:'row',paddingTop:2,paddingBottom:2,paddingLeft:8,paddingRight:8,marginLeft:5,borderRadius:2}}>
+           <Icon name="ios-cart" style={{fontSize:10,color:'#fff'}}/>
+           <Text style={{fontFamily:'OpenSans',fontSize:8,color:'#fff',marginLeft:2}}>Buy Now</Text>
+       </TouchableOpacity>
+ 
+           </Row>
+       </Col>
+    
+</Row>
+</Col>
+        </Row>
+         <Row>
+            <Col size={5} style={{backgroundColor:'#fff',marginTop:10}}>
+            <Row style={{padding:5}}>
+<Col size={2}>
+<Image
+source={require('../../../../../assets/images/images.jpeg')}
+ style={{
+    width: 45, height: 45, alignItems: 'center'
+}}
+/>
+</Col>
+<Col size={7} style={{marginLeft:15}}>
+<Text  style={{fontFamily:'OpenSans',fontSize:10,fontWeight:"700", color: '#775DA3'}}>Amlodipine</Text>
+<Text note style={{fontFamily:'OpenSans',fontSize:8}}>By Apollo Pharmacy</Text>
+<Row style={{marginTop:2}}>
+    <Text  style={{fontFamily:'OpenSans',fontSize:8,textDecorationLine:'line-through',textDecorationColor:'red',textDecorationStyle:'solid',color:'#ff4e42',marginTop:3}}>₹ 278.50</Text>
+    <Text  style={{fontFamily:'OpenSans',fontSize:10,fontWeight:'bold',marginLeft:5}}>₹ 205.50</Text>    
+    </Row>
+</Col>
+<Col size={1} style={{position:'absolute',marginTop:-10,marginLeft:130}}>
+<Image
+source={require('../../../../../assets/images/Badge.png')}
+style={{
+    width: 45, height: 45, alignItems: 'center'
+}}
+/>
+<Text style={{ fontFamily: 'OpenSans', fontSize: 8, position: 'absolute',color:'#fff',marginTop:13,marginLeft:16}}>20%</Text>
+<Text style={{ fontFamily: 'OpenSans', fontSize: 8, position: 'absolute',color:'#fff',marginTop:22,marginLeft:16,fontWeight:'700'}}>OFF</Text>
+</Col>
+</Row>
+<Row style={{marginBottom:5}}>
+       
+       <Col size={2}>
+       </Col>
+       <Col size={8}>
+           <Row>
+           <TouchableOpacity style={{borderColor:'#8dc63f',borderWidth:0.5,flexDirection:'row',paddingTop:2,paddingBottom:2,paddingLeft:7,paddingRight:7,borderRadius:2}}>
+           <Icon name="ios-cart" style={{fontSize:10,color:'#4e85e9'}}/>
+           <Text style={{fontFamily:'OpenSans',fontSize:8,color:'#4e85e9',marginLeft:2}}>Add to Cart</Text>
+       </TouchableOpacity>
+      
+   <TouchableOpacity style={{backgroundColor:'#8dc63f',flexDirection:'row',paddingTop:2,paddingBottom:2,paddingLeft:8,paddingRight:8,marginLeft:5,borderRadius:2}}>
+           <Icon name="ios-cart" style={{fontSize:10,color:'#fff'}}/>
+           <Text style={{fontFamily:'OpenSans',fontSize:8,color:'#fff',marginLeft:2}}>Buy Now</Text>
+       </TouchableOpacity>
+ 
+           </Row>
+       </Col>
+    
+</Row>
+</Col>
+<Col size={5} style={{backgroundColor:'#fff',marginLeft:5,marginTop:10}}>
+<Row style={{padding:5}}>
+<Col size={2}>
+<Image
+source={require('../../../../../assets/images/images.jpeg')}
+ style={{
+    width: 45, height: 45, alignItems: 'center'
+}}
+/>
+</Col>
+<Col size={7} style={{marginLeft:10}}>
+<Text  style={{fontFamily:'OpenSans',fontSize:10,fontWeight:"700", color: '#775DA3'}}>Amlodipine</Text>
+<Text note style={{fontFamily:'OpenSans',fontSize:8}}>By Apollo Pharmacy</Text>
+<Row style={{marginTop:2}}>
+    <Text  style={{fontFamily:'OpenSans',fontSize:8,textDecorationLine:'line-through',textDecorationColor:'red',textDecorationStyle:'solid',color:'#ff4e42',marginTop:3}}>₹ 278.50</Text>
+    <Text  style={{fontFamily:'OpenSans',fontSize:10,fontWeight:'bold',marginLeft:5}}>₹ 205.50</Text>    
+    </Row>
+   
+</Col>
+<Col size={1} style={{position:'absolute',marginTop:-10,marginLeft:130}}>
+<Image
+source={require('../../../../../assets/images/Badge.png')}
+style={{
+    width: 45, height: 45, alignItems: 'center'
+}}
+/>
+<Text style={{ fontFamily: 'OpenSans', fontSize: 8, position: 'absolute',color:'#fff',marginTop:13,marginLeft:16}}>20%</Text>
+<Text style={{ fontFamily: 'OpenSans', fontSize: 8, position: 'absolute',color:'#fff',marginTop:22,marginLeft:16,fontWeight:'700'}}>OFF</Text>
+</Col>
+</Row>
+<Row style={{marginBottom:5}}>
+       
+       <Col size={2}>
+       </Col>
+       <Col size={8}>
+           <Row>
+           <TouchableOpacity style={{borderColor:'#8dc63f',borderWidth:0.5,flexDirection:'row',paddingTop:2,paddingBottom:2,paddingLeft:7,paddingRight:7,borderRadius:2}}>
+           <Icon name="ios-cart" style={{fontSize:10,color:'#4e85e9'}}/>
+           <Text style={{fontFamily:'OpenSans',fontSize:8,color:'#4e85e9',marginLeft:2}}>Add to Cart</Text>
+       </TouchableOpacity>
+      
+   <TouchableOpacity style={{backgroundColor:'#8dc63f',flexDirection:'row',paddingTop:2,paddingBottom:2,paddingLeft:8,paddingRight:8,marginLeft:5,borderRadius:2}}>
+           <Icon name="ios-cart" style={{fontSize:10,color:'#fff'}}/>
+           <Text style={{fontFamily:'OpenSans',fontSize:8,color:'#fff',marginLeft:2}}>Buy Now</Text>
+       </TouchableOpacity>
+ 
+           </Row>
+       </Col>
+    
+</Row>
+</Col>
+        </Row>
+
+
+
+
+
+
+        
+    </View>
 </View>
                 </Content>
 
