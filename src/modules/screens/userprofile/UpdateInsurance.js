@@ -139,7 +139,6 @@ class UpdateInsurance extends Component {
                     <ScrollView>
                         <Spinner color='blue'
                             visible={this.state.isLoading}
-                            textContent={'Loading...'}
                         />
 
                         <Text style={styles.headerText}>Edit Insurance</Text>
