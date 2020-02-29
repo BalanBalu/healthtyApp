@@ -107,7 +107,6 @@ class UpdateEmail extends Component {
 
                                 {this.state.isLoading ? <Spinner color='blue'
                                     visible={this.state.isLoading}
-                                    textContent={'Please wait Loading'}
                                 /> : null}
 
                                 <Item style={{ borderBottomWidth: 0, justifyContent: 'center', marginTop: 35 }}>

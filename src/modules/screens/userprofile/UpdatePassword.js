@@ -83,7 +83,7 @@ class UpdatePassword extends Component {
         }
     }
 
-    onPasswordTextChanged(type,value) {
+    onPasswordTextChanged(type, value) {
         if (type === "OldPassword") {
             this.setState({ oldPassword: value.replace(/\s/g, "") });
         }
@@ -100,7 +100,6 @@ class UpdatePassword extends Component {
                     <ScrollView>
                         <Spinner color='blue'
                             visible={this.state.isLoading}
-                            textContent={'Please wait updating...'}
                         />
 
 

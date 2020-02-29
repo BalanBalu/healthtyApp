@@ -123,14 +123,13 @@ const HomeStack = createStackNavigator({
                         <Icon name="ios-arrow-down" style={{color:'#fff',fontSize:18,paddingLeft: 10,marginTop:2}}/>
                      </View>
                      </TouchableOpacity>
-                      <Text uppercase={false} style={{ paddingLeft: 10, color: '#fff', fontSize: 12, fontFamily: 'OpenSans-SemiBold',marginTop:2 }}>{navigation.getParam('appBar', {locationCapta: 'You are searching Near by Hostpitals'}).locationCapta}</Text>
+                      <Text uppercase={false} style={{ paddingLeft: 10, color: '#fff', fontSize: 12, fontFamily: 'OpenSans-SemiBold',marginTop:2 }}>{navigation.getParam('appBar', {locationCapta: 'You are searching Near by Hospitals'}).locationCapta}</Text>
                     </Col> 
                    </Row>   
 
        
         </Row>
       ),
-
       headerRight: (
         <Grid>
           <Col>
@@ -138,7 +137,7 @@ const HomeStack = createStackNavigator({
               <View>
                 <Icon name="notifications" style={{ color: '#fff', marginRight: 15, fontFamily: 'opensans-semibold' }}></Icon>
                 { navigation.getParam('notificationBadgeCount')!=null?
-              <Text style={{ position: 'absolute', backgroundColor: 'red', color: 'white', borderRadius: 20/2,  marginTop: -7, width:undefined,height:undefined,padding:2,fontSize:10 }}>{navigation.getParam('notificationBadgeCount')>=100?'99+':navigation.getParam('notificationBadgeCount')}</Text>
+              <Text style={{ position: 'absolute', backgroundColor: 'red', color: 'white', borderRadius: 20/2,  marginTop: -7, width:undefined,height:undefined,padding:2,fontSize:10,textAlign:'center'}}>{navigation.getParam('notificationBadgeCount')>=100?'99+':navigation.getParam('notificationBadgeCount')}</Text>
              :null} 
              {/* <Badge /> */}
               </View>

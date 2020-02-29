@@ -178,7 +178,6 @@ class Signup extends Component {
                                         </Item>
                                         <Spinner color='blue'
                                             visible={isLoading}
-                                            textContent={'Loading...'}
                                         />
                                         <View style={{ alignItems: 'center', justifyContent: 'center', marginBottom: 10 }}>
                                             <TouchableOpacity small
