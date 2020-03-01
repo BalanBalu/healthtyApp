@@ -157,7 +157,8 @@ class PharmacyHome extends Component {
         var selectedMedicineName = []
         selectedMedicineName = this.autoCompleteMedicineName(this.state.keyword);
         const comp = (a, b) => a.toLowerCase().trim() === b.toLowerCase().trim();
-
+        
+        const nearPharmacy = [{name:'Medplus',km:'2.30KM',address:'No.28,Kamarajar Nagar,4th cross street, Ambattur, Chennai - 600051.',},{name:'Medplus',km:'2.30KM',address:'No.28,Kamarajar Nagar,4th cross street, Ambattur, Chennai - 600051.',}]
 
         return (
             <Container style={styles.container}>
@@ -274,7 +275,7 @@ class PharmacyHome extends Component {
 
 
                     <View style={{ marginTop: 10, marginLeft: 10, marginRight: 10 }}>
-                        <Text style={{ fontFamily: 'OpenSans', fontSize: 15 }}>Popular Medicines</Text>
+                        <Text style={{ fontFamily: 'OpenSans', fontSize: 15, color:'#4c4c4c'}}>Popular Medicines</Text>
                         <View>
                             <Row>
 
@@ -290,9 +291,9 @@ class PharmacyHome extends Component {
                                         </Col>
                                         <Col size={7} style={{ marginLeft: 10 }}>
                                             <Text style={{ fontFamily: 'OpenSans', fontSize: 10, fontWeight: "700", color: '#775DA3' }}>Amlodipine</Text>
-                                            <Text note style={{ fontFamily: 'OpenSans', fontSize: 8 }}>By Apollo Pharmacy</Text>
+                                            <Text  style={{ fontFamily: 'OpenSans', fontSize: 8,color:'#909090'}}>By Apollo Pharmacy</Text>
                                             <Row style={{ marginTop: 2 }}>
-                                                <Text style={{ fontFamily: 'OpenSans', fontSize: 8, textDecorationLine: 'line-through', textDecorationColor: 'red', textDecorationStyle: 'solid', color: '#ff4e42', marginTop: 3 }}>₹ 278.50</Text>
+                                                <Text style={{ fontFamily: 'OpenSans', fontSize: 8, textDecorationLine: 'line-through', textDecorationColor: '#ff4e42', textDecorationStyle: 'solid', color: '#ff4e42', marginTop: 3 }}>₹ 278.50</Text>
                                                 <Text style={{ fontFamily: 'OpenSans', fontSize: 10, fontWeight: 'bold', marginLeft: 5 }}>₹ 205.50</Text>
                                             </Row>
 
@@ -341,9 +342,9 @@ class PharmacyHome extends Component {
                                         </Col>
                                         <Col size={7} style={{ marginLeft: 10 }}>
                                             <Text style={{ fontFamily: 'OpenSans', fontSize: 10, fontWeight: "700", color: '#775DA3' }}>Amlodipine</Text>
-                                            <Text note style={{ fontFamily: 'OpenSans', fontSize: 8 }}>By Apollo Pharmacy</Text>
+                                            <Text  style={{ fontFamily: 'OpenSans', fontSize: 8 ,color:'#909090' }}>By Apollo Pharmacy</Text>
                                             <Row style={{ marginTop: 2 }}>
-                                                <Text style={{ fontFamily: 'OpenSans', fontSize: 8, textDecorationLine: 'line-through', textDecorationColor: 'red', textDecorationStyle: 'solid', color: '#ff4e42', marginTop: 3 }}>₹ 278.50</Text>
+                                                <Text style={{ fontFamily: 'OpenSans', fontSize: 8, textDecorationLine: 'line-through', textDecorationColor: '#ff4e42', textDecorationStyle: 'solid', color: '#ff4e42', marginTop: 3 }}>₹ 278.50</Text>
                                                 <Text style={{ fontFamily: 'OpenSans', fontSize: 10, fontWeight: 'bold', marginLeft: 5 }}>₹ 205.50</Text>
                                             </Row>
 
@@ -394,9 +395,9 @@ class PharmacyHome extends Component {
                                         </Col>
                                         <Col size={7} style={{ marginLeft: 15 }}>
                                             <Text style={{ fontFamily: 'OpenSans', fontSize: 10, fontWeight: "700", color: '#775DA3' }}>Amlodipine</Text>
-                                            <Text note style={{ fontFamily: 'OpenSans', fontSize: 8 }}>By Apollo Pharmacy</Text>
+                                            <Text  style={{ fontFamily: 'OpenSans', fontSize: 8,color:'#909090' }}>By Apollo Pharmacy</Text>
                                             <Row style={{ marginTop: 2 }}>
-                                                <Text style={{ fontFamily: 'OpenSans', fontSize: 8, textDecorationLine: 'line-through', textDecorationColor: 'red', textDecorationStyle: 'solid', color: '#ff4e42', marginTop: 3 }}>₹ 278.50</Text>
+                                                <Text style={{ fontFamily: 'OpenSans', fontSize: 8, textDecorationLine: 'line-through', textDecorationColor: '#ff4e42', textDecorationStyle: 'solid', color: '#ff4e42', marginTop: 3 }}>₹ 278.50</Text>
                                                 <Text style={{ fontFamily: 'OpenSans', fontSize: 10, fontWeight: 'bold', marginLeft: 5 }}>₹ 205.50</Text>
                                             </Row>
                                         </Col>
@@ -444,9 +445,9 @@ class PharmacyHome extends Component {
                                         </Col>
                                         <Col size={7} style={{ marginLeft: 10 }}>
                                             <Text style={{ fontFamily: 'OpenSans', fontSize: 10, fontWeight: "700", color: '#775DA3' }}>Amlodipine</Text>
-                                            <Text note style={{ fontFamily: 'OpenSans', fontSize: 8 }}>By Apollo Pharmacy</Text>
+                                            <Text  style={{ fontFamily: 'OpenSans', fontSize: 8,color:'#909090' }}>By Apollo Pharmacy</Text>
                                             <Row style={{ marginTop: 2 }}>
-                                                <Text style={{ fontFamily: 'OpenSans', fontSize: 8, textDecorationLine: 'line-through', textDecorationColor: 'red', textDecorationStyle: 'solid', color: '#ff4e42', marginTop: 3 }}>₹ 278.50</Text>
+                                                <Text style={{ fontFamily: 'OpenSans', fontSize: 8, textDecorationLine: 'line-through', textDecorationColor: '#ff4e42', textDecorationStyle: 'solid', color: '#ff4e42', marginTop: 3 }}>₹ 278.50</Text>
                                                 <Text style={{ fontFamily: 'OpenSans', fontSize: 10, fontWeight: 'bold', marginLeft: 5 }}>₹ 205.50</Text>
                                             </Row>
 
@@ -496,27 +497,31 @@ class PharmacyHome extends Component {
 
 
                     <View style={{ marginTop: 10, }}>
-                        <Text style={{ fontFamily: 'OpenSans', fontSize: 15, marginLeft: 10 }}>Nearby Pharmacies</Text>
+                        <Text style={{ fontFamily: 'OpenSans', fontSize: 15, marginLeft: 10,color:'#4c4c4c' }}>Nearby Pharmacies</Text>
                         <ScrollView
                             horizontal={true}
                             showsHorizontalScrollIndicator={false}
 
                         >
+                            <FlatList
+                            data={nearPharmacy}
+                            horizontal={true}
+                            renderItem={({item})=>
                             <View style={{ marginTop: 5, marginLeft: 10, backgroundColor: '#fff', padding: 5, width: 210 }}>
 
 
                                 <Row style={{ borderBottomColor: 'gray', borderBottomWidth: .3, paddingBottom: 2 }}>
                                     <Col size={5}>
-                                        <Text style={{ fontFamily: 'OpenSans', fontSize: 10, fontWeight: "700", color: '#775DA3' }}>Medplus</Text>
+                                        <Text style={{ fontFamily: 'OpenSans', fontSize: 10, fontWeight: "700", color: '#775DA3' }}>{item.name}</Text>
                                     </Col>
                                     <Col size={5}>
-                                        <Text style={{ fontFamily: 'OpenSans', fontSize: 8, textAlign: 'right' }}>2.30KM</Text>
+                                        <Text style={{ fontFamily: 'OpenSans', fontSize: 8, textAlign: 'right',color:'#4c4c4c' }}>{item.km}</Text>
                                     </Col>
                                 </Row>
                                 <View style={{ marginTop: 5 }}>
                                     <Row>
 
-                                        <Text style={{ fontFamily: 'OpenSans', fontSize: 10, textAlign: 'left', lineHeight: 15 }}>No.28,Kamarajar Nagar,4th cross street, Ambattur, Chennai - 600051.</Text>
+                            <Text style={{ fontFamily: 'OpenSans', fontSize: 10, textAlign: 'left', lineHeight: 15, color:'#626262' }}>{item.address}</Text>
 
                                     </Row>
                                     <Row style={{ marginTop: 5 }}>
@@ -534,43 +539,13 @@ class PharmacyHome extends Component {
                                     </Row>
                                 </View>
                             </View>
-                            <View style={{ marginTop: 5, marginLeft: 10, backgroundColor: '#fff', padding: 5, width: 210 }}>
-
-
-                                <Row style={{ borderBottomColor: 'gray', borderBottomWidth: .3, paddingBottom: 2 }}>
-                                    <Col size={5}>
-                                        <Text style={{ fontFamily: 'OpenSans', fontSize: 10, fontWeight: "700", color: '#775DA3' }}>Medplus</Text>
-                                    </Col>
-                                    <Col size={5}>
-                                        <Text style={{ fontFamily: 'OpenSans', fontSize: 8, textAlign: 'right' }}>2.30KM</Text>
-                                    </Col>
-                                </Row>
-                                <View style={{ marginTop: 5 }}>
-                                    <Row>
-
-                                        <Text style={{ fontFamily: 'OpenSans', fontSize: 10, textAlign: 'left', lineHeight: 15 }}>No.28,Kamarajar Nagar,4th cross street, Ambattur, Chennai - 600051.</Text>
-
-                                    </Row>
-                                    <Row style={{ marginTop: 5 }}>
-                                        <Col size={4}>
-
-                                        </Col>
-                                        <Col size={6}>
-                                            <Row style={{ alignItems: 'flex-end', justifyContent: 'flex-end' }}>
-                                                <TouchableOpacity style={{ backgroundColor: '#8dc63f', flexDirection: 'row', paddingTop: 2, paddingBottom: 2, paddingLeft: 8, paddingRight: 8, marginLeft: 5, borderRadius: 2 }}>
-                                                    <Icon name="ios-cart" style={{ fontSize: 10, color: '#fff' }} />
-                                                    <Text style={{ fontFamily: 'OpenSans', fontSize: 8, color: '#fff', marginLeft: 2 }}>Order Medicines</Text>
-                                                </TouchableOpacity>
-                                            </Row>
-                                        </Col>
-                                    </Row>
-                                </View>
-                            </View>
+                            }/>
+                           
                         </ScrollView>
 
                     </View>
                     <View style={{ marginTop: 10, marginRight: 10, marginLeft: 10, marginBottom: 10 }}>
-                        <Text style={{ fontFamily: 'OpenSans', fontSize: 15, }}>Here is What you do!</Text>
+                        <Text style={{ fontFamily: 'OpenSans', fontSize: 15,color:'#4c4c4c' }}>Here is What you do!</Text>
                         <View style={{ backgroundColor: '#fff', marginTop: 5 }}>
 
 
