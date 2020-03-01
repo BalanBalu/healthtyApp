@@ -96,6 +96,7 @@ class PaymentPage extends Component {
 
     makePaymentMethod() {
         let data;
+        debugger
         if(this.state.selectedSavedCardId === null && this.state.paymentOption === null) {
             Toast.show({
                 text: 'Select your Payment Option',
@@ -104,13 +105,21 @@ class PaymentPage extends Component {
             })
             return false;
         }
+        console.log('Selected Saved Card Id ' + this.state.selectedSavedCardId);
         if (this.state.selectedSavedCardId !== null) {
             var savedCards = this.state.savedCards;
             var selectedSavedCardId = this.state.selectedSavedCardId;
             var selectedSavedCardArr = savedCards.filter(function (savedCards) {
                 return savedCards.card_id === selectedSavedCardId;
             });
-            console.log(this.state);
+            if(!this.checkCVV(this.state[selectedSavedCardId + '-savedCardCVV'])) {
+                Toast.show({
+                    text: 'Please enter Valid CVV',
+                    duration: 3000,
+                    type: 'warning' 
+                });
+                return false;    
+            }
             data = {
                 method: 'card',
                 'card[name]': selectedSavedCardArr[0].card_holder_name ? selectedSavedCardArr[0].card_holder_name : 'default',
@@ -146,6 +155,14 @@ class PaymentPage extends Component {
                     })
                     return false;
                 };
+                if(!this.checkCVV( this.state.cardPaymentDetails.cvv )) {
+                    Toast.show({
+                        text: 'Please enter Valid CVV',
+                        duration: 3000,
+                        type: 'warning' 
+                    });
+                    return false;    
+                }
                 data = {
                     method: 'card',
                     'card[name]': this.state.cardPaymentDetails.name,
@@ -313,10 +330,30 @@ class PaymentPage extends Component {
         // Update the state, which in turns updates the value in the text field
 
     }
-
+    checkCVV(cvvNo) {
+        if(!cvvNo) {
+            return false;
+        }
+        const cvv = String(cvvNo);
+        if(isNaN(cvv)) {
+            return false;
+        }
+        if(cvv.length === 3 || cvv.length === 4) {
+        } else {
+            return false;
+        }
+        return true;
+    }
     async storeCardData() {
         try {
+            debugger
             if (this.state.paymentOption === 'CREDIT_CARD' || this.state.paymentOption === 'DEBIT_CARD') {
+                let savedCards = this.state.savedCards;
+                var saveCard = savedCards.find(savedCards => {
+                    return savedCards.card_number === this.state.cardPaymentDetails.number.replace(/ /g, '');
+                });
+                console.log(saveCard)
+                
                 var cardRequestData = {
                     card_holder_name: this.state.cardPaymentDetails.name,
                     card_number: this.state.cardPaymentDetails.number.replace(/ /g, ''),
@@ -326,6 +363,10 @@ class PaymentPage extends Component {
                     user_type: 'user',
                     active: true
                 }
+                if(saveCard) {
+                    cardRequestData.card_id = saveCard.card_id;
+                }
+                console.log('cardRequestData ==> ', cardRequestData)
                 const userId = await AsyncStorage.getItem('userId');
                 let endPoint = 'user/payment/ ' + userId;
                 putService(endPoint, cardRequestData);
@@ -535,16 +576,7 @@ class PaymentPage extends Component {
                     <RadioButton.Group
                         onValueChange={value => {
                             this.setState({ paymentOption: value, selectedSavedCardId: null })
-                            if ((this.state.paymentOption === 'CREDIT_CARD' && value === 'DEBIT_CARD') || (this.state.paymentOption === 'DEBIT_CARD' && value === 'CREDIT_CARD')) {
-                                this.setState({
-                                    cardPaymentDetails: {
-                                        name: null,
-                                        number: null,
-                                        cvv: null,
-                                        monthyear: ''
-                                    }
-                                })
-                            }
+                            console.log('selectedSavedCardId ' + this.state.selectedSavedCardId);
                         }}
                         value={this.state.paymentOption}
                     >
@@ -561,7 +593,7 @@ class PaymentPage extends Component {
 
                         <Row style={{ borderBottomColor: '#C1C1C1', borderBottomWidth: 0.3, backgroundColor: '#fff', padding: 15, marginLeft: 10, marginRight: 10 }}>
                             <Col style={{ width: '90%', }}>
-                                <TouchableOpacity onPress={() => this.setState({ paymentOption: 'DEBIT_CARD' })} style={{ flexDirection: 'row' }}>
+                                <TouchableOpacity onPress={() => this.setState({ paymentOption: 'DEBIT_CARD', selectedSavedCardId: null  })} style={{ flexDirection: 'row' }}>
                                     <RadioButton value="DEBIT_CARD" />
                                     <Text style={{ marginTop: 8, fontFamily: 'OpenSans', fontSize: 14 }}>Debit/Credit Card</Text>
                                 </TouchableOpacity>
@@ -572,7 +604,7 @@ class PaymentPage extends Component {
 
                         <Row style={{ borderBottomColor: '#C1C1C1', borderBottomWidth: 0.3, backgroundColor: '#fff', padding: 15, marginLeft: 10, marginRight: 10 }}>
                             <Col style={{ width: '90%', }}>
-                                <TouchableOpacity onPress={() => this.setState({ paymentOption: 'NET_BANKING' })} style={{ flexDirection: 'row' }}>
+                                <TouchableOpacity onPress={() => this.setState({ paymentOption: 'NET_BANKING', selectedSavedCardId: null  })} style={{ flexDirection: 'row' }}>
                                     <RadioButton value="NET_BANKING" />
                                     <Text
                                         //onPress={()=> this.setState({ paymentOption : 'NET_BANKING' })}
@@ -584,7 +616,7 @@ class PaymentPage extends Component {
 
                         <Row style={{ borderBottomColor: '#C1C1C1', borderBottomWidth: 0.3, backgroundColor: '#fff', padding: 15, marginLeft: 10, marginRight: 10 }}>
                             <Col style={{ width: '90%', }}>
-                                <TouchableOpacity onPress={() => this.setState({ paymentOption: 'UPI' })} style={{ flexDirection: 'row' }}>
+                                <TouchableOpacity onPress={() => this.setState({ paymentOption: 'UPI' , selectedSavedCardId: null })} style={{ flexDirection: 'row' }}>
                                     <RadioButton value="UPI" />
                                     <Text
                                         //onPress={()=> this.setState({ paymentOption : 'UPI' })}
@@ -599,7 +631,7 @@ class PaymentPage extends Component {
                         <Row style={{ borderBottomColor: '#C1C1C1', borderBottomWidth: 0.3, backgroundColor: '#fff', padding: 15, marginLeft: 10, marginRight: 10 }}>
 
                             <Col style={{ width: '90%', }}>
-                                <TouchableOpacity onPress={() => this.setState({ paymentOption: 'WALLET' })} style={{ flexDirection: 'row' }}>
+                                <TouchableOpacity onPress={() => this.setState({ paymentOption: 'WALLET', selectedSavedCardId: null  })} style={{ flexDirection: 'row' }}>
                                     <RadioButton value="WALLET" />
                                     <Text
                                         //onPress={()=> this.setState({ paymentOption : 'WALLET' })}
@@ -898,7 +930,9 @@ class PaymentPage extends Component {
         return (
             <View key={valueOfCreditCard.card_id}>
                 <Row style={{ borderBottomColor: '#C1C1C1', borderBottomWidth: 0.3, backgroundColor: '#fff', padding: 15, marginLeft: 10, marginRight: 10 }}>
-                    <RadioButton value={valueOfCreditCard.card_id} />
+                    <RadioButton 
+                        status={valueOfCreditCard.card_id === this.state.selectedSavedCardId  && this.state.paymentOption === null ? 'checked' : 'unchecked'}
+                        value={valueOfCreditCard.card_id} />
                     <Col style={{ width: '90%', }}>
                         <Row>
                             {/* <Text style={{ color: '#000', fontFamily: 'OpenSans', fontWeight: 'bold', fontSize: 15, marginTop: 8, }}
@@ -918,7 +952,7 @@ class PaymentPage extends Component {
                                 <Form>
 
                                     <Input placeholder="CVV"
-                                        maxLength={3}
+                                        maxLength={4}
                                         onFocus={() => this.setState({ selectedSavedCardId: valueOfCreditCard.card_id, paymentOption: null })}
                                         keyboardType={'numeric'}
                                         secureTextEntry={true}
