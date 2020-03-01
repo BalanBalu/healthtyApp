@@ -8,8 +8,8 @@ import { addToCart, medicineRateAfterOffer } from '../../../common';
 import Autocomplete from '../../../../components/Autocomplete'
 import Spinner from '../../../../components/Spinner'
 import SectionedMultiSelect from 'react-native-sectioned-multi-select';
-
-
+import bannerOffer from '../../../../../assets/images/25offer-banner.jpg'
+import flatBannerOffer from '../../../../../assets/images/20flatoff-banner.jpg'
 let userId;
 class PharmacyHome extends Component {
     constructor(props) {
@@ -250,23 +250,19 @@ class PharmacyHome extends Component {
 
                     >
                         <View style={{ borderColor: 'gray', borderWidth: 1, marginTop: 10, marginLeft: 15, backgroundColor: '#fff' }}>
-
-
                             <Image
-                                source={require('../../../../../assets/images/25offer-banner.jpg')}
+                                source={bannerOffer}
                                 style={{
                                     width: 235, height: 120, alignItems: 'center'
                                 }}
                             />
-
-
                         </View>
 
                         <View style={{ borderColor: 'gray', borderWidth: 1, marginTop: 10, marginLeft: 5, backgroundColor: '#fff' }}>
 
 
                             <Image
-                                source={require('../../../../../assets/images/20flatoff-banner.jpg')}
+                                source={flatBannerOffer}
                                 style={{
                                     width: 235, height: 120, alignItems: 'center'
                                 }}
@@ -279,67 +275,62 @@ class PharmacyHome extends Component {
 
 
                     <View style={{ marginTop: 10, marginLeft: 5, marginRight: 10 }}>
-                        <Text style={{ fontFamily: 'OpenSans', fontSize: 15, color:'#4c4c4c',marginLeft:5}}>Popular Medicines</Text>
+                        <Text style={{ fontFamily: 'OpenSans', fontSize: 15, color:'#4c4c4c', marginBottom: 10,  marginLeft:5}}>Popular Medicines</Text>
                         <View>
                             <Row>
                             <FlatList
-                            data={medDetail}
-                            numColumns={2}
-                            initialNumToRender={4}
-                            renderItem={({item})=>
-                                <Col size={5} style={{ backgroundColor: '#fff', marginLeft: 5, marginTop: 10 }}>
-                                    <Row style={{ padding: 5 }}>
-                                        <Col size={2}>
+                                data={medDetail}
+                                numColumns={2}
+                                columnWrapperStyle={{ margin: 3 } }
+                                keyExtractor={(item, index) => index.toString()}
+                                initialNumToRender={4}
+                                renderItem={({item})=>
+                                <Col size={5} style={{ backgroundColor: '#fff', marginLeft: 5, height : '100%' }}>
+                                    <Row>
+                                        <Col size={9} style={{ alignItems: 'center' }}>
                                             <Image
                                                 source={require('../../../../../assets/images/images.jpeg')}
                                                 style={{
-                                                    width: 45, height: 45, alignItems: 'center'
+                                                    width: 80, height: 80, alignItems: 'center'
                                                 }}
                                             />
                                         </Col>
-                                        <Col size={7} style={{ marginLeft: 10 }}>
-                                            <Text style={styles.mednames}>{item.name}</Text>
-                                            <Text  style={styles.hosname}>{item.hospital}</Text>
-                                            <Row style={{ marginTop: 2 }}>
-                                                <Text style={styles.oldRupees}>₹ {item.oldRupees}</Text>
-                                                <Text style={styles.newRupees}>₹ {item.newRupees}</Text>
-                                            </Row>
-
-                                        </Col>
-                                        <Col size={1} style={{ position: 'absolute', marginTop: -10, marginLeft: 130 }}>
+                                        <Col size={1} style={{ position: 'absolute', alignContent: 'flex-end', marginTop: -10, marginLeft: 130 }}>
                                             <Image
                                                 source={require('../../../../../assets/images/Badge.png')}
                                                 style={{
-                                                    width: 45, height: 45, alignItems: 'center'
+                                                    width: 45, height: 45, alignItems: 'flex-end'
                                                 }}
                                             />
-                                            <Text style={styles.offerText}>{item.offer}</Text>
+                                             <Text style={styles.offerText}>{item.offer}</Text>
                                             <Text style={styles.offText}>OFF</Text>
                                         </Col>
                                     </Row>
-                                    <Row style={{ marginBottom: 5 }}>
 
-                                        <Col size={2}>
-                                        </Col>
-                                        <Col size={8}>
-                                            <Row>
-                                                <TouchableOpacity style={styles.addCartTouch}>
-                                                    <Icon name="ios-cart" style={{ fontSize: 10, color: '#4e85e9' }} />
-                                                    <Text style={styles.addCartText}>Add to Cart</Text>
-                                                </TouchableOpacity>
+                                        
+                                        <Row style={{alignSelf : 'center', marginTop: 5 }} > 
+                                            <Text style={styles.mednames}>{item.name}</Text>
+                                        </Row>
+                                        <Row style={{alignSelf : 'center' }} >       
+                                            <Text  style={styles.hosname}>{item.hospital}</Text>
+                                        </Row>
+                                        <Row style={{ alignSelf :  'center', marginTop: 2 }}>
+                                            <Text style={styles.newRupees}>₹{item.newRupees}</Text> 
+                                            <Text style={styles.oldRupees}>  ₹{item.oldRupees}</Text>
+                                        </Row>
 
-                                                <TouchableOpacity style={styles.buyNowTouch}>
-                                                    <Icon name="ios-cart" style={{ fontSize: 10, color: '#fff' }} />
-                                                    <Text style={styles.BuyNowText}>Buy Now</Text>
-                                                </TouchableOpacity>
-
-                                            </Row>
-                                        </Col>
-
+                                    <Row style={{ marginBottom: 5, marginTop: 5, alignSelf: 'center' }}>
+                                        <TouchableOpacity style={styles.addCartTouch}>
+                                            <Icon name="ios-cart" style={{ fontSize: 12, color: '#4e85e9' }} />
+                                            <Text style={styles.addCartText}>Add to Cart</Text>
+                                        </TouchableOpacity>
+                                        <TouchableOpacity style={styles.buyNowTouch}>
+                                            <Icon name="ios-cart" style={{ fontSize: 12, color: '#fff' }} />
+                                            <Text style={styles.BuyNowText}>Buy Now</Text>
+                                        </TouchableOpacity>
                                     </Row>
                                 </Col>
-                              
-                                            }/>
+                                }/>
 
                             </Row>
                         </View>
@@ -351,11 +342,11 @@ class PharmacyHome extends Component {
                         <ScrollView
                             horizontal={true}
                             showsHorizontalScrollIndicator={false}
-
                         >
                             <FlatList
                             data={nearPharmacy}
                             horizontal={true}
+                            keyExtractor={(item, index) => index.toString()}
                             renderItem={({item})=>
                             <View style={{ marginTop: 5, marginLeft: 10, backgroundColor: '#fff', padding: 5, width: 210 }}>
 
@@ -368,20 +359,18 @@ class PharmacyHome extends Component {
                                     </Col>
                                 </Row>
                                 <View style={{ marginTop: 5 }}>
-                                    <Row>
-
-                            <Text style={styles.addressText}>{item.address}</Text>
-
-                                    </Row>
+                                
+                                <Row>
+                                    <Text style={styles.addressText}>{item.address}</Text>
+                                </Row>
                                     <Row style={{ marginTop: 5 }}>
                                         <Col size={4}>
-
                                         </Col>
                                         <Col size={6}>
                                             <Row style={{ alignItems: 'flex-end', justifyContent: 'flex-end' }}>
                                                 <TouchableOpacity style={{ backgroundColor: '#8dc63f', flexDirection: 'row', paddingTop: 2, paddingBottom: 2, paddingLeft: 8, paddingRight: 8, marginLeft: 5, borderRadius: 2 }}>
                                                     <Icon name="ios-cart" style={{ fontSize: 10, color: '#fff' }} />
-                                                    <Text style={styles.BuyNowText}>Order Medicines</Text>
+                                                    <Text style={styles.orderNowText}>Order Medicines</Text>
                                                 </TouchableOpacity>
                                             </Row>
                                         </Col>
@@ -396,16 +385,12 @@ class PharmacyHome extends Component {
                     <View style={{ marginTop: 10, marginRight: 10, marginLeft: 10, marginBottom: 10 }}>
                         <Text style={{ fontFamily: 'OpenSans', fontSize: 15,color:'#4c4c4c' }}>Here is What you do!</Text>
                         <View style={{ backgroundColor: '#fff', marginTop: 5 }}>
-
-
                             <Image
                                 source={require('../../../../../assets/images/pharmacyprocess.png')}
                                 style={{
                                     width: 350, height: 80, alignItems: 'center'
                                 }}
                             />
-
-
                         </View>
                     </View>
                 </Content>
@@ -634,18 +619,18 @@ const styles = StyleSheet.create({
     },
     mednames:{
         fontFamily: 'OpenSans', 
-        fontSize: 10, 
+        fontSize: 12, 
         fontWeight: "700", 
         color: '#775DA3'
     },
     hosname:{
         fontFamily: 'OpenSans', 
-        fontSize: 8,
+        fontSize: 10,
         color:'#909090'
     },
     oldRupees:{
         fontFamily: 'OpenSans',
-        fontSize: 8,
+        fontSize: 10,
          textDecorationLine: 'line-through', 
          textDecorationColor: '#ff4e42', 
          textDecorationStyle: 'solid', 
@@ -654,7 +639,7 @@ const styles = StyleSheet.create({
     },
     newRupees:{
         fontFamily: 'OpenSans', 
-        fontSize: 10, 
+        fontSize: 12, 
         fontWeight: 'bold', 
         marginLeft: 5
     },
@@ -685,7 +670,7 @@ const styles = StyleSheet.create({
         fontFamily: 'OpenSans', 
         fontSize: 10, 
         textAlign: 'left', 
-        lineHeight: 15, 
+        lineHeight: 20, 
         color:'#626262'
     },
     addCartTouch:{
@@ -700,7 +685,7 @@ const styles = StyleSheet.create({
     },
     addCartText:{
         fontFamily: 'OpenSans', 
-        fontSize: 8, 
+        fontSize: 10, 
         color: '#4e85e9',
          marginLeft: 2 
     },
@@ -716,7 +701,13 @@ const styles = StyleSheet.create({
     },
     BuyNowText:{
         fontFamily: 'OpenSans', 
-        fontSize: 8, 
+        fontSize: 10, 
+        color: '#fff', 
+        marginLeft: 2
+    },
+    orderNowText:{
+        fontFamily: 'OpenSans', 
+        fontSize: 12, 
         color: '#fff', 
         marginLeft: 2
     }
