@@ -78,7 +78,7 @@ export default class CurrentLocation {
           "Alert",
           "Your location permission is denied! To continue, turn on device location,",
           [
-            { text: "OK", onPress: () => this.getCurrentPosition() }
+            { text: "OK", onPress: () => BackHandler.exitApp() }
 
           ],
 
