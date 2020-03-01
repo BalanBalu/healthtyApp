@@ -7,8 +7,7 @@ import { NavigationEvents } from 'react-navigation';
 import { addToCart, medicineRateAfterOffer } from '../../../common';
 import Autocomplete from '../../../../components/Autocomplete'
 import Spinner from '../../../../components/Spinner'
-const chatImg = require('../../../../../assets/images/Chat.jpg');
-const { width } = Dimensions.get('window');
+import SectionedMultiSelect from 'react-native-sectioned-multi-select';
 
 
 let userId;
@@ -150,7 +149,9 @@ class PharmacyHome extends Component {
 
     }
 
-
+    onSelectedStatusChange = () => {
+        this.setState({ status: false });
+    };
     render() {
         const { medicineData } = this.state
         var selectedMedicineName = []
@@ -162,24 +163,71 @@ class PharmacyHome extends Component {
             <Container style={styles.container}>
                 <Content style={{ backgroundColor: '#F5F5F5',}}>
                     <Row style={{marginLeft:15,marginRight:15,marginTop:10}}>
-                        <Col size={6}>
-                            <Item style={styles.transparentLabel1}>
-                                <Input placeholder="Location" style={styles.firstTransparentLabel}
-                                    placeholderTextColor="#C1C1C1"
-                                    keyboardType={'default'}
-                                    returnKeyType={'go'}
-                                    multiline={false}
+                      
+                        <Col size={6} style={{ justifyContent: 'center', backgroundColor: '#fff', height: 30, borderColor: 'gray', borderWidth: 0.3, borderRadius: 2 }}>
+                              <Row>
+                                  <Col size={.5}>
+                                  <Icon name='ios-pin' style={{ fontSize: 20, color: '#775DA3',marginTop:5,marginLeft:4 }} />
+
+                                  </Col>
+                                  <Col size={5.5} style={{justifyContent:'center'}}>
+                                  <SectionedMultiSelect
+                                    styles={{
+                                        selectToggleText: {
+                                            color: '#c3c3c3',
+                                            fontSize: 12,
+                                            textAlign: 'center',
+                                            marginTop: 60,
+                                            height: 65
+
+                                        },
+                                        chipIcon: {
+                                            color: '#c3c3c3',
+                                        },
+
+                                    }}
+                                    items={this.state.languageData}
+                                    uniqueKey='value'
+                                    displayKey='value'
+                                    selectText='Search for Nearby stores'
+                                    selectToggleText={{ fontSize: 12 }}
+                                    searchPlaceholderText='Search Your Languages'
+                                    modalWithTouchable={true}
+                                    showDropDowns={true}
+                                    hideSearch={false}
+                                    showRemoveAll={true}
+                                    showChips={false}
+                                    readOnlyHeadings={false}
+                                    onSelectedItemsChange={this.onSelectedStatusChange}
+                                    selectedItems={this.state.language}
+                                    colors={{ primary: '#18c971' }}
+                                    showCancelButton={true}
+                                    animateDropDowns={true}
+                                    selectToggleIconComponent={
+                                        <Icon
+                                            name="ios-arrow-down"
+                                            style={{
+                                                fontSize: 20,
+                                                marginHorizontal: 6,
+                                                color: '#775DA3',
+                                                textAlign: 'center',
+                                                marginTop: 15,
+                                            }}
+                                        />
+                                    }
+
+                                    testID='languageSelected'
                                 />
-                                <TouchableOpacity style={{ alignItems: 'flex-end' }} >
-                                    <Icon name='ios-locate' style={{ color: '#775DA3', fontSize: 15 }} />
-                                </TouchableOpacity>
-                            </Item>
-                        </Col>
+                                  </Col>
+                              </Row>
+                               
+                            </Col>
                         <Col size={4} style={{ marginLeft: 5 }}>
+                            
                             <TouchableOpacity style={{ backgroundColor: '#4B86EA', height: 30, borderRadius: 2 }}>
                                 <Row style={{ justifyContent: 'center', alignItems: 'center' }}>
                                     <Col size={1.5} style={{ alignItems: 'center' }}>
-                                        <Icon name='locate' style={{ fontSize: 15, color: '#fff', }} />
+                                        <Icon name='ios-share' style={{ fontSize: 15, color: '#fff', }} />
                                     </Col>
                                     <Col size={8.5}  style={{ alignItems: 'center' }}>
                                         <Text style={{ fontFamily: 'OpenSans', fontSize: 12, color: '#fff' }}>Upload Prescription</Text>
@@ -226,11 +274,12 @@ class PharmacyHome extends Component {
 
 
 <View style={{marginTop:10,marginLeft:10,marginRight:10}}>
-    <Text  style={{fontFamily:'OpenSans',fontSize:15,fontWeight:"700"}}>Popular Medicines</Text>
+    <Text  style={{fontFamily:'OpenSans',fontSize:15}}>Popular Medicines</Text>
     <View>
         <Row>
-            <Col size={5} style={{backgroundColor:'#fff',marginTop:10}}>
-            <Row style={{padding:5}}>
+           
+<Col size={5} style={{backgroundColor:'#fff',marginLeft:5,marginTop:10}}>
+<Row style={{padding:5}}>
 <Col size={2}>
 <Image
 source={require('../../../../../assets/images/images.jpeg')}
@@ -239,13 +288,14 @@ source={require('../../../../../assets/images/images.jpeg')}
 }}
 />
 </Col>
-<Col size={7} style={{marginLeft:15}}>
+<Col size={7} style={{marginLeft:10}}>
 <Text  style={{fontFamily:'OpenSans',fontSize:10,fontWeight:"700", color: '#775DA3'}}>Amlodipine</Text>
 <Text note style={{fontFamily:'OpenSans',fontSize:8}}>By Apollo Pharmacy</Text>
 <Row style={{marginTop:2}}>
     <Text  style={{fontFamily:'OpenSans',fontSize:8,textDecorationLine:'line-through',textDecorationColor:'red',textDecorationStyle:'solid',color:'#ff4e42',marginTop:3}}>₹ 278.50</Text>
     <Text  style={{fontFamily:'OpenSans',fontSize:10,fontWeight:'bold',marginLeft:5}}>₹ 205.50</Text>    
     </Row>
+   
 </Col>
 <Col size={1} style={{position:'absolute',marginTop:-10,marginLeft:130}}>
 <Image
@@ -442,6 +492,97 @@ style={{
 
         
     </View>
+</View>
+
+
+<View style={{marginTop:10,}}>
+    <Text  style={{fontFamily:'OpenSans',fontSize:15,marginLeft:10}}>Nearby Pharmacies</Text>
+<ScrollView
+                        horizontal={true}
+                        showsHorizontalScrollIndicator={false}
+
+                    >
+                        <View style={{ marginTop: 5, marginLeft: 10,backgroundColor:'#fff',padding:5,width:210 }}>
+                           
+
+                        <Row style={{borderBottomColor:'gray',borderBottomWidth:.3,paddingBottom:2}}>
+                            <Col size={5}>
+                            <Text  style={{fontFamily:'OpenSans',fontSize:10,fontWeight:"700", color: '#775DA3'}}>Medplus</Text>
+                            </Col>
+                            <Col size={5}>
+                            <Text  style={{fontFamily:'OpenSans',fontSize:8,textAlign:'right'}}>2.30KM</Text>
+                            </Col>
+                        </Row>
+                        <View style={{marginTop:5}}>
+                        <Row>
+
+<Text  style={{fontFamily:'OpenSans',fontSize:10,textAlign:'left',lineHeight:15}}>No.28,Kamarajar Nagar,4th cross street, Ambattur, Chennai - 600051.</Text>
+
+                               </Row>
+                            <Row style={{marginTop:5}}>
+                                <Col size={4}>
+
+                                </Col>
+                                <Col size={6}>
+                                    <Row style={{alignItems:'flex-end',justifyContent:'flex-end'}}>
+                                <TouchableOpacity style={{backgroundColor:'#8dc63f',flexDirection:'row',paddingTop:2,paddingBottom:2,paddingLeft:8,paddingRight:8,marginLeft:5,borderRadius:2}}>
+           <Icon name="ios-cart" style={{fontSize:10,color:'#fff'}}/>
+           <Text style={{fontFamily:'OpenSans',fontSize:8,color:'#fff',marginLeft:2}}>Order Medicines</Text>
+       </TouchableOpacity>
+       </Row>
+                                </Col>
+                            </Row>
+                        </View>
+                        </View>
+                        <View style={{ marginTop: 5, marginLeft: 10,backgroundColor:'#fff',padding:5,width:210 }}>
+                           
+
+                           <Row style={{borderBottomColor:'gray',borderBottomWidth:.3,paddingBottom:2}}>
+                               <Col size={5}>
+                               <Text  style={{fontFamily:'OpenSans',fontSize:10,fontWeight:"700", color: '#775DA3'}}>Medplus</Text>
+                               </Col>
+                               <Col size={5}>
+                               <Text  style={{fontFamily:'OpenSans',fontSize:8,textAlign:'right'}}>2.30KM</Text>
+                               </Col>
+                           </Row>
+                           <View style={{marginTop:5}}>
+                           <Row>
+   
+   <Text  style={{fontFamily:'OpenSans',fontSize:10,textAlign:'left',lineHeight:15}}>No.28,Kamarajar Nagar,4th cross street, Ambattur, Chennai - 600051.</Text>
+   
+                                  </Row>
+                               <Row style={{marginTop:5}}>
+                                   <Col size={4}>
+   
+                                   </Col>
+                                   <Col size={6}>
+                                       <Row style={{alignItems:'flex-end',justifyContent:'flex-end'}}>
+                                   <TouchableOpacity style={{backgroundColor:'#8dc63f',flexDirection:'row',paddingTop:2,paddingBottom:2,paddingLeft:8,paddingRight:8,marginLeft:5,borderRadius:2}}>
+              <Icon name="ios-cart" style={{fontSize:10,color:'#fff'}}/>
+              <Text style={{fontFamily:'OpenSans',fontSize:8,color:'#fff',marginLeft:2}}>Order Medicines</Text>
+          </TouchableOpacity>
+          </Row>
+                                   </Col>
+                               </Row>
+                           </View>
+                           </View>
+    </ScrollView>
+
+</View>
+<View style={{marginTop:10,marginRight:10,marginLeft:10,marginBottom:10}}>
+    <Text  style={{fontFamily:'OpenSans',fontSize:15,}}>Here is What you do!</Text>
+    <View  style={{backgroundColor:'#fff',marginTop:5}}>
+                           
+
+                           <Image
+                                               source={require('../../../../../assets/images/pharmacyprocess.png')}
+                                               style={{
+                                                   width:350, height: 80, alignItems: 'center'
+                                               }}
+                                           />
+   
+   
+                           </View>
 </View>
                 </Content>
 

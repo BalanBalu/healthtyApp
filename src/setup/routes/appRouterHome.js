@@ -9,7 +9,7 @@ import UpdateContact from "../../modules/screens/userprofile/UpdateContact";
 import UpdatePassword from "../../modules/screens/userprofile/UpdatePassword";
 import UpdateInsurance from "../../modules/screens/userprofile/UpdateInsurance";
 import UpdateUserDetails from "../../modules/screens/userprofile/UpdateUserDetails";
-import { Icon, View,Thumbnail } from 'native-base';
+import { Icon, View,Thumbnail,Item,Input } from 'native-base';
 import IndividualChat from '../../modules/screens/chat/individualChat'
 import Categories from "../../modules/screens/categories";
 import login from "../../modules/screens/auth/login";
@@ -427,9 +427,66 @@ const HomeStack = createStackNavigator({
   // ============== Pharmacy =================
   Pharmacy: {
     screen: PharmacyHome,
-    navigationOptions:{
-      title: 'Medflic Pharmacy',
-    }
+    navigationOptions: ({ navigation }) => ({
+      headerLeft: (
+        <Row style={{marginBottom: 5,marginTop:-35,}}>
+          <Col size={2}>
+          <Image
+            style={{ marginLeft: 5,height:20,width:20}}
+            source={require('../../../assets/images/Logo.png')}
+          />
+          </Col>
+                   <Col size={8}>  
+                   <TouchableOpacity onPress={()=> navigation.navigate('Locations')}>
+                   <View style={{flexDirection:'row'}}>
+                    <Icon name="ios-pin" style={{color:'#fff',fontSize:18,paddingLeft: 10,}}/>
+                     <Text uppercase={false} style={{ marginLeft:5, color: '#fff', fontSize: 14, fontFamily: 'OpenSans-SemiBold',fontWeight:'bold' }}>Location</Text>
+                     {/* <Text uppercase={false} style={{ marginLeft:5, color: '#fff', fontSize: 14, fontFamily: 'OpenSans-SemiBold',fontWeight:'bold' }}>{navigation.getParam('appBar', {locationName: ' '}).locationName}</Text> */}
+                        <Icon name="ios-arrow-down" style={{color:'#fff',fontSize:18,paddingLeft: 10,marginTop:2}}/>
+                     </View>
+                     </TouchableOpacity>
+                    </Col> 
+                   </Row>   
+
+       
+      ),
+      headerTitle:(
+        <Grid style={{marginTop:10,marginLeft:-20,}}>
+          <Col style={{position:'absolute'}}>
+          <Item style={{borderBottomWidth:0,backgroundColor:'#fff',height:30,borderRadius:2}}>
+          <Input
+          placeholder='Search for Medicines and Health Products...     '
+        style={{fontSize:12,width:'300%'}}
+          placeholderTextColor="#C1C1C1"
+                   keyboardType={'default'}
+                   returnKeyType={'go'}
+                 multiline={false}/>
+                  <TouchableOpacity style={{alignItems:'flex-end'}} >
+                     <Icon name='ios-search' style={{  color: '#775DA3',fontSize:20 }}/>
+                 </TouchableOpacity>
+        </Item>
+       
+          </Col>
+       
+        </Grid>
+      ),
+      headerRight: (
+        <Grid style={{marginTop:-35}}>
+          <Col>
+            <TouchableOpacity>
+              <View>
+                <Icon name="ios-cart" style={{ color: '#fff', marginRight: 15, fontFamily: 'opensans-semibold',fontSize:20 }}></Icon>
+              </View>
+            </TouchableOpacity>
+          </Col>
+        
+        </Grid>
+      ),
+      headerStyle: {
+        backgroundColor: '#7F49C3',
+        height:90
+      },
+     })
   },
   UploadPrescription: {
     screen: UploadPrescription,
