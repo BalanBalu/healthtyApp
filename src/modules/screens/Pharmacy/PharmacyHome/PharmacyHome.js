@@ -157,43 +157,43 @@ class PharmacyHome extends Component {
         var selectedMedicineName = []
         selectedMedicineName = this.autoCompleteMedicineName(this.state.keyword);
         const comp = (a, b) => a.toLowerCase().trim() === b.toLowerCase().trim();
-        
-        const nearPharmacy = [{name:'Medplus',km:'2.30KM',address:'No.28,Kamarajar Nagar,4th cross street, Ambattur, Chennai - 600051.',},{name:'Medplus',km:'2.30KM',address:'No.28,Kamarajar Nagar,4th cross street, Ambattur, Chennai - 600051.',}]
-        const medDetail = [{name:'Amlodipine',hospital:'By Apollo Pharmacy',oldRupees:278.50,newRupees:205.50,offer:'20%'},
-        {name:'Amlodipine',hospital:'By Apollo Pharmacy',oldRupees:278.50,newRupees:205.50,offer:'20%'},
-        {name:'Amlodipine',hospital:'By Apollo Pharmacy',oldRupees:278.50,newRupees:205.50,offer:'20%'},
-        {name:'Amlodipine',hospital:'By Apollo Pharmacy',oldRupees:278.50,newRupees:205.50,offer:'20%'}]
+
+        const nearPharmacy = [{ name: 'Medplus', km: '2.30KM', address: 'No.28,Kamarajar Nagar,4th cross street, Ambattur, Chennai - 600051.', }, { name: 'Medplus', km: '2.30KM', address: 'No.28,Kamarajar Nagar,4th cross street, Ambattur, Chennai - 600051.', }]
+        const medDetail = [{ name: 'Amlodipine', hospital: 'By Apollo Pharmacy', oldRupees: 278.50, newRupees: 205.50, offer: '20%' },
+        { name: 'Amlodipine', hospital: 'By Apollo Pharmacy', oldRupees: 278.50, newRupees: 205.50, offer: '20%' },
+        { name: 'Amlodipine', hospital: 'By Apollo Pharmacy', oldRupees: 278.50, newRupees: 205.50, offer: '20%' },
+        { name: 'Amlodipine', hospital: 'By Apollo Pharmacy', oldRupees: 278.50, newRupees: 205.50, offer: '20%' }]
 
         return (
             <Container style={styles.container}>
-                 <View style={{backgroundColor:'#7F49C3',padding:5,paddingBottom:10,height:45}}>
-                        <Grid>
+                <View style={{ backgroundColor: '#7F49C3', padding: 5, paddingBottom: 10, height: 45 }}>
+                    <Grid>
 
-                        <Col size={1.1} style={{justifyContent:'center'}}>
-            <Image
-              style={{ marginLeft: 8, height: 20, width: 20 ,justifyContent:'center'}}
-              source={require('../../../../../assets/images/Logo.png')}
-            />
-          </Col>
-                    <Col size={8.6}>
-            <Item style={{ borderBottomWidth: 0, backgroundColor: '#fff', height: 30, borderRadius: 2 }}>
-              <Input
-                placeholder='Search for Medicines and Health Products...     '
-                style={{ fontSize: 12, width: '300%' }}
-                placeholderTextColor="#C1C1C1"
-                keyboardType={'default'}
-                returnKeyType={'go'}
-                multiline={false} />
-              <TouchableOpacity style={{ alignItems: 'flex-end' }} >
-                <Icon name='ios-search' style={{ color: '#775DA3', fontSize: 20 }} />
-              </TouchableOpacity>
-            </Item>
+                        <Col size={1.1} style={{ justifyContent: 'center' }}>
+                            <Image
+                                style={{ marginLeft: 8, height: 20, width: 20, justifyContent: 'center' }}
+                                source={require('../../../../../assets/images/Logo.png')}
+                            />
+                        </Col>
+                        <Col size={8.6}>
+                            <Item style={{ borderBottomWidth: 0, backgroundColor: '#fff', height: 30, borderRadius: 2 }}>
+                                <Input
+                                    placeholder='Search for Medicines and Health Products...     '
+                                    style={{ fontSize: 12, width: '300%' }}
+                                    placeholderTextColor="#C1C1C1"
+                                    keyboardType={'default'}
+                                    returnKeyType={'go'}
+                                    multiline={false} />
+                                <TouchableOpacity style={{ alignItems: 'flex-end' }} >
+                                    <Icon name='ios-search' style={{ color: '#775DA3', fontSize: 20 }} />
+                                </TouchableOpacity>
+                            </Item>
 
-          </Col>
-          <Col size={.3}>
-          </Col>
-          </Grid>
-                    </View>
+                        </Col>
+                        <Col size={.3}>
+                        </Col>
+                    </Grid>
+                </View>
                 <Content style={{ backgroundColor: '#F5F5F5', }}>
                     {/* <View style={{backgroundColor:'#7F49C3',padding:5,paddingBottom:10}}>
                         <Grid>
@@ -331,62 +331,62 @@ class PharmacyHome extends Component {
 
 
                     <View style={{ marginTop: 10, marginLeft: 5, marginRight: 10 }}>
-                        <Text style={{ fontFamily: 'OpenSans', fontSize: 15, color:'#4c4c4c', marginBottom: 10,  marginLeft:5}}>Popular Medicines</Text>
+                        <Text style={{ fontFamily: 'OpenSans', fontSize: 15, color: '#4c4c4c', marginBottom: 10, marginLeft: 5 }}>Popular Medicines</Text>
                         <View>
                             <Row>
-                            <FlatList
-                                data={medDetail}
-                                numColumns={2}
-                                columnWrapperStyle={{ margin: 3 } }
-                                keyExtractor={(item, index) => index.toString()}
-                                initialNumToRender={4}
-                                renderItem={({item})=>
-                                <Col size={5} style={{ backgroundColor: '#fff', marginLeft: 5, height : '100%' }}>
-                                    <Row>
-                                        <Col size={9} style={{ alignItems: 'center' }}>
-                                            <Image
-                                                source={require('../../../../../assets/images/images.jpeg')}
-                                                style={{
-                                                    width: 80, height: 80, alignItems: 'center'
-                                                }}
-                                            />
-                                        </Col>
-                                        <Col size={1} style={{ position: 'absolute', alignContent: 'flex-end', marginTop: -10, marginLeft: 130 }}>
-                                            <Image
-                                                source={require('../../../../../assets/images/Badge.png')}
-                                                style={{
-                                                    width: 45, height: 45, alignItems: 'flex-end'
-                                                }}
-                                            />
-                                             <Text style={styles.offerText}>{item.offer}</Text>
-                                            <Text style={styles.offText}>OFF</Text>
-                                        </Col>
-                                    </Row>
+                                <FlatList
+                                    data={medDetail}
+                                    numColumns={2}
+                                    columnWrapperStyle={{ margin: 3 }}
+                                    keyExtractor={(item, index) => index.toString()}
+                                    initialNumToRender={4}
+                                    renderItem={({ item }) =>
+                                        <Col size={5} style={{ backgroundColor: '#fff', marginLeft: 5, height: '100%' }}>
+                                            <Row>
+                                                <Col size={9} style={{ alignItems: 'center' }}>
+                                                    <Image
+                                                        source={require('../../../../../assets/images/images.jpeg')}
+                                                        style={{
+                                                            width: 80, height: 80, alignItems: 'center'
+                                                        }}
+                                                    />
+                                                </Col>
+                                                <Col size={1} style={{ position: 'absolute', alignContent: 'flex-end', marginTop: -10, marginLeft: 130 }}>
+                                                    <Image
+                                                        source={require('../../../../../assets/images/Badge.png')}
+                                                        style={{
+                                                            width: 45, height: 45, alignItems: 'flex-end'
+                                                        }}
+                                                    />
+                                                    <Text style={styles.offerText}>{item.offer}</Text>
+                                                    <Text style={styles.offText}>OFF</Text>
+                                                </Col>
+                                            </Row>
 
-                                        
-                                        <Row style={{alignSelf : 'center', marginTop: 5 }} > 
-                                            <Text style={styles.mednames}>{item.name}</Text>
-                                        </Row>
-                                        <Row style={{alignSelf : 'center' }} >       
-                                            <Text  style={styles.hosname}>{item.hospital}</Text>
-                                        </Row>
-                                        <Row style={{ alignSelf :  'center', marginTop: 2 }}>
-                                           <Text style={styles.oldRupees}>  ₹{item.oldRupees}</Text>
-                                            <Text style={styles.newRupees}>₹{item.newRupees}</Text> 
-                                        </Row>
 
-                                    <Row style={{ marginBottom: 5, marginTop: 5, alignSelf: 'center' }}>
-                                        <TouchableOpacity style={styles.addCartTouch}>
-                                            <Icon name="ios-cart" style={{ fontSize: 12, color: '#4e85e9' }} />
-                                            <Text style={styles.addCartText}>Add to Cart</Text>
-                                        </TouchableOpacity>
-                                        <TouchableOpacity style={styles.buyNowTouch}>
-                                            <Icon name="ios-cart" style={{ fontSize: 12, color: '#fff' }} />
-                                            <Text style={styles.BuyNowText}>Buy Now</Text>
-                                        </TouchableOpacity>
-                                    </Row>
-                                </Col>
-                                }/>
+                                            <Row style={{ alignSelf: 'center', marginTop: 5 }} >
+                                                <Text style={styles.mednames}>{item.name}</Text>
+                                            </Row>
+                                            <Row style={{ alignSelf: 'center' }} >
+                                                <Text style={styles.hosname}>{item.hospital}</Text>
+                                            </Row>
+                                            <Row style={{ alignSelf: 'center', marginTop: 2 }}>
+                                                <Text style={styles.oldRupees}>  ₹{item.oldRupees}</Text>
+                                                <Text style={styles.newRupees}>₹{item.newRupees}</Text>
+                                            </Row>
+
+                                            <Row style={{ marginBottom: 5, marginTop: 5, alignSelf: 'center' }}>
+                                                <TouchableOpacity style={styles.addCartTouch}>
+                                                    <Icon name="ios-cart" style={{ fontSize: 12, color: '#4e85e9' }} />
+                                                    <Text style={styles.addCartText}>Add to Cart</Text>
+                                                </TouchableOpacity>
+                                                <TouchableOpacity style={styles.buyNowTouch}>
+                                                    <Icon name="ios-cart" style={{ fontSize: 12, color: '#fff' }} />
+                                                    <Text style={styles.BuyNowText}>Buy Now</Text>
+                                                </TouchableOpacity>
+                                            </Row>
+                                        </Col>
+                                    } />
 
                             </Row>
                         </View>
@@ -394,52 +394,52 @@ class PharmacyHome extends Component {
 
 
                     <View style={{ marginTop: 10, }}>
-                        <Text style={{ fontFamily: 'OpenSans', fontSize: 15, marginLeft: 10,color:'#4c4c4c' }}>Nearby Pharmacies</Text>
+                        <Text style={{ fontFamily: 'OpenSans', fontSize: 15, marginLeft: 10, color: '#4c4c4c' }}>Nearby Pharmacies</Text>
                         <ScrollView
                             horizontal={true}
                             showsHorizontalScrollIndicator={false}
                         >
                             <FlatList
-                            data={nearPharmacy}
-                            horizontal={true}
-                            keyExtractor={(item, index) => index.toString()}
-                            renderItem={({item})=>
-                            <View style={{ marginTop: 5, marginLeft: 10, backgroundColor: '#fff', padding: 5, width: 210 }}>
+                                data={nearPharmacy}
+                                horizontal={true}
+                                keyExtractor={(item, index) => index.toString()}
+                                renderItem={({ item }) =>
+                                    <View style={{ marginTop: 5, marginLeft: 10, backgroundColor: '#fff', padding: 5, width: 210 }}>
 
-                                <Row style={{ borderBottomColor: 'gray', borderBottomWidth: .3, paddingBottom: 2 }}>
-                                    <Col size={5}>
-                                        <Text style={styles.mednames}>{item.name}</Text>
-                                    </Col>
-                                    <Col size={5}>
-                                        <Text style={styles.kmText}>{item.km}</Text>
-                                    </Col>
-                                </Row>
-                                <View style={{ marginTop: 5 }}>
-                                
-                                <Row>
-                                    <Text style={styles.addressText}>{item.address}</Text>
-                                </Row>
-                                    <Row style={{ marginTop: 5 }}>
-                                        <Col size={4}>
-                                        </Col>
-                                        <Col size={6}>
-                                            <Row style={{ alignItems: 'flex-end', justifyContent: 'flex-end' }}>
-                                                <TouchableOpacity style={{ backgroundColor: '#8dc63f', flexDirection: 'row', paddingTop: 2, paddingBottom: 2, paddingLeft: 8, paddingRight: 8, marginLeft: 5, borderRadius: 2 }}>
-                                                    <Icon name="ios-cart" style={{ fontSize: 10, color: '#fff' }} />
-                                                    <Text style={styles.orderNowText}>Order Medicines</Text>
-                                                </TouchableOpacity>
+                                        <Row style={{ borderBottomColor: 'gray', borderBottomWidth: .3, paddingBottom: 2 }}>
+                                            <Col size={5}>
+                                                <Text style={styles.mednames}>{item.name}</Text>
+                                            </Col>
+                                            <Col size={5}>
+                                                <Text style={styles.kmText}>{item.km}</Text>
+                                            </Col>
+                                        </Row>
+                                        <View style={{ marginTop: 5 }}>
+
+                                            <Row>
+                                                <Text style={styles.addressText}>{item.address}</Text>
                                             </Row>
-                                        </Col>
-                                    </Row>
-                                </View>
-                            </View>
-                            }/>
-                           
+                                            <Row style={{ marginTop: 5 }}>
+                                                <Col size={4}>
+                                                </Col>
+                                                <Col size={6}>
+                                                    <Row style={{ alignItems: 'flex-end', justifyContent: 'flex-end' }}>
+                                                        <TouchableOpacity style={{ backgroundColor: '#8dc63f', flexDirection: 'row', paddingTop: 2, paddingBottom: 2, paddingLeft: 8, paddingRight: 8, marginLeft: 5, borderRadius: 2 }}>
+                                                            <Icon name="ios-cart" style={{ fontSize: 10, color: '#fff' }} />
+                                                            <Text style={styles.orderNowText}>Order Medicines</Text>
+                                                        </TouchableOpacity>
+                                                    </Row>
+                                                </Col>
+                                            </Row>
+                                        </View>
+                                    </View>
+                                } />
+
                         </ScrollView>
 
                     </View>
                     <View style={{ marginTop: 10, marginRight: 10, marginLeft: 10, marginBottom: 10 }}>
-                        <Text style={{ fontFamily: 'OpenSans', fontSize: 15,color:'#4c4c4c' }}>Here is What you do!</Text>
+                        <Text style={{ fontFamily: 'OpenSans', fontSize: 15, color: '#4c4c4c' }}>Here is What you do!</Text>
                         <View style={{ backgroundColor: '#fff', marginTop: 5 }}>
                             <Image
                                 source={require('../../../../../assets/images/pharmacyprocess.png')}
@@ -673,99 +673,99 @@ const styles = StyleSheet.create({
         height: 30,
         borderRadius: 2
     },
-    mednames:{
-        fontFamily: 'OpenSans', 
-        fontSize: 12, 
-        fontWeight: "700", 
+    mednames: {
+        fontFamily: 'OpenSans',
+        fontSize: 12,
+        fontWeight: "700",
         color: '#775DA3'
     },
-    hosname:{
-        fontFamily: 'OpenSans', 
-        fontSize: 10,
-        color:'#909090'
-    },
-    oldRupees:{
+    hosname: {
         fontFamily: 'OpenSans',
         fontSize: 10,
-         textDecorationLine: 'line-through', 
-         textDecorationColor: '#ff4e42', 
-         textDecorationStyle: 'solid', 
-         color: '#ff4e42', 
-         marginLeft:2,
-         marginTop:2
+        color: '#909090'
     },
-    newRupees:{
-        fontFamily: 'OpenSans', 
-        fontSize: 12, 
-        fontWeight: 'bold', 
+    oldRupees: {
+        fontFamily: 'OpenSans',
+        fontSize: 10,
+        textDecorationLine: 'line-through',
+        textDecorationColor: '#ff4e42',
+        textDecorationStyle: 'solid',
+        color: '#ff4e42',
+        marginLeft: 2,
+        marginTop: 2
+    },
+    newRupees: {
+        fontFamily: 'OpenSans',
+        fontSize: 12,
+        fontWeight: 'bold',
         marginLeft: 5
     },
-    offerText:{
-        fontFamily: 'OpenSans', 
-        fontSize: 8, 
-        position: 'absolute', 
-        color: '#fff', 
-        marginTop: 13, 
+    offerText: {
+        fontFamily: 'OpenSans',
+        fontSize: 8,
+        position: 'absolute',
+        color: '#fff',
+        marginTop: 13,
         marginLeft: 16
     },
-    offText:{
-        fontFamily: 'OpenSans', 
-        fontSize: 8, 
-        position: 'absolute', 
+    offText: {
+        fontFamily: 'OpenSans',
+        fontSize: 8,
+        position: 'absolute',
         color: '#fff',
-        marginTop: 22, 
-        marginLeft: 16, 
+        marginTop: 22,
+        marginLeft: 16,
         fontWeight: '700'
     },
-    kmText:{
-        fontFamily: 'OpenSans', 
-        fontSize: 8, 
+    kmText: {
+        fontFamily: 'OpenSans',
+        fontSize: 8,
         textAlign: 'right',
-        color:'#4c4c4c'
+        color: '#4c4c4c'
     },
-    addressText:{
-        fontFamily: 'OpenSans', 
-        fontSize: 10, 
-        textAlign: 'left', 
-        lineHeight: 20, 
-        color:'#626262'
+    addressText: {
+        fontFamily: 'OpenSans',
+        fontSize: 10,
+        textAlign: 'left',
+        lineHeight: 20,
+        color: '#626262'
     },
-    addCartTouch:{
-        borderColor: '#4e85e9', 
-        borderWidth: 0.5, 
-        flexDirection: 'row', 
-        paddingTop: 2, 
-        paddingBottom: 2, 
-        paddingLeft: 7, 
-        paddingRight: 7, 
+    addCartTouch: {
+        borderColor: '#4e85e9',
+        borderWidth: 0.5,
+        flexDirection: 'row',
+        paddingTop: 2,
+        paddingBottom: 2,
+        paddingLeft: 7,
+        paddingRight: 7,
         borderRadius: 2
     },
-    addCartText:{
-        fontFamily: 'OpenSans', 
-        fontSize: 10, 
+    addCartText: {
+        fontFamily: 'OpenSans',
+        fontSize: 10,
         color: '#4e85e9',
-         marginLeft: 2 
-    },
-    buyNowTouch:{
-        backgroundColor: '#8dc63f', 
-        flexDirection: 'row', 
-        paddingTop: 2, 
-        paddingBottom: 2, 
-        paddingLeft: 8, 
-        paddingRight: 8, 
-        marginLeft: 5, 
-        borderRadius: 2
-    },
-    BuyNowText:{
-        fontFamily: 'OpenSans', 
-        fontSize: 10, 
-        color: '#fff', 
         marginLeft: 2
     },
-    orderNowText:{
-        fontFamily: 'OpenSans', 
-        fontSize: 12, 
-        color: '#fff', 
+    buyNowTouch: {
+        backgroundColor: '#8dc63f',
+        flexDirection: 'row',
+        paddingTop: 2,
+        paddingBottom: 2,
+        paddingLeft: 8,
+        paddingRight: 8,
+        marginLeft: 5,
+        borderRadius: 2
+    },
+    BuyNowText: {
+        fontFamily: 'OpenSans',
+        fontSize: 10,
+        color: '#fff',
+        marginLeft: 2
+    },
+    orderNowText: {
+        fontFamily: 'OpenSans',
+        fontSize: 12,
+        color: '#fff',
         marginLeft: 2
     }
 });
