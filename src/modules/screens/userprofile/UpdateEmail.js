@@ -21,20 +21,6 @@ class UpdateEmail extends Component {
         }
     }
 
-    componentDidMount() {
-        this.bindEmailValues();
-    }
-
-    bindEmailValues() {
-        const { navigation } = this.props;
-        const userData = navigation.getParam('updatedata');
-        if (userData.email) {
-            this.setState({
-                email: userData.email,
-            })
-        }
-
-    }
 
     handleEmailUpdate = async () => {
         try {
