@@ -166,7 +166,63 @@ class PharmacyHome extends Component {
 
         return (
             <Container style={styles.container}>
+                 <View style={{backgroundColor:'#7F49C3',padding:5,paddingBottom:10,height:45}}>
+                        <Grid>
+
+                        <Col size={1.1} style={{justifyContent:'center'}}>
+            <Image
+              style={{ marginLeft: 8, height: 20, width: 20 ,justifyContent:'center'}}
+              source={require('../../../../../assets/images/Logo.png')}
+            />
+          </Col>
+                    <Col size={8.6}>
+            <Item style={{ borderBottomWidth: 0, backgroundColor: '#fff', height: 30, borderRadius: 2 }}>
+              <Input
+                placeholder='Search for Medicines and Health Products...     '
+                style={{ fontSize: 12, width: '300%' }}
+                placeholderTextColor="#C1C1C1"
+                keyboardType={'default'}
+                returnKeyType={'go'}
+                multiline={false} />
+              <TouchableOpacity style={{ alignItems: 'flex-end' }} >
+                <Icon name='ios-search' style={{ color: '#775DA3', fontSize: 20 }} />
+              </TouchableOpacity>
+            </Item>
+
+          </Col>
+          <Col size={.3}>
+          </Col>
+          </Grid>
+                    </View>
                 <Content style={{ backgroundColor: '#F5F5F5', }}>
+                    {/* <View style={{backgroundColor:'#7F49C3',padding:5,paddingBottom:10}}>
+                        <Grid>
+
+                        <Col size={1.1} style={{justifyContent:'center'}}>
+            <Image
+              style={{ marginLeft: 8, height: 20, width: 20 ,}}
+              source={require('../../../../../assets/images/Logo.png')}
+            />
+          </Col>
+                    <Col size={8.6}>
+            <Item style={{ borderBottomWidth: 0, backgroundColor: '#fff', height: 30, borderRadius: 2 }}>
+              <Input
+                placeholder='Search for Medicines and Health Products...     '
+                style={{ fontSize: 12, width: '300%' }}
+                placeholderTextColor="#C1C1C1"
+                keyboardType={'default'}
+                returnKeyType={'go'}
+                multiline={false} />
+              <TouchableOpacity style={{ alignItems: 'flex-end' }} >
+                <Icon name='ios-search' style={{ color: '#775DA3', fontSize: 20 }} />
+              </TouchableOpacity>
+            </Item>
+
+          </Col>
+          <Col size={.3}>
+          </Col>
+          </Grid>
+                    </View> */}
                     <Row style={{ marginLeft: 15, marginRight: 15, marginTop: 10 }}>
 
                         <Col size={6} style={{ justifyContent: 'center', backgroundColor: '#fff', height: 30, borderColor: 'gray', borderWidth: 0.3, borderRadius: 2 }}>
@@ -315,8 +371,8 @@ class PharmacyHome extends Component {
                                             <Text  style={styles.hosname}>{item.hospital}</Text>
                                         </Row>
                                         <Row style={{ alignSelf :  'center', marginTop: 2 }}>
+                                           <Text style={styles.oldRupees}>  ₹{item.oldRupees}</Text>
                                             <Text style={styles.newRupees}>₹{item.newRupees}</Text> 
-                                            <Text style={styles.oldRupees}>  ₹{item.oldRupees}</Text>
                                         </Row>
 
                                     <Row style={{ marginBottom: 5, marginTop: 5, alignSelf: 'center' }}>
@@ -635,7 +691,8 @@ const styles = StyleSheet.create({
          textDecorationColor: '#ff4e42', 
          textDecorationStyle: 'solid', 
          color: '#ff4e42', 
-         marginTop: 3
+         marginLeft:2,
+         marginTop:2
     },
     newRupees:{
         fontFamily: 'OpenSans', 
@@ -674,7 +731,7 @@ const styles = StyleSheet.create({
         color:'#626262'
     },
     addCartTouch:{
-        borderColor: '#8dc63f', 
+        borderColor: '#4e85e9', 
         borderWidth: 0.5, 
         flexDirection: 'row', 
         paddingTop: 2, 
