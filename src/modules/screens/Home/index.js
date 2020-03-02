@@ -344,7 +344,7 @@ class Home extends Component {
             navigation.setParams({
                 appBar: {
                     locationName: patientSearchLocationName,
-                    locationCapta: isSearchByCurrentLocation ? 'You are searching Near by Hostpitals' : 'You are searching Hospitals on ' + patientSearchLocationName
+                    locationCapta: isSearchByCurrentLocation ? 'You are searching Near by Hospitals' : 'You are searching Hospitals on ' + patientSearchLocationName
                 }
             });
             this.locationUpdatedCount = locationUpdatedCount;
