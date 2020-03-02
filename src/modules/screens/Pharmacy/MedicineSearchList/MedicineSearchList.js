@@ -104,11 +104,11 @@ class MedicineSearchList extends Component {
     }
     render() {
         const { value, isLoading } = this.state;
-        const med=[{medname:'Paracetamol',content:'By Appollo Pharmacy',count:'MRP',price:'₹ 300.25',offer:'₹ 180.00'},
-{medname:'Paracetamol',content:'By Appollo Pharmacy',count:'MRP',price:'₹ 300.25',offer:'₹ 180.00'},
-{medname:'Paracetamol',content:'By Appollo Pharmacy',count:'MRP',price:'₹ 300.25',offer:'₹ 180.00'},
-{medname:'Paracetamol',content:'By Appollo Pharmacy',count:'MRP',price:'₹ 300.25',offer:'₹ 180.00'},
-{medname:'Paracetamol',content:'By Appollo Pharmacy',count:'MRP',price:'₹ 300.25',offer:'₹ 180.00'}]
+        const med = [{ medname: 'Paracetamol', content: 'By Appollo Pharmacy', count: 'MRP', price: '₹ 300.25', offer: '₹ 180.00' },
+        { medname: 'Paracetamol', content: 'By Appollo Pharmacy', count: 'MRP', price: '₹ 300.25', offer: '₹ 180.00' },
+        { medname: 'Paracetamol', content: 'By Appollo Pharmacy', count: 'MRP', price: '₹ 300.25', offer: '₹ 180.00' },
+        { medname: 'Paracetamol', content: 'By Appollo Pharmacy', count: 'MRP', price: '₹ 300.25', offer: '₹ 180.00' },
+        { medname: 'Paracetamol', content: 'By Appollo Pharmacy', count: 'MRP', price: '₹ 300.25', offer: '₹ 180.00' }]
 
         return (
             <Container>
@@ -125,47 +125,47 @@ class MedicineSearchList extends Component {
                                 <Icon name='md-search' style={{ color: '#C1C1C1' }} />
                             </TouchableOpacity>
                         </Item>
-                        <Text style={{ marginTop: 5, marginLeft: 5, fontFamily: 'OpenSans', fontSize: 12.5, color: '#7227C7' }}>Showing all results for <Text style={{fontStyle:'italic',fontSize: 12.5, color: '#7227C7'}}>Horlicks</Text></Text>
+                        <Text style={{ marginTop: 5, marginLeft: 5, fontFamily: 'OpenSans', fontSize: 12.5, color: '#7227C7' }}>Showing all results for <Text style={{ fontStyle: 'italic', fontSize: 12.5, color: '#7227C7' }}>Horlicks</Text></Text>
                         <View>
-                                 <FlatList
-                                 data={med}
-                    renderItem={({item})=>
-                        <View style={{ backgroundColor: '#fff', marginTop: 10, borderRadius: 5 }}>
-                            <Row>
-                                <Col size={4}>
-                                    <Image source={require('../../../../../assets/images/Led.jpg')} style={{ height: 100, width: 70, marginLeft: 5 }} />
-                                </Col>
-                                <Col size={12.5}>
-                                    <Text style={{ fontFamily: 'OpenSans', fontSize: 16, marginTop:5 }}>{item.medname}</Text>
-                                    <Text style={{ color: '#A4A4A4', fontFamily: 'OpenSans', fontSize: 12.5, marginBottom:20  }}>{item.content}</Text>
-                                    <Row>
-                                        <Col size={5} style={{ flexDirection: 'row' }}>
-                                            <Text style={{ fontSize: 8,marginBottom: -15, marginTop: 10,marginLeft:-3, color: "#B40404" }}>{item.count}</Text>
-                                            <Text style={{ fontSize: 8, marginTop: 10, marginLeft: 1.5, color: "#B40404", textDecorationLine: 'line-through', textDecorationStyle: 'solid' }}>{item.price}</Text>
-                                            <Text style={{ fontSize: 13, marginTop: 6.5, marginLeft: 2.5, color: "#5FB404" }}>{item.offer}</Text>
-                                        </Col>
-                                        <Col size={3} style={{ height: 20,marginLeft: 4 }}>
-                                            <TouchableOpacity style={{ borderColor: '#0080FF',marginLeft:1.5, borderWidth: 1, borderRadius: 2.5, marginTop: 5, height: 20, width: 65, paddingBottom: 5, paddingTop: 2 }}>
-                                                <Row style={{ alignItems: 'center' }}>
-                                                    <Icon name='ios-cart' style={{ color: '#0080FF', fontSize: 11, marginLeft: 3.5, paddingTop:2.3 }} />
-                                                    <Text style={{ fontSize: 7, color: '#0080FF', marginTop: 2.5, marginLeft: 6 }}>Add to Cart</Text>
+                            <FlatList
+                                data={med}
+                                renderItem={({ item }) =>
+                                    <View style={{ backgroundColor: '#fff', marginTop: 10, borderRadius: 5 }}>
+                                        <Row>
+                                            <Col size={4}>
+                                                <Image source={require('../../../../../assets/images/paracetamol.jpg')} style={{ height: 100, width: 70, marginLeft: 5 }} />
+                                            </Col>
+                                            <Col size={12.5}>
+                                                <Text style={{ fontFamily: 'OpenSans', fontSize: 16, marginTop: 5 }}>{item.medname}</Text>
+                                                <Text style={{ color: '#A4A4A4', fontFamily: 'OpenSans', fontSize: 12.5, marginBottom: 20 }}>{item.content}</Text>
+                                                <Row>
+                                                    <Col size={5} style={{ flexDirection: 'row' }}>
+                                                        <Text style={{ fontSize: 8, marginBottom: -15, marginTop: 10, marginLeft: -3, color: "#B40404" }}>{item.count}</Text>
+                                                        <Text style={{ fontSize: 8, marginTop: 10, marginLeft: 1.5, color: "#B40404", textDecorationLine: 'line-through', textDecorationStyle: 'solid' }}>{item.price}</Text>
+                                                        <Text style={{ fontSize: 13, marginTop: 6.5, marginLeft: 2.5, color: "#5FB404" }}>{item.offer}</Text>
+                                                    </Col>
+                                                    <Col size={3} style={{ height: 20, marginLeft: 4 }}>
+                                                        <TouchableOpacity style={{ borderColor: '#0080FF', marginLeft: 1.5, borderWidth: 1, borderRadius: 2.5, marginTop: 5, height: 20, width: 65, paddingBottom: 5, paddingTop: 2 }}>
+                                                            <Row style={{ alignItems: 'center' }}>
+                                                                <Icon name='ios-cart' style={{ color: '#0080FF', fontSize: 11, marginLeft: 3.5, paddingTop: 2.3 }} />
+                                                                <Text style={{ fontSize: 7, color: '#0080FF', marginTop: 2.5, marginLeft: 6 }}>Add to Cart</Text>
+                                                            </Row>
+                                                        </TouchableOpacity>
+                                                    </Col>
+                                                    <Col size={3.2} style={{ height: 20, marginLeft: 4, marginRight: 2.5 }}>
+                                                        <TouchableOpacity style={{ borderColor: '#31B404', borderWidth: 1, marginLeft: 1, borderRadius: 2.5, marginTop: 5, height: 20, width: 65, paddingBottom: 5, paddingTop: 2, backgroundColor: '#31B404' }}>
+                                                            <Row style={{ alignItems: 'center' }}>
+                                                                <Icon name='ios-cart' style={{ color: '#fff', fontSize: 11, marginLeft: 5, paddingTop: 2.3 }} />
+                                                                <Text style={{ fontSize: 7, color: '#fff', marginTop: 2.5, marginLeft: 6 }}>Buy Now</Text>
+                                                            </Row>
+                                                        </TouchableOpacity>
+                                                    </Col>
                                                 </Row>
-                                            </TouchableOpacity>
-                                        </Col>
-                                        <Col size={3.2} style={{ height: 20, marginLeft: 4,marginRight:2.5 }}>
-                                            <TouchableOpacity style={{ borderColor: '#31B404', borderWidth: 1,marginLeft:1, borderRadius: 2.5, marginTop: 5, height: 20, width: 65, paddingBottom: 5, paddingTop: 2, backgroundColor: '#31B404' }}>
-                                                <Row style={{ alignItems: 'center' }}>
-                                                    <Icon name='ios-cart' style={{ color: '#fff', fontSize: 11, marginLeft: 5, paddingTop:2.3}} />
-                                                    <Text style={{ fontSize:7, color: '#fff', marginTop: 2.5, marginLeft: 6}}>Buy Now</Text>
-                                                </Row>
-                                            </TouchableOpacity>
-                                        </Col>
-                                    </Row>
-                                </Col>
-                            </Row>
+                                            </Col>
+                                        </Row>
+                                    </View>
+                                } />
                         </View>
-                   }/> 
-                    </View>
 
                     </View>
                 </Content>
