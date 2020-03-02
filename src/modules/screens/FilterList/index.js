@@ -55,7 +55,7 @@ class Filters extends Component {
                     this.onSelectedLanguagesChange(filterData.language, true);
                 }
                 if (filterData.category) {
-                    this.onSelectedCategoryChange(filterData.category, true);
+                    this.onSelectedCategoryChange([filterData.category], true);
                 }
                 if (filterData.service) {
                     this.onSelectedServiceChange(filterData.service, true)
@@ -188,7 +188,9 @@ class Filters extends Component {
         }
         else {
             if (!isFilteredData) {
+                if (this.state.selectedCategory.length ===0) {
                 selectedCount++
+                }
             }
         }
         let categoryItem = String(selectedCategory);
@@ -223,7 +225,8 @@ class Filters extends Component {
                                 <TouchableOpacity
                                     onPress={() => this.clickGenderInButton(1, "M", true)}
                                     style={styles.genderTouchableStyles}>
-                                    <Radio selected={genderIndex === 1 ? true : false} />
+                                    <Radio selected={genderIndex === 1 ? true : false} 
+                                   onPress={()=>  this.clickGenderInButton(1, "M", true)}  />
                                     <Icon name="ios-man" style={{ fontSize: 20, marginLeft: 10, }} />
                                     <Text style={styles.genderTextStyles}>Male</Text>
                                 </TouchableOpacity>
@@ -232,8 +235,9 @@ class Filters extends Component {
                                 <TouchableOpacity
                                     onPress={() => this.clickGenderInButton(2, "F", true)}
                                     style={styles.genderTouchableStyles}>
-                                    <Radio selected={genderIndex === 2 ? true : false} />
-                                    <Icon name="ios-man" style={{ fontSize: 20, marginLeft: 10, }} />
+                                    <Radio selected={genderIndex === 2 ? true : false} 
+                                    onPress={()=>  this.clickGenderInButton(2, "F", true)}  />
+                                    <Icon name="ios-woman" style={{ fontSize: 20, marginLeft: 10, }} />
                                     <Text style={styles.genderTextStyles}>Female</Text>
                                 </TouchableOpacity>
                             </Col>
@@ -241,7 +245,8 @@ class Filters extends Component {
                                 <TouchableOpacity
                                     onPress={() => this.clickGenderInButton(3, "O", true)}
                                     style={styles.genderTouchableStyles}>
-                                    <Radio selected={genderIndex === 3 ? true : false} />
+                                    <Radio selected={genderIndex === 3 ? true : false} 
+                              onPress={()=>  this.clickGenderInButton(3, "O", true)}  />                                  
                                     <Text style={styles.genderTextStyles}>Others</Text>
                                 </TouchableOpacity>
                             </Col>
@@ -434,7 +439,7 @@ class Filters extends Component {
                                 </TouchableOpacity>
                             </Col>
                         </Row>
-                        {language.length != 0 || genderSelected || selectedCategory.length != 0 || selectedServices.length != 0 || selectAvailabilityIndex != 0 || selectExperinceIndex != 0 ? <Text style={{ color: '#000', fontFamily: 'OpenSans', fontSize: 12, fontWeight: '600', position: "absolute", backgroundColor: '#775DA3', height: 20, width: 25, borderRadius: 14, textAlign: 'center', marginLeft: 25, marginTop: 35 }}>{selectedCount}</Text> : null}
+                        {language.length != 0 || genderSelected || selectedCategory.length != 0 || selectedServices.length != 0 || selectAvailabilityIndex != 0 || selectExperinceIndex != 0 ? <Text style={{ color: '#ffffff', fontFamily: 'OpenSans', fontSize: 12, fontWeight: '600', position: "absolute", backgroundColor: '#775DA3', height: 25, width: 25, borderRadius: 25/2, textAlign: 'center', marginLeft: 25, marginTop: 35, paddingTop:2 }}>{selectedCount}</Text> : null}
                     </View>
                 </Content>
             </Container >
@@ -474,7 +479,13 @@ const styles = StyleSheet.create({
         paddingBottom: 5,
         paddingLeft: 15,
         paddingRight: 15,
-        borderRadius: 5
+        borderRadius: 5,
+        borderWidth: 0.1,
+        shadowColor: '#000',
+        shadowOffset: { width: 0, height: 0.5 },
+        shadowOpacity: 0.1,
+        shadowRadius: 5,
+        elevation: 1
     },
 
     selectedExpColor: {

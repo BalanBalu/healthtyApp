@@ -102,9 +102,12 @@ class Home extends Component {
     otpAndBasicDetailsCompletion = async () => {
         try {
             let userId = await AsyncStorage.getItem("userId");
+            console.log("userId" + userId)
             res = await getReferalPoints(userId);
+            if(userId){
             if (res.hasProfileUpdated == false) {
                 if (res.hasOtpNotVerified === true) {
+                    console.log("res.hasOtpNotVerified " + res.hasOtpNotVerified )
                     this.props.navigation.navigate('renderOtpInput', {
                         loginData: { userEntry: res.mobile_no },
                         navigateBackToHome: true
@@ -135,6 +138,7 @@ class Home extends Component {
                     { cancelable: false }
                 );
             }
+        }
         } catch (ex) {
             console.log(ex)
         }
