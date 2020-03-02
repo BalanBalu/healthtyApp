@@ -168,14 +168,7 @@ class PharmacyHome extends Component {
             <Container style={styles.container}>
                 <View style={{ backgroundColor: '#7F49C3', padding: 5, paddingBottom: 10, height: 45 }}>
                     <Grid>
-
-                        <Col size={1.1} style={{ justifyContent: 'center' }}>
-                            <Image
-                                style={{ marginLeft: 8, height: 20, width: 20, justifyContent: 'center' }}
-                                source={require('../../../../../assets/images/Logo.png')}
-                            />
-                        </Col>
-                        <Col size={8.6}>
+                        <Col size={6}>
                             <Item style={{ borderBottomWidth: 0, backgroundColor: '#fff', height: 30, borderRadius: 2 }}>
                                 <Input
                                     placeholder='Search for Medicines and Health Products...     '
@@ -190,95 +183,31 @@ class PharmacyHome extends Component {
                             </Item>
 
                         </Col>
-                        <Col size={.3}>
+                        <Col size={4} style={{ marginLeft: 5 }}>
+                            <TouchableOpacity style={{ backgroundColor: '#fff', height: 30, borderRadius: 2 }}>
+                                <Row style={{ justifyContent: 'center', alignItems: 'center' }}>
+                                    <Col size={1.5} style={{ alignItems: 'center' }}>
+                                        <Icon name='ios-share' style={{ fontSize: 15, color: 'grey', }} />
+                                    </Col>
+                                    <Col size={8.5} style={{ alignItems: 'flex-start' }}>
+                                        <Text style={{ fontFamily: 'OpenSans', fontSize: 12, color: '#000' }}>Upload Prescription</Text>
+                                    </Col>
+                                </Row>
+                            </TouchableOpacity>
                         </Col>
                     </Grid>
                 </View>
                 <Content style={{ backgroundColor: '#F5F5F5', }}>
-                    {/* <View style={{backgroundColor:'#7F49C3',padding:5,paddingBottom:10}}>
-                        <Grid>
-
-                        <Col size={1.1} style={{justifyContent:'center'}}>
-            <Image
-              style={{ marginLeft: 8, height: 20, width: 20 ,}}
-              source={require('../../../../../assets/images/Logo.png')}
-            />
-          </Col>
-                    <Col size={8.6}>
-            <Item style={{ borderBottomWidth: 0, backgroundColor: '#fff', height: 30, borderRadius: 2 }}>
-              <Input
-                placeholder='Search for Medicines and Health Products...     '
-                style={{ fontSize: 12, width: '300%' }}
-                placeholderTextColor="#C1C1C1"
-                keyboardType={'default'}
-                returnKeyType={'go'}
-                multiline={false} />
-              <TouchableOpacity style={{ alignItems: 'flex-end' }} >
-                <Icon name='ios-search' style={{ color: '#775DA3', fontSize: 20 }} />
-              </TouchableOpacity>
-            </Item>
-
-          </Col>
-          <Col size={.3}>
-          </Col>
-          </Grid>
-                    </View> */}
+                   
                     <Row style={{ marginLeft: 15, marginRight: 15, marginTop: 10 }}>
 
                         <Col size={6} style={{ justifyContent: 'center', backgroundColor: '#fff', height: 30, borderColor: 'gray', borderWidth: 0.3, borderRadius: 2 }}>
                             <Row>
                                 <Col size={.5}>
                                     <Icon name='ios-pin' style={{ fontSize: 20, color: '#775DA3', marginTop: 5, marginLeft: 4 }} />
-
                                 </Col>
                                 <Col size={5.5} style={{ justifyContent: 'center' }}>
-                                    <SectionedMultiSelect
-                                        styles={{
-                                            selectToggleText: {
-                                                color: '#c3c3c3',
-                                                fontSize: 12,
-                                                textAlign: 'center',
-                                                marginTop: 60,
-                                                height: 65
-
-                                            },
-                                            chipIcon: {
-                                                color: '#c3c3c3',
-                                            },
-
-                                        }}
-                                        items={this.state.languageData}
-                                        uniqueKey='value'
-                                        displayKey='value'
-                                        selectText='Search for Nearby stores'
-                                        selectToggleText={{ fontSize: 12 }}
-                                        searchPlaceholderText='Search Your Languages'
-                                        modalWithTouchable={true}
-                                        showDropDowns={true}
-                                        hideSearch={false}
-                                        showRemoveAll={true}
-                                        showChips={false}
-                                        readOnlyHeadings={false}
-                                        onSelectedItemsChange={this.onSelectedStatusChange}
-                                        selectedItems={this.state.language}
-                                        colors={{ primary: '#18c971' }}
-                                        showCancelButton={true}
-                                        animateDropDowns={true}
-                                        selectToggleIconComponent={
-                                            <Icon
-                                                name="ios-arrow-down"
-                                                style={{
-                                                    fontSize: 20,
-                                                    marginHorizontal: 6,
-                                                    color: '#775DA3',
-                                                    textAlign: 'center',
-                                                    marginTop: 15,
-                                                }}
-                                            />
-                                        }
-
-                                        testID='languageSelected'
-                                    />
+                                    <Text style={{ fontSize: 10, color: '#775DA3', marginLeft: 5 }}>Search Near by Stores</Text>
                                 </Col>
                             </Row>
 
@@ -286,12 +215,12 @@ class PharmacyHome extends Component {
                         <Col size={4} style={{ marginLeft: 5 }}>
 
                             <TouchableOpacity style={{ backgroundColor: '#4B86EA', height: 30, borderRadius: 2 }}>
-                                <Row style={{ justifyContent: 'center', alignItems: 'center' }}>
-                                    <Col size={1.5} style={{ alignItems: 'center' }}>
-                                        <Icon name='ios-share' style={{ fontSize: 15, color: '#fff', }} />
+                                <Row style={{ justifyContent: 'center', alignItems: 'center', marginLeft: 5 }}>
+                                    <Col size={0.5} style={{ alignItems: 'flex-start' }}>
+                                        <Icon name='locate' style={{ fontSize: 15, color: '#fff', }} />
                                     </Col>
-                                    <Col size={8.5} style={{ alignItems: 'center' }}>
-                                        <Text style={{ fontFamily: 'OpenSans', fontSize: 12, color: '#fff' }}>Upload Prescription</Text>
+                                    <Col size={3.5} style={{ alignItems: 'flex-start' }}>
+                                        <Text style={{ fontFamily: 'OpenSans', fontSize: 12, color: '#fff' }}>Current Location </Text>
                                     </Col>
                                 </Row>
 

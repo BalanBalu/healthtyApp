@@ -427,7 +427,7 @@ const HomeStack = createStackNavigator({
   Pharmacy: {
     screen: PharmacyHome,
     navigationOptions: ({ navigation }) => ({
-      headerLeft: (
+     /* headerLeft: (
         <Row style={{ marginBottom: 5, marginTop: 10 }}>
           <Col size={1}>
             <TouchableOpacity onPress={() => navigation.navigate('Home')}>
@@ -451,7 +451,6 @@ const HomeStack = createStackNavigator({
               <View style={{ flexDirection: 'row', marginLeft: 5 }}>
                 <Icon name="ios-pin" style={{ color: '#fff', fontSize: 18, }} />
                 <Text uppercase={false} style={{ marginLeft: 5, color: '#fff', fontSize: 14, fontFamily: 'OpenSans-SemiBold', fontWeight: 'bold' }}>Location</Text>
-                {/* <Text uppercase={false} style={{ marginLeft:5, color: '#fff', fontSize: 14, fontFamily: 'OpenSans-SemiBold',fontWeight:'bold' }}>{navigation.getParam('appBar', {locationName: ' '}).locationName}</Text> */}
                 <Icon name="ios-arrow-down" style={{ color: '#fff', fontSize: 18, paddingLeft: 10, marginTop: 2 }} />
               </View>
             </TouchableOpacity>
@@ -459,9 +458,8 @@ const HomeStack = createStackNavigator({
         </Row>
 
 
-      ),
+      ), */
       headerRight: (
-        <Grid style={{ marginTop: 10 }}>
           <Col>
             <TouchableOpacity>
               <View>
@@ -469,8 +467,6 @@ const HomeStack = createStackNavigator({
               </View>
             </TouchableOpacity>
           </Col>
-
-        </Grid>
       ),
       headerStyle: {
         backgroundColor: '#7F49C3',
