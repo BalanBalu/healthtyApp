@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { Container, Content, Text, Button, Toast, Item, List, ListItem, Card, Input, Left, Segment, CheckBox, View, Radio } from 'native-base';
+import { Container, Content, Text, Button, Toast, Item, List, ListItem, Card, Input, Left, Segment, CheckBox, View, Radio,Footer, FooterTab} from 'native-base';
 import { Col, Row, Grid } from 'react-native-easy-grid';
 import { StyleSheet, Image, AsyncStorage, TouchableOpacity } from 'react-native';
 import { FlatList } from 'react-native-gesture-handler';
@@ -300,8 +300,131 @@ class OrderPaymentAddress extends Component {
 
         return (
             <Container>
-                <Content>
-                    <Grid style={styles.curvedGrid}>
+                <Content style={{backgroundColor:'#F5F5F5',padding:10}}>
+                    <View style={{backgroundColor:'#fff',padding:10}}>
+                        <Row>
+                            <Col size={5}>
+                            <Text style={{fontFamily:'OpenSans',fontSize:14,fontWeight:'500'}}>Home Delivery</Text>
+                            </Col>
+                            <Col size={5} style={{alignItems:'flex-end',justifyContent:'flex-end'}}>
+                            <Radio selected={true} />
+                            </Col>
+                        </Row>
+                        <Row>
+                            <Col size={5}>
+                            <Text style={{fontFamily:'OpenSans',fontSize:14,color:'#7F49C3'}}>Delivery Address</Text>
+                            </Col>
+                            <Col size={5} style={{alignItems:'flex-end',justifyContent:'flex-end'}}>
+                            <TouchableOpacity>
+                            <Text style={{fontFamily:'OpenSans',fontSize:10,color:'#ff4e42'}}>Change</Text>
+                            </TouchableOpacity>
+                            </Col>
+                        </Row>
+                        <Text style={{fontFamily:'OpenSans',fontSize:12,fontWeight:'300',marginTop:5}}>S.Mukesh Kannan</Text>
+                        <Text style={{fontFamily:'OpenSans',fontSize:12,marginTop:2,color:'#6a6a6a'}}>No 67, Gandhi taurrent,OT Bus Stand,Ambattur - 600051</Text>
+                        <Text style={{fontFamily:'OpenSans',fontSize:12,marginTop:2}}>Mobile - 9865224832</Text>
+
+                    </View>
+                    <View style={{backgroundColor:'#fff',padding:10,marginTop:5}}>
+                        <Row>
+                            <Col size={5}>
+                            <Text style={{fontFamily:'OpenSans',fontSize:14,fontWeight:'500'}}>Pick up at Store</Text>
+                            </Col>
+                            <Col size={5} style={{alignItems:'flex-end',justifyContent:'flex-end'}}>
+                            <Radio selected={false} />
+                            </Col>
+                        </Row>
+                        </View>
+
+                        {/* <View style={{backgroundColor:'#fff',padding:10,marginTop:5}}>
+                        <Row>
+                            <Col size={5}>
+                            <Text style={{fontFamily:'OpenSans',fontSize:14,fontWeight:'500'}}>Home Delivery</Text>
+                            </Col>
+                            <Col size={5} style={{alignItems:'flex-end',justifyContent:'flex-end'}}>
+                            <Radio selected={false} />
+                            </Col>
+                        </Row>
+                        </View> */}
+
+                        {/* <View style={{backgroundColor:'#fff',padding:10,marginTop:5}}>
+                        <Row>
+                            <Col size={5}>
+                            <Text style={{fontFamily:'OpenSans',fontSize:14,fontWeight:'500'}}>Pick up at Store</Text>
+                            </Col>
+                            <Col size={5} style={{alignItems:'flex-end',justifyContent:'flex-end'}}>
+                            <Radio selected={true} />
+                            </Col>
+                        </Row>
+                        <Row>
+                            <Col size={5}>
+                            <Text style={{fontFamily:'OpenSans',fontSize:14,color:'#7F49C3'}}>Store Address</Text>
+                            </Col>
+                            <Col size={5} style={{alignItems:'flex-end',justifyContent:'flex-end'}}>
+                            </Col>
+                        </Row>
+                        <Text style={{fontFamily:'OpenSans',fontSize:12,fontWeight:'300',marginTop:5}}>Apollo Pharmacy</Text>
+                        <Text style={{fontFamily:'OpenSans',fontSize:12,marginTop:2,color:'#6a6a6a'}}>No 67, Gandhi taurrent,OT Bus Stand,Ambattur - 600051</Text>
+                        <Text style={{fontFamily:'OpenSans',fontSize:12,marginTop:2}}>Mobile - 9865224832</Text>
+
+                    </View> */}
+                        <View style={{backgroundColor:'#fff',padding:10,marginTop:5}}>
+                        <Text style={{fontFamily:'OpenSans',fontSize:14,color:'#7F49C3'}}>Order Details</Text>
+                        <Row style={{marginTop:10}}>
+                            <Col size={8}>
+                            <Text style={{fontFamily:'OpenSans',fontSize:12,color:'#6a6a6a'}}>Horlicks Health and Nutrician Drink Classic Malt - <Text style={{fontFamily:'OpenSans',fontSize:12,fontWeight:'400'}}>
+                               Apollo Pharmacy <Text style={{fontFamily:'OpenSans',fontSize:12,color:'#8dc63f'}}>(x1)</Text> </Text></Text>
+                            </Col>
+                            <Col size={5} style={{alignItems:'flex-end',justifyContent:'flex-end'}}>
+                          
+                            <Text style={{fontFamily:'OpenSans',fontSize:10,color:'#8dc63f',textAlign:'right'}}>₹ 180.00</Text>
+                
+                            </Col>
+                        </Row>
+                        <Row style={{marginTop:5}}>
+                            <Col size={8}>
+                            <Text style={{fontFamily:'OpenSans',fontSize:12,color:'#6a6a6a'}}>Delivery Charges</Text>
+                            </Col>
+                            <Col size={5} style={{alignItems:'flex-end',justifyContent:'flex-end'}}>
+                          
+                            <Text style={{fontFamily:'OpenSans',fontSize:10,color:'#ff4e42',textAlign:'right'}}>₹ 50.00</Text>
+                
+                            </Col>
+                        </Row>
+                        <Row style={{marginTop:5}}>
+                            <Col size={8}>
+                            <Text style={{fontFamily:'OpenSans',fontSize:12,}}>Tax</Text>
+                            </Col>
+                            <Col size={5} style={{alignItems:'flex-end',justifyContent:'flex-end'}}>
+                          
+                            <Text style={{fontFamily:'OpenSans',fontSize:10,color:'#ff4e42',textAlign:'right'}}>₹ 26.00</Text>
+                
+                            </Col>
+                        </Row>
+                        <Row style={{marginTop:10}}>
+                            <Col size={8}>
+                            <Text style={{fontFamily:'OpenSans',fontSize:12,fontWeight:'500'}}>Amount to be Paid</Text>
+                            </Col>
+                            <Col size={5} style={{alignItems:'flex-end',justifyContent:'flex-end'}}>
+                          
+                            <Text style={{fontFamily:'OpenSans',fontSize:10,color:'#8dc63f',textAlign:'right'}}>₹ 256.00</Text>
+                
+                            </Col>
+                        </Row>
+                        
+
+                        </View>
+
+
+
+
+
+
+
+
+
+
+                    {/* <Grid style={styles.curvedGrid}>
 
                     </Grid>
                     <View style={{ marginTop: -95, height: 100 }}>
@@ -344,8 +467,24 @@ class OrderPaymentAddress extends Component {
                             {this.renderSelectedComponent()}
 
                         </Content>
-                    </Card>
+                    </Card> */}
                 </Content>
+                <Footer style={{}}>
+                    <FooterTab>
+                <Row>
+                    <Col size={5} style={{alignItems:'center',justifyContent:'center',backgroundColor:'#fff'}}>
+                    <TouchableOpacity >
+                        <Text style={{fontSize:16,fontFamily:'OpenSans',color:'#000',fontWeight:'400'}}>Total - ₹ 256.00</Text>
+                    </TouchableOpacity>
+                    </Col>
+                    <Col size={5} style={{alignItems:'center',justifyContent:'center',backgroundColor:'#8dc63f'}}>
+                    <TouchableOpacity>
+                        <Text style={{fontSize:16,fontFamily:'OpenSans',color:'#fff',fontWeight:'400'}}>Proceed</Text>
+                    </TouchableOpacity>
+                    </Col>
+                </Row>
+                </FooterTab>
+                </Footer>
             </Container >
         );
     }
