@@ -1,10 +1,14 @@
 import React, { Component } from 'react';
 import { Container, Content, Toast, Text, Title, Header, Button, H3, Item, Form, List, ListItem, Card, Input, Left, Right, Thumbnail, Body, Icon, View, Footer, FooterTab } from 'native-base';
 import { Col, Row, Grid } from 'react-native-easy-grid';
-import { getMedicineDetails, getSearchedMedicines } from '../../../providers/pharmacy/pharmacy.action'
+import { connect } from 'react-redux'
+import { getMedicineDetails, getSearchedMedicines, getAllPharmacy } from '../../../providers/pharmacy/pharmacy.action'
 import { StyleSheet, Image, FlatList, TouchableOpacity, AsyncStorage, ScrollView, Dimensions } from 'react-native';
 import { NavigationEvents } from 'react-navigation';
 import { addToCart, medicineRateAfterOffer } from '../../../common';
+import Locations from '../../../screens/Home/Locations';
+import CurrentLocation from '../../Home/CurrentLocation';
+
 import Autocomplete from '../../../../components/Autocomplete'
 import Spinner from '../../../../components/Spinner'
 import SectionedMultiSelect from 'react-native-sectioned-multi-select';
@@ -21,61 +25,40 @@ class PharmacyHome extends Component {
             cartItems: [],
             searchMedicine: [],
             keyword: '',
-            isLoading: true
+            isLoading: true,
+            locationName: '',
+            pharmacyData: ''
 
         }
     }
 
-    componentDidMount() {
+    async componentDidMount() {
+        CurrentLocation.getCurrentPosition();
+        this.getCurrentLocation()
         this.setState({ clickCard: null, isLoading: true });
         this.getMedicineList();
+        this.getPharmacyList();
     }
 
     backNavigation(payload) {
-        console.log(payload)
-        if (payload.action.type == 'Navigation/BACK') {
+        if (payload.action.type == 'Navigation/BACK' || 'Navigation/POP') {
             this.setState({ clickCard: null, isLoading: true });
+            this.getCurrentLocation();
             this.getMedicineList();
+            this.getPharmacyList();
         }
     }
 
     /*Get medicine list*/
     getMedicineList = async () => {
         try {
-            console.log("getmedicine");
             let temp_userid = await AsyncStorage.getItem('userId')
             userId = JSON.stringify(temp_userid);
-            console.log(userId);
-
             medicineSearchMap = new Map();
             let result = await getMedicineDetails();
-
             if (result.success) {
-                console.log("reust.success")
-                result.data.forEach(element => {
-                    medicineSearchMap.set(element.medicine_id, element)
-
-                })
+                this.setState({ medicineData: result.data })
             }
-
-            const cartItems = await AsyncStorage.getItem('cartItems-' + userId);
-            console.log(cartItems);
-            if (cartItems === null) {
-                console.log("");
-                if (Array.isArray(JSON.parse(cartItems)) == true) {
-                    this.setState({ cartItems: JSON.parse(cartItems) })
-                    this.state.cartItems.forEach(element => {
-                        if (medicineSearchMap.get(element.medicine_id) != undefined) {
-                            medicineSearchMap.set(element.medicine_id, element);
-                        }
-                    })
-                }
-            }
-
-            let temp = [...medicineSearchMap.values()]
-            this.setState({ medicineData: temp });
-            console.log('this.state.medicineData' + JSON.stringify(this.state.medicineData))
-            this.setState({ isLoading: false })
         }
         catch (e) {
             console.log(e)
@@ -85,6 +68,28 @@ class PharmacyHome extends Component {
         }
     }
 
+    /*Get Current Location */
+    getCurrentLocation() {
+        const { bookappointment: { patientSearchLocationName, locationUpdatedCount } } = this.props;
+        if (locationUpdatedCount !== this.locationUpdatedCount) {
+            let locationName = patientSearchLocationName;
+            this.setState({ locationName })
+        }
+        this.locationUpdatedCount = locationUpdatedCount;
+    }
+
+    getPharmacyList = async () => {
+        try {
+            let result = await getAllPharmacy();
+            if (result.success) {
+                this.setState({ pharmacyData: result.data })
+            }
+        }
+        catch (e) {
+            console.log(e)
+        }
+
+    }
     /*Search medicine*/
     searchMedicineByName = async () => {
         try {
@@ -93,9 +98,7 @@ class PharmacyHome extends Component {
             };
 
             let result = await getSearchedMedicines(requestData);
-            console.log('result' + JSON.stringify(result));
             await this.setState({ searchMedicine: result.data })
-            console.log('this.staete' + JSON.stringify(this.state.searchMedicine));
         }
         catch (e) {
             console.log(e);
@@ -159,13 +162,11 @@ class PharmacyHome extends Component {
         const comp = (a, b) => a.toLowerCase().trim() === b.toLowerCase().trim();
 
         const nearPharmacy = [{ name: 'Medplus', km: '2.30KM', address: 'No.28,Kamarajar Nagar,4th cross street, Ambattur, Chennai - 600051.', }, { name: 'Medplus', km: '2.30KM', address: 'No.28,Kamarajar Nagar,4th cross street, Ambattur, Chennai - 600051.', }]
-        const medDetail = [{ name: 'Amlodipine', hospital: 'By Apollo Pharmacy', oldRupees: 278.50, newRupees: 205.50, offer: '20%' },
-        { name: 'Amlodipine', hospital: 'By Apollo Pharmacy', oldRupees: 278.50, newRupees: 205.50, offer: '20%' },
-        { name: 'Amlodipine', hospital: 'By Apollo Pharmacy', oldRupees: 278.50, newRupees: 205.50, offer: '20%' },
-        { name: 'Amlodipine', hospital: 'By Apollo Pharmacy', oldRupees: 278.50, newRupees: 205.50, offer: '20%' }]
-
         return (
             <Container style={styles.container}>
+                <NavigationEvents
+                    onWillFocus={payload => { this.backNavigation(payload) }}
+                />
                 <View style={{ backgroundColor: '#7F49C3', padding: 5, paddingBottom: 10, height: 45 }}>
                     <Grid>
                         <Col size={6}>
@@ -174,23 +175,21 @@ class PharmacyHome extends Component {
                                     placeholder='Search for Medicines and Health Products...     '
                                     style={{ fontSize: 12, width: '300%' }}
                                     placeholderTextColor="#C1C1C1"
-                                    keyboardType={'default'}
-                                    returnKeyType={'go'}
-                                    multiline={false} />
-                                <TouchableOpacity style={{ alignItems: 'flex-end' }} >
+                                    onFocus={() => this.props.navigation.navigate('medicineSearchList')} />
+                                <TouchableOpacity style={{ alignItems: 'flex-end' }}>
                                     <Icon name='ios-search' style={{ color: '#775DA3', fontSize: 20 }} />
                                 </TouchableOpacity>
                             </Item>
 
                         </Col>
                         <Col size={4} style={{ marginLeft: 5 }}>
-                            <TouchableOpacity style={{ backgroundColor: '#fff', height: 30, borderRadius: 2 }}>
+                            <TouchableOpacity style={{ backgroundColor: '#fff', height: 30, borderRadius: 2 }} onPress={() => this.props.navigation.navigate('UploadPrescription')}>
                                 <Row style={{ justifyContent: 'center', alignItems: 'center' }}>
                                     <Col size={1.5} style={{ alignItems: 'center' }}>
                                         <Icon name='ios-share' style={{ fontSize: 15, color: 'grey', }} />
                                     </Col>
                                     <Col size={8.5} style={{ alignItems: 'flex-start' }}>
-                                        <Text style={{ fontFamily: 'OpenSans', fontSize: 12, color: '#000' }}>Upload Prescription</Text>
+                                        <Text style={{ fontFamily: 'OpenSans', fontSize: 10, color: '#000' }}>Upload Prescription</Text>
                                     </Col>
                                 </Row>
                             </TouchableOpacity>
@@ -198,7 +197,7 @@ class PharmacyHome extends Component {
                     </Grid>
                 </View>
                 <Content style={{ backgroundColor: '#F5F5F5', }}>
-                   
+
                     <Row style={{ marginLeft: 15, marginRight: 15, marginTop: 10 }}>
 
                         <Col size={6} style={{ justifyContent: 'center', backgroundColor: '#fff', height: 30, borderColor: 'gray', borderWidth: 0.3, borderRadius: 2 }}>
@@ -214,13 +213,13 @@ class PharmacyHome extends Component {
                         </Col>
                         <Col size={4} style={{ marginLeft: 5 }}>
 
-                            <TouchableOpacity style={{ backgroundColor: '#4B86EA', height: 30, borderRadius: 2 }}>
+                            <TouchableOpacity style={{ backgroundColor: '#4B86EA', height: 30, borderRadius: 2 }} onPress={() => this.props.navigation.navigate('Locations', { navigationOption: 'Near by pharmacies' })}>
                                 <Row style={{ justifyContent: 'center', alignItems: 'center', marginLeft: 5 }}>
                                     <Col size={0.5} style={{ alignItems: 'flex-start' }}>
                                         <Icon name='locate' style={{ fontSize: 15, color: '#fff', }} />
                                     </Col>
                                     <Col size={3.5} style={{ alignItems: 'flex-start' }}>
-                                        <Text style={{ fontFamily: 'OpenSans', fontSize: 12, color: '#fff' }}>Current Location </Text>
+                                        <Text style={{ fontFamily: 'OpenSans', fontSize: 12, color: '#fff' }}>{this.state.locationName} </Text>
                                     </Col>
                                 </Row>
 
@@ -264,7 +263,7 @@ class PharmacyHome extends Component {
                         <View>
                             <Row>
                                 <FlatList
-                                    data={medDetail}
+                                    data={this.state.medicineData}
                                     numColumns={2}
                                     columnWrapperStyle={{ margin: 3 }}
                                     keyExtractor={(item, index) => index.toString()}
@@ -294,14 +293,14 @@ class PharmacyHome extends Component {
 
 
                                             <Row style={{ alignSelf: 'center', marginTop: 5 }} >
-                                                <Text style={styles.mednames}>{item.name}</Text>
+                                                <Text style={styles.mednames}>{item.medicine_name}</Text>
                                             </Row>
                                             <Row style={{ alignSelf: 'center' }} >
                                                 <Text style={styles.hosname}>{item.hospital}</Text>
                                             </Row>
                                             <Row style={{ alignSelf: 'center', marginTop: 2 }}>
-                                                <Text style={styles.oldRupees}>  ₹{item.oldRupees}</Text>
-                                                <Text style={styles.newRupees}>₹{item.newRupees}</Text>
+                                                <Text style={styles.oldRupees}>  ₹{item.price}</Text>
+                                                <Text style={styles.newRupees}>₹{medicineRateAfterOffer(item)}</Text>
                                             </Row>
 
                                             <Row style={{ marginBottom: 5, marginTop: 5, alignSelf: 'center' }}>
@@ -329,7 +328,7 @@ class PharmacyHome extends Component {
                             showsHorizontalScrollIndicator={false}
                         >
                             <FlatList
-                                data={nearPharmacy}
+                                data={this.state.pharmacyData}
                                 horizontal={true}
                                 keyExtractor={(item, index) => index.toString()}
                                 renderItem={({ item }) =>
@@ -344,9 +343,11 @@ class PharmacyHome extends Component {
                                             </Col>
                                         </Row>
                                         <View style={{ marginTop: 5 }}>
-
                                             <Row>
-                                                <Text style={styles.addressText}>{item.address}</Text>
+                                                <Text style={styles.addressText}>{(item.location && item.location.address.no_and_street)+ ','+
+                                                    (item.location && item.location.address.address_line_1 ? item.location.address.address_line_1 : null) + ',' +(item.location && item.location.address.city )+ ',' + (item.location && item.location.address.state) + ',' + (item.location && item.location.address.country) + ',' + (item.location && item.location.address.pin_code)}</Text>
+                                               
+                                                {/* <Text style={styles.addressText}>{item.address}</Text> */}
                                             </Row>
                                             <Row style={{ marginTop: 5 }}>
                                                 <Col size={4}>
@@ -380,9 +381,7 @@ class PharmacyHome extends Component {
                     </View>
                 </Content>
 
-                {/* <NavigationEvents
-					onWillFocus={payload => { this.backNavigation(payload) }}
-				/> */}
+
                 {/* <Content >
                     <Grid style={styles.curvedGrid}>
                     </Grid>
@@ -529,7 +528,13 @@ class PharmacyHome extends Component {
 
 }
 
-export default PharmacyHome
+function pharmacyState(state) {
+
+    return {
+        bookappointment: state.bookappointment,
+    }
+}
+export default connect(pharmacyState)(PharmacyHome)
 
 
 const styles = StyleSheet.create({

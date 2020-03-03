@@ -117,7 +117,7 @@ export async function addToCart(medicineData, selectItem, operation) {
 }
 
 export function medicineRateAfterOffer(item) {
-    return parseInt(item.price) - ((parseInt(item.offer) / 100) * parseInt(item.price));
+    return (parseInt(item.price) - ((parseInt(item.offer) / 100) * parseInt(item.price))).toFixed();
 }
 
 export function getDoctorSpecialist(specialistData) {

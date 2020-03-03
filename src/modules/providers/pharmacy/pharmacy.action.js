@@ -20,7 +20,7 @@ export async function getSearchedMedicines (keyword, isLoading = true) {
 export async function getMedicineDetails() {
     try {
       
-      let endPoint = '/medicine/detailsList?limit=8'
+      let endPoint = '/medicine/detailsList?limit=4'
       console.log(endPoint);
       let response = await getService(endPoint);
       let respData = response.data;
@@ -85,6 +85,19 @@ export async function getpharmacy(pharmacy_id) {
   }
 }
 
+/*get all pharmacy list*/
+export async function getAllPharmacy() {
+  try {
 
+    let endPoint = '/getpharmacy'
+    let response = await getService(endPoint);
+    let respData = response.data;
+    return respData;
+  } catch (e) {
+    return {
+      message: 'exception' + e,
+      success: false
+    }
+  }
+}
 
-  
