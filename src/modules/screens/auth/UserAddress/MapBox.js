@@ -185,7 +185,7 @@ export default class MapBox extends React.Component {
             }
             const userId = await AsyncStorage.getItem('userId')
             // console.log(this.state.address.district)
-            if (validateName(this.state.address.city)) {
+            if (validateName(this.state.address.city) === false) {
                 Toast.show({
                     text: 'City should not contains white spaces and any Special Character',
                     type: 'danger',
@@ -193,7 +193,7 @@ export default class MapBox extends React.Component {
                 })
                 return false
             }
-            if (validateName(this.state.address.district)) {
+            if (validateName(this.state.address.district) === false) {
                 Toast.show({
                     text: 'District should not contains white spaces and any Special Character',
                     type: 'danger',
@@ -201,7 +201,7 @@ export default class MapBox extends React.Component {
                 });
                 return false;
             }
-            if (validateName(this.state.address.state)) {
+            if (validateName(this.state.address.state) === false) {
                 Toast.show({
                     text: 'State should not contains white spaces and any Special Character',
                     type: 'danger',
@@ -209,7 +209,7 @@ export default class MapBox extends React.Component {
                 })
                 return false;
             }
-            if (validateName(this.state.address.country)) {
+            if (validateName(this.state.address.country) === false) {
                 Toast.show({
                     text: 'Country should not contains white spaces and any Special Character',
                     type: 'danger',
