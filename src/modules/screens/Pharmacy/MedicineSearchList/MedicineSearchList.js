@@ -1,14 +1,15 @@
 import React, { Component } from 'react';
 import {
     Container, Content, Text, View, Button, H3, Item, Card,
-    Input, Left, Right, Icon, Footer, Badge, Form
+    Input, Left, Right, Icon, Footer, Badge, Form,CardItem
 } from 'native-base';
 import { Col, Row, Grid } from 'react-native-easy-grid';
-import { StyleSheet, Image, TouchableOpacity, AsyncStorage, FlatList } from 'react-native';
+        import { StyleSheet, Image, TouchableOpacity, AsyncStorage, FlatList ,TouchableHighlight,Modal} from 'react-native';
 import { NavigationEvents } from 'react-navigation';
 import { Loader } from '../../../../components/ContentLoader'
 import { addToCart, medicineRateAfterOffer } from '../../../common';
 import { TextInput } from 'react-native-gesture-handler';
+
 
 class MedicineSearchList extends Component {
     constructor(props) {
@@ -18,7 +19,9 @@ class MedicineSearchList extends Component {
             clickCard: null,
             footerSelectedItem: '',
             cartItems: [],
-            isLoading: true
+            isLoading: true,
+            modalVisible: false,
+            proposedVisible:false
         }
     }
 
@@ -37,6 +40,16 @@ class MedicineSearchList extends Component {
         }
     }
 
+    setModalVisible(visible) {
+        this.setState({modalVisible: visible});
+      }
+
+
+
+
+
+
+    
     // searchedMedicines = async (keyword) => {
     //     try {
     //         this.setState({ isLoading: true })
@@ -102,13 +115,20 @@ class MedicineSearchList extends Component {
             </Item>
         )
     }
+
+
+
+    sble() {
+        
+          this.setState({ isLoading: true, proposedVisible : false })
+    }
     render() {
         const { value, isLoading } = this.state;
-        const med = [{ medname: 'Paracetamol', content: 'By Appollo Pharmacy', count: 'MRP', price: '₹ 300.25', offer: '₹ 180.00' },
-        { medname: 'Paracetamol', content: 'By Appollo Pharmacy', count: 'MRP', price: '₹ 300.25', offer: '₹ 180.00' },
-        { medname: 'Paracetamol', content: 'By Appollo Pharmacy', count: 'MRP', price: '₹ 300.25', offer: '₹ 180.00' },
-        { medname: 'Paracetamol', content: 'By Appollo Pharmacy', count: 'MRP', price: '₹ 300.25', offer: '₹ 180.00' },
-        { medname: 'Paracetamol', content: 'By Appollo Pharmacy', count: 'MRP', price: '₹ 300.25', offer: '₹ 180.00' }]
+        const med = [{ medname: 'Paracetamol', content: 'By Apollo Pharmacy', count: 'MRP', price: '₹ 300.25', offer: '₹ 180.00' },
+        { medname: 'Paracetamol', content: 'By Apollo Pharmacy', count: 'MRP', price: '₹ 300.25', offer: '₹ 180.00' },
+        { medname: 'Paracetamol', content: 'By Apollo Pharmacy', count: 'MRP', price: '₹ 300.25', offer: '₹ 180.00' },
+        { medname: 'Paracetamol', content: 'By Apollo Pharmacy', count: 'MRP', price: '₹ 300.25', offer: '₹ 180.00' },
+        { medname: 'Paracetamol', content: 'By Apollo Pharmacy', count: 'MRP', price: '₹ 300.25', offer: '₹ 180.00' }]
 
         return (
             <Container>
@@ -133,32 +153,40 @@ class MedicineSearchList extends Component {
                                     <View style={{ backgroundColor: '#fff', marginTop: 10, borderRadius: 5 }}>
                                         <Row>
                                             <Col size={4}>
-                                                <Image source={require('../../../../../assets/images/paracetamol.jpg')} style={{ height: 100, width: 70, marginLeft: 5 }} />
+                                                <Image source={require('../../../../../assets/images/paracetamol.jpg')} style={{ height: 80, width: 70, marginLeft: 5 ,marginTop:2.5 }} />
                                             </Col>
                                             <Col size={12.5}>
                                                 <Text style={{ fontFamily: 'OpenSans', fontSize: 16, marginTop: 5 }}>{item.medname}</Text>
-                                                <Text style={{ color: '#A4A4A4', fontFamily: 'OpenSans', fontSize: 12.5, marginBottom: 20 }}>{item.content}</Text>
+                                                <Text style={{ color: '#7d7d7d', fontFamily: 'OpenSans', fontSize: 12.5, marginBottom: 20 }}>{item.content}</Text>
                                                 <Row>
                                                     <Col size={5} style={{ flexDirection: 'row' }}>
-                                                        <Text style={{ fontSize: 8, marginBottom: -15, marginTop: 10, marginLeft: -3, color: "#B40404" }}>{item.count}</Text>
-                                                        <Text style={{ fontSize: 8, marginTop: 10, marginLeft: 1.5, color: "#B40404", textDecorationLine: 'line-through', textDecorationStyle: 'solid' }}>{item.price}</Text>
-                                                        <Text style={{ fontSize: 13, marginTop: 6.5, marginLeft: 2.5, color: "#5FB404" }}>{item.offer}</Text>
+                                                        <Text style={{ fontSize: 8, marginBottom: -15,marginTop: -5,  marginLeft: -3, color: "#ff4e42" }}>{item.count}</Text>
+                                                        <Text style={{ fontSize: 8,  marginLeft: 1.5,marginTop: -5, color: "#ff4e42", textDecorationLine: 'line-through', textDecorationStyle: 'solid' }}>{item.price}</Text>
+                                                        <Text style={{ fontSize: 13, marginTop: -10, marginLeft: 2.5, color: "#8dc63f" }}>{item.offer}</Text>
                                                     </Col>
                                                     <Col size={3} style={{ height: 20, marginLeft: 4 }}>
-                                                        <TouchableOpacity style={{ borderColor: '#0080FF', marginLeft: 1.5, borderWidth: 1, borderRadius: 2.5, marginTop: 5, height: 20, width: 65, paddingBottom: 5, paddingTop: 2 }}>
+                                                        <Row>
+                                                        <TouchableOpacity style={{ borderColor: '#4e85e9', marginLeft: 1.5, borderWidth: 1, borderRadius: 2.5, marginTop: -12.5, height: 25, width: 65, paddingBottom: 5, paddingTop: 2 }}
+                                                        >
                                                             <Row style={{ alignItems: 'center' }}>
-                                                                <Icon name='ios-cart' style={{ color: '#0080FF', fontSize: 11, marginLeft: 3.5, paddingTop: 2.3 }} />
-                                                                <Text style={{ fontSize: 7, color: '#0080FF', marginTop: 2.5, marginLeft: 6 }}>Add to Cart</Text>
+                                                                <Icon name='ios-cart' style={{ color: '#4e85e9', fontSize: 11, marginLeft: 3.5, paddingTop: 2.3 }} />
+                                                                <Text style={{ fontSize: 7, color: '#4e85e9', marginTop: 2.5, marginLeft: 6 }}>Add to Cart</Text>
                                                             </Row>
                                                         </TouchableOpacity>
+                                                        </Row>
                                                     </Col>
                                                     <Col size={3.2} style={{ height: 20, marginLeft: 4, marginRight: 2.5 }}>
-                                                        <TouchableOpacity style={{ borderColor: '#31B404', borderWidth: 1, marginLeft: 1, borderRadius: 2.5, marginTop: 5, height: 20, width: 65, paddingBottom: 5, paddingTop: 2, backgroundColor: '#31B404' }}>
+                                                    <Row>
+                                                        <TouchableOpacity style={{ borderColor: '#8dc63f', borderWidth: 1, marginLeft: 1, borderRadius: 2.5, marginTop: -12.5, height: 25, width: 65, paddingBottom: 5, paddingTop: 2, backgroundColor: '#8dc63f' }}
+                                                          onPress={() => {
+                                                            this.setModalVisible(true);
+                                                          }}>
                                                             <Row style={{ alignItems: 'center' }}>
                                                                 <Icon name='ios-cart' style={{ color: '#fff', fontSize: 11, marginLeft: 5, paddingTop: 2.3 }} />
                                                                 <Text style={{ fontSize: 7, color: '#fff', marginTop: 2.5, marginLeft: 6 }}>Buy Now</Text>
                                                             </Row>
                                                         </TouchableOpacity>
+                                                        </Row>
                                                     </Col>
                                                 </Row>
                                             </Col>
@@ -168,8 +196,134 @@ class MedicineSearchList extends Component {
                         </View>
 
                     </View>
+
+
+
+
+
+         
+
+
+
+
+                    <View style={{ height: 200, position: 'absolute', bottom: 0}}>
+                  <Modal
+                    animationType="slide"
+                    transparent={true}
+                    containerStyle={{ justifyContent: 'flex-end' }}
+                    visible={this.state.modalVisible}
+                  >
+                    
+          <Grid style={{
+            backgroundColor: '#fff',
+            position: 'absolute',
+            bottom: 0,
+            marginLeft:10, marginRight:10, borderRadius:5, borderWidth:1, borderColor:'grey'
+          }}>
+            <Row style={{ backgroundColor: '#fff', paddingTop: 10, paddingBottom: 10, paddingLeft: 10, paddingRight: 10, borderTopLeftRadius: 5, borderTopRightRadius: 5 }}>
+              <Left>
+                <Text style={{ color: '#3A01DF', fontSize: 16}}>Buy Now</Text>
+              </Left>
+              <Right>
+                  <TouchableOpacity>
+                  <Icon name='ios-close-circle' style={{fontSize:17, color: '#FF0000' }} onPress={() => { this.setModalVisible(false); }} />
+                </TouchableOpacity>
+              </Right>
+            </Row>
+
+            
+            <View>
+                <Row>
+                    <Col style={{marginLeft: 5}}>
+            <Image source={require('../../../../../assets/images/paracetamol.jpg')} style={{ height: 80, width: 70, marginLeft: 5 ,marginTop:2.5 }} />
+            </Col>
+            <Col size={7.5} style={{marginLeft: 70}}>
+            <Text style={{ fontFamily: 'OpenSans', fontSize: 16, marginTop: 5 }}>Pharmacy</Text>
+             <Text style={{ color: '#7d7d7d', fontFamily: 'OpenSans', fontSize: 12.5, marginBottom: 20 }}>Apollo Pharmacy</Text>
+            </Col>
+            <Col size={3} style={{marginLeft: 2.5,marginRight:5}}>
+                <View>
+            <Text style={{ fontSize: 15, marginTop: 10, color: "#8dc63f"}}>₹ 180.00</Text>
+            <Row style={{marginLeft: 2.5,marginRight: 5, marginTop:10}}>
+                <Col>
+            <TouchableOpacity style={{width:20,height:20,borderRadius:10,backgroundColor:'#E6E6E6',justifyContent:'center',alignItems:'center'}}>
+                <Text style={{fontSize:12,fontWeight:'500',font:'OpenSans',textAlign:'center',color:'#FF0000'}}>-</Text>
+                </TouchableOpacity>
+                </Col>
+                <Col>
+                <Text style={{fontSize:12,marginTop:2.5,marginLeft:5}}>2</Text>
+                </Col>
+                <Col>
+                <TouchableOpacity style={{width:20,height:20,borderRadius:10,backgroundColor:'#E6E6E6',justifyContent:'center',alignItems:'center'}}>
+                <Text style={{fontSize:12,fontWeight:'500',font:'OpenSans',textAlign:'center',color:'#8dc63f'}}>+</Text>
+                </TouchableOpacity>
+                </Col>
+                </Row>
+            </View>
+            </Col>
+            </Row>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+            
+              
+              
+              
+            </View>
+           
+            <Row style={{ marginLeft: 20, marginTop: 10, marginRight: 20, }}>
+
+              <Col style={{ width: '50%' }}>
+              </Col>
+              <Col style={{ width: '50%', flexDirection: 'row', alignItems: 'flex-end', justifyContent: 'flex-end' }}>
+              <TouchableOpacity style={{ borderColor: '#8dc63f', borderWidth: 1, marginLeft: 1, borderRadius: 2.5, marginTop: -12.5, height: 30, width: 100, paddingBottom: -5, paddingTop: 2, backgroundColor: '#8dc63f'}}>
+                                                            <Row style={{ alignItems: 'center'}}>
+                                                                <Icon name='ios-cart' style={{ color: '#fff', fontSize: 13, marginLeft: 5, paddingTop: 2.3 }} />
+                                                                <Text style={{ fontSize: 12, color: '#fff', marginTop: 2.5, marginLeft: 6 }}>Buy Now</Text>
+                                                            </Row>
+                                                        </TouchableOpacity>
+              </Col>
+
+
+            </Row>
+          </Grid>
+
+                  </Modal>
+                </View>
+
                 </Content>
             </Container>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
