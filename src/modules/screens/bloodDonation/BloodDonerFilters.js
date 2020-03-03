@@ -238,7 +238,7 @@ class BloodDonerFilters extends Component {
         data: user
       })
     }
-    this.props.navigation.navigate('Blood Doners', {
+    this.props.navigation.navigate('Blood Donors', {
       filteredData:user,filerCount: this.filterData.length
     })
 
