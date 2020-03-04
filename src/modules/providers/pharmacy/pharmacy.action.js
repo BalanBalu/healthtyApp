@@ -85,6 +85,36 @@ export async function getpharmacy(pharmacy_id) {
   }
 }
 
+export async function getSuggestionMedicines (keyword,data, isLoading = true) {
+  try {
+    let endPoint = 'medicines/suggestions/'+keyword;
+    let response = await postService(endPoint, data);
+
+    let respData = response.data;
+    return respData;
+  } catch (e) {
+    return {
+      message: 'exception' + e,
+      success: false
+    }
+  }
+}
+export async function getMedicinesSearchList (data, isLoading = true) {
+  try {
+    let endPoint = '/medicines/search/healthCareProducts';
+    let response = await postService(endPoint, data);
+
+    let respData = response.data;
+    return respData;
+  } catch (e) {
+    return {
+      message: 'exception' + e,
+      success: false
+    }
+  }
+}
+
+
 
 
   

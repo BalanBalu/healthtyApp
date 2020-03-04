@@ -63,7 +63,9 @@ import MyChats from '../../modules/screens/chat/MyChats';
 import AvailableDoctors4Chat from '../../modules/screens/chat/AvailableDoctor';
 import SuccessChatPaymentPage from '../../modules/screens/chat/successMsg';
 import ReportIssue from '../../modules/screens/ReportIssue';
-import EarnReward from '../../modules/screens/Home/EarnReward'
+import EarnReward from '../../modules/screens/Home/EarnReward';
+import PharmacySuggestionList from '../../modules/screens/Pharmacy/pharmacyMediceSuggestionList./pharmacySuggestionList';
+
 
 const AuthRoutes = {
   login: {
@@ -517,6 +519,12 @@ const HomeStack = createStackNavigator({
     screen: OrderPaymentSuccess,
     navigationOptions: {
       title: 'Payment Success'
+    }
+  },
+  PharmacySuggestionList: {
+    screen: PharmacySuggestionList,
+    navigationOptions: {
+      title: 'Pharmacy Suggestion List'
     }
   },
 
