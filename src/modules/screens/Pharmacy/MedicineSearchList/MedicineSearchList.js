@@ -5,9 +5,9 @@ import {
 } from 'native-base';
 import { Col, Row, Grid } from 'react-native-easy-grid';
 import { StyleSheet, Image, TouchableOpacity, AsyncStorage, FlatList, TouchableHighlight, Modal } from 'react-native';
-import {getMedicinesSearchList} from '../../../providers/pharmacy/pharmacy.action'
-import {medicineRateAfterOffer} from '../../../common'
-import {BuyNow} from '../BuyNow/BuyNow'
+import { getMedicinesSearchList } from '../../../providers/pharmacy/pharmacy.action'
+import { medicineRateAfterOffer } from '../../../common'
+import { BuyNow } from '../BuyNow/BuyNow'
 
 
 class MedicineSearchList extends Component {
@@ -21,47 +21,47 @@ class MedicineSearchList extends Component {
             isLoading: true,
             modalVisible: false,
             //new impementation
-            data:[],
+            data: [],
             isBuyNow: false
 
         }
     }
-componentDidMount(){
-    let medicineName=this.props.navigation.getParam('medicineName')
-    let postData=[
-        {
-            type:'medicine_name',
-            value:medicineName 
-             
-            
-        }
-    ]
-    this.MedicineSearchList(postData)
-}
-MedicineSearchList = async (postData) => {
-    try{
-    let medicineResultData = await getMedicinesSearchList( postData);
-    console.log(medicineResultData.data)
-    if (medicineResultData.success) {
-        this.setState({
-            data: medicineResultData.data,
-            
-        });
-      
-    } else {
+    componentDidMount() {
+        let medicineName = this.props.navigation.getParam('medicineName')
+        let postData = [
+            {
+                type: 'medicine_name',
+                value: medicineName
 
-        this.setState({
-            data: [],
-         
-        });
+
+            }
+        ]
+        this.MedicineSearchList(postData)
     }
-}
-catch(e){
-    console.log(e)
-}
-}
+    MedicineSearchList = async (postData) => {
+        try {
+            let medicineResultData = await getMedicinesSearchList(postData);
+            console.log(medicineResultData.data)
+            if (medicineResultData.success) {
+                this.setState({
+                    data: medicineResultData.data,
+
+                });
+
+            } else {
+
+                this.setState({
+                    data: [],
+
+                });
+            }
+        }
+        catch (e) {
+            console.log(e)
+        }
+    }
     render() {
-        const { value, isLoading ,data} = this.state;
+        const { value, isLoading, data } = this.state;
         const med = [{ medname: 'Paracetamol', content: 'By Apollo Pharmacy', count: 'MRP', price: '₹ 300.25', offer: '₹ 180.00' },
         { medname: 'Paracetamol', content: 'By Apollo Pharmacy', count: 'MRP', price: '₹ 300.25', offer: '₹ 180.00' },
         { medname: 'Paracetamol', content: 'By Apollo Pharmacy', count: 'MRP', price: '₹ 300.25', offer: '₹ 180.00' },
@@ -96,11 +96,11 @@ catch(e){
                                             </Col>
                                             <Col size={12.5}>
                                                 <Text style={{ fontFamily: 'OpenSans', fontSize: 16, marginTop: 5 }}>{item.medicine_name}</Text>
-                                                <Text style={{ color: '#7d7d7d', fontFamily: 'OpenSans', fontSize: 12.5, marginBottom: 20 }}>{'By ' +item.pharmacy_name}</Text>
+                                                <Text style={{ color: '#7d7d7d', fontFamily: 'OpenSans', fontSize: 12.5, marginBottom: 20 }}>{'By ' + item.pharmacy_name}</Text>
                                                 <Row>
                                                     <Col size={5} style={{ flexDirection: 'row' }}>
                                                         <Text style={{ fontSize: 8, marginBottom: -15, marginTop: -5, marginLeft: -3, color: "#ff4e42" }}>{'MRP'}</Text>
-                                                        <Text style={{ fontSize: 8, marginLeft: 1.5, marginTop: -5, color: "#ff4e42", textDecorationLine: 'line-through', textDecorationStyle: 'solid' }}>{item.price||''}</Text>
+                                                        <Text style={{ fontSize: 8, marginLeft: 1.5, marginTop: -5, color: "#ff4e42", textDecorationLine: 'line-through', textDecorationStyle: 'solid' }}>{item.price || ''}</Text>
                                                         <Text style={{ fontSize: 13, marginTop: -10, marginLeft: 2.5, color: "#8dc63f" }}>{medicineRateAfterOffer(item)}</Text>
                                                     </Col>
                                                     <Col size={3} style={{ height: 20, marginLeft: 4 }}>
@@ -117,7 +117,7 @@ catch(e){
                                                     <Col size={3.2} style={{ height: 20, marginLeft: 4, marginRight: 2.5 }}>
                                                         <Row>
                                                             <TouchableOpacity style={{ borderColor: '#8dc63f', borderWidth: 1, marginLeft: 1, borderRadius: 2.5, marginTop: -12.5, height: 25, width: 65, paddingBottom: 5, paddingTop: 2, backgroundColor: '#8dc63f' }}
-                                                                onPress={() =>this.setState({isBuyNow:true}) }>
+                                                                onPress={() => this.setState({ isBuyNow: true })}>
                                                                 <Row style={{ alignItems: 'center' }}>
                                                                     <Icon name='ios-cart' style={{ color: '#fff', fontSize: 11, marginLeft: 5, paddingTop: 2.3 }} />
                                                                     <Text style={{ fontSize: 7, color: '#fff', marginTop: 2.5, marginLeft: 6 }}>Buy Now</Text>
@@ -129,26 +129,26 @@ catch(e){
                                             </Col>
                                         </Row>
                                     </View>
-                                    
+
                                 } />
                         </View>
 
                     </View>
 
-        {this.state.isBuyNow==true?
-        <BuyNow/>
-        :null}
+                    {this.state.isBuyNow == true ?
+                        <BuyNow />
+                        : null}
 
 
 
 
-                                  </Content>
+                </Content>
             </Container>
 
 
 
-)
-}
+        )
+    }
 }
 
 export default MedicineSearchList
@@ -368,7 +368,7 @@ const styles = StyleSheet.create({
 
             // </Container >
 
-       
+
 
 
 

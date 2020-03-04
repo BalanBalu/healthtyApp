@@ -121,7 +121,7 @@ export function medicineRateAfterOffer(item) {
     if (item.discount_type) {
 
         if (item.discount_type == 'PERCENTAGE') {
-            let divided = (parseInt(item.discount_value)/100) * parseInt(item.price)
+            let divided = (parseInt(item.discount_value) / 100) * parseInt(item.price)
             amount = parseInt(item.price) - divided
             return amount
         } else if (item.discount_type == 'AMOUNT') {
