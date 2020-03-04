@@ -47,7 +47,7 @@ class OrderDetails extends Component {
                         {/* <Text style={styles.delHeadText}>Delivery On 29th February,2020</Text> */}
 
 
-                        <Row style={{marginTop:15,borderBottomColor:'gray',borderBottomWidth:0.3,paddingBottom:10}}>
+                        <Row style={{ marginTop: 15, borderBottomColor: 'gray', borderBottomWidth: 0.3, paddingBottom: 10 }}>
                             <Col size={0.7}>
                                 <TouchableOpacity style={styles.lengthTouch}>
                                 </TouchableOpacity>
@@ -62,22 +62,22 @@ class OrderDetails extends Component {
 
                             </Col>
                             <Col size={9.3}>
-                                <View style={{marginTop:-3}}>
-                                <Text style={styles.trackingText}>Ordered and Approved</Text>
-                                <Text style={{fontSize:14,fontFamily:'OpenSans',color:'#909090'}}>17th February,2020 at 05.27 PM</Text>
+                                <View style={{ marginTop: -3 }}>
+                                    <Text style={styles.trackingText}>Ordered and Approved</Text>
+                                    <Text style={{ fontSize: 14, fontFamily: 'OpenSans', color: '#909090' }}>17th February,2020 at 05.27 PM</Text>
                                 </View>
-                                <View style={{marginTop:34}}>
-                                <Text style={styles.trackingText}>Packed and Out for Delivery</Text>
-                                <Text style={{fontSize:14,fontFamily:'OpenSans',color:'#909090'}}>17th February,2020 at 05.40 PM</Text>
-                                <Text style={{fontSize:14,fontFamily:'OpenSans',color:'#ff4e42'}}>Order is yet to be delivered</Text>
+                                <View style={{ marginTop: 34 }}>
+                                    <Text style={styles.trackingText}>Packed and Out for Delivery</Text>
+                                    <Text style={{ fontSize: 14, fontFamily: 'OpenSans', color: '#909090' }}>17th February,2020 at 05.40 PM</Text>
+                                    <Text style={{ fontSize: 14, fontFamily: 'OpenSans', color: '#ff4e42' }}>Order is yet to be delivered</Text>
                                 </View>
-                                <View style={{marginTop:14}}>
-                                <Text style={styles.trackingText}>Ordered and Approved</Text>
-                                <Text style={{fontSize:14,fontFamily:'OpenSans',color:'#909090'}}>17th February,2020 at 05.27 PM</Text>
+                                <View style={{ marginTop: 14 }}>
+                                    <Text style={styles.trackingText}>Ordered and Approved</Text>
+                                    <Text style={{ fontSize: 14, fontFamily: 'OpenSans', color: '#909090' }}>17th February,2020 at 05.27 PM</Text>
                                 </View>
                             </Col>
                         </Row>
-<Text style={{fontSize:14,fontWeight:'500',fontFamily:'OpenSans',color:'#7F49C3',marginTop:10}}> Ordered Medicines</Text>
+                        <Text style={{ fontSize: 14, fontWeight: '500', fontFamily: 'OpenSans', color: '#7F49C3', marginTop: 10 }}> Ordered Medicines</Text>
                         <FlatList
                             data={MedDetail}
                             renderItem={({ item }) =>
@@ -488,30 +488,30 @@ const styles = StyleSheet.create({
         fontWeight: '500',
         marginTop: 5
     },
-    lengthTouch:{
-        height:12,
-        width:12,
-        borderRadius:12/2,
-        backgroundColor:'#7F49C3'
+    lengthTouch: {
+        height: 12,
+        width: 12,
+        borderRadius: 12 / 2,
+        backgroundColor: '#7F49C3'
     },
-    TouchLegth :{
-        height:60,
-        backgroundColor:'#7F49C3',
-        padding:1,
-        width:4,
-        marginLeft:4
+    TouchLegth: {
+        height: 60,
+        backgroundColor: '#7F49C3',
+        padding: 1,
+        width: 4,
+        marginLeft: 4
     },
-    bottomText:{
-        height:12,
-        width:12,
-        borderRadius:12/2,
-        borderColor:'gray',
-        borderWidth:0.3
+    bottomText: {
+        height: 12,
+        width: 12,
+        borderRadius: 12 / 2,
+        borderColor: 'gray',
+        borderWidth: 0.3
     },
-    trackingText:{
-        fontSize:14,
-        fontWeight:'500',
-        fontFamily:'OpenSans',
-        color:'#4c4c4c'
+    trackingText: {
+        fontSize: 14,
+        fontWeight: '500',
+        fontFamily: 'OpenSans',
+        color: '#4c4c4c'
     }
 });
