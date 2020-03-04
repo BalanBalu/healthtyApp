@@ -85,6 +85,22 @@ export async function getpharmacy(pharmacy_id) {
   }
 }
 
+export async function getSelectedMedicineDetails(medicineId) {
+  try {
+
+    let endPoint = '/medicines/' + medicineId;
+    console.log(endPoint);
+    let response = await getService(endPoint);
+    let respData = response.data;
+    return respData;
+  } catch (e) {
+    return {
+      message: 'exception' + e,
+      success: false
+    }
+  }
+}
+
 
 
   
