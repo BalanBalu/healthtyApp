@@ -1,86 +1,220 @@
 import React, { Component } from 'react';
-import { Container, Content, Text, Title, Header, Form, Textarea, Button, H3, Item, List, ListItem, Card, Input, Left, Right, Thumbnail, Body, Icon, Footer, FooterTab, Picker, Segment, CheckBox, View, Badge } from 'native-base';
+import { Container, Content, Text, Title, Header, Form, Textarea, Button, H3, Item, List, ListItem, Card, Input, Left, Right, ScrollView, Thumbnail, Body, Icon, Footer, FooterTab, Picker, Segment, CheckBox, View, Badge } from 'native-base';
 import { Col, Row, Grid } from 'react-native-easy-grid';
 import { StyleSheet, Image, AsyncStorage, TextInput, FlatList, TouchableOpacity } from 'react-native';
 import { Loader } from '../../../../components/ContentLoader';
 import { medicineRateAfterOffer } from '../../../common';
 
-let temp, userId; 
+let temp, userId;
 class PharmacyCart extends Component {
     constructor(props) {
         super(props)
         this.state = {
-            cartItems:[],
+            cartItems: [],
             isLoading: true
-        }       
+        }
     }
 
-     componentDidMount(){
+    componentDidMount() {
         this.getAddToCart();
     }
 
-    getAddToCart= async() => {
-    try{
-        this.setState({ isLoading: true })
-        temp = await AsyncStorage.getItem('userId')
-        userId = JSON.stringify(temp);
+    getAddToCart = async () => {
+        try {
+            this.setState({ isLoading: true })
+            temp = await AsyncStorage.getItem('userId')
+            userId = JSON.stringify(temp);
 
-        const cartItems = await AsyncStorage.getItem('cartItems-'+userId);       
-        if( cartItems === undefined){
-            this.setState({ cartItems: [], isLoading: false });
-        }else{       
-            this.setState({ cartItems: JSON.parse(cartItems), isLoading: false });
+            const cartItems = await AsyncStorage.getItem('cartItems-' + userId);
+            if (cartItems === undefined) {
+                this.setState({ cartItems: [], isLoading: false });
+            } else {
+                this.setState({ cartItems: JSON.parse(cartItems), isLoading: false });
+            }
+        }
+        catch (e) {
+            console.log(e);
+        }
+        finally {
+            this.setState({ isLoading: false });
         }
     }
-    catch(e){
-        console.log(e);
-    }
-    finally {
-         this.setState({ isLoading: false });
-        }
-    }
 
-    increase(index){
-        let selectedCartItem = this.state.cartItems;        
-        selectedCartItem[index].selectedQuantity++;
-        this.setState({cartItems: selectedCartItem})
-        AsyncStorage.setItem('cartItems-'+userId, JSON.stringify(this.state.cartItems))
-    }
-
-    decrease(index){
+    increase(index) {
         let selectedCartItem = this.state.cartItems;
-        if(selectedCartItem[index].selectedQuantity > 1){
-            selectedCartItem[index].selectedQuantity--;       
-         this.setState({cartItems: selectedCartItem})
-            AsyncStorage.setItem('cartItems-'+userId, JSON.stringify(this.state.cartItems))
+        selectedCartItem[index].selectedQuantity++;
+        this.setState({ cartItems: selectedCartItem })
+        AsyncStorage.setItem('cartItems-' + userId, JSON.stringify(this.state.cartItems))
+    }
+
+    decrease(index) {
+        let selectedCartItem = this.state.cartItems;
+        if (selectedCartItem[index].selectedQuantity > 1) {
+            selectedCartItem[index].selectedQuantity--;
+            this.setState({ cartItems: selectedCartItem })
+            AsyncStorage.setItem('cartItems-' + userId, JSON.stringify(this.state.cartItems))
         }
     }
-  
-    removeMedicine(index){
-            let data = this.state.cartItems;
-            data.splice(index, 1);
-            this.setState({ cartItems: data });
-             AsyncStorage.setItem('cartItems-'+userId, JSON.stringify(this.state.cartItems))
-      }
-      
-      totalPrice() {
+
+    removeMedicine(index) {
+        let data = this.state.cartItems;
+        data.splice(index, 1);
+        this.setState({ cartItems: data });
+        AsyncStorage.setItem('cartItems-' + userId, JSON.stringify(this.state.cartItems))
+    }
+
+    totalPrice() {
         let total = 0;
-        if(this.state.cartItems) {
+        if (this.state.cartItems) {
             this.state.cartItems.forEach(element => {
-                total = total + ((parseInt(element.price) - (parseInt(element.offer)/100) * parseInt(element.price)) * parseInt(element.selectedQuantity))
-            }) 
+                total = total + ((parseInt(element.price) - (parseInt(element.offer) / 100) * parseInt(element.price)) * parseInt(element.selectedQuantity))
+            })
             return total.toFixed(2);
-        }   
-      }
+        }
+    }
 
 
-    render() {            
-              const { isLoading,cartItems } = this.state;
+    render() {
+        const { isLoading, cartItems } = this.state;
 
-     return (            
-      <Container style={styles.container}>
+        return (
+            <Container style={{ backgroundColor: '#EAE6E6' }}>
+                <Content>
+                
+                    <View style={{ margin: 5, marginTop:10, backgroundColor: '#fff', borderRadius: 5 }}>
+                        <Row>
+                            <Col>
+                                <Text style={{ margin: 10, fontFamily: 'Open Sans', color: '#7401DF' }}>Delivery Address</Text>
+                            </Col>
+                            <Col>
+                                <TouchableOpacity>
+                                    <Text style={{ fontFamily: 'Open Sans', marginTop: 12.5, margin: 10, fontSize: 11, textAlign: 'right', color: '#ff4e42' }}>Change</Text>
+                                </TouchableOpacity>
+                            </Col>
+                        </Row>
+                        <Row>
+                            <Text style={{ fontFamily: 'Open Sans', margin: 10, fontSize: 12.5, marginTop: -5, color: '#848484' }} >No 67, Gandhi taurret, OT Bus Stand, Ambattur - 600051</Text>
+                        </Row>
+                    </View>
+                    <View style={{ margin: 5, backgroundColor: '#fff', borderRadius: 5 }}>
+                        <Row>
+                            <Image source={require('../../../../../assets/images/Led.jpg')} style={{ height: 100, width: 70, margin: 5 }} />
+                            <Col Size={5} style={{ marginLeft: 10 }}>
+                                <Text style={{ fontFamily: 'OpenSans', fontSize: 16, marginTop: 5 }}>Paracetamol</Text>
+                                <Text style={{ color: '#A4A4A4', fontFamily: 'OpenSans', fontSize: 12.5, marginBottom: 20 }}>By Apollo pharmacy</Text>
+                                <Row style={{ marginTop: -15, marginRight: 10 }}>
+                                    <Col>
+                                        <Text style={{ fontSize: 9.5, marginBottom: -15, marginTop: 30, marginLeft: 3.5, color: "#ff4e42" }}>MRP</Text>
+                                    </Col>
+                                    <Col>
+                                        <Text style={{ fontSize: 9.5, marginTop: 30, marginLeft: -32.5, color: "#ff4e42", textDecorationLine: 'line-through', textDecorationStyle: 'solid' }}>₹ 300.25</Text>
+                                    </Col>
+                                    <Col>
+                                        <Text style={{ fontSize: 15, marginTop: 25, marginLeft: -50, color: "#5FB404" }}>₹ 180.00</Text>
+                                    </Col>
+                                    <Row style={{ marginTop: -25 }}>
+                                        <TouchableOpacity style={styles.touch}>
+                                            <Text style={{ fontSize: 15, fontWeight: '500', fontFamily: 'OpenSans', textAlign: 'center', color: '#FF0000' }}>-</Text>
+                                        </TouchableOpacity>
+                                        <Text style={{ fontWeight: '300', fontSize: 15, textAlign: 'center', marginTop: 4.5, marginLeft: 5, fontFamily: 'OpenSans' }}>2</Text>
+                                        <TouchableOpacity style={styles.touch}>
+                                            <Text style={{ fontSize: 15, fontWeight: '500', fontFamily: 'OpenSans', textAlign: 'center', color: '#8dc63f' }}>+</Text>
+                                        </TouchableOpacity>
+                                    </Row>
+                                    <Row style={{ marginLeft: -75, marginTop: 30, marginRight: 12.5 }}>
+                                        <TouchableOpacity style={{ borderColor: '#ff4e42', borderWidth: 1, marginLeft: -25, borderRadius: 2.5, marginTop: -12.5, height: 30, width: 100, paddingBottom: -5, paddingTop: 2, backgroundColor: '#fff' }}>
+                                            <Row style={{ alignItems: 'center' }}>
+                                                <Text style={{ fontSize: 12, color: '#ff4e42', marginTop: 2.5, fontWeight: '500', fontFamily: 'OpenSans', marginLeft: 25, marginBottom: 5, textAlign: 'center' }}><Icon name='ios-trash' style={{ color: '#ff4e42', fontSize: 13, marginLeft: -2.5, paddingTop: 2.3 }} /> Remove</Text>
+                                            </Row>
+                                        </TouchableOpacity>
+                                    </Row>
+                                </Row>
+                            </Col>
+                        </Row>
+                    </View>
 
-          {isLoading == true ? <Loader style='list' /> :
+                    <View style={{ backgroundColor: '#fff', margin: 5, borderRadius: 5 }}>
+                        <Row>
+                            <Col>
+                                <Text style={{ margin: 10, fontFamily: 'Open Sans', color: '#7401DF', marginBottom: -5 }}>Add More Item</Text>
+                            </Col>
+                            <Col>
+                                <TouchableOpacity>
+                                    <Icon name='ios-add-circle' style={{ margin: 10, color: '#7401DF', fontSize: 25, marginLeft: 125, paddingTop: 2.3 }} />
+                                </TouchableOpacity>
+                            </Col>
+                        </Row>
+                    </View>
+
+                    <View style={{backgroundColor: '#fff', margin: 5, borderRadius: 5}}>
+                        <Row>
+                            <Col size={7.5}>
+                        <Text style={styles.Totalamount}>Total Amount of Products in the Cart</Text>
+                        </Col>
+                        <Col size={2.5}>
+                        <Text style={{margin:10,color:'#5FB404',fontSize:15,textAlign:'right'}}>₹ 180.00</Text>
+                        </Col>
+                        </Row>
+                        <Row style={{marginTop:-10}}>
+                            <Col size={7.5}>
+                        <Text style={styles.Totalamount}>Delivery Charges</Text>
+                        </Col>
+                        <Col size={2.5}>
+                        <Text style={{margin:10,color:'#ff4e42',fontSize:15,textAlign:'right'}}>₹ 50.00</Text>
+                        </Col>
+                        </Row>
+                        <Row style={{marginTop:10}}>
+                            <Col size={7.5}>
+                        <Text style={{margin:10,fontWeight:'500', fontSize:14}}>Amount to be Paid</Text>
+                        </Col>
+                        <Col size={2.5}>
+                        <Text style={{margin:10,color:'#5FB404',fontSize:15,textAlign:'right'}}>₹ 230.00</Text>
+                        </Col>
+                        </Row>
+                    </View>
+
+                   
+
+<View>
+
+</View>
+  
+
+                    {/* <View style={{ margin: 100 }}>
+                        <Image source={require('../../../../../assets/images/Emptycart.png')} style={{ height: 175, width: 175 }} />
+                        <Text style={{ margintop: -20, textAlign: 'center', color: '#7401DF', fontWeight: '500', fontFamily: 'OpenSans' }}>OOPS!</Text>
+                        <Text style={{ textAlign: 'center', color: '#848484', fontFamily: 'OpenSans', fontWeight: '400', marginTop:2.5}}>Your Cart is Empty!</Text>
+                        <TouchableOpacity style={{ borderColor: '#5FB404', borderWidth: 1, marginLeft: 20, borderRadius: 2.5, marginTop: 15, height: 30, width: 120, paddingBottom: -5, paddingTop: 2, backgroundColor: '#5FB404' }}>
+                            <Text style={{ fontFamily: 'OpenSans', fontSize: 12, color: '#fff', marginTop: 2.5, fontWeight: '500', fontFamily: 'OpenSans', marginRight: 10, marginLeft: 10, marginBottom: 5, textAlign: 'center' }}><Icon name='ios-cart' style={{ color: '#fff', fontSize: 13, marginLeft: 2.5, paddingTop: 2.3 }} /> Add Item</Text>
+                        </TouchableOpacity>
+                    </View> */}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+                    {/* {isLoading == true ? <Loader style='list' /> :
 
              <Content style={styles.bodyContent}>
 
@@ -173,7 +307,52 @@ class PharmacyCart extends Component {
                             <Text>Checkout</Text>
                         </Button>
                     </Col>
-                </Footer>: null}
+                </Footer>: null} */}
+                </Content>
+               
+
+                <Footer style={{}}>
+                    <FooterTab>
+                <Row>
+                    <Col size={5} style={{alignItems:'center',justifyContent:'center',backgroundColor:'#fff'}}>
+                    <TouchableOpacity >
+                    <Text style={{ color: '#ff4e42', fontSize:20, margin:10,marginLeft:7.5}}><Icon name='ios-trash' style={{ color: '#ff4e42', fontSize: 20, marginLeft: -2.5, paddingTop: 2.3, margin:10 }} /> Remove All</Text>
+                    </TouchableOpacity>
+                    </Col>
+                    <Col size={5} style={{alignItems:'center',justifyContent:'center',backgroundColor:'#8dc63f'}}>
+                    <TouchableOpacity>
+                    <Text style={{ color: '#fff', fontSize:20, marginLeft:20, margin:10}}><Icon name='ios-cart' style={{ color: '#fff', fontSize: 20, marginLeft: -2.5, paddingTop: 2.3, margin:10 }} /> Buy Now</Text>
+                    </TouchableOpacity>
+                    </Col>
+                </Row>
+                </FooterTab>
+                </Footer>
+
+
+
+
+
+
+
+
+                   
+                    {/* <View style={{marginTop:200,  backgroundColor:'#fff'}}>
+                        
+                        <Row>
+                            <Col size={5} >
+                                <TouchableOpacity style={{backgroundColor:'#fff'}}>
+                    <Text style={{ color: '#ff4e42', fontSize:20, margin:10,marginLeft:25}}><Icon name='ios-trash' style={{ color: '#ff4e42', fontSize: 20, marginLeft: -2.5, paddingTop: 2.3, margin:10 }} /> Remove All</Text>
+                    </TouchableOpacity>
+                    </Col>
+                    <Col size={5} style={{backgroundColor:'#5FB404'}}>
+                    <TouchableOpacity  style={{backgroundColor:'#5FB404'}}>
+                    <Text style={{ color: '#fff', fontSize:20, marginLeft:40, margin:10}}><Icon name='ios-cart' style={{ color: '#fff', fontSize: 20, marginLeft: -2.5, paddingTop: 2.3, margin:10 }} /> Buy Now</Text>
+                    </TouchableOpacity>
+                    </Col>
+                    </Row>
+                    </View> */}
+                    
+                   
             </Container >
         )
     }
@@ -185,10 +364,6 @@ export default PharmacyCart
 
 const styles = StyleSheet.create({
 
-    container:
-    {
-        backgroundColor: '#ffffff',
-    },
 
     bodyContent: {
         padding: 0
@@ -201,18 +376,33 @@ const styles = StyleSheet.create({
         marginTop: 'auto',
         marginBottom: 'auto'
     },
+   Totalamount: {
+    margin:10, 
+    color:'#A4A4A4', 
+    fontSize:14
+   },
 
+   touch: {
+    marginLeft: 2.5, 
+    marginTop: 5, 
+    width: 20, 
+    height: 20, 
+    borderRadius: 10,
+    backgroundColor: '#E6E6E6', 
+    justifyContent: 'center', 
+    alignItems: 'center'
+   },
 
     curvedGrid: {
         width: 250,
         height: 250,
         borderRadius: 125,
-        marginTop:-135,
-        marginLeft:'auto',
-        marginRight:'auto',
+        marginTop: -135,
+        marginLeft: 'auto',
+        marginRight: 'auto',
         backgroundColor: '#745DA6',
         transform: [
-          {scaleX: 2}
+            { scaleX: 2 }
         ],
         position: 'relative',
         overflow: 'hidden',
