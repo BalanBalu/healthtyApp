@@ -1,7 +1,9 @@
 import React, { Component } from 'react';
-import { Container, Content, Text, Title, Header, Form, Textarea, 
-    Button, H3, Item, List, ListItem, Card, Input, Left, Right, 
-    Thumbnail, Body, Icon, Footer, FooterTab, Picker, Segment, CheckBox, View, Badge, Spinner } from 'native-base';
+import {
+    Container, Content, Text, Title, Header, Form, Textarea,
+    Button, H3, Item, List, ListItem, Card, Input, Left, Right,
+    Thumbnail, Body, Icon, Footer, FooterTab, Picker, Segment, CheckBox, View, Badge, Spinner
+} from 'native-base';
 import { Col, Row, Grid } from 'react-native-easy-grid';
 import { StyleSheet, Image, AsyncStorage, TextInput, FlatList, TouchableOpacity } from 'react-native';
 import { Loader } from '../../../../components/ContentLoader';
@@ -11,17 +13,17 @@ class OrderDetails extends Component {
     constructor(props) {
         super(props)
         this.state = {
-            orderId:'',
-            myOrderList:[],
-            isLoading:true,
+            orderId: '',
+            myOrderList: [],
+            isLoading: true,
         }
     }
-    async componentDidMount(){
+    async componentDidMount() {
         const { navigation } = this.props;
-   await  this.setState({myOrderList: navigation.getParam('orderDetails'), isLoading:false})
-        }
-   
-   
+        await this.setState({ myOrderList: navigation.getParam('orderDetails'), isLoading: false })
+    }
+
+
     noOrders() {
         return (
             <Item style={{ borderBottomWidth: 0, justifyContent: 'center', alignItems: 'center' }}>
@@ -32,10 +34,154 @@ class OrderDetails extends Component {
 
     render() {
         const { navigation } = this.props;
-        const { isLoading,myOrderList } = this.state;
+        const { isLoading, myOrderList } = this.state;
+        const MedDetail = [{ medname: 'Horlicks Health and Nutrician Drink Classic Malt (x 1)', pharname: 'By Apollo Pharmacy', amount: '₹ 180.00' },
+        { medname: 'Horlicks Health and Nutrician Drink Classic Malt (x 1)', pharname: 'By Apollo Pharmacy', amount: '₹ 180.00' },
+        { medname: 'Horlicks Health and Nutrician Drink Classic Malt (x 1)', pharname: 'By Apollo Pharmacy', amount: '₹ 180.00' }]
         return (
             <Container style={styles.container}>
-                {isLoading == true ? <Spinner color='blue' /> :
+                <Content style={{ backgroundColor: '#F5F5F5', padding: 10 }}>
+                    <View style={{ backgroundColor: '#fff', padding: 10, marginTop: 5 }}>
+                        <Text style={styles.arrHeadText}>Arriving On Today</Text>
+                        {/* Delivery date display  */}
+                        {/* <Text style={styles.delHeadText}>Delivery On 29th February,2020</Text> */}
+
+
+                        <Row style={{marginTop:15,borderBottomColor:'gray',borderBottomWidth:0.3,paddingBottom:10}}>
+                            <Col size={0.7}>
+                                <TouchableOpacity style={styles.lengthTouch}>
+                                </TouchableOpacity>
+                                <TouchableOpacity style={styles.TouchLegth}>
+                                </TouchableOpacity>
+                                <TouchableOpacity style={styles.lengthTouch}>
+                                </TouchableOpacity>
+                                <TouchableOpacity style={styles.TouchLegth}>
+                                </TouchableOpacity>
+                                <TouchableOpacity style={styles.bottomText}>
+                                </TouchableOpacity>
+
+                            </Col>
+                            <Col size={9.3}>
+                                <View style={{marginTop:-3}}>
+                                <Text style={styles.trackingText}>Ordered and Approved</Text>
+                                <Text style={{fontSize:14,fontFamily:'OpenSans',color:'#909090'}}>17th February,2020 at 05.27 PM</Text>
+                                </View>
+                                <View style={{marginTop:34}}>
+                                <Text style={styles.trackingText}>Packed and Out for Delivery</Text>
+                                <Text style={{fontSize:14,fontFamily:'OpenSans',color:'#909090'}}>17th February,2020 at 05.40 PM</Text>
+                                <Text style={{fontSize:14,fontFamily:'OpenSans',color:'#ff4e42'}}>Order is yet to be delivered</Text>
+                                </View>
+                                <View style={{marginTop:14}}>
+                                <Text style={styles.trackingText}>Ordered and Approved</Text>
+                                <Text style={{fontSize:14,fontFamily:'OpenSans',color:'#909090'}}>17th February,2020 at 05.27 PM</Text>
+                                </View>
+                            </Col>
+                        </Row>
+<Text style={{fontSize:14,fontWeight:'500',fontFamily:'OpenSans',color:'#7F49C3',marginTop:10}}> Ordered Medicines</Text>
+                        <FlatList
+                            data={MedDetail}
+                            renderItem={({ item }) =>
+                                <Row style={styles.rowStyle}>
+                                    <Col size={2}>
+                                        <Image
+                                            source={require('../../../../../assets/images/images.jpeg')}
+                                            style={{
+                                                width: 60, height: 60, alignItems: 'center'
+                                            }}
+                                        />
+                                    </Col>
+                                    <Col size={8} style={styles.nameText}>
+                                        <Text style={styles.nameText}>{item.medname}</Text>
+                                        <Text style={styles.pharText}>{item.pharname}</Text>
+                                        <Text style={styles.amountText}>{item.amount}</Text>
+                                    </Col>
+                                </Row>
+                            } />
+                        <Row style={{ marginTop: 10 }}>
+                            <Col size={5}>
+                                <Text style={styles.ItemText}>Item Total</Text>
+
+                            </Col>
+                            <Col size={5}>
+                                <Text style={styles.rsText}>₹ 540.00</Text>
+                            </Col>
+                        </Row>
+                        <Row style={{ marginTop: 10 }}>
+                            <Col size={5}>
+                                <Text style={styles.mainText}>Delivery Charges</Text>
+
+                            </Col>
+                            <Col size={5}>
+                                <Text style={styles.rsText}>₹ 50.00</Text>
+                            </Col>
+                        </Row>
+                        <Row style={{ marginTop: 10 }}>
+                            <Col size={5}>
+                                <Text style={styles.mainText}>Tax</Text>
+
+                            </Col>
+                            <Col size={5}>
+                                <Text style={styles.rsText}>₹ 50.00</Text>
+                            </Col>
+                        </Row>
+                        <Row style={{ marginTop: 10 }}>
+                            <Col size={5}>
+                                <Text style={styles.grandTotalText}>Grand Total</Text>
+
+                            </Col>
+                            <Col size={5}>
+                                <Text style={styles.totalsText}>₹ 640.00</Text>
+                            </Col>
+                        </Row>
+                    </View>
+
+                    <View style={styles.mainView}>
+                        <Text style={styles.orderText}>OrderDetails</Text>
+                        <View style={{ marginTop: 10 }}>
+                            <Text style={styles.innerText}>Order Id</Text>
+                            <Text style={styles.rightText}>2020729443</Text>
+                        </View>
+                        <View style={{ marginTop: 10 }}>
+                            <Text style={styles.innerText}>Payment</Text>
+                            <Text style={styles.rightText}>Cash on Delivery</Text>
+                        </View>
+                        <View style={{ marginTop: 10 }}>
+                            <Text style={styles.innerText}>Ordered On</Text>
+                            <Text style={styles.rightText}>02nd March,2020</Text>
+                        </View>
+                        <View style={{ marginTop: 10, paddingBottom: 10 }}>
+                            <Text style={styles.innerText}>Customer Details</Text>
+                            <Text style={styles.nameTextss}>S.Mukesh Kannan</Text>
+                            <Text style={styles.addressText}>No.28,Kamarajar Nagar,4th cross street, Ambattur, Chennai - 600051.</Text>
+                            <Text style={styles.addressText}>Mobile - 8989567891</Text>
+
+                        </View>
+
+                    </View>
+
+                </Content>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+                {/* {isLoading == true ? <Spinner color='blue' /> :
                     <Content style={styles.bodyContent}>
                    <Grid style={styles.curvedGrid}>
                     </Grid>
@@ -99,7 +245,7 @@ class OrderDetails extends Component {
                             }
                                 
                         </Card>             
-                    </Content>}
+                    </Content>} */}
             </Container>
         )
     }
@@ -130,12 +276,12 @@ const styles = StyleSheet.create({
         width: 250,
         height: 250,
         borderRadius: 125,
-        marginTop:-135,
-        marginLeft:'auto',
-        marginRight:'auto',
+        marginTop: -135,
+        marginLeft: 'auto',
+        marginRight: 'auto',
         backgroundColor: '#745DA6',
         transform: [
-          {scaleX: 2}
+            { scaleX: 2 }
         ],
         position: 'relative',
         overflow: 'hidden',
@@ -241,5 +387,131 @@ const styles = StyleSheet.create({
         color: '#c26c57',
         marginLeft: 10,
         fontWeight: "bold"
+    },
+    delHeadText: {
+        fontFamily: 'OpenSans',
+        fontSize: 14,
+        fontWeight: '500',
+        color: '#ff4e42'
+    },
+    arrHeadText: {
+        fontFamily: 'OpenSans',
+        fontSize: 18,
+        fontWeight: '500',
+        color: '#8dc63f'
+    },
+    rowStyle: {
+        marginTop: 15,
+        paddingBottom: 10,
+        borderBottomColor: 'gray',
+        borderBottomWidth: 0.3
+    },
+    nameText: {
+        fontFamily: 'OpenSans',
+        fontSize: 12,
+        fontWeight: '500',
+        color: '#4c4c4c'
+    },
+    pharText: {
+        fontFamily: 'OpenSans',
+        fontSize: 12,
+        color: '#909090'
+    },
+    amountText: {
+        fontFamily: 'OpenSans',
+        fontSize: 12,
+        color: '#8dc63f',
+        textAlign: 'right'
+    },
+    ItemText: {
+        fontFamily: 'OpenSans',
+        fontSize: 12,
+        fontWeight: '500',
+        color: '#7F49C3'
+    },
+    rsText: {
+        fontFamily: 'OpenSans',
+        fontSize: 12,
+        color: '#4c4c4c',
+        textAlign: 'right'
+    },
+    mainText: {
+        fontFamily: 'OpenSans',
+        fontSize: 12,
+        color: '#909090'
+    },
+    grandTotalText: {
+        fontFamily: 'OpenSans',
+        fontSize: 12,
+        fontWeight: '500',
+        color: '#7F49C3'
+    },
+    totalsText: {
+        fontFamily: 'OpenSans',
+        fontSize: 12,
+        color: '#8dc63f',
+        textAlign: 'right'
+    },
+    mainView: {
+        backgroundColor: '#fff',
+        padding: 10,
+        marginTop: 5,
+    },
+    orderText: {
+        fontFamily: 'OpenSans',
+        fontSize: 14,
+        fontWeight: '500',
+        color: '#4c4c4c'
+    },
+    innerText: {
+        fontFamily: 'OpenSans',
+        fontSize: 10,
+        fontWeight: '500',
+        color: '#7F49C3'
+    },
+    rightText: {
+        fontFamily: 'OpenSans',
+        fontSize: 10,
+        color: '#4c4c4c'
+
+    },
+    addressText: {
+        fontFamily: 'OpenSans',
+        fontSize: 10,
+        color: '#4c4c4c',
+        marginTop: 5
+    },
+    nameTextss: {
+        fontFamily: 'OpenSans',
+        fontSize: 10,
+        color: '#4c4c4c',
+        fontWeight: '500',
+        marginTop: 5
+    },
+    lengthTouch:{
+        height:12,
+        width:12,
+        borderRadius:12/2,
+        backgroundColor:'#7F49C3'
+    },
+    TouchLegth :{
+        height:60,
+        backgroundColor:'#7F49C3',
+        padding:1,
+        width:4,
+        marginLeft:4
+    },
+    bottomText:{
+        height:12,
+        width:12,
+        borderRadius:12/2,
+        borderColor:'gray',
+        borderWidth:0.3
+    },
+    trackingText:{
+        fontSize:14,
+        fontWeight:'500',
+        fontFamily:'OpenSans',
+        color:'#4c4c4c'
     }
 });
