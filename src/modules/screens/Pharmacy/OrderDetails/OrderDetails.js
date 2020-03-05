@@ -46,37 +46,45 @@ class OrderDetails extends Component {
                         {/* Delivery date display  */}
                         {/* <Text style={styles.delHeadText}>Delivery On 29th February,2020</Text> */}
 
-
-                        <Row style={{ marginTop: 15, borderBottomColor: 'gray', borderBottomWidth: 0.3, paddingBottom: 10 }}>
+                        <FlatList
+                            style={{ marginTop: 10 }}
+                            data={[ { status: 'Ordered and Approved', checked: true, drawLine: true }, 
+                                    { status: 'Packed and Out for Delivery', checked: true, drawLine: true },
+                                    { status: 'Delivered', checked: false }, ]}
+                            renderItem={({ item }) =>
+                            <Row style={{  }}>
                             <Col size={0.7}>
+                                {item.checked === true ? 
                                 <TouchableOpacity style={styles.lengthTouch}>
-                                </TouchableOpacity>
-                                <TouchableOpacity style={styles.TouchLegth}>
-                                </TouchableOpacity>
-                                <TouchableOpacity style={styles.lengthTouch}>
-                                </TouchableOpacity>
-                                <TouchableOpacity style={styles.TouchLegth}>
-                                </TouchableOpacity>
-                                <TouchableOpacity style={styles.bottomText}>
-                                </TouchableOpacity>
-
+                                </TouchableOpacity> : null } 
+                                
+                                {item.checked === false ? 
+                                    <TouchableOpacity style={styles.bottomText}>
+                                    </TouchableOpacity> : 
+                                null }
+                                
+                                {item.checked === true && item.drawLine === true ?
+                                    <TouchableOpacity style={styles.TouchLegth}>
+                                    </TouchableOpacity>  
+                                    :  
+                                    <TouchableOpacity style={{
+                                        height: 60,
+                                        padding: 1,
+                                        width: 4,
+                                        marginLeft: 4
+                                    }}>
+                                    </TouchableOpacity>  }
                             </Col>
                             <Col size={9.3}>
                                 <View style={{ marginTop: -3 }}>
-                                    <Text style={styles.trackingText}>Ordered and Approved</Text>
+                                    <Text style={styles.trackingText}>{item.status}</Text>
                                     <Text style={{ fontSize: 14, fontFamily: 'OpenSans', color: '#909090' }}>17th February,2020 at 05.27 PM</Text>
                                 </View>
-                                <View style={{ marginTop: 34 }}>
-                                    <Text style={styles.trackingText}>Packed and Out for Delivery</Text>
-                                    <Text style={{ fontSize: 14, fontFamily: 'OpenSans', color: '#909090' }}>17th February,2020 at 05.40 PM</Text>
-                                    <Text style={{ fontSize: 14, fontFamily: 'OpenSans', color: '#ff4e42' }}>Order is yet to be delivered</Text>
-                                </View>
-                                <View style={{ marginTop: 14 }}>
-                                    <Text style={styles.trackingText}>Ordered and Approved</Text>
-                                    <Text style={{ fontSize: 14, fontFamily: 'OpenSans', color: '#909090' }}>17th February,2020 at 05.27 PM</Text>
-                                </View>
+                        
                             </Col>
                         </Row>
+                        }/>
+                        
                         <Text style={{ fontSize: 14, fontWeight: '500', fontFamily: 'OpenSans', color: '#7F49C3', marginTop: 10 }}> Ordered Medicines</Text>
                         <FlatList
                             data={MedDetail}
