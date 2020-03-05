@@ -45,17 +45,11 @@ class PharmacySuggestionList extends Component {
         console.log('clicked :' + this.count++)
         const userId = await AsyncStorage.getItem('userId');
         const { bookappointment: { locationCordinates } } = this.props;
-        // locationData = {
-        //     "coordinates":
-        //         [
-        //             8.1703556,
-        //             77.386093
-        //         ]
-        //     ,
-        //     "maxDistance": MAX_DISTANCE_TO_COVER
-        // // }
-       
-        let medicineResultData = await getSuggestionMedicines(enteredText, locationCordinates);
+        locationData = {
+            "coordinates": locationCordinates,
+            "maxDistance": MAX_DISTANCE_TO_COVER
+        }
+        let medicineResultData = await getSuggestionMedicines(enteredText, locationData);
 
         if (medicineResultData.success) {
             this.setState({
