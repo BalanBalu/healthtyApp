@@ -360,3 +360,26 @@ export function onlySpaceNotAllowed(text) {
     }
 
 }
+
+
+export async function ProductIncrementDecreMent(quantity, price, operation) {
+
+    let itemQuantity, totalAmount = price;
+    if (operation === "add") {
+        itemQuantity = (quantity == undefined ? 0 : quantity);
+        quantity = ++itemQuantity;
+        totalAmount = quantity * price
+
+    } else {
+        if (quantity > 1) {
+            itemQuantity = quantity;
+            quantity = --itemQuantity;
+            totalAmount = quantity * price
+        }
+    }
+
+    return {
+        quantity: quantity,
+        totalAmount: totalAmount
+    }
+}
