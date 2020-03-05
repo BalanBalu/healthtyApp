@@ -64,7 +64,7 @@ import AvailableDoctors4Chat from '../../modules/screens/chat/AvailableDoctor';
 import SuccessChatPaymentPage from '../../modules/screens/chat/successMsg';
 import ReportIssue from '../../modules/screens/ReportIssue';
 import EarnReward from '../../modules/screens/Home/EarnReward';
-import PharmacySuggestionList from '../../modules/screens/Pharmacy/pharmacyMediceSuggestionList./pharmacySuggestionList';
+import PharmacySuggestionList from '../../modules/screens/Pharmacy/pharmacyMediceSuggestionList/pharmacySuggestionList';
 
 
 const AuthRoutes = {
