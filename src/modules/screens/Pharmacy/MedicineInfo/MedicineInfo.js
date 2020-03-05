@@ -8,7 +8,7 @@ import { medicineRateAfterOffer } from '../../../common';
 import Spinner from '../../../../components/Spinner';
 
 
-class OrderMedicineDetails extends Component {
+class MedicineInfo extends Component {
     constructor(props) {
         super(props);
         this.state = {
@@ -378,7 +378,7 @@ class OrderMedicineDetails extends Component {
     }
 }
 
-export default OrderMedicineDetails;
+export default MedicineInfo;
 
 const styles = StyleSheet.create({
     cardsize: {

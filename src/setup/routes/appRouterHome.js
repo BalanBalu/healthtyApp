@@ -52,7 +52,7 @@ import OrderPaymentSuccess from '../../modules/screens/Pharmacy/OrderPaymentSucc
 import UploadPrescription from '../../modules/screens/Pharmacy/PharmacyHome/UploadPrescription';
 import OrderPaymentAddress from '../../modules/screens/Pharmacy/OrderPaymentAddress/OrderPaymentAddress';
 import OrderPaymentPreview from '../../modules/screens/Pharmacy/OrderPaymentPreview/OrderPaymentPreview';
-import OrderMedicineDetails from '../../modules/screens/Pharmacy/OrderMedicineDetails/OrderMedicineDetails';
+import MedicineInfo from '../../modules/screens/Pharmacy/MedicineInfo/MedicineInfo';
 import MedicineSearchList from '../../modules/screens/Pharmacy/MedicineSearchList/MedicineSearchList';
 import MedicineCheckout from '../../modules/screens/Pharmacy/MedicineCheckout/MedicineChekout';
 import { Badge } from '../../../src/modules/common'
@@ -545,8 +545,8 @@ const HomeStack = createStackNavigator({
       title: 'My Order'
     }
   },
-  OrderMedicineDetails: {
-    screen: OrderMedicineDetails,
+  MedicineInfo: {
+    screen: MedicineInfo,
     navigationOptions: {
       title: 'Medicine Details'
     }
