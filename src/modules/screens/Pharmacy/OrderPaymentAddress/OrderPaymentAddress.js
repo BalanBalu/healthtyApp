@@ -1,12 +1,13 @@
 import React, { Component } from 'react';
 import { Container, Content, Text, Button, Toast, Item, List, ListItem, Card, Input, Left, Segment, CheckBox, View, Radio,Footer, FooterTab} from 'native-base';
 import { Col, Row, Grid } from 'react-native-easy-grid';
-import { StyleSheet, Image, AsyncStorage, TouchableOpacity } from 'react-native';
+import { StyleSheet, Image, AsyncStorage, TouchableOpacity,Platform } from 'react-native';
 import { FlatList } from 'react-native-gesture-handler';
 import { fetchUserProfile } from '../../../providers/profile/profile.action';
 import { userFiledsUpdate, logout } from '../../../providers/auth/auth.actions';
 import Spinner from '../../../../components/Spinner';
 import { formatDate } from '../../../../setup/helpers';
+import { RadioButton, } from 'react-native-paper';
 
 
 class OrderPaymentAddress extends Component {
@@ -28,6 +29,7 @@ class OrderPaymentAddress extends Component {
             pin_code: '',
             isFocusKeyboard: false,
             isLoading: false,
+            itemSelected: 'itemOne',
         };
     }
 
@@ -295,6 +297,14 @@ class OrderPaymentAddress extends Component {
             )
         }
     }
+
+    deliveryChoose(){
+        this.setState({homeDelivery:true})
+    }
+    pickUpStoreChoose(){
+        this.setState({pickUpStore:true})
+    }
+
     render() {
         const { currentDate } = this.state
 
@@ -307,10 +317,15 @@ class OrderPaymentAddress extends Component {
                             <Text style={{fontFamily:'OpenSans',fontSize:14,fontWeight:'500'}}>Home Delivery</Text>
                             </Col>
                             <Col size={5} style={{alignItems:'flex-end',justifyContent:'flex-end'}}>
-                            <Radio selected={true} />
+                            <RadioButton.Group onValueChange={value => this.setState({ itemSelected: 'itemOne' })}
+                            value={this.state.itemSelected == 'itemOne'}  >
+                                  <RadioButton value={this.state.itemSelected == 'itemOne'} />
+                                </RadioButton.Group>
                             </Col>
                         </Row>
-                        <Row>
+                    {this.state.itemSelected === 'itemOne' ?
+                        <View>
+                        <Row style={{marginTop:5}}>
                             <Col size={5}>
                             <Text style={{fontFamily:'OpenSans',fontSize:14,color:'#7F49C3'}}>Delivery Address</Text>
                             </Col>
@@ -323,39 +338,25 @@ class OrderPaymentAddress extends Component {
                         <Text style={{fontFamily:'OpenSans',fontSize:12,fontWeight:'300',marginTop:5}}>S.Mukesh Kannan</Text>
                         <Text style={{fontFamily:'OpenSans',fontSize:12,marginTop:2,color:'#6a6a6a'}}>No 67, Gandhi taurrent,OT Bus Stand,Ambattur - 600051</Text>
                         <Text style={{fontFamily:'OpenSans',fontSize:12,marginTop:2}}>Mobile - 9865224832</Text>
+                        </View>:
+                        null}
+                    </View>                    
 
-                    </View>
-                    <View style={{backgroundColor:'#fff',padding:10,marginTop:5}}>
+                        <View style={{backgroundColor:'#fff',padding:10,marginTop:5}}>
                         <Row>
                             <Col size={5}>
                             <Text style={{fontFamily:'OpenSans',fontSize:14,fontWeight:'500'}}>Pick up at Store</Text>
                             </Col>
                             <Col size={5} style={{alignItems:'flex-end',justifyContent:'flex-end'}}>
-                            <Radio selected={false} />
-                            </Col>
-                        </Row>
-                        </View>
 
-                        {/* <View style={{backgroundColor:'#fff',padding:10,marginTop:5}}>
-                        <Row>
-                            <Col size={5}>
-                            <Text style={{fontFamily:'OpenSans',fontSize:14,fontWeight:'500'}}>Home Delivery</Text>
-                            </Col>
-                            <Col size={5} style={{alignItems:'flex-end',justifyContent:'flex-end'}}>
-                            <Radio selected={false} />
+                            <RadioButton.Group onValueChange={value => this.setState({ itemSelected: 'itemTwo' })}
+                            >
+                                  <RadioButton value={this.state.itemSelected == 'itemTwo'} />
+                       </RadioButton.Group>
                             </Col>
                         </Row>
-                        </View> */}
-
-                        {/* <View style={{backgroundColor:'#fff',padding:10,marginTop:5}}>
-                        <Row>
-                            <Col size={5}>
-                            <Text style={{fontFamily:'OpenSans',fontSize:14,fontWeight:'500'}}>Pick up at Store</Text>
-                            </Col>
-                            <Col size={5} style={{alignItems:'flex-end',justifyContent:'flex-end'}}>
-                            <Radio selected={true} />
-                            </Col>
-                        </Row>
+                        {this.state.itemSelected === 'itemTwo' ?
+                        <View>
                         <Row>
                             <Col size={5}>
                             <Text style={{fontFamily:'OpenSans',fontSize:14,color:'#7F49C3'}}>Store Address</Text>
@@ -366,8 +367,10 @@ class OrderPaymentAddress extends Component {
                         <Text style={{fontFamily:'OpenSans',fontSize:12,fontWeight:'300',marginTop:5}}>Apollo Pharmacy</Text>
                         <Text style={{fontFamily:'OpenSans',fontSize:12,marginTop:2,color:'#6a6a6a'}}>No 67, Gandhi taurrent,OT Bus Stand,Ambattur - 600051</Text>
                         <Text style={{fontFamily:'OpenSans',fontSize:12,marginTop:2}}>Mobile - 9865224832</Text>
+                        </View>:
+                        null}
 
-                    </View> */}
+                    </View>
                         <View style={{backgroundColor:'#fff',padding:10,marginTop:5}}>
                         <Text style={{fontFamily:'OpenSans',fontSize:14,color:'#7F49C3'}}>Order Details</Text>
                         <Row style={{marginTop:10}}>
@@ -393,7 +396,7 @@ class OrderPaymentAddress extends Component {
                         </Row>
                         <Row style={{marginTop:5}}>
                             <Col size={8}>
-                            <Text style={{fontFamily:'OpenSans',fontSize:12,}}>Tax</Text>
+                            <Text style={{fontFamily:'OpenSans',fontSize:12,color:'#6a6a6a'}}>Tax</Text>
                             </Col>
                             <Col size={5} style={{alignItems:'flex-end',justifyContent:'flex-end'}}>
                           
@@ -469,7 +472,9 @@ class OrderPaymentAddress extends Component {
                         </Content>
                     </Card> */}
                 </Content>
-                <Footer style={{}}>
+                <Footer style={
+                    Platform.OS ==="ios" ?
+                    {height:30} :{height:45}}>
                     <FooterTab>
                 <Row>
                     <Col size={5} style={{alignItems:'center',justifyContent:'center',backgroundColor:'#fff'}}>
