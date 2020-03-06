@@ -108,26 +108,26 @@ const HomeStack = createStackNavigator({
       headerLeft: (
 
         <Row>
-        <TouchableOpacity onPress={() => navigation.toggleDrawer()} style={{flexDirection:'row',marginTop:10}}>
-          <Image
-            style={{ marginLeft: 18, tintColor: '#fff' }}
-            source={menuIcon}
-          />
-        </TouchableOpacity>
-        <Row style={{marginBottom: 5,marginTop:5,marginLeft:5}}>
-                   <Col size={10}>  
-                   <TouchableOpacity onPress={()=> navigation.navigate('Locations')}>
-                   <View style={{flexDirection:'row'}}>
-                    <Icon name="ios-pin" style={{color:'#fff',fontSize:18,paddingLeft: 10,}}/>
-                     <Text uppercase={false} style={{ marginLeft:5, color: '#fff', fontSize: 14, fontFamily: 'OpenSans-SemiBold',fontWeight:'bold' }}>{navigation.getParam('appBar', {locationName: ' '}).locationName}</Text>
-                        <Icon name="ios-arrow-down" style={{color:'#fff',fontSize:18,paddingLeft: 10,marginTop:2}}/>
-                     </View>
-                     </TouchableOpacity>
-                      <Text uppercase={false} style={{ paddingLeft: 10, color: '#fff', fontSize: 12, fontFamily: 'OpenSans-SemiBold',marginTop:2 }}>{navigation.getParam('appBar', {locationCapta: 'You are searching Near by Hospitals'}).locationCapta}</Text>
-                    </Col> 
-                   </Row>   
+          <TouchableOpacity onPress={() => navigation.toggleDrawer()} style={{ flexDirection: 'row', marginTop: 10 }}>
+            <Image
+              style={{ marginLeft: 18, tintColor: '#fff' }}
+              source={menuIcon}
+            />
+          </TouchableOpacity>
+          <Row style={{ marginBottom: 5, marginTop: 5, marginLeft: 5 }}>
+            <Col size={10}>
+              <TouchableOpacity onPress={() => navigation.navigate('Locations')}>
+                <View style={{ flexDirection: 'row' }}>
+                  <Icon name="ios-pin" style={{ color: '#fff', fontSize: 18, paddingLeft: 10, }} />
+                  <Text uppercase={false} style={{ marginLeft: 5, color: '#fff', fontSize: 14, fontFamily: 'OpenSans-SemiBold', fontWeight: 'bold' }}>{navigation.getParam('appBar', { locationName: ' ' }).locationName}</Text>
+                  <Icon name="ios-arrow-down" style={{ color: '#fff', fontSize: 18, paddingLeft: 10, marginTop: 2 }} />
+                </View>
+              </TouchableOpacity>
+              <Text uppercase={false} style={{ paddingLeft: 10, color: '#fff', fontSize: 12, fontFamily: 'OpenSans-SemiBold', marginTop: 2 }}>{navigation.getParam('appBar', { locationCapta: 'You are searching Near by Hospitals' }).locationCapta}</Text>
+            </Col>
+          </Row>
 
-       
+
         </Row>
       ),
       headerRight: (
@@ -136,10 +136,10 @@ const HomeStack = createStackNavigator({
             <TouchableOpacity onPress={() => { navigation.navigate('Notification') }} >
               <View>
                 <Icon name="notifications" style={{ color: '#fff', marginRight: 15, fontFamily: 'opensans-semibold' }}></Icon>
-                { navigation.getParam('notificationBadgeCount')!=null?
-              <Text style={{ position: 'absolute', backgroundColor: 'red', color: 'white', borderRadius: 20/2,  marginTop: -7, width:undefined,height:undefined,padding:2,fontSize:10,textAlign:'center'}}>{navigation.getParam('notificationBadgeCount')>=100?'99+':navigation.getParam('notificationBadgeCount')}</Text>
-             :null} 
-             {/* <Badge /> */}
+                {navigation.getParam('notificationBadgeCount') != null ?
+                  <Text style={{ position: 'absolute', backgroundColor: 'red', color: 'white', borderRadius: 20 / 2, marginTop: -7, width: undefined, height: undefined, padding: 2, fontSize: 10, textAlign: 'center' }}>{navigation.getParam('notificationBadgeCount') >= 100 ? '99+' : navigation.getParam('notificationBadgeCount')}</Text>
+                  : null}
+                {/* <Badge /> */}
               </View>
             </TouchableOpacity>
           </Col>
@@ -427,20 +427,30 @@ const HomeStack = createStackNavigator({
   Pharmacy: {
     screen: PharmacyHome,
     navigationOptions: ({ navigation }) => ({
-      headerLeft: (
-        <Row style={{ marginBottom: 5, marginTop: -35, }}>
-          <Col size={2}>
-            <Image
-              style={{ marginLeft: 5, height: 20, width: 20 }}
-              source={require('../../../assets/images/Logo.png')}
-            />
+     /* headerLeft: (
+        <Row style={{ marginBottom: 5, marginTop: 10 }}>
+          <Col size={1}>
+            <TouchableOpacity onPress={() => navigation.navigate('Home')}>
+              <Row style={{ alignItems: 'center', justifyContent: 'center' }}>
+                <Icon
+                  style={
+                    Platform.OS === "ios"
+                      ? { marginBottom: -4, width: 25, marginLeft: 15, color: "#FFF", fontSize: 25, marginTop: 12 }
+                      : { marginBottom: -4, width: 25, marginLeft: 15, color: "#FFF", fontSize: 25, marginTop: 12 }
+                  }
+                  size={Platform.OS === "ios" ? 35 : 24}
+                  name={Platform.OS === "ios" ? "ios-arrow-back" : "md-arrow-back"}
+                />
+                {Platform.OS === "ios" ?
+                  <Text style={{ fontFamily: 'OpenSans', fontSize: 16, color: '#FFF', marginLeft: 5, fontWeight: '300' }}>Back</Text> : null}
+              </Row>
+            </TouchableOpacity>
           </Col>
           <Col size={8}>
             <TouchableOpacity onPress={() => navigation.navigate('Locations')}>
-              <View style={{ flexDirection: 'row' }}>
-                <Icon name="ios-pin" style={{ color: '#fff', fontSize: 18, paddingLeft: 10, }} />
+              <View style={{ flexDirection: 'row', marginLeft: 5 }}>
+                <Icon name="ios-pin" style={{ color: '#fff', fontSize: 18, }} />
                 <Text uppercase={false} style={{ marginLeft: 5, color: '#fff', fontSize: 14, fontFamily: 'OpenSans-SemiBold', fontWeight: 'bold' }}>Location</Text>
-                {/* <Text uppercase={false} style={{ marginLeft:5, color: '#fff', fontSize: 14, fontFamily: 'OpenSans-SemiBold',fontWeight:'bold' }}>{navigation.getParam('appBar', {locationName: ' '}).locationName}</Text> */}
                 <Icon name="ios-arrow-down" style={{ color: '#fff', fontSize: 18, paddingLeft: 10, marginTop: 2 }} />
               </View>
             </TouchableOpacity>
@@ -448,29 +458,8 @@ const HomeStack = createStackNavigator({
         </Row>
 
 
-      ),
-      headerTitle: (
-        <Grid style={{ marginTop: 10, marginLeft: -20, }}>
-          <Col style={{ position: 'absolute' }}>
-            <Item style={{ borderBottomWidth: 0, backgroundColor: '#fff', height: 30, borderRadius: 2 }}>
-              <Input
-                placeholder='Search for Medicines and Health Products...     '
-                style={{ fontSize: 12, width: '300%' }}
-                placeholderTextColor="#C1C1C1"
-                keyboardType={'default'}
-                returnKeyType={'go'}
-                multiline={false} />
-              <TouchableOpacity style={{ alignItems: 'flex-end' }} >
-                <Icon name='ios-search' style={{ color: '#775DA3', fontSize: 20 }} />
-              </TouchableOpacity>
-            </Item>
-
-          </Col>
-
-        </Grid>
-      ),
+      ), */
       headerRight: (
-        <Grid style={{ marginTop: -35 }}>
           <Col>
             <TouchableOpacity>
               <View>
@@ -478,13 +467,14 @@ const HomeStack = createStackNavigator({
               </View>
             </TouchableOpacity>
           </Col>
-
-        </Grid>
       ),
       headerStyle: {
         backgroundColor: '#7F49C3',
-        height: 90
+        height: 40,
+        elevation: 0,
+        shadowColor: 'transparent'
       },
+
     })
   },
   UploadPrescription: {
