@@ -26,14 +26,20 @@ class MedicineSearchList extends Component {
             data: [],
             isBuyNow: false,
             selectedMedcine: {},
-            medicineName: ''
+            medicineName: '',
+            AddToCardData:null
 
         }
     }
     async  componentDidMount() {
         this.setState({ isLoading: true })
         let medicineName = this.props.navigation.getParam('medicineName') || ''
-        this.setState({ medicineName })
+        // let AddToCardDatas={}
+    //     AddToCardDatas=await AsyncStorage.getItem('AddToCardData')||null
+    //     console.log(AddToCardDatas)
+        
+    //    await  this.setState({ medicineName,AddToCardData:AddToCardDatas })
+       
         let postData = [
             {
                 type: 'medicine_name',
@@ -84,7 +90,15 @@ class MedicineSearchList extends Component {
 
     async  getvisble(val) {
         try {
-            this.setState({ isBuyNow: false })
+            if(val.isNavigate){
+                let temp=[];
+                temp.push(val.medicineData)
+                this.setState({ isBuyNow: false })
+                 this.props.navigation.navigate("OrderPaymentAddress", {medicineDetails:temp})
+                }
+             else{
+                this.setState({ isBuyNow: false })  
+             }
 
         } catch (e) {
             console.log(e)
@@ -92,7 +106,7 @@ class MedicineSearchList extends Component {
     }
 
     render() {
-        const { medicineName, isLoading, data } = this.state;
+        const { medicineName, isLoading, data,AddToCardData } = this.state;
 
 
         return (
@@ -144,6 +158,7 @@ class MedicineSearchList extends Component {
                                                                     <Text style={{ fontSize: 8, marginLeft: 1.5, marginTop: -5, color: "#ff4e42", textDecorationLine: 'line-through', textDecorationStyle: 'solid' }}>{item.price || ''}</Text>
                                                                     <Text style={{ fontSize: 13, marginTop: -10, marginLeft: 2.5, color: "#8dc63f" }}>{medicineRateAfterOffer(item)}</Text>
                                                                 </Col>
+                                                                {/* {AddToCardData==null||AddToCardData[item.medicine_id]==undefined?
                                                                 <Col size={3} style={{ height: 20, marginLeft: 4 }}>
                                                                     <Row>
                                                                         <TouchableOpacity style={{ borderColor: '#4e85e9', marginLeft: 1.5, borderWidth: 1, borderRadius: 2.5, marginTop: -12.5, height: 25, width: 65, paddingBottom: 5, paddingTop: 2 }}
@@ -154,7 +169,18 @@ class MedicineSearchList extends Component {
                                                                             </Row>
                                                                         </TouchableOpacity>
                                                                     </Row>
-                                                                </Col>
+                                                                </Col>: <Col size={3} style={{ height: 20, marginLeft: 4 }}>
+                                                                    <Row>
+                                                                        <TouchableOpacity style={{ borderColor: '#4e85e9', marginLeft: 1.5, borderWidth: 1, borderRadius: 2.5, marginTop: -12.5, height: 25, width: 65, paddingBottom: 5, paddingTop: 2 }}
+                                                                            onPress={() => this.selectedItems(item, 'Add to Card')} >
+                                                                            <Row style={{ alignItems: 'center' }}>
+                                                                                <Text>{item.medicine_id}</Text>
+                                                                                <Icon name='ios-cart' style={{ color: '#4e85e9', fontSize: 11, marginLeft: 3.5, paddingTop: 2.3 }} />
+                                                                                <Text style={{ fontSize: 7, color: '#4e85e9', marginTop: 2.5, marginLeft: 6 }}>{'Added'+AddToCardData[item.medicine_id].QunatityAmout}}</Text>
+                                                                            </Row>
+                                                                        </TouchableOpacity>
+                                                                    </Row>
+                                                                </Col>} */}
                                                                 <Col size={3.2} style={{ height: 20, marginLeft: 4, marginRight: 2.5 }}>
                                                                     <Row>
                                                                         <TouchableOpacity style={{ borderColor: '#8dc63f', borderWidth: 1, marginLeft: 1, borderRadius: 2.5, marginTop: -12.5, height: 25, width: 65, paddingBottom: 5, paddingTop: 2, backgroundColor: '#8dc63f' }}

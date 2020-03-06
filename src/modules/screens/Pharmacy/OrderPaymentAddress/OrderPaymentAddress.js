@@ -14,7 +14,7 @@ class OrderPaymentAddress extends Component {
     constructor(props) {
         super(props);
         this.state = {
-            medicineDetails: null,
+            medicineDetails: [],
             deliveryAddressArray: [],
             activePage: 1,
             currentDate: formatDate(new Date(), 'MMMM D, YYYY'),
@@ -35,10 +35,11 @@ class OrderPaymentAddress extends Component {
 
     async componentDidMount() {
         const { navigation } = this.props;
-        const medicineDetails = navigation.getParam('medicineDetails');
-        await this.setState({ medicineDetails: medicineDetails })
-        console.log('this.state.medicineDetails' + JSON.stringify(this.state.medicineDetails))
-        this.clickedHomeDelivery();
+        const medicineDetails = navigation.getParam('medicineDetails')||[];
+        alert(JSON.stringify(medicineDetails))
+        await this.setState({ medicineDetails })
+        console.log(  JSON.stringify(this.state.medicineDetails))
+        // this.clickedHomeDelivery();
     }
 
     clickedHomeDelivery = async () => {
@@ -47,7 +48,7 @@ class OrderPaymentAddress extends Component {
         let userId = await AsyncStorage.getItem('userId');
         this.setState({ isLoading: true });
         let patientResult = await fetchUserProfile(userId, patientFields);
-        // console.log('patientResult' + JSON.stringify(patientResult))
+        
         if (patientResult !== null) {
             this.setState({ isLoading: false });
 
@@ -65,7 +66,7 @@ class OrderPaymentAddress extends Component {
 
         }
     }
-    selectComponent = (activePage) => () => this.setState({ activePage })
+    // selectComponent = (activePage) => () => this.setState({ activePage })
 
 
     selectAddressRadioButton = async (radioIndex, addressValue) => {
@@ -114,189 +115,7 @@ class OrderPaymentAddress extends Component {
 
 
 
-    renderSelectedComponent = () => {
-        const { deliveryAddressArray, deliveryAddressData, isLoading } = this.state
-
-        if (this.state.activePage === 1) {
-            return (
-
-                <View style={{ marginTop: 5, marginLeft: 2 }}>
-                    <Spinner color="blue"
-                        visible={isLoading} />
-                    <Text style={{ fontSize: 20, fontFamily: 'OpenSans', fontWeight: 'bold' }} >Select a Delivery address</Text>
-
-                    <FlatList
-                        data={deliveryAddressArray}
-                        keyExtractor={(item, index) => index.toString()}
-                        renderItem={({ item, index }) =>
-                            <Card style={{ padding: 10, marginTop: 20 }}>
-                                <TouchableOpacity onPress={() => this.selectAddressRadioButton(index, item)}>
-                                    <Row>
-                                        <Col style={{ width: '10%' }}>
-                                            <Radio
-                                                selected={this.state.selectedRadioButton[index]} color="green"
-                                            />
-
-                                        </Col>
-                                        <Col style={{ width: '90%' }}>
-                                            {item.fullName != undefined ? <Text style={{ fontSize: 14, fontFamily: 'OpenSans', marginLeft: 10, marginTop: 3, fontWeight: 'bold' }}>{item.fullName}</Text> :
-                                                <Text style={{ fontSize: 14, fontFamily: 'OpenSans', marginLeft: 20, marginTop: 3, fontWeight: 'bold' }}>{deliveryAddressArray[0].fullName}</Text>
-
-                                            }
-
-                                    <Text style={styles.customText}>{item.email}</Text>
-                                    <Text style={styles.customText}>{item.mobile_no}</Text>
-                                    {item.address ?
-                                        <View>
-                                            <Text style={{ fontSize: 14, fontFamily: 'OpenSans', marginLeft: 10, marginTop: 4, fontWeight: 'bold' }}>Delivery Address</Text>
-                                            <Row>
-                                                <Text style={styles.customText}>{item.address.no_and_street}
-                                                </Text>
-                                                <Text style={styles.customSubText}>{item.address.address_line_1 + ', ' + item.address.address_line_2}
-                                                </Text>
-                                            </Row>
-                                            <Row>
-                                                <Text style={styles.customText}>{item.address.city}</Text>
-                                                <Text style={styles.customSubText}>Pincode:{item.address.pin_code}</Text>
-                                            </Row>
-                                        </View>
-                                        : null}
-                                        </Col>
-                                    </Row>
-                                   
-                                </TouchableOpacity>
-                            </Card>
-                        } />
-                    <Button onPress={() => this.props.navigation.navigate('OrderPaymentPreview'
-                        // ,{deliveryAddressData:deliveryAddressData}
-                    )} block style={styles.loginButton}><Text>Proceed to Pay</Text></Button>
-
-                </View>
-            )
-        }
-        else {
-            return (
-                <Card transparent>
-                    <Grid style={{ marginTop: 5 }}>
-                        <Col>
-                            <Text style={{ fontSize: 14, fontFamily: 'OpenSans', marginLeft: 5 }}>E-mail</Text>
-
-                            <Input
-                                placeholder="E-mail"
-                                style={styles.transparentLabel}
-                                value={this.state.email}
-                                keyboardType={'email-address'}
-                                returnKeyType={'next'}
-                                onChangeText={email => this.setState({ email })}
-                                autoCapitalize='none'
-                                blurOnSubmit={false}
-                                onSubmitEditing={() => { this.mobile_no._root.focus(); }}
-                                testID="enterNo&Street"
-
-                            />
-
-                        </Col>
-                        <Col>
-                            <Text style={{ fontSize: 14, fontFamily: 'OpenSans', marginLeft: 5 }}>Phone</Text>
-                            <Input
-                                placeholder="Phone_No"
-                                style={styles.transparentLabel}
-                                value={this.state.mobile_no}
-                                ref={(input) => { this.mobile_no = input; }}
-                                keyboardType={'phone-pad'}
-                                returnKeyType={'next'}
-                                onChangeText={mobile_no => this.setState({ mobile_no })}
-                                autoCapitalize='none'
-                                blurOnSubmit={false}
-                                onSubmitEditing={() => { this.no_and_street._root.focus(); }}
-                                testID="enterNo&Street"
-
-                            />
-                        </Col>
-                    </Grid>
-                    <Grid style={{ marginTop: 5 }}>
-                        <Col>
-                            <Text style={{ fontSize: 14, fontFamily: 'OpenSans', fontWeight: 'bold', }}> Delivery Address</Text>
-                            <Text style={{ fontSize: 14, fontFamily: 'OpenSans', marginTop: 15 }}> Door_No and Street </Text>
-
-                            <Input
-                                placeholder="Enter Door_No ,Street"
-                                style={styles.addressLabel}
-                                value={this.state.no_and_street}
-                                ref={(input) => { this.no_and_street = input; }}
-                                keyboardType={'default'}
-                                returnKeyType={'next'}
-                                onChangeText={no_and_street => this.setState({ no_and_street })}
-                                autoCapitalize='none'
-                                blurOnSubmit={false}
-                                onSubmitEditing={() => { this.address_line_1._root.focus(); }}
-                                testID="enterNo&Street"
-
-                            />
-                        </Col>
-                    </Grid>
-                    <Grid style={{ marginTop: 5 }}>
-                        <Col>
-                            <Text style={{ fontSize: 14, fontFamily: 'OpenSans', marginTop: 10 }}> City Or Town </Text>
-                            <Input
-                                placeholder="Enter City name"
-                                style={styles.addressLabel}
-                                ref={(input) => { this.address_line_1 = input; }}
-                                value={this.state.address_line_1}
-                                keyboardType={'default'}
-                                returnKeyType={'next'}
-                                onChangeText={address_line_1 => this.setState({ address_line_1 })}
-                                autoCapitalize='none'
-                                blurOnSubmit={false}
-                                onSubmitEditing={() => { this.address_line_2._root.focus(this.setState({ isFocusKeyboard: true })); }}
-                                testID="enterAddressLine1"
-                            />
-
-                        </Col>
-                    </Grid>
-                    <Grid style={{ marginTop: 5 }}>
-                        <Col>
-                            <Text style={{ fontSize: 14, fontFamily: 'OpenSans', marginTop: 10 }}> State and Country </Text>
-                            <Input
-                                placeholder="Enter State and Country"
-                                style={styles.addressLabel}
-                                ref={(input) => { this.address_line_2 = input; }}
-                                value={this.state.address_line_2}
-                                keyboardType={'default'}
-                                returnKeyType={'next'}
-                                onChangeText={address_line_2 => this.setState({ address_line_2 })}
-                                autoCapitalize='none'
-                                blurOnSubmit={false}
-                                onSubmitEditing={() => { this.pin_code._root.focus(this.setState({ isFocusKeyboard: true })); }}
-                                testID="enterAddressLine2"
-                            />
-                        </Col>
-                    </Grid>
-                    <Grid style={{ marginTop: 5 }}>
-                        <Col>
-                            <Text style={{ fontSize: 14, fontFamily: 'OpenSans', marginTop: 10 }}> Pin Code </Text>
-                            <Input
-                                placeholder="Enter Pin code"
-                                style={styles.transparentLabel}
-                                value={this.state.pin_code}
-                                autoFocus={this.state.isFocusKeyboard}
-                                ref={(input) => { this.pin_code = input; }}
-                                keyboardType="numeric"
-                                returnKeyType={'next'}
-                                onChangeText={pin_code => this.setState({ pin_code })}
-                                autoCapitalize='none'
-                                blurOnSubmit={false}
-                                onSubmitEditing={() => { this.updateNewAddressMethod() }}
-                                testID="enterPincode"
-                            />
-                        </Col>
-                    </Grid>
-                    <Button onPress={() => this.updateNewAddressMethod()} block style={styles.loginButton}><Text>Continue</Text></Button>
-
-                </Card>
-            )
-        }
-    }
+   
 
     deliveryChoose(){
         this.setState({homeDelivery:true})
@@ -371,19 +190,31 @@ class OrderPaymentAddress extends Component {
                         null}
 
                     </View>
+                    
                         <View style={{backgroundColor:'#fff',padding:10,marginTop:5}}>
                         <Text style={{fontFamily:'OpenSans',fontSize:14,color:'#7F49C3'}}>Order Details</Text>
+                        {this.state.medicineDetails.length!=0?
+                        <FlatList
+                          data={this.state.medicineDetails}
+                          renderItem={({item}) =>
                         <Row style={{marginTop:10}}>
                             <Col size={8}>
-                            <Text style={{fontFamily:'OpenSans',fontSize:12,color:'#6a6a6a'}}>Horlicks Health and Nutrician Drink Classic Malt - <Text style={{fontFamily:'OpenSans',fontSize:12,fontWeight:'400'}}>
-                               Apollo Pharmacy <Text style={{fontFamily:'OpenSans',fontSize:12,color:'#8dc63f'}}>(x1)</Text> </Text></Text>
+                            <Text style={{fontFamily:'OpenSans',fontSize:12,color:'#6a6a6a'}}>{item.medicine_name +' -' }<Text style={{fontFamily:'OpenSans',fontSize:12,fontWeight:'400'}}>
+        {item.pharmacy_name} <Text style={{fontFamily:'OpenSans',fontSize:12,color:'#8dc63f'}}>{'(X'+item.medicineTotalQuantity+')'}</Text> </Text></Text>
                             </Col>
                             <Col size={5} style={{alignItems:'flex-end',justifyContent:'flex-end'}}>
                           
-                            <Text style={{fontFamily:'OpenSans',fontSize:10,color:'#8dc63f',textAlign:'right'}}>₹ 180.00</Text>
+                            <Text style={{fontFamily:'OpenSans',fontSize:10,color:'#8dc63f',textAlign:'right'}}>{'₹'+ item.QunatityAmout|| ''} </Text>
                 
                             </Col>
                         </Row>
+                          }/>:   <Row style={{marginTop:10}}>
+                          <Col size={8}>
+                          <Text style={{fontFamily:'OpenSans',fontSize:12,color:'#6a6a6a'}}>No orders Available</Text>
+                          </Col>
+                          <Col size={5} style={{alignItems:'flex-end',justifyContent:'flex-end'}}>
+                          </Col>
+                      </Row>}
                         <Row style={{marginTop:5}}>
                             <Col size={8}>
                             <Text style={{fontFamily:'OpenSans',fontSize:12,color:'#6a6a6a'}}>Delivery Charges</Text>
@@ -414,63 +245,7 @@ class OrderPaymentAddress extends Component {
                 
                             </Col>
                         </Row>
-                        
-
                         </View>
-
-
-
-
-
-
-
-
-
-
-                    {/* <Grid style={styles.curvedGrid}>
-
-                    </Grid>
-                    <View style={{ marginTop: -95, height: 100 }}>
-                        <Row style={{paddingLeft:10,paddingRight:10 }}>
-                            <Col style={{ width: '35%', alignItems: 'flex-start' }}>
-                                <Text style={styles.normalText}>Date</Text>
-                            </Col>
-                            <Col style={{ width: '20%', alignItems: 'center' }}>
-                            </Col>
-                            <Col style={{ width: '45%', alignItems: 'flex-end' }}>
-                                <Text style={styles.normalText}>{currentDate}</Text>
-                            </Col>
-                        </Row>
-
-                        <Row style={{ marginTop: -28,paddingLeft:10,paddingRight:10 }}>
-                            <Col style={{ width: '35%', alignItems: 'flex-start', }}>
-                                <Text style={styles.normalText}>TotalBill</Text>
-                            </Col>
-                            <Col style={{ width: '20%', alignItems: 'center' }}>
-                            </Col>
-                            <Col style={{ width: '45%', alignItems: 'flex-end',  }}>
-                                <Text style={styles.normalText}>Rs.100</Text>
-                            </Col>
-                        </Row>
-                    </View>
-
-                    <Card transparent style={{ padding: 10, marginTop: 20, }}>
-                        <Text style={{ fontFamily: 'OpenSans', fontWeight: 'bold', fontSize: 18, padding: 5 }}>Address Info</Text>
-                        <Segment>
-                            <Button active={this.state.activePage === 1} style={{borderLeftColor:'#fff',borderLeftWidth:1}}
-                                onPress={this.selectComponent(1)}><Text uppercase={false}>Default Address</Text>
-
-                            </Button>
-                            <Button active={this.state.activePage === 2}
-                                onPress={this.selectComponent(2)}><Text uppercase={false}>Add New Address</Text>
-
-                            </Button>
-                        </Segment>
-                        <Content padder>
-                            {this.renderSelectedComponent()}
-
-                        </Content>
-                    </Card> */}
                 </Content>
                 <Footer style={
                     Platform.OS ==="ios" ?
@@ -596,3 +371,242 @@ const styles = StyleSheet.create({
         fontSize: 13
     }
 });
+
+
+
+/*
+renderSelectedComponent = () => {
+    const { deliveryAddressArray, deliveryAddressData, isLoading } = this.state
+
+    if (this.state.activePage === 1) {
+        return (
+
+            <View style={{ marginTop: 5, marginLeft: 2 }}>
+                <Spinner color="blue"
+                    visible={isLoading} />
+                <Text style={{ fontSize: 20, fontFamily: 'OpenSans', fontWeight: 'bold' }} >Select a Delivery address</Text>
+
+                <FlatList
+                    data={deliveryAddressArray}
+                    keyExtractor={(item, index) => index.toString()}
+                    renderItem={({ item, index }) =>
+                        <Card style={{ padding: 10, marginTop: 20 }}>
+                            <TouchableOpacity onPress={() => this.selectAddressRadioButton(index, item)}>
+                                <Row>
+                                    <Col style={{ width: '10%' }}>
+                                        <Radio
+                                            selected={this.state.selectedRadioButton[index]} color="green"
+                                        />
+
+                                    </Col>
+                                    <Col style={{ width: '90%' }}>
+                                        {item.fullName != undefined ? <Text style={{ fontSize: 14, fontFamily: 'OpenSans', marginLeft: 10, marginTop: 3, fontWeight: 'bold' }}>{item.fullName}</Text> :
+                                            <Text style={{ fontSize: 14, fontFamily: 'OpenSans', marginLeft: 20, marginTop: 3, fontWeight: 'bold' }}>{deliveryAddressArray[0].fullName}</Text>
+
+                                        }
+
+                                <Text style={styles.customText}>{item.email}</Text>
+                                <Text style={styles.customText}>{item.mobile_no}</Text>
+                                {item.address ?
+                                    <View>
+                                        <Text style={{ fontSize: 14, fontFamily: 'OpenSans', marginLeft: 10, marginTop: 4, fontWeight: 'bold' }}>Delivery Address</Text>
+                                        <Row>
+                                            <Text style={styles.customText}>{item.address.no_and_street}
+                                            </Text>
+                                            <Text style={styles.customSubText}>{item.address.address_line_1 + ', ' + item.address.address_line_2}
+                                            </Text>
+                                        </Row>
+                                        <Row>
+                                            <Text style={styles.customText}>{item.address.city}</Text>
+                                            <Text style={styles.customSubText}>Pincode:{item.address.pin_code}</Text>
+                                        </Row>
+                                    </View>
+                                    : null}
+                                    </Col>
+                                </Row>
+                               
+                            </TouchableOpacity>
+                        </Card>
+                    } />
+                <Button onPress={() => this.props.navigation.navigate('OrderPaymentPreview'
+                    // ,{deliveryAddressData:deliveryAddressData}
+                )} block style={styles.loginButton}><Text>Proceed to Pay</Text></Button>
+
+            </View>
+        )
+    }
+    else {
+        return (
+            <Card transparent>
+                <Grid style={{ marginTop: 5 }}>
+                    <Col>
+                        <Text style={{ fontSize: 14, fontFamily: 'OpenSans', marginLeft: 5 }}>E-mail</Text>
+
+                        <Input
+                            placeholder="E-mail"
+                            style={styles.transparentLabel}
+                            value={this.state.email}
+                            keyboardType={'email-address'}
+                            returnKeyType={'next'}
+                            onChangeText={email => this.setState({ email })}
+                            autoCapitalize='none'
+                            blurOnSubmit={false}
+                            onSubmitEditing={() => { this.mobile_no._root.focus(); }}
+                            testID="enterNo&Street"
+
+                        />
+
+                    </Col>
+                    <Col>
+                        <Text style={{ fontSize: 14, fontFamily: 'OpenSans', marginLeft: 5 }}>Phone</Text>
+                        <Input
+                            placeholder="Phone_No"
+                            style={styles.transparentLabel}
+                            value={this.state.mobile_no}
+                            ref={(input) => { this.mobile_no = input; }}
+                            keyboardType={'phone-pad'}
+                            returnKeyType={'next'}
+                            onChangeText={mobile_no => this.setState({ mobile_no })}
+                            autoCapitalize='none'
+                            blurOnSubmit={false}
+                            onSubmitEditing={() => { this.no_and_street._root.focus(); }}
+                            testID="enterNo&Street"
+
+                        />
+                    </Col>
+                </Grid>
+                <Grid style={{ marginTop: 5 }}>
+                    <Col>
+                        <Text style={{ fontSize: 14, fontFamily: 'OpenSans', fontWeight: 'bold', }}> Delivery Address</Text>
+                        <Text style={{ fontSize: 14, fontFamily: 'OpenSans', marginTop: 15 }}> Door_No and Street </Text>
+
+                        <Input
+                            placeholder="Enter Door_No ,Street"
+                            style={styles.addressLabel}
+                            value={this.state.no_and_street}
+                            ref={(input) => { this.no_and_street = input; }}
+                            keyboardType={'default'}
+                            returnKeyType={'next'}
+                            onChangeText={no_and_street => this.setState({ no_and_street })}
+                            autoCapitalize='none'
+                            blurOnSubmit={false}
+                            onSubmitEditing={() => { this.address_line_1._root.focus(); }}
+                            testID="enterNo&Street"
+
+                        />
+                    </Col>
+                </Grid>
+                <Grid style={{ marginTop: 5 }}>
+                    <Col>
+                        <Text style={{ fontSize: 14, fontFamily: 'OpenSans', marginTop: 10 }}> City Or Town </Text>
+                        <Input
+                            placeholder="Enter City name"
+                            style={styles.addressLabel}
+                            ref={(input) => { this.address_line_1 = input; }}
+                            value={this.state.address_line_1}
+                            keyboardType={'default'}
+                            returnKeyType={'next'}
+                            onChangeText={address_line_1 => this.setState({ address_line_1 })}
+                            autoCapitalize='none'
+                            blurOnSubmit={false}
+                            onSubmitEditing={() => { this.address_line_2._root.focus(this.setState({ isFocusKeyboard: true })); }}
+                            testID="enterAddressLine1"
+                        />
+
+                    </Col>
+                </Grid>
+                <Grid style={{ marginTop: 5 }}>
+                    <Col>
+                        <Text style={{ fontSize: 14, fontFamily: 'OpenSans', marginTop: 10 }}> State and Country </Text>
+                        <Input
+                            placeholder="Enter State and Country"
+                            style={styles.addressLabel}
+                            ref={(input) => { this.address_line_2 = input; }}
+                            value={this.state.address_line_2}
+                            keyboardType={'default'}
+                            returnKeyType={'next'}
+                            onChangeText={address_line_2 => this.setState({ address_line_2 })}
+                            autoCapitalize='none'
+                            blurOnSubmit={false}
+                            onSubmitEditing={() => { this.pin_code._root.focus(this.setState({ isFocusKeyboard: true })); }}
+                            testID="enterAddressLine2"
+                        />
+                    </Col>
+                </Grid>
+                <Grid style={{ marginTop: 5 }}>
+                    <Col>
+                        <Text style={{ fontSize: 14, fontFamily: 'OpenSans', marginTop: 10 }}> Pin Code </Text>
+                        <Input
+                            placeholder="Enter Pin code"
+                            style={styles.transparentLabel}
+                            value={this.state.pin_code}
+                            autoFocus={this.state.isFocusKeyboard}
+                            ref={(input) => { this.pin_code = input; }}
+                            keyboardType="numeric"
+                            returnKeyType={'next'}
+                            onChangeText={pin_code => this.setState({ pin_code })}
+                            autoCapitalize='none'
+                            blurOnSubmit={false}
+                            onSubmitEditing={() => { this.updateNewAddressMethod() }}
+                            testID="enterPincode"
+                        />
+                    </Col>
+                </Grid>
+                <Button onPress={() => this.updateNewAddressMethod()} block style={styles.loginButton}><Text>Continue</Text></Button>
+
+            </Card>
+        )
+    }
+}*/
+
+
+
+
+
+
+
+
+                    {/* <Grid style={styles.curvedGrid}>
+                       march 6 changes
+                    </Grid>
+                    <View style={{ marginTop: -95, height: 100 }}>
+                        <Row style={{paddingLeft:10,paddingRight:10 }}>
+                            <Col style={{ width: '35%', alignItems: 'flex-start' }}>
+                                <Text style={styles.normalText}>Date</Text>
+                            </Col>
+                            <Col style={{ width: '20%', alignItems: 'center' }}>
+                            </Col>
+                            <Col style={{ width: '45%', alignItems: 'flex-end' }}>
+                                <Text style={styles.normalText}>{currentDate}</Text>
+                            </Col>
+                        </Row>
+
+                        <Row style={{ marginTop: -28,paddingLeft:10,paddingRight:10 }}>
+                            <Col style={{ width: '35%', alignItems: 'flex-start', }}>
+                                <Text style={styles.normalText}>TotalBill</Text>
+                            </Col>
+                            <Col style={{ width: '20%', alignItems: 'center' }}>
+                            </Col>
+                            <Col style={{ width: '45%', alignItems: 'flex-end',  }}>
+                                <Text style={styles.normalText}>Rs.100</Text>
+                            </Col>
+                        </Row>
+                    </View>
+
+                    <Card transparent style={{ padding: 10, marginTop: 20, }}>
+                        <Text style={{ fontFamily: 'OpenSans', fontWeight: 'bold', fontSize: 18, padding: 5 }}>Address Info</Text>
+                        <Segment>
+                            <Button active={this.state.activePage === 1} style={{borderLeftColor:'#fff',borderLeftWidth:1}}
+                                onPress={this.selectComponent(1)}><Text uppercase={false}>Default Address</Text>
+
+                            </Button>
+                            <Button active={this.state.activePage === 2}
+                                onPress={this.selectComponent(2)}><Text uppercase={false}>Add New Address</Text>
+
+                            </Button>
+                        </Segment>
+                        <Content padder>
+                            {this.renderSelectedComponent()}
+
+                        </Content>
+                    </Card> */}
