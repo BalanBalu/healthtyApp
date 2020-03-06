@@ -102,9 +102,12 @@ class Home extends Component {
     otpAndBasicDetailsCompletion = async () => {
         try {
             let userId = await AsyncStorage.getItem("userId");
+            console.log("userId" + userId)
             res = await getReferalPoints(userId);
+            if(userId){
             if (res.hasProfileUpdated == false) {
                 if (res.hasOtpNotVerified === true) {
+                    console.log("res.hasOtpNotVerified " + res.hasOtpNotVerified )
                     this.props.navigation.navigate('renderOtpInput', {
                         loginData: { userEntry: res.mobile_no },
                         navigateBackToHome: true
@@ -135,6 +138,7 @@ class Home extends Component {
                     { cancelable: false }
                 );
             }
+        }
         } catch (ex) {
             console.log(ex)
         }
@@ -340,7 +344,7 @@ class Home extends Component {
             navigation.setParams({
                 appBar: {
                     locationName: patientSearchLocationName,
-                    locationCapta: isSearchByCurrentLocation ? 'You are searching Near by Hostpitals' : 'You are searching Hospitals on ' + patientSearchLocationName
+                    locationCapta: isSearchByCurrentLocation ? 'You are searching Near by Hospitals' : 'You are searching Hospitals on ' + patientSearchLocationName
                 }
             });
             this.locationUpdatedCount = locationUpdatedCount;
@@ -431,7 +435,7 @@ class Home extends Component {
 
                     <Grid style={{ flex: 1, marginLeft: 10, marginRight: 10, marginTop: 10 }}>
                         <Col style={{ width: '33.33%', }}>
-                            <TouchableOpacity onPress={() => this.props.navigation.navigate("Blood Doners")}>
+                            <TouchableOpacity onPress={() => this.props.navigation.navigate("Blood Donors")}>
                                 <Card style={{ borderRadius: 10, overflow: 'hidden' }}>
                                     <Row style={{ height: 100, width: '100%', overflow: 'hidden', backgroundColor: "#fff", justifyContent: 'center', alignItems: 'center' }}>
                                         <Image
