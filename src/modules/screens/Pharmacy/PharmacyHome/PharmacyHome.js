@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import { Container, Content, Toast, Text, Title, Header, Button, H3, Item, Form, List, ListItem, Card, Input, Left, Right, Thumbnail, Body, Icon, View, Footer, FooterTab } from 'native-base';
 import { Col, Row, Grid } from 'react-native-easy-grid';
 import { connect } from 'react-redux'
-import { getMedicineDetails, getSearchedMedicines, getNearOrOrderPharmacy } from '../../../providers/pharmacy/pharmacy.action'
+import { getPopularMedicine, getSearchedMedicines, getNearOrOrderPharmacy } from '../../../providers/pharmacy/pharmacy.action'
 import { StyleSheet, Image, FlatList, TouchableOpacity, AsyncStorage, ScrollView, Dimensions } from 'react-native';
 import { NavigationEvents } from 'react-navigation';
 import { addToCart, medicineRateAfterOffer } from '../../../common';
@@ -15,6 +15,8 @@ import Spinner from '../../../../components/Spinner'
 import SectionedMultiSelect from 'react-native-sectioned-multi-select';
 import bannerOffer from '../../../../../assets/images/25offer-banner.jpg'
 import flatBannerOffer from '../../../../../assets/images/20flatoff-banner.jpg'
+import { AddToCard } from '../AddToCardBuyNow/AddToCard'
+
 class PharmacyHome extends Component {
     constructor(props) {
         super(props)
@@ -27,22 +29,23 @@ class PharmacyHome extends Component {
             keyword: '',
             isLoading: true,
             locationName: '',
-            pharmacyData: ''
+            pharmacyData: '',
+            selectedMedcine:'',
+            isBuyNow:false,
+            isAddToCart:false
 
         }
     }
 
     async componentDidMount() {
         CurrentLocation.getCurrentPosition();
-        this.getCurrentLocation()
-        this.setState({ clickCard: null, isLoading: true });
+        await this.getCurrentLocation()
         this.getMedicineList();
         this.getNearByPharmacyList();
     }
 
     backNavigation(payload) {
         if (payload.action.type == 'Navigation/BACK' || 'Navigation/POP') {
-            this.setState({ clickCard: null, isLoading: true });
             this.getCurrentLocation();
             this.getMedicineList();
             this.getNearByPharmacyList();
@@ -52,9 +55,10 @@ class PharmacyHome extends Component {
     /*Get medicine list*/
     getMedicineList = async () => {
         try {
-            let result = await getMedicineDetails();
+            let userId = await AsyncStorage.getItem('userId')
+            let result = await getPopularMedicine(userId);
             if (result.success) {
-                this.setState({ medicineData: result.data })
+                this.setState({ medicineData: result.data.data })
             }
         }
         catch (e) {
@@ -82,7 +86,6 @@ class PharmacyHome extends Component {
                 "coordinates": locationCordinates,
                 "maxDistance": MAX_DISTANCE_TO_COVER
             }
-            console.log("locationData", locationData)
             let userId = await AsyncStorage.getItem('userId')
             let result = await getNearOrOrderPharmacy(userId, JSON.stringify(locationData));
             if (result.success) {
@@ -94,15 +97,26 @@ class PharmacyHome extends Component {
         }
 
     }
+    async selectedItems(data, selected) {
+        try {
+            let temp = data;
+            temp.offeredAmount = medicineRateAfterOffer(data.medInfo)
+            temp.selectedType = selected
+            await this.setState({ selectedMedcine: temp })
 
-    // async addSubOperation(selectItem, operation) {
-    //     let temp = await AsyncStorage.getItem('userId');
-    //     userId = JSON.stringify(temp);
-    //     let data = await addToCart(this.state.medicineData, selectItem, operation);
-    //     const cartItems = await AsyncStorage.getItem('cartItems-' + userId);
-    //     this.setState({ footerSelectedItem: data.selectemItemData, cartItems: JSON.parse(cartItems) })
-    // }
+        } catch (e) {
+            console.log(e)
+        }
 
+    }
+    cancelPopup(val) {
+        try {
+            this.setState({ isBuyNow: false, isAddToCart: false })
+
+        } catch (e) {
+            console.log(e)
+        }
+    }
 
     render() {
         const { medicineData, pharmacyData } = this.state
@@ -227,39 +241,48 @@ class PharmacyHome extends Component {
                                                             }}
                                                         />
                                                     </Col>
-                                                    <Col size={1} style={{ position: 'absolute', alignContent: 'flex-end', marginTop: -10, marginLeft: 130 }}>
-                                                        <Image
-                                                            source={require('../../../../../assets/images/Badge.png')}
-                                                            style={{
-                                                                width: 45, height: 45, alignItems: 'flex-end'
-                                                            }}
-                                                        />
-                                                        <Text style={styles.offerText}>{item.offer}</Text>
-                                                        <Text style={styles.offText}>OFF</Text>
-                                                    </Col>
+                                                    {item.medInfo.discount_type != undefined ?
+                                                        <Col size={1} style={{ position: 'absolute', alignContent: 'flex-end', marginTop: -10, marginLeft: 130 }}>
+                                                            <Image
+                                                                source={require('../../../../../assets/images/Badge.png')}
+                                                                style={{
+                                                                    width: 45, height: 45, alignItems: 'flex-end'
+                                                                }}
+                                                            />
+                                                            <Text style={styles.offerText}>{item.medInfo.discount_value}</Text>
+                                                            <Text style={styles.offText}>{item.medInfo.discount_type == 'PERCENTAGE' ? "OFF" : "Rs"}</Text>
+                                                        </Col> : null}
                                                 </Row>
 
 
                                                 <Row style={{ alignSelf: 'center', marginTop: 5 }} >
-                                                    <Text style={styles.mednames}>{item.medicine_name}</Text>
+                                                    <Text style={styles.mednames}>{item.medInfo.medicine_name}</Text>
                                                 </Row>
                                                 <Row style={{ alignSelf: 'center' }} >
-                                                    <Text style={styles.hosname}>{item.hospital}</Text>
+                                                    <Text style={styles.hosname}>{item.pharmacyInfo.name}</Text>
                                                 </Row>
                                                 <Row style={{ alignSelf: 'center', marginTop: 2 }}>
-                                                    <Text style={styles.oldRupees}>  ₹{item.price}</Text>
-                                                    <Text style={styles.newRupees}>₹{medicineRateAfterOffer(item)}</Text>
+                                                    <Text style={item.medInfo.discount_type != undefined ? styles.oldRupees : styles.newRupees}>₹{item.medInfo.price}</Text>
+                                                    {item.medInfo.discount_type != undefined ? 
+                                                        <Text style={styles.newRupees}>₹{medicineRateAfterOffer(item.medInfo)}</Text>:null}
                                                 </Row>
 
                                                 <Row style={{ marginBottom: 5, marginTop: 5, alignSelf: 'center' }}>
-                                                    <TouchableOpacity style={styles.addCartTouch}>
+                                                    <TouchableOpacity style={styles.addCartTouch} onPress={() =>{ this.setState({ isAddToCart:true}), this.selectedItems(item, 'Add to Card')}} >
                                                         <Icon name="ios-cart" style={{ fontSize: 12, color: '#4e85e9' }} />
                                                         <Text style={styles.addCartText}>Add to Cart</Text>
                                                     </TouchableOpacity>
-                                                    <TouchableOpacity style={styles.buyNowTouch}>
+                                                    
+                                                    <TouchableOpacity style={styles.buyNowTouch} onPress={() => {this.setState({ isBuyNow: true }),this.selectedItems(item, 'Buy Now')}} >
                                                         <Icon name="ios-cart" style={{ fontSize: 12, color: '#fff' }} />
                                                         <Text style={styles.BuyNowText}>Buy Now</Text>
                                                     </TouchableOpacity>
+                                                    {this.state.isBuyNow == true || this.state.isAddToCart == true ?
+                                                        <AddToCard
+                                                            data={this.state.selectedMedcine}
+                                                            popupVisible={(data) => this.cancelPopup(data)}
+                                                        />
+                                                        : null}
                                                 </Row>
                                             </Col>
                                         } />
@@ -288,7 +311,7 @@ class PharmacyHome extends Component {
 
                                             <Row style={{ borderBottomColor: 'gray', borderBottomWidth: .3, paddingBottom: 2 }}>
                                                 <Col size={5}>
-                                                    <Text style={styles.mednames}>{item.name}</Text>
+                                                    <Text style={styles.mednames}>{item.pharmacyInfo.name}</Text>
                                                 </Col>
                                                 <Col size={5}>
                                                     <Text style={styles.kmText}>{item.km}</Text>
@@ -296,8 +319,8 @@ class PharmacyHome extends Component {
                                             </Row>
                                             <View style={{ marginTop: 5 }}>
                                                 <Row>
-                                                    <Text style={styles.addressText}>{(item.location && item.location.address.no_and_street) + ',' +
-                                                        (item.location && item.location.address.address_line_1 ? item.location.address.address_line_1 : null) + ',' + (item.location && item.location.address.city) + ',' + (item.location && item.location.address.state) + ',' + (item.location && item.location.address.country) + ',' + (item.location && item.location.address.pin_code)}</Text>
+                                                    <Text style={styles.addressText}>{(item.pharmacyInfo && item.pharmacyInfo.location.address.no_and_street) + ',' +
+                                                        (item.pharmacyInfo && item.pharmacyInfo.location.address.address_line_1 ? item.pharmacyInfo.location.address.address_line_1 : null) + ',' + (item.pharmacyInfo && item.pharmacyInfo.location.address.city) + ',' + (item.pharmacyInfo && item.pharmacyInfo.location.address.state) + ',' + (item.pharmacyInfo && item.pharmacyInfo.location.address.country) + ',' + (item.pharmacyInfo && item.pharmacyInfo.location.address.pin_code)}</Text>
 
                                                     {/* <Text style={styles.addressText}>{item.address}</Text> */}
                                                 </Row>
@@ -596,7 +619,7 @@ const styles = StyleSheet.create({
     },
     offText: {
         fontFamily: 'OpenSans',
-        fontSize: 8,
+        fontSize: 6,
         position: 'absolute',
         color: '#fff',
         marginTop: 22,

@@ -85,11 +85,28 @@ export async function getpharmacy(pharmacy_id) {
   }
 }
 
-/*get all pharmacy list*/
+/*get Near by pharmacy list*/
 export async function getNearOrOrderPharmacy(userId, coordinates) {
   try {
 
-    let endPoint = '/orders/PharmaciesOrders?userId=' + userId + '&location=' + coordinates;
+    let endPoint = '/orders/recentOrNearByPharmacies?userId=' + userId + '&location=' + coordinates;
+    console.log(endPoint)
+    let response = await getService(endPoint);
+    let respData = response.data;
+    return respData;
+  } catch (e) {
+    return {
+      message: 'exception' + e,
+      success: false
+    }
+  }
+}
+
+/*get Popular Medicine*/
+export async function getPopularMedicine(userId) {
+  try {
+
+    let endPoint = '/orders/recentOrPapularHealthCareProducts?userId=' + userId;
     console.log(endPoint)
     let response = await getService(endPoint);
     let respData = response.data;
