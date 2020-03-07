@@ -59,7 +59,7 @@ class PharmacyHome extends Component {
             let userId = await AsyncStorage.getItem('userId')
             let result = await getPopularMedicine(userId);
             if (result.success) {
-                this.setState({ medicineData: result.data.data })
+                this.setState({ medicineData: result.data })
             }
         }
         catch (e) {
@@ -103,9 +103,9 @@ class PharmacyHome extends Component {
             let temp = data.medInfo;
             temp.pharmacy_name = data.pharmacyInfo.name;
             temp.pharmacy_id = data.pharmacyInfo.pharmacy_id
-            temp.medicine_id = data.medInfo._id
+            temp.medicine_id = data.medInfo.medicine_id
 
-            temp.offeredAmount = medicineRateAfterOffer(data.medInfo)
+            temp.offeredAmount = medicineRateAfterOffer(data.medPharDetailInfo)
             temp.selectedType = selected;
 
             await this.setState({ selectedMedcine: temp })
@@ -118,11 +118,11 @@ class PharmacyHome extends Component {
     cancelPopup(val) {
         try {
             if (val.isNavigate) {
-                this.setState({ isAddToCart: false })
+                this.setState({ isAddToCart: false, isBuyNow: false })
                 this.props.navigation.navigate('PharmacyCart')
             }
             else {
-                this.setState({ isAddToCart: false })
+                this.setState({ isAddToCart: false ,  isBuyNow: false  })
             }
         } catch (e) {
             console.log(e)
@@ -259,7 +259,7 @@ class PharmacyHome extends Component {
                                                             }}
                                                         />
                                                     </Col>
-                                                    {item.medInfo.discount_type != undefined ?
+                                                    {item.medPharDetailInfo.discount_type != undefined ?
                                                         <Col size={1} style={{ position: 'absolute', alignContent: 'flex-end', marginTop: -10, marginLeft: 130 }}>
                                                             <Image
                                                                 source={require('../../../../../assets/images/Badge.png')}
@@ -267,8 +267,8 @@ class PharmacyHome extends Component {
                                                                     width: 45, height: 45, alignItems: 'flex-end'
                                                                 }}
                                                             />
-                                                            <Text style={styles.offerText}>{item.medInfo.discount_value}</Text>
-                                                            <Text style={styles.offText}>{item.medInfo.discount_type == 'PERCENTAGE' ? "OFF" : "Rs"}</Text>
+                                                            <Text style={styles.offerText}>{item.medPharDetailInfo.discount_value}</Text>
+                                                            <Text style={styles.offText}>{item.medPharDetailInfo.discount_type == 'PERCENTAGE' ? "OFF" : "Rs"}</Text>
                                                         </Col> : null}
                                                 </Row>
 
@@ -280,9 +280,9 @@ class PharmacyHome extends Component {
                                                     <Text style={styles.hosname}>{item.pharmacyInfo.name}</Text>
                                                 </Row>
                                                 <Row style={{ alignSelf: 'center', marginTop: 2 }}>
-                                                    <Text style={item.medInfo.discount_type != undefined ? styles.oldRupees : styles.newRupees}>₹{item.medInfo.price}</Text>
-                                                    {item.medInfo.discount_type != undefined ?
-                                                        <Text style={styles.newRupees}>₹{medicineRateAfterOffer(item.medInfo)}</Text> : null}
+                                                    <Text style={item.medPharDetailInfo.discount_type != undefined ? styles.oldRupees : styles.newRupees}>₹{item.medPharDetailInfo.price}</Text>
+                                                    {item.medPharDetailInfo.discount_type != undefined ?
+                                                        <Text style={styles.newRupees}>₹{medicineRateAfterOffer(item.medPharDetailInfo)}</Text> : null}
                                                 </Row>
 
                                                 <Row style={{ marginBottom: 5, marginTop: 5, alignSelf: 'center' }}>

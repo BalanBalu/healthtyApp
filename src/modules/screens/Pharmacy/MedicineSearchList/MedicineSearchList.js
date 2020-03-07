@@ -9,8 +9,8 @@ import Spinner from "../../../../components/Spinner";
 import { getMedicinesSearchList } from '../../../providers/pharmacy/pharmacy.action'
 import { medicineRateAfterOffer } from '../../../common'
 import { AddToCard } from '../AddToCardBuyNow/AddToCard'
-
-
+import { connect } from 'react-redux'
+import { MAX_DISTANCE_TO_COVER } from '../../../../setup/config';
 class MedicineSearchList extends Component {
     constructor(props) {
         super(props)
@@ -34,18 +34,19 @@ class MedicineSearchList extends Component {
     async  componentDidMount() {
         this.setState({ isLoading: true })
         let medicineName = this.props.navigation.getParam('medicineName') || ''
-        // let AddToCardDatas={}
-    //     AddToCardDatas=await AsyncStorage.getItem('AddToCardData')||null
-    //     console.log(AddToCardDatas)
-        
-    //    await  this.setState({ medicineName,AddToCardData:AddToCardDatas })
-       
+        const { bookappointment: { locationCordinates } } = this.props;
+        const locationData = {
+            "coordinates": locationCordinates,
+            "maxDistance": MAX_DISTANCE_TO_COVER
+        }
         let postData = [
+            {
+                type: 'geo',
+                value: locationData
+            },
             {
                 type: 'medicine_name',
                 value: medicineName
-
-
             }
         ]
         await this.MedicineSearchList(postData)
@@ -59,14 +60,10 @@ class MedicineSearchList extends Component {
             if (medicineResultData.success) {
                 this.setState({
                     data: medicineResultData.data,
-
                 });
-
             } else {
-
                 this.setState({
                     data: [],
-
                 });
             }
         }
@@ -76,8 +73,11 @@ class MedicineSearchList extends Component {
     }
     async selectedItems(data, selected) {
         try {
-            let temp = data
-            temp.offeredAmount = medicineRateAfterOffer(data)
+            let temp = data.medInfo;
+            temp.pharmacy_name = data.pharmacyInfo.name;
+            temp.pharmacy_id = data.pharmacyInfo.pharmacy_id
+            temp.medicine_id = data.medInfo.medicine_id
+            temp.offeredAmount = medicineRateAfterOffer(data.medPharDetailInfo)
             temp.selectedType = selected
             await this.setState({ selectedMedcine: temp, isBuyNow: true })
 
@@ -93,10 +93,12 @@ class MedicineSearchList extends Component {
             if(val.isNavigate){
                 let temp=[];
                 temp.push(val.medicineData)
-                this.setState({ isBuyNow: false })
-                 this.props.navigation.navigate("OrderPaymentAddress", {medicineDetails:temp})
+                await this.setState({ isBuyNow: false })
+                    this.props.navigation.navigate("OrderPaymentAddress", {
+                        medicineDetails: temp
+                    })
                 }
-             else{
+             else {
                 this.setState({ isBuyNow: false })  
              }
 
@@ -123,17 +125,24 @@ class MedicineSearchList extends Component {
                             cancelable={false}
                         /> :
                         <View>
-                            {/* <TouchableOpacity onFocus={()=>this.props.navigation.navigate('PharmacySuggestionList',{medicineName:medicineName})} style={{ alignItems: 'flex-end', marginRight: 5 }} > */}
-                            <Row onPress={() => this.props.navigation.navigate('PharmacySuggestionList', { medicineName: medicineName })} style={styles.transparentLabel1}>
-                                <Input placeholder="Search medicine" style={styles.firstTransparentLabel}
+                            
+                            <View style={{ flex: 1, }}>
+                             <Item style={{ borderBottomWidth: 0, backgroundColor: '#fff', height: 30, borderRadius: 2, }}>
+                                <Input
+                                    placeholder='Search for Medicines and Health Products...     '
+                                    style={{ fontSize: 12, width: '300%' }}
                                     placeholderTextColor="#C1C1C1"
+                                    keyboardType={'default'}
+                                    returnKeyType={'go'}
                                     value={this.state.medicineName}
-
-                                />
-
-                                <Icon name='md-search' style={{ color: '#C1C1C1' }} />
-
-                            </Row>
+                                    autoFocus={false}
+                                    onKeyPress={enteredText => this.props.navigation.navigate('PharmacySuggestionList', { medicineName: enteredText })}
+                                    multiline={false} />
+                                <TouchableOpacity style={{ alignItems: 'flex-end' }} >
+                                    <Icon name='ios-search' style={{ color: '#775DA3', fontSize: 20 }} />
+                                </TouchableOpacity>
+                             </Item>
+                            </View>
                             {/* </TouchableOpacity> */}
                             {data.length == 0 ?
                                 <Text style={{ marginTop: 5, marginLeft: 5, fontFamily: 'OpenSans', fontSize: 12.5, color: '#7227C7' }}> No medicine were found</Text> :
@@ -150,15 +159,15 @@ class MedicineSearchList extends Component {
                                                             <Image source={require('../../../../../assets/images/paracetamol.jpg')} style={{ height: 80, width: 70, marginLeft: 5, marginTop: 2.5 }} />
                                                         </Col>
                                                         <Col size={12.5}>
-                                                            <Text style={{ fontFamily: 'OpenSans', fontSize: 16, marginTop: 5 }}>{item.medicine_name}</Text>
-                                                            <Text style={{ color: '#7d7d7d', fontFamily: 'OpenSans', fontSize: 12.5, marginBottom: 20 }}>{'By ' + item.pharmacy_name}</Text>
+                                                            <Text style={{ fontFamily: 'OpenSans', fontSize: 16, marginTop: 5 }}>{item.medInfo.medicine_name}</Text>
+                                                            <Text style={{ color: '#7d7d7d', fontFamily: 'OpenSans', fontSize: 12.5, marginBottom: 20 }}>{'By ' + item.pharmacyInfo.name}</Text>
                                                             <Row>
                                                                 <Col size={5} style={{ flexDirection: 'row' }}>
                                                                     <Text style={{ fontSize: 8, marginBottom: -15, marginTop: -5, marginLeft: -3, color: "#ff4e42" }}>{'MRP'}</Text>
-                                                                    <Text style={{ fontSize: 8, marginLeft: 1.5, marginTop: -5, color: "#ff4e42", textDecorationLine: 'line-through', textDecorationStyle: 'solid' }}>{item.price || ''}</Text>
-                                                                    <Text style={{ fontSize: 13, marginTop: -10, marginLeft: 2.5, color: "#8dc63f" }}>{medicineRateAfterOffer(item)}</Text>
+                                                                    <Text style={{ fontSize: 8, marginLeft: 1.5, marginTop: -5, color: "#ff4e42", textDecorationLine: 'line-through', textDecorationStyle: 'solid' }}>{item.medPharDetailInfo.price || ''}</Text>
+                                                                    <Text style={{ fontSize: 13, marginTop: -10, marginLeft: 2.5, color: "#8dc63f" }}>{medicineRateAfterOffer(item.medPharDetailInfo)}</Text>
                                                                 </Col>
-                                                                {/* {AddToCardData==null||AddToCardData[item.medicine_id]==undefined?
+                                                                {AddToCardData === null ?
                                                                 <Col size={3} style={{ height: 20, marginLeft: 4 }}>
                                                                     <Row>
                                                                         <TouchableOpacity style={{ borderColor: '#4e85e9', marginLeft: 1.5, borderWidth: 1, borderRadius: 2.5, marginTop: -12.5, height: 25, width: 65, paddingBottom: 5, paddingTop: 2 }}
@@ -169,7 +178,9 @@ class MedicineSearchList extends Component {
                                                                             </Row>
                                                                         </TouchableOpacity>
                                                                     </Row>
-                                                                </Col>: <Col size={3} style={{ height: 20, marginLeft: 4 }}>
+                                                                </Col>: null }
+                                                               {/* 
+                                                                <Col size={3} style={{ height: 20, marginLeft: 4 }}>
                                                                     <Row>
                                                                         <TouchableOpacity style={{ borderColor: '#4e85e9', marginLeft: 1.5, borderWidth: 1, borderRadius: 2.5, marginTop: -12.5, height: 25, width: 65, paddingBottom: 5, paddingTop: 2 }}
                                                                             onPress={() => this.selectedItems(item, 'Add to Card')} >
@@ -180,7 +191,7 @@ class MedicineSearchList extends Component {
                                                                             </Row>
                                                                         </TouchableOpacity>
                                                                     </Row>
-                                                                </Col>} */}
+                                                               </Col> */}
                                                                 <Col size={3.2} style={{ height: 20, marginLeft: 4, marginRight: 2.5 }}>
                                                                     <Row>
                                                                         <TouchableOpacity style={{ borderColor: '#8dc63f', borderWidth: 1, marginLeft: 1, borderRadius: 2.5, marginTop: -12.5, height: 25, width: 65, paddingBottom: 5, paddingTop: 2, backgroundColor: '#8dc63f' }}
@@ -224,7 +235,15 @@ class MedicineSearchList extends Component {
     }
 }
 
-export default MedicineSearchList
+
+function PharmacySearchListState(state) {
+    return {
+        bookappointment: state.bookappointment,
+    }
+}
+export default connect(PharmacySearchListState)(MedicineSearchList)
+
+
 const styles = StyleSheet.create({
     container:
     {

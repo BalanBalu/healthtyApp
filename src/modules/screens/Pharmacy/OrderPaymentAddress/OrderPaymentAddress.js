@@ -34,16 +34,19 @@ class OrderPaymentAddress extends Component {
     }
 
     async componentDidMount() {
-        const { navigation } = this.props;
-        const medicineDetails = navigation.getParam('medicineDetails')||[];
-        alert(JSON.stringify(medicineDetails))
-        await this.setState({ medicineDetails })
-        console.log(  JSON.stringify(this.state.medicineDetails))
-        // this.clickedHomeDelivery();
+      try {
+            const { navigation } = this.props;
+          //  const medicineDetails = navigation.getParam('medicineDetails')||[];
+          
+           // await this.setState({ medicineDetails })
+         //   console.log(  JSON.stringify(this.state.medicineDetails))
+        } catch (error) {
+            console.error(error)     
+        }
     }
 
-    clickedHomeDelivery = async () => {
-
+clickedHomeDelivery = async () => {
+    try {
         patientFields = "first_name,last_name,mobile_no,email,address,delivery_Address"
         let userId = await AsyncStorage.getItem('userId');
         this.setState({ isLoading: true });
@@ -65,7 +68,10 @@ class OrderPaymentAddress extends Component {
             await this.setState({ deliveryAddressArray: deliveryAddressArray })
 
         }
-    }
+    } catch (error) {
+        console.log(error);       
+    } 
+}
     // selectComponent = (activePage) => () => this.setState({ activePage })
 
 

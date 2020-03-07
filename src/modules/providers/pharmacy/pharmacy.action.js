@@ -74,7 +74,7 @@ export async function getSuggestionMedicines (keyword,data, isLoading = true) {
   try {
     let endPoint = 'medicines/suggestions/'+keyword;
     let response = await postService(endPoint, data);
-
+console.log(endPoint);
     let respData = response.data;
     return respData;
   } catch (e) {
@@ -118,7 +118,7 @@ export async function getNearOrOrderPharmacy(userId, coordinates) {
 /*get Popular Medicine*/
 export async function getPopularMedicine(userId) {
   try {
-    let endPoint = '/recommedation/recentOrPapularHealthCareProducts?userId=' + userId;
+    let endPoint = '/recommedation/recentOrPapularHealthCareProducts?user_id=' + userId;
     console.log(endPoint)
     let response = await getService(endPoint);
     let respData = response.data;

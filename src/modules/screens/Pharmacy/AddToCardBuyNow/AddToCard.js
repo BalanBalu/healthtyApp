@@ -31,7 +31,6 @@ export class AddToCard extends Component {
         totalQunatityAmout = result.totalAmount || 0,
             medicineQuantity = result.quantity || 0
         this.setState({ totalQunatityAmout, medicineQuantity })
-
     }
     async cancelCard() {
         this.props.popupVisible({
@@ -47,23 +46,10 @@ export class AddToCard extends Component {
         temp.QunatityAmout = totalQunatityAmout;
         temp.medicineTotalQuantity = medicineQuantity;
         if (data.selectedType === 'Add to Card') {
-            
-            // let AddToCardData = await AsyncStorage.getItem('AddToCardData') || {}
-            // if( AddToCardData[data.medicine_id]){
-            //     AddToCardData[data.medicine_id] = {}
-            //     AddToCardData[data.medicine_id] = temp
-
-            // }else{
-            //             AddToCardData[data.medicine_id] = temp
-            // }
-           
-            // await AsyncStorage.setItem('AddToCardData', JSON.stringify(AddToCardData))
-
             this.props.popupVisible({
                 visible: false,
                 updatedVisible: false
             })
-
         }
         else if (data.selectedType === 'Buy Now') {
             this.props.popupVisible({
@@ -72,15 +58,8 @@ export class AddToCard extends Component {
                 isNavigate:true,
                 medicineData:temp
             })
-           
-           
         }
-
-
-        }
-
-
-
+    }
 
         render() {
             const { data } = this.state;

@@ -31,14 +31,8 @@ class PharmacySuggestionList extends Component {
         this.callSuggestionService = debounce(this.callSuggestionService, 500);
     }
     componentDidMount() {
-        // // let object=this.props.getParams('coordinates')
-        // // data=this.state.data;
-        // // data.push(object)
-        // let data = []
-        // this.setState({ data })
         let medicineName = this.props.navigation.getParam('medicineName') || null
         this.setState({ medicineName })
-
     }
     SearchKeyWordFunction = async (enteredText) => {
 
@@ -50,14 +44,10 @@ class PharmacySuggestionList extends Component {
         }  // Call the Suggestion API with Debounce method
     }
     callSuggestionService = async (enteredText) => {
-        console.log('clicked :' + this.count++)
         const userId = await AsyncStorage.getItem('userId');
         const { bookappointment: { locationCordinates } } = this.props;
         locationData = {
-            "coordinates": [
-                13.0423185,
-                80.196269
-            ],
+            "coordinates": locationCordinates,
             "maxDistance": MAX_DISTANCE_TO_COVER
         }
         let medicineResultData = await getSuggestionMedicines(enteredText, locationData);
