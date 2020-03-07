@@ -4,7 +4,7 @@ import { View, StyleSheet, Image, TouchableOpacity, AsyncStorage, FlatList } fro
 import { createStackNavigator } from 'react-navigation';
 import { Item, Text, Icon, Header, Left, Row, Grid, Col, Input, Container, Content, Right, Card } from 'native-base';
 import { getSuggestionMedicines } from '../../../providers/pharmacy/pharmacy.action';
-import { MAP_BOX_PUBLIC_TOKEN, IS_ANDROID, MAX_DISTANCE_TO_COVER, CURRENT_PRODUCT_VERSION_CODE } from '../../../../setup/config';
+import { MAX_DISTANCE_TO_COVER } from '../../../../setup/config';
 import { connect } from 'react-redux'
 const debounce = (fun, delay) => {
     let timer = null;
@@ -22,17 +22,22 @@ class PharmacySuggestionList extends Component {
 
     constructor(props) {
         super(props);
+        let medicineName = this.props.navigation.getParam('medicineName') || null
         this.state = {
             data: [],
-            medicineName: null,
+            medicineName: medicineName,
             medicineSugesstionArray: null
-
         }
         this.callSuggestionService = debounce(this.callSuggestionService, 500);
+       
+       
+   
     }
     componentDidMount() {
-        let medicineName = this.props.navigation.getParam('medicineName') || null
-        this.setState({ medicineName })
+       const { medicineName } = this.state;
+       if(medicineName !== null) {
+           this.SearchKeyWordFunction(medicineName);
+       }
     }
     SearchKeyWordFunction = async (enteredText) => {
 
@@ -41,7 +46,7 @@ class PharmacySuggestionList extends Component {
         } else {
             await this.setState({ medicineName: enteredText })
             this.callSuggestionService(enteredText);
-        }  // Call the Suggestion API with Debounce method
+        }
     }
     callSuggestionService = async (enteredText) => {
         const userId = await AsyncStorage.getItem('userId');

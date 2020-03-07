@@ -18,6 +18,7 @@ import flatBannerOffer from '../../../../../assets/images/20flatoff-banner.jpg'
 import { AddToCard } from '../AddToCardBuyNow/AddToCard'
 
 class PharmacyHome extends Component {
+    searchedMedicinetext = '';
     constructor(props) {
         super(props)
         this.state = {
@@ -33,8 +34,8 @@ class PharmacyHome extends Component {
             selectedMedcine: '',
             isBuyNow: false,
             isAddToCart: false
-
         }
+       
     }
 
     componentDidMount() {
@@ -128,8 +129,10 @@ class PharmacyHome extends Component {
             console.log(e)
         }
     }
-    navigatePress(){
-        this.props.navigation.navigate('PharmacySuggestionList')
+    navigatePress(text){
+        console.log(text);
+        this.props.navigation.navigate('PharmacySuggestionList', {medicineName: text })
+       
     }
 
     render() {
@@ -148,7 +151,8 @@ class PharmacyHome extends Component {
                                     style={{ fontSize: 12, width: '300%' }}
                                     placeholderTextColor="#C1C1C1"
                                     keyboardType={'default'}
-                                    onKeyPress={()=>this.navigatePress()}
+                                    onChangeText={(text) => this.navigatePress(text)}
+                                    // onKeyPress={(evet) => this.navigatePress(evet)}
                                     returnKeyType={'go'}
                                     multiline={false} />
 
