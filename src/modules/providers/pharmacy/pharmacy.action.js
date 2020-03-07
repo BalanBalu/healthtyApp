@@ -19,8 +19,7 @@ export async function getSearchedMedicines(keyword, isLoading = true) {
 /*get medicine list*/
 export async function getMedicineDetails() {
   try {
-
-    let endPoint = '/medicine/detailsList?limit=8'
+    let endPoint = '/medicine/detailsList?limit=4'
     console.log(endPoint);
     let response = await getService(endPoint);
     let respData = response.data;
@@ -102,4 +101,64 @@ export async function getSelectedMedicineDetails(medicineId, pharmacyId) {
 }
 
 
+export async function getSuggestionMedicines (keyword,data, isLoading = true) {
+  try {
+    let endPoint = 'medicines/suggestions/'+keyword;
+    let response = await postService(endPoint, data);
+
+    let respData = response.data;
+    return respData;
+  } catch (e) {
+    return {
+      message: 'exception' + e,
+      success: false
+    }
+  }
+}
+export async function getMedicinesSearchList (data, isLoading = true) {
+  try {
+    let endPoint = '/medicines/search/healthCareProducts';
+    let response = await postService(endPoint, data);
+
+    let respData = response.data;
+    return respData;
+  } catch (e) {
+    return {
+      message: 'exception' + e,
+      success: false
+    }
+  }
+}
+
+/*get Near by pharmacy list*/
+export async function getNearOrOrderPharmacy(userId, coordinates) {
+  try {
+    let endPoint = '/recommedation/recentOrNearByPharmacies?userId=' + userId + '&location=' + coordinates;
+    console.log(endPoint)
+    let response = await getService(endPoint);
+    let respData = response.data;
+    return respData;
+  } catch (e) {
+    return {
+      message: 'exception' + e,
+      success: false
+    }
+  }
+}
+
+/*get Popular Medicine*/
+export async function getPopularMedicine(userId) {
+  try {
+    let endPoint = '/recommedation/recentOrPapularHealthCareProducts?userId=' + userId;
+    console.log(endPoint)
+    let response = await getService(endPoint);
+    let respData = response.data;
+    return respData;
+  } catch (e) {
+    return {
+      message: 'exception' + e,
+      success: false
+    }
+  }
+}
 
