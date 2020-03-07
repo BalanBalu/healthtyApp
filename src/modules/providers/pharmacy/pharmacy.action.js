@@ -89,7 +89,7 @@ export async function getpharmacy(pharmacy_id) {
 export async function getNearOrOrderPharmacy(userId, coordinates) {
   try {
 
-    let endPoint = '/orders/recentOrNearByPharmacies?userId=' + userId + '&location=' + coordinates;
+    let endPoint = '/recommedation/recentOrNearByPharmacies?userId=' + userId + '&location=' + coordinates;
     console.log(endPoint)
     let response = await getService(endPoint);
     let respData = response.data;
@@ -106,7 +106,7 @@ export async function getNearOrOrderPharmacy(userId, coordinates) {
 export async function getPopularMedicine(userId) {
   try {
 
-    let endPoint = '/orders/recentOrPapularHealthCareProducts?userId=' + userId;
+    let endPoint = '/recommedation/recentOrPapularHealthCareProducts?userId=' + userId;
     console.log(endPoint)
     let response = await getService(endPoint);
     let respData = response.data;
