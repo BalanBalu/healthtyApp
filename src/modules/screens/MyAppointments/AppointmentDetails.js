@@ -585,7 +585,7 @@ class AppointmentDetails extends Component {
                       }
                     </Col>
                   </Row>
-                  {data.appointment_status == 'COMPLETED' || reviewData.length !== 0 ?
+                  {(data.appointment_status == 'COMPLETED' && reviewData.length !== 0)||reviewData.length !== 0 ?
                     <Row style={styles.rowSubText}>
                       <Col style={{ width: '8%', paddingTop: 5 }}>
                         <Icon name="ios-medkit" style={{ fontSize: 20, }} />
