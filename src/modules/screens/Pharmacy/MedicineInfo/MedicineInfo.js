@@ -3,7 +3,7 @@ import { Container, Content, Text, Radio, Title, Header, Form, Textarea, Button,
 import { Grid } from 'react-native-easy-grid';
 import { connect } from 'react-redux'
 import { StyleSheet, Image, AsyncStorage, FlatList, TouchableOpacity } from 'react-native';
-import { getpharmacy, getSelectedMedicineDetails } from '../../../providers/pharmacy/pharmacy.action'
+import { getSelectedMedicineDetails } from '../../../providers/pharmacy/pharmacy.action'
 import { medicineRateAfterOffer } from '../../../common';
 import Spinner from '../../../../components/Spinner';
 
@@ -19,18 +19,19 @@ class MedicineInfo extends Component {
 
     }
 
-    async componentDidMount() {
-        await this.getMedicineDetails();
-        this.getPharmacydetails();
+    componentDidMount() {
+        this.getMedicineDetails();
     }
 
     getMedicineDetails = async () => {
         try {
             this.setState({ isLoading: true });
-            let medicineId = "5d68dda1a2bcf43380a6aa37"
-            let result = await getSelectedMedicineDetails(medicineId);
+            let medicineId = "5e61d1e3158a1deb42260b67"
+            let pharmacyId ="5e62ab2dfc8ee6f9a78fac02"
+            let result = await getSelectedMedicineDetails(medicineId, pharmacyId);
+            console.log("result", result)
             if (result.success) {
-                this.setState({ medicineData: result.data[0] })
+                this.setState({ medicineData: result.data })
             }
             this.setState({ isLoading: false });
         }
@@ -41,24 +42,24 @@ class MedicineInfo extends Component {
             this.setState({ isLoading: false });
         }
     }
-    getPharmacydetails = async () => {
-        try {
-            this.setState({ isLoading: true });
-            let pharmacyId = this.state.medicineData.pharmacy_id;
-            let result = await getpharmacy(pharmacyId);
-            // console.log("result", result)
-            if (result.success) {
-                await this.setState({ pharmacyData: result.data[0] })
-            }
-            this.setState({ isLoading: false });
-        }
-        catch (e) {
-            console.log(e)
-        }
-        finally {
-            this.setState({ isLoading: false });
-        }
-    }
+    // getPharmacydetails = async () => {
+    //     try {
+    //         this.setState({ isLoading: true });
+    //         let pharmacyId = this.state.medicineData.pharmacy_id;
+    //         let result = await getpharmacy(pharmacyId);
+    //         // console.log("result", result)
+    //         if (result.success) {
+    //             await this.setState({ pharmacyData: result.data[0] })
+    //         }
+    //         this.setState({ isLoading: false });
+    //     }
+    //     catch (e) {
+    //         console.log(e)
+    //     }
+    //     finally {
+    //         this.setState({ isLoading: false });
+    //     }
+    // }
     increase() {
         let selectedCartItem = this.state.medicineData;
         // console.log('selectedCartItem'+JSON.stringify( selectedCartItem[0].total_quantity++;))
@@ -110,7 +111,7 @@ class MedicineInfo extends Component {
                                     </View>
                                 </Col>
                             </Row>
-                            <Text style={{ fontSize: 14, fontFamily: 'OpenSans', color: '#909090' }}>By {pharmacyData && pharmacyData.name}</Text>
+                            <Text style={{ fontSize: 14, fontFamily: 'OpenSans', color: '#909090' }}>By {medicineData.pharmacy_name}</Text>
                             <View style={{ justifyContent: 'center', alignItems: 'center' }}>
                                 <Image
                                     source={require('../../../../../assets/images/images.jpeg')}
