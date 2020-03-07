@@ -118,7 +118,7 @@ export async function addToCart(medicineData, selectItem, operation) {
 
 export function medicineRateAfterOffer(item) {
     let amount = ''
-     if (item.discount_value == undefined) {
+    if (item.discount_value == undefined) {
         amount = parseInt(item.price)
     }
     if (item.discount_type) {

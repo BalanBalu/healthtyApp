@@ -85,10 +85,39 @@ export async function getpharmacy(pharmacy_id) {
   }
 }
 
+
+export async function getSuggestionMedicines (keyword,data, isLoading = true) {
+  try {
+    let endPoint = 'medicines/suggestions/'+keyword;
+    let response = await postService(endPoint, data);
+
+    let respData = response.data;
+    return respData;
+  } catch (e) {
+    return {
+      message: 'exception' + e,
+      success: false
+    }
+  }
+}
+export async function getMedicinesSearchList (data, isLoading = true) {
+  try {
+    let endPoint = '/medicines/search/healthCareProducts';
+    let response = await postService(endPoint, data);
+
+    let respData = response.data;
+    return respData;
+  } catch (e) {
+    return {
+      message: 'exception' + e,
+      success: false
+    }
+  }
+}
+
 /*get Near by pharmacy list*/
 export async function getNearOrOrderPharmacy(userId, coordinates) {
   try {
-
     let endPoint = '/recommedation/recentOrNearByPharmacies?userId=' + userId + '&location=' + coordinates;
     console.log(endPoint)
     let response = await getService(endPoint);
@@ -105,7 +134,6 @@ export async function getNearOrOrderPharmacy(userId, coordinates) {
 /*get Popular Medicine*/
 export async function getPopularMedicine(userId) {
   try {
-
     let endPoint = '/recommedation/recentOrPapularHealthCareProducts?userId=' + userId;
     console.log(endPoint)
     let response = await getService(endPoint);

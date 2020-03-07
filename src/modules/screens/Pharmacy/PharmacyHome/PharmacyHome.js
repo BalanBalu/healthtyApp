@@ -128,6 +128,9 @@ class PharmacyHome extends Component {
             console.log(e)
         }
     }
+    navigatePress(){
+        this.props.navigation.navigate('PharmacySuggestionList')
+    }
 
     render() {
         const { medicineData, pharmacyData } = this.state
@@ -144,7 +147,11 @@ class PharmacyHome extends Component {
                                     placeholder='Search for Medicines and Health Products...     '
                                     style={{ fontSize: 12, width: '300%' }}
                                     placeholderTextColor="#C1C1C1"
-                                    onFocus={() => this.props.navigation.navigate('medicineSearchList')} />
+                                    keyboardType={'default'}
+                                    onKeyPress={()=>this.navigatePress()}
+                                    returnKeyType={'go'}
+                                    multiline={false} />
+
                                 <TouchableOpacity style={{ alignItems: 'flex-end' }}>
                                     <Icon name='ios-search' style={{ color: '#775DA3', fontSize: 20 }} />
                                 </TouchableOpacity>
