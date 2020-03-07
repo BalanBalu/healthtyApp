@@ -20,10 +20,10 @@ class MedicineInfo extends Component {
     }
 
     componentDidMount() {
-        this.getMedicineDetails();
+        this.getSelectedMedicineDetails();
     }
 
-    getMedicineDetails = async () => {
+    getSelectedMedicineDetails = async () => {
         try {
             this.setState({ isLoading: true });
             let medicineId = "5e61d1e3158a1deb42260b67"
