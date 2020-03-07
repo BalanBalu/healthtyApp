@@ -19,7 +19,6 @@ export async function getSearchedMedicines(keyword, isLoading = true) {
 /*get medicine list*/
 export async function getMedicineDetails() {
   try {
-
     let endPoint = '/medicine/detailsList?limit=4'
     console.log(endPoint);
     let response = await getService(endPoint);
@@ -73,6 +72,22 @@ export async function getpharmacy(pharmacy_id) {
   try {
 
     let endPoint = '/getpharmacy/' + pharmacy_id
+    console.log(endPoint);
+    let response = await getService(endPoint);
+    let respData = response.data;
+    return respData;
+  } catch (e) {
+    return {
+      message: 'exception' + e,
+      success: false
+    }
+  }
+}
+
+export async function getSelectedMedicineDetails(medicineId, pharmacyId) {
+  try {
+
+    let endPoint = '/medicine/' + medicineId + '/pharmacy/' + pharmacyId;
     console.log(endPoint);
     let response = await getService(endPoint);
     let respData = response.data;
