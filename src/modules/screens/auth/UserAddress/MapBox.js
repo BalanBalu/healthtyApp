@@ -21,7 +21,7 @@ export default class MapBox extends React.Component {
         this.state = {
             fromProfile: false,
             loading: false,
-            coordinates: [],
+            coordinates: null,
             center: [],
             zoom: 12,
             isFinisedLoading: false,
@@ -44,7 +44,7 @@ export default class MapBox extends React.Component {
     }
     async componentDidMount() {
         if (IS_ANDROID) {
-            PermissionsAndroid.requestMultiple(
+            const granted = PermissionsAndroid.requestMultiple(
                 [PermissionsAndroid.PERMISSIONS.ACCESS_FINE_LOCATION,
                 PermissionsAndroid.PERMISSIONS.ACCESS_COARSE_LOCATION],
                 {
@@ -56,6 +56,8 @@ export default class MapBox extends React.Component {
             }).catch(err => {
                 console.warn(err);
             });
+            console.log("granted");
+            console.log(await granted);
         }
         this._isMounted = true;
         const { navigation } = this.props;
@@ -184,84 +186,82 @@ export default class MapBox extends React.Component {
             const userId = await AsyncStorage.getItem('userId')
             // console.log(this.state.address.district)
             if (validateName(this.state.address.city)) {
-                if (validateName(this.state.address.district)) {
-
-                    if (validateName(this.state.address.state)) {
-
-                        if (validateName(this.state.address.country)) {
-
-                            let result = await userFiledsUpdate(userId, userAddressData);
-                            this.setState({ loading: false });
-                            if (result.success) {
-                                if (this.state.fromProfile) {
-                                    Toast.show({
-                                        text: result.message,
-                                        type: 'success',
-                                        duration: 3000,
-                                    })
-                                    this.props.navigation.navigate('Profile');
-                                }
-                                else {
-                                    logout();
-                                    Toast.show({
-                                        text: "Click Here Login to continue",
-                                        type: 'success',
-                                        duration: 3000,
-                                    })
-                                    this.props.navigation.navigate('login');
-                                }
-                            }
-                            else {
-                                Toast.show({
-                                    text: result.message,
-                                    type: 'warning',
-                                    duration: 3000,
-                                    buttonText: "Okay",
-                                    buttonTextStyle: {
-                                        color: "#008000"
-                                    },
-                                    buttonStyle: { backgroundColor: "#5cb85c" }
-                                })
-                                return
-                            }
-
-                            
-                        } else {
-                            Toast.show({
-                                text: 'Country should not contains white spaces and any Special Character',
-                                type: 'danger',
-                                duration: 5000
-                            })
-                        }
-                    } else {
-                        Toast.show({
-                            text: 'State should not contains white spaces and any Special Character',
-                            type: 'danger',
-                            duration: 5000
-                        })
-                    }
-                } else {
-                    Toast.show({
-                        text: 'District should not contains white spaces and any Special Character',
-                        type: 'danger',
-                        duration: 5000
-                    })
-                }
-            } else {
                 Toast.show({
                     text: 'City should not contains white spaces and any Special Character',
                     type: 'danger',
                     duration: 5000
                 })
+                return false
             }
-           
-           
+            if (validateName(this.state.address.district)) {
+                Toast.show({
+                    text: 'District should not contains white spaces and any Special Character',
+                    type: 'danger',
+                    duration: 5000
+                });
+                return false;
+            }
+            if (validateName(this.state.address.state)) {
+                Toast.show({
+                    text: 'State should not contains white spaces and any Special Character',
+                    type: 'danger',
+                    duration: 5000
+                })
+                return false;
+            }
+            if (validateName(this.state.address.country)) {
+                Toast.show({
+                    text: 'Country should not contains white spaces and any Special Character',
+                    type: 'danger',
+                    duration: 5000
+                })
+                return false;
+            }
+
+            this.setState({ loading: false });
+
+            let result = await userFiledsUpdate(userId, userAddressData);
+            if (result.success) {
+                if (this.state.fromProfile) {
+                    Toast.show({
+                        text: result.message,
+                        type: 'success',
+                        duration: 3000,
+                    })
+                    this.props.navigation.navigate('Profile');
+                }
+                else {
+                    logout();
+                    Toast.show({
+                        text: "Click Here Login to continue",
+                        type: 'success',
+                        duration: 3000,
+                    })
+                    this.props.navigation.navigate('login');
+                }
+            }
+            else {
+                Toast.show({
+                    text: result.message,
+                    type: 'warning',
+                    duration: 3000,
+                    buttonText: "Okay",
+                    buttonTextStyle: {
+                        color: "#008000"
+                    },
+                    buttonStyle: { backgroundColor: "#5cb85c" }
+                })
+                return
+            }
         } catch (e) {
             Toast.show({
                 text: 'Exception Occured' + e,
                 type: 'danger',
                 duration: 5000
             })
+        }
+        finally {
+            this.setState({ loading: false });
         }
     }
     async onRegionDidChange() {
@@ -336,7 +336,7 @@ export default class MapBox extends React.Component {
             request.send();
         }
     }
-    
+
     render() {
         return (
             <Container>
@@ -353,9 +353,10 @@ export default class MapBox extends React.Component {
                         <MapboxGL.MapView
                             ref={(c) => this._map = c}
                             style={{ flex: 1 }}
+                            compassEnabled={false}
                             showUserLocation={true}
                             styleURL={MapboxGL.StyleURL.Street}
-                            compassEnabled={false}
+
                             onRegionDidChange={this.onRegionDidChange}
                             regionDidChangeDebounceTime={500}
                             onRegionIsChanging={this.onRegionIsChanging}
@@ -427,7 +428,7 @@ export default class MapBox extends React.Component {
                                 <Label>State</Label>
                                 <Input placeholder="State" style={styles.transparentLabel}
                                     value={this.state.address.state}
-                                    onChangeText={value =>this.updateAddressObject('state', value)} />
+                                    onChangeText={value => this.updateAddressObject('state', value)} />
                             </Item>
                             <Item floatingLabel>
                                 <Label>Country</Label>

@@ -98,7 +98,7 @@ class PharmacyCart extends Component {
                     </View>
                     <View style={{ margin: 5, backgroundColor: '#fff', borderRadius: 5 }}>
                         <Row>
-                            <Image source={require('../../../../../assets/images/Led.jpg')} style={{ height: 100, width: 70, margin: 5 }} />
+                            <Image source={require('../../../../../assets/images/paracetamol.jpg')} style={{ height: 100, width: 70, margin: 5 }} />
                             <Col Size={5} style={{ marginLeft: 10 }}>
                                 <Text style={{ fontFamily: 'OpenSans', fontSize: 16, marginTop: 5 }}>Paracetamol</Text>
                                 <Text style={{ color: '#A4A4A4', fontFamily: 'OpenSans', fontSize: 12.5, marginBottom: 20 }}>By Apollo pharmacy</Text>

@@ -54,10 +54,10 @@ class UpdateContact extends Component {
 
     onPressMobileNumUpdate() {
         const { OTPRequestSend } = this.state;
-        if(OTPRequestSend === false) {
+        if (OTPRequestSend === false) {
 
         }
-        
+
     }
 
     commonUpdateContactMethod = async () => {
@@ -109,7 +109,6 @@ class UpdateContact extends Component {
             <Container style={styles.container}>
                 <Spinner color='blue'
                     visible={this.state.isLoading}
-                    textContent={'Please Wait Loading'}
                 />
 
                 <Content contentContainerStyle={styles.bodyContent1}>
@@ -124,7 +123,7 @@ class UpdateContact extends Component {
                                         <Row>
                                             <Icon name="call" style={styles.centeredIcons}></Icon>
                                             <Input placeholder="Edit Your Number" style={styles.transparentLabel} keyboardType="numeric"
-                                                onChangeText={primary_mobile_no => acceptNumbersOnly(primary_mobile_no) == true || primary_mobile_no === '' ? this.setState({ primary_mobile_no}):null}
+                                                onChangeText={primary_mobile_no => acceptNumbersOnly(primary_mobile_no) == true || primary_mobile_no === '' ? this.setState({ primary_mobile_no }) : null}
                                                 value={String(this.state.primary_mobile_no)}
                                                 testID='updatePrimaryContact' />
                                         </Row>
