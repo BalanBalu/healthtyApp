@@ -16,21 +16,6 @@ export async function getSearchedMedicines(keyword, isLoading = true) {
   }
 }
 
-/*get medicine list*/
-export async function getMedicineDetails() {
-  try {
-    let endPoint = '/medicine/detailsList?limit=4'
-    console.log(endPoint);
-    let response = await getService(endPoint);
-    let respData = response.data;
-    return respData;
-  } catch (e) {
-    return {
-      message: 'exception' + e,
-      success: false
-    }
-  }
-}
 
 /*Search Pharmacy in Upload Prescription Page*/
 export async function searchPharmacyByName(keyword) {
