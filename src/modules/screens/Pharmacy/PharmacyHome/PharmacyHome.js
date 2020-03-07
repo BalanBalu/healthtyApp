@@ -30,16 +30,17 @@ class PharmacyHome extends Component {
             isLoading: true,
             locationName: '',
             pharmacyData: '',
-            selectedMedcine:'',
-            isBuyNow:false,
-            isAddToCart:false
+            selectedMedcine: '',
+            isBuyNow: false,
+            isAddToCart: false
 
         }
     }
 
-    async componentDidMount() {
+    componentDidMount() {
+
         CurrentLocation.getCurrentPosition();
-        await this.getCurrentLocation()
+        this.getCurrentLocation()
         this.getMedicineList();
         this.getNearByPharmacyList();
     }
@@ -99,9 +100,14 @@ class PharmacyHome extends Component {
     }
     async selectedItems(data, selected) {
         try {
-            let temp = data;
+            let temp = data.medInfo;
+            temp.pharmacy_name = data.pharmacyInfo.name;
+            temp.pharmacy_id = data.pharmacyInfo.pharmacy_id
+            temp.medicine_id = data.medInfo._id
+
             temp.offeredAmount = medicineRateAfterOffer(data.medInfo)
-            temp.selectedType = selected
+            temp.selectedType = selected;
+
             await this.setState({ selectedMedcine: temp })
 
         } catch (e) {
@@ -111,8 +117,13 @@ class PharmacyHome extends Component {
     }
     cancelPopup(val) {
         try {
-            this.setState({ isBuyNow: false, isAddToCart: false })
-
+            if (val.isNavigate) {
+                this.setState({ isAddToCart: false })
+                this.props.navigation.navigate('PharmacyCart')
+            }
+            else {
+                this.setState({ isAddToCart: false })
+            }
         } catch (e) {
             console.log(e)
         }
@@ -263,17 +274,17 @@ class PharmacyHome extends Component {
                                                 </Row>
                                                 <Row style={{ alignSelf: 'center', marginTop: 2 }}>
                                                     <Text style={item.medInfo.discount_type != undefined ? styles.oldRupees : styles.newRupees}>₹{item.medInfo.price}</Text>
-                                                    {item.medInfo.discount_type != undefined ? 
-                                                        <Text style={styles.newRupees}>₹{medicineRateAfterOffer(item.medInfo)}</Text>:null}
+                                                    {item.medInfo.discount_type != undefined ?
+                                                        <Text style={styles.newRupees}>₹{medicineRateAfterOffer(item.medInfo)}</Text> : null}
                                                 </Row>
 
                                                 <Row style={{ marginBottom: 5, marginTop: 5, alignSelf: 'center' }}>
-                                                    <TouchableOpacity style={styles.addCartTouch} onPress={() =>{ this.setState({ isAddToCart:true}), this.selectedItems(item, 'Add to Card')}} >
+                                                    <TouchableOpacity style={styles.addCartTouch} onPress={() => { this.setState({ isAddToCart: true }), this.selectedItems(item, 'Add to Card') }} >
                                                         <Icon name="ios-cart" style={{ fontSize: 12, color: '#4e85e9' }} />
                                                         <Text style={styles.addCartText}>Add to Cart</Text>
                                                     </TouchableOpacity>
-                                                    
-                                                    <TouchableOpacity style={styles.buyNowTouch} onPress={() => {this.setState({ isBuyNow: true }),this.selectedItems(item, 'Buy Now')}} >
+
+                                                    <TouchableOpacity style={styles.buyNowTouch} onPress={() => { this.setState({ isBuyNow: true }), this.selectedItems(item, 'Buy Now') }} >
                                                         <Icon name="ios-cart" style={{ fontSize: 12, color: '#fff' }} />
                                                         <Text style={styles.BuyNowText}>Buy Now</Text>
                                                     </TouchableOpacity>
@@ -356,145 +367,6 @@ class PharmacyHome extends Component {
                     </View>
                 </Content>
 
-
-                {/* <Content >
-                    <Grid style={styles.curvedGrid}>
-                    </Grid>
-                    
-                   <Row style={{marginTop:-90,}}>
-                            <Col style={{width: '50%',justifyContent:'center',marginLeft:70}}>
-                                <Autocomplete style={{  backgroundColor: '#F1F1F1', borderRadius: 5,borderBottomRightRadius: 0, borderTopRightRadius: 0,padding:14,paddingTop:10}} 
-                                data={this.state.searchMedicine!=undefined?(selectedMedicineName.length === 1 && comp(this.state.keyword, selectedMedicineName[0].medicine_name) ? [] : selectedMedicineName):selectedMedicineName}
-                                    defaultValue={this.state.keyword}
-                                    onChangeText={text => this.setState({ keyword:text })}
-                                    placeholder='Search Medicine'
-                                    listStyle={{ width: '100%', }}
-                                    renderItem={({ item }) => (
-                                        <View>
-                                        <TouchableOpacity onPress={() => this.setState({ keyword: selectedMedicineName[0].medicine_name==='Medicine Not Found'?null:item.medicine_name})}  >
-                                         <Text style={{fontSize: 15,color:'gray',borderBottomWidth:0.3,padding:3,}}>{item.medicine_name}</Text>
-                                        </TouchableOpacity>
-                                        </View>
-                                    )}
-                                  keyExtractor={(item, index) => index.toString()} />
-                            </Col>
-                             
-                            <Col style={{position:'absolute',marginTop:0.1,justifyContent:'center',marginLeft:250}}>
-                                   <Button block style={{ backgroundColor: '#000', borderRadius: 10, borderBottomLeftRadius: 0, borderTopLeftRadius: 0,marginTop:2 }}  onPress={()=>this.onSearchPress(selectedMedicineName)} testID='searchMedicine'>
-                                        <Icon name="ios-search" style={{ color: 'white' }}/>
-                            </Button>
-                            </Col>                          
-                        </Row>
-                           
-
-                    <View style={{ marginLeft: 'auto', marginRight: 'auto', marginTop:75 }}>
-                        <TouchableOpacity style={{ justifyContent: "center", backgroundColor: '#745DA6', borderRadius: 5,flexDirection:'row',paddingLeft:10,paddingRight:10,paddingTop:5,paddingBottom:5}} onPress={() => this.props.navigation.navigate('UploadPrescription')} testID="clickButtonToUploadPrescription">
-                            <Icon style={{ fontSize: 30,color:'#fff'}} name='md-cloud-upload'/>   
-                            <Text style={{ color: '#fff',marginLeft:5,marginTop:4}}>Upload your prescription</Text>
-                        </TouchableOpacity>
-                    </View>
-                   
-                    <Card transparent >
-                    { this.state.isLoading == true?
-                         <Spinner color='blue'
-                         visible={this.state.isLoading}/>
-                         :medicineData.length == 0 ?
-                            <Item style={{ borderBottomWidth: 0, justifyContent:'center',alignItems:'center', height:70 }}>
-                               <Text style={{fontSize:20,justifyContent:'center',alignItems:'center'}}>No Medicines </Text>
-                            </Item>  : 
-                        <Grid style={{ marginTop: 25, padding: 10, width: 'auto' }}>
-                            <FlatList 
-                                data={medicineData}
-                                extraData={this.state}
-                                horizontal={false}
-                                numColumns={2}
-                                renderItem={
-                                   ({ item, index }) =>
-                                            <View style={styles.customColumn}>
-                                                <TouchableOpacity onPress={()=>this.onPressCard(item,index)} testID='selectToMedicine'>
-                                                    <View style={{ width: 'auto', flex: 1, flexDirection: 'row' }}>
-                                                        <Text style={{ marginTop: -30, fontFamily: 'OpenSans', fontSize: 13, color: '#ffa723', }}>{'Get'+' '+item.offer+'%'+' '+'OFF'}
-                                                        </Text>                                                        
-                                                        <Right>
-                                                        {this.state.clickCard!==index?<Icon  style={{ color: '#5cb75d', marginTop: -30, }} />
-                                                         :<Icon name="checkmark-circle" style={{ color: '#5cb75d', marginTop: -30, }} />}
-                         
-                                                        </Right>
-                                                    </View>
-                                                    <Image source={{ uri: 'https://vimecare.com/WelcomeDesign/images/doctor-icon.png' }} style={styles.customImage} />
-                                                   <Text style={styles.pageText}>{item.medicine_name}</Text>
-                                                    <View style={{ flex: 1, flexDirection: 'row' }}>
-                                                        <Text style={{
-                                                            textDecorationLine: 'line-through', textDecorationStyle: 'solid',
-                                                            fontFamily: 'OpenSans',
-                                                            fontSize: 12,
-                                                            color: 'black',
-
-                                                            fontWeight: "bold"
-                                                        }}>{'MRP'+' '+'Rs.'+item.price}</Text>
-                                                        <Text style={{
-                                                            fontFamily: 'OpenSans',
-                                                            fontSize: 12,
-                                                            color: '#000',
-                                                            marginLeft: 10,
-                                                            fontWeight: "bold"
-                                                        }} >{medicineRateAfterOffer(item)}</Text>
-                                                    </View>
-
-
-                                                </TouchableOpacity>
-                                            </View>
-                                }
-                                keyExtractor={(item, index) => index.toString()}
-                            />
-                        </Grid>
-                    }
-                    </Card>
-                </Content> */}
-
-                {/* {this.state.clickCard!==null?<Footer style={{ backgroundColor: '#7E49C3', }}>
-                    <Row>
-                        <Col style={{ flexDirection: 'row', justifyContent: 'center', marginTop: 12 }}>
-                            <TouchableOpacity onPress={()=>this.addSubOperation(this.state.footerSelectedItem,"sub")} testID='decreaseMedicineQuantity'>
-                                <View style={{ padding: 0, justifyContent: 'center', borderWidth: 1, borderColor: 'black', width: 40, height: 35, backgroundColor: 'white' }}>
-                                    <Text style={{ fontSize: 40, textAlign: 'center', marginTop: -5, color: 'black' }}>-</Text>
-                                </View>
-                            </TouchableOpacity>
-                            <View>
-                                <Text style={{ marginLeft: 5, color: 'white', fontSize: 20 }}>{this.state.footerSelectedItem.selectedQuantity==undefined?0:this.state.footerSelectedItem.selectedQuantity}</Text>
-                            </View>
-                            <TouchableOpacity onPress={()=>this.addSubOperation(this.state.footerSelectedItem,"add")} testID='addMedicineQuantity'>
-                                <View style={{ padding: 0, justifyContent: 'center', borderWidth: 1, borderColor: 'black', width: 40, height: 35, marginLeft: 5, backgroundColor: 'white' }}>
-                                    <Text style={{
-                                        fontSize: 20, textAlign: 'center', marginTop: -5,
-                                        color: 'black'
-                                    }}>+</Text>
-                                </View>
-                            </TouchableOpacity>
-                        </Col>
-
-                        <Col style={{ marginRight: 40 }} >
-                            <Button success style={{ borderRadius: 10, marginTop: 10, marginLeft: 45, height: 40, justifyContent: 'center' }} onPress={()=> this.props.navigation.navigate('PharmacyCart')} testID='clickButtonToViewCartPage'>
-
-
-                                <Row style={{ justifyContent: 'center', }}>
-
-                                    <Icon name='ios-cart'/>
-
-                                    <Text style={{ marginLeft: -25, marginTop: 2, }}>VIEW CART</Text>
-                                   {this.state.cartItems.length!=0? <View>
-                                        <Text style={{ position: 'absolute', height: 20, width: 20, fontSize: 13, backgroundColor: '#ffa723', top: 0, marginLeft: -105, borderRadius: 20, marginTop: -10,textAlign:'center' }}>
-                                            {this.state.cartItems.length}
-                                        </Text>     
-                                   </View>:null }  
-                                </Row>               
-                            </Button>
-                        </Col>
-
-                    </Row>
-
-
-                </Footer>:null} */}
 
             </Container>
 
