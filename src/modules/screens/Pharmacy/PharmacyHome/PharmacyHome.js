@@ -148,6 +148,9 @@ class PharmacyHome extends Component {
 
 
     }
+    navigatePress(){
+        this.props.navigation.navigate('PharmacySuggestionList')
+    }
 
     onSelectedStatusChange = () => {
         this.setState({ status: false });
@@ -175,6 +178,7 @@ class PharmacyHome extends Component {
                                     style={{ fontSize: 12, width: '300%' }}
                                     placeholderTextColor="#C1C1C1"
                                     keyboardType={'default'}
+                                    onKeyPress={()=>this.navigatePress()}
                                     returnKeyType={'go'}
                                     multiline={false} />
                                 <TouchableOpacity style={{ alignItems: 'flex-end' }} >

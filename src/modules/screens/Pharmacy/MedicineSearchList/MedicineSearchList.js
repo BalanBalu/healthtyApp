@@ -5,10 +5,10 @@ import {
 } from 'native-base';
 import { Col, Row, Grid } from 'react-native-easy-grid';
 import { StyleSheet, Image, TouchableOpacity, AsyncStorage, FlatList, TouchableHighlight, Modal } from 'react-native';
-import { NavigationEvents } from 'react-navigation';
-import { Loader } from '../../../../components/ContentLoader'
-import { addToCart, medicineRateAfterOffer } from '../../../common';
-import { TextInput } from 'react-native-gesture-handler';
+import Spinner from "../../../../components/Spinner";
+import { getMedicinesSearchList } from '../../../providers/pharmacy/pharmacy.action'
+import { medicineRateAfterOffer } from '../../../common'
+import { AddToCard } from '../AddToCardBuyNow/AddToCard'
 
 
 class MedicineSearchList extends Component {
@@ -21,274 +21,277 @@ class MedicineSearchList extends Component {
             cartItems: [],
             isLoading: true,
             modalVisible: false,
-            proposedVisible: false
+            //new impementation
+            isLoading: true,
+            data: [],
+            isBuyNow: false,
+            selectedMedcine: {},
+            medicineName: '',
+            AddToCardData:null
+
         }
     }
-
-    componentDidMount() {
-        const temp = this.props.navigation.getParam('medicineList');
-        this.setState({ clickCard: null, value: temp });
-        this.storeMedicineToCart();
-    };
-
-
-    backNavigation(payload) {
-        if (payload.action.type === 'Navigation/BACK') {
-            const temp = this.props.navigation.getParam('medicineList');
-            this.setState({ clickCard: null, value: temp });
-            this.storeMedicineToCart();
-        }
-    }
-
-    setModalVisible(visible) {
-        this.setState({ modalVisible: visible });
-    }
-
-
-
-
-
-
-
-    // searchedMedicines = async (keyword) => {
-    //     try {
-    //         this.setState({ isLoading: true })
-    //         let requestData = {
-    //             value: keyword
-    //         };
-    //         let result = await getSearchedMedicines(requestData);
-    //         this.setState({ value: result.data, isLoading: true })
-    //     }
-    //     catch (e) {
-    //         console.log(e);
-    //     }
-    //     finally {
-    //         this.setState({ isLoading: false });
-    //     }
-    // }
-
-    async addSubOperation(selectItem, operation) {
-        let temp_userid = await AsyncStorage.getItem('userId')
-        let userId = JSON.stringify(temp_userid);
-        let data = await addToCart(this.state.value, selectItem, operation);
-        let cartItems = await AsyncStorage.getItem('cartItems-' + userId);
-        this.setState({ footerSelectedItem: data.selectemItemData, cartItems: JSON.parse(cartItems) })
-    }
-
-    onPressCard = async (item, index) => {
-        this.setState({ clickCard: index })
-        await this.setState({ footerSelectedItem: item });
-    }
-
-    storeMedicineToCart = async () => {
+    async  componentDidMount() {
         this.setState({ isLoading: true })
-        let data = await AsyncStorage.getItem('userId')
-        let userId = JSON.stringify(data);
+        let medicineName = this.props.navigation.getParam('medicineName') || ''
+        // let AddToCardDatas={}
+    //     AddToCardDatas=await AsyncStorage.getItem('AddToCardData')||null
+    //     console.log(AddToCardDatas)
+        
+    //    await  this.setState({ medicineName,AddToCardData:AddToCardDatas })
+       
+        let postData = [
+            {
+                type: 'medicine_name',
+                value: medicineName
 
-        medicineSearchMap = new Map();
-        if (this.state.value != undefined) {
-            this.state.value.forEach(element => {
-                medicineSearchMap.set(element.medicine_id, element)
-            })
-        }
 
-        const cartItems = await AsyncStorage.getItem('cartItems-' + userId);
-        if (Array.isArray(JSON.parse(cartItems)) == true) {
-            this.setState({ cartItems: JSON.parse(cartItems) })
-            this.state.cartItems.forEach(element => {
-                if (medicineSearchMap.get(element.medicine_id) != undefined) {
-                    medicineSearchMap.set(element.medicine_id, element);
-                }
-            })
-        }
-
-        let temp = await [...medicineSearchMap.values()]
-        await this.setState({ value: temp });
+            }
+        ]
+        await this.MedicineSearchList(postData)
         this.setState({ isLoading: false })
 
     }
+    MedicineSearchList = async (postData) => {
+        try {
+            let medicineResultData = await getMedicinesSearchList(postData);
+            console.log(medicineResultData.data)
+            if (medicineResultData.success) {
+                this.setState({
+                    data: medicineResultData.data,
 
-    noMedicines() {
-        return (
-            <Item style={{ borderBottomWidth: 0, justifyContent: 'center', alignItems: 'center' }}>
-                <Text style={{ fontSize: 18, justifyContent: 'center', alignItems: 'center' }} > No Medicines available! </Text>
-            </Item>
-        )
+                });
+
+            } else {
+
+                this.setState({
+                    data: [],
+
+                });
+            }
+        }
+        catch (e) {
+            console.log(e)
+        }
+    }
+    async selectedItems(data, selected) {
+        try {
+            let temp = data
+            temp.offeredAmount = medicineRateAfterOffer(data)
+            temp.selectedType = selected
+            await this.setState({ selectedMedcine: temp, isBuyNow: true })
+
+        } catch (e) {
+            console.log(e)
+        }
+
     }
 
 
+    async  getvisble(val) {
+        try {
+            if(val.isNavigate){
+                let temp=[];
+                temp.push(val.medicineData)
+                this.setState({ isBuyNow: false })
+                 this.props.navigation.navigate("OrderPaymentAddress", {medicineDetails:temp})
+                }
+             else{
+                this.setState({ isBuyNow: false })  
+             }
 
-    sble() {
-
-        this.setState({ isLoading: true, proposedVisible: false })
+        } catch (e) {
+            console.log(e)
+        }
     }
+
     render() {
-        const { value, isLoading } = this.state;
-        const med = [{ medname: 'Paracetamol', content: 'By Apollo Pharmacy', count: 'MRP', price: '₹ 300.25', offer: '₹ 180.00' },
-        { medname: 'Paracetamol', content: 'By Apollo Pharmacy', count: 'MRP', price: '₹ 300.25', offer: '₹ 180.00' },
-        { medname: 'Paracetamol', content: 'By Apollo Pharmacy', count: 'MRP', price: '₹ 300.25', offer: '₹ 180.00' },
-        { medname: 'Paracetamol', content: 'By Apollo Pharmacy', count: 'MRP', price: '₹ 300.25', offer: '₹ 180.00' },
-        { medname: 'Paracetamol', content: 'By Apollo Pharmacy', count: 'MRP', price: '₹ 300.25', offer: '₹ 180.00' }]
+        const { medicineName, isLoading, data,AddToCardData } = this.state;
+
 
         return (
             <Container >
                 <Content style={{ backgroundColor: '#EAE6E6', padding: 10 }}>
-                    <View>
-                        <Item style={styles.transparentLabel1}>
-                            <Input placeholder="Search medicine" style={styles.firstTransparentLabel}
-                                placeholderTextColor="#C1C1C1"
-                                keyboardType={'default'}
-                                returnKeyType={'go'}
-                                multiline={false}
-                            />
-                            <TouchableOpacity style={{ alignItems: 'flex-end', marginRight: 5 }} >
-                                <Icon name='md-search' style={{ color: '#C1C1C1' }} />
-                            </TouchableOpacity>
-                        </Item>
-                        <Text style={{ marginTop: 5, marginLeft: 5, fontFamily: 'OpenSans', fontSize: 12.5, color: '#7227C7' }}>Showing all results for <Text style={{ fontStyle: 'italic', fontSize: 12.5, color: '#7227C7' }}>Horlicks</Text></Text>
+                    {isLoading == true ?
+
+                        <Spinner
+                            color="blue"
+                            style={[styles.containers, styles.horizontal]}
+                            visible={true}
+                            size={"large"}
+                            overlayColor="none"
+                            cancelable={false}
+                        /> :
                         <View>
-                            <FlatList
-                                data={med}
-                                renderItem={({ item }) =>
-                                    <View style={{ backgroundColor: '#fff', marginTop: 10, borderRadius: 5 }}>
-                                        <Row>
-                                            <Col size={4}>
-                                                <Image source={require('../../../../../assets/images/paracetamol.jpg')} style={{ height: 80, width: 70, marginLeft: 5, marginTop: 2.5 }} />
-                                            </Col>
-                                            <Col size={12.5}>
-                                                <Text style={{ fontFamily: 'OpenSans', fontSize: 16, marginTop: 5 }}>{item.medname}</Text>
-                                                <Text style={{ color: '#7d7d7d', fontFamily: 'OpenSans', fontSize: 12.5, marginBottom: 20 }}>{item.content}</Text>
-                                                <Row>
-                                                    <Col size={5} style={{ flexDirection: 'row' }}>
-                                                        <Text style={{ fontSize: 8, marginBottom: -15, marginTop: -5, marginLeft: -3, color: "#ff4e42" }}>{item.count}</Text>
-                                                        <Text style={{ fontSize: 8, marginLeft: 1.5, marginTop: -5, color: "#ff4e42", textDecorationLine: 'line-through', textDecorationStyle: 'solid' }}>{item.price}</Text>
-                                                        <Text style={{ fontSize: 13, marginTop: -10, marginLeft: 2.5, color: "#8dc63f" }}>{item.offer}</Text>
-                                                    </Col>
-                                                    <Col size={3} style={{ height: 20, marginLeft: 4 }}>
-                                                        <Row>
-                                                            <TouchableOpacity style={{ borderColor: '#4e85e9', marginLeft: 1.5, borderWidth: 1, borderRadius: 2.5, marginTop: -12.5, height: 25, width: 65, paddingBottom: 5, paddingTop: 2 }}
-                                                            >
-                                                                <Row style={{ alignItems: 'center' }}>
-                                                                    <Icon name='ios-cart' style={{ color: '#4e85e9', fontSize: 11, marginLeft: 3.5, paddingTop: 2.3 }} />
-                                                                    <Text style={{ fontSize: 7, color: '#4e85e9', marginTop: 2.5, marginLeft: 6 }}>Add to Cart</Text>
-                                                                </Row>
-                                                            </TouchableOpacity>
-                                                        </Row>
-                                                    </Col>
-                                                    <Col size={3.2} style={{ height: 20, marginLeft: 4, marginRight: 2.5 }}>
-                                                        <Row>
-                                                            <TouchableOpacity style={{ borderColor: '#8dc63f', borderWidth: 1, marginLeft: 1, borderRadius: 2.5, marginTop: -12.5, height: 25, width: 65, paddingBottom: 5, paddingTop: 2, backgroundColor: '#8dc63f' }}
-                                                                onPress={() => {
-                                                                    this.setModalVisible(true);
-                                                                }}>
-                                                                <Row style={{ alignItems: 'center' }}>
-                                                                    <Icon name='ios-cart' style={{ color: '#fff', fontSize: 11, marginLeft: 5, paddingTop: 2.3 }} />
-                                                                    <Text style={{ fontSize: 7, color: '#fff', marginTop: 2.5, marginLeft: 6 }}>Buy Now</Text>
-                                                                </Row>
-                                                            </TouchableOpacity>
-                                                        </Row>
-                                                    </Col>
-                                                </Row>
-                                            </Col>
-                                        </Row>
-                                    </View>
-                                } />
-                        </View>
+                            {/* <TouchableOpacity onFocus={()=>this.props.navigation.navigate('PharmacySuggestionList',{medicineName:medicineName})} style={{ alignItems: 'flex-end', marginRight: 5 }} > */}
+                            <Row onPress={() => this.props.navigation.navigate('PharmacySuggestionList', { medicineName: medicineName })} style={styles.transparentLabel1}>
+                                <Input placeholder="Search medicine" style={styles.firstTransparentLabel}
+                                    placeholderTextColor="#C1C1C1"
+                                    value={this.state.medicineName}
 
-                    </View>
+                                />
 
+                                <Icon name='md-search' style={{ color: '#C1C1C1' }} />
 
-
-
-
-
-
-
-
-
-                    <View style={{ height: 200, position: 'absolute', bottom: 0 }}>
-                        <Modal
-                            animationType="slide"
-                            transparent={true}
-                            backgroundColor='rgba(0,0,0,0.7)'
-                            containerStyle={{ justifyContent: 'flex-end',}}
-                            visible={this.state.modalVisible}
-                            animationType={'slide'}
-                        >
-
-                            <Grid style={{
-                                backgroundColor: '#fff',
-                                position: 'absolute',
-                                bottom: 0,
-                                marginLeft: 10, marginRight: 10, borderRadius: 5, borderWidth: 1, borderColor: 'grey'
-                            }}>
-                                <Row style={{ backgroundColor: '#fff', paddingTop: 10, paddingBottom: 10, paddingLeft: 10, paddingRight: 10, borderTopLeftRadius: 5, borderTopRightRadius: 5 }}>
-                                    <Left>
-                                        <Text style={{ color: '#7227C7', fontSize: 16, fontWeight: '500'}}>Buy Now</Text>
-                                    </Left>
-                                    <Right>
-                                        <TouchableOpacity>
-                                            <Icon name='ios-close-circle' style={{ fontSize: 20, color: '#FF0000' }} onPress={() => { this.setModalVisible(false); }} />
-                                        </TouchableOpacity>
-                                    </Right>
-                                </Row>
-
-
+                            </Row>
+                            {/* </TouchableOpacity> */}
+                            {data.length == 0 ?
+                                <Text style={{ marginTop: 5, marginLeft: 5, fontFamily: 'OpenSans', fontSize: 12.5, color: '#7227C7' }}> No medicine were found</Text> :
                                 <View>
-                                    <Row>
-                                        <Col size={1} style={{ marginLeft: 5 }}>
-                                            <Image source={require('../../../../../assets/images/paracetamol.jpg')} style={{ height: 80, width: 70, marginLeft: 5, marginTop: 2.5 }} />
-                                        </Col>
-                                        <Col size={6} style={{ marginLeft: 70 }}>
-                                            <Text style={{ fontFamily: 'OpenSans', fontSize: 16, marginTop: 5 }}>Paracetamol</Text>
-                                            <Text style={{ color: '#7d7d7d', fontFamily: 'OpenSans', fontSize: 12.5, marginBottom: 20 }}>Apollo Pharmacy</Text>
-                                        </Col>
-                                        <Col size={3} style={{ marginLeft: 2.5, marginRight: 5,justifyContent:'flex-end',alignItems:'flex-end',marginRight:10 }}>
-                                            <View>
-                                                <Text style={{ fontSize: 15, marginTop: 10, color: "#8dc63f", fontFamily: 'OpenSans',textAlign:'right',marginRight:5 }}>₹ 180.00</Text>
-                                                <Row style={{ marginLeft: 2.5, marginRight: 5, marginTop: 10 }}>
-                                                    <Col>
-                                                        <TouchableOpacity style={{ width: 20, height: 20, borderRadius: 10, backgroundColor: '#E6E6E6', justifyContent: 'center', alignItems: 'center' }}>
-                                                            <Text style={{ fontSize: 12, fontWeight: '500', fontFamily: 'OpenSans', textAlign: 'center', color: '#FF0000' }}>-</Text>
-                                                        </TouchableOpacity>
-                                                    </Col>
-                                                    <Col>
-                                                        <Text style={{ fontSize: 12, marginTop: 2.5, marginLeft: 5, fontFamily: 'OpenSans' }}>2</Text>
-                                                    </Col>
-                                                    <Col>
-                                                        <TouchableOpacity style={{ width: 20, height: 20, borderRadius: 10, backgroundColor: '#E6E6E6', justifyContent: 'center', alignItems: 'center' }}>
-                                                            <Text style={{ fontSize: 12, fontWeight: '500', fontFamily: 'OpenSans', textAlign: 'center', color: '#8dc63f' }}>+</Text>
-                                                        </TouchableOpacity>
-                                                    </Col>
-                                                </Row>
-                                            </View>
-                                        </Col>
-                                    </Row>
+                                    <Text style={{ marginTop: 5, marginLeft: 5, fontFamily: 'OpenSans', fontSize: 12.5, color: '#7227C7' }}>Showing all results for <Text style={{ fontStyle: 'italic', fontSize: 12.5, color: '#7227C7' }}>{medicineName}</Text></Text>
+                                    <View>
+                                        <FlatList
+                                            data={data}
+                                            keyExtractor={(item, index) => index.toString()}
+                                            renderItem={({ item }) =>
+                                                <View style={{ backgroundColor: '#fff', marginTop: 10, borderRadius: 5 }}>
+                                                    <Row>
+                                                        <Col size={4}>
+                                                            <Image source={require('../../../../../assets/images/paracetamol.jpg')} style={{ height: 80, width: 70, marginLeft: 5, marginTop: 2.5 }} />
+                                                        </Col>
+                                                        <Col size={12.5}>
+                                                            <Text style={{ fontFamily: 'OpenSans', fontSize: 16, marginTop: 5 }}>{item.medicine_name}</Text>
+                                                            <Text style={{ color: '#7d7d7d', fontFamily: 'OpenSans', fontSize: 12.5, marginBottom: 20 }}>{'By ' + item.pharmacy_name}</Text>
+                                                            <Row>
+                                                                <Col size={5} style={{ flexDirection: 'row' }}>
+                                                                    <Text style={{ fontSize: 8, marginBottom: -15, marginTop: -5, marginLeft: -3, color: "#ff4e42" }}>{'MRP'}</Text>
+                                                                    <Text style={{ fontSize: 8, marginLeft: 1.5, marginTop: -5, color: "#ff4e42", textDecorationLine: 'line-through', textDecorationStyle: 'solid' }}>{item.price || ''}</Text>
+                                                                    <Text style={{ fontSize: 13, marginTop: -10, marginLeft: 2.5, color: "#8dc63f" }}>{medicineRateAfterOffer(item)}</Text>
+                                                                </Col>
+                                                                {/* {AddToCardData==null||AddToCardData[item.medicine_id]==undefined?
+                                                                <Col size={3} style={{ height: 20, marginLeft: 4 }}>
+                                                                    <Row>
+                                                                        <TouchableOpacity style={{ borderColor: '#4e85e9', marginLeft: 1.5, borderWidth: 1, borderRadius: 2.5, marginTop: -12.5, height: 25, width: 65, paddingBottom: 5, paddingTop: 2 }}
+                                                                            onPress={() => this.selectedItems(item, 'Add to Card')} >
+                                                                            <Row style={{ alignItems: 'center' }}>
+                                                                                <Icon name='ios-cart' style={{ color: '#4e85e9', fontSize: 11, marginLeft: 3.5, paddingTop: 2.3 }} />
+                                                                                <Text style={{ fontSize: 7, color: '#4e85e9', marginTop: 2.5, marginLeft: 6 }}>Add to Cart</Text>
+                                                                            </Row>
+                                                                        </TouchableOpacity>
+                                                                    </Row>
+                                                                </Col>: <Col size={3} style={{ height: 20, marginLeft: 4 }}>
+                                                                    <Row>
+                                                                        <TouchableOpacity style={{ borderColor: '#4e85e9', marginLeft: 1.5, borderWidth: 1, borderRadius: 2.5, marginTop: -12.5, height: 25, width: 65, paddingBottom: 5, paddingTop: 2 }}
+                                                                            onPress={() => this.selectedItems(item, 'Add to Card')} >
+                                                                            <Row style={{ alignItems: 'center' }}>
+                                                                                <Text>{item.medicine_id}</Text>
+                                                                                <Icon name='ios-cart' style={{ color: '#4e85e9', fontSize: 11, marginLeft: 3.5, paddingTop: 2.3 }} />
+                                                                                <Text style={{ fontSize: 7, color: '#4e85e9', marginTop: 2.5, marginLeft: 6 }}>{'Added'+AddToCardData[item.medicine_id].QunatityAmout}}</Text>
+                                                                            </Row>
+                                                                        </TouchableOpacity>
+                                                                    </Row>
+                                                                </Col>} */}
+                                                                <Col size={3.2} style={{ height: 20, marginLeft: 4, marginRight: 2.5 }}>
+                                                                    <Row>
+                                                                        <TouchableOpacity style={{ borderColor: '#8dc63f', borderWidth: 1, marginLeft: 1, borderRadius: 2.5, marginTop: -12.5, height: 25, width: 65, paddingBottom: 5, paddingTop: 2, backgroundColor: '#8dc63f' }}
+                                                                            onPress={() => this.selectedItems(item, 'Buy Now')}>
+                                                                            <Row style={{ alignItems: 'center' }}>
+                                                                                <Icon name='ios-cart' style={{ color: '#fff', fontSize: 11, marginLeft: 5, paddingTop: 2.3 }} />
+                                                                                <Text style={{ fontSize: 7, color: '#fff', marginTop: 2.5, marginLeft: 6 }}>Buy Now</Text>
+                                                                            </Row>
+                                                                        </TouchableOpacity>
+                                                                    </Row>
+                                                                </Col>
+                                                            </Row>
+                                                        </Col>
+                                                    </Row>
+                                                </View>
+
+                                            } />
+
+                                    </View>
                                 </View>
-                                <Row style={{ marginLeft: 20, marginTop: 10, marginRight: 15, marginBottom: 10 }}>
- 
-                                    <Col style={{ width: '60%'}}>
-                                        <Text style={{fontFamily: 'OpenSans',textAlign:'right', fontSize:14, marginBottom:5, color:'#848484',marginRight:10}}>Total - ₹ 360.00</Text>
-                                    </Col>
-                                    <Col style={{ width: '40%', flexDirection: 'row', alignItems: 'flex-end', justifyContent: 'flex-end',}}>
-                                        <TouchableOpacity style={{ borderColor: '#4e85e9', borderWidth: 1, marginLeft: 25, borderRadius: 2.5, marginTop: -12.5, height: 30, width: 120, paddingBottom: -5, paddingTop: 2, backgroundColor: '#4e85e9' }}>
-                                            <Row style={{ alignItems: 'center'}}>
-                                            <Text style={{ fontSize: 12, color: '#fff', marginTop: 2.5, fontWeight: '500', fontFamily: 'OpenSans', marginLeft: 25, marginBottom:5, textAlign:'center'}}><Icon name='ios-cart' style={{ color: '#fff', fontSize: 13, marginLeft: 5, paddingTop: 2.3 }} />  Buy Now</Text>
-                                            </Row>
-                                        </TouchableOpacity>
-                                    </Col>
+                            }
+
+                        </View>
+                    }
+                    {this.state.isBuyNow == true ?
+                        <AddToCard
+                            data={this.state.selectedMedcine}
+                            popupVisible={(data) => this.getvisble(data)}
+                        />
+                        : null}
 
 
-                                </Row>
-                            </Grid>
 
-                        </Modal>
-                    </View>
 
                 </Content>
             </Container>
 
 
+
+        )
+    }
+}
+
+export default MedicineSearchList
+const styles = StyleSheet.create({
+    container:
+    {
+        backgroundColor: '#ffffff',
+    },
+
+    bodyContent: {
+        padding: 0
+    },
+    customImage: {
+        height: 90,
+        width: 90,
+        marginLeft: 'auto',
+        marginRight: 'auto',
+        marginTop: 'auto',
+        marginBottom: 'auto',
+        borderRadius: 50
+    },
+
+    curvedGrid:
+    {
+        width: 250,
+        height: 250,
+        borderRadius: 125,
+        marginTop: -135,
+        marginLeft: 'auto',
+        marginRight: 'auto',
+        backgroundColor: '#745DA6',
+        transform: [
+            { scaleX: 2 }
+        ],
+        position: 'relative',
+        overflow: 'hidden',
+
+    },
+
+    normalText:
+    {
+        fontFamily: 'OpenSans',
+        fontSize: 17,
+        marginTop: 10
+    },
+    offerText:
+    {
+        fontFamily: 'OpenSans',
+        fontSize: 13,
+        color: 'green'
+
+    },
+    subText: {
+        fontFamily: 'OpenSans',
+        fontSize: 17,
+        color: 'black'
+    },
+    transparentLabel1:
+    {
+        backgroundColor: "#fff",
+        height: 35,
+        borderRadius: 5
+    },
+
+    firstTransparentLabel: {
+        fontSize: 12.5,
+        marginLeft: 10
+
+    }
+});
 
 
 
@@ -438,76 +441,105 @@ class MedicineSearchList extends Component {
 
             // </Container >
 
-        )
+
+
+
+
+
+/*componentDidMount() {
+    const temp = this.props.navigation.getParam('medicineList');
+    this.setState({ clickCard: null, value: temp });
+    this.storeMedicineToCart();
+};
+
+
+backNavigation(payload) {
+    if (payload.action.type === 'Navigation/BACK') {
+        const temp = this.props.navigation.getParam('medicineList');
+        this.setState({ clickCard: null, value: temp });
+        this.storeMedicineToCart();
     }
 }
 
+setModalVisible(visible) {
+    this.setState({ modalVisible: visible });
+}
 
-export default MedicineSearchList
-const styles = StyleSheet.create({
-    container:
-    {
-        backgroundColor: '#ffffff',
-    },
 
-    bodyContent: {
-        padding: 0
-    },
-    customImage: {
-        height: 90,
-        width: 90,
-        marginLeft: 'auto',
-        marginRight: 'auto',
-        marginTop: 'auto',
-        marginBottom: 'auto',
-        borderRadius: 50
-    },
 
-    curvedGrid:
-    {
-        width: 250,
-        height: 250,
-        borderRadius: 125,
-        marginTop: -135,
-        marginLeft: 'auto',
-        marginRight: 'auto',
-        backgroundColor: '#745DA6',
-        transform: [
-            { scaleX: 2 }
-        ],
-        position: 'relative',
-        overflow: 'hidden',
 
-    },
 
-    normalText:
-    {
-        fontFamily: 'OpenSans',
-        fontSize: 17,
-        marginTop: 10
-    },
-    offerText:
-    {
-        fontFamily: 'OpenSans',
-        fontSize: 13,
-        color: 'green'
 
-    },
-    subText: {
-        fontFamily: 'OpenSans',
-        fontSize: 17,
-        color: 'black'
-    },
-    transparentLabel1:
-    {
-        backgroundColor: "#fff",
-        height: 35,
-        borderRadius: 5
-    },
 
-    firstTransparentLabel: {
-        fontSize: 12.5,
-        marginLeft: 10
+// searchedMedicines = async (keyword) => {
+//     try {
+//         this.setState({ isLoading: true })
+//         let requestData = {
+//             value: keyword
+//         };
+//         let result = await getSearchedMedicines(requestData);
+//         this.setState({ value: result.data, isLoading: true })
+//     }
+//     catch (e) {
+//         console.log(e);
+//     }
+//     finally {
+//         this.setState({ isLoading: false });
+//     }
+// }
 
+async addSubOperation(selectItem, operation) {
+    let temp_userid = await AsyncStorage.getItem('userId')
+    let userId = JSON.stringify(temp_userid);
+    let data = await addToCart(this.state.value, selectItem, operation);
+    let cartItems = await AsyncStorage.getItem('cartItems-' + userId);
+    this.setState({ footerSelectedItem: data.selectemItemData, cartItems: JSON.parse(cartItems) })
+}
+
+onPressCard = async (item, index) => {
+    this.setState({ clickCard: index })
+    await this.setState({ footerSelectedItem: item });
+}
+
+storeMedicineToCart = async () => {
+    this.setState({ isLoading: true })
+    let data = await AsyncStorage.getItem('userId')
+    let userId = JSON.stringify(data);
+
+    medicineSearchMap = new Map();
+    if (this.state.value != undefined) {
+        this.state.value.forEach(element => {
+            medicineSearchMap.set(element.medicine_id, element)
+        })
     }
-});
+
+    const cartItems = await AsyncStorage.getItem('cartItems-' + userId);
+    if (Array.isArray(JSON.parse(cartItems)) == true) {
+        this.setState({ cartItems: JSON.parse(cartItems) })
+        this.state.cartItems.forEach(element => {
+            if (medicineSearchMap.get(element.medicine_id) != undefined) {
+                medicineSearchMap.set(element.medicine_id, element);
+            }
+        })
+    }
+
+    let temp = await [...medicineSearchMap.values()]
+    await this.setState({ value: temp });
+    this.setState({ isLoading: false })
+
+}
+
+noMedicines() {
+    return (
+        <Item style={{ borderBottomWidth: 0, justifyContent: 'center', alignItems: 'center' }}>
+            <Text style={{ fontSize: 18, justifyContent: 'center', alignItems: 'center' }} > No Medicines available! </Text>
+        </Item>
+    )
+}
+
+
+
+sble() {
+
+    this.setState({ isLoading: true, proposedVisible: false })
+}*/
