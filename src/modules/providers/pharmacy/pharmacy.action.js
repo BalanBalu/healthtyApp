@@ -17,22 +17,6 @@ export async function getSearchedMedicines(keyword, isLoading = true) {
 }
 
 
-/*Search Pharmacy in Upload Prescription Page*/
-export async function searchPharmacyByName(keyword) {
-  try {
-    let endPoint = '/medicine/pharmacy/keyword'
-    console.log(endPoint);
-    let response = await postService(endPoint, keyword);
-    let respData = response.data;
-    return respData;
-  } catch (e) {
-    return {
-      message: 'exception' + e,
-      success: false
-    }
-  }
-}
-
 /* Medicine Order List */
 
 export async function getMedicineOrderList(userId) {
