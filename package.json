@@ -6,7 +6,8 @@
     "start": "node node_modules/react-native/local-cli/cli.js start",
     "test": "jest",
     "preinstall": "git clone https://sathishkrish20@bitbucket.org/sathishkrish20/react-native-customui.git && mv react-native-customui ../react-native-customui",
-    "postinstall": "npx jetify"
+    "postinstall": "npx jetify",
+    "build-android": "cd android && ./gradlew assembleRelease"
   },
   "dependencies": {
     "@mapbox/mapbox-sdk": "^0.6.0",
