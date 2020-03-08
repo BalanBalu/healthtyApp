@@ -98,6 +98,21 @@ export async function getMedicinesSearchList (data, isLoading = true) {
     }
   }
 }
+export async function getMedicinesSearchListByPharmacyId (pharmacyId, isLoading = true) {
+  try {
+    let endPoint = '/medicines/pharmacy/' + pharmacyId;
+    console.log(endPoint);
+    let response = await getService(endPoint);
+    let respData = response.data;
+    return respData;
+  } catch (e) {
+    return {
+      message: 'exception' + e,
+      success: false
+    }
+  }
+}
+
 
 /*get Near by pharmacy list*/
 export async function getNearOrOrderPharmacy(userId, coordinates) {

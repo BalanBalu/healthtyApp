@@ -253,8 +253,15 @@ class PharmacyHome extends Component {
                                         keyExtractor={(item, index) => index.toString()}
                                         initialNumToRender={4}
                                         renderItem={({ item }) =>
+                                         
                                             <Col size={5} style={{ backgroundColor: '#fff', marginLeft: 5, height: '100%' }}>
-                                                <Row>
+                                              
+                                                <Row onPress={() =>  
+                                                    this.props.navigation.navigate('MedicineInfo', {
+                                                        medicineId: item.medInfo.medicine_id,
+                                                        pharmacyId: item.pharmacyInfo.pharmacy_id,
+                                                        medicineData: item
+                                                    })}>
                                                     <Col size={9} style={{ alignItems: 'center' }}>
                                                         <Image
                                                             source={require('../../../../../assets/images/images.jpeg')}
@@ -351,7 +358,12 @@ class PharmacyHome extends Component {
                                                     </Col>
                                                     <Col size={6}>
                                                         <Row style={{ alignItems: 'flex-end', justifyContent: 'flex-end' }}>
-                                                            <TouchableOpacity style={{ backgroundColor: '#8dc63f', flexDirection: 'row', paddingTop: 2, paddingBottom: 2, paddingLeft: 8, paddingRight: 8, marginLeft: 5, borderRadius: 2 }}>
+                                                            <TouchableOpacity 
+                                                                onPress={() => this.props.navigation.navigate('medicineSearchList', {
+                                                                    byPharmacy: true,
+                                                                    pharmacyInfo: item.pharmacyInfo
+                                                                })}
+                                                                style={{ backgroundColor: '#8dc63f', flexDirection: 'row', paddingTop: 2, paddingBottom: 2, paddingLeft: 8, paddingRight: 8, marginLeft: 5, borderRadius: 2 }}>
                                                                 <Icon name="ios-cart" style={{ fontSize: 10, color: '#fff' }} />
                                                                 <Text style={styles.orderNowText}>Order Medicines</Text>
                                                             </TouchableOpacity>

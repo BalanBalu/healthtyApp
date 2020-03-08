@@ -12,7 +12,13 @@ class MedicineInfo extends Component {
     constructor(props) {
         super(props);
         this.state = {
-            medicineData: '',
+            medicineData: {
+                medInfo: {
+                },
+                pharmacyInfo: {
+                },
+                medPharDetailInfo: {}
+            },
             pharmacyData: '',
             isLoading: false
         };
@@ -26,10 +32,9 @@ class MedicineInfo extends Component {
     getSelectedMedicineDetails = async () => {
         try {
             this.setState({ isLoading: true });
-            let medicineId = "5e61d1e3158a1deb42260b67"
-            let pharmacyId ="5e62ab2dfc8ee6f9a78fac02"
+            let medicineId = this.props.navigation.getParam('medicineId');
+            let pharmacyId =this.props.navigation.getParam('pharmacyId');
             let result = await getSelectedMedicineDetails(medicineId, pharmacyId);
-            console.log("result", result)
             if (result.success) {
                 this.setState({ medicineData: result.data })
             }
@@ -42,27 +47,9 @@ class MedicineInfo extends Component {
             this.setState({ isLoading: false });
         }
     }
-    // getPharmacydetails = async () => {
-    //     try {
-    //         this.setState({ isLoading: true });
-    //         let pharmacyId = this.state.medicineData.pharmacy_id;
-    //         let result = await getpharmacy(pharmacyId);
-    //         // console.log("result", result)
-    //         if (result.success) {
-    //             await this.setState({ pharmacyData: result.data[0] })
-    //         }
-    //         this.setState({ isLoading: false });
-    //     }
-    //     catch (e) {
-    //         console.log(e)
-    //     }
-    //     finally {
-    //         this.setState({ isLoading: false });
-    //     }
-    // }
+    
     increase() {
         let selectedCartItem = this.state.medicineData;
-        // console.log('selectedCartItem'+JSON.stringify( selectedCartItem[0].total_quantity++;))
         selectedCartItem.total_quantity++;
         this.setState({ medicineData: selectedCartItem })
         this.addToCart();
@@ -85,7 +72,8 @@ class MedicineInfo extends Component {
         await AsyncStorage.setItem('cartItems-' + userId, JSON.stringify(cart))
     }
     saveMoney() {
-        return parseInt(this.state.medicineData.price) - parseInt(medicineRateAfterOffer(this.state.medicineData))
+        const { medicineData : { medPharDetailInfo } } = this.state;
+        return parseInt(medPharDetailInfo.price) - parseInt(medicineRateAfterOffer(medPharDetailInfo))
     }
 
     render() {
@@ -101,7 +89,7 @@ class MedicineInfo extends Component {
                         <View>
                             <Row>
                                 <Col size={9}>
-                                    <Text style={styles.headText}>{medicineData.medicine_name}</Text>
+                                    <Text style={styles.headText}>{medicineData.medInfo.medicine_name}</Text>
                                 </Col>
                                 <Col size={1}>
                                     <View style={styles.headerViewRate}>
@@ -111,7 +99,7 @@ class MedicineInfo extends Component {
                                     </View>
                                 </Col>
                             </Row>
-                            <Text style={{ fontSize: 14, fontFamily: 'OpenSans', color: '#909090' }}>By {medicineData.pharmacy_name}</Text>
+                            <Text style={{ fontSize: 14, fontFamily: 'OpenSans', color: '#909090' }}>By {medicineData.pharmacyInfo.name}</Text>
                             <View style={{ justifyContent: 'center', alignItems: 'center' }}>
                                 <Image
                                     source={require('../../../../../assets/images/images.jpeg')}
@@ -123,8 +111,8 @@ class MedicineInfo extends Component {
                             <Row>
                                 <Col size={7} style={{ flexDirection: 'row', marginTop: 10 }}>
                                     <Text style={{ fontSize: 10, fontFamily: 'OpenSans', color: '#ff4e42', marginTop: 5 }}>MRP</Text>
-                                    <Text style={styles.oldRupees}>₹{medicineData.price}</Text>
-                                    <Text style={styles.newRupees}>₹{medicineRateAfterOffer(this.state.medicineData)}</Text>
+                                    <Text style={styles.oldRupees}>₹{medicineData.medPharDetailInfo.price}</Text>
+                                    <Text style={styles.newRupees}>₹{medicineRateAfterOffer(medicineData.medPharDetailInfo)}</Text>
                                     <Text style={styles.saveText}>(Save upto ₹{this.saveMoney()})</Text>
                                 </Col>
                                 <Col size={3}>
@@ -153,7 +141,7 @@ class MedicineInfo extends Component {
 
                         <View style={{ marginTop: 10 }}>
                             <Text style={styles.desText}>Product Description</Text>
-                            <Text style={styles.mainText}>{medicineData.description}</Text>
+                            <Text style={styles.mainText}>{medicineData.medInfo.description}</Text>
                         </View>
                         <View style={{ marginTop: 10 }}>
                             <Text style={styles.desText}>Rating and Reviews</Text>
