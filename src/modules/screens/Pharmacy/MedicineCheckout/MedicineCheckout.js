@@ -10,7 +10,7 @@ import { formatDate } from '../../../../setup/helpers';
 import { RadioButton, } from 'react-native-paper';
 
 
-class OrderPaymentAddress extends Component {
+class MedicineCheckout extends Component {
     constructor(props) {
         super(props);
         this.state = {
@@ -276,7 +276,7 @@ clickedHomeDelivery = async () => {
     }
 }
 
-export default OrderPaymentAddress;
+export default MedicineCheckout;
 
 const styles = StyleSheet.create({
 

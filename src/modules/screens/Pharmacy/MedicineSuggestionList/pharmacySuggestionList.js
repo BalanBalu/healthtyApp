@@ -17,7 +17,7 @@ const debounce = (fun, delay) => {
     };
 }
 
-class PharmacySuggestionList extends Component {
+class MedicineSuggestionList extends Component {
 
 
     constructor(props) {
@@ -156,7 +156,7 @@ class PharmacySuggestionList extends Component {
 
 
 }
-function PharmacySuggestionListState(state) {
+function MedicineSuggestionListState(state) {
 
     return {
         bookappointment: state.bookappointment,
@@ -164,7 +164,7 @@ function PharmacySuggestionListState(state) {
 
     }
 }
-export default connect(PharmacySuggestionListState)(PharmacySuggestionList)
+export default connect(MedicineSuggestionListState)(MedicineSuggestionList)
 
 
 // export default mapRoutes = createStackNavigator(routes, {

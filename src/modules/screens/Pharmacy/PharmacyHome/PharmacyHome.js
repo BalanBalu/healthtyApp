@@ -131,7 +131,7 @@ class PharmacyHome extends Component {
     }
     navigatePress(text){
         console.log(text);
-        this.props.navigation.navigate('PharmacySuggestionList', {medicineName: text })
+        this.props.navigation.navigate('MedicineSuggestionList', {medicineName: text })
        
     }
 

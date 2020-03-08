@@ -162,7 +162,7 @@ class MedicineSearchList extends Component {
                                     returnKeyType={'go'}
                                     value={this.state.medicineName}
                                     autoFocus={false}
-                                    onChangeText={enteredText => this.props.navigation.navigate('PharmacySuggestionList', { medicineName: enteredText })}
+                                    onChangeText={enteredText => this.props.navigation.navigate('MedicineSuggestionList', { medicineName: enteredText })}
                                     multiline={false} />
                                 <TouchableOpacity style={{ alignItems: 'flex-end' }} >
                                     <Icon name='ios-search' style={{ color: '#775DA3', fontSize: 20 }} />
