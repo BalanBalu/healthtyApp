@@ -228,8 +228,8 @@ class BloodDonerFilters extends Component {
     let user = [],
       doctor = [];
     let result = await bloodDonationList(this.filterData);
+    
     if (result.success) {
-      this.props.navigation.setParams( {filerCount: this.filterData.length})
       user = result.data.userList
       doctor = result.data.doctorList
       user.concat(doctor);
@@ -238,9 +238,8 @@ class BloodDonerFilters extends Component {
         data: user
       })
     }
-    
-    this.props.navigation.navigate('Blood Doners', {
-      data: user,filerCount: this.filterData.length
+    this.props.navigation.navigate('Blood Donors', {
+      filteredData:user,filerCount: this.filterData.length
     })
 
 

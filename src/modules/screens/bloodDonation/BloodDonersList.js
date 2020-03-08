@@ -125,7 +125,6 @@ class BloodDonersList extends Component {
             <Spinner color='blue'
               visible={isLoading}
               overlayColor="none"
-              textContent={'Loading...'}
             /> :
 
             data.length == 0 ?
@@ -144,7 +143,7 @@ class BloodDonersList extends Component {
                     <Card style={{ padding: 5, marginTop: 5 }}>
                       <Row style={{ borderBottomWidth: 0,  }}>
                         <Col size={2} style={{ justifyContent: 'center', marginLeft: -10,alignItems:'center' }}>
-                          <Image source={require("../../../../assets/images/Blooddrop.png")} style={{ height: 95, width: 95, position: 'relative' }} />
+                          <Image source={require("../../../../assets/images/bloodrop.png")} style={{ height: 95, width: 95, position: 'relative' }} />
                           <Text style={{ fontFamily: 'OpenSans', fontSize: 15, position: 'absolute', fontWeight: 'bold', paddingTop: 20, color: '#fff', width: '100%', textAlign: 'center',  }}>{this.getBloodGrp(item.blood_group)}</Text>
                         </Col>
                         <Col size={6.5} style={{ marginTop: 25, marginLeft: 10 }}>

@@ -94,7 +94,7 @@ export const RenderReviewData = (props) => {
         <Grid>
             <Row style={{marginTop:20,borderTopColor:'gray',borderTopWidth:0.5,paddingTop:20}}>
                 <Col style={{width:'15%'}}>
-                    <Thumbnail square source={renderProfileImage(item.userInfo)} style={{width:60,height:60,}}/>
+                    <Thumbnail  source={renderProfileImage(item.userInfo)} style={{width:60,height:60,borderRadius:60/2}}/>
                 </Col>
                 <Col style={{width:'55%',marginTop:5,marginLeft:15}}>
                     <Text style={styles.name}>{item.is_anonymous == true ? 'Medflic User' : item.userInfo.first_name + ' ' + item.userInfo.last_name} </Text>

@@ -178,6 +178,8 @@ export async function logout() {
   await AsyncStorage.removeItem('profile')
   await AsyncStorage.removeItem('isLoggedIn');
   await AsyncStorage.removeItem('basicProfileData');
+  await AsyncStorage.removeItem('ProfileCompletionViaHome');
+
   store.dispatch({
     type: LOGOUT
   }),

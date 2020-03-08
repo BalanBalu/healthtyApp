@@ -65,7 +65,7 @@ async getBasicData() {
             
             <Image square source={require('../../../assets/images/Logo.png')} style={{flex:1, width: undefined, height: undefined,opacity:0.1,transform:[{rotate:'-2deg'}]}}/>
            
-             <Row style={{alignItems:'center',marginLeft:15,position:'absolute',marginTop:30}}>
+             <Row style={{alignItems:'center',marginLeft:15,position:'absolute',marginTop:30,}}>
                <Col style={{width:'25%'}}>
                   <Image square source={this.renderProfileImageOrLogo()} 
                      style={{ height: 60, width: 60,borderColor:'#fff',borderWidth:2,borderRadius:30}}
@@ -73,14 +73,14 @@ async getBasicData() {
               </Col>
                <Col style={{width:'75%'}}>
                 {hasLoggedIn ?  
-                   <View>
-                    <Text style={{fontFamily:'OpenSans',fontSize:18,fontWeight:'bold',color:'#fff'}}>{this.activeUserData && this.activeUserData.first_name}</Text>
+                   <View style={{marginLeft:10}}>
+                    <Text style={{fontFamily:'OpenSans',fontSize:18,fontWeight:'bold',color:'#fff'}}>{this.activeUserData && (this.activeUserData.first_name +" "+ this.activeUserData.last_name) }</Text>
                    <TouchableOpacity onPress={()=> this.props.navigation.navigate('Profile')}>
                     <Text style={{fontFamily:'OpenSans',fontSize:13,color:'#fff'}}>View Profile</Text>
                     </TouchableOpacity>
                    </View>
                  : 
-                   <View style={{alignItems:'center',marginLeft:-95}}>
+                   <View style={{alignItems:'center'}}>
                     <TouchableOpacity style={{borderColor:'#fff',borderWidth:2,borderRadius:5,padding:5,alignItems:'center',paddingRight:15,paddingLeft:15}}>
                        <View style={{flexDirection:'row'}}>
                          <Icon name='log-in' style={{color:'#FFF',fontSize:25}}/>
@@ -90,14 +90,12 @@ async getBasicData() {
                  </View> } 
                </Col>
               </Row> 
-             
-
           </View>
           <List style={{borderBottomWidth:0}}
             dataArray={items}
             renderRow={data => {
               return (
-                <ListItem style={{borderBottomWidth:0,height: 50 }}
+                <ListItem style={{borderBottomWidth:0,paddingBottom:-2,marginTop:5 }}
                   button
                   onPress={() => this.props.navigation.navigate(data.routeName)}>
                           <Image square source={DragwerLogos[data.key]} 
@@ -110,17 +108,15 @@ async getBasicData() {
           />
           
         </Content>
-        <List>
-           <ListItem style={{borderBottomWidth:0,  marginTop: 40 }}>
+          <View>
+          <List style={{position:'absolute',marginTop:-50}}>
+           <ListItem style={{borderBottomWidth:0, paddingBottom:-2,marginTop:5}}>
               <Icon name='ios-power' style={{fontSize:15,color:'#7D4ac1',marginLeft:5
             }}/>
             <Text onPress={() => this.signInOrSignup(hasLoggedIn) } 
                 style={{fontFamily:'OpenSans',fontSize:15,marginLeft:22}}>{hasLoggedIn ? 'Sign Out' : 'Sign In' }</Text>
             </ListItem>
-        </List>  
-          
-          <View>
-           
+        </List> 
            <Footer style={{  height: 40, backgroundColor:'#fff',}}>
               <FooterTab style={{justifyContent:'center',alignItems:'center',backgroundColor:'#7f49c3'}}>
                 <Text style={{textAlign:'center',fontFamily:'OpenSans',fontWeight:'700',fontSize:20,color:'#fff'}}>MEDFLIC</Text>

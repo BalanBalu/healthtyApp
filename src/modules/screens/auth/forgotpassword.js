@@ -126,7 +126,6 @@ class Forgotpassword extends Component {
                 {isLoading ?
                     <Spinner
                         visible={isLoading}
-                        textContent={'Please Wait...Generating OTP'}
                     /> : null}
                 <Button
                     style={userEntry == '' ? styles.forgotButtonDisable : styles.forgotButton}
@@ -184,7 +183,6 @@ class Forgotpassword extends Component {
                 {isLoading ?
                     <Spinner
                         visible={isLoading}
-                        textContent={'Please Wait...Loading'}
                     /> : null}
                 <Button
                     style={(otpCode && password && confirmPassword) == '' ? styles.forgotButtonDisable : styles.forgotButton}
