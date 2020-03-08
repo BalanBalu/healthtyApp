@@ -41,50 +41,60 @@ class OrderDetails extends Component {
         return (
             <Container style={styles.container}>
                 <Content style={{ backgroundColor: '#F5F5F5', padding: 10 }}>
-                    <View style={{ backgroundColor: '#fff', padding: 10, marginTop: 5 }}>
+                    <View style={{ paddingLeft: 10, paddingRight: 10, paddingBottom: 10 }}>
+                        <Row>
+                            <Col size={5}>
+                                <Text style={styles.orderIdText}>Order Id</Text>
+                            </Col>
+                            <Col size={5}>
+                                <Text style={{ fontSize: 12, textAlign: 'right', marginTop: 13, fontFamily: 'OpenSans' }}>2020729443</Text>
+                            </Col>
+                        </Row>
+                    </View>
+                    <View style={{ backgroundColor: '#fff', padding: 10, }}>
                         <Text style={styles.arrHeadText}>Arriving On Today</Text>
                         {/* Delivery date display  */}
                         {/* <Text style={styles.delHeadText}>Delivery On 29th February,2020</Text> */}
 
                         <FlatList
                             style={{ marginTop: 10 }}
-                            data={[ { status: 'Ordered and Approved', checked: true, drawLine: true }, 
-                                    { status: 'Packed and Out for Delivery', checked: true, drawLine: true },
-                                    { status: 'Delivered', checked: false }, ]}
+                            data={[{ status: 'Ordered and Approved', checked: true, drawLine: true },
+                            { status: 'Packed and Out for Delivery', checked: true, drawLine: true },
+                            { status: 'Delivered', checked: false },]}
                             renderItem={({ item }) =>
-                            <Row style={{  }}>
-                            <Col size={0.7}>
-                                {item.checked === true ? 
-                                <TouchableOpacity style={styles.lengthTouch}>
-                                </TouchableOpacity> : null } 
-                                
-                                {item.checked === false ? 
-                                    <TouchableOpacity style={styles.bottomText}>
-                                    </TouchableOpacity> : 
-                                null }
-                                
-                                {item.checked === true && item.drawLine === true ?
-                                    <TouchableOpacity style={styles.TouchLegth}>
-                                    </TouchableOpacity>  
-                                    :  
-                                    <TouchableOpacity style={{
-                                        height: 60,
-                                        padding: 1,
-                                        width: 4,
-                                        marginLeft: 4
-                                    }}>
-                                    </TouchableOpacity>  }
-                            </Col>
-                            <Col size={9.3}>
-                                <View style={{ marginTop: -3 }}>
-                                    <Text style={styles.trackingText}>{item.status}</Text>
-                                    <Text style={{ fontSize: 14, fontFamily: 'OpenSans', color: '#909090' }}>17th February,2020 at 05.27 PM</Text>
-                                </View>
-                        
-                            </Col>
-                        </Row>
-                        }/>
-                        
+                                <Row style={{}}>
+                                    <Col size={0.7}>
+                                        {item.checked === true ?
+                                            <TouchableOpacity style={styles.lengthTouch}>
+                                            </TouchableOpacity> : null}
+
+                                        {item.checked === false ?
+                                            <TouchableOpacity style={styles.bottomText}>
+                                            </TouchableOpacity> :
+                                            null}
+
+                                        {item.checked === true && item.drawLine === true ?
+                                            <TouchableOpacity style={styles.TouchLegth}>
+                                            </TouchableOpacity>
+                                            :
+                                            <TouchableOpacity style={{
+                                                height: 60,
+                                                padding: 1,
+                                                width: 4,
+                                                marginLeft: 4
+                                            }}>
+                                            </TouchableOpacity>}
+                                    </Col>
+                                    <Col size={9.3}>
+                                        <View style={{ marginTop: -3 }}>
+                                            <Text style={styles.trackingText}>{item.status}</Text>
+                                            <Text style={{ fontSize: 12, fontFamily: 'OpenSans', color: '#909090' }}>17th February,2020 at 05.27 PM</Text>
+                                        </View>
+
+                                    </Col>
+                                </Row>
+                            } />
+
                         <Text style={{ fontSize: 14, fontWeight: '500', fontFamily: 'OpenSans', color: '#7F49C3', marginTop: 10 }}> Ordered Medicines</Text>
                         <FlatList
                             data={MedDetail}
@@ -145,10 +155,6 @@ class OrderDetails extends Component {
 
                     <View style={styles.mainView}>
                         <Text style={styles.orderText}>OrderDetails</Text>
-                        <View style={{ marginTop: 10 }}>
-                            <Text style={styles.innerText}>Order Id</Text>
-                            <Text style={styles.rightText}>2020729443</Text>
-                        </View>
                         <View style={{ marginTop: 10 }}>
                             <Text style={styles.innerText}>Payment</Text>
                             <Text style={styles.rightText}>Cash on Delivery</Text>
@@ -404,7 +410,7 @@ const styles = StyleSheet.create({
     },
     arrHeadText: {
         fontFamily: 'OpenSans',
-        fontSize: 18,
+        fontSize: 17,
         fontWeight: '500',
         color: '#8dc63f'
     },
@@ -473,25 +479,25 @@ const styles = StyleSheet.create({
     },
     innerText: {
         fontFamily: 'OpenSans',
-        fontSize: 10,
+        fontSize: 12,
         fontWeight: '500',
         color: '#7F49C3'
     },
     rightText: {
         fontFamily: 'OpenSans',
-        fontSize: 10,
+        fontSize: 12,
         color: '#4c4c4c'
 
     },
     addressText: {
         fontFamily: 'OpenSans',
-        fontSize: 10,
+        fontSize: 12,
         color: '#4c4c4c',
         marginTop: 5
     },
     nameTextss: {
         fontFamily: 'OpenSans',
-        fontSize: 10,
+        fontSize: 12,
         color: '#4c4c4c',
         fontWeight: '500',
         marginTop: 5
@@ -521,5 +527,11 @@ const styles = StyleSheet.create({
         fontWeight: '500',
         fontFamily: 'OpenSans',
         color: '#4c4c4c'
+    },
+    orderIdText: {
+        fontSize: 17,
+        fontWeight: '500',
+        fontFamily: 'OpenSans',
+        color: '#7F49C3', marginTop: 8
     }
 });
