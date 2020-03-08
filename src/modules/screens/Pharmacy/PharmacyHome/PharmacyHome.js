@@ -123,9 +123,12 @@ class PharmacyHome extends Component {
         try {
             if (val.isNavigate) {
                 this.setState({ isAddToCart: false, isBuyNow: false })
-                this.props.navigation.navigate('PharmacyCart')
-            }
-            else {
+                let temp = [];
+                temp.push(val.medicineData)
+                this.props.navigation.navigate("MedicineCheckout", {
+                        medicineDetails: temp
+                })
+            } else {
                 this.setState({ isAddToCart: false ,  isBuyNow: false  })
             }
         } catch (e) {
@@ -245,7 +248,7 @@ class PharmacyHome extends Component {
                         <Text style={{ fontFamily: 'OpenSans', fontSize: 15, color: '#4c4c4c', marginBottom: 10, marginLeft: 5 }}>Popular Medicines</Text>
                         <View>
                             <Row>
-                                {medicineData.length == 0 ?
+                                {medicineData.length === 0 ?
                                     <Item style={{ borderBottomWidth: 0, justifyContent: 'center', alignItems: 'center', height: 70 }}>
                                         <Text style={{ fontSize: 10, justifyContent: 'center', alignItems: 'center' }}>No Medicines are Available </Text>
                                     </Item> :
