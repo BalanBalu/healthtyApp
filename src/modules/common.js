@@ -117,7 +117,22 @@ export async function addToCart(medicineData, selectItem, operation) {
 }
 
 export function medicineRateAfterOffer(item) {
-    return parseInt(item.price) - ((parseInt(item.offer) / 100) * parseInt(item.price));
+    let amount = ''
+    if (item.discount_value == undefined) {
+        amount = parseInt(item.price)
+    }
+    if (item.discount_type) {
+        if (item.discount_type == 'PERCENTAGE') {
+            let divided = (parseInt(item.discount_value) / 100) * parseInt(item.price)
+            amount = parseInt(item.price) - divided
+            return amount
+        } else if (item.discount_type == 'AMOUNT') {
+            amount = parseInt(item.price) - parseInt(item.discount_value);
+            return amount
+        }
+    } else {
+        return amount
+    }
 }
 
 export function getDoctorSpecialist(specialistData) {
@@ -145,7 +160,7 @@ export function getDoctorExperience(calulatedExperience) {
     }
     if (calulatedExperience.year == 0) {
         month = calulatedExperience.month;
-        if(month==0){
+        if (month == 0) {
             return 'N/A'
         }
         return `${month} Month` + (month <= 1 ? '' : 's')
@@ -167,14 +182,14 @@ export async function getUserNotification() {
 export function getName(data) {
     let name = 'unKnown'
     if (data) {
-      if (data.first_name != undefined || data.last_name != undefined) {
-        name = `${data.first_name || ''} ${data.last_name || ''}`
-  
-      }
+        if (data.first_name != undefined || data.last_name != undefined) {
+            name = `${data.first_name || ''} ${data.last_name || ''}`
+
+        }
     }
     return name
-  
-  }
+
+}
 
 
 export class Badge extends Component {
@@ -198,7 +213,7 @@ export class Badge extends Component {
         return (
 
             data != null &&
-            <Text style={{ position: 'absolute', backgroundColor: 'red', color: 'white', borderRadius: 20/2,  marginTop: -7, width:undefined,height:undefined,padding:2,fontSize:10 }}>{data}</Text>        )
+            <Text style={{ position: 'absolute', backgroundColor: 'red', color: 'white', borderRadius: 20 / 2, marginTop: -7, width: undefined, height: undefined, padding: 2, fontSize: 10 }}>{data}</Text>)
     }
 }
 
@@ -278,7 +293,7 @@ export function validateEmailAddress(text) {
 }
 
 export function stringHasOnlySpace(text) {
-    let regex =/^(?!\s*$)[-a-zA-Z0-9_:,.' ']{1,100}$/;
+    let regex = /^(?!\s*$)[-a-zA-Z0-9_:,.' ']{1,100}$/;
     if (regex.test(text) === false) return false;
     else return true;
 }
@@ -308,10 +323,10 @@ export function validatePincode(number) {
 }
 
 export function acceptNumbersOnly(value) {
-    const regex = new RegExp('^[0-9]+$');  
+    const regex = new RegExp('^[0-9]+$');
     const result = regex.test(value);
     return result
-  }
+}
 export function validatePassword(value) {
     const regex = new RegExp('^[^\\s]+$');  //did't support White spaces
     if (regex.test(value) === false) return false;
@@ -321,16 +336,16 @@ export function validatePassword(value) {
 export function getHospitalHeadeName(location) {
     if (!location) return ''
     if (location)
-      return `${location.name}`;
+        return `${location.name}`;
     else
-      return ''
+        return ''
 }
 export function getHospitalName(location) {
     if (!location) return ''
     if (location)
-      return `${location.location.address.no_and_street}, ${location.location.address.city}, ${location.location.address.state}, ${location.location.address.pin_code}`;
+        return `${location.location.address.no_and_street}, ${location.location.address.city}, ${location.location.address.state}, ${location.location.address.pin_code}`;
     else
-      return ''
+        return ''
 }
 export function validateName(text) {
     let regex = /^(?!\s*$)[-a-zA-Z_:' ']{1,100}$/;
@@ -338,12 +353,34 @@ export function validateName(text) {
     else return true;
 }
 export function onlySpaceNotAllowed(text) {
-          if(text){
-         if(text.trim())return true
-          else return false;
-          }
-          else{
-            return false  
-          }
-         
-         }
+    if (text) {
+        if (text.trim()) return true
+        else return false;
+    }
+    else {
+        return false
+    }
+
+}
+
+
+export async function ProductIncrementDecreMent(quantity, price, operation) {
+
+    let itemQuantity, totalAmount = price;
+    if (operation === "add") {
+        itemQuantity = (quantity == undefined ? 0 : quantity);
+        quantity = ++itemQuantity;
+        totalAmount = quantity * price
+
+    } else {
+        if (quantity > 1) {
+            itemQuantity = quantity;
+            quantity = --itemQuantity;
+            totalAmount = quantity * price
+        }
+    }
+    return {
+        quantity: quantity,
+        totalAmount: totalAmount
+    }
+}

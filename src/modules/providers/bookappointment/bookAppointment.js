@@ -1,11 +1,13 @@
 import { bookAppointment, createPaymentRazor } from './bookappointment.action';
 import { updateChat } from '../chat/chat.action'
+import { createMedicineOrder } from '../pharmacy/pharmacy.action'
 import { SERVICE_TYPES } from '../../../setup/config'
 import { possibleChatStatus } from '../../../Constants/Chat'
 export default class BookAppointmentPaymentUpdate {
 
   
   async updatePaymentDetails(isSuccess, razorPayRespData, modeOfPayment, bookSlotDetails, serviceType, userId, paymentMethod) {
+    debugger
     try {
         let paymentId = razorPayRespData.razorpay_payment_id ? razorPayRespData.razorpay_payment_id : modeOfPayment === 'cash' ? 'cash_' + new Date().getTime() : 'pay_err_' + new Date().getTime();
         let paymentData = null;
@@ -73,6 +75,36 @@ export default class BookAppointmentPaymentUpdate {
                  }
              }  
         }
+        else if(serviceType === SERVICE_TYPES.PHARMACY) {
+            paymentData = {
+                payer_id: userId,
+                payer_type: 'user',
+                payment_id: paymentId,
+                amount: bookSlotDetails.fee,
+                amount_paid: !isSuccess || modeOfPayment === 'cash' ? 0 : bookSlotDetails.fee,
+                amount_due: !isSuccess || modeOfPayment === 'cash' ? bookSlotDetails.fee : 0,
+                currency: 'INR',
+                service_type: serviceType,
+                booking_from: 'APPLICATION',
+                is_error: !isSuccess,
+                error_message: razorPayRespData.description || null,
+                payment_mode: modeOfPayment,
+                payment_method: paymentMethod
+              }
+              let resultData = await createPaymentRazor(paymentData);
+              console.log(resultData);
+              if (resultData.success) {
+                const orderResp = await this.createNewMedicineOrder(bookSlotDetails, userId, paymentId, isSuccess)
+                return orderResp
+              } else {
+                  console.log('Creating Orders Failed');
+                  await this.createNewMedicineOrder(bookSlotDetails, userId, paymentId, isSuccess)
+                  return {
+                     success: false, 
+                     message: resultData.message
+                 }
+             }  
+        }
         
     } catch (error) {
        return {
@@ -90,7 +122,7 @@ export default class BookAppointmentPaymentUpdate {
     //description: Joi.string().optional(),
       status_by: 'USER',
       statusUpdateReason: 'BOOKING_HAS_DONE',
-      payment_id: paymentId
+      payment_id: paymentId,
     }
 
     let resultData = await updateChat(chatId, request4InitiateChat);
@@ -136,6 +168,43 @@ export default class BookAppointmentPaymentUpdate {
                 message: resultData.message,
                 success: true,
                 tokenNo: resultData.tokenNo
+            }
+        } else {
+            return {
+                message: resultData.message,
+                success: false,
+            }
+        }
+    } catch (ex) {
+       return {
+            message: 'Exception Occured ' + ex,
+            success: false,
+        }
+    } 
+}
+
+async createNewMedicineOrder(orderData, userId, paymentId, isSuccess) {
+    try {
+        debugger
+        let requestData = {
+            user_id: userId,
+            description: orderData.diseaseDescription || '',
+            status: isSuccess ? 'PENDING' : 'FAILED',
+            status_by: "USER",
+            status_update_reason: 'New Medicine Order',
+            booked_from: "APPLICATION",
+            payment_id: paymentId,
+            order_items: orderData.medicineDetails,
+            delivery_option: orderData.delivery_option,
+            pickup_or_delivery_address: orderData.pickup_or_delivery_address
+        }
+        let resultData = await createMedicineOrder(requestData);
+        console.log(resultData)
+        if (resultData.success) {
+            return {
+                message: resultData.message,
+                success: isSuccess,
+                orderNo: resultData.orderNo
             }
         } else {
             return {

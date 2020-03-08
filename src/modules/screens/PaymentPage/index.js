@@ -277,17 +277,34 @@ class PaymentPage extends Component {
             } else if (serviceType === SERVICE_TYPES.CHAT) {
                 this.props.navigation.navigate('SuccessChat');
                 Toast.show({
-                    text: 'Paymenet Success for Chat',
-                    type: 'warning',
+                    text: 'Paymenet Success',
+                    type: 'success',
+                    duration: 3000
+                })
+            }
+            else if (serviceType === SERVICE_TYPES.PHARMACY) {
+                this.props.navigation.navigate('SuccessChat', { manualNaviagationPage : 'Home' });
+                Toast.show({
+                    text: 'Paymenet Success',
+                    type: 'success',
                     duration: 3000
                 })
             }
         } else {
-            Toast.show({
-                text: response.message,
-                type: 'warning',
-                duration: 3000
-            })
+            if (serviceType === SERVICE_TYPES.PHARMACY) {
+                this.props.navigation.navigate('Home');
+                Toast.show({
+                    text: 'Payment Failed',
+                    type: 'danger',
+                    duration: 5000
+                })
+            } else {
+                Toast.show({
+                    text: response.message,
+                    type: 'warning',
+                    duration: 3000
+                })
+            }
         }
         this.setState({ isLoading: false });
     }
