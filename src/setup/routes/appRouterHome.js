@@ -46,7 +46,6 @@ import Reminder from '../../modules/screens/Reminder/Reminders'
 import PharmacyHome from '../../modules/screens/Pharmacy/PharmacyHome/PharmacyHome';
 import MyOrdersList from '../../modules/screens/Pharmacy/MyOrdersList/MyOrdersList';
 import OrderDetails from '../../modules/screens/Pharmacy/OrderDetails/OrderDetails';
-import OrderPayment from '../../modules/screens/Pharmacy/OrderPayment/OrderPayment';
 import PharmacyCart from '../../modules/screens/Pharmacy/PharmacyCart/PharmacyCart';
 import OrderPaymentSuccess from '../../modules/screens/Pharmacy/OrderPaymentSuccess/OrderPaymentSuccess';
 import UploadPrescription from '../../modules/screens/Pharmacy/PharmacyHome/UploadPrescription';
@@ -487,12 +486,6 @@ const HomeStack = createStackNavigator({
     screen: MedicineSearchList,
     navigationOptions: {
       title: 'Search List'
-    }
-  },
-  OrderPayment: {
-    screen: OrderPayment,
-    navigationOptions: {
-      title: 'Payment Page'
     }
   },
   PharmacyCart: {

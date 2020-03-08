@@ -16,7 +16,8 @@ export const BASIC_DEFAULT = {
 export const FIREBASE_SENDER_ID = "607089059424";
 export const SERVICE_TYPES = {
     APPOINTMENT: 'APPOINTMENT',
-    CHAT:'CHAT'
+    CHAT:'CHAT',
+    PHARMACY: 'PHARMACY'
 }
 export const MAX_DISTANCE_TO_COVER = 30000; // in meters Doctor Can be search Within in the AREA
 export const MAX_PERCENT_APPLY_BY_CREDIT_POINTS = 25;

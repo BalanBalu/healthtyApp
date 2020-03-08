@@ -8,7 +8,8 @@ import { userFiledsUpdate, logout } from '../../../providers/auth/auth.actions';
 import Spinner from '../../../../components/Spinner';
 import { formatDate } from '../../../../setup/helpers';
 import { RadioButton, } from 'react-native-paper';
-
+import { SERVICE_TYPES } from '../../../../setup/config'
+import { hasLoggedIn } from '../../../providers/auth/auth.actions';
 
 class MedicineCheckout extends Component {
     constructor(props) {
@@ -33,17 +34,22 @@ class MedicineCheckout extends Component {
         };
     }
 
-    async componentDidMount() {
-      try {
-            const { navigation } = this.props;
-          //  const medicineDetails = navigation.getParam('medicineDetails')||[];
-          
-           // await this.setState({ medicineDetails })
-         //   console.log(  JSON.stringify(this.state.medicineDetails))
-        } catch (error) {
-            console.error(error)     
+async componentDidMount() {
+    try {
+        const { navigation } = this.props;
+        console.log(navigation.state);
+        const isLoggedIn = await hasLoggedIn(this.props);
+        if (!isLoggedIn) {
+            navigation.navigate('login');
+            return
         }
+        const medicineDetails = navigation.getParam('medicineDetails') || [];
+        console.log(  JSON.stringify(medicineDetails))
+        this.setState({ medicineDetails })
+    } catch (error) {
+        console.error(error)     
     }
+}
 
 clickedHomeDelivery = async () => {
     try {
@@ -71,6 +77,65 @@ clickedHomeDelivery = async () => {
     } catch (error) {
         console.log(error);       
     } 
+}
+
+onProceedToPayment = () => {
+    const { medicineDetails } = this.state;
+    if(medicineDetails.length === 0) {
+        Toast.show({
+            text: 'No Medicines Added to Checkout',
+            type: 'warning',
+            duration: 3000
+        })
+    }
+    let medicinceNames = '';
+    let medicineOrderData = [];
+    const amount =  medicineDetails.map(ele => { 
+        if(medicinceNames.length < 50) {
+            medicinceNames = medicinceNames + ele.medicine_name
+        }
+        medicineOrderData.push({
+            medicine_id: ele.medicine_id,
+            pharmacy_id: ele.pharmacy_id,
+            medicine_original_price: ele.price,
+            medicine_offered_price: ele.offeredAmount,
+            quantity: ele.userAddedMedicineQuantity,
+            final_price: userAddedTotalMedicineAmount,
+            medicine_name: ele.medicine_name,
+        })
+        return ele.userAddedTotalMedicineAmount
+        }).reduce(
+        (total, userAddedTotalMedicineAmount ) =>  total + userAddedTotalMedicineAmount );
+    
+    
+    const paymentPageRequestData = {
+        service_type: SERVICE_TYPES.PHARMACY,
+        amount: amount,
+        bookSlotDetails: {
+            fee: amount,
+            diseaseDescription: medicinceNames,
+            medicineDetails: medicineOrderData,
+            delivery_option: 'HOME_DELIVERY',
+            pickup_or_delivery_address: {
+                coordinates: [ 12.12, 88.99 ],
+                type: 'Point',
+                address: {
+                    no_and_street: 'Placeholder',
+                    address_line_1: 'Placeholder',
+                    district: 'Placeholder',
+                    city: 'Placeholder',
+                    state: 'Placeholder',
+                    country: 'Placeholder',
+                    pin_code: 'Placeholder'
+                }
+            },
+        }
+    }
+    this.props.navigation.navigate('paymentPage', paymentPageRequestData )
+    
+
+    console.log(paymentPageRequestData);
+    
 }
     // selectComponent = (activePage) => () => this.setState({ activePage })
 
@@ -264,7 +329,7 @@ clickedHomeDelivery = async () => {
                     </TouchableOpacity>
                     </Col>
                     <Col size={5} style={{alignItems:'center',justifyContent:'center',backgroundColor:'#8dc63f'}}>
-                    <TouchableOpacity>
+                    <TouchableOpacity onPress={() => this.onProceedToPayment()}>
                         <Text style={{fontSize:16,fontFamily:'OpenSans',color:'#fff',fontWeight:'400'}}>Proceed</Text>
                     </TouchableOpacity>
                     </Col>

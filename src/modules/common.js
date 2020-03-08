@@ -130,7 +130,6 @@ export function medicineRateAfterOffer(item) {
             amount = parseInt(item.price) - parseInt(item.discount_value);
             return amount
         }
-       
     } else {
         return amount
     }
@@ -380,7 +379,6 @@ export async function ProductIncrementDecreMent(quantity, price, operation) {
             totalAmount = quantity * price
         }
     }
-
     return {
         quantity: quantity,
         totalAmount: totalAmount

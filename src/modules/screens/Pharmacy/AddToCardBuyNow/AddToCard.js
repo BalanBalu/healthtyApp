@@ -6,31 +6,31 @@ import {
     Container, Header, Title, Left, Right, Body, Button, Card, Toast, CardItem, Row, Grid, View, Col,
     Text, Thumbnail, Content, CheckBox, Item, Input, Icon
 } from 'native-base';
-import { ProductIncrementDecreMent } from '../../../common'
+import { ProductIncrementDecreMent, medicineRateAfterOffer } from '../../../common'
 
 
 export class AddToCard extends Component {
     constructor(props) {
         super(props)
         this.state = {
-            data: this.props.data,
-            medicineQuantity: 1,
-            totalQunatityAmout: this.props.data.offeredAmount
-
-
+            data: { },
+            userAddedMedicineQuantity: 0,
         }
-
     }
 
     async componentDidMount() {
-        const { data } = this.props;
+        let data  = {
+            ...this.props.data,
+            offeredAmount:  medicineRateAfterOffer(this.props.data),
+        }
         this.setState({ data })
+        this.productQuantityOperator(data, 'add')
     }
     async productQuantityOperator(item, operator) {
-        let result = await ProductIncrementDecreMent(this.state.medicineQuantity, item.offeredAmount, operator)
-        totalQunatityAmout = result.totalAmount || 0,
-            medicineQuantity = result.quantity || 0
-        this.setState({ totalQunatityAmout, medicineQuantity })
+        let result = await ProductIncrementDecreMent(this.state.userAddedMedicineQuantity, item.offeredAmount, operator)
+            userAddedTotalMedicineAmount = result.totalAmount || 0,
+            userAddedMedicineQuantity = result.quantity || 0
+        this.setState({ userAddedTotalMedicineAmount, userAddedMedicineQuantity })
     }
     async cancelCard() {
         this.props.popupVisible({
@@ -40,11 +40,12 @@ export class AddToCard extends Component {
 
     }
     async  cardAction() {
-        const { data, totalQunatityAmout, medicineQuantity } = this.state
+        const { data, userAddedMedicineQuantity, userAddedTotalMedicineAmount } = this.state
        
         let temp = data
-        temp.QunatityAmout = totalQunatityAmout;
-        temp.medicineTotalQuantity = medicineQuantity;
+        temp.userAddedMedicineQuantity = userAddedMedicineQuantity;
+        temp.userAddedTotalMedicineAmount = userAddedTotalMedicineAmount
+        
         if (data.selectedType === 'Add to Card') {
             this.props.popupVisible({
                 visible: false,
@@ -114,7 +115,7 @@ export class AddToCard extends Component {
                                                 </TouchableOpacity>
                                             </Col>
                                             <Col size={2}>
-                                                <Text style={{ fontSize: 12, marginTop: 2.5, fontFamily: 'OpenSans' }}>{this.state.medicineQuantity}</Text>
+                                                <Text style={{ fontSize: 12, marginTop: 2.5, fontFamily: 'OpenSans' }}>{this.state.userAddedMedicineQuantity}</Text>
                                             </Col>
                                             <Col size={4}>
                                                 <TouchableOpacity onPress={() => this.productQuantityOperator(data, 'add')} style={{ width: 20, height: 20, borderRadius: 10, backgroundColor: '#E6E6E6' }}>
@@ -128,7 +129,7 @@ export class AddToCard extends Component {
                             <Row style={{ marginLeft: 20, marginTop: 10, marginRight: 15, marginBottom: 10 }}>
 
                                 <Col style={{ width: '60%' }}>
-                                    <Text style={{ fontFamily: 'OpenSans', textAlign: 'right', fontSize: 14, marginBottom: 5, color: '#848484', marginRight: 10 }}>{'Total - ₹ ' + this.state.totalQunatityAmout}</Text>
+                                    <Text style={{ fontFamily: 'OpenSans', textAlign: 'right', fontSize: 14, marginBottom: 5, color: '#848484', marginRight: 10 }}>{'Total - ₹ ' + (this.state.userAddedMedicineQuantity * data.offeredAmount )}</Text>
                                 </Col>
                                 <Col style={{ width: '40%', flexDirection: 'row', alignItems: 'flex-end', justifyContent: 'flex-end', }}>
                                     <TouchableOpacity onPress={() => this.cardAction()} style={{ borderColor: '#4e85e9', borderWidth: 1, marginLeft: 25, borderRadius: 2.5, marginTop: -12.5, height: 30, width: 120, paddingBottom: -5, paddingTop: 2, backgroundColor: '#4e85e9' }}>

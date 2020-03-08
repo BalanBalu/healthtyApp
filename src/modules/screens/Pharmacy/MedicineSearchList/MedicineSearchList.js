@@ -99,11 +99,12 @@ class MedicineSearchList extends Component {
     }
     async selectedItems(data, selected) {
         try {
-            let temp = data.medInfo;
+            let temp = {
+                ...data.medInfo,
+                ...data.medPharDetailInfo,
+            }
             temp.pharmacy_name = data.pharmacyInfo.name;
             temp.pharmacy_id = data.pharmacyInfo.pharmacy_id
-            temp.medicine_id = data.medInfo.medicine_id
-            temp.offeredAmount = medicineRateAfterOffer(data.medPharDetailInfo)
             temp.selectedType = selected
             await this.setState({ selectedMedcine: temp, isBuyNow: true })
 
@@ -118,9 +119,10 @@ class MedicineSearchList extends Component {
         try {
             if(val.isNavigate){
                 let temp=[];
+                console.log(val);
                 temp.push(val.medicineData)
                 await this.setState({ isBuyNow: false })
-                    this.props.navigation.navigate("OrderPaymentAddress", {
+                    this.props.navigation.navigate("MedicineCheckout", {
                         medicineDetails: temp
                     })
                 }

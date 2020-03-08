@@ -101,7 +101,10 @@ class PharmacyHome extends Component {
     }
     async selectedItems(data, selected) {
         try {
-            let temp = data.medInfo;
+            let temp = {
+                ...data.medInfo,
+                ...data.medPharDetailInfo
+            }
             temp.pharmacy_name = data.pharmacyInfo.name;
             temp.pharmacy_id = data.pharmacyInfo.pharmacy_id
             temp.medicine_id = data.medInfo.medicine_id

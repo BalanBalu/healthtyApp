@@ -22,7 +22,7 @@ export async function getSearchedMedicines(keyword, isLoading = true) {
 export async function getMedicineOrderList(userId) {
   try {
 
-    let endPoint = 'ordersDetails?userId=' + userId;
+    let endPoint = 'medicine/ordersDetails?userId=' + userId;
     console.log(endPoint);
     let response = await getService(endPoint);
     let respData = response.data;
@@ -136,6 +136,21 @@ export async function getPopularMedicine(userId) {
     let endPoint = '/recommedation/recentOrPapularHealthCareProducts?user_id=' + userId;
     console.log(endPoint)
     let response = await getService(endPoint);
+    let respData = response.data;
+    return respData;
+  } catch (e) {
+    return {
+      message: 'exception' + e,
+      success: false
+    }
+  }
+}
+
+export async function createMedicineOrder(data) {
+  try {
+    let endPoint = '/medicine/order' ;
+    console.log(endPoint)
+    let response = await postService(endPoint, data);
     let respData = response.data;
     return respData;
   } catch (e) {
