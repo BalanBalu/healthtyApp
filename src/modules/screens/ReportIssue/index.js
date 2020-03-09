@@ -7,7 +7,7 @@ import Spinner from "../../../components/Spinner";
 import { RadioButton } from 'react-native-paper';
 import { getCurrentVersion } from '../../providers/profile/profile.action';
 import { onlySpaceNotAllowed, chatIssue, pharmacyIssue } from '../../common';
-import { statusValue } from '../../../setup/helpers';
+// import { statusValue } from '../../../setup/helpers';
 
 import { insertReportIssue } from '../../providers/reportIssue/reportIssue.action';
 
@@ -38,16 +38,14 @@ class ReportIssue extends Component {
       if (issueFor.serviceType == 'Appointment') {
 
         if (issueFor.status) {
-          type = statusValue[issueFor.status].type
+          type ='REPORT_ISSUE_APPOINTMENT_'+issueFor.status
         }
+        console.log(type)
         let reportIssueList = await getCurrentVersion(type)
+        
         if (reportIssueList.success) {
            issueList = reportIssueList.data[0].value
-           let obj={ 
-            issue_no:issueList.length+1 ,
-            issue : "Others" }
-            issueList.push(obj)
-          this.setState({ issueList })
+          
         }
 
       }
@@ -60,7 +58,7 @@ class ReportIssue extends Component {
 
       }
     }
-    else{
+   
       let obj={ 
         issue_no:issueList.length+1 ,
         issue : "Others" }
@@ -68,7 +66,7 @@ class ReportIssue extends Component {
         
       this.setState({ issueList:issueList })
        
-    }
+    
     this.setState({ isLoading: false });
   }
   catch(e){
