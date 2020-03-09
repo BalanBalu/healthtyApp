@@ -5,7 +5,7 @@ import { connect } from 'react-redux'
 import { getPopularMedicine, getSearchedMedicines, getNearOrOrderPharmacy } from '../../../providers/pharmacy/pharmacy.action'
 import { StyleSheet, Image, FlatList, TouchableOpacity, AsyncStorage, ScrollView, Dimensions } from 'react-native';
 import { NavigationEvents } from 'react-navigation';
-import { addToCart, medicineRateAfterOffer } from '../../../common';
+import { medicineRateAfterOffer } from '../CommomPharmacy';
 import { MAX_DISTANCE_TO_COVER } from '../../../../setup/config'
 import Locations from '../../../screens/Home/Locations';
 import CurrentLocation from '../../Home/CurrentLocation';
@@ -59,6 +59,7 @@ class PharmacyHome extends Component {
         try {
             let userId = await AsyncStorage.getItem('userId')
             let result = await getPopularMedicine(userId);
+            console.log("result", result)
             if (result.success) {
                 this.setState({ medicineData: result.data })
             }
@@ -119,16 +120,22 @@ class PharmacyHome extends Component {
         }
 
     }
-    cancelPopup(val) {
+    getVisible=async(val)=> {
         try {
             if (val.isNavigate) {
-                this.setState({ isAddToCart: false, isBuyNow: false })
+                this.setState({ isBuyNow: false })
                 let temp = [];
                 temp.push(val.medicineData)
                 this.props.navigation.navigate("MedicineCheckout", {
                         medicineDetails: temp
                 })
-            } else {
+            } 
+            else if(val.isNavigateCart){
+                this.setState({ isAddToCart: false })
+              
+                this.props.navigation.navigate("PharmacyCart")
+            }
+            else {
                 this.setState({ isAddToCart: false ,  isBuyNow: false  })
             }
         } catch (e) {
@@ -315,7 +322,7 @@ class PharmacyHome extends Component {
                                                     {this.state.isBuyNow == true || this.state.isAddToCart == true ?
                                                         <AddToCard
                                                             data={this.state.selectedMedcine}
-                                                            popupVisible={(data) => this.cancelPopup(data)}
+                                                            popupVisible={(data) => this.getVisible(data)}
                                                         />
                                                         : null}
                                                 </Row>
