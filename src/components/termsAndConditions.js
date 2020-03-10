@@ -302,7 +302,7 @@ If you do not qualify under these Terms of Use, do not use the Site or Services.
 </Text>
 
 <View style={{backgroundColor:'#666666', marginTop:10}}>
-<Text style={{textAlign:'center',fontSize:15,color:'#fff', paddingTop:15, paddingBottom:15}}>Copyright © 2017 All Direction Source Tech</Text>
+<Text style={{textAlign:'center',fontSize:15,color:'#fff', paddingTop:15, paddingBottom:15}}>Copyright © 2017 All Direction Source Technologies private limited</Text>
 
 </View>
           </View>     

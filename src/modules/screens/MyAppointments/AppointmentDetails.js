@@ -444,11 +444,11 @@ class AppointmentDetails extends Component {
               <Col style={{width:'92%',paddingTop:5}}>
               { data.appointment_status=='PROPOSED_NEW_TIME' ? 
                             <Text style={styles.innerSubText1}>
-                              {data.status_updated_by.toLowerCase() === 'user' ? 'Proposed a new time by You' : 'Rescheudled a New Time by Patient'}</Text>
+                              {data.status_updated_by.toLowerCase() === 'user' ? 'Proposed a new time by You' : 'Rescheudled a New Time by Doctor'}</Text>
                           : null }
                           { data.appointment_status=='CANCELED' ? 
                             <Text style={styles.innerSubText1}>
-                              {data.status_updated_by.toLowerCase() === 'user' ? 'Canceled by  You' : ' Canceled by  Patient'}</Text>
+                              {data.status_updated_by.toLowerCase() === 'user' ? 'Canceled by  You' : ' Canceled by  Doctor'}</Text>
                           : null }
                 {/* <Text style={styles.innerSubText1}>{data.appointment_status=='PROPOSED_NEW_TIME'?'Reschedule by '+data.status_updated_by.toLowerCase():'Canceled by '+data.status_updated_by.toLowerCase()}</Text> */}
               <Text note style={styles.subTextInner1}>{data.status_update_reason}</Text>

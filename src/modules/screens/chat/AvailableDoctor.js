@@ -163,8 +163,8 @@ async componentDidMount() {
                 renderItem={({item}) =>
                  <Row style={styles.RowStyle}>
                    <Col style={{width:'15%'}}>
-                       <Thumbnail square source={renderDoctorImage(item)} 
-                            style={{width:50,height:50,position:'relative'}}
+                       <Thumbnail source={renderDoctorImage(item)} 
+                            style={{width:50,height:50,position:'relative',borderRadius:50/2}}
                         />
                        <View style={styles.circle} />
                     </Col>
