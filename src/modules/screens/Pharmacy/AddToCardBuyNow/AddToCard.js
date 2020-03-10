@@ -7,6 +7,9 @@ import {
     Text, Thumbnail, Content, CheckBox, Item, Input, Icon
 } from 'native-base';
 import { ProductIncrementDecreMent, medicineRateAfterOffer } from '../CommomPharmacy'
+import { store } from '../../../../setup/store';
+import { connect } from 'react-redux'
+// import { SET_ADDTOCART_DETAILS} from '../../../../modules/providers/bookappointment/bookappointment.reducer'
 
 
 export class AddToCard extends Component {
@@ -41,18 +44,19 @@ export class AddToCard extends Component {
     }
     async  cardAction() {
         const { data, userAddedMedicineQuantity, userAddedTotalMedicineAmount } = this.state
-        let temp = data;
+        let temp = [];
+        temp = data
         temp.userAddedMedicineQuantity = userAddedMedicineQuantity;
         temp.userAddedTotalMedicineAmount = userAddedTotalMedicineAmount
         if (data.selectedType === 'Add to Card') {
+            let cartItems = []
             let userId = await AsyncStorage.getItem('userId')
-            let cartItems = await AsyncStorage.getItem('cartItems-' + userId) || [];
-            cartItems = JSON.parse(cartItems);
+            let cart = await AsyncStorage.getItem('cartItems-' + userId);
+            if (cart != null) {
+                cartItems = JSON.parse(cart);
+            }
             cartItems.push(temp);
-            AsyncStorage.setItem('cartItems-' + userId, JSON.stringify(cartItems)).then(() => {
-                console.log('cartItems updated.')
-            });
-
+            await AsyncStorage.setItem('cartItems-' + userId, JSON.stringify(cartItems))
             this.props.popupVisible({
                 visible: false,
                 updatedVisible: false,
@@ -159,6 +163,13 @@ export class AddToCard extends Component {
     }
 }
 
-export default AddToCard
+function addToCartState(state) {
+
+    return {
+        bookappointment: state.bookappointment,
+    }
+}
+export default connect(addToCartState)(AddToCard)
+
 
 

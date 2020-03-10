@@ -59,7 +59,6 @@ class PharmacyHome extends Component {
         try {
             let userId = await AsyncStorage.getItem('userId')
             let result = await getPopularMedicine(userId);
-            console.log("result", result)
             if (result.success) {
                 this.setState({ medicineData: result.data })
             }
