@@ -8,6 +8,7 @@ import { Col, Row, Grid } from 'react-native-easy-grid';
 import { StyleSheet, Image, AsyncStorage, TextInput, FlatList, TouchableOpacity } from 'react-native';
 import { Loader } from '../../../../components/ContentLoader';
 import { formatDate } from '../../../../setup/helpers';
+import { getMedicineOrderDetails } from '../../../providers/pharmacy/pharmacy.action';
 
 class OrderDetails extends Component {
     constructor(props) {
@@ -18,9 +19,33 @@ class OrderDetails extends Component {
             isLoading: true,
         }
     }
-    async componentDidMount() {
-        const { navigation } = this.props;
-        await this.setState({ myOrderList: navigation.getParam('orderDetails'), isLoading: false })
+    // async componentDidMount() {
+    //     const { navigation } = this.props;
+    //     await this.setState({ myOrderList: navigation.getParam('orderDetails'), isLoading: false })
+       
+    // }
+
+    componentDidMount() {
+        this.medicineOrderDetails();
+    }
+
+    async medicineOrderDetails() {
+        try {
+            this.setState({ isLoading: true });
+            let userId = await AsyncStorage.getItem('userId');
+            let result = await getMedicineOrderDetails("5e6738d1d19db70bcb33c6ee" , userId);
+            console.log("result+++++++++++++++++"+JSON.stringify(result))
+            if (result.success) {
+                this.setState({ myOrderList: result.data });
+                console.log("baluuuorderList+++++++++++++++++"+JSON.stringify(this.state.myOrderList))
+  
+            }
+        }
+        catch (e) {
+            console.log(e);
+        } finally {
+            this.setState({ isLoading: false });
+        }
     }
 
 
@@ -97,7 +122,7 @@ class OrderDetails extends Component {
 
                         <Text style={{ fontSize: 14, fontWeight: '500', fontFamily: 'OpenSans', color: '#7F49C3', marginTop: 10 }}> Ordered Medicines</Text>
                         <FlatList
-                            data={MedDetail}
+                            data={myOrderList}
                             renderItem={({ item }) =>
                                 <Row style={styles.rowStyle}>
                                     <Col size={2}>
@@ -109,9 +134,9 @@ class OrderDetails extends Component {
                                         />
                                     </Col>
                                     <Col size={8} style={styles.nameText}>
-                                        <Text style={styles.nameText}>{item.medname}</Text>
+                                        <Text style={styles.nameText}>{item.medicine_name}</Text>
                                         <Text style={styles.pharText}>{item.pharname}</Text>
-                                        <Text style={styles.amountText}>{item.amount}</Text>
+                                        <Text style={styles.amountText}>{item.medicine_original_price}</Text>
                                     </Col>
                                 </Row>
                             } />
