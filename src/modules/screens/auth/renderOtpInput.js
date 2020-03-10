@@ -27,9 +27,13 @@ class RenderOtpInput extends Component {
         }
         // this.setState({ isLoading: true });
         console.log(this.props.user)
+        if(loginData.userEntry  === null && this.props.user && this.props.user.details) {
+            loginData.userEntry = this.props.user.details.email
+        }
+        console.log(loginData);
         let requestData = {
             appType: 'user',
-            userEntry: loginData.userEntry
+            userEntry: loginData.userEntry 
         }
         console.log("requestData" + JSON.stringify(requestData))
         await this.setState({ requestData });

@@ -46,15 +46,12 @@ import Reminder from '../../modules/screens/Reminder/Reminders'
 import PharmacyHome from '../../modules/screens/Pharmacy/PharmacyHome/PharmacyHome';
 import MyOrdersList from '../../modules/screens/Pharmacy/MyOrdersList/MyOrdersList';
 import OrderDetails from '../../modules/screens/Pharmacy/OrderDetails/OrderDetails';
-import OrderPayment from '../../modules/screens/Pharmacy/OrderPayment/OrderPayment';
 import PharmacyCart from '../../modules/screens/Pharmacy/PharmacyCart/PharmacyCart';
 import OrderPaymentSuccess from '../../modules/screens/Pharmacy/OrderPaymentSuccess/OrderPaymentSuccess';
 import UploadPrescription from '../../modules/screens/Pharmacy/PharmacyHome/UploadPrescription';
-import OrderPaymentAddress from '../../modules/screens/Pharmacy/OrderPaymentAddress/OrderPaymentAddress';
-import OrderPaymentPreview from '../../modules/screens/Pharmacy/OrderPaymentPreview/OrderPaymentPreview';
-import OrderMedicineDetails from '../../modules/screens/Pharmacy/OrderMedicineDetails/OrderMedicineDetails';
+import MedicineCheckout from '../../modules/screens/Pharmacy/MedicineCheckout/MedicineCheckout';
+import MedicineInfo from '../../modules/screens/Pharmacy/MedicineInfo/MedicineInfo';
 import MedicineSearchList from '../../modules/screens/Pharmacy/MedicineSearchList/MedicineSearchList';
-import MedicineCheckout from '../../modules/screens/Pharmacy/MedicineCheckout/MedicineChekout';
 import { Badge } from '../../../src/modules/common'
 import Locations from '../../modules/screens/Home/Locations';
 import BloodDonersList from '../../modules/screens/bloodDonation/BloodDonersList';
@@ -63,7 +60,9 @@ import MyChats from '../../modules/screens/chat/MyChats';
 import AvailableDoctors4Chat from '../../modules/screens/chat/AvailableDoctor';
 import SuccessChatPaymentPage from '../../modules/screens/chat/successMsg';
 import ReportIssue from '../../modules/screens/ReportIssue';
-import EarnReward from '../../modules/screens/Home/EarnReward'
+import EarnReward from '../../modules/screens/Home/EarnReward';
+import MedicineSuggestionList from '../../modules/screens/Pharmacy/MedicineSuggestionList/pharmacySuggestionList';
+
 
 const AuthRoutes = {
   login: {
@@ -108,26 +107,26 @@ const HomeStack = createStackNavigator({
       headerLeft: (
 
         <Row>
-        <TouchableOpacity onPress={() => navigation.toggleDrawer()} style={{flexDirection:'row',marginTop:10}}>
-          <Image
-            style={{ marginLeft: 18, tintColor: '#fff' }}
-            source={menuIcon}
-          />
-        </TouchableOpacity>
-        <Row style={{marginBottom: 5,marginTop:5,marginLeft:5}}>
-                   <Col size={10}>  
-                   <TouchableOpacity onPress={()=> navigation.navigate('Locations')}>
-                   <View style={{flexDirection:'row'}}>
-                    <Icon name="ios-pin" style={{color:'#fff',fontSize:18,paddingLeft: 10,}}/>
-                     <Text uppercase={false} style={{ marginLeft:5, color: '#fff', fontSize: 14, fontFamily: 'OpenSans-SemiBold',fontWeight:'bold' }}>{navigation.getParam('appBar', {locationName: ' '}).locationName}</Text>
-                        <Icon name="ios-arrow-down" style={{color:'#fff',fontSize:18,paddingLeft: 10,marginTop:2}}/>
-                     </View>
-                     </TouchableOpacity>
-                      <Text uppercase={false} style={{ paddingLeft: 10, color: '#fff', fontSize: 12, fontFamily: 'OpenSans-SemiBold',marginTop:2 }}>{navigation.getParam('appBar', {locationCapta: 'You are searching Near by Hospitals'}).locationCapta}</Text>
-                    </Col> 
-                   </Row>   
+          <TouchableOpacity onPress={() => navigation.toggleDrawer()} style={{ flexDirection: 'row', marginTop: 10 }}>
+            <Image
+              style={{ marginLeft: 18, tintColor: '#fff' }}
+              source={menuIcon}
+            />
+          </TouchableOpacity>
+          <Row style={{ marginBottom: 5, marginTop: 5, marginLeft: 5 }}>
+            <Col size={10}>
+              <TouchableOpacity onPress={() => navigation.navigate('Locations')}>
+                <View style={{ flexDirection: 'row' }}>
+                  <Icon name="ios-pin" style={{ color: '#fff', fontSize: 18, paddingLeft: 10, }} />
+                  <Text uppercase={false} style={{ marginLeft: 5, color: '#fff', fontSize: 14, fontFamily: 'OpenSans-SemiBold', fontWeight: 'bold' }}>{navigation.getParam('appBar', { locationName: ' ' }).locationName}</Text>
+                  <Icon name="ios-arrow-down" style={{ color: '#fff', fontSize: 18, paddingLeft: 10, marginTop: 2 }} />
+                </View>
+              </TouchableOpacity>
+              <Text uppercase={false} style={{ paddingLeft: 10, color: '#fff', fontSize: 12, fontFamily: 'OpenSans-SemiBold', marginTop: 2 }}>{navigation.getParam('appBar', { locationCapta: 'You are searching Near by Hospitals' }).locationCapta}</Text>
+            </Col>
+          </Row>
 
-       
+
         </Row>
       ),
       headerRight: (
@@ -136,10 +135,10 @@ const HomeStack = createStackNavigator({
             <TouchableOpacity onPress={() => { navigation.navigate('Notification') }} >
               <View>
                 <Icon name="notifications" style={{ color: '#fff', marginRight: 15, fontFamily: 'opensans-semibold' }}></Icon>
-                { navigation.getParam('notificationBadgeCount')!=null?
-              <Text style={{ position: 'absolute', backgroundColor: 'red', color: 'white', borderRadius: 20/2,  marginTop: -7, width:undefined,height:undefined,padding:2,fontSize:10,textAlign:'center'}}>{navigation.getParam('notificationBadgeCount')>=100?'99+':navigation.getParam('notificationBadgeCount')}</Text>
-             :null} 
-             {/* <Badge /> */}
+                {navigation.getParam('notificationBadgeCount') != null ?
+                  <Text style={{ position: 'absolute', backgroundColor: 'red', color: 'white', borderRadius: 20 / 2, marginTop: -7, width: undefined, height: undefined, padding: 2, fontSize: 10, textAlign: 'center' }}>{navigation.getParam('notificationBadgeCount') >= 100 ? '99+' : navigation.getParam('notificationBadgeCount')}</Text>
+                  : null}
+                {/* <Badge /> */}
               </View>
             </TouchableOpacity>
           </Col>
@@ -427,64 +426,54 @@ const HomeStack = createStackNavigator({
   Pharmacy: {
     screen: PharmacyHome,
     navigationOptions: ({ navigation }) => ({
-      headerLeft: (
-        <Row style={{ marginBottom: 5, marginTop: -35, }}>
-          <Col size={2}>
-            <Image
-              style={{ marginLeft: 5, height: 20, width: 20 }}
-              source={require('../../../assets/images/Logo.png')}
-            />
-          </Col>
-          <Col size={8}>
-            <TouchableOpacity onPress={() => navigation.navigate('Locations')}>
-              <View style={{ flexDirection: 'row' }}>
-                <Icon name="ios-pin" style={{ color: '#fff', fontSize: 18, paddingLeft: 10, }} />
-                <Text uppercase={false} style={{ marginLeft: 5, color: '#fff', fontSize: 14, fontFamily: 'OpenSans-SemiBold', fontWeight: 'bold' }}>Location</Text>
-                {/* <Text uppercase={false} style={{ marginLeft:5, color: '#fff', fontSize: 14, fontFamily: 'OpenSans-SemiBold',fontWeight:'bold' }}>{navigation.getParam('appBar', {locationName: ' '}).locationName}</Text> */}
-                <Icon name="ios-arrow-down" style={{ color: '#fff', fontSize: 18, paddingLeft: 10, marginTop: 2 }} />
-              </View>
-            </TouchableOpacity>
-          </Col>
-        </Row>
-
-
-      ),
-      headerTitle: (
-        <Grid style={{ marginTop: 10, marginLeft: -20, }}>
-          <Col style={{ position: 'absolute' }}>
-            <Item style={{ borderBottomWidth: 0, backgroundColor: '#fff', height: 30, borderRadius: 2 }}>
-              <Input
-                placeholder='Search for Medicines and Health Products...     '
-                style={{ fontSize: 12, width: '300%' }}
-                placeholderTextColor="#C1C1C1"
-                keyboardType={'default'}
-                returnKeyType={'go'}
-                multiline={false} />
-              <TouchableOpacity style={{ alignItems: 'flex-end' }} >
-                <Icon name='ios-search' style={{ color: '#775DA3', fontSize: 20 }} />
-              </TouchableOpacity>
-            </Item>
-
-          </Col>
-
-        </Grid>
-      ),
+      /* headerLeft: (
+         <Row style={{ marginBottom: 5, marginTop: 10 }}>
+           <Col size={1}>
+             <TouchableOpacity onPress={() => navigation.navigate('Home')}>
+               <Row style={{ alignItems: 'center', justifyContent: 'center' }}>
+                 <Icon
+                   style={
+                     Platform.OS === "ios"
+                       ? { marginBottom: -4, width: 25, marginLeft: 15, color: "#FFF", fontSize: 25, marginTop: 12 }
+                       : { marginBottom: -4, width: 25, marginLeft: 15, color: "#FFF", fontSize: 25, marginTop: 12 }
+                   }
+                   size={Platform.OS === "ios" ? 35 : 24}
+                   name={Platform.OS === "ios" ? "ios-arrow-back" : "md-arrow-back"}
+                 />
+                 {Platform.OS === "ios" ?
+                   <Text style={{ fontFamily: 'OpenSans', fontSize: 16, color: '#FFF', marginLeft: 5, fontWeight: '300' }}>Back</Text> : null}
+               </Row>
+             </TouchableOpacity>
+           </Col>
+           <Col size={8}>
+             <TouchableOpacity onPress={() => navigation.navigate('Locations')}>
+               <View style={{ flexDirection: 'row', marginLeft: 5 }}>
+                 <Icon name="ios-pin" style={{ color: '#fff', fontSize: 18, }} />
+                 <Text uppercase={false} style={{ marginLeft: 5, color: '#fff', fontSize: 14, fontFamily: 'OpenSans-SemiBold', fontWeight: 'bold' }}>Location</Text>
+                 <Icon name="ios-arrow-down" style={{ color: '#fff', fontSize: 18, paddingLeft: 10, marginTop: 2 }} />
+               </View>
+             </TouchableOpacity>
+           </Col>
+         </Row>
+ 
+ 
+       ), */
       headerRight: (
-        <Grid style={{ marginTop: -35 }}>
-          <Col>
-            <TouchableOpacity>
-              <View>
-                <Icon name="ios-cart" style={{ color: '#fff', marginRight: 15, fontFamily: 'opensans-semibold', fontSize: 20 }}></Icon>
-              </View>
-            </TouchableOpacity>
-          </Col>
-
-        </Grid>
+        <Col>
+          <TouchableOpacity>
+            <View>
+              <Icon name="ios-cart" style={{ color: '#fff', marginRight: 15, fontFamily: 'opensans-semibold', fontSize: 20 }}></Icon>
+            </View>
+          </TouchableOpacity>
+        </Col>
       ),
       headerStyle: {
         backgroundColor: '#7F49C3',
-        height: 90
+        height: 40,
+        elevation: 0,
+        shadowColor: 'transparent'
       },
+
     })
   },
   UploadPrescription: {
@@ -499,24 +488,6 @@ const HomeStack = createStackNavigator({
       title: 'Search List'
     }
   },
-  MedicineCheckout: {
-    screen: MedicineCheckout,
-    navigationOptions: {
-      title: 'Checkout'
-    }
-  },
-  OrderPaymentPreview: {
-    screen: OrderPaymentPreview,
-    navigationOptions: {
-      title: 'Payment Preview'
-    }
-  },
-  OrderPayment: {
-    screen: OrderPayment,
-    navigationOptions: {
-      title: 'Payment Page'
-    }
-  },
   PharmacyCart: {
     screen: PharmacyCart,
     navigationOptions: {
@@ -529,9 +500,15 @@ const HomeStack = createStackNavigator({
       title: 'Payment Success'
     }
   },
+  MedicineSuggestionList: {
+    screen: MedicineSuggestionList,
+    navigationOptions: {
+      title: 'Pharmacy Suggestion List'
+    }
+  },
 
-  OrderPaymentAddress: {
-    screen: OrderPaymentAddress,
+  MedicineCheckout: {
+    screen: MedicineCheckout,
     navigationOptions: {
       title: 'Order Payment Address'
     }
@@ -555,8 +532,8 @@ const HomeStack = createStackNavigator({
       title: 'My Order'
     }
   },
-  OrderMedicineDetails: {
-    screen: OrderMedicineDetails,
+  MedicineInfo: {
+    screen: MedicineInfo,
     navigationOptions: {
       title: 'Medicine Details'
     }
@@ -654,326 +631,3 @@ export default createAppContainer(createSwitchNavigator(
 
   }
 ));
-
-/*
-const AppointMentstack1 = createStackNavigator({
-  "Doctor List": {
-    screen: doctorSearchList,
-    navigationOptions: ({ navigation }) => ({
-      title: 'Doctor List',
-      headerLeft: (
-        <TouchableOpacity onPress={() => navigation.navigate('Home')}>
-          <Icon name="arrow-back" style={{ marginLeft: 18, color: '#fff', fontFamily: 'opensans-semibold' }}></Icon>
-        </TouchableOpacity>
-      ),
-
-    })
-  },
-  Filters: {
-    screen: FilterList,
-    navigationOptions: {
-      title: 'Filters'
-    }
-  },
-
-  Services: {
-    screen: ServicesList,
-    navigationOptions: {
-      title: 'ServicesList'
-    }
-  },
-  "Book Appointment": {
-    screen: BookAppoinment,
-    navigationOptions: {
-      title: 'Book Appointment'
-    }
-  },
-  "Mapbox": {
-    screen: Mapbox,
-    navigationOptions: {
-      title: 'Mapbox'
-    }
-  },
-  Reviews: {
-    screen: Reviews,
-    navigationOptions: {
-      title: 'Reviews'
-    }
-  },
-  "Payment Review": {
-    screen: PaymentReview,
-    navigationOptions: {
-      title: 'Payment Review'
-    }
-  },
-  paymentPage: {
-    screen: PaymentPage,
-    navigationOptions: {
-      title: 'Payment Page'
-    }
-  },
-  paymentsuccess: {
-    screen: PaymentSuccess,
-    navigationOptions: {
-      headerLeft: null,
-      title: 'Success'
-    }
-  }
-},
-  {
-    defaultNavigationOptions: ({ navigation }) => ({
-      headerStyle: { backgroundColor: '#7E49C3', fontFamily: 'opensans-semibold' },
-      headerTintColor: 'white',
-    })
-  });
-*/
-
-/*
-const myAppointmentsStack = createStackNavigator({
-  "My Appointments": {
-    screen: MyAppoinmentList,
-    navigationOptions: ({ navigation }) => ({
-      title: 'Appointments',
-      headerLeft: (
-        <TouchableOpacity onPress={() => navigation.navigate('Home')}>
-          <Icon name="arrow-back" style={{ marginLeft: 18, color: '#fff', fontFamily: 'opensans-semibold' }}></Icon>
-        </TouchableOpacity>
-      ),
-    })
-  },
-  "AppointmentInfo": {
-    screen: AppointmentDetails,
-    navigationOptions: {
-      title: 'Appointment Info'
-    }
-  },
-  "CancelAppointment": {
-    screen: CancelAppointment,
-    navigationOptions: {
-      title: 'Cancel Appointment'
-    }
-  },
-  "InsertReview": {
-    screen: InsertReview,
-    navigationOptions: {
-      title: 'Rate and Review'
-    }
-  }
-
-},
-  {
-    defaultNavigationOptions: ({ navigation }) => ({
-      headerStyle: { backgroundColor: '#7E49C3', fontFamily: 'opensans-semibold' },
-      headerTintColor: 'white',
-    })
-  });
-
-*/
-
-
-/*
-const ProfileStack = createStackNavigator({
-  Profile: {
-    screen: Profile,
-    navigationOptions: ({ navigation }) => ({
-      title: 'Profile',
-      headerLeft: (
-        <TouchableOpacity onPress={() => navigation.navigate('Home')}>
-          <Icon name="arrow-back" style={{ marginLeft: 18, color: '#fff', fontFamily: 'opensans-semibold' }}></Icon>
-        </TouchableOpacity>
-      ),
-    })
-  },
-  UpdateEmail: {
-    screen: UpdateEmail,
-    navigationOptions: {
-      title: 'Update Email'
-    }
-  },
-  UpdateContact: {
-    screen: UpdateContact,
-    navigationOptions: {
-      title: 'Update Contact'
-    }
-  },
-  UpdatePassword: {
-    screen: UpdatePassword,
-    navigationOptions: {
-      title: 'Update Password'
-    }
-  },
-  UpdateInsurance: {
-    screen: UpdateInsurance,
-    navigationOptions: {
-      title: 'Update Insurance'
-    }
-  },
-  UpdateUserDetails: {
-    screen: UpdateUserDetails,
-    navigationOptions: {
-      title: 'Update User Details'
-    }
-  },
-  UpdateAddress: {
-    screen: UpdateAddress,
-    navigationOptions: {
-      title: 'Update Address'
-    }
-  },
-  "Book Appointment": {
-    screen: BookAppoinment,
-    navigationOptions: {
-      title: 'Book Appointment'
-    }
-  },
-
-},
-  {
-    defaultNavigationOptions: ({ navigation }) => ({
-      headerStyle: { backgroundColor: '#7E49C3', fontFamily: 'opensans-semibold' },
-      headerTintColor: 'white',
-    })
-  });
-
-*/
-/*
-const PharmacyStack = createStackNavigator({
-  Pharmacy: {
-    screen: PharmacyHome,
-    navigationOptions: ({ navigation }) => ({
-      title: 'Medflic Pharmacy',
-      headerLeft: (
-        <TouchableOpacity onPress={() => navigation.navigate('Home')}>
-          <Icon name="arrow-back" style={{ marginLeft: 18, color: '#fff', fontFamily: 'opensans-semibold' }}></Icon>
-        </TouchableOpacity>
-      ),
-    })
-  },
-  UploadPrescription: {
-    screen: UploadPrescription,
-    navigationOptions: {
-      title: 'Upload Prescription'
-    }
-  },
-  medicineSearchList: {
-    screen: MedicineSearchList,
-    navigationOptions: {
-      title: 'Search List'
-    }
-  },
-  MedicineCheckout: {
-    screen: MedicineCheckout,
-    navigationOptions: {
-      title: 'Checkout'
-    }
-  },
-  OrderPaymentPreview: {
-    screen: OrderPaymentPreview,
-    navigationOptions: {
-      title: 'Payment Preview'
-    }
-  },
-  OrderPayment: {
-    screen: OrderPayment,
-    navigationOptions: {
-      title: 'Payment Page'
-    }
-  },
-  PharmacyCart: {
-    screen: PharmacyCart,
-    navigationOptions: {
-      title: 'Pharmacy Cart'
-    }
-  },
-  OrderPaymentSuccess: {
-    screen: OrderPaymentSuccess,
-    navigationOptions: {
-      title: 'Payment Success'
-    }
-  },
-
-  OrderPaymentAddress: {
-    screen: OrderPaymentAddress,
-    navigationOptions: {
-      title: 'Order Payment Address'
-    }
-  }
-},
-  {
-    defaultNavigationOptions: ({ navigation }) => ({
-      headerStyle: { backgroundColor: '#7E49C3', fontFamily: 'opensans-semibold' },
-      headerTintColor: 'white',
-    })
-  });
-*/
-/*
-const OrdersStack = createStackNavigator({
-  Orders: {
-    screen: MyOrdersList,
-    navigationOptions: ({ navigation }) => ({
-      title: 'Orders List',
-      headerLeft: (
-        <TouchableOpacity onPress={() => navigation.navigate('Home')}>
-          <Icon name="arrow-back" style={{ marginLeft: 18, color: '#fff', fontFamily: 'opensans-semibold' }}></Icon>
-        </TouchableOpacity>
-      ),
-    })
-  },
-  MyOrdersList: {
-    screen: MyOrdersList,
-    navigationOptions: {
-      title: 'Order List'
-    }
-  },
-
-  OrderDetails: {
-    screen: OrderDetails,
-    navigationOptions: {
-      title: 'My Order'
-    }
-  },
-
-  OrderMedicineDetails: {
-    screen: OrderMedicineDetails,
-    navigationOptions: {
-      title: 'Medicine Details'
-    }
-  }
-
-},
-  {
-    defaultNavigationOptions: ({ navigation }) => ({
-      headerStyle: { backgroundColor: '#7E49C3', fontFamily: 'opensans-semibold' },
-      headerTintColor: 'white',
-    })
-  });
-*/
-/*
-const categoryStack = createStackNavigator({
-  Categories: {
-    screen: Categories,
-    navigationOptions: ({ navigation }) => ({
-      title: 'Specialists',
-      headerLeft: (
-        <TouchableOpacity onPress={() => navigation.navigate('Home')}>
-          <Icon name="arrow-back" style={{ marginLeft: 18, color: '#fff', fontFamily: 'opensans-semibold' }}></Icon>
-        </TouchableOpacity>
-      ),
-    })
-  },
-},
-  {
-    defaultNavigationOptions: ({ navigation }) => ({
-      headerStyle: { backgroundColor: '#7E49C3', fontFamily: 'opensans-semibold' },
-      headerTintColor: 'white',
-    })
-  });
-*/
-
-// export const appStack = createStackNavigator(AppRoutes, {
-//   initialRouteName: 'Home',
-//   headerMode: 'none',
-//   navigationOptions: { headerVisible: false }
-// })
-// const stack = createStackNavigator({ AppTabs, appStack }, { headerMode: "none" });
-//export default createAppContainer(stack)

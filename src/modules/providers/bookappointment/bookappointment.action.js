@@ -15,7 +15,7 @@ import { store } from '../../../setup/store';
 /*  get All Sponsors data details from Sponsors collection*/
 export const getAllDoctorsActiveSponsorDetails = async (doctorIds) => {
   try {
-    let endPoint = 'sponsor/'+ doctorIds+'?active_sponsor=true';
+    let endPoint = 'sponsor/withoutAuth/'+ doctorIds+'?active_sponsor=true';
     let response = await getService(endPoint);
     let respData = response.data;
     
@@ -454,6 +454,23 @@ export async function getLocations() {
       }
     }
 }
+
+export async function getPharmacyLocations() {
+  try {
+
+    let endPoint = 'pharmacies/locations'
+    let response = await getService(endPoint);
+    let respData = response.data;
+    return respData;
+  } catch (e) {
+    return {
+      message: 'exception' + e,
+      success: false
+    }
+  }
+}
+
+
 
 export const getPaymentInfomation = async (paymentId) => {
   try{    
