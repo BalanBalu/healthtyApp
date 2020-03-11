@@ -7,7 +7,6 @@ import ImagePicker from 'react-native-image-picker';
 import { uploadMultiPart } from '../../../../setup/services/httpservices'
 import Autocomplete from '../../../../components/Autocomplete'
 import { Loader } from '../../../../components/ContentLoader'
-import { searchPharmacyByName } from '../../../providers/pharmacy/pharmacy.action'
 
 
 class UploadPrescription extends Component {
@@ -34,9 +33,6 @@ class UploadPrescription extends Component {
             value: [this.state.keyword]
         }]
         console.log(pharmacyData);
-        let result = await searchPharmacyByName(pharmacyData);
-        console.log(result);
-        this.setState({ pharmacyList: result.data, isLoading: false });
     }
 
     autoCompletePharmacyName(keyword) {

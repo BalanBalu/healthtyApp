@@ -69,7 +69,7 @@ class Home extends Component {
     checkForUserProfile(res) {
 
         if (res.hasOtpNotVerified === true) {
-            this.props.navigation.navigate('renderOtpInput', { loginData: { userEntry: res.mobile_no }, navigateBackToHome: true });
+            this.props.navigation.navigate('renderOtpInput', { loginData: { userEntry: res.mobile_no || res.email }, navigateBackToHome: true });
         }
         else if (res.updateBasicDetails === true) {
             this.props.navigation.navigate('UpdateUserDetails');

@@ -455,6 +455,23 @@ export async function getLocations() {
     }
 }
 
+export async function getPharmacyLocations() {
+  try {
+
+    let endPoint = 'pharmacies/locations'
+    let response = await getService(endPoint);
+    let respData = response.data;
+    return respData;
+  } catch (e) {
+    return {
+      message: 'exception' + e,
+      success: false
+    }
+  }
+}
+
+
+
 export const getPaymentInfomation = async (paymentId) => {
   try{    
         
