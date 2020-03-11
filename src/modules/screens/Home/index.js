@@ -77,6 +77,10 @@ class Home extends Component {
     }
     async componentDidMount() {
         try {
+            const coronoTestStatus = await AsyncStorage.getItem('coronoTested'); 
+            if(coronoTestStatus === '1') {} else {
+                this.props.navigation.navigate('CORONO Status');
+            }
             this.initialFunction();
             if (IS_ANDROID) {
                 let productConfigVersion = await getCurrentVersion("CURRENT_PATIENT_MEDFLIC_VERSION")

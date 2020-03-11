@@ -64,6 +64,7 @@ import AvailableDoctors4Chat from '../../modules/screens/chat/AvailableDoctor';
 import SuccessChatPaymentPage from '../../modules/screens/chat/successMsg';
 import ReportIssue from '../../modules/screens/ReportIssue';
 import EarnReward from '../../modules/screens/Home/EarnReward'
+import CoronaDisease from '../../modules/screens/CoronaDisease/CoronaDisease';
 
 const AuthRoutes = {
   login: {
@@ -551,6 +552,12 @@ const HomeStack = createStackNavigator({
       title: 'Medicine Details'
     }
   },
+  'CORONO Status': {
+    screen: CoronaDisease,
+    navigationOptions: {
+      title: 'CORONO Status'
+    }
+  },
   // ============== Reminder =================
 
   Reminder: {
@@ -611,6 +618,9 @@ const DrawerNavigator = createDrawerNavigator({
   },
   Reminder: {
     screen: Reminder
+  },
+  'CORONO Status': {
+    screen: CoronaDisease
   }
 },
   {
@@ -631,6 +641,7 @@ export const DragwerLogos = {
   "My Chats": require('../../../assets/images/drawerIcons/Chat.png'),
   "Chat Service": require('../../../assets/images/drawerIcons/Chat.png'),
   "Blood Donors": require('../../../assets/images/drawerIcons/Blooddonars.png'),
+  'CORONO Status': require('../../../assets/images/drawerIcons/Pharmacy.png'),
 }
 export default createAppContainer(createSwitchNavigator(
   {
