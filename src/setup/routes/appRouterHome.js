@@ -61,10 +61,8 @@ import AvailableDoctors4Chat from '../../modules/screens/chat/AvailableDoctor';
 import SuccessChatPaymentPage from '../../modules/screens/chat/successMsg';
 import ReportIssue from '../../modules/screens/ReportIssue';
 import ReportDetails from '../../modules/screens/ReportIssue/reportIssueDetails'
-import EarnReward from '../../modules/screens/Home/EarnReward'
-import EarnReward from '../../modules/screens/Home/EarnReward'
-import CoronaDisease from '../../modules/screens/CoronaDisease/CoronaDisease';
 import EarnReward from '../../modules/screens/Home/EarnReward';
+import CoronaDisease from '../../modules/screens/CoronaDisease/CoronaDisease';
 
 import MedicineSuggestionList from '../../modules/screens/Pharmacy/MedicineSuggestionList/pharmacySuggestionList';
 
