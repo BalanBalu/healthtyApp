@@ -120,7 +120,7 @@ class CoronaDisease extends Component {
                     {id <= this.state.coronoDiseaseData.length && this.state.showResult === false ? 
                      <View>
                      <View style={{ justifyContent: 'center', alignItems: 'center', marginTop: 10 }}>
-                        <Image square source={image} style={{ height: 250, width: 200 }} />
+                        <Image square source={image} style={{ height: 250, width:"100%"  }} />
                      </View>
                     <View style={{ marginLeft: 15 }}>
                         <Text style={styles.quesText}>{question}</Text>
@@ -158,7 +158,7 @@ class CoronaDisease extends Component {
                        { this.state.coronoTestStatusPositive === true ?
                       <View>
                         <View style={{ justifyContent: 'center', alignItems: 'center', marginTop: 10 }}>
-                            <Image square source={require('../../../../assets/images/corono/Positive.png')} style={{ height: 250, width: 200 }} />
+                            <Image square source={require('../../../../assets/images/corono/Positive.png')} style={{ height: 250, width:"100%"  }} />
                         </View>
                         <View style={{ marginLeft: 15 }}>
                             <Text style={styles.resText}>{ 'It Seems to be effective. Please consult your near by Doctors Immediatly'}</Text>
@@ -168,7 +168,7 @@ class CoronaDisease extends Component {
                      : 
                      <View>
                         <View style={{ justifyContent: 'center', alignItems: 'center', marginTop: 10 }}>
-                            <Image square source={require('../../../../assets/images/corono/negative.png')} style={{ height: 250, width: 100 }} />
+                            <Image square source={require('../../../../assets/images/corono/negative.png')} style={{ height: 250, width:"100%" }} />
                         </View>
                         <View style={{ marginLeft: 15 }}>
                             <Text style={styles.resText}>{'No Need to Worry'}</Text>
