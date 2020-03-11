@@ -22,9 +22,10 @@ export async function getSearchedMedicines(keyword, isLoading = true) {
 export async function getMedicineOrderList(userId) {
   try {
 
-    let endPoint = 'medicine/ordersDetails?userId=' + userId;
+    let endPoint = '/medicine/orders/user/' + userId;
     console.log(endPoint);
     let response = await getService(endPoint);
+    console.log(response);
     let respData = response.data;
     return respData;
   } catch (e) {

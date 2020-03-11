@@ -9,35 +9,43 @@ import { Loader } from '../../../../components/ContentLoader';
 import { getMedicineOrderList } from '../../../providers/pharmacy/pharmacy.action';
 import { formatDate } from '../../../../setup/helpers';
 
+
 class MyOrdersList extends Component {
     constructor(props) {
         super(props)
         this.state = {
+            data: [],
             cartItems: [],
             orderList: [],
             orderId: '',
-            isLoading: true
+            isLoading: true,
         }
     }
     componentDidMount() {
-        this.medicineOrderList();
+        this.getMedicineOrderList();
     }
 
-    async medicineOrderList() {
-        try {
-            this.setState({ isLoading: true });
-            let userId = await AsyncStorage.getItem('userId');
-            let result = await getMedicineOrderList(userId);
-            if (result.success) {
-                this.setState({ orderList: result.data });
-            }
-        }
-        catch (e) {
-            console.log(e);
-        } finally {
-            this.setState({ isLoading: false });
-        }
-    }
+    // async medicineOrderList() {
+    //     try {
+    //         this.setState({ isLoading: true });
+    //         let userId = await AsyncStorage.getItem('userId');
+    //         let result = await getMedicineOrderList(userId);
+    //         console.log('result++++++' + JSON.stringify(result))
+    //         if (result.success) {
+    //             this.setState({ orderList: result.data });
+    //         }
+
+    //     }
+
+    //     catch (e) {
+    //         console.log(e);
+    //     } finally {
+    //         this.setState({ isLoading: false });
+    //     }
+    // }
+
+
+
 
     calcTotalAmount(data) {
         let temp = 0;
@@ -55,172 +63,104 @@ class MyOrdersList extends Component {
         )
     }
 
-    renderOrders() {
-        const { isLoading, orderList } = this.state;
-        return (
-            <Container style={styles.container}>
-                {isLoading == true ? <Loader style='list' /> :
-                    <Content style={styles.bodyContent}>
-                        <Card transparent >
-                            <Grid >
-                                <Row style={{ justifyContent: 'center', width: '100%', marginTop: 30 }}>
-                                    <Text style={{ fontFamily: 'OpenSans', fontWeight: 'bold', fontSize: 22, padding: 5 }}>Your Order</Text>
-                                </Row>
-                            </Grid>
-                            <View style={{
-                                padding: 5, marginTop: 20
-                            }}>
-                                <FlatList
-                                    data={orderList}
-                                    extraData={this.state}
-                                    keyExtractor={(item, index) => index.toString()}
-                                    renderItem={({ item, index }) =>
-                                        <TouchableOpacity testID="orderDetailsNavigation" onPress={() => this.props.navigation.navigate('OrderDetails', { orderDetails: item })}>
-                                            <Card style={{ marginTop: 10, padding: 5, height: 155, borderRadius: 5 }}>
-                                                <Grid>
-                                                    <Row>
-                                                        <Right><Text style={{
-                                                            fontFamily: 'OpenSans', fontSize: 16, color: '#e84393', marginRight: 10,
-                                                            fontWeight: 'bold'
-                                                        }}>{formatDate(item.order_date, "dddd, MMMM DD-YYYY, hh:mm a")}</Text></Right>
-                                                    </Row>
-                                                    <View style={{ marginLeft: 10, marginTop: 20, flexDirection: 'row' }}>
-                                                        <Text style={{ fontFamily: 'OpenSans', fontSize: 18, fontWeight: 'bold', color: '#3966c6' }}>Order Id </Text>
-                                                        <Text style={{ fontFamily: 'OpenSans', fontSize: 16, marginLeft: 48, fontWeight: 'bold' }}>:  {item._id} </Text>
-                                                    </View>
-                                                    <View style={{ flexDirection: 'row', marginLeft: 10, marginTop: 5 }}>
-                                                        <Text style={{ fontSize: 15, fontWeight: 'bold', fontFamily: 'OpenSans', color: '#3966c6' }}>No of Medicine </Text>
-                                                        <Text style={{ fontSize: 15, fontFamily: 'OpenSans', marginLeft: 10, fontWeight: 'bold' }}>:  {item.order_items.length} </Text>
-                                                    </View>
-                                                    <View style={{ flexDirection: 'row', marginLeft: 10, marginTop: 5 }}>
-                                                        <Text style={{ fontSize: 15, fontWeight: 'bold', fontFamily: 'OpenSans', color: '#3966c6' }}>Total </Text>
-                                                        <Text style={styles.subText}>:{'  '}{'\u20B9'}{this.calcTotalAmount(item.order_items)}</Text>
-                                                    </View>
-                                                </Grid>
-                                            </Card>
-                                        </TouchableOpacity>
-                                    } />
-                            </View>
-                        </Card>
-                    </Content>}
 
-            </Container >
-        )
+    getMedicineOrderList = async () => {
+        try {
+            let userId = await AsyncStorage.getItem('userId');
+            let result = await getMedicineOrderList(userId);
+            console.log('this.state.result=========>' + JSON.stringify(result))
+
+            if (result.success) {
+                await this.setState({ data: result.data })
+                console.log('this.state.data=========>' + JSON.stringify(this.state.data))
+            }
+        } catch (e) {
+            console.log(e);
+        } finally {
+            this.setState({ isLoading: false });
+        }
     }
 
+
     render() {
-        const List=[{Orderid:'2020735588',content:'Horlicks Health and Nutrician Drink Classic Malt( x 1 ), Fluticasone and salmeterol( x 3 ), LA Shield Sunscreen Gel SPF 40 ( x 1 ).',date:'3rd march, 2020',price:' ₹ 790.00',greendel:'Arrving on Today'}]
-        const Order=[{Ordersid:'2020735589',content:'Horlicks Health and Nutrician Drink Classic Malt( x 1 ), Fluticasone and salmeterol( x 3 ), LA Shield Sunscreen Gel SPF 40 ( x 1 ).',dates:'4th march, 2020.',price:'₹ 790.00',reddel:'Delivery on 6th march 2020.'},
-        {Ordersid:'2020735590',content:'Horlicks Health and Nutrician Drink Classic Malt( x 1 ), Fluticasone and salmeterol( x 3 ), LA Shield Sunscreen Gel SPF 40 ( x 1 ).',dates:'4th march, 2020.',price:'₹ 790.00',reddel:'Delivery on 6th march 2020.'},
-        {Ordersid:'2020735591',content:'Horlicks Health and Nutrician Drink Classic Malt( x 1 ), Fluticasone and salmeterol( x 3 ), LA Shield Sunscreen Gel SPF 40 ( x 1 ).',dates:'5th march, 2020.',price:'₹ 790.00',reddel:'Delivery on 7th march 2020.'},
-        {Ordersid:'2020735592',content:'Horlicks Health and Nutrician Drink Classic Malt( x 1 ), Fluticasone and salmeterol( x 3 ), LA Shield Sunscreen Gel SPF 40 ( x 1 ).',dates:'5th march, 2020.',price:'₹ 790.00',reddel:'Delivery on 7th march 2020.'}]
+        const { data } = this.state;
+        // const List=[{Orderid:'2020735588',content:'Horlicks Health and Nutrician Drink Classic Malt( x 1 ), Fluticasone and salmeterol( x 3 ), LA Shield Sunscreen Gel SPF 40 ( x 1 ).',date:'3rd march, 2020',price:' ₹ 790.00',greendel:'Arrving on Today'}]
+        // const Order=[{Ordersid:'2020735589',content:'Horlicks Health and Nutrician Drink Classic Malt( x 1 ), Fluticasone and salmeterol( x 3 ), LA Shield Sunscreen Gel SPF 40 ( x 1 ).',dates:'4th march, 2020.',price:'₹ 790.00',reddel:'Deliveried on 6th march 2020.'},
+        // {Ordersid:'2020735590',content:'Horlicks Health and Nutrician Drink Classic Malt( x 1 ), Fluticasone and salmeterol( x 3 ), LA Shield Sunscreen Gel SPF 40 ( x 1 ).',dates:'4th march, 2020.',price:'₹ 790.00',reddel:'Deliveried on 6th march 2020.'},
+        // {Ordersid:'2020735591',content:'Horlicks Health and Nutrician Drink Classic Malt( x 1 ), Fluticasone and salmeterol( x 3 ), LA Shield Sunscreen Gel SPF 40 ( x 1 ).',dates:'5th march, 2020.',price:'₹ 790.00',reddel:'Deliveried on 7th march 2020.'},
+        // {Ordersid:'2020735592',content:'Horlicks Health and Nutrician Drink Classic Malt( x 1 ), Fluticasone and salmeterol( x 3 ), LA Shield Sunscreen Gel SPF 40 ( x 1 ).',dates:'5th march, 2020.',price:'₹ 790.00',reddel:'Deliveried on 7th march 2020.'}]
         return (
             <Container style={{ backgroundColor: '#E6E6E6' }}>
                 <Content>
-                <FlatList 
-                data={List}
-                    renderItem={({item})=>
-                    <View style={{ margin: 5, backgroundColor: '#fff', marginLeft:10, marginRight:10}}>
-                        <Row style={{ marginBottom: -5 }}>
-                            <Col>
-                                <Text style={styles.Head}>Order Id</Text>
-                            </Col>
-                            <Col>
-                                <Text style={{ fontSize: 10, textAlign: 'right', margin: 10, fontFamily: 'OpenSans' }}>{item.Orderid}</Text>
-                            </Col>
-                        </Row>
-                        <Row style={styles.Row} />
-                        <Row>
-                            <Text style={{ fontSize: 10, margin: 10, fontFamily: 'OpenSans' }}>{item.content}</Text>
-                        </Row>
-                        <Row style={{ marginTop: -10 }}>
-                            <Text style={styles.Head}>Ordered On</Text>
-                        </Row>
-                        <Row style={{ marginTop: -10 }}>
-                            <Text style={styles.orderprice}>{item.date}</Text>
-                        </Row>
-                        <Row style={{marginBottom:-15, marginTop:-5}}>    
-                            <Col>                  
-                            <Row style={{ marginTop: -5}}>
-                            <Text style={styles.Head}>Total price</Text>
-                        </Row>
-                        <Row style={{ marginTop: -10 }}>
-                            <Col size={5}>
-                            <Text style={styles.orderprice}>{item.price}</Text>
-                            </Col>
-                            <Col size={5} style={{ marginRight: -5, marginTop: -7.5 }}>
-                                <TouchableOpacity style={{ borderRadius: 2.5, paddingBottom: -5, paddingTop: 2, marginBottom: 20, borderWidth: 1, borderColor: '#8dc63f', width: 85, height: 17.5, marginLeft: 50 }}>
-                                    <Text style={{ textAlign: 'center', fontSize: 7.5, color: '#8dc63f', marginTop:0.5}}>Track Order</Text>
-                                </TouchableOpacity>
-                            </Col>
-                        </Row>
-                        </Col>  
-                        </Row>
+                    <FlatList data={data}
+                        renderItem={({ item, key }) =>
+                            <View style={{ margin: 5, backgroundColor: '#fff', marginLeft: 10, marginRight: 10 }}>
+                                <FlatList data={item.order_items}
+                                    extraData={item}
+                                    renderItem={({ item, key }) =>
+                                        <View>
+                                            <Row style={{ marginBottom: -5 }}>
+                                                <Col>
+                                                    <Text style={styles.Head}>Order Id</Text>
+                                                </Col>
+                                                <Col>
+                                                    <Text style={{ fontSize: 10, textAlign: 'right', margin: 10, fontFamily: 'OpenSans' }}>{item.Orderid}</Text>
+                                                </Col>
+                                            </Row>
+                                            <Row style={styles.Row} />
+                                            <Row>
+                                                <Text style={{ fontSize: 10, margin: 10, fontFamily: 'OpenSans' }}>{item.medicine_name}</Text>
+                                            </Row>
+                                            <Row style={{ marginTop: -10 }}>
+                                                <Text style={styles.Head}>Ordered On</Text>
+                                            </Row>
+                                            <Row style={{ marginTop: -10 }}>
+                                                <Text style={styles.orderprice}>{formatDate(item.created_date, 'DD MMMM,YYYY')}</Text>
+                                            </Row>
+                                            <Row style={{ marginBottom: -15, marginTop: -5 }}>
+                                                <Col>
+                                                    <Row style={{ marginTop: -5 }}>
+                                                        <Text style={styles.Head}>Total price</Text>
+                                                    </Row>
+                                                    <Row style={{ marginBottom: 7.5, marginTop: -10 }}>
+                                                        <Col size={5}>
+                                                            <Text style={styles.orderprice}>₹ {item.final_price}</Text>
+                                                        </Col>
+                                                    </Row>
+                                                </Col>
+                                            </Row>
+                                            <Row style={{ marginTop: 7.5 }}>
+                                                <Row style={styles.Row} />
+                                            </Row>
 
-                        <Row style={styles.Row}/>
-                        <Row style={{marginBottom: -12.5}}>
-                            <Col size={7}>
-                                <Text style={{fontSize: 11, margin: 10, color: '#8dc63f', fontFamily: 'OpenSans', fontWeight:'500'}}>{item.greendel}</Text>
-                            </Col>
-                            <Col size={3} style={{ marginRight: 10, marginTop: 10 }}>
+                                        </View>
+                                    } />
+                                <Row style={{marginBottom:-5}}>
+                                    <Col size={7}>
+                                        {item.status == "PENDING" ?
+                                            <Text style={{ fontSize: 11, marginTop: 10, margin: 10, color: '#8dc63f', fontFamily: 'OpenSans', fontWeight: '500' }}>Arrving on 24 Hours</Text> :
+                                            null}
+                                        {item.status == "IN PROGRESS" ?
+                                            <Text style={{ fontSize: 11, marginTop: 10, margin: 10, color: '#8dc63f', fontFamily: 'OpenSans', fontWeight: '500' }}>Arrving on Today</Text> :
+                                            null}
+                                        {item.status == "COMPLETED" ?
+                                            <Text style={{ fontSize: 11, marginTop: 10, margin: 10, color: '#ff4e42', fontFamily: 'OpenSans', fontWeight: '500' }}>Deliveried on </Text> :
+                                            null}
+                                    </Col>
+                                    {item.status == "COMPLETED" ?
+                                    <Col size={3} style={{ marginRight: 10, marginTop: 10 }}>
                                 <TouchableOpacity style={styles.Touch}>
                                     <Text style={styles.Buynow}><Icon name='ios-cart' style={styles.cart} />  Buy Again</Text>
                                 </TouchableOpacity>
-                            </Col>
-                        </Row>
-                    </View> }/>
+                            </Col>:
+                            null }
+                                </Row>
+                            </View>
+                        } />
 
 
 
-                    <FlatList 
-                data={Order}
-                    renderItem={({item})=>
-                    <View style={{ margin: 5, backgroundColor: '#fff',  marginLeft:10, marginRight:10}}>
-                        <Row style={{ marginBottom: -5 }}>
-                            <Col>
-                                <Text style={styles.Head}>Order Id</Text>
-                            </Col>
-                            <Col>
-                                <Text style={{ fontSize: 10,  textAlign: 'right', margin: 10, fontFamily: 'OpenSans' }}>{item.Ordersid}</Text>
-                            </Col>
-                        </Row>
-                        <Row style={styles.Row}/>
-                        <Row>
-                        <Text style={{ fontSize: 10,  margin: 10, fontFamily: 'OpenSans' }}>{item.content}</Text>
-                        </Row>
-                        <Row style={{ marginTop: -10 }}>
-                            <Text style={styles.Head}>Ordered On</Text>
-                        </Row>
-                        <Row style={{ marginTop: -10 }}>
-                        <Text style={styles.orderprice}>{item.dates}</Text>
-                        </Row>
-                        <Row style={{ marginTop: -10 }}>
-                            <Text style={styles.Head}>Total price</Text>
-                        </Row>
-                        <Row style={{ marginTop: -10 }}>
-                            <Col size={5}>
-                            <Text style={styles.orderprice}>{item.price}</Text>
-                            </Col>
-                        </Row>
-                        <Row style={styles.Row}/>
-                        <Row style={{marginBottom:-12.5}}>
-                            <Col size={7} >
-                                <Text style={{fontSize: 11, margin: 10, color: '#ff4e42', fontFamily: 'OpenSans', fontWeight:'500'}}>{item.reddel}</Text>
-                            </Col>
-                            <Col size={3} style={{ marginLeft:-10 , marginTop: 10 }}>
-                            <TouchableOpacity style={styles.Touch}>
-                                    <Text style={styles.Buynow}><Icon name='ios-cart' style={styles.cart} />  Buy Again</Text>
-                                </TouchableOpacity>
-                            </Col>
-                        </Row>
-                    </View> }/> 
-                    {/* <Content contentContainerStyle={styles.BodyContent}>
-                   {this.state.isLoading ? <Spinner color='blue' /> :
-                        <View  style={{justifyContent: "center", alignItems: "center" }}>
-                            {this.state.orderList.length !== 0 ? this.renderOrders() : this.renderNoOrders()}
-                        </View>}
-                </Content> */}       
-                       
+
                 </Content>
             </Container>
         )
@@ -237,42 +177,42 @@ const styles = StyleSheet.create({
 
     },
     Row: {
-        borderWidth: 0.5, 
-        borderColor: '#E6E6E6', 
-        margin: 2.5, 
-        marginTop:5, 
-        marginBottom:-1.5, 
-        marginLeft: 10, 
+        borderWidth: 0.5,
+        borderColor: '#E6E6E6',
+        margin: 2.5,
+        marginTop: 5,
+        marginBottom: -1.5,
+        marginLeft: 10,
         marginRight: 10
     },
 
     Buynow: {
-        fontFamily: 'OpenSans', 
-        fontSize: 7.5, 
-        color: '#fff', 
-        marginTop: 2, 
-        fontWeight: '500', 
-        fontFamily: 'OpenSans', 
-        marginRight: 10, 
-        marginLeft: 10, 
-        marginBottom: 14, 
-        textAlign: 'center' 
+        fontFamily: 'OpenSans',
+        fontSize: 7.5,
+        color: '#fff',
+        marginTop: 2,
+        fontWeight: '500',
+        fontFamily: 'OpenSans',
+        marginRight: 10,
+        marginLeft: 10,
+        marginBottom: 14,
+        textAlign: 'center'
     },
 
-    cart:  {
-        color: '#fff', 
-        fontSize: 9.5, 
+    cart: {
+        color: '#fff',
+        fontSize: 9.5,
         marginLeft: 1.5
     },
 
     Touch: {
-        backgroundColor: '#4e85e9', 
-        borderRadius: 2.5, 
-        marginBottom: 20, 
-        borderWidth: 1, 
-        borderColor: '#4e85e9', 
-        width: 85, 
-        height: 17.5, 
+        backgroundColor: '#4e85e9',
+        borderRadius: 2.5,
+        marginBottom: 20,
+        borderWidth: 1,
+        borderColor: '#4e85e9',
+        width: 85,
+        height: 17.5,
         marginLeft: -5
     },
 
@@ -291,12 +231,12 @@ const styles = StyleSheet.create({
         marginTop: 'auto',
         marginBottom: 'auto'
     },
-    orderprice: { 
-        fontSize: 11, 
+    orderprice: {
+        fontSize: 11,
         textAlign: 'left',
-        fontFamily: 'OpenSans', 
+        fontFamily: 'OpenSans',
         marginLeft: 10,
-        marginBottom:5
+        marginBottom: 5
     },
     curvedGrid: {
         borderRadius: 800,
