@@ -61,9 +61,9 @@ class reportIssueDetails extends Component {
 
         let response = await upDateReportIssue(data._id, userId, reqData);
 
-
+        console.log(response);
         if (response.success) {
-          let temp = data.reply_data;
+          let temp = data.reply_data || [];
           temp.push(response.reportedData)
           this.setState({ replyData: temp, comments: '' })
           Toast.show({
@@ -137,6 +137,7 @@ class reportIssueDetails extends Component {
                   <FlatList
                     data={replyData}
                     extraData={data}
+                    keyExtractor={(item, index) => index.toString()}
                     renderItem={({ item }) =>
                       <View>
                         <Row style={{ paddingBottom: 10, borderBottomColor: '#C1C1C1', borderBottomWidth: 0.3, marginTop: 30 }}>
