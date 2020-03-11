@@ -60,9 +60,10 @@ import MyChats from '../../modules/screens/chat/MyChats';
 import AvailableDoctors4Chat from '../../modules/screens/chat/AvailableDoctor';
 import SuccessChatPaymentPage from '../../modules/screens/chat/successMsg';
 import ReportIssue from '../../modules/screens/ReportIssue';
-import EarnReward from '../../modules/screens/Home/EarnReward'
-import CoronaDisease from '../../modules/screens/CoronaDisease/CoronaDisease';
+import ReportDetails from '../../modules/screens/ReportIssue/reportIssueDetails'
 import EarnReward from '../../modules/screens/Home/EarnReward';
+import CoronaDisease from '../../modules/screens/CoronaDisease/CoronaDisease';
+
 import MedicineSuggestionList from '../../modules/screens/Pharmacy/MedicineSuggestionList/pharmacySuggestionList';
 
 const AuthRoutes = {
@@ -229,6 +230,12 @@ const HomeStack = createStackNavigator({
     screen: ReportIssue,
     navigationOptions: {
       title: 'Report issue'
+    }
+  },
+  ReportDetails: {
+    screen: ReportDetails,
+    navigationOptions: {
+      title: 'Report details'
     }
   },
   "CancelAppointment": {

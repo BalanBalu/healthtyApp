@@ -353,16 +353,40 @@ export function validateName(text) {
     else return true;
 }
 export function onlySpaceNotAllowed(text) {
-    if (text) {
-        if (text.trim()) return true
-        else return false;
-    }
-    else {
-        return false
-    }
+          if(text){
+         if(text.trim())return true
+          else return false;
+          }
+          else{
+            return false  
+          }
+         
+         }
 
-}
 
+
+         
+export const reportStatusValue = {
+
+    "OPEN":
+    {
+      color: '#f1994d',
+    },
+    "INPROGRASS": {
+     
+      color: ' #5593fb',
+    },
+    "RESOLVED": {
+      color: '#6ec41b',
+    },
+    "CLOSED": {
+      color: 'red',
+    },
+    "undefined": { 
+      color: 'red',
+    }
+  }
+  
 
 export async function ProductIncrementDecreMent(quantity, price, operation) {
 
