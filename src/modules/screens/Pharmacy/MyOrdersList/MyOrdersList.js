@@ -94,7 +94,7 @@ class MyOrdersList extends Component {
                 <Content>
                     <FlatList data={data}
                         renderItem={({ item, key }) =>
-                            <View style={{ margin: 5, backgroundColor: '#fff', marginLeft: 10, marginRight: 10 }}>
+                            <View style={{ margin: 5, backgroundColor: '#fff', marginLeft: 10, marginRight: 10, marginBottom: 10 }}>
                                 <FlatList data={item.order_items}
                                     extraData={item}
                                     renderItem={({ item, key }) =>
@@ -104,7 +104,7 @@ class MyOrdersList extends Component {
                                                     <Text style={styles.Head}>Order Id</Text>
                                                 </Col>
                                                 <Col>
-                                                    <Text style={{ fontSize: 10, textAlign: 'right', margin: 10, fontFamily: 'OpenSans' }}>{item.Orderid}</Text>
+                                                    <Text style={{ fontSize: 10, textAlign: 'right', margin: 10, fontFamily: 'OpenSans' }}>{item.Orderid || 'NIL'}</Text>
                                                 </Col>
                                             </Row>
                                             <Row style={styles.Row} />
@@ -135,25 +135,25 @@ class MyOrdersList extends Component {
 
                                         </View>
                                     } />
-                                <Row style={{marginBottom:-5}}>
+                                <Row style={{ marginBottom: -12.5 }}>
                                     <Col size={7}>
                                         {item.status == "PENDING" ?
-                                            <Text style={{ fontSize: 11, marginTop: 10, margin: 10, color: '#8dc63f', fontFamily: 'OpenSans', fontWeight: '500' }}>Arrving on 24 Hours</Text> :
+                                            <Text style={styles.buytext}>Arrving on 24 Hours</Text> :
                                             null}
                                         {item.status == "IN PROGRESS" ?
-                                            <Text style={{ fontSize: 11, marginTop: 10, margin: 10, color: '#8dc63f', fontFamily: 'OpenSans', fontWeight: '500' }}>Arrving on Today</Text> :
+                                            <Text style={styles.buytext}>Arrving on Today</Text> :
                                             null}
                                         {item.status == "COMPLETED" ?
-                                            <Text style={{ fontSize: 11, marginTop: 10, margin: 10, color: '#ff4e42', fontFamily: 'OpenSans', fontWeight: '500' }}>Deliveried on </Text> :
+                                            <Text style={{ marginBottom: 25, fontSize: 11, marginTop: 10, margin: 10, color: '#ff4e42', fontFamily: 'OpenSans', fontWeight: '500' }}>Deliveried on </Text> :
                                             null}
                                     </Col>
                                     {item.status == "COMPLETED" ?
-                                    <Col size={3} style={{ marginRight: 10, marginTop: 10 }}>
-                                <TouchableOpacity style={styles.Touch}>
-                                    <Text style={styles.Buynow}><Icon name='ios-cart' style={styles.cart} />  Buy Again</Text>
-                                </TouchableOpacity>
-                            </Col>:
-                            null }
+                                        <Col size={3} style={{ marginRight: 10, marginTop: 10 }}>
+                                            <TouchableOpacity style={styles.Touch} onPress={() => { this.props.navigation.navigate("medicineSearchList") }}>
+                                                <Text style={styles.Buynow}><Icon name='ios-cart' style={styles.cart} />  Buy Again</Text>
+                                            </TouchableOpacity>
+                                        </Col> :
+                                        null}
                                 </Row>
                             </View>
                         } />
@@ -184,6 +184,16 @@ const styles = StyleSheet.create({
         marginBottom: -1.5,
         marginLeft: 10,
         marginRight: 10
+    },
+
+    buytext: {
+        marginBottom: 25,
+        fontSize: 11,
+        marginTop: 10,
+        margin: 10,
+        color: '#8dc63f',
+        fontFamily: 'OpenSans',
+        fontWeight: '500'
     },
 
     Buynow: {
