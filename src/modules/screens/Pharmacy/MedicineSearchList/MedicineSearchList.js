@@ -27,7 +27,7 @@ class MedicineSearchList extends Component {
             isBuyNow: false,
             selectedMedcine: {},
             medicineName: '',
-            AddToCardData:null
+            AddToCardData: null
 
         }
     }
@@ -35,7 +35,7 @@ class MedicineSearchList extends Component {
         this.setState({ isLoading: true })
         let medicineName = this.props.navigation.getParam('medicineName') || ''
         const navigationByPharmacySelect = this.props.navigation.getParam('byPharmacy') || false;
-        if(navigationByPharmacySelect === true) {
+        if (navigationByPharmacySelect === true) {
             let pharmacyInfo = this.props.navigation.getParam('pharmacyInfo') || null;
             this.medicineSearchListByPharmacyId(pharmacyInfo.pharmacy_id)
         }
@@ -105,7 +105,11 @@ class MedicineSearchList extends Component {
             }
             temp.pharmacy_name = data.pharmacyInfo.name;
             temp.pharmacy_id = data.pharmacyInfo.pharmacy_id
+            temp.pharmacyInfo=data.pharmacyInfo
+            console.log(data.pharmacyInfo)
             temp.selectedType = selected
+            
+
             await this.setState({ selectedMedcine: temp, isBuyNow: true })
 
         } catch (e) {
@@ -117,18 +121,18 @@ class MedicineSearchList extends Component {
 
     async  getvisble(val) {
         try {
-            if(val.isNavigate){
-                let temp=[];
+            if (val.isNavigate) {
+                let temp = [];
                 console.log(val);
                 temp.push(val.medicineData)
                 await this.setState({ isBuyNow: false })
-                    this.props.navigation.navigate("MedicineCheckout", {
-                        medicineDetails: temp
-                    })
-                }
-             else {
-                this.setState({ isBuyNow: false })  
-             }
+                this.props.navigation.navigate("MedicineCheckout", {
+                    medicineDetails: temp
+                })
+            }
+            else {
+                this.setState({ isBuyNow: false })
+            }
 
         } catch (e) {
             console.log(e)
@@ -136,7 +140,7 @@ class MedicineSearchList extends Component {
     }
 
     render() {
-        const { medicineName, isLoading, data,AddToCardData } = this.state;
+        const { medicineName, isLoading, data, AddToCardData } = this.state;
 
 
         return (
@@ -153,23 +157,23 @@ class MedicineSearchList extends Component {
                             cancelable={false}
                         /> :
                         <View>
-                            
+
                             <View style={{ flex: 1, }}>
-                             <Item style={{ borderBottomWidth: 0, backgroundColor: '#fff', height: 30, borderRadius: 2, }}>
-                                <Input
-                                    placeholder='Search for Medicines and Health Products...     '
-                                    style={{ fontSize: 12, width: '300%' }}
-                                    placeholderTextColor="#C1C1C1"
-                                    keyboardType={'default'}
-                                    returnKeyType={'go'}
-                                    value={this.state.medicineName}
-                                    autoFocus={false}
-                                    onChangeText={enteredText => this.props.navigation.navigate('MedicineSuggestionList', { medicineName: enteredText })}
-                                    multiline={false} />
-                                <TouchableOpacity style={{ alignItems: 'flex-end' }} >
-                                    <Icon name='ios-search' style={{ color: '#775DA3', fontSize: 20 }} />
-                                </TouchableOpacity>
-                             </Item>
+                                <Item style={{ borderBottomWidth: 0, backgroundColor: '#fff', height: 30, borderRadius: 2, }}>
+                                    <Input
+                                        placeholder='Search for Medicines and Health Products...     '
+                                        style={{ fontSize: 12, width: '300%' }}
+                                        placeholderTextColor="#C1C1C1"
+                                        keyboardType={'default'}
+                                        returnKeyType={'go'}
+                                        value={this.state.medicineName}
+                                        autoFocus={false}
+                                        onChangeText={enteredText => this.props.navigation.navigate('MedicineSuggestionList', { medicineName: enteredText })}
+                                        multiline={false} />
+                                    <TouchableOpacity style={{ alignItems: 'flex-end' }} >
+                                        <Icon name='ios-search' style={{ color: '#775DA3', fontSize: 20 }} />
+                                    </TouchableOpacity>
+                                </Item>
                             </View>
                             {/* </TouchableOpacity> */}
                             {data.length == 0 ?
@@ -202,18 +206,18 @@ class MedicineSearchList extends Component {
                                                                     <Text style={{ fontSize: 13, marginTop: -10, marginLeft: 2.5, color: "#8dc63f" }}>{medicineRateAfterOffer(item.medPharDetailInfo)}</Text>
                                                                 </Col>
                                                                 {AddToCardData === null ?
-                                                                <Col size={3} style={{ height: 20, marginLeft: 4 }}>
-                                                                    <Row>
-                                                                        <TouchableOpacity style={{ borderColor: '#4e85e9', marginLeft: 1.5, borderWidth: 1, borderRadius: 2.5, marginTop: -12.5, height: 25, width: 65, paddingBottom: 5, paddingTop: 2 }}
-                                                                            onPress={() => this.selectedItems(item, 'Add to Card')} >
-                                                                            <Row style={{ alignItems: 'center' }}>
-                                                                                <Icon name='ios-cart' style={{ color: '#4e85e9', fontSize: 11, marginLeft: 3.5, paddingTop: 2.3 }} />
-                                                                                <Text style={{ fontSize: 7, color: '#4e85e9', marginTop: 2.5, marginLeft: 6 }}>Add to Cart</Text>
-                                                                            </Row>
-                                                                        </TouchableOpacity>
-                                                                    </Row>
-                                                                </Col>: null }
-                                                               {/* 
+                                                                    <Col size={3} style={{ height: 20, marginLeft: 4 }}>
+                                                                        <Row>
+                                                                            <TouchableOpacity style={{ borderColor: '#4e85e9', marginLeft: 1.5, borderWidth: 1, borderRadius: 2.5, marginTop: -12.5, height: 25, width: 65, paddingBottom: 5, paddingTop: 2 }}
+                                                                                onPress={() => this.selectedItems(item, 'Add to Card')} >
+                                                                                <Row style={{ alignItems: 'center' }}>
+                                                                                    <Icon name='ios-cart' style={{ color: '#4e85e9', fontSize: 11, marginLeft: 3.5, paddingTop: 2.3 }} />
+                                                                                    <Text style={{ fontSize: 7, color: '#4e85e9', marginTop: 2.5, marginLeft: 6 }}>Add to Cart</Text>
+                                                                                </Row>
+                                                                            </TouchableOpacity>
+                                                                        </Row>
+                                                                    </Col> : null}
+                                                                {/* 
                                                                 <Col size={3} style={{ height: 20, marginLeft: 4 }}>
                                                                     <Row>
                                                                         <TouchableOpacity style={{ borderColor: '#4e85e9', marginLeft: 1.5, borderWidth: 1, borderRadius: 2.5, marginTop: -12.5, height: 25, width: 65, paddingBottom: 5, paddingTop: 2 }}
