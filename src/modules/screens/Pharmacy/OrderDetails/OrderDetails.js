@@ -33,11 +33,11 @@ class OrderDetails extends Component {
         try {
             this.setState({ isLoading: true });
             let userId = await AsyncStorage.getItem('userId');
-            let result = await getMedicineOrderDetails("5e6738d1d19db70bcb33c6ee" , userId);
-            console.log("result+++++++++++++++++"+JSON.stringify(result))
+            let result = await getMedicineOrderDetails("5e68adbb30a7db0ee1f5f2c2" , userId);
+            // console.log("result+++++++++++++++++"+JSON.stringify(result))
             if (result.success) {
-                this.setState({ myOrderList: result.data });
-                console.log("baluuuorderList+++++++++++++++++"+JSON.stringify(this.state.myOrderList))
+                this.setState({ myOrderList: result.data[0] });
+                // console.log("baluuuorderList+++++++++++++++++"+JSON.stringify(this.state.myOrderList))
   
             }
         }
@@ -57,6 +57,14 @@ class OrderDetails extends Component {
         )
     }
 
+    getAddress(address) {
+        if (address.pickup_or_delivery_address) {
+        let temp = address.pickup_or_delivery_address.address;
+          return `${ temp.no_and_street || '' },${temp.address_line_1 || ''},${temp.district || ''},${temp.city || ''},${temp.state || ''},${temp.country || ''},${temp.pin_code || ''}`
+        } else {
+          return null
+        }
+      }
     render() {
         const { navigation } = this.props;
         const { isLoading, myOrderList } = this.state;
@@ -122,7 +130,8 @@ class OrderDetails extends Component {
 
                         <Text style={{ fontSize: 14, fontWeight: '500', fontFamily: 'OpenSans', color: '#7F49C3', marginTop: 10 }}> Ordered Medicines</Text>
                         <FlatList
-                            data={myOrderList}
+                            data={myOrderList.order_items}
+                            extraData={myOrderList.order_items}
                             renderItem={({ item }) =>
                                 <Row style={styles.rowStyle}>
                                     <Col size={2}>
@@ -136,7 +145,7 @@ class OrderDetails extends Component {
                                     <Col size={8} style={styles.nameText}>
                                         <Text style={styles.nameText}>{item.medicine_name}</Text>
                                         <Text style={styles.pharText}>{item.pharname}</Text>
-                                        <Text style={styles.amountText}>{item.medicine_original_price}</Text>
+                                        <Text style={styles.amountText}>₹{item.final_price}</Text>
                                     </Col>
                                 </Row>
                             } />
@@ -186,12 +195,12 @@ class OrderDetails extends Component {
                         </View>
                         <View style={{ marginTop: 10 }}>
                             <Text style={styles.innerText}>Ordered On</Text>
-                            <Text style={styles.rightText}>02nd March,2020</Text>
+                        <Text style={styles.rightText}>{formatDate(myOrderList.created_date,'Do MMM,YYYY')}</Text>
                         </View>
                         <View style={{ marginTop: 10, paddingBottom: 10 }}>
                             <Text style={styles.innerText}>Customer Details</Text>
-                            <Text style={styles.nameTextss}>S.Mukesh Kannan</Text>
-                            <Text style={styles.addressText}>No.28,Kamarajar Nagar,4th cross street, Ambattur, Chennai - 600051.</Text>
+                            <Text style={styles.nameTextss}>S.Mukesh Kannan</Text>          
+                          <Text style={styles.addressText}>{this.getAddress(myOrderList)}</Text>
                             <Text style={styles.addressText}>Mobile - 8989567891</Text>
 
                         </View>
