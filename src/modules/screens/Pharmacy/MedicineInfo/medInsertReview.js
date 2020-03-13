@@ -64,7 +64,6 @@ export class MedInsertReview extends Component {
           });
           this.props.popupVisible({
             visible: false,
-            updatedVisible: true
           });
         }
 
@@ -79,7 +78,6 @@ export class MedInsertReview extends Component {
       } else {
         this.props.popupVisible({
           visible: false,
-          updatedVisible: true
         });
         this.setState({  isLoading: false });
       }

@@ -6,6 +6,7 @@ import { StyleSheet, Image, AsyncStorage, FlatList, TouchableOpacity } from 'rea
 import { getSelectedMedicineDetails, getMedicineReviews, getMedicineReviewsCount } from '../../../providers/pharmacy/pharmacy.action'
 import { medicineRateAfterOffer } from '../../../common';
 import Spinner from '../../../../components/Spinner';
+import { NavigationEvents } from 'react-navigation';
 import { dateDiff, getMoment, formatDate } from '../../../../setup/helpers'
 import { MedInsertReview } from './medInsertReview'
 import { AddToCard } from '../AddToCardBuyNow/AddToCard'
@@ -57,11 +58,13 @@ class MedicineInfo extends Component {
         this.getMedicineReviewCount();
     }
 
+
     getSelectedMedicineDetails = async () => {
         try {
             this.setState({ isLoading: true });
             medicineId = this.props.navigation.getParam('medicineId');
             let pharmacyId = this.props.navigation.getParam('pharmacyId');
+        
             let result = await getSelectedMedicineDetails(medicineId, pharmacyId);
             if (result.success) {
                 this.setState({ medicineData: result.data })
@@ -158,10 +161,10 @@ class MedicineInfo extends Component {
         await this.setState({ insertReviewData: insertReviewData, isReviewInsert: true })
 
     }
-    getvisble = async (val) => {
+    getMedicineReviewVisible = async (val) => {
         try {
             console.log("val", val)
-            await this.setState({ isLoading: true, modalVisible: false })
+            await this.setState({ isLoading: true, modalVisible: false, isReviewInsert :false  })
         } catch (e) {
             console.log(e)
         }
@@ -186,6 +189,7 @@ class MedicineInfo extends Component {
         const { medicineData, reviewData, reviewCount } = this.state
         return (
             <Container >
+                
                 <Content style={{ padding: 10 }}>
                     {this.state.isLoading ? <Spinner color='blue'
                         visible={this.state.isLoading}
@@ -385,7 +389,7 @@ class MedicineInfo extends Component {
                         {this.state.isReviewInsert == true ?
                             <MedInsertReview
                                 data={this.state.insertReviewData}
-                                popupVisible={(data) => this.popupVisible(data)}
+                                popupVisible={(data) => this.getMedicineReviewVisible(data)}
 
                             />
                             : null}

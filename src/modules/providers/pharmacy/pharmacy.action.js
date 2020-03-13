@@ -182,7 +182,7 @@ export async function getMedicineReviews(medicine_id) {
 export async function InsertMedicineReviews(userId, data) {
   try {
 
-    let endPoint = '/medicine/review /'+userId;
+    let endPoint = '/medicine/review/'+userId;
     console.log(endPoint);
     let response = await postService(endPoint, data);
     let respData = response.data;
