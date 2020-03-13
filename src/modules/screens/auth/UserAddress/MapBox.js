@@ -3,7 +3,7 @@ import React, { Component } from 'react';
 import { View, StyleSheet, Image, PermissionsAndroid, AsyncStorage, TouchableOpacity } from 'react-native';
 import MapboxGL from '@react-native-mapbox-gl/maps';
 import { Col, Row, Grid } from 'react-native-easy-grid';
-import { IS_ANDROID, validatePincode, validateName, validatePassword, acceptNumbersOnly } from '../../../common';
+import { IS_ANDROID, validatePincode, validateName, validatePassword, validateFirstNameLastName, acceptNumbersOnly } from '../../../common';
 import { Container, Toast, Body, Button, Text, Item, Input, Icon, Card, CardItem, Label, Form, Content, Picker } from 'native-base';
 import { MAP_BOX_TOKEN } from '../../../../setup/config';
 import axios from 'axios';
@@ -27,6 +27,9 @@ export default class MapBox extends React.Component {
             isFinisedLoading: false,
             locationFullText: null,
             showAllAddressFields: false,
+            full_name: '',
+            mobile_no: null,
+            addressType: null,
             address: {
                 no_and_street: null,
                 address_line_1: null,
@@ -43,40 +46,53 @@ export default class MapBox extends React.Component {
         this.onDidFinishLoadingMap = this.onDidFinishLoadingMap.bind(this);
     }
     async componentDidMount() {
-        if (IS_ANDROID) {
-            const granted = PermissionsAndroid.requestMultiple(
-                [PermissionsAndroid.PERMISSIONS.ACCESS_FINE_LOCATION,
-                PermissionsAndroid.PERMISSIONS.ACCESS_COARSE_LOCATION],
-                {
-                    title: 'Give Location Permission',
-                    message: 'App needs location permission to find your position.'
+        try {
+            if (IS_ANDROID) {
+                const granted = PermissionsAndroid.requestMultiple(
+                    [PermissionsAndroid.PERMISSIONS.ACCESS_FINE_LOCATION,
+                    PermissionsAndroid.PERMISSIONS.ACCESS_COARSE_LOCATION],
+                    {
+                        title: 'Give Location Permission',
+                        message: 'App needs location permission to find your position.'
+                    }
+                ).then(granted => {
+                    console.log(granted);
+                }).catch(err => {
+                    console.warn(err);
+                });
+                console.log("granted");
+                console.log(await granted);
+            }
+            this._isMounted = true;
+            const { navigation } = this.props;
+            const fromProfile = navigation.getParam('fromProfile') || false
+            showAllAddressFields = navigation.getParam('mapEdit') || false
+            navigationOption = navigation.getParam('navigationOption') || null
+            let locationData = this.props.navigation.getParam('locationData');
+            console.log("locationData" + JSON.stringify(locationData))
+            if (fromProfile) {
+                await this.setState({ fromProfile: true })
+                if (locationData) {
+                    this.formUserAddress(locationData)
+                    await this.setState({ coordinates: locationData.center, fromProfile, showAllAddressFields })
                 }
-            ).then(granted => {
-                console.log(granted);
-            }).catch(err => {
-                console.warn(err);
-            });
-            console.log("granted");
-            console.log(await granted);
-        }
-        this._isMounted = true;
-        const { navigation } = this.props;
-        const fromProfile = navigation.getParam('fromProfile') || false
-        showAllAddressFields = navigation.getParam('mapEdit') || false
-        let locationData = this.props.navigation.getParam('locationData');
-        console.log("locationData" + JSON.stringify(locationData))
-        if (fromProfile) {
-            await this.setState({ fromProfile: true })
-            if (locationData) {
-                this.formUserAddress(locationData)
-                await this.setState({ coordinates: locationData.center, fromProfile, showAllAddressFields })
+                else {
+                    this.getCurrentLocation();
+                }
+            } else if (navigationOption) {
+                addressType = navigation.getParam('addressType') || null
+                if (addressType) {
+                    this.setState({ addressType: addressType.addressType, full_name: addressType.full_name, mobile_no: addressType.mobile_no })
+                }
+
+                this.setState({ navigationOption })
+
             }
             else {
                 this.getCurrentLocation();
             }
-        }
-        else {
-            this.getCurrentLocation();
+        } catch (e) {
+            console.log(e)
         }
     }
     backNavigation(navigationData) {
@@ -176,6 +192,7 @@ export default class MapBox extends React.Component {
         try {
             this.setState({ loading: true })
             let Lnglat = this.state.center;
+            addressData = 'address'
             let userAddressData = {
                 address: {
                     coordinates: [Lnglat[1], Lnglat[0]],
@@ -183,6 +200,26 @@ export default class MapBox extends React.Component {
                     address: this.state.address
                 }
             }
+            if (this.state.addressType == 'delivery_Address') {
+
+                if (validateFirstNameLastName(this.state.full_name) == false) {
+                    Toast.show({
+                        text: 'name should not contains white spaces and any Special Character',
+                        type: 'danger',
+                        duration: 5000
+                    })
+                    return false
+                } else {
+                    userAddressData.delivery_Address = userAddressData.address;
+                    userAddressData.delivery_Address.full_name = this.state.full_name;
+                    userAddressData.delivery_Address.mobile_no = this.state.mobile_no;
+
+                    delete userAddressData.address
+                    alert(JSON.stringify(userAddressData))
+                }
+            }
+
+            console.log(userAddressData)
             const userId = await AsyncStorage.getItem('userId')
             // console.log(this.state.address.district)
             if (!validateName(this.state.address.city)) {
@@ -229,6 +266,9 @@ export default class MapBox extends React.Component {
                         duration: 3000,
                     })
                     this.props.navigation.navigate('Profile');
+                } else if (this.state.navigationOption) {
+                    this.props.navigation.navigate(navigationOption);
+
                 }
                 else {
                     logout();
@@ -399,7 +439,23 @@ export default class MapBox extends React.Component {
                     </Card> :
                     <Content style={styles.bodyContent}>
                         <Form>
-
+                            {this.state.addressType == 'delivery_Address' ?
+                                <View>
+                                    <Item floatingLabel>
+                                        <Label>Name</Label>
+                                        <Input placeholder="No And Street" style={styles.transparentLabel}
+                                            value={this.state.full_name}
+                                            onChangeText={value => this.setState({ full_name: value })} />
+                                    </Item>
+                                    <Item floatingLabel>
+                                        <Label>Mobile no </Label>
+                                        <Input placeholder="Address Line 1" style={styles.transparentLabel}
+                                            value={this.state.mobile_no}
+                                            onChangeText={value => acceptNumbersOnly(value) == true || value === '' ? this.setState({ mobile_no: value }) : null}
+                                        />
+                                    </Item>
+                                </View>
+                                : null}
                             <Item floatingLabel>
                                 <Label>No And Street</Label>
                                 <Input placeholder="No And Street" style={styles.transparentLabel}
@@ -465,7 +521,7 @@ export default class MapBox extends React.Component {
                                 value={this.state.locationFullText}
                                 style={styles.inputfield}
                                 placeholderTextColor="black"
-                                onFocus={() => { this.state.fromProfile ? this.props.navigation.navigate('UserAddress', { fromProfile: true }) : this.props.navigation.navigate('UserAddress') }}
+                                onFocus={() => { this.state.fromProfile ? this.props.navigation.navigate('UserAddress', { fromProfile: true }) : this.state.navigationOption ? this.props.navigation.navigate('UserAddress', { navigationOption: navigationOption }) : this.props.navigation.navigate('UserAddress') }}
                                 onChangeText={locationFullText => this.setState({ locationFullText })} />
                         </View>
                     </Row>

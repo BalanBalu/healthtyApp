@@ -347,47 +347,63 @@ export function getHospitalName(location) {
     else
         return ''
 }
+export function getAddress(location) {
+    if (!location) return ''
+    if (location)
+        return `${location.address.no_and_street},${location.address.address_line_1} ${location.address.city}, ${location.address.state}, ${location.address.pin_code}`;
+    else
+        return ''
+}
 export function validateName(text) {
     let regex = /^(?!\s*$)[-a-zA-Z_:' ']{1,100}$/;
     if (regex.test(text) === false) return false;
     else return true;
 }
 export function onlySpaceNotAllowed(text) {
-          if(text){
-         if(text.trim())return true
-          else return false;
-          }
-          else{
-            return false  
-          }
-         
-         }
+    if (text) {
+        if (text.trim()) return true
+        else return false;
+    }
+    else {
+        return false
+    }
+
+}
 
 
 
-         
+
 export const reportStatusValue = {
 
     "OPEN":
     {
-      color: '#f1994d',
+        color: '#f1994d',
     },
     "INPROGRASS": {
-     
-      color: ' #5593fb',
+
+        color: ' #5593fb',
     },
     "RESOLVED": {
-      color: '#6ec41b',
+        color: '#6ec41b',
     },
     "CLOSED": {
-      color: 'red',
+        color: 'red',
     },
-    "undefined": { 
-      color: 'red',
+    "undefined": {
+        color: 'red',
     }
-  }
-  
+}
 
+
+    export async function validateFirstNameLastName(text){
+    const regex = new RegExp('^[\ba-zA-Z ]+$')  //Support letter with space
+   
+    if (regex.test(text) === false) {
+       return false
+    } else{
+        return true
+    }
+}
 export async function ProductIncrementDecreMent(quantity, price, operation) {
 
     let itemQuantity, totalAmount = price;
