@@ -215,7 +215,7 @@ export default class MapBox extends React.Component {
                     userAddressData.delivery_Address.mobile_no = this.state.mobile_no;
 
                     delete userAddressData.address
-                    alert(JSON.stringify(userAddressData))
+                    
                 }
             }
 

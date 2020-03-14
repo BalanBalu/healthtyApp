@@ -26,9 +26,9 @@ class MedicineCheckout extends Component {
             isLoading: true,
             itemSelected: 'HOME_DELIVERY',
             deliveryDetails: null,
-            medicineTotalAmount:0,
-            pickupOPtionEnabled:true,
-            phamacyInfo:null
+            medicineTotalAmount: 0,
+            pickupOPtionEnabled: true,
+            pharmacyInfo: null
 
         };
     }
@@ -36,7 +36,7 @@ class MedicineCheckout extends Component {
     async componentDidMount() {
         try {
             const { navigation } = this.props;
-            console.log(navigation.state);
+
             const isLoggedIn = await hasLoggedIn(this.props);
             if (!isLoggedIn) {
                 navigation.navigate('login');
@@ -45,8 +45,8 @@ class MedicineCheckout extends Component {
             const medicineDetails = navigation.getParam('medicineDetails') || [];
 
             this.setState({ medicineDetails })
-            if(medicineDetails.length!=0){
-             await this.getdeliveryWithMedicineAmountCalculation(medicineDetails)
+            if (medicineDetails.length != 0) {
+                await this.getdeliveryWithMedicineAmountCalculation(medicineDetails)
             }
             await this.clickedHomeDelivery()
             await this.getDelveryChageAmount()
@@ -83,6 +83,7 @@ class MedicineCheckout extends Component {
                 }
                 deliveryAddressArray.unshift(defaultAddressObject);
             }
+            console.log(JSON.stringify(deliveryAddressArray))
             await this.setState({ deliveryAddressArray })
 
 
@@ -96,12 +97,12 @@ class MedicineCheckout extends Component {
 
             type = "PHARMACY_MEDICINE_DELIVERY_CHARGES"
             let deliveryCharge = await getCurrentVersion(type);
-            console.log(deliveryCharge)
+
             if (deliveryCharge.success) {
-                deliveryDetails=deliveryCharge.data[0].value 
+                deliveryDetails = deliveryCharge.data[0].value
                 deliveryTax = (parseInt(deliveryDetails.delivery_charges) * parseInt(deliveryDetails.Gst_tax) / 100)
-                deliveryDetails.delivery_tax=deliveryTax
-                this.setState({ deliveryDetails})
+                deliveryDetails.delivery_tax = deliveryTax
+                this.setState({ deliveryDetails })
                 this.selectedItem(this.state.itemSelected)
             }
         } catch (error) {
@@ -110,13 +111,21 @@ class MedicineCheckout extends Component {
     }
 
     onProceedToPayment = () => {
-        const { medicineDetails, selectedAddress, mobile_no, full_name ,medicineTotalAmountwithDeliveryChage,itemSelected} = this.state;
+        const { medicineDetails, selectedAddress, mobile_no, full_name, medicineTotalAmountwithDeliveryChage, itemSelected } = this.state;
         if (medicineDetails.length === 0) {
             Toast.show({
                 text: 'No Medicines Added to Checkout',
                 type: 'warning',
                 duration: 3000
             })
+        }
+        if (selectedAddress == null) {
+            Toast.show({
+                text: 'kindly chosse Address',
+                type: 'warning',
+                duration: 3000
+            })
+            return
         }
         let medicinceNames = '';
         let medicineOrderData = [];
@@ -146,15 +155,15 @@ class MedicineCheckout extends Component {
                 diseaseDescription: medicinceNames,
                 medicineDetails: medicineOrderData,
                 delivery_option: itemSelected,
-                delivery_charges:deliveryDetails.delivery_charges,
+                delivery_charges: deliveryDetails.delivery_charges,
                 delivery_tax: deliveryDetails.delivery_tax,
                 pickup_or_delivery_address: {
                     mobile_number: selectedAddress.mobile_no || mobile_no || BASIC_DEFAULT.mobile_no,
-                    full_name: selectedAddress.full_name ||selectedAddress.name|| full_name,
+                    full_name: selectedAddress.full_name || selectedAddress.name || full_name,
                     coordinates: selectedAddress.coordinates,
                     type: selectedAddress.type,
                     address: {
-                        no_and_street: selectedAddress.address.no_and_street||' ',
+                        no_and_street: selectedAddress.address.no_and_street || ' ',
                         address_line_1: selectedAddress.address.address_line_1,
                         district: selectedAddress.address.district,
                         city: selectedAddress.address.city,
@@ -165,15 +174,15 @@ class MedicineCheckout extends Component {
                 },
             }
         }
-        if(itemSelected=='STORE_PICKUP'){
-            delete  paymentPageRequestData.bookSlotDetails.delivery_charges
-            delete   paymentPageRequestData.bookSlotDetails.delivery_tax
+        if (itemSelected == 'STORE_PICKUP') {
+            delete paymentPageRequestData.bookSlotDetails.delivery_charges
+            delete paymentPageRequestData.bookSlotDetails.delivery_tax
         }
         console.log(paymentPageRequestData)
         this.props.navigation.navigate('paymentPage', paymentPageRequestData)
 
 
-        console.log(paymentPageRequestData);
+
 
     }
 
@@ -181,37 +190,49 @@ class MedicineCheckout extends Component {
 
     getdeliveryWithMedicineAmountCalculation(medicineDetails) {
         if (medicineDetails.length != 0) {
-            let pharmacyData=[]
+            let pharmacyData = []
             let amount = this.state.medicineDetails.map(ele => {
-                if(pharmacyData.length!=2){
-                    if(!pharmacyData.includes(ele.pharmacyInfo.pharmacy_id)){
-                           pharmacyData.push(ele.pharmacyInfo)
-                           this.setState({phamacyInfo:ele.pharmacyInfo})
-                    }else{
-                        this.setState({pickupOPtionEnabled:false,phamacyInfo:null})
+
+                if (ele.pharmacyInfo) {
+
+                    if (pharmacyData.length != 2) {
+
+                        if (!pharmacyData.includes(ele.pharmacyInfo.pharmacy_id)) {
+                            pharmacyData.push(ele.pharmacyInfo.pharmacy_id)
+
+                            if (pharmacyData.length != 2) {
+                                let temp = ele.pharmacyInfo
+                                delete temp.name
+                                temp.full_name = ele.pharmacyInfo.name;
+                                temp.coordinates = ele.pharmacyInfo.location.coordinates
+                                temp.type = ele.pharmacyInfo.location.type
+                                temp.address = ele.pharmacyInfo.location.address
+                                this.setState({ pharmacyInfo: temp })
+                            }
+                        }
+                    } else {
+                        this.setState({ pickupOPtionEnabled: false, pharmacyInfo: null })
                     }
+
                 }
                 return ele.userAddedTotalMedicineAmount
             }).reduce(
                 (total, userAddedTotalMedicineAmount) => total + userAddedTotalMedicineAmount);
-          
-           this.setState({medicineTotalAmount:amount})
+
+            this.setState({ medicineTotalAmount: amount })
         } else {
             return ' '
         }
 
     }
 
-    selectedItem(value){
-        if(value=='HOME_DELIVERY'){
-            medicineTotalAmountwithDeliveryChage=this.state.medicineTotalAmount+this.state.deliveryDetails.delivery_tax+this.state.deliveryDetails.delivery_charges
-            this.setState({medicineTotalAmountwithDeliveryChage,itemSelected:value})
-        }else{
-            let temp=this.state.phamacyInfo
-            delete temp.name
-            temp.full_name=this.state.phamacyInfo.name;
-            temp.address=this.state.phamacyInfo.location
-            this.setState({medicineTotalAmountwithDeliveryChage:this.state.medicineTotalAmount,itemSelected:value,selectedAddress:temp})
+    selectedItem(value) {
+        if (value == 'HOME_DELIVERY') {
+            medicineTotalAmountwithDeliveryChage = this.state.medicineTotalAmount + this.state.deliveryDetails.delivery_tax + this.state.deliveryDetails.delivery_charges
+            this.setState({ medicineTotalAmountwithDeliveryChage, itemSelected: value })
+        } else {
+
+            this.setState({ medicineTotalAmountwithDeliveryChage: this.state.medicineTotalAmount, itemSelected: value, selectedAddress: this.state.pharmacyInfo })
         }
     }
     editProfile(screen, addressType) {
@@ -228,7 +249,7 @@ class MedicineCheckout extends Component {
     }
 
     render() {
-        const { itemSelected, deliveryAddressArray, isLoading, deliveryDetails, pickupOPtionEnabled,medicineTotalAmount,medicineTotalAmountwithDeliveryChage,phamacyInfo } = this.state
+        const { itemSelected, deliveryAddressArray, isLoading, deliveryDetails, pickupOPtionEnabled, medicineTotalAmount, medicineTotalAmountwithDeliveryChage, pharmacyInfo } = this.state
 
 
         return (
@@ -239,7 +260,7 @@ class MedicineCheckout extends Component {
                     />
                     <Spinner color="blue"
                         visible={isLoading} />
-                    <RadioButton.Group onValueChange={value => this.selectedItem( value)}
+                    <RadioButton.Group onValueChange={value => this.selectedItem(value)}
                         value={itemSelected}  >
                         <View style={{ backgroundColor: '#fff', padding: 10 }}>
                             <Row>
@@ -253,7 +274,7 @@ class MedicineCheckout extends Component {
                                 </Col>
                             </Row>
                         </View>
-                        {pickupOPtionEnabled == true&&phamacyInfo!=null ?
+                        {pickupOPtionEnabled == true && pharmacyInfo != null ?
                             <View style={{ backgroundColor: '#fff', padding: 10, marginTop: 5 }}>
                                 <Row>
                                     <Col size={5}>
@@ -322,9 +343,9 @@ class MedicineCheckout extends Component {
                                 <Col size={5} style={{ alignItems: 'flex-end', justifyContent: 'flex-end' }}>
                                 </Col>
                             </Row>
-                            <Text style={{ fontFamily: 'OpenSans', fontSize: 12, fontWeight: '300', marginTop: 5 }}>{phamacyInfo.name}</Text>
-                            <Text style={{ fontFamily: 'OpenSans', fontSize: 12, marginTop: 2, color: '#6a6a6a' }}>{getAddress(phamacyInfo.location)}</Text>
-                            <Text style={{ fontFamily: 'OpenSans', fontSize: 12, marginTop: 2 }}>{'Mobile -'+(phamacyInfo.mobile_no||'Nil')}</Text>
+                            <Text style={{ fontFamily: 'OpenSans', fontSize: 12, fontWeight: '300', marginTop: 5 }}>{pharmacyInfo.name}</Text>
+                            <Text style={{ fontFamily: 'OpenSans', fontSize: 12, marginTop: 2, color: '#6a6a6a' }}>{getAddress(pharmacyInfo.location)}</Text>
+                            <Text style={{ fontFamily: 'OpenSans', fontSize: 12, marginTop: 2 }}>{'Mobile -' + (pharmacyInfo.mobile_no || 'Nil')}</Text>
                         </View> :
                         null}
 
@@ -354,37 +375,37 @@ class MedicineCheckout extends Component {
                                 <Col size={5} style={{ alignItems: 'flex-end', justifyContent: 'flex-end' }}>
                                 </Col>
                             </Row>}
-                        {deliveryDetails != null&&itemSelected=='HOME_DELIVERY'?
-                           <View>
-                            <Row style={{ marginTop: 5 }}>
-                                <Col size={8}>
-                                    <Text style={{ fontFamily: 'OpenSans', fontSize: 12, color: '#6a6a6a' }}>Delivery Charges</Text>
-                                </Col>
+                        {deliveryDetails != null && itemSelected == 'HOME_DELIVERY' ?
+                            <View>
+                                <Row style={{ marginTop: 5 }}>
+                                    <Col size={8}>
+                                        <Text style={{ fontFamily: 'OpenSans', fontSize: 12, color: '#6a6a6a' }}>Delivery Charges</Text>
+                                    </Col>
 
-                                <Col size={5} style={{ alignItems: 'flex-end', justifyContent: 'flex-end' }}>
+                                    <Col size={5} style={{ alignItems: 'flex-end', justifyContent: 'flex-end' }}>
 
-                                    <Text style={{ fontFamily: 'OpenSans', fontSize: 10, color: '#ff4e42', textAlign: 'right' }}>{'₹' + deliveryDetails.delivery_charges || ''} </Text>
+                                        <Text style={{ fontFamily: 'OpenSans', fontSize: 10, color: '#ff4e42', textAlign: 'right' }}>{'₹' + deliveryDetails.delivery_charges || ''} </Text>
 
-                                </Col>
-                            </Row> 
-                        <Row style={{ marginTop: 5 }}>
-                            <Col size={8}>
-                                <Text style={{ fontFamily: 'OpenSans', fontSize: 12, color: '#6a6a6a' }}>Tax</Text>
-                            </Col>
-                            <Col size={5} style={{ alignItems: 'flex-end', justifyContent: 'flex-end' }}>
+                                    </Col>
+                                </Row>
+                                <Row style={{ marginTop: 5 }}>
+                                    <Col size={8}>
+                                        <Text style={{ fontFamily: 'OpenSans', fontSize: 12, color: '#6a6a6a' }}>Tax</Text>
+                                    </Col>
+                                    <Col size={5} style={{ alignItems: 'flex-end', justifyContent: 'flex-end' }}>
 
-                                <Text style={{ fontFamily: 'OpenSans', fontSize: 10, color: '#ff4e42', textAlign: 'right' }}>{'₹' + deliveryDetails.delivery_tax||0}</Text>
+                                        <Text style={{ fontFamily: 'OpenSans', fontSize: 10, color: '#ff4e42', textAlign: 'right' }}>{'₹' + deliveryDetails.delivery_tax || 0}</Text>
 
-                            </Col>
-                        </Row>
-                        </View>: null}
+                                    </Col>
+                                </Row>
+                            </View> : null}
                         <Row style={{ marginTop: 10 }}>
                             <Col size={8}>
                                 <Text style={{ fontFamily: 'OpenSans', fontSize: 12, fontWeight: '500' }}>Amount to be Paid</Text>
                             </Col>
                             <Col size={5} style={{ alignItems: 'flex-end', justifyContent: 'flex-end' }}>
 
-                                <Text style={{ fontFamily: 'OpenSans', fontSize: 10, color: '#8dc63f', textAlign: 'right' }}>{'₹' +medicineTotalAmountwithDeliveryChage} </Text>
+                                <Text style={{ fontFamily: 'OpenSans', fontSize: 10, color: '#8dc63f', textAlign: 'right' }}>{'₹' + medicineTotalAmountwithDeliveryChage} </Text>
 
                             </Col>
                         </Row>
