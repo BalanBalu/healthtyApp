@@ -200,7 +200,7 @@ export default class BookAppointmentPaymentUpdate {
                 delivery_option: orderData.delivery_option,
                 pickup_or_delivery_address: orderData.pickup_or_delivery_address
             }
-              if(delivery_option=='PICKUPSTORE'){
+              if(orderData.delivery_option=='STORE_PICKUP'){
             delete  requestData.delivery_tax
             delete  requestData.delivery_charges
         }
