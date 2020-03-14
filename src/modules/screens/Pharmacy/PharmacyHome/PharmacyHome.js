@@ -106,9 +106,9 @@ class PharmacyHome extends Component {
                 ...data.medPharDetailInfo
             }
             temp.pharmacy_name = data.pharmacyInfo.name;
-            temp.pharmacy_id = data.pharmacyInfo.pharmacy_id
-            temp.medicine_id = data.medInfo.medicine_id
-
+            temp.pharmacy_id = data.pharmacyInfo.pharmacy_id;
+            temp.medicine_id = data.medInfo.medicine_id;
+            temp.pharmacyInfo = data.pharmacyInfo;
             temp.offeredAmount = medicineRateAfterOffer(data.medPharDetailInfo)
             temp.selectedType = selected;
 
