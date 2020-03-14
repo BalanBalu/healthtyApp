@@ -9,6 +9,7 @@ import { StyleSheet, Image, AsyncStorage, TextInput, FlatList, TouchableOpacity 
 import { Loader } from '../../../../components/ContentLoader';
 import { formatDate } from '../../../../setup/helpers';
 import { getMedicineOrderDetails } from '../../../providers/pharmacy/pharmacy.action';
+import { getPaymentInfomation } from '../../../providers/bookappointment/bookappointment.action'
 
 class OrderDetails extends Component {
     constructor(props) {
@@ -16,6 +17,7 @@ class OrderDetails extends Component {
         this.state = {
             orderId: '',
             myOrderList: [],
+            paymentDetails: {},
             isLoading: true,
         }
     }
@@ -27,17 +29,19 @@ class OrderDetails extends Component {
 
     componentDidMount() {
         this.medicineOrderDetails();
+
     }
 
     async medicineOrderDetails() {
         try {
             this.setState({ isLoading: true });
             let userId = await AsyncStorage.getItem('userId');
-            let result = await getMedicineOrderDetails("5e68adbb30a7db0ee1f5f2c2" , userId);
+            let result = await getMedicineOrderDetails("5e6b8b1d86320347fcceb7fe" , userId);
             // console.log("result+++++++++++++++++"+JSON.stringify(result))
             if (result.success) {
                 this.setState({ myOrderList: result.data[0] });
-                // console.log("baluuuorderList+++++++++++++++++"+JSON.stringify(this.state.myOrderList))
+                this.getPaymentInfo(result.data[0].payment_id)
+               console.log("baluuuorderList+++++++++++++++++"+JSON.stringify(this.state.myOrderList))
   
             }
         }
@@ -65,9 +69,40 @@ class OrderDetails extends Component {
           return null
         }
       }
+
+      getName(name){
+        if (name.pickup_or_delivery_address) {
+            let temp = name.pickup_or_delivery_address;
+              return `${ temp.full_name || '' }`
+            } else {
+              return null
+            }
+      }
+      getMobile(number){
+        if (number.pickup_or_delivery_address) {
+            let temp = number.pickup_or_delivery_address;
+              return `${ temp.mobile_number || '' }`
+            } else {
+              return null
+            }
+      }
+      getPaymentInfo = async (paymentId) => {
+        try {
+          let result = await getPaymentInfomation(paymentId);
+         
+          if (result.success) {
+            this.setState({ paymentDetails: result.data[0] })
+            console.log("this.state.paymentDetails+++++++++++=="+ JSON.stringify(this.state.paymentDetails))
+          }
+        }
+        catch (e) {
+          console.log(e)
+        }
+      }
+
     render() {
         const { navigation } = this.props;
-        const { isLoading, myOrderList } = this.state;
+        const { isLoading, myOrderList,paymentDetails } = this.state;
         const MedDetail = [{ medname: 'Horlicks Health and Nutrician Drink Classic Malt (x 1)', pharname: 'By Apollo Pharmacy', amount: '₹ 180.00' },
         { medname: 'Horlicks Health and Nutrician Drink Classic Malt (x 1)', pharname: 'By Apollo Pharmacy', amount: '₹ 180.00' },
         { medname: 'Horlicks Health and Nutrician Drink Classic Malt (x 1)', pharname: 'By Apollo Pharmacy', amount: '₹ 180.00' }]
@@ -128,7 +163,7 @@ class OrderDetails extends Component {
                                 </Row>
                             } />
 
-                        <Text style={{ fontSize: 14, fontWeight: '500', fontFamily: 'OpenSans', color: '#7F49C3', marginTop: 10 }}> Ordered Medicines</Text>
+                        <Text style={{ fontSize: 14, fontWeight: '500', fontFamily: 'OpenSans', color: '#7F49C3', marginTop: 10 }}>Ordered Medicines</Text>
                         <FlatList
                             data={myOrderList.order_items}
                             extraData={myOrderList.order_items}
@@ -144,7 +179,7 @@ class OrderDetails extends Component {
                                     </Col>
                                     <Col size={8} style={styles.nameText}>
                                         <Text style={styles.nameText}>{item.medicine_name}</Text>
-                                        <Text style={styles.pharText}>{item.pharname}</Text>
+                                        <Text style={styles.pharText}>{item.pharmcyInfo.name}</Text>
                                         <Text style={styles.amountText}>₹{item.final_price}</Text>
                                     </Col>
                                 </Row>
@@ -191,7 +226,7 @@ class OrderDetails extends Component {
                         <Text style={styles.orderText}>OrderDetails</Text>
                         <View style={{ marginTop: 10 }}>
                             <Text style={styles.innerText}>Payment</Text>
-                            <Text style={styles.rightText}>Cash on Delivery</Text>
+                            <Text style={styles.rightText}>{paymentDetails.payment_method || 0 }</Text>
                         </View>
                         <View style={{ marginTop: 10 }}>
                             <Text style={styles.innerText}>Ordered On</Text>
@@ -199,9 +234,9 @@ class OrderDetails extends Component {
                         </View>
                         <View style={{ marginTop: 10, paddingBottom: 10 }}>
                             <Text style={styles.innerText}>Customer Details</Text>
-                            <Text style={styles.nameTextss}>S.Mukesh Kannan</Text>          
+                        <Text style={styles.nameTextss}>{this.getName(myOrderList)}</Text>          
                           <Text style={styles.addressText}>{this.getAddress(myOrderList)}</Text>
-                            <Text style={styles.addressText}>Mobile - 8989567891</Text>
+                        <Text style={styles.addressText}>Mobile - {this.getMobile(myOrderList)}</Text>
 
                         </View>
 
