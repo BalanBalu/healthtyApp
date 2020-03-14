@@ -64,7 +64,6 @@ class MedicineInfo extends Component {
             this.setState({ isLoading: true });
             medicineId = this.props.navigation.getParam('medicineId');
             let pharmacyId = this.props.navigation.getParam('pharmacyId');
-        
             let result = await getSelectedMedicineDetails(medicineId, pharmacyId);
             if (result.success) {
                 this.setState({ medicineData: result.data })
@@ -83,10 +82,12 @@ class MedicineInfo extends Component {
         try {
             this.setState({ isLoading: true });
             let result = await getMedicineReviews(medicineId);
+
             if (result.success) {
                 this.setState({ reviewData: result.data })
+            } else {
+                this.setState({ isLoading: false, reviewData: '' });
             }
-            this.setState({ isLoading: false });
         }
         catch (e) {
             console.log(e)
@@ -99,10 +100,13 @@ class MedicineInfo extends Component {
         try {
             this.setState({ isLoading: true });
             let result = await getMedicineReviewsCount(medicineId);
+
             if (result.success) {
                 this.setState({ reviewCount: result.data[0] })
             }
-            this.setState({ isLoading: false });
+            else {
+                this.setState({ isLoading: false, reviewCount: '' });
+            }
         }
         catch (e) {
             console.log(e)
@@ -144,7 +148,6 @@ class MedicineInfo extends Component {
             }
             else if (val.isNavigateCart) {
                 this.setState({ isAddToCart: false })
-
                 this.props.navigation.navigate("PharmacyCart")
             }
             else {
@@ -156,15 +159,13 @@ class MedicineInfo extends Component {
     }
     async insertReview() {
         let insertReviewData = this.state.medicineData.medInfo;
-        console.log("insertReviewData", insertReviewData)
         insertReviewData.modalVisible = true;
         await this.setState({ insertReviewData: insertReviewData, isReviewInsert: true })
 
     }
     getMedicineReviewVisible = async (val) => {
         try {
-            console.log("val", val)
-            await this.setState({ isLoading: true, modalVisible: false, isReviewInsert :false  })
+            await this.setState({ isLoading: true, modalVisible: false, isReviewInsert: false })
         } catch (e) {
             console.log(e)
         }
@@ -189,12 +190,13 @@ class MedicineInfo extends Component {
         const { medicineData, reviewData, reviewCount } = this.state
         return (
             <Container >
-                
+
                 <Content style={{ padding: 10 }}>
                     {this.state.isLoading ? <Spinner color='blue'
                         visible={this.state.isLoading}
                     /> : null}
                     <View style={{ paddingBottom: 20 }}>
+
                         <View>
                             <Row>
                                 <Col size={9}>
