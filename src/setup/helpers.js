@@ -205,43 +205,51 @@ export const statusValue={
   {
     text:'waiting for confirmation',
     color:'red',
-    icon: 'checkmark-circle'
+    icon: 'checkmark-circle',
+    type:'REPORT_ISSUE_APPOINTMENT_PENDING',
   },
   "APPROVED":
  {
     text:'Appointment confirmed',
     color:'green',
-    icon: 'checkmark-circle'
+    icon: 'checkmark-circle',
+    type:'REPORT_ISSUE_APPOINTMENT_APPROVED',
   },
   "COMPLETED":
   {
     text:'Appointment completed',
     color:'green',
-    icon: 'checkmark-circle'
+    icon: 'checkmark-circle',
+    type:'REPORT_ISSUE_APPOINTMENT_COMPLETED'
   },
   "PENDING_REVIEW":
   {
     text:'Appointment completed',
     color:'green',
-    icon: 'checkmark-circle'
+    icon: 'checkmark-circle',
+    type:'REPORT_ISSUE_APPOINTMENT_PENDING_REVIEW'
   },
    "PROPOSED_NEW_TIME":
      {
     text:'PROPOSED NEW TIME',
     color:'#3d70ff',
-    icon: 'md-timer'
+    icon: 'md-timer',
+    type:'REPORT_ISSUE_APPOINTMENT_PROPOSED_NEW_TIME'
   },
   "CLOSED":
   {
     text:'No Response',
     color:'red',
-    icon: 'ios-close-circleo'
+    icon: 'ios-close-circle',
+    type:'REPORT_ISSUE_APPOINTMENT_CANCELED'
+    
   },
    "CANCELED":
   {
     text:'Appointment cancelled',
     color:'red',
-    icon: 'ios-close-circle'
+    icon: 'ios-close-circle',
+    type:'REPORT_ISSUE_APPOINTMENT_CANCELED'
   }
 }
 

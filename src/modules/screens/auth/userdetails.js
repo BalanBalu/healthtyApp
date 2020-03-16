@@ -177,7 +177,7 @@ class UserDetails extends Component {
 
                                                 </Item>
                                             </View>
-                                            <Row style={{ marginTop: 5, marginLeft: 5 }}>
+                                            <Row style={{ marginTop: 5, marginLeft: -5,alignItems:'center'}}>
 
                                                 <Checkbox status={this.state.isBloodDonor ? 'checked' : 'unchecked'} color="#775DA3" onPress={() => this.setState({ isBloodDonor: !this.state.isBloodDonor })} testID='privateCheckbox'></Checkbox>
                                                 <Text style={{ marginLeft: 2, color: '#775DA3', fontFamily: 'OpenSans', fontSize: 14, fontWeight: 'bold' }}>Are you blood donor</Text>
