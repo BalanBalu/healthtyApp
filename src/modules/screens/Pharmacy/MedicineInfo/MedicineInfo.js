@@ -4,7 +4,7 @@ import { Grid } from 'react-native-easy-grid';
 import { connect } from 'react-redux'
 import { StyleSheet, Image, AsyncStorage, FlatList, TouchableOpacity } from 'react-native';
 import { getSelectedMedicineDetails, getMedicineReviews, getMedicineReviewsCount } from '../../../providers/pharmacy/pharmacy.action'
-import { medicineRateAfterOffer } from '../../../common';
+import { medicineRateAfterOffer } from '../CommomPharmacy';
 import Spinner from '../../../../components/Spinner';
 import { NavigationEvents } from 'react-navigation';
 import { dateDiff, getMoment, formatDate } from '../../../../setup/helpers'
