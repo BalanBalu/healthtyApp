@@ -307,6 +307,13 @@ export function getHospitalName(location) {
     else
         return ''
 }
+export function getAddress(location) {
+    if (!location) return ''
+    if (location)
+        return `${location.address.no_and_street},${location.address.address_line_1} ${location.address.city}, ${location.address.state}, ${location.address.pin_code}`;
+    else
+        return ''
+}
 export function validateName(text) {
     let regex = /^(?!\s*$)[-a-zA-Z_:' ']{1,100}$/;
     if (regex.test(text) === false) return false;
@@ -324,3 +331,36 @@ export function onlySpaceNotAllowed(text) {
 }
 
 
+
+
+export const reportStatusValue = {
+
+    "OPEN":
+    {
+        color: '#f1994d',
+    },
+    "INPROGRASS": {
+
+        color: ' #5593fb',
+    },
+    "RESOLVED": {
+        color: '#6ec41b',
+    },
+    "CLOSED": {
+        color: 'red',
+    },
+    "undefined": {
+        color: 'red',
+    }
+}
+
+
+    export async function validateFirstNameLastName(text){
+    const regex = new RegExp('^[\ba-zA-Z ]+$')  //Support letter with space
+   
+    if (regex.test(text) === false) {
+       return false
+    } else{
+        return true
+    }
+}
