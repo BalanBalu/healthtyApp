@@ -188,7 +188,7 @@ const HomeStack = createStackNavigator({
       title: 'Filter',
     })
   },
-  "Blood Doners": {
+  "Blood Donors": {
     screen: BloodDonersList,
     navigationOptions: ({ navigation }) => ({
       title: 'Blood Donors',
@@ -578,7 +578,7 @@ const DrawerNavigator = createDrawerNavigator({
   Home: {
     screen: HomeStack,
   },
-  "Blood Doners": {
+  "Blood Donors": {
     screen: BloodDonersList,
   },
   "My Appointments": {
@@ -617,7 +617,7 @@ export const DragwerLogos = {
   Reminder: require('../../../assets/images/drawerIcons/Reminder.png'),
   "My Chats": require('../../../assets/images/drawerIcons/Chat.png'),
   "Chat Service": require('../../../assets/images/drawerIcons/Chat.png'),
-  "Blood Doners": require('../../../assets/images/drawerIcons/Blooddonars.png'),
+  "Blood Donors": require('../../../assets/images/drawerIcons/Blooddonars.png'),
 }
 export default createAppContainer(createSwitchNavigator(
   {

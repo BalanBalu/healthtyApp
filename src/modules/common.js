@@ -94,46 +94,6 @@ export function renderDoctorImage(data) {
     return (source)
 }
 
-export async function addToCart(medicineData, selectItem, operation) {
-    let userId = JSON.stringify(await AsyncStorage.getItem('userId'))
-    let itemQuantity;
-    if (operation === "add") {
-        itemQuantity = (selectItem.selectedQuantity == undefined ? 0 : selectItem.selectedQuantity);
-        selectItem.selectedQuantity = ++itemQuantity;
-    } else {
-        if (selectItem.selectedQuantity > 0) {
-            itemQuantity = selectItem.selectedQuantity;
-            selectItem.selectedQuantity = --itemQuantity;
-        }
-    }
-    let cart = [];
-    medicineData.filter(element => {
-        if (element.selectedQuantity >= 1) {
-            cart.push(element);
-        }
-    })
-    await AsyncStorage.setItem('cartItems-' + userId, JSON.stringify(cart))
-    return { selectemItemData: selectItem }
-}
-
-export function medicineRateAfterOffer(item) {
-    let amount = ''
-    if (item.discount_value == undefined) {
-        amount = parseInt(item.price)
-    }
-    if (item.discount_type) {
-        if (item.discount_type == 'PERCENTAGE') {
-            let divided = (parseInt(item.discount_value) / 100) * parseInt(item.price)
-            amount = parseInt(item.price) - divided
-            return amount
-        } else if (item.discount_type == 'AMOUNT') {
-            amount = parseInt(item.price) - parseInt(item.discount_value);
-            return amount
-        }
-    } else {
-        return amount
-    }
-}
 
 export function getDoctorSpecialist(specialistData) {
     if (specialistData) {
@@ -364,23 +324,3 @@ export function onlySpaceNotAllowed(text) {
 }
 
 
-export async function ProductIncrementDecreMent(quantity, price, operation) {
-
-    let itemQuantity, totalAmount = price;
-    if (operation === "add") {
-        itemQuantity = (quantity == undefined ? 0 : quantity);
-        quantity = ++itemQuantity;
-        totalAmount = quantity * price
-
-    } else {
-        if (quantity > 1) {
-            itemQuantity = quantity;
-            quantity = --itemQuantity;
-            totalAmount = quantity * price
-        }
-    }
-    return {
-        quantity: quantity,
-        totalAmount: totalAmount
-    }
-}
