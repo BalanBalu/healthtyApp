@@ -77,6 +77,10 @@ class Home extends Component {
     }
     async componentDidMount() {
         try {
+            const coronoTestStatus = await AsyncStorage.getItem('coronoTested'); 
+            if(coronoTestStatus === '1') {} else {
+                this.props.navigation.navigate('CORONO Status');
+            }
             this.initialFunction();
             if (IS_ANDROID) {
                 let productConfigVersion = await getCurrentVersion("CURRENT_PATIENT_MEDFLIC_VERSION")
@@ -344,7 +348,7 @@ class Home extends Component {
             navigation.setParams({
                 appBar: {
                     locationName: patientSearchLocationName,
-                    locationCapta: isSearchByCurrentLocation ? 'You are searching Near by Hostpitals' : 'You are searching Hospitals on ' + patientSearchLocationName
+                    locationCapta: isSearchByCurrentLocation ? 'You are searching Near by Hospitals' : 'You are searching Hospitals on ' + patientSearchLocationName
                 }
             });
             this.locationUpdatedCount = locationUpdatedCount;
@@ -435,7 +439,7 @@ class Home extends Component {
 
                     <Grid style={{ flex: 1, marginLeft: 10, marginRight: 10, marginTop: 10 }}>
                         <Col style={{ width: '33.33%', }}>
-                            <TouchableOpacity onPress={() => this.props.navigation.navigate("Blood Doners")}>
+                            <TouchableOpacity onPress={() => this.props.navigation.navigate("Blood Donors")}>
                                 <Card style={{ borderRadius: 10, overflow: 'hidden' }}>
                                     <Row style={{ height: 100, width: '100%', overflow: 'hidden', backgroundColor: "#fff", justifyContent: 'center', alignItems: 'center' }}>
                                         <Image

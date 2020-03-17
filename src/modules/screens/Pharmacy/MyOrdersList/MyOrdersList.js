@@ -94,6 +94,7 @@ class MyOrdersList extends Component {
                 <Content>
                     <FlatList data={data}
                         renderItem={({ item, key }) =>
+                        <TouchableOpacity testID="orderDetailsNavigation" onPress={() => this.props.navigation.navigate('OrderDetails', { orderDetails: item })}>
                             <View style={{ margin: 5, backgroundColor: '#fff', marginLeft: 10, marginRight: 10, marginBottom: 10 }}>
                                 <FlatList data={item.order_items}
                                     extraData={item}
@@ -156,6 +157,7 @@ class MyOrdersList extends Component {
                                         null}
                                 </Row>
                             </View>
+                            </TouchableOpacity>
                         } />
 
 

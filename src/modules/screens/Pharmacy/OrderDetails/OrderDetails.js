@@ -8,6 +8,8 @@ import { Col, Row, Grid } from 'react-native-easy-grid';
 import { StyleSheet, Image, AsyncStorage, TextInput, FlatList, TouchableOpacity } from 'react-native';
 import { Loader } from '../../../../components/ContentLoader';
 import { formatDate } from '../../../../setup/helpers';
+import { getMedicineOrderDetails } from '../../../providers/pharmacy/pharmacy.action';
+import { getPaymentInfomation } from '../../../providers/bookappointment/bookappointment.action'
 
 class OrderDetails extends Component {
     constructor(props) {
@@ -15,14 +17,21 @@ class OrderDetails extends Component {
         this.state = {
             orderId: '',
             myOrderList: [],
+            paymentDetails: {},
             isLoading: true,
         }
     }
     async componentDidMount() {
         const { navigation } = this.props;
-        await this.setState({ myOrderList: navigation.getParam('orderDetails'), isLoading: false })
-    }
+        let orderDetails = navigation.getParam('orderDetails');
+        // console.log("orderDetails", orderDetails)
+        await this.setState({ myOrderList: orderDetails[0], isLoading: false })
+        // console.log("orderDetails+++++++++++++++++" + JSON.stringify(this.state.myOrderList))
 
+        // this.medicineOrderDetails();
+        this.getPaymentInfo(orderDetails[0].payment_id)
+
+    }
 
     noOrders() {
         return (
@@ -32,147 +41,207 @@ class OrderDetails extends Component {
         )
     }
 
+    getAddress(address) {
+        if (address.pickup_or_delivery_address) {
+            let temp = address.pickup_or_delivery_address.address;
+            return `${temp.no_and_street || ''},${temp.address_line_1 || ''},${temp.district || ''},${temp.city || ''},${temp.state || ''},${temp.country || ''},${temp.pin_code || ''}`
+        } else {
+            return null
+        }
+    }
+
+    getName(name) {
+        if (name.pickup_or_delivery_address) {
+            let temp = name.pickup_or_delivery_address;
+            return `${temp.full_name || ''}`
+        } else {
+            return null
+        }
+    }
+    getMobile(number) {
+        if (number.pickup_or_delivery_address) {
+            let temp = number.pickup_or_delivery_address;
+            return `${temp.mobile_number || ''}`
+        } else {
+            return null
+        }
+    }
+
+    getGrandTotal(Total) {
+        if (Total != undefined) {
+            let itemTotal = Total.order_total_amount;
+            let deliveryCharge = Total.delivery_charges;
+            let deliveryTax = Total.delivery_tax
+            let TotalAmount = (parseInt(itemTotal) + parseInt(deliveryCharge || 0) + parseInt(deliveryTax || 0))
+            alert(TotalAmount)
+            return `${TotalAmount || ''}`
+        }
+        else {
+            return null
+        }
+    }
+
+
+    getPaymentInfo = async (paymentId) => {
+        try {
+            let result = await getPaymentInfomation(paymentId);
+            if (result.success) {
+                this.setState({ paymentDetails: result.data[0] })
+                console.log("this.state.paymentDetails+++++++++++==" + JSON.stringify(this.state.paymentDetails))
+            }
+        }
+        catch (e) {
+            console.log(e)
+        }
+    }
+
     render() {
         const { navigation } = this.props;
-        const { isLoading, myOrderList } = this.state;
-        const MedDetail = [{ medname: 'Horlicks Health and Nutrician Drink Classic Malt (x 1)', pharname: 'By Apollo Pharmacy', amount: '₹ 180.00' },
-        { medname: 'Horlicks Health and Nutrician Drink Classic Malt (x 1)', pharname: 'By Apollo Pharmacy', amount: '₹ 180.00' },
-        { medname: 'Horlicks Health and Nutrician Drink Classic Malt (x 1)', pharname: 'By Apollo Pharmacy', amount: '₹ 180.00' }]
+        const { isLoading, myOrderList, paymentDetails } = this.state;
         return (
             <Container style={styles.container}>
                 <Content style={{ backgroundColor: '#F5F5F5', padding: 10 }}>
-                    <View style={{ paddingLeft: 10, paddingRight: 10, paddingBottom: 10 }}>
-                        <Row>
-                            <Col size={5}>
-                                <Text style={styles.orderIdText}>Order Id</Text>
-                            </Col>
-                            <Col size={5}>
-                                <Text style={{ fontSize: 12, textAlign: 'right', marginTop: 13, fontFamily: 'OpenSans' }}>2020729443</Text>
-                            </Col>
-                        </Row>
-                    </View>
-                    <View style={{ backgroundColor: '#fff', padding: 10, }}>
-                        <Text style={styles.arrHeadText}>Arriving On Today</Text>
-                        {/* Delivery date display  */}
-                        {/* <Text style={styles.delHeadText}>Delivery On 29th February,2020</Text> */}
+                    {isLoading == true ?
+                        <Spinner color='blue'
+                            visible={isLoading}
+                            overlayColor="none"
+                        /> :
+                        myOrderList === undefined ? this.noOrders() :
+                            <View>
+                                <View style={{ paddingLeft: 10, paddingRight: 10, paddingBottom: 10 }}>
+                                    <Row>
+                                        <Col size={5}>
+                                            <Text style={styles.orderIdText}>Order Id</Text>
+                                        </Col>
+                                        <Col size={5}>
+                                            <Text style={{ fontSize: 12, textAlign: 'right', marginTop: 13, fontFamily: 'OpenSans' }}>{myOrderList._id || ''}</Text>
+                                        </Col>
+                                    </Row>
+                                </View>
+                                <View style={{ backgroundColor: '#fff', padding: 10, }}>
+                                    <Text style={styles.arrHeadText}>Arriving On Today</Text>
+                                    {/* Delivery date display  */}
+                                    {/* <Text style={styles.delHeadText}>Delivery On 29th February,2020</Text> */}
 
-                        <FlatList
-                            style={{ marginTop: 10 }}
-                            data={[{ status: 'Ordered and Approved', checked: true, drawLine: true },
-                            { status: 'Packed and Out for Delivery', checked: true, drawLine: true },
-                            { status: 'Delivered', checked: false },]}
-                            renderItem={({ item }) =>
-                                <Row style={{}}>
-                                    <Col size={0.7}>
-                                        {item.checked === true ?
-                                            <TouchableOpacity style={styles.lengthTouch}>
-                                            </TouchableOpacity> : null}
+                                    <FlatList
+                                        style={{ marginTop: 10 }}
+                                        data={[{ status: 'Ordered and Approved', checked: true, drawLine: true },
+                                        { status: 'Packed and Out for Delivery', checked: true, drawLine: true },
+                                        { status: 'Delivered', checked: false },]}
+                                        renderItem={({ item }) =>
+                                            <Row style={{}}>
+                                                <Col size={0.7}>
+                                                    {item.checked === true ?
+                                                        <TouchableOpacity style={styles.lengthTouch}>
+                                                        </TouchableOpacity> : null}
 
-                                        {item.checked === false ?
-                                            <TouchableOpacity style={styles.bottomText}>
-                                            </TouchableOpacity> :
-                                            null}
+                                                    {item.checked === false ?
+                                                        <TouchableOpacity style={styles.bottomText}>
+                                                        </TouchableOpacity> :
+                                                        null}
 
-                                        {item.checked === true && item.drawLine === true ?
-                                            <TouchableOpacity style={styles.TouchLegth}>
-                                            </TouchableOpacity>
-                                            :
-                                            <TouchableOpacity style={{
-                                                height: 60,
-                                                padding: 1,
-                                                width: 4,
-                                                marginLeft: 4
-                                            }}>
-                                            </TouchableOpacity>}
-                                    </Col>
-                                    <Col size={9.3}>
-                                        <View style={{ marginTop: -3 }}>
-                                            <Text style={styles.trackingText}>{item.status}</Text>
-                                            <Text style={{ fontSize: 12, fontFamily: 'OpenSans', color: '#909090' }}>17th February,2020 at 05.27 PM</Text>
-                                        </View>
+                                                    {item.checked === true && item.drawLine === true ?
+                                                        <TouchableOpacity style={styles.TouchLegth}>
+                                                        </TouchableOpacity>
+                                                        :
+                                                        <TouchableOpacity style={{
+                                                            height: 60,
+                                                            padding: 1,
+                                                            width: 4,
+                                                            marginLeft: 4
+                                                        }}>
+                                                        </TouchableOpacity>}
+                                                </Col>
+                                                <Col size={9.3}>
+                                                    <View style={{ marginTop: -3 }}>
+                                                        <Text style={styles.trackingText}>{item.status}</Text>
+                                                        <Text style={{ fontSize: 12, fontFamily: 'OpenSans', color: '#909090' }}>17th February,2020 at 05.27 PM</Text>
+                                                    </View>
 
-                                    </Col>
-                                </Row>
-                            } />
+                                                </Col>
+                                            </Row>
+                                        } />
 
-                        <Text style={{ fontSize: 14, fontWeight: '500', fontFamily: 'OpenSans', color: '#7F49C3', marginTop: 10 }}> Ordered Medicines</Text>
-                        <FlatList
-                            data={MedDetail}
-                            renderItem={({ item }) =>
-                                <Row style={styles.rowStyle}>
-                                    <Col size={2}>
-                                        <Image
-                                            source={require('../../../../../assets/images/images.jpeg')}
-                                            style={{
-                                                width: 60, height: 60, alignItems: 'center'
-                                            }}
-                                        />
-                                    </Col>
-                                    <Col size={8} style={styles.nameText}>
-                                        <Text style={styles.nameText}>{item.medname}</Text>
-                                        <Text style={styles.pharText}>{item.pharname}</Text>
-                                        <Text style={styles.amountText}>{item.amount}</Text>
-                                    </Col>
-                                </Row>
-                            } />
-                        <Row style={{ marginTop: 10 }}>
-                            <Col size={5}>
-                                <Text style={styles.ItemText}>Item Total</Text>
+                                    <Text style={{ fontSize: 14, fontWeight: '500', fontFamily: 'OpenSans', color: '#7F49C3', marginTop: 10 }}>Ordered Medicines</Text>
+                                    <FlatList
+                                        data={myOrderList.order_items}
+                                        extraData={myOrderList.order_items}
+                                        renderItem={({ item }) =>
+                                            <Row style={styles.rowStyle}>
+                                                <Col size={2}>
+                                                    <Image
+                                                        source={require('../../../../../assets/images/images.jpeg')}
+                                                        style={{
+                                                            width: 60, height: 60, alignItems: 'center'
+                                                        }}
+                                                    />
+                                                </Col>
+                                                <Col size={8} style={styles.nameText}>
+                                                    <Text style={styles.nameText}>{item.medicine_name}</Text>
+                                                    <Text style={styles.pharText}>{item.pharmcyInfo.name}</Text>
+                                                    <Text style={styles.amountText}>₹{item.final_price}</Text>
+                                                </Col>
+                                            </Row>
+                                        } />
+                                    <Row style={{ marginTop: 10 }}>
+                                        <Col size={5}>
+                                            <Text style={styles.ItemText}>Item Total</Text>
 
-                            </Col>
-                            <Col size={5}>
-                                <Text style={styles.rsText}>₹ 540.00</Text>
-                            </Col>
-                        </Row>
-                        <Row style={{ marginTop: 10 }}>
-                            <Col size={5}>
-                                <Text style={styles.mainText}>Delivery Charges</Text>
+                                        </Col>
+                                        <Col size={5}>
+                                            <Text style={styles.rsText}>₹ {myOrderList.order_total_amount || 0}</Text>
+                                        </Col>
+                                    </Row>
+                                    <Row style={{ marginTop: 10 }}>
+                                        <Col size={5}>
+                                            <Text style={styles.mainText}>Delivery Charges</Text>
 
-                            </Col>
-                            <Col size={5}>
-                                <Text style={styles.rsText}>₹ 50.00</Text>
-                            </Col>
-                        </Row>
-                        <Row style={{ marginTop: 10 }}>
-                            <Col size={5}>
-                                <Text style={styles.mainText}>Tax</Text>
+                                        </Col>
+                                        <Col size={5}>
+                                            <Text style={styles.rsText}>₹ {myOrderList.delivery_charges || 0}</Text>
+                                        </Col>
+                                    </Row>
+                                    <Row style={{ marginTop: 10 }}>
+                                        <Col size={5}>
+                                            <Text style={styles.mainText}>Tax</Text>
 
-                            </Col>
-                            <Col size={5}>
-                                <Text style={styles.rsText}>₹ 50.00</Text>
-                            </Col>
-                        </Row>
-                        <Row style={{ marginTop: 10 }}>
-                            <Col size={5}>
-                                <Text style={styles.grandTotalText}>Grand Total</Text>
+                                        </Col>
+                                        <Col size={5}>
+                                            <Text style={styles.rsText}>₹ {myOrderList.delivery_tax || 0}</Text>
+                                        </Col>
+                                    </Row>
+                                    <Row style={{ marginTop: 10 }}>
+                                        <Col size={5}>
+                                            <Text style={styles.grandTotalText}>Grand Total</Text>
 
-                            </Col>
-                            <Col size={5}>
-                                <Text style={styles.totalsText}>₹ 640.00</Text>
-                            </Col>
-                        </Row>
-                    </View>
+                                        </Col>
+                                        <Col size={5}>
+                                            <Text style={styles.totalsText}>₹ {this.getGrandTotal(myOrderList)}</Text>
+                                        </Col>
+                                    </Row>
+                                </View>
 
-                    <View style={styles.mainView}>
-                        <Text style={styles.orderText}>OrderDetails</Text>
-                        <View style={{ marginTop: 10 }}>
-                            <Text style={styles.innerText}>Payment</Text>
-                            <Text style={styles.rightText}>Cash on Delivery</Text>
-                        </View>
-                        <View style={{ marginTop: 10 }}>
-                            <Text style={styles.innerText}>Ordered On</Text>
-                            <Text style={styles.rightText}>02nd March,2020</Text>
-                        </View>
-                        <View style={{ marginTop: 10, paddingBottom: 10 }}>
-                            <Text style={styles.innerText}>Customer Details</Text>
-                            <Text style={styles.nameTextss}>S.Mukesh Kannan</Text>
-                            <Text style={styles.addressText}>No.28,Kamarajar Nagar,4th cross street, Ambattur, Chennai - 600051.</Text>
-                            <Text style={styles.addressText}>Mobile - 8989567891</Text>
+                                <View style={styles.mainView}>
+                                    <Text style={styles.orderText}>OrderDetails</Text>
+                                    <View style={{ marginTop: 10 }}>
+                                        <Text style={styles.innerText}>Payment</Text>
+                                        <Text style={styles.rightText}>{paymentDetails.payment_method || 0}</Text>
+                                    </View>
+                                    <View style={{ marginTop: 10 }}>
+                                        <Text style={styles.innerText}>Ordered On</Text>
+                                        <Text style={styles.rightText}>{formatDate(myOrderList.created_date, 'Do MMM,YYYY')}</Text>
+                                    </View>
+                                    <View style={{ marginTop: 10, paddingBottom: 10 }}>
+                                        <Text style={styles.innerText}>Customer Details</Text>
+                                        <Text style={styles.nameTextss}>{this.getName(myOrderList)}</Text>
+                                        <Text style={styles.addressText}>{this.getAddress(myOrderList)}</Text>
+                                        <Text style={styles.addressText}>Mobile - {this.getMobile(myOrderList)}</Text>
 
-                        </View>
+                                    </View>
 
-                    </View>
-
+                                </View>
+                            </View>
+                    }
                 </Content>
 
 

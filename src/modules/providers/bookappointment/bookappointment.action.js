@@ -15,7 +15,7 @@ import { store } from '../../../setup/store';
 /*  get All Sponsors data details from Sponsors collection*/
 export const getAllDoctorsActiveSponsorDetails = async (doctorIds) => {
   try {
-    let endPoint = 'sponsor/'+ doctorIds+'?active_sponsor=true';
+    let endPoint = 'sponsor/withoutAuth/'+ doctorIds+'?active_sponsor=true';
     let response = await getService(endPoint);
     let respData = response.data;
     
@@ -161,22 +161,6 @@ export async function viewUserReviews(type, id, limit) {
     }
   }
 }
-export async function getUserRepportDetails(type, reportedId, limit) {
-  try {
-    let endPoint =  'report/'+type+'/'+reportedId+limit;
-    let response = await getService(endPoint);
-
-    let respData = response.data;
-    return respData;
-
-  } catch (e) {
-    return {
-      message: 'exception' + e,
-      success: false
-    }
-  }
-}
-
 
 export async function getDoctorsReviewsCount(doctorIds) {
   try {
