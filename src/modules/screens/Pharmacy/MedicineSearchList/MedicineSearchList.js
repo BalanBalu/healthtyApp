@@ -1,13 +1,13 @@
 import React, { Component } from 'react';
 import {
     Container, Content, Text, View, Button, H3, Item, Card,
-    Input, Left, Right, Icon, Footer, Badge, Form, CardItem
+    Input, Left, Right, Icon, Footer, Badge, Form, CardItem, Toast
 } from 'native-base';
 import { Col, Row, Grid } from 'react-native-easy-grid';
 import { StyleSheet, Image, TouchableOpacity, AsyncStorage, FlatList, TouchableHighlight, Modal } from 'react-native';
 import Spinner from "../../../../components/Spinner";
 import { getMedicinesSearchList, getMedicinesSearchListByPharmacyId } from '../../../providers/pharmacy/pharmacy.action'
-import { medicineRateAfterOffer } from '../../../common'
+import { medicineRateAfterOffer } from '../CommomPharmacy'
 import { AddToCard } from '../AddToCardBuyNow/AddToCard'
 import { connect } from 'react-redux'
 import { MAX_DISTANCE_TO_COVER } from '../../../../setup/config';
@@ -129,6 +129,13 @@ class MedicineSearchList extends Component {
                 this.props.navigation.navigate("MedicineCheckout", {
                     medicineDetails: temp
                 })
+            }else if(val.isNavigateCart){
+                Toast.show({
+                    text: 'Item added to card',
+                    duration: 3000,
+                
+                  })
+                  this.setState({ isBuyNow: false })
             }
             else {
                 this.setState({ isBuyNow: false })

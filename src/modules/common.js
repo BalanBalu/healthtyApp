@@ -310,7 +310,7 @@ export function getHospitalName(location) {
 export function getAddress(location) {
     if (!location) return ''
     if (location)
-        return `${location.address.no_and_street},${location.address.address_line_1} ${location.address.city}, ${location.address.state}, ${location.address.pin_code}`;
+        return `${location.address.no_and_street},${location.address.address_line_1||''} ${location.address.city}, ${location.address.state}, ${location.address.pin_code}`;
     else
         return ''
 }
