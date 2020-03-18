@@ -57,7 +57,6 @@ class PaymentSuccess extends Component {
         const { navigation } = this.props;
         const { successBookSlotDetails, paymentMethod , tokenNo} = this.state;
         return (
-
             <Container style={styles.container}>
                 <ScrollView>
                     <Content style={styles.bodyContent}>
@@ -65,15 +64,12 @@ class PaymentSuccess extends Component {
                             <View style={{ alignItems: 'center', marginTop: 10 }}>
                                 <Icon name="checkmark-circle" style={styles.circleIcon} />
                             </View>
-
-
-
                             <Text style={styles.successHeading}>SUCCESS</Text>
                             <Text style={styles.subText}>Thank You For Choosing Our Service And Trust Our Doctor To Take Care Your Health</Text>
 
                             <Row style={{ borderTopColor: 'gray', borderTopWidth: 0.5, marginTop: 10, marginLeft: 10, padding: 15, marginRight: 10 }}>
                                 <Col style={{ width: '25%', }}>
-                                    <Thumbnail square source={renderDoctorImage(successBookSlotDetails)} style={{ height: 60, width: 60 }} />
+                                    <Thumbnail  source={renderDoctorImage(successBookSlotDetails)} style={{ height: 60, width: 60,borderRadius:60/2 }} />
                                 </Col>
                                 <Col style={{ width: '75%', marginTop: 10 }}>
                                     <Row>

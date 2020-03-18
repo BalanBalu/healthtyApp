@@ -14,6 +14,9 @@ import { formatDate, dateDiff,statusValue } from '../../../setup/helpers';
 import { Loader } from '../../../components/ContentLoader'
 import { InsertReview } from '../Reviews/InsertReview'
 import { renderDoctorImage, RenderHospitalAddress, getAllEducation, getAllSpecialist, getName, getDoctorExperience,getHospitalHeadeName,getHospitalName } from '../../common'
+
+const hasReviewButtonShow=true
+
 class AppointmentDetails extends Component {
   constructor(props) {
     super(props)
@@ -157,7 +160,7 @@ class AppointmentDetails extends Component {
           await new Promise.all([
             this.getDoctorDetails(),
             this.getPaymentInfo(result.data[0].payment_id)])
-      }
+      
 
       if (result.data[0].appointment_status == 'COMPLETED' && result.data[0].is_review_added == undefined) {
         await this.setState({ modalVisible: true })
@@ -166,6 +169,7 @@ class AppointmentDetails extends Component {
       if (result.data[0].appointment_status == 'PROPOSED_NEW_TIME'&&checkProposedNewTime!=='SKIP') {
         await this.setState({ proposedVisible: true })
       }
+    }
     } catch (error) {
       console.error(error);
     }
@@ -302,11 +306,16 @@ class AppointmentDetails extends Component {
                          </Col> 
                          <Col style={{width:'80%',marginTop:10}}>
                             <Row>
+                              <Col size={9}>
                               <Text  style={styles.Textname} >{(doctorData && doctorData.prefix != undefined ? doctorData.prefix +' ' : '') + (getName(data.doctorInfo)) + ' '}</Text>
                               <Text note style={{ fontSize: 13, fontFamily: 'OpenSans',fontWeight:'normal' }}>{education}</Text>
+                              <Text  style={styles.specialistTextStyle} >{specialist} </Text>
+                              </Col>
+                            <Col size={1}>
+                            </Col>
                              </Row>
                              <Row style={{ alignSelf: 'flex-start'  }}>
-                                <Text  style={styles.specialistTextStyle} >{specialist} </Text>
+                               
                              </Row>
                             {/* <Text style={styles. cardItemText2}>{getUserGenderAndAge(data && data.userInfo)}</Text>  */}
                          </Col>
@@ -435,11 +444,11 @@ class AppointmentDetails extends Component {
               <Col style={{width:'92%',paddingTop:5}}>
               { data.appointment_status=='PROPOSED_NEW_TIME' ? 
                             <Text style={styles.innerSubText1}>
-                              {data.status_updated_by.toLowerCase() === 'user' ? 'Proposed a new time by You' : 'Rescheudled a New Time by Patient'}</Text>
+                              {data.status_updated_by.toLowerCase() === 'user' ? 'Proposed a new time by You' : 'Rescheudled a New Time by Doctor'}</Text>
                           : null }
                           { data.appointment_status=='CANCELED' ? 
                             <Text style={styles.innerSubText1}>
-                              {data.status_updated_by.toLowerCase() === 'user' ? 'Canceled by  You' : ' Canceled by  Patient'}</Text>
+                              {data.status_updated_by.toLowerCase() === 'user' ? 'Canceled by  You' : ' Canceled by  Doctor'}</Text>
                           : null }
                 {/* <Text style={styles.innerSubText1}>{data.appointment_status=='PROPOSED_NEW_TIME'?'Reschedule by '+data.status_updated_by.toLowerCase():'Canceled by '+data.status_updated_by.toLowerCase()}</Text> */}
               <Text note style={styles.subTextInner1}>{data.status_update_reason}</Text>
@@ -558,7 +567,7 @@ class AppointmentDetails extends Component {
                     </View>
               </Col>
             </Row>
-            {data.appointment_status == 'COMPLETED' && reviewData.length !== 0 ?
+            {data.appointment_status == 'COMPLETED' || reviewData.length !== 0 ?
             <Row style={styles.rowSubText}>
                <Col style={{width:'8%',paddingTop:5}}>
                  <Icon name="ios-medkit" style={{fontSize:20,}}/>
@@ -574,7 +583,7 @@ class AppointmentDetails extends Component {
                  <Text note style={styles.subTextInner1}>{reviewData[0] && reviewData[0].comments||''}</Text> 
                </Col>
                </Row>:
-               data.appointment_status == 'COMPLETED' && reviewData.length == 0 ? 
+               (data.appointment_status == 'COMPLETED' && reviewData.length == 0)||hasReviewButtonShow==true ? 
                <Row style={styles.rowSubText}>
                <Col style={{width:'8%',paddingTop:5}}>
                  <Icon name="ios-add-circle" style={{fontSize:20,}}/>
@@ -794,6 +803,7 @@ const styles = StyleSheet.create({
       fontSize:12,
       fontFamily:'OpenSans',
       fontWeight:'normal',
+      marginTop:5
      
     },
     subText1:{

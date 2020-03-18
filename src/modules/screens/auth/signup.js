@@ -94,11 +94,11 @@ class Signup extends Component {
                     <Content contentContainerStyle={styles.authBodyContent}>
                         <View >
                             <Text style={[styles.signUpHead, { color: '#fff' }]}>List Your Practice to Reach millions of Peoples</Text>
-                            <Card style={{ borderRadius: 10, padding: 5, marginTop: 20 }}>
+                            <Card style={{ borderRadius: 10, padding: 5, marginTop: 15 }}>
                                 <View style={{ marginLeft: 10, marginRight: 10 }}>
                                     <Text uppercase={true} style={[styles.cardHead, { color: '#775DA3' }]}>Sign up</Text>
                                     <Form>
-                                        <Label style={{ marginTop: 20, fontSize: 15, color: '#775DA3', fontWeight: 'bold' }}>Mobile Number</Label>
+                                        <Label style={{ marginTop: 10, fontSize: 15, color: '#775DA3', fontWeight: 'bold' }}>Mobile Number</Label>
                                         <Item style={{ borderBottomWidth: 0, marginLeft: 'auto', marginRight: 'auto' }}>
                                             <Input placeholder="Mobile Number" style={styles.authTransparentLabel}
                                                 returnKeyType={'next'}
@@ -178,7 +178,6 @@ class Signup extends Component {
                                         </Item>
                                         <Spinner color='blue'
                                             visible={isLoading}
-                                            textContent={'Loading...'}
                                         />
                                         <View style={{ alignItems: 'center', justifyContent: 'center', marginBottom: 10 }}>
                                             <TouchableOpacity small

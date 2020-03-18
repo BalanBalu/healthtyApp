@@ -33,7 +33,7 @@ class Categories extends Component {
           imageURL = item.imageBaseURL + item.category_id + '.png';
           base64ImageDataRes =  await toDataUrl(imageURL)
           result.data[i].base64ImageData = base64ImageDataRes;
-          this.setState({ data: result.data, categoriesMain: result.data })
+          this.setState({  categoriesMain: result.data })
         }
       }
     } catch (e) {
