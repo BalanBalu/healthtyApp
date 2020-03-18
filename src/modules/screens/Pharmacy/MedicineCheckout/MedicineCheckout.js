@@ -304,6 +304,7 @@ class MedicineCheckout extends Component {
 
                                     <FlatList
                                         data={deliveryAddressArray}
+                                        keyExtractor={(item, index) => index.toString()}
                                         renderItem={({ item }) =>
                                             <View style={{ backgroundColor: '#fff' }}>
                                                 <Text style={{ fontFamily: 'OpenSans', fontSize: 12, fontWeight: '300', marginTop: 2 }}>{item.full_name}</Text>
