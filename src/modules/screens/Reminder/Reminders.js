@@ -19,7 +19,7 @@ class Reminder extends Component {
   }
   componentDidMount() {
     const status = RNCalendarEvents.authorizationStatus()
-    alert(status);
+   // alert(status);
     this.getAllReminderdata();
   }
 
