@@ -5,7 +5,7 @@ import { FlatList } from 'react-native-gesture-handler';
 import CalendarStrip from 'react-native-calendar-strip';
 import { getReminderData } from '../../providers/reminder/reminder.action.js';
 import { formatDate } from "../../../setup/helpers";
-
+import RNCalendarEvents from 'react-native-calendar-events';
 
 
 class Reminder extends Component {
@@ -18,6 +18,8 @@ class Reminder extends Component {
     }
   }
   componentDidMount() {
+    const status = RNCalendarEvents.authorizationStatus()
+   // alert(status);
     this.getAllReminderdata();
   }
 

@@ -3,6 +3,7 @@ package com.medflic;
 import android.app.Application;
 import com.horcrux.svg.SvgPackage;
 import com.facebook.react.ReactApplication;
+import com.calendarevents.CalendarEventsPackage;
 import com.reactnative.ivpusic.imagepicker.PickerPackage;
 import com.dieam.reactnativepushnotification.ReactNativePushNotificationPackage;
 
@@ -36,6 +37,7 @@ public class MainApplication extends Application implements ReactApplication {
     protected List<ReactPackage> getPackages() {
       return Arrays.<ReactPackage>asList(
           new MainReactPackage(),
+            new CalendarEventsPackage(),
             new PickerPackage(),
             new ReactNativePushNotificationPackage(),
           new RNFirebasePackage(),
