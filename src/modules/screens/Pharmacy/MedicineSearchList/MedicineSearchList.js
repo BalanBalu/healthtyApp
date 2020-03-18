@@ -116,16 +116,13 @@ class MedicineSearchList extends Component {
             temp.pharmacy_name = data.pharmacyInfo.name;
             temp.pharmacy_id = data.pharmacyInfo.pharmacy_id
             temp.pharmacyInfo = data.pharmacyInfo
-            console.log(data.pharmacyInfo)
             temp.selectedType = selected
 
-            if (index != undefined) {
+            if (index !== undefined) {
                 cardItems = this.state.cartItems;
                 temp.userAddedMedicineQuantity = cardItems[index].userAddedMedicineQuantity
                 temp.index = index
             }
-
-
             await this.setState({ selectedMedcine: temp, isBuyNow: true })
 
         } catch (e) {
@@ -238,7 +235,7 @@ class MedicineSearchList extends Component {
                                                                     <Text style={{ fontSize: 8, marginLeft: 1.5, marginTop: -5, color: "#ff4e42", textDecorationLine: 'line-through', textDecorationStyle: 'solid' }}>{item.medPharDetailInfo.price || ''}</Text>
                                                                     <Text style={{ fontSize: 13, marginTop: -10, marginLeft: 2.5, color: "#8dc63f" }}>{medicineRateAfterOffer(item.medPharDetailInfo)}</Text>
                                                                 </Col>
-                                                                {cartItems.length == 0 || cartItems.findIndex(ele => ele.medicine_id == item.medPharDetailInfo.medicine_id && ele.pharmacy_id == item.medPharDetailInfo.pharmacy_id) == -1 ?
+                                                                {cartItems.length == 0 || cartItems.findIndex(ele => ele.medicine_id == item.medPharDetailInfo.medicine_id && ele.pharmacy_id == item.medPharDetailInfo.pharmacy_id) === -1 ?
                                                                     <Col size={3} style={{ height: 20, marginLeft: 4 }}>
                                                                         <Row>
                                                                             <TouchableOpacity style={{ borderColor: '#4e85e9', marginLeft: 1.5, borderWidth: 1, borderRadius: 2.5, marginTop: -12.5, height: 25, width: 65, paddingBottom: 5, paddingTop: 2 }}
