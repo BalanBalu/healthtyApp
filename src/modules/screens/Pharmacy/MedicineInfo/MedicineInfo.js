@@ -52,10 +52,11 @@ class MedicineInfo extends Component {
         }
     }
 
-    componentDidMount() {
+    async componentDidMount() {
         this.getSelectedMedicineDetails();
         this.getMedicineReviewDetails();
         this.getMedicineReviewCount();
+        await this.totalRating();
     }
 
 
@@ -85,6 +86,36 @@ class MedicineInfo extends Component {
 
             if (result.success) {
                 this.setState({ reviewData: result.data })
+                console.log("reviewData", this.state.reviewData)
+                var fifthCount = 0, fourthCount = 0, thirdCount = 0, secondCount = 0, firstCount = 0;
+                let finalRatingObject = {}
+                this.state.reviewData.map((ele) => {
+                    if (ele.rating == 5) {
+
+                        finalRatingObject.startFive = Math.round(fifthCount++ / this.state.reviewData.length * 100)
+                    }
+                    if (ele.rating == 4) {
+                        finalRatingObject.startFour = Math.round(fourthCount++ / this.state.reviewData.length * 100)
+                        console.log("this.state.reviewData.length:::", this.state.reviewData.length)
+
+                    }
+                    if (ele.rating == 3) {
+
+                        finalRatingObject.starThree = Math.round(thirdCount++ / this.state.reviewData.length * 100)
+
+                    }
+                    if (ele.rating == 2) {
+
+                        finalRatingObject.starTwo = Math.round(secondCount++ / this.state.reviewData.length * 100)
+
+                    }
+                    if (ele.rating == 1) {
+
+                        finalRatingObject.starOne = Math.round(firstCount++ / this.state.reviewData.length * 100)
+                    }
+                })
+                this.setState({ finalRatingObject})
+                console.log('finalRatingObject::::::::', this.state.finalRatingObject)
             } else {
                 this.setState({ isLoading: false, reviewData: '' });
             }
@@ -100,12 +131,16 @@ class MedicineInfo extends Component {
         try {
             this.setState({ isLoading: true });
             let result = await getMedicineReviewsCount(medicineId);
+            console.log("result", result)
 
             if (result.success) {
                 this.setState({ reviewCount: result.data[0] })
+                console.log("reviewCount", this.state.reviewCount)
+
             }
             else {
                 this.setState({ isLoading: false, reviewCount: '' });
+
             }
         }
         catch (e) {
@@ -115,7 +150,41 @@ class MedicineInfo extends Component {
             this.setState({ isLoading: false });
         }
     }
+    totalRating() {
+        try {
+            console.log(this.state.reviewCount.count)
 
+            this.state.reviewData.map((ele) => {
+                if (ele.rating == 5) {
+                    let startFive = Math.floor(5 / 100 * ele.length)
+                    console.log("startFive", startFive)
+                }
+                if (ele.rating == 4) {
+                    let startfour = Math.floor(1 / 100 * ele.length)
+                    console.log("startfour", startfour)
+
+                }
+                if (ele.rating == 3) {
+                    let startthree = Math.floor(1 / 100 * ele.length)
+                    console.log("startthree", startthree)
+
+                }
+                if (ele.rating == 2) {
+                    let starttwo = Math.floor(1 / 100 * ele.length)
+                    console.log("starttwo", starttwo)
+
+                }
+                if (ele.rating == 1) {
+                    let startone = Math.floor(1 / 100 * ele.length)
+                    console.log("startone", startone)
+
+                }
+            })
+        } catch (e) {
+            console.log(e)
+        }
+
+    }
     async selectedItems(data, selected) {
         try {
             let temp = {
@@ -188,7 +257,7 @@ class MedicineInfo extends Component {
     }
 
     render() {
-        const { medicineData, reviewData, reviewCount } = this.state
+        const { medicineData, reviewData, reviewCount, finalRatingObject } = this.state
         return (
             <Container >
 
@@ -203,13 +272,14 @@ class MedicineInfo extends Component {
                                 <Col size={9}>
                                     <Text style={styles.headText}>{medicineData.medInfo.medicine_name}</Text>
                                 </Col>
-                                <Col size={1}>
-                                    <View style={styles.headerViewRate}>
-                                        <Icon name="ios-star" style={{ color: '#fff', fontSize: 10 }} />
-                                        <Text style={styles.ratingText}>{reviewCount.average_rating}</Text>
+                                {reviewCount != '' ?
+                                    <Col size={1}>
+                                        <View style={styles.headerViewRate}>
+                                            <Icon name="ios-star" style={{ color: '#fff', fontSize: 10 }} />
+                                            <Text style={styles.ratingText}>{reviewCount.average_rating}</Text>
+                                        </View>
+                                    </Col> : null}
 
-                                    </View>
-                                </Col>
                             </Row>
                             <Text style={{ fontSize: 14, fontFamily: 'OpenSans', color: '#909090' }}>By {medicineData.pharmacyInfo.name}</Text>
                             <View style={{ justifyContent: 'center', alignItems: 'center' }}>
@@ -264,11 +334,14 @@ class MedicineInfo extends Component {
                             <Text style={styles.desText}>Rating and Reviews</Text>
                             <Row style={styles.borderView}>
                                 <Col size={3}>
-                                    <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'center' }}>
-                                        <Icon name="ios-star" style={{ color: '#8dc63f', fontSize: 25 }} />
-                                        <Text style={{ fontSize: 16, fontFamily: 'OpenSans', color: '#8dc63f', fontWeight: '500', marginLeft: 5 }}>{reviewCount.average_rating}</Text>
-                                    </View>
-                                    <Text style={{ fontSize: 12, fontFamily: 'OpenSans', color: '#909090' }}>{reviewCount.total_rating + ' Ratings &' + reviewCount.count + ' Reviews'}</Text>
+                                    {reviewCount != '' ?
+                                        <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'center' }}>
+                                            <Icon name="ios-star" style={{ color: '#8dc63f', fontSize: 25 }} />
+                                            <Text style={{ fontSize: 16, fontFamily: 'OpenSans', color: '#8dc63f', fontWeight: '500', marginLeft: 5 }}>{reviewCount.average_rating}</Text>
+                                        </View> : null}
+                                    {reviewCount != '' ?
+                                        <Text style={{ fontSize: 12, fontFamily: 'OpenSans', color: '#909090' }}>{reviewCount.total_rating + ' Ratings &' + reviewCount.count + ' Reviews'}</Text> :
+                                        <Text style={{ fontSize: 12, fontFamily: 'OpenSans', color: '#909090' }}>{'0 Ratings & 0 Reviews'}</Text>}
 
                                 </Col>
                                 <Col size={7} style={{ borderLeftColor: '#909090', borderLeftWidth: 0.3, paddingLeft: 10 }}>
@@ -283,7 +356,7 @@ class MedicineInfo extends Component {
                                             </TouchableOpacity>
                                         </Col>
                                         <Col size={1.5}>
-                                            <Text style={{ fontSize: 10, fontFamily: 'OpenSans', color: '#909090', marginLeft: 5 }}>72%</Text>
+                                            <Text style={{ fontSize: 10, fontFamily: 'OpenSans', color: '#909090', marginLeft: 5 }}>{finalRatingObject.startFive?finalRatingObject.startFive:'0'}</Text>
                                         </Col>
                                     </Row>
                                     <Row style={{ marginTop: 1 }}>
@@ -297,7 +370,7 @@ class MedicineInfo extends Component {
                                             </TouchableOpacity>
                                         </Col>
                                         <Col size={1.5}>
-                                            <Text style={{ fontSize: 10, fontFamily: 'OpenSans', color: '#909090', marginLeft: 5 }}>10%</Text>
+                                            <Text style={{ fontSize: 10, fontFamily: 'OpenSans', color: '#909090', marginLeft: 5 }}>{finalRatingObject.startFour ? finalRatingObject.startFour : '0'}</Text>
                                         </Col>
                                     </Row>
                                     <Row style={{ marginTop: 1 }}>
@@ -311,7 +384,7 @@ class MedicineInfo extends Component {
                                             </TouchableOpacity>
                                         </Col>
                                         <Col size={1.5}>
-                                            <Text style={{ fontSize: 10, fontFamily: 'OpenSans', color: '#909090', marginLeft: 5 }}>8%</Text>
+                                            <Text style={{ fontSize: 10, fontFamily: 'OpenSans', color: '#909090', marginLeft: 5 }}>{finalRatingObject.starThree ? finalRatingObject.starThree : '0'}</Text>
                                         </Col>
                                     </Row>
                                     <Row style={{ marginTop: 1 }}>
@@ -325,7 +398,7 @@ class MedicineInfo extends Component {
                                             </TouchableOpacity>
                                         </Col>
                                         <Col size={1.5}>
-                                            <Text style={{ fontSize: 10, fontFamily: 'OpenSans', color: '#909090', marginLeft: 5 }}>6%</Text>
+                                            <Text style={{ fontSize: 10, fontFamily: 'OpenSans', color: '#909090', marginLeft: 5 }}>{finalRatingObject.starTwo ? finalRatingObject.starTwo : '0'}</Text>
                                         </Col>
                                     </Row>
                                     <Row style={{ marginTop: 1 }}>
@@ -339,46 +412,51 @@ class MedicineInfo extends Component {
                                             </TouchableOpacity>
                                         </Col>
                                         <Col size={1.5}>
-                                            <Text style={{ fontSize: 10, fontFamily: 'OpenSans', color: '#909090', marginLeft: 5 }}>4%</Text>
+                                            <Text style={{ fontSize: 10, fontFamily: 'OpenSans', color: '#909090', marginLeft: 5 }}>{finalRatingObject.starOne ? finalRatingObject.starOne : '0'}</Text>
                                         </Col>
                                     </Row>
                                 </Col>
                             </Row>
                         </View>
-                        <FlatList
-                            data={reviewData}
-                            keyExtractor={(item, index) => index.toString()}
-                            renderItem={({ item }) =>
-                                <View style={styles.borderView}>
+                        {reviewData !== null ?
+                            <FlatList
+                                data={reviewData}
+                                keyExtractor={(item, index) => index.toString()}
+                                renderItem={({ item }) =>
+                                    <View style={styles.borderView}>
+                                        <Row>
+                                            <Col size={5} style={{ flexDirection: 'row' }}>
+                                                <Text style={styles.desText}>{item.is_anonymous ? 'Medflic User' : item.userInfo.first_name + '' + item.userInfo.last_name}</Text>
+                                                <View style={styles.viewRating}>
+                                                    <Icon name="ios-star" style={{ color: '#fff', fontSize: 10 }} />
+                                                    <Text style={styles.ratingText}>{item.rating}</Text>
+
+                                                </View>
+                                            </Col>
+                                            <Col size={5}>
+                                                <Text style={styles.dateText}>{this.relativeTimeView(item.review_date)}</Text>
+                                            </Col>
+                                        </Row>
+                                        <Text style={styles.contentText}>{item.comments}</Text>
+                                    </View>
+                                } /> :
+                            <Text style={{ fontSize: 10, justifyContent: 'center', alignItems: 'center' }}>No Reviews Were found</Text>}
+
+                        {reviewData.length > 2 ?
+
+                            <Row style={{ marginTop: 10 }}>
+                                <Col size={6}>
+                                </Col>
+                                <Col size={4} style={{ alignItems: 'flex-end', justifyContent: 'flex-end' }}>
                                     <Row>
-                                        <Col size={5} style={{ flexDirection: 'row' }}>
-                                            <Text style={styles.desText}>{item.is_anonymous ? 'Medflic User' : item.userInfo.first_name + '' + item.userInfo.last_name}</Text>
-                                            <View style={styles.viewRating}>
-                                                <Icon name="ios-star" style={{ color: '#fff', fontSize: 10 }} />
-                                                <Text style={styles.ratingText}>{item.rating}</Text>
+                                        <TouchableOpacity style={styles.viewTouch}>
+                                            <Text style={styles.ViewText}>View All Reviews</Text>
+                                            <Icon name="ios-arrow-round-forward" style={{ fontSize: 16, color: '#4e85e9', marginLeft: 2 }} />
 
-                                            </View>
-                                        </Col>
-                                        <Col size={5}>
-                                            <Text style={styles.dateText}>{this.relativeTimeView(item.review_date)}</Text>
-                                        </Col>
+                                        </TouchableOpacity>
                                     </Row>
-                                    <Text style={styles.contentText}>{item.comments}</Text>
-                                </View>
-                            } />
-                        <Row style={{ marginTop: 10 }}>
-                            <Col size={6}>
-                            </Col>
-                            <Col size={4} style={{ alignItems: 'flex-end', justifyContent: 'flex-end' }}>
-                                <Row>
-                                    <TouchableOpacity style={styles.viewTouch}>
-                                        <Text style={styles.ViewText}>View All Reviews</Text>
-                                        <Icon name="ios-arrow-round-forward" style={{ fontSize: 16, color: '#4e85e9', marginLeft: 2 }} />
-
-                                    </TouchableOpacity>
-                                </Row>
-                            </Col>
-                        </Row>
+                                </Col>
+                            </Row> : null}
                         <View>
                             <Row>
                                 <TouchableOpacity style={{ borderColor: '#8dc63f', borderWidth: 1, marginLeft: 1, borderRadius: 2.5, height: 25, width: 65, backgroundColor: '#8dc63f' }}

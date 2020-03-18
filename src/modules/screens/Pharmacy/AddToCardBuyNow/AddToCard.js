@@ -18,6 +18,7 @@ export class AddToCard extends Component {
         this.state = {
             data: {},
             userAddedMedicineQuantity: 0,
+            cartItems: []
         }
     }
 
@@ -46,6 +47,7 @@ export class AddToCard extends Component {
         const { data, userAddedMedicineQuantity, userAddedTotalMedicineAmount } = this.state
         let temp = [];
         temp = data
+        console.log("temp", temp)
         temp.userAddedMedicineQuantity = userAddedMedicineQuantity;
         temp.userAddedTotalMedicineAmount = userAddedTotalMedicineAmount
         if (data.selectedType === 'Add to Card') {
@@ -57,6 +59,15 @@ export class AddToCard extends Component {
             }
             cartItems.push(temp);
             await AsyncStorage.setItem('cartItems-' + userId, JSON.stringify(cartItems))
+            cartItems = await AsyncStorage.getItem('cartItems-' + userId);
+            await this.setState({ cartItems: JSON.parse(cartItems) })
+            console.log("cartItems", JSON.parse(this.state.cartItems.length))
+
+            if (this.state.cartItems.length != 0) {
+                console.log("setParams")
+                this.props.navigation.setParams({ cartItemsCount: this.state.cartItems.length });
+            }
+
             this.props.popupVisible({
                 visible: false,
                 updatedVisible: false,

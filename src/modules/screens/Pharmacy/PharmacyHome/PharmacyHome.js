@@ -129,11 +129,11 @@ class PharmacyHome extends Component {
                         medicineDetails: temp
                 })
             } 
-            else if(val.isNavigateCart){
-                this.setState({ isAddToCart: false })
+            // else if(val.isNavigateCart){
+            //     this.setState({ isAddToCart: false })
               
-                this.props.navigation.navigate("PharmacyCart")
-            }
+            //     this.props.navigation.navigate("PharmacyCart")
+            // }
             else {
                 this.setState({ isAddToCart: false ,  isBuyNow: false  })
             }

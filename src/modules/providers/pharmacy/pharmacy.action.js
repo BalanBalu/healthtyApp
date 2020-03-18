@@ -180,6 +180,22 @@ export async function createMedicineOrder(data) {
 export async function getMedicineReviews(medicine_id) {
   try {
 
+    let endPoint = '/medicine/reviews/' + medicine_id + '?limit=2';
+    console.log(endPoint);
+    let response = await getService(endPoint);
+    let respData = response.data;
+    return respData;
+  } catch (e) {
+    return {
+      message: 'exception' + e,
+      success: false
+    }
+  }
+}
+/*Get medicine reviews */
+export async function getAllMedicineReviews(medicine_id) {
+  try {
+
     let endPoint = '/medicine/reviews/' + medicine_id;
     console.log(endPoint);
     let response = await getService(endPoint);
