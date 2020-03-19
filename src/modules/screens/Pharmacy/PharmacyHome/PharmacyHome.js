@@ -172,6 +172,7 @@ class PharmacyHome extends Component {
 
     render() {
         const { medicineData, pharmacyData, cartItems } = this.state
+        const { navigation } = this.props;
         return (
             <Container style={styles.container}>
                 <NavigationEvents
@@ -215,7 +216,8 @@ class PharmacyHome extends Component {
 
                     <Row style={{ marginLeft: 15, marginRight: 15, marginTop: 10 }}>
 
-                        <Col size={6} style={{ justifyContent: 'center', backgroundColor: '#fff', height: 30, borderColor: 'gray', borderWidth: 0.3, borderRadius: 2 }}>
+                        <Col onPress={() => navigation.navigate('PharmacyList')} 
+                        size={6} style={{ justifyContent: 'center', backgroundColor: '#fff', height: 30, borderColor: 'gray', borderWidth: 0.3, borderRadius: 2 }}>
                             <Row>
                                 <Col size={.5}>
                                     <Icon name='ios-pin' style={{ fontSize: 20, color: '#775DA3', marginTop: 5, marginLeft: 4 }} />

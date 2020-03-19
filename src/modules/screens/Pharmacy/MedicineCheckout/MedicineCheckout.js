@@ -180,13 +180,7 @@ class MedicineCheckout extends Component {
         }
         console.log(paymentPageRequestData)
         this.props.navigation.navigate('paymentPage', paymentPageRequestData)
-
-
-
-
     }
-
-
 
     getdeliveryWithMedicineAmountCalculation(medicineDetails) {
         if (medicineDetails.length != 0) {
@@ -242,16 +236,12 @@ class MedicineCheckout extends Component {
     backNavigation = async (navigationData) => {
         try {
             this.clickedHomeDelivery();
-
         } catch (e) {
             console.log(e)
         }
     }
-
     render() {
         const { itemSelected, deliveryAddressArray, isLoading, deliveryDetails, pickupOPtionEnabled, medicineTotalAmount, medicineTotalAmountwithDeliveryChage, pharmacyInfo } = this.state
-
-
         return (
             <Container>
                 <Content style={{ backgroundColor: '#F5F5F5', padding: 10 }}>
@@ -357,6 +347,7 @@ class MedicineCheckout extends Component {
                         {this.state.medicineDetails.length != 0 ?
                             <FlatList
                                 data={this.state.medicineDetails}
+                                keyExtractor={(item, index) => index.toString()}
                                 renderItem={({ item }) =>
                                     <Row style={{ marginTop: 10 }}>
                                         <Col size={8}>
