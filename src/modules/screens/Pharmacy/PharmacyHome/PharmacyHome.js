@@ -5,7 +5,7 @@ import { connect } from 'react-redux'
 import { getPopularMedicine, getSearchedMedicines, getNearOrOrderPharmacy } from '../../../providers/pharmacy/pharmacy.action'
 import { StyleSheet, Image, FlatList, TouchableOpacity, AsyncStorage, ScrollView, Dimensions } from 'react-native';
 import { NavigationEvents } from 'react-navigation';
-import { medicineRateAfterOffer } from '../CommomPharmacy';
+import { medicineRateAfterOffer, setCartItemCountOnNavigation } from '../CommomPharmacy';
 import { MAX_DISTANCE_TO_COVER } from '../../../../setup/config'
 import Locations from '../../../screens/Home/Locations';
 import CurrentLocation from '../../Home/CurrentLocation';
@@ -64,9 +64,11 @@ class PharmacyHome extends Component {
             if (result.success) {
                 this.setState({ medicineData: result.data })
                 let cart = await AsyncStorage.getItem('cartItems-' + userId) || []
-                if (cart.length != 0) {
-                    let cartData = JSON.parse(cart)
-                    this.setState({ cartItems: cartData })
+                const { navigation } = this.props;
+                setCartItemCountOnNavigation(navigation);
+                let cartData = JSON.parse(cart)
+                if (cartData.length != 0) {
+                   this.setState({ cartItems: cartData })
                 }
             }
         }

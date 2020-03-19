@@ -59,3 +59,14 @@ export async function relativeTimeView(review_date) {
         console.log(e)
     }
 }
+
+export async function setCartItemCountOnNavigation(navigation) {
+    const userId = await AsyncStorage.getItem('userId')
+    if(userId) {
+        let cart = await AsyncStorage.getItem('cartItems-' + userId) || [];
+        let cartData = JSON.parse(cart)
+        navigation.setParams({
+            cartItemsCount: cartData.length
+        });
+    }
+}

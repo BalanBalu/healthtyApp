@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import { Container, Content, Text, Toast, Icon, View, Col, Row, } from 'native-base';
 import { StyleSheet, Image, AsyncStorage, FlatList, TouchableOpacity } from 'react-native';
 import { getSelectedMedicineDetails, getMedicineReviews, getMedicineReviewsCount } from '../../../providers/pharmacy/pharmacy.action'
-import { medicineRateAfterOffer } from '../CommomPharmacy';
+import { medicineRateAfterOffer , setCartItemCountOnNavigation} from '../CommomPharmacy';
 import Spinner from '../../../../components/Spinner';
 import { dateDiff, getMoment, formatDate } from '../../../../setup/helpers'
 import { MedInsertReview } from './medInsertReview'
@@ -57,6 +57,8 @@ class MedicineInfo extends Component {
         await this.getMedicineReviewCount();
         userId = await AsyncStorage.getItem('userId')
         if (userId) {
+            const { navigation } = this.props
+            setCartItemCountOnNavigation(navigation);
             let cart = await AsyncStorage.getItem('cartItems-' + userId) || []
             if (cart.length != 0) {
                 let cartData = JSON.parse(cart)
