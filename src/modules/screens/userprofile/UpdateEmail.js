@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
-import { Container, Content, Text, Button, H3, Item, List,Col, CheckBox, Left, Right, Thumbnail, Body, Icon, Card, Input, Toast, View, Row } from 'native-base';
-import { userFiledsUpdate } from '../../providers/auth/auth.actions';
+import { Container, Content, Text, Button, H3, Item, List, Col, CheckBox, Left, Right, Thumbnail, Body, Icon, Card, Input, Toast, View, Row } from 'native-base';
+import { userEmailUpdate } from '../../providers/auth/auth.actions';
 import { AsyncStorage, ScrollView } from 'react-native';
 import { connect } from 'react-redux'
 import styles from './style.js';
@@ -9,58 +9,54 @@ import { validateEmailAddress } from '../../common';
 
 
 
-
+let loginData;
 class UpdateEmail extends Component {
     constructor(props) {
         super(props)
         this.state = {
-            secondary_email: null,
-            primary_email: null,
+            email: null,
             isLoading: false,
-            existingEmail: null,
             errorMsg: '',
+            editable: true,
+            primaryEmail: ''
 
         }
     }
-
     componentDidMount() {
         this.bindEmailValues();
+
     }
 
-    bindEmailValues() {
+    bindEmailValues = async () => {
         const { navigation } = this.props;
         const userData = navigation.getParam('updatedata');
-        this.setState({
-            fromProfile: true,
-            primary_email: userData.email,
-        })
-        if (userData.secondary_email) {
-            this.setState({
-                secondary_email: userData.secondary_email,
-                existingEmail: userData.secondary_email
+        await this.setState({ primaryEmail: userData.email })
+
+        if (userData.email) {
+            await this.setState({
+                emailVerified: userData.is_email_verified,
+                editable: false
             })
+
         }
 
     }
 
+
+
     handleEmailUpdate = async () => {
-        const { existingEmail, secondary_email, primary_email } = this.state
         try {
-            if (validateEmailAddress(secondary_email) == false) {
+            if (validateEmailAddress(this.state.email) == false) {
                 this.setState({ errorMsg: 'Kindly enter valid mail id' })
-                return false;
-            }
-            if (existingEmail === secondary_email || primary_email === secondary_email) {
-                this.setState({ errorMsg: 'Entered email id is already exist.Enter the new email id' })
                 return false;
             }
             this.setState({ errorMsg: '', isLoading: true });
             let userId = await AsyncStorage.getItem('userId');
             let data = {
-                secondary_email: secondary_email
+                email: this.state.email
             };
 
-            let response = await userFiledsUpdate(userId, data);
+            let response = await userEmailUpdate(userId, data, 'user');
             if (response.success) {
                 Toast.show({
                     text: 'Your email id is updated successfully',
@@ -68,10 +64,14 @@ class UpdateEmail extends Component {
                     duration: 3000,
 
                 })
-                this.props.navigation.navigate('Profile');
+                loginData = {
+                    userEntry: this.state.email,
+                    type: 'user'
+                }
+                this.props.navigation.navigate('renderOtpInput', { loginData: loginData, fromProfile: true });
             } else {
                 Toast.show({
-                    text: 'The entered email is invalid',
+                    text: response.message,
                     type: "danger",
                     duration: 3000
                 })
@@ -85,7 +85,9 @@ class UpdateEmail extends Component {
             this.setState({ isLoading: false });
         }
     }
-
+    verifyEmail() {
+        this.props.navigation.navigate('renderOtpInput', { loginData: loginData, fromProfile: true });
+    }
 
 
     render() {
@@ -94,58 +96,46 @@ class UpdateEmail extends Component {
                 <Content contentContainerStyle={styles.bodyContent}>
                     <ScrollView>
 
-                        <View>
-                            {this.state.primary_email != null ? <Text style={styles.headerText}>Primary Email</Text> : null}
-                            <Card style={styles.cardEmail}>
-                                {this.state.primary_email != null ?
-                                    <Row style={{ borderBottomWidth: 0 }}>
-                                        <Col size={1.2}>
-                                            <Icon name='mail' style={styles.centeredIcons}></Icon>
-                                        </Col>
-                                        <Col size={8.3}>
-                                        <Text style={styles.customText}>{this.state.primary_email}</Text>
-                                        </Col>
-                                        <Col size={0.5}>
-                                            <Icon style={{ color: 'gray', fontSize: 25 }} name='ios-lock' />
-                                        </Col>
-                                    </Row>
-                                    : null}</Card>
-                            <Text style={{ color: 'gray', fontSize: 16 }}>Primary email is not editable</Text>
-
-                        </View>
                         <View style={{ marginTop: 30 }}>
-                            <Text style={styles.headerText}>Secondary Email</Text>
+                            <Text style={styles.headerText}>Email</Text>
 
                             <Card style={styles.cardEmail}>
 
                                 <Item style={{ borderBottomWidth: 0, marginTop: 12, marginLeft: 4 }}>
-                                    <Text style={{ color: 'gray', fontSize: 15, fontFamily: 'OpenSans', marginTop: 5, marginLeft: 7 }}>Update your secondary email</Text>
+                                    <Text style={{ color: 'gray', fontSize: 15, fontFamily: 'OpenSans', marginTop: 5, marginLeft: 7 }}>Primary Email</Text>
                                 </Item>
 
                                 <Item style={{ borderBottomWidth: 0, }}>
                                     <Icon name='mail' style={styles.centeredIcons}></Icon>
-                                    <Input placeholder="Edit Your Secondary Email" style={styles.transparentLabel} keyboardType="email-address"
-                                        onChangeText={(secondary_email) => this.setState({ secondary_email })}
-                                        value={this.state.secondary_email}
+                                    <Input placeholder="Edit Your Email"
+                                        editable={this.state.editable}
+                                        style={styles.transparentLabel} keyboardType="email-address"
+                                        onChangeText={(email) => this.setState({ email })}
+                                        value={this.state.primaryEmail}
                                         testID='updateEmail' />
                                 </Item>
-
+                                {this.state.primaryEmail !== undefined ?
+                                    <Text style={{ marginLeft: 7, color: 'gray', fontSize: 13 }}>Primary email is not editable</Text> : null}
                                 <Text style={{ color: 'red', marginLeft: 15, marginTop: 5 }}>{this.state.errorMsg}</Text>
 
                                 {this.state.isLoading ? <Spinner color='blue'
                                     visible={this.state.isLoading}
                                 /> : null}
 
-
-
-
-
                                 <Item style={{ borderBottomWidth: 0, justifyContent: 'center', marginTop: 35 }}>
                                     <Row style={{ width: '100%' }}>
                                         <Right>
-                                            <Button success style={styles.button2} onPress={() => this.handleEmailUpdate()} testID='clickUpdateEmail' >
-                                                <Text style={styles.buttonText}>Update</Text>
-                                            </Button>
+                                            {this.state.primaryEmail != null && (this.state.emailVerified || this.state.emailVerified) ?
+                                                <Button success style={styles.button2} onPress={() => this.props.navigation.navigate('Profile')} testID='clickUpdateEmail' >
+                                                    <Text style={styles.buttonText}>Back</Text>
+                                                </Button> :
+                                                this.state.primaryEmail != null && this.state.emailVerified == undefined ?
+                                                    <Button success style={styles.button2} onPress={() => this.verifyEmail()} testID='clickUpdateEmail' >
+                                                        <Text style={styles.buttonText}>Verify Email</Text>
+                                                    </Button> :
+                                                    <Button success style={styles.button2} onPress={() => this.handleEmailUpdate()} testID='clickUpdateEmail' >
+                                                        <Text style={styles.buttonText}>Update</Text>
+                                                    </Button>}
                                         </Right>
                                     </Row>
                                 </Item>

@@ -431,7 +431,7 @@ class PaymentPage extends Component {
                 <Content style={styles.bodyContent}>
                     <Spinner
                         visible={isLoading}
-                        textContent={isPaymentSuccess ? "We are Booking your Appoinmtent" : "Please wait..."}
+                        // textContent={isPaymentSuccess ? "We are Booking your Appoinmtent" : "Please wait..."}
                     />
                  {/*   <View style={{ backgroundColor: '#f2f2f2' }}>
                         <View style={{ marginTop: 10, marginBottom: 10, paddingBottom: 10 }}>

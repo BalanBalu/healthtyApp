@@ -81,14 +81,13 @@ class PharmacyCart extends Component {
         let total = 0;
         if (this.state.cartItems) {
             this.state.cartItems.map(element => {
-
-                total = total + (element.userAddedMedicineQuantity) * (element.offeredAmount)
+               total = total + (element.userAddedMedicineQuantity) * (element.offeredAmount)
             })
             return total.toFixed(2);
         }
     }
     paidAmount() {
-        return parseInt(this.totalPrice()) + parseInt(this.state.deliveryCharge)
+        return Number(this.totalPrice()).toFixed(2);
     }
     removeAllItems = async () => {
         this.setState({ cartItems: [] })
@@ -160,14 +159,7 @@ class PharmacyCart extends Component {
                                     <Text style={{ margin: 10, color: '#5FB404', fontSize: 15, textAlign: 'right' }}>₹ {this.totalPrice()}</Text>
                                 </Col>
                             </Row>
-                            <Row style={{ marginTop: -10 }}>
-                                <Col size={7.5}>
-                                    <Text style={styles.Totalamount}>Delivery Charges</Text>
-                                </Col>
-                                <Col size={2.5}>
-                                    <Text style={{ margin: 10, color: '#ff4e42', fontSize: 15, textAlign: 'right' }}>₹ {this.state.deliveryCharge}</Text>
-                                </Col>
-                            </Row>
+                           
                             <Row style={{ marginTop: 10 }}>
                                 <Col size={7.5}>
                                     <Text style={{ margin: 10, fontWeight: '500', fontSize: 14 }}>Amount to be Paid</Text>
