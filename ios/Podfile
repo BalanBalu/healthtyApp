@@ -14,6 +14,7 @@ target 'medflic' do
     #pod 'react-native-image-picker', :path => '../node_modules/react-native-image-picker'
 
 
+ 
   end
 
   target 'medflicTests' do
@@ -23,6 +24,7 @@ target 'medflic' do
 
 end
 
+pod 'react-native-calendar-events', :path => '../node_modules/react-native-calendar-events'
 
  # Flexbox Layout Manager Used By React Native
  pod 'yoga', :path => '../node_modules/react-native/ReactCommon/yoga/Yoga.podspec'
