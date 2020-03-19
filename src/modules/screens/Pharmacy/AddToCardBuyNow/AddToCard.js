@@ -27,11 +27,18 @@ export class AddToCard extends Component {
             ...this.props.data,
             offeredAmount: medicineRateAfterOffer(this.props.data),
         }
-        this.setState({ data })
+        if(data.userAddedMedicineQuantity){
+            userAddedMedicineQuantity=data.userAddedMedicineQuantity
+            this.setState({userAddedMedicineQuantity})
+        }else{
+        
         this.productQuantityOperator(data, 'add')
+        }
+        this.setState({ data })
     }
     async productQuantityOperator(item, operator) {
         let result = await ProductIncrementDecreMent(this.state.userAddedMedicineQuantity, item.offeredAmount, operator)
+       console.log(JSON.stringify(result))
         userAddedTotalMedicineAmount = result.totalAmount || 0,
             userAddedMedicineQuantity = result.quantity || 0
         this.setState({ userAddedTotalMedicineAmount, userAddedMedicineQuantity })
@@ -54,20 +61,21 @@ export class AddToCard extends Component {
             let cartItems = []
             let userId = await AsyncStorage.getItem('userId')
             let cart = await AsyncStorage.getItem('cartItems-' + userId);
+            
             if (cart != null) {
                 cartItems = JSON.parse(cart);
             }
+            if(temp.index!=undefined){
+                index=temp.index
+                delete temp.index
+                cartItems.splice(index,1,temp)
+            }else{
             cartItems.push(temp);
-            await AsyncStorage.setItem('cartItems-' + userId, JSON.stringify(cartItems))
-            cartItems = await AsyncStorage.getItem('cartItems-' + userId);
-            await this.setState({ cartItems: JSON.parse(cartItems) })
-            console.log("cartItems", JSON.parse(this.state.cartItems.length))
-
-            if (this.state.cartItems.length != 0) {
-                console.log("setParams")
-                this.props.navigation.setParams({ cartItemsCount: this.state.cartItems.length });
             }
-
+            let count =cartItems.length;
+            
+            await AsyncStorage.setItem('cartItems-' + userId, JSON.stringify(cartItems))
+           
             this.props.popupVisible({
                 visible: false,
                 updatedVisible: false,

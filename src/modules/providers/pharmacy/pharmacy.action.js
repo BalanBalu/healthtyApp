@@ -22,7 +22,7 @@ export async function getSearchedMedicines(keyword, isLoading = true) {
 export async function getMedicineOrderList(userId) {
   try {
 
-    let endPoint = 'medicine/ordersDetails?userId=' + userId;
+    let endPoint = '/medicine/orders/user/' + userId;
     let response = await getService(endPoint);
     let respData = response.data;
     return respData;
@@ -44,6 +44,7 @@ export async function getMedicineOrderDetails(order_id , userId) {
     let endPoint = '/medicine/order/'+ order_id + '/user/' + userId ;
     console.log(endPoint);
     let response = await getService(endPoint);
+    console.log(response);
     let respData = response.data;
     return respData;
   } catch (e) {
@@ -134,11 +135,14 @@ export async function getMedicinesSearchListByPharmacyId(pharmacyId, isLoading =
 /*get Near by pharmacy list*/
 export async function getNearOrOrderPharmacy(user_id, coordinates) {
   try {
-    let endPoint = '/recommedation/recentOrNearByPharmacies?user_id=' + user_id + '&location=' + coordinates;
+    let endPoint = '/recommendation/recentOrNearByPharmacies?user_id=' + user_id + '&location=' + coordinates;
+    console.log(endPoint);
     let response = await getService(endPoint);
     let respData = response.data;
+    console.log(respData);
     return respData;
   } catch (e) {
+    console.log(e);
     return {
       message: 'exception' + e,
       success: false
@@ -149,7 +153,7 @@ export async function getNearOrOrderPharmacy(user_id, coordinates) {
 /*get Popular Medicine*/
 export async function getPopularMedicine(userId) {
   try {
-    let endPoint = '/recommedation/recentOrPapularHealthCareProducts?user_id=' + userId;
+    let endPoint = '/recommendation/recentOrPapularHealthCareProducts?user_id=' + userId;
     let response = await getService(endPoint);
     let respData = response.data;
     return respData;
