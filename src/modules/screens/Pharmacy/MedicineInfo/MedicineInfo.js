@@ -1,17 +1,14 @@
 import React, { Component } from 'react';
-import { Container, Content, Text, Radio, Title, Header, Form, Textarea, Button, H3, Item, List, ListItem, Card, Input, Left, Right, Thumbnail, Body, Icon, Footer, FooterTab, Picker, View, Segment, Col, Row, } from 'native-base';
-import { Grid } from 'react-native-easy-grid';
-import { connect } from 'react-redux'
+import { Container, Content, Text, Toast, Icon, View, Col, Row, } from 'native-base';
 import { StyleSheet, Image, AsyncStorage, FlatList, TouchableOpacity } from 'react-native';
 import { getSelectedMedicineDetails, getMedicineReviews, getMedicineReviewsCount } from '../../../providers/pharmacy/pharmacy.action'
 import { medicineRateAfterOffer } from '../CommomPharmacy';
 import Spinner from '../../../../components/Spinner';
-import { NavigationEvents } from 'react-navigation';
 import { dateDiff, getMoment, formatDate } from '../../../../setup/helpers'
 import { MedInsertReview } from './medInsertReview'
 import { AddToCard } from '../AddToCardBuyNow/AddToCard'
 
-let medicineId;
+let medicineId, userId;
 class MedicineInfo extends Component {
     constructor(props) {
         super(props);
@@ -32,7 +29,9 @@ class MedicineInfo extends Component {
             isReviewInsert: false,
             insertReviewData: '',
             modalVisible: false,
-            reviewCount: ''
+            reviewCount: '',
+            cartItems: [],
+            finalRating:''
         };
 
     }
@@ -55,8 +54,16 @@ class MedicineInfo extends Component {
     async componentDidMount() {
         this.getSelectedMedicineDetails();
         this.getMedicineReviewDetails();
-        this.getMedicineReviewCount();
-        await this.totalRating();
+        await this.getMedicineReviewCount();
+        userId = await AsyncStorage.getItem('userId')
+        if (userId) {
+            let cart = await AsyncStorage.getItem('cartItems-' + userId) || []
+            if (cart.length != 0) {
+                let cartData = JSON.parse(cart)
+                this.setState({ cartItems: cartData })
+            }
+        }
+
     }
 
 
@@ -83,39 +90,9 @@ class MedicineInfo extends Component {
         try {
             this.setState({ isLoading: true });
             let result = await getMedicineReviews(medicineId);
-
             if (result.success) {
                 this.setState({ reviewData: result.data })
-                console.log("reviewData", this.state.reviewData)
-                var fifthCount = 0, fourthCount = 0, thirdCount = 0, secondCount = 0, firstCount = 0;
-                let finalRatingObject = {}
-                this.state.reviewData.map((ele) => {
-                    if (ele.rating == 5) {
-
-                        finalRatingObject.startFive = Math.round(fifthCount++ / this.state.reviewData.length * 100)
-                    }
-                    if (ele.rating == 4) {
-                        finalRatingObject.startFour = Math.round(fourthCount++ / this.state.reviewData.length * 100)
-                        console.log("this.state.reviewData.length:::", this.state.reviewData.length)
-
-                    }
-                    if (ele.rating == 3) {
-
-                        finalRatingObject.starThree = Math.round(thirdCount++ / this.state.reviewData.length * 100)
-
-                    }
-                    if (ele.rating == 2) {
-
-                        finalRatingObject.starTwo = Math.round(secondCount++ / this.state.reviewData.length * 100)
-
-                    }
-                    if (ele.rating == 1) {
-
-                        finalRatingObject.starOne = Math.round(firstCount++ / this.state.reviewData.length * 100)
-                    }
-                })
-                this.setState({ finalRatingObject})
-                console.log('finalRatingObject::::::::', this.state.finalRatingObject)
+                console.log("reviewData", this.state.reviewData.length)
             } else {
                 this.setState({ isLoading: false, reviewData: '' });
             }
@@ -127,16 +104,15 @@ class MedicineInfo extends Component {
             this.setState({ isLoading: false });
         }
     }
+
     getMedicineReviewCount = async () => {
         try {
             this.setState({ isLoading: true });
             let result = await getMedicineReviewsCount(medicineId);
-            console.log("result", result)
-
             if (result.success) {
-                this.setState({ reviewCount: result.data[0] })
-                console.log("reviewCount", this.state.reviewCount)
-
+                await this.setState({ reviewCount: result.data[0] })
+                let temp = this.state.reviewCount.final_rating
+                this.setState({ finalRating: temp })
             }
             else {
                 this.setState({ isLoading: false, reviewCount: '' });
@@ -150,42 +126,7 @@ class MedicineInfo extends Component {
             this.setState({ isLoading: false });
         }
     }
-    totalRating() {
-        try {
-            console.log(this.state.reviewCount.count)
-
-            this.state.reviewData.map((ele) => {
-                if (ele.rating == 5) {
-                    let startFive = Math.floor(5 / 100 * ele.length)
-                    console.log("startFive", startFive)
-                }
-                if (ele.rating == 4) {
-                    let startfour = Math.floor(1 / 100 * ele.length)
-                    console.log("startfour", startfour)
-
-                }
-                if (ele.rating == 3) {
-                    let startthree = Math.floor(1 / 100 * ele.length)
-                    console.log("startthree", startthree)
-
-                }
-                if (ele.rating == 2) {
-                    let starttwo = Math.floor(1 / 100 * ele.length)
-                    console.log("starttwo", starttwo)
-
-                }
-                if (ele.rating == 1) {
-                    let startone = Math.floor(1 / 100 * ele.length)
-                    console.log("startone", startone)
-
-                }
-            })
-        } catch (e) {
-            console.log(e)
-        }
-
-    }
-    async selectedItems(data, selected) {
+    async selectedItems(data, selected, index) {
         try {
             let temp = {
                 ...data.medInfo,
@@ -198,7 +139,11 @@ class MedicineInfo extends Component {
 
             temp.offeredAmount = medicineRateAfterOffer(data.medPharDetailInfo)
             temp.selectedType = selected;
-
+            if (index !== undefined) {
+                cardItems = this.state.cartItems;
+                temp.userAddedMedicineQuantity = cardItems[index].userAddedMedicineQuantity
+                temp.index = index
+            }
             await this.setState({ selectedMedcine: temp })
 
         } catch (e) {
@@ -217,8 +162,19 @@ class MedicineInfo extends Component {
                 })
             }
             else if (val.isNavigateCart) {
+                Toast.show({
+                    text: 'Item added to card',
+                    duration: 3000,
+
+                })
+                if (userId) {
+                    let cart = await AsyncStorage.getItem('cartItems-' + userId) || []
+                    if (cart.length != 0) {
+                        let cardData = JSON.parse(cart)
+                        await this.setState({ cartItems: cardData })
+                    }
+                }
                 this.setState({ isAddToCart: false })
-                this.props.navigation.navigate("PharmacyCart")
             }
             else {
                 this.setState({ isAddToCart: false, isBuyNow: false })
@@ -257,7 +213,7 @@ class MedicineInfo extends Component {
     }
 
     render() {
-        const { medicineData, reviewData, reviewCount, finalRatingObject } = this.state
+        const { medicineData, reviewData, reviewCount, cartItems, finalRating } = this.state
         return (
             <Container >
 
@@ -305,19 +261,36 @@ class MedicineInfo extends Component {
                         <Row style={{ marginTop: 10 }}>
                             <Col size={5}>
 
-                                <TouchableOpacity style={styles.addCartTouch} onPress={() => { this.setState({ isAddToCart: true }), this.selectedItems(medicineData, 'Add to Card') }}>
-                                    <Icon name="ios-cart" style={{ fontSize: 15, color: '#4e85e9' }} />
-                                    <Text style={styles.addCartText}>Add to Cart</Text>
-                                </TouchableOpacity>
+                                {cartItems.length == 0 || cartItems.findIndex(ele => ele.medicine_id == medicineData.medPharDetailInfo.medicine_id && ele.pharmacy_id == medicineData.medPharDetailInfo.pharmacy_id) === -1 ?
+                                    <Row style={{ alignItems: 'flex-end' }}>
+                                        <TouchableOpacity style={styles.addCartTouch}
+                                            onPress={() => { this.setState({ isAddToCart: true }), this.selectedItems(medicineData, 'Add to Card') }} >
+
+                                            <Icon name='ios-cart' style={{ color: '#4e85e9', fontSize: 15 }} />
+                                            <Text style={styles.addCartText}>Add to Cart</Text>
+
+                                        </TouchableOpacity>
+                                    </Row> :
+                                    <Row style={{alignItems:'flex-end'}}>
+                                        <TouchableOpacity style={styles.addCartTouch}
+                                            onPress={() => { this.setState({ isAddToCart: true }), this.selectedItems(medicineData, 'Add to Card', cartItems.findIndex(ele => ele.medicine_id == medicineData.medPharDetailInfo.medicine_id && ele.pharmacy_id == medicineData.medPharDetailInfo.pharmacy_id)) }} >
+
+                                            <Icon name='ios-cart' style={{ color: '#4e85e9', fontSize: 15 }} />
+                                            <Text style={styles.addCartText}>{'Added ' + cartItems[cartItems.findIndex(ele => ele.medicine_id == medicineData.medPharDetailInfo.medicine_id && ele.pharmacy_id == medicineData.medPharDetailInfo.pharmacy_id)].userAddedMedicineQuantity}</Text>
+
+                                        </TouchableOpacity>
+                                    </Row>
+                                }
+
 
                             </Col>
                             <Col size={5}>
-
-                                <TouchableOpacity style={styles.buyNowTouch} onPress={() => { this.setState({ isBuyNow: true }), this.selectedItems(item, 'Buy Now') }} >
-                                    <Icon name="ios-cart" style={{ fontSize: 15, color: '#fff' }} />
-                                    <Text style={styles.BuyNowText}>Buy Now</Text>
-                                </TouchableOpacity>
-
+                                <Row>
+                                    <TouchableOpacity style={styles.buyNowTouch} onPress={() => { this.setState({ isBuyNow: true }), this.selectedItems(medicineData, 'Buy Now') }} >
+                                        <Icon name="ios-cart" style={{ fontSize: 15, color: '#fff' }} />
+                                        <Text style={styles.BuyNowText}>Buy Now</Text>
+                                    </TouchableOpacity>
+                                </Row>
                             </Col>
                         </Row>
                         {this.state.isBuyNow == true || this.state.isAddToCart == true ?
@@ -356,7 +329,7 @@ class MedicineInfo extends Component {
                                             </TouchableOpacity>
                                         </Col>
                                         <Col size={1.5}>
-                                            <Text style={{ fontSize: 10, fontFamily: 'OpenSans', color: '#909090', marginLeft: 5 }}>{finalRatingObject.startFive?finalRatingObject.startFive:'0'}</Text>
+                                            <Text style={{ fontSize: 10, fontFamily: 'OpenSans', color: '#909090', marginLeft: 5 }}>{finalRating.five_star ? finalRating.five_star : 0}%</Text>
                                         </Col>
                                     </Row>
                                     <Row style={{ marginTop: 1 }}>
@@ -370,7 +343,7 @@ class MedicineInfo extends Component {
                                             </TouchableOpacity>
                                         </Col>
                                         <Col size={1.5}>
-                                            <Text style={{ fontSize: 10, fontFamily: 'OpenSans', color: '#909090', marginLeft: 5 }}>{finalRatingObject.startFour ? finalRatingObject.startFour : '0'}</Text>
+                                            <Text style={{ fontSize: 10, fontFamily: 'OpenSans', color: '#909090', marginLeft: 5 }}>{finalRating.four_star ? finalRating.four_star:0}%</Text>
                                         </Col>
                                     </Row>
                                     <Row style={{ marginTop: 1 }}>
@@ -384,7 +357,7 @@ class MedicineInfo extends Component {
                                             </TouchableOpacity>
                                         </Col>
                                         <Col size={1.5}>
-                                            <Text style={{ fontSize: 10, fontFamily: 'OpenSans', color: '#909090', marginLeft: 5 }}>{finalRatingObject.starThree ? finalRatingObject.starThree : '0'}</Text>
+                                            <Text style={{ fontSize: 10, fontFamily: 'OpenSans', color: '#909090', marginLeft: 5 }}>{finalRating.three_star ? finalRating.three_star : 0}%</Text>
                                         </Col>
                                     </Row>
                                     <Row style={{ marginTop: 1 }}>
@@ -398,7 +371,7 @@ class MedicineInfo extends Component {
                                             </TouchableOpacity>
                                         </Col>
                                         <Col size={1.5}>
-                                            <Text style={{ fontSize: 10, fontFamily: 'OpenSans', color: '#909090', marginLeft: 5 }}>{finalRatingObject.starTwo ? finalRatingObject.starTwo : '0'}</Text>
+                                            <Text style={{ fontSize: 10, fontFamily: 'OpenSans', color: '#909090', marginLeft: 5 }}>{finalRating.two_star ? finalRating.two_star : 0}%</Text>
                                         </Col>
                                     </Row>
                                     <Row style={{ marginTop: 1 }}>
@@ -412,7 +385,7 @@ class MedicineInfo extends Component {
                                             </TouchableOpacity>
                                         </Col>
                                         <Col size={1.5}>
-                                            <Text style={{ fontSize: 10, fontFamily: 'OpenSans', color: '#909090', marginLeft: 5 }}>{finalRatingObject.starOne ? finalRatingObject.starOne : '0'}</Text>
+                                            <Text style={{ fontSize: 10, fontFamily: 'OpenSans', color: '#909090', marginLeft: 5 }}>{finalRating.one_star ? finalRating.one_star : 0}%</Text>
                                         </Col>
                                     </Row>
                                 </Col>
@@ -442,7 +415,7 @@ class MedicineInfo extends Component {
                                 } /> :
                             <Text style={{ fontSize: 10, justifyContent: 'center', alignItems: 'center' }}>No Reviews Were found</Text>}
 
-                        {reviewData.length > 2 ?
+                        {reviewData.length!==0 ?
 
                             <Row style={{ marginTop: 10 }}>
                                 <Col size={6}>
@@ -607,7 +580,8 @@ const styles = StyleSheet.create({
         paddingBottom: 5,
         paddingLeft: 50,
         paddingRight: 50,
-        borderRadius: 2
+        borderRadius: 2,
+        alignItems:'flex-end'
     },
     buyNowTouch: {
         backgroundColor: '#8dc63f',

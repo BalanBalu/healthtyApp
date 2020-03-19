@@ -51,6 +51,8 @@ import OrderPaymentSuccess from '../../modules/screens/Pharmacy/OrderPaymentSucc
 import UploadPrescription from '../../modules/screens/Pharmacy/PharmacyHome/UploadPrescription';
 import MedicineCheckout from '../../modules/screens/Pharmacy/MedicineCheckout/MedicineCheckout';
 import MedicineInfo from '../../modules/screens/Pharmacy/MedicineInfo/MedicineInfo';
+import ViewAllReviews from '../../modules/screens/Pharmacy/MedicineInfo/ViewAllReviews';
+
 import MedicineSearchList from '../../modules/screens/Pharmacy/MedicineSearchList/MedicineSearchList';
 import { Badge } from '../../../src/modules/common'
 import Locations from '../../modules/screens/Home/Locations';
@@ -466,15 +468,31 @@ const HomeStack = createStackNavigator({
  
  
        ), */
+
+      //       < TouchableOpacity onPress={() => { navigation.navigate('Notification') }} >
+      // <View>
+      //   <Icon name="notifications" style={{ color: '#fff', marginRight: 15, fontFamily: 'opensans-semibold' }}></Icon>
+      //   {navigation.getParam('notificationBadgeCount') != null ?
+      //     <Text style={{ position: 'absolute', backgroundColor: 'red', color: 'white', borderRadius: 20 / 2, marginTop: -7, width: undefined, height: undefined, padding: 2, fontSize: 10, textAlign: 'center' }}>{navigation.getParam('notificationBadgeCount') >= 100 ? '99+' : navigation.getParam('notificationBadgeCount')}</Text>
+      //     : null}
+      //   {/* <Badge /> */}
+      // </View>
+      //           </TouchableOpacity >
       headerRight: (
         <Col>
-          <TouchableOpacity>
+          <TouchableOpacity onPress={() => { navigation.navigate('PharmacyCart') }} >
             <View>
               <Icon name="ios-cart" style={{ color: '#fff', marginRight: 15, fontFamily: 'opensans-semibold', fontSize: 20 }}></Icon>
+
+              {console.log(navigation.getParam('cartItemsCount'))}
+              {/* {navigation.getParam('cartItemsCount') != null ?
+                <Text style={{ position: 'absolute', backgroundColor: 'red', color: 'white', borderRadius: 20 / 2, marginTop: -7, width: undefined, height: undefined, padding: 2, fontSize: 10, textAlign: 'center' }}>{navigation.getParam('cartItemsCount') >= 100 ? '99+' : navigation.getParam('cartItemsCount')}</Text>
+                : null} */}
             </View>
           </TouchableOpacity>
         </Col>
       ),
+
       headerStyle: {
         backgroundColor: '#7F49C3',
         height: 40,
@@ -492,9 +510,25 @@ const HomeStack = createStackNavigator({
   },
   medicineSearchList: {
     screen: MedicineSearchList,
-    navigationOptions: {
-      title: 'Search List'
-    }
+    navigationOptions: ({ navigation }) => ({
+      title: 'Search List',
+      headerRight: (
+        <Grid>
+          <Col>
+            <TouchableOpacity onPress={() => { navigation.navigate('PharmacyCart') }} >
+              <View>
+                <Icon name="ios-cart" style={{ color: '#fff', marginRight: 15, fontFamily: 'opensans-semibold', fontSize: 20 }}></Icon>
+
+                {/* {console.log(navigation.getParam('cartItemsCount'))}
+                {navigation.getParam('cartItemsCount') != null ?
+                <Text style={{ position: 'absolute', backgroundColor: 'red', color: 'white', borderRadius: 20 / 2, marginTop: -7, width: undefined, height: undefined, padding: 2, fontSize: 10, textAlign: 'center' }}>{navigation.getParam('cartItemsCount') >= 100 ? '99+' : navigation.getParam('cartItemsCount')}</Text>
+                : null} */}
+              </View>
+            </TouchableOpacity>
+          </Col>
+        </Grid>
+      ),
+    })
   },
   PharmacyCart: {
     screen: PharmacyCart,
@@ -510,9 +544,26 @@ const HomeStack = createStackNavigator({
   },
   MedicineSuggestionList: {
     screen: MedicineSuggestionList,
-    navigationOptions: {
-      title: 'Pharmacy Suggestion List'
-    }
+    navigationOptions: ({ navigation }) => ({
+      title: 'Pharmacy Suggestion List',
+      headerRight: (
+        <Grid>
+          <Col>
+            <TouchableOpacity onPress={() => { navigation.navigate('PharmacyCart') }} >
+              <View>
+                <Icon name="ios-cart" style={{ color: '#fff', marginRight: 15, fontFamily: 'opensans-semibold', fontSize: 20 }}></Icon>
+
+                {/* {console.log(navigation.getParam('cartItemsCount'))}
+                {navigation.getParam('cartItemsCount') != null ?
+                <Text style={{ position: 'absolute', backgroundColor: 'red', color: 'white', borderRadius: 20 / 2, marginTop: -7, width: undefined, height: undefined, padding: 2, fontSize: 10, textAlign: 'center' }}>{navigation.getParam('cartItemsCount') >= 100 ? '99+' : navigation.getParam('cartItemsCount')}</Text>
+                : null} */}
+              </View>
+            </TouchableOpacity>
+          </Col>
+        </Grid>
+      ),
+    })
+
   },
 
   MedicineCheckout: {
@@ -542,10 +593,33 @@ const HomeStack = createStackNavigator({
   },
   MedicineInfo: {
     screen: MedicineInfo,
+     navigationOptions: ({ navigation }) => ({
+       title: 'Medicine Details',
+      headerRight: (
+        <Grid>
+          <Col>
+            <TouchableOpacity onPress={() => { navigation.navigate('PharmacyCart') }} >
+              <View>
+                <Icon name="ios-cart" style={{ color: '#fff', marginRight: 15, fontFamily: 'opensans-semibold', fontSize: 20 }}></Icon>
+
+                {console.log(navigation.getParam('cartItemsCount'))}
+                {navigation.getParam('cartItemsCount') != null ?
+                <Text style={{ position: 'absolute', backgroundColor: 'red', color: 'white', borderRadius: 20 / 2, marginTop: -7, width: undefined, height: undefined, padding: 2, fontSize: 10, textAlign: 'center' }}>{navigation.getParam('cartItemsCount') >= 100 ? '99+' : navigation.getParam('cartItemsCount')}</Text>
+                : null}
+              </View>
+            </TouchableOpacity>
+          </Col>
+        </Grid>
+      ),
+    })
+  },
+  ViewAllReviews: {
+    screen: ViewAllReviews,
     navigationOptions: {
-      title: 'Medicine Details'
+      title: 'Medicine Reviews'
     }
   },
+
   'CORONO Status': {
     screen: CoronaDisease,
     navigationOptions: {
