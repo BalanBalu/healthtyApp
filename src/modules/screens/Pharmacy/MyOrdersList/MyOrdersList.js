@@ -50,8 +50,6 @@ class MyOrdersList extends Component {
         } catch (e) {
             console.log(e);
             this.setState({ isLoading: false });
-        } finally {
-            this.setState({ isLoading: false });
         }
     }
 

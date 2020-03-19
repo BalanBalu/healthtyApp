@@ -434,7 +434,7 @@ const HomeStack = createStackNavigator({
   },
 
   // ============== Pharmacy =================
-  Pharmacy: {
+  Medicines: {
     screen: PharmacyHome,
     navigationOptions: ({ navigation }) => ({
       /* headerLeft: (
@@ -600,7 +600,7 @@ const HomeStack = createStackNavigator({
     }
   },
   //=================== Medicine Order Details =============
-  Orders: {
+  "Medicine Orders": {
     screen: MyOrdersList,
     navigationOptions: {
       title: 'Orders List',
@@ -700,10 +700,10 @@ const DrawerNavigator = createDrawerNavigator({
   "My Appointments": {
     screen: MyAppoinmentList
   },
-  Pharmacy: {
+  Medicines: {
     screen: PharmacyHome,
   },
-  Orders: {
+  "Medicine Orders": {
     screen: MyOrdersList
   },
   "Chat Service": {
@@ -731,8 +731,8 @@ export const DragwerLogos = {
   Home: require('../../../assets/images/drawerIcons/Home.png'),
   Profile: require('../../../assets/images/drawerIcons/Profile.png'),
   "My Appointments": require('../../../assets/images/drawerIcons/Appointments.png'),
-  Pharmacy: require('../../../assets/images/drawerIcons/Pharmacy.png'),
-  Orders: require('../../../assets/images/drawerIcons/Orders.png'),
+  Medicines: require('../../../assets/images/drawerIcons/Pharmacy.png'),
+  "Medicine Orders": require('../../../assets/images/drawerIcons/Orders.png'),
   Reminder: require('../../../assets/images/drawerIcons/Reminder.png'),
   "My Chats": require('../../../assets/images/drawerIcons/Chat.png'),
   "Chat Service": require('../../../assets/images/drawerIcons/Chat.png'),
