@@ -16,15 +16,21 @@ class UserAddress extends Component {
         this.state = {
             text: '',
             locationFetchSuccess: false,
-            fromProfile: false
+            fromProfile: false,
+            navigationOption: null
+
         }
     }
     componentDidMount() {
         const { navigation } = this.props;
         const fromProfile = navigation.getParam('fromProfile') || false
+        navigationOption = navigation.getParam('navigationOption') || null
         console.log(fromProfile)
         if (fromProfile) {
             this.setState({ fromProfile: true })
+        }
+        if (navigationOption) {
+            this.setState({ navigationOption })
         }
     }
 
@@ -37,7 +43,7 @@ class UserAddress extends Component {
 
         return (
             <View style={{ flex: 1, backgroundColor: '#ecf0f1' }}>
-                {!this.state.fromProfile ?
+                {!this.state.fromProfile && !this.state.navigationOption ?
                     <Header style={{ backgroundColor: '#7E49C3' }}>
                         <Row>
                             <Left>

@@ -17,6 +17,7 @@ import bannerOffer from '../../../../../assets/images/25offer-banner.jpg'
 import flatBannerOffer from '../../../../../assets/images/20flatoff-banner.jpg'
 import { AddToCard } from '../AddToCardBuyNow/AddToCard'
 
+let userId;
 class PharmacyHome extends Component {
     searchedMedicinetext = '';
     constructor(props) {
@@ -35,15 +36,16 @@ class PharmacyHome extends Component {
             isBuyNow: false,
             isAddToCart: false
         }
-       
+
     }
 
-    componentDidMount() {
+    async componentDidMount() {
 
         CurrentLocation.getCurrentPosition();
         this.getCurrentLocation()
         this.getMedicineList();
         this.getNearByPharmacyList();
+      
     }
 
     backNavigation(payload) {
@@ -57,10 +59,15 @@ class PharmacyHome extends Component {
     /*Get medicine list*/
     getMedicineList = async () => {
         try {
-            let userId = await AsyncStorage.getItem('userId')
+            userId = await AsyncStorage.getItem('userId')
             let result = await getPopularMedicine(userId);
             if (result.success) {
                 this.setState({ medicineData: result.data })
+                let cart = await AsyncStorage.getItem('cartItems-' + userId) || []
+                if (cart.length != 0) {
+                    let cartData = JSON.parse(cart)
+                    this.setState({ cartItems: cartData })
+                }
             }
         }
         catch (e) {
@@ -88,7 +95,6 @@ class PharmacyHome extends Component {
                 "coordinates": locationCordinates,
                 "maxDistance": MAX_DISTANCE_TO_COVER
             }
-            let userId = await AsyncStorage.getItem('userId')
             let result = await getNearOrOrderPharmacy(userId, JSON.stringify(locationData));
             if (result.success) {
                 this.setState({ pharmacyData: result.data })
@@ -99,7 +105,7 @@ class PharmacyHome extends Component {
         }
 
     }
-    async selectedItems(data, selected) {
+    async selectedItems(data, selected, index) {
         try {
             let temp = {
                 ...data.medInfo,
@@ -112,6 +118,11 @@ class PharmacyHome extends Component {
             temp.offeredAmount = medicineRateAfterOffer(data.medPharDetailInfo)
             temp.selectedType = selected;
 
+            if (index !== undefined) {
+                cardItems = this.state.cartItems;
+                temp.userAddedMedicineQuantity = cardItems[index].userAddedMedicineQuantity
+                temp.index = index
+            }
             await this.setState({ selectedMedcine: temp })
 
         } catch (e) {
@@ -119,36 +130,46 @@ class PharmacyHome extends Component {
         }
 
     }
-    getVisible=async(val)=> {
+    getVisible = async (val) => {
         try {
             if (val.isNavigate) {
                 this.setState({ isBuyNow: false })
                 let temp = [];
                 temp.push(val.medicineData)
                 this.props.navigation.navigate("MedicineCheckout", {
-                        medicineDetails: temp
+                    medicineDetails: temp
                 })
-            } 
-            else if(val.isNavigateCart){
+            }
+            else if (val.isNavigateCart) {
+                Toast.show({
+                    text: 'Item added to card',
+                    duration: 3000,
+
+                })
+                if (userId) {
+                    let cart = await AsyncStorage.getItem('cartItems-' + userId) || []
+                    if (cart.length != 0) {
+                        let cardData = JSON.parse(cart)
+                        await this.setState({ cartItems: cardData })
+                    }
+                }
                 this.setState({ isAddToCart: false })
-              
-                this.props.navigation.navigate("PharmacyCart")
             }
             else {
-                this.setState({ isAddToCart: false ,  isBuyNow: false  })
+                this.setState({ isAddToCart: false, isBuyNow: false })
             }
         } catch (e) {
             console.log(e)
         }
     }
-    navigatePress(text){
+    navigatePress(text) {
         console.log(text);
-        this.props.navigation.navigate('MedicineSuggestionList', {medicineName: text })
-       
+        this.props.navigation.navigate('MedicineSuggestionList', { medicineName: text })
+
     }
 
     render() {
-        const { medicineData, pharmacyData } = this.state
+        const { medicineData, pharmacyData, cartItems } = this.state
         return (
             <Container style={styles.container}>
                 <NavigationEvents
@@ -265,10 +286,10 @@ class PharmacyHome extends Component {
                                         keyExtractor={(item, index) => index.toString()}
                                         initialNumToRender={4}
                                         renderItem={({ item }) =>
-                                         
+
                                             <Col size={5} style={{ backgroundColor: '#fff', marginLeft: 5, height: '100%' }}>
-                                              
-                                                <Row onPress={() =>  
+
+                                                <Row onPress={() =>
                                                     this.props.navigation.navigate('MedicineInfo', {
                                                         medicineId: item.medInfo.medicine_id,
                                                         pharmacyId: item.pharmacyInfo.pharmacy_id,
@@ -309,10 +330,21 @@ class PharmacyHome extends Component {
                                                 </Row>
 
                                                 <Row style={{ marginBottom: 5, marginTop: 5, alignSelf: 'center' }}>
-                                                    <TouchableOpacity style={styles.addCartTouch} onPress={() => { this.setState({ isAddToCart: true }), this.selectedItems(item, 'Add to Card') }} >
-                                                        <Icon name="ios-cart" style={{ fontSize: 12, color: '#4e85e9' }} />
-                                                        <Text style={styles.addCartText}>Add to Cart</Text>
-                                                    </TouchableOpacity>
+                                                    {cartItems.length == 0 || cartItems.findIndex(ele => ele.medicine_id == item.medPharDetailInfo.medicine_id && ele.pharmacy_id == item.medPharDetailInfo.pharmacy_id) === -1 ?
+                                                        <TouchableOpacity style={styles.addCartTouch}
+                                                            onPress={() => { this.setState({ isAddToCart: true }), this.selectedItems(item, 'Add to Card') }} >
+                                                          
+                                                                <Icon name='ios-cart' style={{ color: '#4e85e9', fontSize: 11, marginLeft: 3.5, paddingTop: 2.3 }} />
+                                                                <Text style={styles.addCartText}>Add to Cart</Text>
+                                                           
+                                                        </TouchableOpacity> :
+                                                        <TouchableOpacity style={styles.addCartTouch}
+                                                            onPress={() => { this.setState({ isAddToCart: true }), this.selectedItems(item, 'Add to Card', cartItems.findIndex(ele => ele.medicine_id == item.medPharDetailInfo.medicine_id && ele.pharmacy_id == item.medPharDetailInfo.pharmacy_id)) }} >
+                                                            
+                                                                <Icon name='ios-cart' style={{ color: '#4e85e9', fontSize: 11, marginLeft: 3.5, paddingTop: 2.3 }} />
+                                                            <Text style={styles.addCartText}>{'Added ' + cartItems[cartItems.findIndex(ele => ele.medicine_id == item.medPharDetailInfo.medicine_id && ele.pharmacy_id == item.medPharDetailInfo.pharmacy_id)].userAddedMedicineQuantity}</Text>
+                                                          
+                                                        </TouchableOpacity>}
 
                                                     <TouchableOpacity style={styles.buyNowTouch} onPress={() => { this.setState({ isBuyNow: true }), this.selectedItems(item, 'Buy Now') }} >
                                                         <Icon name="ios-cart" style={{ fontSize: 12, color: '#fff' }} />
@@ -370,7 +402,7 @@ class PharmacyHome extends Component {
                                                     </Col>
                                                     <Col size={6}>
                                                         <Row style={{ alignItems: 'flex-end', justifyContent: 'flex-end' }}>
-                                                            <TouchableOpacity 
+                                                            <TouchableOpacity
                                                                 onPress={() => this.props.navigation.navigate('medicineSearchList', {
                                                                     byPharmacy: true,
                                                                     pharmacyInfo: item.pharmacyInfo

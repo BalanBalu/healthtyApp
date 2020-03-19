@@ -22,9 +22,29 @@ export async function getSearchedMedicines(keyword, isLoading = true) {
 export async function getMedicineOrderList(userId) {
   try {
 
-    let endPoint = 'medicine/ordersDetails?userId=' + userId;
+    let endPoint = '/medicine/orders/user/' + userId;
+    let response = await getService(endPoint);
+    let respData = response.data;
+    return respData;
+  } catch (e) {
+    return {
+      message: 'exception' + e,
+      success: false
+    }
+  }
+}
+
+
+
+/* Medicine Order details */
+
+export async function getMedicineOrderDetails(order_id , userId) {
+  try {
+
+    let endPoint = '/medicine/order/'+ order_id + '/user/' + userId ;
     console.log(endPoint);
     let response = await getService(endPoint);
+    console.log(response);
     let respData = response.data;
     return respData;
   } catch (e) {
@@ -57,7 +77,7 @@ export async function getSelectedMedicineDetails(medicineId, pharmacyId) {
   try {
 
     let endPoint = '/medicine/' + medicineId + '/pharmacy/' + pharmacyId;
-    console.log(endPoint);
+    console.log(endPoint)
     let response = await getService(endPoint);
     let respData = response.data;
     return respData;
@@ -70,11 +90,10 @@ export async function getSelectedMedicineDetails(medicineId, pharmacyId) {
 }
 
 
-export async function getSuggestionMedicines (keyword,data, isLoading = true) {
+export async function getSuggestionMedicines(keyword, data, isLoading = true) {
   try {
-    let endPoint = 'medicines/suggestions/'+keyword;
+    let endPoint = 'medicines/suggestions/' + keyword;
     let response = await postService(endPoint, data);
-console.log(endPoint);
     let respData = response.data;
     return respData;
   } catch (e) {
@@ -84,7 +103,7 @@ console.log(endPoint);
     }
   }
 }
-export async function getMedicinesSearchList (data, isLoading = true) {
+export async function getMedicinesSearchList(data, isLoading = true) {
   try {
     let endPoint = '/medicines/search/healthCareProducts';
     let response = await postService(endPoint, data);
@@ -98,10 +117,9 @@ export async function getMedicinesSearchList (data, isLoading = true) {
     }
   }
 }
-export async function getMedicinesSearchListByPharmacyId (pharmacyId, isLoading = true) {
+export async function getMedicinesSearchListByPharmacyId(pharmacyId, isLoading = true) {
   try {
     let endPoint = '/medicines/pharmacy/' + pharmacyId;
-    console.log(endPoint);
     let response = await getService(endPoint);
     let respData = response.data;
     return respData;
@@ -115,14 +133,16 @@ export async function getMedicinesSearchListByPharmacyId (pharmacyId, isLoading 
 
 
 /*get Near by pharmacy list*/
-export async function getNearOrOrderPharmacy(userId, coordinates) {
+export async function getNearOrOrderPharmacy(user_id, coordinates) {
   try {
-    let endPoint = '/recommedation/recentOrNearByPharmacies?userId=' + userId + '&location=' + coordinates;
-    console.log(endPoint)
+    let endPoint = '/recommendation/recentOrNearByPharmacies?user_id=' + user_id + '&location=' + coordinates;
+    console.log(endPoint);
     let response = await getService(endPoint);
     let respData = response.data;
+    console.log(respData);
     return respData;
   } catch (e) {
+    console.log(e);
     return {
       message: 'exception' + e,
       success: false
@@ -133,8 +153,7 @@ export async function getNearOrOrderPharmacy(userId, coordinates) {
 /*get Popular Medicine*/
 export async function getPopularMedicine(userId) {
   try {
-    let endPoint = '/recommedation/recentOrPapularHealthCareProducts?user_id=' + userId;
-    console.log(endPoint)
+    let endPoint = '/recommendation/recentOrPapularHealthCareProducts?user_id=' + userId;
     let response = await getService(endPoint);
     let respData = response.data;
     return respData;
@@ -148,7 +167,7 @@ export async function getPopularMedicine(userId) {
 
 export async function createMedicineOrder(data) {
   try {
-    let endPoint = '/medicine/order' ;
+    let endPoint = '/medicine/order';
     console.log(endPoint)
     let response = await postService(endPoint, data);
     let respData = response.data;
@@ -160,4 +179,72 @@ export async function createMedicineOrder(data) {
     }
   }
 }
+
+/*Get medicine reviews */
+export async function getMedicineReviews(medicine_id) {
+  try {
+
+    let endPoint = '/medicine/reviews/' + medicine_id + '?limit=2';
+    console.log(endPoint);
+    let response = await getService(endPoint);
+    let respData = response.data;
+    return respData;
+  } catch (e) {
+    return {
+      message: 'exception' + e,
+      success: false
+    }
+  }
+}
+/*Get medicine reviews */
+export async function getAllMedicineReviews(medicine_id) {
+  try {
+
+    let endPoint = '/medicine/reviews/' + medicine_id;
+    console.log(endPoint);
+    let response = await getService(endPoint);
+    let respData = response.data;
+    return respData;
+  } catch (e) {
+    return {
+      message: 'exception' + e,
+      success: false
+    }
+  }
+}
+
+/*Insert medicine reviews */
+export async function InsertMedicineReviews(userId, data) {
+  try {
+
+    let endPoint = '/medicine/review/' + userId;
+    console.log(endPoint);
+    let response = await postService(endPoint, data);
+    let respData = response.data;
+    return respData;
+  } catch (e) {
+    return {
+      message: 'exception' + e,
+      success: false
+    }
+  }
+}
+
+/*Get medicine reviews count*/
+export async function getMedicineReviewsCount(medicine_id) {
+  try {
+
+    let endPoint = '/medicine/reviewsCount/' + medicine_id;
+    console.log(endPoint);
+    let response = await getService(endPoint);
+    let respData = response.data;
+    return respData;
+  } catch (e) {
+    return {
+      message: 'exception' + e,
+      success: false
+    }
+  }
+}
+
 

@@ -7,9 +7,8 @@ import {
     Text, Thumbnail, Content, CheckBox, Item, Input, Icon
 } from 'native-base';
 import { ProductIncrementDecreMent, medicineRateAfterOffer } from '../CommomPharmacy'
-import { store } from '../../../../setup/store';
+import { NavigationEvents } from 'react-navigation';
 import { connect } from 'react-redux'
-// import { SET_ADDTOCART_DETAILS} from '../../../../modules/providers/bookappointment/bookappointment.reducer'
 
 
 export class AddToCard extends Component {
@@ -18,6 +17,7 @@ export class AddToCard extends Component {
         this.state = {
             data: {},
             userAddedMedicineQuantity: 0,
+            cartItems: []
         }
     }
 
@@ -26,8 +26,15 @@ export class AddToCard extends Component {
             ...this.props.data,
             offeredAmount: medicineRateAfterOffer(this.props.data),
         }
+        if (data.userAddedMedicineQuantity) {
+            userAddedMedicineQuantity = data.userAddedMedicineQuantity
+            this.setState({ userAddedMedicineQuantity })
+        } else {
+
+            this.productQuantityOperator(data, 'add')
+        }
         this.setState({ data })
-        this.productQuantityOperator(data, 'add')
+
     }
     async productQuantityOperator(item, operator) {
         let result = await ProductIncrementDecreMent(this.state.userAddedMedicineQuantity, item.offeredAmount, operator)
@@ -42,7 +49,7 @@ export class AddToCard extends Component {
         })
 
     }
-    async  cardAction() {
+    cardAction = async()=> {
         const { data, userAddedMedicineQuantity, userAddedTotalMedicineAmount } = this.state
         let temp = [];
         temp = data
@@ -52,11 +59,23 @@ export class AddToCard extends Component {
             let cartItems = []
             let userId = await AsyncStorage.getItem('userId')
             let cart = await AsyncStorage.getItem('cartItems-' + userId);
+
             if (cart != null) {
                 cartItems = JSON.parse(cart);
             }
-            cartItems.push(temp);
+            if (temp.index != undefined) {
+                index = temp.index
+                delete temp.index
+                cartItems.splice(index, 1, temp)
+            } else {
+                cartItems.push(temp);
+            }
+            let count = cartItems.length;
+            console.log("count", count)
             await AsyncStorage.setItem('cartItems-' + userId, JSON.stringify(cartItems))
+            // this.props.navigation.setParams({
+            //     cartItemsCount: count
+            // })
             this.props.popupVisible({
                 visible: false,
                 updatedVisible: false,
