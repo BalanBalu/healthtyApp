@@ -1,13 +1,14 @@
 import React, { Component } from 'react';
-import { Container, Content, Text, Radio, Title, Header, Form, Textarea, Button, H3, Item, List, ListItem, Card, Input, Left, Right, Thumbnail, Body, Icon, Footer, FooterTab, Picker, View, Segment, Col, Row, } from 'native-base';
-import { Grid } from 'react-native-easy-grid';
-import { connect } from 'react-redux'
+import { Container, Content, Text, Toast, Icon, View, Col, Row, } from 'native-base';
 import { StyleSheet, Image, AsyncStorage, FlatList, TouchableOpacity } from 'react-native';
-import { getSelectedMedicineDetails } from '../../../providers/pharmacy/pharmacy.action'
-import { medicineRateAfterOffer } from '../../../common';
+import { getSelectedMedicineDetails, getMedicineReviews, getMedicineReviewsCount } from '../../../providers/pharmacy/pharmacy.action'
+import { medicineRateAfterOffer , setCartItemCountOnNavigation} from '../CommomPharmacy';
 import Spinner from '../../../../components/Spinner';
+import { dateDiff, getMoment, formatDate } from '../../../../setup/helpers'
+import { MedInsertReview } from './medInsertReview'
+import { AddToCard } from '../AddToCardBuyNow/AddToCard'
 
-
+let medicineId, userId;
 class MedicineInfo extends Component {
     constructor(props) {
         super(props);
@@ -20,20 +21,59 @@ class MedicineInfo extends Component {
                 medPharDetailInfo: {}
             },
             pharmacyData: '',
-            isLoading: false
+            isLoading: false,
+            reviewData: [],
+            isBuyNow: false,
+            isAddToCart: false,
+            selectedMedcine: '',
+            isReviewInsert: false,
+            insertReviewData: '',
+            modalVisible: false,
+            reviewCount: '',
+            cartItems: [],
+            finalRating:''
         };
 
     }
-
-    componentDidMount() {
-        this.getSelectedMedicineDetails();
+    relativeTimeView(review_date) {
+        try {
+            var postedDate = review_date;
+            var currentDate = new Date();
+            var relativeDate = dateDiff(postedDate, currentDate, 'days');
+            if (relativeDate > 30) {
+                return formatDate(review_date, "DD-MM-YYYY")
+            } else {
+                return getMoment(review_date, "YYYYMMDD").fromNow();
+            }
+        }
+        catch (e) {
+            console.log(e)
+        }
     }
+
+    async componentDidMount() {
+        this.getSelectedMedicineDetails();
+        this.getMedicineReviewDetails();
+        await this.getMedicineReviewCount();
+        userId = await AsyncStorage.getItem('userId')
+        if (userId) {
+            const { navigation } = this.props
+            setCartItemCountOnNavigation(navigation);
+            let cart = await AsyncStorage.getItem('cartItems-' + userId) || []
+            if (cart.length != 0) {
+                let cartData = JSON.parse(cart)
+                this.setState({ cartItems: cartData })
+            }
+        }
+
+    }
+
 
     getSelectedMedicineDetails = async () => {
         try {
             this.setState({ isLoading: true });
-            let medicineId = this.props.navigation.getParam('medicineId');
-            let pharmacyId =this.props.navigation.getParam('pharmacyId');
+            medicineId = this.props.navigation.getParam('medicineId');
+            let pharmacyId = this.props.navigation.getParam('pharmacyId');
             let result = await getSelectedMedicineDetails(medicineId, pharmacyId);
             if (result.success) {
                 this.setState({ medicineData: result.data })
@@ -47,57 +87,157 @@ class MedicineInfo extends Component {
             this.setState({ isLoading: false });
         }
     }
-    
-    increase() {
-        let selectedCartItem = this.state.medicineData;
-        selectedCartItem.total_quantity++;
-        this.setState({ medicineData: selectedCartItem })
-        this.addToCart();
-    }
 
-    decrease() {
-        let selectedCartItem = this.state.medicineData;
-        if (selectedCartItem.total_quantity > 1) {
-            selectedCartItem.total_quantity--;
-            this.setState({ medicineData: selectedCartItem })
-            this.addToCart();
+    getMedicineReviewDetails = async () => {
+        try {
+            this.setState({ isLoading: true });
+            let result = await getMedicineReviews(medicineId);
+            if (result.success) {
+                this.setState({ reviewData: result.data })
+                console.log("reviewData", this.state.reviewData.length)
+            } else {
+                this.setState({ isLoading: false, reviewData: '' });
+            }
+        }
+        catch (e) {
+            console.log(e)
+        }
+        finally {
+            this.setState({ isLoading: false });
         }
     }
+
+    getMedicineReviewCount = async () => {
+        try {
+            this.setState({ isLoading: true });
+            let result = await getMedicineReviewsCount(medicineId);
+            if (result.success) {
+                await this.setState({ reviewCount: result.data[0] })
+                let temp = this.state.reviewCount.final_rating
+                this.setState({ finalRating: temp })
+            }
+            else {
+                this.setState({ isLoading: false, reviewCount: '' });
+
+            }
+        }
+        catch (e) {
+            console.log(e)
+        }
+        finally {
+            this.setState({ isLoading: false });
+        }
+    }
+    async selectedItems(data, selected, index) {
+        try {
+            let temp = {
+                ...data.medInfo,
+                ...data.medPharDetailInfo
+            }
+            temp.pharmacy_name = data.pharmacyInfo.name;
+            temp.pharmacy_id = data.pharmacyInfo.pharmacy_id
+            temp.medicine_id = data.medInfo.medicine_id
+            temp.pharmacyInfo = data.pharmacyInfo;
+
+            temp.offeredAmount = medicineRateAfterOffer(data.medPharDetailInfo)
+            temp.selectedType = selected;
+            if (index !== undefined) {
+                cardItems = this.state.cartItems;
+                temp.userAddedMedicineQuantity = cardItems[index].userAddedMedicineQuantity
+                temp.index = index
+            }
+            await this.setState({ selectedMedcine: temp })
+
+        } catch (e) {
+            console.log(e)
+        }
+
+    }
+    getVisible = async (val) => {
+        try {
+            if (val.isNavigate) {
+                this.setState({ isBuyNow: false })
+                let temp = [];
+                temp.push(val.medicineData)
+                this.props.navigation.navigate("MedicineCheckout", {
+                    medicineDetails: temp
+                })
+            }
+            else if (val.isNavigateCart) {
+                Toast.show({
+                    text: 'Item added to card',
+                    duration: 3000,
+
+                })
+                if (userId) {
+                    let cart = await AsyncStorage.getItem('cartItems-' + userId) || []
+                    if (cart.length != 0) {
+                        let cardData = JSON.parse(cart)
+                        await this.setState({ cartItems: cardData })
+                    }
+                }
+                this.setState({ isAddToCart: false })
+            }
+            else {
+                this.setState({ isAddToCart: false, isBuyNow: false })
+            }
+        } catch (e) {
+            console.log(e)
+        }
+    }
+    async insertReview() {
+        let insertReviewData = this.state.medicineData.medInfo;
+        insertReviewData.modalVisible = true;
+        await this.setState({ insertReviewData: insertReviewData, isReviewInsert: true })
+
+    }
+    getMedicineReviewVisible = async (val) => {
+        try {
+            await this.setState({ isLoading: true, modalVisible: false, isReviewInsert: false })
+        } catch (e) {
+            console.log(e)
+        }
+        finally {
+            this.setState({ isLoading: false })
+        }
+    }
+
 
     addToCart = async () => {
         let temp = await AsyncStorage.getItem('userId')
         let userId = JSON.stringify(temp);
         let cart = this.state.medicineData;
-        console.log('cart' + JSON.stringify(cart))
         await AsyncStorage.setItem('cartItems-' + userId, JSON.stringify(cart))
     }
     saveMoney() {
-        const { medicineData : { medPharDetailInfo } } = this.state;
+        const { medicineData: { medPharDetailInfo } } = this.state;
         return parseInt(medPharDetailInfo.price) - parseInt(medicineRateAfterOffer(medPharDetailInfo))
     }
 
     render() {
-        const { medicineData, pharmacyData } = this.state
-        const reviews = [{ name: 'S.Mukesh Kannan', rating: 4.4, date: "02 March,2020", content: 'It is very Useful Product..and Its very Tasty and energetic in Morning.' }, { name: 'S.Pradeep Natarajan Kannan', rating: 4.4, date: "06 March,2020", content: 'It is very Useful Product..and Its very Tasty and energetic in Morning.' }, { name: 'U.Ajay Kumar', rating: 4.4, date: "06 March,2020", content: 'It is very Useful Product..and Its very Tasty and energetic in Morning.' }]
+        const { medicineData, reviewData, reviewCount, cartItems, finalRating } = this.state
         return (
             <Container >
+
                 <Content style={{ padding: 10 }}>
                     {this.state.isLoading ? <Spinner color='blue'
                         visible={this.state.isLoading}
                     /> : null}
                     <View style={{ paddingBottom: 20 }}>
+
                         <View>
                             <Row>
                                 <Col size={9}>
                                     <Text style={styles.headText}>{medicineData.medInfo.medicine_name}</Text>
                                 </Col>
-                                <Col size={1}>
-                                    <View style={styles.headerViewRate}>
-                                        <Icon name="ios-star" style={{ color: '#fff', fontSize: 10 }} />
-                                        <Text style={styles.ratingText}>4.4</Text>
+                                {reviewCount != '' ?
+                                    <Col size={1}>
+                                        <View style={styles.headerViewRate}>
+                                            <Icon name="ios-star" style={{ color: '#fff', fontSize: 10 }} />
+                                            <Text style={styles.ratingText}>{reviewCount.average_rating}</Text>
+                                        </View>
+                                    </Col> : null}
 
-                                    </View>
-                                </Col>
                             </Row>
                             <Text style={{ fontSize: 14, fontFamily: 'OpenSans', color: '#909090' }}>By {medicineData.pharmacyInfo.name}</Text>
                             <View style={{ justifyContent: 'center', alignItems: 'center' }}>
@@ -123,22 +263,44 @@ class MedicineInfo extends Component {
                         <Row style={{ marginTop: 10 }}>
                             <Col size={5}>
 
-                                <TouchableOpacity style={styles.addCartTouch} onPress={() => this.props.navigation.navigate('PharmacyCart')}>
-                                    <Icon name="ios-cart" style={{ fontSize: 15, color: '#4e85e9' }} />
-                                    <Text style={styles.addCartText}>Add to Cart</Text>
-                                </TouchableOpacity>
+                                {cartItems.length == 0 || cartItems.findIndex(ele => ele.medicine_id == medicineData.medPharDetailInfo.medicine_id && ele.pharmacy_id == medicineData.medPharDetailInfo.pharmacy_id) === -1 ?
+                                    <Row style={{ alignItems: 'flex-end' }}>
+                                        <TouchableOpacity style={styles.addCartTouch}
+                                            onPress={() => { this.setState({ isAddToCart: true }), this.selectedItems(medicineData, 'Add to Card') }} >
+
+                                            <Icon name='ios-cart' style={{ color: '#4e85e9', fontSize: 15 }} />
+                                            <Text style={styles.addCartText}>Add to Cart</Text>
+
+                                        </TouchableOpacity>
+                                    </Row> :
+                                    <Row style={{alignItems:'flex-end'}}>
+                                        <TouchableOpacity style={styles.addCartTouch}
+                                            onPress={() => { this.setState({ isAddToCart: true }), this.selectedItems(medicineData, 'Add to Card', cartItems.findIndex(ele => ele.medicine_id == medicineData.medPharDetailInfo.medicine_id && ele.pharmacy_id == medicineData.medPharDetailInfo.pharmacy_id)) }} >
+
+                                            <Icon name='ios-cart' style={{ color: '#4e85e9', fontSize: 15 }} />
+                                            <Text style={styles.addCartText}>{'Added ' + cartItems[cartItems.findIndex(ele => ele.medicine_id == medicineData.medPharDetailInfo.medicine_id && ele.pharmacy_id == medicineData.medPharDetailInfo.pharmacy_id)].userAddedMedicineQuantity}</Text>
+
+                                        </TouchableOpacity>
+                                    </Row>
+                                }
+
 
                             </Col>
                             <Col size={5}>
-
-                                <TouchableOpacity style={styles.buyNowTouch}>
-                                    <Icon name="ios-cart" style={{ fontSize: 15, color: '#fff' }} />
-                                    <Text style={styles.BuyNowText}>Buy Now</Text>
-                                </TouchableOpacity>
-
+                                <Row>
+                                    <TouchableOpacity style={styles.buyNowTouch} onPress={() => { this.setState({ isBuyNow: true }), this.selectedItems(medicineData, 'Buy Now') }} >
+                                        <Icon name="ios-cart" style={{ fontSize: 15, color: '#fff' }} />
+                                        <Text style={styles.BuyNowText}>Buy Now</Text>
+                                    </TouchableOpacity>
+                                </Row>
                             </Col>
                         </Row>
-
+                        {this.state.isBuyNow == true || this.state.isAddToCart == true ?
+                            <AddToCard
+                                data={this.state.selectedMedcine}
+                                popupVisible={(data) => this.getVisible(data)}
+                            />
+                            : null}
                         <View style={{ marginTop: 10 }}>
                             <Text style={styles.desText}>Product Description</Text>
                             <Text style={styles.mainText}>{medicineData.medInfo.description}</Text>
@@ -147,11 +309,14 @@ class MedicineInfo extends Component {
                             <Text style={styles.desText}>Rating and Reviews</Text>
                             <Row style={styles.borderView}>
                                 <Col size={3}>
-                                    <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'center' }}>
-                                        <Icon name="ios-star" style={{ color: '#8dc63f', fontSize: 25 }} />
-                                        <Text style={{ fontSize: 16, fontFamily: 'OpenSans', color: '#8dc63f', fontWeight: '500', marginLeft: 5 }}>4.4</Text>
-                                    </View>
-                                    <Text style={{ fontSize: 12, fontFamily: 'OpenSans', color: '#909090' }}>64 Ratings & 52 Reviews</Text>
+                                    {reviewCount != '' ?
+                                        <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'center' }}>
+                                            <Icon name="ios-star" style={{ color: '#8dc63f', fontSize: 25 }} />
+                                            <Text style={{ fontSize: 16, fontFamily: 'OpenSans', color: '#8dc63f', fontWeight: '500', marginLeft: 5 }}>{reviewCount.average_rating}</Text>
+                                        </View> : null}
+                                    {reviewCount != '' ?
+                                        <Text style={{ fontSize: 12, fontFamily: 'OpenSans', color: '#909090' }}>{reviewCount.total_rating + ' Ratings &' + reviewCount.count + ' Reviews'}</Text> :
+                                        <Text style={{ fontSize: 12, fontFamily: 'OpenSans', color: '#909090' }}>{'0 Ratings & 0 Reviews'}</Text>}
 
                                 </Col>
                                 <Col size={7} style={{ borderLeftColor: '#909090', borderLeftWidth: 0.3, paddingLeft: 10 }}>
@@ -166,7 +331,7 @@ class MedicineInfo extends Component {
                                             </TouchableOpacity>
                                         </Col>
                                         <Col size={1.5}>
-                                            <Text style={{ fontSize: 10, fontFamily: 'OpenSans', color: '#909090', marginLeft: 5 }}>72%</Text>
+                                            <Text style={{ fontSize: 10, fontFamily: 'OpenSans', color: '#909090', marginLeft: 5 }}>{finalRating.five_star ? finalRating.five_star : 0}%</Text>
                                         </Col>
                                     </Row>
                                     <Row style={{ marginTop: 1 }}>
@@ -180,7 +345,7 @@ class MedicineInfo extends Component {
                                             </TouchableOpacity>
                                         </Col>
                                         <Col size={1.5}>
-                                            <Text style={{ fontSize: 10, fontFamily: 'OpenSans', color: '#909090', marginLeft: 5 }}>10%</Text>
+                                            <Text style={{ fontSize: 10, fontFamily: 'OpenSans', color: '#909090', marginLeft: 5 }}>{finalRating.four_star ? finalRating.four_star:0}%</Text>
                                         </Col>
                                     </Row>
                                     <Row style={{ marginTop: 1 }}>
@@ -194,7 +359,7 @@ class MedicineInfo extends Component {
                                             </TouchableOpacity>
                                         </Col>
                                         <Col size={1.5}>
-                                            <Text style={{ fontSize: 10, fontFamily: 'OpenSans', color: '#909090', marginLeft: 5 }}>8%</Text>
+                                            <Text style={{ fontSize: 10, fontFamily: 'OpenSans', color: '#909090', marginLeft: 5 }}>{finalRating.three_star ? finalRating.three_star : 0}%</Text>
                                         </Col>
                                     </Row>
                                     <Row style={{ marginTop: 1 }}>
@@ -208,7 +373,7 @@ class MedicineInfo extends Component {
                                             </TouchableOpacity>
                                         </Col>
                                         <Col size={1.5}>
-                                            <Text style={{ fontSize: 10, fontFamily: 'OpenSans', color: '#909090', marginLeft: 5 }}>6%</Text>
+                                            <Text style={{ fontSize: 10, fontFamily: 'OpenSans', color: '#909090', marginLeft: 5 }}>{finalRating.two_star ? finalRating.two_star : 0}%</Text>
                                         </Col>
                                     </Row>
                                     <Row style={{ marginTop: 1 }}>
@@ -222,47 +387,68 @@ class MedicineInfo extends Component {
                                             </TouchableOpacity>
                                         </Col>
                                         <Col size={1.5}>
-                                            <Text style={{ fontSize: 10, fontFamily: 'OpenSans', color: '#909090', marginLeft: 5 }}>4%</Text>
+                                            <Text style={{ fontSize: 10, fontFamily: 'OpenSans', color: '#909090', marginLeft: 5 }}>{finalRating.one_star ? finalRating.one_star : 0}%</Text>
                                         </Col>
                                     </Row>
                                 </Col>
                             </Row>
                         </View>
-                        <FlatList
-                            data={reviews}
-                            keyExtractor={(item, index) => index.toString()}
-                            renderItem={({ item }) =>
-                                <View style={styles.borderView}>
+                        {reviewData !== null ?
+                            <FlatList
+                                data={reviewData}
+                                keyExtractor={(item, index) => index.toString()}
+                                renderItem={({ item }) =>
+                                    <View style={styles.borderView}>
+                                        <Row>
+                                            <Col size={5} style={{ flexDirection: 'row' }}>
+                                                <Text style={styles.desText}>{item.is_anonymous ? 'Medflic User' : item.userInfo.first_name + '' + item.userInfo.last_name}</Text>
+                                                <View style={styles.viewRating}>
+                                                    <Icon name="ios-star" style={{ color: '#fff', fontSize: 10 }} />
+                                                    <Text style={styles.ratingText}>{item.rating}</Text>
+
+                                                </View>
+                                            </Col>
+                                            <Col size={5}>
+                                                <Text style={styles.dateText}>{this.relativeTimeView(item.review_date)}</Text>
+                                            </Col>
+                                        </Row>
+                                        <Text style={styles.contentText}>{item.comments}</Text>
+                                    </View>
+                                } /> :
+                            <Text style={{ fontSize: 10, justifyContent: 'center', alignItems: 'center' }}>No Reviews Were found</Text>}
+
+                        {reviewData.length!==0 ?
+
+                            <Row style={{ marginTop: 10 }}>
+                                <Col size={6}>
+                                </Col>
+                                <Col size={4} style={{ alignItems: 'flex-end', justifyContent: 'flex-end' }}>
                                     <Row>
-                                        <Col size={5} style={{ flexDirection: 'row' }}>
-                                            <Text style={styles.desText}>{item.name}</Text>
-                                            <View style={styles.viewRating}>
-                                                <Icon name="ios-star" style={{ color: '#fff', fontSize: 10 }} />
-                                                <Text style={styles.ratingText}>{item.rating}</Text>
+                                        <TouchableOpacity style={styles.viewTouch}>
+                                            <Text style={styles.ViewText}>View All Reviews</Text>
+                                            <Icon name="ios-arrow-round-forward" style={{ fontSize: 16, color: '#4e85e9', marginLeft: 2 }} />
 
-                                            </View>
-                                        </Col>
-                                        <Col size={5}>
-                                            <Text style={styles.dateText}>{item.date}</Text>
-                                        </Col>
+                                        </TouchableOpacity>
                                     </Row>
-                                    <Text style={styles.contentText}>{item.content}</Text>
-                                </View>
-                            } />
-                        <Row style={{ marginTop: 10 }}>
-                            <Col size={6}>
-                            </Col>
-                            <Col size={4} style={{ alignItems: 'flex-end', justifyContent: 'flex-end' }}>
-                                <Row>
-                                    <TouchableOpacity style={styles.viewTouch}>
-                                        <Text style={styles.ViewText}>View All Reviews</Text>
-                                        <Icon name="ios-arrow-round-forward" style={{ fontSize: 16, color: '#4e85e9', marginLeft: 2 }} />
+                                </Col>
+                            </Row> : null}
+                        <View>
+                            <Row>
+                                <TouchableOpacity style={{ borderColor: '#8dc63f', borderWidth: 1, marginLeft: 1, borderRadius: 2.5, height: 25, width: 65, backgroundColor: '#8dc63f' }}
+                                    onPress={() => { this.insertReview(), this.setState({ isReviewInsert: true }) }}>
+                                    <Row style={{ alignItems: 'center' }}>
+                                        <Text style={{ fontSize: 7, color: '#fff', marginTop: 2.5, marginLeft: 6 }}>Insert Reviews</Text>
+                                    </Row>
+                                </TouchableOpacity>
+                            </Row>
+                        </View>
+                        {this.state.isReviewInsert == true ?
+                            <MedInsertReview
+                                data={this.state.insertReviewData}
+                                popupVisible={(data) => this.getMedicineReviewVisible(data)}
 
-                                    </TouchableOpacity>
-                                </Row>
-                            </Col>
-                        </Row>
-
+                            />
+                            : null}
                     </View>
                     {/* <View style={styles.customColumn}>
                         <Row>
@@ -396,7 +582,8 @@ const styles = StyleSheet.create({
         paddingBottom: 5,
         paddingLeft: 50,
         paddingRight: 50,
-        borderRadius: 2
+        borderRadius: 2,
+        alignItems:'flex-end'
     },
     buyNowTouch: {
         backgroundColor: '#8dc63f',

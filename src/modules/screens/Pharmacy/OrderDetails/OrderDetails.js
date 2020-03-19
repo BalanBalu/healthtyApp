@@ -8,6 +8,8 @@ import { Col, Row, Grid } from 'react-native-easy-grid';
 import { StyleSheet, Image, AsyncStorage, TextInput, FlatList, TouchableOpacity } from 'react-native';
 import { Loader } from '../../../../components/ContentLoader';
 import { formatDate } from '../../../../setup/helpers';
+import { getMedicineOrderDetails } from '../../../providers/pharmacy/pharmacy.action';
+import { getPaymentInfomation } from '../../../providers/bookappointment/bookappointment.action'
 
 class OrderDetails extends Component {
     constructor(props) {
@@ -15,12 +17,40 @@ class OrderDetails extends Component {
         this.state = {
             orderId: '',
             myOrderList: [],
+            orderList:[],
+            paymentDetails: {},
             isLoading: true,
         }
     }
     async componentDidMount() {
         const { navigation } = this.props;
-        await this.setState({ myOrderList: navigation.getParam('orderDetails'), isLoading: false })
+        await this.setState({ orderList: navigation.getParam('orderDetails'), isLoading: false })
+       console.log("myOrderList" + JSON.stringify(this.state.orderList))
+       this.medicineOrderDetails();
+    }
+
+    
+
+    async medicineOrderDetails() {
+        try {
+            this.setState({ isLoading: true });
+            let userId = await AsyncStorage.getItem('userId');
+            let orderId = this.state.orderList._id
+
+            let result = await getMedicineOrderDetails(orderId , userId);
+            // console.log("result+++++++++++++++++"+JSON.stringify(result))
+            if (result.success) {
+                this.setState({ myOrderList: result.data[0] });
+                this.getPaymentInfo(result.data[0].payment_id)
+               console.log("baluuuorderList+++++++++++++++++"+JSON.stringify(this.state.myOrderList))
+  
+            }
+        }
+        catch (e) {
+            console.log(e);
+        } finally {
+            this.setState({ isLoading: false });
+        }
     }
 
 
@@ -32,62 +62,123 @@ class OrderDetails extends Component {
         )
     }
 
+    getAddress(address) {
+        if (address.pickup_or_delivery_address) {
+        let temp = address.pickup_or_delivery_address.address;
+          return `${ temp.no_and_street || '' },${temp.address_line_1 || ''},${temp.district || ''},${temp.city || ''},${temp.state || ''},${temp.country || ''},${temp.pin_code || ''}`
+        } else {
+          return null
+        }
+      }
+
+      getName(name){
+        if (name.pickup_or_delivery_address) {
+            let temp = name.pickup_or_delivery_address;
+              return `${ temp.full_name || '' }`
+            } else {
+              return null
+            }
+      }
+      getMobile(number){
+        if (number.pickup_or_delivery_address) {
+            let temp = number.pickup_or_delivery_address;
+              return `${ temp.mobile_number || '' }`
+            } else {
+              return null
+            }
+      }
+
+
+    getGrandTotal(Total) {
+        if (Total != undefined) {
+            let itemTotal = Total.order_total_amount;
+            let deliveryCharge = Total.delivery_charges;
+            let deliveryTax = Total.delivery_tax
+            let TotalAmount = (parseInt(itemTotal) + parseInt(deliveryCharge || 0) + parseInt(deliveryTax || 0))
+            return `${TotalAmount || ''}`
+        }
+        else {
+            return null
+        }
+    }
+      getPaymentInfo = async (paymentId) => {
+        try {
+          let result = await getPaymentInfomation(paymentId);
+         
+          if (result.success) {
+            this.setState({ paymentDetails: result.data[0] })
+            console.log("this.state.paymentDetails+++++++++++=="+ JSON.stringify(this.state.paymentDetails))
+          }
+        }
+        catch (e) {
+          console.log(e)
+        }
+      }
+
     render() {
         const { navigation } = this.props;
-        const { isLoading, myOrderList } = this.state;
-        const MedDetail = [{ medname: 'Horlicks Health and Nutrician Drink Classic Malt (x 1)', pharname: 'By Apollo Pharmacy', amount: '₹ 180.00' },
-        { medname: 'Horlicks Health and Nutrician Drink Classic Malt (x 1)', pharname: 'By Apollo Pharmacy', amount: '₹ 180.00' },
-        { medname: 'Horlicks Health and Nutrician Drink Classic Malt (x 1)', pharname: 'By Apollo Pharmacy', amount: '₹ 180.00' }]
+        const { isLoading, myOrderList,paymentDetails,orderList } = this.state;
         return (
             <Container style={styles.container}>
                 <Content style={{ backgroundColor: '#F5F5F5', padding: 10 }}>
-                    <View style={{ backgroundColor: '#fff', padding: 10, marginTop: 5 }}>
+                    <View style={{ paddingLeft: 10, paddingRight: 10, paddingBottom: 10 }}>
+                        <Row>
+                            <Col size={5}>
+                                <Text style={styles.orderIdText}>Order Id</Text>
+                            </Col>
+                            <Col size={5}>
+                                <Text style={{ fontSize: 12, textAlign: 'right', marginTop: 13, fontFamily: 'OpenSans' }}>{orderList._id || ''}</Text>
+                            </Col>
+                        </Row>
+                    </View>
+                    <View style={{ backgroundColor: '#fff', padding: 10, }}>
                         <Text style={styles.arrHeadText}>Arriving On Today</Text>
                         {/* Delivery date display  */}
                         {/* <Text style={styles.delHeadText}>Delivery On 29th February,2020</Text> */}
 
                         <FlatList
                             style={{ marginTop: 10 }}
-                            data={[ { status: 'Ordered and Approved', checked: true, drawLine: true }, 
-                                    { status: 'Packed and Out for Delivery', checked: true, drawLine: true },
-                                    { status: 'Delivered', checked: false }, ]}
+                            data={[{ status: 'Ordered and Approved', checked: true, drawLine: true },
+                            { status: 'Packed and Out for Delivery', checked: true, drawLine: true },
+                            { status: 'Delivered', checked: false },]}
                             renderItem={({ item }) =>
-                            <Row style={{  }}>
-                            <Col size={0.7}>
-                                {item.checked === true ? 
-                                <TouchableOpacity style={styles.lengthTouch}>
-                                </TouchableOpacity> : null } 
-                                
-                                {item.checked === false ? 
-                                    <TouchableOpacity style={styles.bottomText}>
-                                    </TouchableOpacity> : 
-                                null }
-                                
-                                {item.checked === true && item.drawLine === true ?
-                                    <TouchableOpacity style={styles.TouchLegth}>
-                                    </TouchableOpacity>  
-                                    :  
-                                    <TouchableOpacity style={{
-                                        height: 60,
-                                        padding: 1,
-                                        width: 4,
-                                        marginLeft: 4
-                                    }}>
-                                    </TouchableOpacity>  }
-                            </Col>
-                            <Col size={9.3}>
-                                <View style={{ marginTop: -3 }}>
-                                    <Text style={styles.trackingText}>{item.status}</Text>
-                                    <Text style={{ fontSize: 14, fontFamily: 'OpenSans', color: '#909090' }}>17th February,2020 at 05.27 PM</Text>
-                                </View>
-                        
-                            </Col>
-                        </Row>
-                        }/>
-                        
-                        <Text style={{ fontSize: 14, fontWeight: '500', fontFamily: 'OpenSans', color: '#7F49C3', marginTop: 10 }}> Ordered Medicines</Text>
+                                <Row style={{}}>
+                                    <Col size={0.7}>
+                                        {item.checked === true ?
+                                            <TouchableOpacity style={styles.lengthTouch}>
+                                            </TouchableOpacity> : null}
+
+                                        {item.checked === false ?
+                                            <TouchableOpacity style={styles.bottomText}>
+                                            </TouchableOpacity> :
+                                            null}
+
+                                        {item.checked === true && item.drawLine === true ?
+                                            <TouchableOpacity style={styles.TouchLegth}>
+                                            </TouchableOpacity>
+                                            :
+                                            <TouchableOpacity style={{
+                                                height: 60,
+                                                padding: 1,
+                                                width: 4,
+                                                marginLeft: 4
+                                            }}>
+                                            </TouchableOpacity>}
+                                    </Col>
+                                    <Col size={9.3}>
+                                        <View style={{ marginTop: -3 }}>
+                                            <Text style={styles.trackingText}>{item.status}</Text>
+                                            <Text style={{ fontSize: 12, fontFamily: 'OpenSans', color: '#909090' }}>17th February,2020 at 05.27 PM</Text>
+                                        </View>
+
+                                    </Col>
+                                </Row>
+                            } />
+
+                        <Text style={{ fontSize: 14, fontWeight: '500', fontFamily: 'OpenSans', color: '#7F49C3', marginTop: 10 }}>Ordered Medicines</Text>
                         <FlatList
-                            data={MedDetail}
+                            data={myOrderList.order_items}
+                            extraData={myOrderList.order_items}
                             renderItem={({ item }) =>
                                 <Row style={styles.rowStyle}>
                                     <Col size={2}>
@@ -99,9 +190,9 @@ class OrderDetails extends Component {
                                         />
                                     </Col>
                                     <Col size={8} style={styles.nameText}>
-                                        <Text style={styles.nameText}>{item.medname}</Text>
-                                        <Text style={styles.pharText}>{item.pharname}</Text>
-                                        <Text style={styles.amountText}>{item.amount}</Text>
+                                        <Text style={styles.nameText}>{item.medicine_name}</Text>
+                                        <Text style={styles.pharText}>{item.pharmcyInfo.name}</Text>
+                                        <Text style={styles.amountText}>₹{item.final_price}</Text>
                                     </Col>
                                 </Row>
                             } />
@@ -111,7 +202,7 @@ class OrderDetails extends Component {
 
                             </Col>
                             <Col size={5}>
-                                <Text style={styles.rsText}>₹ 540.00</Text>
+                                <Text style={styles.rsText}>₹ {myOrderList.order_total_amount || 0}</Text>
                             </Col>
                         </Row>
                         <Row style={{ marginTop: 10 }}>
@@ -120,7 +211,7 @@ class OrderDetails extends Component {
 
                             </Col>
                             <Col size={5}>
-                                <Text style={styles.rsText}>₹ 50.00</Text>
+                                <Text style={styles.rsText}>₹ {myOrderList.delivery_charges || 0}</Text>
                             </Col>
                         </Row>
                         <Row style={{ marginTop: 10 }}>
@@ -129,7 +220,7 @@ class OrderDetails extends Component {
 
                             </Col>
                             <Col size={5}>
-                                <Text style={styles.rsText}>₹ 50.00</Text>
+                                <Text style={styles.rsText}>₹ {myOrderList.delivery_tax || 0}</Text>
                             </Col>
                         </Row>
                         <Row style={{ marginTop: 10 }}>
@@ -138,7 +229,7 @@ class OrderDetails extends Component {
 
                             </Col>
                             <Col size={5}>
-                                <Text style={styles.totalsText}>₹ 640.00</Text>
+                                <Text style={styles.totalsText}>₹ {this.getGrandTotal(myOrderList)}</Text>
                             </Col>
                         </Row>
                     </View>
@@ -146,22 +237,18 @@ class OrderDetails extends Component {
                     <View style={styles.mainView}>
                         <Text style={styles.orderText}>OrderDetails</Text>
                         <View style={{ marginTop: 10 }}>
-                            <Text style={styles.innerText}>Order Id</Text>
-                            <Text style={styles.rightText}>2020729443</Text>
-                        </View>
-                        <View style={{ marginTop: 10 }}>
                             <Text style={styles.innerText}>Payment</Text>
-                            <Text style={styles.rightText}>Cash on Delivery</Text>
+                            <Text style={styles.rightText}>{paymentDetails.payment_method || 0 }</Text>
                         </View>
                         <View style={{ marginTop: 10 }}>
                             <Text style={styles.innerText}>Ordered On</Text>
-                            <Text style={styles.rightText}>02nd March,2020</Text>
+                        <Text style={styles.rightText}>{formatDate(myOrderList.created_date,'Do MMM,YYYY')}</Text>
                         </View>
                         <View style={{ marginTop: 10, paddingBottom: 10 }}>
                             <Text style={styles.innerText}>Customer Details</Text>
-                            <Text style={styles.nameTextss}>S.Mukesh Kannan</Text>
-                            <Text style={styles.addressText}>No.28,Kamarajar Nagar,4th cross street, Ambattur, Chennai - 600051.</Text>
-                            <Text style={styles.addressText}>Mobile - 8989567891</Text>
+                        <Text style={styles.nameTextss}>{this.getName(myOrderList)}</Text>          
+                          <Text style={styles.addressText}>{this.getAddress(myOrderList)}</Text>
+                        <Text style={styles.addressText}>Mobile - {this.getMobile(myOrderList)}</Text>
 
                         </View>
 
@@ -404,7 +491,7 @@ const styles = StyleSheet.create({
     },
     arrHeadText: {
         fontFamily: 'OpenSans',
-        fontSize: 18,
+        fontSize: 17,
         fontWeight: '500',
         color: '#8dc63f'
     },
@@ -473,25 +560,25 @@ const styles = StyleSheet.create({
     },
     innerText: {
         fontFamily: 'OpenSans',
-        fontSize: 10,
+        fontSize: 12,
         fontWeight: '500',
         color: '#7F49C3'
     },
     rightText: {
         fontFamily: 'OpenSans',
-        fontSize: 10,
+        fontSize: 12,
         color: '#4c4c4c'
 
     },
     addressText: {
         fontFamily: 'OpenSans',
-        fontSize: 10,
+        fontSize: 12,
         color: '#4c4c4c',
         marginTop: 5
     },
     nameTextss: {
         fontFamily: 'OpenSans',
-        fontSize: 10,
+        fontSize: 12,
         color: '#4c4c4c',
         fontWeight: '500',
         marginTop: 5
@@ -521,5 +608,11 @@ const styles = StyleSheet.create({
         fontWeight: '500',
         fontFamily: 'OpenSans',
         color: '#4c4c4c'
+    },
+    orderIdText: {
+        fontSize: 17,
+        fontWeight: '500',
+        fontFamily: 'OpenSans',
+        color: '#7F49C3', marginTop: 8
     }
 });

@@ -5,6 +5,7 @@ import { createStackNavigator } from 'react-navigation';
 import { Item, Text, Icon, Header, Left, Row, Grid, Col, Input, Container, Content, Right, Card } from 'native-base';
 import { getSuggestionMedicines } from '../../../providers/pharmacy/pharmacy.action';
 import { MAX_DISTANCE_TO_COVER } from '../../../../setup/config';
+import { setCartItemCountOnNavigation } from '../CommomPharmacy'
 import { connect } from 'react-redux'
 const debounce = (fun, delay) => {
     let timer = null;
@@ -38,6 +39,8 @@ class MedicineSuggestionList extends Component {
        if(medicineName !== null) {
            this.SearchKeyWordFunction(medicineName);
        }
+       const { navigation } = this.props
+       setCartItemCountOnNavigation(navigation);
     }
     SearchKeyWordFunction = async (enteredText) => {
 
@@ -79,7 +82,7 @@ class MedicineSuggestionList extends Component {
 
 
                     <View style={{ flex: 1, }}>
-                        <Item style={{ borderBottomWidth: 0, backgroundColor: '#fff', height: 30, borderRadius: 2, }}>
+                        <Item style={{ borderBottomWidth: 0, backgroundColor: '#fff', height: 30, borderRadius: 2,borderWidth:1,borderColor:'gray' }}>
                             <Input
                                 placeholder='Search for Medicines and Health Products...     '
                                 style={{ fontSize: 12, width: '300%' }}
@@ -127,13 +130,13 @@ class MedicineSuggestionList extends Component {
                                     data={this.state.medicineSugesstionArray}
                                     ItemSeparatorComponent={this.itemSaperatedByListView}
                                     renderItem={({ item }) => (
-                                        <Row style={{ borderBottomWidth: 0.1, borderBottomColor: 'gray' }} onPress={() => {
+                                        <Row style={{ borderBottomWidth: 0.3, borderBottomColor: '#cacaca' }} onPress={() => {
 
                                             this.props.navigation.navigate("medicineSearchList", { medicineName: item.value })
                                         }} >
                                             <Text style={{ padding: 10, fontFamily: 'OpenSans', fontSize: 13 }}>{item.value || ''}</Text>
                                             <Right>
-                                                <Text style={{ padding: 10, fontFamily: 'OpenSans', fontSize: 13 }}>{item.type || ''}</Text>
+                                                <Text style={{ padding: 10, fontFamily: 'OpenSans', fontSize: 13 ,color:'#7F49C3'}}>{item.type || ''}</Text>
                                             </Right>
                                         </Row>
                                     )}
