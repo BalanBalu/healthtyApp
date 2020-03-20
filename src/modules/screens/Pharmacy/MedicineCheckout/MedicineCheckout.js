@@ -130,16 +130,16 @@ class MedicineCheckout extends Component {
         let medicinceNames = '';
         let medicineOrderData = [];
         const amount = medicineDetails.map(ele => {
-            if (medicinceNames.length < 50) {
-                medicinceNames = medicinceNames + ele.medicine_name
+            if (medicinceNames.length < 100) {
+                medicinceNames = medicinceNames + ele.medicine_name + '( * ' + String(ele.userAddedMedicineQuantity) + '), ' 
             }
             medicineOrderData.push({
                 medicine_id: ele.medicine_id,
                 pharmacy_id: ele.pharmacy_id,
-                medicine_original_price: ele.price,
-                medicine_offered_price: ele.offeredAmount,
-                quantity: ele.userAddedMedicineQuantity,
-                final_price: userAddedTotalMedicineAmount,
+                medicine_original_price: Number(ele.price),
+                medicine_offered_price: Number(ele.offeredAmount),
+                quantity: Number(ele.userAddedMedicineQuantity),
+                final_price: Number(userAddedTotalMedicineAmount),
                 medicine_name: ele.medicine_name,
             })
             return ele.userAddedTotalMedicineAmount
@@ -152,7 +152,7 @@ class MedicineCheckout extends Component {
             amount: medicineTotalAmountwithDeliveryChage,
             bookSlotDetails: {
                 fee: amount,
-                diseaseDescription: medicinceNames,
+                diseaseDescription: medicinceNames.slice(0, -1),
                 medicineDetails: medicineOrderData,
                 delivery_option: itemSelected,
                 delivery_charges: deliveryDetails.delivery_charges,
@@ -185,35 +185,28 @@ class MedicineCheckout extends Component {
     getdeliveryWithMedicineAmountCalculation(medicineDetails) {
         if (medicineDetails.length != 0) {
             let pharmacyData = []
+            let pharmacyInfo = null;
             let amount = this.state.medicineDetails.map(ele => {
 
-                if (ele.pharmacyInfo) {
-
-                    if (pharmacyData.length != 2) {
-
-                        if (!pharmacyData.includes(ele.pharmacyInfo.pharmacy_id)) {
-                            pharmacyData.push(ele.pharmacyInfo.pharmacy_id)
-
-                            if (pharmacyData.length != 2) {
-                                let temp = ele.pharmacyInfo
-                                delete temp.name
-                                temp.full_name = ele.pharmacyInfo.name;
-                                temp.coordinates = ele.pharmacyInfo.location.coordinates
-                                temp.type = ele.pharmacyInfo.location.type
-                                temp.address = ele.pharmacyInfo.location.address
-                                this.setState({ pharmacyInfo: temp })
-                            }
-                        }
-                    } else {
-                        this.setState({ pickupOPtionEnabled: false, pharmacyInfo: null })
-                    }
-
+                if (ele.pharmacyInfo && !pharmacyData.includes(ele.pharmacyInfo.pharmacy_id)) {
+                    pharmacyData.push(ele.pharmacyInfo.pharmacy_id)
+                    let temp = ele.pharmacyInfo
+                    delete temp.name
+                    temp.full_name = ele.pharmacyInfo.name;
+                    temp.coordinates = ele.pharmacyInfo.location.coordinates
+                    temp.type = ele.pharmacyInfo.location.type
+                    temp.address = ele.pharmacyInfo.location.address;
+                    pharmacyInfo = temp;
                 }
                 return ele.userAddedTotalMedicineAmount
             }).reduce(
                 (total, userAddedTotalMedicineAmount) => total + userAddedTotalMedicineAmount);
-
-            this.setState({ medicineTotalAmount: amount })
+        
+                this.setState({ 
+                    pickupOPtionEnabled: pharmacyData.length === 1,
+                    pharmacyInfo: pharmacyData.length === 1 ? pharmacyInfo: null,
+                    medicineTotalAmount: amount,
+                 })
         } else {
             return ' '
         }
