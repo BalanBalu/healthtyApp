@@ -43,6 +43,18 @@ export async function ProductIncrementDecreMent(quantity, price, operation) {
         totalAmount: totalAmount
     }
 }
+
+
+export function renderMedicineImage(data) {
+    let source = require('../../../../assets/images/paracetamol.jpg')
+    if (data.medcine_image) {
+        if(data.medcine_image[0]){
+            console.log(data.medcine_image[0].imageURL)
+            source = { uri: data.medcine_image[0].imageURL }
+        }  
+    } 
+    return (source)
+}
 export async function relativeTimeView(review_date) {
     try {
         console.log(review_date)
