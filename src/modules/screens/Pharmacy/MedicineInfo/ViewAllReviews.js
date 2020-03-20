@@ -6,6 +6,9 @@ import { StyleSheet, FlatList, TouchableOpacity } from 'react-native';
 import { getSelectedMedicineDetails, getMedicineReviews, getAllMedicineReviews, getMedicineReviewsCount } from '../../../providers/pharmacy/pharmacy.action'
 import { relativeTimeView } from '../CommomPharmacy';
 import Spinner from '../../../../components/Spinner';
+import { dateDiff, getMoment, formatDate } from '../../../../setup/helpers'
+import StarRating from 'react-native-star-rating';
+import { renderProfileImage } from '../../../common';
 
 
 class ViewAllReviews extends Component {
@@ -19,6 +22,22 @@ class ViewAllReviews extends Component {
     componentDidMount() {
         this.getAllMedicineReviewDetails();
     }
+    relativeTimeView(review_date) {
+        try {
+            console.log(review_date)
+            var postedDate = review_date;
+            var currentDate = new Date();
+            var relativeDate = dateDiff(postedDate, currentDate, 'days');
+            if (relativeDate > 30) {
+                return formatDate(review_date, "DD-MM-YYYY")
+            } else {
+                return getMoment(review_date, "YYYYMMDD").fromNow();
+            }
+        }
+        catch (e) {
+            console.log(e)
+        }
+    }
     getAllMedicineReviewDetails = async () => {
         try {
             this.setState({ isLoading: true });
@@ -27,6 +46,8 @@ class ViewAllReviews extends Component {
             console.log("result", result)
             if (result.success) {
                 this.setState({ viewAllReviewData: result.data })
+                console.log("viewAllReviewData", this.state.viewAllReviewData)
+
             } else {
                 this.setState({ isLoading: false, viewAllReviewData: '' });
             }
@@ -38,37 +59,52 @@ class ViewAllReviews extends Component {
             this.setState({ isLoading: false });
         }
     }
+
     render() {
 
         return (
             <Container style={styles.container}>
                 <Content style={styles.bodyContent}>
+
                     {this.state.isLoading ? <Spinner color='blue' /> :
                         this.state.viewAllReviewData !== null ?
                             <FlatList
                                 data={this.state.viewAllReviewData}
                                 keyExtractor={(item, index) => index.toString()}
                                 renderItem={({ item }) =>
-                                    <View style={styles.borderView}>
-                                        <Row>
-                                            <Col size={5} style={{ flexDirection: 'row' }}>
-                                                <Text style={styles.desText}>{item.is_anonymous ? 'Medflic User' : item.userInfo.first_name + '' + item.userInfo.last_name}</Text>
-                                                <View style={styles.viewRating}>
-                                                    <Icon name="ios-star" style={{ color: '#fff', fontSize: 10 }} />
-                                                    <Text style={styles.ratingText}>{item.rating}</Text>
+                                    <Card style={{ backgroundColor: '#ffffff', borderRadius: 10, padding: 10 }}>
 
+                                        <View style={styles.borderView}>
+                                            <Row>
+                                                <Col size={2} style={{ flexDirection: 'row' }}>
+                                                    <Thumbnail square source={renderProfileImage(item.userInfo)} style={{ width: 60, height: 60, borderRadius: 60 }} />
+                                                    
+                                                </Col>
+                                                <Col size={4}>
+                                                    <Text style={styles.desText}>{item.is_anonymous ? 'Medflic User' : item.userInfo.first_name + '' + item.userInfo.last_name}</Text>
+                                                    <StarRating fullStarColor='#FF9500' starSize={15} width={100} containerStyle={{ width: 100 }}
+                                                        disabled={false}
+                                                        maxStars={5}
+                                                        rating={parseInt(item.rating)}
+
+                                                    />
+                                                    <Text style={styles.contentText}>{item.comments}</Text>
+                                                </Col>
+                                                <View style={{ marginTop: 5 }}>
+                                                    <Col size={4}>
+                                                        <Text style={styles.dateText}>{this.relativeTimeView(item.review_date)}</Text>
+                                                    </Col>
                                                 </View>
-                                            </Col>
-                                            <Col size={5}>
-                                                <Text style={styles.dateText}>{relativeTimeView(item.review_date)}</Text>
-                                            </Col>
-                                        </Row>
-                                        <Text style={styles.contentText}>{item.comments}</Text>
-                                    </View>
-                                } />
-                            : <Text style={{ fontSize: 10, justifyContent: 'center', alignItems: 'center' }}>No Reviews Were found</Text>}
+                                            </Row>
+                                        </View>
 
 
+
+
+                                    </Card>
+
+                                } /> : null
+                        // :  <Text style={{ alignItems: 'center' ,fontFamily:'OpenSans',fontSize:12,marginLeft:60,fontWeight:'bold',borderTopColor:'gray',borderTopWidth:0.6}} >No Reviews Were found</Text>
                     }
                 </Content>
             </Container>
@@ -96,6 +132,22 @@ const styles = StyleSheet.create({
         borderWidth: 0.5,
         borderColor: 'black',
     },
+    ratingText: {
+        fontSize: 10,
+        fontFamily: 'OpenSans',
+        color: '#fff'
+    },
+    viewRating: {
+        backgroundColor: '#8dc63f',
+        height: 15,
+        flexDirection: 'row',
+        alignItems: 'center',
+        justifyContent: 'center',
+        marginLeft: 5,
+        paddingLeft: 1,
+        paddingRight: 1
+    },
+
     button2: {
         marginLeft: 'auto',
         marginRight: 10,
