@@ -7,7 +7,7 @@ import { Col, Row, Grid } from 'react-native-easy-grid';
 import { StyleSheet, Image, TouchableOpacity, AsyncStorage, FlatList, TouchableHighlight, Modal } from 'react-native';
 import Spinner from "../../../../components/Spinner";
 import { getMedicinesSearchList, getMedicinesSearchListByPharmacyId } from '../../../providers/pharmacy/pharmacy.action'
-import { medicineRateAfterOffer } from '../CommomPharmacy'
+import { medicineRateAfterOffer, setCartItemCountOnNavigation } from '../CommomPharmacy'
 import { AddToCard } from '../AddToCardBuyNow/AddToCard'
 import { connect } from 'react-redux'
 import{renderMedicineImage} from '../CommomPharmacy'
@@ -40,9 +40,10 @@ class MedicineSearchList extends Component {
         if (userId) {
             let cart = await AsyncStorage.getItem('cartItems-' + userId) || []
             if (cart.length != 0) {
-                console.log('MedicineSearchListcomponentdidmount')
                 let cartData = JSON.parse(cart)
                 this.setState({ cartItems: cartData})
+                const { navigation } = this.props;
+                setCartItemCountOnNavigation(navigation);
             }
         }
         if (navigationByPharmacySelect === true) {

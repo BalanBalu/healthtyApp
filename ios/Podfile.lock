@@ -61,6 +61,8 @@ PODS:
   - QBImagePickerController (3.4.0)
   - React (0.59.10):
     - React/Core (= 0.59.10)
+  - react-native-calendar-events (1.7.3):
+    - React
   - react-native-mapbox-gl (7.0.4):
     - React
   - React/Core (0.59.10):
@@ -109,6 +111,7 @@ PODS:
 DEPENDENCIES:
   - Firebase/Analytics
   - Folly (from `../node_modules/react-native/third-party-podspecs/Folly.podspec`)
+  - react-native-calendar-events (from `../node_modules/react-native-calendar-events`)
   - "react-native-mapbox-gl (from `../node_modules/@react-native-mapbox-gl/maps`)"
   - React/Core (from `../node_modules/react-native`)
   - React/DevSupport (from `../node_modules/react-native`)
@@ -149,6 +152,8 @@ EXTERNAL SOURCES:
     :podspec: "../node_modules/react-native/third-party-podspecs/Folly.podspec"
   React:
     :path: "../node_modules/react-native"
+  react-native-calendar-events:
+    :path: "../node_modules/react-native-calendar-events"
   react-native-mapbox-gl:
     :path: "../node_modules/@react-native-mapbox-gl/maps"
   RNImageCropPicker:
@@ -170,11 +175,12 @@ SPEC CHECKSUMS:
   nanopb: 2901f78ea1b7b4015c860c2fdd1ea2fee1a18d48
   QBImagePickerController: d54cf93db6decf26baf6ed3472f336ef35cae022
   React: 36d0768f9e93be2473b37e7fa64f92c1d5341eef
+  react-native-calendar-events: 2fe35a9294af05de0ed819d3a1b5dac048d2c010
   react-native-mapbox-gl: e5e1921140b7e2ae2e4e1d917f4c91ad13da3f25
   RNImageCropPicker: 6134b66a3d5bc13e2895a97c630a4254006902b4
   RSKImageCropper: a446db0e8444a036b34f3c43db01b2373baa4b2a
   yoga: 684513b14b03201579ba3cee20218c9d1298b0cc
 
-PODFILE CHECKSUM: 953fa853c1857d60558d1c8d3063915f62c1efb0
+PODFILE CHECKSUM: 9e86e00e2d56c1e0cb95a4c5dd6ae0ef86274168
 
 COCOAPODS: 1.8.4

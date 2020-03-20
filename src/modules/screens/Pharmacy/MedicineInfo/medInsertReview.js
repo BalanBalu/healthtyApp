@@ -26,13 +26,13 @@ export class MedInsertReview extends Component {
 
     const { data } = this.props;
     await this.setState({ data, userId: data.user_id, medicineId: data.medicine_id,modalVisible:data.modalVisible })
-
+    console.log("data", this.state.data)
   }
 
   submitReview = async (reviewType) => {
     try {
 
-      const { userId, medicineId, is_anonymous, rating, comments } = this.state;
+      const {  medicineId, is_anonymous, rating, comments } = this.state;
       if (reviewType == 'ADD') {
         if (rating == 0) {
           this.setState({ errorMsg: 'Add Rating to Continue' })
@@ -53,6 +53,7 @@ export class MedInsertReview extends Component {
 
         };
         let userId = await AsyncStorage.getItem('userId');
+        console.log("data", data)
 
         let result = await InsertMedicineReviews(userId, data);
         console.log("result", result)

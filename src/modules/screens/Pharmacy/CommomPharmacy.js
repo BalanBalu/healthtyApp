@@ -1,9 +1,6 @@
 import React, { Component } from 'react';
 import { View, Text, AsyncStorage, Platform } from "react-native";
-
-
-
-
+import { dateDiff, getMoment, formatDate } from '../../../setup/helpers'
 
 
 export function medicineRateAfterOffer(item) {
@@ -57,4 +54,31 @@ export function renderMedicineImage(data) {
         }  
     } 
     return (source)
+}
+export async function relativeTimeView(review_date) {
+    try {
+        console.log(review_date)
+        var postedDate = review_date;
+        var currentDate = new Date();
+        var relativeDate = dateDiff(postedDate, currentDate, 'days');
+        if (relativeDate > 30) {
+            return formatDate(review_date, "DD-MM-YYYY")
+        } else {
+            return getMoment(review_date, "YYYYMMDD").fromNow();
+        }
+    }
+    catch (e) {
+        console.log(e)
+    }
+}
+
+export async function setCartItemCountOnNavigation(navigation) {
+    const userId = await AsyncStorage.getItem('userId')
+    if(userId) {
+        let cart = await AsyncStorage.getItem('cartItems-' + userId) || [];
+        let cartData = JSON.parse(cart)
+        navigation.setParams({
+            cartItemsCount: cartData.length
+        });
+    }
 }
