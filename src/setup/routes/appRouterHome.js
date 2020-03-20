@@ -43,6 +43,8 @@ import MyAppoinmentList from '../../modules/screens/MyAppointments/MyAppointment
 import CancelAppointment from "../../modules/screens/MyAppointments/cancelAppointment";
 import AddReminder from '../../modules/screens/Reminder/AddReminder'
 import Reminder from '../../modules/screens/Reminder/Reminders'
+
+
 import PharmacyHome from '../../modules/screens/Pharmacy/PharmacyHome/PharmacyHome';
 import MyOrdersList from '../../modules/screens/Pharmacy/MyOrdersList/MyOrdersList';
 import OrderDetails from '../../modules/screens/Pharmacy/OrderDetails/OrderDetails';
@@ -52,8 +54,9 @@ import UploadPrescription from '../../modules/screens/Pharmacy/PharmacyHome/Uplo
 import MedicineCheckout from '../../modules/screens/Pharmacy/MedicineCheckout/MedicineCheckout';
 import MedicineInfo from '../../modules/screens/Pharmacy/MedicineInfo/MedicineInfo';
 import ViewAllReviews from '../../modules/screens/Pharmacy/MedicineInfo/ViewAllReviews';
-
 import MedicineSearchList from '../../modules/screens/Pharmacy/MedicineSearchList/MedicineSearchList';
+import PharmacyList from '../../modules/screens/Pharmacy/PharmacyList/pharmacyList'
+
 import { Badge } from '../../../src/modules/common'
 import Locations from '../../modules/screens/Home/Locations';
 import BloodDonersList from '../../modules/screens/bloodDonation/BloodDonersList';
@@ -573,6 +576,12 @@ const HomeStack = createStackNavigator({
     screen: MedicineCheckout,
     navigationOptions: {
       title: 'Order Payment Address'
+    }
+  },
+  PharmacyList: {
+    screen: PharmacyList,
+    navigationOptions: {
+      title: 'Pharmacy List'
     }
   },
   //=================== Medicine Order Details =============
