@@ -38,10 +38,10 @@ export async function getMedicineOrderList(userId) {
 
 /* Medicine Order details */
 
-export async function getMedicineOrderDetails(order_id , userId) {
+export async function getMedicineOrderDetails(order_id, userId) {
   try {
 
-    let endPoint = '/medicine/order/'+ order_id + '/user/' + userId ;
+    let endPoint = '/medicine/order/' + order_id + '/user/' + userId;
     console.log(endPoint);
     let response = await getService(endPoint);
     console.log(response);
@@ -184,7 +184,7 @@ export async function createMedicineOrder(data) {
 export async function getMedicineReviews(medicine_id) {
   try {
 
-    let endPoint = '/medicine/reviews/' + medicine_id + '?limit=2';
+    let endPoint = '/medicine/' + medicine_id + '/reviews?limit=2';
     console.log(endPoint);
     let response = await getService(endPoint);
     let respData = response.data;
@@ -200,7 +200,7 @@ export async function getMedicineReviews(medicine_id) {
 export async function getAllMedicineReviews(medicine_id) {
   try {
 
-    let endPoint = '/medicine/reviews/' + medicine_id;
+    let endPoint = '/medicine/' + medicine_id + '/reviews';
     console.log(endPoint);
     let response = await getService(endPoint);
     let respData = response.data;
@@ -234,7 +234,7 @@ export async function InsertMedicineReviews(userId, data) {
 export async function getMedicineReviewsCount(medicine_id) {
   try {
 
-    let endPoint = '/medicine/reviewsCount/' + medicine_id;
+    let endPoint = '/medicine/' + medicine_id +'/reviewsCount';
     console.log(endPoint);
     let response = await getService(endPoint);
     let respData = response.data;

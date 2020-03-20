@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import { Container, Content, Text, Toast, Icon, View, Col, Row, } from 'native-base';
 import { StyleSheet, Image, AsyncStorage, FlatList, TouchableOpacity } from 'react-native';
 import { getSelectedMedicineDetails, getMedicineReviews, getMedicineReviewsCount } from '../../../providers/pharmacy/pharmacy.action'
-import { medicineRateAfterOffer , setCartItemCountOnNavigation} from '../CommomPharmacy';
+import { medicineRateAfterOffer, setCartItemCountOnNavigation, renderMedicineImage} from '../CommomPharmacy';
 import Spinner from '../../../../components/Spinner';
 import { dateDiff, getMoment, formatDate } from '../../../../setup/helpers'
 import { MedInsertReview } from './medInsertReview'
@@ -53,7 +53,7 @@ class MedicineInfo extends Component {
 
     async componentDidMount() {
         this.getSelectedMedicineDetails();
-        this.getMedicineReviewDetails();
+        await this.getMedicineReviewDetails();
         await this.getMedicineReviewCount();
         userId = await AsyncStorage.getItem('userId')
         if (userId) {
@@ -61,7 +61,7 @@ class MedicineInfo extends Component {
             setCartItemCountOnNavigation(navigation);
             let cart = await AsyncStorage.getItem('cartItems-' + userId) || []
             if (cart.length != 0) {
-                let cartData = JSON.parse(cart)
+                let cartData = JSON.parse(cart);
                 this.setState({ cartItems: cartData })
             }
         }
@@ -77,6 +77,8 @@ class MedicineInfo extends Component {
             let result = await getSelectedMedicineDetails(medicineId, pharmacyId);
             if (result.success) {
                 this.setState({ medicineData: result.data })
+                console.log("medicineData", this.state.medicineData)
+
             }
             this.setState({ isLoading: false });
         }
@@ -241,8 +243,7 @@ class MedicineInfo extends Component {
                             </Row>
                             <Text style={{ fontSize: 14, fontFamily: 'OpenSans', color: '#909090' }}>By {medicineData.pharmacyInfo.name}</Text>
                             <View style={{ justifyContent: 'center', alignItems: 'center' }}>
-                                <Image
-                                    source={require('../../../../../assets/images/images.jpeg')}
+                                <Image source={renderMedicineImage(medicineData.medPharDetailInfo)}
                                     style={{
                                         width: 90, height: 90, alignItems: 'center'
                                     }}
@@ -424,7 +425,7 @@ class MedicineInfo extends Component {
                                 </Col>
                                 <Col size={4} style={{ alignItems: 'flex-end', justifyContent: 'flex-end' }}>
                                     <Row>
-                                        <TouchableOpacity style={styles.viewTouch}>
+                                        <TouchableOpacity style={styles.viewTouch} onPress={() => this.props.navigation.navigate('ViewAllReviews', { medicineId: medicineId})}>
                                             <Text style={styles.ViewText}>View All Reviews</Text>
                                             <Icon name="ios-arrow-round-forward" style={{ fontSize: 16, color: '#4e85e9', marginLeft: 2 }} />
 
