@@ -139,7 +139,7 @@ class MedicineCheckout extends Component {
                 medicine_original_price: Number(ele.price),
                 medicine_offered_price: Number(ele.offeredAmount),
                 quantity: Number(ele.userAddedMedicineQuantity),
-                final_price: Number(userAddedTotalMedicineAmount),
+                final_price: Number(Number(ele.userAddedTotalMedicineAmount).toFixed(2)),
                 medicine_name: ele.medicine_name,
             })
             return ele.userAddedTotalMedicineAmount
