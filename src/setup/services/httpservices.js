@@ -36,3 +36,19 @@ export const uploadMultiPart = async(endPoint,formData) => {
   return response;
 
 }
+export const updateUploadMultiPart = async(endPoint,formData) => {
+   
+   var req = {
+      method: 'POST',
+      url: API_URL+endPoint,
+      data: formData,
+      headers: {
+      'content-type': `multipart/form-data; boundary=${formData._boundary}`,
+      },
+  }
+  console.log(req)
+  const response = await axios(req)
+  console.log(response)
+  return response;
+
+}
