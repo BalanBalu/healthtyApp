@@ -298,21 +298,21 @@ class PharmacyHome extends Component {
                                         keyExtractor={(item, index) => index.toString()}
                                         initialNumToRender={4}
                                         renderItem={({ item }) =>
-
+                                            <Row onPress={() =>
+                                                this.props.navigation.navigate('MedicineInfo', {
+                                                    medicineId: item.medInfo.medicine_id,
+                                                    pharmacyId: item.pharmacyInfo.pharmacy_id,
+                                                    medicineData: item
+                                                })}>
                                             <Col size={5} style={{ backgroundColor: '#fff', marginLeft: 5, height: '100%' }}>
 
-                                                <Row onPress={() =>
-                                                    this.props.navigation.navigate('MedicineInfo', {
-                                                        medicineId: item.medInfo.medicine_id,
-                                                        pharmacyId: item.pharmacyInfo.pharmacy_id,
-                                                        medicineData: item
-                                                    })}>
+                                                <Row>
                                                     <Col size={9} style={{ alignItems: 'center' }}>
                                                         <Image source={renderMedicineImage(item.medPharDetailInfo)}
                                                             style={{ height: 80, width: 70, marginLeft: 5, marginTop: 2.5 }} />
                                                     </Col>
                                                     {item.medPharDetailInfo.discount_type != undefined ?
-                                                        <Col size={1} style={{ position: 'absolute', alignContent: 'flex-end', marginTop: -10, marginLeft: 130 }}>
+                                                        <Col size={1} style={{ position: 'absolute', alignContent: 'flex-end', marginTop: -10, marginLeft: 120 }}>
                                                             <Image
                                                                 source={require('../../../../../assets/images/Badge.png')}
                                                                 style={{
@@ -366,6 +366,7 @@ class PharmacyHome extends Component {
                                                         : null}
                                                 </Row>
                                             </Col>
+                                            </Row>
                                         } />
                                 }
                             </Row>
