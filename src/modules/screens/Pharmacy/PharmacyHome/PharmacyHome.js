@@ -60,7 +60,12 @@ class PharmacyHome extends Component {
     getMedicineList = async () => {
         try {
             userId = await AsyncStorage.getItem('userId')
-            let result = await getPopularMedicine(userId);
+            const { bookappointment: { locationCordinates } } = this.props;
+            locationData = {
+                "coordinates": locationCordinates,
+                "maxDistance": MAX_DISTANCE_TO_COVER
+            }
+            let result = await getPopularMedicine(userId,  JSON.stringify(locationData));
             if (result.success) {
                 this.setState({ medicineData: result.data })
                 console.log("medicineData", this.state.medicineData)
@@ -71,6 +76,8 @@ class PharmacyHome extends Component {
                 if (cartData.length != 0) {
                     this.setState({ cartItems: cartData })
                 }
+            } else {
+                alert(result.message)
             }
         }
         catch (e) {
