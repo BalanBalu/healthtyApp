@@ -298,7 +298,7 @@ class PharmacyHome extends Component {
                                         keyExtractor={(item, index) => index.toString()}
                                         initialNumToRender={4}
                                         renderItem={({ item }) =>
-                                            <TouchableOpacity onPress={() =>
+                                            <Row onPress={() =>
                                                 this.props.navigation.navigate('MedicineInfo', {
                                                     medicineId: item.medInfo.medicine_id,
                                                     pharmacyId: item.pharmacyInfo.pharmacy_id,
@@ -366,7 +366,7 @@ class PharmacyHome extends Component {
                                                         : null}
                                                 </Row>
                                             </Col>
-                                            </TouchableOpacity>
+                                            </Row>
                                         } />
                                 }
                             </Row>
