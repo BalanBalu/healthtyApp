@@ -322,7 +322,7 @@ class PharmacyHome extends Component {
                                                             <Text style={styles.offerText}>{item.medPharDetailInfo.discount_value}</Text>
                                                             <Text style={styles.offText}>{item.medPharDetailInfo.discount_type == 'PERCENTAGE' ? "OFF" : "Rs"}</Text>
                                                         </Col> : null}
-                                                </Row>
+                                              
 
 
                                                 <Row style={{ alignSelf: 'center', marginTop: 5 }} >
@@ -364,6 +364,7 @@ class PharmacyHome extends Component {
                                                             popupVisible={(data) => this.getVisible(data)}
                                                         />
                                                         : null}
+                                                </Row>
                                                 </Row>
                                             </Col>
                                         } />
