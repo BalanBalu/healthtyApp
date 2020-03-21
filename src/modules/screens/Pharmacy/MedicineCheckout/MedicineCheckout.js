@@ -12,7 +12,7 @@ import { RadioButton, } from 'react-native-paper';
 import { getAddress } from '../../../common'
 import { SERVICE_TYPES, BASIC_DEFAULT } from '../../../../setup/config'
 import { hasLoggedIn } from '../../../providers/auth/auth.actions';
-
+import BookAppointmentPaymentUpdate from '../../../providers/bookappointment/bookAppointment';
 class MedicineCheckout extends Component {
     constructor(props) {
         super(props);
@@ -110,7 +110,8 @@ class MedicineCheckout extends Component {
         }
     }
 
-    onProceedToPayment = () => {
+    onProceedToPayment (navigationToPayment) {
+        debugger
         const { medicineDetails, selectedAddress, mobile_no, full_name, medicineTotalAmountwithDeliveryChage, itemSelected } = this.state;
         if (medicineDetails.length === 0) {
             Toast.show({
@@ -125,7 +126,7 @@ class MedicineCheckout extends Component {
                 type: 'warning',
                 duration: 3000
             })
-            return
+            return false;
         }
         let medicinceNames = '';
         let medicineOrderData = [];
@@ -152,6 +153,7 @@ class MedicineCheckout extends Component {
             amount: medicineTotalAmountwithDeliveryChage,
             bookSlotDetails: {
                 fee: amount,
+                is_order_type_prescription: false,
                 diseaseDescription: medicinceNames.slice(0, -1),
                 medicineDetails: medicineOrderData,
                 delivery_option: itemSelected,
@@ -179,7 +181,11 @@ class MedicineCheckout extends Component {
             delete paymentPageRequestData.bookSlotDetails.delivery_tax
         }
         console.log(paymentPageRequestData)
-        this.props.navigation.navigate('paymentPage', paymentPageRequestData)
+        if (navigationToPayment === true) {
+            this.props.navigation.navigate('paymentPage', paymentPageRequestData)
+        } else {
+            return paymentPageRequestData;
+        }
     }
 
     getdeliveryWithMedicineAmountCalculation(medicineDetails) {
@@ -232,6 +238,36 @@ class MedicineCheckout extends Component {
         } catch (e) {
             console.log(e)
         }
+    }
+    async processToPayLater() {
+        debugger
+        this.setState({ isLoading: true })
+        const orderRequestData = await this.onProceedToPayment(false);
+        if(orderRequestData === false) {
+            this.setState({ isLoading: false, spinnerText: ' ' }); 
+            return false;
+        }
+    debugger 
+        const userId = await AsyncStorage.getItem('userId');
+        this.BookAppointmentPaymentUpdate = new BookAppointmentPaymentUpdate();
+        let response = await this.BookAppointmentPaymentUpdate.updatePaymentDetails(true, {}, 'cash',orderRequestData.bookSlotDetails, orderRequestData.service_type, userId, 'cash');
+        console.log('Order Booking Response ');
+        
+        if (response.success) {
+            this.props.navigation.navigate('SuccessChat', { manualNaviagationPage : 'Home' });
+            Toast.show({
+                text: 'Paymenet Success',
+                type: 'success',
+                duration: 3000
+            })
+        } else {
+            Toast.show({
+                text: response.message,
+                type: 'warning',
+                duration: 3000
+            })
+        }
+        this.setState({ isLoading: false, spinnerText: ' ' }); 
     }
     render() {
         const { itemSelected, deliveryAddressArray, isLoading, deliveryDetails, pickupOPtionEnabled, medicineTotalAmount, medicineTotalAmountwithDeliveryChage, pharmacyInfo } = this.state
@@ -402,12 +438,12 @@ class MedicineCheckout extends Component {
                     <FooterTab>
                         <Row>
                             <Col size={5} style={{ alignItems: 'center', justifyContent: 'center', backgroundColor: '#fff' }}>
-                                <TouchableOpacity >
-                                    <Text style={{ fontSize: 16, fontFamily: 'OpenSans', color: '#000', fontWeight: '400' }}>{'Total - ₹' + medicineTotalAmountwithDeliveryChage} </Text>
+                                <TouchableOpacity onPress={()=> this.processToPayLater()} >
+                                    <Text style={{ fontSize: 16, fontFamily: 'OpenSans', color: '#000', fontWeight: '400' }}>{itemSelected == 'HOME_DELIVERY' ? 'Cash On Delivary' : 'Cash on Pickup'} </Text>
                                 </TouchableOpacity>
                             </Col>
                             <Col size={5} style={{ alignItems: 'center', justifyContent: 'center', backgroundColor: '#8dc63f' }}>
-                                <TouchableOpacity onPress={() => this.onProceedToPayment()}>
+                                <TouchableOpacity onPress={() => this.onProceedToPayment(true)}>
                                     <Text style={{ fontSize: 16, fontFamily: 'OpenSans', color: '#fff', fontWeight: '400' }}>Proceed</Text>
                                 </TouchableOpacity>
                             </Col>
