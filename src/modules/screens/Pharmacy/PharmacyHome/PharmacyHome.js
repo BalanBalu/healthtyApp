@@ -312,7 +312,7 @@ class PharmacyHome extends Component {
                                                             style={{ height: 80, width: 70, marginLeft: 5, marginTop: 2.5 }} />
                                                     </Col>
                                                     {item.medPharDetailInfo.discount_type != undefined ?
-                                                        <Col size={1} style={{ position: 'absolute', alignContent: 'flex-end', marginTop: -10, marginLeft: 100 }}>
+                                                        <Col size={1} style={{ position: 'absolute', alignContent: 'flex-end', marginTop: -10, marginLeft: 120 }}>
                                                             <Image
                                                                 source={require('../../../../../assets/images/Badge.png')}
                                                                 style={{
