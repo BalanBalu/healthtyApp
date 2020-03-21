@@ -60,7 +60,12 @@ class PharmacyHome extends Component {
     getMedicineList = async () => {
         try {
             userId = await AsyncStorage.getItem('userId')
-            let result = await getPopularMedicine(userId);
+            const { bookappointment: { locationCordinates } } = this.props;
+            locationData = {
+                "coordinates": locationCordinates,
+                "maxDistance": MAX_DISTANCE_TO_COVER
+            }
+            let result = await getPopularMedicine(userId,  JSON.stringify(locationData));
             if (result.success) {
                 this.setState({ medicineData: result.data })
                 console.log("medicineData", this.state.medicineData)
@@ -71,6 +76,8 @@ class PharmacyHome extends Component {
                 if (cartData.length != 0) {
                     this.setState({ cartItems: cartData })
                 }
+            } else {
+                alert(result.message)
             }
         }
         catch (e) {
@@ -291,21 +298,21 @@ class PharmacyHome extends Component {
                                         keyExtractor={(item, index) => index.toString()}
                                         initialNumToRender={4}
                                         renderItem={({ item }) =>
-
+                                            <TouchableOpacity onPress={() =>
+                                                this.props.navigation.navigate('MedicineInfo', {
+                                                    medicineId: item.medInfo.medicine_id,
+                                                    pharmacyId: item.pharmacyInfo.pharmacy_id,
+                                                    medicineData: item
+                                                })}>
                                             <Col size={5} style={{ backgroundColor: '#fff', marginLeft: 5, height: '100%' }}>
 
-                                                <Row onPress={() =>
-                                                    this.props.navigation.navigate('MedicineInfo', {
-                                                        medicineId: item.medInfo.medicine_id,
-                                                        pharmacyId: item.pharmacyInfo.pharmacy_id,
-                                                        medicineData: item
-                                                    })}>
+                                                <Row>
                                                     <Col size={9} style={{ alignItems: 'center' }}>
                                                         <Image source={renderMedicineImage(item.medPharDetailInfo)}
                                                             style={{ height: 80, width: 70, marginLeft: 5, marginTop: 2.5 }} />
                                                     </Col>
                                                     {item.medPharDetailInfo.discount_type != undefined ?
-                                                        <Col size={1} style={{ position: 'absolute', alignContent: 'flex-end', marginTop: -10, marginLeft: 130 }}>
+                                                        <Col size={1} style={{ position: 'absolute', alignContent: 'flex-end', marginTop: -10, marginLeft: 100 }}>
                                                             <Image
                                                                 source={require('../../../../../assets/images/Badge.png')}
                                                                 style={{
@@ -359,6 +366,7 @@ class PharmacyHome extends Component {
                                                         : null}
                                                 </Row>
                                             </Col>
+                                            </TouchableOpacity>
                                         } />
                                 }
                             </Row>
