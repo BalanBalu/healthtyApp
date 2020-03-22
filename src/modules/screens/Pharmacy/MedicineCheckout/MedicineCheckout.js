@@ -28,7 +28,9 @@ class MedicineCheckout extends Component {
             deliveryDetails: null,
             medicineTotalAmount: 0,
             pickupOPtionEnabled: true,
-            pharmacyInfo: null
+            pharmacyInfo: null,
+            isPrescription: false
+
 
         };
     }
@@ -43,9 +45,10 @@ class MedicineCheckout extends Component {
                 return
             }
             const medicineDetails = navigation.getParam('medicineDetails') || [];
+            const isPrescription = navigation.getParam('isPrescription') || false
 
-            this.setState({ medicineDetails })
-            if (medicineDetails.length != 0) {
+            this.setState({ medicineDetails, isPrescription })
+            if (medicineDetails.length !== 0 && isPrescription === true) {
                 await this.getdeliveryWithMedicineAmountCalculation(medicineDetails)
             }
             await this.clickedHomeDelivery()
@@ -249,7 +252,7 @@ class MedicineCheckout extends Component {
     }
 
     render() {
-        const { itemSelected, deliveryAddressArray, isLoading, deliveryDetails, pickupOPtionEnabled, medicineTotalAmount, medicineTotalAmountwithDeliveryChage, pharmacyInfo } = this.state
+        const { itemSelected, deliveryAddressArray, isLoading, deliveryDetails, pickupOPtionEnabled, medicineTotalAmount, medicineTotalAmountwithDeliveryChage, pharmacyInfo, isPrescription } = this.state
 
 
         return (

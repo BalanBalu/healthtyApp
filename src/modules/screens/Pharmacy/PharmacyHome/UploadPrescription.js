@@ -1,13 +1,14 @@
 import React, { Component } from 'react';
 import { Container, Content, Text, Title, Header, Button, H3, Item, List, ListItem, Card, Input, Left, Right, Thumbnail, Body, Icon, View, Footer, FooterTab, Toast } from 'native-base';
 import { Col, Row, Grid } from 'react-native-easy-grid';
-import { StyleSheet, AsyncStorage, TextInput,Modal } from 'react-native';
+import { StyleSheet, AsyncStorage, TextInput, Modal ,FlatList} from 'react-native';
 import { TouchableOpacity, ScrollView } from 'react-native-gesture-handler';
 // import ImagePicker from 'react-native-image-picker';
 import ImagePicker from 'react-native-image-crop-picker';
-import { updateUploadMultiPart } from '../../../../setup/services/httpservices'
+import { uploadMultiPart } from '../../../../setup/services/httpservices'
 import Autocomplete from '../../../../components/Autocomplete'
 import { Loader } from '../../../../components/ContentLoader'
+import {getUploadPrescription} from '../../../providers/pharmacy/pharmacy.action'
 
 
 class UploadPrescription extends Component {
@@ -15,50 +16,29 @@ class UploadPrescription extends Component {
         super(props)
         this.state = {
             imageSource: null,
-            keyword: '',
-            pharmacyList:[],
+            pharmacyList: [],
             uploadButton: true,
             isLoading: true,
             isImageNotLoaded: true,
             selectOptionPoopup: false,
+            prescriptionData:[]
         }
     }
-
-    async componentWillMount() {
-        this.getPharmacyData();
+    componentDidMount(){
+        this.getUploadPrescription()
+    }
+   async  getUploadPrescription(){
+        userId=await AsyncStorage.getItem('userId');
+        result=await getUploadPrescription(userId)
+          if(result.success){
+              this.setState({prescriptionData:result.data})
+              
+          }
     }
 
-    /*Search Pharmacy */
-    getPharmacyData = async () => {
-        let pharmacyData = [{
-            type: 'name',
-            value: [this.state.keyword]
-        }]
-        console.log(pharmacyData);
-    }
-
-    autoCompletePharmacyName(keyword) {
-        if (keyword === '' || keyword === undefined || keyword === null) {
-            return [];
-        }
-        const { pharmacyList } = this.state;
-
-        if(pharmacyList!=undefined){
-        const regex = new RegExp(`${keyword.trim()}`, 'i');
-        console.log(regex);        
-        selectedPharmacy = pharmacyList.filter(value => value.name.search(regex) >= 0);
-        }
-        if(selectedPharmacy.length==0){
-            let defaultValue={name:'Pharmacy not found'}
-           selectedPharmacy.push(defaultValue);
-        }
-        return selectedPharmacy;
-       
-    }
     uploadProfilePicture(type) {
         if (type == "Camera") {
             ImagePicker.openCamera({
-                multiple: true,
                 cropping: true,
                 width: 500,
                 height: 500,
@@ -95,52 +75,55 @@ class UploadPrescription extends Component {
         }
     }
 
- 
+
     /*Save Image to Database*/
     uploadImageToServer = async (imagePath) => {
-        console.log('hi')
+       
         try {
-                const userId = await AsyncStorage.getItem('userId');
-                var formData = new FormData();
-                console.log(imagePath)
-                if(imagePath){
-                    imagePath.map((ele) => {
-                formData.append('prescription', {
-                    uri: ele.path,
+            const userId = await AsyncStorage.getItem('userId');
+            var formData = new FormData();
+            console.log(imagePath)
+            if (Array.isArray(imagePath) && imagePath.length!=0) {
+                imagePath.map((ele) => {
+                    formData.append("prescription", {
+                        uri: ele.path,
+                        type: 'image/jpeg',
+                        name: 'photo.jpg'
+                    });
+                });
+            }else{
+                formData.append("prescription", {
+                    uri: imagePath.path,
                     type: 'image/jpeg',
                     name: 'photo.jpg'
                 });
-            });
-        }
-                debugger
-                let endPoint = `medicine/image/order/${userId}`
-                console.log(endPoint + 'endpoint');
-                var res = await updateUploadMultiPart(endPoint, formData);
-                console.log(JSON.stringify(res))
-                const response = res.data;
-                if (response.success) {
-                    console.log("succcss")
-                    Toast.show({
-                        text: 'Prescription Uploaded Successfully',
-                        duration: 3000,
-                        type: 'success'
-                    });
-                    // this.setState({
-                    //     imageSource: imagePath,
-                    //     isImageNotLoaded: false
-                    // });
-                    console.log('this.state.imageSource' + JSON.stringify(this.state.imageSource));
-                    this.props.navigation.navigate('PharmacyList')
-                } else {
-                    Toast.show({
-                        text: 'Problem Uploading Profile Picture',
-                        duration: 3000,
-                        type: 'danger'
-                    });
+            }
+            debugger
+            let endPoint = `medicine/image/order/${userId}`
+            console.log(endPoint + 'endpoint');
+            var res = await uploadMultiPart(endPoint, formData);
 
-                }
-            
-            
+
+            const response = res.data;
+            if (response.success) {
+                console.log("succcss")
+                Toast.show({
+                    text: 'Prescription Uploaded Successfully',
+                    duration: 3000,
+                    type: 'success'
+                });
+                this.props.navigation.navigate('ChosePharmacyList',{prescriptionId:response.prescriptionId})
+
+            } else {
+                Toast.show({
+                    text: 'Problem Uploading Profile Picture',
+                    duration: 3000,
+                    type: 'danger'
+                });
+
+            }
+
+
         } catch (e) {
             Toast.show({
                 text: 'Problem Uploading Profile Picture' + e,
@@ -153,12 +136,9 @@ class UploadPrescription extends Component {
 
 
     render() {
-        var selectedPharmacy = [];
-        if (this.state.isImageNotLoaded === true) {
-            selectedPharmacy = this.autoCompletePharmacyName(this.state.keyword);
-        }
-        const { imageSource, isLoading } = this.state;
-        const comp = (a, b) => a.toLowerCase().trim() === b.toLowerCase().trim();
+       
+        const { imageSource, isLoading ,prescriptionData} = this.state;
+
         return (
             <Container style={styles.container}>
                 {isLoading !== true ? <Loader style={'appointment'} /> :
@@ -182,13 +162,20 @@ class UploadPrescription extends Component {
                             <View style={{marginTop:5}}>
                                <Text style={{marginLeft:10,fontFamily:'OpenSans',color:'red'}}>{this.state.noKeywords}</Text>
                             </View> */}
-
+                    
 
                             <View >
-                                <TouchableOpacity  onPress={() => this.setState({ selectOptionPoopup: true })}>
-                                    {imageSource === null ?
+                                <TouchableOpacity onPress={() => this.setState({ selectOptionPoopup: true })}>
+                                    {prescriptionData.length === 0 ?
                                         <Thumbnail square style={styles.profileImage} source={require('../../../../../assets/images/prescription_upload.png')} />
-                                        : <Thumbnail square style={styles.profileImage} source={{ uri: imageSource }} />}
+                                        :  <FlatList
+                                        data={prescriptionData}
+                                        extraData={this.state}
+                                        keyExtractor={(item, index) => index.toString()}
+                                        renderItem={({ item, index }) =>
+                                        <Thumbnail square style={styles.profileImage} source={{ uri: item.prescription_path }} />
+                                    } />
+                                    }
                                 </TouchableOpacity>
                                 <Row style={{ width: '92%', }}>
                                     <Right>
@@ -198,25 +185,14 @@ class UploadPrescription extends Component {
                                 </Row>
                             </View>
 
-                            <View style={{ padding: 25,}}>
-                                <Text style={{  fontFamily: 'OpenSans', fontSize: 15 }}>Comments(optional)</Text>
-                                <TextInput style={{ borderWidth: 0.5, textAlignVertical: 'top', borderRadius: 5, height: 100, width: '100%',marginTop:10 }}
-                                    placeholder=" Type your comments here"
-                                    placeholderTextColor={'gray'}
-                                    multiline={true} />
-
-
-
-                            </View>
-
-                            <Row style={{ alignSelf: 'center', justifyContent: 'center', paddingLeft: 50,paddingRight:50, alignItems: 'center' }}>
-                                <Col style={{ width: '60%', justifyContent: 'center',marginLeft:55 }}>
+                            <Row style={{ alignSelf: 'center', justifyContent: 'center', paddingLeft: 50, paddingRight: 50, alignItems: 'center' }}>
+                                <Col style={{ width: '60%', justifyContent: 'center', marginLeft: 55 }}>
                                     <Button disabled={this.state.uploadButton} style={{ borderRadius: 5, height: 35, padding: 35, color: 'gray' }} onPress={() => { this.uploadImageToServer(this.state.imageSource, selectedPharmacy) }}>
                                         <Text style={{ fontSize: 12 }}>UPLOAD</Text>
                                     </Button>
                                 </Col>
-                                <Col style={{ width: '40%', justifyContent: 'center',marginLeft:30 }}>
-                                    <Button style={{ borderRadius: 5, height: 35,}} onPress={() => this.props.navigation.navigate('Pharmacy')}>
+                                <Col style={{ width: '40%', justifyContent: 'center', marginLeft: 30 }}>
+                                    <Button style={{ borderRadius: 5, height: 35, }} onPress={() => this.props.navigation.navigate('Pharmacy')}>
                                         <Text style={{ fontSize: 12 }} >CANCEL</Text>
                                     </Button>
                                 </Col>
@@ -237,7 +213,7 @@ class UploadPrescription extends Component {
                             }}>
                                 <View style={{
                                     width: '80%',
-                                    height: '35%', backgroundColor: '#fff',
+                                    backgroundColor: '#fff',
                                     borderColor: 'gray',
                                     borderWidth: 3,
                                     padding: 30,
@@ -247,22 +223,20 @@ class UploadPrescription extends Component {
 
                                     <Text style={{ fontSize: 26, fontFamily: 'OpenSans', fontWeight: 'bold', textAlign: 'center' }}> Select a Photo  </Text>
                                     {/* </Item> */}
-                                    <Row style={{ marginTop: 10 }}>
-                                        <Col>
-                                            <TouchableOpacity onPress={() => this.uploadProfilePicture("Camera")} testID='chooseCemara'>
-                                                <Text style={{ fontSize: 20, fontFamily: 'OpenSans', marginLeft: 10, marginTop: 10 }}>Take Photo</Text>
-                                            </TouchableOpacity>
-                                            <TouchableOpacity onPress={() => this.uploadProfilePicture("Library")} testID='chooselibrary'>
-                                                <Text style={{ fontSize: 20, fontFamily: 'OpenSans', marginLeft: 10, marginTop: 10 }}>Choose from Library</Text>
-                                            </TouchableOpacity>
-                                        </Col>
-                                    </Row>
-                                    <Row style={{ marginTop: 50 }}>
-                                        <Right style={{ marginTop: 15, marginLeft: 15 }} >
-                                            <Button transparent style={{ marginTop: 15 }} 
-                                            onPress={() => this.uploadProfilePicture("Library")}
-                                            // onPress={() => this.setState({ selectOptionPoopup: false })} 
-                                            testID='cancleButton'>
+
+                                    <Button transparent style={{ paddingTop: 5, paddingBottom: 5 }} onPress={() => this.uploadProfilePicture("Camera")} testID='chooseCemara'>
+                                        <Text style={{ fontSize: 20, fontFamily: 'OpenSans', marginTop: 10 }}>Take Photo</Text>
+                                    </Button>
+                                    <Button transparent style={{ paddingTop: 5, paddingBottom: 5 }} onPress={() => this.uploadProfilePicture("Library")} testID='chooselibrary'>
+                                        <Text style={{ fontSize: 20, fontFamily: 'OpenSans', marginTop: 10 }}>Choose from Library</Text>
+                                    </Button>
+
+                                    <Row style={{ marginTop: 50, marginBottom: 10 }}>
+                                        <Right style={{ marginTop: 15 }} >
+                                            <Button transparent style={{ marginTop: 15, alignItems: 'flex-end' }}
+
+                                                onPress={() => this.setState({ selectOptionPoopup: false })}
+                                                testID='cancleButton'>
                                                 <Text style={{ fontFamily: 'OpenSans', fontSize: 20, }}> Cancel</Text>
                                             </Button>
                                         </Right>
@@ -294,7 +268,7 @@ const styles = StyleSheet.create({
         height: 250,
         width: 310,
         borderColor: '#f5f5f5',
-       
+
     },
     searchBox: {
         width: '100%',
@@ -308,19 +282,19 @@ const styles = StyleSheet.create({
         padding: 20
     },
     customIcons:
-  {
-    backgroundColor: 'black',
-    borderRadius: 20,
-    justifyContent: 'center',
-    color: '#fff',
-    marginLeft:150,
-    textAlign: 'center',
-    marginTop:-270,
-    fontSize: 25,
-    height: 25,
-    width: 25,
-    fontWeight: 'bold'
-  }
+    {
+        backgroundColor: 'black',
+        borderRadius: 20,
+        justifyContent: 'center',
+        color: '#fff',
+        marginLeft: 150,
+        textAlign: 'center',
+        marginTop: -270,
+        fontSize: 25,
+        height: 25,
+        width: 25,
+        fontWeight: 'bold'
+    }
 })
 
 

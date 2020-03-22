@@ -135,7 +135,8 @@ export async function getMedicinesSearchListByPharmacyId(pharmacyId, isLoading =
 /*get Near by pharmacy list*/
 export async function getNearOrOrderPharmacy(user_id, coordinates) {
   try {
-    let endPoint = '/recommendation/recentOrNearByPharmacies?user_id=' + user_id + '&location=' + coordinates;
+    
+    let endPoint = '/recommendation/recentOrNearByPharmacies?user_id=' + user_id + '&location=' +coordinates ;
     console.log(endPoint);
     let response = await getService(endPoint);
     let respData = response.data;
@@ -246,5 +247,19 @@ export async function getMedicineReviewsCount(medicine_id) {
     }
   }
 }
+export async function getUploadPrescription(userId) {
+  try {
 
+    let endPoint = '/medicine/prescription/order/'+ userId;
+    console.log(endPoint);
+    let response = await getService(endPoint);
+    let respData = response.data;
+    return respData;
+  } catch (e) {
+    return {
+      message: 'exception' + e,
+      success: false
+    }
+  }
+}
 

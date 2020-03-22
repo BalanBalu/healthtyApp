@@ -55,7 +55,8 @@ import MedicineCheckout from '../../modules/screens/Pharmacy/MedicineCheckout/Me
 import MedicineInfo from '../../modules/screens/Pharmacy/MedicineInfo/MedicineInfo';
 import ViewAllReviews from '../../modules/screens/Pharmacy/MedicineInfo/ViewAllReviews';
 import MedicineSearchList from '../../modules/screens/Pharmacy/MedicineSearchList/MedicineSearchList';
-import PharmacyList from '../../modules/screens/Pharmacy/PharmacyList/pharmacyList'
+import ChosePharmacyList from '../../modules/screens/Pharmacy/PharmacyList/ChosePharmacyList'
+
 
 import { Badge } from '../../../src/modules/common'
 import Locations from '../../modules/screens/Home/Locations';
@@ -578,10 +579,10 @@ const HomeStack = createStackNavigator({
       title: 'Order Payment Address'
     }
   },
-  PharmacyList: {
-    screen: PharmacyList,
+  ChosePharmacyList: {
+    screen: ChosePharmacyList,
     navigationOptions: {
-      title: 'Pharmacy List'
+      title: ' Chose Pharmacy List'
     }
   },
   //=================== Medicine Order Details =============

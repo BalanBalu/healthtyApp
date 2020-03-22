@@ -48,11 +48,11 @@ export async function ProductIncrementDecreMent(quantity, price, operation) {
 export function renderMedicineImage(data) {
     let source = require('../../../../assets/images/paracetamol.jpg')
     if (data.medcine_image) {
-        if(data.medcine_image[0]){
+        if (data.medcine_image[0]) {
             console.log(data.medcine_image[0].imageURL)
             source = { uri: data.medcine_image[0].imageURL }
-        }  
-    } 
+        }
+    }
     return (source)
 }
 export async function relativeTimeView(review_date) {
@@ -74,11 +74,104 @@ export async function relativeTimeView(review_date) {
 
 export async function setCartItemCountOnNavigation(navigation) {
     const userId = await AsyncStorage.getItem('userId')
-    if(userId) {
+    if (userId) {
         let cart = await AsyncStorage.getItem('cartItems-' + userId) || [];
-        let cartData = JSON.parse(cart)
+        let cartData = []
+        if (cart.length != 0) {
+            cartData = JSON.parse(cart)
+        }
         navigation.setParams({
             cartItemsCount: cartData.length
         });
     }
 }
+
+export function getAddress(location) {
+    if (!location) return ''
+    if (location)
+        return `${location.address.no_and_street},${location.address.address_line_1 || ''} ${location.address.city}, ${location.address.state}, ${location.address.pin_code}`;
+    else
+        return ''
+}
+export function getKiloMeterCalculation(gpsLocation, pharmacyLocation) {
+    console.log(gpsLocation)
+    if (gpsLocation !== undefined && pharmacyLocation !== undefined) {
+
+        let narthCorinate = gpsLocation[0] - pharmacyLocation[0];
+        let eastCorinate = gpsLocation[1] - pharmacyLocation[1];
+        squareNarthCorinate = Math.pow(narthCorinate, 2);
+        squareeastCorinate = Math.pow(eastCorinate, 2)
+        add = squareNarthCorinate + squareeastCorinate
+        return Math.sqrt(add)
+
+
+    }
+    else {
+        return ' '
+    }
+
+}
+
+
+
+export const  renderAppoinmentData=(props)=> {
+
+    return (
+      <View style={{ borderBottomColor: '#DCDCDC', borderBottomWidth: 0.5, paddingBottom: 5 }}>
+        <ScrollView
+          horizontal={true}
+          style={{ marginTop: 5 }}
+          showsHorizontalScrollIndicator={false}
+        >
+          <FlatList
+            data={data}
+            extraData={this.state}
+            horizontal={true}
+            onEndReached={this.onScrollHandler}
+            onEndThreshold={0}
+            keyExtractor={(item, index) => index.toString()}
+            renderItem={({ item }) =>
+              <Card
+                style={{ padding: 10, borderRadius: 2, borderBottomWidth: 2, }}>
+                <Grid onPress={() => this.props.navigation.navigate('PatientInfo', { data: item })}>
+                  <Row>
+                    <Col size={2}>
+                      <Thumbnail circle source={RenderProfileImage(item.userInfo)} style={{ height: 50, width: 50 }} />
+
+                    </Col>
+                    <Col size={8} style={{ marginLeft: 10 }}>
+
+                      <Text style={styles.nameText}>{getName(item.userInfo)}</Text>
+
+                      <Text note style={styles.diseaseText}>{getUserGenderAndAge(item.userInfo) + "," + item.disease_description}</Text>
+
+                      <Text style={styles.locationText}>{getHospitalHeadeName(item.location)}</Text>
+
+                    </Col>
+                  </Row>
+                  <Row style={{ marginTop: 10 }}>
+                    <View style={{ flexDirection: 'row' }}>
+                      <Icon name="md-calendar" style={{ fontSize: 15, color: '#775DA3' }} />
+                      <Text style={styles.dateText}>{formatDate(item.appointment_starttime, 'DD/MM/YYYY')}</Text>
+                    </View>
+
+                    <View style={{ flexDirection: 'row', marginLeft: 10 }}>
+                      <Icon name="md-clock" style={{ fontSize: 15, color: '#775DA3' }} />
+                      <Text style={styles.dateText}>`{formatDate(item.appointment_starttime, 'hh:mm A')} - {formatDate(item.appointment_endtime, 'hh:mm A')}`</Text>
+                    </View>
+
+                  </Row>
+                </Grid>
+              </Card>
+            } />
+          <Row style={{ justifyContent: 'center', alignItems: 'center', marginLeft: 10 }} >
+            <TouchableOpacity onPress={() => this.props.navigation.navigate("Appointments", { makeActiveTab: activeTab })} style={{ alignItems: 'center', borderRadius: 1500 / 2, backgroundColor: '#F3EBF8', paddingLeft: 5, paddingRight: 5, paddingTop: 25, paddingBottom: 25 }}>
+              <Text style={styles.moredataText}>View All </Text>
+              <Text style={styles.moredataText}>Appointments</Text>
+            </TouchableOpacity>
+          </Row>
+        </ScrollView>
+      </View>
+
+    )
+  }

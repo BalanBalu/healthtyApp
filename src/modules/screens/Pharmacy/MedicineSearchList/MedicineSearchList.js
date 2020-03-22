@@ -20,7 +20,6 @@ class MedicineSearchList extends Component {
             clickCard: null,
             footerSelectedItem: '',
             cartItems: [],
-            isLoading: true,
             modalVisible: false,
             //new impementation
             isLoading: true,
