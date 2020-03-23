@@ -136,9 +136,9 @@ export async function getMedicinesSearchListByPharmacyId(pharmacyId, isLoading =
 export async function getNearOrOrderPharmacy(user_id, coordinates) {
   try {
     if(user_id) {
-      var endPoint = '/recommendation/recentOrNearByPharmacies?user_id=' + user_id + '&location=' + coordinates;
+      var endPoint = '/recommendation/recentOrNearByPharmacies?user_id=' + user_id + '&location=' + encodeURIComponent(coordinates);
     } else {
-      var endPoint = '/recommendation/recentOrNearByPharmacies?location=' + coordinates;
+      var endPoint = '/recommendation/recentOrNearByPharmacies?location=' + encodeURIComponent(coordinates);
     }
     
     console.log(endPoint);
@@ -159,9 +159,9 @@ export async function getNearOrOrderPharmacy(user_id, coordinates) {
 export async function getPopularMedicine(userId, coordinates) {
   try {
     if(userId) {
-      var endPoint = '/recommendation/recentOrPapularHealthCareProducts?user_id=' + userId + '&location=' + coordinates;
+      var endPoint = '/recommendation/recentOrPapularHealthCareProducts?user_id=' + userId + '&location=' + encodeURIComponent(coordinates);
     } else {
-      var endPoint = '/recommendation/recentOrPapularHealthCareProducts?location=' + coordinates;
+      var endPoint = '/recommendation/recentOrPapularHealthCareProducts?location=' + encodeURIComponent(coordinates);
     }
     let response = await getService(endPoint);
     let respData = response.data;
