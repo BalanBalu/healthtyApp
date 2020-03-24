@@ -195,15 +195,19 @@ export default class BookAppointmentPaymentUpdate {
                 booked_from: "APPLICATION",
                 payment_id: paymentId,
                 order_items: orderData.medicineDetails,
-                delivery_charges: orderData.delivery_charges||' ',
-                delivery_tax: orderData.delivery_tax||'',
+                delivery_charges: orderData.delivery_charges || ' ',
+                delivery_tax: orderData.delivery_tax || '',
                 delivery_option: orderData.delivery_option,
+                is_order_type_prescription: orderData.is_order_type_prescription,
                 pickup_or_delivery_address: orderData.pickup_or_delivery_address
             }
-              if(orderData.delivery_option=='STORE_PICKUP'){
-            delete  requestData.delivery_tax
-            delete  requestData.delivery_charges
-        }
+            if (orderData.delivery_option === 'STORE_PICKUP') {
+                delete requestData.delivery_tax
+                delete requestData.delivery_charges
+            } if (orderData.is_order_type_prescription === true) {
+                requestData.prescription_id= orderData.prescription_id
+                delete requestData.order_items
+            }
             let resultData = await createMedicineOrder(requestData);
             console.log(resultData)
             if (resultData.success) {

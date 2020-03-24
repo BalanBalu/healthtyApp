@@ -3,7 +3,7 @@ import { Container, Content, Text, Title, Header, Form, Textarea, Button, H3, It
 import { Col, Row, Grid } from 'react-native-easy-grid';
 import { StyleSheet, Image, AsyncStorage, TextInput, FlatList, TouchableOpacity } from 'react-native';
 import { Loader } from '../../../../components/ContentLoader';
-import { ProductIncrementDecreMent, medicineRateAfterOffer } from '../CommomPharmacy'
+import { ProductIncrementDecreMent, medicineRateAfterOffer, renderMedicineImage } from '../CommomPharmacy'
 
 let userId;
 class PharmacyCart extends Component {
@@ -30,6 +30,7 @@ class PharmacyCart extends Component {
                 this.setState({ cartItems: [], isLoading: false });
             } else {
                 this.setState({ cartItems: JSON.parse(cartItems), isLoading: false });
+                console.log("cartItems", this.state.cartItems)
             }
         }
         catch (e) {
@@ -52,22 +53,6 @@ class PharmacyCart extends Component {
         this.setState({ cartItems })
         await AsyncStorage.setItem('cartItems-' + userId, JSON.stringify(this.state.cartItems))
     }
-
-    // increase(index) {
-    //     let selectedCartItem = this.state.cartItems;
-    //     selectedCartItem[index].selectedQuantity++;
-    //     this.setState({ cartItems: selectedCartItem })
-    //     AsyncStorage.setItem('cartItems-' + userId, JSON.stringify(this.state.cartItems))
-    // }
-
-    // decrease(index) {
-    //     let selectedCartItem = this.state.cartItems;
-    //     if (selectedCartItem[index].selectedQuantity > 1) {
-    //         selectedCartItem[index].selectedQuantity--;
-    //         this.setState({ cartItems: selectedCartItem })
-    //         AsyncStorage.setItem('cartItems-' + userId, JSON.stringify(this.state.cartItems))
-    //     }
-    // }
 
     removeMedicine = async (index) => {
         let data = this.state.cartItems;
@@ -111,7 +96,8 @@ class PharmacyCart extends Component {
                                 keyExtractor={(item, index) => index.toString()}
                                 renderItem={({ item, index }) =>
                                     <Row>
-                                        <Image source={require('../../../../../assets/images/paracetamol.jpg')} style={{ height: 100, width: 70, margin: 5 }} />
+                                        <Image source={renderMedicineImage(item)}
+                                             style={{ height: 100, width: 70, margin: 5 }} />
                                         <Col Size={5} style={{ marginLeft: 10 }}>
                                             <Text style={{ fontFamily: 'OpenSans', fontSize: 16, marginTop: 5 }}>{item.medicine_name}</Text>
                                             <Text style={{ color: '#A4A4A4', fontFamily: 'OpenSans', fontSize: 12.5, marginBottom: 20 }}>{item.pharmacy_name}</Text>

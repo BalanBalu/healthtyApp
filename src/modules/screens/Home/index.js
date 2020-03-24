@@ -482,7 +482,7 @@ class Home extends Component {
                             </TouchableOpacity>
                         </Col>
                         <Col style={{ width: '33.33%', }}>
-                            <TouchableOpacity onPress={() => this.props.navigation.navigate("Pharmacy")}>
+                            <TouchableOpacity onPress={() => this.props.navigation.navigate("Medicines")}>
                                 <Card style={{ borderRadius: 10, overflow: 'hidden' }}>
                                     <Row style={{ height: 100, width: '100%', overflow: 'hidden', backgroundColor: "#fff", justifyContent: 'center', alignItems: 'center' }}>
                                         <Image
