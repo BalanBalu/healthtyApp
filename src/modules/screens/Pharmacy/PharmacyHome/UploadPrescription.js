@@ -228,10 +228,10 @@ class UploadPrescription extends Component {
                                                         source={{ uri: item.prescription_path }}
                                                         style={styles.profileImage}
                                                     />
-                                                     <Right>
+                                                     {/* <Right>
                                         <Icon name='ios-close' style={styles.customIcons} onPress={() => { this.setState({ imageSource: null, uploadButton: true }) }} /> 
 
-                                    </Right>
+                                    </Right> */}
                                                      
                                                 </Row>
                                                 {/* </Card> */}

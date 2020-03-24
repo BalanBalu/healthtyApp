@@ -97,17 +97,17 @@ export function getKiloMeterCalculation(gpsLocation, pharmacyLocation) {
     console.log(gpsLocation)
     if (gpsLocation !== undefined && pharmacyLocation !== undefined) {
 
-        let narthCorinate = gpsLocation[0] - pharmacyLocation[0];
-        let eastCorinate = gpsLocation[1] - pharmacyLocation[1];
-        squareNarthCorinate = Math.pow(narthCorinate, 2);
-        squareeastCorinate = Math.pow(eastCorinate, 2)
+        // let narthCorinate = ;
+        // let eastCorinate =;
+        squareNarthCorinate = Math.pow((gpsLocation[0] - pharmacyLocation[0]), 2);
+        squareeastCorinate = Math.pow(( gpsLocation[1] - pharmacyLocation[1]), 2)
         add = squareNarthCorinate + squareeastCorinate
-        return Math.sqrt(add)
-
+       let km=Math.sqrt(add).toFixed(1)+' Km'
+       return  km
 
     }
     else {
-        return ' '
+        return '0 km '
     }
 
 }
