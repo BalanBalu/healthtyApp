@@ -169,7 +169,7 @@ class UploadPrescription extends Component {
     }
     removePrescriptionImage = async () => {
         try {
-            this.setState({ isLoading: true })
+            this.setState({ isLoading: false })
             const { prescriptionData, selectIndex } = this.state
 
             const userId = await AsyncStorage.getItem('userId');
@@ -177,7 +177,7 @@ class UploadPrescription extends Component {
             if (result.success) {
                 let temp = prescriptionData
                 temp.splice(selectIndex, 1)
-                this.setState({ prescriptionData: temp ,isLoading: false })
+                this.setState({ prescriptionData: temp ,isLoading: true })
             }
 
 
@@ -186,7 +186,7 @@ class UploadPrescription extends Component {
             console.log(e)
         }
         finally {
-            this.setState({ isLoading: false })
+            this.setState({ isLoading: true })
         }
     }
 
