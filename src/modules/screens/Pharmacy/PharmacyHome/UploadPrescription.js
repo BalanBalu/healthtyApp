@@ -1,14 +1,14 @@
 import React, { Component } from 'react';
 import { Container, Content, Text, Title, Header, Button, H3, Item, List, ListItem, Card, Input, Left, Right, Thumbnail, Body, Icon, View, Footer, FooterTab, Toast } from 'native-base';
 import { Col, Row, Grid } from 'react-native-easy-grid';
-import { StyleSheet, AsyncStorage, TextInput, Modal, FlatList, Image, Dimensions,Platform} from 'react-native';
+import { StyleSheet, AsyncStorage, TextInput, Modal, FlatList, Image, Dimensions, Platform } from 'react-native';
 import { TouchableOpacity, ScrollView } from 'react-native-gesture-handler';
 // import ImagePicker from 'react-native-image-picker';
 import ImagePicker from 'react-native-image-crop-picker';
 import { uploadMultiPart } from '../../../../setup/services/httpservices'
 import Autocomplete from '../../../../components/Autocomplete'
 import { Loader } from '../../../../components/ContentLoader'
-import { getUploadPrescription } from '../../../providers/pharmacy/pharmacy.action'
+import { getUploadPrescription, removePrescriptionImage } from '../../../providers/pharmacy/pharmacy.action'
 const device_width = Dimensions.get("window").width
 
 class UploadPrescription extends Component {
@@ -93,7 +93,6 @@ class UploadPrescription extends Component {
         }
     }
 
-
     /*Save Image to Database*/
     uploadImageToServer = async (imagePath) => {
 
@@ -156,17 +155,41 @@ class UploadPrescription extends Component {
 
     setSelectedIndex = event => {
         try {
-            
+
 
             const viewSize = event.nativeEvent.layoutMeasurement.width;
             const contentOffset = event.nativeEvent.contentOffset.x;
-            const selectIndex = Math.floor(contentOffset / viewSize)
+            const selectIndex = Math.round(contentOffset / viewSize)
             this.setState({ selectIndex })
-            
+
+
         } catch (e) {
             console.log(e)
         }
     }
+    removePrescriptionImage = async () => {
+        try {
+            this.setState({ isLoading: true })
+            const { prescriptionData, selectIndex } = this.state
+
+            const userId = await AsyncStorage.getItem('userId');
+            result = await removePrescriptionImage(prescriptionData[selectIndex], userId)
+            if (result.success) {
+                let temp = prescriptionData
+                temp.splice(selectIndex, 1)
+                this.setState({ prescriptionData: temp ,isLoading: false })
+            }
+
+
+        }
+        catch (e) {
+            console.log(e)
+        }
+        finally {
+            this.setState({ isLoading: false })
+        }
+    }
+
     render() {
 
         const { imageSource, isLoading, prescriptionData, prescriptionId, selectIndex } = this.state;
@@ -175,99 +198,56 @@ class UploadPrescription extends Component {
             <Container style={styles.container}>
                 {isLoading !== true ? <Loader style={'appointment'} /> :
                     <Content >
-                        {/* <ScrollView> */}
-                            {/* <View style={{ marginTop: 10 }}>
-                                <Autocomplete style={{ borderBottomWidth: 0, backgroundColor: '#F1F1F1', borderRadius: 5, padding: 5, width: '85%',marginLeft: 'auto',marginRight: 'auto',}} 
-                                data={this.state.pharmacyList!==undefined?(selectedPharmacy.length === 1 && comp(this.state.keyword, selectedPharmacy[0].name) ? [] : selectedPharmacy):selectedPharmacy}
-                                    defaultValue={this.state.keyword}
-                                    onChangeText={text => this.setState({ keyword: text })}
-                                    placeholder='Select Pharmacy'
-                                    listStyle={{ position: 'relative',  marginLeft: 'auto',marginRight: 'auto', width: '100%', marginTop: -3.5 }}
-                                    renderItem={({ item }) => (
-                                        <TouchableOpacity onPress={() => this.setState({ keyword:selectedPharmacy[0].name==='Pharmacy not found'?null:item.name })}>
-                                            <Text style={{ fontFamily: 'OpenSans', borderBottomWidth: 0.3, color: 'gray', marginTop: 2, fontSize: 14 }}>{item.name}</Text>
-                                        </TouchableOpacity>
-                                    )}
-                                    keyExtractor={(item, index) => index.toString()} />
+                        <View >
+                            {prescriptionData.length === 0 ?
+                                <TouchableOpacity onPress={() => this.setState({ selectOptionPoopup: true })}>
 
-                            </View>
-                            <View style={{marginTop:5}}>
-                               <Text style={{marginLeft:10,fontFamily:'OpenSans',color:'red'}}>{this.state.noKeywords}</Text>
-                            </View> */}
+                                    <Thumbnail square style={styles.profileImage} source={require('../../../../../assets/images/prescription_upload.png')} />
+                                </TouchableOpacity>
+                                :
 
-
-                            <View >
-                                {prescriptionData.length === 0 ?
-                                    <TouchableOpacity onPress={() => this.setState({ selectOptionPoopup: true })}>
-
-                                        <Thumbnail square style={styles.profileImage} source={require('../../../../../assets/images/prescription_upload.png')} />
-                                    </TouchableOpacity>
-                                    :
-
-<View>
+                                <View>
                                     <FlatList horizontal pagingEnabled
                                         data={prescriptionData}
                                         extraData={selectIndex}
-                                        onMomentumScrollEnd={this.setSelectedIndex}   
-                                        ref={this.scrollRef}                                 
+                                        onMomentumScrollEnd={this.setSelectedIndex}
+                                        ref={this.scrollRef}
                                         showsHorizontalScrollIndicator={false}
                                         keyExtractor={(item, index) => index.toString()}
                                         renderItem={({ item, index }) =>
-                                        <View>
-                                                {/* <Grid style={{ flex: 1, marginLeft: 10, marginRight: 10, marginTop: 10 }}> */}
-
-                                                {/* <Card style={{ borderRadius: 10, overflow: 'hidden', marginTop: 20, padding: 50 }}> */}
-                                                <Item style={{ borderBottomWidth: 0, justifyContent: 'center', alignItems: 'center',marginTop:10 }}>
+                                            <View>
+                                                <Item style={{ borderBottomWidth: 0, justifyContent: 'center', alignItems: 'center', marginTop: 10 }}>
                                                     <Image
                                                         source={{ uri: item.prescription_path }}
                                                         style={styles.profileImage}
                                                     />
-                                                    </Item>
-                                                   
-                                           
-                                            <View style={styles.circleDev}>
-                                         <View key={item} style={[styles.whiteCircle,{opacity: index === selectIndex ? 0.5 : 1}]}/>
+                                                </Item>
+
+
+                                                <View style={styles.circleDev}>
+                                                    <View key={item} style={[styles.whiteCircle, { opacity: index === selectIndex ? 0.5 : 1 }]} />
 
                                                 </View>
-                        </View>
+
+                                            </View>
 
                                         } />
-<Row style={{justifyContent:'center'}}>
-                                        <TouchableOpacity  style={{marginTop:20,backgroundColor:'#f9DADB',paddingLeft:150,paddingRight:150,paddingTop:5,paddingBottom:5,borderRadius:5}}>
-                                            <Text style={{fontSize:14,fontWeight:'500',color:'red',textAlign:'center'}}>Delete</Text>
+                                    <Row style={{ justifyContent: 'center' }}>
+                                        <TouchableOpacity onPress={() => this.removePrescriptionImage()} style={{ marginTop: 20, backgroundColor: '#f9DADB', paddingLeft: 150, paddingRight: 150, paddingTop: 5, paddingBottom: 5, borderRadius: 5 }}>
+                                            <Text style={{ fontSize: 14, fontWeight: '500', color: 'red', textAlign: 'center' }}>Delete</Text>
                                         </TouchableOpacity>
-                                        </Row>
-                                        </View>
+                                    </Row>
+                                </View>
 
-                                }
-  {/* <Right>
-                                        <Icon name='ios-close' style={styles.customIcons} onPress={() => { this.setState({ imageSource: null, uploadButton: true }) }} /> 
+                            }
+                            <Row style={{ width: '100%', }}>
+                                <Right>
+                                    {imageSource != null ? <Icon name='ios-close' style={styles.customIcons} onPress={() => { this.setState({ imageSource: null, uploadButton: true }) }} /> : null}
 
-                                    </Right> */}
-                                                     
-                                                
-                                                {/* </Card> */}
-
-                                                {/* </Grid> */}
-                                                {/* <Row style={{ marginTop: 20 }}>
-                                                    <View style={[styles.circleDev, selectIndex === index ? {
-                                                        width: 6,
-                                                        height: 6,
-                                                        borderRadius: 3,
-                                                        margin: 5,
-                                                        backgroundColor: '#fff'
-                                                    } : null]}>
-
-                                                    </View>
-                                                </Row> */}
-                                <Row style={{ width: '100%', }}>
-                                    <Right>
-                                        {imageSource != null ? <Icon name='ios-close' style={styles.customIcons} onPress={() => { this.setState({ imageSource: null, uploadButton: true }) }} /> : null}
-
-                                    </Right>
-                                </Row>
-                            </View>
-                            {/* {prescriptionData.length !== 0 ?
+                                </Right>
+                            </Row>
+                        </View>
+                        {/* {prescriptionData.length !== 0 ?
                                 <Row style={{ alignSelf: 'center', justifyContent: 'center', paddingLeft: 50, paddingRight: 50, alignItems: 'center' }}>
                                     <Col size={5} style={{ width: '50%', justifyContent: 'center', marginLeft: 30 }}>
                                         <Button style={{ borderRadius: 5, height: 35 }} onPress={() => this.setState({ selectOptionPoopup: true })}>
@@ -330,28 +310,28 @@ class UploadPrescription extends Component {
                         </Modal>
 
                     </Content>
-}
-{prescriptionData.length !== 0 ?
-<Footer style={
-                    Platform.OS === "ios" ?
-                        { height: 30 } : { height: 45 }}>
-                    <FooterTab>
-                        <Row>
-                            <Col size={5} style={{ alignItems: 'center', justifyContent: 'center', backgroundColor: '#fff' }}>
-                                <TouchableOpacity onPress={() => this.setState({ selectOptionPoopup: true })} >
-                                    <Text style={{ fontSize: 16, fontFamily: 'OpenSans', color: '#7F49C3', fontWeight: '400' }}>Add More </Text>
-                                </TouchableOpacity>
-                            </Col>
-                            
+                }
+                {prescriptionData.length !== 0 ?
+                    <Footer style={
+                        Platform.OS === "ios" ?
+                            { height: 30 } : { height: 45 }}>
+                        <FooterTab>
+                            <Row>
+                                <Col size={5} style={{ alignItems: 'center', justifyContent: 'center', backgroundColor: '#fff' }}>
+                                    <TouchableOpacity onPress={() => this.setState({ selectOptionPoopup: true })} >
+                                        <Text style={{ fontSize: 16, fontFamily: 'OpenSans', color: '#7F49C3', fontWeight: '400' }}>Add More </Text>
+                                    </TouchableOpacity>
+                                </Col>
+
                                 <Col size={5} style={{ alignItems: 'center', justifyContent: 'center', backgroundColor: '#8dc63f' }}>
                                     <TouchableOpacity onPress={() => this.props.navigation.navigate('ChosePharmacyList', { prescriptionId: prescriptionId })}>
                                         <Text style={{ fontSize: 16, fontFamily: 'OpenSans', color: '#fff', fontWeight: '400' }}>Buy Now</Text>
                                     </TouchableOpacity>
                                 </Col>
-                        </Row>
-                    </FooterTab>
-                </Footer> :null}
-</Container>
+                            </Row>
+                        </FooterTab>
+                    </Footer> : null}
+            </Container>
         )
     }
 }
@@ -369,11 +349,11 @@ const styles = StyleSheet.create({
     {
         marginLeft: 'auto',
         marginRight: 'auto',
-        width: Dimensions.get('window').width-10, 
-        height: Dimensions.get('window').height-200,
-        justifyContent:'center',
+        width: Dimensions.get('window').width - 10,
+        height: Dimensions.get('window').height - 200,
+        justifyContent: 'center',
         borderColor: '#f5f5f5',
-        alignItems:'center',
+        alignItems: 'center',
 
     },
     searchBox: {
@@ -405,7 +385,7 @@ const styles = StyleSheet.create({
         position: 'absolute',
         bottom: 15,
         height: 15,
-        width:'100%',
+        width: '100%',
         display: 'flex',
         flexDirection: 'row',
         justifyContent: 'center',

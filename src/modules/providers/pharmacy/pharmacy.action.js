@@ -1,4 +1,4 @@
-import { postService, getService, putService } from '../../../setup/services/httpservices';
+import { postService, getService, putService,deleteService } from '../../../setup/services/httpservices';
 
 /* Search Medicine in pharmacy module  */
 export async function getSearchedMedicines(keyword, isLoading = true) {
@@ -271,3 +271,18 @@ export async function getUploadPrescription(userId) {
   }
 }
 
+export async function removePrescriptionImage(prescriptionData,userId) {
+  try {
+
+    let endPoint = '/medicine/prescription/order/'+prescriptionData.prescription_id+'/' + userId;
+    console.log(endPoint);
+    let response = await deleteService(endPoint);
+    let respData = response.data;
+    return respData;
+  } catch (e) {
+    return {
+      message: 'exception' + e,
+      success: false
+    }
+  }
+}
