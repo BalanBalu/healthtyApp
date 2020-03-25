@@ -49,7 +49,7 @@ export class AddToCard extends Component {
         })
 
     }
-    cardAction = async()=> {
+    cardAction = async () => {
         const { data, userAddedMedicineQuantity, userAddedTotalMedicineAmount } = this.state
         let temp = [];
         temp = data
@@ -142,7 +142,7 @@ export class AddToCard extends Component {
                                     <Row style={{ marginLeft: 2.5, marginTop: 10, }}>
                                         <Col size={4} style={{ marginLeft: 5 }}>
                                             <TouchableOpacity onPress={() => this.productQuantityOperator(data, 'sub')} style={{ width: 20, height: 20, borderRadius: 10, backgroundColor: '#E6E6E6' }}>
-                                                <Text style={{ fontSize: 12, fontWeight: '500', fontFamily: 'OpenSans', textAlign: 'center', color: '#FF0000' }}>-</Text>
+                                                <Text style={{ fontSize: 12, fontWeight: '500', fontFamily: 'OpenSans', textAlign: 'center', color: this.state.userAddedMedicineQuantity !== 1 ? '#FF0000' : 'grey' }}>-</Text>
                                             </TouchableOpacity>
                                         </Col>
                                         <Col size={2}>
