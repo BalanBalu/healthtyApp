@@ -48,10 +48,11 @@ class MedicineCheckout extends Component {
             const isPrescription = navigation.getParam('isPrescription') || false
 
             this.setState({ medicineDetails, isPrescription })
-            if (medicineDetails.length !== 0 && isPrescription === true) {
+            if (medicineDetails.length !== 0) {
                 await this.clickedHomeDelivery()
-                await this.getDelveryChageAmount()
+             
                 await this.getdeliveryWithMedicineAmountCalculation(medicineDetails, isPrescription)
+                await this.getDelveryChageAmount()
             }
 
             this.setState({ isLoading: false })
@@ -123,6 +124,7 @@ class MedicineCheckout extends Component {
                 type: 'warning',
                 duration: 3000
             })
+            return false
         }
         if (selectedAddress == null) {
             Toast.show({
@@ -204,7 +206,8 @@ class MedicineCheckout extends Component {
             let pharmacyData = []
             let pharmacyInfo = null;
             let amount = this.state.medicineDetails.map(ele => {
-
+                console.log('..........................................')
+                  console.log(JSON.stringify(this.state.medicineDetails))
                 if (ele.pharmacyInfo && !pharmacyData.includes(ele.pharmacyInfo.pharmacy_id)) {
                     pharmacyData.push(ele.pharmacyInfo.pharmacy_id)
                     let temp = ele.pharmacyInfo
@@ -237,12 +240,11 @@ class MedicineCheckout extends Component {
             temp.coordinates = ele.location.coordinates
             temp.type = ele.location.type
             temp.address = ele.location.address;
-            pharmacyInfo = temp;
             delete temp.name
           
             this.setState({
                 pickupOPtionEnabled: true,
-                pharmacyInfo: pharmacyInfo ,
+                pharmacyInfo: temp ,
                 medicineTotalAmount: 0,
             })
 
@@ -312,6 +314,7 @@ class MedicineCheckout extends Component {
                     />{isLoading === true ?
                         <Spinner color="blue"
                             visible={isLoading} /> :
+                            this.state.medicineDetails.length != 0 ?
                         <View>
                             <RadioButton.Group onValueChange={value => this.selectedItem(value)}
                                 value={itemSelected}  >
@@ -469,7 +472,7 @@ class MedicineCheckout extends Component {
                                     </Col>
                                 </Row>
                             </View>
-                        </View>
+                        </View>:<Text style={{ fontFamily: 'OpenSans', fontSize: 24, color: '#6a6a6a',marginTop: "40%" ,marginLeft:55,alignContent:'center'}}>No orders Available</Text>
                     }
                 </Content>
                 <Footer style={

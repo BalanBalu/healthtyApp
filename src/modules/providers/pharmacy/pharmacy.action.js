@@ -1,4 +1,4 @@
-import { postService, getService, putService,deleteService } from '../../../setup/services/httpservices';
+import { postService, getService, putService, deleteService } from '../../../setup/services/httpservices';
 
 /* Search Medicine in pharmacy module  */
 export async function getSearchedMedicines(keyword, isLoading = true) {
@@ -135,7 +135,7 @@ export async function getMedicinesSearchListByPharmacyId(pharmacyId, isLoading =
 /*get Near by pharmacy list*/
 export async function getNearOrOrderPharmacy(user_id, coordinates) {
   try {
-    if(user_id) {
+    if (user_id) {
       var endPoint = '/recommendation/recentOrNearByPharmacies?user_id=' + user_id + '&location=' + encodeURIComponent(coordinates);
     } else {
       var endPoint = '/recommendation/recentOrNearByPharmacies?location=' + encodeURIComponent(coordinates);
@@ -158,7 +158,7 @@ export async function getNearOrOrderPharmacy(user_id, coordinates) {
 /*get Popular Medicine*/
 export async function getPopularMedicine(userId, coordinates) {
   try {
-    if(userId) {
+    if (userId) {
       var endPoint = '/recommendation/recentOrPapularHealthCareProducts?user_id=' + userId + '&location=' + encodeURIComponent(coordinates);
     } else {
       var endPoint = '/recommendation/recentOrPapularHealthCareProducts?location=' + encodeURIComponent(coordinates);
@@ -258,7 +258,7 @@ export async function getMedicineReviewsCount(medicine_id) {
 export async function getUploadPrescription(userId) {
   try {
 
-    let endPoint = '/medicine/prescription/order/' + userId;
+    let endPoint = '/medicine_orders/prescription/user/' + userId;
     console.log(endPoint);
     let response = await getService(endPoint);
     let respData = response.data;
@@ -271,11 +271,10 @@ export async function getUploadPrescription(userId) {
   }
 }
 
-export async function removePrescriptionImage(prescriptionData,userId) {
+export async function removePrescriptionImage(prescriptionData, userId) {
   try {
 
-    let endPoint = '/medicine/prescription/order/'+prescriptionData.prescription_id+'/' + userId;
-    console.log(endPoint);
+    let endPoint = '/medicine_orders/prescription/'+prescriptionData.prescription_id+'/user/'+userId
     let response = await deleteService(endPoint);
     let respData = response.data;
     return respData;

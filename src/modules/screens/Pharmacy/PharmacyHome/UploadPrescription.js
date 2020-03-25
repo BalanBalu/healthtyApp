@@ -116,7 +116,7 @@ class UploadPrescription extends Component {
                 });
             }
             debugger
-            let endPoint = `medicine/image/order/${userId}`
+            let endPoint = `/medicine_orders/prescription/user/${userId}`
             console.log(endPoint + 'endpoint');
             var res = await uploadMultiPart(endPoint, formData);
 
