@@ -46,12 +46,13 @@ export async function ProductIncrementDecreMent(quantity, price, operation) {
 
 
 export function renderMedicineImage(data) {
+  console.log(data)
     let source = require('../../../../assets/images/paracetamol.jpg')
-    if (data.medcine_image) {
-        if (data.medcine_image[0]) {
-            console.log(data.medcine_image[0].imageURL)
-            source = { uri: data.medcine_image[0].imageURL }
-        }
+    if (data.medicine_images) {
+        if (data.medicine_images[0]) {
+            console.log(data.medicine_images[0].imageURL)
+            source = { uri: data.medicine_images[0].imageURL }
+       }
     }
     return (source)
 }
