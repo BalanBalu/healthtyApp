@@ -15,15 +15,16 @@ class RenderOtpInput extends Component {
             errorMsg: '',
             isVerifyingEmail: false,
             isGeneratedOtp: false,
-            isLoading: false
+            isLoading: false,
+            verifyData:''
         };
     }
     async componentDidMount() {
         const loginData = this.props.navigation.getParam("loginData");
         const fromProfile = this.props.navigation.getParam('fromProfile') || false
-        console.log("fromProfile" + fromProfile)
+        const verifyData = this.props.navigation.getParam("verifyData")||null
         if (fromProfile) {
-            this.setState({ fromProfile: true })
+            this.setState({ fromProfile: true, verifyData })
         }
         // this.setState({ isLoading: true });
         console.log(this.props.user)
@@ -89,12 +90,22 @@ class RenderOtpInput extends Component {
             let userId = await AsyncStorage.getItem('userId');
 
             if (this.state.fromProfile) {
-                reqDataForVerifyOtpCode = {
+                if (this.state.verifyData){
+                    reqDataForVerifyOtpCode = {
+                        appType: 'user',
+                        userId: userId,
+                        "otp": otp,
+                        verifyData: 'mobileNo'
+                    } 
+                }
+                else{
+                    reqDataForVerifyOtpCode = {
                     appType: 'user',
                     userId: userId,
                     "otp": otp,
                     verifyData: 'email'
                 }
+            }
                 reqOtpVerifiedResponse = await verifyOtpForEmailAndMobileNo(reqDataForVerifyOtpCode)
 
             } else {
@@ -106,8 +117,6 @@ class RenderOtpInput extends Component {
 
                 reqOtpVerifiedResponse = await verifyOtpCodeForCreateAccount(reqDataForVerifyOtpCode)
             }
-            console.log("reqOtpVerifiedResponse");
-            console.log(reqOtpVerifiedResponse);
 
             if (reqOtpVerifiedResponse.success == true) {
                 Toast.show({
@@ -115,7 +124,7 @@ class RenderOtpInput extends Component {
                     type: "success",
                     duration: 4000
                 });
-                if (this.props.navigation.getParam("navigateBackToHome")) {
+                if (this.props.navigation.getParam("navigateBackToHome") || (this.state.verifyData == 'mobileNo')) {
                     this.props.navigation.navigate('Home');
                 }
                 else if(this.state.fromProfile){
