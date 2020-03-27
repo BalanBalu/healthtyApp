@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import { Container, Content, Text, Toast, Icon, View, Col, Row, } from 'native-base';
 import { StyleSheet, Image, AsyncStorage, FlatList, TouchableOpacity } from 'react-native';
 import { getSelectedMedicineDetails, getMedicineReviews, getMedicineReviewsCount } from '../../../providers/pharmacy/pharmacy.action'
-import { medicineRateAfterOffer , setCartItemCountOnNavigation} from '../CommomPharmacy';
+import { medicineRateAfterOffer, setCartItemCountOnNavigation } from '../CommomPharmacy';
 import Spinner from '../../../../components/Spinner';
 import { dateDiff, getMoment, formatDate } from '../../../../setup/helpers'
 import { MedInsertReview } from './medInsertReview'
@@ -31,7 +31,8 @@ class MedicineInfo extends Component {
             modalVisible: false,
             reviewCount: '',
             cartItems: [],
-            finalRating:''
+            finalRating: '',
+            enlargeContent: false
         };
 
     }
@@ -216,6 +217,13 @@ class MedicineInfo extends Component {
 
     render() {
         const { medicineData, reviewData, reviewCount, cartItems, finalRating } = this.state
+        const useage = [{ text: "1. Maintain half an hour gap between food/drinks/other medications and the prescribed homeopathic medicine." },
+        { text: "2. While on homeopathic medication, there shouldn't be any strong smell like that of an onion, garlic, camphor, coffee, hing, in your mouth." },
+        { text: "3. Avoid use of alcohol and tobacco while on homeopathic medication." },
+        { text: "4. During pregnancy and while on breastfeeding, consult the homeopathic physician before use." },
+        { text: "5. Store homeopathic remedies away from strong odors such as menthol, mint, camphor, essential oils, lip balm, deep heat liniments, cough lozenges, chewing gum, aromatic toothpaste, chemical fumes, perfumes etc." }]
+        const Ingredients = [{ name: 'Syzgium Jambolanum' }, { name: 'Syzgium Jambolanum' }, { name: 'Syzgium Jambolanum' }, { name: 'Syzgium Jambolanum' }]
+        const prescriptionData = [{prescription_path:require('../../../../../assets/images/images.jpeg')},{prescription_path:require('../../../../../assets/images/images.jpeg')},{prescription_path:require('../../../../../assets/images/images.jpeg')},{prescription_path:require('../../../../../assets/images/images.jpeg')},{prescription_path:require('../../../../../assets/images/images.jpeg')}]
         return (
             <Container >
 
@@ -240,14 +248,27 @@ class MedicineInfo extends Component {
 
                             </Row>
                             <Text style={{ fontSize: 14, fontFamily: 'OpenSans', color: '#909090' }}>By {medicineData.pharmacyInfo.name}</Text>
-                            <View style={{ justifyContent: 'center', alignItems: 'center' }}>
+                            <FlatList horizontal pagingEnabled
+                                        data={prescriptionData}    
+                                        contentContainerStyle={{flexGrow: 1, justifyContent: 'center',flex:1}}                     
+                                        showsHorizontalScrollIndicator={false}
+                                        keyExtractor={(item, index) => index.toString()}
+                                        renderItem={({ item, index }) =>
+                                        <View >
+                            <View style={{ justifyContent: 'center', alignItems: 'center',  }}>
                                 <Image
-                                    source={require('../../../../../assets/images/images.jpeg')}
+                                    source={item.prescription_path}
                                     style={{
-                                        width: 90, height: 90, alignItems: 'center'
+                                        width: 90, height: 90, alignItems: 'center',justifyContent:'center' 
                                     }}
                                 />
                             </View>
+                            <View style={styles.circleDev}>
+                                         <View key={item} style={[styles.whiteCircle]}/>
+
+                                                </View>
+                            </View>
+                                }/>
                             <Row>
                                 <Col size={7} style={{ flexDirection: 'row', marginTop: 10 }}>
                                     <Text style={{ fontSize: 10, fontFamily: 'OpenSans', color: '#ff4e42', marginTop: 5 }}>MRP</Text>
@@ -273,7 +294,7 @@ class MedicineInfo extends Component {
 
                                         </TouchableOpacity>
                                     </Row> :
-                                    <Row style={{alignItems:'flex-end'}}>
+                                    <Row style={{ alignItems: 'flex-end' }}>
                                         <TouchableOpacity style={styles.addCartTouch}
                                             onPress={() => { this.setState({ isAddToCart: true }), this.selectedItems(medicineData, 'Add to Card', cartItems.findIndex(ele => ele.medicine_id == medicineData.medPharDetailInfo.medicine_id && ele.pharmacy_id == medicineData.medPharDetailInfo.pharmacy_id)) }} >
 
@@ -302,8 +323,43 @@ class MedicineInfo extends Component {
                             />
                             : null}
                         <View style={{ marginTop: 10 }}>
-                            <Text style={styles.desText}>Product Description</Text>
-                            <Text style={styles.mainText}>{medicineData.medInfo.description}</Text>
+                            <Text style={styles.desText}>Product Details</Text>
+                            {/* <Text style={styles.mainText}>{medicineData.medInfo.description}</Text> */}
+                            <Text style={styles.mainText}>SBL’s Diaboherb helps to stimulate the pancreatic cells to produce more insulin thereby controlling the blood sugar levels. SBL’s Diaboherb is indicated for frequent urination, increased thirst, increased appetite and diabetes-related heart problems.</Text>
+                            <TouchableOpacity onPress={() => this.setState({ enlargeContent: true })}>
+                                <Text style={styles.showText}>Show more</Text>
+                            </TouchableOpacity>
+                            {this.state.enlargeContent == true ?
+                                <View>
+                                    <View style={{ marginTop: 10 }}>
+                                        <Text style={styles.desText}>Medicine Dosage</Text>
+                                        <Text style={styles.mainText}>One capsule 3 times in a day.</Text>
+                                    </View>
+                                    <View style={{ marginTop: 10 }}>
+                                        <Text style={styles.desText}>Directions To Use </Text>
+                                        <FlatList
+                                            data={useage}
+                                            renderItem={({ item }) =>
+                                                <Text style={styles.mainText}>{item.text}</Text>
+                                            } />
+                                    </View>
+                                    <View style={{ marginTop: 10 }}>
+                                        <Text style={styles.desText}>Key Ingredients</Text>
+                                        <FlatList
+                                            data={Ingredients}
+                                            renderItem={({ item }) =>
+                                                <Text style={styles.mainText}><Text style={{ fontSize: 12, marginTop: 5, }}>{'\u2B24'}</Text>   {item.name}</Text>
+                                            } />
+                                    </View>
+                                    <View style={{ marginTop: 10 }}>
+                                        <Text style={styles.desText}>Side effects</Text>
+                                        <Text style={styles.mainText}>No side effects are known.</Text>
+                                    </View>
+                                    <TouchableOpacity onPress={() => this.setState({ enlargeContent: false })}>
+                                        <Text style={styles.showText}>Show less</Text>
+                                    </TouchableOpacity>
+                                </View> : null}
+
                         </View>
                         <View style={{ marginTop: 10 }}>
                             <Text style={styles.desText}>Rating and Reviews</Text>
@@ -345,7 +401,7 @@ class MedicineInfo extends Component {
                                             </TouchableOpacity>
                                         </Col>
                                         <Col size={1.5}>
-                                            <Text style={{ fontSize: 10, fontFamily: 'OpenSans', color: '#909090', marginLeft: 5 }}>{finalRating.four_star ? finalRating.four_star:0}%</Text>
+                                            <Text style={{ fontSize: 10, fontFamily: 'OpenSans', color: '#909090', marginLeft: 5 }}>{finalRating.four_star ? finalRating.four_star : 0}%</Text>
                                         </Col>
                                     </Row>
                                     <Row style={{ marginTop: 1 }}>
@@ -417,7 +473,7 @@ class MedicineInfo extends Component {
                                 } /> :
                             <Text style={{ fontSize: 10, justifyContent: 'center', alignItems: 'center' }}>No Reviews Were found</Text>}
 
-                        {reviewData.length!==0 ?
+                        {reviewData.length !== 0 ?
 
                             <Row style={{ marginTop: 10 }}>
                                 <Col size={6}>
@@ -583,7 +639,7 @@ const styles = StyleSheet.create({
         paddingLeft: 50,
         paddingRight: 50,
         borderRadius: 2,
-        alignItems:'flex-end'
+        alignItems: 'flex-end'
     },
     buyNowTouch: {
         backgroundColor: '#8dc63f',
@@ -773,5 +829,29 @@ const styles = StyleSheet.create({
         fontFamily: 'OpenSans',
         color: '#909090',
         marginTop: 5
+    },
+    showText: {
+        fontSize: 12,
+        fontFamily: 'OpenSans',
+        color: '#7F49C3',
+        marginTop: 10
+    },
+    circleDev: {
+        position: 'absolute',
+        bottom: 15,
+        height: 15,
+        width:'100%',
+        display: 'flex',
+        flexDirection: 'row',
+        justifyContent: 'center',
+        alignContent: 'center'
+    },
+    whiteCircle: {
+        width: 6,
+        height: 6,
+        borderRadius: 3,
+        margin: 5,
+        backgroundColor: '#fff'
+
     }
 })
