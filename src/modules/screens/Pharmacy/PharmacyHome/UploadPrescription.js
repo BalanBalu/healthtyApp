@@ -49,7 +49,7 @@ class UploadPrescription extends Component {
         result = await getUploadPrescription(userId)
         console.log(JSON.stringify(result))
         if (result.success) {
-            this.setState({ prescriptionData: result.data[0].prescriptionData, prescriptionId: result.data[0]._id })
+            this.setState({ prescriptionData: result.data[0].prescriptionData, prescriptionDetails: result.data[0] })
 
         }
     }
@@ -177,7 +177,7 @@ class UploadPrescription extends Component {
             if (result.success) {
                 let temp = prescriptionData
                 temp.splice(selectIndex, 1)
-                this.setState({ prescriptionData: temp ,isLoading: true })
+                this.setState({ prescriptionData: temp, isLoading: true })
             }
 
 
@@ -192,7 +192,7 @@ class UploadPrescription extends Component {
 
     render() {
 
-        const { imageSource, isLoading, prescriptionData, prescriptionId, selectIndex } = this.state;
+        const { imageSource, isLoading, prescriptionData, prescriptionDetails, selectIndex } = this.state;
 
         return (
             <Container style={styles.container}>
@@ -324,7 +324,7 @@ class UploadPrescription extends Component {
                                 </Col>
 
                                 <Col size={5} style={{ alignItems: 'center', justifyContent: 'center', backgroundColor: '#8dc63f' }}>
-                                    <TouchableOpacity onPress={() => this.props.navigation.navigate('ChosePharmacyList', { prescriptionId: prescriptionId })}>
+                                    <TouchableOpacity onPress={() => this.props.navigation.navigate('ChosePharmacyList', { prescriptionDetails: prescriptionDetails })}>
                                         <Text style={{ fontSize: 16, fontFamily: 'OpenSans', color: '#fff', fontWeight: '400' }}>Buy Now</Text>
                                     </TouchableOpacity>
                                 </Col>

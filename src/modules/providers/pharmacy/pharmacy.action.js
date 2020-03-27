@@ -274,8 +274,24 @@ export async function getUploadPrescription(userId) {
 export async function removePrescriptionImage(prescriptionData, userId) {
   try {
 
-    let endPoint = '/medicine_orders/prescription/'+prescriptionData.prescription_id+'/user/'+userId
+    let endPoint = '/medicine_orders/prescription/' + prescriptionData.prescription_id + '/user/' + userId
     let response = await deleteService(endPoint);
+    let respData = response.data;
+    return respData;
+  } catch (e) {
+    return {
+      message: 'exception' + e,
+      success: false
+    }
+  }
+}
+
+export async function getPurcharseRecomentation( data) {
+  try {
+
+    let endPoint = '/medicine/purcharse/recomentation';
+
+    let response = await postService(endPoint, data);
     let respData = response.data;
     return respData;
   } catch (e) {

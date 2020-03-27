@@ -198,7 +198,9 @@ export default class BookAppointmentPaymentUpdate {
                 delivery_charges: orderData.delivery_charges || ' ',
                 delivery_tax: orderData.delivery_tax || '',
                 delivery_option: orderData.delivery_option,
+                is_order_type_recommentation:orderData.is_order_type_recommentation,
                 is_order_type_prescription: orderData.is_order_type_prescription,
+                pharmacy_ids:orderData.pharmacy_ids||[],
                 pickup_or_delivery_address: orderData.pickup_or_delivery_address
             }
             if (orderData.delivery_option === 'STORE_PICKUP') {
@@ -208,6 +210,9 @@ export default class BookAppointmentPaymentUpdate {
                 requestData.prescription_id= orderData.prescription_id
                 delete requestData.order_items
             }
+            if(orderData.is_order_type_recommentation===false){
+                delete  requestData.pharmacy_ids
+              }
             let resultData = await createMedicineOrder(requestData);
             console.log(resultData)
             if (resultData.success) {

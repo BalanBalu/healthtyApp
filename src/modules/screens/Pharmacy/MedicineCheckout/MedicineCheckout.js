@@ -8,11 +8,13 @@ import { fetchUserProfile, getCurrentVersion } from '../../../providers/profile/
 import { userFiledsUpdate, logout } from '../../../providers/auth/auth.actions';
 import Spinner from '../../../../components/Spinner';
 import { formatDate } from '../../../../setup/helpers';
-import { RadioButton, } from 'react-native-paper';
+import { RadioButton, Checkbox } from 'react-native-paper';
 import { getAddress } from '../../../common'
-import { SERVICE_TYPES, BASIC_DEFAULT } from '../../../../setup/config'
+import { SERVICE_TYPES, BASIC_DEFAULT, MAX_DISTANCE_TO_COVER } from '../../../../setup/config'
 import { hasLoggedIn } from '../../../providers/auth/auth.actions';
+import { getPurcharseRecomentation } from '../../../providers/pharmacy/pharmacy.action'
 import BookAppointmentPaymentUpdate from '../../../providers/bookappointment/bookAppointment';
+import { connect } from 'react-redux'
 class MedicineCheckout extends Component {
     constructor(props) {
         super(props);
@@ -29,7 +31,10 @@ class MedicineCheckout extends Component {
             medicineTotalAmount: 0,
             pickupOPtionEnabled: true,
             pharmacyInfo: null,
-            isPrescription: false
+            isPrescription: false,
+            isPharmacyRecomentation: false,
+            recommentationData: [],
+   
 
 
         };
@@ -117,7 +122,7 @@ class MedicineCheckout extends Component {
 
     onProceedToPayment(navigationToPayment) {
         debugger
-        const { medicineDetails, selectedAddress, mobile_no, full_name, medicineTotalAmountwithDeliveryChage, itemSelected, isPrescription } = this.state;
+        const { medicineDetails, selectedAddress, mobile_no, full_name, medicineTotalAmountwithDeliveryChage, itemSelected, isPrescription ,isPharmacyRecomentation,recommentationData} = this.state;
         if (medicineDetails.length === 0) {
             Toast.show({
                 text: 'No Medicines Added to Checkout',
@@ -162,6 +167,7 @@ class MedicineCheckout extends Component {
             bookSlotDetails: {
                 fee: amount,
                 is_order_type_prescription: isPrescription,
+                is_order_type_recommentation: isPharmacyRecomentation,
                 diseaseDescription: medicinceNames.slice(0, -1) || 'Upload prescription',
                 medicineDetails: medicineOrderData,
                 delivery_option: itemSelected,
@@ -193,6 +199,22 @@ class MedicineCheckout extends Component {
             paymentPageRequestData.bookSlotDetails.prescription_id = medicineDetails[0].PrescriptionId
 
         }
+        if(isPharmacyRecomentation===true){
+            pharmacy_ids=[]
+            recommentationData.map(ele=>{
+                pharmacy_ids.push(ele.pharmacy_id)
+            })
+            if (itemSelected === 'STORE_PICKUP') {
+            paymentPageRequestData.amount=recommentationData[0].medicine_total_amount
+            }
+            else{
+                paymentPageRequestData.amount=recommentationData[0].medicine_total_amount+deliveryDetails.delivery_charges+deliveryDetails.delivery_tax
+
+            }
+            paymentPageRequestData.bookSlotDetails.fee=recommentationData[0].medicine_total_amount;
+            paymentPageRequestData.bookSlotDetails.pharmacy_ids=pharmacy_ids
+        }
+
         console.log(paymentPageRequestData)
         if (navigationToPayment === true) {
             this.props.navigation.navigate('paymentPage', paymentPageRequestData)
@@ -201,13 +223,18 @@ class MedicineCheckout extends Component {
         }
     }
 
-    getdeliveryWithMedicineAmountCalculation(medicineDetails, isPrescription) {
+    async  getdeliveryWithMedicineAmountCalculation(medicineDetails, isPrescription) {
         if (medicineDetails.length !== 0 && isPrescription === false) {
             let pharmacyData = []
+            let medicineOrderData = [];
+            let recommentationData = [];
             let pharmacyInfo = null;
             let amount = this.state.medicineDetails.map(ele => {
-                console.log('..........................................')
-                console.log(JSON.stringify(this.state.medicineDetails))
+                medicineOrderData.push({
+                    medicine_id: ele.medicine_id,
+                    quantity: Number(ele.userAddedMedicineQuantity),
+
+                })
                 if (ele.pharmacyInfo && !pharmacyData.includes(ele.pharmacyInfo.pharmacy_id)) {
                     pharmacyData.push(ele.pharmacyInfo.pharmacy_id)
                     let temp = ele.pharmacyInfo
@@ -222,11 +249,31 @@ class MedicineCheckout extends Component {
                 return ele.userAddedTotalMedicineAmount
             }).reduce(
                 (total, userAddedTotalMedicineAmount) => total + userAddedTotalMedicineAmount);
+            if (medicineOrderData.length !== 0) {
+                const { bookappointment: { locationCordinates } } = this.props;
 
+                purcharseProductsData = {
+                    coordinates: locationCordinates,
+                    type: 'Point',
+                    maxDistance: 300000000000,
+                    order_items: medicineOrderData,
+                    medicine_total_amount: amount
+                };
+                recomentationResult = await getPurcharseRecomentation(purcharseProductsData)
+
+                if (recomentationResult.success) {
+                    let data = recomentationResult.data.sort(function (firstVarlue, secandValue) {
+                        return firstVarlue.medicine_total_amount > secandValue.medicine_total_amount ? -1 : 0
+                    })
+
+                    recommentationData = data
+                }
+            }
             this.setState({
                 pickupOPtionEnabled: pharmacyData.length === 1,
                 pharmacyInfo: pharmacyData.length === 1 ? pharmacyInfo : null,
                 medicineTotalAmount: amount,
+                recommentationData: recommentationData
             })
         } else {
 
@@ -303,7 +350,7 @@ class MedicineCheckout extends Component {
         this.setState({ isLoading: false, spinnerText: ' ' });
     }
     render() {
-        const { itemSelected, deliveryAddressArray, isLoading, deliveryDetails, pickupOPtionEnabled, medicineTotalAmount, medicineTotalAmountwithDeliveryChage, pharmacyInfo, isPrescription } = this.state
+        const { itemSelected, deliveryAddressArray, isLoading, deliveryDetails, pickupOPtionEnabled, medicineTotalAmount, medicineTotalAmountwithDeliveryChage, pharmacyInfo, isPrescription, recommentationData, isPharmacyRecomentation } = this.state
 
 
         return (
@@ -351,7 +398,7 @@ class MedicineCheckout extends Component {
                                                         keyExtractor={(item, index) => index.toString()}
                                                         renderItem={({ item }) =>
                                                             <View style={{ backgroundColor: '#fff' }}>
-                                                                <Text style={{ fontFamily: 'OpenSans', fontSize: 12, fontWeight: '300', marginTop: 2,marginLeft:33 }}>{item.full_name}</Text>
+                                                                <Text style={{ fontFamily: 'OpenSans', fontSize: 12, fontWeight: '300', marginTop: 2, marginLeft: 33 }}>{item.full_name}</Text>
                                                                 <Row style={{ borderBottomWidth: 0.5, paddingBottom: 10 }}>
                                                                     <Col size={1}>
                                                                         <RadioButton.Group style={{ marginTop: 2 }} onValueChange={value => this.setState({ selectedAddress: value })}
@@ -435,7 +482,17 @@ class MedicineCheckout extends Component {
                                                 </Col>
                                                 <Col size={5} style={{ alignItems: 'flex-end', justifyContent: 'flex-end' }}>
                                                 </Col>
-                                            </Row> : <Text>prescription Upload</Text>}
+                                            </Row> :
+                                        <Row style={{ marginTop: 10 }}>
+                                            <Col size={8}>
+                                                <Text style={{ fontFamily: 'OpenSans', fontSize: 12, color: '#6a6a6a' }}>{'Prescription reference no:'}</Text>
+                                            </Col>
+                                            <Col size={5} style={{ alignItems: 'flex-end', justifyContent: 'flex-end' }}>
+
+                                                <Text style={{ fontFamily: 'OpenSans', fontSize: 10, color: '#8dc63f', textAlign: 'right' }}>{this.state.medicineDetails[0].prescription_ref_no} </Text>
+
+                                            </Col>
+                                        </Row>}
                                     {deliveryDetails != null && itemSelected == 'HOME_DELIVERY' ?
                                         <View>
                                             <Row style={{ marginTop: 5 }}>
@@ -466,16 +523,27 @@ class MedicineCheckout extends Component {
                                         </Col>
                                         <Col size={5} style={{ alignItems: 'flex-end', justifyContent: 'flex-end' }}>
                                             {isPrescription === false ?
-                                                <Text style={{ fontFamily: 'OpenSans', fontSize: 10, color: '#8dc63f', textAlign: 'right' }}>{'₹' + medicineTotalAmountwithDeliveryChage} </Text>
+                                                <Text style={{ fontFamily: 'OpenSans', fontSize: 10, color: '#8dc63f', textAlign: 'right' }}>{'₹' +( medicineTotalAmountwithDeliveryChage||' ')} </Text>
                                                 : itemSelected === 'HOME_DELIVERY' ?
                                                     <Text style={{ fontFamily: 'OpenSans', fontSize: 10, color: '#8dc63f', textAlign: 'right' }}>{'your prescription amount added with ' + (deliveryDetails != null ? (deliveryDetails.delivery_tax + deliveryDetails.delivery_charges) : ' ')}} </Text>
                                                     : <Text style={{ fontFamily: 'OpenSans', fontSize: 10, color: '#8dc63f', textAlign: 'right' }}>{'your prescription amount added later'} </Text>
                                             }
                                         </Col>
                                     </Row>
-                                </View>
+                                </View>{
+                                  recommentationData.length !== 0 ?
+                                        <Row style={{  paddingRight: 20, marginTop: 5, alignItems: 'center', }}>
+
+                                            <Checkbox color="green"
+                                                status={isPharmacyRecomentation ? 'checked' : 'unchecked'}
+                                                onPress={() => { this.setState({ isPharmacyRecomentation: !isPharmacyRecomentation }); }}
+                                            />
+                                            <Text style={{ fontFamily: 'OpenSans', fontSize: 13, }}>{'Above order you will get Rs' + recommentationData[0].medicine_total_amount + 'do you select'}</Text>
+                                        </Row> : null
+                                }
                             </View> : <Text style={{ fontFamily: 'OpenSans', fontSize: 24, color: '#6a6a6a', marginTop: "40%", marginLeft: 55, alignContent: 'center' }}>No orders Available</Text>
                     }
+
                 </Content>
                 <Footer style={
                     Platform.OS === "ios" ?
@@ -503,7 +571,16 @@ class MedicineCheckout extends Component {
     }
 }
 
-export default MedicineCheckout;
+// export default MedicineCheckout;
+function MedicineCheckoutState(state) {
+
+    return {
+        bookappointment: state.bookappointment,
+
+
+    }
+}
+export default connect(MedicineCheckoutState)(MedicineCheckout)
 
 const styles = StyleSheet.create({
 
