@@ -8,14 +8,18 @@ import DateTimePicker from 'react-native-modal-datetime-picker';
 import { formatDate } from "../../../setup/helpers";
 import moment from 'moment';
 import { addReminderdata } from '../../providers/reminder/reminder.action.js';
+
 const medicineFormType = ["Select medicine Form", "Pill", "Solution", "Injection", "Powder", "Drops", "Inhales", "Other",]
 const medicineStrengthType = ["Select medicine strength", "g", "IU", "mcg", "mEg", "mg"]
 
 class AddReminder extends Component {
   constructor(props) {
     super(props)
+    let medicineName = this.props.navigation.getParam('medicineName') || null
     this.state = {
-      medicine_name: null,
+      data: [],
+      medicineName: medicineName,
+      medicineSugesstionArray: null,
       medicine_take_times: moment().startOf('day').toDate(),
       medicine_take_one_date: moment().startOf('day').toDate(),
       medicine_take_start_date: moment().startOf('day').toDate(),
@@ -49,7 +53,21 @@ class AddReminder extends Component {
     console.log('medicine_take_times' + moment().startOf('day').toDate())
 
   }
+  // componentDidMount() {
+  //   const { medicineName } = this.state;
+  //   if(medicineName !== null) {
+  //     this.SearchKeyWordFunction(medicineName);
+  // }
+  // const { navigation } = this.props
+  // setCartItemCountOnNavigation(navigation);
+  
+  // }
 
+
+  navigatePress(text) {
+    console.log(text);
+    this.props.navigation.navigate('MedicineSuggestionList', { medicineName: text })
+}
 
   onValueChange2(value) {
     this.setState({
@@ -218,6 +236,7 @@ class AddReminder extends Component {
       console.log(e.message)
     }
   }
+  
 
   deleteData(index) {
     // console.log("index" + index)
@@ -286,7 +305,9 @@ class AddReminder extends Component {
       alert(e.message)
       console.log(e.message)
     }
+    
   }
+  
 
   medicinePage = () => {
     this.setState({ medicinepage: false })
@@ -309,7 +330,8 @@ class AddReminder extends Component {
                   <Form>
                     <TextInput style={styles.autoField}
                       placeholder="Medicine name"
-                      onChangeText={(medicine_name) => this.setState({ medicine_name })}
+                      //onChangeText={(medicine_name) => this.setState({ medicine_name })}
+                      onChangeText={(text) => this.navigatePress(text)}
                       value={this.state.medicine_name}
                     />
                   </Form>
