@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import { Container, Content, Text, Toast, Icon, View, Col, Row, } from 'native-base';
-import { StyleSheet, Image, AsyncStorage, FlatList, TouchableOpacity,Dimensions } from 'react-native';
+import { StyleSheet, Image, AsyncStorage, FlatList, TouchableOpacity, Dimensions } from 'react-native';
 import { getSelectedMedicineDetails, getMedicineReviews, getMedicineReviewsCount } from '../../../providers/pharmacy/pharmacy.action'
 import { medicineRateAfterOffer, setCartItemCountOnNavigation } from '../CommomPharmacy';
 import Spinner from '../../../../components/Spinner';
@@ -78,7 +78,7 @@ class MedicineInfo extends Component {
             let result = await getSelectedMedicineDetails(medicineId, pharmacyId);
             if (result.success) {
                 this.setState({ medicineData: result.data })
-                console.log("this.state.medicineData ++++++++"+this.state.medicineData)
+                console.log("this.state.medicineData ++++++++" + this.state.medicineData)
             }
             this.setState({ isLoading: false });
         }
@@ -249,28 +249,28 @@ class MedicineInfo extends Component {
 
                             </Row>
                             <Text style={{ fontSize: 14, fontFamily: 'OpenSans', color: '#909090' }}>By {medicineData.pharmacyInfo.name}</Text>
-                
-    <View style={{flex:1,marginLeft:10,marginRight:10}}>
-<SwiperFlatList
-        autoplay
-        autoplayDelay={3}
-        index={3}
-        contentContainerStyle={{flexGrow: 1, justifyContent: 'center'}}
-        autoplayLoop
-        data={prescriptionData}
-        renderItem={({item}) => 
-        <View style={{ justifyContent: 'center', alignItems: 'center',  }}>
-        <Image
-            source={item.prescription_path}
-            style={{
-                width: Dimensions.get('window').width-100, height: Dimensions.get('window').height-400,justifyContent:'center',alignItems:'center'
-            }}
-        />
-        </View>
-             }
-        showPagination
-      />
-      </View>
+
+                            <View style={{ flex: 1, marginLeft: 10, marginRight: 10 }}>
+                                <SwiperFlatList
+                                    autoplay
+                                    autoplayDelay={3}
+                                    index={3}
+                                    contentContainerStyle={{ flexGrow: 1, justifyContent: 'center' }}
+                                    autoplayLoop
+                                    data={prescriptionData}
+                                    renderItem={({ item }) =>
+                                        <View style={{ justifyContent: 'center', alignItems: 'center', }}>
+                                            <Image
+                                                source={item.prescription_path}
+                                                style={{
+                                                    width: Dimensions.get('window').width - 100, height: Dimensions.get('window').height - 400, justifyContent: 'center', alignItems: 'center'
+                                                }}
+                                            />
+                                        </View>
+                                    }
+                                    showPagination
+                                />
+                            </View>
                             <Row>
                                 <Col size={7} style={{ flexDirection: 'row', marginTop: 10 }}>
                                     <Text style={{ fontSize: 10, fontFamily: 'OpenSans', color: '#ff4e42', marginTop: 5 }}>MRP</Text>
@@ -326,7 +326,6 @@ class MedicineInfo extends Component {
                             : null}
                         <View style={{ marginTop: 10 }}>
                             <Text style={styles.desText}>Product Details</Text>
-                            {/* <Text style={styles.mainText}>{medicineData.medInfo.description}</Text> */}
                             <Text style={styles.mainText}>{medicineData.medInfo.description}</Text>
                             <TouchableOpacity onPress={() => this.setState({ enlargeContent: true })}>
                                 <Text style={styles.showText}>Show more</Text>
@@ -335,7 +334,7 @@ class MedicineInfo extends Component {
                                 <View>
                                     <View style={{ marginTop: 10 }}>
                                         <Text style={styles.desText}>Medicine Dosage</Text>
-                                        <Text style={styles.mainText}>One capsule 3 times in a day.</Text>
+                                        <Text style={styles.mainText}>{medicineData.medInfo.medicine_unit}</Text>
                                     </View>
                                     <View style={{ marginTop: 10 }}>
                                         <Text style={styles.desText}>Directions To Use </Text>
@@ -849,31 +848,31 @@ const styles = StyleSheet.create({
 
     },
     wrapper: {
-        marginTop:5,
-        borderRadius:2
-        },
-        slide1: {
+        marginTop: 5,
+        borderRadius: 2
+    },
+    slide1: {
         flex: 1,
         justifyContent: 'center',
         alignItems: 'center',
         backgroundColor: '#9DD6EB',
-        },
-        slide2: {
+    },
+    slide2: {
         flex: 1,
         justifyContent: 'center',
         alignItems: 'center',
         backgroundColor: '#97CAE5'
-        },
-        slide3: {
+    },
+    slide3: {
         flex: 1,
         justifyContent: 'center',
         alignItems: 'center',
         backgroundColor: '#92BBD9'
-        },
-        text: {
+    },
+    text: {
         color: '#fff',
         fontSize: 30,
         fontWeight: 'bold'
-        }
+    }
 
 })
