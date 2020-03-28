@@ -1,13 +1,13 @@
 import React, { Component } from 'react';
 import { Container, Content, Text, Toast, Icon, View, Col, Row, } from 'native-base';
-import { StyleSheet, Image, AsyncStorage, FlatList, TouchableOpacity } from 'react-native';
+import { StyleSheet, Image, AsyncStorage, FlatList, TouchableOpacity,Dimensions } from 'react-native';
 import { getSelectedMedicineDetails, getMedicineReviews, getMedicineReviewsCount } from '../../../providers/pharmacy/pharmacy.action'
 import { medicineRateAfterOffer, setCartItemCountOnNavigation } from '../CommomPharmacy';
 import Spinner from '../../../../components/Spinner';
 import { dateDiff, getMoment, formatDate } from '../../../../setup/helpers'
 import { MedInsertReview } from './medInsertReview'
 import { AddToCard } from '../AddToCardBuyNow/AddToCard'
-
+import SwiperFlatList from 'react-native-swiper-flatlist';
 let medicineId, userId;
 class MedicineInfo extends Component {
     constructor(props) {
@@ -78,6 +78,7 @@ class MedicineInfo extends Component {
             let result = await getSelectedMedicineDetails(medicineId, pharmacyId);
             if (result.success) {
                 this.setState({ medicineData: result.data })
+                console.log("this.state.medicineData ++++++++"+this.state.medicineData)
             }
             this.setState({ isLoading: false });
         }
@@ -223,7 +224,7 @@ class MedicineInfo extends Component {
         { text: "4. During pregnancy and while on breastfeeding, consult the homeopathic physician before use." },
         { text: "5. Store homeopathic remedies away from strong odors such as menthol, mint, camphor, essential oils, lip balm, deep heat liniments, cough lozenges, chewing gum, aromatic toothpaste, chemical fumes, perfumes etc." }]
         const Ingredients = [{ name: 'Syzgium Jambolanum' }, { name: 'Syzgium Jambolanum' }, { name: 'Syzgium Jambolanum' }, { name: 'Syzgium Jambolanum' }]
-        const prescriptionData = [{prescription_path:require('../../../../../assets/images/images.jpeg')},{prescription_path:require('../../../../../assets/images/images.jpeg')},{prescription_path:require('../../../../../assets/images/images.jpeg')},{prescription_path:require('../../../../../assets/images/images.jpeg')},{prescription_path:require('../../../../../assets/images/images.jpeg')}]
+        const prescriptionData = [{ prescription_path: require('../../../../../assets/images/images.jpeg') }, { prescription_path: require('../../../../../assets/images/images.jpeg') }, { prescription_path: require('../../../../../assets/images/images.jpeg') }, { prescription_path: require('../../../../../assets/images/images.jpeg') }, { prescription_path: require('../../../../../assets/images/images.jpeg') }]
         return (
             <Container >
 
@@ -248,27 +249,28 @@ class MedicineInfo extends Component {
 
                             </Row>
                             <Text style={{ fontSize: 14, fontFamily: 'OpenSans', color: '#909090' }}>By {medicineData.pharmacyInfo.name}</Text>
-                            <FlatList horizontal pagingEnabled
-                                        data={prescriptionData}    
-                                        contentContainerStyle={{flexGrow: 1, justifyContent: 'center',flex:1}}                     
-                                        showsHorizontalScrollIndicator={false}
-                                        keyExtractor={(item, index) => index.toString()}
-                                        renderItem={({ item, index }) =>
-                                        <View >
-                            <View style={{ justifyContent: 'center', alignItems: 'center',  }}>
-                                <Image
-                                    source={item.prescription_path}
-                                    style={{
-                                        width: 90, height: 90, alignItems: 'center',justifyContent:'center' 
-                                    }}
-                                />
-                            </View>
-                            <View style={styles.circleDev}>
-                                         <View key={item} style={[styles.whiteCircle]}/>
-
-                                                </View>
-                            </View>
-                                }/>
+                
+    <View style={{flex:1,marginLeft:10,marginRight:10}}>
+<SwiperFlatList
+        autoplay
+        autoplayDelay={3}
+        index={3}
+        contentContainerStyle={{flexGrow: 1, justifyContent: 'center'}}
+        autoplayLoop
+        data={prescriptionData}
+        renderItem={({item}) => 
+        <View style={{ justifyContent: 'center', alignItems: 'center',  }}>
+        <Image
+            source={item.prescription_path}
+            style={{
+                width: Dimensions.get('window').width-100, height: Dimensions.get('window').height-400,justifyContent:'center',alignItems:'center'
+            }}
+        />
+        </View>
+             }
+        showPagination
+      />
+      </View>
                             <Row>
                                 <Col size={7} style={{ flexDirection: 'row', marginTop: 10 }}>
                                     <Text style={{ fontSize: 10, fontFamily: 'OpenSans', color: '#ff4e42', marginTop: 5 }}>MRP</Text>
@@ -325,7 +327,7 @@ class MedicineInfo extends Component {
                         <View style={{ marginTop: 10 }}>
                             <Text style={styles.desText}>Product Details</Text>
                             {/* <Text style={styles.mainText}>{medicineData.medInfo.description}</Text> */}
-                            <Text style={styles.mainText}>SBL’s Diaboherb helps to stimulate the pancreatic cells to produce more insulin thereby controlling the blood sugar levels. SBL’s Diaboherb is indicated for frequent urination, increased thirst, increased appetite and diabetes-related heart problems.</Text>
+                            <Text style={styles.mainText}>{medicineData.medInfo.description}</Text>
                             <TouchableOpacity onPress={() => this.setState({ enlargeContent: true })}>
                                 <Text style={styles.showText}>Show more</Text>
                             </TouchableOpacity>
@@ -337,23 +339,15 @@ class MedicineInfo extends Component {
                                     </View>
                                     <View style={{ marginTop: 10 }}>
                                         <Text style={styles.desText}>Directions To Use </Text>
-                                        <FlatList
-                                            data={useage}
-                                            renderItem={({ item }) =>
-                                                <Text style={styles.mainText}>{item.text}</Text>
-                                            } />
+                                        <Text style={styles.mainText}>{medicineData.medInfo.directions_to_use}</Text>
                                     </View>
                                     <View style={{ marginTop: 10 }}>
                                         <Text style={styles.desText}>Key Ingredients</Text>
-                                        <FlatList
-                                            data={Ingredients}
-                                            renderItem={({ item }) =>
-                                                <Text style={styles.mainText}><Text style={{ fontSize: 12, marginTop: 5, }}>{'\u2B24'}</Text>   {item.name}</Text>
-                                            } />
+                                        <Text style={styles.mainText}><Text style={{ fontSize: 12, marginTop: 5, }}>{'\u2B24'}</Text>   {medicineData.medInfo.ingridients}</Text>
                                     </View>
                                     <View style={{ marginTop: 10 }}>
                                         <Text style={styles.desText}>Side effects</Text>
-                                        <Text style={styles.mainText}>No side effects are known.</Text>
+                                        <Text style={styles.mainText}>{medicineData.medInfo.side_effects}</Text>
                                     </View>
                                     <TouchableOpacity onPress={() => this.setState({ enlargeContent: false })}>
                                         <Text style={styles.showText}>Show less</Text>
@@ -840,7 +834,7 @@ const styles = StyleSheet.create({
         position: 'absolute',
         bottom: 15,
         height: 15,
-        width:'100%',
+        width: '100%',
         display: 'flex',
         flexDirection: 'row',
         justifyContent: 'center',
@@ -853,5 +847,33 @@ const styles = StyleSheet.create({
         margin: 5,
         backgroundColor: '#fff'
 
-    }
+    },
+    wrapper: {
+        marginTop:5,
+        borderRadius:2
+        },
+        slide1: {
+        flex: 1,
+        justifyContent: 'center',
+        alignItems: 'center',
+        backgroundColor: '#9DD6EB',
+        },
+        slide2: {
+        flex: 1,
+        justifyContent: 'center',
+        alignItems: 'center',
+        backgroundColor: '#97CAE5'
+        },
+        slide3: {
+        flex: 1,
+        justifyContent: 'center',
+        alignItems: 'center',
+        backgroundColor: '#92BBD9'
+        },
+        text: {
+        color: '#fff',
+        fontSize: 30,
+        fontWeight: 'bold'
+        }
+
 })
