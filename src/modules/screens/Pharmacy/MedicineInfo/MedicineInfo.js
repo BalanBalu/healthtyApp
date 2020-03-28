@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { Container, Content, Text, Toast, Icon, View, Col, Row, } from 'native-base';
+import { Container, Content, Text, Toast, Icon, View, Col, Row, Picker } from 'native-base';
 import { StyleSheet, Image, AsyncStorage, FlatList, TouchableOpacity, Dimensions } from 'react-native';
 import { getSelectedMedicineDetails, getMedicineReviews, getMedicineReviewsCount } from '../../../providers/pharmacy/pharmacy.action'
 import { medicineRateAfterOffer, setCartItemCountOnNavigation } from '../CommomPharmacy';
@@ -215,7 +215,11 @@ class MedicineInfo extends Component {
         const { medicineData: { medPharDetailInfo } } = this.state;
         return parseInt(medPharDetailInfo.price) - parseInt(medicineRateAfterOffer(medPharDetailInfo))
     }
-
+    onValueChange2(value) {
+        this.setState({
+            selected2: value
+        });
+    }
     render() {
         const { medicineData, reviewData, reviewCount, cartItems, finalRating } = this.state
         const useage = [{ text: "1. Maintain half an hour gap between food/drinks/other medications and the prescribed homeopathic medicine." },
@@ -280,8 +284,27 @@ class MedicineInfo extends Component {
                                 </Col>
                                 <Col size={3}>
                                 </Col>
+                            </Row >
+                            <Row style={{ marginTop: 10 }}><Col size={5} style={{ height: 30, justifyContent: 'center', backgroundColor: '#fff', borderRadius: 5, borderColor: '#000', borderWidth: 0.5 }}>
+                                <Picker
+                                    mode="dropdown"
+                                    style={{ width: undefined }}
+                                    placeholder="Select your SIM"
+                                    placeholderStyle={{ color: "#bfc6ea" }}
+                                    placeholderIconColor="#007aff"
+                                    selectedValue={this.state.selected2}
+                                    onValueChange={this.onValueChange2.bind(this)}
+                                >
+                                    <Picker.Item label="1 MG" value="key0" />
+                                    <Picker.Item label="2 MG" value="key1" />
+                                    <Picker.Item label="3 MG" value="key2" />
+                                    <Picker.Item label="4 MG" value="key3" />
+                                </Picker>
+                            </Col>
+                                <Col size={5} style={{ justifyContent: 'center', marginLeft: 5 }}>
+                                    <Text style={{ fontSize: 12, fontFamily: 'OpenSans', color: '#000' }}> of {medicineData.medInfo.medicine_form}</Text>
+                                </Col>
                             </Row>
-
                         </View>
                         <Row style={{ marginTop: 10 }}>
                             <Col size={5}>
