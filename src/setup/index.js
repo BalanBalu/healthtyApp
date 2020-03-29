@@ -14,6 +14,7 @@ import { fetchUserMarkedAsReadedNotification } from '../modules/providers/notifi
 import { SET_LAST_MESSAGES_DATA } from '../modules/providers/chat/chat.action';
 import NotifService from './NotifService';
 import SocketIOClient from 'socket.io-client';
+import { AuthService } from '../modules/screens/VideoConsulation/services/index';
 YellowBox.ignoreWarnings([
   'Unrecognized WebSocket connection option(s) `agent`, `perMessageDeflate`, `pfx`, `key`, `passphrase`, `cert`, `ca`, `ciphers`, `rejectUnauthorized`. Did you mean to put these under `headers`?',
   'Warning: Slider has been extracted from react-native core ',
@@ -29,6 +30,7 @@ export default class App extends Component {
       senderId: FIREBASE_SENDER_ID
     };
     this.notif = new NotifService(this.onRegister.bind(this), this.onNotif.bind(this));
+    AuthService.init();
   }
   async componentDidMount() {
     const userId = await AsyncStorage.getItem('userId');
@@ -43,7 +45,7 @@ export default class App extends Component {
   }
 
   initializeSocket(userId) {
-    this.socket = SocketIOClient(CHAT_API_URL, {
+    this.socket = SocketIOClient.connect(CHAT_API_URL, {
       query: {
         member_id: userId
       },
@@ -53,7 +55,10 @@ export default class App extends Component {
       transports: ['websocket'],
       agent: false, // [2] Please don't set this to true upgrade: false, 
     });
-    this.socket.on(userId + '-member-message', this.onReceivedMessage);
+    this.socket.on(userId + '-member-message', () => {
+      console.log('Connected');
+      this.onReceivedMessage()
+    });
   }
   onReceivedMessage = (recievedMessage) => {
     const recievedConvesationId = recievedMessage.conversation_id;
@@ -133,7 +138,7 @@ export default class App extends Component {
 
 
     return (
-
+     
 
       <Provider store={store} key="provider">
         <Root>

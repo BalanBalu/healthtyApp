@@ -68,6 +68,8 @@ import CoronaDisease from '../../modules/screens/CoronaDisease/CoronaDisease';
 
 import MedicineSuggestionList from '../../modules/screens/Pharmacy/MedicineSuggestionList/pharmacySuggestionList';
 import PharmacyList from '../../modules/screens/Pharmacy/PharmacyList/pharmacyList';
+import AuthScreen from '../../modules/screens/VideoConsulation/components/AuthScreen';
+ import VideoScreen from '../../modules/screens/VideoConsulation/components/VideoScreen';
 
 const AuthRoutes = {
   login: {
@@ -654,6 +656,20 @@ const HomeStack = createStackNavigator({
       title: 'CORONO Status'
     }
   },
+  /* Video Consultation */
+  'AuthScreen': {
+    screen: AuthScreen,
+    navigationOptions: {
+      title: 'Video Auth'
+    }
+  },
+  VideoScreen: {
+    screen: VideoScreen,
+    navigationOptions: {
+      title: 'Video Calling'
+    }
+  },
+
   // ============== Reminder =================
 
   Reminder: {
@@ -717,7 +733,11 @@ const DrawerNavigator = createDrawerNavigator({
   },
   'CORONO Status': {
     screen: CoronaDisease
-  }
+  },
+  'AuthScreen': {
+    screen: AuthScreen
+  },
+
 },
   {
     overlayColor: 'rgba(0, 0, 0, 0.7)',

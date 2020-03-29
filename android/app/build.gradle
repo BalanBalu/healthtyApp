@@ -152,6 +152,9 @@ android {
 }
 
 dependencies {
+    implementation project(':react-native-webrtc')
+    implementation project(':react-native-incall-manager')
+    implementation project(':react-native-sound')
     implementation project(':react-native-calendar-events')
     implementation project(':react-native-image-crop-picker')
     implementation project(':react-native-push-notification')

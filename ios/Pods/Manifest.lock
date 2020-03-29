@@ -65,6 +65,8 @@ PODS:
     - React
   - react-native-mapbox-gl (7.0.4):
     - React
+  - react-native-webrtc (1.75.3):
+    - React
   - React/Core (0.59.10):
     - yoga (= 0.59.10.React)
   - React/DevSupport (0.59.10):
@@ -101,10 +103,17 @@ PODS:
     - React/Core
     - React/fishhook
     - React/RCTBlob
+  - ReactNativeIncallManager (3.2.7):
+    - React
   - RNImageCropPicker (0.24.1):
     - QBImagePickerController
     - React/Core
     - RSKImageCropper
+  - RNSound (0.11.0):
+    - React
+    - RNSound/Core (= 0.11.0)
+  - RNSound/Core (0.11.0):
+    - React
   - RSKImageCropper (2.2.3)
   - yoga (0.59.10.React)
 
@@ -113,6 +122,7 @@ DEPENDENCIES:
   - Folly (from `../node_modules/react-native/third-party-podspecs/Folly.podspec`)
   - react-native-calendar-events (from `../node_modules/react-native-calendar-events`)
   - "react-native-mapbox-gl (from `../node_modules/@react-native-mapbox-gl/maps`)"
+  - react-native-webrtc (from `../node_modules/react-native-webrtc`)
   - React/Core (from `../node_modules/react-native`)
   - React/DevSupport (from `../node_modules/react-native`)
   - React/RCTActionSheet (from `../node_modules/react-native`)
@@ -128,7 +138,9 @@ DEPENDENCIES:
   - React/RCTText (from `../node_modules/react-native`)
   - React/RCTVibration (from `../node_modules/react-native`)
   - React/RCTWebSocket (from `../node_modules/react-native`)
+  - ReactNativeIncallManager (from `../node_modules/react-native-incall-manager`)
   - RNImageCropPicker (from `../node_modules/react-native-image-crop-picker`)
+  - RNSound (from `../node_modules/react-native-sound`)
   - yoga (from `../node_modules/react-native/ReactCommon/yoga/Yoga.podspec`)
 
 SPEC REPOS:
@@ -156,8 +168,14 @@ EXTERNAL SOURCES:
     :path: "../node_modules/react-native-calendar-events"
   react-native-mapbox-gl:
     :path: "../node_modules/@react-native-mapbox-gl/maps"
+  react-native-webrtc:
+    :path: "../node_modules/react-native-webrtc"
+  ReactNativeIncallManager:
+    :path: "../node_modules/react-native-incall-manager"
   RNImageCropPicker:
     :path: "../node_modules/react-native-image-crop-picker"
+  RNSound:
+    :path: "../node_modules/react-native-sound"
   yoga:
     :path: "../node_modules/react-native/ReactCommon/yoga/Yoga.podspec"
 
@@ -177,10 +195,13 @@ SPEC CHECKSUMS:
   React: 36d0768f9e93be2473b37e7fa64f92c1d5341eef
   react-native-calendar-events: 2fe35a9294af05de0ed819d3a1b5dac048d2c010
   react-native-mapbox-gl: e5e1921140b7e2ae2e4e1d917f4c91ad13da3f25
+  react-native-webrtc: 86d841823e66d68cc1f86712db1c2956056bf0c2
+  ReactNativeIncallManager: 35e387f58d3fc6e8cc042f47a2256b5f50134a67
   RNImageCropPicker: 6134b66a3d5bc13e2895a97c630a4254006902b4
+  RNSound: c980916b596cc15c8dcd2f6ecd3b13c4881dbe20
   RSKImageCropper: a446db0e8444a036b34f3c43db01b2373baa4b2a
   yoga: 684513b14b03201579ba3cee20218c9d1298b0cc
 
-PODFILE CHECKSUM: 9e86e00e2d56c1e0cb95a4c5dd6ae0ef86274168
+PODFILE CHECKSUM: 5c9048da33c9c5606fbe32b3dbb0b200d9c33f08
 
 COCOAPODS: 1.8.4
