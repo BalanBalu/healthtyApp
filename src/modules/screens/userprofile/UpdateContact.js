@@ -84,7 +84,11 @@ class UpdateContact extends Component {
                     type: "success",
                     duration: 3000,
                 })
-                this.props.navigation.navigate('Profile');
+                loginData = {
+                    userEntry: primary_mobile_no,
+                    type: 'user'
+                }
+                this.props.navigation.navigate('renderOtpInput', { loginData: loginData, fromProfile: true, verifyData: 'mobileNo' });
             } else {
                 Toast.show({
                     text: response.message,

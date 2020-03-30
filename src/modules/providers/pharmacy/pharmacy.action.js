@@ -22,7 +22,7 @@ export async function getSearchedMedicines(keyword, isLoading = true) {
 export async function getMedicineOrderList(userId) {
   try {
 
-    let endPoint = '/medicine/orders/user/' + userId;
+    let endPoint = '/medicine_orders/user/' + userId;
     let response = await getService(endPoint);
     let respData = response.data;
     return respData;
@@ -41,7 +41,7 @@ export async function getMedicineOrderList(userId) {
 export async function getMedicineOrderDetails(order_id, userId) {
   try {
 
-    let endPoint = '/medicine/order/' + order_id + '/user/' + userId;
+    let endPoint = '/medicine_orders/order/' + order_id + '/user/' + userId;
     console.log(endPoint);
     let response = await getService(endPoint);
     console.log(response);
@@ -176,7 +176,7 @@ export async function getPopularMedicine(userId, coordinates) {
 
 export async function createMedicineOrder(data) {
   try {
-    let endPoint = '/medicine/order';
+    let endPoint = '/medicine_orders/order';
     console.log(endPoint)
     let response = await postService(endPoint, data);
     let respData = response.data;

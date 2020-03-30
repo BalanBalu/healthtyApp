@@ -177,6 +177,7 @@ export async function getCurrentVersion(type) {
 export const getReferalPoints = async (userId) => {
   let fields = "credit_points,is_mobile_verified,refer_code,email,mobile_no,first_name,last_name,dob"
   let result = await fetchUserProfile(userId, fields);
+  console.log("result.is_mobile_verified", result.is_mobile_verified)
   if (result) {
     store.dispatch({
       type: AVAILABLE_CREDIT_POINTS,
@@ -188,7 +189,14 @@ export const getReferalPoints = async (userId) => {
         data: result.refer_code
       })
     }
-    if (!result.is_mobile_verified) {
+
+    if (result.mobile_no == undefined) {
+      return {
+        hasProfileUpdated: false,
+        updateMobileNo: true
+      }
+    }
+    else if (!result.is_mobile_verified) {
       return {
         hasProfileUpdated: false,
         hasOtpNotVerified: true,

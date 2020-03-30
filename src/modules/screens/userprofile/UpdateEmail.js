@@ -18,7 +18,7 @@ class UpdateEmail extends Component {
             isLoading: false,
             errorMsg: '',
             editable: true,
-            primaryEmail: ''
+            primaryEmail: null
 
         }
     }
@@ -114,7 +114,7 @@ class UpdateEmail extends Component {
                                         value={this.state.primaryEmail}
                                         testID='updateEmail' />
                                 </Item>
-                                {this.state.primaryEmail !== undefined ?
+                                {this.state.primaryEmail !== null ?
                                     <Text style={{ marginLeft: 7, color: 'gray', fontSize: 13 }}>Primary email is not editable</Text> : null}
                                 <Text style={{ color: 'red', marginLeft: 15, marginTop: 5 }}>{this.state.errorMsg}</Text>
 

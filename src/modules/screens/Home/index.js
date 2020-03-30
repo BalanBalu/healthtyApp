@@ -77,8 +77,8 @@ class Home extends Component {
     }
     async componentDidMount() {
         try {
-            const coronoTestStatus = await AsyncStorage.getItem('coronoTested'); 
-            if(coronoTestStatus === '1') {} else {
+            const coronoTestStatus = await AsyncStorage.getItem('coronoTested');
+            if (coronoTestStatus === '1') { } else {
                 this.props.navigation.navigate('CORONO Status');
             }
             this.initialFunction();
@@ -95,9 +95,9 @@ class Home extends Component {
                 else {
                     this.otpAndBasicDetailsCompletion();
                 }
-            } else 
+            } else
                 this.otpAndBasicDetailsCompletion();
-            
+
         } catch (ex) {
             console.log(ex)
         }
@@ -106,43 +106,49 @@ class Home extends Component {
     otpAndBasicDetailsCompletion = async () => {
         try {
             let userId = await AsyncStorage.getItem("userId");
-            console.log("userId" + userId)
             res = await getReferalPoints(userId);
-            if(userId){
-            if (res.hasProfileUpdated == false) {
-                if (res.hasOtpNotVerified === true) {
-                    console.log("res.hasOtpNotVerified " + res.hasOtpNotVerified )
-                    this.props.navigation.navigate('renderOtpInput', {
-                        loginData: { userEntry: res.mobile_no },
-                        navigateBackToHome: true
-                    });
-                    return;
+            if (userId) {
+                if (res.updateMobileNo === true) {
+                    this.props.navigation.navigate('UpdateContact', { updatedata: {} });
+                    Toast.show({
+                        text: 'Plase Update Your Mobile Number and Continue',
+                        duration: 3000,
+                        type: 'warning'
+                    })
                 }
+                else if (res.hasProfileUpdated == false) {
+                    if (res.hasOtpNotVerified === true) {
+                        this.props.navigation.navigate('renderOtpInput', {
+                            loginData: { userEntry: res.mobile_no },
+                            navigateBackToHome: true
+                        });
+                        return;
+                    }
 
-                Alert.alert(
-                    "Alert",
-                    "Your profile is not completed!Update to continue",
-                    [
-                        {
-                            text: "Skip",
-                            onPress: () => {
-                                console.log("Cancel Pressed");
+                    Alert.alert(
+                        "Alert",
+                        "Your profile is not completed!Update to continue",
+                        [
+                            {
+                                text: "Skip",
+                                onPress: () => {
+                                    console.log("Cancel Pressed");
+                                },
+                                style: "cancel"
                             },
-                            style: "cancel"
-                        },
-                        {
-                            text: "Update", onPress: () => {
-                                AsyncStorage.setItem('ProfileCompletionViaHome', '1'),
-                                    this.checkForUserProfile(res)
+                            {
+                                text: "Update", onPress: () => {
+                                    AsyncStorage.setItem('ProfileCompletionViaHome', '1'),
+                                        this.checkForUserProfile(res)
+
+                                }
 
                             }
-
-                        }
-                    ],
-                    { cancelable: false }
-                );
+                        ],
+                        { cancelable: false }
+                    );
+                }
             }
-        }
         } catch (ex) {
             console.log(ex)
         }
@@ -417,12 +423,12 @@ class Home extends Component {
                                                 value: item.type === 'symptoms' ? [item.value] : item.value
                                             })
                                         }
-                                          this.props.navigation.navigate("Doctor List", { resultData: requestData }) 
-                                        }}
-                                    >
-                                         <Col size={7}>
-                                    <Text style={{marginTop:2, fontFamily: 'OpenSans', fontSize: 12,color: '#775DA3',paddingLeft: 10, }}>{item.value}</Text> 
-                                  {item.address? <Text style={{marginTop:2, fontFamily: 'OpenSans', fontSize: 12,color: '#9c9b9f',paddingLeft: 10, }}>{item.address}</Text>:null }
+                                        this.props.navigation.navigate("Doctor List", { resultData: requestData })
+                                    }}
+                                >
+                                    <Col size={7}>
+                                        <Text style={{ marginTop: 2, fontFamily: 'OpenSans', fontSize: 12, color: '#775DA3', paddingLeft: 10, }}>{item.value}</Text>
+                                        {item.address ? <Text style={{ marginTop: 2, fontFamily: 'OpenSans', fontSize: 12, color: '#9c9b9f', paddingLeft: 10, }}>{item.address}</Text> : null}
 
                                     </Col>
                                     <Col size={3}>
