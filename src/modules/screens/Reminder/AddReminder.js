@@ -277,7 +277,7 @@ class AddReminder extends Component {
         }
         alert(JSON.stringify(data))
         let result = await addReminderdata(userId, data)
-        // console.log('result', result)
+        console.log('result', result)
         if (result.success) {
 
           Toast.show({
@@ -545,7 +545,7 @@ class AddReminder extends Component {
                     <Col size={4} style={{ mariginTop: 5 }}>
                       <Text style={styles.NumText}>Choose your time</Text>
                     </Col>
-                    <Col size={3.5} style={{ mariginTop: 5, }}>
+                    <Col size={3.5} style={{ mariginTop: 5}}>
                       <View style={{ alignItems: 'flex-start', marginTop: 5, padding: 1 }}>
                         <TouchableOpacity onPress={() => { this.setState({ isTimePickerVisible: !this.state.isTimePickerVisible }) }} style={styles.toucableOpacity}>
                           <Icon name='ios-clock' style={styles.tocuhIcon} />
