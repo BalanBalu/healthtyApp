@@ -8,6 +8,8 @@ import { dateDiff, getMoment, formatDate } from '../../../../setup/helpers'
 import { MedInsertReview } from './medInsertReview'
 import { AddToCard } from '../AddToCardBuyNow/AddToCard'
 import SwiperFlatList from 'react-native-swiper-flatlist';
+import ImageZoom from 'react-native-image-pan-zoom';
+
 let medicineId, userId;
 class MedicineInfo extends Component {
     constructor(props) {
@@ -254,26 +256,32 @@ class MedicineInfo extends Component {
                             </Row>
                             <Text style={{ fontSize: 14, fontFamily: 'OpenSans', color: '#909090' }}>By {medicineData.pharmacyInfo.name}</Text>
 
-                            <View style={{ flex: 1, marginLeft: 10, marginRight: 10 }}>
-                                <SwiperFlatList
-                                    autoplay
-                                    autoplayDelay={3}
-                                    index={3}
-                                    contentContainerStyle={{ flexGrow: 1, justifyContent: 'center' }}
-                                    autoplayLoop
-                                    data={prescriptionData}
-                                    renderItem={({ item }) =>
-                                        <View style={{ justifyContent: 'center', alignItems: 'center', }}>
+                            <View style={{ flex: 1, marginLeft: 10, marginRight: 10, justifyContent: 'center', alignItems: 'center', }}>
+                                <ImageZoom cropWidth={200}
+                                    cropHeight={200}
+                                    imageWidth={200}
+                                    minScale={0.6}
+                                    imageHeight={200}>
+
+                                    <SwiperFlatList
+                                        autoplay
+                                        autoplayDelay={3}
+                                        index={3}
+                                        contentContainerStyle={{ flexGrow: 1, }}
+                                        autoplayLoop
+                                        data={prescriptionData}
+                                        renderItem={({ item }) =>
+
                                             <Image
                                                 source={item.prescription_path}
                                                 style={{
-                                                    width: Dimensions.get('window').width - 100, height: Dimensions.get('window').height - 400, justifyContent: 'center', alignItems: 'center'
+                                                    width: 200, height: 200,
                                                 }}
                                             />
-                                        </View>
-                                    }
-                                    showPagination
-                                />
+                                        }
+                                        showPagination
+                                    />
+                                </ImageZoom>
                             </View>
                             <Row>
                                 <Col size={7} style={{ flexDirection: 'row', marginTop: 10 }}>
