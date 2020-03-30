@@ -289,6 +289,13 @@ class PaymentPage extends Component {
                     type: 'success',
                     duration: 3000
                 })
+            } else if (serviceType === SERVICE_TYPES.VIDEO_CONSULTING) {
+                this.props.navigation.navigate('SuccessChat', { manualNaviagationPage : 'Home' });
+                Toast.show({
+                    text: 'Paymenet Success',
+                    type: 'success',
+                    duration: 3000
+                })
             }
         } else {
             if (serviceType === SERVICE_TYPES.PHARMACY) {

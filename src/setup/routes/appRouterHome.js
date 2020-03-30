@@ -70,6 +70,7 @@ import MedicineSuggestionList from '../../modules/screens/Pharmacy/MedicineSugge
 import PharmacyList from '../../modules/screens/Pharmacy/PharmacyList/pharmacyList';
 import AuthScreen from '../../modules/screens/VideoConsulation/components/AuthScreen';
  import VideoScreen from '../../modules/screens/VideoConsulation/components/VideoScreen';
+import AvailableDoctors4Video from '../../modules/screens/VideoConsulation/components/AvailableDoctors';
 
 const AuthRoutes = {
   login: {
@@ -669,6 +670,12 @@ const HomeStack = createStackNavigator({
       title: 'Video Calling'
     }
   },
+  'Video Consulting': {
+    screen: AvailableDoctors4Video,
+    navigationOptions: {
+      title: 'Video Consulting'
+    }
+  },
 
   // ============== Reminder =================
 
@@ -737,6 +744,9 @@ const DrawerNavigator = createDrawerNavigator({
   'AuthScreen': {
     screen: AuthScreen
   },
+  'Video Consulting' : {
+    screen: AvailableDoctors4Video
+  }
 
 },
   {
