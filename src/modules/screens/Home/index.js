@@ -522,35 +522,30 @@ class Home extends Component {
                         </Row>
 
                         <View>
-                            <Row >
+                            <Row style={{marginLeft:-5,marginTop:-10}}>
                                 <FlatList
                                     numColumns={3}
                                     data={this.state.catagary}
                                     extraData={this.state.categryCount}
                                     renderItem={({ item, index }) =>
                                         <Col style={styles.maincol}>
-
                                             <TouchableOpacity onPress={() => this.navigateToCategorySearch(item.category_name)}
-                                                style={{ justifyContent: 'center', alignItems: 'center', width: '100%', paddingTop: 5, paddingBottom: 5, }}>
-
-                                                <Row style={{ height: 45, width: '100%', justifyContent: 'center', alignItems: 'center', }} >
-                                                    <Image
+                                               style={{ justifyContent: 'center', alignItems: 'center', width: '100%', paddingTop: 5, paddingBottom: 5 }}>
+                                                 <Image
                                                         source={{ uri: item.base64ImageData /*item.imageBaseURL + item.category_id + '.png' */ }}
                                                         style={{
                                                             width: 50, height: 50, alignItems: 'center'
                                                         }}
                                                     />
-                                                </Row>
-                                                <Row style={{ height: 40, width: '100%', justifyContent: 'center', alignItems: 'center', }} >
-                                                    <Text style={{ fontSize: 10, textAlign: 'center', fontWeight: '200', marginTop: 5, paddingLeft: 5, paddingRight: 5, paddingTop: 1, paddingBottom: 1 }}>{item.category_name}</Text>
-                                                </Row>
+                                                    <Text style={{ fontSize: 10, textAlign: 'center', fontWeight: '200', marginTop: 5, paddingLeft: 5, paddingRight: 5, paddingTop: 1,paddingBottom: 1 }}>{item.category_name}</Text>
                                             </TouchableOpacity>
-
-                                        </Col>
+                                        </Col>   
                                     }
                                     keyExtractor={(item, index) => index.toString()}
                                 />
                             </Row>
+                         
+                           
                         </View>
 
                         <Row style={{ marginTop: 10, marginBottom: 5 }}>
@@ -787,7 +782,6 @@ const styles = StyleSheet.create({
 
     },
     maincol: {
-        flex: 1,
         alignItems: "center",
         justifyContent: "center",
         borderColor: 'gray',
@@ -795,15 +789,18 @@ const styles = StyleSheet.create({
         flexDirection: 'row',
         borderWidth: 0.1,
         shadowColor: '#000',
-        shadowOffset: { width: 0, height: 0.5 },
-        shadowOpacity: 0.1,
+        shadowOffset: { width: 0, height: 0 },
+        shadowOpacity: 0.5,
         shadowRadius: 5,
-        elevation: 2,
+        elevation: 1,
         padding: 1,
-        marginLeft: 5,
-        marginRight: 8,
-        marginTop: 8,
-        width: '30%',
-        flexDirection: 'row',
+        marginTop: 15,
+        marginLeft: 11,
+        marginBottom: 1, 
+        width: '29.5%', 
+        flexDirection: 'row', 
+        backgroundColor: '#fff',
+
+        
     }
 });
