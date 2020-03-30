@@ -65,9 +65,8 @@ import ReportIssue from '../../modules/screens/ReportIssue';
 import ReportDetails from '../../modules/screens/ReportIssue/reportIssueDetails'
 import EarnReward from '../../modules/screens/Home/EarnReward';
 import CoronaDisease from '../../modules/screens/CoronaDisease/CoronaDisease';
-
 import MedicineSuggestionList from '../../modules/screens/Pharmacy/MedicineSuggestionList/pharmacySuggestionList';
-
+import ImageView from '../../modules/screens/Pharmacy/MedicineInfo/ImageView'
 const AuthRoutes = {
   login: {
     screen: login,
@@ -623,6 +622,13 @@ const HomeStack = createStackNavigator({
       title: 'Medicine Reviews'
     }
   },
+  ImageView: {
+    screen: ImageView,
+    navigationOptions: {
+      title: 'Image View'
+    }
+  },
+
 
   'CORONO Status': {
     screen: CoronaDisease,

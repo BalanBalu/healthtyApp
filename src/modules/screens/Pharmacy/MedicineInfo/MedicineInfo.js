@@ -261,8 +261,11 @@ class MedicineInfo extends Component {
                                     cropHeight={200}
                                     imageWidth={200}
                                     minScale={0.6}
-                                    imageHeight={200}>
+                                    panToMove={false}
+                                    pinchToZoom={false}
+                                    enableDoubleClickZoom={false}
 
+                                    imageHeight={200}>
                                     <SwiperFlatList
                                         autoplay
                                         autoplayDelay={3}
@@ -271,13 +274,14 @@ class MedicineInfo extends Component {
                                         autoplayLoop
                                         data={prescriptionData}
                                         renderItem={({ item }) =>
-
-                                            <Image
-                                                source={item.prescription_path}
-                                                style={{
-                                                    width: 200, height: 200,
-                                                }}
-                                            />
+                                            <TouchableOpacity onPress={() => this.props.navigation.navigate("ImageView")}>
+                                                <Image
+                                                    source={item.prescription_path}
+                                                    style={{
+                                                        width: 200, height: 200,
+                                                    }}
+                                                />
+                                            </TouchableOpacity>
                                         }
                                         showPagination
                                     />
