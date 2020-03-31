@@ -6,6 +6,7 @@ import CallingLoader from './CallingLoader';
 
 export default ({streams}) => {
   const RTCViewRendered = ({userId, stream}) => {
+    console.log(stream);
     if (stream) {
       return (
         <RTCView
@@ -16,16 +17,18 @@ export default ({streams}) => {
         />
       );
     }
-
+    else {
     return (
       <View style={styles.blackView}>
-        <CallingLoader name={CallService.getUserById(userId, 'name')} />
+        {/* <CallingLoader name={CallService.getUserById(userId, 'name')} /> */}
+        <CallingLoader name={'Hey this is the Loader'} />
       </View>
     );
+    }
   };
 
   const streamsCount = streams.length;
-
+  console.log('Stream Count ' , streams)
   let RTCListView = null;
 
   switch (streamsCount) {

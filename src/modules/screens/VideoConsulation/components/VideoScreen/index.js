@@ -6,14 +6,17 @@ import RTCViewGrid from './RTCViewGrid';
 import {CallService, AuthService} from '../../services';
 import ToolBar from './ToolBar';
 import UsersSelect from './UsersSelect';
-
-export default class VideoScreen extends React.Component {
+import { store } from '../../../../../setup/store';
+import { connect } from 'react-redux';
+import { SET_VIDEO_SESSION } from '../../../../providers/chat/chat.action';
+ class VideoScreen extends React.Component {
   constructor(props) {
     super(props);
 
     this._session = null;
+    this.steamSubscribeLoadedUsers = [];
     this.opponentsIds = props.navigation.getParam('opponentsIds') || [];
-
+    
     this.state = {
       localStream: null,
       remoteStreams: [],
@@ -22,15 +25,33 @@ export default class VideoScreen extends React.Component {
       isActiveCall: false,
       isIncomingCall: false,
     };
-
+    
     this._setUpListeners();
+  
+  }
+  componentDidMount() {
+    store.subscribe(() => {
+      const { chat: { session } } = this.props;
+      if(session && this.steamSubscribeLoadedUsers.indexOf(session.userId) === -1) {
+          console.log('Coming here boss');
+          this.setRemoteListener(session.userId, session.stream);
+          this.steamSubscribeLoadedUsers.push(session.userId);
+      }
+    });
+    const { navigation } = this.props;
+    const isIncomingCall = navigation.getParam('isIncomingCall') || false;
+    if(isIncomingCall) {
+      this.showInomingCallModal(CallService.getSession());
+    }
   }
 
   componentWillUnmount() {
-    CallService.stopCall();
+   // CallService.stopCall();
    // AuthService.logout();
   }
-
+  componentWillReceiveProps() {
+   
+  }
   componentDidUpdate(prevProps, prevState) {
     const currState = this.state;
 
@@ -44,12 +65,13 @@ export default class VideoScreen extends React.Component {
   }
 
   showInomingCallModal = session => {
-    this._session = session;
-    this.setState({isIncomingCall: true});
+   this._session = session;
+   this.setState({isIncomingCall: true});
   };
 
   hideInomingCallModal = () => {
     this._session = null;
+
     this.setState({isIncomingCall: false});
   };
 
@@ -86,7 +108,10 @@ export default class VideoScreen extends React.Component {
     this.setState(({remoteStreams}) => {
       const updatedRemoteStreams = remoteStreams.map(item => {
         if (item.userId === userId) {
-          return {userId, stream};
+          return {
+            userId, 
+            stream
+          };
         }
 
         return {userId: item.userId, stream: item.stream};
@@ -100,6 +125,8 @@ export default class VideoScreen extends React.Component {
     this.setState(({remoteStreams}) => ({
       remoteStreams: remoteStreams.filter(item => item.userId !== userId),
     }));
+   
+    
   };
 
   setLocalStream = stream => {
@@ -114,6 +141,11 @@ export default class VideoScreen extends React.Component {
       isActiveSelect: true,
       isActiveCall: false,
     });
+    this.steamSubscribeLoadedUsers = [];
+    store.dispatch({
+      type: SET_VIDEO_SESSION,
+      data: null
+    })
   };
 
   _setUpListeners() {
@@ -132,6 +164,10 @@ export default class VideoScreen extends React.Component {
         userId => currentUserID !== userId,
       );
 
+      console.log('stream:::==> ', stream);
+    console.log('opponentsIDs:::==> ', opponentsIDs, + ' InitiatorId==>',  initiatorID, + ' currentUserID==>',  currentUserID);
+    console.log('Session:::==> ', this._session);
+    
       this.initRemoteStreams(opponentsIds);
       this.setLocalStream(stream);
       this.closeSelect();
@@ -145,12 +181,14 @@ export default class VideoScreen extends React.Component {
   };
 
   _onCallListener = (session, extension) => {
+   
     CallService.processOnCallListener(session)
       .then(() => this.showInomingCallModal(session))
       .catch(this.hideInomingCallModal);
   };
 
   _onAcceptCallListener = (session, userId, extension) => {
+    
     CallService.processOnAcceptCallListener(session, userId, extension)
       .then(this.setOnCall)
       .catch(this.hideInomingCallModal);
@@ -168,7 +206,7 @@ export default class VideoScreen extends React.Component {
     CallService.processOnStopCallListener(userId, isStoppedByInitiator)
       .then(() => {
         if (isStoppedByInitiator) {
-          this.resetState();
+           this.resetState();
         } else {
           this.removeRemoteStream(userId);
         }
@@ -183,6 +221,7 @@ export default class VideoScreen extends React.Component {
   };
 
   _onRemoteStreamListener = (session, userId, stream) => {
+ 
     CallService.processOnRemoteStreamListener(userId)
       .then(() => {
         this.updateRemoteStream(userId, stream);
@@ -190,7 +229,14 @@ export default class VideoScreen extends React.Component {
       })
       .catch(this.hideInomingCallModal);
   };
-
+  setRemoteListener(userId, stream) {
+    CallService.processOnRemoteStreamListener(userId)
+      .then(() => {
+        this.updateRemoteStream(userId, stream);
+        this.setOnCall();
+      })
+      .catch(this.hideInomingCallModal);
+  }
   render() {
     const {
       localStream,
@@ -200,7 +246,15 @@ export default class VideoScreen extends React.Component {
       isActiveCall,
       isIncomingCall,
     } = this.state;
-
+    initiatorName = 'Doctor';
+    
+    /*  
+      TODO: Incoming Call from Doctor Name to be implement
+      const initiatorName = isIncomingCall
+      ? CallService.getUserById(this._session.initiatorID, 'name')
+      : '';
+    
+    */
     const initiatorName = isIncomingCall
       ? CallService.getUserById(this._session.initiatorID, 'name')
       : '';
@@ -208,20 +262,14 @@ export default class VideoScreen extends React.Component {
       ? [{userId: 'localStream', stream: localStream}]
       : [];
     const streams = [...remoteStreams, ...localStreamItem];
-
+    console.log(streams);
     CallService.setSpeakerphoneOn(remoteStreams.length > 0);
 
     return (
       <SafeAreaView style={{flex: 1, backgroundColor: 'black'}}>
         <StatusBar backgroundColor="black" barStyle="light-content" />
         <RTCViewGrid streams={streams} />
-        <UsersSelect
-          isActiveSelect={isActiveSelect}
-          opponentsIds={this.opponentsIds}
-          selectedUsersIds={selectedUsersIds}
-          selectUser={this.selectUser}
-          unselectUser={this.unselectUser}
-        />
+        
         <ToolBar
           selectedUsersIds={selectedUsersIds}
           localStream={localStream}
@@ -256,3 +304,11 @@ export default class VideoScreen extends React.Component {
     );
   }
 }
+
+function homeState(state) {
+
+  return {
+      chat: state.chat,
+  }
+}
+export default connect(homeState)(VideoScreen)

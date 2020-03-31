@@ -61,7 +61,6 @@ export default class CurrentLocation {
 
         }).catch(err => {
           console.log(err);
-          alert("Please Enable Your Location to Provide the Better Results");
           // The user has not accepted to enable the location services or something went wrong during the process
           // "err" : { "code" : "ERR00|ERR01|ERR02", "message" : "message"}
           // codes : 

@@ -38,6 +38,13 @@ export default class CallService {
     });
   }
 
+  setSession(session) {
+    this._session = session;
+  }
+  getSession() {
+    return this._session;
+  }
+
   acceptCall = session => {
     this.stopSounds();
     this._session = session;

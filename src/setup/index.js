@@ -31,6 +31,7 @@ export default class App extends Component {
     };
     this.notif = new NotifService(this.onRegister.bind(this), this.onNotif.bind(this));
     AuthService.init();
+   
   }
   async componentDidMount() {
     const userId = await AsyncStorage.getItem('userId');
@@ -43,6 +44,7 @@ export default class App extends Component {
     }, 10000)
     //this.checkPermission();
   }
+
 
   initializeSocket(userId) {
     this.socket = SocketIOClient.connect(CHAT_API_URL, {
@@ -134,17 +136,20 @@ export default class App extends Component {
   handlePerm(perms) {
     Alert.alert("Permissions", JSON.stringify(perms));
   }
+
+  
   render() {
-
-
+    const {
+        isIncomingCall,
+    } = this.state;
+   
     return (
      
 
       <Provider store={store} key="provider">
         <Root>
           <StyleProvider style={getTheme(material)}>
-            <RoutesHome />
-
+            <RoutesHome/>
           </StyleProvider>
         </Root>
       </Provider>
