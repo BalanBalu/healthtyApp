@@ -311,11 +311,15 @@ class Profile extends Component {
                                         <Icon name="heart" style={styles.profileIcon}></Icon>
                                     </Col>
                                     <Col style={{ width: '55%' }} >
-                                        {imageSource != undefined ?
-                                            <Thumbnail style={styles.profileImage} source={{ uri: imageSource }} /> :
-                                            <Thumbnail style={styles.profileImage} square source={renderProfileImage(data)} />
-                                        }
+                                        <TouchableOpacity onPress={() => this.props.navigation.navigate("ImageView", { passImage: renderProfileImage(data), title: 'Profile photo' })}>
+                                            {imageSource != undefined ?
 
+                                                <Thumbnail style={styles.profileImage} source={{ uri: imageSource }} /> :
+
+                                                <Thumbnail style={styles.profileImage} square source={renderProfileImage(data)} />
+
+                                            }
+                                        </TouchableOpacity>
                                         <View style={{ marginLeft: 80, marginTop: -20, justifyContent: 'center' }}>
                                             <Icon name="camera" style={{ fontSize: 20 }} onPress={() => this.setState({ selectOptionPoopup: true })} testID="cameraIconTapped" />
                                         </View>
@@ -430,11 +434,11 @@ class Profile extends Component {
                                 </Body>
 
 
-                                {data.email != undefined  ?
+                                {data.email != undefined ?
                                     <Right>
                                         <Icon name="create" style={{ color: 'black' }} onPress={() => this.editProfile('UpdateEmail')} testID="iconToUpdateEmail" />
                                     </Right>
-                                      : null} 
+                                    : null}
 
                             </ListItem>
 

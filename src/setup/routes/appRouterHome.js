@@ -624,11 +624,10 @@ const HomeStack = createStackNavigator({
   },
   ImageView: {
     screen: ImageView,
-    navigationOptions: {
-      title: 'Image View'
-    }
+    navigationOptions: ({ navigation }) => ({
+      title: navigation.getParam("title"),
+    }),
   },
-
 
   'CORONO Status': {
     screen: CoronaDisease,

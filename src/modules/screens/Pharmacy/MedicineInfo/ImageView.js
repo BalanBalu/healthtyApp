@@ -7,17 +7,24 @@ import { Checkbox } from 'react-native-paper';
 import { Col, Row, Grid } from 'react-native-easy-grid';
 import { StyleSheet, Image, TouchableOpacity, AsyncStorage, FlatList, TouchableHighlight, Modal, Dimensions } from 'react-native';
 import { TextInput } from 'react-native-gesture-handler';
+import { NavigationEvents } from 'react-navigation';
 import ImageZoom from 'react-native-image-pan-zoom';
 class ImageView extends Component {
     constructor(props) {
         super(props)
         this.state = {
-
+            getImage: ''
         }
     }
 
+    componentDidMount() {
+        let { navigation } = this.props;
+        let ImageData = navigation.getParam('passImage');
+        console.log("ImageData+++++++++++" + JSON.stringify(ImageData))
+        this.setState({ getImage: ImageData })
+    }
     render() {
-
+        const { getImage } = this.state
         return (
             <Container>
                 <Content contentContainerStyle={styles.content}>
@@ -29,8 +36,7 @@ class ImageView extends Component {
                         minScale={0.6}
                         imageHeight={300}>
                         <Image
-                            // source={this.props.prescription_path}
-                            source={require('../../../../../assets/images/images.jpeg')}
+                            source={getImage}
                             style={{
                                 width: 300, height: 300
                             }}
