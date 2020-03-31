@@ -106,8 +106,8 @@ class Home extends Component {
     otpAndBasicDetailsCompletion = async () => {
         try {
             let userId = await AsyncStorage.getItem("userId");
-            res = await getReferalPoints(userId);
             if (userId) {
+                res = await getReferalPoints(userId);
                 if (res.updateMobileNo === true) {
                     this.props.navigation.navigate('UpdateContact', { updatedata: {} });
                     Toast.show({
@@ -165,6 +165,7 @@ class Home extends Component {
                 });
                 this.getAllChatsByUserId(userId);
                 this.getMarkedAsReadedNotification(userId)
+                
             }
         }
         catch (ex) {
