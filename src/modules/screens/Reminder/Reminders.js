@@ -13,7 +13,9 @@ class Reminder extends Component {
     super(props)
     this.state = {
       data: [],
-      isLoading: true
+      isLoading: true,
+      Enable: true
+
 
     }
   }
@@ -38,9 +40,14 @@ class Reminder extends Component {
     }
   }
 
+  Enable = () => {
+    this.setState({ Enable : false })
+    alert(this.state.Enable)
+  }
+
 
   render() {
-    const { data } = this.state;
+    const { data} = this.state;
 console.log(this.state.data)
     // const Reaminder = [{ medname: 'Acentaminophen', content: '10 mg   1 pill(s)', time: '7:00 AM', remtime: 'Your Remainder Time is at 7:00 AM, Oct 24,2019.' },
     // { medname: 'Acentaminophen', content: '13 mg   1 pill(s)', time: '10:00 AM', remtime: 'Your Remainder Time is at 10:00 AM, Oct 24,2019.' },
@@ -75,7 +82,7 @@ console.log(this.state.data)
             keyExtractor={(item, index) => index.toString()}
 
             renderItem={({ item }) => (
-                    <Card style={{borderRadius:5,marginTop:10}}>
+                    <Card  style={this.state.Enable == true ? {borderRadius:5,marginTop:10} : {borderRadius:5,marginTop:10,backgroundColor:"#D8D8D8"} }>
                      <Grid>
                       <Row style={{marginTop:5}}>
                        <Col style={styles.col1}>
@@ -103,8 +110,11 @@ console.log(this.state.data)
                            <Switch style={{ transform: [{ scaleX: .8 }, { scaleY: .8 }], backgroundColor: 'fff' }} trackColor={{ true: '#6FC41A', false: 'grey' }}
                            trackColor={{ true: '#7F49C3'}}
                           thumbColor={"#F2F2F2"}
-                          onValueChange={this.toggleSwitch}
-                          value={true} />
+                          value={this.state.Enable}
+                           onValueChange={value => {
+                            this.setState({ Enable : !this.state.Enable})}
+                                                 }
+                           />
                            </Col>
                           
                            </Row>
@@ -189,10 +199,6 @@ const styles = StyleSheet.create({
     borderRightColor: 'gray',
     borderRightWidth: 1,
     width: '50%',
-
-
-
-
   },
   col2: {
     width: '50%',
