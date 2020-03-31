@@ -12,7 +12,7 @@ export default class VideoScreen extends React.Component {
     super(props);
 
     this._session = null;
-    this.opponentsIds = props.navigation.getParam('opponentsIds');
+    this.opponentsIds = props.navigation.getParam('opponentsIds') || [];
 
     this.state = {
       localStream: null,

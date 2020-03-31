@@ -96,6 +96,10 @@ def enableProguardInReleaseBuilds = true
 android {
     compileSdkVersion rootProject.ext.compileSdkVersion
     buildToolsVersion rootProject.ext.buildToolsVersion
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_1_8
+        targetCompatibility JavaVersion.VERSION_1_8
+    }
     ext {
       googlePlayServicesVersion = "16.1.0"
       firebaseVersion = "17.6.0"
@@ -106,6 +110,7 @@ android {
         targetSdkVersion rootProject.ext.targetSdkVersion
         versionCode 9
         versionName "1.9"
+        multiDexEnabled true
     }
     splits {
         abi {

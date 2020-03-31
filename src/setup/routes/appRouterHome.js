@@ -746,7 +746,11 @@ const DrawerNavigator = createDrawerNavigator({
   },
   'Video Consulting' : {
     screen: AvailableDoctors4Video
-  }
+  },
+  VideoScreen: {
+    screen: VideoScreen,
+   
+  },
 
 },
   {
