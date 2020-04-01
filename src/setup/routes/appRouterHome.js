@@ -66,7 +66,7 @@ import ReportDetails from '../../modules/screens/ReportIssue/reportIssueDetails'
 import EarnReward from '../../modules/screens/Home/EarnReward';
 import CoronaDisease from '../../modules/screens/CoronaDisease/CoronaDisease';
 import MedicineSuggestionList from '../../modules/screens/Pharmacy/MedicineSuggestionList/pharmacySuggestionList';
-import ImageView from '../../modules/screens/Pharmacy/MedicineInfo/ImageView'
+import ImageView from '../../modules/shared/ImageView'
 const AuthRoutes = {
   login: {
     screen: login,
