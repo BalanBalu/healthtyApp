@@ -12,16 +12,19 @@ import ImageZoom from 'react-native-image-pan-zoom';
 class ImageView extends Component {
     constructor(props) {
         super(props)
+        let imageData = props.navigation.getParam('passImage');
+        console.log("ImageData+++++++++++" + JSON.stringify(imageData))
         this.state = {
-            getImage: ''
+            getImage: imageData
         }
     }
 
     componentDidMount() {
-        let { navigation } = this.props;
+      /*  let { navigation } = this.props;
         let ImageData = navigation.getParam('passImage');
         console.log("ImageData+++++++++++" + JSON.stringify(ImageData))
         this.setState({ getImage: ImageData })
+      */
     }
     render() {
         const { getImage } = this.state
