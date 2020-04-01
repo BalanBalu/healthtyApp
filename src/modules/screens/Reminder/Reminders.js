@@ -14,14 +14,16 @@ class Reminder extends Component {
     this.state = {
       data: [],
       isLoading: true,
-      Enable: true
+      Enable: false,
+      
+
 
 
     }
   }
   componentDidMount() {
     const status = RNCalendarEvents.authorizationStatus()
-   // alert(status);
+    // alert(status);
     this.getAllReminderdata();
   }
 
@@ -41,14 +43,28 @@ class Reminder extends Component {
   }
 
   Enable = () => {
-    this.setState({ Enable : false })
+    this.setState({ Enable: false })
     alert(this.state.Enable)
   }
+  
+
+  // deleteData(index) {
+  //   // console.log("index" + index)
+  //   const {item} = this.state;
+  //   let temp = item.id;
+  //   temp.splice(index, 1)
+  //   // console.log("temp" + JSON.stringify(temp))
+  //   this.setState({ data: temp })
+  //   // console.log("data" + JSON.stringify(this.state.data))
+
+  // }
+
+  
 
 
   render() {
-    const { data} = this.state;
-console.log(this.state.data)
+    const { data, index } = this.state;
+    console.log(this.state.data)
     // const Reaminder = [{ medname: 'Acentaminophen', content: '10 mg   1 pill(s)', time: '7:00 AM', remtime: 'Your Remainder Time is at 7:00 AM, Oct 24,2019.' },
     // { medname: 'Acentaminophen', content: '13 mg   1 pill(s)', time: '10:00 AM', remtime: 'Your Remainder Time is at 10:00 AM, Oct 24,2019.' },
     // { medname: 'Acentaminophen', content: '15 mg   1 pill(s)', time: '11:00 AM', remtime: 'Your Remainder Time is at 1:00 PM, Oct 24,2019.' },
@@ -77,56 +93,66 @@ console.log(this.state.data)
           </View>
 
 
-<View style={{paddingRight:10,paddingLeft:10}}>
-          <FlatList data={data}
-            keyExtractor={(item, index) => index.toString()}
+          <View style={{ paddingRight: 10, paddingLeft: 10 }}>
+            <FlatList data={data}
+              keyExtractor={(item, index) => index.toString()}
 
-            renderItem={({ item }) => (
-                    <Card  style={this.state.Enable == true ? {borderRadius:5,marginTop:10} : {borderRadius:5,marginTop:10,backgroundColor:"#D8D8D8"} }>
-                     <Grid>
-                      <Row style={{marginTop:5}}>
-                       <Col style={styles.col1}>
-                        <View style={{marginLeft:15}}>
+              renderItem={({ item }) => (
+                <Card style={this.state.Enable == true ? { borderRadius: 5, marginTop: 10 } : { borderRadius: 5, marginTop: 10, backgroundColor: "#D8D8D8" }}>
+                  <Grid>
+                    <Row style={{ marginTop: 5 }}>
+                      <Col style={styles.col1}>
+                        <View style={{ marginLeft: 15 }}>
                           <Text style={styles.mednamestyle}>{item.medicine_name}</Text>
-                          <Text  style={styles.innerText}>{item.medicine_form}</Text>
-                          <Text  style={styles.innerText}>{item.medicine_strength}</Text>
-                          </View> 
-                       </Col>
-                       <Col style={styles.col2}>
-                         <Row>
-                        
-                         <Col size={8}>
-                        <FlatList 
-                        data={item.medicine_take_times}
-                        extraData={item}
-                          keyExtractor={(item, index) => index.toString()}
-                          renderItem={({ item }) => (
-                            <Text style={{ marginLeft: 15, color: '#000' }}>{formatDate(item.medicine_take_times, 'HH:mm A')}</Text>
-
-                          )} />
+                          <Text style={styles.innerText}>{item.medicine_form}</Text>
+                          <Text style={styles.innerText}>{item.medicine_strength}</Text>
+                        </View>
                       </Col>
-                                      
-                           <Col size={2}>
-                           <Switch style={{ transform: [{ scaleX: .8 }, { scaleY: .8 }], backgroundColor: 'fff' }} trackColor={{ true: '#6FC41A', false: 'grey' }}
-                           trackColor={{ true: '#7F49C3'}}
-                          thumbColor={"#F2F2F2"}
-                          value={this.state.Enable}
-                           onValueChange={value => {
-                            this.setState({ Enable : !this.state.Enable})}
-                                                 }
-                           />
-                           </Col>
-                          
-                           </Row>
-                       </Col>
-                      </Row>
-                     </Grid>
-                    <View style={{marginTop:5,borderTopColor:'gray',borderTopWidth:1,}}> 
-                      <Text style={styles.remText}>Your Remainder Time is at {formatDate(item.medicine_take_start_date, 'DD/MM/YYYY')} - {formatDate(item.medicine_take_end_date, 'DD/MM/YYYY')}</Text>
-                    </View>
-                 </Card>
-             )}/>
-             </View>
+                      <Col style={styles.col2}>
+                        <Row>
+
+                          <Col size={8}>
+                            <FlatList
+                              data={item.medicine_take_times}
+                              extraData={item}
+                              keyExtractor={(item, index) => index.toString()}
+                              renderItem={({ item }) => (
+                                <Text style={{ marginLeft: 15, color: '#000' }}>{formatDate(item.medicine_take_times, 'HH:mm A')}</Text>
+
+                              )} />
+                          </Col>
+
+                          <Col size={2}>
+                            <Switch style={{ transform: [{ scaleX: .8 }, { scaleY: .8 }], backgroundColor: 'fff' }} trackColor={{ true: '#6FC41A', false: 'grey' }}
+                              trackColor={{ true: '#7F49C3' }}
+                              thumbColor={"#F2F2F2"}
+                              value={this.state.Enable}
+                              onValueChange={value => {
+                               
+                                if (value === true) {
+                                  this.setState({ Enable: item.active == true })
+                                }
+                                else
+                                 {
+                                  //this.deleteData(index)
+                                  this.setState({ Enable: item.active == false })
+                                  
+                                }
+
+                              }
+                              }
+                            />
+                          </Col>
+                        </Row>
+                      </Col>
+                    </Row>
+                  </Grid>
+                  <View style={{ marginTop: 5, borderTopColor: 'gray', borderTopWidth: 1, }}>
+                    <Text style={styles.remText}>Your Remainder Time is at {formatDate(item.medicine_take_start_date, 'DD/MM/YYYY')} - {formatDate(item.medicine_take_end_date, 'DD/MM/YYYY')}</Text>
+                  </View>
+                </Card>
+              )} />
+          </View>
 
 
 
