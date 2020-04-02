@@ -14,11 +14,6 @@ class Reminder extends Component {
     this.state = {
       data: [],
       isLoading: true,
-      Enable: false,
-      
-
-
-
     }
   }
   componentDidMount() {
@@ -42,11 +37,11 @@ class Reminder extends Component {
     }
   }
 
-  Enable = () => {
-    this.setState({ Enable: false })
-    alert(this.state.Enable)
-  }
-  
+  // Enable = () => {
+  //   this.setState({ Enable: false })
+  //   alert(this.state.Enable)
+  // }
+
 
   // deleteData(index) {
   //   // console.log("index" + index)
@@ -59,12 +54,21 @@ class Reminder extends Component {
 
   // }
 
-  
+  setStatus(_id, value) {
+    var temp = [...this.state.data]
+    temp.map((t) => {
+      if (t._id == _id) {
+        t.active = value
+        //alert(t.active)
+      }
+    })
+    this.setState({ data: temp })
+    console.log(this.state.data)
+  }
 
 
   render() {
-    const { data, index } = this.state;
-    console.log(this.state.data)
+    const { index } = this.state;
     // const Reaminder = [{ medname: 'Acentaminophen', content: '10 mg   1 pill(s)', time: '7:00 AM', remtime: 'Your Remainder Time is at 7:00 AM, Oct 24,2019.' },
     // { medname: 'Acentaminophen', content: '13 mg   1 pill(s)', time: '10:00 AM', remtime: 'Your Remainder Time is at 10:00 AM, Oct 24,2019.' },
     // { medname: 'Acentaminophen', content: '15 mg   1 pill(s)', time: '11:00 AM', remtime: 'Your Remainder Time is at 1:00 PM, Oct 24,2019.' },
@@ -94,11 +98,11 @@ class Reminder extends Component {
 
 
           <View style={{ paddingRight: 10, paddingLeft: 10 }}>
-            <FlatList data={data}
-              keyExtractor={(item, index) => index.toString()}
-
-              renderItem={({ item }) => (
-                <Card style={this.state.Enable == true ? { borderRadius: 5, marginTop: 10 } : { borderRadius: 5, marginTop: 10, backgroundColor: "#D8D8D8" }}>
+            <FlatList data={this.state.data}
+              keyExtractor={({ _id }, index) => _id.toString()}
+              extraData={this.state}
+              renderItem={({ item, index }) => (
+                <Card style={{ borderRadius: 5, marginTop: 10 }}>
                   <Grid>
                     <Row style={{ marginTop: 5 }}>
                       <Col style={styles.col1}>
@@ -123,24 +127,24 @@ class Reminder extends Component {
                           </Col>
 
                           <Col size={2}>
-                            <Switch style={{ transform: [{ scaleX: .8 }, { scaleY: .8 }], backgroundColor: 'fff' }} trackColor={{ true: '#6FC41A', false: 'grey' }}
+                            {/* <Switch style={{ transform: [{ scaleX: .8 }, { scaleY: .8 }], backgroundColor: 'fff' }} trackColor={{ true: '#6FC41A', false: 'grey' }}
                               trackColor={{ true: '#7F49C3' }}
                               thumbColor={"#F2F2F2"}
                               value={this.state.Enable}
                               onValueChange={value => {
-                               
+                                
                                 if (value === true) {
-                                  this.setState({ Enable: item.active == true })
-                                }
-                                else
-                                 {
-                                  //this.deleteData(index)
-                                  this.setState({ Enable: item.active == false })
-                                  
+                                 
                                 }
 
                               }
                               }
+                            /> */}
+                            <Switch style={{ transform: [{ scaleX: .8 }, { scaleY: .8 }], backgroundColor: 'fff' }} trackColor={{ true: '#6FC41A', false: 'grey' }}
+                              trackColor={{ true: '#7F49C3' }}
+                              thumbColor={"#F2F2F2"}
+                              onValueChange={(val) => this.setStatus(item._id, val)}
+                              value={item.active}
                             />
                           </Col>
                         </Row>
