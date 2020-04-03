@@ -14,7 +14,7 @@ class ReminderPopup extends Component {
       proposedVisible: false
     }
   }
- 
+
   setModalVisible(visible) {
     this.setState({ modalVisible: visible });
   }
@@ -36,84 +36,84 @@ class ReminderPopup extends Component {
               </TouchableOpacity>
             </Row>
           </View>
-          <View style={{ height: 200, justifyContent: 'center',  }}>
+          <View style={{ height: 200, justifyContent: 'center', }}>
             <Modal
               animationType='fade'
               transparent={true}
               backdropColor="transparent"
-              backgroundColor = "transparent"
-              containerStyle={{ justifyContent: 'center',  }}
+              backgroundColor="transparent"
+              containerStyle={{ justifyContent: 'center', }}
               visible={this.state.modalVisible}
               animationType={'slide'}
             >
               <Grid style={{
                 backgroundColor: '#fff',
                 position: 'absolute',
-                top:200,
+                top: 200,
                 justifyContent: 'center',
-                marginLeft: 10, marginRight: 10, borderRadius: 5,borderColor:'gray',borderWidth:0.3
+                marginLeft: 10, marginRight: 10, borderRadius: 5, borderColor: 'gray', borderWidth: 0.3
               }}>
 
                 <View>
                   <View>
-                  <Row style={{paddingTop: 10, paddingBottom: 10, paddingLeft: 10, paddingRight: 10, borderTopLeftRadius: 5, borderTopRightRadius: 5,borderBottomColor:'#c3c3c3',borderBottomWidth:0.3,paddingBottom:10}}>
-                  <Left>
-                  <TouchableOpacity onPress={() => { this.setModalVisible(false); }}>
-                          <Icon name='ios-information-circle-outline' style={{fontSize:20,color:'#7F49C3'}}/>
-                      </TouchableOpacity>
-                  </Left>
-                  <Right>
-                      <Row>
-                      <TouchableOpacity onPress={() => { this.setModalVisible(false); }}>
-                          <Icon name='ios-trash' style={{color:'#7F49C3',fontSize:20}}/>
-                      </TouchableOpacity>
-                      <TouchableOpacity style={{marginLeft:15,fontSize:25}}>
-                          <Icon name="create" style={{fontSize:20,color:'#7F49C3'}}/>
-                      </TouchableOpacity>
-                      </Row>
-                  </Right>
-                </Row>
-                    <View style={{ marginTop: 20,justifyContent:'center',alignItems:'center'}}>
-                     <Text style={{fontFamily:'OpenSans',fontWeight:'500',fontSize:16,textAlign:'center'}}>Dollo</Text>
+                    <Row style={styles.topRow}>
+                      <Left>
+                        <TouchableOpacity onPress={() => { this.setModalVisible(false); }}>
+                          <Icon name='ios-information-circle-outline' style={{ fontSize: 20, color: '#7F49C3' }} />
+                        </TouchableOpacity>
+                      </Left>
+                      <Right>
+                        <Row>
+                          <TouchableOpacity onPress={() => { this.setModalVisible(false); }}>
+                            <Icon name='ios-trash' style={{ color: '#7F49C3', fontSize: 20 }} />
+                          </TouchableOpacity>
+                          <TouchableOpacity style={{ marginLeft: 15, fontSize: 25 }}>
+                            <Icon name="create" style={{ fontSize: 20, color: '#7F49C3' }} />
+                          </TouchableOpacity>
+                        </Row>
+                      </Right>
+                    </Row>
+                    <View style={{ marginTop: 20, justifyContent: 'center', alignItems: 'center' }}>
+                      <Text style={styles.medname}>Dollo</Text>
                     </View>
                     <View style={{ marginLeft: 20, marginTop: 10, marginRight: 20 }}>
-                     <Row>
-                         <Col size={1}>
-                         <Icon name='ios-calculator' style={{fontSize:20,color:'#7F49C3'}}/>
-                         </Col>
-                         <Col size={9}>
-                         <Text style={{fontFamily:'OpenSans',fontSize:14,}}>Scheduled for 12:00 AM,today,April 3</Text> 
-                         </Col>
-                     </Row>
-                     <Row style={{marginTop:10}}>
-                         <Col size={1}>
-                         <MaterialCommunityIcons name='note-outline' style={{fontSize:18,color:'#7F49C3',marginLeft:-2}}/>
-                         </Col>
-                         <Col size={9}>
-                         <Text style={{fontFamily:'OpenSans',fontSize:14,}}>10 mg,take 1 pill(s)</Text> 
-                         </Col>
-                     </Row>
+                      <Row>
+                        <Col size={1}>
+                          <Icon name='ios-calculator' style={{ fontSize: 20, color: '#7F49C3' }} />
+                        </Col>
+                        <Col size={9}>
+                          <Text style={styles.innerText}>Scheduled for 12:00 AM,today,April 3</Text>
+                        </Col>
+                      </Row>
+                      <Row style={{ marginTop: 10 }}>
+                        <Col size={1}>
+                          <MaterialCommunityIcons name='note-outline' style={{ fontSize: 18, color: '#7F49C3', marginLeft: -2 }} />
+                        </Col>
+                        <Col size={9}>
+                          <Text style={styles.innerText}>10 mg,take 1 pill(s)</Text>
+                        </Col>
+                      </Row>
                     </View>
                   </View>
-                  <Row style={{  marginTop: 20,marginBottom:20,borderTopColor:'#c3c3c3',borderTopWidth:0.3,paddingTop:10 }}>
-                    <Col style={{ width: '33.3%',justifyContent:'center',alignItems:'center',}}>
-                        
-                        <TouchableOpacity style={{height:50,width:50,borderRadius:50/2,backgroundColor:'#D6C9EA',justifyContent:'center',alignItems:'center'}}>
-                            <Icon name='ios-close-circle-outline'/>
-                        </TouchableOpacity>
-                        <Text style={{fontFamily:'OpenSans',fontSize:14,color:'#7F49C3',marginTop:5}}>SKIP</Text> 
+                  <Row style={styles.bottomRow}>
+                    <Col style={{ width: '33.3%', justifyContent: 'center', alignItems: 'center', }}>
+
+                      <TouchableOpacity style={styles.NormalColor}>
+                        <Icon name='ios-close-circle-outline' />
+                      </TouchableOpacity>
+                      <Text style={styles.buttonText}>SKIP</Text>
                     </Col>
-                    <Col style={{ width: '33.3%',justifyContent:'center',alignItems:'center'}}>
-                    <TouchableOpacity style={{height:50,width:50,borderRadius:50/2,backgroundColor:'#7F49C3',justifyContent:'center',alignItems:'center'}}>
-                            <Icon name='ios-checkmark-circle-outline' style={{color:'#fff'}}/>
-                        </TouchableOpacity>
-                        <Text style={{fontFamily:'OpenSans',fontSize:14,color:'#7F49C3',marginTop:5}}>TAKE</Text> 
+                    <Col style={{ width: '33.3%', justifyContent: 'center', alignItems: 'center' }}>
+                      <TouchableOpacity style={styles.selectedcolor}>
+                        <Icon name='ios-checkmark-circle-outline' style={{ color: '#fff' }} />
+                      </TouchableOpacity>
+                      <Text style={styles.buttonText}>TAKE</Text>
                     </Col>
-                    <Col style={{ width: '33.3%',justifyContent:'center',alignItems:'center'  }}>
-                    <TouchableOpacity style={{height:50,width:50,borderRadius:50/2,backgroundColor:'#D6C9EA',justifyContent:'center',alignItems:'center'}}>
-                            <Icon name='ios-alarm'/>
-                        </TouchableOpacity>
-                        <Text style={{fontFamily:'OpenSans',fontSize:14,color:'#7F49C3',marginTop:5}}>RESCHEDULE</Text> 
+                    <Col style={{ width: '33.3%', justifyContent: 'center', alignItems: 'center' }}>
+                      <TouchableOpacity style={styles.NormalColor}>
+                        <Icon name='ios-alarm' />
+                      </TouchableOpacity>
+                      <Text style={styles.buttonText}>RESCHEDULE</Text>
 
 
                     </Col>
@@ -135,65 +135,55 @@ const styles = StyleSheet.create({
   {
     backgroundColor: '#ffffff',
   },
-
-  bodyContent: {
-    padding: 0
+  topRow: {
+    paddingTop: 10,
+    paddingBottom: 10,
+    paddingLeft: 10,
+    paddingRight: 10,
+    borderTopLeftRadius: 5,
+    borderTopRightRadius: 5,
+    borderBottomColor: '#c3c3c3',
+    borderBottomWidth: 0.3,
+    paddingBottom: 10
   },
-  customImage: {
-    height: 90,
-    width: 90,
-    marginLeft: 'auto',
-    marginRight: 'auto',
-    marginTop: 'auto',
-    marginBottom: 'auto',
-    borderRadius: 50
+  bottomRow: {
+    marginTop: 20,
+    marginBottom: 20,
+    borderTopColor: '#c3c3c3',
+    borderTopWidth: 0.3,
+    paddingTop: 10
   },
-
-  curvedGrid:
-  {
-    width: 250,
-    height: 250,
-    borderRadius: 125,
-    marginTop: -135,
-    marginLeft: 'auto',
-    marginRight: 'auto',
-    backgroundColor: '#745DA6',
-    transform: [
-      { scaleX: 2 }
-    ],
-    position: 'relative',
-    overflow: 'hidden',
-
-  },
-
-  normalText:
-  {
+  medname: {
     fontFamily: 'OpenSans',
-    fontSize: 17,
-    marginTop: 10
+    fontWeight: '500',
+    fontSize: 16,
+    textAlign: 'center'
   },
-  offerText:
-  {
+  innerText: {
     fontFamily: 'OpenSans',
-    fontSize: 13,
-    color: 'green'
-
+    fontSize: 14,
   },
-  subText: {
+  buttonText: {
     fontFamily: 'OpenSans',
-    fontSize: 17,
-    color: 'black'
+    fontSize: 14,
+    color: '#7F49C3',
+    marginTop: 5
   },
-  transparentLabel1:
-  {
-    backgroundColor: "#fff",
-    height: 35,
-    borderRadius: 5
+  NormalColor: {
+    height: 50,
+    width: 50,
+    borderRadius: 50 / 2,
+    backgroundColor: '#D6C9EA',
+    justifyContent: 'center',
+    alignItems: 'center'
   },
-
-  firstTransparentLabel: {
-    fontSize: 12.5,
-    marginLeft: 10
-
+  selectedcolor: {
+    height: 50,
+    width: 50,
+    borderRadius: 50 / 2,
+    backgroundColor: '#7F49C3',
+    justifyContent: 'center',
+    alignItems: 'center'
   }
+
 });
