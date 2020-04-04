@@ -20,8 +20,7 @@ export default ({streams}) => {
     else {
     return (
       <View style={styles.blackView}>
-        {/* <CallingLoader name={CallService.getUserById(userId, 'name')} /> */}
-        <CallingLoader name={'Hey this is the Loader'} />
+        <CallingLoader name={CallService.getUserById(userId, 'name')} />
       </View>
     );
     }

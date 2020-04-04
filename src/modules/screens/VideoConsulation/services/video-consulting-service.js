@@ -29,6 +29,21 @@ export const createVideoConsuting = async (request) => {
     }
 }
 
+export const getVideoConsuting = async (userId) => {
+    try {
+        let endPoint = 'video-consulting/consultation/user/' + userId;
+        let response = await getService(endPoint);
+        let respData = response.data;
+        return respData;
+    } catch (e) {
+        return {
+            success: false,
+            message: e + ' Occured! Please Try again'
+        }
+    }
+}
+
+
 export const updateVideoConsuting = async (consultationId, request) => {
     try {
         let endPoint = 'video-consulting/consultation/' + consultationId;

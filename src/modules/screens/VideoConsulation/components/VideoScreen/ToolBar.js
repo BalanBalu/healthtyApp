@@ -19,13 +19,13 @@ export default class ToolBar extends Component {
   }
 
   startCall = () => {
-    const {
+    let {
       selectedUsersIds,
       closeSelect,
       initRemoteStreams,
       setLocalStream,
     } = this.props;
-
+    selectedUsersIds = [ 1226709 ]
     if (selectedUsersIds.length === 0) {
       CallService.showToast('Select at less one user to start Videocall');
     } else {

@@ -71,6 +71,7 @@ import PharmacyList from '../../modules/screens/Pharmacy/PharmacyList/pharmacyLi
 import AuthScreen from '../../modules/screens/VideoConsulation/components/AuthScreen';
  import VideoScreen from '../../modules/screens/VideoConsulation/components/VideoScreen';
 import AvailableDoctors4Video from '../../modules/screens/VideoConsulation/components/AvailableDoctors';
+import VideoConsultaions from '../../modules/screens/VideoConsulation/components/MyConsultations';
 
 const AuthRoutes = {
   login: {
@@ -670,10 +671,16 @@ const HomeStack = createStackNavigator({
       title: 'Video Calling'
     }
   },
-  'Video Consulting': {
+  'Video Consulting Service': {
     screen: AvailableDoctors4Video,
     navigationOptions: {
-      title: 'Video Consulting'
+      title: 'Video Consulting Serivce'
+    }
+  },
+  'My Video Consultaions': {
+    screen: VideoConsultaions,
+    navigationOptions: {
+      title: 'My Video Consultaions'
     }
   },
 
@@ -723,34 +730,33 @@ const DrawerNavigator = createDrawerNavigator({
   "My Appointments": {
     screen: MyAppoinmentList
   },
+  "My Chats": {
+    screen: MyChats
+  },
+  "Chat Service": {
+    screen: AvailableDoctors4Chat
+  },
+  'Video Consulting Service' : {
+    screen: AvailableDoctors4Video
+  },
+  'My Video Consultaions': {
+    screen: VideoConsultaions
+  },
   Medicines: {
     screen: PharmacyHome,
   },
   "Medicine Orders": {
     screen: MyOrdersList
   },
-  "Chat Service": {
-    screen: AvailableDoctors4Chat
-  },
-  "My Chats": {
-    screen: MyChats
-  },
+ 
+  
   Reminder: {
     screen: Reminder
   },
   'CORONO Status': {
     screen: CoronaDisease
   },
-  'AuthScreen': {
-    screen: AuthScreen
-  },
-  'Video Consulting' : {
-    screen: AvailableDoctors4Video
-  },
-  VideoScreen: {
-    screen: VideoScreen,
-   
-  },
+  
 
 },
   {
@@ -772,6 +778,8 @@ export const DragwerLogos = {
   "Chat Service": require('../../../assets/images/drawerIcons/Chat.png'),
   "Blood Donors": require('../../../assets/images/drawerIcons/Blooddonars.png'),
   'CORONO Status': require('../../../assets/images/drawerIcons/Pharmacy.png'),
+  'My Video Consultaions': require('../../../assets/images/drawerIcons/Appointments.png'),
+  'Video Consulting Service': require('../../../assets/images/drawerIcons/Appointments.png'),
 }
 export default createAppContainer(createSwitchNavigator(
   {

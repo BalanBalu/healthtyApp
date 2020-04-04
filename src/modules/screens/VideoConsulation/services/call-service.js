@@ -2,12 +2,12 @@ import { Toast } from 'native-base';
 import ConnectyCube from 'react-native-connectycube';
 import InCallManager from 'react-native-incall-manager';
 import Sound from 'react-native-sound';
-import { users } from '../config';
 
 export default class CallService {
  static MEDIA_OPTIONS = {audio: true, video: {facingMode: 'user'}};
 
   _session = null;
+  _extension = null;
   mediaDevices = [];
 
   outgoingCall = new Sound(require('../../../../../assets/sounds/dialing.mp3'));
@@ -23,12 +23,7 @@ export default class CallService {
   };
 
   getUserById = (userId, key) => {
-    const user = users.find(user => user.id == userId);
-
-    if (typeof key === 'string') {
-      return user[key];
-    }
-
+    const user = 'Doctor';
     return user;
   };
 
@@ -43,6 +38,12 @@ export default class CallService {
   }
   getSession() {
     return this._session;
+  }
+  setExtention(extension) {
+    this._extension = extension
+  }
+  getExtention() {
+    return this._extension;
   }
 
   acceptCall = session => {

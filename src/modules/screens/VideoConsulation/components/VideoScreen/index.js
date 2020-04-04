@@ -5,7 +5,6 @@ import AwesomeAlert from 'react-native-awesome-alerts';
 import RTCViewGrid from './RTCViewGrid';
 import {CallService, AuthService} from '../../services';
 import ToolBar from './ToolBar';
-import UsersSelect from './UsersSelect';
 import { store } from '../../../../../setup/store';
 import { connect } from 'react-redux';
 import { SET_VIDEO_SESSION } from '../../../../providers/chat/chat.action';
@@ -13,7 +12,9 @@ import { SET_VIDEO_SESSION } from '../../../../providers/chat/chat.action';
   constructor(props) {
     super(props);
 
-    this._session = null;
+    this._session = null;  
+    this._extension = null;
+
     this.steamSubscribeLoadedUsers = [];
     this.opponentsIds = props.navigation.getParam('opponentsIds') || [];
     
@@ -42,6 +43,7 @@ import { SET_VIDEO_SESSION } from '../../../../providers/chat/chat.action';
     const isIncomingCall = navigation.getParam('isIncomingCall') || false;
     if(isIncomingCall) {
       this.showInomingCallModal(CallService.getSession());
+      this._extension = CallService.getExtention();
     }
   }
 
@@ -61,6 +63,7 @@ import { SET_VIDEO_SESSION } from '../../../../providers/chat/chat.action';
     ) {
       CallService.stopCall();
       this.resetState();
+      this.navigateToHome();
     }
   }
 
@@ -71,7 +74,6 @@ import { SET_VIDEO_SESSION } from '../../../../providers/chat/chat.action';
 
   hideInomingCallModal = () => {
     this._session = null;
-
     this.setState({isIncomingCall: false});
   };
 
@@ -149,7 +151,7 @@ import { SET_VIDEO_SESSION } from '../../../../providers/chat/chat.action';
   };
 
   _setUpListeners() {
-    ConnectyCube.videochat.onCallListener = this._onCallListener;
+   // ConnectyCube.videochat.onCallListener = this._onCallListener;
     ConnectyCube.videochat.onAcceptCallListener = this._onAcceptCallListener;
     ConnectyCube.videochat.onRejectCallListener = this._onRejectCallListener;
     ConnectyCube.videochat.onStopCallListener = this._onStopCallListener;
@@ -163,11 +165,6 @@ import { SET_VIDEO_SESSION } from '../../../../providers/chat/chat.action';
       const opponentsIds = [initiatorID, ...opponentsIDs].filter(
         userId => currentUserID !== userId,
       );
-
-      console.log('stream:::==> ', stream);
-    console.log('opponentsIDs:::==> ', opponentsIDs, + ' InitiatorId==>',  initiatorID, + ' currentUserID==>',  currentUserID);
-    console.log('Session:::==> ', this._session);
-    
       this.initRemoteStreams(opponentsIds);
       this.setLocalStream(stream);
       this.closeSelect();
@@ -176,16 +173,20 @@ import { SET_VIDEO_SESSION } from '../../../../providers/chat/chat.action';
   };
 
   _onPressReject = () => {
-    CallService.rejectCall(this._session);
+    CallService.rejectCall(this._session, this._extension);
     this.hideInomingCallModal();
+    this.navigateToHome();
   };
+  navigateToHome() {
+    this.props.navigation.navigate('Home')
+  }
 
-  _onCallListener = (session, extension) => {
+  // _onCallListener = (session, extension) => {
    
-    CallService.processOnCallListener(session)
-      .then(() => this.showInomingCallModal(session))
-      .catch(this.hideInomingCallModal);
-  };
+  //   CallService.processOnCallListener(session)
+  //     .then(() => this.showInomingCallModal(session))
+  //     .catch(this.hideInomingCallModal);
+  // };
 
   _onAcceptCallListener = (session, userId, extension) => {
     
@@ -246,7 +247,6 @@ import { SET_VIDEO_SESSION } from '../../../../providers/chat/chat.action';
       isActiveCall,
       isIncomingCall,
     } = this.state;
-    initiatorName = 'Doctor';
     
     /*  
       TODO: Incoming Call from Doctor Name to be implement

@@ -366,7 +366,7 @@ class Home extends Component {
       _onCallListener = (session, extension) => {
        
         CallService.processOnCallListener(session)
-          .then(() => this.showInomingCallModal(session))
+          .then(() => this.showInomingCallModal(session, extension))
           .catch(this.hideInomingCallModal);
       };
       _onRemoteStreamListener = async (session, userId, stream) => {
@@ -381,8 +381,9 @@ class Home extends Component {
             })
       };
       
-      showInomingCallModal = session => {
+      showInomingCallModal = (session, extension) => {
             CallService.setSession(session);
+            CallService.setExtention(extension)
             this.props.navigation.navigate('VideoScreen', { isIncomingCall: true })
       };
      

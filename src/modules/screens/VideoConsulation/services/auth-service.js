@@ -1,6 +1,6 @@
 import ConnectyCube from 'react-native-connectycube';
 import config from '../config';
-import { postService, getService, putService } from '../../../../setup/services/httpservices';
+import { postService } from '../../../../setup/services/httpservices';
 const splice = function(originalStr,idx, rem, str) {
   return originalStr.slice(0, idx) + str + originalStr.slice(idx + Math.abs(rem));
 };
