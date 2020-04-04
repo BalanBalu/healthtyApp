@@ -25,7 +25,6 @@ export default class AuthService {
         console.log(loginRequest);
         this.login(loginRequest).then(() => {
           console.log('Successfully Logged in')
-          alert('Success')
         }).catch((e) => {
            alert('Login Failed because', JSON.stringify(e));
            console.log(e); 
@@ -75,7 +74,6 @@ export default class AuthService {
       }
       this.login(loginRequest).then(() => {
         console.log('Successfully Logged in to ConnectyCube');
-        alert('Success')
       }).catch((e) => {
          alert('Login Failed because', JSON.stringify(e));
          console.log(e); 
