@@ -319,7 +319,7 @@ class AddReminder extends Component {
           <Content style={{ padding: 20 }}>
             <View style={{ marginBottom: 30 }}>
 
-              <View pointerEvents={this.state.medicinepage ? "auto" : "none"} style={this.state.medicinepage == true ? { backgroundColor: '#fff', paddingBottom: 10, paddingLeft: 5, paddingRight: 5, borderRadius: 5 } : { backgroundColor: '#E6E6E6', paddingBottom: 10, paddingLeft: 5, paddingRight: 5, borderRadius: 5, }}>
+              <View pointerEvents={this.state.medicinepage ? "auto" : "none"} style={this.state.medicinepage == true ? styles.medicineenabletext : styles.medicinedisabletext }>
                 <View>
                   <Text style={styles.NumText}>What Medicine would you like to add ?</Text>
                   <Form>
@@ -400,9 +400,8 @@ class AddReminder extends Component {
 
 
 
-
-              <View>
-                <View>
+              <View pointerEvents={this.state.medicinepage == false ? "auto" : "none"} style={this.state.medicinepage == true ? styles.datetimedisabletext : styles.datetimeenabletext }>
+                <View >
                   <Text style={styles.NumText}>How often would you take this Medicine</Text>
                   <Item style={{ marginTop: 10, borderBottomWidth: 0, }}>
 
@@ -432,7 +431,7 @@ class AddReminder extends Component {
                 {this.state.medicinePeriod == "everyday" ?
                   <View>
                     <Form style={{ marginTop: 5 }}>
-                      <Row>
+                      <Row style={{marginRight:12.5}}> 
                         <Col size={3}>
                           <Text style={styles.NumText}>Select Date</Text>
                         </Col>
@@ -442,10 +441,10 @@ class AddReminder extends Component {
                               <Col size={3.5} style={{ mariginTop: 10 }}>
                                 <View style={{ marginTop: 5, }}>
                                   <TouchableOpacity onPress={() => { this.setState({ isDateTimePickerVisible: !this.state.isDateTimePickerVisible }) }} style={{ width: 110, backgroundColor: '#f1f1f1', flexDirection: 'row' }}>
-                                    <Icon name='md-calendar' style={{ padding: 4, fontSize: 20, color: '#1296db', marginTop: 1 }} />
+                                    <Icon name='md-calendar' style={styles.calendarstyle} />
                                     {this.state.startDatePlaceholder ?
-                                      <Text style={{ marginTop: 7, marginBottom: 7, fontFamily: 'OpenSans', fontSize: 13, textAlign: 'center', marginLeft: 5 }}>{formatDate(this.state.medicine_take_start_date, 'DD/MM/YYYY')}</Text> :
-                                      <Text style={{ marginTop: 7, marginBottom: 7, fontFamily: 'OpenSans', fontSize: 13, textAlign: 'center', marginLeft: 5 }}>Start Date</Text>
+                                      <Text style={styles.startenddatetext}>{formatDate(this.state.medicine_take_start_date, 'DD/MM/YYYY')}</Text> :
+                                      <Text style={styles.startenddatetext}>Start Date</Text>
 
                                     }
                                     <DateTimePicker
@@ -462,12 +461,12 @@ class AddReminder extends Component {
                                 </View>
                               </Col>
                               <Col size={3.5} style={{ mariginTop: 10, marginLeft: -10 }}>
-                                <View style={{ marginTop: 5, }}>
+                                <View style={{ marginTop: 5}}>
                                   <TouchableOpacity onPress={() => { this.setState({ isEndDateTimePickerVisible: !this.state.isEndDateTimePickerVisible }) }} style={{ marginLeft: 10, width: 110, backgroundColor: '#f1f1f1', flexDirection: 'row' }}>
-                                    <Icon name='md-calendar' style={{ padding: 4, fontSize: 20, color: '#1296db', marginTop: 1 }} />
+                                    <Icon name='md-calendar' style={styles.calendarstyle} />
                                     {this.state.endDatePlaceholder ?
-                                      <Text style={{ marginTop: 7, marginBottom: 7, fontFamily: 'OpenSans', fontSize: 13, textAlign: 'center', marginLeft: 5 }}>{formatDate(this.state.medicine_take_end_date, 'DD/MM/YYYY')}</Text> :
-                                      <Text style={{ marginTop: 7, marginBottom: 7, fontFamily: 'OpenSans', fontSize: 13, textAlign: 'center', marginLeft: 5 }}>End Date</Text>
+                                      <Text style={styles.startenddatetext}>{formatDate(this.state.medicine_take_end_date, 'DD/MM/YYYY')}</Text> :
+                                      <Text style={styles.startenddatetext}>End Date</Text>
 
                                     }
 
@@ -550,8 +549,8 @@ class AddReminder extends Component {
                         <TouchableOpacity onPress={() => { this.setState({ isTimePickerVisible: !this.state.isTimePickerVisible }) }} style={styles.toucableOpacity}>
                           <Icon name='ios-clock' style={styles.tocuhIcon} />
                           {this.state.timePlaceholder ?
-                            <Text style={{ marginTop: 7, marginBottom: 7, fontFamily: 'OpenSans', fontSize: 13, textAlign: 'center', marginLeft: 5 }}>{formatDate(this.state.medicine_take_times, 'HH:mm A')}</Text> :
-                            <Text style={{ marginTop: 7, marginBottom: 7, fontFamily: 'OpenSans', fontSize: 13, textAlign: 'center', marginLeft: 5 }}>Select time </Text>
+                            <Text style={styles.startenddatetext}>{formatDate(this.state.medicine_take_times, 'HH:mm A')}</Text> :
+                            <Text style={styles.startenddatetext}>Select time </Text>
 
                           }
 
@@ -573,8 +572,7 @@ class AddReminder extends Component {
                       <Button style={styles.RemainderButton} onPress={this.InsertReminderData}>
                         
                         <Text style={styles.RemainderButtonText}>Add</Text>
-                  
-                      </Button>
+                        </Button>
                     </Col>
                   </Row>
                   {/* <Row>
@@ -600,10 +598,10 @@ class AddReminder extends Component {
                               <Text style={{ marginLeft: 10, fontsize: 14 }}>{item.medicine_name}</Text>
                             </Col>
                             <Col size={5}>
-                              <Text style={{ marginLeft: 10, fontSize: 10, marginTop: 5, color: '#6f6f6f' }}>{item.medicine_form}</Text>
+                              <Text style={styles.formstrengthtext}>{item.medicine_form}</Text>
                             </Col>
                             <Col size={5}>
-                              <Text style={{ marginLeft: 10, fontSize: 10, marginTop: 5, color: '#6f6f6f' }}>{item.medicine_strength}</Text>
+                              <Text style={styles.formstrengthtext}>{item.medicine_strength}</Text>
                             </Col>
                           </Row>
                           <Row style={{ marginBottom: 5 }}>
@@ -615,8 +613,8 @@ class AddReminder extends Component {
                             <Col size={5}>
                               {this.state.medicinePeriod == "everyday" ?
 
-                                <Text style={{ fontSize: 10, marginTop: 5, color: '#6f6f6f', marginLeft: -35 }}>{formatDate(item.medicine_take_start_date, 'DD/MM/YYYY')} - {formatDate(item.medicine_take_end_date, 'DD/MM/YYYY')}</Text>
-                                : <Text style={{ fontSize: 10, marginTop: 5, color: '#6f6f6f', marginLeft: -35 }}>{formatDate(item.medicine_take_one_date, 'DD/MM/YYYY')}</Text>
+                                <Text style={styles.datetext}>{formatDate(item.medicine_take_start_date, 'DD/MM/YYYY')} - {formatDate(item.medicine_take_end_date, 'DD/MM/YYYY')}</Text>
+                                : <Text style={styles.datetext}>{formatDate(item.medicine_take_one_date, 'DD/MM/YYYY')}</Text>
                               }
                             </Col>
 
@@ -745,6 +743,14 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
     color: '#fff'
   },
+  startenddatetext: {
+    marginTop: 7, 
+    marginBottom: 7, 
+    fontFamily: 'OpenSans',
+     fontSize: 13, 
+     textAlign: 'center',
+      marginLeft: 5
+  },
   NumText: {
     fontFamily: 'OpenSans',
     fontSize: 16,
@@ -757,32 +763,50 @@ const styles = StyleSheet.create({
     borderRadius: 5,
     marginTop: 5
   },
-  touchbutton: {
-    borderRadius: 5,
-    borderColor: '#7f49c3',
-    borderWidth: 2,
-    backgroundColor: '#fff',
-    padding: 4,
-    height: 30,
-
-  },
-  timeText: {
-    textAlign: 'center',
-    fontSize: 12,
-    fontWeight: 'bold',
-    marginTop: 1,
-  },
-  periodText: {
-    textAlign: 'center',
-    borderBottomLeftRadius: 0,
-    borderTopLeftRadius: 0,
-    fontSize: 12,
-    fontWeight: 'bold',
-    marginLeft: 3,
-    paddingHorizontal: 5
-  }
-
-
+medicineenabletext: {
+  backgroundColor: '#fff', 
+  paddingBottom: 10, 
+  paddingLeft: 5, 
+  paddingRight: 5, 
+  borderRadius: 5
+} , 
+medicinedisabletext: {
+  backgroundColor: '#E6E6E6', 
+  paddingBottom: 10, 
+  paddingLeft: 5, 
+  paddingRight: 5, 
+  borderRadius: 5
+},
+datetimedisabletext: {
+  marginTop:5, 
+  backgroundColor : '#E6E6E6', 
+  paddingLeft: 5, 
+  borderRadius: 5
+},
+datetimeenabletext: {
+  marginTop:5, 
+  backgroundColor : '#fff', 
+  paddingLeft: 5, 
+  borderRadius: 5
+},
+calendarstyle:{ 
+  padding: 4, 
+  fontSize: 20, 
+  color: '#1296db', 
+  marginTop: 1 
+},
+formstrengthtext:{
+  marginLeft: 10, 
+  fontSize: 10, 
+  marginTop: 5, 
+  color: '#6f6f6f'
+},
+datetext:{ 
+  fontSize: 10, 
+  marginTop: 5, 
+  color: '#6f6f6f', 
+  marginLeft: -35 
+}
 })
 
 
