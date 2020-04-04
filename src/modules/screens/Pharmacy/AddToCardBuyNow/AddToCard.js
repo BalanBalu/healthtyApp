@@ -17,6 +17,7 @@ export class AddToCard extends Component {
         this.state = {
             data: {},
             userAddedMedicineQuantity: 0,
+            userAddedTotalMedicineAmount:0,
             cartItems: []
         }
     }
@@ -28,7 +29,8 @@ export class AddToCard extends Component {
         }
         if (data.userAddedMedicineQuantity) {
             userAddedMedicineQuantity = data.userAddedMedicineQuantity
-            this.setState({ userAddedMedicineQuantity })
+            userAddedTotalMedicineAmount=userAddedMedicineQuantity*data.offeredAmount
+            this.setState({ userAddedMedicineQuantity,userAddedTotalMedicineAmount })
         } else {
 
             this.productQuantityOperator(data, 'add')
@@ -160,7 +162,7 @@ export class AddToCard extends Component {
                         <Row style={{ marginLeft: 20, marginTop: 10, marginRight: 15, marginBottom: 10 }}>
 
                             <Col style={{ width: '60%' }}>
-                                <Text style={{ fontFamily: 'OpenSans', textAlign: 'right', fontSize: 14, marginBottom: 5, color: '#848484', marginRight: 10 }}>{'Total - ₹ ' + (this.state.userAddedMedicineQuantity * data.offeredAmount)}</Text>
+                                <Text style={{ fontFamily: 'OpenSans', textAlign: 'right', fontSize: 14, marginBottom: 5, color: '#848484', marginRight: 10 }}>{'Total - ₹ ' + (this.state.userAddedTotalMedicineAmount)}</Text>
                             </Col>
                             <Col style={{ width: '40%', flexDirection: 'row', alignItems: 'flex-end', justifyContent: 'flex-end', }}>
                                 <TouchableOpacity onPress={() => this.cardAction()} style={{ borderColor: '#4e85e9', borderWidth: 1, marginLeft: 25, borderRadius: 2.5, marginTop: -12.5, height: 30, width: 120, paddingBottom: -5, paddingTop: 2, backgroundColor: '#4e85e9' }}>

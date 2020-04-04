@@ -286,12 +286,26 @@ export async function removePrescriptionImage(prescriptionData, userId) {
   }
 }
 
-export async function getPurcharseRecomentation( data) {
+export async function getPurcharseRecomentation(data) {
   try {
 
     let endPoint = '/medicine/purcharse/recomentation';
 
     let response = await postService(endPoint, data);
+    let respData = response.data;
+    return respData;
+  } catch (e) {
+    return {
+      message: 'exception' + e,
+      success: false
+    }
+  }
+}
+export async function getmedicineAvailableStatus(data, isLoading = true) {
+  try {
+    let endPoint = 'medicine/add_to_card/medicine_verification';
+    let response = await postService(endPoint, data);
+
     let respData = response.data;
     return respData;
   } catch (e) {
