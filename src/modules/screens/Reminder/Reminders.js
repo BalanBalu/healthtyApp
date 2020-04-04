@@ -3,10 +3,9 @@ import { Container, Content, View, Card, Grid, CardItem, Text, Switch, Right, It
 import { StyleSheet, TextInput, AsyncStorage } from 'react-native'
 import { FlatList } from 'react-native-gesture-handler';
 import CalendarStrip from 'react-native-calendar-strip';
-import { getReminderData } from '../../providers/reminder/reminder.action.js';
+import { getReminderData, addReminderdata } from '../../providers/reminder/reminder.action.js';
 import { formatDate } from "../../../setup/helpers";
 import RNCalendarEvents from 'react-native-calendar-events';
-
 
 class Reminder extends Component {
   constructor(props) {
@@ -14,13 +13,22 @@ class Reminder extends Component {
     this.state = {
       data: [],
       isLoading: true,
+      
     }
   }
-  componentDidMount() {
+
+
+  async componentDidMount() {
     const status = RNCalendarEvents.authorizationStatus()
     // alert(status);
     this.getAllReminderdata();
+    let _id = ''
+    let value = ''
+    this.setStatus(_id, value);
+
   }
+
+
 
   getAllReminderdata = async () => {
     try {
@@ -36,35 +44,41 @@ class Reminder extends Component {
       this.setState({ isLoading: false });
     }
   }
+ 
 
-  // Enable = () => {
-  //   this.setState({ Enable: false })
-  //   alert(this.state.Enable)
-  // }
-
-
-  // deleteData(index) {
-  //   // console.log("index" + index)
-  //   const {item} = this.state;
-  //   let temp = item.id;
-  //   temp.splice(index, 1)
-  //   // console.log("temp" + JSON.stringify(temp))
-  //   this.setState({ data: temp })
-  //   // console.log("data" + JSON.stringify(this.state.data))
-
-  // }
-
-  setStatus(_id, value) {
+  setStatus = async (data1, value) => {
+    console.log(JSON.stringify(data))
+    let obj = {
+      reminder_id: data1._id,
+      reminder_type: data1.reminder_type,
+      medicine_name: data1.medicine_name,
+      medicine_form: data1.medicine_form,
+      medicine_strength: data1.medicine_strength,
+      medicine_take_times: data1.medicine_take_times,
+      is_reminder_enabled: data1.is_reminder_enabled,
+      active: value
+    }
+    if (obj.reminder_type == "everyday") {
+      obj.medicine_take_start_date = data1.medicine_take_start_date,
+        obj.medicine_take_end_date = data1.medicine_take_end_date
+    }
+    else {
+      obj.medicine_take_start_date = data1.medicine_take_start_date
+    }
+    console.log("obj.active+++++++" + obj.active)
+    let userId = obj.reminder_id;
+    let result = await addReminderdata(userId, obj)
+    this.setState({ value: !value })
     var temp = [...this.state.data]
     temp.map((t) => {
-      if (t._id == _id) {
+      if (t._id == data1._id) {
         t.active = value
-        //alert(t.active)
       }
     })
     this.setState({ data: temp })
-    console.log(this.state.data)
   }
+
+
 
 
   render() {
@@ -127,23 +141,11 @@ class Reminder extends Component {
                           </Col>
 
                           <Col size={2}>
-                            {/* <Switch style={{ transform: [{ scaleX: .8 }, { scaleY: .8 }], backgroundColor: 'fff' }} trackColor={{ true: '#6FC41A', false: 'grey' }}
-                              trackColor={{ true: '#7F49C3' }}
-                              thumbColor={"#F2F2F2"}
-                              value={this.state.Enable}
-                              onValueChange={value => {
-                                
-                                if (value === true) {
-                                 
-                                }
-
-                              }
-                              }
-                            /> */}
+                            
                             <Switch style={{ transform: [{ scaleX: .8 }, { scaleY: .8 }], backgroundColor: 'fff' }} trackColor={{ true: '#6FC41A', false: 'grey' }}
                               trackColor={{ true: '#7F49C3' }}
                               thumbColor={"#F2F2F2"}
-                              onValueChange={(val) => this.setStatus(item._id, val)}
+                              onValueChange={(val) => this.setStatus(item, val)}
                               value={item.active}
                             />
                           </Col>
