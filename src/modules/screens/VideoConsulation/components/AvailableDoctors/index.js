@@ -1,28 +1,27 @@
 import React, { Component } from 'react';
-import { Container, Content, View, Text, Item,Input, Spinner,Thumbnail,Icon, Radio,Row,Col,Form,Button, Toast } from 'native-base';
+import { Container, Content, View, Text, Item,Input, Thumbnail,Icon, Radio,Row,Col,Form,Button, Toast } from 'native-base';
 import {StyleSheet,TextInput, AsyncStorage , TouchableOpacity } from 'react-native'
 import { FlatList } from 'react-native-gesture-handler';
 import { hasLoggedIn } from "../../../../providers/auth/auth.actions";
 import {
     renderDoctorImage,
 } from '../../../../common';
-
+import Spinner from '../../../../../components/Spinner';
 import {
     fetchAvailableDoctors4Video, createVideoConsuting
 } from '../../services/video-consulting-service';
 import { POSSIBLE_VIDEO_CONSULTING_STATUS } from '../../constants';
-import { SERVICE_TYPES } from '../../../../../setup/config'
-/*
+import { SERVICE_TYPES } from '../../../../../setup/config';
 import {
     searchDoctorList
-} from '../../providers/bookappointment/bookappointment.action';
-*/
+} from '../../../../providers/bookappointment/bookappointment.action';
 class AvailableDoctors4Video extends Component {
     constructor(props) {
         super(props)
+        this.userId = null;
         this.state = {
             availableChatDoctors: [],
-            userId: null
+            isLoading: true
         }
     }
 async componentDidMount() {
@@ -31,61 +30,69 @@ async componentDidMount() {
         this.props.navigation.navigate("login");
         return;
     }
-    let userId = await AsyncStorage.getItem("userId");
-    this.setState({ userId });
-    this.getDoctorAvailableDoctorData('Primary')
+    this.userId = await AsyncStorage.getItem("userId");
+    this.getDoctorAvailableDoctorData()
+ 
 }
-/*
+
  searchAvailableDoctorsByKeywords = async(searchKeyword) => {
-    const userId = await AsyncStorage.getItem('userId');
-    const searchedInputValues = [
-       {
-           type: 'category',
+    try {
+        this.setState({ isLoading: true })
+      const searchedInputValues = [
+        {
+            type: 'category',
            value: searchKeyword 
-       },
-       {
+        },
+        {
            type: 'service',
            value: searchKeyword
-       },
-       {
+        },
+        {
            type: 'symptoms',
            value: [ searchKeyword ]
-       }
-    ];
-    let resultData = await searchDoctorList(userId, searchedInputValues);
-    if (resultData.success) {
+        }
+      ];
+      let resultData = await searchDoctorList(this.userId, searchedInputValues);
+      if (resultData.success) {
         let doctorIds = resultData.data.map((element) => {
             return element.doctor_id
         });
         console.log(doctorIds);
-        this.getDoctorAvailableDoctorData(doctorIds);// for getting multiple Doctor details,Reviews ,ReviewCount,etc....
-    } else {
-        console.log('Coming to no symptoms Found');
-        this.setState({ isLoading: false, availableChatDoctors: [] })
+        this.getDoctorAvailableDoctorData(doctorIds.join(','));// for getting multiple Doctor details,Reviews ,ReviewCount,etc....
+      } else {
+          console.log('Coming to no symptoms Found');
+          this.setState({ isLoading: false, availableChatDoctors: [] })
+      }
+    } catch (error) {
+        console.log('Error on searchAvailableDoctorsByKeywords', error)
+    } finally {
+        this.setState({ isLoading: false })
     }
- } */
+ }
 
  getDoctorAvailableDoctorData = async(doctorIds) => {
-        // console.log('doctorIds' + JSON.stringify(doctorIds));
-        // const request = {
-        //     doctor_ids: doctorIds
-        // }
-       const availableDocData = await fetchAvailableDoctors4Video();
-       if(availableDocData.success === true) {
+       try {
+        this.setState({ isLoading: true });
+        const availableDocData = await fetchAvailableDoctors4Video(doctorIds);
+        if (availableDocData.success === true) {
             this.setState({ availableChatDoctors: availableDocData.data })
+        }
+        console.log(availableDocData);
+       } catch (error) {
+            console.log(error);   
+       } finally {
+            this.setState({ isLoading: false });
        }
-       console.log('availableDocData');
-       console.log(availableDocData);
+       
  }
 
  onBookButtonPress4Payment = async(doctorId, fee) => {
     try {
      this.setState({ isLoading: true });
-     const { userId } = this.state;
      const amount = fee;
       
      const videoConsultRequest = {
-        user_id: userId,
+        user_id: this.userId,
         doctor_id: doctorId,
         status: POSSIBLE_VIDEO_CONSULTING_STATUS.PAYMENT_IN_PROGRESS,
         fee: fee,
@@ -118,6 +125,9 @@ async componentDidMount() {
         type: 'danger'
       })
   }
+  finally {
+    this.setState({ isLoading: false });
+  }
     
  }
    getVideoConsultFee(item) {
@@ -127,12 +137,21 @@ async componentDidMount() {
            return ''
        }
    }
+   getDoctorCategory(item) {
+    if(item.specialist) {
+       let specialist =  item.specialist.map(ele => ele.category).join(', ')
+       return  specialist.slice(0, specialist.length - 1)
+    }
+    return ''
+   }
     render() {
-        const { availableChatDoctors, keyword } = this.state;
+        const { availableChatDoctors, keyword, isLoading } = this.state;
         return (
           <Container>
             <Content>
-                
+            <Spinner
+					visible={isLoading} 
+                />
                 <View style={{backgroundColor: '#7E49C3'}}> 
                     <View style={{marginTop:20}}>
                         <Text style={styles.SubText}>Search for Doctors</Text>
@@ -159,7 +178,13 @@ async componentDidMount() {
                     </View>
                     </View>
                
-
+                    {availableChatDoctors.length === 0 && isLoading === false ?
+					<View style={{ alignItems: 'center', justifyContent: 'center', height: 450 }}>
+						<Text style={{ fontFamily: "OpenSans", fontSize: 15, marginTop: "10%", textAlign: 'center' }} note>
+							No Doctors Found for your Search
+						</Text>
+                    </View>
+              :   
               <FlatList
                 style={{marginTop: 10}}
                 extraData={availableChatDoctors}    
@@ -184,7 +209,9 @@ async componentDidMount() {
                       </Row>
                       <Row>
                         <Col style={{width:'60%'}}>
-                            <Text style={styles.status}>{item.category}</Text>
+                            <Text style={styles.docname}>{ 'Specialist in '} 
+                                <Text note style={styles.status}>{ this.getDoctorCategory(item) }</Text>
+                            </Text>
                         </Col>
                         <Col style={{ alignItems: 'center', width:'40%'}}>
                                 <TouchableOpacity onPress={() => this.onBookButtonPress4Payment(item.doctor_id, this.getVideoConsultFee(item))} 
@@ -197,6 +224,7 @@ async componentDidMount() {
                 </Row>
               }
               keyExtractor={(item, index) => index.toString()}/>
+            }
             </Content>
         </Container>
       )
@@ -210,6 +238,11 @@ const styles = StyleSheet.create({
     docname:{
         fontFamily:'OpenSans',
         fontSize:14,
+        fontWeight:'bold'
+    },
+    specialistText:{
+        fontFamily:'OpenSans',
+        fontSize:12,
         fontWeight:'bold'
     },
     date:{

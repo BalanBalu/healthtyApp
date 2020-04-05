@@ -1,9 +1,13 @@
 
 import { postService, getService, putService } from '../../../../setup/services/httpservices';
 export const SET_LAST_MESSAGES_DATA = 'CHAT/LAST_MESSAGES_DATA' 
-export const fetchAvailableDoctors4Video = async (request) => {
+export const fetchAvailableDoctors4Video = async (docIds) => {
     try {
+        
         let endPoint = 'video-consulting/public/available/doctors';
+        if(docIds) {
+            endPoint = endPoint + '?doctorIds=' + docIds
+        }
         let response = await getService(endPoint);
         let respData = response.data;
         return respData;

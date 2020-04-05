@@ -5,6 +5,7 @@ import { StyleSheet, Platform, Image, AsyncStorage, FlatList,TouchableOpacity, S
 import { Col, Row, Grid } from "react-native-easy-grid";
 import Spinner from '../../../../../components/Spinner';
 import { renderDoctorImage, getName } from '../../../../common'
+import { hasLoggedIn } from "../../../../providers/auth/auth.actions";
 import {POSSIBLE_VIDEO_CONSULTING_STATUS, STATUS_VALUE_DATA } from '../../constants';
 import { getVideoConsuting, updateVideoConsuting } from '../../services/video-consulting-service';
 export const IS_ANDROID = Platform.OS === 'android';
@@ -18,6 +19,11 @@ class VideoConsultaions extends Component {
     }
     async componentDidMount() {
         try {
+			const isLoggedIn = await hasLoggedIn(this.props);
+    		 if (!isLoggedIn) {
+        		this.props.navigation.navigate("login");
+        	    return;
+    		}
             const userId = await AsyncStorage.getItem('userId');
             const consultationReesponse = await getVideoConsuting(userId)
             if(consultationReesponse.success === true) {
