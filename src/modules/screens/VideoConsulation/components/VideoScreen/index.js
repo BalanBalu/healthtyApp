@@ -1,5 +1,5 @@
 import React from 'react';
-import {SafeAreaView, StatusBar} from 'react-native';
+import {SafeAreaView, StatusBar, BackHandler } from 'react-native';
 import ConnectyCube from 'react-native-connectycube';
 import AwesomeAlert from 'react-native-awesome-alerts';
 import RTCViewGrid from './RTCViewGrid';
@@ -31,6 +31,7 @@ import { SET_VIDEO_SESSION } from '../../../../providers/chat/chat.action';
   
   }
   componentDidMount() {
+    CallService.setKeepScreenOn(true);
     store.subscribe(() => {
       const { chat: { session } } = this.props;
       if(session && this.steamSubscribeLoadedUsers.indexOf(session.userId) === -1) {
@@ -39,6 +40,8 @@ import { SET_VIDEO_SESSION } from '../../../../providers/chat/chat.action';
           this.steamSubscribeLoadedUsers.push(session.userId);
       }
     });
+    BackHandler.addEventListener('hardwareBackPress', this.handleBackButton);
+    
     const { navigation } = this.props;
     const isIncomingCall = navigation.getParam('isIncomingCall') || false;
     if(isIncomingCall) {
@@ -48,8 +51,8 @@ import { SET_VIDEO_SESSION } from '../../../../providers/chat/chat.action';
   }
 
   componentWillUnmount() {
-   // CallService.stopCall();
-   // AuthService.logout();
+    CallService.setKeepScreenOn(false);
+    BackHandler.removeEventListener('hardwareBackPress', this.handleBackButton);
   }
   componentWillReceiveProps() {
    

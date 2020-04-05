@@ -108,6 +108,10 @@ export default class CallService {
     InCallManager.setSpeakerphoneOn(flag)
   };
 
+  setKeepScreenOn = flag => {
+    InCallManager.setKeepScreenOn(flag);
+  }
+
   processOnUserNotAnswerListener(userId) {
     return new Promise((resolve, reject) => {
       if (!this._session) {

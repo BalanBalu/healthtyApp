@@ -668,7 +668,9 @@ const HomeStack = createStackNavigator({
   VideoScreen: {
     screen: VideoScreen,
     navigationOptions: {
-      title: 'Video Calling'
+      title: 'Video Calling',
+      headerLeft: null,
+      gesturesEnabled: false
     }
   },
   'Video Consulting Service': {

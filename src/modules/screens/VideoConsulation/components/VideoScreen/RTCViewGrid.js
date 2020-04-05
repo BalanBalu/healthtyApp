@@ -43,14 +43,20 @@ export default ({streams}) => {
     case 2:
       RTCListView = (
         <View style={styles.inColumn}>
+          <View style={streams[0].userId === 'localStream' ? styles.forLocalUser : styles.forRemoteUser } >
+        
           <RTCViewRendered
             userId={streams[0].userId}
             stream={streams[0].stream}
           />
+          </View>
+          <View style={streams[1].userId === 'localStream' ? styles.forLocalUser : styles.forRemoteUser }>
+         
           <RTCViewRendered
             userId={streams[1].userId}
             stream={streams[1].stream}
           />
+          </View>
         </View>
       );
       break;
@@ -123,4 +129,16 @@ const styles = StyleSheet.create({
     flex: 1,
     flexDirection: 'row',
   },
+  forLocalUser: {
+    height: 180,
+    width: 120,
+    top: 10,
+    right: 10, 
+    alignSelf: 'flex-end',
+    position: 'absolute',
+    
+  },
+  forRemoteUser: {
+    height: '100%'
+  }
 });
