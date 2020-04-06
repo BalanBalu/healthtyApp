@@ -61,7 +61,12 @@ class AddReminder extends Component {
     console.log('medicine_take_times' + moment().startOf('day').toDate())
 
     this.callmedicinesearchService = debounce(this.callmedicinesearchService, 500);
+
+
   }
+
+
+
   componentDidMount() {
     const { medicineName } = this.state;
     if (medicineName !== null) {
@@ -84,15 +89,18 @@ class AddReminder extends Component {
   callmedicinesearchService = async (enteredText) => {
 
     let medicineResultData = await getAllMedicineDataBySuggestion(enteredText);
+console.log('manni'+ getAllMedicineDataBySuggestion)
     if (medicineResultData.success) {
       this.setState({
         searchValue: medicineResultData.data,
         searchValue: enteredText,
       });
     } else {
+
       this.setState({
         searchValue: enteredText
       });
+      console.log('callmedicinesearchService' + callmedicinesearchService)
     }
   }
 
@@ -198,17 +206,27 @@ class AddReminder extends Component {
 
   insertTimeValue = async () => {
     let temp = this.state.slots;
+    // console.log("temp" + temp)
+
+    // console.log("medicine_take_times" + this.state.medicine_take_times)
     const sample = this.state.medicine_take_times;
+    // console.log("sample" + sample)
+
     if (!temp.includes(sample)) {
       temp.push(sample)
       temp.sort(function (a, b) {
         return new Date(a) > new Date(b) ? 1 : new Date(a) < new Date(b) ? -1 : 0;
       });
       this.setState({ slots: temp })
+
+
     } else {
       alert("Duplicate entry");
     }
+
+
     this.setState({ slots: temp })
+
   }
 
 
@@ -230,8 +248,10 @@ class AddReminder extends Component {
           reminder_type: String(this.state.medicinePeriod),
           is_reminder_enabled: true,
           active: true,
+
         }
         this.setState({ medicinepage: true })
+
         if (this.state.medicinePeriod === "everyday") {
           priviewData.medicine_take_start_date = moment(this.state.medicine_take_start_date).toISOString(),
             priviewData.medicine_take_end_date = moment(this.state.medicine_take_end_date).toISOString()
@@ -246,6 +266,7 @@ class AddReminder extends Component {
         await this.setState({ arrayTakenTime: temp, data: temp })
         console.log("mani++++++++++++++++++++++++++" + getData)
         this.setState({ previewdisplay: true })
+
       }
     }
     catch (e) {
@@ -255,9 +276,13 @@ class AddReminder extends Component {
 
 
   deleteData(index) {
+    // console.log("index" + index)
     let temp = this.state.arrayTakenTime;
     temp.splice(index, 1)
+    // console.log("temp" + JSON.stringify(temp))
     this.setState({ data: temp })
+    // console.log("data" + JSON.stringify(this.state.data))
+
   }
 
 
@@ -272,6 +297,7 @@ class AddReminder extends Component {
         });
       } else {
         let userId = await AsyncStorage.getItem('userId');
+
         let data = {
           medicine_name: this.state.medicinename,
           medicine_form: this.state.selectedMedicineForm,
@@ -286,6 +312,7 @@ class AddReminder extends Component {
         if (this.state.medicinePeriod === "everyday") {
           data.medicine_take_start_date = moment(this.state.medicine_take_start_date).toISOString(),
             data.medicine_take_end_date = moment(this.state.medicine_take_end_date).toISOString()
+
         }
         else {
           data.medicine_take_start_date = moment(this.state.medicine_take_start_date).toISOString()
@@ -294,6 +321,7 @@ class AddReminder extends Component {
         let result = await addReminderdata(userId, data)
         console.log('result', result)
         if (result.success) {
+
           Toast.show({
             text: result.message,
             type: "success",
@@ -332,6 +360,7 @@ class AddReminder extends Component {
         <ScrollView>
           <Content style={{ padding: 20 }}>
             <View style={{ marginBottom: 30 }}>
+
               <View pointerEvents={this.state.medicinepage ? "auto" : "none"} style={this.state.medicinepage == true ? styles.medicineenabletext : styles.medicinedisabletext}>
                 <View>
                   <Text style={styles.NumText}>What Medicine would you like to add ?</Text>
