@@ -65,8 +65,8 @@ import ReportIssue from '../../modules/screens/ReportIssue';
 import ReportDetails from '../../modules/screens/ReportIssue/reportIssueDetails'
 import EarnReward from '../../modules/screens/Home/EarnReward';
 import CoronaDisease from '../../modules/screens/CoronaDisease/CoronaDisease';
-
 import MedicineSuggestionList from '../../modules/screens/Pharmacy/MedicineSuggestionList/pharmacySuggestionList';
+import ImageView from '../../modules/shared/ImageView'
 import PharmacyList from '../../modules/screens/Pharmacy/PharmacyList/pharmacyList';
 import AuthScreen from '../../modules/screens/VideoConsulation/components/AuthScreen';
  import VideoScreen from '../../modules/screens/VideoConsulation/components/VideoScreen';
@@ -357,6 +357,13 @@ const HomeStack = createStackNavigator({
       headerLeft: null,
       title: 'Success'
     }
+  },
+  // ============Zoom image ========================
+  ImageView: {
+    screen: ImageView,
+    navigationOptions: ({ navigation }) => ({
+      title: navigation.getParam("title"),
+    }),
   },
   // ============Chat ========================
   Chat: {
@@ -651,6 +658,7 @@ const HomeStack = createStackNavigator({
       title: 'Medicine Reviews'
     }
   },
+  
 
   'CORONO Status': {
     screen: CoronaDisease,

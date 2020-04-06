@@ -1,12 +1,14 @@
 import React, { Component } from 'react';
-import { Container, Content, Text, Toast, Icon, View, Col, Row, } from 'native-base';
-import { StyleSheet, Image, AsyncStorage, FlatList, TouchableOpacity } from 'react-native';
+import { Container, Content, Text, Toast, Icon, View, Col, Row, Picker } from 'native-base';
+import { StyleSheet, Image, AsyncStorage, FlatList, TouchableOpacity, Dimensions } from 'react-native';
 import { getSelectedMedicineDetails, getMedicineReviews, getMedicineReviewsCount } from '../../../providers/pharmacy/pharmacy.action'
 import { medicineRateAfterOffer, setCartItemCountOnNavigation, renderMedicineImage} from '../CommomPharmacy';
 import Spinner from '../../../../components/Spinner';
 import { dateDiff, getMoment, formatDate } from '../../../../setup/helpers'
 import { MedInsertReview } from './medInsertReview'
 import { AddToCard } from '../AddToCardBuyNow/AddToCard'
+import SwiperFlatList from 'react-native-swiper-flatlist';
+import ImageZoom from 'react-native-image-pan-zoom';
 
 let medicineId, userId;
 class MedicineInfo extends Component {
@@ -31,7 +33,8 @@ class MedicineInfo extends Component {
             modalVisible: false,
             reviewCount: '',
             cartItems: [],
-            finalRating:''
+            finalRating: '',
+            enlargeContent: false
         };
 
     }
@@ -215,9 +218,20 @@ class MedicineInfo extends Component {
         const { medicineData: { medPharDetailInfo } } = this.state;
         return parseInt(medPharDetailInfo.price) - parseInt(medicineRateAfterOffer(medPharDetailInfo))
     }
-
+    onValueChange2(value) {
+        this.setState({
+            selected2: value
+        });
+    }
     render() {
         const { medicineData, reviewData, reviewCount, cartItems, finalRating } = this.state
+        const useage = [{ text: "1. Maintain half an hour gap between food/drinks/other medications and the prescribed homeopathic medicine." },
+        { text: "2. While on homeopathic medication, there shouldn't be any strong smell like that of an onion, garlic, camphor, coffee, hing, in your mouth." },
+        { text: "3. Avoid use of alcohol and tobacco while on homeopathic medication." },
+        { text: "4. During pregnancy and while on breastfeeding, consult the homeopathic physician before use." },
+        { text: "5. Store homeopathic remedies away from strong odors such as menthol, mint, camphor, essential oils, lip balm, deep heat liniments, cough lozenges, chewing gum, aromatic toothpaste, chemical fumes, perfumes etc." }]
+        const Ingredients = [{ name: 'Syzgium Jambolanum' }, { name: 'Syzgium Jambolanum' }, { name: 'Syzgium Jambolanum' }, { name: 'Syzgium Jambolanum' }]
+        const prescriptionData = [{ prescription_path: require('../../../../../assets/images/images.jpeg') }, { prescription_path: require('../../../../../assets/images/images.jpeg') }, { prescription_path: require('../../../../../assets/images/images.jpeg') }, { prescription_path: require('../../../../../assets/images/images.jpeg') }, { prescription_path: require('../../../../../assets/images/images.jpeg') }]
         return (
             <Container >
 
@@ -242,12 +256,37 @@ class MedicineInfo extends Component {
 
                             </Row>
                             <Text style={{ fontSize: 14, fontFamily: 'OpenSans', color: '#909090' }}>By {medicineData.pharmacyInfo.name}</Text>
-                            <View style={{ justifyContent: 'center', alignItems: 'center' }}>
-                                <Image source={renderMedicineImage(medicineData.medPharDetailInfo)}
-                                    style={{
-                                        width: 90, height: 90, alignItems: 'center'
-                                    }}
-                                />
+
+                            <View style={{ flex: 1, marginLeft: 10, marginRight: 10, justifyContent: 'center', alignItems: 'center', }}>
+                                <ImageZoom cropWidth={200}
+                                    cropHeight={200}
+                                    imageWidth={200}
+                                    minScale={0.6}
+                                    panToMove={false}
+                                    pinchToZoom={false}
+                                    enableDoubleClickZoom={false}
+
+                                    imageHeight={200}>
+                                    <SwiperFlatList
+                                        autoplay
+                                        autoplayDelay={3}
+                                        index={3}
+                                        contentContainerStyle={{ flexGrow: 1, }}
+                                        autoplayLoop
+                                        data={prescriptionData}
+                                        renderItem={({ item }) =>
+                                            <TouchableOpacity onPress={() => this.props.navigation.navigate("ImageView", { passImage: item.prescription_path, title: medicineData.medInfo.medicine_name })}>
+                                                <Image
+                                                    // source={renderMedicineImage(medicineData.medPharDetailInfo)}
+                                                    style={{
+                                                        width: 200, height: 200,
+                                                    }}
+                                                />
+                                            </TouchableOpacity>
+                                        }
+                                        showPagination
+                                    />
+                                </ImageZoom>
                             </View>
                             <Row>
                                 <Col size={7} style={{ flexDirection: 'row', marginTop: 10 }}>
@@ -258,8 +297,27 @@ class MedicineInfo extends Component {
                                 </Col>
                                 <Col size={3}>
                                 </Col>
+                            </Row >
+                            <Row style={{ marginTop: 10 }}><Col size={5} style={{ height: 30, justifyContent: 'center', backgroundColor: '#fff', borderRadius: 5, borderColor: '#000', borderWidth: 0.5 }}>
+                                <Picker
+                                    mode="dropdown"
+                                    style={{ width: undefined }}
+                                    placeholder="Select your SIM"
+                                    placeholderStyle={{ color: "#bfc6ea" }}
+                                    placeholderIconColor="#007aff"
+                                    selectedValue={this.state.selected2}
+                                    onValueChange={this.onValueChange2.bind(this)}
+                                >
+                                    <Picker.Item label="1 MG" value="key0" />
+                                    <Picker.Item label="2 MG" value="key1" />
+                                    <Picker.Item label="3 MG" value="key2" />
+                                    <Picker.Item label="4 MG" value="key3" />
+                                </Picker>
+                            </Col>
+                                <Col size={5} style={{ justifyContent: 'center', marginLeft: 5 }}>
+                                    <Text style={{ fontSize: 12, fontFamily: 'OpenSans', color: '#000' }}> of {medicineData.medInfo.medicine_form}</Text>
+                                </Col>
                             </Row>
-
                         </View>
                         <Row style={{ marginTop: 10 }}>
                             <Col size={5}>
@@ -274,7 +332,7 @@ class MedicineInfo extends Component {
 
                                         </TouchableOpacity>
                                     </Row> :
-                                    <Row style={{alignItems:'flex-end'}}>
+                                    <Row style={{ alignItems: 'flex-end' }}>
                                         <TouchableOpacity style={styles.addCartTouch}
                                             onPress={() => { this.setState({ isAddToCart: true }), this.selectedItems(medicineData, 'Add to Card', cartItems.findIndex(ele => ele.medicine_id == medicineData.medPharDetailInfo.medicine_id && ele.pharmacy_id == medicineData.medPharDetailInfo.pharmacy_id)) }} >
 
@@ -303,8 +361,34 @@ class MedicineInfo extends Component {
                             />
                             : null}
                         <View style={{ marginTop: 10 }}>
-                            <Text style={styles.desText}>Product Description</Text>
+                            <Text style={styles.desText}>Product Details</Text>
                             <Text style={styles.mainText}>{medicineData.medInfo.description}</Text>
+                            <TouchableOpacity onPress={() => this.setState({ enlargeContent: true })}>
+                                <Text style={styles.showText}>Show more</Text>
+                            </TouchableOpacity>
+                            {this.state.enlargeContent == true ?
+                                <View>
+                                    <View style={{ marginTop: 10 }}>
+                                        <Text style={styles.desText}>Medicine Dosage</Text>
+                                        <Text style={styles.mainText}>{medicineData.medInfo.medicine_unit}</Text>
+                                    </View>
+                                    <View style={{ marginTop: 10 }}>
+                                        <Text style={styles.desText}>Directions To Use </Text>
+                                        <Text style={styles.mainText}>{medicineData.medInfo.directions_to_use}</Text>
+                                    </View>
+                                    <View style={{ marginTop: 10 }}>
+                                        <Text style={styles.desText}>Key Ingredients</Text>
+                                        <Text style={styles.mainText}><Text style={{ fontSize: 12, marginTop: 5, }}>{'\u2B24'}</Text>   {medicineData.medInfo.ingridients}</Text>
+                                    </View>
+                                    <View style={{ marginTop: 10 }}>
+                                        <Text style={styles.desText}>Side effects</Text>
+                                        <Text style={styles.mainText}>{medicineData.medInfo.side_effects}</Text>
+                                    </View>
+                                    <TouchableOpacity onPress={() => this.setState({ enlargeContent: false })}>
+                                        <Text style={styles.showText}>Show less</Text>
+                                    </TouchableOpacity>
+                                </View> : null}
+
                         </View>
                         <View style={{ marginTop: 10 }}>
                             <Text style={styles.desText}>Rating and Reviews</Text>
@@ -418,7 +502,7 @@ class MedicineInfo extends Component {
                                 } /> :
                             <Text style={{ fontSize: 10, justifyContent: 'center', alignItems: 'center' }}>No Reviews Were found</Text>}
 
-                        {reviewData.length!==0 ?
+                        {reviewData.length !== 0 ?
 
                             <Row style={{ marginTop: 10 }}>
                                 <Col size={6}>
@@ -488,7 +572,7 @@ const styles = StyleSheet.create({
         paddingLeft: 50,
         paddingRight: 50,
         borderRadius: 2,
-        alignItems:'flex-end'
+        alignItems: 'flex-end'
     },
     buyNowTouch: {
         backgroundColor: '#8dc63f',
@@ -678,5 +762,57 @@ const styles = StyleSheet.create({
         fontFamily: 'OpenSans',
         color: '#909090',
         marginTop: 5
+    },
+    showText: {
+        fontSize: 12,
+        fontFamily: 'OpenSans',
+        color: '#7F49C3',
+        marginTop: 10
+    },
+    circleDev: {
+        position: 'absolute',
+        bottom: 15,
+        height: 15,
+        width: '100%',
+        display: 'flex',
+        flexDirection: 'row',
+        justifyContent: 'center',
+        alignContent: 'center'
+    },
+    whiteCircle: {
+        width: 6,
+        height: 6,
+        borderRadius: 3,
+        margin: 5,
+        backgroundColor: '#fff'
+
+    },
+    wrapper: {
+        marginTop: 5,
+        borderRadius: 2
+    },
+    slide1: {
+        flex: 1,
+        justifyContent: 'center',
+        alignItems: 'center',
+        backgroundColor: '#9DD6EB',
+    },
+    slide2: {
+        flex: 1,
+        justifyContent: 'center',
+        alignItems: 'center',
+        backgroundColor: '#97CAE5'
+    },
+    slide3: {
+        flex: 1,
+        justifyContent: 'center',
+        alignItems: 'center',
+        backgroundColor: '#92BBD9'
+    },
+    text: {
+        color: '#fff',
+        fontSize: 30,
+        fontWeight: 'bold'
     }
+
 })
