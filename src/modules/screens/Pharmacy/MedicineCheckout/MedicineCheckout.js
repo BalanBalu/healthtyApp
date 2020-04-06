@@ -12,7 +12,7 @@ import { RadioButton, } from 'react-native-paper';
 import { getAddress } from '../../../common'
 import { SERVICE_TYPES, BASIC_DEFAULT } from '../../../../setup/config'
 import { hasLoggedIn } from '../../../providers/auth/auth.actions';
-
+import BookAppointmentPaymentUpdate from '../../../providers/bookappointment/bookAppointment';
 class MedicineCheckout extends Component {
     constructor(props) {
         super(props);
@@ -110,7 +110,8 @@ class MedicineCheckout extends Component {
         }
     }
 
-    onProceedToPayment = () => {
+    onProceedToPayment (navigationToPayment) {
+        debugger
         const { medicineDetails, selectedAddress, mobile_no, full_name, medicineTotalAmountwithDeliveryChage, itemSelected } = this.state;
         if (medicineDetails.length === 0) {
             Toast.show({
@@ -125,21 +126,21 @@ class MedicineCheckout extends Component {
                 type: 'warning',
                 duration: 3000
             })
-            return
+            return false;
         }
         let medicinceNames = '';
         let medicineOrderData = [];
         const amount = medicineDetails.map(ele => {
-            if (medicinceNames.length < 50) {
-                medicinceNames = medicinceNames + ele.medicine_name
+            if (medicinceNames.length < 100) {
+                medicinceNames = medicinceNames + ele.medicine_name + '( * ' + String(ele.userAddedMedicineQuantity) + '), ' 
             }
             medicineOrderData.push({
                 medicine_id: ele.medicine_id,
                 pharmacy_id: ele.pharmacy_id,
-                medicine_original_price: ele.price,
-                medicine_offered_price: ele.offeredAmount,
-                quantity: ele.userAddedMedicineQuantity,
-                final_price: userAddedTotalMedicineAmount,
+                medicine_original_price: Number(ele.price),
+                medicine_offered_price: Number(ele.offeredAmount),
+                quantity: Number(ele.userAddedMedicineQuantity),
+                final_price: Number(Number(ele.userAddedTotalMedicineAmount).toFixed(2)),
                 medicine_name: ele.medicine_name,
             })
             return ele.userAddedTotalMedicineAmount
@@ -152,7 +153,8 @@ class MedicineCheckout extends Component {
             amount: medicineTotalAmountwithDeliveryChage,
             bookSlotDetails: {
                 fee: amount,
-                diseaseDescription: medicinceNames,
+                is_order_type_prescription: false,
+                diseaseDescription: medicinceNames.slice(0, -1),
                 medicineDetails: medicineOrderData,
                 delivery_option: itemSelected,
                 delivery_charges: deliveryDetails.delivery_charges,
@@ -179,47 +181,38 @@ class MedicineCheckout extends Component {
             delete paymentPageRequestData.bookSlotDetails.delivery_tax
         }
         console.log(paymentPageRequestData)
-        this.props.navigation.navigate('paymentPage', paymentPageRequestData)
-
-
-
-
+        if (navigationToPayment === true) {
+            this.props.navigation.navigate('paymentPage', paymentPageRequestData)
+        } else {
+            return paymentPageRequestData;
+        }
     }
-
-
 
     getdeliveryWithMedicineAmountCalculation(medicineDetails) {
         if (medicineDetails.length != 0) {
             let pharmacyData = []
+            let pharmacyInfo = null;
             let amount = this.state.medicineDetails.map(ele => {
 
-                if (ele.pharmacyInfo) {
-
-                    if (pharmacyData.length != 2) {
-
-                        if (!pharmacyData.includes(ele.pharmacyInfo.pharmacy_id)) {
-                            pharmacyData.push(ele.pharmacyInfo.pharmacy_id)
-
-                            if (pharmacyData.length != 2) {
-                                let temp = ele.pharmacyInfo
-                                delete temp.name
-                                temp.full_name = ele.pharmacyInfo.name;
-                                temp.coordinates = ele.pharmacyInfo.location.coordinates
-                                temp.type = ele.pharmacyInfo.location.type
-                                temp.address = ele.pharmacyInfo.location.address
-                                this.setState({ pharmacyInfo: temp })
-                            }
-                        }
-                    } else {
-                        this.setState({ pickupOPtionEnabled: false, pharmacyInfo: null })
-                    }
-
+                if (ele.pharmacyInfo && !pharmacyData.includes(ele.pharmacyInfo.pharmacy_id)) {
+                    pharmacyData.push(ele.pharmacyInfo.pharmacy_id)
+                    let temp = ele.pharmacyInfo
+                    delete temp.name
+                    temp.full_name = ele.pharmacyInfo.name;
+                    temp.coordinates = ele.pharmacyInfo.location.coordinates
+                    temp.type = ele.pharmacyInfo.location.type
+                    temp.address = ele.pharmacyInfo.location.address;
+                    pharmacyInfo = temp;
                 }
                 return ele.userAddedTotalMedicineAmount
             }).reduce(
                 (total, userAddedTotalMedicineAmount) => total + userAddedTotalMedicineAmount);
-
-            this.setState({ medicineTotalAmount: amount })
+        
+                this.setState({ 
+                    pickupOPtionEnabled: pharmacyData.length === 1,
+                    pharmacyInfo: pharmacyData.length === 1 ? pharmacyInfo: null,
+                    medicineTotalAmount: amount,
+                 })
         } else {
             return ' '
         }
@@ -242,16 +235,42 @@ class MedicineCheckout extends Component {
     backNavigation = async (navigationData) => {
         try {
             this.clickedHomeDelivery();
-
         } catch (e) {
             console.log(e)
         }
     }
-
+    async processToPayLater() {
+        debugger
+        this.setState({ isLoading: true })
+        const orderRequestData = await this.onProceedToPayment(false);
+        if(orderRequestData === false) {
+            this.setState({ isLoading: false, spinnerText: ' ' }); 
+            return false;
+        }
+    debugger 
+        const userId = await AsyncStorage.getItem('userId');
+        this.BookAppointmentPaymentUpdate = new BookAppointmentPaymentUpdate();
+        let response = await this.BookAppointmentPaymentUpdate.updatePaymentDetails(true, {}, 'cash',orderRequestData.bookSlotDetails, orderRequestData.service_type, userId, 'cash');
+        console.log('Order Booking Response ');
+        
+        if (response.success) {
+            this.props.navigation.navigate('SuccessChat', { manualNaviagationPage : 'Home' });
+            Toast.show({
+                text: 'Paymenet Success',
+                type: 'success',
+                duration: 3000
+            })
+        } else {
+            Toast.show({
+                text: response.message,
+                type: 'warning',
+                duration: 3000
+            })
+        }
+        this.setState({ isLoading: false, spinnerText: ' ' }); 
+    }
     render() {
         const { itemSelected, deliveryAddressArray, isLoading, deliveryDetails, pickupOPtionEnabled, medicineTotalAmount, medicineTotalAmountwithDeliveryChage, pharmacyInfo } = this.state
-
-
         return (
             <Container>
                 <Content style={{ backgroundColor: '#F5F5F5', padding: 10 }}>
@@ -357,6 +376,7 @@ class MedicineCheckout extends Component {
                         {this.state.medicineDetails.length != 0 ?
                             <FlatList
                                 data={this.state.medicineDetails}
+                                keyExtractor={(item, index) => index.toString()}
                                 renderItem={({ item }) =>
                                     <Row style={{ marginTop: 10 }}>
                                         <Col size={8}>
@@ -418,12 +438,12 @@ class MedicineCheckout extends Component {
                     <FooterTab>
                         <Row>
                             <Col size={5} style={{ alignItems: 'center', justifyContent: 'center', backgroundColor: '#fff' }}>
-                                <TouchableOpacity >
-                                    <Text style={{ fontSize: 16, fontFamily: 'OpenSans', color: '#000', fontWeight: '400' }}>{'Total - ₹' + medicineTotalAmountwithDeliveryChage} </Text>
+                                <TouchableOpacity onPress={()=> this.processToPayLater()} >
+                                    <Text style={{ fontSize: 16, fontFamily: 'OpenSans', color: '#000', fontWeight: '400' }}>{itemSelected == 'HOME_DELIVERY' ? 'Cash On Delivary' : 'Cash on Pickup'} </Text>
                                 </TouchableOpacity>
                             </Col>
                             <Col size={5} style={{ alignItems: 'center', justifyContent: 'center', backgroundColor: '#8dc63f' }}>
-                                <TouchableOpacity onPress={() => this.onProceedToPayment()}>
+                                <TouchableOpacity onPress={() => this.onProceedToPayment(true)}>
                                     <Text style={{ fontSize: 16, fontFamily: 'OpenSans', color: '#fff', fontWeight: '400' }}>Proceed</Text>
                                 </TouchableOpacity>
                             </Col>

@@ -2,29 +2,64 @@ import React, { Component } from 'react';
 import { Container, Content, Text, Title, Header, Form, Textarea, Button, H3, Item, List, ListItem, Card, Input, Left, Right, ScrollView, Thumbnail, Body, Icon, Footer, FooterTab, Picker, Segment, CheckBox, View, Badge } from 'native-base';
 import { Col, Row, Grid } from 'react-native-easy-grid';
 import { StyleSheet, Image, AsyncStorage, TextInput, FlatList, TouchableOpacity } from 'react-native';
-
+import {  getNearOrOrderPharmacy } from '../../../providers/pharmacy/pharmacy.action'
+import { connect } from 'react-redux';
+import { MAX_DISTANCE_TO_COVER } from '../../../../setup/config'
+import { getAddress } from  '../../../common';
+import { setCartItemCountOnNavigation } from '../CommomPharmacy';
 class PharmacyList extends Component {
     constructor(props) {
         super(props)
         this.state = {
-            cartItems: [],
-            isLoading: true
+            isLoading: true,
+            pharmacyData: []
         }
     }
-
+    componentDidMount() {
+        this.getNearByPharmacyList();
+        const { navigation } = this.props;
+        setCartItemCountOnNavigation(navigation);
+    }
+    getNearByPharmacyList = async () => {
+        try {
+            this.setState({ isLoading: true })
+            const { bookappointment: { locationCordinates } } = this.props;
+            locationData = {
+                "coordinates": locationCordinates,
+                "maxDistance": MAX_DISTANCE_TO_COVER
+            }
+            const userId = await AsyncStorage.getItem('userId')
+            let result = await getNearOrOrderPharmacy(userId, JSON.stringify(locationData));
+            this.setState({ isLoading: false })
+            console.log(result);
+            if (result.success) {
+                this.setState({ pharmacyData: result.data })
+            }
+        }
+        catch (e) {
+            this.setState({ isLoading: false })
+            console.log(e)
+        }
+    }
+    goPharmacyMedicineList(item) {
+        this.props.navigation.navigate('medicineSearchList', {
+            byPharmacy: true,
+            pharmacyInfo: item.pharmacyInfo
+        })
+    }
     render() {
-        const { isLoading, cartItems } = this.state;
-        const nearPharmacy = [{ name: 'Apollo Pharmacy', km: '2.30KM', address: 'No.28,Kamarajar Nagar,4th cross street, Ambattur, Chennai - 600051.', }, { name: 'Medplus', km: '5.30KM', address: 'No.28,Kamarajar Nagar,4th cross street, Ambattur, Chennai - 600051.', }, { name: 'Medplus', km: '5.30KM', address: 'No.28,Kamarajar Nagar,4th cross street, Ambattur, Chennai - 600051.', }, { name: 'Medplus', km: '5.30KM', address: 'No.28,Kamarajar Nagar,4th cross street, Ambattur, Chennai - 600051.', }]
-
+        const { isLoading, pharmacyData } = this.state;
         return (
             <Container style={{ backgroundColor: '#f2f2f2' }}>
                 <Content style={{ padding: 10 }}>
                     <View>
                         <FlatList
-                            data={nearPharmacy}
+                            data={pharmacyData}
+                            keyExtractor={(item, index) => index.toString()}
                             renderItem={({ item }) =>
                                 <View style={{ marginTop: 5, backgroundColor: '#fff', padding: 10, }}>
-                                    <Row style={{ paddingBottom: 2 }}>
+                                    <Row onPress={() => this.goPharmacyMedicineList(item)}
+                                    style={{ paddingBottom: 2 }}>
                                         <Col size={2}>
                                             <Image
                                                 source={require('../../../../../assets/images/apollopharmacy.jpeg')}
@@ -35,17 +70,19 @@ class PharmacyList extends Component {
                                         <Col size={8} style={{ marginLeft: 20 }}>
                                             <Row>
                                                 <Col size={7}>
-                                                    <Text style={styles.mednames}>{item.name}</Text>
-                                                    <Text style={styles.addressText}>{item.address}</Text>
+                                                    <Text style={styles.mednames}>{item.pharmacyInfo.name}</Text>
+                                                    <Text style={styles.addressText}>{getAddress(item.pharmacyInfo.location)}</Text>
                                                 </Col>
                                                 <Col size={3}>
                                                     <Text style={styles.kmText}>{item.km}</Text>
                                                 </Col>
                                             </Row>
                                             <Row style={{ alignItems: 'flex-end', justifyContent: 'flex-end', marginTop: 5 }}>
-                                                <TouchableOpacity style={{ backgroundColor: '#8dc63f', flexDirection: 'row', paddingTop: 2, paddingBottom: 2, paddingLeft: 8, paddingRight: 8, marginLeft: 5, borderRadius: 2 }}>
-                                                    <Icon name="ios-cart" style={{ fontSize: 10, color: '#fff', marginTop: 2 }} />
-                                                    <Text style={styles.BuyNowText}>Order Medicines</Text>
+                                                <TouchableOpacity 
+                                                    onPress={() => this.goPharmacyMedicineList(item)}
+                                                    style={{ backgroundColor: '#8dc63f', flexDirection: 'row', paddingTop: 2, paddingBottom: 2, paddingLeft: 8, paddingRight: 8, marginLeft: 5, borderRadius: 2 }}>
+                                                        <Icon name="ios-cart" style={{ fontSize: 10, color: '#fff', marginTop: 2 }} />
+                                                        <Text style={styles.BuyNowText}>Order Medicines</Text>
                                                 </TouchableOpacity>
                                             </Row>
                                         </Col>
@@ -59,8 +96,12 @@ class PharmacyList extends Component {
     }
 }
 
-
-export default PharmacyList
+function pharmacyState(state) {
+    return {
+        bookappointment: state.bookappointment,
+    }
+}
+export default connect(pharmacyState)(PharmacyList)
 
 
 const styles = StyleSheet.create({

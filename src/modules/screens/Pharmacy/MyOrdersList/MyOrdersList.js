@@ -1,14 +1,12 @@
 import React, { Component } from 'react';
 import {
-    Container, Content, Text, Title, Header, Form, Textarea, Button, H3, Item, List, ListItem, Card, Input, Left, Right, Thumbnail, Body, Icon,
-    Footer, FooterTab, Picker, Segment, CheckBox, View, Spinner, Badge
+    Container, Content, Text, Icon, View
 } from 'native-base';
-import { Col, Row, Grid } from 'react-native-easy-grid';
-import { StyleSheet, Image, AsyncStorage, TextInput, FlatList, TouchableOpacity } from 'react-native';
-import { Loader } from '../../../../components/ContentLoader';
+import { Col, Row } from 'react-native-easy-grid';
+import { StyleSheet, AsyncStorage, FlatList, TouchableOpacity } from 'react-native';
 import { getMedicineOrderList } from '../../../providers/pharmacy/pharmacy.action';
 import { formatDate } from '../../../../setup/helpers';
-
+import Spinner from '../../../../components/Spinner';
 
 class MyOrdersList extends Component {
     constructor(props) {
@@ -25,36 +23,13 @@ class MyOrdersList extends Component {
         this.getMedicineOrderList();
     }
 
-    // async medicineOrderList() {
-    //     try {
-    //         this.setState({ isLoading: true });
-    //         let userId = await AsyncStorage.getItem('userId');
-    //         let result = await getMedicineOrderList(userId);
-    //         console.log('result++++++' + JSON.stringify(result))
-    //         if (result.success) {
-    //             this.setState({ orderList: result.data });
-    //         }
-
-    //     }
-
-    //     catch (e) {
-    //         console.log(e);
-    //     } finally {
-    //         this.setState({ isLoading: false });
-    //     }
-    // }
-
-
-
-
-    calcTotalAmount(data) {
-        let temp = 0;
-        data.forEach(element => {
-            temp += (element.quantity * element.price)
-        })
-        return temp;
+    getFinalPriceOfOrder(orderItems) {
+        let finalPriceForOrder = 0;
+        orderItems.forEach(element => {
+            finalPriceForOrder += element.final_price;
+        });
+        return finalPriceForOrder;
     }
-
     renderNoOrders() {
         return (
             <View style={{ flex: 1, justifyContent: "center", alignItems: "center" }}>
@@ -63,54 +38,50 @@ class MyOrdersList extends Component {
         )
     }
 
-
     getMedicineOrderList = async () => {
         try {
+            this.setState({ isLoading: true })
             let userId = await AsyncStorage.getItem('userId');
             let result = await getMedicineOrderList(userId);
-            console.log('this.state.result=========>' + JSON.stringify(result))
-
+            this.setState({ isLoading: false });
             if (result.success) {
-                await this.setState({ data: result.data })
-                console.log('this.state.data=========>' + JSON.stringify(this.state.data))
+                this.setState({ data: result.data })
             }
         } catch (e) {
             console.log(e);
-        } finally {
             this.setState({ isLoading: false });
         }
     }
 
 
     render() {
-        const { data } = this.state;
-        // const List=[{Orderid:'2020735588',content:'Horlicks Health and Nutrician Drink Classic Malt( x 1 ), Fluticasone and salmeterol( x 3 ), LA Shield Sunscreen Gel SPF 40 ( x 1 ).',date:'3rd march, 2020',price:' ₹ 790.00',greendel:'Arrving on Today'}]
-        // const Order=[{Ordersid:'2020735589',content:'Horlicks Health and Nutrician Drink Classic Malt( x 1 ), Fluticasone and salmeterol( x 3 ), LA Shield Sunscreen Gel SPF 40 ( x 1 ).',dates:'4th march, 2020.',price:'₹ 790.00',reddel:'Deliveried on 6th march 2020.'},
-        // {Ordersid:'2020735590',content:'Horlicks Health and Nutrician Drink Classic Malt( x 1 ), Fluticasone and salmeterol( x 3 ), LA Shield Sunscreen Gel SPF 40 ( x 1 ).',dates:'4th march, 2020.',price:'₹ 790.00',reddel:'Deliveried on 6th march 2020.'},
-        // {Ordersid:'2020735591',content:'Horlicks Health and Nutrician Drink Classic Malt( x 1 ), Fluticasone and salmeterol( x 3 ), LA Shield Sunscreen Gel SPF 40 ( x 1 ).',dates:'5th march, 2020.',price:'₹ 790.00',reddel:'Deliveried on 7th march 2020.'},
-        // {Ordersid:'2020735592',content:'Horlicks Health and Nutrician Drink Classic Malt( x 1 ), Fluticasone and salmeterol( x 3 ), LA Shield Sunscreen Gel SPF 40 ( x 1 ).',dates:'5th march, 2020.',price:'₹ 790.00',reddel:'Deliveried on 7th march 2020.'}]
+        const { data , isLoading } = this.state;
+        console.log(isLoading);
         return (
             <Container style={{ backgroundColor: '#E6E6E6' }}>
                 <Content>
+                    <Spinner
+                        visible={isLoading}
+                    />
                     <FlatList data={data}
+                        keyExtractor={(item, index) => index.toString()}
                         renderItem={({ item, key }) =>
-                        <TouchableOpacity testID="orderDetailsNavigation" onPress={() => this.props.navigation.navigate('OrderDetails', { orderDetails: item })}>
-                            <View style={{ margin: 5, backgroundColor: '#fff', marginLeft: 10, marginRight: 10, marginBottom: 10 }}>
-                                <FlatList data={item.order_items}
-                                    extraData={item}
-                                    renderItem={({ item, key }) =>
+                        <TouchableOpacity 
+                                testID="orderDetailsNavigation" 
+                                onPress={() => this.props.navigation.navigate('OrderDetails', { orderDetails: item })}>
+                                    <View style={{ margin: 5, backgroundColor: '#fff', marginLeft: 10, marginRight: 10, marginBottom: 10 }}>
                                         <View>
                                             <Row style={{ marginBottom: -5 }}>
                                                 <Col>
                                                     <Text style={styles.Head}>Order Id</Text>
                                                 </Col>
                                                 <Col>
-                                                    <Text style={{ fontSize: 10, textAlign: 'right', margin: 10, fontFamily: 'OpenSans' }}>{item.Orderid || 'NIL'}</Text>
+                                                    <Text style={{ fontSize: 10, textAlign: 'right', margin: 10, fontFamily: 'OpenSans' }}>{item.order_ref_no || 'NIL'}</Text>
                                                 </Col>
                                             </Row>
                                             <Row style={styles.Row} />
                                             <Row>
-                                                <Text style={{ fontSize: 10, margin: 10, fontFamily: 'OpenSans' }}>{item.medicine_name}</Text>
+                                                <Text style={{ fontSize: 10, margin: 10, fontFamily: 'OpenSans' }}>{item.description}</Text>
                                             </Row>
                                             <Row style={{ marginTop: -10 }}>
                                                 <Text style={styles.Head}>Ordered On</Text>
@@ -125,7 +96,7 @@ class MyOrdersList extends Component {
                                                     </Row>
                                                     <Row style={{ marginBottom: 7.5, marginTop: -10 }}>
                                                         <Col size={5}>
-                                                            <Text style={styles.orderprice}>₹ {item.final_price}</Text>
+                                                            <Text style={styles.orderprice}>₹ {this.getFinalPriceOfOrder(item.order_items || [])}</Text>
                                                         </Col>
                                                     </Row>
                                                 </Col>
@@ -135,7 +106,7 @@ class MyOrdersList extends Component {
                                             </Row>
 
                                         </View>
-                                    } />
+                                  
                                 <Row style={{ marginBottom: -12.5 }}>
                                     <Col size={7}>
                                         {item.status == "PENDING" ?

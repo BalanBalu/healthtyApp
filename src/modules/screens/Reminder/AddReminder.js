@@ -73,14 +73,15 @@ class AddReminder extends Component {
   }
 
   handleTimePicker = async (date) => {
-    alert('time is picked')
-    this.setState({ timePlaceholder: true })
-    this.setState({ isTimePickerVisible: false })
-    let h = new Date(date).getHours();
-    let m = new Date(date).getMinutes();
-    let Time = moment().startOf('day').add(h, 'h').add(m, 'm').toDate();
-    console.log('check time::::::::::' + Time.toString())
-    await this.setState({ medicine_take_times: date });
+   try {
+      this.setState({ timePlaceholder: true, isTimePickerVisible: false  })
+      let h = new Date(date).getHours();
+      let m = new Date(date).getMinutes();
+      let Time = moment().startOf('day').add(h, 'h').add(m, 'm').toDate();
+      await this.setState({ medicine_take_times: date });
+    } catch (error) {
+      console.log(error);
+    }
 
     console.log('medicine_take_times::::::::::::' + this.state.medicine_take_times)
 
@@ -92,15 +93,18 @@ class AddReminder extends Component {
     this.setState({ isOnlyDateTimePickerVisible: false })
   }
   handleOnlyDateTimePicker = (date) => {
-    this.setState({ isOnlyDateTimePickerVisible: false })
-    let h = new Date(date).getHours();
-    let m = new Date(date).getMinutes();
-    let Time = moment().startOf('day').add(h, 'h').add(m, 'm').toDate();
-    // console.log('check time' + Time.toString())
-
-    this.setState({ medicine_take_one_date: date });
-    // console.log('medicine_take_one_date' + this.state.medicine_take_one_date)
-    this.hideOnlyDateTimePicker();
+    try {
+      this.setState({ isOnlyDateTimePickerVisible: false })
+      let h = new Date(date).getHours();
+      let m = new Date(date).getMinutes();
+      let Time = moment().startOf('day').add(h, 'h').add(m, 'm').toDate();
+      this.setState({ medicine_take_one_date: date });
+      // console.log('medicine_take_one_date' + this.state.medicine_take_one_date)
+      this.hideOnlyDateTimePicker();
+        
+    } catch (error) {
+      console.error('Error on Date Picker: ', error);  
+    }
   }
 
 
@@ -165,7 +169,6 @@ class AddReminder extends Component {
 
 
     } else {
-      alert("Duplicate entry");
     }
 
 
@@ -261,7 +264,6 @@ class AddReminder extends Component {
         else {
           data.medicine_take_start_date = moment(this.state.medicine_take_start_date).toISOString()
         }
-        alert(JSON.stringify(data))
         let result = await addReminderdata(userId, data)
         // console.log('result', result)
         if (result.success) {
@@ -273,7 +275,6 @@ class AddReminder extends Component {
           })
         }
         else {
-          alert('else', result.message)
           Toast.show({
             text: result.message,
             type: "danger",
@@ -283,14 +284,12 @@ class AddReminder extends Component {
       }
     }
     catch (e) {
-      alert(e.message)
       console.log(e.message)
     }
   }
 
   medicinePage = () => {
     this.setState({ medicinepage: false })
-    alert(this.state.medicinepage)
   }
 
 
@@ -303,14 +302,17 @@ class AddReminder extends Component {
           <Content style={{ padding: 20 }}>
             <View style={{ marginBottom: 30 }}>
 
-              <View pointerEvents={this.state.medicinepage ? "auto" : "none"} style={this.state.medicinepage == true ? { backgroundColor: '#fff', paddingBottom: 10, paddingLeft: 5, paddingRight: 5, borderRadius: 5 } : { backgroundColor: '#E6E6E6', paddingBottom: 10, paddingLeft: 5, paddingRight: 5, borderRadius: 5, }}>
+              <View pointerEvents={this.state.medicinepage ? "auto" : "none"} style={this.state.medicinepage == true ? 
+                  { backgroundColor: '#fff', paddingBottom: 10, paddingLeft: 5, paddingRight: 5, borderRadius: 5 } 
+                  : 
+                  { backgroundColor: '#E6E6E6', paddingBottom: 10, paddingLeft: 5, paddingRight: 5, borderRadius: 5, }}>
                 <View>
                   <Text style={styles.NumText}>What Medicine would you like to add ?</Text>
                   <Form>
                     <TextInput style={styles.autoField}
-                      placeholder="Medicine name"
-                      onChangeText={(medicine_name) => this.setState({ medicine_name })}
-                      value={this.state.medicine_name}
+                        placeholder="Medicine name"
+                        onChangeText={(medicine_name) => this.setState({ medicine_name })}
+                        value={this.state.medicine_name}
                     />
                   </Form>
                 </View>
@@ -541,7 +543,6 @@ class AddReminder extends Component {
 
                           <DateTimePicker
                             mode={'time'}
-                            minimumDate={new Date()}
                             date={this.state.medicine_take_times}
                             isVisible={this.state.isTimePickerVisible}
                             onConfirm={this.handleTimePicker}

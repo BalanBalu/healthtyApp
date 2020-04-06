@@ -130,7 +130,7 @@ class UploadPrescription extends Component {
                     //     isImageNotLoaded: false
                     // });
                     console.log('this.state.imageSource' + JSON.stringify(this.state.imageSource));
-                    this.props.navigation.navigate('Pharmacy')
+                    this.props.navigation.navigate('Medicines')
                 } else {
                     Toast.show({
                         text: 'Problem Uploading Profile Picture',
