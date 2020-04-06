@@ -6,6 +6,8 @@ import CalendarStrip from 'react-native-calendar-strip';
 import { getReminderData, addReminderdata } from '../../providers/reminder/reminder.action.js';
 import { formatDate } from "../../../setup/helpers";
 import RNCalendarEvents from 'react-native-calendar-events';
+import { NavigationEvents } from 'react-navigation';
+
 
 class Reminder extends Component {
   constructor(props) {
@@ -78,7 +80,18 @@ class Reminder extends Component {
     this.setState({ data: temp })
   }
 
+  backNavigation  = async (navigationData) => {
+    try {
+      if (navigationData.action) {
+        await this.getReminderData();
+      } else {
+        return null
+      }
+    } catch (e) {
+      console.log(e)
+    }
 
+  }
 
 
   render() {
@@ -92,6 +105,8 @@ class Reminder extends Component {
       <Container>
         <Content style={{ backgroundColor: '#F1F1F1' }}>
           <View style={{ paddingBottom: 10, backgroundColor: '#FFF' }}>
+          <NavigationEvents
+                  onWillFocus={payload => { this.backNavigation(payload) }} />
             <CalendarStrip
               calendarAnimation={{ type: 'sequence', duration: 30 }}
               selection={'border'}

@@ -103,6 +103,7 @@ export async function getSuggestionMedicines(keyword, data, isLoading = true) {
     }
   }
 }
+
 export async function getMedicinesSearchList(data, isLoading = true) {
   try {
     let endPoint = '/medicines/search/healthCareProducts';
@@ -247,4 +248,16 @@ export async function getMedicineReviewsCount(medicine_id) {
   }
 }
 
-
+export async function getAllMedicineDataBySuggestion(keyword) {
+  try {
+    let endPoint = '/reminder/medicines/suggestion/' + keyword;
+    let response = await getService(endPoint);
+    let respData = response.data;
+    return respData;
+  } catch (e) {
+    return {
+      message: 'exception' + e,
+      success: false
+    }
+  }
+}
