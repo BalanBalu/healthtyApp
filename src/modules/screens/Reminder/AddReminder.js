@@ -2,7 +2,6 @@ import React, { Component } from 'react';
 import { Container, Content, View, Text, Item, Card, Spinner, Picker, Icon, Radio, Row, Col, Form, Button, Input, Grid, Toast } from 'native-base';
 import { StyleSheet, TextInput, TouchableOpacity, ScrollView, Image, AsyncStorage, } from 'react-native'
 import { FlatList } from 'react-native-gesture-handler';
-import { getMedicinesSearchList } from '../../../modules/providers/pharmacy/pharmacy.action';
 import Autocomplete from '../../../components/Autocomplete'
 import { RadioButton } from 'react-native-paper';
 import DateTimePicker from 'react-native-modal-datetime-picker';
@@ -10,14 +9,8 @@ import { formatDate } from "../../../setup/helpers";
 import moment from 'moment';
 import { addReminderdata } from '../../providers/reminder/reminder.action.js';
 
-
 const medicineFormType = ["Select medicine Form", "Pill", "Solution", "Injection", "Powder", "Drops", "Inhales", "Other",]
 const medicineStrengthType = ["Select medicine strength", "g", "IU", "mcg", "mEg", "mg"]
-
-
-
-
-
 
 class AddReminder extends Component {
   constructor(props) {
@@ -25,7 +18,6 @@ class AddReminder extends Component {
     this.state = {
       data: [],
       medicineName: null,
-      medicinesearcharray: null,
       medicine_take_times: moment().startOf('day').toDate(),
       medicine_take_one_date: moment().startOf('day').toDate(),
       medicine_take_start_date: moment().startOf('day').toDate(),
@@ -38,6 +30,7 @@ class AddReminder extends Component {
       selected3: undefined,
       slots: [],
       errorMsg: '',
+      //takemed: 'yes',
       selectedDate: new Date(),
       minimumDate: new Date(),
       isDateTimePickerVisible: false,
@@ -53,52 +46,23 @@ class AddReminder extends Component {
 
 
     }
-
     this.pastSelectedDate = new Date(),
       this.upcommingSelectedDate = new Date()
     console.log('medicine_take_times' + moment().startOf('day').toDate())
 
   }
-
-
-   componentDidMount() {
-     const { medicineName } = this.state;
-     if(medicineName !== null) {
-    this.SearchKeyWordFunction(medicineName);
-  }
+  //  componentDidMount() {
+  //    const { medicineName } = this.state;
+  //    if(medicineName !== null) {
+  //   this.SearchKeyWordFunction(medicineName);
+  // }
+  // const { navigation } = this.props
+  // setCartItemCountOnNavigation(navigation);
   
-  }
-
-  SearchKeyWordFunction = async (enteredText) => {
-
-    if (enteredText == '') {
-        await this.setState({ medicinesearcharray: null, medicineName: enteredText })
-    } else {
-        await this.setState({ medicineName: enteredText })
-        this.callmedicinesearchService(enteredText);
-    }
-}
-
-callmedicinesearchService = async (enteredText , data) =>{
-
-  let medicineResultData = await getMedicinesSearchList(enteredText, data);
-  if (medicineResultData.success) {
-    this.setState({
-      medicinesearcharray: medicineResultData.data,
-        searchValue: enteredText,
-    });
-} else {
-
-    this.setState({
-      medicinesearcharray: [],
-        searchValue: enteredText
-    });
-}
+  // }
 
 
-}
-
-
+  
 
   onValueChange2(value) {
     this.setState({
@@ -122,6 +86,7 @@ callmedicinesearchService = async (enteredText , data) =>{
   }
 
   handleTimePicker = async (date) => {
+   // alert('time is picked')
     this.setState({ timePlaceholder: true })
     this.setState({ isTimePickerVisible: false })
     let h = new Date(date).getHours();
@@ -224,7 +189,8 @@ callmedicinesearchService = async (enteredText , data) =>{
 
   InsertReminderData = async () => {
     try {
-      if ((this.state.medicine_name == null) || (this.state.selectedMedicineForm == null) || (this.state.selectedMedicineForm == "Select medicine Form") || (this.state.selectMedicineStrength == null) || (this.state.selectMedicineStrength == "Select medicine strength")) {
+      if ((this.state.medicine_name == null) || (this.state.selectedMedicineForm == null) || (this.state.selectedMedicineForm == "Select medicine Form") || (this.state.selectMedicineStrength == null) || (this.state.selectMedicineStrength == "Select medicine strength")) 
+      {
         Toast.show({
           text: 'Kindly fill all the fields to schedule your reminderTime slots',
           type: 'danger',
@@ -265,7 +231,7 @@ callmedicinesearchService = async (enteredText , data) =>{
       console.log(e.message)
     }
   }
-
+  
 
   deleteData(index) {
     // console.log("index" + index)
@@ -334,9 +300,9 @@ callmedicinesearchService = async (enteredText , data) =>{
       alert(e.message)
       console.log(e.message)
     }
-
+    
   }
-
+  
 
   medicinePage = () => {
     this.setState({ medicinepage: false })
@@ -346,23 +312,21 @@ callmedicinesearchService = async (enteredText , data) =>{
 
 
   render() {
-    const { isTimePickerVisible, medicinesearcharray, isDatePickerVisible, isstartDatePickerVisible, isendDatePickerVisible, selectedDate, text, selectedMedicineForm, selectMedicineStrength, slots, isDateTimePickerVisible, isEndDateTimePickerVisible, data } = this.state;
+    const { isTimePickerVisible, isDatePickerVisible, isstartDatePickerVisible, isendDatePickerVisible, selectedDate, text, selectedMedicineForm, selectMedicineStrength, slots, isDateTimePickerVisible, isEndDateTimePickerVisible, data } = this.state;
     return (
       <Container>
         <ScrollView>
           <Content style={{ padding: 20 }}>
             <View style={{ marginBottom: 30 }}>
 
-              <View pointerEvents={this.state.medicinepage ? "auto" : "none"} style={this.state.medicinepage == true ? styles.medicineenabletext : styles.medicinedisabletext}>
+              <View pointerEvents={this.state.medicinepage ? "auto" : "none"} style={this.state.medicinepage == true ? styles.medicineenabletext : styles.medicinedisabletext }>
                 <View>
                   <Text style={styles.NumText}>What Medicine would you like to add ?</Text>
                   <Form>
                     <TextInput style={styles.autoField}
                       placeholder="Medicine name"
-                     // value={this.state.medicinename}
-                      onChangeText={enteredText => this.SearchKeyWordFunction(enteredText)}
-                     value={this.state.medicine_name}
-                     multiline={false}
+                      onChangeText={(medicine_name) => this.setState({ medicine_name })}
+                      value={this.state.medicine_name}
                     />
                   </Form>
                 </View>
@@ -436,7 +400,7 @@ callmedicinesearchService = async (enteredText , data) =>{
 
 
 
-              <View pointerEvents={this.state.medicinepage == false ? "auto" : "none"} style={this.state.medicinepage == true ? styles.datetimedisabletext : styles.datetimeenabletext}>
+              <View pointerEvents={this.state.medicinepage == false ? "auto" : "none"} style={this.state.medicinepage == true ? styles.datetimedisabletext : styles.datetimeenabletext }>
                 <View >
                   <Text style={styles.NumText}>How often would you take this Medicine</Text>
                   <Item style={{ marginTop: 10, borderBottomWidth: 0, }}>
@@ -467,7 +431,7 @@ callmedicinesearchService = async (enteredText , data) =>{
                 {this.state.medicinePeriod == "everyday" ?
                   <View>
                     <Form style={{ marginTop: 5 }}>
-                      <Row style={{ marginRight: 12.5 }}>
+                      <Row style={{marginRight:12.5}}> 
                         <Col size={3}>
                           <Text style={styles.NumText}>Select Date</Text>
                         </Col>
@@ -497,7 +461,7 @@ callmedicinesearchService = async (enteredText , data) =>{
                                 </View>
                               </Col>
                               <Col size={3.5} style={{ mariginTop: 10, marginLeft: -10 }}>
-                                <View style={{ marginTop: 5 }}>
+                                <View style={{ marginTop: 5}}>
                                   <TouchableOpacity onPress={() => { this.setState({ isEndDateTimePickerVisible: !this.state.isEndDateTimePickerVisible }) }} style={{ marginLeft: 10, width: 110, backgroundColor: '#f1f1f1', flexDirection: 'row' }}>
                                     <Icon name='md-calendar' style={styles.calendarstyle} />
                                     {this.state.endDatePlaceholder ?
@@ -580,7 +544,7 @@ callmedicinesearchService = async (enteredText , data) =>{
                     <Col size={4} style={{ mariginTop: 5 }}>
                       <Text style={styles.NumText}>Choose your time</Text>
                     </Col>
-                    <Col size={3.5} style={{ mariginTop: 5 }}>
+                    <Col size={3.5} style={{ mariginTop: 5}}>
                       <View style={{ alignItems: 'flex-start', marginTop: 5, padding: 1 }}>
                         <TouchableOpacity onPress={() => { this.setState({ isTimePickerVisible: !this.state.isTimePickerVisible }) }} style={styles.toucableOpacity}>
                           <Icon name='ios-clock' style={styles.tocuhIcon} />
@@ -606,9 +570,9 @@ callmedicinesearchService = async (enteredText , data) =>{
                     </Col>
                     <Col size={2.5} style={{ mariginTop: 10 }}>
                       <Button style={styles.RemainderButton} onPress={this.InsertReminderData}>
-
+                        
                         <Text style={styles.RemainderButtonText}>Add</Text>
-                      </Button>
+                        </Button>
                     </Col>
                   </Row>
                   {/* <Row>
@@ -780,12 +744,12 @@ const styles = StyleSheet.create({
     color: '#fff'
   },
   startenddatetext: {
-    marginTop: 7,
-    marginBottom: 7,
+    marginTop: 7, 
+    marginBottom: 7, 
     fontFamily: 'OpenSans',
-    fontSize: 13,
-    textAlign: 'center',
-    marginLeft: 5
+     fontSize: 13, 
+     textAlign: 'center',
+      marginLeft: 5
   },
   NumText: {
     fontFamily: 'OpenSans',
@@ -799,50 +763,50 @@ const styles = StyleSheet.create({
     borderRadius: 5,
     marginTop: 5
   },
-  medicineenabletext: {
-    backgroundColor: '#fff',
-    paddingBottom: 10,
-    paddingLeft: 5,
-    paddingRight: 5,
-    borderRadius: 5
-  },
-  medicinedisabletext: {
-    backgroundColor: '#E6E6E6',
-    paddingBottom: 10,
-    paddingLeft: 5,
-    paddingRight: 5,
-    borderRadius: 5
-  },
-  datetimedisabletext: {
-    marginTop: 5,
-    backgroundColor: '#E6E6E6',
-    paddingLeft: 5,
-    borderRadius: 5
-  },
-  datetimeenabletext: {
-    marginTop: 5,
-    backgroundColor: '#fff',
-    paddingLeft: 5,
-    borderRadius: 5
-  },
-  calendarstyle: {
-    padding: 4,
-    fontSize: 20,
-    color: '#1296db',
-    marginTop: 1
-  },
-  formstrengthtext: {
-    marginLeft: 10,
-    fontSize: 10,
-    marginTop: 5,
-    color: '#6f6f6f'
-  },
-  datetext: {
-    fontSize: 10,
-    marginTop: 5,
-    color: '#6f6f6f',
-    marginLeft: -35
-  }
+medicineenabletext: {
+  backgroundColor: '#fff', 
+  paddingBottom: 10, 
+  paddingLeft: 5, 
+  paddingRight: 5, 
+  borderRadius: 5
+} , 
+medicinedisabletext: {
+  backgroundColor: '#E6E6E6', 
+  paddingBottom: 10, 
+  paddingLeft: 5, 
+  paddingRight: 5, 
+  borderRadius: 5
+},
+datetimedisabletext: {
+  marginTop:5, 
+  backgroundColor : '#E6E6E6', 
+  paddingLeft: 5, 
+  borderRadius: 5
+},
+datetimeenabletext: {
+  marginTop:5, 
+  backgroundColor : '#fff', 
+  paddingLeft: 5, 
+  borderRadius: 5
+},
+calendarstyle:{ 
+  padding: 4, 
+  fontSize: 20, 
+  color: '#1296db', 
+  marginTop: 1 
+},
+formstrengthtext:{
+  marginLeft: 10, 
+  fontSize: 10, 
+  marginTop: 5, 
+  color: '#6f6f6f'
+},
+datetext:{ 
+  fontSize: 10, 
+  marginTop: 5, 
+  color: '#6f6f6f', 
+  marginLeft: -35 
+}
 })
 
 
