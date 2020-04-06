@@ -129,7 +129,6 @@ console.log('manni'+ getAllMedicineDataBySuggestion)
   }
 
   handleTimePicker = async (date) => {
-    // alert('time is picked')
     this.setState({ timePlaceholder: true })
     this.setState({ isTimePickerVisible: false })
     let h = new Date(date).getHours();
@@ -232,7 +231,7 @@ console.log('manni'+ getAllMedicineDataBySuggestion)
 
   InsertReminderData = async () => {
     try {
-      if ((this.state.medicinename == null) || (this.state.selectedMedicineForm == null) || (this.state.selectedMedicineForm == "Select medicine Form") || (this.state.selectMedicineStrength == null) || (this.state.selectMedicineStrength == "Select medicine strength")) {
+      if ((this.state.medicine_name == null) || (this.state.selectedMedicineForm == null) || (this.state.selectedMedicineForm == "Select medicine Form") || (this.state.selectMedicineStrength == null) || (this.state.selectMedicineStrength == "Select medicine strength")) {
         Toast.show({
           text: 'Kindly fill all the fields to schedule your reminderTime slots',
           type: 'danger',
@@ -241,7 +240,7 @@ console.log('manni'+ getAllMedicineDataBySuggestion)
       } else {
         let userId = await AsyncStorage.getItem('userId');
         let priviewData = {
-          medicine_name: this.state.medicinename,
+          medicine_name: this.state.medicine_name,
           medicine_form: this.state.selectedMedicineForm,
           medicine_strength: this.state.selectMedicineStrength,
           medicine_take_times: this.state.medicine_take_times,
@@ -289,7 +288,7 @@ console.log('manni'+ getAllMedicineDataBySuggestion)
   AddReminderDatas = async () => {
     try {
 
-      if ((this.state.medicinename == null) || (this.state.selectedMedicineForm == null) || (this.state.selectedMedicineForm == "Select medicine Form") || (this.state.selectMedicineStrength == null) || (this.state.selectMedicineStrength == "Select medicine strength")) {
+      if ((this.state.medicine_name == null) || (this.state.selectedMedicineForm == null) || (this.state.selectedMedicineForm == "Select medicine Form") || (this.state.selectMedicineStrength == null) || (this.state.selectMedicineStrength == "Select medicine strength")) {
         Toast.show({
           text: 'Kindly fill all the fields to schedule your reminderTime slots',
           type: 'danger',
@@ -299,7 +298,7 @@ console.log('manni'+ getAllMedicineDataBySuggestion)
         let userId = await AsyncStorage.getItem('userId');
 
         let data = {
-          medicine_name: this.state.medicinename,
+          medicine_name: this.state.medicine_name,
           medicine_form: this.state.selectedMedicineForm,
           medicine_strength: this.state.selectMedicineStrength,
           medicine_take_times: this.state.arrayTakenTime,
@@ -368,8 +367,8 @@ console.log('manni'+ getAllMedicineDataBySuggestion)
                     <TextInput style={styles.autoField}
                       placeholder="Medicine name"
                       //onChangeText={medicinename => this.SearchKeyWordFunction(medicinename)}
-                     onChangeText={(medicinename) => this.setState({ medicinename })}
-                      value={this.state.medicinename}
+                     onChangeText={(medicine_name) => this.setState({ medicine_name })}
+                      value={this.state.medicine_name}
                     />
                   </Form>
                 </View>
