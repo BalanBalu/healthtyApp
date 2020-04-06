@@ -23,31 +23,41 @@ export function medicineRateAfterOffer(item) {
 }
 
 
-export async function ProductIncrementDecreMent(quantity, price, operation) {
+export async function ProductIncrementDecreMent(quantity, price, operation, threshold_limits) {
 
-  let itemQuantity, totalAmount = price;
+  let itemQuantity = (quantity === undefined ? 0 : quantity);
+  let totalAmount = price;
+  let threshold_message = null;
+  let threshold_limit = threshold_limits || itemQuantity + 1
   if (operation === "add") {
-    itemQuantity = (quantity === undefined ? 0 : quantity);
-    quantity = ++itemQuantity;
-    totalAmount = quantity * price
+
+    if (itemQuantity < threshold_limit) {
+      quantity = ++itemQuantity;
+      totalAmount = quantity * price
+    } else {
+
+      threshold_message = 'you will not add more than' + threshold_limit
+
+    }
 
   } else {
     if (quantity > 1) {
-      itemQuantity = quantity;
       quantity = --itemQuantity;
       totalAmount = quantity * price
     }
   }
   if (Number.isInteger(totalAmount) === false) {
     let temp = Number(totalAmount).toFixed(2)
-   return{
-    quantity: quantity,
-    totalAmount: Number(temp)
-   } 
+    return {
+      quantity: quantity,
+      totalAmount: Number(temp),
+      threshold_message: threshold_message
+    }
   }
   return {
     quantity: quantity,
-    totalAmount: Number(totalAmount)
+    totalAmount: Number(totalAmount),
+    threshold_message: threshold_message
   }
 }
 

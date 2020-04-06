@@ -236,8 +236,8 @@ class MedicineSearchList extends Component {
                                                             <Row>
                                                                 <Col size={5} style={{ flexDirection: 'row' }}>
                                                                     <Text style={{ fontSize: 8, marginBottom: -15, marginTop: -5, marginLeft: -3, color: "#ff4e42" }}>{'MRP'}</Text>
-                                                                    <Text style={{ fontSize: 8, marginLeft: 1.5, marginTop: -5, color: "#ff4e42", textDecorationLine: 'line-through', textDecorationStyle: 'solid' }}>{item.medPharDetailInfo.price || ''}</Text>
-                                                                    <Text style={{ fontSize: 13, marginTop: -10, marginLeft: 2.5, color: "#8dc63f" }}>{medicineRateAfterOffer(item.medPharDetailInfo)}</Text>
+                                                                    <Text style={{ fontSize: 8, marginLeft: 1.5, marginTop: -5, color: "#ff4e42", textDecorationLine: 'line-through', textDecorationStyle: 'solid' }}>{item.medPharDetailInfo.variations[0].price || ''}</Text>
+                                                                    <Text style={{ fontSize: 13, marginTop: -10, marginLeft: 2.5, color: "#8dc63f" }}>{medicineRateAfterOffer(item.medPharDetailInfo.variations[0])}</Text>
                                                                 </Col>
                                                                 {cartItems.length == 0 || cartItems.findIndex(ele => ele.medicine_id == item.medPharDetailInfo.medicine_id && ele.pharmacy_id == item.medPharDetailInfo.pharmacy_id) === -1 ?
                                                                     <Col size={3} style={{ height: 20, marginLeft: 4 }}>

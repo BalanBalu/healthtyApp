@@ -17,20 +17,22 @@ export class AddToCard extends Component {
         this.state = {
             data: {},
             userAddedMedicineQuantity: 0,
-            userAddedTotalMedicineAmount:0,
-            cartItems: []
+            userAddedTotalMedicineAmount: 0,
+            cartItems: [],
+            threshold_message: null
         }
     }
 
     async componentDidMount() {
         let data = {
             ...this.props.data,
-            offeredAmount: medicineRateAfterOffer(this.props.data),
+            offeredAmount: medicineRateAfterOffer(this.props.data.variations[0]),
         }
+        alert(JSON.stringify(data))
         if (data.userAddedMedicineQuantity) {
             userAddedMedicineQuantity = data.userAddedMedicineQuantity
-            userAddedTotalMedicineAmount=userAddedMedicineQuantity*data.offeredAmount
-            this.setState({ userAddedMedicineQuantity,userAddedTotalMedicineAmount })
+            userAddedTotalMedicineAmount = userAddedMedicineQuantity * data.offeredAmount
+            this.setState({ userAddedMedicineQuantity, userAddedTotalMedicineAmount })
         } else {
 
             this.productQuantityOperator(data, 'add')
@@ -39,10 +41,11 @@ export class AddToCard extends Component {
 
     }
     async productQuantityOperator(item, operator) {
-        let result = await ProductIncrementDecreMent(this.state.userAddedMedicineQuantity, item.offeredAmount, operator)
+        let result = await ProductIncrementDecreMent(this.state.userAddedMedicineQuantity, item.offeredAmount, operator, item.threshold_limit)
         userAddedTotalMedicineAmount = result.totalAmount || 0,
             userAddedMedicineQuantity = result.quantity || 0
-        this.setState({ userAddedTotalMedicineAmount, userAddedMedicineQuantity })
+        threshold_message = result.threshold_message || null;
+        this.setState({ userAddedTotalMedicineAmount, userAddedMedicineQuantity, threshold_message })
     }
     async cancelCard() {
         this.props.popupVisible({
@@ -136,6 +139,8 @@ export class AddToCard extends Component {
 
                                     <Text style={{ fontFamily: 'OpenSans', fontSize: 16, marginTop: 5 }}>{data.medicine_name}</Text>
                                     <Text style={{ color: '#7d7d7d', fontFamily: 'OpenSans', fontSize: 12.5, marginBottom: 20 }}>{'By ' + data.pharmacy_name || 'nill'}</Text>
+                                    {this.state.threshold_message !== null ?
+                            <Text style={{fontSize:8,color: "#ff4e42"}}>{this.state.threshold_message}</Text> : null}
                                 </Col>
                                 <Col size={3} style={{ marginLeft: 2.5, marginRight: 5, justifyContent: 'flex-end', alignItems: 'flex-end', marginRight: 10 }}>
                                     <Row>
@@ -159,6 +164,7 @@ export class AddToCard extends Component {
                                 </Col>
                             </Row>
                         </View>
+        
                         <Row style={{ marginLeft: 20, marginTop: 10, marginRight: 15, marginBottom: 10 }}>
 
                             <Col style={{ width: '60%' }}>
