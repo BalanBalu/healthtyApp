@@ -145,6 +145,7 @@ class MedicineSearchList extends Component {
                     medicineDetails: temp
                 })
             } else if (val.isNavigateCart) {
+                setCartItemCountOnNavigation(this.props.navigation);
                 Toast.show({
                     text: 'Item added to card',
                     duration: 3000,
