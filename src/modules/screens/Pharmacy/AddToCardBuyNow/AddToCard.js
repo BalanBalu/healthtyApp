@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 
-import { StyleSheet, Image, Dimensions, AsyncStorage, Modal, TouchableOpacity, TextInput } from 'react-native';
+import { StyleSheet, Image, Dimensions, AsyncStorage, Modal, TouchableOpacity, TextInput,Picker } from 'react-native';
 
 import {
     Container, Header, Title, Left, Right, Body, Button, Card, Toast, CardItem, Row, Grid, View, Col,
@@ -92,7 +92,11 @@ export class AddToCard extends Component {
             })
         }
     }
-
+    onValueChange2(value) {
+        this.setState({
+            selected2: value
+        });
+    }
     render() {
         const { data } = this.state;
         return (
@@ -130,10 +134,34 @@ export class AddToCard extends Component {
                                 <Col size={1} style={{ marginLeft: 5 }}>
                                     <Image source={require('../../../../../assets/images/paracetamol.jpg')} style={{ height: 80, width: 70, marginLeft: 5, marginTop: 2.5 }} />
                                 </Col>
-                                <Col size={6} style={{ marginLeft: 70 }}>
+                                <Col size={6} style={{ marginLeft: 70 ,marginTop:-5}}>
 
                                     <Text style={{ fontFamily: 'OpenSans', fontSize: 16, marginTop: 5 }}>{data.medicine_name}</Text>
                                     <Text style={{ color: '#7d7d7d', fontFamily: 'OpenSans', fontSize: 12.5, marginBottom: 20 }}>{'By ' + data.pharmacy_name || 'nill'}</Text>
+
+                                    <Row style={{marginTop:-15}}>
+                                        
+                                        <Col size={4} style={{ height: 20, justifyContent: 'center', backgroundColor: '#fff', borderRadius: 1, borderColor: '#000', borderWidth: 0.5,backgroundColor:'#E6E6E6',}}>
+                                <Picker
+                                    mode="dropdown"
+                                    style={{ width: undefined ,fontSize:10}}
+                                    textStyle={{fontSize: 12}}
+                                    placeholder="Select your SIM"
+                                    placeholderStyle={{ color: "#bfc6ea" }}
+                                    placeholderIconColor="#007aff"
+                                    selectedValue={this.state.selected2}
+                                    onValueChange={this.onValueChange2.bind(this)}
+                                >
+                                    <Picker.Item label="1 MG" value="key0" />
+                                    <Picker.Item label="2 MG" value="key1" />
+                                    <Picker.Item label="3 MG" value="key2" />
+                                    <Picker.Item label="4 MG" value="key3" />
+                                </Picker>
+                            </Col>
+                            <Col size={1.5}></Col>
+                                
+                            </Row>
+
                                 </Col>
                                 <Col size={3} style={{ marginLeft: 2.5, marginRight: 5, justifyContent: 'flex-end', alignItems: 'flex-end', marginRight: 10 }}>
                                     <Row>
