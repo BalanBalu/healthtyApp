@@ -11,7 +11,7 @@ import { MAP_BOX_PUBLIC_TOKEN, IS_ANDROID, MAX_DISTANCE_TO_COVER, CURRENT_PRODUC
 import MapboxGL from '@react-native-mapbox-gl/maps';
 import { NavigationEvents } from 'react-navigation'
 import { store } from '../../../setup/store';
-import { getAllChats, SET_LAST_MESSAGES_DATA } from '../../providers/chat/chat.action'
+import { getAllChats, SET_LAST_MESSAGES_DATA, SET_VIDEO_SESSION } from '../../providers/chat/chat.action'
 import CurrentLocation from './CurrentLocation';
 const bloodImg = require('../../../../assets/images/blood.jpeg');
 const chatImg = require('../../../../assets/images/Chat.jpg');
@@ -19,7 +19,9 @@ const pharmacyImg = require('../../../../assets/images/pharmacy.jpg');
 import OfflineNotice from '../../../components/offlineNotice';
 import { toDataUrl } from '../../../setup/helpers';
 import { fetchUserMarkedAsReadedNotification } from '../../providers/notification/notification.actions';
-
+import ConnectyCube from 'react-native-connectycube';
+import { CallService } from '../VideoConsulation/services';
+// import VideoScreen from '../VideoConsulation/components/VideoScreen/index';
 MapboxGL.setAccessToken(MAP_BOX_PUBLIC_TOKEN);
 
 const debounce = (fun, delay) => {
@@ -34,6 +36,7 @@ const debounce = (fun, delay) => {
 }
 
 class Home extends Component {
+    
     locationUpdatedCount = 0;
     constructor(props) {
         super(props)
@@ -47,6 +50,7 @@ class Home extends Component {
             categryCount: 0
         };
         this.callSuggestionService = debounce(this.callSuggestionService, 500);
+        this._setUpListeners();
 
     }
 
@@ -67,7 +71,7 @@ class Home extends Component {
     }
 
     checkForUserProfile(res) {
-
+        
         if (res.hasOtpNotVerified === true) {
             this.props.navigation.navigate('renderOtpInput', { loginData: { userEntry: res.mobile_no || res.email }, navigateBackToHome: true });
         }
@@ -106,8 +110,8 @@ class Home extends Component {
     otpAndBasicDetailsCompletion = async () => {
         try {
             let userId = await AsyncStorage.getItem("userId");
-            res = await getReferalPoints(userId);
             if (userId) {
+                res = await getReferalPoints(userId);
                 if (res.updateMobileNo === true) {
                     this.props.navigation.navigate('UpdateContact', { updatedata: {} });
                     Toast.show({
@@ -165,6 +169,7 @@ class Home extends Component {
                 });
                 this.getAllChatsByUserId(userId);
                 this.getMarkedAsReadedNotification(userId)
+                
             }
         }
         catch (ex) {
@@ -346,6 +351,43 @@ class Home extends Component {
             console.log(e)
         }
     }
+
+/*      
+    Video Calling Service             
+*/
+    _setUpListeners() {
+       ConnectyCube.videochat.onCallListener = this._onCallListener;
+       // ConnectyCube.videochat.onAcceptCallListener = this._onAcceptCallListener;
+       // ConnectyCube.videochat.onRejectCallListener = this._onRejectCallListener;
+        // ConnectyCube.videochat.onStopCallListener = this._onStopCallListener;
+        // ConnectyCube.videochat.onUserNotAnswerListener = this._onUserNotAnswerListener;
+        ConnectyCube.videochat.onRemoteStreamListener = this._onRemoteStreamListener;
+      }
+      _onCallListener = (session, extension) => {
+       
+        CallService.processOnCallListener(session)
+          .then(() => this.showInomingCallModal(session, extension))
+          .catch(this.hideInomingCallModal);
+      };
+      _onRemoteStreamListener = async (session, userId, stream) => {
+            console.log('Stream Sathish', stream);
+            console.log(userId);
+           await store.dispatch({
+                type: SET_VIDEO_SESSION,
+                data: {
+                 userId: userId, 
+                 stream: stream  
+                }
+            })
+      };
+      
+      showInomingCallModal = (session, extension) => {
+            CallService.setSession(session);
+            CallService.setExtention(extension)
+            this.props.navigation.navigate('VideoScreen', { isIncomingCall: true })
+      };
+     
+
     render() {
         const { fromAppointment } = this.state;
         const { bookappointment: { patientSearchLocationName, locationCordinates, isSearchByCurrentLocation, locationUpdatedCount }, navigation } = this.props;
