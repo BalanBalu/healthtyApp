@@ -1,9 +1,10 @@
 // App Imports
-import { SET_LAST_MESSAGES_DATA } from './chat.action'
+import { SET_LAST_MESSAGES_DATA, SET_VIDEO_SESSION } from './chat.action'
 
 // Initial State
 export const commonInitialState = {
-    myChatList: []
+    myChatList: [],
+    session: null
 }
 
 // State
@@ -15,6 +16,12 @@ export default (state = commonInitialState, action) => {
         myChatList: sortChatListByUpdatedDate(action.data)
     
       }
+    case SET_VIDEO_SESSION:
+      console.log('Hey it is Updating Year', action.data);
+      return {
+        session: action.data
+      }
+      break;
     default:
       return state
   }

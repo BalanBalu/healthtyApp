@@ -143,7 +143,9 @@ getAllChatsByUserId = async(userId) => {
         }>
      <Row style={styles.rowStyle}>
                 <Col style={{width:'15%'}}>
+                <TouchableOpacity onPress={() => this.props.navigation.navigate("ImageView", { passImage: item.profileImage, title: 'Profile photo' })}>
                     <Thumbnail circle source={item.profileImage}/>
+                    </TouchableOpacity>
                     <View style={styles.circle} />
                 </Col>
                 <Col style={{width:'85%',marginTop:5,marginLeft:15}}>

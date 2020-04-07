@@ -304,7 +304,9 @@ class AppointmentDetails extends Component {
                       : null}
                     <Row>
                       <Col style={{ width: '25%', }}>
+                      <TouchableOpacity onPress={() => this.props.navigation.navigate("ImageView", { passImage: renderDoctorImage(doctorData), title: 'Profile photo' })}>
                         <Thumbnail circular source={renderDoctorImage(doctorData)} style={{ height: 60, width: 60 }} />
+                        </TouchableOpacity>
                       </Col>
                       <Col style={{ width: '80%', marginTop: 10 }}>
                         <Row>

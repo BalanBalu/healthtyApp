@@ -69,9 +69,13 @@ import ReportIssue from '../../modules/screens/ReportIssue';
 import ReportDetails from '../../modules/screens/ReportIssue/reportIssueDetails'
 import EarnReward from '../../modules/screens/Home/EarnReward';
 import CoronaDisease from '../../modules/screens/CoronaDisease/CoronaDisease';
-
 import MedicineSuggestionList from '../../modules/screens/Pharmacy/MedicineSuggestionList/pharmacySuggestionList';
+import ImageView from '../../modules/shared/ImageView'
 import PharmacyList from '../../modules/screens/Pharmacy/PharmacyList/pharmacyList';
+import AuthScreen from '../../modules/screens/VideoConsulation/components/AuthScreen';
+ import VideoScreen from '../../modules/screens/VideoConsulation/components/VideoScreen';
+import AvailableDoctors4Video from '../../modules/screens/VideoConsulation/components/AvailableDoctors';
+import VideoConsultaions from '../../modules/screens/VideoConsulation/components/MyConsultations';
 
 const AuthRoutes = {
   login: {
@@ -357,6 +361,13 @@ const HomeStack = createStackNavigator({
       headerLeft: null,
       title: 'Success'
     }
+  },
+  // ============Zoom image ========================
+  ImageView: {
+    screen: ImageView,
+    navigationOptions: ({ navigation }) => ({
+      title: navigation.getParam("title"),
+    }),
   },
   // ============Chat ========================
   Chat: {
@@ -657,6 +668,7 @@ const HomeStack = createStackNavigator({
       title: 'Medicine Reviews'
     }
   },
+  
 
   'CORONO Status': {
     screen: CoronaDisease,
@@ -664,6 +676,34 @@ const HomeStack = createStackNavigator({
       title: 'CORONO Status'
     }
   },
+  /* Video Consultation */
+  'AuthScreen': {
+    screen: AuthScreen,
+    navigationOptions: {
+      title: 'Video Auth'
+    }
+  },
+  VideoScreen: {
+    screen: VideoScreen,
+    navigationOptions: {
+      title: 'Video Calling',
+      headerLeft: null,
+      gesturesEnabled: false
+    }
+  },
+  'Video Consulting Service': {
+    screen: AvailableDoctors4Video,
+    navigationOptions: {
+      title: 'Video Consulting Serivce'
+    }
+  },
+  'My Video Consultaions': {
+    screen: VideoConsultaions,
+    navigationOptions: {
+      title: 'My Video Consultaions'
+    }
+  },
+
   // ============== Reminder =================
 
   Reminder: {
@@ -710,24 +750,34 @@ const DrawerNavigator = createDrawerNavigator({
   "My Appointments": {
     screen: MyAppoinmentList
   },
+  "My Chats": {
+    screen: MyChats
+  },
+  "Chat Service": {
+    screen: AvailableDoctors4Chat
+  },
+  'Video Consulting Service' : {
+    screen: AvailableDoctors4Video
+  },
+  'My Video Consultaions': {
+    screen: VideoConsultaions
+  },
   Medicines: {
     screen: PharmacyHome,
   },
   "Medicine Orders": {
     screen: MyOrdersList
   },
-  "Chat Service": {
-    screen: AvailableDoctors4Chat
-  },
-  "My Chats": {
-    screen: MyChats
-  },
+ 
+  
   Reminder: {
     screen: Reminder
   },
   'CORONO Status': {
     screen: CoronaDisease
-  }
+  },
+  
+
 },
   {
     overlayColor: 'rgba(0, 0, 0, 0.7)',
@@ -748,6 +798,8 @@ export const DragwerLogos = {
   "Chat Service": require('../../../assets/images/drawerIcons/Chat.png'),
   "Blood Donors": require('../../../assets/images/drawerIcons/Blooddonars.png'),
   'CORONO Status': require('../../../assets/images/drawerIcons/Pharmacy.png'),
+  'My Video Consultaions': require('../../../assets/images/drawerIcons/Appointments.png'),
+  'Video Consulting Service': require('../../../assets/images/drawerIcons/Appointments.png'),
 }
 export default createAppContainer(createSwitchNavigator(
   {
