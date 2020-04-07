@@ -788,7 +788,7 @@ export const DragwerLogos = {
   "Chat Service": require('../../../assets/images/drawerIcons/Chat.png'),
   "Blood Donors": require('../../../assets/images/drawerIcons/Blooddonars.png'),
   'CORONO Status': require('../../../assets/images/drawerIcons/Pharmacy.png'),
-  'My Video Consultaions': require('../../../assets/images/drawerIcons/Appointments.png'),
+  'My Video Consultations': require('../../../assets/images/drawerIcons/Appointments.png'),
   'Video Consulting Service': require('../../../assets/images/drawerIcons/Appointments.png'),
 }
 export default createAppContainer(createSwitchNavigator(
@@ -800,6 +800,5 @@ export default createAppContainer(createSwitchNavigator(
   {
     initialRouteName: 'AuthLoading',
     headerMode: 'none'
-
   }
 ));

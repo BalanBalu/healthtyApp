@@ -191,36 +191,32 @@ async componentDidMount() {
                 data={availableChatDoctors}
                 renderItem={({item}) =>
                  <Row style={styles.RowStyle}>
-                   <Col style={{width:'15%'}}>
+                   <Col size={2}>
                        <Thumbnail source={renderDoctorImage(item)} 
                             style={{width:50,height:50,position:'relative',borderRadius:50/2}}
                         />
                        <View style={styles.circle} />
                     </Col>
                    
-                    <Col style={{width:'85%'}}>
-                      <Row>
-                         <Col style={{width:'75%'}}>
+                    <Col size={5}>
+                     
                             <Text style={styles.docname}>{item.prefix || ''} {item.first_name || ''} {item.last_name || ''}</Text>
-                        </Col>
-                        <Col style={{alignItems:'center', width: '25%'}}>
-                                <Text style={styles.msgStyle}>{'\u20B9'}{this.getVideoConsultFee(item)}</Text>
-                        </Col>
-                      </Row>
-                      <Row>
-                        <Col style={{width:'60%'}}>
                             <Text style={styles.docname}>{ 'Specialist in '} 
                                 <Text note style={styles.status}>{ this.getDoctorCategory(item) }</Text>
                             </Text>
-                        </Col>
-                        <Col style={{ alignItems: 'center', width:'40%'}}>
-                                <TouchableOpacity onPress={() => this.onBookButtonPress4Payment(item.doctor_id, this.getVideoConsultFee(item))} 
-                                    style={{ textAlign: 'center', backgroundColor: 'green', borderColor: '#000', marginTop: 10, borderRadius: 20, height: 25, justifyContent: 'center' }}>
+                    </Col>
+                        <Col size={3} style={{alignItems:'center',justifyContent:'center'}}>
+                       
+                                <Text style={styles.msgStyle}>{'\u20B9'}{this.getVideoConsultFee(item)}</Text>
+                   
+                        <TouchableOpacity onPress={() => this.onBookButtonPress4Payment(item.doctor_id, this.getVideoConsultFee(item))} 
+                                    style={{ textAlign: 'center', backgroundColor: 'green', borderColor: '#000', marginTop: 10, borderRadius: 20, justifyContent: 'center',height:32 }}>
                                     <Text style={{ textAlign: 'center', color: '#fff', fontSize: 12,padding: 5, fontWeight: 'bold', fontFamily: 'OpenSans' }}>Video Consultation</Text>
                                 </TouchableOpacity>
+                               
                             </Col>
-                      </Row>
-                    </Col>
+                            
+                  
                 </Row>
               }
               keyExtractor={(item, index) => index.toString()}/>
@@ -270,7 +266,7 @@ const styles = StyleSheet.create({
         fontFamily:'OpenSans',
         fontSize:14,
         color:'blue',
-        marginLeft: -50
+        textAlign:'center'
 
     },
     circle: {
