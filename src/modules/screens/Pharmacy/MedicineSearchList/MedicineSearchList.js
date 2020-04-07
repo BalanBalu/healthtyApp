@@ -10,6 +10,7 @@ import { getMedicinesSearchList, getMedicinesSearchListByPharmacyId } from '../.
 import { medicineRateAfterOffer, setCartItemCountOnNavigation } from '../CommomPharmacy'
 import { AddToCard } from '../AddToCardBuyNow/AddToCard'
 import { connect } from 'react-redux'
+import{renderMedicineImage} from '../CommomPharmacy'
 import { MAX_DISTANCE_TO_COVER } from '../../../../setup/config';
 class MedicineSearchList extends Component {
     constructor(props) {
@@ -224,8 +225,14 @@ class MedicineSearchList extends Component {
                                                             medicineData: item
                                                         })
                                                     }>
+                                                        
                                                         <Col size={4}>
-                                                            <Image source={require('../../../../../assets/images/paracetamol.jpg')} style={{ height: 80, width: 70, marginLeft: 5, marginTop: 2.5 }} />
+                                                        <TouchableOpacity onPress={() => this.props.navigation.navigate("ImageView",{passImage:renderMedicineImage(item.medInfo),title:item.medInfo.medicine_name},)}>
+
+                                                            <Image source={renderMedicineImage(item.medInfo)}
+                                                            
+                                                            style={{ height: 80, width: 70, marginLeft: 5, marginTop: 2.5 }} />
+                                                            </TouchableOpacity>
                                                         </Col>
                                                         <Col size={12.5}>
                                                             <Text style={{ fontFamily: 'OpenSans', fontSize: 16, marginTop: 5 }}>{item.medInfo.medicine_name}</Text>

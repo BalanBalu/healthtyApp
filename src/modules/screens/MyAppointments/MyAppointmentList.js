@@ -380,11 +380,13 @@ return (
 												  : null }  
 													<Row>
 														<Col size={2}>
+														<TouchableOpacity onPress={() => this.props.navigation.navigate("ImageView", { passImage: renderDoctorImage(item), title: 'Profile photo' })}>
 														<Thumbnail
 															circular
 															source={renderDoctorImage(item)}
 															style={{ height: 60, width: 60 }}
 														/>
+														</TouchableOpacity>
 													</Col>
 													<Col size={8}>
 

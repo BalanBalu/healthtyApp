@@ -14,6 +14,7 @@ import { getReferalPoints } from '../../providers/profile/profile.action';
 import { TouchableOpacity } from 'react-native-gesture-handler';
 import Spinner from '../../../components/Spinner';
 import { connect } from 'react-redux';
+import { AuthService } from '../VideoConsulation/services';
 class PaymentPage extends Component {
     availableNetBankingData = [];
     availableWallets = [];
@@ -241,9 +242,11 @@ class PaymentPage extends Component {
             // handle success
             console.log(data);
             this.updatePaymentDetails(true, data, 'online', finalAmountToPayByOnline);
+            
             if (this.state.saveCardCheckbox) {
                 this.storeCardData();
             }
+            
         }).catch((error) => {
             console.log(error);
             this.updatePaymentDetails(false, error, 'online', finalAmountToPayByOnline);
@@ -289,6 +292,16 @@ class PaymentPage extends Component {
                     type: 'success',
                     duration: 3000
                 })
+            } else if (serviceType === SERVICE_TYPES.VIDEO_CONSULTING) {
+                this.props.navigation.navigate('SuccessChat', { manualNaviagationPage : 'Home' });
+                Toast.show({
+                    text: 'Paymenet Success',
+                    type: 'success',
+                    duration: 3000
+                })
+                if(isSuccess) {
+                    AuthService.signup(this.userId);
+                }
             }
         } else {
             if (serviceType === SERVICE_TYPES.PHARMACY) {

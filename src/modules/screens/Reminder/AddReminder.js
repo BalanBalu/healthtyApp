@@ -136,6 +136,15 @@ console.log('manni'+ getAllMedicineDataBySuggestion)
     let Time = moment().startOf('day').add(h, 'h').add(m, 'm').toDate();
     console.log('check time::::::::::' + Time.toString())
     await this.setState({ medicine_take_times: date });
+   try {
+      this.setState({ timePlaceholder: true, isTimePickerVisible: false  })
+      let h = new Date(date).getHours();
+      let m = new Date(date).getMinutes();
+      let Time = moment().startOf('day').add(h, 'h').add(m, 'm').toDate();
+      await this.setState({ medicine_take_times: date });
+    } catch (error) {
+      console.log(error);
+    }
 
     console.log('medicine_take_times::::::::::::' + this.state.medicine_take_times)
 
@@ -147,15 +156,18 @@ console.log('manni'+ getAllMedicineDataBySuggestion)
     this.setState({ isOnlyDateTimePickerVisible: false })
   }
   handleOnlyDateTimePicker = (date) => {
-    this.setState({ isOnlyDateTimePickerVisible: false })
-    let h = new Date(date).getHours();
-    let m = new Date(date).getMinutes();
-    let Time = moment().startOf('day').add(h, 'h').add(m, 'm').toDate();
-    // console.log('check time' + Time.toString())
-
-    this.setState({ medicine_take_one_date: date });
-    // console.log('medicine_take_one_date' + this.state.medicine_take_one_date)
-    this.hideOnlyDateTimePicker();
+    try {
+      this.setState({ isOnlyDateTimePickerVisible: false })
+      let h = new Date(date).getHours();
+      let m = new Date(date).getMinutes();
+      let Time = moment().startOf('day').add(h, 'h').add(m, 'm').toDate();
+      this.setState({ medicine_take_one_date: date });
+      // console.log('medicine_take_one_date' + this.state.medicine_take_one_date)
+      this.hideOnlyDateTimePicker();
+        
+    } catch (error) {
+      console.error('Error on Date Picker: ', error);  
+    }
   }
 
 
@@ -220,7 +232,6 @@ console.log('manni'+ getAllMedicineDataBySuggestion)
 
 
     } else {
-      alert("Duplicate entry");
     }
 
 
@@ -316,7 +327,6 @@ console.log('manni'+ getAllMedicineDataBySuggestion)
         else {
           data.medicine_take_start_date = moment(this.state.medicine_take_start_date).toISOString()
         }
-        alert(JSON.stringify(data))
         let result = await addReminderdata(userId, data)
         console.log('result', result)
         if (result.success) {
@@ -328,7 +338,6 @@ console.log('manni'+ getAllMedicineDataBySuggestion)
           })
         }
         else {
-          alert('else', result.message)
           Toast.show({
             text: result.message,
             type: "danger",
@@ -338,7 +347,6 @@ console.log('manni'+ getAllMedicineDataBySuggestion)
       }
     }
     catch (e) {
-      alert(e.message)
       console.log(e.message)
     }
     this.props.navigation.navigate('Reminder')
@@ -347,7 +355,6 @@ console.log('manni'+ getAllMedicineDataBySuggestion)
 
   medicinePage = () => {
     this.setState({ medicinepage: false })
-    alert(this.state.medicinepage)
   }
 
 
@@ -598,7 +605,6 @@ console.log('manni'+ getAllMedicineDataBySuggestion)
 
                           <DateTimePicker
                             mode={'time'}
-                            minimumDate={new Date()}
                             date={this.state.medicine_take_times}
                             isVisible={this.state.isTimePickerVisible}
                             onConfirm={this.handleTimePicker}
