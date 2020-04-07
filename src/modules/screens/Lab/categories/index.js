@@ -78,13 +78,7 @@ class LabCategories extends Component {
     )
   }
   render() {
-    const data = [{ checkup: 'full body checkup', initalprice: 2500, finalprice: 1500 },
-    { checkup: 'Diabetes Test', initalprice: 2500, finalprice: 1500 },
-    { checkup: 'Fever Test', initalprice: 1500, finalprice: 1000 },
-    { checkup: 'Arthristis', initalprice: 500, finalprice: 400 },
-    { checkup: 'Allergy profile', initalprice: 200, finalprice: 100 },
-    { checkup: 'Healthy men', initalprice: 250, finalprice: 150 }]
-    return (
+       return (
       <Container style={styles.container}>
         <Content style={styles.bodyContent}>
 
