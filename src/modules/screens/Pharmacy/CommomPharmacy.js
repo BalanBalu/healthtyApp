@@ -73,6 +73,7 @@ export async function relativeTimeView(review_date) {
 }
 
 export async function setCartItemCountOnNavigation(navigation) {
+    try {
     const userId = await AsyncStorage.getItem('userId')
     if(userId) {
         let cart = await AsyncStorage.getItem('cartItems-' + userId) || [];
@@ -80,5 +81,9 @@ export async function setCartItemCountOnNavigation(navigation) {
         navigation.setParams({
             cartItemsCount: cartData.length
         });
+    }
+    }
+    catch (e) {
+        console.log(e)
     }
 }
