@@ -342,8 +342,6 @@ class MedicineInfo extends Component {
                                         </TouchableOpacity>
                                     </Row>
                                 }
-
-
                             </Col>
                             <Col size={5}>
                                 <Row>
@@ -354,6 +352,9 @@ class MedicineInfo extends Component {
                                 </Row>
                             </Col>
                         </Row>
+                        {/* give this text instead of two button in case of out of stock */}
+                        <Text style={{ fontSize: 15, fontFamily: 'OpenSans', color: '#ff4e42', marginTop: 5,textAlign:'center' }}>Currently Out of stock</Text>
+
                         {this.state.isBuyNow == true || this.state.isAddToCart == true ?
                             <AddToCard
                                 data={this.state.selectedMedcine}

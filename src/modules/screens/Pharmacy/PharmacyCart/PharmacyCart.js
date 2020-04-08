@@ -129,17 +129,21 @@ class PharmacyCart extends Component {
                         <Item style={{ borderBottomWidth: 0, justifyContent: 'center', alignItems: 'center', height: 70 }}>
                             <Text style={{ fontSize: 20, justifyContent: 'center', alignItems: 'center' }}>No Medicines Are Found Your Cart</Text>
                         </Item> :
-                        <View style={{ margin: 5, backgroundColor: '#fff', borderRadius: 5 }}>
+                        <View style={{ margin:5 ,backgroundColor: '#fff', borderRadius: 5 ,paddingBottom:5}}>
                             <FlatList
                                 data={this.state.cartItems}
                                 extraData={this.state}
                                 keyExtractor={(item, index) => index.toString()}
                                 renderItem={({ item, index }) =>
-                                    <Row>
+                                    <Row style={{justifyContent:'center',paddingBottom:5}}>
+                                        <Col size={2}  style={{justifyContent:'center'}}>
                                         <Image source={renderMedicineImage(item)}
-                                            style={{ height: 100, width: 70, margin: 5 }} />
-                                        <Col Size={5} style={{ marginLeft: 10 }}>
-                                            <Text style={{ fontFamily: 'OpenSans', fontSize: 16, marginTop: 5 }}>{item.medicine_name}</Text>
+                                             style={{ height: 100, width: 70, margin: 5 }} />
+                                     <Text style={{ fontSize: 10, fontFamily: 'OpenSans', color: '#ff4e42', marginTop: 5,textAlign:'center',backgroundColor:'#E6E6E6',marginTop:-40,marginLeft:5 }}>Out of stock</Text>
+
+                                        </Col>
+                                        <Col size={7} style={{ marginLeft: 10,justifyContent:'center' }}>
+                                            <Text style={{ fontFamily: 'OpenSans', fontSize: 15, marginTop: 5 }}>{item.medicine_name}<Text style={{ontFamily: 'OpenSans', fontSize: 15, marginTop: 5,color:'#909090'}}>(250 g)</Text></Text>
                                             <Text style={{ color: '#A4A4A4', fontFamily: 'OpenSans', fontSize: 12.5, marginBottom: 20 }}>{item.pharmacy_name}</Text>
                                             {item.is_outofStack !== undefined && item.is_outofStack === true ?
                                                    
