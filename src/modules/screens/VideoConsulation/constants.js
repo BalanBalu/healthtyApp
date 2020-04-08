@@ -55,7 +55,7 @@ export const POSSIBLE_VIDEO_CONSULTING_STATUS = {
         text: 'Payment is not yet completed',
         statusText: 'Payment In Progress',
         color: '#d43640',
-        icon: 'ios-close-circle',
+        icon: 'ios-sync',
         type: 'DOCTOR_REPORT_ISSUE_APPOINTMENT_CANCELED'
       }
   }

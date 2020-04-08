@@ -81,10 +81,10 @@ class VideoConsultaions extends Component {
                     <Row>
                   <Col style={{ width: '80%' }}>  
 					<Row style={{ marginBottom : 15 }}>
-                        <Col style={{ width: '22%', }}>
+                        <Col size={3}>
 						    <Thumbnail circular source={renderDoctorImage(item.doctorInfo)} style={{ height: 60, width: 60 }} />
 						</Col>
-                        <Col>
+                        <Col size={7}>
                             <Text style={styles.docNameText}>{getName(item.userInfo)} </Text>
                             <Text note style={styles.docNameText}>Rs. {item.fee}</Text>
                         </Col>
@@ -128,7 +128,7 @@ class VideoConsultaions extends Component {
                     
                     </Col>
                     </Row>
-                    <Row style={{ marginLeft: '22%' }} >
+                    <Row style={{alignItems:'center',marginBottom:5,justifyContent:'center'}}>
                         <Text style={[styles.statusText, {color: STATUS_VALUE_DATA[item.status].color }]}>{STATUS_VALUE_DATA[item.status].text}</Text> 
                     </Row>
                     
@@ -185,7 +185,8 @@ const styles = StyleSheet.create({
     statusText: {
 		fontFamily: 'OpenSans',
 		fontSize: 16,
-		fontWeight: 'bold'
+		fontWeight: 'bold',
+		textAlign:'center'
 	},
 	genderText: {
 		fontFamily: 'OpenSans',
