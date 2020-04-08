@@ -3,9 +3,6 @@
 .DS_Store
 .vscode
 android/.gradle/
-android/.settings/
-android/app/.classpath
-android/app/.settings/
 # Xcode
 #
 build/

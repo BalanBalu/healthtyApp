@@ -53,9 +53,6 @@ PODS:
     - GoogleUtilities/Logger
   - GoogleUtilities/UserDefaults (6.2.0):
     - GoogleUtilities/Logger
-  - Mapbox-iOS-SDK (5.6.1):
-    - MapboxMobileEvents (= 0.10.2)
-  - MapboxMobileEvents (0.10.2)
   - nanopb (0.3.901):
     - nanopb/decode (= 0.3.901)
     - nanopb/encode (= 0.3.901)
@@ -66,8 +63,7 @@ PODS:
     - React/Core (= 0.59.10)
   - react-native-calendar-events (1.7.3):
     - React
-  - react-native-mapbox-gl (7.2.0):
-    - Mapbox-iOS-SDK (~> 5.6)
+  - react-native-mapbox-gl (7.0.4):
     - React
   - react-native-webrtc (1.75.3):
     - React
@@ -160,8 +156,6 @@ SPEC REPOS:
     - GoogleUtilities
     - nanopb
   trunk:
-    - Mapbox-iOS-SDK
-    - MapboxMobileEvents
     - QBImagePickerController
     - RSKImageCropper
 
@@ -196,13 +190,11 @@ SPEC CHECKSUMS:
   glog: 1de0bb937dccdc981596d3b5825ebfb765017ded
   GoogleAppMeasurement: 51d8d9ea48f0ca44484d29cfbdef976fbd4fc336
   GoogleUtilities: 996e0db07153674fd1b54b220fda3a3dc3547cba
-  Mapbox-iOS-SDK: b31bd62a5dd5b7e688eab787acd3d093a122f4d6
-  MapboxMobileEvents: 2bc0ca2eedb627b73cf403258dce2b2fa98074a6
   nanopb: 2901f78ea1b7b4015c860c2fdd1ea2fee1a18d48
   QBImagePickerController: d54cf93db6decf26baf6ed3472f336ef35cae022
   React: 36d0768f9e93be2473b37e7fa64f92c1d5341eef
   react-native-calendar-events: 2fe35a9294af05de0ed819d3a1b5dac048d2c010
-  react-native-mapbox-gl: f94bda32d55284b202d72359ed7d5d43f5223c89
+  react-native-mapbox-gl: e5e1921140b7e2ae2e4e1d917f4c91ad13da3f25
   react-native-webrtc: 86d841823e66d68cc1f86712db1c2956056bf0c2
   ReactNativeIncallManager: 35e387f58d3fc6e8cc042f47a2256b5f50134a67
   RNImageCropPicker: 6134b66a3d5bc13e2895a97c630a4254006902b4

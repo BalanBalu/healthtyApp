@@ -1,8 +1,7 @@
 CONFIGURATION_BUILD_DIR = ${PODS_CONFIGURATION_BUILD_DIR}/react-native-mapbox-gl
-FRAMEWORK_SEARCH_PATHS = $(inherited) "${PODS_ROOT}/Mapbox-iOS-SDK/dynamic"
+FRAMEWORK_SEARCH_PATHS = $(inherited) "${PODS_ROOT}/../../node_modules/@react-native-mapbox-gl/maps/ios"
 GCC_PREPROCESSOR_DEFINITIONS = $(inherited) COCOAPODS=1
-HEADER_SEARCH_PATHS = $(inherited) "${PODS_ROOT}/Headers/Private" "${PODS_ROOT}/Headers/Private/react-native-mapbox-gl" "${PODS_ROOT}/Headers/Public" "${PODS_ROOT}/Headers/Public/MapboxMobileEvents" "${PODS_ROOT}/Headers/Public/React" "${PODS_ROOT}/Headers/Public/react-native-mapbox-gl" "${PODS_ROOT}/Headers/Public/yoga"
-OTHER_CFLAGS = $(inherited) -fmodule-map-file="${PODS_ROOT}/Headers/Public/MapboxMobileEvents/MapboxMobileEvents.modulemap"
+HEADER_SEARCH_PATHS = $(inherited) "${PODS_ROOT}/Headers/Private" "${PODS_ROOT}/Headers/Private/react-native-mapbox-gl" "${PODS_ROOT}/Headers/Public" "${PODS_ROOT}/Headers/Public/React" "${PODS_ROOT}/Headers/Public/react-native-mapbox-gl" "${PODS_ROOT}/Headers/Public/yoga"
 PODS_BUILD_DIR = ${BUILD_DIR}
 PODS_CONFIGURATION_BUILD_DIR = ${PODS_BUILD_DIR}/$(CONFIGURATION)$(EFFECTIVE_PLATFORM_NAME)
 PODS_ROOT = ${SRCROOT}
