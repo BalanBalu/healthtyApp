@@ -162,14 +162,14 @@ async componentDidMount() {
                 data={availableChatDoctors}
                 renderItem={({item}) =>
                  <Row style={styles.RowStyle}>
-                   <Col style={{width:'15%'}}>
+                   <Col style={{width:'17%'}}>
                        <Thumbnail source={renderDoctorImage(item)} 
                             style={{width:50,height:50,position:'relative',borderRadius:50/2}}
                         />
                        <View style={styles.circle} />
                     </Col>
                    
-                    <Col style={{width:'70%'}}>
+                    <Col style={{width:'68%'}}>
                       <Row>
                          <Col style={{width:'75%'}}>
                             <Text style={styles.docname}>{item.prefix || ''} {item.first_name || ''} {item.last_name || ''}</Text>
@@ -179,6 +179,23 @@ async componentDidMount() {
                         <Col style={{width:'100%'}}>
                             <Text style={styles.status}>{item.category}</Text>
                         </Col>
+                      </Row>
+
+                      <Row>
+                          <Col size={5}>
+                          <TouchableOpacity 
+                                    style={{ textAlign: 'center', borderColor: '#5A89B6', borderWidth: 1, marginTop: 10, borderRadius: 20, height: 25, justifyContent: 'center',flexDirection:'row' }}>
+                                      <Icon name="ios-call" style={{ color: '#5A89B6', fontSize: 15,marginTop:5 }} />  
+                                    <Text style={{ textAlign: 'center', color: '#5A89B6', fontSize: 12,padding: 3, fontWeight: 'bold', fontFamily: 'OpenSans',marginLeft:2 }}>Chat - ₹ 99</Text>
+                                </TouchableOpacity>
+                          </Col>
+                          <Col size={5} style={{marginLeft:10}}>
+                          <TouchableOpacity 
+                                    style={{ textAlign: 'center', borderColor: '#5A89B6', borderWidth: 1, marginTop: 10, borderRadius: 20, height: 25, justifyContent: 'center',flexDirection:'row' }}>
+                                         <Icon name="ios-videocam" style={{ color: '#5A89B6', fontSize: 15 ,marginTop:5}} />  
+                                    <Text style={{ textAlign: 'center', color: '#5A89B6', fontSize: 12,padding: 3, fontWeight: 'bold', fontFamily: 'OpenSans' ,marginLeft:2}}>Video - ₹ 155</Text>
+                                </TouchableOpacity>
+                          </Col>
                       </Row>
                     </Col>
                     
@@ -190,7 +207,7 @@ async componentDidMount() {
                             </Col>
                         </Row>
                         <Row>
-                            <Col style={{ alignItems: 'center' }}>
+                            <Col style={{ alignItems: 'center',marginTop:15 }}>
                                 <TouchableOpacity onPress={() => this.onBookButtonPress4Payment(item.doctor_id, item.chat_service_config.chat_fee)} 
                                     style={{ textAlign: 'center', backgroundColor: 'green', borderColor: '#000', marginTop: 10, borderRadius: 20, height: 25, justifyContent: 'center' }}>
                                     <Text style={{ textAlign: 'center', color: '#fff', fontSize: 12,padding: 3, fontWeight: 'bold', fontFamily: 'OpenSans' }}>Chat</Text>
@@ -199,8 +216,8 @@ async componentDidMount() {
                         </Row>
                     </Col>
                  </Row>
-              }
-              keyExtractor={(item, index) => index.toString()}/>
+               }
+              keyExtractor={(item, index) => index.toString()}/> 
             </Content>
         </Container>
       )
