@@ -34,6 +34,7 @@ class MedicineSearchList extends Component {
     async  componentDidMount() {
         this.setState({ isLoading: true })
         let medicineName = this.props.navigation.getParam('medicineName') || ''
+        let medicineInfo =this.props.navigation.getParam('medicineInfo') || ''
         const navigationByPharmacySelect = this.props.navigation.getParam('byPharmacy') || false;
         let userId = await AsyncStorage.getItem('userId')
         if (userId) {
@@ -55,6 +56,7 @@ class MedicineSearchList extends Component {
                 "coordinates": locationCordinates,
                 "maxDistance": MAX_DISTANCE_TO_COVER
             }
+            
             let postData = [
                 {
                     type: 'geo',
@@ -65,6 +67,18 @@ class MedicineSearchList extends Component {
                     value: medicineName
                 }
             ]
+            if(medicineInfo.medicine_dose){
+                postData.push( {
+                     type: 'medicine_dose',
+                     value: medicineInfo.medicine_dose
+                 })
+             }
+             if(medicineInfo.medicine_unit){
+                postData.push( {
+                     type: 'medicine_unit',
+                     value: medicineInfo.medicine_unit
+                 })
+             }
             await this.MedicineSearchList(postData)
         }
         this.setState({ isLoading: false })

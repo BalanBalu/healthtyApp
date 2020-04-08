@@ -93,7 +93,10 @@ class MedicineSuggestionList extends Component {
                                 autoFocus={true}
                                 onChangeText={enteredText => this.SearchKeyWordFunction(enteredText)}
                                 multiline={false} />
-                            <TouchableOpacity style={{ alignItems: 'flex-end' }} >
+                            <TouchableOpacity style={{ alignItems: 'flex-end' }} onPress={() => {
+
+                                this.props.navigation.navigate("medicineSearchList", { medicineName: this.state.medicineName })
+                            }}  >
                                 <Icon name='ios-search' style={{ color: '#775DA3', fontSize: 20 }} />
                             </TouchableOpacity>
                         </Item>
@@ -132,9 +135,9 @@ class MedicineSuggestionList extends Component {
                                     renderItem={({ item }) => (
                                         <Row style={{ borderBottomWidth: 0.3, borderBottomColor: '#cacaca' }} onPress={() => {
 
-                                            this.props.navigation.navigate("medicineSearchList", { medicineName: item.value })
+                                            this.props.navigation.navigate("medicineSearchList", { medicineName: item.value, medicineInfo: item })
                                         }} >
-                                            <Text style={{ padding: 10, fontFamily: 'OpenSans', fontSize: 13 }}>{item.value || ''}</Text>
+                                            <Text style={{ padding: 10, fontFamily: 'OpenSans', fontSize: 13 }}>{(item.value || '') + ' ' + (item.medicine_dose || '') + ' ' + (item.medicine_unit || '')}</Text>
                                             <Right>
                                                 <Text style={{ padding: 10, fontFamily: 'OpenSans', fontSize: 13, color: '#7F49C3' }}>{item.type || ''}</Text>
                                             </Right>
