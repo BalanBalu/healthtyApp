@@ -687,10 +687,10 @@ const HomeStack = createStackNavigator({
       title: 'Video Consulting Serivce'
     }
   },
-  'My Video Consultaions': {
+  'My Video Consultations': {
     screen: VideoConsultaions,
     navigationOptions: {
-      title: 'My Video Consultaions'
+      title: 'My Video Consultations'
     }
   },
 
@@ -749,7 +749,7 @@ const DrawerNavigator = createDrawerNavigator({
   'Video Consulting Service' : {
     screen: AvailableDoctors4Video
   },
-  'My Video Consultaions': {
+  'My Video Consultations': {
     screen: VideoConsultaions
   },
   Medicines: {
