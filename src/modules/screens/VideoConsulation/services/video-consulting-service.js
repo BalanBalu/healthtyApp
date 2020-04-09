@@ -4,9 +4,9 @@ export const SET_LAST_MESSAGES_DATA = 'CHAT/LAST_MESSAGES_DATA'
 export const fetchAvailableDoctors4Video = async (docIds) => {
     try {
         
-        let endPoint = 'video-consulting/public/available/doctors';
+        let endPoint = 'video-consulting/public/available/doctors?day=' + new Date().getDay();
         if(docIds) {
-            endPoint = endPoint + '?doctorIds=' + docIds
+            endPoint = endPoint + '&doctorIds=' + docIds
         }
         let response = await getService(endPoint);
         let respData = response.data;
