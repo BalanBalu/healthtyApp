@@ -163,17 +163,20 @@ class AvailableDoctors4Chat extends Component {
                         data={availableChatDoctors}
                         renderItem={({ item }) =>
                             <Row style={styles.RowStyle}>
-                                <Col style={{ width: '17%' }}>
+                                <Col style={{ width: '20%' }}>
                                     <Thumbnail source={renderDoctorImage(item)}
-                                        style={{ width: 50, height: 50, position: 'relative', borderRadius: 50 / 2 }}
+                                        style={{ width: 60, height: 60, position: 'relative', borderRadius: 60 / 2 }}
                                     />
                                     <View style={styles.circle} />
+                                    <Thumbnail source={require('../../../../assets/images/viplogo.png')}
+                                        style={{ width: 25, height: 25, position: 'absolute', borderRadius: 50 / 2, marginTop: 45, marginLeft: 35 }}
+                                    />
                                 </Col>
 
-                                <Col style={{ width: '68%' }}>
+                                <Col style={{ width: '65%' }}>
                                     <Row>
                                         <Col style={{ width: '75%' }}>
-                                            <Text style={styles.docname}>{item.prefix || ''} {item.first_name || ''} {item.last_name || ''}</Text>
+                                            <Text style={styles.docname}>{item.prefix || ''} {item.first_name || ''} {item.last_name || ''}{'  '}<Text style={{ paddingLeft: 5, paddingRight: 5, fontSize: 10, fontFamily: 'OpenSans', marginLeft: 5, backgroundColor: '#F3EBF8', justifyContent: 'space-between' }}>{'  '}SPONSORED{'  '}</Text></Text>
                                         </Col>
                                     </Row>
                                     <Row>
@@ -208,7 +211,7 @@ class AvailableDoctors4Chat extends Component {
                                         </Col>
                                     </Row>
                                     <Row>
-                                        <Col style={{ alignItems: 'center', marginTop: 15 }}>
+                                        <Col style={{ alignItems: 'center', marginTop: -25 }}>
                                             <TouchableOpacity onPress={() => this.onBookButtonPress4Payment(item.doctor_id, item.chat_service_config.chat_fee)}
                                                 style={{ textAlign: 'center', backgroundColor: 'green', borderColor: '#000', marginTop: 10, borderRadius: 20, height: 25, justifyContent: 'center' }}>
                                                 <Text style={{ textAlign: 'center', color: '#fff', fontSize: 12, padding: 3, fontWeight: 'bold', fontFamily: 'OpenSans' }}>Chat</Text>
@@ -261,12 +264,12 @@ const styles = StyleSheet.create({
         color: 'blue',
     },
     circle: {
-        width: 10,
-        height: 10,
-        borderRadius: 10 / 2,
+        width: 12,
+        height: 12,
+        borderRadius: 12 / 2,
         backgroundColor: 'green',
         position: 'absolute',
-        marginLeft: 40,
+        marginLeft: 45,
         marginTop: 5
     },
     RowStyle: {
