@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import { Container, Content, View, Text, Item, Card, Spinner, Picker, Icon, Radio, Row, Col, Form, Button, Input, Grid, Toast } from 'native-base';
-import { StyleSheet, TextInput, TouchableOpacity, ScrollView, Image, AsyncStorage, } from 'react-native'
+import { StyleSheet, TextInput, TouchableOpacity, ScrollView, Image, AsyncStorage, Right } from 'react-native'
 import { FlatList } from 'react-native-gesture-handler';
 import Autocomplete from '../../../components/Autocomplete'
 import { RadioButton } from 'react-native-paper';
@@ -9,8 +9,6 @@ import { formatDate } from "../../../setup/helpers";
 import { getAllMedicineDataBySuggestion } from "../../providers/pharmacy/pharmacy.action";
 import moment from 'moment';
 import { addReminderdata } from '../../providers/reminder/reminder.action.js';
-import { connect } from 'react-redux'
-
 
 const medicineFormType = ["Select medicine Form", "Pill", "Solution", "Injection", "Powder", "Drops", "Inhales", "Other",]
 const medicineStrengthType = ["Select medicine strength", "g", "IU", "mcg", "mEg", "mg"]
@@ -55,7 +53,8 @@ class AddReminder extends Component {
       previewdisplay: false,
       data: [],
       arrayTakenTime: [],
-
+      medicineSugesstionArray: null,
+      setShowSuggestions: true
 
     }
     this.pastSelectedDate = new Date(),
@@ -73,14 +72,14 @@ class AddReminder extends Component {
     const { medicine_name } = this.state;
     if (medicine_name !== null) {
       this.SearchKeyWordFunction(medicine_name);
-      console.log('medicine'+ medicine_name )
+      console.log('medicine' + medicine_name)
     }
   }
 
   SearchKeyWordFunction = async (enteredText) => {
 
     if (enteredText == '') {
-      await this.setState({ medicine_name: enteredText })
+      await this.setState({ medicineSugesstionArray: null, medicine_name: enteredText })
     } else {
       await this.setState({ medicine_name: enteredText })
       this.callmedicinesearchService(enteredText);
@@ -88,40 +87,25 @@ class AddReminder extends Component {
   }
 
 
-//   callmedicinesearchService = async (enteredText) => {
+  callmedicinesearchService = async (enteredText) => {
 
-//     let medicineResultData = await getAllMedicineDataBySuggestion(enteredText);
-// console.log('manni'+ getAllMedicineDataBySuggestion)
-//     if (medicineResultData.success) {
-//       this.setState({
-//         searchValue: medicineResultData.data,
-//         searchValue: enteredText,
-//       });
-//     } else {
+    let medicineResultData = await getAllMedicineDataBySuggestion(enteredText);
 
-//       this.setState({
-//         searchValue: enteredText
-//       });
-//       console.log('callmedicinesearchService' + callmedicinesearchService)
-//     }
-//   }
+    if (medicineResultData.success) {
+      this.setState({
+        medicineSugesstionArray: medicineResultData.data,
+        searchValue: enteredText,
+      });
+    } else {
 
-
-
-callmedicinesearchService = async (enteredText) => {
-  try {
-    let result = await getAllMedicineDataBySuggestion(enteredText);
-    alert(JSON.stringify(result))
-    if (result.success) 
-    {
-       this.setState({ data: result})
+      this.setState({
+        medicineSugesstionArray: [],
+        searchValue: enteredText
+      });
     }
-  } catch (e) {
-    console.log(e);
-  } finally {
-    this.setState({ isLoading: false });
   }
-}
+
+
 
 
   onValueChange2(value) {
@@ -153,8 +137,8 @@ callmedicinesearchService = async (enteredText) => {
     let Time = moment().startOf('day').add(h, 'h').add(m, 'm').toDate();
     console.log('check time::::::::::' + Time.toString())
     await this.setState({ medicine_take_times: date });
-   try {
-      this.setState({ timePlaceholder: true, isTimePickerVisible: false  })
+    try {
+      this.setState({ timePlaceholder: true, isTimePickerVisible: false })
       let h = new Date(date).getHours();
       let m = new Date(date).getMinutes();
       let Time = moment().startOf('day').add(h, 'h').add(m, 'm').toDate();
@@ -179,10 +163,11 @@ callmedicinesearchService = async (enteredText) => {
       let m = new Date(date).getMinutes();
       let Time = moment().startOf('day').add(h, 'h').add(m, 'm').toDate();
       this.setState({ medicine_take_one_date: date });
+      // console.log('medicine_take_one_date' + this.state.medicine_take_one_date)
       this.hideOnlyDateTimePicker();
-        
+
     } catch (error) {
-      console.error('Error on Date Picker: ', error);  
+      console.error('Error on Date Picker: ', error);
     }
   }
 
@@ -201,8 +186,10 @@ callmedicinesearchService = async (enteredText) => {
     let h = new Date(date).getHours();
     let m = new Date(date).getMinutes();
     let Time = moment().startOf('day').add(h, 'h').add(m, 'm').toDate();
+    // console.log('check time' + Time.toString())
 
     this.setState({ medicine_take_end_date: date });
+    // console.log('medicine_take_end_date' + this.state.medicine_take_end_date)
     this.hideendDateTimePicker();
   }
   showDateTimePicker = () => {
@@ -221,16 +208,22 @@ callmedicinesearchService = async (enteredText) => {
     let h = new Date(date).getHours();
     let m = new Date(date).getMinutes();
     let Time = moment().startOf('day').add(h, 'h').add(m, 'm').toDate();
+    // console.log('check time' + Time.toString())
+
     this.setState({ medicine_take_start_date: date });
+    // console.log('medicine_take_start_date' + this.state.medicine_take_start_date)
 
     this.hideDateTimePicker();
   }
 
   insertTimeValue = async () => {
     let temp = this.state.slots;
-   
+    // console.log("temp" + temp)
+
+    // console.log("medicine_take_times" + this.state.medicine_take_times)
     const sample = this.state.medicine_take_times;
-  
+    // console.log("sample" + sample)
+
     if (!temp.includes(sample)) {
       temp.push(sample)
       temp.sort(function (a, b) {
@@ -294,9 +287,13 @@ callmedicinesearchService = async (enteredText) => {
 
 
   deleteData(index) {
+    // console.log("index" + index)
     let temp = this.state.arrayTakenTime;
     temp.splice(index, 1)
+    // console.log("temp" + JSON.stringify(temp))
     this.setState({ data: temp })
+    // console.log("data" + JSON.stringify(this.state.data))
+
   }
 
 
@@ -317,6 +314,8 @@ callmedicinesearchService = async (enteredText) => {
           medicine_form: this.state.selectedMedicineForm,
           medicine_strength: this.state.selectMedicineStrength,
           medicine_take_times: this.state.arrayTakenTime,
+          // medicine_take_start_date: moment(this.state.medicine_take_start_date).toISOString(),
+          // //  medicine_take_end_date: moment(this.state.medicine_take_end_date).toISOString(),
           reminder_type: String(this.state.medicinePeriod),
           is_reminder_enabled: true,
           active: true
@@ -338,8 +337,6 @@ callmedicinesearchService = async (enteredText) => {
             type: "success",
             duration: 3000,
           })
-
-         
         }
         else {
           Toast.show({
@@ -353,8 +350,7 @@ callmedicinesearchService = async (enteredText) => {
     catch (e) {
       console.log(e.message)
     }
-     // navigation.navigate({routeName, params: { hasReload: true } });
-      this.props.navigation.navigate('Reminder',{isLoading:true} )
+    this.props.navigation.navigate('Reminder')
   }
 
 
@@ -362,7 +358,7 @@ callmedicinesearchService = async (enteredText) => {
     this.setState({ medicinepage: false })
   }
 
- 
+
 
   render() {
     const { isTimePickerVisible, isDatePickerVisible, isstartDatePickerVisible, isendDatePickerVisible, selectedDate, text, selectedMedicineForm, selectMedicineStrength, slots, isDateTimePickerVisible, isEndDateTimePickerVisible, data } = this.state;
@@ -378,12 +374,35 @@ callmedicinesearchService = async (enteredText) => {
                   <Form>
                     <TextInput style={styles.autoField}
                       placeholder="Medicine name"
-                      onChangeText={(medicine_name) => this.SearchKeyWordFunction(medicine_name)}
-                     //onChangeText={(medicine_name) => this.setState({ medicine_name })}
+                      style={{ fontSize: 12, }}
+                      placeholderTextColor="#C1C1C1"
+                      keyboardType={'default'}
+                      returnKeyType={'go'}
                       value={this.state.medicine_name}
+                      autoFocus={true}
+                      onChangeText={enteredText => this.SearchKeyWordFunction(enteredText)}
+                      multiline={false}
                     />
                   </Form>
                 </View>
+                {this.state.setShowSuggestions == true ?
+                  <View style={{ flex: 1 }}>
+                    <FlatList
+                      data={this.state.medicineSugesstionArray}
+                      ItemSeparatorComponent={this.itemSaperatedByListView}
+                      renderItem={({ item, index }) => (
+                        <TouchableOpacity onPress={() => { this.setState({ medicine_name: item.medicine_name, setShowSuggestions: false }) }}>
+                          <Row style={{ borderBottomWidth: 0.3, borderBottomColor: '#cacaca' }}  >
+                            <Text style={{ padding: 10, fontFamily: 'OpenSans', fontSize: 13, textAlign: 'left' }}>{item.medicine_name}</Text>
+                          </Row>
+                        </TouchableOpacity>
+                      )}
+                      enableEmptySections={true}
+                      style={{ marginTop: 10 }}
+                      keyExtractor={(item, index) => index.toString()}
+                    />
+                  </View>
+                  : null}
                 <View>
                   <Row>
                     <Col>
@@ -861,11 +880,3 @@ const styles = StyleSheet.create({
     marginLeft: -35
   }
 })
-
-
-
-
-
-
-
-
