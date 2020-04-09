@@ -9,6 +9,8 @@ import { formatDate } from "../../../setup/helpers";
 import { getAllMedicineDataBySuggestion } from "../../providers/pharmacy/pharmacy.action";
 import moment from 'moment';
 import { addReminderdata } from '../../providers/reminder/reminder.action.js';
+import { connect } from 'react-redux'
+
 
 const medicineFormType = ["Select medicine Form", "Pill", "Solution", "Injection", "Powder", "Drops", "Inhales", "Other",]
 const medicineStrengthType = ["Select medicine strength", "g", "IU", "mcg", "mEg", "mg"]
@@ -28,7 +30,7 @@ class AddReminder extends Component {
     super(props)
     this.state = {
       data: [],
-      medicineName: null,
+      medicine_name: null,
       medicine_take_times: moment().startOf('day').toDate(),
       medicine_take_one_date: moment().startOf('day').toDate(),
       medicine_take_start_date: moment().startOf('day').toDate(),
@@ -68,43 +70,58 @@ class AddReminder extends Component {
 
 
   componentDidMount() {
-    const { medicineName } = this.state;
-    if (medicineName !== null) {
-      this.SearchKeyWordFunction(medicineName);
-      console.log('medicine'+ medicineName )
+    const { medicine_name } = this.state;
+    if (medicine_name !== null) {
+      this.SearchKeyWordFunction(medicine_name);
+      console.log('medicine'+ medicine_name )
     }
   }
 
   SearchKeyWordFunction = async (enteredText) => {
 
     if (enteredText == '') {
-      await this.setState({ medicineName: enteredText })
+      await this.setState({ medicine_name: enteredText })
     } else {
-      await this.setState({ medicineName: enteredText })
+      await this.setState({ medicine_name: enteredText })
       this.callmedicinesearchService(enteredText);
     }
   }
 
 
-  callmedicinesearchService = async (enteredText) => {
+//   callmedicinesearchService = async (enteredText) => {
 
-    let medicineResultData = await getAllMedicineDataBySuggestion(enteredText);
-console.log('manni'+ getAllMedicineDataBySuggestion)
-    if (medicineResultData.success) {
-      this.setState({
-        searchValue: medicineResultData.data,
-        searchValue: enteredText,
-      });
-    } else {
+//     let medicineResultData = await getAllMedicineDataBySuggestion(enteredText);
+// console.log('manni'+ getAllMedicineDataBySuggestion)
+//     if (medicineResultData.success) {
+//       this.setState({
+//         searchValue: medicineResultData.data,
+//         searchValue: enteredText,
+//       });
+//     } else {
 
-      this.setState({
-        searchValue: enteredText
-      });
-      console.log('callmedicinesearchService' + callmedicinesearchService)
+//       this.setState({
+//         searchValue: enteredText
+//       });
+//       console.log('callmedicinesearchService' + callmedicinesearchService)
+//     }
+//   }
+
+
+
+callmedicinesearchService = async (enteredText) => {
+  try {
+    let result = await getAllMedicineDataBySuggestion(enteredText);
+    alert(JSON.stringify(result))
+    if (result.success) 
+    {
+       this.setState({ data: result})
     }
+  } catch (e) {
+    console.log(e);
+  } finally {
+    this.setState({ isLoading: false });
   }
-
-
+}
 
 
   onValueChange2(value) {
@@ -162,7 +179,6 @@ console.log('manni'+ getAllMedicineDataBySuggestion)
       let m = new Date(date).getMinutes();
       let Time = moment().startOf('day').add(h, 'h').add(m, 'm').toDate();
       this.setState({ medicine_take_one_date: date });
-      // console.log('medicine_take_one_date' + this.state.medicine_take_one_date)
       this.hideOnlyDateTimePicker();
         
     } catch (error) {
@@ -185,10 +201,8 @@ console.log('manni'+ getAllMedicineDataBySuggestion)
     let h = new Date(date).getHours();
     let m = new Date(date).getMinutes();
     let Time = moment().startOf('day').add(h, 'h').add(m, 'm').toDate();
-    // console.log('check time' + Time.toString())
 
     this.setState({ medicine_take_end_date: date });
-    // console.log('medicine_take_end_date' + this.state.medicine_take_end_date)
     this.hideendDateTimePicker();
   }
   showDateTimePicker = () => {
@@ -207,22 +221,16 @@ console.log('manni'+ getAllMedicineDataBySuggestion)
     let h = new Date(date).getHours();
     let m = new Date(date).getMinutes();
     let Time = moment().startOf('day').add(h, 'h').add(m, 'm').toDate();
-    // console.log('check time' + Time.toString())
-
     this.setState({ medicine_take_start_date: date });
-    // console.log('medicine_take_start_date' + this.state.medicine_take_start_date)
 
     this.hideDateTimePicker();
   }
 
   insertTimeValue = async () => {
     let temp = this.state.slots;
-    // console.log("temp" + temp)
-
-    // console.log("medicine_take_times" + this.state.medicine_take_times)
+   
     const sample = this.state.medicine_take_times;
-    // console.log("sample" + sample)
-
+  
     if (!temp.includes(sample)) {
       temp.push(sample)
       temp.sort(function (a, b) {
@@ -286,13 +294,9 @@ console.log('manni'+ getAllMedicineDataBySuggestion)
 
 
   deleteData(index) {
-    // console.log("index" + index)
     let temp = this.state.arrayTakenTime;
     temp.splice(index, 1)
-    // console.log("temp" + JSON.stringify(temp))
     this.setState({ data: temp })
-    // console.log("data" + JSON.stringify(this.state.data))
-
   }
 
 
@@ -313,8 +317,6 @@ console.log('manni'+ getAllMedicineDataBySuggestion)
           medicine_form: this.state.selectedMedicineForm,
           medicine_strength: this.state.selectMedicineStrength,
           medicine_take_times: this.state.arrayTakenTime,
-          // medicine_take_start_date: moment(this.state.medicine_take_start_date).toISOString(),
-          // //  medicine_take_end_date: moment(this.state.medicine_take_end_date).toISOString(),
           reminder_type: String(this.state.medicinePeriod),
           is_reminder_enabled: true,
           active: true
@@ -336,6 +338,8 @@ console.log('manni'+ getAllMedicineDataBySuggestion)
             type: "success",
             duration: 3000,
           })
+
+         
         }
         else {
           Toast.show({
@@ -349,7 +353,8 @@ console.log('manni'+ getAllMedicineDataBySuggestion)
     catch (e) {
       console.log(e.message)
     }
-    this.props.navigation.navigate('Reminder')
+     // navigation.navigate({routeName, params: { hasReload: true } });
+      this.props.navigation.navigate('Reminder',{isLoading:true} )
   }
 
 
@@ -357,7 +362,7 @@ console.log('manni'+ getAllMedicineDataBySuggestion)
     this.setState({ medicinepage: false })
   }
 
-
+ 
 
   render() {
     const { isTimePickerVisible, isDatePickerVisible, isstartDatePickerVisible, isendDatePickerVisible, selectedDate, text, selectedMedicineForm, selectMedicineStrength, slots, isDateTimePickerVisible, isEndDateTimePickerVisible, data } = this.state;
@@ -373,8 +378,8 @@ console.log('manni'+ getAllMedicineDataBySuggestion)
                   <Form>
                     <TextInput style={styles.autoField}
                       placeholder="Medicine name"
-                      //onChangeText={medicinename => this.SearchKeyWordFunction(medicinename)}
-                     onChangeText={(medicine_name) => this.setState({ medicine_name })}
+                      onChangeText={(medicine_name) => this.SearchKeyWordFunction(medicine_name)}
+                     //onChangeText={(medicine_name) => this.setState({ medicine_name })}
                       value={this.state.medicine_name}
                     />
                   </Form>
