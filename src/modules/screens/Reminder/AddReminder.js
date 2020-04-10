@@ -69,10 +69,18 @@ class AddReminder extends Component {
 
 
   componentDidMount() {
-    const { medicine_name } = this.state;
+    const { medicine_name, selectedMedicineForm, selectMedicineStrength } = this.state;
     if (medicine_name !== null) {
       this.SearchKeyWordFunction(medicine_name);
       console.log('medicine' + medicine_name)
+    }
+    if (selectedMedicineForm !== null) {
+      this.SearchKeyWordFunctionMedicineForm(selectedMedicineForm);
+      console.log('selectedMedicineForm' + selectedMedicineForm)
+    }
+    if (selectMedicineStrength !== null) {
+      this.SearchKeyWordFunctionMedicineStrength(selectMedicineStrength);
+      console.log('selectedMedicineForm' + selectMedicineStrength)
     }
   }
 
@@ -86,11 +94,30 @@ class AddReminder extends Component {
     }
   }
 
+  SearchKeyWordFunctionMedicineForm = async (enteredText) => {
+
+    if (enteredText == '') {
+      await this.setState({ medicineSugesstionArray: null, selectedMedicineForm: enteredText })
+    } else {
+      await this.setState({ selectedMedicineForm: enteredText })
+      this.callmedicinesearchService(enteredText);
+    }
+  }
+  SearchKeyWordFunctionMedicineStrength = async (enteredText) => {
+
+    if (enteredText == '') {
+      await this.setState({ medicineSugesstionArray: null, selectMedicineStrength: enteredText })
+    } else {
+      await this.setState({ selectMedicineStrength: enteredText })
+      this.callmedicinesearchService(enteredText);
+    }
+  }
+
 
   callmedicinesearchService = async (enteredText) => {
 
     let medicineResultData = await getAllMedicineDataBySuggestion(enteredText);
-
+    console.log('medicinedone+++++++++++++++++' + JSON.stringify(medicineResultData))
     if (medicineResultData.success) {
       this.setState({
         medicineSugesstionArray: medicineResultData.data,
@@ -371,7 +398,10 @@ class AddReminder extends Component {
               <View pointerEvents={this.state.medicinepage ? "auto" : "none"} style={this.state.medicinepage == true ? styles.medicineenabletext : styles.medicinedisabletext}>
                 <View>
                   <Text style={styles.NumText}>What Medicine would you like to add ?</Text>
-                  <Form>
+                  <Form style={{
+                    borderColor: '#909090',
+                    borderWidth: 0.5, height: 35, borderRadius: 5, marginTop: 5,
+                  }}>
                     <TextInput style={styles.autoField}
                       placeholder="Medicine name"
                       style={{ fontSize: 12, }}
@@ -391,7 +421,7 @@ class AddReminder extends Component {
                       data={this.state.medicineSugesstionArray}
                       ItemSeparatorComponent={this.itemSaperatedByListView}
                       renderItem={({ item, index }) => (
-                        <TouchableOpacity onPress={() => { this.setState({ medicine_name: item.medicine_name, setShowSuggestions: false }) }}>
+                        <TouchableOpacity onPress={() => { this.setState({ medicine_name: item.medicine_name, setShowSuggestions: false, selectedMedicineForm: item.medicine_form, selectMedicineStrength: item.medicine_category }) }}>
                           <Row style={{ borderBottomWidth: 0.3, borderBottomColor: '#cacaca' }}  >
                             <Text style={{ padding: 10, fontFamily: 'OpenSans', fontSize: 13, textAlign: 'left' }}>{item.medicine_name}</Text>
                           </Row>
@@ -407,50 +437,47 @@ class AddReminder extends Component {
                   <Row>
                     <Col>
                       <Text style={styles.NumText}>Form of Medicine</Text>
-                      <Form style={{ marginTop: 5 }}>
+                      <Form style={{
+                        marginTop: 5, borderColor: '#909090',
+                        borderWidth: 0.5, height: 35, borderRadius: 5
+                      }}>
 
-                        <View picker style={{ height: 40, width: 150, justifyContent: 'center', backgroundColor: '#F1F1F1', borderRadius: 5 }}>
-                          <Picker
-                            mode="dropdown"
-                            style={{ width: undefined }}
-                            placeholder="Select your SIM"
-                            placeholderStyle={{ color: "#bfc6ea" }}
-                            placeholderIconColor="#007aff"
-                            onValueChange={(sample) => { this.setState({ selectedMedicineForm: sample }) }}
-                            selectedValue={selectedMedicineForm}
-                            testID="editMedicineForm"
-                          >
-                            {medicineFormType.map((value, key) => {
-                              return <Picker.Item label={String(value)} value={String(value)} key={key}
-                              />
-                            })
-                            }
-                          </Picker>
-                        </View>
+                        <TextInput style={styles.autoField}
+                          placeholder="Medicine Form"
+                          style={{ fontSize: 12, }}
+                          placeholderTextColor="#C1C1C1"
+                          keyboardType={'default'}
+                          returnKeyType={'go'}
+                          value={this.state.selectedMedicineForm}
+                          autoFocus={true}
+                          onChangeText={enteredText => this.SearchKeyWordFunctionMedicineForm(enteredText)}
+                          multiline={false}
+                        />
+
                       </Form>
+                     
                     </Col>
-                    <Col>
+                    <Col style={{ marginLeft: 5 }}>
                       <Text style={styles.NumText}>Strength of Medicine</Text>
-                      <Form style={{ marginTop: 5 }}>
-                        <View picker style={{ height: 40, width: 150, justifyContent: 'center', backgroundColor: '#F1F1F1', borderRadius: 5 }}>
-                          <Picker
-                            mode="dropdown"
-                            style={{ width: undefined }}
-                            placeholder="Select your SIM"
-                            placeholderStyle={{ color: "#bfc6ea" }}
-                            placeholderIconColor="#007aff"
-                            onValueChange={(sample) => { this.setState({ selectMedicineStrength: sample }) }}
-                            selectedValue={selectMedicineStrength}
-                            testID="editMedicineStrength"
-                          >
-                            {medicineStrengthType.map((value, key) => {
-                              return <Picker.Item label={String(value)} value={String(value)} key={key}
-                              />
-                            })
-                            }
-                          </Picker>
-                        </View>
+                      <Form style={{
+                        marginTop: 5, borderColor: '#909090',
+                        borderWidth: 0.5, height: 35, borderRadius: 5
+                      }}>
+
+                        <TextInput style={styles.autoField}
+                          placeholder="Medicine Strength"
+                          style={{ fontSize: 12, }}
+                          placeholderTextColor="#C1C1C1"
+                          keyboardType={'default'}
+                          returnKeyType={'go'}
+                          value={this.state.selectMedicineStrength}
+                          autoFocus={true}
+                          onChangeText={enteredText => this.SearchKeyWordFunctionMedicineStrength(enteredText)}
+                          multiline={false}
+                        />
+
                       </Form>
+                      
                     </Col>
                   </Row>
 
@@ -833,7 +860,8 @@ const styles = StyleSheet.create({
     backgroundColor: '#F1F1F1',
     paddingLeft: 10,
     borderRadius: 5,
-    marginTop: 5
+    marginTop: 5,
+
   },
   medicineenabletext: {
     backgroundColor: '#fff',
