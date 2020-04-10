@@ -34,6 +34,7 @@ class AvailableDoctors4Chat extends Component {
             this.searchAvailableDoctorsByKeywords('Primary'),
         ]);
     }
+  
     searchAvailableDoctorsByKeywords = async (searchKeyword) => {
         const userId = await AsyncStorage.getItem('userId');
         const searchedInputValues = [

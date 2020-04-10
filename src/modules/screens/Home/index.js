@@ -495,7 +495,7 @@ class Home extends Component {
 
                     <Grid style={{ flex: 1, marginLeft: 10, marginRight: 20, marginTop: 10 }}>
                     <Col style={{ width: '33%', marginLeft: 5 }}>
-                            <TouchableOpacity onPress={() => this.props.navigation.navigate("Video Consulting Service")}>
+                            <TouchableOpacity onPress={() => this.props.navigation.navigate("Video and Chat Service")}>
                                 <Card style={{ borderRadius: 2, overflow: 'hidden' }}>
                                     <Row style={styles.rowStyle}>
                                         <Image
