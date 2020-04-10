@@ -78,6 +78,7 @@ class ChosePharmacyList extends Component {
             })
         } else {
             let temp=[];
+            
             let value=pharmacyData[selectedPharmacy]
             value.PrescriptionId=prescriptionDetails._id
             value.prescription_ref_no=prescriptionDetails.prescription_ref_no

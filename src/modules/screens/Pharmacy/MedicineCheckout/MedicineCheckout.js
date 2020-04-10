@@ -34,7 +34,7 @@ class MedicineCheckout extends Component {
             isPrescription: false,
             isPharmacyRecomentation: false,
             recommentationData: [],
-   
+
 
 
         };
@@ -122,7 +122,7 @@ class MedicineCheckout extends Component {
 
     onProceedToPayment(navigationToPayment) {
         debugger
-        const { medicineDetails, selectedAddress, mobile_no, full_name, medicineTotalAmountwithDeliveryChage, itemSelected, isPrescription ,isPharmacyRecomentation,recommentationData} = this.state;
+        const { medicineDetails, selectedAddress, mobile_no, full_name, medicineTotalAmountwithDeliveryChage, itemSelected, isPrescription, isPharmacyRecomentation, recommentationData } = this.state;
         if (medicineDetails.length === 0) {
             Toast.show({
                 text: 'No Medicines Added to Checkout',
@@ -150,6 +150,7 @@ class MedicineCheckout extends Component {
                 medicineOrderData.push({
                     medicine_id: ele.medicine_id,
                     pharmacy_id: ele.pharmacy_id,
+                    medicine_variation_id: ele.medicine_variation_id,
                     medicine_original_price: Number(ele.price),
                     medicine_offered_price: Number(ele.offeredAmount),
                     quantity: Number(ele.userAddedMedicineQuantity),
@@ -197,22 +198,24 @@ class MedicineCheckout extends Component {
         if (isPrescription === true) {
             console.log(medicineDetails[0].PrescriptionId)
             paymentPageRequestData.bookSlotDetails.prescription_id = medicineDetails[0].PrescriptionId
+            paymentPageRequestData.bookSlotDetails.pharmacy_id = medicineDetails[0].pharmacyInfo.pharmacy_id
+
 
         }
-        if(isPharmacyRecomentation===true){
-            pharmacy_ids=[]
-            recommentationData.map(ele=>{
+        if (isPharmacyRecomentation === true) {
+            pharmacy_ids = []
+            recommentationData.map(ele => {
                 pharmacy_ids.push(ele.pharmacy_id)
             })
             if (itemSelected === 'STORE_PICKUP') {
-            paymentPageRequestData.amount=recommentationData[0].medicine_total_amount
+                paymentPageRequestData.amount = recommentationData[0].medicine_total_amount
             }
-            else{
-                paymentPageRequestData.amount=recommentationData[0].medicine_total_amount+deliveryDetails.delivery_charges+deliveryDetails.delivery_tax
+            else {
+                paymentPageRequestData.amount = recommentationData[0].medicine_total_amount + deliveryDetails.delivery_charges + deliveryDetails.delivery_tax
 
             }
-            paymentPageRequestData.bookSlotDetails.fee=recommentationData[0].medicine_total_amount;
-            paymentPageRequestData.bookSlotDetails.pharmacy_ids=pharmacy_ids
+            paymentPageRequestData.bookSlotDetails.fee = recommentationData[0].medicine_total_amount;
+            paymentPageRequestData.bookSlotDetails.pharmacy_ids = pharmacy_ids
         }
 
         console.log(paymentPageRequestData)
@@ -301,8 +304,13 @@ class MedicineCheckout extends Component {
 
     selectedItem(value) {
         if (value == 'HOME_DELIVERY') {
+            let selectedAddress=null
             medicineTotalAmountwithDeliveryChage = this.state.medicineTotalAmount + this.state.deliveryDetails.delivery_tax + this.state.deliveryDetails.delivery_charges
-            this.setState({ medicineTotalAmountwithDeliveryChage, itemSelected: value })
+             if(this.state.deliveryAddressArray.length!==0){
+                selectedAddress=this.state.deliveryAddressArray[0]
+             }
+            
+            this.setState({ medicineTotalAmountwithDeliveryChage, itemSelected: value ,selectedAddress})
         } else {
 
             this.setState({ medicineTotalAmountwithDeliveryChage: this.state.medicineTotalAmount, itemSelected: value, selectedAddress: this.state.pharmacyInfo })
@@ -523,7 +531,7 @@ class MedicineCheckout extends Component {
                                         </Col>
                                         <Col size={5} style={{ alignItems: 'flex-end', justifyContent: 'flex-end' }}>
                                             {isPrescription === false ?
-                                                <Text style={{ fontFamily: 'OpenSans', fontSize: 10, color: '#8dc63f', textAlign: 'right' }}>{'₹' +( medicineTotalAmountwithDeliveryChage||' ')} </Text>
+                                                <Text style={{ fontFamily: 'OpenSans', fontSize: 10, color: '#8dc63f', textAlign: 'right' }}>{'₹' + (medicineTotalAmountwithDeliveryChage || ' ')} </Text>
                                                 : itemSelected === 'HOME_DELIVERY' ?
                                                     <Text style={{ fontFamily: 'OpenSans', fontSize: 10, color: '#8dc63f', textAlign: 'right' }}>{'your prescription amount added with ' + (deliveryDetails != null ? (deliveryDetails.delivery_tax + deliveryDetails.delivery_charges) : ' ')}} </Text>
                                                     : <Text style={{ fontFamily: 'OpenSans', fontSize: 10, color: '#8dc63f', textAlign: 'right' }}>{'your prescription amount added later'} </Text>
@@ -531,14 +539,14 @@ class MedicineCheckout extends Component {
                                         </Col>
                                     </Row>
                                 </View>{
-                                  recommentationData.length !== 0 ?
-                                        <Row style={{  paddingRight: 20, marginTop: 5, alignItems: 'center', }}>
+                                    recommentationData.length !== 0 ?
+                                        <Row style={{ paddingRight: 20, marginTop: 5, alignItems: 'center', }}>
 
                                             <Checkbox color="green"
                                                 status={isPharmacyRecomentation ? 'checked' : 'unchecked'}
                                                 onPress={() => { this.setState({ isPharmacyRecomentation: !isPharmacyRecomentation }); }}
                                             />
-                                            <Text style={{ fontFamily: 'OpenSans', fontSize: 13, }}>{'Above order you will get Rs' + recommentationData[0].medicine_total_amount + 'do you select'}</Text>
+                                            <Text style={{ fontFamily: 'OpenSans', fontSize: 13, }}>{'Above order you will get Rs' + recommentationData[0].medicine_total_amount + ' do you select'}</Text>
                                         </Row> : null
                                 }
                             </View> : <Text style={{ fontFamily: 'OpenSans', fontSize: 24, color: '#6a6a6a', marginTop: "40%", marginLeft: 55, alignContent: 'center' }}>No orders Available</Text>

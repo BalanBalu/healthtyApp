@@ -106,11 +106,11 @@ export class AddToCard extends Component {
             let temp = {
                 ...data,
                 ...value,
-                offeredAmount : medicineRateAfterOffer(value)
+                offeredAmount: medicineRateAfterOffer(value)
             }
             // data.offeredAmount = medicineRateAfterOffer(value),
 
-         
+
 
             userAddedMedicineQuantity = userAddedMedicineQuantity === 0 ? temp.userAddedMedicineQuantity || 1 : userAddedMedicineQuantity
             userAddedTotalMedicineAmount = userAddedMedicineQuantity * temp.offeredAmount
@@ -186,12 +186,9 @@ export class AddToCard extends Component {
 
                                                     {data.variations.map((ele, key) => {
 
-                                                        return <Picker.Item label={String(ele.medicine_weight)} value={ele} key={key} />
+                                                        return <Picker.Item label={String(ele.medicine_weight) + String(ele.medicine_weight_unit)} value={ele} key={key} />
                                                     })}
-                                                    {/* <Picker.Item label="1 MG" value="key0" />
-                                    <Picker.Item label="2 MG" value="key1" />
-                                    <Picker.Item label="3 MG" value="key2" />
-                                    <Picker.Item label="4 MG" value="key3" /> */}
+
                                                 </Picker>
                                             </Col>
                                             : null}

@@ -65,10 +65,22 @@ class PharmacyHome extends Component {
                 "coordinates": locationCordinates,
                 "maxDistance": MAX_DISTANCE_TO_COVER
             }
-            let result = await getPopularMedicine(userId,  JSON.stringify(locationData));
+            let result = await getPopularMedicine(userId, JSON.stringify(locationData));
             if (result.success) {
+               
+                // temp = result.data.medPharDetailInfo
+
+                // mergeObject = Object.assign(temp, result.data.medPharDetailInfo.variations[0])
+                // let tempObject = {
+                //     ...result.data,
+                //     medPharDetailInfo: mergeObject
+
+                // }
                 this.setState({ medicineData: result.data })
-                console.log("medicineData", this.state.medicineData)
+                console.log("=================================================")
+                console.log(JSON.stringify(this.state.medicineData))
+          
+               
                 let cart = await AsyncStorage.getItem('cartItems-' + userId) || []
                 const { navigation } = this.props;
                 setCartItemCountOnNavigation(navigation);
@@ -304,68 +316,68 @@ class PharmacyHome extends Component {
                                                     pharmacyId: item.pharmacyInfo.pharmacy_id,
                                                     medicineData: item
                                                 })}>
-                                            <Col size={5} style={{ backgroundColor: '#fff', marginLeft: 5, height: '100%' }}>
+                                                <Col size={5} style={{ backgroundColor: '#fff', marginLeft: 5, height: '100%' }}>
 
-                                                <Row>
-                                                    <Col size={9} style={{ alignItems: 'center' }}>
-                                                        <Image source={renderMedicineImage(item.medPharDetailInfo)}
-                                                            style={{ height: 80, width: 70, marginLeft: 5, marginTop: 2.5 }} />
-                                                    </Col>
-                                                    {item.medPharDetailInfo.discount_type != undefined ?
-                                                        <Col size={1} style={{ position: 'absolute', alignContent: 'flex-end', marginTop: -10, marginLeft: 120 }}>
-                                                            <Image
-                                                                source={require('../../../../../assets/images/Badge.png')}
-                                                                style={{
-                                                                    width: 45, height: 45, alignItems: 'flex-end'
-                                                                }}
+                                                    <Row>
+                                                        <Col size={9} style={{ alignItems: 'center' }}>
+                                                            <Image source={renderMedicineImage(item.medPharDetailInfo)}
+                                                                style={{ height: 80, width: 70, marginLeft: 5, marginTop: 2.5 }} />
+                                                        </Col>
+                                                        {item.medPharDetailInfo.discount_type != undefined ?
+                                                            <Col size={1} style={{ position: 'absolute', alignContent: 'flex-end', marginTop: -10, marginLeft: 120 }}>
+                                                                <Image
+                                                                    source={require('../../../../../assets/images/Badge.png')}
+                                                                    style={{
+                                                                        width: 45, height: 45, alignItems: 'flex-end'
+                                                                    }}
+                                                                />
+                                                                <Text style={styles.offerText}>{item.medPharDetailInfo.discount_value}</Text>
+                                                                <Text style={styles.offText}>{item.medPharDetailInfo.discount_type == 'PERCENTAGE' ? "OFF" : "Rs"}</Text>
+                                                            </Col> : null}
+                                                    </Row>
+
+
+                                                    <Row style={{ alignSelf: 'center', marginTop: 5 }} >
+                                                        <Text style={styles.mednames}>{item.medInfo.medicine_name}</Text>
+                                                    </Row>
+                                                    <Row style={{ alignSelf: 'center' }} >
+                                                        <Text style={styles.hosname}>{item.pharmacyInfo.name}</Text>
+                                                    </Row>
+                                                    <Row style={{ alignSelf: 'center', marginTop: 2 }}>
+                                                        <Text style={item.medPharDetailInfo.discount_type != undefined ? styles.oldRupees : styles.newRupees}>₹{item.medPharDetailInfo.price}</Text>
+                                                        {item.medPharDetailInfo.discount_type != undefined ?
+                                                            <Text style={styles.newRupees}>₹{medicineRateAfterOffer(item.medPharDetailInfo)}</Text> : null}
+                                                    </Row>
+
+                                                    <Row style={{ marginBottom: 5, marginTop: 5, alignSelf: 'center' }}>
+                                                        {cartItems.length == 0 || cartItems.findIndex(ele => ele.medicine_id == item.medPharDetailInfo.medicine_id && ele.pharmacy_id == item.medPharDetailInfo.pharmacy_id) === -1 ?
+                                                            <TouchableOpacity style={styles.addCartTouch}
+                                                                onPress={() => { this.setState({ isAddToCart: true }), this.selectedItems(item, 'Add to Card') }} >
+
+                                                                <Icon name='ios-cart' style={{ color: '#4e85e9', fontSize: 11, marginLeft: 3.5, paddingTop: 2.3 }} />
+                                                                <Text style={styles.addCartText}>Add to Cart</Text>
+
+                                                            </TouchableOpacity> :
+                                                            <TouchableOpacity style={styles.addCartTouch}
+                                                                onPress={() => { this.setState({ isAddToCart: true }), this.selectedItems(item, 'Add to Card', cartItems.findIndex(ele => ele.medicine_id == item.medPharDetailInfo.medicine_id && ele.pharmacy_id == item.medPharDetailInfo.pharmacy_id)) }} >
+
+                                                                <Icon name='ios-cart' style={{ color: '#4e85e9', fontSize: 11, marginLeft: 3.5, paddingTop: 2.3 }} />
+                                                                <Text style={styles.addCartText}>{'Added ' + cartItems[cartItems.findIndex(ele => ele.medicine_id == item.medPharDetailInfo.medicine_id && ele.pharmacy_id == item.medPharDetailInfo.pharmacy_id)].userAddedMedicineQuantity}</Text>
+
+                                                            </TouchableOpacity>}
+
+                                                        <TouchableOpacity style={styles.buyNowTouch} onPress={() => { this.setState({ isBuyNow: true }), this.selectedItems(item, 'Buy Now') }} >
+                                                            <Icon name="ios-cart" style={{ fontSize: 12, color: '#fff' }} />
+                                                            <Text style={styles.BuyNowText}>Buy Now</Text>
+                                                        </TouchableOpacity>
+                                                        {this.state.isBuyNow == true || this.state.isAddToCart == true ?
+                                                            <AddToCard
+                                                                data={this.state.selectedMedcine}
+                                                                popupVisible={(data) => this.getVisible(data)}
                                                             />
-                                                            <Text style={styles.offerText}>{item.medPharDetailInfo.discount_value}</Text>
-                                                            <Text style={styles.offText}>{item.medPharDetailInfo.discount_type == 'PERCENTAGE' ? "OFF" : "Rs"}</Text>
-                                                        </Col> : null}
-                                                </Row>
-
-
-                                                <Row style={{ alignSelf: 'center', marginTop: 5 }} >
-                                                    <Text style={styles.mednames}>{item.medInfo.medicine_name}</Text>
-                                                </Row>
-                                                <Row style={{ alignSelf: 'center' }} >
-                                                    <Text style={styles.hosname}>{item.pharmacyInfo.name}</Text>
-                                                </Row>
-                                                <Row style={{ alignSelf: 'center', marginTop: 2 }}>
-                                                    <Text style={item.medPharDetailInfo.discount_type != undefined ? styles.oldRupees : styles.newRupees}>₹{item.medPharDetailInfo.price}</Text>
-                                                    {item.medPharDetailInfo.discount_type != undefined ?
-                                                        <Text style={styles.newRupees}>₹{medicineRateAfterOffer(item.medPharDetailInfo)}</Text> : null}
-                                                </Row>
-
-                                                <Row style={{ marginBottom: 5, marginTop: 5, alignSelf: 'center' }}>
-                                                    {cartItems.length == 0 || cartItems.findIndex(ele => ele.medicine_id == item.medPharDetailInfo.medicine_id && ele.pharmacy_id == item.medPharDetailInfo.pharmacy_id) === -1 ?
-                                                        <TouchableOpacity style={styles.addCartTouch}
-                                                            onPress={() => { this.setState({ isAddToCart: true }), this.selectedItems(item, 'Add to Card') }} >
-
-                                                            <Icon name='ios-cart' style={{ color: '#4e85e9', fontSize: 11, marginLeft: 3.5, paddingTop: 2.3 }} />
-                                                            <Text style={styles.addCartText}>Add to Cart</Text>
-
-                                                        </TouchableOpacity> :
-                                                        <TouchableOpacity style={styles.addCartTouch}
-                                                            onPress={() => { this.setState({ isAddToCart: true }), this.selectedItems(item, 'Add to Card', cartItems.findIndex(ele => ele.medicine_id == item.medPharDetailInfo.medicine_id && ele.pharmacy_id == item.medPharDetailInfo.pharmacy_id)) }} >
-
-                                                            <Icon name='ios-cart' style={{ color: '#4e85e9', fontSize: 11, marginLeft: 3.5, paddingTop: 2.3 }} />
-                                                            <Text style={styles.addCartText}>{'Added ' + cartItems[cartItems.findIndex(ele => ele.medicine_id == item.medPharDetailInfo.medicine_id && ele.pharmacy_id == item.medPharDetailInfo.pharmacy_id)].userAddedMedicineQuantity}</Text>
-
-                                                        </TouchableOpacity>}
-
-                                                    <TouchableOpacity style={styles.buyNowTouch} onPress={() => { this.setState({ isBuyNow: true }), this.selectedItems(item, 'Buy Now') }} >
-                                                        <Icon name="ios-cart" style={{ fontSize: 12, color: '#fff' }} />
-                                                        <Text style={styles.BuyNowText}>Buy Now</Text>
-                                                    </TouchableOpacity>
-                                                    {this.state.isBuyNow == true || this.state.isAddToCart == true ?
-                                                        <AddToCard
-                                                            data={this.state.selectedMedcine}
-                                                            popupVisible={(data) => this.getVisible(data)}
-                                                        />
-                                                        : null}
-                                                </Row>
-                                            </Col>
+                                                            : null}
+                                                    </Row>
+                                                </Col>
                                             </Row>
                                         } />
                                 }
