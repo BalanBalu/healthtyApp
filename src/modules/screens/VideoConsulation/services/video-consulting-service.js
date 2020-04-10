@@ -8,6 +8,7 @@ export const fetchAvailableDoctors4Video = async (docIds) => {
         if(docIds) {
             endPoint = endPoint + '&doctorIds=' + docIds
         }
+        console.log(endPoint);
         let response = await getService(endPoint);
         let respData = response.data;
         return respData;

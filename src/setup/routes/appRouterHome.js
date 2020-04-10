@@ -681,7 +681,7 @@ const HomeStack = createStackNavigator({
       gesturesEnabled: false
     }
   },
-  'Video Consulting Service': {
+  'Video and Chat Service': {
     screen: AvailableDoctors4Video,
     navigationOptions: {
       title: 'Video Consulting Serivce'
@@ -743,10 +743,7 @@ const DrawerNavigator = createDrawerNavigator({
   "My Chats": {
     screen: MyChats
   },
-  "Chat Service": {
-    screen: AvailableDoctors4Chat
-  },
-  'Video Consulting Service' : {
+  'Video and Chat Service' : {
     screen: AvailableDoctors4Video
   },
   'My Video Consultations': {
@@ -785,11 +782,10 @@ export const DragwerLogos = {
   "Medicine Orders": require('../../../assets/images/drawerIcons/Orders.png'),
   Reminder: require('../../../assets/images/drawerIcons/Reminder.png'),
   "My Chats": require('../../../assets/images/drawerIcons/Chat.png'),
-  "Chat Service": require('../../../assets/images/drawerIcons/Chat.png'),
   "Blood Donors": require('../../../assets/images/drawerIcons/Blooddonars.png'),
   'CORONO Status': require('../../../assets/images/drawerIcons/Pharmacy.png'),
   'My Video Consultations': require('../../../assets/images/drawerIcons/Appointments.png'),
-  'Video Consulting Service': require('../../../assets/images/drawerIcons/Appointments.png'),
+  'Video and Chat Service': require('../../../assets/images/drawerIcons/Appointments.png'),
 }
 export default createAppContainer(createSwitchNavigator(
   {
