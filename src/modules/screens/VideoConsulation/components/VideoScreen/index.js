@@ -26,22 +26,34 @@ import { SET_VIDEO_SESSION } from '../../../../providers/chat/chat.action';
       isActiveCall: false,
       isIncomingCall: false,
     };
-    
+    this.callToUser = props.navigation.getParam("callToUser") || false;
     this._setUpListeners();
   
   }
   componentDidMount() {
     CallService.setKeepScreenOn(true);
+    BackHandler.addEventListener('hardwareBackPress', this.handleBackButton);
+    if(this.callToUser) {
+      userMedflicNdConnecticubeData = this.props.navigation.getParam("videoConsulationData");
+      console.log(userMedflicNdConnecticubeData);
+      if(userMedflicNdConnecticubeData.doctorInfo && userMedflicNdConnecticubeData.doctorInfo.connectycube) {
+        CallService.setKeepScreenOn(true);
+        const connectyCubeUserId = userMedflicNdConnecticubeData.doctorInfo.connectycube.connectycube_id;
+        this.selectUser(connectyCubeUserId);
+        this.startCall([userMedflicNdConnecticubeData.doctorInfo.connectycube.connectycube_id])
+      } else {
+        alert('We are Not able connect to the user at this time');
+      }
+    }
+
     store.subscribe(() => {
       const { chat: { session } } = this.props;
       if(session && this.steamSubscribeLoadedUsers.indexOf(session.userId) === -1) {
-          console.log('Coming here boss');
           this.setRemoteListener(session.userId, session.stream);
           this.steamSubscribeLoadedUsers.push(session.userId);
       }
     });
-    BackHandler.addEventListener('hardwareBackPress', this.handleBackButton);
-    
+   
     const { navigation } = this.props;
     const isIncomingCall = navigation.getParam('isIncomingCall') || false;
     if(isIncomingCall) {
@@ -241,6 +253,15 @@ import { SET_VIDEO_SESSION } from '../../../../providers/chat/chat.action';
       })
       .catch(this.hideInomingCallModal);
   }
+  startCall = (selectedUsersIds) => {
+    if (selectedUsersIds.length === 0) {
+      CallService.showToast('Select at less one user to start Videocall');
+    } else {
+      this.closeSelect();
+      this.initRemoteStreams(selectedUsersIds);
+      CallService.startCall(selectedUsersIds).then(this.setLocalStream);
+    }
+  };
   render() {
     const {
       localStream,

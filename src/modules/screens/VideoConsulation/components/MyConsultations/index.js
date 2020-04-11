@@ -72,6 +72,12 @@ class VideoConsultaions extends Component {
         } finally {
             this.setState({ isLoading: false })
         }		
+	}
+	callDoctor(videoConsulationData) {
+        this.props.navigation.navigate('VideoScreen', {
+            callToUser: true,
+            videoConsulationData: videoConsulationData
+        })
     }
     
     renderConsultaions(item, index) {
@@ -89,36 +95,17 @@ class VideoConsultaions extends Component {
                             <Text note style={styles.docNameText}>Rs. {item.fee}</Text>
                         </Col>
                     </Row>
-                        {/* {item.status === POSSIBLE_VIDEO_CONSULTING_STATUS.PENDING ?
-                            <Row style={{ marginLeft: '22%' }} >
-                           
-                                <Button iconLeft style={[styles.actionButton, { backgroundColor: '#08BF01'  }]} 
-                                     onPress={() => this.doAccept(item, POSSIBLE_VIDEO_CONSULTING_STATUS.APPROVED, index)}>
-								     <Icon style={{ marginTop: -5 }} name={IS_ANDROID ? 'md-checkmark-circle' : 'ios-checkmark-circle' }  />
-                                    <Text style={[styles.buttonText1, {  marginLeft: -10 }]}>Approve</Text>
-							    </Button>
-                                <Button style={[styles.actionButtonCancel, { marginLeft: 20 }]} 
-                                     onPress={() => this.doAccept(item, POSSIBLE_VIDEO_CONSULTING_STATUS.REJECTED, index)}>
-                                          <Icon style={{ marginTop: -5 }} name={IS_ANDROID ? 'md-close-circle' : 'ios-close-circle' }  />
-								    <Text style={[styles.buttonText1,  { marginLeft: -25 }]}>Reject</Text>
-							    </Button>
-						    </Row>
-                        : 
+                     {
                         item.status === POSSIBLE_VIDEO_CONSULTING_STATUS.APPROVED ? 
                             <Row style={{ marginLeft: '22%' }} >
                                 <Button primary iconLeft style={[styles.actionButton, { backgroundColor: '#08BF01'  }]} 
-                                     onPress={() => this.callUser(item)}>
+                                     onPress={() => this.callDoctor(item)}>
 								    <Icon style={{ marginTop: -5}} name={IS_ANDROID ? 'md-call' : 'ios-call' }  />
                                     <Text style={[styles.buttonText1, {  marginLeft: -10  }]}>Call</Text>
 							    </Button>
-                                <Button primary iconLeft style={[styles.actionButton, { marginLeft: 20 }]} 
-                                     onPress={() => this.doAccept(item, POSSIBLE_VIDEO_CONSULTING_STATUS.COMPLETED, index)}>
-								    <Icon style={{ marginTop: -5, fontWeight: 'bold' }} name={IS_ANDROID ? 'md-cloud-done' : 'ios-cloud-done' }  />
-                                    <Text style={[styles.buttonText1,{ marginLeft: -12 } ] }>Complete</Text>
-							    </Button>
                             </Row>
                         : null    
-                        }  */}
+                        }
                     </Col>
                     <Col style={{ width: '20%', alignItems: 'center' }}>
                         <Icon name={STATUS_VALUE_DATA[item.status].icon} 
