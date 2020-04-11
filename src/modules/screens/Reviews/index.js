@@ -53,8 +53,9 @@ class Reviews extends Component {
         )
     }
 
+    
     render() {
-       
+        
         return (
             <Container style={styles.container}>
                 <Content style={styles.bodyContent}>
@@ -66,6 +67,7 @@ class Reviews extends Component {
                     keyExtractor={(item, index) => index.toString()}
                     renderItem={({item})=>
                         <RenderReviewData 
+                            navigation={this.props.navigation}
                             item={item}
                             userId={this.state.userId}
                             refreshCount={()=> this.setState({ refreshCount : this.state.refreshCount + 1}) }
