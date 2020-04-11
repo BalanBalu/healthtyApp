@@ -305,6 +305,15 @@ onBookButtonPress4PaymentChat = async (doctorId, fee) => {
     }
     return false;
    }
+
+   checkBothSeriveFreeFor2ShowPremiumBatch(item) {
+    if ( (item && item.availabilityData && item.availabilityData[0] && item.availabilityData[0].fee === 0 ) 
+        && (item && item.chat_service_config && item.chat_service_config.chat_fee === 0 ) 
+    ) {
+       return true;
+    }
+    return false;
+   }
    renderAvailableDoctors(item) {
        const isPremium = this.checkAnySeriveFreeFor2ShowPremiumBatch(item);
        
@@ -323,11 +332,18 @@ onBookButtonPress4PaymentChat = async (doctorId, fee) => {
 
                                 <Col style={{ width: '80%' }}>
                                     <Row>
-                                        <Text style={styles.docname}>{item.prefix || ''} {item.first_name || ''} {item.last_name || ''}{'  '}
+                                        <Col size={6}>
+                                        <Text style={styles.docname}>{item.prefix || ''} {item.first_name || ''} {item.last_name || ''}{'  '}</Text>
+                                        </Col>
+                                        <Col size={4}>
+                                        <Row style={{justifyContent:'center'}}>
                                         {isPremium === true ? 
-                                        <Text style={{ paddingLeft: 5, paddingRight: 5, fontSize: 10, fontFamily: 'OpenSans', marginLeft: 5, backgroundColor: '#F3EBF8', justifyContent: 'space-between' }}>
-                                            {'  '}SPONSORED{'  '}</Text> : null }
-                                        </Text>
+                                        <Text style={{ paddingLeft: 5, paddingRight: 5, fontSize: 10, fontFamily: 'OpenSans', marginLeft: 5, backgroundColor: '#8EC63F',borderRadius:10,color:'#fff',height:15,marginTop:3}}>
+                                            SPONSORED</Text> : null }
+                                            </Row>
+                                        </Col>
+                                        
+                                           
                                     </Row>
                                     <Row style={{ marginTop: 2 }}>
                                         <Text style={styles.docname}>{ 'Specialist in '} 
@@ -335,22 +351,41 @@ onBookButtonPress4PaymentChat = async (doctorId, fee) => {
                                         </Text>
                                     </Row>
                                 
-                                    <Row>
-                                       {item.availableForChat === true ? <Col style={ { width: '40%' } }>
+                                    <Row style={{justifyContent:'center',marginRight:5}}>
+                                    { item.chat_service_config.chat_fee === 0 || this.getVideoConsultFee(item) === 0 ?
+                                        <Col size={4.5} style={{justifyContent:'center'}}>
+                                            <Row style={{justifyContent:'center'}}>
+                                            <Col size={1}  style={{justifyContent:'center'}}>
+                                            <Icon name="ios-checkmark" style={{fontSize:30,color:'#8EC63F',marginTop:6}}/>
+                                                </Col>
+                                                <Col size={9}  style={{justifyContent:'center'}}>
+                                                <Text style={{color: '#8EC63F', fontSize: 12,  fontWeight: 'bold', fontFamily: 'OpenSans', marginLeft: 2,marginTop:6}}>Free Consultation !</Text>
+                                                </Col>
+                                            </Row>
+                                        </Col>
+                                        :null}
+                                        <Col size={5.5} style={{flexDirection:'row',}}>
+                                        {item.availableForChat === true ? <Col size={5}>
+                                        <Row>
                                             <TouchableOpacity onPress={() => this.onBookButtonPress4PaymentChat(item.doctor_id, item.chat_service_config.chat_fee)}
-                                                style={{ textAlign: 'center', borderColor: '#5A89B6', borderWidth: 1, marginTop: 10, borderRadius: 20, height: 25, justifyContent: 'center', flexDirection: 'row' }}>
-                                                <Icon name="ios-call" style={{ color: '#5A89B6', fontSize: 15, marginTop: 5 }} />
-                                                <Text style={{ textAlign: 'center', color: '#5A89B6', fontSize: 12, padding: 3, fontWeight: 'bold', fontFamily: 'OpenSans', marginLeft: 2 }}>{ item.chat_service_config.chat_fee === 0 ? 'Free Consult' :  `Chat - ₹ ${item.chat_service_config.chat_fee}` }</Text>
+                                                style={ styles.ButtonStyle  }>
+                                                <Icon name="ios-chatboxes" style={{ color: '#5A89B6', fontSize: 15, marginTop: 2 }} />
+                                                <Text  style={ item.chat_service_config.chat_fee === 0 ? styles.SponsorText : styles.TextStyle  }>{ item.chat_service_config.chat_fee === 0 ? 'Free Consult' :  `Chat - ₹ ${item.chat_service_config.chat_fee}` }</Text>
                                             </TouchableOpacity>
+                                            </Row>
                                         </Col> : null }
                                         
-                                       {item.availableForVideo === true  ? <Col style={{ marginLeft: 10, width: '40%' }}>
+                                       {item.availableForVideo === true  ? <Col size={5} style={{ marginLeft: 5,}}>
+                                           <Row>
                                             <TouchableOpacity onPress={() => this.onBookButtonPress4PaymentVideo(item.doctor_id, this.getVideoConsultFee(item))}
-                                                style={{ textAlign: 'center', borderColor: '#5A89B6', borderWidth: 1, marginTop: 10, borderRadius: 20, height: 25, justifyContent: 'center', flexDirection: 'row' }}>
-                                                <Icon name="ios-videocam" style={{ color: '#5A89B6', fontSize: 15, marginTop: 5 }} />
-                                                <Text style={{ textAlign: 'center', color: '#5A89B6', fontSize: 12, padding: 3, fontWeight: 'bold', fontFamily: 'OpenSans', marginLeft: 2 }}> {this.getVideoConsultFee(item) === 0 ? 'Free Consult' : `Video - ₹ ${this.getVideoConsultFee(item)}`}</Text>
+                                                style={{ textAlign: 'center', borderColor: '#5A89B6', borderWidth: 1, marginTop: 10, borderRadius: 20, height: 25, justifyContent: 'center', flexDirection: 'row',paddingLeft:6,paddingRight:6,paddingTop:2,paddingBottom:2 }}>
+                                                <Icon name="ios-videocam" style={{ color: '#5A89B6', fontSize: 15, marginTop: 2 }} />
+                                                <Text style={{ textAlign: 'center', color: '#5A89B6', fontSize: 8, fontWeight: 'bold', fontFamily: 'OpenSans', marginLeft: 1,marginTop:4}}> {this.getVideoConsultFee(item) === 0 ? 'Free Consult' : `Video - ₹ ${this.getVideoConsultFee(item)}`}</Text>
                                             </TouchableOpacity>
+                                            </Row>
                                         </Col> : null } 
+                                        </Col>
+                                    
                                     </Row>
                                 </Col>
 
@@ -513,6 +548,51 @@ const styles = StyleSheet.create({
         borderBottomRightRadius: 20,
         marginTop: 2,
         marginBottom: 2
+    },
+    ButtonStyle:{
+        textAlign: 'center', 
+        borderColor: '#5A89B6', 
+        borderWidth: 1, 
+        marginTop: 10, 
+        borderRadius: 20, 
+        height: 25, 
+        justifyContent: 'center', 
+        flexDirection: 'row',
+        paddingLeft:6,
+        paddingRight:6,
+        paddingTop:2,
+        paddingBottom:2
+    },
+    ButtonStyleSponsor:{
+        textAlign: 'center', 
+        borderColor: '#8EC63F', 
+        borderWidth: 1, 
+        marginTop: 8, 
+        borderRadius: 20, 
+        height: 25, 
+        justifyContent: 'center', 
+        flexDirection: 'row',
+      
+      
+    },
+    SponsorText:{
+        textAlign: 'center', 
+        color: '#8EC63F', 
+        fontSize: 8, 
+        fontWeight: 'bold', 
+        fontFamily: 'OpenSans', 
+        marginLeft: 1,
+        marginTop:4
+        
+    },
+    TextStyle:{
+        textAlign: 'center', 
+        color: '#5A89B6', 
+        fontSize: 10, 
+        fontWeight: 'bold', 
+        fontFamily: 'OpenSans', 
+        marginLeft: 1,
+        marginTop:4
     }
 
 })
