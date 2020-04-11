@@ -108,8 +108,8 @@ android {
         applicationId "com.medflic"
         minSdkVersion rootProject.ext.minSdkVersion
         targetSdkVersion rootProject.ext.targetSdkVersion
-        versionCode 9
-        versionName "1.9"
+        versionCode 12
+        versionName "1.12"
         multiDexEnabled true
     }
     splits {
@@ -171,7 +171,7 @@ dependencies {
      implementation 'com.facebook.fresco:fresco:1.10.0'
      implementation 'com.facebook.fresco:animated-gif:1.10.0'
     implementation project(':react-native-android-location-enabler')
-    
+    compile "com.android.support:support-v4:${rootProject.ext.supportLibVersion}"
     implementation "com.android.support:appcompat-v7:${rootProject.ext.supportLibVersion}"
     implementation "com.facebook.react:react-native:+"  // From node_modules
     implementation "com.facebook.react:react-native:0.59.10"
