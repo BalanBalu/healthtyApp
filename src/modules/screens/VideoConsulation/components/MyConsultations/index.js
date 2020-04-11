@@ -8,6 +8,7 @@ import { renderDoctorImage, getName } from '../../../../common'
 import { hasLoggedIn } from "../../../../providers/auth/auth.actions";
 import {POSSIBLE_VIDEO_CONSULTING_STATUS, STATUS_VALUE_DATA } from '../../constants';
 import { getVideoConsuting, updateVideoConsuting } from '../../services/video-consulting-service';
+import { formatDate } from  '../../../../../setup/helpers';
 export const IS_ANDROID = Platform.OS === 'android';
 class VideoConsultaions extends Component {
     constructor(props) {
@@ -84,7 +85,12 @@ class VideoConsultaions extends Component {
         return (
             <Card style={styles.mainCard}>
                 <Grid>
-                    <Row>
+                <Row>
+					<Right>
+					  <Text style={styles.dateText}>{formatDate(item.consulting_date, 'DD, MMM YYYY hh:mm a')} </Text>
+				</Right>
+				</Row>
+				<Row>
                   <Col style={{ width: '80%' }}>  
 					<Row style={{ marginBottom : 15 }}>
                         <Col size={3}>
@@ -162,6 +168,10 @@ const styles = StyleSheet.create({
 		borderRadius: 10,
 		marginBottom: 20,
 		
+	},
+	dateText: {
+		fontFamily: 'OpenSans',
+		fontSize: 12,
     },
     docNameText: {
 		fontFamily: 'OpenSans',

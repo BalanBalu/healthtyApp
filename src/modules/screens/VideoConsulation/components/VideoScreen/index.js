@@ -1,5 +1,5 @@
 import React from 'react';
-import {SafeAreaView, StatusBar, BackHandler } from 'react-native';
+import {SafeAreaView, StatusBar, BackHandler,  NativeModules, NativeEventEmitter, DeviceEventEmitter  } from 'react-native';
 import ConnectyCube from 'react-native-connectycube';
 import AwesomeAlert from 'react-native-awesome-alerts';
 import RTCViewGrid from './RTCViewGrid';
@@ -8,6 +8,8 @@ import ToolBar from './ToolBar';
 import { store } from '../../../../../setup/store';
 import { connect } from 'react-redux';
 import { SET_VIDEO_SESSION } from '../../../../providers/chat/chat.action';
+import { Toast } from 'native-base';
+
  class VideoScreen extends React.Component {
   constructor(props) {
     super(props);
@@ -31,6 +33,7 @@ import { SET_VIDEO_SESSION } from '../../../../providers/chat/chat.action';
   
   }
   componentDidMount() {
+    
     CallService.setKeepScreenOn(true);
     BackHandler.addEventListener('hardwareBackPress', this.handleBackButton);
     if(this.callToUser) {
@@ -60,14 +63,18 @@ import { SET_VIDEO_SESSION } from '../../../../providers/chat/chat.action';
       this.showInomingCallModal(CallService.getSession());
       this._extension = CallService.getExtention();
     }
+    Toast.show({
+      text: 'Please Use Your Speaker Phone, as we are not supporting Wiredphone yet',
+      duration: 3000,
+      type: 'warning'
+    })
   }
 
   componentWillUnmount() {
     CallService.setKeepScreenOn(false);
     BackHandler.removeEventListener('hardwareBackPress', this.handleBackButton);
   }
-  componentWillReceiveProps() {
-   
+  componentWillMount() {
   }
   componentDidUpdate(prevProps, prevState) {
     const currState = this.state;
@@ -286,9 +293,7 @@ import { SET_VIDEO_SESSION } from '../../../../providers/chat/chat.action';
       ? [{userId: 'localStream', stream: localStream}]
       : [];
     const streams = [...remoteStreams, ...localStreamItem];
-    console.log(streams);
     CallService.setSpeakerphoneOn(remoteStreams.length > 0);
-
     return (
       <SafeAreaView style={{flex: 1, backgroundColor: 'black'}}>
         <StatusBar backgroundColor="black" barStyle="light-content" />
