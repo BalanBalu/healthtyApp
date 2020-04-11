@@ -65,9 +65,12 @@ async callVideAndChat(doctorIds) {
             availablityMap.set(docChat.doctor_id, docChat);
         }
     })
-    this.setState({ isLoading: false })
-
-    this.setState({ availableVideoDoctors: Array.from(availablityMap.values()) })
+    const sorted = Array.from(availablityMap.values()).sort((eleA,eleB ) => {
+        const eleAVa = this.getMinVideoChatConsultFee(eleA);
+        const eleBVa = this.getMinVideoChatConsultFee(eleB);
+        return eleAVa - eleBVa;
+    })
+    this.setState({ availableVideoDoctors: sorted, isLoading: false})
 }
  searchAvailableDoctorsByKeywords = async(searchKeyword) => {
     try {
@@ -290,6 +293,35 @@ onBookButtonPress4PaymentChat = async (doctorId, fee) => {
            return ''
        }
    }
+   getChatFee(item) {
+       if(item.chat_service_config && item.chat_service_config.chat_fee) {
+           return item.chat_service_config.chat_fee;
+       } else {
+           return ''
+       }
+   }
+   getMinVideoChatConsultFee(item) {
+        let videoFee = null;
+        let chatFee = null;
+        console.log(item);
+        if(item && item.availabilityData && item.availabilityData[0]) {
+            videoFee = Number(item.availabilityData[0].fee);
+        } 
+        if(item.chat_service_config) {
+            if(item.chat_service_config.chat_fee !== undefined && item.chat_service_config.chat_fee !== null && item.chat_service_config.chat_fee !== '') {
+                chatFee = Number(item.chat_service_config.chat_fee);
+            }
+        }
+        if(videoFee !== null && chatFee !== null) {
+            return Math.min(videoFee, chatFee)
+        }
+        if(videoFee !== null) {
+            return videoFee;
+        } 
+        if(chatFee !== null) {
+            return chatFee;
+        }
+   }
    getDoctorCategory(item) {
     if(item.specialist) {
        let specialist =  item.specialist.map(ele => ele.category).join(', ')
@@ -298,8 +330,8 @@ onBookButtonPress4PaymentChat = async (doctorId, fee) => {
     return ''
    }
    checkAnySeriveFreeFor2ShowPremiumBatch(item) {
-    if ( (item && item.availabilityData && item.availabilityData[0] && item.availabilityData[0].fee === 0 ) 
-        || (item && item.chat_service_config && item.chat_service_config.chat_fee === 0 ) 
+    if ( (item && item.availabilityData && item.availabilityData[0] && item.availabilityData[0].fee == 0 ) 
+        || (item && item.chat_service_config && item.chat_service_config.chat_fee == 0 ) 
     ) {
        return true;
     }
@@ -307,8 +339,8 @@ onBookButtonPress4PaymentChat = async (doctorId, fee) => {
    }
 
    checkBothSeriveFreeFor2ShowPremiumBatch(item) {
-    if ( (item && item.availabilityData && item.availabilityData[0] && item.availabilityData[0].fee === 0 ) 
-        && (item && item.chat_service_config && item.chat_service_config.chat_fee === 0 ) 
+    if ( (item && item.availabilityData && item.availabilityData[0] && item.availabilityData[0].fee == 0 ) 
+        && (item && item.chat_service_config && item.chat_service_config.chat_fee == 0 ) 
     ) {
        return true;
     }
@@ -316,6 +348,12 @@ onBookButtonPress4PaymentChat = async (doctorId, fee) => {
    }
    renderAvailableDoctors(item) {
        const isPremium = this.checkAnySeriveFreeFor2ShowPremiumBatch(item);
+       const isBothPremium = this.checkBothSeriveFreeFor2ShowPremiumBatch(item);
+       const isVideoFree = this.getVideoConsultFee(item) === 0;
+       const isChatFree = item.chat_service_config && item.chat_service_config.chat_fee == 0; //&& Number(item.chat_service_config.chat_fee) === 0;
+       if(item.chat_service_config && item.chat_service_config.chat_fee) {
+        //    alert( Number(item.chat_service_config.chat_fee) === 0);
+        }
        
         return (
             <Row style={styles.RowStyle}>
@@ -351,40 +389,49 @@ onBookButtonPress4PaymentChat = async (doctorId, fee) => {
                                         </Text>
                                     </Row>
                                 
-                                    <Row style={{justifyContent:'center',marginRight:5}}>
-                                    { item.chat_service_config.chat_fee === 0 || this.getVideoConsultFee(item) === 0 ?
-                                        <Col size={4.5} style={{justifyContent:'center'}}>
-                                            <Row style={{justifyContent:'center'}}>
-                                            <Col size={1}  style={{justifyContent:'center'}}>
-                                            <Icon name="ios-checkmark" style={{fontSize:30,color:'#8EC63F',marginTop:6}}/>
+                                    <Row>
+                                    { isBothPremium === true ?
+                                        <Col style={{ width: '45%'}}>
+                                            <Row>
+                                            <Col size={1}>
+                                            <Icon name="ios-checkmark" style={{
+                                                fontSize:30,color:'#8EC63F',
+                                                marginTop:6}}/>
                                                 </Col>
                                                 <Col size={9}  style={{justifyContent:'center'}}>
-                                                <Text style={{color: '#8EC63F', fontSize: 12,  fontWeight: 'bold', fontFamily: 'OpenSans', marginLeft: 2,marginTop:6}}>Free Consultation !</Text>
+                                                    <Text style={{color: '#8EC63F', fontSize: 12,  
+                                                        fontWeight: 'bold', 
+                                                        fontFamily: 'OpenSans', 
+                                                        marginLeft: 2,
+                                                        marginTop:6}
+                                                    }>Free Consultation !</Text>
                                                 </Col>
                                             </Row>
                                         </Col>
-                                        :null}
-                                        <Col size={5.5} style={{flexDirection:'row',}}>
-                                        {item.availableForChat === true ? <Col size={5}>
-                                        <Row>
+                                    : null}
+                                     {item.availableForChat === true ? 
+                                      <Col style={[ isBothPremium ?  { width: '25%'} : {  width: '35%'  } , { marginRight: 5}]}>
                                             <TouchableOpacity onPress={() => this.onBookButtonPress4PaymentChat(item.doctor_id, item.chat_service_config.chat_fee)}
-                                                style={ styles.ButtonStyle  }>
-                                                <Icon name="ios-chatboxes" style={{ color: '#5A89B6', fontSize: 15, marginTop: 2 }} />
-                                                <Text  style={ item.chat_service_config.chat_fee === 0 ? styles.SponsorText : styles.TextStyle  }>{ item.chat_service_config.chat_fee === 0 ? 'Free Consult' :  `Chat - ₹ ${item.chat_service_config.chat_fee}` }</Text>
+                                                style={ isBothPremium ? styles.ButtonStyle : isChatFree ? styles.ButtonStyleSponsor : styles.ButtonStyle}>
+                                                <Icon name="ios-chatboxes" style={!isBothPremium && isChatFree ?  { color: '#FFFFFF', fontSize: 15, marginTop: 2 }:  { color: '#5A89B6', fontSize: 15, marginTop: 2 } } />
+                                                <Text  style={ isBothPremium && isChatFree ? styles.TextStyle  : isChatFree ? styles.SponsorText : styles.TextStyle  }>
+                                                  {isBothPremium ? 'Chat' : isChatFree ? 'Free Consult' :  `Chat - ₹ ${item.chat_service_config.chat_fee}` }</Text>
                                             </TouchableOpacity>
-                                            </Row>
-                                        </Col> : null }
+                                        </Col> 
+                                       : null }
                                         
-                                       {item.availableForVideo === true  ? <Col size={5} style={{ marginLeft: 5,}}>
-                                           <Row>
+                                       {item.availableForVideo === true  ? 
+                                          <Col style={isBothPremium ? {width: '25%'  } :  { width: '35%' } }>
                                             <TouchableOpacity onPress={() => this.onBookButtonPress4PaymentVideo(item.doctor_id, this.getVideoConsultFee(item))}
-                                                style={{ textAlign: 'center', borderColor: '#5A89B6', borderWidth: 1, marginTop: 10, borderRadius: 20, height: 25, justifyContent: 'center', flexDirection: 'row',paddingLeft:6,paddingRight:6,paddingTop:2,paddingBottom:2 }}>
-                                                <Icon name="ios-videocam" style={{ color: '#5A89B6', fontSize: 15, marginTop: 2 }} />
-                                                <Text style={{ textAlign: 'center', color: '#5A89B6', fontSize: 8, fontWeight: 'bold', fontFamily: 'OpenSans', marginLeft: 1,marginTop:4}}> {this.getVideoConsultFee(item) === 0 ? 'Free Consult' : `Video - ₹ ${this.getVideoConsultFee(item)}`}</Text>
+                                                style={isBothPremium ? styles.ButtonStyle : isVideoFree ? styles.ButtonStyleSponsor : styles.ButtonStyle}>
+                                                <Icon name="ios-videocam" style={!isBothPremium && isVideoFree ? { color: '#FFFFFF', fontSize: 15, marginTop: 2 } : { color: '#5A89B6', fontSize: 15, marginTop: 2 }} />
+                                                <Text style={isBothPremium ? styles.TextStyle  : isVideoFree ? styles.SponsorText :  styles.TextStyle  }> 
+                                                    { isBothPremium ? 'Video' : isVideoFree ? 'Free Consult' : `Video - ₹ ${this.getVideoConsultFee(item)}`}
+                                                </Text>
                                             </TouchableOpacity>
-                                            </Row>
-                                        </Col> : null } 
-                                        </Col>
+                                          </Col> 
+                                        : null } 
+                                       
                                     
                                     </Row>
                                 </Col>
@@ -556,33 +603,37 @@ const styles = StyleSheet.create({
         marginTop: 10, 
         borderRadius: 20, 
         height: 25, 
-        justifyContent: 'center', 
+        justifyContent: 'center',
         flexDirection: 'row',
         paddingLeft:6,
         paddingRight:6,
         paddingTop:2,
-        paddingBottom:2
+        paddingBottom:2,
     },
     ButtonStyleSponsor:{
         textAlign: 'center', 
+        backgroundColor : '#8EC63F',
         borderColor: '#8EC63F', 
         borderWidth: 1, 
-        marginTop: 8, 
+        marginTop: 10, 
+        justifyContent: 'center',
         borderRadius: 20, 
         height: 25, 
-        justifyContent: 'center', 
+        
         flexDirection: 'row',
-      
-      
+        paddingLeft:6,
+        paddingRight:6,
+        paddingTop:2,
+        paddingBottom:2,
     },
     SponsorText:{
         textAlign: 'center', 
-        color: '#8EC63F', 
+        color: '#FFFFFF', 
         fontSize: 8, 
         fontWeight: 'bold', 
         fontFamily: 'OpenSans', 
-        marginLeft: 1,
-        marginTop:4
+        marginTop:4,
+        marginLeft: 4,
         
     },
     TextStyle:{
@@ -591,7 +642,7 @@ const styles = StyleSheet.create({
         fontSize: 10, 
         fontWeight: 'bold', 
         fontFamily: 'OpenSans', 
-        marginLeft: 1,
+        marginLeft: 4,
         marginTop:4
     }
 
