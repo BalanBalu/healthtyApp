@@ -60,17 +60,15 @@ class MedicineInfo extends Component {
         await this.getMedicineReviewCount();
         userId = await AsyncStorage.getItem('userId')
         if (userId) {
-            const { navigation } = this.props
-            setCartItemCountOnNavigation(navigation);
             let cart = await AsyncStorage.getItem('cartItems-' + userId) || []
             if (cart.length != 0) {
-                let cartData = JSON.parse(cart);
+                let cartData = JSON.parse(cart)
                 this.setState({ cartItems: cartData })
+                setCartItemCountOnNavigation(this.props.navigation);
             }
         }
 
     }
-
 
     getSelectedMedicineDetails = async () => {
         try {
@@ -79,18 +77,7 @@ class MedicineInfo extends Component {
             let pharmacyId = this.props.navigation.getParam('pharmacyId');
             let result = await getSelectedMedicineDetails(medicineId, pharmacyId);
             if (result.success) {
-                // console.log(JSON.stringify(result.data))
-                temp = result.data.medPharDetailInfo
-
-                mergeObject = Object.assign(temp, result.data.medPharDetailInfo.variations[0])
-                let tempObject = {
-                    ...result.data,
-                    medPharDetailInfo: mergeObject
-
-                }
-                this.setState({ medicineData: tempObject })
-                // console.log("=================================================")
-                // console.log(JSON.stringify(this.state.medicineData))
+                this.setState({ medicineData: result.data })
 
             }
             this.setState({ isLoading: false });
@@ -109,7 +96,6 @@ class MedicineInfo extends Component {
             let result = await getMedicineReviews(medicineId);
             if (result.success) {
                 this.setState({ reviewData: result.data })
-                // console.log("reviewData", this.state.reviewData.length)
             } else {
                 this.setState({ isLoading: false, reviewData: '' });
             }
@@ -179,6 +165,7 @@ class MedicineInfo extends Component {
                 })
             }
             else if (val.isNavigateCart) {
+                setCartItemCountOnNavigation(this.props.navigation);
                 Toast.show({
                     text: 'Item added to card',
                     duration: 3000,
@@ -271,7 +258,7 @@ class MedicineInfo extends Component {
         const prescriptionData = [{ prescription_path: require('../../../../../assets/images/images.jpeg') }, { prescription_path: require('../../../../../assets/images/images.jpeg') }, { prescription_path: require('../../../../../assets/images/images.jpeg') }, { prescription_path: require('../../../../../assets/images/images.jpeg') }, { prescription_path: require('../../../../../assets/images/images.jpeg') }]
         return (
             <Container >
-
+               
                 <Content style={{ padding: 10 }}>
                     {this.state.isLoading ? <Spinner color='blue'
                         visible={this.state.isLoading}
@@ -455,7 +442,7 @@ class MedicineInfo extends Component {
                                             </TouchableOpacity>
                                         </Col>
                                         <Col size={1.5}>
-                                            <Text style={{ fontSize: 10, fontFamily: 'OpenSans', color: '#909090', marginLeft: 5 }}>{finalRating.five_star ? (finalRating.five_star).toFixed(1) : 0}%</Text>
+                                            <Text style={{ fontSize: 10, fontFamily: 'OpenSans', color: '#909090', marginLeft: 5 }}>{finalRating.five_star ? Math.round(finalRating.five_star) : 0}%</Text>
                                         </Col>
                                     </Row>
                                     <Row style={{ marginTop: 1 }}>
@@ -469,7 +456,7 @@ class MedicineInfo extends Component {
                                             </TouchableOpacity>
                                         </Col>
                                         <Col size={1.5}>
-                                            <Text style={{ fontSize: 10, fontFamily: 'OpenSans', color: '#909090', marginLeft: 5 }}>{finalRating.four_star ? (finalRating.four_star).toFixed(1) : 0}%</Text>
+                                            <Text style={{ fontSize: 10, fontFamily: 'OpenSans', color: '#909090', marginLeft: 5 }}>{finalRating.four_star ? Math.round(finalRating.four_star) : 0}%</Text>
                                         </Col>
                                     </Row>
                                     <Row style={{ marginTop: 1 }}>
@@ -483,7 +470,7 @@ class MedicineInfo extends Component {
                                             </TouchableOpacity>
                                         </Col>
                                         <Col size={1.5}>
-                                            <Text style={{ fontSize: 10, fontFamily: 'OpenSans', color: '#909090', marginLeft: 5 }}>{finalRating.three_star ? (finalRating.three_star).toFixed(1) : 0}%</Text>
+                                            <Text style={{ fontSize: 10, fontFamily: 'OpenSans', color: '#909090', marginLeft: 5 }}>{finalRating.three_star ? Math.round(finalRating.three_star) : 0}%</Text>
                                         </Col>
                                     </Row>
                                     <Row style={{ marginTop: 1 }}>
@@ -497,7 +484,7 @@ class MedicineInfo extends Component {
                                             </TouchableOpacity>
                                         </Col>
                                         <Col size={1.5}>
-                                            <Text style={{ fontSize: 10, fontFamily: 'OpenSans', color: '#909090', marginLeft: 5 }}>{finalRating.two_star ? (finalRating.two_star).toFixed(1) : 0}%</Text>
+                                            <Text style={{ fontSize: 10, fontFamily: 'OpenSans', color: '#909090', marginLeft: 5 }}>{finalRating.two_star ? Math.round(finalRating.two_star) : 0}%</Text>
                                         </Col>
                                     </Row>
                                     <Row style={{ marginTop: 1 }}>
@@ -511,7 +498,7 @@ class MedicineInfo extends Component {
                                             </TouchableOpacity>
                                         </Col>
                                         <Col size={1.5}>
-                                            <Text style={{ fontSize: 10, fontFamily: 'OpenSans', color: '#909090', marginLeft: 5 }}>{finalRating.one_star ? (finalRating.one_star).toFixed(1) : 0}%</Text>
+                                            <Text style={{ fontSize: 10, fontFamily: 'OpenSans', color: '#909090', marginLeft: 5 }}>{finalRating.one_star ? Math.round(finalRating.one_star) : 0}%</Text>
                                         </Col>
                                     </Row>
                                 </Col>
@@ -561,7 +548,7 @@ class MedicineInfo extends Component {
                                 <TouchableOpacity style={{ borderColor: '#8dc63f', borderWidth: 1, marginLeft: 1, borderRadius: 2.5, height: 25, width: 65, backgroundColor: '#8dc63f' }}
                                     onPress={() => { this.insertReview(), this.setState({ isReviewInsert: true }) }}>
                                     <Row style={{ alignItems: 'center' }}>
-                                        <Text style={{ fontSize: 7, color: '#fff', marginTop: 2.5, marginLeft: 6 }}>Insert Reviews</Text>
+                                        <Text style={{ fontSize: 7, color: '#fff', marginTop: 2.5, marginLeft: 6 }}>Add Reviews</Text>
                                     </Row>
                                 </TouchableOpacity>
                             </Row>

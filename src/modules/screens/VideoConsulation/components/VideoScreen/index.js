@@ -1,5 +1,5 @@
 import React from 'react';
-import {SafeAreaView, StatusBar, BackHandler } from 'react-native';
+import {SafeAreaView, StatusBar, BackHandler,  NativeModules, NativeEventEmitter, DeviceEventEmitter  } from 'react-native';
 import ConnectyCube from 'react-native-connectycube';
 import AwesomeAlert from 'react-native-awesome-alerts';
 import RTCViewGrid from './RTCViewGrid';
@@ -8,6 +8,8 @@ import ToolBar from './ToolBar';
 import { store } from '../../../../../setup/store';
 import { connect } from 'react-redux';
 import { SET_VIDEO_SESSION } from '../../../../providers/chat/chat.action';
+import { Toast } from 'native-base';
+
  class VideoScreen extends React.Component {
   constructor(props) {
     super(props);
@@ -26,36 +28,53 @@ import { SET_VIDEO_SESSION } from '../../../../providers/chat/chat.action';
       isActiveCall: false,
       isIncomingCall: false,
     };
-    
+    this.callToUser = props.navigation.getParam("callToUser") || false;
     this._setUpListeners();
   
   }
   componentDidMount() {
+    
     CallService.setKeepScreenOn(true);
+    BackHandler.addEventListener('hardwareBackPress', this.handleBackButton);
+    if(this.callToUser) {
+      userMedflicNdConnecticubeData = this.props.navigation.getParam("videoConsulationData");
+      console.log(userMedflicNdConnecticubeData);
+      if(userMedflicNdConnecticubeData.doctorInfo && userMedflicNdConnecticubeData.doctorInfo.connectycube) {
+        CallService.setKeepScreenOn(true);
+        const connectyCubeUserId = userMedflicNdConnecticubeData.doctorInfo.connectycube.connectycube_id;
+        this.selectUser(connectyCubeUserId);
+        this.startCall([userMedflicNdConnecticubeData.doctorInfo.connectycube.connectycube_id])
+      } else {
+        alert('We are Not able connect to the user at this time');
+      }
+    }
+
     store.subscribe(() => {
       const { chat: { session } } = this.props;
       if(session && this.steamSubscribeLoadedUsers.indexOf(session.userId) === -1) {
-          console.log('Coming here boss');
           this.setRemoteListener(session.userId, session.stream);
           this.steamSubscribeLoadedUsers.push(session.userId);
       }
     });
-    BackHandler.addEventListener('hardwareBackPress', this.handleBackButton);
-    
+   
     const { navigation } = this.props;
     const isIncomingCall = navigation.getParam('isIncomingCall') || false;
     if(isIncomingCall) {
       this.showInomingCallModal(CallService.getSession());
       this._extension = CallService.getExtention();
     }
+    Toast.show({
+      text: 'Please Use Your Speaker Phone, as we are not supporting Wiredphone yet',
+      duration: 3000,
+      type: 'warning'
+    })
   }
 
   componentWillUnmount() {
     CallService.setKeepScreenOn(false);
     BackHandler.removeEventListener('hardwareBackPress', this.handleBackButton);
   }
-  componentWillReceiveProps() {
-   
+  componentWillMount() {
   }
   componentDidUpdate(prevProps, prevState) {
     const currState = this.state;
@@ -241,6 +260,15 @@ import { SET_VIDEO_SESSION } from '../../../../providers/chat/chat.action';
       })
       .catch(this.hideInomingCallModal);
   }
+  startCall = (selectedUsersIds) => {
+    if (selectedUsersIds.length === 0) {
+      CallService.showToast('Select at less one user to start Videocall');
+    } else {
+      this.closeSelect();
+      this.initRemoteStreams(selectedUsersIds);
+      CallService.startCall(selectedUsersIds).then(this.setLocalStream);
+    }
+  };
   render() {
     const {
       localStream,
@@ -265,9 +293,7 @@ import { SET_VIDEO_SESSION } from '../../../../providers/chat/chat.action';
       ? [{userId: 'localStream', stream: localStream}]
       : [];
     const streams = [...remoteStreams, ...localStreamItem];
-    console.log(streams);
     CallService.setSpeakerphoneOn(remoteStreams.length > 0);
-
     return (
       <SafeAreaView style={{flex: 1, backgroundColor: 'black'}}>
         <StatusBar backgroundColor="black" barStyle="light-content" />

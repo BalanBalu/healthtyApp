@@ -8,6 +8,7 @@ import { Container, Toast, Body, Button, Text, Item, Input, Icon, Card, CardItem
 import { MAP_BOX_TOKEN } from '../../../../setup/config';
 import axios from 'axios';
 import { userFiledsUpdate, logout } from '../../../providers/auth/auth.actions';
+import Geolocation from 'react-native-geolocation-service';
 MapboxGL.setAccessToken(MAP_BOX_TOKEN);
 import Qs from 'qs';
 import Spinner from '../../../../components/Spinner';
@@ -109,7 +110,7 @@ export default class MapBox extends React.Component {
 
     async getCurrentLocation() {
         try {
-            navigator.geolocation.getCurrentPosition(async (position) => {
+            Geolocation.getCurrentPosition(async (position) => {
                 const origin_coordinates = [position.coords.longitude, position.coords.latitude];
                 await this.setState({
                     center: origin_coordinates,

@@ -4,7 +4,7 @@ import { MAP_BOX_PUBLIC_TOKEN, IS_ANDROID, MAP_BOX_TOKEN } from '../../../setup/
 import RNAndroidLocationEnabler from 'react-native-android-location-enabler';
 import MapboxGL from '@react-native-mapbox-gl/maps';
 import { BackHandler, Alert } from 'react-native';
-
+import Geolocation from 'react-native-geolocation-service';
 import { store } from '../../../setup/store';
 import Axios from 'axios';
 MapboxGL.setAccessToken(MAP_BOX_PUBLIC_TOKEN);
@@ -27,7 +27,7 @@ export default class CurrentLocation {
             await this.timeout(1000);
           }
           console.log('You ARE RUNNING ON ANDROID')
-          navigator.geolocation.getCurrentPosition(async (position) => {
+          Geolocation.getCurrentPosition(async (position) => {
             const origin_coordinates = [position.coords.latitude, position.coords.longitude,];
             let fullPath = `https://api.mapbox.com/geocoding/v5/mapbox.places/${origin_coordinates[1]},${origin_coordinates[0]}.json?types=poi&access_token=${MAP_BOX_TOKEN}`;
             let resp = await Axios.get(fullPath, {
@@ -84,7 +84,7 @@ export default class CurrentLocation {
         );
       }
     } else {
-      navigator.geolocation.getCurrentPosition(async (position) => {
+      Geolocation.getCurrentPosition(async (position) => {
         const origin_coordinates = [position.coords.latitude, position.coords.longitude,];
 
         let fullPath = `https://api.mapbox.com/geocoding/v5/mapbox.places/${origin_coordinates[1]},${origin_coordinates[0]}.json?types=poi&access_token=${MAP_BOX_TOKEN}`;

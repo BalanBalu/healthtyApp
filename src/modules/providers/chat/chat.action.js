@@ -4,7 +4,6 @@ export const SET_VIDEO_SESSION = 'CHAT/SET_VIDEO_SESSION';
 export const fetchAvailableDoctors4Chat = async (request) => {
     try {
         let endPoint = 'chat/availability';
-       
         let response = await postService(endPoint, request);
         let respData = response.data;
         return respData;

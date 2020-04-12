@@ -40,12 +40,11 @@ class PharmacyHome extends Component {
     }
 
     async componentDidMount() {
-
         CurrentLocation.getCurrentPosition();
         this.getCurrentLocation()
-        this.getMedicineList();
+        await this.getMedicineList();
         this.getNearByPharmacyList();
-
+        
     }
 
     backNavigation(payload) {
@@ -70,14 +69,14 @@ class PharmacyHome extends Component {
 
               
                 this.setState({ medicineData: result.data })
-              
-
-                let cart = await AsyncStorage.getItem('cartItems-' + userId) || []
-                const { navigation } = this.props;
-                setCartItemCountOnNavigation(navigation);
-                let cartData = JSON.parse(cart)
-                if (cartData.length != 0) {
-                    this.setState({ cartItems: cartData })
+                console.log("medicineData", this.state.medicineData)
+                if (userId) {
+                    let cart = await AsyncStorage.getItem('cartItems-' + userId) || []
+                    if (cart.length != 0) {
+                        let cartData = JSON.parse(cart)
+                        await this.setState({ cartItems: cartData })
+                        setCartItemCountOnNavigation(this.props.navigation);
+                    }
                 }
             } else {
                 alert(result.message)
@@ -154,6 +153,7 @@ class PharmacyHome extends Component {
                 })
             }
             else if (val.isNavigateCart) {
+                setCartItemCountOnNavigation(this.props.navigation);
                 Toast.show({
                     text: 'Item added to card',
                     duration: 3000,

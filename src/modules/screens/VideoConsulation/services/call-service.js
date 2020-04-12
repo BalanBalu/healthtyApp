@@ -29,6 +29,8 @@ export default class CallService {
 
   setMediaDevices() {
     return ConnectyCube.videochat.getMediaDevices().then(mediaDevices => {
+      console.log('=======Setting THE Media Devices =============');
+      console.log(mediaDevices);
       this.mediaDevices = mediaDevices;
     });
   }
@@ -107,11 +109,14 @@ export default class CallService {
   setSpeakerphoneOn = flag => {
     InCallManager.setSpeakerphoneOn(flag)
   };
-
+  setMicrophoneMute = flag => {
+    InCallManager.setMicrophoneMute(flag)
+  };
+  
   setKeepScreenOn = flag => {
     InCallManager.setKeepScreenOn(flag);
   }
-
+  
   processOnUserNotAnswerListener(userId) {
     return new Promise((resolve, reject) => {
       if (!this._session) {
@@ -153,7 +158,7 @@ export default class CallService {
         reject();
       } else {
         const userName = this.getUserById(userId, 'name');
-        const message = `${userName} has accepted the call`;
+        const message = `${userName} accepted the call`;
 
         this.showToast(message);
         this.stopSounds();
@@ -191,7 +196,7 @@ export default class CallService {
         reject();
       } else {
         const userName = this.getUserById(userId, 'name');
-        const message = `${userName} has ${
+        const message = `${userName} ${
           isInitiator ? 'stopped' : 'left'
         } the call`;
 
@@ -239,4 +244,10 @@ export default class CallService {
       this.outgoingCall.pause();
     }
   };
+
+  async getWiredPlugedIn() {
+  
+    const isPluged =  await InCallManager.getIsWiredHeadsetPluggedIn();
+    return isPluged
+  }
 }
