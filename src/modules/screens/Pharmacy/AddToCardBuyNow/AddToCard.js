@@ -6,7 +6,7 @@ import {
     Container, Header, Title, Left, Right, Body, Button, Card, Toast, CardItem, Row, Grid, View, Col,
     Text, Thumbnail, Content, CheckBox, Item, Input, Icon
 } from 'native-base';
-import { ProductIncrementDecreMent, medicineRateAfterOffer } from '../CommomPharmacy'
+import { ProductIncrementDecreMent, medicineRateAfterOffer ,getMedicineName,renderMedicineImage} from '../CommomPharmacy'
 import { NavigationEvents } from 'react-navigation';
 import { connect } from 'react-redux'
 
@@ -29,7 +29,8 @@ export class AddToCard extends Component {
             ...this.props.data.variations[0],
             offeredAmount: medicineRateAfterOffer(this.props.data.variations[0]),
         }
-
+        console.log('addtocate da=======================');
+        console.log(JSON.stringify(data))
         if (data.userAddedMedicineQuantity) {
             userAddedMedicineQuantity = data.userAddedMedicineQuantity
             userAddedTotalMedicineAmount = Number(Number(userAddedMedicineQuantity * data.offeredAmount).toFixed(2))
@@ -160,11 +161,11 @@ export class AddToCard extends Component {
                         <View>
                             <Row>
                                 <Col size={1} style={{ marginLeft: 5 }}>
-                                    <Image source={require('../../../../../assets/images/paracetamol.jpg')} style={{ height: 80, width: 70, marginLeft: 5, marginTop: 2.5 }} />
+                                    <Image source={renderMedicineImage(data)} style={{ height: 80, width: 70, marginLeft: 5, marginTop: 2.5 }} />
                                 </Col>
                                 <Col size={6} style={{ marginLeft: 70, marginTop: -5 }}>
 
-                                    <Text style={{ fontFamily: 'OpenSans', fontSize: 16, marginTop: 5 }}>{data.medicine_name}</Text>
+                                    <Text style={{ fontFamily: 'OpenSans', fontSize: 16, marginTop: 5 }}>{getMedicineName(data)}</Text>
                                     <Text style={{ color: '#7d7d7d', fontFamily: 'OpenSans', fontSize: 12.5, marginBottom: 20 }}>{'By ' + data.pharmacy_name || 'nill'}</Text>
                                     {this.state.threshold_message !== null ?
                                         <Text style={{ fontSize: 8, color: "#ff4e42" }}>{this.state.threshold_message}</Text> : null}

@@ -130,7 +130,33 @@ export function getKiloMeterCalculation(gpsLocation, pharmacyLocation) {
 
 }
 
+export function getMedicineName(data) {
+  let medicineName = ' '
+  if (!data) {
+    return medicineName
+  }
+  if (data) {
+    medicineName = `${(data.medicine_name || '') + ' ' + (data.medicine_dose || '') + ' ' + (data.medicine_unit || '')}`;
+    return medicineName
+  }
+  else {
+    return medicineName
+  }
 
+}
+export function getMedicineWeightUnit(weight, unit) {
+  let medicineWeightUnit = ' '
+  if (!weight && !unit) {
+    return medicineWeightUnit
+  }
+  if (weight && weight) {
+    medicineWeightUnit = `${'('+(weight || '') + ' ' + (unit || '') + ' )'}`;
+    return medicineWeightUnit
+  }
+  else {
+    return medicineWeightUnit
+  }
+}
 
 export const renderAppoinmentData = (props) => {
 

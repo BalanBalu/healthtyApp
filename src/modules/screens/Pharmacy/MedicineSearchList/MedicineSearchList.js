@@ -7,10 +7,9 @@ import { Col, Row, Grid } from 'react-native-easy-grid';
 import { StyleSheet, Image, TouchableOpacity, AsyncStorage, FlatList, TouchableHighlight, Modal } from 'react-native';
 import Spinner from "../../../../components/Spinner";
 import { getMedicinesSearchList, getMedicinesSearchListByPharmacyId } from '../../../providers/pharmacy/pharmacy.action'
-import { medicineRateAfterOffer, setCartItemCountOnNavigation } from '../CommomPharmacy'
+import { medicineRateAfterOffer, setCartItemCountOnNavigation,getMedicineName,renderMedicineImage } from '../CommomPharmacy'
 import { AddToCard } from '../AddToCardBuyNow/AddToCard'
 import { connect } from 'react-redux'
-import{renderMedicineImage} from '../CommomPharmacy'
 import { MAX_DISTANCE_TO_COVER } from '../../../../setup/config';
 class MedicineSearchList extends Component {
     constructor(props) {
@@ -87,8 +86,8 @@ class MedicineSearchList extends Component {
     MedicineSearchList = async (postData) => {
         try {
             let medicineResultData = await getMedicinesSearchList(postData);
-            console.log('MedicineSearchList')
-            console.log(JSON.stringify(medicineResultData.data))
+            // console.log('MedicineSearchList')
+            // console.log(JSON.stringify(medicineResultData.data))
             if (medicineResultData.success) {
                 this.setState({
                     data: medicineResultData.data,
@@ -107,7 +106,7 @@ class MedicineSearchList extends Component {
     medicineSearchListByPharmacyId = async (pharmacyId) => {
         try {
             let medicineResultData = await getMedicinesSearchListByPharmacyId(pharmacyId);
-            console.log(medicineResultData.data)
+            // console.log(medicineResultData.data)
             if (medicineResultData.success) {
                 this.setState({
                     data: medicineResultData.data,
@@ -151,7 +150,7 @@ class MedicineSearchList extends Component {
         try {
             if (val.isNavigate) {
                 let temp = [];
-                console.log(val);
+                // console.log(val);
                 temp.push(val.medicineData)
                 await this.setState({ isBuyNow: false })
                 this.props.navigation.navigate("MedicineCheckout", {
@@ -166,7 +165,7 @@ class MedicineSearchList extends Component {
                 let userId = await AsyncStorage.getItem('userId')
                 if (userId) {
                     let cart = await AsyncStorage.getItem('cartItems-' + userId) || []
-                    console.log('card')
+                    // console.log('card')
                     if (cart.length != 0) {
                         let cardData = JSON.parse(cart)
                         await this.setState({ cartItems: cardData})
@@ -248,7 +247,7 @@ class MedicineSearchList extends Component {
                                                             </TouchableOpacity>
                                                         </Col>
                                                         <Col size={12.5}>
-                                                            <Text style={{ fontFamily: 'OpenSans', fontSize: 16, marginTop: 5 }}>{item.medInfo.medicine_name}</Text>
+                                                            <Text style={{ fontFamily: 'OpenSans', fontSize: 16, marginTop: 5 }}>{getMedicineName(item.medInfo)}</Text>
                                                             <Text style={{ color: '#7d7d7d', fontFamily: 'OpenSans', fontSize: 12.5, marginBottom: 20 }}>{'By ' + item.pharmacyInfo.name}</Text>
                                                             <Row>
                                                                 <Col size={5} style={{ flexDirection: 'row' }}>

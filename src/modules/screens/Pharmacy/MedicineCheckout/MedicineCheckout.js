@@ -52,6 +52,7 @@ class MedicineCheckout extends Component {
             const medicineDetails = navigation.getParam('medicineDetails') || [];
             const isPrescription = navigation.getParam('isPrescription') || false
 
+
             this.setState({ medicineDetails, isPrescription })
             if (medicineDetails.length !== 0) {
                 await this.clickedHomeDelivery()
@@ -95,7 +96,7 @@ class MedicineCheckout extends Component {
             }
             console.log(JSON.stringify(deliveryAddressArray))
             await this.setState({ deliveryAddressArray })
-
+            this.selectedItem(this.state.itemSelected)
 
         } catch (error) {
             console.log(error);
@@ -150,10 +151,12 @@ class MedicineCheckout extends Component {
                 medicineOrderData.push({
                     medicine_id: ele.medicine_id,
                     pharmacy_id: ele.pharmacy_id,
-                    medicine_variation_id: ele.medicine_variation_id,
                     medicine_original_price: Number(ele.price),
                     medicine_offered_price: Number(ele.offeredAmount),
                     quantity: Number(ele.userAddedMedicineQuantity),
+                    medicine_weight: ele.medicine_weight,
+                    medicine_variation_id: ele.medicine_variation_id,
+                    medicine_weight_unit: ele.medicine_weight_unit,
                     final_price: Number(Number(ele.userAddedTotalMedicineAmount).toFixed(2)),
                     medicine_name: ele.medicine_name,
                 })
@@ -220,6 +223,7 @@ class MedicineCheckout extends Component {
 
         console.log(paymentPageRequestData)
         if (navigationToPayment === true) {
+            paymentPageRequestData.orderOption = this.props.navigation.getParam('orderOption') || null
             this.props.navigation.navigate('paymentPage', paymentPageRequestData)
         } else {
             return paymentPageRequestData;
@@ -236,6 +240,8 @@ class MedicineCheckout extends Component {
                 medicineOrderData.push({
                     medicine_id: ele.medicine_id,
                     quantity: Number(ele.userAddedMedicineQuantity),
+                    medicine_weight: Number(ele.medicine_weight),
+                    medicine_weight_unit: ele.medicine_weight_unit,
 
                 })
                 if (ele.pharmacyInfo && !pharmacyData.includes(ele.pharmacyInfo.pharmacy_id)) {
@@ -304,13 +310,13 @@ class MedicineCheckout extends Component {
 
     selectedItem(value) {
         if (value == 'HOME_DELIVERY') {
-            let selectedAddress=null
+            let selectedAddress = null
             medicineTotalAmountwithDeliveryChage = this.state.medicineTotalAmount + this.state.deliveryDetails.delivery_tax + this.state.deliveryDetails.delivery_charges
-             if(this.state.deliveryAddressArray.length!==0){
-                selectedAddress=this.state.deliveryAddressArray[0]
-             }
-            
-            this.setState({ medicineTotalAmountwithDeliveryChage, itemSelected: value ,selectedAddress})
+            if (this.state.deliveryAddressArray.length !== 0) {
+                selectedAddress = this.state.deliveryAddressArray[0]
+            }
+
+            this.setState({ medicineTotalAmountwithDeliveryChage, itemSelected: value, selectedAddress })
         } else {
 
             this.setState({ medicineTotalAmountwithDeliveryChage: this.state.medicineTotalAmount, itemSelected: value, selectedAddress: this.state.pharmacyInfo })
@@ -322,7 +328,13 @@ class MedicineCheckout extends Component {
     }
     backNavigation = async (navigationData) => {
         try {
-            this.clickedHomeDelivery();
+            const { navigation } = this.props;
+            // if (navigation.state.params) {
+            //   if (navigation.state.params.hasReloadAddress) {
+                this.clickedHomeDelivery();  // Reload the Reported issues when they reload
+            //   }
+            // };
+            
         } catch (e) {
             console.log(e)
         }
@@ -342,6 +354,9 @@ class MedicineCheckout extends Component {
         console.log('Order Booking Response ');
 
         if (response.success) {
+            if (this.props.navigation.getParam('orderOption') === 'pharmacyCart') {
+                await AsyncStorage.removeItem('cartItems-' + userId);
+            }
             this.props.navigation.navigate('SuccessChat', { manualNaviagationPage: 'Home' });
             Toast.show({
                 text: 'your order successfully requested',

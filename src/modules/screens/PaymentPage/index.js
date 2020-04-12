@@ -63,6 +63,7 @@ class PaymentPage extends Component {
         const bookSlotDetails = navigation.getParam('bookSlotDetails');
         const serviceType = navigation.getParam('service_type');
         const amount = navigation.getParam('amount');
+       
         this.setState({ bookSlotDetails: bookSlotDetails, serviceType: serviceType, amount: amount });
 
         this.availableNetBankingData = getAvailableNetBanking();
@@ -287,6 +288,10 @@ class PaymentPage extends Component {
             }
             else if (serviceType === SERVICE_TYPES.PHARMACY) {
                 this.props.navigation.navigate('SuccessChat', { manualNaviagationPage: 'Home' });
+                const orderOption =this.props.navigation.getParam('orderOption') || null
+                  if(orderOption==='pharmacyCart'){
+                    await AsyncStorage.removeItem('cartItems-' + this.userId);
+                  }
                 Toast.show({
                     text: 'Paymenet Success',
                     type: 'success',

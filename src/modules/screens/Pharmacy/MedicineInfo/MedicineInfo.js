@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import { Container, Content, Text, Toast, Icon, View, Col, Row, Picker } from 'native-base';
 import { StyleSheet, Image, AsyncStorage, FlatList, TouchableOpacity, Dimensions } from 'react-native';
 import { getSelectedMedicineDetails, getMedicineReviews, getMedicineReviewsCount } from '../../../providers/pharmacy/pharmacy.action'
-import { medicineRateAfterOffer, setCartItemCountOnNavigation, renderMedicineImage } from '../CommomPharmacy';
+import { medicineRateAfterOffer, setCartItemCountOnNavigation, renderMedicineImage ,getMedicineName} from '../CommomPharmacy';
 import Spinner from '../../../../components/Spinner';
 import { dateDiff, getMoment, formatDate } from '../../../../setup/helpers'
 import { MedInsertReview } from './medInsertReview'
@@ -79,7 +79,7 @@ class MedicineInfo extends Component {
             let pharmacyId = this.props.navigation.getParam('pharmacyId');
             let result = await getSelectedMedicineDetails(medicineId, pharmacyId);
             if (result.success) {
-                console.log(JSON.stringify(result.data))
+                // console.log(JSON.stringify(result.data))
                 temp = result.data.medPharDetailInfo
 
                 mergeObject = Object.assign(temp, result.data.medPharDetailInfo.variations[0])
@@ -89,8 +89,8 @@ class MedicineInfo extends Component {
 
                 }
                 this.setState({ medicineData: tempObject })
-                console.log("=================================================")
-                console.log(JSON.stringify(this.state.medicineData))
+                // console.log("=================================================")
+                // console.log(JSON.stringify(this.state.medicineData))
 
             }
             this.setState({ isLoading: false });
@@ -109,7 +109,7 @@ class MedicineInfo extends Component {
             let result = await getMedicineReviews(medicineId);
             if (result.success) {
                 this.setState({ reviewData: result.data })
-                console.log("reviewData", this.state.reviewData.length)
+                // console.log("reviewData", this.state.reviewData.length)
             } else {
                 this.setState({ isLoading: false, reviewData: '' });
             }
@@ -281,7 +281,7 @@ class MedicineInfo extends Component {
                         <View>
                             <Row>
                                 <Col size={9}>
-                                    <Text style={styles.headText}>{medicineData.medInfo.medicine_name}</Text>
+                                    <Text style={styles.headText}>{getMedicineName(medicineData.medInfo)}</Text>
                                 </Col>
                                 {reviewCount != '' ?
                                     <Col size={1}>

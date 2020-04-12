@@ -1,9 +1,9 @@
 import React, { Component } from 'react';
 import { Container, Content, Text, Title, Header, Form, Textarea, Button, H3, Item, List, ListItem, Card, Input, Left, Right, ScrollView, Thumbnail, Body, Icon, Footer, FooterTab, Picker, Segment, CheckBox, View, Badge } from 'native-base';
 import { Col, Row, Grid } from 'react-native-easy-grid';
-import { StyleSheet, Image, AsyncStorage, TextInput, FlatList, TouchableOpacity } from 'react-native';
+import { StyleSheet, Image, AsyncStorage, TextInput, FlatList, TouchableOpacity,Toast } from 'react-native';
 import { Loader } from '../../../../components/ContentLoader';
-import { ProductIncrementDecreMent, medicineRateAfterOffer, renderMedicineImage } from '../CommomPharmacy';
+import { ProductIncrementDecreMent, medicineRateAfterOffer, renderMedicineImage,getMedicineName,getMedicineWeightUnit } from '../CommomPharmacy';
 import { getmedicineAvailableStatus } from '../../../providers/pharmacy/pharmacy.action'
 
 let userId;
@@ -86,7 +86,9 @@ class PharmacyCart extends Component {
             order_items.push({
                 medicine_id: element.medicine_id,
                 pharmacy_id: element.pharmacy_id,
-                quantity: element.userAddedMedicineQuantity
+                quantity: element.userAddedMedicineQuantity,
+                medicine_weight:element.medicine_weight,
+                medicine_weight_unit:element.medicine_weight_unit
             })
 
         })
@@ -94,12 +96,19 @@ class PharmacyCart extends Component {
             order_items: order_items
         }
         let checkResult = await getmedicineAvailableStatus(obj)
+       
         if (checkResult.success === true) {
             if (checkResult.data.length === cartItems.length) {
                 this.props.navigation.navigate("MedicineCheckout", {
-                    medicineDetails: cartItems
+                    medicineDetails: cartItems,
+                    orderOption:"pharmacyCart",
                 })
             } else {
+                Toast.show({
+                    text: 'out of stack',
+                    type: 'danger',
+                    duration: 3000
+                })
                 cartItems.map((ele, index) => {
                     let value = checkResult.data.find(element => {
         
@@ -139,15 +148,15 @@ class PharmacyCart extends Component {
                                         <Col size={2}  style={{justifyContent:'center'}}>
                                         <Image source={renderMedicineImage(item)}
                                              style={{ height: 100, width: 70, margin: 5 }} />
-                                     <Text style={{ fontSize: 10, fontFamily: 'OpenSans', color: '#ff4e42', marginTop: 5,textAlign:'center',backgroundColor:'#E6E6E6',marginTop:-40,marginLeft:5 }}>Out of stock</Text>
+                                             {item.is_outofStack !== undefined && item.is_outofStack === true?
+                                     <Text style={{ fontSize: 10, fontFamily: 'OpenSans', color: '#ff4e42', marginTop: 5,textAlign:'center',backgroundColor:'#E6E6E6',marginTop:-40,marginLeft:5 }}>Out of stock</Text>:null}
 
                                         </Col>
                                         <Col size={7} style={{ marginLeft: 10,justifyContent:'center' }}>
-                                            <Text style={{ fontFamily: 'OpenSans', fontSize: 15, marginTop: 5 }}>{item.medicine_name}<Text style={{ontFamily: 'OpenSans', fontSize: 15, marginTop: 5,color:'#909090'}}>(250 g)</Text></Text>
+                                             <Text style={{ fontFamily: 'OpenSans', fontSize: 15, marginTop: 5 }}>{getMedicineName(item)}<Text style={{fontFamily: 'OpenSans', fontSize: 15, marginTop: 5,color:'#909090'}}>{getMedicineWeightUnit(item.medicine_weight,item.medicine_weight_unit)}</Text></Text>
                                             <Text style={{ color: '#A4A4A4', fontFamily: 'OpenSans', fontSize: 12.5, marginBottom: 20 }}>{item.pharmacy_name}</Text>
-                                            {item.is_outofStack !== undefined && item.is_outofStack === true ?
+                                            
                                                    
-                                                   <Text style={{  color: "#ff4e42", fontFamily: 'OpenSans',fontSize: 15, fontWeight: '500', textDecorationLine: 'line-through', textDecorationStyle: 'solid' ,marginTop: 5 }}> {'Out of Stack'}</Text>:null}
                                                 <Row style={{ marginTop: -15, marginRight: 10 }}>
 
                                                     <Col>
