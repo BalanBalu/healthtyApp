@@ -68,7 +68,6 @@ import CoronaDisease from '../../modules/screens/CoronaDisease/CoronaDisease';
 import MedicineSuggestionList from '../../modules/screens/Pharmacy/MedicineSuggestionList/pharmacySuggestionList';
 import ImageView from '../../modules/shared/ImageView'
 import PharmacyList from '../../modules/screens/Pharmacy/PharmacyList/pharmacyList';
-import AuthScreen from '../../modules/screens/VideoConsulation/components/AuthScreen';
  import VideoScreen from '../../modules/screens/VideoConsulation/components/VideoScreen';
 import AvailableDoctors4Video from '../../modules/screens/VideoConsulation/components/AvailableDoctors';
 import VideoConsultaions from '../../modules/screens/VideoConsulation/components/MyConsultations';
@@ -667,12 +666,6 @@ const HomeStack = createStackNavigator({
     }
   },
   /* Video Consultation */
-  'AuthScreen': {
-    screen: AuthScreen,
-    navigationOptions: {
-      title: 'Video Auth'
-    }
-  },
   VideoScreen: {
     screen: VideoScreen,
     navigationOptions: {

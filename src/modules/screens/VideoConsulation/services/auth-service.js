@@ -1,11 +1,11 @@
 import ConnectyCube from 'react-native-connectycube';
-import config from '../config';
+import { CONNECTY_CUBE } from '../../../../setup/config';
 import { postService } from '../../../../setup/services/httpservices';
 const splice = function(originalStr,idx, rem, str) {
   return originalStr.slice(0, idx) + str + originalStr.slice(idx + Math.abs(rem));
 };
 export default class AuthService {
-  init = () => ConnectyCube.init(...config);
+  init = () => ConnectyCube.init(...CONNECTY_CUBE);
 
   signup = async (userId) => {
     try {
