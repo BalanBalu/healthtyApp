@@ -1,12 +1,12 @@
 import React, { Component } from 'react';
 
-import { StyleSheet, Image, Dimensions, AsyncStorage, Modal, TouchableOpacity, TextInput } from 'react-native';
+import { StyleSheet, Image, Dimensions, AsyncStorage, Modal, TouchableOpacity, TextInput, Picker } from 'react-native';
 
 import {
     Container, Header, Title, Left, Right, Body, Button, Card, Toast, CardItem, Row, Grid, View, Col,
     Text, Thumbnail, Content, CheckBox, Item, Input, Icon
 } from 'native-base';
-import { ProductIncrementDecreMent, medicineRateAfterOffer } from '../CommomPharmacy'
+import { ProductIncrementDecreMent, medicineRateAfterOffer ,getMedicineName,renderMedicineImage} from '../CommomPharmacy'
 import { NavigationEvents } from 'react-navigation';
 import { connect } from 'react-redux'
 
@@ -17,18 +17,25 @@ export class AddToCard extends Component {
         this.state = {
             data: {},
             userAddedMedicineQuantity: 0,
-            cartItems: []
+            userAddedTotalMedicineAmount: 0,
+            cartItems: [],
+            threshold_message: null
         }
     }
 
     async componentDidMount() {
         let data = {
             ...this.props.data,
-            offeredAmount: medicineRateAfterOffer(this.props.data),
+            ...this.props.data.variations[0],
+            offeredAmount: medicineRateAfterOffer(this.props.data.variations[0]),
         }
+        console.log('addtocate da=======================');
+        console.log(JSON.stringify(data))
         if (data.userAddedMedicineQuantity) {
             userAddedMedicineQuantity = data.userAddedMedicineQuantity
-            this.setState({ userAddedMedicineQuantity })
+            userAddedTotalMedicineAmount = Number(Number(userAddedMedicineQuantity * data.offeredAmount).toFixed(2))
+
+            this.setState({ userAddedMedicineQuantity, userAddedTotalMedicineAmount })
         } else {
 
             this.productQuantityOperator(data, 'add')
@@ -37,10 +44,11 @@ export class AddToCard extends Component {
 
     }
     async productQuantityOperator(item, operator) {
-        let result = await ProductIncrementDecreMent(this.state.userAddedMedicineQuantity, item.offeredAmount, operator)
+        let result = await ProductIncrementDecreMent(this.state.userAddedMedicineQuantity, item.offeredAmount, operator, item.threshold_limit)
         userAddedTotalMedicineAmount = result.totalAmount || 0,
             userAddedMedicineQuantity = result.quantity || 0
-        this.setState({ userAddedTotalMedicineAmount, userAddedMedicineQuantity })
+        threshold_message = result.threshold_message || null;
+        this.setState({ userAddedTotalMedicineAmount, userAddedMedicineQuantity, threshold_message })
     }
     async cancelCard() {
         this.props.popupVisible({
@@ -49,7 +57,7 @@ export class AddToCard extends Component {
         })
 
     }
-    cardAction = async()=> {
+    cardAction = async () => {
         const { data, userAddedMedicineQuantity, userAddedTotalMedicineAmount } = this.state
         let temp = [];
         temp = data
@@ -92,7 +100,32 @@ export class AddToCard extends Component {
             })
         }
     }
+    variationSelectedValue(value) {
+        try {
 
+            let { data, userAddedMedicineQuantity } = this.state
+            let temp = {
+                ...data,
+                ...value,
+                offeredAmount: medicineRateAfterOffer(value)
+            }
+            // data.offeredAmount = medicineRateAfterOffer(value),
+
+
+
+            userAddedMedicineQuantity = userAddedMedicineQuantity === 0 ? temp.userAddedMedicineQuantity || 1 : userAddedMedicineQuantity
+            userAddedTotalMedicineAmount = userAddedMedicineQuantity * temp.offeredAmount
+
+
+
+
+            this.setState({
+                data: temp, selected2: value, userAddedMedicineQuantity: userAddedMedicineQuantity, userAddedTotalMedicineAmount: userAddedTotalMedicineAmount
+            });
+        } catch (e) {
+            console.log(e)
+        }
+    }
     render() {
         const { data } = this.state;
         return (
@@ -128,12 +161,42 @@ export class AddToCard extends Component {
                         <View>
                             <Row>
                                 <Col size={1} style={{ marginLeft: 5 }}>
-                                    <Image source={require('../../../../../assets/images/paracetamol.jpg')} style={{ height: 80, width: 70, marginLeft: 5, marginTop: 2.5 }} />
+                                    <Image source={renderMedicineImage(data)} style={{ height: 80, width: 70, marginLeft: 5, marginTop: 2.5 }} />
                                 </Col>
-                                <Col size={6} style={{ marginLeft: 70 }}>
+                                <Col size={6} style={{ marginLeft: 70, marginTop: -5 }}>
 
-                                    <Text style={{ fontFamily: 'OpenSans', fontSize: 16, marginTop: 5 }}>{data.medicine_name}</Text>
+                                    <Text style={{ fontFamily: 'OpenSans', fontSize: 16, marginTop: 5 }}>{getMedicineName(data)}</Text>
                                     <Text style={{ color: '#7d7d7d', fontFamily: 'OpenSans', fontSize: 12.5, marginBottom: 20 }}>{'By ' + data.pharmacy_name || 'nill'}</Text>
+                                    {this.state.threshold_message !== null ?
+                                        <Text style={{ fontSize: 8, color: "#ff4e42" }}>{this.state.threshold_message}</Text> : null}
+
+                                    <Row style={{ marginTop: -15 }}>
+                                        {data.variations !== undefined ?
+                                            <Col size={4} style={{ height: 20, justifyContent: 'center', backgroundColor: '#fff', borderRadius: 1, borderColor: '#000', borderWidth: 0.5, backgroundColor: '#E6E6E6', }}>
+                                                <Picker
+                                                    mode="dropdown"
+                                                    style={{ width: undefined, fontSize: 10 }}
+                                                    textStyle={{ fontSize: 12 }}
+                                                    placeholder="Select your SIM"
+                                                    placeholderStyle={{ color: "#bfc6ea" }}
+                                                    placeholderIconColor="#007aff"
+                                                    selectedValue={this.state.selected2}
+                                                    onValueChange={this.variationSelectedValue.bind(this)}
+                                                >
+
+
+                                                    {data.variations.map((ele, key) => {
+
+                                                        return <Picker.Item label={String(ele.medicine_weight) + String(ele.medicine_weight_unit)} value={ele} key={key} />
+                                                    })}
+
+                                                </Picker>
+                                            </Col>
+                                            : null}
+                                        <Col size={1.5}></Col>
+
+                                    </Row>
+
                                 </Col>
                                 <Col size={3} style={{ marginLeft: 2.5, marginRight: 5, justifyContent: 'flex-end', alignItems: 'flex-end', marginRight: 10 }}>
                                     <Row>
@@ -142,7 +205,7 @@ export class AddToCard extends Component {
                                     <Row style={{ marginLeft: 2.5, marginTop: 10, }}>
                                         <Col size={4} style={{ marginLeft: 5 }}>
                                             <TouchableOpacity onPress={() => this.productQuantityOperator(data, 'sub')} style={{ width: 20, height: 20, borderRadius: 10, backgroundColor: '#E6E6E6' }}>
-                                                <Text style={{ fontSize: 12, fontWeight: '500', fontFamily: 'OpenSans', textAlign: 'center', color: '#FF0000' }}>-</Text>
+                                                <Text style={{ fontSize: 12, fontWeight: '500', fontFamily: 'OpenSans', textAlign: 'center', color: this.state.userAddedMedicineQuantity !== 1 ? '#FF0000' : 'grey' }}>-</Text>
                                             </TouchableOpacity>
                                         </Col>
                                         <Col size={2}>
@@ -157,10 +220,11 @@ export class AddToCard extends Component {
                                 </Col>
                             </Row>
                         </View>
+
                         <Row style={{ marginLeft: 20, marginTop: 10, marginRight: 15, marginBottom: 10 }}>
 
                             <Col style={{ width: '60%' }}>
-                                <Text style={{ fontFamily: 'OpenSans', textAlign: 'right', fontSize: 14, marginBottom: 5, color: '#848484', marginRight: 10 }}>{'Total - ₹ ' + (this.state.userAddedMedicineQuantity * data.offeredAmount)}</Text>
+                                <Text style={{ fontFamily: 'OpenSans', textAlign: 'right', fontSize: 14, marginBottom: 5, color: '#848484', marginRight: 10 }}>{'Total - ₹ ' + (this.state.userAddedTotalMedicineAmount)}</Text>
                             </Col>
                             <Col style={{ width: '40%', flexDirection: 'row', alignItems: 'flex-end', justifyContent: 'flex-end', }}>
                                 <TouchableOpacity onPress={() => this.cardAction()} style={{ borderColor: '#4e85e9', borderWidth: 1, marginLeft: 25, borderRadius: 2.5, marginTop: -12.5, height: 30, width: 120, paddingBottom: -5, paddingTop: 2, backgroundColor: '#4e85e9' }}>

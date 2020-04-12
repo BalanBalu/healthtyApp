@@ -3,8 +3,8 @@ import { updateChat } from '../chat/chat.action'
 import { createMedicineOrder } from '../pharmacy/pharmacy.action'
 import { SERVICE_TYPES } from '../../../setup/config'
 import { possibleChatStatus } from '../../../Constants/Chat';
-import { updateVideoConsuting,  } from '../../screens/VideoConsulation/services/video-consulting-service'
-import { POSSIBLE_VIDEO_CONSULTING_STATUS  } from '../../screens/VideoConsulation/constants';
+import { updateVideoConsuting, } from '../../screens/VideoConsulation/services/video-consulting-service'
+import { POSSIBLE_VIDEO_CONSULTING_STATUS } from '../../screens/VideoConsulation/constants';
 
 export default class BookAppointmentPaymentUpdate {
 
@@ -225,15 +225,27 @@ export default class BookAppointmentPaymentUpdate {
                 booked_from: "APPLICATION",
                 payment_id: paymentId,
                 order_items: orderData.medicineDetails,
-                delivery_charges: orderData.delivery_charges||' ',
-                delivery_tax: orderData.delivery_tax||'',
+                delivery_charges: orderData.delivery_charges || ' ',
+                delivery_tax: orderData.delivery_tax || '',
                 delivery_option: orderData.delivery_option,
+
+                is_order_type_recommentation: orderData.is_order_type_recommentation,
                 is_order_type_prescription: orderData.is_order_type_prescription,
+                pharmacy_ids: orderData.pharmacy_ids || [],
                 pickup_or_delivery_address: orderData.pickup_or_delivery_address
             }
-            if(orderData.delivery_option=='STORE_PICKUP'){
-                delete  requestData.delivery_tax
-                delete  requestData.delivery_charges
+            if (orderData.delivery_option === 'STORE_PICKUP') {
+                delete requestData.delivery_tax
+                delete requestData.delivery_charges
+            } if (orderData.is_order_type_prescription === true) {
+                requestData.prescription_data = {
+                    prescription_id: orderData.prescription_id,
+                    pharmacy_id: orderData.pharmacy_id
+                }
+                delete requestData.order_items
+            }
+            if (orderData.is_order_type_recommentation === false) {
+                delete requestData.pharmacy_ids
             }
             let resultData = await createMedicineOrder(requestData);
             console.log(resultData)

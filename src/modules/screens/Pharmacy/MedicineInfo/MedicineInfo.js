@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import { Container, Content, Text, Toast, Icon, View, Col, Row, Picker } from 'native-base';
 import { StyleSheet, Image, AsyncStorage, FlatList, TouchableOpacity, Dimensions } from 'react-native';
 import { getSelectedMedicineDetails, getMedicineReviews, getMedicineReviewsCount } from '../../../providers/pharmacy/pharmacy.action'
-import { medicineRateAfterOffer, setCartItemCountOnNavigation, renderMedicineImage } from '../CommomPharmacy';
+import { medicineRateAfterOffer, setCartItemCountOnNavigation, renderMedicineImage ,getMedicineName} from '../CommomPharmacy';
 import Spinner from '../../../../components/Spinner';
 import { dateDiff, getMoment, formatDate } from '../../../../setup/helpers'
 import { MedInsertReview } from './medInsertReview'
@@ -220,6 +220,33 @@ class MedicineInfo extends Component {
             selected2: value
         });
     }
+    variationSelectedValue(value) {
+        try {
+
+            let { medicineData } = this.state
+            temp = medicineData.medPharDetailInfo
+
+            mergeObject = Object.assign(temp, value)
+            let tempObject = {
+                ...medicineData,
+                medPharDetailInfo: mergeObject
+
+            }
+            // data.offeredAmount = medicineRateAfterOffer(value),
+
+
+
+
+
+
+
+            this.setState({
+                medicineData: tempObject, selected2: value
+            });
+        } catch (e) {
+            console.log(e)
+        }
+    }
     render() {
         const { medicineData, reviewData, reviewCount, cartItems, finalRating } = this.state
         const useage = [{ text: "1. Maintain half an hour gap between food/drinks/other medications and the prescribed homeopathic medicine." },
@@ -241,7 +268,7 @@ class MedicineInfo extends Component {
                         <View>
                             <Row>
                                 <Col size={9}>
-                                    <Text style={styles.headText}>{medicineData.medInfo.medicine_name}</Text>
+                                    <Text style={styles.headText}>{getMedicineName(medicineData.medInfo)}</Text>
                                 </Col>
                                 {reviewCount != '' ?
                                     <Col size={1}>
@@ -295,26 +322,27 @@ class MedicineInfo extends Component {
                                 <Col size={3}>
                                 </Col>
                             </Row >
-                            <Row style={{ marginTop: 10 }}><Col size={5} style={{ height: 30, justifyContent: 'center', backgroundColor: '#fff', borderRadius: 5, borderColor: '#000', borderWidth: 0.5 }}>
-                                <Picker
-                                    mode="dropdown"
-                                    style={{ width: undefined }}
-                                    placeholder="Select your SIM"
-                                    placeholderStyle={{ color: "#bfc6ea" }}
-                                    placeholderIconColor="#007aff"
-                                    selectedValue={this.state.selected2}
-                                    onValueChange={this.onValueChange2.bind(this)}
-                                >
-                                    <Picker.Item label="1 MG" value="key0" />
-                                    <Picker.Item label="2 MG" value="key1" />
-                                    <Picker.Item label="3 MG" value="key2" />
-                                    <Picker.Item label="4 MG" value="key3" />
-                                </Picker>
-                            </Col>
-                                <Col size={5} style={{ justifyContent: 'center', marginLeft: 5 }}>
-                                    <Text style={{ fontSize: 12, fontFamily: 'OpenSans', color: '#000' }}> of {medicineData.medInfo.medicine_form}</Text>
+                            {medicineData.medPharDetailInfo.variations !== undefined ?
+                                <Row style={{ marginTop: 10 }}><Col size={5} style={{ height: 30, justifyContent: 'center', backgroundColor: '#fff', borderRadius: 5, borderColor: '#000', borderWidth: 0.5 }}>
+                                    <Picker
+                                        mode="dropdown"
+                                        style={{ width: undefined }}
+                                        placeholder="Select your SIM"
+                                        placeholderStyle={{ color: "#bfc6ea" }}
+                                        placeholderIconColor="#007aff"
+                                        selectedValue={this.state.selected2}
+                                        onValueChange={this.variationSelectedValue.bind(this)}
+                                    >
+                                        {medicineData.medPharDetailInfo.variations.map((ele, key) => {
+
+                                            return <Picker.Item label={String(ele.medicine_weight) + String(ele.medicine_weight_unit)} value={ele} key={key} />
+                                        })}
+                                    </Picker>
                                 </Col>
-                            </Row>
+                                    <Col size={5} style={{ justifyContent: 'center', marginLeft: 5 }}>
+                                        <Text style={{ fontSize: 12, fontFamily: 'OpenSans', color: '#000' }}> of {medicineData.medInfo.medicine_form}</Text>
+                                    </Col>
+                                </Row> : null}
                         </View>
                         <Row style={{ marginTop: 10 }}>
                             <Col size={5}>
@@ -339,8 +367,6 @@ class MedicineInfo extends Component {
                                         </TouchableOpacity>
                                     </Row>
                                 }
-
-
                             </Col>
                             <Col size={5}>
                                 <Row>
@@ -351,6 +377,9 @@ class MedicineInfo extends Component {
                                 </Row>
                             </Col>
                         </Row>
+                        {/* give this text instead of two button in case of out of stock */}
+                        <Text style={{ fontSize: 15, fontFamily: 'OpenSans', color: '#ff4e42', marginTop: 5, textAlign: 'center' }}>Currently Out of stock</Text>
+
                         {this.state.isBuyNow == true || this.state.isAddToCart == true ?
                             <AddToCard
                                 data={this.state.selectedMedcine}
