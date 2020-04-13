@@ -1,16 +1,19 @@
 
-import { SET_PATIENT_LOCATION_DATA } from '../../providers/bookappointment/bookappointment.action';
-import { MAP_BOX_PUBLIC_TOKEN, IS_ANDROID, MAP_BOX_TOKEN } from '../../../setup/config';
-import RNAndroidLocationEnabler from 'react-native-android-location-enabler';
-import MapboxGL from '@react-native-mapbox-gl/maps';
-import { BackHandler, Alert } from 'react-native';
-import Geolocation from 'react-native-geolocation-service';
-import { store } from '../../../setup/store';
-import Axios from 'axios';
-MapboxGL.setAccessToken(MAP_BOX_PUBLIC_TOKEN);
+// import { SET_PATIENT_LOCATION_DATA } from '../../providers/bookappointment/bookappointment.action';
+// import { MAP_BOX_PUBLIC_TOKEN, IS_ANDROID, MAP_BOX_TOKEN } from '../../../setup/config';
+// // import RNAndroidLocationEnabler from 'react-native-android-location-enabler';
+// import MapboxGL from '@react-native-mapbox-gl/maps';
+// import { BackHandler, Alert } from 'react-native';
+// // import Geolocation from 'react-native-geolocation-service';
+// import { store } from '../../../setup/store';
+// import Axios from 'axios';
+// //MapboxGL.setAccessToken(MAP_BOX_PUBLIC_TOKEN);
 
 export default class CurrentLocation {
-  static async getCurrentPosition() {
+  getCurrentPosition() {
+
+  }
+ /* static async getCurrentPosition() {
     console.log('Getting to current Location')
     if (IS_ANDROID) {
 
@@ -118,5 +121,5 @@ export default class CurrentLocation {
           console.log(error);
         }, { enableHighAccuracy: false, timeout: 50000 }
     }
-  }
+  } */
 }

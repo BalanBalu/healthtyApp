@@ -7,7 +7,7 @@ import { RadioButton, Checkbox } from 'react-native-paper';
 
 import { getAvailableNetBanking, getAvailableWallet, luhnCheck, getPayCardType } from '../../../setup/paymentMethods';
 import { putService, getService } from '../../../setup/services/httpservices';
-import Razorpay from '../../../components/Razorpay';
+// import Razorpay from '../../../components/Razorpay';
 import { RAZOR_KEY, BASIC_DEFAULT, SERVICE_TYPES, MAX_PERCENT_APPLY_BY_CREDIT_POINTS } from '../../../setup/config';
 import BookAppointmentPaymentUpdate from '../../providers/bookappointment/bookAppointment';
 import { getReferalPoints } from '../../providers/profile/profile.action';
@@ -239,7 +239,7 @@ class PaymentPage extends Component {
             'notes[message]': 'New Appointment Booking: ' + this.userId
         }
         console.log(JSON.stringify(options));
-        Razorpay.open(options).then((data) => {
+      /*  Razorpay.open(options).then((data) => {
             // handle success
             console.log(data);
             this.updatePaymentDetails(true, data, 'online', finalAmountToPayByOnline);
@@ -251,7 +251,7 @@ class PaymentPage extends Component {
         }).catch((error) => {
             console.log(error);
             this.updatePaymentDetails(false, error, 'online', finalAmountToPayByOnline);
-        });
+        }); */
     }
 
     async updatePaymentDetails(isSuccess, data, modeOfPayment, finalAmountToPayByOnline) {

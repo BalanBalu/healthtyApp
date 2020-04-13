@@ -12,7 +12,7 @@ import MapboxGL from '@react-native-mapbox-gl/maps';
 import { NavigationEvents } from 'react-navigation'
 import { store } from '../../../setup/store';
 import { getAllChats, SET_LAST_MESSAGES_DATA, SET_VIDEO_SESSION } from '../../providers/chat/chat.action'
-import CurrentLocation from './CurrentLocation';
+// import CurrentLocation from './CurrentLocation';
 const VideoConultationImg = require('../../../../assets/images/videConsultation.jpg');
 const chatImg = require('../../../../assets/images/Chat.jpg');
 const pharmacyImg = require('../../../../assets/images/pharmacy.jpg');
@@ -24,7 +24,7 @@ const coronaImg = require('../../../../assets/images/corona.png');
 
 
 
-import OfflineNotice from '../../../components/offlineNotice';
+// import OfflineNotice from '../../../components/offlineNotice';
 import { toDataUrl } from '../../../setup/helpers';
 import { fetchUserMarkedAsReadedNotification } from '../../providers/notification/notification.actions';
 import ConnectyCube from 'react-native-connectycube';
@@ -168,7 +168,7 @@ class Home extends Component {
     initialFunction = async () => {
         try {
             this.getCatagries();
-            CurrentLocation.getCurrentPosition();
+           // CurrentLocation.getCurrentPosition();
             let userId = await AsyncStorage.getItem("userId");
             if (userId) {
                 const { notification: { notificationCount }, navigation } = this.props
@@ -413,7 +413,7 @@ class Home extends Component {
         return (
 
             <Container style={styles.container}>
-                <OfflineNotice />
+                {/* <OfflineNotice /> */}
                 <Content keyboardShouldPersistTaps={'handled'} style={styles.bodyContent}>
                     <NavigationEvents
                         onWillFocus={payload => { this.backNavigation(payload) }}

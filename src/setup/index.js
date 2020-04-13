@@ -12,7 +12,7 @@ import { userFiledsUpdate } from '../modules/providers/auth/auth.actions';
 //import firebase from 'react-native-firebase';
 import { fetchUserMarkedAsReadedNotification } from '../modules/providers/notification/notification.actions';
 import { SET_LAST_MESSAGES_DATA } from '../modules/providers/chat/chat.action';
-import NotifService from './NotifService';
+// import NotifService from './NotifService';
 import SocketIOClient from 'socket.io-client';
 import { AuthService } from '../modules/screens/VideoConsulation/services/index';
 YellowBox.ignoreWarnings([
@@ -29,18 +29,18 @@ export default class App extends Component {
     this.state = {
       senderId: FIREBASE_SENDER_ID
     };
-    this.notif = new NotifService(this.onRegister.bind(this), this.onNotif.bind(this));
-    AuthService.init();
+   // this.notif = new NotifService(this.onRegister.bind(this), this.onNotif.bind(this));
+  //  AuthService.init();
    
   }
   async componentDidMount() {
     const userId = await AsyncStorage.getItem('userId');
     if (userId) {
       this.userId = userId;
-      this.initializeSocket(userId);
+    //  this.initializeSocket(userId);
     }
     setInterval(() => {
-      this.getMarkedAsReadedNotification();
+     // this.getMarkedAsReadedNotification();
     }, 10000)
     //this.checkPermission();
   }

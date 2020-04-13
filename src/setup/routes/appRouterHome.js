@@ -1,5 +1,7 @@
 import React, { Component } from 'react';
-import { createStackNavigator, createAppContainer, createSwitchNavigator, createDrawerNavigator, NavigationBackAction } from 'react-navigation';
+import { createAppContainer, createSwitchNavigator, NavigationBackAction } from 'react-navigation';
+import { createDrawerNavigator } from 'react-navigation-drawer';
+import { createStackNavigator } from 'react-navigation-stack';
 import AuthLoadingScreen from './AuthLoadingScreen';
 import SideBar from './SideBar';
 import Home from "../../modules/screens/Home";
@@ -793,7 +795,7 @@ export const DragwerLogos = {
 export default createAppContainer(createSwitchNavigator(
   {
     AuthLoading: AuthLoadingScreen,
-    App: DrawerNavigator,
+    App: AuthStack, //DrawerNavigator,
     Auth: AuthStack
   },
   {
