@@ -12,7 +12,7 @@ import MapboxGL from '@react-native-mapbox-gl/maps';
 import { NavigationEvents } from 'react-navigation'
 import { store } from '../../../setup/store';
 import { getAllChats, SET_LAST_MESSAGES_DATA, SET_VIDEO_SESSION } from '../../providers/chat/chat.action'
-// import CurrentLocation from './CurrentLocation';
+import CurrentLocation from './CurrentLocation';
 const VideoConultationImg = require('../../../../assets/images/videConsultation.jpg');
 const chatImg = require('../../../../assets/images/Chat.jpg');
 const pharmacyImg = require('../../../../assets/images/pharmacy.jpg');
@@ -20,16 +20,11 @@ const BloodImg = require('../../../../assets/images/blood.jpeg');
 const ReminderImg = require('../../../../assets/images/reminder.png');
 const LabTestImg = require('../../../../assets/images/lab-test.png');
 const coronaImg = require('../../../../assets/images/corona.png');
-
-
-
-
 // import OfflineNotice from '../../../components/offlineNotice';
 import { toDataUrl } from '../../../setup/helpers';
 import { fetchUserMarkedAsReadedNotification } from '../../providers/notification/notification.actions';
 import ConnectyCube from 'react-native-connectycube';
 import { CallService } from '../VideoConsulation/services';
-// import VideoScreen from '../VideoConsulation/components/VideoScreen/index';
 MapboxGL.setAccessToken(MAP_BOX_PUBLIC_TOKEN);
 
 const debounce = (fun, delay) => {
@@ -168,7 +163,7 @@ class Home extends Component {
     initialFunction = async () => {
         try {
             this.getCatagries();
-           // CurrentLocation.getCurrentPosition();
+            CurrentLocation.getCurrentPosition();
             let userId = await AsyncStorage.getItem("userId");
             if (userId) {
                 const { notification: { notificationCount }, navigation } = this.props
@@ -236,14 +231,6 @@ class Home extends Component {
 
             if (result.success) {
                 this.setState({ catagary: result.data, categryCount: this.state.categryCount + 1 })
-                for (let i = 0; i < result.data.length; i++) {
-                    const item = result.data[i];
-                    const imageURL = item.imageBaseURL + item.category_id + '.png';
-                    const base64ImageDataRes = await toDataUrl(imageURL)
-                    result.data[i].base64ImageData = base64ImageDataRes;
-                }
-                this.setState({ catagary: result.data, categryCount: this.state.categryCount + 1 })
-
             }
         } catch (e) {
             console.log(e);
@@ -365,11 +352,7 @@ class Home extends Component {
     */
     _setUpListeners() {
         ConnectyCube.videochat.onCallListener = this._onCallListener;
-        // ConnectyCube.videochat.onAcceptCallListener = this._onAcceptCallListener;
-        // ConnectyCube.videochat.onRejectCallListener = this._onRejectCallListener;
-        // ConnectyCube.videochat.onStopCallListener = this._onStopCallListener;
-        // ConnectyCube.videochat.onUserNotAnswerListener = this._onUserNotAnswerListener;
-        ConnectyCube.videochat.onRemoteStreamListener = this._onRemoteStreamListener;
+       ConnectyCube.videochat.onRemoteStreamListener = this._onRemoteStreamListener;
     }
     _onCallListener = (session, extension) => {
 
@@ -627,7 +610,7 @@ class Home extends Component {
                                             <TouchableOpacity onPress={() => this.navigateToCategorySearch(item.category_name)}
                                                 style={{ justifyContent: 'center', alignItems: 'center', width: '100%', paddingTop: 5, paddingBottom: 5 }}>
                                                 <Image
-                                                    source={{ uri: item.base64ImageData /*item.imageBaseURL + item.category_id + '.png' */ }}
+                                                    source={{ uri: item.imageBaseURL + item.category_id + '.png' }}
                                                     style={{
                                                         width: 50, height: 50, alignItems: 'center'
                                                     }}

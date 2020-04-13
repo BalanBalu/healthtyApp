@@ -191,7 +191,7 @@ export const getReferalPoints = async (userId) => {
     }
     if(result.connectycube) {
       
-      AuthService.loginToConnctyCube(userId, result.connectycube)
+     // AuthService.loginToConnctyCube(userId, result.connectycube)
     }
     if (result.mobile_no == undefined) {
       return {

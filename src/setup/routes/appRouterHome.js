@@ -795,7 +795,7 @@ export const DragwerLogos = {
 export default createAppContainer(createSwitchNavigator(
   {
     AuthLoading: AuthLoadingScreen,
-    App: AuthStack, //DrawerNavigator,
+    App: DrawerNavigator,
     Auth: AuthStack
   },
   {

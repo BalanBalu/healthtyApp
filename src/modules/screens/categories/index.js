@@ -119,7 +119,7 @@ class Categories extends Component {
                     <TouchableOpacity onPress={() => this.navigateToCategorySearch(item.category_name)}
                       style={{ justifyContent: 'center', alignItems: 'center', width: '100%', paddingTop: 5, paddingBottom: 5 }}>
                       <Image
-                        source={{ uri:  item.base64ImageData /* item.imageBaseURL + item.category_id + '.png' */ }}
+                        source={{ uri: item.imageBaseURL + item.category_id + '.png' }}
                         style={{
                           width: 60, height: 60, alignItems: 'center'
                         }}

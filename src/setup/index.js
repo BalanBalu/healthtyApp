@@ -30,7 +30,7 @@ export default class App extends Component {
       senderId: FIREBASE_SENDER_ID
     };
    // this.notif = new NotifService(this.onRegister.bind(this), this.onNotif.bind(this));
-  //  AuthService.init();
+    AuthService.init();
    
   }
   async componentDidMount() {
