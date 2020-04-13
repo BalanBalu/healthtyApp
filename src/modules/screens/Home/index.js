@@ -21,7 +21,6 @@ const ReminderImg = require('../../../../assets/images/reminder.png');
 const LabTestImg = require('../../../../assets/images/lab-test.png');
 const coronaImg = require('../../../../assets/images/corona.png');
 // import OfflineNotice from '../../../components/offlineNotice';
-import { toDataUrl } from '../../../setup/helpers';
 import { fetchUserMarkedAsReadedNotification } from '../../providers/notification/notification.actions';
 import ConnectyCube from 'react-native-connectycube';
 import { CallService } from '../VideoConsulation/services';
