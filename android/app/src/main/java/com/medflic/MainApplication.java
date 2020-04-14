@@ -3,6 +3,10 @@ package com.medflic;
 import android.app.Application;
 import com.horcrux.svg.SvgPackage;
 import com.facebook.react.ReactApplication;
+import com.agontuk.RNFusedLocation.RNFusedLocationPackage;
+import com.oney.WebRTCModule.WebRTCModulePackage;
+import com.zxcpoiu.incallmanager.InCallManagerPackage;
+import com.zmxv.RNSound.RNSoundPackage;
 import com.calendarevents.CalendarEventsPackage;
 import com.reactnative.ivpusic.imagepicker.PickerPackage;
 import com.dieam.reactnativepushnotification.ReactNativePushNotificationPackage;
@@ -37,6 +41,10 @@ public class MainApplication extends Application implements ReactApplication {
     protected List<ReactPackage> getPackages() {
       return Arrays.<ReactPackage>asList(
           new MainReactPackage(),
+            new RNFusedLocationPackage(),
+            new WebRTCModulePackage(),
+            new InCallManagerPackage(),
+            new RNSoundPackage(),
             new CalendarEventsPackage(),
             new PickerPackage(),
             new ReactNativePushNotificationPackage(),

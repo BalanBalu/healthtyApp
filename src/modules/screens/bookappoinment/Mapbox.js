@@ -7,6 +7,7 @@ import {IS_ANDROID, MAP_BOX_TOKEN } from '../../../setup/config';
 import MapboxDirectionsFactory from '@mapbox/mapbox-sdk/services/directions';
 const directionsClient = MapboxDirectionsFactory({accessToken : MAP_BOX_TOKEN});
 MapboxGL.setAccessToken(MAP_BOX_TOKEN);
+import Geolocation from 'react-native-geolocation-service';
 import {lineString as makeLineString} from '@turf/helpers';
 
 const layerStyles = {
@@ -106,7 +107,7 @@ class Mapbox extends React.PureComponent {
     await this.setState({hospitaldestination : hospitaldestination })
     console.log('Setting hosptial Destination' + hospitaldestination)
     
-    navigator.geolocation.getCurrentPosition(
+    Geolocation.getCurrentPosition(
       this.success,  
       
       (error) =>  {

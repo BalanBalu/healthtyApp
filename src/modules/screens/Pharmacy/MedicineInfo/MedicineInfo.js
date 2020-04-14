@@ -1,12 +1,14 @@
 import React, { Component } from 'react';
-import { Container, Content, Text, Toast, Icon, View, Col, Row, } from 'native-base';
-import { StyleSheet, Image, AsyncStorage, FlatList, TouchableOpacity } from 'react-native';
+import { Container, Content, Text, Toast, Icon, View, Col, Row, Picker } from 'native-base';
+import { StyleSheet, Image, AsyncStorage, FlatList, TouchableOpacity, Dimensions } from 'react-native';
 import { getSelectedMedicineDetails, getMedicineReviews, getMedicineReviewsCount } from '../../../providers/pharmacy/pharmacy.action'
-import { medicineRateAfterOffer, setCartItemCountOnNavigation, renderMedicineImage} from '../CommomPharmacy';
+import { medicineRateAfterOffer, setCartItemCountOnNavigation, renderMedicineImage ,getMedicineName} from '../CommomPharmacy';
 import Spinner from '../../../../components/Spinner';
 import { dateDiff, getMoment, formatDate } from '../../../../setup/helpers'
 import { MedInsertReview } from './medInsertReview'
 import { AddToCard } from '../AddToCardBuyNow/AddToCard'
+import SwiperFlatList from 'react-native-swiper-flatlist';
+import ImageZoom from 'react-native-image-pan-zoom';
 
 let medicineId, userId;
 class MedicineInfo extends Component {
@@ -31,7 +33,8 @@ class MedicineInfo extends Component {
             modalVisible: false,
             reviewCount: '',
             cartItems: [],
-            finalRating:''
+            finalRating: '',
+            enlargeContent: false
         };
 
     }
@@ -57,17 +60,15 @@ class MedicineInfo extends Component {
         await this.getMedicineReviewCount();
         userId = await AsyncStorage.getItem('userId')
         if (userId) {
-            const { navigation } = this.props
-            setCartItemCountOnNavigation(navigation);
             let cart = await AsyncStorage.getItem('cartItems-' + userId) || []
             if (cart.length != 0) {
-                let cartData = JSON.parse(cart);
+                let cartData = JSON.parse(cart)
                 this.setState({ cartItems: cartData })
+                setCartItemCountOnNavigation(this.props.navigation);
             }
         }
 
     }
-
 
     getSelectedMedicineDetails = async () => {
         try {
@@ -77,7 +78,6 @@ class MedicineInfo extends Component {
             let result = await getSelectedMedicineDetails(medicineId, pharmacyId);
             if (result.success) {
                 this.setState({ medicineData: result.data })
-                console.log("medicineData", this.state.medicineData)
 
             }
             this.setState({ isLoading: false });
@@ -96,7 +96,6 @@ class MedicineInfo extends Component {
             let result = await getMedicineReviews(medicineId);
             if (result.success) {
                 this.setState({ reviewData: result.data })
-                console.log("reviewData", this.state.reviewData.length)
             } else {
                 this.setState({ isLoading: false, reviewData: '' });
             }
@@ -166,6 +165,7 @@ class MedicineInfo extends Component {
                 })
             }
             else if (val.isNavigateCart) {
+                setCartItemCountOnNavigation(this.props.navigation);
                 Toast.show({
                     text: 'Item added to card',
                     duration: 3000,
@@ -215,12 +215,50 @@ class MedicineInfo extends Component {
         const { medicineData: { medPharDetailInfo } } = this.state;
         return parseInt(medPharDetailInfo.price) - parseInt(medicineRateAfterOffer(medPharDetailInfo))
     }
+    onValueChange2(value) {
+        this.setState({
+            selected2: value
+        });
+    }
+    variationSelectedValue(value) {
+        try {
 
+            let { medicineData } = this.state
+            temp = medicineData.medPharDetailInfo
+
+            mergeObject = Object.assign(temp, value)
+            let tempObject = {
+                ...medicineData,
+                medPharDetailInfo: mergeObject
+
+            }
+            // data.offeredAmount = medicineRateAfterOffer(value),
+
+
+
+
+
+
+
+            this.setState({
+                medicineData: tempObject, selected2: value
+            });
+        } catch (e) {
+            console.log(e)
+        }
+    }
     render() {
         const { medicineData, reviewData, reviewCount, cartItems, finalRating } = this.state
+        const useage = [{ text: "1. Maintain half an hour gap between food/drinks/other medications and the prescribed homeopathic medicine." },
+        { text: "2. While on homeopathic medication, there shouldn't be any strong smell like that of an onion, garlic, camphor, coffee, hing, in your mouth." },
+        { text: "3. Avoid use of alcohol and tobacco while on homeopathic medication." },
+        { text: "4. During pregnancy and while on breastfeeding, consult the homeopathic physician before use." },
+        { text: "5. Store homeopathic remedies away from strong odors such as menthol, mint, camphor, essential oils, lip balm, deep heat liniments, cough lozenges, chewing gum, aromatic toothpaste, chemical fumes, perfumes etc." }]
+        const Ingredients = [{ name: 'Syzgium Jambolanum' }, { name: 'Syzgium Jambolanum' }, { name: 'Syzgium Jambolanum' }, { name: 'Syzgium Jambolanum' }]
+        const prescriptionData = [{ prescription_path: require('../../../../../assets/images/images.jpeg') }, { prescription_path: require('../../../../../assets/images/images.jpeg') }, { prescription_path: require('../../../../../assets/images/images.jpeg') }, { prescription_path: require('../../../../../assets/images/images.jpeg') }, { prescription_path: require('../../../../../assets/images/images.jpeg') }]
         return (
             <Container >
-
+               
                 <Content style={{ padding: 10 }}>
                     {this.state.isLoading ? <Spinner color='blue'
                         visible={this.state.isLoading}
@@ -230,7 +268,7 @@ class MedicineInfo extends Component {
                         <View>
                             <Row>
                                 <Col size={9}>
-                                    <Text style={styles.headText}>{medicineData.medInfo.medicine_name}</Text>
+                                    <Text style={styles.headText}>{getMedicineName(medicineData.medInfo)}</Text>
                                 </Col>
                                 {reviewCount != '' ?
                                     <Col size={1}>
@@ -242,12 +280,37 @@ class MedicineInfo extends Component {
 
                             </Row>
                             <Text style={{ fontSize: 14, fontFamily: 'OpenSans', color: '#909090' }}>By {medicineData.pharmacyInfo.name}</Text>
-                            <View style={{ justifyContent: 'center', alignItems: 'center' }}>
-                                <Image source={renderMedicineImage(medicineData.medPharDetailInfo)}
-                                    style={{
-                                        width: 90, height: 90, alignItems: 'center'
-                                    }}
-                                />
+
+                            <View style={{ flex: 1, marginLeft: 10, marginRight: 10, justifyContent: 'center', alignItems: 'center', }}>
+                                <ImageZoom cropWidth={200}
+                                    cropHeight={200}
+                                    imageWidth={200}
+                                    minScale={0.6}
+                                    panToMove={false}
+                                    pinchToZoom={false}
+                                    enableDoubleClickZoom={false}
+
+                                    imageHeight={200}>
+                                    <SwiperFlatList
+                                        autoplay
+                                        autoplayDelay={3}
+                                        index={3}
+                                        contentContainerStyle={{ flexGrow: 1, }}
+                                        autoplayLoop
+                                        data={prescriptionData}
+                                        renderItem={({ item }) =>
+                                            <TouchableOpacity onPress={() => this.props.navigation.navigate("ImageView", { passImage: item.prescription_path, title: medicineData.medInfo.medicine_name })}>
+                                                <Image
+                                                    // source={renderMedicineImage(medicineData.medPharDetailInfo)}
+                                                    style={{
+                                                        width: 200, height: 200,
+                                                    }}
+                                                />
+                                            </TouchableOpacity>
+                                        }
+                                        showPagination
+                                    />
+                                </ImageZoom>
                             </View>
                             <Row>
                                 <Col size={7} style={{ flexDirection: 'row', marginTop: 10 }}>
@@ -258,8 +321,28 @@ class MedicineInfo extends Component {
                                 </Col>
                                 <Col size={3}>
                                 </Col>
-                            </Row>
+                            </Row >
+                            {medicineData.medPharDetailInfo.variations !== undefined ?
+                                <Row style={{ marginTop: 10 }}><Col size={5} style={{ height: 30, justifyContent: 'center', backgroundColor: '#fff', borderRadius: 5, borderColor: '#000', borderWidth: 0.5 }}>
+                                    <Picker
+                                        mode="dropdown"
+                                        style={{ width: undefined }}
+                                        placeholder="Select your SIM"
+                                        placeholderStyle={{ color: "#bfc6ea" }}
+                                        placeholderIconColor="#007aff"
+                                        selectedValue={this.state.selected2}
+                                        onValueChange={this.variationSelectedValue.bind(this)}
+                                    >
+                                        {medicineData.medPharDetailInfo.variations.map((ele, key) => {
 
+                                            return <Picker.Item label={String(ele.medicine_weight) + String(ele.medicine_weight_unit)} value={ele} key={key} />
+                                        })}
+                                    </Picker>
+                                </Col>
+                                    <Col size={5} style={{ justifyContent: 'center', marginLeft: 5 }}>
+                                        <Text style={{ fontSize: 12, fontFamily: 'OpenSans', color: '#000' }}> of {medicineData.medInfo.medicine_form}</Text>
+                                    </Col>
+                                </Row> : null}
                         </View>
                         <Row style={{ marginTop: 10 }}>
                             <Col size={5}>
@@ -274,7 +357,7 @@ class MedicineInfo extends Component {
 
                                         </TouchableOpacity>
                                     </Row> :
-                                    <Row style={{alignItems:'flex-end'}}>
+                                    <Row style={{ alignItems: 'flex-end' }}>
                                         <TouchableOpacity style={styles.addCartTouch}
                                             onPress={() => { this.setState({ isAddToCart: true }), this.selectedItems(medicineData, 'Add to Card', cartItems.findIndex(ele => ele.medicine_id == medicineData.medPharDetailInfo.medicine_id && ele.pharmacy_id == medicineData.medPharDetailInfo.pharmacy_id)) }} >
 
@@ -284,8 +367,6 @@ class MedicineInfo extends Component {
                                         </TouchableOpacity>
                                     </Row>
                                 }
-
-
                             </Col>
                             <Col size={5}>
                                 <Row>
@@ -296,6 +377,9 @@ class MedicineInfo extends Component {
                                 </Row>
                             </Col>
                         </Row>
+                        {/* give this text instead of two button in case of out of stock */}
+                        <Text style={{ fontSize: 15, fontFamily: 'OpenSans', color: '#ff4e42', marginTop: 5, textAlign: 'center' }}>Currently Out of stock</Text>
+
                         {this.state.isBuyNow == true || this.state.isAddToCart == true ?
                             <AddToCard
                                 data={this.state.selectedMedcine}
@@ -303,8 +387,34 @@ class MedicineInfo extends Component {
                             />
                             : null}
                         <View style={{ marginTop: 10 }}>
-                            <Text style={styles.desText}>Product Description</Text>
+                            <Text style={styles.desText}>Product Details</Text>
                             <Text style={styles.mainText}>{medicineData.medInfo.description}</Text>
+                            <TouchableOpacity onPress={() => this.setState({ enlargeContent: true })}>
+                                <Text style={styles.showText}>Show more</Text>
+                            </TouchableOpacity>
+                            {this.state.enlargeContent == true ?
+                                <View>
+                                    <View style={{ marginTop: 10 }}>
+                                        <Text style={styles.desText}>Medicine Dosage</Text>
+                                        <Text style={styles.mainText}>{medicineData.medInfo.medicine_unit}</Text>
+                                    </View>
+                                    <View style={{ marginTop: 10 }}>
+                                        <Text style={styles.desText}>Directions To Use </Text>
+                                        <Text style={styles.mainText}>{medicineData.medInfo.directions_to_use}</Text>
+                                    </View>
+                                    <View style={{ marginTop: 10 }}>
+                                        <Text style={styles.desText}>Key Ingredients</Text>
+                                        <Text style={styles.mainText}><Text style={{ fontSize: 12, marginTop: 5, }}>{'\u2B24'}</Text>   {medicineData.medInfo.ingridients}</Text>
+                                    </View>
+                                    <View style={{ marginTop: 10 }}>
+                                        <Text style={styles.desText}>Side effects</Text>
+                                        <Text style={styles.mainText}>{medicineData.medInfo.side_effects}</Text>
+                                    </View>
+                                    <TouchableOpacity onPress={() => this.setState({ enlargeContent: false })}>
+                                        <Text style={styles.showText}>Show less</Text>
+                                    </TouchableOpacity>
+                                </View> : null}
+
                         </View>
                         <View style={{ marginTop: 10 }}>
                             <Text style={styles.desText}>Rating and Reviews</Text>
@@ -332,7 +442,7 @@ class MedicineInfo extends Component {
                                             </TouchableOpacity>
                                         </Col>
                                         <Col size={1.5}>
-                                            <Text style={{ fontSize: 10, fontFamily: 'OpenSans', color: '#909090', marginLeft: 5 }}>{finalRating.five_star ? (finalRating.five_star).toFixed(1) : 0}%</Text>
+                                            <Text style={{ fontSize: 10, fontFamily: 'OpenSans', color: '#909090', marginLeft: 5 }}>{finalRating.five_star ? Math.round(finalRating.five_star) : 0}%</Text>
                                         </Col>
                                     </Row>
                                     <Row style={{ marginTop: 1 }}>
@@ -346,7 +456,7 @@ class MedicineInfo extends Component {
                                             </TouchableOpacity>
                                         </Col>
                                         <Col size={1.5}>
-                                            <Text style={{ fontSize: 10, fontFamily: 'OpenSans', color: '#909090', marginLeft: 5 }}>{finalRating.four_star ? (finalRating.four_star).toFixed(1):0}%</Text>
+                                            <Text style={{ fontSize: 10, fontFamily: 'OpenSans', color: '#909090', marginLeft: 5 }}>{finalRating.four_star ? Math.round(finalRating.four_star) : 0}%</Text>
                                         </Col>
                                     </Row>
                                     <Row style={{ marginTop: 1 }}>
@@ -360,7 +470,7 @@ class MedicineInfo extends Component {
                                             </TouchableOpacity>
                                         </Col>
                                         <Col size={1.5}>
-                                            <Text style={{ fontSize: 10, fontFamily: 'OpenSans', color: '#909090', marginLeft: 5 }}>{finalRating.three_star ? (finalRating.three_star).toFixed(1) : 0}%</Text>
+                                            <Text style={{ fontSize: 10, fontFamily: 'OpenSans', color: '#909090', marginLeft: 5 }}>{finalRating.three_star ? Math.round(finalRating.three_star) : 0}%</Text>
                                         </Col>
                                     </Row>
                                     <Row style={{ marginTop: 1 }}>
@@ -374,7 +484,7 @@ class MedicineInfo extends Component {
                                             </TouchableOpacity>
                                         </Col>
                                         <Col size={1.5}>
-                                            <Text style={{ fontSize: 10, fontFamily: 'OpenSans', color: '#909090', marginLeft: 5 }}>{finalRating.two_star ? (finalRating.two_star).toFixed(1) : 0}%</Text>
+                                            <Text style={{ fontSize: 10, fontFamily: 'OpenSans', color: '#909090', marginLeft: 5 }}>{finalRating.two_star ? Math.round(finalRating.two_star) : 0}%</Text>
                                         </Col>
                                     </Row>
                                     <Row style={{ marginTop: 1 }}>
@@ -388,7 +498,7 @@ class MedicineInfo extends Component {
                                             </TouchableOpacity>
                                         </Col>
                                         <Col size={1.5}>
-                                            <Text style={{ fontSize: 10, fontFamily: 'OpenSans', color: '#909090', marginLeft: 5 }}>{finalRating.one_star ? (finalRating.one_star).toFixed(1) : 0}%</Text>
+                                            <Text style={{ fontSize: 10, fontFamily: 'OpenSans', color: '#909090', marginLeft: 5 }}>{finalRating.one_star ? Math.round(finalRating.one_star) : 0}%</Text>
                                         </Col>
                                     </Row>
                                 </Col>
@@ -418,14 +528,14 @@ class MedicineInfo extends Component {
                                 } /> :
                             <Text style={{ fontSize: 10, justifyContent: 'center', alignItems: 'center' }}>No Reviews Were found</Text>}
 
-                        {reviewData.length!==0 ?
+                        {reviewData.length !== 0 ?
 
                             <Row style={{ marginTop: 10 }}>
                                 <Col size={6}>
                                 </Col>
                                 <Col size={4} style={{ alignItems: 'flex-end', justifyContent: 'flex-end' }}>
                                     <Row>
-                                        <TouchableOpacity style={styles.viewTouch} onPress={() => this.props.navigation.navigate('ViewAllReviews', { medicineId: medicineId})}>
+                                        <TouchableOpacity style={styles.viewTouch} onPress={() => this.props.navigation.navigate('ViewAllReviews', { medicineId: medicineId })}>
                                             <Text style={styles.ViewText}>View All Reviews</Text>
                                             <Icon name="ios-arrow-round-forward" style={{ fontSize: 16, color: '#4e85e9', marginLeft: 2 }} />
 
@@ -438,7 +548,7 @@ class MedicineInfo extends Component {
                                 <TouchableOpacity style={{ borderColor: '#8dc63f', borderWidth: 1, marginLeft: 1, borderRadius: 2.5, height: 25, width: 65, backgroundColor: '#8dc63f' }}
                                     onPress={() => { this.insertReview(), this.setState({ isReviewInsert: true }) }}>
                                     <Row style={{ alignItems: 'center' }}>
-                                        <Text style={{ fontSize: 7, color: '#fff', marginTop: 2.5, marginLeft: 6 }}>Insert Reviews</Text>
+                                        <Text style={{ fontSize: 7, color: '#fff', marginTop: 2.5, marginLeft: 6 }}>Add Reviews</Text>
                                     </Row>
                                 </TouchableOpacity>
                             </Row>
@@ -451,7 +561,7 @@ class MedicineInfo extends Component {
                             />
                             : null}
                     </View>
-                    
+
                 </Content>
             </Container>
         );
@@ -488,7 +598,7 @@ const styles = StyleSheet.create({
         paddingLeft: 50,
         paddingRight: 50,
         borderRadius: 2,
-        alignItems:'flex-end'
+        alignItems: 'flex-end'
     },
     buyNowTouch: {
         backgroundColor: '#8dc63f',
@@ -678,5 +788,57 @@ const styles = StyleSheet.create({
         fontFamily: 'OpenSans',
         color: '#909090',
         marginTop: 5
+    },
+    showText: {
+        fontSize: 12,
+        fontFamily: 'OpenSans',
+        color: '#7F49C3',
+        marginTop: 10
+    },
+    circleDev: {
+        position: 'absolute',
+        bottom: 15,
+        height: 15,
+        width: '100%',
+        display: 'flex',
+        flexDirection: 'row',
+        justifyContent: 'center',
+        alignContent: 'center'
+    },
+    whiteCircle: {
+        width: 6,
+        height: 6,
+        borderRadius: 3,
+        margin: 5,
+        backgroundColor: '#fff'
+
+    },
+    wrapper: {
+        marginTop: 5,
+        borderRadius: 2
+    },
+    slide1: {
+        flex: 1,
+        justifyContent: 'center',
+        alignItems: 'center',
+        backgroundColor: '#9DD6EB',
+    },
+    slide2: {
+        flex: 1,
+        justifyContent: 'center',
+        alignItems: 'center',
+        backgroundColor: '#97CAE5'
+    },
+    slide3: {
+        flex: 1,
+        justifyContent: 'center',
+        alignItems: 'center',
+        backgroundColor: '#92BBD9'
+    },
+    text: {
+        color: '#fff',
+        fontSize: 30,
+        fontWeight: 'bold'
     }
+
 })

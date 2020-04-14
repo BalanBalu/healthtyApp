@@ -15,7 +15,7 @@ import {
     PixelRatio
 } from 'react-native';
 import Qs from 'qs';
-
+import Geolocation from 'react-native-geolocation-service';
 const WINDOW = Dimensions.get('window');
 
 const defaultStyles = {
@@ -164,7 +164,7 @@ export default class MapboxAutocomplete extends Component {
 
     getCurrentLocation = () => {
 
-        navigator.geolocation.getCurrentPosition(
+        Geolocation.getCurrentPosition(
             (position) => {
                 if (this.props.nearbyPlacesAPI === 'None') {
                     let currentLocation = {

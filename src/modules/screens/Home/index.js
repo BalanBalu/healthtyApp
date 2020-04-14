@@ -11,15 +11,25 @@ import { MAP_BOX_PUBLIC_TOKEN, IS_ANDROID, MAX_DISTANCE_TO_COVER, CURRENT_PRODUC
 import MapboxGL from '@react-native-mapbox-gl/maps';
 import { NavigationEvents } from 'react-navigation'
 import { store } from '../../../setup/store';
-import { getAllChats, SET_LAST_MESSAGES_DATA } from '../../providers/chat/chat.action'
+import { getAllChats, SET_LAST_MESSAGES_DATA, SET_VIDEO_SESSION } from '../../providers/chat/chat.action'
 import CurrentLocation from './CurrentLocation';
-const bloodImg = require('../../../../assets/images/blood.jpeg');
+const VideoConultationImg = require('../../../../assets/images/videConsultation.jpg');
 const chatImg = require('../../../../assets/images/Chat.jpg');
 const pharmacyImg = require('../../../../assets/images/pharmacy.jpg');
+const BloodImg = require('../../../../assets/images/blood.jpeg');
+const ReminderImg = require('../../../../assets/images/reminder.png');
+const LabTestImg = require('../../../../assets/images/lab-test.png');
+const coronaImg = require('../../../../assets/images/corona.png');
+
+
+
+
 import OfflineNotice from '../../../components/offlineNotice';
 import { toDataUrl } from '../../../setup/helpers';
 import { fetchUserMarkedAsReadedNotification } from '../../providers/notification/notification.actions';
-
+import ConnectyCube from 'react-native-connectycube';
+import { CallService } from '../VideoConsulation/services';
+// import VideoScreen from '../VideoConsulation/components/VideoScreen/index';
 MapboxGL.setAccessToken(MAP_BOX_PUBLIC_TOKEN);
 
 const debounce = (fun, delay) => {
@@ -34,6 +44,7 @@ const debounce = (fun, delay) => {
 }
 
 class Home extends Component {
+
     locationUpdatedCount = 0;
     constructor(props) {
         super(props)
@@ -47,6 +58,7 @@ class Home extends Component {
             categryCount: 0
         };
         this.callSuggestionService = debounce(this.callSuggestionService, 500);
+        this._setUpListeners();
 
     }
 
@@ -77,8 +89,8 @@ class Home extends Component {
     }
     async componentDidMount() {
         try {
-            const coronoTestStatus = await AsyncStorage.getItem('coronoTested'); 
-            if(coronoTestStatus === '1') {} else {
+            const coronoTestStatus = await AsyncStorage.getItem('coronoTested');
+            if (coronoTestStatus === '1') { } else {
                 this.props.navigation.navigate('CORONO Status');
             }
             this.initialFunction();
@@ -95,9 +107,9 @@ class Home extends Component {
                 else {
                     this.otpAndBasicDetailsCompletion();
                 }
-            } else 
+            } else
                 this.otpAndBasicDetailsCompletion();
-            
+
         } catch (ex) {
             console.log(ex)
         }
@@ -106,43 +118,49 @@ class Home extends Component {
     otpAndBasicDetailsCompletion = async () => {
         try {
             let userId = await AsyncStorage.getItem("userId");
-            console.log("userId" + userId)
-            res = await getReferalPoints(userId);
-            if(userId){
-            if (res.hasProfileUpdated == false) {
-                if (res.hasOtpNotVerified === true) {
-                    console.log("res.hasOtpNotVerified " + res.hasOtpNotVerified )
-                    this.props.navigation.navigate('renderOtpInput', {
-                        loginData: { userEntry: res.mobile_no },
-                        navigateBackToHome: true
-                    });
-                    return;
+            if (userId) {
+                res = await getReferalPoints(userId);
+                if (res.updateMobileNo === true) {
+                    this.props.navigation.navigate('UpdateContact', { updatedata: {} });
+                    Toast.show({
+                        text: 'Plase Update Your Mobile Number and Continue',
+                        duration: 3000,
+                        type: 'warning'
+                    })
                 }
+                else if (res.hasProfileUpdated == false) {
+                    if (res.hasOtpNotVerified === true) {
+                        this.props.navigation.navigate('renderOtpInput', {
+                            loginData: { userEntry: res.mobile_no },
+                            navigateBackToHome: true
+                        });
+                        return;
+                    }
 
-                Alert.alert(
-                    "Alert",
-                    "Your profile is not completed!Update to continue",
-                    [
-                        {
-                            text: "Skip",
-                            onPress: () => {
-                                console.log("Cancel Pressed");
+                    Alert.alert(
+                        "Alert",
+                        "Your profile is not completed!Update to continue",
+                        [
+                            {
+                                text: "Skip",
+                                onPress: () => {
+                                    console.log("Cancel Pressed");
+                                },
+                                style: "cancel"
                             },
-                            style: "cancel"
-                        },
-                        {
-                            text: "Update", onPress: () => {
-                                AsyncStorage.setItem('ProfileCompletionViaHome', '1'),
-                                    this.checkForUserProfile(res)
+                            {
+                                text: "Update", onPress: () => {
+                                    AsyncStorage.setItem('ProfileCompletionViaHome', '1'),
+                                        this.checkForUserProfile(res)
+
+                                }
 
                             }
-
-                        }
-                    ],
-                    { cancelable: false }
-                );
+                        ],
+                        { cancelable: false }
+                    );
+                }
             }
-        }
         } catch (ex) {
             console.log(ex)
         }
@@ -159,6 +177,7 @@ class Home extends Component {
                 });
                 this.getAllChatsByUserId(userId);
                 this.getMarkedAsReadedNotification(userId)
+
             }
         }
         catch (ex) {
@@ -340,6 +359,43 @@ class Home extends Component {
             console.log(e)
         }
     }
+
+    /*      
+        Video Calling Service             
+    */
+    _setUpListeners() {
+        ConnectyCube.videochat.onCallListener = this._onCallListener;
+        // ConnectyCube.videochat.onAcceptCallListener = this._onAcceptCallListener;
+        // ConnectyCube.videochat.onRejectCallListener = this._onRejectCallListener;
+        // ConnectyCube.videochat.onStopCallListener = this._onStopCallListener;
+        // ConnectyCube.videochat.onUserNotAnswerListener = this._onUserNotAnswerListener;
+        ConnectyCube.videochat.onRemoteStreamListener = this._onRemoteStreamListener;
+    }
+    _onCallListener = (session, extension) => {
+
+        CallService.processOnCallListener(session)
+            .then(() => this.showInomingCallModal(session, extension))
+            .catch(this.hideInomingCallModal);
+    };
+    _onRemoteStreamListener = async (session, userId, stream) => {
+        console.log('Stream Sathish', stream);
+        console.log(userId);
+        await store.dispatch({
+            type: SET_VIDEO_SESSION,
+            data: {
+                userId: userId,
+                stream: stream
+            }
+        })
+    };
+
+    showInomingCallModal = (session, extension) => {
+        CallService.setSession(session);
+        CallService.setExtention(extension)
+        this.props.navigation.navigate('VideoScreen', { isIncomingCall: true })
+    };
+
+
     render() {
         const { fromAppointment } = this.state;
         const { bookappointment: { patientSearchLocationName, locationCordinates, isSearchByCurrentLocation, locationUpdatedCount }, navigation } = this.props;
@@ -417,12 +473,12 @@ class Home extends Component {
                                                 value: item.type === 'symptoms' ? [item.value] : item.value
                                             })
                                         }
-                                          this.props.navigation.navigate("Doctor List", { resultData: requestData }) 
-                                        }}
-                                    >
-                                         <Col size={7}>
-                                    <Text style={{marginTop:2, fontFamily: 'OpenSans', fontSize: 12,color: '#775DA3',paddingLeft: 10, }}>{item.value}</Text> 
-                                  {item.address? <Text style={{marginTop:2, fontFamily: 'OpenSans', fontSize: 12,color: '#9c9b9f',paddingLeft: 10, }}>{item.address}</Text>:null }
+                                        this.props.navigation.navigate("Doctor List", { resultData: requestData })
+                                    }}
+                                >
+                                    <Col size={7}>
+                                        <Text style={{ marginTop: 2, fontFamily: 'OpenSans', fontSize: 12, color: '#775DA3', paddingLeft: 10, }}>{item.value}</Text>
+                                        {item.address ? <Text style={{ marginTop: 2, fontFamily: 'OpenSans', fontSize: 12, color: '#9c9b9f', paddingLeft: 10, }}>{item.address}</Text> : null}
 
                                     </Col>
                                     <Col size={3}>
@@ -437,54 +493,34 @@ class Home extends Component {
                         : null}
 
 
-                    <Grid style={{ flex: 1, marginLeft: 10, marginRight: 10, marginTop: 10 }}>
-                        <Col style={{ width: '33.33%', }}>
-                            <TouchableOpacity onPress={() => this.props.navigation.navigate("Blood Donors")}>
-                                <Card style={{ borderRadius: 10, overflow: 'hidden' }}>
-                                    <Row style={{ height: 100, width: '100%', overflow: 'hidden', backgroundColor: "#fff", justifyContent: 'center', alignItems: 'center' }}>
+                    <Grid style={{ flex: 1, marginLeft: 10, marginRight: 20, marginTop: 10 }}>
+                    <Col style={{ width: '33%', marginLeft: 5 }}>
+                            <TouchableOpacity onPress={() => this.props.navigation.navigate("Video and Chat Service")}>
+                                <Card style={{ borderRadius: 2, overflow: 'hidden' }}>
+                                    <Row style={styles.rowStyle}>
                                         <Image
-                                            source={bloodImg}
+                                            source={VideoConultationImg}
                                             style={{
                                                 width: '100%', height: '100%', alignItems: 'center'
                                             }}
                                         />
                                     </Row>
-                                    <Row style={{ padding: 10, height: 65, width: '100%', borderTopColor: '#000', borderTopWidth: 0.3, backgroundColor: '#fff', paddingTop: 5, justifyContent: 'center' }}>
-                                        <Col style={{ width: '100%' }}>
-                                            <Text style={{ fontSize: 10, textAlign: 'center', fontWeight: 'bold' }}>Available Blood Donors</Text>
-                                            <Text style={{ fontSize: 10, marginTop: 5, textAlign: 'center', }}> donate blood </Text>
-
-                                        </Col>
-                                    </Row>
-                                </Card>
-                            </TouchableOpacity>
-                        </Col>
-
-                        <Col style={{ width: '33.33%', }}>
-                            <TouchableOpacity onPress={() => this.props.navigation.navigate("Chat Service")}>
-                                <Card style={{ borderRadius: 10, overflow: 'hidden' }}>
-                                    <Row style={{ height: 100, width: '100%', overflow: 'hidden', backgroundColor: "#fff", justifyContent: 'center', alignItems: 'center' }}>
-                                        <Image
-                                            source={chatImg}
-                                            style={{
-                                                width: '100%', height: '100%', alignItems: 'center'
-                                            }}
-                                        />
-                                    </Row>
-                                    <Row style={{ padding: 10, height: 65, width: '100%', borderTopColor: '#000', borderTopWidth: 0.3, backgroundColor: '#fff', paddingTop: 5, justifyContent: 'center' }}>
+                                    <Row style={styles.secondRow}>
                                         <Col style={{ width: '100%', }}>
-                                            <Text style={{ fontSize: 10, textAlign: 'center', fontWeight: 'bold' }}> Chat</Text>
-                                            <Text style={{ fontSize: 10, marginTop: 5, textAlign: 'center', }}> Chat with Top doctor</Text>
+                                            <Text style={styles.mainText}>Chat and Video</Text>
+                                            <Text style={styles.subText}>Consult doctors through chat or video</Text>
                                         </Col>
 
                                     </Row>
                                 </Card>
                             </TouchableOpacity>
                         </Col>
-                        <Col style={{ width: '33.33%', }}>
+
+                  
+                        <Col style={{ width: '33%', marginLeft: 5 }}>
                             <TouchableOpacity onPress={() => this.props.navigation.navigate("Medicines")}>
-                                <Card style={{ borderRadius: 10, overflow: 'hidden' }}>
-                                    <Row style={{ height: 100, width: '100%', overflow: 'hidden', backgroundColor: "#fff", justifyContent: 'center', alignItems: 'center' }}>
+                                <Card style={{ borderRadius: 2, overflow: 'hidden' }}>
+                                    <Row style={styles.rowStyle}>
                                         <Image
                                             source={pharmacyImg}
                                             style={{
@@ -492,19 +528,84 @@ class Home extends Component {
                                             }}
                                         />
                                     </Row>
-                                    <Row style={{ padding: 10, height: 65, width: '100%', borderTopColor: '#000', borderTopWidth: 0.3, backgroundColor: '#fff', paddingTop: 5, justifyContent: 'center' }}>
+                                    <Row style={styles.secondRow}>
                                         <Col style={{ width: '100%', }}>
-                                            <Text style={{ fontSize: 10, textAlign: 'center', fontWeight: 'bold' }}> Pharmacy</Text>
-                                            <Text style={{ fontSize: 10, marginTop: 5, textAlign: 'center', }}> Medicine and Health</Text>
+                                            <Text style={styles.mainText}> Pharmacy</Text>
+                                            <Text style={styles.subText}> Get medicines delivered to home</Text>
                                         </Col>
 
                                     </Row>
                                 </Card>
                             </TouchableOpacity>
                         </Col>
+                        <Col style={{ width: '33%', }}>
+                            <TouchableOpacity onPress={() => this.props.navigation.navigate("Chat Service")}>
+                                <Card style={{ borderRadius: 2, overflow: 'hidden' }}>
+                                    <Row style={styles.rowStyle}>
+                                        <Image
+                                            source={BloodImg}
+                                            style={{
+                                                width: '100%', height: '100%', alignItems: 'center'
+                                            }}
+                                        />
+                                    </Row>
+                                    <Row style={styles.secondRow}>
+                                        <Col style={{ width: '100%', }}>
+                                            <Text style={styles.mainText}>Blood donors</Text>
+                                            <Text style={styles.subText}>Find Available blood donors</Text>
+                                        </Col>
+
+                                    </Row>
+                                </Card>
+                            </TouchableOpacity>
+                        </Col>
+                 
+                    </Grid>
+                    <Grid style={{ flex: 1, marginLeft: 10, marginRight: 14, }}>
+                        <Row style={{ marginTop: 5 }}>
+                        <Col size={5}>
+                                <TouchableOpacity onPress={() => this.props.navigation.navigate("Reminder")}>
+                                    <Card style={{ padding: 5, borderRadius: 2 }}>
+                                        <Row>
+                                            <Col size={7.5} style={{ justifyContent: 'center' }}>
+                                                <Text style={styles.mainText}>Set Reminder</Text>
+                                            </Col>
+                                            <Col size={2.5}>
+                                                <Image
+                                                    source={ReminderImg}
+                                                    style={{
+                                                        width: 35, height: 35, alignItems: 'center'
+                                                    }}
+                                                />
+                                            </Col>
+                                        </Row>
+                                    </Card>
+                                </TouchableOpacity>
+                            </Col>
+                            <Col size={5} style={{ marginLeft: 5 }}>
+                                <TouchableOpacity >
+                                    <Card style={{ padding: 5, borderRadius: 2 }}>
+                                        <Row>
+                                            <Col size={7.5} style={{ justifyContent: 'center' }}>
+                                                <Text style={styles.mainText}>Book Lab tests</Text>
+                                            </Col>
+                                            <Col size={2.5}>
+
+                                                <Image
+                                                    source={LabTestImg}
+                                                    style={{
+                                                        width: 35, height: 35, alignItems: 'center'
+                                                    }}
+                                                />
+                                            </Col>
+                                        </Row>
+                                    </Card>
+                                </TouchableOpacity>
+                            </Col>
+                        </Row>
                     </Grid>
                     <View style={{ marginLeft: 10, marginRight: 10, marginBottom: 20 }}>
-                        <Row style={{ marginTop: 5, marginBottom: 5 }}>
+                        <Row style={{ marginTop: 10, marginBottom: 5 }}>
                             <Left>
                                 <Text style={styles.mainHead}>Categories</Text>
                             </Left>
@@ -516,35 +617,30 @@ class Home extends Component {
                         </Row>
 
                         <View>
-                            <Row >
+                            <Row style={{ marginLeft: -5, marginTop: -10 }}>
                                 <FlatList
                                     numColumns={3}
                                     data={this.state.catagary}
                                     extraData={this.state.categryCount}
                                     renderItem={({ item, index }) =>
                                         <Col style={styles.maincol}>
-
                                             <TouchableOpacity onPress={() => this.navigateToCategorySearch(item.category_name)}
-                                                style={{ justifyContent: 'center', alignItems: 'center', width: '100%', paddingTop: 5, paddingBottom: 5, }}>
-
-                                                <Row style={{ height: 45, width: '100%', justifyContent: 'center', alignItems: 'center', }} >
-                                                    <Image
-                                                        source={{ uri: item.base64ImageData /*item.imageBaseURL + item.category_id + '.png' */ }}
-                                                        style={{
-                                                            width: 50, height: 50, alignItems: 'center'
-                                                        }}
-                                                    />
-                                                </Row>
-                                                <Row style={{ height: 40, width: '100%', justifyContent: 'center', alignItems: 'center', }} >
-                                                    <Text style={{ fontSize: 10, textAlign: 'center', fontWeight: '200', marginTop: 5, paddingLeft: 5, paddingRight: 5, paddingTop: 1, paddingBottom: 1 }}>{item.category_name}</Text>
-                                                </Row>
+                                                style={{ justifyContent: 'center', alignItems: 'center', width: '100%', paddingTop: 5, paddingBottom: 5 }}>
+                                                <Image
+                                                    source={{ uri: item.base64ImageData /*item.imageBaseURL + item.category_id + '.png' */ }}
+                                                    style={{
+                                                        width: 50, height: 50, alignItems: 'center'
+                                                    }}
+                                                />
+                                                <Text style={{ fontSize: 10, textAlign: 'center', fontWeight: '200', marginTop: 5, paddingLeft: 5, paddingRight: 5, paddingTop: 1, paddingBottom: 1 }}>{item.category_name}</Text>
                                             </TouchableOpacity>
-
                                         </Col>
                                     }
                                     keyExtractor={(item, index) => index.toString()}
                                 />
                             </Row>
+
+
                         </View>
 
                         <Row style={{ marginTop: 10, marginBottom: 5 }}>
@@ -781,7 +877,6 @@ const styles = StyleSheet.create({
 
     },
     maincol: {
-        flex: 1,
         alignItems: "center",
         justifyContent: "center",
         borderColor: 'gray',
@@ -789,15 +884,46 @@ const styles = StyleSheet.create({
         flexDirection: 'row',
         borderWidth: 0.1,
         shadowColor: '#000',
-        shadowOffset: { width: 0, height: 0.5 },
-        shadowOpacity: 0.1,
+        shadowOffset: { width: 0, height: 0 },
+        shadowOpacity: 0.5,
         shadowRadius: 5,
-        elevation: 2,
+        elevation: 1,
         padding: 1,
-        marginLeft: 5,
-        marginRight: 8,
-        marginTop: 8,
-        width: '30%',
+        marginTop: 15,
+        marginLeft: 11,
+        marginBottom: 1,
+        width: '29.5%',
         flexDirection: 'row',
+        backgroundColor: '#fff',
+
+
+    },
+    rowStyle: {
+        height: 100,
+        width: '100%',
+        overflow: 'hidden',
+        backgroundColor: "#fff",
+        justifyContent: 'center',
+        alignItems: 'center'
+    },
+    secondRow: {
+        paddingTop: 10,
+        paddingBottom: 5,
+        width: '100%',
+        borderTopColor: '#000',
+        borderTopWidth: 0.3,
+        backgroundColor: '#fff',
+        paddingTop: 5,
+        justifyContent: 'center'
+    },
+    mainText: {
+        fontSize: 10,
+        textAlign: 'center',
+        fontWeight: '500'
+    },
+    subText: {
+        fontSize: 10,
+        marginTop: 5,
+        textAlign: 'center',
     }
 });

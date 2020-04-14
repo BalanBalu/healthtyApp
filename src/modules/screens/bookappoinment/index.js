@@ -453,7 +453,9 @@ class BookAppoinment extends Component {
               <Grid >
                 <Row >
                   <Col style={{ width: '5%', marginLeft: 20, marginTop: 10 }}>
+                  <TouchableOpacity onPress={() => this.props.navigation.navigate("ImageView", { passImage: renderDoctorImage(doctorData), title: 'Profile photo' })}>
                     <Thumbnail square source={renderDoctorImage(doctorData)} style={{ height: 60, width: 60,borderRadius:60/2 }} />
+                    </TouchableOpacity>
                   </Col>
                   <Col style={{ width: '78%' }}>
                     <Row style={{ marginLeft: 55, marginTop: 10 }}>
@@ -685,6 +687,7 @@ class BookAppoinment extends Component {
                       keyExtractor={(item, index) => index.toString()}
                       renderItem={({ item }) =>
                         <RenderReviewData
+                        navigation={this.props.navigation}
                           item={item}
                           userId={this.state.userId}
                           refreshCount={() => this.setState({ reviewRefreshCount: this.state.reviewRefreshCount + 1 })}

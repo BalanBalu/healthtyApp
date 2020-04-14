@@ -12,9 +12,8 @@ target 'medflic' do
     # Pods for testing
 
     #pod 'react-native-image-picker', :path => '../node_modules/react-native-image-picker'
+   
 
-
- 
   end
 
   target 'medflicTests' do
@@ -23,8 +22,13 @@ target 'medflic' do
   end
 
 end
-
+pod 'RNSound', :path => '../node_modules/react-native-sound'
 pod 'react-native-calendar-events', :path => '../node_modules/react-native-calendar-events'
+pod 'ReactNativeIncallManager', :path => '../node_modules/react-native-incall-manager'
+
+
+platform :ios, '10.0'
+pod 'react-native-webrtc', :path => '../node_modules/react-native-webrtc'
 
  # Flexbox Layout Manager Used By React Native
  pod 'yoga', :path => '../node_modules/react-native/ReactCommon/yoga/Yoga.podspec'
@@ -55,7 +59,7 @@ pod 'react-native-calendar-events', :path => '../node_modules/react-native-calen
  pod 'RNImageCropPicker', :path =>  '../node_modules/react-native-image-crop-picker'
  # Third party
  pod 'Folly', :podspec => '../node_modules/react-native/third-party-podspecs/Folly.podspec'
-
+ 
  post_install do |installer|
    installer.pods_project.targets.each do |target|
       

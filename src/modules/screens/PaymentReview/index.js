@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import { Container, Toast, Content, Text, Form, Button, Item, Card, CardItem, Thumbnail,  Icon } from 'native-base';
 import { hasLoggedIn } from '../../providers/auth/auth.actions';
 import { Col, Row, Grid } from 'react-native-easy-grid';
-import { StyleSheet, AsyncStorage, View,TextInput } from 'react-native';
+import { StyleSheet, AsyncStorage, View,TextInput, TouchableOpacity } from 'react-native';
 import { validateBooking } from '../../providers/bookappointment/bookappointment.action';
 import { formatDate , isOnlyLetter, toTitleCase } from '../../../setup/helpers';
 import Spinner from '../../../components/Spinner';
@@ -117,7 +117,9 @@ export default class PaymentReview extends Component {
                       </Col> */}
                        <Row>
                          <Col style={{width:'25%',justifyContent:'center'}}>
+                         <TouchableOpacity onPress={() => this.props.navigation.navigate("ImageView", { passImage: renderDoctorImage(bookSlotDetails), title: 'Profile photo' })}>
                             <Thumbnail  source={renderDoctorImage(bookSlotDetails)}   style={{ height: 70, width: 70,borderRadius:70/2 }} />
+                            </TouchableOpacity>
                          </Col> 
                          <Col style={{width:'80%',marginTop:10}}>
                             <Text style={styles.cardItemText}>{bookSlotDetails.prefix || ''} {bookSlotDetails.doctorName} {getDoctorEducation(bookSlotDetails.education)}</Text>

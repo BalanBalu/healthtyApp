@@ -2,7 +2,10 @@ import { bookAppointment, createPaymentRazor } from './bookappointment.action';
 import { updateChat } from '../chat/chat.action'
 import { createMedicineOrder } from '../pharmacy/pharmacy.action'
 import { SERVICE_TYPES } from '../../../setup/config'
-import { possibleChatStatus } from '../../../Constants/Chat'
+import { possibleChatStatus } from '../../../Constants/Chat';
+import { updateVideoConsuting, } from '../../screens/VideoConsulation/services/video-consulting-service'
+import { POSSIBLE_VIDEO_CONSULTING_STATUS } from '../../screens/VideoConsulation/constants';
+
 export default class BookAppointmentPaymentUpdate {
 
 
@@ -104,6 +107,33 @@ export default class BookAppointmentPaymentUpdate {
                         message: resultData.message
                     }
                 }
+            } else if (serviceType === SERVICE_TYPES.VIDEO_CONSULTING) {
+                paymentData = {
+                    payer_id: userId,
+                    payer_type: 'user',
+                    payment_id: paymentId,
+                    amount: bookSlotDetails.fee,
+                    amount_paid: !isSuccess || modeOfPayment === 'cash' ? 0 : bookSlotDetails.fee,
+                    amount_due: !isSuccess || modeOfPayment === 'cash' ? bookSlotDetails.fee : 0,
+                    currency: 'INR',
+                    service_type: serviceType,
+                    booking_from: 'APPLICATION',
+                    is_error: !isSuccess,
+                    error_message: razorPayRespData.description || null,
+                    payment_mode: modeOfPayment,
+                    payment_method: paymentMethod
+                }
+                let resultData = await createPaymentRazor(paymentData);
+                console.log(resultData);
+                if (resultData.success) {
+                    const chatApprovalStatus = await this.updateVideoConsulting(bookSlotDetails.consultationId, userId, paymentId, bookSlotDetails, isSuccess)
+                    return chatApprovalStatus
+                } else {
+                    return {
+                        success: false,
+                        message: resultData.message
+                    }
+                }
             }
 
         } catch (error) {
@@ -195,15 +225,27 @@ export default class BookAppointmentPaymentUpdate {
                 booked_from: "APPLICATION",
                 payment_id: paymentId,
                 order_items: orderData.medicineDetails,
-                delivery_charges: orderData.delivery_charges||' ',
-                delivery_tax: orderData.delivery_tax||'',
+                delivery_charges: orderData.delivery_charges || ' ',
+                delivery_tax: orderData.delivery_tax || '',
                 delivery_option: orderData.delivery_option,
+
+                is_order_type_recommentation: orderData.is_order_type_recommentation,
                 is_order_type_prescription: orderData.is_order_type_prescription,
+                pharmacy_ids: orderData.pharmacy_ids || [],
                 pickup_or_delivery_address: orderData.pickup_or_delivery_address
             }
-            if(orderData.delivery_option=='STORE_PICKUP'){
-                delete  requestData.delivery_tax
-                delete  requestData.delivery_charges
+            if (orderData.delivery_option === 'STORE_PICKUP') {
+                delete requestData.delivery_tax
+                delete requestData.delivery_charges
+            } if (orderData.is_order_type_prescription === true) {
+                requestData.prescription_data = {
+                    prescription_id: orderData.prescription_id,
+                    pharmacy_id: orderData.pharmacy_id
+                }
+                delete requestData.order_items
+            }
+            if (orderData.is_order_type_recommentation === false) {
+                delete requestData.pharmacy_ids
             }
             let resultData = await createMedicineOrder(requestData);
             console.log(resultData)
@@ -212,6 +254,39 @@ export default class BookAppointmentPaymentUpdate {
                     message: resultData.message,
                     success: isSuccess,
                     orderNo: resultData.orderNo
+                }
+            } else {
+                return {
+                    message: resultData.message,
+                    success: false,
+                }
+            }
+        } catch (ex) {
+            return {
+                message: 'Exception Occured ' + ex,
+                success: false,
+            }
+        }
+    }
+
+    updateVideoConsulting = async (consultationId, userId, paymentId, bookSlotDetails, isSuccess) => {
+        debugger
+        try {
+            const request4InitiateChat = {
+                user_id: userId,
+                doctor_id: bookSlotDetails.doctorId,
+                status: isSuccess ? POSSIBLE_VIDEO_CONSULTING_STATUS.PENDING : POSSIBLE_VIDEO_CONSULTING_STATUS.FAILED,
+                description: isSuccess ? 'Your Request will notified to Doctor. you will get a Call from Doctor within 15 minutes' : 'Payment Failed. Please try again.',
+                status_by: 'USER',
+                statusUpdateReason: 'Payment has been done',
+                payment_id: paymentId,
+            }
+            let resultData = await updateVideoConsuting(consultationId, request4InitiateChat);
+            console.log(resultData)
+            if (resultData.success) {
+                return {
+                    message: resultData.message,
+                    success: true,
                 }
             } else {
                 return {
