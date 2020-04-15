@@ -75,6 +75,8 @@ import PharmacyList from '../../modules/screens/Pharmacy/PharmacyList/pharmacyLi
  import VideoScreen from '../../modules/screens/VideoConsulation/components/VideoScreen';
 import AvailableDoctors4Video from '../../modules/screens/VideoConsulation/components/AvailableDoctors';
 import VideoConsultaions from '../../modules/screens/VideoConsulation/components/MyConsultations';
+
+
 import LabAppointmentList from '../../modules/screens/Lab/Appointment/LabAppointmentList'
 import LabAppointmentInfo from '../../modules/screens/Lab/Appointment/LabAppoinmentInfo'
 
@@ -318,6 +320,8 @@ const HomeStack = createStackNavigator({
       title: 'Success'
     }
   },
+
+  //================ Lab Test ===============
   LabAppointmentInfo: {
     screen: LabAppointmentInfo,
     navigationOptions: {

@@ -38,7 +38,7 @@ class LabAppointmentList extends Component {
     }
 
 
-    backNavigation = async (navigationData) => {
+    pageRefresh = async (navigationData) => {
         if (!this.state.isNavigation) {
             if (navigationData.action) {
                 await this.setState({
@@ -156,17 +156,10 @@ class LabAppointmentList extends Component {
 
     render() {
         const { data, selectedIndex,isLoading } = this.state;
-        const patientList = [
-            { name: 'Medlife  International Bloratory', checkup: "Full body check up test", date: 'friday,March 13-2020 07:10 am', status: 'Appointment Ongoing' },
-            { name: 'Medlife  International Bloratory', checkup: "Full body check up test", date: 'friday,March 13-2020 07:10 am', status: 'Appointment Ongoing' },
-            { name: 'Medlife  International Bloratory', checkup: "Full body check up test", date: 'friday,March 13-2020 07:10 am', status: 'Appointment Ongoing' },
-            { name: 'Medlife  International Bloratory', checkup: "Full body check up test", date: 'friday,March 13-2020 07:10 am', status: 'Appointment Ongoing' },
-            { name: 'Medlife  International Bloratory', checkup: "Full body check up test", date: 'friday,March 13-2020 07:10 am', status: 'Appointment Ongoing' }
-        ]
         return (
             <Container style={styles.container}>
                 <NavigationEvents
-                    onWillFocus={payload => { this.backNavigation(payload) }}
+                    onWillFocus={payload => { this.pageRefresh(payload) }}
                 />
                 <Content style={styles.bodyContent}>
                     <Card transparent>

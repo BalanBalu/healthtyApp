@@ -35,10 +35,8 @@ class LabAppointmentInfo extends Component {
 labTestCategoryOfferedPrice(item){
   console.log("item", item)
   
-  // (parseInt(data.available_lab_test_categories && data.available_lab_test_categories.price) - ((parseInt(data.available_lab_test_categories && data.available_lab_test_categories.offer) / 100) * parseInt(data.available_lab_test_categories && data.available_lab_test_categories.price)))
 }
   render() {
-    const patientInfo = [{ name: 'S. Mukesh Kannan [Male]', age: 26 }, { name: 'U. Ajay Kumar [Male]', age: 30 }]
     const { data}=this.state
     return (
       <Container style={styles.container}>
