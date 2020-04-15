@@ -75,6 +75,8 @@ import PharmacyList from '../../modules/screens/Pharmacy/PharmacyList/pharmacyLi
  import VideoScreen from '../../modules/screens/VideoConsulation/components/VideoScreen';
 import AvailableDoctors4Video from '../../modules/screens/VideoConsulation/components/AvailableDoctors';
 import VideoConsultaions from '../../modules/screens/VideoConsulation/components/MyConsultations';
+import LabAppointmentList from '../../modules/screens/Lab/Appointment/LabAppointmentList'
+import LabAppointmentInfo from '../../modules/screens/Lab/Appointment/LabAppoinmentInfo'
 
 const AuthRoutes = {
   login: {
@@ -307,6 +309,25 @@ const HomeStack = createStackNavigator({
     screen: MapBox,
     navigationOptions: {
       title: 'Search Location'
+    }
+  },
+  paymentsuccess: {
+    screen: PaymentSuccess,
+    navigationOptions: {
+      headerLeft: null,
+      title: 'Success'
+    }
+  },
+  LabAppointmentInfo: {
+    screen: LabAppointmentInfo,
+    navigationOptions: {
+      title: 'SucLabAppointmentInfocess'
+    }
+  },
+  LabAppointmentList: {
+    screen: LabAppointmentList,
+    navigationOptions: {
+      title: 'LabAppointmentList'
     }
   },
 

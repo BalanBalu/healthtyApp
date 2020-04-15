@@ -7,15 +7,39 @@ import { Col, Row, Grid } from 'react-native-easy-grid';
 import { StyleSheet, AsyncStorage, TouchableOpacity, Modal } from 'react-native';
 import StarRating from 'react-native-star-rating';
 import { FlatList } from 'react-native-gesture-handler';
+import { formatDate, addTimeUnit, subTimeUnit, statusValue } from "../../../../setup/helpers";
 
 class LabAppointmentInfo extends Component {
   constructor(props) {
     super(props)
     this.state = {
+      data: {},
+      appointmentId: '',
+      doctorId: '',
+      userId: '',
+      reviewData: [],
+      reportData: null,
+      doctorData: {},
+      isLoading: true,
     }
   }
+
+  componentDidMount() {
+    const { navigation } = this.props;
+    const appointmentData = navigation.getParam('data');
+        console.log("appointmentData", appointmentData)
+    if (appointmentData != undefined) {
+      this.setState({ data: appointmentData })
+    }
+  }
+labTestCategoryOfferedPrice(item){
+  console.log("item", item)
+  
+  // (parseInt(data.available_lab_test_categories && data.available_lab_test_categories.price) - ((parseInt(data.available_lab_test_categories && data.available_lab_test_categories.offer) / 100) * parseInt(data.available_lab_test_categories && data.available_lab_test_categories.price)))
+}
   render() {
     const patientInfo = [{ name: 'S. Mukesh Kannan [Male]', age: 26 }, { name: 'U. Ajay Kumar [Male]', age: 30 }]
+    const { data}=this.state
     return (
       <Container style={styles.container}>
         <Content style={styles.bodyContent}>
@@ -25,7 +49,7 @@ class LabAppointmentInfo extends Component {
             }}>
               <CardItem header style={styles.cardItem}>
                 <Grid>
-                  <Text style={{ textAlign: 'right', fontSize: 14, marginTop: -15 }}>Ref no : 123455</Text>
+                  {/* <Text style={{ textAlign: 'right', fontSize: 14, marginTop: -15 }}>{"Ref no :" + data.token_no}</Text> */}
                   <Row>
                     <Col style={{ width: '25%', }}>
                       <Thumbnail circular source={require('../../../../../assets/images/profile_male.png')} style={{ height: 60, width: 60 }} />
@@ -33,8 +57,8 @@ class LabAppointmentInfo extends Component {
                     <Col style={{ width: '80%', marginTop: 10 }}>
                       <Row>
                         <Col size={9}>
-                          <Text style={styles.Textname} >S.Pradeep Natarajan</Text>
-                          <Text style={{ fontSize: 12, fontFamily: 'OpenSans', fontWeight: 'normal' }}>Male,25 years</Text>
+                          <Text style={styles.Textname} >{data.labInfo && data.labInfo.lab_name}</Text>
+                          <Text style={{ fontSize: 12, fontFamily: 'OpenSans', fontWeight: 'normal' }}>{data.lab_test_descriptiion}</Text>
                         </Col>
                         <Col size={1}>
                         </Col>
@@ -49,7 +73,7 @@ class LabAppointmentInfo extends Component {
                     <Row style={{ marginLeft: 5 }} >
                       <Text style={styles.subText1}>Consultation Fee</Text>
                       <Text style={styles.subText2}>-</Text>
-                      <Text note style={styles.subText2}>Rs.100/-</Text>
+                      <Text note style={styles.subText2}>{this.labTestCategoryOfferedPrice(data.available_lab_test_categories)}</Text>
                     </Row>
                     <Row style={{ marginTop: 10, marginLeft: 5 }}>
                       <Text style={styles.subText1}>Payment Method</Text>
@@ -82,13 +106,13 @@ class LabAppointmentInfo extends Component {
                     <Col style={{ width: '50%', justifyContent: 'center' }}>
                       <Row style={{ alignItems: 'center' }}>
                         <Icon name='md-calendar' style={styles.iconStyle} />
-                        <Text style={styles.timeText}>31 Mar, 2020</Text>
+                        <Text style={styles.timeText}>{formatDate(data.appointment_starttime, 'DD MMM,YYYY')}</Text>
                       </Row>
                     </Col>
                     <Col style={{ width: '50%', justifyContent: 'center', alignItems: 'center' }}>
                       <Row style={{ justifyContent: 'center', alignItems: 'center' }}>
                         <Icon name="md-clock" style={styles.iconStyle} />
-                        <Text style={styles.timeText}>07.00 PM - 08.00 PM</Text>
+                        <Text style={styles.timeText}>{formatDate(data.appointment_starttime, 'hh:mm a') + '-' + formatDate(data.appointment_endtime, 'hh:mm a')}</Text>
                       </Row>
                     </Col>
                   </Row>
@@ -110,7 +134,7 @@ class LabAppointmentInfo extends Component {
                   </Col>
                 </Row>
                 <FlatList
-                  data={patientInfo}
+                  data={data.patient_data}
                   renderItem={({ item }) =>
                     <View style={styles.commonView}>
                       <Row>
@@ -123,7 +147,7 @@ class LabAppointmentInfo extends Component {
 
                         </Col>
                         <Col size={8}>
-                          <Text note style={styles.commonText}>{item.name}</Text>
+                          <Text note style={styles.commonText}>{item.patient_name}</Text>
                         </Col>
                       </Row>
                       <Row>
@@ -136,7 +160,7 @@ class LabAppointmentInfo extends Component {
 
                         </Col>
                         <Col size={8}>
-                          <Text note style={styles.commonText}>{item.age} years</Text>
+                          <Text note style={styles.commonText}>{item.patient_age} years</Text>
                         </Col>
                       </Row>
                     </View>
@@ -158,8 +182,8 @@ class LabAppointmentInfo extends Component {
                   </Col>
                   <Col style={{ width: '92%', paddingTop: 5 }}>
                     <Text style={styles.innerSubText}>Pick Up at Lab</Text>
-                    <Text style={[styles.commonText, { color: '#4c4c4c', marginTop: 5 }]}>Medlife International Laboratory</Text>
-                    <Text note style={[styles.subTextInner1, { marginTop: 10 }]}>CTS - 636, A Wing,Avis Motors Pvt Ltd, Kailash Heights, Andheri Kurla Road, Sakinaka, Mumbai - 400072.</Text>
+                    <Text style={[styles.commonText, { color: '#4c4c4c', marginTop: 5 }]}>{data.labInfo && data.labInfo.lab_name}</Text>
+                    <Text note style={[styles.subTextInner1, { marginTop: 10 }]}></Text>
                   </Col>
                 </Row>
 
