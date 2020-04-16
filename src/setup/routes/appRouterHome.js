@@ -79,6 +79,7 @@ import VideoConsultaions from '../../modules/screens/VideoConsulation/components
 
 import LabAppointmentList from '../../modules/screens/Lab/Appointment/LabAppointmentList'
 import LabAppointmentInfo from '../../modules/screens/Lab/Appointment/LabAppoinmentInfo'
+import LabCancelAppointment from '../../modules/screens/Lab/Appointment/LabCancelAppointment'
 
 const AuthRoutes = {
   login: {
@@ -325,16 +326,22 @@ const HomeStack = createStackNavigator({
   LabAppointmentInfo: {
     screen: LabAppointmentInfo,
     navigationOptions: {
-      title: 'SucLabAppointmentInfocess'
+      title: 'Lab Appointment Info'
     }
   },
   LabAppointmentList: {
     screen: LabAppointmentList,
     navigationOptions: {
-      title: 'LabAppointmentList'
+      title: 'Lab Appointment List'
     }
   },
-
+  LabCancelAppointment: {
+    screen: LabCancelAppointment,
+    navigationOptions: {
+      title: 'Lab Cancel Appointment'
+    }
+  },
+  
   // ========Appointment stack ==========
   "Doctor List": {
     screen: doctorSearchList,

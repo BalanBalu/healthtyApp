@@ -13,6 +13,8 @@ import Spinner from "../../../../components/Spinner";
 import noAppointmentImage from "../../../../../assets/images/noappointment.png";
 import { formatDate, addTimeUnit, subTimeUnit, statusValue } from "../../../../setup/helpers";
 import { getLapAppointments, getCategories } from '../../../providers/lab/lab.action'
+import { hasLoggedIn } from "../../../providers/auth/auth.actions";
+
 class LabAppointmentList extends Component {
     constructor(props) {
         super(props)
@@ -24,8 +26,6 @@ class LabAppointmentList extends Component {
             pastData: [],
             userId: null,
             loading: true,
-            isRefreshing: false,
-            isNavigation: true,
             modalVisible: false,
             reviewData: {},
             reviewIndex: -1
@@ -33,13 +33,18 @@ class LabAppointmentList extends Component {
 
         }
     }
-    componentDidMount() {
+   async componentDidMount() {
+        await this.setState({ isLoading: true })
+        const isLoggedIn = await hasLoggedIn(this.props);
+        if (!isLoggedIn) {
+            this.props.navigation.navigate("login");
+            return;
+        }
         this.upCommingAppointment();
     }
 
 
     pageRefresh = async (navigationData) => {
-        if (!this.state.isNavigation) {
             if (navigationData.action) {
                 await this.setState({
                     isLoading: true
@@ -54,7 +59,7 @@ class LabAppointmentList extends Component {
                     }
                 }
             }
-        }
+        
     }
 
     upCommingAppointment = async () => {
@@ -267,7 +272,7 @@ class LabAppointmentList extends Component {
                                                     <Text style={{ fontFamily: "OpenSans", fontSize: 11 }} note>
                                                         {formatDate(item.appointment_starttime, "dddd,MMMM DD-YYYY  hh:mm a")} </Text>
                                                     {selectedIndex == 1 ?
-                                                        <Row style={{ borderBottomWidth: 0, marginTop: 5 }}>
+                                                       (<Row style={{ borderBottomWidth: 0, marginTop: 5 }}>
                                                             <Right style={(styles.marginRight = -2)}>
                                                                 <Button
                                                                     style={styles.shareButton}
@@ -289,7 +294,7 @@ class LabAppointmentList extends Component {
 																</Text>
                                                                 </Button>
                                                             </Right>
-                                                        </Row>
+                                                        </Row>)
                                                         : null}
                                                 </Col>
                                             </Row>
