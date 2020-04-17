@@ -6,9 +6,8 @@ import Autocomplete from '../../../components/Autocomplete'
 import { RadioButton } from 'react-native-paper';
 import DateTimePicker from 'react-native-modal-datetime-picker';
 import { formatDate } from "../../../setup/helpers";
-import { getAllMedicineDataBySuggestion } from "../../providers/pharmacy/pharmacy.action";
 import moment from 'moment';
-import { addReminderdata } from '../../providers/reminder/reminder.action.js';
+import { addReminderdata, getAllMedicineDataBySuggestion } from '../../providers/reminder/reminder.action.js';
 
 const debounce = (fun, delay) => {
   let timer = null;

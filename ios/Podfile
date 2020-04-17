@@ -59,7 +59,7 @@ pod 'react-native-webrtc', :path => '../node_modules/react-native-webrtc'
  pod 'RNImageCropPicker', :path =>  '../node_modules/react-native-image-crop-picker'
  # Third party
  pod 'Folly', :podspec => '../node_modules/react-native/third-party-podspecs/Folly.podspec'
-
+ 
  post_install do |installer|
    installer.pods_project.targets.each do |target|
       

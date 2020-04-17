@@ -43,6 +43,8 @@ import MyAppoinmentList from '../../modules/screens/MyAppointments/MyAppointment
 import CancelAppointment from "../../modules/screens/MyAppointments/cancelAppointment";
 import AddReminder from '../../modules/screens/Reminder/AddReminder'
 import Reminder from '../../modules/screens/Reminder/Reminders'
+
+
 import PharmacyHome from '../../modules/screens/Pharmacy/PharmacyHome/PharmacyHome';
 import MyOrdersList from '../../modules/screens/Pharmacy/MyOrdersList/MyOrdersList';
 import OrderDetails from '../../modules/screens/Pharmacy/OrderDetails/OrderDetails';
@@ -52,8 +54,10 @@ import UploadPrescription from '../../modules/screens/Pharmacy/PharmacyHome/Uplo
 import MedicineCheckout from '../../modules/screens/Pharmacy/MedicineCheckout/MedicineCheckout';
 import MedicineInfo from '../../modules/screens/Pharmacy/MedicineInfo/MedicineInfo';
 import ViewAllReviews from '../../modules/screens/Pharmacy/MedicineInfo/ViewAllReviews';
-
 import MedicineSearchList from '../../modules/screens/Pharmacy/MedicineSearchList/MedicineSearchList';
+import ChosePharmacyList from '../../modules/screens/Pharmacy/PharmacyList/ChosePharmacyList'
+
+
 import { Badge } from '../../../src/modules/common'
 import Locations from '../../modules/screens/Home/Locations';
 import BloodDonersList from '../../modules/screens/bloodDonation/BloodDonersList';
@@ -68,7 +72,6 @@ import CoronaDisease from '../../modules/screens/CoronaDisease/CoronaDisease';
 import MedicineSuggestionList from '../../modules/screens/Pharmacy/MedicineSuggestionList/pharmacySuggestionList';
 import ImageView from '../../modules/shared/ImageView'
 import PharmacyList from '../../modules/screens/Pharmacy/PharmacyList/pharmacyList';
-import AuthScreen from '../../modules/screens/VideoConsulation/components/AuthScreen';
  import VideoScreen from '../../modules/screens/VideoConsulation/components/VideoScreen';
 import AvailableDoctors4Video from '../../modules/screens/VideoConsulation/components/AvailableDoctors';
 import VideoConsultaions from '../../modules/screens/VideoConsulation/components/MyConsultations';
@@ -495,7 +498,7 @@ const HomeStack = createStackNavigator({
           <TouchableOpacity onPress={() => { navigation.navigate('PharmacyCart') }} >
             <View>
               <Icon name="ios-cart" style={{ color: '#fff', marginRight: 15, fontFamily: 'opensans-semibold', fontSize: 20 }}></Icon>
-              {navigation.getParam('cartItemsCount') === null || navigation.getParam('cartItemsCount') === undefined ? null :
+              {navigation.getParam('cartItemsCount') === null || navigation.getParam('cartItemsCount') === undefined || navigation.getParam('cartItemsCount') === 0? null :
                 <Text style={{ position: 'absolute', backgroundColor: 'red', color: 'white', borderRadius: 20 / 2, marginTop: -7, width: undefined, height: undefined, padding: 2, fontSize: 10, textAlign: 'center' }}>{
                     navigation.getParam('cartItemsCount') >= 100 ? '99+' : 
                     navigation.getParam('cartItemsCount')}
@@ -531,7 +534,7 @@ const HomeStack = createStackNavigator({
             <TouchableOpacity onPress={() => { navigation.navigate('PharmacyCart') }} >
               <View>
                 <Icon name="ios-cart" style={{ color: '#fff', marginRight: 15, fontFamily: 'opensans-semibold', fontSize: 20 }}></Icon>
-                {navigation.getParam('cartItemsCount') === null || navigation.getParam('cartItemsCount') === undefined ? null :
+                {navigation.getParam('cartItemsCount') === null || navigation.getParam('cartItemsCount') === undefined || navigation.getParam('cartItemsCount') === 0? null :
                   <Text style={{ position: 'absolute', backgroundColor: 'red', color: 'white', borderRadius: 20 / 2, marginTop: -7, width: undefined, height: undefined, padding: 2, fontSize: 10, textAlign: 'center' }}>{
                     navigation.getParam('cartItemsCount') >= 100 ? '99+' : 
                     navigation.getParam('cartItemsCount')}
@@ -554,7 +557,7 @@ const HomeStack = createStackNavigator({
             <TouchableOpacity onPress={() => { navigation.navigate('PharmacyCart') }} >
               <View>
                 <Icon name="ios-cart" style={{ color: '#fff', marginRight: 15, fontFamily: 'opensans-semibold', fontSize: 20 }}></Icon>
-                {navigation.getParam('cartItemsCount') === null || navigation.getParam('cartItemsCount') === undefined ? null :
+                {navigation.getParam('cartItemsCount') === null || navigation.getParam('cartItemsCount') === undefined || navigation.getParam('cartItemsCount') === 0? null :
                   <Text style={{ position: 'absolute', backgroundColor: 'red', color: 'white', borderRadius: 20 / 2, marginTop: -7, width: undefined, height: undefined, padding: 2, fontSize: 10, textAlign: 'center' }}>{
                     navigation.getParam('cartItemsCount') >= 100 ? '99+' : 
                     navigation.getParam('cartItemsCount')}
@@ -589,7 +592,7 @@ const HomeStack = createStackNavigator({
             <TouchableOpacity onPress={() => { navigation.navigate('PharmacyCart') }} >
               <View>
                 <Icon name="ios-cart" style={{ color: '#fff', marginRight: 15, fontFamily: 'opensans-semibold', fontSize: 20 }}></Icon>
-                {navigation.getParam('cartItemsCount') === null || navigation.getParam('cartItemsCount') === undefined ? null :
+                {navigation.getParam('cartItemsCount') === null || navigation.getParam('cartItemsCount') === undefined || navigation.getParam('cartItemsCount') === 0 ? null :
                   <Text style={{ position: 'absolute', backgroundColor: 'red', color: 'white', borderRadius: 20 / 2, marginTop: -7, width: undefined, height: undefined, padding: 2, fontSize: 10, textAlign: 'center' }}>{
                     navigation.getParam('cartItemsCount') >= 100 ? '99+' : 
                     navigation.getParam('cartItemsCount')}
@@ -608,6 +611,12 @@ const HomeStack = createStackNavigator({
     screen: MedicineCheckout,
     navigationOptions: {
       title: 'Order Payment Address'
+    }
+  },
+  ChosePharmacyList: {
+    screen: ChosePharmacyList,
+    navigationOptions: {
+      title: ' Chose Pharmacy List'
     }
   },
   //=================== Medicine Order Details =============
@@ -639,7 +648,7 @@ const HomeStack = createStackNavigator({
             <TouchableOpacity onPress={() => { navigation.navigate('PharmacyCart') }} >
               <View>
                 <Icon name="ios-cart" style={{ color: '#fff', marginRight: 15, fontFamily: 'opensans-semibold', fontSize: 20 }}></Icon>
-                {navigation.getParam('cartItemsCount') === null || navigation.getParam('cartItemsCount') === undefined ? null :
+                {navigation.getParam('cartItemsCount') === null || navigation.getParam('cartItemsCount') === undefined || navigation.getParam('cartItemsCount') === 0 ? null :
                   <Text style={{ position: 'absolute', backgroundColor: 'red', color: 'white', borderRadius: 20 / 2, marginTop: -7, width: undefined, height: undefined, padding: 2, fontSize: 10, textAlign: 'center' }}>{
                     navigation.getParam('cartItemsCount') >= 100 ? '99+' : 
                     navigation.getParam('cartItemsCount')}
@@ -667,12 +676,6 @@ const HomeStack = createStackNavigator({
     }
   },
   /* Video Consultation */
-  'AuthScreen': {
-    screen: AuthScreen,
-    navigationOptions: {
-      title: 'Video Auth'
-    }
-  },
   VideoScreen: {
     screen: VideoScreen,
     navigationOptions: {
@@ -681,16 +684,16 @@ const HomeStack = createStackNavigator({
       gesturesEnabled: false
     }
   },
-  'Video Consulting Service': {
+  'Video and Chat Service': {
     screen: AvailableDoctors4Video,
     navigationOptions: {
       title: 'Video Consulting Serivce'
     }
   },
-  'My Video Consultaions': {
+  'My Video Consultations': {
     screen: VideoConsultaions,
     navigationOptions: {
-      title: 'My Video Consultaions'
+      title: 'My Video Consultations'
     }
   },
 
@@ -743,13 +746,10 @@ const DrawerNavigator = createDrawerNavigator({
   "My Chats": {
     screen: MyChats
   },
-  "Chat Service": {
-    screen: AvailableDoctors4Chat
-  },
-  'Video Consulting Service' : {
+  'Video and Chat Service' : {
     screen: AvailableDoctors4Video
   },
-  'My Video Consultaions': {
+  'My Video Consultations': {
     screen: VideoConsultaions
   },
   Medicines: {
@@ -785,11 +785,10 @@ export const DragwerLogos = {
   "Medicine Orders": require('../../../assets/images/drawerIcons/Orders.png'),
   Reminder: require('../../../assets/images/drawerIcons/Reminder.png'),
   "My Chats": require('../../../assets/images/drawerIcons/Chat.png'),
-  "Chat Service": require('../../../assets/images/drawerIcons/Chat.png'),
   "Blood Donors": require('../../../assets/images/drawerIcons/Blooddonars.png'),
   'CORONO Status': require('../../../assets/images/drawerIcons/Pharmacy.png'),
-  'My Video Consultaions': require('../../../assets/images/drawerIcons/Appointments.png'),
-  'Video Consulting Service': require('../../../assets/images/drawerIcons/Appointments.png'),
+  'My Video Consultations': require('../../../assets/images/drawerIcons/Appointments.png'),
+  'Video and Chat Service': require('../../../assets/images/drawerIcons/Appointments.png'),
 }
 export default createAppContainer(createSwitchNavigator(
   {
@@ -800,6 +799,5 @@ export default createAppContainer(createSwitchNavigator(
   {
     initialRouteName: 'AuthLoading',
     headerMode: 'none'
-
   }
 ));

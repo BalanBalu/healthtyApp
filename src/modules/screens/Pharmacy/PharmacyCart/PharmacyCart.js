@@ -1,9 +1,10 @@
 import React, { Component } from 'react';
 import { Container, Content, Text, Title, Header, Form, Textarea, Button, H3, Item, List, ListItem, Card, Input, Left, Right, ScrollView, Thumbnail, Body, Icon, Footer, FooterTab, Picker, Segment, CheckBox, View, Badge } from 'native-base';
 import { Col, Row, Grid } from 'react-native-easy-grid';
-import { StyleSheet, Image, AsyncStorage, TextInput, FlatList, TouchableOpacity } from 'react-native';
+import { StyleSheet, Image, AsyncStorage, TextInput, FlatList, TouchableOpacity,Toast } from 'react-native';
 import { Loader } from '../../../../components/ContentLoader';
-import { ProductIncrementDecreMent, medicineRateAfterOffer, renderMedicineImage } from '../CommomPharmacy'
+import { ProductIncrementDecreMent, medicineRateAfterOffer, renderMedicineImage,getMedicineName,getMedicineWeightUnit } from '../CommomPharmacy';
+import { getmedicineAvailableStatus } from '../../../providers/pharmacy/pharmacy.action'
 
 let userId;
 class PharmacyCart extends Component {
@@ -66,7 +67,7 @@ class PharmacyCart extends Component {
         let total = 0;
         if (this.state.cartItems) {
             this.state.cartItems.map(element => {
-               total = total + (element.userAddedMedicineQuantity) * (element.offeredAmount)
+                total = total + (element.userAddedMedicineQuantity) * (element.offeredAmount)
             })
             return total.toFixed(2);
         }
@@ -77,6 +78,54 @@ class PharmacyCart extends Component {
     removeAllItems = async () => {
         this.setState({ cartItems: [] })
         await AsyncStorage.removeItem('cartItems-' + userId);
+    }
+    async  procced() {
+        const { cartItems } = this.state;
+        let order_items = []
+        cartItems.map(element => {
+            order_items.push({
+                medicine_id: element.medicine_id,
+                pharmacy_id: element.pharmacy_id,
+                quantity: element.userAddedMedicineQuantity,
+                medicine_weight:element.medicine_weight,
+                medicine_weight_unit:element.medicine_weight_unit
+            })
+
+        })
+        let obj = {
+            order_items: order_items
+        }
+        let checkResult = await getmedicineAvailableStatus(obj)
+       
+        if (checkResult.success === true) {
+            if (checkResult.data.length === cartItems.length) {
+                this.props.navigation.navigate("MedicineCheckout", {
+                    medicineDetails: cartItems,
+                    orderOption:"pharmacyCart",
+                })
+            } else {
+                Toast.show({
+                    text: 'out of stack',
+                    type: 'danger',
+                    duration: 3000
+                })
+                cartItems.map((ele, index) => {
+                    let value = checkResult.data.find(element => {
+        
+                        return element.pharmacy_id === ele.pharmacy_id && element.medicine_id === ele.medicine_id
+                    })
+                    console.log(value)
+                    if (value === undefined) {
+                       
+                        ele.is_outofStack = true
+                      
+                        cartItems.splice(index, 1, ele)
+                    }
+                })
+                this.setState({ cartItems })
+
+            }
+        }
     }
     render() {
         const { isLoading, cartItems } = this.state;
@@ -89,45 +138,55 @@ class PharmacyCart extends Component {
                         <Item style={{ borderBottomWidth: 0, justifyContent: 'center', alignItems: 'center', height: 70 }}>
                             <Text style={{ fontSize: 20, justifyContent: 'center', alignItems: 'center' }}>No Medicines Are Found Your Cart</Text>
                         </Item> :
-                        <View style={{ margin: 5, backgroundColor: '#fff', borderRadius: 5 }}>
+                        <View style={{ margin:5 ,backgroundColor: '#fff', borderRadius: 5 ,paddingBottom:5}}>
                             <FlatList
                                 data={this.state.cartItems}
                                 extraData={this.state}
                                 keyExtractor={(item, index) => index.toString()}
                                 renderItem={({ item, index }) =>
-                                    <Row>
+                                    <Row style={{justifyContent:'center',paddingBottom:5}}>
+                                        <Col size={2}  style={{justifyContent:'center'}}>
                                         <Image source={renderMedicineImage(item)}
                                              style={{ height: 100, width: 70, margin: 5 }} />
-                                        <Col Size={5} style={{ marginLeft: 10 }}>
-                                            <Text style={{ fontFamily: 'OpenSans', fontSize: 16, marginTop: 5 }}>{item.medicine_name}</Text>
+                                             {item.is_outofStack !== undefined && item.is_outofStack === true?
+                                     <Text style={{ fontSize: 10, fontFamily: 'OpenSans', color: '#ff4e42', marginTop: 5,textAlign:'center',backgroundColor:'#E6E6E6',marginTop:-40,marginLeft:5 }}>Out of stock</Text>:null}
+
+                                        </Col>
+                                        <Col size={7} style={{ marginLeft: 10,justifyContent:'center' }}>
+                                             <Text style={{ fontFamily: 'OpenSans', fontSize: 15, marginTop: 5 }}>{getMedicineName(item)}<Text style={{fontFamily: 'OpenSans', fontSize: 15, marginTop: 5,color:'#909090'}}>{getMedicineWeightUnit(item.medicine_weight,item.medicine_weight_unit)}</Text></Text>
                                             <Text style={{ color: '#A4A4A4', fontFamily: 'OpenSans', fontSize: 12.5, marginBottom: 20 }}>{item.pharmacy_name}</Text>
-                                            <Row style={{ marginTop: -15, marginRight: 10 }}>
-                                                <Col>
-                                                    <Text style={{ fontSize: 9.5, marginBottom: -15, marginTop: 30, marginLeft: 3.5, color: "#ff4e42" }}>MRP</Text>
-                                                </Col>
-                                                <Col>
-                                                    <Text style={{ fontSize: 9.5, marginTop: 30, marginLeft: -32.5, color: "#ff4e42", textDecorationLine: 'line-through', textDecorationStyle: 'solid' }}>₹ {item.price}</Text>
-                                                </Col>
-                                                <Col>
-                                                    <Text style={{ fontSize: 15, marginTop: 25, marginLeft: -50, color: "#5FB404" }}>₹ {item.offeredAmount}</Text>
-                                                </Col>
-                                                <Row style={{ marginTop: -25 }}>
-                                                    <TouchableOpacity style={styles.touch} onPress={() => this.productQuantityOperator(item, 'sub', index)}>
-                                                        <Text style={{ fontSize: 15, fontWeight: '500', fontFamily: 'OpenSans', textAlign: 'center', color: '#FF0000' }} testID='decreaseMedicine'>-</Text>
-                                                    </TouchableOpacity>
-                                                    <Text style={{ fontWeight: '300', fontSize: 15, textAlign: 'center', marginTop: 4.5, marginLeft: 5, fontFamily: 'OpenSans' }}>{item.userAddedMedicineQuantity}</Text>
-                                                    <TouchableOpacity style={styles.touch} onPress={() => this.productQuantityOperator(item, 'add', index)} testID='increaseMedicine'>
-                                                        <Text style={{ fontSize: 15, fontWeight: '500', fontFamily: 'OpenSans', textAlign: 'center', color: '#8dc63f' }}>+</Text>
-                                                    </TouchableOpacity>
+                                            
+                                                   
+                                                <Row style={{ marginTop: -15, marginRight: 10 }}>
+
+                                                    <Col>
+                                                        <Text style={{ fontSize: 9.5, marginBottom: -15, marginTop: 30, marginLeft: 3.5, color: "#ff4e42" }}>MRP</Text>
+                                                    </Col>
+                                                    <Col>
+                                                        <Text style={{ fontSize: 9.5, marginTop: 30, marginLeft: -32.5, color: "#ff4e42", textDecorationLine: 'line-through', textDecorationStyle: 'solid' }}>₹ {item.price}</Text>
+                                                    </Col>
+                                                    <Col>
+                                                        <Text style={{ fontSize: 15, marginTop: 25, marginLeft: -50, color: "#5FB404" }}>₹ {item.offeredAmount}</Text>
+                                                    </Col>
+                                                   
+                                                     
+                                                    <Row style={{ marginTop: -25 }}>
+                                                        <TouchableOpacity style={styles.touch} onPress={() => this.productQuantityOperator(item, 'sub', index)}>
+                                                            <Text style={{ fontSize: 15, fontWeight: '500', fontFamily: 'OpenSans', textAlign: 'center', color: '#FF0000' }} testID='decreaseMedicine'>-</Text>
+                                                        </TouchableOpacity>
+                                                        <Text style={{ fontWeight: '300', fontSize: 15, textAlign: 'center', marginTop: 4.5, marginLeft: 5, fontFamily: 'OpenSans' }}>{item.userAddedMedicineQuantity}</Text>
+                                                        <TouchableOpacity style={styles.touch} onPress={() => this.productQuantityOperator(item, 'add', index)} testID='increaseMedicine'>
+                                                            <Text style={{ fontSize: 15, fontWeight: '500', fontFamily: 'OpenSans', textAlign: 'center', color: '#8dc63f' }}>+</Text>
+                                                        </TouchableOpacity>
+                                                    </Row>
+                                                    <Row style={{ marginLeft: -75, marginTop: 30, marginRight: 12.5 }}>
+                                                        <TouchableOpacity style={{ borderColor: '#ff4e42', borderWidth: 1, marginLeft: -25, borderRadius: 2.5, marginTop: -12.5, height: 30, width: 100, paddingBottom: -5, paddingTop: 2, backgroundColor: '#fff' }} onPress={() => this.removeMedicine(index)} testID='removeMedicineToCart'>
+                                                            <Row style={{ alignItems: 'center' }}>
+                                                                <Text style={{ fontSize: 12, color: '#ff4e42', marginTop: 2.5, fontWeight: '500', fontFamily: 'OpenSans', marginLeft: 25, marginBottom: 5, textAlign: 'center' }}><Icon name='ios-trash' style={{ color: '#ff4e42', fontSize: 13, marginLeft: -2.5, paddingTop: 2.3 }} /> Remove</Text>
+                                                            </Row>
+                                                        </TouchableOpacity>
+                                                    </Row>
                                                 </Row>
-                                                <Row style={{ marginLeft: -75, marginTop: 30, marginRight: 12.5 }}>
-                                                    <TouchableOpacity style={{ borderColor: '#ff4e42', borderWidth: 1, marginLeft: -25, borderRadius: 2.5, marginTop: -12.5, height: 30, width: 100, paddingBottom: -5, paddingTop: 2, backgroundColor: '#fff' }} onPress={() => this.removeMedicine(index)} testID='removeMedicineToCart'>
-                                                        <Row style={{ alignItems: 'center' }}>
-                                                            <Text style={{ fontSize: 12, color: '#ff4e42', marginTop: 2.5, fontWeight: '500', fontFamily: 'OpenSans', marginLeft: 25, marginBottom: 5, textAlign: 'center' }}><Icon name='ios-trash' style={{ color: '#ff4e42', fontSize: 13, marginLeft: -2.5, paddingTop: 2.3 }} /> Remove</Text>
-                                                        </Row>
-                                                    </TouchableOpacity>
-                                                </Row>
-                                            </Row>
                                         </Col>
                                     </Row>
                                 }
@@ -145,7 +204,7 @@ class PharmacyCart extends Component {
                                     <Text style={{ margin: 10, color: '#5FB404', fontSize: 15, textAlign: 'right' }}>₹ {this.totalPrice()}</Text>
                                 </Col>
                             </Row>
-                           
+
                             <Row style={{ marginTop: 10 }}>
                                 <Col size={7.5}>
                                     <Text style={{ margin: 10, fontWeight: '500', fontSize: 14 }}>Amount to be Paid</Text>
@@ -169,9 +228,7 @@ class PharmacyCart extends Component {
                                     </TouchableOpacity>
                                 </Col>
                                 <Col size={5} style={{ alignItems: 'center', justifyContent: 'center', backgroundColor: '#8dc63f' }}>
-                                    <TouchableOpacity onPress={() => this.props.navigation.navigate("MedicineCheckout", {
-                                        medicineDetails: cartItems
-                                    })}>
+                                    <TouchableOpacity onPress={() => this.procced()}>
                                         <Text style={{ color: '#fff', fontSize: 20, marginLeft: 20, margin: 10 }}><Icon name='ios-cart' style={{ color: '#fff', fontSize: 20, marginLeft: -2.5, paddingTop: 2.3, margin: 10 }} /> Buy Now</Text>
                                     </TouchableOpacity>
                                 </Col>

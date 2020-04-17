@@ -37,9 +37,8 @@ async componentDidMount() {
     let userId = await AsyncStorage.getItem("userId");
     this.setState({ userId });
     const fromSuccessPage = navigation.getParam('fromSuccessPage') || false
-    if(fromSuccessPage) {
-        this.getAllChatsByUserId(userId)
-    }
+    this.getAllChatsByUserId(userId)
+    
     
 }
 removeBackHandlerListerner () {
@@ -57,7 +56,7 @@ getAllChatsByUserId = async(userId) => {
   try {
     this.setState({ isLoading: true });
     const chatList = await getAllChats(userId);
-   
+   console.log(chatList);
     if(chatList.success === true) {
         store.dispatch({
             type: SET_LAST_MESSAGES_DATA,
@@ -111,7 +110,7 @@ getAllChatsByUserId = async(userId) => {
  
     render() {
         const { chat: { myChatList } } = this.props;
-        const { refreshCountByBack } = this.state;
+        const { refreshCountByBack, isLoading } = this.state;
        
     return (
         <Container>
@@ -120,6 +119,12 @@ getAllChatsByUserId = async(userId) => {
               onWillBlur={payload => this.removeBackHandlerListerner()}
             />
             <Content>
+            {myChatList.length === 0 && isLoading === false ?
+					<View style={{ alignItems: 'center', justifyContent: 'center', height: 450 }}>
+						<Text style={{ fontFamily: "OpenSans", fontSize: 15, marginTop: "10%", textAlign: 'center' }} note>
+							No Conversations
+						</Text>
+                    </View> : 
               <FlatList 
                 data={myChatList}
                 extraData={[myChatList,refreshCountByBack ]}
@@ -128,6 +133,7 @@ getAllChatsByUserId = async(userId) => {
                     this.renderChatInfo(this.getUserOrDoctorDataToDisplay(item), index) 
                   : null
                 } keyExtractor={(item, index) => index.toString()}/>
+            }
             </Content>
             </Container>
         )

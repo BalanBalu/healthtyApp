@@ -31,3 +31,18 @@ export async function addReminderdata(userId,data) {
       }
     }
   }
+
+  
+export async function getAllMedicineDataBySuggestion(keyword) {
+  try {
+    let endPoint = '/reminder/medicines/suggestion/' + keyword;
+    let response = await getService(endPoint);
+    let respData = response.data;
+    return respData;
+  } catch (e) {
+    return {
+      message: 'exception' + e,
+      success: false
+    }
+  }
+}

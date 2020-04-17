@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import { Container, Toast, Content, Text, Form, Button, Item, Card, CardItem, Thumbnail,  Icon } from 'native-base';
 import { hasLoggedIn } from '../../providers/auth/auth.actions';
 import { Col, Row, Grid } from 'react-native-easy-grid';
-import { StyleSheet, AsyncStorage, View,TextInput } from 'react-native';
+import { StyleSheet, AsyncStorage, View,TextInput, TouchableOpacity } from 'react-native';
 import { validateBooking } from '../../providers/bookappointment/bookappointment.action';
 import { formatDate , isOnlyLetter, toTitleCase } from '../../../setup/helpers';
 import Spinner from '../../../components/Spinner';

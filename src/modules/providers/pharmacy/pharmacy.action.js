@@ -1,4 +1,4 @@
-import { postService, getService, putService } from '../../../setup/services/httpservices';
+import { postService, getService, putService, deleteService } from '../../../setup/services/httpservices';
 
 /* Search Medicine in pharmacy module  */
 export async function getSearchedMedicines(keyword, isLoading = true) {
@@ -136,12 +136,12 @@ export async function getMedicinesSearchListByPharmacyId(pharmacyId, isLoading =
 /*get Near by pharmacy list*/
 export async function getNearOrOrderPharmacy(user_id, coordinates) {
   try {
-    if(user_id) {
+    if (user_id) {
       var endPoint = '/recommendation/recentOrNearByPharmacies?user_id=' + user_id + '&location=' + encodeURIComponent(coordinates);
     } else {
       var endPoint = '/recommendation/recentOrNearByPharmacies?location=' + encodeURIComponent(coordinates);
     }
-    
+
     console.log(endPoint);
     let response = await getService(endPoint);
     let respData = response.data;
@@ -159,7 +159,7 @@ export async function getNearOrOrderPharmacy(user_id, coordinates) {
 /*get Popular Medicine*/
 export async function getPopularMedicine(userId, coordinates) {
   try {
-    if(userId) {
+    if (userId) {
       var endPoint = '/recommendation/recentOrPapularHealthCareProducts?user_id=' + userId + '&location=' + encodeURIComponent(coordinates);
     } else {
       var endPoint = '/recommendation/recentOrPapularHealthCareProducts?location=' + encodeURIComponent(coordinates);
@@ -244,7 +244,7 @@ export async function InsertMedicineReviews(userId, data) {
 export async function getMedicineReviewsCount(medicine_id) {
   try {
 
-    let endPoint = '/medicine/' + medicine_id +'/reviewsCount';
+    let endPoint = '/medicine/' + medicine_id + '/reviewsCount';
     console.log(endPoint);
     let response = await getService(endPoint);
     let respData = response.data;
@@ -257,10 +257,42 @@ export async function getMedicineReviewsCount(medicine_id) {
   }
 }
 
-export async function getAllMedicineDataBySuggestion(keyword) {
+
+export async function removePrescriptionImage(prescriptionData, userId) {
   try {
-    let endPoint = '/reminder/medicines/suggestion/' + keyword;
-    let response = await getService(endPoint);
+
+    let endPoint = '/medicine_orders/prescription/' + prescriptionData.prescription_image_id + '/user/' + userId
+    let response = await deleteService(endPoint);
+    let respData = response.data;
+    return respData;
+  } catch (e) {
+    return {
+      message: 'exception' + e,
+      success: false
+    }
+  }
+}
+
+export async function getPurcharseRecomentation(data) {
+  try {
+
+    let endPoint = '/medicine/purcharse/recomentation';
+
+    let response = await postService(endPoint, data);
+    let respData = response.data;
+    return respData;
+  } catch (e) {
+    return {
+      message: 'exception' + e,
+      success: false
+    }
+  }
+}
+export async function getmedicineAvailableStatus(data, isLoading = true) {
+  try {
+    let endPoint = 'medicine/add_to_card/medicine_verification';
+    let response = await postService(endPoint, data);
+
     let respData = response.data;
     return respData;
   } catch (e) {
