@@ -6,6 +6,7 @@ import { TouchableOpacity, ScrollView } from 'react-native-gesture-handler';
 // import ImagePicker from 'react-native-image-picker';
 import ImagePicker from 'react-native-image-crop-picker';
 import { uploadMultiPart } from '../../../../setup/services/httpservices'
+import { hasLoggedIn } from '../../../providers/auth/auth.actions';
 import Autocomplete from '../../../../components/Autocomplete'
 import { Loader } from '../../../../components/ContentLoader'
 import { getUploadPrescription, removePrescriptionImage } from '../../../providers/pharmacy/pharmacy.action'
@@ -26,7 +27,13 @@ class UploadPrescription extends Component {
             selectIndex: 0,
         }
     }
-    componentDidMount() {
+ async componentDidMount() {
+    
+        const isLoggedIn = await hasLoggedIn(this.props);
+        if (!isLoggedIn) {
+            this.props.navigation.navigate('login');
+            return
+        }
         this.getUploadPrescription()
         // setInterval(() => {
         //     this.setState(prev =>({selectIndex:this.state.selectedIndex === this.state.prescriptionData.length - 1 ? 0 : this.state.selectedIndex + 1}),

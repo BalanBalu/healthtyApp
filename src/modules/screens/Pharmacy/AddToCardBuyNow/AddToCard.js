@@ -9,6 +9,7 @@ import {
 import { ProductIncrementDecreMent, medicineRateAfterOffer ,getMedicineName,renderMedicineImage} from '../CommomPharmacy'
 import { NavigationEvents } from 'react-navigation';
 import { connect } from 'react-redux'
+import { hasLoggedIn } from '../../../providers/auth/auth.actions';
 
 
 export class AddToCard extends Component {
@@ -29,7 +30,7 @@ export class AddToCard extends Component {
             ...this.props.data.variations[0],
             offeredAmount: medicineRateAfterOffer(this.props.data.variations[0]),
         }
-        console.log('addtocate da=======================');
+        console.log('addtocard data=======================');
         console.log(JSON.stringify(data))
         if (data.userAddedMedicineQuantity) {
             userAddedMedicineQuantity = data.userAddedMedicineQuantity
@@ -64,6 +65,11 @@ export class AddToCard extends Component {
         temp.userAddedMedicineQuantity = userAddedMedicineQuantity;
         temp.userAddedTotalMedicineAmount = userAddedTotalMedicineAmount
         if (data.selectedType === 'Add to Card') {
+            const isLoggedIn = await hasLoggedIn(this.props);
+            if (!isLoggedIn) {
+                this.props.navigation.navigate('login');
+                return
+            }
             let cartItems = []
             let userId = await AsyncStorage.getItem('userId')
             let cart = await AsyncStorage.getItem('cartItems-' + userId);

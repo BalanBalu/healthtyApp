@@ -78,9 +78,10 @@ class PharmacyHome extends Component {
                         setCartItemCountOnNavigation(this.props.navigation);
                     }
                 }
-            } else {
-                alert(result.message)
             }
+            //  else {
+            //     alert(result.message)
+            // }
         }
         catch (e) {
             console.log(e)
@@ -107,6 +108,8 @@ class PharmacyHome extends Component {
                 "coordinates": locationCordinates,
                 "maxDistance": MAX_DISTANCE_TO_COVER
             }
+            console.log('location data=============')
+            console.log(JSON.stringify(locationData))
             let result = await getNearOrOrderPharmacy(userId, JSON.stringify(locationData));
             if (result.success) {
                 this.setState({ pharmacyData: result.data })
