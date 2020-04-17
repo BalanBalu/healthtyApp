@@ -144,8 +144,14 @@ async callVideAndChat(doctorIds) {
 onBookButtonPress4PaymentChat = async (doctorId, fee) => {
     try {
         this.setState({ isLoading: true });
+        
         const amount = fee;
-
+        console.log(fee);
+        let freeService = false;
+         if(fee == 0) {
+            freeService = true;
+        }
+        debugger
         const createChatRequest = {
             user_id: this.userId,
             doctor_id: doctorId,
@@ -159,7 +165,7 @@ onBookButtonPress4PaymentChat = async (doctorId, fee) => {
         this.setState({ isLoading: false });
         if (createChatResponse.success) {
             console.log(createChatResponse);
-            if(fee === 0) {
+            if(freeService === true) {
                 const bookSlotDetails = {
                     doctorId: doctorId,
                     fee: amount,
@@ -213,7 +219,7 @@ onBookButtonPress4PaymentChat = async (doctorId, fee) => {
      this.setState({ isLoading: true });
      const amount = fee;
      let freeService = false;
-     if(fee === 0) {
+     if(fee == 0) {
         freeService = true;
      }
       
@@ -229,7 +235,7 @@ onBookButtonPress4PaymentChat = async (doctorId, fee) => {
      this.setState({ isLoading: false });
      if(createVideoConsultingResponse.success) {
         console.log(createVideoConsultingResponse);
-        if(fee === 0) {
+        if(freeService === true) {
             videoConsultRequest.status = POSSIBLE_VIDEO_CONSULTING_STATUS.PENDING;
             const bookSlotDetails  = {
                 doctorId : doctorId,

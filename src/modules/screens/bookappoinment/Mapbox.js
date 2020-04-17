@@ -99,6 +99,7 @@ class Mapbox extends React.PureComponent {
     //const { navigation, hospitalLocation } = this.props;
     const { hospitalLocation } = this.props
     const data = hospitalLocation // navigation.getParam('coordinates');
+    console.log('hospitalLocation======>', hospitalLocation);
     //data.location.location.coordinates = [13.0694, 80.1948]; //chennai location
     hospitaldestination = [
       data.location.coordinates[1],
@@ -130,7 +131,7 @@ class Mapbox extends React.PureComponent {
       })
       console.log('Setting User Destination')
      
-    }catch(e){
+    }catch(e) {
       console.log(e);
     } 
     finally {
@@ -139,6 +140,8 @@ class Mapbox extends React.PureComponent {
     }  
   
 renderOrigin(coordinates) {
+  debugger
+  console.log('coordinates========> ', coordinates)
   let backgroundColor = '#808080';
 
   if (this.state.currentPoint) {
@@ -157,6 +160,7 @@ renderOrigin(coordinates) {
 }
 
   renderDestination(destinationCoordinates) {
+    console.log('Destination ---->', destinationCoordinates);
     let backgroundColor = '#808080';
     if (this.state.currentPoint) {
       backgroundColor = '#314ccd';
