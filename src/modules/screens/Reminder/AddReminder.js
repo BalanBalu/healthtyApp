@@ -1,4 +1,4 @@
-import React, { Component } from 'react';
+  import React, { Component } from 'react';
 import { Container, Content, View, Text, Item, Card, Spinner, Picker, Icon, Radio, Row, Col, Form, Button, Input, Grid, Toast } from 'native-base';
 import { StyleSheet, TextInput, TouchableOpacity, ScrollView, Image, AsyncStorage, Right } from 'react-native'
 import { FlatList } from 'react-native-gesture-handler';
@@ -10,8 +10,6 @@ import { getAllMedicineDataBySuggestion } from "../../providers/pharmacy/pharmac
 import moment from 'moment';
 import { addReminderdata } from '../../providers/reminder/reminder.action.js';
 
-const medicineFormType = ["Select medicine Form", "Pill", "Solution", "Injection", "Powder", "Drops", "Inhales", "Other",]
-const medicineStrengthType = ["Select medicine strength", "g", "IU", "mcg", "mEg", "mg"]
 const debounce = (fun, delay) => {
   let timer = null;
   return function (...args) {
@@ -36,12 +34,13 @@ class AddReminder extends Component {
       selectedMedicineForm: null,
       selectMedicineStrength: null,
       medicinePeriod: "everyday",
+      medicinePeriod: "onlyonce",
       medicinepage: true,
       selected2: undefined,
       selected3: undefined,
       slots: [],
       errorMsg: '',
-      selectedDate: new Date(),
+     selectedDate: new Date(),
       minimumDate: new Date(),
       isDateTimePickerVisible: false,
       isEndDateTimePickerVisible: false,
@@ -57,9 +56,9 @@ class AddReminder extends Component {
       setShowSuggestions: true
 
     }
-    this.pastSelectedDate = new Date(),
-      this.upcommingSelectedDate = new Date()
-    console.log('medicine_take_times' + moment().startOf('day').toDate())
+    // this.pastSelectedDate = new Date(),
+    //   this.upcommingSelectedDate = new Date()
+    // console.log('medicine_take_times' + moment().startOf('day').toDate())
 
     this.callmedicinesearchService = debounce(this.callmedicinesearchService, 500);
 
@@ -190,7 +189,6 @@ class AddReminder extends Component {
       let m = new Date(date).getMinutes();
       let Time = moment().startOf('day').add(h, 'h').add(m, 'm').toDate();
       this.setState({ medicine_take_one_date: date });
-      // console.log('medicine_take_one_date' + this.state.medicine_take_one_date)
       this.hideOnlyDateTimePicker();
 
     } catch (error) {
@@ -213,10 +211,8 @@ class AddReminder extends Component {
     let h = new Date(date).getHours();
     let m = new Date(date).getMinutes();
     let Time = moment().startOf('day').add(h, 'h').add(m, 'm').toDate();
-    // console.log('check time' + Time.toString())
 
     this.setState({ medicine_take_end_date: date });
-    // console.log('medicine_take_end_date' + this.state.medicine_take_end_date)
     this.hideendDateTimePicker();
   }
   showDateTimePicker = () => {
@@ -235,22 +231,17 @@ class AddReminder extends Component {
     let h = new Date(date).getHours();
     let m = new Date(date).getMinutes();
     let Time = moment().startOf('day').add(h, 'h').add(m, 'm').toDate();
-    // console.log('check time' + Time.toString())
-
-    this.setState({ medicine_take_start_date: date });
-    // console.log('medicine_take_start_date' + this.state.medicine_take_start_date)
+   this.setState({ medicine_take_start_date: date });
+   
 
     this.hideDateTimePicker();
   }
 
   insertTimeValue = async () => {
     let temp = this.state.slots;
-    // console.log("temp" + temp)
-
-    // console.log("medicine_take_times" + this.state.medicine_take_times)
+    
     const sample = this.state.medicine_take_times;
-    // console.log("sample" + sample)
-
+  
     if (!temp.includes(sample)) {
       temp.push(sample)
       temp.sort(function (a, b) {
@@ -294,16 +285,29 @@ class AddReminder extends Component {
           priviewData.medicine_take_start_date = moment(this.state.medicine_take_start_date).toISOString(),
             priviewData.medicine_take_end_date = moment(this.state.medicine_take_end_date).toISOString()
         }
-        else {
+        else
+        {
+          null
+        }
+
+        if (this.state.medicinePeriod === "onlyonce") {
           priviewData.medicine_take_one_date = moment(this.state.medicine_take_one_date).toISOString()
         }
+        else
+        {
+          null
+        }
+
+
         let temp = [];
         temp = this.state.data
         temp.push(priviewData)
         let getData = JSON.stringify(temp)
         await this.setState({ arrayTakenTime: temp, data: temp })
         console.log("mani++++++++++++++++++++++++++" + getData)
+        alert(getData)
         this.setState({ previewdisplay: true })
+        
 
       }
     }
@@ -314,12 +318,9 @@ class AddReminder extends Component {
 
 
   deleteData(index) {
-    // console.log("index" + index)
     let temp = this.state.arrayTakenTime;
     temp.splice(index, 1)
-    // console.log("temp" + JSON.stringify(temp))
     this.setState({ data: temp })
-    // console.log("data" + JSON.stringify(this.state.data))
 
   }
 
@@ -341,8 +342,7 @@ class AddReminder extends Component {
           medicine_form: this.state.selectedMedicineForm,
           medicine_strength: this.state.selectMedicineStrength,
           medicine_take_times: this.state.arrayTakenTime,
-          // medicine_take_start_date: moment(this.state.medicine_take_start_date).toISOString(),
-          // //  medicine_take_end_date: moment(this.state.medicine_take_end_date).toISOString(),
+
           reminder_type: String(this.state.medicinePeriod),
           is_reminder_enabled: true,
           active: true
@@ -350,10 +350,18 @@ class AddReminder extends Component {
         if (this.state.medicinePeriod === "everyday") {
           data.medicine_take_start_date = moment(this.state.medicine_take_start_date).toISOString(),
             data.medicine_take_end_date = moment(this.state.medicine_take_end_date).toISOString()
-
         }
-        else {
-          data.medicine_take_start_date = moment(this.state.medicine_take_start_date).toISOString()
+        else
+        {
+          null
+        }
+
+        if (this.state.medicinePeriod === "onlyonce") {
+          data.medicine_take_one_date = moment(this.state.medicine_take_one_date).toISOString()
+        }
+        else
+        {
+          null
         }
         let result = await addReminderdata(userId, data)
         console.log('result', result)
@@ -513,16 +521,14 @@ class AddReminder extends Component {
                         <Text style={{
                           fontFamily: 'OpenSans', fontSize: 15, marginTop: 8
                         }}>Everyday</Text>
-                      </View>
+                      </View>              
                       <View style={{ flexDirection: 'row', marginLeft: 10 }}>
                         <RadioButton value="onlyonce" style={{ marginLeft: 20 }} color={'#1296db'} uncheckedColor={'#1296db'} />
                         <Text style={{
                           fontFamily: 'OpenSans', fontSize: 15, marginTop: 8
                         }}>Only when I need</Text>
-                      </View>
+                      </View>                     
                     </RadioButton.Group>
-
-
                   </Item>
                 </View>
 
@@ -597,9 +603,9 @@ class AddReminder extends Component {
 
                   :
 
+null }
 
-
-
+{this.state.medicinePeriod == "onlyonce" ?
                   <View>
                     <Form style={{ marginTop: 5 }}>
                       <Row>
@@ -621,7 +627,7 @@ class AddReminder extends Component {
                                       isVisible={this.state.isOnlyDateTimePickerVisible}
                                       onConfirm={this.handleOnlyDateTimePicker}
                                       onCancel={() => this.setState({ isOnlyDateTimePickerVisible: !this.state.isOnlyDateTimePickerVisible })}
-                                      datePickerModeAndroid='default'
+                                       datePickerModeAndroid='default'
                                     />
                                   </TouchableOpacity>
                                 </View>
@@ -634,7 +640,7 @@ class AddReminder extends Component {
                     </Form>
                   </View>
 
-
+: null
 
                 }
 
@@ -674,13 +680,7 @@ class AddReminder extends Component {
                       </Button>
                     </Col>
                   </Row>
-                  {/* <Row>
-                    <Col size={2.5} style={{ mariginTop: 10 }}>
-                      <Button style={styles.BackButton} onPress={this.backPage}>
-                        <Text style={styles.BackButtonText}>Back</Text>
-                      </Button>
-                    </Col>
-                  </Row> */}
+                 
                 </View>
               </View>
 
@@ -710,16 +710,21 @@ class AddReminder extends Component {
                             </Col>
 
                             <Col size={5}>
-                              {this.state.medicinePeriod == "everyday" ?
+                              {this.state.medicinePeriod  == "everyday" ?
 
                                 <Text style={styles.datetext}>{formatDate(item.medicine_take_start_date, 'DD/MM/YYYY')} - {formatDate(item.medicine_take_end_date, 'DD/MM/YYYY')}</Text>
-                                : <Text style={styles.datetext}>{formatDate(item.medicine_take_one_date, 'DD/MM/YYYY')}</Text>
-                              }
+                                :
+                                null
+                     }
+                     {this.state.medicinePeriod == "onlyonce" ?
+                      <Text style={styles.datetext}>{formatDate(item.medicine_take_one_date, 'DD/MM/YYYY')}</Text>
+                         : null     }
                             </Col>
 
 
                           </Row>
                         </Col>
+
                         <Col size={1.5} style={{ justifyContent: 'center', alignItem: 'center' }}>
                           <TouchableOpacity onPress={() => { this.deleteData(index) }}>
                             <Icon style={{ fontSize: 20, color: '#bd0f10', alignItems: 'flex-end', justifyContent: 'flex-end', marginRight: 15 }} name="ios-close-circle" />
@@ -728,6 +733,8 @@ class AddReminder extends Component {
 
                         </Col>
                       </Row>
+
+                      
                     )}
                     keyExtractor={(item, index) => index.toString()}
                   />
