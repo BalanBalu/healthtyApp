@@ -20,7 +20,7 @@ const BloodImg = require('../../../../assets/images/blood.jpeg');
 const ReminderImg = require('../../../../assets/images/reminder.png');
 const LabTestImg = require('../../../../assets/images/lab-test.png');
 const coronaImg = require('../../../../assets/images/corona.png');
-// import OfflineNotice from '../../../components/offlineNotice';
+import OfflineNotice from '../../../components/offlineNotice';
 import { fetchUserMarkedAsReadedNotification } from '../../providers/notification/notification.actions';
 import ConnectyCube from 'react-native-connectycube';
 import { CallService } from '../VideoConsulation/services';
@@ -395,7 +395,7 @@ class Home extends Component {
         return (
 
             <Container style={styles.container}>
-                {/* <OfflineNotice /> */}
+                <OfflineNotice />
                 <Content keyboardShouldPersistTaps={'handled'} style={styles.bodyContent}>
                     <NavigationEvents
                         onWillFocus={payload => { this.backNavigation(payload) }}

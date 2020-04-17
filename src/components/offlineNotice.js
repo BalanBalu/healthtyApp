@@ -26,19 +26,14 @@ class OfflineNotice extends React.PureComponent {
   }
 
   componentDidMount() {
-    NetInfo.isConnected.addEventListener('connectionChange', this.changeNetworkState);
-
-    NetInfo.isConnected.fetch().done((isConnected) => {
-      if (isConnected == false) this.setState({ connectionStatus: "Offline" });
-    });
+      NetInfo.addEventListener(this.changeNetworkState);
   }
 
   componentWillUnmount() {
-    NetInfo.isConnected.removeEventListener('connectionChange', this.changeNetworkState);
   }
 
   changeNetworkState = (isConnected) => {
-    if (isConnected == true) {
+    if (isConnected.isConnected == true) {
       this.setState({ connectionStatus: "Online" })
       setTimeout(() => {
         this.setState({ connectionStatus: "" })
