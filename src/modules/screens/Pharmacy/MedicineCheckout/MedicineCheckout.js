@@ -575,7 +575,7 @@ class MedicineCheckout extends Component {
                         <Row>
                             <Col size={5} style={{ alignItems: 'center', justifyContent: 'center', backgroundColor: '#fff' }}>
                                 <TouchableOpacity onPress={() => this.processToPayLater()} >
-                                    <Text style={{ fontSize: 16, fontFamily: 'OpenSans', color: '#000', fontWeight: '400' }}>{itemSelected == 'HOME_DELIVERY' ? 'Cash On Delivary' : 'Cash on Pickup'} </Text>
+                                    <Text style={{ fontSize: 16, fontFamily: 'OpenSans', color: '#000', fontWeight: '400' }}>{itemSelected == 'HOME_DELIVERY' ? 'Cash On Delivery' : 'Cash on Pickup'} </Text>
                                 </TouchableOpacity>
                             </Col>
                             {isPrescription === false ?
