@@ -74,7 +74,7 @@ import CoronaDisease from '../../modules/screens/CoronaDisease/CoronaDisease';
 import MedicineSuggestionList from '../../modules/screens/Pharmacy/MedicineSuggestionList/pharmacySuggestionList';
 import ImageView from '../../modules/shared/ImageView'
 import PharmacyList from '../../modules/screens/Pharmacy/PharmacyList/pharmacyList';
- import VideoScreen from '../../modules/screens/VideoConsulation/components/VideoScreen';
+import VideoScreen from '../../modules/screens/VideoConsulation/components/VideoScreen';
 import AvailableDoctors4Video from '../../modules/screens/VideoConsulation/components/AvailableDoctors';
 import VideoConsultaions from '../../modules/screens/VideoConsulation/components/MyConsultations';
 
@@ -116,12 +116,13 @@ const AuthStack = createStackNavigator(AuthRoutes, {
 const HomeStack = createStackNavigator({
   Home: {
     screen: Home,
-    navigationOptions: ({ navigation }) => ({
 
+    navigationOptions: ({ navigation }) => ({
+      title: null,
       headerLeft: (
 
-        <Row>
-          <TouchableOpacity onPress={() => navigation.toggleDrawer()} style={{ flexDirection: 'row', marginTop: 10 }}>
+        <Row style={{ justifyContent: 'center', alignItems: 'center' }}>
+          <TouchableOpacity onPress={() => navigation.toggleDrawer()} style={{ flexDirection: 'row', }}>
             <Image
               style={{ marginLeft: 18, tintColor: '#fff' }}
               source={menuIcon}
@@ -144,7 +145,7 @@ const HomeStack = createStackNavigator({
         </Row>
       ),
       headerRight: (
-        <Grid>
+        <Grid style={{ justifyContent: 'center', alignItems: 'center' }}>
           <Col>
             <TouchableOpacity onPress={() => { navigation.navigate('Notification') }} >
               <View>
@@ -161,7 +162,6 @@ const HomeStack = createStackNavigator({
       ),
       headerStyle: {
         backgroundColor: '#7F49C3',
-        height: 60
       },
     })
   },
@@ -208,7 +208,7 @@ const HomeStack = createStackNavigator({
       title: 'Blood Donors',
 
       headerRight: (
-        <Grid>
+        <Grid style={{ justifyContent: 'center', alignItems: 'center' }}>
           <Col>
             <TouchableOpacity onPress={() => { navigation.navigate('BloodDonerFilters') }} >
               <View>
@@ -500,9 +500,9 @@ const HomeStack = createStackNavigator({
           <TouchableOpacity onPress={() => { navigation.navigate('PharmacyCart') }} >
             <View>
               <Icon name="ios-cart" style={{ color: '#fff', marginRight: 15, fontFamily: 'opensans-semibold', fontSize: 20 }}></Icon>
-              {navigation.getParam('cartItemsCount') === null || navigation.getParam('cartItemsCount') === undefined || navigation.getParam('cartItemsCount') === 0? null :
+              {navigation.getParam('cartItemsCount') === null || navigation.getParam('cartItemsCount') === undefined || navigation.getParam('cartItemsCount') === 0 ? null :
                 <Text style={{ position: 'absolute', backgroundColor: 'red', color: 'white', borderRadius: 20 / 2, marginTop: -7, width: undefined, height: undefined, padding: 2, fontSize: 10, textAlign: 'center' }}>{
-                    navigation.getParam('cartItemsCount') >= 100 ? '99+' : 
+                  navigation.getParam('cartItemsCount') >= 100 ? '99+' :
                     navigation.getParam('cartItemsCount')}
                 </Text>
               }
@@ -536,10 +536,10 @@ const HomeStack = createStackNavigator({
             <TouchableOpacity onPress={() => { navigation.navigate('PharmacyCart') }} >
               <View>
                 <Icon name="ios-cart" style={{ color: '#fff', marginRight: 15, fontFamily: 'opensans-semibold', fontSize: 20 }}></Icon>
-                {navigation.getParam('cartItemsCount') === null || navigation.getParam('cartItemsCount') === undefined || navigation.getParam('cartItemsCount') === 0? null :
+                {navigation.getParam('cartItemsCount') === null || navigation.getParam('cartItemsCount') === undefined || navigation.getParam('cartItemsCount') === 0 ? null :
                   <Text style={{ position: 'absolute', backgroundColor: 'red', color: 'white', borderRadius: 20 / 2, marginTop: -7, width: undefined, height: undefined, padding: 2, fontSize: 10, textAlign: 'center' }}>{
-                    navigation.getParam('cartItemsCount') >= 100 ? '99+' : 
-                    navigation.getParam('cartItemsCount')}
+                    navigation.getParam('cartItemsCount') >= 100 ? '99+' :
+                      navigation.getParam('cartItemsCount')}
                   </Text>
                 }
               </View>
@@ -559,10 +559,10 @@ const HomeStack = createStackNavigator({
             <TouchableOpacity onPress={() => { navigation.navigate('PharmacyCart') }} >
               <View>
                 <Icon name="ios-cart" style={{ color: '#fff', marginRight: 15, fontFamily: 'opensans-semibold', fontSize: 20 }}></Icon>
-                {navigation.getParam('cartItemsCount') === null || navigation.getParam('cartItemsCount') === undefined || navigation.getParam('cartItemsCount') === 0? null :
+                {navigation.getParam('cartItemsCount') === null || navigation.getParam('cartItemsCount') === undefined || navigation.getParam('cartItemsCount') === 0 ? null :
                   <Text style={{ position: 'absolute', backgroundColor: 'red', color: 'white', borderRadius: 20 / 2, marginTop: -7, width: undefined, height: undefined, padding: 2, fontSize: 10, textAlign: 'center' }}>{
-                    navigation.getParam('cartItemsCount') >= 100 ? '99+' : 
-                    navigation.getParam('cartItemsCount')}
+                    navigation.getParam('cartItemsCount') >= 100 ? '99+' :
+                      navigation.getParam('cartItemsCount')}
                   </Text>
                 }
               </View>
@@ -596,8 +596,8 @@ const HomeStack = createStackNavigator({
                 <Icon name="ios-cart" style={{ color: '#fff', marginRight: 15, fontFamily: 'opensans-semibold', fontSize: 20 }}></Icon>
                 {navigation.getParam('cartItemsCount') === null || navigation.getParam('cartItemsCount') === undefined || navigation.getParam('cartItemsCount') === 0 ? null :
                   <Text style={{ position: 'absolute', backgroundColor: 'red', color: 'white', borderRadius: 20 / 2, marginTop: -7, width: undefined, height: undefined, padding: 2, fontSize: 10, textAlign: 'center' }}>{
-                    navigation.getParam('cartItemsCount') >= 100 ? '99+' : 
-                    navigation.getParam('cartItemsCount')}
+                    navigation.getParam('cartItemsCount') >= 100 ? '99+' :
+                      navigation.getParam('cartItemsCount')}
                   </Text>
                 }
               </View>
@@ -642,8 +642,8 @@ const HomeStack = createStackNavigator({
   },
   MedicineInfo: {
     screen: MedicineInfo,
-     navigationOptions: ({ navigation }) => ({
-       title: 'Medicine Details',
+    navigationOptions: ({ navigation }) => ({
+      title: 'Medicine Details',
       headerRight: (
         <Grid>
           <Col>
@@ -652,8 +652,8 @@ const HomeStack = createStackNavigator({
                 <Icon name="ios-cart" style={{ color: '#fff', marginRight: 15, fontFamily: 'opensans-semibold', fontSize: 20 }}></Icon>
                 {navigation.getParam('cartItemsCount') === null || navigation.getParam('cartItemsCount') === undefined || navigation.getParam('cartItemsCount') === 0 ? null :
                   <Text style={{ position: 'absolute', backgroundColor: 'red', color: 'white', borderRadius: 20 / 2, marginTop: -7, width: undefined, height: undefined, padding: 2, fontSize: 10, textAlign: 'center' }}>{
-                    navigation.getParam('cartItemsCount') >= 100 ? '99+' : 
-                    navigation.getParam('cartItemsCount')}
+                    navigation.getParam('cartItemsCount') >= 100 ? '99+' :
+                      navigation.getParam('cartItemsCount')}
                   </Text>
                 }
               </View>
@@ -669,7 +669,7 @@ const HomeStack = createStackNavigator({
       title: 'Medicine Reviews'
     }
   },
-  
+
 
   'CORONO Status': {
     screen: CoronaDisease,
@@ -748,7 +748,7 @@ const DrawerNavigator = createDrawerNavigator({
   "My Chats": {
     screen: MyChats
   },
-  'Video and Chat Service' : {
+  'Video and Chat Service': {
     screen: AvailableDoctors4Video
   },
   'My Video Consultations': {
@@ -760,15 +760,15 @@ const DrawerNavigator = createDrawerNavigator({
   "Medicine Orders": {
     screen: MyOrdersList
   },
- 
-  
+
+
   Reminder: {
     screen: Reminder
   },
   'CORONO Status': {
     screen: CoronaDisease
   },
-  
+
 
 },
   {
