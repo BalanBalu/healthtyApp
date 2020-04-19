@@ -3,7 +3,7 @@ import { Container, Content, Text, Title, Header, Form, Textarea, Button, H3, It
 import { Col, Row, Grid } from 'react-native-easy-grid';
 import { StyleSheet, Image, AsyncStorage, TextInput, FlatList, TouchableOpacity, Platform } from 'react-native';
 import { getMedicinesSearchList,getNearOrOrderPharmacy } from '../../../providers/pharmacy/pharmacy.action';
-import { MAX_DISTANCE_TO_COVER } from '../../../../setup/config';
+import { MAX_DISTANCE_TO_COVER ,PHARMACY_MAX_DISTANCE_TO_COVER} from '../../../../setup/config';
 import { getAddress, getKiloMeterCalculation } from '../CommomPharmacy'
 import Spinner from "../../../../components/Spinner";
 import { connect } from 'react-redux'
@@ -31,7 +31,7 @@ class ChosePharmacyList extends Component {
             const { bookappointment: { locationCordinates } } = this.props;
             locationData = {
                 "coordinates": locationCordinates,
-                "maxDistance": MAX_DISTANCE_TO_COVER
+                "maxDistance": PHARMACY_MAX_DISTANCE_TO_COVER
             }
             console.log('JSON.stringify(locationData)')
             console.log(JSON.stringify(locationData))

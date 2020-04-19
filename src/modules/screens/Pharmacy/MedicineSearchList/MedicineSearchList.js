@@ -10,7 +10,7 @@ import { getMedicinesSearchList, getMedicinesSearchListByPharmacyId } from '../.
 import { medicineRateAfterOffer, setCartItemCountOnNavigation, getMedicineName, renderMedicineImage,quantityPriceSort } from '../CommomPharmacy'
 import { AddToCard } from '../AddToCardBuyNow/AddToCard'
 import { connect } from 'react-redux'
-import { MAX_DISTANCE_TO_COVER } from '../../../../setup/config';
+import { MAX_DISTANCE_TO_COVER ,PHARMACY_MAX_DISTANCE_TO_COVER} from '../../../../setup/config';
 class MedicineSearchList extends Component {
     constructor(props) {
         super(props)
@@ -53,7 +53,7 @@ class MedicineSearchList extends Component {
             const { bookappointment: { locationCordinates } } = this.props;
             const locationData = {
                 "coordinates": locationCordinates,
-                "maxDistance": MAX_DISTANCE_TO_COVER
+                "maxDistance": PHARMACY_MAX_DISTANCE_TO_COVER
             }
 
             let postData = [

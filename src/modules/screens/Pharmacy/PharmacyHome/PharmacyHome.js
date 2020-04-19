@@ -6,7 +6,7 @@ import { getPopularMedicine, getSearchedMedicines, getNearOrOrderPharmacy } from
 import { StyleSheet, Image, FlatList, TouchableOpacity, AsyncStorage, ScrollView, Dimensions } from 'react-native';
 import { NavigationEvents } from 'react-navigation';
 import { medicineRateAfterOffer, setCartItemCountOnNavigation, renderMedicineImage, getMedicineName, quantityPriceSort } from '../CommomPharmacy';
-import { MAX_DISTANCE_TO_COVER } from '../../../../setup/config'
+import { PHARMACY_MAX_DISTANCE_TO_COVER } from '../../../../setup/config'
 import Locations from '../../../screens/Home/Locations';
 import CurrentLocation from '../../Home/CurrentLocation';
 
@@ -42,7 +42,7 @@ class PharmacyHome extends Component {
     async componentDidMount() {
         CurrentLocation.getCurrentPosition();
         this.getCurrentLocation()
-        await this.getMedicineList();
+        this.getMedicineList();
         this.getNearByPharmacyList();
 
     }
@@ -62,7 +62,7 @@ class PharmacyHome extends Component {
             const { bookappointment: { locationCordinates } } = this.props;
             locationData = {
                 "coordinates": locationCordinates,
-                "maxDistance": MAX_DISTANCE_TO_COVER
+                "maxDistance": PHARMACY_MAX_DISTANCE_TO_COVER
             }
             let result = await getPopularMedicine(userId, JSON.stringify(locationData));
             if (result.success) {
@@ -106,7 +106,7 @@ class PharmacyHome extends Component {
             const { bookappointment: { locationCordinates } } = this.props;
             locationData = {
                 "coordinates": locationCordinates,
-                "maxDistance": MAX_DISTANCE_TO_COVER
+                "maxDistance": PHARMACY_MAX_DISTANCE_TO_COVER
             }
             console.log('location data=============')
             console.log(JSON.stringify(locationData))

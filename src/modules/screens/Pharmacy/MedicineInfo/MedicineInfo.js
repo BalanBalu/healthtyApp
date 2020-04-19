@@ -338,7 +338,7 @@ class MedicineInfo extends Component {
                                 <Col size={7} style={{ flexDirection: 'row', marginTop: 10 }}>
                                     <Text style={{ fontSize: 10, fontFamily: 'OpenSans', color: '#ff4e42', marginTop: 5 }}>MRP</Text>
                                     <Text style={styles.oldRupees}>₹{medicineData.medPharDetailInfo.price}</Text>
-                                    <Text style={styles.newRupees}>₹{medicineRateAfterOffer(medicineData.medPharDetailInfo, 'r')}</Text>
+                                    <Text style={styles.newRupees}>₹{medicineRateAfterOffer(medicineData.medPharDetailInfo)}</Text>
                                     <Text style={styles.saveText}>(Save upto ₹{this.saveMoney()})</Text>
                                 </Col>
                                 <Col size={3}>
@@ -366,41 +366,44 @@ class MedicineInfo extends Component {
                                     </Col>
                                 </Row> : null}
                         </View>
-                        <Row style={{ marginTop: 10 }}>
-                            <Col size={5}>
+                        {medicineData.medPharDetailInfo.total_quantity === 0 ? null :
+                            <Row style={{ marginTop: 10 }}>
+                                <Col size={5}>
 
-                                {cartItems.length == 0 || cartItems.findIndex(ele => ele.medicine_id == medicineData.medPharDetailInfo.medicine_id && ele.pharmacy_id == medicineData.medPharDetailInfo.pharmacy_id) === -1 ?
-                                    <Row style={{ alignItems: 'flex-end' }}>
-                                        <TouchableOpacity style={styles.addCartTouch}
-                                            onPress={() => { this.setState({ isAddToCart: true }), this.selectedItems(medicineData, 'Add to Card') }} >
+                                    {cartItems.length == 0 || cartItems.findIndex(ele => ele.medicine_id == medicineData.medPharDetailInfo.medicine_id && ele.pharmacy_id == medicineData.medPharDetailInfo.pharmacy_id) === -1 ?
+                                        <Row style={{ alignItems: 'flex-end' }}>
+                                            <TouchableOpacity style={styles.addCartTouch}
+                                                onPress={() => { this.setState({ isAddToCart: true }), this.selectedItems(medicineData, 'Add to Card') }} >
 
-                                            <Icon name='ios-cart' style={{ color: '#4e85e9', fontSize: 15 }} />
-                                            <Text style={styles.addCartText}>Add to Cart</Text>
+                                                <Icon name='ios-cart' style={{ color: '#4e85e9', fontSize: 15 }} />
+                                                <Text style={styles.addCartText}>Add to Cart</Text>
 
-                                        </TouchableOpacity>
-                                    </Row> :
-                                    <Row style={{ alignItems: 'flex-end' }}>
-                                        <TouchableOpacity style={styles.addCartTouch}
-                                            onPress={() => { this.setState({ isAddToCart: true }), this.selectedItems(medicineData, 'Add to Card', cartItems.findIndex(ele => ele.medicine_id == medicineData.medPharDetailInfo.medicine_id && ele.pharmacy_id == medicineData.medPharDetailInfo.pharmacy_id)) }} >
+                                            </TouchableOpacity>
+                                        </Row> :
+                                        <Row style={{ alignItems: 'flex-end' }}>
+                                            <TouchableOpacity style={styles.addCartTouch}
+                                                onPress={() => { this.setState({ isAddToCart: true }), this.selectedItems(medicineData, 'Add to Card', cartItems.findIndex(ele => ele.medicine_id == medicineData.medPharDetailInfo.medicine_id && ele.pharmacy_id == medicineData.medPharDetailInfo.pharmacy_id)) }} >
 
-                                            <Icon name='ios-cart' style={{ color: '#4e85e9', fontSize: 15 }} />
-                                            <Text style={styles.addCartText}>{'Added ' + cartItems[cartItems.findIndex(ele => ele.medicine_id == medicineData.medPharDetailInfo.medicine_id && ele.pharmacy_id == medicineData.medPharDetailInfo.pharmacy_id)].userAddedMedicineQuantity}</Text>
+                                                <Icon name='ios-cart' style={{ color: '#4e85e9', fontSize: 15 }} />
+                                                <Text style={styles.addCartText}>{'Added ' + cartItems[cartItems.findIndex(ele => ele.medicine_id == medicineData.medPharDetailInfo.medicine_id && ele.pharmacy_id == medicineData.medPharDetailInfo.pharmacy_id)].userAddedMedicineQuantity}</Text>
 
+                                            </TouchableOpacity>
+                                        </Row>
+                                    }
+                                </Col>
+                                <Col size={5}>
+                                    <Row>
+                                        <TouchableOpacity style={styles.buyNowTouch} onPress={() => { this.setState({ isBuyNow: true }), this.selectedItems(medicineData, 'Buy Now') }} >
+                                            <Icon name="ios-cart" style={{ fontSize: 15, color: '#fff' }} />
+                                            <Text style={styles.BuyNowText}>Buy Now</Text>
                                         </TouchableOpacity>
                                     </Row>
-                                }
-                            </Col>
-                            <Col size={5}>
-                                <Row>
-                                    <TouchableOpacity style={styles.buyNowTouch} onPress={() => { this.setState({ isBuyNow: true }), this.selectedItems(medicineData, 'Buy Now') }} >
-                                        <Icon name="ios-cart" style={{ fontSize: 15, color: '#fff' }} />
-                                        <Text style={styles.BuyNowText}>Buy Now</Text>
-                                    </TouchableOpacity>
-                                </Row>
-                            </Col>
-                        </Row>
+                                </Col>
+                            </Row>
+                        }
                         {/* give this text instead of two button in case of out of stock */}
-                        <Text style={{ fontSize: 15, fontFamily: 'OpenSans', color: '#ff4e42', marginTop: 5, textAlign: 'center' }}>Currently Out of stock</Text>
+                        {medicineData.medPharDetailInfo.total_quantity === 0 ?
+                            <Text style={{ fontSize: 15, fontFamily: 'OpenSans', color: '#ff4e42', marginTop: 5, textAlign: 'center' }}>Currently Out of stock</Text> : null}
 
                         {this.state.isBuyNow == true || this.state.isAddToCart == true ?
                             <AddToCard
