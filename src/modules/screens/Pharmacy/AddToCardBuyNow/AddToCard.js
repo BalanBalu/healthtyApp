@@ -6,7 +6,7 @@ import {
     Container, Header, Title, Left, Right, Body, Button, Card, Toast, CardItem, Row, Grid, View, Col,
     Text, Thumbnail, Content, CheckBox, Item, Input, Icon
 } from 'native-base';
-import { ProductIncrementDecreMent, medicineRateAfterOffer ,getMedicineName,renderMedicineImage} from '../CommomPharmacy'
+import { ProductIncrementDecreMent, medicineRateAfterOffer, getMedicineName, renderMedicineImage } from '../CommomPharmacy'
 import { NavigationEvents } from 'react-navigation';
 import { connect } from 'react-redux'
 import { hasLoggedIn } from '../../../providers/auth/auth.actions';
@@ -45,10 +45,21 @@ export class AddToCard extends Component {
 
     }
     async productQuantityOperator(item, operator) {
+
         let result = await ProductIncrementDecreMent(this.state.userAddedMedicineQuantity, item.offeredAmount, operator, item.threshold_limit)
         userAddedTotalMedicineAmount = result.totalAmount || 0,
             userAddedMedicineQuantity = result.quantity || 0
         threshold_message = result.threshold_message || null;
+        if (threshold_message !== null) {
+            Toast.show({
+                text: threshold_message,
+                duration: 3000,
+                type: 'danger',
+                position: "bottom",
+                style: { bottom: "50%" }
+
+            })
+        }
         this.setState({ userAddedTotalMedicineAmount, userAddedMedicineQuantity, threshold_message })
     }
     async cancelCard() {
@@ -87,9 +98,7 @@ export class AddToCard extends Component {
             let count = cartItems.length;
             console.log("count", count)
             await AsyncStorage.setItem('cartItems-' + userId, JSON.stringify(cartItems))
-            // this.props.navigation.setParams({
-            //     cartItemsCount: count
-            // })
+
             this.props.popupVisible({
                 visible: false,
                 updatedVisible: false,
@@ -168,13 +177,14 @@ export class AddToCard extends Component {
                             <Row>
                                 <Col size={1} style={{ marginLeft: 5 }}>
                                     <Image source={renderMedicineImage(data)} style={{ height: 80, width: 70, marginLeft: 5, marginTop: 2.5 }} />
+                                   
+
                                 </Col>
                                 <Col size={6} style={{ marginLeft: 70, marginTop: -5 }}>
 
                                     <Text style={{ fontFamily: 'OpenSans', fontSize: 16, marginTop: 5 }}>{getMedicineName(data)}</Text>
                                     <Text style={{ color: '#7d7d7d', fontFamily: 'OpenSans', fontSize: 12.5, marginBottom: 20 }}>{'By ' + data.pharmacy_name || 'nill'}</Text>
-                                    {this.state.threshold_message !== null ?
-                                        <Text style={{ fontSize: 8, color: "#ff4e42" }}>{this.state.threshold_message}</Text> : null}
+
 
                                     <Row style={{ marginTop: -15 }}>
                                         {data.variations !== undefined ?
@@ -208,6 +218,7 @@ export class AddToCard extends Component {
                                     <Row>
                                         <Text style={{ fontSize: 15, marginTop: 10, color: "#8dc63f", fontFamily: 'OpenSans', textAlign: 'right', marginRight: 5 }}>{'₹' + data.offeredAmount}</Text>
                                     </Row>
+                                    {data.total_quantity !== 0 ?
                                     <Row style={{ marginLeft: 2.5, marginTop: 10, }}>
                                         <Col size={4} style={{ marginLeft: 5 }}>
                                             <TouchableOpacity onPress={() => this.productQuantityOperator(data, 'sub')} style={{ width: 20, height: 20, borderRadius: 10, backgroundColor: '#E6E6E6' }}>
@@ -222,7 +233,7 @@ export class AddToCard extends Component {
                                                 <Text style={{ fontSize: 12, fontWeight: '500', fontFamily: 'OpenSans', textAlign: 'center', color: '#8dc63f' }}>+</Text>
                                             </TouchableOpacity>
                                         </Col>
-                                    </Row>
+                                    </Row>:null}
                                 </Col>
                             </Row>
                         </View>
@@ -232,12 +243,16 @@ export class AddToCard extends Component {
                             <Col style={{ width: '60%' }}>
                                 <Text style={{ fontFamily: 'OpenSans', textAlign: 'right', fontSize: 14, marginBottom: 5, color: '#848484', marginRight: 10 }}>{'Total - ₹ ' + (this.state.userAddedTotalMedicineAmount)}</Text>
                             </Col>
+                          
                             <Col style={{ width: '40%', flexDirection: 'row', alignItems: 'flex-end', justifyContent: 'flex-end', }}>
+                            {data.total_quantity === 0 ?
+                                        <Text style={{ fontSize: 12, fontFamily: 'OpenSans', color: '#ff4e42', marginTop: 5, textAlign: 'center', backgroundColor: '#E6E6E6', marginTop: -40, marginLeft: 5 }}>Out of stock</Text> :
                                 <TouchableOpacity onPress={() => this.cardAction()} style={{ borderColor: '#4e85e9', borderWidth: 1, marginLeft: 25, borderRadius: 2.5, marginTop: -12.5, height: 30, width: 120, paddingBottom: -5, paddingTop: 2, backgroundColor: '#4e85e9' }}>
                                     <Row style={{ alignItems: 'center' }}>
                                         <Text style={{ fontSize: 12, color: '#fff', marginTop: 2.5, fontWeight: '500', fontFamily: 'OpenSans', marginLeft: 25, marginBottom: 5, textAlign: 'center' }}><Icon name='ios-cart' style={{ color: '#fff', fontSize: 13, marginLeft: 5, paddingTop: 2.3 }} />{data.selectedType}</Text>
                                     </Row>
                                 </TouchableOpacity>
+    }
                             </Col>
 
 

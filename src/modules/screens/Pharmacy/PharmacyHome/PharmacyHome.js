@@ -5,7 +5,7 @@ import { connect } from 'react-redux'
 import { getPopularMedicine, getSearchedMedicines, getNearOrOrderPharmacy } from '../../../providers/pharmacy/pharmacy.action'
 import { StyleSheet, Image, FlatList, TouchableOpacity, AsyncStorage, ScrollView, Dimensions } from 'react-native';
 import { NavigationEvents } from 'react-navigation';
-import { medicineRateAfterOffer, setCartItemCountOnNavigation, renderMedicineImage, getMedicineName } from '../CommomPharmacy';
+import { medicineRateAfterOffer, setCartItemCountOnNavigation, renderMedicineImage, getMedicineName, quantityPriceSort } from '../CommomPharmacy';
 import { MAX_DISTANCE_TO_COVER } from '../../../../setup/config'
 import Locations from '../../../screens/Home/Locations';
 import CurrentLocation from '../../Home/CurrentLocation';
@@ -44,7 +44,7 @@ class PharmacyHome extends Component {
         this.getCurrentLocation()
         await this.getMedicineList();
         this.getNearByPharmacyList();
-        
+
     }
 
     backNavigation(payload) {
@@ -66,9 +66,9 @@ class PharmacyHome extends Component {
             }
             let result = await getPopularMedicine(userId, JSON.stringify(locationData));
             if (result.success) {
+                let sortedData = await quantityPriceSort(medicineResultData.data)
 
-              
-                this.setState({ medicineData: result.data })
+                this.setState({ medicineData: sortedData })
                 console.log("medicineData", this.state.medicineData)
                 if (userId) {
                     let cart = await AsyncStorage.getItem('cartItems-' + userId) || []
@@ -326,7 +326,7 @@ class PharmacyHome extends Component {
                                                                     }}
                                                                 />
                                                                 <Text style={styles.offerText}>{item.medPharDetailInfo.variations[0].discount_value}</Text>
-                                                                <Text style={styles.offText}>{item.medPharDetailInfo.variations[0].discount_type == 'PERCENTAGE' ? "OFF" : "Rs"}</Text>
+                                                                <Text style={styles.offText}>{item.medPharDetailInfo.variations[0].discount_type === 'PERCENTAGE' ? "OFF" : "Rs"}</Text>
                                                             </Col> : null}
                                                     </Row>
 
