@@ -4,7 +4,7 @@ import { View, StyleSheet, Image, TouchableOpacity, AsyncStorage, FlatList } fro
 import { createStackNavigator } from 'react-navigation';
 import { Item, Text, Icon, Header, Left, Row, Grid, Col, Input, Container, Content, Right, Card } from 'native-base';
 import { getSuggestionMedicines } from '../../../providers/pharmacy/pharmacy.action';
-import { MAX_DISTANCE_TO_COVER } from '../../../../setup/config';
+import { PHARMACY_MAX_DISTANCE_TO_COVER } from '../../../../setup/config';
 import { setCartItemCountOnNavigation } from '../CommomPharmacy'
 import { connect } from 'react-redux'
 const debounce = (fun, delay) => {
@@ -56,7 +56,7 @@ class MedicineSuggestionList extends Component {
         const { bookappointment: { locationCordinates } } = this.props;
         locationData = {
             "coordinates": locationCordinates,
-            "maxDistance": MAX_DISTANCE_TO_COVER
+            "maxDistance": PHARMACY_MAX_DISTANCE_TO_COVER
         }
         let medicineResultData = await getSuggestionMedicines(enteredText, locationData);
 

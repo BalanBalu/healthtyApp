@@ -1,10 +1,11 @@
 import React, { Component } from 'react';
-import { Container, Content, Text, Title, Header, Form, Textarea, Button, H3, Item, List, ListItem, Card, Input, Left, Right, ScrollView, Thumbnail, Body, Icon, Footer, FooterTab, Picker, Segment, CheckBox, View, Badge } from 'native-base';
+import { Container, Content, Text, Title, Header, Form, Textarea, Button, H3, Item, List, ListItem, Card, Input, Left, Right, ScrollView, Thumbnail, Body, Icon, Footer, FooterTab, Picker, Segment, CheckBox, View, Badge ,Toast} from 'native-base';
 import { Col, Row, Grid } from 'react-native-easy-grid';
-import { StyleSheet, Image, AsyncStorage, TextInput, FlatList, TouchableOpacity,Toast } from 'react-native';
+import { StyleSheet, Image, AsyncStorage, TextInput, FlatList, TouchableOpacity } from 'react-native';
 import { Loader } from '../../../../components/ContentLoader';
 import { ProductIncrementDecreMent, medicineRateAfterOffer, renderMedicineImage,getMedicineName,getMedicineWeightUnit } from '../CommomPharmacy';
-import { getmedicineAvailableStatus } from '../../../providers/pharmacy/pharmacy.action'
+import { getmedicineAvailableStatus } from '../../../providers/pharmacy/pharmacy.action';
+import noAppointmentImage from "../../../../../assets/images/noappointment.png";
 
 let userId;
 class PharmacyCart extends Component {
@@ -26,8 +27,8 @@ class PharmacyCart extends Component {
         try {
             this.setState({ isLoading: true })
             userId = await AsyncStorage.getItem('userId')
-            const cartItems = await AsyncStorage.getItem('cartItems-' + userId);
-            if (cartItems === undefined) {
+            let  cartItems = await AsyncStorage.getItem('cartItems-' + userId)||[];
+            if (cartItems.length === 0) {
                 this.setState({ cartItems: [], isLoading: false });
             } else {
                 this.setState({ cartItems: JSON.parse(cartItems), isLoading: false });
@@ -96,7 +97,7 @@ class PharmacyCart extends Component {
             order_items: order_items
         }
         let checkResult = await getmedicineAvailableStatus(obj)
-       
+       alert(JSON.stringify(checkResult))
         if (checkResult.success === true) {
             if (checkResult.data.length === cartItems.length) {
                 this.props.navigation.navigate("MedicineCheckout", {
@@ -134,10 +135,41 @@ class PharmacyCart extends Component {
             <Container style={{ backgroundColor: '#EAE6E6' }}>
                 <Content>
 
-                    {cartItems == '' || cartItems == null ?
-                        <Item style={{ borderBottomWidth: 0, justifyContent: 'center', alignItems: 'center', height: 70 }}>
-                            <Text style={{ fontSize: 20, justifyContent: 'center', alignItems: 'center' }}>No Medicines Are Found Your Cart</Text>
-                        </Item> :
+                    {cartItems.length===0 ?
+                    <Card transparent style={{
+                        alignItems: "center",
+                        justifyContent: "center",
+                        marginTop: "20%"
+        }}>
+                    <Thumbnail
+                        square
+                        source={noAppointmentImage}
+                        style={{ height: 100, width: 100, marginTop: "10%" }}
+                    />
+
+                    <Text
+                        style={{
+                            fontFamily: "OpenSans",
+                            fontSize: 15,
+                            marginTop: "10%"
+                        }}
+                        note
+                    >
+                        No Medicines Are Found Your Cart
+                    </Text>
+                    <Item style={{ marginTop: "15%", borderBottomWidth: 0 }}>
+                        <Button style={[styles.bookingButton, styles.customButton]}
+                            onPress={() =>
+                                this.props.navigation.pop()
+                            } testID='navigateToHome'>
+                            <Text style={{ fontFamily: 'Opensans', fontSize: 15, fontWeight: 'bold' }}>Place Order</Text>
+                        </Button>
+                    </Item>
+                </Card>
+                        // <Item style={{ borderBottomWidth: 0, justifyContent: 'center', alignItems: 'center', height: 70 }}>
+                        //     <Text style={{ fontSize: 20, justifyContent: 'center', alignItems: 'center' }}>No Medicines Are Found Your Cart</Text>
+                        // </Item> 
+                        :
                         <View style={{ margin:5 ,backgroundColor: '#fff', borderRadius: 5 ,paddingBottom:5}}>
                             <FlatList
                                 data={this.state.cartItems}
@@ -194,7 +226,7 @@ class PharmacyCart extends Component {
                         </View>
                     }
 
-                    {cartItems !== null ?
+                    {cartItems.length!==0 ?
                         <View style={{ backgroundColor: '#fff', margin: 5, borderRadius: 5 }}>
                             <Row>
                                 <Col size={7.5}>
@@ -217,7 +249,7 @@ class PharmacyCart extends Component {
                     }
 
                 </Content>
-                {cartItems !== null ?
+                {cartItems.length!==0 ?
 
                     <Footer style={{}}>
                         <FooterTab>
@@ -374,8 +406,22 @@ const styles = StyleSheet.create({
         color: '#c26c57',
         marginLeft: 5,
         fontWeight: "bold"
-    }
-
+    },
+    customButton: {
+		alignItems: "center",
+		justifyContent: "center",
+		marginTop: 12,
+		backgroundColor: "#775DA3",
+		marginLeft: 15,
+		borderRadius: 10,
+		width: "auto",
+		height: 40,
+		color: "white",
+		fontSize: 12,
+		textAlign: "center",
+		marginLeft: "auto",
+		marginRight: "auto"
+	},
 
 
 });

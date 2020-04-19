@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import { Container, Content, Text, Toast, Icon, View, Col, Row, Picker } from 'native-base';
 import { StyleSheet, Image, AsyncStorage, FlatList, TouchableOpacity, Dimensions } from 'react-native';
 import { getSelectedMedicineDetails, getMedicineReviews, getMedicineReviewsCount } from '../../../providers/pharmacy/pharmacy.action'
-import { medicineRateAfterOffer, setCartItemCountOnNavigation, renderMedicineImage ,getMedicineName} from '../CommomPharmacy';
+import { medicineRateAfterOffer, setCartItemCountOnNavigation, renderMedicineImageAnimation, getMedicineName } from '../CommomPharmacy';
 import Spinner from '../../../../components/Spinner';
 import { dateDiff, getMoment, formatDate } from '../../../../setup/helpers'
 import { MedInsertReview } from './medInsertReview'
@@ -55,9 +55,15 @@ class MedicineInfo extends Component {
     }
 
     async componentDidMount() {
-        this.getSelectedMedicineDetails();
-        await this.getMedicineReviewDetails();
-        await this.getMedicineReviewCount();
+        medicineId = this.props.navigation.getParam('medicineId');
+        pharmacyId = this.props.navigation.getParam('pharmacyId');
+        this.setState({ isLoading: true });
+        await new Promise.all([
+            this.getSelectedMedicineDetails(),
+            this.getMedicineReviewDetails(),
+            this.getMedicineReviewCount(),
+        ])
+        this.setState({ isLoading: false });
         userId = await AsyncStorage.getItem('userId')
         if (userId) {
             let cart = await AsyncStorage.getItem('cartItems-' + userId) || []
@@ -72,62 +78,84 @@ class MedicineInfo extends Component {
 
     getSelectedMedicineDetails = async () => {
         try {
-            this.setState({ isLoading: true });
+
             medicineId = this.props.navigation.getParam('medicineId');
-            let pharmacyId = this.props.navigation.getParam('pharmacyId');
+            pharmacyId = this.props.navigation.getParam('pharmacyId');
             let result = await getSelectedMedicineDetails(medicineId, pharmacyId);
+            console.log(JSON.stringify(result))
             if (result.success) {
-                this.setState({ medicineData: result.data })
+                if (result.data.medPharDetailInfo) {
+                    if (result.data.medPharDetailInfo.variations) {
+
+                        result.data.medPharDetailInfo.variations.sort(function (firstVarlue, secandValue) {
+
+
+                            if (firstVarlue.total_quantity === 0) {
+                                return 1;
+                            }
+                            else if (secandValue.total_quantity === 0) {
+                                return -1;
+                            }
+                            else {
+                                return firstVarlue.price - secandValue.price;
+                            }
+                        });
+
+                    }
+                }
+                temp = result.data.medPharDetailInfo
+
+                mergeObject = Object.assign(temp, result.data.medPharDetailInfo.variations[0])
+                let tempObject = {
+                    ...result.data,
+                    medPharDetailInfo: mergeObject
+
+                }
+                this.setState({ medicineData: tempObject })
 
             }
-            this.setState({ isLoading: false });
+
         }
         catch (e) {
             console.log(e)
         }
-        finally {
-            this.setState({ isLoading: false });
-        }
+
     }
 
     getMedicineReviewDetails = async () => {
         try {
-            this.setState({ isLoading: true });
+
             let result = await getMedicineReviews(medicineId);
             if (result.success) {
                 this.setState({ reviewData: result.data })
             } else {
-                this.setState({ isLoading: false, reviewData: '' });
+                this.setState({ reviewData: [] });
             }
         }
         catch (e) {
             console.log(e)
         }
-        finally {
-            this.setState({ isLoading: false });
-        }
+
     }
 
     getMedicineReviewCount = async () => {
         try {
-            this.setState({ isLoading: true });
+
             let result = await getMedicineReviewsCount(medicineId);
             if (result.success) {
-                await this.setState({ reviewCount: result.data[0] })
-                let temp = this.state.reviewCount.final_rating
-                this.setState({ finalRating: temp })
+                // await this.setState({ reviewCount: result.data[0] })
+                let temp = result.data[0].final_rating
+                this.setState({ finalRating: temp, reviewCount: result.data[0] })
             }
             else {
-                this.setState({ isLoading: false, reviewCount: '' });
+                this.setState({ reviewCount: '' });
 
             }
         }
         catch (e) {
             console.log(e)
         }
-        finally {
-            this.setState({ isLoading: false });
-        }
+
     }
     async selectedItems(data, selected, index) {
         try {
@@ -212,8 +240,15 @@ class MedicineInfo extends Component {
         await AsyncStorage.setItem('cartItems-' + userId, JSON.stringify(cart))
     }
     saveMoney() {
-        const { medicineData: { medPharDetailInfo } } = this.state;
-        return parseInt(medPharDetailInfo.price) - parseInt(medicineRateAfterOffer(medPharDetailInfo))
+        const { medicineData } = this.state;
+
+        let saveData = 0
+        if (medicineData.medPharDetailInfo) {
+            if (medicineData.medPharDetailInfo.price) {
+                saveData = parseInt(medicineData.medPharDetailInfo.price) - parseInt(medicineRateAfterOffer(medicineData.medPharDetailInfo, 's'))
+            }
+        }
+        return saveData
     }
     onValueChange2(value) {
         this.setState({
@@ -232,14 +267,6 @@ class MedicineInfo extends Component {
                 medPharDetailInfo: mergeObject
 
             }
-            // data.offeredAmount = medicineRateAfterOffer(value),
-
-
-
-
-
-
-
             this.setState({
                 medicineData: tempObject, selected2: value
             });
@@ -249,16 +276,11 @@ class MedicineInfo extends Component {
     }
     render() {
         const { medicineData, reviewData, reviewCount, cartItems, finalRating } = this.state
-        const useage = [{ text: "1. Maintain half an hour gap between food/drinks/other medications and the prescribed homeopathic medicine." },
-        { text: "2. While on homeopathic medication, there shouldn't be any strong smell like that of an onion, garlic, camphor, coffee, hing, in your mouth." },
-        { text: "3. Avoid use of alcohol and tobacco while on homeopathic medication." },
-        { text: "4. During pregnancy and while on breastfeeding, consult the homeopathic physician before use." },
-        { text: "5. Store homeopathic remedies away from strong odors such as menthol, mint, camphor, essential oils, lip balm, deep heat liniments, cough lozenges, chewing gum, aromatic toothpaste, chemical fumes, perfumes etc." }]
-        const Ingredients = [{ name: 'Syzgium Jambolanum' }, { name: 'Syzgium Jambolanum' }, { name: 'Syzgium Jambolanum' }, { name: 'Syzgium Jambolanum' }]
+
         const prescriptionData = [{ prescription_path: require('../../../../../assets/images/images.jpeg') }, { prescription_path: require('../../../../../assets/images/images.jpeg') }, { prescription_path: require('../../../../../assets/images/images.jpeg') }, { prescription_path: require('../../../../../assets/images/images.jpeg') }, { prescription_path: require('../../../../../assets/images/images.jpeg') }]
         return (
             <Container >
-               
+
                 <Content style={{ padding: 10 }}>
                     {this.state.isLoading ? <Spinner color='blue'
                         visible={this.state.isLoading}
@@ -280,38 +302,38 @@ class MedicineInfo extends Component {
 
                             </Row>
                             <Text style={{ fontSize: 14, fontFamily: 'OpenSans', color: '#909090' }}>By {medicineData.pharmacyInfo.name}</Text>
+                            {medicineData.medInfo !== undefined && medicineData.medInfo.medicine_images !== undefined && medicineData.medInfo.medicine_images.length !== 0 ?
+                                <View style={{ flex: 1, marginLeft: 10, marginRight: 10, justifyContent: 'center', alignItems: 'center', }}>
+                                    <ImageZoom cropWidth={200}
+                                        cropHeight={200}
+                                        imageWidth={200}
+                                        minScale={0.6}
+                                        panToMove={false}
+                                        pinchToZoom={false}
+                                        enableDoubleClickZoom={false}
 
-                            <View style={{ flex: 1, marginLeft: 10, marginRight: 10, justifyContent: 'center', alignItems: 'center', }}>
-                                <ImageZoom cropWidth={200}
-                                    cropHeight={200}
-                                    imageWidth={200}
-                                    minScale={0.6}
-                                    panToMove={false}
-                                    pinchToZoom={false}
-                                    enableDoubleClickZoom={false}
-
-                                    imageHeight={200}>
-                                    <SwiperFlatList
-                                        autoplay
-                                        autoplayDelay={3}
-                                        index={3}
-                                        contentContainerStyle={{ flexGrow: 1, }}
-                                        autoplayLoop
-                                        data={prescriptionData}
-                                        renderItem={({ item }) =>
-                                            <TouchableOpacity onPress={() => this.props.navigation.navigate("ImageView", { passImage: item.prescription_path, title: medicineData.medInfo.medicine_name })}>
-                                                <Image
-                                                    // source={renderMedicineImage(medicineData.medPharDetailInfo)}
-                                                    style={{
-                                                        width: 200, height: 200,
-                                                    }}
-                                                />
-                                            </TouchableOpacity>
-                                        }
-                                        showPagination
-                                    />
-                                </ImageZoom>
-                            </View>
+                                        imageHeight={200}>
+                                        <SwiperFlatList
+                                            autoplay
+                                            autoplayDelay={3}
+                                            index={medicineData.medInfo.medicine_images.length - 1}
+                                            contentContainerStyle={{ flexGrow: 1, }}
+                                            autoplayLoop
+                                            data={medicineData.medInfo.medicine_images}
+                                            renderItem={({ item }) =>
+                                                <TouchableOpacity onPress={() => this.props.navigation.navigate("ImageView", { passImage: item.prescription_path, title: medicineData.medInfo.medicine_name })}>
+                                                    <Image
+                                                        source={renderMedicineImageAnimation(medicineData.medInfo.medicine_images)}
+                                                        style={{
+                                                            width: 200, height: 200,
+                                                        }}
+                                                    />
+                                                </TouchableOpacity>
+                                            }
+                                            showPagination
+                                        />
+                                    </ImageZoom>
+                                </View> : null}
                             <Row>
                                 <Col size={7} style={{ flexDirection: 'row', marginTop: 10 }}>
                                     <Text style={{ fontSize: 10, fontFamily: 'OpenSans', color: '#ff4e42', marginTop: 5 }}>MRP</Text>
@@ -344,41 +366,44 @@ class MedicineInfo extends Component {
                                     </Col>
                                 </Row> : null}
                         </View>
-                        <Row style={{ marginTop: 10 }}>
-                            <Col size={5}>
+                        {medicineData.medPharDetailInfo.total_quantity === 0 ? null :
+                            <Row style={{ marginTop: 10 }}>
+                                <Col size={5}>
 
-                                {cartItems.length == 0 || cartItems.findIndex(ele => ele.medicine_id == medicineData.medPharDetailInfo.medicine_id && ele.pharmacy_id == medicineData.medPharDetailInfo.pharmacy_id) === -1 ?
-                                    <Row style={{ alignItems: 'flex-end' }}>
-                                        <TouchableOpacity style={styles.addCartTouch}
-                                            onPress={() => { this.setState({ isAddToCart: true }), this.selectedItems(medicineData, 'Add to Card') }} >
+                                    {cartItems.length == 0 || cartItems.findIndex(ele => ele.medicine_id == medicineData.medPharDetailInfo.medicine_id && ele.pharmacy_id == medicineData.medPharDetailInfo.pharmacy_id) === -1 ?
+                                        <Row style={{ alignItems: 'flex-end' }}>
+                                            <TouchableOpacity style={styles.addCartTouch}
+                                                onPress={() => { this.setState({ isAddToCart: true }), this.selectedItems(medicineData, 'Add to Card') }} >
 
-                                            <Icon name='ios-cart' style={{ color: '#4e85e9', fontSize: 15 }} />
-                                            <Text style={styles.addCartText}>Add to Cart</Text>
+                                                <Icon name='ios-cart' style={{ color: '#4e85e9', fontSize: 15 }} />
+                                                <Text style={styles.addCartText}>Add to Cart</Text>
 
-                                        </TouchableOpacity>
-                                    </Row> :
-                                    <Row style={{ alignItems: 'flex-end' }}>
-                                        <TouchableOpacity style={styles.addCartTouch}
-                                            onPress={() => { this.setState({ isAddToCart: true }), this.selectedItems(medicineData, 'Add to Card', cartItems.findIndex(ele => ele.medicine_id == medicineData.medPharDetailInfo.medicine_id && ele.pharmacy_id == medicineData.medPharDetailInfo.pharmacy_id)) }} >
+                                            </TouchableOpacity>
+                                        </Row> :
+                                        <Row style={{ alignItems: 'flex-end' }}>
+                                            <TouchableOpacity style={styles.addCartTouch}
+                                                onPress={() => { this.setState({ isAddToCart: true }), this.selectedItems(medicineData, 'Add to Card', cartItems.findIndex(ele => ele.medicine_id == medicineData.medPharDetailInfo.medicine_id && ele.pharmacy_id == medicineData.medPharDetailInfo.pharmacy_id)) }} >
 
-                                            <Icon name='ios-cart' style={{ color: '#4e85e9', fontSize: 15 }} />
-                                            <Text style={styles.addCartText}>{'Added ' + cartItems[cartItems.findIndex(ele => ele.medicine_id == medicineData.medPharDetailInfo.medicine_id && ele.pharmacy_id == medicineData.medPharDetailInfo.pharmacy_id)].userAddedMedicineQuantity}</Text>
+                                                <Icon name='ios-cart' style={{ color: '#4e85e9', fontSize: 15 }} />
+                                                <Text style={styles.addCartText}>{'Added ' + cartItems[cartItems.findIndex(ele => ele.medicine_id == medicineData.medPharDetailInfo.medicine_id && ele.pharmacy_id == medicineData.medPharDetailInfo.pharmacy_id)].userAddedMedicineQuantity}</Text>
 
+                                            </TouchableOpacity>
+                                        </Row>
+                                    }
+                                </Col>
+                                <Col size={5}>
+                                    <Row>
+                                        <TouchableOpacity style={styles.buyNowTouch} onPress={() => { this.setState({ isBuyNow: true }), this.selectedItems(medicineData, 'Buy Now') }} >
+                                            <Icon name="ios-cart" style={{ fontSize: 15, color: '#fff' }} />
+                                            <Text style={styles.BuyNowText}>Buy Now</Text>
                                         </TouchableOpacity>
                                     </Row>
-                                }
-                            </Col>
-                            <Col size={5}>
-                                <Row>
-                                    <TouchableOpacity style={styles.buyNowTouch} onPress={() => { this.setState({ isBuyNow: true }), this.selectedItems(medicineData, 'Buy Now') }} >
-                                        <Icon name="ios-cart" style={{ fontSize: 15, color: '#fff' }} />
-                                        <Text style={styles.BuyNowText}>Buy Now</Text>
-                                    </TouchableOpacity>
-                                </Row>
-                            </Col>
-                        </Row>
+                                </Col>
+                            </Row>
+                        }
                         {/* give this text instead of two button in case of out of stock */}
-                        <Text style={{ fontSize: 15, fontFamily: 'OpenSans', color: '#ff4e42', marginTop: 5, textAlign: 'center' }}>Currently Out of stock</Text>
+                        {medicineData.medPharDetailInfo.total_quantity === 0 ?
+                            <Text style={{ fontSize: 15, fontFamily: 'OpenSans', color: '#ff4e42', marginTop: 5, textAlign: 'center' }}>Currently Out of stock</Text> : null}
 
                         {this.state.isBuyNow == true || this.state.isAddToCart == true ?
                             <AddToCard
@@ -504,7 +529,7 @@ class MedicineInfo extends Component {
                                 </Col>
                             </Row>
                         </View>
-                        {reviewData !== null ?
+                        {reviewData.length !== 0 ?
                             <FlatList
                                 data={reviewData}
                                 keyExtractor={(item, index) => index.toString()}
