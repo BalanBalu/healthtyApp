@@ -2,6 +2,7 @@
 import { SET_LAST_MESSAGES_DATA, SET_VIDEO_SESSION, SET_INCOMING_VIDEO_CALL, RESET_INCOMING_VIDEO_CALL } from './chat.action'
 import { Alert } from 'react-native';
 import RootNavigation from '../../../setup/rootNavigation';
+import IncomingVideoCallAlert from './video.alert.model';
 // Initial State
 export const commonInitialState = {
     myChatList: [],
@@ -28,7 +29,8 @@ export default (state = commonInitialState, action) => {
     case SET_INCOMING_VIDEO_CALL:
       console.log('Hey it is Updating Year', action.data);
       if(action.data) {
-        Alert.alert("Video Call",
+        IncomingVideoCallAlert.show('Alert Message');
+       /* Alert.alert("Video Call",
         "Incoming Call from Doctor!",
         [
             {
@@ -46,7 +48,7 @@ export default (state = commonInitialState, action) => {
             }
         ],
         { cancelable: false }
-      );
+      ); */
       }
       return {
         ...state,
