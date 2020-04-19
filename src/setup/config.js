@@ -39,5 +39,6 @@ export const SERVICE_TYPES = {
     VIDEO_CONSULTING: 'VIDEO_CONSULTING'
 }
 export const MAX_DISTANCE_TO_COVER = 30000; // in meters Doctor Can be search Within in the AREA
+export const PHARMACY_MAX_DISTANCE_TO_COVER = 30000;
 export const MAX_PERCENT_APPLY_BY_CREDIT_POINTS = 25;
 

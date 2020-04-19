@@ -2,8 +2,8 @@ import React, { Component } from 'react';
 import { Container, Content, Text, Title, Header, Form, Textarea, Button, H3, Item, List, ListItem, Card, Input, Left, Right, ScrollView, Thumbnail, Body, Icon, Footer, FooterTab, Picker, Segment, CheckBox, View, Badge, Toast } from 'native-base';
 import { Col, Row, Grid } from 'react-native-easy-grid';
 import { StyleSheet, Image, AsyncStorage, TextInput, FlatList, TouchableOpacity, Platform } from 'react-native';
-import { getMedicinesSearchList,getNearOrOrderPharmacy } from '../../../providers/pharmacy/pharmacy.action';
-import { MAX_DISTANCE_TO_COVER } from '../../../../setup/config';
+import { getMedicinesSearchList, getNearOrOrderPharmacy } from '../../../providers/pharmacy/pharmacy.action';
+import { MAX_DISTANCE_TO_COVER, PHARMACY_MAX_DISTANCE_TO_COVER } from '../../../../setup/config';
 import { getAddress, getKiloMeterCalculation } from '../CommomPharmacy'
 import Spinner from "../../../../components/Spinner";
 import { connect } from 'react-redux'
@@ -13,17 +13,17 @@ class ChosePharmacyList extends Component {
         super(props)
         this.state = {
             pharmacyData: [],
-            pharmacyMainData:[],
+            pharmacyMainData: [],
             isLoading: true,
             locationCordinates: null,
             selectedPharmacy: -1,
             checked: false,
-            prescriptionDetails:null,
+            prescriptionDetails: null,
         }
     }
     componentDidMount() {
-        prescriptionDetails=this.props.navigation.getParam('prescriptionDetails')||null;
-        this.setState({prescriptionDetails})
+        prescriptionDetails = this.props.navigation.getParam('prescriptionDetails') || null;
+        this.setState({ prescriptionDetails })
         this.getNearByPharmacyList()
     }
     getNearByPharmacyList = async () => {
@@ -31,8 +31,10 @@ class ChosePharmacyList extends Component {
             const { bookappointment: { locationCordinates } } = this.props;
             locationData = {
                 "coordinates": locationCordinates,
-                "maxDistance": MAX_DISTANCE_TO_COVER
+                "maxDistance": PHARMACY_MAX_DISTANCE_TO_COVER
             }
+            console.log('JSON.stringify(locationData)')
+            console.log(JSON.stringify(locationData))
             this.setState({ locationCordinates: locationCordinates })
             userId = await AsyncStorage.getItem('userId')
             let postData = [
@@ -42,12 +44,12 @@ class ChosePharmacyList extends Component {
                 }
             ]
             // let result = await getMedicinesSearchList(postData);
-            let result = await getNearOrOrderPharmacy(userId, JSON.stringify(locationData));
+            let result = await getNearOrOrderPharmacy(null, JSON.stringify(locationData));
             console.log(JSON.stringify(result))
 
 
             if (result.success) {
-                await this.setState({ pharmacyData: result.data ,pharmacyMainData:result.data})
+                await this.setState({ pharmacyData: result.data, pharmacyMainData: result.data })
             }
         }
         catch (e) {
@@ -68,70 +70,70 @@ class ChosePharmacyList extends Component {
         }
     }
     onProceedToPayment = () => {
-        const { selectedPharmacy,pharmacyData,prescriptionDetails } = this.state;
+        const { selectedPharmacy, pharmacyData, prescriptionDetails } = this.state;
 
         if (selectedPharmacy === -1) {
             Toast.show({
-                text: 'kindly chosse pharmacy',
+                text: 'kindly choose pharmacy',
                 type: 'warning',
                 duration: 3000
             })
         } else {
-            let temp=[];
-            
-            let value=pharmacyData[selectedPharmacy]
-            value.PrescriptionId=prescriptionDetails._id
-            value.prescription_ref_no=prescriptionDetails.prescription_ref_no
-        
+            let temp = [];
+
+            let value = pharmacyData[selectedPharmacy]
+            value.PrescriptionId = prescriptionDetails._id
+            value.prescription_ref_no = prescriptionDetails.prescription_ref_no
+
             temp.push(value)
             this.props.navigation.navigate("MedicineCheckout", {
-                medicineDetails: temp,isPrescription:true
+                medicineDetails: temp, isPrescription: true
             })
         }
     }
     filterPharmacies(searchValue) {
-        
+
         const { pharmacyMainData } = this.state;
-        if(!searchValue) {
-          this.setState({ searchValue, data: pharmacyMainData });
+        if (!searchValue) {
+            this.setState({ searchValue, pharmacyData: pharmacyMainData });
         } else {
-          const filteredPharmacies = pharmacyMainData.filter(ele => 
-             ele.pharmacyInfo.name.toLowerCase().search(searchValue.toLowerCase()) !== -1 
-          );
-          this.setState({ searchValue, pharmacyData: filteredPharmacies })
+            const filteredPharmacies = pharmacyMainData.filter(ele =>
+                ele.pharmacyInfo.name.toLowerCase().search(searchValue.toLowerCase()) !== -1
+            );
+            this.setState({ searchValue, pharmacyData: filteredPharmacies, selectedPharmacy: -1 })
         }
-      }
+    }
     renderStickeyHeader() {
         return (
-          <View style={{ width: '100%' }} >
+            <View style={{ width: '100%' }} >
                 <Text style={{ fontFamily: 'OpenSans', fontSize: 12, marginLeft: 10, marginTop: 10 }}>Search pharmacy by their </Text>
                 <Row style={styles.SearchRow}>
-    
-                  <Col size={9.1} style={{ justifyContent: 'center', }}>
-                    <Input
-                      placeholder="Search Pharmacy"
-                      style={styles.inputfield}
-                      placeholderTextColor="#e2e2e2"
-                      keyboardType={'email-address'}
-                      value={this.state.searchValue}
-                      onChangeText={searchValue => this.filterPharmacies(searchValue)}
-                      underlineColorAndroid="transparent"
-                      blurOnSubmit={false}
-                    />
-                  </Col>
-                  <Col size={0.9} style={styles.SearchStyle}>
-                    <TouchableOpacity style={{ justifyContent: 'center' }}>
-                      <Icon name="ios-search" style={{ color: 'gray', fontSize: 20, padding: 2 }} />
-                    </TouchableOpacity>
-                  </Col>
-    
+
+                    <Col size={9.1} style={{ justifyContent: 'center', }}>
+                        <Input
+                            placeholder="Search Pharmacy"
+                            style={styles.inputfield}
+                            placeholderTextColor="#e2e2e2"
+                            keyboardType={'email-address'}
+                            value={this.state.searchValue}
+                            onChangeText={searchValue => this.filterPharmacies(searchValue)}
+                            underlineColorAndroid="transparent"
+                            blurOnSubmit={false}
+                        />
+                    </Col>
+                    <Col size={0.9} style={styles.SearchStyle}>
+                        <TouchableOpacity style={{ justifyContent: 'center' }}>
+                            <Icon name="ios-search" style={{ color: 'gray', fontSize: 20, padding: 2 }} />
+                        </TouchableOpacity>
+                    </Col>
+
                 </Row>
-                </View>
+            </View>
         )
-      }
+    }
 
     render() {
-        const { pharmacyData, isLoading, locationCordinates, selectedPharmacy, checked,prescriptionDetails } = this.state;
+        const { pharmacyData, isLoading, locationCordinates, selectedPharmacy, checked, prescriptionDetails } = this.state;
         const nearPharmacy = [{ name: 'Apollo Pharmacy', km: '2.30KM', address: 'No.28,Kamarajar Nagar,4th cross street, Ambattur, Chennai - 600051.', }, { name: 'Medplus', km: '5.30KM', address: 'No.28,Kamarajar Nagar,4th cross street, Ambattur, Chennai - 600051.', }, { name: 'Medplus', km: '5.30KM', address: 'No.28,Kamarajar Nagar,4th cross street, Ambattur, Chennai - 600051.', }, { name: 'Medplus', km: '5.30KM', address: 'No.28,Kamarajar Nagar,4th cross street, Ambattur, Chennai - 600051.', }]
 
         return (
@@ -149,12 +151,12 @@ class ChosePharmacyList extends Component {
                         /> :
                         <View>
                             {pharmacyData.length === 0 ?
-                             <View>
-                                 { this.renderStickeyHeader()}
-                                 
-                                <Item style={{ borderBottomWidth: 0, justifyContent: 'center', alignItems: 'center', height: 70 }}>
-                                    <Text style={{ fontSize: 10, justifyContent: 'center', alignItems: 'center' }}>No Pharmacies Found Near by current Location</Text>
-                                </Item>
+                                <View>
+                                    {this.renderStickeyHeader()}
+
+                                    <Item style={{ borderBottomWidth: 0, justifyContent: 'center', alignItems: 'center', height: 70 }}>
+                                        <Text style={{ fontSize: 10, justifyContent: 'center', alignItems: 'center' }}>No Pharmacies Found Near by current Location</Text>
+                                    </Item>
                                 </View> :
                                 <View>
                                     <FlatList
@@ -219,9 +221,9 @@ class ChosePharmacyList extends Component {
                     <FooterTab>
                         <Row>
                             <Col size={5} style={{ alignItems: 'center', justifyContent: 'center', backgroundColor: '#fff' }}>
-                            {prescriptionDetails!==null?
-                                    <Text style={{ fontSize: 16, fontFamily: 'OpenSans', color: '#000', fontWeight: '400' }}>{'Ref_no:'+prescriptionDetails.prescription_ref_no} </Text>:null}
-                               
+                                {prescriptionDetails !== null ?
+                                    <Text style={{ fontSize: 16, fontFamily: 'OpenSans', color: '#000', fontWeight: '400' }}>{'Ref_no:' + prescriptionDetails.prescription_ref_no} </Text> : null}
+
                             </Col>
                             <Col size={5} style={{ alignItems: 'center', justifyContent: 'center', backgroundColor: '#8dc63f' }}>
                                 <TouchableOpacity onPress={() => this.onProceedToPayment()}>
