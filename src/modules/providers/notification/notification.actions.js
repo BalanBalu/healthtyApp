@@ -7,7 +7,6 @@ export const NOTIFICATION_REQUEST = 'NOTIFICATION/NOTIFICATION_REQUEST'
 export const NOTIFICATION_HAS_ERROR = 'NOTIFICATION/NOTIFICATION_HAS_ERROR'
 export const NOTIFICATION_RESPONSE = 'NOTIFICATION/NOTIFICATION_RESPONSE'
 export const NOTIFICATION_RESET = 'NOTIFICATION/NOTIFICATION_RESET'
-import { AsyncStorage } from 'react-native';
 import { store } from '../../../setup/store';
 
 /* Get Patient Notification List  */
