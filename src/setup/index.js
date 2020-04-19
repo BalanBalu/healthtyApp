@@ -2,6 +2,8 @@ import React, { Component } from 'react';
 import RoutesHome from './routes/appRouterHome';
 //import RoutesLogin from './routes/appRouterLogin';
 import { Provider } from 'react-redux';
+// import { NavigationContainer } from '@react-navigation/native';
+ import NavigationService from './rootNavigation';
 import { store } from './store'
 import { StyleProvider, Root, Toast } from 'native-base';
 import getTheme from '../theme/components';
@@ -12,7 +14,6 @@ import { userFiledsUpdate } from '../modules/providers/auth/auth.actions';
 //import firebase from 'react-native-firebase';
 import { fetchUserMarkedAsReadedNotification } from '../modules/providers/notification/notification.actions';
 import { SET_LAST_MESSAGES_DATA } from '../modules/providers/chat/chat.action';
-// import NotifService from './NotifService';
 import SocketIOClient from 'socket.io-client';
 import { AuthService } from '../modules/screens/VideoConsulation/services/index';
 YellowBox.ignoreWarnings([
@@ -29,7 +30,6 @@ export default class App extends Component {
     this.state = {
       senderId: FIREBASE_SENDER_ID
     };
-   // this.notif = new NotifService(this.onRegister.bind(this), this.onNotif.bind(this));
     AuthService.init();
    
   }
@@ -37,14 +37,13 @@ export default class App extends Component {
     const userId = await AsyncStorage.getItem('userId');
     if (userId) {
       this.userId = userId;
-    //  this.initializeSocket(userId);
+      this.initializeSocket(userId);
     }
     setInterval(() => {
-     // this.getMarkedAsReadedNotification();
+      this.getMarkedAsReadedNotification();
     }, 10000)
     //this.checkPermission();
   }
-
 
   initializeSocket(userId) {
     this.socket = SocketIOClient.connect(CHAT_API_URL, {
@@ -103,31 +102,7 @@ export default class App extends Component {
     }
   }
   
-  onRegister = async (token) => {
-    const userId = await AsyncStorage.getItem('userId');
-    const updatedDeviceToken  = await AsyncStorage.getItem('updatedDeviceToken');
-    let deviceToken = token.token;
-    if (userId != null && deviceToken != null) {
-      let mergedTokenWithUserId = userId + '_' + deviceToken.slice(deviceToken.length - 15);
-      if (mergedTokenWithUserId !== updatedDeviceToken)
-        await this.updateDeviceToken(userId, deviceToken, mergedTokenWithUserId);  // update Unique Device_Tokens 
-    }
-    
-  }
-
-  updateDeviceToken = async (userId, deviceToken, mergedTokenWithUserId) => {
-    try {
-      let requestData = {
-        device_token: deviceToken,
-      }
-      let updateResponse = await userFiledsUpdate(userId, requestData);
-      if (updateResponse.success == true) {
-        await AsyncStorage.setItem('updatedDeviceToken', mergedTokenWithUserId);
-      }
-    } catch (e) {
-      console.log(e);
-    }
-  }
+  
 
   onNotif(notif) {
     console.log(notif);
@@ -150,7 +125,9 @@ export default class App extends Component {
       <Provider store={store} key="provider">
         <Root>
           <StyleProvider style={getTheme(material)}>
-            <RoutesHome/>
+             <RoutesHome ref={navigatorRef => NavigationService.setContainer(navigatorRef)}> 
+
+            </RoutesHome>
           </StyleProvider>
         </Root>
       </Provider>

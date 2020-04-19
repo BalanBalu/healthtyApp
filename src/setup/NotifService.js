@@ -1,25 +1,36 @@
 import PushNotification from 'react-native-push-notification';
 import { FIREBASE_SENDER_ID } from './config'
+import { AsyncStorage, Alert } from 'react-native';
+import { userFiledsUpdate } from '../modules/providers/auth/auth.actions';
+import ConnectyCube from 'react-native-connectycube';
+import { getUniqueId } from 'react-native-device-info';
+import { store } from './store';
+import { SET_INCOMING_VIDEO_CALL } from '../modules/providers/chat/chat.action';
+let tokenData;
+let navigationProps;
+class NotifService {
 
-export default class NotifService {
-
-  constructor(onRegister, onNotification) {
+  constructor() {
+   
+  }
+  initNotification(props) {
+    navigationProps = props;
     console.log("Coming here");
-    this.configure(onRegister, onNotification);
+    this.configure();
     this.checkPermission(function(cb) {
         console.log('Perminssion is '  + JSON.stringify(cb));
     })
     this.lastId = 0;
   }
 
-  configure(onRegister, onNotification, gcm = FIREBASE_SENDER_ID) {
+  configure( gcm = FIREBASE_SENDER_ID) {
     console.log(gcm)
     PushNotification.configure({
       // (optional) Called when Token is generated (iOS and Android)
-      onRegister: onRegister, //this._onRegister.bind(this),
+      onRegister:(token) => this.onRegister(token), //this._onRegister.bind(this),
         
       // (required) Called when a remote or local notification is opened or received
-      onNotification: onNotification, //this._onNotification,
+      onNotification: (notif) => this.onNotification(notif), //this._onNotification,
 
       // ANDROID ONLY: GCM Sender ID (optional - not required for local notifications, but is need to receive remote push notifications)
       senderID: gcm,
@@ -121,4 +132,99 @@ export default class NotifService {
   cancelAll() {
     PushNotification.cancelAllLocalNotifications();
   }
+
+  onRegister = async (token) => {
+    console.log('On Register TOken ===> ', token);
+    tokenData = token;
+   
+  }
+  
+  updateDeviceToken = async(userId) => {
+    if(tokenData) {
+    const updatedDeviceToken  = await AsyncStorage.getItem('updatedDeviceToken');
+    let deviceToken = tokenData.token;
+    let mergedTokenWithUserId = String(userId) + '_' + String(deviceToken).substr(0, 15);
+    if(!updatedDeviceToken) {
+      this.callApiToDeviceToken(userId, deviceToken, mergedTokenWithUserId); 
+    }
+    else if (mergedTokenWithUserId !== updatedDeviceToken) {
+      this.callApiToDeviceToken(userId, deviceToken, mergedTokenWithUserId); 
+    }
+   }
+  }
+  callApiToDeviceToken = async (userId, deviceToken, mergedTokenWithUserId) => {
+    try {
+      let requestData = {
+        device_token: deviceToken,
+      }
+      let updateResponse = await userFiledsUpdate(userId, requestData);
+      console.log('updateResponse==>', updateResponse)
+      if (updateResponse.success == true) {
+        
+         AsyncStorage.setItem('updatedDeviceToken', mergedTokenWithUserId);
+      }
+    } catch (e) {
+      console.log(e);
+    }
+  }
+  onNotification(notificationStr) {
+     const notification = JSON.parse(JSON.stringify(notificationStr));
+     if(notification.videoNotification == '1') {
+      store.dispatch({
+        type: SET_INCOMING_VIDEO_CALL,
+        data: true,
+     });
+    } 
+    // console.log("NOTIFICATION:", notification);
+  }
+  subcribeToPushNotificationConnectyCube() {
+  
+   /* if(tokenData) {
+    const params = {
+      // for iOS VoIP it should be 'apns_voip'
+      notification_channel: Platform.OS === 'ios' ? 'apns' : 'gcm',
+      device: {
+        platform: Platform.OS,
+        udid: getUniqueId()
+      },
+      push_token: {
+        environment: 'production', // __DEV__ ? 'development' : 'production',
+        client_identification_sequence: tokenData.token,
+        bundle_identifier: "com.medflic"
+      }
+    }
+    console.log('Param of Push==> ', params)
+    ConnectyCube.pushnotifications.subscriptions.create(params)
+    .then(result => {
+     
+      console.log('Created the Push Notifiation', navigationProps);
+      // alert('Created the Push Notifiation' + JSON.stringify(result));
+      // RootNavigation.navigate('My Chats', {});
+      // NavigationDispatch(NavigationActions.navigate({routeName: 'My Chats'}));
+    })
+    .catch(error => {
+      console.log(error);
+      alert('Error on Alert' + JSON.stringify(error));
+    });
+    } */
+  }
+ /*
+ sendConnectyCubeNotification = (userIds, payload) => {
+  const pushParameters = {
+    notification_type: "push",
+    user: { ids: [ 9876543217 ] }, // recipients.
+    environment: 'production', // __DEV__ ? 'development' : 'production',
+    message: ConnectyCube.pushnotifications.base64Encode(payload)
+  }
+  alert(JSON.stringify(pushParameters));
+  ConnectyCube.pushnotifications.events.create(pushParameters).then(result => {
+      alert('Send an alert Message'+  JSON.stringify(result));
+  }).catch(error => {
+    console.log('Push Failed-===>', error);
+    alert('Push Send failed:' + JSON.stringify(error))
+  }); 
+} */
 }
+
+ 
+export default (new NotifService());

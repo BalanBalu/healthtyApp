@@ -1,34 +1,42 @@
 {
   "project_info": {
-    "project_number": "607089059424",
-    "firebase_url": "https://medflic-521a2.firebaseio.com",
-    "project_id": "medflic-521a2",
-    "storage_bucket": "medflic-521a2.appspot.com"
+    "project_number": "630872953526",
+    "firebase_url": "https://medflic-15149.firebaseio.com",
+    "project_id": "medflic-15149",
+    "storage_bucket": "medflic-15149.appspot.com"
   },
   "client": [
     {
       "client_info": {
-        "mobilesdk_app_id": "1:607089059424:android:7e7b5afd1291a006454505",
+        "mobilesdk_app_id": "1:630872953526:android:eea3d5027590f08f5fcc17",
         "android_client_info": {
           "package_name": "com.medflic"
         }
       },
       "oauth_client": [
         {
-          "client_id": "607089059424-uo7vjvr3gkg6lu0r12l7ghvhetggipda.apps.googleusercontent.com",
+          "client_id": "630872953526-69rg5evdtdsecdfjljr794q0vbq7fbil.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.medflic",
+            "certificate_hash": "3f30e06e19444ed61b49466e48fe06b6e70e84c4"
+          }
+        },
+        {
+          "client_id": "630872953526-g77lq6i2gqm1btqfh2b9ndl615ssmnmi.apps.googleusercontent.com",
           "client_type": 3
         }
       ],
       "api_key": [
         {
-          "current_key": "AIzaSyDq83_rHWtHKXrzNh10YF8Leonhn4bxvjs"
+          "current_key": "AIzaSyA7uFs2g9WUroWoWLebHc44u8OPw2_DaN4"
         }
       ],
       "services": {
         "appinvite_service": {
           "other_platform_oauth_client": [
             {
-              "client_id": "607089059424-uo7vjvr3gkg6lu0r12l7ghvhetggipda.apps.googleusercontent.com",
+              "client_id": "630872953526-g77lq6i2gqm1btqfh2b9ndl615ssmnmi.apps.googleusercontent.com",
               "client_type": 3
             }
           ]

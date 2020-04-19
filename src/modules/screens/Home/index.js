@@ -11,7 +11,7 @@ import { MAP_BOX_PUBLIC_TOKEN, IS_ANDROID, MAX_DISTANCE_TO_COVER, CURRENT_PRODUC
 import MapboxGL from '@react-native-mapbox-gl/maps';
 import { NavigationEvents } from 'react-navigation'
 import { store } from '../../../setup/store';
-import { getAllChats, SET_LAST_MESSAGES_DATA, SET_VIDEO_SESSION } from '../../providers/chat/chat.action'
+import { getAllChats, SET_LAST_MESSAGES_DATA, SET_VIDEO_SESSION, SET_INCOMING_VIDEO_CALL } from '../../providers/chat/chat.action'
 import CurrentLocation from './CurrentLocation';
 const VideoConultationImg = require('../../../../assets/images/videConsultation.jpg');
 const chatImg = require('../../../../assets/images/Chat.jpg');
@@ -23,9 +23,9 @@ const coronaImg = require('../../../../assets/images/corona.png');
 import OfflineNotice from '../../../components/offlineNotice';
 import { fetchUserMarkedAsReadedNotification } from '../../providers/notification/notification.actions';
 import ConnectyCube from 'react-native-connectycube';
-import { CallService } from '../VideoConsulation/services';
+import { CallService  } from '../VideoConsulation/services';
 MapboxGL.setAccessToken(MAP_BOX_PUBLIC_TOKEN);
-
+import NotifService from '../../../setup/NotifService';
 const debounce = (fun, delay) => {
     let timer = null;
     return function (...args) {
@@ -53,6 +53,7 @@ class Home extends Component {
         };
         this.callSuggestionService = debounce(this.callSuggestionService, 500);
         this._setUpListeners();
+        NotifService.initNotification(props.navigation);
 
     }
 
@@ -350,7 +351,7 @@ class Home extends Component {
         Video Calling Service             
     */
     _setUpListeners() {
-        ConnectyCube.videochat.onCallListener = this._onCallListener;
+       ConnectyCube.videochat.onCallListener = this._onCallListener;
        ConnectyCube.videochat.onRemoteStreamListener = this._onRemoteStreamListener;
     }
     _onCallListener = (session, extension) => {
@@ -370,14 +371,16 @@ class Home extends Component {
             }
         })
     };
-
+    
     showInomingCallModal = (session, extension) => {
         CallService.setSession(session);
-        CallService.setExtention(extension)
-        this.props.navigation.navigate('VideoScreen', { isIncomingCall: true })
+        CallService.setExtention(extension);
+        store.dispatch({
+            type: SET_INCOMING_VIDEO_CALL,
+            data: true
+        })
     };
-
-
+    
     render() {
         const { fromAppointment } = this.state;
         const { bookappointment: { patientSearchLocationName, locationCordinates, isSearchByCurrentLocation, locationUpdatedCount }, navigation } = this.props;
