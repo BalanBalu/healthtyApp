@@ -553,7 +553,7 @@ class Home extends Component {
                                     <Card style={{ padding: 5, borderRadius: 2 }}>
                                         <Row>
                                             <Col size={7.5} style={{ justifyContent: 'center' }}>
-                                                <Text style={styles.mainText}>Set Reminder</Text>
+                                                <Text style={styles.mainText}>Medicine Reminder</Text>
                                             </Col>
                                             <Col size={2.5}>
                                                 <Image
