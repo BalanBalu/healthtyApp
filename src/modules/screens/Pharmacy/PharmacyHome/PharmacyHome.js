@@ -66,7 +66,7 @@ class PharmacyHome extends Component {
             }
             let result = await getPopularMedicine(userId, JSON.stringify(locationData));
             if (result.success) {
-                let sortedData = await quantityPriceSort(medicineResultData.data)
+                let sortedData = await quantityPriceSort(result.data)
 
                 this.setState({ medicineData: sortedData })
                 console.log("medicineData", this.state.medicineData)
@@ -79,11 +79,10 @@ class PharmacyHome extends Component {
                     }
                 }
             }
-            //  else {
-            //     alert(result.message)
-            // }
+            
         }
         catch (e) {
+           
             console.log(e)
         }
         finally {
