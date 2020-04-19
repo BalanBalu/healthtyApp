@@ -33,6 +33,8 @@ class ChosePharmacyList extends Component {
                 "coordinates": locationCordinates,
                 "maxDistance": MAX_DISTANCE_TO_COVER
             }
+            console.log('JSON.stringify(locationData)')
+            console.log(JSON.stringify(locationData))
             this.setState({ locationCordinates: locationCordinates })
             userId = await AsyncStorage.getItem('userId')
             let postData = [
@@ -42,7 +44,7 @@ class ChosePharmacyList extends Component {
                 }
             ]
             // let result = await getMedicinesSearchList(postData);
-            let result = await getNearOrOrderPharmacy(userId, JSON.stringify(locationData));
+            let result = await getNearOrOrderPharmacy(null,JSON.stringify(locationData));
             console.log(JSON.stringify(result))
 
 
@@ -72,7 +74,7 @@ class ChosePharmacyList extends Component {
 
         if (selectedPharmacy === -1) {
             Toast.show({
-                text: 'kindly chosse pharmacy',
+                text: 'kindly choose pharmacy',
                 type: 'warning',
                 duration: 3000
             })
@@ -93,7 +95,7 @@ class ChosePharmacyList extends Component {
         
         const { pharmacyMainData } = this.state;
         if(!searchValue) {
-          this.setState({ searchValue, data: pharmacyMainData });
+          this.setState({ searchValue, pharmacyData: pharmacyMainData });
         } else {
           const filteredPharmacies = pharmacyMainData.filter(ele => 
              ele.pharmacyInfo.name.toLowerCase().search(searchValue.toLowerCase()) !== -1 
