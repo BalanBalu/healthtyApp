@@ -139,7 +139,7 @@ class Mapbox extends React.PureComponent {
     }
     }  
   
-renderOrigin(coordinates) {
+renderOrigin(coordinates, hospitaldestination) {
   debugger
   console.log('coordinates========> ', coordinates)
   let backgroundColor = '#808080';
@@ -153,8 +153,31 @@ renderOrigin(coordinates) {
   return (
     <MapboxGL.ShapeSource
       id="origin"
-      shape={MapboxGL.geoUtils.makePoint(coordinates)}>
-      <MapboxGL.Animated.CircleLayer id="originInnerCircle" style={style} />
+      shape={[
+        {
+          type: 'Feature',
+          id: '9d10456e-bdda-4aa9-9269-04c1667d4552',
+          properties: {
+            icon: 'originInnerCircle',
+          },
+          geometry: {
+            type: 'Point',
+            coordinates: [coordinates],
+          },
+        },
+        {
+          type: 'Feature',
+          id: '9d10456e-bdda-4aa9-9269-04c1667d4552',
+          properties: {
+            icon: 'airport-15',
+          },
+          geometry: {
+            type: 'Point',
+            coordinates: [hospitaldestination],
+          },
+        },
+      ]}>
+      {/* <MapboxGL.Animated.CircleLayer id="originInnerCircle" style={style} /> */}
     </MapboxGL.ShapeSource>
   );
 }
@@ -210,12 +233,12 @@ renderOrigin(coordinates) {
             zoomLevel={12}
             centerCoordinate={this.state.center}
           />: null }
-          {this.state.currentLocation !== null ? 
-              this.renderOrigin(this.state.currentLocation)
-          : null } 
-          {this.state.hospitaldestination !== null ? 
+          {/* {this.state.currentLocation !== null && this.state.hospitaldestination !== null ? 
+              this.renderOrigin(this.state.currentLocation, this.state.hospitaldestination)
+          : null }  */}
+          {/* {this.state.hospitaldestination !== null ? 
              this.renderDestination(this.state.hospitaldestination)
-          : null } 
+          : null }  */}
           {this.renderRoute()}
         </MapboxGL.MapView>
       </View>

@@ -29,7 +29,7 @@ export default (state = commonInitialState, action) => {
       console.log('Hey it is Updating Year', action.data);
       if(action.data) {
         Alert.alert("Video Call",
-        "Doctor is Calling You...!",
+        "Incoming Call from Doctor!",
         [
             {
                 text: "Reject",
@@ -42,10 +42,6 @@ export default (state = commonInitialState, action) => {
             {
                 text: "Accept", onPress: () => {
                   RootNavigation.navigate('VideoScreen', { isIncomingCall: true, onPressReject: false, onPressAccept: true })
-                 
-                  
-                 // CallService.setSession(JSON.parse(notification.session));
-                 // this.props.navigate('VideoScreen', { isIncomingCall: true })
                 }
             }
         ],

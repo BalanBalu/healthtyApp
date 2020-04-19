@@ -2,8 +2,6 @@ import PushNotification from 'react-native-push-notification';
 import { FIREBASE_SENDER_ID } from './config'
 import { AsyncStorage, Alert } from 'react-native';
 import { userFiledsUpdate } from '../modules/providers/auth/auth.actions';
-import ConnectyCube from 'react-native-connectycube';
-import { getUniqueId } from 'react-native-device-info';
 import { store } from './store';
 import { SET_INCOMING_VIDEO_CALL } from '../modules/providers/chat/chat.action';
 let tokenData;

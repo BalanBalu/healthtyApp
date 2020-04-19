@@ -416,6 +416,7 @@ const HomeStack = createStackNavigator({
   IndividualChat: {
     screen: IndividualChat,
     navigationOptions: ({ navigation }) => ({
+      headerTitle: null,
       headerLeft: (
         <Grid>
           <Col>
@@ -434,18 +435,6 @@ const HomeStack = createStackNavigator({
           </Col>
         </Grid>
       ),
-      /*headerRight: (
-        <Grid>
-          <Col>
-            <TouchableOpacity  >
-              <View style={{flexDirection:'row',}}>
-                <Icon name="ios-attach" style={{ color: '#fff',marginRight: 20,transform: [{ rotate: '45deg'}]}}/>
-                <Icon name="md-more" style={{ color: '#fff', marginRight: 15,  }}></Icon>
-              </View>
-            </TouchableOpacity>
-          </Col>
-        </Grid>
-       ),*/
     })
   },
 
@@ -453,50 +442,8 @@ const HomeStack = createStackNavigator({
   Medicines: {
     screen: PharmacyHome,
     navigationOptions: ({ navigation }) => ({
-      /* headerLeft: (
-         <Row style={{ marginBottom: 5, marginTop: 10 }}>
-           <Col size={1}>
-             <TouchableOpacity onPress={() => navigation.navigate('Home')}>
-               <Row style={{ alignItems: 'center', justifyContent: 'center' }}>
-                 <Icon
-                   style={
-                     Platform.OS === "ios"
-                       ? { marginBottom: -4, width: 25, marginLeft: 15, color: "#FFF", fontSize: 25, marginTop: 12 }
-                       : { marginBottom: -4, width: 25, marginLeft: 15, color: "#FFF", fontSize: 25, marginTop: 12 }
-                   }
-                   size={Platform.OS === "ios" ? 35 : 24}
-                   name={Platform.OS === "ios" ? "ios-arrow-back" : "md-arrow-back"}
-                 />
-                 {Platform.OS === "ios" ?
-                   <Text style={{ fontFamily: 'OpenSans', fontSize: 16, color: '#FFF', marginLeft: 5, fontWeight: '300' }}>Back</Text> : null}
-               </Row>
-             </TouchableOpacity>
-           </Col>
-           <Col size={8}>
-             <TouchableOpacity onPress={() => navigation.navigate('Locations')}>
-               <View style={{ flexDirection: 'row', marginLeft: 5 }}>
-                 <Icon name="ios-pin" style={{ color: '#fff', fontSize: 18, }} />
-                 <Text uppercase={false} style={{ marginLeft: 5, color: '#fff', fontSize: 14, fontFamily: 'OpenSans-SemiBold', fontWeight: 'bold' }}>Location</Text>
-                 <Icon name="ios-arrow-down" style={{ color: '#fff', fontSize: 18, paddingLeft: 10, marginTop: 2 }} />
-               </View>
-             </TouchableOpacity>
-           </Col>
-         </Row>
- 
- 
-       ), */
-
-      //       < TouchableOpacity onPress={() => { navigation.navigate('Notification') }} >
-      // <View>
-      //   <Icon name="notifications" style={{ color: '#fff', marginRight: 15, fontFamily: 'opensans-semibold' }}></Icon>
-      //   {navigation.getParam('notificationBadgeCount') != null ?
-      //     <Text style={{ position: 'absolute', backgroundColor: 'red', color: 'white', borderRadius: 20 / 2, marginTop: -7, width: undefined, height: undefined, padding: 2, fontSize: 10, textAlign: 'center' }}>{navigation.getParam('notificationBadgeCount') >= 100 ? '99+' : navigation.getParam('notificationBadgeCount')}</Text>
-      //     : null}
-      //   {/* <Badge /> */}
-      // </View>
-      //           </TouchableOpacity >
       headerRight: (
-        <Col>
+       
           <TouchableOpacity onPress={() => { navigation.navigate('PharmacyCart') }} >
             <View>
               <Icon name="ios-cart" style={{ color: '#fff', marginRight: 15, fontFamily: 'opensans-semibold', fontSize: 20 }}></Icon>
@@ -508,16 +455,8 @@ const HomeStack = createStackNavigator({
               }
             </View>
           </TouchableOpacity>
-        </Col>
-      ),
-
-      headerStyle: {
-        backgroundColor: '#7F49C3',
-        height: 40,
-        elevation: 0,
-        shadowColor: 'transparent'
-      },
-
+        
+      )
     })
   },
   UploadPrescription: {
