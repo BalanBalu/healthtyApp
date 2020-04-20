@@ -340,6 +340,7 @@ class Home extends Component {
         try {
             let userId = await AsyncStorage.getItem('userId')
             if (userId) {
+                ConnectyCube.videochat.onRemoteStreamListener = this._onRemoteStreamListener;
                 this.getMarkedAsReadedNotification(userId);
             }
         } catch (e) {

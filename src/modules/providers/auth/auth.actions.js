@@ -203,13 +203,14 @@ export async function logout() {
   await AsyncStorage.removeItem('basicProfileData');
   await AsyncStorage.removeItem('updatedDeviceToken');
   await AsyncStorage.removeItem('ProfileCompletionViaHome');
-  AuthService.logout();
+  
   store.dispatch({
     type: LOGOUT
   }),
   store.dispatch({
     type: NOTIFICATION_RESET
   })
+  AuthService.logout();
 }
 
 

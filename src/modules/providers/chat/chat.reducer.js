@@ -29,8 +29,8 @@ export default (state = commonInitialState, action) => {
     case SET_INCOMING_VIDEO_CALL:
       console.log('Hey it is Updating Year', action.data);
       if(action.data) {
-        IncomingVideoCallAlert.show('Alert Message');
-       /* Alert.alert("Video Call",
+       // IncomingVideoCallAlert.show('Alert Message');
+        Alert.alert("Video Call",
         "Incoming Call from Doctor!",
         [
             {
@@ -48,7 +48,7 @@ export default (state = commonInitialState, action) => {
             }
         ],
         { cancelable: false }
-      ); */
+      );
       }
       return {
         ...state,
