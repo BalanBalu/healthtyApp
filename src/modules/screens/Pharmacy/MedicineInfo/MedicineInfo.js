@@ -349,6 +349,7 @@ class MedicineInfo extends Component {
                                     <Picker
                                         mode="dropdown"
                                         style={{ width: undefined }}
+                                        iosIcon={<Icon name="ios-arrow-down" style={{ color: 'gray', fontSize: 20 }} />}
                                         placeholder="Select your SIM"
                                         placeholderStyle={{ color: "#bfc6ea" }}
                                         placeholderIconColor="#007aff"
@@ -620,8 +621,8 @@ const styles = StyleSheet.create({
         flexDirection: 'row',
         paddingTop: 5,
         paddingBottom: 5,
-        paddingLeft: 50,
-        paddingRight: 50,
+        paddingLeft: 45,
+        paddingRight: 45,
         borderRadius: 2,
         alignItems: 'flex-end'
     },

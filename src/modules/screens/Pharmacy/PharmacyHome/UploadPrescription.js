@@ -239,11 +239,11 @@ class UploadPrescription extends Component {
                                             </View>
 
                                         } />
-                                    <Row style={{ justifyContent: 'center' }}>
-                                        <TouchableOpacity onPress={() => this.removePrescriptionImage()} style={{ marginTop: 20, backgroundColor: '#f9DADB', paddingLeft: 150, paddingRight: 150, paddingTop: 5, paddingBottom: 5, borderRadius: 5 }}>
+                                    <View style={{Flex:1,marginLeft:20,marginRight:20 }}>
+                                        <TouchableOpacity onPress={() => this.removePrescriptionImage()} style={{  backgroundColor: '#f9DADB',alignSelf:'stretch', paddingTop:8,paddingBottom:8,marginTop:5,borderRadius:5}}>
                                             <Text style={{ fontSize: 14, fontWeight: '500', color: 'red', textAlign: 'center' }}>Delete</Text>
                                         </TouchableOpacity>
-                                    </Row>
+                                    </View>
                                 </View>
 
                             }

@@ -177,8 +177,6 @@ export class AddToCard extends Component {
                             <Row>
                                 <Col size={1} style={{ marginLeft: 5 }}>
                                     <Image source={renderMedicineImage(data)} style={{ height: 80, width: 70, marginLeft: 5, marginTop: 2.5 }} />
-                                   
-
                                 </Col>
                                 <Col size={6} style={{ marginLeft: 70, marginTop: -5 }}>
 
@@ -192,10 +190,19 @@ export class AddToCard extends Component {
                                                 <Picker
                                                     mode="dropdown"
                                                     style={{ width: undefined, fontSize: 10 }}
-                                                    textStyle={{ fontSize: 12 }}
+                                                    textStyle={{ fontSize: 12 ,}}
                                                     placeholder="Select your SIM"
+                                                    iosIcon={<Icon name="ios-arrow-down" style={{ color: 'gray', fontSize: 10 }} />}
                                                     placeholderStyle={{ color: "#bfc6ea" }}
                                                     placeholderIconColor="#007aff"
+                                                      textStyle={{ color: "gray", left: 0, marginLeft: -5 }}
+                                        note={false}
+                                        itemStyle={{
+                                         
+    
+                                            fontSize: 12,
+                                        }}
+                                        itemTextStyle={{ color: '#5cb85c', }}
                                                     selectedValue={this.state.selected2}
                                                     onValueChange={this.variationSelectedValue.bind(this)}
                                                 >
@@ -214,21 +221,21 @@ export class AddToCard extends Component {
                                     </Row>
 
                                 </Col>
-                                <Col size={3} style={{ marginLeft: 2.5, marginRight: 5, justifyContent: 'flex-end', alignItems: 'flex-end', marginRight: 10 }}>
+                                <Col size={3} style={{ marginLeft: 2.5, marginRight: 5, justifyContent: 'flex-end', alignItems: 'flex-end', marginRight: 10, marginTop: -8}}>
                                     <Row>
                                         <Text style={{ fontSize: 15, marginTop: 10, color: "#8dc63f", fontFamily: 'OpenSans', textAlign: 'right', marginRight: 5 }}>{'₹' + data.offeredAmount}</Text>
                                     </Row>
                                     {data.total_quantity !== 0 ?
-                                    <Row style={{ marginLeft: 2.5, marginTop: 10, }}>
-                                        <Col size={4} style={{ marginLeft: 5 }}>
+                                    <Row style={{ marginTop: -30,justifyContent:'flex-end' }}>
+                                        <Col size={4} style={{ marginLeft: 5,justifyContent:'center', }}>
                                             <TouchableOpacity onPress={() => this.productQuantityOperator(data, 'sub')} style={{ width: 20, height: 20, borderRadius: 10, backgroundColor: '#E6E6E6' }}>
                                                 <Text style={{ fontSize: 12, fontWeight: '500', fontFamily: 'OpenSans', textAlign: 'center', color: this.state.userAddedMedicineQuantity !== 1 ? '#FF0000' : 'grey' }}>-</Text>
                                             </TouchableOpacity>
                                         </Col>
-                                        <Col size={2}>
+                                        <Col size={2} style={{justifyContent:'center', }}>
                                             <Text style={{ fontSize: 12, marginTop: 2.5, fontFamily: 'OpenSans' }}>{this.state.userAddedMedicineQuantity}</Text>
                                         </Col>
-                                        <Col size={4}>
+                                        <Col size={4} style={{justifyContent:'center', }}>
                                             <TouchableOpacity onPress={() => this.productQuantityOperator(data, 'add')} style={{ width: 20, height: 20, borderRadius: 10, backgroundColor: '#E6E6E6' }}>
                                                 <Text style={{ fontSize: 12, fontWeight: '500', fontFamily: 'OpenSans', textAlign: 'center', color: '#8dc63f' }}>+</Text>
                                             </TouchableOpacity>
@@ -238,7 +245,7 @@ export class AddToCard extends Component {
                             </Row>
                         </View>
 
-                        <Row style={{ marginLeft: 20, marginTop: 10, marginRight: 15, marginBottom: 10 }}>
+                        <Row style={{  marginTop: 10, marginRight: 15, marginBottom: 10 }}>
 
                             <Col style={{ width: '60%' }}>
                                 <Text style={{ fontFamily: 'OpenSans', textAlign: 'right', fontSize: 14, marginBottom: 5, color: '#848484', marginRight: 10 }}>{'Total - ₹ ' + (this.state.userAddedTotalMedicineAmount)}</Text>
