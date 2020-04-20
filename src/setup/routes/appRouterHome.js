@@ -628,7 +628,7 @@ const HomeStack = createStackNavigator({
   'Video and Chat Service': {
     screen: AvailableDoctors4Video,
     navigationOptions: {
-      title: 'Video Consulting Serivce'
+      title: 'Video & Chat Consulting Service'
     }
   },
   'My Video Consultations': {
