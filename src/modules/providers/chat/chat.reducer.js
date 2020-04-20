@@ -1,8 +1,5 @@
 // App Imports
-import { SET_LAST_MESSAGES_DATA, SET_VIDEO_SESSION, SET_INCOMING_VIDEO_CALL, RESET_INCOMING_VIDEO_CALL } from './chat.action'
-import { Alert } from 'react-native';
-import RootNavigation from '../../../setup/rootNavigation';
-import IncomingVideoCallAlert from './video.alert.model';
+import { SET_LAST_MESSAGES_DATA, SET_VIDEO_SESSION, SET_INCOMING_VIDEO_CALL, RESET_INCOMING_VIDEO_CALL, ShowVieoAlertModal } from './chat.action'
 // Initial State
 export const commonInitialState = {
     myChatList: [],
@@ -29,7 +26,12 @@ export default (state = commonInitialState, action) => {
     case SET_INCOMING_VIDEO_CALL:
       console.log('Hey it is Updating Year', action.data);
       if(action.data) {
-       // IncomingVideoCallAlert.show('Alert Message');
+          ShowVieoAlertModal(true);
+          
+        
+           
+         /* 
+        // IncomingVideoCallAlert.show('Alert Message');
         Alert.alert("Video Call",
         "Incoming Call from Doctor!",
         [
@@ -37,29 +39,29 @@ export default (state = commonInitialState, action) => {
                 text: "Reject",
                 onPress: () => {
                     console.log("Cancel Pressed");
-                    RootNavigation.navigate('VideoScreen', { isIncomingCall: true, onPressReject: true, onPressAccept: false  })
+                  //  RootNavigation.navigate('VideoScreen', { isIncomingCall: true, onPressReject: true, onPressAccept: false  })
                 },
                 style: "cancel"
             },
             {
                 text: "Accept", onPress: () => {
-                  RootNavigation.navigate('VideoScreen', { isIncomingCall: true, onPressReject: false, onPressAccept: true })
+                 // RootNavigation.navigate('VideoScreen', { isIncomingCall: true, onPressReject: false, onPressAccept: true })
                 }
             }
         ],
         { cancelable: false }
-      );
+      ); */
+        return {
+          ...state,
+          incomingVideoCall: action.data
+        }
       }
-      return {
-        ...state,
-        incomingVideoCall: action.data
-      }
+
+      
       case RESET_INCOMING_VIDEO_CALL: 
         return {
          ...state,
-         onPressReject: false,
-         onPressAccept: false,
-
+         incomingVideoCall: false,
         } 
     default:
       return state
