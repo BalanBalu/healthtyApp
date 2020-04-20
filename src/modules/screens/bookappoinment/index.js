@@ -718,6 +718,7 @@ class BookAppoinment extends Component {
   }
 
   renderHospitalLocation = (hopitalLocationData, doctorId) => {
+    debugger
     console.log(doctorId);
     console.log(hopitalLocationData);
     if (!hopitalLocationData) {

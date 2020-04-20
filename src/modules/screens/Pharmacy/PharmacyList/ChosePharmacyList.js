@@ -74,7 +74,7 @@ class ChosePharmacyList extends Component {
 
         if (selectedPharmacy === -1) {
             Toast.show({
-                text: 'kindly chose pharmacy',
+                text: 'kindly choose pharmacy',
                 type: 'warning',
                 duration: 3000
             })

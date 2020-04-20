@@ -1,6 +1,8 @@
 import ConnectyCube from 'react-native-connectycube';
 import { CONNECTY_CUBE } from '../../../../setup/config';
 import { postService } from '../../../../setup/services/httpservices';
+import NotifService from '../../../../setup/NotifService';
+
 const splice = function(originalStr,idx, rem, str) {
   return originalStr.slice(0, idx) + str + originalStr.slice(idx + Math.abs(rem));
 };
@@ -73,6 +75,7 @@ export default class AuthService {
         password: connectyCubePw
       }
       this.login(loginRequest).then(() => {
+        NotifService.subcribeToPushNotificationConnectyCube();
         console.log('Successfully Logged in to ConnectyCube');
       }).catch((e) => {
          alert('Login Failed because', JSON.stringify(e));

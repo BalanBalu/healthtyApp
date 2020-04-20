@@ -28,7 +28,7 @@ class OrderDetails extends Component {
     }
     async componentDidMount() {
         const { navigation } = this.props;
-        await this.setState({ orderList: navigation.getParam('orderDetails'), isLoading: false })
+        await this.setState({ orderList: navigation.getParam('orderDetails')||[], isLoading: false })
         this.medicineOrderDetails();
     }
 
@@ -38,8 +38,15 @@ class OrderDetails extends Component {
         try {
             this.setState({ isLoading: true });
             let userId = await AsyncStorage.getItem('userId');
-            let orderId = this.state.orderList._id
+            let orderId 
+            if(this.state.orderList.length!==0){
+            orderId = this.state.orderList._id
+            }else{
+                orderId= this.props.navigation.getParam('serviceId')
+            }
+           
             let result = await getMedicineOrderDetails(orderId , userId);
+         
             if (result.success) {
                 this.setState({ myOrderList: result.data[0] });
                 this.getPaymentInfo(result.data[0].payment_id)
