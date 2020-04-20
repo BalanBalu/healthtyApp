@@ -16,6 +16,7 @@ import { fetchUserMarkedAsReadedNotification } from '../modules/providers/notifi
 import { SET_LAST_MESSAGES_DATA } from '../modules/providers/chat/chat.action';
 import SocketIOClient from 'socket.io-client';
 import { AuthService } from '../modules/screens/VideoConsulation/services/index';
+import IncomingVideoCallAlert from '../modules/providers/chat/video.alert.model';
 YellowBox.ignoreWarnings([
   'Unrecognized WebSocket connection option(s) `agent`, `perMessageDeflate`, `pfx`, `key`, `passphrase`, `cert`, `ca`, `ciphers`, `rejectUnauthorized`. Did you mean to put these under `headers`?',
   'Warning: Slider has been extracted from react-native core ',
@@ -23,6 +24,7 @@ YellowBox.ignoreWarnings([
   'Warning: Async Storage has been extracted from react-native core and ',
   'Warning: NetInfo has been extracted from react-native core and will',
 ]);
+
 export default class App extends Component {
   userId = null;
   constructor(props) {
@@ -33,6 +35,7 @@ export default class App extends Component {
     AuthService.init();
    
   }
+
   async componentDidMount() {
     const userId = await AsyncStorage.getItem('userId');
     if (userId) {
@@ -124,9 +127,12 @@ export default class App extends Component {
 
       <Provider store={store} key="provider">
         <Root>
+        <IncomingVideoCallAlert>
+                  
+                  </IncomingVideoCallAlert>
           <StyleProvider style={getTheme(material)}>
              <RoutesHome ref={navigatorRef => NavigationService.setContainer(navigatorRef)}> 
-
+               
             </RoutesHome>
           </StyleProvider>
         </Root>
