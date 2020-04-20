@@ -524,7 +524,7 @@ class Home extends Component {
                             </TouchableOpacity>
                         </Col>
                         <Col style={{ width: '33%', }}>
-                            <TouchableOpacity onPress={() => this.props.navigation.navigate("Chat Service")}>
+                            <TouchableOpacity onPress={() => this.props.navigation.navigate("Blood Donors")}>
                                 <Card style={{ borderRadius: 2, overflow: 'hidden' }}>
                                     <Row style={styles.rowStyle}>
                                         <Image
@@ -893,12 +893,11 @@ const styles = StyleSheet.create({
     },
     secondRow: {
         paddingTop: 10,
-        paddingBottom: 5,
+        paddingBottom: 10,
         width: '100%',
         borderTopColor: '#000',
         borderTopWidth: 0.3,
         backgroundColor: '#fff',
-        paddingTop: 5,
         justifyContent: 'center'
     },
     mainText: {
