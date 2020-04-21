@@ -21,6 +21,7 @@ export default (state = commonInitialState, action) => {
     case SET_VIDEO_SESSION:
       console.log('Hey it is Updating Year', action.data);
       return {
+        ...state,
         session: action.data
       }
     case SET_INCOMING_VIDEO_CALL:

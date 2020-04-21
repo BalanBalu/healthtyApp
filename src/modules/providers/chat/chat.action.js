@@ -78,7 +78,7 @@ export const showModal = ({ modalProps, modalType }) => dispatch => {
     })
 }
   
-export const hideModal = () => dispatch => {
+export const hideIncomingVideoModal = () => dispatch => {
     dispatch({
       type: RESET_INCOMING_VIDEO_CALL
     })
