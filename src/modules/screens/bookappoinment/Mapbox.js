@@ -7,6 +7,7 @@ import {IS_ANDROID, MAP_BOX_TOKEN } from '../../../setup/config';
 import MapboxDirectionsFactory from '@mapbox/mapbox-sdk/services/directions';
 const directionsClient = MapboxDirectionsFactory({accessToken : MAP_BOX_TOKEN});
 MapboxGL.setAccessToken(MAP_BOX_TOKEN);
+import Geolocation from 'react-native-geolocation-service';
 import {lineString as makeLineString} from '@turf/helpers';
 
 const layerStyles = {
@@ -98,6 +99,7 @@ class Mapbox extends React.PureComponent {
     //const { navigation, hospitalLocation } = this.props;
     const { hospitalLocation } = this.props
     const data = hospitalLocation // navigation.getParam('coordinates');
+    console.log('hospitalLocation======>', hospitalLocation);
     //data.location.location.coordinates = [13.0694, 80.1948]; //chennai location
     hospitaldestination = [
       data.location.coordinates[1],
@@ -106,7 +108,7 @@ class Mapbox extends React.PureComponent {
     await this.setState({hospitaldestination : hospitaldestination })
     console.log('Setting hosptial Destination' + hospitaldestination)
     
-    navigator.geolocation.getCurrentPosition(
+    Geolocation.getCurrentPosition(
       this.success,  
       
       (error) =>  {
@@ -129,7 +131,7 @@ class Mapbox extends React.PureComponent {
       })
       console.log('Setting User Destination')
      
-    }catch(e){
+    }catch(e) {
       console.log(e);
     } 
     finally {
@@ -137,7 +139,9 @@ class Mapbox extends React.PureComponent {
     }
     }  
   
-renderOrigin(coordinates) {
+renderOrigin(coordinates, hospitaldestination) {
+  debugger
+  console.log('coordinates========> ', coordinates)
   let backgroundColor = '#808080';
 
   if (this.state.currentPoint) {
@@ -149,13 +153,37 @@ renderOrigin(coordinates) {
   return (
     <MapboxGL.ShapeSource
       id="origin"
-      shape={MapboxGL.geoUtils.makePoint(coordinates)}>
-      <MapboxGL.Animated.CircleLayer id="originInnerCircle" style={style} />
+      shape={[
+        {
+          type: 'Feature',
+          id: '9d10456e-bdda-4aa9-9269-04c1667d4552',
+          properties: {
+            icon: 'originInnerCircle',
+          },
+          geometry: {
+            type: 'Point',
+            coordinates: [coordinates],
+          },
+        },
+        {
+          type: 'Feature',
+          id: '9d10456e-bdda-4aa9-9269-04c1667d4552',
+          properties: {
+            icon: 'airport-15',
+          },
+          geometry: {
+            type: 'Point',
+            coordinates: [hospitaldestination],
+          },
+        },
+      ]}>
+      {/* <MapboxGL.Animated.CircleLayer id="originInnerCircle" style={style} /> */}
     </MapboxGL.ShapeSource>
   );
 }
 
   renderDestination(destinationCoordinates) {
+    console.log('Destination ---->', destinationCoordinates);
     let backgroundColor = '#808080';
     if (this.state.currentPoint) {
       backgroundColor = '#314ccd';
@@ -205,12 +233,12 @@ renderOrigin(coordinates) {
             zoomLevel={12}
             centerCoordinate={this.state.center}
           />: null }
-          {this.state.currentLocation !== null ? 
-              this.renderOrigin(this.state.currentLocation)
-          : null } 
-          {this.state.hospitaldestination !== null ? 
+          {/* {this.state.currentLocation !== null && this.state.hospitaldestination !== null ? 
+              this.renderOrigin(this.state.currentLocation, this.state.hospitaldestination)
+          : null }  */}
+          {/* {this.state.hospitaldestination !== null ? 
              this.renderDestination(this.state.hospitaldestination)
-          : null } 
+          : null }  */}
           {this.renderRoute()}
         </MapboxGL.MapView>
       </View>

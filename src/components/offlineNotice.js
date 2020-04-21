@@ -1,11 +1,12 @@
 import React from 'react';
-import { View, Text, NetInfo, Dimensions, StyleSheet } from 'react-native';
+import { View, Text, Dimensions, StyleSheet } from 'react-native';
+import NetInfo from '@react-native-community/netinfo';
 const { width={} } = Dimensions.get('window');
 
 RenderOffline = () => {
   return (
     <View style={styles.offlineContainer}>
-      <Text style={styles.offlineText}>>No Internet connection</Text>
+      <Text style={styles.offlineText}>No Internet connection</Text>
     </View>
   );
 }
@@ -25,19 +26,14 @@ class OfflineNotice extends React.PureComponent {
   }
 
   componentDidMount() {
-    NetInfo.isConnected.addEventListener('connectionChange', this.changeNetworkState);
-
-    NetInfo.isConnected.fetch().done((isConnected) => {
-      if (isConnected == false) this.setState({ connectionStatus: "Offline" });
-    });
+      NetInfo.addEventListener(this.changeNetworkState);
   }
 
   componentWillUnmount() {
-    NetInfo.isConnected.removeEventListener('connectionChange', this.changeNetworkState);
   }
 
   changeNetworkState = (isConnected) => {
-    if (isConnected == true) {
+    if (isConnected.isConnected == true) {
       this.setState({ connectionStatus: "Online" })
       setTimeout(() => {
         this.setState({ connectionStatus: "" })

@@ -62,7 +62,7 @@ class Profile extends Component {
     /*Get userProfile*/
     getUserProfile = async () => {
         try {
-            let fields = "first_name,last_name,gender,dob,mobile_no,secondary_mobile,email,secondary_email,insurance,address,is_blood_donor,is_available_blood_donate,blood_group,profile_image"
+            let fields = "first_name,last_name,gender,dob,mobile_no,secondary_mobile,email,secondary_email,insurance,address,is_blood_donor,is_available_blood_donate,blood_group,profile_image,is_email_verified"
 
             let userId = await AsyncStorage.getItem('userId');
             let result = await fetchUserProfile(userId, fields);
@@ -311,11 +311,15 @@ class Profile extends Component {
                                         <Icon name="heart" style={styles.profileIcon}></Icon>
                                     </Col>
                                     <Col style={{ width: '55%' }} >
-                                        {imageSource != undefined ?
-                                            <Thumbnail style={styles.profileImage} source={{ uri: imageSource }} /> :
-                                            <Thumbnail style={styles.profileImage} square source={renderProfileImage(data)} />
-                                        }
+                                        <TouchableOpacity onPress={() => this.props.navigation.navigate("ImageView", { passImage: renderProfileImage(data), title: 'Profile photo' })}>
+                                            {imageSource != undefined ?
 
+                                                <Thumbnail style={styles.profileImage} source={{ uri: imageSource }} /> :
+
+                                                <Thumbnail style={styles.profileImage} square source={renderProfileImage(data)} />
+
+                                            }
+                                        </TouchableOpacity>
                                         <View style={{ marginLeft: 80, marginTop: -20, justifyContent: 'center' }}>
                                             <Icon name="camera" style={{ fontSize: 20 }} onPress={() => this.setState({ selectOptionPoopup: true })} testID="cameraIconTapped" />
                                         </View>
@@ -420,22 +424,21 @@ class Profile extends Component {
                                 <Body >
                                     <TouchableOpacity onPress={() => this.editProfile('UpdateEmail')} testID="onPressEmail">
                                         <Text style={styles.customText}>Email</Text>
-                                        <Text note style={styles.customText1}>{data.email}</Text>
-                                        {data.secondary_email != undefined ? <Text note style={styles.customText1}>{data.secondary_email}</Text>
+                                        {data.email != undefined ? <Text note style={styles.customText1}>{data.email}</Text>
 
                                             : <Button transparent>
                                                 <Icon name='add' style={{ color: 'gray' }} />
-                                                <Text uppercase={false} style={styles.customText} onPress={() => this.editProfile('UpdateEmail')} testID="onPressAddSecondaryEmail">Add Secondary email</Text>
+                                                <Text uppercase={false} style={styles.customText} onPress={() => this.editProfile('UpdateEmail')} testID="onPressAddSecondaryEmail">Add  your email</Text>
                                             </Button>}
                                     </TouchableOpacity>
                                 </Body>
 
 
-                                {data.secondary_email != undefined ?
-
+                                {data.email != undefined ?
                                     <Right>
                                         <Icon name="create" style={{ color: 'black' }} onPress={() => this.editProfile('UpdateEmail')} testID="iconToUpdateEmail" />
-                                    </Right> : null}
+                                    </Right>
+                                    : null}
 
                             </ListItem>
 
@@ -584,13 +587,13 @@ class Profile extends Component {
                                         renderItem={({ item }) => (
                                             <ListItem avatar noBorder>
                                                 <Left>
-                                                    <Thumbnail square source={renderDoctorImage(item.doctorInfo)} style={{ height: 60, width: 60,borderRadius:60}} />
+                                                    <Thumbnail square source={renderDoctorImage(item.doctorInfo)} style={{ height: 60, width: 60, borderRadius: 60 }} />
                                                 </Left>
                                                 <Body>
                                                     <Text style={{ fontFamily: 'OpenSans', fontSize: 12, width: '100%' }}>{item.doctorInfo.prefix ? item.doctorInfo.prefix + '.' : 'Dr.'} {item.doctorInfo.first_name + " " + item.doctorInfo.last_name} </Text>
                                                 </Body>
                                                 <Right>
-                                                    <TouchableOpacity style={styles.docbutton}><Text style={{ fontFamily: 'OpenSans', fontSize: 12,color:'#fff' ,textAlign:'center'}} onPress={() => this.props.navigation.navigate('Book Appointment', { doctorId: item.doctorInfo.doctor_id, fetchAvailabiltySlots: true })} testID="navigateBookAppointment"> Book Again</Text></TouchableOpacity>
+                                                    <TouchableOpacity style={styles.docbutton}><Text style={{ fontFamily: 'OpenSans', fontSize: 12, color: '#fff', textAlign: 'center' }} onPress={() => this.props.navigation.navigate('Book Appointment', { doctorId: item.doctorInfo.doctor_id, fetchAvailabiltySlots: true })} testID="navigateBookAppointment"> Book Again</Text></TouchableOpacity>
                                                 </Right>
 
                                             </ListItem>
@@ -703,12 +706,12 @@ const styles = StyleSheet.create({
         height: 30,
         width: "auto",
         borderRadius: 20,
-        fontSize:10,
+        fontSize: 10,
         backgroundColor: '#7357A2',
-        marginTop: 5,alignItems:'center',
-        justifyContent:'center',
-        paddingLeft:5,
-        paddingRight:5
+        marginTop: 5, alignItems: 'center',
+        justifyContent: 'center',
+        paddingLeft: 5,
+        paddingRight: 5
 
     },
     profileIcon:

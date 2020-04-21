@@ -10,7 +10,8 @@ export const SET_REFER_CODE = 'PROFILE/SET_REFER_CODE';
 
 import { store } from '../../../setup/store'
 import { getService, putService, postService } from '../../../setup/services/httpservices';
-
+import { AuthService } from '../../screens/VideoConsulation/services';
+import NotifService from '../../../setup/NotifService';
 /*get doctor profile*/
 export async function fetchUserProfile(userId, fields, isLoading = true) {
   try {
@@ -175,8 +176,10 @@ export async function getCurrentVersion(type) {
 
 
 export const getReferalPoints = async (userId) => {
-  let fields = "credit_points,is_mobile_verified,refer_code,mobile_no,first_name,last_name,dob"
+  let fields = "credit_points,is_mobile_verified,refer_code,email,mobile_no,first_name,last_name,dob,connectycube"
   let result = await fetchUserProfile(userId, fields);
+ 
+  console.log("result.is_mobile_verified", result.is_mobile_verified)
   if (result) {
     store.dispatch({
       type: AVAILABLE_CREDIT_POINTS,
@@ -188,11 +191,22 @@ export const getReferalPoints = async (userId) => {
         data: result.refer_code
       })
     }
-    if (!result.is_mobile_verified) {
+    NotifService.updateDeviceToken(userId);
+    if(result.connectycube) {
+        AuthService.loginToConnctyCube(userId, result.connectycube)
+    }
+    if (result.mobile_no == undefined) {
+      return {
+        hasProfileUpdated: false,
+        updateMobileNo: true
+      }
+    }
+    else if (!result.is_mobile_verified) {
       return {
         hasProfileUpdated: false,
         hasOtpNotVerified: true,
-        mobile_no: result.mobile_no
+        mobile_no: result.mobile_no,
+        email: result.email
       }
     }
 

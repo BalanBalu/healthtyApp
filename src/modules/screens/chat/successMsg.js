@@ -9,8 +9,10 @@ class SuccessChatPaymentPage extends Component {
         this.state = {
            
         }
+        const { navigation } = this.props;
+        const manualNaviagationPage = navigation.getParam('manualNaviagationPage') || 'My Chats';
         setTimeout(() => {
-            this.props.navigation.navigate('My Chats', { fromSuccessPage: true });
+            this.props.navigation.navigate(manualNaviagationPage, { fromSuccessPage: true });
         }, 1500);
     }
 

@@ -1,9 +1,11 @@
 import { postService, getService, putService } from '../../../setup/services/httpservices';
 export const SET_LAST_MESSAGES_DATA = 'CHAT/LAST_MESSAGES_DATA' 
+export const SET_VIDEO_SESSION = 'CHAT/SET_VIDEO_SESSION'; 
+export const SET_INCOMING_VIDEO_CALL = 'CHAT/SET_INCOMING_VIDEO_CALL'; 
+export const RESET_INCOMING_VIDEO_CALL = 'CHAT/RESET_INCOMING_VIDEO_CALL'; 
 export const fetchAvailableDoctors4Chat = async (request) => {
     try {
         let endPoint = 'chat/availability';
-       
         let response = await postService(endPoint, request);
         let respData = response.data;
         return respData;

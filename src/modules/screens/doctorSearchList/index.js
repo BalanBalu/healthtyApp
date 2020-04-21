@@ -701,7 +701,9 @@ class doctorSearchList extends Component {
         <Grid onPress={() => this.navigateToBookAppointmentPage(item)}>
             <Row>
                 <Col size={2}>
+                <TouchableOpacity onPress={() => this.props.navigation.navigate("ImageView", { passImage: renderDoctorImage(item), title: 'Profile photo' })}>
                     <Thumbnail  source={renderDoctorImage(item)} style={{ height: 50, width: 50,borderRadius:50/2 }} />
+                    </TouchableOpacity>
                     <View style={{ position: 'absolute', marginTop: 35, alignSelf: 'flex-end' }}>
                         <Image square source={vipLogo} style={{ height: 20, width: 20 }} />
                     </View>
@@ -844,8 +846,9 @@ class doctorSearchList extends Component {
                             <Grid >
                                 <Row onPress={() => this.navigateToBookAppointmentPage(item)}>
                                     <Col style={{ width: '5%' }}>
+                                    <TouchableOpacity onPress={() => this.props.navigation.navigate("ImageView", { passImage: renderDoctorImage(item), title: 'Profile photo' })}>
                                         <Thumbnail circle source={renderDoctorImage(item)} style={{ height: 60, width: 60,borderRadius:60/2 }} />
-
+                                    </TouchableOpacity>
                                     </Col>
                                     <Col style={{ width: '78%' }}>
                                         <Row style={{ marginLeft: 55, }}>

@@ -1,5 +1,7 @@
 import React, { Component } from 'react';
-import { createStackNavigator, createAppContainer, createSwitchNavigator, createDrawerNavigator, NavigationBackAction } from 'react-navigation';
+import { createAppContainer, createSwitchNavigator, NavigationBackAction } from 'react-navigation';
+import { createDrawerNavigator } from 'react-navigation-drawer';
+import { createStackNavigator } from 'react-navigation-stack';
 import AuthLoadingScreen from './AuthLoadingScreen';
 import SideBar from './SideBar';
 import Home from "../../modules/screens/Home";
@@ -43,18 +45,21 @@ import MyAppoinmentList from '../../modules/screens/MyAppointments/MyAppointment
 import CancelAppointment from "../../modules/screens/MyAppointments/cancelAppointment";
 import AddReminder from '../../modules/screens/Reminder/AddReminder'
 import Reminder from '../../modules/screens/Reminder/Reminders'
+
+
 import PharmacyHome from '../../modules/screens/Pharmacy/PharmacyHome/PharmacyHome';
 import MyOrdersList from '../../modules/screens/Pharmacy/MyOrdersList/MyOrdersList';
 import OrderDetails from '../../modules/screens/Pharmacy/OrderDetails/OrderDetails';
-import OrderPayment from '../../modules/screens/Pharmacy/OrderPayment/OrderPayment';
 import PharmacyCart from '../../modules/screens/Pharmacy/PharmacyCart/PharmacyCart';
 import OrderPaymentSuccess from '../../modules/screens/Pharmacy/OrderPaymentSuccess/OrderPaymentSuccess';
 import UploadPrescription from '../../modules/screens/Pharmacy/PharmacyHome/UploadPrescription';
-import OrderPaymentAddress from '../../modules/screens/Pharmacy/OrderPaymentAddress/OrderPaymentAddress';
-import OrderPaymentPreview from '../../modules/screens/Pharmacy/OrderPaymentPreview/OrderPaymentPreview';
-import OrderMedicineDetails from '../../modules/screens/Pharmacy/OrderMedicineDetails/OrderMedicineDetails';
+import MedicineCheckout from '../../modules/screens/Pharmacy/MedicineCheckout/MedicineCheckout';
+import MedicineInfo from '../../modules/screens/Pharmacy/MedicineInfo/MedicineInfo';
+import ViewAllReviews from '../../modules/screens/Pharmacy/MedicineInfo/ViewAllReviews';
 import MedicineSearchList from '../../modules/screens/Pharmacy/MedicineSearchList/MedicineSearchList';
-import MedicineCheckout from '../../modules/screens/Pharmacy/MedicineCheckout/MedicineChekout';
+import ChosePharmacyList from '../../modules/screens/Pharmacy/PharmacyList/ChosePharmacyList'
+
+
 import { Badge } from '../../../src/modules/common'
 import Locations from '../../modules/screens/Home/Locations';
 import BloodDonersList from '../../modules/screens/bloodDonation/BloodDonersList';
@@ -63,7 +68,15 @@ import MyChats from '../../modules/screens/chat/MyChats';
 import AvailableDoctors4Chat from '../../modules/screens/chat/AvailableDoctor';
 import SuccessChatPaymentPage from '../../modules/screens/chat/successMsg';
 import ReportIssue from '../../modules/screens/ReportIssue';
-import EarnReward from '../../modules/screens/Home/EarnReward'
+import ReportDetails from '../../modules/screens/ReportIssue/reportIssueDetails'
+import EarnReward from '../../modules/screens/Home/EarnReward';
+import CoronaDisease from '../../modules/screens/CoronaDisease/CoronaDisease';
+import MedicineSuggestionList from '../../modules/screens/Pharmacy/MedicineSuggestionList/pharmacySuggestionList';
+import ImageView from '../../modules/shared/ImageView'
+import PharmacyList from '../../modules/screens/Pharmacy/PharmacyList/pharmacyList';
+import VideoScreen from '../../modules/screens/VideoConsulation/components/VideoScreen';
+import AvailableDoctors4Video from '../../modules/screens/VideoConsulation/components/AvailableDoctors';
+import VideoConsultaions from '../../modules/screens/VideoConsulation/components/MyConsultations';
 
 const AuthRoutes = {
   login: {
@@ -103,12 +116,13 @@ const AuthStack = createStackNavigator(AuthRoutes, {
 const HomeStack = createStackNavigator({
   Home: {
     screen: Home,
-    navigationOptions: ({ navigation }) => ({
 
+    navigationOptions: ({ navigation }) => ({
+      title: null,
       headerLeft: (
 
-        <Row>
-          <TouchableOpacity onPress={() => navigation.toggleDrawer()} style={{ flexDirection: 'row', marginTop: 10 }}>
+        <Row style={{ justifyContent: 'center', alignItems: 'center' }}>
+          <TouchableOpacity onPress={() => navigation.toggleDrawer()} style={{ flexDirection: 'row', }}>
             <Image
               style={{ marginLeft: 18, tintColor: '#fff' }}
               source={menuIcon}
@@ -131,7 +145,7 @@ const HomeStack = createStackNavigator({
         </Row>
       ),
       headerRight: (
-        <Grid>
+        <Grid style={{ justifyContent: 'center', alignItems: 'center' }}>
           <Col>
             <TouchableOpacity onPress={() => { navigation.navigate('Notification') }} >
               <View>
@@ -148,7 +162,6 @@ const HomeStack = createStackNavigator({
       ),
       headerStyle: {
         backgroundColor: '#7F49C3',
-        height: 60
       },
     })
   },
@@ -195,7 +208,7 @@ const HomeStack = createStackNavigator({
       title: 'Blood Donors',
 
       headerRight: (
-        <Grid>
+        <Grid style={{ justifyContent: 'center', alignItems: 'center' }}>
           <Col>
             <TouchableOpacity onPress={() => { navigation.navigate('BloodDonerFilters') }} >
               <View>
@@ -229,6 +242,12 @@ const HomeStack = createStackNavigator({
     screen: ReportIssue,
     navigationOptions: {
       title: 'Report issue'
+    }
+  },
+  ReportDetails: {
+    screen: ReportDetails,
+    navigationOptions: {
+      title: 'Report details'
     }
   },
   "CancelAppointment": {
@@ -344,6 +363,13 @@ const HomeStack = createStackNavigator({
       title: 'Success'
     }
   },
+  // ============Zoom image ========================
+  ImageView: {
+    screen: ImageView,
+    navigationOptions: ({ navigation }) => ({
+      title: navigation.getParam("title"),
+    }),
+  },
   // ============Chat ========================
   Chat: {
     screen: Chat,
@@ -390,6 +416,7 @@ const HomeStack = createStackNavigator({
   IndividualChat: {
     screen: IndividualChat,
     navigationOptions: ({ navigation }) => ({
+      headerTitle: null,
       headerLeft: (
         <Grid>
           <Col>
@@ -408,73 +435,28 @@ const HomeStack = createStackNavigator({
           </Col>
         </Grid>
       ),
-      /*headerRight: (
-        <Grid>
-          <Col>
-            <TouchableOpacity  >
-              <View style={{flexDirection:'row',}}>
-                <Icon name="ios-attach" style={{ color: '#fff',marginRight: 20,transform: [{ rotate: '45deg'}]}}/>
-                <Icon name="md-more" style={{ color: '#fff', marginRight: 15,  }}></Icon>
-              </View>
-            </TouchableOpacity>
-          </Col>
-        </Grid>
-       ),*/
     })
   },
 
   // ============== Pharmacy =================
-  Pharmacy: {
+  Medicines: {
     screen: PharmacyHome,
     navigationOptions: ({ navigation }) => ({
-     /* headerLeft: (
-        <Row style={{ marginBottom: 5, marginTop: 10 }}>
-          <Col size={1}>
-            <TouchableOpacity onPress={() => navigation.navigate('Home')}>
-              <Row style={{ alignItems: 'center', justifyContent: 'center' }}>
-                <Icon
-                  style={
-                    Platform.OS === "ios"
-                      ? { marginBottom: -4, width: 25, marginLeft: 15, color: "#FFF", fontSize: 25, marginTop: 12 }
-                      : { marginBottom: -4, width: 25, marginLeft: 15, color: "#FFF", fontSize: 25, marginTop: 12 }
-                  }
-                  size={Platform.OS === "ios" ? 35 : 24}
-                  name={Platform.OS === "ios" ? "ios-arrow-back" : "md-arrow-back"}
-                />
-                {Platform.OS === "ios" ?
-                  <Text style={{ fontFamily: 'OpenSans', fontSize: 16, color: '#FFF', marginLeft: 5, fontWeight: '300' }}>Back</Text> : null}
-              </Row>
-            </TouchableOpacity>
-          </Col>
-          <Col size={8}>
-            <TouchableOpacity onPress={() => navigation.navigate('Locations')}>
-              <View style={{ flexDirection: 'row', marginLeft: 5 }}>
-                <Icon name="ios-pin" style={{ color: '#fff', fontSize: 18, }} />
-                <Text uppercase={false} style={{ marginLeft: 5, color: '#fff', fontSize: 14, fontFamily: 'OpenSans-SemiBold', fontWeight: 'bold' }}>Location</Text>
-                <Icon name="ios-arrow-down" style={{ color: '#fff', fontSize: 18, paddingLeft: 10, marginTop: 2 }} />
-              </View>
-            </TouchableOpacity>
-          </Col>
-        </Row>
-
-
-      ), */
       headerRight: (
-          <Col>
-            <TouchableOpacity>
-              <View>
-                <Icon name="ios-cart" style={{ color: '#fff', marginRight: 15, fontFamily: 'opensans-semibold', fontSize: 20 }}></Icon>
-              </View>
-            </TouchableOpacity>
-          </Col>
-      ),
-      headerStyle: {
-        backgroundColor: '#7F49C3',
-        height: 40,
-        elevation: 0,
-        shadowColor: 'transparent'
-      },
-
+       
+          <TouchableOpacity onPress={() => { navigation.navigate('PharmacyCart') }} >
+            <View>
+              <Icon name="ios-cart" style={{ color: '#fff', marginRight: 15, fontFamily: 'opensans-semibold', fontSize: 20 }}></Icon>
+              {navigation.getParam('cartItemsCount') === null || navigation.getParam('cartItemsCount') === undefined || navigation.getParam('cartItemsCount') === 0 ? null :
+                <Text style={{ position: 'absolute', backgroundColor: 'red', color: 'white', borderRadius: 20 / 2, marginTop: -7, width: undefined, height: undefined, padding: 2, fontSize: 10, textAlign: 'center' }}>{
+                  navigation.getParam('cartItemsCount') >= 100 ? '99+' :
+                    navigation.getParam('cartItemsCount')}
+                </Text>
+              }
+            </View>
+          </TouchableOpacity>
+        
+      )
     })
   },
   UploadPrescription: {
@@ -485,27 +467,49 @@ const HomeStack = createStackNavigator({
   },
   medicineSearchList: {
     screen: MedicineSearchList,
-    navigationOptions: {
-      title: 'Search List'
-    }
+    navigationOptions: ({ navigation }) => ({
+      title: 'Search List',
+      headerRight: (
+        <Grid>
+          <Col>
+            <TouchableOpacity onPress={() => { navigation.navigate('PharmacyCart') }} >
+              <View>
+                <Icon name="ios-cart" style={{ color: '#fff', marginRight: 15, fontFamily: 'opensans-semibold', fontSize: 20 }}></Icon>
+                {navigation.getParam('cartItemsCount') === null || navigation.getParam('cartItemsCount') === undefined || navigation.getParam('cartItemsCount') === 0 ? null :
+                  <Text style={{ position: 'absolute', backgroundColor: 'red', color: 'white', borderRadius: 20 / 2, marginTop: -7, width: undefined, height: undefined, padding: 2, fontSize: 10, textAlign: 'center' }}>{
+                    navigation.getParam('cartItemsCount') >= 100 ? '99+' :
+                      navigation.getParam('cartItemsCount')}
+                  </Text>
+                }
+              </View>
+            </TouchableOpacity>
+          </Col>
+        </Grid>
+      ),
+    })
   },
-  MedicineCheckout: {
-    screen: MedicineCheckout,
-    navigationOptions: {
-      title: 'Checkout'
-    }
-  },
-  OrderPaymentPreview: {
-    screen: OrderPaymentPreview,
-    navigationOptions: {
-      title: 'Payment Preview'
-    }
-  },
-  OrderPayment: {
-    screen: OrderPayment,
-    navigationOptions: {
-      title: 'Payment Page'
-    }
+  PharmacyList: {
+    screen: PharmacyList,
+    navigationOptions: ({ navigation }) => ({
+      title: 'Pharmacies',
+      headerRight: (
+        <Grid>
+          <Col>
+            <TouchableOpacity onPress={() => { navigation.navigate('PharmacyCart') }} >
+              <View>
+                <Icon name="ios-cart" style={{ color: '#fff', marginRight: 15, fontFamily: 'opensans-semibold', fontSize: 20 }}></Icon>
+                {navigation.getParam('cartItemsCount') === null || navigation.getParam('cartItemsCount') === undefined || navigation.getParam('cartItemsCount') === 0 ? null :
+                  <Text style={{ position: 'absolute', backgroundColor: 'red', color: 'white', borderRadius: 20 / 2, marginTop: -7, width: undefined, height: undefined, padding: 2, fontSize: 10, textAlign: 'center' }}>{
+                    navigation.getParam('cartItemsCount') >= 100 ? '99+' :
+                      navigation.getParam('cartItemsCount')}
+                  </Text>
+                }
+              </View>
+            </TouchableOpacity>
+          </Col>
+        </Grid>
+      ),
+    })
   },
   PharmacyCart: {
     screen: PharmacyCart,
@@ -519,15 +523,45 @@ const HomeStack = createStackNavigator({
       title: 'Payment Success'
     }
   },
+  MedicineSuggestionList: {
+    screen: MedicineSuggestionList,
+    navigationOptions: ({ navigation }) => ({
+      title: 'Pharmacy Suggestion List',
+      headerRight: (
+        <Grid>
+          <Col>
+            <TouchableOpacity onPress={() => { navigation.navigate('PharmacyCart') }} >
+              <View>
+                <Icon name="ios-cart" style={{ color: '#fff', marginRight: 15, fontFamily: 'opensans-semibold', fontSize: 20 }}></Icon>
+                {navigation.getParam('cartItemsCount') === null || navigation.getParam('cartItemsCount') === undefined || navigation.getParam('cartItemsCount') === 0 ? null :
+                  <Text style={{ position: 'absolute', backgroundColor: 'red', color: 'white', borderRadius: 20 / 2, marginTop: -7, width: undefined, height: undefined, padding: 2, fontSize: 10, textAlign: 'center' }}>{
+                    navigation.getParam('cartItemsCount') >= 100 ? '99+' :
+                      navigation.getParam('cartItemsCount')}
+                  </Text>
+                }
+              </View>
+            </TouchableOpacity>
+          </Col>
+        </Grid>
+      ),
+    })
 
-  OrderPaymentAddress: {
-    screen: OrderPaymentAddress,
+  },
+
+  MedicineCheckout: {
+    screen: MedicineCheckout,
     navigationOptions: {
       title: 'Order Payment Address'
     }
   },
+  ChosePharmacyList: {
+    screen: ChosePharmacyList,
+    navigationOptions: {
+      title: ' Chose Pharmacy List'
+    }
+  },
   //=================== Medicine Order Details =============
-  Orders: {
+  "Medicine Orders": {
     screen: MyOrdersList,
     navigationOptions: {
       title: 'Orders List',
@@ -545,12 +579,65 @@ const HomeStack = createStackNavigator({
       title: 'My Order'
     }
   },
-  OrderMedicineDetails: {
-    screen: OrderMedicineDetails,
+  MedicineInfo: {
+    screen: MedicineInfo,
+    navigationOptions: ({ navigation }) => ({
+      title: 'Medicine Details',
+      headerRight: (
+        <Grid>
+          <Col>
+            <TouchableOpacity onPress={() => { navigation.navigate('PharmacyCart') }} >
+              <View>
+                <Icon name="ios-cart" style={{ color: '#fff', marginRight: 15, fontFamily: 'opensans-semibold', fontSize: 20 }}></Icon>
+                {navigation.getParam('cartItemsCount') === null || navigation.getParam('cartItemsCount') === undefined || navigation.getParam('cartItemsCount') === 0 ? null :
+                  <Text style={{ position: 'absolute', backgroundColor: 'red', color: 'white', borderRadius: 20 / 2, marginTop: -7, width: undefined, height: undefined, padding: 2, fontSize: 10, textAlign: 'center' }}>{
+                    navigation.getParam('cartItemsCount') >= 100 ? '99+' :
+                      navigation.getParam('cartItemsCount')}
+                  </Text>
+                }
+              </View>
+            </TouchableOpacity>
+          </Col>
+        </Grid>
+      ),
+    })
+  },
+  ViewAllReviews: {
+    screen: ViewAllReviews,
     navigationOptions: {
-      title: 'Medicine Details'
+      title: 'Medicine Reviews'
     }
   },
+
+
+  'CORONO Status': {
+    screen: CoronaDisease,
+    navigationOptions: {
+      title: 'CORONO Status'
+    }
+  },
+  /* Video Consultation */
+  VideoScreen: {
+    screen: VideoScreen,
+    navigationOptions: {
+      title: 'Video Calling',
+      headerLeft: null,
+      gesturesEnabled: false
+    }
+  },
+  'Video and Chat Service': {
+    screen: AvailableDoctors4Video,
+    navigationOptions: {
+      title: 'Video & Chat Consulting Service'
+    }
+  },
+  'My Video Consultations': {
+    screen: VideoConsultaions,
+    navigationOptions: {
+      title: 'My Video Consultations'
+    }
+  },
+
   // ============== Reminder =================
 
   Reminder: {
@@ -597,21 +684,31 @@ const DrawerNavigator = createDrawerNavigator({
   "My Appointments": {
     screen: MyAppoinmentList
   },
-  Pharmacy: {
-    screen: PharmacyHome,
-  },
-  Orders: {
-    screen: MyOrdersList
-  },
-  "Chat Service": {
-    screen: AvailableDoctors4Chat
-  },
   "My Chats": {
     screen: MyChats
   },
+  'Video and Chat Service': {
+    screen: AvailableDoctors4Video
+  },
+  'My Video Consultations': {
+    screen: VideoConsultaions
+  },
+  Medicines: {
+    screen: PharmacyHome,
+  },
+  "Medicine Orders": {
+    screen: MyOrdersList
+  },
+
+
   Reminder: {
     screen: Reminder
-  }
+  },
+  'CORONO Status': {
+    screen: CoronaDisease
+  },
+
+
 },
   {
     overlayColor: 'rgba(0, 0, 0, 0.7)',
@@ -625,12 +722,14 @@ export const DragwerLogos = {
   Home: require('../../../assets/images/drawerIcons/Home.png'),
   Profile: require('../../../assets/images/drawerIcons/Profile.png'),
   "My Appointments": require('../../../assets/images/drawerIcons/Appointments.png'),
-  Pharmacy: require('../../../assets/images/drawerIcons/Pharmacy.png'),
-  Orders: require('../../../assets/images/drawerIcons/Orders.png'),
+  Medicines: require('../../../assets/images/drawerIcons/Pharmacy.png'),
+  "Medicine Orders": require('../../../assets/images/drawerIcons/Orders.png'),
   Reminder: require('../../../assets/images/drawerIcons/Reminder.png'),
   "My Chats": require('../../../assets/images/drawerIcons/Chat.png'),
-  "Chat Service": require('../../../assets/images/drawerIcons/Chat.png'),
   "Blood Donors": require('../../../assets/images/drawerIcons/Blooddonars.png'),
+  'CORONO Status': require('../../../assets/images/drawerIcons/Pharmacy.png'),
+  'My Video Consultations': require('../../../assets/images/drawerIcons/Appointments.png'),
+  'Video and Chat Service': require('../../../assets/images/drawerIcons/Appointments.png'),
 }
 export default createAppContainer(createSwitchNavigator(
   {
@@ -641,329 +740,5 @@ export default createAppContainer(createSwitchNavigator(
   {
     initialRouteName: 'AuthLoading',
     headerMode: 'none'
-
   }
 ));
-
-/*
-const AppointMentstack1 = createStackNavigator({
-  "Doctor List": {
-    screen: doctorSearchList,
-    navigationOptions: ({ navigation }) => ({
-      title: 'Doctor List',
-      headerLeft: (
-        <TouchableOpacity onPress={() => navigation.navigate('Home')}>
-          <Icon name="arrow-back" style={{ marginLeft: 18, color: '#fff', fontFamily: 'opensans-semibold' }}></Icon>
-        </TouchableOpacity>
-      ),
-
-    })
-  },
-  Filters: {
-    screen: FilterList,
-    navigationOptions: {
-      title: 'Filters'
-    }
-  },
-
-  Services: {
-    screen: ServicesList,
-    navigationOptions: {
-      title: 'ServicesList'
-    }
-  },
-  "Book Appointment": {
-    screen: BookAppoinment,
-    navigationOptions: {
-      title: 'Book Appointment'
-    }
-  },
-  "Mapbox": {
-    screen: Mapbox,
-    navigationOptions: {
-      title: 'Mapbox'
-    }
-  },
-  Reviews: {
-    screen: Reviews,
-    navigationOptions: {
-      title: 'Reviews'
-    }
-  },
-  "Payment Review": {
-    screen: PaymentReview,
-    navigationOptions: {
-      title: 'Payment Review'
-    }
-  },
-  paymentPage: {
-    screen: PaymentPage,
-    navigationOptions: {
-      title: 'Payment Page'
-    }
-  },
-  paymentsuccess: {
-    screen: PaymentSuccess,
-    navigationOptions: {
-      headerLeft: null,
-      title: 'Success'
-    }
-  }
-},
-  {
-    defaultNavigationOptions: ({ navigation }) => ({
-      headerStyle: { backgroundColor: '#7E49C3', fontFamily: 'opensans-semibold' },
-      headerTintColor: 'white',
-    })
-  });
-*/
-
-/*
-const myAppointmentsStack = createStackNavigator({
-  "My Appointments": {
-    screen: MyAppoinmentList,
-    navigationOptions: ({ navigation }) => ({
-      title: 'Appointments',
-      headerLeft: (
-        <TouchableOpacity onPress={() => navigation.navigate('Home')}>
-          <Icon name="arrow-back" style={{ marginLeft: 18, color: '#fff', fontFamily: 'opensans-semibold' }}></Icon>
-        </TouchableOpacity>
-      ),
-    })
-  },
-  "AppointmentInfo": {
-    screen: AppointmentDetails,
-    navigationOptions: {
-      title: 'Appointment Info'
-    }
-  },
-  "CancelAppointment": {
-    screen: CancelAppointment,
-    navigationOptions: {
-      title: 'Cancel Appointment'
-    }
-  },
-  "InsertReview": {
-    screen: InsertReview,
-    navigationOptions: {
-      title: 'Rate and Review'
-    }
-  }
-
-},
-  {
-    defaultNavigationOptions: ({ navigation }) => ({
-      headerStyle: { backgroundColor: '#7E49C3', fontFamily: 'opensans-semibold' },
-      headerTintColor: 'white',
-    })
-  });
-
-*/
-
-
-/*
-const ProfileStack = createStackNavigator({
-  Profile: {
-    screen: Profile,
-    navigationOptions: ({ navigation }) => ({
-      title: 'Profile',
-      headerLeft: (
-        <TouchableOpacity onPress={() => navigation.navigate('Home')}>
-          <Icon name="arrow-back" style={{ marginLeft: 18, color: '#fff', fontFamily: 'opensans-semibold' }}></Icon>
-        </TouchableOpacity>
-      ),
-    })
-  },
-  UpdateEmail: {
-    screen: UpdateEmail,
-    navigationOptions: {
-      title: 'Update Email'
-    }
-  },
-  UpdateContact: {
-    screen: UpdateContact,
-    navigationOptions: {
-      title: 'Update Contact'
-    }
-  },
-  UpdatePassword: {
-    screen: UpdatePassword,
-    navigationOptions: {
-      title: 'Update Password'
-    }
-  },
-  UpdateInsurance: {
-    screen: UpdateInsurance,
-    navigationOptions: {
-      title: 'Update Insurance'
-    }
-  },
-  UpdateUserDetails: {
-    screen: UpdateUserDetails,
-    navigationOptions: {
-      title: 'Update User Details'
-    }
-  },
-  UpdateAddress: {
-    screen: UpdateAddress,
-    navigationOptions: {
-      title: 'Update Address'
-    }
-  },
-  "Book Appointment": {
-    screen: BookAppoinment,
-    navigationOptions: {
-      title: 'Book Appointment'
-    }
-  },
-
-},
-  {
-    defaultNavigationOptions: ({ navigation }) => ({
-      headerStyle: { backgroundColor: '#7E49C3', fontFamily: 'opensans-semibold' },
-      headerTintColor: 'white',
-    })
-  });
-
-*/
-/*
-const PharmacyStack = createStackNavigator({
-  Pharmacy: {
-    screen: PharmacyHome,
-    navigationOptions: ({ navigation }) => ({
-      title: 'Medflic Pharmacy',
-      headerLeft: (
-        <TouchableOpacity onPress={() => navigation.navigate('Home')}>
-          <Icon name="arrow-back" style={{ marginLeft: 18, color: '#fff', fontFamily: 'opensans-semibold' }}></Icon>
-        </TouchableOpacity>
-      ),
-    })
-  },
-  UploadPrescription: {
-    screen: UploadPrescription,
-    navigationOptions: {
-      title: 'Upload Prescription'
-    }
-  },
-  medicineSearchList: {
-    screen: MedicineSearchList,
-    navigationOptions: {
-      title: 'Search List'
-    }
-  },
-  MedicineCheckout: {
-    screen: MedicineCheckout,
-    navigationOptions: {
-      title: 'Checkout'
-    }
-  },
-  OrderPaymentPreview: {
-    screen: OrderPaymentPreview,
-    navigationOptions: {
-      title: 'Payment Preview'
-    }
-  },
-  OrderPayment: {
-    screen: OrderPayment,
-    navigationOptions: {
-      title: 'Payment Page'
-    }
-  },
-  PharmacyCart: {
-    screen: PharmacyCart,
-    navigationOptions: {
-      title: 'Pharmacy Cart'
-    }
-  },
-  OrderPaymentSuccess: {
-    screen: OrderPaymentSuccess,
-    navigationOptions: {
-      title: 'Payment Success'
-    }
-  },
-
-  OrderPaymentAddress: {
-    screen: OrderPaymentAddress,
-    navigationOptions: {
-      title: 'Order Payment Address'
-    }
-  }
-},
-  {
-    defaultNavigationOptions: ({ navigation }) => ({
-      headerStyle: { backgroundColor: '#7E49C3', fontFamily: 'opensans-semibold' },
-      headerTintColor: 'white',
-    })
-  });
-*/
-/*
-const OrdersStack = createStackNavigator({
-  Orders: {
-    screen: MyOrdersList,
-    navigationOptions: ({ navigation }) => ({
-      title: 'Orders List',
-      headerLeft: (
-        <TouchableOpacity onPress={() => navigation.navigate('Home')}>
-          <Icon name="arrow-back" style={{ marginLeft: 18, color: '#fff', fontFamily: 'opensans-semibold' }}></Icon>
-        </TouchableOpacity>
-      ),
-    })
-  },
-  MyOrdersList: {
-    screen: MyOrdersList,
-    navigationOptions: {
-      title: 'Order List'
-    }
-  },
-
-  OrderDetails: {
-    screen: OrderDetails,
-    navigationOptions: {
-      title: 'My Order'
-    }
-  },
-
-  OrderMedicineDetails: {
-    screen: OrderMedicineDetails,
-    navigationOptions: {
-      title: 'Medicine Details'
-    }
-  }
-
-},
-  {
-    defaultNavigationOptions: ({ navigation }) => ({
-      headerStyle: { backgroundColor: '#7E49C3', fontFamily: 'opensans-semibold' },
-      headerTintColor: 'white',
-    })
-  });
-*/
-/*
-const categoryStack = createStackNavigator({
-  Categories: {
-    screen: Categories,
-    navigationOptions: ({ navigation }) => ({
-      title: 'Specialists',
-      headerLeft: (
-        <TouchableOpacity onPress={() => navigation.navigate('Home')}>
-          <Icon name="arrow-back" style={{ marginLeft: 18, color: '#fff', fontFamily: 'opensans-semibold' }}></Icon>
-        </TouchableOpacity>
-      ),
-    })
-  },
-},
-  {
-    defaultNavigationOptions: ({ navigation }) => ({
-      headerStyle: { backgroundColor: '#7E49C3', fontFamily: 'opensans-semibold' },
-      headerTintColor: 'white',
-    })
-  });
-*/
-
-// export const appStack = createStackNavigator(AppRoutes, {
-//   initialRouteName: 'Home',
-//   headerMode: 'none',
-//   navigationOptions: { headerVisible: false }
-// })
-// const stack = createStackNavigator({ AppTabs, appStack }, { headerMode: "none" });
-//export default createAppContainer(stack)

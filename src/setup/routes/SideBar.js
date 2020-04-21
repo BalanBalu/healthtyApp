@@ -91,11 +91,11 @@ async getBasicData() {
                </Col>
               </Row> 
           </View>
-          <List style={{borderBottomWidth:0}}
+          <List style={{borderBottomWidth:0,}}
             dataArray={items}
             renderRow={data => {
               return (
-                <ListItem style={{borderBottomWidth:0,paddingBottom:-2,marginTop:5 }}
+                <ListItem style={{borderBottomWidth:0,paddingBottom:-1,marginTop:1, }}
                   button
                   onPress={() => this.props.navigation.navigate(data.routeName)}>
                           <Image square source={DragwerLogos[data.key]} 

@@ -13,10 +13,33 @@ export const NEW_PASSWORD = 'AUTH/NEW_PASSWORD';
 export const REDIRECT_NOTICE = 'AUTH/REDIRECT_NOTICE';
 export const RESET_REDIRECT_NOTICE = 'AUTH/RESET_REDIRECT_NOTICE';
 import {NOTIFICATION_RESET} from '../notification/notification.actions'
+import { AuthService } from '../../screens/VideoConsulation/services'
 import { store } from '../../../setup/store';
 import axios from 'axios';
 
 
+export async function generateOtpForEmailAndMobile(reqData, userId) {
+  try {
+    let endPoint = '/auth/generateOtpForEmailAndMobile/'+userId;
+    let response = await postService(endPoint, reqData);
+    let responseData = response.data;
+    return responseData
+  } catch (e) {
+    console.log(e);
+  }
+}
+
+export async function verifyOtpForEmailAndMobileNo(reqData) {
+  try {
+    let endPoint = '/auth/verifyOtpForEmailAndMobileNo'
+    let response = await postService(endPoint, reqData);
+    let responseData = response.data;
+    return responseData
+  }
+  catch (e) {
+    console.log(e);
+  }
+}
 
 
 
@@ -172,20 +195,22 @@ export async function updateNewPassword(data) {
 export async function logout() {
 
 
-  await AsyncStorage.removeItem('token')
-  await AsyncStorage.removeItem('user')
-  await AsyncStorage.removeItem('userId')
-  await AsyncStorage.removeItem('profile')
+  await AsyncStorage.removeItem('token');
+  await AsyncStorage.removeItem('user');
+  await AsyncStorage.removeItem('userId');
+  await AsyncStorage.removeItem('profile');
   await AsyncStorage.removeItem('isLoggedIn');
   await AsyncStorage.removeItem('basicProfileData');
+  await AsyncStorage.removeItem('updatedDeviceToken');
   await AsyncStorage.removeItem('ProfileCompletionViaHome');
-
+  
   store.dispatch({
     type: LOGOUT
   }),
   store.dispatch({
     type: NOTIFICATION_RESET
   })
+  AuthService.logout();
 }
 
 
@@ -311,6 +336,20 @@ export async function updateProfilePicture(userId, data) {
   }
 }
 
+// Update email id for Patient
+export async function userEmailUpdate(userId, data, type) {
+  try {
+    let endPoint = '/user/updateEmail/' + userId + '/' + type;
+    let response = await putService(endPoint, data);
+    await AsyncStorage.removeItem('profile');
+    return response.data;
+  } catch (e) {
+    return {
+      message: 'exception' + e,
+      success: false
+    }
+  }
+}
 
 
 

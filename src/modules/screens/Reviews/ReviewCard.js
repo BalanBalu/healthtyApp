@@ -87,14 +87,21 @@ function getLikesCount(item) {
     }
     return currentLikedRewiedIds[reviewId] === true ? (likesCount + 1) : likesCount;
 }
+
+
+
+
 export const RenderReviewData = (props) => {
-    const { item, userId } = props;
+    const { item, userId,navigation} = props;
     console.log('Is Refreshing');
+    
     return  ( 
         <Grid>
             <Row style={{marginTop:20,borderTopColor:'gray',borderTopWidth:0.5,paddingTop:20}}>
                 <Col style={{width:'15%'}}>
+                <TouchableOpacity onPress={() => navigation.navigate("ImageView", { passImage: renderProfileImage(item.userInfo), title: 'Profile photo' })}>
                     <Thumbnail  source={renderProfileImage(item.userInfo)} style={{width:60,height:60,borderRadius:60/2}}/>
+                    </TouchableOpacity>
                 </Col>
                 <Col style={{width:'55%',marginTop:5,marginLeft:15}}>
                     <Text style={styles.name}>{item.is_anonymous == true ? 'Medflic User' : item.userInfo.first_name + ' ' + item.userInfo.last_name} </Text>
