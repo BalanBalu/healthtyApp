@@ -8,6 +8,7 @@ import { renderDoctorImage, getName } from '../../../../common'
 import { hasLoggedIn } from "../../../../providers/auth/auth.actions";
 import {POSSIBLE_VIDEO_CONSULTING_STATUS, STATUS_VALUE_DATA } from '../../constants';
 import { getVideoConsuting, updateVideoConsuting } from '../../services/video-consulting-service';
+import { formatDate } from  '../../../../../setup/helpers';
 export const IS_ANDROID = Platform.OS === 'android';
 class VideoConsultaions extends Component {
     constructor(props) {
@@ -72,53 +73,45 @@ class VideoConsultaions extends Component {
         } finally {
             this.setState({ isLoading: false })
         }		
+	}
+	callDoctor(videoConsulationData) {
+        this.props.navigation.navigate('VideoScreen', {
+            callToUser: true,
+            videoConsulationData: videoConsulationData
+        })
     }
     
     renderConsultaions(item, index) {
         return (
             <Card style={styles.mainCard}>
                 <Grid>
-                    <Row>
+                <Row>
+					<Right>
+					  <Text style={styles.dateText}>{formatDate(item.consulting_date, 'DD, MMM YYYY hh:mm a')} </Text>
+				</Right>
+				</Row>
+				<Row>
                   <Col style={{ width: '80%' }}>  
 					<Row style={{ marginBottom : 15 }}>
                         <Col size={3}>
 						    <Thumbnail circular source={renderDoctorImage(item.doctorInfo)} style={{ height: 60, width: 60 }} />
 						</Col>
                         <Col size={7}>
-                            <Text style={styles.docNameText}>{getName(item.userInfo)} </Text>
+                            <Text style={styles.docNameText}>{getName(item.doctorInfo)} </Text>
                             <Text note style={styles.docNameText}>Rs. {item.fee}</Text>
                         </Col>
                     </Row>
-                        {/* {item.status === POSSIBLE_VIDEO_CONSULTING_STATUS.PENDING ?
-                            <Row style={{ marginLeft: '22%' }} >
-                           
-                                <Button iconLeft style={[styles.actionButton, { backgroundColor: '#08BF01'  }]} 
-                                     onPress={() => this.doAccept(item, POSSIBLE_VIDEO_CONSULTING_STATUS.APPROVED, index)}>
-								     <Icon style={{ marginTop: -5 }} name={IS_ANDROID ? 'md-checkmark-circle' : 'ios-checkmark-circle' }  />
-                                    <Text style={[styles.buttonText1, {  marginLeft: -10 }]}>Approve</Text>
-							    </Button>
-                                <Button style={[styles.actionButtonCancel, { marginLeft: 20 }]} 
-                                     onPress={() => this.doAccept(item, POSSIBLE_VIDEO_CONSULTING_STATUS.REJECTED, index)}>
-                                          <Icon style={{ marginTop: -5 }} name={IS_ANDROID ? 'md-close-circle' : 'ios-close-circle' }  />
-								    <Text style={[styles.buttonText1,  { marginLeft: -25 }]}>Reject</Text>
-							    </Button>
-						    </Row>
-                        : 
+                     {
                         item.status === POSSIBLE_VIDEO_CONSULTING_STATUS.APPROVED ? 
                             <Row style={{ marginLeft: '22%' }} >
                                 <Button primary iconLeft style={[styles.actionButton, { backgroundColor: '#08BF01'  }]} 
-                                     onPress={() => this.callUser(item)}>
+                                     onPress={() => this.callDoctor(item)}>
 								    <Icon style={{ marginTop: -5}} name={IS_ANDROID ? 'md-call' : 'ios-call' }  />
                                     <Text style={[styles.buttonText1, {  marginLeft: -10  }]}>Call</Text>
 							    </Button>
-                                <Button primary iconLeft style={[styles.actionButton, { marginLeft: 20 }]} 
-                                     onPress={() => this.doAccept(item, POSSIBLE_VIDEO_CONSULTING_STATUS.COMPLETED, index)}>
-								    <Icon style={{ marginTop: -5, fontWeight: 'bold' }} name={IS_ANDROID ? 'md-cloud-done' : 'ios-cloud-done' }  />
-                                    <Text style={[styles.buttonText1,{ marginLeft: -12 } ] }>Complete</Text>
-							    </Button>
                             </Row>
                         : null    
-                        }  */}
+                        }
                     </Col>
                     <Col style={{ width: '20%', alignItems: 'center' }}>
                         <Icon name={STATUS_VALUE_DATA[item.status].icon} 
@@ -175,6 +168,10 @@ const styles = StyleSheet.create({
 		borderRadius: 10,
 		marginBottom: 20,
 		
+	},
+	dateText: {
+		fontFamily: 'OpenSans',
+		fontSize: 12,
     },
     docNameText: {
 		fontFamily: 'OpenSans',

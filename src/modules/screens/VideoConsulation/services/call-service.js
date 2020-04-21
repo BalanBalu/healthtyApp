@@ -2,7 +2,7 @@ import { Toast } from 'native-base';
 import ConnectyCube from 'react-native-connectycube';
 import InCallManager from 'react-native-incall-manager';
 import Sound from 'react-native-sound';
-
+import { sendNotification } from './video-consulting-service';
 export default class CallService {
  static MEDIA_OPTIONS = {audio: true, video: {facingMode: 'user'}};
 
@@ -29,6 +29,8 @@ export default class CallService {
 
   setMediaDevices() {
     return ConnectyCube.videochat.getMediaDevices().then(mediaDevices => {
+      console.log('=======Setting THE Media Devices =============');
+      console.log(mediaDevices);
       this.mediaDevices = mediaDevices;
     });
   }
@@ -64,6 +66,7 @@ export default class CallService {
     const type = ConnectyCube.videochat.CallType.VIDEO; // AUDIO is also possible
 
     this._session = ConnectyCube.videochat.createNewSession(ids, type, options);
+
     this.setMediaDevices();
     this.playSound('outgoing');
 
@@ -74,6 +77,13 @@ export default class CallService {
         return stream;
       });
   };
+  sendVideoCallingNotification = (medflicUserOrDoctorId) => {
+      sendNotification(medflicUserOrDoctorId, {
+        session: {
+            ID:  this._session.ID,
+          }
+      });
+  }
 
   stopCall = () => {
     this.stopSounds();
@@ -107,11 +117,14 @@ export default class CallService {
   setSpeakerphoneOn = flag => {
     InCallManager.setSpeakerphoneOn(flag)
   };
-
+  setMicrophoneMute = flag => {
+    InCallManager.setMicrophoneMute(flag)
+  };
+  
   setKeepScreenOn = flag => {
     InCallManager.setKeepScreenOn(flag);
   }
-
+  
   processOnUserNotAnswerListener(userId) {
     return new Promise((resolve, reject) => {
       if (!this._session) {
@@ -153,7 +166,7 @@ export default class CallService {
         reject();
       } else {
         const userName = this.getUserById(userId, 'name');
-        const message = `${userName} has accepted the call`;
+        const message = `${userName} accepted the call`;
 
         this.showToast(message);
         this.stopSounds();
@@ -191,7 +204,7 @@ export default class CallService {
         reject();
       } else {
         const userName = this.getUserById(userId, 'name');
-        const message = `${userName} has ${
+        const message = `${userName} ${
           isInitiator ? 'stopped' : 'left'
         } the call`;
 
@@ -239,4 +252,10 @@ export default class CallService {
       this.outgoingCall.pause();
     }
   };
+
+  async getWiredPlugedIn() {
+  
+    const isPluged =  await InCallManager.getIsWiredHeadsetPluggedIn();
+    return isPluged
+  }
 }

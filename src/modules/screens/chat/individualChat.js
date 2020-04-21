@@ -92,7 +92,7 @@ class IndividualChat extends Component {
         });
         const userId = await AsyncStorage.getItem('userId');
         
-        this.setState({ conversation_id, doctorInfo, userInfo, userId, status });
+        this.setState({ conversation_id, doctorInfo, userInfo, userId, status, messageRecieveCount: this.state.messageRecieveCount + 1 });
       
         this.socket = SocketIOClient(CHAT_API_URL, {
                 query: {
@@ -213,6 +213,8 @@ scrollToBottom() {
 
 render() {
     const { messages, userId, doctorInfo, userInfo, status } = this.state;
+    console.log(messages);
+    console.log('userId: ' + userId);
     return (
      <Container>
        

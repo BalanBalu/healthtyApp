@@ -8,11 +8,13 @@ import { fetchUserProfile, getCurrentVersion } from '../../../providers/profile/
 import { userFiledsUpdate, logout } from '../../../providers/auth/auth.actions';
 import Spinner from '../../../../components/Spinner';
 import { formatDate } from '../../../../setup/helpers';
-import { RadioButton, } from 'react-native-paper';
+import { RadioButton, Checkbox } from 'react-native-paper';
 import { getAddress } from '../../../common'
-import { SERVICE_TYPES, BASIC_DEFAULT } from '../../../../setup/config'
+import { SERVICE_TYPES, BASIC_DEFAULT, MAX_DISTANCE_TO_COVER } from '../../../../setup/config'
 import { hasLoggedIn } from '../../../providers/auth/auth.actions';
+import { getPurcharseRecomentation } from '../../../providers/pharmacy/pharmacy.action'
 import BookAppointmentPaymentUpdate from '../../../providers/bookappointment/bookAppointment';
+import { connect } from 'react-redux'
 class MedicineCheckout extends Component {
     constructor(props) {
         super(props);
@@ -28,7 +30,12 @@ class MedicineCheckout extends Component {
             deliveryDetails: null,
             medicineTotalAmount: 0,
             pickupOPtionEnabled: true,
-            pharmacyInfo: null
+            pharmacyInfo: null,
+            isPrescription: false,
+            isPharmacyRecomentation: false,
+            recommentationData: [],
+
+
 
         };
     }
@@ -43,13 +50,17 @@ class MedicineCheckout extends Component {
                 return
             }
             const medicineDetails = navigation.getParam('medicineDetails') || [];
+            const isPrescription = navigation.getParam('isPrescription') || false
 
-            this.setState({ medicineDetails })
-            if (medicineDetails.length != 0) {
-                await this.getdeliveryWithMedicineAmountCalculation(medicineDetails)
+
+            this.setState({ medicineDetails, isPrescription })
+            if (medicineDetails.length !== 0) {
+                await this.clickedHomeDelivery()
+
+                await this.getdeliveryWithMedicineAmountCalculation(medicineDetails, isPrescription)
+                await this.getDelveryChageAmount()
             }
-            await this.clickedHomeDelivery()
-            await this.getDelveryChageAmount()
+
             this.setState({ isLoading: false })
         } catch (error) {
             console.error(error)
@@ -85,7 +96,7 @@ class MedicineCheckout extends Component {
             }
             console.log(JSON.stringify(deliveryAddressArray))
             await this.setState({ deliveryAddressArray })
-
+            this.selectedItem(this.state.itemSelected)
 
         } catch (error) {
             console.log(error);
@@ -110,15 +121,16 @@ class MedicineCheckout extends Component {
         }
     }
 
-    onProceedToPayment (navigationToPayment) {
+    onProceedToPayment(navigationToPayment) {
         debugger
-        const { medicineDetails, selectedAddress, mobile_no, full_name, medicineTotalAmountwithDeliveryChage, itemSelected } = this.state;
+        const { medicineDetails, selectedAddress, mobile_no, full_name, medicineTotalAmountwithDeliveryChage, itemSelected, isPrescription, isPharmacyRecomentation, recommentationData } = this.state;
         if (medicineDetails.length === 0) {
             Toast.show({
                 text: 'No Medicines Added to Checkout',
                 type: 'warning',
                 duration: 3000
             })
+            return false
         }
         if (selectedAddress == null) {
             Toast.show({
@@ -130,31 +142,37 @@ class MedicineCheckout extends Component {
         }
         let medicinceNames = '';
         let medicineOrderData = [];
-        const amount = medicineDetails.map(ele => {
-            if (medicinceNames.length < 100) {
-                medicinceNames = medicinceNames + ele.medicine_name + '( * ' + String(ele.userAddedMedicineQuantity) + '), ' 
-            }
-            medicineOrderData.push({
-                medicine_id: ele.medicine_id,
-                pharmacy_id: ele.pharmacy_id,
-                medicine_original_price: Number(ele.price),
-                medicine_offered_price: Number(ele.offeredAmount),
-                quantity: Number(ele.userAddedMedicineQuantity),
-                final_price: Number(Number(ele.userAddedTotalMedicineAmount).toFixed(2)),
-                medicine_name: ele.medicine_name,
-            })
-            return ele.userAddedTotalMedicineAmount
-        }).reduce(
-            (total, userAddedTotalMedicineAmount) => total + userAddedTotalMedicineAmount);
-
+        let amount = 0;
+        if (isPrescription !== true) {
+            amount = medicineDetails.map(ele => {
+                if (medicinceNames.length < 100) {
+                    medicinceNames = medicinceNames + ele.medicine_name + '( * ' + String(ele.userAddedMedicineQuantity) + '), '
+                }
+                medicineOrderData.push({
+                    medicine_id: ele.medicine_id,
+                    pharmacy_id: ele.pharmacy_id,
+                    medicine_original_price: Number(ele.price),
+                    medicine_offered_price: Number(ele.offeredAmount),
+                    quantity: Number(ele.userAddedMedicineQuantity),
+                    medicine_weight: ele.medicine_weight,
+                    medicine_variation_id: ele.medicine_variation_id,
+                    medicine_weight_unit: ele.medicine_weight_unit,
+                    final_price: Number(Number(ele.userAddedTotalMedicineAmount).toFixed(2)),
+                    medicine_name: ele.medicine_name,
+                })
+                return ele.userAddedTotalMedicineAmount
+            }).reduce(
+                (total, userAddedTotalMedicineAmount) => total + userAddedTotalMedicineAmount);
+        }
 
         const paymentPageRequestData = {
             service_type: SERVICE_TYPES.PHARMACY,
             amount: medicineTotalAmountwithDeliveryChage,
             bookSlotDetails: {
                 fee: amount,
-                is_order_type_prescription: false,
-                diseaseDescription: medicinceNames.slice(0, -1),
+                is_order_type_prescription: isPrescription,
+                is_order_type_recommentation: isPharmacyRecomentation,
+                diseaseDescription: medicinceNames.slice(0, -1) || 'Upload prescription',
                 medicineDetails: medicineOrderData,
                 delivery_option: itemSelected,
                 delivery_charges: deliveryDetails.delivery_charges,
@@ -176,53 +194,129 @@ class MedicineCheckout extends Component {
                 },
             }
         }
-        if (itemSelected == 'STORE_PICKUP') {
+        if (itemSelected === 'STORE_PICKUP') {
             delete paymentPageRequestData.bookSlotDetails.delivery_charges
             delete paymentPageRequestData.bookSlotDetails.delivery_tax
         }
+        if (isPrescription === true) {
+            console.log(medicineDetails[0].PrescriptionId)
+            paymentPageRequestData.bookSlotDetails.prescription_id = medicineDetails[0].PrescriptionId
+            paymentPageRequestData.bookSlotDetails.pharmacy_id = medicineDetails[0].pharmacyInfo.pharmacy_id
+
+
+        }
+        if (isPharmacyRecomentation === true) {
+            pharmacy_ids = []
+            recommentationData.map(ele => {
+                pharmacy_ids.push(ele.pharmacy_id)
+            })
+            if (itemSelected === 'STORE_PICKUP') {
+                paymentPageRequestData.amount = recommentationData[0].medicine_total_amount
+            }
+            else {
+                paymentPageRequestData.amount = recommentationData[0].medicine_total_amount + deliveryDetails.delivery_charges + deliveryDetails.delivery_tax
+
+            }
+            paymentPageRequestData.bookSlotDetails.fee = recommentationData[0].medicine_total_amount;
+            paymentPageRequestData.bookSlotDetails.pharmacy_ids = pharmacy_ids
+        }
+
         console.log(paymentPageRequestData)
         if (navigationToPayment === true) {
+            paymentPageRequestData.orderOption = this.props.navigation.getParam('orderOption') || null
             this.props.navigation.navigate('paymentPage', paymentPageRequestData)
         } else {
             return paymentPageRequestData;
         }
     }
 
-    getdeliveryWithMedicineAmountCalculation(medicineDetails) {
-        if (medicineDetails.length != 0) {
+    async  getdeliveryWithMedicineAmountCalculation(medicineDetails, isPrescription) {
+        if (medicineDetails.length !== 0 && isPrescription === false) {
             let pharmacyData = []
+            let medicineOrderData = [];
+            let recommentationData = [];
             let pharmacyInfo = null;
             let amount = this.state.medicineDetails.map(ele => {
+                medicineOrderData.push({
+                    medicine_id: ele.medicine_id,
+                    quantity: Number(ele.userAddedMedicineQuantity),
+                    medicine_weight: Number(ele.medicine_weight),
+                    medicine_weight_unit: ele.medicine_weight_unit,
 
+                })
                 if (ele.pharmacyInfo && !pharmacyData.includes(ele.pharmacyInfo.pharmacy_id)) {
                     pharmacyData.push(ele.pharmacyInfo.pharmacy_id)
                     let temp = ele.pharmacyInfo
-                    delete temp.name
+
                     temp.full_name = ele.pharmacyInfo.name;
                     temp.coordinates = ele.pharmacyInfo.location.coordinates
                     temp.type = ele.pharmacyInfo.location.type
                     temp.address = ele.pharmacyInfo.location.address;
                     pharmacyInfo = temp;
+                    //  temp.name
                 }
                 return ele.userAddedTotalMedicineAmount
             }).reduce(
                 (total, userAddedTotalMedicineAmount) => total + userAddedTotalMedicineAmount);
-        
-                this.setState({ 
-                    pickupOPtionEnabled: pharmacyData.length === 1,
-                    pharmacyInfo: pharmacyData.length === 1 ? pharmacyInfo: null,
-                    medicineTotalAmount: amount,
-                 })
+            if (medicineOrderData.length !== 0) {
+                const { bookappointment: { locationCordinates } } = this.props;
+
+                purcharseProductsData = {
+                    coordinates: locationCordinates,
+                    type: 'Point',
+                    maxDistance: 300000000000,
+                    order_items: medicineOrderData,
+                    medicine_total_amount: amount
+                };
+                recomentationResult = await getPurcharseRecomentation(purcharseProductsData)
+
+                if (recomentationResult.success) {
+                    let data = recomentationResult.data.sort(function (firstVarlue, secandValue) {
+                        return firstVarlue.medicine_total_amount > secandValue.medicine_total_amount ? -1 : 0
+                    })
+
+                    recommentationData = data
+                }
+            }
+            this.setState({
+                pickupOPtionEnabled: pharmacyData.length === 1,
+                pharmacyInfo: pharmacyData.length === 1 ? pharmacyInfo : null,
+                medicineTotalAmount: amount,
+                recommentationData: recommentationData
+            })
         } else {
-            return ' '
+
+
+
+
+            let ele = this.state.medicineDetails[0].pharmacyInfo
+            let temp = this.state.medicineDetails[0].pharmacyInfo
+
+            temp.full_name = ele.name;
+            temp.coordinates = ele.location.coordinates
+            temp.type = ele.location.type
+            temp.address = ele.location.address;
+            delete temp.name
+
+            this.setState({
+                pickupOPtionEnabled: true,
+                pharmacyInfo: temp,
+                medicineTotalAmount: 0,
+            })
+
         }
 
     }
 
     selectedItem(value) {
         if (value == 'HOME_DELIVERY') {
+            let selectedAddress = null
             medicineTotalAmountwithDeliveryChage = this.state.medicineTotalAmount + this.state.deliveryDetails.delivery_tax + this.state.deliveryDetails.delivery_charges
-            this.setState({ medicineTotalAmountwithDeliveryChage, itemSelected: value })
+            if (this.state.deliveryAddressArray.length !== 0) {
+                selectedAddress = this.state.deliveryAddressArray[0]
+            }
+
+            this.setState({ medicineTotalAmountwithDeliveryChage, itemSelected: value, selectedAddress })
         } else {
 
             this.setState({ medicineTotalAmountwithDeliveryChage: this.state.medicineTotalAmount, itemSelected: value, selectedAddress: this.state.pharmacyInfo })
@@ -234,7 +328,13 @@ class MedicineCheckout extends Component {
     }
     backNavigation = async (navigationData) => {
         try {
-            this.clickedHomeDelivery();
+            const { navigation } = this.props;
+            // if (navigation.state.params) {
+            //   if (navigation.state.params.hasReloadAddress) {
+                this.clickedHomeDelivery();  // Reload the Reported issues when they reload
+            //   }
+            // };
+            
         } catch (e) {
             console.log(e)
         }
@@ -243,20 +343,23 @@ class MedicineCheckout extends Component {
         debugger
         this.setState({ isLoading: true })
         const orderRequestData = await this.onProceedToPayment(false);
-        if(orderRequestData === false) {
-            this.setState({ isLoading: false, spinnerText: ' ' }); 
+        if (orderRequestData === false) {
+            this.setState({ isLoading: false, spinnerText: ' ' });
             return false;
         }
-    debugger 
+        debugger
         const userId = await AsyncStorage.getItem('userId');
         this.BookAppointmentPaymentUpdate = new BookAppointmentPaymentUpdate();
-        let response = await this.BookAppointmentPaymentUpdate.updatePaymentDetails(true, {}, 'cash',orderRequestData.bookSlotDetails, orderRequestData.service_type, userId, 'cash');
+        let response = await this.BookAppointmentPaymentUpdate.updatePaymentDetails(true, {}, 'cash', orderRequestData.bookSlotDetails, orderRequestData.service_type, userId, 'cash');
         console.log('Order Booking Response ');
-        
+
         if (response.success) {
-            this.props.navigation.navigate('SuccessChat', { manualNaviagationPage : 'Home' });
+            if (this.props.navigation.getParam('orderOption') === 'pharmacyCart') {
+                await AsyncStorage.removeItem('cartItems-' + userId);
+            }
+            this.props.navigation.navigate('SuccessChat', { manualNaviagationPage: 'Home' });
             Toast.show({
-                text: 'Paymenet Success',
+                text: 'your order successfully requested',
                 type: 'success',
                 duration: 3000
             })
@@ -267,170 +370,203 @@ class MedicineCheckout extends Component {
                 duration: 3000
             })
         }
-        this.setState({ isLoading: false, spinnerText: ' ' }); 
+        this.setState({ isLoading: false, spinnerText: ' ' });
     }
     render() {
-        const { itemSelected, deliveryAddressArray, isLoading, deliveryDetails, pickupOPtionEnabled, medicineTotalAmount, medicineTotalAmountwithDeliveryChage, pharmacyInfo } = this.state
+        const { itemSelected, deliveryAddressArray, isLoading, deliveryDetails, pickupOPtionEnabled, medicineTotalAmount, medicineTotalAmountwithDeliveryChage, pharmacyInfo, isPrescription, recommentationData, isPharmacyRecomentation } = this.state
+
+
         return (
             <Container>
                 <Content style={{ backgroundColor: '#F5F5F5', padding: 10 }}>
                     <NavigationEvents
                         onWillFocus={payload => { this.backNavigation(payload) }}
-                    />
-                    <Spinner color="blue"
-                        visible={isLoading} />
-                    <RadioButton.Group onValueChange={value => this.selectedItem(value)}
-                        value={itemSelected}  >
-                        <View style={{ backgroundColor: '#fff', padding: 10 }}>
-                            <Row>
-                                <Col size={5}>
-                                    <Text style={{ fontFamily: 'OpenSans', fontSize: 14, fontWeight: '500' }}>Home Delivery</Text>
-                                </Col>
-                                <Col size={5} style={{ alignItems: 'flex-end', justifyContent: 'flex-end' }}>
+                    />{isLoading === true ?
+                        <Spinner color="blue"
+                            visible={isLoading} /> :
+                        this.state.medicineDetails.length != 0 ?
+                            <View>
+                                <RadioButton.Group onValueChange={value => this.selectedItem(value)}
+                                    value={itemSelected}  >
+                                    <View style={{ backgroundColor: '#fff', padding: 10 }}>
+                                        <Row>
+                                            <Col size={5}>
+                                                <Text style={{ fontFamily: 'OpenSans', fontSize: 14, fontWeight: '500' }}>Home Delivery</Text>
+                                            </Col>
+                                            <Col size={5} style={{ alignItems: 'flex-end', justifyContent: 'flex-end' }}>
 
-                                    <RadioButton value={'HOME_DELIVERY'} />
+                                                <RadioButton value={'HOME_DELIVERY'} />
 
-                                </Col>
-                            </Row>
-                        </View>
-                        {pickupOPtionEnabled == true && pharmacyInfo != null ?
-                            <View style={{ backgroundColor: '#fff', padding: 10, marginTop: 5 }}>
-                                <Row>
-                                    <Col size={5}>
-                                        <Text style={{ fontFamily: 'OpenSans', fontSize: 14, fontWeight: '500' }}>Pick up at Store</Text>
-                                    </Col>
-                                    <Col size={5} style={{ alignItems: 'flex-end', justifyContent: 'flex-end' }}>
-                                        <RadioButton value={'STORE_PICKUP'} />
-                                    </Col>
-                                </Row>
-                            </View> : null}
-                    </RadioButton.Group>
-                    {itemSelected === 'HOME_DELIVERY' ?
-                        <View>
-                            <Row style={{ marginTop: 5 }}>
-                                <Col size={5}>
-                                    <Text style={{ fontFamily: 'OpenSans', fontSize: 14, color: '#7F49C3' }}>Delivery Address</Text>
-                                </Col>
-                                {deliveryAddressArray.length != 0 ?
-                                    <Col size={5} style={{ alignItems: 'flex-end', justifyContent: 'flex-end' }}>
-                                        <TouchableOpacity onPress={() => this.editProfile('MapBox', 'delivery_Address')}>
-                                            <Text style={{ fontFamily: 'OpenSans', fontSize: 10, color: '#ff4e42' }}>Add new address</Text>
-                                        </TouchableOpacity>
-                                    </Col> : null}
-                            </Row>
-                            {deliveryAddressArray.length != 0 ?
-                                <View>
+                                            </Col>
+                                        </Row>
+                                    </View>
+                                    {itemSelected === 'HOME_DELIVERY' ?
+                                        <View >
+                                            <Row style={{ marginTop: 5 }}>
+                                                <Col size={5}>
+                                                    <Text style={{ fontFamily: 'OpenSans', fontSize: 14, color: '#7F49C3' }}>Delivery Address</Text>
+                                                </Col>
+                                                {deliveryAddressArray.length != 0 ?
+                                                    <Col size={5} style={{ alignItems: 'flex-end', justifyContent: 'flex-end' }}>
+                                                        <TouchableOpacity onPress={() => this.editProfile('MapBox', 'delivery_Address')}>
+                                                            <Text style={{ fontFamily: 'OpenSans', fontSize: 10, color: '#ff4e42' }}>Add new address</Text>
+                                                        </TouchableOpacity>
+                                                    </Col> : null}
+                                            </Row>
+                                            {deliveryAddressArray.length != 0 ?
+                                                <View>
 
-                                    <FlatList
-                                        data={deliveryAddressArray}
-                                        keyExtractor={(item, index) => index.toString()}
-                                        renderItem={({ item }) =>
-                                            <View style={{ backgroundColor: '#fff' }}>
-                                                <Text style={{ fontFamily: 'OpenSans', fontSize: 12, fontWeight: '300', marginTop: 2 }}>{item.full_name}</Text>
-                                                <Row style={{ borderBottomWidth: 0.5, paddingBottom: 10 }}>
-                                                    <Col size={9}>
-                                                        <Text style={{ fontFamily: 'OpenSans', fontSize: 12, marginTop: 2, color: '#6a6a6a' }}>{getAddress(item)}</Text>
-                                                        <Text style={{ fontFamily: 'OpenSans', fontSize: 12, marginTop: 2 }}>{'Mobile -' + (item.mobile_no || 'Nil')}</Text>
+                                                    <FlatList
+                                                        data={deliveryAddressArray}
+                                                        keyExtractor={(item, index) => index.toString()}
+                                                        renderItem={({ item }) =>
+                                                            <View style={{ backgroundColor: '#fff' }}>
+                                                                <Text style={{ fontFamily: 'OpenSans', fontSize: 12, fontWeight: '300', marginTop: 2, marginLeft: 33 }}>{item.full_name}</Text>
+                                                                <Row style={{ borderBottomWidth: 0.5, paddingBottom: 10 }}>
+                                                                    <Col size={1}>
+                                                                        <RadioButton.Group style={{ marginTop: 2 }} onValueChange={value => this.setState({ selectedAddress: value })}
 
-                                                    </Col>
-                                                    <Col size={1}>
-                                                        <RadioButton.Group style={{ marginTop: 2 }} onValueChange={value => this.setState({ selectedAddress: value })}
+                                                                            value={this.state.selectedAddress}  >
+                                                                            <RadioButton value={item} />
+                                                                        </RadioButton.Group>
+                                                                    </Col>
 
-                                                            value={this.state.selectedAddress}  >
-                                                            <RadioButton value={item} />
-                                                        </RadioButton.Group>
-                                                    </Col>
-                                                </Row>
-                                            </View>
-                                        } />
+                                                                    <Col size={9}>
+                                                                        <Text style={{ fontFamily: 'OpenSans', fontSize: 12, marginTop: 2, color: '#6a6a6a' }}>{getAddress(item)}</Text>
+                                                                        <Text style={{ fontFamily: 'OpenSans', fontSize: 12, marginTop: 2 }}>{'Mobile -' + (item.mobile_no || 'Nil')}</Text>
 
-                                </View> :
-                                <Button transparent onPress={() => this.editProfile('MapBox', null)}>
-                                    <Icon name='add' style={{ color: 'gray' }} />
-                                    <Text uppercase={false} style={styles.customText}>Add Address</Text>
-                                </Button>}
-                        </View> :
-                        null}
+                                                                    </Col>
+                                                                </Row>
+                                                            </View>
+                                                        } />
+
+                                                </View> :
+                                                <Button transparent onPress={() => this.editProfile('MapBox', null)}>
+                                                    <Icon name='add' style={{ color: 'gray' }} />
+                                                    <Text uppercase={false} style={styles.customText}>Add Address</Text>
+                                                </Button>}
+                                        </View> :
+                                        null}
 
 
-
-                    {itemSelected === 'STORE_PICKUP' ?
-                        <View>
-                            <Row>
-                                <Col size={5}>
-                                    <Text style={{ fontFamily: 'OpenSans', fontSize: 14, color: '#7F49C3' }}>Store Address</Text>
-                                </Col>
-                                <Col size={5} style={{ alignItems: 'flex-end', justifyContent: 'flex-end' }}>
-                                </Col>
-                            </Row>
-                            <Text style={{ fontFamily: 'OpenSans', fontSize: 12, fontWeight: '300', marginTop: 5 }}>{pharmacyInfo.name}</Text>
-                            <Text style={{ fontFamily: 'OpenSans', fontSize: 12, marginTop: 2, color: '#6a6a6a' }}>{getAddress(pharmacyInfo.location)}</Text>
-                            <Text style={{ fontFamily: 'OpenSans', fontSize: 12, marginTop: 2 }}>{'Mobile -' + (pharmacyInfo.mobile_no || 'Nil')}</Text>
-                        </View> :
-                        null}
+                                    {pickupOPtionEnabled == true && pharmacyInfo != null ?
+                                        <View style={{ backgroundColor: '#fff', padding: 10, marginTop: 5 }}>
+                                            <Row>
+                                                <Col size={5}>
+                                                    <Text style={{ fontFamily: 'OpenSans', fontSize: 14, fontWeight: '500' }}>Pick up at Store</Text>
+                                                </Col>
+                                                <Col size={5} style={{ alignItems: 'flex-end', justifyContent: 'flex-end' }}>
+                                                    <RadioButton value={'STORE_PICKUP'} />
+                                                </Col>
+                                            </Row>
+                                        </View> : null}
+                                </RadioButton.Group>
 
 
+                                {itemSelected === 'STORE_PICKUP' ?
+                                    <View>
+                                        <Row>
+                                            <Col size={5}>
+                                                <Text style={{ fontFamily: 'OpenSans', fontSize: 14, color: '#7F49C3' }}>Store Address</Text>
+                                            </Col>
+                                            <Col size={5} style={{ alignItems: 'flex-end', justifyContent: 'flex-end' }}>
+                                            </Col>
+                                        </Row>
+                                        <Text style={{ fontFamily: 'OpenSans', fontSize: 12, fontWeight: '300', marginTop: 5 }}>{pharmacyInfo.full_name}</Text>
+                                        <Text style={{ fontFamily: 'OpenSans', fontSize: 12, marginTop: 2, color: '#6a6a6a' }}>{getAddress(pharmacyInfo.location)}</Text>
+                                        <Text style={{ fontFamily: 'OpenSans', fontSize: 12, marginTop: 2 }}>{'Mobile -' + (pharmacyInfo.mobile_no || 'Nil')}</Text>
+                                    </View> :
+                                    null}
 
-                    <View style={{ backgroundColor: '#fff', padding: 10, marginTop: 5 }}>
-                        <Text style={{ fontFamily: 'OpenSans', fontSize: 14, color: '#7F49C3' }}>Order Details</Text>
-                        {this.state.medicineDetails.length != 0 ?
-                            <FlatList
-                                data={this.state.medicineDetails}
-                                keyExtractor={(item, index) => index.toString()}
-                                renderItem={({ item }) =>
+
+
+                                <View style={{ backgroundColor: '#fff', padding: 10, marginTop: 5 }}>
+                                    <Text style={{ fontFamily: 'OpenSans', fontSize: 14, color: '#7F49C3' }}>Order Details</Text>
+                                    {isPrescription === false ?
+                                        this.state.medicineDetails.length != 0 ?
+                                            <FlatList
+                                                data={this.state.medicineDetails}
+                                                keyExtractor={(item, index) => index.toString()}
+                                                renderItem={({ item }) =>
+                                                    <Row style={{ marginTop: 10 }}>
+                                                        <Col size={8}>
+                                                            <Text style={{ fontFamily: 'OpenSans', fontSize: 12, color: '#6a6a6a' }}>{item.medicine_name + ' -'}<Text style={{ fontFamily: 'OpenSans', fontSize: 12, fontWeight: '400' }}>
+                                                                {item.pharmacy_name} <Text style={{ fontFamily: 'OpenSans', fontSize: 12, color: '#8dc63f' }}>{'(X' + item.userAddedMedicineQuantity + ')'}</Text> </Text></Text>
+                                                        </Col>
+                                                        <Col size={5} style={{ alignItems: 'flex-end', justifyContent: 'flex-end' }}>
+
+                                                            <Text style={{ fontFamily: 'OpenSans', fontSize: 10, color: '#8dc63f', textAlign: 'right' }}>{'₹' + item.userAddedTotalMedicineAmount || ''} </Text>
+
+                                                        </Col>
+                                                    </Row>
+                                                } /> : <Row style={{ marginTop: 10 }}>
+                                                <Col size={8}>
+                                                    <Text style={{ fontFamily: 'OpenSans', fontSize: 12, color: '#6a6a6a' }}>No orders Available</Text>
+                                                </Col>
+                                                <Col size={5} style={{ alignItems: 'flex-end', justifyContent: 'flex-end' }}>
+                                                </Col>
+                                            </Row> :
+                                        <Row style={{ marginTop: 10 }}>
+                                            <Col size={8}>
+                                                <Text style={{ fontFamily: 'OpenSans', fontSize: 12, color: '#6a6a6a' }}>{'Prescription reference no:'}</Text>
+                                            </Col>
+                                            <Col size={5} style={{ alignItems: 'flex-end', justifyContent: 'flex-end' }}>
+
+                                                <Text style={{ fontFamily: 'OpenSans', fontSize: 10, color: '#8dc63f', textAlign: 'right' }}>{this.state.medicineDetails[0].prescription_ref_no} </Text>
+
+                                            </Col>
+                                        </Row>}
+                                    {deliveryDetails != null && itemSelected == 'HOME_DELIVERY' ?
+                                        <View>
+                                            <Row style={{ marginTop: 5 }}>
+                                                <Col size={8}>
+                                                    <Text style={{ fontFamily: 'OpenSans', fontSize: 12, color: '#6a6a6a' }}>Delivery Charges</Text>
+                                                </Col>
+
+                                                <Col size={5} style={{ alignItems: 'flex-end', justifyContent: 'flex-end' }}>
+
+                                                    <Text style={{ fontFamily: 'OpenSans', fontSize: 10, color: '#ff4e42', textAlign: 'right' }}>{'₹' + deliveryDetails.delivery_charges || ''} </Text>
+
+                                                </Col>
+                                            </Row>
+                                            <Row style={{ marginTop: 5 }}>
+                                                <Col size={8}>
+                                                    <Text style={{ fontFamily: 'OpenSans', fontSize: 12, color: '#6a6a6a' }}>Tax</Text>
+                                                </Col>
+                                                <Col size={5} style={{ alignItems: 'flex-end', justifyContent: 'flex-end' }}>
+
+                                                    <Text style={{ fontFamily: 'OpenSans', fontSize: 10, color: '#ff4e42', textAlign: 'right' }}>{'₹' + deliveryDetails.delivery_tax || 0}</Text>
+
+                                                </Col>
+                                            </Row>
+                                        </View> : null}
                                     <Row style={{ marginTop: 10 }}>
                                         <Col size={8}>
-                                            <Text style={{ fontFamily: 'OpenSans', fontSize: 12, color: '#6a6a6a' }}>{item.medicine_name + ' -'}<Text style={{ fontFamily: 'OpenSans', fontSize: 12, fontWeight: '400' }}>
-                                                {item.pharmacy_name} <Text style={{ fontFamily: 'OpenSans', fontSize: 12, color: '#8dc63f' }}>{'(X' + item.userAddedMedicineQuantity + ')'}</Text> </Text></Text>
+                                            <Text style={{ fontFamily: 'OpenSans', fontSize: 12, fontWeight: '500' }}>Amount to be Paid</Text>
                                         </Col>
                                         <Col size={5} style={{ alignItems: 'flex-end', justifyContent: 'flex-end' }}>
-
-                                            <Text style={{ fontFamily: 'OpenSans', fontSize: 10, color: '#8dc63f', textAlign: 'right' }}>{'₹' + item.userAddedTotalMedicineAmount || ''} </Text>
-
+                                            {isPrescription === false ?
+                                                <Text style={{ fontFamily: 'OpenSans', fontSize: 10, color: '#8dc63f', textAlign: 'right' }}>{'₹' + (medicineTotalAmountwithDeliveryChage || ' ')} </Text>
+                                                : itemSelected === 'HOME_DELIVERY' ?
+                                                    <Text style={{ fontFamily: 'OpenSans', fontSize: 10, color: '#8dc63f', textAlign: 'right' }}>{'your prescription amount added with ' + (deliveryDetails != null ? (deliveryDetails.delivery_tax + deliveryDetails.delivery_charges) : ' ')}} </Text>
+                                                    : <Text style={{ fontFamily: 'OpenSans', fontSize: 10, color: '#8dc63f', textAlign: 'right' }}>{'your prescription amount added later'} </Text>
+                                            }
                                         </Col>
                                     </Row>
-                                } /> : <Row style={{ marginTop: 10 }}>
-                                <Col size={8}>
-                                    <Text style={{ fontFamily: 'OpenSans', fontSize: 12, color: '#6a6a6a' }}>No orders Available</Text>
-                                </Col>
-                                <Col size={5} style={{ alignItems: 'flex-end', justifyContent: 'flex-end' }}>
-                                </Col>
-                            </Row>}
-                        {deliveryDetails != null && itemSelected == 'HOME_DELIVERY' ?
-                            <View>
-                                <Row style={{ marginTop: 5 }}>
-                                    <Col size={8}>
-                                        <Text style={{ fontFamily: 'OpenSans', fontSize: 12, color: '#6a6a6a' }}>Delivery Charges</Text>
-                                    </Col>
+                                </View>{
+                                    recommentationData.length !== 0 ?
+                                        <Row style={{ paddingRight: 20, marginTop: 5, alignItems: 'center', }}>
 
-                                    <Col size={5} style={{ alignItems: 'flex-end', justifyContent: 'flex-end' }}>
+                                            <Checkbox color="green"
+                                                status={isPharmacyRecomentation ? 'checked' : 'unchecked'}
+                                                onPress={() => { this.setState({ isPharmacyRecomentation: !isPharmacyRecomentation }); }}
+                                            />
+                                            <Text style={{ fontFamily: 'OpenSans', fontSize: 13, }}>{'Above order you will get Rs' + recommentationData[0].medicine_total_amount + ' do you select'}</Text>
+                                        </Row> : null
+                                }
+                            </View> : <Text style={{ fontFamily: 'OpenSans', fontSize: 24, color: '#6a6a6a', marginTop: "40%", marginLeft: 55, alignContent: 'center' }}>No orders Available</Text>
+                    }
 
-                                        <Text style={{ fontFamily: 'OpenSans', fontSize: 10, color: '#ff4e42', textAlign: 'right' }}>{'₹' + deliveryDetails.delivery_charges || ''} </Text>
-
-                                    </Col>
-                                </Row>
-                                <Row style={{ marginTop: 5 }}>
-                                    <Col size={8}>
-                                        <Text style={{ fontFamily: 'OpenSans', fontSize: 12, color: '#6a6a6a' }}>Tax</Text>
-                                    </Col>
-                                    <Col size={5} style={{ alignItems: 'flex-end', justifyContent: 'flex-end' }}>
-
-                                        <Text style={{ fontFamily: 'OpenSans', fontSize: 10, color: '#ff4e42', textAlign: 'right' }}>{'₹' + deliveryDetails.delivery_tax || 0}</Text>
-
-                                    </Col>
-                                </Row>
-                            </View> : null}
-                        <Row style={{ marginTop: 10 }}>
-                            <Col size={8}>
-                                <Text style={{ fontFamily: 'OpenSans', fontSize: 12, fontWeight: '500' }}>Amount to be Paid</Text>
-                            </Col>
-                            <Col size={5} style={{ alignItems: 'flex-end', justifyContent: 'flex-end' }}>
-
-                                <Text style={{ fontFamily: 'OpenSans', fontSize: 10, color: '#8dc63f', textAlign: 'right' }}>{'₹' + medicineTotalAmountwithDeliveryChage} </Text>
-
-                            </Col>
-                        </Row>
-                    </View>
                 </Content>
                 <Footer style={
                     Platform.OS === "ios" ?
@@ -438,24 +574,36 @@ class MedicineCheckout extends Component {
                     <FooterTab>
                         <Row>
                             <Col size={5} style={{ alignItems: 'center', justifyContent: 'center', backgroundColor: '#fff' }}>
-                                <TouchableOpacity onPress={()=> this.processToPayLater()} >
-                                    <Text style={{ fontSize: 16, fontFamily: 'OpenSans', color: '#000', fontWeight: '400' }}>{itemSelected == 'HOME_DELIVERY' ? 'Cash On Delivary' : 'Cash on Pickup'} </Text>
+                                <TouchableOpacity onPress={() => this.processToPayLater()} >
+                                    <Text style={{ fontSize: 16, fontFamily: 'OpenSans', color: '#000', fontWeight: '400' }}>{itemSelected == 'HOME_DELIVERY' ? 'Cash On Delivery' : 'Cash on Pickup'} </Text>
                                 </TouchableOpacity>
                             </Col>
-                            <Col size={5} style={{ alignItems: 'center', justifyContent: 'center', backgroundColor: '#8dc63f' }}>
-                                <TouchableOpacity onPress={() => this.onProceedToPayment(true)}>
-                                    <Text style={{ fontSize: 16, fontFamily: 'OpenSans', color: '#fff', fontWeight: '400' }}>Proceed</Text>
-                                </TouchableOpacity>
-                            </Col>
+                            {isPrescription === false ?
+                                <Col size={5} style={{ alignItems: 'center', justifyContent: 'center', backgroundColor: '#8dc63f' }}>
+                                    <TouchableOpacity onPress={() => this.onProceedToPayment(true)}>
+                                        <Text style={{ fontSize: 16, fontFamily: 'OpenSans', color: '#fff', fontWeight: '400' }}>Proceed</Text>
+                                    </TouchableOpacity>
+                                </Col> : null}
                         </Row>
                     </FooterTab>
                 </Footer>
+
+
             </Container >
         );
     }
 }
 
-export default MedicineCheckout;
+// export default MedicineCheckout;
+function MedicineCheckoutState(state) {
+
+    return {
+        bookappointment: state.bookappointment,
+
+
+    }
+}
+export default connect(MedicineCheckoutState)(MedicineCheckout)
 
 const styles = StyleSheet.create({
 

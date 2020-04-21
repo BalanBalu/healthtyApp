@@ -4,7 +4,7 @@ import { View, StyleSheet, Image, TouchableOpacity, AsyncStorage, FlatList } fro
 import { createStackNavigator } from 'react-navigation';
 import { Item, Text, Icon, Header, Left, Row, Grid, Col, Input, Container, Content, Right, Card } from 'native-base';
 import { getSuggestionMedicines } from '../../../providers/pharmacy/pharmacy.action';
-import { MAX_DISTANCE_TO_COVER } from '../../../../setup/config';
+import { PHARMACY_MAX_DISTANCE_TO_COVER } from '../../../../setup/config';
 import { setCartItemCountOnNavigation } from '../CommomPharmacy'
 import { connect } from 'react-redux'
 const debounce = (fun, delay) => {
@@ -30,17 +30,17 @@ class MedicineSuggestionList extends Component {
             medicineSugesstionArray: null
         }
         this.callSuggestionService = debounce(this.callSuggestionService, 500);
-       
-       
-   
+
+
+
     }
     componentDidMount() {
-       const { medicineName } = this.state;
-       if(medicineName !== null) {
-           this.SearchKeyWordFunction(medicineName);
-       }
-       const { navigation } = this.props
-       setCartItemCountOnNavigation(navigation);
+        const { medicineName } = this.state;
+        if (medicineName !== null) {
+            this.SearchKeyWordFunction(medicineName);
+        }
+        const { navigation } = this.props
+        setCartItemCountOnNavigation(navigation);
     }
     SearchKeyWordFunction = async (enteredText) => {
 
@@ -56,7 +56,7 @@ class MedicineSuggestionList extends Component {
         const { bookappointment: { locationCordinates } } = this.props;
         locationData = {
             "coordinates": locationCordinates,
-            "maxDistance": MAX_DISTANCE_TO_COVER
+            "maxDistance": PHARMACY_MAX_DISTANCE_TO_COVER
         }
         let medicineResultData = await getSuggestionMedicines(enteredText, locationData);
 
@@ -82,7 +82,7 @@ class MedicineSuggestionList extends Component {
 
 
                     <View style={{ flex: 1, }}>
-                        <Item style={{ borderBottomWidth: 0, backgroundColor: '#fff', height: 30, borderRadius: 2,borderWidth:1,borderColor:'gray' }}>
+                        <Item style={{ borderBottomWidth: 0, backgroundColor: '#fff', height: 30, borderRadius: 2, borderWidth: 1, borderColor: 'gray' }}>
                             <Input
                                 placeholder='Search for Medicines and Health Products...     '
                                 style={{ fontSize: 12, width: '300%' }}
@@ -93,7 +93,10 @@ class MedicineSuggestionList extends Component {
                                 autoFocus={true}
                                 onChangeText={enteredText => this.SearchKeyWordFunction(enteredText)}
                                 multiline={false} />
-                            <TouchableOpacity style={{ alignItems: 'flex-end' }} >
+                            <TouchableOpacity style={{ alignItems: 'flex-end' }} onPress={() => {
+
+                                this.props.navigation.navigate("medicineSearchList", { medicineName: this.state.medicineName })
+                            }}  >
                                 <Icon name='ios-search' style={{ color: '#775DA3', fontSize: 20 }} />
                             </TouchableOpacity>
                         </Item>
@@ -132,11 +135,11 @@ class MedicineSuggestionList extends Component {
                                     renderItem={({ item }) => (
                                         <Row style={{ borderBottomWidth: 0.3, borderBottomColor: '#cacaca' }} onPress={() => {
 
-                                            this.props.navigation.navigate("medicineSearchList", { medicineName: item.value })
+                                            this.props.navigation.navigate("medicineSearchList", { medicineName: item.value, medicineInfo: item })
                                         }} >
-                                            <Text style={{ padding: 10, fontFamily: 'OpenSans', fontSize: 13 }}>{item.value || ''}</Text>
+                                            <Text style={{ padding: 10, fontFamily: 'OpenSans', fontSize: 13 }}>{(item.value || '') + ' ' + (item.medicine_dose || '') + ' ' + (item.medicine_unit || '')}</Text>
                                             <Right>
-                                                <Text style={{ padding: 10, fontFamily: 'OpenSans', fontSize: 13 ,color:'#7F49C3'}}>{item.type || ''}</Text>
+                                                <Text style={{ padding: 10, fontFamily: 'OpenSans', fontSize: 13, color: '#7F49C3' }}>{item.type || ''}</Text>
                                             </Right>
                                         </Row>
                                     )}
