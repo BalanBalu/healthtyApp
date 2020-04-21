@@ -27,7 +27,7 @@ export default (state = commonInitialState, action) => {
     case SET_INCOMING_VIDEO_CALL:
       console.log('Hey it is Updating Year', action.data);
       if(action.data) {
-          ShowVieoAlertModal(true);
+        //   ShowVieoAlertModal(true);
           
         
            

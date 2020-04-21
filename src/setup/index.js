@@ -12,6 +12,7 @@ import { fetchUserMarkedAsReadedNotification } from '../modules/providers/notifi
 import { SET_LAST_MESSAGES_DATA } from '../modules/providers/chat/chat.action';
 import SocketIOClient from 'socket.io-client';
 import { AuthService } from '../modules/screens/VideoConsulation/services/index';
+import VideoAlertModel from '../modules/providers/chat/video.alert.model';
 YellowBox.ignoreWarnings([
   'Unrecognized WebSocket connection option(s) `agent`, `perMessageDeflate`, `pfx`, `key`, `passphrase`, `cert`, `ca`, `ciphers`, `rejectUnauthorized`. Did you mean to put these under `headers`?',
   'Warning: Slider has been extracted from react-native core ',
@@ -104,6 +105,7 @@ export default class App extends Component {
     return (
       <Provider store={store} key="provider">
         <Root>
+        <VideoAlertModel/>
           <StyleProvider style={getTheme(material)}>
              <RoutesHome ref={navigatorRef => NavigationService.setContainer(navigatorRef)}> 
             </RoutesHome>
