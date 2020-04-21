@@ -90,10 +90,12 @@ const styles = StyleSheet.create({
     container:
     {
         backgroundColor: '#ffffff',
+        flex: 1
     },
 
     bodyContent: {
-        padding: 0
+        padding: 0,
+        flex: 1
     },
     customImage: {
         height: 60,
@@ -108,12 +110,12 @@ const styles = StyleSheet.create({
         width: 250,
         height: 250,
         borderRadius: 125,
-        marginTop:-135,
-        marginLeft:'auto',
-        marginRight:'auto',
+        marginTop: -135,
+        marginLeft: 'auto',
+        marginRight: 'auto',
         backgroundColor: '#745DA6',
         transform: [
-          {scaleX: 2}
+            { scaleX: 2 }
         ],
         position: 'relative',
         overflow: 'hidden',

@@ -77,8 +77,8 @@ class MedicineSuggestionList extends Component {
     render() {
         const { medicineSugesstionArray } = this.state
         return (
-            <Container>
-                <Content style={{ backgroundColor: '#F5F5F5', padding: 20 }}>
+            <Container style={{ flex: 1 }}>
+                <Content style={{ backgroundColor: '#F5F5F5', padding: 20, flex: 1 }}>
 
 
                     <View style={{ flex: 1, }}>
