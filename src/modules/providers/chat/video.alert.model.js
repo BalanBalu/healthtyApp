@@ -8,88 +8,64 @@ import {
   View
 } from "react-native";
 import RootNavigation from '../../../setup/rootNavigation';
-import AwesomeAlert from 'react-native-awesome-alerts';
 import { connect } from 'react-redux';
 import { hideIncomingVideoModal } from './chat.action';
 
 class IncomingVideoCallAlert extends Component {
-   constructor(props) {
-     super(props)
-     this.state = {
+    
+    constructor(props) {
+      super(props) 
+      this.state = {
         visibleCount: 1
-     }
-   }
-    _onPressReject() {
-      RootNavigation.navigate('VideoScreen', { isIncomingCall: true, onPressReject: true, onPressAccept: false  });
+      }
     }
-    _onPressAccept() {
-      RootNavigation.navigate('VideoScreen', { isIncomingCall: true, onPressReject: false, onPressAccept: true })
-    }
-
 
   render() {
     const { chat : { incomingVideoCall  }, onPressReject, onPressAccept } = this.props
     console.log('Video Alert Props===>', this.props);
     return (
-      //   <Modal
-      //     animationType="slide"
-      //     transparent={true}
-      //     visible={incomingVideoCall}
-      //     onRequestClose={() => {
-      //         Alert.alert("Modal has been closed.");
-      //   }}>
+     
+        <Modal
+          animationType="slide"
+          transparent={true}
+          visible={incomingVideoCall}
+          onRequestClose={() => {
+              Alert.alert("Modal has been closed.");
+        }}>
+           <View
+        style={[styles.container, { backgroundColor: 'rgba(0, 0, 0, 0.25)' }]}
+      > 
        
-      //   <View style={styles.centeredView}>
-      //     <View style={styles.modalView}>
-      //       <Text style={styles.modalText}>Incoming Call from Doctor!</Text>
-      //       <View style={{ flexDirection: 'row' }}> 
-      //       <TouchableHighlight
-      //         style={{ ...styles.openButton, backgroundColor: "#FF6347" }}
-      //         onPress={() => {
-      //           onPressReject();
-      //           this.setState({ visibleCount : this.state.visibleCount + 1 })
-               
-      //         }}
-      //       >
-      //       <Text style={styles.textStyle}>  Reject  </Text>
-      //       </TouchableHighlight>
+        <View style={styles.centeredView}>
+          <View style={styles.modalView}>
+            <Text style={styles.modalText}>Incoming Call from Doctor!</Text>
+            <View style={{ flexDirection: 'row' }}> 
+            <TouchableHighlight
+              style={{ ...styles.openButton, backgroundColor: "#FF6347" }}
+              onPress={() => {
+                this.setState({ visibleCount : this.state.visibleCount + 1 })
+                onPressReject();
+              }}
+            >
+            <Text style={styles.textStyle}>  Reject  </Text>
+            </TouchableHighlight>
             
-      //       <TouchableHighlight
-      //         style={{ ...styles.openButton, backgroundColor: "#228B22", marginLeft: 10 }}
-      //         onPress={() => {
-      //           onPressAccept();
-      //           this.setState({ visibleCount : this.state.visibleCount + 1 })  
-               
-      //         }}
-      //       >
-      //       <Text style={styles.textStyle}>  Accept  </Text>
+            <TouchableHighlight
+              style={{ ...styles.openButton, backgroundColor: "#228B22", marginLeft: 10 }}
+              onPress={() => {
+                this.setState({ visibleCount : this.state.visibleCount + 1 }) 
+                onPressAccept();
+              }}
+            >
+            <Text style={styles.textStyle}>  Accept  </Text>
               
-      //     </TouchableHighlight>
-      //       </View> 
-      //     </View>
-      //   </View>
-      // </Modal>
-
-      <AwesomeAlert
-               show={incomingVideoCall}
-               showProgress={false}
-               title={`Incoming call from Doctor`}
-               closeOnTouchOutside={false}
-               closeOnHardwareBackPress={true}
-               showCancelButton={true}
-               showConfirmButton={true}
-               cancelText="Reject"
-               confirmText="Accept"
-               cancelButtonColor="red"
-               confirmButtonColor="green"
-               onCancelPressed={onPressReject}
-               onConfirmPressed={onPressAccept}
-               onDismiss={this.hideInomingCallModal}
-               alertContainerStyle={{zIndex: 1}}
-               titleStyle={{fontSize: 21}}
-               cancelButtonTextStyle={{fontSize: 18}}
-               confirmButtonTextStyle={{fontSize: 18}}
-             />
+          </TouchableHighlight>
+            </View> 
+          </View>
+        </View>
+        </View>
+      </Modal>
+     
     )
   }
 }
@@ -113,6 +89,15 @@ const mapDispatchToProps = dispatch => {
   })
 }
 const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    backgroundColor: 'transparent',
+    position: 'absolute',
+    top: 0,
+    bottom: 0,
+    left: 0,
+    right: 0
+  },
   centeredView: {
     flex: 1,
     justifyContent: "center",
