@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { Text, Container, Icon, Spinner } from 'native-base';
+import { Text, Container, Icon, Spinner, Right, Left } from 'native-base';
 import { Row } from 'react-native-easy-grid';
 import { connect } from 'react-redux'
 import { StyleSheet, View, TouchableOpacity, FlatList } from 'react-native';
@@ -19,7 +19,7 @@ class Locations extends Component {
         const navigationOption = this.props.navigation.getParam('navigationOption') || null
 
         this.setState({ isLoading: true })
-        if (navigationOption!=null) {
+        if (navigationOption != null) {
             const pharmacyResult = await getPharmacyLocations();
             this.setState({ isLoading: false })
             if (pharmacyResult.success) {
@@ -64,7 +64,12 @@ class Locations extends Component {
                                 })
                                 this.props.navigation.pop()
                             }} >
-                                <Text style={{ padding: 10, fontFamily: 'OpenSans', fontSize: 13 }}>{item.location}</Text>
+                                <Left>
+                                    <Text style={{ padding: 10, fontFamily: 'OpenSans', fontSize: 13 }}>{item.location}</Text>
+                                </Left>
+                                <Right style={{ marginRight: 20, }}>
+                                    <Icon name="ios-arrow-forward" style={{ fontSize: 20 }} />
+                                </Right>
                             </Row>
                         )}
                         enableEmptySections={true}
