@@ -470,7 +470,7 @@ const HomeStack = createStackNavigator({
     navigationOptions: ({ navigation }) => ({
       title: 'Search List',
       headerRight: (
-        <Grid>
+        <Grid style={{justifyContent:'center',alignItems:'center'}}>
           <Col>
             <TouchableOpacity onPress={() => { navigation.navigate('PharmacyCart') }} >
               <View>
@@ -584,7 +584,7 @@ const HomeStack = createStackNavigator({
     navigationOptions: ({ navigation }) => ({
       title: 'Medicine Details',
       headerRight: (
-        <Grid>
+        <Grid style={{alignItems:'center',justifyContent:'center'}}>
           <Col>
             <TouchableOpacity onPress={() => { navigation.navigate('PharmacyCart') }} >
               <View>

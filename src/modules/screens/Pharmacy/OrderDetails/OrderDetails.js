@@ -21,32 +21,32 @@ class OrderDetails extends Component {
         this.state = {
             orderId: '',
             myOrderList: [],
-            orderList:[],
+            orderList: [],
             paymentDetails: {},
             isLoading: true,
         }
     }
     async componentDidMount() {
         const { navigation } = this.props;
-        await this.setState({ orderList: navigation.getParam('orderDetails')||[], isLoading: false })
+        await this.setState({ orderList: navigation.getParam('orderDetails') || [], isLoading: false })
         this.medicineOrderDetails();
     }
 
-    
+
 
     async medicineOrderDetails() {
         try {
             this.setState({ isLoading: true });
             let userId = await AsyncStorage.getItem('userId');
-            let orderId 
-            if(this.state.orderList.length!==0){
-            orderId = this.state.orderList._id
-            }else{
-                orderId= this.props.navigation.getParam('serviceId')
+            let orderId
+            if (this.state.orderList.length !== 0) {
+                orderId = this.state.orderList._id
+            } else {
+                orderId = this.props.navigation.getParam('serviceId')
             }
-           
-            let result = await getMedicineOrderDetails(orderId , userId);
-         
+
+            let result = await getMedicineOrderDetails(orderId, userId);
+
             if (result.success) {
                 this.setState({ myOrderList: result.data[0] });
                 this.getPaymentInfo(result.data[0].payment_id)
@@ -71,26 +71,26 @@ class OrderDetails extends Component {
     getAddress(address) {
         if (address.pickup_or_delivery_address) {
             let temp = address.pickup_or_delivery_address.address;
-            return `${ temp.no_and_street || '' },${temp.address_line_1 || ''},${temp.district || ''},${temp.city || ''},${temp.state || ''},${temp.country || ''},${temp.pin_code || ''}`
+            return `${temp.no_and_street || ''},${temp.address_line_1 || ''},${temp.district || ''},${temp.city || ''},${temp.state || ''},${temp.country || ''},${temp.pin_code || ''}`
         } else {
             return null
         }
-      }
-    getName(name) {
-      if (name.pickup_or_delivery_address) {
-        let temp = name.pickup_or_delivery_address;
-        return `${ temp.full_name || '' }`
-      } else {
-        return null
-      }
     }
-    getMobile(number){
-      if (number.pickup_or_delivery_address) {
-        let temp = number.pickup_or_delivery_address;
-        return `${ temp.mobile_number || '' }`
-      } else {
-        return null
-      }
+    getName(name) {
+        if (name.pickup_or_delivery_address) {
+            let temp = name.pickup_or_delivery_address;
+            return `${temp.full_name || ''}`
+        } else {
+            return null
+        }
+    }
+    getMobile(number) {
+        if (number.pickup_or_delivery_address) {
+            let temp = number.pickup_or_delivery_address;
+            return `${temp.mobile_number || ''}`
+        } else {
+            return null
+        }
     }
 
     getFinalPriceOfOrder(orderItems) {
@@ -101,7 +101,7 @@ class OrderDetails extends Component {
         return finalPriceForOrder;
     }
     getGrandTotal(orderInfo) {
-        const itemTotal = this.getFinalPriceOfOrder( orderInfo.order_items || []);
+        const itemTotal = this.getFinalPriceOfOrder(orderInfo.order_items || []);
         const deliveryCharge = orderInfo.delivery_charges;
         const deliveryTax = orderInfo.delivery_tax
         let totalAmount = Number(Number(itemTotal) + Number(deliveryCharge || 0) + Number(deliveryTax || 0)).toFixed(2)
@@ -109,14 +109,14 @@ class OrderDetails extends Component {
     }
     getPaymentInfo = async (paymentId) => {
         try {
-          let result = await getPaymentInfomation(paymentId);
-         
-          if (result.success) {
-            this.setState({ paymentDetails: result.data[0] })
-          }
+            let result = await getPaymentInfomation(paymentId);
+
+            if (result.success) {
+                this.setState({ paymentDetails: result.data[0] })
+            }
         }
         catch (e) {
-          console.log(e)
+            console.log(e)
         }
     }
 
@@ -125,8 +125,8 @@ class OrderDetails extends Component {
         const { isLoading, myOrderList, paymentDetails, orderList } = this.state;
         return (
             <Container style={styles.container}>
-                <Content style={{ backgroundColor: '#F5F5F5', padding: 10 }}>
-               
+                <Content style={{ backgroundColor: '#F5F5F5', padding: 10, flex: 1 }}>
+
                     <Spinner
                         visible={isLoading}
                     />
@@ -142,7 +142,7 @@ class OrderDetails extends Component {
                     </View>
                     <View style={{ backgroundColor: '#fff', padding: 10, }}>
                         <Text style={styles.arrHeadText}>Arriving On Today</Text>
-                        
+
                         <FlatList
                             style={{ marginTop: 10 }}
                             data={[{ status: 'Ordered and Approved', checked: true, drawLine: true },
@@ -199,7 +199,7 @@ class OrderDetails extends Component {
                                             }}
                                         />
                                     </Col>
-                                    <Col size={8} style={[styles.nameText, { marginTop: 5}]}>
+                                    <Col size={8} style={[styles.nameText, { marginTop: 5 }]}>
                                         <Text style={styles.nameText}>{item.medicine_name}</Text>
                                         <Text style={styles.pharText}>{item.pharmacyInfo.name}</Text>
                                     </Col>
@@ -250,17 +250,17 @@ class OrderDetails extends Component {
                         <Text style={styles.orderText}>OrderDetails</Text>
                         <View style={{ marginTop: 10 }}>
                             <Text style={styles.innerText}>Payment</Text>
-                            <Text style={styles.rightText}>{paymentDetails.payment_method || 0 }</Text>
+                            <Text style={styles.rightText}>{paymentDetails.payment_method || 0}</Text>
                         </View>
                         <View style={{ marginTop: 10 }}>
                             <Text style={styles.innerText}>Ordered On</Text>
-                        <Text style={styles.rightText}>{formatDate(myOrderList.created_date,'Do MMM,YYYY')}</Text>
+                            <Text style={styles.rightText}>{formatDate(myOrderList.created_date, 'Do MMM,YYYY')}</Text>
                         </View>
                         <View style={{ marginTop: 10, paddingBottom: 10 }}>
                             <Text style={styles.innerText}>Customer Details</Text>
-                        <Text style={styles.nameTextss}>{this.getName(myOrderList)}</Text>          
-                          <Text style={styles.addressText}>{this.getAddress(myOrderList)}</Text>
-                        <Text style={styles.addressText}>Mobile - {this.getMobile(myOrderList)}</Text>
+                            <Text style={styles.nameTextss}>{this.getName(myOrderList)}</Text>
+                            <Text style={styles.addressText}>{this.getAddress(myOrderList)}</Text>
+                            <Text style={styles.addressText}>Mobile - {this.getMobile(myOrderList)}</Text>
 
                         </View>
 
@@ -277,6 +277,7 @@ const styles = StyleSheet.create({
     container:
     {
         backgroundColor: '#ffffff',
+        flex: 1
     },
 
     bodyContent: {

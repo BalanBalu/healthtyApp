@@ -331,10 +331,10 @@ class MedicineCheckout extends Component {
             const { navigation } = this.props;
             // if (navigation.state.params) {
             //   if (navigation.state.params.hasReloadAddress) {
-                this.clickedHomeDelivery();  // Reload the Reported issues when they reload
+            this.clickedHomeDelivery();  // Reload the Reported issues when they reload
             //   }
             // };
-            
+
         } catch (e) {
             console.log(e)
         }
@@ -377,8 +377,8 @@ class MedicineCheckout extends Component {
 
 
         return (
-            <Container>
-                <Content style={{ backgroundColor: '#F5F5F5', padding: 10 }}>
+            <Container style={{ flex: 1 }}>
+                <Content style={{ backgroundColor: '#F5F5F5', padding: 10, flex: 1 }}>
                     <NavigationEvents
                         onWillFocus={payload => { this.backNavigation(payload) }}
                     />{isLoading === true ?
