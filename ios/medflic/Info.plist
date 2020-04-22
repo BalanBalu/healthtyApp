@@ -8,13 +8,8 @@
 	<string>medflic</string>
 	<key>CFBundleExecutable</key>
 	<string>$(EXECUTABLE_NAME)</string>
-	<key>CFBundleIconFiles</key>
-	<array>
-		<string>Icon-60.png</string>
-		<string>Icon-120.png</string>
-		<string>Icon-76.png</string>
-		<string>Icon-152.png</string>
-	</array>
+	<key>CFBundleIconName</key>
+	<string>AppIcon</string>
 	<key>CFBundleIdentifier</key>
 	<string>$(PRODUCT_BUNDLE_IDENTIFIER)</string>
 	<key>CFBundleInfoDictionaryVersion</key>
