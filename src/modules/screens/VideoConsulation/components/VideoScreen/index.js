@@ -3,11 +3,11 @@ import {SafeAreaView, StatusBar, BackHandler,  NativeModules, NativeEventEmitter
 import ConnectyCube from 'react-native-connectycube';
 import AwesomeAlert from 'react-native-awesome-alerts';
 import RTCViewGrid from './RTCViewGrid';
-import {CallService, AuthService} from '../../services';
+import {CallService } from '../../services';
 import ToolBar from './ToolBar';
 import { store } from '../../../../../setup/store';
 import { connect } from 'react-redux';
-import { SET_VIDEO_SESSION } from '../../../../providers/chat/chat.action';
+import { SET_VIDEO_SESSION, RESET_INCOMING_VIDEO_CALL } from '../../../../providers/chat/chat.action';
 import { Toast } from 'native-base';
 
  class VideoScreen extends React.Component {
@@ -30,7 +30,6 @@ import { Toast } from 'native-base';
     };
     this.callToUser = props.navigation.getParam("callToUser") || false;
     this._setUpListeners();
-  
   }
   componentDidMount() {
     
@@ -43,20 +42,12 @@ import { Toast } from 'native-base';
         CallService.setKeepScreenOn(true);
         const connectyCubeUserId = userMedflicNdConnecticubeData.doctorInfo.connectycube.connectycube_id;
         this.selectUser(connectyCubeUserId);
-        this.startCall([userMedflicNdConnecticubeData.doctorInfo.connectycube.connectycube_id])
+        this.startCall([ connectyCubeUserId ], userMedflicNdConnecticubeData.doctorInfo.doctor_id)
       } else {
         alert('We are Not able connect to the user at this time');
       }
     }
 
-    store.subscribe(() => {
-      const { chat: { session } } = this.props;
-      if(session && this.steamSubscribeLoadedUsers.indexOf(session.userId) === -1) {
-          this.setRemoteListener(session.userId, session.stream);
-          this.steamSubscribeLoadedUsers.push(session.userId);
-      }
-    });
-   
     const { navigation } = this.props;
     const isIncomingCall = navigation.getParam('isIncomingCall') || false;
     if(isIncomingCall) {
@@ -68,6 +59,13 @@ import { Toast } from 'native-base';
       duration: 3000,
       type: 'warning'
     })
+    store.subscribe(() => {
+      const { chat: { session } } = this.props;
+      if(session && this.steamSubscribeLoadedUsers.indexOf(session.userId) === -1) {
+          this.setRemoteListener(session.userId, session.stream);
+          this.steamSubscribeLoadedUsers.push(session.userId);
+      }
+    });
   }
 
   componentWillUnmount() {
@@ -91,7 +89,22 @@ import { Toast } from 'native-base';
 
   showInomingCallModal = session => {
    this._session = session;
-   this.setState({isIncomingCall: true});
+   const { navigation } = this.props;
+    const onPressReject = navigation.getParam('onPressReject') || false;
+    const onPressAccept = navigation.getParam('onPressAccept') || false;
+   console.log('State of onPressReject:' + onPressReject);
+   console.log('State of onPressAccept:' + onPressAccept);
+    if(onPressReject === true) {
+     this._onPressReject();
+   } if(onPressAccept === true ) {
+      this._onPressAccept()
+   }
+   store.dispatch({
+     type: RESET_INCOMING_VIDEO_CALL
+   });
+   if(onPressAccept === false && onPressReject === false ) {
+     this.setState({isIncomingCall: true});
+   }
   };
 
   hideInomingCallModal = () => {
@@ -260,13 +273,16 @@ import { Toast } from 'native-base';
       })
       .catch(this.hideInomingCallModal);
   }
-  startCall = (selectedUsersIds) => {
+  startCall = (selectedUsersIds, doctorId) => {
     if (selectedUsersIds.length === 0) {
       CallService.showToast('Select at less one user to start Videocall');
     } else {
       this.closeSelect();
       this.initRemoteStreams(selectedUsersIds);
-      CallService.startCall(selectedUsersIds).then(this.setLocalStream);
+      CallService.startCall(selectedUsersIds).then((stream) => {
+        this.setLocalStream(stream)
+        CallService.sendVideoCallingNotification(doctorId);
+      });
     }
   };
   render() {

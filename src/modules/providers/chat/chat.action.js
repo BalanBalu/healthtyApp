@@ -1,6 +1,10 @@
 import { postService, getService, putService } from '../../../setup/services/httpservices';
 export const SET_LAST_MESSAGES_DATA = 'CHAT/LAST_MESSAGES_DATA' 
 export const SET_VIDEO_SESSION = 'CHAT/SET_VIDEO_SESSION'; 
+export const SET_INCOMING_VIDEO_CALL = 'CHAT/SET_INCOMING_VIDEO_CALL'; 
+export const RESET_INCOMING_VIDEO_CALL = 'CHAT/RESET_INCOMING_VIDEO_CALL'; 
+import React from 'react';
+import IncomingVideoCallAlert from './video.alert.model';
 export const fetchAvailableDoctors4Chat = async (request) => {
     try {
         let endPoint = 'chat/availability';
@@ -67,4 +71,19 @@ export const updateChatUpdatedTime = async(chatId) => {
     }
 }
 
+export const showModal = ({ modalProps, modalType }) => dispatch => {
+    dispatch({
+      type: SET_INCOMING_VIDEO_CALL,
+      incomingVideoCall: true
+    })
+}
+  
+export const hideIncomingVideoModal = () => dispatch => {
+    dispatch({
+      type: RESET_INCOMING_VIDEO_CALL
+    })
+}
+export function ShowVieoAlertModal({...props }) {
+     return <IncomingVideoCallAlert isVisible={true} />
+}
 

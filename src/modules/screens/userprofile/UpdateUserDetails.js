@@ -7,7 +7,7 @@ import { userFiledsUpdate, logout } from '../../providers/auth/auth.actions';
 import { connect } from 'react-redux'
 import { Row, Col } from 'react-native-easy-grid';
 
-import { Image, BackHandler, AsyncStorage, ScrollView } from 'react-native';
+import { Image, BackHandler, AsyncStorage, ScrollView,Platform } from 'react-native';
 import styles from './style.js';
 import {
     formatDate, subTimeUnit
@@ -219,12 +219,12 @@ class UpdateUserDetails extends Component {
                                         textStyle={{ color: "gray", left: 0, marginLeft: -5 }}
                                         note={false}
                                         itemStyle={{
-                                            backgroundColor: "gray",
+                                         
                                             paddingLeft: 10,
                                             fontSize: 16,
                                         }}
                                         itemTextStyle={{ color: '#5cb85c', }}
-                                        style={{ width: undefined }}
+                                        style={{ width: 320 }}
                                         onValueChange={(sample) => { this.setState({ selectedBloodGroup: sample, updateButton: false }) }}
                                         selectedValue={this.state.selectedBloodGroup}
                                         testID="editBloodGroup"
@@ -245,27 +245,27 @@ class UpdateUserDetails extends Component {
                                     <RadioButton.Group
                                         onValueChange={value => this.setState({ gender: value, updateButton: false })}
                                         value={this.state.gender}>
-                                            <Row>
-                                                <Col size={3.3}>
-                                                    <Row style={{alignItems:'center'}}>
+                                            <Row style={ Platform.OS === "ios" ? {marginLeft:10,marginRight:10}:null} >
+                                                <Col size={3} style={{justifyContent:'center'}}>
+                                                    <Row style={{alignItems:'center',}}>
                                                     <RadioButton value="M" />
-                                                    <Text style={{  fontFamily: 'OpenSans', fontSize: 12 }}>Male</Text>
+                                                    <Text style={ Platform.OS === "ios" ? {  fontFamily: 'OpenSans', fontSize: 12,marginTop:10,marginLeft:5 }:{  fontFamily: 'OpenSans', fontSize: 12 }}>Male</Text>
                                                     </Row>
                                                 </Col>
-                                            <Col size={3.3}>
+                                            <Col size={3}>
                                                 <Row style={{ alignItems: 'center' }}>
                                                 
                                                     <RadioButton value="F" />
                                                
-                                                <Text style={{  fontFamily: 'OpenSans', fontSize: 12 }}>Female</Text>
+                                                <Text style={ Platform.OS === "ios" ? {  fontFamily: 'OpenSans', fontSize: 12,marginTop:10,marginLeft:5 }:{  fontFamily: 'OpenSans', fontSize: 12 }}>Female</Text>
                                                 </Row>
                                             </Col>
-                                            <Col size={3.3}>
+                                            <Col size={3}>
                                                 <Row style={{ alignItems: 'center' }}>
                                                 
                                                     <RadioButton value="O" />
                                               
-                                                <Text style={{  fontFamily: 'OpenSans', fontSize: 12 }}>Others</Text>
+                                                <Text style={ Platform.OS === "ios" ? {  fontFamily: 'OpenSans', fontSize: 12,marginTop:10,marginLeft:5 }:{  fontFamily: 'OpenSans', fontSize: 12 }}>Others</Text>
                                                 </Row>
                                             </Col>
                                             </Row>                              

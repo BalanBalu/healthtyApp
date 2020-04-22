@@ -12,7 +12,7 @@ import { fetchUserProfile, storeBasicProfile } from '../../providers/profile/pro
 import { acceptNumbersOnly } from '../../screens/../common';
 const mainBg = require('../../../../assets/images/MainBg.jpg');
 import Spinner from '../../../components/Spinner';
-
+import Razorpay from 'react-native-customui';
 class Login extends Component {
   constructor(props) {
     super(props)
@@ -146,7 +146,9 @@ class Login extends Component {
 
                     <Item style={{ marginLeft: 'auto', marginRight: 'auto', borderBottomWidth: 0, marginBottom: 10 }}>
                       <Text uppercase={false} style={{ color: '#000', fontSize: 14, fontFamily: 'OpenSans', color: '#775DA3' }}>Don't Have An Account ?</Text>
-                      <TouchableOpacity onPress={() => this.props.navigation.navigate('signup')} style={styles.smallSignUpButton}>
+                      <TouchableOpacity onPress={() => {
+                           this.props.navigation.navigate('signup')
+                        }} style={styles.smallSignUpButton}>
                         <Text uppercase={true} style={{ color: '#000', fontSize: 10, fontFamily: 'OpenSans', fontWeight: 'bold', color: '#fff' }}> Sign Up</Text>
                       </TouchableOpacity>
                     </Item>
