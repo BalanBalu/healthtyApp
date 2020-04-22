@@ -123,12 +123,9 @@ class Locations extends Component {
                                             button
                                             onPress={() => this.onPressList()}
                                             button   >
-                                            <Left>
+                                           
                                                 <Text style={{ fontFamily: 'OpenSans', fontSize: 13, }}>{item.name}</Text>
-                                            </Left>
-                                            <Right style={{ marginRight: 10, }}>
-                                                <Icon name="ios-arrow-forward" style={{ fontSize: 20 }} />
-                                            </Right>
+                                            
                                         </ListItem>
 
 
