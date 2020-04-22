@@ -77,6 +77,7 @@ import PharmacyList from '../../modules/screens/Pharmacy/PharmacyList/pharmacyLi
 import VideoScreen from '../../modules/screens/VideoConsulation/components/VideoScreen';
 import AvailableDoctors4Video from '../../modules/screens/VideoConsulation/components/AvailableDoctors';
 import VideoConsultaions from '../../modules/screens/VideoConsulation/components/MyConsultations';
+import COVID19StateDistrictStats from '../../modules/screens/Home/Covid10-District-wise';
 
 const AuthRoutes = {
   login: {
@@ -608,13 +609,17 @@ const HomeStack = createStackNavigator({
       title: 'Medicine Reviews'
     }
   },
-
-
   'CORONA Status': {
     screen: CoronaDisease,
-    navigationOptions: {
+    navigationOptions: ({ navigation }) => ({
       title: 'CORONA Status'
-    }
+    })
+  },
+  COVID19StateDistrictStats: {
+    screen: COVID19StateDistrictStats,
+    navigationOptions: ({ navigation }) => ({
+      title: 'Covid-19 ' + navigation.getParam('stateName') || ' '
+    })
   },
   /* Video Consultation */
   VideoScreen: {
@@ -704,9 +709,9 @@ const DrawerNavigator = createDrawerNavigator({
   Reminder: {
     screen: Reminder
   },
-  'CORONA Status': {
-    screen: CoronaDisease
-  },
+  // 'CORONA Status': {
+  //   screen: CoronaDisease
+  // },
 
 
 },

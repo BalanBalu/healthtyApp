@@ -704,7 +704,7 @@ class Home extends Component {
                             </Card>
                         </View>
                         <View>
-                            <COVID19Stats> </COVID19Stats>
+                            <COVID19Stats navigation={this.props.navigation}> </COVID19Stats>
                         </View>
                          
 

@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import { StyleSheet, FlatList, ImageBackground, } from 'react-native';
-import { Container, Content, Text, Card } from 'native-base';
+import { Container, Content, Text, Card, Button} from 'native-base';
 import { Col, Row, Grid } from 'react-native-easy-grid';
 import axios from 'axios';
 
@@ -14,6 +14,7 @@ class COVID19Stats extends Component {
             dailyStats : {},
             statwise: []
         }
+        this.districtWiseData = {};
     }
     async componentDidMount() {
         let fullPath = `https://api.covid19india.org/data.json`;
@@ -30,6 +31,37 @@ class COVID19Stats extends Component {
                 this.setState({ dailyStats: dailyStats, statwise: resp.data.statewise });
             }   
         }
+        let fullPathDistrictWise = `https://api.covid19india.org/state_district_wise.json`;
+        let respDistrictWise = await axios.get(fullPathDistrictWise, {
+            headers: {
+                'Content-Type': null,
+                'x-access-token': null,
+                'userId': null
+            }
+        });
+        this.districtWiseData = respDistrictWise.data;
+    }
+    getAndNavigateToDistrictWise(stateName, stateCode, lastupdatedtime) {
+
+        const selectedDistrictData = this.districtWiseData[stateName];
+        const stateData = {
+            stateName: stateName,
+            stateCode: selectedDistrictData.statecode,
+            lastupdatedtime: lastupdatedtime,
+            districtData: Object.keys(selectedDistrictData.districtData).map(ele => {
+                const distData = {
+                    districtName: ele,
+                    ...selectedDistrictData.districtData[ele],
+                }
+                return distData
+            })
+        }
+        const { navigation } = this.props;
+        console.log(stateData);
+        navigation.navigate('COVID19StateDistrictStats', { stateName: stateName, stateData: stateData });
+      
+
+
     }
     render() {
         const { dailyStats, statwise } = this.state
@@ -174,8 +206,17 @@ class COVID19Stats extends Component {
                     </Col>
                 </Row>  
                 
-                <Row size={2} style={{ height: 60, width: '100%', overflow: 'hidden', backgroundColor: "#fff", borderRadius: 10, }}>
-                    <Text style={styles.textLable }> Updated on {dailyStats.lastupdatedtime} </Text>           
+                <Row size={2} style={{ marginTop: 20, height: 25, alignItems: 'flex-start', width: '100%', overflow: 'hidden', backgroundColor: "#fff", borderRadius: 10, }}>
+                    <Col size={60}>
+                        <Text style={{...styles.textLable, alignSelf: 'flex-start' }}> Updated on {dailyStats.lastupdatedtime} </Text>           
+                    </Col>
+                    {dailyStats.statecode === 'TT' ? null :
+                        <Col size={40}>
+                            <Button onPress={() => this.getAndNavigateToDistrictWise(dailyStats.state, dailyStats.statecode, dailyStats.lastupdatedtime ) } style={{ height: 22,   borderRadius: 10, backgroundColor: '#6e5c7b' }}>
+                                <Text style={{  fontSize: 8, color: '#FFF', } }> View District Wise </Text> 
+                            </Button>
+                        </Col>
+                     }
                 </Row> 
            </Grid>
         </Card>

@@ -43,6 +43,8 @@
 	<string>$(PRODUCT_NAME) would like access to your Calendar to set your Appointments</string>
 	<key>NSCameraUsageDescription</key>
 	<string>Allow $(PRODUCT_NAME) to access your camera to upload Profile image as well as the hospital Images</string>
+	<key>NSLocationAlwaysAndWhenInUseUsageDescription</key>
+	<string>$(PRODUCT_NAME) helps you to show nearest doctors and hospitals</string>
 	<key>NSLocationAlwaysUsageDescription</key>
 	<string>$(PRODUCT_NAME) helps you to show nearest doctors and hospitals</string>
 	<key>NSLocationWhenInUseUsageDescription</key>
@@ -80,6 +82,7 @@
 	</array>
 	<key>UIBackgroundModes</key>
 	<array>
+		<string>location</string>
 		<string>remote-notification</string>
 	</array>
 	<key>UILaunchStoryboardName</key>
