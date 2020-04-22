@@ -77,13 +77,15 @@ import PharmacyList from '../../modules/screens/Pharmacy/PharmacyList/pharmacyLi
 import VideoScreen from '../../modules/screens/VideoConsulation/components/VideoScreen';
 import AvailableDoctors4Video from '../../modules/screens/VideoConsulation/components/AvailableDoctors';
 import VideoConsultaions from '../../modules/screens/VideoConsulation/components/MyConsultations';
+
+
 import LabSearchList from '../../modules/screens/LabTest/labSearchList';
 import LabCategory from '../../modules/screens/LabTest/categories'
 
-
-import LabAppointmentList from '../../modules/screens/Lab/Appointment/LabAppointmentList'
-import LabAppointmentInfo from '../../modules/screens/Lab/Appointment/LabAppoinmentInfo'
-import LabCancelAppointment from '../../modules/screens/Lab/Appointment/LabCancelAppointment'
+import labConfirmation from '../../modules/screens/LabTest/labConfirmation/index'
+import LabAppointmentList from '../../modules/screens/LabTest/Appointment/LabAppointmentList'
+import LabAppointmentInfo from '../../modules/screens/LabTest/Appointment/LabAppoinmentInfo'
+import LabCancelAppointment from '../../modules/screens/LabTest/Appointment/LabCancelAppointment'
 
 const AuthRoutes = {
   login: {
@@ -397,6 +399,14 @@ const HomeStack = createStackNavigator({
       title: 'Success'
     }
   },
+  
+  labConfirmation: {
+    screen: labConfirmation,
+    navigationOptions: {
+      title: 'Lab Confirmation'
+    }
+  },
+
   // ============Zoom image ========================
   ImageView: {
     screen: ImageView,
