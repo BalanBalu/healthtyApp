@@ -48,9 +48,9 @@ class Locations extends Component {
             />
         );
     };
-    onPressList = (index) => {
+    onPressList = () => {
 
-        this.setState({ pressStatus: true, selectedItem: index });
+        // this.setState({ pressStatus: true, selectedItem: index });
         this.props.navigation.navigate("LocationDetail")
     }
     render() {
@@ -100,12 +100,12 @@ class Locations extends Component {
 
                                         <ListItem
                                             button
-                                            onPress={() => this.onPressList(index)}
+                                            onPress={() => this.onPressList()}
                                             button   >
                                             <Left>
                                                 <Text style={{ fontFamily: 'OpenSans', fontSize: 13, }}>{item.name}</Text>
                                             </Left>
-                                            <Right style={{ marginRight: 15, }}>
+                                            <Right style={{ marginRight: 10, }}>
                                                 <Icon name="ios-arrow-forward" style={{ fontSize: 20 }} />
                                             </Right>
                                         </ListItem>
@@ -121,12 +121,12 @@ class Locations extends Component {
                                     renderItem={({ item }) => (
                                         <ListItem
                                             button
-                                            onPress={() => this.onPressList(index)}
+                                            onPress={() => this.onPressList()}
                                             button   >
                                             <Left>
                                                 <Text style={{ fontFamily: 'OpenSans', fontSize: 13, }}>{item.name}</Text>
                                             </Left>
-                                            <Right style={{ marginRight: 15, }}>
+                                            <Right style={{ marginRight: 10, }}>
                                                 <Icon name="ios-arrow-forward" style={{ fontSize: 20 }} />
                                             </Right>
                                         </ListItem>
