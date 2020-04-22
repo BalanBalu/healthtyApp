@@ -79,6 +79,12 @@ import AvailableDoctors4Video from '../../modules/screens/VideoConsulation/compo
 import VideoConsultaions from '../../modules/screens/VideoConsulation/components/MyConsultations';
 import LabSearchList from '../../modules/screens/LabTest/labSearchList';
 import LabCategory from '../../modules/screens/LabTest/categories'
+
+
+import LabAppointmentList from '../../modules/screens/Lab/Appointment/LabAppointmentList'
+import LabAppointmentInfo from '../../modules/screens/Lab/Appointment/LabAppoinmentInfo'
+import LabCancelAppointment from '../../modules/screens/Lab/Appointment/LabCancelAppointment'
+
 const AuthRoutes = {
   login: {
     screen: login,
@@ -312,7 +318,34 @@ const HomeStack = createStackNavigator({
       title: 'Search Location'
     }
   },
+  paymentsuccess: {
+    screen: PaymentSuccess,
+    navigationOptions: {
+      headerLeft: null,
+      title: 'Success'
+    }
+  },
 
+  //================ Lab Test ===============
+  LabAppointmentInfo: {
+    screen: LabAppointmentInfo,
+    navigationOptions: {
+      title: 'Lab Appointment Info'
+    }
+  },
+  LabAppointmentList: {
+    screen: LabAppointmentList,
+    navigationOptions: {
+      title: 'Lab Appointment List'
+    }
+  },
+  LabCancelAppointment: {
+    screen: LabCancelAppointment,
+    navigationOptions: {
+      title: 'Lab Cancel Appointment'
+    }
+  },
+  
   // ========Appointment stack ==========
   "Doctor List": {
     screen: doctorSearchList,
