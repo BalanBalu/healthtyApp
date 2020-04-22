@@ -29,7 +29,8 @@ class reportIssueDetails extends Component {
     try {
       this.setState({ isLoading: true });
       const userId = await AsyncStorage.getItem('userId');
-      let resultReport = await getUserRepportDetails('appointment', userId, this.state.reportedId, true);
+      let serviceType=this.props.navigation.getParam('serviceType')
+      let resultReport = await getUserRepportDetails(serviceType, userId, this.state.reportedId, true);
      
       if (resultReport.success) {
 

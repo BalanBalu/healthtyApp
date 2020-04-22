@@ -1,13 +1,18 @@
 import React, { Component } from 'react';
 import {
-    Container, Content, Text, Item, View,
+    Container, Content, Text, Item, View, Icon
 } from 'native-base';
 import { Col, Row } from 'react-native-easy-grid';
 import { StyleSheet, Image, AsyncStorage, FlatList, TouchableOpacity } from 'react-native';
 import { formatDate } from '../../../../setup/helpers';
 import { getMedicineOrderDetails } from '../../../providers/pharmacy/pharmacy.action';
+import { statusBar, renderPrescriptionImageAnimation } from '../CommomPharmacy'
 import { getPaymentInfomation } from '../../../providers/bookappointment/bookappointment.action'
 import Spinner from '../../../../components/Spinner';
+import { getUserRepportDetails } from '../../../providers/reportIssue/reportIssue.action';
+import SwiperFlatList from 'react-native-swiper-flatlist';
+import ImageZoom from 'react-native-image-pan-zoom';
+
 
 /*
   TODO: 
@@ -19,36 +24,36 @@ class OrderDetails extends Component {
     constructor(props) {
         super(props)
         this.state = {
-            orderId: '',
-            myOrderList: [],
-            orderList:[],
+            orderId: null,
+            reportData: null,
+            orderDetails: {},
+            orderList: [],
             paymentDetails: {},
             isLoading: true,
         }
     }
     async componentDidMount() {
         const { navigation } = this.props;
-        await this.setState({ orderList: navigation.getParam('orderDetails')||[], isLoading: false })
+
         this.medicineOrderDetails();
+        this.getUserReport()
     }
 
-    
+
 
     async medicineOrderDetails() {
         try {
             this.setState({ isLoading: true });
+            orderId = this.props.navigation.getParam('serviceId') || null
             let userId = await AsyncStorage.getItem('userId');
-            let orderId 
-            if(this.state.orderList.length!==0){
-            orderId = this.state.orderList._id
-            }else{
-                orderId= this.props.navigation.getParam('serviceId')
-            }
-           
-            let result = await getMedicineOrderDetails(orderId , userId);
-         
+
+
+
+
+            let result = await getMedicineOrderDetails(orderId, userId);
+            console.log(JSON.stringify(result))
             if (result.success) {
-                this.setState({ myOrderList: result.data[0] });
+                this.setState({ orderDetails: result.data[0] });
                 this.getPaymentInfo(result.data[0].payment_id)
             }
         }
@@ -58,39 +63,49 @@ class OrderDetails extends Component {
             this.setState({ isLoading: false });
         }
     }
+    getUserReport = async () => {
+        try {
+            const userId = await AsyncStorage.getItem('userId');
+            orderId = this.props.navigation.getParam('serviceId') || null
+            let resultReport = await getUserRepportDetails('MEDICINE_ORDER', userId, orderId);
 
+            if (resultReport.success) {
 
-    noOrders() {
-        return (
-            <Item style={{ borderBottomWidth: 0, justifyContent: 'center', alignItems: 'center' }}>
-                <Text style={{ fontSize: 18, justifyContent: 'center', alignItems: 'center' }} > No Orders Available </Text>
-            </Item>
-        )
+                this.setState({ reportData: resultReport.data });
+            }
+        }
+
+        catch (e) {
+            console.error(e);
+        }
+
     }
+
+ 
 
     getAddress(address) {
         if (address.pickup_or_delivery_address) {
             let temp = address.pickup_or_delivery_address.address;
-            return `${ temp.no_and_street || '' },${temp.address_line_1 || ''},${temp.district || ''},${temp.city || ''},${temp.state || ''},${temp.country || ''},${temp.pin_code || ''}`
+            return `${temp.no_and_street || ''},${temp.address_line_1 || ''},${temp.district || ''},${temp.city || ''},${temp.state || ''},${temp.country || ''},${temp.pin_code || ''}`
         } else {
             return null
         }
-      }
-    getName(name) {
-      if (name.pickup_or_delivery_address) {
-        let temp = name.pickup_or_delivery_address;
-        return `${ temp.full_name || '' }`
-      } else {
-        return null
-      }
     }
-    getMobile(number){
-      if (number.pickup_or_delivery_address) {
-        let temp = number.pickup_or_delivery_address;
-        return `${ temp.mobile_number || '' }`
-      } else {
-        return null
-      }
+    getName(name) {
+        if (name.pickup_or_delivery_address) {
+            let temp = name.pickup_or_delivery_address;
+            return `${temp.full_name || ''}`
+        } else {
+            return null
+        }
+    }
+    getMobile(number) {
+        if (number.pickup_or_delivery_address) {
+            let temp = number.pickup_or_delivery_address;
+            return `${temp.mobile_number || ''}`
+        } else {
+            return null
+        }
     }
 
     getFinalPriceOfOrder(orderItems) {
@@ -101,7 +116,7 @@ class OrderDetails extends Component {
         return finalPriceForOrder;
     }
     getGrandTotal(orderInfo) {
-        const itemTotal = this.getFinalPriceOfOrder( orderInfo.order_items || []);
+        const itemTotal = this.getFinalPriceOfOrder(orderInfo.order_items || []);
         const deliveryCharge = orderInfo.delivery_charges;
         const deliveryTax = orderInfo.delivery_tax
         let totalAmount = Number(Number(itemTotal) + Number(deliveryCharge || 0) + Number(deliveryTax || 0)).toFixed(2)
@@ -109,24 +124,24 @@ class OrderDetails extends Component {
     }
     getPaymentInfo = async (paymentId) => {
         try {
-          let result = await getPaymentInfomation(paymentId);
-         
-          if (result.success) {
-            this.setState({ paymentDetails: result.data[0] })
-          }
+            let result = await getPaymentInfomation(paymentId);
+
+            if (result.success) {
+                this.setState({ paymentDetails: result.data[0] })
+            }
         }
         catch (e) {
-          console.log(e)
+            console.log(e)
         }
     }
 
     render() {
         const { navigation } = this.props;
-        const { isLoading, myOrderList, paymentDetails, orderList } = this.state;
+        const { isLoading, orderDetails, paymentDetails, reportData } = this.state;
         return (
             <Container style={styles.container}>
                 <Content style={{ backgroundColor: '#F5F5F5', padding: 10 }}>
-               
+
                     <Spinner
                         visible={isLoading}
                     />
@@ -136,32 +151,30 @@ class OrderDetails extends Component {
                                 <Text style={styles.orderIdText}>Order Id</Text>
                             </Col>
                             <Col size={5}>
-                                <Text style={{ fontSize: 12, textAlign: 'right', marginTop: 13, fontFamily: 'OpenSans' }}>{orderList._id || ''}</Text>
+                                <Text style={{ fontSize: 12, textAlign: 'right', marginTop: 13, fontFamily: 'OpenSans' }}>{orderDetails.order_ref_no || ''}</Text>
                             </Col>
                         </Row>
                     </View>
                     <View style={{ backgroundColor: '#fff', padding: 10, }}>
-                        <Text style={styles.arrHeadText}>Arriving On Today</Text>
-                        
+                        {/* <Text style={styles.arrHeadText}>Arriving On Today</Text> */}
+
                         <FlatList
                             style={{ marginTop: 10 }}
-                            data={[{ status: 'Ordered and Approved', checked: true, drawLine: true },
-                            { status: 'Packed and Out for Delivery', checked: true, drawLine: true },
-                            { status: 'Delivered', checked: false },]}
+                            data={orderDetails.order_status_slap}
                             keyExtractor={(item, index) => index.toString()}
                             renderItem={({ item }) =>
                                 <Row style={{}}>
                                     <Col size={0.7}>
-                                        {item.checked === true ?
+                                        {statusBar[item.status].checked === true ?
                                             <TouchableOpacity style={styles.lengthTouch}>
                                             </TouchableOpacity> : null}
 
-                                        {item.checked === false ?
+                                        {statusBar[item.status].checked === false ?
                                             <TouchableOpacity style={styles.bottomText}>
                                             </TouchableOpacity> :
                                             null}
 
-                                        {item.checked === true && item.drawLine === true ?
+                                        {statusBar[item.status].checked === true && statusBar[item.status].drawLine === true ?
                                             <TouchableOpacity style={styles.TouchLegth}>
                                             </TouchableOpacity>
                                             :
@@ -175,8 +188,8 @@ class OrderDetails extends Component {
                                     </Col>
                                     <Col size={9.3}>
                                         <View style={{ marginTop: -3 }}>
-                                            <Text style={styles.trackingText}>{item.status}</Text>
-                                            <Text style={{ fontSize: 12, fontFamily: 'OpenSans', color: '#909090' }}>17th February,2020 at 05.27 PM</Text>
+                                            <Text style={styles.trackingText}>{statusBar[item.status].status}</Text>
+                                            <Text style={{ fontSize: 12, fontFamily: 'OpenSans', color: '#909090' }}>{formatDate(item.status_update_date, ' Do MMMM YYYY ') + ' at ' + formatDate(item.status_update_date, 'h:mm:ss a')}</Text>
                                         </View>
 
                                     </Col>
@@ -185,10 +198,43 @@ class OrderDetails extends Component {
 
 
                         <Text style={{ fontSize: 14, fontWeight: '500', fontFamily: 'OpenSans', color: '#7F49C3', marginTop: 10 }}>Ordered Medicines</Text>
+                        {orderDetails.is_order_type_prescription === true ?
+
+                            <View style={{ flex: 1, marginLeft: 10, marginRight: 10, justifyContent: 'center', alignItems: 'center', }}>
+                                <ImageZoom cropWidth={200}
+                                    cropHeight={200}
+                                    imageWidth={200}
+                                    minScale={0.6}
+                                    panToMove={false}
+                                    pinchToZoom={false}
+                                    enableDoubleClickZoom={false}
+
+                                    imageHeight={200}>
+                                    <SwiperFlatList
+                                        autoplay
+                                        autoplayDelay={3}
+                                        index={orderDetails.prescription_data.prescription_items - 1}
+                                        contentContainerStyle={{ flexGrow: 1, }}
+                                        autoplayLoop
+                                        data={orderDetails.prescription_data.prescription_items}
+                                        renderItem={({ item }) =>
+                                            <TouchableOpacity onPress={() => this.props.navigation.navigate("ImageView", { passImage: item.prescription_path, title: medicineData.medInfo.medicine_name })}>
+                                                <Image
+                                                    source={renderPrescriptionImageAnimation(item)}
+                                                    style={{
+                                                        width: 200, height: 200,
+                                                    }}
+                                                />
+                                            </TouchableOpacity>
+                                        }
+                                        showPagination
+                                    />
+                                </ImageZoom>
+                            </View> : null}
                         <FlatList
-                            data={myOrderList.order_items}
+                            data={orderDetails.order_items}
                             keyExtractor={(item, index) => index.toString()}
-                            extraData={myOrderList.order_items}
+                            extraData={orderDetails.order_items}
                             renderItem={({ item }) =>
                                 <Row style={styles.rowStyle}>
                                     <Col size={2}>
@@ -199,7 +245,7 @@ class OrderDetails extends Component {
                                             }}
                                         />
                                     </Col>
-                                    <Col size={8} style={[styles.nameText, { marginTop: 5}]}>
+                                    <Col size={8} style={[styles.nameText, { marginTop: 5 }]}>
                                         <Text style={styles.nameText}>{item.medicine_name}</Text>
                                         <Text style={styles.pharText}>{item.pharmacyInfo.name}</Text>
                                     </Col>
@@ -208,63 +254,116 @@ class OrderDetails extends Component {
                                     </Col>
                                 </Row>
                             } />
-                        <Row style={{ marginTop: 10 }}>
-                            <Col size={5}>
-                                <Text style={styles.ItemText}>Item Total</Text>
 
-                            </Col>
-                            <Col size={5}>
-                                <Text style={styles.rsText}>₹ {this.getFinalPriceOfOrder(myOrderList.order_items || [])}</Text>
-                            </Col>
-                        </Row>
-                        <Row style={{ marginTop: 10 }}>
-                            <Col size={5}>
-                                <Text style={styles.mainText}>Delivery Charges</Text>
+                        {orderDetails.is_order_type_prescription !== true && orderDetails.order_items !== undefined && orderDetails.order_items.length !== 0 ?
+                            <Row style={{ marginTop: 10 }}>
+                                <Col size={5}>
+                                    <Text style={styles.ItemText}>Item Total</Text>
 
-                            </Col>
-                            <Col size={5}>
-                                <Text style={styles.rsText}>₹ {myOrderList.delivery_charges || 0}</Text>
-                            </Col>
-                        </Row>
-                        <Row style={{ marginTop: 10 }}>
-                            <Col size={5}>
-                                <Text style={styles.mainText}>Tax</Text>
+                                </Col>
+                                <Col size={5}>
+                                    <Text style={styles.rsText}>₹ {this.getFinalPriceOfOrder(orderDetails.order_items || [])}</Text>
+                                </Col>
+                                </Row>
+                                    :
+                                    <Row style={{ marginTop: 10 }}>
+                              <Col size={5}>
+                                        <Text style={styles.ItemText}>Item Total</Text>
 
-                            </Col>
-                            <Col size={5}>
-                                <Text style={styles.rsText}>₹ {myOrderList.delivery_tax || 0}</Text>
-                            </Col>
-                        </Row>
-                        <Row style={{ marginTop: 10 }}>
-                            <Col size={5}>
-                                <Text style={styles.grandTotalText}>Grand Total</Text>
+                                    </Col>
+                                    <Col size={5}>
+                                        <Text style={styles.rsText}> {'prescription medicine Amount added later'}</Text>
+                                    </Col>
+                                    </Row>
+                                    }
+                       
+                                <Row style={{ marginTop: 10 }}>
+                                    <Col size={5}>
+                                        <Text style={styles.mainText}>Delivery Charges</Text>
 
-                            </Col>
-                            <Col size={5}>
-                                <Text style={styles.totalsText}>₹ {this.getGrandTotal(myOrderList)}</Text>
-                            </Col>
-                        </Row>
+                                    </Col>
+                                    <Col size={5}>
+                                        <Text style={styles.rsText}>₹ {orderDetails.delivery_charges || 0}</Text>
+                                    </Col>
+                                </Row>
+                                <Row style={{ marginTop: 10 }}>
+                                    <Col size={5}>
+                                        <Text style={styles.mainText}>Tax</Text>
+
+                                    </Col>
+                                    <Col size={5}>
+                                        <Text style={styles.rsText}>₹ {orderDetails.delivery_tax || 0}</Text>
+                                    </Col>
+                                </Row>
+                                <Row style={{ marginTop: 10 }}>
+                                    <Col size={5}>
+                                        <Text style={styles.grandTotalText}>Grand Total</Text>
+
+                                    </Col>
+                                    <Col size={5}>
+                                        <Text style={styles.totalsText}>₹ {this.getGrandTotal(orderDetails)}</Text>
+                                    </Col>
+                                </Row>
                     </View>
+                    {reportData != null ?
+                            <View style={{ borderRadius: 5, borderColor: 'grey', borderWidth: 0.5, padding: 5 }} >
+                                <TouchableOpacity onPress={() => { this.props.navigation.navigate('ReportDetails', { reportedId: orderDetails._id, serviceType: 'MEDICINE_ORDER' }) }}>
+                                    <Text note style={[styles.subTextInner2, { marginLeft: 10 }]}>"You have raised Report for this medicine orders"</Text>
+                                    <Row>
+                                        <Col size={9}>
+                                            <Text note style={[styles.subTextInner1, { marginLeft: 10 }]}>{reportData.issue_type || ' '}</Text>
 
-                    <View style={styles.mainView}>
-                        <Text style={styles.orderText}>OrderDetails</Text>
-                        <View style={{ marginTop: 10 }}>
-                            <Text style={styles.innerText}>Payment</Text>
-                            <Text style={styles.rightText}>{paymentDetails.payment_method || 0 }</Text>
-                        </View>
-                        <View style={{ marginTop: 10 }}>
-                            <Text style={styles.innerText}>Ordered On</Text>
-                        <Text style={styles.rightText}>{formatDate(myOrderList.created_date,'Do MMM,YYYY')}</Text>
-                        </View>
-                        <View style={{ marginTop: 10, paddingBottom: 10 }}>
-                            <Text style={styles.innerText}>Customer Details</Text>
-                        <Text style={styles.nameTextss}>{this.getName(myOrderList)}</Text>          
-                          <Text style={styles.addressText}>{this.getAddress(myOrderList)}</Text>
-                        <Text style={styles.addressText}>Mobile - {this.getMobile(myOrderList)}</Text>
+                                        </Col>
+                                        <Col size={1}>
+                                            <Icon name='ios-arrow-forward' style={{ fontSize: 20, color: 'grey' }} />
+                                        </Col>
+                                    </Row>
+                                </TouchableOpacity>
+                            </View> :
+
+                            <View style={{ alignItems: 'center', justifyContent: 'center', marginTop: 5, marginBottom: 10 }}>
+                                <TouchableOpacity
+                                    onPress={() => {
+                                        this.props.navigation.push('ReportIssue', {
+                                            issueFor: { serviceType: 'MEDICINE_ORDER', reportedId: orderDetails._id, status: orderDetails.status },
+                                            prevState: this.props.navigation.state
+                                        })
+                                    }}
+                                    block success
+                                    style={styles.reviewButton
+                                    }>
+                                    <Text style={{ color: '#fff', fontSize: 14, fontFamily: 'OpenSans', fontWeight: 'bold', textAlign: 'center', marginTop: 5 }}>
+                                        Report Issue
+                        </Text>
+                                </TouchableOpacity>
+                            </View>
+                        }
+
+                        <View style={styles.mainView}>
+                            <Text style={styles.orderText}>OrderDetails</Text>
+                            <View style={{ marginTop: 10 }}>
+                                <Text style={styles.innerText}>Payment</Text>
+                                <Text style={styles.rightText}>{paymentDetails.payment_method || 0}</Text>
+                            </View>
+                            
+                           
+                            <View style={{ marginTop: 10 }}>
+                                <Text style={styles.innerText}>Delivery On</Text>
+                                <Text style={styles.rightText}>{orderDetails.delivery_option ||''}</Text>
+                            </View>
+                            <View style={{ marginTop: 10 }}>
+                                <Text style={styles.innerText}>Ordered On</Text>
+                                <Text style={styles.rightText}>{formatDate(orderDetails.created_date, 'Do MMM,YYYY')}</Text>
+                            </View>
+                            <View style={{ marginTop: 10, paddingBottom: 10 }}>
+                                <Text style={styles.innerText}>Customer Details</Text>
+                                <Text style={styles.nameTextss}>{this.getName(orderDetails)}</Text>
+                                <Text style={styles.addressText}>{this.getAddress(orderDetails)}</Text>
+                                <Text style={styles.addressText}>Mobile - {this.getMobile(orderDetails)}</Text>
+
+                            </View>
 
                         </View>
-
-                    </View>
                 </Content>
             </Container>
         )
@@ -274,16 +373,16 @@ class OrderDetails extends Component {
 
 export default OrderDetails
 const styles = StyleSheet.create({
-    container:
-    {
-        backgroundColor: '#ffffff',
+                    container:
+                {
+                    backgroundColor: '#ffffff',
     },
 
     bodyContent: {
-        padding: 0
+                    padding: 0
     },
     customImage: {
-        height: 50,
+                    height: 50,
         width: 90,
         marginLeft: 'auto',
         marginRight: 'auto',
@@ -293,7 +392,7 @@ const styles = StyleSheet.create({
 
 
     curvedGrid: {
-        width: 250,
+                    width: 250,
         height: 250,
         borderRadius: 125,
         marginTop: -135,
@@ -301,59 +400,59 @@ const styles = StyleSheet.create({
         marginRight: 'auto',
         backgroundColor: '#745DA6',
         transform: [
-            { scaleX: 2 }
+                { scaleX: 2 }
         ],
         position: 'relative',
         overflow: 'hidden',
     },
 
     loginButton: {
-        marginTop: 12,
+                    marginTop: 12,
         backgroundColor: '#775DA3',
         borderRadius: 5,
     },
     normalText:
-    {
-        fontFamily: 'OpenSans',
+                {
+                    fontFamily: 'OpenSans',
         fontSize: 16,
         color: '#fff',
         fontWeight: 'bold'
     },
     customText:
-    {
-        fontFamily: 'OpenSans',
+                {
+                    fontFamily: 'OpenSans',
         fontSize: 16,
         color: '#2F3940',
         fontWeight: 'bold'
     },
     labelTop:
-    {
-        fontFamily: 'OpenSans',
+                {
+                    fontFamily: 'OpenSans',
         fontSize: 18,
         fontWeight: 'bold'
     },
 
     textDesc:
-    {
-        fontFamily: 'OpenSans',
+                {
+                    fontFamily: 'OpenSans',
         fontSize: 14,
         width: '80%'
     },
     medName:
-    {
-        fontFamily: 'OpenSans',
+                {
+                    fontFamily: 'OpenSans',
         fontSize: 14,
         fontWeight: 'bold',
         marginTop: 5
     },
     medPhar:
-    {
-        fontFamily: 'OpenSans',
+                {
+                    fontFamily: 'OpenSans',
         fontSize: 12,
     },
     transparentLabel:
-    {
-        borderBottomColor: 'transparent',
+                {
+                    borderBottomColor: 'transparent',
         backgroundColor: '#F1F1F1',
         height: 45,
         marginTop: 10,
@@ -363,8 +462,8 @@ const styles = StyleSheet.create({
         margin: 2,
     },
     badgeText:
-    {
-        height: 30,
+                {
+                    height: 30,
         width: 30,
         backgroundColor: 'red',
         borderRadius: 15,
@@ -373,7 +472,7 @@ const styles = StyleSheet.create({
         paddingTop: 5
     },
     button1: {
-        backgroundColor: "#5cb75d",
+                    backgroundColor: "#5cb75d",
         marginLeft: 20,
         marginTop: -10,
         borderRadius: 10,
@@ -381,7 +480,7 @@ const styles = StyleSheet.create({
         padding: 5,
     },
     button2: {
-        marginLeft: 70,
+                    marginLeft: 70,
         marginTop: -5,
         borderRadius: 10,
         justifyContent: 'center',
@@ -390,7 +489,7 @@ const styles = StyleSheet.create({
         backgroundColor: 'gray',
     },
     curvedGrid: {
-        borderRadius: 800,
+                    borderRadius: 800,
         width: '200%',
         height: 690,
         marginLeft: -200,
@@ -402,143 +501,155 @@ const styles = StyleSheet.create({
     },
 
     subText: {
-        fontFamily: 'OpenSans',
+                    fontFamily: 'OpenSans',
         fontSize: 17,
         color: '#c26c57',
         marginLeft: 10,
         fontWeight: "bold"
     },
     delHeadText: {
-        fontFamily: 'OpenSans',
+                    fontFamily: 'OpenSans',
         fontSize: 14,
         fontWeight: '500',
         color: '#ff4e42'
     },
     arrHeadText: {
-        fontFamily: 'OpenSans',
+                    fontFamily: 'OpenSans',
         fontSize: 17,
         fontWeight: '500',
         color: '#8dc63f'
     },
     rowStyle: {
-        marginTop: 15,
+                    marginTop: 15,
         paddingBottom: 10,
         borderBottomColor: 'gray',
         borderBottomWidth: 0.3
     },
     nameText: {
-        fontFamily: 'OpenSans-Bold',
+                    fontFamily: 'OpenSans-Bold',
         fontSize: 14,
         fontWeight: '500',
         color: '#4c4c4c'
     },
     pharText: {
-        fontFamily: 'OpenSans',
+                    fontFamily: 'OpenSans',
         fontSize: 12,
         color: '#909090',
         marginTop: 3
     },
     amountText: {
-        fontFamily: 'OpenSans',
+                    fontFamily: 'OpenSans',
         fontSize: 14,
         color: '#8dc63f',
         textAlign: 'right'
     },
     ItemText: {
-        fontFamily: 'OpenSans',
+                    fontFamily: 'OpenSans',
         fontSize: 12,
         fontWeight: '500',
         color: '#7F49C3'
     },
     rsText: {
-        fontFamily: 'OpenSans',
+                    fontFamily: 'OpenSans',
         fontSize: 12,
         color: '#4c4c4c',
         textAlign: 'right'
     },
     mainText: {
-        fontFamily: 'OpenSans',
+                    fontFamily: 'OpenSans',
         fontSize: 12,
         color: '#909090'
     },
     grandTotalText: {
-        fontFamily: 'OpenSans',
+                    fontFamily: 'OpenSans',
         fontSize: 12,
         fontWeight: '500',
         color: '#7F49C3'
     },
     totalsText: {
-        fontFamily: 'OpenSans',
+                    fontFamily: 'OpenSans',
         fontSize: 12,
         color: '#8dc63f',
         textAlign: 'right'
     },
     mainView: {
-        backgroundColor: '#fff',
+                    backgroundColor: '#fff',
         padding: 10,
         marginTop: 5,
     },
     orderText: {
-        fontFamily: 'OpenSans',
+                    fontFamily: 'OpenSans',
         fontSize: 14,
         fontWeight: '500',
         color: '#4c4c4c'
     },
     innerText: {
-        fontFamily: 'OpenSans',
+                    fontFamily: 'OpenSans',
         fontSize: 12,
         fontWeight: '500',
         color: '#7F49C3'
     },
     rightText: {
-        fontFamily: 'OpenSans',
+                    fontFamily: 'OpenSans',
         fontSize: 12,
         color: '#4c4c4c'
 
     },
     addressText: {
-        fontFamily: 'OpenSans',
+                    fontFamily: 'OpenSans',
         fontSize: 12,
         color: '#4c4c4c',
         marginTop: 5
     },
     nameTextss: {
-        fontFamily: 'OpenSans',
+                    fontFamily: 'OpenSans',
         fontSize: 12,
         color: '#4c4c4c',
         fontWeight: '500',
         marginTop: 5
     },
     lengthTouch: {
-        height: 12,
+                    height: 12,
         width: 12,
         borderRadius: 12 / 2,
         backgroundColor: '#7F49C3'
     },
     TouchLegth: {
-        height: 60,
+                    height: 60,
         backgroundColor: '#7F49C3',
         padding: 1,
         width: 4,
         marginLeft: 4
     },
     bottomText: {
-        height: 12,
+                    height: 12,
         width: 12,
         borderRadius: 12 / 2,
         borderColor: 'gray',
         borderWidth: 0.3
     },
     trackingText: {
-        fontSize: 14,
+                    fontSize: 14,
         fontWeight: '500',
         fontFamily: 'OpenSans',
         color: '#4c4c4c'
     },
     orderIdText: {
-        fontSize: 17,
+                    fontSize: 17,
         fontWeight: '500',
         fontFamily: 'OpenSans',
         color: '#7F49C3', marginTop: 8
-    }
+    },
+    reviewButton: {
+                    marginTop: 12,
+        backgroundColor: '#775DA3',
+        borderRadius: 10,
+        height: 40,
+        color: 'white',
+        paddingLeft: 20,
+        paddingRight: 20,
+        paddingBottom: 5,
+        paddingTop: 5,
+        flexDirection: 'row'
+    },
 });
