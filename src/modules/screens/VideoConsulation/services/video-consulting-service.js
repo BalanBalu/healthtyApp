@@ -8,6 +8,7 @@ export const fetchAvailableDoctors4Video = async (docIds) => {
         if(docIds) {
             endPoint = endPoint + '&doctorIds=' + docIds
         }
+        console.log(endPoint);
         let response = await getService(endPoint);
         let respData = response.data;
         return respData;
@@ -55,6 +56,23 @@ export const updateVideoConsuting = async (consultationId, request) => {
         let respData = response.data;
         return respData;
     } catch (e) {
+        return {
+            success: false,
+            message: e + ' Occured! Please Try again'
+        }
+    }
+}
+export const sendNotification = async (doctorId, request) => {
+    try {
+        let endPoint = 'video-consulting/connectycube/notification/doctor/' + doctorId;
+        console.log(endPoint);
+        console.log(request);
+        let response = await postService(endPoint, request);
+        let respData = response.data;
+        console.log(respData);
+        return respData;
+    } catch (e) {
+        console.log(e);
         return {
             success: false,
             message: e + ' Occured! Please Try again'

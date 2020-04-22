@@ -687,6 +687,7 @@ class BookAppoinment extends Component {
                       keyExtractor={(item, index) => index.toString()}
                       renderItem={({ item }) =>
                         <RenderReviewData
+                        navigation={this.props.navigation}
                           item={item}
                           userId={this.state.userId}
                           refreshCount={() => this.setState({ reviewRefreshCount: this.state.reviewRefreshCount + 1 })}
@@ -717,6 +718,7 @@ class BookAppoinment extends Component {
   }
 
   renderHospitalLocation = (hopitalLocationData, doctorId) => {
+    debugger
     console.log(doctorId);
     console.log(hopitalLocationData);
     if (!hopitalLocationData) {

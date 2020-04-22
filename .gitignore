@@ -42,7 +42,11 @@ yarn-error.log
 buck-out/
 \.buckd/
 *.keystore
-
+*.hprof
+src/setup/config-prod.js
+android/app/.classpath
+android/.settings
+android/app/.settings
 # fastlane
 #
 # It is recommended to not store the screenshots in the git repo. Instead, use fastlane to re-generate the
@@ -57,3 +61,6 @@ buck-out/
 # Bundle artifact
 *.jsbundle
 
+ios/Pods
+package-lock.json
+ios/Podfile.lock

@@ -4,6 +4,8 @@ How to Build Android APP
     1. Change the Config File URL
     2. Run cd android && ./gradlew assembleRelease
     
+To Enable Bit Code on WebRTC
+node_modules/react-native-webrtc/tools/downloadBitcode.sh
 
  Issues 
     Bable Error

@@ -11,27 +11,21 @@ import { MAP_BOX_PUBLIC_TOKEN, IS_ANDROID, MAX_DISTANCE_TO_COVER, CURRENT_PRODUC
 import MapboxGL from '@react-native-mapbox-gl/maps';
 import { NavigationEvents } from 'react-navigation'
 import { store } from '../../../setup/store';
-import { getAllChats, SET_LAST_MESSAGES_DATA, SET_VIDEO_SESSION } from '../../providers/chat/chat.action'
+import { getAllChats, SET_LAST_MESSAGES_DATA, SET_VIDEO_SESSION, SET_INCOMING_VIDEO_CALL, RESET_INCOMING_VIDEO_CALL } from '../../providers/chat/chat.action'
 import CurrentLocation from './CurrentLocation';
 const VideoConultationImg = require('../../../../assets/images/videConsultation.jpg');
 const chatImg = require('../../../../assets/images/Chat.jpg');
 const pharmacyImg = require('../../../../assets/images/pharmacy.jpg');
-const BloodImg = require('../../../../assets/images/blood.png');
+const BloodImg = require('../../../../assets/images/blood.jpeg');
 const ReminderImg = require('../../../../assets/images/reminder.png');
 const LabTestImg = require('../../../../assets/images/lab-test.png');
 const coronaImg = require('../../../../assets/images/corona.png');
-
-
-
-
 import OfflineNotice from '../../../components/offlineNotice';
-import { toDataUrl } from '../../../setup/helpers';
 import { fetchUserMarkedAsReadedNotification } from '../../providers/notification/notification.actions';
 import ConnectyCube from 'react-native-connectycube';
-import { CallService } from '../VideoConsulation/services';
-// import VideoScreen from '../VideoConsulation/components/VideoScreen/index';
+import { CallService  } from '../VideoConsulation/services';
 MapboxGL.setAccessToken(MAP_BOX_PUBLIC_TOKEN);
-
+import NotifService from '../../../setup/NotifService';
 const debounce = (fun, delay) => {
     let timer = null;
     return function (...args) {
@@ -59,6 +53,7 @@ class Home extends Component {
         };
         this.callSuggestionService = debounce(this.callSuggestionService, 500);
         this._setUpListeners();
+        NotifService.initNotification(props.navigation);
 
     }
 
@@ -91,7 +86,7 @@ class Home extends Component {
         try {
             const coronoTestStatus = await AsyncStorage.getItem('coronoTested');
             if (coronoTestStatus === '1') { } else {
-                this.props.navigation.navigate('CORONO Status');
+                this.props.navigation.navigate('CORONA Status');
             }
             this.initialFunction();
             if (IS_ANDROID) {
@@ -236,14 +231,6 @@ class Home extends Component {
 
             if (result.success) {
                 this.setState({ catagary: result.data, categryCount: this.state.categryCount + 1 })
-                for (let i = 0; i < result.data.length; i++) {
-                    const item = result.data[i];
-                    const imageURL = item.imageBaseURL + item.category_id + '.png';
-                    const base64ImageDataRes = await toDataUrl(imageURL)
-                    result.data[i].base64ImageData = base64ImageDataRes;
-                }
-                this.setState({ catagary: result.data, categryCount: this.state.categryCount + 1 })
-
             }
         } catch (e) {
             console.log(e);
@@ -353,6 +340,10 @@ class Home extends Component {
         try {
             let userId = await AsyncStorage.getItem('userId')
             if (userId) {
+                ConnectyCube.videochat.onCallListener = this._onCallListener;
+                ConnectyCube.videochat.onRemoteStreamListener = this._onRemoteStreamListener;
+                ConnectyCube.videochat.onStopCallListener = this._onStopCallListener;
+                ConnectyCube.videochat.onRejectCallListener =  this._onRejectCallListener;
                 this.getMarkedAsReadedNotification(userId);
             }
         } catch (e) {
@@ -364,12 +355,10 @@ class Home extends Component {
         Video Calling Service             
     */
     _setUpListeners() {
-        ConnectyCube.videochat.onCallListener = this._onCallListener;
-        // ConnectyCube.videochat.onAcceptCallListener = this._onAcceptCallListener;
-        // ConnectyCube.videochat.onRejectCallListener = this._onRejectCallListener;
-        // ConnectyCube.videochat.onStopCallListener = this._onStopCallListener;
-        // ConnectyCube.videochat.onUserNotAnswerListener = this._onUserNotAnswerListener;
-        ConnectyCube.videochat.onRemoteStreamListener = this._onRemoteStreamListener;
+       ConnectyCube.videochat.onCallListener = this._onCallListener;
+       ConnectyCube.videochat.onRemoteStreamListener = this._onRemoteStreamListener;
+       ConnectyCube.videochat.onStopCallListener = this._onStopCallListener;
+       ConnectyCube.videochat.onRejectCallListener =  this._onRejectCallListener;
     }
     _onCallListener = (session, extension) => {
 
@@ -388,14 +377,52 @@ class Home extends Component {
             }
         })
     };
-
+    _onStopCallListener = (session, userId, extension) => {
+        const isStoppedByInitiator = session.initiatorID === userId;
+    
+        CallService.processOnStopCallListener(userId, isStoppedByInitiator)
+          .then(() => {
+            if (isStoppedByInitiator) {
+                  store.dispatch({
+                    type: SET_VIDEO_SESSION,
+                    data: null
+                  });
+                  CallService.setSession(null);
+                  CallService.setExtention(null);
+                  store.dispatch({
+                    type: RESET_INCOMING_VIDEO_CALL,
+                  })
+            }
+          })
+          .catch(
+            store.dispatch({
+                type: RESET_INCOMING_VIDEO_CALL,
+          }));
+      };
+    _onRejectCallListener = (session, userId, extension) => {
+        CallService.processOnRejectCallListener(session, userId, extension)
+          .then(() => {
+            store.dispatch({
+                type: SET_VIDEO_SESSION,
+                data: null
+            });
+            CallService.setSession(null);
+            CallService.setExtention(null);
+          })
+          .catch(store.dispatch({
+            type: RESET_INCOMING_VIDEO_CALL,
+          }));
+      };
+    
     showInomingCallModal = (session, extension) => {
         CallService.setSession(session);
-        CallService.setExtention(extension)
-        this.props.navigation.navigate('VideoScreen', { isIncomingCall: true })
+        CallService.setExtention(extension);
+        store.dispatch({
+            type: SET_INCOMING_VIDEO_CALL,
+            data: true
+        })
     };
-
-
+    
     render() {
         const { fromAppointment } = this.state;
         const { bookappointment: { patientSearchLocationName, locationCordinates, isSearchByCurrentLocation, locationUpdatedCount }, navigation } = this.props;
@@ -494,14 +521,12 @@ class Home extends Component {
 
 
                     <Grid style={{ flex: 1, marginLeft: 10, marginRight: 20, marginTop: 10 }}>
-
-
-                        <Col style={{ width: '33%', }}>
-                            <TouchableOpacity onPress={() => this.props.navigation.navigate("Chat Service")}>
+                    <Col style={{ width: '33%',}}>
+                            <TouchableOpacity onPress={() => this.props.navigation.navigate("Video and Chat Service")}>
                                 <Card style={{ borderRadius: 2, overflow: 'hidden' }}>
                                     <Row style={styles.rowStyle}>
                                         <Image
-                                            source={chatImg}
+                                            source={VideoConultationImg}
                                             style={{
                                                 width: '100%', height: '100%', alignItems: 'center'
                                             }}
@@ -509,14 +534,16 @@ class Home extends Component {
                                     </Row>
                                     <Row style={styles.secondRow}>
                                         <Col style={{ width: '100%', }}>
-                                            <Text style={styles.mainText}> Chat</Text>
-                                            <Text style={styles.subText}> Chat with leading physicians</Text>
+                                            <Text style={styles.mainText}>Chat and Video</Text>
+                                            <Text style={styles.subText}>Consult doctors through chat or video</Text>
                                         </Col>
 
                                     </Row>
                                 </Card>
                             </TouchableOpacity>
                         </Col>
+
+                  
                         <Col style={{ width: '33%', marginLeft: 5 }}>
                             <TouchableOpacity onPress={() => this.props.navigation.navigate("Medicines")}>
                                 <Card style={{ borderRadius: 2, overflow: 'hidden' }}>
@@ -539,11 +566,11 @@ class Home extends Component {
                             </TouchableOpacity>
                         </Col>
                         <Col style={{ width: '33%', marginLeft: 5 }}>
-                            <TouchableOpacity onPress={() => this.props.navigation.navigate("Video Consulting Service")}>
+                            <TouchableOpacity onPress={() => this.props.navigation.navigate("Blood Donors")}>
                                 <Card style={{ borderRadius: 2, overflow: 'hidden' }}>
                                     <Row style={styles.rowStyle}>
                                         <Image
-                                            source={VideoConultationImg}
+                                            source={BloodImg}
                                             style={{
                                                 width: '100%', height: '100%', alignItems: 'center'
                                             }}
@@ -551,27 +578,28 @@ class Home extends Component {
                                     </Row>
                                     <Row style={styles.secondRow}>
                                         <Col style={{ width: '100%', }}>
-                                            <Text style={styles.mainText}>Video Consultation</Text>
-                                            <Text style={styles.subText}>Consult doctors through video</Text>
+                                            <Text style={styles.mainText}>Blood donors</Text>
+                                            <Text style={styles.subText}>Find Available blood donors</Text>
                                         </Col>
 
                                     </Row>
                                 </Card>
                             </TouchableOpacity>
                         </Col>
+                 
                     </Grid>
                     <Grid style={{ flex: 1, marginLeft: 10, marginRight: 14, }}>
                         <Row style={{ marginTop: 5 }}>
-                            <Col size={5}>
-                                <TouchableOpacity onPress={() => this.props.navigation.navigate("Blood Donors")}>
-                                    <Card style={{ padding: 5, borderRadius: 2 }} >
+                        <Col size={5}>
+                                <TouchableOpacity onPress={() => this.props.navigation.navigate("Reminder")}>
+                                    <Card style={{ padding: 5, borderRadius: 2 }}>
                                         <Row>
                                             <Col size={7.5} style={{ justifyContent: 'center' }}>
-                                                <Text style={styles.mainText}>Blood Donors</Text>
+                                                <Text style={styles.mainText}>Medicine Reminder</Text>
                                             </Col>
                                             <Col size={2.5}>
                                                 <Image
-                                                    source={BloodImg}
+                                                    source={ReminderImg}
                                                     style={{
                                                         width: 35, height: 35, alignItems: 'center'
                                                     }}
@@ -602,48 +630,6 @@ class Home extends Component {
                                 </TouchableOpacity>
                             </Col>
                         </Row>
-                        <Row style={{ marginTop: 5 }}>
-                            <Col size={5}>
-                                <TouchableOpacity onPress={() => this.props.navigation.navigate("Reminder")}>
-                                    <Card style={{ padding: 5, borderRadius: 2 }}>
-                                        <Row>
-                                            <Col size={7.5} style={{ justifyContent: 'center' }}>
-                                                <Text style={styles.mainText}>Set Reminder</Text>
-                                            </Col>
-                                            <Col size={2.5}>
-                                                <Image
-                                                    source={ReminderImg}
-                                                    style={{
-                                                        width: 35, height: 35, alignItems: 'center'
-                                                    }}
-                                                />
-                                            </Col>
-                                        </Row>
-                                    </Card>
-                                </TouchableOpacity>
-                            </Col>
-                            <Col size={5} style={{ marginLeft: 5 }}>
-                                <TouchableOpacity onPress={() => this.props.navigation.navigate("CORONO Status")}>
-                                    <Card style={{ padding: 5, borderRadius: 2 }}>
-                                        <Row>
-                                            <Col size={7.5} style={{ justifyContent: 'center' }}>
-                                                <Text style={styles.mainText}>COVID - 19 test</Text>
-                                            </Col>
-                                            <Col size={2.5}>
-
-                                                <Image
-                                                    source={coronaImg}
-                                                    style={{
-                                                        width: 35, height: 35, alignItems: 'center'
-                                                    }}
-                                                />
-                                            </Col>
-                                        </Row>
-                                    </Card>
-                                </TouchableOpacity>
-                            </Col>
-                        </Row>
-
                     </Grid>
                     <View style={{ marginLeft: 10, marginRight: 10, marginBottom: 20 }}>
                         <Row style={{ marginTop: 10, marginBottom: 5 }}>
@@ -668,7 +654,7 @@ class Home extends Component {
                                             <TouchableOpacity onPress={() => this.navigateToCategorySearch(item.category_name)}
                                                 style={{ justifyContent: 'center', alignItems: 'center', width: '100%', paddingTop: 5, paddingBottom: 5 }}>
                                                 <Image
-                                                    source={{ uri: item.base64ImageData /*item.imageBaseURL + item.category_id + '.png' */ }}
+                                                    source={{ uri: item.imageBaseURL + item.category_id + '.png' }}
                                                     style={{
                                                         width: 50, height: 50, alignItems: 'center'
                                                     }}
@@ -940,7 +926,7 @@ const styles = StyleSheet.create({
 
     },
     rowStyle: {
-        height: 85,
+        height: 100,
         width: '100%',
         overflow: 'hidden',
         backgroundColor: "#fff",
@@ -949,12 +935,11 @@ const styles = StyleSheet.create({
     },
     secondRow: {
         paddingTop: 10,
-        paddingBottom: 5,
+        paddingBottom: 10,
         width: '100%',
         borderTopColor: '#000',
         borderTopWidth: 0.3,
         backgroundColor: '#fff',
-        paddingTop: 5,
         justifyContent: 'center'
     },
     mainText: {
