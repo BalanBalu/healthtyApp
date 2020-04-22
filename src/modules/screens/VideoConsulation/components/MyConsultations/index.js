@@ -97,7 +97,7 @@ class VideoConsultaions extends Component {
 						    <Thumbnail circular source={renderDoctorImage(item.doctorInfo)} style={{ height: 60, width: 60 }} />
 						</Col>
                         <Col size={7}>
-                            <Text style={styles.docNameText}>{getName(item.userInfo)} </Text>
+                            <Text style={styles.docNameText}>{getName(item.doctorInfo)} </Text>
                             <Text note style={styles.docNameText}>Rs. {item.fee}</Text>
                         </Col>
                     </Row>

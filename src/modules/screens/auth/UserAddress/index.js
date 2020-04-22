@@ -1,8 +1,8 @@
 
 import React, { Component } from 'react';
-import { View, StyleSheet, Image, TouchableOpacity } from 'react-native';
+import { View, StyleSheet, Image, TouchableOpacity, Platform } from 'react-native';
 import { createStackNavigator } from 'react-navigation';
-import { Item, Text, Icon, Header, Left, Row } from 'native-base';
+import { Item, Text, Icon, Header, Left, Row, } from 'native-base';
 import MapboxAutocomplete from './AutoComplete';
 let token = 'sk.eyJ1IjoidmFpcmFpc2F0aGlzaCIsImEiOiJjanZhMjZ0ZXMwdWozNDRteTB4bG14Y2o1In0.A34n-MA-vy3hsydgt_8pRQ';
 let publicToken = 'pk.eyJ1IjoidmFpcmFpc2F0aGlzaCIsImEiOiJjanRyZnFvN2YwcGo3NGRxc251bnl3Nzd0In0.A5faVs4HJr1xUgi7k9eg-A';
@@ -47,7 +47,7 @@ class UserAddress extends Component {
                     <Header style={{ backgroundColor: '#7E49C3' }}>
                         <Row>
                             <Left>
-                                <TouchableOpacity onPress={() => this.props.navigation.pop()} style={{ paddingRight: 10, paddingTop: 10, paddingBottom: 10, alignItems: 'flex-start', flexDirection: 'row', color: '#775DA3', marginLeft: 10 }} >
+                                <TouchableOpacity onPress={() => this.props.navigation.pop()} style={Platform.OS === "ios" ? { paddingRight: 10, paddingTop: 10, paddingBottom: 10, alignItems: 'flex-start', flexDirection: 'row', color: '#775DA3', marginTop: -10, marginLeft: -10 } : { paddingRight: 10, paddingTop: 10, paddingBottom: 10, alignItems: 'flex-start', flexDirection: 'row', color: '#775DA3', marginLeft: 10 }} >
                                     <Icon name="arrow-back" style={{ color: '#fff', fontSize: 30, marginLeft: 10, marginTop: 10 }} />
                                     <Text style={{ color: '#fff', fontSize: 20, marginLeft: 20, marginTop: 10 }}>Back</Text>
                                 </TouchableOpacity>
@@ -56,11 +56,16 @@ class UserAddress extends Component {
                         </Row>
                     </Header>
                     : null}
-
-                <Item style={style.slide}>
-                    <Text style={style.welcome}>Hi, Add Your Location </Text>
-                    <Icon name='pin' style={{ fontSize: 50, color: '#775DA3', marginLeft: 10 }} />
-                </Item>
+                {Platform.OS === "ios" ?
+                    <View style={style.iosSlide}>
+                        <Text style={[style.welcome, { marginTop: 20 }]}>Hi, Add Your Location</Text>
+                        <Icon name='pin' style={{ fontSize: 30, color: '#775DA3', marginLeft: 10, marginTop: 20 }} />
+                    </View> :
+                    <Item style={style.slide}>
+                        <Text style={style.welcome}>Hi, Add Your Location </Text>
+                        <Icon name='pin' style={{ fontSize: 50, color: '#775DA3', marginLeft: 10 }} />
+                    </Item>
+                }
                 <MapboxAutocomplete
                     text={this.state.text}
                     minLength={2}
@@ -121,6 +126,13 @@ const style = StyleSheet.create({
         paddingLeft: 30,
         paddingRight: 40,
         fontFamily: 'OpenSans',
+    },
+    iosSlide: {
+        borderBottomWidth: 0,
+        justifyContent: 'center',
+        fontFamily: 'OpenSans',
+        flexDirection: 'row',
+        marginTop: 30
     },
 
 });

@@ -61,8 +61,9 @@ class Notification extends Component {
     }
     updateNavigation = async (item) => {
         
-        
+       
         await this.setState({ notificationId: item._id })
+        if(item.notification_type==='APPOINTMENT'){
         if (!item.mark_as_viewed) {
             await this.upDateNotification('mark_as_viewed')
             this.props.navigation.push("AppointmentInfo", { appointmentId: item.appointment_id,fromNotification:true })
@@ -71,6 +72,17 @@ class Notification extends Component {
         else {
             this.props.navigation.push("AppointmentInfo", { appointmentId: item.appointment_id,fromNotification:true })
         }
+    }
+    if(item.notification_type==='PHARMACY_ORDERS'){
+        if (!item.mark_as_viewed) {
+            await this.upDateNotification('mark_as_viewed')
+            this.props.navigation.push("OrderDetails", { serviceId: item.service_id,fromNotification:true })
+              
+        }
+        else {
+            this.props.navigation.push("OrderDetails", { serviceId: item.service_id,fromNotification:true })
+        }
+    }
     }
     upDateNotification = async (node) => {
         try {
@@ -93,7 +105,7 @@ class Notification extends Component {
         let userId = await AsyncStorage.getItem('userId');
        
         let result = await fetchUserNotification(userId);
-        
+      
         if (result.success) {
             this.setState({data:result.data})
         }

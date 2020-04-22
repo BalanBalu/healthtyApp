@@ -391,19 +391,25 @@ class MyAppoinmentList extends Component {
 														<Col size={8}>
 
 															<Row style={{ borderBottomWidth: 0 }}>
+																<Col size={9}>
+																	<Text style={{ fontFamily: "OpenSans", fontSize: 15, fontWeight: 'bold' }}>
+																		{(item.prefix != undefined ? item.prefix + ' ' : '') + getName(item.appointmentResult.doctorInfo)}
+																	</Text>
+																	<Text
+																		style={{
+																			fontFamily: "OpenSans",
+																			fontSize: 13,
+																			marginTop: "1%"
+																		}}
+																	>
+																		{item.degree}
+																	</Text>
+																</Col>
+																<Col size={1}>
 
-																<Text style={{ fontFamily: "OpenSans", fontSize: 15, fontWeight: 'bold' }}>
-																	{(item.prefix != undefined ? item.prefix + ' ' : '') + getName(item.appointmentResult.doctorInfo)}
-																</Text>
-																<Text
-																	style={{
-																		fontFamily: "OpenSans",
-																		fontSize: 13,
-																		marginTop: "1%"
-																	}}
-																>
-																	{item.degree}
-																</Text>
+																</Col>
+
+
 															</Row>
 															<Row style={{ borderBottomWidth: 0 }}>
 																<Text

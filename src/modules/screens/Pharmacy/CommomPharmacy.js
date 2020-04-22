@@ -4,28 +4,39 @@ import { dateDiff, getMoment, formatDate } from '../../../setup/helpers'
 
 
 export function medicineRateAfterOffer(item) {
-  let amount = ''
-  if (item.discount_value == undefined) {
+  
+
+  let amount = ''//for binding purpose used empty string
+  if(item===undefined){
+    return amount
+  }
+  if (item.discount_value === undefined) {
+
     amount = parseInt(item.price)
+    return amount
   }
   if (item.discount_type) {
-    if (item.discount_type == 'PERCENTAGE') {
+
+    if (item.discount_type === 'PERCENTAGE') {
       let divided = (parseInt(item.discount_value) / 100) * parseInt(item.price)
       amount = parseInt(item.price) - divided
       return amount
-    } else if (item.discount_type == 'AMOUNT') {
+    } else if (item.discount_type === 'AMOUNT') {
       amount = parseInt(item.price) - parseInt(item.discount_value);
       return amount
     }
-  } else {
+  } 
+else {
     return amount
   }
+
 }
 
 
 export async function ProductIncrementDecreMent(quantity, price, operation, threshold_limits) {
 
   let itemQuantity = (quantity === undefined ? 0 : quantity);
+ 
   let totalAmount = price;
   let threshold_message = null;
   let threshold_limit = threshold_limits || itemQuantity + 1
@@ -36,7 +47,7 @@ export async function ProductIncrementDecreMent(quantity, price, operation, thre
       totalAmount = quantity * price
     } else {
 
-      threshold_message = 'you will not add more than' + threshold_limit
+      threshold_message = 'you will not add more than' + String(threshold_limit)
 
     }
 
@@ -64,12 +75,21 @@ export async function ProductIncrementDecreMent(quantity, price, operation, thre
 
 export function renderMedicineImage(data) {
   console.log(data)
-  let source = require('../../../../assets/images/paracetamol.jpg')
+  let source =  require('../../../../assets/images/paracetamol.jpg')
   if (data.medicine_images) {
     if (data.medicine_images[0]) {
       console.log(data.medicine_images[0].imageURL)
       source = { uri: data.medicine_images[0].imageURL }
     }
+  }
+  return (source)
+}
+export function renderMedicineImageAnimation(data) {
+ 
+ 
+  let source =  require('../../../../assets/images/paracetamol.jpg')
+  if (data) {
+      source = { uri: data.imageURL }
   }
   return (source)
 }
@@ -157,6 +177,26 @@ export function getMedicineWeightUnit(weight, unit) {
     return medicineWeightUnit
   }
 }
+  
+export function quantityPriceSort(data) {
+  data.forEach(element => {
+    if (element.medPharDetailInfo) {
+        if (element.medPharDetailInfo.variations) {
+            
+            element.medPharDetailInfo.variations.sort(function (firstVarlue, secandValue) {
+                
+               
+                    if(firstVarlue.total_quantity === 0) return 1;
+                    else if(secandValue.total_quantity === 0) return -1;
+                    else return firstVarlue.price - secandValue.price;
+                });
+               
+        }
+    }
+})
+return data
+}
+
 
 export const renderAppoinmentData = (props) => {
 
