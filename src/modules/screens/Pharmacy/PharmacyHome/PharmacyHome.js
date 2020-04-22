@@ -83,10 +83,10 @@ class PharmacyHome extends Component {
                     }
                 }
             }
-            
+
         }
         catch (e) {
-           
+
             console.log(e)
         }
         finally {
@@ -345,20 +345,20 @@ class PharmacyHome extends Component {
                                                             <TouchableOpacity style={styles.addCartTouch}
                                                                 onPress={() => { this.setState({ isAddToCart: true }), this.selectedItems(item, 'Add to Card') }} >
 
-                                                                <Icon name='ios-cart' style={{ color: '#4e85e9', fontSize: 11, marginLeft: 3.5, paddingTop: 2.3 }} />
+                                                                <Icon name='ios-cart' style={{ color: '#4e85e9', fontSize: 12, marginLeft: 3.5, paddingTop: 2.3, }} />
                                                                 <Text style={styles.addCartText}>Add to Cart</Text>
 
                                                             </TouchableOpacity> :
                                                             <TouchableOpacity style={styles.addCartTouch}
                                                                 onPress={() => { this.setState({ isAddToCart: true }), this.selectedItems(item, 'Add to Card', cartItems.findIndex(ele => ele.medicine_id == item.medPharDetailInfo.medicine_id && ele.pharmacy_id == item.medPharDetailInfo.pharmacy_id)) }} >
 
-                                                                <Icon name='ios-cart' style={{ color: '#4e85e9', fontSize: 11, marginLeft: 3.5, paddingTop: 2.3 }} />
+                                                                <Icon name='ios-cart' style={{ color: '#4e85e9', fontSize: 12, marginLeft: 3.5, paddingTop: 2.3, }} />
                                                                 <Text style={styles.addCartText}>{'Added ' + cartItems[cartItems.findIndex(ele => ele.medicine_id == item.medPharDetailInfo.medicine_id && ele.pharmacy_id == item.medPharDetailInfo.pharmacy_id)].userAddedMedicineQuantity}</Text>
 
                                                             </TouchableOpacity>}
 
                                                         <TouchableOpacity style={styles.buyNowTouch} onPress={() => { this.setState({ isBuyNow: true }), this.selectedItems(item, 'Buy Now') }} >
-                                                            <Icon name="ios-cart" style={{ fontSize: 12, color: '#fff' }} />
+                                                            <Icon name="ios-cart" style={{ fontSize: 12, color: '#fff', marginTop: 1 }} />
                                                             <Text style={styles.BuyNowText}>Buy Now</Text>
                                                         </TouchableOpacity>
                                                         {this.state.isBuyNow == true || this.state.isAddToCart == true ?
@@ -420,7 +420,7 @@ class PharmacyHome extends Component {
                                                                     pharmacyInfo: item.pharmacyInfo
                                                                 })}
                                                                 style={{ backgroundColor: '#8dc63f', flexDirection: 'row', paddingTop: 2, paddingBottom: 2, paddingLeft: 8, paddingRight: 8, marginLeft: 5, borderRadius: 2 }}>
-                                                                <Icon name="ios-cart" style={{ fontSize: 10, color: '#fff' }} />
+                                                                <Icon name="ios-cart" style={{ fontSize: 12, color: '#fff', marginTop: 3 }} />
                                                                 <Text style={styles.orderNowText}>Order Medicines</Text>
                                                             </TouchableOpacity>
                                                         </Row>
@@ -467,10 +467,13 @@ const styles = StyleSheet.create({
 
     container: {
         backgroundColor: '#ffffff',
+        flex: 1
     },
     bodyContent: {
-        padding: 5
+        padding: 5,
+        flex: 1
     },
+
     customImage: {
         height: 70,
         width: 70,

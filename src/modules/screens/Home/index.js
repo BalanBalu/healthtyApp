@@ -11,7 +11,7 @@ import { MAP_BOX_PUBLIC_TOKEN, IS_ANDROID, MAX_DISTANCE_TO_COVER, CURRENT_PRODUC
 import MapboxGL from '@react-native-mapbox-gl/maps';
 import { NavigationEvents } from 'react-navigation'
 import { store } from '../../../setup/store';
-import { getAllChats, SET_LAST_MESSAGES_DATA, SET_VIDEO_SESSION, SET_INCOMING_VIDEO_CALL } from '../../providers/chat/chat.action'
+import { getAllChats, SET_LAST_MESSAGES_DATA, SET_VIDEO_SESSION, SET_INCOMING_VIDEO_CALL, RESET_INCOMING_VIDEO_CALL } from '../../providers/chat/chat.action'
 import CurrentLocation from './CurrentLocation';
 const VideoConultationImg = require('../../../../assets/images/videConsultation.jpg');
 const chatImg = require('../../../../assets/images/Chat.jpg');
@@ -86,7 +86,7 @@ class Home extends Component {
         try {
             const coronoTestStatus = await AsyncStorage.getItem('coronoTested');
             if (coronoTestStatus === '1') { } else {
-                this.props.navigation.navigate('CORONO Status');
+                this.props.navigation.navigate('CORONA Status');
             }
             this.initialFunction();
             if (IS_ANDROID) {
@@ -340,7 +340,10 @@ class Home extends Component {
         try {
             let userId = await AsyncStorage.getItem('userId')
             if (userId) {
+                ConnectyCube.videochat.onCallListener = this._onCallListener;
                 ConnectyCube.videochat.onRemoteStreamListener = this._onRemoteStreamListener;
+                ConnectyCube.videochat.onStopCallListener = this._onStopCallListener;
+                ConnectyCube.videochat.onRejectCallListener =  this._onRejectCallListener;
                 this.getMarkedAsReadedNotification(userId);
             }
         } catch (e) {
@@ -354,6 +357,8 @@ class Home extends Component {
     _setUpListeners() {
        ConnectyCube.videochat.onCallListener = this._onCallListener;
        ConnectyCube.videochat.onRemoteStreamListener = this._onRemoteStreamListener;
+       ConnectyCube.videochat.onStopCallListener = this._onStopCallListener;
+       ConnectyCube.videochat.onRejectCallListener =  this._onRejectCallListener;
     }
     _onCallListener = (session, extension) => {
 
@@ -372,6 +377,42 @@ class Home extends Component {
             }
         })
     };
+    _onStopCallListener = (session, userId, extension) => {
+        const isStoppedByInitiator = session.initiatorID === userId;
+    
+        CallService.processOnStopCallListener(userId, isStoppedByInitiator)
+          .then(() => {
+            if (isStoppedByInitiator) {
+                  store.dispatch({
+                    type: SET_VIDEO_SESSION,
+                    data: null
+                  });
+                  CallService.setSession(null);
+                  CallService.setExtention(null);
+                  store.dispatch({
+                    type: RESET_INCOMING_VIDEO_CALL,
+                  })
+            }
+          })
+          .catch(
+            store.dispatch({
+                type: RESET_INCOMING_VIDEO_CALL,
+          }));
+      };
+    _onRejectCallListener = (session, userId, extension) => {
+        CallService.processOnRejectCallListener(session, userId, extension)
+          .then(() => {
+            store.dispatch({
+                type: SET_VIDEO_SESSION,
+                data: null
+            });
+            CallService.setSession(null);
+            CallService.setExtention(null);
+          })
+          .catch(store.dispatch({
+            type: RESET_INCOMING_VIDEO_CALL,
+          }));
+      };
     
     showInomingCallModal = (session, extension) => {
         CallService.setSession(session);

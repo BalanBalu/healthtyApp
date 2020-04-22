@@ -331,8 +331,8 @@ onBookButtonPress4PaymentChat = async (doctorId, fee) => {
    }
    getDoctorCategory(item) {
     if(item.specialist) {
-       let specialist =  item.specialist.map(ele => ele.category).join(', ')
-       return  specialist.slice(0, specialist.length - 1)
+       let specialist =  item.specialist.map(ele => ele.category);
+       return specialist.join(', ');
     }
     return ''
    }
@@ -465,7 +465,7 @@ onBookButtonPress4PaymentChat = async (doctorId, fee) => {
                                         <Row style={{ marginTop: 5 ,  width: '100%'}}>
                                             <Button disabled style={{height: 30,   borderRadius: 10, backgroundColor: '#6e5c7b' }}>
                                             <Icon name="ios-videocam" style={ { color: '#FFFFFF', fontSize: 15 }} />
-                                    <Text style={{ marginLeft: -20 }}>Available on {this.getNextAvailabiltyData(item)}</Text>
+                                            <Text style={{ marginLeft: -20, fontSize: 10 }}>Available on {this.getNextAvailabiltyData(item)}</Text>
                                             {/*nextAvailableDate ? <Text style={{ color: '#fff', fontFamily: 'OpenSans', fontWeight: 'bold', fontSize: 15 }}>Next Availability On {nextAvailableDate}</Text> : <Text style={{ color: '#fff', fontFamily: 'OpenSans', fontWeight: 'bold', fontSize: 16 }}> No Availablity for Next 7 Days</Text>*/}
                                             </Button>
                                         </Row> : null }

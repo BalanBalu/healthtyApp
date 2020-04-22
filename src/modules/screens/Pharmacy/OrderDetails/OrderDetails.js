@@ -34,7 +34,6 @@ class OrderDetails extends Component {
     }
     async componentDidMount() {
         const { navigation } = this.props;
-
         this.medicineOrderDetails();
         this.getUserReport()
     }
@@ -81,7 +80,7 @@ class OrderDetails extends Component {
 
     }
 
- 
+
 
     getAddress(address) {
         if (address.pickup_or_delivery_address) {
@@ -140,7 +139,7 @@ class OrderDetails extends Component {
         const { isLoading, orderDetails, paymentDetails, reportData } = this.state;
         return (
             <Container style={styles.container}>
-                <Content style={{ backgroundColor: '#F5F5F5', padding: 10 }}>
+                <Content style={{ backgroundColor: '#F5F5F5', padding: 10, flex: 1 }}>
 
                     <Spinner
                         visible={isLoading}
@@ -264,106 +263,106 @@ class OrderDetails extends Component {
                                 <Col size={5}>
                                     <Text style={styles.rsText}>₹ {this.getFinalPriceOfOrder(orderDetails.order_items || [])}</Text>
                                 </Col>
-                                </Row>
-                                    :
-                                    <Row style={{ marginTop: 10 }}>
-                              <Col size={5}>
-                                        <Text style={styles.ItemText}>Item Total</Text>
+                            </Row>
+                            :
+                            <Row style={{ marginTop: 10 }}>
+                                <Col size={5}>
+                                    <Text style={styles.ItemText}>Item Total</Text>
 
-                                    </Col>
-                                    <Col size={5}>
-                                        <Text style={styles.rsText}> {'prescription medicine Amount added later'}</Text>
-                                    </Col>
-                                    </Row>
-                                    }
-                       
-                                <Row style={{ marginTop: 10 }}>
-                                    <Col size={5}>
-                                        <Text style={styles.mainText}>Delivery Charges</Text>
-
-                                    </Col>
-                                    <Col size={5}>
-                                        <Text style={styles.rsText}>₹ {orderDetails.delivery_charges || 0}</Text>
-                                    </Col>
-                                </Row>
-                                <Row style={{ marginTop: 10 }}>
-                                    <Col size={5}>
-                                        <Text style={styles.mainText}>Tax</Text>
-
-                                    </Col>
-                                    <Col size={5}>
-                                        <Text style={styles.rsText}>₹ {orderDetails.delivery_tax || 0}</Text>
-                                    </Col>
-                                </Row>
-                                <Row style={{ marginTop: 10 }}>
-                                    <Col size={5}>
-                                        <Text style={styles.grandTotalText}>Grand Total</Text>
-
-                                    </Col>
-                                    <Col size={5}>
-                                        <Text style={styles.totalsText}>₹ {this.getGrandTotal(orderDetails)}</Text>
-                                    </Col>
-                                </Row>
-                    </View>
-                    {reportData != null ?
-                            <View style={{ borderRadius: 5, borderColor: 'grey', borderWidth: 0.5, padding: 5 }} >
-                                <TouchableOpacity onPress={() => { this.props.navigation.navigate('ReportDetails', { reportedId: orderDetails._id, serviceType: 'MEDICINE_ORDER' }) }}>
-                                    <Text note style={[styles.subTextInner2, { marginLeft: 10 }]}>"You have raised Report for this medicine orders"</Text>
-                                    <Row>
-                                        <Col size={9}>
-                                            <Text note style={[styles.subTextInner1, { marginLeft: 10 }]}>{reportData.issue_type || ' '}</Text>
-
-                                        </Col>
-                                        <Col size={1}>
-                                            <Icon name='ios-arrow-forward' style={{ fontSize: 20, color: 'grey' }} />
-                                        </Col>
-                                    </Row>
-                                </TouchableOpacity>
-                            </View> :
-
-                            <View style={{ alignItems: 'center', justifyContent: 'center', marginTop: 5, marginBottom: 10 }}>
-                                <TouchableOpacity
-                                    onPress={() => {
-                                        this.props.navigation.push('ReportIssue', {
-                                            issueFor: { serviceType: 'MEDICINE_ORDER', reportedId: orderDetails._id, status: orderDetails.status },
-                                            prevState: this.props.navigation.state
-                                        })
-                                    }}
-                                    block success
-                                    style={styles.reviewButton
-                                    }>
-                                    <Text style={{ color: '#fff', fontSize: 14, fontFamily: 'OpenSans', fontWeight: 'bold', textAlign: 'center', marginTop: 5 }}>
-                                        Report Issue
-                        </Text>
-                                </TouchableOpacity>
-                            </View>
+                                </Col>
+                                <Col size={5}>
+                                    <Text style={styles.rsText}> {'prescription medicine Amount added later'}</Text>
+                                </Col>
+                            </Row>
                         }
 
-                        <View style={styles.mainView}>
-                            <Text style={styles.orderText}>OrderDetails</Text>
-                            <View style={{ marginTop: 10 }}>
-                                <Text style={styles.innerText}>Payment</Text>
-                                <Text style={styles.rightText}>{paymentDetails.payment_method || 0}</Text>
-                            </View>
-                            
-                           
-                            <View style={{ marginTop: 10 }}>
-                                <Text style={styles.innerText}>Delivery On</Text>
-                                <Text style={styles.rightText}>{orderDetails.delivery_option ||''}</Text>
-                            </View>
-                            <View style={{ marginTop: 10 }}>
-                                <Text style={styles.innerText}>Ordered On</Text>
-                                <Text style={styles.rightText}>{formatDate(orderDetails.created_date, 'Do MMM,YYYY')}</Text>
-                            </View>
-                            <View style={{ marginTop: 10, paddingBottom: 10 }}>
-                                <Text style={styles.innerText}>Customer Details</Text>
-                                <Text style={styles.nameTextss}>{this.getName(orderDetails)}</Text>
-                                <Text style={styles.addressText}>{this.getAddress(orderDetails)}</Text>
-                                <Text style={styles.addressText}>Mobile - {this.getMobile(orderDetails)}</Text>
+                        <Row style={{ marginTop: 10 }}>
+                            <Col size={5}>
+                                <Text style={styles.mainText}>Delivery Charges</Text>
 
-                            </View>
+                            </Col>
+                            <Col size={5}>
+                                <Text style={styles.rsText}>₹ {orderDetails.delivery_charges || 0}</Text>
+                            </Col>
+                        </Row>
+                        <Row style={{ marginTop: 10 }}>
+                            <Col size={5}>
+                                <Text style={styles.mainText}>Tax</Text>
+
+                            </Col>
+                            <Col size={5}>
+                                <Text style={styles.rsText}>₹ {orderDetails.delivery_tax || 0}</Text>
+                            </Col>
+                        </Row>
+                        <Row style={{ marginTop: 10 }}>
+                            <Col size={5}>
+                                <Text style={styles.grandTotalText}>Grand Total</Text>
+
+                            </Col>
+                            <Col size={5}>
+                                <Text style={styles.totalsText}>₹ {this.getGrandTotal(orderDetails)}</Text>
+                            </Col>
+                        </Row>
+                    </View>
+                    {reportData != null ?
+                        <View style={{ borderRadius: 5, borderColor: 'grey', borderWidth: 0.5, padding: 5 }} >
+                            <TouchableOpacity onPress={() => { this.props.navigation.navigate('ReportDetails', { reportedId: orderDetails._id, serviceType: 'MEDICINE_ORDER' }) }}>
+                                <Text note style={[styles.subTextInner2, { marginLeft: 10 }]}>"You have raised Report for this medicine orders"</Text>
+                                <Row>
+                                    <Col size={9}>
+                                        <Text note style={[styles.subTextInner1, { marginLeft: 10 }]}>{reportData.issue_type || ' '}</Text>
+
+                                    </Col>
+                                    <Col size={1}>
+                                        <Icon name='ios-arrow-forward' style={{ fontSize: 20, color: 'grey' }} />
+                                    </Col>
+                                </Row>
+                            </TouchableOpacity>
+                        </View> :
+
+                        <View style={{ alignItems: 'center', justifyContent: 'center', marginTop: 5, marginBottom: 10 }}>
+                            <TouchableOpacity
+                                onPress={() => {
+                                    this.props.navigation.push('ReportIssue', {
+                                        issueFor: { serviceType: 'MEDICINE_ORDER', reportedId: orderDetails._id, status: orderDetails.status },
+                                        prevState: this.props.navigation.state
+                                    })
+                                }}
+                                block success
+                                style={styles.reviewButton
+                                }>
+                                <Text style={{ color: '#fff', fontSize: 14, fontFamily: 'OpenSans', fontWeight: 'bold', textAlign: 'center', marginTop: 5 }}>
+                                    Report Issue
+                        </Text>
+                            </TouchableOpacity>
+                        </View>
+                    }
+
+                    <View style={styles.mainView}>
+                        <Text style={styles.orderText}>OrderDetails</Text>
+                        <View style={{ marginTop: 10 }}>
+                            <Text style={styles.innerText}>Payment</Text>
+                            <Text style={styles.rightText}>{paymentDetails.payment_method || 0}</Text>
+                        </View>
+
+
+                        <View style={{ marginTop: 10 }}>
+                            <Text style={styles.innerText}>Delivery On</Text>
+                            <Text style={styles.rightText}>{orderDetails.delivery_option || ''}</Text>
+                        </View>
+                        <View style={{ marginTop: 10 }}>
+                            <Text style={styles.innerText}>Ordered On</Text>
+                            <Text style={styles.rightText}>{formatDate(orderDetails.created_date, 'Do MMM,YYYY')}</Text>
+                        </View>
+                        <View style={{ marginTop: 10, paddingBottom: 10 }}>
+                            <Text style={styles.innerText}>Customer Details</Text>
+                            <Text style={styles.nameTextss}>{this.getName(orderDetails)}</Text>
+                            <Text style={styles.addressText}>{this.getAddress(orderDetails)}</Text>
+                            <Text style={styles.addressText}>Mobile - {this.getMobile(orderDetails)}</Text>
 
                         </View>
+
+                    </View>
                 </Content>
             </Container>
         )
@@ -373,16 +372,17 @@ class OrderDetails extends Component {
 
 export default OrderDetails
 const styles = StyleSheet.create({
-                    container:
-                {
-                    backgroundColor: '#ffffff',
+    container:
+    {
+        backgroundColor: '#ffffff',
+        flex: 1
     },
 
     bodyContent: {
-                    padding: 0
+        padding: 0
     },
     customImage: {
-                    height: 50,
+        height: 50,
         width: 90,
         marginLeft: 'auto',
         marginRight: 'auto',
@@ -392,7 +392,7 @@ const styles = StyleSheet.create({
 
 
     curvedGrid: {
-                    width: 250,
+        width: 250,
         height: 250,
         borderRadius: 125,
         marginTop: -135,
@@ -400,59 +400,59 @@ const styles = StyleSheet.create({
         marginRight: 'auto',
         backgroundColor: '#745DA6',
         transform: [
-                { scaleX: 2 }
+            { scaleX: 2 }
         ],
         position: 'relative',
         overflow: 'hidden',
     },
 
     loginButton: {
-                    marginTop: 12,
+        marginTop: 12,
         backgroundColor: '#775DA3',
         borderRadius: 5,
     },
     normalText:
-                {
-                    fontFamily: 'OpenSans',
+    {
+        fontFamily: 'OpenSans',
         fontSize: 16,
         color: '#fff',
         fontWeight: 'bold'
     },
     customText:
-                {
-                    fontFamily: 'OpenSans',
+    {
+        fontFamily: 'OpenSans',
         fontSize: 16,
         color: '#2F3940',
         fontWeight: 'bold'
     },
     labelTop:
-                {
-                    fontFamily: 'OpenSans',
+    {
+        fontFamily: 'OpenSans',
         fontSize: 18,
         fontWeight: 'bold'
     },
 
     textDesc:
-                {
-                    fontFamily: 'OpenSans',
+    {
+        fontFamily: 'OpenSans',
         fontSize: 14,
         width: '80%'
     },
     medName:
-                {
-                    fontFamily: 'OpenSans',
+    {
+        fontFamily: 'OpenSans',
         fontSize: 14,
         fontWeight: 'bold',
         marginTop: 5
     },
     medPhar:
-                {
-                    fontFamily: 'OpenSans',
+    {
+        fontFamily: 'OpenSans',
         fontSize: 12,
     },
     transparentLabel:
-                {
-                    borderBottomColor: 'transparent',
+    {
+        borderBottomColor: 'transparent',
         backgroundColor: '#F1F1F1',
         height: 45,
         marginTop: 10,
@@ -462,8 +462,8 @@ const styles = StyleSheet.create({
         margin: 2,
     },
     badgeText:
-                {
-                    height: 30,
+    {
+        height: 30,
         width: 30,
         backgroundColor: 'red',
         borderRadius: 15,
@@ -472,7 +472,7 @@ const styles = StyleSheet.create({
         paddingTop: 5
     },
     button1: {
-                    backgroundColor: "#5cb75d",
+        backgroundColor: "#5cb75d",
         marginLeft: 20,
         marginTop: -10,
         borderRadius: 10,
@@ -480,7 +480,7 @@ const styles = StyleSheet.create({
         padding: 5,
     },
     button2: {
-                    marginLeft: 70,
+        marginLeft: 70,
         marginTop: -5,
         borderRadius: 10,
         justifyContent: 'center',
@@ -489,7 +489,7 @@ const styles = StyleSheet.create({
         backgroundColor: 'gray',
     },
     curvedGrid: {
-                    borderRadius: 800,
+        borderRadius: 800,
         width: '200%',
         height: 690,
         marginLeft: -200,
@@ -501,147 +501,147 @@ const styles = StyleSheet.create({
     },
 
     subText: {
-                    fontFamily: 'OpenSans',
+        fontFamily: 'OpenSans',
         fontSize: 17,
         color: '#c26c57',
         marginLeft: 10,
         fontWeight: "bold"
     },
     delHeadText: {
-                    fontFamily: 'OpenSans',
+        fontFamily: 'OpenSans',
         fontSize: 14,
         fontWeight: '500',
         color: '#ff4e42'
     },
     arrHeadText: {
-                    fontFamily: 'OpenSans',
+        fontFamily: 'OpenSans',
         fontSize: 17,
         fontWeight: '500',
         color: '#8dc63f'
     },
     rowStyle: {
-                    marginTop: 15,
+        marginTop: 15,
         paddingBottom: 10,
         borderBottomColor: 'gray',
         borderBottomWidth: 0.3
     },
     nameText: {
-                    fontFamily: 'OpenSans-Bold',
+        fontFamily: 'OpenSans-Bold',
         fontSize: 14,
         fontWeight: '500',
         color: '#4c4c4c'
     },
     pharText: {
-                    fontFamily: 'OpenSans',
+        fontFamily: 'OpenSans',
         fontSize: 12,
         color: '#909090',
         marginTop: 3
     },
     amountText: {
-                    fontFamily: 'OpenSans',
+        fontFamily: 'OpenSans',
         fontSize: 14,
         color: '#8dc63f',
         textAlign: 'right'
     },
     ItemText: {
-                    fontFamily: 'OpenSans',
+        fontFamily: 'OpenSans',
         fontSize: 12,
         fontWeight: '500',
         color: '#7F49C3'
     },
     rsText: {
-                    fontFamily: 'OpenSans',
+        fontFamily: 'OpenSans',
         fontSize: 12,
         color: '#4c4c4c',
         textAlign: 'right'
     },
     mainText: {
-                    fontFamily: 'OpenSans',
+        fontFamily: 'OpenSans',
         fontSize: 12,
         color: '#909090'
     },
     grandTotalText: {
-                    fontFamily: 'OpenSans',
+        fontFamily: 'OpenSans',
         fontSize: 12,
         fontWeight: '500',
         color: '#7F49C3'
     },
     totalsText: {
-                    fontFamily: 'OpenSans',
+        fontFamily: 'OpenSans',
         fontSize: 12,
         color: '#8dc63f',
         textAlign: 'right'
     },
     mainView: {
-                    backgroundColor: '#fff',
+        backgroundColor: '#fff',
         padding: 10,
         marginTop: 5,
     },
     orderText: {
-                    fontFamily: 'OpenSans',
+        fontFamily: 'OpenSans',
         fontSize: 14,
         fontWeight: '500',
         color: '#4c4c4c'
     },
     innerText: {
-                    fontFamily: 'OpenSans',
+        fontFamily: 'OpenSans',
         fontSize: 12,
         fontWeight: '500',
         color: '#7F49C3'
     },
     rightText: {
-                    fontFamily: 'OpenSans',
+        fontFamily: 'OpenSans',
         fontSize: 12,
         color: '#4c4c4c'
 
     },
     addressText: {
-                    fontFamily: 'OpenSans',
+        fontFamily: 'OpenSans',
         fontSize: 12,
         color: '#4c4c4c',
         marginTop: 5
     },
     nameTextss: {
-                    fontFamily: 'OpenSans',
+        fontFamily: 'OpenSans',
         fontSize: 12,
         color: '#4c4c4c',
         fontWeight: '500',
         marginTop: 5
     },
     lengthTouch: {
-                    height: 12,
+        height: 12,
         width: 12,
         borderRadius: 12 / 2,
         backgroundColor: '#7F49C3'
     },
     TouchLegth: {
-                    height: 60,
+        height: 60,
         backgroundColor: '#7F49C3',
         padding: 1,
         width: 4,
         marginLeft: 4
     },
     bottomText: {
-                    height: 12,
+        height: 12,
         width: 12,
         borderRadius: 12 / 2,
         borderColor: 'gray',
         borderWidth: 0.3
     },
     trackingText: {
-                    fontSize: 14,
+        fontSize: 14,
         fontWeight: '500',
         fontFamily: 'OpenSans',
         color: '#4c4c4c'
     },
     orderIdText: {
-                    fontSize: 17,
+        fontSize: 17,
         fontWeight: '500',
         fontFamily: 'OpenSans',
         color: '#7F49C3', marginTop: 8
     },
     reviewButton: {
-                    marginTop: 12,
+        marginTop: 12,
         backgroundColor: '#775DA3',
         borderRadius: 10,
         height: 40,

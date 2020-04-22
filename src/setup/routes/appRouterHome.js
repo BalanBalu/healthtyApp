@@ -470,7 +470,7 @@ const HomeStack = createStackNavigator({
     navigationOptions: ({ navigation }) => ({
       title: 'Search List',
       headerRight: (
-        <Grid>
+        <Grid style={{justifyContent:'center',alignItems:'center'}}>
           <Col>
             <TouchableOpacity onPress={() => { navigation.navigate('PharmacyCart') }} >
               <View>
@@ -584,7 +584,7 @@ const HomeStack = createStackNavigator({
     navigationOptions: ({ navigation }) => ({
       title: 'Medicine Details',
       headerRight: (
-        <Grid>
+        <Grid style={{alignItems:'center',justifyContent:'center'}}>
           <Col>
             <TouchableOpacity onPress={() => { navigation.navigate('PharmacyCart') }} >
               <View>
@@ -610,10 +610,10 @@ const HomeStack = createStackNavigator({
   },
 
 
-  'CORONO Status': {
+  'CORONA Status': {
     screen: CoronaDisease,
     navigationOptions: {
-      title: 'CORONO Status'
+      title: 'CORONA Status'
     }
   },
   /* Video Consultation */
@@ -704,7 +704,7 @@ const DrawerNavigator = createDrawerNavigator({
   Reminder: {
     screen: Reminder
   },
-  'CORONO Status': {
+  'CORONA Status': {
     screen: CoronaDisease
   },
 
@@ -727,7 +727,7 @@ export const DragwerLogos = {
   Reminder: require('../../../assets/images/drawerIcons/Reminder.png'),
   "My Chats": require('../../../assets/images/drawerIcons/Chat.png'),
   "Blood Donors": require('../../../assets/images/drawerIcons/Blooddonars.png'),
-  'CORONO Status': require('../../../assets/images/drawerIcons/Pharmacy.png'),
+  'CORONA Status': require('../../../assets/images/drawerIcons/Pharmacy.png'),
   'My Video Consultations': require('../../../assets/images/drawerIcons/Appointments.png'),
   'Video and Chat Service': require('../../../assets/images/drawerIcons/Appointments.png'),
 }
