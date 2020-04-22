@@ -77,6 +77,8 @@ import PharmacyList from '../../modules/screens/Pharmacy/PharmacyList/pharmacyLi
 import VideoScreen from '../../modules/screens/VideoConsulation/components/VideoScreen';
 import AvailableDoctors4Video from '../../modules/screens/VideoConsulation/components/AvailableDoctors';
 import VideoConsultaions from '../../modules/screens/VideoConsulation/components/MyConsultations';
+import LabSearchList from '../../modules/screens/LabTest/labSearchList';
+import LabCategory from '../../modules/screens/LabTest/categories'
 
 
 import LabAppointmentList from '../../modules/screens/Lab/Appointment/LabAppointmentList'
@@ -640,8 +642,6 @@ const HomeStack = createStackNavigator({
       title: 'Medicine Reviews'
     }
   },
-
-
   'CORONA Status': {
     screen: CoronaDisease,
     navigationOptions: {
@@ -695,6 +695,19 @@ const HomeStack = createStackNavigator({
       title: 'Add Reminder'
     }
   },
+  /* ========>  Lab Test  <========== */
+  LabCategory: {
+    screen: LabCategory,
+    navigationOptions: {
+      title: 'Lab Category'
+    }
+  },
+  LabSearchList: {
+    screen: LabSearchList,
+    navigationOptions: {
+      title: 'Lab List'
+    }
+  },
 },
   {
     defaultNavigationOptions: ({ navigation }) => ({
@@ -739,8 +752,9 @@ const DrawerNavigator = createDrawerNavigator({
   'CORONA Status': {
     screen: CoronaDisease
   },
-
-
+  'Lab Test': {
+    screen: LabCategory
+  }
 },
   {
     overlayColor: 'rgba(0, 0, 0, 0.7)',
