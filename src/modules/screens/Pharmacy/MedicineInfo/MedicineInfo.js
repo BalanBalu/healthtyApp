@@ -279,9 +279,9 @@ class MedicineInfo extends Component {
 
         const prescriptionData = [{ prescription_path: require('../../../../../assets/images/images.jpeg') }, { prescription_path: require('../../../../../assets/images/images.jpeg') }, { prescription_path: require('../../../../../assets/images/images.jpeg') }, { prescription_path: require('../../../../../assets/images/images.jpeg') }, { prescription_path: require('../../../../../assets/images/images.jpeg') }]
         return (
-            <Container >
+            <Container style={{ flex: 1 }}>
 
-                <Content style={{ padding: 10 }}>
+                <Content style={{ padding: 10, flex: 1 }}>
                     {this.state.isLoading ? <Spinner color='blue'
                         visible={this.state.isLoading}
                     /> : null}
@@ -349,6 +349,7 @@ class MedicineInfo extends Component {
                                     <Picker
                                         mode="dropdown"
                                         style={{ width: undefined }}
+                                        iosIcon={<Icon name="ios-arrow-down" style={{ color: 'gray', fontSize: 20 }} />}
                                         placeholder="Select your SIM"
                                         placeholderStyle={{ color: "#bfc6ea" }}
                                         placeholderIconColor="#007aff"
@@ -551,7 +552,7 @@ class MedicineInfo extends Component {
                                         <Text style={styles.contentText}>{item.comments}</Text>
                                     </View>
                                 } /> :
-                            <Text style={{ fontSize: 10, justifyContent: 'center', alignItems: 'center' }}>No Reviews Were found</Text>}
+                            <Text style={{ fontSize: 10, justifyContent: 'center', alignItems: 'center', marginTop: 10 }}>No Reviews Were found</Text>}
 
                         {reviewData.length !== 0 ?
 
@@ -569,7 +570,7 @@ class MedicineInfo extends Component {
                                 </Col>
                             </Row> : null}
                         <View>
-                            <Row>
+                            <Row style={{ marginTop: 10 }}>
                                 <TouchableOpacity style={{ borderColor: '#8dc63f', borderWidth: 1, marginLeft: 1, borderRadius: 2.5, height: 25, width: 65, backgroundColor: '#8dc63f' }}
                                     onPress={() => { this.insertReview(), this.setState({ isReviewInsert: true }) }}>
                                     <Row style={{ alignItems: 'center' }}>
@@ -620,8 +621,8 @@ const styles = StyleSheet.create({
         flexDirection: 'row',
         paddingTop: 5,
         paddingBottom: 5,
-        paddingLeft: 50,
-        paddingRight: 50,
+        paddingLeft: 45,
+        paddingRight: 45,
         borderRadius: 2,
         alignItems: 'flex-end'
     },

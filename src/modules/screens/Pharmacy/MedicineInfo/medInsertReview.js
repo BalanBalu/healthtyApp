@@ -25,14 +25,14 @@ export class MedInsertReview extends Component {
   async componentDidMount() {
 
     const { data } = this.props;
-    await this.setState({ data, userId: data.user_id, medicineId: data.medicine_id,modalVisible:data.modalVisible })
+    await this.setState({ data, userId: data.user_id, medicineId: data.medicine_id, modalVisible: data.modalVisible })
     console.log("data", this.state.data)
   }
 
   submitReview = async (reviewType) => {
     try {
 
-      const {  medicineId, is_anonymous, rating, comments } = this.state;
+      const { medicineId, is_anonymous, rating, comments } = this.state;
       if (reviewType == 'ADD') {
         if (rating == 0) {
           this.setState({ errorMsg: 'Add Rating to Continue' })
@@ -80,7 +80,7 @@ export class MedInsertReview extends Component {
         this.props.popupVisible({
           visible: false,
         });
-        this.setState({  isLoading: false });
+        this.setState({ isLoading: false });
       }
     }
     catch (e) {
@@ -96,8 +96,8 @@ export class MedInsertReview extends Component {
   render() {
     const { errorMsg, is_anonymous } = this.state;
     return (
-      <Container>
-        <Content style={{ backgroundColor: '#EAE6E6', padding: 10 }}>
+      <Container style={{ flex: 1 }}>
+        <Content style={{ backgroundColor: '#EAE6E6', padding: 10, flex: 1 }}>
           {/* <View>
             <Row>
               <TouchableOpacity style={{ borderColor: '#8dc63f', borderWidth: 1, marginLeft: 1, borderRadius: 2.5, height: 25, width: 65, backgroundColor: '#8dc63f' }}
@@ -142,7 +142,7 @@ export class MedInsertReview extends Component {
                         disabled={false}
                         maxStars={5}
                         rating={this.state.rating}
-                        selectedStar={(rating) => this.setState({rating})}
+                        selectedStar={(rating) => this.setState({ rating })}
                       />
                     </View>
                     <View style={{ marginLeft: 20, marginTop: 10, marginRight: 20 }}>
@@ -196,7 +196,7 @@ const styles = StyleSheet.create({
   },
 
   bodyContent: {
-    padding: 0
+    padding: 0,
   },
   customImage: {
     height: 90,
