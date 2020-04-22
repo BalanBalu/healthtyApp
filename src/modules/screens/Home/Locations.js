@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { Text, Container, Icon, Spinner, Right, Left } from 'native-base';
+import { Text, Container, Icon, Spinner, Right, Left, List, ListItem, Content } from 'native-base';
 import { Row } from 'react-native-easy-grid';
 import { connect } from 'react-redux'
 import { StyleSheet, View, TouchableOpacity, FlatList } from 'react-native';
@@ -12,9 +12,13 @@ class Locations extends Component {
         super(props)
         this.state = {
             locations: [],
-            isLoading: false
+            isLoading: false,
+            pressStatus: false,
+            selectedItem: 0
         }
     }
+
+
     async componentDidMount() {
         const navigationOption = this.props.navigation.getParam('navigationOption') || null
 
@@ -44,14 +48,24 @@ class Locations extends Component {
             />
         );
     };
+    onPressList = (index) => {
+
+        this.setState({ pressStatus: true, selectedItem: index });
+        this.props.navigation.navigate("LocationDetail")
+    }
     render() {
         const { locations, isLoading } = this.state
+        const TopCities = [{ name: 'New Delhi' }, { name: 'Gurgaon' }, { name: 'Pune', }, { name: 'Mumbai' }, { name: 'Bengaluru' }, { name: 'Kolkata' }, { name: 'Hyderabad' }
+        ]
+        const OtherCities = [{ name: 'Adambakkam' }, { name: 'Adyar' }, { name: 'Alandur', }, { name: 'Anna Nagar' }, { name: 'Ayanavaram' }, { name: 'Adambakkam' }, { name: 'Adyar' }, { name: 'Alandur', }, { name: 'Anna Nagar' }, { name: 'Ayanavaram' }, { name: 'Adambakkam' }, { name: 'Adyar' }, { name: 'Alandur', }, { name: 'Anna Nagar' }, { name: 'Ayanavaram' },
+        { name: 'Ashok Nagar' }]
         return (
             <Container>
 
                 {isLoading ? <Spinner color='blue' /> : null}
-                <View style={{ flex: 1 }}>
-                    <FlatList
+                <Content>
+                    <View style={{ flex: 1 }}>
+                        {/* <FlatList
                         data={locations}
                         ItemSeparatorComponent={this.itemSaperatedByListView}
                         renderItem={({ item }) => (
@@ -67,25 +81,71 @@ class Locations extends Component {
                                 <Left>
                                     <Text style={{ padding: 10, fontFamily: 'OpenSans', fontSize: 13 }}>{item.location}</Text>
                                 </Left>
-                                <Right style={{ marginRight: 20, }}>
-                                    <Icon name="ios-arrow-forward" style={{ fontSize: 20 }} />
-                                </Right>
+                               
                             </Row>
                         )}
                         enableEmptySections={true}
                         style={{ marginTop: 10 }}
                         keyExtractor={(item, index) => index.toString()}
-                    />
+                    /> */}
+                        <View>
+                            <List>
+                                <ListItem itemDivider>
+                                    <Text> Popular Cities</Text>
+                                </ListItem>
+                                <FlatList
+                                    data={TopCities}
+                                    renderItem={({ item }) => (
 
-                    <View>
-                        <TouchableOpacity style={styles.fab} onPress={() => {
-                            CurrentLocation.getCurrentPosition();
-                            this.props.navigation.navigate("Home")
-                        }}>
-                            <Icon name="locate" style={styles.text}></Icon>
-                        </TouchableOpacity>
+
+                                        <ListItem
+                                            button
+                                            onPress={() => this.onPressList(index)}
+                                            button   >
+                                            <Left>
+                                                <Text style={{ fontFamily: 'OpenSans', fontSize: 13, }}>{item.name}</Text>
+                                            </Left>
+                                            <Right style={{ marginRight: 15, }}>
+                                                <Icon name="ios-arrow-forward" style={{ fontSize: 20 }} />
+                                            </Right>
+                                        </ListItem>
+
+                                    )} />
+                            </List>
+                            <List>
+                                <ListItem itemDivider>
+                                    <Text>Other Cities</Text>
+                                </ListItem>
+                                <FlatList
+                                    data={OtherCities}
+                                    renderItem={({ item }) => (
+                                        <ListItem
+                                            button
+                                            onPress={() => this.onPressList(index)}
+                                            button   >
+                                            <Left>
+                                                <Text style={{ fontFamily: 'OpenSans', fontSize: 13, }}>{item.name}</Text>
+                                            </Left>
+                                            <Right style={{ marginRight: 15, }}>
+                                                <Icon name="ios-arrow-forward" style={{ fontSize: 20 }} />
+                                            </Right>
+                                        </ListItem>
+
+
+                                    )} />
+                            </List>
+                        </View>
                     </View>
+                </Content>
+                <View>
+                    <TouchableOpacity style={styles.fab} onPress={() => {
+                        CurrentLocation.getCurrentPosition();
+                        this.props.navigation.navigate("Home")
+                    }}>
+                        <Icon name="locate" style={styles.text}></Icon>
+                    </TouchableOpacity>
                 </View>
+
 
             </Container>
         )
