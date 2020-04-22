@@ -8,7 +8,7 @@ import { NavigationEvents } from 'react-navigation';
 import { fetchUserProfile } from '../../../providers/profile/profile.action';
 import { dateDiff } from '../../../../setup/helpers';
 import { getAddress } from '../../../common'
-import { InsertAppointment } from '../../../providers/Lab/lab.action'
+import { InsertAppointment } from '../../../providers/lab/lab.action';
 
 
 class labConfirmation extends Component {
