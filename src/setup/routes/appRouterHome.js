@@ -9,6 +9,7 @@ import Profile from "../../modules/screens/userprofile";
 import UpdateEmail from "../../modules/screens/userprofile/UpdateEmail";
 import UpdateContact from "../../modules/screens/userprofile/UpdateContact";
 import UpdatePassword from "../../modules/screens/userprofile/UpdatePassword";
+import Updateheightweight from "../../modules/screens/userprofile/Updateheightweight";
 import UpdateInsurance from "../../modules/screens/userprofile/UpdateInsurance";
 import UpdateUserDetails from "../../modules/screens/userprofile/UpdateUserDetails";
 import { Icon, View, Thumbnail, Item, Input } from 'native-base';
@@ -77,6 +78,7 @@ import PharmacyList from '../../modules/screens/Pharmacy/PharmacyList/pharmacyLi
 import VideoScreen from '../../modules/screens/VideoConsulation/components/VideoScreen';
 import AvailableDoctors4Video from '../../modules/screens/VideoConsulation/components/AvailableDoctors';
 import VideoConsultaions from '../../modules/screens/VideoConsulation/components/MyConsultations';
+import COVID19StateDistrictStats from '../../modules/screens/Home/Covid10-District-wise';
 
 
 import LabSearchList from '../../modules/screens/LabTest/labSearchList';
@@ -294,8 +296,16 @@ const HomeStack = createStackNavigator({
     screen: UpdatePassword,
     navigationOptions: {
       title: 'Update Password'
-    }
+    }   
   },
+  
+  Updateheightweight: {
+    screen: Updateheightweight,
+    navigationOptions: {
+      title: 'Update height weight'
+    }   
+  },
+
   UpdateInsurance: {
     screen: UpdateInsurance,
     navigationOptions: {
@@ -654,9 +664,15 @@ const HomeStack = createStackNavigator({
   },
   'CORONA Status': {
     screen: CoronaDisease,
-    navigationOptions: {
+    navigationOptions: ({ navigation }) => ({
       title: 'CORONA Status'
-    }
+    })
+  },
+  COVID19StateDistrictStats: {
+    screen: COVID19StateDistrictStats,
+    navigationOptions: ({ navigation }) => ({
+      title: 'Covid-19 ' + navigation.getParam('stateName') || ' '
+    })
   },
   /* Video Consultation */
   VideoScreen: {
@@ -765,6 +781,7 @@ const DrawerNavigator = createDrawerNavigator({
   'Lab Test': {
     screen: LabCategory
   }
+
 },
   {
     overlayColor: 'rgba(0, 0, 0, 0.7)',

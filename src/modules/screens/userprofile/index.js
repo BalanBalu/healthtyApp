@@ -62,7 +62,7 @@ class Profile extends Component {
     /*Get userProfile*/
     getUserProfile = async () => {
         try {
-            let fields = "first_name,last_name,gender,dob,mobile_no,secondary_mobile,email,secondary_email,insurance,address,is_blood_donor,is_available_blood_donate,blood_group,profile_image,is_email_verified"
+            let fields = "first_name,last_name,gender,dob,mobile_no,secondary_mobile,email,secondary_email,insurance,address,is_blood_donor,is_available_blood_donate,blood_group,profile_image,is_email_verified,height,weight"
 
             let userId = await AsyncStorage.getItem('userId');
             let result = await fetchUserProfile(userId, fields);
@@ -415,30 +415,25 @@ class Profile extends Component {
                             <Text style={styles.titleText}>Personal details..</Text>
 
                             <ListItem avatar>
-
                                 <Left>
-                                    <Icon name="mail" style={{ color: '#7E49C3' }}></Icon>
+                                    <Icon name="ios-body" style={{ color: '#7E49C3' }}></Icon>
                                 </Left>
-
-
-                                <Body >
-                                    <TouchableOpacity onPress={() => this.editProfile('UpdateEmail')} testID="onPressEmail">
-                                        <Text style={styles.customText}>Email</Text>
-                                        {data.email != undefined ? <Text note style={styles.customText1}>{data.email}</Text>
-
-                                            : <Button transparent>
-                                                <Icon name='add' style={{ color: 'gray' }} />
-                                                <Text uppercase={false} style={styles.customText} onPress={() => this.editProfile('UpdateEmail')} testID="onPressAddSecondaryEmail">Add  your email</Text>
-                                            </Button>}
-                                    </TouchableOpacity>
+                                <Body>
+                                    <Row>
+                                        <Col>
+                                            <Text style={styles.customText}>Weight</Text>
+                            <Text note style={styles.customText1}>{data.weight} kg</Text>
+                                        </Col>
+                                        <Col>
+                                            <Text style={styles.customText}>Height</Text>
+                                            <Text note style={styles.customText1}>{data.height} cm</Text>
+                                        </Col>
+                                    </Row>
                                 </Body>
 
-
-                                {data.email != undefined ?
-                                    <Right>
-                                        <Icon name="create" style={{ color: 'black' }} onPress={() => this.editProfile('UpdateEmail')} testID="iconToUpdateEmail" />
-                                    </Right>
-                                    : null}
+                                <Right>
+                                    <Icon name="create" style={{ color: 'black' }} onPress={() => this.props.navigation.navigate('Updateheightweight', { weight: data.weight,height : data.height } )}></Icon>
+                                </Right>
 
                             </ListItem>
 
@@ -468,6 +463,47 @@ class Profile extends Component {
                                     />
                                 </Right>
                             </ListItem>
+
+
+
+
+                            <ListItem avatar>
+
+                                <Left>
+                                    <Icon name="mail" style={{ color: '#7E49C3' }}></Icon>
+                                </Left>
+
+
+                                <Body >
+                                    <TouchableOpacity onPress={() => this.editProfile('UpdateEmail')} testID="onPressEmail">
+                                        <Text style={styles.customText}>Email</Text>
+                                        {data.email != undefined ? <Text note style={styles.customText1}>{data.email}</Text>
+
+                                            : <Button transparent>
+                                                <Icon name='add' style={{ color: 'gray' }} />
+                                                <Text uppercase={false} style={styles.customText} onPress={() => this.editProfile('UpdateEmail')} testID="onPressAddSecondaryEmail">Add  your email</Text>
+                                            </Button>}
+                                    </TouchableOpacity>
+                                </Body>
+
+
+                                {data.email != undefined ?
+                                    <Right>
+                                        <Icon name="create" style={{ color: 'black' }} onPress={() => this.editProfile('UpdateEmail')} testID="iconToUpdateEmail" />
+                                    </Right>
+                                    : null}
+
+                            </ListItem>
+
+
+
+
+
+
+
+
+
+
                             <ListItem avatar>
 
                                 <Left>

@@ -556,7 +556,7 @@ class AppointmentDetails extends Component {
                       <Text style={styles.innerSubText}>Payment Report</Text>
                       {reportData != null ?
                         <View style={{ borderRadius: 5, borderColor: 'grey', borderWidth: 0.5, padding: 5 }} >
-                          <TouchableOpacity onPress={() => { this.props.navigation.navigate('ReportDetails', { reportedId: data._id }) }}>
+                          <TouchableOpacity onPress={() => { this.props.navigation.navigate('ReportDetails', { reportedId: data._id ,serviceType: 'appointment'}) }}>
                             <Text note style={[styles.subTextInner2, { marginLeft: 10 }]}>"You have raised Report for this appointment"</Text>
                             <Row>
                               <Col size={9}>
@@ -574,7 +574,7 @@ class AppointmentDetails extends Component {
                           <TouchableOpacity
                             onPress={() => {
                               this.props.navigation.push('ReportIssue', {
-                                issueFor: { serviceType: 'Appointment', reportedId: data._id, status: data.appointment_status },
+                                issueFor: { serviceType: 'APPOINTMENT', reportedId: data._id, status: data.appointment_status },
                                 prevState: this.props.navigation.state
                               })
                             }}

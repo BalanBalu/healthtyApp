@@ -35,27 +35,18 @@ class ReportIssue extends Component {
      const { issueFor } = this.state
     let type ,  issueList =[]
     if (issueFor) {
-      if (issueFor.serviceType == 'Appointment') {
-
+   
         if (issueFor.status) {
-          type ='REPORT_ISSUE_APPOINTMENT_'+issueFor.status
+          type ='REPORT_ISSUE_'+issueFor.serviceType +'_'+issueFor.status
         }
-        console.log(type)
-        let reportIssueList = await getCurrentVersion(type)
+     
+     
+      console.log(type)
+      let reportIssueList = await getCurrentVersion(type)
+      
+      if (reportIssueList.success) {
+         issueList = reportIssueList.data[0].value
         
-        if (reportIssueList.success) {
-           issueList = reportIssueList.data[0].value
-          
-        }
-
-      }
-      else if (issueFor == 'chat') {
-        this.setState({ issueList: chatIssue })
-
-      }
-      else if (issueFor == 'Pharmacy') {
-        this.setState({ issueList: pharmacyIssue })
-
       }
     }
    
@@ -85,7 +76,7 @@ class ReportIssue extends Component {
 
         let userId = await AsyncStorage.getItem('userId');
         let data = {
-          service_type: issueFor.serviceType.toUpperCase(),
+          service_type: issueFor.serviceType,
           sender_id: userId,
           report_by: 'USER',
           issue_type: issueType.issue,
@@ -94,15 +85,12 @@ class ReportIssue extends Component {
 
 
         }
-        if (issueFor.serviceType == 'Appointment') {
+        if (issueFor.serviceType == 'APPOINTMENT') {
           data.appointment_id = issueFor.reportedId
         }
-        else if (issueFor.serviceType == 'chat') {
-          data.chat_id = this.props.navigation.getParam('reportedId')
-        }
-        else if (issueFor.serviceType == 'Pharmacy') {
-          data.pharmacy_id = this.props.navigation.getParam('reportedId')
-        }
+       else{
+         data.service_id=issueFor.reportedId
+       }
         let response = await insertReportIssue(data);
 
         if (response.success) {
