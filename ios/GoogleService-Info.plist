@@ -3,21 +3,23 @@
 <plist version="1.0">
 <dict>
 	<key>CLIENT_ID</key>
-	<string>607089059424-74dbpshj4pdrgv3o1gl8sq77hu49milg.apps.googleusercontent.com</string>
+	<string>630872953526-skp4meb39jg7n6t485d4kss8s1cc3sor.apps.googleusercontent.com</string>
 	<key>REVERSED_CLIENT_ID</key>
-	<string>com.googleusercontent.apps.607089059424-74dbpshj4pdrgv3o1gl8sq77hu49milg</string>
+	<string>com.googleusercontent.apps.630872953526-skp4meb39jg7n6t485d4kss8s1cc3sor</string>
+	<key>ANDROID_CLIENT_ID</key>
+	<string>630872953526-194b0r4o4f8b8lq7hohqsv821he0ggjq.apps.googleusercontent.com</string>
 	<key>API_KEY</key>
-	<string>AIzaSyC1JOs1T3aleeqsKkM-DRt01jh3xfW1SUk</string>
+	<string>AIzaSyAEK-Z1S36Qw4YIwJr_uJfyfguFyW2J6k4</string>
 	<key>GCM_SENDER_ID</key>
-	<string>607089059424</string>
+	<string>630872953526</string>
 	<key>PLIST_VERSION</key>
 	<string>1</string>
 	<key>BUNDLE_ID</key>
 	<string>com.ads.medflic</string>
 	<key>PROJECT_ID</key>
-	<string>medflic-521a2</string>
+	<string>medflic-15149</string>
 	<key>STORAGE_BUCKET</key>
-	<string>medflic-521a2.appspot.com</string>
+	<string>medflic-15149.appspot.com</string>
 	<key>IS_ADS_ENABLED</key>
 	<false></false>
 	<key>IS_ANALYTICS_ENABLED</key>
@@ -29,8 +31,8 @@
 	<key>IS_SIGNIN_ENABLED</key>
 	<true></true>
 	<key>GOOGLE_APP_ID</key>
-	<string>1:607089059424:ios:f2ddf8d18d6c2cab454505</string>
+	<string>1:630872953526:ios:8d11bee29070171a5fcc17</string>
 	<key>DATABASE_URL</key>
-	<string>https://medflic-521a2.firebaseio.com</string>
+	<string>https://medflic-15149.firebaseio.com</string>
 </dict>
 </plist>

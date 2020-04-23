@@ -21,6 +21,7 @@ import {
 } from '../../../../providers/chat/chat.action';
 import BookAppointmentPaymentUpdate from '../../../../providers/bookappointment/bookAppointment';
 import { AuthService } from '../../services'
+import moment from 'moment';
 class AvailableDoctors4Video extends Component {
     constructor(props) {
         super(props)
@@ -144,8 +145,14 @@ async callVideAndChat(doctorIds) {
 onBookButtonPress4PaymentChat = async (doctorId, fee) => {
     try {
         this.setState({ isLoading: true });
+        
         const amount = fee;
-
+        console.log(fee);
+        let freeService = false;
+         if(fee == 0) {
+            freeService = true;
+        }
+        debugger
         const createChatRequest = {
             user_id: this.userId,
             doctor_id: doctorId,
@@ -159,7 +166,7 @@ onBookButtonPress4PaymentChat = async (doctorId, fee) => {
         this.setState({ isLoading: false });
         if (createChatResponse.success) {
             console.log(createChatResponse);
-            if(fee === 0) {
+            if(freeService === true) {
                 const bookSlotDetails = {
                     doctorId: doctorId,
                     fee: amount,
@@ -213,7 +220,7 @@ onBookButtonPress4PaymentChat = async (doctorId, fee) => {
      this.setState({ isLoading: true });
      const amount = fee;
      let freeService = false;
-     if(fee === 0) {
+     if(fee == 0) {
         freeService = true;
      }
       
@@ -229,7 +236,7 @@ onBookButtonPress4PaymentChat = async (doctorId, fee) => {
      this.setState({ isLoading: false });
      if(createVideoConsultingResponse.success) {
         console.log(createVideoConsultingResponse);
-        if(fee === 0) {
+        if(freeService === true) {
             videoConsultRequest.status = POSSIBLE_VIDEO_CONSULTING_STATUS.PENDING;
             const bookSlotDetails  = {
                 doctorId : doctorId,
@@ -287,8 +294,8 @@ onBookButtonPress4PaymentChat = async (doctorId, fee) => {
     
  }
    getVideoConsultFee(item) {
-       if(item && item.availabilityData && item.availabilityData[0]) {
-            return item.availabilityData[0].fee
+       if(item && item.currentAvailabilityData) {
+            return item.currentAvailabilityData.fee
        } else {
            return ''
        }
@@ -324,8 +331,8 @@ onBookButtonPress4PaymentChat = async (doctorId, fee) => {
    }
    getDoctorCategory(item) {
     if(item.specialist) {
-       let specialist =  item.specialist.map(ele => ele.category).join(', ')
-       return  specialist.slice(0, specialist.length - 1)
+       let specialist =  item.specialist.map(ele => ele.category);
+       return specialist.join(', ');
     }
     return ''
    }
@@ -346,14 +353,33 @@ onBookButtonPress4PaymentChat = async (doctorId, fee) => {
     }
     return false;
    }
+   getNextAvailabiltyData(item) {
+        const currentDay = new Date().getDay();
+        if(item.availabilityData[0]) {
+            startTime = String(item.availabilityData[0].start_time).split(':');
+            const timing = new Date(); 
+            timing.setUTCHours(startTime[0]);
+            timing.setUTCMinutes(startTime[1]);
+            timing.setUTCSeconds(1);
+            const timeAfterFormat = moment(timing).format('HH:mm A')
+            
+            if(Number(item.availabilityData[0].day) >= currentDay) {
+                
+
+                return moment().startOf('w').add(Number(item.availabilityData[0].day), 'd').
+                format('MMM DD, YYYY') + ' ' + timeAfterFormat
+            } else {
+                return moment().startOf('w').add(1, 'week').add(Number(item.availabilityData[0].day), 'd')
+                .format('MMM DD, YYYY') + ' ' + timeAfterFormat
+            }
+        }
+        
+   }
    renderAvailableDoctors(item) {
        const isPremium = this.checkAnySeriveFreeFor2ShowPremiumBatch(item);
        const isBothPremium = this.checkBothSeriveFreeFor2ShowPremiumBatch(item);
        const isVideoFree = this.getVideoConsultFee(item) === 0;
        const isChatFree = item.chat_service_config && item.chat_service_config.chat_fee == 0; //&& Number(item.chat_service_config.chat_fee) === 0;
-       if(item.chat_service_config && item.chat_service_config.chat_fee) {
-        //    alert( Number(item.chat_service_config.chat_fee) === 0);
-        }
        
         return (
             <Row style={styles.RowStyle}>
@@ -420,7 +446,7 @@ onBookButtonPress4PaymentChat = async (doctorId, fee) => {
                                         </Col> 
                                        : null }
                                         
-                                       {item.availableForVideo === true  ? 
+                                       {item.availableForVideo === true && item.hasCurrentlyAvailable === true ? 
                                           <Col style={isBothPremium ? {width: '25%'  } :  { width: '35%' } }>
                                             <TouchableOpacity onPress={() => this.onBookButtonPress4PaymentVideo(item.doctor_id, this.getVideoConsultFee(item))}
                                                 style={isBothPremium ? styles.ButtonStyle : isVideoFree ? styles.ButtonStyleSponsor : styles.ButtonStyle}>
@@ -430,10 +456,19 @@ onBookButtonPress4PaymentChat = async (doctorId, fee) => {
                                                 </Text>
                                             </TouchableOpacity>
                                           </Col> 
-                                        : null } 
+                                        :  
+                                       null } 
                                        
                                     
                                     </Row>
+                                    {item.availableForVideo === true && item.hasCurrentlyAvailable === false ? 
+                                        <Row style={{ marginTop: 5 ,  width: '100%'}}>
+                                            <Button disabled style={{height: 30,   borderRadius: 10, backgroundColor: '#6e5c7b' }}>
+                                            <Icon name="ios-videocam" style={ { color: '#FFFFFF', fontSize: 15 }} />
+                                            <Text style={{ marginLeft: -20, fontSize: 10 }}>Available on {this.getNextAvailabiltyData(item)}</Text>
+                                            {/*nextAvailableDate ? <Text style={{ color: '#fff', fontFamily: 'OpenSans', fontWeight: 'bold', fontSize: 15 }}>Next Availability On {nextAvailableDate}</Text> : <Text style={{ color: '#fff', fontFamily: 'OpenSans', fontWeight: 'bold', fontSize: 16 }}> No Availablity for Next 7 Days</Text>*/}
+                                            </Button>
+                                        </Row> : null }
                                 </Col>
 
 

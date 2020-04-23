@@ -58,7 +58,7 @@ class CoronaDisease extends Component {
         const isLoggedIn = await hasLoggedIn(this.props);
         if (!isLoggedIn) {
             Toast.show({
-                text: 'Please Login and Test Your Corono Status',
+                text: 'Please Login and Test Your Corona Status',
                 duration: 3000,
                 type: 'success'
             })
@@ -66,7 +66,7 @@ class CoronaDisease extends Component {
             return
         } else {
             Toast.show({
-                text: 'Test Your Corono(COVID-19) Status',
+                text: 'Test Your Corona(COVID-19) Status',
                 duration: 3000,
                 type: 'success'
             })
@@ -180,7 +180,7 @@ class CoronaDisease extends Component {
                        <View style={{ alignItems:'center', justifyContent:'center', marginTop: 20 }}>
                        <TouchableOpacity onPress={() => {
                            this.setState({ showResult: false, activeId: 1, answers: [] })
-                           this.props.navigation.navigate('CORONO Status');
+                           this.props.navigation.navigate('CORONA Status');
                        }} style={[styles.touchbuttonShare, { backgroundColor: 'green'} ]}>
                             <Text style={styles.touchTextShare}>Check Again</Text>
                           </TouchableOpacity>

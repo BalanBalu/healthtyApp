@@ -6,9 +6,10 @@ import {
     Container, Header, Title, Left, Right, Body, Button, Card, Toast, CardItem, Row, Grid, View, Col,
     Text, Thumbnail, Content, CheckBox, Item, Input, Icon
 } from 'native-base';
-import { ProductIncrementDecreMent, medicineRateAfterOffer ,getMedicineName,renderMedicineImage} from '../CommomPharmacy'
+import { ProductIncrementDecreMent, medicineRateAfterOffer, getMedicineName, renderMedicineImage } from '../CommomPharmacy'
 import { NavigationEvents } from 'react-navigation';
 import { connect } from 'react-redux'
+import { hasLoggedIn } from '../../../providers/auth/auth.actions';
 
 
 export class AddToCard extends Component {
@@ -29,7 +30,7 @@ export class AddToCard extends Component {
             ...this.props.data.variations[0],
             offeredAmount: medicineRateAfterOffer(this.props.data.variations[0]),
         }
-        console.log('addtocate da=======================');
+        console.log('addtocard data=======================');
         console.log(JSON.stringify(data))
         if (data.userAddedMedicineQuantity) {
             userAddedMedicineQuantity = data.userAddedMedicineQuantity
@@ -44,10 +45,21 @@ export class AddToCard extends Component {
 
     }
     async productQuantityOperator(item, operator) {
+
         let result = await ProductIncrementDecreMent(this.state.userAddedMedicineQuantity, item.offeredAmount, operator, item.threshold_limit)
         userAddedTotalMedicineAmount = result.totalAmount || 0,
             userAddedMedicineQuantity = result.quantity || 0
         threshold_message = result.threshold_message || null;
+        if (threshold_message !== null) {
+            Toast.show({
+                text: threshold_message,
+                duration: 3000,
+                type: 'danger',
+                position: "bottom",
+                style: { bottom: "50%" }
+
+            })
+        }
         this.setState({ userAddedTotalMedicineAmount, userAddedMedicineQuantity, threshold_message })
     }
     async cancelCard() {
@@ -64,6 +76,11 @@ export class AddToCard extends Component {
         temp.userAddedMedicineQuantity = userAddedMedicineQuantity;
         temp.userAddedTotalMedicineAmount = userAddedTotalMedicineAmount
         if (data.selectedType === 'Add to Card') {
+            const isLoggedIn = await hasLoggedIn(this.props);
+            if (!isLoggedIn) {
+                this.props.navigation.navigate('login');
+                return
+            }
             let cartItems = []
             let userId = await AsyncStorage.getItem('userId')
             let cart = await AsyncStorage.getItem('cartItems-' + userId);
@@ -81,9 +98,7 @@ export class AddToCard extends Component {
             let count = cartItems.length;
             console.log("count", count)
             await AsyncStorage.setItem('cartItems-' + userId, JSON.stringify(cartItems))
-            // this.props.navigation.setParams({
-            //     cartItemsCount: count
-            // })
+
             this.props.popupVisible({
                 visible: false,
                 updatedVisible: false,
@@ -130,7 +145,7 @@ export class AddToCard extends Component {
         const { data } = this.state;
         return (
 
-            <View style={{ height: 200, position: 'absolute', bottom: 0 }}>
+            <View style={{ height: 200, position: 'absolute', bottom: 0, flex: 1 }}>
                 <Modal
                     animationType="slide"
                     transparent={true}
@@ -144,98 +159,105 @@ export class AddToCard extends Component {
                         backgroundColor: '#fff',
                         position: 'absolute',
                         bottom: 0,
-                        marginLeft: 10, marginRight: 10, borderRadius: 5, borderWidth: 1, borderColor: 'grey'
+                        marginLeft: 10, marginRight: 10, borderRadius: 5, borderWidth: 1, borderColor: 'grey', width: '95%', paddingBottom: 15, padding: 10
                     }}>
-                        <Row style={{ backgroundColor: '#fff', paddingTop: 10, paddingBottom: 10, paddingLeft: 10, paddingRight: 10, borderTopLeftRadius: 5, borderTopRightRadius: 5 }}>
-                            <Left>
+                        <Row >
+                            <Col size={7}>
                                 <Text style={{ color: '#7227C7', fontSize: 16, fontWeight: '500' }}>{data.selectedType || ''}</Text>
-                            </Left>
-                            <Right>
-                                <TouchableOpacity>
+                                <Row style={{ marginTop: 5 }}>
+                                    <Col size={4}>
+                                        <Image source={renderMedicineImage(data)} style={{ height: 80, width: 70, marginLeft: 5, marginTop: 2.5 }} />
+                                    </Col>
+                                    <Col size={6} style={{ marginTop: -5 }}>
+                                        <Text style={{ fontFamily: 'OpenSans', fontSize: 16, marginTop: 5 }}>{getMedicineName(data)}</Text>
+                                        <Text style={{ color: '#7d7d7d', fontFamily: 'OpenSans', fontSize: 12.5, }}>{'By ' + data.pharmacy_name || 'nill'}</Text>
+                                        <Row style={{ marginTop: 5 }}>
+                                            {data.variations !== undefined ?
+                                                <Col size={4} style={{ height: 20, justifyContent: 'center', backgroundColor: '#fff', borderRadius: 1, borderColor: '#000', borderWidth: 0.5, backgroundColor: '#E6E6E6', }}>
+                                                    <Picker
+                                                        mode="dropdown"
+                                                        style={{ width: undefined, fontSize: 10 }}
+                                                        textStyle={{ fontSize: 12, }}
+                                                        placeholder="Select your SIM"
+                                                        iosIcon={<Icon name="ios-arrow-down" style={{ color: 'gray', fontSize: 10 }} />}
+                                                        placeholderStyle={{ color: "#bfc6ea" }}
+                                                        placeholderIconColor="#007aff"
+                                                        textStyle={{ color: "gray", left: 0, marginLeft: -5 }}
+                                                        note={false}
+                                                        itemStyle={{
+
+
+                                                            fontSize: 12,
+                                                        }}
+                                                        itemTextStyle={{ color: '#5cb85c', }}
+                                                        selectedValue={this.state.selected2}
+                                                        onValueChange={this.variationSelectedValue.bind(this)}
+                                                    >
+
+
+                                                        {data.variations.map((ele, key) => {
+
+                                                            return <Picker.Item label={String(ele.medicine_weight) + String(ele.medicine_weight_unit)} value={ele} key={key} />
+                                                        })}
+
+                                                    </Picker>
+                                                </Col>
+                                                : null}
+                                            <Col size={1.5}></Col>
+
+                                        </Row>
+                                        <Text style={{ fontFamily: 'OpenSans', fontSize: 14, color: '#848484', }}>{'Total - ₹ ' + (this.state.userAddedTotalMedicineAmount)}</Text>
+
+
+                                    </Col>
+
+                                </Row>
+                            </Col>
+                            <Col size={3}>
+                                <TouchableOpacity style={{ alignItems: 'flex-end', justifyContent: 'flex-end' }}>
                                     <Icon name='ios-close-circle' style={{ fontSize: 20, color: '#FF0000' }} onPress={() => this.cancelCard()} />
                                 </TouchableOpacity>
-                            </Right>
-                        </Row>
+                                <Text style={{ fontSize: 15, marginTop: 10, color: "#8dc63f", fontFamily: 'OpenSans', textAlign: 'right', marginRight: 5, marginTop: 10 }}>{'₹' + data.offeredAmount}</Text>
 
-
-                        <View>
-                            <Row>
-                                <Col size={1} style={{ marginLeft: 5 }}>
-                                    <Image source={renderMedicineImage(data)} style={{ height: 80, width: 70, marginLeft: 5, marginTop: 2.5 }} />
-                                </Col>
-                                <Col size={6} style={{ marginLeft: 70, marginTop: -5 }}>
-
-                                    <Text style={{ fontFamily: 'OpenSans', fontSize: 16, marginTop: 5 }}>{getMedicineName(data)}</Text>
-                                    <Text style={{ color: '#7d7d7d', fontFamily: 'OpenSans', fontSize: 12.5, marginBottom: 20 }}>{'By ' + data.pharmacy_name || 'nill'}</Text>
-                                    {this.state.threshold_message !== null ?
-                                        <Text style={{ fontSize: 8, color: "#ff4e42" }}>{this.state.threshold_message}</Text> : null}
-
-                                    <Row style={{ marginTop: -15 }}>
-                                        {data.variations !== undefined ?
-                                            <Col size={4} style={{ height: 20, justifyContent: 'center', backgroundColor: '#fff', borderRadius: 1, borderColor: '#000', borderWidth: 0.5, backgroundColor: '#E6E6E6', }}>
-                                                <Picker
-                                                    mode="dropdown"
-                                                    style={{ width: undefined, fontSize: 10 }}
-                                                    textStyle={{ fontSize: 12 }}
-                                                    placeholder="Select your SIM"
-                                                    placeholderStyle={{ color: "#bfc6ea" }}
-                                                    placeholderIconColor="#007aff"
-                                                    selectedValue={this.state.selected2}
-                                                    onValueChange={this.variationSelectedValue.bind(this)}
-                                                >
-
-
-                                                    {data.variations.map((ele, key) => {
-
-                                                        return <Picker.Item label={String(ele.medicine_weight) + String(ele.medicine_weight_unit)} value={ele} key={key} />
-                                                    })}
-
-                                                </Picker>
-                                            </Col>
-                                            : null}
-                                        <Col size={1.5}></Col>
-
-                                    </Row>
-
-                                </Col>
-                                <Col size={3} style={{ marginLeft: 2.5, marginRight: 5, justifyContent: 'flex-end', alignItems: 'flex-end', marginRight: 10 }}>
-                                    <Row>
-                                        <Text style={{ fontSize: 15, marginTop: 10, color: "#8dc63f", fontFamily: 'OpenSans', textAlign: 'right', marginRight: 5 }}>{'₹' + data.offeredAmount}</Text>
-                                    </Row>
-                                    <Row style={{ marginLeft: 2.5, marginTop: 10, }}>
-                                        <Col size={4} style={{ marginLeft: 5 }}>
+                                {data.total_quantity !== 0 ?
+                                    <Row style={{ justifyContent: 'flex-end', marginTop: 20 }}>
+                                        <Col size={4} style={{ marginLeft: 5, justifyContent: 'center', alignItems: 'flex-end' }}>
                                             <TouchableOpacity onPress={() => this.productQuantityOperator(data, 'sub')} style={{ width: 20, height: 20, borderRadius: 10, backgroundColor: '#E6E6E6' }}>
                                                 <Text style={{ fontSize: 12, fontWeight: '500', fontFamily: 'OpenSans', textAlign: 'center', color: this.state.userAddedMedicineQuantity !== 1 ? '#FF0000' : 'grey' }}>-</Text>
                                             </TouchableOpacity>
                                         </Col>
-                                        <Col size={2}>
-                                            <Text style={{ fontSize: 12, marginTop: 2.5, fontFamily: 'OpenSans' }}>{this.state.userAddedMedicineQuantity}</Text>
+                                        <Col size={2} style={{ justifyContent: 'center', alignItems: 'flex-end' }}>
+                                            <Text style={{ fontSize: 12, marginTop: 2.5, fontFamily: 'OpenSans', textAlign: 'center' }}>{this.state.userAddedMedicineQuantity}</Text>
                                         </Col>
-                                        <Col size={4}>
+                                        <Col size={4} style={{ justifyContent: 'center', alignItems: 'flex-end' }}>
                                             <TouchableOpacity onPress={() => this.productQuantityOperator(data, 'add')} style={{ width: 20, height: 20, borderRadius: 10, backgroundColor: '#E6E6E6' }}>
                                                 <Text style={{ fontSize: 12, fontWeight: '500', fontFamily: 'OpenSans', textAlign: 'center', color: '#8dc63f' }}>+</Text>
                                             </TouchableOpacity>
                                         </Col>
-                                    </Row>
-                                </Col>
-                            </Row>
-                        </View>
+                                    </Row> : null}
 
-                        <Row style={{ marginLeft: 20, marginTop: 10, marginRight: 15, marginBottom: 10 }}>
+                                {data.total_quantity === 0 ?
+                                    <Text style={{ fontSize: 12, fontFamily: 'OpenSans', color: '#ff4e42', marginTop: 5, textAlign: 'center', backgroundColor: '#E6E6E6', }}>Out of stock</Text> :
+                                    <TouchableOpacity onPress={() => this.cardAction()} style={{ borderColor: '#4e85e9', borderWidth: 1, borderRadius: 2.5, height: 30, paddingTop: 2, backgroundColor: '#4e85e9', flexDirection: 'row', justifyContent: 'center', alignItems: 'center', marginTop: 15 }}>
 
-                            <Col style={{ width: '60%' }}>
-                                <Text style={{ fontFamily: 'OpenSans', textAlign: 'right', fontSize: 14, marginBottom: 5, color: '#848484', marginRight: 10 }}>{'Total - ₹ ' + (this.state.userAddedTotalMedicineAmount)}</Text>
+                                        <Icon name='ios-cart' style={{ color: '#fff', fontSize: 13, }} />
+                                        <Text style={{ fontSize: 12, color: '#fff', marginTop: 2.5, fontWeight: '500', fontFamily: 'OpenSans', marginLeft: 5, marginBottom: 5, textAlign: 'center' }}>{data.selectedType}</Text>
+
+                                    </TouchableOpacity>
+                                }
                             </Col>
-                            <Col style={{ width: '40%', flexDirection: 'row', alignItems: 'flex-end', justifyContent: 'flex-end', }}>
-                                <TouchableOpacity onPress={() => this.cardAction()} style={{ borderColor: '#4e85e9', borderWidth: 1, marginLeft: 25, borderRadius: 2.5, marginTop: -12.5, height: 30, width: 120, paddingBottom: -5, paddingTop: 2, backgroundColor: '#4e85e9' }}>
-                                    <Row style={{ alignItems: 'center' }}>
-                                        <Text style={{ fontSize: 12, color: '#fff', marginTop: 2.5, fontWeight: '500', fontFamily: 'OpenSans', marginLeft: 25, marginBottom: 5, textAlign: 'center' }}><Icon name='ios-cart' style={{ color: '#fff', fontSize: 13, marginLeft: 5, paddingTop: 2.3 }} />{data.selectedType}</Text>
-                                    </Row>
-                                </TouchableOpacity>
-                            </Col>
-
 
                         </Row>
+
+
+
+
+
+
+
+
+
+
                     </Grid>
 
                 </Modal>
