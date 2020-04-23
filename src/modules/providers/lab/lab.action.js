@@ -18,7 +18,7 @@ export async function getLabTestCateries(coordinates) {
 
 export const getLapAppointments = async (user_id, filters) => {
     try {
-        let endPoint = 'labappointments/user/' + user_id + '?startDate=' + filters.startDate + '&endDate=' + filters.endDate;
+        let endPoint = 'lab-test/labappointments/user/' + user_id + '?startDate=' + filters.startDate + '&endDate=' + filters.endDate;
         console.log(endPoint);
         let response = await getService(endPoint);
         let respData = response.data;
@@ -48,7 +48,7 @@ export async function getCategories() {
 
 export async function updateLapAppointment(appointmentId, requestData, isLoading = true) {
     try {
-        let endPoint = 'labappointments/' + appointmentId
+        let endPoint = 'lab-test/labappointments/' + appointmentId
         console.log("endPoint", endPoint)
         let response = await putService(endPoint, requestData);
         let respData = response.data;
@@ -83,5 +83,54 @@ export const getLapTestPaymentDetails = async (paymentId) => {
             success: false,
             message: 'Exception Occured' + e
         };
+    }
+}
+
+export async function InsertAppointment(data) {
+    try {
+        let endPoint = 'lab-test/labappointments';
+        let response = await postService(endPoint, data);
+        let respData = response.data;
+        return respData;
+    }
+    catch (e) {
+        return {
+            message: 'exception' + e,
+            success: false
+        }
+    }
+}
+
+
+
+export async function insertReviews(userId, insertUserReviews) {
+    try {
+        let endPoint = 'lab-test/user/' + userId + '/labReview';
+        let response = await postService(endPoint, insertUserReviews);
+        let respData = response.data;
+        return respData;
+    }
+    catch (e) {
+        return {
+            message: 'exception' + e,
+            success: false
+        }
+    }
+}
+
+
+export async function getUserReviews(userId) {
+    try {
+        let endPoint = 'lab-test/user/' + userId;
+        console.log("endPoint", endPoint)
+        let response = await getService(endPoint);
+        let respData = response.data;
+        return respData;
+
+    } catch (e) {
+        return {
+            message: 'exception' + e,
+            success: false
+        }
     }
 }

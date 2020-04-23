@@ -185,7 +185,7 @@ class LabCancelAppointment extends Component {
                                         </Button>
 
 
-                                        <Button danger style={styles.button2} onPress={() => this.cancelLabAppointment(data, 'CANCELED')} testID='iconToEditContact'>
+                                        <Button danger style={styles.button2} onPress={() => this.cancelLabAppointment(data, 'REJECTED')} testID='iconToEditContact'>
                                             <Text style={{ color: '#FFF', fontFamily: 'OpenSans', fontSize: 13 }}>Cancel</Text>
                                         </Button>
                                     </Row>

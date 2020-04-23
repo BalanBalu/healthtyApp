@@ -7,8 +7,8 @@ import { RadioButton, Checkbox } from 'react-native-paper';
 import { NavigationEvents } from 'react-navigation';
 import { fetchUserProfile } from '../../../providers/profile/profile.action';
 import { dateDiff } from '../../../../setup/helpers';
-import { getAddress } from '../../../common'
-import { InsertAppointment } from '../../../providers/Lab/lab.action'
+import { getAddress } from '../../../common';
+import { InsertAppointment } from '../../../providers/lab/lab.action';
 
 
 class labConfirmation extends Component {
@@ -126,7 +126,7 @@ class labConfirmation extends Component {
 
         let totalAmount;
         if (itemSelected == 'TEST_TO_HOME') {
-            totalAmount = ((packageDetails.packageAmount * patientdetails.length) + (packageDetails.testToHomeCharge))
+            totalAmount = ((packageDetails.packageAmount * patientdetails.length) + (packageDetails.extra_charges))
             return totalAmount
         }
         else {
@@ -462,7 +462,7 @@ class labConfirmation extends Component {
                                 </Col>
                                 <Col size={5} style={{ alignItems: 'flex-end', justifyContent: 'flex-end' }}>
 
-                                    <Text style={{ fontFamily: 'OpenSans', fontSize: 10, color: '#ff4e42', textAlign: 'right' }}>₹{packageDetails.testToHomeCharge ? packageDetails.testToHomeCharge : 0}</Text>
+                                    <Text style={{ fontFamily: 'OpenSans', fontSize: 10, color: '#ff4e42', textAlign: 'right' }}>₹{packageDetails.extra_charges ? packageDetails.extra_charges : 0}</Text>
 
                                 </Col>
                             </Row> : null}
