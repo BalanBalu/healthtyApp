@@ -9,6 +9,7 @@ import Profile from "../../modules/screens/userprofile";
 import UpdateEmail from "../../modules/screens/userprofile/UpdateEmail";
 import UpdateContact from "../../modules/screens/userprofile/UpdateContact";
 import UpdatePassword from "../../modules/screens/userprofile/UpdatePassword";
+import Updateheightweight from "../../modules/screens/userprofile/Updateheightweight";
 import UpdateInsurance from "../../modules/screens/userprofile/UpdateInsurance";
 import UpdateUserDetails from "../../modules/screens/userprofile/UpdateUserDetails";
 import { Icon, View, Thumbnail, Item, Input } from 'native-base';
@@ -286,8 +287,16 @@ const HomeStack = createStackNavigator({
     screen: UpdatePassword,
     navigationOptions: {
       title: 'Update Password'
-    }
+    }   
   },
+  
+  Updateheightweight: {
+    screen: Updateheightweight,
+    navigationOptions: {
+      title: 'Update height weight'
+    }   
+  },
+
   UpdateInsurance: {
     screen: UpdateInsurance,
     navigationOptions: {
