@@ -722,7 +722,7 @@ const HomeStack = createStackNavigator({
     }
   },
   /* ========>  Lab Test  <========== */
-  LabCategory: {
+  'Lab Test': {
     screen: LabCategory,
     navigationOptions: {
       title: 'Lab Category'
@@ -778,9 +778,6 @@ const DrawerNavigator = createDrawerNavigator({
   'CORONA Status': {
     screen: CoronaDisease
   },
-  'Lab Test': {
-    screen: LabCategory
-  }
 
 },
   {
