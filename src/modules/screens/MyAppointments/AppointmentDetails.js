@@ -295,39 +295,42 @@ class AppointmentDetails extends Component {
                   onWillFocus={payload => { this.backNavigation(payload) }}
                 />
 
-                <CardItem header style={styles.cardItem}>
 
 
-                  <Grid>
+
+                <Grid style={styles.cardItem}>
+                  <Row style={{ justifyContent: 'flex-end', marginRight: 10, marginTop: 10 }}>
                     {data.token_no ?
-                      <Text style={{ textAlign: 'right', fontSize: 14, marginTop: -15 }} >{"Ref no :" + data.token_no}</Text>
+                      <Text style={{ textAlign: 'right', fontSize: 14, }} >{"Ref no :" + data.token_no}</Text>
                       : null}
-                    <Row>
-                      <Col style={{ width: '25%', }}>
+                  </Row>
+
+                  <Row style={{ marginLeft: 10, marginRight: 10 }}>
+                    <Col style={{ width: '22%', justifyContent: 'center', marginTop: 10 }}>
                       <TouchableOpacity onPress={() => this.props.navigation.navigate("ImageView", { passImage: renderDoctorImage(doctorData), title: 'Profile photo' })}>
                         <Thumbnail circular source={renderDoctorImage(doctorData)} style={{ height: 60, width: 60 }} />
-                        </TouchableOpacity>
-                      </Col>
-                      <Col style={{ width: '80%', marginTop: 10 }}>
-                        <Row>
-                          <Col size={9}>
-                            <Text style={styles.Textname} >{(doctorData && doctorData.prefix != undefined ? doctorData.prefix + ' ' : '') + (getName(data.doctorInfo)) + ' '}</Text>
-                            <Text note style={{ fontSize: 13, fontFamily: 'OpenSans', fontWeight: 'normal' }}>{education}</Text>
-                            <Text style={styles.specialistTextStyle} >{specialist} </Text>
-                          </Col>
-                          <Col size={1}>
-                          </Col>
-                        </Row>
-                        <Row style={{ alignSelf: 'flex-start' }}>
+                      </TouchableOpacity>
+                    </Col>
+                    <Col style={{ width: '77%', marginTop: 10 }}>
+                      <Row>
+                        <Col size={9}>
+                          <Text style={styles.Textname} >{(doctorData && doctorData.prefix != undefined ? doctorData.prefix + ' ' : '') + (getName(data.doctorInfo)) + ' '}</Text>
+                          <Text note style={{ fontSize: 13, fontFamily: 'OpenSans', fontWeight: 'normal' }}>{education}</Text>
+                          <Text style={styles.specialistTextStyle} >{specialist} </Text>
+                        </Col>
+                        <Col size={1}>
+                        </Col>
+                      </Row>
+                      <Row style={{ alignSelf: 'flex-start' }}>
 
-                        </Row>
-                        {/* <Text style={styles. cardItemText2}>{getUserGenderAndAge(data && data.userInfo)}</Text>  */}
-                      </Col>
-                    </Row>
-                  </Grid>
-                </CardItem>
+                      </Row>
+                      {/* <Text style={styles. cardItemText2}>{getUserGenderAndAge(data && data.userInfo)}</Text>  */}
+                    </Col>
+                  </Row>
+                </Grid>
 
-                <Grid>
+
+                <Grid style={{ marginTop: 10 }}>
                   <Row>
                     <Col size={6}>
                       <Row style={{ marginTop: 10, marginLeft: 5 }} >
@@ -405,7 +408,7 @@ class AppointmentDetails extends Component {
                 </Grid>
                 <CardItem footer style={styles.cardItem2}>
                   <Grid>
-                    <Row style={{ height: 25, marginRight: 5 }} >
+                    <Row style={{ marginRight: 5 }} >
                       <Col style={{ width: '50%', }}>
                         <Row>
                           <Icon name='md-calendar' style={styles.iconStyle} />
@@ -417,7 +420,6 @@ class AppointmentDetails extends Component {
                         <Row>
                           <Icon name="md-clock" style={styles.iconStyle} />
                           <Text style={styles.timeText}>{formatDate(data.appointment_starttime, 'hh:mm a') + '-' + formatDate(data.appointment_endtime, 'hh:mm a')}</Text>
-
                         </Row>
                       </Col>
                     </Row>
@@ -554,7 +556,7 @@ class AppointmentDetails extends Component {
                       <Text style={styles.innerSubText}>Payment Report</Text>
                       {reportData != null ?
                         <View style={{ borderRadius: 5, borderColor: 'grey', borderWidth: 0.5, padding: 5 }} >
-                          <TouchableOpacity onPress={() => { this.props.navigation.navigate('ReportDetails', { reportedId: data._id }) }}>
+                          <TouchableOpacity onPress={() => { this.props.navigation.navigate('ReportDetails', { reportedId: data._id ,serviceType: 'appointment'}) }}>
                             <Text note style={[styles.subTextInner2, { marginLeft: 10 }]}>"You have raised Report for this appointment"</Text>
                             <Row>
                               <Col size={9}>
@@ -572,7 +574,7 @@ class AppointmentDetails extends Component {
                           <TouchableOpacity
                             onPress={() => {
                               this.props.navigation.push('ReportIssue', {
-                                issueFor: { serviceType: 'Appointment', reportedId: data._id, status: data.appointment_status },
+                                issueFor: { serviceType: 'APPOINTMENT', reportedId: data._id, status: data.appointment_status },
                                 prevState: this.props.navigation.state
                               })
                             }}
@@ -587,7 +589,7 @@ class AppointmentDetails extends Component {
                       }
                     </Col>
                   </Row>
-                  {(data.appointment_status == 'COMPLETED' && reviewData.length !== 0)||reviewData.length !== 0 ?
+                  {(data.appointment_status == 'COMPLETED' && reviewData.length !== 0) || reviewData.length !== 0 ?
                     <Row style={styles.rowSubText}>
                       <Col style={{ width: '8%', paddingTop: 5 }}>
                         <Icon name="ios-medkit" style={{ fontSize: 20, }} />
@@ -615,12 +617,9 @@ class AppointmentDetails extends Component {
                             <TouchableOpacity block success style={styles.reviewButton} onPress={() => this.navigateAddReview()} testID='addFeedBack'>
 
                               <Text style={{ color: '#fff', fontSize: 14, fontFamily: 'OpenSans', fontWeight: 'bold', textAlign: 'center', marginTop: 5 }}> ADD FEEDBACK </Text>
-                              <Icon name="create" style={styles.editProfilePencil}></Icon>
-
+                              <Icon name="create" style={{ fontSize: 20, marginTop: 3, marginLeft: 5, color: '#fff' }}></Icon>
                             </TouchableOpacity>
                           </View>
-
-
                         </Col>
                       </Row> : null
                   }
@@ -805,7 +804,7 @@ const styles = StyleSheet.create({
     borderTopLeftRadius: 10,
     borderTopRightRadius: 10,
     justifyContent: 'center',
-    height: 100,
+
   },
   cardItemText2: {
     fontFamily: 'OpenSans',
@@ -972,12 +971,10 @@ const styles = StyleSheet.create({
   },
   cardItem2: {
     backgroundColor: '#784EBC',
-    marginBottom: -10,
     borderBottomLeftRadius: 10,
     borderBottomRightRadius: 10,
     justifyContent: 'center',
     alignItems: "center",
-    height: 35,
     marginTop: 10
   },
   cardItem3: {

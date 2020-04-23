@@ -99,7 +99,7 @@ class PharmacyCart extends Component {
             order_items: order_items
         }
         let checkResult = await getmedicineAvailableStatus(obj)
-   
+
         if (checkResult.success === true) {
             if (checkResult.data.length === cartItems.length) {
                 this.props.navigation.navigate("MedicineCheckout", {
@@ -134,8 +134,8 @@ class PharmacyCart extends Component {
         const { isLoading, cartItems } = this.state;
 
         return (
-            <Container style={{ backgroundColor: '#EAE6E6' }}>
-                <Content>
+            <Container style={{ backgroundColor: '#EAE6E6', flex: 1 }}>
+                <Content style={{ flex: 1 }}>
 
                     {cartItems.length === 0 ?
                         <Card transparent style={{
@@ -187,40 +187,51 @@ class PharmacyCart extends Component {
 
                                         </Col>
                                         <Col size={7} style={{ marginLeft: 10, justifyContent: 'center' }}>
-                                            <Text style={{ fontFamily: 'OpenSans', fontSize: 15, marginTop: 5 }}>{getMedicineName(item)}<Text style={{ fontFamily: 'OpenSans', fontSize: 15, marginTop: 5, color: '#909090' }}>{getMedicineWeightUnit(item.medicine_weight, item.medicine_weight_unit)}</Text></Text>
-                                            <Text style={{ color: '#A4A4A4', fontFamily: 'OpenSans', fontSize: 12.5, marginBottom: 20 }}>{item.pharmacy_name}</Text>
+                                            <Row>
+                                                <Col size={7}>
+                                                    <Text style={{ fontFamily: 'OpenSans', fontSize: 15, marginTop: 5 }}>{getMedicineName(item)}<Text style={{ fontFamily: 'OpenSans', fontSize: 15, marginTop: 5, color: '#909090' }}>{getMedicineWeightUnit(item.medicine_weight, item.medicine_weight_unit)}</Text></Text>
+                                                    <Text style={{ color: '#A4A4A4', fontFamily: 'OpenSans', fontSize: 12.5, marginBottom: 20 }}>{item.pharmacy_name}</Text>
 
-
-                                            <Row style={{ marginTop: -15, marginRight: 10 }}>
-
-                                                <Col>
-                                                    <Text style={{ fontSize: 9.5, marginBottom: -15, marginTop: 30, marginLeft: 3.5, color: "#ff4e42" }}>MRP</Text>
                                                 </Col>
-                                                <Col>
-                                                    <Text style={{ fontSize: 9.5, marginTop: 30, marginLeft: -32.5, color: "#ff4e42", textDecorationLine: 'line-through', textDecorationStyle: 'solid' }}>₹ {item.price}</Text>
+                                                <Col size={3}>
+                                                    <Row style={{ marginTop: 20, justifyContent: 'flex-end', marginRight: 5 }}>
+                                                        <TouchableOpacity style={styles.touch} onPress={() => this.productQuantityOperator(item, 'sub', index)}>
+                                                            <Text style={{ fontSize: 15, fontWeight: '500', fontFamily: 'OpenSans', textAlign: 'center', color: '#FF0000' }} testID='decreaseMedicine'>-</Text>
+                                                        </TouchableOpacity>
+                                                        <Text style={{ fontWeight: '300', fontSize: 15, textAlign: 'center', marginTop: 4.5, marginLeft: 5, fontFamily: 'OpenSans' }}>{item.userAddedMedicineQuantity}</Text>
+                                                        <TouchableOpacity style={styles.touch} onPress={() => this.productQuantityOperator(item, 'add', index)} testID='increaseMedicine'>
+                                                            <Text style={{ fontSize: 15, fontWeight: '500', fontFamily: 'OpenSans', textAlign: 'center', color: '#8dc63f' }}>+</Text>
+                                                        </TouchableOpacity>
+                                                    </Row>
                                                 </Col>
-                                                <Col>
-                                                    <Text style={{ fontSize: 15, marginTop: 25, marginLeft: -50, color: "#5FB404" }}>₹ {item.offeredAmount}</Text>
-                                                </Col>
-
-
-                                                <Row style={{ marginTop: -25 }}>
-                                                    <TouchableOpacity style={styles.touch} onPress={() => this.productQuantityOperator(item, 'sub', index)}>
-                                                        <Text style={{ fontSize: 15, fontWeight: '500', fontFamily: 'OpenSans', textAlign: 'center', color: '#FF0000' }} testID='decreaseMedicine'>-</Text>
-                                                    </TouchableOpacity>
-                                                    <Text style={{ fontWeight: '300', fontSize: 15, textAlign: 'center', marginTop: 4.5, marginLeft: 5, fontFamily: 'OpenSans' }}>{item.userAddedMedicineQuantity}</Text>
-                                                    <TouchableOpacity style={styles.touch} onPress={() => this.productQuantityOperator(item, 'add', index)} testID='increaseMedicine'>
-                                                        <Text style={{ fontSize: 15, fontWeight: '500', fontFamily: 'OpenSans', textAlign: 'center', color: '#8dc63f' }}>+</Text>
-                                                    </TouchableOpacity>
-                                                </Row>
-                                                <Row style={{ marginLeft: -75, marginTop: 30, marginRight: 12.5 }}>
-                                                    <TouchableOpacity style={{ borderColor: '#ff4e42', borderWidth: 1, marginLeft: -25, borderRadius: 2.5, marginTop: -12.5, height: 30, width: 100, paddingBottom: -5, paddingTop: 2, backgroundColor: '#fff' }} onPress={() => this.removeMedicine(index)} testID='removeMedicineToCart'>
-                                                        <Row style={{ alignItems: 'center' }}>
-                                                            <Text style={{ fontSize: 12, color: '#ff4e42', marginTop: 2.5, fontWeight: '500', fontFamily: 'OpenSans', marginLeft: 25, marginBottom: 5, textAlign: 'center' }}><Icon name='ios-trash' style={{ color: '#ff4e42', fontSize: 13, marginLeft: -2.5, paddingTop: 2.3 }} /> Remove</Text>
-                                                        </Row>
-                                                    </TouchableOpacity>
-                                                </Row>
                                             </Row>
+
+
+
+
+                                            <Row style={{}}>
+                                                <Col size={7} style={{ flexDirection: 'row' }}>
+                                                    <Text style={{ fontSize: 9.5, marginBottom: -15, marginTop: 30, marginLeft: 3.5, color: "#ff4e42" }}>MRP</Text>
+                                                    <Text style={{ fontSize: 9.5, marginTop: 30, color: "#ff4e42", textDecorationLine: 'line-through', textDecorationStyle: 'solid', marginLeft: 5 }}>₹ {item.price}</Text>
+                                                    <Text style={{ fontSize: 15, marginTop: 25, color: "#5FB404", marginLeft: 5 }}>₹ {this.totalPrice()}</Text>
+                                                </Col>
+                                                <Col size={3}>
+                                                    <Row style={{ marginTop: 30, }}>
+                                                        <TouchableOpacity style={{ borderColor: '#ff4e42', borderWidth: 1, marginLeft: -25, borderRadius: 2.5, marginTop: -12.5, height: 30, width: 100, paddingBottom: -5, paddingTop: 2, backgroundColor: '#fff' }} onPress={() => this.removeMedicine(index)} testID='removeMedicineToCart'>
+                                                            <Row style={{ alignItems: 'center' }}>
+                                                                <Text style={{ fontSize: 12, color: '#ff4e42', marginTop: 2.5, fontWeight: '500', fontFamily: 'OpenSans', marginLeft: 25, marginBottom: 5, textAlign: 'center' }}><Icon name='ios-trash' style={{ color: '#ff4e42', fontSize: 13, marginLeft: -2.5, paddingTop: 2.3 }} /> Remove</Text>
+                                                            </Row>
+                                                        </TouchableOpacity>
+                                                    </Row>
+                                                </Col>
+
+
+                                            </Row>
+
+
+
+
+
                                         </Col>
                                     </Row>
                                 }

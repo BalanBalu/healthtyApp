@@ -521,7 +521,7 @@ class Home extends Component {
 
 
                     <Grid style={{ flex: 1, marginLeft: 10, marginRight: 20, marginTop: 10 }}>
-                    <Col style={{ width: '33%', marginLeft: 5 }}>
+                    <Col style={{ width: '33%',}}>
                             <TouchableOpacity onPress={() => this.props.navigation.navigate("Video and Chat Service")}>
                                 <Card style={{ borderRadius: 2, overflow: 'hidden' }}>
                                     <Row style={styles.rowStyle}>
@@ -565,8 +565,8 @@ class Home extends Component {
                                 </Card>
                             </TouchableOpacity>
                         </Col>
-                        <Col style={{ width: '33%', }}>
-                            <TouchableOpacity onPress={() => this.props.navigation.navigate("Chat Service")}>
+                        <Col style={{ width: '33%', marginLeft: 5 }}>
+                            <TouchableOpacity onPress={() => this.props.navigation.navigate("Blood Donors")}>
                                 <Card style={{ borderRadius: 2, overflow: 'hidden' }}>
                                     <Row style={styles.rowStyle}>
                                         <Image
@@ -935,12 +935,11 @@ const styles = StyleSheet.create({
     },
     secondRow: {
         paddingTop: 10,
-        paddingBottom: 5,
+        paddingBottom: 10,
         width: '100%',
         borderTopColor: '#000',
         borderTopWidth: 0.3,
         backgroundColor: '#fff',
-        paddingTop: 5,
         justifyContent: 'center'
     },
     mainText: {

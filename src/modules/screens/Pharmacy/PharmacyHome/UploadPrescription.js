@@ -27,8 +27,8 @@ class UploadPrescription extends Component {
             selectIndex: 0,
         }
     }
- async componentDidMount() {
-    
+    async componentDidMount() {
+
         const isLoggedIn = await hasLoggedIn(this.props);
         if (!isLoggedIn) {
             this.props.navigation.navigate('login');
@@ -204,7 +204,7 @@ class UploadPrescription extends Component {
         return (
             <Container style={styles.container}>
                 {isLoading !== true ? <Loader style={'appointment'} /> :
-                    <Content >
+                    <Content style={{ flex: 1 }}>
                         <View >
                             {prescriptionData.length === 0 ?
                                 <TouchableOpacity onPress={() => this.setState({ selectOptionPoopup: true })}>
@@ -239,11 +239,11 @@ class UploadPrescription extends Component {
                                             </View>
 
                                         } />
-                                    <Row style={{ justifyContent: 'center' }}>
-                                        <TouchableOpacity onPress={() => this.removePrescriptionImage()} style={{ marginTop: 20, backgroundColor: '#f9DADB', paddingLeft: 150, paddingRight: 150, paddingTop: 5, paddingBottom: 5, borderRadius: 5 }}>
+                                    <View style={{ Flex: 1, marginLeft: 20, marginRight: 20 }}>
+                                        <TouchableOpacity onPress={() => this.removePrescriptionImage()} style={{ backgroundColor: '#f9DADB', alignSelf: 'stretch', paddingTop: 8, paddingBottom: 8, marginTop: 5, borderRadius: 5 }}>
                                             <Text style={{ fontSize: 14, fontWeight: '500', color: 'red', textAlign: 'center' }}>Delete</Text>
                                         </TouchableOpacity>
-                                    </Row>
+                                    </View>
                                 </View>
 
                             }
@@ -286,28 +286,28 @@ class UploadPrescription extends Component {
                                     backgroundColor: '#fff',
                                     borderColor: 'gray',
                                     borderWidth: 3,
-                                    padding: 30,
+                                    padding: 25,
                                     borderRadius: 5
                                 }}>
 
 
-                                    <Text style={{ fontSize: 26, fontFamily: 'OpenSans', fontWeight: 'bold', textAlign: 'center' }}> Select a Photo  </Text>
+                                    <Text style={{ fontSize: 22, fontFamily: 'OpenSans', fontWeight: 'bold', textAlign: 'center' }}> Select a Photo  </Text>
                                     {/* </Item> */}
 
-                                    <Button transparent style={{ paddingTop: 5, paddingBottom: 5 }} onPress={() => this.uploadProfilePicture("Camera")} testID='chooseCemara'>
-                                        <Text style={{ fontSize: 20, fontFamily: 'OpenSans', marginTop: 10 }}>Take Photo</Text>
+                                    <Button transparent style={{ paddingTop: 5, paddingBottom: 5, marginTop: 20 }} onPress={() => this.uploadProfilePicture("Camera")} testID='chooseCemara'>
+                                        <Text style={{ fontSize: 18, fontFamily: 'OpenSans', marginTop: 10 }}>Take Photo</Text>
                                     </Button>
                                     <Button transparent style={{ paddingTop: 5, paddingBottom: 5 }} onPress={() => this.uploadProfilePicture("Library")} testID='chooselibrary'>
-                                        <Text style={{ fontSize: 20, fontFamily: 'OpenSans', marginTop: 10 }}>Choose from Library</Text>
+                                        <Text style={{ fontSize: 18, fontFamily: 'OpenSans', marginTop: 10 }}>Choose from Library</Text>
                                     </Button>
 
-                                    <Row style={{ marginTop: 50, marginBottom: 10 }}>
+                                    <Row style={{ marginTop: 50, marginBottom: 20 }}>
                                         <Right style={{ marginTop: 15 }} >
                                             <Button transparent style={{ marginTop: 15, alignItems: 'flex-end' }}
 
                                                 onPress={() => this.setState({ selectOptionPoopup: false })}
                                                 testID='cancleButton'>
-                                                <Text style={{ fontFamily: 'OpenSans', fontSize: 20, }}> Cancel</Text>
+                                                <Text style={{ fontFamily: 'OpenSans', fontSize: 18, }}> Cancel</Text>
                                             </Button>
                                         </Right>
                                     </Row>
@@ -349,7 +349,7 @@ const styles = StyleSheet.create({
     container:
     {
         backgroundColor: '#ffffff',
-
+        flex: 1
     },
 
     profileImage:

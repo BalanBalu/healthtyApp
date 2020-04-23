@@ -1,13 +1,20 @@
 import React, { Component } from 'react';
 import {
-    Container, Content, Text, Item, View,
+    Container, Content, Text, Item, View, Icon,Toast
 } from 'native-base';
 import { Col, Row } from 'react-native-easy-grid';
 import { StyleSheet, Image, AsyncStorage, FlatList, TouchableOpacity } from 'react-native';
 import { formatDate } from '../../../../setup/helpers';
-import { getMedicineOrderDetails } from '../../../providers/pharmacy/pharmacy.action';
+import { getMedicineOrderDetails, upDateOrderData } from '../../../providers/pharmacy/pharmacy.action';
+import { statusBar, renderPrescriptionImageAnimation } from '../CommomPharmacy';
+import { NavigationEvents } from 'react-navigation';
 import { getPaymentInfomation } from '../../../providers/bookappointment/bookappointment.action'
 import Spinner from '../../../../components/Spinner';
+import { getUserRepportDetails } from '../../../providers/reportIssue/reportIssue.action';
+import AwesomeAlert from 'react-native-awesome-alerts';
+import SwiperFlatList from 'react-native-swiper-flatlist';
+import ImageZoom from 'react-native-image-pan-zoom';
+
 
 /*
   TODO: 
@@ -19,36 +26,31 @@ class OrderDetails extends Component {
     constructor(props) {
         super(props)
         this.state = {
-            orderId: '',
-            myOrderList: [],
-            orderList:[],
+            orderId: null,
+            reportData: null,
+            orderDetails: {},
+            orderList: [],
             paymentDetails: {},
             isLoading: true,
         }
     }
     async componentDidMount() {
         const { navigation } = this.props;
-        await this.setState({ orderList: navigation.getParam('orderDetails')||[], isLoading: false })
         this.medicineOrderDetails();
+        this.getUserReport()
     }
 
-    
+
 
     async medicineOrderDetails() {
         try {
             this.setState({ isLoading: true });
-            let userId = await AsyncStorage.getItem('userId');
-            let orderId 
-            if(this.state.orderList.length!==0){
-            orderId = this.state.orderList._id
-            }else{
-                orderId= this.props.navigation.getParam('serviceId')
-            }
-           
-            let result = await getMedicineOrderDetails(orderId , userId);
-         
+            let orderId = this.props.navigation.getParam('serviceId') || null
+            let userId = await AsyncStorage.getItem('userId')
+            let result = await getMedicineOrderDetails(orderId, userId);
+            console.log(JSON.stringify(result))
             if (result.success) {
-                this.setState({ myOrderList: result.data[0] });
+                this.setState({ orderDetails: result.data[0] });
                 this.getPaymentInfo(result.data[0].payment_id)
             }
         }
@@ -58,39 +60,49 @@ class OrderDetails extends Component {
             this.setState({ isLoading: false });
         }
     }
+    getUserReport = async () => {
+        try {
+            const userId = await AsyncStorage.getItem('userId');
+            let orderId = this.props.navigation.getParam('serviceId') || null
+            let resultReport = await getUserRepportDetails('MEDICINE_ORDER', userId, orderId);
 
+            if (resultReport.success) {
 
-    noOrders() {
-        return (
-            <Item style={{ borderBottomWidth: 0, justifyContent: 'center', alignItems: 'center' }}>
-                <Text style={{ fontSize: 18, justifyContent: 'center', alignItems: 'center' }} > No Orders Available </Text>
-            </Item>
-        )
+                this.setState({ reportData: resultReport.data });
+            }
+        }
+
+        catch (e) {
+            console.error(e);
+        }
+
     }
+
+
 
     getAddress(address) {
         if (address.pickup_or_delivery_address) {
             let temp = address.pickup_or_delivery_address.address;
-            return `${ temp.no_and_street || '' },${temp.address_line_1 || ''},${temp.district || ''},${temp.city || ''},${temp.state || ''},${temp.country || ''},${temp.pin_code || ''}`
+            return `${temp.no_and_street || ''},${temp.address_line_1 || ''},${temp.district || ''},${temp.city || ''},${temp.state || ''},${temp.country || ''},${temp.pin_code || ''}`
         } else {
             return null
         }
-      }
-    getName(name) {
-      if (name.pickup_or_delivery_address) {
-        let temp = name.pickup_or_delivery_address;
-        return `${ temp.full_name || '' }`
-      } else {
-        return null
-      }
     }
-    getMobile(number){
-      if (number.pickup_or_delivery_address) {
-        let temp = number.pickup_or_delivery_address;
-        return `${ temp.mobile_number || '' }`
-      } else {
-        return null
-      }
+    getName(name) {
+        if (name.pickup_or_delivery_address) {
+            let temp = name.pickup_or_delivery_address;
+            return `${temp.full_name || ''}`
+        } else {
+            return null
+        }
+    }
+    getMobile(number) {
+        if (number.pickup_or_delivery_address) {
+            let temp = number.pickup_or_delivery_address;
+            return `${temp.mobile_number || ''}`
+        } else {
+            return null
+        }
     }
 
     getFinalPriceOfOrder(orderItems) {
@@ -101,7 +113,7 @@ class OrderDetails extends Component {
         return finalPriceForOrder;
     }
     getGrandTotal(orderInfo) {
-        const itemTotal = this.getFinalPriceOfOrder( orderInfo.order_items || []);
+        const itemTotal = this.getFinalPriceOfOrder(orderInfo.order_items || []);
         const deliveryCharge = orderInfo.delivery_charges;
         const deliveryTax = orderInfo.delivery_tax
         let totalAmount = Number(Number(itemTotal) + Number(deliveryCharge || 0) + Number(deliveryTax || 0)).toFixed(2)
@@ -109,24 +121,84 @@ class OrderDetails extends Component {
     }
     getPaymentInfo = async (paymentId) => {
         try {
-          let result = await getPaymentInfomation(paymentId);
-         
-          if (result.success) {
-            this.setState({ paymentDetails: result.data[0] })
-          }
+            let result = await getPaymentInfomation(paymentId);
+
+            if (result.success) {
+                this.setState({ paymentDetails: result.data[0] })
+            }
         }
         catch (e) {
-          console.log(e)
+            console.log(e)
         }
     }
+    async cancelOreder() {
+        let medicineData = [];
+        const { orderDetails } = this.state
 
+        let userId = await AsyncStorage.getItem('userId');
+        let reqData = {
+            user_id: userId,
+            order_id: orderDetails._id,
+            status: "CANCELED",
+            status_by: "USER"
+        }
+        let result = await upDateOrderData(orderDetails._id, reqData)
+       
+        if (result.success === true) {
+            this.medicineOrderDetails()
+        }else{
+            Toast.show({
+                text: 'order not canceled',
+                duration: 3000,
+                type: 'warning'
+              })
+        }
+        this.setState({isCancel:false})
+
+    }
+    _onPressReject = () => {
+      this.setState({isCancel:false})
+    };
+    _onPressAccept = () => {
+       this.cancelOreder()
+      };
+    async backNavigation() {
+        const { navigation } = this.props;
+        if (navigation.state.params) {
+            if (navigation.state.params.hasReloadReportIssue) {
+                this.getUserReport();  // Reload the Reported issues when they reload
+            }
+        };
+    }
     render() {
         const { navigation } = this.props;
-        const { isLoading, myOrderList, paymentDetails, orderList } = this.state;
+        const { isLoading, orderDetails, paymentDetails, reportData, isCancel } = this.state;
         return (
             <Container style={styles.container}>
-                <Content style={{ backgroundColor: '#F5F5F5', padding: 10 }}>
-               
+                <Content style={{ backgroundColor: '#F5F5F5', padding: 10, flex: 1 }}>
+                    <NavigationEvents
+                        onWillFocus={payload => { this.backNavigation(payload) }}
+                    />
+                    <AwesomeAlert
+                        show={isCancel}
+                        showProgress={false}
+                        title={`are you sure cancel this order `}
+                        closeOnTouchOutside={false}
+                        closeOnHardwareBackPress={true}
+                        showCancelButton={true}
+                        showConfirmButton={true}
+                        cancelText="Reject"
+                        confirmText="Accept"
+                        cancelButtonColor="red"
+                        confirmButtonColor="green"
+                        onCancelPressed={this._onPressReject}
+                        onConfirmPressed={this._onPressAccept}
+                       
+                        alertContainerStyle={{ zIndex: 1 }}
+                        titleStyle={{ fontSize: 21 }}
+                        cancelButtonTextStyle={{ fontSize: 18 }}
+                        confirmButtonTextStyle={{ fontSize: 18 }}
+                    />
                     <Spinner
                         visible={isLoading}
                     />
@@ -136,32 +208,30 @@ class OrderDetails extends Component {
                                 <Text style={styles.orderIdText}>Order Id</Text>
                             </Col>
                             <Col size={5}>
-                                <Text style={{ fontSize: 12, textAlign: 'right', marginTop: 13, fontFamily: 'OpenSans' }}>{orderList._id || ''}</Text>
+                                <Text style={{ fontSize: 12, textAlign: 'right', marginTop: 13, fontFamily: 'OpenSans' }}>{orderDetails.order_ref_no || ''}</Text>
                             </Col>
                         </Row>
                     </View>
                     <View style={{ backgroundColor: '#fff', padding: 10, }}>
-                        <Text style={styles.arrHeadText}>Arriving On Today</Text>
-                        
+                        {/* <Text style={styles.arrHeadText}>Arriving On Today</Text> */}
+
                         <FlatList
                             style={{ marginTop: 10 }}
-                            data={[{ status: 'Ordered and Approved', checked: true, drawLine: true },
-                            { status: 'Packed and Out for Delivery', checked: true, drawLine: true },
-                            { status: 'Delivered', checked: false },]}
+                            data={orderDetails.order_status_slap}
                             keyExtractor={(item, index) => index.toString()}
                             renderItem={({ item }) =>
                                 <Row style={{}}>
                                     <Col size={0.7}>
-                                        {item.checked === true ?
+                                        {statusBar[item.status].checked === true ?
                                             <TouchableOpacity style={styles.lengthTouch}>
                                             </TouchableOpacity> : null}
 
-                                        {item.checked === false ?
+                                        {statusBar[item.status].checked === false ?
                                             <TouchableOpacity style={styles.bottomText}>
                                             </TouchableOpacity> :
                                             null}
 
-                                        {item.checked === true && item.drawLine === true ?
+                                        {statusBar[item.status].checked === true && statusBar[item.status].drawLine === true ?
                                             <TouchableOpacity style={styles.TouchLegth}>
                                             </TouchableOpacity>
                                             :
@@ -175,8 +245,8 @@ class OrderDetails extends Component {
                                     </Col>
                                     <Col size={9.3}>
                                         <View style={{ marginTop: -3 }}>
-                                            <Text style={styles.trackingText}>{item.status}</Text>
-                                            <Text style={{ fontSize: 12, fontFamily: 'OpenSans', color: '#909090' }}>17th February,2020 at 05.27 PM</Text>
+                                            <Text style={styles.trackingText}>{statusBar[item.status].status}</Text>
+                                            <Text style={{ fontSize: 12, fontFamily: 'OpenSans', color: '#909090' }}>{formatDate(item.status_update_date, ' Do MMMM YYYY ') + ' at ' + formatDate(item.status_update_date, 'h:mm:ss a')}</Text>
                                         </View>
 
                                     </Col>
@@ -185,10 +255,43 @@ class OrderDetails extends Component {
 
 
                         <Text style={{ fontSize: 14, fontWeight: '500', fontFamily: 'OpenSans', color: '#7F49C3', marginTop: 10 }}>Ordered Medicines</Text>
+                        {orderDetails.is_order_type_prescription === true ?
+
+                            <View style={{ flex: 1, marginLeft: 10, marginRight: 10, justifyContent: 'center', alignItems: 'center', }}>
+                                <ImageZoom cropWidth={200}
+                                    cropHeight={200}
+                                    imageWidth={200}
+                                    minScale={0.6}
+                                    panToMove={false}
+                                    pinchToZoom={false}
+                                    enableDoubleClickZoom={false}
+
+                                    imageHeight={200}>
+                                    <SwiperFlatList
+                                        autoplay
+                                        autoplayDelay={3}
+                                        index={orderDetails.prescription_data.prescription_items - 1}
+                                        contentContainerStyle={{ flexGrow: 1, }}
+                                        autoplayLoop
+                                        data={orderDetails.prescription_data.prescription_items}
+                                        renderItem={({ item }) =>
+                                            <TouchableOpacity onPress={() => this.props.navigation.navigate("ImageView", { passImage: item.prescription_path, title: medicineData.medInfo.medicine_name })}>
+                                                <Image
+                                                    source={renderPrescriptionImageAnimation(item)}
+                                                    style={{
+                                                        width: 200, height: 200,
+                                                    }}
+                                                />
+                                            </TouchableOpacity>
+                                        }
+                                        showPagination
+                                    />
+                                </ImageZoom>
+                            </View> : null}
                         <FlatList
-                            data={myOrderList.order_items}
+                            data={orderDetails.order_items}
                             keyExtractor={(item, index) => index.toString()}
-                            extraData={myOrderList.order_items}
+                            extraData={orderDetails.order_items}
                             renderItem={({ item }) =>
                                 <Row style={styles.rowStyle}>
                                     <Col size={2}>
@@ -199,7 +302,7 @@ class OrderDetails extends Component {
                                             }}
                                         />
                                     </Col>
-                                    <Col size={8} style={[styles.nameText, { marginTop: 5}]}>
+                                    <Col size={8} style={[styles.nameText, { marginTop: 5 }]}>
                                         <Text style={styles.nameText}>{item.medicine_name}</Text>
                                         <Text style={styles.pharText}>{item.pharmacyInfo.name}</Text>
                                     </Col>
@@ -208,22 +311,36 @@ class OrderDetails extends Component {
                                     </Col>
                                 </Row>
                             } />
-                        <Row style={{ marginTop: 10 }}>
-                            <Col size={5}>
-                                <Text style={styles.ItemText}>Item Total</Text>
 
-                            </Col>
-                            <Col size={5}>
-                                <Text style={styles.rsText}>₹ {this.getFinalPriceOfOrder(myOrderList.order_items || [])}</Text>
-                            </Col>
-                        </Row>
+                        {orderDetails.is_order_type_prescription !== true && orderDetails.order_items !== undefined && orderDetails.order_items.length !== 0 ?
+                            <Row style={{ marginTop: 10 }}>
+                                <Col size={5}>
+                                    <Text style={styles.ItemText}>Item Total</Text>
+
+                                </Col>
+                                <Col size={5}>
+                                    <Text style={styles.rsText}>₹ {this.getFinalPriceOfOrder(orderDetails.order_items || [])}</Text>
+                                </Col>
+                            </Row>
+                            :
+                            <Row style={{ marginTop: 10 }}>
+                                <Col size={5}>
+                                    <Text style={styles.ItemText}>Item Total</Text>
+
+                                </Col>
+                                <Col size={5}>
+                                    <Text style={styles.rsText}> {'prescription medicine Amount added later'}</Text>
+                                </Col>
+                            </Row>
+                        }
+
                         <Row style={{ marginTop: 10 }}>
                             <Col size={5}>
                                 <Text style={styles.mainText}>Delivery Charges</Text>
 
                             </Col>
                             <Col size={5}>
-                                <Text style={styles.rsText}>₹ {myOrderList.delivery_charges || 0}</Text>
+                                <Text style={styles.rsText}>₹ {orderDetails.delivery_charges || 0}</Text>
                             </Col>
                         </Row>
                         <Row style={{ marginTop: 10 }}>
@@ -232,7 +349,7 @@ class OrderDetails extends Component {
 
                             </Col>
                             <Col size={5}>
-                                <Text style={styles.rsText}>₹ {myOrderList.delivery_tax || 0}</Text>
+                                <Text style={styles.rsText}>₹ {orderDetails.delivery_tax || 0}</Text>
                             </Col>
                         </Row>
                         <Row style={{ marginTop: 10 }}>
@@ -241,26 +358,79 @@ class OrderDetails extends Component {
 
                             </Col>
                             <Col size={5}>
-                                <Text style={styles.totalsText}>₹ {this.getGrandTotal(myOrderList)}</Text>
+                                <Text style={styles.totalsText}>₹ {this.getGrandTotal(orderDetails)}</Text>
                             </Col>
                         </Row>
                     </View>
+                    {orderDetails.status === "PENDING" ?
+                        <View style={{ alignItems: 'center', justifyContent: 'center', marginTop: 5, marginBottom: 10 }}>
+                            <TouchableOpacity
+                                onPress={() => this.setState({ isCancel: true })}
+                                block danger
+                                style={styles.reviewButton1
+                                }>
+                                <Text style={{ color: '#fff', fontSize: 14, fontFamily: 'OpenSans', fontWeight: 'bold', textAlign: 'center', marginTop: 5 }}>
+                                    CANCEL ORDER
+                        </Text>
+                            </TouchableOpacity>
+                        </View> : null}
+                    <Text style={{ fontSize: 14, fontWeight: '500', fontFamily: 'OpenSans', color: '#7F49C3', marginTop: 10 }}>Medicine order Report</Text>
+
+                    {reportData != null ?
+                        <View style={{ borderRadius: 5, borderColor: 'grey', borderWidth: 0.5, padding: 5 }} >
+                            <TouchableOpacity onPress={() => { this.props.navigation.navigate('ReportDetails', { reportedId: orderDetails._id, serviceType: 'MEDICINE_ORDER' }) }}>
+                                <Text note style={[styles.subTextInner2, { marginLeft: 10 }]}>"You have raised Report for this medicine orders"</Text>
+                                <Row>
+                                    <Col size={9}>
+                                        <Text note style={[styles.subTextInner1, { marginLeft: 10 }]}>{reportData.issue_type || ' '}</Text>
+
+                                    </Col>
+                                    <Col size={1}>
+                                        <Icon name='ios-arrow-forward' style={{ fontSize: 20, color: 'grey' }} />
+                                    </Col>
+                                </Row>
+                            </TouchableOpacity>
+                        </View> :
+
+                        <View style={{ alignItems: 'center', justifyContent: 'center', marginTop: 5, marginBottom: 10 }}>
+                            <TouchableOpacity
+                                onPress={() => {
+                                    this.props.navigation.push('ReportIssue', {
+                                        issueFor: { serviceType: 'MEDICINE_ORDER', reportedId: orderDetails._id, status: orderDetails.status },
+                                        prevState: this.props.navigation.state
+                                    })
+                                }}
+                                block success
+                                style={styles.reviewButton
+                                }>
+                                <Text style={{ color: '#fff', fontSize: 14, fontFamily: 'OpenSans', fontWeight: 'bold', textAlign: 'center', marginTop: 5 }}>
+                                    Report Issue
+                        </Text>
+                            </TouchableOpacity>
+                        </View>
+                    }
 
                     <View style={styles.mainView}>
                         <Text style={styles.orderText}>OrderDetails</Text>
                         <View style={{ marginTop: 10 }}>
                             <Text style={styles.innerText}>Payment</Text>
-                            <Text style={styles.rightText}>{paymentDetails.payment_method || 0 }</Text>
+                            <Text style={styles.rightText}>{paymentDetails.payment_method || 0}</Text>
+                        </View>
+
+
+                        <View style={{ marginTop: 10 }}>
+                            <Text style={styles.innerText}>Delivery On</Text>
+                            <Text style={styles.rightText}>{orderDetails.delivery_option || ''}</Text>
                         </View>
                         <View style={{ marginTop: 10 }}>
                             <Text style={styles.innerText}>Ordered On</Text>
-                        <Text style={styles.rightText}>{formatDate(myOrderList.created_date,'Do MMM,YYYY')}</Text>
+                            <Text style={styles.rightText}>{formatDate(orderDetails.created_date, 'Do MMM,YYYY')}</Text>
                         </View>
                         <View style={{ marginTop: 10, paddingBottom: 10 }}>
                             <Text style={styles.innerText}>Customer Details</Text>
-                        <Text style={styles.nameTextss}>{this.getName(myOrderList)}</Text>          
-                          <Text style={styles.addressText}>{this.getAddress(myOrderList)}</Text>
-                        <Text style={styles.addressText}>Mobile - {this.getMobile(myOrderList)}</Text>
+                            <Text style={styles.nameTextss}>{this.getName(orderDetails)}</Text>
+                            <Text style={styles.addressText}>{this.getAddress(orderDetails)}</Text>
+                            <Text style={styles.addressText}>Mobile - {this.getMobile(orderDetails)}</Text>
 
                         </View>
 
@@ -277,6 +447,7 @@ const styles = StyleSheet.create({
     container:
     {
         backgroundColor: '#ffffff',
+        flex: 1
     },
 
     bodyContent: {
@@ -540,5 +711,40 @@ const styles = StyleSheet.create({
         fontWeight: '500',
         fontFamily: 'OpenSans',
         color: '#7F49C3', marginTop: 8
-    }
+    },
+    reviewButton: {
+        marginTop: 12,
+        backgroundColor: '#775DA3',
+        borderRadius: 10,
+        height: 40,
+        color: 'white',
+        paddingLeft: 20,
+        paddingRight: 20,
+        paddingBottom: 5,
+        paddingTop: 5,
+        flexDirection: 'row'
+    },
+    reviewButton1: {
+        marginTop: 12,
+        backgroundColor: 'red',
+        borderRadius: 10,
+        height: 40,
+        color: 'white',
+        paddingLeft: 20,
+        paddingRight: 20,
+        paddingBottom: 5,
+        paddingTop: 5,
+        flexDirection: 'row'
+    },
+    subTextInner2: {
+        fontSize: 10,
+        color: "red",
+        fontFamily: 'OpenSans',
+        marginBottom: 5
+    },
+    subTextInner1: {
+        fontSize: 12,
+        fontFamily: 'OpenSans',
+        marginBottom: 5
+    },
 });
