@@ -10,31 +10,31 @@ import { validatePassword } from '../../common'
 
 
 
-class Updateheightweight extends Component {
+class UpdateHeightWeight extends Component {
     constructor(props) {
         super(props)
+        const { navigation } = this.props;
+       
         this.state = {
-            setWeight: '',
-            setHeight: '',
+            setWeight: navigation.getParam('weight') || null,
+            setHeight: navigation.getParam('height') || null,
             isLoading: false,
             errorMsg: '',
         }
+       
     }
 
     componentDidMount() {
-        this.UpdateHeightAndWeight();
+        
     }
 
     UpdateHeightAndWeight= async () => {    
         try {
             let userId = await AsyncStorage.getItem('userId');
             let data = {
-              
-                    height: this.state.setHeight,
-                    weight: this.state.setWeight,
-                
+                height: this.state.setHeight,
+                weight: this.state.setWeight,
             };
-
             this.setState({  isLoading: true });
 
             let response = await userFiledsUpdate(userId, data);
@@ -44,7 +44,7 @@ class Updateheightweight extends Component {
                     type: "success",
                     duration: 3000,
                 })
-               
+               this.props.navigation.pop();
             } 
             this.setState({ isLoading: false });
 
@@ -134,6 +134,6 @@ function profileState(state) {
         user: state.user
     }
 }
-export default connect(profileState)(Updateheightweight)
+export default connect(profileState)(UpdateHeightWeight)
 
 

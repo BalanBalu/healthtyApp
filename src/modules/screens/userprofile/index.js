@@ -432,7 +432,7 @@ class Profile extends Component {
                                 </Body>
 
                                 <Right>
-                                    <Icon name="create" style={{ color: 'black' }} onPress={() => this.props.navigation.navigate('Updateheightweight')}></Icon>
+                                    <Icon name="create" style={{ color: 'black' }} onPress={() => this.props.navigation.navigate('Updateheightweight', { weight: data.weight,height : data.height } )}></Icon>
                                 </Right>
 
                             </ListItem>
