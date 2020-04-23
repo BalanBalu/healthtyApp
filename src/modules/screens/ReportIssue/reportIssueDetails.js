@@ -8,7 +8,7 @@ import Spinner from "../../../components/Spinner";
 import { upDateReportIssue, getUserRepportDetails } from '../../providers/reportIssue/reportIssue.action';
 
 
-import { onlySpaceNotAllowed,reportStatusValue } from '../../common'
+import { onlySpaceNotAllowed, reportStatusValue } from '../../common'
 
 class reportIssueDetails extends Component {
   constructor(props) {
@@ -29,9 +29,9 @@ class reportIssueDetails extends Component {
     try {
       this.setState({ isLoading: true });
       const userId = await AsyncStorage.getItem('userId');
-      let serviceType=this.props.navigation.getParam('serviceType')
+      let serviceType = this.props.navigation.getParam('serviceType')
       let resultReport = await getUserRepportDetails(serviceType, userId, this.state.reportedId, true);
-     
+
       if (resultReport.success) {
 
         this.setState({ data: resultReport.data, replyData: resultReport.data.reply_data || [] });
@@ -42,16 +42,16 @@ class reportIssueDetails extends Component {
     catch (e) {
       console.error(e);
     }
-     finally{
+    finally {
       this.setState({ isLoading: false });
-     }
+    }
   }
 
   upDateReportIssueData = async () => {
     try {
       this.setState({ isLoading: true });
-      
-      const { comments, data } = this.state;
+
+      const { comments, data,replyData } = this.state;
       if (onlySpaceNotAllowed(comments) == true) {
         let userId = await AsyncStorage.getItem('userId');
         let reqData = {
@@ -64,9 +64,10 @@ class reportIssueDetails extends Component {
 
         console.log(response);
         if (response.success) {
-          let temp = data.reply_data || [];
+          let temp =replyData||[]
+        
           temp.push(response.reportedData)
-          this.setState({ replyData: temp, comments: '' })
+          this.setState({ replyData: temp, comments: ''})
           Toast.show({
             text: response.message,
             type: 'success',
@@ -101,7 +102,7 @@ class reportIssueDetails extends Component {
   }
 
   render() {
-    const { isLoading, data, replyData ,comments} = this.state
+    const { isLoading, data, replyData, comments } = this.state
 
     //     const data =[{date:"Today, 20/02/2020 at 01.10 PM",content:"We have no special tie-ups,relationship or consideration with doctors in this regard as we want to be an independent unbiased site for patients.",
     // detail:"Through Medflic,yours chances of booking an appoinment are the same as using any other means."}]
@@ -126,12 +127,12 @@ class reportIssueDetails extends Component {
                       <Text style={styles.reportText}>{data.report_by == 'USER' ? 'Reported By You' : 'Reported By Doctor'}</Text>
                     </Left>
                     <Right>
-                    <Text style={[styles.date1,{color:reportStatusValue[data.report_status].color}]}>{data.report_status||''}</Text>
+                      <Text style={[styles.date1, { color: reportStatusValue[data.report_status].color }]}>{data.report_status || ''}</Text>
                     </Right>
                   </Row>
                   <View style={{ marginTop: 10 }}>
-                  <Text style={styles.contentText}>{data.issue_type}</Text>
-                    <Text  note style={styles.contentText}>{data.complaint +' Reported on '+formatDate(data.created_date, 'DD/MM/YYYY ')}</Text>
+                    <Text style={styles.contentText}>{data.issue_type}</Text>
+                    <Text note style={styles.contentText}>{data.complaint + ' Reported on ' + formatDate(data.created_date, 'DD/MM/YYYY ')}</Text>
                   </View>
                 </View>
                 {replyData.length != 0 &&
@@ -146,7 +147,7 @@ class reportIssueDetails extends Component {
                             <Text style={styles.reportText}>{item.reply_provider_type == 'USER' ? 'Replied By You' : item.reply_provider_type == 'DOCTOR' ? 'Replied By Doctor' : 'Replied By Medflic'}</Text>
                           </Left>
                           <Right>
-                            <Text style={styles.date}>{formatDate(item.created_date, 'dddd,DD/MM/YYYY')+' at '+formatDate(item.created_date, 'hh:mm a')}</Text>
+                            <Text style={styles.date}>{formatDate(item.created_date, 'dddd,DD/MM/YYYY') + ' at ' + formatDate(item.created_date, 'hh:mm a')}</Text>
                           </Right>
                         </Row>
                         <View style={{ marginTop: 10 }}>
@@ -265,7 +266,7 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
   },
   date1: {
-    fontWeight:'bold',
+    fontWeight: 'bold',
     fontFamily: 'OpenSans',
     fontSize: 14,
     color: '#909090'

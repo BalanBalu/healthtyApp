@@ -218,10 +218,8 @@ export const statusBar = {
   "APPROVED": 
   { status: 'Packed and Out for Delivery', checked: false, },
   
- 
-
-  "CANCELLED": 
-    { status: 'Ordered and Approved', checked: true, drawLine: true },
+  "CANCELED": 
+    { status: 'Canceled the order', checked: true, drawLine: true },
 
   
 

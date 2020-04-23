@@ -1,15 +1,17 @@
 import React, { Component } from 'react';
 import {
-    Container, Content, Text, Item, View, Icon
+    Container, Content, Text, Item, View, Icon,Toast
 } from 'native-base';
 import { Col, Row } from 'react-native-easy-grid';
 import { StyleSheet, Image, AsyncStorage, FlatList, TouchableOpacity } from 'react-native';
 import { formatDate } from '../../../../setup/helpers';
-import { getMedicineOrderDetails } from '../../../providers/pharmacy/pharmacy.action';
-import { statusBar, renderPrescriptionImageAnimation } from '../CommomPharmacy'
+import { getMedicineOrderDetails, upDateOrderData } from '../../../providers/pharmacy/pharmacy.action';
+import { statusBar, renderPrescriptionImageAnimation } from '../CommomPharmacy';
+import { NavigationEvents } from 'react-navigation';
 import { getPaymentInfomation } from '../../../providers/bookappointment/bookappointment.action'
 import Spinner from '../../../../components/Spinner';
 import { getUserRepportDetails } from '../../../providers/reportIssue/reportIssue.action';
+import AwesomeAlert from 'react-native-awesome-alerts';
 import SwiperFlatList from 'react-native-swiper-flatlist';
 import ImageZoom from 'react-native-image-pan-zoom';
 
@@ -43,12 +45,8 @@ class OrderDetails extends Component {
     async medicineOrderDetails() {
         try {
             this.setState({ isLoading: true });
-            orderId = this.props.navigation.getParam('serviceId') || null
-            let userId = await AsyncStorage.getItem('userId');
-
-
-
-
+            let orderId = this.props.navigation.getParam('serviceId') || null
+            let userId = await AsyncStorage.getItem('userId')
             let result = await getMedicineOrderDetails(orderId, userId);
             console.log(JSON.stringify(result))
             if (result.success) {
@@ -65,7 +63,7 @@ class OrderDetails extends Component {
     getUserReport = async () => {
         try {
             const userId = await AsyncStorage.getItem('userId');
-            orderId = this.props.navigation.getParam('serviceId') || null
+            let orderId = this.props.navigation.getParam('serviceId') || null
             let resultReport = await getUserRepportDetails('MEDICINE_ORDER', userId, orderId);
 
             if (resultReport.success) {
@@ -133,14 +131,74 @@ class OrderDetails extends Component {
             console.log(e)
         }
     }
+    async cancelOreder() {
+        let medicineData = [];
+        const { orderDetails } = this.state
 
+        let userId = await AsyncStorage.getItem('userId');
+        let reqData = {
+            user_id: userId,
+            order_id: orderDetails._id,
+            status: "CANCELED",
+            status_by: "USER"
+        }
+        let result = await upDateOrderData(orderDetails._id, reqData)
+       
+        if (result.success === true) {
+            this.medicineOrderDetails()
+        }else{
+            Toast.show({
+                text: 'order not canceled',
+                duration: 3000,
+                type: 'warning'
+              })
+        }
+        this.setState({isCancel:false})
+
+    }
+    _onPressReject = () => {
+      this.setState({isCancel:false})
+    };
+    _onPressAccept = () => {
+       this.cancelOreder()
+      };
+    async backNavigation() {
+        const { navigation } = this.props;
+        if (navigation.state.params) {
+            if (navigation.state.params.hasReloadReportIssue) {
+                this.getUserReport();  // Reload the Reported issues when they reload
+            }
+        };
+    }
     render() {
         const { navigation } = this.props;
-        const { isLoading, orderDetails, paymentDetails, reportData } = this.state;
+        const { isLoading, orderDetails, paymentDetails, reportData, isCancel } = this.state;
         return (
             <Container style={styles.container}>
                 <Content style={{ backgroundColor: '#F5F5F5', padding: 10, flex: 1 }}>
-
+                    <NavigationEvents
+                        onWillFocus={payload => { this.backNavigation(payload) }}
+                    />
+                    <AwesomeAlert
+                        show={isCancel}
+                        showProgress={false}
+                        title={`are you sure cancel this order `}
+                        closeOnTouchOutside={false}
+                        closeOnHardwareBackPress={true}
+                        showCancelButton={true}
+                        showConfirmButton={true}
+                        cancelText="Reject"
+                        confirmText="Accept"
+                        cancelButtonColor="red"
+                        confirmButtonColor="green"
+                        onCancelPressed={this._onPressReject}
+                        onConfirmPressed={this._onPressAccept}
+                       
+                        alertContainerStyle={{ zIndex: 1 }}
+                        titleStyle={{ fontSize: 21 }}
+                        cancelButtonTextStyle={{ fontSize: 18 }}
+                        confirmButtonTextStyle={{ fontSize: 18 }}
+                    />
                     <Spinner
                         visible={isLoading}
                     />
@@ -304,6 +362,20 @@ class OrderDetails extends Component {
                             </Col>
                         </Row>
                     </View>
+                    {orderDetails.status === "PENDING" ?
+                        <View style={{ alignItems: 'center', justifyContent: 'center', marginTop: 5, marginBottom: 10 }}>
+                            <TouchableOpacity
+                                onPress={() => this.setState({ isCancel: true })}
+                                block danger
+                                style={styles.reviewButton1
+                                }>
+                                <Text style={{ color: '#fff', fontSize: 14, fontFamily: 'OpenSans', fontWeight: 'bold', textAlign: 'center', marginTop: 5 }}>
+                                    CANCEL ORDER
+                        </Text>
+                            </TouchableOpacity>
+                        </View> : null}
+                    <Text style={{ fontSize: 14, fontWeight: '500', fontFamily: 'OpenSans', color: '#7F49C3', marginTop: 10 }}>Medicine order Report</Text>
+
                     {reportData != null ?
                         <View style={{ borderRadius: 5, borderColor: 'grey', borderWidth: 0.5, padding: 5 }} >
                             <TouchableOpacity onPress={() => { this.props.navigation.navigate('ReportDetails', { reportedId: orderDetails._id, serviceType: 'MEDICINE_ORDER' }) }}>
@@ -651,5 +723,28 @@ const styles = StyleSheet.create({
         paddingBottom: 5,
         paddingTop: 5,
         flexDirection: 'row'
+    },
+    reviewButton1: {
+        marginTop: 12,
+        backgroundColor: 'red',
+        borderRadius: 10,
+        height: 40,
+        color: 'white',
+        paddingLeft: 20,
+        paddingRight: 20,
+        paddingBottom: 5,
+        paddingTop: 5,
+        flexDirection: 'row'
+    },
+    subTextInner2: {
+        fontSize: 10,
+        color: "red",
+        fontFamily: 'OpenSans',
+        marginBottom: 5
+    },
+    subTextInner1: {
+        fontSize: 12,
+        fontFamily: 'OpenSans',
+        marginBottom: 5
     },
 });
