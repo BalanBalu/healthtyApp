@@ -13,9 +13,6 @@ class MyOrdersList extends Component {
         super(props)
         this.state = {
             data: [],
-            cartItems: [],
-            orderList: [],
-            orderId: '',
             isLoading: true,
         }
     }
@@ -68,7 +65,7 @@ class MyOrdersList extends Component {
                         renderItem={({ item, key }) =>
                             <TouchableOpacity
                                 testID="orderDetailsNavigation"
-                                onPress={() => this.props.navigation.navigate('OrderDetails', { orderDetails: item })}>
+                                onPress={() => this.props.navigation.navigate('OrderDetails', { serviceId: item._id })}>
                                 <View style={{ margin: 5, backgroundColor: '#fff', marginLeft: 10, marginRight: 10, marginBottom: 10 }}>
                                     <View>
                                         <Row style={{ marginBottom: -5 }}>
@@ -76,7 +73,7 @@ class MyOrdersList extends Component {
                                                 <Text style={styles.Head}>Order Id</Text>
                                             </Col>
                                             <Col>
-                                                <Text style={{ fontSize: 10, textAlign: 'right', margin: 10, fontFamily: 'OpenSans' }}>{item.order_ref_no || 'NIL'}</Text>
+                                                <Text style={{ fontSize: 10, textAlign: 'right', margin: 10, fontFamily: 'OpenSans' }}>{item.order_ref_no || ''}</Text>
                                             </Col>
                                         </Row>
                                         <Row style={styles.Row} />

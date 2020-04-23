@@ -56,7 +56,7 @@ class MedicineInfo extends Component {
 
     async componentDidMount() {
         medicineId = this.props.navigation.getParam('medicineId');
-        pharmacyId = this.props.navigation.getParam('pharmacyId');
+       let  pharmacyId = this.props.navigation.getParam('pharmacyId');
         this.setState({ isLoading: true });
         await new Promise.all([
             this.getSelectedMedicineDetails(),
@@ -80,9 +80,9 @@ class MedicineInfo extends Component {
         try {
 
             medicineId = this.props.navigation.getParam('medicineId');
-            pharmacyId = this.props.navigation.getParam('pharmacyId');
+            let pharmacyId = this.props.navigation.getParam('pharmacyId');
             let result = await getSelectedMedicineDetails(medicineId, pharmacyId);
-            console.log(JSON.stringify(result))
+          
             if (result.success) {
                 if (result.data.medPharDetailInfo) {
                     if (result.data.medPharDetailInfo.variations) {
@@ -103,20 +103,22 @@ class MedicineInfo extends Component {
 
                     }
                 }
-                temp = result.data.medPharDetailInfo
+                let temp = result.data.medPharDetailInfo
 
-                mergeObject = Object.assign(temp, result.data.medPharDetailInfo.variations[0])
+              let  mergeObject = Object.assign(temp, result.data.medPharDetailInfo.variations[0])
                 let tempObject = {
                     ...result.data,
                     medPharDetailInfo: mergeObject
 
                 }
+               
                 this.setState({ medicineData: tempObject })
 
             }
 
         }
         catch (e) {
+       
             console.log(e)
         }
 
@@ -323,7 +325,7 @@ class MedicineInfo extends Component {
                                             renderItem={({ item }) =>
                                                 <TouchableOpacity onPress={() => this.props.navigation.navigate("ImageView", { passImage: item.prescription_path, title: medicineData.medInfo.medicine_name })}>
                                                     <Image
-                                                        source={renderMedicineImageAnimation(medicineData.medInfo.medicine_images)}
+                                                        source={renderMedicineImageAnimation(item)}
                                                         style={{
                                                             width: 200, height: 200,
                                                         }}
