@@ -16,9 +16,9 @@ export async function getLabTestCateries(coordinates) {
     }
 }
 
-export const getLapAppointments = async (user_id, filters) => {
+export const getLapAppointments = async (userId, filters) => {
     try {
-        let endPoint = 'lab-test/labappointments/user/' + user_id + '?startDate=' + filters.startDate + '&endDate=' + filters.endDate;
+        let endPoint = 'lab-test/appointments/user/' + userId + '?startDate=' + filters.startDate + '&endDate=' + filters.endDate;
         console.log(endPoint);
         let response = await getService(endPoint);
         let respData = response.data;
@@ -48,7 +48,7 @@ export async function getCategories() {
 
 export async function updateLapAppointment(appointmentId, requestData, isLoading = true) {
     try {
-        let endPoint = 'lab-test/labappointments/' + appointmentId
+        let endPoint = 'lab-test/appointments/' + appointmentId
         console.log("endPoint", endPoint)
         let response = await putService(endPoint, requestData);
         let respData = response.data;
@@ -88,7 +88,7 @@ export const getLapTestPaymentDetails = async (paymentId) => {
 
 export async function InsertAppointment(data) {
     try {
-        let endPoint = 'lab-test/labappointments';
+        let endPoint = 'lab-test/appointments';
         let response = await postService(endPoint, data);
         let respData = response.data;
         return respData;

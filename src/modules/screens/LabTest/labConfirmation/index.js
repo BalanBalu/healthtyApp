@@ -34,13 +34,40 @@ class labConfirmation extends Component {
         };
     }
     async componentDidMount() {
-        const packageDetails = navigation.getParam('packageDetails') || [];
-        if (packageDetails != undefined) {
-            this.setState({ packageDetails})
+        // const packageDetails = navigation.getParam('packageDetails') || [];
+        // if (packageDetails != undefined) {
+        //     this.setState({ packageDetails })
+        // }
+        packageDetails = {
+            "lab_id": "5e7d9676ebd1650d14355677",
+            "lab_test_categories_id": "5e78d0c127490f934d10de70",
+            "lab_test_descriptiion": "genral",
+            "fee": 1000,
+            "lab_name": "ARROW",
+            "category_name": "Allergy Profile",
+            "appointment_starttime": "2020-04-25T18:00:00.000Z",
+            "appointment_endtime": "2020-04-25T18:30:00.000Z",
+            "mobile_no": "98076540211",
+            "location": {
+                "coordinates": [
+                    13.104802,
+                    80.208888
+                ],
+                "type": "Point",
+                "address": {
+                    "no_and_street": "1",
+                    "address_line_1": "Villivakkam",
+                    "district": "Chennai",
+                    "city": "Chennai",
+                    "state": "Tamil Nadu",
+                    "country": "India",
+                    "pin_code": "60010"
+                }
+            },
         }
         await this.getUserProfile();
     }
-  
+
     backNavigation(navigationData) {
         if (navigationData.action) {
             if (navigationData.action.type === 'Navigation/NAVIGATE') {
@@ -102,7 +129,7 @@ class labConfirmation extends Component {
     }
 
     editProfile(screen, addressType) {
-        this.props.navigation.navigate(screen, { screen: screen, navigationOption: 'labConfirmation', addressType:'lab_delivery_Address' })
+        this.props.navigation.navigate(screen, { screen: screen, navigationOption: 'labConfirmation', addressType: 'lab_delivery_Address' })
     }
 
     addPatientData = async () => {
@@ -126,11 +153,11 @@ class labConfirmation extends Component {
 
         let totalAmount;
         if (itemSelected == 'TEST_TO_HOME') {
-            totalAmount = ((packageDetails.packageAmount * patientdetails.length) + (packageDetails.extra_charges))
+            totalAmount = ((packageDetails.fee * patientdetails.length) + (packageDetails.extra_charges))
             return totalAmount
         }
         else {
-            totalAmount = (packageDetails.packageAmount * patientdetails.length)
+            totalAmount = (packageDetails.fee * patientdetails.length)
             return totalAmount
         }
 
@@ -139,10 +166,10 @@ class labConfirmation extends Component {
     proceedToLabTestAppointment = async () => {
         const { patientdetails, packageDetails } = this.state
         try {
-            let patientData=[];
-           this.state.patientdetails.map(ele=>{
-               patientData.push({ patient_name: ele.full_name, patient_age:ele.age})
-           })
+            let patientData = [];
+            this.state.patientdetails.map(ele => {
+                patientData.push({ patient_name: ele.full_name, patient_age: ele.age })
+            })
             this.setState({ isLoading: true });
             const userId = await AsyncStorage.getItem('userId')
             let requestData = {
@@ -152,15 +179,13 @@ class labConfirmation extends Component {
                 lab_name: packageDetails.lab_name,
                 lab_test_categories_id: packageDetails.lab_test_categories_id,
                 lab_test_descriptiion: packageDetails.lab_test_descriptiion,
-                fee: packageDetails.packageAmount,
+                fee: packageDetails.fee,
                 startTime: packageDetails.startTime,
                 endTime: packageDetails.endTime,
                 status: "PENDING",
                 status_by: "USER",
                 booked_from: "Mobile",
                 // payment_id: paymentId
-
-
             };
             let response = await InsertAppointment(requestData);
             if (response.success) {
@@ -181,7 +206,7 @@ class labConfirmation extends Component {
 
         }
         catch (e) {
-            
+
             console.log(e);
         }
         finally {
@@ -440,8 +465,8 @@ class labConfirmation extends Component {
                             </Col>
                             <Col size={5} style={{ alignItems: 'flex-end', justifyContent: 'flex-end' }}>
 
-                                <Text style={{ fontFamily: 'OpenSans', fontSize: 10, color: '#8dc63f', textAlign: 'right' }}>₹ {(packageDetails.packageAmount * patientdetails.length)}</Text>
-                                {/* <Text style={{ fontFamily: 'OpenSans', fontSize: 10, color: '#8dc63f', textAlign: 'right' }}>₹ {packageDetails.packageAmount}</Text> */}
+                                <Text style={{ fontFamily: 'OpenSans', fontSize: 10, color: '#8dc63f', textAlign: 'right' }}>₹ {(packageDetails.fee * patientdetails.length)}</Text>
+
 
                             </Col>
                         </Row>
