@@ -2,7 +2,7 @@ import { postService, getService, putService } from '../../../setup/services/htt
 
 export const searchByLabDetailsService = async (inputData) => {
     try {
-        const endPoint = '/user/search/labCategories';
+        const endPoint = 'lab-test/user/search/labCategories';
         const response = await postService(endPoint, inputData);
         const respData = response.data;
         return respData;

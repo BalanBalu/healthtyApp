@@ -26,6 +26,7 @@ import ConnectyCube from 'react-native-connectycube';
 import { CallService  } from '../VideoConsulation/services';
 MapboxGL.setAccessToken(MAP_BOX_PUBLIC_TOKEN);
 import NotifService from '../../../setup/NotifService';
+import COVID19Stats from './Covid19-stats';
 const debounce = (fun, delay) => {
     let timer = null;
     return function (...args) {
@@ -84,9 +85,11 @@ class Home extends Component {
     }
     async componentDidMount() {
         try {
-            const coronoTestStatus = await AsyncStorage.getItem('coronoTested');
-            if (coronoTestStatus === '1') { } else {
-                this.props.navigation.navigate('CORONA Status');
+            if(IS_ANDROID) {
+                const coronoTestStatus = await AsyncStorage.getItem('coronoTested');
+                if (coronoTestStatus === '1') { } else {
+                    this.props.navigation.navigate('CORONA Status');
+                }
             }
             this.initialFunction();
             if (IS_ANDROID) {
@@ -475,10 +478,6 @@ class Home extends Component {
 
                     </Row>
 
-
-
-
-
                     {this.state.searchValue != null ?
                         <FlatList
                             data={this.state.totalSpecialistDataArry ? [{ value: 'All Doctors in ' + (isSearchByCurrentLocation === true ? 'Your Location' : patientSearchLocationName), type: ' ' }].concat(this.state.totalSpecialistDataArry) : [{ value: 'All Doctors in ' + (isSearchByCurrentLocation === true ? 'Your Location' : patientSearchLocationName), type: ' ' }]}
@@ -610,7 +609,7 @@ class Home extends Component {
                                 </TouchableOpacity>
                             </Col>
                             <Col size={5} style={{ marginLeft: 5 }}>
-                                <TouchableOpacity >
+                                <TouchableOpacity onPress={()=> this.props.navigation.navigate('Lab Test')}> 
                                     <Card style={{ padding: 5, borderRadius: 2 }}>
                                         <Row>
                                             <Col size={7.5} style={{ justifyContent: 'center' }}>
@@ -704,6 +703,11 @@ class Home extends Component {
                                 </TouchableOpacity>
                             </Card>
                         </View>
+                        <View>
+                            <COVID19Stats navigation={this.props.navigation}> </COVID19Stats>
+                        </View>
+                         
+
                     </View>
 
                 </Content>
