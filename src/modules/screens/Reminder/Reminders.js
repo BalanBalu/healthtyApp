@@ -10,6 +10,7 @@ import { NavigationEvents } from 'react-navigation';
 import moment from 'moment';
 import { hasLoggedIn } from "../../providers/auth/auth.actions";
 import SpinnerOverlay from '../../../components/Spinner';
+import NotifService from '../../../setup/NotifService';
 
 var { width, height } = Dimensions.get('window');
 console.log('height', height);
@@ -50,7 +51,9 @@ class Reminder extends Component {
         this.setState({ data: result.data })
         console.log('this.state.data=========>', result.data )
       }
+      // NotifService.scheduleNotif('You have a Medince Reminder', 'You have to Take the Medicine at this time', new Date());
     } catch (e) {
+      alert(e);
       console.log(e);
     } finally {
       this.setState({ isLoading: false });
@@ -152,8 +155,9 @@ class Reminder extends Component {
           <NavigationEvents
                   onWillFocus={payload => { this.backNavigation(payload) }} />
             <CalendarStrip
-              calendarAnimation={{ type: 'sequence', duration: 30 }}
               selection={'border'}
+              minDate={moment()}
+              startingDate={moment()}
               selectionAnimation={{ duration: 300, borderWidth: 1 }}
               style={{ paddingTop: 2, paddingBottom: 2 }}
               calendarHeaderStyle={{ color: 'gray' }}

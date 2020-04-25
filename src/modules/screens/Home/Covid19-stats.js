@@ -155,7 +155,7 @@ class COVID19Stats extends Component {
                     </Col>
                 </Row>  
                 
-                <Row size={2} style={{ height: 60, width: '100%', overflow: 'hidden', backgroundColor: "#fff", borderRadius: 10, }}>
+                <Row size={2} style={{ marginTop: 20, height: 25, width: '100%', overflow: 'hidden', backgroundColor: "#fff", borderRadius: 10, }}>
                     <Text style={styles.textLable }> Updated on {dailyStats.date} </Text>           
                 </Row> 
             </Grid>
@@ -168,7 +168,7 @@ class COVID19Stats extends Component {
             <Text style={{ marginTop: 10, marginLeft: 10 } }> 
                 COVID-19 - {dailyStats.state}
             </Text>
-            <Grid style={{margin :10 }}>
+            <Grid style={{ marginTop :10, marginLeft: 10, marginRight: 10 }}>
                 <Row size={24} style={{ height: 60, width: '100%', overflow: 'hidden', backgroundColor: "#fff", borderRadius: 10, }} >
                     <Col size={3}>
                         <Text style={styles.textHeader }> {dailyStats.active} </Text>
@@ -206,7 +206,7 @@ class COVID19Stats extends Component {
                     </Col>
                 </Row>  
                 
-                <Row size={2} style={{ marginTop: 20, height: 25, alignItems: 'flex-start', width: '100%', overflow: 'hidden', backgroundColor: "#fff", borderRadius: 10, }}>
+                <Row size={2} style={{ height: 25, marginTop: 20, alignItems: 'flex-start', width: '100%', overflow: 'hidden', backgroundColor: "#fff", borderRadius: 10, }}>
                     <Col size={60}>
                         <Text style={{...styles.textLable, alignSelf: 'flex-start' }}> Updated on {dailyStats.lastupdatedtime} </Text>           
                     </Col>

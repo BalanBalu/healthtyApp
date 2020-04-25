@@ -92,7 +92,7 @@ class COVID19StateDistrictStats extends Component {
                     </Col>
                     <Col size={3}>
                         <Text style={styles.textHeader }> {dailyStats.confirmed}</Text>
-                        <Text style={styles.textLable }> Total Confirmed </Text>  
+                        <Text style={styles.textLable }> Total Confirmedd </Text>  
                     </Col>  
                     <Col size={3}>
                         <Text style={styles.textHeader }> {dailyStats.recovered} </Text>
@@ -132,12 +132,11 @@ class COVID19StateDistrictStats extends Component {
 }
 const styles = StyleSheet.create({
     textHeader: { 
-            marginTop: 10, 
-            alignSelf:
-            'center', 
-            marginLeft: 10, 
-            lineHeight : 30 , 
-            color:'#f50035' 
+        marginBottom: 5,
+        alignSelf: 'center', 
+        marginLeft: 10, 
+        lineHeight : 30 , 
+        color:'#f50035' 
     },
     textLable : { 
         marginLeft: 10,
