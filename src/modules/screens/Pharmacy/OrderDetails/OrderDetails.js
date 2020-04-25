@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import {
-    Container, Content, Text, Item, View, Icon,Toast
+    Container, Content, Text, Item, View, Icon, Toast
 } from 'native-base';
 import { Col, Row } from 'react-native-easy-grid';
 import { StyleSheet, Image, AsyncStorage, FlatList, TouchableOpacity } from 'react-native';
@@ -53,6 +53,7 @@ class OrderDetails extends Component {
                 this.setState({ orderDetails: result.data[0] });
                 this.getPaymentInfo(result.data[0].payment_id)
             }
+            this.setState({ isLoading: false });
         }
         catch (e) {
             console.log(e);
@@ -143,25 +144,25 @@ class OrderDetails extends Component {
             status_by: "USER"
         }
         let result = await upDateOrderData(orderDetails._id, reqData)
-       
+
         if (result.success === true) {
             this.medicineOrderDetails()
-        }else{
+        } else {
             Toast.show({
                 text: 'order not canceled',
                 duration: 3000,
                 type: 'warning'
-              })
+            })
         }
-        this.setState({isCancel:false})
+        this.setState({ isCancel: false })
 
     }
     _onPressReject = () => {
-      this.setState({isCancel:false})
+        this.setState({ isCancel: false })
     };
     _onPressAccept = () => {
-       this.cancelOreder()
-      };
+        this.cancelOreder()
+    };
     async backNavigation() {
         const { navigation } = this.props;
         if (navigation.state.params) {
@@ -193,7 +194,7 @@ class OrderDetails extends Component {
                         confirmButtonColor="green"
                         onCancelPressed={this._onPressReject}
                         onConfirmPressed={this._onPressAccept}
-                       
+
                         alertContainerStyle={{ zIndex: 1 }}
                         titleStyle={{ fontSize: 21 }}
                         cancelButtonTextStyle={{ fontSize: 18 }}
@@ -275,7 +276,7 @@ class OrderDetails extends Component {
                                         autoplayLoop
                                         data={orderDetails.prescription_data.prescription_items}
                                         renderItem={({ item }) =>
-                                            <TouchableOpacity onPress={() => this.props.navigation.navigate("ImageView", { passImage: item.prescription_path, title: medicineData.medInfo.medicine_name })}>
+                                            <TouchableOpacity onPress={() => this.props.navigation.navigate("ImageView", { passImage: item.prescription_path, title: 'prescription' })}>
                                                 <Image
                                                     source={renderPrescriptionImageAnimation(item)}
                                                     style={{

@@ -51,7 +51,7 @@ class reportIssueDetails extends Component {
     try {
       this.setState({ isLoading: true });
 
-      const { comments, data,replyData } = this.state;
+      const { comments, data, replyData } = this.state;
       if (onlySpaceNotAllowed(comments) == true) {
         let userId = await AsyncStorage.getItem('userId');
         let reqData = {
@@ -64,10 +64,10 @@ class reportIssueDetails extends Component {
 
         console.log(response);
         if (response.success) {
-          let temp =replyData||[]
-        
+          let temp = replyData || []
+
           temp.push(response.reportedData)
-          this.setState({ replyData: temp, comments: ''})
+          this.setState({ replyData: temp, comments: '' })
           Toast.show({
             text: response.message,
             type: 'success',

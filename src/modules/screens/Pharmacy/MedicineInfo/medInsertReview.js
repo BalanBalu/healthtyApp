@@ -7,8 +7,10 @@ import { Checkbox } from 'react-native-paper';
 import { Col, Row, Grid } from 'react-native-easy-grid';
 import { StyleSheet, Image, TouchableOpacity, AsyncStorage, FlatList, TouchableHighlight, Modal } from 'react-native';
 import { TextInput } from 'react-native-gesture-handler';
+import { formatDate } from '../../../../setup/helpers';
 import StarRating from 'react-native-star-rating';
 import { InsertMedicineReviews } from '../../../providers/pharmacy/pharmacy.action'
+import { hasLoggedIn } from "../../../providers/auth/auth.actions";
 
 export class MedInsertReview extends Component {
   constructor(props) {
@@ -43,7 +45,7 @@ export class MedInsertReview extends Component {
           return false;
         }
 
-        this.setState({ errorMsg: '', isLoading: true });
+        this.setState({ errorMsg: '' });
 
         let data = {
           medicine_id: medicineId,
@@ -56,7 +58,7 @@ export class MedInsertReview extends Component {
         console.log("data", data)
 
         let result = await InsertMedicineReviews(userId, data);
-        console.log("result", result)
+
         if (result.success) {
           Toast.show({
             text: result.message,
@@ -65,6 +67,7 @@ export class MedInsertReview extends Component {
           });
           this.props.popupVisible({
             visible: false,
+            reviewUpdated: true
           });
         }
 
@@ -74,21 +77,22 @@ export class MedInsertReview extends Component {
             type: "danger",
             duration: 3000
           });
+          this.props.popupVisible({
+            visible: false,
+          });
         }
-        this.setState({ isLoading: false });
+
       } else {
         this.props.popupVisible({
           visible: false,
         });
-        this.setState({ isLoading: false });
+
       }
     }
     catch (e) {
       console.log(e)
     }
-    finally {
-      this.setState({ isLoading: false });
-    }
+
   }
 
 
@@ -131,7 +135,7 @@ export class MedInsertReview extends Component {
                     <Text style={{ color: '#fff', fontSize: 16 }}>{this.state.data.medicine_name}</Text>
                   </Left>
                   <Right>
-                    <Text style={{ color: '#fff', fontSize: 12 }}>January 2,2020 - 05.30 PM</Text>
+                    <Text style={{ color: '#fff', fontSize: 12 }}>{formatDate(new Date(), 'MMMM DD, YYYY - hh.mm a')}</Text>
                   </Right>
                 </Row>
 
