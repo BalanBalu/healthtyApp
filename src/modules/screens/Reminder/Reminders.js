@@ -3,9 +3,12 @@ import { Container, Content, View, Card, Grid, CardItem, Text, Switch, Right, It
 import { StyleSheet, TextInput, AsyncStorage } from 'react-native'
 import { FlatList } from 'react-native-gesture-handler';
 import CalendarStrip from 'react-native-calendar-strip';
-import { getReminderData } from '../../providers/reminder/reminder.action.js';
+import { getReminderData, addReminderdata } from '../../providers/reminder/reminder.action.js';
 import { formatDate } from "../../../setup/helpers";
 import RNCalendarEvents from 'react-native-calendar-events';
+import { NavigationEvents } from 'react-navigation';
+import moment from 'moment';
+
 
 
 class Reminder extends Component {
@@ -13,18 +16,31 @@ class Reminder extends Component {
     super(props)
     this.state = {
       data: [],
-      isLoading: true
-
+      isLoading: true,
+      selectedDate: moment().format('MMMM Do YYYY, h:mm:ss a'),
+      startDate: formatDate(new Date(), 'YYYY-MM-DD'),
+      endDate: formatDate(new Date(), 'YYYY-MM-DD') 
     }
   }
-  componentDidMount() {
-    const status = RNCalendarEvents.authorizationStatus()
-   // alert(status);
+
+
+  async componentDidMount() {
     this.getAllReminderdata();
+    let _id = ''
+    let value = ''
+    let date = ''
+
+    this.setStatus(_id, value);
+    this.onDateChanged(_id, date)
   }
+
+
 
   getAllReminderdata = async () => {
     try {
+      this.setState({
+        isLoading: true
+      })
       let userId = await AsyncStorage.getItem('userId');
       let result = await getReminderData(userId);
       if (result.success) {
@@ -38,19 +54,99 @@ class Reminder extends Component {
     }
   }
 
+  
+
+   onDateChanged  = async (data1, date) => {
+   
+    alert(JSON.stringify(date))
+    let selectedDate = moment().format('MMMM Do YYYY, h:mm:ss a');
+    let startDate = formatDate(new Date(), 'YYYY-MM-DD');
+    let endDate = formatDate(new Date(), 'YYYY-MM-DD');
+   
+  
+        date = this.state.selectedDate
+        
+alert(this.state.selectedDate)
+    if(this.state.selectedDate){
+     
+      await this.getAllReminderdata()
+      getAllReminderdata._id = medicine_take_start_date.data1 =  medicine_take_end_date.data1 
+      alert(getAllReminderdata)
+      if(getAllReminderdata){
+
+        medicine_take_start_date.data1 = startDate
+        medicine_take_end_date.data1 = endDate
+
+      }
+      else{
+        null
+      }
+    }
+  }
+
+
+
+
+
+
+  setStatus = async (data1, value) => {
+    console.log(JSON.stringify(data))
+    let   obj = {
+      reminder_id: data1._id,
+      reminder_type: data1.reminder_type,
+      medicine_name: data1.medicine_name,
+      medicine_form: data1.medicine_form,
+      medicine_strength: data1.medicine_strength,
+      medicine_take_times: data1.medicine_take_times,
+      is_reminder_enabled: data1.is_reminder_enabled,
+      active: value
+    }
+    if (obj.reminder_type == "everyday") {
+      obj.medicine_take_start_date = data1.medicine_take_start_date,
+        obj.medicine_take_end_date = data1.medicine_take_end_date
+    }
+    else {
+      obj.medicine_take_start_date = data1.medicine_take_start_date
+    }
+    console.log("obj.active+++++++" + obj.active)
+    let userId = obj.reminder_id;
+    let result = await addReminderdata(userId, obj)
+    this.setState({ value: !value })
+    var temp = [...this.state.data]
+    temp.map((t) => {
+      if (t._id == data1._id) {
+        t.active = value
+      }
+    })
+    this.setState({ data: temp })
+  }
+
+  backNavigation  = async (navigationData) => {
+    try {
+      if (navigationData.action) {
+        await this.getAllReminderdata();
+      } else {
+        return null
+      }
+    } catch (e) {
+      console.log(e)
+    }
+
+  }
+
+   calendar
 
   render() {
-    const { data } = this.state;
-console.log(this.state.data)
-    // const Reaminder = [{ medname: 'Acentaminophen', content: '10 mg   1 pill(s)', time: '7:00 AM', remtime: 'Your Remainder Time is at 7:00 AM, Oct 24,2019.' },
-    // { medname: 'Acentaminophen', content: '13 mg   1 pill(s)', time: '10:00 AM', remtime: 'Your Remainder Time is at 10:00 AM, Oct 24,2019.' },
-    // { medname: 'Acentaminophen', content: '15 mg   1 pill(s)', time: '11:00 AM', remtime: 'Your Remainder Time is at 1:00 PM, Oct 24,2019.' },
-    // { medname: 'Acentaminophen', content: '20 mg   1 pill(s)', time: '4:00 PM', remtime: 'Your Remainder Time is at 4:00 PM, Oct 24,2019.' },
-    // { medname: 'Acentaminophen', content: '10 mg   1 pill(s)', time: '9:00 PM', remtime: 'Your Remainder Time is at 9:00 PM, Oct 24,2019.' }]
+    const { index, isLoading,} = this.state;
     return (
       <Container>
         <Content style={{ backgroundColor: '#F1F1F1' }}>
+        
+
+          <View>
           <View style={{ paddingBottom: 10, backgroundColor: '#FFF' }}>
+          <NavigationEvents
+                  onWillFocus={payload => { this.backNavigation(payload) }} />
             <CalendarStrip
               calendarAnimation={{ type: 'sequence', duration: 30 }}
               selection={'border'}
@@ -64,117 +160,75 @@ console.log(this.state.data)
               highlightDateNumberStyle={{ color: 'white', backgroundColor: '#7F49C3', borderRadius: 15, padding: 5, height: 30, width: 30, fontSize: 12 }}
               highlightDateNameStyle={{ color: '#7F49C3' }}
               borderHighlightColor={'white'}
+              onDateSelected={(date) => this.onDateChanged(date)}
               iconContainer={{ flex: 0.1 }}
             />
             <Text style={{ color: '#7F49C3', textAlign: 'center', marginTop: 2, fontFamily: 'OpenSans', fontWeight: "500" }}>Today</Text>
           </View>
 
 
-<View style={{paddingRight:10,paddingLeft:10}}>
-          <FlatList data={data}
-            keyExtractor={(item, index) => index.toString()}
+          {isLoading == true ?
+            <Spinner color='blue'
+              visible={isLoading}
+              overlayColor="none"
+            /> :
 
-            renderItem={({ item }) => (
-                    <Card style={{borderRadius:5,marginTop:10}}>
-                     <Grid>
-                      <Row style={{marginTop:5}}>
-                       <Col style={styles.col1}>
-                        <View style={{marginLeft:15}}>
+            data.length == 0 ?
+              <View style={{ alignItems: 'center', justifyContent: 'center', height: 550 }}>
+                <Text> No Blood Donors</Text>
+              </View>
+
+              :
+          <View style={{ paddingRight: 10, paddingLeft: 10 }}>
+            <FlatList data={this.state.data}
+              keyExtractor={({ _id }, index) => _id.toString()}
+              extraData={this.state}
+              renderItem={({ item, index }) => (
+                <Card style={{ borderRadius: 5, marginTop: 10 }}>
+                  <Grid>
+                    <Row style={{ marginTop: 5 }}>
+                      <Col style={styles.col1}>
+                        <View style={{ marginLeft: 15 }}>
                           <Text style={styles.mednamestyle}>{item.medicine_name}</Text>
-                          <Text  style={styles.innerText}>{item.medicine_form}</Text>
-                          <Text  style={styles.innerText}>{item.medicine_strength}</Text>
-                          </View> 
-                       </Col>
-                       <Col style={styles.col2}>
-                         <Row>
-                        
-                         <Col size={8}>
-                        <FlatList 
-                        data={item.medicine_take_times}
-                        extraData={item}
-                          keyExtractor={(item, index) => index.toString()}
-                          renderItem={({ item }) => (
-                            <Text style={{ marginLeft: 15, color: '#000' }}>{formatDate(item.medicine_take_times, 'HH:mm A')}</Text>
-
-                          )} />
+                          <Text style={styles.innerText}>{item.medicine_form}</Text>
+                          <Text style={styles.innerText}>{item.medicine_strength}</Text>
+                        </View>
                       </Col>
-                                      
-                           <Col size={2}>
-                           <Switch style={{ transform: [{ scaleX: .8 }, { scaleY: .8 }], backgroundColor: 'fff' }} trackColor={{ true: '#6FC41A', false: 'grey' }}
-                           trackColor={{ true: '#7F49C3'}}
-                          thumbColor={"#F2F2F2"}
-                          onValueChange={this.toggleSwitch}
-                          value={true} />
-                           </Col>
-                          
-                           </Row>
-                       </Col>
-                      </Row>
-                     </Grid>
-                    <View style={{marginTop:5,borderTopColor:'gray',borderTopWidth:1,}}> 
-                      <Text style={styles.remText}>Your Remainder Time is at {formatDate(item.medicine_take_start_date, 'DD/MM/YYYY')} - {formatDate(item.medicine_take_end_date, 'DD/MM/YYYY')}</Text>
-                    </View>
-                 </Card>
-             )}/>
-             </View>
+                      <Col style={styles.col2}>
+                        <Row>
 
+                          <Col size={8}>
+                            <FlatList
+                              data={item.medicine_take_times}
+                              extraData={item}
+                              keyExtractor={(item, index) => index.toString()}
+                              renderItem={({ item }) => (
+                                <Text style={{ marginLeft: 15, color: '#000' }}>{formatDate(item.medicine_take_times, 'HH:mm A')}</Text>
 
+                              )} />
+                          </Col>
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-          {/* <FlatList data={data}
-            keyExtractor={(item, index) => index.toString()}
-
-            renderItem={({ item }) => (
-              <View style={{ marginLeft: 15, marginRight: 15, }}>
-                <Card style={{ marginTop: 15 }}>
-                  <Grid style={{ paddingBottom: 10 }}>
-                    <Row style={{ backgroundColor: '#7F49C3', paddingTop: 5, paddingBottom: 5 }}>
-                      <Col>
-                        <FlatList 
-                        data={item.medicine_take_times}
-                        extraData={item}
-                          keyExtractor={(item, index) => index.toString()}
-                          renderItem={({ item }) => (
-                            <Text style={{ marginLeft: 15, color: '#FFF' }}>{formatDate(item.medicine_take_times, 'HH:mm A')}</Text>
-
-                          )} />
+                          <Col size={2}>
+                            
+                            <Switch style={{ transform: [{ scaleX: .8 }, { scaleY: .8 }], backgroundColor: 'fff' }} trackColor={{ true: '#6FC41A', false: 'grey' }}
+                              trackColor={{ true: '#7F49C3' }}
+                              thumbColor={"#F2F2F2"}
+                              onValueChange={(val) => this.setStatus(item, val)}
+                              value={item.active}
+                            />
+                          </Col>
+                        </Row>
                       </Col>
-                      <Col style={{ alignItems: 'flex-end', justifyContent: 'center' }}>
-                        <Switch style={{ transform: [{ scaleX: .8 }, { scaleY: .8 }], backgroundColor: 'fff' }} trackColor={{ true: '#6FC41A', false: 'grey' }}
-                          thumbColor={"white"}
-                          onValueChange={this.toggleSwitch}
-                          value={true} />
-                      </Col>
-                    </Row>
-                    <Row style={{ marginTop: 10 }}>
-                      <Col>
-                        <Text style={{ marginLeft: 15, fontFamily: 'OpenSans', fontWeight: '500' }}>{item.medicine_name}</Text>
-                      </Col>
-                      <Col>
-                        <Text style={{ textAlign: 'right', marginRight: 5, fontSize: 12, color: '#6c6c6c', fontWeight: "100", marginTop: 3 }}>{item.medicine_form + '  ' + item.medicine_strength} </Text>
-                      </Col>
-                    </Row>
-                    <Row style={{ marginTop: 10 }}>
-                      
-                          <Text style={{ marginLeft: 15, color: '#2fbf1c', fontSize: 12, fontFamily: 'OpenSans', fontWeight: "300" }}>Your Remainder Time is at {formatDate(item.medicine_take_start_date, 'DD/MM/YYYY')} - {formatDate(item.medicine_take_end_date, 'DD/MM/YYYY')}</Text>
                     </Row>
                   </Grid>
+                  <View style={{ marginTop: 5, borderTopColor: 'gray', borderTopWidth: 1, }}>
+                    <Text style={styles.remText}>Your Remainder Time is at {formatDate(item.medicine_take_start_date, 'DD/MM/YYYY')} - {formatDate(item.medicine_take_end_date, 'DD/MM/YYYY')}</Text>
+                  </View>
                 </Card>
-              </View>
-            )} /> */}
+              )} />
+          </View>
+  }
+          </View>
         </Content>
       </Container>
     )
@@ -189,10 +243,6 @@ const styles = StyleSheet.create({
     borderRightColor: 'gray',
     borderRightWidth: 1,
     width: '50%',
-
-
-
-
   },
   col2: {
     width: '50%',

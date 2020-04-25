@@ -103,6 +103,7 @@ export async function getSuggestionMedicines(keyword, data, isLoading = true) {
     }
   }
 }
+
 export async function getMedicinesSearchList(data, isLoading = true) {
   try {
     let endPoint = '/medicines/search/healthCareProducts';
@@ -239,6 +240,8 @@ export async function InsertMedicineReviews(userId, data) {
   }
 }
 
+
+
 /*Get medicine reviews count*/
 export async function getMedicineReviewsCount(medicine_id) {
   try {
@@ -255,21 +258,7 @@ export async function getMedicineReviewsCount(medicine_id) {
     }
   }
 }
-export async function getUploadPrescription(userId) {
-  try {
 
-    let endPoint = '/medicine_orders/prescription/user/' + userId;
-    console.log(endPoint);
-    let response = await getService(endPoint);
-    let respData = response.data;
-    return respData;
-  } catch (e) {
-    return {
-      message: 'exception' + e,
-      success: false
-    }
-  }
-}
 
 export async function removePrescriptionImage(prescriptionData, userId) {
   try {
@@ -326,6 +315,21 @@ export async function upDateOrderData(orderId,data) {
     console.log(JSON.stringify(respData))
     return respData;
     
+  } catch (e) {
+    return {
+      message: 'exception' + e,
+      success: false
+    }
+  }
+}
+
+export async function getUploadPrescription(userId) {
+  try {
+    let endPoint = '/medicine_orders/prescription/user/' + userId;
+    console.log(endPoint);
+    let response = await getService(endPoint);
+    let respData = response.data;
+    return respData;
   } catch (e) {
     return {
       message: 'exception' + e,

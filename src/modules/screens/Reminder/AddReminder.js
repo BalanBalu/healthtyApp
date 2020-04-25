@@ -1,20 +1,30 @@
-import React, { Component } from 'react';
+  import React, { Component } from 'react';
 import { Container, Content, View, Text, Item, Card, Spinner, Picker, Icon, Radio, Row, Col, Form, Button, Input, Grid, Toast } from 'native-base';
-import { StyleSheet, TextInput, TouchableOpacity, ScrollView, Image, AsyncStorage, } from 'react-native'
+import { StyleSheet, TextInput, TouchableOpacity, ScrollView, Image, AsyncStorage, Right } from 'react-native'
 import { FlatList } from 'react-native-gesture-handler';
 import Autocomplete from '../../../components/Autocomplete'
 import { RadioButton } from 'react-native-paper';
 import DateTimePicker from 'react-native-modal-datetime-picker';
 import { formatDate } from "../../../setup/helpers";
 import moment from 'moment';
-import { addReminderdata } from '../../providers/reminder/reminder.action.js';
-const medicineFormType = ["Select medicine Form", "Pill", "Solution", "Injection", "Powder", "Drops", "Inhales", "Other",]
-const medicineStrengthType = ["Select medicine strength", "g", "IU", "mcg", "mEg", "mg"]
+import { addReminderdata, getAllMedicineDataBySuggestion } from '../../providers/reminder/reminder.action.js';
+
+const debounce = (fun, delay) => {
+  let timer = null;
+  return function (...args) {
+    const context = this;
+    timer && clearTimeout(timer);
+    timer = setTimeout(() => {
+      fun.apply(context, args);
+    }, delay);
+  };
+}
 
 class AddReminder extends Component {
   constructor(props) {
     super(props)
     this.state = {
+      data: [],
       medicine_name: null,
       medicine_take_times: moment().startOf('day').toDate(),
       medicine_take_one_date: moment().startOf('day').toDate(),
@@ -23,13 +33,13 @@ class AddReminder extends Component {
       selectedMedicineForm: null,
       selectMedicineStrength: null,
       medicinePeriod: "everyday",
+      medicinePeriod: "onlyonce",
       medicinepage: true,
       selected2: undefined,
       selected3: undefined,
       slots: [],
       errorMsg: '',
-      //takemed: 'yes',
-      selectedDate: new Date(),
+     selectedDate: new Date(),
       minimumDate: new Date(),
       isDateTimePickerVisible: false,
       isEndDateTimePickerVisible: false,
@@ -41,14 +51,86 @@ class AddReminder extends Component {
       previewdisplay: false,
       data: [],
       arrayTakenTime: [],
-
+      medicineSugesstionArray: null,
+      setShowSuggestions: true
 
     }
-    this.pastSelectedDate = new Date(),
-      this.upcommingSelectedDate = new Date()
-    console.log('medicine_take_times' + moment().startOf('day').toDate())
+    // this.pastSelectedDate = new Date(),
+    //   this.upcommingSelectedDate = new Date()
+    // console.log('medicine_take_times' + moment().startOf('day').toDate())
+
+    this.callmedicinesearchService = debounce(this.callmedicinesearchService, 500);
+
 
   }
+
+
+
+  componentDidMount() {
+    const { medicine_name, selectedMedicineForm, selectMedicineStrength } = this.state;
+    if (medicine_name !== null) {
+      this.SearchKeyWordFunction(medicine_name);
+      console.log('medicine' + medicine_name)
+    }
+    if (selectedMedicineForm !== null) {
+      this.SearchKeyWordFunctionMedicineForm(selectedMedicineForm);
+      console.log('selectedMedicineForm' + selectedMedicineForm)
+    }
+    if (selectMedicineStrength !== null) {
+      this.SearchKeyWordFunctionMedicineStrength(selectMedicineStrength);
+      console.log('selectedMedicineForm' + selectMedicineStrength)
+    }
+  }
+
+  SearchKeyWordFunction = async (enteredText) => {
+
+    if (enteredText == '') {
+      await this.setState({ medicineSugesstionArray: null, medicine_name: enteredText })
+    } else {
+      await this.setState({ medicine_name: enteredText })
+      this.callmedicinesearchService(enteredText);
+    }
+  }
+
+  SearchKeyWordFunctionMedicineForm = async (enteredText) => {
+
+    if (enteredText == '') {
+      await this.setState({ medicineSugesstionArray: null, selectedMedicineForm: enteredText })
+    } else {
+      await this.setState({ selectedMedicineForm: enteredText })
+      this.callmedicinesearchService(enteredText);
+    }
+  }
+  SearchKeyWordFunctionMedicineStrength = async (enteredText) => {
+
+    if (enteredText == '') {
+      await this.setState({ medicineSugesstionArray: null, selectMedicineStrength: enteredText })
+    } else {
+      await this.setState({ selectMedicineStrength: enteredText })
+      this.callmedicinesearchService(enteredText);
+    }
+  }
+
+
+  callmedicinesearchService = async (enteredText) => {
+
+    let medicineResultData = await getAllMedicineDataBySuggestion(enteredText);
+    console.log('medicinedone+++++++++++++++++' + JSON.stringify(medicineResultData))
+    if (medicineResultData.success) {
+      this.setState({
+        medicineSugesstionArray: medicineResultData.data,
+        searchValue: enteredText,
+      });
+    } else {
+
+      this.setState({
+        medicineSugesstionArray: [],
+        searchValue: enteredText
+      });
+    }
+  }
+
+
 
 
   onValueChange2(value) {
@@ -73,8 +155,15 @@ class AddReminder extends Component {
   }
 
   handleTimePicker = async (date) => {
-   try {
-      this.setState({ timePlaceholder: true, isTimePickerVisible: false  })
+    this.setState({ timePlaceholder: true })
+    this.setState({ isTimePickerVisible: false })
+    let h = new Date(date).getHours();
+    let m = new Date(date).getMinutes();
+    let Time = moment().startOf('day').add(h, 'h').add(m, 'm').toDate();
+    console.log('check time::::::::::' + Time.toString())
+    await this.setState({ medicine_take_times: date });
+    try {
+      this.setState({ timePlaceholder: true, isTimePickerVisible: false })
       let h = new Date(date).getHours();
       let m = new Date(date).getMinutes();
       let Time = moment().startOf('day').add(h, 'h').add(m, 'm').toDate();
@@ -99,11 +188,10 @@ class AddReminder extends Component {
       let m = new Date(date).getMinutes();
       let Time = moment().startOf('day').add(h, 'h').add(m, 'm').toDate();
       this.setState({ medicine_take_one_date: date });
-      // console.log('medicine_take_one_date' + this.state.medicine_take_one_date)
       this.hideOnlyDateTimePicker();
-        
+
     } catch (error) {
-      console.error('Error on Date Picker: ', error);  
+      console.error('Error on Date Picker: ', error);
     }
   }
 
@@ -122,10 +210,8 @@ class AddReminder extends Component {
     let h = new Date(date).getHours();
     let m = new Date(date).getMinutes();
     let Time = moment().startOf('day').add(h, 'h').add(m, 'm').toDate();
-    // console.log('check time' + Time.toString())
 
     this.setState({ medicine_take_end_date: date });
-    // console.log('medicine_take_end_date' + this.state.medicine_take_end_date)
     this.hideendDateTimePicker();
   }
   showDateTimePicker = () => {
@@ -144,22 +230,17 @@ class AddReminder extends Component {
     let h = new Date(date).getHours();
     let m = new Date(date).getMinutes();
     let Time = moment().startOf('day').add(h, 'h').add(m, 'm').toDate();
-    // console.log('check time' + Time.toString())
-
-    this.setState({ medicine_take_start_date: date });
-    // console.log('medicine_take_start_date' + this.state.medicine_take_start_date)
+   this.setState({ medicine_take_start_date: date });
+   
 
     this.hideDateTimePicker();
   }
 
   insertTimeValue = async () => {
     let temp = this.state.slots;
-    // console.log("temp" + temp)
-
-    // console.log("medicine_take_times" + this.state.medicine_take_times)
+    
     const sample = this.state.medicine_take_times;
-    // console.log("sample" + sample)
-
+  
     if (!temp.includes(sample)) {
       temp.push(sample)
       temp.sort(function (a, b) {
@@ -179,8 +260,7 @@ class AddReminder extends Component {
 
   InsertReminderData = async () => {
     try {
-      if ((this.state.medicine_name == null) || (this.state.selectedMedicineForm == null) || (this.state.selectedMedicineForm == "Select medicine Form") || (this.state.selectMedicineStrength == null) || (this.state.selectMedicineStrength == "Select medicine strength")) 
-      {
+      if ((this.state.medicine_name == null) || (this.state.selectedMedicineForm == null) || (this.state.selectedMedicineForm == "Select medicine Form") || (this.state.selectMedicineStrength == null) || (this.state.selectMedicineStrength == "Select medicine strength")) {
         Toast.show({
           text: 'Kindly fill all the fields to schedule your reminderTime slots',
           type: 'danger',
@@ -204,16 +284,29 @@ class AddReminder extends Component {
           priviewData.medicine_take_start_date = moment(this.state.medicine_take_start_date).toISOString(),
             priviewData.medicine_take_end_date = moment(this.state.medicine_take_end_date).toISOString()
         }
-        else {
+        else
+        {
+          null
+        }
+
+        if (this.state.medicinePeriod === "onlyonce") {
           priviewData.medicine_take_one_date = moment(this.state.medicine_take_one_date).toISOString()
         }
+        else
+        {
+          null
+        }
+
+
         let temp = [];
         temp = this.state.data
         temp.push(priviewData)
         let getData = JSON.stringify(temp)
         await this.setState({ arrayTakenTime: temp, data: temp })
         console.log("mani++++++++++++++++++++++++++" + getData)
+        alert(getData)
         this.setState({ previewdisplay: true })
+        
 
       }
     }
@@ -222,13 +315,11 @@ class AddReminder extends Component {
     }
   }
 
+
   deleteData(index) {
-    // console.log("index" + index)
     let temp = this.state.arrayTakenTime;
     temp.splice(index, 1)
-    // console.log("temp" + JSON.stringify(temp))
     this.setState({ data: temp })
-    // console.log("data" + JSON.stringify(this.state.data))
 
   }
 
@@ -250,8 +341,7 @@ class AddReminder extends Component {
           medicine_form: this.state.selectedMedicineForm,
           medicine_strength: this.state.selectMedicineStrength,
           medicine_take_times: this.state.arrayTakenTime,
-          // medicine_take_start_date: moment(this.state.medicine_take_start_date).toISOString(),
-          // //  medicine_take_end_date: moment(this.state.medicine_take_end_date).toISOString(),
+
           reminder_type: String(this.state.medicinePeriod),
           is_reminder_enabled: true,
           active: true
@@ -259,13 +349,21 @@ class AddReminder extends Component {
         if (this.state.medicinePeriod === "everyday") {
           data.medicine_take_start_date = moment(this.state.medicine_take_start_date).toISOString(),
             data.medicine_take_end_date = moment(this.state.medicine_take_end_date).toISOString()
-
         }
-        else {
-          data.medicine_take_start_date = moment(this.state.medicine_take_start_date).toISOString()
+        else
+        {
+          null
+        }
+
+        if (this.state.medicinePeriod === "onlyonce") {
+          data.medicine_take_one_date = moment(this.state.medicine_take_one_date).toISOString()
+        }
+        else
+        {
+          null
         }
         let result = await addReminderdata(userId, data)
-        // console.log('result', result)
+        console.log('result', result)
         if (result.success) {
 
           Toast.show({
@@ -286,7 +384,9 @@ class AddReminder extends Component {
     catch (e) {
       console.log(e.message)
     }
+    this.props.navigation.navigate('Reminder')
   }
+
 
   medicinePage = () => {
     this.setState({ medicinepage: false })
@@ -302,68 +402,89 @@ class AddReminder extends Component {
           <Content style={{ padding: 20 }}>
             <View style={{ marginBottom: 30 }}>
 
-              <View pointerEvents={this.state.medicinepage ? "auto" : "none"} style={this.state.medicinepage == true ? 
-                  { backgroundColor: '#fff', paddingBottom: 10, paddingLeft: 5, paddingRight: 5, borderRadius: 5 } 
-                  : 
-                  { backgroundColor: '#E6E6E6', paddingBottom: 10, paddingLeft: 5, paddingRight: 5, borderRadius: 5, }}>
+              <View pointerEvents={this.state.medicinepage ? "auto" : "none"} style={this.state.medicinepage == true ? styles.medicineenabletext : styles.medicinedisabletext}>
                 <View>
                   <Text style={styles.NumText}>What Medicine would you like to add ?</Text>
-                  <Form>
+                  <Form style={{
+                    borderColor: '#909090',
+                    borderWidth: 0.5, height: 35, borderRadius: 5, marginTop: 5,
+                  }}>
                     <TextInput style={styles.autoField}
-                        placeholder="Medicine name"
-                        onChangeText={(medicine_name) => this.setState({ medicine_name })}
-                        value={this.state.medicine_name}
+                      placeholder="Medicine name"
+                      style={{ fontSize: 12, }}
+                      placeholderTextColor="#C1C1C1"
+                      keyboardType={'default'}
+                      returnKeyType={'go'}
+                      value={this.state.medicine_name}
+                      autoFocus={true}
+                      onChangeText={enteredText => this.SearchKeyWordFunction(enteredText)}
+                      multiline={false}
                     />
                   </Form>
                 </View>
+                {this.state.setShowSuggestions == true ?
+                  <View style={{ flex: 1 }}>
+                    <FlatList
+                      data={this.state.medicineSugesstionArray}
+                      ItemSeparatorComponent={this.itemSaperatedByListView}
+                      renderItem={({ item, index }) => (
+                        <TouchableOpacity onPress={() => { this.setState({ medicine_name: item.medicine_name, setShowSuggestions: false, selectedMedicineForm: item.medicine_form, selectMedicineStrength: item.medicine_category }) }}>
+                          <Row style={{ borderBottomWidth: 0.3, borderBottomColor: '#cacaca' }}  >
+                            <Text style={{ padding: 10, fontFamily: 'OpenSans', fontSize: 13, textAlign: 'left' }}>{item.medicine_name}</Text>
+                          </Row>
+                        </TouchableOpacity>
+                      )}
+                      enableEmptySections={true}
+                      style={{ marginTop: 10 }}
+                      keyExtractor={(item, index) => index.toString()}
+                    />
+                  </View>
+                  : null}
                 <View>
                   <Row>
                     <Col>
                       <Text style={styles.NumText}>Form of Medicine</Text>
-                      <Form style={{ marginTop: 5 }}>
+                      <Form style={{
+                        marginTop: 5, borderColor: '#909090',
+                        borderWidth: 0.5, height: 35, borderRadius: 5
+                      }}>
 
-                        <View picker style={{ height: 40, width: 150, justifyContent: 'center', backgroundColor: '#F1F1F1', borderRadius: 5 }}>
-                          <Picker
-                            mode="dropdown"
-                            style={{ width: undefined }}
-                            placeholder="Select your SIM"
-                            placeholderStyle={{ color: "#bfc6ea" }}
-                            placeholderIconColor="#007aff"
-                            onValueChange={(sample) => { this.setState({ selectedMedicineForm: sample }) }}
-                            selectedValue={selectedMedicineForm}
-                            testID="editMedicineForm"
-                          >
-                            {medicineFormType.map((value, key) => {
-                              return <Picker.Item label={String(value)} value={String(value)} key={key}
-                              />
-                            })
-                            }
-                          </Picker>
-                        </View>
+                        <TextInput style={styles.autoField}
+                          placeholder="Medicine Form"
+                          style={{ fontSize: 12, }}
+                          placeholderTextColor="#C1C1C1"
+                          keyboardType={'default'}
+                          returnKeyType={'go'}
+                          value={this.state.selectedMedicineForm}
+                          autoFocus={true}
+                          onChangeText={enteredText => this.SearchKeyWordFunctionMedicineForm(enteredText)}
+                          multiline={false}
+                        />
+
                       </Form>
+                     
                     </Col>
-                    <Col>
+                    <Col style={{ marginLeft: 5 }}>
                       <Text style={styles.NumText}>Strength of Medicine</Text>
-                      <Form style={{ marginTop: 5 }}>
-                        <View picker style={{ height: 40, width: 150, justifyContent: 'center', backgroundColor: '#F1F1F1', borderRadius: 5 }}>
-                          <Picker
-                            mode="dropdown"
-                            style={{ width: undefined }}
-                            placeholder="Select your SIM"
-                            placeholderStyle={{ color: "#bfc6ea" }}
-                            placeholderIconColor="#007aff"
-                            onValueChange={(sample) => { this.setState({ selectMedicineStrength: sample }) }}
-                            selectedValue={selectMedicineStrength}
-                            testID="editMedicineStrength"
-                          >
-                            {medicineStrengthType.map((value, key) => {
-                              return <Picker.Item label={String(value)} value={String(value)} key={key}
-                              />
-                            })
-                            }
-                          </Picker>
-                        </View>
+                      <Form style={{
+                        marginTop: 5, borderColor: '#909090',
+                        borderWidth: 0.5, height: 35, borderRadius: 5
+                      }}>
+
+                        <TextInput style={styles.autoField}
+                          placeholder="Medicine Strength"
+                          style={{ fontSize: 12, }}
+                          placeholderTextColor="#C1C1C1"
+                          keyboardType={'default'}
+                          returnKeyType={'go'}
+                          value={this.state.selectMedicineStrength}
+                          autoFocus={true}
+                          onChangeText={enteredText => this.SearchKeyWordFunctionMedicineStrength(enteredText)}
+                          multiline={false}
+                        />
+
                       </Form>
+                      
                     </Col>
                   </Row>
 
@@ -386,9 +507,8 @@ class AddReminder extends Component {
 
 
 
-
-              <View>
-                <View>
+              <View pointerEvents={this.state.medicinepage == false ? "auto" : "none"} style={this.state.medicinepage == true ? styles.datetimedisabletext : styles.datetimeenabletext}>
+                <View >
                   <Text style={styles.NumText}>How often would you take this Medicine</Text>
                   <Item style={{ marginTop: 10, borderBottomWidth: 0, }}>
 
@@ -400,16 +520,14 @@ class AddReminder extends Component {
                         <Text style={{
                           fontFamily: 'OpenSans', fontSize: 15, marginTop: 8
                         }}>Everyday</Text>
-                      </View>
+                      </View>              
                       <View style={{ flexDirection: 'row', marginLeft: 10 }}>
                         <RadioButton value="onlyonce" style={{ marginLeft: 20 }} color={'#1296db'} uncheckedColor={'#1296db'} />
                         <Text style={{
                           fontFamily: 'OpenSans', fontSize: 15, marginTop: 8
                         }}>Only when I need</Text>
-                      </View>
+                      </View>                     
                     </RadioButton.Group>
-
-
                   </Item>
                 </View>
 
@@ -418,7 +536,7 @@ class AddReminder extends Component {
                 {this.state.medicinePeriod == "everyday" ?
                   <View>
                     <Form style={{ marginTop: 5 }}>
-                      <Row>
+                      <Row style={{ marginRight: 12.5 }}>
                         <Col size={3}>
                           <Text style={styles.NumText}>Select Date</Text>
                         </Col>
@@ -428,10 +546,10 @@ class AddReminder extends Component {
                               <Col size={3.5} style={{ mariginTop: 10 }}>
                                 <View style={{ marginTop: 5, }}>
                                   <TouchableOpacity onPress={() => { this.setState({ isDateTimePickerVisible: !this.state.isDateTimePickerVisible }) }} style={{ width: 110, backgroundColor: '#f1f1f1', flexDirection: 'row' }}>
-                                    <Icon name='md-calendar' style={{ padding: 4, fontSize: 20, color: '#1296db', marginTop: 1 }} />
+                                    <Icon name='md-calendar' style={styles.calendarstyle} />
                                     {this.state.startDatePlaceholder ?
-                                      <Text style={{ marginTop: 7, marginBottom: 7, fontFamily: 'OpenSans', fontSize: 13, textAlign: 'center', marginLeft: 5 }}>{formatDate(this.state.medicine_take_start_date, 'DD/MM/YYYY')}</Text> :
-                                      <Text style={{ marginTop: 7, marginBottom: 7, fontFamily: 'OpenSans', fontSize: 13, textAlign: 'center', marginLeft: 5 }}>Start Date</Text>
+                                      <Text style={styles.startenddatetext}>{formatDate(this.state.medicine_take_start_date, 'DD/MM/YYYY')}</Text> :
+                                      <Text style={styles.startenddatetext}>Start Date</Text>
 
                                     }
                                     <DateTimePicker
@@ -448,12 +566,12 @@ class AddReminder extends Component {
                                 </View>
                               </Col>
                               <Col size={3.5} style={{ mariginTop: 10, marginLeft: -10 }}>
-                                <View style={{ marginTop: 5, }}>
+                                <View style={{ marginTop: 5 }}>
                                   <TouchableOpacity onPress={() => { this.setState({ isEndDateTimePickerVisible: !this.state.isEndDateTimePickerVisible }) }} style={{ marginLeft: 10, width: 110, backgroundColor: '#f1f1f1', flexDirection: 'row' }}>
-                                    <Icon name='md-calendar' style={{ padding: 4, fontSize: 20, color: '#1296db', marginTop: 1 }} />
+                                    <Icon name='md-calendar' style={styles.calendarstyle} />
                                     {this.state.endDatePlaceholder ?
-                                      <Text style={{ marginTop: 7, marginBottom: 7, fontFamily: 'OpenSans', fontSize: 13, textAlign: 'center', marginLeft: 5 }}>{formatDate(this.state.medicine_take_end_date, 'DD/MM/YYYY')}</Text> :
-                                      <Text style={{ marginTop: 7, marginBottom: 7, fontFamily: 'OpenSans', fontSize: 13, textAlign: 'center', marginLeft: 5 }}>End Date</Text>
+                                      <Text style={styles.startenddatetext}>{formatDate(this.state.medicine_take_end_date, 'DD/MM/YYYY')}</Text> :
+                                      <Text style={styles.startenddatetext}>End Date</Text>
 
                                     }
 
@@ -484,9 +602,9 @@ class AddReminder extends Component {
 
                   :
 
+null }
 
-
-
+{this.state.medicinePeriod == "onlyonce" ?
                   <View>
                     <Form style={{ marginTop: 5 }}>
                       <Row>
@@ -508,7 +626,7 @@ class AddReminder extends Component {
                                       isVisible={this.state.isOnlyDateTimePickerVisible}
                                       onConfirm={this.handleOnlyDateTimePicker}
                                       onCancel={() => this.setState({ isOnlyDateTimePickerVisible: !this.state.isOnlyDateTimePickerVisible })}
-                                      datePickerModeAndroid='default'
+                                       datePickerModeAndroid='default'
                                     />
                                   </TouchableOpacity>
                                 </View>
@@ -521,7 +639,7 @@ class AddReminder extends Component {
                     </Form>
                   </View>
 
-
+: null
 
                 }
 
@@ -531,13 +649,13 @@ class AddReminder extends Component {
                     <Col size={4} style={{ mariginTop: 5 }}>
                       <Text style={styles.NumText}>Choose your time</Text>
                     </Col>
-                    <Col size={3.5} style={{ mariginTop: 5, }}>
+                    <Col size={3.5} style={{ mariginTop: 5 }}>
                       <View style={{ alignItems: 'flex-start', marginTop: 5, padding: 1 }}>
                         <TouchableOpacity onPress={() => { this.setState({ isTimePickerVisible: !this.state.isTimePickerVisible }) }} style={styles.toucableOpacity}>
                           <Icon name='ios-clock' style={styles.tocuhIcon} />
                           {this.state.timePlaceholder ?
-                            <Text style={{ marginTop: 7, marginBottom: 7, fontFamily: 'OpenSans', fontSize: 13, textAlign: 'center', marginLeft: 5 }}>{formatDate(this.state.medicine_take_times, 'HH:mm A')}</Text> :
-                            <Text style={{ marginTop: 7, marginBottom: 7, fontFamily: 'OpenSans', fontSize: 13, textAlign: 'center', marginLeft: 5 }}>Select time </Text>
+                            <Text style={styles.startenddatetext}>{formatDate(this.state.medicine_take_times, 'HH:mm A')}</Text> :
+                            <Text style={styles.startenddatetext}>Select time </Text>
 
                           }
 
@@ -556,19 +674,12 @@ class AddReminder extends Component {
                     </Col>
                     <Col size={2.5} style={{ mariginTop: 10 }}>
                       <Button style={styles.RemainderButton} onPress={this.InsertReminderData}>
-                        
+
                         <Text style={styles.RemainderButtonText}>Add</Text>
-                  
                       </Button>
                     </Col>
                   </Row>
-                  {/* <Row>
-                    <Col size={2.5} style={{ mariginTop: 10 }}>
-                      <Button style={styles.BackButton} onPress={this.backPage}>
-                        <Text style={styles.BackButtonText}>Back</Text>
-                      </Button>
-                    </Col>
-                  </Row> */}
+                 
                 </View>
               </View>
 
@@ -585,10 +696,10 @@ class AddReminder extends Component {
                               <Text style={{ marginLeft: 10, fontsize: 14 }}>{item.medicine_name}</Text>
                             </Col>
                             <Col size={5}>
-                              <Text style={{ marginLeft: 10, fontSize: 10, marginTop: 5, color: '#6f6f6f' }}>{item.medicine_form}</Text>
+                              <Text style={styles.formstrengthtext}>{item.medicine_form}</Text>
                             </Col>
                             <Col size={5}>
-                              <Text style={{ marginLeft: 10, fontSize: 10, marginTop: 5, color: '#6f6f6f' }}>{item.medicine_strength}</Text>
+                              <Text style={styles.formstrengthtext}>{item.medicine_strength}</Text>
                             </Col>
                           </Row>
                           <Row style={{ marginBottom: 5 }}>
@@ -598,16 +709,21 @@ class AddReminder extends Component {
                             </Col>
 
                             <Col size={5}>
-                              {this.state.medicinePeriod == "everyday" ?
+                              {this.state.medicinePeriod  == "everyday" ?
 
-                                <Text style={{ fontSize: 10, marginTop: 5, color: '#6f6f6f', marginLeft: -35 }}>{formatDate(item.medicine_take_start_date, 'DD/MM/YYYY')} - {formatDate(item.medicine_take_end_date, 'DD/MM/YYYY')}</Text>
-                                : <Text style={{ fontSize: 10, marginTop: 5, color: '#6f6f6f', marginLeft: -35 }}>{formatDate(item.medicine_take_one_date, 'DD/MM/YYYY')}</Text>
-                              }
+                                <Text style={styles.datetext}>{formatDate(item.medicine_take_start_date, 'DD/MM/YYYY')} - {formatDate(item.medicine_take_end_date, 'DD/MM/YYYY')}</Text>
+                                :
+                                null
+                     }
+                     {this.state.medicinePeriod == "onlyonce" ?
+                      <Text style={styles.datetext}>{formatDate(item.medicine_take_one_date, 'DD/MM/YYYY')}</Text>
+                         : null     }
                             </Col>
 
 
                           </Row>
                         </Col>
+
                         <Col size={1.5} style={{ justifyContent: 'center', alignItem: 'center' }}>
                           <TouchableOpacity onPress={() => { this.deleteData(index) }}>
                             <Icon style={{ fontSize: 20, color: '#bd0f10', alignItems: 'flex-end', justifyContent: 'flex-end', marginRight: 15 }} name="ios-close-circle" />
@@ -616,6 +732,8 @@ class AddReminder extends Component {
 
                         </Col>
                       </Row>
+
+                      
                     )}
                     keyExtractor={(item, index) => index.toString()}
                   />
@@ -730,6 +848,14 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
     color: '#fff'
   },
+  startenddatetext: {
+    marginTop: 7,
+    marginBottom: 7,
+    fontFamily: 'OpenSans',
+    fontSize: 13,
+    textAlign: 'center',
+    marginLeft: 5
+  },
   NumText: {
     fontFamily: 'OpenSans',
     fontSize: 16,
@@ -740,40 +866,51 @@ const styles = StyleSheet.create({
     backgroundColor: '#F1F1F1',
     paddingLeft: 10,
     borderRadius: 5,
-    marginTop: 5
+    marginTop: 5,
+
   },
-  touchbutton: {
-    borderRadius: 5,
-    borderColor: '#7f49c3',
-    borderWidth: 2,
+  medicineenabletext: {
     backgroundColor: '#fff',
+    paddingBottom: 10,
+    paddingLeft: 5,
+    paddingRight: 5,
+    borderRadius: 5
+  },
+  medicinedisabletext: {
+    backgroundColor: '#E6E6E6',
+    paddingBottom: 10,
+    paddingLeft: 5,
+    paddingRight: 5,
+    borderRadius: 5
+  },
+  datetimedisabletext: {
+    marginTop: 5,
+    backgroundColor: '#E6E6E6',
+    paddingLeft: 5,
+    borderRadius: 5
+  },
+  datetimeenabletext: {
+    marginTop: 5,
+    backgroundColor: '#fff',
+    paddingLeft: 5,
+    borderRadius: 5
+  },
+  calendarstyle: {
     padding: 4,
-    height: 30,
-
+    fontSize: 20,
+    color: '#1296db',
+    marginTop: 1
   },
-  timeText: {
-    textAlign: 'center',
-    fontSize: 12,
-    fontWeight: 'bold',
-    marginTop: 1,
+  formstrengthtext: {
+    marginLeft: 10,
+    fontSize: 10,
+    marginTop: 5,
+    color: '#6f6f6f'
   },
-  periodText: {
-    textAlign: 'center',
-    borderBottomLeftRadius: 0,
-    borderTopLeftRadius: 0,
-    fontSize: 12,
-    fontWeight: 'bold',
-    marginLeft: 3,
-    paddingHorizontal: 5
+  datetext: {
+    fontSize: 10,
+    marginTop: 5,
+    color: '#6f6f6f',
+    marginLeft: -35
   }
-
-
 })
-
-
-
-
-
-
-
-
