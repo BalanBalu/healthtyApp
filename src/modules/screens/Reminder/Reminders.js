@@ -16,6 +16,7 @@ console.log('height', height);
 class Reminder extends Component {
   constructor(props) {
     super(props)
+    this.reminderData = [];
     this.state = {
       data: [],
       isLoading: true,
@@ -45,6 +46,7 @@ class Reminder extends Component {
       let userId = await AsyncStorage.getItem('userId');
       let result = await getReminderData(userId);
       if (result.success) {
+        this.reminderData = result.data;
         this.setState({ data: result.data })
         console.log('this.state.data=========>', result.data )
       }
@@ -57,31 +59,33 @@ class Reminder extends Component {
 
   
 
-   onDateChanged  = async (data1, date) => {
-   
-  
-    let selectedDate = moment().format('MMMM Do YYYY, h:mm:ss a');
-    let startDate = formatDate(new Date(), 'YYYY-MM-DD');
-    let endDate = formatDate(new Date(), 'YYYY-MM-DD');
-   
-  
-        date = this.state.selectedDate
-        
-    if(this.state.selectedDate){
-     
-      await this.getAllReminderdata()
-      getAllReminderdata._id = medicine_take_start_date.data1 =  medicine_take_end_date.data1 
-   
-      if(getAllReminderdata){
-
-        medicine_take_start_date.data1 = startDate
-        medicine_take_end_date.data1 = endDate
-
+   onDateChanged  = async (data1) => {
+      if(data1) {
+        console.log(data1);
+        let date = new Date(moment(data1).startOf('d').toISOString()).getTime();
+        console.log(date);
+        const reminderDataBySelectedDate = this.reminderData.filter(ele => {
+            console.log(ele);
+            let startDate = new Date(ele.medicine_take_start_date).getTime();
+            let endDate;
+            if(ele.reminder_type === 'onlyonce') {
+              let endDateTemp = new Date(ele.medicine_take_start_date);
+              endDateTemp.setHours(23);
+              endDateTemp.setMinutes(59);
+              endDate = new Date(endDateTemp).getTime();
+            } else {
+              endDate = new Date(ele.medicine_take_end_date).getTime();
+            }
+            console.log('Start Date==>' + startDate);
+            console.log('End Date==>' + endDate);
+            
+            if((date <= endDate  && date >= startDate )) {
+              return true;
+            }
+        });
+        console.log(reminderDataBySelectedDate);
+        this.setState({ data: reminderDataBySelectedDate });
       }
-      else{
-        null
-      }
-    }
   }
 
 
@@ -204,7 +208,7 @@ class Reminder extends Component {
                               extraData={item}
                               keyExtractor={(item, index) => index.toString()}
                               renderItem={({ item }) => (
-                                <Text style={{ marginLeft: 15, color: '#000' }}>{formatDate(item.medicine_take_times, 'HH:mm A')}</Text>
+                                <Text style={{ marginLeft: 15, color: '#000' }}>{formatDate(item.medicine_take_time, 'HH:mm A')}</Text>
 
                               )} />
                           </Col>

@@ -210,7 +210,7 @@ class AddReminder extends Component {
           data.medicine_take_end_date = moment(this.state.medicine_take_end_date).toISOString()
         }
         if (this.state.medicinePeriod === "onlyonce") {
-          data.medicine_take_one_date = moment(this.state.medicine_take_one_date).toISOString()
+          data.medicine_take_start_date = moment(this.state.medicine_take_one_date).toISOString()
         }
         let result = await addReminderdata(userId, data)
         console.log('result', result)
