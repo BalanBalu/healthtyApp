@@ -240,20 +240,7 @@ export async function InsertMedicineReviews(userId, data) {
   }
 }
 
-export async function getUploadPrescription(userId) {
-  try {
-    let endPoint = '/medicine_orders/prescription/user/' + userId;
-    console.log(endPoint);
-    let response = await getService(endPoint);
-    let respData = response.data;
-    return respData;
-  } catch (e) {
-    return {
-      message: 'exception' + e,
-      success: false
-    }
-  }
-}
+
 
 /*Get medicine reviews count*/
 export async function getMedicineReviewsCount(medicine_id) {
@@ -328,6 +315,21 @@ export async function upDateOrderData(orderId,data) {
     console.log(JSON.stringify(respData))
     return respData;
     
+  } catch (e) {
+    return {
+      message: 'exception' + e,
+      success: false
+    }
+  }
+}
+
+export async function getUploadPrescription(userId) {
+  try {
+    let endPoint = '/medicine_orders/prescription/user/' + userId;
+    console.log(endPoint);
+    let response = await getService(endPoint);
+    let respData = response.data;
+    return respData;
   } catch (e) {
     return {
       message: 'exception' + e,
