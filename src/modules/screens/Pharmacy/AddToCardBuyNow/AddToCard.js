@@ -1,10 +1,10 @@
 import React, { Component } from 'react';
 
-import { StyleSheet, Image, Dimensions, AsyncStorage, Modal, TouchableOpacity, TextInput, Picker } from 'react-native';
+import { StyleSheet, Image, Dimensions, AsyncStorage, Modal, TouchableOpacity, TextInput,  } from 'react-native';
 
 import {
     Container, Header, Title, Left, Right, Body, Button, Card, Toast, CardItem, Row, Grid, View, Col,
-    Text, Thumbnail, Content, CheckBox, Item, Input, Icon
+    Text, Thumbnail, Content, CheckBox, Item, Input, Icon,Picker
 } from 'native-base';
 import { ProductIncrementDecreMent, medicineRateAfterOffer, getMedicineName, renderMedicineImage } from '../CommomPharmacy'
 import { NavigationEvents } from 'react-navigation';
@@ -178,7 +178,7 @@ export class AddToCard extends Component {
                                                         mode="dropdown"
                                                         style={{ width: undefined, fontSize: 10 }}
                                                         textStyle={{ fontSize: 12, }}
-                                                        placeholder="Select your SIM"
+                                                        placeholder="Select"
                                                         iosIcon={<Icon name="ios-arrow-down" style={{ color: 'gray', fontSize: 10 }} />}
                                                         placeholderStyle={{ color: "#bfc6ea" }}
                                                         placeholderIconColor="#007aff"
