@@ -749,9 +749,9 @@ null }
 
               <View style={{ marginTop: 10 }}>
 
-                <Button style={{ marginTop: 5, width: 320, paddingLeft: 100, backgroundColor: '#1296db', height: -40, borderRadius: 5 }} onPress={this.AddReminderDatas}>
+                <Button style={{ marginTop: 5, backgroundColor: '#1296db', height: -40, borderRadius: 5,justifyContent:'center'}} onPress={this.AddReminderDatas}>
 
-                  <Text style={{ width: 475, fontWeight: 'bold' }}>SET REMINDER</Text>
+                  <Text style={{ width: 475, fontWeight: 'bold',textAlign:'center' }}>SET MEDICINE REMINDER</Text>
                 </Button>
 
               </View>

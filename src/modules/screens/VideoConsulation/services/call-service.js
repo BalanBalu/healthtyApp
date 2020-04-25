@@ -2,7 +2,7 @@ import { Toast } from 'native-base';
 import ConnectyCube from 'react-native-connectycube';
 import InCallManager from 'react-native-incall-manager';
 import Sound from 'react-native-sound';
-
+import { sendNotification } from './video-consulting-service';
 export default class CallService {
  static MEDIA_OPTIONS = {audio: true, video: {facingMode: 'user'}};
 
@@ -66,6 +66,7 @@ export default class CallService {
     const type = ConnectyCube.videochat.CallType.VIDEO; // AUDIO is also possible
 
     this._session = ConnectyCube.videochat.createNewSession(ids, type, options);
+
     this.setMediaDevices();
     this.playSound('outgoing');
 
@@ -76,6 +77,13 @@ export default class CallService {
         return stream;
       });
   };
+  sendVideoCallingNotification = (medflicUserOrDoctorId) => {
+      sendNotification(medflicUserOrDoctorId, {
+        session: {
+            ID:  this._session.ID,
+          }
+      });
+  }
 
   stopCall = () => {
     this.stopSounds();

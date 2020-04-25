@@ -302,3 +302,21 @@ export async function getmedicineAvailableStatus(data, isLoading = true) {
     }
   }
 }
+
+export async function upDateOrderData(orderId,data) {
+  try {
+    let endPoint = '/medicine_orders/order/user/'+orderId;
+    let response = await putService(endPoint, data);
+
+    let respData = response.data;
+    console.log('updateData====================================')
+    console.log(JSON.stringify(respData))
+    return respData;
+    
+  } catch (e) {
+    return {
+      message: 'exception' + e,
+      success: false
+    }
+  }
+}

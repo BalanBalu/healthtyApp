@@ -64,7 +64,7 @@ class ViewAllReviews extends Component {
 
         return (
             <Container style={styles.container}>
-                <Content style={styles.bodyContent}>
+                <Content style={{ flex: 1 }}>
 
                     {this.state.isLoading ? <Spinner color='blue' /> :
                         this.state.viewAllReviewData !== null ?
@@ -78,7 +78,7 @@ class ViewAllReviews extends Component {
                                             <Row>
                                                 <Col size={2} style={{ flexDirection: 'row' }}>
                                                     <Thumbnail square source={renderProfileImage(item.userInfo)} style={{ width: 60, height: 60, borderRadius: 60 }} />
-                                                    
+
                                                 </Col>
                                                 <Col size={4}>
                                                     <Text style={styles.desText}>{item.is_anonymous ? 'Medflic User' : item.userInfo.first_name + '' + item.userInfo.last_name}</Text>
@@ -116,7 +116,8 @@ export default ViewAllReviews
 
 const styles = StyleSheet.create({
     container: {
-        padding: 5
+        padding: 5,
+        flex: 1
     },
 
     button1: {

@@ -4,28 +4,39 @@ import { dateDiff, getMoment, formatDate } from '../../../setup/helpers'
 
 
 export function medicineRateAfterOffer(item) {
-  let amount = ''
-  if (item.discount_value == undefined) {
+  
+
+  let amount = ''//for binding purpose used empty string
+  if(item===undefined){
+    return amount
+  }
+  if (item.discount_value === undefined) {
+
     amount = parseInt(item.price)
+    return amount
   }
   if (item.discount_type) {
-    if (item.discount_type == 'PERCENTAGE') {
+
+    if (item.discount_type === 'PERCENTAGE') {
       let divided = (parseInt(item.discount_value) / 100) * parseInt(item.price)
       amount = parseInt(item.price) - divided
       return amount
-    } else if (item.discount_type == 'AMOUNT') {
+    } else if (item.discount_type === 'AMOUNT') {
       amount = parseInt(item.price) - parseInt(item.discount_value);
       return amount
     }
-  } else {
+  } 
+else {
     return amount
   }
+
 }
 
 
 export async function ProductIncrementDecreMent(quantity, price, operation, threshold_limits) {
 
   let itemQuantity = (quantity === undefined ? 0 : quantity);
+ 
   let totalAmount = price;
   let threshold_message = null;
   let threshold_limit = threshold_limits || itemQuantity + 1
@@ -36,7 +47,7 @@ export async function ProductIncrementDecreMent(quantity, price, operation, thre
       totalAmount = quantity * price
     } else {
 
-      threshold_message = 'you will not add more than' + threshold_limit
+      threshold_message = 'you will not add more than' + String(threshold_limit)
 
     }
 
@@ -64,12 +75,30 @@ export async function ProductIncrementDecreMent(quantity, price, operation, thre
 
 export function renderMedicineImage(data) {
   console.log(data)
-  let source = require('../../../../assets/images/paracetamol.jpg')
+  let source =  require('../../../../assets/images/paracetamol.jpg')
   if (data.medicine_images) {
     if (data.medicine_images[0]) {
       console.log(data.medicine_images[0].imageURL)
       source = { uri: data.medicine_images[0].imageURL }
     }
+  }
+  return (source)
+}
+export function renderMedicineImageAnimation(data) {
+ 
+ 
+  let source =  require('../../../../assets/images/paracetamol.jpg')
+  if (data) {
+      source = { uri: data.imageURL }
+  }
+  return (source)
+}
+export function renderPrescriptionImageAnimation(data) {
+ 
+ 
+  let source =  require('../../../../assets/images/paracetamol.jpg')
+  if (data) {
+      source = { uri: data.prescription_path }
   }
   return (source)
 }
@@ -157,65 +186,41 @@ export function getMedicineWeightUnit(weight, unit) {
     return medicineWeightUnit
   }
 }
+  
+export function quantityPriceSort(data) {
+  data.forEach(element => {
+    if (element.medPharDetailInfo) {
+        if (element.medPharDetailInfo.variations) {
+            
+            element.medPharDetailInfo.variations.sort(function (firstVarlue, secandValue) {
+                
+               
+                    if(firstVarlue.total_quantity === 0) return 1;
+                    else if(secandValue.total_quantity === 0) return -1;
+                    else return firstVarlue.price - secandValue.price;
+                });
+               
+        }
+    }
+})
+return data
+}
 
-export const renderAppoinmentData = (props) => {
 
-  return (
-    <View style={{ borderBottomColor: '#DCDCDC', borderBottomWidth: 0.5, paddingBottom: 5 }}>
-      <ScrollView
-        horizontal={true}
-        style={{ marginTop: 5 }}
-        showsHorizontalScrollIndicator={false}
-      >
-        <FlatList
-          data={data}
-          extraData={this.state}
-          horizontal={true}
-          onEndReached={this.onScrollHandler}
-          onEndThreshold={0}
-          keyExtractor={(item, index) => index.toString()}
-          renderItem={({ item }) =>
-            <Card
-              style={{ padding: 10, borderRadius: 2, borderBottomWidth: 2, }}>
-              <Grid onPress={() => this.props.navigation.navigate('PatientInfo', { data: item })}>
-                <Row>
-                  <Col size={2}>
-                    <Thumbnail circle source={RenderProfileImage(item.userInfo)} style={{ height: 50, width: 50 }} />
+export const statusBar = {
 
-                  </Col>
-                  <Col size={8} style={{ marginLeft: 10 }}>
+  "PENDING":
+  
+    { status: 'Ordered and Approved', checked: true, drawLine: true },
+ 
+ 
 
-                    <Text style={styles.nameText}>{getName(item.userInfo)}</Text>
+  "APPROVED": 
+  { status: 'Packed and Out for Delivery', checked: false, },
+  
+  "CANCELED": 
+    { status: 'Canceled the order', checked: true, drawLine: true },
 
-                    <Text note style={styles.diseaseText}>{getUserGenderAndAge(item.userInfo) + "," + item.disease_description}</Text>
+  
 
-                    <Text style={styles.locationText}>{getHospitalHeadeName(item.location)}</Text>
-
-                  </Col>
-                </Row>
-                <Row style={{ marginTop: 10 }}>
-                  <View style={{ flexDirection: 'row' }}>
-                    <Icon name="md-calendar" style={{ fontSize: 15, color: '#775DA3' }} />
-                    <Text style={styles.dateText}>{formatDate(item.appointment_starttime, 'DD/MM/YYYY')}</Text>
-                  </View>
-
-                  <View style={{ flexDirection: 'row', marginLeft: 10 }}>
-                    <Icon name="md-clock" style={{ fontSize: 15, color: '#775DA3' }} />
-                    <Text style={styles.dateText}>`{formatDate(item.appointment_starttime, 'hh:mm A')} - {formatDate(item.appointment_endtime, 'hh:mm A')}`</Text>
-                  </View>
-
-                </Row>
-              </Grid>
-            </Card>
-          } />
-        <Row style={{ justifyContent: 'center', alignItems: 'center', marginLeft: 10 }} >
-          <TouchableOpacity onPress={() => this.props.navigation.navigate("Appointments", { makeActiveTab: activeTab })} style={{ alignItems: 'center', borderRadius: 1500 / 2, backgroundColor: '#F3EBF8', paddingLeft: 5, paddingRight: 5, paddingTop: 25, paddingBottom: 25 }}>
-            <Text style={styles.moredataText}>View All </Text>
-            <Text style={styles.moredataText}>Appointments</Text>
-          </TouchableOpacity>
-        </Row>
-      </ScrollView>
-    </View>
-
-  )
 }
