@@ -3,9 +3,10 @@ import {  getService, putService} from '../../../setup/services/httpservices';
 export async function addReminderdata(userId,data) {
     try {
       
-      let endPoint = '/reminder/user/' + userId;
+      let endPoint = '/reminder/medicines/user/' + userId;
+      console.log(endPoint);
       let response = await putService(endPoint, data);
-      console.log('response'+response);
+      console.log('response', response);
       let respData = response.data;
       return respData;
     } catch (e) {
@@ -19,9 +20,10 @@ export async function addReminderdata(userId,data) {
   export async function getReminderData(userId) {
     try {
       
-      let endPoint = '/reminder/user/' + userId;
+      let endPoint = '/reminder/medicines/user/' + userId;
+      console.log(endPoint);
       let response = await getService(endPoint);
-      console.log('response'+response);
+      console.log('response', response);
       let respData = response.data;
       return respData;
     } catch (e) {

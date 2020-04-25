@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
-import { Container, Content, View, Card, Grid, CardItem, Text, Switch, Right, Item, Spinner, Radio, Row, Col, Form, Button, Left } from 'native-base';
-import { StyleSheet, TextInput, AsyncStorage } from 'react-native'
+import { Container, Content, View, Card, Grid, CardItem, Text, Switch, Right, Item, Radio, Row, Col, Form, Button, Left } from 'native-base';
+import { StyleSheet, TextInput, AsyncStorage, Image , Dimensions } from 'react-native'
 import { FlatList } from 'react-native-gesture-handler';
 import CalendarStrip from 'react-native-calendar-strip';
 import { getReminderData, addReminderdata } from '../../providers/reminder/reminder.action.js';
@@ -8,9 +8,11 @@ import { formatDate } from "../../../setup/helpers";
 import RNCalendarEvents from 'react-native-calendar-events';
 import { NavigationEvents } from 'react-navigation';
 import moment from 'moment';
+import { hasLoggedIn } from "../../providers/auth/auth.actions";
+import SpinnerOverlay from '../../../components/Spinner';
 
-
-
+var { width, height } = Dimensions.get('window');
+console.log('height', height);
 class Reminder extends Component {
   constructor(props) {
     super(props)
@@ -25,13 +27,12 @@ class Reminder extends Component {
 
 
   async componentDidMount() {
+    const isLoggedIn = await hasLoggedIn(this.props);
+    if (!isLoggedIn) {
+        this.props.navigation.navigate("login");
+        return;
+    }
     this.getAllReminderdata();
-    let _id = ''
-    let value = ''
-    let date = ''
-
-    this.setStatus(_id, value);
-    this.onDateChanged(_id, date)
   }
 
 
@@ -44,8 +45,8 @@ class Reminder extends Component {
       let userId = await AsyncStorage.getItem('userId');
       let result = await getReminderData(userId);
       if (result.success) {
-        await this.setState({ data: result.data })
-        console.log('this.state.data=========>', this.state.data)
+        this.setState({ data: result.data })
+        console.log('this.state.data=========>', result.data )
       }
     } catch (e) {
       console.log(e);
@@ -58,7 +59,7 @@ class Reminder extends Component {
 
    onDateChanged  = async (data1, date) => {
    
-    alert(JSON.stringify(date))
+  
     let selectedDate = moment().format('MMMM Do YYYY, h:mm:ss a');
     let startDate = formatDate(new Date(), 'YYYY-MM-DD');
     let endDate = formatDate(new Date(), 'YYYY-MM-DD');
@@ -66,12 +67,11 @@ class Reminder extends Component {
   
         date = this.state.selectedDate
         
-alert(this.state.selectedDate)
     if(this.state.selectedDate){
      
       await this.getAllReminderdata()
       getAllReminderdata._id = medicine_take_start_date.data1 =  medicine_take_end_date.data1 
-      alert(getAllReminderdata)
+   
       if(getAllReminderdata){
 
         medicine_take_start_date.data1 = startDate
@@ -124,7 +124,7 @@ alert(this.state.selectedDate)
   backNavigation  = async (navigationData) => {
     try {
       if (navigationData.action) {
-        await this.getAllReminderdata();
+       // await this.getAllReminderdata();
       } else {
         return null
       }
@@ -137,7 +137,7 @@ alert(this.state.selectedDate)
    calendar
 
   render() {
-    const { index, isLoading,} = this.state;
+    const { index, isLoading, data } = this.state;
     return (
       <Container>
         <Content style={{ backgroundColor: '#F1F1F1' }}>
@@ -168,21 +168,22 @@ alert(this.state.selectedDate)
 
 
           {isLoading == true ?
-            <Spinner color='blue'
+            <SpinnerOverlay color='blue'
               visible={isLoading}
-              overlayColor="none"
             /> :
 
-            data.length == 0 ?
-              <View style={{ alignItems: 'center', justifyContent: 'center', height: 550 }}>
-                <Text> No Blood Donors</Text>
-              </View>
-
-              :
+          data.length == 0 ?
+            <View style={{ backgroundColor: '#F1F1F1', marginTop: height/ 4,  justifyContent: 'center', alignItems: 'center'  }}>
+               
+                <Image source={require('../../../../assets/images/Remindericon.png')} style={{ justifyContent: 'center', height: 150, width: 150 }} />
+                <Text style={{ color: '#d83939',  }}>No Reminder is avaialble now!</Text>
+            </View>
+          :
+          
           <View style={{ paddingRight: 10, paddingLeft: 10 }}>
             <FlatList data={this.state.data}
               keyExtractor={({ _id }, index) => _id.toString()}
-              extraData={this.state}
+              extraData={[ this.state.data ]}
               renderItem={({ item, index }) => (
                 <Card style={{ borderRadius: 5, marginTop: 10 }}>
                   <Grid>
