@@ -15,18 +15,10 @@ class ImageView extends Component {
         super(props)
         
         this.state = {
-            getImage: this.props.navigation.getParam('passImage')
+            getImage: props.navigation.getParam('passImage')
         }
     }
 
-    componentDidMount() {
-        console.log(this.state.getImage)
-        /*  let { navigation } = this.props;
-          let ImageData = navigation.getParam('passImage');
-          console.log("ImageData+++++++++++" + JSON.stringify(ImageData))
-          this.setState({ getImage: ImageData })
-        */
-    }
     render() {
         const { getImage } = this.state
         return (
