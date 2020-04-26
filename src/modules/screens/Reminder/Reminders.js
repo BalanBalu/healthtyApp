@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { Container, Content, View, Card, Grid, CardItem, Text, Switch, Right, Item, Radio, Row, Col, Form, Button, Left } from 'native-base';
+import { Container, Content, View, Card, Grid, CardItem, Text, Switch, Right, Item, Radio, Row, Col, Form, Button, Left, Toast } from 'native-base';
 import { StyleSheet, TextInput, AsyncStorage, Image , Dimensions } from 'react-native'
 import { FlatList } from 'react-native-gesture-handler';
 import CalendarStrip from 'react-native-calendar-strip';
@@ -34,8 +34,16 @@ class Reminder extends Component {
         this.props.navigation.navigate("login");
         return;
     }
-    const { reminder: { reminderResponse: { data }  } } = this.props;
-    this.setState({ data: data });
+    const { reminder: { reminderResponse: { data, success, message }  } } = this.props;
+    if(success === false ) {
+      Toast.show({
+        text: message,
+        duration: 3000,
+        type: 'warning'
+      })
+    } else {
+      this.setState({ data: data });
+    }
   }
 
   getAllReminderdata = async () => {
