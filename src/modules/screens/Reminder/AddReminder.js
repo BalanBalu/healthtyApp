@@ -7,7 +7,8 @@ import { RadioButton } from 'react-native-paper';
 import DateTimePicker from 'react-native-modal-datetime-picker';
 import { formatDate } from "../../../setup/helpers";
 import moment from 'moment';
-import { addReminderdata, getAllMedicineDataBySuggestion } from '../../providers/reminder/reminder.action.js';
+import { addReminderdata, getAllMedicineDataBySuggestion, addReminderOnProp, sheudleNotificationForAddReminders } from '../../providers/reminder/reminder.action.js';
+import { IS_ANDROID, IS_IOS } from '../../../setup/config';
 var { width, height } = Dimensions.get('window');
 const POSSIBLE_PAGE_CONTENT = {
   MEDICINE_CONTENT: 'MEDCINE_CONTENT',
@@ -59,7 +60,8 @@ class AddReminder extends Component {
       previewdisplay: false,
       
       medicineSugesstionArray: null,
-      setShowSuggestions: false
+      setShowSuggestions: false,
+      refreshCount : 1
 
     }
     this.callmedicinesearchService = debounce(this.callmedicinesearchService, 500);
@@ -113,7 +115,8 @@ class AddReminder extends Component {
 
   handleTimePicker = async (date) => {
     try {
-      this.setState({ timePlaceholder: true, isTimePickerVisible: false,  medicine_take_times: date  })
+      await this.setState({ timePlaceholder: true, isTimePickerVisible: false,  medicine_take_times: date  })
+      this.insertReminderData();
     } catch (error) {
       console.log(error);
     }
@@ -164,7 +167,6 @@ class AddReminder extends Component {
           duration: 3000
         });
       } else {
-        
         this.medicineTakeTimes.push({
           id: this.medicineTakeTimes.length + 1,
           medicine_take_time: this.state.medicine_take_times
@@ -179,9 +181,11 @@ class AddReminder extends Component {
 
 
   delete(index) {
+    console.log('Deliting...');
     let temp = this.medicineTakeTimes;
     temp.splice(index, 1)
     this.medicineTakeTimes = temp;
+    this.setState({ refreshCount: this.state.refreshCount + 1 })
   }
 
   AddReminderDatas = async () => {
@@ -195,14 +199,13 @@ class AddReminder extends Component {
         });
       } else {
         let userId = await AsyncStorage.getItem('userId');
-
         let data = {
           medicine_name: this.state.medicine_name,
           medicine_form: this.state.medicine_form,
           medicine_strength: this.state.medicine_strength,
           medicine_take_times: this.medicineTakeTimes,
           reminder_type: String(this.state.medicinePeriod),
-          is_reminder_enabled: true,
+          is_reminder_enabled: this.state.is_reminder_enabled,
           active: true
         }
         if (this.state.medicinePeriod === "everyday") {
@@ -213,9 +216,13 @@ class AddReminder extends Component {
           data.medicine_take_start_date = moment(this.state.medicine_take_one_date).toISOString()
         }
         let result = await addReminderdata(userId, data)
-        console.log('result', result)
+        
+        
+        
         if (result.success) {
-
+          data.userId = data;
+          addReminderOnProp(data);
+          sheudleNotificationForAddReminders([ data ])
           Toast.show({
             text: result.message,
             type: "success",
@@ -246,7 +253,7 @@ class AddReminder extends Component {
 
   render() {
     const { isTimePickerVisible, isDatePickerVisible, isstartDatePickerVisible, isendDatePickerVisible, selectedDate, text, 
-      medicine_name, active, medicine_form, medicine_strength, medicine_take_start_date, medicine_take_end_date, medicine_take_one_date, medicinePeriod, isDateTimePickerVisible, isEndDateTimePickerVisible, data } = this.state;
+      medicine_name, active, medicine_form, medicine_strength, medicine_take_start_date, medicine_take_end_date, medicine_take_one_date, medicinePeriod, is_reminder_enabled, isDateTimePickerVisible, isEndDateTimePickerVisible, data } = this.state;
     return (
       <Container>
         <ScrollView>
@@ -263,7 +270,7 @@ class AddReminder extends Component {
                   }}>
                     <TextInput 
                       placeholder="Medicine name"
-                      style={{ fontSize: 12, margin: 5, marginTop: 8,  borderRadius: 5  }}
+                      style={[{ fontSize: 12, marginLeft: 5,  borderRadius: 5  }, IS_ANDROID ? { } :  {  marginTop: 8 }]}
                       placeholderTextColor="#C1C1C1"
                       keyboardType={'default'}
                       returnKeyType={'go'}
@@ -307,7 +314,7 @@ class AddReminder extends Component {
                         <TextInput 
                          
                           placeholder="Medicine Form"
-                          style={{ fontSize: 12, margin: 5, marginTop: 8, borderRadius: 5 }}
+                          style={[{ fontSize: 12, marginLeft: 5, borderRadius: 5 }, IS_IOS ? {  marginTop: 8 }: { }]}
                           placeholderTextColor="#C1C1C1"
                           keyboardType={'default'}
                           returnKeyType={'go'}
@@ -329,7 +336,7 @@ class AddReminder extends Component {
 
                         <TextInput 
                           placeholder="Medicine Strength"
-                          style={{ fontSize: 12, margin: 5, marginTop: 8,  borderRadius: 5  }}
+                          style={[{ fontSize: 12, marginLeft: 5, borderRadius: 5 }, IS_IOS ? {  marginTop: 8 }: { }]}
                           placeholderTextColor="#C1C1C1"
                           keyboardType={'default'}
                           returnKeyType={'go'}
@@ -455,7 +462,7 @@ class AddReminder extends Component {
                 }
               </View>
               <Row>
-                <Col size={2.5} style={{ mariginTop: 10 }}>
+                <Col size={4} style={{ mariginTop: 10 }}>
                   
                   {this.state.pageContent == true ?
                     
@@ -474,7 +481,7 @@ class AddReminder extends Component {
               </Row> 
          
                     
-         
+               {this.state.pageContent === false ?    
                 <View  
                  pointerEvents={this.state.pageContent == false ? "auto" : "none"} style={this.state.pageContent == true ? styles.datetimedisabletext : styles.datetimeenabletext}
                   style={{ marginBottom: 10, marginTop: 10 }}>
@@ -504,23 +511,29 @@ class AddReminder extends Component {
                         </TouchableOpacity>
                       </View>
                     </Col>
-                    <Col size={2.5} style={{ mariginTop: 10 }}>
-                      <Button style={[styles.RemainderButton, { marginTop: 20 }  ]} onPress={this.insertReminderData}>
-
-                        <Text style={styles.RemainderButtonText}>Add</Text>
-                      </Button>
-                    </Col>
                   </Row>
-
-                  
-                                 
-                 
-                </View>
+                </View> : null }
             
 
           {this.state.previewdisplay == true ?
-              <View style={{ backgroundColor: '#f1f1f1', marginLeft: 10, marginRight: 10, paddingBottom: 10, marginTop: 10, borderRadius: 5 }}>
-                <Text style={{ textAlign: 'center', marginTop: 10 }}>Preview</Text>  
+             
+                <View style={{ backgroundColor: '#f1f1f1', marginRight: 10, paddingBottom: 10, marginTop: 10, borderRadius: 5 }}>
+                 <Row> 
+                      <Col size={5}>
+                        <Text style={{ textAlign: 'left' , marginTop: 10, marginLeft: 10 }}>Preview</Text>  
+                      </Col>
+                      <Col size={5} style={{ alignItems: 'flex-end' }}>
+                        <Row>
+                          <Text style={{ textAlign: 'left' , marginTop: 10, marginLeft: 10 }}>Notify Me</Text>  
+                          <Switch style={{ transform: [{ scaleX: .8 }, { scaleY: .8 }], backgroundColor: 'fff', alignSelf: 'center', marginTop: 2 }} trackColor={{ true: '#6FC41A', false: 'grey' }}
+                            trackColor={{ true: '#7F49C3' }}
+                            thumbColor={"#F2F2F2"}
+                            onValueChange={(val) => this.setState( { is_reminder_enabled : val } )}
+                            value={is_reminder_enabled}
+                          />
+                      </Row>
+                      </Col>
+                    </Row> 
               <Card style={{ borderRadius: 5, marginTop: 10 }}>
                 <Grid>
                   <Row style={{ marginTop: 5 }}>
@@ -539,19 +552,20 @@ class AddReminder extends Component {
                             data={this.medicineTakeTimes}
                             extraData={this.medicineTakeTimes}
                             keyExtractor={(item, index) => index.toString()}
-                            renderItem={({ item }) => (
-                              <Text style={{ marginLeft: 15, color: '#000' }}>{formatDate(item.medicine_take_time, 'HH:mm A')}</Text>
-                          )} />
+                            renderItem={({ item, index }) => (
+                              <Row>
+                               <Col size={7}>   
+                                  <Text style={{ marginLeft: 15, color: '#000' }}>{formatDate(item.medicine_take_time, 'HH:mm A')}</Text>
+                                </Col>
+                                <Col size={3}>
+                                  <Icon onPress={() => this.delete(index)} name={IS_IOS ? 'ios-close-circle': 'md-close-circle'}
+                                    style={{ color: 'red', fontSize: 15 }} />
+                                </Col>
+                              </Row>
+                          )}/>
                         </Col>
 
-                        <Col size={3}>
-                          <Switch style={{ transform: [{ scaleX: .8 }, { scaleY: .8 }], backgroundColor: 'fff'  }} trackColor={{ true: '#6FC41A', false: 'grey' }}
-                            trackColor={{ true: '#7F49C3' }}
-                            thumbColor={"#F2F2F2"}
-                            onValueChange={(val) => this.setState( { active : val } )}
-                            value={active}
-                          />
-                        </Col>
+                        
                       </Row>
                     </Col>
                   </Row>

@@ -87,7 +87,7 @@ class NotifService {
 
   scheduleNotif(subText, bigText, scheduleTime) {
     PushNotification.localNotificationSchedule({
-      date: new Date(Date.now() + (30 * 1000)), // in 30 secs
+      date: scheduleTime, // in 30 secs
 
       /* Android Only Properties */
       ticker: "My Notification Ticker", // (optional)
