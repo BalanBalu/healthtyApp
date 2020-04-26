@@ -4,10 +4,10 @@ import { dateDiff, getMoment, formatDate } from '../../../setup/helpers'
 
 
 export function medicineRateAfterOffer(item) {
-  
+
 
   let amount = ''//for binding purpose used empty string
-  if(item===undefined){
+  if (item === undefined) {
     return amount
   }
   if (item.discount_value === undefined) {
@@ -25,8 +25,8 @@ export function medicineRateAfterOffer(item) {
       amount = parseInt(item.price) - parseInt(item.discount_value);
       return amount
     }
-  } 
-else {
+  }
+  else {
     return amount
   }
 
@@ -36,7 +36,7 @@ else {
 export async function ProductIncrementDecreMent(quantity, price, operation, threshold_limits) {
 
   let itemQuantity = (quantity === undefined ? 0 : quantity);
- 
+
   let totalAmount = price;
   let threshold_message = null;
   let threshold_limit = threshold_limits || itemQuantity + 1
@@ -75,7 +75,7 @@ export async function ProductIncrementDecreMent(quantity, price, operation, thre
 
 export function renderMedicineImage(data) {
   console.log(data)
-  let source =  require('../../../../assets/images/paracetamol.jpg')
+  let source = require('../../../../assets/images/paracetamol.jpg')
   if (data.medicine_images) {
     if (data.medicine_images[0]) {
       console.log(data.medicine_images[0].imageURL)
@@ -85,20 +85,29 @@ export function renderMedicineImage(data) {
   return (source)
 }
 export function renderMedicineImageAnimation(data) {
- 
- 
-  let source =  require('../../../../assets/images/paracetamol.jpg')
+
+
+  let source = require('../../../../assets/images/paracetamol.jpg')
   if (data) {
-      source = { uri: data.imageURL }
+    source = { uri: data.imageURL }
+  }
+  return (source)
+}
+export function renderMedicineImageView(data) {
+
+
+  let source = require('../../../../assets/images/paracetamol.jpg')
+  if (data) {
+    source = { uri: data }
   }
   return (source)
 }
 export function renderPrescriptionImageAnimation(data) {
- 
- 
-  let source =  require('../../../../assets/images/paracetamol.jpg')
+
+
+  let source = require('../../../../assets/images/paracetamol.jpg')
   if (data) {
-      source = { uri: data.prescription_path }
+    source = { uri: data.prescription_path }
   }
   return (source)
 }
@@ -179,48 +188,48 @@ export function getMedicineWeightUnit(weight, unit) {
     return medicineWeightUnit
   }
   if (weight && weight) {
-    medicineWeightUnit = `${'('+(weight || '') + ' ' + (unit || '') + ' )'}`;
+    medicineWeightUnit = `${'(' + (weight || '') + ' ' + (unit || '') + ' )'}`;
     return medicineWeightUnit
   }
   else {
     return medicineWeightUnit
   }
 }
-  
+
 export function quantityPriceSort(data) {
   data.forEach(element => {
     if (element.medPharDetailInfo) {
-        if (element.medPharDetailInfo.variations) {
-            
-            element.medPharDetailInfo.variations.sort(function (firstVarlue, secandValue) {
-                
-               
-                    if(firstVarlue.total_quantity === 0) return 1;
-                    else if(secandValue.total_quantity === 0) return -1;
-                    else return firstVarlue.price - secandValue.price;
-                });
-               
-        }
+      if (element.medPharDetailInfo.variations) {
+
+        element.medPharDetailInfo.variations.sort(function (firstVarlue, secandValue) {
+
+
+          if (firstVarlue.total_quantity === 0) return 1;
+          else if (secandValue.total_quantity === 0) return -1;
+          else return firstVarlue.price - secandValue.price;
+        });
+
+      }
     }
-})
-return data
+  })
+  return data
 }
 
 
 export const statusBar = {
 
   "PENDING":
-  
-    { status: 'Ordered and Approved', checked: true, drawLine: true },
- 
- 
 
-  "APPROVED": 
-  { status: 'Packed and Out for Delivery', checked: false, },
-  
-  "CANCELED": 
+    { status: 'Ordered and Approved', checked: true, drawLine: true },
+
+
+
+  "APPROVED":
+    { status: 'Packed and Out for Delivery', checked: false, },
+
+  "CANCELED":
     { status: 'Canceled the order', checked: true, drawLine: true },
 
-  
+
 
 }

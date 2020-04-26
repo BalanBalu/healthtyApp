@@ -69,7 +69,7 @@ class MedicineCheckout extends Component {
 
     clickedHomeDelivery = async () => {
         try {
-            patientFields = "first_name,last_name,mobile_no,email,address,delivery_address"
+            let patientFields = "first_name,last_name,mobile_no,email,address,delivery_address"
             let userId = await AsyncStorage.getItem('userId');
             this.setState({ isLoading: true });
             let patientResult = await fetchUserProfile(userId, patientFields);
@@ -77,7 +77,7 @@ class MedicineCheckout extends Component {
             let deliveryAddressArray = []
             if (patientResult !== null) {
                 this.setState({ isLoading: false });
-                full_name = patientResult.first_name + " " + patientResult.last_name,
+                let full_name = patientResult.first_name + " " + patientResult.last_name,
                     mobile_no = patientResult.mobile_no
                 this.setState({ full_name, mobile_no })
                 if (patientResult.delivery_address)
@@ -106,12 +106,12 @@ class MedicineCheckout extends Component {
         try {
 
 
-            type = "PHARMACY_MEDICINE_DELIVERY_CHARGES"
+            let type = "PHARMACY_MEDICINE_DELIVERY_CHARGES"
             let deliveryCharge = await getCurrentVersion(type);
 
             if (deliveryCharge.success) {
-                deliveryDetails = deliveryCharge.data[0].value
-                deliveryTax = (parseInt(deliveryDetails.delivery_charges) * parseInt(deliveryDetails.Gst_tax) / 100)
+                let deliveryDetails = deliveryCharge.data[0].value
+                let deliveryTax = (parseInt(deliveryDetails.delivery_charges) * parseInt(deliveryDetails.Gst_tax) / 100)
                 deliveryDetails.delivery_tax = deliveryTax
                 this.setState({ deliveryDetails })
                 this.selectedItem(this.state.itemSelected)
@@ -122,8 +122,10 @@ class MedicineCheckout extends Component {
     }
 
     onProceedToPayment(navigationToPayment) {
-        debugger
-        const { medicineDetails, selectedAddress, mobile_no, full_name, medicineTotalAmountwithDeliveryChage, itemSelected, isPrescription, isPharmacyRecomentation, recommentationData } = this.state;
+        // debugger
+        const { medicineDetails, selectedAddress, mobile_no, full_name, medicineTotalAmountwithDeliveryChage, itemSelected, isPrescription, isPharmacyRecomentation, recommentationData, deliveryDetails } = this.state;
+
+
         if (medicineDetails.length === 0) {
             Toast.show({
                 text: 'No Medicines Added to Checkout',
@@ -166,6 +168,7 @@ class MedicineCheckout extends Component {
         }
 
         const paymentPageRequestData = {
+
             service_type: SERVICE_TYPES.PHARMACY,
             amount: medicineTotalAmountwithDeliveryChage,
             bookSlotDetails: {
@@ -175,8 +178,8 @@ class MedicineCheckout extends Component {
                 diseaseDescription: medicinceNames.slice(0, -1) || 'Upload prescription',
                 medicineDetails: medicineOrderData,
                 delivery_option: itemSelected,
-                delivery_charges: deliveryDetails.delivery_charges,
-                delivery_tax: deliveryDetails.delivery_tax,
+                delivery_charges: deliveryDetails !== null ? deliveryDetails.delivery_charges : 0,
+                delivery_tax: deliveryDetails !== null ? deliveryDetails.delivery_tax : 0,
                 pickup_or_delivery_address: {
                     mobile_number: selectedAddress.mobile_no || mobile_no || BASIC_DEFAULT.mobile_no,
                     full_name: selectedAddress.full_name || selectedAddress.name || full_name,
@@ -206,10 +209,23 @@ class MedicineCheckout extends Component {
 
         }
         if (isPharmacyRecomentation === true) {
-            pharmacy_ids = []
-            recommentationData.map(ele => {
-                pharmacy_ids.push(ele.pharmacy_id)
+            let recommentation_pharmacy_data = []
+
+            medicineOrderData.map(ele => {
+                let temp = recommentationData[0].recomment_medicine_data.find(element => {
+
+                    return String(element.medicine_id) === String(ele.medicine_id)
+                })
+
+
+                if (temp !== undefined) {
+                    ele.medicine_recommentation_max_price = temp.pharmacy_medicine_recommentation_price
+                }
+                return ele
             })
+
+            console.log('recommentationData[0].medicine_total_amount')
+            console.log(recommentationData[0])
             if (itemSelected === 'STORE_PICKUP') {
                 paymentPageRequestData.amount = recommentationData[0].medicine_total_amount
             }
@@ -217,8 +233,19 @@ class MedicineCheckout extends Component {
                 paymentPageRequestData.amount = recommentationData[0].medicine_total_amount + deliveryDetails.delivery_charges + deliveryDetails.delivery_tax
 
             }
+
             paymentPageRequestData.bookSlotDetails.fee = recommentationData[0].medicine_total_amount;
-            paymentPageRequestData.bookSlotDetails.pharmacy_ids = pharmacy_ids
+
+            recommentationData.map(ele => {
+
+                recommentation_pharmacy_data.push({
+                    pharmacy_id: ele.pharmacy_id,
+                    recomment_medicine_data: ele.recomment_medicine_data
+                })
+            })
+
+            paymentPageRequestData.bookSlotDetails.recommentation_pharmacy_data = recommentation_pharmacy_data
+            paymentPageRequestData.bookSlotDetails.medicineDetails = medicineOrderData
         }
 
         console.log(paymentPageRequestData)
@@ -261,14 +288,14 @@ class MedicineCheckout extends Component {
             if (medicineOrderData.length !== 0) {
                 const { bookappointment: { locationCordinates } } = this.props;
 
-                purcharseProductsData = {
+                let purcharseProductsData = {
                     coordinates: locationCordinates,
                     type: 'Point',
                     maxDistance: 300000000000,
                     order_items: medicineOrderData,
                     medicine_total_amount: amount
                 };
-                recomentationResult = await getPurcharseRecomentation(purcharseProductsData)
+                let recomentationResult = await getPurcharseRecomentation(purcharseProductsData)
 
                 if (recomentationResult.success) {
                     let data = recomentationResult.data.sort(function (firstVarlue, secandValue) {
@@ -311,7 +338,10 @@ class MedicineCheckout extends Component {
     selectedItem(value) {
         if (value == 'HOME_DELIVERY') {
             let selectedAddress = null
-            medicineTotalAmountwithDeliveryChage = this.state.medicineTotalAmount + this.state.deliveryDetails.delivery_tax + this.state.deliveryDetails.delivery_charges
+            let medicineTotalAmountwithDeliveryChage = this.state.medicineTotalAmount
+            if (this.state.deliveryDetails !== null) {
+                medicineTotalAmountwithDeliveryChage = this.state.medicineTotalAmount + this.state.deliveryDetails.delivery_tax + this.state.deliveryDetails.delivery_charges
+            }
             if (this.state.deliveryAddressArray.length !== 0) {
                 selectedAddress = this.state.deliveryAddressArray[0]
             }
@@ -329,11 +359,11 @@ class MedicineCheckout extends Component {
     backNavigation = async (navigationData) => {
         try {
             const { navigation } = this.props;
-            // if (navigation.state.params) {
-            //   if (navigation.state.params.hasReloadAddress) {
+            if (navigation.state.params) {
+              if (navigation.state.params.hasReloadAddress) {
             this.clickedHomeDelivery();  // Reload the Reported issues when they reload
-            //   }
-            // };
+              }
+            };
 
         } catch (e) {
             console.log(e)
@@ -449,7 +479,7 @@ class MedicineCheckout extends Component {
                                         null}
 
 
-                                    {pickupOPtionEnabled == true && pharmacyInfo != null ?
+                                    {pickupOPtionEnabled == true && pharmacyInfo != null && isPharmacyRecomentation === false ?
                                         <View style={{ backgroundColor: '#fff', padding: 10, marginTop: 5 }}>
                                             <Row>
                                                 <Col size={5}>
@@ -516,7 +546,7 @@ class MedicineCheckout extends Component {
 
                                             </Col>
                                         </Row>}
-                                    {deliveryDetails != null && itemSelected == 'HOME_DELIVERY' ?
+                                    {deliveryDetails !== null && itemSelected === 'HOME_DELIVERY' ?
                                         <View>
                                             <Row style={{ marginTop: 5 }}>
                                                 <Col size={8}>
