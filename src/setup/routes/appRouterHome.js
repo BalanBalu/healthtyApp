@@ -567,7 +567,7 @@ const HomeStack = createStackNavigator({
   ChosePharmacyList: {
     screen: ChosePharmacyList,
     navigationOptions: {
-      title: ' Chose Pharmacy List'
+      title: ' Choose Pharmacy List'
     }
   },
   //=================== Medicine Order Details =============
