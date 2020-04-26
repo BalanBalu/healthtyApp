@@ -7,7 +7,7 @@ import { formatDate } from '../../../setup/helpers';
 export async function addReminderdata(userId,data) {
     try {
       
-      let endPoint = '/reminder/medicines/user/' + userId;
+      let endPoint = 'reminder/medicines/user/' + userId;
       console.log(endPoint);
       let response = await putService(endPoint, data);
       console.log('response', response);
@@ -23,7 +23,8 @@ export async function addReminderdata(userId,data) {
 
   export async function getReminderData(userId) {
     try {
-      let endPoint = '/reminder/medicines/user/' + userId;
+      let endPoint = 'reminder/medicines/user/' + userId;
+      console.log(endPoint);
       let response = await getService(endPoint);
       let respData = response.data;
       storeOnProp(respData);
