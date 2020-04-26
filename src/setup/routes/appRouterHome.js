@@ -572,19 +572,13 @@ const HomeStack = createStackNavigator({
   "Medicine Orders": {
     screen: MyOrdersList,
     navigationOptions: {
-      title: 'Orders List',
-    }
-  },
-  MyOrdersList: {
-    screen: MyOrdersList,
-    navigationOptions: {
-      title: 'Order List'
+      title: 'My Medicine Orders',
     }
   },
   OrderDetails: {
     screen: OrderDetails,
     navigationOptions: {
-      title: 'My Order'
+      title: 'Medicine Order Details'
     }
   },
   MedicineInfo: {

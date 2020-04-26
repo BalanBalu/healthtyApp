@@ -118,6 +118,9 @@ class OrderDetails extends Component {
         const deliveryCharge = orderInfo.delivery_charges;
         const deliveryTax = orderInfo.delivery_tax
         let totalAmount = Number(Number(itemTotal) + Number(deliveryCharge || 0) + Number(deliveryTax || 0)).toFixed(2)
+        if(itemTotal === 0) {
+            return totalAmount + ' + Medicine Charges By Pharmacy'
+        }
         return `${totalAmount || ''}`
     }
     getPaymentInfo = async (paymentId) => {
@@ -337,7 +340,7 @@ class OrderDetails extends Component {
 
                                 </Col>
                                 <Col size={5}>
-                                    <Text style={styles.rsText}> {'prescription medicine Amount added later'}</Text>
+                                    <Text style={styles.rsText}> {'Medicine Charges By Pharmacy'}</Text>
                                 </Col>
                             </Row>
                         }
