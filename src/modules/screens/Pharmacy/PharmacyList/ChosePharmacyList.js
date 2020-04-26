@@ -106,7 +106,6 @@ class ChosePharmacyList extends Component {
     renderStickeyHeader() {
         return (
             <View style={{ width: '100%' }} >
-                <Text style={{ fontFamily: 'OpenSans', fontSize: 12, marginLeft: 10, marginTop: 10 }}>Search pharmacy by their </Text>
                 <Row style={styles.SearchRow}>
 
                     <Col size={9.1} style={{ justifyContent: 'center', }}>
