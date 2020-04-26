@@ -133,7 +133,7 @@ class OrderDetails extends Component {
         }
     }
     async cancelOreder() {
-        let medicineData = [];
+      
         const { orderDetails } = this.state
 
         let userId = await AsyncStorage.getItem('userId');
@@ -276,7 +276,7 @@ class OrderDetails extends Component {
                                         autoplayLoop
                                         data={orderDetails.prescription_data.prescription_items}
                                         renderItem={({ item }) =>
-                                            <TouchableOpacity onPress={() => this.props.navigation.navigate("ImageView", { passImage: item.prescription_path, title: 'prescription' })}>
+                                            <TouchableOpacity onPress={() => this.props.navigation.navigate("ImageView", { passImage: {uri:item.prescription_path}, title: 'prescription' })}>
                                                 <Image
                                                     source={renderPrescriptionImageAnimation(item)}
                                                     style={{
@@ -305,10 +305,17 @@ class OrderDetails extends Component {
                                     </Col>
                                     <Col size={8} style={[styles.nameText, { marginTop: 5 }]}>
                                         <Text style={styles.nameText}>{item.medicine_name}</Text>
+                                        {orderDetails.is_order_type_recommentation===true?
+                                        <Text style={styles.pharText}>{'mediflic pharmacy'}</Text>:
                                         <Text style={styles.pharText}>{item.pharmacyInfo.name}</Text>
+                                        }
+
                                     </Col>
                                     <Col size={2} style={[styles.nameText, { alignSelf: 'flex-end' }]}>
-                                        <Text style={styles.amountText}>₹{item.final_price}</Text>
+                                    {orderDetails.is_order_type_recommentation===true?
+                                        <Text style={styles.amountText}>₹{item.medicine_recommentation_max_price}</Text>
+                                        :<Text style={styles.amountText}>₹{item.final_price}</Text>
+                                    }
                                     </Col>
                                 </Row>
                             } />

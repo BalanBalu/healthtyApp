@@ -40,7 +40,7 @@ class ImageView extends Component {
                         minScale={0.6}
                         imageHeight={300}>
                         <Image
-                            source={{uri:getImage}}
+                            source={getImage}
                             style={{
                                 width: 300, height: 300
                             }}

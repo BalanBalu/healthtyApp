@@ -354,7 +354,7 @@ class MedicineInfo extends Component {
                                             autoplayLoop
                                             data={medicineData.medInfo.medicine_images}
                                             renderItem={({ item }) =>
-                                                <TouchableOpacity onPress={() => this.props.navigation.navigate("ImageView", { passImage: item.imageURL, title: medicineData.medInfo.medicine_name })}>
+                                                <TouchableOpacity onPress={() => this.props.navigation.navigate("ImageView", { passImage:{uri: item.imageURL}, title: medicineData.medInfo.medicine_name })}>
                                                     <Image
                                                         source={renderMedicineImageAnimation(item)}
                                                         style={{
