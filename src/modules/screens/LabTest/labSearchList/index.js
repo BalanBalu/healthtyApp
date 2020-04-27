@@ -158,8 +158,28 @@ class labSearchList extends Component {
         )
     }
 
-    onPressToContinue4PaymentReview() {   // navigate to next further process
-        alert('Continue pressed')
+    onPressToContinue4PaymentReview(labData, seletedSlotItem ,labId) {   // navigate to next further process
+        console.log(labData);
+        console.log(seletedSlotItem);
+        console.log(labId);
+        debugger    
+        const { labInfo , labCatInfo } = labData;
+        let packageDetails = {
+            lab_id: labInfo.lab_id ,
+            lab_test_categories_id: labCatInfo._id,
+            // Fields which we need to get it from Backend API 
+                lab_test_descriptiion: "genral",
+                fee: 1000,
+                extra_charges: 50,
+                mobile_no: "98076540211",
+            //  // Fields which we need to get it from Backend API 
+            lab_name: labInfo.lab_name,
+            category_name: labCatInfo.category_name,
+            appointment_starttime: seletedSlotItem.slotStartDateAndTime,
+            appointment_endtime: seletedSlotItem.slotEndDateAndTime,
+            "location": labInfo.location
+        }
+        this.props.navigation.navigate('labConfirmation', { packageDetails: packageDetails })
     }
 
     renderLabListCards(item) {
@@ -183,9 +203,10 @@ class labSearchList extends Component {
                                             <Text note style={{ fontFamily: 'OpenSans', marginTop: 2, fontSize: 11 }}>{item.labCatInfo.category_name}</Text>
                                         </Row>
                                         <Row style={{ marginLeft: 55, }}>
-                                            {item.labInfo.location.address ?
+                                            {item.labInfo.location && item.labInfo.location.address ?
                                                 <View>
-                                                    <Text note style={{ fontFamily: 'OpenSans', marginTop: 5, fontSize: 11, color: '#4c4c4c' }}>{item.labInfo.location.address.no_and_street + ' , ' +
+                                                    <Text note style={{ fontFamily: 'OpenSans', marginTop: 5, fontSize: 11, color: '#4c4c4c' }}>{
+                                                        item.labInfo.location.address.no_and_street + ' , ' +
                                                         item.labInfo.location.address.district + ' , ' +
                                                         item.labInfo.location.address.city + ' , ' +
                                                         item.labInfo.location.address.state}</Text>

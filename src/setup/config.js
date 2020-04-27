@@ -4,7 +4,7 @@ export const IS_IOS = Platform.OS === 'ios';
 
 /*** Change ON Prod Start ***/
 
-export const API_URL = 'https://medflic-qa-api.aopks.com/api/';
+export const API_URL = 'https://medflic-qa.aopks.com/api/';
 export const CATEGORY_BASE_URL = API_URL.substring(0, API_URL.length - 4) + 'images/category/';
 export const CHAT_API_URL = 'https://chat-qa-api.aopks.com';
 
@@ -36,7 +36,8 @@ export const SERVICE_TYPES = {
     APPOINTMENT: 'APPOINTMENT',
     CHAT:'CHAT',
     PHARMACY: 'PHARMACY',
-    VIDEO_CONSULTING: 'VIDEO_CONSULTING'
+    VIDEO_CONSULTING: 'VIDEO_CONSULTING',
+    LAB_TEST: 'LAB_TEST'
 }
 export const MAX_DISTANCE_TO_COVER = 30000; // in meters Doctor Can be search Within in the AREA
 export const PHARMACY_MAX_DISTANCE_TO_COVER = 10000;

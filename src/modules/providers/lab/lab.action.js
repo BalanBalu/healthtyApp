@@ -86,7 +86,7 @@ export const getLapTestPaymentDetails = async (paymentId) => {
     }
 }
 
-export async function InsertAppointment(data) {
+export async function insertAppointment(data) {
     try {
         let endPoint = 'lab-test/appointments';
         let response = await postService(endPoint, data);

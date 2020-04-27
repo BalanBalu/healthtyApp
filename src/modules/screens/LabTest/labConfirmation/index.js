@@ -10,7 +10,8 @@ import { dateDiff } from '../../../../setup/helpers';
 import { getAddress } from '../../../common'
 import { InsertAppointment } from '../../../providers/lab/lab.action';
 import { getUserGenderAndAge } from '../CommonLabTest'
-
+import { SERVICE_TYPES } from '../../../../setup/config'
+import BookAppointmentPaymentUpdate from '../../../providers/bookappointment/bookAppointment';
 let patientDetails = [];
 class LabConfirmation extends Component {
     constructor(props) {
@@ -39,11 +40,12 @@ class LabConfirmation extends Component {
         };
     }
     async componentDidMount() {
-        // const packageDetails = navigation.getParam('packageDetails') || [];
-        // if (packageDetails != undefined) {
-        //     this.setState({ packageDetails })
-        // }
-        let packageDetails = {
+        const { navigation } = this.props;
+        const packageDetails = navigation.getParam('packageDetails') || {};
+        if (packageDetails != undefined) {
+            this.setState({ packageDetails })
+        }
+       /* let packageDetails = {
             "lab_id": "5e7d9676ebd1650d14355677",
             "lab_test_categories_id": "5e78d0c127490f934d10de70",
             "lab_test_descriptiion": "genral",
@@ -70,7 +72,7 @@ class LabConfirmation extends Component {
                     "pin_code": "60010"
                 }
             },
-        }
+        } */
         this.setState({ packageDetails })
         await this.getUserProfile();
     }
@@ -228,16 +230,18 @@ class LabConfirmation extends Component {
         }
     }
 
-    proceedToLabTestAppointment = async () => {
-        const { patientDetails, packageDetails, selectedAddress } = this.state
+    proceedToLabTestAppointment = async (paymentMode) => {
+        let { patientDetails, packageDetails, selectedAddress, itemSelected } = this.state
         try {
-            if (selectedAddress == null) {
+            if ( itemSelected === 'TEST_AT_HOME' &&  selectedAddress == null) {
                 Toast.show({
                     text: 'kindly chosse Address',
                     type: 'warning',
                     duration: 3000
                 })
                 return false;
+            } else {
+                selectedAddress = packageDetails.location;
             }
             console.log("address", selectedAddress)
             let patientData = [];
@@ -246,6 +250,7 @@ class LabConfirmation extends Component {
             })
             this.setState({ isLoading: true });
             const userId = await AsyncStorage.getItem('userId')
+            
             let requestData = {
                 user_id: userId,
                 patient_data: patientData,
@@ -269,33 +274,48 @@ class LabConfirmation extends Component {
                         pin_code: selectedAddress.address.pin_code
                     }
                 },
-
-                status: "PENDING",
+                status: paymentMode === 'cash' ? "PENDING" : 'BOOKING_IN_PROGRESS',
                 status_by: "USER",
                 booked_from: "Mobile",
-                // payment_id: paymentId
             };
-            let response = await InsertAppointment(requestData);
-            if (response.success) {
-                Toast.show({
-                    text: 'Appointment has Succcessfully Requested',
-                    type: "success",
-                    duration: 3000
+            if(paymentMode === 'cash') {
+                this.BookAppointmentPaymentUpdate = new BookAppointmentPaymentUpdate();
+                let response = await this.BookAppointmentPaymentUpdate.updatePaymentDetails(true, {}, 'cash', requestData, SERVICE_TYPES.LAB_TEST, userId, 'cash');
+                if (response.success) {
+                    this.props.navigation.navigate('SuccessChat', { manualNaviagationPage : 'Home' });
+                    Toast.show({
+                        text: 'Appointment has Succcessfully Requested',
+                        type: "success",
+                        duration: 3000
+                    });
+                }
+                else {
+                    Toast.show({
+                        text: response.message,
+                        type: "danger",
+                        duration: 3000
+                    });
+                    this.setState({ isLoading: false });
+                }
+    
+            } else {
+                let response = await insertAppointment(requestData);
+                response.labTestAppointmentId = response.labTestAppointmentId;
+                this.props.navigation.navigate('paymentPage', {
+                    service_type: SERVICE_TYPES.LAB_TEST,
+                    bookSlotDetails: requestData,
+                    amount: packageDetails.fee
                 });
             }
-            else {
-                Toast.show({
-                    text: response.message,
-                    type: "danger",
-                    duration: 3000
-                });
-                this.setState({ isLoading: false });
-            }
-
         }
         catch (e) {
 
             console.log(e);
+            Toast.show({
+                text: 'Exception While Creating the Appointment' + e,
+                type: "danger",
+                duration: 3000
+            });
         }
         finally {
             this.setState({ isLoading: false });
@@ -673,12 +693,12 @@ class LabConfirmation extends Component {
                     <FooterTab>
                         <Row>
                             <Col size={5} style={{ alignItems: 'center', justifyContent: 'center', backgroundColor: '#fff' }}>
-                                <TouchableOpacity >
+                                <TouchableOpacity onPress={() => this.proceedToLabTestAppointment('cash')}>
                                     <Text style={{ fontSize: 16, fontFamily: 'OpenSans', color: '#000', fontWeight: '400' }}>{itemSelected == 'TEST_AT_HOME' ? 'Cash On Home' : 'Cash on Lab'} </Text>
                                 </TouchableOpacity>
                             </Col>
                             <Col size={5} style={{ alignItems: 'center', justifyContent: 'center', backgroundColor: '#8dc63f' }}>
-                                <TouchableOpacity onPress={() => this.proceedToLabTestAppointment()}>
+                                <TouchableOpacity onPress={() => this.proceedToLabTestAppointment('online')}>
                                     <Text style={{ fontSize: 16, fontFamily: 'OpenSans', color: '#fff', fontWeight: '400' }}>Proceed</Text>
                                 </TouchableOpacity>
                             </Col>

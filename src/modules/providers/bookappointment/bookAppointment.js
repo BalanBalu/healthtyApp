@@ -5,7 +5,7 @@ import { SERVICE_TYPES } from '../../../setup/config'
 import { possibleChatStatus } from '../../../Constants/Chat';
 import { updateVideoConsuting, } from '../../screens/VideoConsulation/services/video-consulting-service'
 import { POSSIBLE_VIDEO_CONSULTING_STATUS } from '../../screens/VideoConsulation/constants';
-
+import { insertAppointment } from '../lab/lab.action';
 export default class BookAppointmentPaymentUpdate {
 
 
@@ -128,6 +128,33 @@ export default class BookAppointmentPaymentUpdate {
                 if (resultData.success) {
                     const chatApprovalStatus = await this.updateVideoConsulting(bookSlotDetails.consultationId, userId, paymentId, bookSlotDetails, isSuccess)
                     return chatApprovalStatus
+                } else {
+                    return {
+                        success: false,
+                        message: resultData.message
+                    }
+                }
+            } else if (serviceType === SERVICE_TYPES.LAB_TEST) {
+                paymentData = {
+                    payer_id: userId,
+                    payer_type: 'user',
+                    payment_id: paymentId,
+                    amount: bookSlotDetails.fee,
+                    amount_paid: !isSuccess || modeOfPayment === 'cash' ? 0 : bookSlotDetails.fee,
+                    amount_due: !isSuccess || modeOfPayment === 'cash' ? bookSlotDetails.fee : 0,
+                    currency: 'INR',
+                    service_type: serviceType,
+                    booking_from: 'APPLICATION',
+                    is_error: !isSuccess,
+                    error_message: razorPayRespData.description || null,
+                    payment_mode: modeOfPayment,
+                    payment_method: paymentMethod
+                }
+                let resultData = await createPaymentRazor(paymentData);
+                console.log(resultData);
+                if (resultData.success) {
+                    const statusResponse = await this.updateNewBookLabTestAppointment(bookSlotDetails.labTestAppointmentId, bookSlotDetails, paymentId)
+                    return statusResponse
                 } else {
                     return {
                         success: false,
@@ -300,5 +327,33 @@ export default class BookAppointmentPaymentUpdate {
                 success: false,
             }
         }
+    }
+
+    updateNewBookLabTestAppointment = async (labTestAppointmentId, appointmentData, paymentId ) => {
+        let resultData = {};
+        if(labTestAppointmentId) {
+            // Update Appointment
+        } else {
+            // Create Appointment in case of cash
+            const createAppointmentData = {
+                ...appointmentData,
+                payment_id: paymentId
+            }
+            resultData = await insertAppointment(createAppointmentData);
+        }
+        console.log(resultData)
+        if (resultData.success) {
+            return {
+                message: resultData.message,
+                success: true,
+                tokenNo: resultData.tokenNo
+            }
+        } else {
+            return {
+                message: resultData.message,
+                success: false,
+            }
+        }       
+        
     }
 }
