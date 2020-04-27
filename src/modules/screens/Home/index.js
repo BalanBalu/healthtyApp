@@ -28,7 +28,7 @@ MapboxGL.setAccessToken(MAP_BOX_PUBLIC_TOKEN);
 import NotifService from '../../../setup/NotifService';
 import COVID19Stats from './Covid19-stats';
 import { getReminderData } from '../../providers/reminder/reminder.action.js';
-
+import FastImage from 'react-native-fast-image'
 const debounce = (fun, delay) => {
     let timer = null;
     return function (...args) {
@@ -658,7 +658,7 @@ class Home extends Component {
                                         <Col style={styles.maincol}>
                                             <TouchableOpacity onPress={() => this.navigateToCategorySearch(item.category_name)}
                                                 style={{ justifyContent: 'center', alignItems: 'center', width: '100%', paddingTop: 5, paddingBottom: 5 }}>
-                                                <Image
+                                                <FastImage
                                                     source={{ uri: item.imageBaseURL + item.category_id + '.png' }}
                                                     style={{
                                                         width: 50, height: 50, alignItems: 'center'

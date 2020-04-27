@@ -4,7 +4,7 @@ import { Container, Content, Text, Card, Button} from 'native-base';
 import { Col, Row, Grid } from 'react-native-easy-grid';
 import axios from 'axios';
 
-class COVID19Stats extends Component {
+class COVID19Stats extends React.PureComponent {
    
     constructor(props) {
         super(props)
