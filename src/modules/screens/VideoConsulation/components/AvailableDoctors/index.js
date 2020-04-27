@@ -356,7 +356,7 @@ onBookButtonPress4PaymentChat = async (doctorId, fee) => {
    getNextAvailabiltyData(item) {
         const currentDay = new Date().getDay();
         if(item.availabilityData[0]) {
-            startTime = String(item.availabilityData[0].start_time).split(':');
+            let startTime = String(item.availabilityData[0].start_time).split(':');
             const timing = new Date(); 
             timing.setUTCHours(startTime[0]);
             timing.setUTCMinutes(startTime[1]);
@@ -410,7 +410,7 @@ onBookButtonPress4PaymentChat = async (doctorId, fee) => {
                                            
                                     </Row>
                                     <Row style={{ marginTop: 2 }}>
-                                        <Text style={styles.docname}>{ 'Specialist in '} 
+                                        <Text style={styles.docname}>{ ''} 
                                             <Text note style={styles.status}>{ this.getDoctorCategory(item) }</Text>
                                         </Text>
                                     </Row>

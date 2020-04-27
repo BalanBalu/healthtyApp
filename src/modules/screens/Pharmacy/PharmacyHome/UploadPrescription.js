@@ -3,7 +3,6 @@ import { Container, Content, Text, Title, Header, Button, H3, Item, List, ListIt
 import { Col, Row, Grid } from 'react-native-easy-grid';
 import { StyleSheet, AsyncStorage, TextInput, Modal, FlatList, Image, Dimensions, Platform } from 'react-native';
 import { TouchableOpacity, ScrollView } from 'react-native-gesture-handler';
-// import ImagePicker from 'react-native-image-picker';
 import ImagePicker from 'react-native-image-crop-picker';
 import { uploadMultiPart } from '../../../../setup/services/httpservices'
 import { hasLoggedIn } from '../../../providers/auth/auth.actions';

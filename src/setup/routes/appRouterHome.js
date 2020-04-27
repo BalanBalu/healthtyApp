@@ -31,7 +31,6 @@ import PaymentSuccess from "../../modules/screens/PaymentSuccess";
 import InsertReview from '../../modules/screens/Reviews/InsertReview';
 import WishList from "../../modules/screens/wishList";
 import Notification from "../../modules/screens/Notification";
-import Chat from "../../modules/screens/chat";
 import { Col, Grid, Row } from 'react-native-easy-grid';
 import { logout } from '../../modules/providers/auth/auth.actions';
 import termsAndConditions from '../../components/termsAndConditions'
@@ -425,12 +424,6 @@ const HomeStack = createStackNavigator({
     }),
   },
   // ============Chat ========================
-  Chat: {
-    screen: Chat,
-    navigationOptions: {
-      title: 'Online Chat'
-    }
-  },
   "Chat Service": {
     screen: AvailableDoctors4Chat,
     navigationOptions: {
@@ -522,7 +515,7 @@ const HomeStack = createStackNavigator({
   medicineSearchList: {
     screen: MedicineSearchList,
     navigationOptions: ({ navigation }) => ({
-      title: 'Search List',
+      title: 'Medicine List',
       headerRight: (
         <Grid style={{justifyContent:'center',alignItems:'center'}}>
           <Col>
@@ -580,10 +573,8 @@ const HomeStack = createStackNavigator({
   MedicineSuggestionList: {
     screen: MedicineSuggestionList,
     navigationOptions: ({ navigation }) => ({
-      title: 'Pharmacy Suggestion List',
+      title: 'Search Medicines',
       headerRight: (
-        <Grid>
-          <Col>
             <TouchableOpacity onPress={() => { navigation.navigate('PharmacyCart') }} >
               <View>
                 <Icon name="ios-cart" style={{ color: '#fff', marginRight: 15, fontFamily: 'opensans-semibold', fontSize: 20 }}></Icon>
@@ -595,8 +586,8 @@ const HomeStack = createStackNavigator({
                 }
               </View>
             </TouchableOpacity>
-          </Col>
-        </Grid>
+        
+      
       ),
     })
 
@@ -605,32 +596,26 @@ const HomeStack = createStackNavigator({
   MedicineCheckout: {
     screen: MedicineCheckout,
     navigationOptions: {
-      title: 'Order Payment Address'
+      title: 'Checkout'
     }
   },
   ChosePharmacyList: {
     screen: ChosePharmacyList,
     navigationOptions: {
-      title: ' Chose Pharmacy List'
+      title: ' Choose Pharmacy'
     }
   },
   //=================== Medicine Order Details =============
   "Medicine Orders": {
     screen: MyOrdersList,
     navigationOptions: {
-      title: 'Orders List',
-    }
-  },
-  MyOrdersList: {
-    screen: MyOrdersList,
-    navigationOptions: {
-      title: 'Order List'
+      title: 'My Medicine Orders',
     }
   },
   OrderDetails: {
     screen: OrderDetails,
     navigationOptions: {
-      title: 'My Order'
+      title: 'Medicine Order Details'
     }
   },
   MedicineInfo: {

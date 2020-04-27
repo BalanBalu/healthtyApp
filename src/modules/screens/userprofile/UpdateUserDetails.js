@@ -12,7 +12,6 @@ import styles from './style.js';
 import {
     formatDate, subTimeUnit
 } from "../../../setup/helpers";
-import { RadioButton } from 'react-native-paper';
 import Spinner from '../../../components/Spinner';
 import { bloodGroupList, validateName } from "../../common";
 
@@ -242,35 +241,38 @@ class UpdateUserDetails extends Component {
 
 
                                 <View style={{ marginTop: 20, borderBottomWidth: 0,marginLeft:5}}>
-                                    <RadioButton.Group
-                                        onValueChange={value => this.setState({ gender: value, updateButton: false })}
-                                        value={this.state.gender}>
                                             <Row style={ Platform.OS === "ios" ? {marginLeft:10,marginRight:10}:null} >
                                                 <Col size={3} style={{justifyContent:'center'}}>
                                                     <Row style={{alignItems:'center',}}>
-                                                    <RadioButton value="M" />
-                                                    <Text style={ Platform.OS === "ios" ? {  fontFamily: 'OpenSans', fontSize: 12,marginTop:10,marginLeft:5 }:{  fontFamily: 'OpenSans', fontSize: 12 }}>Male</Text>
+                                                    <Radio 
+                                                        standardStyle={true}
+                                                        onPress={() => this.setState({ gender: 'M', updateButton: false })}
+                                                        selected={this.state.gender === 'M'}
+                                                    />
+                                                    <Text style={ Platform.OS === "ios" ? {  fontFamily: 'OpenSans', fontSize: 14, marginLeft:5 }:{  fontFamily: 'OpenSans', fontSize: 12 }}>Male</Text>
                                                     </Row>
                                                 </Col>
                                             <Col size={3}>
                                                 <Row style={{ alignItems: 'center' }}>
-                                                
-                                                    <RadioButton value="F" />
-                                               
-                                                <Text style={ Platform.OS === "ios" ? {  fontFamily: 'OpenSans', fontSize: 12,marginTop:10,marginLeft:5 }:{  fontFamily: 'OpenSans', fontSize: 12 }}>Female</Text>
+                                                    <Radio 
+                                                        standardStyle={true}
+                                                        onPress={() => this.setState({ gender: 'F', updateButton: false })}
+                                                        selected={this.state.gender === 'F'}
+                                                       />
+                                                    <Text style={ Platform.OS === "ios" ? {  fontFamily: 'OpenSans', fontSize: 14, marginLeft:5 }:{  fontFamily: 'OpenSans', fontSize: 12 }}>Female</Text>
                                                 </Row>
                                             </Col>
                                             <Col size={3}>
                                                 <Row style={{ alignItems: 'center' }}>
-                                                
-                                                    <RadioButton value="O" />
-                                              
-                                                <Text style={ Platform.OS === "ios" ? {  fontFamily: 'OpenSans', fontSize: 12,marginTop:10,marginLeft:5 }:{  fontFamily: 'OpenSans', fontSize: 12 }}>Others</Text>
+                                                    <Radio
+                                                        standardStyle={true}
+                                                        selectedColor={'#775DA3'}
+                                                        onPress={() => this.setState({ gender: 'O', updateButton: false })}
+                                                        selected={this.state.gender === 'O'}/>
+                                                    <Text style={ Platform.OS === "ios" ? {  fontFamily: 'OpenSans', fontSize: 14, marginLeft:5 }:{  fontFamily: 'OpenSans', fontSize: 12 }}>Others</Text>
                                                 </Row>
                                             </Col>
                                             </Row>                              
-                                        
-                                    </RadioButton.Group>
                                 </View>
                                 <Text style={{ color: 'red', marginLeft: 15, marginTop: 5 }}>{this.state.errorMsg}</Text>
 

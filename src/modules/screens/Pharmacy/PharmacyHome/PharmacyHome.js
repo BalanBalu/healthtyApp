@@ -41,18 +41,32 @@ class PharmacyHome extends Component {
 
     async componentDidMount() {
         const { bookappointment: { locationCordinates } } = this.props;
-        if(locationCordinates===null){
-         CurrentLocation.getCurrentPosition();
+        if (locationCordinates === null) {
+            CurrentLocation.getCurrentPosition();
         }
-     
+
         this.getMedicineList();
         this.getNearByPharmacyList();
 
     }
 
-    backNavigation(payload) {
+    async backNavigation(payload) {
+        let hascartReload = await AsyncStorage.getItem('hasCartReload')
+
+        if (hascartReload === 'true') {
+            await AsyncStorage.removeItem('hasCartReload');
+            if (userId) {
+                let cart = await AsyncStorage.getItem('cartItems-' + userId) || []
+                let cartData = []
+                if (cart.length != 0) {
+                    cartData = JSON.parse(cart)
+
+                }
+                await this.setState({ cartItems: cartData })
+            }
+        }
         if (payload.action.type == 'Navigation/BACK' || 'Navigation/POP') {
-            
+
             this.getMedicineList();
             this.getNearByPharmacyList();
         }
@@ -68,7 +82,7 @@ class PharmacyHome extends Component {
                 "maxDistance": PHARMACY_MAX_DISTANCE_TO_COVER
             }
             let result = await getPopularMedicine(userId, JSON.stringify(locationData));
-           
+
             if (result.success) {
                 let sortedData = await quantityPriceSort(result.data)
 
@@ -94,7 +108,7 @@ class PharmacyHome extends Component {
         }
     }
 
-    
+
 
     getNearByPharmacyList = async () => {
         try {
@@ -103,9 +117,9 @@ class PharmacyHome extends Component {
                 "coordinates": locationCordinates,
                 "maxDistance": PHARMACY_MAX_DISTANCE_TO_COVER
             }
-           
+
             let result = await getNearOrOrderPharmacy(userId, JSON.stringify(locationData));
-          
+
             if (result.success) {
                 this.setState({ pharmacyData: result.data })
             }
@@ -129,7 +143,7 @@ class PharmacyHome extends Component {
             temp.selectedType = selected;
 
             if (index !== undefined) {
-                cardItems = this.state.cartItems;
+                let cardItems = this.state.cartItems;
                 temp.userAddedMedicineQuantity = cardItems[index].userAddedMedicineQuantity
                 temp.index = index
             }
@@ -182,8 +196,8 @@ class PharmacyHome extends Component {
     render() {
         const { medicineData, pharmacyData, cartItems } = this.state
         const { navigation } = this.props;
-        const { bookappointment: {patientSearchLocationName,locationCordinates } } = this.props;
-        
+        const { bookappointment: { patientSearchLocationName, locationCordinates } } = this.props;
+
         return (
             <Container style={styles.container}>
                 <NavigationEvents
@@ -247,7 +261,7 @@ class PharmacyHome extends Component {
                                         <Icon name='locate' style={{ fontSize: 15, color: '#fff', }} />
                                     </Col>
                                     <Col size={3.5} style={{ alignItems: 'flex-start' }}>
-                                        <Text style={{ fontFamily: 'OpenSans', fontSize: 12, color: '#fff' }}>{patientSearchLocationName||''} </Text>
+                                        <Text style={{ fontFamily: 'OpenSans', fontSize: 12, color: '#fff' }}>{patientSearchLocationName || ''} </Text>
                                     </Col>
                                 </Row>
 
@@ -296,6 +310,7 @@ class PharmacyHome extends Component {
                                     </Item> :
                                     <FlatList
                                         data={medicineData}
+                                        extraData={cartItems}
                                         numColumns={2}
                                         columnWrapperStyle={{ margin: 3 }}
                                         keyExtractor={(item, index) => index.toString()}
@@ -314,7 +329,7 @@ class PharmacyHome extends Component {
                                                             <Image source={renderMedicineImage(item.medInfo)}
                                                                 style={{ height: 80, width: 70, marginLeft: 5, marginTop: 2.5 }} />
                                                         </Col>
-                                                        {item.medPharDetailInfo.variations[0].discount_type != undefined ?
+                                                        {item.medPharDetailInfo.variations[0].discount_type !== undefined ?
                                                             <Col size={1} style={{ position: 'absolute', alignContent: 'flex-end', marginTop: -10, marginLeft: 120 }}>
                                                                 <Image
                                                                     source={require('../../../../../assets/images/Badge.png')}
@@ -335,8 +350,8 @@ class PharmacyHome extends Component {
                                                         <Text style={styles.hosname}>{item.pharmacyInfo.name}</Text>
                                                     </Row>
                                                     <Row style={{ alignSelf: 'center', marginTop: 2 }}>
-                                                        <Text style={item.medPharDetailInfo.variations[0].discount_type != undefined ? styles.oldRupees : styles.newRupees}>₹{item.medPharDetailInfo.variations[0].price}</Text>
-                                                        {item.medPharDetailInfo.variations[0].discount_type != undefined ?
+                                                        <Text style={item.medPharDetailInfo.variations[0].discount_value !== undefined ? styles.oldRupees : styles.newRupees}>₹{item.medPharDetailInfo.variations[0].price}</Text>
+                                                        {item.medPharDetailInfo.variations[0].discount_type !== undefined ?
                                                             <Text style={styles.newRupees}>₹{medicineRateAfterOffer(item.medPharDetailInfo.variations[0])}</Text> : null}
                                                     </Row>
 
