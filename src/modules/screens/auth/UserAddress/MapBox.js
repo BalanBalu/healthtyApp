@@ -14,6 +14,7 @@ import Qs from 'qs';
 import Spinner from '../../../../components/Spinner';
 import locationIcon from '../../../../../assets/marker.png'
 import { NavigationEvents } from 'react-navigation';
+
 export default class MapBox extends React.Component {
     _requests = [];
     _isMounted = false;
@@ -82,8 +83,12 @@ export default class MapBox extends React.Component {
                 }
             } else if (navigationOption) {
                 addressType = navigation.getParam('addressType') || null
+                console.log("addressType", addressType)
                 if (addressType) {
                     this.setState({ addressType: addressType.addressType, full_name: addressType.full_name, mobile_no: addressType.mobile_no })
+                }
+                else if (addressType == 'lab_delivery_Address') {
+                    this.setState({ addressType: addressType })
                 }
 
                 this.setState({ navigationOption })
@@ -216,9 +221,16 @@ export default class MapBox extends React.Component {
                     userAddressData.delivery_Address.mobile_no = this.state.mobile_no;
 
                     delete userAddressData.address
-                    
+
                 }
             }
+            if (this.state.addressType == 'lab_delivery_Address') {
+                userAddressData.delivery_Address = userAddressData.address;
+                delete userAddressData.address
+
+            }
+
+
 
             console.log(userAddressData)
             const userId = await AsyncStorage.getItem('userId')
