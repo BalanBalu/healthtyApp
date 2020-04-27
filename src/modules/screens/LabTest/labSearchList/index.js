@@ -7,7 +7,7 @@ import StarRating from 'react-native-star-rating';
 import { searchByLabDetailsService, fetchLabTestAvailabilitySlotsService } from '../../../providers/labTest/basicLabTest.action';
 import { renderLabTestImage } from '../labTestCommon';
 import { Loader } from '../../../../components/ContentLoader';
-import { formatDate, addMoment, getMoment } from '../../../../setup/helpers';
+import { formatDate, addMoment, getMoment, getUnixTimeStamp } from '../../../../setup/helpers';
 import moment from 'moment';
 import RenderDates from './RenderDateList';
 import RenderSlots from './RenderSlots';
@@ -15,14 +15,18 @@ import RenderSlots from './RenderSlots';
 class labSearchList extends Component {
     labTestAvailabilitySlotsDatesArry = [];
     labTestSelectedDates = {};
+    selectedSlotByLabIds = {};
     constructor(props) {
         super(props)
+        //debugger
         this.state = {
             currentDate: formatDate(new Date(), 'YYYY-MM-DD'),
             selectedDate: formatDate(new Date(), 'YYYY-MM-DD'),
             labListData: [],
             labTestAvailabilitySlotsDatesArry: [],
             expandedLabIdToShowSlotsData: [],
+            selectedSlotByDoctorIds: {},
+            availableSlotsData: {},
             refreshCount: 0,
             isLoading: false,
 
@@ -30,6 +34,7 @@ class labSearchList extends Component {
         }
     }
     async componentDidMount() {
+        //debugger
         this.searchByLabCatAndDetails()
     }
     searchByLabCatAndDetails = async () => {
@@ -37,7 +42,7 @@ class labSearchList extends Component {
             this.setState({ isLoading: true });
             const { navigation } = this.props;
             const inputDataBySearch = navigation.getParam('inputDataFromLabCat');
-            // console.log('inputDataBySearch====>', inputDataBySearch);
+            console.log('inputDataBySearch====>', inputDataBySearch);
             const labListResponse = await searchByLabDetailsService(inputDataBySearch);
             console.log('labListResponse====>', JSON.stringify(labListResponse));
             if (labListResponse.success) {
@@ -68,7 +73,6 @@ class labSearchList extends Component {
     /* get Lab Test Availability Slots */
     getLabTestAvailabilitySlots = async (getSearchedLabId, startDateByMoment, endDateByMoment) => {
         let availabilityData = [];
-        this.enumerateDates(startDateByMoment, endDateByMoment)
         try {
             const totalSlotsInWeek = {
                 startDate: formatDate(startDateByMoment, 'YYYY-MM-DD'),
@@ -78,16 +82,20 @@ class labSearchList extends Component {
                 "labIds": [getSearchedLabId]
             }
             const resultSlotsData = await fetchLabTestAvailabilitySlotsService(availabilityReqData, totalSlotsInWeek);
-            console.log('resultSlotsData======>', resultSlotsData)
-            debugger
+            // console.log('resultSlotsData======>', resultSlotsData)
             if (resultSlotsData.success) {
                 availabilityData = resultSlotsData.data;
                 if (availabilityData[0].slotData) {
-
                     const availableSlotsData = availabilityData[0].slotData;
-                    this.setState({ availableSlotsData })
+                    // return availableSlotsData
+                    // this.setState({ availableSlotsData })
+
+                    await this.setState({ availableSlotsData })
+
+                    console.log('after  await this.setState({ availableSlotsData })');
+
+                    alert(JSON.stringify(this.state.availableSlotsData))
                 }
-                return availabilityData
             }
         } catch (ex) {
             console.log('ex======', ex.message);
@@ -96,40 +104,69 @@ class labSearchList extends Component {
     }
 
     onBookPress = async (labId) => {
+        //debugger
+
         const { expandedLabIdToShowSlotsData } = this.state;
         if (expandedLabIdToShowSlotsData.indexOf(labId) !== -1) {
             expandedLabIdToShowSlotsData.splice(expandedLabIdToShowSlotsData.indexOf(labId), 1)
         } else {
             expandedLabIdToShowSlotsData.push(labId);
         }
+        // this.setState({ expandedLabIdToShowSlotsData })
+
         const startDateByMoment = addMoment(this.state.currentDate)
         const endDateByMoment = addMoment(this.state.currentDate, 7, 'days');
-        this.getLabTestAvailabilitySlots(labId, startDateByMoment, endDateByMoment);
+        // const availableSlotsData = await
+        console.log('slot is Booked');
+
+        await this.getLabTestAvailabilitySlots(labId, startDateByMoment, endDateByMoment);
+        console.log('after getLabTestAvailabilitySlots calling====>');
+
+        this.enumerateDates(startDateByMoment, endDateByMoment)
+        console.log('after enumerateDates calling====>');
+        //debugger
     }
 
-     /* Change the Date from Date Picker */
-     onDateChanged(selectedDate, labId) {
+    /* Change the Date from Date Picker */
+    onDateChanged(selectedDate, labId) {
+        debugger
         this.labTestSelectedDates[labId] = selectedDate;
-        this.setState({ refreshCountOnDateFL: this.state.refreshCountOnDateFL + 1})
+        this.selectedSlotByLabIds[labId] = -1;
+        console.log('    this.labTestSelectedDates[labId]===>', this.labTestSelectedDates[labId]);
+        console.log('   this.selectedSlotByLabIds[labId]====>', this.selectedSlotByLabIds[labId]);
+
+        this.setState({ refreshCountOnDateFL: this.state.refreshCountOnDateFL + 1 })
+        debugger
     }
     onSlotItemPress(labId, selectedDate, selectedSlot, selectedSlotIndex) {
-       this.setState({ selectedSlotIndex }) 
+        //debugger
+        this.setState({ selectedSlotIndex })
+        //debugger
     }
     renderDatesOnFlatList(labId) {
+        //debugger
         const selectedDate = this.labTestSelectedDates[labId] || this.state.currentDate;
         const { availableSlotsData, selectedSlotIndex } = this.state;
-        if(!availableSlotsData) return null;    
+        // alert(availableSlotsData)
+        console.log('availableSlotsData from renderDatesOnFlatList====>', availableSlotsData);
+
+        //debuggerS
+        if (!Object.keys(availableSlotsData)) {
+            return null;
+        }
+        // if (!availableSlotsData) return null;
+        //debugger
         return (
             <View>
                 <RenderDates labTestAvailabilitySlotsDatesArry={this.labTestAvailabilitySlotsDatesArry}
-                             onDateChanged={(item, labId) => this.onDateChanged(item, labId)}
-                             selectedDate={selectedDate}
-                             availableSlotsData={availableSlotsData}
-                             labId={labId}
-                             shouldUpdate={labId + '-' + selectedDate}
+                    onDateChanged={(item, labId) => this.onDateChanged(item, labId)}
+                    selectedDate={selectedDate}
+                    availableSlotsData={availableSlotsData}
+                    labId={labId}
+                    shouldUpdate={labId + '-' + selectedDate}
                 >
                 </RenderDates>
-                <RenderSlots 
+                <RenderSlots
                     selectedSlotIndex={selectedSlotIndex}
                     selectedDate={selectedDate}
                     slotData={availableSlotsData[this.labTestSelectedDates[labId]]}
@@ -140,8 +177,14 @@ class labSearchList extends Component {
         )
     }
     renderLabListCards(item) {
-        const { expandedLabIdToShowSlotsData, selectedDate } = this.state
+        debugger
+        const { expandedLabIdToShowSlotsData, selectedDate, availableSlotsData } = this.state;
+        console.log('renderLabListCards availableSlotsData====>', JSON.stringify(availableSlotsData));
+        console.log('renderLabListCards this.labTestSelectedDates====>', JSON.stringify(this.labTestSelectedDates));
+        // console.log(availableSlotsData[this.labTestSelectedDates[item.labInfo.lab_id]]);
 
+
+        debugger
         return (
             <View>
                 <Card style={{ padding: 2, borderRadius: 10, borderBottomWidth: 2 }}>
@@ -206,7 +249,7 @@ class labSearchList extends Component {
                                     <Col style={{ width: "25%", marginLeft: 10 }}>
                                         <Text note style={{ fontFamily: 'OpenSans', fontSize: 12, textAlign: 'center' }}>Package Amt</Text>
                                         <Row style={{ justifyContent: 'center' }}>
-                                            <Text style={styles.finalRs}>₹ {item.labInfo && item.labInfo.labPriceInfo && item.labInfo.labPriceInfo[0] &&  item.labInfo.labPriceInfo[0].price || ''}</Text>
+                                            <Text style={styles.finalRs}>₹ {item.labInfo && item.labInfo.labPriceInfo && item.labInfo.labPriceInfo[0] && item.labInfo.labPriceInfo[0].price || ''}</Text>
                                             {/* <Text style={styles.finalRs}>₹ {item.finalAmount || ''}</Text> */}
                                         </Row>
                                     </Col>
@@ -234,7 +277,11 @@ class labSearchList extends Component {
                                             <Text style={{ fontSize: 13, fontFamily: 'OpenSans' }}>Select appoinment date and time</Text>
                                         </Row>
                                         {this.renderDatesOnFlatList(item.labInfo.lab_id)}
-
+                                        {
+                                            availableSlotsData[this.labTestSelectedDates[item.labInfo.lab_id] || this.state.currentDate] !== undefined ?
+                                                this.haveAvailableSlots(item.labInfo.lab_id, availableSlotsData[this.labTestSelectedDates[item.labInfo.lab_id] || this.state.currentDate])
+                                                : this.noAvailableSlots(item.labInfo.lab_id, availableSlotsData)
+                                        }
                                     </View> : null}
                             </Grid>
                         </ListItem>
@@ -243,8 +290,60 @@ class labSearchList extends Component {
             </View>
         )
     }
+
+
+    haveAvailableSlots(labId, slotsData) {
+        // let { selectedSlotByDoctorIds, showedFee } = this.state;
+        debugger
+        let selectedSlotIndex = this.selectedSlotByLabIds[labId] !== undefined ? this.selectedSlotByLabIds[labId] : -1
+        const { width } = Dimensions.get('screen');
+        const itemWidth = (width) / 4;
+        const sortByStartTime = (a, b) => {
+            debugger
+            let startTimeSortA = getUnixTimeStamp(a.slotStartDateAndTime);
+            let startTimeSortB = getUnixTimeStamp(b.slotStartDateAndTime);
+            return startTimeSortA - startTimeSortB;
+        }
+
+        debugger
+        return (
+            <Row>
+                {/* <Col style={{width:'8%'}}></Col> */}
+                <FlatList
+                    numColumns={4}
+                    data={slotsData.sort(sortByStartTime)}
+                    // extraData={[this.state.selectedDatesByDoctorIds, this.state.selectedSlotByDoctorIds]}
+                    renderItem={({ item, index }) =>
+                        <Col style={{ width: itemWidth - 10 }}>
+                            <TouchableOpacity disabled={item.isSlotBooked}
+                                style={item.isSlotBooked ? styles.slotBookedBgColor : selectedSlotIndex === index ?
+                                    styles.slotSelectedBgColor : styles.slotDefaultBgColor}
+                                onPress={() => this.onSlotItemPress(labId, item, index)}>
+                                <Text style={item.isSlotBooked ? styles.slotBookedTextColor : selectedSlotIndex === index ? styles.slotBookedTextColor : styles.slotDefaultTextColor}> {formatDate(item.slotStartDateAndTime, 'hh:mm A')} </Text>
+                            </TouchableOpacity>
+                        </Col>
+                    }
+                    listKey={(item, index) => index.toString()} />
+                {/* <Col style={{width:'8%'}}></Col> */}
+            </Row>
+        )
+    }
+    noAvailableSlots() {
+        //console.log('started-loading-no-slots-available');
+        return (
+            <Row style={{ justifyContent: 'center', marginTop: 20 }}>
+                <Button disabled style={{ alignItems: 'center', borderRadius: 10, backgroundColor: '#6e5c7b' }}>
+                    <Text>No Slots Available</Text>
+                    {/*nextAvailableDate ? <Text style={{ color: '#fff', fontFamily: 'OpenSans', fontWeight: 'bold', fontSize: 15 }}>Next Availability On {nextAvailableDate}</Text> : <Text style={{ color: '#fff', fontFamily: 'OpenSans', fontWeight: 'bold', fontSize: 16 }}> No Availablity for Next 7 Days</Text>*/}
+                </Button>
+            </Row>
+        )
+    }
+
     render() {
+        // debugger
         const { labListData, isLoading } = this.state;
+        // debugger
         return (
             <Container style={styles.container}>
                 {isLoading ? <Loader style='list' /> :

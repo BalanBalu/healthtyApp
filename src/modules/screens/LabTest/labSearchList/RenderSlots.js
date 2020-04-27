@@ -12,36 +12,36 @@ import moment from 'moment';
 
 export default class RenderSlots extends React.Component {
     constructor(props) {
-      super(props)
+        super(props)
 
     }
     shouldComponentUpdate(nextProps, nextState) {
-            return nextProps.shouldUpdate !== this.props.shouldUpdate;
+        return nextProps.shouldUpdate !== this.props.shouldUpdate;
     }
     render() {
-       const { slotData, selectedSlotIndex, onSlotItemPress , labId, selectedDate } = this.props;
-               
-     return <FlatList
-        numColumns={4}
-        data={slotData}
-        // extraData={[this.labTestSelectedDates[labId]]}
-        renderItem={({ item, index }) => {
-            
-            return (
-                <Col style={{ width : '25%' }}>
-                    <TouchableOpacity disabled={item.isSlotBooked}
-                        style={item.isSlotBooked ? styles.slotBookedBgColor : selectedSlotIndex === index ?
-                        styles.slotSelectedBgColor : styles.slotDefaultBgColor}
-                        onPress={() => 
-                            onSlotItemPress(labId, selectedDate, item, index)
-                        }>
-                        <Text style={item.isSlotBooked ? styles.slotBookedTextColor : selectedSlotIndex === index ? styles.slotBookedTextColor : styles.slotDefaultTextColor}> {formatDate(item.slotStartDateAndTime, 'hh:mm A')} </Text>
-                    </TouchableOpacity>
-                </Col>
-          )
-        }
-        } keyExtractor={(item, index) => index.toString()} />
-   
+        const { slotData, selectedSlotIndex, onSlotItemPress, labId, selectedDate } = this.props;
+
+        return <FlatList
+            numColumns={4}
+            data={slotData}
+            // extraData={[this.labTestSelectedDates[labId]]}
+            renderItem={({ item, index }) => {
+
+                return (
+                    <Col style={{ width: '25%' }}>
+                        <TouchableOpacity disabled={item.isSlotBooked}
+                            style={item.isSlotBooked ? styles.slotBookedBgColor : selectedSlotIndex === index ?
+                                styles.slotSelectedBgColor : styles.slotDefaultBgColor}
+                            onPress={() =>
+                                onSlotItemPress(labId, selectedDate, item, index)
+                            }>
+                            <Text style={item.isSlotBooked ? styles.slotBookedTextColor : selectedSlotIndex === index ? styles.slotBookedTextColor : styles.slotDefaultTextColor}> {formatDate(item.slotStartDateAndTime, 'hh:mm A')} </Text>
+                        </TouchableOpacity>
+                    </Col>
+                )
+            }
+            } keyExtractor={(item, index) => index.toString()} />
+
     }
 }
 

@@ -12,58 +12,67 @@ import moment from 'moment';
 
 export default class RenderDates extends React.Component {
     constructor(props) {
-      super(props)
-
+        super(props)
+        debugger
     }
     shouldComponentUpdate(nextProps, nextState) {
+        debugger
         return nextProps.selectedDate !== this.props.selectedDate
     }
     render() {
-       const { labTestAvailabilitySlotsDatesArry, onDateChanged, selectedDate , availableSlotsData, labId } = this.props;
-       if(!availableSlotsData) return null;    
-        // console.log('exe renderDatesOnFlatList======>', availableSlotsData)
-        
+        debugger
+        const { labTestAvailabilitySlotsDatesArry, onDateChanged, selectedDate, availableSlotsData, labId } = this.props;
+        debugger
+        if (!Object.keys(availableSlotsData)) {
+            return null;
+        }
+        // if (!availableSlotsData) return null;
+        debugger
+        // alert('exe renderDatesOnFlatList======>', JSON.stringify(availableSlotsData))
+
         const reducer = (accumulator, currentValue, currentIndex, souceArray) => {
             if (!currentValue.isSlotBooked)
                 return 1 + accumulator;
             else if (souceArray.length - 1 === currentIndex) {
                 return accumulator == 0 ? 'No' : accumulator;
             }
-            else
+            else {
                 return accumulator
-        }
-return <View>
-        <FlatList
-            horizontal={true}
-            data={labTestAvailabilitySlotsDatesArry}
-        //extraData={[this.labTestSelectedDates[labId]]}
-            onEndReachedThreshold={1}
-            onEndReached={({ distanceFromEnd }) => {
-            // let endIndex = this.labTestAvailabilitySlotsDatesArry.length
-            // let lastProcessedDate = this.labTestAvailabilitySlotsDatesArry[endIndex - 1];
-            // let startMoment = getMoment(lastProcessedDate).add(1, 'day');
-            // let endDateMoment = addMoment(lastProcessedDate, 7, 'days')
-            // // if (this.state.isAvailabilityLoading === false) {
-            //     this.callGetAvailabilitySlot(this.state.getSearchedDoctorIds, startMoment, endDateMoment);
-            // }
-            }}
-            renderItem={({ item }) => {
-                return (
-                    <View>
-                        <Col style={{ justifyContent: 'center' }}>
-                            <TouchableOpacity style={[styles.availabilityBG, selectedDate === item ? { backgroundColor: '#775DA3', alignItems: 'center' } : { backgroundColor: '#ced6e0', alignItems: 'center' }]}
-                                onPress={() => onDateChanged(item, labId)}>
-                                <Text style={[{ fontSize: 12, fontFamily: 'OpenSans' }, selectedDate === item ? { color: '#fff' } : { color: '#000' }]}>{formatDate(moment(item), 'ddd, DD MMM')}</Text>
-                                <Text style={[{ fontSize: 10, fontFamily: 'OpenSans' }, selectedDate === item ? { color: '#fff' } : { color: '#000' }]}>{availableSlotsData[item] ? availableSlotsData[item].reduce(reducer, 0) + ' Slots Available' : 'No Slots Available'}</Text>
-                            </TouchableOpacity>
-                        </Col>
-                    </View>  
-                )
             }
-          
-        } keyExtractor={(item, index) => index.toString()} />
+        }
+        debugger
+        return <View>
+            <FlatList
+                horizontal={true}
+                data={labTestAvailabilitySlotsDatesArry}
+                //extraData={[this.labTestSelectedDates[labId]]}
+                onEndReachedThreshold={1}
+                onEndReached={({ distanceFromEnd }) => {
+                    // let endIndex = this.labTestAvailabilitySlotsDatesArry.length
+                    // let lastProcessedDate = this.labTestAvailabilitySlotsDatesArry[endIndex - 1];
+                    // let startMoment = getMoment(lastProcessedDate).add(1, 'day');
+                    // let endDateMoment = addMoment(lastProcessedDate, 7, 'days')
+                    // // if (this.state.isAvailabilityLoading === false) {
+                    //     this.callGetAvailabilitySlot(this.state.getSearchedDoctorIds, startMoment, endDateMoment);
+                    // }
+                }}
+                renderItem={({ item }) => {
+                    return (
+                        <View>
+                            <Col style={{ justifyContent: 'center' }}>
+                                <TouchableOpacity style={[styles.availabilityBG, selectedDate === item ? { backgroundColor: '#775DA3', alignItems: 'center' } : { backgroundColor: '#ced6e0', alignItems: 'center' }]}
+                                    onPress={() => onDateChanged(item, labId)}>
+                                    <Text style={[{ fontSize: 12, fontFamily: 'OpenSans' }, selectedDate === item ? { color: '#fff' } : { color: '#000' }]}>{formatDate(moment(item), 'ddd, DD MMM')}</Text>
+                                    <Text style={[{ fontSize: 10, fontFamily: 'OpenSans' }, selectedDate === item ? { color: '#fff' } : { color: '#000' }]}>{availableSlotsData[item] ? availableSlotsData[item].reduce(reducer, 0) + ' Slots Available' : 'No Slots Available'}</Text>
+                                </TouchableOpacity>
+                            </Col>
+                        </View>
+                    )
+                }
 
-    </View>
+                } keyExtractor={(item, index) => index.toString()} />
+
+        </View>
     }
 }
 
