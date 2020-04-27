@@ -59,6 +59,7 @@
     "react-navigation-drawer": "^2.4.11",
     "react-navigation-stack": "^2.3.11",
     "react-redux": "^7.2.0",
+    "react-timer-mixin": "^0.13.4",
     "redux": "^4.0.5",
     "redux-thunk": "^2.3.0",
     "socket.io-client": "^2.3.0",
