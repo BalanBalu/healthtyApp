@@ -341,19 +341,19 @@ const HomeStack = createStackNavigator({
   LabAppointmentInfo: {
     screen: LabAppointmentInfo,
     navigationOptions: {
-      title: 'Lab Appointment Info'
+      title: 'Lab Test Appointment Details'
     }
   },
-  LabAppointmentList: {
+  'My Lab Test Appointments': {
     screen: LabAppointmentList,
     navigationOptions: {
-      title: 'Lab Appointment List'
+      title: 'My Lab Test Appointments'
     }
   },
   LabCancelAppointment: {
     screen: LabCancelAppointment,
     navigationOptions: {
-      title: 'Lab Cancel Appointment'
+      title: 'Lab Test Cancel Appointment'
     }
   },
   
@@ -734,8 +734,11 @@ const DrawerNavigator = createDrawerNavigator({
   Home: {
     screen: HomeStack,
   },
-  "Blood Donors": {
-    screen: BloodDonersList,
+  'Video and Chat Service': {
+    screen: AvailableDoctors4Video
+  },
+  Medicines: {
+    screen: PharmacyHome,
   },
   "My Appointments": {
     screen: MyAppoinmentList
@@ -743,22 +746,20 @@ const DrawerNavigator = createDrawerNavigator({
   "My Chats": {
     screen: MyChats
   },
-  'Video and Chat Service': {
-    screen: AvailableDoctors4Video
-  },
   'My Video Consultations': {
     screen: VideoConsultaions
   },
-  Medicines: {
-    screen: PharmacyHome,
+  'My Lab Test Appointments': {
+    screen: LabAppointmentList
   },
   "Medicine Orders": {
     screen: MyOrdersList
   },
-
-
   Reminder: {
     screen: Reminder
+  },
+  "Blood Donors": {
+    screen: BloodDonersList,
   },
   'CORONA Status': {
     screen: CoronaDisease
@@ -785,6 +786,7 @@ export const DragwerLogos = {
   'CORONA Status': require('../../../assets/images/drawerIcons/Pharmacy.png'),
   'My Video Consultations': require('../../../assets/images/drawerIcons/Appointments.png'),
   'Video and Chat Service': require('../../../assets/images/drawerIcons/Appointments.png'),
+  'My Lab Test Appointments': require('../../../assets/images/drawerIcons/Appointments.png'),
 }
 export default createAppContainer(createSwitchNavigator(
   {
