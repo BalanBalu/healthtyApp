@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { Container, Content, Text, Button, Toast, Item, List, ListItem, Card, Input, Left, Segment, CheckBox, View, Radio, Footer, FooterTab } from 'native-base';
+import { Container, Content, Text, Button, Toast, Item, List, ListItem, Card, Input, Left, Segment, CheckBox, View, Radio, Footer, FooterTab, Icon } from 'native-base';
 import { Col, Row, Grid } from 'react-native-easy-grid';
 import { StyleSheet, Image, AsyncStorage, TouchableOpacity, Platform } from 'react-native';
 import { FlatList } from 'react-native-gesture-handler';
@@ -9,38 +9,72 @@ import { fetchUserProfile } from '../../../providers/profile/profile.action';
 import { dateDiff } from '../../../../setup/helpers';
 import { getAddress } from '../../../common'
 import { InsertAppointment } from '../../../providers/lab/lab.action';
+import { getUserGenderAndAge } from '../CommonLabTest'
 
-
-class labConfirmation extends Component {
+let patientDetails = [];
+class LabConfirmation extends Component {
     constructor(props) {
         super(props);
         this.state = {
             isLoading: false,
             itemSelected: 'itemOne',
-            selfChecked: true,
+            selfChecked: false,
             othersChecked: false,
             gender: 'M',
             patientType: [],
-            selectedType: [true, false],
-            patientdetails: [],
+            selectedType: [false, false],
+            patientDetails: [],
+            patientAddress: [],
+            defaultPatientDetails: [],
             email: '',
             mobile_no: '',
             full_name: '',
             gender: '',
             age: '',
-            itemSelected: 'TEST_TO_HOME',
-            packageDetails: {}
+            itemSelected: 'TEST_AT_LAP',
+            packageDetails: {},
+            selectedAddress: null,
+
 
         };
     }
     async componentDidMount() {
-        const packageDetails = navigation.getParam('packageDetails') || [];
-        if (packageDetails != undefined) {
-            this.setState({ packageDetails})
+        // const packageDetails = navigation.getParam('packageDetails') || [];
+        // if (packageDetails != undefined) {
+        //     this.setState({ packageDetails })
+        // }
+        let packageDetails = {
+            "lab_id": "5e7d9676ebd1650d14355677",
+            "lab_test_categories_id": "5e78d0c127490f934d10de70",
+            "lab_test_descriptiion": "genral",
+            "fee": 1000,
+            "lab_name": "ARROW",
+            "category_name": "Allergy Profile",
+            "extra_charges": 50,
+            "appointment_starttime": "2020-04-30T18:00:00.000Z",
+            "appointment_endtime": "2020-04-30T18:30:00.000Z",
+            "mobile_no": "98076540211",
+            "location": {
+                "coordinates": [
+                    13.104802,
+                    80.208888
+                ],
+                "type": "Point",
+                "address": {
+                    "no_and_street": "1",
+                    "address_line_1": "Villivakkam",
+                    "district": "Chennai",
+                    "city": "Chennai",
+                    "state": "Tamil Nadu",
+                    "country": "India",
+                    "pin_code": "60010"
+                }
+            },
         }
+        this.setState({ packageDetails })
         await this.getUserProfile();
     }
-  
+
     backNavigation(navigationData) {
         if (navigationData.action) {
             if (navigationData.action.type === 'Navigation/NAVIGATE') {
@@ -61,37 +95,46 @@ class labConfirmation extends Component {
             array.splice(deSelectedIndex, 1);
         }
         this.setState({ patientType: array });
-
+        console.log("patientType", this.state.patientType)
     }
     getUserProfile = async () => {
         try {
             let fields = "first_name,last_name,gender,dob,mobile_no,address,delivery_address"
             let userId = await AsyncStorage.getItem('userId');
             let result = await fetchUserProfile(userId, fields);
-            let patientdetails = [];
-            if (result) {
+            console.log("result", result)
+            let patientAddress = [], patientDetails = [];
 
-                if (result.delivery_address) {
-                    let userAddressData = {
-                        full_name: result.first_name + " " + result.last_name,
-                        mobile_no: result.mobile_no,
-                        gender: result.gender,
-                        age: parseInt(dateDiff(result.dob, new Date(), 'years')),
-                        address: result.delivery_address[0].address
-                    }
-                    patientdetails.push(userAddressData);
-                } else if (result.address.address) {
-                    let userAddressData = {
-                        full_name: result.first_name + " " + result.last_name,
-                        mobile_no: result.mobile_no,
-                        gender: result.gender,
-                        age: dateDiff(result.dob, new Date(), 'years'),
-                        address: result.address.address
-                    }
-                    patientdetails.unshift(userAddressData);
-                }
-                await this.setState({ patientdetails })
+            this.defaultPatientDetails = {
+                type: 'self',
+                full_name: result.first_name + " " + result.last_name,
+                gender: result.gender,
+                age: parseInt(dateDiff(result.dob, new Date(), 'years'))
             }
+
+            if (result.delivery_address) {
+                let userAddressData = {
+                    mobile_no: result.delivery_address[0].mobile_no,
+                    coordinates: result.delivery_address[0].coordinates,
+                    type: result.delivery_address[0].type,
+                    address: result.delivery_address[0].address
+                }
+                patientAddress.push(userAddressData);
+            }
+            if (result.address.address) {
+                let userAddressData = {
+                    mobile_no: result.mobile_no,
+                    coordinates: result.address.coordinates,
+                    type: result.address.type,
+                    address: result.address.address
+                }
+                patientAddress.unshift(userAddressData);
+            }
+            await this.setState({ patientAddress, data: result })
+            console.log("patient Address ",this.state.patientAddress)
+            console.log("data", this.defaultPatientDetails)
+            // this.onChangeSelf()
+
         }
         catch (e) {
             console.log(e);
@@ -102,47 +145,105 @@ class labConfirmation extends Component {
     }
 
     editProfile(screen, addressType) {
-        this.props.navigation.navigate(screen, { screen: screen, navigationOption: 'labConfirmation', addressType:'lab_delivery_Address' })
+        addressType = { addressType: addressType, mobile_no: this.state.mobile_no, full_name: this.state.full_name }
+        this.props.navigation.navigate(screen, { screen: screen, navigationOption: 'labConfirmation', addressType: addressType })
+    }
+    onChangeSelf = async () => {
+        console.log("this.state.selfChecked::: ", this.state.selfChecked)
+        console.log("this.state.othersChecked::: ", this.state.othersChecked)
+
+        if (this.state.selfChecked == true) {
+            patientDetails.unshift(this.defaultPatientDetails)
+            console.log("::::", patientDetails)
+        }
+        else if (this.state.selfChecked == false) {
+            this.state.patientDetails.shift(this.defaultPatientDetails)
+            console.log("this.state.patientDetails:::shift", this.state.patientDetails)
+
+        }
+        this.setState({ patientDetails })
     }
 
+    onChangeCheckBox = async () => {
+        console.log("this.state.selfChecked::: ", this.state.selfChecked)
+        console.log("this.state.othersChecked::: ", this.state.othersChecked)
+        console.log("::::", this.defaultPatientDetails)
+        console.log("this.state.patientDetails", this.state.patientDetails)
+
+        if (this.state.othersChecked == true) {
+            this.addPatientData()
+        }
+        if (this.state.othersChecked == false) {
+            this.state.patientDetails.map(ele => {
+                if (ele.type = 'others') {
+                    this.state.patientDetails.pop(this.state.patientDetails)
+                }
+            })
+        }
+        await this.setState({ patientDetails })
+        console.log("this.state.patientDetails:", this.state.patientDetails)
+    }
+
+
+
+
+
     addPatientData = async () => {
-        if (!this.state.name || !this.state.age) {
+        if (!this.state.name || !this.state.age || !this.state.gender) {
             this.setState({ errMsg: '* Kindly fill all the fields' })
         } else {
+            let temp;
+            // if (this.state.selfChecked == true) {
+            //     temp = this.state.defaultPatientDetails;
+            // }
+            // else {
+            //     temp = this.state.patientDetails;
+
+            // }
+
             this.setState({ errMsg: '' })
-            let temp = this.state.patientdetails;
+            temp = this.state.patientDetails;
+
             temp.push({
+                type: 'others',
                 full_name: this.state.name,
                 age: parseInt(this.state.age),
                 gender: this.state.gender
             });
-            await this.setState({ patientdetails: temp, updateButton: false });
-            await this.setState({ name: null, age: null, });
+            await this.setState({ patientDetails: temp, updateButton: false });
+            await this.setState({ name: null, age: null, gender: null });
 
         }
     }
     amountPaid() {
-        const { packageDetails, patientdetails, itemSelected } = this.state;
-
+        const { packageDetails, patientDetails, itemSelected } = this.state;
         let totalAmount;
-        if (itemSelected == 'TEST_TO_HOME') {
-            totalAmount = ((packageDetails.packageAmount * patientdetails.length) + (packageDetails.testToHomeCharge))
+        if (itemSelected == 'TEST_AT_HOME') {
+            totalAmount = ((packageDetails.fee * patientDetails.length) + (packageDetails.extra_charges))
             return totalAmount
         }
         else {
-            totalAmount = (packageDetails.packageAmount * patientdetails.length)
+            totalAmount = (packageDetails.fee * patientDetails.length)
             return totalAmount
         }
-
     }
 
     proceedToLabTestAppointment = async () => {
-        const { patientdetails, packageDetails } = this.state
+        const { patientDetails, packageDetails, selectedAddress } = this.state
         try {
-            let patientData=[];
-           this.state.patientdetails.map(ele=>{
-               patientData.push({ patient_name: ele.full_name, patient_age:ele.age})
-           })
+            if (selectedAddress == null) {
+                Toast.show({
+                    text: 'kindly chosse Address',
+                    type: 'warning',
+                    duration: 3000
+                })
+                return false;
+            }
+            console.log("address", selectedAddress)
+            let patientData = [];
+            this.state.patientDetails.map(ele => {
+                patientData.push({ patient_name: ele.full_name, patient_age: ele.age, gender: ele.gender })
+            })
             this.setState({ isLoading: true });
             const userId = await AsyncStorage.getItem('userId')
             let requestData = {
@@ -152,15 +253,27 @@ class labConfirmation extends Component {
                 lab_name: packageDetails.lab_name,
                 lab_test_categories_id: packageDetails.lab_test_categories_id,
                 lab_test_descriptiion: packageDetails.lab_test_descriptiion,
-                fee: packageDetails.packageAmount,
-                startTime: packageDetails.startTime,
-                endTime: packageDetails.endTime,
+                fee: packageDetails.fee,
+                startTime: packageDetails.appointment_starttime,
+                endTime: packageDetails.appointment_endtime,
+                location: {
+                    coordinates: selectedAddress.coordinates,
+                    type: selectedAddress.type,
+                    address: {
+                        no_and_street: selectedAddress.address.no_and_street || ' ',
+                        address_line_1: selectedAddress.address.address_line_1,
+                        district: selectedAddress.address.district,
+                        city: selectedAddress.address.city,
+                        state: selectedAddress.address.state,
+                        country: selectedAddress.address.country,
+                        pin_code: selectedAddress.address.pin_code
+                    }
+                },
+
                 status: "PENDING",
                 status_by: "USER",
                 booked_from: "Mobile",
                 // payment_id: paymentId
-
-
             };
             let response = await InsertAppointment(requestData);
             if (response.success) {
@@ -181,18 +294,23 @@ class labConfirmation extends Component {
 
         }
         catch (e) {
-            
+
             console.log(e);
         }
         finally {
             this.setState({ isLoading: false });
         }
     }
+    removePatientData(item, index) {
+        let temp = this.state.patientDetails
+        temp.splice(index, 1);
+        this.setState({ patientDetails: temp });
+    }
 
 
 
     render() {
-        const { patientType, name, age, gender, patientdetails, itemSelected, packageDetails } = this.state;
+        const { data, name, age, gender, patientDetails, itemSelected, packageDetails, patientAddress, selfChecked, othersChecked, defaultPatientDetails } = this.state;
 
         return (
             <Container>
@@ -210,8 +328,8 @@ class labConfirmation extends Component {
                                     <Col size={3}>
                                         <Row style={{ alignItems: 'center' }}>
                                             <Checkbox color="#775DA3"
-                                                status={this.state.selectedType[0] ? 'checked' : 'unchecked'}
-                                                onPress={() => { this.selectPatientType(0, 'Self'); }}
+                                                status={this.state.selfChecked ? 'checked' : 'unchecked'}
+                                                onPress={async () => { await this.setState({ selfChecked: !this.state.selfChecked }), this.onChangeSelf() }}
                                             />
                                             <Text style={{ fontFamily: 'OpenSans', fontSize: 12, color: '#000' }}>Self</Text>
                                         </Row>
@@ -219,8 +337,8 @@ class labConfirmation extends Component {
                                     <Col size={3}>
                                         <Row style={{ alignItems: 'center' }}>
                                             <Checkbox color="#775DA3"
-                                                status={this.state.selectedType[1] ? 'checked' : 'unchecked'}
-                                                onPress={() => { this.selectPatientType(1, 'Others'); }}
+                                                status={this.state.othersChecked ? 'checked' : 'unchecked'}
+                                                onPress={async () => { await this.setState({ othersChecked: !this.state.othersChecked }), this.onChangeCheckBox() }}
                                             />
                                             <Text style={{ fontFamily: 'OpenSans', fontSize: 12, color: '#000' }}>Others</Text>
                                         </Row>
@@ -231,7 +349,7 @@ class labConfirmation extends Component {
                             </Col>
                         </Row>
 
-                        {patientType == 'Others' ?
+                        {othersChecked == true ?
                             <View style={{ marginTop: 10 }}>
                                 <Text style={{ fontFamily: 'OpenSans', fontSize: 14, color: '#7F49C3' }}>Add other patient's details</Text>
                                 <Row style={{ marginTop: 10 }}>
@@ -298,8 +416,9 @@ class labConfirmation extends Component {
                                     </RadioButton.Group>
                                 </View>
                             </View> : null}
+                        {this.state.errMsg ? <Text style={{ paddingLeft: 10, fontSize: 10, fontFamily: 'OpenSans', color: 'red' }}>{this.state.errMsg}</Text> : null}
 
-                        {patientType == 'Others' ?
+                        {othersChecked == true ?
                             <Row style={{ justifyContent: 'center', alignItems: 'center', marginTop: 10 }}>
                                 <TouchableOpacity style={styles.touchStyle} onPress={() => this.addPatientData()}>
                                     <Text style={styles.touchText}>Add patient</Text>
@@ -309,14 +428,15 @@ class labConfirmation extends Component {
 
                     <View style={{ backgroundColor: '#fff', padding: 10, marginTop: 5 }}>
                         <Text style={{ fontFamily: 'OpenSans', fontSize: 14, color: '#7F49C3' }}>Patient Details</Text>
-
+                        {/* {othersChecked || (selfChecked && othersChecked) ? */}
                         <FlatList
-                            data={patientdetails}
+                            data={patientDetails}
+                            extraData={patientDetails}
                             keyExtractor={(item, index) => index.toString()}
-                            renderItem={({ item }) =>
+                            renderItem={({ item, index }) =>
                                 <View>
                                     <Row style={{ marginTop: 10, }}>
-                                        <Col size={10}>
+                                        <Col size={8}>
                                             <Row>
                                                 <Col size={2}>
                                                     <Text style={{ fontFamily: 'OpenSans', fontSize: 12, color: '#000', fontWeight: '500' }}>Name</Text>
@@ -324,13 +444,19 @@ class labConfirmation extends Component {
                                                 <Col size={.5}>
                                                     <Text style={{ fontFamily: 'OpenSans', fontSize: 12, color: '#000', fontWeight: '500' }}>-</Text>
                                                 </Col>
-                                                <Col size={7.5}>
+                                                <Col size={7}>
                                                     <Text style={{ fontFamily: 'OpenSans', fontSize: 12, color: '#000' }}>{item.full_name}</Text>
 
                                                 </Col>
                                             </Row>
                                         </Col>
+                                        <Col size={0.5}>
+                                            <TouchableOpacity onPress={() => this.removePatientData(item, index)}>
+                                                <Icon active name='ios-close' style={{ color: '#d00729', fontSize: 18 }} />
+                                            </TouchableOpacity>
+                                        </Col>
                                     </Row>
+
                                     <Row>
                                         <Col size={10}>
                                             <Row>
@@ -341,7 +467,7 @@ class labConfirmation extends Component {
                                                     <Text style={{ fontFamily: 'OpenSans', fontSize: 12, color: '#000', fontWeight: '500' }}>-</Text>
                                                 </Col>
                                                 <Col size={7.5}>
-                                                    <Text style={{ fontFamily: 'OpenSans', fontSize: 12, color: '#000' }}>{item.age} years</Text>
+                                                    <Text style={{ fontFamily: 'OpenSans', fontSize: 12, color: '#000' }}>{(item.age) + ' - ' + getUserGenderAndAge(item)}</Text>
 
                                                 </Col>
                                             </Row>
@@ -349,8 +475,8 @@ class labConfirmation extends Component {
                                     </Row>
                                 </View>
                             } />
-                    </View>
 
+                    </View>
 
 
                     <RadioButton.Group onValueChange={value => this.setState({ itemSelected: value })}
@@ -358,66 +484,73 @@ class labConfirmation extends Component {
                         <View style={{ backgroundColor: '#fff', padding: 10, marginTop: 5 }}>
                             <Row>
                                 <Col size={7}>
-                                    <Text style={{ fontFamily: 'OpenSans', fontSize: 14, fontWeight: '500' }}>Test from home<Text style={{ fontFamily: 'OpenSans', fontSize: 14, color: '#909090' }}>(Test Result)</Text></Text>
+                                    <Text style={{ fontFamily: 'OpenSans', fontSize: 14, fontWeight: '500' }}>Test at home<Text style={{ fontFamily: 'OpenSans', fontSize: 14, color: '#909090' }}>(Test Result)</Text></Text>
                                 </Col>
                                 <Col size={5} style={{ alignItems: 'flex-end', justifyContent: 'flex-end' }}>
-                                    <RadioButton value={'TEST_TO_HOME'} />
+                                    <RadioButton value={'TEST_AT_HOME'} />
                                 </Col>
                             </Row>
-                            {itemSelected === 'TEST_TO_HOME' ?
-                                <View>
+                        </View>
+                        {itemSelected === 'TEST_AT_HOME' ?
+                            <View>
+                                {patientAddress.length != 0 ?
                                     <Row style={{ marginTop: 5 }}>
                                         <Col size={5}>
-                                            <Text style={{ fontFamily: 'OpenSans', fontSize: 14, color: '#7F49C3' }}>Delivery Address</Text>
+                                            <Text style={{ fontFamily: 'OpenSans', fontSize: 14, color: '#7F49C3' }}>Save Address</Text>
                                         </Col>
                                         <Col size={5} style={{ alignItems: 'flex-end', justifyContent: 'flex-end' }}>
-                                            <TouchableOpacity onPress={() => this.editProfile('MapBox', 'lab_delivery_Address')}>
+                                            <TouchableOpacity onPress={() => this.editProfile('MapBox', 'delivery_Address')}>
                                                 <Text style={{ fontFamily: 'OpenSans', fontSize: 10, color: '#ff4e42' }}>Add new Address</Text>
                                             </TouchableOpacity>
                                         </Col>
-                                    </Row>
-                                    {/* <FlatList
-                                    data={patientdetails}
-                                    keyExtractor={(item, index) => index.toString()}
-                                    renderItem={({ item }) =>
-                                          
-                                                <Text style={{ fontFamily: 'OpenSans', fontSize: 12, fontWeight: '300', marginTop: 5 }}>{item.full_name}</Text> */}
-                                    <Row style={{ borderBottomColor: '#909090', borderBottomWidth: 0.3, paddingBottom: 15 }}>
+                                    </Row> : null}
+                                {patientAddress.length != 0 ?
+                                    <FlatList
+                                        data={patientAddress}
+                                        extraData={patientAddress}
+                                        keyExtractor={(item, index) => index.toString()}
+                                        renderItem={({ item, index }) =>
+                                            <View style={{ backgroundColor: '#fff' }}>
+                                                <Row style={{ borderBottomColor: '#909090', borderBottomWidth: 0.3, paddingBottom: 15 }}>
 
-                                        <Col size={10}>
-                                            <Text style={{ fontFamily: 'OpenSans', fontSize: 12, marginTop: 2, color: '#6a6a6a' }}>{getAddress(patientdetails[0])}</Text>
-                                            <Text style={{ fontFamily: 'OpenSans', fontSize: 12, marginTop: 2 }}>{'Mobile -' + (patientdetails[0] && patientdetails[0].mobile_no || 'Nil')}</Text>
-                                        </Col>
-                                        {/* <Col size={1} style={{ justifyContent: 'center' }}>
-                                                {/* <RadioButton.Group
-                                                >
-                                                    <RadioButton value={this.state.itemSelected == 'itemTwo'} />
-                                                </RadioButton.Group> */}
-                                        {/* </Col>
-                                       
-                                    } />  */}
-                                    </Row>
-                                </View> :
-                                null}
-                        </View>
+                                                    <Col size={10}>
+                                                        <Text style={{ fontFamily: 'OpenSans', fontSize: 12, marginTop: 2, color: '#6a6a6a' }}>{getAddress(item)}</Text>
+                                                        <Text style={{ fontFamily: 'OpenSans', fontSize: 12, marginTop: 2 }}>{'Mobile -' + (item.mobile_no || 'Nil')}</Text>
+                                                    </Col>
+                                                    <Col size={1} style={{ justifyContent: 'center' }}>
+                                                        <RadioButton.Group style={{ marginTop: 2 }} onValueChange={value => this.setState({ selectedAddress: value })}
+
+                                                            value={this.state.selectedAddress}  >
+                                                            <RadioButton value={item} />
+                                                        </RadioButton.Group>
+                                                    </Col>
+                                                </Row>
+                                            </View>
+                                        } /> :
+
+                                    <Button transparent onPress={() => this.editProfile('MapBox', null)}>
+                                        <Icon name='add' style={{ color: 'gray' }} />
+                                        <Text uppercase={false} style={styles.customText}>Add Address</Text>
+                                    </Button>}
+                            </View> : null}
 
                         <View style={{ backgroundColor: '#fff', padding: 10, marginTop: 5 }}>
                             <Row>
                                 <Col size={7}>
-                                    <Text style={{ fontFamily: 'OpenSans', fontSize: 14, fontWeight: '500' }}>Pick up at Lab<Text style={{ fontFamily: 'OpenSans', fontSize: 14, color: '#909090' }}>(Test Result)</Text></Text>
+                                    <Text style={{ fontFamily: 'OpenSans', fontSize: 14, fontWeight: '500' }}>Test at Lab<Text style={{ fontFamily: 'OpenSans', fontSize: 14, color: '#909090' }}>(Test Result)</Text></Text>
                                 </Col>
                                 <Col size={5} style={{ alignItems: 'flex-end', justifyContent: 'flex-end' }}>
 
-                                    <RadioButton value={'PICKUP_AT_LAP'} />
+                                    <RadioButton value={'TEST_AT_LAP'} />
                                 </Col>
                             </Row>
                         </View>
                     </RadioButton.Group>
-                    {itemSelected === 'PICKUP_AT_LAP' ?
+                    {itemSelected === 'TEST_AT_LAP' ?
                         <View>
                             <Row>
                                 <Col size={5}>
-                                    <Text style={{ fontFamily: 'OpenSans', fontSize: 14, color: '#7F49C3' }}>Store Address</Text>
+                                    <Text style={{ fontFamily: 'OpenSans', fontSize: 14, color: '#7F49C3' }}>Lab Address</Text>
                                 </Col>
                                 <Col size={5} style={{ alignItems: 'flex-end', justifyContent: 'flex-end' }}>
                                 </Col>
@@ -434,14 +567,14 @@ class labConfirmation extends Component {
                         <Row style={{ marginTop: 10 }}>
                             <Col size={8}>
                                 <Text style={{ fontFamily: 'OpenSans', fontSize: 12, color: '#6a6a6a' }}>{packageDetails.category_name}
-                                    <Text style={{ fontFamily: 'OpenSans', fontSize: 12, color: '#8dc63f' }}>{'(' + (patientdetails.length) + " person)"}</Text>
+                                    <Text style={{ fontFamily: 'OpenSans', fontSize: 12, color: '#8dc63f' }}>{'(' + (patientDetails.length) + " person)"}</Text>
                                 </Text>
 
                             </Col>
                             <Col size={5} style={{ alignItems: 'flex-end', justifyContent: 'flex-end' }}>
 
-                                <Text style={{ fontFamily: 'OpenSans', fontSize: 10, color: '#8dc63f', textAlign: 'right' }}>₹ {(packageDetails.packageAmount * patientdetails.length)}</Text>
-                                {/* <Text style={{ fontFamily: 'OpenSans', fontSize: 10, color: '#8dc63f', textAlign: 'right' }}>₹ {packageDetails.packageAmount}</Text> */}
+                                <Text style={{ fontFamily: 'OpenSans', fontSize: 10, color: '#8dc63f', textAlign: 'right' }}>₹ {(packageDetails.fee * patientDetails.length)}</Text>
+
 
                             </Col>
                         </Row>
@@ -455,14 +588,14 @@ class labConfirmation extends Component {
 
                             </Col>
                         </Row> */}
-                        {itemSelected === 'TEST_TO_HOME' ?
+                        {itemSelected === 'TEST_AT_HOME' ?
                             <Row style={{ marginTop: 5 }}>
                                 <Col size={8}>
                                     <Text style={{ fontFamily: 'OpenSans', fontSize: 12, color: '#6a6a6a' }}>Extra Charges</Text>
                                 </Col>
                                 <Col size={5} style={{ alignItems: 'flex-end', justifyContent: 'flex-end' }}>
 
-                                    <Text style={{ fontFamily: 'OpenSans', fontSize: 10, color: '#ff4e42', textAlign: 'right' }}>₹{packageDetails.testToHomeCharge ? packageDetails.testToHomeCharge : 0}</Text>
+                                    <Text style={{ fontFamily: 'OpenSans', fontSize: 10, color: '#ff4e42', textAlign: 'right' }}>₹{packageDetails.extra_charges ? packageDetails.extra_charges : 0}</Text>
 
                                 </Col>
                             </Row> : null}
@@ -541,7 +674,7 @@ class labConfirmation extends Component {
                         <Row>
                             <Col size={5} style={{ alignItems: 'center', justifyContent: 'center', backgroundColor: '#fff' }}>
                                 <TouchableOpacity >
-                                    <Text style={{ fontSize: 16, fontFamily: 'OpenSans', color: '#000', fontWeight: '400' }}>{itemSelected == 'TEST_TO_HOME' ? 'Cash On Laptest' : 'Cash on Pickup'} </Text>
+                                    <Text style={{ fontSize: 16, fontFamily: 'OpenSans', color: '#000', fontWeight: '400' }}>{itemSelected == 'TEST_AT_HOME' ? 'Cash On Home' : 'Cash on Lab'} </Text>
                                 </TouchableOpacity>
                             </Col>
                             <Col size={5} style={{ alignItems: 'center', justifyContent: 'center', backgroundColor: '#8dc63f' }}>
@@ -557,7 +690,7 @@ class labConfirmation extends Component {
     }
 }
 
-export default labConfirmation;
+export default LabConfirmation;
 
 const styles = StyleSheet.create({
 

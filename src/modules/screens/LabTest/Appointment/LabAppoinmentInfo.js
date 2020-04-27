@@ -21,7 +21,6 @@ class LabAppointmentInfo extends Component {
       reviewData: [],
       reportData: null,
       isLoading: true,
-      proposedVisible: false,
 
     }
   }
@@ -31,47 +30,23 @@ class LabAppointmentInfo extends Component {
     const appointmentData = navigation.getParam('data');
     const upcomingTap = navigation.getParam('selectedIndex');
 
-        console.log("appointmentData", appointmentData)
     if (appointmentData != undefined) {
       await this.setState({ data: appointmentData, upcomingTap})
     }
-    await new Promise.all([this.labTestCategoryOfferedPrice(),
-    this.getLapTestPaymentInfo(appointmentData.payment_id)])
-    if (appointmentData.appointment_status == 'PROPOSED_NEW_TIME') {
-      await this.setState({ proposedVisible: true })
-    }
+    this.getLapTestPaymentInfo(appointmentData.payment_id)
+   
   }
-labTestCategoryOfferedPrice(){
-  const{data}=this.state
-  let labTestCategoryInfo=[];
-  let temp=data.labInfo;
-  temp.available_lab_test_categories.map(ele=>{
-    if (ele.lab_test_categories_id == data.lab_test_categories_id){
-    //  let offerdPrice= parseInt(ele.price) - ((parseInt(ele.offer) / 100) * parseInt(ele.price));
-      labTestCategoryInfo.push({ category_name: ele.category_name})
-      this.setState({ labTestCategoryInfo: labTestCategoryInfo[0] })
-
-    }
-  })
-  
-}
   async  navigateCancelAppoointment() {
     try {
-      await this.setState({ proposedVisible: false })
       this.props.navigation.navigate('LabCancelAppointment', { appointmentData: this.state.data })
     }
     catch (e) {
       console.log(e)
     }
   }
-  async SkipAction() {
-    this.setState({ proposedVisible: false })
-  }
 
   updateLabAppointmentStatus = async (data, updatedStatus) => {
     try {
-      console.log("data:::", data)
-
       this.setState({ isLoading: true });
       let userId = await AsyncStorage.getItem('userId');
       let requestData = {
@@ -85,21 +60,15 @@ labTestCategoryOfferedPrice(){
       };
 
       let result = await updateLapAppointment(data._id, requestData);
-      console.log("Update   result>>>>>>>>>>>>>>>>>>>>>", result)
-
       this.setState({ isLoading: false })
-
       if (result.success) {
         let temp = this.state.data
-
         temp.appointment_status = result.appointmentData.appointment_status
         Toast.show({
           text: result.message,
           duration: 3000
         })
-        if (this.state.proposedVisible == true) {
-          this.setState({ proposedVisible: false });
-        }
+       
         this.setState({ data: temp });
       }
     }
@@ -111,7 +80,6 @@ labTestCategoryOfferedPrice(){
   getLapTestPaymentInfo = async (paymentId) => {
     try {
       let result = await getLapTestPaymentDetails(paymentId);
-      console.log("result", result)
       if (result.success) {
         this.setState({ paymentData: result.data[0] })
       }
@@ -122,7 +90,7 @@ labTestCategoryOfferedPrice(){
   }
 
   render() {
-    const { data, labTestCategoryInfo, upcomingTap, paymentData}=this.state
+    const { data, upcomingTap, paymentData}=this.state
     return (
       <Container style={styles.container}>
         <Content style={styles.bodyContent}>
@@ -141,7 +109,7 @@ labTestCategoryOfferedPrice(){
                       <Row>
                         <Col size={9}>
                           <Text style={styles.Textname} >{data.labInfo && data.labInfo.lab_name}</Text>
-                          <Text style={{ fontSize: 12, fontFamily: 'OpenSans', fontWeight: 'normal' }}>{labTestCategoryInfo && labTestCategoryInfo.category_name}</Text>
+                          <Text style={{ fontSize: 12, fontFamily: 'OpenSans', fontWeight: 'normal' }}>{data.labCategoryInfo && data.labCategoryInfo.category_name}</Text>
                         </Col>
                         <Col size={1}>
                         </Col>
@@ -174,7 +142,7 @@ labTestCategoryOfferedPrice(){
                             fontSize: 35
                           }} />
 
-                        <Text capitalise={true} style={[styles.textApproved, { color: statusValue[data.appointment_status].color }]}>{data.appointment_status == 'PROPOSED_NEW_TIME' ? 'PROPOSED NEW TIME' : data.appointment_status}</Text>
+                        <Text capitalise={true} style={[styles.textApproved, { color: statusValue[data.appointment_status].color }]}>{data.appointment_status}</Text>
                       </View>
                     </Col>:null
                   }
@@ -194,30 +162,7 @@ labTestCategoryOfferedPrice(){
                         </Button>
                       </Row>
                     </Col>
-                  </Row> :
-                  data.appointment_status == 'PROPOSED_NEW_TIME' ?
-                    <Row>
-                      <Col size={4}>
-                        <Row style={{ marginTop: 10 }}>
-
-                          <Text note style={styles.subText3}>Do you want to accept ?</Text>
-
-                        </Row>
-                      </Col>
-                      <Col size={3}>
-                        <Row style={{ marginTop: 10 }}>
-                          <Button style={[styles.postponeButton, { backgroundColor: '#6FC41A' }]} onPress={() => this.updateLabAppointmentStatus(data, 'APPROVED')}>
-                            <Text style={styles.ButtonText}>ACCEPT</Text>
-                          </Button>
-                        </Row>
-                      </Col>
-                      <Col size={3}>
-                        <Row style={{ marginTop: 10 }}>
-                          <Button danger style={[styles.postponeButton]} onPress={() => this.navigateCancelAppoointment()}>
-                            <Text capitalise={true} style={styles.ButtonText}>CANCEL</Text>
-                          </Button>
-                        </Row>
-                      </Col></Row> : null : null}
+                  </Row>  : null : null}
 
               </Grid>
 
@@ -294,7 +239,7 @@ labTestCategoryOfferedPrice(){
                   </Col>
                   <Col style={{ width: '92%', paddingTop: 5 }}>
                     <Text style={styles.innerSubText}>Lab Test</Text>
-                    <Text note style={styles.subTextInner1}>{labTestCategoryInfo && labTestCategoryInfo.category_name}</Text>
+                    <Text note style={styles.subTextInner1}>{data.labCategoryInfo && data.labCategoryInfo.category_name}</Text>
                   </Col>
                 </Row>
 
@@ -374,85 +319,7 @@ labTestCategoryOfferedPrice(){
               </View>
             </Grid>
           </View>
-
-          <Modal
-            visible={this.state.proposedVisible}
-            transparent={true}
-            animationType={'fade'}
-          >
-            <View style={{
-              flex: 1,
-              flexDirection: 'column',
-              justifyContent: 'center',
-              alignItems: 'center',
-              backgroundColor: 'rgba(0,0,0,0.5)'
-            }}>
-              <View style={{
-                width: '95%',
-                height: '25%',
-                backgroundColor: '#fff',
-                borderColor: 'gray',
-                borderWidth: 3,
-                padding: 10,
-                borderRadius: 10
-              }}>
-
-                <CardItem header style={styles.cardItem3}>
-                  <Text style={{ fontSize: 13, fontFamily: 'OpenSans', fontWeight: 'bold', marginTop: -5, color: '#FFF', marginLeft: -5 }}>{'Lab test has rescheduled the appointment !'}</Text></CardItem>
-                <Row style={{ justifyContent: 'center' }}>
-                  <Col style={{ width: '25%' }}>
-                    <Text style={{ fontSize: 12, fontFamily: 'OpenSans', textAlign: 'center', marginTop: 10, color: 'red', textDecorationLine: 'line-through', textDecorationStyle: 'double', textDecorationColor: 'gray' }}>{data.previous_data ? formatDate(data.previous_data.startDateTime, "DD/MM/YYYY") : null}</Text>
-                  </Col>
-                  <Col style={{ width: '75%' }}>
-                    <Text style={{ fontSize: 12, fontFamily: 'OpenSans', textAlign: 'center', marginTop: 10, color: 'red', textDecorationLine: 'line-through', textDecorationStyle: 'double', textDecorationColor: 'gray' }}>{data.previous_data ? formatDate(data.previous_data.startDateTime, "hh:mm a") + formatDate(data.previous_data.endDateTime, "-hh:mm a") : null}</Text>
-                  </Col>
-
-                </Row>
-                <Row style={{ justifyContent: 'center' }}>
-                  <Col style={{ width: '30%' }}>
-                    <Text style={{ fontSize: 14, fontFamily: 'OpenSans', textAlign: 'center', marginTop: 10, color: 'green' }}>{formatDate(data.appointment_starttime, "DD/MM/YYYY")}</Text>
-                  </Col>
-                  <Col style={{ width: '70%' }}>
-                    <Text style={{ fontSize: 14, fontFamily: 'OpenSans', textAlign: 'center', marginTop: 10, color: 'green' }}>{formatDate(data.appointment_starttime, "hh:mm a") + formatDate(data.appointment_endtime, "-hh:mm a")}</Text>
-                  </Col>
-
-                </Row>
-                <Row style={{ marginTop: 15, justifyContent: 'flex-end', marginBottom: 15 }}>
-                  <Col size={2}></Col>
-                  <Col size={8} >
-                    <Row>
-
-                      <Col size={3} style={{ marginRight: 3 }}>
-                        <TouchableOpacity style={{ paddingLeft: 10, paddingRight: 10, paddingTop: 2, paddingBottom: 2, borderRadius: 5, backgroundColor: '#775DA3' }}
-                          onPress={() => this.SkipAction()} testID='confirmButton'>
-
-                          <Text style={{ fontFamily: 'OpenSans', fontSize: 14, textAlign: 'center', color: '#fff' }}>{'Skip'}</Text>
-                        </TouchableOpacity>
-                      </Col>
-                      <Col size={3.4} style={{ marginRight: 3 }} >
-                        <TouchableOpacity style={{ backgroundColor: '#6FC41A', paddingLeft: 10, paddingRight: 10, paddingTop: 2, paddingBottom: 2, borderRadius: 5, }} onPress={() => this.updateAppointmentStatus(data, 'APPROVED')} testID='confirmButton'>
-                          <Text style={{ fontFamily: 'OpenSans', fontSize: 12, textAlign: 'center', color: '#fff' }}>{'ACCEPT'}</Text>
-                        </TouchableOpacity>
-                      </Col>
-                      <Col size={3.6}>
-                        <TouchableOpacity danger style={{ paddingLeft: 10, paddingRight: 10, paddingTop: 2, paddingBottom: 2, borderRadius: 5, backgroundColor: 'red' }} onPress={() => this.navigateCancelAppoointment()} testID='cancelButton'>
-                          <Text style={{ fontFamily: 'OpenSans', fontSize: 12, textAlign: 'center', color: '#fff' }}> {'CANCEL'}</Text>
-                        </TouchableOpacity>
-                      </Col>
-                    </Row>
-
-
-
-
-
-                  </Col>
-
-                </Row>
-              </View>
-
-            </View>
-          </Modal>
-
+        
         </Content>
       </Container>
 
