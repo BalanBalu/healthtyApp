@@ -6,7 +6,7 @@ export const IS_IOS = Platform.OS === 'ios';
 
 export const API_URL = 'https://medflic-qa-api.aopks.com/api/';
 export const CATEGORY_BASE_URL = API_URL.substring(0, API_URL.length - 4) + 'images/category/';
-export const CHAT_API_URL = 'https://chat-api.aopks.com';
+export const CHAT_API_URL = 'https://chat-qa-api.aopks.com';
 
 export const MAP_BOX_TOKEN = 'sk.eyJ1IjoidmFpcmFpc2F0aGlzaCIsImEiOiJjand4NWV2djQwZGFkNDNtejhkYXVwbW0zIn0.SxLkBv_NwpDKUIl-e499rg';
 export const MAP_BOX_PUBLIC_TOKEN = 'pk.eyJ1IjoidmFpcmFpc2F0aGlzaCIsImEiOiJjanZhMjBrZHMwdW16NGVtamFhNnE4aDIwIn0.s629-J2w7AeQITCLhdl0pw'
@@ -23,7 +23,7 @@ export const CONNECTY_CUBE = [{
     },
   }
 ]
-export const CURRENT_PRODUCT_VERSION_CODE = 13;
+export const CURRENT_PRODUCT_VERSION_CODE = 17;
 
 /*** Change ON Prod End ***/
 
@@ -39,6 +39,6 @@ export const SERVICE_TYPES = {
     VIDEO_CONSULTING: 'VIDEO_CONSULTING'
 }
 export const MAX_DISTANCE_TO_COVER = 30000; // in meters Doctor Can be search Within in the AREA
-export const PHARMACY_MAX_DISTANCE_TO_COVER = 30000;
+export const PHARMACY_MAX_DISTANCE_TO_COVER = 10000;
 export const MAX_PERCENT_APPLY_BY_CREDIT_POINTS = 25;
 
