@@ -9,6 +9,7 @@ import Profile from "../../modules/screens/userprofile";
 import UpdateEmail from "../../modules/screens/userprofile/UpdateEmail";
 import UpdateContact from "../../modules/screens/userprofile/UpdateContact";
 import UpdatePassword from "../../modules/screens/userprofile/UpdatePassword";
+import Updateheightweight from "../../modules/screens/userprofile/Updateheightweight";
 import UpdateInsurance from "../../modules/screens/userprofile/UpdateInsurance";
 import UpdateUserDetails from "../../modules/screens/userprofile/UpdateUserDetails";
 import { Icon, View, Thumbnail, Item, Input } from 'native-base';
@@ -77,6 +78,7 @@ import PharmacyList from '../../modules/screens/Pharmacy/PharmacyList/pharmacyLi
 import VideoScreen from '../../modules/screens/VideoConsulation/components/VideoScreen';
 import AvailableDoctors4Video from '../../modules/screens/VideoConsulation/components/AvailableDoctors';
 import VideoConsultaions from '../../modules/screens/VideoConsulation/components/MyConsultations';
+import COVID19StateDistrictStats from '../../modules/screens/Home/Covid10-District-wise';
 
 const AuthRoutes = {
   login: {
@@ -285,8 +287,16 @@ const HomeStack = createStackNavigator({
     screen: UpdatePassword,
     navigationOptions: {
       title: 'Update Password'
-    }
+    }   
   },
+  
+  Updateheightweight: {
+    screen: Updateheightweight,
+    navigationOptions: {
+      title: 'Update height weight'
+    }   
+  },
+
   UpdateInsurance: {
     screen: UpdateInsurance,
     navigationOptions: {
@@ -468,9 +478,9 @@ const HomeStack = createStackNavigator({
   medicineSearchList: {
     screen: MedicineSearchList,
     navigationOptions: ({ navigation }) => ({
-      title: 'Search List',
+      title: 'Medicine List',
       headerRight: (
-        <Grid>
+        <Grid style={{justifyContent:'center',alignItems:'center'}}>
           <Col>
             <TouchableOpacity onPress={() => { navigation.navigate('PharmacyCart') }} >
               <View>
@@ -526,10 +536,8 @@ const HomeStack = createStackNavigator({
   MedicineSuggestionList: {
     screen: MedicineSuggestionList,
     navigationOptions: ({ navigation }) => ({
-      title: 'Pharmacy Suggestion List',
+      title: 'Search Medicines',
       headerRight: (
-        <Grid>
-          <Col>
             <TouchableOpacity onPress={() => { navigation.navigate('PharmacyCart') }} >
               <View>
                 <Icon name="ios-cart" style={{ color: '#fff', marginRight: 15, fontFamily: 'opensans-semibold', fontSize: 20 }}></Icon>
@@ -541,8 +549,8 @@ const HomeStack = createStackNavigator({
                 }
               </View>
             </TouchableOpacity>
-          </Col>
-        </Grid>
+        
+      
       ),
     })
 
@@ -551,32 +559,26 @@ const HomeStack = createStackNavigator({
   MedicineCheckout: {
     screen: MedicineCheckout,
     navigationOptions: {
-      title: 'Order Payment Address'
+      title: 'Checkout'
     }
   },
   ChosePharmacyList: {
     screen: ChosePharmacyList,
     navigationOptions: {
-      title: ' Chose Pharmacy List'
+      title: ' Choose Pharmacy'
     }
   },
   //=================== Medicine Order Details =============
   "Medicine Orders": {
     screen: MyOrdersList,
     navigationOptions: {
-      title: 'Orders List',
-    }
-  },
-  MyOrdersList: {
-    screen: MyOrdersList,
-    navigationOptions: {
-      title: 'Order List'
+      title: 'My Medicine Orders',
     }
   },
   OrderDetails: {
     screen: OrderDetails,
     navigationOptions: {
-      title: 'My Order'
+      title: 'Medicine Order Details'
     }
   },
   MedicineInfo: {
@@ -584,7 +586,7 @@ const HomeStack = createStackNavigator({
     navigationOptions: ({ navigation }) => ({
       title: 'Medicine Details',
       headerRight: (
-        <Grid>
+        <Grid style={{alignItems:'center',justifyContent:'center'}}>
           <Col>
             <TouchableOpacity onPress={() => { navigation.navigate('PharmacyCart') }} >
               <View>
@@ -608,13 +610,17 @@ const HomeStack = createStackNavigator({
       title: 'Medicine Reviews'
     }
   },
-
-
-  'CORONO Status': {
+  'CORONA Status': {
     screen: CoronaDisease,
-    navigationOptions: {
-      title: 'CORONO Status'
-    }
+    navigationOptions: ({ navigation }) => ({
+      title: 'CORONA Status'
+    })
+  },
+  COVID19StateDistrictStats: {
+    screen: COVID19StateDistrictStats,
+    navigationOptions: ({ navigation }) => ({
+      title: 'Covid-19 ' + navigation.getParam('stateName') || ' '
+    })
   },
   /* Video Consultation */
   VideoScreen: {
@@ -628,7 +634,7 @@ const HomeStack = createStackNavigator({
   'Video and Chat Service': {
     screen: AvailableDoctors4Video,
     navigationOptions: {
-      title: 'Video Consulting Serivce'
+      title: 'Video & Chat Consulting Service'
     }
   },
   'My Video Consultations': {
@@ -704,9 +710,9 @@ const DrawerNavigator = createDrawerNavigator({
   Reminder: {
     screen: Reminder
   },
-  'CORONO Status': {
-    screen: CoronaDisease
-  },
+  // 'CORONA Status': {
+  //   screen: CoronaDisease
+  // },
 
 
 },
@@ -727,7 +733,7 @@ export const DragwerLogos = {
   Reminder: require('../../../assets/images/drawerIcons/Reminder.png'),
   "My Chats": require('../../../assets/images/drawerIcons/Chat.png'),
   "Blood Donors": require('../../../assets/images/drawerIcons/Blooddonars.png'),
-  'CORONO Status': require('../../../assets/images/drawerIcons/Pharmacy.png'),
+  'CORONA Status': require('../../../assets/images/drawerIcons/Pharmacy.png'),
   'My Video Consultations': require('../../../assets/images/drawerIcons/Appointments.png'),
   'Video and Chat Service': require('../../../assets/images/drawerIcons/Appointments.png'),
 }

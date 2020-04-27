@@ -58,8 +58,14 @@ export default class AuthService {
   };
 
   logout = () => {
-    ConnectyCube.chat.disconnect();
-    ConnectyCube.destroySession();
+    try {
+      if(ConnectyCube.chat) {
+        ConnectyCube.chat.disconnect();
+        ConnectyCube.destroySession();
+      }
+    } catch (error) {
+      
+    }
   };
   genePw = (userId, connectycube_pw) => {
     const dyCPasswordHint = connectycube_pw.split('_');

@@ -13,9 +13,6 @@ class MyOrdersList extends Component {
         super(props)
         this.state = {
             data: [],
-            cartItems: [],
-            orderList: [],
-            orderId: '',
             isLoading: true,
         }
     }
@@ -55,79 +52,79 @@ class MyOrdersList extends Component {
 
 
     render() {
-        const { data , isLoading } = this.state;
+        const { data, isLoading } = this.state;
         console.log(isLoading);
         return (
-            <Container style={{ backgroundColor: '#E6E6E6' }}>
-                <Content>
+            <Container style={{ backgroundColor: '#E6E6E6', flex: 1 }}>
+                <Content style={{ flex: 1 }}>
                     <Spinner
                         visible={isLoading}
                     />
                     <FlatList data={data}
                         keyExtractor={(item, index) => index.toString()}
                         renderItem={({ item, key }) =>
-                        <TouchableOpacity 
-                                testID="orderDetailsNavigation" 
-                                onPress={() => this.props.navigation.navigate('OrderDetails', { orderDetails: item })}>
-                                    <View style={{ margin: 5, backgroundColor: '#fff', marginLeft: 10, marginRight: 10, marginBottom: 10 }}>
-                                        <View>
-                                            <Row style={{ marginBottom: -5 }}>
-                                                <Col>
-                                                    <Text style={styles.Head}>Order Id</Text>
-                                                </Col>
-                                                <Col>
-                                                    <Text style={{ fontSize: 10, textAlign: 'right', margin: 10, fontFamily: 'OpenSans' }}>{item.order_ref_no || 'NIL'}</Text>
-                                                </Col>
-                                            </Row>
+                            <TouchableOpacity
+                                testID="orderDetailsNavigation"
+                                onPress={() => this.props.navigation.navigate('OrderDetails', { serviceId: item._id })}>
+                                <View style={{ margin: 5, backgroundColor: '#fff', marginLeft: 10, marginRight: 10, marginBottom: 10 }}>
+                                    <View>
+                                        <Row style={{ marginBottom: -5 }}>
+                                            <Col>
+                                                <Text style={styles.Head}>Order Id</Text>
+                                            </Col>
+                                            <Col>
+                                                <Text style={{ fontSize: 10, textAlign: 'right', margin: 10, fontFamily: 'OpenSans' }}>{item.order_ref_no || ''}</Text>
+                                            </Col>
+                                        </Row>
+                                        <Row style={styles.Row} />
+                                        <Row>
+                                            <Text style={{ fontSize: 10, margin: 10, fontFamily: 'OpenSans' }}>{item.description}</Text>
+                                        </Row>
+                                        <Row style={{ marginTop: -10 }}>
+                                            <Text style={styles.Head}>Ordered On</Text>
+                                        </Row>
+                                        <Row style={{ marginTop: -10 }}>
+                                            <Text style={styles.orderprice}>{formatDate(item.created_date, 'DD MMMM,YYYY')}</Text>
+                                        </Row>
+                                        <Row style={{ marginBottom: -15, marginTop: -5 }}>
+                                            <Col>
+                                                <Row style={{ marginTop: -5 }}>
+                                                    <Text style={styles.Head}>Total price</Text>
+                                                </Row>
+                                                <Row style={{ marginBottom: 7.5, marginTop: -10 }}>
+                                                    <Col size={5}>
+                                                        <Text style={styles.orderprice}>₹ {this.getFinalPriceOfOrder(item.order_items || [])}</Text>
+                                                    </Col>
+                                                </Row>
+                                            </Col>
+                                        </Row>
+                                        <Row style={{ marginTop: 7.5 }}>
                                             <Row style={styles.Row} />
-                                            <Row>
-                                                <Text style={{ fontSize: 10, margin: 10, fontFamily: 'OpenSans' }}>{item.description}</Text>
-                                            </Row>
-                                            <Row style={{ marginTop: -10 }}>
-                                                <Text style={styles.Head}>Ordered On</Text>
-                                            </Row>
-                                            <Row style={{ marginTop: -10 }}>
-                                                <Text style={styles.orderprice}>{formatDate(item.created_date, 'DD MMMM,YYYY')}</Text>
-                                            </Row>
-                                            <Row style={{ marginBottom: -15, marginTop: -5 }}>
-                                                <Col>
-                                                    <Row style={{ marginTop: -5 }}>
-                                                        <Text style={styles.Head}>Total price</Text>
-                                                    </Row>
-                                                    <Row style={{ marginBottom: 7.5, marginTop: -10 }}>
-                                                        <Col size={5}>
-                                                            <Text style={styles.orderprice}>₹ {this.getFinalPriceOfOrder(item.order_items || [])}</Text>
-                                                        </Col>
-                                                    </Row>
-                                                </Col>
-                                            </Row>
-                                            <Row style={{ marginTop: 7.5 }}>
-                                                <Row style={styles.Row} />
-                                            </Row>
+                                        </Row>
 
-                                        </View>
-                                  
-                                <Row style={{ marginBottom: -12.5 }}>
-                                    <Col size={7}>
-                                        {item.status == "PENDING" ?
-                                            <Text style={styles.buytext}>Arrving on 24 Hours</Text> :
-                                            null}
-                                        {item.status == "IN PROGRESS" ?
-                                            <Text style={styles.buytext}>Arrving on Today</Text> :
-                                            null}
+                                    </View>
+
+                                    <Row style={{ marginBottom: -12.5 }}>
+                                        <Col size={7}>
+                                            {item.status == "PENDING" ?
+                                                <Text style={styles.buytext}>Arrving on 24 Hours</Text> :
+                                                null}
+                                            {item.status == "IN PROGRESS" ?
+                                                <Text style={styles.buytext}>Arrving on Today</Text> :
+                                                null}
+                                            {item.status == "COMPLETED" ?
+                                                <Text style={{ marginBottom: 25, fontSize: 11, marginTop: 10, margin: 10, color: '#ff4e42', fontFamily: 'OpenSans', fontWeight: '500' }}>Deliveried on </Text> :
+                                                null}
+                                        </Col>
                                         {item.status == "COMPLETED" ?
-                                            <Text style={{ marginBottom: 25, fontSize: 11, marginTop: 10, margin: 10, color: '#ff4e42', fontFamily: 'OpenSans', fontWeight: '500' }}>Deliveried on </Text> :
+                                            <Col size={3} style={{ marginRight: 10, marginTop: 10 }}>
+                                                <TouchableOpacity style={styles.Touch} onPress={() => { this.props.navigation.navigate("medicineSearchList") }}>
+                                                    <Text style={styles.Buynow}><Icon name='ios-cart' style={styles.cart} />  Buy Again</Text>
+                                                </TouchableOpacity>
+                                            </Col> :
                                             null}
-                                    </Col>
-                                    {item.status == "COMPLETED" ?
-                                        <Col size={3} style={{ marginRight: 10, marginTop: 10 }}>
-                                            <TouchableOpacity style={styles.Touch} onPress={() => { this.props.navigation.navigate("medicineSearchList") }}>
-                                                <Text style={styles.Buynow}><Icon name='ios-cart' style={styles.cart} />  Buy Again</Text>
-                                            </TouchableOpacity>
-                                        </Col> :
-                                        null}
-                                </Row>
-                            </View>
+                                    </Row>
+                                </View>
                             </TouchableOpacity>
                         } />
 

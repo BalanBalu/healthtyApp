@@ -7,8 +7,10 @@ import { Checkbox } from 'react-native-paper';
 import { Col, Row, Grid } from 'react-native-easy-grid';
 import { StyleSheet, Image, TouchableOpacity, AsyncStorage, FlatList, TouchableHighlight, Modal } from 'react-native';
 import { TextInput } from 'react-native-gesture-handler';
+import { formatDate } from '../../../../setup/helpers';
 import StarRating from 'react-native-star-rating';
 import { InsertMedicineReviews } from '../../../providers/pharmacy/pharmacy.action'
+import { hasLoggedIn } from "../../../providers/auth/auth.actions";
 
 export class MedInsertReview extends Component {
   constructor(props) {
@@ -25,14 +27,14 @@ export class MedInsertReview extends Component {
   async componentDidMount() {
 
     const { data } = this.props;
-    await this.setState({ data, userId: data.user_id, medicineId: data.medicine_id,modalVisible:data.modalVisible })
+    await this.setState({ data, userId: data.user_id, medicineId: data.medicine_id, modalVisible: data.modalVisible })
     console.log("data", this.state.data)
   }
 
   submitReview = async (reviewType) => {
     try {
 
-      const {  medicineId, is_anonymous, rating, comments } = this.state;
+      const { medicineId, is_anonymous, rating, comments } = this.state;
       if (reviewType == 'ADD') {
         if (rating == 0) {
           this.setState({ errorMsg: 'Add Rating to Continue' })
@@ -43,7 +45,7 @@ export class MedInsertReview extends Component {
           return false;
         }
 
-        this.setState({ errorMsg: '', isLoading: true });
+        this.setState({ errorMsg: '' });
 
         let data = {
           medicine_id: medicineId,
@@ -56,7 +58,7 @@ export class MedInsertReview extends Component {
         console.log("data", data)
 
         let result = await InsertMedicineReviews(userId, data);
-        console.log("result", result)
+
         if (result.success) {
           Toast.show({
             text: result.message,
@@ -65,6 +67,7 @@ export class MedInsertReview extends Component {
           });
           this.props.popupVisible({
             visible: false,
+            reviewUpdated: true
           });
         }
 
@@ -74,21 +77,22 @@ export class MedInsertReview extends Component {
             type: "danger",
             duration: 3000
           });
+          this.props.popupVisible({
+            visible: false,
+          });
         }
-        this.setState({ isLoading: false });
+
       } else {
         this.props.popupVisible({
           visible: false,
         });
-        this.setState({  isLoading: false });
+
       }
     }
     catch (e) {
       console.log(e)
     }
-    finally {
-      this.setState({ isLoading: false });
-    }
+
   }
 
 
@@ -96,8 +100,8 @@ export class MedInsertReview extends Component {
   render() {
     const { errorMsg, is_anonymous } = this.state;
     return (
-      <Container>
-        <Content style={{ backgroundColor: '#EAE6E6', padding: 10 }}>
+      <Container style={{ flex: 1 }}>
+        <Content style={{ backgroundColor: '#EAE6E6', padding: 10, flex: 1 }}>
           {/* <View>
             <Row>
               <TouchableOpacity style={{ borderColor: '#8dc63f', borderWidth: 1, marginLeft: 1, borderRadius: 2.5, height: 25, width: 65, backgroundColor: '#8dc63f' }}
@@ -131,7 +135,7 @@ export class MedInsertReview extends Component {
                     <Text style={{ color: '#fff', fontSize: 16 }}>{this.state.data.medicine_name}</Text>
                   </Left>
                   <Right>
-                    <Text style={{ color: '#fff', fontSize: 12 }}>January 2,2020 - 05.30 PM</Text>
+                    <Text style={{ color: '#fff', fontSize: 12 }}>{formatDate(new Date(), 'MMMM DD, YYYY - hh.mm a')}</Text>
                   </Right>
                 </Row>
 
@@ -142,7 +146,7 @@ export class MedInsertReview extends Component {
                         disabled={false}
                         maxStars={5}
                         rating={this.state.rating}
-                        selectedStar={(rating) => this.setState({rating})}
+                        selectedStar={(rating) => this.setState({ rating })}
                       />
                     </View>
                     <View style={{ marginLeft: 20, marginTop: 10, marginRight: 20 }}>
@@ -196,7 +200,7 @@ const styles = StyleSheet.create({
   },
 
   bodyContent: {
-    padding: 0
+    padding: 0,
   },
   customImage: {
     height: 90,

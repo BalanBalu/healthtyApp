@@ -6,6 +6,7 @@ import { medicineRateAfterOffer, setCartItemCountOnNavigation, renderMedicineIma
 import Spinner from '../../../../components/Spinner';
 import { dateDiff, getMoment, formatDate } from '../../../../setup/helpers'
 import { MedInsertReview } from './medInsertReview'
+import { NavigationEvents } from 'react-navigation';
 import { AddToCard } from '../AddToCardBuyNow/AddToCard'
 import SwiperFlatList from 'react-native-swiper-flatlist';
 import ImageZoom from 'react-native-image-pan-zoom';
@@ -56,7 +57,7 @@ class MedicineInfo extends Component {
 
     async componentDidMount() {
         medicineId = this.props.navigation.getParam('medicineId');
-        pharmacyId = this.props.navigation.getParam('pharmacyId');
+        let pharmacyId = this.props.navigation.getParam('pharmacyId');
         this.setState({ isLoading: true });
         await new Promise.all([
             this.getSelectedMedicineDetails(),
@@ -80,9 +81,9 @@ class MedicineInfo extends Component {
         try {
 
             medicineId = this.props.navigation.getParam('medicineId');
-            pharmacyId = this.props.navigation.getParam('pharmacyId');
+            let pharmacyId = this.props.navigation.getParam('pharmacyId');
             let result = await getSelectedMedicineDetails(medicineId, pharmacyId);
-            console.log(JSON.stringify(result))
+
             if (result.success) {
                 if (result.data.medPharDetailInfo) {
                     if (result.data.medPharDetailInfo.variations) {
@@ -103,20 +104,22 @@ class MedicineInfo extends Component {
 
                     }
                 }
-                temp = result.data.medPharDetailInfo
+                let temp = result.data.medPharDetailInfo
 
-                mergeObject = Object.assign(temp, result.data.medPharDetailInfo.variations[0])
+                let mergeObject = Object.assign(temp, result.data.medPharDetailInfo.variations[0])
                 let tempObject = {
                     ...result.data,
                     medPharDetailInfo: mergeObject
 
                 }
+
                 this.setState({ medicineData: tempObject })
 
             }
 
         }
         catch (e) {
+
             console.log(e)
         }
 
@@ -127,6 +130,7 @@ class MedicineInfo extends Component {
 
             let result = await getMedicineReviews(medicineId);
             if (result.success) {
+              
                 this.setState({ reviewData: result.data })
             } else {
                 this.setState({ reviewData: [] });
@@ -171,7 +175,7 @@ class MedicineInfo extends Component {
             temp.offeredAmount = medicineRateAfterOffer(data.medPharDetailInfo)
             temp.selectedType = selected;
             if (index !== undefined) {
-                cardItems = this.state.cartItems;
+                let cardItems = this.state.cartItems;
                 temp.userAddedMedicineQuantity = cardItems[index].userAddedMedicineQuantity
                 temp.index = index
             }
@@ -216,6 +220,11 @@ class MedicineInfo extends Component {
         }
     }
     async insertReview() {
+        const isLoggedIn = await hasLoggedIn(this.props);
+        if (!isLoggedIn) {
+            this.props.navigation.navigate("login");
+            return;
+        }
         let insertReviewData = this.state.medicineData.medInfo;
         insertReviewData.modalVisible = true;
         await this.setState({ insertReviewData: insertReviewData, isReviewInsert: true })
@@ -223,6 +232,11 @@ class MedicineInfo extends Component {
     }
     getMedicineReviewVisible = async (val) => {
         try {
+            if (val.reviewUpdated === true) {
+                await this.setState({ isLoading: true })
+                await this.getMedicineReviewDetails()
+
+            }
             await this.setState({ isLoading: true, modalVisible: false, isReviewInsert: false })
         } catch (e) {
             console.log(e)
@@ -274,14 +288,33 @@ class MedicineInfo extends Component {
             console.log(e)
         }
     }
+    async backNavigation(payload) {
+        let hascartReload = await AsyncStorage.getItem('hasCartReload')
+
+        if (hascartReload === 'true') {
+            await AsyncStorage.removeItem('hasCartReload');
+            if (userId) {
+                let cart = await AsyncStorage.getItem('cartItems-' + userId) || []
+                let cartData = []
+                if (cart.length != 0) {
+                    cartData = JSON.parse(cart)
+
+                }
+                await this.setState({ cartItems: cartData })
+            }
+        }
+    }
+
     render() {
         const { medicineData, reviewData, reviewCount, cartItems, finalRating } = this.state
 
         const prescriptionData = [{ prescription_path: require('../../../../../assets/images/images.jpeg') }, { prescription_path: require('../../../../../assets/images/images.jpeg') }, { prescription_path: require('../../../../../assets/images/images.jpeg') }, { prescription_path: require('../../../../../assets/images/images.jpeg') }, { prescription_path: require('../../../../../assets/images/images.jpeg') }]
         return (
-            <Container >
-
-                <Content style={{ padding: 10 }}>
+            <Container style={{ flex: 1 }}>
+                <NavigationEvents
+                    onWillFocus={payload => { this.backNavigation(payload) }}
+                />
+                <Content style={{ padding: 10, flex: 1 }}>
                     {this.state.isLoading ? <Spinner color='blue'
                         visible={this.state.isLoading}
                     /> : null}
@@ -321,9 +354,9 @@ class MedicineInfo extends Component {
                                             autoplayLoop
                                             data={medicineData.medInfo.medicine_images}
                                             renderItem={({ item }) =>
-                                                <TouchableOpacity onPress={() => this.props.navigation.navigate("ImageView", { passImage: item.prescription_path, title: medicineData.medInfo.medicine_name })}>
+                                                <TouchableOpacity onPress={() => this.props.navigation.navigate("ImageView", { passImage:{uri: item.imageURL}, title: medicineData.medInfo.medicine_name })}>
                                                     <Image
-                                                        source={renderMedicineImageAnimation(medicineData.medInfo.medicine_images)}
+                                                        source={renderMedicineImageAnimation(item)}
                                                         style={{
                                                             width: 200, height: 200,
                                                         }}
@@ -337,9 +370,14 @@ class MedicineInfo extends Component {
                             <Row>
                                 <Col size={7} style={{ flexDirection: 'row', marginTop: 10 }}>
                                     <Text style={{ fontSize: 10, fontFamily: 'OpenSans', color: '#ff4e42', marginTop: 5 }}>MRP</Text>
-                                    <Text style={styles.oldRupees}>₹{medicineData.medPharDetailInfo.price}</Text>
-                                    <Text style={styles.newRupees}>₹{medicineRateAfterOffer(medicineData.medPharDetailInfo)}</Text>
-                                    <Text style={styles.saveText}>(Save upto ₹{this.saveMoney()})</Text>
+                                    {medicineData.medPharDetailInfo.discount_value !== undefined ?
+                                        <Row>
+                                            <Text style={styles.oldRupees}>₹{medicineData.medPharDetailInfo.price}</Text>
+                                            <Text style={styles.newRupees}>₹{medicineRateAfterOffer(medicineData.medPharDetailInfo)}</Text>
+                                            <Text style={styles.saveText}>(Save upto ₹{this.saveMoney()})</Text>
+                                        </Row> :
+                                        <Text style={styles.newRupees}>₹{medicineData.medPharDetailInfo.price}</Text>
+                                    }
                                 </Col>
                                 <Col size={3}>
                                 </Col>
@@ -349,6 +387,7 @@ class MedicineInfo extends Component {
                                     <Picker
                                         mode="dropdown"
                                         style={{ width: undefined }}
+                                        iosIcon={<Icon name="ios-arrow-down" style={{ color: 'gray', fontSize: 20 }} />}
                                         placeholder="Select your SIM"
                                         placeholderStyle={{ color: "#bfc6ea" }}
                                         placeholderIconColor="#007aff"
@@ -551,9 +590,9 @@ class MedicineInfo extends Component {
                                         <Text style={styles.contentText}>{item.comments}</Text>
                                     </View>
                                 } /> :
-                            <Text style={{ fontSize: 10, justifyContent: 'center', alignItems: 'center' }}>No Reviews Were found</Text>}
+                            <Text style={{ fontSize: 10, justifyContent: 'center', alignItems: 'center', marginTop: 10 }}>No Reviews Were found</Text>}
 
-                        {reviewData.length !== 0 ?
+                        {reviewData.length > 3 ?
 
                             <Row style={{ marginTop: 10 }}>
                                 <Col size={6}>
@@ -568,16 +607,17 @@ class MedicineInfo extends Component {
                                     </Row>
                                 </Col>
                             </Row> : null}
-                        <View>
-                            <Row>
-                                <TouchableOpacity style={{ borderColor: '#8dc63f', borderWidth: 1, marginLeft: 1, borderRadius: 2.5, height: 25, width: 65, backgroundColor: '#8dc63f' }}
-                                    onPress={() => { this.insertReview(), this.setState({ isReviewInsert: true }) }}>
-                                    <Row style={{ alignItems: 'center' }}>
-                                        <Text style={{ fontSize: 7, color: '#fff', marginTop: 2.5, marginLeft: 6 }}>Add Reviews</Text>
-                                    </Row>
-                                </TouchableOpacity>
-                            </Row>
-                        </View>
+                        {reviewData.length !== 0 && reviewData.findIndex(ele => String(ele.userInfo.user_id) === String(userId)) === -1 ?
+                            <View>
+                                <Row style={{ marginTop: 10 }}>
+                                    <TouchableOpacity style={{ borderColor: '#8dc63f', borderWidth: 1, marginLeft: 1, borderRadius: 2.5, height: 25, width: 65, backgroundColor: '#8dc63f' }}
+                                        onPress={() => { this.insertReview(), this.setState({ isReviewInsert: true }) }}>
+                                        <Row style={{ alignItems: 'center' }}>
+                                            <Text style={{ fontSize: 7, color: '#fff', marginTop: 2.5, marginLeft: 6 }}>Add Reviews</Text>
+                                        </Row>
+                                    </TouchableOpacity>
+                                </Row>
+                            </View> : null}
                         {this.state.isReviewInsert == true ?
                             <MedInsertReview
                                 data={this.state.insertReviewData}
@@ -620,8 +660,8 @@ const styles = StyleSheet.create({
         flexDirection: 'row',
         paddingTop: 5,
         paddingBottom: 5,
-        paddingLeft: 50,
-        paddingRight: 50,
+        paddingLeft: 45,
+        paddingRight: 45,
         borderRadius: 2,
         alignItems: 'flex-end'
     },
