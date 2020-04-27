@@ -31,7 +31,6 @@ import PaymentSuccess from "../../modules/screens/PaymentSuccess";
 import InsertReview from '../../modules/screens/Reviews/InsertReview';
 import WishList from "../../modules/screens/wishList";
 import Notification from "../../modules/screens/Notification";
-import Chat from "../../modules/screens/chat";
 import { Col, Grid, Row } from 'react-native-easy-grid';
 import { logout } from '../../modules/providers/auth/auth.actions';
 import termsAndConditions from '../../components/termsAndConditions'
@@ -381,12 +380,6 @@ const HomeStack = createStackNavigator({
     }),
   },
   // ============Chat ========================
-  Chat: {
-    screen: Chat,
-    navigationOptions: {
-      title: 'Online Chat'
-    }
-  },
   "Chat Service": {
     screen: AvailableDoctors4Chat,
     navigationOptions: {
