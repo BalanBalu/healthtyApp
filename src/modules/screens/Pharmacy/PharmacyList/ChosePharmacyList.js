@@ -191,7 +191,6 @@ class ChosePharmacyList extends Component {
                                                             {selectedPharmacy === index ?
                                                                 <View>
                                                                     <CheckedBox 
-                                                                        color="green"
                                                                         checked={true}
                                                                         onPress={() => this.pharmacySelected(index)}
                                                                     />
@@ -199,7 +198,6 @@ class ChosePharmacyList extends Component {
                                                                 :
                                                                 <View>
                                                                     <CheckedBox
-                                                                        color="green"
                                                                         checked={false}
                                                                         onPress={() => this.pharmacySelected(index)}
                                                                     />
