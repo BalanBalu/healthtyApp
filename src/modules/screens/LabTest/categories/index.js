@@ -4,36 +4,63 @@ import LinearGradient from 'react-native-linear-gradient';
 import { Col, Row, Grid } from 'react-native-easy-grid';
 import { StyleSheet, Image, TouchableOpacity, View, FlatList } from 'react-native';
 import { MAX_DISTANCE_TO_COVER } from '../../../../setup/config';
-
-
+import { connect } from 'react-redux'
+import { getLabTestCateries } from '../../../providers/lab/lab.action';
+import FastImage from 'react-native-fast-image'
 class LabCategories extends Component {
   constructor(props) {
     super(props)
     this.state = {
-      data: [],
+      labData: [],
       categoriesMain: []
     }
   }
   async componentDidMount() {
+    this.getLabCategories();
   }
-  onPressCatItem = async (type, value) => {
-    const inputDataBySearch = [
-      // {
-      //   type: 'geo',
-      //   value: {
-      //     coordinates: locCoOrdinates,
-      //     maxDistance: MAX_DISTANCE_TO_COVER
-      //   }
-      // }
-    ]
-    if (type === 'category_name' || type === 'lab_name') {
-      inputDataBySearch.push({
-        type,
-        value
-      })
+  getLabCategories = async () => {
+    try {
+      const { bookappointment: { locationCordinates } } = this.props;
+      console.log("locationCordinates", locationCordinates)
+      locationData = {
+        "coordinates": locationCordinates,
+        "maxDistance": MAX_DISTANCE_TO_COVER
+      }
+      let result = await getLabTestCateries(JSON.stringify(locationData));
+      console.log("result", result)
+      if (result.success) {
+        this.setState({ labData: result.data })
+      }
     }
-    console.log('cate inputDataBySearch=====>', inputDataBySearch)
+    catch (e) {
+      console.log(e)
+    }
+  }
+  onPressCatItem = async (type, value) => {	
+    const { bookappointment: { locationCordinates } } = this.props;
+    console.log("locationCordinates", locationCordinates)
+    locationData = {
+      "coordinates": locationCordinates,
+      "maxDistance": MAX_DISTANCE_TO_COVER
+    }
+    const inputDataBySearch = [	
+      {	
+        type: 'geo',	
+        value: {
+          coordinates: locationCordinates,	
+          maxDistance: MAX_DISTANCE_TO_COVER	
+        }	
+      }
+    ]	
+    if (type === 'category_name' || type === 'lab_name') {	
+      inputDataBySearch.push({	
+        type,	
+        value	
+      })	
+    }
+    console.log('cate inputDataBySearch=====>', inputDataBySearch)	
     this.props.navigation.navigate('LabSearchList', { inputDataFromLabCat: inputDataBySearch })
+  
   }
   renderStickeyHeader() {
     return (
@@ -63,40 +90,33 @@ class LabCategories extends Component {
     )
   }
   render() {
-    const data = [
-
-      // { checkup: 'arthritis', initalprice: 500, finalprice: 400 },
-      // { checkup: 'Allergy Profile', initalprice: 200, finalprice: 100 }
-      { checkup: 'category1', initalprice: 500, finalprice: 400 },
-      { checkup: 'category2', initalprice: 200, finalprice: 100 }, { checkup: 'full body checkup', initalprice: 2500, finalprice: 1500 },
-      { checkup: 'Diabetes Test', initalprice: 2500, finalprice: 1500 },
-      { checkup: 'Fever Test', initalprice: 1500, finalprice: 1000 },
-      { checkup: 'Healthy men', initalprice: 250, finalprice: 150 }]
-    return (
+       return (
       <Container style={styles.container}>
         <Content style={styles.bodyContent}>
 
           <View style={{ marginBottom: 10 }}>
             <FlatList horizontal={false} numColumns={3}
-              data={data}
+              data={this.state.labData}
               // extraData={this.state}
               ListHeaderComponent={this.renderStickeyHeader()}
               renderItem={({ item, index }) =>
                 <Col style={styles.mainCol}>
-                  <TouchableOpacity
-                    onPress={() => this.onPressCatItem('category_name', item.checkup)}
+                  <TouchableOpacity onPress={() => this.onPressCatItem('category_name', item.lab_test_category_info.category_name)}
                     style={{ justifyContent: 'center', alignItems: 'center', width: '100%', paddingTop: 5, paddingBottom: 5 }}>
-                    <Image
-                      source={require('../../../../../assets/images/labCategories/Diabetes.png')}
+                   
+                    <FastImage
+                      source={{ uri: item.
+                        lab_test_category_info.category_image_url + '/' + item.lab_test_category_info.category_image_name
+                      }}
                       style={{
                         width: 60, height: 60, alignItems: 'center'
                       }}
                     />
-                    <Text style={styles.mainText}>{item.checkup}</Text>
+                    <Text style={styles.mainText}>{item.lab_test_category_info.category_name}</Text>
                     <Text style={styles.subText}>package starts from</Text>
                     <Row>
-                      <Text style={styles.rsText}>₹ {item.initalprice}</Text>
-                      <Text style={styles.finalRs}>₹ {item.finalprice}</Text>
+                      <Text style={styles.rsText}>₹ {item.minPriceWithoutOffer}</Text>
+                      <Text style={styles.finalRs}>₹ {Math.round(item.minPriceWithOffer)}</Text>
                     </Row>
                   </TouchableOpacity>
                 </Col>
@@ -111,8 +131,13 @@ class LabCategories extends Component {
   }
 
 }
+function labCategoriesState(state) {
 
-export default LabCategories
+  return {
+    bookappointment: state.bookappointment,
+  }
+}
+export default connect(labCategoriesState)(LabCategories)
 
 
 const styles = StyleSheet.create({
