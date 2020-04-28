@@ -24,11 +24,7 @@ class labSearchList extends Component {
             currentDate: formatDate(new Date(), 'YYYY-MM-DD'),
             selectedDate: formatDate(new Date(), 'YYYY-MM-DD'),
             labListData: [],
-            // availabilitySlotsDatesArry: [],
             expandedLabIdToShowSlotsData: [],
-            // selectedSlotByDoctorIds: {},
-            // availableSlotsDataByService: {},
-            // refreshCount: 0,
             isLoading: false,
             refreshCountOnDateFL: 1
         }
@@ -39,7 +35,6 @@ class labSearchList extends Component {
     searchByLabCatAndDetails = async () => {
         try {
             this.setState({ isLoading: true });
-            // const { navigation } = this.props;
             const inputDataBySearch = this.props.navigation.getParam('inputDataFromLabCat');
             const labListResponse = await searchByLabDetailsService(inputDataBySearch);
             // console.log('labListResponse====>', JSON.stringify(labListResponse));
@@ -68,7 +63,7 @@ class labSearchList extends Component {
     /* get Lab Test Availability Slots service */
     getLabTestAvailabilitySlots = async (labIdFromItem, startDateByMoment, endDateByMoment) => {
         try {
-            this.availabilitySlotsDatesArry = enumerateStartToEndDates(startDateByMoment, endDateByMoment);
+            this.availabilitySlotsDatesArry = enumerateStartToEndDates(startDateByMoment, endDateByMoment, this.availabilitySlotsDatesArry);
             const arryOfLabIds = this.getLabIdsArrayByInput(labIdFromItem) // get 5 Or LessThan 5 of LabIds in order wise using index of given input of labIdFromItem
             const reqData4Availability = {
                 "labIds": arryOfLabIds
@@ -78,11 +73,15 @@ class labSearchList extends Component {
                 endDate: formatDate(endDateByMoment, 'YYYY-MM-DD')
             }
             const resultSlotsData = await fetchLabTestAvailabilitySlotsService(reqData4Availability, reqStartAndEndDates);
-            // console.log('resultSlotsData======>', resultSlotsData)
+            // console.log('resultSlotsData======>', resultSlotsData);
             if (resultSlotsData.success) {
                 const availabilityData = resultSlotsData.data;
                 if (availabilityData.length != 0) {
-                    availabilityData.map((item) => { this.availableSlotsDataMap.set(String(item.labId), item.slotData) })
+                    availabilityData.map((item) => {
+                        let previousSlotsDataByItem = this.availableSlotsDataMap.get(String(item.labId))
+                        let finalSlotsDataObj = { ...previousSlotsDataByItem, ...item.slotData } // Merge the Previous weeks and On change the Next week slots data
+                        this.availableSlotsDataMap.set(String(item.labId), finalSlotsDataObj)
+                    })
                     this.setState({})
                 }
             }
@@ -121,6 +120,15 @@ class labSearchList extends Component {
         this.selectedSlotItemByLabIdsObj[labId] = selectedSlot;
         this.setState({ selectedSlotIndex })
     }
+    callSlotsServiceWhenOnEndReached = (labId, availabilitySlotsDatesArry) => { // call availability slots service when change dates on next week
+        const finalIndex = availabilitySlotsDatesArry.length
+        const lastProcessedDate = availabilitySlotsDatesArry[finalIndex - 1];
+        const startDateByMoment = getMoment(lastProcessedDate).add(1, 'day');
+        const endDateByMoment = addMoment(lastProcessedDate, 7, 'days');
+        if (!this.availabilitySlotsDatesArry.includes(endDateByMoment.format('YYYY-MM-DD'))) {
+            this.getLabTestAvailabilitySlots(labId, startDateByMoment, endDateByMoment);
+        }
+    }
     renderDatesOnFlatList(labId) {
         const selectedDate = this.selectedDateObj[labId] || this.state.currentDate;
         const slotDataObj4Item = this.availableSlotsDataMap.get(String(labId)) || {}
@@ -135,6 +143,9 @@ class labSearchList extends Component {
                     selectedDateObj={this.selectedDateObj}
                     availableSlotsData={slotDataObj4Item}
                     labId={labId}
+                    callSlotsServiceWhenOnEndReached={(labId, availabilitySlotsDatesArry) => {
+                        this.callSlotsServiceWhenOnEndReached(labId, availabilitySlotsDatesArry)
+                    }}
                     shouldUpdate={`${labId}-${selectedDate}`}
                 >
                 </RenderDates>
@@ -158,32 +169,29 @@ class labSearchList extends Component {
         )
     }
 
-    onPressToContinue4PaymentReview(labData, seletedSlotItem ,labId) {   // navigate to next further process
-        console.log(labData);
-        console.log(seletedSlotItem);
-        console.log(labId);
-        debugger    
-        const { labInfo , labCatInfo } = labData;
+    onPressToContinue4PaymentReview(labData, selectedSlotItem) {   // navigate to next further process
+        debugger
+        const { labInfo, labCatInfo } = labData;
         let packageDetails = {
-            lab_id: labInfo.lab_id ,
+            lab_id: labInfo.lab_id,
             lab_test_categories_id: labCatInfo._id,
             // Fields which we need to get it from Backend API 
-                lab_test_descriptiion: "genral",
-                fee: 1000,
-                extra_charges: 50,
-                mobile_no: "98076540211",
+            // lab_test_description: "general",
+            fee: 1000,
+            extra_charges: 50,
+            mobile_no: "98076540211",
             //  // Fields which we need to get it from Backend API 
             lab_name: labInfo.lab_name,
             category_name: labCatInfo.category_name,
-            appointment_starttime: seletedSlotItem.slotStartDateAndTime,
-            appointment_endtime: seletedSlotItem.slotEndDateAndTime,
+            appointment_starttime: selectedSlotItem.slotStartDateAndTime,
+            appointment_endtime: selectedSlotItem.slotEndDateAndTime,
             "location": labInfo.location
         }
-        this.props.navigation.navigate('labConfirmation', { packageDetails: packageDetails })
+        this.props.navigation.navigate('labConfirmation', { packageDetails })
     }
 
     renderLabListCards(item) {
-        const { expandedLabIdToShowSlotsData, selectedDate } = this.state;
+        const { expandedLabIdToShowSlotsData } = this.state;
         const slotDataObj4Item = this.availableSlotsDataMap.get(String(item.labInfo.lab_id)) || {}
         return (
             <View>
@@ -357,4 +365,5 @@ class labSearchList extends Component {
         )
     }
 }
+
 export default labSearchList

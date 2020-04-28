@@ -5,15 +5,14 @@ import { Col, Row, Grid } from 'react-native-easy-grid';
 import { StyleSheet, TouchableOpacity, View, FlatList, AsyncStorage, Dimensions, ScrollView, Image } from 'react-native';
 import { getUnixTimeStamp } from '../../../setup/helpers';
 
-const enumerateStartToEndDates = (startDateByMoment, endDateByMoment) => {
+const enumerateStartToEndDates = (startDateByMoment, endDateByMoment, datesArry) => {
     let startDate = startDateByMoment.clone();
-    const datesArry = [];
+    // const datesArry = [];
     while (startDate.isSameOrBefore(endDateByMoment)) {
         datesArry.push(startDate.format('YYYY-MM-DD'));
         startDate = startDate.add(1, 'day');
     }
     return datesArry
-    // this.setState({ availabilitySlotsDatesArry: this.availabilitySlotsDatesArry });
 }
 
 const renderLabTestImage = (data) => {
