@@ -47,16 +47,11 @@ class LabCategories extends Component {
     try {
       const { bookappointment: { locationCordinates } } = this.props;
       console.log("locationCordinates", locationCordinates)
-      // locationData = {
-      //   "coordinates": locationCordinates,
-      //   "maxDistance": MAX_DISTANCE_TO_COVER
-      // }
-     let locationData = {
-        "coordinates": [
-          13.0423185,
-          80.196269
-        ]
+      locationData = {
+        "coordinates": locationCordinates,
+        "maxDistance": MAX_DISTANCE_TO_COVER
       }
+     
       let result = await getLabTestCateries(JSON.stringify(locationData));
       console.log("result", result)
       if (result.success) {
