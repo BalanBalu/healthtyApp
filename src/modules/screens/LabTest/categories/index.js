@@ -62,6 +62,9 @@ class LabCategories extends Component {
     this.props.navigation.navigate('LabSearchList', { inputDataFromLabCat: inputDataBySearch })
   
   }
+  filterCategories(value) {
+
+  }
   renderStickeyHeader() {
     return (
       <View style={{ width: '100%' }} >

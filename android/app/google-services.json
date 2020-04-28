@@ -8,6 +8,88 @@
   "client": [
     {
       "client_info": {
+        "mobilesdk_app_id": "1:630872953526:android:d1c33e096fa9a1a65fcc17",
+        "android_client_info": {
+          "package_name": "com.ads.medflic"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "630872953526-g77lq6i2gqm1btqfh2b9ndl615ssmnmi.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyA7uFs2g9WUroWoWLebHc44u8OPw2_DaN4"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "630872953526-g77lq6i2gqm1btqfh2b9ndl615ssmnmi.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "630872953526-h1ohp9hvnnj347u0s7kd6oben1q7qkk5.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.ads.drmedflic",
+                "app_store_id": "1481124450"
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:630872953526:android:8ed584bc1d46f1765fcc17",
+        "android_client_info": {
+          "package_name": "com.drmedflic"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "630872953526-194b0r4o4f8b8lq7hohqsv821he0ggjq.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.drmedflic",
+            "certificate_hash": "1c849e828f86978fe6735ea13bfce124459c106d"
+          }
+        },
+        {
+          "client_id": "630872953526-g77lq6i2gqm1btqfh2b9ndl615ssmnmi.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyA7uFs2g9WUroWoWLebHc44u8OPw2_DaN4"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "630872953526-g77lq6i2gqm1btqfh2b9ndl615ssmnmi.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "630872953526-h1ohp9hvnnj347u0s7kd6oben1q7qkk5.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.ads.drmedflic",
+                "app_store_id": "1481124450"
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "client_info": {
         "mobilesdk_app_id": "1:630872953526:android:eea3d5027590f08f5fcc17",
         "android_client_info": {
           "package_name": "com.medflic"
@@ -38,6 +120,14 @@
             {
               "client_id": "630872953526-g77lq6i2gqm1btqfh2b9ndl615ssmnmi.apps.googleusercontent.com",
               "client_type": 3
+            },
+            {
+              "client_id": "630872953526-h1ohp9hvnnj347u0s7kd6oben1q7qkk5.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.ads.drmedflic",
+                "app_store_id": "1481124450"
+              }
             }
           ]
         }

@@ -1,5 +1,4 @@
-package com.medflic;
-
+package com.ads.medflic;
 import android.app.Application;
 import android.content.Context;
 import com.facebook.react.PackageList;

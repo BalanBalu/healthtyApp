@@ -86,13 +86,6 @@ class Home extends Component {
     }
     async componentDidMount() {
         try {
-            
-            // if(IS_ANDROID) {
-            //     const coronoTestStatus = await AsyncStorage.getItem('coronoTested');
-            //     if (coronoTestStatus === '1') { } else {
-            //         this.props.navigation.navigate('CORONA Status');
-            //     }
-            // }
             this.initialFunction();
             if (IS_ANDROID) {
                 let productConfigVersion = await getCurrentVersion("CURRENT_PATIENT_MEDFLIC_VERSION")
@@ -708,11 +701,6 @@ class Home extends Component {
                                 </TouchableOpacity>
                             </Card>
                         </View>
-                        {/* <View>
-                            <COVID19Stats navigation={this.props.navigation}> </COVID19Stats>
-                        </View>
-                          */}
-
                     </View>
 
                 </Content>
