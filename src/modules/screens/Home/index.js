@@ -27,7 +27,7 @@ import { CallService  } from '../VideoConsulation/services';
 MapboxGL.setAccessToken(MAP_BOX_PUBLIC_TOKEN);
 import NotifService from '../../../setup/NotifService';
 import { getReminderData } from '../../providers/reminder/reminder.action.js';
-
+import FastImage from 'react-native-fast-image'
 const debounce = (fun, delay) => {
     let timer = null;
     return function (...args) {
@@ -614,7 +614,7 @@ class Home extends Component {
                                 </TouchableOpacity>
                             </Col>
                             <Col size={5} style={{ marginLeft: 5 }}>
-                                <TouchableOpacity >
+                                <TouchableOpacity onPress={()=> this.props.navigation.navigate('Lab Test')}> 
                                     <Card style={{ padding: 5, borderRadius: 2 }}>
                                         <Row>
                                             <Col size={7.5} style={{ justifyContent: 'center' }}>
@@ -657,7 +657,7 @@ class Home extends Component {
                                         <Col style={styles.maincol}>
                                             <TouchableOpacity onPress={() => this.navigateToCategorySearch(item.category_name)}
                                                 style={{ justifyContent: 'center', alignItems: 'center', width: '100%', paddingTop: 5, paddingBottom: 5 }}>
-                                                <Image
+                                                <FastImage
                                                     source={{ uri: item.imageBaseURL + item.category_id + '.png' }}
                                                     style={{
                                                         width: 50, height: 50, alignItems: 'center'

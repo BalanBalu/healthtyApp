@@ -31,7 +31,6 @@ import PaymentSuccess from "../../modules/screens/PaymentSuccess";
 import InsertReview from '../../modules/screens/Reviews/InsertReview';
 import WishList from "../../modules/screens/wishList";
 import Notification from "../../modules/screens/Notification";
-import Chat from "../../modules/screens/chat";
 import { Col, Grid, Row } from 'react-native-easy-grid';
 import { logout } from '../../modules/providers/auth/auth.actions';
 import termsAndConditions from '../../components/termsAndConditions'
@@ -81,6 +80,15 @@ import VideoConsultaions from '../../modules/screens/VideoConsulation/components
   import CoronaDisease from '../../modules/screens/CoronaDisease/CoronaDisease';
   import COVID19StateDistrictStats from '../../modules/screens/Home/Covid10-District-wise';
 */
+
+import LabSearchList from '../../modules/screens/LabTest/labSearchList';
+import LabCategory from '../../modules/screens/LabTest/categories'
+
+import labConfirmation from '../../modules/screens/LabTest/labConfirmation/index'
+import LabAppointmentList from '../../modules/screens/LabTest/Appointment/LabAppointmentList'
+import LabAppointmentInfo from '../../modules/screens/LabTest/Appointment/LabAppoinmentInfo'
+import LabCancelAppointment from '../../modules/screens/LabTest/Appointment/LabCancelAppointment'
+
 const AuthRoutes = {
   login: {
     screen: login,
@@ -322,7 +330,34 @@ const HomeStack = createStackNavigator({
       title: 'Search Location'
     }
   },
+  paymentsuccess: {
+    screen: PaymentSuccess,
+    navigationOptions: {
+      headerLeft: null,
+      title: 'Success'
+    }
+  },
 
+  //================ Lab Test ===============
+  LabAppointmentInfo: {
+    screen: LabAppointmentInfo,
+    navigationOptions: {
+      title: 'Lab Test Appointment Details'
+    }
+  },
+  'My Lab Test Appointments': {
+    screen: LabAppointmentList,
+    navigationOptions: {
+      title: 'My Lab Test Appointments'
+    }
+  },
+  LabCancelAppointment: {
+    screen: LabCancelAppointment,
+    navigationOptions: {
+      title: 'Lab Test Cancel Appointment'
+    }
+  },
+  
   // ========Appointment stack ==========
   "Doctor List": {
     screen: doctorSearchList,
@@ -374,6 +409,14 @@ const HomeStack = createStackNavigator({
       title: 'Success'
     }
   },
+  
+  labConfirmation: {
+    screen: labConfirmation,
+    navigationOptions: {
+      title: 'Lab Confirmation'
+    }
+  },
+
   // ============Zoom image ========================
   ImageView: {
     screen: ImageView,
@@ -382,12 +425,6 @@ const HomeStack = createStackNavigator({
     }),
   },
   // ============Chat ========================
-  Chat: {
-    screen: Chat,
-    navigationOptions: {
-      title: 'Online Chat'
-    }
-  },
   "Chat Service": {
     screen: AvailableDoctors4Chat,
     navigationOptions: {
@@ -670,6 +707,19 @@ const HomeStack = createStackNavigator({
       title: 'Add Reminder'
     }
   },
+  /* ========>  Lab Test  <========== */
+  'Lab Test': {
+    screen: LabCategory,
+    navigationOptions: {
+      title: 'Lab Category'
+    }
+  },
+  LabSearchList: {
+    screen: LabSearchList,
+    navigationOptions: {
+      title: 'Lab List'
+    }
+  },
 },
   {
     defaultNavigationOptions: ({ navigation }) => ({
@@ -685,8 +735,11 @@ const DrawerNavigator = createDrawerNavigator({
   Home: {
     screen: HomeStack,
   },
-  "Blood Donors": {
-    screen: BloodDonersList,
+  'Video and Chat Service': {
+    screen: AvailableDoctors4Video
+  },
+  Medicines: {
+    screen: PharmacyHome,
   },
   "My Appointments": {
     screen: MyAppoinmentList
@@ -694,30 +747,26 @@ const DrawerNavigator = createDrawerNavigator({
   "My Chats": {
     screen: MyChats
   },
-  'Video and Chat Service': {
-    screen: AvailableDoctors4Video
-  },
   'My Video Consultations': {
     screen: VideoConsultaions
   },
-  Medicines: {
-    screen: PharmacyHome,
+  'My Lab Test Appointments': {
+    screen: LabAppointmentList
   },
   "Medicine Orders": {
     screen: MyOrdersList
   },
-
-
   Reminder: {
     screen: Reminder
+  },
+  "Blood Donors": {
+    screen: BloodDonersList,
   },
 /* 
   'CORONA Status': {
      screen: CoronaDisease
   },
-*/  
-
-
+*/ 
 },
   {
     overlayColor: 'rgba(0, 0, 0, 0.7)',
@@ -738,6 +787,7 @@ export const DragwerLogos = {
   "Blood Donors": require('../../../assets/images/drawerIcons/Blooddonars.png'),
   'My Video Consultations': require('../../../assets/images/drawerIcons/Appointments.png'),
   'Video and Chat Service': require('../../../assets/images/drawerIcons/Appointments.png'),
+  'My Lab Test Appointments': require('../../../assets/images/drawerIcons/Appointments.png'),
 }
 export default createAppContainer(createSwitchNavigator(
   {

@@ -3,6 +3,7 @@ import { AppRegistry, Image, StatusBar,TouchableOpacity, AsyncStorage} from "rea
 import { Container, Content, Text, List, ListItem,View,Row,Col,Footer,FooterTab,Icon,Button,Body } from "native-base";
 import { DragwerLogos } from './appRouterHome';
 import { logout } from '../../modules/providers/auth/auth.actions';
+import FastImage from 'react-native-fast-image'
 class SideBar extends React.Component {
   activeUserData = {};
   constructor(props) {
@@ -63,11 +64,11 @@ async getBasicData() {
           <Content>
           <View style={{height:120,backgroundColor:'#7f49c3', }}>
             
-            <Image square source={require('../../../assets/images/Logo.png')} style={{flex:1, width: undefined, height: undefined,opacity:0.1,transform:[{rotate:'-2deg'}]}}/>
+            <FastImage square source={require('../../../assets/images/Logo.png')} style={{flex:1, width: undefined, height: undefined,opacity:0.1,transform:[{rotate:'-2deg'}]}}/>
            
              <Row style={{alignItems:'center',marginLeft:15,position:'absolute',marginTop:30,}}>
                <Col style={{width:'30%'}}>
-                  <Image square source={this.renderProfileImageOrLogo()} 
+                  <FastImage square source={this.renderProfileImageOrLogo()} 
                      style={{ height: 60, width: 60,borderColor:'#fff',borderWidth:2,borderRadius:30}}
                    />
               </Col>
