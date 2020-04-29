@@ -2,15 +2,17 @@ import React, { Component } from 'react';
 import {
     Container, Content, Text, Item, View, Icon, Toast
 } from 'native-base';
+import StarRating from 'react-native-star-rating';
 import { Col, Row } from 'react-native-easy-grid';
 import { StyleSheet, Image, AsyncStorage, FlatList, TouchableOpacity } from 'react-native';
 import { formatDate } from '../../../../setup/helpers';
-import { getMedicineOrderDetails, upDateOrderData } from '../../../providers/pharmacy/pharmacy.action';
+import { getMedicineOrderDetails, upDateOrderData, getOrderUserReviews } from '../../../providers/pharmacy/pharmacy.action';
 import { statusBar, renderPrescriptionImageAnimation } from '../CommomPharmacy';
 import { NavigationEvents } from 'react-navigation';
 import { getPaymentInfomation } from '../../../providers/bookappointment/bookappointment.action'
 import Spinner from '../../../../components/Spinner';
 import { getUserRepportDetails } from '../../../providers/reportIssue/reportIssue.action';
+import { OrderInsertReview } from '../MedicineInfo/medInsertReview'
 import AwesomeAlert from 'react-native-awesome-alerts';
 import SwiperFlatList from 'react-native-swiper-flatlist';
 import ImageZoom from 'react-native-image-pan-zoom';
@@ -32,6 +34,8 @@ class OrderDetails extends Component {
             orderList: [],
             paymentDetails: {},
             isLoading: true,
+            modalVisible: false,
+            reviewData: []
         }
     }
     async componentDidMount() {
@@ -51,6 +55,11 @@ class OrderDetails extends Component {
             console.log(JSON.stringify(result))
             if (result.success) {
                 this.setState({ orderDetails: result.data[0] });
+                if (result.data[0].status === 'DELIVERED' && result.data[0].is_review_added === undefined) {
+                    await this.setState({ modalVisible: true })
+                } else {
+                    this.getUserReviews(orderId)
+                }
                 this.getPaymentInfo(result.data[0].payment_id)
             }
             this.setState({ isLoading: false });
@@ -118,7 +127,7 @@ class OrderDetails extends Component {
         const deliveryCharge = orderInfo.delivery_charges;
         const deliveryTax = orderInfo.delivery_tax
         let totalAmount = Number(Number(itemTotal) + Number(deliveryCharge || 0) + Number(deliveryTax || 0)).toFixed(2)
-        if(itemTotal === 0) {
+        if (itemTotal === 0) {
             return totalAmount + ' + Medicine Charges By Pharmacy'
         }
         return `${totalAmount || ''}`
@@ -136,7 +145,7 @@ class OrderDetails extends Component {
         }
     }
     async cancelOreder() {
-      
+
         const { orderDetails } = this.state
 
         let userId = await AsyncStorage.getItem('userId');
@@ -174,15 +183,56 @@ class OrderDetails extends Component {
             }
         };
     }
+    getUserReviews = async (orderId) => {
+        try {
+
+            let resultReview = await getOrderUserReviews(orderId);
+            console.log('getReview===================')
+            console.log(JSON.stringify(resultReview))
+            if (resultReview.success) {
+                this.setState({ reviewData: resultReview.data });
+            }
+
+        }
+        catch (e) {
+            console.error(e);
+        }
+
+
+    }
+
+    async  getvisble(val) {
+        try {
+            console.log('come review=============')
+            console.log(JSON.stringify(val))
+            await this.setState({ isLoading: true, modalVisible: false })
+            if (val.reviewUpdated === true) {
+
+                this.getUserReviews(this.state.orderDetails._id)
+            }
+        } catch (e) {
+            console.log(e)
+        }
+        finally {
+            await this.setState({ isLoading: false })
+        }
+    }
+    navigateAddReview() {
+        this.setState({
+            modalVisible: true
+        });
+
+    }
     render() {
         const { navigation } = this.props;
-        const { isLoading, orderDetails, paymentDetails, reportData, isCancel } = this.state;
+        const { isLoading, orderDetails, paymentDetails, reportData, isCancel, reviewData } = this.state;
         return (
             <Container style={styles.container}>
                 <Content style={{ backgroundColor: '#F5F5F5', padding: 10, flex: 1 }}>
                     <NavigationEvents
                         onWillFocus={payload => { this.backNavigation(payload) }}
                     />
+
                     <AwesomeAlert
                         show={isCancel}
                         showProgress={false}
@@ -206,6 +256,7 @@ class OrderDetails extends Component {
                     <Spinner
                         visible={isLoading}
                     />
+
                     <View style={{ paddingLeft: 10, paddingRight: 10, paddingBottom: 10 }}>
                         <Row>
                             <Col size={5}>
@@ -279,7 +330,7 @@ class OrderDetails extends Component {
                                         autoplayLoop
                                         data={orderDetails.prescription_data.prescription_items}
                                         renderItem={({ item }) =>
-                                            <TouchableOpacity onPress={() => this.props.navigation.navigate("ImageView", { passImage: {uri:item.prescription_path}, title: 'prescription' })}>
+                                            <TouchableOpacity onPress={() => this.props.navigation.navigate("ImageView", { passImage: { uri: item.prescription_path }, title: 'prescription' })}>
                                                 <Image
                                                     source={renderPrescriptionImageAnimation(item)}
                                                     style={{
@@ -308,17 +359,17 @@ class OrderDetails extends Component {
                                     </Col>
                                     <Col size={8} style={[styles.nameText, { marginTop: 5 }]}>
                                         <Text style={styles.nameText}>{item.medicine_name}</Text>
-                                        {orderDetails.is_order_type_recommentation===true?
-                                        <Text style={styles.pharText}>{'mediflic pharmacy'}</Text>:
-                                        <Text style={styles.pharText}>{item.pharmacyInfo.name}</Text>
+                                        {orderDetails.is_order_type_recommentation === true ?
+                                            <Text style={styles.pharText}>{'mediflic pharmacy'}</Text> :
+                                            <Text style={styles.pharText}>{item.pharmacyInfo.name}</Text>
                                         }
 
                                     </Col>
                                     <Col size={2} style={[styles.nameText, { alignSelf: 'flex-end' }]}>
-                                    {orderDetails.is_order_type_recommentation===true?
-                                        <Text style={styles.amountText}>₹{item.medicine_recommentation_max_price}</Text>
-                                        :<Text style={styles.amountText}>₹{item.final_price}</Text>
-                                    }
+                                        {orderDetails.is_order_type_recommentation === true ?
+                                            <Text style={styles.amountText}>₹{item.medicine_recommentation_max_price}</Text>
+                                            : <Text style={styles.amountText}>₹{item.final_price}</Text>
+                                        }
                                     </Col>
                                 </Row>
                             } />
@@ -420,6 +471,42 @@ class OrderDetails extends Component {
                             </TouchableOpacity>
                         </View>
                     }
+                    {(orderDetails.status == 'DELIVERED' && reviewData.length !== 0) || reviewData.length !== 0 ?
+                        <Row style={styles.rowSubText}>
+                            <Col style={{ width: '8%', paddingTop: 5 }}>
+                                <Icon name="ios-medkit" style={{ fontSize: 20, }} />
+                            </Col>
+                            <Col style={{ width: '92%', paddingTop: 5 }}>
+                                <Text style={styles.innerSubText}>Review</Text>
+
+                                <StarRating fullStarColor='#FF9500' starSize={15} width={100} containerStyle={{ width: 100 }}
+                                    disabled={false}
+                                    maxStars={5}
+                                    rating={reviewData[0] && reviewData[0].overall_rating}
+                                />
+                                <Text note style={styles.subTextInner1}>{reviewData[0] && reviewData[0].comments || ''}</Text>
+                            </Col>
+                        </Row> :
+                        (orderDetails.status === 'DELIVERED' && reviewData.length === 0) ?
+                            <Row style={styles.rowSubText}>
+                                <Col style={{ width: '8%', paddingTop: 5 }}>
+                                    <Icon name="ios-add-circle" style={{ fontSize: 20, }} />
+
+                                </Col>
+                                <Col style={{ width: '92%', paddingTop: 5 }}>
+                                    <Text style={styles.innerSubText}>Add Feedback</Text>
+                                    <View style={{ justifyContent: 'center', alignItems: 'center' }}>
+                                        <TouchableOpacity block success style={styles.reviewButton} onPress={() => this.navigateAddReview()} testID='addFeedBack'>
+
+                                            <Text style={{ color: '#fff', fontSize: 14, fontFamily: 'OpenSans', fontWeight: 'bold', textAlign: 'center', marginTop: 5 }}> ADD FEEDBACK </Text>
+                                            <Icon name="create" style={{ fontSize: 20, marginTop: 3, marginLeft: 5, color: '#fff' }}></Icon>
+                                        </TouchableOpacity>
+                                    </View>
+                                </Col>
+                            </Row> : null
+                    }
+
+
 
                     <View style={styles.mainView}>
                         <Text style={styles.orderText}>OrderDetails</Text>
@@ -444,7 +531,13 @@ class OrderDetails extends Component {
                             <Text style={styles.addressText}>Mobile - {this.getMobile(orderDetails)}</Text>
 
                         </View>
+                        {this.state.modalVisible == true ?
+                            <OrderInsertReview
+                                data={this.state.orderDetails}
+                                popupVisible={(data) => this.getvisble(data)}
 
+                            />
+                            : null}
                     </View>
                 </Content>
             </Container>
