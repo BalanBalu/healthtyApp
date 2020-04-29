@@ -11,6 +11,9 @@ import { formatDate, addMoment, getMoment } from '../../../../setup/helpers';
 import styles from '../styles'
 import RenderDates from './RenderDateList';
 import RenderSlots from './RenderSlots';
+
+const CALL_AVAILABILITY_SERVICE_BY_NO_OF_IDS_COUNT = 5;
+
 class labSearchList extends Component {
     availabilitySlotsDatesArry = [];
     selectedDateObj = {};
@@ -26,7 +29,8 @@ class labSearchList extends Component {
             labListData: [],
             expandedLabIdToShowSlotsData: [],
             isLoading: false,
-            refreshCountOnDateFL: 1
+            refreshCountOnDateFL: 1,
+            renderRefreshCount: 0
         }
     }
     async componentDidMount() {
@@ -57,7 +61,10 @@ class labSearchList extends Component {
 
     getLabIdsArrayByInput = labIdFromItem => {
         const findIndexOfLabId = this.totalLabIdsArryBySearched.indexOf(String(labIdFromItem));
-        return this.totalLabIdsArryBySearched.slice(findIndexOfLabId, findIndexOfLabId + 5) || []
+        return this.totalLabIdsArryBySearched.slice(findIndexOfLabId, findIndexOfLabId + CALL_AVAILABILITY_SERVICE_BY_NO_OF_IDS_COUNT) || []
+        // if (this.totalLabIdsArryBySearched.length <= 2 && findIndexOfLabId >= 2) {
+        // get items list before index position
+        // }
     }
 
     /* get Lab Test Availability Slots service */
@@ -82,7 +89,7 @@ class labSearchList extends Component {
                         let finalSlotsDataObj = { ...previousSlotsDataByItem, ...item.slotData } // Merge the Previous weeks and On change the Next week slots data
                         this.availableSlotsDataMap.set(String(item.labId), finalSlotsDataObj)
                     })
-                    this.setState({})
+                    this.setState({ renderRefreshCount: this.state.renderRefreshCount + 1 })
                 }
             }
         } catch (ex) {
@@ -104,7 +111,7 @@ class labSearchList extends Component {
             this.getLabTestAvailabilitySlots(labIdFromItem, startDateByMoment, endDateByMoment);
         }
         else {
-            this.setState({})
+            this.setState({ renderRefreshCount: this.state.renderRefreshCount + 1 })
         }
     }
 
@@ -170,7 +177,6 @@ class labSearchList extends Component {
     }
 
     onPressToContinue4PaymentReview(labData, selectedSlotItem) {   // navigate to next further process
-        debugger
         const { labInfo, labCatInfo } = labData;
         let packageDetails = {
             lab_id: labInfo.lab_id,
