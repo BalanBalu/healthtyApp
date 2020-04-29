@@ -66,38 +66,6 @@ class LabCategories extends Component {
   }
 
 
-  getLabCategories = async () => {
-    try {
-      const { bookappointment: { locationCordinates } } = this.props;
-      console.log("locationCordinates", locationCordinates)
-      locationData = {
-        "coordinates": locationCordinates,
-        "maxDistance": MAX_DISTANCE_TO_COVER
-      }
-     
-      let result = await getLabTestCateries(JSON.stringify(locationData));
-      console.log("result", result)
-      if (result.success) {
-        this.setState({ data: result.data, labData: result.data })
-        for (let i = 0; i < result.data.length; i++) {
-          const value = result.data[i];
-          const imageURL = value.lab_test_category_info.category_image_url + value.lab_test_category_info.category_image_name;
-          console.log("imageURL", imageURL)
-
-          const finalImageUrl = await toDataUrl(imageURL)
-          result.data[i].baseImageURL = finalImageUrl;
-          this.setState({ labData: result.data, data:result.data })
-          console.log("labData", this.state.labData)
-
-        }
-      }
-    }
-    catch (e) {
-      console.log(e)
-    }
-  }
-
-
   filterCategories(searchValue) {
     console.log(this.state.data);
     const { labData } = this.state;
