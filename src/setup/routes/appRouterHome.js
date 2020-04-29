@@ -70,15 +70,16 @@ import SuccessChatPaymentPage from '../../modules/screens/chat/successMsg';
 import ReportIssue from '../../modules/screens/ReportIssue';
 import ReportDetails from '../../modules/screens/ReportIssue/reportIssueDetails'
 import EarnReward from '../../modules/screens/Home/EarnReward';
-import CoronaDisease from '../../modules/screens/CoronaDisease/CoronaDisease';
 import MedicineSuggestionList from '../../modules/screens/Pharmacy/MedicineSuggestionList/pharmacySuggestionList';
 import ImageView from '../../modules/shared/ImageView'
 import PharmacyList from '../../modules/screens/Pharmacy/PharmacyList/pharmacyList';
 import VideoScreen from '../../modules/screens/VideoConsulation/components/VideoScreen';
 import AvailableDoctors4Video from '../../modules/screens/VideoConsulation/components/AvailableDoctors';
 import VideoConsultaions from '../../modules/screens/VideoConsulation/components/MyConsultations';
-import COVID19StateDistrictStats from '../../modules/screens/Home/Covid10-District-wise';
-
+/*
+  import CoronaDisease from '../../modules/screens/CoronaDisease/CoronaDisease';
+  import COVID19StateDistrictStats from '../../modules/screens/Home/Covid10-District-wise';
+*/
 
 import LabSearchList from '../../modules/screens/LabTest/labSearchList';
 import LabCategory from '../../modules/screens/LabTest/categories'
@@ -647,7 +648,7 @@ const HomeStack = createStackNavigator({
       title: 'Medicine Reviews'
     }
   },
-  'CORONA Status': {
+ /* 'CORONA Status': {
     screen: CoronaDisease,
     navigationOptions: ({ navigation }) => ({
       title: 'CORONA Status'
@@ -658,7 +659,7 @@ const HomeStack = createStackNavigator({
     navigationOptions: ({ navigation }) => ({
       title: 'Covid-19 ' + navigation.getParam('stateName') || ' '
     })
-  },
+  }, */
   /* Video Consultation */
   VideoScreen: {
     screen: VideoScreen,
@@ -761,10 +762,11 @@ const DrawerNavigator = createDrawerNavigator({
   "Blood Donors": {
     screen: BloodDonersList,
   },
+/* 
   'CORONA Status': {
-    screen: CoronaDisease
+     screen: CoronaDisease
   },
-
+*/ 
 },
   {
     overlayColor: 'rgba(0, 0, 0, 0.7)',
@@ -783,7 +785,6 @@ export const DragwerLogos = {
   Reminder: require('../../../assets/images/drawerIcons/Reminder.png'),
   "My Chats": require('../../../assets/images/drawerIcons/Chat.png'),
   "Blood Donors": require('../../../assets/images/drawerIcons/Blooddonars.png'),
-  'CORONA Status': require('../../../assets/images/drawerIcons/Pharmacy.png'),
   'My Video Consultations': require('../../../assets/images/drawerIcons/Appointments.png'),
   'Video and Chat Service': require('../../../assets/images/drawerIcons/Appointments.png'),
   'My Lab Test Appointments': require('../../../assets/images/drawerIcons/Appointments.png'),

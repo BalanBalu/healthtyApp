@@ -26,7 +26,6 @@ import ConnectyCube from 'react-native-connectycube';
 import { CallService  } from '../VideoConsulation/services';
 MapboxGL.setAccessToken(MAP_BOX_PUBLIC_TOKEN);
 import NotifService from '../../../setup/NotifService';
-import COVID19Stats from './Covid19-stats';
 import { getReminderData } from '../../providers/reminder/reminder.action.js';
 import FastImage from 'react-native-fast-image'
 const debounce = (fun, delay) => {
@@ -88,12 +87,12 @@ class Home extends Component {
     async componentDidMount() {
         try {
             
-            if(IS_ANDROID) {
-                const coronoTestStatus = await AsyncStorage.getItem('coronoTested');
-                if (coronoTestStatus === '1') { } else {
-                    this.props.navigation.navigate('CORONA Status');
-                }
-            }
+            // if(IS_ANDROID) {
+            //     const coronoTestStatus = await AsyncStorage.getItem('coronoTested');
+            //     if (coronoTestStatus === '1') { } else {
+            //         this.props.navigation.navigate('CORONA Status');
+            //     }
+            // }
             this.initialFunction();
             if (IS_ANDROID) {
                 let productConfigVersion = await getCurrentVersion("CURRENT_PATIENT_MEDFLIC_VERSION")
@@ -709,10 +708,10 @@ class Home extends Component {
                                 </TouchableOpacity>
                             </Card>
                         </View>
-                        <View>
+                        {/* <View>
                             <COVID19Stats navigation={this.props.navigation}> </COVID19Stats>
                         </View>
-                         
+                          */}
 
                     </View>
 

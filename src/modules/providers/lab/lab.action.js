@@ -3,7 +3,7 @@ import { postService, getService, putService } from '../../../setup/services/htt
 /*get Popular Medicine*/
 export async function getLabTestCateries(coordinates) {
     try {
-        var endPoint = 'lab-test/categories?location=' + coordinates;
+        var endPoint = 'lab-test/categories?location=' + encodeURIComponent(coordinates);
         console.log("endPoint", endPoint)
         let response = await getService(endPoint);
         let respData = response.data;

@@ -8,7 +8,7 @@
     "start": "react-native start",
     "test": "jest",
     "lint": "eslint .",
-    "build-android": "cd android && ./gradlew assembleRelease"
+    "build-android": "npx jetify && cd android && ./gradlew assembleRelease"
   },
   "dependencies": {
     "@mapbox/mapbox-sdk": "^0.10.0",
