@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import {
-    Container, Content, Text, View, Badge, Spinner, Toast
+    Container, Content, Text, View, Badge, Spinner, Toast,Radio
 } from 'native-base';
 import { Col, Row, Grid } from 'react-native-easy-grid';
 import { StyleSheet, Image, AsyncStorage, TextInput, FlatList, TouchableOpacity, Share  } from 'react-native';
@@ -126,22 +126,26 @@ class CoronaDisease extends Component {
                         <Text style={styles.quesText}>{question}</Text>
                         <View style={styles.viewStyle}>
                         
-                               
-                            <RadioButton.Group onValueChange={value => this.setState({ itemSelected: value })}
-                                value={this.state.itemSelected}  >
+                            
                                 <Col>
-                                    <Row>
-                                       <RadioButton value={'YES'}>
-                                    </RadioButton>
+                                    <Row style={{alignItems:'center'}}>
+                                    <Radio 
+                                    standardStyle={true}
+                                    selected={this.state.itemSelected === 'YES' ? true : false} 
+                                    onPress={()=>   this.setState({ itemSelected: 'YES' })}  />
                                     <Text style={styles.yesText}>Yes</Text>
                                     </Row>
-                                 <Row>
-                                    <RadioButton value={'NO'}/>
+                                 <Row style={{alignItems:'center'}}>
+                                   
+                                    <Radio 
+                                    standardStyle={true}
+                                    selected={this.state.itemSelected === 'NO' ? true : false} 
+                                    onPress={()=>   this.setState({ itemSelected: 'NO' })}  />
                                     <Text style={styles.noText}>No</Text>
                                     </Row>
                                     </Col>
                                
-                            </RadioButton.Group>
+                           
                           
                            
 
@@ -244,15 +248,13 @@ yesText:{
     fontFamily: 'OpenSans', 
     fontSize: 15, 
     color: '#ff4e42', 
-    marginLeft: 5, 
-    marginTop: 8
+    marginLeft: 10, 
 },
 noText:{
     fontFamily: 'OpenSans',
     fontSize: 15,
      color: '#909090', 
-     marginLeft: 5, 
-     marginTop: 8
+     marginLeft: 10, 
 },
 touchStyle:{
     backgroundColor: '#4E85E9', 

@@ -184,21 +184,21 @@ export class InsertReview extends Component {
                 </Right>
               </Row>
               <Row style={{ marginTop: 20, marginLeft: 14, marginRight: 20 }}>
-                <Col style={{ flexDirection: 'row', width: '45%', alignItems: "flex-start", justifyContent: 'flex-start' }}>
-                  <Checkbox color="#3C98EC" size={5}
-                    status={isAnonymous ? 'checked' : 'unchecked'}
-                    onPress={() => { this.setState({ isAnonymous: !isAnonymous }); }}
-                    style={{ height: 5, width: 5 }} />
-                  <Text style={{ color: '#3C98EC', marginTop: 10, fontSize: 12 }}>Anonymous</Text>
+                <Col style={{ flexDirection: 'row', width: '45%', alignItems: "flex-start", justifyContent: 'flex-start',alignItems:'center' }}>
+                     <CheckBox style={{borderRadius:5}}
+                                               status={isAnonymous ? true : false}
+                                               checked={this.state.isAnonymous}
+                                               onPress={() => { this.setState({ isAnonymous: !isAnonymous }); }}
+                                               />
+                  <Text style={{ color: '#3C98EC',  fontSize: 12,marginLeft:20 }}>Anonymous</Text>
                 </Col>
-                <Col style={{ flexDirection: 'row', width: '55%', alignItems: "flex-start", justifyContent: 'flex-start' }}>
-
-                  <Checkbox color="#3C98EC" size={5}
-                    status={isDoctorRecommended ? 'checked' : 'unchecked'}
-                    onPress={() => { this.setState({ isDoctorRecommended: !isDoctorRecommended }); }}
-                  />
-
-                  <Text style={{ color: '#3C98EC', fontSize: 12, marginTop: 10 }}>Recommend this Doctor</Text>
+                <Col style={{ flexDirection: 'row', width: '55%', alignItems: "flex-start", justifyContent: 'flex-start',alignItems:'center' }}>
+                  <CheckBox  style={{borderRadius:5}}
+                                               status={isDoctorRecommended ? true : false}
+                                               checked={this.state.isDoctorRecommended}
+                                               onPress={() => { this.setState({ isDoctorRecommended: !isDoctorRecommended }); }}
+                                               />
+                  <Text style={{ color: '#3C98EC', fontSize: 12,marginLeft:20  }}>Recommend this Doctor</Text>
                 </Col>
                
               </Row>

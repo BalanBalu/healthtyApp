@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { Container, Content, Text, Button, FooterTab, Card, Footer, Item, Icon, Input, Toast, Form, Right, Left } from 'native-base';
+import { Container, Content, Text, Button, FooterTab, Card, Footer, Item, Icon, Input, Toast, Form, Right, Left,Radio,CheckBox } from 'native-base';
 import { Col, Row, Grid } from 'react-native-easy-grid';
 import { StyleSheet, Image, View, AsyncStorage, TextInput } from 'react-native';
 import SectionedMultiSelect from 'react-native-sectioned-multi-select';
@@ -535,20 +535,15 @@ class PaymentPage extends Component {
                                 <Text style={{ fontSize: 15, fontFamily: 'OpenSans', fontWeight: 'bold', marginLeft: 15, }}>CREDIT POINTS</Text>
 
                             </Row>
-                            <Row style={{ paddingLeft: 15, alignItems: 'center', marginTop: 10 }}>
+                            <Row style={{ paddingLeft: 5, alignItems: 'center', marginTop: 10 }}>
 
-                                <Checkbox color="green"
-                                    borderStyle={{
-                                        borderColor: '#F44336',
-                                        backfaceVisibility: 'visible',
-                                        borderRadius: 18,
-                                        borderWidth: 1,
-                                        padding: 2,
-                                    }}
-                                    status={this.state.creditPointsApplied ? 'checked' : 'unchecked'}
-                                    onPress={() => this.setPaymentByCreditApplied()}
-                                />
-                                <Text style={{ fontFamily: 'OpenSans', color: '#333333', fontSize: 13, width: '90%' }}>Apply Your {maxDicountAmountByCreditPoints} Credit Points to Pay your Appointment</Text>
+                                
+                                 <CheckBox style={{borderRadius:5}}
+                                             status={this.state.creditPointsApplied ? true : false}
+                                               checked={this.state.creditPointsApplied}
+                                               onPress={() => this.setPaymentByCreditApplied()}
+                                               />
+                                <Text style={{ fontFamily: 'OpenSans', color: '#333333', fontSize: 13, width: '90%' ,marginLeft:20}}>Apply Your {maxDicountAmountByCreditPoints} Credit Points to Pay your Appointment</Text>
                             </Row>
                         </Grid> : null}
 
@@ -592,9 +587,6 @@ class PaymentPage extends Component {
                         <Text style={{ fontSize: 15, fontFamily: 'OpenSans', color: 'gray', marginTop: 40, marginLeft: 15 }}>SAVED CARDS</Text>
                     </Row> : null}
 
-                    <RadioButton.Group
-                        onValueChange={value => this.setState({ selectedSavedCardId: value, paymentOption: null })}
-                        value={this.state.selectedSavedCardId}>
                         <Grid>
                             <View style={{ marginTop: 10, justifyContent: 'center' }}>
                                 {savedCards.map(element => {
@@ -602,18 +594,10 @@ class PaymentPage extends Component {
                                 })}
                             </View>
                         </Grid>
-                    </RadioButton.Group>
-
                     <Row style={{ marginBottom: 10, paddingLeft: 15, paddingRight: 15, paddingTop: 10 }}>
                         <Text style={{ fontSize: 15, fontFamily: 'OpenSans', fontWeight: 'bold' }}>Payment Options</Text>
                     </Row>
-                    <RadioButton.Group
-                        onValueChange={value => {
-                            this.setState({ paymentOption: value, selectedSavedCardId: null })
-                            console.log('selectedSavedCardId ' + this.state.selectedSavedCardId);
-                        }}
-                        value={this.state.paymentOption}
-                    >
+                
                         {/* <Row style={{ borderBottomColor: '#C1C1C1', borderBottomWidth: 0.3, backgroundColor: '#fff', paddingLeft: 15, paddingBottom: 15, paddingRight: 15, marginLeft: 10, marginRight: 10 }}>
                             <Col style={{ width: '90%', }}>
                                 <TouchableOpacity onPress={() => this.setState({ paymentOption: 'CREDIT_CARD' })} style={{ flexDirection: 'row' }}>
@@ -627,9 +611,12 @@ class PaymentPage extends Component {
 
                         <Row style={{ borderBottomColor: '#C1C1C1', borderBottomWidth: 0.3, backgroundColor: '#fff', padding: 15, marginLeft: 10, marginRight: 10 }}>
                             <Col style={{ width: '90%', }}>
-                                <TouchableOpacity onPress={() => this.setState({ paymentOption: 'DEBIT_CARD', selectedSavedCardId: null })} style={{ flexDirection: 'row' }}>
-                                    <RadioButton value="DEBIT_CARD" />
-                                    <Text style={{ marginTop: 8, fontFamily: 'OpenSans', fontSize: 14 }}>Debit/Credit Card</Text>
+                                <TouchableOpacity onPress={() => this.setState({ paymentOption: 'DEBIT_CARD', selectedSavedCardId: null })} style={{ flexDirection: 'row',alignItems:'center', }}>
+                                    <Radio 
+                                    standardStyle={true}
+                                    selected={this.state.paymentOption === "DEBIT_CARD" ? true : false} 
+                                    onPress={()=>   this.setState({ paymentOption: "DEBIT_CARD", selectedSavedCardId: null })} />
+                                    <Text style={{  fontFamily: 'OpenSans', fontSize: 14,marginLeft:10}}>Debit/Credit Card</Text>
                                 </TouchableOpacity>
                             </Col>
                         </Row>
@@ -638,11 +625,14 @@ class PaymentPage extends Component {
 
                         <Row style={{ borderBottomColor: '#C1C1C1', borderBottomWidth: 0.3, backgroundColor: '#fff', padding: 15, marginLeft: 10, marginRight: 10 }}>
                             <Col style={{ width: '90%', }}>
-                                <TouchableOpacity onPress={() => this.setState({ paymentOption: 'NET_BANKING', selectedSavedCardId: null })} style={{ flexDirection: 'row' }}>
-                                    <RadioButton value="NET_BANKING" />
+                                <TouchableOpacity onPress={() => this.setState({ paymentOption: 'NET_BANKING', selectedSavedCardId: null })} style={{ flexDirection: 'row',alignItems:'center',}}>
+                                    <Radio 
+                                    standardStyle={true}
+                                    selected={this.state.paymentOption === "NET_BANKING" ? true : false} 
+                                    onPress={()=>   this.setState({ paymentOption: "NET_BANKING", selectedSavedCardId: null })} />
                                     <Text
                                         //onPress={()=> this.setState({ paymentOption : 'NET_BANKING' })}
-                                        style={{ marginTop: 8, fontFamily: 'OpenSans', fontSize: 14 }}>Net Banking</Text>
+                                        style={{ fontFamily: 'OpenSans', fontSize: 14 ,marginLeft:10}}>Net Banking</Text>
                                 </TouchableOpacity>
                             </Col>
                         </Row>
@@ -650,11 +640,15 @@ class PaymentPage extends Component {
 
                         <Row style={{ borderBottomColor: '#C1C1C1', borderBottomWidth: 0.3, backgroundColor: '#fff', padding: 15, marginLeft: 10, marginRight: 10 }}>
                             <Col style={{ width: '90%', }}>
-                                <TouchableOpacity onPress={() => this.setState({ paymentOption: 'UPI', selectedSavedCardId: null })} style={{ flexDirection: 'row' }}>
-                                    <RadioButton value="UPI" />
+                                <TouchableOpacity onPress={() => this.setState({ paymentOption: 'UPI', selectedSavedCardId: null })} style={{ flexDirection: 'row',alignItems:'center', }}>
+                                   
+                                    <Radio 
+                                    standardStyle={true}
+                                    selected={this.state.paymentOption === "UPI" ? true : false} 
+                                    onPress={()=>   this.setState({ paymentOption: "UPI", selectedSavedCardId: null })} />
                                     <Text
                                         //onPress={()=> this.setState({ paymentOption : 'UPI' })}
-                                        style={{ marginTop: 8, fontFamily: 'OpenSans', fontSize: 14 }}>UPI</Text>
+                                        style={{  fontFamily: 'OpenSans', fontSize: 14,marginLeft:10 }}>UPI</Text>
                                 </TouchableOpacity>
                             </Col>
                         </Row>
@@ -665,11 +659,15 @@ class PaymentPage extends Component {
                         <Row style={{ borderBottomColor: '#C1C1C1', borderBottomWidth: 0.3, backgroundColor: '#fff', padding: 15, marginLeft: 10, marginRight: 10 }}>
 
                             <Col style={{ width: '90%', }}>
-                                <TouchableOpacity onPress={() => this.setState({ paymentOption: 'WALLET', selectedSavedCardId: null })} style={{ flexDirection: 'row' }}>
-                                    <RadioButton value="WALLET" />
+                                <TouchableOpacity onPress={() => this.setState({ paymentOption: 'WALLET', selectedSavedCardId: null })} style={{ flexDirection: 'row',alignItems:'center',}}>
+                            
+                                    <Radio 
+                                    standardStyle={true}
+                                    selected={this.state.paymentOption === "WALLET" ? true : false} 
+                                    onPress={()=>   this.setState({ paymentOption: "WALLET", selectedSavedCardId: null })} />
                                     <Text
                                         //onPress={()=> this.setState({ paymentOption : 'WALLET' })}
-                                        style={{ marginTop: 8, fontFamily: 'OpenSans', fontSize: 13 }}>Wallet</Text>
+                                        style={{  fontFamily: 'OpenSans', fontSize: 13,marginLeft:10 }}>Wallet</Text>
                                 </TouchableOpacity>
                             </Col>
 
@@ -680,8 +678,7 @@ class PaymentPage extends Component {
 
                         </Row>
                         {this.state.paymentOption === "WALLET" ? this.renderWallet() : null}
-                    </RadioButton.Group>
-
+                
 
 
                 </Content>
@@ -784,18 +781,12 @@ class PaymentPage extends Component {
                                 <Row>
                                     <Col>
                                         <Row>
-                                            <Checkbox color="green"
-                                                borderStyle={{
-                                                    borderColor: '#F44336',
-                                                    backfaceVisibility: 'visible',
-                                                    borderRadius: 18,
-                                                    borderWidth: 1,
-                                                    padding: 2,
-                                                }}
-                                                status={this.state.saveCardCheckbox ? 'checked' : 'unchecked'}
-                                                onPress={() => this.setState({ saveCardCheckbox: !this.state.saveCardCheckbox })}
-                                            />
-                                            <Text style={{ color: 'gray', fontFamily: 'OpenSans', marginTop: -3 }}>Save card for faster transaction</Text>
+                                             <CheckBox style={{borderRadius:5}}
+                                               status={this.state.saveCardCheckbox ? true : false}
+                                               checked={this.state.saveCardCheckbox}
+                                               onPress={() => this.setState({ saveCardCheckbox: !this.state.saveCardCheckbox })}
+                                               />
+                                            <Text style={{ color: 'gray', fontFamily: 'OpenSans' ,marginLeft:20}}>Save card for faster transaction</Text>
                                         </Row>
                                     </Col>
                                 </Row>
@@ -964,9 +955,13 @@ class PaymentPage extends Component {
         return (
             <View key={valueOfCreditCard.card_id}>
                 <Row style={{ borderBottomColor: '#C1C1C1', borderBottomWidth: 0.3, backgroundColor: '#fff', padding: 15, marginLeft: 10, marginRight: 10 }}>
-                    <RadioButton
-                        status={valueOfCreditCard.card_id === this.state.selectedSavedCardId && this.state.paymentOption === null ? 'checked' : 'unchecked'}
-                        value={valueOfCreditCard.card_id} />
+                              <Radio 
+                                    standardStyle={true}
+                                    status={valueOfCreditCard.card_id === this.state.selectedSavedCardId && this.state.paymentOption === null ? true : false}
+                                    selected={this.state.selectedSavedCardId === valueOfCreditCard.card_id ? true : false} 
+                                    onPress={()=> this.setState({ selectedSavedCardId: valueOfCreditCard.card_id, paymentOption: null })}
+                                  />
+                                    <Icon name="ios-woman" style={{ fontSize: 20, marginLeft: 10, }} />
                     <Col style={{ width: '90%', }}>
                         <Row>
                             {/* <Text style={{ color: '#000', fontFamily: 'OpenSans', fontWeight: 'bold', fontSize: 15, marginTop: 8, }}

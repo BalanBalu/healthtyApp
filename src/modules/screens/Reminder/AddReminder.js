@@ -357,22 +357,25 @@ class AddReminder extends Component {
                   <Text style={styles.NumText}>How often would you take this Medicine</Text>
                   <Item style={{ marginTop: 10, borderBottomWidth: 0, }}>
 
-                    <RadioButton.Group
-                      onValueChange={value => { this.setState({ medicinePeriod: value }) }}
-                      value={this.state.medicinePeriod}>
-                      <View style={{ flexDirection: 'row' }}>
-                        <RadioButton value="everyday" color={'#1296db'} uncheckedColor={'#1296db'} />
+                      <View style={{ flexDirection: 'row',alignItems:'center'  }}>
+                        <Radio 
+                                    standardStyle={true}
+                                    selected={this.state.medicinePeriod === "everyday" ? true : false} 
+                                    onPress={()=> this.setState({ medicinePeriod: "everyday" }) }  /> 
                         <Text style={{
-                          fontFamily: 'OpenSans', fontSize: 15, marginTop: 8
+                          fontFamily: 'OpenSans', fontSize: 15, marginLeft:10
                         }}>Everyday</Text>
                       </View>              
-                      <View style={{ flexDirection: 'row', marginLeft: 10 }}>
-                        <RadioButton value="onlyonce" style={{ marginLeft: 20 }} color={'#1296db'} uncheckedColor={'#1296db'} />
+                      <View style={{ flexDirection: 'row', marginLeft: 10,alignItems:'center' }}>
+                        <Radio 
+                                    standardStyle={true}
+                                    selected={this.state.medicinePeriod === "onlyonce" ? true : false} 
+                                    onPress={()=> this.setState({ medicinePeriod: "onlyonce" }) }  /> 
                         <Text style={{
-                          fontFamily: 'OpenSans', fontSize: 15, marginTop: 8
+                          fontFamily: 'OpenSans', fontSize: 15,  marginLeft:10
                         }}>Only when I need</Text>
                       </View>                     
-                    </RadioButton.Group>
+                
                   </Item>
                 </View>
 
