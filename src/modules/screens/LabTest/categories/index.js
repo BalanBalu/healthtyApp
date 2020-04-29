@@ -1,7 +1,9 @@
 import React, { Component } from 'react';
 import { Container, Content, Text, Title, Header, Button, H3, Item, List, ListItem, Card, Left, Right, Thumbnail, Body, Icon, locations, Input } from 'native-base';
 import LinearGradient from 'react-native-linear-gradient';
+import { connect } from 'react-redux'
 import { Col, Row, Grid } from 'react-native-easy-grid';
+import { toDataUrl } from '../../../../setup/helpers';
 import { StyleSheet, Image, TouchableOpacity, View, FlatList } from 'react-native';
 import { MAX_DISTANCE_TO_COVER } from '../../../../setup/config';
 import { connect } from 'react-redux'
@@ -62,6 +64,24 @@ class LabCategories extends Component {
     this.props.navigation.navigate('LabSearchList', { inputDataFromLabCat: inputDataBySearch })
   
   }
+
+
+  filterCategories(searchValue) {
+    console.log(this.state.data);
+    const { labData } = this.state;
+    if (!searchValue) {
+      this.setState({ searchValue, data: labData });
+    } else {
+      const filteredCategories = labData.filter(ele =>
+        ele.lab_test_category_info.category_name.toLowerCase().search(searchValue.toLowerCase()) !== -1
+      );
+      this.setState({ searchValue, data: filteredCategories })
+      console.log("filteredCategories",this.state.filteredCategories);
+
+    }
+  }
+
+
   renderStickeyHeader() {
     return (
       <View style={{ width: '100%' }} >
