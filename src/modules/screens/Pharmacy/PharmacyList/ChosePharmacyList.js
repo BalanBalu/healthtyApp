@@ -4,7 +4,7 @@ import { Col, Row, Grid } from 'react-native-easy-grid';
 import { StyleSheet, Image, AsyncStorage, TextInput, FlatList, TouchableOpacity, Platform } from 'react-native';
 import { getMedicinesSearchList, getNearOrOrderPharmacy } from '../../../providers/pharmacy/pharmacy.action';
 import { MAX_DISTANCE_TO_COVER, PHARMACY_MAX_DISTANCE_TO_COVER } from '../../../../setup/config';
-import { getAddress, getKiloMeterCalculation } from '../CommomPharmacy'
+import { getAddress, getKiloMeterCalculation, renderPharmacyImage } from '../CommomPharmacy'
 import Spinner from "../../../../components/Spinner";
 import { connect } from 'react-redux'
 import { RadioButton, Checkbox } from 'react-native-paper';
@@ -22,7 +22,7 @@ class ChosePharmacyList extends Component {
         }
     }
     componentDidMount() {
-        prescriptionDetails = this.props.navigation.getParam('prescriptionDetails') || null;
+      let   prescriptionDetails = this.props.navigation.getParam('prescriptionDetails') || null;
         this.setState({ prescriptionDetails })
         this.getNearByPharmacyList()
     }
@@ -168,7 +168,8 @@ class ChosePharmacyList extends Component {
                                                 <Row style={{ paddingBottom: 2 }}>
                                                     <Col size={2}>
                                                         <Image
-                                                            source={require('../../../../../assets/images/apollopharmacy.jpeg')}
+
+                                                            source={renderPharmacyImage(item.pharmacyInfo.profile_image)}
                                                             style={{
                                                                 width: 70, height: 75, alignItems: 'flex-end'
                                                             }} />

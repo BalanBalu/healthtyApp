@@ -280,7 +280,7 @@ class PaymentPage extends Component {
             } else if (serviceType === SERVICE_TYPES.CHAT) {
                 this.props.navigation.navigate('SuccessChat');
                 Toast.show({
-                    text: 'Paymenet Success',
+                    text: 'Payment Success',
                     type: 'success',
                     duration: 3000
                 })
@@ -292,14 +292,14 @@ class PaymentPage extends Component {
                     await AsyncStorage.removeItem('cartItems-' + this.userId);
                 }
                 Toast.show({
-                    text: 'Paymenet Success',
+                    text: 'Payment Success',
                     type: 'success',
                     duration: 3000
                 })
             } else if (serviceType === SERVICE_TYPES.VIDEO_CONSULTING) {
                 this.props.navigation.navigate('SuccessChat', { manualNaviagationPage: 'Home' });
                 Toast.show({
-                    text: 'Paymenet Success',
+                    text: 'Payment Success',
                     type: 'success',
                     duration: 3000
                 })

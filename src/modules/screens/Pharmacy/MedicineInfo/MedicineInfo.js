@@ -10,6 +10,7 @@ import { NavigationEvents } from 'react-navigation';
 import { AddToCard } from '../AddToCardBuyNow/AddToCard'
 import SwiperFlatList from 'react-native-swiper-flatlist';
 import ImageZoom from 'react-native-image-pan-zoom';
+import { hasLoggedIn } from "../../../providers/auth/auth.actions";
 
 let medicineId, userId;
 class MedicineInfo extends Component {
@@ -130,7 +131,7 @@ class MedicineInfo extends Component {
 
             let result = await getMedicineReviews(medicineId);
             if (result.success) {
-              
+
                 this.setState({ reviewData: result.data })
             } else {
                 this.setState({ reviewData: [] });
@@ -354,7 +355,7 @@ class MedicineInfo extends Component {
                                             autoplayLoop
                                             data={medicineData.medInfo.medicine_images}
                                             renderItem={({ item }) =>
-                                                <TouchableOpacity onPress={() => this.props.navigation.navigate("ImageView", { passImage:{uri: item.imageURL}, title: medicineData.medInfo.medicine_name })}>
+                                                <TouchableOpacity onPress={() => this.props.navigation.navigate("ImageView", { passImage: { uri: item.imageURL }, title: medicineData.medInfo.medicine_name })}>
                                                     <Image
                                                         source={renderMedicineImageAnimation(item)}
                                                         style={{
@@ -370,7 +371,7 @@ class MedicineInfo extends Component {
                             <Row>
                                 <Col size={7} style={{ flexDirection: 'row', marginTop: 10 }}>
                                     <Text style={{ fontSize: 10, fontFamily: 'OpenSans', color: '#ff4e42', marginTop: 5 }}>MRP</Text>
-                                    {medicineData.medPharDetailInfo.discount_value !== undefined ?
+                                    {medicineData.medPharDetailInfo.discount_value !== undefined && medicineData.medPharDetailInfo.variations[0].discount_value !== 0 ?
                                         <Row>
                                             <Text style={styles.oldRupees}>₹{medicineData.medPharDetailInfo.price}</Text>
                                             <Text style={styles.newRupees}>₹{medicineRateAfterOffer(medicineData.medPharDetailInfo)}</Text>
@@ -412,7 +413,7 @@ class MedicineInfo extends Component {
                                     {cartItems.length == 0 || cartItems.findIndex(ele => ele.medicine_id == medicineData.medPharDetailInfo.medicine_id && ele.pharmacy_id == medicineData.medPharDetailInfo.pharmacy_id) === -1 ?
                                         <Row style={{ alignItems: 'flex-end' }}>
                                             <TouchableOpacity style={styles.addCartTouch}
-                                                onPress={() => { this.setState({ isAddToCart: true }), this.selectedItems(medicineData, 'Add to Card') }} >
+                                                onPress={() => { this.setState({ isAddToCart: true }), this.selectedItems(medicineData, 'Add to Cart') }} >
 
                                                 <Icon name='ios-cart' style={{ color: '#4e85e9', fontSize: 15 }} />
                                                 <Text style={styles.addCartText}>Add to Cart</Text>
@@ -421,7 +422,7 @@ class MedicineInfo extends Component {
                                         </Row> :
                                         <Row style={{ alignItems: 'flex-end' }}>
                                             <TouchableOpacity style={styles.addCartTouch}
-                                                onPress={() => { this.setState({ isAddToCart: true }), this.selectedItems(medicineData, 'Add to Card', cartItems.findIndex(ele => ele.medicine_id == medicineData.medPharDetailInfo.medicine_id && ele.pharmacy_id == medicineData.medPharDetailInfo.pharmacy_id)) }} >
+                                                onPress={() => { this.setState({ isAddToCart: true }), this.selectedItems(medicineData, 'Add to Cart', cartItems.findIndex(ele => ele.medicine_id == medicineData.medPharDetailInfo.medicine_id && ele.pharmacy_id == medicineData.medPharDetailInfo.pharmacy_id)) }} >
 
                                                 <Icon name='ios-cart' style={{ color: '#4e85e9', fontSize: 15 }} />
                                                 <Text style={styles.addCartText}>{'Added ' + cartItems[cartItems.findIndex(ele => ele.medicine_id == medicineData.medPharDetailInfo.medicine_id && ele.pharmacy_id == medicineData.medPharDetailInfo.pharmacy_id)].userAddedMedicineQuantity}</Text>
@@ -453,9 +454,11 @@ class MedicineInfo extends Component {
                         <View style={{ marginTop: 10 }}>
                             <Text style={styles.desText}>Product Details</Text>
                             <Text style={styles.mainText}>{medicineData.medInfo.description}</Text>
-                            <TouchableOpacity onPress={() => this.setState({ enlargeContent: true })}>
-                                <Text style={styles.showText}>Show more</Text>
-                            </TouchableOpacity>
+                            {this.state.enlargeContent == false ?
+                                <TouchableOpacity onPress={() => this.setState({ enlargeContent: true })}>
+                                    <Text style={styles.showText}>Show more</Text>
+                                </TouchableOpacity> : null}
+
                             {this.state.enlargeContent == true ?
                                 <View>
                                     <View style={{ marginTop: 10 }}>
