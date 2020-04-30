@@ -239,7 +239,6 @@ export default class MapBox extends React.Component {
         }
     }
 
-
     updateAddressObject(addressNode, value) {
         let statusCopy = Object.assign({}, this.state);
         statusCopy.address[addressNode] = value;

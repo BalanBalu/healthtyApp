@@ -564,8 +564,6 @@ const styles = StyleSheet.create({
     marginLeft: -10,
     marginBottom: -10,
     marginRight: -10,
-    //  justifyContent:'center',
-    //  alignItems:"center",ss
     height: 35,
     marginTop: -10
   },

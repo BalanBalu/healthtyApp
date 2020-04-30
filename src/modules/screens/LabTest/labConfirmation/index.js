@@ -234,6 +234,7 @@ class LabConfirmation extends Component {
         return totalAmount;
     }
 
+    
     proceedToLabTestAppointment = async (paymentMode) => {
         let { patientDetails, packageDetails, selectedAddress, itemSelected } = this.state
         try {

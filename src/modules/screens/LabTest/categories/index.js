@@ -8,6 +8,7 @@ import { StyleSheet, Image, TouchableOpacity, View, FlatList } from 'react-nativ
 import { MAX_DISTANCE_TO_COVER } from '../../../../setup/config';
 import { getLabTestCateries } from '../../../providers/lab/lab.action';
 import FastImage from 'react-native-fast-image'
+
 class LabCategories extends Component {
   constructor(props) {
     super(props)
