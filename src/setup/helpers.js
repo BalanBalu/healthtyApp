@@ -257,6 +257,13 @@ export const statusValue={
     color: 'red',
     icon: 'ios-close-circle',
      type: 'REPORT_ISSUE_APPOINTMENT_REJECTED'
+  },
+  "PAYMENT_FAILED":
+  {
+    text: 'Payment process failed',
+    color: 'red',
+    icon: 'ios-close-circle',
+    type: 'REPORT_ISSUE_APPOINTMENT_PAYMENT_FAILED'
   }
 }
 

@@ -7,7 +7,7 @@ import { IS_ANDROID, validatePincode, validateName, validatePassword, validateFi
 import { Container, Toast, Body, Button, Text, Item, Input, Icon, Card, CardItem, Label, Form, Content, Picker } from 'native-base';
 import { MAP_BOX_TOKEN } from '../../../../setup/config';
 import axios from 'axios';
-import { userFiledsUpdate, logout } from '../../../providers/auth/auth.actions';
+import { userFiledsUpdate, logout, getPostOffNameAndDetails } from '../../../providers/auth/auth.actions';
 import Geolocation from 'react-native-geolocation-service';
 MapboxGL.setAccessToken(MAP_BOX_TOKEN);
 import Qs from 'qs';
@@ -32,6 +32,8 @@ export default class MapBox extends React.Component {
             full_name: '',
             mobile_no: null,
             addressType: null,
+            postOfficeData: [],
+            editable: true,
             address: {
                 no_and_street: null,
                 address_line_1: null,
@@ -39,7 +41,8 @@ export default class MapBox extends React.Component {
                 district: null,
                 state: null,
                 country: null,
-                pin_code: null
+                pin_code: null,
+                post_office_name: null
             }
         }
         this.onPress = this.onPress.bind(this);
@@ -164,6 +167,9 @@ export default class MapBox extends React.Component {
                     case 'place':
                         this.updateAddressObject('city', textValue);
                         break
+                    case 'post_office_name':
+                        this.updateAddressObject('post_office_name', textValue);
+                        break
                     case 'district':
                         this.updateAddressObject('district', textValue);
                         break
@@ -187,6 +193,51 @@ export default class MapBox extends React.Component {
     }
 
 
+    validPincode = async (value) => {
+        var reg = /^[1-9][0-9]{5}$/;
+        this.updateAddressObject('pin_code', value)
+        if (value.match(reg)) {
+            this.getPostOffName(value);
+            return true;
+        }
+    }
+
+    getPostOffName = async (value) => {
+        let response = await getPostOffNameAndDetails(value);
+        console.log("response::::", response)
+        if (response.Status == 'Success') {
+            let temp = [];
+            temp = response.PostOffice;
+            this.setState({ postOfficeData: temp })
+        } else {
+            Toast.show({
+                text: response.Message,
+                type: 'danger',
+                duration: 5000
+            })
+            return false
+        }
+    }
+    postOfficeAddress = async (value) => {
+        if (value != null || value != undefined) {
+
+            this.updateAddressObject('post_office_name', value.Name)
+            await this.setState({
+                editable: false,
+                address: {
+                    no_and_street: this.state.address.no_and_street,
+                    address_line_1: this.state.address.address_line_1,
+                    city: this.state.address.city,
+                    district: value.District,
+                    state: value.State,
+                    country: value.Country,
+                    pin_code: this.state.address.pin_code,
+                    post_office_name: this.state.address.post_office_name
+                }
+
+            })
+        }
+    }
 
 
     updateAddressObject(addressNode, value) {
@@ -198,7 +249,7 @@ export default class MapBox extends React.Component {
         try {
             this.setState({ loading: true })
             let Lnglat = this.state.center;
-            addressData = 'address'
+            // addressData = 'address'
             let userAddressData = {
                 address: {
                     coordinates: [Lnglat[1], Lnglat[0]],
@@ -206,6 +257,7 @@ export default class MapBox extends React.Component {
                     address: this.state.address
                 }
             }
+            console.log("userAddressData", userAddressData)
             if (this.state.addressType == 'delivery_Address') {
 
                 if (validateFirstNameLastName(this.state.full_name) == false) {
@@ -234,40 +286,7 @@ export default class MapBox extends React.Component {
 
             console.log(userAddressData)
             const userId = await AsyncStorage.getItem('userId')
-            // console.log(this.state.address.district)
-            if (!validateName(this.state.address.city)) {
-                Toast.show({
-                    text: 'City should not contains white spaces and any Special Character',
-                    type: 'danger',
-                    duration: 5000
-                })
-                return false
-            }
-            if (!validateName(this.state.address.district)) {
-                Toast.show({
-                    text: 'District should not contains white spaces and any Special Character',
-                    type: 'danger',
-                    duration: 5000
-                });
-                return false;
-            }
-            if (!validateName(this.state.address.state)) {
-                Toast.show({
-                    text: 'State should not contains white spaces and any Special Character',
-                    type: 'danger',
-                    duration: 5000
-                })
-                return false;
-            }
-            if (!validateName(this.state.address.country)) {
-                Toast.show({
-                    text: 'Country should not contains white spaces and any Special Character',
-                    type: 'danger',
-                    duration: 5000
-                })
-                return false;
-            }
-
+          
             this.setState({ loading: false });
 
             let result = await userFiledsUpdate(userId, userAddressData);
@@ -481,8 +500,37 @@ export default class MapBox extends React.Component {
                                     value={this.state.address.address_line_1}
                                     onChangeText={value => this.updateAddressObject('address_line_1', value)} />
                             </Item>
+                            <Item floatingLabel>
+                                <Label>Pin Code</Label>
+                                <Input placeholder="Pin Code" style={styles.transparentLabel}
+                                    keyboardType="numeric"
+                                    value={this.state.address.pin_code}
+                                    onChangeText={(value) => this.validPincode(value)} />
+                            </Item>
+                            <Item style={[styles.transparentLabel1]}>
+                                <Picker style={{ fontFamily: 'OpenSans', fontSize: 14, backgroundColor: '#F1F1F1' }}
+                                    mode="dropdown"
+                                    iosIcon={<Icon name="arrow-down" />}
+                                    placeholder="Select your Post Office Name"
+                                    textStyle={{ color: "gray", fontFamily: 'OpenSans' }}
+                                    itemStyle={{
+                                        backgroundColor: "gray",
+                                        marginLeft: 0,
+                                        paddingLeft: 10
+                                    }}
+                                    onValueChange={(value) => this.postOfficeAddress(value)}
+                                    itemTextStyle={{ color: '#788ad2' }}
+                                    style={{ width: undefined }}
+                                    selectedValue={this.state.address.post_office_name}
+                                >
+                                    {this.state.postOfficeData.map((ele, index) => {
+                                        return <Picker.Item label={String(ele.Name)} value={ele} key={index} testID='pickPostOfficeName' />
+                                    })}
+
+                                </Picker>
+                            </Item>
                             <Item floatingLabel >
-                                <Label>City</Label>
+                                <Label>City Or Area</Label>
                                 <Input placeholder="City" style={styles.transparentLabel}
                                     value={this.state.address.city}
                                     onChangeText={value => this.updateAddressObject('city', value)} />
@@ -491,28 +539,24 @@ export default class MapBox extends React.Component {
                                 <Label>District</Label>
                                 <Input placeholder="District" style={styles.transparentLabel}
                                     value={this.state.address.district}
+                                    editable={this.state.editable}
                                     onChangeText={value => this.updateAddressObject('district', value)} />
                             </Item>
                             <Item floatingLabel>
                                 <Label>State</Label>
                                 <Input placeholder="State" style={styles.transparentLabel}
                                     value={this.state.address.state}
+                                    editable={this.state.editable}
                                     onChangeText={value => this.updateAddressObject('state', value)} />
                             </Item>
                             <Item floatingLabel>
                                 <Label>Country</Label>
                                 <Input placeholder="Country" style={styles.transparentLabel}
                                     value={this.state.address.country}
+                                    editable={this.state.editable}
                                     onChangeText={value => this.updateAddressObject('country', value)} />
                             </Item>
-                            <Item floatingLabel>
-                                <Label>Pin Code</Label>
-                                <Input placeholder="Pin Code" style={styles.transparentLabel}
-                                    keyboardType="numeric"
-                                    value={this.state.address.pin_code}
-                                    onChangeText={value => acceptNumbersOnly(value) == true || value === '' ? this.updateAddressObject('pin_code', value) : null} />
-                            </Item>
-
+                           
                             <Button success style={styles.loginButton} block onPress={() => this.updateAddressData()}>
                                 <Icon name='paper-plane'></Icon>
                                 <Text>Update</Text>
@@ -594,6 +638,17 @@ const styles = StyleSheet.create({
         color: '#000',
         fontFamily: 'OpenSans',
     },
+    transparentLabel1: {
+        borderBottomColor: 'transparent',
+        backgroundColor: '#F1F1F1',
+        height: 45,
+        marginTop: 10,
+        borderRadius: 5,
+        paddingLeft: 20,
+        color: '#000',
+        fontFamily: 'OpenSans'
+    },
+
     annotationContainer: {
         width: 30,
         height: 30,

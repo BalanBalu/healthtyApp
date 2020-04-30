@@ -1,4 +1,4 @@
-import { postService, putService } from '../../../setup/services/httpservices';
+import { postService, putService,getService } from '../../../setup/services/httpservices';
 import { AsyncStorage } from 'react-native';
 export const LOGIN_REQUEST = 'AUTH/LOGIN_REQUEST'
 export const LOGIN_HAS_ERROR = 'AUTH/LOGIN_RESPONSE'
@@ -306,6 +306,25 @@ export async function userFiledsUpdate(userId, data) {
     }
   }
 }
+/*Get post office name and details */
+export async function getPostOffNameAndDetails(pincode) {
+  try {
+    console.log(pincode)
+    let fullPath = 'pincode/' + pincode;
+    console.log("fullPath", fullPath)
+    let response = await getService(fullPath);
+    return response.data;
+  } catch (e) {
+    console.log(e);
+    return {
+      message: 'exception' + e,
+      success: false
+    }
+  }
+}
+
+
+
 export async function updatePrimaryContact(userId, data) {
   try {
     let endPoint = 'user/' + userId + '/primary_contact';
