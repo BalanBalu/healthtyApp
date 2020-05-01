@@ -8,7 +8,7 @@ import { acceptNumbersOnly } from '../../common';
 import { connect } from 'react-redux'
 import { StyleSheet, Image, View, TouchableOpacity, ImageBackground } from 'react-native';
 import styles from '../../screens/auth/styles';
-import { RadioButton, Checkbox } from 'react-native-paper';
+import { RadioButton,  } from 'react-native-paper';
 import Spinner from '../../../components/Spinner'
 const mainBg = require('../../../../assets/images/MainBg.jpg')
 
@@ -143,35 +143,47 @@ class Signup extends Component {
 
                                         <View style={{ marginTop: 10, borderBottomWidth: 0, flexDirection: 'row' }}>
 
-                                            <RadioButton.Group
-                                                onValueChange={value => this.setState({ gender: value })}
-                                                value={gender}>
-                                                <View style={{ flexDirection: 'row' }}>
-                                                    <RadioButton value="M" />
+                                          
+                                                <View style={{ flexDirection: 'row',alignItems:'center' }}>
+                                                    <Radio  
+                                                     standardStyle={true}
+                                                      onPress={() => this.setState({ gender: "M" })}
+                                                         selected={gender === "M" ? true : false} 
+                                                      />
                                                     <Text style={{
-                                                        fontFamily: 'OpenSans', fontSize: 15, marginTop: 8
+                                                        fontFamily: 'OpenSans', fontSize: 15,marginLeft:5 
                                                     }}>Male</Text>
                                                 </View>
-                                                <View style={{ flexDirection: 'row', marginLeft: 20 }}>
-                                                    <RadioButton value="F" />
+                                                <View style={{ flexDirection: 'row', marginLeft: 20,alignItems:'center' }}>
+                                                  
+                                                    <Radio  
+                                                     standardStyle={true}
+                                                      onPress={() => this.setState({ gender: "F" })}
+                                                         selected={gender === "F" ? true : false} 
+                                                      />
                                                     <Text style={{
-                                                        fontFamily: 'OpenSans', fontSize: 15, marginTop: 8
+                                                        fontFamily: 'OpenSans', fontSize: 15 ,marginLeft:5
                                                     }}>Female</Text>
                                                 </View>
-                                                <View style={{ flexDirection: 'row', marginLeft: 20 }}>
-                                                    <RadioButton value="O" />
+                                                <View style={{ flexDirection: 'row', marginLeft: 20 ,alignItems:'center'}}>
+                                              
+                                                    <Radio  
+                                                     standardStyle={true}
+                                                      onPress={() => this.setState({ gender: "O" })}
+                                                         selected={gender === "O" ? true : false} 
+                                                      />
                                                     <Text style={{
-                                                        fontFamily: 'OpenSans', fontSize: 15, marginTop: 8
+                                                        fontFamily: 'OpenSans', fontSize: 15,marginLeft:5
                                                     }}>Others</Text>
                                                 </View>
-                                            </RadioButton.Group>
+                                           
                                         </View>
-                                        <Item style={{ borderBottomWidth: 0, marginTop: 5,marginLeft:-1}}>
-                                            <Checkbox color="#775DA3"
-                                                status={checked ? 'checked' : 'unchecked'}
+                                        <Item style={{ borderBottomWidth: 0, marginTop: 10,marginLeft:-10}}>
+                                            <CheckBox style={{borderRadius:5}}
+                                               checked={this.state.checked}
                                                 onPress={() => { this.setState({ checked: !checked }); }}
                                             />
-                                            <Text style={{ color: 'gray', fontFamily: 'OpenSans', fontSize: 12, }}>I Accept the Medflic </Text>
+                                            <Text style={{ color: 'gray', fontFamily: 'OpenSans', fontSize: 12,marginLeft:20 }}>I Accept the Medflic </Text>
                                             <TouchableOpacity onPress={() => this.props.navigation.navigate('termsAndConditions')}>
                                                 <Text style={{ color: '#5055d7', fontFamily: 'OpenSans', fontSize: 13, }}>Terms And Conditions</Text>
                                             </TouchableOpacity>
