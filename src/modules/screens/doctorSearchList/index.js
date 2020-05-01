@@ -768,25 +768,25 @@ class doctorSearchList extends Component {
                             <Card style={{ borderRadius: 7, paddingTop: 5, paddingBottom: 5 }}>
 
                                 <Row>
-                                    <Col style={{ width: '55%', flexDirection: 'row', marginLeft: 5, }} onPress={() => this.sortByTopRatings(filteredDoctorData)}>
-                                        <Row>
-                                            <Col style={{ width: '15%' }}>
-                                                <Icon name='ios-arrow-down' style={{ color: '#000', fontSize: 20, marginTop: 5 }} />
+                                    <Col  size={5} style={{  flexDirection: 'row', marginLeft: 5, }} onPress={() => this.sortByTopRatings(filteredDoctorData)}>
+                                       
+                                            <Col size={1.1} >
+                                                <Icon name='ios-arrow-down' style={{ color: 'gray', fontSize: 20, marginTop: 10 }} />
                                             </Col>
-                                            <Col style={{ width: '85%' }}>
+                                            <Col size={8.9} style={{justifyContent:'center'}}>
                                                 <Text uppercase={false} style={{ fontFamily: 'OpenSans', color: '#000', fontSize: 13, textAlign: 'center', marginTop: 5 }}>Top Rated </Text>
                                             </Col>
-                                        </Row>
+                                      
                                     </Col>
-                                    <Col style={{ width: '45%', alignItems: 'flex-start', flexDirection: 'row', borderLeftColor: 'gray', borderLeftWidth: 1 }} onPress={() => this.navigateToFilters()}>
-                                        <Row>
-                                            <Col style={{ width: '35%', marginLeft: 10 }}>
-                                                <Icon name='ios-funnel' style={{ color: 'gray' }} />
+                                    <Col  size={5} style={{   flexDirection: 'row', borderLeftColor: '#909090', borderLeftWidth: 0.3 }} onPress={() => this.navigateToFilters()}>
+                                       
+                                            <Col  size={1.1} style={{ marginLeft:10 }}>
+                                                <Icon name='ios-funnel' style={{ color: 'gray',fontSize: 25,marginTop: 5 }} />
                                             </Col>
-                                            <Col style={{ width: '65%' }}>
-                                                <Text uppercase={false} style={{ fontFamily: 'OpenSans', color: '#000', fontSize: 13, marginTop: 5, marginLeft: 5, width: '100%' }}>Filters </Text>
+                                            <Col size={8.9} style={{justifyContent:'center'}}>
+                                                <Text uppercase={false} style={{ fontFamily: 'OpenSans', color: '#000', fontSize: 13, marginTop: 5, marginLeft: 5, width: '100%',textAlign:'center' }}>Filters </Text>
                                             </Col>
-                                        </Row>
+                                        
                                     </Col>
                                 </Row>
                             </Card>
@@ -845,12 +845,12 @@ class doctorSearchList extends Component {
                         <ListItem>
                             <Grid >
                                 <Row onPress={() => this.navigateToBookAppointmentPage(item)}>
-                                    <Col style={{ width: '5%' }}>
+                                    <Col style={{ width: '10%' }}>
                                     <TouchableOpacity onPress={() => this.props.navigation.navigate("ImageView", { passImage: renderDoctorImage(item), title: 'Profile photo' })}>
                                         <Thumbnail circle source={renderDoctorImage(item)} style={{ height: 60, width: 60,borderRadius:60/2 }} />
                                     </TouchableOpacity>
                                     </Col>
-                                    <Col style={{ width: '78%' }}>
+                                    <Col style={{ width: '73%' }}>
                                         <Row style={{ marginLeft: 55, }}>
                                             <Text style={{ fontFamily: 'OpenSans', fontSize: 12, fontWeight: 'bold' }}>{(item.prefix ? item.prefix + '. ' : '') + (item.first_name || '') + ' ' + (item.last_name || '')}</Text>
                                         </Row>
@@ -951,7 +951,7 @@ class doctorSearchList extends Component {
                                     <View>
 
                                         <Row style={{ marginTop: 10 }}>
-                                            <Text style={{ fontSize: 13, fontFamily: 'OpenSans' }}>Select appoinment date and time</Text>
+                                            <Text style={{ fontSize: 13, fontFamily: 'OpenSans' }}>Choose appointment date and time</Text>
                                         </Row>
                                         {this.renderDatesOnFlatlist(item.slotData, selectedDatesByDoctorIds[item.doctorIdHostpitalId] || this.state.currentDate, item.doctorIdHostpitalId)}
                                         {

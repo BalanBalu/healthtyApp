@@ -264,9 +264,12 @@ class BookAppoinment extends Component {
 
   noAvailableSlots() {
     return (
-      <View style={{ alignItems: 'center' }}>
-        <Text style={{ marginTop: 10, fontSize: 15, borderColor: 'gray', borderRadius: 5, alignItems: 'center' }} >No slots available </Text>
-      </View>
+      <Row style={{ justifyContent: 'center', marginTop: 20 }}>
+                <Button disabled style={{ alignItems: 'center', borderRadius: 10, backgroundColor: '#6e5c7b' }}>
+                    <Text>No Slots Available</Text>
+                    {/*nextAvailableDate ? <Text style={{ color: '#fff', fontFamily: 'OpenSans', fontWeight: 'bold', fontSize: 15 }}>Next Availability On {nextAvailableDate}</Text> : <Text style={{ color: '#fff', fontFamily: 'OpenSans', fontWeight: 'bold', fontSize: 16 }}> No Availablity for Next 7 Days</Text>*/}
+                </Button>
+            </Row>
     )
   }
 
@@ -567,7 +570,7 @@ class BookAppoinment extends Component {
 
                 <View>
                   <Row style={{ marginTop: 10 }}>
-                    <Text style={{ fontSize: 13, fontFamily: 'OpenSans' }}>Select appoinment date and time</Text>
+                    <Text style={{ fontSize: 13, fontFamily: 'OpenSans' }}>Choose appointment date and time</Text>
                   </Row>
                 
                   {this.renderDatesOnFlatlist(doctorData.slotData, selectedDate)}

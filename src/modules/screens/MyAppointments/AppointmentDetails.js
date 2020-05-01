@@ -315,7 +315,7 @@ class AppointmentDetails extends Component {
                       <Row>
                         <Col size={9}>
                           <Text style={styles.Textname} >{(doctorData && doctorData.prefix != undefined ? doctorData.prefix + ' ' : '') + (getName(data.doctorInfo)) + ' '}</Text>
-                          <Text note style={{ fontSize: 13, fontFamily: 'OpenSans', fontWeight: 'normal' }}>{education}</Text>
+                          <Text note style={{ fontSize: 13, fontFamily: 'OpenSans', fontWeight: 'normal', color:'#4c4c4c' }}>{education}</Text>
                           <Text style={styles.specialistTextStyle} >{specialist} </Text>
                         </Col>
                         <Col size={1}>
@@ -454,7 +454,7 @@ class AppointmentDetails extends Component {
                             : null}
                           {data.appointment_status == 'CANCELED' ?
                             <Text style={styles.innerSubText1}>
-                              {data.status_updated_by.toLowerCase() === 'user' ? 'Canceled by  You' : ' Canceled by doctor'}</Text>
+                              {data.status_updated_by.toLowerCase() === 'user' ? 'Canceled by You' : ' Canceled by doctor'}</Text>
                             : null}
                           {/* <Text style={styles.innerSubText1}>{data.appointment_status=='PROPOSED_NEW_TIME'?'Reschedule by '+data.status_updated_by.toLowerCase():'Canceled by '+data.status_updated_by.toLowerCase()}</Text> */}
                           <Text note style={styles.subTextInner1}>{data.status_update_reason}</Text>
@@ -479,7 +479,7 @@ class AppointmentDetails extends Component {
                       <Icon name="ios-medkit" style={{ fontSize: 20, }} />
                     </Col>
                     <Col style={{ width: '92%', paddingTop: 5 }}>
-                      <Text style={styles.innerSubText}>Diesease</Text>
+                      <Text style={styles.innerSubText}>Disease</Text>
                       <Text note style={styles.subTextInner1}>{data.disease_description || ''}</Text>
                     </Col>
                   </Row>
@@ -544,7 +544,7 @@ class AppointmentDetails extends Component {
                         <Icon name="ios-book" style={{ fontSize: 20, }} />
                       </Col>
                       <Col style={{ width: '92%', paddingTop: 5 }}>
-                        <Text style={styles.innerSubText}>Languages speaks By Doctor</Text>
+                        <Text style={styles.innerSubText}>Doctor spoken language</Text>
                         <Text note style={styles.subTextInner1}>{doctorData.language && doctorData.language.toString()}</Text>
                       </Col>
                     </Row> : null}
@@ -833,7 +833,8 @@ const styles = StyleSheet.create({
   subText2: {
     fontSize: 13,
     fontFamily: 'OpenSans',
-    marginLeft: 5
+    marginLeft: 5,
+    color:'#4c4c4c'
   },
   subText3: {
     fontSize: 12,
@@ -907,7 +908,8 @@ const styles = StyleSheet.create({
   subTextInner1: {
     fontSize: 12,
     fontFamily: 'OpenSans',
-    marginBottom: 5
+    marginBottom: 5,
+     color:'#4c4c4c'
   },
   subTextInner2: {
     fontSize: 10,
