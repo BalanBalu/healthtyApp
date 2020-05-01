@@ -3,14 +3,14 @@ import { Container, Content, Text, Toast, Button, Card, Item, List, ListItem, Le
 import { Col, Row, Grid } from 'react-native-easy-grid';
 import { connect } from 'react-redux'
 import { StyleSheet, TouchableOpacity, View, FlatList, AsyncStorage, Dimensions, ScrollView, Image } from 'react-native';
-import StarRating from 'react-native-star-rating';
 import { searchByLabDetailsService, fetchLabTestAvailabilitySlotsService } from '../../../providers/labTest/basicLabTest.action';
-import { renderLabTestImage, RenderNoSlotsAvailable, RenderListNotFound, enumerateStartToEndDates } from '../labTestCommon';
+import { RenderFavoritesComponent, RenderFavoritesCount, RenderStarRatingCount, RenderPriceDetails, RenderOfferDetails, renderLabTestImage, RenderNoSlotsAvailable, RenderListNotFound, enumerateStartToEndDates } from '../labTestCommon';
 import { Loader } from '../../../../components/ContentLoader';
 import { formatDate, addMoment, getMoment } from '../../../../setup/helpers';
 import styles from '../styles'
 import RenderDates from './RenderDateList';
 import RenderSlots from './RenderSlots';
+import { getWishList4PatientByLabTestService, addFavoritesToLabByUserService, getTotalWishList4LabTestService } from '../../../providers/labTest/labTestBookAppointment.action'
 
 const CALL_AVAILABILITY_SERVICE_BY_NO_OF_IDS_COUNT = 5;
 
@@ -30,11 +30,42 @@ class labSearchList extends Component {
             expandedLabIdToShowSlotsData: [],
             isLoading: false,
             refreshCountOnDateFL: 1,
-            renderRefreshCount: 0
+            renderRefreshCount: 0,
+            isLoggedIn: false,
         }
     }
     async componentDidMount() {
-        this.searchByLabCatAndDetails()
+        const userId = await AsyncStorage.getItem('userId');
+        this.searchByLabCatAndDetails();
+        if (userId) {
+            this.getPatientWishListsByUserId(userId);
+            this.setState({ isLoggedIn: true })
+        }
+    }
+    /* Update Favorites for LabTest by UserId  */
+    addToFavoritesList = async (labId) => {
+        const userId = await AsyncStorage.getItem('userId');
+        const updateResponse = await addFavoritesToLabByUserService(userId, labId);
+        // if (updateResponse)
+        // Toast.show({
+        //     text: updateResponse.message,
+        //     type: "success",
+        //     duration: 3000,
+        // })
+        this.setState({ renderRefreshCount: this.state.renderRefreshCount + 1 });
+    }
+    getPatientWishListsByUserId = (userId) => {
+        try {
+            getWishList4PatientByLabTestService(userId);
+        } catch (Ex) {
+            console.log('Ex is getting on get Wish list details for Patient====>', Ex)
+            return {
+                success: false,
+                statusCode: 500,
+                error: Ex,
+                message: `Exception while getting on WishList for Patient : ${Ex}`
+            }
+        }
     }
     searchByLabCatAndDetails = async () => {
         try {
@@ -45,7 +76,8 @@ class labSearchList extends Component {
             if (labListResponse.success) {
                 const labListData = labListResponse.data;
                 this.totalLabIdsArryBySearched = labListData.map(item => String(item.labInfo.lab_id));
-                await this.setState({ labListData })
+                await this.setState({ labListData });
+                this.getTotalWishList4LabTest(this.totalLabIdsArryBySearched);
             }
         } catch (ex) {
             Toast.show({
@@ -58,6 +90,21 @@ class labSearchList extends Component {
             this.setState({ isLoading: false })
         }
     }
+
+    getTotalWishList4LabTest = async (labIdsArry) => {
+        try {
+            getTotalWishList4LabTestService(labIdsArry);
+        } catch (Ex) {
+            console.log('Ex is getting on get Wish list details for Patient====>', Ex)
+            return {
+                success: false,
+                statusCode: 500,
+                error: Ex,
+                message: `Exception while getting on WishList for Patient : ${Ex}`
+            }
+        }
+    }
+
 
     getLabIdsArrayByInput = labIdFromItem => {
         const findIndexOfLabId = this.totalLabIdsArryBySearched.indexOf(String(labIdFromItem));
@@ -196,8 +243,11 @@ class labSearchList extends Component {
         this.props.navigation.navigate('labConfirmation', { packageDetails })
     }
 
+
     renderLabListCards(item) {
-        const { expandedLabIdToShowSlotsData } = this.state;
+
+        const { LabTestData: { patientWishListLabIds, wishListCountByLabIds } } = this.props;
+        const { expandedLabIdToShowSlotsData, isLoggedIn } = this.state;
         const slotDataObj4Item = this.availableSlotsDataMap.get(String(item.labInfo.lab_id)) || {}
         return (
             <View>
@@ -228,49 +278,26 @@ class labSearchList extends Component {
                                         </Row>
                                     </Col>
                                     <Col style={{ width: '15%' }}>
-                                        <Row>
-                                            <TouchableOpacity>
-                                                <Icon name="heart"
-                                                    style={{ marginLeft: 20, color: '#000', fontSize: 20 }}>
-                                                </Icon>
-                                            </TouchableOpacity>
-                                        </Row>
+                                        <RenderFavoritesComponent
+                                            isLoggedIn={isLoggedIn}
+                                            isEnabledFavorites={patientWishListLabIds.includes(item.labInfo.lab_id)}
+                                            onPressFavoriteIcon={() => this.addToFavoritesList(item.labInfo.lab_id)}
+                                        />
                                     </Col>
                                 </Row>
                                 <Row style={{ marginTop: 10 }}>
-                                    <Col style={{ width: "25%", marginLeft: -10 }}>
-                                        <Text note style={{ fontFamily: 'OpenSans', fontSize: 12, }}> Favourites</Text>
-                                        <Text style={{ fontFamily: 'OpenSans', fontSize: 12, fontWeight: 'bold' }}>{item.Favorites || ''}</Text>
-                                    </Col>
-                                    <Col style={{ width: "25%" }}>
-                                        <Text note style={{ fontFamily: 'OpenSans', fontSize: 12, textAlign: 'center', }}> Rating</Text>
-                                        <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'center' }}>
-                                            <StarRating
-                                                fullStarColor='#FF9500'
-                                                starSize={12}
-                                                width={85}
-                                                containerStyle={{ marginTop: 2 }}
-                                                disabled={true}
-                                                rating={1}
-                                                maxStars={1}
-                                            />
-                                            <Text style={{ fontFamily: 'OpenSans', fontSize: 12, fontWeight: 'bold', marginLeft: 2 }}>0</Text>
-                                        </View>
-                                    </Col>
-                                    <Col style={{ width: "25%" }}>
-                                        <Text note style={{ fontFamily: 'OpenSans', fontSize: 12, }}>Offer</Text>
-                                        <Text style={{ fontFamily: 'OpenSans', fontSize: 12, fontWeight: 'bold', color: 'green' }}>{item.labInfo && item.labInfo.labPriceInfo && item.labInfo.labPriceInfo[0] && item.labInfo.labPriceInfo[0].offer || ''} off</Text>
-                                    </Col>
-                                    <Col style={{ width: "25%", marginLeft: 10 }}>
-                                        <Text note style={{ fontFamily: 'OpenSans', fontSize: 12, textAlign: 'center' }}>Package Amt</Text>
-                                        <Row style={{ justifyContent: 'center' }}>
-                                            <Text style={styles.finalRs}>₹ {item.labInfo && item.labInfo.labPriceInfo && item.labInfo.labPriceInfo[0] && item.labInfo.labPriceInfo[0].price || ''}</Text>
-                                            {/* <Text style={styles.finalRs}>₹ {item.finalAmount || ''}</Text> */}
-                                        </Row>
-                                    </Col>
+                                    <RenderFavoritesCount
+                                        favoritesCount={wishListCountByLabIds[item.labInfo.lab_id]}
+                                    />
+                                    <RenderStarRatingCount
+                                    />
+                                    <RenderOfferDetails
+                                        offerInfo={item.labInfo && item.labInfo.labPriceInfo && item.labInfo.labPriceInfo[0] && item.labInfo.labPriceInfo[0].offer}
+                                    />
+                                    <RenderPriceDetails
+                                        priceInfo={item.labInfo && item.labInfo.labPriceInfo && item.labInfo.labPriceInfo[0] && item.labInfo.labPriceInfo[0].price}
+                                    />
                                 </Row>
-                                {/* <View> */}
-                                {/* <View style={{ borderTopColor: '#090909', borderTopWidth: 0.2, marginTop: 10 }}> */}
                                 <Row  >
                                     <Col style={{ width: "5%" }}>
                                         <Icon name='ios-time' style={{ fontSize: 20, marginTop: 12 }} />
@@ -322,6 +349,8 @@ class labSearchList extends Component {
     }
 
     render() {
+        const { LabTestData: { patientWishListLabIds } } = this.props;
+
         const { labListData, isLoading } = this.state;
         return (
             <Container style={styles.container}>
@@ -372,4 +401,8 @@ class labSearchList extends Component {
     }
 }
 
-export default labSearchList
+const LabTestBookAppointmentState = (state) => ({
+    LabTestData: state.LabTestData
+})
+export default connect(LabTestBookAppointmentState)(labSearchList)
+
