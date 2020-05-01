@@ -338,9 +338,10 @@ class MedicineCheckout extends Component {
     selectedItem(value) {
         if (value == 'HOME_DELIVERY') {
             let selectedAddress = null
-            let medicineTotalAmountwithDeliveryChage = this.state.medicineTotalAmount
+            let medicineTotalAmountwithDeliveryChage = Number(Number(this.state.medicineTotalAmount).toFixed(2))
             if (this.state.deliveryDetails !== null) {
-                medicineTotalAmountwithDeliveryChage = this.state.medicineTotalAmount + this.state.deliveryDetails.delivery_tax + this.state.deliveryDetails.delivery_charges
+                let totalAmount = Number(this.state.medicineTotalAmount) + Number(this.state.deliveryDetails.delivery_tax) + Number(this.state.deliveryDetails.delivery_charges)
+                medicineTotalAmountwithDeliveryChage = Number(Number(totalAmount).toFixed(2))
             }
             if (this.state.deliveryAddressArray.length !== 0) {
                 selectedAddress = this.state.deliveryAddressArray[0]
@@ -360,9 +361,9 @@ class MedicineCheckout extends Component {
         try {
             const { navigation } = this.props;
             if (navigation.state.params) {
-              if (navigation.state.params.hasReloadAddress) {
-            this.clickedHomeDelivery();  // Reload the Reported issues when they reload
-              }
+                if (navigation.state.params.hasReloadAddress) {
+                    this.clickedHomeDelivery();  // Reload the Reported issues when they reload
+                }
             };
 
         } catch (e) {
@@ -578,7 +579,7 @@ class MedicineCheckout extends Component {
                                             {isPrescription === false ?
                                                 <Text style={{ fontFamily: 'OpenSans', fontSize: 10, color: '#8dc63f', textAlign: 'right' }}>{'₹' + (medicineTotalAmountwithDeliveryChage || ' ')} </Text>
                                                 : itemSelected === 'HOME_DELIVERY' ?
-                                                    <Text style={{ fontFamily: 'OpenSans', fontSize: 10, color: '#8dc63f', textAlign: 'right' }}>{ (deliveryDetails != null ? 'Medicine Charges by Pharmacy + ' + (deliveryDetails.delivery_tax + deliveryDetails.delivery_charges) : ' ')} </Text>
+                                                    <Text style={{ fontFamily: 'OpenSans', fontSize: 10, color: '#8dc63f', textAlign: 'right' }}>{(deliveryDetails != null ? 'Medicine Charges by Pharmacy + ' + (deliveryDetails.delivery_tax + deliveryDetails.delivery_charges) : ' ')} </Text>
                                                     : <Text style={{ fontFamily: 'OpenSans', fontSize: 10, color: '#8dc63f', textAlign: 'right' }}>{'Medicine Charges by Pharmacy'} </Text>
                                             }
                                         </Col>
