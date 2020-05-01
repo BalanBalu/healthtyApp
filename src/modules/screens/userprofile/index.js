@@ -157,6 +157,8 @@ class Profile extends Component {
                 });
 
                 function location(locationObj) {
+                    console.log("locationObj", locationObj)
+
                     let placeName = '';
                     let contextData = [];
                     Object.keys(locationObj).forEach(keyEle => {
@@ -173,6 +175,9 @@ class Profile extends Component {
                             case 'city':
                                 obj.id = 'place.123';
                                 break;
+                            case 'post_office_name':
+                                obj.id = 'post_office_name.123';
+                                break
                             case 'district':
                                 obj.id = 'district.123';
                                 break;

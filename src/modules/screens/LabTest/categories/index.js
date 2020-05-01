@@ -6,9 +6,9 @@ import { Col, Row, Grid } from 'react-native-easy-grid';
 import { toDataUrl } from '../../../../setup/helpers';
 import { StyleSheet, Image, TouchableOpacity, View, FlatList } from 'react-native';
 import { MAX_DISTANCE_TO_COVER } from '../../../../setup/config';
-import { connect } from 'react-redux'
 import { getLabTestCateries } from '../../../providers/lab/lab.action';
 import FastImage from 'react-native-fast-image'
+
 class LabCategories extends Component {
   constructor(props) {
     super(props)
