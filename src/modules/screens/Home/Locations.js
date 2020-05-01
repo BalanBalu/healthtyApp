@@ -1,4 +1,4 @@
-import React, { Component } from 'react';
+import React, { PureComponent } from 'react';
 import { Text, Container, Icon, Spinner, Right, Left, List, ListItem, Content } from 'native-base';
 import { Row } from 'react-native-easy-grid';
 import { connect } from 'react-redux'
@@ -7,7 +7,7 @@ import { StyleSheet, View, TouchableOpacity, FlatList } from 'react-native';
 import { store } from '../../../setup/store';
 import { SET_PATIENT_LOCATION_DATA, getLocations, getPharmacyLocations } from '../../providers/bookappointment/bookappointment.action';
 import CurrentLocation from './CurrentLocation';
-class Locations extends Component {
+class Locations extends PureComponent {
     constructor(props) {
         super(props)
         this.state = {

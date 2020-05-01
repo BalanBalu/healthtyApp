@@ -1,11 +1,11 @@
-import React, { Component } from 'react';
+import React, { PureComponent } from 'react';
 import { Text, Container, Icon, Spinner, ListItem, List } from 'native-base';
 import { Row } from 'react-native-easy-grid';
 import { connect } from 'react-redux'
 import { StyleSheet, View, TouchableOpacity, FlatList } from 'react-native';
 
 
-class LocationDetail extends Component {
+class LocationDetail extends PureComponent {
     constructor(props) {
         super(props)
         this.state = {
