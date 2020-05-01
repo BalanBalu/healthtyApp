@@ -55,7 +55,8 @@ async getBasicData() {
  
    render() {
 
-    const { items } = this.props;
+    const { items, menuSubMenus} = this.props;
+    console.log(menuSubMenus);
     const { hasLoggedIn } = this.state;
     this.getBasicData();
     return (
@@ -92,12 +93,44 @@ async getBasicData() {
                </Col>
               </Row> 
           </View>
+          
+
           <List style={{borderBottomWidth:0,}}
+            dataArray={menuSubMenus}
+            renderRow={data => {
+              return ( 
+                <ListItem style={{borderBottomWidth:0, }}
+                small>
+                  <Body style={{borderBottomWidth:0,}}>
+                      <View style={{ marginLeft: -20,  backgroundColor: 'grey', height: 30,  }}>
+                          <Text style={{fontFamily:'OpenSans',fontSize:15, justifyContent: 'center', marginLeft: 10, marginTop: 3 }}>{data.menuName}</Text> 
+                      </View>
+                      
+                      <List style={{borderBottomWidth:0,}}
+                        dataArray={data.subMenus}
+                        renderRow={data => {
+                        return (
+                           <ListItem style={{borderBottomWidth:0,   backgroundColor: '#FFF'  }}
+                            small
+                            onPress={() => this.props.navigation.navigate(data.routeName)}>
+                            <Image square source={data.icon} 
+                              style={{ height: 20, width: 20,}}
+                            />  
+                             <Body style={{borderBottomWidth:0,}}>
+                              <Text style={{fontFamily:'OpenSans',fontSize:15 }}>{data.name}</Text> 
+                          </Body> 
+                        </ListItem>
+                        );
+                      }}/>
+                  </Body> 
+            </ListItem> )
+            }}/>  
+          {/* <List style={{borderBottomWidth:0,}}
             dataArray={items}
             renderRow={data => {
               return (
-                <ListItem style={{borderBottomWidth:0, }}
-                small
+                <ListItem style={{borderBottomWidth:0 }}
+                  small
                   onPress={() => this.props.navigation.navigate(data.routeName)}>
                           <Image square source={DragwerLogos[data.key]} 
                           style={{ height: 20, width: 20,}}
@@ -108,7 +141,7 @@ async getBasicData() {
                 </ListItem>
               );
             }}
-          />
+          /> */}
             
            <ListItem avatar>
               <Icon name='ios-power' style={{fontSize:15,color:'#7D4ac1',marginLeft:5

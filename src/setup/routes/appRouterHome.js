@@ -741,48 +741,118 @@ const HomeStack = createStackNavigator({
   })
 
 
+const drawerNavigatorRoutes = {
+    Home: {
+      screen: HomeStack,
+      routeName: 'Home'
+    },
+    'Video and Chat Service': {
+      screen: AvailableDoctors4Video,
+      routeName: 'Video and Chat Service'
+    },
+    Medicines: {
+      screen: PharmacyHome,
+      routeName: 'Medicines'
+    },
+    "My Appointments": {
+      screen: MyAppoinmentList,
+      routeName: 'My Appointments'
+    },
+    "My Chats": {
+      screen: MyChats,
+      routeName: 'My Chats'
+      
+    },
+    'My Video Consultations': {
+      screen: VideoConsultaions,
+      routeName: 'My Video Consultations'
+    },
+    'My Lab Test Appointments': {
+      screen: LabAppointmentList,
+      routeName: 'My Lab Test Appointments'
+    },
+    "Medicine Orders": {
+      screen: MyOrdersList,
+      routeName: 'Medicine Orders'
+    },
+    Reminder: {
+      screen: Reminder,
+      routeName: 'Reminder'
+    },
+    "Blood Donors": {
+      screen: BloodDonersList,
+      routeName: 'Blood Donors'
+    }
+}
 
-
-const DrawerNavigator = createDrawerNavigator({
-  Home: {
-    screen: HomeStack,
-  },
-  'Video and Chat Service': {
-    screen: AvailableDoctors4Video
-  },
-  Medicines: {
-    screen: PharmacyHome,
-  },
-  "My Appointments": {
-    screen: MyAppoinmentList
-  },
-  "My Chats": {
-    screen: MyChats
-  },
-  'My Video Consultations': {
-    screen: VideoConsultaions
-  },
-  'My Lab Test Appointments': {
-    screen: LabAppointmentList
-  },
-  "Medicine Orders": {
-    screen: MyOrdersList
-  },
-  Reminder: {
-    screen: Reminder
-  },
-  "Blood Donors": {
-    screen: BloodDonersList,
-  },
-/* 
-  'CORONA Status': {
-     screen: CoronaDisease
-  },
-*/ 
-},
-  {
+const DrawerNavigator = createDrawerNavigator(drawerNavigatorRoutes, {
     overlayColor: 'rgba(0, 0, 0, 0.7)',
-    contentComponent: props => <SideBar {...props} />
+    contentComponent: props => <SideBar 
+      menuSubMenus={[ 
+        {
+          menuName: 'Home',
+          routeName: drawerNavigatorRoutes.Home.routeName,
+          icon: require('../../../assets/images/drawerIcons/Home.png'),
+          subMenus: [ ]
+        },
+        {
+          menuName: 'Services',
+          subMenus: [ 
+            { 
+              name: 'Video and Chat Service',
+              routeName: drawerNavigatorRoutes["Video and Chat Service"].routeName,
+              icon: require('../../../assets/images/drawerIcons/Appointments.png'),
+
+            } , 
+            { 
+              name : 'Medicines',
+              routeName: drawerNavigatorRoutes.Medicines.routeName,
+              icon:  require('../../../assets/images/drawerIcons/Orders.png'),
+
+            }, 
+            {
+              name: 'Reminder',
+              routeName: drawerNavigatorRoutes.Reminder.routeName,
+              icon:  require('../../../assets/images/drawerIcons/Reminder.png'),
+            }, 
+            { 
+              name: 'Blood Donors',
+              routeName: drawerNavigatorRoutes["Blood Donors"].routeName,
+              icon: require('../../../assets/images/drawerIcons/Blooddonars.png'),
+            } 
+        ]
+        },
+        {
+          menuName: 'Orders and Consultations',
+          subMenus: [ 
+            {
+              name: 'My Appointments',
+              routeName: drawerNavigatorRoutes["My Appointments"].routeName,
+              icon: require('../../../assets/images/drawerIcons/Appointments.png'),
+            }, 
+            { 
+              name:  'My Chat Consultations',
+              routeName: drawerNavigatorRoutes["My Chats"].routeName,
+              icon: require('../../../assets/images/drawerIcons/Chat.png'),
+            },
+            { 
+              name:  'My Video Consultations',
+              routeName: drawerNavigatorRoutes["My Video Consultations"].routeName,
+              icon: require('../../../assets/images/drawerIcons/Chat.png'),
+            }, 
+            {
+              name: 'My Lab Test Appointments',
+              routeName: drawerNavigatorRoutes["My Lab Test Appointments"].routeName,
+              icon: require('../../../assets/images/drawerIcons/Appointments.png'),
+            },
+            { 
+              name: 'Medicine Orders',
+              routeName: drawerNavigatorRoutes["Medicine Orders"].routeName,
+              icon: require('../../../assets/images/drawerIcons/Orders.png'),
+            } ]
+        }
+      ]}
+      {...props} />
   },
   {
     initialRouteName: 'Home'
