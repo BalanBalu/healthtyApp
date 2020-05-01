@@ -35,7 +35,7 @@ import { Col, Grid, Row } from 'react-native-easy-grid';
 import { logout } from '../../modules/providers/auth/auth.actions';
 import termsAndConditions from '../../components/termsAndConditions'
 
-import { TouchableOpacity, Image, Text, Platform, TouchableNativeFeedback } from 'react-native'
+import { TouchableOpacity, Image, Text, Platform, TouchableNativeFeedback, Picker } from 'react-native'
 
 import menuIcon from '../../../assets/images/menu.png';
 import BookAppoinment from "../../modules/screens/bookappoinment";
@@ -88,6 +88,9 @@ import labConfirmation from '../../modules/screens/LabTest/labConfirmation/index
 import LabAppointmentList from '../../modules/screens/LabTest/Appointment/LabAppointmentList'
 import LabAppointmentInfo from '../../modules/screens/LabTest/Appointment/LabAppoinmentInfo'
 import LabCancelAppointment from '../../modules/screens/LabTest/Appointment/LabCancelAppointment'
+import { Modal } from 'react-native-paper';
+import { IS_IOS } from '../config';
+import { setI18nConfig } from '../translator.helper';
 
 const AuthRoutes = {
   login: {
@@ -139,6 +142,7 @@ const HomeStack = createStackNavigator({
               source={menuIcon}
             />
           </TouchableOpacity>
+          
           <Row style={{ marginBottom: 5, marginTop: 5, marginLeft: 5 }}>
             <Col size={10}>
               <TouchableOpacity onPress={() => navigation.navigate('Locations')}>
@@ -156,8 +160,8 @@ const HomeStack = createStackNavigator({
         </Row>
       ),
       headerRight: (
-        <Grid style={{ justifyContent: 'center', alignItems: 'center' }}>
-          <Col>
+        <Grid style={{ }}>
+          <Row>
             <TouchableOpacity onPress={() => { navigation.navigate('Notification') }} >
               <View>
                 <Icon name="notifications" style={{ color: '#fff', marginRight: 15, fontFamily: 'opensans-semibold' }}></Icon>
@@ -167,7 +171,15 @@ const HomeStack = createStackNavigator({
                 {/* <Badge /> */}
               </View>
             </TouchableOpacity>
-          </Col>
+
+            <TouchableOpacity onPress={() => { setI18nConfig('en' ) }} >
+              <View>
+                <Icon name={IS_IOS ? 'ios-more' : "md-more"} style={{ color: '#fff', marginRight: 15, fontFamily: 'opensans-semibold' }}></Icon>
+              </View>
+            </TouchableOpacity>
+
+                      
+          </Row>
 
         </Grid>
       ),
