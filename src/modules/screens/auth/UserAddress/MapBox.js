@@ -25,7 +25,7 @@ export default class MapBox extends React.Component {
             loading: false,
             coordinates: null,
             center: [],
-            zoom: 12,
+            zoom: 15,
             isFinisedLoading: false,
             locationFullText: null,
             showAllAddressFields: false,
@@ -123,7 +123,7 @@ export default class MapBox extends React.Component {
                 await this.setState({
                     center: origin_coordinates,
                     coordinates: origin_coordinates,
-                    zoom: 12,
+                    zoom: 15,
                     isFinisedLoading: true
                 })
                 this.updtateLocation(origin_coordinates);
