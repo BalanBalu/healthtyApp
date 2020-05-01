@@ -1,4 +1,4 @@
-import React, { Component } from 'react';
+import React, { PureComponent } from 'react';
 import {
   Container,
   Content, Text,
@@ -47,7 +47,7 @@ selectedSlotFeeWithoutOffer = null;
 showedFee = null;
 fields = "first_name,last_name,prefix,professional_statement,gender,specialist,education,language,gender_preference,experience,profile_image,hospital";
 
-class BookAppoinment extends Component {
+class BookAppoinment extends PureComponent {
   processedAvailabilityDates = [];
 
   constructor(props) {
@@ -112,8 +112,8 @@ class BookAppoinment extends Component {
         doctorId: doctorId,
         include_all_hospitals: true
       }]
-      await this.setState( { doctorIdWithHosId: docIdWithHosId })
-     
+      await this.setState({ doctorIdWithHosId: docIdWithHosId })
+
       await this.getAvailabilitySlots(docIdWithHosId, startDateMoment, endDateMoment);
       await this.getLocationDataBySelectedSlot(this.state.doctorData.slotData[this.state.selectedDate], this.state.doctorData.slotData, this.state.selectedSlotIndex);
     } else {
@@ -180,7 +180,7 @@ class BookAppoinment extends Component {
       }
       let resultData = await fetchAvailabilitySlots(fromAppointmentDoctorId, totalSlotsInWeek);
       console.log('resultData', resultData);
-      if (resultData.success === true && resultData.data.length > 0 ) {
+      if (resultData.success === true && resultData.data.length > 0) {
         for (let docCount = 0; docCount < resultData.data.length; docCount++) {
           let doctorSlotData = resultData.data[docCount];
           if (this.processedDoctorDetailsAndSlotData) {
@@ -205,7 +205,7 @@ class BookAppoinment extends Component {
           data: this.processedDoctorDetailsAndSlotData
         })
         console.log(this.processedDoctorDetailsAndSlotData);
-        await this.setState({ doctorData: this.processedDoctorDetailsAndSlotData || { } });
+        await this.setState({ doctorData: this.processedDoctorDetailsAndSlotData || {} });
       } else {
         console.log(obj);
         let doctorDetailsData = this.state.doctorDetails; //this.doctorDetailsMap.get(doctorSlotData.doctorId)
@@ -214,7 +214,7 @@ class BookAppoinment extends Component {
           slotData: {}
         }
         this.processedDoctorDetailsAndSlotData = obj;
-       store.dispatch({
+        store.dispatch({
           type: SET_SINGLE_DOCTOR_DATA,
           data: this.processedDoctorDetailsAndSlotData
         })
@@ -253,7 +253,7 @@ class BookAppoinment extends Component {
   }
   /*Get doctor Qualification details*/
   getdoctorDetails = async (doctorId) => {
-    let resultDoctorDetails = await getMultipleDoctorDetails(doctorId, fields).catch(ex => { console.log('Exception on Getting Doctor Details'); return { success: false, data : [] } } );
+    let resultDoctorDetails = await getMultipleDoctorDetails(doctorId, fields).catch(ex => { console.log('Exception on Getting Doctor Details'); return { success: false, data: [] } });
     if (resultDoctorDetails.success) {
       return resultDoctorDetails;
     }
@@ -265,11 +265,11 @@ class BookAppoinment extends Component {
   noAvailableSlots() {
     return (
       <Row style={{ justifyContent: 'center', marginTop: 20 }}>
-                <Button disabled style={{ alignItems: 'center', borderRadius: 10, backgroundColor: '#6e5c7b' }}>
-                    <Text>No Slots Available</Text>
-                    {/*nextAvailableDate ? <Text style={{ color: '#fff', fontFamily: 'OpenSans', fontWeight: 'bold', fontSize: 15 }}>Next Availability On {nextAvailableDate}</Text> : <Text style={{ color: '#fff', fontFamily: 'OpenSans', fontWeight: 'bold', fontSize: 16 }}> No Availablity for Next 7 Days</Text>*/}
-                </Button>
-            </Row>
+        <Button disabled style={{ alignItems: 'center', borderRadius: 10, backgroundColor: '#6e5c7b' }}>
+          <Text>No Slots Available</Text>
+          {/*nextAvailableDate ? <Text style={{ color: '#fff', fontFamily: 'OpenSans', fontWeight: 'bold', fontSize: 15 }}>Next Availability On {nextAvailableDate}</Text> : <Text style={{ color: '#fff', fontFamily: 'OpenSans', fontWeight: 'bold', fontSize: 16 }}> No Availablity for Next 7 Days</Text>*/}
+        </Button>
+      </Row>
     )
   }
 
@@ -456,19 +456,19 @@ class BookAppoinment extends Component {
               <Grid >
                 <Row >
                   <Col style={{ width: '5%', marginLeft: 20, marginTop: 10 }}>
-                  <TouchableOpacity onPress={() => this.props.navigation.navigate("ImageView", { passImage: renderDoctorImage(doctorData), title: 'Profile photo' })}>
-                    <Thumbnail square source={renderDoctorImage(doctorData)} style={{ height: 60, width: 60,borderRadius:60/2 }} />
+                    <TouchableOpacity onPress={() => this.props.navigation.navigate("ImageView", { passImage: renderDoctorImage(doctorData), title: 'Profile photo' })}>
+                      <Thumbnail square source={renderDoctorImage(doctorData)} style={{ height: 60, width: 60, borderRadius: 60 / 2 }} />
                     </TouchableOpacity>
                   </Col>
                   <Col style={{ width: '78%' }}>
                     <Row style={{ marginLeft: 55, marginTop: 10 }}>
                       <Col size={9}>
-                      <Text style={{ fontFamily: 'OpenSans', fontSize: 12, fontWeight: 'bold' }}>{(doctorData.prefix ? doctorData.prefix + '. ' : '') + (doctorData.first_name || '') + ' ' + (doctorData.last_name || '')}</Text>
-                      <Text note style={{ fontFamily: 'OpenSans',fontSize: 11,marginTop:5 }}>{(getDoctorEducation(doctorData.education)) + ' ' + getDoctorSpecialist(doctorData.specialist)}</Text>
+                        <Text style={{ fontFamily: 'OpenSans', fontSize: 12, fontWeight: 'bold' }}>{(doctorData.prefix ? doctorData.prefix + '. ' : '') + (doctorData.first_name || '') + ' ' + (doctorData.last_name || '')}</Text>
+                        <Text note style={{ fontFamily: 'OpenSans', fontSize: 11, marginTop: 5 }}>{(getDoctorEducation(doctorData.education)) + ' ' + getDoctorSpecialist(doctorData.specialist)}</Text>
                       </Col>
                       <Col size={1}>
                       </Col>
-                    </Row>  
+                    </Row>
                   </Col>
                   <Col style={{ width: '17%' }}>
 
@@ -508,7 +508,7 @@ class BookAppoinment extends Component {
                     <Text note style={{ fontFamily: 'OpenSans', fontSize: 12, textAlign: 'center' }}> Favourite</Text>
                     <Text style={{ fontFamily: 'OpenSans', fontSize: 12, fontWeight: 'bold', textAlign: 'center' }}> {favouriteListCountByDoctorIds[doctorData.doctor_id] ? favouriteListCountByDoctorIds[doctorData.doctor_id] : 0}</Text>
                   </Col>
-                  <Col style={{ width: "25%", marginTop: 15,}}>
+                  <Col style={{ width: "25%", marginTop: 15, }}>
                     <Text note style={{ fontFamily: 'OpenSans', fontSize: 12, textAlign: 'center' }}> Fees</Text>
                     <Text style={{ fontFamily: 'OpenSans', fontSize: 12, fontWeight: 'bold', textAlign: 'center', marginLeft: 10 }}>{'\u20B9'}{this.selectedSlotFee}{' '}
 
@@ -572,7 +572,7 @@ class BookAppoinment extends Component {
                   <Row style={{ marginTop: 10 }}>
                     <Text style={{ fontSize: 13, fontFamily: 'OpenSans' }}>Choose appointment date and time</Text>
                   </Row>
-                
+
                   {this.renderDatesOnFlatlist(doctorData.slotData, selectedDate)}
                   {
                     doctorData.slotData[selectedDate] !== undefined ?
@@ -588,8 +588,8 @@ class BookAppoinment extends Component {
                       <Col style={{ width: '40%' }}>
                         <Text style={{ marginTop: 2, marginBottom: 2, color: '#000', fontSize: 12, fontFamily: 'OpenSans' }}>{selectedSlotItem ? formatDate(selectedSlotItem.slotStartDateAndTime, 'ddd DD MMM, h:mm a') : null}</Text>
                       </Col>
-                        <Col style={{ width: '35%' }}></Col>
-                        <Col style={{ width: '25%' }}></Col>
+                      <Col style={{ width: '35%' }}></Col>
+                      <Col style={{ width: '25%' }}></Col>
                     </Row>
                   </View>
                 </View>
@@ -599,7 +599,7 @@ class BookAppoinment extends Component {
                 {doctorData.awards ?
                   <View style={{ marginLeft: 5, marginRight: 5, borderTopColor: 'gray', borderTopWidth: 0.7, marginBottom: 5 }}>
                     <Row style={{ marginTop: 10 }}>
-                      <Icon name='ios-medkit' style={{ fontSize: 20,color:'gray'}} />
+                      <Icon name='ios-medkit' style={{ fontSize: 20, color: 'gray' }} />
                       <Text style={{ fontFamily: 'OpenSans', fontSize: 13, fontWeight: 'bold', marginLeft: 10, marginTop: 1 }}>Awards</Text>
                     </Row>
                     <FlatList
@@ -612,7 +612,7 @@ class BookAppoinment extends Component {
 
                 <View style={{ marginLeft: 5, marginRight: 5, borderTopColor: 'gray', borderTopWidth: 1, }}>
                   <Row style={{ marginTop: 10 }}>
-                    <Icon name='ios-medkit' style={{ fontSize: 20,color:'gray' }} />
+                    <Icon name='ios-medkit' style={{ fontSize: 20, color: 'gray' }} />
                     <Text style={{ fontFamily: 'OpenSans', fontSize: 13, fontWeight: 'bold', marginLeft: 10, marginTop: 1 }}>Language Spoken</Text>
                   </Row>
 
@@ -633,7 +633,7 @@ class BookAppoinment extends Component {
 
                 <View style={{ marginLeft: 5, marginRight: 5, borderTopColor: 'gray', borderTopWidth: 1, marginTop: 10 }}>
                   <Row style={{ marginTop: 10 }}>
-                    <Icon name='ios-medkit' style={{ fontSize: 20,color:'gray' }} />
+                    <Icon name='ios-medkit' style={{ fontSize: 20, color: 'gray' }} />
                     <Text style={{ fontFamily: 'OpenSans', fontSize: 13, fontWeight: 'bold', marginLeft: 10, marginTop: 1 }}>Services</Text>
                   </Row>
                   <FlatList
@@ -690,7 +690,7 @@ class BookAppoinment extends Component {
                       keyExtractor={(item, index) => index.toString()}
                       renderItem={({ item }) =>
                         <RenderReviewData
-                        navigation={this.props.navigation}
+                          navigation={this.props.navigation}
                           item={item}
                           userId={this.state.userId}
                           refreshCount={() => this.setState({ reviewRefreshCount: this.state.reviewRefreshCount + 1 })}
@@ -762,8 +762,8 @@ class BookAppoinment extends Component {
           }
         }}
         renderItem={({ item }) =>
-          <Col style={{justifyContent: 'center' }}>
-            <TouchableOpacity style={[styles.availabilityBG, selectedDate === item ? { backgroundColor: '#775DA3', alignItems: 'center' } : {  backgroundColor: '#ced6e0', alignItems: 'center'}]}
+          <Col style={{ justifyContent: 'center' }}>
+            <TouchableOpacity style={[styles.availabilityBG, selectedDate === item ? { backgroundColor: '#775DA3', alignItems: 'center' } : { backgroundColor: '#ced6e0', alignItems: 'center' }]}
               onPress={() => this.onDateChanged(item)}>
               <Text style={[{ textAlign: 'center', fontSize: 12, fontFamily: 'OpenSans' }, selectedDate === item ? { color: '#fff' } : { color: '#000' }]}>{formatDate(moment(item), 'ddd, DD MMM')}</Text>
               <Text style={[{ textAlign: 'center', fontSize: 10, fontFamily: 'OpenSans', lineHeight: 11 }, selectedDate === item ? { color: '#fff' } : { color: '#000' }]}>{slotData[item] ? slotData[item].reduce(reducer, 0) + ' Slots Available' : 'No Slots Available'}</Text>
@@ -797,14 +797,14 @@ const styles = StyleSheet.create({
   },
   availabilityBG: {
     textAlign: 'center',
-        borderColor: '#000',
-        marginTop: 10,
-        height: 50,
-        borderRadius: 5,
-        justifyContent: 'center',
-        marginRight: 5,
-        paddingLeft: 5,
-        paddingRight: 5
+    borderColor: '#000',
+    marginTop: 10,
+    height: 50,
+    borderRadius: 5,
+    justifyContent: 'center',
+    marginRight: 5,
+    paddingLeft: 5,
+    paddingRight: 5
   },
 
   logo: {

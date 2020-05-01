@@ -1,4 +1,4 @@
-import React, { Component } from 'react';
+import React, { PureComponent } from 'react';
 import {
   Container, Content, Text, Button, Item, Card, List, ListItem, Left, Right,
   Thumbnail, Body, Icon, Toast, View, CardItem
@@ -17,7 +17,7 @@ import { renderDoctorImage, RenderHospitalAddress, getAllEducation, getAllSpecia
 
 const hasReviewButtonShow = true
 
-class AppointmentDetails extends Component {
+class AppointmentDetails extends PureComponent {
   constructor(props) {
     super(props)
 
@@ -315,7 +315,7 @@ class AppointmentDetails extends Component {
                       <Row>
                         <Col size={9}>
                           <Text style={styles.Textname} >{(doctorData && doctorData.prefix != undefined ? doctorData.prefix + ' ' : '') + (getName(data.doctorInfo)) + ' '}</Text>
-                          <Text note style={{ fontSize: 13, fontFamily: 'OpenSans', fontWeight: 'normal', color:'#4c4c4c' }}>{education}</Text>
+                          <Text note style={{ fontSize: 13, fontFamily: 'OpenSans', fontWeight: 'normal', color: '#4c4c4c' }}>{education}</Text>
                           <Text style={styles.specialistTextStyle} >{specialist} </Text>
                         </Col>
                         <Col size={1}>
@@ -556,7 +556,7 @@ class AppointmentDetails extends Component {
                       <Text style={styles.innerSubText}>Payment Report</Text>
                       {reportData != null ?
                         <View style={{ borderRadius: 5, borderColor: 'grey', borderWidth: 0.5, padding: 5 }} >
-                          <TouchableOpacity onPress={() => { this.props.navigation.navigate('ReportDetails', { reportedId: data._id ,serviceType: 'appointment'}) }}>
+                          <TouchableOpacity onPress={() => { this.props.navigation.navigate('ReportDetails', { reportedId: data._id, serviceType: 'appointment' }) }}>
                             <Text note style={[styles.subTextInner2, { marginLeft: 10 }]}>"You have raised Report for this appointment"</Text>
                             <Row>
                               <Col size={9}>
@@ -834,7 +834,7 @@ const styles = StyleSheet.create({
     fontSize: 13,
     fontFamily: 'OpenSans',
     marginLeft: 5,
-    color:'#4c4c4c'
+    color: '#4c4c4c'
   },
   subText3: {
     fontSize: 12,
@@ -909,7 +909,7 @@ const styles = StyleSheet.create({
     fontSize: 12,
     fontFamily: 'OpenSans',
     marginBottom: 5,
-     color:'#4c4c4c'
+    color: '#4c4c4c'
   },
   subTextInner2: {
     fontSize: 10,
