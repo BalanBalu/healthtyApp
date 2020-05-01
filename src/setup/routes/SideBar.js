@@ -56,7 +56,6 @@ async getBasicData() {
    render() {
 
     const { items, menuSubMenus} = this.props;
-    console.log(menuSubMenus);
     const { hasLoggedIn } = this.state;
     this.getBasicData();
     return (
@@ -125,24 +124,7 @@ async getBasicData() {
                   </Body> 
             </ListItem> )
             }}/>  
-          {/* <List style={{borderBottomWidth:0,}}
-            dataArray={items}
-            renderRow={data => {
-              return (
-                <ListItem style={{borderBottomWidth:0 }}
-                  small
-                  onPress={() => this.props.navigation.navigate(data.routeName)}>
-                          <Image square source={DragwerLogos[data.key]} 
-                          style={{ height: 20, width: 20,}}
-                            />  
-                             <Body style={{borderBottomWidth:0,}}>
-                          <Text style={{fontFamily:'OpenSans',fontSize:15,marginLeft:20}}>{data.key}</Text> 
-                          </Body> 
-                </ListItem>
-              );
-            }}
-          /> */}
-            
+          
            <ListItem avatar>
               <Icon name='ios-power' style={{fontSize:15,color:'#7D4ac1',marginLeft:5
             }}/>
