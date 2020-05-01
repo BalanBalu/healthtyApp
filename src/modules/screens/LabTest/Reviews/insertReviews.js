@@ -6,9 +6,6 @@ import {
     Container, Header, Title, Left, Right, Body, Button, Card, Toast, CardItem, Row, Grid, View, Col,
     Text, Thumbnail, Content, CheckBox, Item, Input
 } from 'native-base';
-import { Checkbox } from 'react-native-paper';
-//import {ScrollView} from 'react-native-gesture-handler';
-//import Icon from 'react-native-vector-icons/FontAwesome';
 import { insertReviews } from '../../../providers/lab/lab.action'
 import { formatDate } from '../../../../setup/helpers';
 

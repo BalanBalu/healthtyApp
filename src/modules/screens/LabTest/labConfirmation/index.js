@@ -3,7 +3,7 @@ import { Container, Content, Text, Button, Toast, Item, List, ListItem, Card, In
 import { Col, Row, Grid } from 'react-native-easy-grid';
 import { StyleSheet, Image, AsyncStorage, TouchableOpacity, Platform } from 'react-native';
 import { FlatList } from 'react-native-gesture-handler';
-import { RadioButton, Checkbox } from 'react-native-paper';
+import { RadioButton } from 'react-native-paper';
 import { NavigationEvents } from 'react-navigation';
 import { fetchUserProfile } from '../../../providers/profile/profile.action';
 import { dateDiff } from '../../../../setup/helpers';

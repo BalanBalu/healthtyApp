@@ -6,7 +6,6 @@ import {
   Container, Header, Title, Left, Right, Body, Button, Card, Toast, CardItem, Row, Grid, View, Col,
   Text, Thumbnail, Content, CheckBox, Item, Input
 } from 'native-base';
-import { Checkbox } from 'react-native-paper';
 //import {ScrollView} from 'react-native-gesture-handler';
 //import Icon from 'react-native-vector-icons/FontAwesome';
 import { addReview } from '../../providers/bookappointment/bookappointment.action'
@@ -186,17 +185,17 @@ export class InsertReview extends Component {
               <Row style={{ marginTop: 20, marginLeft: 14, marginRight: 20 }}>
                 <Col style={{ flexDirection: 'row', width: '45%', alignItems: "flex-start", justifyContent: 'flex-start',alignItems:'center' }}>
                      <CheckBox style={{borderRadius:5}}
-                                               status={isAnonymous ? true : false}
-                                               checked={this.state.isAnonymous}
-                                               onPress={() => { this.setState({ isAnonymous: !isAnonymous }); }}
-                                               />
+                              status={isAnonymous ? true : false}
+                              checked={this.state.isAnonymous}
+                              onPress={() => { this.setState({ isAnonymous: !isAnonymous }); }}
+                    />
                   <Text style={{ color: '#3C98EC',  fontSize: 12,marginLeft:20 }}>Anonymous</Text>
                 </Col>
                 <Col style={{ flexDirection: 'row', width: '55%', alignItems: "flex-start", justifyContent: 'flex-start',alignItems:'center' }}>
                   <CheckBox  style={{borderRadius:5}}
-                                               status={isDoctorRecommended ? true : false}
-                                               checked={this.state.isDoctorRecommended}
-                                               onPress={() => { this.setState({ isDoctorRecommended: !isDoctorRecommended }); }}
+                      status={isDoctorRecommended ? true : false}
+                      checked={this.state.isDoctorRecommended}
+                      onPress={() => { this.setState({ isDoctorRecommended: !isDoctorRecommended }); }}
                                                />
                   <Text style={{ color: '#3C98EC', fontSize: 12,marginLeft:20  }}>Recommend this Doctor</Text>
                 </Col>

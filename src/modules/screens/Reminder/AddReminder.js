@@ -2,14 +2,12 @@
 import { Container, Content, View, Text, Item, Card, Spinner, Picker, Icon, Radio, Row, Col, Form, Button, Input, Grid, Toast, Switch } from 'native-base';
 import { StyleSheet, TextInput, TouchableOpacity, ScrollView, Image, AsyncStorage, Right, Dimensions } from 'react-native'
 import { FlatList } from 'react-native-gesture-handler';
-import Autocomplete from '../../../components/Autocomplete'
-import { RadioButton } from 'react-native-paper';
+
 import DateTimePicker from 'react-native-modal-datetime-picker';
 import { formatDate } from "../../../setup/helpers";
 import moment from 'moment';
 import { addReminderdata, getAllMedicineDataBySuggestion, addReminderOnProp, sheudleNotificationForAddReminders } from '../../providers/reminder/reminder.action.js';
 import { IS_ANDROID, IS_IOS } from '../../../setup/config';
-var { width, height } = Dimensions.get('window');
 const POSSIBLE_PAGE_CONTENT = {
   MEDICINE_CONTENT: 'MEDCINE_CONTENT',
   DATE_CONTENT: 'DATE_CONTENT',

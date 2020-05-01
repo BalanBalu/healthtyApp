@@ -8,7 +8,6 @@ import { acceptNumbersOnly } from '../../common';
 import { connect } from 'react-redux'
 import { StyleSheet, Image, View, TouchableOpacity, ImageBackground } from 'react-native';
 import styles from '../../screens/auth/styles';
-import { RadioButton,  } from 'react-native-paper';
 import Spinner from '../../../components/Spinner'
 const mainBg = require('../../../../assets/images/MainBg.jpg')
 

@@ -7,8 +7,6 @@ import { NavigationEvents } from 'react-navigation';
 import { fetchUserProfile, getCurrentVersion } from '../../../providers/profile/profile.action';
 import { userFiledsUpdate, logout } from '../../../providers/auth/auth.actions';
 import Spinner from '../../../../components/Spinner';
-import { formatDate } from '../../../../setup/helpers';
-import { RadioButton, Checkbox } from 'react-native-paper';
 import { getAddress } from '../../../common'
 import { SERVICE_TYPES, BASIC_DEFAULT, MAX_DISTANCE_TO_COVER } from '../../../../setup/config'
 import { hasLoggedIn } from '../../../providers/auth/auth.actions';
@@ -417,8 +415,7 @@ class MedicineCheckout extends Component {
                             visible={isLoading} /> :
                         this.state.medicineDetails.length != 0 ?
                             <View>
-                                {/* <RadioButton.Group onValueChange={value => this.selectedItem(value)}
-                                    value={itemSelected}  > */}
+                                
                                     <View style={{ backgroundColor: '#fff', padding: 10 }}>
                                         <Row>
                                             <Col size={5}>
@@ -496,7 +493,7 @@ class MedicineCheckout extends Component {
                                                 </Col>
                                             </Row>
                                         </View> : null}
-                                {/* </RadioButton.Group> */}
+                              
 
 
                                 {itemSelected === 'STORE_PICKUP' ?
