@@ -3,7 +3,6 @@ import { Container, Content, Text, Button, FooterTab, Card, Footer, Item, Icon, 
 import { Col, Row, Grid } from 'react-native-easy-grid';
 import { StyleSheet, Image, View, AsyncStorage, TextInput } from 'react-native';
 import SectionedMultiSelect from 'react-native-sectioned-multi-select';
-import { RadioButton, Checkbox } from 'react-native-paper';
 import { getAvailableNetBanking, getAvailableWallet, luhnCheck, getPayCardType } from '../../../setup/paymentMethods';
 import { putService, getService } from '../../../setup/services/httpservices';
 import Razorpay from 'react-native-customui';
