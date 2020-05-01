@@ -8,7 +8,7 @@ import { StyleSheet, Image, AsyncStorage, TextInput, FlatList, TouchableOpacity,
 import { Button } from 'react-native-paper';
 export const bloodGroupList = ['Select number', 'A+', 'O+', 'B+', 'AB+', 'A-', 'O-', 'B-', 'AB-']
 
-class AppointmentPreparation extends PureComponent {
+class PrepareAppointmentWizard extends PureComponent {
     constructor(props) {
         super(props)
         this.state = {
@@ -1124,7 +1124,7 @@ class AppointmentPreparation extends PureComponent {
 }
 
 
-export default AppointmentPreparation
+export default PrepareAppointmentWizard
 const styles = StyleSheet.create({
     container: {
 
