@@ -534,7 +534,7 @@ class BookAppoinment extends PureComponent {
                       </Row> */}
               </Grid>
             </Card>
-            <Row style={{ marginLeft: 5, marginRight: 5 }}>
+            <Row style={{ marginLeft: 5, marginRight: 5,marginTop:10 }}>
               <Segment>
                 <TouchableOpacity first style={[{ width: '50%', borderBottomWidth: 4, alignItems: 'center', justifyContent: 'center' }, pressTab === 1 ? { borderBottomColor: '#775DA3' } : { borderBottomColor: '#000' }]} onPress={() => { this.onSegemntClick(1) }}>
                   <Text style={{ color: '#000', fontSize: 12, fontFamily: 'OpenSans', textAlign: 'center' }}>About</Text>
@@ -582,7 +582,7 @@ class BookAppoinment extends PureComponent {
 
                   <View style={{ borderTopColor: '#000', borderTopWidth: 0.5, marginTop: 10 }}>
                     <Row style={{ marginTop: 10 }}>
-                      <Text note style={{ fontSize: 12, fontFamily: 'OpenSans' }}>Selected Appointment on</Text>
+                      <Text  style={{ fontSize: 12, fontFamily: 'OpenSans' }}>Selected Appointment on</Text>
                     </Row>
                     <Row style={{ marginTop: 5 }}>
                       <Col style={{ width: '40%' }}>
