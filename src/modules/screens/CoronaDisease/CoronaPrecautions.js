@@ -3,9 +3,7 @@ import {
     Container, Content, Text, View, Badge, Spinner, Toast
 } from 'native-base';
 import { Col, Row, Grid } from 'react-native-easy-grid';
-import { StyleSheet, Image, AsyncStorage, TextInput, FlatList, TouchableOpacity, Share  } from 'react-native';
-import { RadioButton, } from 'react-native-paper';
-import { hasLoggedIn } from '../../providers/auth/auth.actions';
+import { StyleSheet, Image  } from 'react-native';
 class CoronaPrecautions extends Component {
     constructor(props) {
         super(props)

@@ -35,7 +35,7 @@ class Mapbox extends React.PureComponent {
     super(props)
 
     this.state = {
-      zoom: 12,
+      zoom: 15,
       route: null,
       coordinates : [ 77.5946, 12.9716 ],
       center: [ 77.5946, 12.9716 ],
@@ -93,7 +93,7 @@ class Mapbox extends React.PureComponent {
   async onDidFinishLoadingMap() {
     const zoom = await this._map.getZoom();
     console.log('the zoom is ' + zoom)
-    this.setState( { zoom : 14});
+    this.setState( { zoom : 17});
   }
   async getUserLocation() {
     //const { navigation, hospitalLocation } = this.props;
@@ -230,7 +230,7 @@ renderOrigin(coordinates, hospitaldestination) {
         >
         {this.state.center !== null ?  
           <MapboxGL.Camera
-            zoomLevel={12}
+            zoomLevel={15}
             centerCoordinate={this.state.center}
           />: null }
           {/* {this.state.currentLocation !== null && this.state.hospitaldestination !== null ? 

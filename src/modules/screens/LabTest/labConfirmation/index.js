@@ -3,12 +3,12 @@ import { Container, Content, Text, Button, Toast, Item, List, ListItem, Card, In
 import { Col, Row, Grid } from 'react-native-easy-grid';
 import { StyleSheet, Image, AsyncStorage, TouchableOpacity, Platform } from 'react-native';
 import { FlatList } from 'react-native-gesture-handler';
-import { RadioButton, Checkbox } from 'react-native-paper';
+import { RadioButton } from 'react-native-paper';
 import { NavigationEvents } from 'react-navigation';
 import { fetchUserProfile } from '../../../providers/profile/profile.action';
 import { dateDiff } from '../../../../setup/helpers';
 import { getAddress } from '../../../common'
-import { InsertAppointment } from '../../../providers/lab/lab.action';
+import { insertAppointment } from '../../../providers/lab/lab.action';
 import { getUserGenderAndAge } from '../CommonLabTest'
 import { SERVICE_TYPES } from '../../../../setup/config'
 import BookAppointmentPaymentUpdate from '../../../providers/bookappointment/bookAppointment';
@@ -42,37 +42,38 @@ class LabConfirmation extends Component {
     async componentDidMount() {
         const { navigation } = this.props;
         const packageDetails = navigation.getParam('packageDetails') || {};
+        console.log("packageDetails", packageDetails)
         if (packageDetails != undefined) {
             this.setState({ packageDetails })
         }
-       /* let packageDetails = {
-            "lab_id": "5e7d9676ebd1650d14355677",
-            "lab_test_categories_id": "5e78d0c127490f934d10de70",
-            "lab_test_descriptiion": "genral",
-            "fee": 1000,
-            "lab_name": "ARROW",
-            "category_name": "Allergy Profile",
-            "extra_charges": 50,
-            "appointment_starttime": "2020-04-30T18:00:00.000Z",
-            "appointment_endtime": "2020-04-30T18:30:00.000Z",
-            "mobile_no": "98076540211",
-            "location": {
-                "coordinates": [
-                    13.104802,
-                    80.208888
-                ],
-                "type": "Point",
-                "address": {
-                    "no_and_street": "1",
-                    "address_line_1": "Villivakkam",
-                    "district": "Chennai",
-                    "city": "Chennai",
-                    "state": "Tamil Nadu",
-                    "country": "India",
-                    "pin_code": "60010"
-                }
-            },
-        } */
+        /* let packageDetails = {
+             "lab_id": "5e7d9676ebd1650d14355677",
+             "lab_test_categories_id": "5e78d0c127490f934d10de70",
+             "lab_test_descriptiion": "genral",
+             "fee": 1000,
+             "lab_name": "ARROW",
+             "category_name": "Allergy Profile",
+             "extra_charges": 50,
+             "appointment_starttime": "2020-04-30T18:00:00.000Z",
+             "appointment_endtime": "2020-04-30T18:30:00.000Z",
+             "mobile_no": "98076540211",
+             "location": {
+                 "coordinates": [
+                     13.104802,
+                     80.208888
+                 ],
+                 "type": "Point",
+                 "address": {
+                     "no_and_street": "1",
+                     "address_line_1": "Villivakkam",
+                     "district": "Chennai",
+                     "city": "Chennai",
+                     "state": "Tamil Nadu",
+                     "country": "India",
+                     "pin_code": "60010"
+                 }
+             },
+         } */
         this.setState({ packageDetails })
         await this.getUserProfile();
     }
@@ -133,7 +134,7 @@ class LabConfirmation extends Component {
                 patientAddress.unshift(userAddressData);
             }
             await this.setState({ patientAddress, data: result })
-            console.log("patient Address ",this.state.patientAddress)
+            console.log("patient Address ", this.state.patientAddress)
             console.log("data", this.defaultPatientDetails)
             // this.onChangeSelf()
 
@@ -219,21 +220,25 @@ class LabConfirmation extends Component {
     }
     amountPaid() {
         const { packageDetails, patientDetails, itemSelected } = this.state;
-        let totalAmount;
-        if (itemSelected == 'TEST_AT_HOME') {
-            totalAmount = ((packageDetails.fee * patientDetails.length) + (packageDetails.extra_charges))
-            return totalAmount
+        let totalAmount = 0;
+        if (packageDetails.fee != undefined) {
+            if (itemSelected == 'TEST_AT_HOME') {
+                totalAmount = ((packageDetails.fee * patientDetails.length) + (packageDetails.extra_charges))
+                return totalAmount
+            }
+            else {
+                totalAmount = (packageDetails.fee * patientDetails.length)
+                return totalAmount
+            }
         }
-        else {
-            totalAmount = (packageDetails.fee * patientDetails.length)
-            return totalAmount
-        }
+        return totalAmount;
     }
 
+    
     proceedToLabTestAppointment = async (paymentMode) => {
         let { patientDetails, packageDetails, selectedAddress, itemSelected } = this.state
         try {
-            if ( itemSelected === 'TEST_AT_HOME' &&  selectedAddress == null) {
+            if (itemSelected === 'TEST_AT_HOME' && selectedAddress == null) {
                 Toast.show({
                     text: 'kindly chosse Address',
                     type: 'warning',
@@ -250,7 +255,7 @@ class LabConfirmation extends Component {
             })
             this.setState({ isLoading: true });
             const userId = await AsyncStorage.getItem('userId')
-            
+
             let requestData = {
                 user_id: userId,
                 patient_data: patientData,
@@ -278,11 +283,11 @@ class LabConfirmation extends Component {
                 status_by: "USER",
                 booked_from: "Mobile",
             };
-            if(paymentMode === 'cash') {
+            if (paymentMode === 'cash') {
                 this.BookAppointmentPaymentUpdate = new BookAppointmentPaymentUpdate();
                 let response = await this.BookAppointmentPaymentUpdate.updatePaymentDetails(true, {}, 'cash', requestData, SERVICE_TYPES.LAB_TEST, userId, 'cash');
                 if (response.success) {
-                    this.props.navigation.navigate('SuccessChat', { manualNaviagationPage : 'Home' });
+                    this.props.navigation.navigate('SuccessChat', { manualNaviagationPage: 'Home' });
                     Toast.show({
                         text: 'Appointment has Succcessfully Requested',
                         type: "success",
@@ -297,7 +302,7 @@ class LabConfirmation extends Component {
                     });
                     this.setState({ isLoading: false });
                 }
-    
+
             } else {
                 let response = await insertAppointment(requestData);
                 response.labTestAppointmentId = response.labTestAppointmentId;
@@ -347,20 +352,23 @@ class LabConfirmation extends Component {
                                 <Row>
                                     <Col size={3}>
                                         <Row style={{ alignItems: 'center' }}>
-                                            <Checkbox color="#775DA3"
-                                                status={this.state.selfChecked ? 'checked' : 'unchecked'}
-                                                onPress={async () => { await this.setState({ selfChecked: !this.state.selfChecked }), this.onChangeSelf() }}
-                                            />
-                                            <Text style={{ fontFamily: 'OpenSans', fontSize: 12, color: '#000' }}>Self</Text>
+                                          
+                                             <CheckBox style={{borderRadius:5}}
+                                             status={this.state.selfChecked ? true : false}
+                                               checked={this.state.selfChecked}
+                                               onPress={async () => { await this.setState({ selfChecked: !this.state.selfChecked }), this.onChangeSelf() }}
+                                             />
+                                            <Text style={{ fontFamily: 'OpenSans', fontSize: 12, color: '#000',marginLeft:20 }}>Self</Text>
                                         </Row>
                                     </Col>
                                     <Col size={3}>
                                         <Row style={{ alignItems: 'center' }}>
-                                            <Checkbox color="#775DA3"
-                                                status={this.state.othersChecked ? 'checked' : 'unchecked'}
-                                                onPress={async () => { await this.setState({ othersChecked: !this.state.othersChecked }), this.onChangeCheckBox() }}
-                                            />
-                                            <Text style={{ fontFamily: 'OpenSans', fontSize: 12, color: '#000' }}>Others</Text>
+                                             <CheckBox style={{borderRadius:5}}
+                                             status={this.state.othersChecked ? true : false}
+                                               checked={this.state.othersChecked}
+                                               onPress={async () => { await this.setState({ othersChecked: !this.state.othersChecked }), this.onChangeCheckBox() }}
+                                               />
+                                            <Text style={{ fontFamily: 'OpenSans', fontSize: 12, color: '#000' ,marginLeft:20}}>Others</Text>
                                         </Row>
                                     </Col>
                                     <Col size={4}>
@@ -593,7 +601,7 @@ class LabConfirmation extends Component {
                             </Col>
                             <Col size={5} style={{ alignItems: 'flex-end', justifyContent: 'flex-end' }}>
 
-                                <Text style={{ fontFamily: 'OpenSans', fontSize: 10, color: '#8dc63f', textAlign: 'right' }}>₹ {(packageDetails.fee * patientDetails.length)}</Text>
+                                <Text style={{ fontFamily: 'OpenSans', fontSize: 10, color: '#8dc63f', textAlign: 'right' }}>₹ {packageDetails.fee ? (packageDetails.fee * patientDetails.length) : 0}</Text>
 
 
                             </Col>

@@ -8,14 +8,14 @@ import { StyleSheet, AsyncStorage, TouchableOpacity, Modal } from 'react-native'
 import StarRating from 'react-native-star-rating';
 import { FlatList } from 'react-native-gesture-handler';
 import { formatDate, addTimeUnit, subTimeUnit, statusValue } from "../../../../setup/helpers";
-import { updateLapAppointment, getLapTestPaymentDetails} from "../../../providers/lab/lab.action"
+import { updateLapAppointment, getLapTestPaymentDetails } from "../../../providers/lab/lab.action"
 
 class LabAppointmentInfo extends Component {
   constructor(props) {
     super(props)
     this.state = {
       data: {},
-      labTestCategoryInfo:'',
+      labTestCategoryInfo: '',
       upcomingTap: 0,
       paymentData: {},
       reviewData: [],
@@ -31,10 +31,10 @@ class LabAppointmentInfo extends Component {
     const upcomingTap = navigation.getParam('selectedIndex');
 
     if (appointmentData != undefined) {
-      await this.setState({ data: appointmentData, upcomingTap})
+      await this.setState({ data: appointmentData, upcomingTap })
     }
     this.getLapTestPaymentInfo(appointmentData.payment_id)
-   
+
   }
   async  navigateCancelAppoointment() {
     try {
@@ -44,6 +44,16 @@ class LabAppointmentInfo extends Component {
       console.log(e)
     }
   }
+
+  async  navigateLabConfirmation() {
+    try {
+      this.props.navigation.navigate('labConfirmation', { packageDetails: this.state.data.labInfo })
+    }
+    catch (e) {
+      console.log(e)
+    }
+  }
+
 
   updateLabAppointmentStatus = async (data, updatedStatus) => {
     try {
@@ -68,7 +78,7 @@ class LabAppointmentInfo extends Component {
           text: result.message,
           duration: 3000
         })
-       
+
         this.setState({ data: temp });
       }
     }
@@ -90,7 +100,7 @@ class LabAppointmentInfo extends Component {
   }
 
   render() {
-    const { data, upcomingTap, paymentData}=this.state
+    const { data, upcomingTap, paymentData } = this.state
     return (
       <Container style={styles.container}>
         <Content style={styles.bodyContent}>
@@ -129,10 +139,10 @@ class LabAppointmentInfo extends Component {
                     <Row style={{ marginTop: 10, marginLeft: 5 }}>
                       <Text style={styles.subText1}>Payment Method</Text>
                       <Text style={styles.subText2}>-</Text>
-                      <Text note style={styles.subText2}>{paymentData ? paymentData.payment_method:0}</Text>
+                      <Text note style={styles.subText2}>{paymentData ? paymentData.payment_method : 0}</Text>
                     </Row>
                   </Col>
-                    {data.appointment_status != undefined ?
+                  {data.appointment_status != undefined ?
                     <Col size={3}>
 
                       <View style={{ alignItems: 'center', marginLeft: -25 }}>
@@ -142,9 +152,9 @@ class LabAppointmentInfo extends Component {
                             fontSize: 35
                           }} />
 
-                        <Text capitalise={true} style={[styles.textApproved, { color: statusValue[data.appointment_status].color }]}>{data.appointment_status}</Text>
+                        <Text capitalise={true} style={[styles.textApproved, { color: statusValue[data.appointment_status].color }]}>{data.appointment_status == "PAYMENT_FAILED" ? 'PAYMENT FAILED' : data.appointment_status}</Text>
                       </View>
-                    </Col>:null
+                    </Col> : null
                   }
                 </Row>
 
@@ -162,7 +172,23 @@ class LabAppointmentInfo extends Component {
                         </Button>
                       </Row>
                     </Col>
-                  </Row>  : null : null}
+                  </Row> :
+                  data.appointment_status == 'PAYMENT_FAILED' ?
+                    <Row>
+                      <Col size={7}>
+                        <Row style={{ marginTop: 10 }}>
+                          <Text note style={styles.subText3}>Do you need to retry this appointment ?</Text>
+                        </Row>
+                      </Col>
+                      <Col size={3}>
+                        <Row style={{ marginTop: 10 }}>
+                          <Button style={[styles.postponeButton, { backgroundColor: '#6FC41A' }]} onPress={() => this.navigateLabConfirmation()}>
+                            <Text capitalise={true} style={styles.ButtonText}>RETRY</Text>
+                          </Button>
+                        </Row>
+                      </Col>
+                    </Row> :
+                    null : null}
 
               </Grid>
 
@@ -201,7 +227,7 @@ class LabAppointmentInfo extends Component {
                 </Row>
                 <FlatList
                   data={data.patient_data}
-                  keyExtractor={(item,index)=>index.toString()}
+                  keyExtractor={(item, index) => index.toString()}
                   renderItem={({ item }) =>
                     <View style={styles.commonView}>
                       <Row>
@@ -250,13 +276,13 @@ class LabAppointmentInfo extends Component {
                   <Col style={{ width: '92%', paddingTop: 5 }}>
                     <Text style={styles.innerSubText}>Pick Up at Lab</Text>
                     <Text style={[styles.commonText, { color: '#4c4c4c', marginTop: 5 }]}>{data.labInfo && data.labInfo.lab_name}</Text>
-                    <Text note style={[styles.subTextInner1, { marginTop: 10 }]}>{(data.labInfo && data.labInfo.location && data.labInfo.location.address.no_and_street) + ',' + 
-                   (data.labInfo && data.labInfo.location && data.labInfo.location.address.address_line_1)+','+
-                      (data.labInfo && data.labInfo.location && data.labInfo.location.address.district) + ',' + 
-                      (data.labInfo && data.labInfo.location && data.labInfo.location.address.city) + ',' + 
-                      (data.labInfo && data.labInfo.location && data.labInfo.location.address.state) + ',' + 
-                      (data.labInfo && data.labInfo.location && data.labInfo.location.address.country) + ',' + 
-                     (data.labInfo && data.labInfo.location && data.labInfo.location.address.pin_code) }</Text>
+                    <Text note style={[styles.subTextInner1, { marginTop: 10 }]}>{(data.labInfo && data.labInfo.location && data.labInfo.location.address.no_and_street) + ',' +
+                      (data.labInfo && data.labInfo.location && data.labInfo.location.address.address_line_1) + ',' +
+                      (data.labInfo && data.labInfo.location && data.labInfo.location.address.district) + ',' +
+                      (data.labInfo && data.labInfo.location && data.labInfo.location.address.city) + ',' +
+                      (data.labInfo && data.labInfo.location && data.labInfo.location.address.state) + ',' +
+                      (data.labInfo && data.labInfo.location && data.labInfo.location.address.country) + ',' +
+                      (data.labInfo && data.labInfo.location && data.labInfo.location.address.pin_code)}</Text>
                   </Col>
                 </Row>
 
@@ -311,7 +337,7 @@ class LabAppointmentInfo extends Component {
                         <Text style={styles.downText}>-</Text>
                       </Col>
                       <Col style={{ width: '25%' }}>
-                        <Text note style={styles.downText}>{paymentData ? paymentData.payment_method:0}</Text>
+                        <Text note style={styles.downText}>{paymentData ? paymentData.payment_method : 0}</Text>
                       </Col>
                     </Row>
                   </Col>
@@ -319,7 +345,7 @@ class LabAppointmentInfo extends Component {
               </View>
             </Grid>
           </View>
-        
+
         </Content>
       </Container>
 
@@ -538,8 +564,6 @@ const styles = StyleSheet.create({
     marginLeft: -10,
     marginBottom: -10,
     marginRight: -10,
-    //  justifyContent:'center',
-    //  alignItems:"center",ss
     height: 35,
     marginTop: -10
   },

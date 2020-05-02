@@ -167,7 +167,7 @@ class PharmacyCart extends Component {
                                 }}
                                 note
                             >
-                                No Medicines Are Found Your Cart
+                               No medicines found on your Cart
                     </Text>
                             <Item style={{ marginTop: "15%", borderBottomWidth: 0 }}>
                                 <Button style={[styles.bookingButton, styles.customButton]}
@@ -222,7 +222,7 @@ class PharmacyCart extends Component {
                                             <Row style={{}}>
                                                 <Col size={7} style={{ flexDirection: 'row' }}>
                                                     <Text style={{ fontSize: 9.5, marginBottom: -15, marginTop: 30, marginLeft: 3.5, color: "#ff4e42" }}>MRP</Text>
-                                                    {item.discount_type !== undefined ?
+                                                    {item.discount_type !== undefined&& item.discount_value!==0?
                                                         <Row>
                                                             <Text style={{ fontSize: 9.5, marginTop: 30, color: "#ff4e42", textDecorationLine: 'line-through', textDecorationStyle: 'solid', marginLeft: 5 }}>₹ {item.price}</Text>
                                                             <Text style={{ fontSize: 15, marginTop: 25, color: "#5FB404", marginLeft: 5 }}>₹ {item.offeredAmount}</Text>
