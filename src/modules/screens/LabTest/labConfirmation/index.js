@@ -8,6 +8,7 @@ import { NavigationEvents } from 'react-navigation';
 import { fetchUserProfile } from '../../../providers/profile/profile.action';
 import { dateDiff } from '../../../../setup/helpers';
 import { getAddress } from '../../../common'
+import { hasLoggedIn } from '../../../providers/auth/auth.actions';
 import { insertAppointment } from '../../../providers/lab/lab.action';
 import { getUserGenderAndAge } from '../CommonLabTest'
 import { SERVICE_TYPES } from '../../../../setup/config'
@@ -41,6 +42,11 @@ class LabConfirmation extends Component {
     }
     async componentDidMount() {
         const { navigation } = this.props;
+        const isLoggedIn = await hasLoggedIn(this.props);
+        if (!isLoggedIn) {
+            navigation.navigate('login');
+            return
+        }
         const packageDetails = navigation.getParam('packageDetails') || {};
         console.log("packageDetails", packageDetails)
         if (packageDetails != undefined) {
@@ -152,39 +158,27 @@ class LabConfirmation extends Component {
         this.props.navigation.navigate(screen, { screen: screen, navigationOption: 'labConfirmation', addressType: addressType })
     }
     onChangeSelf = async () => {
-        console.log("this.state.selfChecked::: ", this.state.selfChecked)
-        console.log("this.state.othersChecked::: ", this.state.othersChecked)
-
         if (this.state.selfChecked == true) {
             patientDetails.unshift(this.defaultPatientDetails)
-            console.log("::::", patientDetails)
         }
         else if (this.state.selfChecked == false) {
             this.state.patientDetails.shift(this.defaultPatientDetails)
-            console.log("this.state.patientDetails:::shift", this.state.patientDetails)
-
         }
         this.setState({ patientDetails })
     }
 
     onChangeCheckBox = async () => {
-        console.log("this.state.selfChecked::: ", this.state.selfChecked)
-        console.log("this.state.othersChecked::: ", this.state.othersChecked)
-        console.log("::::", this.defaultPatientDetails)
-        console.log("this.state.patientDetails", this.state.patientDetails)
-
         if (this.state.othersChecked == true) {
             this.addPatientData()
         }
         if (this.state.othersChecked == false) {
             this.state.patientDetails.map(ele => {
-                if (ele.type = 'others') {
+                if (ele.type == 'others') {
                     this.state.patientDetails.pop(this.state.patientDetails)
                 }
             })
         }
         await this.setState({ patientDetails })
-        console.log("this.state.patientDetails:", this.state.patientDetails)
     }
 
 
@@ -196,14 +190,6 @@ class LabConfirmation extends Component {
             this.setState({ errMsg: '* Kindly fill all the fields' })
         } else {
             let temp;
-            // if (this.state.selfChecked == true) {
-            //     temp = this.state.defaultPatientDetails;
-            // }
-            // else {
-            //     temp = this.state.patientDetails;
-
-            // }
-
             this.setState({ errMsg: '' })
             temp = this.state.patientDetails;
 
@@ -443,8 +429,10 @@ class LabConfirmation extends Component {
                                         </View>
                                     </RadioButton.Group>
                                 </View>
+
+                                {this.state.errMsg ? <Text style={{ paddingLeft: 10, fontSize: 10, fontFamily: 'OpenSans', color: 'red' }}>{this.state.errMsg}</Text> : null}
+
                             </View> : null}
-                        {this.state.errMsg ? <Text style={{ paddingLeft: 10, fontSize: 10, fontFamily: 'OpenSans', color: 'red' }}>{this.state.errMsg}</Text> : null}
 
                         {othersChecked == true ?
                             <Row style={{ justifyContent: 'center', alignItems: 'center', marginTop: 10 }}>
@@ -456,7 +444,6 @@ class LabConfirmation extends Component {
 
                     <View style={{ backgroundColor: '#fff', padding: 10, marginTop: 5 }}>
                         <Text style={{ fontFamily: 'OpenSans', fontSize: 14, color: '#7F49C3' }}>Patient Details</Text>
-                        {/* {othersChecked || (selfChecked && othersChecked) ? */}
                         <FlatList
                             data={patientDetails}
                             extraData={patientDetails}
@@ -641,59 +628,6 @@ class LabConfirmation extends Component {
 
                     </View>
 
-
-
-
-
-
-
-
-
-
-                    {/* <Grid style={styles.curvedGrid}>
-
-                    </Grid>
-                    <View style={{ marginTop: -95, height: 100 }}>
-                        <Row style={{paddingLeft:10,paddingRight:10 }}>
-                            <Col style={{ width: '35%', alignItems: 'flex-start' }}>
-                                <Text style={styles.normalText}>Date</Text>
-                            </Col>
-                            <Col style={{ width: '20%', alignItems: 'center' }}>
-                            </Col>
-                            <Col style={{ width: '45%', alignItems: 'flex-end' }}>
-                                <Text style={styles.normalText}>{currentDate}</Text>
-                            </Col>
-                        </Row>
-
-                        <Row style={{ marginTop: -28,paddingLeft:10,paddingRight:10 }}>
-                            <Col style={{ width: '35%', alignItems: 'flex-start', }}>
-                                <Text style={styles.normalText}>TotalBill</Text>
-                            </Col>
-                            <Col style={{ width: '20%', alignItems: 'center' }}>
-                            </Col>
-                            <Col style={{ width: '45%', alignItems: 'flex-end',  }}>
-                                <Text style={styles.normalText}>Rs.100</Text>
-                            </Col>
-                        </Row>
-                    </View>
-
-                    <Card transparent style={{ padding: 10, marginTop: 20, }}>
-                        <Text style={{ fontFamily: 'OpenSans', fontWeight: 'bold', fontSize: 18, padding: 5 }}>Address Info</Text>
-                        <Segment>
-                            <Button active={this.state.activePage === 1} style={{borderLeftColor:'#fff',borderLeftWidth:1}}
-                                onPress={this.selectComponent(1)}><Text uppercase={false}>Default Address</Text>
-
-                            </Button>
-                            <Button active={this.state.activePage === 2}
-                                onPress={this.selectComponent(2)}><Text uppercase={false}>Add New Address</Text>
-
-                            </Button>
-                        </Segment>
-                        <Content padder>
-                            {this.renderSelectedComponent()}
-
-                        </Content>
-                    </Card> */}
                 </Content>
                 <Footer style={
                     Platform.OS === "ios" ?
