@@ -132,7 +132,7 @@ class reportIssueDetails extends Component {
                   </Row>
                   <View style={{ marginTop: 10 }}>
                     <Text style={styles.contentText}>{data.issue_type}</Text>
-                    <Text note style={styles.contentText}>{data.complaint + ' Reported on ' + formatDate(data.created_date, 'DD/MM/YYYY ')}</Text>
+                    <Text note style={styles.contentText}>{data.complaint} <Text style={{fontFamily:'OpenSans',fontSize:10,color:'#4c4c4c'}}>{' Reported on ' +formatDate(data.created_date, 'DD/MM/YYYY ')}</Text> </Text>
                   </View>
                 </View>
                 {replyData.length != 0 &&

@@ -225,8 +225,11 @@ class Filters extends Component {
                                 <TouchableOpacity
                                     onPress={() => this.clickGenderInButton(1, "M", true)}
                                     style={styles.genderTouchableStyles}>
-                                    <Radio selected={genderIndex === 1 ? true : false} 
+                                    <Radio 
+                                     standardStyle={true}
+                                    selected={genderIndex === 1 ? true : false} 
                                    onPress={()=>  this.clickGenderInButton(1, "M", true)}  />
+                                  
                                     <Icon name="ios-man" style={{ fontSize: 20, marginLeft: 10, }} />
                                     <Text style={styles.genderTextStyles}>Male</Text>
                                 </TouchableOpacity>
@@ -235,7 +238,9 @@ class Filters extends Component {
                                 <TouchableOpacity
                                     onPress={() => this.clickGenderInButton(2, "F", true)}
                                     style={styles.genderTouchableStyles}>
-                                    <Radio selected={genderIndex === 2 ? true : false} 
+                                    <Radio 
+                                    standardStyle={true}
+                                    selected={genderIndex === 2 ? true : false} 
                                     onPress={()=>  this.clickGenderInButton(2, "F", true)}  />
                                     <Icon name="ios-woman" style={{ fontSize: 20, marginLeft: 10, }} />
                                     <Text style={styles.genderTextStyles}>Female</Text>
@@ -245,7 +250,9 @@ class Filters extends Component {
                                 <TouchableOpacity
                                     onPress={() => this.clickGenderInButton(3, "O", true)}
                                     style={styles.genderTouchableStyles}>
-                                    <Radio selected={genderIndex === 3 ? true : false} 
+                                    <Radio 
+                                    standardStyle={true}
+                                    selected={genderIndex === 3 ? true : false} 
                               onPress={()=>  this.clickGenderInButton(3, "O", true)}  />                                  
                                     <Text style={styles.genderTextStyles}>Others</Text>
                                 </TouchableOpacity>
@@ -522,31 +529,58 @@ const styles = StyleSheet.create({
         borderWidth: 0.5
     },
     defaultDaysTextColor: {
-        color: '#333333', fontFamily: 'OpenSans', fontSize: 13, textAlign: 'center'
+        color: '#333333', 
+        fontFamily: 'OpenSans', 
+        fontSize: 13, 
+        textAlign: 'center'
     },
     selectedDaysTextColor: {
-        color: '#FFFFFF', fontFamily: 'OpenSans', fontSize: 13, textAlign: 'center'
+        color: '#FFFFFF', 
+        fontFamily: 'OpenSans', 
+        fontSize: 13, 
+        textAlign: 'center'
 
     },
     defaultExpTextColor: {
-        color: '#333333', fontFamily: 'OpenSans', fontSize: 10, textAlign: 'center'
+        color: '#333333', 
+        fontFamily: 'OpenSans', 
+        fontSize: 10, 
+        textAlign: 'center'
     },
     selectedExpTextColor: {
-        color: '#FFFFFF', fontFamily: 'OpenSans', fontSize: 10, textAlign: 'center'
+        color: '#FFFFFF', 
+        fontFamily: 'OpenSans', 
+        fontSize: 10, 
+        textAlign: 'center'
     },
     defaultApplyTextColor: {
-        color: '#775DA3', fontFamily: 'OpenSans', fontSize: 13, textAlign: 'center', fontWeight: '500'
+        color: '#775DA3', 
+        fontFamily: 'OpenSans', 
+        fontSize: 13, 
+        textAlign: 'center', 
+        fontWeight: '500'
     },
     enabledApplyTextColor: {
-        color: '#FFFFFF', fontFamily: 'OpenSans', fontSize: 13, textAlign: 'center', fontWeight: '500'
+        color: '#FFFFFF', 
+        fontFamily: 'OpenSans', 
+        fontSize: 13, 
+        textAlign: 'center', 
+        fontWeight: '500'
     },
     headingLabelStyle: {
-        fontFamily: 'OpenSans', color: 'gray', fontSize: 13
+        fontFamily: 'OpenSans',  
+        fontSize: 13,
+        fontWeight:'bold'
     },
     genderTextStyles: {
-        fontFamily: 'OpenSans', fontSize: 13, marginLeft: 15, color: '#333333'
+        fontFamily: 'OpenSans', 
+        fontSize: 13, 
+        marginLeft: 15, 
+        color: '#333333'
     },
     genderTouchableStyles: {
-        alignItems: 'center', justifyContent: 'center', flexDirection: 'row'
+        alignItems: 'center', 
+        justifyContent: 'center', 
+        flexDirection: 'row'
     },
 })

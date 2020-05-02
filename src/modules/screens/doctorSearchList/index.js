@@ -57,31 +57,31 @@ class doctorSearchList extends Component {
     constructor(props) {
         super(props)
         conditionFromFilterPage = null,  // for check FilterPage Values
-        this.showNoOfPrimeDocsOnSwipperList = SHOW_NO_OF_PRIME_DOCS_ON_PRIME_LIST_SWIPPER_LIST;
-    
-            this.state = {
-                selectedSlotItemByDoctorIds: {},
-                selectedDate: formatDate(new Date(), 'YYYY-MM-DD'),
-                currentDate: formatDate(new Date(), 'YYYY-MM-DD'),
-                doctorData: [],
-                searchedResultData: [],
-                getSearchedDoctorIds: null,
-                nextAvailableSlotDate: '',
-                isLoading: true,
-                isAvailabilityLoading: false,
-                filterBySelectedAvailabilityDateCount: 0,
-                filterData: null,
-                yearOfExperience: '',
-                processedDoctorAvailabilityDates: [],
-                sliderPageIndex: 0,
-                sliderPageIndexesByDoctorIds: {},
-                selectedDatesByDoctorIds: {},
-                selectedSlotByDoctorIds: {},
-                expandedDoctorIdHospitalsToShowSlotsData: [],
-                showedFeeByDoctorIds: {},
-                isLoggedIn: null,
-                refreshCount: 0
-            }
+            this.showNoOfPrimeDocsOnSwipperList = SHOW_NO_OF_PRIME_DOCS_ON_PRIME_LIST_SWIPPER_LIST;
+
+        this.state = {
+            selectedSlotItemByDoctorIds: {},
+            selectedDate: formatDate(new Date(), 'YYYY-MM-DD'),
+            currentDate: formatDate(new Date(), 'YYYY-MM-DD'),
+            doctorData: [],
+            searchedResultData: [],
+            getSearchedDoctorIds: null,
+            nextAvailableSlotDate: '',
+            isLoading: true,
+            isAvailabilityLoading: false,
+            filterBySelectedAvailabilityDateCount: 0,
+            filterData: null,
+            yearOfExperience: '',
+            processedDoctorAvailabilityDates: [],
+            sliderPageIndex: 0,
+            sliderPageIndexesByDoctorIds: {},
+            selectedDatesByDoctorIds: {},
+            selectedSlotByDoctorIds: {},
+            expandedDoctorIdHospitalsToShowSlotsData: [],
+            showedFeeByDoctorIds: {},
+            isLoggedIn: null,
+            refreshCount: 0
+        }
     }
 
     navigateToFilters() {
@@ -271,16 +271,16 @@ class doctorSearchList extends Component {
 
         const userId = await AsyncStorage.getItem('userId');
         let resultData = await searchDoctorList(userId, searchedInputValues);
-        
+
         await this.setState({ searchedResultData: resultData.data });
         if (resultData.success) {
             let doctorIds = resultData.data.map((element) => {
                 const docObj = {
-                    doctorId : element.doctor_id,
+                    doctorId: element.doctor_id,
                     hospitalIds: element.hospital ? element.hospital.map(hosp => {
-                      this.distanceMap.set(element.doctor_id + '-' + hosp.hospital_id,  hosp.distInKiloMeter)
-                      return hosp.hospital_id 
-                    }) : [] 
+                        this.distanceMap.set(element.doctor_id + '-' + hosp.hospital_id, hosp.distInKiloMeter)
+                        return hosp.hospital_id
+                    }) : []
                 }
                 return docObj
             });
@@ -318,8 +318,8 @@ class doctorSearchList extends Component {
                     slotData: doctorSlotData.slotData,
                     location: doctorSlotData.slotData[Object.keys(doctorSlotData.slotData)[0]].length > 0 ? doctorSlotData.slotData[Object.keys(doctorSlotData.slotData)[0]][0].location : null,
                 }
-                if(this.sponsorIdWithHospitalIdArray.includes(doctorSlotData.doctorIdHostpitalId)) {
-                    if(showedPrimeListDocs < this.showNoOfPrimeDocsOnSwipperList) {
+                if (this.sponsorIdWithHospitalIdArray.includes(doctorSlotData.doctorIdHostpitalId)) {
+                    if (showedPrimeListDocs < this.showNoOfPrimeDocsOnSwipperList) {
                         obj.isDoctorHosptalSponsored = true;
                         showedPrimeListDocs += 1;
                     } else {
@@ -331,8 +331,8 @@ class doctorSearchList extends Component {
                     this.processedDoctorIds.push(doctorSlotData.doctorIdHostpitalId);
                     this.processedDoctorDetailsData.push(obj);
                 }
-                console.log('Is doctor sponsored' , this.sponsorIdWithHospitalIdArray.includes(doctorSlotData.doctorIdHostpitalId));
-               
+                console.log('Is doctor sponsored', this.sponsorIdWithHospitalIdArray.includes(doctorSlotData.doctorIdHostpitalId));
+
             }
         }
         store.dispatch({
@@ -366,11 +366,11 @@ class doctorSearchList extends Component {
                 activeSponsorDetails.data.map((ele) => {
                     sponsorIdArray.push(ele._id)
                     const hospitalId = ele.location[0] && ele.location[0].hospital_id;
-                    if(hospitalId) {
-                        this.sponsorIdWithHospitalIdArray.push(ele.doctor_id + '-' + hospitalId); 
-                    }   
+                    if (hospitalId) {
+                        this.sponsorIdWithHospitalIdArray.push(ele.doctor_id + '-' + hospitalId);
+                    }
                 });
-                console.log('Hopital Array:' +this.sponsorIdWithHospitalIdArray);
+                console.log('Hopital Array:' + this.sponsorIdWithHospitalIdArray);
                 this.updateSponsorViewersCount(sponsorIdArray)
             };
 
@@ -580,7 +580,7 @@ class doctorSearchList extends Component {
                                     styles.slotSelectedBgColor : styles.slotDefaultBgColor}
                                 onPress={() => this.onSlotItemPress(doctorIdHostpitalId, item, index)}>
                                 <Text style={item.isSlotBooked ? styles.slotBookedTextColor : selectedSlotIndex === index ? styles.slotBookedTextColor : styles.slotDefaultTextColor}> {formatDate(item.slotStartDateAndTime, 'hh:mm A')} </Text>
-                             </TouchableOpacity>
+                            </TouchableOpacity>
                         </Col>
                     }
                     keyExtractor={(item, index) => index.toString()} />
@@ -647,7 +647,7 @@ class doctorSearchList extends Component {
         const { bookappointment: { reviewsByDoctorIds } } = this.props;
         console.log(reviewsByDoctorIds);
         filteredData = filteredDoctorData.sort(function (a, b) {
-            
+
             let ratingA = 0;
             let ratingB = 0;
             if (reviewsByDoctorIds[a.doctor_id]) {
@@ -656,7 +656,7 @@ class doctorSearchList extends Component {
             if (reviewsByDoctorIds[b.doctor_id]) {
                 ratingB = reviewsByDoctorIds[b.doctor_id].average_rating || 0
             }
-            if(a.primeDocOnNonPrimeList === true || b.primeDocOnNonPrimeList) {
+            if (a.primeDocOnNonPrimeList === true || b.primeDocOnNonPrimeList) {
                 return ratingB - ratingA;
             }
             if (currentDoctorOrder === 'ASC') {
@@ -679,81 +679,81 @@ class doctorSearchList extends Component {
     }
 
     getDistance(doctorIdHostpitalId) {
-      if(!isNaN(this.distanceMap.get(doctorIdHostpitalId))) {
-        if(this.distanceMap.get(doctorIdHostpitalId) > 0) {
-           const distanceInMeter = Number(this.distanceMap.get(doctorIdHostpitalId)).toFixed(3)
-           const distanceInNumber = Number(distanceInMeter.split('.')[1]);
-           return  distanceInNumber + 'm'
-        } else {
-            const distanceInKm = Number(this.distanceMap.get(doctorIdHostpitalId)).toFixed(1) + 'Km'
-            return distanceInKm;
+        if (!isNaN(this.distanceMap.get(doctorIdHostpitalId))) {
+            if (this.distanceMap.get(doctorIdHostpitalId) > 0) {
+                const distanceInMeter = Number(this.distanceMap.get(doctorIdHostpitalId)).toFixed(3)
+                const distanceInNumber = Number(distanceInMeter.split('.')[1]);
+                return distanceInNumber + 'm'
+            } else {
+                const distanceInKm = Number(this.distanceMap.get(doctorIdHostpitalId)).toFixed(1) + 'Km'
+                return distanceInKm;
+            }
         }
-      }
     }
 
     renderSponsorDoctorList(item) {
-        const { bookappointment: {  reviewsByDoctorIds } } = this.props;
+        const { bookappointment: { reviewsByDoctorIds } } = this.props;
         const { selectedDatesByDoctorIds
         } = this.state;
         const { fee, feeWithoutOffer } = this.getFeesBySelectedSlot(item.slotData[selectedDatesByDoctorIds[item.doctorIdHostpitalId] || this.state.currentDate], item.slotData, item.doctorIdHostpitalId)
-       
+
         return <Card style={{ padding: 10, borderRadius: 10, borderBottomWidth: 2, marginLeft: 10 }}>
-        <Grid onPress={() => this.navigateToBookAppointmentPage(item)}>
-            <Row>
-                <Col size={2}>
-                <TouchableOpacity onPress={() => this.props.navigation.navigate("ImageView", { passImage: renderDoctorImage(item), title: 'Profile photo' })}>
-                    <Thumbnail  source={renderDoctorImage(item)} style={{ height: 50, width: 50,borderRadius:50/2 }} />
-                    </TouchableOpacity>
-                    <View style={{ position: 'absolute', marginTop: 35, alignSelf: 'flex-end' }}>
-                        <Image square source={vipLogo} style={{ height: 20, width: 20 }} />
+            <Grid onPress={() => this.navigateToBookAppointmentPage(item)}>
+                <Row>
+                    <Col size={2}>
+                        <TouchableOpacity onPress={() => this.props.navigation.navigate("ImageView", { passImage: renderDoctorImage(item), title: 'Profile photo' })}>
+                            <Thumbnail source={renderDoctorImage(item)} style={{ height: 50, width: 50, borderRadius: 50 / 2 }} />
+                        </TouchableOpacity>
+                        <View style={{ position: 'absolute', marginTop: 35, alignSelf: 'flex-end' }}>
+                            <Image square source={vipLogo} style={{ height: 20, width: 20 }} />
+                        </View>
+                    </Col>
+                    <Col size={8} style={{ marginLeft: 10 }}>
+
+                        <Text style={{ fontFamily: 'OpenSans', fontSize: 12, fontWeight: 'bold' }}>{(item.prefix ? item.prefix + '. ' : '') + (item.first_name || '') + ' ' + (item.last_name || '')}</Text>
+
+                        <Text style={{ fontFamily: 'OpenSans', marginTop: 2, fontSize: 10, marginTop: 5, fontWeight: 'bold' }}>{(getDoctorEducation(item.education)) + ' ' + getDoctorSpecialist(item.specialist)}</Text>
+
+                        <Text style={{ fontFamily: 'OpenSans', fontWeight: 'bold', marginTop: 5, fontSize: 11, color: '#808080' }}>
+                            {item.location.name + ' - ' + item.location.location.address.city}
+                        </Text>
+                        <Text style={{ fontFamily: 'OpenSans', marginTop: 2, fontSize: 10, marginTop: 5, fontWeight: 'bold', color: '#808080' }}>Experience: {getDoctorExperience(item.calulatedExperience)} </Text>
+
+                    </Col>
+                </Row>
+                <Row style={{ marginTop: 10 }}>
+                    <Text note style={{ fontFamily: 'OpenSans', fontSize: 10, textAlign: 'center', marginTop: 2 }}> Rating -</Text>
+                    <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'center', marginLeft: 5 }}>
+                        <StarRating
+                            fullStarColor='#FF9500'
+                            starSize={12}
+                            width={85}
+                            containerStyle={{ marginTop: 2 }}
+                            disabled={true}
+                            rating={1}
+                            maxStars={1}
+                        />
+                        <Text style={{ fontFamily: 'OpenSans', fontSize: 12, fontWeight: 'bold', marginLeft: 2 }}> {reviewsByDoctorIds[item.doctor_id] !== undefined ? reviewsByDoctorIds[item.doctor_id].average_rating : ' 0'}</Text>
                     </View>
-                </Col>
-                <Col size={8} style={{ marginLeft: 10 }}>
 
-                    <Text style={{ fontFamily: 'OpenSans', fontSize: 12, fontWeight: 'bold' }}>{(item.prefix ? item.prefix + '. ' : '') + (item.first_name || '') + ' ' + (item.last_name || '')}</Text>
-
-                    <Text style={{ fontFamily: 'OpenSans', marginTop: 2, fontSize: 10, marginTop: 5, fontWeight: 'bold' }}>{(getDoctorEducation(item.education)) + ' ' + getDoctorSpecialist(item.specialist)}</Text>
-
-                    <Text  style={{ fontFamily: 'OpenSans', fontWeight: 'bold', marginTop: 5, fontSize: 11,color: '#808080' }}>
-                        {item.location.name + ' - ' + item.location.location.address.city}
+                    <Text note style={{ fontFamily: 'OpenSans', fontSize: 10, textAlign: 'center', marginLeft: 10, marginTop: 2 }}> Fees -</Text>
+                    <Text style={{ fontFamily: 'OpenSans', fontSize: 12, fontWeight: 'bold', textAlign: 'center', marginLeft: 10 }}>{'\u20B9'}{fee} {' '}
+                        {fee !== feeWithoutOffer ?
+                            <Text style={{ fontFamily: 'OpenSans', fontWeight: 'normal', fontSize: 12, textDecorationLine: 'line-through', textDecorationStyle: 'solid', textAlign: 'center' }}>
+                                {'\u20B9'}{feeWithoutOffer}</Text> : null
+                        }
                     </Text>
-                    <Text style={{ fontFamily: 'OpenSans', marginTop: 2, fontSize: 10, marginTop: 5,  fontWeight: 'bold', color: '#808080' }}>Experience: {getDoctorExperience(item.calulatedExperience)} </Text>
-                   
-                </Col>
-            </Row>
-            <Row style={{ marginTop: 10 }}>
-                <Text note style={{ fontFamily: 'OpenSans', fontSize: 10, textAlign: 'center', marginTop: 2 }}> Rating -</Text>
-                <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'center', marginLeft: 5 }}>
-                    <StarRating
-                        fullStarColor='#FF9500'
-                        starSize={12}
-                        width={85}
-                        containerStyle={{ marginTop: 2 }}
-                        disabled={true}
-                        rating={1}
-                        maxStars={1}
-                    />
-                    <Text style={{ fontFamily: 'OpenSans', fontSize: 12, fontWeight: 'bold', marginLeft: 2 }}> {reviewsByDoctorIds[item.doctor_id] !== undefined ? reviewsByDoctorIds[item.doctor_id].average_rating : ' 0'}</Text>
-                </View>
-
-                <Text note style={{ fontFamily: 'OpenSans', fontSize: 10, textAlign: 'center', marginLeft: 10, marginTop: 2 }}> Fees -</Text>
-                <Text style={{ fontFamily: 'OpenSans', fontSize: 12, fontWeight: 'bold', textAlign: 'center', marginLeft: 10 }}>{'\u20B9'}{fee} {' '}
-                                            {fee !== feeWithoutOffer ?
-                                                <Text style={{ fontFamily: 'OpenSans', fontWeight: 'normal', fontSize: 12, textDecorationLine: 'line-through', textDecorationStyle: 'solid', textAlign: 'center' }}>
-                                                    {'\u20B9'}{feeWithoutOffer}</Text> : null
-                                            }
-                </Text>
-                <TouchableOpacity onPress={() => this.navigateToBookAppointmentPage(item)} style={{ backgroundColor: '#7F49C3', borderRadius: 10, marginLeft: 10, paddingLeft: 15, paddingRight: 15, paddingTop: 2, paddingBottom: 2, justifyContent: 'center', }}>
-                    <Text style={{ textAlign: 'center', color: '#fff', fontSize: 10, fontWeight: 'bold', fontFamily: 'OpenSans' }}>BOOK </Text>
-                </TouchableOpacity>
-            </Row>
-        </Grid>
-    </Card>
+                    <TouchableOpacity onPress={() => this.navigateToBookAppointmentPage(item)} style={{ backgroundColor: '#7F49C3', borderRadius: 10, marginLeft: 10, paddingLeft: 15, paddingRight: 15, paddingTop: 2, paddingBottom: 2, justifyContent: 'center', }}>
+                        <Text style={{ textAlign: 'center', color: '#fff', fontSize: 10, fontWeight: 'bold', fontFamily: 'OpenSans' }}>BOOK </Text>
+                    </TouchableOpacity>
+                </Row>
+            </Grid>
+        </Card>
     }
     render() {
 
-        const { bookappointment: {  reviewsByDoctorIds, filteredDoctorData } } = this.props;
-        const { 
+        const { bookappointment: { reviewsByDoctorIds, filteredDoctorData } } = this.props;
+        const {
             isLoading
         } = this.state;
         return (
@@ -768,25 +768,25 @@ class doctorSearchList extends Component {
                             <Card style={{ borderRadius: 7, paddingTop: 5, paddingBottom: 5 }}>
 
                                 <Row>
-                                    <Col style={{ width: '55%', flexDirection: 'row', marginLeft: 5, }} onPress={() => this.sortByTopRatings(filteredDoctorData)}>
-                                        <Row>
-                                            <Col style={{ width: '15%' }}>
-                                                <Icon name='ios-arrow-down' style={{ color: '#000', fontSize: 20, marginTop: 5 }} />
-                                            </Col>
-                                            <Col style={{ width: '85%' }}>
-                                                <Text uppercase={false} style={{ fontFamily: 'OpenSans', color: '#000', fontSize: 13, textAlign: 'center', marginTop: 5 }}>Top Rated </Text>
-                                            </Col>
-                                        </Row>
+                                    <Col size={5} style={{ flexDirection: 'row', marginLeft: 5, }} onPress={() => this.sortByTopRatings(filteredDoctorData)}>
+
+                                        <Col size={1.1} >
+                                            <Icon name='ios-arrow-down' style={{ color: 'gray', fontSize: 20, marginTop: 10 }} />
+                                        </Col>
+                                        <Col size={8.9} style={{ justifyContent: 'center' }}>
+                                            <Text uppercase={false} style={{ fontFamily: 'OpenSans', color: '#000', fontSize: 13, textAlign: 'center', marginTop: 5 }}>Top Rated </Text>
+                                        </Col>
+
                                     </Col>
-                                    <Col style={{ width: '45%', alignItems: 'flex-start', flexDirection: 'row', borderLeftColor: 'gray', borderLeftWidth: 1 }} onPress={() => this.navigateToFilters()}>
-                                        <Row>
-                                            <Col style={{ width: '35%', marginLeft: 10 }}>
-                                                <Icon name='ios-funnel' style={{ color: 'gray' }} />
-                                            </Col>
-                                            <Col style={{ width: '65%' }}>
-                                                <Text uppercase={false} style={{ fontFamily: 'OpenSans', color: '#000', fontSize: 13, marginTop: 5, marginLeft: 5, width: '100%' }}>Filters </Text>
-                                            </Col>
-                                        </Row>
+                                    <Col size={5} style={{ flexDirection: 'row', borderLeftColor: '#909090', borderLeftWidth: 0.3 }} onPress={() => this.navigateToFilters()}>
+
+                                        <Col size={1.1} style={{ marginLeft: 10 }}>
+                                            <Icon name='ios-funnel' style={{ color: 'gray', fontSize: 25, marginTop: 5 }} />
+                                        </Col>
+                                        <Col size={8.9} style={{ justifyContent: 'center' }}>
+                                            <Text uppercase={false} style={{ fontFamily: 'OpenSans', color: '#000', fontSize: 13, marginTop: 5, marginLeft: 5, width: '100%', textAlign: 'center' }}>Filters </Text>
+                                        </Col>
+
                                     </Col>
                                 </Row>
                             </Card>
@@ -810,8 +810,8 @@ class doctorSearchList extends Component {
                                                 extraData={this.state.refreshCount}
                                                 keyExtractor={(item, index) => index.toString()}
                                                 renderItem={({ item }) =>
-                                                   item.isDoctorHosptalSponsored === true ? this.renderSponsorDoctorList(item) : null 
-                                                }/>
+                                                    item.isDoctorHosptalSponsored === true ? this.renderSponsorDoctorList(item) : null
+                                                } />
 
                                         </ScrollView>
                                     </View>
@@ -821,8 +821,8 @@ class doctorSearchList extends Component {
                                         extraData={this.state.refreshCount}
                                         keyExtractor={(item, index) => index.toString()}
                                         renderItem={({ item }) =>
-                                        item.isDoctorHosptalSponsored === true ?  null : this.renderDoctorCard(item) 
-                                    } />
+                                            item.isDoctorHosptalSponsored === true ? null : this.renderDoctorCard(item)
+                                        } />
                                 </View>}
                         </View>
                     </Content>
@@ -845,12 +845,12 @@ class doctorSearchList extends Component {
                         <ListItem>
                             <Grid >
                                 <Row onPress={() => this.navigateToBookAppointmentPage(item)}>
-                                    <Col style={{ width: '5%' }}>
-                                    <TouchableOpacity onPress={() => this.props.navigation.navigate("ImageView", { passImage: renderDoctorImage(item), title: 'Profile photo' })}>
-                                        <Thumbnail circle source={renderDoctorImage(item)} style={{ height: 60, width: 60,borderRadius:60/2 }} />
-                                    </TouchableOpacity>
+                                    <Col style={{ width: '10%' }}>
+                                        <TouchableOpacity onPress={() => this.props.navigation.navigate("ImageView", { passImage: renderDoctorImage(item), title: 'Profile photo' })}>
+                                            <Thumbnail circle source={renderDoctorImage(item)} style={{ height: 60, width: 60, borderRadius: 60 / 2 }} />
+                                        </TouchableOpacity>
                                     </Col>
-                                    <Col style={{ width: '78%' }}>
+                                    <Col style={{ width: '73%' }}>
                                         <Row style={{ marginLeft: 55, }}>
                                             <Text style={{ fontFamily: 'OpenSans', fontSize: 12, fontWeight: 'bold' }}>{(item.prefix ? item.prefix + '. ' : '') + (item.first_name || '') + ' ' + (item.last_name || '')}</Text>
                                         </Row>
@@ -866,25 +866,25 @@ class doctorSearchList extends Component {
                                     </Col>
                                     <Col style={{ width: '17%' }}>
                                         <Row>
-                                            <TouchableOpacity>
+                                            <TouchableOpacity style={{paddingBottom:10,paddingTop:10,paddingRight:10,paddingLeft:10}} onPress={() => this.addToWishList(item.doctor_id)}>
                                                 {isLoggedIn ?
-                                                    <Icon name="heart" onPress={() => this.addToWishList(item.doctor_id)}
+                                                    <Icon name="heart" 
                                                         style={patientWishListsDoctorIds.includes(item.doctor_id) ? { marginLeft: 20, color: '#B22222', fontSize: 20 } : { marginLeft: 20, borderColor: '#fff', fontSize: 20 }}>
                                                     </Icon> : null}
                                             </TouchableOpacity>
                                         </Row>
-                                    {item.primeDocOnNonPrimeList === true ? 
-                                        <Row>
-                                            <View style={{ position: 'absolute', marginLeft: 15, alignSelf: 'center' }}>
-                                                <Image square source={vipLogo} style={{ height: 30, width: 30 }} />
-                                            </View>
-                                        </Row> 
-                                    :
-                                        <Row>
-                                             <Text style={{ fontFamily: 'OpenSans', marginTop:20,fontSize:12,marginLeft:15 }}>{this.getDistance(item.doctorIdHostpitalId)}</Text>
-                                        </Row> 
-                                    }
-                                      
+                                        {item.primeDocOnNonPrimeList === true ?
+                                            <Row>
+                                                <View style={{ position: 'absolute', marginLeft: 15, alignSelf: 'center' }}>
+                                                    <Image square source={vipLogo} style={{ height: 30, width: 30 }} />
+                                                </View>
+                                            </Row>
+                                            :
+                                            <Row>
+                                                <Text style={{ fontFamily: 'OpenSans', marginTop: 20, fontSize: 12, marginLeft: 15 }}>{this.getDistance(item.doctorIdHostpitalId)}</Text>
+                                            </Row>
+                                        }
+
                                     </Col>
                                 </Row>
 
@@ -926,7 +926,7 @@ class doctorSearchList extends Component {
                                 </Row>
 
 
-                                           
+
                                 <Row style={{ borderTopColor: '#000', borderTopWidth: 0.4, marginTop: 5 }} >
                                     <Col style={{ width: "5%" }}>
 
@@ -951,7 +951,7 @@ class doctorSearchList extends Component {
                                     <View>
 
                                         <Row style={{ marginTop: 10 }}>
-                                            <Text style={{ fontSize: 13, fontFamily: 'OpenSans' }}>Select appoinment date and time</Text>
+                                            <Text style={{ fontSize: 13, fontFamily: 'OpenSans' }}>Choose appointment date and time</Text>
                                         </Row>
                                         {this.renderDatesOnFlatlist(item.slotData, selectedDatesByDoctorIds[item.doctorIdHostpitalId] || this.state.currentDate, item.doctorIdHostpitalId)}
                                         {
@@ -963,7 +963,7 @@ class doctorSearchList extends Component {
                                         <View style={{ borderTopColor: '#000', borderTopWidth: 0.5, marginTop: 10 }}>
                                             <Row style={{ marginTop: 10 }}>
                                                 <Col size={10} style={{ alignContent: 'flex-start', alignItems: 'flex-start' }}>
-                                                    <Text note style={{ fontSize: 12, alignSelf: 'flex-start', fontFamily: 'OpenSans' }}>Selected Appointment on</Text>
+                                                    <Text  style={{ fontSize: 12, alignSelf: 'flex-start', fontFamily: 'OpenSans' }}>Selected Appointment on</Text>
                                                     <Text style={{ alignSelf: 'flex-start', color: '#000', fontSize: 12, fontFamily: 'OpenSans', marginTop: 5 }}>{selectedSlotItemByDoctorIds[item.doctorIdHostpitalId] ? formatDate(selectedSlotItemByDoctorIds[item.doctorIdHostpitalId].slotStartDateAndTime, 'ddd DD MMM, h:mm a') : null}</Text>
                                                 </Col>
 

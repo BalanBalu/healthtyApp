@@ -25,7 +25,7 @@ export default class MapBox extends React.Component {
             loading: false,
             coordinates: null,
             center: [],
-            zoom: 12,
+            zoom: 15,
             isFinisedLoading: false,
             locationFullText: null,
             showAllAddressFields: false,
@@ -38,11 +38,11 @@ export default class MapBox extends React.Component {
                 no_and_street: null,
                 address_line_1: null,
                 city: null,
+                post_office_name: null,
                 district: null,
                 state: null,
                 country: null,
-                pin_code: null,
-                post_office_name: null
+                pin_code: null
             }
         }
         this.onPress = this.onPress.bind(this);
@@ -71,8 +71,8 @@ export default class MapBox extends React.Component {
             this._isMounted = true;
             const { navigation } = this.props;
             const fromProfile = navigation.getParam('fromProfile') || false
-            showAllAddressFields = navigation.getParam('mapEdit') || false
-            navigationOption = navigation.getParam('navigationOption') || null
+            let showAllAddressFields = navigation.getParam('mapEdit') || false
+            let navigationOption = navigation.getParam('navigationOption') || null
             let locationData = this.props.navigation.getParam('locationData');
             console.log("locationData" + JSON.stringify(locationData))
             if (fromProfile) {
@@ -123,7 +123,7 @@ export default class MapBox extends React.Component {
                 await this.setState({
                     center: origin_coordinates,
                     coordinates: origin_coordinates,
-                    zoom: 12,
+                    zoom: 15,
                     isFinisedLoading: true
                 })
                 this.updtateLocation(origin_coordinates);
@@ -151,6 +151,7 @@ export default class MapBox extends React.Component {
         }
     }
     formUserAddress(locationData) {
+        console.log("locationData", locationData)
         let locationFullText = '';
         if (locationData.context) {
             for (let i = 0; i < locationData.context.length; i++) {
@@ -188,6 +189,7 @@ export default class MapBox extends React.Component {
             locationFullText = locationData.place_name;
         }
         this.setState({ address: { ...this.state.address }, locationFullText });
+        console.log("address", this.state.address)
         this.setState({ center: locationData.center })
         debugger
     }
@@ -227,18 +229,17 @@ export default class MapBox extends React.Component {
                 address: {
                     no_and_street: this.state.address.no_and_street,
                     address_line_1: this.state.address.address_line_1,
+                    post_office_name: this.state.address.post_office_name,
                     city: this.state.address.city,
                     district: value.District,
                     state: value.State,
                     country: value.Country,
-                    pin_code: this.state.address.pin_code,
-                    post_office_name: this.state.address.post_office_name
+                    pin_code: this.state.address.pin_code
                 }
 
             })
         }
     }
-
 
     updateAddressObject(addressNode, value) {
         let statusCopy = Object.assign({}, this.state);

@@ -3,7 +3,7 @@ import { Container, Content, Text, Button, Toast, Item, List, ListItem, Card, In
 import { Col, Row, Grid } from 'react-native-easy-grid';
 import { StyleSheet, Image, AsyncStorage, TouchableOpacity, Platform } from 'react-native';
 import { FlatList } from 'react-native-gesture-handler';
-import { RadioButton, Checkbox } from 'react-native-paper';
+import { RadioButton } from 'react-native-paper';
 import { NavigationEvents } from 'react-navigation';
 import { fetchUserProfile } from '../../../providers/profile/profile.action';
 import { dateDiff } from '../../../../setup/helpers';
@@ -220,7 +220,7 @@ class LabConfirmation extends Component {
         return totalAmount;
     }
 
-
+    
     proceedToLabTestAppointment = async (paymentMode) => {
         let { patientDetails, packageDetails, selectedAddress, itemSelected } = this.state
         try {
@@ -338,20 +338,23 @@ class LabConfirmation extends Component {
                                 <Row>
                                     <Col size={3}>
                                         <Row style={{ alignItems: 'center' }}>
-                                            <Checkbox color="#775DA3"
-                                                status={this.state.selfChecked ? 'checked' : 'unchecked'}
-                                                onPress={async () => { await this.setState({ selfChecked: !this.state.selfChecked }), this.onChangeSelf() }}
-                                            />
-                                            <Text style={{ fontFamily: 'OpenSans', fontSize: 12, color: '#000' }}>Self</Text>
+                                          
+                                             <CheckBox style={{borderRadius:5}}
+                                             status={this.state.selfChecked ? true : false}
+                                               checked={this.state.selfChecked}
+                                               onPress={async () => { await this.setState({ selfChecked: !this.state.selfChecked }), this.onChangeSelf() }}
+                                             />
+                                            <Text style={{ fontFamily: 'OpenSans', fontSize: 12, color: '#000',marginLeft:20 }}>Self</Text>
                                         </Row>
                                     </Col>
                                     <Col size={3}>
                                         <Row style={{ alignItems: 'center' }}>
-                                            <Checkbox color="#775DA3"
-                                                status={this.state.othersChecked ? 'checked' : 'unchecked'}
-                                                onPress={async () => { await this.setState({ othersChecked: !this.state.othersChecked }), this.onChangeCheckBox() }}
-                                            />
-                                            <Text style={{ fontFamily: 'OpenSans', fontSize: 12, color: '#000' }}>Others</Text>
+                                             <CheckBox style={{borderRadius:5}}
+                                             status={this.state.othersChecked ? true : false}
+                                               checked={this.state.othersChecked}
+                                               onPress={async () => { await this.setState({ othersChecked: !this.state.othersChecked }), this.onChangeCheckBox() }}
+                                               />
+                                            <Text style={{ fontFamily: 'OpenSans', fontSize: 12, color: '#000' ,marginLeft:20}}>Others</Text>
                                         </Row>
                                     </Col>
                                     <Col size={4}>

@@ -1,4 +1,4 @@
-import { postService, putService,getService } from '../../../setup/services/httpservices';
+import { postService, putService, getService } from '../../../setup/services/httpservices';
 import { AsyncStorage } from 'react-native';
 export const LOGIN_REQUEST = 'AUTH/LOGIN_REQUEST'
 export const LOGIN_HAS_ERROR = 'AUTH/LOGIN_RESPONSE'
@@ -12,15 +12,16 @@ export const AUTH_RESPONSE = 'AUTH_RESPONSE'
 export const NEW_PASSWORD = 'AUTH/NEW_PASSWORD';
 export const REDIRECT_NOTICE = 'AUTH/REDIRECT_NOTICE';
 export const RESET_REDIRECT_NOTICE = 'AUTH/RESET_REDIRECT_NOTICE';
-import {NOTIFICATION_RESET} from '../notification/notification.actions'
+import { NOTIFICATION_RESET } from '../notification/notification.actions'
 import { AuthService } from '../../screens/VideoConsulation/services'
 import { store } from '../../../setup/store';
 import axios from 'axios';
 
 
+
 export async function generateOtpForEmailAndMobile(reqData, userId) {
   try {
-    let endPoint = '/auth/generateOtpForEmailAndMobile/'+userId;
+    let endPoint = '/auth/generateOtpForEmailAndMobile/' + userId;
     let response = await postService(endPoint, reqData);
     let responseData = response.data;
     return responseData
@@ -90,7 +91,7 @@ export async function login(userCredentials, isLoading = true) {
 
 
       const token = respData.token;
-     await setUserLocally(token, respData.data);
+      await setUserLocally(token, respData.data);
 
       store.dispatch({
         type: LOGIN_RESPONSE,
@@ -150,11 +151,11 @@ export async function changePassword(reqData) {
     let endPoint = 'auth/changePassword/'
     let response = await postService(endPoint, reqData);
     let responseData = response.data
-     if (response.data.success == true) {
+    if (response.data.success == true) {
       store.dispatch({
         type: NEW_PASSWORD,
         newPassword: true,
-        message:response.data.message
+        message: response.data.message
       })
     }
     store.dispatch({
@@ -163,7 +164,7 @@ export async function changePassword(reqData) {
     })
     return responseData
   }
-   catch (e) {
+  catch (e) {
     console.log(e);
     store.dispatch({
       type: AUTH_HAS_ERROR,
@@ -203,20 +204,20 @@ export async function logout() {
   await AsyncStorage.removeItem('basicProfileData');
   await AsyncStorage.removeItem('updatedDeviceToken');
   await AsyncStorage.removeItem('ProfileCompletionViaHome');
-  
+
   store.dispatch({
     type: LOGOUT
   }),
-  store.dispatch({
-    type: NOTIFICATION_RESET
-  })
+    store.dispatch({
+      type: NOTIFICATION_RESET
+    })
   AuthService.logout();
 }
 
 
 // Set user token and info locally (AsyncStorage)
-export async function  setUserLocally(token, userData) {
-  
+export async function setUserLocally(token, userData) {
+
   await AsyncStorage.setItem('token', token)
   await AsyncStorage.setItem('userId', userData.userId)
   await AsyncStorage.setItem('isLoggedIn', 'true');

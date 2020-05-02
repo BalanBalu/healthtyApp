@@ -16,6 +16,35 @@ export async function getSearchedMedicines(keyword, isLoading = true) {
   }
 }
 
+export async function getOrderUserReviews(order_id, id, limit) {
+  try {
+    let endPoint = 'user/order_review/' + order_id
+    let response = await getService(endPoint);
+    let respData = response.data;
+    return respData;
+
+  } catch (e) {
+    return {
+      message: 'exception' + e,
+      success: false
+    }
+  }
+}
+export async function InsertOrderReviews(user_id,data) {
+  try {
+    let endPoint = '/user/order_review/' + user_id
+    let response = await postService(endPoint,data);
+    let respData = response.data;
+    return respData;
+
+  } catch (e) {
+    return {
+      message: 'exception' + e,
+      success: false
+    }
+  }
+}
+
 
 /* Medicine Order List */
 
@@ -305,16 +334,16 @@ export async function getmedicineAvailableStatus(data, isLoading = true) {
   }
 }
 
-export async function upDateOrderData(orderId,data) {
+export async function upDateOrderData(orderId, data) {
   try {
-    let endPoint = '/medicine_orders/order/user/'+orderId;
+    let endPoint = '/medicine_orders/order/user/' + orderId;
     let response = await putService(endPoint, data);
 
     let respData = response.data;
     console.log('updateData====================================')
     console.log(JSON.stringify(respData))
     return respData;
-    
+
   } catch (e) {
     return {
       message: 'exception' + e,
