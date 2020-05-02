@@ -529,31 +529,58 @@ const styles = StyleSheet.create({
         borderWidth: 0.5
     },
     defaultDaysTextColor: {
-        color: '#333333', fontFamily: 'OpenSans', fontSize: 13, textAlign: 'center'
+        color: '#333333', 
+        fontFamily: 'OpenSans', 
+        fontSize: 13, 
+        textAlign: 'center'
     },
     selectedDaysTextColor: {
-        color: '#FFFFFF', fontFamily: 'OpenSans', fontSize: 13, textAlign: 'center'
+        color: '#FFFFFF', 
+        fontFamily: 'OpenSans', 
+        fontSize: 13, 
+        textAlign: 'center'
 
     },
     defaultExpTextColor: {
-        color: '#333333', fontFamily: 'OpenSans', fontSize: 10, textAlign: 'center'
+        color: '#333333', 
+        fontFamily: 'OpenSans', 
+        fontSize: 10, 
+        textAlign: 'center'
     },
     selectedExpTextColor: {
-        color: '#FFFFFF', fontFamily: 'OpenSans', fontSize: 10, textAlign: 'center'
+        color: '#FFFFFF', 
+        fontFamily: 'OpenSans', 
+        fontSize: 10, 
+        textAlign: 'center'
     },
     defaultApplyTextColor: {
-        color: '#775DA3', fontFamily: 'OpenSans', fontSize: 13, textAlign: 'center', fontWeight: '500'
+        color: '#775DA3', 
+        fontFamily: 'OpenSans', 
+        fontSize: 13, 
+        textAlign: 'center', 
+        fontWeight: '500'
     },
     enabledApplyTextColor: {
-        color: '#FFFFFF', fontFamily: 'OpenSans', fontSize: 13, textAlign: 'center', fontWeight: '500'
+        color: '#FFFFFF', 
+        fontFamily: 'OpenSans', 
+        fontSize: 13, 
+        textAlign: 'center', 
+        fontWeight: '500'
     },
     headingLabelStyle: {
-        fontFamily: 'OpenSans', color: 'gray', fontSize: 13
+        fontFamily: 'OpenSans',  
+        fontSize: 13,
+        fontWeight:'bold'
     },
     genderTextStyles: {
-        fontFamily: 'OpenSans', fontSize: 13, marginLeft: 15, color: '#333333'
+        fontFamily: 'OpenSans', 
+        fontSize: 13, 
+        marginLeft: 15, 
+        color: '#333333'
     },
     genderTouchableStyles: {
-        alignItems: 'center', justifyContent: 'center', flexDirection: 'row'
+        alignItems: 'center', 
+        justifyContent: 'center', 
+        flexDirection: 'row'
     },
 })

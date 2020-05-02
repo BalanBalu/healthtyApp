@@ -4,7 +4,6 @@ import { Container, Content, View, Text, Item, Radio, Row, Col, Form, Button, To
 import { StyleSheet, TextInput, AsyncStorage } from 'react-native'
 import { FlatList } from 'react-native-gesture-handler';
 import Spinner from "../../../components/Spinner";
-import { RadioButton } from 'react-native-paper';
 import { getCurrentVersion } from '../../providers/profile/profile.action';
 import { onlySpaceNotAllowed, chatIssue, pharmacyIssue } from '../../common';
 // import { statusValue } from '../../../setup/helpers';
@@ -155,17 +154,12 @@ class ReportIssue extends Component {
                   keyExtractor={(item, index) => index.toString()}
                   renderItem={({ item }) =>
                     <View>
-                      <Row style={{ marginTop: 10 }}>
+                      <Row style={{ marginTop: 10,alignItems:'center' }}>
+                        <Radio standardStyle={true}
+                               selected={this.state.issueType === item ? true : false} 
+                               onPress={()=>   this.setState({ issueType: item })}  />
 
-                        <RadioButton.Group
-                          onValueChange={value => {
-                            this.setState({ issueType: value, })
-                          }}
-                          value={this.state.issueType}>
-                          <RadioButton value={item} style={{ marginTop: -5 }} />
-                        </RadioButton.Group>
-
-                        <Text style={{ fontFamily: 'OpenSans', fontSize: 16, lineHeight: 20, marginLeft: 10, marginTop: 8, width: '80%' }}>{item.issue}</Text>
+                        <Text style={{ fontFamily: 'OpenSans', fontSize: 16, lineHeight: 20, marginLeft: 10,  width: '80%' }}>{item.issue}</Text>
                       </Row>
                       {this.state.issueType == item ?
                         <Row style={{ marginTop: 10, marginBottom: 10 }}>
