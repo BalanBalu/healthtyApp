@@ -562,10 +562,9 @@ class Home extends Component {
                                     </Row>
                                     <Row style={styles.secondRow}>
                                         <Col style={{ width: '100%', }}>
-                                        <Text style={styles.mainText}>{translate('Pharmacy', { default: 'Pharmacy'})}</Text>
+                                        <Text style={styles.mainText}>{translate('Pharmacy')}</Text>
                                             <Text style={styles.subText}> Get medicines delivered to home</Text>
                                         </Col>
-
                                     </Row>
                                 </Card>
                             </TouchableOpacity>

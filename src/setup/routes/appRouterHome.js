@@ -172,11 +172,11 @@ const HomeStack = createStackNavigator({
               </View>
             </TouchableOpacity>
 
-            <TouchableOpacity onPress={() => { setI18nConfig('en' ) }} >
+            {/* <TouchableOpacity onPress={() => { setI18nConfig('en' ) }} >
               <View>
                 <Icon name={IS_IOS ? 'ios-more' : "md-more"} style={{ color: '#fff', marginRight: 15, fontFamily: 'opensans-semibold' }}></Icon>
               </View>
-            </TouchableOpacity>
+            </TouchableOpacity> */}
 
                       
           </Row>

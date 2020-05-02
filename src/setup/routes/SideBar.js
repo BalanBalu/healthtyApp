@@ -1,5 +1,5 @@
 import React from "react";
-import { AppRegistry, Image, StatusBar,TouchableOpacity, AsyncStorage} from "react-native";
+import { AppRegistry, Image, StatusBar,TouchableOpacity, FlatList, AsyncStorage} from "react-native";
 import { Container, Content, Text, List, ListItem,View,Row,Col,Footer,FooterTab,Icon,Button,Body } from "native-base";
 import { DragwerLogos } from './appRouterHome';
 import { logout } from '../../modules/providers/auth/auth.actions';
@@ -92,39 +92,48 @@ async getBasicData() {
                </Col>
               </Row> 
           </View>
-          
-<View style={{marginTop:10}}>
-          <List style={{borderBottomWidth:0,}}
-            dataArray={menuSubMenus}
-            renderRow={data => {
-              return ( 
-                <ListItem style={{borderBottomWidth:0, }}
-                small>
-                  <Body style={{borderBottomWidth:0,marginTop:-18}}>
-                  <ListItem itemDivider style={{backgroundColor:'#e6e1ed'}}>
-                  <Text style={{fontFamily:'OpenSans',fontSize:15, justifyContent: 'center',fontWeight:'600'  }}>{data.menuName}</Text> 
-                                </ListItem>
-                      <List style={{borderBottomWidth:0,}}
-                        dataArray={data.subMenus}
-                        renderRow={data => {
-                        return (
-                           <ListItem style={{borderBottomWidth:0,   backgroundColor: '#FFF'  }}
+
+          <FlatList
+            data={menuSubMenus}
+            keyExtractor={(item, index) => index.toString()}
+            ItemSeparatorComponent={() => 
+              <View
+                style={{
+                  borderBottomColor: 'transparent',
+                  borderWidth: 0.5,
+                }}
+              />
+            }
+            renderItem={({ item }) =>
+              <View>
+                <ListItem 
+                  onPress={() => item.routeName ? this.props.navigation.navigate(item.routeName) : null }
+                  itemDivider style={{backgroundColor:'#e6e1ed'}}>
+                  <Text style={{fontFamily:'OpenSans',fontSize:15, justifyContent: 'center',fontWeight:'600'  }}>{item.menuName}</Text> 
+                </ListItem>
+                 <FlatList
+                  data={item.subMenus}
+                  keyExtractor={(item, index) => index.toString()}
+                   renderItem={({ item }) =>
+                      <ListItem style={{borderBottomWidth:0,   backgroundColor: '#FFF'  }}
                             small
-                            onPress={() => this.props.navigation.navigate(data.routeName)}>
-                            <Image square source={data.icon} 
+                            onPress={() => this.props.navigation.navigate(item.routeName)}>
+                            <Image square source={item.icon} 
                               style={{ height: 20, width: 20,}}
                             />  
                              <Body style={{borderBottomWidth:0,}}>
-                              <Text style={{fontFamily:'OpenSans',fontSize:15 }}>{data.name}</Text> 
+                              <Text style={{fontFamily:'OpenSans',fontSize:15 }}>{item.name}</Text> 
                           </Body> 
-                        </ListItem>
-                        );
-                      }}/>
-                  </Body> 
-            </ListItem> )
-            }}/>  
+                      </ListItem>
+                }/>
+              </View>
+            }/>
+         
+
+
           
-           <ListItem avatar style={{marginTop:-15}}>
+        <View style={{marginTop:10}}>
+            <ListItem avatar style={{marginTop:-15}}>
               <Icon name='ios-power' style={{fontSize:15,color:'#7D4ac1',marginLeft:22,
             }}/>
             <Body style={{borderBottomWidth:0,}}>

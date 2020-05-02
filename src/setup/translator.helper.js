@@ -18,10 +18,9 @@ const translate = memoize(
 
 const setI18nConfig = (languageShortForm) => {
   // fallback if no available language fits
-  const fallback = { languageTag:  languageShortForm || 'ta', isRTL: false };
+  const fallback = { languageTag:  languageShortForm || 'en', isRTL: false };
 
   const { languageTag, isRTL } = /* RNLocalize.findBestAvailableLanguage(Object.keys(translationGetters)) || */ fallback;
-  console.log(languageTag);
   // clear translation cache
   translate.cache.clear();
   // update layout direction
