@@ -47,7 +47,21 @@ class LabAppointmentInfo extends Component {
 
   async  navigateLabConfirmation() {
     try {
-      this.props.navigation.navigate('labConfirmation', { packageDetails: this.state.data.labInfo })
+      const { data } = this.state;
+      this.packageDetails = {
+        lab_id: data.lab_id,
+        lab_test_categories_id: data.lab_test_categories_id,
+        lab_test_descriptiion: data.lab_test_descriptiion,
+        fee: data.fee,
+        lab_name: data.labInfo.lab_name,
+        category_name: data.labCategoryInfo.category_name,
+        extra_charges: data.labInfo.extra_charges,
+        appointment_starttime: data.appointment_starttime,
+        appointment_endtime: data.appointment_endtime,
+        mobile_no: data.labInfo.mobile_no,
+        location: data.labInfo.location
+      }
+      this.props.navigation.navigate('labConfirmation', { packageDetails: this.packageDetails })
     }
     catch (e) {
       console.log(e)
@@ -564,8 +578,6 @@ const styles = StyleSheet.create({
     marginLeft: -10,
     marginBottom: -10,
     marginRight: -10,
-    //  justifyContent:'center',
-    //  alignItems:"center",ss
     height: 35,
     marginTop: -10
   },
