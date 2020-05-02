@@ -2,6 +2,8 @@ import { getService, putService } from '../../../setup/services/httpservices';
 
 export const SET_PATIENT_WISH_LIST_LAB_IDS = 'LAB/SET_PATIENT_WISH_LIST_LAB_IDS';
 export const SET_WISHLIST_LAB_COUNT_BY_IDS = 'LAB/SET_WISHLIST_LAB_COUNT_BY_IDS';
+export const SET_REVIEWS_COUNT_BY_LAB_IDS = 'LAB/SET_REVIEWS_COUNT_BY_LAB_IDS';
+
 import { store } from '../../../setup/store';
 
 
@@ -15,12 +17,15 @@ export const getTotalReviewsCount4LabTestService = async (labIds) => {
             const { LabTestData: { reviewCountsByLabIds } } = store.getState();
             const reviewCountList = reviewCountRes.data;
             if (reviewCountList.length != 0) {
-                reviewCountList.map(item => reviewCountsByLabIds[item]);
+                for (i = 0; i < reviewCountList.length; i++) {
+                    reviewCountsByLabIds[reviewCountList[i]._id] = reviewCountList[i];
+                }
             }
             store.dispatch({
                 type: SET_REVIEWS_COUNT_BY_LAB_IDS,
                 data: reviewCountsByLabIds
             })
+            // console.log('reviewCountsByLabIds=====>', reviewCountsByLabIds);
         }
         return reviewCountRes;
 
