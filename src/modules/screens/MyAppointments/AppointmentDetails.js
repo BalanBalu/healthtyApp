@@ -1,4 +1,4 @@
-import React, { PureComponent } from 'react';
+import React, { Component } from 'react';
 import {
   Container, Content, Text, Button, Item, Card, List, ListItem, Left, Right,
   Thumbnail, Body, Icon, Toast, View, CardItem
@@ -17,7 +17,7 @@ import { renderDoctorImage, RenderHospitalAddress, getAllEducation, getAllSpecia
 
 const hasReviewButtonShow = true
 
-class AppointmentDetails extends PureComponent {
+class AppointmentDetails extends Component {
   constructor(props) {
     super(props)
 

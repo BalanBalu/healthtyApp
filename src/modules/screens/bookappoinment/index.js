@@ -1,4 +1,4 @@
-import React, { PureComponent } from 'react';
+import React, { Component } from 'react';
 import {
   Container,
   Content, Text,
@@ -47,7 +47,7 @@ selectedSlotFeeWithoutOffer = null;
 showedFee = null;
 fields = "first_name,last_name,prefix,professional_statement,gender,specialist,education,language,gender_preference,experience,profile_image,hospital";
 
-class BookAppoinment extends PureComponent {
+class BookAppoinment extends Component {
   processedAvailabilityDates = [];
 
   constructor(props) {

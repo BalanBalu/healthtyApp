@@ -1,4 +1,4 @@
-import React, { PureComponent } from 'react';
+import React, { Component } from 'react';
 import { Container, Content, Text, Toast, Button, Card, Item, List, ListItem, Left, Thumbnail, Icon } from 'native-base';
 import { Col, Row, Grid } from 'react-native-easy-grid';
 import { connect } from 'react-redux'
@@ -45,7 +45,7 @@ let currentDoctorOrder = 'ASC';
 let doctorDataWithAviablityInMap = new Map();
 const SHOW_NO_OF_PRIME_DOCS_ON_PRIME_LIST_SWIPPER_LIST = 2;
 
-class doctorSearchList extends PureComponent {
+class doctorSearchList extends Component {
     processedDoctorIds = [];
     processedDoctorData = [];
     processedDoctorDetailsData = [];
