@@ -866,9 +866,9 @@ class doctorSearchList extends PureComponent {
                                     </Col>
                                     <Col style={{ width: '17%' }}>
                                         <Row>
-                                            <TouchableOpacity>
+                                            <TouchableOpacity style={{paddingBottom:10,paddingTop:10,paddingRight:10,paddingLeft:10}} onPress={() => this.addToWishList(item.doctor_id)}>
                                                 {isLoggedIn ?
-                                                    <Icon name="heart" onPress={() => this.addToWishList(item.doctor_id)}
+                                                    <Icon name="heart" 
                                                         style={patientWishListsDoctorIds.includes(item.doctor_id) ? { marginLeft: 20, color: '#B22222', fontSize: 20 } : { marginLeft: 20, borderColor: '#fff', fontSize: 20 }}>
                                                     </Icon> : null}
                                             </TouchableOpacity>

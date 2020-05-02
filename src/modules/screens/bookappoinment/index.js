@@ -452,7 +452,7 @@ class BookAppoinment extends PureComponent {
         {isLoading ?
           <Loader style='appointment' /> :
           <Content style={styles.bodyContent} contentContainerStyle={{ flex: 0, padding: 10 }}>
-            <Card style={{ borderBottomWidth: 2 }}>
+            <Card style={{ borderBottomWidth: 0.3 }}>
               <Grid >
                 <Row >
                   <Col style={{ width: '5%', marginLeft: 20, marginTop: 10 }}>
@@ -473,8 +473,8 @@ class BookAppoinment extends PureComponent {
                   <Col style={{ width: '17%' }}>
 
                     {isLoggedIn ?
-                      <TouchableOpacity>
-                        <Icon name="heart" onPress={() => this.addToWishList(doctorData.doctor_id)}
+                      <TouchableOpacity style={{paddingBottom:10,paddingTop:10,paddingRight:10,paddingLeft:10}}  onPress={() => this.addToWishList(doctorData.doctor_id)}>
+                        <Icon name="heart"
                           style={patientWishListsDoctorIds.includes(doctorData.doctor_id) ? { color: '#B22222', fontSize: 20, marginTop: 10 } : { color: '#000000', fontSize: 20, marginTop: 10 }}>
                         </Icon>
                       </TouchableOpacity> : null}
@@ -536,10 +536,10 @@ class BookAppoinment extends PureComponent {
             </Card>
             <Row style={{ marginLeft: 5, marginRight: 5,marginTop:10 }}>
               <Segment>
-                <TouchableOpacity first style={[{ width: '50%', borderBottomWidth: 4, alignItems: 'center', justifyContent: 'center' }, pressTab === 1 ? { borderBottomColor: '#775DA3' } : { borderBottomColor: '#000' }]} onPress={() => { this.onSegemntClick(1) }}>
+                <TouchableOpacity first style={[{ width: '50%', borderBottomWidth: 5, alignItems: 'center', justifyContent: 'center' }, pressTab === 1 ? { borderBottomColor: '#775DA3' } : { borderBottomColor: '#000' }]} onPress={() => { this.onSegemntClick(1) }}>
                   <Text style={{ color: '#000', fontSize: 12, fontFamily: 'OpenSans', textAlign: 'center' }}>About</Text>
                 </TouchableOpacity>
-                <TouchableOpacity style={[{ width: '50%', borderBottomWidth: 4, alignContent: 'center', justifyContent: 'center' }, pressTab === 2 ? { borderBottomColor: '#775DA3' } : { borderBottomColor: '#000' }]} onPress={() => {
+                <TouchableOpacity style={[{ width: '50%', borderBottomWidth: 5, alignContent: 'center', justifyContent: 'center' }, pressTab === 2 ? { borderBottomColor: '#775DA3' } : { borderBottomColor: '#000' }]} onPress={() => {
                   if (!isLoadedUserReview) {
                     this.getUserReview(doctorData.doctor_id);
                   }
@@ -555,7 +555,7 @@ class BookAppoinment extends PureComponent {
               <Content>
                 {doctorData.professional_statement ?
                   <View>
-                    <View style={{ marginLeft: 5, marginRight: 5 }}>
+                    <View style={{ marginLeft: 5, marginRight: 5,marginTop:10  }}>
                       <Text note style={{ fontFamily: 'OpenSans', fontSize: 12, }}>Description</Text>
                       {this.state.showMoreOption === false ?
                         <Text style={styles.customText}>{(doctorData.professional_statement).slice(0, 100)} <Text style={{ fontFamily: 'OpenSans', color: 'blue', fontSize: 14 }} onPress={() => this.setState({ showMoreOption: true })}>{doctorData.professional_statement.length > 100 ? '...View more' : ''}</Text></Text> :
@@ -580,8 +580,8 @@ class BookAppoinment extends PureComponent {
                       : this.noAvailableSlots()
                   }
 
-                  <View style={{ borderTopColor: '#000', borderTopWidth: 0.5, marginTop: 10 }}>
-                    <Row style={{ marginTop: 10 }}>
+                  <View style={{ borderTopColor: '#000', borderTopWidth: 0.3, marginTop: 10 }}>
+                    <Row style={{ marginTop: 10,paddingTop:10 }}>
                       <Text  style={{ fontSize: 12, fontFamily: 'OpenSans' }}>Selected Appointment on</Text>
                     </Row>
                     <Row style={{ marginTop: 5 }}>
@@ -597,8 +597,8 @@ class BookAppoinment extends PureComponent {
                 {this.renderHospitalLocation(this.selectedSlotLocationShowed, doctorData.doctorId)}
 
                 {doctorData.awards ?
-                  <View style={{ marginLeft: 5, marginRight: 5, borderTopColor: 'gray', borderTopWidth: 0.7, marginBottom: 5 }}>
-                    <Row style={{ marginTop: 10 }}>
+                  <View style={{ marginLeft: 5, marginRight: 5, borderTopColor: 'gray', borderTopWidth: 0.3, marginBottom: 5,marginTop:10  }}>
+                    <Row style={{ marginTop: 10 ,paddingTop:10}}>
                       <Icon name='ios-medkit' style={{ fontSize: 20, color: 'gray' }} />
                       <Text style={{ fontFamily: 'OpenSans', fontSize: 13, fontWeight: 'bold', marginLeft: 10, marginTop: 1 }}>Awards</Text>
                     </Row>
@@ -610,8 +610,8 @@ class BookAppoinment extends PureComponent {
                       } keyExtractor={(item, index) => index.toString()} />
                   </View> : null}
 
-                <View style={{ marginLeft: 5, marginRight: 5, borderTopColor: 'gray', borderTopWidth: 1, }}>
-                  <Row style={{ marginTop: 10 }}>
+                <View style={{ marginLeft: 5, marginRight: 5, borderTopColor: 'gray', borderTopWidth: 0.3,marginTop:10  }}>
+                  <Row style={{ marginTop: 10,paddingTop:10 }}>
                     <Icon name='ios-medkit' style={{ fontSize: 20, color: 'gray' }} />
                     <Text style={{ fontFamily: 'OpenSans', fontSize: 13, fontWeight: 'bold', marginLeft: 10, marginTop: 1 }}>Language Spoken</Text>
                   </Row>
@@ -631,8 +631,8 @@ class BookAppoinment extends PureComponent {
                   </Row>
                 </View>
 
-                <View style={{ marginLeft: 5, marginRight: 5, borderTopColor: 'gray', borderTopWidth: 1, marginTop: 10 }}>
-                  <Row style={{ marginTop: 10 }}>
+                <View style={{ marginLeft: 5, marginRight: 5, borderTopColor: 'gray', borderTopWidth: 0.3, marginTop: 10 }}>
+                  <Row style={{ marginTop: 10,paddingTop:10 }}>
                     <Icon name='ios-medkit' style={{ fontSize: 20, color: 'gray' }} />
                     <Text style={{ fontFamily: 'OpenSans', fontSize: 13, fontWeight: 'bold', marginLeft: 10, marginTop: 1 }}>Services</Text>
                   </Row>
@@ -648,7 +648,7 @@ class BookAppoinment extends PureComponent {
                           this.setState({ categoryShownObj })
                           console.log(CATEGORY_BASE_URL + item.category_id + '.png');
                         }}>
-                          <Row style={{ marginLeft: 20, marginTop: 20, borderTopColor: 'gray', borderTopWidth: 0.5 }}>
+                          <Row style={{ marginLeft: 20, marginTop: 20, borderTopColor: 'gray', borderTopWidth: 0.3 }}>
                             <Col style={{ width: '22%', paddingTop: 10 }}>
                               <Image square source={{ uri: CATEGORY_BASE_URL + item.category_id + '.png' }}
                                 style={{ height: 50, width: 50, borderRadius: 5 }} />
@@ -665,7 +665,7 @@ class BookAppoinment extends PureComponent {
                             extraData={categoryShownObj}
                             keyExtractor={(item, index) => index.toString()}
                             renderItem={({ item }) =>
-                              <Row style={{ marginLeft: 100, borderTopColor: 'gray', borderTopWidth: 0.5 }}>
+                              <Row style={{ marginLeft: 100, borderTopColor: 'gray', borderTopWidth: 0.3 }}>
                                 <Text style={{ fontSize: 18 }}>{'\u2022'}</Text>
                                 <Text style={{ flex: 1, paddingLeft: 5, fontSize: 12, fontFamily: 'OpenSans', marginTop: 6 }}>{item.service_name}</Text>
                               </Row>
