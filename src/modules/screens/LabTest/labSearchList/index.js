@@ -4,13 +4,14 @@ import { Col, Row, Grid } from 'react-native-easy-grid';
 import { connect } from 'react-redux'
 import { StyleSheet, TouchableOpacity, View, FlatList, AsyncStorage, Dimensions, ScrollView, Image } from 'react-native';
 import { searchByLabDetailsService, fetchLabTestAvailabilitySlotsService } from '../../../providers/labTest/basicLabTest.action';
-import { RenderFavoritesComponent, RenderFavoritesCount, RenderStarRatingCount, RenderPriceDetails, RenderOfferDetails, renderLabTestImage, RenderNoSlotsAvailable, RenderListNotFound, enumerateStartToEndDates } from '../labTestCommon';
+import { RenderFavoritesComponent, RenderFavoritesCount, RenderStarRatingCount, RenderPriceDetails, RenderOfferDetails, RenderAddressInfo, renderLabTestImage, RenderNoSlotsAvailable, RenderListNotFound } from '../labTestComponents';
+import { enumerateStartToEndDates } from '../CommonLabTest'
 import { Loader } from '../../../../components/ContentLoader';
 import { formatDate, addMoment, getMoment } from '../../../../setup/helpers';
 import styles from '../styles'
 import RenderDates from './RenderDateList';
 import RenderSlots from './RenderSlots';
-import { getWishList4PatientByLabTestService, addFavoritesToLabByUserService, getTotalWishList4LabTestService } from '../../../providers/labTest/labTestBookAppointment.action'
+import { getWishList4PatientByLabTestService, addFavoritesToLabByUserService, getTotalWishList4LabTestService, getTotalReviewsCount4LabTestService } from '../../../providers/labTest/labTestBookAppointment.action'
 
 const CALL_AVAILABILITY_SERVICE_BY_NO_OF_IDS_COUNT = 5;
 
@@ -78,6 +79,8 @@ class labSearchList extends Component {
                 this.totalLabIdsArryBySearched = labListData.map(item => String(item.labInfo.lab_id));
                 await this.setState({ labListData });
                 this.getTotalWishList4LabTest(this.totalLabIdsArryBySearched);
+                this.getTotalReviewsCount4LabTest(this.totalLabIdsArryBySearched);
+
             }
         } catch (ex) {
             Toast.show({
@@ -104,6 +107,20 @@ class labSearchList extends Component {
             }
         }
     }
+    getTotalReviewsCount4LabTest = async (labIdsArry) => {
+        try {
+            getTotalReviewsCount4LabTestService(labIdsArry);
+        } catch (Ex) {
+            console.log('Ex is getting on get Reviews count for Lab====>', Ex)
+            return {
+                success: false,
+                statusCode: 500,
+                error: Ex,
+                message: `Exception while getting on Reviews count for Lab : ${Ex}`
+            }
+        }
+    }
+
 
 
     getLabIdsArrayByInput = labIdFromItem => {
@@ -225,6 +242,14 @@ class labSearchList extends Component {
 
     onPressToContinue4PaymentReview(labData, selectedSlotItem) {   // navigate to next further process
         const { labInfo, labCatInfo } = labData;
+        if (!selectedSlotItem) {
+            Toast.show({
+                text: 'Please Select a Slot to continue booking',
+                type: 'warning',
+                duration: 3000
+            })
+            return;
+        }
         let packageDetails = {
             lab_id: labInfo.lab_id,
             lab_test_categories_id: labCatInfo._id,
@@ -246,7 +271,7 @@ class labSearchList extends Component {
 
     renderLabListCards(item) {
 
-        const { LabTestData: { patientWishListLabIds, wishListCountByLabIds } } = this.props;
+        const { LabTestData: { patientWishListLabIds, wishListCountByLabIds, reviewCountsByLabIds } } = this.props;
         const { expandedLabIdToShowSlotsData, isLoggedIn } = this.state;
         const slotDataObj4Item = this.availableSlotsDataMap.get(String(item.labInfo.lab_id)) || {}
         return (
@@ -266,16 +291,9 @@ class labSearchList extends Component {
                                         <Row style={{ marginLeft: 55, }}>
                                             <Text note style={{ fontFamily: 'OpenSans', marginTop: 2, fontSize: 11 }}>{item.labCatInfo.category_name}</Text>
                                         </Row>
-                                        <Row style={{ marginLeft: 55, }}>
-                                            {item.labInfo.location && item.labInfo.location.address ?
-                                                <View>
-                                                    <Text note style={{ fontFamily: 'OpenSans', marginTop: 5, fontSize: 11, color: '#4c4c4c' }}>{
-                                                        item.labInfo.location.address.no_and_street + ' , ' +
-                                                        item.labInfo.location.address.district + ' , ' +
-                                                        item.labInfo.location.address.city + ' , ' +
-                                                        item.labInfo.location.address.state}</Text>
-                                                </View> : null}
-                                        </Row>
+                                        <RenderAddressInfo
+                                            addressInfo={item.labInfo.location && item.labInfo.location.address ? item.labInfo.location.address : null}
+                                        />
                                     </Col>
                                     <Col style={{ width: '15%' }}>
                                         <RenderFavoritesComponent
@@ -287,15 +305,16 @@ class labSearchList extends Component {
                                 </Row>
                                 <Row style={{ marginTop: 10 }}>
                                     <RenderFavoritesCount
-                                        favoritesCount={wishListCountByLabIds[item.labInfo.lab_id]}
+                                        favoritesCount={wishListCountByLabIds[item.labInfo.lab_id] ? wishListCountByLabIds[item.labInfo.lab_id] : '0'}
                                     />
                                     <RenderStarRatingCount
+                                        totalRatingCount={reviewCountsByLabIds[item.labInfo.lab_id] ? reviewCountsByLabIds[item.labInfo.lab_id].average_rating : ' 0'}
                                     />
                                     <RenderOfferDetails
-                                        offerInfo={item.labInfo && item.labInfo.labPriceInfo && item.labInfo.labPriceInfo[0] && item.labInfo.labPriceInfo[0].offer}
+                                        offerInfo={item.labInfo && item.labInfo.labPriceInfo && item.labInfo.labPriceInfo[0] && item.labInfo.labPriceInfo[0].offer ? item.labInfo.labPriceInfo[0].offer : ' '}
                                     />
                                     <RenderPriceDetails
-                                        priceInfo={item.labInfo && item.labInfo.labPriceInfo && item.labInfo.labPriceInfo[0] && item.labInfo.labPriceInfo[0].price}
+                                        priceInfo={item.labInfo && item.labInfo.labPriceInfo && item.labInfo.labPriceInfo[0] && item.labInfo.labPriceInfo[0].price ? item.labInfo.labPriceInfo[0].price : ' '}
                                     />
                                 </Row>
                                 <Row  >
@@ -321,7 +340,9 @@ class labSearchList extends Component {
                                         {
                                             slotDataObj4Item[this.selectedDateObj[item.labInfo.lab_id] || this.state.currentDate] !== undefined ?
                                                 this.renderAvailableSlots(item.labInfo.lab_id, slotDataObj4Item[this.selectedDateObj[item.labInfo.lab_id] || this.state.currentDate])
-                                                : <RenderNoSlotsAvailable />
+                                                : <RenderNoSlotsAvailable
+                                                    text={'No Slots Available'}
+                                                />
                                         }
                                         <View style={{ borderTopColor: '#000', borderTopWidth: 0.5, marginTop: 10 }}>
                                             <Row style={{ marginTop: 10 }}>
@@ -329,7 +350,6 @@ class labSearchList extends Component {
                                                     <Text note style={{ fontSize: 12, alignSelf: 'flex-start', fontFamily: 'OpenSans' }}>Selected Appointment on</Text>
                                                     <Text style={{ alignSelf: 'flex-start', color: '#000', fontSize: 12, fontFamily: 'OpenSans', marginTop: 5 }}>{this.selectedSlotItemByLabIdsObj[item.labInfo.lab_id] ? formatDate(this.selectedSlotItemByLabIdsObj[item.labInfo.lab_id].slotStartDateAndTime, 'ddd DD MMM, h:mm a') : null}</Text>
                                                 </Col>
-                                                {/* <Col style={{ width: '35%' }}></Col> */}
                                                 <Col size={4}>
                                                     <TouchableOpacity
                                                         onPress={() => { this.onPressToContinue4PaymentReview(item, this.selectedSlotItemByLabIdsObj[item.labInfo.lab_id], item.labInfo.lab_id) }}
@@ -382,7 +402,7 @@ class labSearchList extends Component {
                                 </Row>
                             </Card>
                             <View>
-                                {labListData.length === 0 ? <RenderListNotFound /> :
+                                {labListData.length === 0 ? <RenderListNotFound text={' No Lab list found!'} /> :
                                     <View>
                                         <FlatList
                                             data={labListData}

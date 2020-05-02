@@ -5,6 +5,38 @@ export const SET_WISHLIST_LAB_COUNT_BY_IDS = 'LAB/SET_WISHLIST_LAB_COUNT_BY_IDS'
 import { store } from '../../../setup/store';
 
 
+
+export const getTotalReviewsCount4LabTestService = async (labIds) => {
+    try {
+        const endPoint = 'lab-test/user/reviewsCount/' + labIds;
+        const response = await getService(endPoint);
+        const reviewCountRes = response.data;
+        if (reviewCountRes.success) {
+            const { LabTestData: { reviewCountsByLabIds } } = store.getState();
+            const reviewCountList = reviewCountRes.data;
+            if (reviewCountList.length != 0) {
+                reviewCountList.map(item => reviewCountsByLabIds[item]);
+            }
+            store.dispatch({
+                type: SET_REVIEWS_COUNT_BY_LAB_IDS,
+                data: reviewCountsByLabIds
+            })
+        }
+        return reviewCountRes;
+
+    } catch (Ex) {
+        console.log('Ex is getting on get Reviews count for Lab====>', Ex)
+        return {
+            success: false,
+            statusCode: 500,
+            error: Ex,
+            message: `Exception while getting on Reviews count for Lab : ${Ex}`
+        }
+    }
+}
+
+
+
 export const getTotalWishList4LabTestService = async (labId) => {
     try {
         const endPoint = 'lab-test/wishList/' + labId;

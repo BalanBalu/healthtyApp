@@ -1,11 +1,9 @@
 import React, { Component } from 'react';
-import { Container, Content, Text, Toast, Button, Card, Item, List, ListItem, Left, Thumbnail, Icon } from 'native-base';
+import { Container, Content, Text } from 'native-base';
 import { Col, Row, Grid } from 'react-native-easy-grid';
-import { StyleSheet, TouchableOpacity, View, FlatList, AsyncStorage, Dimensions, ScrollView, Image } from 'react-native';
-import StarRating from 'react-native-star-rating';
+import { StyleSheet, TouchableOpacity, View, FlatList, Dimensions, ScrollView, Image } from 'react-native';
 import { formatDate } from '../../../../setup/helpers';
-// import labSearchList from './index'
-import { reducer } from '../labTestCommon';
+import { reducer } from '../CommonLabTest';
 import styles from '../styles'
 import moment from 'moment';
 
