@@ -93,18 +93,17 @@ async getBasicData() {
               </Row> 
           </View>
           
-
+<View style={{marginTop:10}}>
           <List style={{borderBottomWidth:0,}}
             dataArray={menuSubMenus}
             renderRow={data => {
               return ( 
                 <ListItem style={{borderBottomWidth:0, }}
                 small>
-                  <Body style={{borderBottomWidth:0,}}>
-                      <View style={{ marginLeft: -20,  backgroundColor: 'grey', height: 30,  }}>
-                          <Text style={{fontFamily:'OpenSans',fontSize:15, justifyContent: 'center', marginLeft: 10, marginTop: 3 }}>{data.menuName}</Text> 
-                      </View>
-                      
+                  <Body style={{borderBottomWidth:0,marginTop:-18}}>
+                  <ListItem itemDivider style={{backgroundColor:'#e6e1ed'}}>
+                  <Text style={{fontFamily:'OpenSans',fontSize:15, justifyContent: 'center',fontWeight:'600'  }}>{data.menuName}</Text> 
+                                </ListItem>
                       <List style={{borderBottomWidth:0,}}
                         dataArray={data.subMenus}
                         renderRow={data => {
@@ -125,15 +124,15 @@ async getBasicData() {
             </ListItem> )
             }}/>  
           
-           <ListItem avatar>
-              <Icon name='ios-power' style={{fontSize:15,color:'#7D4ac1',marginLeft:5
+           <ListItem avatar style={{marginTop:-15}}>
+              <Icon name='ios-power' style={{fontSize:15,color:'#7D4ac1',marginLeft:22,
             }}/>
             <Body style={{borderBottomWidth:0,}}>
             <Text onPress={() => this.signInOrSignup(hasLoggedIn) } 
-                style={{fontFamily:'OpenSans',fontSize:15,marginLeft:8}}>{hasLoggedIn ? 'Sign Out' : 'Sign In' }</Text>
+                style={{fontFamily:'OpenSans',fontSize:15,}}>{hasLoggedIn ? 'Sign Out' : 'Sign In' }</Text>
                 </Body>
             </ListItem>
-      
+            </View>
         </Content>
           <View>
            <Footer style={{marginTop:10,backgroundColor:'#fff',}}>
