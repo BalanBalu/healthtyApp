@@ -88,9 +88,6 @@ import labConfirmation from '../../modules/screens/LabTest/labConfirmation/index
 import LabAppointmentList from '../../modules/screens/LabTest/Appointment/LabAppointmentList'
 import LabAppointmentInfo from '../../modules/screens/LabTest/Appointment/LabAppoinmentInfo'
 import LabCancelAppointment from '../../modules/screens/LabTest/Appointment/LabCancelAppointment'
-import { Modal } from 'react-native-paper';
-import { IS_IOS } from '../config';
-import { setI18nConfig } from '../translator.helper';
 
 const AuthRoutes = {
   login: {

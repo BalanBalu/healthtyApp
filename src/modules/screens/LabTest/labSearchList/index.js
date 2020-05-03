@@ -46,13 +46,7 @@ class labSearchList extends Component {
     /* Update Favorites for LabTest by UserId  */
     addToFavoritesList = async (labId) => {
         const userId = await AsyncStorage.getItem('userId');
-        const updateResponse = await addFavoritesToLabByUserService(userId, labId);
-        // if (updateResponse)
-        // Toast.show({
-        //     text: updateResponse.message,
-        //     type: "success",
-        //     duration: 3000,
-        // })
+        await addFavoritesToLabByUserService(userId, labId);
         this.setState({ renderRefreshCount: this.state.renderRefreshCount + 1 });
     }
     getPatientWishListsByUserId = (userId) => {
@@ -126,9 +120,7 @@ class labSearchList extends Component {
     getLabIdsArrayByInput = labIdFromItem => {
         const findIndexOfLabId = this.totalLabIdsArryBySearched.indexOf(String(labIdFromItem));
         return this.totalLabIdsArryBySearched.slice(findIndexOfLabId, findIndexOfLabId + CALL_AVAILABILITY_SERVICE_BY_NO_OF_IDS_COUNT) || []
-        // if (this.totalLabIdsArryBySearched.length <= 2 && findIndexOfLabId >= 2) {
-        // get items list before index position
-        // }
+       
     }
 
     /* get Lab Test Availability Slots service */
@@ -144,7 +136,7 @@ class labSearchList extends Component {
                 endDate: formatDate(endDateByMoment, 'YYYY-MM-DD')
             }
             const resultSlotsData = await fetchLabTestAvailabilitySlotsService(reqData4Availability, reqStartAndEndDates);
-            // console.log('resultSlotsData======>', resultSlotsData);
+             console.log('resultSlotsData======>', resultSlotsData);
             if (resultSlotsData.success) {
                 const availabilityData = resultSlotsData.data;
                 if (availabilityData.length != 0) {

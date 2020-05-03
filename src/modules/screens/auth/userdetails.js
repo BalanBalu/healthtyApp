@@ -5,7 +5,6 @@ import {
 } from 'native-base';
 import { connect } from 'react-redux'
 import { Image, BackHandler, AsyncStorage, ScrollView, ImageBackground, TouchableOpacity } from 'react-native';
-import { Checkbox } from 'react-native-paper';
 import { userFiledsUpdate, logout } from '../../providers/auth/auth.actions';
 import styles from '../../screens/auth/styles';
 import Spinner from '../../../components/Spinner';
