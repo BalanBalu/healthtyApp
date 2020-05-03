@@ -79,6 +79,7 @@ import VideoScreen from '../../modules/screens/VideoConsulation/components/Video
 import AvailableDoctors4Video from '../../modules/screens/VideoConsulation/components/AvailableDoctors';
 import VideoConsultaions from '../../modules/screens/VideoConsulation/components/MyConsultations';
 import COVID19StateDistrictStats from '../../modules/screens/Home/Covid10-District-wise';
+import CancelService from '../../modules/screens/commonScreen/cancelService'
 
 const AuthRoutes = {
   login: {
@@ -262,6 +263,12 @@ const HomeStack = createStackNavigator({
     screen: InsertReview,
     navigationOptions: {
       title: 'Rate and Review'
+    }
+  },
+  CancelService: {
+    screen: CancelService,
+    navigationOptions: {
+      title: 'Cancel service'
     }
   },
   // ================Profile Stack =================

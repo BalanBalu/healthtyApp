@@ -55,6 +55,8 @@ class OrderDetails extends Component {
             console.log(JSON.stringify(result))
             if (result.success) {
                 this.setState({ orderDetails: result.data[0] });
+                // console.log('JSON.stringify(orderDetails)');
+                // console.log(JSON.stringify(orderDetails));
                 if (result.data[0].status === 'DELIVERED' && result.data[0].is_review_added === undefined) {
                     await this.setState({ modalVisible: true })
                 } else {
@@ -117,9 +119,16 @@ class OrderDetails extends Component {
 
     getFinalPriceOfOrder(orderItems) {
         let finalPriceForOrder = 0;
-        orderItems.forEach(element => {
-            finalPriceForOrder += element.final_price;
-        });
+        if (this.state.orderDetails.is_order_type_recommentation === true) {
+            orderItems.forEach(element => {
+                finalPriceForOrder +=Number(element.medicine_recommentation_max_price);
+            });
+           
+        } else {
+            orderItems.forEach(element => {
+                finalPriceForOrder += Number(element.final_price);
+            });
+        }
         return finalPriceForOrder;
     }
     getGrandTotal(orderInfo) {
@@ -144,7 +153,7 @@ class OrderDetails extends Component {
             console.log(e)
         }
     }
-    async cancelOreder() {
+    async cancelOreder(statusUpdateReason) {
 
         const { orderDetails } = this.state
 
@@ -152,11 +161,12 @@ class OrderDetails extends Component {
         let reqData = {
             user_id: userId,
             order_id: orderDetails._id,
+            status_update_reason: statusUpdateReason,
             status: "CANCELED",
             status_by: "USER"
         }
         let result = await upDateOrderData(orderDetails._id, reqData)
-
+        
         if (result.success === true) {
             this.medicineOrderDetails()
         } else {
@@ -181,14 +191,18 @@ class OrderDetails extends Component {
             if (navigation.state.params.hasReloadReportIssue) {
                 this.getUserReport();  // Reload the Reported issues when they reload
             }
+            if (navigation.state.params.hasUpdateCancelService) {
+                this.cancelOreder(navigation.state.params.statusUpdateReason)
+            }
         };
     }
     getUserReviews = async (orderId) => {
         try {
-
-            let resultReview = await getOrderUserReviews(orderId);
+            let userId = await AsyncStorage.getItem('userId');
+            let resultReview = await getOrderUserReviews(userId, orderId);
             console.log('getReview===================')
             console.log(JSON.stringify(resultReview))
+
             if (resultReview.success) {
                 this.setState({ reviewData: resultReview.data });
             }
@@ -274,7 +288,7 @@ class OrderDetails extends Component {
                             style={{ marginTop: 10 }}
                             data={orderDetails.order_status_slap}
                             keyExtractor={(item, index) => index.toString()}
-                            renderItem={({ item }) =>
+                            renderItem={({ item, index }) =>
                                 <Row style={{}}>
                                     <Col size={0.7}>
                                         {statusBar[item.status].checked === true ?
@@ -286,7 +300,7 @@ class OrderDetails extends Component {
                                             </TouchableOpacity> :
                                             null}
 
-                                        {statusBar[item.status].checked === true && statusBar[item.status].drawLine === true ?
+                                        {statusBar[item.status].checked === true && orderDetails.order_status_slap.length !== (Number(index) + 1) ?
                                             <TouchableOpacity style={styles.TouchLegth}>
                                             </TouchableOpacity>
                                             :
@@ -325,7 +339,7 @@ class OrderDetails extends Component {
                                     <SwiperFlatList
                                         autoplay
                                         autoplayDelay={3}
-                                        index={orderDetails.prescription_data.prescription_items - 1}
+                                        index={Number(orderDetails.prescription_data.prescription_items.length) - 1}
                                         contentContainerStyle={{ flexGrow: 1, }}
                                         autoplayLoop
                                         data={orderDetails.prescription_data.prescription_items}
@@ -343,36 +357,39 @@ class OrderDetails extends Component {
                                     />
                                 </ImageZoom>
                             </View> : null}
-                        <FlatList
-                            data={orderDetails.order_items}
-                            keyExtractor={(item, index) => index.toString()}
-                            extraData={orderDetails.order_items}
-                            renderItem={({ item }) =>
-                                <Row style={styles.rowStyle}>
-                                    <Col size={2}>
-                                        <Image
-                                            source={require('../../../../../assets/images/images.jpeg')}
-                                            style={{
-                                                width: 60, height: 60, alignItems: 'center'
-                                            }}
-                                        />
-                                    </Col>
-                                    <Col size={8} style={[styles.nameText, { marginTop: 5 }]}>
-                                        <Text style={styles.nameText}>{item.medicine_name}</Text>
-                                        {orderDetails.is_order_type_recommentation === true ?
-                                            <Text style={styles.pharText}>{'mediflic pharmacy'}</Text> :
-                                            <Text style={styles.pharText}>{item.pharmacyInfo.name}</Text>
-                                        }
+                        {orderDetails.order_items !== undefined && orderDetails.order_items.length !== 0 ?
+                            <FlatList
+                                data={orderDetails.order_items}
+                                keyExtractor={(item, index) => index.toString()}
+                                extraData={orderDetails.order_items}
+                                renderItem={({ item }) =>
+                                    <Row style={styles.rowStyle}>
+                                        <Col size={2}>
+                                            <Image
+                                                source={require('../../../../../assets/images/images.jpeg')}
+                                                style={{
+                                                    width: 60, height: 60, alignItems: 'center'
+                                                }}
+                                            />
+                                        </Col>
+                                        <Col size={8} style={[styles.nameText, { marginTop: 5 }]}>
+                                            <Text style={styles.nameText}>{item.medicine_name}</Text>
+                                            {orderDetails.is_order_type_recommentation === true ?
+                                                <Text style={styles.pharText}>{'mediflic pharmacy'}</Text> :
+                                                orderDetails.is_order_type_prescription === true && orderDetails.status !== 'PENDING' ?
+                                                    <Text style={styles.pharText}>{orderDetails.pharmacyInfo.name}</Text> :
+                                                    <Text style={styles.pharText}>{item.pharmacyInfo.name}</Text>
+                                            }
 
-                                    </Col>
-                                    <Col size={2} style={[styles.nameText, { alignSelf: 'flex-end' }]}>
-                                        {orderDetails.is_order_type_recommentation === true ?
-                                            <Text style={styles.amountText}>₹{item.medicine_recommentation_max_price}</Text>
-                                            : <Text style={styles.amountText}>₹{item.final_price}</Text>
-                                        }
-                                    </Col>
-                                </Row>
-                            } />
+                                        </Col>
+                                        <Col size={2} style={[styles.nameText, { alignSelf: 'flex-end' }]}>
+                                            {orderDetails.is_order_type_recommentation === true ?
+                                                <Text style={styles.amountText}>₹{item.medicine_recommentation_max_price}</Text>
+                                                : <Text style={styles.amountText}>₹{item.final_price}</Text>
+                                            }
+                                        </Col>
+                                    </Row>
+                                } /> : null}
 
                         {orderDetails.is_order_type_prescription !== true && orderDetails.order_items !== undefined && orderDetails.order_items.length !== 0 ?
                             <Row style={{ marginTop: 10 }}>
@@ -427,7 +444,7 @@ class OrderDetails extends Component {
                     {orderDetails.status === "PENDING" ?
                         <View style={{ alignItems: 'center', justifyContent: 'center', marginTop: 5, marginBottom: 10 }}>
                             <TouchableOpacity
-                                onPress={() => this.setState({ isCancel: true })}
+                                onPress={() => this.props.navigation.navigate('CancelService', { serviceType: 'MEDICINES_ORDER', prevState: this.props.navigation.state })}
                                 block danger
                                 style={styles.reviewButton1
                                 }>
@@ -472,38 +489,32 @@ class OrderDetails extends Component {
                         </View>
                     }
                     {(orderDetails.status == 'DELIVERED' && reviewData.length !== 0) || reviewData.length !== 0 ?
-                        <Row style={styles.rowSubText}>
-                            <Col style={{ width: '8%', paddingTop: 5 }}>
-                                <Icon name="ios-medkit" style={{ fontSize: 20, }} />
-                            </Col>
-                            <Col style={{ width: '92%', paddingTop: 5 }}>
-                                <Text style={styles.innerSubText}>Review</Text>
+                        <View>
+                            <Text style={{ fontSize: 14, fontWeight: '500', fontFamily: 'OpenSans', color: '#7F49C3', marginTop: 10 }}>Review</Text>
 
-                                <StarRating fullStarColor='#FF9500' starSize={15} width={100} containerStyle={{ width: 100 }}
-                                    disabled={false}
-                                    maxStars={5}
-                                    rating={reviewData[0] && reviewData[0].overall_rating}
-                                />
-                                <Text note style={styles.subTextInner1}>{reviewData[0] && reviewData[0].comments || ''}</Text>
-                            </Col>
-                        </Row> :
+                            <StarRating fullStarColor='#FF9500' starSize={15} width={100} containerStyle={{ width: 100 }}
+                                disabled={false}
+                                maxStars={5}
+                                rating={reviewData[0] && reviewData[0].overall_rating}
+                            />
+                            <Text note style={styles.subTextInner1}>{reviewData[0] && reviewData[0].comments || ''}</Text>
+                        </View>
+                        :
                         (orderDetails.status === 'DELIVERED' && reviewData.length === 0) ?
-                            <Row style={styles.rowSubText}>
-                                <Col style={{ width: '8%', paddingTop: 5 }}>
-                                    <Icon name="ios-add-circle" style={{ fontSize: 20, }} />
+                            <View>
+                                <Text style={{ fontSize: 14, fontWeight: '500', fontFamily: 'OpenSans', color: '#7F49C3', marginTop: 10 }}>Add Review</Text>
 
-                                </Col>
-                                <Col style={{ width: '92%', paddingTop: 5 }}>
-                                    <Text style={styles.innerSubText}>Add Feedback</Text>
-                                    <View style={{ justifyContent: 'center', alignItems: 'center' }}>
-                                        <TouchableOpacity block success style={styles.reviewButton} onPress={() => this.navigateAddReview()} testID='addFeedBack'>
 
-                                            <Text style={{ color: '#fff', fontSize: 14, fontFamily: 'OpenSans', fontWeight: 'bold', textAlign: 'center', marginTop: 5 }}> ADD FEEDBACK </Text>
-                                            <Icon name="create" style={{ fontSize: 20, marginTop: 3, marginLeft: 5, color: '#fff' }}></Icon>
-                                        </TouchableOpacity>
-                                    </View>
-                                </Col>
-                            </Row> : null
+                                <View style={{ alignItems: 'center', justifyContent: 'center', marginTop: 5, marginBottom: 10 }}>
+                                    <TouchableOpacity block success style={styles.reviewButton} onPress={() => this.navigateAddReview()} testID='addFeedBack'>
+
+                                        <Text style={{ color: '#fff', fontSize: 14, fontFamily: 'OpenSans', fontWeight: 'bold', textAlign: 'center', marginTop: 5 }}> ADD FEEDBACK </Text>
+                                        <Icon name="create" style={{ fontSize: 20, marginTop: 3, marginLeft: 5, color: '#fff' }}></Icon>
+                                    </TouchableOpacity>
+                                </View>
+                            </View>
+
+                            : null
                     }
 
 
@@ -517,7 +528,7 @@ class OrderDetails extends Component {
 
 
                         <View style={{ marginTop: 10 }}>
-                            <Text style={styles.innerText}>Delivery On</Text>
+                            <Text style={styles.innerText}>Delivery mode</Text>
                             <Text style={styles.rightText}>{orderDetails.delivery_option || ''}</Text>
                         </View>
                         <View style={{ marginTop: 10 }}>
