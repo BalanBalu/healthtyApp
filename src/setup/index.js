@@ -19,6 +19,8 @@ YellowBox.ignoreWarnings([
   'Warning: ViewPagerAndroid has been extracted from react-nati',
   'Warning: Async Storage has been extracted from react-native core and ',
   'Warning: NetInfo has been extracted from react-native core and will',
+  'Animated: `useNativeDriver` was not specified. This is',
+  'VirtualizedLists should never be nested inside plain ScrollViews with the same orientation'
 ]);
 import { setI18nConfig, translate  } from './translator.helper';
 import * as RNLocalize from "react-native-localize";

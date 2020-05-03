@@ -254,7 +254,7 @@ class labSearchList extends Component {
             lab_id: labInfo.lab_id,
             lab_test_categories_id: labCatInfo._id,
             // Fields which we need to get it from Backend API 
-            // lab_test_description: "general",
+             lab_test_description: "general",
             fee: 1000,
             extra_charges: 50,
             mobile_no: "98076540211",

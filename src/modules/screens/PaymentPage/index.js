@@ -306,7 +306,16 @@ class PaymentPage extends Component {
                     AuthService.signup(this.userId);
                 }
             }
-        } else {
+            else if (serviceType === SERVICE_TYPES.LAB_TEST) {
+                this.props.navigation.navigate('SuccessChat', { manualNaviagationPage: 'Home' });
+                Toast.show({
+                    text: 'Payment Success for Lab Test',
+                    type: 'success',
+                    duration: 3000
+                })
+            }
+        } 
+        else {
             if (serviceType === SERVICE_TYPES.PHARMACY) {
                 this.props.navigation.navigate('Home');
                 Toast.show({
