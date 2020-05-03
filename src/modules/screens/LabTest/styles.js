@@ -95,6 +95,19 @@ export default styles = StyleSheet.create({
         marginLeft: 5,
         color: '#8dc63f'
     },
+    isEnabledFavorite: {
+        marginLeft: 20, color: '#B22222', fontSize: 20
+    },
+    isDisabledFavorite: {
+        marginLeft: 20, borderColor: '#fff', fontSize: 20
+    },
+    favoritesCount: {
+        fontFamily: 'OpenSans', fontSize: 12, fontWeight: 'bold'
+    },
+    favoritesText: {
+        fontFamily: 'OpenSans', fontSize: 12
+    },
+
 })
 
 
