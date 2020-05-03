@@ -258,6 +258,8 @@ export const statusBar = {
     { status: 'The order is delivered', checked: true },
   "null":
     { status: 'status  mismatching', checked: true },
+    "FAILED":
+    { status: 'order is failed try again', checked: true },
 
 
 

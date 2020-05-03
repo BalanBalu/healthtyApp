@@ -21,11 +21,17 @@ class MyOrdersList extends Component {
         this.getMedicineOrderList();
     }
 
-    getFinalPriceOfOrder(orderItems) {
+    getFinalPriceOfOrder(orderItems,data) {
         let finalPriceForOrder = 0;
+        if(data.is_order_type_recommentation===true){
+            orderItems.forEach(element => {
+                finalPriceForOrder += Number(element.medicine_recommentation_max_price);
+            });   
+        }else{
         orderItems.forEach(element => {
             finalPriceForOrder += element.final_price;
         });
+    }
         return finalPriceForOrder;
     }
     renderNoOrders() {
@@ -130,7 +136,7 @@ class MyOrdersList extends Component {
                                                         </Row>
                                                         <Row style={{ marginBottom: 7.5, marginTop: -10 }}>
                                                             <Col size={5}>
-                                                                <Text style={styles.orderprice}>₹ {this.getFinalPriceOfOrder(item.order_items || [])}</Text>
+                                                                <Text style={styles.orderprice}>₹ {this.getFinalPriceOfOrder(item.order_items || [],item)}</Text>
                                                             </Col>
                                                         </Row>
                                                     </Col>
