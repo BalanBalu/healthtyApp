@@ -28,6 +28,7 @@ MapboxGL.setAccessToken(MAP_BOX_PUBLIC_TOKEN);
 import NotifService from '../../../setup/NotifService';
 import { getReminderData } from '../../providers/reminder/reminder.action.js';
 import FastImage from 'react-native-fast-image'
+import { translate } from '../../../setup/translator.helper';
 const debounce = (fun, delay) => {
     let timer = null;
     return function (...args) {
@@ -561,10 +562,9 @@ class Home extends Component {
                                     </Row>
                                     <Row style={styles.secondRow}>
                                         <Col style={{ width: '100%', }}>
-                                            <Text style={styles.mainText}> Pharmacy</Text>
+                                        <Text style={styles.mainText}>{translate('Pharmacy')}</Text>
                                             <Text style={styles.subText}> Get medicines delivered to home</Text>
                                         </Col>
-
                                     </Row>
                                 </Card>
                             </TouchableOpacity>

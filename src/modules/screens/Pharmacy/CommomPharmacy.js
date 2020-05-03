@@ -47,7 +47,7 @@ export async function ProductIncrementDecreMent(quantity, price, operation, thre
       totalAmount = quantity * price
     } else {
 
-      threshold_message = 'you will not add more than' + String(threshold_limit)
+      threshold_message = `You can't add more than  ${String(threshold_limit)} items`
 
     }
 
@@ -111,6 +111,13 @@ export function renderPrescriptionImageAnimation(data) {
   }
   return (source)
 }
+export function renderPharmacyImage(data) {
+  let source = require('../../../../assets/images/apollopharmacy.jpeg')
+  if (data) {
+    source = { uri: data.imageURL }
+  }
+  return source
+}
 export async function relativeTimeView(review_date) {
   try {
     console.log(review_date)
@@ -152,20 +159,37 @@ export function getAddress(location) {
 export function getKiloMeterCalculation(gpsLocation, pharmacyLocation) {
   console.log(gpsLocation)
   if (gpsLocation !== undefined && pharmacyLocation !== undefined) {
+    let result = getDistanceFromLatLonInKm(gpsLocation[0], gpsLocation[1], pharmacyLocation[0], pharmacyLocation[1])
 
-    // let narthCorinate = ;
-    // let eastCorinate =;
-    squareNarthCorinate = Math.pow((gpsLocation[0] - pharmacyLocation[0]), 2);
-    squareeastCorinate = Math.pow((gpsLocation[1] - pharmacyLocation[1]), 2)
-    add = squareNarthCorinate + squareeastCorinate
-    let km = Math.sqrt(add).toFixed(1) + ' Km'
-    return km
+    return result.toFixed(1) + ' Km'
+    // squareNarthCorinate = Math.pow((gpsLocation[0] - pharmacyLocation[0]), 2);
+    // squareeastCorinate = Math.pow((gpsLocation[1] - pharmacyLocation[1]), 2)
+    // add = squareNarthCorinate + squareeastCorinate
+    // let km = Math.sqrt(add).toFixed(1) + ' Km'
+    // return km
 
   }
   else {
     return '0 km '
   }
 
+}
+function getDistanceFromLatLonInKm(lat1, lon1, lat2, lon2) {
+  let R = 6371; // Radius of the earth in km
+  let dLat = deg2rad(lat2 - lat1);  // deg2rad below
+  let dLon = deg2rad(lon2 - lon1);
+  let a =
+    Math.sin(dLat / 2) * Math.sin(dLat / 2) +
+    Math.cos(deg2rad(lat1)) * Math.cos(deg2rad(lat2)) *
+    Math.sin(dLon / 2) * Math.sin(dLon / 2)
+    ;
+  let c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+  let  d = R * c; // Distance in km
+  return d;
+}
+
+function deg2rad(deg) {
+  return deg * (Math.PI / 180)
 }
 
 export function getMedicineName(data) {
@@ -219,16 +243,21 @@ export function quantityPriceSort(data) {
 export const statusBar = {
 
   "PENDING":
-
-    { status: 'Ordered and Approved', checked: true, drawLine: true },
-
-
-
+    { status: 'Ordered and Approved', checked: true },
   "APPROVED":
-    { status: 'Packed and Out for Delivery', checked: false, },
-
+    { status: 'Packed and Out for Delivery', checked: true, },
   "CANCELED":
-    { status: 'Canceled the order', checked: true, drawLine: true },
+    { status: 'Canceled the order', checked: true },
+  "REJECTED":
+    { status: 'Rejected  the order', checked: true },
+  "OUT_FOR_DELIVERY":
+    { status: 'Order is on the way', checked: true },
+  "READY_FOR_DELIVERY":
+    { status: 'The order is ready for delivery', checked: true },
+  "DELIVERED":
+    { status: 'The order is delivered', checked: true },
+  "null":
+    { status: 'status  mismatching', checked: true },
 
 
 

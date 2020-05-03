@@ -1,4 +1,4 @@
-import React, { Component } from 'react';
+import React, { Component, PureComponent } from 'react';
 import { Container, Content, Text, Title, Header, Button, H3, Item, List, ListItem, Card, Left, Right, Thumbnail, Body, Icon, locations, Input } from 'native-base';
 import LinearGradient from 'react-native-linear-gradient';
 import { connect } from 'react-redux'
@@ -6,10 +6,10 @@ import { Col, Row, Grid } from 'react-native-easy-grid';
 import { toDataUrl } from '../../../../setup/helpers';
 import { StyleSheet, Image, TouchableOpacity, View, FlatList } from 'react-native';
 import { MAX_DISTANCE_TO_COVER } from '../../../../setup/config';
-import { connect } from 'react-redux'
 import { getLabTestCateries } from '../../../providers/lab/lab.action';
 import FastImage from 'react-native-fast-image'
-class LabCategories extends Component {
+
+class LabCategories extends PureComponent {
   constructor(props) {
     super(props)
     this.state = {
@@ -31,7 +31,8 @@ class LabCategories extends Component {
       let result = await getLabTestCateries(JSON.stringify(locationData));
       console.log("result", result)
       if (result.success) {
-        this.setState({ labData: result.data })
+        this.setState({ labData: result.data });
+        this.mainLabData = result.data;
       }
     }
     catch (e) {
@@ -72,12 +73,10 @@ class LabCategories extends Component {
     if (!searchValue) {
       this.setState({ searchValue, data: labData });
     } else {
-      const filteredCategories = labData.filter(ele =>
+      const filteredCategories = this.mainLabData.filter(ele =>
         ele.lab_test_category_info.category_name.toLowerCase().search(searchValue.toLowerCase()) !== -1
       );
-      this.setState({ searchValue, data: filteredCategories })
-      console.log("filteredCategories",this.state.filteredCategories);
-
+      this.setState({ searchValue, labData: filteredCategories })
     }
   }
 
@@ -117,7 +116,7 @@ class LabCategories extends Component {
           <View style={{ marginBottom: 10 }}>
             <FlatList horizontal={false} numColumns={3}
               data={this.state.labData}
-              // extraData={this.state}
+              extraData={this.state.labData}
               ListHeaderComponent={this.renderStickeyHeader()}
               renderItem={({ item, index }) =>
                 <Col style={styles.mainCol}>

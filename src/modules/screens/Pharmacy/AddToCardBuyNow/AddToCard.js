@@ -75,7 +75,7 @@ export class AddToCard extends Component {
         temp = data
         temp.userAddedMedicineQuantity = userAddedMedicineQuantity;
         temp.userAddedTotalMedicineAmount = userAddedTotalMedicineAmount
-        if (data.selectedType === 'Add to Card') {
+        if (data.selectedType === 'Add to Cart') {
             const isLoggedIn = await hasLoggedIn(this.props);
             if (!isLoggedIn) {
                 this.props.navigation.navigate('login');
@@ -89,7 +89,7 @@ export class AddToCard extends Component {
                 cartItems = JSON.parse(cart);
             }
             if (temp.index != undefined) {
-                index = temp.index
+               let  index = temp.index
                 delete temp.index
                 cartItems.splice(index, 1, temp)
             } else {
