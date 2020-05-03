@@ -76,6 +76,8 @@ import PharmacyList from '../../modules/screens/Pharmacy/PharmacyList/pharmacyLi
 import VideoScreen from '../../modules/screens/VideoConsulation/components/VideoScreen';
 import AvailableDoctors4Video from '../../modules/screens/VideoConsulation/components/AvailableDoctors';
 import VideoConsultaions from '../../modules/screens/VideoConsulation/components/MyConsultations';
+// import COVID19StateDistrictStats from '../../modules/screens/Home/Covid10-District-wise';
+import CancelService from '../../modules/screens/commonScreen/cancelService'
 /*
   import CoronaDisease from '../../modules/screens/CoronaDisease/CoronaDisease';
   import COVID19StateDistrictStats from '../../modules/screens/Home/Covid10-District-wise';
@@ -280,6 +282,12 @@ const HomeStack = createStackNavigator({
     screen: InsertReview,
     navigationOptions: {
       title: 'Rate and Review'
+    }
+  },
+  CancelService: {
+    screen: CancelService,
+    navigationOptions: {
+      title: 'Cancel service'
     }
   },
   // ================Profile Stack =================
