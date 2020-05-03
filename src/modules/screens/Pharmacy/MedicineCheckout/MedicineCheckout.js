@@ -7,8 +7,6 @@ import { NavigationEvents } from 'react-navigation';
 import { fetchUserProfile, getCurrentVersion } from '../../../providers/profile/profile.action';
 import { userFiledsUpdate, logout } from '../../../providers/auth/auth.actions';
 import Spinner from '../../../../components/Spinner';
-import { formatDate } from '../../../../setup/helpers';
-import { RadioButton, Checkbox } from 'react-native-paper';
 import { getAddress } from '../../../common'
 import { SERVICE_TYPES, BASIC_DEFAULT, MAX_DISTANCE_TO_COVER } from '../../../../setup/config'
 import { hasLoggedIn } from '../../../providers/auth/auth.actions';
@@ -417,8 +415,7 @@ class MedicineCheckout extends Component {
                             visible={isLoading} /> :
                         this.state.medicineDetails.length != 0 ?
                             <View>
-                                <RadioButton.Group onValueChange={value => this.selectedItem(value)}
-                                    value={itemSelected}  >
+                                
                                     <View style={{ backgroundColor: '#fff', padding: 10 }}>
                                         <Row>
                                             <Col size={5}>
@@ -426,8 +423,11 @@ class MedicineCheckout extends Component {
                                             </Col>
                                             <Col size={5} style={{ alignItems: 'flex-end', justifyContent: 'flex-end' }}>
 
-                                                <RadioButton value={'HOME_DELIVERY'} />
-
+                                                <Radio 
+                                    standardStyle={true}
+                                    selected={itemSelected === 'HOME_DELIVERY' ? true : false} 
+                                    onPress={()=> this.selectedItem('HOME_DELIVERY')}  />
+                                    <Icon name="ios-woman" style={{ fontSize: 20, marginLeft: 10, }} />
                                             </Col>
                                         </Row>
                                     </View>
@@ -453,16 +453,15 @@ class MedicineCheckout extends Component {
                                                         renderItem={({ item }) =>
                                                             <View style={{ backgroundColor: '#fff' }}>
                                                                 <Text style={{ fontFamily: 'OpenSans', fontSize: 12, fontWeight: '300', marginTop: 2, marginLeft: 33 }}>{item.full_name}</Text>
-                                                                <Row style={{ borderBottomWidth: 0.5, paddingBottom: 10 }}>
-                                                                    <Col size={1}>
-                                                                        <RadioButton.Group style={{ marginTop: 2 }} onValueChange={value => this.setState({ selectedAddress: value })}
-
-                                                                            value={this.state.selectedAddress}  >
-                                                                            <RadioButton value={item} />
-                                                                        </RadioButton.Group>
+                                                                <Row style={{ borderBottomWidth: 0.5, paddingBottom: 10,marginTop:5}}>
+                                                                    <Col size={1} >
+                                                                            <Radio 
+                                                                               standardStyle={true}
+                                                                               selected={this.state.selectedAddress === item ? true : false} 
+                                                                               onPress={()=>this.setState({ selectedAddress: item })} />
                                                                     </Col>
 
-                                                                    <Col size={9}>
+                                                                    <Col size={9} >
                                                                         <Text style={{ fontFamily: 'OpenSans', fontSize: 12, marginTop: 2, color: '#6a6a6a' }}>{getAddress(item)}</Text>
                                                                         <Text style={{ fontFamily: 'OpenSans', fontSize: 12, marginTop: 2 }}>{'Mobile -' + (item.mobile_no || 'Nil')}</Text>
 
@@ -487,11 +486,14 @@ class MedicineCheckout extends Component {
                                                     <Text style={{ fontFamily: 'OpenSans', fontSize: 14, fontWeight: '500' }}>Pick up at Store</Text>
                                                 </Col>
                                                 <Col size={5} style={{ alignItems: 'flex-end', justifyContent: 'flex-end' }}>
-                                                    <RadioButton value={'STORE_PICKUP'} />
+                                                    <Radio 
+                                    standardStyle={true}
+                                    selected={itemSelected === 'STORE_PICKUP' ? true : false} 
+                                    onPress={()=> this.selectedItem('STORE_PICKUP')}  /> 
                                                 </Col>
                                             </Row>
                                         </View> : null}
-                                </RadioButton.Group>
+                              
 
 
                                 {itemSelected === 'STORE_PICKUP' ?
@@ -587,12 +589,12 @@ class MedicineCheckout extends Component {
                                 </View>{
                                     recommentationData.length !== 0 ?
                                         <Row style={{ paddingRight: 20, marginTop: 5, alignItems: 'center', }}>
-
-                                            <Checkbox color="green"
-                                                status={isPharmacyRecomentation ? 'checked' : 'unchecked'}
-                                                onPress={() => { this.setState({ isPharmacyRecomentation: !isPharmacyRecomentation }); }}
-                                            />
-                                            <Text style={{ fontFamily: 'OpenSans', fontSize: 13, }}>{'Above order you will get Rs' + recommentationData[0].medicine_total_amount + ' do you select'}</Text>
+                                             <CheckBox style={{borderRadius:5}}
+                                             status={isPharmacyRecomentation ? true : false}
+                                               checked={this.state.isPharmacyRecomentation}
+                                               onPress={() => { this.setState({ isPharmacyRecomentation: !isPharmacyRecomentation }); }}
+                                               />
+                                            <Text style={{ fontFamily: 'OpenSans', fontSize: 13,marginLeft:20 }}>{'Above order you will get Rs' + recommentationData[0].medicine_total_amount + ' do you select'}</Text>
                                         </Row> : null
                                 }
                             </View> : <Text style={{ fontFamily: 'OpenSans', fontSize: 24, color: '#6a6a6a', marginTop: "40%", marginLeft: 55, alignContent: 'center' }}>No orders Available</Text>

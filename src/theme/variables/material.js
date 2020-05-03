@@ -116,11 +116,12 @@ export default {
   CheckboxPaddingLeft: 2,
   CheckboxPaddingBottom: 5,
   CheckboxIconSize: 16,
-  CheckboxIconMarginTop: 1,
+  CheckboxIconMarginTop: 0,
   CheckboxFontSize: 17,
-  checkboxBgColor: '#039BE5',
+  checkboxBgColor: '#775DA3',
   checkboxSize: 20,
   checkboxTickColor: '#fff',
+  checkboxDefaultColor: 'transparent',
 
   // Color
   brandPrimary: '#3F51B5',
@@ -234,7 +235,7 @@ export default {
   radioSelectedColorAndroid: '#3F51B5',
   radioBtnLineHeight: 24,
   get radioColor() {
-    return this.brandPrimary;
+    return '#775DA3' //this.brandPrimary;
   },
 
   // Segment

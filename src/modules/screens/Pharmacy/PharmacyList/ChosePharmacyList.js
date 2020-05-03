@@ -1,5 +1,9 @@
 import React, { Component } from 'react';
-import { Container, Content, Text, Title, Header, Form, Textarea, Button, H3, Item, List, ListItem, Card, Input, Left, Right, ScrollView, Thumbnail, Body, Icon, Footer, FooterTab, Picker, Segment, CheckBox, View, Badge, Toast } from 'native-base';
+import { Container, Content, Text,  Item, ListItem, Input,  Icon, Footer, FooterTab, 
+ 
+   View, CheckBox as CheckedBox,
+    Badge, 
+    Toast } from 'native-base';
 import { Col, Row, Grid } from 'react-native-easy-grid';
 import { StyleSheet, Image, AsyncStorage, TextInput, FlatList, TouchableOpacity, Platform } from 'react-native';
 import { getMedicinesSearchList, getNearOrOrderPharmacy } from '../../../providers/pharmacy/pharmacy.action';
@@ -7,7 +11,6 @@ import { MAX_DISTANCE_TO_COVER, PHARMACY_MAX_DISTANCE_TO_COVER } from '../../../
 import { getAddress, getKiloMeterCalculation, renderPharmacyImage } from '../CommomPharmacy'
 import Spinner from "../../../../components/Spinner";
 import { connect } from 'react-redux'
-import { RadioButton, Checkbox } from 'react-native-paper';
 class ChosePharmacyList extends Component {
     constructor(props) {
         super(props)
@@ -136,6 +139,7 @@ class ChosePharmacyList extends Component {
         const nearPharmacy = [{ name: 'Apollo Pharmacy', km: '2.30KM', address: 'No.28,Kamarajar Nagar,4th cross street, Ambattur, Chennai - 600051.', }, { name: 'Medplus', km: '5.30KM', address: 'No.28,Kamarajar Nagar,4th cross street, Ambattur, Chennai - 600051.', }, { name: 'Medplus', km: '5.30KM', address: 'No.28,Kamarajar Nagar,4th cross street, Ambattur, Chennai - 600051.', }, { name: 'Medplus', km: '5.30KM', address: 'No.28,Kamarajar Nagar,4th cross street, Ambattur, Chennai - 600051.', }]
 
         return (
+           
             <Container style={{ backgroundColor: '#f2f2f2' }}>
                 <Content style={{ padding: 10 }}>
                     {isLoading == true ?
@@ -187,15 +191,15 @@ class ChosePharmacyList extends Component {
                                                         <Row style={{ alignItems: 'flex-end', justifyContent: 'flex-end', marginTop: 5 }}>
                                                             {selectedPharmacy === index ?
                                                                 <View>
-                                                                    <Checkbox color="#775DA3"
-                                                                        status={'checked'}
+                                                                    <CheckedBox 
+                                                                        checked={true}
                                                                         onPress={() => this.pharmacySelected(index)}
                                                                     />
                                                                 </View>
                                                                 :
                                                                 <View>
-                                                                    <Checkbox color="#775DA3"
-                                                                        status={'unchecked'}
+                                                                    <CheckedBox
+                                                                        checked={false}
                                                                         onPress={() => this.pharmacySelected(index)}
                                                                     />
                                                                 </View>
