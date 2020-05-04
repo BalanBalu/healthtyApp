@@ -9,6 +9,7 @@ import Profile from "../../modules/screens/userprofile";
 import UpdateEmail from "../../modules/screens/userprofile/UpdateEmail";
 import UpdateContact from "../../modules/screens/userprofile/UpdateContact";
 import UpdatePassword from "../../modules/screens/userprofile/UpdatePassword";
+import Updateheightweight from "../../modules/screens/userprofile/Updateheightweight";
 import UpdateInsurance from "../../modules/screens/userprofile/UpdateInsurance";
 import UpdateUserDetails from "../../modules/screens/userprofile/UpdateUserDetails";
 import { Icon, View, Thumbnail, Item, Input } from 'native-base';
@@ -30,12 +31,11 @@ import PaymentSuccess from "../../modules/screens/PaymentSuccess";
 import InsertReview from '../../modules/screens/Reviews/InsertReview';
 import WishList from "../../modules/screens/wishList";
 import Notification from "../../modules/screens/Notification";
-import Chat from "../../modules/screens/chat";
 import { Col, Grid, Row } from 'react-native-easy-grid';
 import { logout } from '../../modules/providers/auth/auth.actions';
 import termsAndConditions from '../../components/termsAndConditions'
 
-import { TouchableOpacity, Image, Text, Platform, TouchableNativeFeedback } from 'react-native'
+import { TouchableOpacity, Image, Text, Platform, TouchableNativeFeedback, Picker } from 'react-native'
 
 import menuIcon from '../../../assets/images/menu.png';
 import BookAppoinment from "../../modules/screens/bookappoinment";
@@ -70,13 +70,26 @@ import SuccessChatPaymentPage from '../../modules/screens/chat/successMsg';
 import ReportIssue from '../../modules/screens/ReportIssue';
 import ReportDetails from '../../modules/screens/ReportIssue/reportIssueDetails'
 import EarnReward from '../../modules/screens/Home/EarnReward';
-import CoronaDisease from '../../modules/screens/CoronaDisease/CoronaDisease';
 import MedicineSuggestionList from '../../modules/screens/Pharmacy/MedicineSuggestionList/pharmacySuggestionList';
 import ImageView from '../../modules/shared/ImageView'
 import PharmacyList from '../../modules/screens/Pharmacy/PharmacyList/pharmacyList';
 import VideoScreen from '../../modules/screens/VideoConsulation/components/VideoScreen';
 import AvailableDoctors4Video from '../../modules/screens/VideoConsulation/components/AvailableDoctors';
 import VideoConsultaions from '../../modules/screens/VideoConsulation/components/MyConsultations';
+// import COVID19StateDistrictStats from '../../modules/screens/Home/Covid10-District-wise';
+import CancelService from '../../modules/screens/commonScreen/cancelService'
+/*
+  import CoronaDisease from '../../modules/screens/CoronaDisease/CoronaDisease';
+  import COVID19StateDistrictStats from '../../modules/screens/Home/Covid10-District-wise';
+*/
+
+import LabSearchList from '../../modules/screens/LabTest/labSearchList';
+import LabCategory from '../../modules/screens/LabTest/categories'
+
+import labConfirmation from '../../modules/screens/LabTest/labConfirmation/index'
+import LabAppointmentList from '../../modules/screens/LabTest/Appointment/LabAppointmentList'
+import LabAppointmentInfo from '../../modules/screens/LabTest/Appointment/LabAppoinmentInfo'
+import LabCancelAppointment from '../../modules/screens/LabTest/Appointment/LabCancelAppointment'
 
 const AuthRoutes = {
   login: {
@@ -128,6 +141,7 @@ const HomeStack = createStackNavigator({
               source={menuIcon}
             />
           </TouchableOpacity>
+          
           <Row style={{ marginBottom: 5, marginTop: 5, marginLeft: 5 }}>
             <Col size={10}>
               <TouchableOpacity onPress={() => navigation.navigate('Locations')}>
@@ -145,8 +159,8 @@ const HomeStack = createStackNavigator({
         </Row>
       ),
       headerRight: (
-        <Grid style={{ justifyContent: 'center', alignItems: 'center' }}>
-          <Col>
+        <Grid style={{ }}>
+          <Row>
             <TouchableOpacity onPress={() => { navigation.navigate('Notification') }} >
               <View>
                 <Icon name="notifications" style={{ color: '#fff', marginRight: 15, fontFamily: 'opensans-semibold' }}></Icon>
@@ -156,7 +170,15 @@ const HomeStack = createStackNavigator({
                 {/* <Badge /> */}
               </View>
             </TouchableOpacity>
-          </Col>
+
+            {/* <TouchableOpacity onPress={() => { setI18nConfig('en' ) }} >
+              <View>
+                <Icon name={IS_IOS ? 'ios-more' : "md-more"} style={{ color: '#fff', marginRight: 15, fontFamily: 'opensans-semibold' }}></Icon>
+              </View>
+            </TouchableOpacity> */}
+
+                      
+          </Row>
 
         </Grid>
       ),
@@ -262,6 +284,12 @@ const HomeStack = createStackNavigator({
       title: 'Rate and Review'
     }
   },
+  CancelService: {
+    screen: CancelService,
+    navigationOptions: {
+      title: 'Cancel service'
+    }
+  },
   // ================Profile Stack =================
   Profile: {
     screen: Profile,
@@ -285,8 +313,16 @@ const HomeStack = createStackNavigator({
     screen: UpdatePassword,
     navigationOptions: {
       title: 'Update Password'
-    }
+    }   
   },
+  
+  Updateheightweight: {
+    screen: Updateheightweight,
+    navigationOptions: {
+      title: 'Update height weight'
+    }   
+  },
+
   UpdateInsurance: {
     screen: UpdateInsurance,
     navigationOptions: {
@@ -311,7 +347,34 @@ const HomeStack = createStackNavigator({
       title: 'Search Location'
     }
   },
+  paymentsuccess: {
+    screen: PaymentSuccess,
+    navigationOptions: {
+      headerLeft: null,
+      title: 'Success'
+    }
+  },
 
+  //================ Lab Test ===============
+  LabAppointmentInfo: {
+    screen: LabAppointmentInfo,
+    navigationOptions: {
+      title: 'Lab Test Appointment Details'
+    }
+  },
+  'My Lab Test Appointments': {
+    screen: LabAppointmentList,
+    navigationOptions: {
+      title: 'My Lab Test Appointments'
+    }
+  },
+  LabCancelAppointment: {
+    screen: LabCancelAppointment,
+    navigationOptions: {
+      title: 'Lab Test Cancel Appointment'
+    }
+  },
+  
   // ========Appointment stack ==========
   "Doctor List": {
     screen: doctorSearchList,
@@ -363,6 +426,14 @@ const HomeStack = createStackNavigator({
       title: 'Success'
     }
   },
+  
+  labConfirmation: {
+    screen: labConfirmation,
+    navigationOptions: {
+      title: 'Lab Confirmation'
+    }
+  },
+
   // ============Zoom image ========================
   ImageView: {
     screen: ImageView,
@@ -371,12 +442,6 @@ const HomeStack = createStackNavigator({
     }),
   },
   // ============Chat ========================
-  Chat: {
-    screen: Chat,
-    navigationOptions: {
-      title: 'Online Chat'
-    }
-  },
   "Chat Service": {
     screen: AvailableDoctors4Chat,
     navigationOptions: {
@@ -468,9 +533,9 @@ const HomeStack = createStackNavigator({
   medicineSearchList: {
     screen: MedicineSearchList,
     navigationOptions: ({ navigation }) => ({
-      title: 'Search List',
+      title: 'Medicine List',
       headerRight: (
-        <Grid>
+        <Grid style={{justifyContent:'center',alignItems:'center'}}>
           <Col>
             <TouchableOpacity onPress={() => { navigation.navigate('PharmacyCart') }} >
               <View>
@@ -526,10 +591,8 @@ const HomeStack = createStackNavigator({
   MedicineSuggestionList: {
     screen: MedicineSuggestionList,
     navigationOptions: ({ navigation }) => ({
-      title: 'Pharmacy Suggestion List',
+      title: 'Search Medicines',
       headerRight: (
-        <Grid>
-          <Col>
             <TouchableOpacity onPress={() => { navigation.navigate('PharmacyCart') }} >
               <View>
                 <Icon name="ios-cart" style={{ color: '#fff', marginRight: 15, fontFamily: 'opensans-semibold', fontSize: 20 }}></Icon>
@@ -541,8 +604,8 @@ const HomeStack = createStackNavigator({
                 }
               </View>
             </TouchableOpacity>
-          </Col>
-        </Grid>
+        
+      
       ),
     })
 
@@ -551,32 +614,26 @@ const HomeStack = createStackNavigator({
   MedicineCheckout: {
     screen: MedicineCheckout,
     navigationOptions: {
-      title: 'Order Payment Address'
+      title: 'Checkout'
     }
   },
   ChosePharmacyList: {
     screen: ChosePharmacyList,
     navigationOptions: {
-      title: ' Chose Pharmacy List'
+      title: ' Choose Pharmacy'
     }
   },
   //=================== Medicine Order Details =============
   "Medicine Orders": {
     screen: MyOrdersList,
     navigationOptions: {
-      title: 'Orders List',
-    }
-  },
-  MyOrdersList: {
-    screen: MyOrdersList,
-    navigationOptions: {
-      title: 'Order List'
+      title: 'My Medicine Orders',
     }
   },
   OrderDetails: {
     screen: OrderDetails,
     navigationOptions: {
-      title: 'My Order'
+      title: 'Medicine Order Details'
     }
   },
   MedicineInfo: {
@@ -584,7 +641,7 @@ const HomeStack = createStackNavigator({
     navigationOptions: ({ navigation }) => ({
       title: 'Medicine Details',
       headerRight: (
-        <Grid>
+        <Grid style={{alignItems:'center',justifyContent:'center'}}>
           <Col>
             <TouchableOpacity onPress={() => { navigation.navigate('PharmacyCart') }} >
               <View>
@@ -608,14 +665,18 @@ const HomeStack = createStackNavigator({
       title: 'Medicine Reviews'
     }
   },
-
-
-  'CORONO Status': {
+ /* 'CORONA Status': {
     screen: CoronaDisease,
-    navigationOptions: {
-      title: 'CORONO Status'
-    }
+    navigationOptions: ({ navigation }) => ({
+      title: 'CORONA Status'
+    })
   },
+  COVID19StateDistrictStats: {
+    screen: COVID19StateDistrictStats,
+    navigationOptions: ({ navigation }) => ({
+      title: 'Covid-19 ' + navigation.getParam('stateName') || ' '
+    })
+  }, */
   /* Video Consultation */
   VideoScreen: {
     screen: VideoScreen,
@@ -663,6 +724,19 @@ const HomeStack = createStackNavigator({
       title: 'Add Reminder'
     }
   },
+  /* ========>  Lab Test  <========== */
+  'Lab Test': {
+    screen: LabCategory,
+    navigationOptions: {
+      title: 'Lab Category'
+    }
+  },
+  LabSearchList: {
+    screen: LabSearchList,
+    navigationOptions: {
+      title: 'Lab List'
+    }
+  },
 },
   {
     defaultNavigationOptions: ({ navigation }) => ({
@@ -672,47 +746,118 @@ const HomeStack = createStackNavigator({
   })
 
 
+const drawerNavigatorRoutes = {
+    Home: {
+      screen: HomeStack,
+      routeName: 'Home'
+    },
+    'Video and Chat Service': {
+      screen: AvailableDoctors4Video,
+      routeName: 'Video and Chat Service'
+    },
+    Medicines: {
+      screen: PharmacyHome,
+      routeName: 'Medicines'
+    },
+    "My Appointments": {
+      screen: MyAppoinmentList,
+      routeName: 'My Appointments'
+    },
+    "My Chats": {
+      screen: MyChats,
+      routeName: 'My Chats'
+      
+    },
+    'My Video Consultations': {
+      screen: VideoConsultaions,
+      routeName: 'My Video Consultations'
+    },
+    'My Lab Test Appointments': {
+      screen: LabAppointmentList,
+      routeName: 'My Lab Test Appointments'
+    },
+    "Medicine Orders": {
+      screen: MyOrdersList,
+      routeName: 'Medicine Orders'
+    },
+    Reminder: {
+      screen: Reminder,
+      routeName: 'Reminder'
+    },
+    "Blood Donors": {
+      screen: BloodDonersList,
+      routeName: 'Blood Donors'
+    }
+}
 
-
-const DrawerNavigator = createDrawerNavigator({
-  Home: {
-    screen: HomeStack,
-  },
-  "Blood Donors": {
-    screen: BloodDonersList,
-  },
-  "My Appointments": {
-    screen: MyAppoinmentList
-  },
-  "My Chats": {
-    screen: MyChats
-  },
-  'Video and Chat Service': {
-    screen: AvailableDoctors4Video
-  },
-  'My Video Consultations': {
-    screen: VideoConsultaions
-  },
-  Medicines: {
-    screen: PharmacyHome,
-  },
-  "Medicine Orders": {
-    screen: MyOrdersList
-  },
-
-
-  Reminder: {
-    screen: Reminder
-  },
-  'CORONO Status': {
-    screen: CoronaDisease
-  },
-
-
-},
-  {
+const DrawerNavigator = createDrawerNavigator(drawerNavigatorRoutes, {
     overlayColor: 'rgba(0, 0, 0, 0.7)',
-    contentComponent: props => <SideBar {...props} />
+    contentComponent: props => <SideBar 
+      menuSubMenus={[ 
+        {
+          menuName: 'Home',
+          routeName: drawerNavigatorRoutes.Home.routeName,
+          icon: require('../../../assets/images/drawerIcons/Home.png'),
+          subMenus: [ ]
+        },
+        {
+          menuName: 'Services',
+          subMenus: [ 
+            { 
+              name: 'Video and Chat Service',
+              routeName: drawerNavigatorRoutes["Video and Chat Service"].routeName,
+              icon: require('../../../assets/images/drawerIcons/Appointments.png'),
+
+            } , 
+            { 
+              name : 'Medicines',
+              routeName: drawerNavigatorRoutes.Medicines.routeName,
+              icon:  require('../../../assets/images/drawerIcons/Orders.png'),
+
+            }, 
+            {
+              name: 'Reminder',
+              routeName: drawerNavigatorRoutes.Reminder.routeName,
+              icon:  require('../../../assets/images/drawerIcons/Reminder.png'),
+            }, 
+            { 
+              name: 'Blood Donors',
+              routeName: drawerNavigatorRoutes["Blood Donors"].routeName,
+              icon: require('../../../assets/images/drawerIcons/Blooddonars.png'),
+            } 
+        ]
+        },
+        {
+          menuName: 'Orders and Consultations',
+          subMenus: [ 
+            {
+              name: 'My Appointments',
+              routeName: drawerNavigatorRoutes["My Appointments"].routeName,
+              icon: require('../../../assets/images/drawerIcons/Appointments.png'),
+            }, 
+            { 
+              name:  'My Chat Consultations',
+              routeName: drawerNavigatorRoutes["My Chats"].routeName,
+              icon: require('../../../assets/images/drawerIcons/Chat.png'),
+            },
+            { 
+              name:  'My Video Consultations',
+              routeName: drawerNavigatorRoutes["My Video Consultations"].routeName,
+              icon: require('../../../assets/images/drawerIcons/Chat.png'),
+            }, 
+            {
+              name: 'My Lab Test Appointments',
+              routeName: drawerNavigatorRoutes["My Lab Test Appointments"].routeName,
+              icon: require('../../../assets/images/drawerIcons/Appointments.png'),
+            },
+            { 
+              name: 'Medicine Orders',
+              routeName: drawerNavigatorRoutes["Medicine Orders"].routeName,
+              icon: require('../../../assets/images/drawerIcons/Orders.png'),
+            } ]
+        }
+      ]}
+      {...props} />
   },
   {
     initialRouteName: 'Home'
@@ -727,9 +872,9 @@ export const DragwerLogos = {
   Reminder: require('../../../assets/images/drawerIcons/Reminder.png'),
   "My Chats": require('../../../assets/images/drawerIcons/Chat.png'),
   "Blood Donors": require('../../../assets/images/drawerIcons/Blooddonars.png'),
-  'CORONO Status': require('../../../assets/images/drawerIcons/Pharmacy.png'),
   'My Video Consultations': require('../../../assets/images/drawerIcons/Appointments.png'),
   'Video and Chat Service': require('../../../assets/images/drawerIcons/Appointments.png'),
+  'My Lab Test Appointments': require('../../../assets/images/drawerIcons/Appointments.png'),
 }
 export default createAppContainer(createSwitchNavigator(
   {

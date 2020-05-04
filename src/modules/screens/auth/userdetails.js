@@ -1,11 +1,10 @@
 import React, { Component } from 'react';
 import {
-    Container, Content, Button, Text, Form, Item, Input, Footer, Icon, DatePicker, View, Picker, Card, Row,
+    Container, Content, Button, Text, Form, Item, Input, Footer, Icon, DatePicker, View, Picker, Card, Row,CheckBox,
     FooterTab, H3, Toast
 } from 'native-base';
 import { connect } from 'react-redux'
 import { Image, BackHandler, AsyncStorage, ScrollView, ImageBackground, TouchableOpacity } from 'react-native';
-import { Checkbox } from 'react-native-paper';
 import { userFiledsUpdate, logout } from '../../providers/auth/auth.actions';
 import styles from '../../screens/auth/styles';
 import Spinner from '../../../components/Spinner';
@@ -177,9 +176,13 @@ class UserDetails extends Component {
                                                 </Item>
                                             </View>
                                             <Row style={{ marginTop: 5, marginLeft: -5, alignItems: 'center' }}>
-
-                                                <Checkbox status={this.state.isBloodDonor ? 'checked' : 'unchecked'} color="#775DA3" onPress={() => this.setState({ isBloodDonor: !this.state.isBloodDonor })} testID='privateCheckbox'></Checkbox>
-                                                <Text style={{ marginLeft: 2, color: '#775DA3', fontFamily: 'OpenSans', fontSize: 14, fontWeight: 'bold' }}>Are you blood donor</Text>
+                                            <CheckBox style={{borderRadius:5}}
+                                             status={this.state.isBloodDonor ? true : false}
+                                               checked={this.state.isBloodDonor}
+                                               onPress={() => this.setState({ isBloodDonor: !this.state.isBloodDonor })} testID='privateCheckbox'
+                                               />
+                                               
+                                                <Text style={{ marginLeft: 20, color: '#775DA3', fontFamily: 'OpenSans', fontSize: 14, fontWeight: 'bold' }}>Are you blood donor</Text>
                                             </Row>
 
                                             <View>

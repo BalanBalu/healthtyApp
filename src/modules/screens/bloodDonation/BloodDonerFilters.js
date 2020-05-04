@@ -4,7 +4,6 @@ import { StyleSheet, TextInput, TouchableOpacity, ScrollView } from 'react-nativ
 import { FlatList } from 'react-native-gesture-handler';
 import Autocomplete from '../../../components/Autocomplete'
 import { bloodDonationFilter, bloodDonationList } from '../../providers/profile/profile.action'
-import { RadioButton, } from 'react-native-paper';
 import { object } from 'prop-types';
 class BloodDonerFilters extends Component {
   constructor(props) {
@@ -21,7 +20,8 @@ class BloodDonerFilters extends Component {
       countrySelect: null,
       stateSelect: null,
       citySelect: null,
-      districtSelect: null
+      districtSelect: null,
+      bloodgroupbutton:false
     }
   this.filterData = [];
   }
@@ -109,7 +109,6 @@ class BloodDonerFilters extends Component {
   }
 
   async clickedBloodDonorAvailableList(value, type) {
-
     let object = {
       type: type,
       value: value
@@ -267,8 +266,7 @@ class BloodDonerFilters extends Component {
                       keyExtractor={(item, index) => index.toString()}
                       renderItem={({ item, index }) =>
                         <ListItem>
-                          <RadioButton.Group onValueChange={value => this.clickedBloodDonorAvailableList(value, 'blood_group')}
-                            value={this.state.bloodSelect}>
+                         
 
                             <TouchableOpacity
                               onPress={() => this.clickedBloodDonorAvailableList(item, 'blood_group')}
@@ -277,11 +275,15 @@ class BloodDonerFilters extends Component {
                                 <Text style={styles.subText}>{item}</Text>
                               </Left>
                               <Right>
-                                <RadioButton value={item} />
+                              <Radio  
+                                standardStyle={true}
+                                onPress={() => this.clickedBloodDonorAvailableList(item, 'blood_group')}
+                                selected={this.state.bloodSelect === item ? true : false} 
+                                />
+                              
                               </Right>
                             </TouchableOpacity>
-                          </RadioButton.Group>
-
+                      
                         </ListItem>
                       } />
                   </View> : null}
@@ -303,10 +305,11 @@ class BloodDonerFilters extends Component {
                               <Text style={styles.subText}>{item}</Text>
                             </Left>
                             <Right>
-                              <RadioButton.Group onValueChange={value => this.clickedBloodDonorAvailableList(value, 'address.address.country')}
-                                value={this.state.countrySelect}>
-                                <RadioButton value={item} />
-                              </RadioButton.Group>
+                              <Radio  
+                                standardStyle={true}
+                                onPress={() => this.clickedBloodDonorAvailableList(item, 'address.address.country')}
+                                selected={this.state.countrySelect === item ? true : false} 
+                                />
                             </Right>
                           </TouchableOpacity>
                         </ListItem>
@@ -329,10 +332,12 @@ class BloodDonerFilters extends Component {
                               <Text style={styles.subText}>{item}</Text>
                             </Left>
                             <Right>
-                              <RadioButton.Group onValueChange={value => this.clickedBloodDonorAvailableList(value, 'address.address.state')}
-                                value={this.state.stateSelect}>
-                                <RadioButton value={item} />
-                              </RadioButton.Group>
+                              
+                              <Radio  
+                                standardStyle={true}
+                                onPress={() => this.clickedBloodDonorAvailableList(item, 'address.address.state')}
+                                selected={this.state.stateSelect === item ? true : false} 
+                                />
                             </Right>
                           </TouchableOpacity>
                         </ListItem>
@@ -356,10 +361,11 @@ class BloodDonerFilters extends Component {
                               <Text style={styles.subText}>{item}</Text>
                             </Left>
                             <Right>
-                              <RadioButton.Group onValueChange={value => this.clickedBloodDonorAvailableList(value, 'address.address.district')}
-                                value={this.state.districtSelect}>
-                                <RadioButton value={item} />
-                              </RadioButton.Group>
+                              <Radio  
+                                standardStyle={true}
+                                onPress={() => this.clickedBloodDonorAvailableList(item, 'address.address.district')}
+                                selected={this.state.districtSelect === item ? true : false} 
+                                />
                             </Right>
                           </TouchableOpacity>
                         </ListItem>
@@ -386,10 +392,11 @@ class BloodDonerFilters extends Component {
                               <Text style={styles.subText}>{item}</Text>
                             </Left>
                             <Right>
-                              <RadioButton.Group onValueChange={value => this.clickedBloodDonorAvailableList(value, 'address.address.city')}
-                                value={this.state.citySelect}>
-                                <RadioButton value={item} />
-                              </RadioButton.Group>
+                              <Radio  
+                                standardStyle={true}
+                                onPress={() => this.clickedBloodDonorAvailableList(item, 'address.address.city')}
+                                selected={this.state.citySelect === item ? true : false} 
+                                />
                             </Right>
                           </TouchableOpacity>
                         </ListItem>

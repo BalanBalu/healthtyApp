@@ -1,10 +1,9 @@
 import React, { Component } from 'react';
 import {
-    Container, Content, Text, View, Badge, Spinner, Toast
+    Container, Content, Text, View, Badge, Spinner, Toast,Radio
 } from 'native-base';
 import { Col, Row, Grid } from 'react-native-easy-grid';
 import { StyleSheet, Image, AsyncStorage, TextInput, FlatList, TouchableOpacity, Share  } from 'react-native';
-import { RadioButton, } from 'react-native-paper';
 import { hasLoggedIn } from '../../providers/auth/auth.actions';
 class CoronaDisease extends Component {
     constructor(props) {
@@ -58,7 +57,7 @@ class CoronaDisease extends Component {
         const isLoggedIn = await hasLoggedIn(this.props);
         if (!isLoggedIn) {
             Toast.show({
-                text: 'Please Login and Test Your Corono Status',
+                text: 'Please Login and Test Your Corona Status',
                 duration: 3000,
                 type: 'success'
             })
@@ -66,7 +65,7 @@ class CoronaDisease extends Component {
             return
         } else {
             Toast.show({
-                text: 'Test Your Corono(COVID-19) Status',
+                text: 'Test Your Corona(COVID-19) Status',
                 duration: 3000,
                 type: 'success'
             })
@@ -126,22 +125,26 @@ class CoronaDisease extends Component {
                         <Text style={styles.quesText}>{question}</Text>
                         <View style={styles.viewStyle}>
                         
-                               
-                            <RadioButton.Group onValueChange={value => this.setState({ itemSelected: value })}
-                                value={this.state.itemSelected}  >
+                            
                                 <Col>
-                                    <Row>
-                                       <RadioButton value={'YES'}>
-                                    </RadioButton>
+                                    <Row style={{alignItems:'center'}}>
+                                    <Radio 
+                                    standardStyle={true}
+                                    selected={this.state.itemSelected === 'YES' ? true : false} 
+                                    onPress={()=>   this.setState({ itemSelected: 'YES' })}  />
                                     <Text style={styles.yesText}>Yes</Text>
                                     </Row>
-                                 <Row>
-                                    <RadioButton value={'NO'}/>
+                                 <Row style={{alignItems:'center'}}>
+                                   
+                                    <Radio 
+                                    standardStyle={true}
+                                    selected={this.state.itemSelected === 'NO' ? true : false} 
+                                    onPress={()=>   this.setState({ itemSelected: 'NO' })}  />
                                     <Text style={styles.noText}>No</Text>
                                     </Row>
                                     </Col>
                                
-                            </RadioButton.Group>
+                           
                           
                            
 
@@ -180,7 +183,7 @@ class CoronaDisease extends Component {
                        <View style={{ alignItems:'center', justifyContent:'center', marginTop: 20 }}>
                        <TouchableOpacity onPress={() => {
                            this.setState({ showResult: false, activeId: 1, answers: [] })
-                           this.props.navigation.navigate('CORONO Status');
+                           this.props.navigation.navigate('CORONA Status');
                        }} style={[styles.touchbuttonShare, { backgroundColor: 'green'} ]}>
                             <Text style={styles.touchTextShare}>Check Again</Text>
                           </TouchableOpacity>
@@ -244,15 +247,13 @@ yesText:{
     fontFamily: 'OpenSans', 
     fontSize: 15, 
     color: '#ff4e42', 
-    marginLeft: 5, 
-    marginTop: 8
+    marginLeft: 10, 
 },
 noText:{
     fontFamily: 'OpenSans',
     fontSize: 15,
      color: '#909090', 
-     marginLeft: 5, 
-     marginTop: 8
+     marginLeft: 10, 
 },
 touchStyle:{
     backgroundColor: '#4E85E9', 

@@ -11,7 +11,7 @@ import { MAP_BOX_PUBLIC_TOKEN, IS_ANDROID, MAX_DISTANCE_TO_COVER, CURRENT_PRODUC
 import MapboxGL from '@react-native-mapbox-gl/maps';
 import { NavigationEvents } from 'react-navigation'
 import { store } from '../../../setup/store';
-import { getAllChats, SET_LAST_MESSAGES_DATA, SET_VIDEO_SESSION, SET_INCOMING_VIDEO_CALL } from '../../providers/chat/chat.action'
+import { getAllChats, SET_LAST_MESSAGES_DATA, SET_VIDEO_SESSION, SET_INCOMING_VIDEO_CALL, RESET_INCOMING_VIDEO_CALL } from '../../providers/chat/chat.action'
 import CurrentLocation from './CurrentLocation';
 const VideoConultationImg = require('../../../../assets/images/videConsultation.jpg');
 const chatImg = require('../../../../assets/images/Chat.jpg');
@@ -26,6 +26,9 @@ import ConnectyCube from 'react-native-connectycube';
 import { CallService  } from '../VideoConsulation/services';
 MapboxGL.setAccessToken(MAP_BOX_PUBLIC_TOKEN);
 import NotifService from '../../../setup/NotifService';
+import { getReminderData } from '../../providers/reminder/reminder.action.js';
+import FastImage from 'react-native-fast-image'
+import { translate } from '../../../setup/translator.helper';
 const debounce = (fun, delay) => {
     let timer = null;
     return function (...args) {
@@ -84,10 +87,13 @@ class Home extends Component {
     }
     async componentDidMount() {
         try {
-            const coronoTestStatus = await AsyncStorage.getItem('coronoTested');
-            if (coronoTestStatus === '1') { } else {
-                this.props.navigation.navigate('CORONO Status');
-            }
+            
+            // if(IS_ANDROID) {
+            //     const coronoTestStatus = await AsyncStorage.getItem('coronoTested');
+            //     if (coronoTestStatus === '1') { } else {
+            //         this.props.navigation.navigate('CORONA Status');
+            //     }
+            // }
             this.initialFunction();
             if (IS_ANDROID) {
                 let productConfigVersion = await getCurrentVersion("CURRENT_PATIENT_MEDFLIC_VERSION")
@@ -170,8 +176,11 @@ class Home extends Component {
                 navigation.setParams({
                     notificationBadgeCount: notificationCount
                 });
+                getReminderData(userId);
                 this.getAllChatsByUserId(userId);
-                this.getMarkedAsReadedNotification(userId)
+                this.getMarkedAsReadedNotification(userId);
+             
+               
 
             }
         }
@@ -340,7 +349,10 @@ class Home extends Component {
         try {
             let userId = await AsyncStorage.getItem('userId')
             if (userId) {
+                ConnectyCube.videochat.onCallListener = this._onCallListener;
                 ConnectyCube.videochat.onRemoteStreamListener = this._onRemoteStreamListener;
+                ConnectyCube.videochat.onStopCallListener = this._onStopCallListener;
+                ConnectyCube.videochat.onRejectCallListener =  this._onRejectCallListener;
                 this.getMarkedAsReadedNotification(userId);
             }
         } catch (e) {
@@ -354,6 +366,8 @@ class Home extends Component {
     _setUpListeners() {
        ConnectyCube.videochat.onCallListener = this._onCallListener;
        ConnectyCube.videochat.onRemoteStreamListener = this._onRemoteStreamListener;
+       ConnectyCube.videochat.onStopCallListener = this._onStopCallListener;
+       ConnectyCube.videochat.onRejectCallListener =  this._onRejectCallListener;
     }
     _onCallListener = (session, extension) => {
 
@@ -372,6 +386,42 @@ class Home extends Component {
             }
         })
     };
+    _onStopCallListener = (session, userId, extension) => {
+        const isStoppedByInitiator = session.initiatorID === userId;
+    
+        CallService.processOnStopCallListener(userId, isStoppedByInitiator)
+          .then(() => {
+            if (isStoppedByInitiator) {
+                  store.dispatch({
+                    type: SET_VIDEO_SESSION,
+                    data: null
+                  });
+                  CallService.setSession(null);
+                  CallService.setExtention(null);
+                  store.dispatch({
+                    type: RESET_INCOMING_VIDEO_CALL,
+                  })
+            }
+          })
+          .catch(
+            store.dispatch({
+                type: RESET_INCOMING_VIDEO_CALL,
+          }));
+      };
+    _onRejectCallListener = (session, userId, extension) => {
+        CallService.processOnRejectCallListener(session, userId, extension)
+          .then(() => {
+            store.dispatch({
+                type: SET_VIDEO_SESSION,
+                data: null
+            });
+            CallService.setSession(null);
+            CallService.setExtention(null);
+          })
+          .catch(store.dispatch({
+            type: RESET_INCOMING_VIDEO_CALL,
+          }));
+      };
     
     showInomingCallModal = (session, extension) => {
         CallService.setSession(session);
@@ -434,10 +484,6 @@ class Home extends Component {
 
                     </Row>
 
-
-
-
-
                     {this.state.searchValue != null ?
                         <FlatList
                             data={this.state.totalSpecialistDataArry ? [{ value: 'All Doctors in ' + (isSearchByCurrentLocation === true ? 'Your Location' : patientSearchLocationName), type: ' ' }].concat(this.state.totalSpecialistDataArry) : [{ value: 'All Doctors in ' + (isSearchByCurrentLocation === true ? 'Your Location' : patientSearchLocationName), type: ' ' }]}
@@ -480,7 +526,7 @@ class Home extends Component {
 
 
                     <Grid style={{ flex: 1, marginLeft: 10, marginRight: 20, marginTop: 10 }}>
-                    <Col style={{ width: '33%', marginLeft: 5 }}>
+                    <Col style={{ width: '33%',}}>
                             <TouchableOpacity onPress={() => this.props.navigation.navigate("Video and Chat Service")}>
                                 <Card style={{ borderRadius: 2, overflow: 'hidden' }}>
                                     <Row style={styles.rowStyle}>
@@ -516,16 +562,15 @@ class Home extends Component {
                                     </Row>
                                     <Row style={styles.secondRow}>
                                         <Col style={{ width: '100%', }}>
-                                            <Text style={styles.mainText}> Pharmacy</Text>
+                                        <Text style={styles.mainText}>{translate('Pharmacy')}</Text>
                                             <Text style={styles.subText}> Get medicines delivered to home</Text>
                                         </Col>
-
                                     </Row>
                                 </Card>
                             </TouchableOpacity>
                         </Col>
-                        <Col style={{ width: '33%', }}>
-                            <TouchableOpacity onPress={() => this.props.navigation.navigate("Chat Service")}>
+                        <Col style={{ width: '33%', marginLeft: 5 }}>
+                            <TouchableOpacity onPress={() => this.props.navigation.navigate("Blood Donors")}>
                                 <Card style={{ borderRadius: 2, overflow: 'hidden' }}>
                                     <Row style={styles.rowStyle}>
                                         <Image
@@ -569,7 +614,7 @@ class Home extends Component {
                                 </TouchableOpacity>
                             </Col>
                             <Col size={5} style={{ marginLeft: 5 }}>
-                                <TouchableOpacity >
+                                <TouchableOpacity onPress={()=> this.props.navigation.navigate('Lab Test')}> 
                                     <Card style={{ padding: 5, borderRadius: 2 }}>
                                         <Row>
                                             <Col size={7.5} style={{ justifyContent: 'center' }}>
@@ -612,7 +657,7 @@ class Home extends Component {
                                         <Col style={styles.maincol}>
                                             <TouchableOpacity onPress={() => this.navigateToCategorySearch(item.category_name)}
                                                 style={{ justifyContent: 'center', alignItems: 'center', width: '100%', paddingTop: 5, paddingBottom: 5 }}>
-                                                <Image
+                                                <FastImage
                                                     source={{ uri: item.imageBaseURL + item.category_id + '.png' }}
                                                     style={{
                                                         width: 50, height: 50, alignItems: 'center'
@@ -663,6 +708,11 @@ class Home extends Component {
                                 </TouchableOpacity>
                             </Card>
                         </View>
+                        {/* <View>
+                            <COVID19Stats navigation={this.props.navigation}> </COVID19Stats>
+                        </View>
+                          */}
+
                     </View>
 
                 </Content>
@@ -894,12 +944,11 @@ const styles = StyleSheet.create({
     },
     secondRow: {
         paddingTop: 10,
-        paddingBottom: 5,
+        paddingBottom: 10,
         width: '100%',
         borderTopColor: '#000',
         borderTopWidth: 0.3,
         backgroundColor: '#fff',
-        paddingTop: 5,
         justifyContent: 'center'
     },
     mainText: {

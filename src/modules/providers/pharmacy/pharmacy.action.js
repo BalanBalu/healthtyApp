@@ -16,6 +16,35 @@ export async function getSearchedMedicines(keyword, isLoading = true) {
   }
 }
 
+export async function getOrderUserReviews(user_id,order_id) {
+  try {
+    let endPoint = '/medicine_orders/user/'+user_id+'/order_review/'+order_id   
+    let response = await getService(endPoint);
+    let respData = response.data;
+    return respData;
+
+  } catch (e) {
+    return {
+      message: 'exception' + e,
+      success: false
+    }
+  }
+}
+export async function InsertOrderReviews(user_id, data) {
+  try {
+    let endPoint = '/medicine_orders/user/' + user_id + '/order_review'
+    let response = await postService(endPoint, data);
+    let respData = response.data;
+    return respData;
+
+  } catch (e) {
+    return {
+      message: 'exception' + e,
+      success: false
+    }
+  }
+}
+
 
 /* Medicine Order List */
 
@@ -103,6 +132,7 @@ export async function getSuggestionMedicines(keyword, data, isLoading = true) {
     }
   }
 }
+
 export async function getMedicinesSearchList(data, isLoading = true) {
   try {
     let endPoint = '/medicines/search/healthCareProducts';
@@ -239,6 +269,8 @@ export async function InsertMedicineReviews(userId, data) {
   }
 }
 
+
+
 /*Get medicine reviews count*/
 export async function getMedicineReviewsCount(medicine_id) {
   try {
@@ -255,21 +287,7 @@ export async function getMedicineReviewsCount(medicine_id) {
     }
   }
 }
-export async function getUploadPrescription(userId) {
-  try {
 
-    let endPoint = '/medicine_orders/prescription/user/' + userId;
-    console.log(endPoint);
-    let response = await getService(endPoint);
-    let respData = response.data;
-    return respData;
-  } catch (e) {
-    return {
-      message: 'exception' + e,
-      success: false
-    }
-  }
-}
 
 export async function removePrescriptionImage(prescriptionData, userId) {
   try {
@@ -306,6 +324,39 @@ export async function getmedicineAvailableStatus(data, isLoading = true) {
     let endPoint = 'medicine/add_to_card/medicine_verification';
     let response = await postService(endPoint, data);
 
+    let respData = response.data;
+    return respData;
+  } catch (e) {
+    return {
+      message: 'exception' + e,
+      success: false
+    }
+  }
+}
+
+export async function upDateOrderData(orderId, data) {
+  try {
+    let endPoint = '/medicine_orders/order/user/' + orderId;
+    let response = await putService(endPoint, data);
+
+    let respData = response.data;
+    console.log('updateData====================================')
+    console.log(JSON.stringify(respData))
+    return respData;
+
+  } catch (e) {
+    return {
+      message: 'exception' + e,
+      success: false
+    }
+  }
+}
+
+export async function getUploadPrescription(userId) {
+  try {
+    let endPoint = '/medicine_orders/prescription/user/' + userId;
+    console.log(endPoint);
+    let response = await getService(endPoint);
     let respData = response.data;
     return respData;
   } catch (e) {

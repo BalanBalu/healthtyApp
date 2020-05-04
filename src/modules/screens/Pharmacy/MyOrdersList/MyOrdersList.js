@@ -1,21 +1,19 @@
 import React, { Component } from 'react';
 import {
-    Container, Content, Text, Icon, View
+    Container, Content, Text, Icon, View, Card, Thumbnail, Item, Button
 } from 'native-base';
 import { Col, Row } from 'react-native-easy-grid';
 import { StyleSheet, AsyncStorage, FlatList, TouchableOpacity } from 'react-native';
 import { getMedicineOrderList } from '../../../providers/pharmacy/pharmacy.action';
 import { formatDate } from '../../../../setup/helpers';
 import Spinner from '../../../../components/Spinner';
+import noAppointmentImage from "../../../../../assets/images/noappointment.png";
 
 class MyOrdersList extends Component {
     constructor(props) {
         super(props)
         this.state = {
             data: [],
-            cartItems: [],
-            orderList: [],
-            orderId: '',
             isLoading: true,
         }
     }
@@ -23,11 +21,17 @@ class MyOrdersList extends Component {
         this.getMedicineOrderList();
     }
 
-    getFinalPriceOfOrder(orderItems) {
+    getFinalPriceOfOrder(orderItems,data) {
         let finalPriceForOrder = 0;
+        if(data.is_order_type_recommentation===true){
+            orderItems.forEach(element => {
+                finalPriceForOrder += Number(element.medicine_recommentation_max_price);
+            });   
+        }else{
         orderItems.forEach(element => {
             finalPriceForOrder += element.final_price;
         });
+    }
         return finalPriceForOrder;
     }
     renderNoOrders() {
@@ -55,85 +59,121 @@ class MyOrdersList extends Component {
 
 
     render() {
-        const { data , isLoading } = this.state;
+        const { data, isLoading } = this.state;
         console.log(isLoading);
         return (
-            <Container style={{ backgroundColor: '#E6E6E6' }}>
-                <Content>
+            <Container style={{ backgroundColor: '#E6E6E6', flex: 1 }}>
+                <Content style={{ flex: 1 }}>
                     <Spinner
                         visible={isLoading}
                     />
-                    <FlatList data={data}
-                        keyExtractor={(item, index) => index.toString()}
-                        renderItem={({ item, key }) =>
-                        <TouchableOpacity 
-                                testID="orderDetailsNavigation" 
-                                onPress={() => this.props.navigation.navigate('OrderDetails', { orderDetails: item })}>
-                                    <View style={{ margin: 5, backgroundColor: '#fff', marginLeft: 10, marginRight: 10, marginBottom: 10 }}>
-                                        <View>
-                                            <Row style={{ marginBottom: -5 }}>
-                                                <Col>
-                                                    <Text style={styles.Head}>Order Id</Text>
-                                                </Col>
-                                                <Col>
-                                                    <Text style={{ fontSize: 10, textAlign: 'right', margin: 10, fontFamily: 'OpenSans' }}>{item.order_ref_no || 'NIL'}</Text>
-                                                </Col>
-                                            </Row>
-                                            <Row style={styles.Row} />
-                                            <Row>
-                                                <Text style={{ fontSize: 10, margin: 10, fontFamily: 'OpenSans' }}>{item.description}</Text>
-                                            </Row>
-                                            <Row style={{ marginTop: -10 }}>
-                                                <Text style={styles.Head}>Ordered On</Text>
-                                            </Row>
-                                            <Row style={{ marginTop: -10 }}>
-                                                <Text style={styles.orderprice}>{formatDate(item.created_date, 'DD MMMM,YYYY')}</Text>
-                                            </Row>
-                                            <Row style={{ marginBottom: -15, marginTop: -5 }}>
-                                                <Col>
-                                                    <Row style={{ marginTop: -5 }}>
-                                                        <Text style={styles.Head}>Total price</Text>
-                                                    </Row>
-                                                    <Row style={{ marginBottom: 7.5, marginTop: -10 }}>
-                                                        <Col size={5}>
-                                                            <Text style={styles.orderprice}>₹ {this.getFinalPriceOfOrder(item.order_items || [])}</Text>
-                                                        </Col>
-                                                    </Row>
-                                                </Col>
-                                            </Row>
-                                            <Row style={{ marginTop: 7.5 }}>
+                    {data.length === 0 ?
+                        <Card transparent style={{
+                            alignItems: "center",
+                            justifyContent: "center",
+                            marginTop: "20%"
+                        }}>
+                            <Thumbnail
+                                square
+                                source={noAppointmentImage}
+                                style={{ height: 100, width: 100, marginTop: "10%" }}
+                            />
+
+                            <Text
+                                style={{
+                                    fontFamily: "OpenSans",
+                                    fontSize: 15,
+                                    marginTop: "10%"
+                                }}
+                                note
+                            >
+                                No orders Are Found
+                    </Text>
+                            <Item style={{ marginTop: "15%", borderBottomWidth: 0 }}>
+                                <Button style={[styles.bookingButton, styles.customButton]}
+                                    onPress={() =>
+                                        this.props.navigation.navigate('Medicines')
+                                    } testID='navigateToHome'>
+                                    <Text style={{ fontFamily: 'Opensans', fontSize: 15, fontWeight: 'bold' }}>Place Order</Text>
+                                </Button>
+                            </Item>
+                        </Card>
+                        // <Item style={{ borderBottomWidth: 0, justifyContent: 'center', alignItems: 'center', height: 70 }}>
+                        //     <Text style={{ fontSize: 20, justifyContent: 'center', alignItems: 'center' }}>No Medicines Are Found Your Cart</Text>
+                        // </Item> 
+                        :
+                        <View>
+                            <FlatList data={data}
+                                keyExtractor={(item, index) => index.toString()}
+                                renderItem={({ item, key }) =>
+                                    <TouchableOpacity
+                                        testID="orderDetailsNavigation"
+                                        onPress={() => this.props.navigation.navigate('OrderDetails', { serviceId: item._id })}>
+                                        <View style={{ margin: 5, backgroundColor: '#fff', marginLeft: 10, marginRight: 10, marginBottom: 10 }}>
+                                            <View>
+                                                <Row style={{ marginBottom: -5 }}>
+                                                    <Col>
+                                                        <Text style={styles.Head}>Order Id</Text>
+                                                    </Col>
+                                                    <Col>
+                                                        <Text style={{ fontSize: 10, textAlign: 'right', margin: 10, fontFamily: 'OpenSans' }}>{item.order_ref_no || ''}</Text>
+                                                    </Col>
+                                                </Row>
                                                 <Row style={styles.Row} />
+                                                <Row>
+                                                    <Text style={{ fontSize: 10, margin: 10, fontFamily: 'OpenSans' }}>{item.description}</Text>
+                                                </Row>
+                                                <Row style={{ marginTop: -10 }}>
+                                                    <Text style={styles.Head}>Ordered On</Text>
+                                                </Row>
+                                                <Row style={{ marginTop: -10 }}>
+                                                    <Text style={styles.orderprice}>{formatDate(item.created_date, 'DD MMMM,YYYY')}</Text>
+                                                </Row>
+                                                <Row style={{ marginBottom: -15, marginTop: -5 }}>
+                                                    <Col>
+                                                        <Row style={{ marginTop: -5 }}>
+                                                            <Text style={styles.Head}>Total price</Text>
+                                                        </Row>
+                                                        <Row style={{ marginBottom: 7.5, marginTop: -10 }}>
+                                                            <Col size={5}>
+                                                                <Text style={styles.orderprice}>₹ {this.getFinalPriceOfOrder(item.order_items || [],item)}</Text>
+                                                            </Col>
+                                                        </Row>
+                                                    </Col>
+                                                </Row>
+                                                <Row style={{ marginTop: 7.5 }}>
+                                                    <Row style={styles.Row} />
+                                                </Row>
+
+                                            </View>
+
+                                            <Row style={{ marginBottom: -12.5 }}>
+                                                <Col size={7}>
+                                                    {item.status == "PENDING" ?
+                                                        <Text style={styles.buytext}>Arrving on 24 Hours</Text> :
+                                                        null}
+                                                    {item.status == "IN PROGRESS" ?
+                                                        <Text style={styles.buytext}>Arrving on Today</Text> :
+                                                        null}
+                                                    {item.status == "COMPLETED" ?
+                                                        <Text style={{ marginBottom: 25, fontSize: 11, marginTop: 10, margin: 10, color: '#ff4e42', fontFamily: 'OpenSans', fontWeight: '500' }}>Deliveried on </Text> :
+                                                        null}
+                                                </Col>
+                                                {item.status == "COMPLETED" ?
+                                                    <Col size={3} style={{ marginRight: 10, marginTop: 10 }}>
+                                                        <TouchableOpacity style={styles.Touch} onPress={() => { this.props.navigation.navigate("medicineSearchList") }}>
+                                                            <Text style={styles.Buynow}><Icon name='ios-cart' style={styles.cart} />  Buy Again</Text>
+                                                        </TouchableOpacity>
+                                                    </Col> :
+                                                    null}
                                             </Row>
-
                                         </View>
-                                  
-                                <Row style={{ marginBottom: -12.5 }}>
-                                    <Col size={7}>
-                                        {item.status == "PENDING" ?
-                                            <Text style={styles.buytext}>Arrving on 24 Hours</Text> :
-                                            null}
-                                        {item.status == "IN PROGRESS" ?
-                                            <Text style={styles.buytext}>Arrving on Today</Text> :
-                                            null}
-                                        {item.status == "COMPLETED" ?
-                                            <Text style={{ marginBottom: 25, fontSize: 11, marginTop: 10, margin: 10, color: '#ff4e42', fontFamily: 'OpenSans', fontWeight: '500' }}>Deliveried on </Text> :
-                                            null}
-                                    </Col>
-                                    {item.status == "COMPLETED" ?
-                                        <Col size={3} style={{ marginRight: 10, marginTop: 10 }}>
-                                            <TouchableOpacity style={styles.Touch} onPress={() => { this.props.navigation.navigate("medicineSearchList") }}>
-                                                <Text style={styles.Buynow}><Icon name='ios-cart' style={styles.cart} />  Buy Again</Text>
-                                            </TouchableOpacity>
-                                        </Col> :
-                                        null}
-                                </Row>
-                            </View>
-                            </TouchableOpacity>
-                        } />
+                                    </TouchableOpacity>
+                                } />
 
 
 
-
+                        </View>}
                 </Content>
             </Container>
         )
