@@ -248,7 +248,7 @@ class LabConfirmation extends Component {
                 lab_id: packageDetails.lab_id,
                 lab_name: packageDetails.lab_name,
                 lab_test_categories_id: packageDetails.lab_test_categories_id,
-                lab_test_descriptiion: packageDetails.lab_test_descriptiion,
+                lab_test_description: packageDetails.lab_test_description,
                 fee: packageDetails.fee,
                 startTime: packageDetails.appointment_starttime,
                 endTime: packageDetails.appointment_endtime,
@@ -265,7 +265,7 @@ class LabConfirmation extends Component {
                         pin_code: selectedAddress.address.pin_code
                     }
                 },
-                status: paymentMode === 'cash' ? "PENDING" : 'BOOKING_IN_PROGRESS',
+                status: paymentMode === 'cash' ? "PENDING" : 'PAYMENT_IN_PROGRESS',
                 status_by: "USER",
                 booked_from: "Mobile",
             };
@@ -291,12 +291,20 @@ class LabConfirmation extends Component {
 
             } else {
                 let response = await insertAppointment(requestData);
-                response.labTestAppointmentId = response.labTestAppointmentId;
-                this.props.navigation.navigate('paymentPage', {
-                    service_type: SERVICE_TYPES.LAB_TEST,
-                    bookSlotDetails: requestData,
-                    amount: packageDetails.fee
-                });
+                console.log(response);
+                if(response.success === true) {
+                    requestData.labTestAppointmentId = response.appointmentId;
+                    this.props.navigation.navigate('paymentPage', {
+                        service_type: SERVICE_TYPES.LAB_TEST,
+                        bookSlotDetails: requestData,
+                        amount: packageDetails.fee
+                    });
+                } else {
+                    Toast.show({
+                        text: response.message,
+                        duration: 3000,
+                    })
+                }
             }
         }
         catch (e) {

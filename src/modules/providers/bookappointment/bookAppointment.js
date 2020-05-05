@@ -5,7 +5,7 @@ import { SERVICE_TYPES } from '../../../setup/config'
 import { possibleChatStatus } from '../../../Constants/Chat';
 import { updateVideoConsuting, } from '../../screens/VideoConsulation/services/video-consulting-service'
 import { POSSIBLE_VIDEO_CONSULTING_STATUS } from '../../screens/VideoConsulation/constants';
-import { insertAppointment } from '../lab/lab.action';
+import { insertAppointment, updateLapAppointment } from '../lab/lab.action';
 export default class BookAppointmentPaymentUpdate {
 
 
@@ -330,9 +330,24 @@ export default class BookAppointmentPaymentUpdate {
     }
 
     updateNewBookLabTestAppointment = async (labTestAppointmentId, appointmentData, paymentId ) => {
+        debugger
         let resultData = {};
         if(labTestAppointmentId) {
-            // Update Appointment
+            const createAppointmentData = {
+                userId: appointmentData.user_id,
+                labId: appointmentData.lab_id,
+                status: 'PENDING',
+                status_by: 'USER',
+                startTime:appointmentData.startTime,
+                endTime: appointmentData.endTime,
+                statusUpdateReason: 'NEW BOOKING',
+                payment_id: paymentId,
+                booked_from: 'MOBILE',
+
+            }
+            console.log(createAppointmentData);
+            resultData = await updateLapAppointment(labTestAppointmentId, createAppointmentData);
+
         } else {
             // Create Appointment in case of cash
             const createAppointmentData = {

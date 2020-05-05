@@ -7,21 +7,22 @@ import common from '../modules/providers/common/common.reducer';
 import profile from '../modules/providers/profile/profile.reducer';
 import bookappointment from '../modules/providers/bookappointment/bookappointment.reducer';
 import notification from '../modules/providers/notification/notification.reducer';
-import reminder from '../modules/providers/reminder/reminder.reducer'
+import reminder from '../modules/providers/reminder/reminder.reducer';
+import LabTestData from '../modules/providers/labTest/labTestBookAppointment.reducer';
 const rootReducer = combineReducers({
-    user,
-    common,
-    profile,
-    bookappointment,
-    notification,
-    chat,
-    reminder
+  user,
+  common,
+  profile,
+  bookappointment,
+  notification,
+  chat,
+  reminder,
+  LabTestData
 });
 
 export const store = createStore(
-    rootReducer,
-    compose(
-      applyMiddleware(thunk),
-    )
+  rootReducer,
+  compose(
+    applyMiddleware(thunk),
   )
-  //console.log(store.getState());
+)

@@ -16,9 +16,9 @@ export async function getSearchedMedicines(keyword, isLoading = true) {
   }
 }
 
-export async function getOrderUserReviews(order_id, id, limit) {
+export async function getOrderUserReviews(user_id,order_id) {
   try {
-    let endPoint = 'user/order_review/' + order_id
+    let endPoint = '/medicine_orders/user/'+user_id+'/order_review/'+order_id   
     let response = await getService(endPoint);
     let respData = response.data;
     return respData;
@@ -30,10 +30,10 @@ export async function getOrderUserReviews(order_id, id, limit) {
     }
   }
 }
-export async function InsertOrderReviews(user_id,data) {
+export async function InsertOrderReviews(user_id, data) {
   try {
-    let endPoint = '/user/order_review/' + user_id
-    let response = await postService(endPoint,data);
+    let endPoint = '/medicine_orders/user/' + user_id + '/order_review'
+    let response = await postService(endPoint, data);
     let respData = response.data;
     return respData;
 
