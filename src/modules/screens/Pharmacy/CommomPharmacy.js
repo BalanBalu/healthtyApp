@@ -76,11 +76,13 @@ export async function ProductIncrementDecreMent(quantity, price, operation, thre
 export function renderMedicineImage(data) {
   console.log(data)
   let source = require('../../../../assets/images/paracetamol.jpg')
+  if(data){
   if (data.medicine_images) {
     if (data.medicine_images[0]) {
       console.log(data.medicine_images[0].imageURL)
       source = { uri: data.medicine_images[0].imageURL }
     }
+  }
   }
   return (source)
 }
@@ -184,7 +186,7 @@ function getDistanceFromLatLonInKm(lat1, lon1, lat2, lon2) {
     Math.sin(dLon / 2) * Math.sin(dLon / 2)
     ;
   let c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
-  let  d = R * c; // Distance in km
+  let d = R * c; // Distance in km
   return d;
 }
 
@@ -258,7 +260,7 @@ export const statusBar = {
     { status: 'The order is delivered', checked: true },
   "null":
     { status: 'status  mismatching', checked: true },
-    "FAILED":
+  "FAILED":
     { status: 'order is failed try again', checked: true },
 
 

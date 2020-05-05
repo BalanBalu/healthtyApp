@@ -7,7 +7,7 @@ import { Col, Row } from 'react-native-easy-grid';
 import { StyleSheet, Image, AsyncStorage, FlatList, TouchableOpacity } from 'react-native';
 import { formatDate } from '../../../../setup/helpers';
 import { getMedicineOrderDetails, upDateOrderData, getOrderUserReviews } from '../../../providers/pharmacy/pharmacy.action';
-import { statusBar, renderPrescriptionImageAnimation } from '../CommomPharmacy';
+import { statusBar, renderPrescriptionImageAnimation, renderMedicineImage } from '../CommomPharmacy';
 import { NavigationEvents } from 'react-navigation';
 import { getPaymentInfomation } from '../../../providers/bookappointment/bookappointment.action'
 import Spinner from '../../../../components/Spinner';
@@ -121,9 +121,9 @@ class OrderDetails extends Component {
         let finalPriceForOrder = 0;
         if (this.state.orderDetails.is_order_type_recommentation === true) {
             orderItems.forEach(element => {
-                finalPriceForOrder +=Number(element.medicine_recommentation_max_price);
+                finalPriceForOrder += Number(element.medicine_recommentation_max_price);
             });
-           
+
         } else {
             orderItems.forEach(element => {
                 finalPriceForOrder += Number(element.final_price);
@@ -240,6 +240,7 @@ class OrderDetails extends Component {
     render() {
         const { navigation } = this.props;
         const { isLoading, orderDetails, paymentDetails, reportData, isCancel, reviewData } = this.state;
+        
         return (
             <Container style={styles.container}>
                 <Content style={{ backgroundColor: '#F5F5F5', padding: 10, flex: 1 }}>
@@ -366,7 +367,7 @@ class OrderDetails extends Component {
                                     <Row style={styles.rowStyle}>
                                         <Col size={2}>
                                             <Image
-                                                source={require('../../../../../assets/images/images.jpeg')}
+                                                source={renderMedicineImage(item.medInfo)}
                                                 style={{
                                                     width: 60, height: 60, alignItems: 'center'
                                                 }}
@@ -377,7 +378,7 @@ class OrderDetails extends Component {
                                             {orderDetails.is_order_type_recommentation === true ?
                                                 <Text style={styles.pharText}>{'mediflic pharmacy'}</Text> :
                                                 orderDetails.is_order_type_prescription === true && orderDetails.status !== 'PENDING' ?
-                                                    <Text style={styles.pharText}>{orderDetails.pharmacyInfo.name}</Text> :
+                                                    <Text style={styles.pharText}>{orderDetails.pharmacyInfo[0].name}</Text> :
                                                     <Text style={styles.pharText}>{item.pharmacyInfo.name}</Text>
                                             }
 
@@ -444,7 +445,7 @@ class OrderDetails extends Component {
                     {orderDetails.status === "PENDING" ?
                         <View style={{ alignItems: 'center', justifyContent: 'center', marginTop: 5, marginBottom: 10 }}>
                             <TouchableOpacity
-                                onPress={() => this.props.navigation.navigate('CancelService', { serviceType: 'MEDICINES_ORDER', prevState: this.props.navigation.state })}
+                                onPress={() => this.props.navigation.navigate('CancelService', { serviceType: 'MEDICINES_ORDER', prevState: this.props.navigation.state, tittle: 'Cancel Order' })}
                                 block danger
                                 style={styles.reviewButton1
                                 }>
