@@ -7,11 +7,13 @@ import { StyleSheet, View, TouchableOpacity, FlatList } from 'react-native';
 import { store } from '../../../setup/store';
 import { SET_PATIENT_LOCATION_DATA, getLocations, getPharmacyLocations } from '../../providers/bookappointment/bookappointment.action';
 import CurrentLocation from './CurrentLocation';
+import { getPopularCities } from '../../providers/locations/location.action';
 class Locations extends PureComponent {
     constructor(props) {
         super(props)
         this.state = {
             locations: [],
+            popularLocations: [],
             isLoading: false,
             pressStatus: false,
             selectedItem: 0
@@ -21,7 +23,7 @@ class Locations extends PureComponent {
 
     async componentDidMount() {
         const navigationOption = this.props.navigation.getParam('navigationOption') || null
-
+        const popularCitiesResp = this.getPopularCities()
         this.setState({ isLoading: true })
         if (navigationOption != null) {
             const pharmacyResult = await getPharmacyLocations();
@@ -37,6 +39,12 @@ class Locations extends PureComponent {
             }
         }
     }
+    getPopularCities = async () => {
+       const result = await getPopularCities();
+       if (result.success) {
+           this.setState({ popularLocations: result.data });
+       }
+    }
     itemSaperatedByListView = () => {
         return (
             <View
@@ -48,17 +56,12 @@ class Locations extends PureComponent {
             />
         );
     };
-    onPressList = () => {
-
-        // this.setState({ pressStatus: true, selectedItem: index });
-        this.props.navigation.navigate("LocationDetail")
+    onPressList = (cityInfo) => {
+        this.props.navigation.navigate("LocationDetail", { cityData : cityInfo })
     }
     render() {
-        const { locations, isLoading } = this.state
-        const TopCities = [{ name: 'New Delhi' }, { name: 'Gurgaon' }, { name: 'Pune', }, { name: 'Mumbai' }, { name: 'Bengaluru' }, { name: 'Kolkata' }, { name: 'Hyderabad' }
-        ]
-        const OtherCities = [{ name: 'Adambakkam' }, { name: 'Adyar' }, { name: 'Alandur', }, { name: 'Anna Nagar' }, { name: 'Ayanavaram' }, { name: 'Adambakkam' }, { name: 'Adyar' }, { name: 'Alandur', }, { name: 'Anna Nagar' }, { name: 'Ayanavaram' }, { name: 'Adambakkam' }, { name: 'Adyar' }, { name: 'Alandur', }, { name: 'Anna Nagar' }, { name: 'Ayanavaram' },
-        { name: 'Ashok Nagar' }]
+        const { locations, isLoading , popularLocations } = this.state
+        
         return (
             <Container>
 
@@ -94,16 +97,15 @@ class Locations extends PureComponent {
                                     <Text> Popular Cities</Text>
                                 </ListItem>
                                 <FlatList
-                                    data={TopCities}
+                                    data={popularLocations}
+                                    extraData={popularLocations}
                                     renderItem={({ item }) => (
-
-
                                         <ListItem
                                             button
-                                            onPress={() => this.onPressList()}
-                                            button   >
+                                            onPress={() => this.onPressList(item)}
+                                            button>
                                             <Left>
-                                                <Text style={{ fontFamily: 'OpenSans', fontSize: 13, }}>{item.name}</Text>
+                                                <Text style={{ fontFamily: 'OpenSans', fontSize: 13, }}>{item.city_name}</Text>
                                             </Left>
                                             <Right style={{ marginRight: 10, }}>
                                                 <Icon name="ios-arrow-forward" style={{ fontSize: 20 }} />
@@ -117,14 +119,22 @@ class Locations extends PureComponent {
                                     <Text>Other Cities</Text>
                                 </ListItem>
                                 <FlatList
-                                    data={OtherCities}
+                                    data={locations}
                                     renderItem={({ item }) => (
                                         <ListItem
                                             button
-                                            onPress={() => this.onPressList()}
-                                            button   >
+                                            onPress={() =>{
+                                                store.dispatch({
+                                                    type: SET_PATIENT_LOCATION_DATA,
+                                                    center: item.coordinates,
+                                                    locationName: item.location,
+                                                    isSearchByCurrentLocation: false
+                                                })
+                                                this.props.navigation.pop()
+                                            }}
+                                            button>
                                            
-                                                <Text style={{ fontFamily: 'OpenSans', fontSize: 13, }}>{item.name}</Text>
+                                                <Text style={{ fontFamily: 'OpenSans', fontSize: 13, }}>{item.location}</Text>
                                             
                                         </ListItem>
 

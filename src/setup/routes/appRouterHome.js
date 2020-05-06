@@ -62,6 +62,7 @@ import ChosePharmacyList from '../../modules/screens/Pharmacy/PharmacyList/Chose
 
 import { Badge } from '../../../src/modules/common'
 import Locations from '../../modules/screens/Home/Locations';
+import LocationDetail from '../../modules/screens/Home/LocationDetail';
 import BloodDonersList from '../../modules/screens/bloodDonation/BloodDonersList';
 import BloodDonerFilters from '../../modules/screens/bloodDonation/BloodDonerFilters';
 import MyChats from '../../modules/screens/chat/MyChats';
@@ -198,6 +199,12 @@ const HomeStack = createStackNavigator({
     screen: Locations,
     navigationOptions: ({ navigation }) => ({
       title: 'Locations',
+    })
+  },
+  LocationDetail: {
+    screen : LocationDetail,
+    navigationOptions: ({ navigation }) => ({
+      title: navigation.getParam('cityData') ? navigation.getParam('cityData').city_name : 'Areas',
     })
   },
   Categories: {

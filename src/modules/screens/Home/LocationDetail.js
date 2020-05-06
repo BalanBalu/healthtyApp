@@ -1,9 +1,9 @@
 import React, { PureComponent } from 'react';
-import { Text, Container, Icon, Spinner, ListItem, List } from 'native-base';
-import { Row } from 'react-native-easy-grid';
+import { Text, Container,  ListItem, List } from 'native-base';
 import { connect } from 'react-redux'
-import { StyleSheet, View, TouchableOpacity, FlatList } from 'react-native';
-
+import { View, FlatList } from 'react-native';
+import { store } from '../../../setup/store';
+import { SET_PATIENT_LOCATION_DATA, getLocations, getPharmacyLocations } from '../../providers/bookappointment/bookappointment.action';
 
 class LocationDetail extends PureComponent {
     constructor(props) {
@@ -12,6 +12,17 @@ class LocationDetail extends PureComponent {
             pressStatus: false,
             selectedItem: 0
         }
+        const { navigation } = this.props;
+        this.fetchPopularCityAreas(navigation.getParam('cityData'))
+    }
+    async fetchPopularCityAreas(cityData) {
+      const result = await getLocations({
+         fromPinCode: cityData.from_pincode, 
+         toPinCode: cityData.to_pincode
+      });
+      if (result.success) {
+        this.setState({ locations: result.data });
+    }
     }
     onPressList = (index) => {
 
@@ -19,20 +30,27 @@ class LocationDetail extends PureComponent {
     }
     render() {
         const { locations, isLoading } = this.state
-        const location = [{ name: 'Adambakkam' }, { name: 'Adyar' }, { name: 'Alandur', }, { name: 'Anna Nagar' }, { name: 'Ayanavaram' }, { name: 'Adambakkam' }, { name: 'Adyar' }, { name: 'Alandur', }, { name: 'Anna Nagar' }, { name: 'Ayanavaram' }, { name: 'Adambakkam' }, { name: 'Adyar' }, { name: 'Alandur', }, { name: 'Anna Nagar' }, { name: 'Ayanavaram' },
-        { name: 'Ashok Nagar' }]
+        const { navigation } = this.props;
         return (
             <Container>
                 <View style={{ flex: 1 }}>
                     <FlatList
-                        data={location}
+                        data={locations}
                         renderItem={({ item }) => (
                             <List>
                                 <ListItem
                                     button
-                                    onPress={() => this.onPressList(index)}
+                                    onPress={() => {
+                                        store.dispatch({
+                                            type: SET_PATIENT_LOCATION_DATA,
+                                            center: item.coordinates,
+                                            locationName: item.location,
+                                            isSearchByCurrentLocation: false
+                                        });
+                                        navigation.navigate('Home')
+                                    }}
                                     button >
-                                    <Text style={{ fontFamily: 'OpenSans', fontSize: 13, }}>{item.name}</Text>
+                                    <Text style={{ fontFamily: 'OpenSans', fontSize: 13, }}>{item.location}</Text>
                                 </ListItem>
                             </List>
                         )} />
@@ -42,9 +60,12 @@ class LocationDetail extends PureComponent {
         )
     }
 }
-const styles = StyleSheet.create({
 
-});
+function LocationState(state) {
 
-export default LocationDetail
+    return {
+        bookappointment: state.bookappointment
+    }
+}
+export default connect(LocationState)(LocationDetail)
 
