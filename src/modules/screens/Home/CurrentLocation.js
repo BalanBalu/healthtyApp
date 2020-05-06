@@ -8,10 +8,20 @@ import Geolocation from 'react-native-geolocation-service';
 import { store } from '../../../setup/store';
 import Axios from 'axios';
 MapboxGL.setAccessToken(MAP_BOX_PUBLIC_TOKEN);
+if(!IS_ANDROID) {
+  Geolocation.setRNConfiguration({
+    skipPermissionRequests: false,
+    authorizationLevel: 'always'
+  });
+}
 
 export default class CurrentLocation {
+
   static async getCurrentPosition() {
     console.log('Getting to current Location')
+    try {
+      
+    
     if (IS_ANDROID) {
 
       isGranted = await MapboxGL.requestAndroidLocationPermissions();
@@ -84,6 +94,8 @@ export default class CurrentLocation {
         );
       }
     } else {
+      Geolocation.requestAuthorization();
+      console.log('Getting Current Llocation Androud');
       Geolocation.getCurrentPosition(async (position) => {
         const origin_coordinates = [position.coords.latitude, position.coords.longitude,];
 
@@ -117,6 +129,9 @@ export default class CurrentLocation {
         error => {
           console.log(error);
         }, { enableHighAccuracy: false, timeout: 50000 }
+    }
+    } catch (error) {
+        console.error('Exception on getting Location ', error); 
     }
   }
 }

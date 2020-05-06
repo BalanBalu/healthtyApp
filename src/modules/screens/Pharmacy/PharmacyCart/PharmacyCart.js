@@ -14,7 +14,6 @@ class PharmacyCart extends Component {
         this.state = {
             cartItems: [],
             isLoading: true,
-            deliveryCharge: 10
         }
 
     }
@@ -50,7 +49,7 @@ class PharmacyCart extends Component {
         let temp = item;
         temp.userAddedTotalMedicineAmount = result.totalAmount || 0,
             temp.userAddedMedicineQuantity = result.quantity || 0
-        cartItems = this.state.cartItems
+        let cartItems = this.state.cartItems
         cartItems[index] == temp
         this.setState({ cartItems })
         await AsyncStorage.setItem('cartItems-' + userId, JSON.stringify(this.state.cartItems))
@@ -61,6 +60,7 @@ class PharmacyCart extends Component {
         data.splice(index, 1);
         this.setState({ cartItems: data });
         // let userId = await AsyncStorage.getItem('userId')
+        await AsyncStorage.setItem('hasCartReload', 'true')
         await AsyncStorage.setItem('cartItems-' + userId, JSON.stringify(this.state.cartItems))
         setCartItemCountOnNavigation(this.props.navigation)
     }
@@ -79,6 +79,7 @@ class PharmacyCart extends Component {
     }
     removeAllItems = async () => {
         this.setState({ cartItems: [] })
+        await AsyncStorage.setItem('hasCartReload', 'true')
         await AsyncStorage.removeItem('cartItems-' + userId);
         setCartItemCountOnNavigation(this.props.navigation)
     }
@@ -86,20 +87,23 @@ class PharmacyCart extends Component {
         const { cartItems } = this.state;
         let order_items = []
         cartItems.map(element => {
+           
             order_items.push({
                 medicine_id: element.medicine_id,
                 pharmacy_id: element.pharmacy_id,
-                quantity: element.userAddedMedicineQuantity,
-                medicine_weight: element.medicine_weight,
+                quantity: Number(element.userAddedMedicineQuantity),
+                medicine_weight: Number(element.medicine_weight),
                 medicine_weight_unit: element.medicine_weight_unit
             })
 
         })
+        console.log('availble status=====');
+        console.log(JSON.stringify(order_items))
         let obj = {
             order_items: order_items
         }
         let checkResult = await getmedicineAvailableStatus(obj)
-
+        console.log(JSON.stringify(checkResult))
         if (checkResult.success === true) {
             if (checkResult.data.length === cartItems.length) {
                 this.props.navigation.navigate("MedicineCheckout", {
@@ -128,6 +132,12 @@ class PharmacyCart extends Component {
                 this.setState({ cartItems })
 
             }
+        } else {
+            Toast.show({
+                text: 'out of stack',
+                type: 'danger',
+                duration: 3000
+            })
         }
     }
     render() {
@@ -157,7 +167,7 @@ class PharmacyCart extends Component {
                                 }}
                                 note
                             >
-                                No Medicines Are Found Your Cart
+                               No medicines found on your Cart
                     </Text>
                             <Item style={{ marginTop: "15%", borderBottomWidth: 0 }}>
                                 <Button style={[styles.bookingButton, styles.customButton]}
@@ -212,8 +222,12 @@ class PharmacyCart extends Component {
                                             <Row style={{}}>
                                                 <Col size={7} style={{ flexDirection: 'row' }}>
                                                     <Text style={{ fontSize: 9.5, marginBottom: -15, marginTop: 30, marginLeft: 3.5, color: "#ff4e42" }}>MRP</Text>
-                                                    <Text style={{ fontSize: 9.5, marginTop: 30, color: "#ff4e42", textDecorationLine: 'line-through', textDecorationStyle: 'solid', marginLeft: 5 }}>₹ {item.price}</Text>
-                                                    <Text style={{ fontSize: 15, marginTop: 25, color: "#5FB404", marginLeft: 5 }}>₹ {this.totalPrice()}</Text>
+                                                    {item.discount_type !== undefined&& item.discount_value!==0?
+                                                        <Row>
+                                                            <Text style={{ fontSize: 9.5, marginTop: 30, color: "#ff4e42", textDecorationLine: 'line-through', textDecorationStyle: 'solid', marginLeft: 5 }}>₹ {item.price}</Text>
+                                                            <Text style={{ fontSize: 15, marginTop: 25, color: "#5FB404", marginLeft: 5 }}>₹ {item.offeredAmount}</Text>
+                                                        </Row>
+                                                        : <Text style={{ fontSize: 15, marginTop: 25, color: "#5FB404", marginLeft: 5 }}>₹ {item.price}</Text>}
                                                 </Col>
                                                 <Col size={3}>
                                                     <Row style={{ marginTop: 30, }}>

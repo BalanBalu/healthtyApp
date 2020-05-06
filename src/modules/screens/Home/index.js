@@ -26,6 +26,9 @@ import ConnectyCube from 'react-native-connectycube';
 import { CallService  } from '../VideoConsulation/services';
 MapboxGL.setAccessToken(MAP_BOX_PUBLIC_TOKEN);
 import NotifService from '../../../setup/NotifService';
+import { getReminderData } from '../../providers/reminder/reminder.action.js';
+import FastImage from 'react-native-fast-image'
+import { translate } from '../../../setup/translator.helper';
 const debounce = (fun, delay) => {
     let timer = null;
     return function (...args) {
@@ -84,10 +87,13 @@ class Home extends Component {
     }
     async componentDidMount() {
         try {
-            const coronoTestStatus = await AsyncStorage.getItem('coronoTested');
-            if (coronoTestStatus === '1') { } else {
-                this.props.navigation.navigate('CORONA Status');
-            }
+            
+            // if(IS_ANDROID) {
+            //     const coronoTestStatus = await AsyncStorage.getItem('coronoTested');
+            //     if (coronoTestStatus === '1') { } else {
+            //         this.props.navigation.navigate('CORONA Status');
+            //     }
+            // }
             this.initialFunction();
             if (IS_ANDROID) {
                 let productConfigVersion = await getCurrentVersion("CURRENT_PATIENT_MEDFLIC_VERSION")
@@ -170,8 +176,11 @@ class Home extends Component {
                 navigation.setParams({
                     notificationBadgeCount: notificationCount
                 });
+                getReminderData(userId);
                 this.getAllChatsByUserId(userId);
-                this.getMarkedAsReadedNotification(userId)
+                this.getMarkedAsReadedNotification(userId);
+             
+               
 
             }
         }
@@ -190,7 +199,7 @@ class Home extends Component {
                     {
                         text: "UPDATE", onPress: () => {
                             console.log('OK Pressed')
-                            Linking.openURL("https://play.google.com/store/apps/details?id=com.medflic&hl=en")
+                            Linking.openURL("https://play.google.com/store/apps/details?id=com.ads.medflic&hl=en")
                         }
                     }
                 ],
@@ -212,7 +221,7 @@ class Home extends Component {
                     {
                         text: "UPDATE", onPress: () => {
                             console.log('OK Pressed')
-                            Linking.openURL("https://play.google.com/store/apps/details?id=com.medflic&hl=en")
+                            Linking.openURL("https://play.google.com/store/apps/details?id=com.ads.medflic&hl=en")
                         }
 
                     }
@@ -475,10 +484,6 @@ class Home extends Component {
 
                     </Row>
 
-
-
-
-
                     {this.state.searchValue != null ?
                         <FlatList
                             data={this.state.totalSpecialistDataArry ? [{ value: 'All Doctors in ' + (isSearchByCurrentLocation === true ? 'Your Location' : patientSearchLocationName), type: ' ' }].concat(this.state.totalSpecialistDataArry) : [{ value: 'All Doctors in ' + (isSearchByCurrentLocation === true ? 'Your Location' : patientSearchLocationName), type: ' ' }]}
@@ -557,10 +562,9 @@ class Home extends Component {
                                     </Row>
                                     <Row style={styles.secondRow}>
                                         <Col style={{ width: '100%', }}>
-                                            <Text style={styles.mainText}> Pharmacy</Text>
+                                        <Text style={styles.mainText}>{translate('Pharmacy')}</Text>
                                             <Text style={styles.subText}> Get medicines delivered to home</Text>
                                         </Col>
-
                                     </Row>
                                 </Card>
                             </TouchableOpacity>
@@ -610,7 +614,7 @@ class Home extends Component {
                                 </TouchableOpacity>
                             </Col>
                             <Col size={5} style={{ marginLeft: 5 }}>
-                                <TouchableOpacity >
+                                <TouchableOpacity onPress={()=> this.props.navigation.navigate('Lab Test')}> 
                                     <Card style={{ padding: 5, borderRadius: 2 }}>
                                         <Row>
                                             <Col size={7.5} style={{ justifyContent: 'center' }}>
@@ -653,7 +657,7 @@ class Home extends Component {
                                         <Col style={styles.maincol}>
                                             <TouchableOpacity onPress={() => this.navigateToCategorySearch(item.category_name)}
                                                 style={{ justifyContent: 'center', alignItems: 'center', width: '100%', paddingTop: 5, paddingBottom: 5 }}>
-                                                <Image
+                                                <FastImage
                                                     source={{ uri: item.imageBaseURL + item.category_id + '.png' }}
                                                     style={{
                                                         width: 50, height: 50, alignItems: 'center'
@@ -704,6 +708,11 @@ class Home extends Component {
                                 </TouchableOpacity>
                             </Card>
                         </View>
+                        {/* <View>
+                            <COVID19Stats navigation={this.props.navigation}> </COVID19Stats>
+                        </View>
+                          */}
+
                     </View>
 
                 </Content>

@@ -9,7 +9,7 @@ import { StyleSheet, Image, TouchableOpacity, View, FlatList } from 'react-nativ
 import { catagries } from '../../providers/catagries/catagries.actions';
 import { toDataUrl  } from '../../../setup/helpers';
 import { MAX_DISTANCE_TO_COVER  } from '../../../setup/config';
-
+import FastImage from 'react-native-fast-image'
 
 
 class Categories extends Component {
@@ -118,7 +118,7 @@ class Categories extends Component {
                   <Col style={styles.mainCol}>
                     <TouchableOpacity onPress={() => this.navigateToCategorySearch(item.category_name)}
                       style={{ justifyContent: 'center', alignItems: 'center', width: '100%', paddingTop: 5, paddingBottom: 5 }}>
-                      <Image
+                      <FastImage
                         source={{ uri: item.imageBaseURL + item.category_id + '.png' }}
                         style={{
                           width: 60, height: 60, alignItems: 'center'

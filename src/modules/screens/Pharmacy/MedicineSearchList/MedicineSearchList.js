@@ -6,6 +6,7 @@ import {
 import { Col, Row, Grid } from 'react-native-easy-grid';
 import { StyleSheet, Image, TouchableOpacity, AsyncStorage, FlatList, TouchableHighlight, Modal } from 'react-native';
 import Spinner from "../../../../components/Spinner";
+import { NavigationEvents } from 'react-navigation';
 import { getMedicinesSearchList, getMedicinesSearchListByPharmacyId } from '../../../providers/pharmacy/pharmacy.action'
 import { medicineRateAfterOffer, setCartItemCountOnNavigation, getMedicineName, renderMedicineImage, quantityPriceSort } from '../CommomPharmacy'
 import { AddToCard } from '../AddToCardBuyNow/AddToCard'
@@ -80,7 +81,7 @@ class MedicineSearchList extends Component {
             }
             await this.MedicineSearchList(postData)
         }
-        this.setState({ isLoading: false })
+        this.setState({ isLoading: false, medicineName })
 
     }
     MedicineSearchList = async (postData) => {
@@ -138,11 +139,12 @@ class MedicineSearchList extends Component {
             temp.selectedType = selected
 
             if (index !== undefined) {
-                cardItems = this.state.cartItems;
+                let cardItems = this.state.cartItems;
                 temp.userAddedMedicineQuantity = cardItems[index].userAddedMedicineQuantity
                 temp.index = index
             }
             await this.setState({ selectedMedcine: temp, isBuyNow: true })
+
 
         } catch (e) {
             console.log(e)
@@ -187,13 +189,33 @@ class MedicineSearchList extends Component {
             console.log(e)
         }
     }
+    async backNavigation(payload) {
+        let hascartReload = await AsyncStorage.getItem('hasCartReload');
+        let userId = await AsyncStorage.getItem('userId')
+
+        if (hascartReload === 'true') {
+            await AsyncStorage.removeItem('hasCartReload');
+            if (userId) {
+                let cart = await AsyncStorage.getItem('cartItems-' + userId) || []
+                let cartData = []
+                if (cart.length != 0) {
+                    cartData = JSON.parse(cart)
+
+                }
+                await this.setState({ cartItems: cartData })
+            }
+        }
+    }
 
     render() {
-        const { medicineName, isLoading, data, AddToCardData, cartItems } = this.state;
+        const { medicineName, isLoading, data, cartItems } = this.state;
 
 
         return (
             <Container style={{ flex: 1 }} >
+                <NavigationEvents
+                    onWillFocus={payload => { this.backNavigation(payload) }}
+                />
                 <Content style={{ backgroundColor: '#EAE6E6', padding: 10, flex: 1 }}>
                     {isLoading == true ?
 
@@ -260,14 +282,19 @@ class MedicineSearchList extends Component {
                                                                 <Row>
                                                                     <Col size={5} style={{ flexDirection: 'row' }}>
                                                                         <Text style={{ fontSize: 8, marginBottom: -15, marginTop: -5, marginLeft: -3, color: "#ff4e42" }}>{'MRP'}</Text>
-                                                                        <Text style={{ fontSize: 8, marginLeft: 1.5, marginTop: -5, color: "#ff4e42", textDecorationLine: 'line-through', textDecorationStyle: 'solid', marginLeft: 5 }}>₹ {item.medPharDetailInfo.variations[0].price || ''}</Text>
-                                                                        <Text style={{ fontSize: 13, marginTop: -10, marginLeft: 2.5, color: "#8dc63f", marginLeft: 5 }}>₹ {medicineRateAfterOffer(item.medPharDetailInfo.variations[0])}</Text>
+                                                                        {item.medPharDetailInfo.variations[0].discount_type !== undefined && item.medPharDetailInfo.variations[0].discount_value !== 0 ?
+                                                                            <Row>
+                                                                                <Text style={{ fontSize: 8, marginLeft: 1.5, marginTop: -5, color: "#ff4e42", textDecorationLine: 'line-through', textDecorationStyle: 'solid', marginLeft: 5 }}>₹ {item.medPharDetailInfo.variations[0].price || ''}</Text>
+                                                                                <Text style={{ fontSize: 13, marginTop: -10, marginLeft: 2.5, color: "#8dc63f", marginLeft: 5 }}>₹ {medicineRateAfterOffer(item.medPharDetailInfo.variations[0])}</Text>
+                                                                            </Row> :
+                                                                            <Text style={{ fontSize: 13, marginTop: -10, marginLeft: 2.5, color: "#8dc63f", marginLeft: 5 }}>₹ {medicineRateAfterOffer(item.medPharDetailInfo.variations[0])}</Text>
+                                                                        }
                                                                     </Col>
                                                                     {cartItems.length == 0 || cartItems.findIndex(ele => ele.medicine_id == item.medPharDetailInfo.medicine_id && ele.pharmacy_id == item.medPharDetailInfo.pharmacy_id) === -1 ?
                                                                         <Col size={3} style={{ height: 20, marginLeft: 4 }}>
                                                                             <Row>
                                                                                 <TouchableOpacity style={{ borderColor: '#4e85e9', marginLeft: 1.5, borderWidth: 1, borderRadius: 2.5, marginTop: -12.5, height: 25, width: 65, paddingBottom: 5, paddingTop: 2 }}
-                                                                                    onPress={() => this.selectedItems(item, 'Add to Card')} >
+                                                                                    onPress={() => this.selectedItems(item, 'Add to Cart')} >
                                                                                     <Row style={{ alignItems: 'center' }}>
                                                                                         <Icon name='ios-cart' style={{ color: '#4e85e9', fontSize: 11, marginLeft: 3.5, paddingTop: 2.3 }} />
                                                                                         <Text style={{ fontSize: 7, color: '#4e85e9', marginTop: 2.5, marginLeft: 6 }}>Add to Cart</Text>
@@ -279,12 +306,12 @@ class MedicineSearchList extends Component {
                                                                         <Col size={3} style={{ height: 20, marginLeft: 4 }}>
                                                                             <Row>
                                                                                 <TouchableOpacity style={{ borderColor: '#4e85e9', marginLeft: 1.5, borderWidth: 1, borderRadius: 2.5, marginTop: -12.5, height: 25, width: 65, paddingBottom: 5, paddingTop: 2 }}
-                                                                                    onPress={() => this.selectedItems(item, 'Add to Card', cartItems.findIndex(ele => ele.medicine_id == item.medPharDetailInfo.medicine_id && ele.pharmacy_id == item.medPharDetailInfo.pharmacy_id))} >
+                                                                                    onPress={() => this.selectedItems(item, 'Add to Cart', cartItems.findIndex(ele => ele.medicine_id === item.medPharDetailInfo.medicine_id && ele.pharmacy_id === item.medPharDetailInfo.pharmacy_id))} >
                                                                                     {/* onPress={() =>  this.props.navigation.navigate("PharmacyCart")} > */}
                                                                                     <Row style={{ alignItems: 'center' }}>
                                                                                         <Text>{item.medicine_id}</Text>
                                                                                         <Icon name='ios-cart' style={{ color: '#4e85e9', fontSize: 11, marginLeft: 3.5, paddingTop: 2.3 }} />
-                                                                                        <Text style={{ fontSize: 7, color: '#4e85e9', marginTop: 2.5, marginLeft: 6 }}>{'Added ' + cartItems[cartItems.findIndex(ele => ele.medicine_id == item.medPharDetailInfo.medicine_id && ele.pharmacy_id == item.medPharDetailInfo.pharmacy_id)].userAddedMedicineQuantity}</Text>
+                                                                                        <Text style={{ fontSize: 7, color: '#4e85e9', marginTop: 2.5, marginLeft: 6 }}>{'Added ' + cartItems[cartItems.findIndex(ele => ele.medicine_id === item.medPharDetailInfo.medicine_id && ele.pharmacy_id === item.medPharDetailInfo.pharmacy_id)].userAddedMedicineQuantity}</Text>
                                                                                     </Row>
                                                                                 </TouchableOpacity>
                                                                             </Row>
