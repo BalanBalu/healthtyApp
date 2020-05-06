@@ -1,5 +1,4 @@
 import React, { PureComponent } from 'react';
-
 import {
     Container, Content, Text, View, Badge, Toast, Radio, Form, CheckBox, Item, Picker, Icon
 } from 'native-base';
@@ -10,7 +9,9 @@ import Spinner from '../../../../components/Spinner';
 import { userFiledsUpdate } from '../../../providers/auth/auth.actions';
 import { prepareAppointmentUpdate } from '../../../providers/bookappointment/bookappointment.action'
 import { acceptNumbersOnly } from '../../../common';
-import { disease, bloodGroupList, allergic, numberList } from './constants'
+import { disease, bloodGroupList, allergic, numberList, hospitalizedFor } from './constants';
+import moment from 'moment';
+
 
 export class PrepareAppointmentWizard extends PureComponent {
     constructor(props) {
@@ -61,25 +62,21 @@ export class BasicInfo extends PureComponent {
             radioButton: false,
             checkBoxClick: false,
             isLoading: false,
-            appointmentId: ''
+            appointmentId: '',
+            AppointmentId: props.navigation.getParam('AppointmentId')
 
         }
     }
 
-    // componentDidMount(){
-    //     const { navigation } = this.props;
-    //     const appointmentId = navigation.getParam('appointmentId');
-    //     alert(appointmentId)
-    //     this.setState({appointmentId:appointmentId})
-    // }
     addBasicInfo = async () => {
         try {
-
+            const { AppointmentId, itemSelected } = this.state
             let data = {
-                is_user_meet_doctor_before: this.state.itemSelected
+                is_user_meet_doctor_before: itemSelected
             }
+
             this.setState({ isLoading: true })
-            let response = await prepareAppointmentUpdate("5eb12fb614dc71158fe83a7f", data)
+            let response = await prepareAppointmentUpdate(AppointmentId, data)
             if (response.success) {
                 Toast.show({
                     text: response.message,
@@ -97,11 +94,14 @@ export class BasicInfo extends PureComponent {
         }
     }
 
-
     render() {
         return (
             <Container style={styles.container}>
                 <Content contentContainerStyle={styles.content}>
+                    <Spinner
+                        color='blue'
+                        visible={this.state.isLoading}
+                    />
                     <View style={{ flex: 1 }}>
 
                         <Text style={styles.subHead}>Have you ever visited Dr.Balasubramanian before?</Text>
@@ -153,8 +153,9 @@ export class MedicalHistory extends PureComponent {
             radioButton: "EXCELLENT",
             checkBoxClick: [],
             reason_description: '',
-            any_other_concerns: ''
-
+            any_other_concerns: '',
+            isLoading: false,
+            AppointmentId: props.navigation.getParam('AppointmentId')
 
 
         }
@@ -169,6 +170,8 @@ export class MedicalHistory extends PureComponent {
             let data = {
                 general_health_info: this.state.radioButton
             }
+
+
             this.setState({ isLoading: true })
             let response = await userFiledsUpdate(userId, data)
             if (response.success) {
@@ -192,15 +195,16 @@ export class MedicalHistory extends PureComponent {
 
     addMedicalHistory = async () => {
         try {
-
+            const { reason_description, any_other_concerns, appointmentId } = this.state
             let data = {
-                description: this.state.reason_description,
-                any_other_concerns: this.state.any_other_concerns
+                description: reason_description,
+                any_other_concerns: any_other_concerns
 
             }
+
             this.setState({ isLoading: true })
             this.addgeneralHealthInfo()
-            let response = await prepareAppointmentUpdate("5eb12fb614dc71158fe83a7f", data)
+            let response = await prepareAppointmentUpdate(appointmentId, data)
             if (response.success) {
                 Toast.show({
                     text: response.message,
@@ -223,6 +227,10 @@ export class MedicalHistory extends PureComponent {
         return (
             <Container style={styles.container}>
                 <Content contentContainerStyle={styles.content}>
+                    <Spinner
+                        color='blue'
+                        visible={this.state.isLoading}
+                    />
                     <View style={{ flex: 1 }}>
                         <Text style={[styles.subHead, { textAlign: 'center' }]}>Reason for vist</Text>
                         <View style={{ marginTop: 20 }}>
@@ -304,7 +312,7 @@ export class MedicalHistory extends PureComponent {
                                 </TouchableOpacity>
                             </View>
                             <View style={{ width: '60%', marginLeft: 5 }}>
-                                <TouchableOpacity style={styles.saveButton} onPress={() => this.addgeneralHealthInfo()}>
+                                <TouchableOpacity style={styles.saveButton} onPress={() => this.addMedicalHistory()}>
                                     <Text style={styles.touchText}>Save and continue</Text>
                                 </TouchableOpacity>
                             </View>
@@ -342,6 +350,7 @@ export class PhysicianInfo extends PureComponent {
                     mobile_no: contact_number
                 }
             }
+
             this.setState({ isLoading: true })
             let response = await userFiledsUpdate(userId, data)
             console.log(JSON.stringify(response))
@@ -463,10 +472,12 @@ export class PastMedicalConditions extends PureComponent {
 
             let userId = await AsyncStorage.getItem('userId');
             let data = {
-                past_health_condition: [this.state.lists]
+                past_health_condition: this.state.checkBoxClick
             }
+
             this.setState({ isLoading: true })
             let response = await userFiledsUpdate(userId, data)
+
             console.log(JSON.stringify(response))
             if (response.success) {
                 Toast.show({
@@ -506,13 +517,13 @@ export class PastMedicalConditions extends PureComponent {
                             renderItem={({ item, index }) => (
                                 <View style={{ alignItems: 'center', flexDirection: 'row', marginTop: 15 }}>
                                     <CheckBox style={{ borderRadius: 5, marginLeft: -10 }}
-                                        checked={checkBoxClick.includes(item.id)}
+                                        checked={checkBoxClick.includes(item.disease)}
                                         onPress={() => {
-                                            if (checkBoxClick.includes(item.id)) {
-                                                checkBoxClick.splice(checkBoxClick.indexOf(item.id), 1)
+                                            if (checkBoxClick.includes(item.disease)) {
+                                                checkBoxClick.splice(checkBoxClick.indexOf(item.disease), 1)
 
                                             } else {
-                                                checkBoxClick.push(item.id)
+                                                checkBoxClick.push(item.disease)
                                             }
                                             this.setState({ checkBoxClick, refreshCount: refreshCount + 1 })
 
@@ -541,6 +552,9 @@ export class PastMedicalConditions extends PureComponent {
         )
     }
 }
+
+
+
 export class PatientInfo extends PureComponent {
     constructor(props) {
         super(props)
@@ -553,7 +567,8 @@ export class PatientInfo extends PureComponent {
             date_of_birth: '',
             gender: 'M',
             marital_status: 'MARRIED',
-            selectedBloodGroup: null
+            selectedBloodGroup: null,
+            isLoading: false
 
         }
     }
@@ -571,9 +586,10 @@ export class PatientInfo extends PureComponent {
                 blood_group: selectedBloodGroup,
                 marital_status: marital_status
             }
+
             this.setState({ isLoading: true })
             let response = await userFiledsUpdate(userId, data)
-            console.log(JSON.stringify(response))
+
             if (response.success) {
                 Toast.show({
                     text: response.message,
@@ -597,6 +613,10 @@ export class PatientInfo extends PureComponent {
         return (
             <Container style={styles.container}>
                 <Content contentContainerStyle={styles.content}>
+                    <Spinner
+                        color='blue'
+                        visible={this.state.isLoading}
+                    />
                     <View style={{ flex: 1 }}>
                         <Text style={[styles.subHead, { textAlign: 'center' }]}>Personal Information</Text>
                         <View style={{ marginTop: 20, width: '100%', }}>
@@ -613,6 +633,7 @@ export class PatientInfo extends PureComponent {
                                     onChangeText={(enteredText) => this.setState({ user_name: enteredText })}
                                     onSubmitEditing={() => { this.user_name._root.focus(); }}
                                 />
+
                             </Form>
                         </View>
                         <View style={{ marginTop: 20, width: '100%', }}>
@@ -770,10 +791,11 @@ export class AllergiesAndMedications extends PureComponent {
             firstQuestion: 0,
             radioButton: false,
             checkBoxClick: false,
-            allergic_name: '',
-            allergic_reaction: '',
-            medicine_name: '',
-            dosage: ''
+            isLoading: false,
+            allergic_name: [],
+            allergic_reaction: [],
+            medicine_name: [],
+            dosage: []
 
         }
     }
@@ -783,19 +805,14 @@ export class AllergiesAndMedications extends PureComponent {
 
             let userId = await AsyncStorage.getItem('userId');
             let data = {
-                have_any_allergies: {
-                    allergy_name: allergic_name,
-                    allergy_reaction: allergic_reaction,
-
-                },
-                currently_taking_medications: {
-                    medicine_name: medicine_name,
-                    medicine_dosage: dosage,
-                }
+                allergy_name: allergic_name,
+                allergy_reaction: allergic_reaction,
+                medicine_name: medicine_name,
+                medicine_dosage: dosage
             }
+
             this.setState({ isLoading: true })
             let response = await userFiledsUpdate(userId, data)
-            console.log(JSON.stringify(response))
             if (response.success) {
                 Toast.show({
                     text: response.message,
@@ -814,7 +831,7 @@ export class AllergiesAndMedications extends PureComponent {
     }
 
     render() {
-        const { allergic_name, allergic_reaction, medicine_name, dosage } = this.state
+        const { allergic_name1, allergic_name2, allergic_reaction1, allergic_reaction2, medicine_name1, medicine_name2, dosage1, dosage2 } = this.state
 
         return (
             <Container style={styles.container}>
@@ -838,73 +855,78 @@ export class AllergiesAndMedications extends PureComponent {
 
                                 </Col>
                             </Row>
+
+
+
+
                             <Row style={{ marginTop: 5 }}>
                                 <Col size={5} style={{
                                 }}>
-                                    <Form style={styles.formStyle7}>
-                                        <TextInput
-                                            placeholder="Enter  name"
-                                            style={Platform == "ios" ? styles.textInputStyle : styles.textInputAndroid}
-                                            placeholderTextColor="#C1C1C1"
-                                            keyboardType={'default'}
-                                            returnKeyType={'go'}
-                                            value={allergic_name}
-                                            onChangeText={(text) => { this.handleAddMore(text, 'textInput1'); }}
-                                            // onChangeText={(enteredText) => this.setState({allergic_name:enteredText})}
-                                            onSubmitEditing={() => { this.allergic_name._root.focus(); }}
-                                        />
 
-                                    </Form>
+                                    <FlatList
+                                        style={{ flex: 1 }}
+                                        data={[1, 2, 3]}
+                                        renderItem={({ item, index }) => {
+                                            return (
+                                                <Form style={styles.formStyle7}>
+                                                    <TextInput
+                                                        placeholder="Enter  name"
+                                                        style={Platform == "ios" ? styles.textInputStyle : styles.textInputAndroid}
+                                                        placeholderTextColor="#C1C1C1"
+                                                        keyboardType={'default'}
+                                                        returnKeyType={'go'}
+                                                        onChangeText={text => {
+                                                            let { allergic_name } = this.state;
+                                                            allergic_name[index] = text;
+                                                            this.setState({
+                                                                allergic_name,
+                                                            });
+                                                        }}
+                                                        value={this.state.allergic_name[index]}
+                                                    />
+                                                </Form>
+                                            );
+                                        }}
+                                    />
+
                                 </Col>
+
+
                                 <Col size={5} style={{
                                 }}>
-                                    <Form style={styles.formStyle8}>
-                                        <TextInput
-                                            placeholder="Enter reaction"
-                                            style={Platform == "ios" ? styles.textInputStyle : styles.textInputAndroid}
-                                            placeholderTextColor="#C1C1C1"
-                                            keyboardType={'default'}
-                                            returnKeyType={'go'}
-                                            value={allergic_reaction}
-                                            onChangeText={(enteredText) => this.setState({ allergic_reaction: enteredText })}
-                                            onSubmitEditing={() => { this.allergic_reaction._root.focus(); }}
-                                        />
-                                    </Form>
+
+                                    <FlatList
+                                        style={{ flex: 1 }}
+                                        data={[1, 2, 3]}
+                                        renderItem={({ item, index }) => {
+                                            return (
+                                                <Form style={styles.formStyle7}>
+                                                    <TextInput
+                                                        placeholder="Enter  Reaction"
+                                                        style={Platform == "ios" ? styles.textInputStyle : styles.textInputAndroid}
+                                                        placeholderTextColor="#C1C1C1"
+                                                        keyboardType={'default'}
+                                                        returnKeyType={'go'}
+                                                        onChangeText={text => {
+                                                            let { allergic_reaction } = this.state;
+                                                            allergic_reaction[index] = text;
+                                                            this.setState({
+                                                                allergic_reaction,
+                                                            });
+                                                        }}
+                                                        value={this.state.allergic_reaction[index]}
+                                                    />
+                                                </Form>
+                                            );
+                                        }}
+                                    />
+
                                 </Col>
                             </Row>
-                            <Row style={{}}>
-                                <Col size={5} style={{}}>
-
-                                    <Form style={styles.formStyle4}>
-                                        <TextInput
-                                            placeholder="Enter  name"
-                                            style={Platform == "ios" ? styles.textInputStyle : styles.textInputAndroid}
-                                            placeholderTextColor="#C1C1C1"
-                                            keyboardType={'default'}
-                                            returnKeyType={'go'}
-                                            value={allergic_name}
-                                            onChangeText={(enteredText) => this.setState({ allergic_name: enteredText })}
-                                            onSubmitEditing={() => { this.allergic_name._root.focus(); }}
-                                        />
 
 
-                                    </Form>
-                                </Col>
-                                <Col size={5} style={{}}>
-                                    <Form style={[styles.formStyle3, { justifyContent: 'center' }]}>
-                                        <TextInput
-                                            placeholder="Enter reaction"
-                                            style={Platform == "ios" ? styles.textInputStyle : styles.textInputAndroid}
-                                            placeholderTextColor="#C1C1C1"
-                                            keyboardType={'default'}
-                                            returnKeyType={'go'}
-                                            value={allergic_reaction}
-                                            onChangeText={(enteredText) => this.setState({ allergic_reaction: enteredText })}
-                                            onSubmitEditing={() => { this.allergic_reaction._root.focus(); }}
-                                        />
-                                    </Form>
-                                </Col>
-                            </Row>
+
+
 
                         </View>
 
@@ -915,76 +937,71 @@ export class AllergiesAndMedications extends PureComponent {
                             <Row style={{ marginTop: 15 }}>
                                 <Col size={5}>
                                     <Text style={{ fontFamily: "OpenSans", fontSize: 12, }}>Name</Text>
-
                                 </Col>
                                 <Col size={5}>
                                     <Text style={{ fontFamily: "OpenSans", fontSize: 12, }}>Dosage</Text>
-
                                 </Col>
                             </Row>
                             <Row style={{ marginTop: 5 }}>
                                 <Col size={5} style={{
                                 }}>
-                                    <Form style={styles.formStyle7}>
-                                        <TextInput
-                                            placeholder="Enter medicine name"
-                                            style={Platform == "ios" ? styles.textInputStyle : styles.textInputAndroid}
-                                            placeholderTextColor="#C1C1C1"
-                                            keyboardType={'default'}
-                                            returnKeyType={'go'}
-                                            value={medicine_name}
-                                            onChangeText={(enteredText) => this.setState({ medicine_name: enteredText })}
-                                            onSubmitEditing={() => { this.medicine_name._root.focus(); }}
-                                        />
 
-                                    </Form>
+                                    <FlatList
+                                        style={{ flex: 1 }}
+                                        data={[1, 2,]}
+                                        renderItem={({ item, index }) => {
+                                            return (
+                                                <Form style={styles.formStyle7}>
+                                                    <TextInput
+                                                        placeholder="Enter medicine name"
+                                                        style={Platform == "ios" ? styles.textInputStyle : styles.textInputAndroid}
+                                                        placeholderTextColor="#C1C1C1"
+                                                        keyboardType={'default'}
+                                                        returnKeyType={'go'}
+                                                        onChangeText={text => {
+                                                            let { medicine_name } = this.state;
+                                                            medicine_name[index] = text;
+                                                            this.setState({
+                                                                medicine_name,
+                                                            });
+                                                        }}
+                                                        value={this.state.medicine_name[index]}
+                                                    />
+                                                </Form>
+                                            );
+                                        }}
+                                    />
+
                                 </Col>
                                 <Col size={5} style={{
                                 }}>
-                                    <Form style={styles.formStyle8}>
-                                        <TextInput
-                                            placeholder="Enter dosage"
-                                            style={Platform == "ios" ? styles.textInputStyle : styles.textInputAndroid}
-                                            placeholderTextColor="#C1C1C1"
-                                            keyboardType={'default'}
-                                            returnKeyType={'go'}
-                                            value={dosage}
-                                            onChangeText={(enteredText) => this.setState({ dosage: enteredText })}
-                                            onSubmitEditing={() => { this.dosage._root.focus(); }}
-                                        />
-                                    </Form>
-                                </Col>
-                            </Row>
-                            <Row style={{}}>
-                                <Col size={5} style={{}}>
 
-                                    <Form style={styles.formStyle4}>
-                                        <TextInput
-                                            placeholder="Enter medicine name"
-                                            style={Platform == "ios" ? styles.textInputStyle : styles.textInputAndroid}
-                                            placeholderTextColor="#C1C1C1"
-                                            keyboardType={'default'}
-                                            returnKeyType={'go'}
-                                            value={medicine_name}
-                                            onChangeText={(enteredText) => this.setState({ medicine_name: enteredText })}
-                                            onSubmitEditing={() => { this.medicine_name._root.focus(); }}
-                                        />
+                                    <FlatList
+                                        style={{ flex: 1 }}
+                                        data={[1, 2,]}
+                                        renderItem={({ item, index }) => {
+                                            return (
+                                                <Form style={styles.formStyle7}>
+                                                    <TextInput
+                                                        placeholder="Enter dosage"
+                                                        style={Platform == "ios" ? styles.textInputStyle : styles.textInputAndroid}
+                                                        placeholderTextColor="#C1C1C1"
+                                                        keyboardType={'default'}
+                                                        returnKeyType={'go'}
+                                                        onChangeText={text => {
+                                                            let { dosage } = this.state;
+                                                            dosage[index] = text;
+                                                            this.setState({
+                                                                dosage,
+                                                            });
+                                                        }}
+                                                        value={this.state.dosage[index]}
+                                                    />
+                                                </Form>
+                                            );
+                                        }}
+                                    />
 
-                                    </Form>
-                                </Col>
-                                <Col size={5} style={{}}>
-                                    <Form style={[styles.formStyle3, { justifyContent: 'center' }]}>
-                                        <TextInput
-                                            placeholder="Enter dosage"
-                                            style={Platform == "ios" ? styles.textInputStyle : styles.textInputAndroid}
-                                            placeholderTextColor="#C1C1C1"
-                                            keyboardType={'default'}
-                                            returnKeyType={'go'}
-                                            value={dosage}
-                                            onChangeText={(enteredText) => this.setState({ dosage: enteredText })}
-                                            onSubmitEditing={() => { this.dosage._root.focus(); }}
-                                        />
-                                    </Form>
                                 </Col>
                             </Row>
 
@@ -1015,16 +1032,52 @@ export class FamilyMedicalConditions extends PureComponent {
     constructor(props) {
         super(props)
         this.state = {
-            firstQuestion: 0,
-            radioButton: false,
-            checkBoxClick: false
+            person_name: [],
+            person: [],
+
+            isLoading: false
+
 
         }
     }
+    addFamilyMedicalConditions = async () => {
+        try {
+            const { person_name, person } = this.state
+
+            let userId = await AsyncStorage.getItem('userId');
+            let data = {
+                person_name: person_name,
+                family_person_who: person,
+            }
+
+            this.setState({ isLoading: true })
+            let response = await userFiledsUpdate(userId, data)
+            console.log(JSON.stringify(response))
+            if (response.success) {
+                Toast.show({
+                    text: response.message,
+                    type: "success",
+                    duration: 3000,
+                })
+                this.props.navigation.navigate('AllergicDisease');
+            }
+        }
+        catch (e) {
+            console.log(e)
+        }
+        finally {
+            this.setState({ isLoading: false })
+        }
+    }
     render() {
+        const { person_name1, person_name2, person_name3, person_name4, person1, person2, person3, person4 } = this.state
         return (
             <Container style={styles.container}>
                 <Content contentContainerStyle={styles.content}>
+                    <Spinner
+                        color='blue'
+                        visible={this.state.isLoading}
+                    />
                     <View style={{ flex: 1 }}>
                         <Text style={[styles.subHead, { textAlign: 'center' }]}>Family conditions</Text>
                         <View style={{ marginTop: 20, width: '100%', }}>
@@ -1043,108 +1096,68 @@ export class FamilyMedicalConditions extends PureComponent {
                             <Row style={{ marginTop: 5 }}>
                                 <Col size={5} style={{
                                 }}>
-                                    <Form style={styles.formStyle7}>
-                                        <TextInput
-                                            placeholder="Enter  name"
-                                            style={Platform === "ios" ? { fontSize: 12, borderRadius: 5, paddingLeft: 2, paddingTop: 10, } : styles.textInputAndroid}
-                                            placeholderTextColor="#C1C1C1"
-                                            keyboardType={'default'}
-                                            returnKeyType={'go'}
-                                        />
 
-                                    </Form>
+                                    <FlatList
+                                        style={{ flex: 1 }}
+                                        data={[1, 2, 3, 4, 5]}
+                                        renderItem={({ item, index }) => {
+                                            return (
+                                                <Form style={styles.formStyle7}>
+                                                    <TextInput
+                                                        placeholder="Enter  name"
+                                                        style={Platform == "ios" ? styles.textInputStyle : styles.textInputAndroid}
+                                                        placeholderTextColor="#C1C1C1"
+                                                        keyboardType={'default'}
+                                                        returnKeyType={'go'}
+                                                        onChangeText={text => {
+                                                            let { person_name } = this.state;
+                                                            person_name[index] = text;
+                                                            this.setState({
+                                                                person_name,
+                                                            });
+                                                        }}
+                                                        value={this.state.person_name[index]}
+                                                    />
+                                                </Form>
+                                            );
+                                        }}
+                                    />
+
                                 </Col>
                                 <Col size={5} style={{
                                 }}>
-                                    <Form style={styles.formStyle8}>
-                                        <TextInput
-                                            placeholder="Enter who?"
-                                            style={Platform === "ios" ? styles.textInputStyle : styles.textInputAndroid}
-                                            placeholderTextColor="#C1C1C1"
-                                            keyboardType={'default'}
-                                            returnKeyType={'go'}
-                                        />
-                                    </Form>
+
+                                    <FlatList
+                                        style={{ flex: 1 }}
+                                        data={[1, 2, 3, 4, 5]}
+                                        renderItem={({ item, index }) => {
+                                            return (
+                                                <Form style={styles.formStyle7}>
+                                                    <TextInput
+                                                        placeholder="Enter who?"
+                                                        style={Platform == "ios" ? styles.textInputStyle : styles.textInputAndroid}
+                                                        placeholderTextColor="#C1C1C1"
+                                                        keyboardType={'default'}
+                                                        returnKeyType={'go'}
+                                                        onChangeText={text => {
+                                                            let { person } = this.state;
+                                                            person[index] = text;
+                                                            this.setState({
+                                                                person,
+                                                            });
+                                                        }}
+                                                        value={this.state.person[index]}
+                                                    />
+                                                </Form>
+                                            );
+                                        }}
+                                    />
+
                                 </Col>
                             </Row>
-                            <Row style={{}}>
-                                <Col size={5} style={{}}>
 
-                                    <Form style={styles.formStyle4}>
-                                        <TextInput
-                                            placeholder="Enter  name"
-                                            style={Platform === "ios" ? styles.textInputStyle : styles.textInputAndroid}
-                                            placeholderTextColor="#C1C1C1"
-                                            keyboardType={'default'}
-                                            returnKeyType={'go'}
-                                        />
 
-                                    </Form>
-                                </Col>
-                                <Col size={5} style={{}}>
-                                    <Form style={styles.formStyle8}>
-                                        <TextInput
-                                            placeholder="Enter who?"
-                                            style={Platform === "ios" ? styles.textInputStyle : styles.textInputAndroid}
-                                            placeholderTextColor="#C1C1C1"
-                                            keyboardType={'default'}
-                                            returnKeyType={'go'}
-                                        />
-                                    </Form>
-                                </Col>
-                            </Row>
-                            <Row style={{}}>
-                                <Col size={5} style={{}}>
 
-                                    <Form style={styles.formStyle4}>
-                                        <TextInput
-                                            placeholder="Enter  name"
-                                            style={Platform === "ios" ? styles.textInputStyle : styles.textInputAndroid}
-                                            placeholderTextColor="#C1C1C1"
-                                            keyboardType={'default'}
-                                            returnKeyType={'go'}
-                                        />
-
-                                    </Form>
-                                </Col>
-                                <Col size={5} style={{}}>
-                                    <Form style={styles.formStyle8}>
-                                        <TextInput
-                                            placeholder="Enter who?"
-                                            style={Platform === "ios" ? styles.textInputStyle : styles.textInputAndroid}
-                                            placeholderTextColor="#C1C1C1"
-                                            keyboardType={'default'}
-                                            returnKeyType={'go'}
-                                        />
-                                    </Form>
-                                </Col>
-                            </Row>
-                            <Row style={{}}>
-                                <Col size={5} style={{}}>
-
-                                    <Form style={styles.formStyle4}>
-                                        <TextInput
-                                            placeholder="Enter  name"
-                                            style={Platform === "ios" ? styles.textInputStyle : styles.textInputAndroid}
-                                            placeholderTextColor="#C1C1C1"
-                                            keyboardType={'default'}
-                                            returnKeyType={'go'}
-                                        />
-
-                                    </Form>
-                                </Col>
-                                <Col size={5} style={{}}>
-                                    <Form style={styles.formStyle8}>
-                                        <TextInput
-                                            placeholder="Enter who?"
-                                            style={Platform === "ios" ? styles.textInputStyle : styles.textInputAndroid}
-                                            placeholderTextColor="#C1C1C1"
-                                            keyboardType={'default'}
-                                            returnKeyType={'go'}
-                                        />
-                                    </Form>
-                                </Col>
-                            </Row>
                         </View>
                         <View style={{ flexDirection: 'row', height: 38, marginTop: 100 }}>
                             <View style={{ width: '40%', }}>
@@ -1153,7 +1166,7 @@ export class FamilyMedicalConditions extends PureComponent {
                                 </TouchableOpacity>
                             </View>
                             <View style={{ width: '60%', marginLeft: 5 }}>
-                                <TouchableOpacity style={styles.saveButton} onPress={() => this.setState({ firstQuestion: 8 })}>
+                                <TouchableOpacity style={styles.saveButton} onPress={() => this.addFamilyMedicalConditions()}>
                                     <Text style={styles.touchText}>Save and continue</Text>
                                 </TouchableOpacity>
                             </View>
@@ -1183,7 +1196,7 @@ export class AllergicDisease extends PureComponent {
 
             let userId = await AsyncStorage.getItem('userId');
             let data = {
-                allergy_info: [this.state.lists]
+                allergy_info: this.state.checkBoxClick
             }
             this.setState({ isLoading: true })
             let response = await userFiledsUpdate(userId, data)
@@ -1209,6 +1222,10 @@ export class AllergicDisease extends PureComponent {
         return (
             <Container style={styles.container}>
                 <Content contentContainerStyle={styles.content}>
+                    <Spinner
+                        color='blue'
+                        visible={this.state.isLoading}
+                    />
                     <View style={{ flex: 1 }}>
                         <Text style={[styles.subHead, { textAlign: 'center' }]}>Allergies and Medications</Text>
                         <View style={{ marginTop: 20, width: '100%', }}>
@@ -1221,13 +1238,13 @@ export class AllergicDisease extends PureComponent {
                                 renderItem={({ item, index }) => (
                                     <View style={{ alignItems: 'center', flexDirection: 'row', marginTop: 15 }}>
                                         <CheckBox style={{ borderRadius: 5, marginLeft: -10 }}
-                                            checked={checkBoxClick.includes(item.id)}
+                                            checked={checkBoxClick.includes(item.disease)}
                                             onPress={() => {
-                                                if (checkBoxClick.includes(item.id)) {
-                                                    checkBoxClick.splice(checkBoxClick.indexOf(item.id), 1)
+                                                if (checkBoxClick.includes(item.disease)) {
+                                                    checkBoxClick.splice(checkBoxClick.indexOf(item.disease), 1)
 
                                                 } else {
-                                                    checkBoxClick.push(item.id)
+                                                    checkBoxClick.push(item.disease)
                                                 }
                                                 this.setState({ checkBoxClick, refreshCount: refreshCount + 1 })
 
@@ -1262,18 +1279,58 @@ export class HospitalizationAndSurgeries extends PureComponent {
     constructor(props) {
         super(props)
         this.state = {
-            firstQuestion: 0,
             radioButton: false,
-            checkBoxClick: false
+            checkBoxClick: '',
+            lists: '',
+            hospitalised_reason: [],
+            hospitalised_date: [],
+            isLoading: false
 
         }
     }
-    render() {
-        const hospitalizedFor = [{ condition: 'Blood Transfusion' }, { condition: 'None of the above' }, { condition: 'Not sure' }]
+    addHospitalizationAndSurgeries = async () => {
+        try {
+            const { hospitalised_reason, hospitalised_date, checkBoxClick } = this.state
 
+            let userId = await AsyncStorage.getItem('userId');
+            let data = {
+                medical_procedure: checkBoxClick,
+                hospitalized: [{
+                    hospitalized_reason: hospitalised_reason,
+                    // hospitalized_date: hospitalised_date
+                }],
+            }
+            this.setState({ isLoading: true })
+            let response = await userFiledsUpdate(userId, data)
+            console.log(JSON.stringify(response))
+            if (response.success) {
+                Toast.show({
+                    text: response.message,
+                    type: "success",
+                    duration: 3000,
+                })
+                this.props.navigation.navigate('SocialHistory');
+            }
+        }
+        catch (e) {
+            console.log(e)
+        }
+        finally {
+            this.setState({ isLoading: false })
+        }
+    }
+    clickCheckBoXStatus(item) {
+        this.setState({ checkBoxClick: item.condition })
+    }
+    render() {
+        const { hospitalised_reason1, hospitalised_reason2, hospitalised_date1, hospitalised_date2 } = this.state
         return (
             <Container style={styles.container}>
                 <Content contentContainerStyle={styles.content}>
+                    <Spinner
+                        color='blue'
+                        visible={this.state.isLoading}
+                    />
                     <View style={{ flex: 1 }}>
                         <Text style={[styles.subHead, { textAlign: 'center' }]}>hospitalization and Surgeries</Text>
                         <View style={{ marginTop: 20, width: '100%', }}>
@@ -1281,14 +1338,13 @@ export class HospitalizationAndSurgeries extends PureComponent {
                             <Text style={{ fontFamily: "OpenSans", fontSize: 15, }}>Have you ever had any of the folloing procedures?</Text>
                             <FlatList
                                 data={hospitalizedFor}
+                                keyExtractor={(item, index) => index.toString()}
+                                extraData={this.state.checkBoxClick}
                                 renderItem={({ item, index }) => (
                                     <View style={{ alignItems: 'center', flexDirection: 'row', marginTop: 15 }}>
                                         <CheckBox style={{ borderRadius: 5, marginLeft: -10 }}
-
-                                            checked={this.state.checkBoxClick}
-
-
-                                            onPress={() => { this.setState({ checkBoxClick: true }); }}
+                                            checked={item.condition === this.state.checkBoxClick ? true : false}
+                                            onPress={() => this.clickCheckBoXStatus(item)}
 
                                         />
                                         <Text style={styles.flatlistText}>{item.condition}</Text>
@@ -1312,56 +1368,66 @@ export class HospitalizationAndSurgeries extends PureComponent {
                             <Row style={{ marginTop: 5 }}>
                                 <Col size={5} style={{
                                 }}>
-                                    <Form style={styles.formStyle7}>
-                                        <TextInput
-                                            placeholder="Enter reason"
-                                            style={Platform == "ios" ? styles.textInputStyle : styles.textInputAndroid}
-                                            placeholderTextColor="#C1C1C1"
-                                            keyboardType={'default'}
-                                            returnKeyType={'go'}
-                                        />
 
-                                    </Form>
+                                    <FlatList
+                                        style={{ flex: 1 }}
+                                        data={[1, 2, 3, 4, 5]}
+                                        renderItem={({ item, index }) => {
+                                            return (
+                                                <Form style={styles.formStyle7}>
+                                                    <TextInput
+                                                        placeholder="Enter reason"
+                                                        style={Platform == "ios" ? styles.textInputStyle : styles.textInputAndroid}
+                                                        placeholderTextColor="#C1C1C1"
+                                                        keyboardType={'default'}
+                                                        returnKeyType={'go'}
+                                                        onChangeText={text => {
+                                                            let { hospitalised_reason } = this.state;
+                                                            hospitalised_reason[index] = text;
+                                                            this.setState({
+                                                                hospitalised_reason,
+                                                            });
+                                                        }}
+                                                        value={this.state.hospitalised_reason[index]}
+                                                    />
+                                                </Form>
+                                            );
+                                        }}
+                                    />
+
                                 </Col>
                                 <Col size={5} style={{
                                 }}>
-                                    <Form style={styles.formStyle8}>
-                                        <TextInput
-                                            placeholder="Enter date"
-                                            style={Platform == "ios" ? styles.textInputStyle : styles.textInputAndroid}
-                                            placeholderTextColor="#C1C1C1"
-                                            keyboardType={'default'}
-                                            returnKeyType={'go'}
-                                        />
-                                    </Form>
+
+                                    <FlatList
+                                        style={{ flex: 1 }}
+                                        data={[1, 2, 3, 4, 5]}
+                                        renderItem={({ item, index }) => {
+                                            return (
+                                                <Form style={styles.formStyle7}>
+                                                    <TextInput
+                                                        placeholder="Enter date in DD-MM-YYYY"
+                                                        style={Platform == "ios" ? styles.textInputStyle : styles.textInputAndroid}
+                                                        placeholderTextColor="#C1C1C1"
+                                                        keyboardType={'default'}
+                                                        returnKeyType={'go'}
+                                                        onChangeText={text => {
+                                                            let { hospitalised_date } = this.state;
+                                                            hospitalised_date[index] = text;
+                                                            this.setState({
+                                                                hospitalised_date,
+                                                            });
+                                                        }}
+                                                        value={this.state.hospitalised_date[index]}
+                                                    />
+                                                </Form>
+                                            );
+                                        }}
+                                    />
+
                                 </Col>
                             </Row>
-                            <Row style={{}}>
-                                <Col size={5} style={{}}>
 
-                                    <Form style={styles.formStyle4}>
-                                        <TextInput
-                                            placeholder="Enter reason"
-                                            style={Platform == "ios" ? styles.textInputStyle : styles.textInputAndroid}
-                                            placeholderTextColor="#C1C1C1"
-                                            keyboardType={'default'}
-                                            returnKeyType={'go'}
-                                        />
-
-                                    </Form>
-                                </Col>
-                                <Col size={5} style={{}}>
-                                    <Form style={[styles.formStyle3, { justifyContent: 'center' }]}>
-                                        <TextInput
-                                            placeholder="Enter date"
-                                            style={Platform == "ios" ? styles.textInputStyle : styles.textInputAndroid}
-                                            placeholderTextColor="#C1C1C1"
-                                            keyboardType={'default'}
-                                            returnKeyType={'go'}
-                                        />
-                                    </Form>
-                                </Col>
-                            </Row>
 
                         </View>
 
@@ -1372,7 +1438,7 @@ export class HospitalizationAndSurgeries extends PureComponent {
                                 </TouchableOpacity>
                             </View>
                             <View style={{ width: '60%', marginLeft: 5 }}>
-                                <TouchableOpacity style={styles.saveButton} onPress={() => this.setState({ firstQuestion: 10 })}>
+                                <TouchableOpacity style={styles.saveButton} onPress={() => this.addHospitalizationAndSurgeries()}>
                                     <Text style={styles.touchText}>Save and continue</Text>
                                 </TouchableOpacity>
                             </View>
@@ -1396,7 +1462,8 @@ export class SocialHistory extends PureComponent {
             recreational_drugs: true,
             physically_or_verbally: true,
             selectnumber: '',
-            exercise: true
+            exercise: true,
+            isLoading: false
 
 
 
@@ -1417,9 +1484,9 @@ export class SocialHistory extends PureComponent {
                 physically_or_verbally_hurt_you: physically_or_verbally,
                 exercise: exercise
             }
+
             this.setState({ isLoading: true })
             let response = await userFiledsUpdate(userId, data)
-            alert(JSON.stringify(response))
             if (response.success) {
                 Toast.show({
                     text: response.message,
@@ -1441,6 +1508,10 @@ export class SocialHistory extends PureComponent {
         return (
             <Container style={styles.container}>
                 <Content contentContainerStyle={styles.content}>
+                    <Spinner
+                        color='blue'
+                        visible={this.state.isLoading}
+                    />
                     <View style={{ flex: 1 }}>
                         <Text style={[styles.subHead, { textAlign: 'center' }]}>Social history</Text>
                         <View style={{ marginTop: 20, width: '100%', }}>
@@ -1647,37 +1718,46 @@ export class PrepareAppointmentLastStep extends PureComponent {
     constructor(props) {
         super(props)
         this.state = {
-            agreed_for_send_forms: false
+            agreed_for_send_forms: false,
+            isLoading: false,
+            AppointmentId: props.navigation.getParam('AppointmentId')
 
         }
     }
     addAppointmentLastStep = async () => {
-        try {
-            let data = {
-                agreed_for_send_forms: this.state.agreed_for_send_forms
+        if (this.state.agreed_for_send_forms === true) {
+            try {
+                const { agreed_for_send_forms, appointmentId } = this.state
+                let data = {
+                    agreed_for_send_forms: agreed_for_send_forms
+                }
+                this.setState({ isLoading: true })
+                let response = await prepareAppointmentUpdate(appointmentId, data)
+                if (response.success) {
+                    Toast.show({
+                        text: response.message,
+                        type: "success",
+                        duration: 3000,
+                    })
+                    this.props.navigation.navigate('Home');
+                }
             }
-            this.setState({ isLoading: true })
-            let response = await prepareAppointmentUpdate("5eb12fb614dc71158fe83a7f", data)
-            if (response.success) {
-                Toast.show({
-                    text: response.message,
-                    type: "success",
-                    duration: 3000,
-                })
-                this.props.navigation.navigate('Home');
+            catch (e) {
+                console.log(e)
             }
-        }
-        catch (e) {
-            console.log(e)
-        }
-        finally {
-            this.setState({ isLoading: false })
+            finally {
+                this.setState({ isLoading: false })
+            }
         }
     }
     render() {
         return (
             <Container style={styles.container}>
                 <Content contentContainerStyle={styles.content}>
+                    <Spinner
+                        color='blue'
+                        visible={this.state.isLoading}
+                    />
                     <View style={styles.mainView}>
                         <View>
                             <View style={styles.centerContent}>
