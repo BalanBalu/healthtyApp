@@ -199,7 +199,7 @@ class Home extends Component {
                     {
                         text: "UPDATE", onPress: () => {
                             console.log('OK Pressed')
-                            Linking.openURL("https://play.google.com/store/apps/details?id=com.medflic&hl=en")
+                            Linking.openURL("https://play.google.com/store/apps/details?id=com.ads.medflic&hl=en")
                         }
                     }
                 ],
@@ -221,7 +221,7 @@ class Home extends Component {
                     {
                         text: "UPDATE", onPress: () => {
                             console.log('OK Pressed')
-                            Linking.openURL("https://play.google.com/store/apps/details?id=com.medflic&hl=en")
+                            Linking.openURL("https://play.google.com/store/apps/details?id=com.ads.medflic&hl=en")
                         }
 
                     }
