@@ -1637,7 +1637,7 @@ export class SocialHistory extends PureComponent {
                                     testID="editBloodGroup"
                                 >
                                     {numberList.map((value, key) => {
-                                        return <Picker.Item label={value} value={value} key={key}
+                                        return <Picker.Item label={String(value)} value={String(value)} key={key}
                                         />
                                     })
                                     }
