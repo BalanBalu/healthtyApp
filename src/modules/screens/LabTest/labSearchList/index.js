@@ -103,7 +103,7 @@ class labSearchList extends Component {
     }
     getTotalReviewsCount4LabTest = async (labIdsArry) => {
         try {
-            getTotalReviewsCount4LabTestService(labIdsArry);
+            // getTotalReviewsCount4LabTestService(labIdsArry);
         } catch (Ex) {
             console.log('Ex is getting on get Reviews count for Lab====>', Ex)
             return {
@@ -261,23 +261,29 @@ class labSearchList extends Component {
     }
 
     onPressGoToBookAppointmentPage(labItemData) {
-        labItemData.labId = labItemData.labInfo.lab_id;
+        debugger
+        const { labInfo } = labItemData
+        labItemData.labId = labInfo.lab_id;
+        labItemData.slotData = this.availableSlotsDataMap.get(String(labInfo.lab_id)) || {};
+        console.log('labItemData.slotData====>', JSON.stringify(labItemData.slotData));
+
         let reqLabBookAppointmentData = { ...labItemData }
         store.dispatch({
             type: SET_SINGLE_LAB_ITEM_DATA,
             data: reqLabBookAppointmentData
         });
         console.log('reqLabBookAppointmentData====>', JSON.stringify(reqLabBookAppointmentData));
-        console.log(' labItemData.labInfo.lab_id====>', JSON.stringify(labItemData.labInfo.lab_id));
+        console.log(' labItemData.labInfo.lab_id====>', JSON.stringify(labInfo.lab_id));
 
-        this.props.navigation.navigate('LabBookAppointment', { LabId: labItemData.lab_id, availabilitySlotsDatesArry: this.availabilitySlotsDatesArry })
+        this.props.navigation.navigate('LabBookAppointment', { LabId: labInfo.lab_id, availabilitySlotsDatesArry: this.availabilitySlotsDatesArry });
+        debugger
     }
 
 
 
     renderLabListCards(item) {
 
-        const { LabTestData: { patientWishListLabIds, wishListCountByLabIds, reviewCountsByLabIds } } = this.props;
+        const { labTestData: { patientWishListLabIds, wishListCountByLabIds, reviewCountsByLabIds } } = this.props;
         const { expandedLabIdToShowSlotsData, isLoggedIn } = this.state;
         const slotDataObj4Item = this.availableSlotsDataMap.get(String(item.labInfo.lab_id)) || {}
         return (
@@ -375,7 +381,7 @@ class labSearchList extends Component {
     }
 
     render() {
-        const { LabTestData: { patientWishListLabIds } } = this.props;
+        const { labTestData: { patientWishListLabIds } } = this.props;
 
         const { labListData, isLoading } = this.state;
         return (
@@ -428,7 +434,7 @@ class labSearchList extends Component {
 }
 
 const LabTestBookAppointmentState = (state) => ({
-    LabTestData: state.LabTestData
+    labTestData: state.labTestData
 })
 export default connect(LabTestBookAppointmentState)(labSearchList)
 

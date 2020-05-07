@@ -9,7 +9,7 @@ export const commonInitialState = {
     patientWishListLabIds: [],
     wishListCountByLabIds: {},
     reviewCountsByLabIds: {},
-    singleLabItemData: null,
+    singleLabItemData: {},
 }
 
 export default (state = commonInitialState, action) => {

@@ -14,7 +14,7 @@ export const getTotalReviewsCount4LabTestService = async (labIds) => {
         const response = await getService(endPoint);
         const reviewCountRes = response.data;
         if (reviewCountRes.success) {
-            const { LabTestData: { reviewCountsByLabIds } } = store.getState();
+            const { labTestData: { reviewCountsByLabIds } } = store.getState();
             const reviewCountList = reviewCountRes.data;
             if (reviewCountList.length != 0) {
                 for (i = 0; i < reviewCountList.length; i++) {
@@ -72,7 +72,7 @@ export const getTotalWishList4LabTestService = async (labId) => {
 }
 export const addFavoritesToLabByUserService = async (userId, labId) => {
     try {
-        const { LabTestData: { patientWishListLabIds, wishListCountByLabIds } } = store.getState();
+        const { labTestData: { patientWishListLabIds, wishListCountByLabIds } } = store.getState();
         if (userId) {
             const reqData4updateWishList = {
                 active: !patientWishListLabIds.includes(labId)

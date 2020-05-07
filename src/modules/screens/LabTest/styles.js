@@ -122,7 +122,14 @@ export default styles = StyleSheet.create({
         marginTop: 5,
         marginLeft: -20
     },
-
+    descriptionText: {
+        fontFamily: 'OpenSans',
+        color: '#000',
+        fontSize: 14,
+        marginTop: 5
+    },
+    viewMoreAndHideText: { fontFamily: 'OpenSans', color: 'blue', fontSize: 14 },
+    descriptionLabelName: { fontFamily: 'OpenSans', fontSize: 12, },
 })
 
 

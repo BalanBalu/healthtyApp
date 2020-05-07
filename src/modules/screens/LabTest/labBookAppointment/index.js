@@ -5,12 +5,24 @@ import { connect } from 'react-redux'
 import { StyleSheet, TouchableOpacity, View, FlatList, AsyncStorage, Image } from 'react-native';
 import StarRating from 'react-native-star-rating';
 import RenderReviews from './RenderReviews'
-class labBookAppointment extends Component {
+import RenderDescription from './RenderDescription';
+import { formatDate, addMoment, getMoment, getUnixTimeStamp } from '../../../../setup/helpers';
+import RenderDates from '../labSearchList/RenderDateList';
+import { enumerateStartToEndDates } from '../CommonLabTest'
+import { } from '../../../providers/labTest/labTestBookAppointment.action';
+import { fetchLabTestAvailabilitySlotsService } from '../../../providers/labTest/basicLabTest.action';
+
+class LabBookAppointment extends Component {
   availabilitySlotsDatesArry = [];
+  labDescriptionData = 'aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaabbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbcccccccccccccccccccccccccccccccccccccccccccccccccccccddddddddddddddddddddddddddddddd';
+
+  slotData4ItemMap = new Map();
   constructor(props) {
     super(props)
 
     this.state = {
+      currentDate: formatDate(new Date(), 'YYYY-MM-DD'),
+
       selectedSlotItem: null,
       isLoading: true,
       pressTab: 1,
@@ -35,15 +47,19 @@ class labBookAppointment extends Component {
       userId: null,
       isReviewLoading: false,
       showMoreOption: false,
-      doctorIdWithHosId: []
+      doctorIdWithHosId: [],
+      renderRefreshCount: 0,
     }
 
   }
 
   async componentDidMount() {
     const { navigation } = this.props;
+
     const fromMyAppointment = navigation.getParam('fromMyAppointment') || false;
     // this.setState({ isLoading: true });
+    const startDateByMoment = addMoment(this.state.currentDate)
+    const endDateByMoment = addMoment(this.state.currentDate, 7, 'days');
     let userId = await AsyncStorage.getItem('userId');
     if (userId) {
       this.setState({ isLoggedIn: true, userId });
@@ -52,16 +68,63 @@ class labBookAppointment extends Component {
       // ...
       //...
     } else {
-      this.availabilitySlotsDatesArry = navigation.getParam('availabilitySlotsDatesArry');
 
+      this.availabilitySlotsDatesArry = navigation.getParam('availabilitySlotsDatesArry');
       const { labTestData: { singleLabItemData } } = this.props;
-      // this.processedDoctorDetailsAndSlotData = singleDoctorData;
+      console.log('from Book appomt singleLabItemData====>', singleLabItemData);
+      console.log(' singleLabItemData.slotData====>', singleLabItemData.slotData);
+
+      if (Object.keys(singleLabItemData.slotData).length === 0) {
+        this.getLabTestAvailabilitySlots(singleLabItemData.labId, startDateByMoment, endDateByMoment);
+      }
+      else {
+        this.slotData4ItemMap.set(String(singleLabItemData.labId), singleLabItemData.slotData)
+
+      }
+
+      // this.processedDoctorDetailsAndSlotData = singleLabItemData;
+
       this.getLabItemLocData(singleLabItemData)
-      await this.setState({ labId: singleDoctorData.labId, labItemData: singleLabItemData });
+
+      await this.setState({ labId: singleLabItemData.labId, labItemData: singleLabItemData });
     }
     // this.setState({ isLoading: false });
   }
 
+
+  /* get Lab Test Availability Slots service */
+  getLabTestAvailabilitySlots = async (labIdFromItem, startDateByMoment, endDateByMoment) => {
+    try {
+
+      this.availabilitySlotsDatesArry = enumerateStartToEndDates(startDateByMoment, endDateByMoment, this.availabilitySlotsDatesArry);
+      const reqData4Availability = {
+        "labIds": [labIdFromItem]
+      }
+      const reqStartAndEndDates = {
+        startDate: formatDate(startDateByMoment, 'YYYY-MM-DD'),
+        endDate: formatDate(endDateByMoment, 'YYYY-MM-DD')
+      }
+
+      const resultSlotsData = await fetchLabTestAvailabilitySlotsService(reqData4Availability, reqStartAndEndDates);
+      console.log('resultSlotsData======>', resultSlotsData);
+      if (resultSlotsData.success) {
+
+        const availabilityData = resultSlotsData.data;
+        if (availabilityData.length != 0) {
+          availabilityData.map((item) => {
+            let previousSlotsDataByItem = this.slotData4ItemMap.get(String(item.labId))
+            let finalSlotsDataObj = { ...previousSlotsDataByItem, ...item.slotData } // Merge the Previous weeks and On change the Next week slots data
+            this.slotData4ItemMap.set(String(item.labId), finalSlotsDataObj)
+          })
+          this.setState({ renderRefreshCount: this.state.renderRefreshCount + 1 })
+        }
+
+      }
+
+    } catch (ex) {
+      console.log('Ex getting on getAvailabilitySlots service======', ex.message);
+    }
+  }
 
   getLabItemLocData(labItemData) {
     if (labItemData) {
@@ -73,11 +136,49 @@ class labBookAppointment extends Component {
   onSegemntClick(index) {
     this.setState({ pressTab: index })
   }
+
+  callSlotsServiceWhenOnEndReached = (labId, availabilitySlotsDatesArry) => { // call availability slots service when change dates on next week
+    // const finalIndex = availabilitySlotsDatesArry.length
+    // const lastProcessedDate = availabilitySlotsDatesArry[finalIndex - 1];
+    // const startDateByMoment = getMoment(lastProcessedDate).add(1, 'day');
+    // const endDateByMoment = addMoment(lastProcessedDate, 7, 'days');
+    // if (!this.availabilitySlotsDatesArry.includes(endDateByMoment.format('YYYY-MM-DD'))) {
+    //   this.getLabTestAvailabilitySlots(labId, startDateByMoment, endDateByMoment);
+    // }
+  }
+  renderDatesOnFlatList() {
+    const { currentDate, labId } = this.state
+    // const selectedDate = this.state.currentDate;
+    const slotDataObj4Item = this.slotData4ItemMap.get(String(labId)) || {}
+
+    const selectedDateObj = {}
+
+    if (Object.keys(slotDataObj4Item).length === 0) {
+      return null;
+    }
+    return (
+      <View>
+        <RenderDates availabilitySlotsDatesArry={this.availabilitySlotsDatesArry}
+          onDateChanged={(item, labId) => this.onDateChanged(item, labId)}
+          selectedDate={currentDate}
+          selectedDateObj={this.selectedDateObj}
+          availableSlotsData={slotDataObj4Item}
+          labId={labId}
+          callSlotsServiceWhenOnEndReached={(labId, availabilitySlotsDatesArry) => {
+            this.callSlotsServiceWhenOnEndReached(labId, availabilitySlotsDatesArry)
+          }}
+          shouldUpdate={`${labId}-${currentDate}`}
+        >
+        </RenderDates>
+      </View>
+    )
+  }
+
+
+
   render() {
-    const slotdata = [{ date: 'Mon, 16 Mar', slot: '10 slots Available' }, { date: 'Mon, 16 Mar', slot: '10 slots Available' },
-    { date: 'Mon, 16 Mar', slot: '10 slots Available' }, { date: 'Mon, 16 Mar', slot: '10 slots Available' }, { date: 'Mon, 16 Mar', slot: '10 slots Available' },
-    { date: 'Mon, 16 Mar', slot: '10 slots Available' }]
-    const slot = [{ slots: '12:20 am' }, { slots: '12:20 am' }, { slots: '12:20 am' }, { slots: '12:20 am' }, { slots: '12:20 am' }, { slots: '12:20 am' }, { slots: '12:20 am' }, { slots: '12:20 am' }]
+    const { showMoreOption } = this.state;
+
     const data = [{ checkup: 'full body checkup', initalprice: 2500, finalprice: 1500 },
     { checkup: 'Diabetes Test', initalprice: 2500, finalprice: 1500 },
     { checkup: 'Fever Test', initalprice: 1500, finalprice: 1000 },
@@ -164,30 +265,27 @@ class labBookAppointment extends Component {
           {this.state.pressTab == 2 ?
             <RenderReviews />
             :
-
-
-
             <Content>
+              <RenderDescription
+                labDescriptionData={this.labDescriptionData}
+                showMoreOption={showMoreOption}
+                onPressShowAndHide={(condition) => this.setState({ showMoreOption: condition })}
+              />
               <View>
-                <View style={{ marginLeft: 5, marginRight: 5, marginTop: 10 }}>
-                  <Text note style={{ fontFamily: 'OpenSans', fontSize: 12, }}>Description</Text>
-                  <Text style={styles.customText}>Quest Diagnostics India Pvt Ltd in Nungambakkam boasts of a state of the art center,which is fully equipped with modern diagnostic equipment.from the time servive seekers walk in,they find themselves in ahealthy and hygienic environment.</Text>
-                  <Text style={{ fontFamily: 'OpenSans', color: 'blue', fontSize: 14 }} onPress={() => this.setState({ showMoreOption: false })}>...Hide</Text>
-                </View>
-                <Row style={{ marginLeft: 5, marginRight: 5, paddingBottom: 5 }}>
-                  <Right><Text style={{ fontFamily: 'OpenSans', fontSize: 15, color: '#775DA3' }}></Text></Right>
-                </Row>
-              </View>
 
-
-
-              <View>
                 <Row style={{ marginTop: 10 }}>
                   <Text style={{ fontSize: 13, fontFamily: 'OpenSans' }}>Select appoinment date and time</Text>
                 </Row>
 
 
-                <Row>
+                {this.availabilitySlotsDatesArry.length !== 0 ? this.renderDatesOnFlatList() : null}
+                {/* {
+                    doctorData.slotData[selectedDate] !== undefined ?
+                      this.haveAvailableSlots(doctorData.slotData[selectedDate])
+                      : this.noAvailableSlots()
+                  } */}
+
+                {/* <Row>
                   <FlatList
                     data={slotdata}
                     horizontal={true}
@@ -211,7 +309,7 @@ class labBookAppointment extends Component {
                         <Text style={styles.slotBookedTextColor}>{item.slots}</Text>
                       </TouchableOpacity>
                     </Col>
-                  } />
+                  } /> */}
                 <View style={{ borderTopColor: '#000', borderTopWidth: 0.5, marginTop: 10 }}>
                   <Row style={{ marginTop: 10 }}>
                     <Text note style={{ fontSize: 12, fontFamily: 'OpenSans' }}>Selected Appointment on</Text>
@@ -307,7 +405,12 @@ class labBookAppointment extends Component {
 }
 
 
-export default labBookAppointment
+// export default labBookAppointment
+const LabTestBookAppointmentState = (state) => ({
+  labTestData: state.labTestData
+})
+export default connect(LabTestBookAppointmentState)(LabBookAppointment)
+
 
 
 const styles = StyleSheet.create({
