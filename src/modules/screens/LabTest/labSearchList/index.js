@@ -11,8 +11,8 @@ import { formatDate, addMoment, getMoment } from '../../../../setup/helpers';
 import styles from '../styles'
 import RenderDates from './RenderDateList';
 import RenderSlots from './RenderSlots';
-import { getWishList4PatientByLabTestService, addFavoritesToLabByUserService, getTotalWishList4LabTestService, getTotalReviewsCount4LabTestService } from '../../../providers/labTest/labTestBookAppointment.action'
-
+import { getWishList4PatientByLabTestService, addFavoritesToLabByUserService, getTotalWishList4LabTestService, getTotalReviewsCount4LabTestService, SET_SINGLE_LAB_ITEM_DATA } from '../../../providers/labTest/labTestBookAppointment.action'
+import { store } from '../../../../setup/store'
 const CALL_AVAILABILITY_SERVICE_BY_NO_OF_IDS_COUNT = 5;
 
 class labSearchList extends Component {
@@ -120,7 +120,7 @@ class labSearchList extends Component {
     getLabIdsArrayByInput = labIdFromItem => {
         const findIndexOfLabId = this.totalLabIdsArryBySearched.indexOf(String(labIdFromItem));
         return this.totalLabIdsArryBySearched.slice(findIndexOfLabId, findIndexOfLabId + CALL_AVAILABILITY_SERVICE_BY_NO_OF_IDS_COUNT) || []
-       
+
     }
 
     /* get Lab Test Availability Slots service */
@@ -136,7 +136,7 @@ class labSearchList extends Component {
                 endDate: formatDate(endDateByMoment, 'YYYY-MM-DD')
             }
             const resultSlotsData = await fetchLabTestAvailabilitySlotsService(reqData4Availability, reqStartAndEndDates);
-             console.log('resultSlotsData======>', resultSlotsData);
+            console.log('resultSlotsData======>', resultSlotsData);
             if (resultSlotsData.success) {
                 const availabilityData = resultSlotsData.data;
                 if (availabilityData.length != 0) {
@@ -246,7 +246,7 @@ class labSearchList extends Component {
             lab_id: labInfo.lab_id,
             lab_test_categories_id: labCatInfo._id,
             // Fields which we need to get it from Backend API 
-             lab_test_description: "general",
+            lab_test_description: "general",
             fee: 1000,
             extra_charges: 50,
             mobile_no: "98076540211",
@@ -260,6 +260,20 @@ class labSearchList extends Component {
         this.props.navigation.navigate('labConfirmation', { packageDetails })
     }
 
+    onPressGoToBookAppointmentPage(labItemData) {
+        labItemData.labId = labItemData.labInfo.lab_id;
+        let reqLabBookAppointmentData = { ...labItemData }
+        store.dispatch({
+            type: SET_SINGLE_LAB_ITEM_DATA,
+            data: reqLabBookAppointmentData
+        });
+        console.log('reqLabBookAppointmentData====>', JSON.stringify(reqLabBookAppointmentData));
+        console.log(' labItemData.labInfo.lab_id====>', JSON.stringify(labItemData.labInfo.lab_id));
+
+        this.props.navigation.navigate('LabBookAppointment', { LabId: labItemData.lab_id, availabilitySlotsDatesArry: this.availabilitySlotsDatesArry })
+    }
+
+
 
     renderLabListCards(item) {
 
@@ -272,7 +286,7 @@ class labSearchList extends Component {
                     <List style={{ borderBottomWidth: 0 }}>
                         <ListItem style={{ borderBottomWidth: 0 }}>
                             <Grid>
-                                <Row>
+                                <Row onPress={() => this.onPressGoToBookAppointmentPage(item)}>
                                     <Col style={{ width: '5%' }}>
                                         <Thumbnail source={renderLabTestImage(item.labInfo)} style={{ height: 60, width: 60 }} />
                                     </Col>

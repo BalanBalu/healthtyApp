@@ -3,7 +3,7 @@ import { getService, putService } from '../../../setup/services/httpservices';
 export const SET_PATIENT_WISH_LIST_LAB_IDS = 'LAB/SET_PATIENT_WISH_LIST_LAB_IDS';
 export const SET_WISHLIST_LAB_COUNT_BY_IDS = 'LAB/SET_WISHLIST_LAB_COUNT_BY_IDS';
 export const SET_REVIEWS_COUNT_BY_LAB_IDS = 'LAB/SET_REVIEWS_COUNT_BY_LAB_IDS';
-
+export const SET_SINGLE_LAB_ITEM_DATA = 'LAB/SET_SINGLE_LAB_ITEM_DATA';
 import { store } from '../../../setup/store';
 
 

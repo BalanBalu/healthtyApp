@@ -107,6 +107,21 @@ export default styles = StyleSheet.create({
     favoritesText: {
         fontFamily: 'OpenSans', fontSize: 12
     },
+    commentText:
+    {
+        fontFamily: 'OpenSans',
+        color: '#000',
+        fontSize: 12,
+        marginTop: 5
+    },
+    reviewText:
+    {
+        fontFamily: 'OpenSans',
+        color: '#000',
+        fontSize: 12,
+        marginTop: 5,
+        marginLeft: -20
+    },
 
 })
 
