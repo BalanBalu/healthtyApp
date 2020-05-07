@@ -28,6 +28,8 @@ class LabAppointmentInfo extends Component {
   async componentDidMount() {
     const { navigation } = this.props;
     const appointmentData = navigation.getParam('data');
+    console.log("appointmentData", appointmentData)
+
     const upcomingTap = navigation.getParam('selectedIndex');
 
     if (appointmentData != undefined) {
@@ -49,11 +51,13 @@ class LabAppointmentInfo extends Component {
     try {
       const { data } = this.state;
       this.packageDetails = {
+        appointment_id:data._id,
         lab_id: data.lab_id,
         lab_test_categories_id: data.lab_test_categories_id,
         lab_test_descriptiion: data.lab_test_descriptiion,
         fee: data.fee,
         lab_name: data.labInfo.lab_name,
+        appointment_status: data.appointment_status,
         category_name: data.labCategoryInfo.category_name,
         extra_charges: data.labInfo.extra_charges,
         appointment_starttime: data.appointment_starttime,
@@ -166,7 +170,7 @@ class LabAppointmentInfo extends Component {
                             fontSize: 35
                           }} />
 
-                        <Text capitalise={true} style={[styles.textApproved, { color: statusValue[data.appointment_status].color }]}>{data.appointment_status == "PAYMENT_FAILED" ? 'PAYMENT FAILED' : data.appointment_status}</Text>
+                        <Text capitalise={true} style={[styles.textApproved, { color: statusValue[data.appointment_status].color }]}>{data.appointment_status == "PAYMENT_IN_PROGRESS" ? 'PAYMENT IN PROGRESS' : data.appointment_status == "PAYMENT_FAILED" ? 'PAYMENT FAILED'  :data.appointment_status}</Text>
                       </View>
                     </Col> : null
                   }

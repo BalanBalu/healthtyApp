@@ -9,7 +9,7 @@ import { fetchUserProfile } from '../../../providers/profile/profile.action';
 import { dateDiff } from '../../../../setup/helpers';
 import { getAddress } from '../../../common'
 import { hasLoggedIn } from '../../../providers/auth/auth.actions';
-import { insertAppointment } from '../../../providers/lab/lab.action';
+import { insertAppointment, updateLapAppointment } from '../../../providers/lab/lab.action';
 import { getUserGenderAndAge } from '../CommonLabTest'
 import { SERVICE_TYPES } from '../../../../setup/config'
 import BookAppointmentPaymentUpdate from '../../../providers/bookappointment/bookAppointment';
@@ -220,10 +220,18 @@ class LabConfirmation extends Component {
         return totalAmount;
     }
 
-    
+
     proceedToLabTestAppointment = async (paymentMode) => {
         let { patientDetails, packageDetails, selectedAddress, itemSelected } = this.state
         try {
+            if (patientDetails.length == 0) {
+                Toast.show({
+                    text: 'kindly select or add patient details',
+                    type: 'warning',
+                    duration: 3000
+                })
+                return false;
+            }
             if (itemSelected === 'TEST_AT_HOME' && selectedAddress == null) {
                 Toast.show({
                     text: 'kindly chosse Address',
@@ -269,6 +277,9 @@ class LabConfirmation extends Component {
                 status_by: "USER",
                 booked_from: "Mobile",
             };
+            if (packageDetails.appointment_status == 'PAYMENT_FAILED') {
+                requestData.labTestAppointmentId = packageDetails.appointment_id;
+            }
             if (paymentMode === 'cash') {
                 this.BookAppointmentPaymentUpdate = new BookAppointmentPaymentUpdate();
                 let response = await this.BookAppointmentPaymentUpdate.updatePaymentDetails(true, {}, 'cash', requestData, SERVICE_TYPES.LAB_TEST, userId, 'cash');
@@ -290,20 +301,38 @@ class LabConfirmation extends Component {
                 }
 
             } else {
-                let response = await insertAppointment(requestData);
-                console.log(response);
-                if(response.success === true) {
-                    requestData.labTestAppointmentId = response.appointmentId;
-                    this.props.navigation.navigate('paymentPage', {
-                        service_type: SERVICE_TYPES.LAB_TEST,
-                        bookSlotDetails: requestData,
-                        amount: packageDetails.fee
-                    });
+                let response = {};
+                if (packageDetails.appointment_status == 'PAYMENT_FAILED') {
+                    console.log("requestData", requestData)
+                    let updateData = {
+                        labId: requestData.lab_id,
+                        userId: userId,
+                        startTime: requestData.startTime,
+                        endTime: requestData.endtime,
+                        status: requestData.status,
+                        statusUpdateReason: "NEW_BOOKING",
+                        status_by: requestData.status_by
+                    }
+                    response = await updateLapAppointment(packageDetails.appointment_id, updateData);
+
                 } else {
-                    Toast.show({
-                        text: response.message,
-                        duration: 3000,
-                    })
+                    response = await insertAppointment(requestData);
+
+                    console.log("response", response);
+
+                    if (response.success === true) {
+                        requestData.labTestAppointmentId = response.appointmentId;
+                        this.props.navigation.navigate('paymentPage', {
+                            service_type: SERVICE_TYPES.LAB_TEST,
+                            bookSlotDetails: requestData,
+                            amount: packageDetails.fee
+                        });
+                    } else {
+                        Toast.show({
+                            text: response.message,
+                            duration: 3000,
+                        })
+                    }
                 }
             }
         }
@@ -327,7 +356,6 @@ class LabConfirmation extends Component {
     }
 
 
-
     render() {
         const { data, name, age, gender, patientDetails, itemSelected, packageDetails, patientAddress, selfChecked, othersChecked, defaultPatientDetails } = this.state;
 
@@ -346,23 +374,23 @@ class LabConfirmation extends Component {
                                 <Row>
                                     <Col size={3}>
                                         <Row style={{ alignItems: 'center' }}>
-                                          
-                                             <CheckBox style={{borderRadius:5}}
-                                             status={this.state.selfChecked ? true : false}
-                                               checked={this.state.selfChecked}
-                                               onPress={async () => { await this.setState({ selfChecked: !this.state.selfChecked }), this.onChangeSelf() }}
-                                             />
-                                            <Text style={{ fontFamily: 'OpenSans', fontSize: 12, color: '#000',marginLeft:20 }}>Self</Text>
+
+                                            <CheckBox style={{ borderRadius: 5 }}
+                                                status={this.state.selfChecked ? true : false}
+                                                checked={this.state.selfChecked}
+                                                onPress={async () => { await this.setState({ selfChecked: !this.state.selfChecked }), this.onChangeSelf() }}
+                                            />
+                                            <Text style={{ fontFamily: 'OpenSans', fontSize: 12, color: '#000', marginLeft: 20 }}>Self</Text>
                                         </Row>
                                     </Col>
                                     <Col size={3}>
                                         <Row style={{ alignItems: 'center' }}>
-                                             <CheckBox style={{borderRadius:5}}
-                                             status={this.state.othersChecked ? true : false}
-                                               checked={this.state.othersChecked}
-                                               onPress={async () => { await this.setState({ othersChecked: !this.state.othersChecked }), this.onChangeCheckBox() }}
-                                               />
-                                            <Text style={{ fontFamily: 'OpenSans', fontSize: 12, color: '#000' ,marginLeft:20}}>Others</Text>
+                                            <CheckBox style={{ borderRadius: 5 }}
+                                                status={this.state.othersChecked ? true : false}
+                                                checked={this.state.othersChecked}
+                                                onPress={async () => { await this.setState({ othersChecked: !this.state.othersChecked }), this.onChangeCheckBox() }}
+                                            />
+                                            <Text style={{ fontFamily: 'OpenSans', fontSize: 12, color: '#000', marginLeft: 20 }}>Others</Text>
                                         </Row>
                                     </Col>
                                     <Col size={4}>
