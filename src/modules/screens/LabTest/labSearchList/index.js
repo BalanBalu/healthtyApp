@@ -245,12 +245,10 @@ class labSearchList extends Component {
         let packageDetails = {
             lab_id: labInfo.lab_id,
             lab_test_categories_id: labCatInfo._id,
-            // Fields which we need to get it from Backend API 
-            lab_test_description: "general",
-            fee: 1000,
-            extra_charges: 50,
-            mobile_no: "98076540211",
-            //  // Fields which we need to get it from Backend API 
+            lab_test_description: labInfo.labPriceInfo[0].lab_test_description || null,
+            fee: labInfo.labPriceInfo[0].price || 0,
+            extra_charges: labInfo.extra_charges || 0,
+            mobile_no: labInfo.mobile_no || null,
             lab_name: labInfo.lab_name,
             category_name: labCatInfo.category_name,
             appointment_starttime: selectedSlotItem.slotStartDateAndTime,
@@ -264,20 +262,13 @@ class labSearchList extends Component {
         const { labInfo } = labItemData
         labItemData.labId = labInfo.lab_id;
         labItemData.slotData = this.availableSlotsDataMap.get(String(labInfo.lab_id)) || {};
-        console.log('labItemData.slotData====>', JSON.stringify(labItemData.slotData));
-
         let reqLabBookAppointmentData = { ...labItemData }
         store.dispatch({
             type: SET_SINGLE_LAB_ITEM_DATA,
             data: reqLabBookAppointmentData
         });
-        console.log('reqLabBookAppointmentData====>', JSON.stringify(reqLabBookAppointmentData));
-        console.log(' labItemData.labInfo.lab_id====>', JSON.stringify(labInfo.lab_id));
-
         this.props.navigation.navigate('LabBookAppointment', { LabId: labInfo.lab_id, availabilitySlotsDatesArry: this.availabilitySlotsDatesArry });
     }
-
-
 
     renderLabListCards(item) {
 
@@ -301,31 +292,46 @@ class labSearchList extends Component {
                                         <Row style={{ marginLeft: 55, }}>
                                             <Text note style={{ fontFamily: 'OpenSans', marginTop: 2, fontSize: 11 }}>{item.labCatInfo.category_name}</Text>
                                         </Row>
-                                        <RenderAddressInfo
-                                            addressInfo={item.labInfo.location && item.labInfo.location.address ? item.labInfo.location.address : null}
-                                        />
+                                        <Row style={{ marginLeft: 55, }}>
+
+                                            <RenderAddressInfo
+                                                addressInfo={item.labInfo.location && item.labInfo.location.address ? item.labInfo.location.address : null}
+                                            />
+                                        </Row>
                                     </Col>
                                     <Col style={{ width: '15%' }}>
-                                        <RenderFavoritesComponent
-                                            isLoggedIn={isLoggedIn}
-                                            isEnabledFavorites={patientWishListLabIds.includes(item.labInfo.lab_id)}
-                                            onPressFavoriteIcon={() => this.addToFavoritesList(item.labInfo.lab_id)}
-                                        />
+                                        <Row>
+                                            <RenderFavoritesComponent
+                                                isLoggedIn={isLoggedIn}
+                                                isEnabledFavorites={patientWishListLabIds.includes(item.labInfo.lab_id)}
+                                                onPressFavoriteIcon={() => this.addToFavoritesList(item.labInfo.lab_id)}
+                                            />
+                                        </Row>
                                     </Col>
                                 </Row>
                                 <Row style={{ marginTop: 10 }}>
-                                    <RenderFavoritesCount
-                                        favoritesCount={wishListCountByLabIds[item.labInfo.lab_id] ? wishListCountByLabIds[item.labInfo.lab_id] : '0'}
-                                    />
-                                    <RenderStarRatingCount
-                                        totalRatingCount={reviewCountsByLabIds[item.labInfo.lab_id] ? reviewCountsByLabIds[item.labInfo.lab_id].average_rating : ' 0'}
-                                    />
-                                    <RenderOfferDetails
-                                        offerInfo={item.labInfo && item.labInfo.labPriceInfo && item.labInfo.labPriceInfo[0] && item.labInfo.labPriceInfo[0].offer ? item.labInfo.labPriceInfo[0].offer : ' '}
-                                    />
-                                    <RenderPriceDetails
-                                        priceInfo={item.labInfo && item.labInfo.labPriceInfo && item.labInfo.labPriceInfo[0] && item.labInfo.labPriceInfo[0].price ? item.labInfo.labPriceInfo[0].price : ' '}
-                                    />
+                                    <Col style={{ width: "25%", marginLeft: -10 }}>
+                                        <RenderFavoritesCount
+                                            favoritesCount={wishListCountByLabIds[item.labInfo.lab_id] ? wishListCountByLabIds[item.labInfo.lab_id] : '0'}
+                                        />
+                                    </Col>
+                                    <Col style={{ width: "25%" }}>
+
+                                        <RenderStarRatingCount
+                                            totalRatingCount={reviewCountsByLabIds[item.labInfo.lab_id] ? reviewCountsByLabIds[item.labInfo.lab_id].average_rating : ' 0'}
+                                        />
+                                    </Col>
+                                    <Col style={{ width: "25%" }}>
+
+                                        <RenderOfferDetails
+                                            offerInfo={item.labInfo && item.labInfo.labPriceInfo && item.labInfo.labPriceInfo[0] && item.labInfo.labPriceInfo[0].offer ? item.labInfo.labPriceInfo[0].offer : ' '}
+                                        />
+                                    </Col>
+                                    <Col style={{ width: "25%", marginLeft: 10 }}>
+                                        <RenderPriceDetails
+                                            priceInfo={item.labInfo && item.labInfo.labPriceInfo && item.labInfo.labPriceInfo[0] && item.labInfo.labPriceInfo[0].price ? item.labInfo.labPriceInfo[0].price : ' '}
+                                        />
+                                    </Col>
                                 </Row>
                                 <Row  >
                                     <Col style={{ width: "5%" }}>

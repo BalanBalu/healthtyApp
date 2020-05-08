@@ -95,6 +95,7 @@ export default styles = StyleSheet.create({
         marginLeft: 5,
         color: '#8dc63f'
     },
+
     isEnabledFavorite: {
         marginLeft: 20, color: '#B22222', fontSize: 20
     },
@@ -106,6 +107,12 @@ export default styles = StyleSheet.create({
     },
     favoritesText: {
         fontFamily: 'OpenSans', fontSize: 12
+    },
+    favoritesCount4LalBookApp: {
+        fontFamily: 'OpenSans', fontSize: 12, fontWeight: 'bold', textAlign: 'center'
+    },
+    favoritesText4LalBookApp: {
+        fontFamily: 'OpenSans', fontSize: 12, textAlign: 'center'
     },
     commentText:
     {
@@ -130,6 +137,55 @@ export default styles = StyleSheet.create({
     },
     viewMoreAndHideText: { fontFamily: 'OpenSans', color: 'blue', fontSize: 14 },
     descriptionLabelName: { fontFamily: 'OpenSans', fontSize: 12, },
+    isEnabledFavorite4LalBookApp: {
+        marginTop: 10, color: '#B22222', fontSize: 20
+    },
+    isDisabledFavorite4LalBookApp: {
+        marginTop: 10, borderColor: '#fff', fontSize: 20
+    },
+    ratingCount: {
+        fontFamily: 'OpenSans', fontSize: 12, fontWeight: 'bold', marginLeft: 2
+    },
+    ratingCount4LalBookApp: {
+        fontFamily: 'OpenSans', fontSize: 12, fontWeight: 'bold', textAlign: 'center'
+    },
+    offerText: {
+        fontFamily: 'OpenSans', fontSize: 12,
+    },
+    offerText4LalBookApp: {
+        fontFamily: 'OpenSans', fontSize: 12, textAlign: 'center'
+    },
+    offer: {
+        fontFamily: 'OpenSans', fontSize: 12, fontWeight: 'bold', color: 'green'
+    },
+    offer4LabBookApp: {
+        fontFamily: 'OpenSans', fontSize: 12, fontWeight: 'bold', textAlign: 'center', color: 'green'
+    },
+    mainCol: {
+        justifyContent: "center",
+        borderColor: 'gray',
+        borderRadius: 5,
+        flexDirection: 'row',
+        borderWidth: 0.1,
+        shadowColor: '#000',
+        shadowOffset: { width: 0, height: 0.5 },
+        shadowOpacity: 0.5,
+        shadowRadius: 5,
+        elevation: 10,
+        marginLeft: 10,
+        marginBottom: 1, backgroundColor: '#fafafa',
+    },
+
+    mainText: {
+        fontSize: 10,
+        textAlign: 'center',
+        fontWeight: '200',
+        marginTop: 5,
+        paddingLeft: 5,
+        paddingRight: 5,
+        paddingTop: 1,
+        color: '#7F49C3'
+    },
 })
 
 

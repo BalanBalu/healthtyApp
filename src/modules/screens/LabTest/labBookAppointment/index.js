@@ -3,19 +3,20 @@ import { Container, Content, Text, Segment, Button, Card, Right, Thumbnail, Icon
 import { Col, Row, Grid } from 'react-native-easy-grid';
 import { connect } from 'react-redux'
 import { StyleSheet, TouchableOpacity, View, FlatList, AsyncStorage, Image } from 'react-native';
-import StarRating from 'react-native-star-rating';
 import RenderReviews from './RenderReviews'
-import RenderDescription from './RenderDescription';
+// import RenderDescription from './RenderDescription';
 import { formatDate, addMoment, getMoment, getUnixTimeStamp } from '../../../../setup/helpers';
 import RenderDates from '../labSearchList/RenderDateList';
 import RenderSlots from '../labSearchList/RenderSlots';
-import { RenderNoSlotsAvailable } from '../labTestComponents'
+import { RenderFavoritesComponent, RenderFavoritesCount, RenderStarRatingCount, RenderPriceDetails, RenderOfferDetails, renderLabTestImage, RenderNoSlotsAvailable } from '../labTestComponents'
 import { enumerateStartToEndDates } from '../CommonLabTest'
 import { } from '../../../providers/labTest/labTestBookAppointment.action';
 import { fetchLabTestAvailabilitySlotsService } from '../../../providers/labTest/basicLabTest.action';
 import RenderLabLocation from '../RenderLabLocation';
 import { Loader } from '../../../../components/ContentLoader';
-
+import { addFavoritesToLabByUserService } from '../../../providers/labTest/labTestBookAppointment.action'
+import RenderLabCategories from '../RenderLabCategories';
+import styles from '../styles'
 class LabBookAppointment extends Component {
   availabilitySlotsDatesArry = [];
   slotData4ItemMap = new Map();
@@ -53,16 +54,15 @@ class LabBookAppointment extends Component {
       // ...
       //...
     } else {
-
       this.availabilitySlotsDatesArry = navigation.getParam('availabilitySlotsDatesArry');
       const { labTestData: { singleLabItemData } } = this.props;
       if (Object.keys(singleLabItemData.slotData).length === 0) {
-        this.getLabTestAvailabilitySlots(singleLabItemData.labId, startDateByMoment, endDateByMoment);
+        await this.getLabTestAvailabilitySlots(singleLabItemData.labId, startDateByMoment, endDateByMoment);
       }
       else {
         this.slotData4ItemMap.set(String(singleLabItemData.labId), singleLabItemData.slotData)
       }
-      await this.setState({ labId: singleLabItemData.labId, labItemData: singleLabItemData });
+      this.setState({ labId: singleLabItemData.labId });
     }
     this.setState({ isLoading: false });
   }
@@ -111,7 +111,7 @@ class LabBookAppointment extends Component {
 
   /* Change the Date using Date Picker */
   onDateChanged(onChangeDate) {
-    let { selectedDate } = this.state;
+    let { selectedDate } = this.state
     selectedDate = onChangeDate;
     this.selectedSlotIndex = -1;
     this.selectedSlotItem = null;
@@ -119,7 +119,6 @@ class LabBookAppointment extends Component {
   }
   renderDatesOnFlatList() {
     const { selectedDate, labId } = this.state
-    // const selectedDate = this.state.selectedDate;
     const slotDataObj4Item = this.slotData4ItemMap.get(String(labId)) || {}
     if (Object.keys(slotDataObj4Item).length === 0) {
       return null;
@@ -192,24 +191,24 @@ class LabBookAppointment extends Component {
       ...labData,
       slotData: selectedSlotItem
     };
-    this.props.navigation.navigate('Payment Review', { resultconfirmSlotDetails: confirmSlotDetails })
+    // this.props.navigation.navigate('Payment Review', { resultconfirmSlotDetails: confirmSlotDetails })
+    // this.props.navigation.navigate('Payment Review')
   }
-
+  /* Update Favorites for LabTest by UserId  */
+  addToFavoritesList = async (labId) => {
+    await addFavoritesToLabByUserService(this.state.userId, labId);
+    this.setState({ renderRefreshCount: this.state.renderRefreshCount + 1 });
+  }
   render() {
-    const { selectedDate, showMoreOption, labId, onPressTabView, isLoading } = this.state;
+    const { selectedDate, isLoggedIn, showMoreOption, labId, onPressTabView, isLoading } = this.state;
     const slotDataObj4Item = this.slotData4ItemMap.get(String(labId)) || {}
-    const { labTestData: { singleLabItemData } } = this.props;
-    const data = [{ checkup: 'full body checkup', initalprice: 2500, finalprice: 1500 },
-    { checkup: 'Diabetes Test', initalprice: 2500, finalprice: 1500 },
-    { checkup: 'Fever Test', initalprice: 1500, finalprice: 1000 },
-    { checkup: 'Arthristis', initalprice: 500, finalprice: 400 },
-    { checkup: 'Allergy profile', initalprice: 200, finalprice: 100 },
-    { checkup: 'Healthy men', initalprice: 250, finalprice: 150 }]
+    const { labTestData: { singleLabItemData, patientWishListLabIds, wishListCountByLabIds, reviewCountsByLabIds } } = this.props;
+    const { labInfo, labCatInfo } = singleLabItemData;
     return (
       <Container style={styles.container}>
         {isLoading ?
           <Loader style='appointment' /> :
-          <Content style={styles.bodyContent} contentContainerStyle={{ flex: 0, padding: 10 }}>
+          <Content contentContainerStyle={{ flex: 0, padding: 10 }}>
             <Card style={{ borderBottomWidth: 2 }}>
               <Grid >
                 <Row >
@@ -219,55 +218,46 @@ class LabBookAppointment extends Component {
                   <Col style={{ width: '78%' }}>
                     <Row style={{ marginLeft: 55, marginTop: 10 }}>
                       <Col size={9}>
-                        <Text style={{ fontFamily: 'OpenSans', fontSize: 12, fontWeight: 'bold' }}>Quest Diagnostics India Pvt Ltd</Text>
-                        <Text note style={{ fontFamily: 'OpenSans', fontSize: 11, marginTop: 5 }}>Full body check up test</Text>
+                        <Text style={{ fontFamily: 'OpenSans', fontSize: 12, fontWeight: 'bold' }}>{labInfo && labInfo.lab_name}</Text>
+                        <Text note style={{ fontFamily: 'OpenSans', fontSize: 11, marginTop: 5 }}>{labCatInfo && labCatInfo.category_name}</Text>
                       </Col>
                       <Col size={1}>
                       </Col>
                     </Row>
                   </Col>
                   <Col style={{ width: '17%' }}>
-                    <TouchableOpacity>
-                      <Icon name="heart"
-                        style={{ color: '#000000', fontSize: 20, marginTop: 10 }}>
-                      </Icon>
-                    </TouchableOpacity>
+                    <RenderFavoritesComponent
+                      isLoggedIn={isLoggedIn}
+                      isFromLabBookApp={true}
+                      isEnabledFavorites={patientWishListLabIds.includes(labInfo.lab_id)}
+                      onPressFavoriteIcon={() => this.addToFavoritesList(labInfo.lab_id)}
+                    />
                   </Col>
                 </Row>
-
                 <Row style={{ marginBottom: 10 }}>
                   <Col style={{ width: "25%", marginTop: 15, }}>
-                    <Text note style={{ fontFamily: 'OpenSans', fontSize: 12, textAlign: 'center' }}> Favourites</Text>
-                    <Text style={{ fontFamily: 'OpenSans', fontSize: 12, fontWeight: 'bold', textAlign: 'center' }}>2</Text>
+                    <RenderFavoritesCount
+                      isFromLabBookApp={true}
+                      favoritesCount={wishListCountByLabIds[labInfo.lab_id] ? wishListCountByLabIds[labInfo.lab_id] : '0'}
+                    />
                   </Col>
                   <Col style={{ width: "25%", marginTop: 15, }}>
-                    <Text note style={{ fontFamily: 'OpenSans', fontSize: 12, textAlign: 'center' }}> Rating</Text>
-                    <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'center' }}>
-                      <StarRating
-                        fullStarColor='#FF9500'
-                        starSize={12} width={85}
-                        containerStyle={{ marginTop: 2 }}
-                        disabled={true}
-                        rating={1}
-                        maxStars={1} />
-                      <Text style={{ fontFamily: 'OpenSans', fontSize: 12, fontWeight: 'bold', textAlign: 'center' }}>0</Text>
-                    </View>
+                    <RenderStarRatingCount
+                      isFromLabBookApp={true}
+                      totalRatingCount={reviewCountsByLabIds[labInfo.lab_id] ? reviewCountsByLabIds[labInfo.lab_id].average_rating : ' 0'}
+                    />
                   </Col>
                   <Col style={{ width: "25%", marginTop: 15, }}>
-
-                    <Text note style={{ fontFamily: 'OpenSans', fontSize: 12, textAlign: 'center' }}> Offer</Text>
-                    <Text style={{ fontFamily: 'OpenSans', fontSize: 12, fontWeight: 'bold', textAlign: 'center', color: 'green' }}>40%</Text>
+                    <RenderOfferDetails
+                      offerInfo={labInfo && labInfo.labPriceInfo && labInfo.labPriceInfo[0] && labInfo.labPriceInfo[0].offer ? labInfo.labPriceInfo[0].offer : ' '}
+                    />
                   </Col>
                   <Col style={{ width: "25%", marginTop: 15, }}>
-                    <Text note style={{ fontFamily: 'OpenSans', fontSize: 12, textAlign: 'center' }}> Package Amt</Text>
-                    <Row style={{ justifyContent: 'center' }}>
-                      <Text style={styles.rsText}>₹ 1500</Text>
-                      <Text style={styles.finalRs}>₹ 1000</Text>
-                    </Row>
-
+                    <RenderPriceDetails
+                      priceInfo={labInfo && labInfo.labPriceInfo && labInfo.labPriceInfo[0] && labInfo.labPriceInfo[0].price ? labInfo.labPriceInfo[0].price : ' '}
+                    />
                   </Col>
                 </Row>
-
               </Grid>
             </Card>
             <Row style={{ marginLeft: 5, marginRight: 5 }}>
@@ -285,12 +275,10 @@ class LabBookAppointment extends Component {
               <RenderReviews />
               :
               <Content>
-                
                 <View>
                   <Row style={{ marginTop: 10 }}>
                     <Text style={{ fontSize: 13, fontFamily: 'OpenSans' }}>Choose appointment date and time</Text>
                   </Row>
-
                   {this.availabilitySlotsDatesArry.length !== 0 ? this.renderDatesOnFlatList() : null}
                   {
                     slotDataObj4Item[selectedDate] ?
@@ -299,7 +287,6 @@ class LabBookAppointment extends Component {
                         text={'No Slots Available'}
                       />
                   }
-
                   <View style={{ borderTopColor: '#000', borderTopWidth: 0.5, marginTop: 10 }}>
                     <Row style={{ marginTop: 10 }}>
                       <Text note style={{ fontSize: 12, fontFamily: 'OpenSans' }}>Selected Appointment on</Text>
@@ -314,41 +301,7 @@ class LabBookAppointment extends Component {
                   </View>
                 </View>
                 {this.renderLabLocAddress()}
-
-                <View style={{ marginLeft: 5, marginRight: 5, borderTopColor: 'gray', borderTopWidth: 1, }}>
-                  <Row style={{ marginTop: 10 }}>
-                    <Icon name='ios-medkit' style={{ fontSize: 20, color: 'gray' }} />
-                    <Text style={{ fontFamily: 'OpenSans', fontSize: 13, fontWeight: 'bold', marginLeft: 10, marginTop: 1 }}>Other Packages</Text>
-                  </Row>
-
-                  <View style={{ marginBottom: 10, marginTop: 10 }}>
-                    <FlatList
-                      horizontal={true}
-                      data={data}
-                      renderItem={({ item, index }) =>
-                        <Col style={styles.mainCol}>
-                          <View style={{ height: 110, width: 100 }}>
-                            <TouchableOpacity
-                              style={{ justifyContent: 'center', alignItems: 'center', width: '100%', paddingTop: 5, paddingBottom: 5 }}>
-                              <Image
-                                source={require('../../../../../assets/images/labCategories/Diabetes.png')}
-                                style={{
-                                  width: 60, height: 60, alignItems: 'center'
-                                }}
-                              />
-                              <Text style={styles.mainText}>{item.checkup}</Text>
-                              <View style={{ flexDirection: 'row' }}>
-                                <Text style={styles.rsText}>₹ {item.initalprice}</Text>
-                                <Text style={styles.finalRs}>₹ {item.finalprice}</Text>
-                              </View>
-                            </TouchableOpacity>
-                          </View>
-                        </Col>
-                      }
-                      keyExtractor={(item, index) => index.toString()}
-                    />
-                  </View>
-                </View>
+                <RenderLabCategories />
               </Content>
             }
           </Content>}
@@ -358,7 +311,6 @@ class LabBookAppointment extends Component {
             <Col style={{ marginRight: 40 }} >
               <Button success style={{ borderRadius: 10, marginTop: 10, marginLeft: 45, height: 40, justifyContent: 'center' }}
                 onPress={() => this.onPressContinueForPaymentReview(singleLabItemData, this.selectedSlotItem)}
-
                 testID='clickButtonToPaymentReviewPage'>
                 <Row style={{ justifyContent: 'center', }}>
                   <Text style={{ marginLeft: -25, marginTop: 2, fontWeight: 'bold', justifyContent: 'center', alignItems: 'center' }}>BOOK APPOINTMENT</Text>
@@ -369,7 +321,6 @@ class LabBookAppointment extends Component {
         </Footer>
       </Container >
     )
-
   }
 }
 
@@ -378,313 +329,3 @@ const LabTestBookAppointmentState = (state) => ({
 })
 export default connect(LabTestBookAppointmentState)(LabBookAppointment)
 
-
-
-const styles = StyleSheet.create({
-
-  container:
-  {
-    backgroundColor: '#ffffff',
-  },
-
-  bodyContent: {
-    // paddingLeft: 20,
-    // paddingRight: 20,
-
-  },
-  availabilityBG: {
-    textAlign: 'center',
-    borderColor: '#000',
-    marginTop: 10,
-    height: 50,
-    borderRadius: 5,
-    justifyContent: 'center',
-    marginRight: 5,
-    paddingLeft: 5,
-    paddingRight: 5
-  },
-
-  logo: {
-    height: 80,
-    width: 80,
-    marginLeft: 'auto',
-    marginRight: 'auto',
-    marginTop: 10
-  },
-
-  customCard: {
-    borderRadius: 20,
-    padding: 15,
-    marginTop: -180,
-    marginLeft: 20,
-    marginRight: 20,
-
-  },
-  topValue: {
-    marginLeft: 'auto',
-    marginRight: 'auto'
-  },
-  bottomValue:
-  {
-    marginLeft: 'auto',
-    marginRight: 'auto'
-  },
-  multipleStyles:
-  {
-    fontFamily: 'OpenSans',
-    fontSize: 12,
-    color: 'white'
-  },
-  slotDefaultBg: {
-    backgroundColor: 'pink',
-    borderRadius: 5,
-    width: '30%',
-    height: 30,
-    margin: 5
-  },
-  slotBookedBg: {
-    backgroundColor: 'gray',
-    borderRadius: 5,
-    width: '30%',
-    height: 30,
-    margin: 5
-  },
-  slotSelectedBg: {
-    backgroundColor: '#2652AC',
-    borderRadius: 5,
-    width: '30%',
-    height: 30,
-    margin: 5
-  },
-  customPadge: {
-    backgroundColor: 'green',
-    alignItems: 'center',
-    width: '30%'
-  },
-  customText:
-  {
-    fontFamily: 'OpenSans',
-    color: '#000',
-    fontSize: 14,
-    marginTop: 5
-  },
-  commentText:
-  {
-    fontFamily: 'OpenSans',
-    color: '#000',
-    fontSize: 12,
-    marginTop: 5
-  },
-  reviewText:
-  {
-    fontFamily: 'OpenSans',
-    color: '#000',
-    fontSize: 12,
-    marginTop: 5,
-    marginLeft: -20
-  },
-  subtitlesText: {
-    fontSize: 15,
-    margin: 10,
-    color: '#F2889B',
-    fontFamily: 'opensans-semibold',
-
-  },
-  titlesText: {
-    fontSize: 15,
-    color: '#F2889B',
-    fontFamily: 'opensans-semibold',
-
-  },
-  profileImage:
-  {
-    marginLeft: 'auto',
-    marginRight: 'auto',
-    marginTop: 25,
-    height: 80,
-    width: 80,
-    borderColor: '#f5f5f5',
-    borderWidth: 2,
-    borderRadius: 50
-  },
-  customIcon:
-  {
-    height: 30,
-    width: 30,
-    backgroundColor: 'gray',
-    color: 'white',
-    borderRadius: 8,
-    fontSize: 19,
-    paddingLeft: 8,
-    paddingRight: 6,
-    paddingTop: 6,
-    paddingBottom: 6
-
-  },
-  rowText:
-  {
-    fontFamily: 'OpenSans',
-    color: '#000',
-    fontSize: 14,
-    margin: 5
-  },
-  slotBookedBgColor: {
-    backgroundColor: '#A9A9A9', //'#775DA3',
-    borderColor: '#000',
-    marginTop: 10, height: 30,
-    borderRadius: 5,
-    justifyContent: 'center',
-    marginLeft: 5,
-
-  },
-  slotSelectedBgColor: {
-
-    backgroundColor: '#775DA3',
-    borderColor: '#000',
-    marginTop: 10, height: 30,
-    borderRadius: 5,
-    justifyContent: 'center',
-    marginLeft: 5,
-
-  },
-  slotBookedTextColor: {
-    textAlign: 'center',
-    color: '#fff',
-    fontSize: 12,
-    fontFamily: 'OpenSans'
-  },
-  slotDefaultBgColor: {
-    backgroundColor: '#ced6e0',
-    borderColor: '#000',
-    marginTop: 10,
-    height: 30,
-    borderRadius: 5,
-    justifyContent: 'center',
-    marginLeft: 5,
-  },
-  slotDefaultTextColor: {
-    textAlign: 'center',
-    color: '#000',
-    fontSize: 12,
-    fontFamily: 'OpenSans'
-  },
-  rsText: {
-    fontSize: 8,
-    textAlign: 'center',
-    fontWeight: '200',
-    color: '#ff4e42',
-    textDecorationLine: 'line-through',
-    textDecorationStyle: 'solid',
-    textDecorationColor: '#ff4e42',
-    marginTop: 2
-  },
-  finalRs: {
-    fontSize: 10,
-    textAlign: 'center',
-    fontWeight: '200',
-    paddingTop: 1,
-    marginLeft: 5,
-    color: '#8dc63f'
-  },
-  textcenter: {
-    marginLeft: 'auto',
-    marginRight: 'auto',
-    fontFamily: 'OpenSans'
-  },
-
-  column:
-  {
-    width: '15%',
-    borderRadius: 10,
-    margin: 10,
-    padding: 6
-  },
-
-
-  customImage: {
-    height: 100,
-    width: 100,
-    margin: 10,
-    alignItems: 'center'
-  },
-
-  titleText: {
-    fontSize: 12,
-    textAlign: 'center',
-    color: 'white',
-    fontFamily: 'OpenSans',
-
-  },
-  SearchRow: {
-    backgroundColor: 'white',
-    borderColor: 'grey',
-    borderWidth: 0.5,
-    height: 35,
-    marginRight: 10,
-    marginLeft: 10,
-    marginTop: 5, borderRadius: 5
-  },
-  SearchStyle: {
-
-    width: '85%',
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-  inputfield: {
-    color: 'gray',
-    fontFamily: 'OpenSans',
-    fontSize: 12,
-    padding: 5,
-    paddingLeft: 10
-  },
-  mainCol: {
-    justifyContent: "center",
-    borderColor: 'gray',
-    borderRadius: 5,
-    flexDirection: 'row',
-    borderWidth: 0.1,
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 0.5 },
-    shadowOpacity: 0.5,
-    shadowRadius: 5,
-    elevation: 10,
-    marginLeft: 10,
-    marginBottom: 1, backgroundColor: '#fafafa',
-  },
-  mainText: {
-    fontSize: 10,
-    textAlign: 'center',
-    fontWeight: '200',
-    marginTop: 5,
-    paddingLeft: 5,
-    paddingRight: 5,
-    paddingTop: 1,
-    color: '#7F49C3'
-  },
-  subText: {
-    fontSize: 8,
-    textAlign: 'center',
-    fontWeight: '200',
-    paddingTop: 1,
-  },
-  rsText: {
-    fontSize: 8,
-    textAlign: 'center',
-    fontWeight: '200',
-    paddingTop: 1,
-    color: '#ff4e42',
-    marginTop: 2,
-    textDecorationLine: 'line-through',
-    textDecorationStyle: 'solid',
-    textDecorationColor: '#ff4e42'
-  },
-  finalRs: {
-    fontSize: 10,
-    textAlign: 'center',
-    fontWeight: '200',
-    paddingTop: 1,
-    marginLeft: 5,
-    color: '#8dc63f'
-  }
-
-});
