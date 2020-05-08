@@ -261,7 +261,6 @@ class labSearchList extends Component {
     }
 
     onPressGoToBookAppointmentPage(labItemData) {
-        debugger
         const { labInfo } = labItemData
         labItemData.labId = labInfo.lab_id;
         labItemData.slotData = this.availableSlotsDataMap.get(String(labInfo.lab_id)) || {};
@@ -276,7 +275,6 @@ class labSearchList extends Component {
         console.log(' labItemData.labInfo.lab_id====>', JSON.stringify(labInfo.lab_id));
 
         this.props.navigation.navigate('LabBookAppointment', { LabId: labInfo.lab_id, availabilitySlotsDatesArry: this.availabilitySlotsDatesArry });
-        debugger
     }
 
 
