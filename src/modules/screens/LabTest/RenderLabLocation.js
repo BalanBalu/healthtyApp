@@ -14,7 +14,8 @@ export default class RenderLabLocation extends Component {
 
     render() {
         const { locationData, name } = this.props;
-        const addressData = locationData.address;
+        console.log('locationData', locationData);
+        const addressData = locationData && locationData.address;
         return (
             <View style={{ marginLeft: 5, marginRight: 5, borderTopColor: 'gray', borderTopWidth: 0.7, }}>
                 <Row style={{ marginTop: 10 }}>
@@ -24,7 +25,9 @@ export default class RenderLabLocation extends Component {
                 {/* <Text  style={{ fontFamily: 'OpenSans',fontSize:13,marginLeft:26}}>  {addressData.no_and_street + ', ' + addressData.city + ', ' + addressData.state } </Text> */}
                 <Card transparent style={{ margin: 20, backgroundColor: '#ecf0f1' }}>
                     <Card style={{ height: 250 }}>
-                        <Mapbox locationData={locationData} />
+                        <Mapbox locationData={locationData} 
+                                hospitalLocation={{ location: locationData}}
+                        />
                         <List>
                             <ListItem avatar>
                                 <Left>

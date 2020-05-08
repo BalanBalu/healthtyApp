@@ -18,7 +18,6 @@ import { Loader } from '../../../../components/ContentLoader';
 
 class LabBookAppointment extends Component {
   availabilitySlotsDatesArry = [];
-  labDescriptionData = 'aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaabbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbcccccccccccccccccccccccccccccccccccccccccccccccccccccddddddddddddddddddddddddddddddd';
   slotData4ItemMap = new Map();
   selectedSlotItem = null;
   selectedSlotIndex = -1
@@ -286,11 +285,7 @@ class LabBookAppointment extends Component {
               <RenderReviews />
               :
               <Content>
-                <RenderDescription
-                  labDescriptionData={this.labDescriptionData}
-                  showMoreOption={showMoreOption}
-                  onPressShowAndHide={(condition) => this.setState({ showMoreOption: condition })}
-                />
+                
                 <View>
                   <Row style={{ marginTop: 10 }}>
                     <Text style={{ fontSize: 13, fontFamily: 'OpenSans' }}>Choose appointment date and time</Text>
