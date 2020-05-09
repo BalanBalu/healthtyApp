@@ -76,13 +76,13 @@ export async function ProductIncrementDecreMent(quantity, price, operation, thre
 export function renderMedicineImage(data) {
   console.log(data)
   let source = require('../../../../assets/images/paracetamol.jpg')
-  if(data){
-  if (data.medicine_images) {
-    if (data.medicine_images[0]) {
-      console.log(data.medicine_images[0].imageURL)
-      source = { uri: data.medicine_images[0].imageURL }
+  if (data) {
+    if (data.medicine_images) {
+      if (data.medicine_images[0]) {
+        console.log(data.medicine_images[0].imageURL)
+        source = { uri: data.medicine_images[0].imageURL }
+      }
     }
-  }
   }
   return (source)
 }
@@ -245,24 +245,63 @@ export function quantityPriceSort(data) {
 export const statusBar = {
 
   "PENDING":
-    { status: 'Ordered and Approved', checked: true },
+  {
+    status: 'Ordered and Approved',
+    checked: true,
+    color: 'red'
+  },
   "APPROVED":
-    { status: 'Packed and Out for Delivery', checked: true, },
+  {
+    status: 'Packed and Out for Delivery',
+    checked: true,
+    color: 'green'
+  },
   "CANCELED":
-    { status: 'Canceled the order', checked: true },
+  {
+    status: 'Canceled the order',
+    checked: true,
+    color: 'red'
+  },
   "REJECTED":
-    { status: 'Rejected  the order', checked: true },
+  {
+    status: 'Rejected  the order',
+    checked: true,
+    color: 'red'
+  },
   "OUT_FOR_DELIVERY":
-    { status: 'Order is on the way', checked: true },
+    { status: 'Order is on the way',
+     checked: true ,
+    color:'green'},
   "READY_FOR_DELIVERY":
-    { status: 'The order is ready for delivery', checked: true },
+    { status: 'The order is ready for delivery',
+     checked: true,
+     color:'green'
+     },
   "DELIVERED":
-    { status: 'The order is delivered', checked: true },
+    { status: 'The order is delivered', 
+    checked: true,
+    color:'green' },
   "null":
-    { status: 'status  mismatching', checked: true },
+    { status: 'status  mismatching',
+     checked: true ,
+     color:'red'
+    },
   "FAILED":
-    { status: 'order is failed try again', checked: true },
+    { status: 'order is failed try again',
+     checked: true ,
+     color:'green'
+    },
+}
 
 
+export function getName(data) {
+  let name = 'unKnown'
+  if (data) {
+      if (data.first_name != undefined || data.last_name != undefined) {
+          name = `${data.first_name || ''} ${data.last_name || ''}`
+
+      }
+  }
+  return name
 
 }

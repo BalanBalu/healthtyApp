@@ -7,7 +7,7 @@ import { Col, Row } from 'react-native-easy-grid';
 import { StyleSheet, Image, AsyncStorage, FlatList, TouchableOpacity } from 'react-native';
 import { formatDate } from '../../../../setup/helpers';
 import { getMedicineOrderDetails, upDateOrderData, getOrderUserReviews } from '../../../providers/pharmacy/pharmacy.action';
-import { statusBar, renderPrescriptionImageAnimation, renderMedicineImage } from '../CommomPharmacy';
+import { statusBar, renderPrescriptionImageAnimation, renderMedicineImage, getName } from '../CommomPharmacy';
 import { NavigationEvents } from 'react-navigation';
 import { getPaymentInfomation } from '../../../providers/bookappointment/bookappointment.action'
 import Spinner from '../../../../components/Spinner';
@@ -40,6 +40,8 @@ class OrderDetails extends Component {
     }
     async componentDidMount() {
         const { navigation } = this.props;
+        console.log('=============================================')
+        console.log(navigation.state)
         this.medicineOrderDetails();
         this.getUserReport()
     }
@@ -55,8 +57,7 @@ class OrderDetails extends Component {
             console.log(JSON.stringify(result))
             if (result.success) {
                 this.setState({ orderDetails: result.data[0] });
-                // console.log('JSON.stringify(orderDetails)');
-                // console.log(JSON.stringify(orderDetails));
+                
                 if (result.data[0].status === 'DELIVERED' && result.data[0].is_review_added === undefined) {
                     await this.setState({ modalVisible: true })
                 } else {
@@ -166,7 +167,7 @@ class OrderDetails extends Component {
             status_by: "USER"
         }
         let result = await upDateOrderData(orderDetails._id, reqData)
-        
+
         if (result.success === true) {
             this.medicineOrderDetails()
         } else {
@@ -240,7 +241,7 @@ class OrderDetails extends Component {
     render() {
         const { navigation } = this.props;
         const { isLoading, orderDetails, paymentDetails, reportData, isCancel, reviewData } = this.state;
-        
+
         return (
             <Container style={styles.container}>
                 <Content style={{ backgroundColor: '#F5F5F5', padding: 10, flex: 1 }}>
@@ -395,7 +396,7 @@ class OrderDetails extends Component {
                         {orderDetails.is_order_type_prescription !== true && orderDetails.order_items !== undefined && orderDetails.order_items.length !== 0 ?
                             <Row style={{ marginTop: 10 }}>
                                 <Col size={5}>
-                                    <Text style={styles.ItemText}>Item Total</Text>
+                                    <Text style={styles.ItemText}>Medicine total amout</Text>
 
                                 </Col>
                                 <Col size={5}>
@@ -405,7 +406,7 @@ class OrderDetails extends Component {
                             :
                             <Row style={{ marginTop: 10 }}>
                                 <Col size={5}>
-                                    <Text style={styles.ItemText}>Item Total</Text>
+                                    <Text style={styles.ItemText}>Medicine total amout</Text>
 
                                 </Col>
                                 <Col size={5}>
@@ -413,25 +414,28 @@ class OrderDetails extends Component {
                                 </Col>
                             </Row>
                         }
+                        {orderDetails.delivery_option === "HOME_DELIVERY" ?
+                            <View>
+                                <Row style={{ marginTop: 10 }}>
+                                    <Col size={5}>
+                                        <Text style={styles.mainText}>Delivery Charges</Text>
 
-                        <Row style={{ marginTop: 10 }}>
-                            <Col size={5}>
-                                <Text style={styles.mainText}>Delivery Charges</Text>
+                                    </Col>
+                                    <Col size={5}>
+                                        <Text style={styles.rsText}>₹ {orderDetails.delivery_charges || 0}</Text>
+                                    </Col>
+                                </Row>
+                                <Row style={{ marginTop: 10 }}>
+                                    <Col size={5}>
+                                        <Text style={styles.mainText}>Tax</Text>
 
-                            </Col>
-                            <Col size={5}>
-                                <Text style={styles.rsText}>₹ {orderDetails.delivery_charges || 0}</Text>
-                            </Col>
-                        </Row>
-                        <Row style={{ marginTop: 10 }}>
-                            <Col size={5}>
-                                <Text style={styles.mainText}>Tax</Text>
-
-                            </Col>
-                            <Col size={5}>
-                                <Text style={styles.rsText}>₹ {orderDetails.delivery_tax || 0}</Text>
-                            </Col>
-                        </Row>
+                                    </Col>
+                                    <Col size={5}>
+                                        <Text style={styles.rsText}>₹ {orderDetails.delivery_tax || 0}</Text>
+                                    </Col>
+                                </Row>
+                            </View>
+                            : null}
                         <Row style={{ marginTop: 10 }}>
                             <Col size={5}>
                                 <Text style={styles.grandTotalText}>Grand Total</Text>
@@ -543,6 +547,16 @@ class OrderDetails extends Component {
                             <Text style={styles.addressText}>Mobile - {this.getMobile(orderDetails)}</Text>
 
                         </View>
+                        {
+                            orderDetails.delivery_option === 'HOME_DELIVERY' && orderDetails.delivery_boy_details !== undefined ?
+                                <View style={{ marginTop: 10, paddingBottom: 10 }}>
+                                    <Text style={styles.innerText}>delivey boy Details</Text>
+                                    <Text style={styles.addressText}> ref_no -{orderDetails.delivery_boy_details.delivery_boy_ref_no}</Text>
+                                    <Text style={styles.nameTextss}>Name-{orderDetails.delivery_boy_details.full_name}</Text>
+                                    <Text style={styles.addressText}>Mobile - {this.getMobile(orderDetails.delivery_boy_details)}</Text>
+
+                                </View> : null
+                        }
                         {this.state.modalVisible == true ?
                             <OrderInsertReview
                                 data={this.state.orderDetails}
