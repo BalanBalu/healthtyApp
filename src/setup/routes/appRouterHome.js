@@ -94,11 +94,19 @@ import LabCancelAppointment from '../../modules/screens/LabTest/Appointment/LabC
 import { Modal } from 'react-native-paper';
 import { IS_IOS } from '../config';
 import { setI18nConfig } from '../translator.helper';
-import {
-  PrepareAppointmentWizard, BasicInfo, MedicalHistory, PhysicianInfo, PastMedicalConditions,
-  PatientInfo, AllergiesAndMedications, FamilyMedicalConditions, AllergicDisease,
-  HospitalizationAndSurgeries, SocialHistory, PrepareAppointmentLastStep
-} from '../../modules/screens/MyAppointments/PrepareAppoinmentWizard'
+import PrepareAppointmentWizard from '../../modules/screens/MyAppointments/PrepareAppoinmentWizard'
+import BasicInfo from '../../modules/screens/MyAppointments/PrepareAppoinmentWizard/BasicInfo'
+import MedicalHistory from '../../modules/screens/MyAppointments/PrepareAppoinmentWizard/MedicalHistory'
+import PhysicianInfo from '../../modules/screens/MyAppointments/PrepareAppoinmentWizard/PhysicianInfo'
+import PastMedicalConditions from '../../modules/screens/MyAppointments/PrepareAppoinmentWizard/PastMedicalConditions'
+import PatientInfo from '../../modules/screens/MyAppointments/PrepareAppoinmentWizard/PatientInfo'
+import AllergiesAndMedications from '../../modules/screens/MyAppointments/PrepareAppoinmentWizard/AllergiesAndMedications'
+import FamilyMedicalConditions from '../../modules/screens/MyAppointments/PrepareAppoinmentWizard/FamilyMedicalConditions'
+import AllergicDisease from '../../modules/screens/MyAppointments/PrepareAppoinmentWizard/AllergicDisease'
+import HospitalizationAndSurgeries from '../../modules/screens/MyAppointments/PrepareAppoinmentWizard/HospitalizationAndSurgeries'
+import SocialHistory from '../../modules/screens/MyAppointments/PrepareAppoinmentWizard/SocialHistory'
+import PrepareAppointmentLastStep from '../../modules/screens/MyAppointments/PrepareAppoinmentWizard/PrepareAppointmentLastStep'
+
 
 const AuthRoutes = {
   login: {
