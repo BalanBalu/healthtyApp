@@ -16,10 +16,22 @@ class LocationDetail extends PureComponent {
         this.fetchPopularCityAreas(navigation.getParam('cityData'))
     }
     async fetchPopularCityAreas(cityData) {
-      const result = await getLocations({
+       let  navigationOption=this.props.navigation.getParam('navigationOption')||null;
+       
+        let result;
+        if(navigationOption!==null){
+            result=await getPharmacyLocations({
+                fromPinCode: cityData.from_pincode, 
+                toPinCode: cityData.to_pincode
+             });
+
+        }else{
+     result = await getLocations({
          fromPinCode: cityData.from_pincode, 
          toPinCode: cityData.to_pincode
       });
+    }
+      
       if (result.success) {
         this.setState({ locations: result.data });
     }
