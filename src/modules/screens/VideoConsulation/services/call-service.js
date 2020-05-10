@@ -3,6 +3,9 @@ import ConnectyCube from 'react-native-connectycube';
 import InCallManager from 'react-native-incall-manager';
 import Sound from 'react-native-sound';
 import { sendNotification } from './video-consulting-service';
+import { CallKeepService , REMOTE_USER_END_CALL_REASONS} from './index';
+
+import {  AppState  } from 'react-native'
 export default class CallService {
  static MEDIA_OPTIONS = {audio: true, video: {facingMode: 'user'}};
 
@@ -94,14 +97,18 @@ export default class CallService {
       ConnectyCube.videochat.clearSession(this._session.ID);
       this._session = null;
       this.mediaDevices = [];
+      CallKeepService.endCall();
     }
   };
 
   rejectCall = (session, extension) => {
     this.stopSounds();
-    session.reject(extension);
+    if(session) {
+      session.reject(extension);
+      CallKeepService.rejectCall();
+    }
   };
-
+  
   setAudioMuteState = mute => {
     if (mute) {
       this._session.mute('audio');
@@ -134,7 +141,7 @@ export default class CallService {
         const message = `${userName} did not answer`;
 
         this.showToast(message);
-
+        CallKeepService.endCallByRemoteUser(REMOTE_USER_END_CALL_REASONS.REMOTE_USER_DID_NOT_ANSWER);
         resolve();
       }
     });
@@ -148,6 +155,7 @@ export default class CallService {
 
       if (this._session) {
         this.rejectCall(session, {busy: true});
+        CallKeepService.rejectCall();
         reject();
       }
 
@@ -181,16 +189,15 @@ export default class CallService {
       if (userId === session.currentUserID) {
         this._session = null;
         this.showToast('You have rejected the call on other side');
-
+        CallKeepService.endCallByRemoteUser(REMOTE_USER_END_CALL_REASONS.CALL_FAILED);
         reject();
       } else {
         const userName = this.getUserById(userId, 'name');
         const message = extension.busy
           ? `${userName} is busy`
           : `${userName} rejected the call request`;
-
+        CallKeepService.endCallByRemoteUser(REMOTE_USER_END_CALL_REASONS.CALL_FAILED);
         this.showToast(message);
-
         resolve();
       }
     });
@@ -207,9 +214,8 @@ export default class CallService {
         const message = `${userName} ${
           isInitiator ? 'stopped' : 'left'
         } the call`;
-
+        CallKeepService.endCallByRemoteUser(REMOTE_USER_END_CALL_REASONS.REMOTE_USER_ENDED_CALL);
         this.showToast(message);
-
         resolve();
       }
     });
@@ -232,8 +238,10 @@ export default class CallService {
         this.outgoingCall.play();
         break;
       case 'incoming':
-        this.incomingCall.setNumberOfLoops(-1);
-        this.incomingCall.play();
+        if(AppState.currentState === 'active') {
+          this.incomingCall.setNumberOfLoops(-1);
+          this.incomingCall.play();
+        }
         break;
       case 'end':
         this.endCall.play();

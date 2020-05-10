@@ -2,8 +2,8 @@ import PushNotification from 'react-native-push-notification';
 import { FIREBASE_SENDER_ID } from './config'
 import { AsyncStorage, Alert } from 'react-native';
 import { userFiledsUpdate } from '../modules/providers/auth/auth.actions';
-import { store } from './store';
-import { SET_INCOMING_VIDEO_CALL } from '../modules/providers/chat/chat.action';
+import messaging from '@react-native-firebase/messaging';
+import rootNavigation from './rootNavigation';
 let tokenData;
 let navigationProps;
 class NotifService {
@@ -15,20 +15,45 @@ class NotifService {
     navigationProps = props;
     console.log("Coming here");
     this.configure();
-    this.checkPermission(function(cb) {
-        console.log('Perminssion is '  + JSON.stringify(cb));
+   
+    messaging().requestPermission().then((result) => {
+      console.log('result ---- of Permission', result);
+      this.messageListener = messaging().onMessage((message) => {
+        console.log('Message', message);
+        if(message.videoNotification == '1') {
+           rootNavigation.navigate('Home');
+        }
+      // Process your message as required
+      });
+      messaging().getToken().then(fcmToken => {
+        if (fcmToken) {
+          tokenData = { token : fcmToken };
+          console.log('fcmToken: ',  fcmToken);
+        }
+      });
     })
     this.lastId = 0;
   }
+
+  async requestUserPermission() {
+    const settings = await messaging().requestPermission();
+    
+    if (settings) {
+      console.log('Permission settings:', settings);
+      return settings;
+    }
+   
+  }
+  
 
   configure( gcm = FIREBASE_SENDER_ID) {
     console.log(gcm)
     PushNotification.configure({
       // (optional) Called when Token is generated (iOS and Android)
-      onRegister:(token) => this.onRegister(token), //this._onRegister.bind(this),
+     // onRegister:(token) => this.onRegister(token), //this._onRegister.bind(this),
         
       // (required) Called when a remote or local notification is opened or received
-      onNotification: (notif) => this.onNotification(notif), //this._onNotification,
+     // onNotification: (notif) => this.onNotification(notif), //this._onNotification,
 
       // ANDROID ONLY: GCM Sender ID (optional - not required for local notifications, but is need to receive remote push notifications)
       senderID: gcm,
@@ -135,13 +160,13 @@ class NotifService {
   onRegister = async (token) => {
     console.log('On Register TOken ===> ', token);
     tokenData = token;
-   
   }
   
   updateDeviceToken = async(userId) => {
     if(tokenData) {
     const updatedDeviceToken  = await AsyncStorage.getItem('updatedDeviceToken');
     let deviceToken = tokenData.token;
+    console.log('deviceToken', deviceToken)
     let mergedTokenWithUserId = String(userId) + '_' + String(deviceToken).substr(0, 15);
     if(!updatedDeviceToken) {
       this.callApiToDeviceToken(userId, deviceToken, mergedTokenWithUserId); 
@@ -159,23 +184,21 @@ class NotifService {
       let updateResponse = await userFiledsUpdate(userId, requestData);
       console.log('updateResponse==>', updateResponse)
       if (updateResponse.success == true) {
-        
-         AsyncStorage.setItem('updatedDeviceToken', mergedTokenWithUserId);
+        AsyncStorage.setItem('updatedDeviceToken', mergedTokenWithUserId);
       }
     } catch (e) {
       console.log(e);
     }
   }
-  onNotification(notificationStr) {
+ 
+ /* onNotification(notificationStr) {
+     console.log(notificationStr);
      const notification = JSON.parse(JSON.stringify(notificationStr));
      if(notification.videoNotification == '1') {
-      store.dispatch({
-        type: SET_INCOMING_VIDEO_CALL,
-        data: true,
-     });
+
     } 
-    // console.log("NOTIFICATION:", notification);
-  }
+    console.log("NOTIFICATION:", notification);
+  } */
   subcribeToPushNotificationConnectyCube() {
   
    /* if(tokenData) {

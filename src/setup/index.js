@@ -11,7 +11,7 @@ import { FIREBASE_SENDER_ID, CHAT_API_URL } from './config'
 import { fetchUserMarkedAsReadedNotification } from '../modules/providers/notification/notification.actions';
 import { SET_LAST_MESSAGES_DATA } from '../modules/providers/chat/chat.action';
 import SocketIOClient from 'socket.io-client';
-import { AuthService } from '../modules/screens/VideoConsulation/services/index';
+import { AuthService , CallKeepService } from '../modules/screens/VideoConsulation/services/index';
 import VideoAlertModel from '../modules/providers/chat/video.alert.model';
 YellowBox.ignoreWarnings([
   'Unrecognized WebSocket connection option(s) `agent`, `perMessageDeflate`, `pfx`, `key`, `passphrase`, `cert`, `ca`, `ciphers`, `rejectUnauthorized`. Did you mean to put these under `headers`?',
@@ -24,6 +24,9 @@ YellowBox.ignoreWarnings([
 ]);
 import { setI18nConfig, translate  } from './translator.helper';
 import * as RNLocalize from "react-native-localize";
+
+
+
 export default class App extends Component {
   userId = null;
   constructor(props) {
@@ -33,7 +36,8 @@ export default class App extends Component {
     };
     setI18nConfig();
     AuthService.init();
-   
+    CallKeepService.setupCallkeep();
+    
   }
 
   async componentDidMount() {

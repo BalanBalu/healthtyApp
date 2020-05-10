@@ -14,21 +14,20 @@ import { store } from '../../../setup/store';
 import { getAllChats, SET_LAST_MESSAGES_DATA, SET_VIDEO_SESSION, SET_INCOMING_VIDEO_CALL, RESET_INCOMING_VIDEO_CALL } from '../../providers/chat/chat.action'
 import CurrentLocation from './CurrentLocation';
 const VideoConultationImg = require('../../../../assets/images/videConsultation.jpg');
-const chatImg = require('../../../../assets/images/Chat.jpg');
 const pharmacyImg = require('../../../../assets/images/pharmacy.jpg');
 const BloodImg = require('../../../../assets/images/blood.jpeg');
 const ReminderImg = require('../../../../assets/images/reminder.png');
 const LabTestImg = require('../../../../assets/images/lab-test.png');
-const coronaImg = require('../../../../assets/images/corona.png');
 import OfflineNotice from '../../../components/offlineNotice';
 import { fetchUserMarkedAsReadedNotification } from '../../providers/notification/notification.actions';
 import ConnectyCube from 'react-native-connectycube';
-import { CallService  } from '../VideoConsulation/services';
+import { CallService, CallKeepService  } from '../VideoConsulation/services';
 MapboxGL.setAccessToken(MAP_BOX_PUBLIC_TOKEN);
 import NotifService from '../../../setup/NotifService';
 import { getReminderData } from '../../providers/reminder/reminder.action.js';
 import FastImage from 'react-native-fast-image'
 import { translate } from '../../../setup/translator.helper';
+import { authorizeConnectyCube } from '../VideoConsulation/services/video-consulting-service';
 const debounce = (fun, delay) => {
     let timer = null;
     return function (...args) {
@@ -87,13 +86,6 @@ class Home extends Component {
     }
     async componentDidMount() {
         try {
-            
-            // if(IS_ANDROID) {
-            //     const coronoTestStatus = await AsyncStorage.getItem('coronoTested');
-            //     if (coronoTestStatus === '1') { } else {
-            //         this.props.navigation.navigate('CORONA Status');
-            //     }
-            // }
             this.initialFunction();
             if (IS_ANDROID) {
                 let productConfigVersion = await getCurrentVersion("CURRENT_PATIENT_MEDFLIC_VERSION")
@@ -363,11 +355,18 @@ class Home extends Component {
     /*      
         Video Calling Service             
     */
-    _setUpListeners() {
-       ConnectyCube.videochat.onCallListener = this._onCallListener;
-       ConnectyCube.videochat.onRemoteStreamListener = this._onRemoteStreamListener;
-       ConnectyCube.videochat.onStopCallListener = this._onStopCallListener;
-       ConnectyCube.videochat.onRejectCallListener =  this._onRejectCallListener;
+   async _setUpListeners() {
+        let userId = await AsyncStorage.getItem('userId')
+        if (userId) {
+           this.authorized = await authorizeConnectyCube(userId);
+           console.log(this.authorized);
+           if(this.authorized) {
+                ConnectyCube.videochat.onCallListener = this._onCallListener;
+                ConnectyCube.videochat.onRemoteStreamListener = this._onRemoteStreamListener;
+                ConnectyCube.videochat.onStopCallListener = this._onStopCallListener;
+                ConnectyCube.videochat.onRejectCallListener =  this._onRejectCallListener;
+           }
+        }
     }
     _onCallListener = (session, extension) => {
 
@@ -430,6 +429,7 @@ class Home extends Component {
             type: SET_INCOMING_VIDEO_CALL,
             data: true
         })
+        CallKeepService.displayIncomingCall('12345', 'Doctor' );
     };
     
     render() {
@@ -527,7 +527,9 @@ class Home extends Component {
 
                     <Grid style={{ flex: 1, marginLeft: 10, marginRight: 20, marginTop: 10 }}>
                     <Col style={{ width: '33%',}}>
-                            <TouchableOpacity onPress={() => this.props.navigation.navigate("Video and Chat Service")}>
+                            <TouchableOpacity onPress={() => 
+                                 this.props.navigation.navigate("Video and Chat Service")
+                            }>
                                 <Card style={{ borderRadius: 2, overflow: 'hidden' }}>
                                     <Row style={styles.rowStyle}>
                                         <Image
