@@ -54,7 +54,7 @@ export default StyleSheet.create({
   },
   touchStyle: {
     backgroundColor: '#8EC63F',
-    borderRadius: 1,
+    borderRadius: 5,
     paddingLeft: 30,
     paddingRight: 30,
     paddingBottom: 10,
@@ -122,11 +122,13 @@ skipButton: {
     backgroundColor: '#4E85E9',
     paddingBottom: 10,
     paddingTop: 10,
+    borderRadius:5
 },
 saveButton: {
     backgroundColor: '#8EC63F',
     paddingBottom: 10,
-    paddingTop: 10
+    paddingTop: 10,
+    borderRadius:5
 },
 formText: {
     borderColor: '#909090',
