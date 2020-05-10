@@ -27,6 +27,7 @@ class Locations extends PureComponent {
         this.setState({ isLoading: true })
         if (navigationOption != null) {
             const pharmacyResult = await getPharmacyLocations();
+          
             this.setState({ isLoading: false })
             if (pharmacyResult.success) {
                 this.setState({ locations: pharmacyResult.data });
@@ -41,6 +42,7 @@ class Locations extends PureComponent {
     }
     getPopularCities = async () => {
        const result = await getPopularCities();
+       
        if (result.success) {
            this.setState({ popularLocations: result.data });
        }
@@ -57,7 +59,8 @@ class Locations extends PureComponent {
         );
     };
     onPressList = (cityInfo) => {
-        this.props.navigation.navigate("LocationDetail", { cityData : cityInfo })
+        let value=this.props.navigation.getParam('navigationOption')||null
+        this.props.navigation.navigate("LocationDetail", { cityData : cityInfo,navigationOption:value })
     }
     render() {
         const { locations, isLoading , popularLocations } = this.state
