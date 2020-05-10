@@ -251,7 +251,7 @@ class MyAppoinmentList extends Component {
 
 	handleIndexChange = async (index) => {
 		let data = []
-		this.setState({
+		await this.setState({
 			selectedIndex: index,
 		});
 		if (index === 0) {
