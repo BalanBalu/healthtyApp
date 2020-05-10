@@ -9,7 +9,7 @@ import { connect } from 'react-redux'
 import moment from 'moment';
 import { fetchUserNotification, UpDateUserNotification } from '../../providers/notification/notification.actions';
 import { hasLoggedIn } from "../../providers/auth/auth.actions";
-import { formatDate, dateDiff } from '../../../setup/helpers';
+import { formatDate, dateDiff,notificationNavigation } from '../../../setup/helpers';
 import Spinner from "../../../components/Spinner";
 import { store } from '../../../setup/store';
 
@@ -47,7 +47,7 @@ class Notification extends Component {
         try {
             await this.setState({ isLoading: false })
             if (navigationData.action) {
-                if (navigationData.action.type === 'Navigation/BACK') {
+                if (navigationData.action.type === 'Navigation/BACK'||navigationData.action.type === 'Navigation/POP') {
                     
                   await this.getUserNotification();
                    
@@ -73,14 +73,14 @@ class Notification extends Component {
             this.props.navigation.push("AppointmentInfo", { appointmentId: item.appointment_id,fromNotification:true })
         }
     }
-    if(item.notification_type==='PHARMACY_ORDERS'){
+  else{
         if (!item.mark_as_viewed) {
             await this.upDateNotification('mark_as_viewed')
-            this.props.navigation.push("OrderDetails", { serviceId: item.service_id,fromNotification:true })
+            this.props.navigation.push(notificationNavigation[item.notification_type].navigationOption, { serviceId: item.service_id,fromNotification:true })
               
         }
         else {
-            this.props.navigation.push("OrderDetails", { serviceId: item.service_id,fromNotification:true })
+            this.props.navigation.push(notificationNavigation[item.notification_type].navigationOption, { serviceId: item.service_id,fromNotification:true })
         }
     }
     }
