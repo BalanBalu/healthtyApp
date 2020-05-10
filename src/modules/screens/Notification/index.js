@@ -9,7 +9,7 @@ import { connect } from 'react-redux'
 import moment from 'moment';
 import { fetchUserNotification, UpDateUserNotification } from '../../providers/notification/notification.actions';
 import { hasLoggedIn } from "../../providers/auth/auth.actions";
-import { formatDate, dateDiff,notificationNavigation } from '../../../setup/helpers';
+import { formatDate, dateDiff, notificationNavigation } from '../../../setup/helpers';
 import Spinner from "../../../components/Spinner";
 import { store } from '../../../setup/store';
 
@@ -27,30 +27,30 @@ class Notification extends Component {
     }
 
     async componentDidMount() {
-       
+
         const isLoggedIn = await hasLoggedIn(this.props);
         if (!isLoggedIn) {
             this.props.navigation.navigate("login");
             return;
         }
         await this.setState({ notificationId: this.props.notification.notificationIds });
-       
+
         await new Promise.all([
             this.getUserNotification(),
             this.upDateNotification('mark_as_readed')
-        ])    
+        ])
         await this.setState({ isLoading: true })
-         
+
     }
 
     backNavigation = async (navigationData) => {
         try {
             await this.setState({ isLoading: false })
             if (navigationData.action) {
-                if (navigationData.action.type === 'Navigation/BACK'||navigationData.action.type === 'Navigation/POP') {
-                    
-                  await this.getUserNotification();
-                   
+                if (navigationData.action.type === 'Navigation/BACK' || navigationData.action.type === 'Navigation/POP') {
+
+                    await this.getUserNotification();
+
                 }
             }
             await this.setState({ isLoading: true })
@@ -60,37 +60,37 @@ class Notification extends Component {
 
     }
     updateNavigation = async (item) => {
-        
-       
+
+
         await this.setState({ notificationId: item._id })
-        if(item.notification_type==='APPOINTMENT'){
-        if (!item.mark_as_viewed) {
-            await this.upDateNotification('mark_as_viewed')
-            this.props.navigation.push("AppointmentInfo", { appointmentId: item.appointment_id,fromNotification:true })
-              
+        if (item.notification_type === 'APPOINTMENT') {
+            if (!item.mark_as_viewed) {
+                await this.upDateNotification('mark_as_viewed')
+                this.props.navigation.push("AppointmentInfo", { appointmentId: item.appointment_id, fromNotification: true })
+
+            }
+            else {
+                this.props.navigation.push("AppointmentInfo", { appointmentId: item.appointment_id, fromNotification: true })
+            }
         }
-        else {
-            this.props.navigation.push("AppointmentInfo", { appointmentId: item.appointment_id,fromNotification:true })
+        else if (item.notification_type !== 'VIDEO_CONSULTATION') {
+            if (!item.mark_as_viewed) {
+                await this.upDateNotification('mark_as_viewed')
+                this.props.navigation.push(notificationNavigation[item.notification_type].navigationOption, { serviceId: item.service_id, fromNotification: true })
+
+            }
+            else {
+                this.props.navigation.push(notificationNavigation[item.notification_type].navigationOption, { serviceId: item.service_id, fromNotification: true })
+            }
         }
-    }
-  else{
-        if (!item.mark_as_viewed) {
-            await this.upDateNotification('mark_as_viewed')
-            this.props.navigation.push(notificationNavigation[item.notification_type].navigationOption, { serviceId: item.service_id,fromNotification:true })
-              
-        }
-        else {
-            this.props.navigation.push(notificationNavigation[item.notification_type].navigationOption, { serviceId: item.service_id,fromNotification:true })
-        }
-    }
     }
     upDateNotification = async (node) => {
         try {
-           
+
             if (this.state.notificationId) {
-               
+
                 let result = await UpDateUserNotification(node, this.state.notificationId);
-               
+
             }
         }
         catch (e) {
@@ -99,35 +99,35 @@ class Notification extends Component {
 
     }
 
-     getUserNotification=async()=> {
-    try {
+    getUserNotification = async () => {
+        try {
 
-        let userId = await AsyncStorage.getItem('userId');
-       
-        let result = await fetchUserNotification(userId);
-      
-        if (result.success) {
-            this.setState({data:result.data})
+            let userId = await AsyncStorage.getItem('userId');
+
+            let result = await fetchUserNotification(userId);
+
+            if (result.success) {
+                this.setState({ data: result.data })
+            }
+
+
+
+
+
+
         }
-        
-        
-
-
+        catch (e) {
+            console.log(e);
+        }
 
 
     }
-    catch (e) {
-        console.log(e);
-    }
-
-
-}
 
 
 
     render() {
         const { data, isLoading } = this.state;
-        
+
 
         return (
             < Container style={styles.container} >
@@ -169,37 +169,37 @@ class Notification extends Component {
 
 
 
-                                            <Card style={{ borderRadius: 5, width: 'auto',padding:15,backgroundColor: (item.mark_as_viewed == false) ? '#f5e6ff' : null}}>
+                                            <Card style={{ borderRadius: 5, width: 'auto', padding: 15, backgroundColor: (item.mark_as_viewed == false) ? '#f5e6ff' : null }}>
                                                 {/* <View style={{ borderWidth: 1, borderColor: '#c9cdcf', marginTop: 10 }} /> */}
                                                 <TouchableOpacity onPress={() => this.updateNavigation(item)} testID='notificationView'>
                                                     <View >
 
-                                                       
-                                                            {dateDiff(new Date(item.created_date), new Date(), 'days') > 30 ?
 
-                                                                <Text style={{ fontSize: 12, fontFamily: 'OpenSans', textAlign:'right', marginTop: 5,}}>
-                                                                   {formatDate(new Date(item.created_date), "DD-MM-YYYY")} 
-                                                                </Text> :
+                                                        {dateDiff(new Date(item.created_date), new Date(), 'days') > 30 ?
 
-                                                                <Text style={{
-                                                                    fontSize: 12, fontFamily: 'OpenSans',
-                                                                     marginTop: 5,textAlign:'right',
-                                                                }}>
-                                                                    {moment(new Date(item.created_date), "YYYYMMDD").fromNow()}
-                                                                </Text>
-                                                            }
-                                                       
-
-                                                        
+                                                            <Text style={{ fontSize: 12, fontFamily: 'OpenSans', textAlign: 'right', marginTop: 5, }}>
+                                                                {formatDate(new Date(item.created_date), "DD-MM-YYYY")}
+                                                            </Text> :
 
                                                             <Text style={{
-                                                                fontSize: 14, fontFamily: 'OpenSans', marginTop: 10,
-                                                                color: '#000',textAlign:'auto',lineHeight:20
-                                                            }}>{item.notification_message} </Text>
+                                                                fontSize: 12, fontFamily: 'OpenSans',
+                                                                marginTop: 5, textAlign: 'right',
+                                                            }}>
+                                                                {moment(new Date(item.created_date), "YYYYMMDD").fromNow()}
+                                                            </Text>
+                                                        }
 
 
 
-                                                       
+
+                                                        <Text style={{
+                                                            fontSize: 14, fontFamily: 'OpenSans', marginTop: 10,
+                                                            color: '#000', textAlign: 'auto', lineHeight: 20
+                                                        }}>{item.notification_message} </Text>
+
+
+
+
 
                                                     </View>
                                                 </TouchableOpacity>
@@ -208,9 +208,9 @@ class Notification extends Component {
                                         }
                                         keyExtractor={(item, index) => index.toString()} />
                                 </List>
-                               
+
                             </ ScrollView>
-                           
+
 
                     }
                 </Content>
