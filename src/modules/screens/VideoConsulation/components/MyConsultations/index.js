@@ -9,6 +9,7 @@ import { hasLoggedIn } from "../../../../providers/auth/auth.actions";
 import {POSSIBLE_VIDEO_CONSULTING_STATUS, STATUS_VALUE_DATA } from '../../constants';
 import { getVideoConsuting, updateVideoConsuting } from '../../services/video-consulting-service';
 import { formatDate } from  '../../../../../setup/helpers';
+import { connect } from 'react-redux';
 export const IS_ANDROID = Platform.OS === 'android';
 class VideoConsultaions extends Component {
     constructor(props) {
@@ -82,6 +83,7 @@ class VideoConsultaions extends Component {
     }
     
     renderConsultaions(item, index) {
+		const { chat: { loggedIntoConnectyCube } } = this.props;
         return (
             <Card style={styles.mainCard}>
                 <Grid>
@@ -102,7 +104,7 @@ class VideoConsultaions extends Component {
                         </Col>
                     </Row>
                      {
-                        item.status === POSSIBLE_VIDEO_CONSULTING_STATUS.APPROVED ? 
+                        item.status === POSSIBLE_VIDEO_CONSULTING_STATUS.APPROVED && loggedIntoConnectyCube ? 
                             <Row style={{ marginLeft: '22%' }} >
                                 <Button primary iconLeft style={[styles.actionButton, { backgroundColor: '#08BF01'  }]} 
                                      onPress={() => this.callDoctor(item)}>
@@ -342,5 +344,10 @@ const styles = StyleSheet.create({
 	},
 	
 })
-  
-export default VideoConsultaions;
+function homeState(state) {
+	return {
+		chat: state.chat,
+	}
+}
+export default connect(homeState)(VideoConsultaions)
+

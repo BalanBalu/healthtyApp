@@ -3,7 +3,7 @@ import {SafeAreaView, StatusBar, BackHandler,  NativeModules, NativeEventEmitter
 import ConnectyCube from 'react-native-connectycube';
 import AwesomeAlert from 'react-native-awesome-alerts';
 import RTCViewGrid from './RTCViewGrid';
-import {CallService } from '../../services';
+import {CallService, CallKeepService } from '../../services';
 import ToolBar from './ToolBar';
 import { store } from '../../../../../setup/store';
 import { connect } from 'react-redux';
@@ -82,8 +82,10 @@ import { Toast } from 'native-base';
       currState.remoteStreams.length === 0
     ) {
       CallService.stopCall();
+     // CallKeepService.endCall();
       this.resetState();
       this.navigateToHome();
+     
     }
   }
 
@@ -162,8 +164,6 @@ import { Toast } from 'native-base';
     this.setState(({remoteStreams}) => ({
       remoteStreams: remoteStreams.filter(item => item.userId !== userId),
     }));
-   
-    
   };
 
   setLocalStream = stream => {
@@ -204,6 +204,7 @@ import { Toast } from 'native-base';
       this.setLocalStream(stream);
       this.closeSelect();
       this.hideInomingCallModal();
+      
     });
   };
 
