@@ -383,9 +383,9 @@ const HomeStack = createStackNavigator({
 
   CancelService: {
     screen: CancelService,
-    navigationOptions: {
-      title: 'Cancel service'
-    }
+    navigationOptions: ({ navigation }) => ({
+      title: navigation.getParam("tittle"),
+    }),
   },
   // ================Profile Stack =================
   Profile: {
