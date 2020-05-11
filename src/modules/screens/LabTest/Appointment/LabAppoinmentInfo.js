@@ -3,11 +3,13 @@ import {
   Container, Content, Text, Button, Item, Card, List, ListItem, Left, Right,
   Thumbnail, Body, Icon, Toast, View, CardItem
 } from 'native-base';
+import { NavigationEvents } from 'react-navigation';
 import { Col, Row, Grid } from 'react-native-easy-grid';
 import { StyleSheet, AsyncStorage, TouchableOpacity, Modal } from 'react-native';
 import StarRating from 'react-native-star-rating';
 import { FlatList } from 'react-native-gesture-handler';
 import { formatDate, addTimeUnit, subTimeUnit, statusValue } from "../../../../setup/helpers";
+import { getUserRepportDetails } from '../../../providers/reportIssue/reportIssue.action';
 import { updateLapAppointment, getLapTestPaymentDetails, getLabAppointmentById } from "../../../providers/lab/lab.action"
 
 class LabAppointmentInfo extends Component {
@@ -21,7 +23,7 @@ class LabAppointmentInfo extends Component {
       reviewData: [],
       reportData: null,
       isLoading: true,
-
+      appointmentId:''
     }
   }
 
@@ -62,6 +64,28 @@ class LabAppointmentInfo extends Component {
     }
     finally {
       await this.setState({ isLoading: true });
+    }
+  }
+
+  async backNavigation() {
+    const { navigation } = this.props;
+    if (navigation.state.params) {
+      if (navigation.state.params.hasReloadReportIssue) {
+        this.getUserReport();  // Reload the Reported issues when they reload
+      }
+    };
+  }
+
+  getUserReport = async () => {
+    try {
+      const userId = await AsyncStorage.getItem('userId');
+      let resultReport = await getUserRepportDetails('labAppointment', userId, this.state.appointmentId);
+      if (resultReport.success) {
+        this.setState({ reportData: resultReport.data });
+      }
+    }
+    catch (e) {
+      console.error(e);
     }
   }
 
@@ -147,7 +171,7 @@ class LabAppointmentInfo extends Component {
   }
 
   render() {
-    const { data, upcomingTap, paymentData } = this.state
+    const { data, upcomingTap, paymentData, reportData } = this.state
     return (
       <Container style={styles.container}>
         <Content style={styles.bodyContent}>
@@ -155,6 +179,9 @@ class LabAppointmentInfo extends Component {
             <Card style={{
               borderRadius: 10,
             }}>
+              <NavigationEvents
+                onWillFocus={payload => { this.backNavigation(payload) }}
+              />
               <CardItem header style={styles.cardItem}>
                 <Grid>
                   <Text style={{ textAlign: 'right', fontSize: 14, marginTop: -15 }}>{"Ref no :" + data.token_no}</Text>
@@ -333,6 +360,47 @@ class LabAppointmentInfo extends Component {
                   </Col>
                 </Row>
 
+                <Row style={styles.rowSubText}>
+                  <Col style={{ width: '8%', paddingTop: 5 }}>
+                    <Icon name="ios-document" style={{ fontSize: 20, }} />
+                  </Col>
+                  <Col style={{ width: '92%', paddingTop: 5 }}>
+                    <Text style={styles.innerSubText}>Payment Report</Text>
+                    {reportData != null ?
+                      <View style={{ borderRadius: 5, borderColor: 'grey', borderWidth: 0.5, padding: 5 }} >
+                        <TouchableOpacity onPress={() => { this.props.navigation.navigate('ReportDetails', { reportedId: data._id, serviceType: 'LAB_TEST' }) }}>
+                          <Text note style={[styles.subTextInner2, { marginLeft: 10 }]}>"You have raised Report for this appointment"</Text>
+                          <Row>
+                            <Col size={9}>
+                              <Text note style={[styles.subTextInner1, { marginLeft: 10 }]}>{reportData.issue_type || ' '}</Text>
+
+                            </Col>
+                            <Col size={1}>
+                              <Icon name='ios-arrow-forward' style={{ fontSize: 20, color: 'grey' }} />
+                            </Col>
+                          </Row>
+                        </TouchableOpacity>
+                      </View> :
+
+                      <View style={{ alignItems: 'center', justifyContent: 'center', marginTop: 5, marginBottom: 10 }}>
+                        <TouchableOpacity
+                          onPress={() => {
+                            this.props.navigation.push('ReportIssue', {
+                              issueFor: { serviceType: 'LAB_TEST', reportedId: data._id, status: data.appointment_status },
+                              prevState: this.props.navigation.state
+                            })
+                          }}
+                          block success
+                          style={styles.reviewButton
+                          }>
+                          <Text style={{ color: '#fff', fontSize: 14, fontFamily: 'OpenSans', fontWeight: 'bold', textAlign: 'center', marginTop: 5 }}>
+                            Report Issue
+                        </Text>
+                        </TouchableOpacity>
+                      </View>
+                    }
+                  </Col>
+                </Row>
 
                 <Row style={styles.rowStyles}>
                   <Col style={{ width: '8%', paddingTop: 5 }}>
