@@ -424,10 +424,13 @@ export async function insertDoctorsWishList(userId, doctorId, requestData) {
   }
 }
  
-export async function getLocations() {
+export async function getLocations(reqQueryFromAndToPinCodes) {
     try {
   
       let endPoint = 'hospital/locations'
+      if(reqQueryFromAndToPinCodes) {
+        endPoint = endPoint +'?fromPinCode=' + reqQueryFromAndToPinCodes.fromPinCode + '&toPinCode=' + reqQueryFromAndToPinCodes.toPinCode
+      }
       let response = await getService(endPoint);
       let respData = response.data;
       return respData;
@@ -439,10 +442,15 @@ export async function getLocations() {
     }
 }
 
-export async function getPharmacyLocations() {
+
+
+export async function getPharmacyLocations(reqQueryFromAndToPinCodes) {
   try {
 
     let endPoint = 'pharmacies/locations'
+    if(reqQueryFromAndToPinCodes) {
+      endPoint = endPoint +'?fromPinCode=' + reqQueryFromAndToPinCodes.fromPinCode + '&toPinCode=' + reqQueryFromAndToPinCodes.toPinCode
+    }
     let response = await getService(endPoint);
     let respData = response.data;
     return respData;

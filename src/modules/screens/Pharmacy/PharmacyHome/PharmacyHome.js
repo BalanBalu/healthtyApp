@@ -255,7 +255,7 @@ class PharmacyHome extends Component {
                         </Col>
                         <Col size={4} style={{ marginLeft: 5 }}>
 
-                            <TouchableOpacity style={{ backgroundColor: '#4B86EA', height: 30, borderRadius: 2 }} onPress={() => this.props.navigation.navigate('Locations', { navigationOption: 'Near by pharmacies' })}>
+                            <TouchableOpacity style={{ backgroundColor: '#4B86EA', height: 30, borderRadius: 2 }} onPress={() => this.props.navigation.navigate('Locations', { navigationOption: 'Medicines' })}>
                                 <Row style={{ justifyContent: 'center', alignItems: 'center', marginLeft: 5 }}>
                                     <Col size={0.5} style={{ alignItems: 'flex-start' }}>
                                         <Icon name='locate' style={{ fontSize: 15, color: '#fff', }} />
