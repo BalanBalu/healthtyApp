@@ -1,5 +1,7 @@
 // App Imports
-import { SET_LAST_MESSAGES_DATA, SET_VIDEO_SESSION, SET_INCOMING_VIDEO_CALL, RESET_INCOMING_VIDEO_CALL, ShowVieoAlertModal } from './chat.action'
+import { SET_LAST_MESSAGES_DATA, SET_VIDEO_SESSION, 
+  SET_INCOMING_VIDEO_CALL, RESET_INCOMING_VIDEO_CALL, 
+   SET_USER_LOOGED_IN_CONNECTYCUBE } from './chat.action'
 // Initial State
 export const commonInitialState = {
     myChatList: [],
@@ -7,6 +9,7 @@ export const commonInitialState = {
     incomingVideoCall: false,
     onPressReject: false,
     onPressAccept: false,
+    loggedIntoConnectyCube: false
 }
 
 // State
@@ -27,34 +30,9 @@ export default (state = commonInitialState, action) => {
     case SET_INCOMING_VIDEO_CALL:
       console.log('Hey it is Updating Year', action.data);
       if(action.data) {
-        //   ShowVieoAlertModal(true);
-          
-        
-           
-         /* 
-        // IncomingVideoCallAlert.show('Alert Message');
-        Alert.alert("Video Call",
-        "Incoming Call from Doctor!",
-        [
-            {
-                text: "Reject",
-                onPress: () => {
-                    console.log("Cancel Pressed");
-                  //  RootNavigation.navigate('VideoScreen', { isIncomingCall: true, onPressReject: true, onPressAccept: false  })
-                },
-                style: "cancel"
-            },
-            {
-                text: "Accept", onPress: () => {
-                 // RootNavigation.navigate('VideoScreen', { isIncomingCall: true, onPressReject: false, onPressAccept: true })
-                }
-            }
-        ],
-        { cancelable: false }
-      ); */
         return {
           ...state,
-          incomingVideoCall: action.data
+          incomingVideoCall: true
         }
       }
 
@@ -64,6 +42,12 @@ export default (state = commonInitialState, action) => {
          ...state,
          incomingVideoCall: false,
         } 
+      case SET_USER_LOOGED_IN_CONNECTYCUBE: 
+        return {
+         ...state,
+         loggedIntoConnectyCube: true,
+      } 
+        
     default:
       return state
   }

@@ -2,6 +2,7 @@ import ConnectyCube from 'react-native-connectycube';
 import { CONNECTY_CUBE } from '../../../../setup/config';
 import { postService } from '../../../../setup/services/httpservices';
 import NotifService from '../../../../setup/NotifService';
+import { setUserLoggedIn } from './video-consulting-service';
 
 const splice = function(originalStr,idx, rem, str) {
   return originalStr.slice(0, idx) + str + originalStr.slice(idx + Math.abs(rem));
@@ -24,7 +25,6 @@ export default class AuthService {
           login: finalResponseData.connectycube_login,
           password: connectyCubePw
         }
-        console.log(loginRequest);
         this.login(loginRequest).then(() => {
           console.log('Successfully Logged in')
         }).catch((e) => {
@@ -46,14 +46,15 @@ export default class AuthService {
   login = user => {
     return new Promise((resolve, reject) => {
       ConnectyCube.createSession(user)
-        .then(() =>
+        .then(() => {
           ConnectyCube.chat.connect({
             userId: user.id,
             password: user.password,
-          }),
-        )
-        .then(resolve)
-        .catch(reject);
+          });
+          setUserLoggedIn();
+        }
+      ).then(resolve)
+      .catch(reject);
     });
   };
 
@@ -74,6 +75,8 @@ export default class AuthService {
   };
   
   loginToConnctyCube = (userId, connectycube) => {
+
+    return new Promise((resolve, reject) => {
       const connectyCubePw = this.genePw(userId, connectycube.connectycube_pw);
       const loginRequest = {
         id: connectycube.connectycube_id,
@@ -83,9 +86,13 @@ export default class AuthService {
       this.login(loginRequest).then(() => {
         NotifService.subcribeToPushNotificationConnectyCube();
         console.log('Successfully Logged in to ConnectyCube');
+        resolve(true);
       }).catch((e) => {
          alert('Login Failed because', JSON.stringify(e));
          console.log(e); 
+         reject(false);
       });
+    
+    });
   }
 }

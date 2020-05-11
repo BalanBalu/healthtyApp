@@ -6,6 +6,7 @@ import { Col, Row } from 'react-native-easy-grid';
 import { StyleSheet, AsyncStorage, FlatList, TouchableOpacity } from 'react-native';
 import { getMedicineOrderList } from '../../../providers/pharmacy/pharmacy.action';
 import { formatDate } from '../../../../setup/helpers';
+import{statusBar} from '../CommomPharmacy'
 import Spinner from '../../../../components/Spinner';
 import noAppointmentImage from "../../../../../assets/images/noappointment.png";
 
@@ -128,6 +129,9 @@ class MyOrdersList extends Component {
                                                 </Row>
                                                 <Row style={{ marginTop: -10 }}>
                                                     <Text style={styles.orderprice}>{formatDate(item.created_date, 'DD MMMM,YYYY')}</Text>
+                                                </Row>
+                                                <Row style={{ marginTop: -5 }}>
+                                                    <Text style={[styles.orderprice,{color: statusBar[item.status].color}]}>{statusBar[item.status].status}</Text>
                                                 </Row>
                                                 <Row style={{ marginBottom: -15, marginTop: -5 }}>
                                                     <Col>
