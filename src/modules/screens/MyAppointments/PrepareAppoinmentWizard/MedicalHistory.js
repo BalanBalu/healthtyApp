@@ -36,7 +36,6 @@ class MedicalHistory extends PureComponent {
             let userId = await AsyncStorage.getItem('userId');
             let data = {
                 general_health_info: radioButton,
-
             }
 
 

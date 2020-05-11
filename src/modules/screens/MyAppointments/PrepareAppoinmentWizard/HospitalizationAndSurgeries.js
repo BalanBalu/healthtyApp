@@ -26,12 +26,12 @@ class HospitalizationAndSurgeries extends PureComponent {
 
         }
     }
-    skippingButton = async () => {
+    skippingButton = async (hasSkip = true) => {
         try {
             const { appointmentId } = this.state
 
             let data = {
-                has_skip_hospitalization_and_surgeries: false
+                has_skip_hospitalization_and_surgeries: hasSkip
             }
             let result = await prepareAppointmentUpdate(appointmentId, data);
             if (result.success) {
@@ -66,7 +66,7 @@ class HospitalizationAndSurgeries extends PureComponent {
                     type: "success",
                     duration: 3000,
                 })
-                this.skippingButton();
+                this.skippingButton(false);
                 this.props.navigation.navigate('SocialHistory', { AppointmentId: appointmentId });
             }
         }

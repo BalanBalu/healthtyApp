@@ -17,7 +17,7 @@ class PastMedicalConditions extends PureComponent {
 
         this.state = {
             firstQuestion: 0,
-            checkBoxClick: past_health_condition,
+            checkBoxClick: past_health_condition || [],
             isLoading: false,
             lists: [],
             refreshCount: 0,
@@ -25,12 +25,12 @@ class PastMedicalConditions extends PureComponent {
 
         }
     }
-    skippingButton = async () => {
+    skippingButton = async (hasSkip = true) => {
         try {
             const { appointmentId } = this.state
 
             let data = {
-                has_skip_past_health_condition: false
+                has_skip_past_health_condition: hasSkip
             }
             let result = await prepareAppointmentUpdate(appointmentId, data);
             if (result.success) {
@@ -64,7 +64,7 @@ class PastMedicalConditions extends PureComponent {
                     type: "success",
                     duration: 3000,
                 })
-                this.skippingButton()
+                this.skippingButton(false)
                 this.props.navigation.navigate('PatientInfo', { AppointmentId: appointmentId });
             }
         }

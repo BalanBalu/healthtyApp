@@ -21,29 +21,25 @@ class SocialHistory extends PureComponent {
             firstQuestion: 0,
             radioButton: false,
             checkBoxClick: false,
-            sexuallyActive: social_history.sexually_active,
-            drinkAlcohol: social_history.drink_alcohol,
-            smoke: social_history.smoke,
-            recreational_drugs: social_history.use_recreational_drugs,
-            physically_or_verbally: social_history.physically_or_verbally_hurt_you,
-            exercise: social_history.exercise,
             isLoading: false,
-            selectnumber: social_history.use_caffeinated_drink,
+            sexuallyActive: social_history ? social_history.sexually_active : null,
+            drinkAlcohol: social_history ? social_history.drink_alcohol : null,
+            smoke: social_history ? social_history.smoke : null,
+            recreational_drugs: social_history ? social_history.use_recreational_drugs : null,
+            physically_or_verbally: social_history ? social_history.physically_or_verbally_hurt_you : null, 
+            exercise: social_history ? social_history.exercise : null, 
+            selectnumber: social_history? social_history.use_caffeinated_drink : null,
             appointmentId: props.navigation.getParam('AppointmentId')
-
-
-
-
         }
     }
 
 
-    skippingButton = async () => {
+    skippingButton = async (hasSkip = true) => {
         try {
             const { appointmentId } = this.state
 
             let data = {
-                has_skip_social_history: false
+                has_skip_social_history: hasSkip
             }
             let result = await prepareAppointmentUpdate(appointmentId, data);
             if (result.success) {
@@ -84,7 +80,7 @@ class SocialHistory extends PureComponent {
                     type: "success",
                     duration: 3000,
                 })
-                this.skippingButton();
+                this.skippingButton(false);
                 this.props.navigation.navigate('PrepareAppointmentLastStep', { AppointmentId: appointmentId });
             }
         }
@@ -114,15 +110,15 @@ class SocialHistory extends PureComponent {
                                     <Col style={{ flexDirection: 'row' }}>
                                         <Radio
                                             standardStyle={true}
-                                            selected={this.state.sexuallyActive}
-                                            onPress={() => this.setState({ sexuallyActive: this.state.sexuallyActive })} />
+                                            selected={this.state.sexuallyActive === true }
+                                            onPress={() => this.setState({ sexuallyActive: true })} />
                                         <Text style={styles.radioText1}>Yes</Text>
                                     </Col>
                                     <Col style={{ flexDirection: 'row' }}>
                                         <Radio
                                             standardStyle={true}
-                                            selected={!this.state.sexuallyActive}
-                                            onPress={() => this.setState({ sexuallyActive: !this.state.sexuallyActive })} />
+                                            selected={this.state.sexuallyActive === false }
+                                            onPress={() => this.setState({ sexuallyActive: false })} />
                                         <Text style={styles.radioText1}>No</Text>
                                     </Col>
                                 </Col>
@@ -139,15 +135,15 @@ class SocialHistory extends PureComponent {
                                     <Col style={{ flexDirection: 'row' }}>
                                         <Radio
                                             standardStyle={true}
-                                            selected={this.state.drinkAlcohol}
-                                            onPress={() => this.setState({ drinkAlcohol: this.state.drinkAlcohol })} />
+                                            selected={this.state.drinkAlcohol === true }
+                                            onPress={() => this.setState({ drinkAlcohol: true })} />
                                         <Text style={styles.radioText1}>Yes</Text>
                                     </Col>
                                     <Col style={{ flexDirection: 'row' }}>
                                         <Radio
                                             standardStyle={true}
-                                            selected={!this.state.drinkAlcohol}
-                                            onPress={() => this.setState({ drinkAlcohol: !this.state.drinkAlcohol })} />
+                                            selected={this.state.drinkAlcohol === false }
+                                            onPress={() => this.setState({ drinkAlcohol: false })} />
                                         <Text style={styles.radioText1}>No</Text>
                                     </Col>
                                 </Col>
@@ -164,15 +160,15 @@ class SocialHistory extends PureComponent {
                                     <Col style={{ flexDirection: 'row' }}>
                                         <Radio
                                             standardStyle={true}
-                                            selected={this.state.smoke}
-                                            onPress={() => this.setState({ smoke: this.state.smoke })} />
+                                            selected={this.state.smoke === true }
+                                            onPress={() => this.setState({ smoke: true })} />
                                         <Text style={styles.radioText1}>Yes</Text>
                                     </Col>
                                     <Col style={{ flexDirection: 'row' }}>
                                         <Radio
                                             standardStyle={true}
-                                            selected={!this.state.smoke}
-                                            onPress={() => this.setState({ smoke: !this.state.smoke })} />
+                                            selected={this.state.smoke === false }
+                                            onPress={() => this.setState({ smoke: false })} />
                                         <Text style={styles.radioText1}>No</Text>
                                     </Col>
                                 </Col>
@@ -189,15 +185,15 @@ class SocialHistory extends PureComponent {
                                     <Col style={{ flexDirection: 'row' }}>
                                         <Radio
                                             standardStyle={true}
-                                            selected={this.state.recreational_drugs}
-                                            onPress={() => this.setState({ recreational_drugs: this.state.recreational_drugs })} />
+                                            selected={this.state.recreational_drugs === true }
+                                            onPress={() => this.setState({ recreational_drugs: true })} />
                                         <Text style={styles.radioText1}>Yes</Text>
                                     </Col>
                                     <Col style={{ flexDirection: 'row' }}>
                                         <Radio
                                             standardStyle={true}
-                                            selected={!this.state.recreational_drugs}
-                                            onPress={() => this.setState({ recreational_drugs: !this.state.recreational_drugs })} />
+                                            selected={this.state.recreational_drugs === false }
+                                            onPress={() => this.setState({ recreational_drugs: false })} />
                                         <Text style={styles.radioText1}>No</Text>
                                     </Col>
                                 </Col>
@@ -245,15 +241,15 @@ class SocialHistory extends PureComponent {
                                     <Col style={{ flexDirection: 'row' }}>
                                         <Radio
                                             standardStyle={true}
-                                            selected={this.state.physically_or_verbally}
-                                            onPress={() => this.setState({ physically_or_verbally: this.state.physically_or_verbally })} />
+                                            selected={this.state.physically_or_verbally === true}
+                                            onPress={() => this.setState({ physically_or_verbally: true})} />
                                         <Text style={styles.radioText1}>Yes</Text>
                                     </Col>
                                     <Col style={{ flexDirection: 'row' }}>
                                         <Radio
                                             standardStyle={true}
-                                            selected={!this.state.physically_or_verbally}
-                                            onPress={() => this.setState({ physically_or_verbally: !this.state.physically_or_verbally })} />
+                                            selected={this.state.physically_or_verbally === false }
+                                            onPress={() => this.setState({ physically_or_verbally: false  })} />
                                         <Text style={styles.radioText1}>No</Text>
                                     </Col>
                                 </Col>
@@ -270,15 +266,15 @@ class SocialHistory extends PureComponent {
                                     <Col style={{ flexDirection: 'row' }}>
                                         <Radio
                                             standardStyle={true}
-                                            selected={this.state.exercise}
-                                            onPress={() => this.setState({ exercise: this.state.exercise })} />
+                                            selected={this.state.exercise === true }
+                                            onPress={() => this.setState({ exercise: true })} />
                                         <Text style={styles.radioText1}>Yes</Text>
                                     </Col>
                                     <Col style={{ flexDirection: 'row' }}>
                                         <Radio
                                             standardStyle={true}
-                                            selected={!this.state.exercise}
-                                            onPress={() => this.setState({ exercise: !this.state.exercise })} />
+                                            selected={this.state.exercise === false }
+                                            onPress={() => this.setState({ exercise: false })} />
                                         <Text style={styles.radioText1}>No</Text>
                                     </Col>
                                 </Col>

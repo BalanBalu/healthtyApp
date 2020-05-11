@@ -20,16 +20,19 @@ class FamilyMedicalConditions extends PureComponent {
             family_person_who: [],
             isLoading: false,
             appointmentId: props.navigation.getParam('AppointmentId'),
-            familyCondition: family_conditions,
+            familyCondition: family_conditions || [{
+                person_name: null,
+                family_person_who: null
+            }],
             refreshCount: 1,
         }
     }
-    skippingButton = async () => {
+    skippingButton = async (hasSkip = true) => {
         try {
             const { appointmentId } = this.state
 
             let data = {
-                has_skip_family_conditions: false
+                has_skip_family_conditions: hasSkip
             }
             let result = await prepareAppointmentUpdate(appointmentId, data);
             if (result.success) {
@@ -63,7 +66,7 @@ class FamilyMedicalConditions extends PureComponent {
                     type: "success",
                     duration: 3000,
                 })
-                this.skippingButton();
+                this.skippingButton(false);
                 this.props.navigation.navigate('AllergicDisease', { AppointmentId: appointmentId });
             }
         }

@@ -26,12 +26,12 @@ class AllergicDisease extends PureComponent {
 
 
 
-    skippingButton = async () => {
+    skippingButton = async (hasSKip = true) => {
         try {
             const { appointmentId } = this.state
 
             let data = {
-                has_skip_allergies_and_medicines: false
+                has_skip_allergies_and_medicines: hasSKip
             }
             let result = await prepareAppointmentUpdate(appointmentId, data);
             if (result.success) {
@@ -64,6 +64,7 @@ class AllergicDisease extends PureComponent {
                     type: "success",
                     duration: 3000,
                 })
+                this.skippingButton(false)
                 this.props.navigation.navigate('HospitalizationAndSurgeries', { AppointmentId: appointmentId });
             }
         }

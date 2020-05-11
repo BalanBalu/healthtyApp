@@ -20,21 +20,21 @@ class PhysicianInfo extends PureComponent {
             radioButton: false,
             checkBoxClick: false,
             isLoading: false,
-            hospital_name: primary_care_physician_info.hospital_name,
-            physician_name: primary_care_physician_info.physician_name,
-            contact_number: primary_care_physician_info.mobile_no,
+            hospital_name: primary_care_physician_info && primary_care_physician_info.hospital_name,
+            physician_name: primary_care_physician_info && primary_care_physician_info.physician_name,
+            contact_number: primary_care_physician_info && primary_care_physician_info.mobile_no,
             appointmentId: props.navigation.getParam('AppointmentId')
 
         }
     }
 
 
-    skippingButton = async () => {
+    skippingButton = async (hasSkip = true) => {
         try {
             const { appointmentId } = this.state
 
             let data = {
-                has_skip_primary_care_physician_info: false
+                has_skip_primary_care_physician_info: hasSkip
             }
             let result = await prepareAppointmentUpdate(appointmentId, data);
             if (result.success) {
@@ -74,7 +74,7 @@ class PhysicianInfo extends PureComponent {
                     type: "success",
                     duration: 3000,
                 })
-                this.skippingButton();
+                this.skippingButton(false);
                 this.props.navigation.navigate('PastMedicalConditions', { AppointmentId: appointmentId });
             }
         }

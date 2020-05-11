@@ -27,17 +27,23 @@ class AllergiesAndMedications extends PureComponent {
             allergy_reaction_string: '',
             refreshCount: 1,
             appointmentId: props.navigation.getParam('AppointmentId'),
-            alergicDetails: having_any_allergies,
-            medicineTakingDetails: taking_medications
-
+            alergicDetails: having_any_allergies || [{ 
+                allergy_name: null,
+                allergy_reaction: null
+            } ],
+            medicineTakingDetails: taking_medications || [
+                {
+                    medicine_name: null,
+                    medicine_dosage: null
+                }]
         }
     }
-    skippingButton = async () => {
+    skippingButton = async (hasSkip = true) => {
         try {
             const { appointmentId } = this.state
 
             let data = {
-                has_skip_allergies_and_Medications: false
+                has_skip_allergies_and_Medications: hasSkip
             }
             let result = await prepareAppointmentUpdate(appointmentId, data);
             if (result.success) {
@@ -71,7 +77,7 @@ class AllergiesAndMedications extends PureComponent {
                     type: "success",
                     duration: 3000,
                 })
-                this.skippingButton();
+                this.skippingButton(false);
                 this.props.navigation.navigate('FamilyMedicalConditions', { AppointmentId: appointmentId });
             }
         }
