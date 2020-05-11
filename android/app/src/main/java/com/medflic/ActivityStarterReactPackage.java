@@ -1,4 +1,4 @@
-package com.medflic;
+package com.ads.medflic;
 import androidx.annotation.NonNull;
 
 import com.facebook.react.ReactPackage;
