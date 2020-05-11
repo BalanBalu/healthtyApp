@@ -484,5 +484,17 @@ export const getPaymentInfomation = async (paymentId) => {
       }; 
   }
 }
-
+export async function prepareAppointmentUpdate(appointmentId, requestData) {
+  try {
+    let endPoint =  'prepare/appointment/' + appointmentId
+    let response = await putService(endPoint, requestData);
+    let respData = response.data;
+    return respData;
+  } catch (e) {
+    return {
+      message: 'exception' + e,
+      success: false
+    }
+  }
+}
 
