@@ -1,10 +1,11 @@
 package com.medflic;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.TextView;
 import android.widget.Toast;
-
+import com.facebook.react.bridge.Promise;
 import androidx.annotation.CallSuper;
 import androidx.annotation.Nullable;
 
@@ -14,12 +15,13 @@ import com.facebook.react.ReactNativeHost;
 import com.facebook.react.bridge.CatalystInstance;
 import com.facebook.react.bridge.ReactContext;
 import com.facebook.react.bridge.WritableNativeArray;
-
+import android.view.WindowManager;
 /**
  * Activity to start from React Native JavaScript, triggered via
  * {@link ActivityStarterModule#navigateToExample()}.
  */
 public final class ExampleActivity extends ReactActivity {
+
 
     @Override
     @CallSuper
@@ -27,18 +29,21 @@ public final class ExampleActivity extends ReactActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_example);
 
-        // Display app and React Native versions:
-        this.<TextView>findViewById(R.id.app_version).setText(BuildConfig.VERSION_NAME);
-        this.<TextView>findViewById(R.id.react_native_version).setText("11");
+        getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON|
+                WindowManager.LayoutParams.FLAG_DISMISS_KEYGUARD|
+                WindowManager.LayoutParams.FLAG_SHOW_WHEN_LOCKED|
+                WindowManager.LayoutParams.FLAG_TURN_SCREEN_ON);
 
-        findViewById(R.id.go_back_button).setOnClickListener(new View.OnClickListener() {
+        // Display app and React Native versions:
+
+      /*  findViewById(R.id.accept_button).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 onBackPressed();
             }
-        });
+        }); */
 
-        findViewById(R.id.trigger_alert_button).setOnClickListener(new View.OnClickListener() {
+        findViewById(R.id.accept_button).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 // The target of this event does two things:
@@ -48,12 +53,28 @@ public final class ExampleActivity extends ReactActivity {
                 //    events to React Native. The easiest way to do that is to inherit ReactActivity
                 //    instead of ReactActivity, but you can code it yourself if you want.
                 // The iOS version does not suffer from this problem.
-                EventEmitterModule.emitEvent("Hello from " + ExampleActivity.class.getSimpleName());
-                Toast.makeText(ExampleActivity.this, "Extra message was changed", Toast.LENGTH_SHORT).show();
+                Intent intent = new Intent(ExampleActivity.this, MainActivity.class);
+                startActivity(intent);
+                EventEmitterModule.emitEvent("accepted");
+            }
+        });
+        findViewById(R.id.decline_button).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                // The target of this event does two things:
+                // 1. It sets the "extra text" that shows up when you tap "Call JavaScript from Java"
+                //    on the front page. This should always work.
+                // 2. It calls "alert". This does note work unless this activity forwards lifecycle
+                //    events to React Native. The easiest way to do that is to inherit ReactActivity
+                //    instead of ReactActivity, but you can code it yourself if you want.
+                // The iOS version does not suffer from this problem.
+                Intent intent = new Intent(ExampleActivity.this, MainActivity.class);
+                startActivity(intent);
+                EventEmitterModule.emitEvent("declined");
             }
         });
 
-        findViewById(R.id.call_javascript_button).setOnClickListener(new View.OnClickListener() {
+       /* findViewById(R.id.call_javascript_button).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 MainApplication application = (MainApplication) ExampleActivity.this.getApplication();
@@ -88,6 +109,6 @@ public final class ExampleActivity extends ReactActivity {
                     }
                 }
             }
-        });
+        }); */
     }
 }

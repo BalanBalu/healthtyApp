@@ -7,6 +7,7 @@ import { BackHandler, Alert } from 'react-native';
 import Geolocation from 'react-native-geolocation-service';
 import { store } from '../../../setup/store';
 import Axios from 'axios';
+import { CallKeepService } from '../VideoConsulation/services';
 MapboxGL.setAccessToken(MAP_BOX_PUBLIC_TOKEN);
 if(!IS_ANDROID) {
   Geolocation.setRNConfiguration({
@@ -15,27 +16,31 @@ if(!IS_ANDROID) {
   });
 }
 
+
 export default class CurrentLocation {
 
   static async getCurrentPosition() {
-    console.log('Getting to current Location')
-    try {
-      
-    
-    if (IS_ANDROID) {
+  console.log('Getting to current Location')
+try {
+  if (IS_ANDROID) {
+      setTimeout(async () => {
 
+      
       isGranted = await MapboxGL.requestAndroidLocationPermissions();
-      console.log(isGranted)
+      console.log('isGranted', isGranted);
+      
       // await this.setState({
       //    isAndroidPermissionGranted: isGranted,
       //    isFetchingAndroidPermission: false,
       //  });
       if (isGranted) {
+       
 
        // RNAndroidLocationEnabler.promptForEnableLocationIfNeeded({ interval: 10000, fastInterval: 5000 }).then(async (data) => {
           // if (data === 'enabled') {
           //   await this.timeout(1000);
           // }
+          CallKeepService.setupCallkeep();
           console.log('You ARE RUNNING ON ANDROID')
           Geolocation.getCurrentPosition(async (position) => {
             const origin_coordinates = [position.coords.latitude, position.coords.longitude,];
@@ -99,8 +104,11 @@ export default class CurrentLocation {
 
         );
       }
-    } else {
+    });
+  } else {
+     setTimeout(async () => {
       Geolocation.requestAuthorization();
+      CallKeepService.setupCallkeep();
       console.log('Getting Current Llocation Androud');
       Geolocation.getCurrentPosition(async (position) => {
         console.log('position '+ position);
@@ -146,7 +154,9 @@ export default class CurrentLocation {
           }
         }, 
         { enableHighAccuracy: false, timeout: 1000 }
+      });
     }
+    
     } catch (error) {
         console.error('Exception on getting Location ', error); 
     }

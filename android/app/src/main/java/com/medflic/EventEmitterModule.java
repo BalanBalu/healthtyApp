@@ -42,7 +42,7 @@ final class EventEmitterModule extends ReactContextBaseJavaModule {
     @Override
     public Map<String, Object> getConstants() {
         final Map<String, Object> constants = new HashMap<>();
-        constants.put("MyEventName", "MyEventValue");
+        constants.put("CALL_ACTION_CHANGE", "callActionChange");
         return constants;
     }
 
@@ -50,6 +50,6 @@ final class EventEmitterModule extends ReactContextBaseJavaModule {
      * To pass a JavaScript object instead of a simple string, create a {@link WritableNativeMap} and populate it.
      */
     static void emitEvent(@NonNull String message) {
-        eventEmitter.emit("MyEventValue", message);
+        eventEmitter.emit("callActionChange", message);
     }
 }

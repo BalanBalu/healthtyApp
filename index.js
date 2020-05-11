@@ -13,7 +13,6 @@ messaging().setBackgroundMessageHandler(async remoteMessage => {
     if(remoteMessage.data && remoteMessage.data.videoNotification == '1') {
        // rootNavigation.navigate('Home');
     }
-   // NativeModules.ActivityStarter.navigateToExample();
     Promise.resolve();
 });
 AppRegistry.registerComponent(appName, () => App);

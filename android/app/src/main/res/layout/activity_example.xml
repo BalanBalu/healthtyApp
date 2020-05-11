@@ -1,69 +1,95 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout
+<RelativeLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
+    android:background="@drawable/main_bg"
     tools:context="com.medflic.ExampleActivity">
+
+    <LinearLayout
+        android:layout_centerHorizontal="true"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:layout_marginTop="30dp"
+        android:orientation="vertical"
+        >
+    <TextView
+        android:gravity="center"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="16dp"
+        android:text="@string/video_call_screen_activity_title"
+        android:textSize="36sp"
+        android:textStyle="bold"
+        android:textColor="@color/whitesmoke"
+    />
+
+        <ImageView
+            android:id="@+id/imageView1"
+            android:layout_width="match_parent"
+            android:layout_height="83dp"
+            android:layout_marginTop="10dp"
+            android:gravity="center"
+            android:src="@mipmap/ic_launcher_new" />
 
     <TextView
         android:gravity="center"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="36dp"
-        android:text="@string/example_activity_title"
-        android:textSize="36sp"
-        android:textStyle="bold"
-    />
-    <TextView
-        android:id="@+id/app_version"
-        android:gravity="center"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        tools:text="6.0.3"
+        android:text="@string/incoming_call_text"
+        android:layout_marginTop="56dp"
         android:textSize="22sp"
         android:textStyle="bold"
+        android:textColor="@color/whitesmoke"
     />
+        <ImageView
+            android:id="@+id/imageView2"
+            android:layout_width="match_parent"
+            android:layout_height="83dp"
+            android:layout_marginTop="10dp"
+            android:gravity="center"
+            android:src="@drawable/anonymous_avatar" />
     <TextView
-        android:id="@+id/react_native_version"
         android:gravity="center"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginBottom="36dp"
-        tools:text="0.60.5"
+        android:text="Doctor"
+        android:textColor="@color/whitesmoke"
         android:textSize="22sp"
         android:textStyle="bold"
     />
-    <LinearLayout
+    </LinearLayout>
+    <RelativeLayout
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="center"
-        android:orientation="vertical"
+        android:layout_marginBottom="80dp"
+        android:orientation="horizontal"
+        android:layout_alignParentBottom="true"
         >
         <Button
-            android:id="@+id/go_back_button"
-            android:layout_gravity="center"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginBottom="12dp"
-            android:text="@string/go_back"
+            android:id="@+id/accept_button"
+            android:layout_gravity="start"
+            android:layout_width="64dp"
+            android:layout_height="64dp"
+            android:layout_alignParentStart="true"
+            android:layout_marginLeft="50dp"
+            android:background="@drawable/accept1"
             />
         <Button
-            android:id="@+id/trigger_alert_button"
-            android:layout_gravity="center"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginBottom="12dp"
-            android:text="@string/trigger_event"
+            android:id="@+id/decline_button"
+            android:layout_gravity="end"
+            android:layout_width="64dp"
+            android:layout_height="64dp"
+            android:layout_marginRight="50dp"
+            android:layout_alignParentEnd="true"
+            android:background="@drawable/decline"
             />
-        <Button
-            android:id="@+id/call_javascript_button"
-            android:layout_gravity="center"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="@string/call_javascript_from_java"
-            />
-    </LinearLayout>
 
-</LinearLayout>
+    </RelativeLayout>
+
+</RelativeLayout>

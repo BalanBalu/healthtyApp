@@ -1,19 +1,36 @@
 import React, { useState, useEffect } from 'react';
 
 import RNCallKeep from 'react-native-callkeep';
-import { PermissionsAndroid, AppRegistry, NativeModules, AppState  } from 'react-native'
-import { IS_ANDROID, ANDROID_BUNDLE_IDENTIFIER } from '../../../../setup/config';
+import { PermissionsAndroid, AppState } from 'react-native'
+import { IS_ANDROID, ANDROID_BUNDLE_IDENTIFIER, IS_IOS, ANDROID_VIDEO_CALL_ACTIVITY_NAME } from '../../../../setup/config';
 import RootNavigation from '../../../../setup/rootNavigation';
 import { v4 as uuidv4 } from 'uuid';
-import SajjadLaunchApplication from 'react-native-launch-application';
 import { store } from '../../../../setup/store';
 import { SET_INCOMING_VIDEO_CALL } from '../../../providers/chat/chat.action';
+import SajjadLaunchApplication  from 'react-native-launch-application';
+/*
+let activityStarter;
+let eventEmitter;
+if(IS_ANDROID) {
+     activityStarter = NativeModules.ActivityStarter;
+     eventEmitter = new NativeEventEmitter(activityStarter);
+} */ 
+const randomNumber = () => {
+    const possible = '0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz';
+    let rand = '';
+    for (var i = 0; i <= 15; i++) {
+        if(i % 5) {
+            rand += '-';
+        }
+        rand += possible.charAt(Math.floor(Math.random() * possible.length));
+    }
+    return rand;
+}
 
 export default class CallKeepService {
 
     setupCallkeep = () => {
        try {
-        
         RNCallKeep.setup({
             ios: {
               appName: 'Medflic',
@@ -24,15 +41,16 @@ export default class CallKeepService {
               alertDescription: 'This application needs to access your phone accounts',
               cancelButton: 'Cancel',
               okButton: 'ok',
-            //  imageName: ''
-             // additionalPermissions: [PermissionsAndroid.PERMISSIONS.Location]
+              additionalPermissions: [ PermissionsAndroid.PERMISSIONS.RECORD_AUDIO, PermissionsAndroid.PERMISSIONS.CAMERA ]
             },
-        });
-        
+        }).then((res) => {
+            console.log('res of Permission '+ res);
+        }).catch(err => {
+            console.log('Errror Permission '+ err);
+        })
             if (IS_ANDROID) {
-                  RNCallKeep.setAvailable(true);
+                RNCallKeep.setAvailable(true);
             }
-          
         } catch (error) {
            console.error('Error while Setting to be Available ', error)
         }
@@ -47,20 +65,33 @@ export default class CallKeepService {
        }
     } */
 
-    displayIncomingCall = (handleNumber, handlerName) => {
-        this.uuid = uuidv4();
+    displayIncomingCall = async (handleNumber, handlerName) => {
+        this.uuid = IS_ANDROID ? randomNumber() : uuidv4();
         this.handleNumber = handleNumber;
         this.handlerName = handlerName;
         if(AppState.currentState === 'active') {
+           /* if(IS_IOS) {   // Enable THese Condition when we set for Cusotm Activity once all of them tested
+                store.dispatch({
+                    type: SET_INCOMING_VIDEO_CALL,
+                    data: true
+                })
+            } else if(IS_ANDROID && await activityStarter.getActivityNameAsPromise() !== ANDROID_VIDEO_CALL_ACTIVITY_NAME) {
+                store.dispatch({
+                    type: SET_INCOMING_VIDEO_CALL,
+                    data: true
+                })
+            } */
             store.dispatch({
                 type: SET_INCOMING_VIDEO_CALL,
                 data: true
             })
         } else {
             if(IS_ANDROID) {
-                RNCallKeep.displayIncomingCall(this.uuid, String(handleNumber), handlerName );
+                // activityStarter.navigateToExample();
+                               
+                RNCallKeep.displayIncomingCall(this.uuid, String(6333662), 'Medflic Doctor' );
             } else {
-                RNCallKeep.displayIncomingCall(this.uuid, String(handleNumber), handlerName, 'generic', true );
+                RNCallKeep.displayIncomingCall(this.uuid, String(handleNumber), 'Medflic Doctor', 'generic', true );
             }
         }
     }
@@ -90,9 +121,8 @@ export default class CallKeepService {
     onAnswerCallAction = () => {
         console.log('ON Answer Event');
         if(IS_ANDROID) {
-            RNCallKeep.setCurrentCallActive(this.uuid);
-            SajjadLaunchApplication.open(ANDROID_BUNDLE_IDENTIFIER);
-            // this.endCall();
+           RNCallKeep.setCurrentCallActive(this.uuid);
+           SajjadLaunchApplication.open(ANDROID_BUNDLE_IDENTIFIER);
         }
          RootNavigation.navigate('VideoScreen', { isIncomingCall: true, onPressReject: false, onPressAccept: true });
     }
@@ -109,6 +139,16 @@ export default class CallKeepService {
            // RNCallKeep.addEventListener('didPerformSetMutedCallAction', didPerformSetMutedCallAction);
            // RNCallKeep.addEventListener('didToggleHoldCallAction', didToggleHoldCallAction);
               RNCallKeep.addEventListener('endCall', this.onRejectCallAction);
+             /* if(IS_ANDROID) {
+                eventEmitter.addListener('callActionChange', (param) =>  {
+                    console.log('Action Result Param', param);
+                    if(param === 'accepted') {
+                        this.onAnswerCallAction();
+                    } else if(param === 'declined') {
+                        this.onRejectCallAction();
+                    }
+                });
+            } */ 
         
             return () => {
                 RNCallKeep.removeEventListener('answerCall', this.onAnswerCallAction);

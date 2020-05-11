@@ -32,7 +32,7 @@ export default (state = commonInitialState, action) => {
       if(action.data) {
         return {
           ...state,
-          incomingVideoCall: action.data
+          incomingVideoCall: true
         }
       }
 

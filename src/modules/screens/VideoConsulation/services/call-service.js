@@ -4,7 +4,6 @@ import InCallManager from 'react-native-incall-manager';
 import Sound from 'react-native-sound';
 import { sendNotification } from './video-consulting-service';
 import { CallKeepService , REMOTE_USER_END_CALL_REASONS} from './index';
-
 import {  AppState  } from 'react-native'
 export default class CallService {
  static MEDIA_OPTIONS = {audio: true, video: {facingMode: 'user'}};
@@ -240,8 +239,8 @@ export default class CallService {
       case 'incoming':
         if(AppState.currentState === 'active') {
           this.incomingCall.setNumberOfLoops(-1);
-          this.incomingCall.play();
-        }
+          this.incomingCall.setVolume(1).play();
+        } 
         break;
       case 'end':
         this.endCall.play();

@@ -11,7 +11,7 @@ import { MAP_BOX_PUBLIC_TOKEN, IS_ANDROID, MAX_DISTANCE_TO_COVER, CURRENT_PRODUC
 import MapboxGL from '@react-native-mapbox-gl/maps';
 import { NavigationEvents } from 'react-navigation'
 import { store } from '../../../setup/store';
-import { getAllChats, SET_LAST_MESSAGES_DATA, SET_VIDEO_SESSION, SET_INCOMING_VIDEO_CALL, RESET_INCOMING_VIDEO_CALL } from '../../providers/chat/chat.action'
+import { getAllChats, SET_LAST_MESSAGES_DATA, SET_VIDEO_SESSION, RESET_INCOMING_VIDEO_CALL } from '../../providers/chat/chat.action'
 import CurrentLocation from './CurrentLocation';
 const VideoConultationImg = require('../../../../assets/images/videConsultation.jpg');
 const pharmacyImg = require('../../../../assets/images/pharmacy.jpg');
@@ -28,6 +28,8 @@ import { getReminderData } from '../../providers/reminder/reminder.action.js';
 import FastImage from 'react-native-fast-image'
 import { translate } from '../../../setup/translator.helper';
 import { authorizeConnectyCube } from '../VideoConsulation/services/video-consulting-service';
+
+
 const debounce = (fun, delay) => {
     let timer = null;
     return function (...args) {
@@ -56,7 +58,6 @@ class Home extends Component {
         this.callSuggestionService = debounce(this.callSuggestionService, 500);
         this._setUpListeners();
         NotifService.initNotification(props.navigation);
-
     }
 
     navigetToCategories() {
@@ -86,6 +87,7 @@ class Home extends Component {
     }
     async componentDidMount() {
         try {
+            
             this.initialFunction();
             if (IS_ANDROID) {
                 let productConfigVersion = await getCurrentVersion("CURRENT_PATIENT_MEDFLIC_VERSION")
@@ -425,10 +427,6 @@ class Home extends Component {
     showInomingCallModal = (session, extension) => {
         CallService.setSession(session);
         CallService.setExtention(extension);
-        store.dispatch({
-            type: SET_INCOMING_VIDEO_CALL,
-            data: true
-        })
         CallKeepService.displayIncomingCall('12345', 'Doctor' );
     };
     

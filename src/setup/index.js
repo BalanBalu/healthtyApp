@@ -36,8 +36,6 @@ export default class App extends Component {
     };
     setI18nConfig();
     AuthService.init();
-    CallKeepService.setupCallkeep();
-    
   }
 
   async componentDidMount() {
@@ -126,7 +124,7 @@ export default class App extends Component {
     return (
       <Provider store={store} key="provider">
         <Root>
-        <VideoAlertModel/>
+        <VideoAlertModel> </VideoAlertModel>
           <StyleProvider style={getTheme(material)}>
               <RoutesHome ref={navigatorRef => NavigationService.setContainer(navigatorRef)}> 
             </RoutesHome> 
