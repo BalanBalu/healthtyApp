@@ -3,7 +3,6 @@ import { Container, Content, Text, Button, Toast, Item, List, ListItem, Card, In
 import { Col, Row, Grid } from 'react-native-easy-grid';
 import { StyleSheet, Image, AsyncStorage, TouchableOpacity, Platform } from 'react-native';
 import { FlatList } from 'react-native-gesture-handler';
-import { RadioButton } from 'react-native-paper';
 import { NavigationEvents } from 'react-navigation';
 import { fetchUserProfile } from '../../../providers/profile/profile.action';
 import { dateDiff } from '../../../../setup/helpers';
@@ -442,28 +441,34 @@ class LabConfirmation extends Component {
                                     <Text style={{
                                         fontFamily: 'OpenSans', fontSize: 12, marginTop: 10
                                     }}>Gender</Text>
-                                    <RadioButton.Group
-                                        onValueChange={value => this.setState({ gender: value })}
-                                        value={gender}>
+                                 
                                         <View style={{ flexDirection: 'row' }}>
-                                            <RadioButton value="M" style={{ fontSize: 10 }} />
+                                            <Radio 
+                                              standardStyle={true}
+                                              selected={gender === "M" ? true : false} 
+                                              onPress={()=> this.setState({ gender: "M"  }) }  /> 
                                             <Text style={{
-                                                fontFamily: 'OpenSans', fontSize: 12, marginTop: 10
+                                                fontFamily: 'OpenSans', fontSize: 12, marginLeft: 10
                                             }}>Male</Text>
                                         </View>
                                         <View style={{ flexDirection: 'row', marginLeft: 20 }}>
-                                            <RadioButton value="F" />
+                                            <Radio 
+                                              standardStyle={true}
+                                              selected={gender === "F" ? true : false} 
+                                              onPress={()=> this.setState({ gender: "F" }) }  /> 
                                             <Text style={{
-                                                fontFamily: 'OpenSans', fontSize: 12, marginTop: 10
+                                                fontFamily: 'OpenSans', fontSize: 12,  marginLeft: 10
                                             }}>Female</Text>
                                         </View>
                                         <View style={{ flexDirection: 'row', marginLeft: 20 }}>
-                                            <RadioButton value="O" />
+                                            <Radio 
+                                              standardStyle={true}
+                                              selected={gender === "O" ? true : false} 
+                                              onPress={()=> this.setState({ gender: "O" }) }  /> 
                                             <Text style={{
-                                                fontFamily: 'OpenSans', fontSize: 12, marginTop: 10
+                                                fontFamily: 'OpenSans', fontSize: 12,  marginLeft: 10
                                             }}>Others</Text>
                                         </View>
-                                    </RadioButton.Group>
                                 </View>
 
                                 {this.state.errMsg ? <Text style={{ paddingLeft: 10, fontSize: 10, fontFamily: 'OpenSans', color: 'red' }}>{this.state.errMsg}</Text> : null}
@@ -530,15 +535,17 @@ class LabConfirmation extends Component {
                     </View>
 
 
-                    <RadioButton.Group onValueChange={value => this.setState({ itemSelected: value })}
-                        value={itemSelected}  >
+                    
                         <View style={{ backgroundColor: '#fff', padding: 10, marginTop: 5 }}>
                             <Row>
                                 <Col size={7}>
                                     <Text style={{ fontFamily: 'OpenSans', fontSize: 14, fontWeight: '500' }}>Test at home<Text style={{ fontFamily: 'OpenSans', fontSize: 14, color: '#909090' }}>(Test Result)</Text></Text>
                                 </Col>
                                 <Col size={5} style={{ alignItems: 'flex-end', justifyContent: 'flex-end' }}>
-                                    <RadioButton value={'TEST_AT_HOME'} />
+                                    <Radio 
+                                              standardStyle={true}
+                                              selected={itemSelected === 'TEST_AT_HOME' ? true : false} 
+                                              onPress={()=> this.setState({ itemSelected: 'TEST_AT_HOME' }) }  /> 
                                 </Col>
                             </Row>
                         </View>
@@ -569,11 +576,10 @@ class LabConfirmation extends Component {
                                                         <Text style={{ fontFamily: 'OpenSans', fontSize: 12, marginTop: 2 }}>{'Mobile -' + (item.mobile_no || 'Nil')}</Text>
                                                     </Col>
                                                     <Col size={1} style={{ justifyContent: 'center' }}>
-                                                        <RadioButton.Group style={{ marginTop: 2 }} onValueChange={value => this.setState({ selectedAddress: value })}
-
-                                                            value={this.state.selectedAddress}  >
-                                                            <RadioButton value={item} />
-                                                        </RadioButton.Group>
+                                                        <Radio 
+                                              standardStyle={true}
+                                              selected={this.state.selectedAddress === item ? true : false} 
+                                              onPress={()=> this.setState({selectedAddress: item }) }  /> 
                                                     </Col>
                                                 </Row>
                                             </View>
@@ -592,11 +598,15 @@ class LabConfirmation extends Component {
                                 </Col>
                                 <Col size={5} style={{ alignItems: 'flex-end', justifyContent: 'flex-end' }}>
 
-                                    <RadioButton value={'TEST_AT_LAP'} />
+
+                                    <Radio 
+                                              standardStyle={true}
+                                              selected={itemSelected === 'TEST_AT_LAP' ? true : false} 
+                                              onPress={()=> this.setState({ itemSelected: 'TEST_AT_LAP' }) }  />
                                 </Col>
                             </Row>
                         </View>
-                    </RadioButton.Group>
+                
                     {itemSelected === 'TEST_AT_LAP' ?
                         <View>
                             <Row>

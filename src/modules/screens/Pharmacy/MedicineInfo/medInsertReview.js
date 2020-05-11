@@ -3,7 +3,6 @@ import {
   Container, Content, Text, View, Button, H3, Item, Card,
   Input, Left, Right, Icon, Footer, Badge, Form, CardItem, Toast, CheckBox
 } from 'native-base';
-import { Checkbox } from 'react-native-paper';
 import { Col, Row, Grid } from 'react-native-easy-grid';
 import { StyleSheet, Image, TouchableOpacity, AsyncStorage, FlatList, TouchableHighlight, Modal } from 'react-native';
 import { TextInput } from 'react-native-gesture-handler';
@@ -352,12 +351,12 @@ render() {
                   <Row style={{ marginTop: 20, marginLeft: 14, marginRight: 20 }}>
 
                     <Col style={{ flexDirection: 'row', width: '45%', alignItems: "flex-start", justifyContent: 'flex-start' }}>
-                      <Checkbox color="#3C98EC" size={5}
-                        status={is_anonymous === true ? true : false }
-                        checked={this.state.is_anonymous}
-                        onPress={() => { this.setState({ is_anonymous: !is_anonymous }); }}
-                        style={{ height: 5, width: 5 }} 
-                      />
+                       <CheckBox  
+                            status={is_anonymous  ? true : false}
+                            style={{borderRadius:5}}
+                            checked={this.state.is_anonymous}
+                            onPress={() => { this.setState({ is_anonymous: !is_anonymous }); }}
+                                               />
                       <Text style={{ color: '#3C98EC', marginTop: 10, fontSize: 12 }}>Anonymous</Text>
                     </Col>
                   </Row>
@@ -376,10 +375,13 @@ render() {
                 <Row style={{ marginTop: 20, marginLeft: 14, marginRight: 20 }}>
 
                   <Col style={{ flexDirection: 'row', width: '45%', alignItems: "flex-start", justifyContent: 'flex-start' }}>
-                    <Checkbox color="#3C98EC" size={5}
-                      status={is_anonymous ? 'checked' : 'unchecked'}
-                      onPress={() => { this.setState({ is_anonymous: !is_anonymous }); }}
-                      style={{ height: 5, width: 5 }} />
+                  
+                      <CheckBox  
+                            status={is_anonymous  ? true : false}
+                            style={{borderRadius:5}}
+                            checked={this.state.is_anonymous}
+                            onPress={() => { this.setState({ is_anonymous: !is_anonymous }); }}
+                                               />
                     <Text style={{ color: '#3C98EC', marginTop: 10, fontSize: 12 }}>Anonymous</Text>
                   </Col>
                 </Row>
