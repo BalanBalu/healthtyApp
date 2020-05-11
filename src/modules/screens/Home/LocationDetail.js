@@ -24,16 +24,18 @@ class LocationDetail extends PureComponent {
                 fromPinCode: cityData.from_pincode, 
                 toPinCode: cityData.to_pincode
              });
+             this.setState({navigationOption:navigationOption}) 
 
         }else{
      result = await getLocations({
          fromPinCode: cityData.from_pincode, 
          toPinCode: cityData.to_pincode
       });
+      this.setState({navigationOption:'Home'}) 
     }
       
       if (result.success) {
-        this.setState({ locations: result.data });
+        this.setState({ locations: result.data});
     }
     }
     onPressList = (index) => {
@@ -41,7 +43,7 @@ class LocationDetail extends PureComponent {
         this.setState({ pressStatus: true, selectedItem: index });
     }
     render() {
-        const { locations, isLoading } = this.state
+        const { locations, isLoading,navigationOption } = this.state
         const { navigation } = this.props;
         return (
             <Container>
@@ -59,7 +61,7 @@ class LocationDetail extends PureComponent {
                                             locationName: item.location,
                                             isSearchByCurrentLocation: false
                                         });
-                                        navigation.navigate('Home')
+                                        navigation.navigate(navigationOption)
                                     }}
                                     button >
                                     <Text style={{ fontFamily: 'OpenSans', fontSize: 13, }}>{item.location}</Text>
