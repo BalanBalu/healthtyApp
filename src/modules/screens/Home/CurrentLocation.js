@@ -16,8 +16,12 @@ if(!IS_ANDROID) {
 }
 
 export default class CurrentLocation {
+
   static async getCurrentPosition() {
     console.log('Getting to current Location')
+    try {
+      
+    
     if (IS_ANDROID) {
 
       isGranted = await MapboxGL.requestAndroidLocationPermissions();
@@ -125,6 +129,9 @@ export default class CurrentLocation {
         error => {
           console.log(error);
         }, { enableHighAccuracy: false, timeout: 50000 }
+    }
+    } catch (error) {
+        console.error('Exception on getting Location ', error); 
     }
   }
 }

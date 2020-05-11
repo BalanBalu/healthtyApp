@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import { createAppContainer, createSwitchNavigator, NavigationBackAction } from 'react-navigation';
 import { createDrawerNavigator } from 'react-navigation-drawer';
 import { createStackNavigator } from 'react-navigation-stack';
+
 import AuthLoadingScreen from './AuthLoadingScreen';
 import SideBar from './SideBar';
 import Home from "../../modules/screens/Home";
@@ -62,6 +63,7 @@ import ChosePharmacyList from '../../modules/screens/Pharmacy/PharmacyList/Chose
 
 import { Badge } from '../../../src/modules/common'
 import Locations from '../../modules/screens/Home/Locations';
+import LocationDetail from '../../modules/screens/Home/LocationDetail';
 import BloodDonersList from '../../modules/screens/bloodDonation/BloodDonersList';
 import BloodDonerFilters from '../../modules/screens/bloodDonation/BloodDonerFilters';
 import MyChats from '../../modules/screens/chat/MyChats';
@@ -90,7 +92,21 @@ import labConfirmation from '../../modules/screens/LabTest/labConfirmation/index
 import LabAppointmentList from '../../modules/screens/LabTest/Appointment/LabAppointmentList'
 import LabAppointmentInfo from '../../modules/screens/LabTest/Appointment/LabAppoinmentInfo'
 import LabCancelAppointment from '../../modules/screens/LabTest/Appointment/LabCancelAppointment'
-import LabBookAppointment from '../../modules/screens/LabTest/labBookAppointment'
+import LabBookAppointment from '../../modules/screens/LabTest/labBookAppointment';
+import PrepareAppointmentWizard from '../../modules/screens/MyAppointments/PrepareAppoinmentWizard'
+import BasicInfo from '../../modules/screens/MyAppointments/PrepareAppoinmentWizard/BasicInfo'
+import MedicalHistory from '../../modules/screens/MyAppointments/PrepareAppoinmentWizard/MedicalHistory'
+import PhysicianInfo from '../../modules/screens/MyAppointments/PrepareAppoinmentWizard/PhysicianInfo'
+import PastMedicalConditions from '../../modules/screens/MyAppointments/PrepareAppoinmentWizard/PastMedicalConditions'
+import PatientInfo from '../../modules/screens/MyAppointments/PrepareAppoinmentWizard/PatientInfo'
+import AllergiesAndMedications from '../../modules/screens/MyAppointments/PrepareAppoinmentWizard/AllergiesAndMedications'
+import FamilyMedicalConditions from '../../modules/screens/MyAppointments/PrepareAppoinmentWizard/FamilyMedicalConditions'
+import AllergicDisease from '../../modules/screens/MyAppointments/PrepareAppoinmentWizard/AllergicDisease'
+import HospitalizationAndSurgeries from '../../modules/screens/MyAppointments/PrepareAppoinmentWizard/HospitalizationAndSurgeries'
+import SocialHistory from '../../modules/screens/MyAppointments/PrepareAppoinmentWizard/SocialHistory'
+import PrepareAppointmentLastStep from '../../modules/screens/MyAppointments/PrepareAppoinmentWizard/PrepareAppointmentLastStep'
+
+
 const AuthRoutes = {
   login: {
     screen: login,
@@ -200,6 +216,12 @@ const HomeStack = createStackNavigator({
       title: 'Locations',
     })
   },
+  LocationDetail: {
+    screen : LocationDetail,
+    navigationOptions: ({ navigation }) => ({
+      title: navigation.getParam('cityData') ? navigation.getParam('cityData').city_name : 'Areas',
+    })
+  },
   Categories: {
     screen: Categories,
     navigationOptions: ({ navigation }) => ({
@@ -284,11 +306,84 @@ const HomeStack = createStackNavigator({
       title: 'Rate and Review'
     }
   },
+  PrepareAppointmentWizard: {
+    screen: PrepareAppointmentWizard,
+    navigationOptions: {
+      title: 'Prepare for the appointment'
+    }
+  },
+  BasicInfo: {
+    screen: BasicInfo,
+    navigationOptions: {
+      title: 'Prepare for the appointment'
+    }
+  },
+  MedicalHistory: {
+    screen: MedicalHistory,
+    navigationOptions: {
+      title: 'Prepare for the appointment'
+    }
+  },
+  PhysicianInfo: {
+    screen: PhysicianInfo,
+    navigationOptions: {
+      title: 'Prepare for the appointment'
+    }
+  },
+  PastMedicalConditions: {
+    screen: PastMedicalConditions,
+    navigationOptions: {
+      title: 'Prepare for the appointment'
+    }
+  },
+  PatientInfo: {
+    screen: PatientInfo,
+    navigationOptions: {
+      title: 'Prepare for the appointment'
+    }
+  },
+  AllergiesAndMedications: {
+    screen: AllergiesAndMedications,
+    navigationOptions: {
+      title: 'Prepare for the appointment'
+    }
+  },
+  FamilyMedicalConditions: {
+    screen: FamilyMedicalConditions,
+    navigationOptions: {
+      title: 'Prepare for the appointment'
+    }
+  },
+  AllergicDisease: {
+    screen: AllergicDisease,
+    navigationOptions: {
+      title: 'Prepare for the appointment'
+    }
+  },
+  HospitalizationAndSurgeries: {
+    screen: HospitalizationAndSurgeries,
+    navigationOptions: {
+      title: 'Prepare for the appointment'
+    }
+  },
+  SocialHistory: {
+    screen: SocialHistory,
+    navigationOptions: {
+      title: 'Prepare for the appointment'
+    }
+  },
+  PrepareAppointmentLastStep: {
+    screen: PrepareAppointmentLastStep,
+    navigationOptions: {
+      title: 'Prepare for the appointment'
+    }
+  },
+
   CancelService: {
     screen: CancelService,
-    navigationOptions: {
-      title: 'Cancel service'
-    }
+    navigationOptions: ({ navigation }) => ({
+      title: navigation.getParam("tittle"),
+    }),
   },
   // ================Profile Stack =================
   Profile: {
@@ -636,6 +731,7 @@ const HomeStack = createStackNavigator({
       title: 'Medicine Order Details'
     }
   },
+
   MedicineInfo: {
     screen: MedicineInfo,
     navigationOptions: ({ navigation }) => ({

@@ -185,14 +185,24 @@ class LabBookAppointment extends Component {
       })
       return;
     }
-    labData.labName = labData.labInfo.lab_name;
-    delete labData.slotData;
-    var confirmSlotDetails = {
-      ...labData,
-      slotData: selectedSlotItem
-    };
-    // this.props.navigation.navigate('Payment Review', { resultconfirmSlotDetails: confirmSlotDetails })
-    // this.props.navigation.navigate('Payment Review')
+    console.log(selectedSlotItem);
+    
+    const { labInfo, labCatInfo } = labData;
+    
+    let packageDetails = {
+      lab_id: labInfo.lab_id,
+      lab_test_categories_id: labCatInfo._id,
+      lab_test_description: labInfo.labPriceInfo[0].lab_test_description || 'null',
+      fee: labInfo.labPriceInfo[0].price || 0,
+      extra_charges: labInfo.extra_charges || 0,
+      mobile_no: labInfo.mobile_no || null,
+      lab_name: labInfo.lab_name,
+      category_name: labCatInfo.category_name,
+      appointment_starttime: selectedSlotItem.slotStartDateAndTime,
+      appointment_endtime: selectedSlotItem.slotEndDateAndTime,
+      location: labInfo.location
+    }
+    this.props.navigation.navigate('labConfirmation', { packageDetails })
   }
   /* Update Favorites for LabTest by UserId  */
   addToFavoritesList = async (labId) => {
@@ -301,7 +311,7 @@ class LabBookAppointment extends Component {
                   </View>
                 </View>
                 {this.renderLabLocAddress()}
-                <RenderLabCategories />
+                {/* <RenderLabCategories> </RenderLabCategories> */}
               </Content>
             }
           </Content>}

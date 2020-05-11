@@ -245,7 +245,7 @@ class labSearchList extends Component {
         let packageDetails = {
             lab_id: labInfo.lab_id,
             lab_test_categories_id: labCatInfo._id,
-            lab_test_description: labInfo.labPriceInfo[0].lab_test_description || null,
+            lab_test_description: labInfo.labPriceInfo[0].lab_test_description || 'null',
             fee: labInfo.labPriceInfo[0].price || 0,
             extra_charges: labInfo.extra_charges || 0,
             mobile_no: labInfo.mobile_no || null,
