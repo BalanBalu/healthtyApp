@@ -9,44 +9,41 @@ import styles from './styles'
 
 const RenderAddressInfo = (props) => {
     return (
-        <Row style={{ marginLeft: 55, }}>
-            {props.addressInfo ?
-                <View>
-                    <Text note style={{ fontFamily: 'OpenSans', marginTop: 5, fontSize: 11, color: '#4c4c4c' }}>{
-                        props.addressInfo.no_and_street + ' , ' +
-                        props.addressInfo.district + ' , ' +
-                        props.addressInfo.city + ' , ' +
-                        props.addressInfo.state}</Text>
-                </View> : null}
-        </Row>
+        props.addressInfo ?
+            <View>
+                <Text note style={{ fontFamily: 'OpenSans', marginTop: 5, fontSize: 11, color: '#4c4c4c' }}>{
+                    props.addressInfo.no_and_street + ' , ' +
+                    props.addressInfo.district + ' , ' +
+                    props.addressInfo.city + ' , ' +
+                    props.addressInfo.state}</Text>
+            </View> : null
     )
 }
 
 const RenderPriceDetails = (props) => {
     return (
-        <Col style={{ width: "25%", marginLeft: 10 }}>
+        <>
             <Text note style={{ fontFamily: 'OpenSans', fontSize: 12, textAlign: 'center' }}>Package Amt</Text>
             <Row style={{ justifyContent: 'center' }}>
                 <Text style={styles.finalRs}>₹ {props.priceInfo}</Text>
                 {/* <Text style={styles.finalRs}>₹ {item.finalAmount || ''}</Text> */}
             </Row>
-        </Col>
+        </>
     )
 }
 
 const RenderOfferDetails = (props) => {
     return (
-        <Col style={{ width: "25%" }}>
-            <Text note style={{ fontFamily: 'OpenSans', fontSize: 12, }}>Offer</Text>
-            <Text style={{ fontFamily: 'OpenSans', fontSize: 12, fontWeight: 'bold', color: 'green' }}>{props.offerInfo} off</Text>
-        </Col>
+        <>
+            <Text note style={props.isFromLabBookApp ? styles.offerText4LalBookApp : styles.offerText}>Offer</Text>
+            <Text style={props.isFromLabBookApp ? styles.offer4LabBookApp : styles.offer}>{props.offerInfo} off</Text>
+        </>
     )
 }
 
-
 const RenderStarRatingCount = (props) => {
     return (
-        <Col style={{ width: "25%" }}>
+        <>
             <Text note style={{ fontFamily: 'OpenSans', fontSize: 12, textAlign: 'center', }}> Rating</Text>
             <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'center' }}>
                 <StarRating
@@ -58,32 +55,30 @@ const RenderStarRatingCount = (props) => {
                     rating={1}
                     maxStars={1}
                 />
-                <Text style={{ fontFamily: 'OpenSans', fontSize: 12, fontWeight: 'bold', marginLeft: 2 }}>{props.totalRatingCount}</Text>
+                <Text style={props.isFromLabBookApp ? styles.ratingCount4LalBookApp : styles.ratingCount}>{props.totalRatingCount}</Text>
             </View>
-        </Col>
+        </>
     )
 }
 
 const RenderFavoritesCount = (props) => {
     return (
-        <Col style={{ width: "25%", marginLeft: -10 }}>
-            <Text note style={styles.favoritesText}> Favorites</Text>
-            <Text style={styles.favoritesCount}>{props.favoritesCount}</Text>
-        </Col>
+        <>
+            <Text note style={props.isFromLabBookApp ? styles.favoritesText4LalBookApp : styles.favoritesText}> Favorites</Text>
+            <Text style={props.isFromLabBookApp ? styles.favoritesCount4LalBookApp : styles.favoritesCount}>{props.favoritesCount}</Text>
+        </>
     )
 }
 
 
 const RenderFavoritesComponent = (props) => {
     return (
-        <Row>
-            <TouchableOpacity>
-                {props.isLoggedIn ?
-                    <Icon name="heart" onPress={() => props.onPressFavoriteIcon()}
-                        style={props.isEnabledFavorites ? styles.isEnabledFavorite : styles.isDisabledFavorite}>
-                    </Icon> : null}
-            </TouchableOpacity>
-        </Row>
+        <TouchableOpacity>
+            {props.isLoggedIn ?
+                <Icon name="heart" onPress={() => props.onPressFavoriteIcon()}
+                    style={props.isEnabledFavorites ? props.isFromLabBookApp ? styles.isEnabledFavorite4LalBookApp : styles.isEnabledFavorite : props.isFromLabBookApp ? styles.isDisabledFavorite4LalBookApp : styles.isDisabledFavorite}>
+                </Icon> : null}
+        </TouchableOpacity>
     )
 }
 const RenderNoSlotsAvailable = (props) => {

@@ -92,9 +92,7 @@ import labConfirmation from '../../modules/screens/LabTest/labConfirmation/index
 import LabAppointmentList from '../../modules/screens/LabTest/Appointment/LabAppointmentList'
 import LabAppointmentInfo from '../../modules/screens/LabTest/Appointment/LabAppoinmentInfo'
 import LabCancelAppointment from '../../modules/screens/LabTest/Appointment/LabCancelAppointment'
-import { Modal } from 'react-native-paper';
-import { IS_IOS } from '../config';
-import { setI18nConfig } from '../translator.helper';
+import LabBookAppointment from '../../modules/screens/LabTest/labBookAppointment';
 import PrepareAppointmentWizard from '../../modules/screens/MyAppointments/PrepareAppoinmentWizard'
 import BasicInfo from '../../modules/screens/MyAppointments/PrepareAppoinmentWizard/BasicInfo'
 import MedicalHistory from '../../modules/screens/MyAppointments/PrepareAppoinmentWizard/MedicalHistory'
@@ -833,6 +831,12 @@ const HomeStack = createStackNavigator({
     screen: LabSearchList,
     navigationOptions: {
       title: 'Lab List'
+    }
+  },
+  LabBookAppointment: {
+    screen: LabBookAppointment,
+    navigationOptions: {
+      title: 'Lab BookAppointment'
     }
   },
 },
