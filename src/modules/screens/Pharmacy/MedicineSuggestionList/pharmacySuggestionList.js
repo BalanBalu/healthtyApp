@@ -121,7 +121,7 @@ class MedicineSuggestionList extends Component {
                                     }}
                                     note
                                 >
-                                    No medicine found
+                                    No medicines were found
                         </Text>
 
                             </Card> :

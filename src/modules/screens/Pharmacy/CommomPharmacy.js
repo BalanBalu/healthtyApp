@@ -47,7 +47,7 @@ export async function ProductIncrementDecreMent(quantity, price, operation, thre
       totalAmount = quantity * price
     } else {
 
-      threshold_message = 'you will not add more than' + String(threshold_limit)
+      threshold_message = `You can't add more than  ${String(threshold_limit)} items`
 
     }
 
@@ -76,10 +76,12 @@ export async function ProductIncrementDecreMent(quantity, price, operation, thre
 export function renderMedicineImage(data) {
   console.log(data)
   let source = require('../../../../assets/images/paracetamol.jpg')
-  if (data.medicine_images) {
-    if (data.medicine_images[0]) {
-      console.log(data.medicine_images[0].imageURL)
-      source = { uri: data.medicine_images[0].imageURL }
+  if (data) {
+    if (data.medicine_images) {
+      if (data.medicine_images[0]) {
+        console.log(data.medicine_images[0].imageURL)
+        source = { uri: data.medicine_images[0].imageURL }
+      }
     }
   }
   return (source)
@@ -110,6 +112,13 @@ export function renderPrescriptionImageAnimation(data) {
     source = { uri: data.prescription_path }
   }
   return (source)
+}
+export function renderPharmacyImage(data) {
+  let source = require('../../../../assets/images/apollopharmacy.jpeg')
+  if (data) {
+    source = { uri: data.imageURL }
+  }
+  return source
 }
 export async function relativeTimeView(review_date) {
   try {
@@ -152,20 +161,37 @@ export function getAddress(location) {
 export function getKiloMeterCalculation(gpsLocation, pharmacyLocation) {
   console.log(gpsLocation)
   if (gpsLocation !== undefined && pharmacyLocation !== undefined) {
+    let result = getDistanceFromLatLonInKm(gpsLocation[0], gpsLocation[1], pharmacyLocation[0], pharmacyLocation[1])
 
-    // let narthCorinate = ;
-    // let eastCorinate =;
-    squareNarthCorinate = Math.pow((gpsLocation[0] - pharmacyLocation[0]), 2);
-    squareeastCorinate = Math.pow((gpsLocation[1] - pharmacyLocation[1]), 2)
-    add = squareNarthCorinate + squareeastCorinate
-    let km = Math.sqrt(add).toFixed(1) + ' Km'
-    return km
+    return result.toFixed(1) + ' Km'
+    // squareNarthCorinate = Math.pow((gpsLocation[0] - pharmacyLocation[0]), 2);
+    // squareeastCorinate = Math.pow((gpsLocation[1] - pharmacyLocation[1]), 2)
+    // add = squareNarthCorinate + squareeastCorinate
+    // let km = Math.sqrt(add).toFixed(1) + ' Km'
+    // return km
 
   }
   else {
     return '0 km '
   }
 
+}
+function getDistanceFromLatLonInKm(lat1, lon1, lat2, lon2) {
+  let R = 6371; // Radius of the earth in km
+  let dLat = deg2rad(lat2 - lat1);  // deg2rad below
+  let dLon = deg2rad(lon2 - lon1);
+  let a =
+    Math.sin(dLat / 2) * Math.sin(dLat / 2) +
+    Math.cos(deg2rad(lat1)) * Math.cos(deg2rad(lat2)) *
+    Math.sin(dLon / 2) * Math.sin(dLon / 2)
+    ;
+  let c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+  let d = R * c; // Distance in km
+  return d;
+}
+
+function deg2rad(deg) {
+  return deg * (Math.PI / 180)
 }
 
 export function getMedicineName(data) {
@@ -219,17 +245,63 @@ export function quantityPriceSort(data) {
 export const statusBar = {
 
   "PENDING":
-
-    { status: 'Ordered and Approved', checked: true, drawLine: true },
-
-
-
+  {
+    status: 'Ordered and Approved',
+    checked: true,
+    color: 'red'
+  },
   "APPROVED":
-    { status: 'Packed and Out for Delivery', checked: false, },
-
+  {
+    status: 'Packed and Out for Delivery',
+    checked: true,
+    color: 'green'
+  },
   "CANCELED":
-    { status: 'Canceled the order', checked: true, drawLine: true },
+  {
+    status: 'Canceled the order',
+    checked: true,
+    color: 'red'
+  },
+  "REJECTED":
+  {
+    status: 'Rejected  the order',
+    checked: true,
+    color: 'red'
+  },
+  "OUT_FOR_DELIVERY":
+    { status: 'Order is on the way',
+     checked: true ,
+    color:'green'},
+  "READY_FOR_DELIVERY":
+    { status: 'The order is ready for delivery',
+     checked: true,
+     color:'green'
+     },
+  "DELIVERED":
+    { status: 'The order is delivered', 
+    checked: true,
+    color:'green' },
+  "null":
+    { status: 'status  mismatching',
+     checked: true ,
+     color:'red'
+    },
+  "FAILED":
+    { status: 'order is failed try again',
+     checked: true ,
+     color:'green'
+    },
+}
 
 
+export function getName(data) {
+  let name = 'unKnown'
+  if (data) {
+      if (data.first_name != undefined || data.last_name != undefined) {
+          name = `${data.first_name || ''} ${data.last_name || ''}`
+
+      }
+  }
+  return name
 
 }

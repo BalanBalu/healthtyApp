@@ -3,14 +3,18 @@ import { Container, Content, Text, Toast, Button, Card, Item, List, ListItem, Le
 import { Col, Row, Grid } from 'react-native-easy-grid';
 import { connect } from 'react-redux'
 import { StyleSheet, TouchableOpacity, View, FlatList, AsyncStorage, Dimensions, ScrollView, Image } from 'react-native';
-import StarRating from 'react-native-star-rating';
 import { searchByLabDetailsService, fetchLabTestAvailabilitySlotsService } from '../../../providers/labTest/basicLabTest.action';
-import { renderLabTestImage, RenderNoSlotsAvailable, RenderListNotFound, enumerateStartToEndDates } from '../labTestCommon';
+import { RenderFavoritesComponent, RenderFavoritesCount, RenderStarRatingCount, RenderPriceDetails, RenderOfferDetails, RenderAddressInfo, renderLabTestImage, RenderNoSlotsAvailable, RenderListNotFound } from '../labTestComponents';
+import { enumerateStartToEndDates } from '../CommonLabTest'
 import { Loader } from '../../../../components/ContentLoader';
 import { formatDate, addMoment, getMoment } from '../../../../setup/helpers';
 import styles from '../styles'
 import RenderDates from './RenderDateList';
 import RenderSlots from './RenderSlots';
+import { getWishList4PatientByLabTestService, addFavoritesToLabByUserService, getTotalWishList4LabTestService, getTotalReviewsCount4LabTestService, SET_SINGLE_LAB_ITEM_DATA } from '../../../providers/labTest/labTestBookAppointment.action'
+import { store } from '../../../../setup/store'
+const CALL_AVAILABILITY_SERVICE_BY_NO_OF_IDS_COUNT = 5;
+
 class labSearchList extends Component {
     availabilitySlotsDatesArry = [];
     selectedDateObj = {};
@@ -24,29 +28,53 @@ class labSearchList extends Component {
             currentDate: formatDate(new Date(), 'YYYY-MM-DD'),
             selectedDate: formatDate(new Date(), 'YYYY-MM-DD'),
             labListData: [],
-            // availabilitySlotsDatesArry: [],
             expandedLabIdToShowSlotsData: [],
-            // selectedSlotByDoctorIds: {},
-            // availableSlotsDataByService: {},
-            // refreshCount: 0,
             isLoading: false,
-            refreshCountOnDateFL: 1
+            refreshCountOnDateFL: 1,
+            renderRefreshCount: 0,
+            isLoggedIn: false,
         }
     }
     async componentDidMount() {
-        this.searchByLabCatAndDetails()
+        const userId = await AsyncStorage.getItem('userId');
+        this.searchByLabCatAndDetails();
+        if (userId) {
+            this.getPatientWishListsByUserId(userId);
+            this.setState({ isLoggedIn: true })
+        }
+    }
+    /* Update Favorites for LabTest by UserId  */
+    addToFavoritesList = async (labId) => {
+        const userId = await AsyncStorage.getItem('userId');
+        await addFavoritesToLabByUserService(userId, labId);
+        this.setState({ renderRefreshCount: this.state.renderRefreshCount + 1 });
+    }
+    getPatientWishListsByUserId = (userId) => {
+        try {
+            getWishList4PatientByLabTestService(userId);
+        } catch (Ex) {
+            console.log('Ex is getting on get Wish list details for Patient====>', Ex)
+            return {
+                success: false,
+                statusCode: 500,
+                error: Ex,
+                message: `Exception while getting on WishList for Patient : ${Ex}`
+            }
+        }
     }
     searchByLabCatAndDetails = async () => {
         try {
             this.setState({ isLoading: true });
-            // const { navigation } = this.props;
             const inputDataBySearch = this.props.navigation.getParam('inputDataFromLabCat');
             const labListResponse = await searchByLabDetailsService(inputDataBySearch);
             // console.log('labListResponse====>', JSON.stringify(labListResponse));
             if (labListResponse.success) {
                 const labListData = labListResponse.data;
                 this.totalLabIdsArryBySearched = labListData.map(item => String(item.labInfo.lab_id));
-                await this.setState({ labListData })
+                await this.setState({ labListData });
+                this.getTotalWishList4LabTest(this.totalLabIdsArryBySearched);
+                this.getTotalReviewsCount4LabTest(this.totalLabIdsArryBySearched);
+
             }
         } catch (ex) {
             Toast.show({
@@ -60,15 +88,45 @@ class labSearchList extends Component {
         }
     }
 
+    getTotalWishList4LabTest = async (labIdsArry) => {
+        try {
+            getTotalWishList4LabTestService(labIdsArry);
+        } catch (Ex) {
+            console.log('Ex is getting on get Wish list details for Patient====>', Ex)
+            return {
+                success: false,
+                statusCode: 500,
+                error: Ex,
+                message: `Exception while getting on WishList for Patient : ${Ex}`
+            }
+        }
+    }
+    getTotalReviewsCount4LabTest = async (labIdsArry) => {
+        try {
+            // getTotalReviewsCount4LabTestService(labIdsArry);
+        } catch (Ex) {
+            console.log('Ex is getting on get Reviews count for Lab====>', Ex)
+            return {
+                success: false,
+                statusCode: 500,
+                error: Ex,
+                message: `Exception while getting on Reviews count for Lab : ${Ex}`
+            }
+        }
+    }
+
+
+
     getLabIdsArrayByInput = labIdFromItem => {
         const findIndexOfLabId = this.totalLabIdsArryBySearched.indexOf(String(labIdFromItem));
-        return this.totalLabIdsArryBySearched.slice(findIndexOfLabId, findIndexOfLabId + 5) || []
+        return this.totalLabIdsArryBySearched.slice(findIndexOfLabId, findIndexOfLabId + CALL_AVAILABILITY_SERVICE_BY_NO_OF_IDS_COUNT) || []
+
     }
 
     /* get Lab Test Availability Slots service */
     getLabTestAvailabilitySlots = async (labIdFromItem, startDateByMoment, endDateByMoment) => {
         try {
-            this.availabilitySlotsDatesArry = enumerateStartToEndDates(startDateByMoment, endDateByMoment);
+            this.availabilitySlotsDatesArry = enumerateStartToEndDates(startDateByMoment, endDateByMoment, this.availabilitySlotsDatesArry);
             const arryOfLabIds = this.getLabIdsArrayByInput(labIdFromItem) // get 5 Or LessThan 5 of LabIds in order wise using index of given input of labIdFromItem
             const reqData4Availability = {
                 "labIds": arryOfLabIds
@@ -78,12 +136,16 @@ class labSearchList extends Component {
                 endDate: formatDate(endDateByMoment, 'YYYY-MM-DD')
             }
             const resultSlotsData = await fetchLabTestAvailabilitySlotsService(reqData4Availability, reqStartAndEndDates);
-            // console.log('resultSlotsData======>', resultSlotsData)
+            console.log('resultSlotsData======>', resultSlotsData);
             if (resultSlotsData.success) {
                 const availabilityData = resultSlotsData.data;
                 if (availabilityData.length != 0) {
-                    availabilityData.map((item) => { this.availableSlotsDataMap.set(String(item.labId), item.slotData) })
-                    this.setState({})
+                    availabilityData.map((item) => {
+                        let previousSlotsDataByItem = this.availableSlotsDataMap.get(String(item.labId))
+                        let finalSlotsDataObj = { ...previousSlotsDataByItem, ...item.slotData } // Merge the Previous weeks and On change the Next week slots data
+                        this.availableSlotsDataMap.set(String(item.labId), finalSlotsDataObj)
+                    })
+                    this.setState({ renderRefreshCount: this.state.renderRefreshCount + 1 })
                 }
             }
         } catch (ex) {
@@ -105,7 +167,7 @@ class labSearchList extends Component {
             this.getLabTestAvailabilitySlots(labIdFromItem, startDateByMoment, endDateByMoment);
         }
         else {
-            this.setState({})
+            this.setState({ renderRefreshCount: this.state.renderRefreshCount + 1 })
         }
     }
 
@@ -121,6 +183,15 @@ class labSearchList extends Component {
         this.selectedSlotItemByLabIdsObj[labId] = selectedSlot;
         this.setState({ selectedSlotIndex })
     }
+    callSlotsServiceWhenOnEndReached = (labId, availabilitySlotsDatesArry) => { // call availability slots service when change dates on next week
+        const finalIndex = availabilitySlotsDatesArry.length
+        const lastProcessedDate = availabilitySlotsDatesArry[finalIndex - 1];
+        const startDateByMoment = getMoment(lastProcessedDate).add(1, 'day');
+        const endDateByMoment = addMoment(lastProcessedDate, 7, 'days');
+        if (!this.availabilitySlotsDatesArry.includes(endDateByMoment.format('YYYY-MM-DD'))) {
+            this.getLabTestAvailabilitySlots(labId, startDateByMoment, endDateByMoment);
+        }
+    }
     renderDatesOnFlatList(labId) {
         const selectedDate = this.selectedDateObj[labId] || this.state.currentDate;
         const slotDataObj4Item = this.availableSlotsDataMap.get(String(labId)) || {}
@@ -135,6 +206,9 @@ class labSearchList extends Component {
                     selectedDateObj={this.selectedDateObj}
                     availableSlotsData={slotDataObj4Item}
                     labId={labId}
+                    callSlotsServiceWhenOnEndReached={(labId, availabilitySlotsDatesArry) => {
+                        this.callSlotsServiceWhenOnEndReached(labId, availabilitySlotsDatesArry)
+                    }}
                     shouldUpdate={`${labId}-${selectedDate}`}
                 >
                 </RenderDates>
@@ -158,32 +232,48 @@ class labSearchList extends Component {
         )
     }
 
-    onPressToContinue4PaymentReview(labData, seletedSlotItem ,labId) {   // navigate to next further process
-        console.log(labData);
-        console.log(seletedSlotItem);
-        console.log(labId);
-        debugger    
-        const { labInfo , labCatInfo } = labData;
+    onPressToContinue4PaymentReview(labData, selectedSlotItem) {   // navigate to next further process
+        const { labInfo, labCatInfo } = labData;
+        if (!selectedSlotItem) {
+            Toast.show({
+                text: 'Please Select a Slot to continue booking',
+                type: 'warning',
+                duration: 3000
+            })
+            return;
+        }
         let packageDetails = {
-            lab_id: labInfo.lab_id ,
+            lab_id: labInfo.lab_id,
             lab_test_categories_id: labCatInfo._id,
-            // Fields which we need to get it from Backend API 
-                lab_test_descriptiion: "genral",
-                fee: 1000,
-                extra_charges: 50,
-                mobile_no: "98076540211",
-            //  // Fields which we need to get it from Backend API 
+            lab_test_description: labInfo.labPriceInfo[0].lab_test_description || 'null',
+            fee: labInfo.labPriceInfo[0].price || 0,
+            extra_charges: labInfo.extra_charges || 0,
+            mobile_no: labInfo.mobile_no || null,
             lab_name: labInfo.lab_name,
             category_name: labCatInfo.category_name,
-            appointment_starttime: seletedSlotItem.slotStartDateAndTime,
-            appointment_endtime: seletedSlotItem.slotEndDateAndTime,
+            appointment_starttime: selectedSlotItem.slotStartDateAndTime,
+            appointment_endtime: selectedSlotItem.slotEndDateAndTime,
             "location": labInfo.location
         }
-        this.props.navigation.navigate('labConfirmation', { packageDetails: packageDetails })
+        this.props.navigation.navigate('labConfirmation', { packageDetails })
+    }
+
+    onPressGoToBookAppointmentPage(labItemData) {
+        const { labInfo } = labItemData
+        labItemData.labId = labInfo.lab_id;
+        labItemData.slotData = this.availableSlotsDataMap.get(String(labInfo.lab_id)) || {};
+        let reqLabBookAppointmentData = { ...labItemData }
+        store.dispatch({
+            type: SET_SINGLE_LAB_ITEM_DATA,
+            data: reqLabBookAppointmentData
+        });
+        this.props.navigation.navigate('LabBookAppointment', { LabId: labInfo.lab_id, availabilitySlotsDatesArry: this.availabilitySlotsDatesArry });
     }
 
     renderLabListCards(item) {
-        const { expandedLabIdToShowSlotsData, selectedDate } = this.state;
+
+        const { labTestData: { patientWishListLabIds, wishListCountByLabIds, reviewCountsByLabIds } } = this.props;
+        const { expandedLabIdToShowSlotsData, isLoggedIn } = this.state;
         const slotDataObj4Item = this.availableSlotsDataMap.get(String(item.labInfo.lab_id)) || {}
         return (
             <View>
@@ -191,7 +281,7 @@ class labSearchList extends Component {
                     <List style={{ borderBottomWidth: 0 }}>
                         <ListItem style={{ borderBottomWidth: 0 }}>
                             <Grid>
-                                <Row>
+                                <Row onPress={() => this.onPressGoToBookAppointmentPage(item)}>
                                     <Col style={{ width: '5%' }}>
                                         <Thumbnail source={renderLabTestImage(item.labInfo)} style={{ height: 60, width: 60 }} />
                                     </Col>
@@ -203,60 +293,46 @@ class labSearchList extends Component {
                                             <Text note style={{ fontFamily: 'OpenSans', marginTop: 2, fontSize: 11 }}>{item.labCatInfo.category_name}</Text>
                                         </Row>
                                         <Row style={{ marginLeft: 55, }}>
-                                            {item.labInfo.location && item.labInfo.location.address ?
-                                                <View>
-                                                    <Text note style={{ fontFamily: 'OpenSans', marginTop: 5, fontSize: 11, color: '#4c4c4c' }}>{
-                                                        item.labInfo.location.address.no_and_street + ' , ' +
-                                                        item.labInfo.location.address.district + ' , ' +
-                                                        item.labInfo.location.address.city + ' , ' +
-                                                        item.labInfo.location.address.state}</Text>
-                                                </View> : null}
+
+                                            <RenderAddressInfo
+                                                addressInfo={item.labInfo.location && item.labInfo.location.address ? item.labInfo.location.address : null}
+                                            />
                                         </Row>
                                     </Col>
                                     <Col style={{ width: '15%' }}>
                                         <Row>
-                                            <TouchableOpacity>
-                                                <Icon name="heart"
-                                                    style={{ marginLeft: 20, color: '#000', fontSize: 20 }}>
-                                                </Icon>
-                                            </TouchableOpacity>
+                                            <RenderFavoritesComponent
+                                                isLoggedIn={isLoggedIn}
+                                                isEnabledFavorites={patientWishListLabIds.includes(item.labInfo.lab_id)}
+                                                onPressFavoriteIcon={() => this.addToFavoritesList(item.labInfo.lab_id)}
+                                            />
                                         </Row>
                                     </Col>
                                 </Row>
                                 <Row style={{ marginTop: 10 }}>
                                     <Col style={{ width: "25%", marginLeft: -10 }}>
-                                        <Text note style={{ fontFamily: 'OpenSans', fontSize: 12, }}> Favourites</Text>
-                                        <Text style={{ fontFamily: 'OpenSans', fontSize: 12, fontWeight: 'bold' }}>{item.Favorites || ''}</Text>
+                                        <RenderFavoritesCount
+                                            favoritesCount={wishListCountByLabIds[item.labInfo.lab_id] ? wishListCountByLabIds[item.labInfo.lab_id] : '0'}
+                                        />
                                     </Col>
                                     <Col style={{ width: "25%" }}>
-                                        <Text note style={{ fontFamily: 'OpenSans', fontSize: 12, textAlign: 'center', }}> Rating</Text>
-                                        <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'center' }}>
-                                            <StarRating
-                                                fullStarColor='#FF9500'
-                                                starSize={12}
-                                                width={85}
-                                                containerStyle={{ marginTop: 2 }}
-                                                disabled={true}
-                                                rating={1}
-                                                maxStars={1}
-                                            />
-                                            <Text style={{ fontFamily: 'OpenSans', fontSize: 12, fontWeight: 'bold', marginLeft: 2 }}>0</Text>
-                                        </View>
+
+                                        <RenderStarRatingCount
+                                            totalRatingCount={reviewCountsByLabIds[item.labInfo.lab_id] ? reviewCountsByLabIds[item.labInfo.lab_id].average_rating : ' 0'}
+                                        />
                                     </Col>
                                     <Col style={{ width: "25%" }}>
-                                        <Text note style={{ fontFamily: 'OpenSans', fontSize: 12, }}>Offer</Text>
-                                        <Text style={{ fontFamily: 'OpenSans', fontSize: 12, fontWeight: 'bold', color: 'green' }}>{item.labInfo && item.labInfo.labPriceInfo && item.labInfo.labPriceInfo[0] && item.labInfo.labPriceInfo[0].offer || ''} off</Text>
+
+                                        <RenderOfferDetails
+                                            offerInfo={item.labInfo && item.labInfo.labPriceInfo && item.labInfo.labPriceInfo[0] && item.labInfo.labPriceInfo[0].offer ? item.labInfo.labPriceInfo[0].offer : ' '}
+                                        />
                                     </Col>
                                     <Col style={{ width: "25%", marginLeft: 10 }}>
-                                        <Text note style={{ fontFamily: 'OpenSans', fontSize: 12, textAlign: 'center' }}>Package Amt</Text>
-                                        <Row style={{ justifyContent: 'center' }}>
-                                            <Text style={styles.finalRs}>₹ {item.labInfo && item.labInfo.labPriceInfo && item.labInfo.labPriceInfo[0] && item.labInfo.labPriceInfo[0].price || ''}</Text>
-                                            {/* <Text style={styles.finalRs}>₹ {item.finalAmount || ''}</Text> */}
-                                        </Row>
+                                        <RenderPriceDetails
+                                            priceInfo={item.labInfo && item.labInfo.labPriceInfo && item.labInfo.labPriceInfo[0] && item.labInfo.labPriceInfo[0].price ? item.labInfo.labPriceInfo[0].price : ' '}
+                                        />
                                     </Col>
                                 </Row>
-                                {/* <View> */}
-                                {/* <View style={{ borderTopColor: '#090909', borderTopWidth: 0.2, marginTop: 10 }}> */}
                                 <Row  >
                                     <Col style={{ width: "5%" }}>
                                         <Icon name='ios-time' style={{ fontSize: 20, marginTop: 12 }} />
@@ -280,7 +356,9 @@ class labSearchList extends Component {
                                         {
                                             slotDataObj4Item[this.selectedDateObj[item.labInfo.lab_id] || this.state.currentDate] !== undefined ?
                                                 this.renderAvailableSlots(item.labInfo.lab_id, slotDataObj4Item[this.selectedDateObj[item.labInfo.lab_id] || this.state.currentDate])
-                                                : <RenderNoSlotsAvailable />
+                                                : <RenderNoSlotsAvailable
+                                                    text={'No Slots Available'}
+                                                />
                                         }
                                         <View style={{ borderTopColor: '#000', borderTopWidth: 0.5, marginTop: 10 }}>
                                             <Row style={{ marginTop: 10 }}>
@@ -288,7 +366,6 @@ class labSearchList extends Component {
                                                     <Text note style={{ fontSize: 12, alignSelf: 'flex-start', fontFamily: 'OpenSans' }}>Selected Appointment on</Text>
                                                     <Text style={{ alignSelf: 'flex-start', color: '#000', fontSize: 12, fontFamily: 'OpenSans', marginTop: 5 }}>{this.selectedSlotItemByLabIdsObj[item.labInfo.lab_id] ? formatDate(this.selectedSlotItemByLabIdsObj[item.labInfo.lab_id].slotStartDateAndTime, 'ddd DD MMM, h:mm a') : null}</Text>
                                                 </Col>
-                                                {/* <Col style={{ width: '35%' }}></Col> */}
                                                 <Col size={4}>
                                                     <TouchableOpacity
                                                         onPress={() => { this.onPressToContinue4PaymentReview(item, this.selectedSlotItemByLabIdsObj[item.labInfo.lab_id], item.labInfo.lab_id) }}
@@ -308,6 +385,8 @@ class labSearchList extends Component {
     }
 
     render() {
+        const { labTestData: { patientWishListLabIds } } = this.props;
+
         const { labListData, isLoading } = this.state;
         return (
             <Container style={styles.container}>
@@ -339,7 +418,7 @@ class labSearchList extends Component {
                                 </Row>
                             </Card>
                             <View>
-                                {labListData.length === 0 ? <RenderListNotFound /> :
+                                {labListData.length === 0 ? <RenderListNotFound text={' No Lab list found!'} /> :
                                     <View>
                                         <FlatList
                                             data={labListData}
@@ -357,4 +436,9 @@ class labSearchList extends Component {
         )
     }
 }
-export default labSearchList
+
+const LabTestBookAppointmentState = (state) => ({
+    labTestData: state.labTestData
+})
+export default connect(LabTestBookAppointmentState)(labSearchList)
+

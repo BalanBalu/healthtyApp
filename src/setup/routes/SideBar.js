@@ -1,5 +1,5 @@
 import React from "react";
-import { AppRegistry, Image, StatusBar,TouchableOpacity, AsyncStorage} from "react-native";
+import { AppRegistry, Image, StatusBar,TouchableOpacity, FlatList, AsyncStorage} from "react-native";
 import { Container, Content, Text, List, ListItem,View,Row,Col,Footer,FooterTab,Icon,Button,Body } from "native-base";
 import { DragwerLogos } from './appRouterHome';
 import { logout } from '../../modules/providers/auth/auth.actions';
@@ -55,7 +55,7 @@ async getBasicData() {
  
    render() {
 
-    const { items } = this.props;
+    const { items, menuSubMenus} = this.props;
     const { hasLoggedIn } = this.state;
     this.getBasicData();
     return (
@@ -92,33 +92,56 @@ async getBasicData() {
                </Col>
               </Row> 
           </View>
-          <List style={{borderBottomWidth:0,}}
-            dataArray={items}
-            renderRow={data => {
-              return (
-                <ListItem style={{borderBottomWidth:0, }}
-                small
-                  onPress={() => this.props.navigation.navigate(data.routeName)}>
-                          <Image square source={DragwerLogos[data.key]} 
-                          style={{ height: 20, width: 20,}}
+
+          <FlatList
+            data={menuSubMenus}
+            keyExtractor={(item, index) => index.toString()}
+            ItemSeparatorComponent={() => 
+              <View
+                style={{
+                  borderBottomColor: 'transparent',
+                  borderWidth: 0.5,
+                }}
+              />
+            }
+            renderItem={({ item }) =>
+              <View>
+                <ListItem 
+                  onPress={() => item.routeName ? this.props.navigation.navigate(item.routeName) : null }
+                  itemDivider style={{backgroundColor:'#e6e1ed'}}>
+                  <Text style={{fontFamily:'OpenSans',fontSize:15, justifyContent: 'center',fontWeight:'600'  }}>{item.menuName}</Text> 
+                </ListItem>
+                 <FlatList
+                  data={item.subMenus}
+                  keyExtractor={(item, index) => index.toString()}
+                   renderItem={({ item }) =>
+                      <ListItem style={{borderBottomWidth:0,   backgroundColor: '#FFF'  }}
+                            small
+                            onPress={() => this.props.navigation.navigate(item.routeName)}>
+                            <Image square source={item.icon} 
+                              style={{ height: 20, width: 20,}}
                             />  
                              <Body style={{borderBottomWidth:0,}}>
-                          <Text style={{fontFamily:'OpenSans',fontSize:15,marginLeft:20}}>{data.key}</Text> 
+                              <Text style={{fontFamily:'OpenSans',fontSize:15 }}>{item.name}</Text> 
                           </Body> 
-                </ListItem>
-              );
-            }}
-          />
-            
-           <ListItem avatar>
-              <Icon name='ios-power' style={{fontSize:15,color:'#7D4ac1',marginLeft:5
+                      </ListItem>
+                }/>
+              </View>
+            }/>
+         
+
+
+          
+        <View style={{marginTop:10}}>
+            <ListItem avatar style={{marginTop:-15}}>
+              <Icon name='ios-power' style={{fontSize:15,color:'#7D4ac1',marginLeft:22,
             }}/>
             <Body style={{borderBottomWidth:0,}}>
             <Text onPress={() => this.signInOrSignup(hasLoggedIn) } 
-                style={{fontFamily:'OpenSans',fontSize:15,marginLeft:8}}>{hasLoggedIn ? 'Sign Out' : 'Sign In' }</Text>
+                style={{fontFamily:'OpenSans',fontSize:15,}}>{hasLoggedIn ? 'Sign Out' : 'Sign In' }</Text>
                 </Body>
             </ListItem>
-      
+            </View>
         </Content>
           <View>
            <Footer style={{marginTop:10,backgroundColor:'#fff',}}>

@@ -255,7 +255,7 @@ class PharmacyHome extends Component {
                         </Col>
                         <Col size={4} style={{ marginLeft: 5 }}>
 
-                            <TouchableOpacity style={{ backgroundColor: '#4B86EA', height: 30, borderRadius: 2 }} onPress={() => this.props.navigation.navigate('Locations', { navigationOption: 'Near by pharmacies' })}>
+                            <TouchableOpacity style={{ backgroundColor: '#4B86EA', height: 30, borderRadius: 2 }} onPress={() => this.props.navigation.navigate('Locations', { navigationOption: 'Medicines' })}>
                                 <Row style={{ justifyContent: 'center', alignItems: 'center', marginLeft: 5 }}>
                                     <Col size={0.5} style={{ alignItems: 'flex-start' }}>
                                         <Icon name='locate' style={{ fontSize: 15, color: '#fff', }} />
@@ -329,7 +329,7 @@ class PharmacyHome extends Component {
                                                             <Image source={renderMedicineImage(item.medInfo)}
                                                                 style={{ height: 80, width: 70, marginLeft: 5, marginTop: 2.5 }} />
                                                         </Col>
-                                                        {item.medPharDetailInfo.variations[0].discount_type !== undefined ?
+                                                        {item.medPharDetailInfo.variations[0].discount_type !== undefined && item.medPharDetailInfo.variations[0].discount_value !== 0 ?
                                                             <Col size={1} style={{ position: 'absolute', alignContent: 'flex-end', marginTop: -10, marginLeft: 120 }}>
                                                                 <Image
                                                                     source={require('../../../../../assets/images/Badge.png')}
@@ -350,22 +350,22 @@ class PharmacyHome extends Component {
                                                         <Text style={styles.hosname}>{item.pharmacyInfo.name}</Text>
                                                     </Row>
                                                     <Row style={{ alignSelf: 'center', marginTop: 2 }}>
-                                                        <Text style={item.medPharDetailInfo.variations[0].discount_value !== undefined ? styles.oldRupees : styles.newRupees}>₹{item.medPharDetailInfo.variations[0].price}</Text>
-                                                        {item.medPharDetailInfo.variations[0].discount_type !== undefined ?
+                                                        <Text style={item.medPharDetailInfo.variations[0].discount_value !== undefined && item.medPharDetailInfo.variations[0].discount_value !== 0 ? styles.oldRupees : styles.newRupees}>₹{item.medPharDetailInfo.variations[0].price}</Text>
+                                                        {item.medPharDetailInfo.variations[0].discount_type !== undefined && item.medPharDetailInfo.variations[0].discount_value !== 0 ?
                                                             <Text style={styles.newRupees}>₹{medicineRateAfterOffer(item.medPharDetailInfo.variations[0])}</Text> : null}
                                                     </Row>
 
                                                     <Row style={{ marginBottom: 5, marginTop: 5, alignSelf: 'center' }}>
                                                         {cartItems.length == 0 || cartItems.findIndex(ele => ele.medicine_id == item.medPharDetailInfo.medicine_id && ele.pharmacy_id == item.medPharDetailInfo.pharmacy_id) === -1 ?
                                                             <TouchableOpacity style={styles.addCartTouch}
-                                                                onPress={() => { this.setState({ isAddToCart: true }), this.selectedItems(item, 'Add to Card') }} >
+                                                                onPress={() => { this.setState({ isAddToCart: true }), this.selectedItems(item, 'Add to Cart') }} >
 
                                                                 <Icon name='ios-cart' style={{ color: '#4e85e9', fontSize: 12, marginLeft: 3.5, paddingTop: 2.3, }} />
                                                                 <Text style={styles.addCartText}>Add to Cart</Text>
 
                                                             </TouchableOpacity> :
                                                             <TouchableOpacity style={styles.addCartTouch}
-                                                                onPress={() => { this.setState({ isAddToCart: true }), this.selectedItems(item, 'Add to Card', cartItems.findIndex(ele => ele.medicine_id == item.medPharDetailInfo.medicine_id && ele.pharmacy_id == item.medPharDetailInfo.pharmacy_id)) }} >
+                                                                onPress={() => { this.setState({ isAddToCart: true }), this.selectedItems(item, 'Add to Cart', cartItems.findIndex(ele => ele.medicine_id == item.medPharDetailInfo.medicine_id && ele.pharmacy_id == item.medPharDetailInfo.pharmacy_id)) }} >
 
                                                                 <Icon name='ios-cart' style={{ color: '#4e85e9', fontSize: 12, marginLeft: 3.5, paddingTop: 2.3, }} />
                                                                 <Text style={styles.addCartText}>{'Added ' + cartItems[cartItems.findIndex(ele => ele.medicine_id == item.medPharDetailInfo.medicine_id && ele.pharmacy_id == item.medPharDetailInfo.pharmacy_id)].userAddedMedicineQuantity}</Text>
@@ -393,7 +393,7 @@ class PharmacyHome extends Component {
 
 
                     <View style={{ marginTop: 10, }}>
-                        <Text style={{ fontFamily: 'OpenSans', fontSize: 15, marginLeft: 10, color: '#4c4c4c' }}>Nearby Pharmacies</Text>
+                        <Text style={{ fontFamily: 'OpenSans', fontSize: 15, marginLeft: 10, color: '#4c4c4c' }}>Near by pharmacy</Text>
                         <ScrollView
                             horizontal={true}
                             showsHorizontalScrollIndicator={false}

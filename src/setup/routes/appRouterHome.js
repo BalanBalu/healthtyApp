@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import { createAppContainer, createSwitchNavigator, NavigationBackAction } from 'react-navigation';
 import { createDrawerNavigator } from 'react-navigation-drawer';
 import { createStackNavigator } from 'react-navigation-stack';
+
 import AuthLoadingScreen from './AuthLoadingScreen';
 import SideBar from './SideBar';
 import Home from "../../modules/screens/Home";
@@ -35,7 +36,7 @@ import { Col, Grid, Row } from 'react-native-easy-grid';
 import { logout } from '../../modules/providers/auth/auth.actions';
 import termsAndConditions from '../../components/termsAndConditions'
 
-import { TouchableOpacity, Image, Text, Platform, TouchableNativeFeedback } from 'react-native'
+import { TouchableOpacity, Image, Text, Platform, TouchableNativeFeedback, Picker } from 'react-native'
 
 import menuIcon from '../../../assets/images/menu.png';
 import BookAppoinment from "../../modules/screens/bookappoinment";
@@ -62,6 +63,7 @@ import ChosePharmacyList from '../../modules/screens/Pharmacy/PharmacyList/Chose
 
 import { Badge } from '../../../src/modules/common'
 import Locations from '../../modules/screens/Home/Locations';
+import LocationDetail from '../../modules/screens/Home/LocationDetail';
 import BloodDonersList from '../../modules/screens/bloodDonation/BloodDonersList';
 import BloodDonerFilters from '../../modules/screens/bloodDonation/BloodDonerFilters';
 import MyChats from '../../modules/screens/chat/MyChats';
@@ -76,6 +78,8 @@ import PharmacyList from '../../modules/screens/Pharmacy/PharmacyList/pharmacyLi
 import VideoScreen from '../../modules/screens/VideoConsulation/components/VideoScreen';
 import AvailableDoctors4Video from '../../modules/screens/VideoConsulation/components/AvailableDoctors';
 import VideoConsultaions from '../../modules/screens/VideoConsulation/components/MyConsultations';
+// import COVID19StateDistrictStats from '../../modules/screens/Home/Covid10-District-wise';
+import CancelService from '../../modules/screens/commonScreen/cancelService'
 /*
   import CoronaDisease from '../../modules/screens/CoronaDisease/CoronaDisease';
   import COVID19StateDistrictStats from '../../modules/screens/Home/Covid10-District-wise';
@@ -88,6 +92,20 @@ import labConfirmation from '../../modules/screens/LabTest/labConfirmation/index
 import LabAppointmentList from '../../modules/screens/LabTest/Appointment/LabAppointmentList'
 import LabAppointmentInfo from '../../modules/screens/LabTest/Appointment/LabAppoinmentInfo'
 import LabCancelAppointment from '../../modules/screens/LabTest/Appointment/LabCancelAppointment'
+import LabBookAppointment from '../../modules/screens/LabTest/labBookAppointment';
+import PrepareAppointmentWizard from '../../modules/screens/MyAppointments/PrepareAppoinmentWizard'
+import BasicInfo from '../../modules/screens/MyAppointments/PrepareAppoinmentWizard/BasicInfo'
+import MedicalHistory from '../../modules/screens/MyAppointments/PrepareAppoinmentWizard/MedicalHistory'
+import PhysicianInfo from '../../modules/screens/MyAppointments/PrepareAppoinmentWizard/PhysicianInfo'
+import PastMedicalConditions from '../../modules/screens/MyAppointments/PrepareAppoinmentWizard/PastMedicalConditions'
+import PatientInfo from '../../modules/screens/MyAppointments/PrepareAppoinmentWizard/PatientInfo'
+import AllergiesAndMedications from '../../modules/screens/MyAppointments/PrepareAppoinmentWizard/AllergiesAndMedications'
+import FamilyMedicalConditions from '../../modules/screens/MyAppointments/PrepareAppoinmentWizard/FamilyMedicalConditions'
+import AllergicDisease from '../../modules/screens/MyAppointments/PrepareAppoinmentWizard/AllergicDisease'
+import HospitalizationAndSurgeries from '../../modules/screens/MyAppointments/PrepareAppoinmentWizard/HospitalizationAndSurgeries'
+import SocialHistory from '../../modules/screens/MyAppointments/PrepareAppoinmentWizard/SocialHistory'
+import PrepareAppointmentLastStep from '../../modules/screens/MyAppointments/PrepareAppoinmentWizard/PrepareAppointmentLastStep'
+
 
 const AuthRoutes = {
   login: {
@@ -139,6 +157,7 @@ const HomeStack = createStackNavigator({
               source={menuIcon}
             />
           </TouchableOpacity>
+
           <Row style={{ marginBottom: 5, marginTop: 5, marginLeft: 5 }}>
             <Col size={10}>
               <TouchableOpacity onPress={() => navigation.navigate('Locations')}>
@@ -156,8 +175,8 @@ const HomeStack = createStackNavigator({
         </Row>
       ),
       headerRight: (
-        <Grid style={{ justifyContent: 'center', alignItems: 'center' }}>
-          <Col>
+        
+          <Row>
             <TouchableOpacity onPress={() => { navigation.navigate('Notification') }} >
               <View>
                 <Icon name="notifications" style={{ color: '#fff', marginRight: 15, fontFamily: 'opensans-semibold' }}></Icon>
@@ -166,10 +185,18 @@ const HomeStack = createStackNavigator({
                   : null}
                 {/* <Badge /> */}
               </View>
+               {/* <TouchableOpacity onPress={() => { setI18nConfig('en' ) }} >
+              <View>
+                <Icon name={IS_IOS ? 'ios-more' : "md-more"} style={{ color: '#fff', marginRight: 15, fontFamily: 'opensans-semibold' }}></Icon>
+              </View>
+            </TouchableOpacity> */} 
             </TouchableOpacity>
-          </Col>
 
-        </Grid>
+
+          </Row>
+
+                      
+       
       ),
       headerStyle: {
         backgroundColor: '#7F49C3',
@@ -187,6 +214,12 @@ const HomeStack = createStackNavigator({
     screen: Locations,
     navigationOptions: ({ navigation }) => ({
       title: 'Locations',
+    })
+  },
+  LocationDetail: {
+    screen : LocationDetail,
+    navigationOptions: ({ navigation }) => ({
+      title: navigation.getParam('cityData') ? navigation.getParam('cityData').city_name : 'Areas',
     })
   },
   Categories: {
@@ -273,6 +306,85 @@ const HomeStack = createStackNavigator({
       title: 'Rate and Review'
     }
   },
+  PrepareAppointmentWizard: {
+    screen: PrepareAppointmentWizard,
+    navigationOptions: {
+      title: 'Prepare for the appointment'
+    }
+  },
+  BasicInfo: {
+    screen: BasicInfo,
+    navigationOptions: {
+      title: 'Prepare for the appointment'
+    }
+  },
+  MedicalHistory: {
+    screen: MedicalHistory,
+    navigationOptions: {
+      title: 'Prepare for the appointment'
+    }
+  },
+  PhysicianInfo: {
+    screen: PhysicianInfo,
+    navigationOptions: {
+      title: 'Prepare for the appointment'
+    }
+  },
+  PastMedicalConditions: {
+    screen: PastMedicalConditions,
+    navigationOptions: {
+      title: 'Prepare for the appointment'
+    }
+  },
+  PatientInfo: {
+    screen: PatientInfo,
+    navigationOptions: {
+      title: 'Prepare for the appointment'
+    }
+  },
+  AllergiesAndMedications: {
+    screen: AllergiesAndMedications,
+    navigationOptions: {
+      title: 'Prepare for the appointment'
+    }
+  },
+  FamilyMedicalConditions: {
+    screen: FamilyMedicalConditions,
+    navigationOptions: {
+      title: 'Prepare for the appointment'
+    }
+  },
+  AllergicDisease: {
+    screen: AllergicDisease,
+    navigationOptions: {
+      title: 'Prepare for the appointment'
+    }
+  },
+  HospitalizationAndSurgeries: {
+    screen: HospitalizationAndSurgeries,
+    navigationOptions: {
+      title: 'Prepare for the appointment'
+    }
+  },
+  SocialHistory: {
+    screen: SocialHistory,
+    navigationOptions: {
+      title: 'Prepare for the appointment'
+    }
+  },
+  PrepareAppointmentLastStep: {
+    screen: PrepareAppointmentLastStep,
+    navigationOptions: {
+      title: 'Prepare for the appointment'
+    }
+  },
+
+  CancelService: {
+    screen: CancelService,
+    navigationOptions: ({ navigation }) => ({
+      title: navigation.getParam("tittle"),
+    }),
+  },
   // ================Profile Stack =================
   Profile: {
     screen: Profile,
@@ -296,14 +408,14 @@ const HomeStack = createStackNavigator({
     screen: UpdatePassword,
     navigationOptions: {
       title: 'Update Password'
-    }   
+    }
   },
-  
+
   Updateheightweight: {
     screen: Updateheightweight,
     navigationOptions: {
       title: 'Update height weight'
-    }   
+    }
   },
 
   UpdateInsurance: {
@@ -357,7 +469,7 @@ const HomeStack = createStackNavigator({
       title: 'Lab Test Cancel Appointment'
     }
   },
-  
+
   // ========Appointment stack ==========
   "Doctor List": {
     screen: doctorSearchList,
@@ -409,7 +521,7 @@ const HomeStack = createStackNavigator({
       title: 'Success'
     }
   },
-  
+
   labConfirmation: {
     screen: labConfirmation,
     navigationOptions: {
@@ -491,19 +603,19 @@ const HomeStack = createStackNavigator({
     screen: PharmacyHome,
     navigationOptions: ({ navigation }) => ({
       headerRight: (
-       
-          <TouchableOpacity onPress={() => { navigation.navigate('PharmacyCart') }} >
-            <View>
-              <Icon name="ios-cart" style={{ color: '#fff', marginRight: 15, fontFamily: 'opensans-semibold', fontSize: 20 }}></Icon>
-              {navigation.getParam('cartItemsCount') === null || navigation.getParam('cartItemsCount') === undefined || navigation.getParam('cartItemsCount') === 0 ? null :
-                <Text style={{ position: 'absolute', backgroundColor: 'red', color: 'white', borderRadius: 20 / 2, marginTop: -7, width: undefined, height: undefined, padding: 2, fontSize: 10, textAlign: 'center' }}>{
-                  navigation.getParam('cartItemsCount') >= 100 ? '99+' :
-                    navigation.getParam('cartItemsCount')}
-                </Text>
-              }
-            </View>
-          </TouchableOpacity>
-        
+
+        <TouchableOpacity onPress={() => { navigation.navigate('PharmacyCart') }} >
+          <View>
+            <Icon name="ios-cart" style={{ color: '#fff', marginRight: 15, fontFamily: 'opensans-semibold', fontSize: 20 }}></Icon>
+            {navigation.getParam('cartItemsCount') === null || navigation.getParam('cartItemsCount') === undefined || navigation.getParam('cartItemsCount') === 0 ? null :
+              <Text style={{ position: 'absolute', backgroundColor: 'red', color: 'white', borderRadius: 20 / 2, marginTop: -7, width: undefined, height: undefined, padding: 2, fontSize: 10, textAlign: 'center' }}>{
+                navigation.getParam('cartItemsCount') >= 100 ? '99+' :
+                  navigation.getParam('cartItemsCount')}
+              </Text>
+            }
+          </View>
+        </TouchableOpacity>
+
       )
     })
   },
@@ -518,7 +630,7 @@ const HomeStack = createStackNavigator({
     navigationOptions: ({ navigation }) => ({
       title: 'Medicine List',
       headerRight: (
-        <Grid style={{justifyContent:'center',alignItems:'center'}}>
+        <Grid style={{ justifyContent: 'center', alignItems: 'center' }}>
           <Col>
             <TouchableOpacity onPress={() => { navigation.navigate('PharmacyCart') }} >
               <View>
@@ -576,19 +688,19 @@ const HomeStack = createStackNavigator({
     navigationOptions: ({ navigation }) => ({
       title: 'Search Medicines',
       headerRight: (
-            <TouchableOpacity onPress={() => { navigation.navigate('PharmacyCart') }} >
-              <View>
-                <Icon name="ios-cart" style={{ color: '#fff', marginRight: 15, fontFamily: 'opensans-semibold', fontSize: 20 }}></Icon>
-                {navigation.getParam('cartItemsCount') === null || navigation.getParam('cartItemsCount') === undefined || navigation.getParam('cartItemsCount') === 0 ? null :
-                  <Text style={{ position: 'absolute', backgroundColor: 'red', color: 'white', borderRadius: 20 / 2, marginTop: -7, width: undefined, height: undefined, padding: 2, fontSize: 10, textAlign: 'center' }}>{
-                    navigation.getParam('cartItemsCount') >= 100 ? '99+' :
-                      navigation.getParam('cartItemsCount')}
-                  </Text>
-                }
-              </View>
-            </TouchableOpacity>
-        
-      
+        <TouchableOpacity onPress={() => { navigation.navigate('PharmacyCart') }} >
+          <View>
+            <Icon name="ios-cart" style={{ color: '#fff', marginRight: 15, fontFamily: 'opensans-semibold', fontSize: 20 }}></Icon>
+            {navigation.getParam('cartItemsCount') === null || navigation.getParam('cartItemsCount') === undefined || navigation.getParam('cartItemsCount') === 0 ? null :
+              <Text style={{ position: 'absolute', backgroundColor: 'red', color: 'white', borderRadius: 20 / 2, marginTop: -7, width: undefined, height: undefined, padding: 2, fontSize: 10, textAlign: 'center' }}>{
+                navigation.getParam('cartItemsCount') >= 100 ? '99+' :
+                  navigation.getParam('cartItemsCount')}
+              </Text>
+            }
+          </View>
+        </TouchableOpacity>
+
+
       ),
     })
 
@@ -619,12 +731,13 @@ const HomeStack = createStackNavigator({
       title: 'Medicine Order Details'
     }
   },
+
   MedicineInfo: {
     screen: MedicineInfo,
     navigationOptions: ({ navigation }) => ({
       title: 'Medicine Details',
       headerRight: (
-        <Grid style={{alignItems:'center',justifyContent:'center'}}>
+        <Grid style={{ alignItems: 'center', justifyContent: 'center' }}>
           <Col>
             <TouchableOpacity onPress={() => { navigation.navigate('PharmacyCart') }} >
               <View>
@@ -648,18 +761,18 @@ const HomeStack = createStackNavigator({
       title: 'Medicine Reviews'
     }
   },
- /* 'CORONA Status': {
-    screen: CoronaDisease,
-    navigationOptions: ({ navigation }) => ({
-      title: 'CORONA Status'
-    })
-  },
-  COVID19StateDistrictStats: {
-    screen: COVID19StateDistrictStats,
-    navigationOptions: ({ navigation }) => ({
-      title: 'Covid-19 ' + navigation.getParam('stateName') || ' '
-    })
-  }, */
+  /* 'CORONA Status': {
+     screen: CoronaDisease,
+     navigationOptions: ({ navigation }) => ({
+       title: 'CORONA Status'
+     })
+   },
+   COVID19StateDistrictStats: {
+     screen: COVID19StateDistrictStats,
+     navigationOptions: ({ navigation }) => ({
+       title: 'Covid-19 ' + navigation.getParam('stateName') || ' '
+     })
+   }, */
   /* Video Consultation */
   VideoScreen: {
     screen: VideoScreen,
@@ -720,6 +833,12 @@ const HomeStack = createStackNavigator({
       title: 'Lab List'
     }
   },
+  LabBookAppointment: {
+    screen: LabBookAppointment,
+    navigationOptions: {
+      title: 'Lab BookAppointment'
+    }
+  },
 },
   {
     defaultNavigationOptions: ({ navigation }) => ({
@@ -729,49 +848,119 @@ const HomeStack = createStackNavigator({
   })
 
 
-
-
-const DrawerNavigator = createDrawerNavigator({
+const drawerNavigatorRoutes = {
   Home: {
     screen: HomeStack,
+    routeName: 'Home'
   },
   'Video and Chat Service': {
-    screen: AvailableDoctors4Video
+    screen: AvailableDoctors4Video,
+    routeName: 'Video and Chat Service'
   },
   Medicines: {
     screen: PharmacyHome,
+    routeName: 'Medicines'
   },
   "My Appointments": {
-    screen: MyAppoinmentList
+    screen: MyAppoinmentList,
+    routeName: 'My Appointments'
   },
   "My Chats": {
-    screen: MyChats
+    screen: MyChats,
+    routeName: 'My Chats'
+
   },
   'My Video Consultations': {
-    screen: VideoConsultaions
+    screen: VideoConsultaions,
+    routeName: 'My Video Consultations'
   },
   'My Lab Test Appointments': {
-    screen: LabAppointmentList
+    screen: LabAppointmentList,
+    routeName: 'My Lab Test Appointments'
   },
   "Medicine Orders": {
-    screen: MyOrdersList
+    screen: MyOrdersList,
+    routeName: 'Medicine Orders'
   },
   Reminder: {
-    screen: Reminder
+    screen: Reminder,
+    routeName: 'Reminder'
   },
   "Blood Donors": {
     screen: BloodDonersList,
-  },
-/* 
-  'CORONA Status': {
-     screen: CoronaDisease
-  },
-*/ 
+    routeName: 'Blood Donors'
+  }
+}
+
+const DrawerNavigator = createDrawerNavigator(drawerNavigatorRoutes, {
+  overlayColor: 'rgba(0, 0, 0, 0.7)',
+  contentComponent: props => <SideBar
+    menuSubMenus={[
+      {
+        menuName: 'Home',
+        routeName: drawerNavigatorRoutes.Home.routeName,
+        icon: require('../../../assets/images/drawerIcons/Home.png'),
+        subMenus: []
+      },
+      {
+        menuName: 'Services',
+        subMenus: [
+          {
+            name: 'Video and Chat Service',
+            routeName: drawerNavigatorRoutes["Video and Chat Service"].routeName,
+            icon: require('../../../assets/images/drawerIcons/Appointments.png'),
+
+          },
+          {
+            name: 'Medicines',
+            routeName: drawerNavigatorRoutes.Medicines.routeName,
+            icon: require('../../../assets/images/drawerIcons/Orders.png'),
+
+          },
+          {
+            name: 'Reminder',
+            routeName: drawerNavigatorRoutes.Reminder.routeName,
+            icon: require('../../../assets/images/drawerIcons/Reminder.png'),
+          },
+          {
+            name: 'Blood Donors',
+            routeName: drawerNavigatorRoutes["Blood Donors"].routeName,
+            icon: require('../../../assets/images/drawerIcons/Blooddonars.png'),
+          }
+        ]
+      },
+      {
+        menuName: 'Orders and Consultations',
+        subMenus: [
+          {
+            name: 'My Appointments',
+            routeName: drawerNavigatorRoutes["My Appointments"].routeName,
+            icon: require('../../../assets/images/drawerIcons/Appointments.png'),
+          },
+          {
+            name: 'My Chat Consultations',
+            routeName: drawerNavigatorRoutes["My Chats"].routeName,
+            icon: require('../../../assets/images/drawerIcons/Chat.png'),
+          },
+          {
+            name: 'My Video Consultations',
+            routeName: drawerNavigatorRoutes["My Video Consultations"].routeName,
+            icon: require('../../../assets/images/drawerIcons/Chat.png'),
+          },
+          {
+            name: 'My Lab Test Appointments',
+            routeName: drawerNavigatorRoutes["My Lab Test Appointments"].routeName,
+            icon: require('../../../assets/images/drawerIcons/Appointments.png'),
+          },
+          {
+            name: 'Medicine Orders',
+            routeName: drawerNavigatorRoutes["Medicine Orders"].routeName,
+            icon: require('../../../assets/images/drawerIcons/Orders.png'),
+          }]
+      }
+    ]}
+    {...props} />
 },
-  {
-    overlayColor: 'rgba(0, 0, 0, 0.7)',
-    contentComponent: props => <SideBar {...props} />
-  },
   {
     initialRouteName: 'Home'
   })

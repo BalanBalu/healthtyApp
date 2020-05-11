@@ -2,15 +2,17 @@ import React, { Component } from 'react';
 import {
     Container, Content, Text, Item, View, Icon, Toast
 } from 'native-base';
+import StarRating from 'react-native-star-rating';
 import { Col, Row } from 'react-native-easy-grid';
 import { StyleSheet, Image, AsyncStorage, FlatList, TouchableOpacity } from 'react-native';
 import { formatDate } from '../../../../setup/helpers';
-import { getMedicineOrderDetails, upDateOrderData } from '../../../providers/pharmacy/pharmacy.action';
-import { statusBar, renderPrescriptionImageAnimation } from '../CommomPharmacy';
+import { getMedicineOrderDetails, upDateOrderData, getOrderUserReviews } from '../../../providers/pharmacy/pharmacy.action';
+import { statusBar, renderPrescriptionImageAnimation, renderMedicineImage, getName } from '../CommomPharmacy';
 import { NavigationEvents } from 'react-navigation';
 import { getPaymentInfomation } from '../../../providers/bookappointment/bookappointment.action'
 import Spinner from '../../../../components/Spinner';
 import { getUserRepportDetails } from '../../../providers/reportIssue/reportIssue.action';
+import { OrderInsertReview } from '../MedicineInfo/medInsertReview'
 import AwesomeAlert from 'react-native-awesome-alerts';
 import SwiperFlatList from 'react-native-swiper-flatlist';
 import ImageZoom from 'react-native-image-pan-zoom';
@@ -32,10 +34,14 @@ class OrderDetails extends Component {
             orderList: [],
             paymentDetails: {},
             isLoading: true,
+            modalVisible: false,
+            reviewData: []
         }
     }
     async componentDidMount() {
         const { navigation } = this.props;
+        console.log('=============================================')
+        console.log(navigation.state)
         this.medicineOrderDetails();
         this.getUserReport()
     }
@@ -51,6 +57,12 @@ class OrderDetails extends Component {
             console.log(JSON.stringify(result))
             if (result.success) {
                 this.setState({ orderDetails: result.data[0] });
+                
+                if (result.data[0].status === 'DELIVERED' && result.data[0].is_review_added === undefined) {
+                    await this.setState({ modalVisible: true })
+                } else {
+                    this.getUserReviews(orderId)
+                }
                 this.getPaymentInfo(result.data[0].payment_id)
             }
             this.setState({ isLoading: false });
@@ -108,9 +120,16 @@ class OrderDetails extends Component {
 
     getFinalPriceOfOrder(orderItems) {
         let finalPriceForOrder = 0;
-        orderItems.forEach(element => {
-            finalPriceForOrder += element.final_price;
-        });
+        if (this.state.orderDetails.is_order_type_recommentation === true) {
+            orderItems.forEach(element => {
+                finalPriceForOrder += Number(element.medicine_recommentation_max_price);
+            });
+
+        } else {
+            orderItems.forEach(element => {
+                finalPriceForOrder += Number(element.final_price);
+            });
+        }
         return finalPriceForOrder;
     }
     getGrandTotal(orderInfo) {
@@ -118,7 +137,7 @@ class OrderDetails extends Component {
         const deliveryCharge = orderInfo.delivery_charges;
         const deliveryTax = orderInfo.delivery_tax
         let totalAmount = Number(Number(itemTotal) + Number(deliveryCharge || 0) + Number(deliveryTax || 0)).toFixed(2)
-        if(itemTotal === 0) {
+        if (itemTotal === 0) {
             return totalAmount + ' + Medicine Charges By Pharmacy'
         }
         return `${totalAmount || ''}`
@@ -135,14 +154,15 @@ class OrderDetails extends Component {
             console.log(e)
         }
     }
-    async cancelOreder() {
-      
+    async cancelOreder(statusUpdateReason) {
+
         const { orderDetails } = this.state
 
         let userId = await AsyncStorage.getItem('userId');
         let reqData = {
             user_id: userId,
             order_id: orderDetails._id,
+            status_update_reason: statusUpdateReason,
             status: "CANCELED",
             status_by: "USER"
         }
@@ -172,17 +192,63 @@ class OrderDetails extends Component {
             if (navigation.state.params.hasReloadReportIssue) {
                 this.getUserReport();  // Reload the Reported issues when they reload
             }
+            if (navigation.state.params.hasUpdateCancelService) {
+                this.cancelOreder(navigation.state.params.statusUpdateReason)
+            }
         };
+    }
+    getUserReviews = async (orderId) => {
+        try {
+            let userId = await AsyncStorage.getItem('userId');
+            let resultReview = await getOrderUserReviews(userId, orderId);
+            console.log('getReview===================')
+            console.log(JSON.stringify(resultReview))
+
+            if (resultReview.success) {
+                this.setState({ reviewData: resultReview.data });
+            }
+
+        }
+        catch (e) {
+            console.error(e);
+        }
+
+
+    }
+
+    async  getvisble(val) {
+        try {
+            console.log('come review=============')
+            console.log(JSON.stringify(val))
+            await this.setState({ isLoading: true, modalVisible: false })
+            if (val.reviewUpdated === true) {
+
+                this.getUserReviews(this.state.orderDetails._id)
+            }
+        } catch (e) {
+            console.log(e)
+        }
+        finally {
+            await this.setState({ isLoading: false })
+        }
+    }
+    navigateAddReview() {
+        this.setState({
+            modalVisible: true
+        });
+
     }
     render() {
         const { navigation } = this.props;
-        const { isLoading, orderDetails, paymentDetails, reportData, isCancel } = this.state;
+        const { isLoading, orderDetails, paymentDetails, reportData, isCancel, reviewData } = this.state;
+
         return (
             <Container style={styles.container}>
                 <Content style={{ backgroundColor: '#F5F5F5', padding: 10, flex: 1 }}>
                     <NavigationEvents
                         onWillFocus={payload => { this.backNavigation(payload) }}
                     />
+
                     <AwesomeAlert
                         show={isCancel}
                         showProgress={false}
@@ -206,6 +272,7 @@ class OrderDetails extends Component {
                     <Spinner
                         visible={isLoading}
                     />
+
                     <View style={{ paddingLeft: 10, paddingRight: 10, paddingBottom: 10 }}>
                         <Row>
                             <Col size={5}>
@@ -223,7 +290,7 @@ class OrderDetails extends Component {
                             style={{ marginTop: 10 }}
                             data={orderDetails.order_status_slap}
                             keyExtractor={(item, index) => index.toString()}
-                            renderItem={({ item }) =>
+                            renderItem={({ item, index }) =>
                                 <Row style={{}}>
                                     <Col size={0.7}>
                                         {statusBar[item.status].checked === true ?
@@ -235,7 +302,7 @@ class OrderDetails extends Component {
                                             </TouchableOpacity> :
                                             null}
 
-                                        {statusBar[item.status].checked === true && statusBar[item.status].drawLine === true ?
+                                        {statusBar[item.status].checked === true && orderDetails.order_status_slap.length !== (Number(index) + 1) ?
                                             <TouchableOpacity style={styles.TouchLegth}>
                                             </TouchableOpacity>
                                             :
@@ -274,12 +341,12 @@ class OrderDetails extends Component {
                                     <SwiperFlatList
                                         autoplay
                                         autoplayDelay={3}
-                                        index={orderDetails.prescription_data.prescription_items - 1}
+                                        index={Number(orderDetails.prescription_data.prescription_items.length) - 1}
                                         contentContainerStyle={{ flexGrow: 1, }}
                                         autoplayLoop
                                         data={orderDetails.prescription_data.prescription_items}
                                         renderItem={({ item }) =>
-                                            <TouchableOpacity onPress={() => this.props.navigation.navigate("ImageView", { passImage: {uri:item.prescription_path}, title: 'prescription' })}>
+                                            <TouchableOpacity onPress={() => this.props.navigation.navigate("ImageView", { passImage: { uri: item.prescription_path }, title: 'prescription' })}>
                                                 <Image
                                                     source={renderPrescriptionImageAnimation(item)}
                                                     style={{
@@ -292,41 +359,44 @@ class OrderDetails extends Component {
                                     />
                                 </ImageZoom>
                             </View> : null}
-                        <FlatList
-                            data={orderDetails.order_items}
-                            keyExtractor={(item, index) => index.toString()}
-                            extraData={orderDetails.order_items}
-                            renderItem={({ item }) =>
-                                <Row style={styles.rowStyle}>
-                                    <Col size={2}>
-                                        <Image
-                                            source={require('../../../../../assets/images/images.jpeg')}
-                                            style={{
-                                                width: 60, height: 60, alignItems: 'center'
-                                            }}
-                                        />
-                                    </Col>
-                                    <Col size={8} style={[styles.nameText, { marginTop: 5 }]}>
-                                        <Text style={styles.nameText}>{item.medicine_name}</Text>
-                                        {orderDetails.is_order_type_recommentation===true?
-                                        <Text style={styles.pharText}>{'mediflic pharmacy'}</Text>:
-                                        <Text style={styles.pharText}>{item.pharmacyInfo.name}</Text>
-                                        }
+                        {orderDetails.order_items !== undefined && orderDetails.order_items.length !== 0 ?
+                            <FlatList
+                                data={orderDetails.order_items}
+                                keyExtractor={(item, index) => index.toString()}
+                                extraData={orderDetails.order_items}
+                                renderItem={({ item }) =>
+                                    <Row style={styles.rowStyle}>
+                                        <Col size={2}>
+                                            <Image
+                                                source={renderMedicineImage(item.medInfo)}
+                                                style={{
+                                                    width: 60, height: 60, alignItems: 'center'
+                                                }}
+                                            />
+                                        </Col>
+                                        <Col size={8} style={[styles.nameText, { marginTop: 5 }]}>
+                                            <Text style={styles.nameText}>{item.medicine_name}</Text>
+                                            {orderDetails.is_order_type_recommentation === true ?
+                                                <Text style={styles.pharText}>{'mediflic pharmacy'}</Text> :
+                                                orderDetails.is_order_type_prescription === true && orderDetails.status !== 'PENDING' ?
+                                                    <Text style={styles.pharText}>{orderDetails.pharmacyInfo[0].name}</Text> :
+                                                    <Text style={styles.pharText}>{item.pharmacyInfo.name}</Text>
+                                            }
 
-                                    </Col>
-                                    <Col size={2} style={[styles.nameText, { alignSelf: 'flex-end' }]}>
-                                    {orderDetails.is_order_type_recommentation===true?
-                                        <Text style={styles.amountText}>₹{item.medicine_recommentation_max_price}</Text>
-                                        :<Text style={styles.amountText}>₹{item.final_price}</Text>
-                                    }
-                                    </Col>
-                                </Row>
-                            } />
+                                        </Col>
+                                        <Col size={2} style={[styles.nameText, { alignSelf: 'flex-end' }]}>
+                                            {orderDetails.is_order_type_recommentation === true ?
+                                                <Text style={styles.amountText}>₹{item.medicine_recommentation_max_price}</Text>
+                                                : <Text style={styles.amountText}>₹{item.final_price}</Text>
+                                            }
+                                        </Col>
+                                    </Row>
+                                } /> : null}
 
                         {orderDetails.is_order_type_prescription !== true && orderDetails.order_items !== undefined && orderDetails.order_items.length !== 0 ?
                             <Row style={{ marginTop: 10 }}>
                                 <Col size={5}>
-                                    <Text style={styles.ItemText}>Item Total</Text>
+                                    <Text style={styles.ItemText}>Medicine total amout</Text>
 
                                 </Col>
                                 <Col size={5}>
@@ -336,7 +406,7 @@ class OrderDetails extends Component {
                             :
                             <Row style={{ marginTop: 10 }}>
                                 <Col size={5}>
-                                    <Text style={styles.ItemText}>Item Total</Text>
+                                    <Text style={styles.ItemText}>Medicine total amout</Text>
 
                                 </Col>
                                 <Col size={5}>
@@ -344,25 +414,28 @@ class OrderDetails extends Component {
                                 </Col>
                             </Row>
                         }
+                        {orderDetails.delivery_option === "HOME_DELIVERY" ?
+                            <View>
+                                <Row style={{ marginTop: 10 }}>
+                                    <Col size={5}>
+                                        <Text style={styles.mainText}>Delivery Charges</Text>
 
-                        <Row style={{ marginTop: 10 }}>
-                            <Col size={5}>
-                                <Text style={styles.mainText}>Delivery Charges</Text>
+                                    </Col>
+                                    <Col size={5}>
+                                        <Text style={styles.rsText}>₹ {orderDetails.delivery_charges || 0}</Text>
+                                    </Col>
+                                </Row>
+                                <Row style={{ marginTop: 10 }}>
+                                    <Col size={5}>
+                                        <Text style={styles.mainText}>Tax</Text>
 
-                            </Col>
-                            <Col size={5}>
-                                <Text style={styles.rsText}>₹ {orderDetails.delivery_charges || 0}</Text>
-                            </Col>
-                        </Row>
-                        <Row style={{ marginTop: 10 }}>
-                            <Col size={5}>
-                                <Text style={styles.mainText}>Tax</Text>
-
-                            </Col>
-                            <Col size={5}>
-                                <Text style={styles.rsText}>₹ {orderDetails.delivery_tax || 0}</Text>
-                            </Col>
-                        </Row>
+                                    </Col>
+                                    <Col size={5}>
+                                        <Text style={styles.rsText}>₹ {orderDetails.delivery_tax || 0}</Text>
+                                    </Col>
+                                </Row>
+                            </View>
+                            : null}
                         <Row style={{ marginTop: 10 }}>
                             <Col size={5}>
                                 <Text style={styles.grandTotalText}>Grand Total</Text>
@@ -376,7 +449,7 @@ class OrderDetails extends Component {
                     {orderDetails.status === "PENDING" ?
                         <View style={{ alignItems: 'center', justifyContent: 'center', marginTop: 5, marginBottom: 10 }}>
                             <TouchableOpacity
-                                onPress={() => this.setState({ isCancel: true })}
+                                onPress={() => this.props.navigation.navigate('CancelService', { serviceType: 'MEDICINES_ORDER', prevState: this.props.navigation.state, tittle: 'Cancel Order' })}
                                 block danger
                                 style={styles.reviewButton1
                                 }>
@@ -420,6 +493,36 @@ class OrderDetails extends Component {
                             </TouchableOpacity>
                         </View>
                     }
+                    {(orderDetails.status == 'DELIVERED' && reviewData.length !== 0) || reviewData.length !== 0 ?
+                        <View>
+                            <Text style={{ fontSize: 14, fontWeight: '500', fontFamily: 'OpenSans', color: '#7F49C3', marginTop: 10 }}>Review</Text>
+
+                            <StarRating fullStarColor='#FF9500' starSize={15} width={100} containerStyle={{ width: 100 }}
+                                disabled={false}
+                                maxStars={5}
+                                rating={reviewData[0] && reviewData[0].overall_rating}
+                            />
+                            <Text note style={styles.subTextInner1}>{reviewData[0] && reviewData[0].comments || ''}</Text>
+                        </View>
+                        :
+                        (orderDetails.status === 'DELIVERED' && reviewData.length === 0) ?
+                            <View>
+                                <Text style={{ fontSize: 14, fontWeight: '500', fontFamily: 'OpenSans', color: '#7F49C3', marginTop: 10 }}>Add Review</Text>
+
+
+                                <View style={{ alignItems: 'center', justifyContent: 'center', marginTop: 5, marginBottom: 10 }}>
+                                    <TouchableOpacity block success style={styles.reviewButton} onPress={() => this.navigateAddReview()} testID='addFeedBack'>
+
+                                        <Text style={{ color: '#fff', fontSize: 14, fontFamily: 'OpenSans', fontWeight: 'bold', textAlign: 'center', marginTop: 5 }}> ADD FEEDBACK </Text>
+                                        <Icon name="create" style={{ fontSize: 20, marginTop: 3, marginLeft: 5, color: '#fff' }}></Icon>
+                                    </TouchableOpacity>
+                                </View>
+                            </View>
+
+                            : null
+                    }
+
+
 
                     <View style={styles.mainView}>
                         <Text style={styles.orderText}>OrderDetails</Text>
@@ -430,7 +533,7 @@ class OrderDetails extends Component {
 
 
                         <View style={{ marginTop: 10 }}>
-                            <Text style={styles.innerText}>Delivery On</Text>
+                            <Text style={styles.innerText}>Delivery mode</Text>
                             <Text style={styles.rightText}>{orderDetails.delivery_option || ''}</Text>
                         </View>
                         <View style={{ marginTop: 10 }}>
@@ -444,7 +547,23 @@ class OrderDetails extends Component {
                             <Text style={styles.addressText}>Mobile - {this.getMobile(orderDetails)}</Text>
 
                         </View>
+                        {
+                            orderDetails.delivery_option === 'HOME_DELIVERY' && orderDetails.delivery_boy_details !== undefined ?
+                                <View style={{ marginTop: 10, paddingBottom: 10 }}>
+                                    <Text style={styles.innerText}>delivey boy Details</Text>
+                                    <Text style={styles.addressText}> ref_no -{orderDetails.delivery_boy_details.delivery_boy_ref_no}</Text>
+                                    <Text style={styles.nameTextss}>Name-{orderDetails.delivery_boy_details.full_name}</Text>
+                                    <Text style={styles.addressText}>Mobile - {this.getMobile(orderDetails.delivery_boy_details)}</Text>
 
+                                </View> : null
+                        }
+                        {this.state.modalVisible == true ?
+                            <OrderInsertReview
+                                data={this.state.orderDetails}
+                                popupVisible={(data) => this.getvisble(data)}
+
+                            />
+                            : null}
                     </View>
                 </Content>
             </Container>
