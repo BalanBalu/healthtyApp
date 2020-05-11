@@ -38,7 +38,7 @@ export default class CallKeepService {
             },
             android: {
               alertTitle: 'Permissions required',
-              alertDescription: 'This application needs to access your phone accounts',
+              alertDescription: 'Medflic is need a Permission to Show the Incoming Video Call Request',
               cancelButton: 'Cancel',
               okButton: 'ok',
               additionalPermissions: [ PermissionsAndroid.PERMISSIONS.RECORD_AUDIO, PermissionsAndroid.PERMISSIONS.CAMERA ]
