@@ -86,6 +86,22 @@ export const getLapTestPaymentDetails = async (paymentId) => {
     }
 }
 
+
+export const getLabAppointmentById = async (appointmentId) => {
+    try {
+        let endPoint = 'lab-test/appointments/' + appointmentId
+        let response = await getService(endPoint);
+        let respData = response.data;
+        return respData;
+    } catch (e) {
+        return {
+            message: 'exception' + e,
+            success: false
+        }
+    }
+}
+
+
 export async function insertAppointment(data) {
     try {
         let endPoint = 'lab-test/appointments';

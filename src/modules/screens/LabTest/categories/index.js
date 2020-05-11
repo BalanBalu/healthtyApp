@@ -24,7 +24,7 @@ class LabCategories extends PureComponent {
     try {
       const { bookappointment: { locationCordinates } } = this.props;
       console.log("locationCordinates", locationCordinates)
-      locationData = {
+      let locationData = {
         "coordinates": locationCordinates,
         "maxDistance": MAX_DISTANCE_TO_COVER
       }
@@ -68,15 +68,18 @@ class LabCategories extends PureComponent {
 
 
   filterCategories(searchValue) {
-    console.log(this.state.data);
+    console.log("this.mainLabData", this.mainLabData);
     const { labData } = this.state;
     if (!searchValue) {
       this.setState({ searchValue, data: labData });
     } else {
-      const filteredCategories = this.mainLabData.filter(ele =>
-        ele.lab_test_category_info.category_name.toLowerCase().search(searchValue.toLowerCase()) !== -1
-      );
-      this.setState({ searchValue, labData: filteredCategories })
+      if (this.mainLabData!=undefined){
+        const filteredCategories = this.mainLabData.filter(ele =>
+          ele.lab_test_category_info.category_name.toLowerCase().search(searchValue.toLowerCase()) !== -1
+        );
+        this.setState({ searchValue, labData: filteredCategories })
+      }
+     
     }
   }
 
