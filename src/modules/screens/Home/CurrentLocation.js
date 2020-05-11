@@ -1,7 +1,6 @@
 
 import { SET_PATIENT_LOCATION_DATA } from '../../providers/bookappointment/bookappointment.action';
 import { MAP_BOX_PUBLIC_TOKEN, IS_ANDROID, MAP_BOX_TOKEN } from '../../../setup/config';
-import RNAndroidLocationEnabler from 'react-native-android-location-enabler';
 import MapboxGL from '@react-native-mapbox-gl/maps';
 import { BackHandler, Alert } from 'react-native';
 import Geolocation from 'react-native-geolocation-service';
@@ -28,18 +27,8 @@ try {
       
       isGranted = await MapboxGL.requestAndroidLocationPermissions();
       console.log('isGranted', isGranted);
-      
-      // await this.setState({
-      //    isAndroidPermissionGranted: isGranted,
-      //    isFetchingAndroidPermission: false,
-      //  });
+     
       if (isGranted) {
-       
-
-       // RNAndroidLocationEnabler.promptForEnableLocationIfNeeded({ interval: 10000, fastInterval: 5000 }).then(async (data) => {
-          // if (data === 'enabled') {
-          //   await this.timeout(1000);
-          // }
           CallKeepService.setupCallkeep();
           console.log('You ARE RUNNING ON ANDROID')
           Geolocation.getCurrentPosition(async (position) => {
@@ -82,16 +71,6 @@ try {
             }
           }, 
           { timeout: 500000, enableHighAccuracy: true, showLocationDialog: true, forceRequestLocation: true };
-
-      /*  }).catch(err => {
-          console.log(err);
-          // The user has not accepted to enable the location services or something went wrong during the process
-          // "err" : { "code" : "ERR00|ERR01|ERR02", "message" : "message"}
-          // codes : 
-          //  - ERR00 : The user has clicked on Cancel button in the popup
-          //  - ERR01 : If the Settings change are unavailable
-          //  - ERR02 : If the popup has failed to open
-        }); */
       }
       else {
         Alert.alert(

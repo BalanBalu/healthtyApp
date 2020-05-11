@@ -11,8 +11,8 @@ import { formatDate, addMoment, getMoment } from '../../../../setup/helpers';
 import styles from '../styles'
 import RenderDates from './RenderDateList';
 import RenderSlots from './RenderSlots';
-import { getWishList4PatientByLabTestService, addFavoritesToLabByUserService, getTotalWishList4LabTestService, getTotalReviewsCount4LabTestService } from '../../../providers/labTest/labTestBookAppointment.action'
-
+import { getWishList4PatientByLabTestService, addFavoritesToLabByUserService, getTotalWishList4LabTestService, getTotalReviewsCount4LabTestService, SET_SINGLE_LAB_ITEM_DATA } from '../../../providers/labTest/labTestBookAppointment.action'
+import { store } from '../../../../setup/store'
 const CALL_AVAILABILITY_SERVICE_BY_NO_OF_IDS_COUNT = 5;
 
 class labSearchList extends Component {
@@ -103,7 +103,7 @@ class labSearchList extends Component {
     }
     getTotalReviewsCount4LabTest = async (labIdsArry) => {
         try {
-            getTotalReviewsCount4LabTestService(labIdsArry);
+            // getTotalReviewsCount4LabTestService(labIdsArry);
         } catch (Ex) {
             console.log('Ex is getting on get Reviews count for Lab====>', Ex)
             return {
@@ -120,7 +120,7 @@ class labSearchList extends Component {
     getLabIdsArrayByInput = labIdFromItem => {
         const findIndexOfLabId = this.totalLabIdsArryBySearched.indexOf(String(labIdFromItem));
         return this.totalLabIdsArryBySearched.slice(findIndexOfLabId, findIndexOfLabId + CALL_AVAILABILITY_SERVICE_BY_NO_OF_IDS_COUNT) || []
-       
+
     }
 
     /* get Lab Test Availability Slots service */
@@ -136,7 +136,7 @@ class labSearchList extends Component {
                 endDate: formatDate(endDateByMoment, 'YYYY-MM-DD')
             }
             const resultSlotsData = await fetchLabTestAvailabilitySlotsService(reqData4Availability, reqStartAndEndDates);
-             console.log('resultSlotsData======>', resultSlotsData);
+            console.log('resultSlotsData======>', resultSlotsData);
             if (resultSlotsData.success) {
                 const availabilityData = resultSlotsData.data;
                 if (availabilityData.length != 0) {
@@ -245,12 +245,10 @@ class labSearchList extends Component {
         let packageDetails = {
             lab_id: labInfo.lab_id,
             lab_test_categories_id: labCatInfo._id,
-            // Fields which we need to get it from Backend API 
-             lab_test_description: "general",
-            fee: 1000,
-            extra_charges: 50,
-            mobile_no: "98076540211",
-            //  // Fields which we need to get it from Backend API 
+            lab_test_description: labInfo.labPriceInfo[0].lab_test_description || 'null',
+            fee: labInfo.labPriceInfo[0].price || 0,
+            extra_charges: labInfo.extra_charges || 0,
+            mobile_no: labInfo.mobile_no || null,
             lab_name: labInfo.lab_name,
             category_name: labCatInfo.category_name,
             appointment_starttime: selectedSlotItem.slotStartDateAndTime,
@@ -260,10 +258,21 @@ class labSearchList extends Component {
         this.props.navigation.navigate('labConfirmation', { packageDetails })
     }
 
+    onPressGoToBookAppointmentPage(labItemData) {
+        const { labInfo } = labItemData
+        labItemData.labId = labInfo.lab_id;
+        labItemData.slotData = this.availableSlotsDataMap.get(String(labInfo.lab_id)) || {};
+        let reqLabBookAppointmentData = { ...labItemData }
+        store.dispatch({
+            type: SET_SINGLE_LAB_ITEM_DATA,
+            data: reqLabBookAppointmentData
+        });
+        this.props.navigation.navigate('LabBookAppointment', { LabId: labInfo.lab_id, availabilitySlotsDatesArry: this.availabilitySlotsDatesArry });
+    }
 
     renderLabListCards(item) {
 
-        const { LabTestData: { patientWishListLabIds, wishListCountByLabIds, reviewCountsByLabIds } } = this.props;
+        const { labTestData: { patientWishListLabIds, wishListCountByLabIds, reviewCountsByLabIds } } = this.props;
         const { expandedLabIdToShowSlotsData, isLoggedIn } = this.state;
         const slotDataObj4Item = this.availableSlotsDataMap.get(String(item.labInfo.lab_id)) || {}
         return (
@@ -272,7 +281,7 @@ class labSearchList extends Component {
                     <List style={{ borderBottomWidth: 0 }}>
                         <ListItem style={{ borderBottomWidth: 0 }}>
                             <Grid>
-                                <Row>
+                                <Row onPress={() => this.onPressGoToBookAppointmentPage(item)}>
                                     <Col style={{ width: '5%' }}>
                                         <Thumbnail source={renderLabTestImage(item.labInfo)} style={{ height: 60, width: 60 }} />
                                     </Col>
@@ -283,31 +292,46 @@ class labSearchList extends Component {
                                         <Row style={{ marginLeft: 55, }}>
                                             <Text note style={{ fontFamily: 'OpenSans', marginTop: 2, fontSize: 11 }}>{item.labCatInfo.category_name}</Text>
                                         </Row>
-                                        <RenderAddressInfo
-                                            addressInfo={item.labInfo.location && item.labInfo.location.address ? item.labInfo.location.address : null}
-                                        />
+                                        <Row style={{ marginLeft: 55, }}>
+
+                                            <RenderAddressInfo
+                                                addressInfo={item.labInfo.location && item.labInfo.location.address ? item.labInfo.location.address : null}
+                                            />
+                                        </Row>
                                     </Col>
                                     <Col style={{ width: '15%' }}>
-                                        <RenderFavoritesComponent
-                                            isLoggedIn={isLoggedIn}
-                                            isEnabledFavorites={patientWishListLabIds.includes(item.labInfo.lab_id)}
-                                            onPressFavoriteIcon={() => this.addToFavoritesList(item.labInfo.lab_id)}
-                                        />
+                                        <Row>
+                                            <RenderFavoritesComponent
+                                                isLoggedIn={isLoggedIn}
+                                                isEnabledFavorites={patientWishListLabIds.includes(item.labInfo.lab_id)}
+                                                onPressFavoriteIcon={() => this.addToFavoritesList(item.labInfo.lab_id)}
+                                            />
+                                        </Row>
                                     </Col>
                                 </Row>
                                 <Row style={{ marginTop: 10 }}>
-                                    <RenderFavoritesCount
-                                        favoritesCount={wishListCountByLabIds[item.labInfo.lab_id] ? wishListCountByLabIds[item.labInfo.lab_id] : '0'}
-                                    />
-                                    <RenderStarRatingCount
-                                        totalRatingCount={reviewCountsByLabIds[item.labInfo.lab_id] ? reviewCountsByLabIds[item.labInfo.lab_id].average_rating : ' 0'}
-                                    />
-                                    <RenderOfferDetails
-                                        offerInfo={item.labInfo && item.labInfo.labPriceInfo && item.labInfo.labPriceInfo[0] && item.labInfo.labPriceInfo[0].offer ? item.labInfo.labPriceInfo[0].offer : ' '}
-                                    />
-                                    <RenderPriceDetails
-                                        priceInfo={item.labInfo && item.labInfo.labPriceInfo && item.labInfo.labPriceInfo[0] && item.labInfo.labPriceInfo[0].price ? item.labInfo.labPriceInfo[0].price : ' '}
-                                    />
+                                    <Col style={{ width: "25%", marginLeft: -10 }}>
+                                        <RenderFavoritesCount
+                                            favoritesCount={wishListCountByLabIds[item.labInfo.lab_id] ? wishListCountByLabIds[item.labInfo.lab_id] : '0'}
+                                        />
+                                    </Col>
+                                    <Col style={{ width: "25%" }}>
+
+                                        <RenderStarRatingCount
+                                            totalRatingCount={reviewCountsByLabIds[item.labInfo.lab_id] ? reviewCountsByLabIds[item.labInfo.lab_id].average_rating : ' 0'}
+                                        />
+                                    </Col>
+                                    <Col style={{ width: "25%" }}>
+
+                                        <RenderOfferDetails
+                                            offerInfo={item.labInfo && item.labInfo.labPriceInfo && item.labInfo.labPriceInfo[0] && item.labInfo.labPriceInfo[0].offer ? item.labInfo.labPriceInfo[0].offer : ' '}
+                                        />
+                                    </Col>
+                                    <Col style={{ width: "25%", marginLeft: 10 }}>
+                                        <RenderPriceDetails
+                                            priceInfo={item.labInfo && item.labInfo.labPriceInfo && item.labInfo.labPriceInfo[0] && item.labInfo.labPriceInfo[0].price ? item.labInfo.labPriceInfo[0].price : ' '}
+                                        />
+                                    </Col>
                                 </Row>
                                 <Row  >
                                     <Col style={{ width: "5%" }}>
@@ -361,7 +385,7 @@ class labSearchList extends Component {
     }
 
     render() {
-        const { LabTestData: { patientWishListLabIds } } = this.props;
+        const { labTestData: { patientWishListLabIds } } = this.props;
 
         const { labListData, isLoading } = this.state;
         return (
@@ -414,7 +438,7 @@ class labSearchList extends Component {
 }
 
 const LabTestBookAppointmentState = (state) => ({
-    LabTestData: state.LabTestData
+    labTestData: state.labTestData
 })
 export default connect(LabTestBookAppointmentState)(labSearchList)
 

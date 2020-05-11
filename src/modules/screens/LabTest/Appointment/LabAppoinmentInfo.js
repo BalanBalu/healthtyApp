@@ -8,7 +8,7 @@ import { StyleSheet, AsyncStorage, TouchableOpacity, Modal } from 'react-native'
 import StarRating from 'react-native-star-rating';
 import { FlatList } from 'react-native-gesture-handler';
 import { formatDate, addTimeUnit, subTimeUnit, statusValue } from "../../../../setup/helpers";
-import { updateLapAppointment, getLapTestPaymentDetails } from "../../../providers/lab/lab.action"
+import { updateLapAppointment, getLapTestPaymentDetails, getLabAppointmentById } from "../../../providers/lab/lab.action"
 
 class LabAppointmentInfo extends Component {
   constructor(props) {
@@ -28,14 +28,45 @@ class LabAppointmentInfo extends Component {
   async componentDidMount() {
     const { navigation } = this.props;
     const appointmentData = navigation.getParam('data');
+    console.log("appointmentData", appointmentData)
+
     const upcomingTap = navigation.getParam('selectedIndex');
 
-    if (appointmentData != undefined) {
-      await this.setState({ data: appointmentData, upcomingTap })
+    if (appointmentData == undefined) {
+      let appointmentId = navigation.getParam('appointmentId')
+      await this.setState({ appointmentId })
+      await new Promise.all([
+        this.getAppointmentById(appointmentId),
+      ])
     }
-    this.getLapTestPaymentInfo(appointmentData.payment_id)
-
+    else {
+      await this.setState({ data: appointmentData, upcomingTap })
+      this.getLapTestPaymentInfo(appointmentData.payment_id)
+    }
   }
+
+
+  getAppointmentById = async (appointmentId) => {
+
+    try {
+      let result = await getLabAppointmentById(appointmentId)
+      console.log("result", result)
+
+      if (result.success) {
+        await this.setState({ data: result.data[0], isLoading: true });
+        this.getLapTestPaymentInfo(result.data[0].payment_id)
+      }
+    }
+    catch (e) {
+      console.log(e)
+    }
+    finally {
+      await this.setState({ isLoading: true });
+    }
+  }
+
+
+
   async  navigateCancelAppoointment() {
     try {
       this.props.navigation.navigate('LabCancelAppointment', { appointmentData: this.state.data })
@@ -49,11 +80,13 @@ class LabAppointmentInfo extends Component {
     try {
       const { data } = this.state;
       this.packageDetails = {
+        appointment_id: data._id,
         lab_id: data.lab_id,
         lab_test_categories_id: data.lab_test_categories_id,
         lab_test_descriptiion: data.lab_test_descriptiion,
         fee: data.fee,
         lab_name: data.labInfo.lab_name,
+        appointment_status: data.appointment_status,
         category_name: data.labCategoryInfo.category_name,
         extra_charges: data.labInfo.extra_charges,
         appointment_starttime: data.appointment_starttime,
@@ -166,7 +199,7 @@ class LabAppointmentInfo extends Component {
                             fontSize: 35
                           }} />
 
-                        <Text capitalise={true} style={[styles.textApproved, { color: statusValue[data.appointment_status].color }]}>{data.appointment_status == "PAYMENT_FAILED" ? 'PAYMENT FAILED' : data.appointment_status}</Text>
+                        <Text capitalise={true} style={[styles.textApproved, { color: statusValue[data.appointment_status].color }]}>{data.appointment_status == "PAYMENT_IN_PROGRESS" ? 'PAYMENT IN PROGRESS' : data.appointment_status == "PAYMENT_FAILED" ? 'PAYMENT FAILED' : data.appointment_status}</Text>
                       </View>
                     </Col> : null
                   }

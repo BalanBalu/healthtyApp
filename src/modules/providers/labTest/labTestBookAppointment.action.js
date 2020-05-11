@@ -3,7 +3,7 @@ import { getService, putService } from '../../../setup/services/httpservices';
 export const SET_PATIENT_WISH_LIST_LAB_IDS = 'LAB/SET_PATIENT_WISH_LIST_LAB_IDS';
 export const SET_WISHLIST_LAB_COUNT_BY_IDS = 'LAB/SET_WISHLIST_LAB_COUNT_BY_IDS';
 export const SET_REVIEWS_COUNT_BY_LAB_IDS = 'LAB/SET_REVIEWS_COUNT_BY_LAB_IDS';
-
+export const SET_SINGLE_LAB_ITEM_DATA = 'LAB/SET_SINGLE_LAB_ITEM_DATA';
 import { store } from '../../../setup/store';
 
 
@@ -14,7 +14,7 @@ export const getTotalReviewsCount4LabTestService = async (labIds) => {
         const response = await getService(endPoint);
         const reviewCountRes = response.data;
         if (reviewCountRes.success) {
-            const { LabTestData: { reviewCountsByLabIds } } = store.getState();
+            const { labTestData: { reviewCountsByLabIds } } = store.getState();
             const reviewCountList = reviewCountRes.data;
             if (reviewCountList.length != 0) {
                 for (i = 0; i < reviewCountList.length; i++) {
@@ -72,7 +72,7 @@ export const getTotalWishList4LabTestService = async (labId) => {
 }
 export const addFavoritesToLabByUserService = async (userId, labId) => {
     try {
-        const { LabTestData: { patientWishListLabIds, wishListCountByLabIds } } = store.getState();
+        const { labTestData: { patientWishListLabIds, wishListCountByLabIds } } = store.getState();
         if (userId) {
             const reqData4updateWishList = {
                 active: !patientWishListLabIds.includes(labId)

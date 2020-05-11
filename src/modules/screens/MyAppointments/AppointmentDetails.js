@@ -281,7 +281,7 @@ class AppointmentDetails extends Component {
 
 
   render() {
-    const { data, reviewData, reportData, doctorData, education, specialist, isLoading, selectedTab, paymentDetails } = this.state;
+    const { data, reviewData, reportData, doctorData, education, specialist, isLoading, selectedTab, paymentDetails,appointmentId } = this.state;
 
     return (
       <Container style={styles.container}>
@@ -439,6 +439,14 @@ class AppointmentDetails extends Component {
                 </Row>
               </TouchableOpacity>
             </Row>:null} */}
+
+            <Row style={styles.rowStyle}>
+              <TouchableOpacity style={styles.appoinmentPrepareStyle} onPress={() => { this.props.navigation.navigate('PrepareAppointmentWizard', { AppointmentId: appointmentId }) }}>
+                <Row>
+                <Text style={styles.touchableText1}>Appointment Preparation</Text>
+                </Row>
+              </TouchableOpacity>
+            </Row>
                 <View style={{ marginTop: 10 }}>
                   {data.appointment_status === 'CANCELED' || data.appointment_status === 'PROPOSED_NEW_TIME' ? data.status_update_reason != undefined &&
                     <View style={styles.rowSubText1}>
@@ -891,6 +899,21 @@ const styles = StyleSheet.create({
     color: '#4765FF',
     marginTop: 4,
     marginLeft: 5
+  },
+  touchableText1: {
+    fontFamily: 'OpenSans',
+    fontSize: 15,
+    fontWeight: 'bold',
+    color: '#fff',
+    marginLeft: 5
+  },
+  appoinmentPrepareStyle:{
+    backgroundColor:'#8EC63F',
+    paddingTop:10,
+    paddingBottom:10,
+    paddingRight:20,
+    paddingLeft:20,
+    borderRadius:5
   },
   rowSubText: {
     marginLeft: 10,

@@ -201,7 +201,13 @@ export function toDataUrl(url) {
 
 
 export const statusValue={
-  
+  "PAYMENT_IN_PROGRESS":
+  {
+    text: 'waiting for  Payment process',
+    color: '#3d70ff',
+    icon: 'md-timer',
+    type: 'REPORT_ISSUE_APPOINTMENT_PAYMENT_IN_PROGRESS'
+  },
   "PENDING":
   {
     text:'waiting for confirmation',
@@ -266,6 +272,25 @@ export const statusValue={
     icon: 'ios-close-circle',
     type: 'REPORT_ISSUE_APPOINTMENT_PAYMENT_FAILED'
   }
+}
+
+
+
+export const notificationNavigation={
+  
+  "PHARMACY_ORDERS":
+  {
+    navigationOption:'OrderDetails',
+
+  },
+  "APPOINTMENT":
+ {
+  navigationOption:'AppointmentInfo',
+  },
+  "LAB_APPOINTMENT":
+  {
+    navigationOption:'LabAppointmentInfo'
+  }, 
 }
 
 
