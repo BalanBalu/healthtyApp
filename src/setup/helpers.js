@@ -270,4 +270,23 @@ export const statusValue={
 
 
 
+export const notificationNavigation={
+  
+  "PHARMACY_ORDERS":
+  {
+    navigationOption:'OrderDetails',
+
+  },
+  "APPOINTMENT":
+ {
+  navigationOption:'AppointmentInfo',
+  },
+  "LAB_APPOINTMENT":
+  {
+    navigationOption:'LabAppointmentInfo'
+  }, 
+}
+
+
+
 
