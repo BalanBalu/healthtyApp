@@ -42,10 +42,7 @@ class LabCategories extends PureComponent {
   onPressCatItem = async (type, value) => {	
     const { bookappointment: { locationCordinates } } = this.props;
     console.log("locationCordinates", locationCordinates)
-    locationData = {
-      "coordinates": locationCordinates,
-      "maxDistance": MAX_DISTANCE_TO_COVER
-    }
+    
     const inputDataBySearch = [	
       {	
         type: 'geo',	
