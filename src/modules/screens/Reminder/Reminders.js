@@ -201,11 +201,11 @@ class Reminder extends Component {
                       <Col style={styles.col2}>
                        <Row>
                       
-                        <Col size={8}>
+                        <Col size={7}>
                           {renderTimeList(item.medicine_take_times)}
                         </Col>
                            
-                        <Col size={2}>
+                        <Col size={3}>
                             
                             <Switch style={{ transform: [{ scaleX: .8 }, { scaleY: .8 }], backgroundColor: 'fff' }} trackColor={{ true: '#6FC41A', false: 'grey' }}
                               trackColor={{ true: '#7F49C3' }}
@@ -246,10 +246,12 @@ const styles = StyleSheet.create({
     borderRightColor: 'gray',
     borderRightWidth: 1,
     width: '50%',
+    marginTop:5
   },
   col2: {
     width: '50%',
     justifyContent: 'center',
+    marginTop:5
   },
   mednamestyle: {
     fontFamily: 'OpenSans',

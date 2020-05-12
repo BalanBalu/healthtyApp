@@ -463,7 +463,7 @@ class AddReminder extends Component {
                 }
               </View>
               <Row>
-                <Col size={4} style={{ mariginTop: 10 }}>
+                <Col size={4} style={{ mariginTop: 10,alignItems:'flex-end' }}>
                   
                   {this.state.pageContent == true ?
                     
@@ -667,8 +667,6 @@ const styles = StyleSheet.create({
   NextButton: {
     borderRadius: 5,
     height: 40,
-    
-    marginLeft: 245,
     padding: 5,
     justifyContent: 'center',
     backgroundColor: '#1296db'
@@ -705,7 +703,7 @@ const styles = StyleSheet.create({
   NumText: {
     fontFamily: 'OpenSans',
     fontSize: 16,
-    marginTop: 10,
+    marginTop: 15,
   },
   autoField: {
     height: 45,
