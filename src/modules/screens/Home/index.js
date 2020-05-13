@@ -358,9 +358,10 @@ class Home extends Component {
     */
    async _setUpListeners() {
         let userId = await AsyncStorage.getItem('userId')
-        if (userId) {
-           this.authorized = await authorizeConnectyCube(userId);
-           console.log(this.authorized);
+        const { chat : { loggedIntoConnectyCube }} = this.props;
+        if (userId && loggedIntoConnectyCube === false ) {
+           this.authorized = await authorizeConnectyCube();
+           console.log('loggedIntoConnectyCube '+ loggedIntoConnectyCube + ' Authorized: ' + this.authorized);
            if(this.authorized) {
                 ConnectyCube.videochat.onCallListener = this._onCallListener;
                 ConnectyCube.videochat.onRemoteStreamListener = this._onRemoteStreamListener;

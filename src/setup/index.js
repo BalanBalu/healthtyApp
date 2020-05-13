@@ -35,12 +35,14 @@ export default class App extends Component {
       senderId: FIREBASE_SENDER_ID
     };
     setI18nConfig();
-    AuthService.init();
+    NavigationService.isMountedRef.current = false;
+    
   }
 
   async componentDidMount() {
+    NavigationService.isMountedRef.current = true;
     const userId = await AsyncStorage.getItem('userId');
-  
+    AuthService.init();
     RNLocalize.addEventListener('change', this.handleLocalizationChange);
     if (userId) {
       this.userId = userId;
@@ -126,7 +128,7 @@ export default class App extends Component {
         <Root>
         <VideoAlertModel> </VideoAlertModel>
           <StyleProvider style={getTheme(material)}>
-              <RoutesHome ref={navigatorRef => NavigationService.setContainer(navigatorRef)}> 
+              <RoutesHome ref={NavigationService.navigationRef}> 
             </RoutesHome> 
           </StyleProvider>
         </Root>
