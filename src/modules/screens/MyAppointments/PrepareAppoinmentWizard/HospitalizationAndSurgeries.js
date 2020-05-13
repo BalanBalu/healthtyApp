@@ -16,9 +16,7 @@ class HospitalizationAndSurgeries extends PureComponent {
         const { profile: { medical_procedure } } = this.props
 
         this.state = {
-            radioButton: false,
             checkBoxClick: medical_procedure,
-            lists: '',
             hospitalised_reason: [],
             hospitalised_date: [],
             isLoading: false,
@@ -95,7 +93,7 @@ class HospitalizationAndSurgeries extends PureComponent {
                         <Text style={[styles.subHead, { textAlign: 'center' }]}>hospitalization and Surgeries</Text>
                         <View style={{ marginTop: 20, width: '100%', }}>
 
-                            <Text style={{ fontFamily: "OpenSans", fontSize: 15, }}>Have you ever had any of the folloing procedures?</Text>
+                            <Text style={{ fontFamily: "OpenSans", fontSize: 15, }}>Have you ever had any of the following procedures?</Text>
                             <FlatList
                                 data={hospitalizedFor}
                                 keyExtractor={(item, index) => index.toString()}

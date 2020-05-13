@@ -10,21 +10,19 @@ class PrepareAppointmentWizard extends PureComponent {
     constructor(props) {
         super(props)
         this.state = {
-
-            appointmentId: props.navigation.getParam('AppointmentId')
+            doctorData: props.navigation.getParam('DoctorData'),
+            appointmentId: props.navigation.getParam('AppointmentId'),
+            doctorName:props.navigation.getParam("Data")
         }
     }
     getUserProfile = async () => {
         try {
             let fields = "first_name,dob,blood_group,secondary_mobile,primary_care_physician_info,general_health_info,marital_status,allergy_info,past_health_condition,having_any_allergies,taking_medications,family_conditions,hospitalized,medical_procedure,social_history,is_user_meet_doctor_before,any_other_concerns,description,gender,smoke,use_recreational_drugs,drink_alcohol,sexually_active,use_caffeinated_drink,physically_or_verbally_hurt_you,exercise,social_history"
-
             let userId = await AsyncStorage.getItem('userId');
             let result = await fetchUserProfile(userId, fields);
-
             if (result) {
                 setUserDataForPreparation(result);
             }
-
         }
         catch (e) {
             console.error('Error while Fetching User profile' + e);
@@ -32,7 +30,7 @@ class PrepareAppointmentWizard extends PureComponent {
     }
 
     render() {
-        const { Question, appointmentId } = this.state
+        const { Question, appointmentId ,doctorData,doctorName} = this.state
         return (
             <Container style={styles.container}>
                 <Content contentContainerStyle={styles.content}>
@@ -47,10 +45,10 @@ class PrepareAppointmentWizard extends PureComponent {
                         </View>
                         <View style={[styles.centerContent, { marginTop: 50 }]}>
                             <TouchableOpacity style={styles.touchStyle} onPress={() => {
-                                this.props.navigation.navigate("BasicInfo", { AppointmentId: appointmentId })
+                                this.props.navigation.navigate("BasicInfo", { AppointmentId: appointmentId ,DoctorData: doctorData,Data:doctorName})
                                 this.getUserProfile()
                             }}>
-                                <Text style={styles.touchText}>I Agree,Start check-in</Text>
+                                <Text style={styles.touchText}>I Agree Start check-in</Text>
                             </TouchableOpacity>
                         </View>
                     </View>

@@ -10,7 +10,9 @@ import { acceptNumbersOnly } from '../../../common';
 import { bloodGroupList } from './constants';
 import { connect } from 'react-redux';
 import { prepareAppointmentUpdate, } from '../../../providers/bookappointment/bookappointment.action'
-import styles from '../styles'
+import styles from '../styles';
+import { formatDate } from "../../../../setup/helpers";
+
 
 class PatientInfo extends PureComponent {
     constructor(props) {
@@ -18,12 +20,9 @@ class PatientInfo extends PureComponent {
         const { profile: { first_name, dob, gender, marital_status, blood_group, secondary_mobile } } = this.props
 
         this.state = {
-            firstQuestion: 0,
-            radioButton: false,
-            checkBoxClick: false,
             user_name: first_name,
             mobile_no: secondary_mobile,
-            date_of_birth: dob,
+            date_of_birth: formatDate(dob,'DD/MM/YYYY'),
             gender: gender,
             marital_status: marital_status,
             selectedBloodGroup: blood_group,
@@ -115,7 +114,6 @@ class PatientInfo extends PureComponent {
                                     returnKeyType={'go'}
                                     value={user_name}
                                     onChangeText={(enteredText) => this.setState({ user_name: enteredText })}
-                                    onSubmitEditing={() => { this.user_name._root.focus(); }}
                                 />
 
                             </Form>
@@ -132,7 +130,6 @@ class PatientInfo extends PureComponent {
                                     returnKeyType={'go'}
                                     value={date_of_birth}
                                     onChangeText={(enteredText) => this.setState({ date_of_birth: enteredText })}
-                                    onSubmitEditing={() => { this.date_of_birth._root.focus(); }}
                                 />
                             </Form>
                         </View>
@@ -170,7 +167,7 @@ class PatientInfo extends PureComponent {
 
                         <View style={{ marginTop: 20, width: '100%', }}>
 
-                            <Text style={{ fontFamily: "OpenSans", fontSize: 15, }}>Martial status</Text>
+                            <Text style={{ fontFamily: "OpenSans", fontSize: 15, }}>Marital status</Text>
                             <View style={{ flexDirection: 'row', marginTop: 15 }}>
                                 <Col style={{ flexDirection: 'row' }} size={6}>
                                     <Col style={{ flexDirection: 'row' }}>
@@ -245,7 +242,6 @@ class PatientInfo extends PureComponent {
                                     returnKeyType={'go'}
                                     value={mobile_no}
                                     onChangeText={mobile_no => acceptNumbersOnly(mobile_no) == true || mobile_no === '' ? this.setState({ mobile_no }) : null}
-                                    onSubmitEditing={() => { this.mobile_no._root.focus(); }}
                                 />
                             </Form>
                         </View>

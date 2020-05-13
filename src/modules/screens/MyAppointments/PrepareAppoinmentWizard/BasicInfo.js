@@ -8,6 +8,7 @@ import { userFiledsUpdate } from '../../../providers/auth/auth.actions';
 import { prepareAppointmentUpdate } from '../../../providers/bookappointment/bookappointment.action'
 import { connect } from 'react-redux';
 import styles from '../styles'
+import {  getName, } from '../../../common'
 
 
 
@@ -16,11 +17,12 @@ class BasicInfo extends PureComponent {
         super(props)
         this.state = {
             itemSelected: true,
-            radioButton: false,
-            checkBoxClick: false,
             isLoading: false,
             userVisited: true,
-            appointmentId: props.navigation.getParam('AppointmentId')
+            appointmentId: props.navigation.getParam('AppointmentId'),
+            doctorData: props.navigation.getParam('DoctorData'),
+            doctorName:props.navigation.getParam("Data")
+
 
         }
     }
@@ -55,6 +57,7 @@ class BasicInfo extends PureComponent {
 
 
     render() {
+        const {doctorData,doctorName} = this.state;
         return (
             <Container style={styles.container}>
                 <Content contentContainerStyle={styles.content}>
@@ -64,14 +67,14 @@ class BasicInfo extends PureComponent {
                     />
                     <View style={{ flex: 1 }}>
 
-                        <Text style={styles.subHead}>Have you ever visited Dr.Balasubramanian before?</Text>
+                        <Text style={styles.subHead}>Have you ever visited  {(doctorData && doctorData.prefix != undefined ? doctorData.prefix + ' ' : '') + (getName(doctorName)) + ' '} before?</Text>
                         <View style={{ alignItems: 'center', flexDirection: 'row', marginTop: 20 }}>
 
                             <Radio
                                 standardStyle={true}
                                 selected={this.state.itemSelected}
                                 onPress={() => this.setState({
-                                    itemSelected: this.state.itemSelected
+                                    itemSelected: !this.state.itemSelected
                                 })} />
 
                             <Text style={styles.innersubTexts}>Yes,I've seen this doctor before</Text>
