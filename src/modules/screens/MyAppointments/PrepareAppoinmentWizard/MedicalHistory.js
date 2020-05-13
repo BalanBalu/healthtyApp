@@ -16,7 +16,6 @@ class MedicalHistory extends PureComponent {
         const { profile: { general_health_info } } = this.props
 
         this.state = {
-            firstQuestion: 0,
             radioButton: general_health_info,
             checkBoxClick: [],
             reason_description: '',
@@ -101,7 +100,7 @@ class MedicalHistory extends PureComponent {
                         visible={this.state.isLoading}
                     />
                     <View style={{ flex: 1 }}>
-                        <Text style={[styles.subHead, { textAlign: 'center' }]}>Reason for vist</Text>
+                        <Text style={[styles.subHead, { textAlign: 'center' }]}>Reason for visit</Text>
                         <View style={{ marginTop: 20 }}>
 
                             <Text style={{ fontFamily: "OpenSans", fontSize: 15, }}>Why are you booking this appointment ?</Text>
@@ -114,7 +113,7 @@ class MedicalHistory extends PureComponent {
                                     returnKeyType={'go'}
                                     value={reason_description}
                                     onChangeText={(enteredText) => this.setState({ reason_description: enteredText })}
-                                    onSubmitEditing={() => { this.reason_description._root.focus(); }}
+                                
                                 />
                             </Form>
                         </View>
@@ -134,7 +133,6 @@ class MedicalHistory extends PureComponent {
                                     returnKeyType={'go'}
                                     value={any_other_concerns}
                                     onChangeText={(enteredText) => this.setState({ any_other_concerns: enteredText })}
-                                    onSubmitEditing={() => { this.any_other_concerns._root.focus(); }}
                                 />
                             </Form>
                         </View>

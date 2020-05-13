@@ -441,7 +441,7 @@ class AppointmentDetails extends Component {
             </Row>:null} */}
 
             <Row style={styles.rowStyle}>
-              <TouchableOpacity style={styles.appoinmentPrepareStyle} onPress={() => { this.props.navigation.navigate('PrepareAppointmentWizard', { AppointmentId: appointmentId }) }}>
+              <TouchableOpacity style={styles.appoinmentPrepareStyle} onPress={() => { this.props.navigation.navigate('PrepareAppointmentWizard', { AppointmentId: appointmentId,DoctorData: doctorData ,Data : data.doctorInfo}) }}>
                 <Row>
                 <Text style={styles.touchableText1}>Appointment Preparation</Text>
                 </Row>

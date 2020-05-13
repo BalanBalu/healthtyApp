@@ -167,7 +167,7 @@ class FamilyMedicalConditions extends PureComponent {
                                                     </Col>
                                                     <Col size={1} style={{ justifyContent: 'center' }}>
                                                         <TouchableOpacity onPress={() => this.deleteTablefamilyCondition(index)}
-                                                            style={{ backgroundColor: 'red', borderRadius: 5 / 2, paddingLeft: 1, paddingRight: 1, paddingTop: 1, paddingBottom: 1, flexDirection: 'row', justifyContent: 'center', marginLeft: 5 }}>
+                                                            style={{ backgroundColor: 'red', borderRadius: 5 / 2, paddingLeft: 1, paddingRight: 1, paddingTop: 1, paddingBottom: 1, flexDirection: 'row', justifyContent: 'center', marginLeft: 10 }}>
                                                             <Icon name="md-close" style={{ fontSize: 15, color: '#fff' }} />
                                                         </TouchableOpacity>
                                                     </Col>
@@ -178,7 +178,7 @@ class FamilyMedicalConditions extends PureComponent {
 
                                 </Form>
                                 <TouchableOpacity onPress={() => this.onAddNewfamilyCondition()}
-                                    style={{ position: 'absolute', right: 0, bottom: -18, backgroundColor: '#7F49C3', borderRadius: 10 / 2, paddingLeft: 2, paddingRight: 2, paddingTop: 2, paddingBottom: 2, flexDirection: 'row', alignItems: 'center', marginRight: 28 }}>
+                                    style={{ position: 'absolute', right: 0, bottom: -18, backgroundColor: '#7F49C3', borderRadius: 10 / 2, paddingLeft: 2, paddingRight: 2, paddingTop: 2, paddingBottom: 2, flexDirection: 'row', alignItems: 'center', marginRight: 32 }}>
                                     <Icon name="md-add" style={{ fontSize: 15, color: '#fff' }} />
                                     <Text style={{ fontSize: 10, fontFamily: 'OpenSans', color: '#fff', fontWeight: 'bold' }}>Add</Text>
                                 </TouchableOpacity>

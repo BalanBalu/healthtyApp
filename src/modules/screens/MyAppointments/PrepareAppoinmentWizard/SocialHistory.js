@@ -18,9 +18,6 @@ class SocialHistory extends PureComponent {
         const { profile: { social_history } } = this.props
 
         this.state = {
-            firstQuestion: 0,
-            radioButton: false,
-            checkBoxClick: false,
             isLoading: false,
             sexuallyActive: social_history ? social_history.sexually_active : null,
             drinkAlcohol: social_history ? social_history.drink_alcohol : null,

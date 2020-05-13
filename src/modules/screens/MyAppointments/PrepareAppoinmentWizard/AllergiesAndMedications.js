@@ -16,8 +16,6 @@ class AllergiesAndMedications extends PureComponent {
         const { profile: { having_any_allergies, taking_medications } } = this.props
 
         this.state = {
-            radioButton: false,
-            checkBoxClick: false,
             isLoading: false,
             allergy_name: [],
             allergy_reaction: [],
@@ -194,7 +192,7 @@ class AllergiesAndMedications extends PureComponent {
                                                     </Col>
                                                     <Col size={1} style={{ justifyContent: 'center' }}>
                                                         <TouchableOpacity onPress={() => this.deleteTable(index)}
-                                                            style={{ backgroundColor: 'red', borderRadius: 5 / 2, paddingLeft: 1, paddingRight: 1, paddingTop: 1, paddingBottom: 1, flexDirection: 'row', justifyContent: 'center', marginLeft: 5 }}>
+                                                            style={{ backgroundColor: 'red', borderRadius: 5 / 2, paddingLeft: 1, paddingRight: 1, paddingTop: 1, paddingBottom: 1, flexDirection: 'row', justifyContent: 'center', marginLeft: 10 }}>
                                                             <Icon name="md-close" style={{ fontSize: 15, color: '#fff' }} />
                                                         </TouchableOpacity>
                                                     </Col>
@@ -207,7 +205,7 @@ class AllergiesAndMedications extends PureComponent {
 
                             </View>
                             <TouchableOpacity onPress={() => this.onAddNewAlergics()}
-                                style={{ position: 'absolute', right: 0, bottom: -18, backgroundColor: '#7F49C3', borderRadius: 10 / 2, paddingLeft: 2, paddingRight: 2, paddingTop: 2, paddingBottom: 2, flexDirection: 'row', alignItems: 'center', marginRight: 28 }}>
+                                style={{ position: 'absolute', right: 0, bottom: -18, backgroundColor: '#7F49C3', borderRadius: 10 / 2, paddingLeft: 2, paddingRight: 2, paddingTop: 2, paddingBottom: 2, flexDirection: 'row', alignItems: 'center', marginRight: 32 }}>
                                 <Icon name="md-add" style={{ fontSize: 15, color: '#fff' }} />
                                 <Text style={{ fontSize: 10, fontFamily: 'OpenSans', color: '#fff', fontWeight: 'bold' }}>Add</Text>
                             </TouchableOpacity>
@@ -275,7 +273,7 @@ class AllergiesAndMedications extends PureComponent {
                                                         </Col>
                                                         <Col size={1} style={{ justifyContent: 'center' }}>
                                                             <TouchableOpacity onPress={() => this.deleteTableMedicineInfo(index)}
-                                                                style={{ backgroundColor: 'red', borderRadius: 5 / 2, paddingLeft: 1, paddingRight: 1, paddingTop: 1, paddingBottom: 1, flexDirection: 'row', justifyContent: 'center', marginLeft: 5 }}>
+                                                                style={{ backgroundColor: 'red', borderRadius: 5 / 2, paddingLeft: 1, paddingRight: 1, paddingTop: 1, paddingBottom: 1, flexDirection: 'row', justifyContent: 'center', marginLeft: 10 }}>
                                                                 <Icon name="md-close" style={{ fontSize: 15, color: '#fff' }} />
                                                             </TouchableOpacity>
                                                         </Col>
@@ -286,7 +284,7 @@ class AllergiesAndMedications extends PureComponent {
 
                                     </Form>
                                     <TouchableOpacity onPress={() => this.onAddNewMedicineInfo()}
-                                        style={{ position: 'absolute', right: 0, bottom: -18, backgroundColor: '#7F49C3', borderRadius: 10 / 2, paddingLeft: 2, paddingRight: 2, paddingTop: 2, paddingBottom: 2, flexDirection: 'row', alignItems: 'center', marginRight: 28 }}>
+                                        style={{ position: 'absolute', right: 0, bottom: -18, backgroundColor: '#7F49C3', borderRadius: 10 / 2, paddingLeft: 2, paddingRight: 2, paddingTop: 2, paddingBottom: 2, flexDirection: 'row', alignItems: 'center', marginRight: 32 }}>
                                         <Icon name="md-add" style={{ fontSize: 15, color: '#fff' }} />
                                         <Text style={{ fontSize: 10, fontFamily: 'OpenSans', color: '#fff', fontWeight: 'bold' }}>Add</Text>
                                     </TouchableOpacity>
