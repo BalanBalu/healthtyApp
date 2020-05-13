@@ -7,7 +7,7 @@ import {CallService, CallKeepService } from '../../services';
 import ToolBar from './ToolBar';
 import { store } from '../../../../../setup/store';
 import { connect } from 'react-redux';
-import { SET_VIDEO_SESSION, RESET_INCOMING_VIDEO_CALL } from '../../../../providers/chat/chat.action';
+import { SET_VIDEO_SESSION, RESET_INCOMING_VIDEO_CALL, RESET_INCOMING_VIDEO_CALL_VIA_BACKGROUND, SET_ON_VIDEO_SCREEN } from '../../../../providers/chat/chat.action';
 import { Toast } from 'native-base';
 
  class VideoScreen extends React.Component {
@@ -63,16 +63,24 @@ import { Toast } from 'native-base';
       const { chat: { session } } = this.props;
       if(session && this.steamSubscribeLoadedUsers.indexOf(session.userId) === -1) {
           this.setRemoteListener(session.userId, session.stream);
-          this.steamSubscribeLoadedUsers.push(session.userId);
       }
     });
+    store.dispatch({
+      type: SET_ON_VIDEO_SCREEN,
+      data: false
+    })
   }
 
   componentWillUnmount() {
     CallService.setKeepScreenOn(false);
     BackHandler.removeEventListener('hardwareBackPress', this.handleBackButton);
+    store.dispatch({
+      type: SET_ON_VIDEO_SCREEN,
+      data: false
+    })
   }
   componentWillMount() {
+   
   }
   componentDidUpdate(prevProps, prevState) {
     const currState = this.state;
@@ -147,6 +155,7 @@ import { Toast } from 'native-base';
     this.setState(({remoteStreams}) => {
       const updatedRemoteStreams = remoteStreams.map(item => {
         if (item.userId === userId) {
+          this.steamSubscribeLoadedUsers.push(userId);
           return {
             userId, 
             stream
@@ -182,7 +191,10 @@ import { Toast } from 'native-base';
     store.dispatch({
       type: SET_VIDEO_SESSION,
       data: null
-    })
+    });
+    store.dispatch({
+       type: RESET_INCOMING_VIDEO_CALL_VIA_BACKGROUND,
+    });
   };
 
   _setUpListeners() {

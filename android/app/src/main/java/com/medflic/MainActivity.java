@@ -1,4 +1,4 @@
-package com.medflic;
+package com.ads.medflic;
 
 import com.facebook.react.ReactActivity;
 import com.facebook.react.ReactActivityDelegate;

@@ -1,7 +1,9 @@
 // App Imports
 import { SET_LAST_MESSAGES_DATA, SET_VIDEO_SESSION, 
   SET_INCOMING_VIDEO_CALL, RESET_INCOMING_VIDEO_CALL, 
-   SET_USER_LOOGED_IN_CONNECTYCUBE } from './chat.action'
+   SET_USER_LOOGED_IN_CONNECTYCUBE, 
+   SET_INCOMING_VIDEO_CALL_VIA_BACKGROUND, RESET_INCOMING_VIDEO_CALL_VIA_BACKGROUND, SET_ON_VIDEO_SCREEN
+  } from './chat.action'
 // Initial State
 export const commonInitialState = {
     myChatList: [],
@@ -9,7 +11,9 @@ export const commonInitialState = {
     incomingVideoCall: false,
     onPressReject: false,
     onPressAccept: false,
-    loggedIntoConnectyCube: false
+    loggedIntoConnectyCube: false,
+    incomingVideoCallViaBackgrondState: false,
+    onVideoScreen: false
 }
 
 // State
@@ -47,6 +51,21 @@ export default (state = commonInitialState, action) => {
          ...state,
          loggedIntoConnectyCube: true,
       } 
+      case SET_INCOMING_VIDEO_CALL_VIA_BACKGROUND: 
+        return {
+         ...state,
+         incomingVideoCallViaBackgrondState: true,
+      }
+      case RESET_INCOMING_VIDEO_CALL_VIA_BACKGROUND: 
+        return {
+         ...state,
+         incomingVideoCallViaBackgrondState: false,
+      }
+      case SET_ON_VIDEO_SCREEN: 
+        return {
+         ...state,
+         onVideoScreen: action.data,
+      }
         
     default:
       return state

@@ -1,4 +1,4 @@
-package com.medflic;
+package com.ads.medflic;
 
 import android.content.Intent;
 import android.os.Bundle;

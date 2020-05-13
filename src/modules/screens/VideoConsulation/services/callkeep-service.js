@@ -1,12 +1,12 @@
 import React, { useState, useEffect } from 'react';
 
 import RNCallKeep from 'react-native-callkeep';
-import { PermissionsAndroid, AppState } from 'react-native'
+import { PermissionsAndroid, AppState, Alert } from 'react-native'
 import { IS_ANDROID, ANDROID_BUNDLE_IDENTIFIER, IS_IOS, ANDROID_VIDEO_CALL_ACTIVITY_NAME } from '../../../../setup/config';
 import RootNavigation from '../../../../setup/rootNavigation';
 import { v4 as uuidv4 } from 'uuid';
 import { store } from '../../../../setup/store';
-import { SET_INCOMING_VIDEO_CALL } from '../../../providers/chat/chat.action';
+import { SET_INCOMING_VIDEO_CALL, SET_INCOMING_VIDEO_CALL_VIA_BACKGROUND } from '../../../providers/chat/chat.action';
 import SajjadLaunchApplication  from 'react-native-launch-application';
 /*
 let activityStarter;
@@ -18,8 +18,8 @@ if(IS_ANDROID) {
 const randomNumber = () => {
     const possible = '0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz';
     let rand = '';
-    for (var i = 0; i <= 15; i++) {
-        if(i % 5) {
+    for (var i = 1; i <= 25; i++) {
+        if(i % 5 === 0) {
             rand += '-';
         }
         rand += possible.charAt(Math.floor(Math.random() * possible.length));
@@ -57,13 +57,6 @@ export default class CallKeepService {
         this.setupListeners();
      
     }
-   /* startCall = (uuid, handle, contactIdentifier, handleType, hasVideo) => {
-       if(IS_ANDROID) {
-            RNCallKeep.startCall(uuid, handle, contactIdentifier,);
-       } else {
-            RNCallKeep.startCall(uuid, handle, contactIdentifier, handleType, hasVideo);
-       }
-    } */
 
     displayIncomingCall = async (handleNumber, handlerName) => {
         this.uuid = IS_ANDROID ? randomNumber() : uuidv4();
@@ -100,6 +93,7 @@ export default class CallKeepService {
             RNCallKeep.endCall(this.uuid);
             this.uuid = null;
         }
+        RNCallKeep.endAllCalls();
     }
     rejectCall() {
         if(this.uuid) {
@@ -107,28 +101,42 @@ export default class CallKeepService {
             this.uuid = null;
             
         }
+        RNCallKeep.endAllCalls();
     }
     endCallByRemoteUser = (reason) => {
         if(this.uuid) {
             RNCallKeep.reportEndCallWithUUID(this.uuid, reason);
             this.uuid = null;
         }
+        RNCallKeep.endAllCalls();
     }
     
    
 
     //  EVENTS ///
     onAnswerCallAction = () => {
-        console.log('ON Answer Event');
-        if(IS_ANDROID) {
-           RNCallKeep.setCurrentCallActive(this.uuid);
-           SajjadLaunchApplication.open(ANDROID_BUNDLE_IDENTIFIER);
-        }
-         RootNavigation.navigate('VideoScreen', { isIncomingCall: true, onPressReject: false, onPressAccept: true });
+            console.log('ON Answer Event');
+            if(IS_ANDROID) {
+                RNCallKeep.setCurrentCallActive(this.uuid);
+                SajjadLaunchApplication.open(ANDROID_BUNDLE_IDENTIFIER);
+            }
+            if (!RootNavigation.getContainerRef()) {
+                console.log('On Reference False');
+                store.dispatch({
+                    type: SET_INCOMING_VIDEO_CALL,
+                    data: true
+                });
+                store.dispatch({
+                    type: SET_INCOMING_VIDEO_CALL_VIA_BACKGROUND,
+                });
+            } else {
+                RootNavigation.navigate('VideoScreen', { isIncomingCall: true, onPressReject: false, onPressAccept: true });
+            }
     }
     onRejectCallAction = () => {
         console.log('On Reject the Incoming Call...');
         RootNavigation.navigate('VideoScreen', { isIncomingCall: true, onPressReject: true, onPressAccept: false });
+        RNCallKeep.endAllCalls();
     }
 
    
