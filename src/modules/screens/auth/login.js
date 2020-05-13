@@ -13,6 +13,8 @@ import { acceptNumbersOnly } from '../../screens/../common';
 const mainBg = require('../../../../assets/images/MainBg.jpg');
 import Spinner from '../../../components/Spinner';
 import Razorpay from 'react-native-customui';
+import Modal from 'react-native-modal';
+
 class Login extends Component {
   constructor(props) {
     super(props)
@@ -22,6 +24,7 @@ class Login extends Component {
       password: '',
       loginErrorMsg: '',
       checked: false,
+      isModalVisible: false,
       showPassword: true
     }
   }
@@ -53,17 +56,13 @@ class Login extends Component {
         }
         this.props.navigation.navigate('Home');
       } else {
-        this.setState({ loginErrorMsg: this.props.user.message })
+        this.setState({ loginErrorMsg: this.props.user.message, isModalVisible: true })
       }
-      setTimeout(async () => {   // set Time out for Disable the Error Messages
-        await this.setState({ loginErrorMsg: '' });
-      }, 4000);
+      // setTimeout(async () => {   // set Time out for Disable the Error Messages
+      //   await this.setState({ loginErrorMsg: '' });
+      // }, 4000);
     } catch (e) {
-      Toast.show({
-        text: 'Something Went Wrong' + e,
-        duration: 3000,
-        type: "danger"
-      })
+      this.setState({ loginErrorMsg: 'Something Went Wrong' + e, isModalVisible: true })
     }
   }
   getUserProfile = async () => {
@@ -77,6 +76,7 @@ class Login extends Component {
       console.log(e);
     }
   }
+
   render() {
     const { user: { isLoading } } = this.props;
     const { userEntry, password, showPassword, loginErrorMsg } = this.state;
@@ -89,6 +89,21 @@ class Login extends Component {
                 style={[styles.welcome, { color: '#fff' }]}> Medflic</Text>
 
               <Card style={{ borderRadius: 10, padding: 5, marginTop: 20 }}>
+                <View style={{ flex: 1 }}>
+                  <Modal
+                    testID={'modal'}
+                    isVisible={this.state.isModalVisible}
+                    onSwipeComplete={() => this.setState({ isModalVisible: false })}
+                    swipeDirection={['up', 'left', 'right', 'down']}
+                    style={styles.view}>
+                    <View style={styles.modalContent}>
+                      <Text style={styles.modalContentTitle}>{loginErrorMsg}</Text>
+                      <Button transparent onPress={() => this.setState({ isModalVisible: false })}>
+                        <Text style={styles.modalContentClose}>Close</Text>
+                      </Button>
+                    </View>
+                  </Modal>
+                </View>
                 <View style={{ marginLeft: 10, marginRight: 10 }}>
                   <Text uppercase={true} style={[styles.cardHead, { color: '#775DA3' }]}>Login</Text>
                   <Form>
@@ -99,7 +114,7 @@ class Login extends Component {
                         returnKeyType={'next'}
                         value={userEntry}
                         keyboardType={"default"}
-                        onChangeText={userEntry =>  this.setState({ userEntry })/*acceptNumbersOnly(userEntry) == true || userEntry === '' ? this.setState({ userEntry }) : null */}
+                        onChangeText={userEntry => this.setState({ userEntry })/*acceptNumbersOnly(userEntry) == true || userEntry === '' ? this.setState({ userEntry }) : null */}
                         autoCapitalize='none'
                         blurOnSubmit={false}
                         onSubmitEditing={() => { this.userEntry._root.focus(); }}
@@ -141,14 +156,14 @@ class Login extends Component {
                         block success disabled={(userEntry && password) == ''} onPress={() => this.doLogin()}>
                         <Text uppercase={true} style={styles.ButtonText}>Login </Text>
                       </TouchableOpacity>
-                      <Text style={{ color: 'red', fontSize: 15, fontFamily: 'OpenSans', marginTop: 2 }}>{loginErrorMsg}</Text>
+                      {/* <Text style={{ color: 'red', fontSize: 15, fontFamily: 'OpenSans', marginTop: 2 }}>{loginErrorMsg}</Text> */}
                     </View>
 
                     <Item style={{ marginLeft: 'auto', marginRight: 'auto', borderBottomWidth: 0, marginBottom: 10 }}>
                       <Text uppercase={false} style={{ color: '#000', fontSize: 14, fontFamily: 'OpenSans', color: '#775DA3' }}>Don't Have An Account ?</Text>
                       <TouchableOpacity onPress={() => {
-                           this.props.navigation.navigate('signup')
-                        }} style={styles.smallSignUpButton}>
+                        this.props.navigation.navigate('signup')
+                      }} style={styles.smallSignUpButton}>
                         <Text uppercase={true} style={{ color: '#000', fontSize: 10, fontFamily: 'OpenSans', fontWeight: 'bold', color: '#fff' }}> Sign Up</Text>
                       </TouchableOpacity>
                     </Item>
