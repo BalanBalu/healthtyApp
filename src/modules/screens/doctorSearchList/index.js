@@ -378,7 +378,7 @@ class doctorSearchList extends Component {
                 this.doctorDetailsMap.set(element.doctor_id, element) // total_rating
             });
 
-            let doctorData = this.processFinalData(slotData);
+            let doctorData = this.processFinalData(slotData) || [];
             console.log(doctorData);
             this.setState({ refreshCount: this.state.refreshCount + 1 });
             doctorData.forEach((element) => {
@@ -412,8 +412,8 @@ class doctorSearchList extends Component {
     /*Get doctor specialist and Degree details*/
 
     getDoctorDetails = async (doctorIds) => {
+        let doctorData = [];
         try {
-            let doctorData = [];
             let resultDoctorDetails = await getMultipleDoctorDetails(doctorIds, fields);
             console.log(resultDoctorDetails);
             if (resultDoctorDetails.success) {

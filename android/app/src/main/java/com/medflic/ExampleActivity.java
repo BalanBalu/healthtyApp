@@ -6,6 +6,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.Build;
 import android.os.Bundle;
+import android.util.SparseArray;
 import android.view.View;
 import android.view.Window;
 import android.view.animation.Animation;
@@ -13,6 +14,8 @@ import android.view.animation.AnimationUtils;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
+
+import com.facebook.react.bridge.Arguments;
 import com.facebook.react.bridge.Promise;
 import androidx.annotation.CallSuper;
 import androidx.annotation.Nullable;
@@ -23,6 +26,8 @@ import com.facebook.react.ReactNativeHost;
 import com.facebook.react.bridge.CatalystInstance;
 import com.facebook.react.bridge.ReactApplicationContext;
 import com.facebook.react.bridge.ReactContext;
+import com.facebook.react.bridge.ReactMethod;
+import com.facebook.react.bridge.ReadableMap;
 import com.facebook.react.bridge.WritableNativeArray;
 import android.view.WindowManager;
 /**
@@ -33,6 +38,16 @@ public final class ExampleActivity extends ReactActivity implements Animation.An
 
     ImageView arrrowMark;
     Animation animSlideUp;
+    public static final int REQUEST_CODE = 123;
+    public static final int RESPONSE_CODE = 321;
+    public static final int ACCEPT_CODE = 1;
+    public static final int DECLINE_CODE = 0;
+    public static final String HAS_ACCEPTED = "HAS_ACCEPTED";
+    public static final String HAS_DECLINED = "HAS_DECLINED";
+    public static final String DESCRIPTION = "DESCRIPTION";
+
+
+
     @Override
     @CallSuper
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -80,9 +95,11 @@ public final class ExampleActivity extends ReactActivity implements Animation.An
                 //    events to React Native. The easiest way to do that is to inherit ReactActivity
                 //    instead of ReactActivity, but you can code it yourself if you want.
                 // The iOS version does not suffer from this problem.
-                Intent intent = new Intent(ExampleActivity.this, MainActivity.class);
-                startActivity(intent);
+//                Intent intent = new Intent(ExampleActivity.this, MainActivity.class);
+//                startActivity(intent);
+                returnSuccessCallback(ACCEPT_CODE, "ACCEPTED");
                 EventEmitterModule.emitEvent("accepted");
+
             }
         });
         findViewById(R.id.decline_button).setOnClickListener(new View.OnClickListener() {
@@ -95,8 +112,7 @@ public final class ExampleActivity extends ReactActivity implements Animation.An
                 //    events to React Native. The easiest way to do that is to inherit ReactActivity
                 //    instead of ReactActivity, but you can code it yourself if you want.
                 // The iOS version does not suffer from this problem.
-                Intent intent = new Intent(ExampleActivity.this, MainActivity.class);
-                startActivity(intent);
+                returnErrorCallback(DECLINE_CODE, "DECLINED");
                 EventEmitterModule.emitEvent("declined");
             }
         });
@@ -152,5 +168,27 @@ public final class ExampleActivity extends ReactActivity implements Animation.An
     @Override
     public void onAnimationRepeat(Animation animation) {
 
+    }
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data){
+        super.onActivityResult(requestCode, resultCode, data);
+    }
+
+    private void returnErrorCallback(int errorCode, String errorDescription){
+        Intent returnIntent = new Intent();
+        returnIntent.putExtra(HAS_ACCEPTED, false);
+        returnIntent.putExtra(HAS_DECLINED, true);
+        this.setResult(errorCode, returnIntent);
+        onActivityResult(REQUEST_CODE, RESPONSE_CODE, returnIntent);
+        this.finish();
+    }
+    private void returnSuccessCallback(int errorCode, String errorDescription){
+        Intent returnIntent = new Intent();
+        returnIntent.putExtra(HAS_ACCEPTED, true);
+        returnIntent.putExtra(HAS_DECLINED, false);
+        returnIntent.putExtra(DESCRIPTION, errorDescription);
+        this.setResult(errorCode, returnIntent);
+        onActivityResult(REQUEST_CODE, RESPONSE_CODE, returnIntent);
+        this.finish();
     }
 }

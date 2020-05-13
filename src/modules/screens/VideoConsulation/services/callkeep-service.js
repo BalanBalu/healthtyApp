@@ -80,18 +80,20 @@ export default class CallKeepService {
         } else {
             if(IS_ANDROID) {
                 console.log('...Coming to Correct Condition with Backgroud....');
-                if (!RootNavigation.getContainerRef()) {
+                if (RootNavigation.getContainerRef()) {
+                    activityStarter.navigateToExample();
+                } else {
                     SajjadLaunchApplication.open(ANDROID_BUNDLE_IDENTIFIER);
-                }
-                var interval = setInterval(() => {
-                    console.log('Excuting......');
-                    if (RootNavigation.getContainerRef()) {
-                       activityStarter.navigateToExample();
-                       clearInterval(interval);
-                    }
-                 },100);
-                console.log('Excuting on Android with ' +  AppState.currentState);
+                    var interval = setInterval(() => {
+                        if (RootNavigation.getContainerRef()) {
+                            console.log('Excuting to Navigate To Video Screen...');
+                            activityStarter.navigateToExample();
+                            clearInterval(interval);
+                        }
+                    },100);
+                    console.log('Excuting on Android with ' +  AppState.currentState);
               //  RNCallKeep.displayIncomingCall(this.uuid, String(6333662), 'Medflic Doctor' );
+              }
             } else {
                 RNCallKeep.displayIncomingCall(this.uuid, String(handleNumber), 'Medflic Doctor', 'generic', true );
             }
@@ -102,13 +104,18 @@ export default class CallKeepService {
             RNCallKeep.endCall(this.uuid);
             this.uuid = null;
         }
+        if(IS_ANDROID) {
+            activityStarter.endVideoCallScreen();
+        }
         RNCallKeep.endAllCalls();
     }
     rejectCall() {
         if(this.uuid) {
             RNCallKeep.rejectCall(this.uuid);
             this.uuid = null;
-            
+        }
+        if(IS_ANDROID) {
+            activityStarter.endVideoCallScreen();
         }
         RNCallKeep.endAllCalls();
     }
@@ -118,15 +125,14 @@ export default class CallKeepService {
             this.uuid = null;
         }
         RNCallKeep.endAllCalls();
+        if(IS_ANDROID) {
+            activityStarter.endVideoCallScreen();
+        }
     }
 
     //  EVENTS ///
     onAnswerCallAction = () => {
             console.log('ON Answer Event');
-           /* if(IS_ANDROID) {
-                RNCallKeep.setCurrentCallActive(this.uuid);
-                SajjadLaunchApplication.open(ANDROID_BUNDLE_IDENTIFIER);
-            } */
             if (!RootNavigation.getContainerRef()) {
                 console.log('On Reference False');
                 store.dispatch({
@@ -144,6 +150,9 @@ export default class CallKeepService {
         console.log('On Reject the Incoming Call...');
         RootNavigation.navigate('VideoScreen', { isIncomingCall: true, onPressReject: true, onPressAccept: false });
         RNCallKeep.endAllCalls();
+        if(IS_ANDROID) {
+            activityStarter.endVideoCallScreen();
+        }
     }
 
    
