@@ -24,6 +24,7 @@ final class ActivityStarterReactPackage implements ReactPackage {
         modules.add(new ActivityStarterModule(reactContext));
         modules.add(new EventEmitterModule(reactContext));
         return modules;
+
     }
 
     @NonNull

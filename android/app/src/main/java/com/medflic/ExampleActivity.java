@@ -1,8 +1,16 @@
 package com.ads.medflic;
 
+import android.app.Activity;
+import android.app.KeyguardManager;
+import android.content.Context;
 import android.content.Intent;
+import android.os.Build;
 import android.os.Bundle;
 import android.view.View;
+import android.view.Window;
+import android.view.animation.Animation;
+import android.view.animation.AnimationUtils;
+import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 import com.facebook.react.bridge.Promise;
@@ -13,6 +21,7 @@ import com.facebook.react.ReactActivity;
 import com.facebook.react.ReactInstanceManager;
 import com.facebook.react.ReactNativeHost;
 import com.facebook.react.bridge.CatalystInstance;
+import com.facebook.react.bridge.ReactApplicationContext;
 import com.facebook.react.bridge.ReactContext;
 import com.facebook.react.bridge.WritableNativeArray;
 import android.view.WindowManager;
@@ -20,19 +29,30 @@ import android.view.WindowManager;
  * Activity to start from React Native JavaScript, triggered via
  * {@link ActivityStarterModule#navigateToExample()}.
  */
-public final class ExampleActivity extends ReactActivity {
+public final class ExampleActivity extends ReactActivity implements Animation.AnimationListener {
 
-
+    ImageView arrrowMark;
+    Animation animSlideUp;
     @Override
     @CallSuper
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_example);
 
-        getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON|
-                WindowManager.LayoutParams.FLAG_DISMISS_KEYGUARD|
-                WindowManager.LayoutParams.FLAG_SHOW_WHEN_LOCKED|
-                WindowManager.LayoutParams.FLAG_TURN_SCREEN_ON);
+
+        /* if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O_MR1) {
+            setShowWhenLocked(true);
+            setTurnScreenOn(true);
+            KeyguardManager keyguardManager = (KeyguardManager) getSystemService(Context.KEYGUARD_SERVICE);
+            if(keyguardManager!=null)
+                keyguardManager.requestDismissKeyguard(this, null);
+        } */
+        Window window = this.getWindow();
+        window.addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON |
+                    WindowManager.LayoutParams.FLAG_DISMISS_KEYGUARD |
+                    WindowManager.LayoutParams.FLAG_SHOW_WHEN_LOCKED |
+                    WindowManager.LayoutParams.FLAG_TURN_SCREEN_ON);
+
+        setContentView(R.layout.activity_example);
 
         // Display app and React Native versions:
 
@@ -42,6 +62,13 @@ public final class ExampleActivity extends ReactActivity {
                 onBackPressed();
             }
         }); */
+        animSlideUp = AnimationUtils.loadAnimation(getApplicationContext(),
+                R.anim.slide_up);
+        animSlideUp.setAnimationListener(this);
+
+        arrrowMark = findViewById(R.id.arrow);
+        arrrowMark.setVisibility(View.VISIBLE);
+        arrrowMark.startAnimation(animSlideUp);
 
         findViewById(R.id.accept_button).setOnClickListener(new View.OnClickListener() {
             @Override
@@ -110,5 +137,20 @@ public final class ExampleActivity extends ReactActivity {
                 }
             }
         }); */
+    }
+
+    @Override
+    public void onAnimationStart(Animation animation) {
+
+    }
+
+    @Override
+    public void onAnimationEnd(Animation animation) {
+
+    }
+
+    @Override
+    public void onAnimationRepeat(Animation animation) {
+
     }
 }

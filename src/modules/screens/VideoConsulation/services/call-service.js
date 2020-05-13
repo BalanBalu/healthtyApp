@@ -6,6 +6,7 @@ import { sendNotification } from './video-consulting-service';
 import { CallKeepService , REMOTE_USER_END_CALL_REASONS} from './index';
 import {  AppState  } from 'react-native';
 import { store } from '../../../../setup/store';
+import { IS_ANDROID } from '../../../../setup/config';
 export default class CallService {
  static MEDIA_OPTIONS = {audio: true, video: {facingMode: 'user'}};
 
@@ -240,10 +241,10 @@ export default class CallService {
         this.outgoingCall.play();
         break;
       case 'incoming':
-        if(AppState.currentState === 'active') {
+        if(AppState.currentState === 'active' || IS_ANDROID ) {
           this.incomingCall.setNumberOfLoops(-1);
           this.incomingCall.setVolume(1).play();
-        } 
+        }
         break;
       case 'end':
         this.endCall.play();
