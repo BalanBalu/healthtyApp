@@ -47,28 +47,6 @@ export default StyleSheet.create({
 
     },
 
-    view: {
-        justifyContent: 'flex-end',
-        margin: 0,
-    },
-    modalContent: {
-        backgroundColor: 'white',
-        padding: 10,
-        justifyContent: 'center',
-        alignItems: 'center',
-        borderRadius: 4,
-        borderColor: 'rgba(0, 0, 0, 0.1)',
-    },
-    modalContentClose: {
-        fontSize: 14,
-        marginBottom: 12,
-    },
-    modalContentTitle: {
-        fontSize: 16,
-        marginTop: 12,
-        color: 'red',
-
-    },
     cardHead:
     {
         fontSize: 18,

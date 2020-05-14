@@ -10,7 +10,7 @@ import { StyleSheet, Image, View, TouchableOpacity, ImageBackground } from 'reac
 import styles from '../../screens/auth/styles';
 import Spinner from '../../../components/Spinner'
 const mainBg = require('../../../../assets/images/MainBg.jpg')
-import Modal from 'react-native-modal';
+import ModalPopup from '../../../components/Shared/ModalPopup';
 
 class Signup extends Component {
     constructor(props) {
@@ -85,7 +85,7 @@ class Signup extends Component {
     }
     render() {
         const { user: { isLoading } } = this.props;
-        const { mobile_no, password, showPassword, checked, gender, errorMsg, referralCode } = this.state;
+        const { mobile_no, password, showPassword, checked, gender, errorMsg, referralCode, isModalVisible } = this.state;
         return (
             <Container style={styles.container}>
                 <ImageBackground source={mainBg} style={{ width: '100%', height: '100%', flex: 1 }}>
@@ -94,19 +94,11 @@ class Signup extends Component {
                             <Text style={[styles.signUpHead, { color: '#fff' }]}>List Your Practice to Reach millions of Peoples</Text>
                             <Card style={{ borderRadius: 10, padding: 5, marginTop: 15 }}>
                                 <View style={{ flex: 1 }}>
-                                    <Modal
-                                        testID={'modal'}
-                                        isVisible={this.state.isModalVisible}
-                                        onSwipeComplete={() => this.setState({ isModalVisible: false })}
-                                        swipeDirection={['up', 'left', 'right', 'down']}
-                                        style={styles.view}>
-                                        <View style={styles.modalContent}>
-                                            <Text style={styles.modalContentTitle}>{errorMsg}</Text>
-                                            <Button transparent onPress={() => this.setState({ isModalVisible: false })}>
-                                                <Text style={styles.modalContentClose}>Close</Text>
-                                            </Button>
-                                        </View>
-                                    </Modal>
+                                    <ModalPopup
+                                        errorMessageText={errorMsg}
+                                        closeButtonText={'CLOSE'}
+                                        closeButtonAction={() => this.setState({ isModalVisible: !isModalVisible })}
+                                        visible={isModalVisible} />
                                 </View>
                                 <View style={{ marginLeft: 10, marginRight: 10 }}>
                                     <Text uppercase={true} style={[styles.cardHead, { color: '#775DA3' }]}>Sign up</Text>

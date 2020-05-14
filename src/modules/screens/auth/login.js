@@ -13,7 +13,7 @@ import { acceptNumbersOnly } from '../../screens/../common';
 const mainBg = require('../../../../assets/images/MainBg.jpg');
 import Spinner from '../../../components/Spinner';
 import Razorpay from 'react-native-customui';
-import Modal from 'react-native-modal';
+import ModalPopup from '../../../components/Shared/ModalPopup';
 
 class Login extends Component {
   constructor(props) {
@@ -79,7 +79,7 @@ class Login extends Component {
 
   render() {
     const { user: { isLoading } } = this.props;
-    const { userEntry, password, showPassword, loginErrorMsg } = this.state;
+    const { userEntry, password, showPassword, loginErrorMsg, isModalVisible } = this.state;
     return (
       <Container style={styles.container}>
         <ImageBackground source={mainBg} style={{ width: '100%', height: '100%', flex: 1 }}>
@@ -90,19 +90,11 @@ class Login extends Component {
 
               <Card style={{ borderRadius: 10, padding: 5, marginTop: 20 }}>
                 <View style={{ flex: 1 }}>
-                  <Modal
-                    testID={'modal'}
-                    isVisible={this.state.isModalVisible}
-                    onSwipeComplete={() => this.setState({ isModalVisible: false })}
-                    swipeDirection={['up', 'left', 'right', 'down']}
-                    style={styles.view}>
-                    <View style={styles.modalContent}>
-                      <Text style={styles.modalContentTitle}>{loginErrorMsg}</Text>
-                      <Button transparent onPress={() => this.setState({ isModalVisible: false })}>
-                        <Text style={styles.modalContentClose}>Close</Text>
-                      </Button>
-                    </View>
-                  </Modal>
+                  <ModalPopup
+                    errorMessageText={loginErrorMsg}
+                    closeButtonText={'CLOSE'}
+                    closeButtonAction={() => this.setState({ isModalVisible: !isModalVisible })}
+                    visible={isModalVisible} />
                 </View>
                 <View style={{ marginLeft: 10, marginRight: 10 }}>
                   <Text uppercase={true} style={[styles.cardHead, { color: '#775DA3' }]}>Login</Text>
