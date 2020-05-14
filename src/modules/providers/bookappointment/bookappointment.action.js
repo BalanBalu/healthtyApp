@@ -263,6 +263,22 @@ export const getMultipleDoctorDetails = async (doctorIds, fields, isLoading = tr
   }
 }
 
+/*get multiple doctor details*/
+export const getMultipleDoctorDetailsV2 = async (doctorIds, fields, isLoading = true) => {
+  try {
+    let endPoint = '/doctors/multiple/details?fields=' + fields;
+    let response = await postService(endPoint, doctorIds);
+    let respData = response.data;
+    return respData;
+  } catch (e) {
+    console.log(e.message);
+    return {
+      message: 'exception' + e,
+      success: false
+    }
+  }
+}
+
 
 /* Get Appointment details */
 

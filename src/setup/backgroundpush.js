@@ -1,14 +1,6 @@
 import messaging from '@react-native-firebase/messaging';
 import NotifService from './NotifService';
 import rootNavigation from './rootNavigation';
-import { PermissionsAndroid, AppState, Alert, NativeModules , NativeEventEmitter } from 'react-native'
-
-let activityStarter;
-let eventEmitter;
-
-     activityStarter = NativeModules.ActivityStarter;
-     eventEmitter = new NativeEventEmitter(activityStarter);
-
 
 export default async (message) => {
   try {

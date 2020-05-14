@@ -35,12 +35,26 @@ class LocationDetail extends PureComponent {
     }
       
       if (result.success) {
-        this.setState({ locations: result.data});
+        const asscendingResult = this.asscendingSort(result.data)
+        this.setState({ locations:  asscendingResult });
     }
     }
     onPressList = (index) => {
 
         this.setState({ pressStatus: true, selectedItem: index });
+    }
+    asscendingSort(data) {
+       const result =  data.sort((a, b) => {
+            if (a.location < b.location) {
+                return -1;
+            }
+            if (b > a) {
+                return 1;
+            }
+            return 0;
+        })
+        return result;
+
     }
     render() {
         const { locations, isLoading,navigationOption } = this.state

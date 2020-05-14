@@ -15,7 +15,7 @@ export default class CallService {
   mediaDevices = [];
 
   outgoingCall = new Sound(require('../../../../../assets/sounds/dialing.mp3'));
-  incomingCall = new Sound(require('../../../../../assets/sounds/calling.mp3'));
+  incomingCall = new Sound(require('../../../../../assets/sounds/incoming.mp3'));
   endCall =      new Sound(require('../../../../../assets/sounds/end_call.mp3'));
 
   showToast = text => {
@@ -241,7 +241,7 @@ export default class CallService {
         this.outgoingCall.play();
         break;
       case 'incoming':
-        if(AppState.currentState === 'active' || IS_ANDROID ) {
+        if(AppState.currentState === 'active') {
           this.incomingCall.setNumberOfLoops(-1);
           this.incomingCall.setVolume(1).play();
         }

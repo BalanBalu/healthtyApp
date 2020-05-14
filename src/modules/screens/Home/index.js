@@ -27,7 +27,7 @@ import NotifService from '../../../setup/NotifService';
 import { getReminderData } from '../../providers/reminder/reminder.action.js';
 import FastImage from 'react-native-fast-image'
 import { translate } from '../../../setup/translator.helper';
-import { authorizeConnectyCube } from '../VideoConsulation/services/video-consulting-service';
+import { authorizeConnectyCube, setUserLoggedIn } from '../VideoConsulation/services/video-consulting-service';
 
 
 const debounce = (fun, delay) => {
@@ -56,8 +56,7 @@ class Home extends Component {
             categryCount: 0
         };
         this.callSuggestionService = debounce(this.callSuggestionService, 500);
-        this._setUpListeners();
-        NotifService.initNotification(props.navigation);
+      
     }
 
     navigetToCategories() {
@@ -88,6 +87,8 @@ class Home extends Component {
     async componentDidMount() {
         try {
             this.initialFunction();
+            this._setUpListeners();
+            NotifService.initNotification(this.props.navigation);
             if (IS_ANDROID) {
                 let productConfigVersion = await getCurrentVersion("CURRENT_PATIENT_MEDFLIC_VERSION")
                 console.log(productConfigVersion)
@@ -113,7 +114,7 @@ class Home extends Component {
         try {
             let userId = await AsyncStorage.getItem("userId");
             if (userId) {
-                res = await getReferalPoints(userId);
+                let res = await getReferalPoints(userId);
                 if (res.updateMobileNo === true) {
                     this.props.navigation.navigate('UpdateContact', { updatedata: {} });
                     Toast.show({
@@ -172,9 +173,6 @@ class Home extends Component {
                 getReminderData(userId);
                 this.getAllChatsByUserId(userId);
                 this.getMarkedAsReadedNotification(userId);
-             
-               
-
             }
         }
         catch (ex) {
@@ -223,8 +221,6 @@ class Home extends Component {
             );
         }
     }
-
-
 
     getCatagries = async () => {
         try {
@@ -363,10 +359,14 @@ class Home extends Component {
            this.authorized = await authorizeConnectyCube();
            console.log('loggedIntoConnectyCube '+ loggedIntoConnectyCube + ' Authorized: ' + this.authorized);
            if(this.authorized) {
-                ConnectyCube.videochat.onCallListener = this._onCallListener;
-                ConnectyCube.videochat.onRemoteStreamListener = this._onRemoteStreamListener;
-                ConnectyCube.videochat.onStopCallListener = this._onStopCallListener;
-                ConnectyCube.videochat.onRejectCallListener =  this._onRejectCallListener;
+                 ConnectyCube.videochat.onCallListener = this._onCallListener;
+                 ConnectyCube.videochat.onRemoteStreamListener = this._onRemoteStreamListener;
+                 ConnectyCube.videochat.onStopCallListener = this._onStopCallListener;
+                 ConnectyCube.videochat.onRejectCallListener =  this._onRejectCallListener;
+               setTimeout(() => {
+                    setUserLoggedIn();
+               }, 5000)
+                
            }
         }
     }

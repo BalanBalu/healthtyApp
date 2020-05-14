@@ -22,22 +22,28 @@ export async function addReminderdata(userId,data) {
   }
 
   export async function getReminderData(userId) {
+    let respData = {
+      success: false,
+      message: '',
+      data: []
+    };
     try {
       let endPoint = 'reminder/medicines/user/' + userId;
       console.log(endPoint);
       let response = await getService(endPoint);
-      let respData = response.data;
-      storeOnProp(respData);
-      NoftifService.cancelAll();
-      if(respData.data && respData.data.length > 0) {
-          sheudleNotificationForAddReminders(respData.data);
-      }
+      respData = response.data;
       return respData;
     } catch (e) {
       console.log('exception', e);
       return {
         message: 'exception' + e,
         success: false
+      }
+    } finally {
+      storeOnProp(respData);
+      NoftifService.cancelAll();
+      if(respData.data && respData.data.length > 0) {
+          sheudleNotificationForAddReminders(respData.data);
       }
     }
 }
@@ -48,18 +54,18 @@ export function sheudleNotificationForAddReminders(reminders) {
       let reminderDate = new Date(element.medicine_take_start_date);
       iterateThroughMedinceTimesByDay(element, reminderDate)
     } else {
-       const startDate = moment(element.medicine_take_start_date);
-       const endDate = moment(element.medicine_take_end_date);
-       const betweenDates = enumerateDaysBetweenDates(startDate, endDate)
-       betweenDates.forEach(date => {
-         iterateThroughMedinceTimesByDay(element, date)
-       });
+        const startDate = moment(element.medicine_take_start_date);
+        const endDate = moment(element.medicine_take_end_date); 
+        if(moment().isBetween(startDate, endDate)) {
+          iterateThroughMedinceTimesByDay(element, new Date())
+        }
     }
   });
 
 }
 
 function iterateThroughMedinceTimesByDay(element, reminderDate) {
+  console.log('Reminder Data......');
   for (let index = 0; index < element.medicine_take_times.length; index++) {
     const medicineTakeTimeData = element.medicine_take_times[index];
     let reminderTime = new Date(medicineTakeTimeData.medicine_take_time);

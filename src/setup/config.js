@@ -23,7 +23,7 @@ export const CONNECTY_CUBE = [{
     },
   }
 ]
-export const CURRENT_PRODUCT_VERSION_CODE = 17;
+export const CURRENT_PRODUCT_VERSION_CODE = 18;
 
 /*** Change ON Prod End ***/
 export const ANDROID_BUNDLE_IDENTIFIER = 'com.ads.medflic';
