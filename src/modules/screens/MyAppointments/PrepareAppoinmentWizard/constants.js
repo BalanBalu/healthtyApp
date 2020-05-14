@@ -14,13 +14,13 @@ export const allergic = [
     { disease: 'Adhesive Tape', },
     { disease: 'Antibiotics', },
     { disease: 'Aspirin', },
-    { disease: 'Barbituates', },
+    { disease: 'Barbiturates', },
     { disease: 'Codeine', },
-    { disease: 'Lodine', },
+    { disease: 'Iodine', },
     { disease: 'Latex', },
     { disease: 'Local Anesthetics', },
     { disease: 'Sulfa', },
-    { disease: 'Non of the above', },
+    { disease: 'None of the above', },
     { disease: 'Not sure', }]
 export const numberList = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10]
 export const hospitalizedFor = [

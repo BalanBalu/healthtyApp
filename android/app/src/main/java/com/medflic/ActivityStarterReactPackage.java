@@ -1,4 +1,4 @@
-package com.medflic;
+package com.ads.medflic;
 import androidx.annotation.NonNull;
 
 import com.facebook.react.ReactPackage;
@@ -24,6 +24,7 @@ final class ActivityStarterReactPackage implements ReactPackage {
         modules.add(new ActivityStarterModule(reactContext));
         modules.add(new EventEmitterModule(reactContext));
         return modules;
+
     }
 
     @NonNull

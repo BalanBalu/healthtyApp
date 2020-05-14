@@ -4,7 +4,9 @@ import InCallManager from 'react-native-incall-manager';
 import Sound from 'react-native-sound';
 import { sendNotification } from './video-consulting-service';
 import { CallKeepService , REMOTE_USER_END_CALL_REASONS} from './index';
-import {  AppState  } from 'react-native'
+import {  AppState  } from 'react-native';
+import { store } from '../../../../setup/store';
+import { IS_ANDROID } from '../../../../setup/config';
 export default class CallService {
  static MEDIA_OPTIONS = {audio: true, video: {facingMode: 'user'}};
 
@@ -17,11 +19,13 @@ export default class CallService {
   endCall =      new Sound(require('../../../../../assets/sounds/end_call.mp3'));
 
   showToast = text => {
-    Toast.show({
-      text: text,
-      type:'success',
-      duration: 4000
-    })
+    if(AppState.currentState === 'active') {
+      Toast.show({
+        text: text,
+        type:'success',
+        duration: 4000
+      })
+    }
   };
 
   getUserById = (userId, key) => {
@@ -89,14 +93,13 @@ export default class CallService {
 
   stopCall = () => {
     this.stopSounds();
-
+    CallKeepService.endCall();
     if (this._session) {
       this.playSound('end');
       this._session.stop({});
       ConnectyCube.videochat.clearSession(this._session.ID);
       this._session = null;
       this.mediaDevices = [];
-      CallKeepService.endCall();
     }
   };
 
@@ -138,9 +141,8 @@ export default class CallService {
       } else {
         const userName = this.getUserById(userId, 'name');
         const message = `${userName} did not answer`;
-
-        this.showToast(message);
         CallKeepService.endCallByRemoteUser(REMOTE_USER_END_CALL_REASONS.REMOTE_USER_DID_NOT_ANSWER);
+        this.showToast(message);
         resolve();
       }
     });
@@ -151,10 +153,11 @@ export default class CallService {
       if (session.initiatorID === session.currentUserID) {
         reject();
       }
-
-      if (this._session) {
+      const inIncomingCallViaBackgroudState = store.getState().chat.incomingVideoCallViaBackgrondState;
+      if (this._session && inIncomingCallViaBackgroudState === false ) {
+        console.log('is Busy.....');
         this.rejectCall(session, {busy: true});
-        CallKeepService.rejectCall();
+        CallKeepService.endCall();
         reject();
       }
 
@@ -168,8 +171,8 @@ export default class CallService {
     return new Promise((resolve, reject) => {
       if (userId === session.currentUserID) {
         this._session = null;
+        CallKeepService.endCallByRemoteUser(REMOTE_USER_END_CALL_REASONS.REMOTE_USER_ENDED_CALL);
         this.showToast('You have accepted the call on other side');
-
         reject();
       } else {
         const userName = this.getUserById(userId, 'name');
@@ -207,6 +210,7 @@ export default class CallService {
       this.stopSounds();
 
       if (!this._session) {
+        CallKeepService.endCall();
         reject();
       } else {
         const userName = this.getUserById(userId, 'name');
@@ -237,10 +241,10 @@ export default class CallService {
         this.outgoingCall.play();
         break;
       case 'incoming':
-        if(AppState.currentState === 'active') {
+        if(AppState.currentState === 'active' || IS_ANDROID ) {
           this.incomingCall.setNumberOfLoops(-1);
           this.incomingCall.setVolume(1).play();
-        } 
+        }
         break;
       case 'end':
         this.endCall.play();

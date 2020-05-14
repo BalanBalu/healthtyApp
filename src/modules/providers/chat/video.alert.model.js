@@ -21,8 +21,11 @@ class IncomingVideoCallAlert extends Component {
     }
 
   render() {
-    const { chat : { incomingVideoCall  }, onPressReject, onPressAccept } = this.props
+    const { chat : { incomingVideoCall, onVideoScreen }, onPressReject, onPressAccept } = this.props
     console.log('Video Alert Props===>', this.props);
+    if(onVideoScreen) {
+        return null;
+    }
     return (
      
         <Modal

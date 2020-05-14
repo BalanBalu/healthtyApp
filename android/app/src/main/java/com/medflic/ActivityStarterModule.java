@@ -1,11 +1,13 @@
-package com.medflic;
+package com.ads.medflic;
 import android.app.Activity;
 import android.content.Intent;
 import android.net.Uri;
+import android.util.Log;
 import android.util.SparseArray;
 
 import androidx.annotation.NonNull;
 
+import com.ads.medflic.ExampleActivity;
 import com.facebook.react.ReactInstanceManager;
 import com.facebook.react.ReactNativeHost;
 import com.facebook.react.bridge.Arguments;
@@ -44,8 +46,17 @@ final class ActivityStarterModule extends ReactContextBaseJavaModule {
         Activity activity = getCurrentActivity();
         if (activity != null) {
             Intent intent = new Intent(activity, ExampleActivity.class);
-            activity.startActivity(intent);
-
+            activity.startActivityForResult(intent, ExampleActivity.ACCEPT_CODE);
+        }
+    }
+    @ReactMethod
+    void endVideoCallScreen() {
+        Activity activity = getCurrentActivity();
+        Log.d("endVideCall", activity.getClass().getSimpleName());
+        if (activity != null) {
+            if(activity.getClass().getSimpleName().equals(ExampleActivity.class.getSimpleName())) {
+                activity.finish();
+            }
         }
     }
 
@@ -101,8 +112,19 @@ final class ActivityStarterModule extends ReactContextBaseJavaModule {
         }
     }
     @ReactMethod
+    public void startActivityForResult(int requestCode, String action, Intent data) {
+        System.out.println("Request Code " + requestCode);
+        Log.d("Action ", action);
+        Log.d("Request Code  ", ""+requestCode);
+        Log.d("Intent ", ""+data.getExtras());
+    }
+
+    @ReactMethod
     public void startActivityForResult(int requestCode, String action, ReadableMap data, Promise promise) {
+        Log.d("Action On Over", action);
+        Log.d("Action On Over ", ""+requestCode);
         Activity activity = getReactApplicationContext().getCurrentActivity();
+
         Intent intent = new Intent(action);
         intent.putExtras(Arguments.toBundle(data));
         activity.startActivityForResult(intent, requestCode);

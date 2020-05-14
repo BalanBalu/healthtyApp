@@ -16,7 +16,6 @@ class PastMedicalConditions extends PureComponent {
         const { profile: { past_health_condition } } = this.props
 
         this.state = {
-            firstQuestion: 0,
             checkBoxClick: past_health_condition || [],
             isLoading: false,
             lists: [],

@@ -26,7 +26,7 @@ export const CONNECTY_CUBE = [{
 export const CURRENT_PRODUCT_VERSION_CODE = 17;
 
 /*** Change ON Prod End ***/
-export const ANDROID_BUNDLE_IDENTIFIER = 'com.medflic';
+export const ANDROID_BUNDLE_IDENTIFIER = 'com.ads.medflic';
 export const ANDROID_VIDEO_CALL_ACTIVITY_NAME = 'ExampleActivity'
 export const BASIC_DEFAULT = {
     email : 'sathishkrish20@gmail.com',

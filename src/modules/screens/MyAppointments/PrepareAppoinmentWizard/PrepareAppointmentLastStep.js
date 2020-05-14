@@ -61,14 +61,14 @@ class PrepareAppointmentLastStep extends PureComponent {
 
                             </View>
                             <Text style={styles.textContent}>Last Step!</Text>
-                            <Text style={[styles.subText1, { lineHeight: 22 }]}>Confirm your information below,and then we'll send all your forms to your doctor</Text>
+                            <Text style={[styles.subText1, { lineHeight: 22 }]}>Confirm your information below,and then we will send all your forms to your doctor</Text>
                         </View>
                         <View style={{ flexDirection: 'row', marginTop: 20, justifyContent: 'center' }}>
                             <CheckBox style={{ borderRadius: 5 }}
                                 checked={this.state.agreed_for_send_forms}
                                 onPress={() => this.setState({ agreed_for_send_forms: !this.state.agreed_for_send_forms })}
                             />
-                            <Text style={[styles.flatlistText, { color: '#4c4c4c', lineHeight: 20 }]}>I verify that the information presented here is accurate,and i autorize Medflic to sen this
+                            <Text style={[styles.flatlistText, { color: '#4c4c4c', lineHeight: 20 }]}>I verify that the information presented here is accurate,and i authorize Medflic to send this
                                             information to my healthcare provider.</Text>
                         </View>
 

@@ -16,9 +16,6 @@ class PhysicianInfo extends PureComponent {
         super(props)
         const { profile: { primary_care_physician_info } } = this.props
         this.state = {
-            firstQuestion: 0,
-            radioButton: false,
-            checkBoxClick: false,
             isLoading: false,
             hospital_name: primary_care_physician_info && primary_care_physician_info.hospital_name,
             physician_name: primary_care_physician_info && primary_care_physician_info.physician_name,
@@ -110,7 +107,6 @@ class PhysicianInfo extends PureComponent {
                                     returnKeyType={'go'}
                                     value={physician_name}
                                     onChangeText={(enteredText) => this.setState({ physician_name: enteredText })}
-                                    onSubmitEditing={() => { this.physician_name._root.focus(); }}
 
                                 />
                             </Form>
@@ -127,7 +123,6 @@ class PhysicianInfo extends PureComponent {
                                     returnKeyType={'go'}
                                     value={hospital_name}
                                     onChangeText={(enteredText) => this.setState({ hospital_name: enteredText })}
-                                    onSubmitEditing={() => { this.hospital_name._root.focus(); }}
 
                                 />
                             </Form>
@@ -144,7 +139,6 @@ class PhysicianInfo extends PureComponent {
                                     returnKeyType={'go'}
                                     value={contact_number}
                                     onChangeText={contact_number => acceptNumbersOnly(contact_number) == true || contact_number === '' ? this.setState({ contact_number }) : null}
-                                    onSubmitEditing={() => { this.contact_number._root.focus(); }}
                                 />
                             </Form>
                         </View>
