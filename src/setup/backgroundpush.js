@@ -17,7 +17,9 @@ export default async (message) => {
         'Notification caused app to open from background state:',
         remoteMessage.notification,
       );
-      rootNavigation.navigate(remoteMessage.data.navigationKeyDR);
+      if(remoteMessage.data.navigationKeyPT) {
+        rootNavigation.navigate(remoteMessage.data.navigationKeyPT);
+      }
     });
     
     messaging()
@@ -29,7 +31,9 @@ export default async (message) => {
             'Notification caused app to open from quit state:',
             remoteMessage.notification,
           );
-          rootNavigation.navigate(remoteMessage.data.navigationKeyDR); // e.g. "Settings"
+          if(remoteMessage.data.navigationKeyPT) {
+            rootNavigation.navigate(remoteMessage.data.navigationKeyPT);
+          } // e.g. "Settings"
         }
       });
 

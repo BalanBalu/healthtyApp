@@ -241,7 +241,7 @@ export default class CallService {
         this.outgoingCall.play();
         break;
       case 'incoming':
-        if(AppState.currentState === 'active') {
+        if(AppState.currentState === 'active' || IS_ANDROID ) {
           this.incomingCall.setNumberOfLoops(-1);
           this.incomingCall.setVolume(1).play();
         }
