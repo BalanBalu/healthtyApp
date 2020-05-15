@@ -427,13 +427,12 @@ class MedicineCheckout extends Component {
                                     standardStyle={true}
                                     selected={itemSelected === 'HOME_DELIVERY' ? true : false} 
                                     onPress={()=> this.selectedItem('HOME_DELIVERY')}  />
-                                    <Icon name="ios-woman" style={{ fontSize: 20, marginLeft: 10, }} />
                                             </Col>
                                         </Row>
                                     </View>
                                     {itemSelected === 'HOME_DELIVERY' ?
                                         <View >
-                                            <Row style={{ marginTop: 5 }}>
+                                            <Row style={{ marginTop: 10,marginBottom:10 }}>
                                                 <Col size={5}>
                                                     <Text style={{ fontFamily: 'OpenSans', fontSize: 14, color: '#7F49C3' }}>Delivery Address</Text>
                                                 </Col>
@@ -452,16 +451,16 @@ class MedicineCheckout extends Component {
                                                         keyExtractor={(item, index) => index.toString()}
                                                         renderItem={({ item }) =>
                                                             <View style={{ backgroundColor: '#fff' }}>
-                                                                <Text style={{ fontFamily: 'OpenSans', fontSize: 12, fontWeight: '300', marginTop: 2, marginLeft: 33 }}>{item.full_name}</Text>
-                                                                <Row style={{ borderBottomWidth: 0.5, paddingBottom: 10,marginTop:5}}>
-                                                                    <Col size={1} >
+                                                                <Row style={{ borderBottomWidth: 0.5, paddingBottom: 10,marginTop:5,marginLeft:5,justifyContent:'center'}}>
+                                                                    <Col size={1} style={{ justifyContent: 'center'}}>
                                                                             <Radio 
                                                                                standardStyle={true}
                                                                                selected={this.state.selectedAddress === item ? true : false} 
                                                                                onPress={()=>this.setState({ selectedAddress: item })} />
                                                                     </Col>
 
-                                                                    <Col size={9} >
+                                                                    <Col size={9}  style={{ justifyContent: 'center'}}>
+                                                                    <Text style={{ fontFamily: 'OpenSans', fontSize: 12, fontWeight: '300', marginTop: 2, }}>{item.full_name}</Text>
                                                                         <Text style={{ fontFamily: 'OpenSans', fontSize: 12, marginTop: 2, color: '#6a6a6a' }}>{getAddress(item)}</Text>
                                                                         <Text style={{ fontFamily: 'OpenSans', fontSize: 12, marginTop: 2 }}>{'Mobile -' + (item.mobile_no || 'Nil')}</Text>
 

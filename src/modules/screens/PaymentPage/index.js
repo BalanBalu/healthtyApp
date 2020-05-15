@@ -963,14 +963,16 @@ class PaymentPage extends Component {
         return (
             <View key={valueOfCreditCard.card_id}>
                 <Row style={{ borderBottomColor: '#C1C1C1', borderBottomWidth: 0.3, backgroundColor: '#fff', padding: 15, marginLeft: 10, marginRight: 10 }}>
-                              <Radio 
+                       <Col style={{ width: '10%',marginTop:5}}>
+                       <Radio 
                                     standardStyle={true}
                                     status={valueOfCreditCard.card_id === this.state.selectedSavedCardId && this.state.paymentOption === null ? true : false}
                                     selected={this.state.selectedSavedCardId === valueOfCreditCard.card_id ? true : false} 
                                     onPress={()=> this.setState({ selectedSavedCardId: valueOfCreditCard.card_id, paymentOption: null })}
                                   />
-                                    <Icon name="ios-woman" style={{ fontSize: 20, marginLeft: 10, }} />
-                    <Col style={{ width: '90%', }}>
+                       </Col>      
+                             
+                    <Col style={{ width: '90%', marginLeft: 5,justifyContent:'center'}}>
                         <Row>
                             {/* <Text style={{ color: '#000', fontFamily: 'OpenSans', fontWeight: 'bold', fontSize: 15, marginTop: 8, }}
                             >SBI</Text> */}

@@ -171,7 +171,7 @@ const HomeStack = createStackNavigator({
       ),
       headerRight: (
         
-          <Row>
+          <Row style={{justifyContent:'center',alignItems:'center'}}>
             <TouchableOpacity onPress={() => { navigation.navigate('Notification') }} >
               <View>
                 <Icon name="notifications" style={{ color: '#fff', marginRight: 15, fontFamily: 'opensans-semibold' }}></Icon>
