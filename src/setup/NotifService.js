@@ -126,8 +126,8 @@ class NotifService {
     importance: 'high',
     fullScreenIntent: false,
     priority: 'high',
-    category: 'Medflic'
-
+    category: 'Medflic',
+    visibility: 'private'
   }) {
     PushNotification.localNotificationSchedule({
       date: scheduleTime, // in 30 secs
@@ -146,7 +146,7 @@ class NotifService {
       group: options.group || 'medflic_group', // (optional) add group to message
       ongoing: options.ongoing || false,  // (optional) set whether this is an "ongoing" notification
       priority: options.priority || 'high', // (optional) set notification priority, default: high
-      // visibility: "private", // (optional) set notification visibility, default: private
+      visibility:  options.visibility || 'private' , // (optional) set notification visibility, default: private
       importance: options.importance || 'high', // (optional) set notification importance, default: high
       allowWhileIdle: false, // (optional) set notification to work while on doze, default: false
       ignoreInForeground: false, 
