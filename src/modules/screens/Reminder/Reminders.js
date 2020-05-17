@@ -179,7 +179,7 @@ class Reminder extends Component {
             <View style={{ backgroundColor: '#F1F1F1', marginTop: height/ 4,  justifyContent: 'center', alignItems: 'center'  }}>
                
                 <Image source={require('../../../../assets/images/Remindericon.png')} style={{ justifyContent: 'center', height: 150, width: 150 }} />
-                <Text style={{ color: '#d83939',  }}>No Reminder is avaialble now!</Text>
+                <Text style={{ color: '#d83939',  }}>No Reminder is available now!</Text>
             </View>
           :
           

@@ -226,6 +226,7 @@ class AddReminder extends Component {
             type: "success",
             duration: 3000,
           })
+          this.props.navigation.navigate('Reminder')
         }
         else {
           Toast.show({
@@ -239,7 +240,6 @@ class AddReminder extends Component {
     catch (e) {
       console.log(e.message)
     }
-    this.props.navigation.navigate('Reminder')
   }
 
 
@@ -269,7 +269,7 @@ class AddReminder extends Component {
                     <TextInput 
                       placeholder="Medicine name"
                       style={[{ fontSize: 12, marginLeft: 5,  borderRadius: 5  }, IS_ANDROID ? { } :  {  marginTop: 8 }]}
-                      placeholderTextColor="#C1C1C1"
+                      placeholderTextColor="#696969"
                       keyboardType={'default'}
                       returnKeyType={'go'}
                       value={this.state.medicine_name}
@@ -308,12 +308,10 @@ class AddReminder extends Component {
                         marginTop: 5, borderColor: '#909090',
                         borderWidth: 0.5, height: 35, borderRadius: 5
                       }}>
-
                         <TextInput 
-                         
                           placeholder="Medicine Form"
                           style={[{ fontSize: 12, marginLeft: 5, borderRadius: 5 }, IS_IOS ? {  marginTop: 8 }: { }]}
-                          placeholderTextColor="#C1C1C1"
+                          placeholderTextColor="#696969"
                           keyboardType={'default'}
                           returnKeyType={'go'}
                           value={this.state.medicine_form}
@@ -321,9 +319,7 @@ class AddReminder extends Component {
                           onChangeText={enteredText => this.setState({ medicine_form: enteredText } ) }
                           multiline={false}
                         />
-
                       </Form>
-                     
                     </Col>
                     <Col style={{ marginLeft: 5 }}>
                       <Text style={styles.NumText}>Strength of Medicine</Text>
@@ -331,11 +327,10 @@ class AddReminder extends Component {
                         marginTop: 5, borderColor: '#909090',
                         borderWidth: 0.5, height: 35, borderRadius: 5
                       }}>
-
                         <TextInput 
                           placeholder="Medicine Strength"
                           style={[{ fontSize: 12, marginLeft: 5, borderRadius: 5 }, IS_IOS ? {  marginTop: 8 }: { }]}
-                          placeholderTextColor="#C1C1C1"
+                          placeholderTextColor="#696969"
                           keyboardType={'default'}
                           returnKeyType={'go'}
                           value={this.state.medicine_strength}
@@ -343,14 +338,10 @@ class AddReminder extends Component {
                           onChangeText={enteredText => this.setState({ medicine_strength: enteredText })}
                           multiline={false}
                         />
-
                       </Form>
-                      
                     </Col>
                   </Row>
-
                 </View>
-            
                 <View>
                   <Text style={styles.NumText}>How often would you take this Medicine</Text>
                   <Item style={{ marginTop: 10, borderBottomWidth: 0, }}>
@@ -577,7 +568,7 @@ class AddReminder extends Component {
                 </View> 
                 : 
                 <View style={{ marginTop: 5, borderTopColor: 'gray', borderTopWidth: 1, }}>
-                  <Text style={styles.remText}>Your Remainder Time is on {formatDate(medicine_take_one_date, 'DD/MM/YYYY')}</Text>
+                  <Text style={styles.remText}>Your Reminder Time is on {formatDate(medicine_take_one_date, 'DD/MM/YYYY')}</Text>
                       </View> }
               </Card>
               </View>
