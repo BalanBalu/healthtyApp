@@ -21,10 +21,14 @@
     <uses-permission android:name="android.permission.VIBRATE" />
     <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED"/>
     
-    <uses-permission android:name="android.permission.BIND_TELECOM_CONNECTION_SERVICE"/>
     <uses-permission android:name="android.permission.FOREGROUND_SERVICE" />
+    
+ <!-- 
     <uses-permission android:name="android.permission.READ_PHONE_STATE" />
     <uses-permission android:name="android.permission.CALL_PHONE" />
+    <uses-permission android:name="android.permission.BIND_TELECOM_CONNECTION_SERVICE"/> -->
+    
+    <uses-permission android:name="android.permission.USE_FULL_SCREEN_INTENT" />
     
     <application
       android:name=".MainApplication"
@@ -65,18 +69,19 @@
         </intent-filter>
     </service> 
 
-     <service android:name="io.wazo.callkeep.VoiceConnectionService"
+     <!-- <service android:name="io.wazo.callkeep.VoiceConnectionService"
         android:label="Wazo"
         android:permission="android.permission.BIND_TELECOM_CONNECTION_SERVICE">
         <intent-filter>
             <action android:name="android.telecom.ConnectionService" />
         </intent-filter>
-    </service>
+    </service> -->
 
     <activity
         android:name=".ExampleActivity"
         android:label="@string/title_activity_example"
     />
+    
     
        
         <meta-data  android:name="com.dieam.reactnativepushnotification.notification_channel_name"
@@ -85,6 +90,7 @@
         <meta-data android:name="com.dieam.reactnativepushnotification.notification_foreground"
             android:value="true"/>
 
+       
         <meta-data  android:name="com.dieam.reactnativepushnotification.notification_channel_description"
                     android:value="Medflic Notifications for Services"/>
         <!-- Change the resource name to your App's accent color - or any other color you want -->
