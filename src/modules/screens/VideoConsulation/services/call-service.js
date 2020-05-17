@@ -142,7 +142,7 @@ export default class CallService {
         const userName = this.getUserById(userId, 'name');
         const message = `${userName} did not answer`;
         CallKeepService.endCallByRemoteUser(REMOTE_USER_END_CALL_REASONS.REMOTE_USER_DID_NOT_ANSWER);
-        this.showToast(message);
+        this.showToast ?  this.showToast(message) : null;
         resolve();
       }
     });
@@ -172,13 +172,12 @@ export default class CallService {
       if (userId === session.currentUserID) {
         this._session = null;
         CallKeepService.endCallByRemoteUser(REMOTE_USER_END_CALL_REASONS.REMOTE_USER_ENDED_CALL);
-        this.showToast('You have accepted the call on other side');
+        this.showToast ?  this.showToast('You have accepted the call on other side') : null;
         reject();
       } else {
         const userName = this.getUserById(userId, 'name');
         const message = `${userName} accepted the call`;
-
-        this.showToast(message);
+        this.showToast ? this.showToast(message) : null;
         this.stopSounds();
 
         resolve();
@@ -190,7 +189,7 @@ export default class CallService {
     return new Promise((resolve, reject) => {
       if (userId === session.currentUserID) {
         this._session = null;
-        this.showToast('You have rejected the call on other side');
+        this.showToast ? this.showToast('You have rejected the call on other side') : null;
         CallKeepService.endCallByRemoteUser(REMOTE_USER_END_CALL_REASONS.CALL_FAILED);
         reject();
       } else {
@@ -199,7 +198,7 @@ export default class CallService {
           ? `${userName} is busy`
           : `${userName} rejected the call request`;
         CallKeepService.endCallByRemoteUser(REMOTE_USER_END_CALL_REASONS.CALL_FAILED);
-        this.showToast(message);
+        this.showToast ? this.showToast(message) : null;
         resolve();
       }
     });
@@ -218,7 +217,7 @@ export default class CallService {
           isInitiator ? 'stopped' : 'left'
         } the call`;
         CallKeepService.endCallByRemoteUser(REMOTE_USER_END_CALL_REASONS.REMOTE_USER_ENDED_CALL);
-        this.showToast(message);
+        this.showToast ? this.showToast(message) : null;
         resolve();
       }
     });

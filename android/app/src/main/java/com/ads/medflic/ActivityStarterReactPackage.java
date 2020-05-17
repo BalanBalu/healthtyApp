@@ -22,7 +22,7 @@ final class ActivityStarterReactPackage implements ReactPackage {
     public List<NativeModule> createNativeModules(@NonNull ReactApplicationContext reactContext) {
         List<NativeModule> modules = new ArrayList<>();
         modules.add(new ActivityStarterModule(reactContext));
-        modules.add(new EventEmitterModule(reactContext));
+       // modules.add(new EventEmitterModule(reactContext));
         return modules;
 
     }

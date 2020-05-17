@@ -4,7 +4,7 @@ export const IS_IOS = Platform.OS === 'ios';
 
 /*** Change ON Prod Start ***/
 
-export const API_URL = 'https://medflic-api.aopks.com/api/';
+export const API_URL = 'http://192.168.1.3:3000/api/';
 export const CATEGORY_BASE_URL = API_URL.substring(0, API_URL.length - 4) + 'images/category/';
 export const CHAT_API_URL = 'https://chat-qa-api.aopks.com';
 

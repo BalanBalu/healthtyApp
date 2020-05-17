@@ -3,9 +3,12 @@ import android.app.Activity;
 import android.app.AlarmManager;
 import android.app.Application;
 import android.app.Notification;
+import android.app.NotificationChannel;
+import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Color;
 import android.net.Uri;
 import android.os.Build;
 import android.provider.Settings;
@@ -66,6 +69,12 @@ final class ActivityStarterModule extends ReactContextBaseJavaModule {
             activity.startActivityForResult(intent, ExampleActivity.ACCEPT_CODE);
         }
     }
+    @ReactMethod
+    public void androidBuildAPIVersion(Promise promise) {
+        ReactContext reactContext = getReactApplicationContext();
+        int sdkInt = Build.VERSION.SDK_INT;
+        promise.resolve(sdkInt);
+    }
 
 
     @RequiresApi(api = Build.VERSION_CODES.M)
@@ -91,55 +100,54 @@ final class ActivityStarterModule extends ReactContextBaseJavaModule {
             Log.d("getPermissionForOverLay", "inside  Not Null of Activity Condition");
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
                 Log.d("getPermissionForOverLay", "inside  Version Condition");
-
-                if (!Settings.canDrawOverlays(activity)) {
-                  //  Log.d("getPermissionForOverLay", "inside getPermissionForOverLay Setting Can Draw Overlay");
-                  //  Intent intent = new Intent(Settings.ACTION_MANAGE_OVERLAY_PERMISSION,
-                  ///          Uri.parse("package:" + getReactApplicationContext().getPackageName()));
-                   // activity.startActivityForResult(intent, 0 );
-
-
-                    Intent rIntent = getReactApplicationContext().getPackageManager()
-                            .getLaunchIntentForPackage(getReactApplicationContext().getPackageName() );
-                    PendingIntent intent = PendingIntent.getActivity(
-                            activity, 0,
-                            rIntent, PendingIntent.FLAG_CANCEL_CURRENT);
-                    AlarmManager manager = (AlarmManager) activity.getSystemService(Context.ALARM_SERVICE);
-                    manager.set(AlarmManager.RTC, System.currentTimeMillis(), intent);
-                    System.exit(2);
+                if (!Settings.canDrawOverlays(activity)) { // Check Extra Permission for MIUI Devices
+                    Log.d("getPermissionForOverLay", "inside getPermissionForOverLay Setting Can Draw Overlay");
+                    Intent intent = new Intent(Settings.ACTION_MANAGE_OVERLAY_PERMISSION,
+                            Uri.parse("package:" + getReactApplicationContext().getPackageName()));
+                    activity.startActivityForResult(intent, 0 );
                 }
             }
         }
     }
 
     @ReactMethod
-    void showIncomingCallNotification() {
-        Context activity = getCurrentActivity();
+    void showIncomingCallNotification(int notificationId) {
+        Activity activity = getCurrentActivity();
         if (activity != null) {
             Log.d("NotificationBuilder", "Notification is Building...");
-            // Intent intent = new Intent(activity, ExampleActivity.class);
-           // activity.startActivityForResult(intent, ExampleActivity.ACCEPT_CODE);
             Intent fullScreenIntent = new Intent(activity, ExampleActivity.class);
+            NotificationManager notificationManager = (NotificationManager) activity.getSystemService(Context.NOTIFICATION_SERVICE);
+            String NOTIFICATION_CHANNEL_ID = "my_channel_id_01";
 
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+                NotificationChannel notificationChannel = new NotificationChannel(NOTIFICATION_CHANNEL_ID, "MEDFLIC_PT_CHANNEL", NotificationManager.IMPORTANCE_HIGH);
 
-            PendingIntent fullScreenPendingIntent = PendingIntent.getActivity(activity, 0,
-                    fullScreenIntent, PendingIntent.FLAG_UPDATE_CURRENT);
-            NotificationCompat.Builder notificationBuilder =
-                    new NotificationCompat.Builder(context, "123")
-                            .setSmallIcon(R.drawable.video_accept1)
-                            .setContentTitle("Incoming call")
-                            .setContentText("(919) 555-1234")
-                            .setPriority(NotificationCompat.PRIORITY_HIGH)
-                            .setCategory(NotificationCompat.CATEGORY_CALL)
+                // Configure the notification channel.
+                notificationChannel.setDescription("Channel description");
+                notificationChannel.enableLights(true);
+                notificationChannel.setLightColor(Color.rgb(0,0,0));
+                notificationChannel.setVibrationPattern(new long[]{0, 1000, 500, 1000});
+                notificationChannel.enableVibration(true);
+                notificationManager.createNotificationChannel(notificationChannel);
+            }
 
-                            // Use a full-screen intent only for the highest-priority alerts where you
-                            // have an associated activity that you would like to launch after the user
-                            // interacts with the notification. Also, if your app targets Android 10
-                            // or higher, you need to request the USE_FULL_SCREEN_INTENT permission in
-                            // order for the platform to invoke this notification.
-                            .setFullScreenIntent(fullScreenPendingIntent, true);
+            // assuming your main activity
+            NotificationCompat.Builder notificationBuilder = new NotificationCompat.Builder(activity, NOTIFICATION_CHANNEL_ID);
+            PendingIntent pendingIntent = PendingIntent.getActivity(activity, 0, fullScreenIntent, 0);
+            notificationBuilder.setAutoCancel(true)
+                    .setDefaults(Notification.DEFAULT_ALL)
+                    .setCategory(Notification.CATEGORY_CALL)
+                    .setOngoing(true)
+                    .setWhen(System.currentTimeMillis())
+                    .setSmallIcon(R.drawable.video_accept1)
+                    .setTicker("Hearty365")
+                    .setPriority(Notification.PRIORITY_MAX)
+                    .setContentTitle("Default notification")
+                    .setContentText("Lorem ipsum dolor sit amet, consectetur adipiscing elit.")
+                    .setFullScreenIntent(pendingIntent,true)
+                    .setContentInfo("Info");
 
-            Notification incomingCallNotification = notificationBuilder.build();
+            notificationManager.notify(/*notification id*/notificationId, notificationBuilder.build());
 
             Log.d("NotificationBuilder", "Notification has been Build");
         }

@@ -1,5 +1,3 @@
-import React, { useState, useEffect } from 'react';
-
 import RNCallKeep from 'react-native-callkeep';
 import { PermissionsAndroid, AppState, Alert, NativeModules , NativeEventEmitter } from 'react-native'
 import { IS_ANDROID, ANDROID_BUNDLE_IDENTIFIER, IS_IOS, ANDROID_VIDEO_CALL_ACTIVITY_NAME } from '../../../../setup/config';
@@ -8,13 +6,19 @@ import { v4 as uuidv4 } from 'uuid';
 import { store } from '../../../../setup/store';
 import { SET_INCOMING_VIDEO_CALL, SET_INCOMING_VIDEO_CALL_VIA_BACKGROUND } from '../../../providers/chat/chat.action';
 import SajjadLaunchApplication  from 'react-native-launch-application';
-
+import PushNotification from 'react-native-push-notification';
+import NotifService from '../../../../setup/NotifService';
+const INCOMING_CALL_SCREEN_THRESHHOLD_API_VERSION = 29;
 let activityStarter;
 let eventEmitter;
 if(IS_ANDROID) {
      activityStarter = NativeModules.ActivityStarter;
      eventEmitter = new NativeEventEmitter(activityStarter);
 }
+const CALL_SCREEN_ACTIONS = {
+    ACCEPTED: 'ACCEPTED',
+    DECLINED: 'DECLINED'
+} 
 const randomNumber = () => {
     const possible = '0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz';
     let rand = '';
@@ -50,7 +54,7 @@ export default class CallKeepService {
             console.log('Errror Permission '+ err);
         })
       }
-        if (IS_ANDROID) {
+      /*  if (IS_ANDROID) {
             console.log('hasAlreadyPermissionGrantedToShowVideoScreen ', await activityStarter.hasAlreadyPermissionGrantedToShowVideoScreen());
             if(await activityStarter.hasAlreadyPermissionGrantedToShowVideoScreen() === false) {
                 console.log('Overlay Permission False, So Requesting Once');
@@ -67,7 +71,7 @@ export default class CallKeepService {
                     { cancelable: false }
                 );
             }
-        }
+        } */
     } catch (error) {
            console.error('Error while Setting to be Available ', error)
         }
@@ -93,24 +97,34 @@ export default class CallKeepService {
                 })
             }
         } else {
+            console.log('Is IS_ANDROID ', IS_ANDROID);
             if(IS_ANDROID) {
-                 console.log('...Coming to Correct Condition with Backgroud....');
-                if (RootNavigation.getContainerRef()) {
-                    console.log('Navigation Container is already Present....');
-                    activityStarter.navigateToExample();
-                } else {
-                    SajjadLaunchApplication.open(ANDROID_BUNDLE_IDENTIFIER);
-                    console.log('Navigation Container is  Not Present....');
-                    var interval = setInterval(() => {
-                        if (RootNavigation.getContainerRef()) {
-                            console.log('Excuting to Navigate To Video Screen...');
-                            activityStarter.navigateToExample();
-                            clearInterval(interval);
-                        }
-                    },100);
-                    console.log('Excuting on Android with ' +  AppState.currentState);
-                    
-              //  RNCallKeep.displayIncomingCall(this.uuid, String(6333662), 'Medflic Doctor' );
+                console.log('...Coming to Correct Condition with Backgroud....');
+                const buildAPIVersion = await activityStarter.androidBuildAPIVersion();
+                console.log(buildAPIVersion);
+                if(buildAPIVersion >= INCOMING_CALL_SCREEN_THRESHHOLD_API_VERSION) {
+                    console.log('Android API Version 29 or Higher')
+                    NotifService.localNotif('Medflic: New Video Call from Doctor', 'Doctor is Calling You', {
+                        tag: 'VIDEO_NOTIFICATION',
+                        ongoing: true,
+                        fullScreenIntent: true
+                    });
+                } else {  
+                    if (RootNavigation.getContainerRef()) {
+                        console.log('Navigation Container is already Present....');
+                        PushNotification.navigateToIncomingCallScreen();
+                    } else {
+                        SajjadLaunchApplication.open(ANDROID_BUNDLE_IDENTIFIER);
+                        console.log('Navigation Container is  Not Present....');
+                        var interval = setInterval(() => {
+                            if (RootNavigation.getContainerRef()) {
+                                console.log('Excuting to Navigate To Video Screen...');
+                                PushNotification.navigateToIncomingCallScreen();
+                                clearInterval(interval);
+                            }
+                        },100);
+                        console.log('Excuting on Android with ' +  AppState.currentState);
+                }
               } 
             } else {
                 RNCallKeep.displayIncomingCall(this.uuid, String(handleNumber), 'Medflic Doctor', 'generic', true );
@@ -149,27 +163,50 @@ export default class CallKeepService {
     }
 
     //  EVENTS ///
-    onAnswerCallAction = () => {
+    onAnswerCallAction = async () => {
             console.log('ON Answer Event');
-            if (!RootNavigation.getContainerRef()) {
-                console.log('On Reference False');
-                store.dispatch({
-                    type: SET_INCOMING_VIDEO_CALL,
-                    data: true
-                });
-                store.dispatch({
-                    type: SET_INCOMING_VIDEO_CALL_VIA_BACKGROUND,
-                });
+            if(IS_ANDROID) {
+                if (RootNavigation.getContainerRef()) {
+                    RootNavigation.navigate('VideoScreen', { isIncomingCall: true, onPressReject: false, onPressAccept: true });
+                } else {
+                    const buildAPIVersion = await activityStarter.androidBuildAPIVersion();
+                    console.log(buildAPIVersion);
+                    if(buildAPIVersion >= INCOMING_CALL_SCREEN_THRESHHOLD_API_VERSION) {
+                        SajjadLaunchApplication.open(ANDROID_BUNDLE_IDENTIFIER);
+                        console.log('Navigation Container is  Not Present....');
+                        var interval = setInterval(() => {
+                            if (RootNavigation.getContainerRef()) {
+                                console.log('Excuting to Navigate To Video Screen...');
+                                RootNavigation.navigate('VideoScreen', { isIncomingCall: true, onPressReject: false, onPressAccept: true });
+                                clearInterval(interval);
+                            }
+                        },100);
+                    } else {
+                        RootNavigation.navigate('VideoScreen', { isIncomingCall: true, onPressReject: false, onPressAccept: true });
+                    }
+                }
             } else {
-                RootNavigation.navigate('VideoScreen', { isIncomingCall: true, onPressReject: false, onPressAccept: true });
-            }
+                if (!RootNavigation.getContainerRef()) {
+                    console.log('On Reference False');
+                    store.dispatch({
+                        type: SET_INCOMING_VIDEO_CALL,
+                        data: true
+                    });
+                 
+                } else {
+                    RootNavigation.navigate('VideoScreen', { isIncomingCall: true, onPressReject: false, onPressAccept: true });
+                }
+        }
+        store.dispatch({
+            type: SET_INCOMING_VIDEO_CALL_VIA_BACKGROUND,
+        });  
     }
     onRejectCallAction = () => {
         console.log('On Reject the Incoming Call...');
         RootNavigation.navigate('VideoScreen', { isIncomingCall: true, onPressReject: true, onPressAccept: false });
         RNCallKeep.endAllCalls();
         if(IS_ANDROID) {
-            activityStarter.endVideoCallScreen();
+           
         }
     }
 
@@ -182,11 +219,19 @@ export default class CallKeepService {
            // RNCallKeep.addEventListener('didToggleHoldCallAction', didToggleHoldCallAction);
               RNCallKeep.addEventListener('endCall', this.onRejectCallAction);
               if(IS_ANDROID) {
-                eventEmitter.addListener('callActionChange', (param) =>  {
+               /* eventEmitter.addListener('callActionChange', (param) =>  {
                     console.log('Action Result Param', param);
                     if(param === 'accepted') {
                         this.onAnswerCallAction();
                     } else if(param === 'declined') {
+                        this.onRejectCallAction();
+                    }
+                }); */
+                PushNotification.onFullScreenIntentActionRegister((result) => {
+                    console.log(result);
+                    if(result === CALL_SCREEN_ACTIONS.ACCEPTED ) {
+                        this.onAnswerCallAction();
+                    } else if(result === CALL_SCREEN_ACTIONS.DECLINED) {
                         this.onRejectCallAction();
                     }
                 });
