@@ -1,11 +1,10 @@
 import PushNotification from 'react-native-push-notification';
-import { FIREBASE_SENDER_ID } from './config'
+import { FIREBASE_SENDER_ID, IS_IOS } from './config'
 import { AsyncStorage, Alert } from 'react-native';
 import { userFiledsUpdate } from '../modules/providers/auth/auth.actions';
 import messaging from '@react-native-firebase/messaging';
 import rootNavigation from './rootNavigation';
 import backgroundpush from './backgroundpush';
-import { sub } from 'react-native-reanimated';
 let tokenData;
 let navigationProps;
 class NotifService {
@@ -112,7 +111,7 @@ class NotifService {
       message: bigText || 'Medflic Notification', // (required)
       playSound: true, // (optional) default: true
       soundName: options.sound || 'default', // (optional) Sound to play when the notification is shown. Value of 'default' plays the default sound. It can be set to a custom sound such as 'android.resource://com.xyz/raw/my_sound'. It will look for the 'my_sound' audio file in 'res/raw' directory and play it. default: 'default' (default sound is played)
-      number: ''+ this.lastId, // (optional) Valid 32 bit integer specified as string. default: none (Cannot be zero)
+      number: IS_IOS ? this.lastId : ''+ this.lastId, // (optional) Valid 32 bit integer specified as string. default: none (Cannot be zero)
       actions: options.actions || '',  // (Android only) See the doc for notification actions to know more
       fullScreenIntent: options.fullScreenIntent || false,
     });

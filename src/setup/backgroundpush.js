@@ -1,21 +1,26 @@
 import messaging from '@react-native-firebase/messaging';
-import NotifService from './NotifService';
 import rootNavigation from './rootNavigation';
-import { PermissionsAndroid, AppState, Alert, NativeModules , NativeEventEmitter } from 'react-native'
-
-let activityStarter;
-let eventEmitter;
-
-     activityStarter = NativeModules.ActivityStarter;
-     eventEmitter = new NativeEventEmitter(activityStarter);
+import NotifService from './NotifService';
+import { IS_IOS } from './config';
 let id = 1;
 export default async (message) => {
-  
+  console.log(message);
   try {
     const isVideoCallNotification = message.data.videoNotification;
-   
+    if(IS_IOS) {
+       let title, body;
+       if(message.notification) {
+         title = message.notification.title;
+         body = message.notification.body;
+       } else {
+          title = message.data.title;
+          body = message.data.body;
+       }
+       NotifService.localNotif(title, body)
+    }
+
     if(isVideoCallNotification === '1') {
-     
+        
     }
     
     const notitificationId = id + 1;
