@@ -6,7 +6,7 @@ import { Col, Row } from 'react-native-easy-grid';
 import { StyleSheet, AsyncStorage, FlatList, TouchableOpacity } from 'react-native';
 import { getMedicineOrderList } from '../../../providers/pharmacy/pharmacy.action';
 import { formatDate } from '../../../../setup/helpers';
-import{statusBar} from '../CommomPharmacy'
+import { statusBar } from '../CommomPharmacy'
 import Spinner from '../../../../components/Spinner';
 import noAppointmentImage from "../../../../../assets/images/noappointment.png";
 
@@ -22,17 +22,17 @@ class MyOrdersList extends Component {
         this.getMedicineOrderList();
     }
 
-    getFinalPriceOfOrder(orderItems,data) {
+    getFinalPriceOfOrder(orderItems, data) {
         let finalPriceForOrder = 0;
-        if(data.is_order_type_recommentation===true){
+        if (data.is_order_type_recommentation === true) {
             orderItems.forEach(element => {
                 finalPriceForOrder += Number(element.medicine_recommentation_max_price);
-            });   
-        }else{
-        orderItems.forEach(element => {
-            finalPriceForOrder += element.final_price;
-        });
-    }
+            });
+        } else {
+            orderItems.forEach(element => {
+                finalPriceForOrder += element.final_price;
+            });
+        }
         return finalPriceForOrder;
     }
     renderNoOrders() {
@@ -111,47 +111,49 @@ class MyOrdersList extends Component {
                                         testID="orderDetailsNavigation"
                                         onPress={() => this.props.navigation.navigate('OrderDetails', { serviceId: item._id })}>
                                         <View style={{ margin: 5, backgroundColor: '#fff', marginLeft: 10, marginRight: 10, marginBottom: 10 }}>
-                                            <View>
-                                                <Row style={{ marginBottom: -5 }}>
+                                            <View style={{ marginBottom: 10 }}>
+                                                <Row style={{ borderBottomWidth: 0.5, borderBottomColor: '#E6E6E6', paddingBottom: 5, marginLeft: 10, marginRight: 10 }}>
                                                     <Col>
                                                         <Text style={styles.Head}>Order Id</Text>
                                                     </Col>
                                                     <Col>
-                                                        <Text style={{ fontSize: 10, textAlign: 'right', margin: 10, fontFamily: 'OpenSans' }}>{item.order_ref_no || ''}</Text>
+                                                        <Text style={{ fontSize: 12, textAlign: 'right', marginTop: 13, fontFamily: 'OpenSans', marginRight: 5 }}>{item.order_ref_no || ''}</Text>
                                                     </Col>
                                                 </Row>
                                                 <Row style={styles.Row} />
                                                 <Row>
-                                                    <Text style={{ fontSize: 10, margin: 10, fontFamily: 'OpenSans' }}>{item.description}</Text>
+                                                    <Text style={{ fontFamily: 'OpenSans', fontSize: 16, color: '#000', fontWeight: 'bold', marginTop: 5, marginLeft: 10 }}>{item.description}</Text>
                                                 </Row>
-                                                <Row style={{ marginTop: -10 }}>
-                                                    <Text style={styles.Head}>Ordered On</Text>
+                                                <Row >
+                                                    <Text style={styles.Head1}>Ordered On</Text>
                                                 </Row>
-                                                <Row style={{ marginTop: -10 }}>
+                                                <Row >
                                                     <Text style={styles.orderprice}>{formatDate(item.created_date, 'DD MMMM,YYYY')}</Text>
                                                 </Row>
-                                                <Row style={{ marginTop: -5 }}>
-                                                    <Text style={[styles.orderprice,{color: statusBar[item.status].color}]}>{statusBar[item.status].status}</Text>
-                                                </Row>
-                                                <Row style={{ marginBottom: -15, marginTop: -5 }}>
+
+                                                <Row >
                                                     <Col>
-                                                        <Row style={{ marginTop: -5 }}>
-                                                            <Text style={styles.Head}>Total price</Text>
+                                                        <Row  >
+                                                            <Text style={styles.Head1}>Total price</Text>
                                                         </Row>
-                                                        <Row style={{ marginBottom: 7.5, marginTop: -10 }}>
+
+                                                        <Row style={{}}>
                                                             <Col size={5}>
-                                                                <Text style={styles.orderprice}>₹ {this.getFinalPriceOfOrder(item.order_items || [],item)}</Text>
+                                                                <Text style={styles.orderprice}>₹ {this.getFinalPriceOfOrder(item.order_items || [], item)}</Text>
                                                             </Col>
                                                         </Row>
                                                     </Col>
                                                 </Row>
-                                                <Row style={{ marginTop: 7.5 }}>
-                                                    <Row style={styles.Row} />
+                                                <Row style={styles.Row}>
+                                                    <Text style={[styles.orderprice1, { color: statusBar[item.status].color }]}>{statusBar[item.status].status}</Text>
                                                 </Row>
 
                                             </View>
 
-                                            <Row style={{ marginBottom: -12.5 }}>
+                                            <Row style={{
+                                                marginBottom: 10, borderTopWidth: 0.5, marginLeft: 10, marginRight: 10,
+                                                borderTopColor: '#E6E6E6', paddingTop: 5,
+                                            }}>
                                                 <Col size={7}>
                                                     {item.status == "PENDING" ?
                                                         <Text style={styles.buytext}>Arrving on 24 Hours</Text> :
@@ -166,7 +168,7 @@ class MyOrdersList extends Component {
                                                 {item.status == "COMPLETED" ?
                                                     <Col size={3} style={{ marginRight: 10, marginTop: 10 }}>
                                                         <TouchableOpacity style={styles.Touch} onPress={() => { this.props.navigation.navigate("medicineSearchList") }}>
-                                                            <Text style={styles.Buynow}><Icon name='ios-cart' style={styles.cart} />  Buy Again</Text>
+                                                            <Text style={styles.Buynow}><Icon name='ios-cart' style={styles.cart} />Buy Again</Text>
                                                         </TouchableOpacity>
                                                     </Col> :
                                                     null}
@@ -194,23 +196,15 @@ const styles = StyleSheet.create({
 
     },
     Row: {
-        borderWidth: 0.5,
-        borderColor: '#E6E6E6',
-        margin: 2.5,
-        marginTop: 5,
-        marginBottom: -1.5,
         marginLeft: 10,
-        marginRight: 10
+        marginRight: 10, marginTop: 5
     },
 
     buytext: {
-        marginBottom: 25,
-        fontSize: 11,
-        marginTop: 10,
-        margin: 10,
+        fontSize: 12,
         color: '#8dc63f',
         fontFamily: 'OpenSans',
-        fontWeight: '500'
+        fontWeight: 'bold'
     },
 
     Buynow: {
@@ -244,11 +238,19 @@ const styles = StyleSheet.create({
     },
 
     Head: {
-        fontSize: 10,
-        margin: 10,
-        color: '#775DA3',
+        fontSize: 17,
+        fontWeight: '500',
         fontFamily: 'OpenSans',
-        fontWeight: '500'
+        color: '#7F49C3',
+        marginTop: 5,
+    },
+    Head1: {
+        fontFamily: 'OpenSans',
+        fontSize: 12,
+        fontWeight: 'bold',
+        marginTop: 5,
+        marginLeft: 10,
+        color: '#4c4c4c'
     },
     customImage: {
         height: 50,
@@ -259,11 +261,16 @@ const styles = StyleSheet.create({
         marginBottom: 'auto'
     },
     orderprice: {
-        fontSize: 11,
-        textAlign: 'left',
         fontFamily: 'OpenSans',
-        marginLeft: 10,
-        marginBottom: 5
+        fontSize: 12,
+        color: '#4c4c4c', marginTop: 1,
+        marginLeft: 10
+    },
+    orderprice1: {
+        fontFamily: 'OpenSans',
+        fontSize: 12,
+        marginTop: 1,
+        fontWeight: 'bold'
     },
     curvedGrid: {
         borderRadius: 800,
