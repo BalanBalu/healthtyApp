@@ -4,7 +4,7 @@ export const IS_IOS = Platform.OS === 'ios';
 
 /*** Change ON Prod Start ***/
 
-export const API_URL = 'https://medflic-qa-api.aopks.com/api/';
+export const API_URL = 'http://192.168.1.3:3000/api/';
 export const CATEGORY_BASE_URL = API_URL.substring(0, API_URL.length - 4) + 'images/category/';
 export const CHAT_API_URL = 'https://chat-qa-api.aopks.com';
 
@@ -23,10 +23,11 @@ export const CONNECTY_CUBE = [{
     },
   }
 ]
-export const CURRENT_PRODUCT_VERSION_CODE = 17;
+export const CURRENT_PRODUCT_VERSION_CODE = 18;
 
 /*** Change ON Prod End ***/
-
+export const ANDROID_BUNDLE_IDENTIFIER = 'com.ads.medflic';
+export const ANDROID_VIDEO_CALL_ACTIVITY_NAME = 'ExampleActivity'
 export const BASIC_DEFAULT = {
     email : 'sathishkrish20@gmail.com',
     mobile_no: '9164932823'

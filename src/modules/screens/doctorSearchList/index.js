@@ -7,7 +7,7 @@ import StarRating from 'react-native-star-rating';
 
 import {
     searchDoctorList, fetchAvailabilitySlots,
-    getMultipleDoctorDetails,
+    getMultipleDoctorDetailsV2,
     getDoctorsReviewsCount,
     getPatientWishList,
     SET_BOOK_APP_DOCTOR_DATA,
@@ -378,7 +378,7 @@ class doctorSearchList extends Component {
                 this.doctorDetailsMap.set(element.doctor_id, element) // total_rating
             });
 
-            let doctorData = this.processFinalData(slotData);
+            let doctorData = this.processFinalData(slotData) || [];
             console.log(doctorData);
             this.setState({ refreshCount: this.state.refreshCount + 1 });
             doctorData.forEach((element) => {
@@ -394,7 +394,6 @@ class doctorSearchList extends Component {
     /* Update Active Sponsors count for Doctors */
     updateSponsorViewersCount = async (sponsorIdArray) => {
         try {
-
             let userId = await AsyncStorage.getItem('userId');
             if (!userId) userId = "NO_USER"
             let sponsorIds = {
@@ -412,10 +411,10 @@ class doctorSearchList extends Component {
     /*Get doctor specialist and Degree details*/
 
     getDoctorDetails = async (doctorIds) => {
+        let doctorData = [];
         try {
-            let doctorData = [];
-            let resultDoctorDetails = await getMultipleDoctorDetails(doctorIds, fields);
-            console.log(resultDoctorDetails);
+            let resultDoctorDetails = await getMultipleDoctorDetailsV2(doctorIds, fields);
+            console.log('resultDoctorDetails ==> ', resultDoctorDetails);
             if (resultDoctorDetails.success) {
                 doctorData = resultDoctorDetails.data;
                 return doctorData;

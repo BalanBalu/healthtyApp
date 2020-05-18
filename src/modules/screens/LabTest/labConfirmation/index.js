@@ -3,13 +3,12 @@ import { Container, Content, Text, Button, Toast, Item, List, ListItem, Card, In
 import { Col, Row, Grid } from 'react-native-easy-grid';
 import { StyleSheet, Image, AsyncStorage, TouchableOpacity, Platform } from 'react-native';
 import { FlatList } from 'react-native-gesture-handler';
-import { RadioButton } from 'react-native-paper';
 import { NavigationEvents } from 'react-navigation';
 import { fetchUserProfile } from '../../../providers/profile/profile.action';
 import { dateDiff } from '../../../../setup/helpers';
 import { getAddress } from '../../../common'
 import { hasLoggedIn } from '../../../providers/auth/auth.actions';
-import { insertAppointment } from '../../../providers/lab/lab.action';
+import { insertAppointment, updateLapAppointment } from '../../../providers/lab/lab.action';
 import { getUserGenderAndAge } from '../CommonLabTest'
 import { SERVICE_TYPES } from '../../../../setup/config'
 import BookAppointmentPaymentUpdate from '../../../providers/bookappointment/bookAppointment';
@@ -220,10 +219,18 @@ class LabConfirmation extends Component {
         return totalAmount;
     }
 
-    
+
     proceedToLabTestAppointment = async (paymentMode) => {
         let { patientDetails, packageDetails, selectedAddress, itemSelected } = this.state
         try {
+            if (patientDetails.length == 0) {
+                Toast.show({
+                    text: 'kindly select or add patient details',
+                    type: 'warning',
+                    duration: 3000
+                })
+                return false;
+            }
             if (itemSelected === 'TEST_AT_HOME' && selectedAddress == null) {
                 Toast.show({
                     text: 'kindly chosse Address',
@@ -269,6 +276,9 @@ class LabConfirmation extends Component {
                 status_by: "USER",
                 booked_from: "Mobile",
             };
+            if (packageDetails.appointment_status == 'PAYMENT_FAILED') {
+                requestData.labTestAppointmentId = packageDetails.appointment_id;
+            }
             if (paymentMode === 'cash') {
                 this.BookAppointmentPaymentUpdate = new BookAppointmentPaymentUpdate();
                 let response = await this.BookAppointmentPaymentUpdate.updatePaymentDetails(true, {}, 'cash', requestData, SERVICE_TYPES.LAB_TEST, userId, 'cash');
@@ -290,20 +300,38 @@ class LabConfirmation extends Component {
                 }
 
             } else {
-                let response = await insertAppointment(requestData);
-                console.log(response);
-                if(response.success === true) {
-                    requestData.labTestAppointmentId = response.appointmentId;
-                    this.props.navigation.navigate('paymentPage', {
-                        service_type: SERVICE_TYPES.LAB_TEST,
-                        bookSlotDetails: requestData,
-                        amount: packageDetails.fee
-                    });
+                let response = {};
+                if (packageDetails.appointment_status == 'PAYMENT_FAILED') {
+                    console.log("requestData", requestData)
+                    let updateData = {
+                        labId: requestData.lab_id,
+                        userId: userId,
+                        startTime: requestData.startTime,
+                        endTime: requestData.endtime,
+                        status: requestData.status,
+                        statusUpdateReason: "NEW_BOOKING",
+                        status_by: requestData.status_by
+                    }
+                    response = await updateLapAppointment(packageDetails.appointment_id, updateData);
+
                 } else {
-                    Toast.show({
-                        text: response.message,
-                        duration: 3000,
-                    })
+                    response = await insertAppointment(requestData);
+
+                    console.log("response", response);
+
+                    if (response.success === true) {
+                        requestData.labTestAppointmentId = response.appointmentId;
+                        this.props.navigation.navigate('paymentPage', {
+                            service_type: SERVICE_TYPES.LAB_TEST,
+                            bookSlotDetails: requestData,
+                            amount: packageDetails.fee
+                        });
+                    } else {
+                        Toast.show({
+                            text: response.message,
+                            duration: 3000,
+                        })
+                    }
                 }
             }
         }
@@ -327,7 +355,6 @@ class LabConfirmation extends Component {
     }
 
 
-
     render() {
         const { data, name, age, gender, patientDetails, itemSelected, packageDetails, patientAddress, selfChecked, othersChecked, defaultPatientDetails } = this.state;
 
@@ -346,23 +373,23 @@ class LabConfirmation extends Component {
                                 <Row>
                                     <Col size={3}>
                                         <Row style={{ alignItems: 'center' }}>
-                                          
-                                             <CheckBox style={{borderRadius:5}}
-                                             status={this.state.selfChecked ? true : false}
-                                               checked={this.state.selfChecked}
-                                               onPress={async () => { await this.setState({ selfChecked: !this.state.selfChecked }), this.onChangeSelf() }}
-                                             />
-                                            <Text style={{ fontFamily: 'OpenSans', fontSize: 12, color: '#000',marginLeft:20 }}>Self</Text>
+
+                                            <CheckBox style={{ borderRadius: 5 }}
+                                                status={this.state.selfChecked ? true : false}
+                                                checked={this.state.selfChecked}
+                                                onPress={async () => { await this.setState({ selfChecked: !this.state.selfChecked }), this.onChangeSelf() }}
+                                            />
+                                            <Text style={{ fontFamily: 'OpenSans', fontSize: 12, color: '#000', marginLeft: 20 }}>Self</Text>
                                         </Row>
                                     </Col>
                                     <Col size={3}>
                                         <Row style={{ alignItems: 'center' }}>
-                                             <CheckBox style={{borderRadius:5}}
-                                             status={this.state.othersChecked ? true : false}
-                                               checked={this.state.othersChecked}
-                                               onPress={async () => { await this.setState({ othersChecked: !this.state.othersChecked }), this.onChangeCheckBox() }}
-                                               />
-                                            <Text style={{ fontFamily: 'OpenSans', fontSize: 12, color: '#000' ,marginLeft:20}}>Others</Text>
+                                            <CheckBox style={{ borderRadius: 5 }}
+                                                status={this.state.othersChecked ? true : false}
+                                                checked={this.state.othersChecked}
+                                                onPress={async () => { await this.setState({ othersChecked: !this.state.othersChecked }), this.onChangeCheckBox() }}
+                                            />
+                                            <Text style={{ fontFamily: 'OpenSans', fontSize: 12, color: '#000', marginLeft: 20 }}>Others</Text>
                                         </Row>
                                     </Col>
                                     <Col size={4}>
@@ -414,28 +441,34 @@ class LabConfirmation extends Component {
                                     <Text style={{
                                         fontFamily: 'OpenSans', fontSize: 12, marginTop: 10
                                     }}>Gender</Text>
-                                    <RadioButton.Group
-                                        onValueChange={value => this.setState({ gender: value })}
-                                        value={gender}>
-                                        <View style={{ flexDirection: 'row' }}>
-                                            <RadioButton value="M" style={{ fontSize: 10 }} />
-                                            <Text style={{
-                                                fontFamily: 'OpenSans', fontSize: 12, marginTop: 10
-                                            }}>Male</Text>
-                                        </View>
-                                        <View style={{ flexDirection: 'row', marginLeft: 20 }}>
-                                            <RadioButton value="F" />
-                                            <Text style={{
-                                                fontFamily: 'OpenSans', fontSize: 12, marginTop: 10
-                                            }}>Female</Text>
-                                        </View>
-                                        <View style={{ flexDirection: 'row', marginLeft: 20 }}>
-                                            <RadioButton value="O" />
-                                            <Text style={{
-                                                fontFamily: 'OpenSans', fontSize: 12, marginTop: 10
-                                            }}>Others</Text>
-                                        </View>
-                                    </RadioButton.Group>
+
+                                    <View style={{ flexDirection: 'row' }}>
+                                        <Radio
+                                            standardStyle={true}
+                                            selected={gender === "M" ? true : false}
+                                            onPress={() => this.setState({ gender: "M" })} />
+                                        <Text style={{
+                                            fontFamily: 'OpenSans', fontSize: 12, marginLeft: 10
+                                        }}>Male</Text>
+                                    </View>
+                                    <View style={{ flexDirection: 'row', marginLeft: 20 }}>
+                                        <Radio
+                                            standardStyle={true}
+                                            selected={gender === "F" ? true : false}
+                                            onPress={() => this.setState({ gender: "F" })} />
+                                        <Text style={{
+                                            fontFamily: 'OpenSans', fontSize: 12, marginLeft: 10
+                                        }}>Female</Text>
+                                    </View>
+                                    <View style={{ flexDirection: 'row', marginLeft: 20 }}>
+                                        <Radio
+                                            standardStyle={true}
+                                            selected={gender === "O" ? true : false}
+                                            onPress={() => this.setState({ gender: "O" })} />
+                                        <Text style={{
+                                            fontFamily: 'OpenSans', fontSize: 12, marginLeft: 10
+                                        }}>Others</Text>
+                                    </View>
                                 </View>
 
                                 {this.state.errMsg ? <Text style={{ paddingLeft: 10, fontSize: 10, fontFamily: 'OpenSans', color: 'red' }}>{this.state.errMsg}</Text> : null}
@@ -502,73 +535,78 @@ class LabConfirmation extends Component {
                     </View>
 
 
-                    <RadioButton.Group onValueChange={value => this.setState({ itemSelected: value })}
-                        value={itemSelected}  >
-                        <View style={{ backgroundColor: '#fff', padding: 10, marginTop: 5 }}>
-                            <Row>
-                                <Col size={7}>
-                                    <Text style={{ fontFamily: 'OpenSans', fontSize: 14, fontWeight: '500' }}>Test at home<Text style={{ fontFamily: 'OpenSans', fontSize: 14, color: '#909090' }}>(Test Result)</Text></Text>
-                                </Col>
-                                <Col size={5} style={{ alignItems: 'flex-end', justifyContent: 'flex-end' }}>
-                                    <RadioButton value={'TEST_AT_HOME'} />
-                                </Col>
-                            </Row>
-                        </View>
-                        {itemSelected === 'TEST_AT_HOME' ?
-                            <View>
-                                {patientAddress.length != 0 ?
-                                    <Row style={{ marginTop: 5 }}>
-                                        <Col size={5}>
-                                            <Text style={{ fontFamily: 'OpenSans', fontSize: 14, color: '#7F49C3' }}>Save Address</Text>
-                                        </Col>
-                                        <Col size={5} style={{ alignItems: 'flex-end', justifyContent: 'flex-end' }}>
-                                            <TouchableOpacity onPress={() => this.editProfile('MapBox', 'delivery_Address')}>
-                                                <Text style={{ fontFamily: 'OpenSans', fontSize: 10, color: '#ff4e42' }}>Add new Address</Text>
-                                            </TouchableOpacity>
-                                        </Col>
-                                    </Row> : null}
-                                {patientAddress.length != 0 ?
-                                    <FlatList
-                                        data={patientAddress}
-                                        extraData={patientAddress}
-                                        keyExtractor={(item, index) => index.toString()}
-                                        renderItem={({ item, index }) =>
-                                            <View style={{ backgroundColor: '#fff' }}>
-                                                <Row style={{ borderBottomColor: '#909090', borderBottomWidth: 0.3, paddingBottom: 15 }}>
 
-                                                    <Col size={10}>
-                                                        <Text style={{ fontFamily: 'OpenSans', fontSize: 12, marginTop: 2, color: '#6a6a6a' }}>{getAddress(item)}</Text>
-                                                        <Text style={{ fontFamily: 'OpenSans', fontSize: 12, marginTop: 2 }}>{'Mobile -' + (item.mobile_no || 'Nil')}</Text>
-                                                    </Col>
-                                                    <Col size={1} style={{ justifyContent: 'center' }}>
-                                                        <RadioButton.Group style={{ marginTop: 2 }} onValueChange={value => this.setState({ selectedAddress: value })}
+                    <View style={{ backgroundColor: '#fff', padding: 10, marginTop: 5 }}>
+                        <Row>
+                            <Col size={7}>
+                                <Text style={{ fontFamily: 'OpenSans', fontSize: 14, fontWeight: '500' }}>Test at home<Text style={{ fontFamily: 'OpenSans', fontSize: 14, color: '#909090' }}>(Test Result)</Text></Text>
+                            </Col>
+                            <Col size={5} style={{ alignItems: 'flex-end', justifyContent: 'flex-end' }}>
+                                <Radio
+                                    standardStyle={true}
+                                    selected={itemSelected === 'TEST_AT_HOME' ? true : false}
+                                    onPress={() => this.setState({ itemSelected: 'TEST_AT_HOME' })} />
+                            </Col>
+                        </Row>
+                    </View>
+                    {itemSelected === 'TEST_AT_HOME' ?
+                        <View>
+                            {patientAddress.length != 0 ?
+                                <Row style={{ marginTop: 5 }}>
+                                    <Col size={5}>
+                                        <Text style={{ fontFamily: 'OpenSans', fontSize: 14, color: '#7F49C3' }}>Save Address</Text>
+                                    </Col>
+                                    <Col size={5} style={{ alignItems: 'flex-end', justifyContent: 'flex-end' }}>
+                                        <TouchableOpacity onPress={() => this.editProfile('MapBox', 'delivery_Address')}>
+                                            <Text style={{ fontFamily: 'OpenSans', fontSize: 10, color: '#ff4e42' }}>Add new Address</Text>
+                                        </TouchableOpacity>
+                                    </Col>
+                                </Row> : null}
+                            {patientAddress.length != 0 ?
+                                <FlatList
+                                    data={patientAddress}
+                                    extraData={patientAddress}
+                                    keyExtractor={(item, index) => index.toString()}
+                                    renderItem={({ item, index }) =>
+                                        <View style={{ backgroundColor: '#fff' }}>
+                                            <Row style={{ borderBottomColor: '#909090', borderBottomWidth: 0.3, paddingBottom: 15 }}>
 
-                                                            value={this.state.selectedAddress}  >
-                                                            <RadioButton value={item} />
-                                                        </RadioButton.Group>
-                                                    </Col>
-                                                </Row>
-                                            </View>
-                                        } /> :
+                                                <Col size={10}>
+                                                    <Text style={{ fontFamily: 'OpenSans', fontSize: 12, marginTop: 2, color: '#6a6a6a' }}>{getAddress(item)}</Text>
+                                                    <Text style={{ fontFamily: 'OpenSans', fontSize: 12, marginTop: 2 }}>{'Mobile -' + (item.mobile_no || 'Nil')}</Text>
+                                                </Col>
+                                                <Col size={1} style={{ justifyContent: 'center' }}>
+                                                    <Radio
+                                                        standardStyle={true}
+                                                        selected={this.state.selectedAddress === item ? true : false}
+                                                        onPress={() => this.setState({ selectedAddress: item })} />
+                                                </Col>
+                                            </Row>
+                                        </View>
+                                    } /> :
 
-                                    <Button transparent onPress={() => this.editProfile('MapBox', null)}>
-                                        <Icon name='add' style={{ color: 'gray' }} />
-                                        <Text uppercase={false} style={styles.customText}>Add Address</Text>
-                                    </Button>}
-                            </View> : null}
+                                <Button transparent onPress={() => this.editProfile('MapBox', null)}>
+                                    <Icon name='add' style={{ color: 'gray' }} />
+                                    <Text uppercase={false} style={styles.customText}>Add Address</Text>
+                                </Button>}
+                        </View> : null}
 
-                        <View style={{ backgroundColor: '#fff', padding: 10, marginTop: 5 }}>
-                            <Row>
-                                <Col size={7}>
-                                    <Text style={{ fontFamily: 'OpenSans', fontSize: 14, fontWeight: '500' }}>Test at Lab<Text style={{ fontFamily: 'OpenSans', fontSize: 14, color: '#909090' }}>(Test Result)</Text></Text>
-                                </Col>
-                                <Col size={5} style={{ alignItems: 'flex-end', justifyContent: 'flex-end' }}>
+                    <View style={{ backgroundColor: '#fff', padding: 10, marginTop: 5 }}>
+                        <Row>
+                            <Col size={7}>
+                                <Text style={{ fontFamily: 'OpenSans', fontSize: 14, fontWeight: '500' }}>Test at Lab<Text style={{ fontFamily: 'OpenSans', fontSize: 14, color: '#909090' }}>(Test Result)</Text></Text>
+                            </Col>
+                            <Col size={5} style={{ alignItems: 'flex-end', justifyContent: 'flex-end' }}>
 
-                                    <RadioButton value={'TEST_AT_LAP'} />
-                                </Col>
-                            </Row>
-                        </View>
-                    </RadioButton.Group>
+
+                                <Radio
+                                    standardStyle={true}
+                                    selected={itemSelected === 'TEST_AT_LAP' ? true : false}
+                                    onPress={() => this.setState({ itemSelected: 'TEST_AT_LAP' })} />
+                            </Col>
+                        </Row>
+                    </View>
+
                     {itemSelected === 'TEST_AT_LAP' ?
                         <View>
                             <Row>

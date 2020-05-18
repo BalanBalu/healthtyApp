@@ -263,6 +263,22 @@ export const getMultipleDoctorDetails = async (doctorIds, fields, isLoading = tr
   }
 }
 
+/*get multiple doctor details*/
+export const getMultipleDoctorDetailsV2 = async (doctorIds, fields, isLoading = true) => {
+  try {
+    let endPoint = '/doctors/multiple/details?fields=' + fields;
+    let response = await postService(endPoint, doctorIds);
+    let respData = response.data;
+    return respData;
+  } catch (e) {
+    console.log(e.message);
+    return {
+      message: 'exception' + e,
+      success: false
+    }
+  }
+}
+
 
 /* Get Appointment details */
 
@@ -424,10 +440,13 @@ export async function insertDoctorsWishList(userId, doctorId, requestData) {
   }
 }
  
-export async function getLocations() {
+export async function getLocations(reqQueryFromAndToPinCodes) {
     try {
   
       let endPoint = 'hospital/locations'
+      if(reqQueryFromAndToPinCodes) {
+        endPoint = endPoint +'?fromPinCode=' + reqQueryFromAndToPinCodes.fromPinCode + '&toPinCode=' + reqQueryFromAndToPinCodes.toPinCode
+      }
       let response = await getService(endPoint);
       let respData = response.data;
       return respData;
@@ -439,10 +458,15 @@ export async function getLocations() {
     }
 }
 
-export async function getPharmacyLocations() {
+
+
+export async function getPharmacyLocations(reqQueryFromAndToPinCodes) {
   try {
 
     let endPoint = 'pharmacies/locations'
+    if(reqQueryFromAndToPinCodes) {
+      endPoint = endPoint +'?fromPinCode=' + reqQueryFromAndToPinCodes.fromPinCode + '&toPinCode=' + reqQueryFromAndToPinCodes.toPinCode
+    }
     let response = await getService(endPoint);
     let respData = response.data;
     return respData;
@@ -484,7 +508,19 @@ export const getPaymentInfomation = async (paymentId) => {
       }; 
   }
 }
-
+export async function prepareAppointmentUpdate(appointmentId, requestData) {
+  try {
+    let endPoint =  'prepare/appointment/' + appointmentId
+    let response = await putService(endPoint, requestData);
+    let respData = response.data;
+    return respData;
+  } catch (e) {
+    return {
+      message: 'exception' + e,
+      success: false
+    }
+  }
+}
 
 
 

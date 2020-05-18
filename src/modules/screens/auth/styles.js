@@ -46,6 +46,7 @@ export default StyleSheet.create({
         fontFamily: 'OpenSans',
 
     },
+
     cardHead:
     {
         fontSize: 18,

@@ -3,12 +3,14 @@ import {
   Container, Content, Text, Button, Item, Card, List, ListItem, Left, Right,
   Thumbnail, Body, Icon, Toast, View, CardItem
 } from 'native-base';
+import { NavigationEvents } from 'react-navigation';
 import { Col, Row, Grid } from 'react-native-easy-grid';
 import { StyleSheet, AsyncStorage, TouchableOpacity, Modal } from 'react-native';
 import StarRating from 'react-native-star-rating';
 import { FlatList } from 'react-native-gesture-handler';
 import { formatDate, addTimeUnit, subTimeUnit, statusValue } from "../../../../setup/helpers";
-import { updateLapAppointment, getLapTestPaymentDetails } from "../../../providers/lab/lab.action"
+import { getUserRepportDetails } from '../../../providers/reportIssue/reportIssue.action';
+import { updateLapAppointment, getLapTestPaymentDetails, getLabAppointmentById } from "../../../providers/lab/lab.action"
 
 class LabAppointmentInfo extends Component {
   constructor(props) {
@@ -21,21 +23,74 @@ class LabAppointmentInfo extends Component {
       reviewData: [],
       reportData: null,
       isLoading: true,
-
+      appointmentId:''
     }
   }
 
   async componentDidMount() {
     const { navigation } = this.props;
     const appointmentData = navigation.getParam('data');
+    console.log("appointmentData", appointmentData)
+
     const upcomingTap = navigation.getParam('selectedIndex');
 
-    if (appointmentData != undefined) {
-      await this.setState({ data: appointmentData, upcomingTap })
+    if (appointmentData == undefined) {
+      let appointmentId = navigation.getParam('appointmentId')
+      await this.setState({ appointmentId })
+      await new Promise.all([
+        this.getAppointmentById(appointmentId),
+      ])
     }
-    this.getLapTestPaymentInfo(appointmentData.payment_id)
-
+    else {
+      await this.setState({ data: appointmentData, upcomingTap })
+      this.getLapTestPaymentInfo(appointmentData.payment_id)
+    }
   }
+
+
+  getAppointmentById = async (appointmentId) => {
+
+    try {
+      let result = await getLabAppointmentById(appointmentId)
+      console.log("result", result)
+
+      if (result.success) {
+        await this.setState({ data: result.data[0], isLoading: true });
+        this.getLapTestPaymentInfo(result.data[0].payment_id)
+      }
+    }
+    catch (e) {
+      console.log(e)
+    }
+    finally {
+      await this.setState({ isLoading: true });
+    }
+  }
+
+  async backNavigation() {
+    const { navigation } = this.props;
+    if (navigation.state.params) {
+      if (navigation.state.params.hasReloadReportIssue) {
+        this.getUserReport();  // Reload the Reported issues when they reload
+      }
+    };
+  }
+
+  getUserReport = async () => {
+    try {
+      const userId = await AsyncStorage.getItem('userId');
+      let resultReport = await getUserRepportDetails('labAppointment', userId, this.state.appointmentId);
+      if (resultReport.success) {
+        this.setState({ reportData: resultReport.data });
+      }
+    }
+    catch (e) {
+      console.error(e);
+    }
+  }
+
+
+
   async  navigateCancelAppoointment() {
     try {
       this.props.navigation.navigate('LabCancelAppointment', { appointmentData: this.state.data })
@@ -49,11 +104,13 @@ class LabAppointmentInfo extends Component {
     try {
       const { data } = this.state;
       this.packageDetails = {
+        appointment_id: data._id,
         lab_id: data.lab_id,
         lab_test_categories_id: data.lab_test_categories_id,
         lab_test_descriptiion: data.lab_test_descriptiion,
         fee: data.fee,
         lab_name: data.labInfo.lab_name,
+        appointment_status: data.appointment_status,
         category_name: data.labCategoryInfo.category_name,
         extra_charges: data.labInfo.extra_charges,
         appointment_starttime: data.appointment_starttime,
@@ -114,7 +171,7 @@ class LabAppointmentInfo extends Component {
   }
 
   render() {
-    const { data, upcomingTap, paymentData } = this.state
+    const { data, upcomingTap, paymentData, reportData } = this.state
     return (
       <Container style={styles.container}>
         <Content style={styles.bodyContent}>
@@ -122,6 +179,9 @@ class LabAppointmentInfo extends Component {
             <Card style={{
               borderRadius: 10,
             }}>
+              <NavigationEvents
+                onWillFocus={payload => { this.backNavigation(payload) }}
+              />
               <CardItem header style={styles.cardItem}>
                 <Grid>
                   <Text style={{ textAlign: 'right', fontSize: 14, marginTop: -15 }}>{"Ref no :" + data.token_no}</Text>
@@ -166,7 +226,7 @@ class LabAppointmentInfo extends Component {
                             fontSize: 35
                           }} />
 
-                        <Text capitalise={true} style={[styles.textApproved, { color: statusValue[data.appointment_status].color }]}>{data.appointment_status == "PAYMENT_FAILED" ? 'PAYMENT FAILED' : data.appointment_status}</Text>
+                        <Text capitalise={true} style={[styles.textApproved, { color: statusValue[data.appointment_status].color }]}>{data.appointment_status == "PAYMENT_IN_PROGRESS" ? 'PAYMENT IN PROGRESS' : data.appointment_status == "PAYMENT_FAILED" ? 'PAYMENT FAILED' : data.appointment_status}</Text>
                       </View>
                     </Col> : null
                   }
@@ -300,6 +360,47 @@ class LabAppointmentInfo extends Component {
                   </Col>
                 </Row>
 
+                <Row style={styles.rowSubText}>
+                  <Col style={{ width: '8%', paddingTop: 5 }}>
+                    <Icon name="ios-document" style={{ fontSize: 20, }} />
+                  </Col>
+                  <Col style={{ width: '92%', paddingTop: 5 }}>
+                    <Text style={styles.innerSubText}>Payment Report</Text>
+                    {reportData != null ?
+                      <View style={{ borderRadius: 5, borderColor: 'grey', borderWidth: 0.5, padding: 5 }} >
+                        <TouchableOpacity onPress={() => { this.props.navigation.navigate('ReportDetails', { reportedId: data._id, serviceType: 'LAB_TEST' }) }}>
+                          <Text note style={[styles.subTextInner2, { marginLeft: 10 }]}>"You have raised Report for this appointment"</Text>
+                          <Row>
+                            <Col size={9}>
+                              <Text note style={[styles.subTextInner1, { marginLeft: 10 }]}>{reportData.issue_type || ' '}</Text>
+
+                            </Col>
+                            <Col size={1}>
+                              <Icon name='ios-arrow-forward' style={{ fontSize: 20, color: 'grey' }} />
+                            </Col>
+                          </Row>
+                        </TouchableOpacity>
+                      </View> :
+
+                      <View style={{ alignItems: 'center', justifyContent: 'center', marginTop: 5, marginBottom: 10 }}>
+                        <TouchableOpacity
+                          onPress={() => {
+                            this.props.navigation.push('ReportIssue', {
+                              issueFor: { serviceType: 'LAB_TEST', reportedId: data._id, status: data.appointment_status },
+                              prevState: this.props.navigation.state
+                            })
+                          }}
+                          block success
+                          style={styles.reviewButton
+                          }>
+                          <Text style={{ color: '#fff', fontSize: 14, fontFamily: 'OpenSans', fontWeight: 'bold', textAlign: 'center', marginTop: 5 }}>
+                            Report Issue
+                        </Text>
+                        </TouchableOpacity>
+                      </View>
+                    }
+                  </Col>
+                </Row>
 
                 <Row style={styles.rowStyles}>
                   <Col style={{ width: '8%', paddingTop: 5 }}>

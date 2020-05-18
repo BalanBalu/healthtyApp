@@ -10,6 +10,7 @@ import { StyleSheet, Image, View, TouchableOpacity, ImageBackground } from 'reac
 import styles from '../../screens/auth/styles';
 import Spinner from '../../../components/Spinner'
 const mainBg = require('../../../../assets/images/MainBg.jpg')
+import ModalPopup from '../../../components/Shared/ModalPopup';
 
 class Signup extends Component {
     constructor(props) {
@@ -24,7 +25,9 @@ class Signup extends Component {
             checked: false,
             showPassword: true,
             isLoading: false,
-            referralCode: null
+            referralCode: null,
+            isModalVisible: false,
+
         }
     }
     toggleRadio = async (radioSelect, genderSelect) => {
@@ -36,16 +39,16 @@ class Signup extends Component {
         const { mobile_no, password, checked, gender, referralCode } = this.state;
         try {
             if (checked === false) {
-                this.setState({ errorMsg: 'Please agree to the terms and conditions to continue' });
+                this.setState({ errorMsg: 'Please agree to the terms and conditions to continue', isModalVisible: true });
                 return false;
             }
-           
+
             if (password.length < 6) {
-                this.setState({ errorMsg: "Password is required Min 6 Characters" });
+                this.setState({ errorMsg: "Password is required Min 6 Characters", isModalVisible: true });
                 return false;
             }
             if (password.length > 16) {
-                this.setState({ errorMsg: "Password Accepted Max 16 Characters only" });
+                this.setState({ errorMsg: "Password Accepted Max 16 Characters only", isModalVisible: true });
                 return false
             }
             this.setState({ errorMsg: '', isLoading: true });
@@ -67,14 +70,10 @@ class Signup extends Component {
                 }
                 this.props.navigation.navigate('renderOtpInput', { loginData: loginData });
             } else {
-                this.setState({ errorMsg: this.props.user.message })
+                this.setState({ errorMsg: this.props.user.message, isModalVisible: true })
             }
         } catch (e) {
-            Toast.show({
-                text: 'Something Went Wrong' + e,
-                duration: 3000,
-                type: "danger"
-            })
+            this.setState({ errorMsg: 'Something Went Wrong' + e, isModalVisible: true })
         }
         finally {
             this.setState({ isLoading: false })
@@ -86,7 +85,7 @@ class Signup extends Component {
     }
     render() {
         const { user: { isLoading } } = this.props;
-        const { mobile_no, password, showPassword, checked, gender, errorMsg, referralCode } = this.state;
+        const { mobile_no, password, showPassword, checked, gender, errorMsg, referralCode, isModalVisible } = this.state;
         return (
             <Container style={styles.container}>
                 <ImageBackground source={mainBg} style={{ width: '100%', height: '100%', flex: 1 }}>
@@ -94,6 +93,13 @@ class Signup extends Component {
                         <View >
                             <Text style={[styles.signUpHead, { color: '#fff' }]}>List Your Practice to Reach millions of Peoples</Text>
                             <Card style={{ borderRadius: 10, padding: 5, marginTop: 15 }}>
+                                <View style={{ flex: 1 }}>
+                                    <ModalPopup
+                                        errorMessageText={errorMsg}
+                                        closeButtonText={'CLOSE'}
+                                        closeButtonAction={() => this.setState({ isModalVisible: !isModalVisible })}
+                                        visible={isModalVisible} />
+                                </View>
                                 <View style={{ marginLeft: 10, marginRight: 10 }}>
                                     <Text uppercase={true} style={[styles.cardHead, { color: '#775DA3' }]}>Sign up</Text>
                                     <Form>
@@ -142,47 +148,47 @@ class Signup extends Component {
 
                                         <View style={{ marginTop: 10, borderBottomWidth: 0, flexDirection: 'row' }}>
 
-                                          
-                                                <View style={{ flexDirection: 'row',alignItems:'center' }}>
-                                                    <Radio  
-                                                     standardStyle={true}
-                                                      onPress={() => this.setState({ gender: "M" })}
-                                                         selected={gender === "M" ? true : false} 
-                                                      />
-                                                    <Text style={{
-                                                        fontFamily: 'OpenSans', fontSize: 15,marginLeft:5 
-                                                    }}>Male</Text>
-                                                </View>
-                                                <View style={{ flexDirection: 'row', marginLeft: 20,alignItems:'center' }}>
-                                                  
-                                                    <Radio  
-                                                     standardStyle={true}
-                                                      onPress={() => this.setState({ gender: "F" })}
-                                                         selected={gender === "F" ? true : false} 
-                                                      />
-                                                    <Text style={{
-                                                        fontFamily: 'OpenSans', fontSize: 15 ,marginLeft:5
-                                                    }}>Female</Text>
-                                                </View>
-                                                <View style={{ flexDirection: 'row', marginLeft: 20 ,alignItems:'center'}}>
-                                              
-                                                    <Radio  
-                                                     standardStyle={true}
-                                                      onPress={() => this.setState({ gender: "O" })}
-                                                         selected={gender === "O" ? true : false} 
-                                                      />
-                                                    <Text style={{
-                                                        fontFamily: 'OpenSans', fontSize: 15,marginLeft:5
-                                                    }}>Others</Text>
-                                                </View>
-                                           
+
+                                            <View style={{ flexDirection: 'row', alignItems: 'center' }}>
+                                                <Radio
+                                                    standardStyle={true}
+                                                    onPress={() => this.setState({ gender: "M" })}
+                                                    selected={gender === "M" ? true : false}
+                                                />
+                                                <Text style={{
+                                                    fontFamily: 'OpenSans', fontSize: 15, marginLeft: 5
+                                                }}>Male</Text>
+                                            </View>
+                                            <View style={{ flexDirection: 'row', marginLeft: 20, alignItems: 'center' }}>
+
+                                                <Radio
+                                                    standardStyle={true}
+                                                    onPress={() => this.setState({ gender: "F" })}
+                                                    selected={gender === "F" ? true : false}
+                                                />
+                                                <Text style={{
+                                                    fontFamily: 'OpenSans', fontSize: 15, marginLeft: 5
+                                                }}>Female</Text>
+                                            </View>
+                                            <View style={{ flexDirection: 'row', marginLeft: 20, alignItems: 'center' }}>
+
+                                                <Radio
+                                                    standardStyle={true}
+                                                    onPress={() => this.setState({ gender: "O" })}
+                                                    selected={gender === "O" ? true : false}
+                                                />
+                                                <Text style={{
+                                                    fontFamily: 'OpenSans', fontSize: 15, marginLeft: 5
+                                                }}>Others</Text>
+                                            </View>
+
                                         </View>
-                                        <Item style={{ borderBottomWidth: 0, marginTop: 10,marginLeft:-10}}>
-                                            <CheckBox style={{borderRadius:5}}
-                                               checked={this.state.checked}
+                                        <Item style={{ borderBottomWidth: 0, marginTop: 10, marginLeft: -10 }}>
+                                            <CheckBox style={{ borderRadius: 5 }}
+                                                checked={this.state.checked}
                                                 onPress={() => { this.setState({ checked: !checked }); }}
                                             />
-                                            <Text style={{ color: 'gray', fontFamily: 'OpenSans', fontSize: 12,marginLeft:20 }}>I Accept the Medflic </Text>
+                                            <Text style={{ color: 'gray', fontFamily: 'OpenSans', fontSize: 12, marginLeft: 20 }}>I Accept the Medflic </Text>
                                             <TouchableOpacity onPress={() => this.props.navigation.navigate('termsAndConditions')}>
                                                 <Text style={{ color: '#5055d7', fontFamily: 'OpenSans', fontSize: 13, }}>Terms And Conditions</Text>
                                             </TouchableOpacity>
@@ -196,7 +202,7 @@ class Signup extends Component {
                                                 block success disabled={(mobile_no && password) == ''} onPress={() => this.doSignUp()}>
                                                 <Text uppercase={true} style={styles.ButtonText}>Sign Up</Text>
                                             </TouchableOpacity>
-                                            <Text style={{ color: 'red', fontSize: 15, fontFamily: 'OpenSans' }}>{errorMsg} </Text>
+                                            {/* <Text style={{ color: 'red', fontSize: 15, fontFamily: 'OpenSans' }}>{errorMsg} </Text> */}
                                         </View>
                                     </Form>
                                 </View>
