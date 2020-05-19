@@ -14,6 +14,10 @@ import NotifService from '../../../setup/NotifService';
 import { connect } from 'react-redux'
 var { width, height } = Dimensions.get('window');
 console.log('height', height);
+let datesBlackList = [{
+  start: moment().subtract(7, 'days').toISOString(),
+  end: moment().subtract(1, 'days').toISOString()
+}];
 class Reminder extends Component {
   constructor(props) {
     super(props)
@@ -69,15 +73,22 @@ class Reminder extends Component {
 
    onDateChanged  = async (data1) => {
       if(data1) {
+        console.log("data1++++++++",data1)
         let date = new Date(moment(data1).startOf('d').toISOString()).getTime();
+        console.log("data++++++++",data)
+        let selectedDate = formatDate(data1, 'YYYY-MM-DD');
+        console.log("selectedDate++++++++",selectedDate)
         const reminderDataBySelectedDate = this.reminderData.filter(ele => {
             let startDate = new Date(ele.medicine_take_start_date).getTime();
+            console.log("startDate++++++++",startDate)
             let endDate;
             if(ele.reminder_type === 'onlyonce') {
               let endDateTemp = new Date(ele.medicine_take_start_date);
+              console.log("endDateTemp++++++++",endDateTemp)
               endDateTemp.setHours(23);
               endDateTemp.setMinutes(59);
               endDate = new Date(endDateTemp).getTime();
+              console.log("endDate++++++++",endDate)
             } else {
               endDate = new Date(ele.medicine_take_end_date).getTime();
             }
@@ -88,7 +99,8 @@ class Reminder extends Component {
               return true;
             }
         });
-        this.setState({ data: reminderDataBySelectedDate });
+        this.setState({ data: reminderDataBySelectedDate,selectedDate: selectedDate });
+        console.log("this.state.data++++++++",this.state.data)
       }
   }
 
@@ -143,16 +155,14 @@ class Reminder extends Component {
     return (
       <Container>
         <Content style={{ backgroundColor: '#F1F1F1' }}>
-        
-
           <View>
           <View style={{ paddingBottom: 10, backgroundColor: '#FFF' }}>
           <NavigationEvents
                   onWillFocus={payload => { this.backNavigation(payload) }} />
             <CalendarStrip
               selection={'border'}
-              minDate={moment()}
-              startingDate={moment()}
+              minDate={new Date()}
+              maxDate= {new Date(), 1, 'year'}
               selectionAnimation={{ duration: 300, borderWidth: 1 }}
               style={{ paddingTop: 2, paddingBottom: 2 }}
               calendarHeaderStyle={{ color: 'gray' }}
@@ -165,6 +175,7 @@ class Reminder extends Component {
               borderHighlightColor={'white'}
               onDateSelected={(date) => this.onDateChanged(date)}
               iconContainer={{ flex: 0.1 }}
+              datesBlacklist={datesBlackList}
             /> 
             <Text style={{ color: '#7F49C3', textAlign: 'center', marginTop: 2, fontFamily: 'OpenSans', fontWeight: "500" }}>Today</Text>
           </View>
@@ -200,13 +211,10 @@ class Reminder extends Component {
                       </Col>
                       <Col style={styles.col2}>
                        <Row>
-                      
                         <Col size={7}>
                           {renderTimeList(item.medicine_take_times)}
-                        </Col>
-                           
+                        </Col> 
                         <Col size={3}>
-                            
                             <Switch style={{ transform: [{ scaleX: .8 }, { scaleY: .8 }], backgroundColor: 'fff' }} trackColor={{ true: '#6FC41A', false: 'grey' }}
                               trackColor={{ true: '#7F49C3' }}
                               thumbColor={"#F2F2F2"}
@@ -219,12 +227,12 @@ class Reminder extends Component {
                     </Row>
                   </Grid> 
                   <View style={{ marginTop: 5, borderTopColor: 'gray', borderTopWidth: 1, }}>
-                    <Text style={styles.remText}>Your Remainder Time is at {formatDate(item.medicine_take_start_date, 'DD/MM/YYYY')} - {formatDate(item.medicine_take_end_date, 'DD/MM/YYYY')}</Text>
+                    <Text style={styles.remText}>Your Reminder Time is at {formatDate(item.medicine_take_start_date, 'DD/MM/YYYY')} - {formatDate(item.medicine_take_end_date, 'DD/MM/YYYY')}</Text>
                   </View> 
                 </Card>
               )} /> 
           </View>
-  }
+          }
           </View>
         </Content>
       </Container>
