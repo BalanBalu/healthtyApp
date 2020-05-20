@@ -54,11 +54,7 @@ import { Toast } from 'native-base';
       this.showInomingCallModal(CallService.getSession());
       this._extension = CallService.getExtention();
     }
-    Toast.show({
-      text: 'Please Use Your Speaker Phone, as we are not supporting Wiredphone yet',
-      duration: 3000,
-      type: 'warning'
-    })
+   
     store.subscribe(() => {
       const { chat: { session } } = this.props;
       if(session && this.steamSubscribeLoadedUsers.indexOf(session.userId) === -1) {
@@ -107,7 +103,12 @@ import { Toast } from 'native-base';
     if(onPressReject === true) {
      this._onPressReject();
    } if(onPressAccept === true ) {
-      this._onPressAccept()
+      this._onPressAccept();
+      Toast.show({
+        text: 'Please Use Your Speaker Phone, as we are not supporting Wiredphone yet',
+        duration: 3000,
+        type: 'warning'
+      })
    }
    store.dispatch({
      type: RESET_INCOMING_VIDEO_CALL
