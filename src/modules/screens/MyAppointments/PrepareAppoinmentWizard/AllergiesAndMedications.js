@@ -61,6 +61,7 @@ class AllergiesAndMedications extends PureComponent {
         try {
             const { appointmentId, alergicDetails, medicineTakingDetails } = this.state
             let userId = await AsyncStorage.getItem('userId');
+            
             let data = {
                 having_any_allergies: alergicDetails,
                 taking_medications: medicineTakingDetails
@@ -87,15 +88,27 @@ class AllergiesAndMedications extends PureComponent {
         }
     }
     onAddNewAlergics = async () => {
+        debugger
         const { alergicDetails, refreshCount } = this.state;
-
+const getLastItemInAllergicArry=alergicDetails.slice(-1)[0];
+debugger
+if(getLastItemInAllergicArry !=undefined){
+if(!getLastItemInAllergicArry.allergy_name || !getLastItemInAllergicArry.allergy_reaction){
+    debugger
+  
+return false
+}
+}
+debugger
         alergicDetails.push({
             allergy_name: null,
             allergy_reaction: null
         });
+        debugger
         await this.setState({ alergicDetails, refreshCount: refreshCount + 1 })
-
+        debugger
     }
+    
     deleteTable(index) {
         const { alergicDetails } = this.state;
         alergicDetails.splice(index, 1)
@@ -105,7 +118,15 @@ class AllergiesAndMedications extends PureComponent {
     }
     onAddNewMedicineInfo = async () => {
         const { medicineTakingDetails, refreshCount } = this.state;
+        const getLastItemInMedicineTakingDetails=medicineTakingDetails.slice(-1)[0];
 
+        if(getLastItemInMedicineTakingDetails !=undefined){
+            if(!getLastItemInMedicineTakingDetails.medicine_name || !getLastItemInMedicineTakingDetails.medicine_dosage){
+                debugger
+              
+            return false
+            }
+            }
         medicineTakingDetails.push({
             medicine_name: null,
             medicine_dosage: null
