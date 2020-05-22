@@ -218,7 +218,7 @@ class AddReminder extends Component {
         });
       } else if (this.medicineTakeTimes.length === 0) {
         Toast.show({
-          text: 'Add Remainder Timings at least one',
+          text: 'Add Reminder Timings at least one',
           type: 'danger',
           duration: 3000
         });
@@ -551,7 +551,6 @@ class AddReminder extends Component {
                               isVisible={this.state.isTimePickerVisible}
                               onConfirm={this.handleTimePicker}
                               onCancel={() => this.setState({ isTimePickerVisible: !this.state.isTimePickerVisible })}
-                              is24Hour={true}
 
 
                             />
