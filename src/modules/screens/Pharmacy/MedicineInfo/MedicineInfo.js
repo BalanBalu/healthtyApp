@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import { Container, Content, Text, Toast, Icon, View, Col, Row, Picker } from 'native-base';
 import { StyleSheet, Image, AsyncStorage, FlatList, TouchableOpacity, Dimensions } from 'react-native';
-import { getSelectedMedicineDetails, getMedicineReviews, getMedicineReviewsCount } from '../../../providers/pharmacy/pharmacy.action'
+import { getProductDetailById, getMedicineReviews, getMedicineReviewsCount } from '../../../providers/pharmacy/pharmacy.action'
 import { medicineRateAfterOffer, setCartItemCountOnNavigation, renderMedicineImageAnimation, getMedicineName } from '../CommomPharmacy';
 import Spinner from '../../../../components/Spinner';
 import { dateDiff, getMoment, formatDate } from '../../../../setup/helpers'
@@ -82,40 +82,11 @@ class MedicineInfo extends Component {
         try {
 
             medicineId = this.props.navigation.getParam('medicineId');
-            let pharmacyId = this.props.navigation.getParam('pharmacyId');
-            let result = await getSelectedMedicineDetails(medicineId, pharmacyId);
-
-            if (result.success) {
-                if (result.data.medPharDetailInfo) {
-                    if (result.data.medPharDetailInfo.variations) {
-
-                        result.data.medPharDetailInfo.variations.sort(function (firstVarlue, secandValue) {
-
-
-                            if (firstVarlue.total_quantity === 0) {
-                                return 1;
-                            }
-                            else if (secandValue.total_quantity === 0) {
-                                return -1;
-                            }
-                            else {
-                                return firstVarlue.price - secandValue.price;
-                            }
-                        });
-
-                    }
-                }
-                let temp = result.data.medPharDetailInfo
-
-                let mergeObject = Object.assign(temp, result.data.medPharDetailInfo.variations[0])
-                let tempObject = {
-                    ...result.data,
-                    medPharDetailInfo: mergeObject
-
-                }
-
-                this.setState({ medicineData: tempObject })
-
+            // let pharmacyId = this.props.navigation.getParam('pharmacyId');
+            let result = await getProductDetailById(medicineId);
+            console.log(result)
+            if (result) {
+                this.setState({ medicineData: result })
             }
 
         }
@@ -164,16 +135,7 @@ class MedicineInfo extends Component {
     }
     async selectedItems(data, selected, index) {
         try {
-            let temp = {
-                ...data.medInfo,
-                ...data.medPharDetailInfo
-            }
-            temp.pharmacy_name = data.pharmacyInfo.name;
-            temp.pharmacy_id = data.pharmacyInfo.pharmacy_id
-            temp.medicine_id = data.medInfo.medicine_id
-            temp.pharmacyInfo = data.pharmacyInfo;
-
-            temp.offeredAmount = medicineRateAfterOffer(data.medPharDetailInfo)
+           let temp=data
             temp.selectedType = selected;
             if (index !== undefined) {
                 let cardItems = this.state.cartItems;
@@ -270,25 +232,7 @@ class MedicineInfo extends Component {
             selected2: value
         });
     }
-    variationSelectedValue(value) {
-        try {
-
-            let { medicineData } = this.state
-            temp = medicineData.medPharDetailInfo
-
-            mergeObject = Object.assign(temp, value)
-            let tempObject = {
-                ...medicineData,
-                medPharDetailInfo: mergeObject
-
-            }
-            this.setState({
-                medicineData: tempObject, selected2: value
-            });
-        } catch (e) {
-            console.log(e)
-        }
-    }
+   
     async backNavigation(payload) {
         let hascartReload = await AsyncStorage.getItem('hasCartReload')
 
@@ -324,7 +268,7 @@ class MedicineInfo extends Component {
                         <View>
                             <Row>
                                 <Col size={9}>
-                                    <Text style={styles.headText}>{getMedicineName(medicineData.medInfo)}</Text>
+                                    <Text style={styles.headText}>{getMedicineName(medicineData)}</Text>
                                 </Col>
                                 {reviewCount != '' ?
                                     <Col size={1}>
@@ -335,7 +279,7 @@ class MedicineInfo extends Component {
                                     </Col> : null}
 
                             </Row>
-                            <Text style={{ fontSize: 14, fontFamily: 'OpenSans', color: '#909090' }}>By {medicineData.pharmacyInfo.name}</Text>
+                            {/* <Text style={{ fontSize: 14, fontFamily: 'OpenSans', color: '#909090' }}>By {medicineData.pharmacyInfo.name}</Text> */}
                             {medicineData.medInfo !== undefined && medicineData.medInfo.medicine_images !== undefined && medicineData.medInfo.medicine_images.length !== 0 ?
                                 <View style={{ flex: 1, marginLeft: 10, marginRight: 10, justifyContent: 'center', alignItems: 'center', }}>
                                     <ImageZoom cropWidth={200}
@@ -371,42 +315,21 @@ class MedicineInfo extends Component {
                             <Row>
                                 <Col size={7} style={{ flexDirection: 'row', marginTop: 10 }}>
                                     <Text style={{ fontSize: 10, fontFamily: 'OpenSans', color: '#ff4e42', marginTop: 5 }}>MRP</Text>
-                                    {medicineData.medPharDetailInfo.discount_value !== undefined && medicineData.medPharDetailInfo.variations[0].discount_value !== 0 ?
+                                    {medicineData.medPharDetailInfo !== undefined && medicineData.medPharDetailInfo.discount_value !== undefined && medicineData.medPharDetailInfo.variations[0].discount_value !== 0 ?
                                         <Row>
-                                            <Text style={styles.oldRupees}>₹{medicineData.medPharDetailInfo.price}</Text>
+                                            <Text style={styles.oldRupees}>₹{medicineData.price}</Text>
                                             <Text style={styles.newRupees}>₹{medicineRateAfterOffer(medicineData.medPharDetailInfo)}</Text>
                                             <Text style={styles.saveText}>(Save upto ₹{this.saveMoney()})</Text>
                                         </Row> :
-                                        <Text style={styles.newRupees}>₹{medicineData.medPharDetailInfo.price}</Text>
+                                        <Text style={styles.newRupees}>₹{medicineData.price}</Text>
                                     }
                                 </Col>
                                 <Col size={3}>
                                 </Col>
                             </Row >
-                            {medicineData.medPharDetailInfo.variations !== undefined ?
-                                <Row style={{ marginTop: 10 }}><Col size={5} style={{ height: 30, justifyContent: 'center', backgroundColor: '#fff', borderRadius: 5, borderColor: '#000', borderWidth: 0.5 }}>
-                                    <Picker
-                                        mode="dropdown"
-                                        style={{ width: undefined }}
-                                        iosIcon={<Icon name="ios-arrow-down" style={{ color: 'gray', fontSize: 20 }} />}
-                                        placeholder="Select your SIM"
-                                        placeholderStyle={{ color: "#bfc6ea" }}
-                                        placeholderIconColor="#007aff"
-                                        selectedValue={this.state.selected2}
-                                        onValueChange={this.variationSelectedValue.bind(this)}
-                                    >
-                                        {medicineData.medPharDetailInfo.variations.map((ele, key) => {
-
-                                            return <Picker.Item label={String(ele.medicine_weight) + String(ele.medicine_weight_unit)} value={ele} key={key} />
-                                        })}
-                                    </Picker>
-                                </Col>
-                                    <Col size={5} style={{ justifyContent: 'center', marginLeft: 5 }}>
-                                        <Text style={{ fontSize: 12, fontFamily: 'OpenSans', color: '#000' }}> of {medicineData.medInfo.medicine_form}</Text>
-                                    </Col>
-                                </Row> : null}
+                          
                         </View>
-                        {medicineData.medPharDetailInfo.total_quantity === 0 ? null :
+                        {medicineData.productDetails && medicineData.productDetails.available === 0 ? null :
                             <Row style={{ marginTop: 10 }}>
                                 <Col size={5}>
 
@@ -442,7 +365,7 @@ class MedicineInfo extends Component {
                             </Row>
                         }
                         {/* give this text instead of two button in case of out of stock */}
-                        {medicineData.medPharDetailInfo.total_quantity === 0 ?
+                        {medicineData.productDetails && medicineData.productDetails.available === 0 ?
                             <Text style={{ fontSize: 15, fontFamily: 'OpenSans', color: '#ff4e42', marginTop: 5, textAlign: 'center' }}>Currently Out of stock</Text> : null}
 
                         {this.state.isBuyNow == true || this.state.isAddToCart == true ?
@@ -453,7 +376,9 @@ class MedicineInfo extends Component {
                             : null}
                         <View style={{ marginTop: 10 }}>
                             <Text style={styles.desText}>Product Details</Text>
-                            <Text style={styles.mainText}>{medicineData.medInfo.description}</Text>
+                            {medicineData.description ?
+                                <Text style={styles.mainText}>{medicineData.description}</Text>
+                                : <Text style={styles.mainText}>N/A</Text>}
                             {this.state.enlargeContent == false ?
                                 <TouchableOpacity onPress={() => this.setState({ enlargeContent: true })}>
                                     <Text style={styles.showText}>Show more</Text>
@@ -463,19 +388,29 @@ class MedicineInfo extends Component {
                                 <View>
                                     <View style={{ marginTop: 10 }}>
                                         <Text style={styles.desText}>Medicine Dosage</Text>
-                                        <Text style={styles.mainText}>{medicineData.medInfo.medicine_unit}</Text>
+                                        {medicineData.medicine_unit ?
+                                            <Text style={styles.mainText}>{medicineData.medicine_unit}</Text> :
+                                            <Text style={styles.mainText}>{'N/A'}</Text>}
+
                                     </View>
                                     <View style={{ marginTop: 10 }}>
                                         <Text style={styles.desText}>Directions To Use </Text>
-                                        <Text style={styles.mainText}>{medicineData.medInfo.directions_to_use}</Text>
+                                        {medicineData.directions_to_use ?
+                                            <Text style={styles.mainText}>{medicineData.directions_to_use}</Text> :
+                                            <Text style={styles.mainText}>{'N/A'}</Text>}
                                     </View>
                                     <View style={{ marginTop: 10 }}>
                                         <Text style={styles.desText}>Key Ingredients</Text>
-                                        <Text style={styles.mainText}><Text style={{ fontSize: 12, marginTop: 5, }}>{'\u2B24'}</Text>   {medicineData.medInfo.ingridients}</Text>
+                                        {medicineData.ingridients ?
+                                            <Text style={styles.mainText}><Text style={{ fontSize: 12, marginTop: 5, }}>{'\u2B24'}</Text>   {medicineData.ingridients}</Text> :
+                                            <Text style={styles.mainText}><Text style={{ fontSize: 12, marginTop: 5, }}>{'\u2B24'}</Text>   {'N/A'}</Text>}
+
                                     </View>
                                     <View style={{ marginTop: 10 }}>
                                         <Text style={styles.desText}>Side effects</Text>
-                                        <Text style={styles.mainText}>{medicineData.medInfo.side_effects}</Text>
+                                        {medicineData.side_effects ?
+                                            <Text style={styles.mainText}>{medicineData.side_effects}</Text> :
+                                            <Text style={styles.mainText}>{'N/A'}</Text>}
                                     </View>
                                     <TouchableOpacity onPress={() => this.setState({ enlargeContent: false })}>
                                         <Text style={styles.showText}>Show less</Text>

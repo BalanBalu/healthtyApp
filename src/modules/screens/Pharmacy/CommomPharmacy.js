@@ -200,7 +200,7 @@ export function getMedicineName(data) {
     return medicineName
   }
   if (data) {
-    medicineName = `${(data.medicine_name || '') + ' ' + (data.medicine_dose || '') + ' ' + (data.medicine_unit || '')}`;
+    medicineName = `${(data.description || '') + ' ' + (data.unit || '') + ' ' + (data.uomName || '')}`;
     return medicineName
   }
   else {

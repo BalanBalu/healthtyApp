@@ -58,11 +58,13 @@ class MedicineSuggestionList extends Component {
             "coordinates": locationCordinates,
             "maxDistance": PHARMACY_MAX_DISTANCE_TO_COVER
         }
-        let medicineResultData = await getSuggestionMedicines(enteredText, locationData);
+        let medicineResultData = await getSuggestionMedicines(enteredText);
+        // console.log('hi sugestion result')
+        // console.log(JSON.stringify(medicineResultData))
 
-        if (medicineResultData.success) {
+        if (medicineResultData) {
             this.setState({
-                medicineSugesstionArray: medicineResultData.data,
+                medicineSugesstionArray: medicineResultData,
                 searchValue: enteredText,
             });
         } else {
@@ -135,11 +137,11 @@ class MedicineSuggestionList extends Component {
                                     renderItem={({ item }) => (
                                         <Row style={{ borderBottomWidth: 0.3, borderBottomColor: '#cacaca' }} onPress={() => {
 
-                                            this.props.navigation.navigate("medicineSearchList", { medicineName: item.value, medicineInfo: item })
+                                            this.props.navigation.navigate("medicineSearchList", { medicineName: item.description, medicineInfo: item })
                                         }} >
-                                            <Text style={{ padding: 10, fontFamily: 'OpenSans', fontSize: 13 }}>{(item.value || '') + ' ' + (item.medicine_dose || '') + ' ' + (item.medicine_unit || '')}</Text>
+                                            <Text style={{ padding: 10, fontFamily: 'OpenSans', fontSize: 13 }}>{item.description || ''}</Text>
                                             <Right>
-                                                <Text style={{ padding: 10, fontFamily: 'OpenSans', fontSize: 13, color: '#7F49C3' }}>{item.type || ''}</Text>
+                                                <Text style={{ padding: 10, fontFamily: 'OpenSans', fontSize: 13, color: '#7F49C3' }}>{item.typeName || ''}</Text>
                                             </Right>
                                         </Row>
                                     )}
