@@ -84,13 +84,13 @@ class ChosePharmacyList extends Component {
         } else {
             let temp = [];
 
-            let value = pharmacyData[selectedPharmacy]
-            value.PrescriptionId = prescriptionDetails._id
-            value.prescription_ref_no = prescriptionDetails.prescription_ref_no
+            let value = pharmacyData[selectedPharmacy].pharmacyInfo
+            // value.PrescriptionId = prescriptionDetails._id
+            // value.prescription_ref_no = prescriptionDetails.prescription_ref_no
 
-            temp.push(value)
+            // temp.push(value)
             this.props.navigation.navigate("MedicineCheckout", {
-                medicineDetails: temp, isPrescription: true
+                pharmacyInfo: value, isPrescription: true,hasChosePharmacyReload:true
             })
         }
     }

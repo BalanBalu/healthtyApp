@@ -222,24 +222,7 @@ export function getMedicineWeightUnit(weight, unit) {
   }
 }
 
-export function quantityPriceSort(data) {
-  data.forEach(element => {
-    if (element.medPharDetailInfo) {
-      if (element.medPharDetailInfo.variations) {
 
-        element.medPharDetailInfo.variations.sort(function (firstVarlue, secandValue) {
-
-
-          if (firstVarlue.total_quantity === 0) return 1;
-          else if (secandValue.total_quantity === 0) return -1;
-          else return firstVarlue.price - secandValue.price;
-        });
-
-      }
-    }
-  })
-  return data
-}
 
 
 export const statusBar = {

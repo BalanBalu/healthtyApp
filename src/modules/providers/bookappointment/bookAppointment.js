@@ -277,15 +277,15 @@ export default class BookAppointmentPaymentUpdate {
             }
             let resultData = await createMedicineOrder(requestData);
             console.log(resultData)
-            if (resultData.success) {
+            if (resultData) {
                 return {
-                    message: resultData.message,
+                    message: 'order created sucessfully',
                     success: isSuccess,
-                    orderNo: resultData.orderNo
+                    // orderNo: resultData.orderNo
                 }
             } else {
                 return {
-                    message: resultData.message,
+                    message: 'order failed try again',
                     success: false,
                 }
             }

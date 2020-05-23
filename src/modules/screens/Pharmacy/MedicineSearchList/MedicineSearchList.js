@@ -8,7 +8,7 @@ import { StyleSheet, Image, TouchableOpacity, AsyncStorage, FlatList, TouchableH
 import Spinner from "../../../../components/Spinner";
 import { NavigationEvents } from 'react-navigation';
 import { getMedicinesSearchList, getMedicinesSearchListByPharmacyId, getSuggestionMedicines,getAllPromotions } from '../../../providers/pharmacy/pharmacy.action'
-import { medicineRateAfterOffer, setCartItemCountOnNavigation, getMedicineName, renderMedicineImage, quantityPriceSort } from '../CommomPharmacy'
+import { medicineRateAfterOffer, setCartItemCountOnNavigation, getMedicineName, renderMedicineImage } from '../CommomPharmacy'
 import { AddToCard } from '../AddToCardBuyNow/AddToCard'
 import { connect } from 'react-redux'
 import { MAX_DISTANCE_TO_COVER, PHARMACY_MAX_DISTANCE_TO_COVER } from '../../../../setup/config';
@@ -54,12 +54,11 @@ class MedicineSearchList extends Component {
     MedicineSearchList = async (enteredText) => {
         try {
 
-            let medicineResultData = await getSuggestionMedicines('d');
+            let medicineResultData = await getSuggestionMedicines(enteredText);
             console.log('MedicineSearchList')
             console.log(JSON.stringify(medicineResultData))
             if (medicineResultData) {
-            //   let  discountResult=await getAllPromotions();
-            //     // let sortedData = await quantityPriceSort(medicineResultData.data)
+           
 
                 this.setState({
                     data: medicineResultData,
@@ -78,10 +77,10 @@ class MedicineSearchList extends Component {
     medicineSearchListByPharmacyId = async (pharmacyId) => {
         try {
             let medicineResultData = await getMedicinesSearchListByPharmacyId(pharmacyId);
-            alert(JSON.stringify(medicineResultData))
+         
             console.log(JSON.stringify(medicineResultData))
             if (medicineResultData) {
-                // let sortedData = await quantityPriceSort(medicineResultData.data)
+                
 
                 this.setState({
                     data: medicineResultData

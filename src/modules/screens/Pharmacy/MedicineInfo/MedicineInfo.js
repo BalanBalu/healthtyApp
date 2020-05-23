@@ -220,9 +220,9 @@ class MedicineInfo extends Component {
         const { medicineData } = this.state;
 
         let saveData = 0
-        if (medicineData.medPharDetailInfo) {
-            if (medicineData.medPharDetailInfo.price) {
-                saveData = parseInt(medicineData.medPharDetailInfo.price) - parseInt(medicineRateAfterOffer(medicineData.medPharDetailInfo, 's'))
+        if (medicineData) {
+            if (medicineData.price) {
+                saveData = parseInt(medicineData.price) - parseInt(medicineRateAfterOffer(medicineData.medPharDetailInfo, 's'))
             }
         }
         return saveData
@@ -315,10 +315,10 @@ class MedicineInfo extends Component {
                             <Row>
                                 <Col size={7} style={{ flexDirection: 'row', marginTop: 10 }}>
                                     <Text style={{ fontSize: 10, fontFamily: 'OpenSans', color: '#ff4e42', marginTop: 5 }}>MRP</Text>
-                                    {medicineData.medPharDetailInfo !== undefined && medicineData.medPharDetailInfo.discount_value !== undefined && medicineData.medPharDetailInfo.variations[0].discount_value !== 0 ?
+                                    {medicineData.discountedValue !== undefined?
                                         <Row>
                                             <Text style={styles.oldRupees}>₹{medicineData.price}</Text>
-                                            <Text style={styles.newRupees}>₹{medicineRateAfterOffer(medicineData.medPharDetailInfo)}</Text>
+                                            <Text style={styles.newRupees}>₹{medicineData.discountedValue}</Text>
                                             <Text style={styles.saveText}>(Save upto ₹{this.saveMoney()})</Text>
                                         </Row> :
                                         <Text style={styles.newRupees}>₹{medicineData.price}</Text>
@@ -333,7 +333,7 @@ class MedicineInfo extends Component {
                             <Row style={{ marginTop: 10 }}>
                                 <Col size={5}>
 
-                                    {cartItems.length == 0 || cartItems.findIndex(ele => ele.medicine_id == medicineData.medPharDetailInfo.medicine_id && ele.pharmacy_id == medicineData.medPharDetailInfo.pharmacy_id) === -1 ?
+                                    {cartItems.length == 0 || cartItems.findIndex(ele =>  ele.id == medicineData.id) === -1 ?
                                         <Row style={{ alignItems: 'flex-end' }}>
                                             <TouchableOpacity style={styles.addCartTouch}
                                                 onPress={() => { this.setState({ isAddToCart: true }), this.selectedItems(medicineData, 'Add to Cart') }} >
@@ -345,10 +345,10 @@ class MedicineInfo extends Component {
                                         </Row> :
                                         <Row style={{ alignItems: 'flex-end' }}>
                                             <TouchableOpacity style={styles.addCartTouch}
-                                                onPress={() => { this.setState({ isAddToCart: true }), this.selectedItems(medicineData, 'Add to Cart', cartItems.findIndex(ele => ele.medicine_id == medicineData.medPharDetailInfo.medicine_id && ele.pharmacy_id == medicineData.medPharDetailInfo.pharmacy_id)) }} >
+                                                onPress={() => { this.setState({ isAddToCart: true }), this.selectedItems(medicineData, 'Add to Cart', cartItems.findIndex(ele =>  ele.id == medicineData.id)) }} >
 
                                                 <Icon name='ios-cart' style={{ color: '#4e85e9', fontSize: 15 }} />
-                                                <Text style={styles.addCartText}>{'Added ' + cartItems[cartItems.findIndex(ele => ele.medicine_id == medicineData.medPharDetailInfo.medicine_id && ele.pharmacy_id == medicineData.medPharDetailInfo.pharmacy_id)].userAddedMedicineQuantity}</Text>
+                                                <Text style={styles.addCartText}>{'Added ' + cartItems[cartItems.findIndex(ele =>  ele.id == medicineData.id)].userAddedMedicineQuantity}</Text>
 
                                             </TouchableOpacity>
                                         </Row>

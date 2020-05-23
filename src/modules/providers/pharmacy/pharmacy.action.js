@@ -88,7 +88,7 @@ export async function getMedicineOrderList(userId) {
     let response = await inventoryGetService(endPoint);
     console.log('req========================')
     let respData = response.data
-    console.log(respData.content[1].items)
+   
     return respData;
   } catch (e) {
     console.log('hi======')
@@ -219,6 +219,7 @@ export async function createMedicineOrder(data) {
     let endPoint = '/transaction';
     console.log(endPoint)
     let response = await inventoryPutService(endPoint, data);
+    console.log(JSON.stringify(response))
     let respData = response.data;
     return respData;
   } catch (e) {

@@ -159,7 +159,7 @@ export class AddToCard extends Component {
                                 </TouchableOpacity>
                                 <Text style={{ fontSize: 15, marginTop: 10, color: "#8dc63f", fontFamily: 'OpenSans', textAlign: 'right', marginRight: 5, marginTop: 10 }}>{'₹' + (data.discountedValue || data.price)}</Text>
 
-                                {(data.productDetails && data.productDetails.available !== 0) || data.productDetails !== null ?
+                                {(data.productDetails && data.productDetails.available !== 0) || data.productDetails === null ?
                                     <Row style={{ justifyContent: 'flex-end', marginTop: 20 }}>
                                         <Col size={4} style={{ marginLeft: 5, justifyContent: 'center', alignItems: 'flex-end' }}>
                                             <TouchableOpacity onPress={() => this.productQuantityOperator(data, 'sub')} style={{ width: 20, height: 20, borderRadius: 10, backgroundColor: '#E6E6E6' }}>
@@ -175,7 +175,7 @@ export class AddToCard extends Component {
                                             </TouchableOpacity>
                                         </Col>
                                     </Row> : null}
-
+                             {/* api did not ready so condition use in reverse  */}
                                 {(data.productDetails && data.productDetails.available === 0) || data.productDetails !== null ?
                                     <Text style={{ fontSize: 12, fontFamily: 'OpenSans', color: '#ff4e42', marginTop: 5, textAlign: 'center', backgroundColor: '#E6E6E6', }}>Out of stock</Text> :
                                     <TouchableOpacity onPress={() => this.cardAction()} style={{ borderColor: '#4e85e9', borderWidth: 1, borderRadius: 2.5, height: 30, paddingTop: 2, backgroundColor: '#4e85e9', flexDirection: 'row', justifyContent: 'center', alignItems: 'center', marginTop: 15 }}>

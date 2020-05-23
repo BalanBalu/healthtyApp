@@ -122,7 +122,7 @@ class MedicineCheckout extends Component {
 
     onProceedToPayment(navigationToPayment) {
         // debugger
-        const { medicineDetails, selectedAddress, mobile_no, full_name, medicineTotalAmountwithDeliveryChage, itemSelected, isPrescription, isPharmacyRecomentation, recommentationData, deliveryDetails } = this.state;
+        const { medicineDetails, selectedAddress, mobile_no, full_name, medicineTotalAmountwithDeliveryChage, itemSelected, isPrescription, isPharmacyRecomentation, recommentationData, deliveryDetails,pharmacyInfo } = this.state;
         console.log('medicineDetailsmedicineDetailsmedicineDetailsmedicineDetailsmedicineDetails')
         console.log(JSON.stringify(medicineDetails))
         if (medicineDetails.length === 0) {
@@ -150,9 +150,9 @@ class MedicineCheckout extends Component {
                     medicinceNames = medicinceNames + ele.medicine_name + '( * ' + String(ele.userAddedMedicineQuantity) + '), '
                 }
                 medicineOrderData.push({
-                    description:String(ele.description),
+                    description: String(ele.description),
                     discountedAmount: Number(ele.discountedAmount) || Number(ele.price),
-                    productId: ele.productDetails?String(ele.productDetails.productId):String(ele.id),
+                    productId: ele.productDetails ? String(ele.productDetails.productId) : String(ele.id),
                     quantity: Number(ele.userAddedMedicineQuantity),
                     tax: 0,
                     totalPrice: Number(ele.userAddedTotalMedicineAmount),
@@ -171,7 +171,7 @@ class MedicineCheckout extends Component {
                 fee: amount,
                 medicineDetails: medicineOrderData,
                 totalAmount: amount,
-                deliveryType:itemSelected,
+                deliveryType: itemSelected,
                 // delivery_option: itemSelected,
                 // delivery_charges: deliveryDetails !== null ? deliveryDetails.delivery_charges : 0,
                 // delivery_tax: deliveryDetails !== null ? deliveryDetails.delivery_tax : 0,
@@ -201,7 +201,7 @@ class MedicineCheckout extends Component {
             }
         }
         if (itemSelected === 1) {
-            paymentPageRequestData.bookSlotDetails.pharmacyId=''
+            paymentPageRequestData.bookSlotDetails.pharmacyId = pharmacyInfo.pharmacyId
             // delete paymentPageRequestData.bookSlotDetails.delivery_charges
             // delete paymentPageRequestData.bookSlotDetails.delivery_tax
         }
@@ -266,7 +266,7 @@ class MedicineCheckout extends Component {
             let pharmacyData = []
             let medicineOrderData = [];
             let recommentationData = [];
-            let pharmacyInfo = null;
+
             let amount = this.state.medicineDetails.map(ele => {
                 medicineOrderData.push({
                     medicine_id: ele.medicine_id,
@@ -275,17 +275,7 @@ class MedicineCheckout extends Component {
                     medicine_weight_unit: ele.medicine_weight_unit,
 
                 })
-                // if (ele.pharmacyInfo && !pharmacyData.includes(ele.pharmacyInfo.pharmacy_id)) {
-                //     pharmacyData.push(ele.pharmacyInfo.pharmacy_id)
-                //     let temp = ele.pharmacyInfo
 
-                //     temp.full_name = ele.pharmacyInfo.name;
-                //     temp.coordinates = ele.pharmacyInfo.location.coordinates
-                //     temp.type = ele.pharmacyInfo.location.type
-                //     temp.address = ele.pharmacyInfo.location.address;
-                //     pharmacyInfo = temp;
-                //     //  temp.name
-                // }
                 return ele.userAddedTotalMedicineAmount
             }).reduce(
                 (total, userAddedTotalMedicineAmount) => total + userAddedTotalMedicineAmount);
@@ -310,8 +300,6 @@ class MedicineCheckout extends Component {
                 }
             }
             this.setState({
-                pickupOPtionEnabled: pharmacyData.length === 1,
-                pharmacyInfo: pharmacyData.length === 1 ? pharmacyInfo : null,
                 medicineTotalAmount: amount,
                 recommentationData: recommentationData
             })
@@ -320,18 +308,9 @@ class MedicineCheckout extends Component {
 
 
 
-            let ele = this.state.medicineDetails[0].pharmacyInfo
-            let temp = this.state.medicineDetails[0].pharmacyInfo
-
-            temp.full_name = ele.name;
-            temp.coordinates = ele.location.coordinates
-            temp.type = ele.location.type
-            temp.address = ele.location.address;
-            delete temp.name
 
             this.setState({
-                pickupOPtionEnabled: true,
-                pharmacyInfo: temp,
+
                 medicineTotalAmount: 0,
             })
 
@@ -340,7 +319,8 @@ class MedicineCheckout extends Component {
     }
 
     selectedItem(value) {
-        if (value == 'HOME_DELIVERY') {
+        alert(value)
+        if (value == 0) {
             let selectedAddress = null
             let medicineTotalAmountwithDeliveryChage = Number(Number(this.state.medicineTotalAmount).toFixed(2))
             if (this.state.deliveryDetails !== null) {
@@ -353,8 +333,11 @@ class MedicineCheckout extends Component {
 
             this.setState({ medicineTotalAmountwithDeliveryChage, itemSelected: value, selectedAddress })
         } else {
-
-            this.setState({ medicineTotalAmountwithDeliveryChage: this.state.medicineTotalAmount, itemSelected: value, selectedAddress: this.state.pharmacyInfo })
+            if (this.state.pharmacyInfo !== null) {
+                this.setState({ medicineTotalAmountwithDeliveryChage: this.state.medicineTotalAmount, itemSelected: value, selectedAddress: this.state.pharmacyInfo })
+            } else {
+                this.props.navigation.navigate('ChosePharmacyList')
+            }
         }
     }
     editProfile(screen, addressType) {
@@ -367,6 +350,13 @@ class MedicineCheckout extends Component {
             if (navigation.state.params) {
                 if (navigation.state.params.hasReloadAddress) {
                     this.clickedHomeDelivery();  // Reload the Reported issues when they reload
+                }
+                if (navigation.state.params.hasChosePharmacyReload) {
+                    let pharmacyInfo = navigation.getParam('pharmacyInfo')
+                    pharmacyInfo.address = pharmacyInfo.location.address;
+                    pharmacyInfo.full_name=pharmacyInfo.name
+
+                    this.setState({ pharmacyInfo: pharmacyInfo, selectedAddress: pharmacyInfo, itemSelected: 1 })
                 }
             };
 
@@ -423,7 +413,7 @@ class MedicineCheckout extends Component {
                             <View>
 
                                 <View style={{ backgroundColor: '#fff', padding: 10 }}>
-                                    <Row>
+                                    <Row onPress={() => this.selectedItem(0)}>
                                         <Col size={5}>
                                             <Text style={{ fontFamily: 'OpenSans', fontSize: 14, fontWeight: '500' }}>Home Delivery</Text>
                                         </Col>
@@ -484,36 +474,43 @@ class MedicineCheckout extends Component {
                                     null}
 
 
-                 
-                                    <View style={{ backgroundColor: '#fff', padding: 10, marginTop: 5 }}>
-                                        <Row>
-                                            <Col size={5}>
-                                                <Text style={{ fontFamily: 'OpenSans', fontSize: 14, fontWeight: '500' }}>Pick up at Store</Text>
-                                            </Col>
-                                            <Col size={5} style={{ alignItems: 'flex-end', justifyContent: 'flex-end' }}>
-                                                <Radio
-                                                    standardStyle={true}
-                                                    selected={itemSelected === 1 ? true : false}
-                                                    onPress={() => this.selectedItem(1)} />
-                                            </Col>
-                                        </Row>
-                                    </View> 
+
+                                <View style={{ backgroundColor: '#fff', padding: 10, marginTop: 5 }}>
+                                    <Row onPress={() => this.selectedItem(1)}>
+                                        <Col size={5}>
+                                            <Text style={{ fontFamily: 'OpenSans', fontSize: 14, fontWeight: '500' }}>Pick up at Store</Text>
+                                        </Col>
+                                        <Col size={5} style={{ alignItems: 'flex-end', justifyContent: 'flex-end' }}>
+                                            <Radio
+                                                standardStyle={true}
+                                                selected={itemSelected === 1 ? true : false}
+                                                onPress={() => this.selectedItem(1)} />
+                                        </Col>
+                                    </Row>
+                                </View>
 
 
 
-                                {itemSelected === 1 ?
-                                    <View>
-                                        <Row>
-                                            <Col size={5}>
-                                                <Text style={{ fontFamily: 'OpenSans', fontSize: 14, color: '#7F49C3' }}>Store Address</Text>
-                                            </Col>
-                                            <Col size={5} style={{ alignItems: 'flex-end', justifyContent: 'flex-end' }}>
-                                            </Col>
-                                        </Row>
-                                        <Text style={{ fontFamily: 'OpenSans', fontSize: 12, fontWeight: '300', marginTop: 5 }}>{pharmacyInfo.full_name}</Text>
-                                        <Text style={{ fontFamily: 'OpenSans', fontSize: 12, marginTop: 2, color: '#6a6a6a' }}>{getAddress(pharmacyInfo.location)}</Text>
-                                        <Text style={{ fontFamily: 'OpenSans', fontSize: 12, marginTop: 2 }}>{'Mobile -' + (pharmacyInfo.mobile_no || 'Nil')}</Text>
-                                    </View> :
+                                {itemSelected === 1&&pharmacyInfo !== null ?
+                                        <View>
+                                            {/* <Col style={{ alignItems: 'flex-end', justifyContent: 'flex-end' }}>
+                                            
+                                        </Col> */}
+                                            <Row>
+                                                <Col size={5}>
+                                                    <Text style={{ fontFamily: 'OpenSans', fontSize: 14, color: '#7F49C3' }}>Store Address</Text>
+                                                </Col>
+                                                <Col size={5} style={{ alignItems: 'flex-end', justifyContent: 'flex-end' }}>
+                                                <TouchableOpacity onPress={() =>this.props.navigation.navigate('ChosePharmacyList')}>
+                                                <Text style={{ fontFamily: 'OpenSans', fontSize: 10, color: '#ff4e42' }}>change Store</Text>
+                                            </TouchableOpacity>
+                                                </Col>
+                                            </Row>
+                                            <Text style={{ fontFamily: 'OpenSans', fontSize: 12, fontWeight: '300', marginTop: 5 }}>{pharmacyInfo.full_name}</Text>
+                                            <Text style={{ fontFamily: 'OpenSans', fontSize: 12, marginTop: 2, color: '#6a6a6a' }}>{getAddress(pharmacyInfo.location)}</Text>
+                                            <Text style={{ fontFamily: 'OpenSans', fontSize: 12, marginTop: 2 }}>{'Mobile -' + (pharmacyInfo.mobile_no || 'Nil')}</Text>
+                                        </View> :
+                                        
                                     null}
 
 
