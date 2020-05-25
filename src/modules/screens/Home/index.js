@@ -389,24 +389,22 @@ class Home extends Component {
                     <NavigationEvents
                         onWillFocus={payload => { this.backNavigation(payload) }}
                     />
-                    <TouchableOpacity onPress={() => this.props.navigation.navigate("RenderSuggestionList")}>
                         <Row style={styles.SearchRow}>
                             <Col size={0.9} style={styles.SearchStyle}>
-                                <TouchableOpacity style={{ justifyContent: 'center' }}>
-                                    <Icon name="ios-search" style={{ color: '#fff', fontSize: 20, padding: 2 }} />
-                                </TouchableOpacity>
+                                <Icon name="ios-search" style={{ color: '#fff', fontSize: 20, padding: 2 }} />
                             </Col>
                             <Col size={8.1} style={{ justifyContent: 'center', }}>
                                 <Input
+                                    onFocus={() => { this.props.navigation.navigate("RenderSuggestionList")}}
                                     placeholder="Search for Symptoms/Services,etc"
                                     style={styles.inputfield}
                                     placeholderTextColor="#e2e2e2"
-                                    editable={false}
+                                    editable={true}
                                     underlineColorAndroid="transparent"
                                 />
                             </Col>
                         </Row>
-                    </TouchableOpacity>
+                   
                     <Grid style={{ flex: 1, marginLeft: 10, marginRight: 20, marginTop: 10 }}>
                         <Col style={{ width: '33%', }}>
                             <TouchableOpacity onPress={() =>
