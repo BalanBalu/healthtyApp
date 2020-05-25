@@ -144,6 +144,22 @@ export async function getMedicineOrderDetails(orderId) {
 }
 
 
+export async function getOrderTracking(orderNumber) {
+  try {
+
+    let endPoint = `/transaction/track/${orderNumber}`;
+    console.log(endPoint);
+    let response = await inventoryGetService(endPoint);
+    console.log(response);
+    let respData = response.data;
+    return respData;
+  } catch (e) {
+    return {
+      message: 'exception' + e,
+      success: false
+    }
+  }
+}
 /*get pharmacy list*/
 export async function getpharmacy(pharmacy_id) {
   try {
