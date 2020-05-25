@@ -1,5 +1,70 @@
-import { postService, getService, putService, deleteService } from '../../../setup/services/httpservices';
+import { postService, getService, putService, deleteService, inventoryPostService, inventoryGetService, inventoryPutService, inventoryDeleteService } from '../../../setup/services/httpservices';
 
+
+
+
+export async function getSuggestionMedicines(keyword, data, isLoading = true) {
+  try {
+    let endPoint = 'products/search?s=' + keyword;
+    let response = await inventoryGetService(endPoint);
+
+    let respData = response.data;
+    return respData;
+  } catch (e) {
+    return {
+      message: 'exception' + e,
+      success: false
+    }
+  }
+}
+export async function getMedicinesSearchList(keyword, pagination, isLoading = true) {
+  try {
+    console.log(typeof keyword)
+    let endPoint = '/products/search/pagination?s=' + keyword + '&p=' + 0 + '&c=' + 5;
+    console.log(endPoint);
+
+    let response = await inventoryGetService(endPoint);
+    console.log('hi==================')
+    console.log(JSON.stringify(response.data))
+    let respData = response.data.content;
+    return respData;
+  } catch (e) {
+    return {
+      message: 'exception' + e,
+      success: false
+    }
+  }
+}
+export async function getProductDetailById(medicineId) {
+  try {
+
+    let endPoint = `/products/detail/${medicineId}`;
+    console.log(endPoint)
+    let response = await inventoryGetService(endPoint);
+    let respData = response.data;
+    return respData;
+  } catch (e) {
+    return {
+      message: 'exception' + e,
+      success: false
+    }
+  }
+}
+
+export async function getAllPromotions() {
+  try {
+    let endPoint = 'promotions';
+    let response = await inventoryGetService(endPoint);
+    console.log(JSON.stringify(response))
+    // let respData = response.data;
+    return respData;
+  } catch (e) {
+    return {
+      message: 'exception' + e,
+      success: false
+    }
+  }
+}
 /* Search Medicine in pharmacy module  */
 export async function getSearchedMedicines(keyword, isLoading = true) {
   try {
@@ -16,46 +81,40 @@ export async function getSearchedMedicines(keyword, isLoading = true) {
   }
 }
 
-export async function getOrderUserReviews(user_id,order_id) {
-  try {
-    let endPoint = '/medicine_orders/user/'+user_id+'/order_review/'+order_id   
-    let response = await getService(endPoint);
-    let respData = response.data;
-    return respData;
-
-  } catch (e) {
-    return {
-      message: 'exception' + e,
-      success: false
-    }
-  }
-}
-export async function InsertOrderReviews(user_id, data) {
-  try {
-    let endPoint = '/medicine_orders/user/' + user_id + '/order_review'
-    let response = await postService(endPoint, data);
-    let respData = response.data;
-    return respData;
-
-  } catch (e) {
-    return {
-      message: 'exception' + e,
-      success: false
-    }
-  }
-}
 
 
 /* Medicine Order List */
 
-export async function getMedicineOrderList(userId) {
+export async function getMedicineOrderList(userId, pagination, count) {
   try {
 
-    let endPoint = '/medicine_orders/user/' + userId;
-    let response = await getService(endPoint);
-    let respData = response.data;
+    let endPoint = `transaction/order/user/${userId}?p=${pagination}&c=${10}`;
+    let response = await inventoryGetService(endPoint);
+    console.log('req========================')
+    let respData = response.data.content
+
     return respData;
   } catch (e) {
+    console.log('hi======')
+    console.log(e)
+    return {
+      message: 'exception' + e,
+      success: false
+    }
+  }
+}
+export async function getAvailableStockForListOfProducts(productIds) {
+  try {
+
+    let endPoint = `/products/available-stocks?ids=${productIds}`;
+    let response = await inventoryGetService(endPoint);
+    console.log('req========================')
+    let respData = response.data.content
+
+    return respData;
+  } catch (e) {
+    console.log('hi======')
+    console.log(e)
     return {
       message: 'exception' + e,
       success: false
@@ -67,12 +126,12 @@ export async function getMedicineOrderList(userId) {
 
 /* Medicine Order details */
 
-export async function getMedicineOrderDetails(order_id, userId) {
+export async function getMedicineOrderDetails(orderId) {
   try {
 
-    let endPoint = '/medicine_orders/order/' + order_id + '/user/' + userId;
+    let endPoint = `/transaction/order/${orderId}`;
     console.log(endPoint);
-    let response = await getService(endPoint);
+    let response = await inventoryGetService(endPoint);
     console.log(response);
     let respData = response.data;
     return respData;
@@ -102,56 +161,15 @@ export async function getpharmacy(pharmacy_id) {
   }
 }
 
-export async function getSelectedMedicineDetails(medicineId, pharmacyId) {
-  try {
-
-    let endPoint = '/medicine/' + medicineId + '/pharmacy/' + pharmacyId;
-    console.log(endPoint)
-    let response = await getService(endPoint);
-    let respData = response.data;
-    return respData;
-  } catch (e) {
-    return {
-      message: 'exception' + e,
-      success: false
-    }
-  }
-}
 
 
-export async function getSuggestionMedicines(keyword, data, isLoading = true) {
-  try {
-    let endPoint = 'medicines/suggestions/' + keyword;
-    let response = await postService(endPoint, data);
-    let respData = response.data;
-    return respData;
-  } catch (e) {
-    return {
-      message: 'exception' + e,
-      success: false
-    }
-  }
-}
 
-export async function getMedicinesSearchList(data, isLoading = true) {
-  try {
-    let endPoint = '/medicines/search/healthCareProducts';
-    let response = await postService(endPoint, data);
 
-    let respData = response.data;
-    return respData;
-  } catch (e) {
-    return {
-      message: 'exception' + e,
-      success: false
-    }
-  }
-}
 export async function getMedicinesSearchListByPharmacyId(pharmacyId, isLoading = true) {
   try {
-    let endPoint = '/medicines/pharmacy/' + pharmacyId;
-    let response = await getService(endPoint);
-    let respData = response.data;
+    let endPoint = `/products/pharmacy/${pharmacyId}?p=${1}&c=${10}`;
+    let response = await inventoryGetService(endPoint);
+    let respData = response.data.content;
     return respData;
   } catch (e) {
     return {
@@ -206,9 +224,10 @@ export async function getPopularMedicine(userId, coordinates) {
 
 export async function createMedicineOrder(data) {
   try {
-    let endPoint = '/medicine_orders/order';
+    let endPoint = '/transaction';
     console.log(endPoint)
-    let response = await postService(endPoint, data);
+    let response = await inventoryPutService(endPoint, data);
+    console.log(JSON.stringify(response))
     let respData = response.data;
     return respData;
   } catch (e) {
@@ -289,20 +308,7 @@ export async function getMedicineReviewsCount(medicine_id) {
 }
 
 
-export async function removePrescriptionImage(prescriptionData, userId) {
-  try {
 
-    let endPoint = '/medicine_orders/prescription/' + prescriptionData.prescription_image_id + '/user/' + userId
-    let response = await deleteService(endPoint);
-    let respData = response.data;
-    return respData;
-  } catch (e) {
-    return {
-      message: 'exception' + e,
-      success: false
-    }
-  }
-}
 
 export async function getPurcharseRecomentation(data) {
   try {
@@ -357,6 +363,52 @@ export async function getUploadPrescription(userId) {
     let endPoint = '/medicine_orders/prescription/user/' + userId;
     console.log(endPoint);
     let response = await getService(endPoint);
+    let respData = response.data;
+    return respData;
+  } catch (e) {
+    return {
+      message: 'exception' + e,
+      success: false
+    }
+  }
+}
+
+
+
+export async function getOrderUserReviews(user_id, order_id) {
+  try {
+    let endPoint = '/medicine_orders/user/' + user_id + '/order_review/' + order_id
+    let response = await getService(endPoint);
+    let respData = response.data;
+    return respData;
+
+  } catch (e) {
+    return {
+      message: 'exception' + e,
+      success: false
+    }
+  }
+}
+export async function InsertOrderReviews(user_id, data) {
+  try {
+    let endPoint = '/medicine_orders/user/' + user_id + '/order_review'
+    let response = await postService(endPoint, data);
+    let respData = response.data;
+    return respData;
+
+  } catch (e) {
+    return {
+      message: 'exception' + e,
+      success: false
+    }
+  }
+}
+
+export async function removePrescriptionImage(prescriptionData, userId) {
+  try {
+
+    let endPoint = '/medicine_orders/prescription/' + prescriptionData.prescription_image_id + '/user/' + userId
+    let response = await deleteService(endPoint);
     let respData = response.data;
     return respData;
   } catch (e) {

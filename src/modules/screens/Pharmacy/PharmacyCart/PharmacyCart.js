@@ -68,8 +68,10 @@ class PharmacyCart extends Component {
     totalPrice() {
         let total = 0;
         if (this.state.cartItems) {
+          
             this.state.cartItems.map(element => {
-                total = total + (element.userAddedMedicineQuantity) * (element.offeredAmount)
+                let discountedAmount=element.discountedValue||element.price
+                total = total + (element.userAddedMedicineQuantity) * (discountedAmount)
             })
             return total.toFixed(2);
         }
@@ -85,60 +87,64 @@ class PharmacyCart extends Component {
     }
     async  procced() {
         const { cartItems } = this.state;
-        let order_items = []
-        cartItems.map(element => {
-           
-            order_items.push({
-                medicine_id: element.medicine_id,
-                pharmacy_id: element.pharmacy_id,
-                quantity: Number(element.userAddedMedicineQuantity),
-                medicine_weight: Number(element.medicine_weight),
-                medicine_weight_unit: element.medicine_weight_unit
-            })
-
+        this.props.navigation.navigate("MedicineCheckout", {
+            medicineDetails: cartItems,
+            orderOption: "pharmacyCart",
         })
-        console.log('availble status=====');
-        console.log(JSON.stringify(order_items))
-        let obj = {
-            order_items: order_items
-        }
-        let checkResult = await getmedicineAvailableStatus(obj)
-        console.log(JSON.stringify(checkResult))
-        if (checkResult.success === true) {
-            if (checkResult.data.length === cartItems.length) {
-                this.props.navigation.navigate("MedicineCheckout", {
-                    medicineDetails: cartItems,
-                    orderOption: "pharmacyCart",
-                })
-            } else {
-                Toast.show({
-                    text: 'out of stack',
-                    type: 'danger',
-                    duration: 3000
-                })
-                cartItems.map((ele, index) => {
-                    let value = checkResult.data.find(element => {
+        // let order_items = []
+        // cartItems.map(element => {
+           
+        //     order_items.push({
+        //         medicine_id: element.medicine_id,
+        //         pharmacy_id: element.pharmacy_id,
+        //         quantity: Number(element.userAddedMedicineQuantity),
+        //         medicine_weight: Number(element.medicine_weight),
+        //         medicine_weight_unit: element.medicine_weight_unit
+        //     })
 
-                        return element.pharmacy_id === ele.pharmacy_id && element.medicine_id === ele.medicine_id
-                    })
-                    console.log(value)
-                    if (value === undefined) {
+        // })
+        // console.log('availble status=====');
+        // console.log(JSON.stringify(order_items))
+        // let obj = {
+        //     order_items: order_items
+        // }
+        // let checkResult = await getmedicineAvailableStatus(obj)
+        // console.log(JSON.stringify(checkResult))
+        // if (checkResult.success === true) {
+        //     if (checkResult.data.length === cartItems.length) {
+        //         this.props.navigation.navigate("MedicineCheckout", {
+        //             medicineDetails: cartItems,
+        //             orderOption: "pharmacyCart",
+        //         })
+        //     } else {
+        //         Toast.show({
+        //             text: 'out of stack',
+        //             type: 'danger',
+        //             duration: 3000
+        //         })
+        //         cartItems.map((ele, index) => {
+        //             let value = checkResult.data.find(element => {
 
-                        ele.is_outofStack = true
+        //                 return element.pharmacy_id === ele.pharmacy_id && element.medicine_id === ele.medicine_id
+        //             })
+        //             console.log(value)
+        //             if (value === undefined) {
 
-                        cartItems.splice(index, 1, ele)
-                    }
-                })
-                this.setState({ cartItems })
+        //                 ele.is_outofStack = true
 
-            }
-        } else {
-            Toast.show({
-                text: 'out of stack',
-                type: 'danger',
-                duration: 3000
-            })
-        }
+        //                 cartItems.splice(index, 1, ele)
+        //             }
+        //         })
+        //         this.setState({ cartItems })
+
+        //     }
+        // } else {
+        //     Toast.show({
+        //         text: 'out of stack',
+        //         type: 'danger',
+        //         duration: 3000
+        //     })
+        // }
     }
     render() {
         const { isLoading, cartItems } = this.state;
