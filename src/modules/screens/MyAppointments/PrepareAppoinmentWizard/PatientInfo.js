@@ -1,6 +1,6 @@
 import React, { PureComponent } from 'react';
 import {
-    Container, Content, Text, View, Badge, Toast, Radio, Form, CheckBox, Item, Picker, Icon
+    Container, Content, Text, View, Badge, Toast, Radio, DatePicker, Form, CheckBox, Item, Picker, Icon
 } from 'native-base';
 import { Col, Row, Grid } from 'react-native-easy-grid';
 import { StyleSheet, Image, AsyncStorage, TextInput, FlatList, TouchableOpacity, Share, Platform } from 'react-native';
@@ -71,13 +71,14 @@ class PatientInfo extends PureComponent {
 
             this.setState({ isLoading: true })
             let response = await userFiledsUpdate(userId, data)
-
+            console.log(response);
             if (response.success) {
                 Toast.show({
                     text: response.message,
                     type: "success",
                     duration: 3000,
                 })
+                
                 this.skippingButton(false)
                 this.props.navigation.navigate('AllergiesAndMedications', { AppointmentId: appointmentId });
             }
@@ -122,15 +123,22 @@ class PatientInfo extends PureComponent {
 
                             <Text style={{ fontFamily: "OpenSans", fontSize: 15, }}>Date of birth</Text>
                             <Form style={styles.formStyle2}>
-                                <TextInput
-                                    placeholder="Enter your date of birth"
-                                    style={Platform == "ios" ? styles.textInputStyle : styles.textInputAndroid}
-                                    placeholderTextColor="#C1C1C1"
-                                    keyboardType={'default'}
-                                    returnKeyType={'go'}
-                                    value={date_of_birth}
-                                    onChangeText={(enteredText) => this.setState({ date_of_birth: enteredText })}
-                                />
+                                
+                                                <DatePicker
+                                                    defaultDate={new Date()}
+                                                    timeZoneOffsetInMinutes={undefined}
+                                                    modalTransparent={false}
+                                                    minimumDate={new Date(1940, 0, 1)}
+                                                    animationType={"fade"}
+                                                    androidMode={"default"}
+                                                    placeHolderText={ date_of_birth ? date_of_birth : 'Select Your DOB'}
+                                                    textStyle={{ color: "#5A5A5A",  textAlign: 'left', marginTop: -5 }}
+                                                    value={date_of_birth}
+                                                    placeHolderTextStyle={{ color: "#5A5A5A", marginTop: -5 }}
+                                                    onDateChange={date_of_birth => {  this.setState({ date_of_birth }) }}
+                                                    disabled={false}
+                                                />
+                                           
                             </Form>
                         </View>
 
