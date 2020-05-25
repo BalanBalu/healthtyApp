@@ -43,6 +43,7 @@ import BookAppoinment from "../../modules/screens/bookappoinment";
 import Mapbox from "../../modules/screens/bookappoinment/Mapbox";
 import AppointmentDetails from '../../modules/screens/MyAppointments/AppointmentDetails';
 import MyAppoinmentList from '../../modules/screens/MyAppointments/MyAppointmentList';
+import EmrDetails from '../../modules/screens/MyAppointments/EmrDetails'
 import CancelAppointment from "../../modules/screens/MyAppointments/cancelAppointment";
 import AddReminder from '../../modules/screens/Reminder/AddReminder'
 import Reminder from '../../modules/screens/Reminder/Reminders'
@@ -275,6 +276,13 @@ const HomeStack = createStackNavigator({
     screen: AppointmentDetails,
     navigationOptions: {
       title: "Appointment info"
+    }
+  },
+ 
+  "EmrDetails": {
+    screen: EmrDetails,
+    navigationOptions: {
+      title: "EMR Details"
     }
   },
   ReportIssue: {

@@ -556,6 +556,31 @@ class AppointmentDetails extends Component {
                         <Text note style={styles.subTextInner1}>{doctorData.language && doctorData.language.toString()}</Text>
                       </Col>
                     </Row> : null}
+                    {data.is_emr_recorded !==undefined ?
+                    <Row style={styles.rowSubText}>
+                    <Col style={{ width: '8%', paddingTop: 5 }}>
+                      <Icon name="ios-document" style={{ fontSize: 20, }} />
+                    </Col>
+                    <Col style={{ width: '92%', paddingTop: 5 }}>
+                      <Text style={styles.innerSubText}>EMR Report</Text>
+                   
+                        <View style={{ borderRadius: 5, borderColor: 'grey', borderWidth: 0.5, padding: 5 }} >
+                          <TouchableOpacity onPress={() => { this.props.navigation.navigate('EmrDetails', { appointmentId: data._id}) }}>
+                            <Text note style={[styles.subTextInner2, { marginLeft: 10 }]}>"You get EMR from doctor more details click here"</Text>
+                            <Row>
+                              <Col size={9}>
+                                
+
+                              </Col>
+                              <Col size={1}>
+                                <Icon name='ios-arrow-forward' style={{ fontSize: 20, color: 'grey' }} />
+                              </Col>
+                            </Row>
+                          </TouchableOpacity>
+                        </View> 
+                      
+                    </Col>
+                  </Row>:null}
                   <Row style={styles.rowSubText}>
                     <Col style={{ width: '8%', paddingTop: 5 }}>
                       <Icon name="ios-document" style={{ fontSize: 20, }} />
