@@ -372,6 +372,7 @@ class PharmacyHome extends Component {
                                                         </TouchableOpacity>
                                                         {this.state.isBuyNow == true || this.state.isAddToCart == true ?
                                                             <AddToCard
+                                                                navigation={this.props.navigation}
                                                                 data={this.state.selectedMedcine}
                                                                 popupVisible={(data) => this.getVisible(data)}
                                                             />
