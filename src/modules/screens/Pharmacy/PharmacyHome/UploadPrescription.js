@@ -330,7 +330,7 @@ class UploadPrescription extends Component {
                                 </Col>
 
                                 <Col size={5} style={{ alignItems: 'center', justifyContent: 'center', backgroundColor: '#8dc63f' }}>
-                                    <TouchableOpacity onPress={() => this.props.navigation.navigate('ChosePharmacyList', { prescriptionDetails: prescriptionDetails })}>
+                                    <TouchableOpacity onPress={() => this.props.navigation.navigate('MedicineCheckout', { prescriptionDetails: prescriptionDetails, isPrescription: true })}>
                                         <Text style={{ fontSize: 16, fontFamily: 'OpenSans', color: '#fff', fontWeight: '400' }}>Buy Now</Text>
                                     </TouchableOpacity>
                                 </Col>

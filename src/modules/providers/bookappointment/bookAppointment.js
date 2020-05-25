@@ -244,21 +244,22 @@ export default class BookAppointmentPaymentUpdate {
         try {
             debugger
             let requestData = {
-                user_id: userId,
-                description: orderData.diseaseDescription || '',
+                userId: userId,
+                totalAmount: orderData.totalAmount,
+                // description: orderData.diseaseDescription || '',
                 status: isSuccess ? 'PENDING' : 'FAILED',
-                status_by: "USER",
-                status_update_reason: 'New Medicine Order',
-                booked_from: "APPLICATION",
+                // status_by: "USER",
+                // status_update_reason: 'New Medicine Order',
+                // booked_from: "APPLICATION",
                 payment_id: paymentId,
-                order_items: orderData.medicineDetails,
-                delivery_charges: orderData.delivery_charges || ' ',
-                delivery_tax: orderData.delivery_tax || '',
-                delivery_option: orderData.delivery_option,
-
-                is_order_type_recommentation: orderData.is_order_type_recommentation,
-                is_order_type_prescription: orderData.is_order_type_prescription,
-                recommentation_pharmacy_data: orderData.recommentation_pharmacy_data || [],
+                items: orderData.medicineDetails,
+                // delivery_charges: orderData.delivery_charges || ' ',
+                // delivery_tax: orderData.delivery_tax || '',
+                deliveryType: orderData.deliveryType,
+                deliveryDetail: orderData.deliveryDetail,
+                // is_order_type_recommentation: orderData.is_order_type_recommentation,
+                // is_order_type_prescription: orderData.is_order_type_prescription,
+                // recommentation_pharmacy_data: orderData.recommentation_pharmacy_data || [],
                 pickup_or_delivery_address: orderData.pickup_or_delivery_address
             }
             if (orderData.delivery_option === 'STORE_PICKUP') {
@@ -276,15 +277,15 @@ export default class BookAppointmentPaymentUpdate {
             }
             let resultData = await createMedicineOrder(requestData);
             console.log(resultData)
-            if (resultData.success) {
+            if (resultData) {
                 return {
-                    message: resultData.message,
+                    message: 'order created sucessfully',
                     success: isSuccess,
-                    orderNo: resultData.orderNo
+                    // orderNo: resultData.orderNo
                 }
             } else {
                 return {
-                    message: resultData.message,
+                    message: 'order failed try again',
                     success: false,
                 }
             }
@@ -329,16 +330,16 @@ export default class BookAppointmentPaymentUpdate {
         }
     }
 
-    updateNewBookLabTestAppointment = async (labTestAppointmentId, appointmentData, paymentId ) => {
+    updateNewBookLabTestAppointment = async (labTestAppointmentId, appointmentData, paymentId) => {
         debugger
         let resultData = {};
-        if(labTestAppointmentId) {
+        if (labTestAppointmentId) {
             const createAppointmentData = {
                 userId: appointmentData.user_id,
                 labId: appointmentData.lab_id,
                 status: 'PENDING',
                 status_by: 'USER',
-                startTime:appointmentData.startTime,
+                startTime: appointmentData.startTime,
                 endTime: appointmentData.endTime,
                 statusUpdateReason: 'NEW BOOKING',
                 payment_id: paymentId,
@@ -368,7 +369,7 @@ export default class BookAppointmentPaymentUpdate {
                 message: resultData.message,
                 success: false,
             }
-        }       
-        
+        }
+
     }
 }
