@@ -24,7 +24,6 @@ import ConnectyCube from 'react-native-connectycube';
 import { CallService, CallKeepService  } from '../VideoConsulation/services';
 MapboxGL.setAccessToken(MAP_BOX_PUBLIC_TOKEN);
 import NotifService from '../../../setup/NotifService';
-import { getReminderData } from '../../providers/reminder/reminder.action.js';
 import FastImage from 'react-native-fast-image'
 import { translate } from '../../../setup/translator.helper';
 import { authorizeConnectyCube, setUserLoggedIn } from '../VideoConsulation/services/video-consulting-service';
@@ -170,7 +169,6 @@ class Home extends Component {
                 navigation.setParams({
                     notificationBadgeCount: notificationCount
                 });
-                getReminderData(userId);
                 this.getAllChatsByUserId(userId);
                 this.getMarkedAsReadedNotification(userId);
             }
