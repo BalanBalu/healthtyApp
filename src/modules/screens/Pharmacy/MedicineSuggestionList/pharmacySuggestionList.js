@@ -54,13 +54,12 @@ class MedicineSuggestionList extends Component {
     callSuggestionService = async (enteredText) => {
         const userId = await AsyncStorage.getItem('userId');
         const { bookappointment: { locationCordinates } } = this.props;
-        locationData = {
+        let locationData = {
             "coordinates": locationCordinates,
             "maxDistance": PHARMACY_MAX_DISTANCE_TO_COVER
         }
         let medicineResultData = await getSuggestionMedicines(enteredText);
-        // console.log('hi sugestion result')
-        // console.log(JSON.stringify(medicineResultData))
+
 
         if (medicineResultData) {
             this.setState({

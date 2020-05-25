@@ -222,7 +222,7 @@ class MedicineInfo extends Component {
         let saveData = 0
         if (medicineData) {
             if (medicineData.price) {
-                saveData = parseInt(medicineData.price) - parseInt(medicineRateAfterOffer(medicineData.medPharDetailInfo, 's'))
+                saveData = parseInt(medicineData.price) - parseInt(medicineRateAfterOffer(medicineData))
             }
         }
         return saveData
@@ -315,10 +315,10 @@ class MedicineInfo extends Component {
                             <Row>
                                 <Col size={7} style={{ flexDirection: 'row', marginTop: 10 }}>
                                     <Text style={{ fontSize: 10, fontFamily: 'OpenSans', color: '#ff4e42', marginTop: 5 }}>MRP</Text>
-                                    {medicineData.discountedValue !== undefined?
+                                    {medicineData.discount !== undefined?
                                         <Row>
                                             <Text style={styles.oldRupees}>₹{medicineData.price}</Text>
-                                            <Text style={styles.newRupees}>₹{medicineData.discountedValue}</Text>
+                                            <Text style={styles.newRupees}>₹{medicineRateAfterOffer(medicineData)}</Text>
                                             <Text style={styles.saveText}>(Save upto ₹{this.saveMoney()})</Text>
                                         </Row> :
                                         <Text style={styles.newRupees}>₹{medicineData.price}</Text>

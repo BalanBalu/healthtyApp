@@ -33,6 +33,7 @@ class MedicineCheckout extends Component {
             isPrescription: false,
             isPharmacyRecomentation: false,
             recommentationData: [],
+            prescriptionDetails: null
 
 
 
@@ -50,13 +51,22 @@ class MedicineCheckout extends Component {
             }
             const medicineDetails = navigation.getParam('medicineDetails') || [];
             const isPrescription = navigation.getParam('isPrescription') || false
+            let prescriptionDetails = null
+            if (isPrescription === true) {
+                const prescriptionDetails = navigation.getParam('prescriptionDetails');
+                this.setState({ medicineDetails, isPrescription, prescriptionDetails })
 
-
-            this.setState({ medicineDetails, isPrescription })
+            } else {
+                this.setState({ medicineDetails, isPrescription })
+            }
             if (medicineDetails.length !== 0) {
                 await this.clickedHomeDelivery()
 
                 await this.getdeliveryWithMedicineAmountCalculation(medicineDetails, isPrescription)
+                await this.getDelveryChageAmount()
+            }
+            if (prescriptionDetails !== null) {
+                await this.clickedHomeDelivery()
                 await this.getDelveryChageAmount()
             }
 
@@ -122,10 +132,10 @@ class MedicineCheckout extends Component {
 
     onProceedToPayment(navigationToPayment) {
         // debugger
-        const { medicineDetails, selectedAddress, mobile_no, full_name, medicineTotalAmountwithDeliveryChage, itemSelected, isPrescription, isPharmacyRecomentation, recommentationData, deliveryDetails,pharmacyInfo } = this.state;
+        const { medicineDetails, selectedAddress, mobile_no, full_name, medicineTotalAmountwithDeliveryChage, itemSelected, isPrescription, isPharmacyRecomentation, recommentationData, deliveryDetails, pharmacyInfo } = this.state;
         console.log('medicineDetailsmedicineDetailsmedicineDetailsmedicineDetailsmedicineDetails')
         console.log(JSON.stringify(medicineDetails))
-        if (medicineDetails.length === 0) {
+        if (medicineDetails.length === 0 && isPrescription === false) {
             Toast.show({
                 text: 'No Medicines Added to Checkout',
                 type: 'warning',
@@ -150,7 +160,7 @@ class MedicineCheckout extends Component {
                     medicinceNames = medicinceNames + ele.medicine_name + '( * ' + String(ele.userAddedMedicineQuantity) + '), '
                 }
                 medicineOrderData.push({
-                    description: String(ele.description),
+                    // description: String(ele.description),
                     discountedAmount: Number(ele.discountedAmount) || Number(ele.price),
                     productId: ele.productDetails ? String(ele.productDetails.productId) : String(ele.id),
                     quantity: Number(ele.userAddedMedicineQuantity),
@@ -206,11 +216,7 @@ class MedicineCheckout extends Component {
             // delete paymentPageRequestData.bookSlotDetails.delivery_tax
         }
         if (isPrescription === true) {
-            console.log(medicineDetails[0].PrescriptionId)
-            paymentPageRequestData.bookSlotDetails.prescription_id = medicineDetails[0].PrescriptionId
-            paymentPageRequestData.bookSlotDetails.pharmacy_id = medicineDetails[0].pharmacyInfo.pharmacy_id
-
-
+            paymentPageRequestData.bookSlotDetails.prescriptions = this.state.prescriptionDetails.prescriptionData
         }
         if (isPharmacyRecomentation === true) {
             let recommentation_pharmacy_data = []
@@ -285,7 +291,7 @@ class MedicineCheckout extends Component {
                 let purcharseProductsData = {
                     coordinates: locationCordinates,
                     type: 'Point',
-                    maxDistance: 300000000000,
+                    maxDistance: 3000,
                     order_items: medicineOrderData,
                     medicine_total_amount: amount
                 };
@@ -319,7 +325,7 @@ class MedicineCheckout extends Component {
     }
 
     selectedItem(value) {
-        alert(value)
+
         if (value == 0) {
             let selectedAddress = null
             let medicineTotalAmountwithDeliveryChage = Number(Number(this.state.medicineTotalAmount).toFixed(2))
@@ -354,7 +360,7 @@ class MedicineCheckout extends Component {
                 if (navigation.state.params.hasChosePharmacyReload) {
                     let pharmacyInfo = navigation.getParam('pharmacyInfo')
                     pharmacyInfo.address = pharmacyInfo.location.address;
-                    pharmacyInfo.full_name=pharmacyInfo.name
+                    pharmacyInfo.full_name = pharmacyInfo.name
 
                     this.setState({ pharmacyInfo: pharmacyInfo, selectedAddress: pharmacyInfo, itemSelected: 1 })
                 }
@@ -398,7 +404,7 @@ class MedicineCheckout extends Component {
         this.setState({ isLoading: false, spinnerText: ' ' });
     }
     render() {
-        const { itemSelected, deliveryAddressArray, isLoading, deliveryDetails, pickupOPtionEnabled, medicineTotalAmount, medicineTotalAmountwithDeliveryChage, pharmacyInfo, isPrescription, recommentationData, isPharmacyRecomentation } = this.state
+        const { itemSelected, deliveryAddressArray, isLoading, deliveryDetails, pickupOPtionEnabled, medicineTotalAmount, medicineTotalAmountwithDeliveryChage, pharmacyInfo, isPrescription, recommentationData, isPharmacyRecomentation, prescriptionDetails } = this.state
 
 
         return (
@@ -409,7 +415,7 @@ class MedicineCheckout extends Component {
                     />{isLoading === true ?
                         <Spinner color="blue"
                             visible={isLoading} /> :
-                        this.state.medicineDetails.length != 0 ?
+                        this.state.medicineDetails.length != 0 || prescriptionDetails !== null ?
                             <View>
 
                                 <View style={{ backgroundColor: '#fff', padding: 10 }}>
@@ -491,26 +497,26 @@ class MedicineCheckout extends Component {
 
 
 
-                                {itemSelected === 1&&pharmacyInfo !== null ?
-                                        <View>
-                                            {/* <Col style={{ alignItems: 'flex-end', justifyContent: 'flex-end' }}>
+                                {itemSelected === 1 && pharmacyInfo !== null ?
+                                    <View>
+                                        {/* <Col style={{ alignItems: 'flex-end', justifyContent: 'flex-end' }}>
                                             
                                         </Col> */}
-                                            <Row>
-                                                <Col size={5}>
-                                                    <Text style={{ fontFamily: 'OpenSans', fontSize: 14, color: '#7F49C3' }}>Store Address</Text>
-                                                </Col>
-                                                <Col size={5} style={{ alignItems: 'flex-end', justifyContent: 'flex-end' }}>
-                                                <TouchableOpacity onPress={() =>this.props.navigation.navigate('ChosePharmacyList')}>
-                                                <Text style={{ fontFamily: 'OpenSans', fontSize: 10, color: '#ff4e42' }}>change Store</Text>
-                                            </TouchableOpacity>
-                                                </Col>
-                                            </Row>
-                                            <Text style={{ fontFamily: 'OpenSans', fontSize: 12, fontWeight: '300', marginTop: 5 }}>{pharmacyInfo.full_name}</Text>
-                                            <Text style={{ fontFamily: 'OpenSans', fontSize: 12, marginTop: 2, color: '#6a6a6a' }}>{getAddress(pharmacyInfo.location)}</Text>
-                                            <Text style={{ fontFamily: 'OpenSans', fontSize: 12, marginTop: 2 }}>{'Mobile -' + (pharmacyInfo.mobile_no || 'Nil')}</Text>
-                                        </View> :
-                                        
+                                        <Row>
+                                            <Col size={5}>
+                                                <Text style={{ fontFamily: 'OpenSans', fontSize: 14, color: '#7F49C3' }}>Store Address</Text>
+                                            </Col>
+                                            <Col size={5} style={{ alignItems: 'flex-end', justifyContent: 'flex-end' }}>
+                                                <TouchableOpacity onPress={() => this.props.navigation.navigate('ChosePharmacyList')}>
+                                                    <Text style={{ fontFamily: 'OpenSans', fontSize: 10, color: '#ff4e42' }}>change Store</Text>
+                                                </TouchableOpacity>
+                                            </Col>
+                                        </Row>
+                                        <Text style={{ fontFamily: 'OpenSans', fontSize: 12, fontWeight: '300', marginTop: 5 }}>{pharmacyInfo.full_name}</Text>
+                                        <Text style={{ fontFamily: 'OpenSans', fontSize: 12, marginTop: 2, color: '#6a6a6a' }}>{getAddress(pharmacyInfo.location)}</Text>
+                                        <Text style={{ fontFamily: 'OpenSans', fontSize: 12, marginTop: 2 }}>{'Mobile -' + (pharmacyInfo.mobile_no || 'Nil')}</Text>
+                                    </View> :
+
                                     null}
 
 
@@ -550,7 +556,7 @@ class MedicineCheckout extends Component {
                                             </Col>
                                             <Col size={5} style={{ alignItems: 'flex-end', justifyContent: 'flex-end' }}>
 
-                                                <Text style={{ fontFamily: 'OpenSans', fontSize: 10, color: '#8dc63f', textAlign: 'right' }}>{this.state.medicineDetails[0].prescription_ref_no} </Text>
+                                                <Text style={{ fontFamily: 'OpenSans', fontSize: 10, color: '#8dc63f', textAlign: 'right' }}>{prescriptionDetails !== null ? prescriptionDetails.prescription_ref_no : 'N/A'} </Text>
 
                                             </Col>
                                         </Row>}

@@ -7,7 +7,7 @@ export async function getSuggestionMedicines(keyword, data, isLoading = true) {
   try {
     let endPoint = 'products/search?s=' + keyword;
     let response = await inventoryGetService(endPoint);
-    console.log(JSON.stringify(response))
+
     let respData = response.data;
     return respData;
   } catch (e) {
@@ -17,12 +17,16 @@ export async function getSuggestionMedicines(keyword, data, isLoading = true) {
     }
   }
 }
-export async function getMedicinesSearch(keyword, data, isLoading = true) {
+export async function getMedicinesSearchList(keyword, pagination, isLoading = true) {
   try {
-    let endPoint = 'products/search?s=' + keyword;
+    console.log(typeof keyword)
+    let endPoint = '/products/search/pagination?s=' + keyword + '&p=' + 0 + '&c=' + 5;
+    console.log(endPoint);
+
     let response = await inventoryGetService(endPoint);
-    console.log(JSON.stringify(response))
-    let respData = response.data;
+    console.log('hi==================')
+    console.log(JSON.stringify(response.data))
+    let respData = response.data.content;
     return respData;
   } catch (e) {
     return {
@@ -81,14 +85,32 @@ export async function getSearchedMedicines(keyword, isLoading = true) {
 
 /* Medicine Order List */
 
-export async function getMedicineOrderList(userId) {
+export async function getMedicineOrderList(userId, pagination, count) {
   try {
 
-    let endPoint = `transaction/order/user/${userId}?p=${1}&c=${5}`;
+    let endPoint = `transaction/order/user/${userId}?p=${pagination}&c=${10}`;
     let response = await inventoryGetService(endPoint);
     console.log('req========================')
-    let respData = response.data
-   
+    let respData = response.data.content
+
+    return respData;
+  } catch (e) {
+    console.log('hi======')
+    console.log(e)
+    return {
+      message: 'exception' + e,
+      success: false
+    }
+  }
+}
+export async function getAvailableStockForListOfProducts(productIds) {
+  try {
+
+    let endPoint = `/products/available-stocks?ids=${productIds}`;
+    let response = await inventoryGetService(endPoint);
+    console.log('req========================')
+    let respData = response.data.content
+
     return respData;
   } catch (e) {
     console.log('hi======')
@@ -104,14 +126,14 @@ export async function getMedicineOrderList(userId) {
 
 /* Medicine Order details */
 
-export async function getMedicineOrderDetails(order_id, userId) {
+export async function getMedicineOrderDetails(orderId) {
   try {
 
-    let endPoint = '/medicine_orders/order/' + order_id + '/user/' + userId;
+    let endPoint = `/transaction/order/${orderId}`;
     console.log(endPoint);
-    let response = await getService(endPoint);
+    let response = await inventoryGetService(endPoint);
     console.log(response);
-    let respData = response.data.content;
+    let respData = response.data;
     return respData;
   } catch (e) {
     return {
@@ -143,20 +165,6 @@ export async function getpharmacy(pharmacy_id) {
 
 
 
-export async function getMedicinesSearchList(data, isLoading = true) {
-  try {
-    let endPoint = '/medicines/search/healthCareProducts';
-    let response = await postService(endPoint, data);
-
-    let respData = response.data;
-    return respData;
-  } catch (e) {
-    return {
-      message: 'exception' + e,
-      success: false
-    }
-  }
-}
 export async function getMedicinesSearchListByPharmacyId(pharmacyId, isLoading = true) {
   try {
     let endPoint = `/products/pharmacy/${pharmacyId}?p=${1}&c=${10}`;

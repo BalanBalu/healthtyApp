@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import { Container, Content, Toast, Text, Title, Header, Button, H3, Item, Form, List, ListItem, Card, Input, Left, Right, Thumbnail, Body, Icon, View, Footer, FooterTab } from 'native-base';
 import { Col, Row, Grid } from 'react-native-easy-grid';
 import { connect } from 'react-redux'
-import { getPopularMedicine, getSearchedMedicines, getNearOrOrderPharmacy ,getSuggestionMedicines} from '../../../providers/pharmacy/pharmacy.action'
+import { getPopularMedicine, getSearchedMedicines, getNearOrOrderPharmacy, getSuggestionMedicines } from '../../../providers/pharmacy/pharmacy.action'
 import { StyleSheet, Image, FlatList, TouchableOpacity, AsyncStorage, ScrollView, Dimensions } from 'react-native';
 import { NavigationEvents } from 'react-navigation';
 import { medicineRateAfterOffer, setCartItemCountOnNavigation, renderMedicineImage, getMedicineName, quantityPriceSort } from '../CommomPharmacy';
@@ -77,12 +77,12 @@ class PharmacyHome extends Component {
         try {
             userId = await AsyncStorage.getItem('userId')
             const { bookappointment: { locationCordinates } } = this.props;
-            locationData = {
+            let locationData = {
                 "coordinates": locationCordinates,
                 "maxDistance": PHARMACY_MAX_DISTANCE_TO_COVER
             }
             let result = await getSuggestionMedicines('dolo')
-          
+
             // getPopularMedicine(userId, JSON.stringify(locationData));
 
             if (result) {
@@ -133,8 +133,8 @@ class PharmacyHome extends Component {
     }
     async selectedItems(data, selected, index) {
         try {
-            let temp=data;
-           
+            let temp = data;
+
             temp.selectedType = selected;
 
             if (index !== undefined) {
@@ -313,7 +313,7 @@ class PharmacyHome extends Component {
                                         renderItem={({ item }) =>
                                             <Row onPress={() =>
                                                 this.props.navigation.navigate('MedicineInfo', {
-                                                    medicineId: item.id,     
+                                                    medicineId: item.id,
                                                     medicineData: item
                                                 })}>
                                                 <Col size={5} style={{ backgroundColor: '#fff', marginLeft: 5, height: '100%' }}>
@@ -323,7 +323,7 @@ class PharmacyHome extends Component {
                                                             <Image source={renderMedicineImage(item.medInfo)}
                                                                 style={{ height: 80, width: 70, marginLeft: 5, marginTop: 2.5 }} />
                                                         </Col>
-                                                        {item.discountedValue!== undefined ?
+                                                        {item.discount !== undefined && item.discount !== null ?
                                                             <Col size={1} style={{ position: 'absolute', alignContent: 'flex-end', marginTop: -10, marginLeft: 120 }}>
                                                                 <Image
                                                                     source={require('../../../../../assets/images/Badge.png')}
@@ -331,8 +331,8 @@ class PharmacyHome extends Component {
                                                                         width: 45, height: 45, alignItems: 'flex-end'
                                                                     }}
                                                                 />
-                                                                <Text style={styles.offerText}>{item.discountedValue}</Text>
-                                                                <Text style={styles.offText}>{item.discount_type === 'PERCENTAGE' ? "OFF" : "Rs"}</Text>
+                                                                <Text style={styles.offerText}>{medicineRateAfterOffer(item)}</Text>
+                                                                <Text style={styles.offText}>{item.discount.type === 'PERCENTAGE' ? "OFF" : "Rs"}</Text>
                                                             </Col> : null}
                                                     </Row>
 
@@ -344,9 +344,9 @@ class PharmacyHome extends Component {
                                                         <Text style={styles.hosname}>{item.pharmacyInfo.name}</Text>
                                                     </Row> */}
                                                     <Row style={{ alignSelf: 'center', marginTop: 2 }}>
-                                                        <Text style={item.discountedValue!== undefined ? styles.oldRupees : styles.newRupees}>₹{item.price}</Text>
-                                                        {item.discountedValue !== undefined ?
-                                                            <Text style={styles.newRupees}>₹{item.discountedValue}</Text> : null}
+                                                        <Text style={item.discount !== undefined && item.discount !== null ? styles.oldRupees : styles.newRupees}>₹{item.price}</Text>
+                                                        {item.discount !== undefined && item.discount !== null ?
+                                                            <Text style={styles.newRupees}>₹{medicineRateAfterOffer(item)}</Text> : null}
                                                     </Row>
 
                                                     <Row style={{ marginBottom: 5, marginTop: 5, alignSelf: 'center' }}>

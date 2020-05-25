@@ -7,22 +7,22 @@ export function medicineRateAfterOffer(item) {
 
 
   let amount = ''//for binding purpose used empty string
-  if (item === undefined) {
+  if (item === undefined || item === null) {
     return amount
   }
-  if (item.discount_value === undefined) {
+  if (item.discount === undefined || item.discount === null) {
 
     amount = parseInt(item.price)
     return amount
   }
-  if (item.discount_type) {
+  if (item.discount.type) {
 
-    if (item.discount_type === 'PERCENTAGE') {
-      let divided = (parseInt(item.discount_value) / 100) * parseInt(item.price)
+    if (item.discount.type === 'Percentage') {
+      let divided = (parseInt(item.discount.value) / 100) * parseInt(item.price)
       amount = parseInt(item.price) - divided
       return amount
-    } else if (item.discount_type === 'AMOUNT') {
-      amount = parseInt(item.price) - parseInt(item.discount_value);
+    } else if (item.discount.type === 'Amount') {
+      amount = parseInt(item.price) - parseInt(item.discount.value);
       return amount
     }
   }
@@ -114,7 +114,7 @@ export function renderPrescriptionImageAnimation(data) {
   return (source)
 }
 export function renderPharmacyImage(data) {
-  let source = require('../../../../assets/images/apollopharmacy.jpeg')
+  let source = require('../../../../assets/images/Logo.png')
   if (data) {
     source = { uri: data.imageURL }
   }
@@ -222,7 +222,24 @@ export function getMedicineWeightUnit(weight, unit) {
   }
 }
 
+export function quantityPriceSort(data) {
+  data.forEach(element => {
+    if (element.medPharDetailInfo) {
+      if (element.medPharDetailInfo.variations) {
 
+        element.medPharDetailInfo.variations.sort(function (firstVarlue, secandValue) {
+
+
+          if (firstVarlue.total_quantity === 0) return 1;
+          else if (secandValue.total_quantity === 0) return -1;
+          else return firstVarlue.price - secandValue.price;
+        });
+
+      }
+    }
+  })
+  return data
+}
 
 
 export const statusBar = {
@@ -252,38 +269,45 @@ export const statusBar = {
     color: 'red'
   },
   "OUT_FOR_DELIVERY":
-    { status: 'Order is on the way',
-     checked: true ,
-    color:'green'},
-  "READY_FOR_DELIVERY":
-    { status: 'The order is ready for delivery',
-     checked: true,
-     color:'green'
-     },
-  "DELIVERED":
-    { status: 'The order is delivered', 
+  {
+    status: 'Order is on the way',
     checked: true,
-    color:'green' },
+    color: 'green'
+  },
+  "READY_FOR_DELIVERY":
+  {
+    status: 'The order is ready for delivery',
+    checked: true,
+    color: 'green'
+  },
+  "DELIVERED":
+  {
+    status: 'The order is delivered',
+    checked: true,
+    color: 'green'
+  },
   "null":
-    { status: 'status  mismatching',
-     checked: true ,
-     color:'red'
-    },
+  {
+    status: 'status  mismatching',
+    checked: true,
+    color: 'red'
+  },
   "FAILED":
-    { status: 'order is failed try again',
-     checked: true ,
-     color:'green'
-    },
+  {
+    status: 'order is failed try again',
+    checked: true,
+    color: 'green'
+  },
 }
 
 
 export function getName(data) {
   let name = 'unKnown'
   if (data) {
-      if (data.first_name != undefined || data.last_name != undefined) {
-          name = `${data.first_name || ''} ${data.last_name || ''}`
+    if (data.first_name != undefined || data.last_name != undefined) {
+      name = `${data.first_name || ''} ${data.last_name || ''}`
 
-      }
+    }
   }
   return name
 

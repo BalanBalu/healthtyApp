@@ -7,7 +7,7 @@ import { Col, Row, Grid } from 'react-native-easy-grid';
 import { StyleSheet, Image, TouchableOpacity, AsyncStorage, FlatList, TouchableHighlight, Modal } from 'react-native';
 import Spinner from "../../../../components/Spinner";
 import { NavigationEvents } from 'react-navigation';
-import { getMedicinesSearchList, getMedicinesSearchListByPharmacyId, getSuggestionMedicines,getAllPromotions } from '../../../providers/pharmacy/pharmacy.action'
+import { getMedicinesSearchList, getMedicinesSearchListByPharmacyId } from '../../../providers/pharmacy/pharmacy.action'
 import { medicineRateAfterOffer, setCartItemCountOnNavigation, getMedicineName, renderMedicineImage } from '../CommomPharmacy'
 import { AddToCard } from '../AddToCardBuyNow/AddToCard'
 import { connect } from 'react-redux'
@@ -22,12 +22,13 @@ class MedicineSearchList extends Component {
             isBuyNow: false,
             selectedMedcine: {},
             medicineName: '',
+            pagination: 1,
         }
     }
     async  componentDidMount() {
         this.setState({ isLoading: true })
         let medicineName = this.props.navigation.getParam('medicineName') || ''
-        
+
         const navigationByPharmacySelect = this.props.navigation.getParam('byPharmacy') || false;
         let userId = await AsyncStorage.getItem('userId')
         if (userId) {
@@ -40,9 +41,9 @@ class MedicineSearchList extends Component {
             }
         }
         if (navigationByPharmacySelect === true) {
-          
+
             let pharmacyInfo = this.props.navigation.getParam('pharmacyInfo') || null;
-            
+
             await this.medicineSearchListByPharmacyId(pharmacyInfo.pharmacy_id)
         }
         else {
@@ -54,11 +55,11 @@ class MedicineSearchList extends Component {
     MedicineSearchList = async (enteredText) => {
         try {
 
-            let medicineResultData = await getSuggestionMedicines(enteredText);
+            let medicineResultData = await getMedicinesSearchList(enteredText, this.state.pagination);
             console.log('MedicineSearchList')
             console.log(JSON.stringify(medicineResultData))
             if (medicineResultData) {
-           
+
 
                 this.setState({
                     data: medicineResultData,
@@ -77,10 +78,10 @@ class MedicineSearchList extends Component {
     medicineSearchListByPharmacyId = async (pharmacyId) => {
         try {
             let medicineResultData = await getMedicinesSearchListByPharmacyId(pharmacyId);
-         
-            console.log(JSON.stringify(medicineResultData))
+
+            // console.log(JSON.stringify(medicineResultData))
             if (medicineResultData) {
-                
+
 
                 this.setState({
                     data: medicineResultData
@@ -97,8 +98,8 @@ class MedicineSearchList extends Component {
     }
     async selectedItems(data, selected, index) {
         try {
-          let temp=data;
-          temp.selectedType=selected;
+            let temp = data;
+            temp.selectedType = selected;
             if (index !== undefined) {
                 let cardItems = this.state.cartItems;
                 temp.userAddedMedicineQuantity = cardItems[index].userAddedMedicineQuantity
@@ -223,13 +224,13 @@ class MedicineSearchList extends Component {
                                                     <Row onPress={() =>
                                                         this.props.navigation.navigate('MedicineInfo', {
                                                             medicineId: item.id,
-                                                          
+
                                                             medicineData: item
                                                         })
                                                     }>
 
                                                         <Col size={4}>
-                                                            <TouchableOpacity onPress={() => this.props.navigation.navigate("ImageView", { passImage: renderMedicineImage(item.medInfo), title: item.description})}>
+                                                            <TouchableOpacity onPress={() => this.props.navigation.navigate("ImageView", { passImage: renderMedicineImage(item.medInfo), title: item.description })}>
 
                                                                 <Image source={renderMedicineImage(item.medInfo)}
 
@@ -243,11 +244,11 @@ class MedicineSearchList extends Component {
                                                                 <Text style={{ fontSize: 15, fontFamily: 'OpenSans', color: '#ff4e42', marginTop: -5 }}>Currently Out of stock</Text> :
                                                                 <Row>
                                                                     <Col size={5} style={{ flexDirection: 'row' }}>
-                                                                        <Text style={{ fontSize: 8, marginLeft: -3,marginTop:5, color: "#ff4e42" }}>{'MRP'}</Text>
-                                                                        {item.discountedValue !== undefined ?
+                                                                        <Text style={{ fontSize: 8, marginLeft: -3, marginTop: 5, color: "#ff4e42" }}>{'MRP'}</Text>
+                                                                        {item.discount !== undefined && item.discount !== null ?
                                                                             <Row>
                                                                                 <Text style={{ fontSize: 8, marginLeft: 1.5, marginTop: 5, color: "#ff4e42", textDecorationLine: 'line-through', textDecorationStyle: 'solid', marginLeft: 5 }}>₹ {item.price || ''}</Text>
-                                                                                <Text style={{ fontSize: 13, marginTop: 5, marginLeft: 2.5, color: "#8dc63f", marginLeft: 5 }}>₹ {item.discountedValue}</Text>
+                                                                                <Text style={{ fontSize: 13, marginTop: 5, marginLeft: 2.5, color: "#8dc63f", marginLeft: 5 }}>₹ {medicineRateAfterOffer(item)}</Text>
                                                                             </Row> :
                                                                             <Text style={{ fontSize: 13, marginTop: 5, marginLeft: 2.5, color: "#8dc63f", marginLeft: 5 }}>₹ {item.price}</Text>
                                                                         }
@@ -268,7 +269,7 @@ class MedicineSearchList extends Component {
                                                                         <Col size={3} style={{ height: 20, marginLeft: 4 }}>
                                                                             <Row>
                                                                                 <TouchableOpacity style={{ borderColor: '#4e85e9', marginLeft: 1.5, borderWidth: 1, borderRadius: 2.5, marginTop: -12.5, height: 25, width: 65, paddingBottom: 5, paddingTop: 2 }}
-                                                                                    onPress={() => this.selectedItems(item, 'Add to Cart', cartItems.findIndex(ele => ele.id === item.id ))} >
+                                                                                    onPress={() => this.selectedItems(item, 'Add to Cart', cartItems.findIndex(ele => ele.id === item.id))} >
                                                                                     {/* onPress={() =>  this.props.navigation.navigate("PharmacyCart")} > */}
                                                                                     <Row style={{ alignItems: 'center' }}>
                                                                                         <Text>{item.medicine_id}</Text>

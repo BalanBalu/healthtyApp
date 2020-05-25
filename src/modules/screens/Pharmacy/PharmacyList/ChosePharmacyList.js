@@ -1,9 +1,11 @@
 import React, { Component } from 'react';
-import { Container, Content, Text,  Item, ListItem, Input,  Icon, Footer, FooterTab, 
- 
-   View, CheckBox as CheckedBox,
-    Badge, 
-    Toast } from 'native-base';
+import {
+    Container, Content, Text, Item, ListItem, Input, Icon, Footer, FooterTab,
+
+    View, CheckBox as CheckedBox,
+    Badge,
+    Toast
+} from 'native-base';
 import { Col, Row, Grid } from 'react-native-easy-grid';
 import { StyleSheet, Image, AsyncStorage, TextInput, FlatList, TouchableOpacity, Platform } from 'react-native';
 import { getMedicinesSearchList, getNearOrOrderPharmacy } from '../../../providers/pharmacy/pharmacy.action';
@@ -25,7 +27,7 @@ class ChosePharmacyList extends Component {
         }
     }
     componentDidMount() {
-      let   prescriptionDetails = this.props.navigation.getParam('prescriptionDetails') || null;
+        let prescriptionDetails = this.props.navigation.getParam('prescriptionDetails') || null;
         this.setState({ prescriptionDetails })
         this.getNearByPharmacyList()
     }
@@ -90,7 +92,7 @@ class ChosePharmacyList extends Component {
 
             // temp.push(value)
             this.props.navigation.navigate("MedicineCheckout", {
-                pharmacyInfo: value, isPrescription: true,hasChosePharmacyReload:true
+                pharmacyInfo: value, isPrescription: true, hasChosePharmacyReload: true
             })
         }
     }
@@ -139,7 +141,7 @@ class ChosePharmacyList extends Component {
         const nearPharmacy = [{ name: 'Apollo Pharmacy', km: '2.30KM', address: 'No.28,Kamarajar Nagar,4th cross street, Ambattur, Chennai - 600051.', }, { name: 'Medplus', km: '5.30KM', address: 'No.28,Kamarajar Nagar,4th cross street, Ambattur, Chennai - 600051.', }, { name: 'Medplus', km: '5.30KM', address: 'No.28,Kamarajar Nagar,4th cross street, Ambattur, Chennai - 600051.', }, { name: 'Medplus', km: '5.30KM', address: 'No.28,Kamarajar Nagar,4th cross street, Ambattur, Chennai - 600051.', }]
 
         return (
-           
+
             <Container style={{ backgroundColor: '#f2f2f2' }}>
                 <Content style={{ padding: 10 }}>
                     {isLoading == true ?
@@ -191,7 +193,7 @@ class ChosePharmacyList extends Component {
                                                         <Row style={{ alignItems: 'flex-end', justifyContent: 'flex-end', marginTop: 5 }}>
                                                             {selectedPharmacy === index ?
                                                                 <View>
-                                                                    <CheckedBox 
+                                                                    <CheckedBox
                                                                         checked={true}
                                                                         onPress={() => this.pharmacySelected(index)}
                                                                     />
