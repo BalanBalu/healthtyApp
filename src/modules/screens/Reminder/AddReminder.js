@@ -2,11 +2,11 @@ import React, { Component } from 'react';
 import { Container, Content, View, Text, Item, Card, Spinner, Picker, Icon, Radio, Row, Col, Form, Button, Input, Grid, Toast, Switch } from 'native-base';
 import { StyleSheet, TextInput, TouchableOpacity, ScrollView, Image, AsyncStorage, Right, Dimensions } from 'react-native'
 import { FlatList } from 'react-native-gesture-handler';
-
+import { connect } from 'react-redux'
 import DateTimePicker from 'react-native-modal-datetime-picker';
 import { formatDate } from "../../../setup/helpers";
 import moment from 'moment';
-import { addReminderdata, getAllMedicineDataBySuggestion, addReminderOnProp, sheudleNotificationForAddReminders } from '../../providers/reminder/reminder.action.js';
+import { addReminderdata, getAllMedicineDataBySuggestion, addReminderOnProp, sheudleNotificationForAddReminders,getReminderData} from '../../providers/reminder/reminder.action.js';
 import { IS_ANDROID, IS_IOS } from '../../../setup/config';
 const POSSIBLE_PAGE_CONTENT = {
   MEDICINE_CONTENT: 'MEDCINE_CONTENT',
@@ -55,22 +55,17 @@ class AddReminder extends Component {
       setShowSuggestions: false,
       refreshCount: 1,
       currentTime: moment().format('h:mm a').toUpperCase()
-
-
-
     }
     debugger
     this.callmedicinesearchService = debounce(this.callmedicinesearchService, 500);
-
-
   }
-
-
-
   componentDidMount() {
-
+    debugger
+    const { reminder: { reminderResponse: { data, } } } = this.props;
+   // console.log('data props from compom did mount', JSON.stringify(data));
+    
+    debugger
   }
-
   SearchKeyWordFunction = async (enteredText) => {
     if (enteredText == '') {
       this.setState({ medicineSugesstionArray: null, medicine_name: enteredText })
@@ -79,10 +74,7 @@ class AddReminder extends Component {
       this.callmedicinesearchService(enteredText);
     }
   }
-
-
   callmedicinesearchService = async (enteredText) => {
-
     let medicineResultData = await getAllMedicineDataBySuggestion(enteredText);
     // console.log('medicinedone+++++++++++++++++' + JSON.stringify(medicineResultData))
     if (medicineResultData.success) {
@@ -92,7 +84,6 @@ class AddReminder extends Component {
         setShowSuggestions: true
       });
     } else {
-
       this.setState({
         medicineSugesstionArray: [],
         searchValue: enteredText,
@@ -100,20 +91,41 @@ class AddReminder extends Component {
       });
     }
   }
-
   showTimePicker = () => {
     this.setState({ isTimePickerVisible: true })
   }
-
   hideTimePicker = () => {
     this.setState({ isTimePickerVisible: false })
   }
-
   handleTimePicker = async (date) => {
     try {
-      await this.setState({ timePlaceholder: true, isTimePickerVisible: false, medicine_take_times: date })
-      this.insertReminderData();
-      console.log(this.state.currentTime)
+      debugger
+      const { reminder: { reminderResponse: { data, } } } = this.props;
+     debugger
+let formateByPickedTime=formatDate(date,"hh:mm a");
+//console.log('propssssss  data==[====>',JSON.stringify(data))
+           
+debugger
+data.map(item=>{
+  debugger
+  let checkGivenTime=item.medicine_take_times.some(ele => formatDate(ele.medicine_take_time, 'hh:mm a') === formatDate(date, 'hh:mm a')&& item.medicine_name==this.state.medicine_name)
+  debugger
+  if(checkGivenTime){
+  this.setState({ isTimePickerVisible: true })
+  Toast.show({
+    text: 'Time already exists',
+    type: 'dangers',
+    duration: 3000,
+  })
+  return false;
+}
+
+})
+this.setState({ medicine_take_times: date,timePlaceholder: true, isTimePickerVisible: false})
+this.insertReminderData();
+
+        
+      debugger
     } catch (error) {
       console.log(error);
     }
@@ -223,6 +235,7 @@ class AddReminder extends Component {
           duration: 3000
         });
       }
+
       else {
         debugger
         let userId = await AsyncStorage.getItem('userId');
@@ -654,7 +667,15 @@ class AddReminder extends Component {
   }
 }
 
-export default AddReminder
+
+
+function homeState(state) {
+
+  return {
+    reminder: state.reminder
+  }
+}
+export default connect(homeState)(AddReminder)
 
 const styles = StyleSheet.create({
 
