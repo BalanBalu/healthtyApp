@@ -306,6 +306,7 @@ class MedicineSearchList extends Component {
                     }
                     {this.state.isBuyNow == true ?
                         <AddToCard
+                            navigation={this.props.navigation}
                             data={this.state.selectedMedcine}
                             popupVisible={(data) => this.getvisble(data)}
                         />
