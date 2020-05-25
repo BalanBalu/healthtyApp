@@ -6,7 +6,7 @@ import { connect } from 'react-redux'
 import { StyleSheet, Image, View, TouchableOpacity, AsyncStorage, FlatList, ImageBackground, Alert, Linking } from 'react-native';
 
 import { getReferalPoints, getCurrentVersion } from '../../providers/profile/profile.action';
-import { catagries, getSpecialistDataSuggestions } from '../../providers/catagries/catagries.actions';
+import { catagries } from '../../providers/catagries/catagries.actions';
 import { MAP_BOX_PUBLIC_TOKEN, IS_ANDROID, MAX_DISTANCE_TO_COVER, CURRENT_PRODUCT_VERSION_CODE } from '../../../setup/config';
 import MapboxGL from '@react-native-mapbox-gl/maps';
 import { NavigationEvents } from 'react-navigation'
@@ -21,7 +21,7 @@ const LabTestImg = require('../../../../assets/images/lab-test.png');
 import OfflineNotice from '../../../components/offlineNotice';
 import { fetchUserMarkedAsReadedNotification } from '../../providers/notification/notification.actions';
 import ConnectyCube from 'react-native-connectycube';
-import { CallService, CallKeepService  } from '../VideoConsulation/services';
+import { CallService, CallKeepService } from '../VideoConsulation/services';
 MapboxGL.setAccessToken(MAP_BOX_PUBLIC_TOKEN);
 import NotifService from '../../../setup/NotifService';
 import { getReminderData } from '../../providers/reminder/reminder.action.js';
@@ -29,17 +29,6 @@ import FastImage from 'react-native-fast-image'
 import { translate } from '../../../setup/translator.helper';
 import { authorizeConnectyCube, setUserLoggedIn } from '../VideoConsulation/services/video-consulting-service';
 
-
-const debounce = (fun, delay) => {
-    let timer = null;
-    return function (...args) {
-        const context = this;
-        timer && clearTimeout(timer);
-        timer = setTimeout(() => {
-            fun.apply(context, args);
-        }, delay);
-    };
-}
 
 class Home extends Component {
 
@@ -50,13 +39,8 @@ class Home extends Component {
             data: [],
             isLoading: false,
             catagary: [],
-            searchValue: null,
-            totalSpecialistDataArry: [],
-            visibleClearIcon: '',
             categryCount: 0
         };
-        this.callSuggestionService = debounce(this.callSuggestionService, 500);
-      
     }
 
     navigetToCategories() {
@@ -275,53 +259,7 @@ class Home extends Component {
         }]
         this.props.navigation.navigate('Doctor List', { resultData: serachInputvalues })
     }
-    count = 0;
-    callSuggestionService = async (enteredText) => {
-        console.log('clicked :' + this.count++)
-        const userId = await AsyncStorage.getItem('userId');
-        const { bookappointment: { locationCordinates } } = this.props;
-        locationData = {
-            "coordinates": locationCordinates,
-            "maxDistance": MAX_DISTANCE_TO_COVER
-        }
 
-        let specialistResultData = await getSpecialistDataSuggestions(userId, enteredText, locationData);
-        // console.log('specialistResultData.data' + JSON.stringify(specialistResultData.data))
-        if (specialistResultData.success) {
-            this.setState({
-                totalSpecialistDataArry: specialistResultData.data,
-                searchValue: enteredText,
-            });
-        } else {
-
-            this.setState({
-                totalSpecialistDataArry: [],
-                searchValue: enteredText
-            });
-        }
-    }
-    /* Filter the Specialist and Services on Search Box  */
-
-    SearchKeyWordFunction = async (enteredText) => {
-        await this.setState({ visibleClearIcon: enteredText })
-        this.callSuggestionService(enteredText);  // Call the Suggestion API with Debounce method
-    }
-
-    clearTotalText = () => {
-        this.setState({ visibleClearIcon: null, totalSpecialistDataArry: null, searchValue: null })
-    };
-
-    itemSaperatedByListView = () => {
-        return (
-            <View
-                style={{
-                    padding: 4,
-                    borderBottomColor: 'gray',
-                    borderBottomWidth: 0.5
-                }}
-            />
-        );
-    };
     getMarkedAsReadedNotification = async (userId) => {
         try {
             await fetchUserMarkedAsReadedNotification(userId);
@@ -341,7 +279,7 @@ class Home extends Component {
                 ConnectyCube.videochat.onCallListener = this._onCallListener;
                 ConnectyCube.videochat.onRemoteStreamListener = this._onRemoteStreamListener;
                 ConnectyCube.videochat.onStopCallListener = this._onStopCallListener;
-                ConnectyCube.videochat.onRejectCallListener =  this._onRejectCallListener;
+                ConnectyCube.videochat.onRejectCallListener = this._onRejectCallListener;
                 this.getMarkedAsReadedNotification(userId);
             }
         } catch (e) {
@@ -352,22 +290,22 @@ class Home extends Component {
     /*      
         Video Calling Service             
     */
-   async _setUpListeners() {
+    async _setUpListeners() {
         let userId = await AsyncStorage.getItem('userId')
-        const { chat : { loggedIntoConnectyCube }} = this.props;
-        if (userId && loggedIntoConnectyCube === false ) {
-           this.authorized = await authorizeConnectyCube();
-           console.log('loggedIntoConnectyCube '+ loggedIntoConnectyCube + ' Authorized: ' + this.authorized);
-           if(this.authorized) {
-                 ConnectyCube.videochat.onCallListener = this._onCallListener;
-                 ConnectyCube.videochat.onRemoteStreamListener = this._onRemoteStreamListener;
-                 ConnectyCube.videochat.onStopCallListener = this._onStopCallListener;
-                 ConnectyCube.videochat.onRejectCallListener =  this._onRejectCallListener;
-               setTimeout(() => {
+        const { chat: { loggedIntoConnectyCube } } = this.props;
+        if (userId && loggedIntoConnectyCube === false) {
+            this.authorized = await authorizeConnectyCube();
+            console.log('loggedIntoConnectyCube ' + loggedIntoConnectyCube + ' Authorized: ' + this.authorized);
+            if (this.authorized) {
+                ConnectyCube.videochat.onCallListener = this._onCallListener;
+                ConnectyCube.videochat.onRemoteStreamListener = this._onRemoteStreamListener;
+                ConnectyCube.videochat.onStopCallListener = this._onStopCallListener;
+                ConnectyCube.videochat.onRejectCallListener = this._onRejectCallListener;
+                setTimeout(() => {
                     setUserLoggedIn();
-               }, 5000)
-                
-           }
+                }, 5000)
+
+            }
         }
     }
     _onCallListener = (session, extension) => {
@@ -389,50 +327,49 @@ class Home extends Component {
     };
     _onStopCallListener = (session, userId, extension) => {
         const isStoppedByInitiator = session.initiatorID === userId;
-    
+
         CallService.processOnStopCallListener(userId, isStoppedByInitiator)
-          .then(() => {
-            if (isStoppedByInitiator) {
-                  store.dispatch({
-                    type: SET_VIDEO_SESSION,
-                    data: null
-                  });
-                  CallService.setSession(null);
-                  CallService.setExtention(null);
-                  store.dispatch({
+            .then(() => {
+                if (isStoppedByInitiator) {
+                    store.dispatch({
+                        type: SET_VIDEO_SESSION,
+                        data: null
+                    });
+                    CallService.setSession(null);
+                    CallService.setExtention(null);
+                    store.dispatch({
+                        type: RESET_INCOMING_VIDEO_CALL,
+                    })
+                }
+            })
+            .catch(
+                store.dispatch({
                     type: RESET_INCOMING_VIDEO_CALL,
-                  })
-            }
-          })
-          .catch(
-            store.dispatch({
-                type: RESET_INCOMING_VIDEO_CALL,
-          }));
-      };
+                }));
+    };
     _onRejectCallListener = (session, userId, extension) => {
         CallService.processOnRejectCallListener(session, userId, extension)
-          .then(() => {
-            store.dispatch({
-                type: SET_VIDEO_SESSION,
-                data: null
-            });
-            CallService.setSession(null);
-            CallService.setExtention(null);
-          })
-          .catch(store.dispatch({
-            type: RESET_INCOMING_VIDEO_CALL,
-          }));
-      };
-    
+            .then(() => {
+                store.dispatch({
+                    type: SET_VIDEO_SESSION,
+                    data: null
+                });
+                CallService.setSession(null);
+                CallService.setExtention(null);
+            })
+            .catch(store.dispatch({
+                type: RESET_INCOMING_VIDEO_CALL,
+            }));
+    };
+
     showInomingCallModal = (session, extension) => {
         CallService.setSession(session);
         CallService.setExtention(extension);
-        CallKeepService.displayIncomingCall('12345', 'Doctor' );
+        CallKeepService.displayIncomingCall('12345', 'Doctor');
     };
-    
+
     render() {
-        const { fromAppointment } = this.state;
-        const { bookappointment: { patientSearchLocationName, locationCordinates, isSearchByCurrentLocation, locationUpdatedCount }, navigation } = this.props;
+        const { bookappointment: { patientSearchLocationName, isSearchByCurrentLocation, locationUpdatedCount }, navigation } = this.props;
 
         if (locationUpdatedCount !== this.locationUpdatedCount) {
             navigation.setParams({
@@ -452,81 +389,28 @@ class Home extends Component {
                     <NavigationEvents
                         onWillFocus={payload => { this.backNavigation(payload) }}
                     />
-
-                    <Row style={styles.SearchRow}>
-                        <Col size={0.9} style={styles.SearchStyle}>
-                            <TouchableOpacity style={{ justifyContent: 'center' }}>
-                                <Icon name="ios-search" style={{ color: '#fff', fontSize: 20, padding: 2 }} />
-                            </TouchableOpacity>
-                        </Col>
-                        <Col size={8.1} style={{ justifyContent: 'center', }}>
-                            <Input
-                                placeholder="Search for Symptoms/Services,etc"
-                                style={styles.inputfield}
-                                placeholderTextColor="#e2e2e2"
-                                keyboardType={'email-address'}
-                                autoFocus={fromAppointment}
-                                value={this.state.visibleClearIcon}
-                                onChangeText={enteredText => this.SearchKeyWordFunction(enteredText)}
-                                underlineColorAndroid="transparent"
-                                blurOnSubmit={false}
-                            />
-                        </Col>
-                        <Col size={1.0} style={{ justifyContent: 'center' }}>
-                            {this.state.visibleClearIcon != '' ?
-                                <Button transparent onPress={() => this.clearTotalText()} style={{ justifyContent: 'flex-start', marginLeft: -10 }}>
-                                    <Icon name="ios-close" style={{ fontSize: 25, color: 'gray' }} />
-                                </Button>
-                                : null}
-                        </Col>
-
-                    </Row>
-
-                    {this.state.searchValue != null ?
-                        <FlatList
-                            data={this.state.totalSpecialistDataArry ? [{ value: 'All Doctors in ' + (isSearchByCurrentLocation === true ? 'Your Location' : patientSearchLocationName), type: ' ' }].concat(this.state.totalSpecialistDataArry) : [{ value: 'All Doctors in ' + (isSearchByCurrentLocation === true ? 'Your Location' : patientSearchLocationName), type: ' ' }]}
-                            extraData={[this.state.searchValue, this.state.totalSpecialistDataArry]}
-                            ItemSeparatorComponent={this.itemSaperatedByListView}
-                            renderItem={({ item, index }) => (
-                                <Row
-                                    onPress={() => {
-                                        let requestData = [{
-                                            type: 'geo',
-                                            value: {
-                                                coordinates: locationCordinates,
-                                                maxDistance: MAX_DISTANCE_TO_COVER
-                                            }
-                                        }]
-                                        if (index !== 0) {
-                                            requestData.push({
-                                                type: item.type,
-                                                value: item.type === 'symptoms' ? [item.value] : item.value
-                                            })
-                                        }
-                                        this.props.navigation.navigate("Doctor List", { resultData: requestData })
-                                    }}
-                                >
-                                    <Col size={7}>
-                                        <Text style={{ marginTop: 2, fontFamily: 'OpenSans', fontSize: 12, color: '#775DA3', paddingLeft: 10, }}>{item.value}</Text>
-                                        {item.address ? <Text style={{ marginTop: 2, fontFamily: 'OpenSans', fontSize: 12, color: '#9c9b9f', paddingLeft: 10, }}>{item.address}</Text> : null}
-
-                                    </Col>
-                                    <Col size={3}>
-                                        <Text uppercase={true} style={{ color: 'gray', marginTop: 2, marginRight: 10, color: '#775DA3', fontSize: 12, fontFamily: 'OpenSans-Bold', paddingLeft: 10, }}>{item.type}</Text>
-                                    </Col>
-                                </Row>
-                            )}
-                            enableEmptySections={true}
-                            style={{ marginTop: 10 }}
-                            keyExtractor={(item, index) => index.toString()}
-                        />
-                        : null}
-
-
+                    <TouchableOpacity onPress={() => this.props.navigation.navigate("RenderSuggestionList")}>
+                        <Row style={styles.SearchRow}>
+                            <Col size={0.9} style={styles.SearchStyle}>
+                                <TouchableOpacity style={{ justifyContent: 'center' }}>
+                                    <Icon name="ios-search" style={{ color: '#fff', fontSize: 20, padding: 2 }} />
+                                </TouchableOpacity>
+                            </Col>
+                            <Col size={8.1} style={{ justifyContent: 'center', }}>
+                                <Input
+                                    placeholder="Search for Symptoms/Services,etc"
+                                    style={styles.inputfield}
+                                    placeholderTextColor="#e2e2e2"
+                                    editable={false}
+                                    underlineColorAndroid="transparent"
+                                />
+                            </Col>
+                        </Row>
+                    </TouchableOpacity>
                     <Grid style={{ flex: 1, marginLeft: 10, marginRight: 20, marginTop: 10 }}>
-                    <Col style={{ width: '33%',}}>
-                            <TouchableOpacity onPress={() => 
-                                 this.props.navigation.navigate("Video and Chat Service")
+                        <Col style={{ width: '33%', }}>
+                            <TouchableOpacity onPress={() =>
+                                this.props.navigation.navigate("Video and Chat Service")
                             }>
                                 <Card style={{ borderRadius: 2, overflow: 'hidden' }}>
                                     <Row style={styles.rowStyle}>
@@ -548,7 +432,7 @@ class Home extends Component {
                             </TouchableOpacity>
                         </Col>
 
-                  
+
                         <Col style={{ width: '33%', marginLeft: 5 }}>
                             <TouchableOpacity onPress={() => this.props.navigation.navigate("Medicines")}>
                                 <Card style={{ borderRadius: 2, overflow: 'hidden' }}>
@@ -562,7 +446,7 @@ class Home extends Component {
                                     </Row>
                                     <Row style={styles.secondRow}>
                                         <Col style={{ width: '100%', }}>
-                                        <Text style={styles.mainText}>{translate('Pharmacy')}</Text>
+                                            <Text style={styles.mainText}>{translate('Pharmacy')}</Text>
                                             <Text style={styles.subText}> Get medicines delivered to home</Text>
                                         </Col>
                                     </Row>
@@ -590,11 +474,11 @@ class Home extends Component {
                                 </Card>
                             </TouchableOpacity>
                         </Col>
-                 
+
                     </Grid>
                     <Grid style={{ flex: 1, marginLeft: 10, marginRight: 14, }}>
                         <Row style={{ marginTop: 5 }}>
-                        <Col size={5}>
+                            <Col size={5}>
                                 <TouchableOpacity onPress={() => this.props.navigation.navigate("Reminder")}>
                                     <Card style={{ padding: 5, borderRadius: 2 }}>
                                         <Row>
@@ -614,7 +498,7 @@ class Home extends Component {
                                 </TouchableOpacity>
                             </Col>
                             <Col size={5} style={{ marginLeft: 5 }}>
-                                <TouchableOpacity onPress={()=> this.props.navigation.navigate('Lab Test')}> 
+                                <TouchableOpacity onPress={() => this.props.navigation.navigate('Lab Test')}>
                                     <Card style={{ padding: 5, borderRadius: 2 }}>
                                         <Row>
                                             <Col size={7.5} style={{ justifyContent: 'center' }}>
