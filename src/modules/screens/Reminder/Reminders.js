@@ -23,7 +23,6 @@ class Reminder extends Component {
 
   constructor(props) {
     super(props)
-    debugger
     this.reminderData = [];
     this.state = {
       data: [],
@@ -34,42 +33,25 @@ class Reminder extends Component {
       currentDate: formatDate(new Date(), 'YYYY-MM-DD'),
       refreshCount: 1,
     }
-    debugger
   }
 
 
   async componentDidMount() {
-    debugger
     const isLoggedIn = await hasLoggedIn(this.props);
     if (!isLoggedIn) {
       this.props.navigation.navigate("login");
       return;
     }
-    debugger
     this.getAllReminderdata()
-    // const { reminder: { reminderResponse: { data, success, message } } } = this.props;
-    // debugger
-    // if (success === false) {
-    //   Toast.show({
-    //     text: message,
-    //     duration: 3000,
-    //     type: 'warning'
-    //   })
-    // } else {
-    //   this.reminderData = data
-    //   this.setState({ data: data });
-    // }
   }
 
   getAllReminderdata = async () => {
     try {
-      debugger
       this.setState({
         isLoading: true
       })
       let userId = await AsyncStorage.getItem('userId');
       let result = await getReminderData(userId);
-      debugger
       if (result.success) {
         this.reminderData = result.data;
 
@@ -77,8 +59,6 @@ class Reminder extends Component {
         //  this.setState({ data: result.data })
       }
       return result.data;
-      debugger
-      // NotifService.scheduleNotif('You have a Medince Reminder', 'You have to Take the Medicine at this time', new Date());
     } catch (e) {
       console.log(e);
     } finally {
@@ -88,11 +68,9 @@ class Reminder extends Component {
 
   setCalenderStripDatesAndData = (data1) => {
 
-    debugger
     let date = new Date(moment(data1).startOf('d').toISOString()).getTime();
     let selectedDate = formatDate(data1, 'YYYY-MM-DD');
     const reminderDataBySelectedDate = this.reminderData.filter(ele => {
-      debugger
       let startDate = new Date(ele.medicine_take_start_date).getTime();
       let endDate;
       if (ele.reminder_type === 'onlyonce') {
@@ -100,23 +78,19 @@ class Reminder extends Component {
         endDateTemp.setHours(23);
         endDateTemp.setMinutes(59);
         endDate = new Date(endDateTemp).getTime();
-        debugger
       } else {
         endDate = new Date(ele.medicine_take_end_date).getTime();
       }
       if ((date <= endDate && date >= startDate && ele.active == true)) {
         return true;
       }
-      debugger
     });
-    debugger
     console.log("reminderDataBySelectedDate++++++++++++", reminderDataBySelectedDate)
     this.setState({ data: reminderDataBySelectedDate, selectedDate: selectedDate });
     console.log("this.data++++++++++++", this.state.data)
   }
 
   onDateChanged = async (data1) => {
-    debugger
     if (data1) {
       this.setCalenderStripDatesAndData(data1)
     }
@@ -162,7 +136,6 @@ class Reminder extends Component {
 
   }
   deleteReminder = async (item) => {
-    debugger
     item.active = false;
     let userId = item.user_id;
 
@@ -174,23 +147,11 @@ class Reminder extends Component {
     delete reqObj.user_id;
     delete reqObj._id;
     let result = await addReminderdata(userId, reqObj);
-    debugger
     if (result.success) {
       const reminderResponse = await this.getAllReminderdata();
       this.reminderData = reminderResponse || [];
       this.setCalenderStripDatesAndData(this.state.selectedDate)
     }
-    // var temp = [...this.state.data]
-    // temp.map((t) => {
-    //   if (t._id == item._id) {
-    //     t.active = false
-    //   }
-    // })
-    // debugger
-    //  this.reminderData = temp;
-    // this.setCalenderStripDatesAndData(this.state.selectedDate)
-    // this.setState({refreshCount: this.state.refreshCount + 1 });
-    debugger
   }
 
   render() {
