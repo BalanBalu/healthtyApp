@@ -43,6 +43,7 @@ import BookAppoinment from "../../modules/screens/bookappoinment";
 import Mapbox from "../../modules/screens/bookappoinment/Mapbox";
 import AppointmentDetails from '../../modules/screens/MyAppointments/AppointmentDetails';
 import MyAppoinmentList from '../../modules/screens/MyAppointments/MyAppointmentList';
+import EmrDetails from '../../modules/screens/MyAppointments/EmrDetails'
 import CancelAppointment from "../../modules/screens/MyAppointments/cancelAppointment";
 import AddReminder from '../../modules/screens/Reminder/AddReminder'
 import Reminder from '../../modules/screens/Reminder/Reminders'
@@ -100,6 +101,7 @@ import AllergicDisease from '../../modules/screens/MyAppointments/PrepareAppoinm
 import HospitalizationAndSurgeries from '../../modules/screens/MyAppointments/PrepareAppoinmentWizard/HospitalizationAndSurgeries'
 import SocialHistory from '../../modules/screens/MyAppointments/PrepareAppoinmentWizard/SocialHistory'
 import PrepareAppointmentLastStep from '../../modules/screens/MyAppointments/PrepareAppoinmentWizard/PrepareAppointmentLastStep'
+import RenderSuggestionList from '../../modules/screens/Home/RenderSuggestionList';
 
 
 const AuthRoutes = {
@@ -170,28 +172,28 @@ const HomeStack = createStackNavigator({
         </Row>
       ),
       headerRight: (
-        
-          <Row style={{justifyContent:'center',alignItems:'center'}}>
-            <TouchableOpacity onPress={() => { navigation.navigate('Notification') }} >
-              <View>
-                <Icon name="notifications" style={{ color: '#fff', marginRight: 15, fontFamily: 'opensans-semibold' }}></Icon>
-                {navigation.getParam('notificationBadgeCount') != null ?
-                  <Text style={{ position: 'absolute', backgroundColor: 'red', color: 'white', borderRadius: 20 / 2, marginTop: -7, width: undefined, height: undefined, padding: 2, fontSize: 10, textAlign: 'center' }}>{navigation.getParam('notificationBadgeCount') >= 100 ? '99+' : navigation.getParam('notificationBadgeCount')}</Text>
-                  : null}
-                {/* <Badge /> */}
-              </View>
-               {/* <TouchableOpacity onPress={() => { setI18nConfig('en' ) }} >
+
+        <Row style={{ justifyContent: 'center', alignItems: 'center' }}>
+          <TouchableOpacity onPress={() => { navigation.navigate('Notification') }} >
+            <View>
+              <Icon name="notifications" style={{ color: '#fff', marginRight: 15, fontFamily: 'opensans-semibold' }}></Icon>
+              {navigation.getParam('notificationBadgeCount') != null ?
+                <Text style={{ position: 'absolute', backgroundColor: 'red', color: 'white', borderRadius: 20 / 2, marginTop: -7, width: undefined, height: undefined, padding: 2, fontSize: 10, textAlign: 'center' }}>{navigation.getParam('notificationBadgeCount') >= 100 ? '99+' : navigation.getParam('notificationBadgeCount')}</Text>
+                : null}
+              {/* <Badge /> */}
+            </View>
+            {/* <TouchableOpacity onPress={() => { setI18nConfig('en' ) }} >
               <View>
                 <Icon name={IS_IOS ? 'ios-more' : "md-more"} style={{ color: '#fff', marginRight: 15, fontFamily: 'opensans-semibold' }}></Icon>
               </View>
-            </TouchableOpacity> */} 
-            </TouchableOpacity>
+            </TouchableOpacity> */}
+          </TouchableOpacity>
 
 
-          </Row>
+        </Row>
 
-                      
-       
+
+
       ),
       headerStyle: {
         backgroundColor: '#7F49C3',
@@ -212,7 +214,7 @@ const HomeStack = createStackNavigator({
     })
   },
   LocationDetail: {
-    screen : LocationDetail,
+    screen: LocationDetail,
     navigationOptions: ({ navigation }) => ({
       title: navigation.getParam('cityData') ? navigation.getParam('cityData').city_name : 'Areas',
     })
@@ -275,6 +277,13 @@ const HomeStack = createStackNavigator({
     screen: AppointmentDetails,
     navigationOptions: {
       title: "Appointment info"
+    }
+  },
+ 
+  "EmrDetails": {
+    screen: EmrDetails,
+    navigationOptions: {
+      title: "EMR Details"
     }
   },
   ReportIssue: {
@@ -777,7 +786,14 @@ const HomeStack = createStackNavigator({
       title: 'My Video Consultations'
     }
   },
+  /**** Get Suggestion list from Search Bar ****/
+  RenderSuggestionList: {
+    screen: RenderSuggestionList,
+    navigationOptions: ({ navigation }) => ({
+      title: 'Find & Book',
 
+    })
+  },
   // ============== Reminder =================
 
   Reminder: {

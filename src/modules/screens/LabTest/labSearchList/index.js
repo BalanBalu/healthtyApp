@@ -245,8 +245,8 @@ class labSearchList extends Component {
         let packageDetails = {
             lab_id: labInfo.lab_id,
             lab_test_categories_id: labCatInfo._id,
-            lab_test_description: labInfo.labPriceInfo[0].lab_test_description || 'null',
-            fee: labInfo.labPriceInfo[0].price || 0,
+            lab_test_description: labCatInfo.category_discription || 'null',
+            fee: labCatInfo.price || 0,
             extra_charges: labInfo.extra_charges || 0,
             mobile_no: labInfo.mobile_no || null,
             lab_name: labInfo.lab_name,
@@ -290,7 +290,8 @@ class labSearchList extends Component {
                                             <Text style={{ fontFamily: 'OpenSans', fontSize: 12, fontWeight: 'bold' }}>{item.labInfo.lab_name}</Text>
                                         </Row>
                                         <Row style={{ marginLeft: 55, }}>
-                                            <Text note style={{ fontFamily: 'OpenSans', marginTop: 2, fontSize: 11 }}>{item.labCatInfo.category_name}</Text>
+                                            <Text note style={{ fontFamily: 'OpenSans', marginTop: 2, fontSize: 12 }}>{(item.labCatInfo.categoryInfo && item.labCatInfo.categoryInfo.category_name ) + ' - '}</Text>
+                                            <Text  style={{ fontFamily: 'OpenSans', marginTop: 2, fontSize: 12 }}>{item.labCatInfo.category_name}</Text>
                                         </Row>
                                         <Row style={{ marginLeft: 55, }}>
 
@@ -324,12 +325,12 @@ class labSearchList extends Component {
                                     <Col style={{ width: "25%" }}>
 
                                         <RenderOfferDetails
-                                            offerInfo={item.labInfo && item.labInfo.labPriceInfo && item.labInfo.labPriceInfo[0] && item.labInfo.labPriceInfo[0].offer ? item.labInfo.labPriceInfo[0].offer : ' '}
+                                            offerInfo={item.labCatInfo && item.labCatInfo.offer ? item.labCatInfo.offer : ' '}
                                         />
                                     </Col>
                                     <Col style={{ width: "25%", marginLeft: 10 }}>
                                         <RenderPriceDetails
-                                            priceInfo={item.labInfo && item.labInfo.labPriceInfo && item.labInfo.labPriceInfo[0] && item.labInfo.labPriceInfo[0].price ? item.labInfo.labPriceInfo[0].price : ' '}
+                                            priceInfo={item.labCatInfo && item.labCatInfo.price ?   item.labCatInfo.price : ' '}
                                         />
                                     </Col>
                                 </Row>

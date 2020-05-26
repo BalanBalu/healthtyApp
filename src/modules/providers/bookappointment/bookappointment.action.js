@@ -522,3 +522,19 @@ export async function prepareAppointmentUpdate(appointmentId, requestData) {
   }
 }
 
+
+
+export async function fetchEmrData(appointmentId) {
+  try {
+
+    let endPoint = '/appointments/electrical_medical_records/'+appointmentId
+    let response = await getService(endPoint);
+    let respData = response.data;
+    return respData;
+  } catch (e) {
+    return {
+      message: 'exception' + e,
+      success: false
+    }
+  }
+}

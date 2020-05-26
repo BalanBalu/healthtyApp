@@ -192,8 +192,8 @@ class LabBookAppointment extends Component {
     let packageDetails = {
       lab_id: labInfo.lab_id,
       lab_test_categories_id: labCatInfo._id,
-      lab_test_description: labInfo.labPriceInfo[0].lab_test_description || 'null',
-      fee: labInfo.labPriceInfo[0].price || 0,
+      lab_test_description: labCatInfo.category_discription || 'null',
+      fee: labCatInfo.price || 0,
       extra_charges: labInfo.extra_charges || 0,
       mobile_no: labInfo.mobile_no || null,
       lab_name: labInfo.lab_name,
@@ -229,7 +229,11 @@ class LabBookAppointment extends Component {
                     <Row style={{ marginLeft: 55, marginTop: 10 }}>
                       <Col size={9}>
                         <Text style={{ fontFamily: 'OpenSans', fontSize: 12, fontWeight: 'bold' }}>{labInfo && labInfo.lab_name}</Text>
-                        <Text note style={{ fontFamily: 'OpenSans', fontSize: 11, marginTop: 5 }}>{labCatInfo && labCatInfo.category_name}</Text>
+                      <Row>  
+                        <Text note style={{ fontFamily: 'OpenSans', fontSize: 12, marginTop: 5 }}>{labCatInfo && labCatInfo.categoryInfo && labCatInfo.categoryInfo.category_name}</Text>
+                        <Text note style={{ fontFamily: 'OpenSans', fontSize: 12, marginTop: 5 }}>{' - '}</Text>
+                        <Text style={{ fontFamily: 'OpenSans', fontSize: 12, marginTop: 5 }}>{labCatInfo && labCatInfo.category_name}</Text>
+                      </Row>
                       </Col>
                       <Col size={1}>
                       </Col>
@@ -259,12 +263,12 @@ class LabBookAppointment extends Component {
                   </Col>
                   <Col style={{ width: "25%", marginTop: 15, }}>
                     <RenderOfferDetails
-                      offerInfo={labInfo && labInfo.labPriceInfo && labInfo.labPriceInfo[0] && labInfo.labPriceInfo[0].offer ? labInfo.labPriceInfo[0].offer : ' '}
+                      offerInfo={labCatInfo && labCatInfo.offer ? labCatInfo.offer : ' '}
                     />
                   </Col>
                   <Col style={{ width: "25%", marginTop: 15, }}>
                     <RenderPriceDetails
-                      priceInfo={labInfo && labInfo.labPriceInfo && labInfo.labPriceInfo[0] && labInfo.labPriceInfo[0].price ? labInfo.labPriceInfo[0].price : ' '}
+                      priceInfo={labCatInfo && labCatInfo.price ? labCatInfo.price : ' '}
                     />
                   </Col>
                 </Row>

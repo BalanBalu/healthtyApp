@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
-import { Container, Content, View, Card, Grid, CardItem, Text, Switch, Right, Item, Radio, Row, Col, Form, Button, Left, Toast } from 'native-base';
-import { StyleSheet, TextInput, AsyncStorage, Image , Dimensions } from 'react-native'
+import { Container, Content, View, Card, Grid, CardItem, Text, Switch, Right, Item, Radio, Icon, Row, Col, Form, Button, Left, Toast } from 'native-base';
+import { StyleSheet, TextInput, AsyncStorage, Image, Dimensions, TouchableOpacity } from 'react-native'
 import { FlatList } from 'react-native-gesture-handler';
 import CalendarStrip from 'react-native-calendar-strip';
 import { getReminderData, addReminderdata } from '../../providers/reminder/reminder.action.js';
@@ -12,18 +12,26 @@ import { hasLoggedIn } from "../../providers/auth/auth.actions";
 import SpinnerOverlay from '../../../components/Spinner';
 import NotifService from '../../../setup/NotifService';
 import { connect } from 'react-redux'
+import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons"
 var { width, height } = Dimensions.get('window');
 console.log('height', height);
+let datesBlackList = [{
+  start: moment().subtract(7, 'days').toISOString(),
+  end: moment().subtract(1, 'days').toISOString()
+}];
 class Reminder extends Component {
+
   constructor(props) {
     super(props)
     this.reminderData = [];
     this.state = {
       data: [],
       isLoading: false,
-      selectedDate: moment().format('MMMM Do YYYY, h:mm:ss a'),
+      selectedDate: formatDate(new Date(), 'YYYY-MM-DD'),
       startDate: formatDate(new Date(), 'YYYY-MM-DD'),
-      endDate: formatDate(new Date(), 'YYYY-MM-DD') 
+      endDate: formatDate(new Date(), 'YYYY-MM-DD'),
+      currentDate: formatDate(new Date(), 'YYYY-MM-DD'),
+      refreshCount: 1,
     }
   }
 
@@ -31,19 +39,10 @@ class Reminder extends Component {
   async componentDidMount() {
     const isLoggedIn = await hasLoggedIn(this.props);
     if (!isLoggedIn) {
-        this.props.navigation.navigate("login");
-        return;
+      this.props.navigation.navigate("login");
+      return;
     }
-    const { reminder: { reminderResponse: { data, success, message }  } } = this.props;
-    if(success === false ) {
-      Toast.show({
-        text: message,
-        duration: 3000,
-        type: 'warning'
-      })
-    } else {
-      this.setState({ data: data });
-    }
+    this.getAllReminderdata()
   }
 
   getAllReminderdata = async () => {
@@ -55,9 +54,11 @@ class Reminder extends Component {
       let result = await getReminderData(userId);
       if (result.success) {
         this.reminderData = result.data;
-        this.setState({ data: result.data })
+
+        this.setCalenderStripDatesAndData(this.state.selectedDate)
+        //  this.setState({ data: result.data })
       }
-      // NotifService.scheduleNotif('You have a Medince Reminder', 'You have to Take the Medicine at this time', new Date());
+      return result.data;
     } catch (e) {
       console.log(e);
     } finally {
@@ -65,31 +66,34 @@ class Reminder extends Component {
     }
   }
 
-  
+  setCalenderStripDatesAndData = (data1) => {
 
-   onDateChanged  = async (data1) => {
-      if(data1) {
-        let date = new Date(moment(data1).startOf('d').toISOString()).getTime();
-        const reminderDataBySelectedDate = this.reminderData.filter(ele => {
-            let startDate = new Date(ele.medicine_take_start_date).getTime();
-            let endDate;
-            if(ele.reminder_type === 'onlyonce') {
-              let endDateTemp = new Date(ele.medicine_take_start_date);
-              endDateTemp.setHours(23);
-              endDateTemp.setMinutes(59);
-              endDate = new Date(endDateTemp).getTime();
-            } else {
-              endDate = new Date(ele.medicine_take_end_date).getTime();
-            }
-            console.log('Start Date==>' + startDate);
-            console.log('End Date==>' + endDate);
-            
-            if((date <= endDate  && date >= startDate )) {
-              return true;
-            }
-        });
-        this.setState({ data: reminderDataBySelectedDate });
+    let date = new Date(moment(data1).startOf('d').toISOString()).getTime();
+    let selectedDate = formatDate(data1, 'YYYY-MM-DD');
+    const reminderDataBySelectedDate = this.reminderData.filter(ele => {
+      let startDate = new Date(ele.medicine_take_start_date).getTime();
+      let endDate;
+      if (ele.reminder_type === 'onlyonce') {
+        let endDateTemp = new Date(ele.medicine_take_start_date);
+        endDateTemp.setHours(23);
+        endDateTemp.setMinutes(59);
+        endDate = new Date(endDateTemp).getTime();
+      } else {
+        endDate = new Date(ele.medicine_take_end_date).getTime();
       }
+      if ((date <= endDate && date >= startDate && ele.active == true)) {
+        return true;
+      }
+    });
+    console.log("reminderDataBySelectedDate++++++++++++", reminderDataBySelectedDate)
+    this.setState({ data: reminderDataBySelectedDate, selectedDate: selectedDate });
+    console.log("this.data++++++++++++", this.state.data)
+  }
+
+  onDateChanged = async (data1) => {
+    if (data1) {
+      this.setCalenderStripDatesAndData(data1)
+    }
   }
 
 
@@ -97,18 +101,18 @@ class Reminder extends Component {
 
 
 
-  setStatus = async (data1, value) => {
-    data1.active = value;
+  updateToggleFunction = async (data1, value) => {
+    data1.is_reminder_enabled = value;
     let userId = data1.user_id;
     const reqObj = {
       ...data1,
-      active: value,
+      is_reminder_enabled: value,
       reminder_id: data1._id
     }
     delete reqObj.user_id;
     delete reqObj._id;
     let result = await addReminderdata(userId, reqObj);
-    
+
     var temp = [...this.state.data]
     temp.map((t) => {
       if (t._id == data1._id) {
@@ -118,113 +122,139 @@ class Reminder extends Component {
     this.setState({ data: temp });
   }
 
-  backNavigation  = async (navigationData) => {
+  backNavigation = async (navigationData) => {
     try {
       if (navigationData.action) {
-        const { reminder: { reminderResponse: { data }  } } = this.props;
-        this.setState({ data: data });
+        const { reminder: { reminderResponse: { data } } } = this.props;
+        this.reminderData = data;
+        console.log(JSON.stringify(this.reminderData))
+        this.setCalenderStripDatesAndData(this.state.currentDate)
       }
     } catch (e) {
       console.log(e)
     }
 
   }
+  deleteReminder = async (item) => {
+    item.active = false;
+    let userId = item.user_id;
 
+    const reqObj = {
+      ...item,
+      active: false,
+      reminder_id: item._id
+    }
+    delete reqObj.user_id;
+    delete reqObj._id;
+    let result = await addReminderdata(userId, reqObj);
+    if (result.success) {
+      const reminderResponse = await this.getAllReminderdata();
+      this.reminderData = reminderResponse || [];
+      this.setCalenderStripDatesAndData(this.state.selectedDate)
+    }
+  }
 
   render() {
     const { index, isLoading, data } = this.state;
+
+    // console.log('data=====>', JSON.stringify(data))
     const renderTimeList = (timeList) => {
       return timeList.map((item) => {
-      return (
-        <Text style={{ marginLeft: 15, color: '#000' }}>{formatDate(item.medicine_take_time, 'HH:mm A')}</Text>
-      )
-    })
-  }
+        return (
+          <Text style={{ marginLeft: 15, color: '#000' }}>{formatDate(item.medicine_take_time, 'HH:mm A')}</Text>
+        )
+      })
+    }
     return (
       <Container>
         <Content style={{ backgroundColor: '#F1F1F1' }}>
-        
-
           <View>
-          <View style={{ paddingBottom: 10, backgroundColor: '#FFF' }}>
-          <NavigationEvents
-                  onWillFocus={payload => { this.backNavigation(payload) }} />
-            <CalendarStrip
-              selection={'border'}
-              minDate={moment()}
-              startingDate={moment()}
-              selectionAnimation={{ duration: 300, borderWidth: 1 }}
-              style={{ paddingTop: 2, paddingBottom: 2 }}
-              calendarHeaderStyle={{ color: 'gray' }}
-              calendarColor={'#fff'}
-              highlightColor={'#7F49C3'}
-              dateNumberStyle={{ color: 'gray' }}
-              dateNameStyle={{ color: 'gray' }}
-              highlightDateNumberStyle={{ color: 'white', backgroundColor: '#7F49C3', borderRadius: 15, padding: 5, height: 30, width: 30, fontSize: 12 }}
-              highlightDateNameStyle={{ color: '#7F49C3' }}
-              borderHighlightColor={'white'}
-              onDateSelected={(date) => this.onDateChanged(date)}
-              iconContainer={{ flex: 0.1 }}
-            /> 
-            <Text style={{ color: '#7F49C3', textAlign: 'center', marginTop: 2, fontFamily: 'OpenSans', fontWeight: "500" }}>Today</Text>
-          </View>
-
-
-          {isLoading == true ?
-            <SpinnerOverlay color='blue'
-              visible={isLoading}
-            /> :
-
-          data.length == 0 ?
-            <View style={{ backgroundColor: '#F1F1F1', marginTop: height/ 4,  justifyContent: 'center', alignItems: 'center'  }}>
-               
-                <Image source={require('../../../../assets/images/Remindericon.png')} style={{ justifyContent: 'center', height: 150, width: 150 }} />
-                <Text style={{ color: '#d83939',  }}>No Reminder is avaialble now!</Text>
+            <View style={{ paddingBottom: 10, backgroundColor: '#FFF' }}>
+              <NavigationEvents
+                onWillFocus={payload => { this.backNavigation(payload) }} />
+              <CalendarStrip
+                selection={'border'}
+                minDate={new Date()}
+                maxDate={new Date(), 1, 'year'}
+                selectionAnimation={{ duration: 300, borderWidth: 1 }}
+                style={{ paddingTop: 2, paddingBottom: 2 }}
+                calendarHeaderStyle={{ color: 'gray' }}
+                calendarColor={'#fff'}
+                highlightColor={'#7F49C3'}
+                dateNumberStyle={{ color: 'gray' }}
+                dateNameStyle={{ color: 'gray' }}
+                highlightDateNumberStyle={{ color: 'white', backgroundColor: '#7F49C3', borderRadius: 15, padding: 5, height: 30, width: 30, fontSize: 12 }}
+                highlightDateNameStyle={{ color: '#7F49C3' }}
+                borderHighlightColor={'white'}
+                onDateSelected={(date) => this.onDateChanged(date)}
+                iconContainer={{ flex: 0.1 }}
+                datesBlacklist={datesBlackList}
+              />
+              <Text style={{ color: '#7F49C3', textAlign: 'center', marginTop: 2, fontFamily: 'OpenSans', fontWeight: "500" }}>Today</Text>
             </View>
-          :
-          
-          <View style={{ paddingRight: 10, paddingLeft: 10 }}>
-             <FlatList data={data}
-              keyExtractor={(item, index) => index.toString()}
-              extraData={[ data ]}
-              renderItem={({ item, index }) => (
-                <Card style={{ borderRadius: 5, marginTop: 10 }}>
-                   <Grid>
-                   <Row style={{ marginTop: 5 }}>
-                      <Col style={styles.col1}>
-                        <View style={{ marginLeft: 15 }}>
-                          <Text style={styles.mednamestyle}>{item.medicine_name}</Text>
-                          <Text style={styles.innerText}>{item.medicine_form}</Text>
-                          <Text style={styles.innerText}>{item.medicine_strength}</Text>
+
+
+            {isLoading == true ?
+              <SpinnerOverlay color='blue'
+                visible={isLoading}
+              /> :
+
+              data.length == 0 ?
+                <View style={{ backgroundColor: '#F1F1F1', marginTop: height / 4, justifyContent: 'center', alignItems: 'center' }}>
+
+                  <Image source={require('../../../../assets/images/Remindericon.png')} style={{ justifyContent: 'center', height: 150, width: 150 }} />
+                  <Text style={{ color: '#d83939', }}>No Reminder is available now!</Text>
+                </View>
+                :
+
+                <View style={{ paddingRight: 10, paddingLeft: 10 }}>
+                  <FlatList data={data}
+                    keyExtractor={(item, index) => index.toString()}
+                    extraData={[data]}
+                    renderItem={({ item, index }) => (
+                      <Card style={{ borderRadius: 5, marginTop: 10 }}>
+                        <Grid>
+                          <Row style={{ marginTop: 5 }}>
+                            <Col style={styles.col1}>
+                              <View style={{ marginLeft: 15 }}>
+                                <Text style={styles.mednamestyle}>{item.medicine_name}</Text>
+                                <Text style={styles.innerText}>{item.medicine_form}</Text>
+                                <Text style={styles.innerText}>{item.medicine_strength}</Text>
+                              </View>
+                            </Col>
+                            <Col style={styles.col2}>
+                              <Row>
+                                <Col size={7} style={{ justifyContent: 'center' }}>
+                                  {renderTimeList(item.medicine_take_times)}
+                                </Col>
+                                <Col size={3} style={{ justifyContent: 'center' }}>
+
+                                  <Switch style={{ transform: [{ scaleX: .8 }, { scaleY: .8 }], backgroundColor: 'fff' }} trackColor={{ true: '#6FC41A', false: 'grey' }}
+                                    trackColor={{ true: '#7F49C3' }}
+                                    thumbColor={"#F2F2F2"}
+                                    onValueChange={(val) => this.updateToggleFunction(item, val)}
+                                    value={item.is_reminder_enabled}
+                                  />
+
+                                </Col>
+                              </Row>
+                            </Col>
+
+                          </Row>
+                          <TouchableOpacity style={{ fontSize: 20, color: "red", position: 'absolute', right: 0, top: 0 }} onPress={() => this.deleteReminder(item)}>
+                            <MaterialCommunityIcons name="close-box" style={{ fontSize: 25, color: "red", }} />
+                          </TouchableOpacity>
+                        </Grid>
+                        <View style={{ marginTop: 5, borderTopColor: 'gray', borderTopWidth: 1, }}>
+                          {item.reminder_type === 'everyday' ?
+                            <Text style={styles.remText}>Your Reminder Time is at {formatDate(item.medicine_take_start_date, 'DD/MM/YYYY')} - {formatDate(item.medicine_take_end_date, 'DD/MM/YYYY')}</Text> :
+                            <Text style={styles.remText}>Your Reminder Time is at {formatDate(item.medicine_take_start_date, 'DD/MM/YYYY')}</Text>
+                          }
                         </View>
-                      </Col>
-                      <Col style={styles.col2}>
-                       <Row>
-                      
-                        <Col size={7}>
-                          {renderTimeList(item.medicine_take_times)}
-                        </Col>
-                           
-                        <Col size={3}>
-                            
-                            <Switch style={{ transform: [{ scaleX: .8 }, { scaleY: .8 }], backgroundColor: 'fff' }} trackColor={{ true: '#6FC41A', false: 'grey' }}
-                              trackColor={{ true: '#7F49C3' }}
-                              thumbColor={"#F2F2F2"}
-                              onValueChange={(val) => this.setStatus(item, val)}
-                              value={item.is_reminder_enabled}
-                            />
-                          </Col>
-                        </Row> 
-                      </Col> 
-                    </Row>
-                  </Grid> 
-                  <View style={{ marginTop: 5, borderTopColor: 'gray', borderTopWidth: 1, }}>
-                    <Text style={styles.remText}>Your Remainder Time is at {formatDate(item.medicine_take_start_date, 'DD/MM/YYYY')} - {formatDate(item.medicine_take_end_date, 'DD/MM/YYYY')}</Text>
-                  </View> 
-                </Card>
-              )} /> 
-          </View>
-  }
+                      </Card>
+                    )} />
+                </View>
+            }
           </View>
         </Content>
       </Container>
@@ -235,7 +265,7 @@ class Reminder extends Component {
 function homeState(state) {
 
   return {
-      reminder: state.reminder
+    reminder: state.reminder
   }
 }
 export default connect(homeState)(Reminder)
@@ -246,12 +276,12 @@ const styles = StyleSheet.create({
     borderRightColor: 'gray',
     borderRightWidth: 1,
     width: '50%',
-    marginTop:5
+    marginTop: 15
   },
   col2: {
     width: '50%',
     justifyContent: 'center',
-    marginTop:5
+    marginTop: 15
   },
   mednamestyle: {
     fontFamily: 'OpenSans',

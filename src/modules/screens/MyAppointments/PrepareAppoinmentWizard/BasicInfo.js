@@ -34,10 +34,12 @@ class BasicInfo extends PureComponent {
                 is_user_meet_doctor_before: itemSelected,
                 has_skipped_user_meet_doctor_before: false
             }
+            console.log(data);
             this.setState({ isLoading: true })
             let response = await prepareAppointmentUpdate(appointmentId, data)
 
-
+            debugger
+            console.log(response);
             if (response.success) {
                 Toast.show({
                     text: response.message,
