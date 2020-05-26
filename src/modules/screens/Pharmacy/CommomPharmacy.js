@@ -298,6 +298,13 @@ export const statusBar = {
     checked: true,
     color: 'green'
   },
+  "undefined":
+    {
+      status: 'status  mismatching undefined',
+      checked: true,
+      color: 'red'
+    },
+  
 }
 
 

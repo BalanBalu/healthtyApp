@@ -54,15 +54,16 @@ class MyOrdersList extends Component {
 
             let userId = await AsyncStorage.getItem('userId');
             let result = await getMedicineOrderList(userId, this.state.pagination);
-
+  
 
 
             if (result) {
 
                 let data = this.state.data;
                 let temp = data.concat(result);
-
-                this.setState({ data: temp })
+ console.log('orderlist=======================');
+   console.log(JSON.stringify(result))
+                 this.setState({ data: temp })
             }
             return {
                 success: true
@@ -180,7 +181,8 @@ class MyOrdersList extends Component {
                                                     </Col>
                                                 </Row>
                                                 <Row style={styles.Row}>
-                                                    <Text style={[styles.orderprice1, { color: statusBar[item.status].color }]}>{statusBar[item.status].status}</Text>
+
+                                                    <Text style={[styles.orderprice1, { color: statusBar[item.status].color}]}>{statusBar[item.status].status}</Text>
                                                 </Row>
 
                                             </View>
