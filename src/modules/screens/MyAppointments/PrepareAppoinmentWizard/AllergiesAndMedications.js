@@ -95,7 +95,6 @@ class AllergiesAndMedications extends PureComponent {
         if (getLastItemInAllergicArry != undefined) {
             if (!getLastItemInAllergicArry.allergy_name || !getLastItemInAllergicArry.allergy_reaction) {
                 debugger
-
                 return false
             }
         }
@@ -166,7 +165,7 @@ class AllergiesAndMedications extends PureComponent {
                             <View>
                                 <Form>
                                     <FlatList
-                                        style={{ flex: 1 }}
+                                        containerstyle={{ flex: 1 }}
                                         data={alergicDetails}
                                         extraData={alergicDetails}
                                         renderItem={({ item, index }) => {
@@ -248,7 +247,7 @@ class AllergiesAndMedications extends PureComponent {
                                 <View>
                                     <Form>
                                         <FlatList
-                                            style={{ flex: 1 }}
+                                            containerstyle={{ flex: 1 }}
                                             data={medicineTakingDetails}
                                             extraData={medicineTakingDetails}
                                             renderItem={({ item, index }) => {
