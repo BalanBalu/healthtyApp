@@ -595,7 +595,7 @@ class Home extends Component {
                         </Row>
                         <Card style={{  }}>
                                 <TouchableOpacity onPress={() => this.props.navigation.navigate("EarnReward")}>
-                                    <Row style={{ height: 30, width: '100%', overflow: 'hidden', backgroundColor: "green", }}>
+                                    <Row style={{ height: 30, width: '100%', overflow: 'hidden', backgroundColor: "#8EC63F", }}>
                                         <Col style={{ width: '90%',justifyContent:'center' }}>
                                             <Text style={{
                                                   color: '#fff',
@@ -612,13 +612,13 @@ class Home extends Component {
                                     <Row style={{ height: 60, width: '100%', overflow: 'hidden', backgroundColor: "#fff",marginBottom:10,marginTop:10  }}>
                                         <Col style={{ width: '100%',justifyContent:'center',}}>
                                             <Text style={{
-                                                  color: 'green',
+                                                  color: 'gray',
                                                   fontSize: 14,
                                                   lineHeight: 20,
                                                   marginLeft:15,
                                                   marginRight:15,
                                                   fontWeight: '500',
-                                            }}>You have an Appointment today with  Dr.Balasubramanian and is scheduled at 4:00 pm.Please prepare for the Appointment</Text>
+                                            }}>You  have  an  Appointment  today  with  Dr.Balasubramanian  and  is  scheduled  at  4:00 pm.Please  prepare  for  the  Appointment</Text>
                                            </Col>
                                     </Row>
                                 </TouchableOpacity>
