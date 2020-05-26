@@ -708,6 +708,41 @@ class Home extends Component {
                                 </TouchableOpacity>
                             </Card>
                         </View>
+                        <Row style={{ marginTop: 10, marginBottom: 5 }}>
+                            <Left>
+                                <Text style={styles.mainHead}>You have an Appointment Today</Text>
+                            </Left>
+                        </Row>
+                        <Card style={{  }}>
+                                <TouchableOpacity onPress={() => this.props.navigation.navigate("EarnReward")}>
+                                    <Row style={{ height: 30, width: '100%', overflow: 'hidden', backgroundColor: "green", }}>
+                                        <Col style={{ width: '90%',justifyContent:'center' }}>
+                                            <Text style={{
+                                                  color: '#fff',
+                                                  fontSize: 14,
+                                                  lineHeight: 20,
+                                                  marginLeft:15,
+                                                  fontWeight: '500',
+                                            }}>Your Appointment Schedule</Text>
+                                           </Col>
+                                           <Col style={{ width: '10%',justifyContent:'center' }}>
+                                               <Icon name="ios-information-circle-outline" style={{color:'#fff',fontSize:25}}/>
+                                           </Col>
+                                    </Row>
+                                    <Row style={{ height: 60, width: '100%', overflow: 'hidden', backgroundColor: "#fff",marginBottom:10,marginTop:10  }}>
+                                        <Col style={{ width: '100%',justifyContent:'center',}}>
+                                            <Text style={{
+                                                  color: 'green',
+                                                  fontSize: 14,
+                                                  lineHeight: 20,
+                                                  marginLeft:15,
+                                                  marginRight:15,
+                                                  fontWeight: '500',
+                                            }}>You have an Appointment today with  Dr.Balasubramanian and is scheduled at 4:00 pm.Please prepare for the Appointment</Text>
+                                           </Col>
+                                    </Row>
+                                </TouchableOpacity>
+                            </Card>
                     </View>
 
                 </Content>
