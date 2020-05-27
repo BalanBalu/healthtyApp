@@ -25,6 +25,7 @@ import UserAddress from "../../modules/screens/auth/UserAddress";
 import MapBox from "../../modules/screens/auth/UserAddress/MapBox";
 import Reviews from "../../modules/screens/Reviews";
 import doctorSearchList from "../../modules/screens/doctorSearchList";
+import doctorList from "../../modules/screens/DoctorBookAppointmentFlow/doctorList";
 import FilterList from "../../modules/screens/FilterList";
 import PaymentPage from "../../modules/screens/PaymentPage";
 import PaymentReview from "../../modules/screens/PaymentReview";
@@ -279,7 +280,7 @@ const HomeStack = createStackNavigator({
       title: "Appointment info"
     }
   },
- 
+
   "EmrDetails": {
     screen: EmrDetails,
     navigationOptions: {
@@ -481,6 +482,13 @@ const HomeStack = createStackNavigator({
       title: 'Doctor List',
     }
   },
+  "Doctor Search List": {
+    screen: doctorList,
+    navigationOptions: {
+      title: 'Doctor Search List',
+    }
+  },
+
   Filters: {
     screen: FilterList,
     navigationOptions: {
