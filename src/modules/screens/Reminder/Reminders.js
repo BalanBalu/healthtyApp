@@ -13,6 +13,7 @@ import SpinnerOverlay from '../../../components/Spinner';
 import NotifService from '../../../setup/NotifService';
 import { connect } from 'react-redux'
 import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons"
+import AwesomeAlert from 'react-native-awesome-alerts';
 var { width, height } = Dimensions.get('window');
 console.log('height', height);
 let datesBlackList = [{
@@ -20,7 +21,7 @@ let datesBlackList = [{
   end: moment().subtract(1, 'days').toISOString()
 }];
 class Reminder extends Component {
-
+  reminderItemForRemoveObj = {};
   constructor(props) {
     super(props)
     this.reminderData = [];
@@ -32,6 +33,7 @@ class Reminder extends Component {
       endDate: formatDate(new Date(), 'YYYY-MM-DD'),
       currentDate: formatDate(new Date(), 'YYYY-MM-DD'),
       refreshCount: 1,
+      isCancel: false
     }
   }
 
@@ -54,7 +56,6 @@ class Reminder extends Component {
       let result = await getReminderData(userId);
       if (result.success) {
         this.reminderData = result.data;
-
         this.setCalenderStripDatesAndData(this.state.selectedDate)
         //  this.setState({ data: result.data })
       }
@@ -136,6 +137,7 @@ class Reminder extends Component {
 
   }
   deleteReminder = async (item) => {
+
     item.active = false;
     let userId = item.user_id;
 
@@ -152,10 +154,21 @@ class Reminder extends Component {
       this.reminderData = reminderResponse || [];
       this.setCalenderStripDatesAndData(this.state.selectedDate)
     }
+    // this.setState({ isCancel: true })
   }
 
+  _onPressReject = () => {
+    this.setState({ isCancel: false })
+  };
+  _onPressAccept = () => {
+    this.deleteReminder(this.reminderItemForRemoveObj);
+    this.setState({ isCancel: false })
+  };
+
+
+
   render() {
-    const { index, isLoading, data } = this.state;
+    const { index, isLoading, data, isCancel } = this.state;
 
     // console.log('data=====>', JSON.stringify(data))
     const renderTimeList = (timeList) => {
@@ -167,11 +180,33 @@ class Reminder extends Component {
     }
     return (
       <Container>
-        <Content style={{ backgroundColor: '#F1F1F1' }}>
+        <AwesomeAlert
+          show={isCancel}
+          showProgress={false}
+          title={`Are you sure to delete your Reminder `}
+          closeOnTouchOutside={false}
+          closeOnHardwareBackPress={true}
+          showCancelButton={true}
+          showConfirmButton={true}
+          confirmText="Yes"
+          cancelText="No"
+          cancelButtonColor="red"
+          confirmButtonColor="green"
+          onConfirmPressed={this._onPressAccept}
+          onCancelPressed={this._onPressReject}
+
+          alertContainerStyle={{ zIndex: 1, }}
+          titleStyle={{ fontSize: 21 }}
+          cancelButtonTextStyle={{ fontSize: 18 }}
+          confirmButtonTextStyle={{ fontSize: 18 }}
+        />
+        <Content style={{ backgroundColor: '#F1F1F1', flex: 1 }}>
+
           <View>
             <View style={{ paddingBottom: 10, backgroundColor: '#FFF' }}>
               <NavigationEvents
                 onWillFocus={payload => { this.backNavigation(payload) }} />
+
               <CalendarStrip
                 selection={'border'}
                 minDate={new Date()}
@@ -208,6 +243,7 @@ class Reminder extends Component {
                 :
 
                 <View style={{ paddingRight: 10, paddingLeft: 10 }}>
+
                   <FlatList data={data}
                     keyExtractor={(item, index) => index.toString()}
                     extraData={[data]}
@@ -235,13 +271,15 @@ class Reminder extends Component {
                                     onValueChange={(val) => this.updateToggleFunction(item, val)}
                                     value={item.is_reminder_enabled}
                                   />
-
                                 </Col>
                               </Row>
                             </Col>
-
                           </Row>
-                          <TouchableOpacity style={{ fontSize: 20, color: "red", position: 'absolute', right: 0, top: 0 }} onPress={() => this.deleteReminder(item)}>
+                          <TouchableOpacity style={{ fontSize: 20, color: "red", position: 'absolute', right: 0, top: 0 }} onPress={() => {
+                            this.setState({ isCancel: true });
+                            this.reminderItemForRemoveObj = item;
+                          }
+                          }>
                             <MaterialCommunityIcons name="close-box" style={{ fontSize: 25, color: "red", }} />
                           </TouchableOpacity>
                         </Grid>
@@ -253,6 +291,7 @@ class Reminder extends Component {
                         </View>
                       </Card>
                     )} />
+
                 </View>
             }
           </View>
