@@ -86,6 +86,7 @@ class MyAppoinmentList extends Component {
 				endDate: addTimeUnit(new Date(), 1, "years").toUTCString(),
 				on_going_appointment: true
 			};
+			// alert(JSON.stringify(filters))
 			let upCommingAppointmentResult = await getUserAppointments(userId, filters);
 			console.log('upcomming==================================');
 			console.log(upCommingAppointmentResult)
@@ -135,6 +136,7 @@ class MyAppoinmentList extends Component {
 					data: upcommingInfo,
 					isLoading: false
 				});
+				// alert(JSON.stringify(this.state.data))
 			}
 		} catch (e) {
 			console.log(e);
