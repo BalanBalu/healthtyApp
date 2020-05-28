@@ -7,8 +7,8 @@ import { Col, Row, Grid } from 'react-native-easy-grid';
 import { StyleSheet, Image, TouchableOpacity, AsyncStorage, FlatList, TouchableHighlight, Modal } from 'react-native';
 import Spinner from "../../../../components/Spinner";
 import { NavigationEvents } from 'react-navigation';
-import { getMedicinesSearchList, getMedicinesSearchListByPharmacyId } from '../../../providers/pharmacy/pharmacy.action'
-import { medicineRateAfterOffer, setCartItemCountOnNavigation, getMedicineName, renderMedicineImage } from '../CommomPharmacy'
+import { getMedicinesSearchList, getMedicinesSearchListByPharmacyId, getAvailableStockForListOfProducts } from '../../../providers/pharmacy/pharmacy.action'
+import { medicineRateAfterOffer, setCartItemCountOnNavigation, getMedicineName, renderMedicineImage,getIsAvailable } from '../CommomPharmacy'
 import { AddToCard } from '../AddToCardBuyNow/AddToCard'
 import { connect } from 'react-redux'
 import { MAX_DISTANCE_TO_COVER, PHARMACY_MAX_DISTANCE_TO_COVER } from '../../../../setup/config';
@@ -17,6 +17,7 @@ class MedicineSearchList extends Component {
         super(props)
         this.state = {
             cartItems: [],
+            medicineDataAvailable: [],
             isLoading: true,
             data: [],
             isBuyNow: false,
@@ -57,12 +58,17 @@ class MedicineSearchList extends Component {
 
             let medicineResultData = await getMedicinesSearchList(enteredText, this.state.pagination);
             console.log('MedicineSearchList')
-            console.log(JSON.stringify(medicineResultData))
+
             if (medicineResultData) {
+                let prodcuctIds = []
+                medicineResultData.map(ele => {
+                    prodcuctIds.push(ele.id)
+                })
 
-
+                let availableResult = await getAvailableStockForListOfProducts(prodcuctIds);
+              
                 this.setState({
-                    data: medicineResultData,
+                    data: medicineResultData, medicineDataAvailable: availableResult
                 });
             } else {
                 this.setState({
@@ -77,14 +83,21 @@ class MedicineSearchList extends Component {
 
     medicineSearchListByPharmacyId = async (pharmacyId) => {
         try {
-            let medicineResultData = await getMedicinesSearchListByPharmacyId(pharmacyId);
+            let medicineResultData = await getMedicinesSearchListByPharmacyId(pharmacyId,this.state.pagination);
 
-            // console.log(JSON.stringify(medicineResultData))
+        
             if (medicineResultData) {
+                let data=this.state.data.concat(medicineResultData)
+                let prodcuctIds = []
+                medicineResultData.map(ele => {
+                    prodcuctIds.push(ele.id)
+                })
 
+                let availableResult = await getAvailableStockForListOfProducts(prodcuctIds);
+               let  medicineDataAvailable=this.state.medicineDataAvailable.cancat(availableResult)
 
                 this.setState({
-                    data: medicineResultData
+                    data, medicineDataAvailable
                 });
             } else {
                 this.setState({
@@ -169,6 +182,22 @@ class MedicineSearchList extends Component {
             }
         }
     }
+    handleLoadMore = async () => {
+       
+        const navigationByPharmacySelect = this.props.navigation.getParam('byPharmacy') || false;
+    let  pagination= this.state.pagination + 1;
+    this.setState({pagination})
+        if (navigationByPharmacySelect === true) {
+
+            let pharmacyInfo = this.props.navigation.getParam('pharmacyInfo') || null;
+           
+            await this.medicineSearchListByPharmacyId(pharmacyInfo.pharmacy_id)
+        }
+        else {
+            await this.MedicineSearchList(this.state.medicineName,this.state.pagination + 1)
+        }
+
+    }
 
     render() {
         const { medicineName, isLoading, data, cartItems } = this.state;
@@ -219,6 +248,8 @@ class MedicineSearchList extends Component {
                                             data={data}
                                             extraData={this.state}
                                             keyExtractor={(item, index) => index.toString()}
+                                            onEndReached={this.handleLoadMore}
+                                            onEndReachedThreshold={8}
                                             renderItem={({ item }) =>
                                                 <View style={{ backgroundColor: '#fff', marginTop: 10, borderRadius: 5 }}>
                                                     <Row onPress={() =>
@@ -240,7 +271,7 @@ class MedicineSearchList extends Component {
                                                         <Col size={12.5}>
                                                             <Text style={{ fontFamily: 'OpenSans', fontSize: 16, marginTop: 5 }}>{getMedicineName(item)}</Text>
                                                             {/* <Text style={{ color: '#7d7d7d', fontFamily: 'OpenSans', fontSize: 12.5, marginBottom: 20 }}>{'By ' + item.pharmacyInfo.name}</Text> */}
-                                                            {item.productDetails && item.productDetails.available === 0 ?
+                                                            {getIsAvailable(item,this.state.medicineDataAvailable) === false ?
                                                                 <Text style={{ fontSize: 15, fontFamily: 'OpenSans', color: '#ff4e42', marginTop: -5 }}>Currently Out of stock</Text> :
                                                                 <Row>
                                                                     <Col size={5} style={{ flexDirection: 'row' }}>

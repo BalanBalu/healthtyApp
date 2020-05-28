@@ -6,7 +6,7 @@ import StarRating from 'react-native-star-rating';
 import { Col, Row } from 'react-native-easy-grid';
 import { StyleSheet, Image, AsyncStorage, FlatList, TouchableOpacity } from 'react-native';
 import { formatDate } from '../../../../setup/helpers';
-import { getMedicineOrderDetails, upDateOrderData, getOrderUserReviews } from '../../../providers/pharmacy/pharmacy.action';
+import { getMedicineOrderDetails, upDateOrderData, getOrderUserReviews, getOrderTracking } from '../../../providers/pharmacy/pharmacy.action';
 import { statusBar, renderPrescriptionImageAnimation, renderMedicineImage, getName } from '../CommomPharmacy';
 import { NavigationEvents } from 'react-navigation';
 import { getPaymentInfomation } from '../../../providers/bookappointment/bookappointment.action'
@@ -35,7 +35,8 @@ class OrderDetails extends Component {
             paymentDetails: {},
             isLoading: true,
             modalVisible: false,
-            reviewData: []
+            reviewData: [],
+            statusSlap: []
         }
     }
     async componentDidMount() {
@@ -53,17 +54,23 @@ class OrderDetails extends Component {
             this.setState({ isLoading: true });
             let orderId = this.props.navigation.getParam('serviceId') || null
             let userId = await AsyncStorage.getItem('userId')
-            let result = await getMedicineOrderDetails(orderId, userId);
+            let result = await getMedicineOrderDetails(orderId);
+            console.log('orderDetails======================= info')
             console.log(JSON.stringify(result))
-            if (result.success) {
-                this.setState({ orderDetails: result.data[0] });
-                
-                if (result.data[0].status === 'DELIVERED' && result.data[0].is_review_added === undefined) {
+            if (result) {
+                this.setState({ orderDetails: result });
+                let statusSlap = await getOrderTracking(result.orderNumber)
+                console.log('hi========')
+                console.log(JSON.stringify(result))
+                if (statusSlap) {
+                    this.setState({ statusSlap })
+                }
+                if (result.status === 'DELIVERED' && result.is_review_added === undefined) {
                     await this.setState({ modalVisible: true })
                 } else {
                     this.getUserReviews(orderId)
                 }
-                this.getPaymentInfo(result.data[0].payment_id)
+                this.getPaymentInfo(result.paymentId)
             }
             this.setState({ isLoading: false });
         }
@@ -118,22 +125,24 @@ class OrderDetails extends Component {
         }
     }
 
-    getFinalPriceOfOrder(orderItems) {
-        let finalPriceForOrder = 0;
-        if (this.state.orderDetails.is_order_type_recommentation === true) {
-            orderItems.forEach(element => {
-                finalPriceForOrder += Number(element.medicine_recommentation_max_price);
-            });
+    // getFinalPriceOfOrder(orderItems) {
+    //     let finalPriceForOrder = 0;
+    //     if (orderItems.length !== null) {
+    //         if (this.state.orderDetails.is_order_type_recommentation === true) {
+    //             orderItems.forEach(element => {
+    //                 finalPriceForOrder += Number(element.medicine_recommentation_max_price);
+    //             });
 
-        } else {
-            orderItems.forEach(element => {
-                finalPriceForOrder += Number(element.final_price);
-            });
-        }
-        return finalPriceForOrder;
-    }
+    //         } else {
+    //             orderItems.forEach(element => {
+    //                 finalPriceForOrder += Number(element.final_price);
+    //             });
+    //         }
+    //     }
+    //     return finalPriceForOrder;
+    // }
     getGrandTotal(orderInfo) {
-        const itemTotal = this.getFinalPriceOfOrder(orderInfo.order_items || []);
+        const itemTotal = this.getFinalPriceOfOrder(orderInfo || null);
         const deliveryCharge = orderInfo.delivery_charges;
         const deliveryTax = orderInfo.delivery_tax
         let totalAmount = Number(Number(itemTotal) + Number(deliveryCharge || 0) + Number(deliveryTax || 0)).toFixed(2)
@@ -279,54 +288,54 @@ class OrderDetails extends Component {
                                 <Text style={styles.orderIdText}>Order Id</Text>
                             </Col>
                             <Col size={5}>
-                                <Text style={{ fontSize: 12, textAlign: 'right', marginTop: 13, fontFamily: 'OpenSans' }}>{orderDetails.order_ref_no || ''}</Text>
+                                <Text style={{ fontSize: 12, textAlign: 'right', marginTop: 13, fontFamily: 'OpenSans' }}>{orderDetails.orderNumber || ''}</Text>
                             </Col>
                         </Row>
                     </View>
                     <View style={{ backgroundColor: '#fff', padding: 10, }}>
                         {/* <Text style={styles.arrHeadText}>Arriving On Today</Text> */}
+                        {this.state.statusSlap.length !== 0 ?
+                            <FlatList
+                                style={{ marginTop: 10 }}
+                                data={this.state.statusSlap}
+                                keyExtractor={(item, index) => index.toString()}
+                                renderItem={({ item, index }) =>
+                                    <Row style={{}}>
+                                        <Col size={0.7}>
+                                            {statusBar[item.status].checked === true ?
+                                                <TouchableOpacity style={styles.lengthTouch}>
+                                                </TouchableOpacity> : null}
 
-                        <FlatList
-                            style={{ marginTop: 10 }}
-                            data={orderDetails.order_status_slap}
-                            keyExtractor={(item, index) => index.toString()}
-                            renderItem={({ item, index }) =>
-                                <Row style={{}}>
-                                    <Col size={0.7}>
-                                        {statusBar[item.status].checked === true ?
-                                            <TouchableOpacity style={styles.lengthTouch}>
-                                            </TouchableOpacity> : null}
+                                            {statusBar[item.status].checked === false ?
+                                                <TouchableOpacity style={styles.bottomText}>
+                                                </TouchableOpacity> :
+                                                null}
 
-                                        {statusBar[item.status].checked === false ?
-                                            <TouchableOpacity style={styles.bottomText}>
-                                            </TouchableOpacity> :
-                                            null}
+                                            {statusBar[item.status].checked === true && this.state.statusSlap.length !== (Number(index) + 1) ?
+                                                <TouchableOpacity style={styles.TouchLegth}>
+                                                </TouchableOpacity>
+                                                :
+                                                <TouchableOpacity style={{
+                                                    height: 60,
+                                                    padding: 1,
+                                                    width: 4,
+                                                    marginLeft: 4
+                                                }}>
+                                                </TouchableOpacity>}
+                                        </Col>
+                                        <Col size={9.3}>
+                                            <View style={{ marginTop: -3 }}>
+                                                <Text style={styles.trackingText}>{statusBar[item.status].status}</Text>
+                                                <Text style={{ fontSize: 12, fontFamily: 'OpenSans', color: '#909090' }}>{formatDate(item.updatedDate, ' Do MMMM YYYY ') + ' at ' + formatDate(item.status_update_date, 'h:mm:ss a')}</Text>
+                                            </View>
 
-                                        {statusBar[item.status].checked === true && orderDetails.order_status_slap.length !== (Number(index) + 1) ?
-                                            <TouchableOpacity style={styles.TouchLegth}>
-                                            </TouchableOpacity>
-                                            :
-                                            <TouchableOpacity style={{
-                                                height: 60,
-                                                padding: 1,
-                                                width: 4,
-                                                marginLeft: 4
-                                            }}>
-                                            </TouchableOpacity>}
-                                    </Col>
-                                    <Col size={9.3}>
-                                        <View style={{ marginTop: -3 }}>
-                                            <Text style={styles.trackingText}>{statusBar[item.status].status}</Text>
-                                            <Text style={{ fontSize: 12, fontFamily: 'OpenSans', color: '#909090' }}>{formatDate(item.status_update_date, ' Do MMMM YYYY ') + ' at ' + formatDate(item.status_update_date, 'h:mm:ss a')}</Text>
-                                        </View>
+                                        </Col>
+                                    </Row>
+                                } />
 
-                                    </Col>
-                                </Row>
-                            } />
-
-
+                            : null}
                         <Text style={{ fontSize: 14, fontWeight: '500', fontFamily: 'OpenSans', color: '#7F49C3', marginTop: 10 }}>Ordered Medicines</Text>
-                        {orderDetails.is_order_type_prescription === true ?
+                        {orderDetails.prescriptions !== null && orderDetails.prescriptions !== undefined ?
 
                             <View style={{ flex: 1, marginLeft: 10, marginRight: 10, justifyContent: 'center', alignItems: 'center', }}>
                                 <ImageZoom cropWidth={200}
@@ -341,10 +350,10 @@ class OrderDetails extends Component {
                                     <SwiperFlatList
                                         autoplay
                                         autoplayDelay={3}
-                                        index={Number(orderDetails.prescription_data.prescription_items.length) - 1}
+                                        index={orderDetails.prescriptions.length - 1}
                                         contentContainerStyle={{ flexGrow: 1, }}
                                         autoplayLoop
-                                        data={orderDetails.prescription_data.prescription_items}
+                                        data={orderDetails.prescriptions}
                                         renderItem={({ item }) =>
                                             <TouchableOpacity onPress={() => this.props.navigation.navigate("ImageView", { passImage: { uri: item.prescription_path }, title: 'prescription' })}>
                                                 <Image
@@ -359,11 +368,11 @@ class OrderDetails extends Component {
                                     />
                                 </ImageZoom>
                             </View> : null}
-                        {orderDetails.order_items !== undefined && orderDetails.order_items.length !== 0 ?
+                        {orderDetails.items !== undefined && orderDetails.items !== null && orderDetails.items.length !== 0 ?
                             <FlatList
-                                data={orderDetails.order_items}
+                                data={orderDetails.items}
                                 keyExtractor={(item, index) => index.toString()}
-                                extraData={orderDetails.order_items}
+                                extraData={orderDetails.items}
                                 renderItem={({ item }) =>
                                     <Row style={styles.rowStyle}>
                                         <Col size={2}>
@@ -375,46 +384,37 @@ class OrderDetails extends Component {
                                             />
                                         </Col>
                                         <Col size={8} style={[styles.nameText, { marginTop: 5 }]}>
-                                            <Text style={styles.nameText}>{item.medicine_name}</Text>
-                                            {orderDetails.is_order_type_recommentation === true ?
+                                            <Text style={styles.nameText}>{item.description}</Text>
+                                            {/* {orderDetails.is_order_type_recommentation === true ?
                                                 <Text style={styles.pharText}>{'mediflic pharmacy'}</Text> :
                                                 orderDetails.is_order_type_prescription === true && orderDetails.status !== 'PENDING' ?
                                                     <Text style={styles.pharText}>{orderDetails.pharmacyInfo[0].name}</Text> :
                                                     <Text style={styles.pharText}>{item.pharmacyInfo.name}</Text>
-                                            }
+                                            } */}
 
                                         </Col>
                                         <Col size={2} style={[styles.nameText, { alignSelf: 'flex-end' }]}>
-                                            {orderDetails.is_order_type_recommentation === true ?
+                                            {/* {orderDetails.is_order_type_recommentation === true ?
                                                 <Text style={styles.amountText}>₹{item.medicine_recommentation_max_price}</Text>
-                                                : <Text style={styles.amountText}>₹{item.final_price}</Text>
-                                            }
+                                                 : */}
+                                            <Text style={styles.amountText}>₹{item.totalPrice}</Text>
+                                            {/* } */}
                                         </Col>
                                     </Row>
                                 } /> : null}
 
-                        {orderDetails.is_order_type_prescription !== true && orderDetails.order_items !== undefined && orderDetails.order_items.length !== 0 ?
-                            <Row style={{ marginTop: 10 }}>
-                                <Col size={5}>
-                                    <Text style={styles.ItemText}>Medicine total amout</Text>
 
-                                </Col>
-                                <Col size={5}>
-                                    <Text style={styles.rsText}>₹ {this.getFinalPriceOfOrder(orderDetails.order_items || [])}</Text>
-                                </Col>
-                            </Row>
-                            :
-                            <Row style={{ marginTop: 10 }}>
-                                <Col size={5}>
-                                    <Text style={styles.ItemText}>Medicine total amout</Text>
+                        <Row style={{ marginTop: 10 }}>
+                            <Col size={5}>
+                                <Text style={styles.ItemText}>Medicine total amout</Text>
 
-                                </Col>
-                                <Col size={5}>
-                                    <Text style={styles.rsText}> {'Medicine Charges By Pharmacy'}</Text>
-                                </Col>
-                            </Row>
-                        }
-                        {orderDetails.delivery_option === "HOME_DELIVERY" ?
+                            </Col>
+                            <Col size={5}>
+                                <Text style={styles.rsText}>₹ {orderDetails.prescriptions === null ? orderDetails.totalAmount : ' Medicine Charges By Pharmacy'}</Text>
+                            </Col>
+                        </Row>
+
+                        {orderDetails.delivery_option === 0 ?
                             <View>
                                 <Row style={{ marginTop: 10 }}>
                                     <Col size={5}>
@@ -442,7 +442,7 @@ class OrderDetails extends Component {
 
                             </Col>
                             <Col size={5}>
-                                <Text style={styles.totalsText}>₹ {this.getGrandTotal(orderDetails)}</Text>
+                                <Text style={styles.totalsText}>₹ {orderDetails.prescriptions === null ? orderDetails.totalAmount : ' Medicine Charges By Pharmacy'}</Text>
                             </Col>
                         </Row>
                     </View>
@@ -534,7 +534,7 @@ class OrderDetails extends Component {
 
                         <View style={{ marginTop: 10 }}>
                             <Text style={styles.innerText}>Delivery mode</Text>
-                            <Text style={styles.rightText}>{orderDetails.delivery_option || ''}</Text>
+                            <Text style={styles.rightText}>{orderDetails.deliveryType===0? 'Home delivery':'store pickup'}</Text>
                         </View>
                         <View style={{ marginTop: 10 }}>
                             <Text style={styles.innerText}>Ordered On</Text>

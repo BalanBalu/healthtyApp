@@ -1,9 +1,9 @@
 import React, { Component } from 'react';
 import {
-    Container, Content, Text, Icon, View, Card, Thumbnail, Item, Button
+    Container, Content, Text, Icon, View, Card, Thumbnail, Item, Button, Footer
 } from 'native-base';
 import { Col, Row } from 'react-native-easy-grid';
-import { StyleSheet, AsyncStorage, FlatList, TouchableOpacity } from 'react-native';
+import { StyleSheet, AsyncStorage, FlatList, TouchableOpacity, Platform } from 'react-native';
 import { getMedicineOrderList } from '../../../providers/pharmacy/pharmacy.action';
 import { formatDate } from '../../../../setup/helpers';
 import { statusBar } from '../CommomPharmacy'
@@ -16,10 +16,16 @@ class MyOrdersList extends Component {
         this.state = {
             data: [],
             isLoading: true,
+            pagination: 0,
+            footerLoading: false
         }
     }
-    componentDidMount() {
-        this.getMedicineOrderList();
+    async componentDidMount() {
+        this.setState({ isLoading: true })
+        let result = await this.getMedicineOrderList();
+        if (result.success) {
+            this.setState({ isLoading: false });
+        }
     }
 
     getFinalPriceOfOrder(orderItems, data) {
@@ -45,17 +51,45 @@ class MyOrdersList extends Component {
 
     getMedicineOrderList = async () => {
         try {
-            this.setState({ isLoading: true })
+
             let userId = await AsyncStorage.getItem('userId');
-            let result = await getMedicineOrderList(userId);
-            this.setState({ isLoading: false });
-            if (result.success) {
-                this.setState({ data: result.data })
+            let result = await getMedicineOrderList(userId, this.state.pagination);
+
+
+
+            if (result) {
+
+                let data = this.state.data;
+                let temp = data.concat(result);
+                console.log('orderlist=======================');
+                console.log(JSON.stringify(temp))
+                console.log(temp.length)
+                this.setState({ data: temp })
+            }
+            return {
+                success: true
             }
         } catch (e) {
             console.log(e);
             this.setState({ isLoading: false });
         }
+    }
+    handleLoadMore = async () => {
+        this.setState({ pagination: this.state.pagination + 1, footerLoading: true });
+        let result = await this.getMedicineOrderList()
+         this.setState({ footerLoading: false })
+
+
+    }
+    getorderDescription(data) {
+        if (!!data.items) {
+            return `No of products:${data.items.length}`
+        } else if (!!data.prescriptions) {
+            return `Product:prescription `
+        } else {
+            return null
+        }
+
     }
 
 
@@ -105,11 +139,14 @@ class MyOrdersList extends Component {
                         :
                         <View>
                             <FlatList data={data}
+
                                 keyExtractor={(item, index) => index.toString()}
-                                renderItem={({ item, key }) =>
+                                onEndReached={this.handleLoadMore}
+                                onEndReachedThreshold={8}
+                                renderItem={({ item, index }) =>
                                     <TouchableOpacity
                                         testID="orderDetailsNavigation"
-                                        onPress={() => this.props.navigation.navigate('OrderDetails', { serviceId: item._id })}>
+                                        onPress={() => this.props.navigation.navigate('OrderDetails', { serviceId: item.id })}>
                                         <View style={{ margin: 5, backgroundColor: '#fff', marginLeft: 10, marginRight: 10, marginBottom: 10 }}>
                                             <View style={{ marginBottom: 10 }}>
                                                 <Row style={{ borderBottomWidth: 0.5, borderBottomColor: '#E6E6E6', paddingBottom: 5, marginLeft: 10, marginRight: 10 }}>
@@ -117,18 +154,18 @@ class MyOrdersList extends Component {
                                                         <Text style={styles.Head}>Order Id</Text>
                                                     </Col>
                                                     <Col>
-                                                        <Text style={{ fontSize: 12, textAlign: 'right', marginTop: 13, fontFamily: 'OpenSans', marginRight: 5 }}>{item.order_ref_no || ''}</Text>
+                                                        <Text style={{ fontSize: 12, textAlign: 'right', marginTop: 13, fontFamily: 'OpenSans', marginRight: 5 }}>{item.orderNumber || index}</Text>
                                                     </Col>
                                                 </Row>
                                                 <Row style={styles.Row} />
                                                 <Row>
-                                                    <Text style={{ fontFamily: 'OpenSans', fontSize: 16, color: '#000', fontWeight: 'bold', marginTop: 5, marginLeft: 10 }}>{item.description}</Text>
+                                                    <Text style={{ fontFamily: 'OpenSans', fontSize: 16, color: '#000', fontWeight: 'bold', marginTop: 5, marginLeft: 10 }}>{this.getorderDescription(item)}</Text>
                                                 </Row>
                                                 <Row >
                                                     <Text style={styles.Head1}>Ordered On</Text>
                                                 </Row>
                                                 <Row >
-                                                    <Text style={styles.orderprice}>{formatDate(item.created_date, 'DD MMMM,YYYY')}</Text>
+                                                    <Text style={styles.orderprice}>{formatDate(item.createdDate, 'DD MMMM,YYYY')}</Text>
                                                 </Row>
 
                                                 <Row >
@@ -139,12 +176,13 @@ class MyOrdersList extends Component {
 
                                                         <Row style={{}}>
                                                             <Col size={5}>
-                                                                <Text style={styles.orderprice}>₹ {this.getFinalPriceOfOrder(item.order_items || [], item)}</Text>
+                                                                <Text style={styles.orderprice}>₹ {item.totalAmount}</Text>
                                                             </Col>
                                                         </Row>
                                                     </Col>
                                                 </Row>
                                                 <Row style={styles.Row}>
+
                                                     <Text style={[styles.orderprice1, { color: statusBar[item.status].color }]}>{statusBar[item.status].status}</Text>
                                                 </Row>
 
@@ -180,7 +218,19 @@ class MyOrdersList extends Component {
 
 
                         </View>}
+                    <View >
+                        <Spinner
+
+                            color='blue'
+                            visible={this.state.footerLoading}
+                        />
+                    </View>
                 </Content>
+                {/* <Footer style={
+                    Platform.OS === "ios" ?
+                        { height: 30 } : { height: 45 }}> */}
+
+                {/* </Footer> */}
             </Container>
         )
     }

@@ -208,6 +208,19 @@ export function getMedicineName(data) {
   }
 
 }
+
+export function getIsAvailable(data,availableData) {
+  let isAvailable=false
+  let item=availableData.find(ele=>{
+    return ele.productId===data.id
+  })
+  if(item!==undefined){
+    if(item.available>1){
+      isAvailable=true
+    }
+  }
+return isAvailable
+}
 export function getMedicineWeightUnit(weight, unit) {
   let medicineWeightUnit = ' '
   if (!weight && !unit) {
@@ -298,6 +311,13 @@ export const statusBar = {
     checked: true,
     color: 'green'
   },
+  "undefined":
+    {
+      status: 'status  mismatching undefined',
+      checked: true,
+      color: 'red'
+    },
+  
 }
 
 
