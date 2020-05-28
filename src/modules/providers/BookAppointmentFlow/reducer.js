@@ -1,8 +1,6 @@
 
 import {
-    SET_BOOK_APP_SLOT_DATA,
-    SET_BOOK_APP_DOCTOR_DATA,
-    SET_SELECTED_DATE,
+    SET_DOCTOR_INFO_LIST_AND_SLOTS_DATA,
     SET_SINGLE_DOCTOR_ITEM_DATA,
     SET_PATIENT_FAVORITE_COUNTS_OF_DOCTOR_IDS,
     SET_DOC_FAVORITE_COUNTS_OF_DOCTOR_IDS,
@@ -14,10 +12,8 @@ import {
 export const bookAppointmentData = {
     message: null,
     isLoading: false,
-    selectedDate: null,
-    doctorData: [],
+    doctorInfoListAndSlotsData: [],
     singleDoctorItemData: null,
-    slotData: [],
     patientFavoriteListCountOfDoctorIds: [],
     docFavoriteListCountOfDoctorIDs: {},
     docReviewListCountOfDoctorIDs: {},
@@ -30,20 +26,10 @@ export const bookAppointmentData = {
 // State
 export default (state = bookAppointmentData, action) => {
     switch (action.type) {
-        case SET_BOOK_APP_SLOT_DATA:
+        case SET_DOCTOR_INFO_LIST_AND_SLOTS_DATA:
             return {
                 ...state,
-                slotData: action.data
-            }
-        case SET_BOOK_APP_DOCTOR_DATA:
-            return {
-                ...state,
-                doctorData: action.data
-            }
-        case SET_SELECTED_DATE:
-            return {
-                ...state,
-                selectedDate: action.data
+                doctorInfoListAndSlotsData: action.data
             }
         case SET_SINGLE_DOCTOR_ITEM_DATA:
             return {

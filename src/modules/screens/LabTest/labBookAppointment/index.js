@@ -8,15 +8,15 @@ import RenderReviews from './RenderReviews'
 import { formatDate, addMoment, getMoment, getUnixTimeStamp } from '../../../../setup/helpers';
 import RenderDates from '../labSearchList/RenderDateList';
 import RenderSlots from '../labSearchList/RenderSlots';
-import { RenderFavoritesComponent, RenderFavoritesCount, RenderStarRatingCount, RenderPriceDetails, RenderOfferDetails, renderLabTestImage, RenderNoSlotsAvailable } from '../labTestComponents'
-import { enumerateStartToEndDates } from '../CommonLabTest'
+import { RenderFavoritesComponent, RenderFavoritesCount, RenderStarRatingCount, RenderPriceDetails, RenderOfferDetails, renderLabTestImage, RenderNoSlotsAvailable } from '../../CommonAll/components'
+import { enumerateStartToEndDates } from '../../CommonAll/functions'
 import { } from '../../../providers/labTest/labTestBookAppointment.action';
 import { fetchLabTestAvailabilitySlotsService } from '../../../providers/labTest/basicLabTest.action';
 import RenderLabLocation from '../RenderLabLocation';
 import { Loader } from '../../../../components/ContentLoader';
 import { addFavoritesToLabByUserService } from '../../../providers/labTest/labTestBookAppointment.action'
 import RenderLabCategories from '../RenderLabCategories';
-import styles from '../styles'
+import styles from '../../CommonAll/styles'
 class LabBookAppointment extends Component {
   availabilitySlotsDatesArry = [];
   slotData4ItemMap = new Map();
@@ -186,9 +186,9 @@ class LabBookAppointment extends Component {
       return;
     }
     console.log(selectedSlotItem);
-    
+
     const { labInfo, labCatInfo } = labData;
-    
+
     let packageDetails = {
       lab_id: labInfo.lab_id,
       lab_test_categories_id: labCatInfo._id,
@@ -229,11 +229,11 @@ class LabBookAppointment extends Component {
                     <Row style={{ marginLeft: 55, marginTop: 10 }}>
                       <Col size={9}>
                         <Text style={{ fontFamily: 'OpenSans', fontSize: 12, fontWeight: 'bold' }}>{labInfo && labInfo.lab_name}</Text>
-                      <Row>  
-                        <Text note style={{ fontFamily: 'OpenSans', fontSize: 12, marginTop: 5 }}>{labCatInfo && labCatInfo.categoryInfo && labCatInfo.categoryInfo.category_name}</Text>
-                        <Text note style={{ fontFamily: 'OpenSans', fontSize: 12, marginTop: 5 }}>{' - '}</Text>
-                        <Text style={{ fontFamily: 'OpenSans', fontSize: 12, marginTop: 5 }}>{labCatInfo && labCatInfo.category_name}</Text>
-                      </Row>
+                        <Row>
+                          <Text note style={{ fontFamily: 'OpenSans', fontSize: 12, marginTop: 5 }}>{labCatInfo && labCatInfo.categoryInfo && labCatInfo.categoryInfo.category_name}</Text>
+                          <Text note style={{ fontFamily: 'OpenSans', fontSize: 12, marginTop: 5 }}>{' - '}</Text>
+                          <Text style={{ fontFamily: 'OpenSans', fontSize: 12, marginTop: 5 }}>{labCatInfo && labCatInfo.category_name}</Text>
+                        </Row>
                       </Col>
                       <Col size={1}>
                       </Col>

@@ -4,11 +4,11 @@ import { Col, Row, Grid } from 'react-native-easy-grid';
 import { connect } from 'react-redux'
 import { StyleSheet, TouchableOpacity, View, FlatList, AsyncStorage, Dimensions, ScrollView, Image } from 'react-native';
 import { searchByLabDetailsService, fetchLabTestAvailabilitySlotsService } from '../../../providers/labTest/basicLabTest.action';
-import { RenderFavoritesComponent, RenderFavoritesCount, RenderStarRatingCount, RenderPriceDetails, RenderOfferDetails, RenderAddressInfo, renderLabTestImage, RenderNoSlotsAvailable, RenderListNotFound } from '../labTestComponents';
-import { enumerateStartToEndDates } from '../CommonLabTest'
+import { RenderFavoritesComponent, RenderFavoritesCount, RenderStarRatingCount, RenderPriceDetails, RenderOfferDetails, RenderAddressInfo, renderLabTestImage, RenderNoSlotsAvailable, RenderListNotFound } from '../../CommonAll/components';
+import { enumerateStartToEndDates } from '../../CommonAll/functions'
 import { Loader } from '../../../../components/ContentLoader';
 import { formatDate, addMoment, getMoment } from '../../../../setup/helpers';
-import styles from '../styles'
+import styles from '../../CommonAll/styles'
 import RenderDates from './RenderDateList';
 import RenderSlots from './RenderSlots';
 import { getWishList4PatientByLabTestService, addFavoritesToLabByUserService, getTotalWishList4LabTestService, getTotalReviewsCount4LabTestService, SET_SINGLE_LAB_ITEM_DATA } from '../../../providers/labTest/labTestBookAppointment.action'
@@ -290,8 +290,8 @@ class labSearchList extends Component {
                                             <Text style={{ fontFamily: 'OpenSans', fontSize: 12, fontWeight: 'bold' }}>{item.labInfo.lab_name}</Text>
                                         </Row>
                                         <Row style={{ marginLeft: 55, }}>
-                                            <Text note style={{ fontFamily: 'OpenSans', marginTop: 2, fontSize: 12 }}>{(item.labCatInfo.categoryInfo && item.labCatInfo.categoryInfo.category_name ) + ' - '}</Text>
-                                            <Text  style={{ fontFamily: 'OpenSans', marginTop: 2, fontSize: 12 }}>{item.labCatInfo.category_name}</Text>
+                                            <Text note style={{ fontFamily: 'OpenSans', marginTop: 2, fontSize: 12 }}>{(item.labCatInfo.categoryInfo && item.labCatInfo.categoryInfo.category_name) + ' - '}</Text>
+                                            <Text style={{ fontFamily: 'OpenSans', marginTop: 2, fontSize: 12 }}>{item.labCatInfo.category_name}</Text>
                                         </Row>
                                         <Row style={{ marginLeft: 55, }}>
 
@@ -330,7 +330,7 @@ class labSearchList extends Component {
                                     </Col>
                                     <Col style={{ width: "25%", marginLeft: 10 }}>
                                         <RenderPriceDetails
-                                            priceInfo={item.labCatInfo && item.labCatInfo.price ?   item.labCatInfo.price : ' '}
+                                            priceInfo={item.labCatInfo && item.labCatInfo.price ? item.labCatInfo.price : ' '}
                                         />
                                     </Col>
                                 </Row>

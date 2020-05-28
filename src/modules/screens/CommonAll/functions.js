@@ -1,7 +1,5 @@
-import React, { Component } from "react";
-import { View, Text, Platform } from "react-native";
-import { getUnixTimeStamp } from '../../../setup/helpers';
 
+import { getUnixTimeStamp } from '../../../setup/helpers';
 
 function getUserGenderAndAge(data) {
     let genderAndAge = '';

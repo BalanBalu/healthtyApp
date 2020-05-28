@@ -111,20 +111,28 @@ class RenderSuggestionsList extends PureComponent {
                             renderItem={({ item, index }) => (
                                 <Row
                                     onPress={() => {
-                                        let requestData = [{
-                                            type: 'geo',
-                                            value: {
+                                        // let requestData = [{
+                                        //     type: 'geo',
+                                        //     value: {
+                                        //         coordinates: locationCordinates,
+                                        //         maxDistance: MAX_DISTANCE_TO_COVER
+                                        //     }
+                                        // }]
+                                        // if (index !== 0) {
+                                        //     requestData.push({
+                                        //         type: item.type,
+                                        //         value: item.value
+                                        //     })
+                                        // }
+                                        // this.props.navigation.navigate("Doctor List", { resultData: requestData })
+                                        this.props.navigation.navigate("Doctor Search List", {   // New Enhancement Router path
+                                            inputKeywordFromSearch: item.value,
+                                            locationDataFromSearch: {
+                                                type: 'geo',
                                                 coordinates: locationCordinates,
                                                 maxDistance: MAX_DISTANCE_TO_COVER
                                             }
-                                        }]
-                                        if (index !== 0) {
-                                            requestData.push({
-                                                type: item.type,
-                                                value: item.value
-                                            })
-                                        }
-                                        this.props.navigation.navigate("Doctor List", { resultData: requestData })
+                                        })
                                     }}
                                 >
                                     <Col size={7}>
