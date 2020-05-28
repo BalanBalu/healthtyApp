@@ -1,6 +1,6 @@
 import { bookAppointment, createPaymentRazor } from './bookappointment.action';
 import { updateChat } from '../chat/chat.action'
-import { createMedicineOrder } from '../pharmacy/pharmacy.action'
+import { createMedicineOrder,capturePayment } from '../pharmacy/pharmacy.action'
 import { SERVICE_TYPES } from '../../../setup/config'
 import { possibleChatStatus } from '../../../Constants/Chat';
 import { updateVideoConsuting, } from '../../screens/VideoConsulation/services/video-consulting-service'
@@ -251,7 +251,7 @@ export default class BookAppointmentPaymentUpdate {
                 // status_by: "USER",
                 // status_update_reason: 'New Medicine Order',
                 // booked_from: "APPLICATION",
-                payment_id: paymentId,
+                paymentId: paymentId,
                 items: orderData.medicineDetails,
                 // delivery_charges: orderData.delivery_charges || ' ',
                 // delivery_tax: orderData.delivery_tax || '',
@@ -265,19 +265,20 @@ export default class BookAppointmentPaymentUpdate {
             if (orderData.delivery_option === 'STORE_PICKUP') {
                 delete requestData.delivery_tax
                 delete requestData.delivery_charges
-            } if (orderData.is_order_type_prescription === true) {
-                requestData.prescription_data = {
-                    prescription_id: orderData.prescription_id,
-                    pharmacy_id: orderData.pharmacy_id
-                }
-                delete requestData.order_items
+            } if (orderData.prescriptions) {
+                requestData.prescriptions = orderData.prescriptions
+
+                delete requestData.items
             }
             if (orderData.is_order_type_recommentation === false) {
                 delete requestData.recommentation_pharmacy_data
             }
             let resultData = await createMedicineOrder(requestData);
+            console.log('resultData create order result==================')
             console.log(resultData)
             if (resultData) {
+               capturePayment(paymentId)
+                
                 return {
                     message: 'order created sucessfully',
                     success: isSuccess,

@@ -53,7 +53,7 @@ class MedicineCheckout extends Component {
             const isPrescription = navigation.getParam('isPrescription') || false
             let prescriptionDetails = null
             if (isPrescription === true) {
-                const prescriptionDetails = navigation.getParam('prescriptionDetails');
+                 prescriptionDetails = navigation.getParam('prescriptionDetails');
                 this.setState({ medicineDetails, isPrescription, prescriptionDetails })
 
             } else {
@@ -78,14 +78,16 @@ class MedicineCheckout extends Component {
 
     clickedHomeDelivery = async () => {
         try {
+           
             let patientFields = "first_name,last_name,mobile_no,email,address,delivery_address"
             let userId = await AsyncStorage.getItem('userId');
             this.setState({ isLoading: true });
             let patientResult = await fetchUserProfile(userId, patientFields);
+           
 
             let deliveryAddressArray = []
             if (patientResult !== null) {
-                this.setState({ isLoading: false });
+               
                 let full_name = patientResult.first_name + " " + patientResult.last_name,
                     mobile_no = patientResult.mobile_no
                 this.setState({ full_name, mobile_no })
@@ -106,7 +108,7 @@ class MedicineCheckout extends Component {
             console.log(JSON.stringify(deliveryAddressArray))
             await this.setState({ deliveryAddressArray })
             this.selectedItem(this.state.itemSelected)
-
+            this.setState({ isLoading: false });
         } catch (error) {
             console.log(error);
         }

@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import { Container, Content, Toast, Text, Title, Header, Button, H3, Item, Form, List, ListItem, Card, Input, Left, Right, Thumbnail, Body, Icon, View, Footer, FooterTab } from 'native-base';
 import { Col, Row, Grid } from 'react-native-easy-grid';
 import { connect } from 'react-redux'
-import { getPopularMedicine, getSearchedMedicines, getNearOrOrderPharmacy, getSuggestionMedicines } from '../../../providers/pharmacy/pharmacy.action'
+import { getPopularMedicine, getSearchedMedicines, getNearOrOrderPharmacy, getSuggestionMedicines,getAvailableStockForListOfProducts } from '../../../providers/pharmacy/pharmacy.action'
 import { StyleSheet, Image, FlatList, TouchableOpacity, AsyncStorage, ScrollView, Dimensions } from 'react-native';
 import { NavigationEvents } from 'react-navigation';
 import { medicineRateAfterOffer, setCartItemCountOnNavigation, renderMedicineImage, getMedicineName, quantityPriceSort } from '../CommomPharmacy';
@@ -24,6 +24,7 @@ class PharmacyHome extends Component {
         super(props)
         this.state = {
             medicineData: [],
+            medicineDataAvailable:[],
             clickCard: null,
             footerSelectedItem: '',
             cartItems: [],
@@ -65,30 +66,31 @@ class PharmacyHome extends Component {
                 await this.setState({ cartItems: cartData })
             }
         }
-        if (payload.action.type == 'Navigation/BACK' || 'Navigation/POP') {
+        // if (payload.action.type == 'Navigation/BACK' || 'Navigation/POP') {
 
-            this.getMedicineList();
-            this.getNearByPharmacyList();
-        }
+        //     this.getMedicineList();
+        //     this.getNearByPharmacyList();
+        // }
     }
 
     /*Get medicine list*/
     getMedicineList = async () => {
         try {
             userId = await AsyncStorage.getItem('userId')
-            const { bookappointment: { locationCordinates } } = this.props;
-            let locationData = {
-                "coordinates": locationCordinates,
-                "maxDistance": PHARMACY_MAX_DISTANCE_TO_COVER
-            }
+           
             let result = await getSuggestionMedicines('dolo')
 
-            // getPopularMedicine(userId, JSON.stringify(locationData));
+          
 
             if (result) {
-                // let sortedData = await quantityPriceSort(result.data)
-
-                this.setState({ medicineData: result })
+               let prodcuctIds=[]
+                result.map(ele=>{
+                    prodcuctIds.push(ele.id)
+                })
+               
+                let availableResult=await getAvailableStockForListOfProducts(prodcuctIds);
+            
+                this.setState({ medicineData: result,medicineDataAvailable:availableResult })
                 console.log("medicineData", this.state.medicineData)
                 if (userId) {
                     let cart = await AsyncStorage.getItem('cartItems-' + userId) || []
@@ -115,12 +117,13 @@ class PharmacyHome extends Component {
     getNearByPharmacyList = async () => {
         try {
             const { bookappointment: { locationCordinates } } = this.props;
-            locationData = {
+           let  locationData = {
                 "coordinates": locationCordinates,
                 "maxDistance": PHARMACY_MAX_DISTANCE_TO_COVER
             }
 
             let result = await getNearOrOrderPharmacy(userId, JSON.stringify(locationData));
+        
 
             if (result.success) {
                 this.setState({ pharmacyData: result.data })
