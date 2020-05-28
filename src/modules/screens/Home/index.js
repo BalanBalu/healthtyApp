@@ -27,6 +27,9 @@ import NotifService from '../../../setup/NotifService';
 import FastImage from 'react-native-fast-image'
 import { translate } from '../../../setup/translator.helper';
 import { authorizeConnectyCube, setUserLoggedIn } from '../VideoConsulation/services/video-consulting-service';
+import { getUserAppointments,getMultipleDoctorDetails } from "../../providers/bookappointment/bookappointment.action";
+import {  getName ,getAllEducation, getAllSpecialist} from '../../common'
+import { formatDate, addTimeUnit,getAllId } from "../../../setup/helpers";
 
 
 class Home extends Component {
@@ -38,7 +41,8 @@ class Home extends Component {
             data: [],
             isLoading: false,
             catagary: [],
-            categryCount: 0
+            categryCount: 0,
+            AppoinmentData:[]
         };
     }
 
@@ -69,6 +73,7 @@ class Home extends Component {
     }
     async componentDidMount() {
         try {
+            await this.upCommingNextAppointment(),
             this.initialFunction();
             this._setUpListeners();
             NotifService.initNotification(this.props.navigation);
@@ -366,6 +371,95 @@ class Home extends Component {
         CallKeepService.displayIncomingCall('12345', 'Doctor');
     };
 
+
+	upCommingNextAppointment = async () => {
+		try {
+       
+            this.setState({ isLoading: true })
+         
+            let userId = await AsyncStorage.getItem("userId");
+       
+			let filters = {
+				startDate: new Date().toUTCString(),
+				endDate: addTimeUnit(new Date(), 1, "years").toUTCString(),
+				on_going_appointment: true
+            };
+           
+			// alert(JSON.stringify(userId))
+			let upCommingAppointmentResult = await getUserAppointments(userId, filters);
+			console.log('upcomming==================================');
+            console.log(upCommingAppointmentResult)
+			if (upCommingAppointmentResult.success) {
+				let doctorInfo = new Map();
+				upCommingAppointmentResult = upCommingAppointmentResult.data;
+
+				let doctorIds = getAllId(upCommingAppointmentResult)
+				let speciallistResult = await getMultipleDoctorDetails(doctorIds, "specialist,education,prefix,profile_image,gender");
+
+				speciallistResult.data.forEach(doctorData => {
+					let educationDetails = ' ';
+					let speaciallistDetails = '';
+
+					if (doctorData.education != undefined) {
+						educationDetails = getAllEducation(doctorData.education)
+					}
+					if (doctorData.specialist != undefined) {
+						speaciallistDetails = getAllSpecialist(doctorData.specialist)
+					}
+
+					doctorInfo.set(doctorData.doctor_id, {
+						degree: educationDetails,
+						specialist: speaciallistDetails,
+						prefix: doctorData.prefix,
+						profile_image: doctorData.profile_image,
+						gender: doctorData.gender
+					})
+				});
+
+				let upcommingInfo = [];
+				upCommingAppointmentResult.map(doctorData => {
+					let details = doctorInfo.get(doctorData.doctor_id)
+					upcommingInfo.push({
+						appointmentResult: doctorData,
+						specialist: details.specialist,
+						degree: details.degree,
+						prefix: details.prefix,
+						profile_image: details.profile_image
+					});
+				})
+				upcommingInfo.sort(function (firstVarlue, secandValue) {
+					return firstVarlue.appointmentResult.appointment_starttime < secandValue.appointmentResult.appointment_starttime ? -1 : 0
+				})
+				this.setState({
+					upComingData: upcommingInfo,
+					AppoinmentData: upcommingInfo,
+					isLoading: false
+				});
+				//  alert(JSON.stringify(this.state.AppoinmentData))
+			}
+		} catch (e) {
+			console.log(e);
+		} finally {
+			this.setState({
+				isLoading: false
+			})
+
+		}
+	};
+
+
+
+
+
+
+
+
+
+
+
+
+
+
     render() {
         const { bookappointment: { patientSearchLocationName, isSearchByCurrentLocation, locationUpdatedCount }, navigation } = this.props;
 
@@ -379,6 +473,7 @@ class Home extends Component {
             this.locationUpdatedCount = locationUpdatedCount;
 
         }
+        const {AppoinmentData} = this.state
         return (
 
             <Container style={styles.container}>
@@ -609,6 +704,10 @@ class Home extends Component {
                                                <Icon name="ios-information-circle-outline" style={{color:'#fff',fontSize:25}}/>
                                            </Col>
                                     </Row>
+                                    <FlatList
+										data={AppoinmentData}
+										extraData={AppoinmentData}
+										renderItem={({ item, index }) => (
                                     <Row style={{ height: 60, width: '100%', overflow: 'hidden', backgroundColor: "#fff",marginBottom:10,marginTop:10  }}>
                                         <Col style={{ width: '100%',justifyContent:'center',}}>
                                             <Text style={{
@@ -618,9 +717,10 @@ class Home extends Component {
                                                   marginLeft:15,
                                                   marginRight:15,
                                                   fontWeight: '500',
-                                            }}>You  have  an  Appointment  today  with  Dr.Balasubramanian  and  is  scheduled  at  4:00 pm.Please  prepare  for  the  Appointment</Text>
+                                            }}>You  have  an  Appointment  today  with  Dr.Balasubramanian  	{(item.prefix != undefined ? item.prefix + ' ' : '') + getName(item.appointmentResult.doctorInfo)}  and  is  scheduled  at  4:00 pm.Please  prepare  for  the  Appointment</Text>
                                            </Col>
                                     </Row>
+                                        )}/>
                                 </TouchableOpacity>
                             </Card>
                     </View>
