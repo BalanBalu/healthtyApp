@@ -55,11 +55,12 @@ class OrderDetails extends Component {
             let orderId = this.props.navigation.getParam('serviceId') || null
             let userId = await AsyncStorage.getItem('userId')
             let result = await getMedicineOrderDetails(orderId);
-            console.log('orderDetails=======================')
+            console.log('orderDetails======================= info')
             console.log(JSON.stringify(result))
             if (result) {
                 this.setState({ orderDetails: result });
                 let statusSlap = await getOrderTracking(result.orderNumber)
+                console.log('hi========')
                 console.log(JSON.stringify(result))
                 if (statusSlap) {
                     this.setState({ statusSlap })

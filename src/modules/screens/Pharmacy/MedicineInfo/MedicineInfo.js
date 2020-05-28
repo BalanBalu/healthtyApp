@@ -376,46 +376,48 @@ class MedicineInfo extends Component {
                             />
                             : null}
                         <View style={{ marginTop: 10 }}>
-                            <Text style={styles.desText}>Product Details</Text>
+                            <Text style={styles.desText}>Medicine Details</Text>
                             {medicineData.description ?
                                 <Text style={styles.mainText}>{medicineData.description}</Text>
                                 : <Text style={styles.mainText}>N/A</Text>}
-                            {this.state.enlargeContent == false ?
+                            {this.state.enlargeContent == true ?
                                 <TouchableOpacity onPress={() => this.setState({ enlargeContent: true })}>
                                     <Text style={styles.showText}>Show more</Text>
                                 </TouchableOpacity> : null}
 
                             {this.state.enlargeContent == true ?
                                 <View>
+                                         {medicineData.medicine_unit ?
                                     <View style={{ marginTop: 10 }}>
                                         <Text style={styles.desText}>Medicine Dosage</Text>
-                                        {medicineData.medicine_unit ?
-                                            <Text style={styles.mainText}>{medicineData.medicine_unit}</Text> :
-                                            <Text style={styles.mainText}>{'N/A'}</Text>}
-
+                                   
+                                            <Text style={styles.mainText}>{medicineData.medicine_unit}</Text> 
                                     </View>
+                                    :null}
+                                     {medicineData.directions_to_use ?
                                     <View style={{ marginTop: 10 }}>
                                         <Text style={styles.desText}>Directions To Use </Text>
-                                        {medicineData.directions_to_use ?
-                                            <Text style={styles.mainText}>{medicineData.directions_to_use}</Text> :
-                                            <Text style={styles.mainText}>{'N/A'}</Text>}
-                                    </View>
+                                       
+                                            <Text style={styles.mainText}>{medicineData.directions_to_use}</Text> 
+                                            
+                                    </View>:null}
+                                     {medicineData.ingridients ?
                                     <View style={{ marginTop: 10 }}>
                                         <Text style={styles.desText}>Key Ingredients</Text>
-                                        {medicineData.ingridients ?
+                                       
                                             <Text style={styles.mainText}><Text style={{ fontSize: 12, marginTop: 5, }}>{'\u2B24'}</Text>   {medicineData.ingridients}</Text> :
-                                            <Text style={styles.mainText}><Text style={{ fontSize: 12, marginTop: 5, }}>{'\u2B24'}</Text>   {'N/A'}</Text>}
+          
 
-                                    </View>
+
+                                    </View>:null}
+                                    {medicineData.side_effects ?
                                     <View style={{ marginTop: 10 }}>
                                         <Text style={styles.desText}>Side effects</Text>
-                                        {medicineData.side_effects ?
+                                    
                                             <Text style={styles.mainText}>{medicineData.side_effects}</Text> :
                                             <Text style={styles.mainText}>{'N/A'}</Text>}
-                                    </View>
-                                    <TouchableOpacity onPress={() => this.setState({ enlargeContent: false })}>
-                                        <Text style={styles.showText}>Show less</Text>
-                                    </TouchableOpacity>
+                                    </View>:null}
+                                
                                 </View> : null}
 
                         </View>

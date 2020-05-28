@@ -1,6 +1,6 @@
 import { bookAppointment, createPaymentRazor } from './bookappointment.action';
 import { updateChat } from '../chat/chat.action'
-import { createMedicineOrder } from '../pharmacy/pharmacy.action'
+import { createMedicineOrder,capturePayment } from '../pharmacy/pharmacy.action'
 import { SERVICE_TYPES } from '../../../setup/config'
 import { possibleChatStatus } from '../../../Constants/Chat';
 import { updateVideoConsuting, } from '../../screens/VideoConsulation/services/video-consulting-service'
@@ -277,6 +277,8 @@ export default class BookAppointmentPaymentUpdate {
             console.log('resultData create order result==================')
             console.log(resultData)
             if (resultData) {
+               capturePayment(paymentId)
+                
                 return {
                     message: 'order created sucessfully',
                     success: isSuccess,

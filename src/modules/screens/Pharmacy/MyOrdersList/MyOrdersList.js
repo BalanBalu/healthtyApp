@@ -54,16 +54,17 @@ class MyOrdersList extends Component {
 
             let userId = await AsyncStorage.getItem('userId');
             let result = await getMedicineOrderList(userId, this.state.pagination);
-  
+
 
 
             if (result) {
 
                 let data = this.state.data;
                 let temp = data.concat(result);
- console.log('orderlist=======================');
-   console.log(JSON.stringify(result))
-                 this.setState({ data: temp })
+                console.log('orderlist=======================');
+                console.log(JSON.stringify(temp))
+                console.log(temp.length)
+                this.setState({ data: temp })
             }
             return {
                 success: true
@@ -76,16 +77,16 @@ class MyOrdersList extends Component {
     handleLoadMore = async () => {
         this.setState({ pagination: this.state.pagination + 1, footerLoading: true });
         let result = await this.getMedicineOrderList()
-        this.setState({ footerLoading: false })
+         this.setState({ footerLoading: false })
 
 
     }
-    getorderDescription(data){
-        if(!!data.items){
+    getorderDescription(data) {
+        if (!!data.items) {
             return `No of products:${data.items.length}`
-        }else if(!!data.prescriptions){
-            return`Product:prescription `
-        }else{
+        } else if (!!data.prescriptions) {
+            return `Product:prescription `
+        } else {
             return null
         }
 
@@ -138,15 +139,15 @@ class MyOrdersList extends Component {
                         :
                         <View>
                             <FlatList data={data}
-                          
+
                                 keyExtractor={(item, index) => index.toString()}
                                 onEndReached={this.handleLoadMore}
-                                onEndReachedThreshold={1}
+                                onEndReachedThreshold={8}
                                 renderItem={({ item, index }) =>
                                     <TouchableOpacity
                                         testID="orderDetailsNavigation"
                                         onPress={() => this.props.navigation.navigate('OrderDetails', { serviceId: item.id })}>
-                                        <View   style={{ margin: 5, backgroundColor: '#fff', marginLeft: 10, marginRight: 10, marginBottom: 10 }}>
+                                        <View style={{ margin: 5, backgroundColor: '#fff', marginLeft: 10, marginRight: 10, marginBottom: 10 }}>
                                             <View style={{ marginBottom: 10 }}>
                                                 <Row style={{ borderBottomWidth: 0.5, borderBottomColor: '#E6E6E6', paddingBottom: 5, marginLeft: 10, marginRight: 10 }}>
                                                     <Col>
@@ -182,7 +183,7 @@ class MyOrdersList extends Component {
                                                 </Row>
                                                 <Row style={styles.Row}>
 
-                                                    <Text style={[styles.orderprice1, { color: statusBar[item.status].color}]}>{statusBar[item.status].status}</Text>
+                                                    <Text style={[styles.orderprice1, { color: statusBar[item.status].color }]}>{statusBar[item.status].status}</Text>
                                                 </Row>
 
                                             </View>
@@ -217,18 +218,18 @@ class MyOrdersList extends Component {
 
 
                         </View>}
-                        <View >
-                    <Spinner
-                 
-                        color='blue'
-                        visible={this.state.footerLoading}
-                    />
+                    <View >
+                        <Spinner
+
+                            color='blue'
+                            visible={this.state.footerLoading}
+                        />
                     </View>
                 </Content>
                 {/* <Footer style={
                     Platform.OS === "ios" ?
                         { height: 30 } : { height: 45 }}> */}
-                   
+
                 {/* </Footer> */}
             </Container>
         )
