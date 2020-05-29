@@ -243,7 +243,7 @@ class MedicineSearchList extends Component {
                                 <Text style={{ marginTop: 5, marginLeft: 5, fontFamily: 'OpenSans', fontSize: 12.5, color: '#7227C7' }}> No medicine were found</Text> :
                                 <View>
                                     <Text style={{ marginTop: 5, marginLeft: 5, fontFamily: 'OpenSans', fontSize: 12.5, color: '#7227C7' }}>Showing all results for <Text style={{ fontStyle: 'italic', fontSize: 12.5, color: '#7227C7' }}>{medicineName}</Text></Text>
-                                    <View>
+                                    <View style={{marginBottom:20}}>
                                         <FlatList
                                             data={data}
                                             extraData={this.state}
@@ -251,7 +251,7 @@ class MedicineSearchList extends Component {
                                             onEndReached={this.handleLoadMore}
                                             onEndReachedThreshold={8}
                                             renderItem={({ item }) =>
-                                                <View style={{ backgroundColor: '#fff', marginTop: 10, borderRadius: 5 }}>
+                                                <View style={{ backgroundColor: '#fff', marginTop: 10, borderRadius: 2.5, }}>
                                                     <Row onPress={() =>
                                                         this.props.navigation.navigate('MedicineInfo', {
                                                             medicineId: item.id,
@@ -275,7 +275,7 @@ class MedicineSearchList extends Component {
                                                                 <Text style={{ fontSize: 15, fontFamily: 'OpenSans', color: '#ff4e42', marginTop: -5 }}>Currently Out of stock</Text> :
                                                                 <Row>
                                                                     <Col size={5} style={{ flexDirection: 'row' }}>
-                                                                        <Text style={{ fontSize: 8, marginLeft: -3, marginTop: 5, color: "#ff4e42" }}>{'MRP'}</Text>
+                                                                        <Text style={{ fontSize: 8,marginTop: 5, color: "#ff4e42" }}>{'MRP'}</Text>
                                                                         {item.discount !== undefined && item.discount !== null ?
                                                                             <Row>
                                                                                 <Text style={{ fontSize: 8, marginLeft: 1.5, marginTop: 5, color: "#ff4e42", textDecorationLine: 'line-through', textDecorationStyle: 'solid', marginLeft: 5 }}>₹ {item.price || ''}</Text>

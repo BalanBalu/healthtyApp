@@ -147,7 +147,7 @@ class MyOrdersList extends Component {
                                     <TouchableOpacity
                                         testID="orderDetailsNavigation"
                                         onPress={() => this.props.navigation.navigate('OrderDetails', { serviceId: item.id })}>
-                                        <View style={{ margin: 5, backgroundColor: '#fff', marginLeft: 10, marginRight: 10, marginBottom: 10 }}>
+                                        <View style={{ margin: 5, backgroundColor: '#fff', marginLeft: 10, marginRight: 10, marginBottom: 10,borderRadius: 2.5, }}>
                                             <View style={{ marginBottom: 10 }}>
                                                 <Row style={{ borderBottomWidth: 0.5, borderBottomColor: '#E6E6E6', paddingBottom: 5, marginLeft: 10, marginRight: 10 }}>
                                                     <Col>

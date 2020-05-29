@@ -1,8 +1,7 @@
 import React, { Component } from 'react';
 import {
     Container, Content, Text, Item, ListItem, Input, Icon, Footer, FooterTab,
-
-    View, CheckBox as CheckedBox,
+    View, CheckBox,
     Badge,
     Toast
 } from 'native-base';
@@ -125,9 +124,9 @@ class ChosePharmacyList extends Component {
                             blurOnSubmit={false}
                         />
                     </Col>
-                    <Col size={0.9} style={styles.SearchStyle}>
+                    <Col size={0.9} style={{justifyContent:'center'}}>
                         <TouchableOpacity style={{ justifyContent: 'center' }}>
-                            <Icon name="ios-search" style={{ color: 'gray', fontSize: 20, padding: 2 }} />
+                            <Icon name="ios-search" style={{ color: 'gray', fontSize: 25,}} />
                         </TouchableOpacity>
                     </Col>
 
@@ -154,7 +153,7 @@ class ChosePharmacyList extends Component {
                             overlayColor="none"
                             cancelable={false}
                         /> :
-                        <View>
+                        <View style={{marginBottom:20}}>
                             {pharmacyData.length === 0 ?
                                 <View>
                                     {this.renderStickeyHeader()}
@@ -170,7 +169,7 @@ class ChosePharmacyList extends Component {
                                         ListHeaderComponent={this.renderStickeyHeader()}
                                         keyExtractor={(item, index) => index.toString()}
                                         renderItem={({ item, index }) =>
-                                            <View style={{ marginTop: 5, backgroundColor: '#fff', padding: 10, }}>
+                                            <View style={{ marginTop: 5, backgroundColor: '#fff', padding: 10,borderRadius: 2.5, }}>
                                                 <Row style={{ paddingBottom: 2 }}>
                                                     <Col size={2}>
                                                         <Image
@@ -186,26 +185,30 @@ class ChosePharmacyList extends Component {
                                                                 <Text style={styles.mednames}>{item.pharmacyInfo.name}</Text>
                                                                 <Text style={styles.addressText}>{getAddress(item.pharmacyInfo.location)}</Text>
                                                             </Col>
-                                                            <Col size={3}>
+                                                            <Col size={3} >
+                                                            <View style={{ alignItems: 'flex-end', }}>
                                                                 <Text style={styles.kmText}>{getKiloMeterCalculation(item.pharmacyInfo.location.coordinates, locationCordinates)}</Text>
-                                                            </Col>
-                                                        </Row>
-                                                        <Row style={{ alignItems: 'flex-end', justifyContent: 'flex-end', marginTop: 5 }}>
-                                                            {selectedPharmacy === index ?
-                                                                <View>
-                                                                    <CheckedBox
+                                                               </View>
+                                                                {selectedPharmacy === index ?
+                                                                <View style={{marginTop:10,  alignItems: 'flex-end',marginRight:20 }}>
+                                                                    <CheckBox style={{ borderRadius: 5 }}
                                                                         checked={true}
                                                                         onPress={() => this.pharmacySelected(index)}
                                                                     />
                                                                 </View>
                                                                 :
-                                                                <View>
-                                                                    <CheckedBox
+                                                                <View  style={{marginTop:10,  alignItems: 'flex-end',marginRight:20}}>
+                                                                    <CheckBox style={{ borderRadius: 5 }}
                                                                         checked={false}
                                                                         onPress={() => this.pharmacySelected(index)}
                                                                     />
                                                                 </View>
                                                             }
+                                                            </Col>
+                                                          
+                                                        </Row>
+                                                        <Row style={{ marginTop: 5 }}>
+                                                          
 
 
 
@@ -268,7 +271,7 @@ const styles = StyleSheet.create({
         fontSize: 10,
         color: '#909090',
         marginTop: 3,
-        textAlign: 'right'
+       
     },
     addressText: {
         fontFamily: 'OpenSans',
@@ -293,7 +296,13 @@ const styles = StyleSheet.create({
         flexDirection: "column",
         justifyContent: "center",
         padding: 10
-    }
+    },
+    SearchRow: {
+        backgroundColor: 'white',
+        borderColor: '#000',
+        marginTop: 10,
+        marginBottom: 20,height:40
+    },
 
 
 });

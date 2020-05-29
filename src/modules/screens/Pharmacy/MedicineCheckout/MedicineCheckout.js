@@ -500,11 +500,11 @@ class MedicineCheckout extends Component {
 
 
                                 {itemSelected === 1 && pharmacyInfo !== null ?
-                                    <View>
+                                    <View style={{ padding: 10}}>
                                         {/* <Col style={{ alignItems: 'flex-end', justifyContent: 'flex-end' }}>
                                             
                                         </Col> */}
-                                        <Row>
+                                        <Row >
                                             <Col size={5}>
                                                 <Text style={{ fontFamily: 'OpenSans', fontSize: 14, color: '#7F49C3' }}>Store Address</Text>
                                             </Col>

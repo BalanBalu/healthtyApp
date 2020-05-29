@@ -319,7 +319,7 @@ class PharmacyHome extends Component {
                                                     medicineId: item.id,
                                                     medicineData: item
                                                 })}>
-                                                <Col size={5} style={{ backgroundColor: '#fff', marginLeft: 5, height: '100%' }}>
+                                                <Col size={5} style={{ backgroundColor: '#fff', marginLeft: 5, height: '100%',borderRadius: 2.5,}}>
 
                                                     <Row>
                                                         <Col size={9} style={{ alignItems: 'center' }}>
@@ -405,7 +405,7 @@ class PharmacyHome extends Component {
                                     horizontal={true}
                                     keyExtractor={(item, index) => index.toString()}
                                     renderItem={({ item }) =>
-                                        <View style={{ marginTop: 5, marginLeft: 10, backgroundColor: '#fff', padding: 5, width: 210 }}>
+                                        <View style={{ marginTop: 5, marginLeft: 10, backgroundColor: '#fff', padding: 5, width: 210,borderRadius: 2.5, }}>
 
                                             <Row style={{ borderBottomColor: 'gray', borderBottomWidth: .3, paddingBottom: 2 }}>
                                                 <Col size={5}>
