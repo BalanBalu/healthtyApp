@@ -10,23 +10,24 @@ export const SET_PATIENT_LOCATION_DATA = 'BOOK/SET_PATIENT_LOCATION_DATA';
 import { store } from '../../../setup/store';
 
 
-/*  get All Sponsors data details from Sponsors collection*/
-export const getAllDoctorsActiveSponsorDetails = async (doctorIds) => {
+/*  get All Active Sponsors data details for Doctors */
+export const serviceOfGetTotalActiveSponsorDetails4Doctors = async (doctorIds) => {
     try {
-        let endPoint = 'sponsor/withoutAuth/' + doctorIds + '?active_sponsor=true';
-        let response = await getService(endPoint);
-        let respData = response.data;
-
-
+        const endPoint = 'sponsor/withoutAuth/' + doctorIds + '?active_sponsor=true';
+        const response = await getService(endPoint);
+        const respData = response.data;
         return respData;
-    } catch (e) {
-
+    } catch (Ex) {
+        console.log('Ex is getting on fetchAvailabilitySlots for Doctor====>', Ex)
         return {
-            message: 'exception' + e,
-            success: false
+            success: false,
+            statusCode: 500,
+            error: Ex,
+            message: `Exception while getting on fetchAvailabilitySlots for Doctor : ${Ex}`
         }
     }
 }
+
 
 
 /* Update Sponsor Viewers Counts */

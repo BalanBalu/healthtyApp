@@ -21,7 +21,7 @@ export default class RenderDatesList extends Component {
     }
 
     render() {
-        const { availabilitySlotsDatesArry, selectedDateObjOfDoctorIds, onDateChanged, callSlotsServiceWhenOnEndReached, selectedSlotItemByDoctorIds, selectedDate, slotData, doctorIdHostpitalId } = this.props;
+        const { indexOfItem, availabilitySlotsDatesArry, selectedDateObjOfDoctorIds, onDateChanged, callSlotsServiceWhenOnEndReached, selectedSlotItemByDoctorIds, selectedDate, slotData, doctorIdHostpitalId } = this.props;
         if (slotData === undefined || !Object.keys(slotData)) {
             return null;
         }
@@ -31,13 +31,13 @@ export default class RenderDatesList extends Component {
                 data={availabilitySlotsDatesArry}
                 extraData={[selectedDateObjOfDoctorIds, selectedSlotItemByDoctorIds]}
                 onEndReachedThreshold={1}
-                onEndReached={({ distanceFromEnd }) => { callSlotsServiceWhenOnEndReached(doctorIdHostpitalId, availabilitySlotsDatesArry) }}
+                onEndReached={({ distanceFromEnd }) => { callSlotsServiceWhenOnEndReached(doctorIdHostpitalId, availabilitySlotsDatesArry, indexOfItem) }}
                 renderItem={({ item }) => {
                     return (
                         <View>
                             <Col style={{ justifyContent: 'center' }}>
                                 <TouchableOpacity style={[styles.availabilityBG, selectedDate === item ? { backgroundColor: '#775DA3', alignItems: 'center' } : { backgroundColor: '#ced6e0', alignItems: 'center' }]}
-                                    onPress={() => onDateChanged(item, doctorIdHostpitalId)}>
+                                    onPress={() => onDateChanged(item, doctorIdHostpitalId, indexOfItem)}>
                                     <Text style={[{ fontSize: 12, fontFamily: 'OpenSans' }, selectedDate === item ? { color: '#fff' } : { color: '#000' }]}>{formatDate(moment(item), 'ddd, DD MMM')}</Text>
                                     <Text style={[{ fontSize: 10, fontFamily: 'OpenSans' }, selectedDate === item ? { color: '#fff' } : { color: '#000' }]}>{slotData[item] ? slotData[item].reduce(reducer, 0) + ' Slots Available' : 'No Slots Available'}</Text>
                                 </TouchableOpacity>

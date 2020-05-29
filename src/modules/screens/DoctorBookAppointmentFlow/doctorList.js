@@ -12,6 +12,7 @@ import {
     ServiceOfGetDoctorFavoriteListCount4Pat,
     addFavoritesToDocByUserService,
     fetchDoctorAvailabilitySlotsService,
+    serviceOfGetTotalActiveSponsorDetails4Doctors,
 } from '../../providers/BookAppointmentFlow/action';
 import { formatDate, addMoment, addTimeUnit, getMoment, intersection, getUnixTimeStamp } from '../../../setup/helpers';
 import { Loader } from '../../../components/ContentLoader';
@@ -35,13 +36,10 @@ const SELECTED_EXPERIENCE_START_END_YEARS = {
     40: { start: 40, end: 100 }
 }
 let currentDoctorOrder = 'ASC';
-let doctorDataWithAviablityInMap = new Map();
-const SHOW_NO_OF_PRIME_DOCS_ON_PRIME_LIST_SWIPPER_LIST = 2;
+const SHOW_NO_OF_PRIME_DOCTORS_COUNT_ON_SWIPER_LIST_VIEW = 2;
 const CALL_AVAILABILITY_SERVICE_BY_NO_OF_IDS_COUNT = 5;
 
 class DoctorList extends Component {
-    showNoOfPrimeDocsOnSwipperList;
-
     docListDataArry = [];
     searchedDoctorIdsArray = [];
     searchedDocAndHospitalIdsArray = [];
@@ -51,30 +49,30 @@ class DoctorList extends Component {
     selectedDateObjOfDoctorIds = {};
     selectedSlotByDoctorIdsObj = {};
     selectedSlotItemByDoctorIds = {};
-
+    showNoOfPrimeDocsCountOnSwiperListView = SHOW_NO_OF_PRIME_DOCTORS_COUNT_ON_SWIPER_LIST_VIEW;
     constructor(props) {
         super(props)
         conditionFromFilterPage = null,  // for check FilterPage Values
-            this.showNoOfPrimeDocsOnSwipperList = SHOW_NO_OF_PRIME_DOCS_ON_PRIME_LIST_SWIPPER_LIST;
-        this.state = {
-            selectedDate: formatDate(new Date(), 'YYYY-MM-DD'),
-            currentDate: formatDate(new Date(), 'YYYY-MM-DD'),
-            nextAvailableSlotDate: '',
-            isLoading: true,
-            isAvailabilityLoading: false,
-            filterBySelectedAvailabilityDateCount: 0,
-            filterData: null,
-            yearOfExperience: '',
-            sliderPageIndex: 0,
-            sliderPageIndexesByDoctorIds: {},
-            expandedDoctorIdHospitalsToShowSlotsData: [],
-            showedFeeByDoctorIds: {},
-            isLoggedIn: false,
-            renderRefreshCount: 1,
-            refreshCountOnDateFL: 1,
-            isSlotsLoading: false,
+            // this.showNoOfPrimeDocsCountOnSwiperListView = SHOW_NO_OF_PRIME_DOCTORS_COUNT_ON_SWIPER_LIST_VIEW;
+            this.state = {
+                selectedDate: formatDate(new Date(), 'YYYY-MM-DD'),
+                currentDate: formatDate(new Date(), 'YYYY-MM-DD'),
+                nextAvailableSlotDate: '',
+                isLoading: true,
+                isAvailabilityLoading: false,
+                filterBySelectedAvailabilityDateCount: 0,
+                filterData: null,
+                yearOfExperience: '',
+                sliderPageIndex: 0,
+                sliderPageIndexesByDoctorIds: {},
+                expandedDoctorIdHospitalsToShowSlotsData: [],
+                showedFeeByDoctorIds: {},
+                isLoggedIn: false,
+                renderRefreshCount: 1,
+                refreshCountOnDateFL: 1,
+                isSlotsLoading: false,
 
-        }
+            }
     }
 
     componentNavigationMount = async () => { }   //   Need to Check filter Page implementation also
@@ -121,13 +119,35 @@ class DoctorList extends Component {
                     this.docInfoAndAvailableSlotsMapByDoctorIdHostpitalId.set(doctorIdHostpitalId, item);
                 })
                 //debugger
-                await Promise.all([
+                const [activeDoctorsSponsorDetails, docsFavoriteDetails, docsReviewDetails] = await Promise.all([
+                    serviceOfGetTotalActiveSponsorDetails4Doctors(this.searchedDoctorIdsArray).catch(Ex => console.log("Ex is getting on get Total Reviews  list details for Patient" + Ex)),
                     ServiceOfGetDoctorFavoriteListCount4Pat(this.searchedDoctorIdsArray).catch(Ex => console.log('Ex is getting on get Favorites list details for Patient====>', Ex)),
                     serviceOfGetTotalReviewsCount4Doctors(this.searchedDoctorIdsArray).catch(Ex => console.log("Ex is getting on get Total Reviews  list details for Patient" + Ex)),
                 ]);
                 //debugger
                 const doctorInfoList = Array.from(this.docInfoAndAvailableSlotsMapByDoctorIdHostpitalId.values()) || [];
                 console.log('doctorInfoList========>', JSON.stringify(doctorInfoList));
+                const activeDoctorsSponsorData = activeDoctorsSponsorDetails.data;
+                // if (activeDoctorsSponsorData.length !== 0) {
+                //     const sponsorIdsArray = [];
+                //     let incrementPrimeDoctorCountToShow = 0;
+                //     activeDoctorsSponsorData.map((sponsorItem) => {
+                //         sponsorIdsArray.push(sponsorItem._id);
+                //         const hospitalId = sponsorItem.location[0] && sponsorItem.location[0].hospital_id;
+                //         const doctorIdHostpitalId = sponsorItem.doctor_id + '-' + hospitalId;
+                //         if (this.docInfoAndAvailableSlotsMapByDoctorIdHostpitalId.has(doctorIdHostpitalId)) {
+                //             const baCupDocHospitalIdItemObj = this.docInfoAndAvailableSlotsMapByDoctorIdHostpitalId.get(doctorIdHostpitalId)
+                //             if (incrementPrimeDoctorCountToShow < this.showNoOfPrimeDocsCountOnSwiperListView) {
+                //                 obj.isDoctorIdHostpitalIdSponsored = true;
+                //                 incrementPrimeDoctorCountToShow += 1;
+                //             } else {
+                //                 obj.primeDocOnNonPrimeList = true;
+                //             }
+                //         }
+
+                //     });
+                //     // this.updateSponsorViewersCount(sponsorIdArray)
+                // }
                 store.dispatch({
                     type: SET_DOCTOR_INFO_LIST_AND_SLOTS_DATA,
                     data: doctorInfoList
@@ -234,37 +254,38 @@ class DoctorList extends Component {
         }
     }
 
-    getDoctorIdHostpitalIdsArrayByInput = doctorIdHostpitalId => {
-        const findIndexOfDoctorIdHostpitalId = this.searchedDocAndHospitalIdsArray.indexOf(doctorIdHostpitalId);
-        const getNoOfDocIddHospitalIds4CallAavailabilityService = this.searchedDocAndHospitalIdsArray.slice(findIndexOfDoctorIdHostpitalId, findIndexOfDoctorIdHostpitalId + CALL_AVAILABILITY_SERVICE_BY_NO_OF_IDS_COUNT)
-        return getNoOfDocIddHospitalIds4CallAavailabilityService || []
+    getOrderDataByIndexOfItemFromWholeData4CallAavailabilityService = indexOfItem => {
+        const { bookAppointmentData: { doctorInfoListAndSlotsData } } = this.props;
+        const orderedDataFromWholeData = doctorInfoListAndSlotsData.slice(indexOfItem, indexOfItem + CALL_AVAILABILITY_SERVICE_BY_NO_OF_IDS_COUNT)
+        return orderedDataFromWholeData || []
     }
     /* get Doctor  Availability Slots service */
-    getDoctorAvailabilitySlots = async (doctorIdHostpitalId, startDateByMoment, endDateByMoment) => {
+    getDoctorAvailabilitySlots = async (doctorIdHostpitalId, startDateByMoment, endDateByMoment, indexOfItem) => {
         try {
             debugger
             this.availabilitySlotsDatesArry = enumerateStartToEndDates(startDateByMoment, endDateByMoment, this.availabilitySlotsDatesArry);
-            const arryOfDoctorIdHostpitalIds = this.getDoctorIdHostpitalIdsArrayByInput(doctorIdHostpitalId) // get 5 Or LessThan 5 of doctorIdHostpitalIds in order wise using index of given input of doctorIdHostpitalId
+            alert(indexOfItem)
+
+            const orderedDataFromWholeData = this.getOrderDataByIndexOfItemFromWholeData4CallAavailabilityService(indexOfItem) // get 5 Or LessThan 5 of doctorIdHostpitalIds in order wise using index of given input of doctorInfoListAndSlotsData
             debugger
             const setDoctorIdHostpitalIdsArrayMap = new Map();
-            arryOfDoctorIdHostpitalIds.map((docHospitalIdItem) => {
-                const splitByDocAndHospitalId = docHospitalIdItem.split('-');
-                const splitByDoctorId = splitByDocAndHospitalId[0];
-                const splitByHospitalId = parseInt(splitByDocAndHospitalId[1]);
-                if (setDoctorIdHostpitalIdsArrayMap.has(splitByDoctorId)) {  //Execute condition  when Doctor Id is repeated;
-                    console.log('setDoctorIdHostpitalIdsArrayMap.has(docId)====>', setDoctorIdHostpitalIdsArrayMap.has(splitByDoctorId));
-                    let baCupDocHospitalIdsObj = setDoctorIdHostpitalIdsArrayMap.get(splitByDoctorId);
+            orderedDataFromWholeData.map((item) => {
+                const doctorIdFromItem = item.doctor_id;
+                const hospitalIdFromItem = item.hospitalInfo && item.hospitalInfo.hospital_id;
+                if (setDoctorIdHostpitalIdsArrayMap.has(doctorIdFromItem)) {  //Execute condition  when Doctor Id is repeated;
+                    console.log('setDoctorIdHostpitalIdsArrayMap.has(docId)====>', setDoctorIdHostpitalIdsArrayMap.has(doctorIdFromItem));
+                    let baCupDocHospitalIdsObj = setDoctorIdHostpitalIdsArrayMap.get(doctorIdFromItem);
                     console.log('baCupDocHospitalIdsObj====>', baCupDocHospitalIdsObj);
                     const obj = {
-                        doctorId: splitByDoctorId,
-                        hospitalIds: [...baCupDocHospitalIdsObj.hospitalIds, splitByHospitalId]
+                        doctorId: doctorIdFromItem,
+                        hospitalIds: [...baCupDocHospitalIdsObj.hospitalIds, hospitalIdFromItem]
                     }
-                    setDoctorIdHostpitalIdsArrayMap.set(splitByDoctorId, obj)
+                    setDoctorIdHostpitalIdsArrayMap.set(doctorIdFromItem, obj)
                 }
                 else {
-                    setDoctorIdHostpitalIdsArrayMap.set(splitByDoctorId, {
-                        doctorId: splitByDoctorId,
-                        hospitalIds: [splitByHospitalId]
+                    setDoctorIdHostpitalIdsArrayMap.set(doctorIdFromItem, {
+                        doctorId: doctorIdFromItem,
+                        hospitalIds: [hospitalIdFromItem]
                     })
                 }
             })
@@ -392,7 +413,7 @@ class DoctorList extends Component {
                                                 extraData={this.state.renderRefreshCount}
                                                 keyExtractor={(item, index) => index.toString()}
                                                 renderItem={({ item }) =>
-                                                    item.isDoctorHosptalSponsored === true ? this.renderSponsorDoctorList(item) : null
+                                                    item.isDoctorIdHostpitalIdSponsored === true ? this.renderSponsorDoctorList(item) : null
                                                 } />
                                         </ScrollView>
                                     </View>
@@ -400,8 +421,8 @@ class DoctorList extends Component {
                                         data={doctorInfoListAndSlotsData}
                                         extraData={this.state.renderRefreshCount}
                                         keyExtractor={(item, index) => index.toString()}
-                                        renderItem={({ item }) =>
-                                            item.isDoctorHosptalSponsored === true ? null : this.renderDoctorCard(item)
+                                        renderItem={({ item, index }) =>
+                                            item.isDoctorIdHostpitalIdSponsored === true ? null : this.renderDoctorCard(item, index)
                                         } />
                                 </View>}
                         </View>
@@ -447,26 +468,26 @@ class DoctorList extends Component {
 
 
     /* Change the Date from Date Picker */
-    onDateChanged(selectedDate, doctorIdHostpitalId) {
+    onDateChanged(selectedDate, doctorIdHostpitalId, indexOfItem) {
         this.selectedDateObjOfDoctorIds[doctorIdHostpitalId] = selectedDate;
         this.selectedSlotByDoctorIdsObj[doctorIdHostpitalId] = -1;
         this.selectedSlotItemByDoctorIds[doctorIdHostpitalId] = null;
         if (this.availabilitySlotsDatesArry.includes(selectedDate) === false) {
             const endDateByMoment = addMoment(getMoment(selectedDate), 7, 'days');
-            this.getDoctorAvailabilitySlots(doctorIdHostpitalId, getMoment(selectedDate), endDateByMoment);
+            this.getDoctorAvailabilitySlots(doctorIdHostpitalId, getMoment(selectedDate), endDateByMoment, indexOfItem);
         }
         this.setState({ renderRefreshCount: this.state.renderRefreshCount + 1 });
     }
-    callSlotsServiceWhenOnEndReached = (doctorIdHostpitalId, availabilitySlotsDatesArry) => { // call availability slots service when change dates on next week
+    callSlotsServiceWhenOnEndReached = (doctorIdHostpitalId, availabilitySlotsDatesArry, indexOfItem) => { // call availability slots service when change dates on next week
         const finalIndex = availabilitySlotsDatesArry.length
         const lastProcessedDate = availabilitySlotsDatesArry[finalIndex - 1];
         const startDateByMoment = getMoment(lastProcessedDate).add(1, 'day');
         const endDateByMoment = addMoment(lastProcessedDate, 7, 'days');
         if (!this.availabilitySlotsDatesArry.includes(endDateByMoment.format('YYYY-MM-DD'))) {
-            this.getDoctorAvailabilitySlots(doctorIdHostpitalId, startDateByMoment, endDateByMoment);
+            this.getDoctorAvailabilitySlots(doctorIdHostpitalId, startDateByMoment, endDateByMoment, indexOfItem);
         }
     }
-    renderDatesOnFlatList(doctorIdHostpitalId, slotData) {
+    renderDatesOnFlatList(doctorIdHostpitalId, slotData, indexOfItem) {
         const selectedDate = this.selectedDateObjOfDoctorIds[doctorIdHostpitalId] || this.state.currentDate;
         if (slotData === undefined || !Object.keys(slotData)) {
             return null;
@@ -476,13 +497,14 @@ class DoctorList extends Component {
                 <RenderDatesList
                     selectedDate={selectedDate}
                     slotData={slotData}
+                    indexOfItem={indexOfItem}
                     doctorIdHostpitalId={doctorIdHostpitalId}
                     selectedDateObjOfDoctorIds={this.selectedDateObjOfDoctorIds}
                     selectedSlotItemByDoctorIds={this.selectedSlotItemByDoctorIds}
                     availabilitySlotsDatesArry={this.availabilitySlotsDatesArry}
                     onDateChanged={(item, doctorIdHostpitalId) => this.onDateChanged(item, doctorIdHostpitalId)}
-                    callSlotsServiceWhenOnEndReached={(doctorIdHostpitalId, availabilitySlotsDatesArry) => {
-                        this.callSlotsServiceWhenOnEndReached(doctorIdHostpitalId, availabilitySlotsDatesArry)
+                    callSlotsServiceWhenOnEndReached={(doctorIdHostpitalId, availabilitySlotsDatesArry, indexOfItem) => {
+                        this.callSlotsServiceWhenOnEndReached(doctorIdHostpitalId, availabilitySlotsDatesArry, indexOfItem)
                     }}
                     shouldUpdate={`${doctorIdHostpitalId}-${selectedDate}`}
                 >
@@ -491,7 +513,7 @@ class DoctorList extends Component {
         )
     }
 
-    onBookPress = async (doctorIdHostpitalId) => {
+    onBookPress = async (doctorIdHostpitalId, indexOfItem) => {
         try {
             this.setState({ isSlotsLoading: true, isSlotsLoadingByRespectedItem: doctorIdHostpitalId });
             const { expandedDoctorIdHospitalsToShowSlotsData } = this.state;
@@ -502,9 +524,8 @@ class DoctorList extends Component {
             }
             const startDateByMoment = addMoment(this.state.currentDate)
             const endDateByMoment = addMoment(this.state.currentDate, 7, 'days');
-            console.log('this.docInfoAndAvailableSlotsMapByDoctorIdHostpitalId.get(doctorIdHostpitalId).slotData===>', JSON.stringify(this.docInfoAndAvailableSlotsMapByDoctorIdHostpitalId.get(doctorIdHostpitalId).slotData));
             if (this.docInfoAndAvailableSlotsMapByDoctorIdHostpitalId.get(doctorIdHostpitalId).slotData == undefined) {
-                await this.getDoctorAvailabilitySlots(doctorIdHostpitalId, startDateByMoment, endDateByMoment);
+                await this.getDoctorAvailabilitySlots(doctorIdHostpitalId, startDateByMoment, endDateByMoment, indexOfItem);
             }
             else {
                 this.setState({ renderRefreshCount: this.state.renderRefreshCount + 1 })
@@ -519,7 +540,7 @@ class DoctorList extends Component {
         }
     }
 
-    renderDoctorCard(item) {
+    renderDoctorCard(item, indexOfItem) {
         const { expandedDoctorIdHospitalsToShowSlotsData, isSlotsLoading } = this.state;
         return (
             <View>
@@ -537,7 +558,7 @@ class DoctorList extends Component {
                                     </Col>
                                     <Col style={{ width: "15%" }}>
                                         {!expandedDoctorIdHospitalsToShowSlotsData.includes(item.doctorIdHostpitalId) ?
-                                            <TouchableOpacity onPress={() => this.onBookPress(item.doctorIdHostpitalId)} style={{ textAlign: 'center', backgroundColor: 'green', borderColor: '#000', marginTop: 10, borderRadius: 20, height: 30, justifyContent: 'center', paddingLeft: 1, paddingRight: 1, }}>
+                                            <TouchableOpacity onPress={() => this.onBookPress(item.doctorIdHostpitalId, indexOfItem)} style={{ textAlign: 'center', backgroundColor: 'green', borderColor: '#000', marginTop: 10, borderRadius: 20, height: 30, justifyContent: 'center', paddingLeft: 1, paddingRight: 1, }}>
                                                 <Text style={{ textAlign: 'center', color: '#fff', fontSize: 12, fontWeight: 'bold', fontFamily: 'OpenSans' }}>BOOK </Text>
                                             </TouchableOpacity> :
                                             null}
@@ -560,7 +581,7 @@ class DoctorList extends Component {
                                             <Row style={{ marginTop: 10 }}>
                                                 <Text style={{ fontSize: 13, fontFamily: 'OpenSans' }}>Choose appointment date and time</Text>
                                             </Row>
-                                            {this.renderDatesOnFlatList(item.doctorIdHostpitalId, item.slotData)}
+                                            {this.renderDatesOnFlatList(item.doctorIdHostpitalId, item.slotData, indexOfItem)}
                                             {
                                                 item.slotData[this.selectedDateObjOfDoctorIds[item.doctorIdHostpitalId] || this.state.currentDate] !== undefined ?
                                                     this.renderAvailableSlots(item.doctorIdHostpitalId, item.slotData[this.selectedDateObjOfDoctorIds[item.doctorIdHostpitalId] || this.state.currentDate])
