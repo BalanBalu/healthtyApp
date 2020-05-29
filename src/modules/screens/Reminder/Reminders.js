@@ -44,7 +44,8 @@ class Reminder extends Component {
       this.props.navigation.navigate("login");
       return;
     }
-    this.getAllReminderdata()
+    await this.getAllReminderdata()
+    
   }
 
   getAllReminderdata = async () => {
@@ -53,11 +54,15 @@ class Reminder extends Component {
         isLoading: true
       })
       let userId = await AsyncStorage.getItem('userId');
+    
       let result = await getReminderData(userId);
+      
       if (result.success) {
-        this.reminderData = result.data;
-        this.setCalenderStripDatesAndData(this.state.selectedDate)
-        //  this.setState({ data: result.data })
+        let reminderData = result.data;
+         this.reminderData  = reminderData
+       // alert(JSON.stringify(this.reminderData))
+        console.log("data=========<<<<<<<<<<<<<",JSON.stringify(result.data))
+        await  this.setCalenderStripDatesAndData(this.state.currentDate)
       }
       return result.data;
     } catch (e) {
@@ -69,24 +74,49 @@ class Reminder extends Component {
 
   setCalenderStripDatesAndData = (data1) => {
 
-    let date = new Date(moment(data1).startOf('d').toISOString()).getTime();
-    let selectedDate = formatDate(data1, 'YYYY-MM-DD');
+   
     const reminderDataBySelectedDate = this.reminderData.filter(ele => {
+
+      let date = new Date(moment(data1).startOf('d').toISOString()).getTime();
+      let dateData = formatDate(data1, "dddd,MMMM DD-YYYY")
+     
       let startDate = new Date(ele.medicine_take_start_date).getTime();
       let endDate;
       if (ele.reminder_type === 'onlyonce') {
-        let endDateTemp = new Date(ele.medicine_take_start_date);
-        endDateTemp.setHours(23);
-        endDateTemp.setMinutes(59);
-        endDate = new Date(endDateTemp).getTime();
-      } else {
+        let endDateTemp = formatDate(ele.medicine_take_start_date, "dddd,MMMM DD-YYYY") ;
+    
+        if ((dateData == endDateTemp && ele.active == true)) {
+          return true;
+        }
+      }
+       else {
         endDate = new Date(ele.medicine_take_end_date).getTime();
+        if ((date <= endDate && date >= startDate && ele.active == true)) {
+          return true;
+        }
       }
-      if ((date <= endDate && date >= startDate && ele.active == true)) {
-        return true;
-      }
+
+      // 
+      // let endDate;
+      // if (ele.reminder_type === 'onlyonce') {
+      //   let endDateTemp = new Date(ele.medicine_take_start_date);
+      //   endDateTemp.setHours(23);
+      //   endDateTemp.setMinutes(59);
+      //   endDate = new Date(endDateTemp).getTime();
+      //   if ((date <= endDate && date >= startDate && ele.active == true)) {
+      //     return true;
+      //   }
+      // } else {
+      //   endDate = new Date(ele.medicine_take_end_date).getTime();
+      //   if ((date <= endDate && date >= startDate && ele.active == true)) {
+      //     return true;
+      //   }
+      // }
+     
     });
-    console.log("reminderDataBySelectedDate++++++++++++", reminderDataBySelectedDate)
+    let selectedDate = formatDate(data1, 'YYYY-MM-DD');
+
+    // alert(JSON.stringify(reminderDataBySelectedDate))
     this.setState({ data: reminderDataBySelectedDate, selectedDate: selectedDate });
     console.log("this.data++++++++++++", this.state.data)
   }
@@ -128,7 +158,7 @@ class Reminder extends Component {
       if (navigationData.action) {
         const { reminder: { reminderResponse: { data } } } = this.props;
         this.reminderData = data;
-        console.log(JSON.stringify(this.reminderData))
+        console.log("data=========>>>>>>>>>>>>>>",data)
         this.setCalenderStripDatesAndData(this.state.currentDate)
       }
     } catch (e) {
