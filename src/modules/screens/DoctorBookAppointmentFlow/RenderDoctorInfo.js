@@ -29,7 +29,7 @@ export default class RenderDoctorInfo extends PureComponent {
 
     render() {
         //debugger
-        const { item, isLoggedIn, fee, feeWithoutOffer, patientFavoriteListCountOfDoctorIds, docFavoriteListCountOfDoctorIDs, docReviewListCountOfDoctorIDs, addToFavoritesList, onPressGoToBookAppointmentPage } = this.props;
+        const { item, docInfoData: { isLoggedIn, fee, feeWithoutOffer, patientFavoriteListCountOfDoctorIds, docFavoriteListCountOfDoctorIDs, docReviewListCountOfDoctorIDs }, addToFavoritesList, onPressGoToBookAppointmentPage } = this.props;
         //debugger
         return (
             <View>
@@ -68,7 +68,7 @@ export default class RenderDoctorInfo extends PureComponent {
                             </Row>
                             :
                             <Row>
-                                <Text style={{ fontFamily: 'OpenSans', marginTop: 20, fontSize: 12, marginLeft: 15 }}>{this.getDistance(item.hospitalInfo.distInKiloMeter)}</Text>
+                                <Text style={{ fontFamily: 'OpenSans', marginTop: 20, fontSize: 12, marginLeft: 15 }}>{this.getDistance(item.hospitalInfo.distInKiloMeter) || 0}</Text>
                             </Row>
                         }
                     </Col>

@@ -15,7 +15,7 @@ export default class RenderSlots extends Component {
     //     return nextProps.shouldUpdate !== this.props.shouldUpdate;
     // }
     render() {
-        const { slotData, selectedSlotIndex, onSlotItemPress, doctorIdHostpitalId, selectedDateObjOfDoctorIds, selectedSlotItemByDoctorIds } = this.props;
+        const { slotDetails: { slotData, selectedSlotIndex, doctorIdHostpitalId }, onSlotItemPress, selectedDateObjOfDoctorIds, selectedSlotItemByDoctorIds } = this.props;
         const { width } = Dimensions.get('screen');
         const itemWidth = (width) / 4;
         return <FlatList

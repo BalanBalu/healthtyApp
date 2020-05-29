@@ -418,12 +418,7 @@ class DoctorList extends Component {
             <View>
                 <RenderDoctorInfo
                     item={item}
-                    fee={fee}
-                    feeWithoutOffer={feeWithoutOffer}
-                    isLoggedIn={isLoggedIn}
-                    patientFavoriteListCountOfDoctorIds={patientFavoriteListCountOfDoctorIds}
-                    docFavoriteListCountOfDoctorIDs={docFavoriteListCountOfDoctorIDs}
-                    docReviewListCountOfDoctorIDs={docReviewListCountOfDoctorIDs}
+                    docInfoData={{ isLoggedIn, fee, feeWithoutOffer, patientFavoriteListCountOfDoctorIds, docFavoriteListCountOfDoctorIDs, docReviewListCountOfDoctorIDs }}
                     addToFavoritesList={(doctorId) => { this.addToFavoritesList(doctorId) }}
                     onPressGoToBookAppointmentPage={(item) => { this.onPressGoToBookAppointmentPage(item) }}
                 // shouldUpdate4ReRender={`${item.doctor_id}-${item.doctor_id}`}
@@ -433,7 +428,7 @@ class DoctorList extends Component {
         )
     }
 
-    renderAvailableSlots(doctorIdHostpitalId, slotsData) {
+    renderAvailableSlots(doctorIdHostpitalId, slotData) {
         const { showedFee } = this.state;
         let selectedSlotIndex = this.selectedSlotByDoctorIdsObj[doctorIdHostpitalId] !== undefined ? this.selectedSlotByDoctorIdsObj[doctorIdHostpitalId] : -1
         return (
@@ -441,10 +436,7 @@ class DoctorList extends Component {
                 <RenderSlots
                     selectedDateObjOfDoctorIds={this.selectedDateObjOfDoctorIds}
                     selectedSlotItemByDoctorIds={this.selectedSlotItemByDoctorIds}
-                    selectedSlotIndex={selectedSlotIndex}
-                    // selectedDate={selectedDate}
-                    slotData={slotsData}
-                    doctorIdHostpitalId={doctorIdHostpitalId}
+                    slotDetails={{ selectedSlotIndex, slotData, doctorIdHostpitalId }}
                     // shouldUpdate={`${doctorIdHostpitalId}-${selectedSlotIndex}`}
                     onSlotItemPress={(doctorIdHostpitalId, selectedSlot, selectedSlotIndex) => this.onSlotItemPress(doctorIdHostpitalId, selectedSlot, selectedSlotIndex)}
                 >
@@ -482,13 +474,13 @@ class DoctorList extends Component {
         return (
             <View>
                 <RenderDatesList
+                    selectedDate={selectedDate}
+                    slotData={slotData}
+                    doctorIdHostpitalId={doctorIdHostpitalId}
                     selectedDateObjOfDoctorIds={this.selectedDateObjOfDoctorIds}
                     selectedSlotItemByDoctorIds={this.selectedSlotItemByDoctorIds}
                     availabilitySlotsDatesArry={this.availabilitySlotsDatesArry}
                     onDateChanged={(item, doctorIdHostpitalId) => this.onDateChanged(item, doctorIdHostpitalId)}
-                    selectedDate={selectedDate}
-                    availableSlotsData={slotData}
-                    doctorIdHostpitalId={doctorIdHostpitalId}
                     callSlotsServiceWhenOnEndReached={(doctorIdHostpitalId, availabilitySlotsDatesArry) => {
                         this.callSlotsServiceWhenOnEndReached(doctorIdHostpitalId, availabilitySlotsDatesArry)
                     }}
@@ -511,7 +503,6 @@ class DoctorList extends Component {
             const startDateByMoment = addMoment(this.state.currentDate)
             const endDateByMoment = addMoment(this.state.currentDate, 7, 'days');
             console.log('this.docInfoAndAvailableSlotsMapByDoctorIdHostpitalId.get(doctorIdHostpitalId).slotData===>', JSON.stringify(this.docInfoAndAvailableSlotsMapByDoctorIdHostpitalId.get(doctorIdHostpitalId).slotData));
-
             if (this.docInfoAndAvailableSlotsMapByDoctorIdHostpitalId.get(doctorIdHostpitalId).slotData == undefined) {
                 await this.getDoctorAvailabilitySlots(doctorIdHostpitalId, startDateByMoment, endDateByMoment);
             }
@@ -529,7 +520,7 @@ class DoctorList extends Component {
     }
 
     renderDoctorCard(item) {
-        const { expandedDoctorIdHospitalsToShowSlotsData, isSlotsLoading, isLoggedIn } = this.state;
+        const { expandedDoctorIdHospitalsToShowSlotsData, isSlotsLoading } = this.state;
         return (
             <View>
                 <Card style={{ padding: 2, borderRadius: 10, borderBottomWidth: 2 }}>
@@ -552,11 +543,13 @@ class DoctorList extends Component {
                                             null}
                                         {this.state.isSlotsLoadingByRespectedItem == item.doctorIdHostpitalId ?
                                             isSlotsLoading == true ?
-                                                <ActivityIndicator
-                                                    animating={isSlotsLoading}
-                                                    size="large"
-                                                    color='green'
-                                                />
+                                                <View style={{ marginTop: 6 }}>
+                                                    <ActivityIndicator
+                                                        animating={isSlotsLoading}
+                                                        size="large"
+                                                        color='green'
+                                                    />
+                                                </View>
                                                 : null
                                             : null}
                                     </Col>
