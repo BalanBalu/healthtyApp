@@ -176,15 +176,14 @@ export class AddToCard extends Component {
                                         </Col>
                                     </Row> : null}
                                 {/* api did not ready so condition use in reverse  */}
-                                {(data.productDetails && data.productDetails.available === 0) || data.productDetails !== null ?
-                                    <Text style={{ fontSize: 12, fontFamily: 'OpenSans', color: '#ff4e42', marginTop: 5, textAlign: 'center', backgroundColor: '#E6E6E6', }}>Out of stock</Text> :
-                                    <TouchableOpacity onPress={() => this.cardAction()} style={{ borderColor: '#4e85e9', borderWidth: 1, borderRadius: 2.5, height: 30, paddingTop: 2, backgroundColor: '#4e85e9', flexDirection: 'row', justifyContent: 'center', alignItems: 'center', marginTop: 15 }}>
 
-                                        <Icon name='ios-cart' style={{ color: '#fff', fontSize: 13, }} />
-                                        <Text style={{ fontSize: 12, color: '#fff', marginTop: 2.5, fontWeight: '500', fontFamily: 'OpenSans', marginLeft: 5, marginBottom: 5, textAlign: 'center' }}>{data.selectedType}</Text>
+                                <TouchableOpacity onPress={() => this.cardAction()} style={{ borderColor: '#4e85e9', borderWidth: 1, borderRadius: 2.5, height: 30, paddingTop: 2, backgroundColor: '#4e85e9', flexDirection: 'row', justifyContent: 'center', alignItems: 'center', marginTop: 15 }}>
 
-                                    </TouchableOpacity>
-                                }
+                                    <Icon name='ios-cart' style={{ color: '#fff', fontSize: 13, }} />
+                                    <Text style={{ fontSize: 12, color: '#fff', marginTop: 2.5, fontWeight: '500', fontFamily: 'OpenSans', marginLeft: 5, marginBottom: 5, textAlign: 'center' }}>{data.selectedType}</Text>
+
+                                </TouchableOpacity>
+
                             </Col>
 
                         </Row>

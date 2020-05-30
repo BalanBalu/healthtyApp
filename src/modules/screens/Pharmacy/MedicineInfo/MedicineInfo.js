@@ -1,8 +1,8 @@
 import React, { Component } from 'react';
 import { Container, Content, Text, Toast, Icon, View, Col, Row, Picker } from 'native-base';
 import { StyleSheet, Image, AsyncStorage, FlatList, TouchableOpacity, Dimensions } from 'react-native';
-import { getProductDetailById, getMedicineReviews, getMedicineReviewsCount ,getAvailableStockForListOfProducts} from '../../../providers/pharmacy/pharmacy.action'
-import { medicineRateAfterOffer, setCartItemCountOnNavigation, renderMedicineImageAnimation, getMedicineName,getIsAvailable } from '../CommomPharmacy';
+import { getProductDetailById, getMedicineReviews, getMedicineReviewsCount, getAvailableStockForListOfProducts } from '../../../providers/pharmacy/pharmacy.action'
+import { medicineRateAfterOffer, setCartItemCountOnNavigation, renderMedicineImageAnimation, getMedicineName, getIsAvailable } from '../CommomPharmacy';
 import Spinner from '../../../../components/Spinner';
 import { dateDiff, getMoment, formatDate } from '../../../../setup/helpers'
 import { MedInsertReview } from './medInsertReview'
@@ -37,7 +37,7 @@ class MedicineInfo extends Component {
             cartItems: [],
             finalRating: '',
             enlargeContent: false,
-            productAvailable:null,
+            productAvailable: [],
         };
 
     }
@@ -88,12 +88,12 @@ class MedicineInfo extends Component {
             let [result, availableResult] = await new Promise.all([
                 getProductDetailById(medicineId),
                 getAvailableStockForListOfProducts(prodcuctIds)])
-            console.log(result)
+          
             if (result) {
                 this.setState({ medicineData: result })
             }
-            if(availableResult){
-                this.setState({productAvailable:availableResult[0]})
+            if (availableResult) {
+                this.setState({ productAvailable: availableResult })
 
             }
 
@@ -323,7 +323,7 @@ class MedicineInfo extends Component {
                             <Row>
                                 <Col size={7} style={{ flexDirection: 'row', marginTop: 10 }}>
                                     <Text style={{ fontSize: 10, fontFamily: 'OpenSans', color: '#ff4e42', marginTop: 5 }}>MRP</Text>
-                                    {medicineData.discount !== undefined ?
+                                    {medicineData.discount !== undefined && medicineData.discount !== null ?
                                         <Row>
                                             <Text style={styles.oldRupees}>₹{medicineData.price}</Text>
                                             <Text style={styles.newRupees}>₹{medicineRateAfterOffer(medicineData)}</Text>
@@ -373,7 +373,7 @@ class MedicineInfo extends Component {
                             </Row>
                         }
                         {/* give this text instead of two button in case of out of stock */}
-                        {getIsAvailable(medicineData,this.state.productAvailable) === false?
+                        {getIsAvailable(medicineData, this.state.productAvailable) === false ?
                             <Text style={{ fontSize: 15, fontFamily: 'OpenSans', color: '#ff4e42', marginTop: 5, textAlign: 'center' }}>Currently Out of stock</Text> : null}
 
                         {this.state.isBuyNow == true || this.state.isAddToCart == true ?
