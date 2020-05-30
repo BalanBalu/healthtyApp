@@ -177,7 +177,22 @@ export async function getpharmacy(pharmacy_id) {
   }
 }
 
+export async function deletePrescriptionByUserId(userId) {
+  try {
 
+    let endPoint = '/medicine_orders/prescription/user/'+userId
+    console.log(endPoint);
+    let response = await deleteService(endPoint);
+    console.log(JSON.stringify(response.data))
+    let respData = response.data;
+    return respData;
+  } catch (e) {
+    return {
+      message: 'exception' + e,
+      success: false
+    }
+  }
+}
 
 
 

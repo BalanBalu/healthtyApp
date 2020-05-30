@@ -1,6 +1,6 @@
 import { bookAppointment, createPaymentRazor } from './bookappointment.action';
 import { updateChat } from '../chat/chat.action'
-import { createMedicineOrder,capturePayment } from '../pharmacy/pharmacy.action'
+import { createMedicineOrder, capturePayment, deletePrescriptionByUserId } from '../pharmacy/pharmacy.action'
 import { SERVICE_TYPES } from '../../../setup/config'
 import { possibleChatStatus } from '../../../Constants/Chat';
 import { updateVideoConsuting, } from '../../screens/VideoConsulation/services/video-consulting-service'
@@ -246,25 +246,16 @@ export default class BookAppointmentPaymentUpdate {
             let requestData = {
                 userId: userId,
                 totalAmount: orderData.totalAmount,
-                // description: orderData.diseaseDescription || '',
                 status: isSuccess ? 'PENDING' : 'FAILED',
-                // status_by: "USER",
-                // status_update_reason: 'New Medicine Order',
-                // booked_from: "APPLICATION",
                 paymentId: paymentId,
-                items: orderData.medicineDetails,
-                // delivery_charges: orderData.delivery_charges || ' ',
-                // delivery_tax: orderData.delivery_tax || '',
+                items: orderData.medicineDetails || [],
                 deliveryType: orderData.deliveryType,
                 delivery_address: orderData.delivery_address,
-                // is_order_type_recommentation: orderData.is_order_type_recommentation,
-                // is_order_type_prescription: orderData.is_order_type_prescription,
-                // recommentation_pharmacy_data: orderData.recommentation_pharmacy_data || [],
-                pickup_or_delivery_address: orderData.pickup_or_delivery_address
             }
-            if (orderData.delivery_option === 'STORE_PICKUP') {
-                delete requestData.delivery_tax
-                delete requestData.delivery_charges
+            if (orderData.deliveryType === 1) {
+                console.log('deliveryCharges')
+                // delete requestData.delivery_tax
+                // delete requestData.delivery_charges
             } if (orderData.prescriptions) {
                 requestData.prescriptions = orderData.prescriptions
 
@@ -277,8 +268,12 @@ export default class BookAppointmentPaymentUpdate {
             console.log('resultData create order result==================')
             console.log(resultData)
             if (resultData) {
-               capturePayment(paymentId)
-                
+                capturePayment(paymentId)
+                if (orderData.prescriptions) {
+                   deletePrescriptionByUserId(userId)
+                 
+
+                }
                 return {
                     message: 'order created sucessfully',
                     success: isSuccess,
