@@ -4,9 +4,10 @@ import { Col, Row, Grid } from 'react-native-easy-grid';
 import { StyleSheet, TouchableOpacity, View, FlatList, AsyncStorage, Dimensions, ScrollView, Image } from 'react-native';
 import { RenderFavoritesComponent, RenderFavoritesCount, RenderStarRatingCount } from '../../screens/CommonAll/components';
 import { renderDoctorImage, getDoctorSpecialist, getDoctorEducation, getDoctorExperience } from '../../common';
+const vipLogo = require('../../../../assets/images/viplogo.png')
+
 export default class RenderDoctorInfo extends PureComponent {
     constructor(props) {
-        //debugger
         super(props)
     }
     // shouldComponentUpdate(nextProps, nextState) {
@@ -28,9 +29,7 @@ export default class RenderDoctorInfo extends PureComponent {
     }
 
     render() {
-        //debugger
         const { item, docInfoData: { isLoggedIn, fee, feeWithoutOffer, patientFavoriteListCountOfDoctorIds, docFavoriteListCountOfDoctorIDs, docReviewListCountOfDoctorIDs }, addToFavoritesList, onPressGoToBookAppointmentPage } = this.props;
-        //debugger
         return (
             <View>
                 <Row onPress={() => onPressGoToBookAppointmentPage(item)}>
@@ -60,7 +59,7 @@ export default class RenderDoctorInfo extends PureComponent {
                                 onPressFavoriteIcon={() => addToFavoritesList(item.doctor_id)}
                             />
                         </Row>
-                        {item.primeDocOnNonPrimeList === true ?
+                        {item.isPrimeDoctorOnNormalCardView === true ?
                             <Row>
                                 <View style={{ position: 'absolute', marginLeft: 15, alignSelf: 'center' }}>
                                     <Image square source={vipLogo} style={{ height: 30, width: 30 }} />

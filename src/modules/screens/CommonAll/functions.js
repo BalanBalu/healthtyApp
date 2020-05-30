@@ -49,10 +49,16 @@ const enumerateStartToEndDates = (startDateByMoment, endDateByMoment, datesArry)
     return datesArry
 }
 
+function sortByPrimeDoctors(a, b) {
+    if (a.isPrimeDoctorOnNormalCardView == true || b.isPrimeDoctorOnNormalCardView) {
+        return 1;
+    }
+}
 
 export {
     getUserGenderAndAge,
     enumerateStartToEndDates,
     sortByStartTime,
     reducer,
+    sortByPrimeDoctors
 }

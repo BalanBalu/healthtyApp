@@ -18,12 +18,12 @@ export const serviceOfGetTotalActiveSponsorDetails4Doctors = async (doctorIds) =
         const respData = response.data;
         return respData;
     } catch (Ex) {
-        console.log('Ex is getting on fetchAvailabilitySlots for Doctor====>', Ex)
+        console.log('Ex is getting on fetch Doctor active sponsor list====>', Ex)
         return {
             success: false,
             statusCode: 500,
             error: Ex,
-            message: `Exception while getting on fetchAvailabilitySlots for Doctor : ${Ex}`
+            message: `Exception while getting on fetch Doctor active sponsor list : ${Ex}`
         }
     }
 }
@@ -31,20 +31,24 @@ export const serviceOfGetTotalActiveSponsorDetails4Doctors = async (doctorIds) =
 
 
 /* Update Sponsor Viewers Counts */
-export async function updateSponsorViewCount(userId, sponsorIds) {
+export async function serviceOfUpdateDocSponsorViewCountByUser(userId, sponsorIds) {
     try {
-        let endPoint = 'updateSponsorViewers/' + userId
-        let response = await putService(endPoint, sponsorIds);
-        let respData = response.data;
-        // console.log('respData'+JSON.stringify(respData))
+        const endPoint = 'updateSponsorViewers/' + userId
+        const response = await putService(endPoint, sponsorIds);
+        const respData = response.data;
         return respData;
-    } catch (e) {
+    } catch (Ex) {
+        console.log('Ex is getting on update Doctor sponsor view count by user====>', Ex)
         return {
-            message: 'exception' + e,
-            success: false
+            success: false,
+            statusCode: 500,
+            error: Ex,
+            message: `Exception while getting on update Doctor sponsor view count by user : ${Ex}`
         }
     }
 }
+
+
 
 export const searchByDocDetailsService = async (locationDataFromSearch, inputKeywordFromSearch) => {
     try {
