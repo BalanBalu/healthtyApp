@@ -36,7 +36,7 @@ export async function searchRecentItemsByPharmacy(limit) {
 export async function getMedicinesSearchList(keyword, pagination, isLoading = true) {
   try {
     console.log(typeof keyword)
-    let endPoint = '/products/search/pagination?s=' + keyword + '&p=' + 0 + '&c=' + 10;
+    let endPoint = '/products/search/pagination?s=' + keyword + '&p=' + pagination + '&c=' + 10;
     console.log(endPoint);
 
     let response = await inventoryGetService(endPoint);

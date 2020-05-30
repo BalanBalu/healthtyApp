@@ -63,6 +63,7 @@ class PharmacyHome extends Component {
                     cartData = JSON.parse(cart)
 
                 }
+                setCartItemCountOnNavigation(this.props.navigation);
                 await this.setState({ cartItems: cartData })
             }
         }

@@ -29,7 +29,7 @@ export class AddToCard extends Component {
     async componentDidMount() {
         let data = this.props.data;
 
-        updateTopSearchedItems(data.id)
+       
         console.log('addtocard data=======================');
         console.log(JSON.stringify(data))
         if (data.userAddedMedicineQuantity) {
@@ -43,6 +43,7 @@ export class AddToCard extends Component {
             this.productQuantityOperator(data, 'add')
         }
         this.setState({ data })
+        updateTopSearchedItems(data.id)
 
     }
     async productQuantityOperator(item, operator) {

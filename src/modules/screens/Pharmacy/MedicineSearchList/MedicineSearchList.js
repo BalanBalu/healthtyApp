@@ -23,7 +23,7 @@ class MedicineSearchList extends Component {
             isBuyNow: false,
             selectedMedcine: {},
             medicineName: '',
-            pagination: 1,
+            pagination: 0,
         }
     }
     async  componentDidMount() {
@@ -48,15 +48,15 @@ class MedicineSearchList extends Component {
             await this.medicineSearchListByPharmacyId(pharmacyInfo.pharmacy_id)
         }
         else {
-            await this.MedicineSearchList(medicineName)
+            await this.MedicineSearchList(medicineName,this.state.pagination)
         }
         this.setState({ isLoading: false, medicineName })
 
     }
-    MedicineSearchList = async (enteredText) => {
+    MedicineSearchList = async (enteredText,pagination) => {
         try {
 
-            let medicineResultData = await getMedicinesSearchList(enteredText, this.state.pagination);
+            let medicineResultData = await getMedicinesSearchList(enteredText, pagination);
             console.log('MedicineSearchList')
 
             if (medicineResultData) {
@@ -203,7 +203,7 @@ class MedicineSearchList extends Component {
             await this.medicineSearchListByPharmacyId(pharmacyInfo.pharmacy_id)
         }
         else {
-            await this.MedicineSearchList(this.state.medicineName,this.state.pagination + 1)
+            await this.MedicineSearchList(this.state.medicineName,pagination)
         }
 
     }
